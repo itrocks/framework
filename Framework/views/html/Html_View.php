@@ -1,6 +1,6 @@
 <?php
 
-class Html_View implements View
+class Html_View extends View
 {
 
 	//------------------------------------------------------------------------------------------- run

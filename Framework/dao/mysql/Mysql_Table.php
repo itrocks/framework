@@ -3,6 +3,8 @@
 class Mysql_Table implements Dao_Table
 {
 
+	// TODO this is bad : getFields must be Data_Link::getStoredProperties($object_class) or something like that
+
 	//------------------------------------------------------------------------------------- getFields
 	public static function getFields($data_link, $object_class)
 	{

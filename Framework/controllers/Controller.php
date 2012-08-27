@@ -5,7 +5,7 @@ interface Controller
 
 	//------------------------------------------------------------------------------------------ call
 	/**
-	 * @param array $args
+	 * @param array $params
 	 * @param array $form
 	 * @param array $files
 	 */

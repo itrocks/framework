@@ -11,9 +11,9 @@ class Sql_Builder
 	private static $tcount;
 
 	//----------------------------------------------------------------------------------- buildDelete
-	public static function buildDelete($table_name, $id)
+	public static function buildDelete($object_class, $id)
 	{
-		return "DELETE FROM `" . $table_name . "` WHERE id = " . $id;
+		return "DELETE FROM `" . Sql_Table::classToTableName($object_class) . "` WHERE id = " . $id;
 	}
 
 	//----------------------------------------------------------------------------------- buildFields
@@ -48,7 +48,8 @@ class Sql_Builder
 	//----------------------------------------------------------------------------------- buildSelect
 	public static function buildSelect($object_class, $columns)
 	{
-		$sql_select = Sql_Select_Builder::build($object_class, $columns);
+		$sql_select_builder = new Sql_Select_Builder($object_class, $columns);
+		$sql_select = $sql_select_builder->getQuery();
 		if (Sql_Builder::DEBUG) echo $sql_select . "<br>";
 		return $sql_select;
 	}
@@ -124,8 +125,7 @@ class Sql_Builder
 	private static function buildWhereForObjectSub($object, $sql_link)
 	{
 		$object_class = get_class($object);
-		$table_class = $sql_link->getTableClass();
-		$field_names = array_keys($table_class::getFields($sql_link, $object_class));
+		$field_names = array_keys($sql_link->getStoredProperties($object_class));
 		$t = "t" + Sql_Builder::$tcount; 
 		$do = false;
 		foreach (Class_Fields::accessFields($object_class) as $field) {

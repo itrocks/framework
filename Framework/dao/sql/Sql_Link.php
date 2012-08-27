@@ -50,9 +50,6 @@ abstract class Sql_Link extends Identifier_Map_Data_Link
 	//----------------------------------------------------------------------------------------- fetch
 	protected abstract function fetch($result_set, $class_name);
 
-	//--------------------------------------------------------------------------------- getTableClass
-	public abstract function getTableClass();
-
 	//----------------------------------------------------------------------------------------- query
 	/**
 	 * @param  string $query

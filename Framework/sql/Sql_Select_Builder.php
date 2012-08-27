@@ -27,26 +27,23 @@ class Sql_Select_Builder
 	 * field.foreign_field : field must be a property of class, foreign_field must be a property
 	 *                       of field's @var class
 	 *
-	 * @param string   $object_class base object class name
-	 * @param string[] $columns      columns list
+	 * @param string    $object_class base object class name
+	 * @param string[]  $columns      columns list
+	 * @param Sql_Joins $sql_joins
 	 */
-	private function __construct($object_class, $columns)
+	private function __construct($object_class, $columns, $sql_joins = null)
 	{
 		$this->table_counter = 0;
 		$this->tables = "`" . Sql_Table::classToTableName($object_class) . "` t0";
-		$this->joins = new Sql_Joins($object_class, $columns);
+		$this->joins = $sql_joins ? $sql_joins : new Sql_Joins($object_class, $columns);
 		$this->buildFields($columns);
 		$this->buildTables();
 	}
 
-	//----------------------------------------------------------------------------------------- build
-	public static function build($object_class, $columns)
-	{
-		$sql_select_builder = new Sql_Select_Builder($object_class, $columns);
-		return $sql_select_builder->getQuery();
-	}
-
 	//----------------------------------------------------------------------------------- buildFields
+	/**
+	 * @param string[] $columns columns list
+	 */
 	private function buildFields($columns)
 	{
 		$first_column = true;
@@ -100,9 +97,21 @@ class Sql_Select_Builder
 	}
 
 	//-------------------------------------------------------------------------------------- getQuery
-	private function getQuery()
+	/**
+	 * @return string
+	 */
+	public function getQuery()
 	{
 		return "SELECT " . $this->fields . " FROM " . $this->tables;
+	}
+
+	//-------------------------------------------------------------------------------------- getJoins
+	/**
+	 * @return Sql_Joins
+	 */
+	public function getJoins()
+	{
+		return $this->sql_joins;
 	}
 
 }

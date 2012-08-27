@@ -22,11 +22,12 @@ class Main_Controller
 
 	//------------------------------------------------------------------------------------------ call
 	/**
+	 * Parse URI and call controller / view
+	 *
 	 * @param string $uri
 	 * @param array  $get
 	 * @param array  $post
 	 * @param array  $files
-	 * @return mixed
 	 */
 	private function call($uri, $get, $post, $files)
 	{
@@ -35,33 +36,20 @@ class Main_Controller
 		$controller_class = $uri->getControllerName() . "_Controller";
 		echo "try $controller_class<br>";
 		if (@class_exists($controller_class)) {
-			// call controller : only him will parse parameters and call view
+			// call specific controller : it will parse parameters and call view
+			$controller = new $controller_class();
+			$parameters = $uri->getParameters();
+		} elseif (@class_exists("Default_" . $uri->getFeature() . "_Controller")) {
+			// call default feature controller : it will parse parameters and call view
+			$controller_class = "Default_" . $uri->getFeature() . "_Controller";
+			$controller = new $controller_class();
 			$parameters = $uri->getParameters();
 		} else {
-			// call default view (use built-in default controller)
-			$controller_class = "Default_" . $uri->getFeature();
+			// call default feature view (simply use built-in default controller)
+			$controller = new Default_Controller($uri->getFeature(), $this->config->getViewClass());
 			$parameters = Main_Controller::parseParameters($uri->getParameters());
 		}
-		echo "call $controller_class::call with parameters " . print_r($parameters, true) . "<br>";
-		$controller = new $controller_class();
 		$controller->call($parameters, $post, $files);
-	}
-
-	//------------------------------------------------------------------------------- connectDataLink
-	private function connectDataLink()
-	{
-		$dao_class_name = $this->config->getDaoClassName();
-		Connected_Environment::setCurrent(new Connected_Environment(
-			Dao::newInstance($this->config->getDaoClassName(), $this->config->getDao())
-		));
-	}
-
-	//----------------------------------------------------------------------------------- connectUser
-	private function connectUser($form)
-	{
-		if (isset($form["login"]) && isset($form["password"])) {
-			// TODO generic login using config.php content
-		}
 	}
 
 	//-------------------------------------------------------------------------------- dispatchParams
@@ -94,26 +82,30 @@ class Main_Controller
 		return $parameters;
 	}
 
-	//----------------------------------------------------------------------------------- loadSession
-	public function loadConfiguration($application)
-	{
-		session_start();
-		if ($application) {
-			$this->config = new Config();
-			$this->config->setCurrent($application);
-		} else {
-			$this->config = new Config($_SESSION["config"]);
-		}
-	}
-
 	//------------------------------------------------------------------------------------------- run
 	public function run($uri, $get, $post, $files)
 	{
 		$this->dispatchParams($get, $post);
-		$this->loadConfiguration($post["app"]);
-		$this->connectDataLink();
-		$this->connectUser($post);
-		return $this->call($uri, $get, $post, $files);
+		$this->sessionStart();
+		$this->call($uri, $get, $post, $files);
+	}
+
+	//---------------------------------------------------------------------------------- initDefaults
+	public function sessionStart()
+	{
+		session_start();
+		if ($_SESSION["configuration"] && $_SESSION["user"]) {
+			Configuration::setCurrent($_SESSION["configuration"]);
+			User::setCurrent($_SESSION["user"]);
+		} else {
+			$configurations = new Configurations();
+			$configurations->load();
+		}
+		$configuration = Configuration::getCurrent();
+		$dao_class_name = $configuration->getDaoClassName();
+		Dao::setDataLink(new $dao_class_name($configuration->getDao()));
+		$view_class_name = $configuration->getViewClassName();
+		View::setCurrent(new $view_class_name($configuration->getView()));
 	}
 
 }

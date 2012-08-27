@@ -36,9 +36,8 @@ class Mysql_Link extends Sql_Link
 				}
 			}
 			Class_Fields::accessFieldsDone($object_class);
+			$this->query(Sql_Builder::buildDelete($object_class, $id));
 			$this->removeObjectIdentifier($object);
-			$table_name = SQL_Table::classToTableName($object_class);
-			$this->query(Sql_Builder::buildDelete($table_name, $id));
 			return true;
 		}
 		return false;
@@ -82,6 +81,12 @@ class Mysql_Link extends Sql_Link
 		return mysql_fetch_object($result_set, $class_name);
 	}
 
+	//------------------------------------------------------------------------------------------ free
+	protected function free($result_set)
+	{
+		mysql_free_result($result_set);
+	}
+
 	//--------------------------------------------------------------------------------- getColumnName
 	protected function getColumnName($result_set, $index)
 	{
@@ -94,10 +99,23 @@ class Mysql_Link extends Sql_Link
 		return mysql_num_fields($result_set);
 	}
 
-	//--------------------------------------------------------------------------------- getTableClass
-	public function getTableClass()
+	//--------------------------------------------------------------------------- getStoredProperties
+	public function getStoredProperties($object_class)
 	{
-		return "Mysql_Table";
+		$result_set = mysql_query(
+			"SHOW FIELDS FROM `" . Sql_Table::classToTableName($object_class) . "`",
+			$this->getConnection()
+		);
+		while ($field = mysql_fetch_object($result_set, "Mysql_Field")) {
+			$field_name = $field->getName();
+			if (substr($field_name, 0, 3) == "id_") {
+				$field_name = substr($field_name, 3);
+			}
+			$fields[$field_name] = $field;
+		}
+		mysql_free_result($result_set);
+		$object_properties = Class_Fields::fields($object_class);
+		return array_intersect_key($object_properties, $fields);
 	}
 
 	//----------------------------------------------------------------------------------------- query
@@ -143,7 +161,7 @@ class Mysql_Link extends Sql_Link
 			"SELECT * FROM `" . Sql_Table::classToTableName(objectClass) . "`",
 			$this->getConnection()
 		);
-		while ($object = mysql_fetch_object($result_set)) {
+		while ($object = mysql_fetch_object($result_set, $object_class)) {
 			$this->setOjectIdentifier($object, $object->id);
 			$read_result[] = $object;
 		}
@@ -156,6 +174,7 @@ class Mysql_Link extends Sql_Link
 	{
 		$this->setObjectIdentifier($destination, $this->getObjectIdentifier($source));
 		$this->write($destination);
+		return $destination;
 	}
 
 	//---------------------------------------------------------------------------------------- search

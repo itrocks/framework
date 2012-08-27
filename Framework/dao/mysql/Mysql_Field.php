@@ -1,6 +1,6 @@
 <?php
 
-class Mysql_Field implements DAO_Field
+class Mysql_Field implements Dao_Field
 {
 
 	private $Name;
@@ -27,16 +27,16 @@ class Mysql_Field implements DAO_Field
 		$type = lParse($this->Type, "(");
 		switch ($type) {
 			case "decimal": case "float": case "double":
-				return Data_Type::FLOAT;
+				return "float";
 			case "tinyint": case "smallint": case "mediumint": case "int": case "bigint":
-				return Data_Type::INT;
+				return "integer";
 			case "char": case "varchar": case "tinytext": case "text": case "mediumtext": case "longtext":
 			case "enum": case "set":
-				return Data_Type::TEXT;
+				return "string";
 			case "date": case "datetime": case "timestamp": case "time": case "year":
-				return Data_Type::TIME;
+				return "DateTime";
 			case "tinyblob": case "blob": case "mediumblob": case "longblob":
-				return Data_Type::RAW;
+				return "string";
 		}
 	}
 

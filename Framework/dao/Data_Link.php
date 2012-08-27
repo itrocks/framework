@@ -23,6 +23,15 @@ interface Data_Link
 	 */
 	public function delete($object);
 
+	//--------------------------------------------------------------------------- getStoredProperties
+	/**
+	 * Returns the list of properties of $object_class that are stored by data link
+	 *
+	 * @param string $object_class
+	 * @return Reflection_Property
+	 */
+	public function getStoredProperties($object_class);
+
 	//------------------------------------------------------------------------------------------ read
 	/**
 	 * Read an object from data source
