@@ -1,4 +1,5 @@
 <?php
+namespace Framework\Tests;
 
 class Test_Client
 {

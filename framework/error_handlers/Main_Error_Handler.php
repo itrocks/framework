@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Main_Error_Handler implements Error_Handler
 {

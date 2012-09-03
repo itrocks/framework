@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Html_View_Engine implements View_Engine
 {

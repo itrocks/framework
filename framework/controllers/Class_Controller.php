@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 interface Class_Controller extends Controller
 {

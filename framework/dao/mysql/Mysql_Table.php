@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Mysql_Table implements Dao_Table
 {

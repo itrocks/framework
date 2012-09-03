@@ -1,4 +1,6 @@
 <?php
+namespace Framework;
+use \DateTime;
 
 class Date_Time extends DateTime
 {

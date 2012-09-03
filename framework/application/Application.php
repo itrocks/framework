@@ -1,7 +1,11 @@
 <?php
+namespace Framework;
 
 class Application
 {
+
+	//----------------------------------------------------------------------------------- $namespaces
+	private static $namespaces;
 
 	//-------------------------------------------------------------------------------- getDirectories
 	private static function getDirectories($path)
@@ -17,17 +21,35 @@ class Application
 	}
 
 	//-------------------------------------------------------------------------- getSourceDirectories
-	public static function getSourceDirectories($application_class_name)
+	public static function getSourceDirectories($application_name)
 	{
-		$app_dir = strtolower($application_class_name);
+		$app_dir = strtolower($application_name);
 		$directories = array();
-		if ($application_class_name != "Framework") {
-			$extends = mParse(file_get_contents("{$app_dir}/{$application_class_name}_Application.php"),
+		if ($application_name != "Framework") {
+			$extends = mParse(file_get_contents("{$app_dir}/{$application_name}_Application.php"),
 				" extends ", "_Application"
 			);
 			$directories = Application::getSourceDirectories($extends);
 		}
 		return array_merge(Application::getDirectories($app_dir), $directories);
+	}
+
+	//--------------------------------------------------------------------------------- getNamespaces
+	public static function getNamespaces($application_name)
+	{
+		if (!Application::$namespaces) {
+			$app_dir = strtolower($application_name);
+			Application::$namespaces = array(); 
+			$application = $application_name;
+			while ($application != "Framework") {
+				Application::$namespaces[] = $application;
+				$application =  mParse(file_get_contents("{$app_dir}/{$application_name}_Application.php"),
+					" extends ", "_Application"
+				);
+			}
+			Application::$namespaces[] = "Framework";
+		}
+		return Application::$namespaces;
 	}
 
 }

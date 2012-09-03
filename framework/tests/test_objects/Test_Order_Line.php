@@ -1,4 +1,6 @@
 <?php
+namespace Framework\Tests;
+use \Framework\Aop;
 
 /**
  * @dataset orders_lines
@@ -31,5 +33,5 @@ class Test_Order_Line
 
 }
 
-Aop::registerObjectGetter("Test_Order_Line->client");
-Aop::registerObjectGetter("Test_Order_Line->order");
+Aop::registerObjectGetter("Framework\\Test\\Test_Order_Line->client");
+Aop::registerObjectGetter("Framework\\Test\\Test_Order_Line->order");

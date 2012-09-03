@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Var_Annotation extends Annotation
 {

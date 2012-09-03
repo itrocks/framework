@@ -1,6 +1,5 @@
 <?php
-require_once "framework/application/Autoloader.php";
-require_once "framework/toolbox/string.php";
+namespace Framework;
 
 class Main_Controller
 {
@@ -62,15 +61,19 @@ class Main_Controller
 	 */
 	private function runController($uri, $get, $post, $files)
 	{
+		$namespaces = Application::getNamespaces(Configuration::getCurrent()->getApplicationName());
 		$uri = new Controller_Uri($uri, "output");
 		foreach ($uri->getPossibleControllerCalls() as $call) {
 			list($controller_class_name, $method_name) = $call;
-			if (@method_exists($controller_class_name, $method_name)) {
-				$controller = new $controller_class_name();
-				$controller->$method_name(
-					$uri->parameters, $post, $files, $uri->controller_name, $uri->feature_name
-				);
-				break;
+			foreach ($namespaces as $namespace) {
+				$controller = "\\$namespace\\$controller_class_name";
+				if (@method_exists($controller, $method_name)) {
+					$controller = new $controller();
+					$controller->$method_name(
+						$uri->parameters, $post, $files, $uri->controller_name, $uri->feature_name
+					);
+					break;
+				}
 			}
 		}
 	}
@@ -88,8 +91,14 @@ class Main_Controller
 		}
 		$configuration = Configuration::getCurrent();
 		$dao_class_name = $configuration->getDaoClassName();
+		if (!strpos($dao_class_name, "\\")) {
+			$dao_class_name = "\\Framework\\" . $dao_class_name;
+		}
 		Dao::setDataLink(new $dao_class_name($configuration->getDao()));
 		$view_class_name = $configuration->getViewEngineClassName();
+		if (!strpos($view_class_name, "\\")) {
+			$view_class_name = "\\Framework\\" . $view_class_name;
+		}
 		View::setCurrent(new $view_class_name($configuration->getViewEngine()));
 	}
 

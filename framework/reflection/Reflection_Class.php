@@ -1,4 +1,6 @@
 <?php
+namespace Framework;
+use \ReflectionClass;
 
 class Reflection_Class extends ReflectionClass implements Annoted
 {

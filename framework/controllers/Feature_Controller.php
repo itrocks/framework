@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 interface Feature_Controller extends Controller
 {

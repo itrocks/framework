@@ -1,4 +1,6 @@
 <?php
+namespace Framework\Tests;
+use \Framework\feature_Controller;
 
 class Test_Order_Output_Controller implements Feature_Controller
 {

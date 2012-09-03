@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class View
 {
@@ -20,7 +21,7 @@ class View
 	//------------------------------------------------------------------------------ getPossibleViews
 	public static function getPossibleViews($class_name, $feature_name)
 	{
-		$view_engine_name = lParse(get_class(View::getCurrent()), "_View_Engine");
+		$view_engine_name = mParse(get_class(View::getCurrent()), "\\", "_View_Engine");
 		$feature_class = Names::methodToClass($feature_name);
 		return array(
 			array($view_engine_name . "_" . $class_name . "_" . $feature_class, "run"),
@@ -41,12 +42,16 @@ class View
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
+		$namespaces = Application::getNamespaces(Configuration::getCurrent()->getApplicationName());
 		foreach (View::getPossibleViews($class_name, $feature_name) as $call) {
 			list($view_class_name, $view_method_name) = $call;
-			if (@method_exists($view_class_name, $view_method_name)) {
-				$view_object = new $view_class_name();
-				$view_object->$view_method_name($parameters, $form, $files, $class_name, $feature_name);
-				break;
+			foreach ($namespaces as $namespace) {
+				$view = "\\$namespace\\$view_class_name";
+				if (@method_exists($view, $view_method_name)) {
+					$view_object = new $view();
+					$view_object->$view_method_name($parameters, $form, $files, $class_name, $feature_name);
+					break;
+				}
 			}
 		} 
 	}

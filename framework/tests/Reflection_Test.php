@@ -1,4 +1,8 @@
 <?php
+namespace Framework\Tests;
+use \Framework\Class_Fields;
+use \Framework\Reflection_Property;
+use \ReflectionException;
 
 class Reflection_Test extends Unit_Test
 {

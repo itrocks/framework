@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 interface Dao_Field
 {

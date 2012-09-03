@@ -1,6 +1,7 @@
 <?php
+namespace Framework;
 
-class Session
+class Html_Session
 {
 
 	//--------------------------------------------------------------------------------- postSessionId
@@ -37,4 +38,4 @@ class Session
 
 }
 
-Aop::registerAfter("Html_Template->parse()", "Session::postSessionId");
+Aop::registerAfter("Framework\\Html_Template->parse()", "Framework\\Html_Session::postSessionId");

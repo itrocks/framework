@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Mysql_Link extends Sql_Link
 {

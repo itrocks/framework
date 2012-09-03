@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Callback_Error_Handler implements Error_Handler
 {

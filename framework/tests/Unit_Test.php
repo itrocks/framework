@@ -1,4 +1,5 @@
 <?php
+namespace Framework\Tests;
 
 class Unit_Test
 {

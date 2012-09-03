@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Default_Write_Controller implements Class_Controller
 {

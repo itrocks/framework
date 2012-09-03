@@ -1,5 +1,5 @@
 <?php
-require_once "framework/application/Application.php";
+namespace Framework;
 
 class Autoloader
 {
@@ -14,6 +14,10 @@ class Autoloader
 	//-------------------------------------------------------------------------------------- autoLoad
 	public static function autoLoad($class)
 	{
+		$i = strrpos($class, "\\");
+		if ($i !== false) {
+				$class = substr($class, $i + 1);
+		}
 		if (!@include_once("$class.php")) {
 			Autoloader::init();
 			include_once "$class.php";
@@ -50,11 +54,5 @@ class Autoloader
 
 }
 
-//--------------------------------------------------------------------------------------------- aop
-aop_add_before("Configuration->setCurrent()", "Autoloader::reset");
-
-//-------------------------------------------------------------------------------------- __autoload
-function __autoload($class)
-{
-	Autoloader::autoLoad($class);
-}
+spl_autoload_register("Framework\\Autoloader::autoLoad");
+Aop::registerBefore("Framework\\Configuration->setCurrent()", "Framework\\Autoloader::reset");

@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Mysql_Field implements Dao_Field
 {

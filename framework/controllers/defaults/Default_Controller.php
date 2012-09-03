@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Default_Controller implements Controller
 {

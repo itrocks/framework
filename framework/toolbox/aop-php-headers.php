@@ -1,4 +1,6 @@
 <?php
+namespace Framework;
+
 /**
  * DO NEVER INCLUDE THIS SCRIPT
  * These are headers for AOP-PHP phpdocumentor and Eclipse / Zend Studio auto-completion.

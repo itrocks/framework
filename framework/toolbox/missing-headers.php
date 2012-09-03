@@ -1,4 +1,6 @@
 <?php
+namespace Framework;
+
 /**
  * DO NEVER INCLUDE THIS SCRIPT
  * These are php standard functions headers missing from Eclipse / Zend Studio standard phpdoc.

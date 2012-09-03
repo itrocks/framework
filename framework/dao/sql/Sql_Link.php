@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 abstract class Sql_Link extends Identifier_Map_Data_Link
 {

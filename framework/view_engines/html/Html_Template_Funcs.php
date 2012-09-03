@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Html_Template_Funcs
 {

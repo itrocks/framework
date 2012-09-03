@@ -1,4 +1,5 @@
 <?php
+namespace Framework;
 
 class Sql_Select_Builder
 {
