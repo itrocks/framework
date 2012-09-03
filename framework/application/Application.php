@@ -35,9 +35,10 @@ class Application
 	}
 
 	//--------------------------------------------------------------------------------- getNamespaces
-	public static function getNamespaces($application_name)
+	public static function getNamespaces()
 	{
 		if (!Application::$namespaces) {
+			$application_name = Configuration::getCurrent()->getApplicationName();
 			$app_dir = strtolower($application_name);
 			Application::$namespaces = array(); 
 			$application = $application_name;

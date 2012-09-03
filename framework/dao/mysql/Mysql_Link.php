@@ -107,7 +107,7 @@ class Mysql_Link extends Sql_Link
 			"SHOW FIELDS FROM `" . Sql_Table::classToTableName($object_class) . "`",
 			$this->connection
 		);
-		while ($field = mysql_fetch_object($result_set, "Mysql_Field")) {
+		while ($field = mysql_fetch_object($result_set, "Framework\\Mysql_Field")) {
 			$field_name = $field->getName();
 			if (substr($field_name, 0, 3) == "id_") {
 				$field_name = substr($field_name, 3);

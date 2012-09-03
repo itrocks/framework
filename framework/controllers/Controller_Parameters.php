@@ -29,7 +29,13 @@ class Controller_Parameters
 		if (isset($this->objects[$parameter_name])) {
 			$object = $this->objects[$parameter_name];
 		} else {
-			$object = Getter::getObject($this->parameters[$parameter_name] + 0, $parameter_name);
+			foreach (Application::getNamespaces() as $namespace) {
+				$class = "$namespace\\$parameter_name";
+				if (@class_exists($class)) {
+					$object = Getter::getObject($this->parameters[$parameter_name] + 0, $class);
+					break;
+				}
+			}
 			$this->objects[$parameter_name] = $object;
 		}
 		return $object;

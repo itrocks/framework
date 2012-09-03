@@ -1,6 +1,6 @@
 <?php
 namespace Framework\Tests;
-use \Framework\Sql_Builder;
+use Framework\Sql_Builder;
 
 class Sql_Select_Builder_Test extends Unit_Test
 {

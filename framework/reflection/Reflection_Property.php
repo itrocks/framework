@@ -1,6 +1,6 @@
 <?php
 namespace Framework;
-use \ReflectionProperty;
+use ReflectionProperty;
 
 class Reflection_Property extends ReflectionProperty implements Annoted
 {

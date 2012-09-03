@@ -1,7 +1,7 @@
 <?php
 namespace Framework\Tests;
-use \Framework\Sql_Join;
-use \Framework\Sql_Joins;
+use Framework\Sql_Join;
+use Framework\Sql_Joins;
 
 class Sql_Joins_Test extends Unit_Test
 {

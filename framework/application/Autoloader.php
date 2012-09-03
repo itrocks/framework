@@ -14,9 +14,8 @@ class Autoloader
 	//-------------------------------------------------------------------------------------- autoLoad
 	public static function autoLoad($class)
 	{
-		$i = strrpos($class, "\\");
-		if ($i !== false) {
-				$class = substr($class, $i + 1);
+		if ($i = strrpos($class, "\\")) {
+			$class = substr($class, $i + 1);
 		}
 		if (!@include_once("$class.php")) {
 			Autoloader::init();

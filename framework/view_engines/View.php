@@ -42,11 +42,10 @@ class View
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		$namespaces = Application::getNamespaces(Configuration::getCurrent()->getApplicationName());
 		foreach (View::getPossibleViews($class_name, $feature_name) as $call) {
 			list($view_class_name, $view_method_name) = $call;
-			foreach ($namespaces as $namespace) {
-				$view = "\\$namespace\\$view_class_name";
+			foreach (Application::getNamespaces() as $namespace) {
+				$view = $namespace . "\\" . $view_class_name;
 				if (@method_exists($view, $view_method_name)) {
 					$view_object = new $view();
 					$view_object->$view_method_name($parameters, $form, $files, $class_name, $feature_name);

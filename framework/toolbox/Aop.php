@@ -156,7 +156,7 @@ class Aop
 	 */
 	public static function registerCollectionGetter($class_property)
 	{
-		aop_add_before("read $class_property", "Aop::CollectionGetter");
+		aop_add_before("read $class_property", "Framework\\Aop::CollectionGetter");
 	}
 
 	//------------------------------------------------------------------------ registerDateTimeGetter
@@ -170,7 +170,7 @@ class Aop
 	 */
 	public static function registerDateTimeGetter($class_property)
 	{
-		aop_add_before("read $class_property", "Aop::dateTimeGetter");
+		aop_add_before("read $class_property", "Framework\\Aop::dateTimeGetter");
 	}
 
 	//-------------------------------------------------------------------------- registerObjectGetter
@@ -181,7 +181,7 @@ class Aop
 	 */
 	public static function registerObjectGetter($class_property)
 	{
-		aop_add_before("read $class_property", "Aop::objectGetter");
+		aop_add_before("read $class_property", "Framework\\Aop::objectGetter");
 	}
 
 	//------------------------------------------------------------------------------------ setterCall

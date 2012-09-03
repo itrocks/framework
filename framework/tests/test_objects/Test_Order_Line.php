@@ -1,6 +1,6 @@
 <?php
 namespace Framework\Tests;
-use \Framework\Aop;
+use Framework\Aop;
 
 /**
  * @dataset orders_lines

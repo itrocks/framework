@@ -1,7 +1,7 @@
 <?php
 namespace Framework\Tests;
-use \Framework\Reflection_Class;
-use \Framework\Reflection_Method;
+use Framework\Reflection_Class;
+use Framework\Reflection_Method;
 
 class Tests_Controller
 {

@@ -61,12 +61,11 @@ class Main_Controller
 	 */
 	private function runController($uri, $get, $post, $files)
 	{
-		$namespaces = Application::getNamespaces(Configuration::getCurrent()->getApplicationName());
 		$uri = new Controller_Uri($uri, "output");
 		foreach ($uri->getPossibleControllerCalls() as $call) {
 			list($controller_class_name, $method_name) = $call;
-			foreach ($namespaces as $namespace) {
-				$controller = "\\$namespace\\$controller_class_name";
+			foreach (Application::getNamespaces() as $namespace) {
+				$controller = $namespace . "\\" . $controller_class_name;
 				if (@method_exists($controller, $method_name)) {
 					$controller = new $controller();
 					$controller->$method_name(
