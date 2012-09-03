@@ -60,5 +60,5 @@ class Mysql_Logger
 
 }
 
-aop_add_before("mysql_query()", array(Mysql_Logger::getInstance(), "onQuery"));
-aop_add_after("mysql_query()", array(Mysql_Logger::getInstance(), "onError"));
+Aop::registerBefore("mysql_query()", array(Mysql_Logger::getInstance(), "onQuery"));
+aop::registerAfter("mysql_query()", array(Mysql_Logger::getInstance(), "onError"));

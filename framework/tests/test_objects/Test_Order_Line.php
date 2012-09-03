@@ -7,16 +7,15 @@ class Test_Order_Line
 {
 
 	/**
+	 * @var Test_Client
+	 */
+	public $client;
+
+	/**
 	 * @mandatory
 	 * @var integer
 	 */
 	public $number;
-
-	/**
-	 * @mandatory
-	 * @var float
-	 */
-	public $quantity;
 
 	/**
 	 * @mandatory
@@ -25,11 +24,12 @@ class Test_Order_Line
 	public $order;
 
 	/**
-	 * @var Test_Client
+	 * @mandatory
+	 * @var float
 	 */
-	public $client;
+	public $quantity;
 
 }
 
-aop_add_before("read Test_Order_Line->order",  "Aop::objectGetter");
-aop_add_before("read Test_Order_Line->client", "Aop::objectGetter");
+Aop::registerObjectGetter("Test_Order_Line->client");
+Aop::registerObjectGetter("Test_Order_Line->order");

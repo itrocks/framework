@@ -10,7 +10,7 @@
 <body>
 
 	<!--BEGIN-->
-	<form action="authenticate" method="post">
+	<form name="User_login" action="authenticate" method="post">
 		<div class="fieldset">
 			<div class="field">
 				<span class="label">login</span>
@@ -23,6 +23,7 @@
 		</div>
 		<input type="submit" value="login">
 	</form>
+	<script> document.User_login.login.focus(); </script>
 	<!--END-->
 
 </body>

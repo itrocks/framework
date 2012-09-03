@@ -108,19 +108,76 @@ class Aop
 		}
 	}
 
+	//--------------------------------------------------------------------------------- registerAfter
+	/**
+	 * Register a call_back advice, called after the execution of a function or before
+	 * the read/write of a property
+	 *
+	 * @param string $function ie "Class_Name->functionName()" or "Class_Name->property_name"
+	 * @param string $call_back valid callback function descriptor : "Class_Name::functionName()
+	 */
+	public static function registerAfter($function, $call_back)
+	{
+		aop_add_after($function, $call_back);
+	}
+
+	//-------------------------------------------------------------------------------- registerAround
+	/**
+	 * Register a call_back advice, called around the execution of a function or before
+	 * the read/write of a property
+	 *
+	 * @param string $function ie "Class_Name->functionName()" or "Class_Name->property_name"
+	 * @param string $call_back valid callback function descriptor : "Class_Name::functionName()
+	 */
+	public static function registerAround($function, $call_back)
+	{
+		aop_add_around($function, $call_back);
+	}
+
+	//-------------------------------------------------------------------------------- registerBefore
+	/**
+	 * Register a call_back advice, called before the execution of a function or before
+	 * the read/write of a property
+	 *
+	 * @param string $function ie "Class_Name->functionName()" or "Class_Name->property_name"
+	 * @param string $call_back valid callback function descriptor : "Class_Name::functionName()
+	 */
+	public static function registerBefore($function, $call_back)
+	{
+		aop_add_before($function, $call_back);
+	}
+
 	//---------------------------------------------------------------------- registerCollectionGetter
+	/**
+	 * Register standard collection getter for a class property
+	 * 
+	 * @param string $class_property ie "Class_Name->property_name"
+	 */
 	public static function registerCollectionGetter($class_property)
 	{
 		aop_add_before("read $class_property", "Aop::CollectionGetter");
 	}
 
 	//------------------------------------------------------------------------ registerDateTimeGetter
+	/**
+	 * Register standard Date_Time object getter for a class property
+	 *
+	 * This enable to read ISO string-based dates from a DAO for example,
+	 * but you ever want to work with standard Date_Time objects for dates and times values.
+	 *
+	 * @param string $class_property ie "Class_Name->date_property_name"
+	 */
 	public static function registerDateTimeGetter($class_property)
 	{
 		aop_add_before("read $class_property", "Aop::dateTimeGetter");
 	}
 
 	//-------------------------------------------------------------------------- registerObjectGetter
+	/**
+	 * Register standard object getter for a class property
+	 *
+	 * @param string $class_property ie "Class_Name->property_name"
+	 */
 	public static function registerObjectGetter($class_property)
 	{
 		aop_add_before("read $class_property", "Aop::objectGetter");

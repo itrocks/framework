@@ -56,6 +56,7 @@ class Html_Template
 		$content = $this->content;
 		$content = $this->parseContainer($content);
 		$content = $this->parseVars($content, $this->object);
+		$content = $this->replaceLinks($content);
 		$content = $this->replaceUris($content);
 		return $content;
 	}
@@ -260,9 +261,33 @@ class Html_Template
 		}
 	}
 
+	//---------------------------------------------------------------------------------- replaceLinks
+	/**
+	 * Replace links with correct absolute paths into $content
+	 *
+	 * @param string $content
+	 */
+	private function replaceLinks($content)
+	{
+		$links = array('action="', 'href="');
+		foreach ($links as $link) {
+			$i = 0;
+			while (($i = strpos($content, $link, $i)) !== false) {
+				$i += strlen($link);
+				$j = strpos($content, '"', $i);
+				if (substr($content, $i, 1) === '/') {
+					$full_path = substr($_SERVER["PHP_SELF"], 0, strpos($_SERVER["PHP_SELF"], ".php"))
+						. substr($content, $i, $j - $i);
+					$content = substr($content, 0, $i) . $full_path . substr($content, $j);
+				}
+			}
+		}
+		return $content;
+	}
+
 	//----------------------------------------------------------------------------------- replaceUris
 	/**
-	 * Replace URIs by correct URIs paths into $content
+	 * Replace URIs with correct URIs paths into $content
 	 *
 	 * @param  string $content
 	 * @return string updated content
@@ -271,8 +296,8 @@ class Html_Template
 	{
 		$links = array('@import "', 'src="');
 		foreach ($links as $link) {
-			$j = 0;
-			while (($i = strpos($content, $link, $j)) !== false) {
+			$i = 0;
+			while (($i = strpos($content, $link, $i)) !== false) {
 				$i += strlen($link);
 				$j = strpos($content, '"', $i);
 				$full_path = substr(

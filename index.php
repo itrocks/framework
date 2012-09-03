@@ -1,7 +1,9 @@
 <?php
 $timestart = microtime(true);
 
+require "framework/toolbox/Aop.php";
 require "framework/dao/mysql/Mysql_Logger.php";
+require "framework/application/Session.php";
 
 //-------------------------------------------------------------------------------------------------
 
