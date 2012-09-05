@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 abstract class Identifier_Map_Data_Link implements Data_Link
 {

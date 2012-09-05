@@ -1,15 +1,16 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
-class Mandatory_Annotation extends Annotation
+class Boolean_Annotation extends Annotation
 {
 
 	/**
-	 * @var boolean
+	 * @override
+	 * @var string
 	 */
 	public $value;
 
-	//----------------------------------------------------------------------------------- __construct
+	//---------------------------------------------------------------------------------------- $value
 	public function __construct($value)
 	{
 		parent::__construct($value);

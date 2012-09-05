@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Html_Session
 {
@@ -38,4 +38,4 @@ class Html_Session
 
 }
 
-Aop::registerAfter("Framework\\Html_Template->parse()", "Framework\\Html_Session::postSessionId");
+Aop::registerAfter("SAF\\Framework\\Html_Template->parse()", "SAF\\Framework\\Html_Session::postSessionId");

@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Main_Controller
 {
@@ -69,7 +69,7 @@ class Main_Controller
 				if (@method_exists($controller, $method_name)) {
 					$controller = new $controller();
 					$controller->$method_name(
-						$uri->parameters, $post, $files, $uri->controller_name, $uri->feature_name
+						$uri->parameters, $post, $files, Namespaces::fullClassName($uri->controller_name), $uri->feature_name
 					);
 					break;
 				}
@@ -89,15 +89,9 @@ class Main_Controller
 			$configurations->load();
 		}
 		$configuration = Configuration::getCurrent();
-		$dao_class_name = $configuration->getDaoClassName();
-		if (!strpos($dao_class_name, "\\")) {
-			$dao_class_name = "\\Framework\\" . $dao_class_name;
-		}
+		$dao_class_name = Namespaces::fullClassName($configuration->getDaoClassName());
 		Dao::setDataLink(new $dao_class_name($configuration->getDao()));
-		$view_class_name = $configuration->getViewEngineClassName();
-		if (!strpos($view_class_name, "\\")) {
-			$view_class_name = "\\Framework\\" . $view_class_name;
-		}
+		$view_class_name = Namespaces::fullClassName($configuration->getViewEngineClassName());
 		View::setCurrent(new $view_class_name($configuration->getViewEngine()));
 	}
 

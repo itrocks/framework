@@ -1,5 +1,5 @@
 <?php
-namespace Framework\Tests;
+namespace SAF\Framework\Tests;
 
 class Unit_Test
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 use DateTime;
 
 class Date_Time extends DateTime
@@ -53,3 +53,5 @@ class Date_Time extends DateTime
 	}
 
 }
+
+date_default_timezone_set();

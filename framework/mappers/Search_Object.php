@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 abstract class Search_Object
 {
@@ -11,13 +11,7 @@ abstract class Search_Object
 	 */
 	public static function newInstance($class_name)
 	{
-		foreach (Application::getNamespaces() as $namespace) {
-			$class = $namespace . "\\" . $class_name;
-			if (@class_exists($class)) {
-				$object = new $class();
-				break;
-			}
-		}
+		$object = new $class_name();
 		foreach (Class_Fields::accessFields($class_name) as $field) {
 			$field_name = $field->name;
 			unset($object->$field_name);

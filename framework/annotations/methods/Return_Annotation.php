@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Return_Annotation extends Annotation
 {

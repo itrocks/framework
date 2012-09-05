@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Instantiator
 {
@@ -9,8 +9,9 @@ class Instantiator
 	//-------------------------------------------------------------------------------------- getClass
 	public static function getClass($object_class)
 	{
-		$instance_class = Instantiator::$substitutions[$object_class];
-		return $instance_class ? $instance_class : $object_class;
+		return isset(Instantiator::$substitutions[$object_class])
+			? Instantiator::$substitutions[$object_class]
+			: $object_class;
 	}
 
 	//----------------------------------------------------------------------------------- newInstance

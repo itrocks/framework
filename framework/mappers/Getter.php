@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Getter
 {
@@ -7,10 +7,10 @@ class Getter
 	//--------------------------------------------------------------------------------- getCollection
 	/**
 	 * 
-	 * @param multitype:object $collection
-	 * @param string $elementClass
-	 * @param unknown_type $parent
-	 * @return Object[]
+	 * @param multitype:Container $collection
+	 * @param string              $elementClass
+	 * @param object              $parent
+	 * @return multitype:object
 	 */
 	public static function getCollection($collection, $element_class, $parent)
 	{
@@ -18,11 +18,10 @@ class Getter
 			$search_element = Search_Object::newInstance($element_class);
 			$search_element->setParent($parent);
 			$collection = Dao::search($search_element);
-			/*
+			// this to avoir getter call on $element->getParent() call (parent is already loaded)
 			foreach ($collection as $element) {
 				$element->setParent($parent);
 			}
-			*/
 		}
 		return $collection;
 	}

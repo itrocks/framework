@@ -1,5 +1,6 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
+use Exception;
 use ReflectionMethod;
 
 class Reflection_Method extends ReflectionMethod implements Annoted
@@ -19,9 +20,14 @@ class Reflection_Method extends ReflectionMethod implements Annoted
 	 */
 	public static function getInstanceOf($of_class, $of_name = null)
 	{
+		if (is_string($of_class) && !is_string($of_name)) {
+			throw new Exception(
+				"Reflection_Method::getInstanceOf($of_class, $of_name) illegal parameter 2"
+			);
+		}
 		if ($of_class instanceof ReflectionMethod) {
-			$of_name  = $of_class->name;
 			$of_class = $of_class->class;
+			$of_name  = $of_class->name;
 		}
 		$method = Reflection_Method::$cache[$of_class][$of_name];
 		if (!$method) {

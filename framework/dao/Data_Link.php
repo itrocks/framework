@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 interface Data_Link
 {
@@ -48,7 +48,7 @@ interface Data_Link
 	 * Read all objects from data source
 	 *
 	 * @param  string   $object_class class for read objects
-	 * @return Object[] a collection of read objects
+	 * @return multitype:object a collection of read objects
 	 */
 	public function readAll($object_class);
 
@@ -62,9 +62,9 @@ interface Data_Link
 	 * same data source identifier. You will still be able to write() either source or destination
 	 * after call to replace().
 	 *
-	 * @param  Object $destination destination object
-	 * @param  Object $source source object
-	 * @return Object the resulting $destination object
+	 * @param  object $destination destination object
+	 * @param  object $source source object
+	 * @return object the resulting $destination object
 	 */
 	public function replace($destination, $source);
 
@@ -72,8 +72,8 @@ interface Data_Link
 	/**
 	 * Search objects from data source
 	 *
-	 * @param  Object $what source object for filter, non-null properties will be used for search
-	 * @return Object[] a collection of read objects
+	 * @param  object $what source object for filter, non-null properties will be used for search
+	 * @return multitype:object a collection of read objects
 	 */
 	public function search($what);
 
@@ -84,9 +84,9 @@ interface Data_Link
 	 * @param  string $objectClass class for the base read object
 	 * @param  array  $columns the list of the columns names.
 	 *   You can use "column.sub_column" to get values from linked objects from the same data source.
-	 * @param  Object $filter_object source object for filter,
+	 * @param  object $filter_object source object for filter,
 	 *   non-null properties will be used for search
-	 * @return Object[] a list of read records.
+	 * @return multitype:object a list of read records.
 	 *   Each record values are stored in the same order than columns.
 	 */
 	public function select($object_class, $columns, $filter_object = null);
@@ -99,8 +99,8 @@ interface Data_Link
 	 * If object was not originally read from data source, or linked to it using replace(), a new
 	 * record will be written into data source using this object's data.
 	 *
-	 * @param  Object $object object to write into data source
-	 * @return Object the written object
+	 * @param  object $object object to write into data source
+	 * @return object the written object
 	 */
 	public function write($object);
 

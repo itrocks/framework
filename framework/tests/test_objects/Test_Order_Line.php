@@ -1,6 +1,6 @@
 <?php
-namespace Framework\Tests;
-use Framework\Aop;
+namespace SAF\Framework\Tests;
+use SAF\Framework\Aop;
 
 /**
  * @dataset orders_lines
@@ -9,6 +9,7 @@ class Test_Order_Line
 {
 
 	/**
+	 * @getter Aop::getObject
 	 * @var Test_Client
 	 */
 	public $client;
@@ -20,6 +21,7 @@ class Test_Order_Line
 	public $number;
 
 	/**
+	 * @getter Aop::getObject
 	 * @mandatory
 	 * @var Test_Order
 	 */
@@ -32,6 +34,3 @@ class Test_Order_Line
 	public $quantity;
 
 }
-
-Aop::registerObjectGetter("Framework\\Test\\Test_Order_Line->client");
-Aop::registerObjectGetter("Framework\\Test\\Test_Order_Line->order");

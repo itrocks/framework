@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Sql_Joins
 {
@@ -16,7 +16,7 @@ class Sql_Joins
 	/**
 	 * link field full path to their class name
 	 *
-	 * @var string[] indice is field full path
+	 * @var multitype:string indice is field full path
 	 */
 	private $classes = array();
 
@@ -24,7 +24,7 @@ class Sql_Joins
 	/**
 	 * link field path to sql join
 	 *
-	 * @var Sql_Join[] indice is field full path
+	 * @var multitype:Sql_Join indice is field full path
 	 */
 	private $joins = array();
 
@@ -32,7 +32,7 @@ class Sql_Joins
 	/**
 	 * link class names to their properties
 	 *
-	 * @var Reflection_Property[][] indices are : class name, property name 
+	 * @var multitype:multitype:Reflection_Property indices are : class name, property name 
 	 */
 	private $properties = array();
 
@@ -153,7 +153,7 @@ class Sql_Joins
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @param  string $master_path
-	 * @return Reflection_Property[]
+	 * @return multitype:Reflection_Property
 	 */
 	public function getProperties($master_path)
 	{

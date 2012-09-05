@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Application
 {
@@ -40,15 +40,15 @@ class Application
 		if (!Application::$namespaces) {
 			$application_name = Configuration::getCurrent()->getApplicationName();
 			$app_dir = strtolower($application_name);
-			Application::$namespaces = array(); 
+			Application::$namespaces = array(""); 
 			$application = $application_name;
 			while ($application != "Framework") {
-				Application::$namespaces[] = $application;
+				Application::$namespaces[] = "SAF\\" . $application;
 				$application =  mParse(file_get_contents("{$app_dir}/{$application_name}_Application.php"),
 					" extends ", "_Application"
 				);
 			}
-			Application::$namespaces[] = "Framework";
+			Application::$namespaces[] = "SAF\\Framework";
 		}
 		return Application::$namespaces;
 	}

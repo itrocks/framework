@@ -1,7 +1,7 @@
 <?php
-namespace Framework\Tests;
-use Framework\Reflection_Class;
-use Framework\Reflection_Method;
+namespace SAF\Framework\Tests;
+use SAF\Framework\Reflection_Class;
+use SAF\Framework\Reflection_Method;
 
 class Tests_Controller
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 use ReflectionProperty;
 
 class Reflection_Property extends ReflectionProperty implements Annoted
@@ -14,6 +14,11 @@ class Reflection_Property extends ReflectionProperty implements Annoted
 	 * @var array
 	 */
 	private static $cache = array();
+
+	/**
+	 * @var string
+	 */
+	public $display;
 
 	/**
 	 * @var foreign
@@ -40,6 +45,11 @@ class Reflection_Property extends ReflectionProperty implements Annoted
 	 */
 	private $type;
 
+	/**
+	 * @var mixed
+	 */
+	public $value;
+
 	//--------------------------------------------------------------------------------- getInstanceOf
 	/**
 	 * @param ReflectionProperty | string $of_class
@@ -51,7 +61,9 @@ class Reflection_Property extends ReflectionProperty implements Annoted
 			$of_name  = $of_class->name;
 			$of_class = $of_class->class;
 		}
-		$field = Reflection_Property::$cache[$of_class][$of_name];
+		$field = isset(Reflection_Property::$cache[$of_class][$of_name])
+			? Reflection_Property::$cache[$of_class][$of_name]
+			: null;
 		if (!$field) {
 			$field = new Reflection_Property($of_class, $of_name);
 			Reflection_Property::$cache[$of_class][$of_name] = $field;
@@ -103,18 +115,21 @@ class Reflection_Property extends ReflectionProperty implements Annoted
 		return Reflection_Property::getInstanceOf($this->getType(), $this->getForeignName());
 	}
 
-	//------------------------------------------------------------------------------------- getGetter
+	//------------------------------------------------------------------------------- getGetterMethod
 	/**
-	 * @return Reflection_Method
+	 * @return Reflection_Method | null
 	 */
-	public function getGetter()
+	public function getGetterMethod()
 	{
-		return Reflection_Method::getInstanceOf($this->getDeclaringClass(), $this->getGetterName());
+		$getter_name = $this->getGetterName();
+		return $getter_name
+			? Reflection_Method::getInstanceOf($this->getDeclaringClass()->name, $getter_name)
+			: null;
 	}
 
 	//--------------------------------------------------------------------------------- getGetterName
 	/**
-	 * @return string
+	 * @return string | null
 	 */
 	public function getGetterName()
 	{
@@ -123,12 +138,7 @@ class Reflection_Property extends ReflectionProperty implements Annoted
 			if ($getter && $getter->value) {
 				$this->getter = $getter->value;
 			} else {
-				$getter = Names::propertyToMethod($this->name, "get");
-				if ($this->getDeclaringClass()->hasMethod($getter)) {
-					$this->getter = $getter;
-				} else {
-					$this->getter = null;
-				}
+				$this->getter = null;
 			}
 		}
 		return $this->getter;

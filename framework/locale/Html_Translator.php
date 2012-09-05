@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Html_Translator
 {
@@ -27,4 +27,4 @@ class Html_Translator
 
 }
 
-Aop::registerAfter("Framework\\Html_Template->parse()", "Framework\\Html_Translator::translatePage");
+Aop::registerAfter("SAF\\Framework\\Html_Template->parse()", "SAF\\Framework\\Html_Translator::translatePage");

@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Sql_Select_Builder
 {
@@ -15,7 +15,12 @@ class Sql_Select_Builder
 	private $joins;
 
 	/**
-	 * @var string;
+	 * @var integer
+	 */
+	private $table_counter;
+
+	/**
+	 * @var string
 	 */
 	private $tables;
 
@@ -28,9 +33,9 @@ class Sql_Select_Builder
 	 * field.foreign_field : field must be a property of class, foreign_field must be a property
 	 *                       of field's @var class
 	 *
-	 * @param string    $object_class base object class name
-	 * @param string[]  $columns      columns list
-	 * @param Sql_Joins $sql_joins
+	 * @param string           $object_class base object class name
+	 * @param multitype:string $columns columns list
+	 * @param Sql_Joins        $sql_joins
 	 */
 	public function __construct($object_class, $columns, $sql_joins = null)
 	{
@@ -43,7 +48,7 @@ class Sql_Select_Builder
 
 	//----------------------------------------------------------------------------------- buildFields
 	/**
-	 * @param string[] $columns columns list
+	 * @param multitype:string $columns columns list
 	 */
 	private function buildFields($columns)
 	{

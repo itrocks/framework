@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 /**
  * DO NEVER INCLUDE THIS SCRIPT

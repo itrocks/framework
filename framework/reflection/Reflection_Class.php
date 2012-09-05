@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 use ReflectionClass;
 
 class Reflection_Class extends ReflectionClass implements Annoted
@@ -10,6 +10,7 @@ class Reflection_Class extends ReflectionClass implements Annoted
 	//--------------------------------------------------------------------------------- getInstanceOf
 	/**
 	 * @param ReflectionClass | string $of_class
+	 * @return Reflection_Class
 	 */
 	public static function getInstanceOf($of_class)
 	{
@@ -62,7 +63,7 @@ class Reflection_Class extends ReflectionClass implements Annoted
 
 	//------------------------------------------------------------------------------------ getMethods
 	/**
-	 * @return Reflection_Method[]
+	 * @return multitype:Reflection_Method
 	 */
 	public function getMethods($filter = Reflection_Method::ALL)
 	{
@@ -80,7 +81,7 @@ class Reflection_Class extends ReflectionClass implements Annoted
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
-	 * @return Reflection_Property[]
+	 * @return multitype:Reflection_Property
 	 */
 	public function getProperties($filter = Reflection_Property::ALL)
 	{
@@ -98,7 +99,7 @@ class Reflection_Class extends ReflectionClass implements Annoted
 
 	//--------------------------------------------------------------------------- getStaticProperties
 	/**
-	 * @return Reflection_Property[]
+	 * @return multitype:Reflection_Property
 	 */
 	public function getStaticProperties()
 	{
@@ -116,7 +117,7 @@ class Reflection_Class extends ReflectionClass implements Annoted
 
 	//--------------------------------------------------------------------------------------- methods
 	/**
-	 * @return Reflection_Method[]
+	 * @return multitype:Reflection_Method
 	 */
 	private function methods($methods)
 	{
@@ -128,7 +129,7 @@ class Reflection_Class extends ReflectionClass implements Annoted
 
 	//------------------------------------------------------------------------------------ properties
 	/**
-	 * @return Reflection_Property[]
+	 * @return multitype:Reflection_Property
 	 */
 	private function properties($properties)
 	{

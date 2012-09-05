@@ -1,22 +1,35 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Class_Fields
 {
 
+	/**
+	 * @var multitype:integer
+	 */
 	private static $accessible_fields_count = array();
 
+	/**
+	 * @var multitype:Reflection_Property
+	 */
 	private static $accessible_fields_map = array();
 
+	/**
+	 * @var multitype:Reflection_Property
+	 */
 	private static $private_fields_map = array();
 
 	//--------------------------------------------------------------------------------- _accessFields
 	private static function _accessFields($object_class)
 	{
-		$fields = Class_Fields::$accessible_fields_map[$object_class];
+		$fields = isset(Class_Fields::$accessible_fields_map[$object_class])
+			? Class_Fields::$accessible_fields_map[$object_class]
+			: null;
 		$parent_class = get_parent_class($object_class);
 		if ($parent_class) {
 			$parent_fields = Class_Fields::_accessFields($parent_class);
+		} else {
+			$parent_fields = array();
 		}
 		if ($fields !== null) {
 			Class_Fields::$accessible_fields_count[$object_class] ++;

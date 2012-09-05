@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Html_Template_Funcs
 {
@@ -14,7 +14,9 @@ class Html_Template_Funcs
 	 */
 	public static function getClass($template, $object)
 	{
-		return is_object($object) ? get_class($object) : "";
+		if (is_object($object)) {
+			return Namespaces::shortClassName(get_class($object));
+		}
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
@@ -29,8 +31,8 @@ class Html_Template_Funcs
 	{
 		$fields = Class_Fields::accessFields(get_class($object));
 		foreach ($fields as $field_name => $field) {
-			$fields[$field_name]->display = Names::propertyToDisplay($field_name);
-			$fields[$field_name]->value = $object->$field_name;
+			$field->display = Names::propertyToDisplay($field_name);
+			$field->value = $object->$field_name;
 		}
 		Class_Fields::accessFieldsDone(get_class($object));
 		return $fields;

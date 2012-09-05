@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Callback_Error_Handler implements Error_Handler
 {

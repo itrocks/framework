@@ -1,5 +1,5 @@
 <?php
-namespace Framework\Tests;
+namespace SAF\Framework\Tests;
 
 class Test_Document
 {

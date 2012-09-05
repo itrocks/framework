@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 /**
  * DO NEVER INCLUDE THIS SCRIPT
@@ -164,6 +164,30 @@ class AopJoinPoint
  	 */
  	public function  getAssignedValue() {}
 
+	//---------------------------------------------------------------------------------- getClassName
+	/**
+	 * Returns the object's class name of the triggered joinpoint.
+	 *
+	 * If the joinpoint does not belongs to a class, getClassName returns null.
+	 *
+	 * If the class is declared in a namespace, getClassName indicates the full name of
+	 * the class (with the namespace).
+	 *
+	 * @return string
+	 */
+	public function getClassName() {}
+
+	//------------------------------------------------------------------------------- getFunctionName
+	/**
+	 * Returns the name of the function of the triggered joinpoint.
+	 *
+	 * If the joinpoint was triggered by a property operation, will raise an error.
+	 * If the joinpoint was triggered by a method operation, will raise an error.
+	 *
+	 * @return string
+	 */
+	public function  getFunctionName() {}
+
 	//------------------------------------------------------------------------------- getKindOfAdvice
 	/**
 	 * This will tell in which condition your advice was launched
@@ -174,11 +198,44 @@ class AopJoinPoint
 	 */
 	public function getKindOfAdvice() {}
 
+	//--------------------------------------------------------------------------------- getMethodName
+	/**
+	 * Returns the name of the method of the triggered joinpoint.
+	 *
+	 * If the joinpoint was triggered by a property operation, will raise an error.
+	 * If the joinpoint was triggered by a function operation, will raise an error.
+	 *
+	 * @return string
+	 */
+	public function getMethodName() {}
+
+	//------------------------------------------------------------------------------------- getObject
+	/**
+	 * Returns the object of the triggered joinppoint.
+	 *
+	 * If the joinpoint does not belongs to an object, getObject returns null.
+	 *
+	 * @return object
+	 */
+	public function getObject() {}
+
 	//----------------------------------------------------------------------------------- getPointcut
 	/**
 	 * Returns the pointcut (as a string) that triggered the joinpoint.
+	 *
+	 * @return string
 	 */
 	public function getPointcut() {}
+
+	//------------------------------------------------------------------------------- getPropertyName
+	/**
+	 * Returns the name of the triggering property.
+	 *
+	 * If the joinpoint was triggered by a method operation, will raise an error.
+	 *
+	 * @return string
+	 */
+	public function getPropertyName() {}
 
 	//------------------------------------------------------------------------------ getReturnedValue
 	/**
@@ -193,61 +250,6 @@ class AopJoinPoint
 	 * @return mixed The triggering method returned value.
 	 */
 	public function getReturnedValue() {}
-
-	//------------------------------------------------------------------------ getTriggeringClassName
-	/**
-	 * Returns the object's class name of the triggered joinpoint.
-	 *
-	 * If the joinpoint does not belongs to a class, getTriggeringClassName returns null.
-	 *
-	 * If the class is declared in a namespace, getTriggeringClassName indicates the full name of
-	 * the class (with the namespace).
-	 *
-	 * @return string
-	 */
-	public function getTriggeringClassName() {}
-
-	//--------------------------------------------------------------------- getTriggeringFunctionName
-	/**
-	 * Returns the name of the function of the triggered joinpoint.
-	 *
-	 * If the joinpoint was triggered by a property operation, will raise an error.
-	 * If the joinpoint was triggered by a method operation, will raise an error.
-	 *
-	 * @return string
-	 */
-	public function  getTriggeringFunctionName() {}
-
-	//----------------------------------------------------------------------- getTriggeringMethodName
-	/**
-	 * Returns the name of the method of the triggered joinpoint.
-	 *
-	 * If the joinpoint was triggered by a property operation, will raise an error.
-	 * If the joinpoint was triggered by a function operation, will raise an error.
-	 *
-	 * @return string
-	 */
-	public function getTriggeringMethodName() {}
-
-	//--------------------------------------------------------------------------- getTriggeringObject
-	/**
-	 * Returns the object of the triggered joinppoint.
-	 *
-	 * If the joinpoint does not belongs to an object, getTriggeringObject returns null.
-	 *
-	 * @return object
-	 */
-	public function getTriggeringObject() {}
-
-	//--------------------------------------------------------------------- getTriggeringPropertyName
-	/**
-	 * Returns the name of the triggering property.
-	 *
-	 * If the joinpoint was triggered by a method operation, will raise an error.
-	 *
-	 * @return string
-	 */
-	public function  getTriggeringPropertyName() {}
 
 	//--------------------------------------------------------------------------------------- process
 	/**

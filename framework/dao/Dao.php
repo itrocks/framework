@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 abstract class Dao
 {
@@ -27,7 +27,7 @@ abstract class Dao
 
 	//---------------------------------------------------------------------------------------- delete
 	/**
-	 * @param Object $object
+	 * @param object $object
 	 */
 	public static function delete($object)
 	{
@@ -56,7 +56,7 @@ abstract class Dao
 	//--------------------------------------------------------------------------------------- readAll
 	/**
 	 * @param  string $object_class
-	 * @return Object[]
+	 * @return multitype:object
 	 */
 	public static function readAll($object_class)
 	{
@@ -65,9 +65,9 @@ abstract class Dao
 
 	//--------------------------------------------------------------------------------------- replace
 	/**
-	 * @param  Object $destination
-	 * @param  Object $source
-	 * @return Object source (replaced by destination)
+	 * @param  object $destination
+	 * @param  object $source
+	 * @return object source (replaced by destination)
 	 */
 	public static function replace($destination, $source)
 	{
@@ -76,8 +76,8 @@ abstract class Dao
 
 	//---------------------------------------------------------------------------------------- search
 	/**
-	 * @param  Object $what
-	 * @return Object[]
+	 * @param  object $what
+	 * @return multitype:object
 	 */
 	public static function search($what)
 	{
@@ -86,8 +86,8 @@ abstract class Dao
 
 	//----------------------------------------------------------------------------------- searchFirst
 	/**
-	 * @param  Object $what
-	 * @return Object
+	 * @param  object $what
+	 * @return object
 	 */
 	public static function searchFirst($what)
 	{
@@ -105,7 +105,7 @@ abstract class Dao
 
 	//----------------------------------------------------------------------------------------- write
 	/**
-	 * @param Object $object
+	 * @param object $object
 	 */
 	public static function write($object)
 	{

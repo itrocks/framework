@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Sql_Builder
 {
@@ -116,7 +116,7 @@ class Sql_Builder
 	/**
 	 * @param  Object   $object  
 	 * @param  Sql_Link $sql_link
-	 * @return string[]
+	 * @return multitype:string
 	 */
 	private static function buildWhereForObjectSub($object, $sql_link)
 	{

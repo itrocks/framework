@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Mysql_Link extends Sql_Link
 {
@@ -107,7 +107,7 @@ class Mysql_Link extends Sql_Link
 			"SHOW FIELDS FROM `" . Sql_Table::classToTableName($object_class) . "`",
 			$this->connection
 		);
-		while ($field = mysql_fetch_object($result_set, "Framework\\Mysql_Field")) {
+		while ($field = mysql_fetch_object($result_set, "SAF\\Framework\\Mysql_Field")) {
 			$field_name = $field->getName();
 			if (substr($field_name, 0, 3) == "id_") {
 				$field_name = substr($field_name, 3);
@@ -182,7 +182,7 @@ class Mysql_Link extends Sql_Link
 			"SELECT t0.* FROM `" . SQL_Table::classToTableName($object_class) . "`" . $where,
 			$this->connection
 		);
-		while ($object = mysql_fetch_object($result_set)) {
+		while ($object = mysql_fetch_object($result_set, $object_class)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$search_result[] = $object;
 		}

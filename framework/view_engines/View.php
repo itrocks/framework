@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class View
 {
@@ -21,7 +21,8 @@ class View
 	//------------------------------------------------------------------------------ getPossibleViews
 	public static function getPossibleViews($class_name, $feature_name)
 	{
-		$view_engine_name = mParse(get_class(View::getCurrent()), "\\", "_View_Engine");
+		$view_engine_name = Namespaces::shortClassName(get_class(View::getCurrent()));
+		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, "_View_Engine"));
 		$feature_class = Names::methodToClass($feature_name);
 		return array(
 			array($view_engine_name . "_" . $class_name . "_" . $feature_class, "run"),

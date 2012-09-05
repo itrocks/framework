@@ -1,5 +1,5 @@
 <?php
-namespace Framework\Tests;
+namespace SAF\Framework\Tests;
 
 /**
  * @dataset orders
@@ -16,7 +16,7 @@ class Test_Order extends Test_Document
 	/**
 	 * @mandatory
 	 * @foreign order
-	 * @var Test_Order_Line[]
+	 * @var multitype:Test_Order_Line
 	 */
 	private $lines;
 

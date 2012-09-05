@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Controller_Parameters
 {
@@ -29,13 +29,7 @@ class Controller_Parameters
 		if (isset($this->objects[$parameter_name])) {
 			$object = $this->objects[$parameter_name];
 		} else {
-			foreach (Application::getNamespaces() as $namespace) {
-				$class = "$namespace\\$parameter_name";
-				if (@class_exists($class)) {
-					$object = Getter::getObject($this->parameters[$parameter_name] + 0, $class);
-					break;
-				}
-			}
+			$object = Getter::getObject($this->parameters[$parameter_name] + 0, $parameter_name);
 			$this->objects[$parameter_name] = $object;
 		}
 		return $object;
@@ -77,6 +71,14 @@ class Controller_Parameters
 	 */
 	public function set($parameter_name, $parameter_value)
 	{
+		$namespaces = Application::getNamespaces();
+		foreach ($namespaces as $namespace) {
+			$class_name = $namespace . "\\" . $parameter_name;
+			if (@class_exists($class_name)) {
+				$parameter_name = $class_name;
+				break;
+			}
+		}
 		$this->parameters[$parameter_name] = $parameter_value;
 	}
 

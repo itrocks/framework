@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Sql_Table
 {
@@ -12,10 +12,7 @@ class Sql_Table
 		if ($annotation) {
 			return strtolower($annotation->value);
 		} else {
-			$class_name = $object_class;
-			if ($i = strrpos($class_name, "\\")) {
-				$class_name = substr($class_name, $i + 1);
-			}
+			$class_name = Namespaces::shortClassName($object_class);
 			if (substr($class_name, -1) === "y") {
 				return strtolower(substr($class_name, 0, -1)) . "ies";
 			} else {

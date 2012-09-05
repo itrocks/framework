@@ -1,11 +1,11 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Configurations
 {
 
 	/**
-	 * @var Configuration[]
+	 * @var multitype:Configuration
 	 */
 	private $configurations;
 

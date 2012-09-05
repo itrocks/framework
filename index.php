@@ -1,10 +1,14 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 $timestart = microtime(true);
 
-require "framework/toolbox/Aop.php";
+//------------------------------------------------------------------------------- activated modules
+
 require "framework/toolbox/string.php";
+require "framework/toolbox/Aop.php";
+require "framework/toolbox/Namespaces.php";
+require "framework/mappers/Aop_Getter.php";
 
 require "framework/application/Configuration.php";
 require "framework/application/Application.php";
@@ -12,6 +16,10 @@ require "framework/application/Autoloader.php";
 require "framework/application/Html_Session.php";
 require "framework/dao/mysql/Mysql_Logger.php";
 require "framework/locale/Html_Translator.php";
+
+//------------------------------------------------------------------------------------------- debug
+
+//Aop::registerBefore("SAF\\Framework\\Aop_Getter->getDatetime()", "SAF\\Framework\\Aop_Tracer::method");
 
 //-------------------------------------------------------------------------------------------------
 

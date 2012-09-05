@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace SAF\Framework;
 
 class Html_Template
 {
@@ -153,7 +153,7 @@ class Html_Template
 	private function parseVars($content, $object)
 	{
 		$content = $this->parseLoops($content, $object);
-		$j = 0;
+		$i = 0;
 		while (($i = strpos($content, '{', $i)) !== false) {
 			$i ++;
 			if ($this->parseThis($content, $i)) {
@@ -182,7 +182,7 @@ class Html_Template
 	 */
 	private function parseLoops($content, $object)
 	{
-		$j = 0;
+		$i = 0;
 		while (($i = strpos($content, '<!--' , $i)) !== false) {
 			$i += 4;
 			$j = strpos($content, '-->', $i);
