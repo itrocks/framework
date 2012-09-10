@@ -11,13 +11,17 @@ class Sql_Joins_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Sql_Joins::newInstance("Test_Order")->add("date")->add("number")
-				->add("lines.number")->add("lines.quantity")
+			Sql_Joins::newInstance("Test_Order")
+				->addMultiple(array("date", "number", "lines.number", "lines.quantity"))
 				->getJoins(),
 			array(
+				"date" => null,
+				"number" => null,
 				"lines" => Sql_Join::newInstance(
 					Sql_Join::INNER, "t0", "id", "t1", "orders_lines", "id_order"
-				)
+				),
+				"lines.number" => null,
+				"lines.quantity" => null
 			)
 		);
 	}
@@ -27,16 +31,20 @@ class Sql_Joins_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Sql_Joins::newInstance("Test_Order")->add("number")->add("client.number")
-				->add("client.client.number")->add("client.name")
+			Sql_Joins::newInstance("Test_Order")
+				->addMultiple(array("number", "client.number", "client.client.number", "client.name"))
 				->getJoins(),
 			array(
+				"number" => null,
 				"client" => Sql_Join::newInstance(
 					Sql_Join::INNER, "t0", "id_client", "t1", "test_clients", "id"
 				),
+				"client.number" => null,
 				"client.client" => Sql_Join::newInstance(
 					Sql_Join::LEFT,  "t1", "id_client", "t2", "test_clients", "id"
 				),
+				"client.client.number" => null,
+				"client.name" => null
 			)
 		);
 	}
@@ -46,10 +54,12 @@ class Sql_Joins_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Sql_Joins::newInstance("Test_Client")->add("number")->add("name")
-				->add("Test_Order_Line->client.order")
+			Sql_Joins::newInstance("Test_Client")
+				->addMultiple(array("number", "name", "Test_Order_Line->client.order"))
 				->getJoins(),
 			array(
+				"number" => null,
+				"name" => null,
 				"Test_Order_Line->client" => Sql_Join::newInstance(
 					Sql_Join::LEFT, "t0", "id", "t1", "orders_lines", "id_client"
 				),
@@ -65,12 +75,18 @@ class Sql_Joins_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Sql_Joins::newInstance("Test_Order_Line")->add("order.date")->add("order.number")
-				->add("number")->add("quantity")
+			Sql_Joins::newInstance("Test_Order_Line")
+				->addMultiple(array("order.date", "order.number", "number", "quantity"))
 				->getJoins(),
-			array("order" => Sql_Join::newInstance(
-				Sql_Join::INNER, "t0", "id_order", "t1", "orders", "id"
-			))
+			array(
+				"order" => Sql_Join::newInstance(
+					Sql_Join::INNER, "t0", "id_order", "t1", "orders", "id"
+				),
+				"order.date" => null,
+				"order.number" => null,
+				"number" => null,
+				"quantity" => null
+			)
 		);
 	}
 
@@ -79,11 +95,16 @@ class Sql_Joins_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Sql_Joins::newInstance("Test_Order_Line")->add("number")->add("quantity")->add("order")
+			Sql_Joins::newInstance("Test_Order_Line")
+				->addMultiple(array("number", "quantity", "order"))
 				->getJoins(),
-			array("order" => Sql_Join::newInstance(
-				Sql_Join::INNER, "t0", "id_order", "t1", "orders", "id", Sql_Join::OBJECT
-			))
+			array(
+				"number" => null,
+				"quantity" => null,
+				"order" => Sql_Join::newInstance(
+					Sql_Join::INNER, "t0", "id_order", "t1", "orders", "id", Sql_Join::OBJECT
+				)
+			)
 		);
 	}
 
@@ -92,12 +113,20 @@ class Sql_Joins_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Sql_Joins::newInstance("Test_Order")->add("date")->add("number")
-				->add("Test_Order_Line->order.number")->add("Test_Order_Line->order.quantity")
+			Sql_Joins::newInstance("Test_Order")
+				->addMultiple(array(
+					"date", "number", "Test_Order_Line->order.number", "Test_Order_Line->order.quantity"
+				))
 				->getJoins(),
-			array("Test_Order_Line->order" => Sql_Join::newInstance(
-				Sql_Join::LEFT, "t0", "id", "t1", "orders_lines", "id_order"
-			))
+			array(
+				"date" => null,
+				"number" => null,
+				"Test_Order_Line->order" => Sql_Join::newInstance(
+					Sql_Join::LEFT, "t0", "id", "t1", "orders_lines", "id_order"
+				),
+				"Test_Order_Line->order.number" => null,
+				"Test_Order_Line->order.quantity" => null
+			)
 		);
 	}
 
@@ -106,8 +135,10 @@ class Sql_Joins_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Sql_Joins::newInstance("Test_Order")->add("date")->add("number")->getJoins(),
-			array()
+			Sql_Joins::newInstance("Test_Order")
+				->addMultiple(array("date", "number"))
+				->getJoins(),
+			array("date" => null, "number" => null)
 		);
 	}
 

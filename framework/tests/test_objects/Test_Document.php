@@ -1,20 +1,26 @@
 <?php
 namespace SAF\Framework\Tests;
 
-class Test_Document
+abstract class Test_Document
 {
 
+	//----------------------------------------------------------------------------------------- $date
 	/**
+	 * Document date
+	 *
 	 * @mandatory
-	 * @var string
+	 * @var Date_Time
 	 */
-	public $date;
+	private $date;
 
+	//--------------------------------------------------------------------------------------- $number
 	/**
+	 * Document number
+	 *
 	 * @mandatory
 	 * @var string
 	 */
-	public $number;
+	private $number;
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct($date = null, $number = null)

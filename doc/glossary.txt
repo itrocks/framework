@@ -1,0 +1,10 @@
+Column
+- Database column (aka field, please prefer use of the term "column" to avoid mismatch)
+
+Field
+- Generic data field / column. database columns, class properties, html fields heritate from field concept
+- HTML form field, used for display or input
+ 
+ Property
+ - Class property (aka field, please prefer use of term "property" to avoid mismatch)
+ 

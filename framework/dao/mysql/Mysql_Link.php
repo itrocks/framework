@@ -1,12 +1,20 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * @todo Mysql_Link must be rewritten : call query(), executeQuery(), and standard protected methods instead of mysql_*
+ * @todo some unitary tests to check all of this
+ */
 class Mysql_Link extends Sql_Link
 {
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $database_path
+	 * Construct a new Mysql_Link using a parameters array, and connect to mysql database
+	 *
+	 * The $parameters array keys are : "host", "user", "password", "database".
+	 *
+	 * @param multitype:string $parameters
 	 */
 	public function __construct($parameters)
 	{
@@ -20,24 +28,19 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//---------------------------------------------------------------------------------------- delete
-	/**
-	 * @param  Object  $object
-	 * @return bool
-	 */
 	public function delete($object)
 	{
-		$object_class = get_class($object);
+		$class_name = get_class($object);
 		$id = $this->getObjectIdentifier($object);
 		if ($id) {
-			foreach (Class_Fields::accessFields($object_class) as $class_field) {
-				$value = $object->$class_field;
-				if ($value instanceof Contained) {
-					// TODO probably wrong : use the field type and not it's value that may be not initialized
-					$this->deleteCollection($object, $class_field, $value);
+			$class = Reflection_Class::getInstanceOf($class_name);
+			foreach ($class->accessProperties() as $property) {
+				if ($property->isContained()) {
+					$this->deleteCollection($object, $property, $property->get($object));
 				}
 			}
-			Class_Fields::accessFieldsDone($object_class);
-			$this->query(Sql_Builder::buildDelete($object_class, $id));
+			$class->accessPropertiesDone();
+			$this->query(Sql_Builder::buildDelete($class_name, $id));
 			$this->removeObjectIdentifier($object);
 			return true;
 		}
@@ -46,16 +49,20 @@ class Mysql_Link extends Sql_Link
 
 	//------------------------------------------------------------------------------ deleteCollection
 	/**
-	 * @param Object              $parent
-	 * @param Reflection_Property $field
+	 * Delete a collection of object
+	 *
+	 * This is called by delete() for hard-linked object collection properties : they are identified being instances of Contained.
+	 *
+	 * @param object              $parent
+	 * @param Reflection_Property $property
 	 * @param mixed               $value
 	 */
-	private function deleteCollection($parent, $field, $value)
+	private function deleteCollection($parent, $property, $value)
 	{
-		$parent->$field = null;
-		$getter = $field->getGetterName();
+		$parent->$property = null;
+		$getter = $property->getGetterName();
 		$old_collection = $parent->$getter();
-		$parent->$field = $value;
+		$parent->$property = $value;
 		foreach ($old_collection as $old_element) {
 			$this->delete($old_element);
 		}
@@ -63,11 +70,11 @@ class Mysql_Link extends Sql_Link
 
 	//------------------------------------------------------------------------------------- deleteMap
 	/**
-	 * @param Object $value
+	 * @todo implementation and use
+	 * @param object $value
 	 */
 	private function deleteMap($value)
 	{
-		// TODO
 	}
 
 	//---------------------------------------------------------------------------------- executeQuery
@@ -77,7 +84,7 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//----------------------------------------------------------------------------------------- fetch
-	protected function fetch($result_set, $class_name)
+	protected function fetch($result_set, $class_name = null)
 	{
 		return mysql_fetch_object($result_set, $class_name);
 	}
@@ -101,62 +108,62 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//--------------------------------------------------------------------------- getStoredProperties
-	public function getStoredProperties($object_class)
+	public function getStoredProperties($class)
 	{
+		if (is_string($class)) {
+			$class = Reflection_Class::getInstanceOf($class);
+		}
 		$result_set = mysql_query(
-			"SHOW FIELDS FROM `" . Sql_Table::classToTableName($object_class) . "`",
+			"SHOW COLUMNS FROM `" . Sql_Table::classToTableName($class->name) . "`",
 			$this->connection
 		);
-		while ($field = mysql_fetch_object($result_set, "SAF\\Framework\\Mysql_Field")) {
-			$field_name = $field->getName();
-			if (substr($field_name, 0, 3) == "id_") {
-				$field_name = substr($field_name, 3);
+		while ($column = mysql_fetch_object($result_set, __NAMESPACE__ . "\\Mysql_Column")) {
+			$column_name = $column->getName();
+			if (substr($column_name, 0, 3) == "id_") {
+				$column_name = substr($column_name, 3);
 			}
-			$fields[$field_name] = $field;
+			$columns[$column_name] = $column;
 		}
 		mysql_free_result($result_set);
-		$object_properties = Class_Fields::fields($object_class);
-		return array_intersect_key($object_properties, $fields);
+		$object_properties = $class->getAllProperties();
+		return array_intersect_key($object_properties, $columns);
 	}
 
 	//----------------------------------------------------------------------------------------- query
-	/**
-	 * @param  string $query
-	 * @return int
-	 */
 	public function query($query)
 	{
 		if ($query) {
-			mysql_query($query, $this->connection);
+			$this->executeQuery($query);
 			return @mysql_insert_id($this->connection);
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
 
 	//------------------------------------------------------------------------------------------ read
-	public function read($id, $object_class)
+	public function read($id, $class)
 	{
 		if (!$id) return null;
 		$result_set = mysql_query(
-			"SELECT * FROM `" . Sql_Table::classToTableName($object_class) . "` WHERE id = " . $id,
+			"SELECT * FROM `" . Sql_Table::classToTableName($class) . "` WHERE id = " . $id,
 			$this->connection
 		);
-		$object = mysql_fetch_object($result_set, $object_class);
+		$object = mysql_fetch_object($result_set, $class);
 		mysql_free_result($result_set);
 		$this->setObjectIdentifier($object, $id);
 		return $object;
 	}
 
 	//--------------------------------------------------------------------------------------- readAll
-	public function readAll($object_class)
+	public function readAll($class)
 	{
 		$read_result = array();
 		$result_set = mysql_query(
 			"SELECT * FROM `" . Sql_Table::classToTableName(objectClass) . "`",
 			$this->connection
 		);
-		while ($object = mysql_fetch_object($result_set, $object_class)) {
+		while ($object = mysql_fetch_object($result_set, $class)) {
 			$this->setOjectIdentifier($object, $object->id);
 			$read_result[] = $object;
 		}
@@ -164,25 +171,17 @@ class Mysql_Link extends Sql_Link
 		return $read_result;
 	}
 
-	//--------------------------------------------------------------------------------------- replace
-	public function replace($destination, $source)
-	{
-		$this->setObjectIdentifier($destination, $this->getObjectIdentifier($source));
-		$this->write($destination);
-		return $destination;
-	}
-
 	//---------------------------------------------------------------------------------------- search
 	public function search($what)
 	{
-		$object_class = get_class($what);
+		$class = get_class($what);
 		$search_result = array();
 		$where = Sql_Builder::buildWhere($what, $this);
 		$result_set = mysql_query(
-			"SELECT t0.* FROM `" . SQL_Table::classToTableName($object_class) . "`" . $where,
+			"SELECT * FROM `" . SQL_Table::classToTableName($class) . "`" . $where,
 			$this->connection
 		);
-		while ($object = mysql_fetch_object($result_set, $object_class)) {
+		while ($object = mysql_fetch_object($result_set, $class)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$search_result[] = $object;
 		}
@@ -193,20 +192,21 @@ class Mysql_Link extends Sql_Link
 	//----------------------------------------------------------------------------------------- write
 	public function write($object)
 	{
-		$object_class = get_class($object);
-		$table_name = SQL_Table::classToTableName($object_class);
-		$table_fields_names = array_keys(Mysql_Table::getFields($this, $object_class));
+		$class = Reflection_Class::getInstanceOf($object);
+		$table_columns_names = array_keys($this->getStoredProperties($class));
 		$id = $this->getObjectIdentifier($object);
-		foreach (Class_Fields::accessFields($object_class) as $class_field) {
-			$value = $class_field->getValue($object);
-			if (in_array($class_field->getName(), $table_fields_names)) {
-				$write[$class_field->getName()] = $value;
-			} elseif (in_array("id_" . $class_field->getName(), $table_fields_names)) {
-				$this->writeIdColumn($write, $class_field->getName(), $value);
-			} elseif ($value instanceof Contained) {
-				// TODO check this "Contained" : is it right ?
-				$write_collections[$class_field->getName()] = $value;
-			} elseif (is_array($value)) {
+		foreach ($class->accessProperties() as $property) {
+			$value = $property->getValue($object);
+			if (in_array($property->name, $table_columns_names)) {
+				$write[$property->name] = $value;
+			}
+			elseif (in_array("id_" . $property->name, $table_columns_names)) {
+				$this->writeIdColumn($write, $property->name, $value);
+			}
+			elseif ($property->isContained()) {
+				$write_collections[$property->name] = $value;
+			}
+			elseif (is_array($value)) {
 				$this->writeMap($value);
 			}
 		}
@@ -215,29 +215,39 @@ class Mysql_Link extends Sql_Link
 			$id = null;
 		}
 		if ($id === null) {
-			$id = $this->query(Sql_Builder::buildInsert($table_name, $write));
+			$id = $this->query(Sql_Builder::buildInsert($class, $write));
 			if ($id != null) {
 				$this->setObjectIdentifier($object, $id);
 			}
-		} else {
-			$this->query(Sql_Builder::buildUpdate($table_name, $write, $id));
 		}
-		foreach ($write_collections as $field_name => $value) {
-			$this->writeCollection($object, $field_name, $value);
+		else {
+			$this->query(Sql_Builder::buildUpdate($class, $write, $id));
 		}
-		Class_Fields::accessFieldsDone($object_class);
+		foreach ($write_collections as $property_name => $value) {
+			$this->writeCollection($object, $property_name, $value);
+		}
+		$class->accessPropertiesDone();
 		return $id;
 	}
 
 	//------------------------------------------------------------------------------- writeCollection
-	private function writeCollection($parent, $field_name, $collection)
+	/**
+	 * Write a contained collection property value
+	 *
+	 * Ie when you write an order, it's implicitely needed to write it's lines
+	 *
+	 * @param object $parent
+	 * @param string $property_name
+	 * @param array  $collection
+	 */
+	private function writeCollection($parent, $property_name, $collection)
 	{
 		// old values
-		$parent->$field_name = null;
-		$getter = Getter::getGetter($field_name);
+		$parent->$property_name = null;
+		//$getter = Getter::getGetter($property_name); // TODO use the property getter (work with properties instead of properties names would be better ?)
 		$old_collection = $parent->$getter();
-		$parent->$field_name = $collection;
-		// collection fields : write each of them
+		$parent->$property_name = $collection;
+		// collection properties : write each of them
 		$id_set = array();
 		foreach ($collection as $element) {
 			if ($element instanceof Contained) {
@@ -256,28 +266,33 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//--------------------------------------------------------------------------------- writeIdColumn
-	private function writeIdColumn(&$write, $field_name, $value)
+	private function writeIdColumn(&$write, $property_name, $value)
 	{
 		$int_value = is_numeric($value) ? $value : $this->getObjectIdentifier($value);
 		if (!$int_value === null) {
 			if ($value) {
 				$this->write($value);
 				$int_value = $this->getObjectIdentifier($value);
-			} else {
+			}
+			else {
 				$int_value = 0;
 			}
 		}
-		$write["id_" . $field_name] = $int_value;
+		$write["id_" . $property_name] = $int_value;
 		return $int_value;
 	}
 
 	//-------------------------------------------------------------------------------------- writeMap
+	/**
+	 * @todo not really implemnted here
+	 * @param unknown_type $map
+	 */
 	private function writeMap($map)
 	{
-		// map fields : write each of them
+		// map properties : write each of them
 		foreach ($map as $element_key => $element_value) {
 			$this->write($element_key);
-			// TODO write with linked values (elementKey id must be written into elementValues field)
+			// TODO write with linked values ($element_key id must be written into $element_value property)
 			$this->write($element_value);
 		}
 	}

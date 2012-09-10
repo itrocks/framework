@@ -9,17 +9,18 @@ class Tests_Controller
 	//------------------------------------------------------------------------------------------ test
 	public function run()
 	{
-		$dir = dir("Framework/tests");
+		$dir = dir("framework/tests");
 		while ($entry = $dir->read()) {
 			if (substr($entry, -9) == "_Test.php") {
-				$class = lParse($entry, ".");
+				$class = __NAMESPACE__ . "\\" . substr($entry, 0, strpos($entry, "."));
 				if (method_exists($class, "run")) {
 					// use run method to launch unit tests
 					$object = new $class();
 					$object->begin();
 					$object->run();
 					$object->end();
-				} else {
+				}
+				else {
 					// automatically call each test* public method
 					$call_methods = array();
 					$methods = Reflection_Class::getInstanceOf($class)->getMethods(Reflection_Method::IS_PUBLIC);

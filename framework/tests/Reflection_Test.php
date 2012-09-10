@@ -1,39 +1,25 @@
 <?php
 namespace SAF\Framework\Tests;
-use SAF\Framework\Class_Fields;
+use SAF\Framework\Reflection_Class;
 use SAF\Framework\Reflection_Property;
 use ReflectionException;
 
 class Reflection_Test extends Unit_Test
 {
 
-	//------------------------------------------------------------------------------------ testFields
-	public function testFields()
+	//----------------------------------------------------------------------- testaccessProperties
+	public function testAccessProperties()
 	{
-		$this->assume(
-			__METHOD__,
-			Class_Fields::fields("Test_Order"),
-			array(
-				"date"   => Reflection_Property::getInstanceOf("Test_Document", "date"),
-				"number" => Reflection_Property::getInstanceOf("Test_Document", "number"),
-				"client" => Reflection_Property::getInstanceOf("Test_Order",    "client"),
-				"lines"  => Reflection_Property::getInstanceOf("Test_Order",    "lines")
-			)
-		);
-	}
-
-	//------------------------------------------------------------------------------ testAccessFields
-	public function testAccessFields()
-	{
-		// does access fields return fields list ?
+		// does access properties return properties list ?
+		$class = Reflection_Class::getInstanceOf(__NAMESPACE__ . "\\Test_Order");
 		$test1 = $this->assume(
 			__METHOD__ . ".1",
-			$properties = Class_Fields::accessFields("Test_Order"),
+			$properties = $class->accessProperties(),
 			array(
-				"date"   => Reflection_Property::getInstanceOf("Test_Document", "date"),
-				"number" => Reflection_Property::getInstanceOf("Test_Document", "number"),
-				"client" => Reflection_Property::getInstanceOf("Test_Order",    "client"),
-				"lines"  => Reflection_Property::getInstanceOf("Test_Order",    "lines")
+				"date"   => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "date"),
+				"number" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "number"),
+				"client" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "client"),
+				"lines"  => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "lines")
 			)
 		);
 		if ($test1) {
@@ -53,16 +39,17 @@ class Reflection_Test extends Unit_Test
 				array("date" => date("Y-m-d"), "number" => "CDE001", "client" => null, "lines" => null)
 			);
 		}
-		Class_Fields::accessFieldsDone("Test_Order");
+		$class->accessPropertiesDone();
 	}
 
-	//-------------------------------------------------------------------------- testAccessFieldsDone
-	public function testAccessFieldsDone()
+	//------------------------------------------------------------------- testAccessPropertiesDone
+	public function testAccessPropertiesDone()
 	{
 		$test_order = new Test_Order(date("Y-m-d"), "CDE001");
-		$fields = Class_Fields::accessFields("Test_Order");
-		Class_Fields::accessFieldsDone("Test_Order");
-		foreach ($fields as $property) {
+		$class = Reflection_Class::getInstanceOf(__NAMESPACE__ . "\\Test_Order");
+		$properties = $class->accessProperties();
+		$class->accessPropertiesDone();
+		foreach ($properties as $property) {
 			try {
 				$check[$property->name] = $property->getValue($test_order);
 			} catch (ReflectionException $e) {
@@ -73,6 +60,21 @@ class Reflection_Test extends Unit_Test
 			__METHOD__,
 			$check,
 			array("date" => null, "number" => null, "client" => null, "lines" => null)
+		);
+	}
+
+	//-------------------------------------------------------------------------- testGetAllProperties
+	public function testGetAllProperties()
+	{
+		$this->assume(
+			__METHOD__,
+			Reflection_Class::getInstanceOf(__NAMESPACE__ . "\\Test_Order")->getAllProperties(),
+			array(
+				"date"   => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "date"),
+				"number" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "number"),
+				"client" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "client"),
+				"lines"  => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "lines")
+			)
 		);
 	}
 

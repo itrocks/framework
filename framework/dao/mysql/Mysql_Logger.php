@@ -4,62 +4,80 @@ namespace SAF\Framework;
 class Mysql_Logger
 {
 
-	//------------------------------------------------------------------------------------- $instance
-	/**
-	 * @var Mysql_Logger
-	 */
-	private static $instance;
-
 	//----------------------------------------------------------------------------------- $errors_log
 	/**
+	 * The errors log
+	 *
+	 * Errors are full text looking like "errno: Error message [SQL Query]".
+	 *
 	 * @var multitype:string
 	 */
-	public $errors_log;
+	public $errors_log = array();
 
 	//---------------------------------------------------------------------------------- $queries_log
 	/**
+	 * The queryies log
+	 *
+	 * All executed queries are logged here.
+	 *
 	 * @var multitype:string
 	 */
-	public $queries_log;
+	public $queries_log = array();
 
 	//----------------------------------------------------------------------------------- __construct
-	private function __construct()
-	{
-	}
+	private function __construct() {}
 
 	//----------------------------------------------------------------------------------- getInstance
+	/**
+	 * Get the Mysql_Logger instance
+	 *
+	 * @return Mysql_Logger
+	 */
 	public static function getInstance()
 	{
-		if (!Mysql_Logger::$instance) {
-			Mysql_Logger::$instance = new Mysql_Logger();
+		static $instance = null;
+		if (!isset($instance)) {
+			$instance = new Mysql_Logger();
 		}
-		return Mysql_Logger::$instance;
+		return $instance;
 	}
 
 	//--------------------------------------------------------------------------------------- onQuery
 	/**
+	 * Called each time before a mysql_query() call is done : log the query
+	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
 	public function onQuery($joinpoint)
 	{
 		$arguments = $joinpoint->getArguments();
 		echo "<div class=\"Mysql_Logger_onQuery\">" . $arguments[0] . "</div>\n";
+		$this->queries_log[] = $arguments[0];
 	}
 
 	//--------------------------------------------------------------------------------------- onQuery
 	/**
+	 * Called each time after a mysql_query() call is done : log the error (if some)
+	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
 	public function onError($joinpoint)
 	{
 		if (mysql_errno()) {
-			echo "<div class=\"Mysql_Logger_onError\">"
-				. mysql_errno() . " : " . mysql_error()
-				. "</div>\n";
+			$arguments = $joinpoint->getArguments();
+			$error = mysql_errno() . ": " . mysql_error() . "[" . $arguments[0] . "]"; 
+			echo "<div class=\"Mysql_Logger_onError\">" . $error . "</div>\n";
+			$this->errors_log[] = $error;
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	public static function register()
+	{
+		Aop::registerBefore("mysql_query()", array(Mysql_Logger::getInstance(), "onQuery"));
+		Aop::registerAfter("mysql_query()", array(Mysql_Logger::getInstance(), "onError"));
 	}
 
 }
 
-Aop::registerBefore("mysql_query()", array(Mysql_Logger::getInstance(), "onQuery"));
-aop::registerAfter("mysql_query()", array(Mysql_Logger::getInstance(), "onError"));
+Mysql_Logger::register();

@@ -9,13 +9,17 @@ class Unit_Test
 	{
 		if (is_array($check) && is_array($assume)) {
 			$ok = !array_diff_assoc($check, $assume) && !array_diff_assoc($assume, $check);
-		} else {
-			$ok = $check === $assume;
+		}
+		else {
+			$ok = ($check === $assume);
 		}
 		if ($ok) {
-			$result = "OK";
-		} else {
-			$result = "BAD [" . print_r($check, true) . "]";
+			$result = "<span style='color:green;font-weight:bold;'>OK</span>";
+		}
+		else {
+			$result = "BAD"
+			. "<pre style='color:red;font-weight:bold;'>[" . print_r($check, true) . "]</pre>"
+			. "<pre style='color:blue;font-weight:bold;'>[" . print_r($assume, true) . "]</pre>";
 		}
 		echo "<li>" . substr($test, strpos($test, "::") + 2) . " : " . $result;
 		return ($result === "OK");
