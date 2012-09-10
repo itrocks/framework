@@ -248,8 +248,15 @@ class Reflection_Class extends ReflectionClass implements Annoted
 	public function getUse()
 	{
 		if (!is_array($this->use)) {
-			$annotation = $this->getAnnotation("use");
-			$this->use = $annotation ? $this->use : array();
+			$this->use = array();
+			$annotations = $this->getAnnotation("use");
+			if ($annotations) {
+				foreach ($annotations as $annotation) {
+					$this->use[] = $annotation->value;
+				}
+			} else {
+				$this->use = array();
+			}
 		}
 		return $this->use;
 	}

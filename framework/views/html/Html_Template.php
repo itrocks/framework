@@ -165,6 +165,9 @@ class Html_Template
 				$j = strpos($content, '}', $i);
 				$var_name = substr($content, $i, $j - $i);
 				$value = $this->parseVar($object, $var_name);
+				if (is_array($value)) {
+					$value = "...";
+				}
 				$content = substr($content, 0, $i - 1) . $value . substr($content, $j + 1);
 				$i --;
 			}

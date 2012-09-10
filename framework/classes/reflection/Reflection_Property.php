@@ -161,7 +161,7 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 				$doc = substr($doc, 0, strpos($doc, "$visibility \$$name"));
 				$i = strrpos($doc, "/**");
 				$j = strrpos($doc, "*/", $i) + 2;
-				$this->doc_comment = substr($doc, $i, $j - $i);
+				$this->doc_comment = substr($doc, $i, $j - $i) . parent::getDocComment();
 			}
 			return $this->doc_comment;
 		}

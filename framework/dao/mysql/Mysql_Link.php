@@ -51,7 +51,7 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Delete a collection of object
 	 *
-	 * This is called by delete() for hard-linked object collection properties : they are identified being instances of Contained.
+	 * This is called by delete() for hard-linked object collection properties : only if the matching property has @contained.
 	 *
 	 * @param object              $parent
 	 * @param Reflection_Property $property
@@ -176,11 +176,8 @@ class Mysql_Link extends Sql_Link
 	{
 		$class = get_class($what);
 		$search_result = array();
-		$where = Sql_Builder::buildWhere($what, $this);
-		$result_set = mysql_query(
-			"SELECT * FROM `" . SQL_Table::classToTableName($class) . "`" . $where,
-			$this->connection
-		);
+		$builder = new Sql_Select_Builder(get_class($what), null, $what, $this);
+		$result_set = mysql_query($builder->buildQuery(), $this->connection);
 		while ($object = mysql_fetch_object($result_set, $class)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$search_result[] = $object;
@@ -236,21 +233,23 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * Ie when you write an order, it's implicitely needed to write it's lines
 	 *
+	 * @todo verify source and test it correctly
 	 * @param object $parent
 	 * @param string $property_name
 	 * @param array  $collection
 	 */
 	private function writeCollection($parent, $property_name, $collection)
 	{
+		$property = Reflection_Property::getInstanceOf($parent, $property_name);
+		$getter = $property->getGetterName();
 		// old values
 		$parent->$property_name = null;
-		//$getter = Getter::getGetter($property_name); // TODO use the property getter (work with properties instead of properties names would be better ?)
 		$old_collection = $parent->$getter();
 		$parent->$property_name = $collection;
 		// collection properties : write each of them
 		$id_set = array();
-		foreach ($collection as $element) {
-			if ($element instanceof Contained) {
+		if ($property->isContained()) {
+			foreach ($collection as $element) {
 				$id = $this->getObjectIdentifier($element);
 				if ($id !== null) $id_set[] = $id;
 				$this->write($element);
@@ -284,7 +283,7 @@ class Mysql_Link extends Sql_Link
 
 	//-------------------------------------------------------------------------------------- writeMap
 	/**
-	 * @todo not really implemnted here
+	 * @todo not really implemented here
 	 * @param unknown_type $map
 	 */
 	private function writeMap($map)

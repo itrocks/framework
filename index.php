@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+ini_set("xdebug.scream", false);
 error_reporting(E_ALL);
 
 require_once "framework/classes/Autoloader.php";

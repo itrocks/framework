@@ -106,22 +106,24 @@ abstract class Aop_Getter
 	{
 		if (@class_exists($class_name)) {
 			$class = Reflection_Class::getInstanceOf($class_name);
-			$short_class_name = Namespaces::shortClassName($class_name);
-			foreach ($class->getProperties() as $property) if ($property->class == $short_class_name) {
-				$getter = $property->getGetterName();
-				if ($getter) {
-					if (substr($getter, 0, 5) === "Aop::") {
-						Aop::registerBefore(
-							"read " . $class_name . "->" . $property->name,
-							array(__CLASS__, substr($getter, 5))
-						);
+			foreach ($class->getProperties() as $property) {
+				if ($property->class == $class_name) {
+					$getter = $property->getGetterName();
+					if ($getter) {
+						if (substr($getter, 0, 5) === "Aop::") {
+							Aop::registerBefore(
+								"read " . $class_name . "->" . $property->name,
+								array(__CLASS__, substr($getter, 5))
+							);
+						}
+						else {
+							Aop::registerAround(
+								"read " . $class_name . "->" . $property->name,
+								array($class_name, $getter)
+							);
+						}
 					}
-					else {
-						Aop::registerAround(
-							"read " . $class_name . "->" . $property->name,
-							array($class_name, $getter)
-						);
-					}
+				} else {
 				}
 			}
 		}

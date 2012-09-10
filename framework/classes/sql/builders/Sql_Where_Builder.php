@@ -85,7 +85,7 @@ trait Sql_Where_Builder
 	{
 		if ($id = $this->sql_link->getObjectIdentifier($object)) {
 			// object is linked to stored data : search with object identifier
-			return $this->buildValue($path, $id);
+			return $this->buildValue($path, $id, "id_");
 		}
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
@@ -124,13 +124,13 @@ trait Sql_Where_Builder
 	 * @param mixed  $value search property value
 	 * @return string
 	 */
-	private function buildValue($path, $value)
+	private function buildValue($path, $value, $prefix = "")
 	{
 		$this->joins->add($path);
 		list($master_path, $foreign_field) = Sql_Builder::splitPropertyPath($path);
 		$column = ((!$master_path) || ($master_path === "id"))
-			? ("t0.`" . $foreign_field . "`")
-			: ($this->joins->getAlias($master_path) . ".`" . $foreign_field . "`");
+			? ("t0.`" . $prefix . $foreign_field . "`")
+			: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_field . "`");
 		$expr = is_null($value)
 			? " IS NULL"
 			: (" " . (Sql_Value::isLike($value) ? "LIKE" : "=") . " " . Sql_Value::escape($value));

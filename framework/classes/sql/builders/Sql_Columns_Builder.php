@@ -39,13 +39,17 @@ trait Sql_Columns_Builder
 	 */
 	protected function buildColumns()
 	{
-		$sql_columns = "";
-		$first_property = true;
-		foreach ($this->properties as $path) {
-			$join = $this->joins->add($path);
-			$sql_columns .= $join
-				? $this->buildObjectColumns($path, $join, $first_property)
-				: $this->buildColumn($path, $first_property);
+		if (isset($this->properties)) {
+			$sql_columns = "";
+			$first_property = true;
+			foreach ($this->properties as $path) {
+				$join = $this->joins->add($path);
+				$sql_columns .= $join
+					? $this->buildObjectColumns($path, $join, $first_property)
+					: $this->buildColumn($path, $first_property);
+			}
+		} else {
+			$sql_columns = "*";
 		}
 		return $sql_columns;
 	}
