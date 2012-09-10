@@ -113,8 +113,13 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 		elseif (is_object($of_class)) {
 			$of_class = get_class($of_class); 
 		}
-		$property = Reflection_Property::$cache[$of_class][$of_name];
-		if (!$property) {
+		if (
+			isset(Reflection_Property::$cache[$of_class])
+			&& isset(Reflection_Property::$cache[$of_class][$of_name])
+		) {
+			$property = Reflection_Property::$cache[$of_class][$of_name];
+		}
+		else {
 			$property = new Reflection_Property($of_class, $of_name);
 			Reflection_Property::$cache[$of_class][$of_name] = $property;
 		}
@@ -147,9 +152,11 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	public function getDocComment()
 	{
 		if ($this->getUse()) {
-			if (!isset($this->doc_comment)) {
+			if (!is_string($this->doc_comment)) {
 				$name = $this->name;
-				$visibility = $this->isPublic() ? "public" : ($this->isProtected() ? "protected" : "private");
+				$visibility = $this->isPublic()
+					? "public"
+					: ($this->isProtected() ? "protected" : "private");
 				$doc = file_get_contents($this->getDeclaringClass()->getFileName());
 				$doc = substr($doc, 0, strpos($doc, "$visibility \$$name"));
 				$i = strrpos($doc, "/**");
@@ -171,14 +178,9 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 	public function getForeignName()
 	{
-		if (!isset($this->foreign)) {
+		if (!is_string($this->foreign)) {
 			$foreign = $this->getAnnotation("foreign");
-			if (is_object($foreign)) {
-				$this->foreign = $foreign->value;
-			}
-			else {
-				$this->foreign = null;
-			}
+			$this->foreign = $foreign ? $foreign->value : "";
 		}
 		return $this->foreign;
 	}
@@ -222,14 +224,9 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 	public function getGetterName()
 	{
-		if (!isset($this->getter)) {
+		if (!is_string($this->getter)) {
 			$getter = $this->getAnnotation("getter");
-			if ($getter && $getter->value) {
-				$this->getter = $getter->value;
-			}
-			else {
-				$this->getter = null;
-			}
+			$this->getter = $getter ? $getter->value : "";
 		}
 		return $this->getter;
 	}
@@ -257,14 +254,9 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 	public function getSetterName()
 	{
-		if (!isset($this->setter)) {
+		if (!is_string($this->setter)) {
 			$setter = $this->getAnnotation("setter");
-			if ($setter && $setter->value) {
-				$this->setter = $setter->value;
-			}
-			else {
-				$this->setter = null;
-			}
+			$this->setter = $setter ? $setter->value : "";
 		}
 		return $this->setter;
 	}
@@ -279,9 +271,9 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 	public function getType()
 	{
-		if (!isset($this->type)) {
+		if (!is_string($this->type)) {
 			$type = $this->getAnnotation("var");
-			if (is_object($type) && $type->value) {
+			if ($type && $type->value) {
 				$this->type = $type->value;
 			}
 			else {
@@ -302,7 +294,7 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 	private function getUse()
 	{
-		if (!isset($this->use)) {
+		if (!is_bool($this->use)) {
 			$use = $this->getDeclaringClass()->getUse();
 			$this->use = $use ? in_array($this->name, $use) : false;
 		}
@@ -317,14 +309,9 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 	public function isContained()
 	{
-		if (!isset($this->contained)) {
+		if (!is_bool($this->contained)) {
 			$contained = $this->getAnnotation("contained");
-			if (is_object($contained)) {
-				$this->contained = $contained->value;
-			}
-			else {
-				$this->contained = false;
-			}
+			$this->contained = $contained ? $contained->value : false;
 		}
 		return $this->contained;
 	}
@@ -337,14 +324,9 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 		public function isMandatory()
 	{
-		if (!isset($this->mandatory)) {
+		if (!is_bool($this->mandatory)) {
 			$mandatory = $this->getAnnotation("mandatory");
-			if (is_object($mandatory)) {
-				$this->mandatory = $mandatory->value;
-			}
-			else {
-				$this->mandatory = false;
-			}
+			$this->mandatory = $mandatory ? $mandatory->value : false;
 		}
 		return $this->mandatory;
 	}

@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+error_reporting(E_ALL);
+
 require_once "framework/classes/Autoloader.php";
 require_once "framework/classes/debug/Execution_Timer.php";
 require_once "framework/classes/locale/Html_Translator.php";

@@ -16,9 +16,9 @@ abstract class Sql_Table
 		if (!$class instanceof Reflection_Class) {
 			$class = Reflection_Class::getInstanceOf($class);
 		}
-		$annotation = $class->getDataset();
-		if ($annotation) {
-			return strtolower($annotation->value);
+		$dataset = $class->getDataset();
+		if ($dataset) {
+			return strtolower($dataset);
 		}
 		else {
 			$class_name = Namespaces::shortClassName($class->name);

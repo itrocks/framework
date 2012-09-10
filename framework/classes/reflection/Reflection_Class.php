@@ -123,8 +123,9 @@ class Reflection_Class extends ReflectionClass implements Annoted
 	 */
 	public function getDataset()
 	{
-		if (!isset($this->dataset)) {
-			$this->dataset = $this->getAnnotation("dataset");
+		if (!is_string($this->dataset)) {
+			$annotation = $this->getAnnotation("dataset");
+			$this->dataset = $annotation ? $annotation->value : "";
 		}
 		return $this->dataset;
 	}
@@ -144,11 +145,14 @@ class Reflection_Class extends ReflectionClass implements Annoted
 		elseif (is_object($of_class)) {
 			$of_class = get_class($of_class);
 		}
-		$class = Reflection_Class::$cache[$of_class];
-		if (!$class) {
+		if (isset(Reflection_Class::$cache[$of_class])) {
+			$class = Reflection_Class::$cache[$of_class];
+		}
+		else {
 			try {
 				$class = new Reflection_Class($of_class);
-			} catch (ReflectionException $e) {
+			}
+			catch (ReflectionException $e) {
 				$class = new Reflection_Class(Namespaces::fullClassName($of_class));
 			}
 			Reflection_Class::$cache[$of_class] = $class;
@@ -243,8 +247,9 @@ class Reflection_Class extends ReflectionClass implements Annoted
 	 */
 	public function getUse()
 	{
-		if (!isset($this->use)) {
-			$this->use = $this->getAnnotation("use");
+		if (!is_array($this->use)) {
+			$annotation = $this->getAnnotation("use");
+			$this->use = $annotation ? $this->use : array();
 		}
 		return $this->use;
 	}

@@ -56,7 +56,7 @@ class Sql_Joins
 		$this->alias_counter = 1;
 		$this->classes[""] = $starting_class_name;
 		$class = Reflection_Class::getInstanceOf($starting_class_name);
-		$this->properties[$starting_class_name] = $class->accessProperties();
+		$this->properties[$starting_class_name] = $class->getAllProperties();
 		$this->starting_class_name = $starting_class_name;
 		foreach ($paths as $path) {
 			$this->add($path);
@@ -73,55 +73,36 @@ class Sql_Joins
 	 */
 	public function add($path, $depth = 0)
 	{
-		if (isset($this->joins[$path])) return $this->joins[$path];
-		$foreign_path = $path;
+		if (array_key_exists($path, $this->joins)) {
+			return $this->joins[$path];
+		}
 		list($master_path, $master_property_name) = Sql_Builder::splitPropertyPath($path);
-		if ($master_path && !$this->joins[$master_path]) {
+		if ($master_path && !isset($this->joins[$master_path])) {
 			$this->add($master_path, $depth + 1);
 		}
 		$join = new Sql_Join();
-		if (strpos($master_property_name, "->")) {
-			list($foreign_class_name, $property) = explode("->", $master_property_name);
-			list($join->foreign_column, $join->master_column) = explode("=", $property);
-			if (!$join->master_column) {
-				$join->master_column = "id";
-			}
-			$join->foreign_column = "id_" . $join->foreign_column;
-			$join->mode = Sql_Join::LEFT;
+		$foreign_class_name = (strpos($master_property_name, "->"))
+			? $this->addReverseJoin($join, $master_property_name)
+			: $this->addSimpleJoin($join, $master_path, $master_property_name);
+		$this->joins[$path] = $join->mode
+			? $this->addFinalize($join, $master_path, $foreign_class_name, $path, $depth)
+			: null;
+		return $this->joins[$path];
+	}
+
+	//----------------------------------------------------------------------------------- addFinalize
+	private function addFinalize($join, $master_path, $foreign_class_name, $foreign_path, $depth)
+	{
+		if (!$depth) {
+			$join->type = Sql_Join::OBJECT;
 		}
-		else {
-			$master_property = $this->getProperty($master_path, $master_property_name);
-			if ($master_property) {
-				$foreign_class_name = $master_property->getType();
-				if (!Type::isBasic($foreign_class_name)) {
-					$join->mode = $master_property->isMandatory() ? Sql_Join::INNER : Sql_Join::LEFT;
-					if (substr($foreign_class_name, 0, 10) === "multitype:") {
-						$foreign_class_name = substr($foreign_class_name, 10);
-						$join->master_column  = "id";
-						$join->foreign_column = "id_" . $master_property->getForeignName();
-					}
-					else {
-						$join->master_column  = "id_" . $master_property_name;
-						$join->foreign_column = "id";
-					}
-				}
-			}
-		}
-		if ($join->mode) {
-			if (!$depth) {
-				$join->type = Sql_Join::OBJECT;
-			}
-			$join->master_alias  = $master_path ? $this->getAlias($master_path) : "t0";
-			$join->foreign_table = Sql_Table::classToTableName($foreign_class_name);
-			$join->foreign_alias = "t" . $this->alias_counter ++;
-			$this->classes[$foreign_path]          = $foreign_class_name;
-			$foreign_class = Reflection_Class::getInstanceOf($foreign_class_name);
-			$this->properties[$foreign_class_name] = $foreign_class->getAllProperties();
-		} else {
-			$join = null;
-		}
-		$this->joins[$foreign_path] = $join;
-		return $this->joins[$foreign_path];
+		$join->master_alias  = $master_path ? $this->getAlias($master_path) : "t0";
+		$join->foreign_table = Sql_Table::classToTableName($foreign_class_name);
+		$join->foreign_alias = "t" . $this->alias_counter ++;
+		$this->classes[$foreign_path] = $foreign_class_name;
+		$foreign_class = Reflection_Class::getInstanceOf($foreign_class_name);
+		$this->properties[$foreign_class_name] = $foreign_class->getAllProperties();
+		return $join;
 	}
 
 	//----------------------------------------------------------------------------------- addMultiple
@@ -137,6 +118,44 @@ class Sql_Joins
 			$this->add($path);
 		}
 		return $this;
+	}
+
+	//-------------------------------------------------------------------------------- addReverseJoin
+	private function addReverseJoin($join, $master_property_name)
+	{
+		list($foreign_class_name, $property) = explode("->", $master_property_name);
+		if (strpos($property, "=")) {
+			list($join->foreign_column, $join->master_column) = explode("=", $property);
+			$join->foreign_column = "id_" . $join->foreign_column;
+		} else {
+			$join->master_column = "id";
+			$join->foreign_column = "id_" . $property;
+		}
+		$join->mode = Sql_Join::LEFT;
+		return $foreign_class_name;
+	}
+
+	//--------------------------------------------------------------------------------- addSimpleJoin
+	private function addSimpleJoin($join, $master_path, $master_property_name)
+	{
+		$foreign_class_name = null;
+		$master_property = $this->getProperty($master_path, $master_property_name);
+		if ($master_property) {
+			$foreign_class_name = $master_property->getType();
+			if (!Type::isBasic($foreign_class_name)) {
+				$join->mode = $master_property->isMandatory() ? Sql_Join::INNER : Sql_Join::LEFT;
+				if (substr($foreign_class_name, 0, 10) === "multitype:") {
+					$foreign_class_name = substr($foreign_class_name, 10);
+					$join->master_column  = "id";
+					$join->foreign_column = "id_" . $master_property->getForeignName();
+				}
+				else {
+					$join->master_column  = "id_" . $master_property_name;
+					$join->foreign_column = "id";
+				}
+			}
+		}
+		return $foreign_class_name;
 	}
 
 	//-------------------------------------------------------------------------------------- getAlias
@@ -160,7 +179,7 @@ class Sql_Joins
 	 */
 	public function getJoin($path)
 	{
-		return $this->joins[$path];
+		return isset($this->joins[$path]) ? $this->joins[$path] : null;
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins
@@ -183,8 +202,8 @@ class Sql_Joins
 	 */
 	public function getProperties($master_path)
 	{
-		$class_name = $this->classes[$master_path];
-		return $this->properties[$class_name];
+		$class_name = isset($this->classes[$master_path]) ? $this->classes[$master_path] : null;
+		return isset($this->properties[$class_name]) ? $this->properties[$class_name] : array();
 	}
 
 	//----------------------------------------------------------------------------------- getProperty
@@ -198,7 +217,7 @@ class Sql_Joins
 	private function getProperty($master_path, $property_name)
 	{
 		$properties = $this->getProperties($master_path);
-		return $properties[$property_name];
+		return isset($properties[$property_name]) ? $properties[$property_name] : null;
 	}
 
 	//----------------------------------------------------------------------------------- newInstance

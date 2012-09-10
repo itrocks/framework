@@ -21,7 +21,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 */
 	public function getObjectIdentifier($object)
 	{
-		return $object->id;
+		return isset($object->id) ? $object->id : null;
 	}
 
 	//------------------------------------------------------------------------ removeObjectIdentifier

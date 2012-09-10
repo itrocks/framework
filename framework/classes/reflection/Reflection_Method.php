@@ -47,8 +47,10 @@ class Reflection_Method extends ReflectionMethod implements Annoted
 		elseif (is_object($of_class)) {
 			$of_class = get_class($of_class); 
 		}
-		$method = Reflection_Method::$cache[$of_class][$of_name];
-		if (!$method) {
+		if (isset(Reflection_Method::$cache[$of_class][$of_name])) {
+			$method = Reflection_Method::$cache[$of_class][$of_name];
+		}
+		else {
 			$method = new Reflection_Method($of_class, $of_name);
 			Reflection_Method::$cache[$of_class][$of_name] = $method;
 		}

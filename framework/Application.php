@@ -52,7 +52,7 @@ abstract class Application
 		$directories = array();
 		if ($application_name != "Framework") {
 			$extends = mParse(file_get_contents("{$app_dir}/Application.php"),
-				" extends SAF\\", "\\Application"
+				" extends \\SAF\\", "\\Application"
 			);
 			$directories = Application::getSourceDirectories($extends);
 		}
@@ -78,7 +78,7 @@ abstract class Application
 			while ($application != "Framework") {
 				Application::$namespaces[] = "SAF\\" . $application;
 				$application =  mParse(file_get_contents("{$app_dir}/Application.php"),
-					" extends SAF\\", "\\Application"
+					" extends \\SAF\\", "\\Application"
 				);
 			}
 			Application::$namespaces[] = __NAMESPACE__;

@@ -48,8 +48,8 @@ abstract class Reflection_Class_Properties_Access
 	public static function access($object_class)
 	{
 		$class_name = $object_class->name;
-		$properties = Reflection_Class_Properties_Access::$properties_map[$class_name];
-		if (is_array($properties)) {
+		if (isset(Reflection_Class_Properties_Access::$properties_map[$class_name])) {
+			$properties = Reflection_Class_Properties_Access::$properties_map[$class_name];
 			Reflection_Class_Properties_Access::$count[$class_name] ++;
 		}
 		else {

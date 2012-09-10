@@ -82,8 +82,12 @@ abstract class Autoloader
 	{
 		if (!isset($_SESSION["php_ini"]["include_path"])) {
 			$configuration = Configuration::getCurrent();
-			if (isset($configuration)) $application_name = $configuration->getApplicationName();
-			if (!isset($application_name)) $application_name = "Framework";
+			if (isset($configuration)) {
+				$application_name = $configuration->getApplicationName();
+			}
+			if (!isset($application_name)) {
+				$application_name = "Framework";
+			}
 			$include_path = join(":", Application::getSourceDirectories($application_name));
 			$_SESSION["php_ini"]["include_path"] = Autoloader::getOriginIncludePath() . ":" . $include_path;
 		}

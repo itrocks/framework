@@ -35,8 +35,10 @@ abstract class Namespaces
 	{
 		if (strpos($class_name, "\\") === false) {
 			static $cache = array();
-			$full_class_name = $cache[$class_name];
-			if (!$full_class_name) {
+			if (isset($cache[$class_name])) {
+				$full_class_name = $cache[$class_name];
+			}
+			else {
 				foreach (Application::getNamespaces() as $namespace) {
 					$full_class_name = $namespace . "\\" . $class_name;
 					if (@class_exists($full_class_name)) {

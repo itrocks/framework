@@ -19,6 +19,7 @@ abstract class Annotation_Parser
 	{
 		$annotations = array();
 		$annotation = null;
+		$multiple = false;
 		$i = 0;
 		while (($i = strpos($doc_comment, "@" . $annotation_name, $i)) !== false) {
 			$i += strlen($annotation_name) + 1;
@@ -31,7 +32,9 @@ abstract class Annotation_Parser
 				$value = true;
 			}
 			if (!isset($annotation_class)) {
-				$annotation_class = Namespaces::fullClassName(Names::propertyToClass($annotation_name) . "_Annotation");
+				$annotation_class = Namespaces::fullClassName(
+					Names::propertyToClass($annotation_name) . "_Annotation"
+				);
 				if (!class_exists($annotation_class)) {
 					$annotation_class = __NAMESPACE__ . "\\Annotation";
 				}

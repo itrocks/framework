@@ -29,7 +29,8 @@ class Reflection_Test extends Unit_Test
 			foreach ($properties as $property) {
 				try {
 					$check[$property->name] = $property->getValue($test_order);
-				} catch (ReflectionException $e) {
+				}
+				catch (ReflectionException $e) {
 					$check[$property->name] = null;
 				}
 			}
@@ -52,7 +53,8 @@ class Reflection_Test extends Unit_Test
 		foreach ($properties as $property) {
 			try {
 				$check[$property->name] = $property->getValue($test_order);
-			} catch (ReflectionException $e) {
+			}
+			catch (ReflectionException $e) {
 				$check[$property->name] = null;
 			}
 		}
