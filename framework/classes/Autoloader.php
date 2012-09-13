@@ -1,11 +1,16 @@
 <?php
 namespace SAF\Framework;
 
+// needed
 require_once "framework/Application.php";
 require_once "framework/classes/Configuration.php";
 require_once "framework/classes/mappers/Aop_Getter.php";
 require_once "framework/classes/toolbox/Aop.php";
 require_once "framework/classes/toolbox/Namespaces.php";
+
+// force
+require_once "framework/classes/toolbox/Array.php";
+require_once "framework/classes/toolbox/String.php";
 
 abstract class Autoloader
 {
@@ -81,7 +86,7 @@ abstract class Autoloader
 	public static function init()
 	{
 		if (!isset($_SESSION["php_ini"]["include_path"])) {
-			$configuration = Configuration::getCurrent();
+			$configuration = Configuration::current();
 			if (isset($configuration)) {
 				$application_name = $configuration->getApplicationName();
 			}
@@ -103,8 +108,8 @@ abstract class Autoloader
 	{
 		spl_autoload_register(array(__CLASS__, "autoLoad"));
 		Aop::registerBefore(
-			__NAMESPACE__ . "\\Configuration->setCurrent()",
-			array(__CLASS__, "reset")
+			__NAMESPACE__ . "\\Configuration->current()",
+			array(__CLASS__, "resetOnCurrentConfigurationChange")
 		);
 	}
 
@@ -119,6 +124,19 @@ abstract class Autoloader
 		Autoloader::$initialized = false;
 		unset($_SESSION["php_ini"]["include_path"]);
 		set_include_path(Autoloader::$origin_include_path);
+	}
+
+	//------------------------------------------------------------- resetOnCurrentConfigurationChange
+	/**
+	 * Reset the include path for applications if current configuration changes.
+	 *
+	 * @param AopJoinPoint $joinpoint
+	 */
+	public static function resetOnCurrentConfigurationChange($joinpoint)
+	{
+		if (count($joinpoint->getArguments())) {
+			Autoloader::reset();
+		}
 	}
 
 }

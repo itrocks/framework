@@ -1,6 +1,53 @@
 <?php
 namespace SAF\Framework;
 
+class String
+{
+
+	//---------------------------------------------------------------------------------------- $value
+	/**
+	 * @var string
+	 */
+	protected $value;
+
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct($value)
+	{
+		$this->value = $value;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString()
+	{
+		return $this->value;
+	}
+
+	//----------------------------------------------------------------------------------------- lower
+	public function lower()
+	{
+		return strtolower($this->value);
+	}
+
+	//--------------------------------------------------------------------------------------- ucfirst
+	public function ucfirst()
+	{
+		return ucfirst($this->value);
+	}
+
+	//--------------------------------------------------------------------------------------- ucwords
+	public function ucwords()
+	{
+		return ucwords($this->value);
+	}
+
+	//----------------------------------------------------------------------------------------- upper
+	public function upper()
+	{
+		return strtoupper($this->value);
+	}
+
+}
+
 //----------------------------------------------------------------------------- function lLastParse
 /**
  * Renvoie la partie de chaine à gauche de la dernière occurence du séparateur

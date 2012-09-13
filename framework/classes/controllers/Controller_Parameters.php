@@ -32,11 +32,23 @@ class Controller_Parameters
 	public function getObject($parameter_name)
 	{
 		if (isset($this->objects[$parameter_name])) {
+			// parameter is in cache
 			$object = $this->objects[$parameter_name];
 		}
-		else {
+		elseif (is_numeric($this->parameters[$parameter_name])) {
 			$class_name = Namespaces::fullClassName($parameter_name);
-			$object = Getter::getObject($this->parameters[$parameter_name] + 0, $class_name);
+			if (class_exists($class_name)) {
+				// object parameter
+				$object = Getter::getObject($this->parameters[$parameter_name] + 0, $class_name);
+				$this->objects[$parameter_name] = $object;
+			} else {
+				// free parameter
+				$object = $this->parameters[$parameter_name];
+				$this->objects[$parameter_name] = $object;
+			}
+		} else {
+			// text parameter
+			$object = $this->parameters[$parameter_name];
 			$this->objects[$parameter_name] = $object;
 		}
 		return $object;

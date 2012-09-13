@@ -1,14 +1,17 @@
 <!doctype html>
 <html lang="fr">
+
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>SAF Application</title>
+	<title>User login template</title>
 	<style type="text/css">
 		@import "style/default/style.css";
 	</style>
 </head>
+
 <body>
 
+<div class="User login">
 	<!--BEGIN-->
 	<form name="User_login" action="authenticate" method="post">
 		<div class="fieldset">
@@ -23,8 +26,9 @@
 		</div>
 		<input type="submit" value="login">
 	</form>
-	<script> document.User_login.login.focus(); </script>
+	<script type="text/javascript"> document.User_login.login.focus(); </script>
 	<!--END-->
+</div>
 
 </body>
 </html>

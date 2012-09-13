@@ -78,9 +78,9 @@ class Main_Controller
 	 * @param array  $post
 	 * @param array  $files
 	 */
-	private function runController($uri, $get, $post, $files)
+	public function runController($uri, $get = array(), $post = array(), $files = array())
 	{
-		$uri = new Controller_Uri($uri, "output");
+		$uri = new Controller_Uri($uri, $get, "output");
 		foreach ($uri->getPossibleControllerCalls() as $call) {
 			list($controller_class_name, $method_name) = $call;
 			foreach (Application::getNamespaces() as $namespace) {
@@ -91,7 +91,7 @@ class Main_Controller
 						$uri->parameters, $post, $files,
 						Namespaces::fullClassName($uri->controller_name), $uri->feature_name
 					);
-					break;
+					break 2;
 				}
 			}
 		}
@@ -104,19 +104,21 @@ class Main_Controller
 	private function sessionStart()
 	{
 		session_start();
-		if (isset($_SESSION["configuration"]) && isset($_SESSION["user"])) {
-			Configuration::setCurrent($_SESSION["configuration"]);
-			User::setCurrent($_SESSION["user"]);
-		}
-		else {
+		if (isset($_SESSION["Configuration"])) {
+			foreach ($_SESSION as $class_name => $value) {
+				$class_name::current($value);
+			}
+		} else {
 			$configurations = new Configurations();
 			$configurations->load();
 		}
-		$configuration = Configuration::getCurrent();
-		$dao_class_name = Namespaces::fullClassName($configuration->getDaoClassName());
-		Dao::setDataLink(new $dao_class_name($configuration->getDao()));
-		$view_class_name = Namespaces::fullClassName($configuration->getViewEngineClassName());
-		View::setCurrent(new $view_class_name($configuration->getViewEngine()));
+		foreach (
+			Configuration::current()->getClassesConfigurations() as $class_name => $configuration
+		) {
+			$class_name = Namespaces::fullClassName($class_name);
+			$configuration_class_name = Namespaces::fullClassName($configuration["class"]);
+			$class_name::current(new $configuration_class_name($configuration));
+		}
 	}
 
 }

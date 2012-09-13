@@ -36,13 +36,16 @@ class Controller_Uri
 	 * @param string $uri ie "/Order/3/Line/2/output", or "User/login"
 	 * @param string $default_feature the default feature name, ie put "output" for "/Order/3"
 	 */
-	public function __construct($uri, $default_feature = null)
+	public function __construct($uri, $get, $default_feature = null)
 	{
 		$uri = $this->uriToArray($uri);
 		if ($default_feature && is_numeric(end($uri))) {
 			$uri[] = $default_feature;
 		}
 		$this->parse($uri);
+		foreach ($get as $key => $value) {
+			$this->parameters->set($key, $value);
+		}
 	} 
 
 	//-------------------------------------------------------------------- getPossibleControllerCalls

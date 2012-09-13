@@ -10,7 +10,7 @@ abstract class Aop_Tracer
 	/**
 	 * Register this advice to trace calls to a given method
 	 *
-	 * @example Aop::registerBefore("Class_Name->methodName()", "SAF\\Framework\\Aop_Tracer::method")
+	 * @example Aop::registerBefore("Class_Name->methodName()", __NAMESPACE__ . "\\Aop_Tracer::method")
 	 * @param AopJoinpoint $joinpoint
 	 */
 	public static function method($joinpoint)

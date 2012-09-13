@@ -4,17 +4,16 @@ namespace SAF\Framework;
 class Locale
 {
 
-	//----------------------------------------------------------------------------------- __construct
-	private function __construct() {}
-
-	//----------------------------------------------------------------------------------- getInstance
-	public function getInstance()
+	//--------------------------------------------------------------------------------------- current
+	public function current($set_current = null)
 	{
-		static $instance = null;
-		if (!isset($instance)) {
-			$instance = new Locale();
+		static $current = null;
+		if ($set_current) {
+			$current = $set_current;
+		} elseif (!isset($current)) {
+			$current = new Locale();
 		}
-		return $instance;
+		return $current;
 	}
 
 }

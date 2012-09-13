@@ -10,30 +10,6 @@ class Configuration
 	 */
 	private $app;
 
-	//-------------------------------------------------------------------------------------- $current
-	/**
-	 * @var Configuration
-	 */
-	private static $current;
-
-	//------------------------------------------------------------------------------------------ $dao
-	/**
-	 * @var array
-	 */
-	private $dao;
-
-	//-------------------------------------------------------------------------------------- $default
-	/**
-	 * @var boolean
-	 */
-	private $default = false;
-
-	//----------------------------------------------------------------------------------------- $view
-	/**
-	 * @var array
-	 */
-	private $view;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Build configuration using configurations options
@@ -47,9 +23,25 @@ class Configuration
 		foreach ($configuration_options as $name => $value) {
 			$this->$name = $value;
 		}
-		if ($this->default) {
-			Configuration::setCurrent($this);
+		if (isset($configuration_options["default"]) && $configuration_options["default"]) {
+			Configuration::current($this);
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * Gets/sets the current configuration object, as set by default into the configuration file or by setCurrent()
+	 *
+	 * @param Configuration $set_current
+	 * @return Configuration
+	 */
+	public static function current($set_current = null)
+	{
+		static $current = null;
+		if ($set_current) {
+			$current = $set_current;
+		}
+		return $current;
 	}
 
 	//---------------------------------------------------------------------------- getApplicationName
@@ -63,70 +55,32 @@ class Configuration
 		return $this->app;
 	}
 
-	//------------------------------------------------------------------------------------ getCurrent
+	//---------------------------------------------------------------------- getClassesConfigurations
 	/**
-	 * Get the current configuration object, as set by default into the configuration file or by setCurrent()
+	 * Returns full configuration array for each class configuration
 	 *
-	 * @return Configuration
+	 * @return multitype:array
 	 */
-	public static function getCurrent()
+	public function getClassesConfigurations()
 	{
-		return Configuration::$current;
+		$classes = array();
+		foreach (get_object_vars($this) as $name => $value) {
+			if (($name[0] >= "A") && ($name[0] <= "Z")) {
+				$classes[$name] = $value;
+			}
+		}
+		return $classes;
 	}
 
-	//---------------------------------------------------------------------------------------- getDao
+	//--------------------------------------------------------------------------------------- toArray
 	/**
-	 * Get the DAO configuration as a recursive array
+	 * Returns a configuration as an associative array like in config.php file
 	 *
 	 * @return array
 	 */
-	public function getDao()
+	public function toArray()
 	{
-		return $this->dao;
-	}
-
-	//------------------------------------------------------------------------------- getDaoClassName
-	/**
-	 * Get the DAO class name : the DAO "class" option, with the "_Link" standard DAO suffix 
-	 *
-	 * @return string
-	 */
-	public function getDaoClassName()
-	{
-		return $this->dao["class"] . "_Link";
-	}
-
-	//--------------------------------------------------------------------------------- getViewEngine
-	/**
-	 * Get the view engine configuration as a recursive array
-	 *
-	 * @return array
-	 */
-	public function getViewEngine()
-	{
-		return $this->view;
-	}
-
-	//------------------------------------------------------------------------ getViewEngineClassName
-	/**
-	 * Get the view engine class name : the View "engine" option, with the "_View_Engine" standard view engine suffix
-	 *
-	 * @return string
-	 */
-	public function getViewEngineClassName()
-	{
-		return $this->view["engine"] . "_View_Engine";
-	}
-
-	//------------------------------------------------------------------------------------ setCurrent
-	/**
-	 * Set the current configuration to the given Configuration object
-	 *
-	 * @param Configuration $configuration
-	 */
-	public static function setCurrent($configuration)
-	{
-		Configuration::$current = $configuration;
+		return get_object_vars($this);
 	}
 
 }

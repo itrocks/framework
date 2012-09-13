@@ -4,24 +4,23 @@ namespace SAF\Framework;
 abstract class View
 {
 
+	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @var View_Engine
+	 * @param View_Engine $set_current
 	 */
-	private static $current_view_engine;
-
-	//------------------------------------------------------------------------------------ getCurrent
-	/**
-	 * @return View_Engine
-	 */
-	public static function getCurrent()
+	public static function current($set_current = null)
 	{
-		return View::$current_view_engine;
+		static $current = null;
+		if ($set_current) {
+			$current = $set_current;
+		}
+		return $current;
 	}
 
 	//------------------------------------------------------------------------------ getPossibleViews
 	public static function getPossibleViews($class_name, $feature_name)
 	{
-		$view_engine_name = Namespaces::shortClassName(get_class(View::getCurrent()));
+		$view_engine_name = Namespaces::shortClassName(get_class(View::current()));
 		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, "_View_Engine"));
 		$feature_class = Names::methodToClass($feature_name);
 		return array(
@@ -50,19 +49,10 @@ abstract class View
 				if (@method_exists($view, $view_method_name)) {
 					$view_object = new $view();
 					$view_object->$view_method_name($parameters, $form, $files, $class_name, $feature_name);
-					break;
+					break 2;
 				}
 			}
 		} 
-	}
-
-	//------------------------------------------------------------------------------------ setCurrent
-	/**
-	 * @param View_Engine $current_view
-	 */
-	public static function setCurrent($current_view_engine)
-	{
-		View::$current_view_engine = $current_view_engine;
 	}
 
 }

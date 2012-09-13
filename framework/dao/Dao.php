@@ -4,14 +4,6 @@ namespace SAF\Framework;
 abstract class Dao
 {
 
-	//------------------------------------------------------------------------------------ $data_link
-	/**
-	 * The current / main data link to use into your application
-	 *
-	 * @var Data_Link
-	 */
-	private static $data_link;
-
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Begin a transaction with the current data link (non-transactional SQL engines will do nothing and return null)
@@ -21,8 +13,8 @@ abstract class Dao
 	 */
 	public static function begin()
 	{
-		if (Dao::$data_link instanceof Transactional_Data_Link) {
-			return Dao::$data_link->begin();
+		if (Dao::current() instanceof Transactional_Data_Link) {
+			return Dao::current()->begin();
 		}
 		else {
 			return null;
@@ -38,12 +30,27 @@ abstract class Dao
 	 */
 	public static function commit()
 	{
-		if (Dao::$data_link instanceof Transactional_Data_Link) {
-			return Dao::$data_link->commit();
+		if (Dao::current() instanceof Transactional_Data_Link) {
+			return Dao::current()->commit();
 		}
 		else {
 			return null;
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * Gets/sets current data link object 
+	 *
+	 * @return Data_Link
+	 */
+	public static function current($set_current = null)
+	{
+		static $current = null;
+		if ($set_current) {
+			$current = $set_current;
+		}
+		return $current;
 	}
 
 	//---------------------------------------------------------------------------------------- delete
@@ -59,18 +66,7 @@ abstract class Dao
 	 */
 	public static function delete($object)
 	{
-		return dao::$data_link->delete($object);
-	}
-
-	//----------------------------------------------------------------------------------- getDataLink
-	/**
-	 * Get current data link object 
-	 *
-	 * @return Data_Link
-	 */
-	public static function getDataLink()
-	{
-		return Dao::$data_link;
+		return dao::current()->delete($object);
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -84,7 +80,7 @@ abstract class Dao
 	 */
 	public static function read($value, $object_class)
 	{
-		return Dao::$data_link->read($value, $object_class);
+		return Dao::current()->read($value, $object_class);
 	}
 
 	//--------------------------------------------------------------------------------------- readAll
@@ -97,7 +93,7 @@ abstract class Dao
 	 */
 	public static function readAll($object_class)
 	{
-		return Dao::$data_link->readAll($object_class);
+		return Dao::current()->readAll($object_class);
 	}
 
 	//--------------------------------------------------------------------------------------- replace
@@ -114,7 +110,7 @@ abstract class Dao
 	 */
 	public static function replace($destination, $source)
 	{
-		return Dao::$data_link->replace($destination, $source);
+		return Dao::current()->replace($destination, $source);
 	}
 
 	//-------------------------------------------------------------------------------------- rollback
@@ -126,8 +122,8 @@ abstract class Dao
 	 */
 	public static function rollback()
 	{
-		if (Dao::$data_link instanceof Transactional_Data_Link) {
-			return Dao::$data_link->rollback();
+		if (Dao::current() instanceof Transactional_Data_Link) {
+			return Dao::current()->rollback();
 		}
 		else {
 			return null;
@@ -148,7 +144,7 @@ abstract class Dao
 	 */
 	public static function search($what)
 	{
-		return Dao::$data_link->search($what);
+		return Dao::current()->search($what);
 	}
 
 	//------------------------------------------------------------------------------------- searchOne
@@ -165,18 +161,7 @@ abstract class Dao
 	 */
 	public static function searchOne($what)
 	{
-		return Dao::$data_link->searchOne($what);
-	}
-
-	//----------------------------------------------------------------------------------- setDataLink
-	/**
-	 * Set current default data link to a given Data_Link object
-	 *
-	 * @param Data_Link $data_link
-	 */
-	public static function setDataLink($data_link)
-	{
-		Dao::$data_link = $data_link;
+		return Dao::current()->searchOne($what);
 	}
 
 	//----------------------------------------------------------------------------------------- write
@@ -193,7 +178,7 @@ abstract class Dao
 	 */
 	public static function write($object)
 	{
-		Dao::$data_link->write($object);
+		Dao::current()->write($object);
 	}
 
 }

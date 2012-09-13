@@ -4,27 +4,54 @@ namespace SAF\Framework;
 abstract class Html_Template_Funcs
 {
 
+	//-------------------------------------------------------------------------------- getApplication
+	/**
+	 * Returns application name
+	 *
+	 * @param Html_Template $template
+	 * @param object $object
+	 * @return string
+	 */
+	public static function getApplication($template, $object)
+	{
+		return new Displayable(
+			Configuration::current()->getApplicationName(), Displayable::TYPE_CLASS
+		);
+	}
+
 	//-------------------------------------------------------------------------------------- getClass
 	/**
 	 * Returns object's class name
 	 *
-	 * @param  Html_Template $template
-	 * @param  object $object
+	 * @param Html_Template $template
+	 * @param object $object
 	 * @return string
 	 */
 	public static function getClass($template, $object)
 	{
-		if (is_object($object)) {
-			return Namespaces::shortClassName(get_class($object));
-		}
+		return is_object($object)
+			? new Displayable(Namespaces::shortClassName(get_class($object)), Displayable::TYPE_CLASS)
+			: new Displayable(Namespaces::shortClassName($object), Displayable::TYPE_CLASS);
+	}
+
+	//------------------------------------------------------------------------------------ getFeature
+	/**
+	 * Returns template's feature method name
+	 *
+	 * @param string $template
+	 * @param string $object
+	 */
+	public static function getFeature($template, $object)
+	{
+		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * Returns object's properties, and their display and value
 	 *
-	 * @param  Html_Template $template
-	 * @param  object $object
+	 * @param Html_Template $template
+	 * @param object $object
 	 * @return multitype:Reflection_Property
 	 */
 	public static function getProperties($template, $object)
@@ -44,13 +71,13 @@ abstract class Html_Template_Funcs
 	 * Returns template's top object
 	 * (use it inside of loops)
 	 *
-	 * @param  Html_Template $template
-	 * @param  object $object
+	 * @param Html_Template $template
+	 * @param object $object
 	 * @return object
 	 */
 	public static function getTop($template, $object)
 	{
-		return $template->object;
+		return $template->getObject();
 	}
 
 }

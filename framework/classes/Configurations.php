@@ -51,6 +51,12 @@ class Configurations
 		include $file_name;
 		$this->configurations = array();
 		foreach ($config as $config_name => $config_options) {
+			if (isset($config_options["extends"])) {
+				$config_options = arrayMergeRecursive(
+					$this->getConfiguration($config_options["extends"])->toArray(),
+					$config_options
+				);
+			}
 			$this->configurations[$config_name] = new Configuration($config_options);
 		}
 	}

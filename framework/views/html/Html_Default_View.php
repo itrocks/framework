@@ -18,6 +18,12 @@ class Html_Default_View implements IView
 					$parameters = array($class_name => new $class_name());
 				}
 				$template = new Html_Template(reset($parameters), $template_file, $feature_name);
+				if (isset($parameters["widget"])) {
+					$template->asWidget($parameters["widget"]);
+				}
+				if ($css = View::current()->getCss()) {
+					$template->setCss($css);
+				}
 				echo $template->parse();
 				break;
 			}

@@ -10,6 +10,18 @@ abstract class Names
 		return ucfirst(preg_replace('/([a-z])([A-Z])/', '$1_$2', $method_name));
 	}
 
+	//------------------------------------------------------------------------------- methodToDisplay
+	public static function methodToDisplay($method_name)
+	{
+		return strtolower(preg_replace('/([a-z])([A-Z])/', '$1 $2', $method_name));
+	}
+
+	//-------------------------------------------------------------------------------- classToDisplay
+	public static function classToDisplay($class_name)
+	{
+		return strtolower(str_replace("_", " ", $class_name));
+	}
+
 	//--------------------------------------------------------------------------------- classToMethod
 	public static function classToMethod($class_name, $prefix = null)
 	{

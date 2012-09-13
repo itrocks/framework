@@ -4,23 +4,42 @@ namespace SAF\Framework;
 class Html_Template
 {
 
+	/**
+	 * Display template as a widget
+	 *
+	 * @var boolean
+	 */
+	private $as_widget;
+
 	//-------------------------------------------------------------------------------------- $content
 	/**
+	 * Content of the template file, changed by calculated result HTML content during parse()
+	 *
 	 * @var string
 	 */
-	public $content;
+	private $content;
+
+	//------------------------------------------------------------------------------------------ $css
+	/**
+	 * Css files relative directory (ie "default")
+	 *
+	 * @var string
+	 */
+	private $css;
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
+	 * Feature name (name of a controller's method, end of the view name)
+	 *
 	 * @var string
 	 */
-	public $feature;
+	private $feature;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @var object
 	 */
-	public $object;
+	private $object;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -44,6 +63,84 @@ class Html_Template
 		$this->path    = substr($template_file, 0, strrpos($template_file, "/"));
 		$this->content = file_get_contents($template_file);
 		$this->feature = $feature_name;
+	}
+
+	//-------------------------------------------------------------------------------------- asWidget
+	/**
+	 * Template will be output as a widget
+	 *
+	 * This means that in <!--BEGIN-->...<!--END--> case, main HTML template will NOT be loaded.
+	 * Use this to include templates in others, or for ajax calls.
+	 *
+	 * @param boolean $output_template_as_widget
+	 */
+	public function asWidget($output_template_as_widget = true)
+	{
+		$this->as_widget = $output_template_as_widget;
+	}
+
+	//-------------------------------------------------------------------------------------- callFunc
+	/**
+	 * Calls a function an returns result
+	 *
+	 * @param mixed  $object    object or class name
+	 * @param string $func_call "functionName(param1value,param2value,...)" or "functionName"
+	 */
+	public function callFunc($object_call, $func_call, $object = null)
+	{
+		$params = $object ? array($this, $object) : array();
+		if ($i = strpos($func_call, "(")) {
+			$func_name = substr($func_call, 0, $i);
+			$i ++;
+			$j = strpos($func_call, ")", $i);
+			$params = array_merge(
+				split(",", substr($func_call, $i, $j - $i)),
+				$params
+			);
+			return call_user_func_array(array($object_call, $func_name), $params);
+		} else {
+			return call_user_func_array(array($object_call, $func_call), $params);
+		}
+	}
+
+	//------------------------------------------------------------------------------------ getCssPath
+	/**
+	 * @param string $css
+	 * @return string
+	 */
+	public static function getCssPath($css)
+	{
+		static $css_path = array();
+		$path = isset($css_path[$css]) ? $css_path[$css] : null;
+		if (!$path) {
+			$path = stream_resolve_include_path($css . "/style.css");
+			if ($i = strrpos($path, "/")) {
+				$path = substr($path, 0, $i);
+			}
+			$path = substr($path, strlen($_SERVER["DOCUMENT_ROOT"]));
+			$css_path[$css] = $path;
+		}
+		return $path;
+	}
+
+	//------------------------------------------------------------------------------------ getFeature
+	/**
+	 * @return string
+	 */
+	public function getFeature()
+	{
+		return $this->feature;
+	}
+
+	//------------------------------------------------------------------------------------- getObject
+	/**
+	 * Gets the template top object
+	 *
+	 * @return object
+	 */
+	public function getObject()
+	{
+		return $this->object;
 	}
 
 	//----------------------------------------------------------------------------------------- parse
@@ -73,13 +170,15 @@ class Html_Template
 	{
 		$i = strpos($content, "<!--BEGIN-->");
 		if ($i !== false) {
-			$j = strrpos($content, "<!--END-->");
-			$container = file_get_contents(Html_Configuration::$main_template, true);
-			$content = str_replace(
-				'{content}',
-				substr($content, $i + 12, $j - $i - 12),
-				$container
-			);
+			$i += 12;
+			$j = strrpos($content, "<!--END-->", $i);
+			if ($this->as_widget) {
+				$content = substr($content, $i, $j - $i);
+			}
+			else {
+				$container = file_get_contents(Html_Configuration::$main_template, true);
+				$content = str_replace("{@content}", substr($content, $i, $j - $i), $container);
+			}
 		}
 		return $content;
 	}
@@ -93,18 +192,24 @@ class Html_Template
 	 */
 	private function parseFunc($object, $func_name)
 	{
-		if (isset($this->$func_name)) {
-			return $this->$func_name;
-		}
-		else {
-			$func_name = Names::propertyToMethod($func_name, "get");
-			return Html_Template_Funcs::$func_name($this, $object);
-		}
+		return $this->callFunc(
+			"\\SAF\\Framework\\Html_Template_Funcs",
+			Names::propertyToMethod($func_name, "get"),
+			$object
+		);
+	}
+
+	//---------------------------------------------------------------------------------- parseInclude
+	private function parseInclude($object, $include_uri)
+	{
+		ob_start();
+		Main_Controller::getInstance()->runController($include_uri, array("widget" => true));
+		return ob_get_clean();
 	}
 
 	//-------------------------------------------------------------------------------------- parseVar
 	/**
-	 * Parse a variable / function and returns its return value
+	 * Parse a variable / function / include and returns its return value
 	 *
 	 * @param  object $object
 	 * @param  string $var_name
@@ -113,13 +218,22 @@ class Html_Template
 	private function parseVar($object, $var_name)
 	{
 		foreach (explode(".", $var_name) as $property_name) {
-			if ($property_name[0] === '@') {
+			if ($property_name[0] === "@") {
 				$object = $this->parseFunc($object, substr($property_name, 1));
 			}
-			elseif (strpos($property_name, '()')) {
-				$objet = $object->$property_name();
+			elseif ($property_name[0] === "/") {
+				$object = $this->parseInclude($object, $property_name);
 			}
-			else {
+			elseif ($i = strpos($property_name, "(")) {
+				$object = $this->callFunc($object, $property_name);
+			}
+			elseif (!is_object($object)) {
+				$object = new String($object);
+				$object = $object->$property_name();
+			}
+			elseif (method_exists($object, $property_name)) {
+				$object = $object->$property_name();
+			} else {
 				$object = $object->$property_name;
 			}
 		}
@@ -159,10 +273,10 @@ class Html_Template
 	{
 		$content = $this->parseLoops($content, $object);
 		$i = 0;
-		while (($i = strpos($content, '{', $i)) !== false) {
+		while (($i = strpos($content, "{", $i)) !== false) {
 			$i ++;
 			if ($this->parseThis($content, $i)) {
-				$j = strpos($content, '}', $i);
+				$j = strpos($content, "}", $i);
 				$var_name = substr($content, $i, $j - $i);
 				$value = $this->parseVar($object, $var_name);
 				if (is_array($value)) {
@@ -191,14 +305,14 @@ class Html_Template
 	private function parseLoops($content, $object)
 	{
 		$i = 0;
-		while (($i = strpos($content, '<!--' , $i)) !== false) {
+		while (($i = strpos($content, "<!--" , $i)) !== false) {
 			$i += 4;
-			$j = strpos($content, '-->', $i);
+			$j = strpos($content, "-->", $i);
 			if ($this->parseThis($content, $i)) {
 				$var_name = substr($content, $i, $j - $i);
 				$length = strlen($var_name);
 				$i += $length + 3;
-				$j = strrpos($content, '<!--' . $var_name . '-->', $j);
+				$j = strpos($content, "<!--" . $var_name . "-->", $j);
 				$loop_content = substr($content, $i, $j - $i);
 				$this->removeSample($loop_content);
 				$separator = $this->parseSeparator($loop_content);
@@ -248,7 +362,7 @@ class Html_Template
 
 	//------------------------------------------------------------------------------------- parseThis
 	/**
-	 * Return true if the text at position $i of $content is a variable or function name
+	 * Return true if the text at position $i of $content is a variable, function name, an include
 	 *
 	 * @param  string $content
 	 * @param  integer $i
@@ -257,7 +371,7 @@ class Html_Template
 	private function parseThis($content, $i)
 	{
 		$c = $content[$i];
-		return (($c >= 'a') && ($c <= 'z')) || ($c == '@');		
+		return (($c >= "a") && ($c <= "z")) || ($c == "@") || ($c == "/");		
 	}
 
 	//---------------------------------------------------------------------------------- removeSample
@@ -287,7 +401,7 @@ class Html_Template
 			while (($i = strpos($content, $link, $i)) !== false) {
 				$i += strlen($link);
 				$j = strpos($content, '"', $i);
-				if (substr($content, $i, 1) === '/') {
+				if (substr($content, $i, 1) === "/") {
 					$full_path = substr($_SERVER["PHP_SELF"], 0, strpos($_SERVER["PHP_SELF"], ".php"))
 						. substr($content, $i, $j - $i);
 					$content = substr($content, 0, $i) . $full_path . substr($content, $j);
@@ -312,14 +426,25 @@ class Html_Template
 			while (($i = strpos($content, $link, $i)) !== false) {
 				$i += strlen($link);
 				$j = strpos($content, '"', $i);
-				$full_path = substr(
-					$this->path . "/" . substr($content, $i, $j - $i),
-					strlen($_SERVER["DOCUMENT_ROOT"])
-				);
-				$content = substr($content, 0, $i) . $full_path . substr($content, $j);
+				$file_name = substr($content, $i, $j - $i);
+				$file_name = substr($file_name, strrpos($file_name, "/") + 1);
+				if (substr($file_name, -4) == ".css") {
+					$file_path = Html_Template::getCssPath($this->css) . "/" . $file_name;
+				} elseif ($file_name == "dojo.js") {
+					$file_path = "dojo/dojo/dojo.js";
+				} else {
+					$file_path = substr(stream_resolve_include_path($file_name), strlen($_SERVER["DOCUMENT_ROOT"]));
+				}
+				$content = substr($content, 0, $i) . $file_path . substr($content, $j);
 			}
 		}
 		return $content;
+	}
+
+	//---------------------------------------------------------------------------------------- setCss
+	public function setCss($css)
+	{
+		$this->css = $css;
 	}
 
 }

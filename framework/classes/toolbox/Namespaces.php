@@ -65,7 +65,7 @@ abstract class Namespaces
 	public static function shortClassName($class_name)
 	{
 		$i = strrpos($class_name, "\\");
-		if ($i) {
+		if ($i !== false) {
 			$class_name = substr($class_name, $i + 1);
 		}
 		return $class_name;

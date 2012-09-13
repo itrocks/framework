@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 require_once "framework/classes/Configuration.php";
-require_once "framework/classes/toolbox/string.php";
+require_once "framework/classes/toolbox/String.php";
 
 abstract class Application
 {
@@ -71,7 +71,7 @@ abstract class Application
 	public static function getNamespaces()
 	{
 		if (!Application::$namespaces) {
-			$application_name = Configuration::getCurrent()->getApplicationName();
+			$application_name = Configuration::current()->getApplicationName();
 			$app_dir = strtolower($application_name);
 			Application::$namespaces = array(""); 
 			$application = $application_name;

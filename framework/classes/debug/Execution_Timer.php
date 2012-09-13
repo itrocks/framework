@@ -28,8 +28,11 @@ abstract class Execution_Timer
 	 */
 	public static function end()
 	{
-		echo "<hr />";
-		echo "durée = " . number_format(microtime(true) - Execution_Timer::$start_time, 3, ",", " ");
+		$duration = number_format(microtime(true) - Execution_Timer::$start_time, 3, ",", " ");
+		echo "<script type=\"text/javascript\">"
+			. " document.getElementById(\"main_page\").innerHTML"
+			. " += '<div class=\"debug timer\">$duration</div>';"
+			. " </script>";
 	}
 
 	//-------------------------------------------------------------------------------------- register
