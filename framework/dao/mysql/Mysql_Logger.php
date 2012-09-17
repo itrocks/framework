@@ -51,7 +51,7 @@ class Mysql_Logger
 	public function onQuery($joinpoint)
 	{
 		$arguments = $joinpoint->getArguments();
-		echo "<div class=\"Mysql_Logger_onQuery\">" . $arguments[0] . "</div>\n";
+		echo "<div class=\"Mysql logger query\">" . $arguments[0] . "</div>\n";
 		$this->queries_log[] = $arguments[0];
 	}
 
@@ -66,7 +66,7 @@ class Mysql_Logger
 		if (mysql_errno()) {
 			$arguments = $joinpoint->getArguments();
 			$error = mysql_errno() . ": " . mysql_error() . "[" . $arguments[0] . "]"; 
-			echo "<div class=\"Mysql_Logger_onError\">" . $error . "</div>\n";
+			echo "<div class=\"Mysql logger error\">" . $error . "</div>\n";
 			$this->errors_log[] = $error;
 		}
 	}

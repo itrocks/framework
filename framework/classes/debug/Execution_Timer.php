@@ -31,7 +31,7 @@ abstract class Execution_Timer
 		$duration = number_format(microtime(true) - Execution_Timer::$start_time, 3, ",", " ");
 		echo "<script type=\"text/javascript\">"
 			. " document.getElementById(\"main_page\").innerHTML"
-			. " += '<div class=\"debug timer\">$duration</div>';"
+			. " += '<div class=\"Timer logger duration\">$duration</div>';"
 			. " </script>";
 	}
 
