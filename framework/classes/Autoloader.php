@@ -76,6 +76,17 @@ abstract class Autoloader
 		return Autoloader::$origin_include_path;
 	}
 
+	//------------------------------------------------------------------------------ includeSeparator
+	/**
+	 * The include separator is ":" under unix/linux and ";" under windows systems
+	 *
+	 * @return string
+	 */
+	private static function includeSeparator()
+	{
+		return (PHP_OS === "WINNT") ? ";" : ":";
+	}
+
 	//------------------------------------------------------------------------------------------ init
 	/**
 	 * Initializes the full include path for all application directories (if not already done)
@@ -93,8 +104,11 @@ abstract class Autoloader
 			if (!isset($application_name)) {
 				$application_name = "Framework";
 			}
-			$include_path = join(":", Application::getSourceDirectories($application_name));
-			$_SESSION["php_ini"]["include_path"] = Autoloader::getOriginIncludePath() . ":" . $include_path;
+			$include_path = join(
+				Autoloader::includeSeparator(), Application::getSourceDirectories($application_name)
+			);
+			$_SESSION["php_ini"]["include_path"] = Autoloader::getOriginIncludePath()
+				. Autoloader::includeSeparator() . $include_path;
 		}
 		set_include_path($_SESSION["php_ini"]["include_path"]);
 		Autoloader::$initialized = true;

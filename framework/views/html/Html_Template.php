@@ -113,11 +113,11 @@ class Html_Template
 		static $css_path = array();
 		$path = isset($css_path[$css]) ? $css_path[$css] : null;
 		if (!$path) {
-			$path = stream_resolve_include_path($css . "/style.css");
+			$path = str_replace("\\", "/", stream_resolve_include_path($css . "/style.css"));
 			if ($i = strrpos($path, "/")) {
 				$path = substr($path, 0, $i);
 			}
-			$path = substr($path, strlen($_SERVER["DOCUMENT_ROOT"]));
+			$path = $_SERVER["SAF_ROOT"] . substr($path, strlen(Application::getSafRootPath()));
 			$css_path[$css] = $path;
 		}
 		return $path;
@@ -431,9 +431,11 @@ class Html_Template
 				if (substr($file_name, -4) == ".css") {
 					$file_path = Html_Template::getCssPath($this->css) . "/" . $file_name;
 				} elseif ($file_name == "dojo.js") {
-					$file_path = "dojo/dojo/dojo.js";
+					$file_path = $_SERVER["SAF_ROOT"] . "dojo/dojo/dojo.js";
 				} else {
-					$file_path = substr(stream_resolve_include_path($file_name), strlen($_SERVER["DOCUMENT_ROOT"]));
+					$file_path = $_SERVER["SAF_ROOT"] . substr(
+						stream_resolve_include_path($file_name), strlen(Application::getSafRootPath())
+					);
 				}
 				$content = substr($content, 0, $i) . $file_path . substr($content, $j);
 			}
