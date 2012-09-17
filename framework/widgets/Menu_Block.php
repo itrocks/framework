@@ -1,19 +1,19 @@
 <?php
 namespace SAF\Framework;
 
-class Menu
+class Menu_Block
 {
 
-	//--------------------------------------------------------------------------------------- $blocks
+	//---------------------------------------------------------------------------------------- $items
 	/**
-	 * @var multitype:Menu_Block
+	 * @var multitype:Menu_Item
 	 */
-	public $blocks;
+	public $items;
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
 	 * @var string
 	 */
-	public $title = "Menu";
+	public $title;
 
 }
