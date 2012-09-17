@@ -20,6 +20,11 @@ class Default_Controller implements Controller
 	public function run($parameters, $form, $files, $class_name, $feature_name)
 	{
 		$parameters = $parameters->getObjects();
+		$object = reset($parameters);
+		if (!$object || !is_object($object) || (get_class($object) !== $class_name)) {
+			$object = new $class_name();
+			$parameters = array_merge(array($class_name => $object), $parameters);
+		}
 		View::run($parameters, $form, $files, $class_name, $feature_name);
 	}
 
