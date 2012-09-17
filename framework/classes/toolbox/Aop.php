@@ -17,6 +17,7 @@ abstract class Aop
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
+/*
 	public static function getterCall($joinpoint)
 	{
 		$object   = $joinpoint->getObject();
@@ -36,7 +37,7 @@ abstract class Aop
 			$joinpoint->process();
 		}
 	}
-
+*/
 	//--------------------------------------------------------------------------------- registerAfter
 	/**
 	 * Register a call_back advice, called after the execution of a function or before
@@ -89,6 +90,7 @@ abstract class Aop
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
+/*
 	public static function setterCall($joinpoint)
 	{
 		$object   = $joinpoint->getObject();
@@ -108,5 +110,6 @@ abstract class Aop
 			$joinpoint->process();
 		}
 	}
+*/
 
 }
