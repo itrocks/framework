@@ -16,6 +16,9 @@ require_once "framework/dao/mysql/Mysql_Logger.php";
 
 //Aop::registerBefore(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
 
+// tests
+require_once "framework/tests/test_objects/Menu_Tester.php";
+
 Error_Handlers::getInstance()->addHandler(
 	E_ALL & !E_NOTICE,
 	new Main_Error_Handler()

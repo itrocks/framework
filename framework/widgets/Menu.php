@@ -14,6 +14,6 @@ class Menu
 	/**
 	 * @var string
 	 */
-	public $title = "Menu";
+	public $title;
 
 }
