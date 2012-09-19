@@ -4,6 +4,7 @@ namespace SAF\Framework;
 class Html_Template
 {
 
+	//------------------------------------------------------------------------------------ $as_widget
 	/**
 	 * Display template as a widget
 	 *
@@ -34,6 +35,16 @@ class Html_Template
 	 * @var string
 	 */
 	private $feature;
+
+	//---------------------------------------------------------------------------------- $is_included
+	/**
+	 * Template is included into another one
+	 *
+	 * If true, links and URIs will not be parsed, as this will be done by the container 
+	 *
+	 * @var boolean
+	 */
+	private $is_included;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -143,6 +154,23 @@ class Html_Template
 		return $this->object;
 	}
 
+	//------------------------------------------------------------------------------------ isIncluded
+	/**
+	 * Template is treated as as included template
+	 *
+	 * This means that links and URIs will not be parsed, as this will be done by the container.
+	 * If template is included, it will automatically considered as a widget too.
+	 *
+	 * @param boolean $template_is_included
+	 */
+	public function isIncluded($template_is_included = true)
+	{
+		if ($template_is_included) {
+			$this->asWidget();
+		}
+		$this->is_included = $template_is_included;
+	}
+
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * Parse the template replacing templating codes by object's properties and functions results
@@ -154,8 +182,10 @@ class Html_Template
 		$content = $this->content;
 		$content = $this->parseContainer($content);
 		$content = $this->parseVars($content, $this->object);
-		$content = $this->replaceLinks($content);
-		$content = $this->replaceUris($content);
+		if (!$this->is_included) {
+			$content = $this->replaceLinks($content);
+			$content = $this->replaceUris($content);
+		}
 		return $content;
 	}
 
@@ -203,7 +233,7 @@ class Html_Template
 	private function parseInclude($object, $include_uri)
 	{
 		ob_start();
-		Main_Controller::getInstance()->runController($include_uri, array("widget" => true));
+		Main_Controller::getInstance()->runController($include_uri, array("is_included" => true));
 		return ob_get_clean();
 	}
 
@@ -238,12 +268,7 @@ class Html_Template
 			}
 		}
 		if (is_object($object)) {
-			if (method_exists($object, "__toString")) {
-				return strval($object);
-			}
-			else {
-				return "";
-			}
+			return method_exists($object, "__toString") ? strval($object) : "";
 		}
 		else {
 			return $object;
