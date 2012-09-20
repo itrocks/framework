@@ -14,10 +14,11 @@ namespace SAF\Framework;
  */
 function arrayMergeRecursive($array1, $array2)
 {
-	foreach ($array2 as $index => $value) {
-		$array1[$index] = is_array($value)
-			? arrayMergeRecursive($array1[$index], $value)
-			: $value;
+	foreach ($array2 as $index => $value2) {
+		$value1 = isset($array1[$index]) ? $array1[$index] : null;
+		$array1[$index] = is_array($value2)
+			? arrayMergeRecursive(is_array($value1) ? $value1 : array(), $value2)
+			: $value2;
 	}
 	return $array1;
 }
