@@ -18,6 +18,7 @@ class Mysql_Link extends Sql_Link
 	 */
 	public function __construct($parameters)
 	{
+		parent::__construct($parameters);
 		$this->connection = mysql_connect(
 			$parameters["host"], $parameters["user"], $parameters["password"]
 		);

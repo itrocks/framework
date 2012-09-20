@@ -15,6 +15,14 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 */
 	protected $connection;
 
+	//--------------------------------------------------------------------------------------- $tables
+	/**
+	 * Links each class name to it's storage table name 
+	 *
+	 * @var multitype:string indice is the class name, with or without namespace
+	 */
+	private $tables;
+
 	//-------------------------------------------------------------------------------- $transactional
 	/**
 	 * Is the SQL database engine transactional ?
@@ -22,6 +30,12 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 * @var boolean
 	 */
 	protected $transactional = false;
+
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct($parameters)
+	{
+		$this->tables = $parameters["tables"];
+	}
 
 	//----------------------------------------------------------------------------------------- begin
 	public function begin() {}
@@ -184,6 +198,20 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 			$class->accessPropertiesDone();
 		}
 		return $list;
+	}
+
+	//----------------------------------------------------------------------------------- storeNameOf
+	public function storeNameOf($class_name)
+	{
+		if (isset($this->tables[$class_name])) {
+			return $this->tables[$class_name];
+		}
+		elseif (isset($this->tables[Namespaces::shortClassName($class_name)])) {
+			return $this->tables[Namespaces::shortClassName($class_name)];
+		}
+		else {
+			return parent::storeNameOf($class_name);
+		}
 	}
 
 }

@@ -111,7 +111,28 @@ abstract class Data_Link
 	 *   Each record values (may be objects) are stored in the same order than columns.
 	 */
 	abstract public function select($class, $columns, $filter_object = null);
-	
+
+	//----------------------------------------------------------------------------------- storeNameOf
+	/**
+	 * Gets the store name for records typed as $class_name
+	 *
+	 * @param string $class_name
+	 * @return string
+	 */
+	public function storeNameOf($class_name)
+	{
+		$dataset = Reflection_Class::getInstanceOf($class_name)->getDataSet();
+		if ($dataset) {
+			return strtolower($dataset);
+		}
+		else {
+			$class_name = Namespaces::shortClassName($class_name);
+			return (substr($class_name, -1) === "y")
+			? (strtolower(substr($class_name, 0, -1)) . "ies")
+			: (strtolower($class_name) . "s");
+		}
+	}
+
 	//----------------------------------------------------------------------------------------- write
 	/**
 	 * Write an object into data source
