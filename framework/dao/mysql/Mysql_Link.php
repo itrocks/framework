@@ -115,7 +115,7 @@ class Mysql_Link extends Sql_Link
 			$class = Reflection_Class::getInstanceOf($class);
 		}
 		$result_set = mysql_query(
-			"SHOW COLUMNS FROM `" . Sql_Table::classToTableName($class->name) . "`",
+			"SHOW COLUMNS FROM `" . $this->storeNameOf($class->name) . "`",
 			$this->connection
 		);
 		while ($column = mysql_fetch_object($result_set, __NAMESPACE__ . "\\Mysql_Column")) {
@@ -147,7 +147,7 @@ class Mysql_Link extends Sql_Link
 	{
 		if (!$id) return null;
 		$result_set = mysql_query(
-			"SELECT * FROM `" . Sql_Table::classToTableName($class) . "` WHERE id = " . $id,
+			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $id,
 			$this->connection
 		);
 		$object = mysql_fetch_object($result_set, $class);
@@ -161,7 +161,7 @@ class Mysql_Link extends Sql_Link
 	{
 		$read_result = array();
 		$result_set = mysql_query(
-			"SELECT * FROM `" . Sql_Table::classToTableName(objectClass) . "`",
+			"SELECT * FROM `" . $this->storeNameOf(objectClass) . "`",
 			$this->connection
 		);
 		while ($object = mysql_fetch_object($result_set, $class)) {

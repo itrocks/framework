@@ -97,7 +97,7 @@ class Sql_Joins
 			$join->type = Sql_Join::OBJECT;
 		}
 		$join->master_alias  = $master_path ? $this->getAlias($master_path) : "t0";
-		$join->foreign_table = Sql_Table::classToTableName($foreign_class_name);
+		$join->foreign_table = Dao::current()->storeNameOf($foreign_class_name);
 		$join->foreign_alias = "t" . $this->alias_counter ++;
 		$this->classes[$foreign_path] = $foreign_class_name;
 		$foreign_class = Reflection_Class::getInstanceOf($foreign_class_name);

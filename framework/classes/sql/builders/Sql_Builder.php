@@ -32,7 +32,7 @@ abstract class Sql_Builder
 	 */
 	public static function buildDelete($class, $id)
 	{
-		return "DELETE FROM `" . Sql_Table::classToTableName($class) . "`"
+		return "DELETE FROM `" . Dao::current()->storeNameOf($class) . "`"
 			. " WHERE id = " . $id;
 	}
 
@@ -72,7 +72,7 @@ abstract class Sql_Builder
 			return null;
 		}
 		else {
-			return "INSERT INTO `" . Sql_Table::classToTableName($class) . "`"
+			return "INSERT INTO `" . Dao::current()->storeNameOf($class) . "`"
 				. " (" . $build_columns . ") VALUES ("
 				. Sql_Builder::buildValues($write) . ")";
 		}
@@ -108,7 +108,7 @@ abstract class Sql_Builder
 	 */
 	public static function buildUpdate($class, $write, $id)
 	{
-		$sql_update = "UPDATE `" . Sql_Table::classToTableName($class) . "` SET ";
+		$sql_update = "UPDATE `" . Dao::current()->storeNameOf($class) . "` SET ";
 		$do = false;
 		foreach ($write as $key => $value) {
 			$value = Sql_Value::escape($value);

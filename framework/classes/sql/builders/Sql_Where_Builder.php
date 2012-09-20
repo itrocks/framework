@@ -108,7 +108,7 @@ trait Sql_Where_Builder
 	 */
 	protected function buildTables()
 	{
-		$tables = "`" . Sql_Table::classToTableName($this->class) . "` t0";
+		$tables = "`" . Dao::current()->storeNameOf($this->class) . "` t0";
 		foreach ($this->joins->getJoins() as $join) if ($join) {
 			$tables .= " $join->mode JOIN `$join->foreign_table` $join->foreign_alias"
 			. " ON $join->foreign_alias.$join->foreign_column = $join->master_alias.$join->master_column";
