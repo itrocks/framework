@@ -96,9 +96,9 @@ class Sql_Joins
 		if (!$depth) {
 			$join->type = Sql_Join::OBJECT;
 		}
-		$join->master_alias  = $master_path ? $this->getAlias($master_path) : "t0";
-		$join->foreign_table = Dao::current()->storeNameOf($foreign_class_name);
 		$join->foreign_alias = "t" . $this->alias_counter ++;
+		$join->foreign_table = Dao::current()->storeNameOf($foreign_class_name);
+		$join->master_alias  = $master_path ? $this->getAlias($master_path) : "t0";
 		$this->classes[$foreign_path] = $foreign_class_name;
 		$foreign_class = Reflection_Class::getInstanceOf($foreign_class_name);
 		$this->properties[$foreign_class_name] = $foreign_class->getAllProperties();
@@ -128,8 +128,8 @@ class Sql_Joins
 			list($join->foreign_column, $join->master_column) = explode("=", $property);
 			$join->foreign_column = "id_" . $join->foreign_column;
 		} else {
-			$join->master_column = "id";
 			$join->foreign_column = "id_" . $property;
+			$join->master_column = "id";
 		}
 		$join->mode = Sql_Join::LEFT;
 		return $foreign_class_name;
@@ -146,8 +146,24 @@ class Sql_Joins
 				$join->mode = $master_property->isMandatory() ? Sql_Join::INNER : Sql_Join::LEFT;
 				if (substr($foreign_class_name, 0, 10) === "multitype:") {
 					$foreign_class_name = substr($foreign_class_name, 10);
-					$join->master_column  = "id";
-					$join->foreign_column = "id_" . $master_property->getForeignName();
+					$foreign_property_name = $master_property->getForeignName();
+					if (property_exists(
+						Namespaces::fullClassName($foreign_class_name), $foreign_property_name
+					)) {
+						$join->foreign_column = "id_" . $master_property->getForeignName();
+						$join->master_column  = "id";
+					} else {
+						$join->foreign_column = "id";
+						$join->master_column = "id_" . Names::classToProperty($foreign_class_name);
+						$linked_join = new Sql_Join();
+						$linked_join->foreign_alias = "t" . $this->alias_counter ++;
+						$linked_join->foreign_column = "id_" . $master_property->getForeignName();
+						$linked_join->foreign_table = $master_property->getDeclaringclass()->getDataset() . "_" . Reflection_Class::getInstanceOf($foreign_class_name)->getDataset() . "_links";
+						$linked_join->master_alias = $master_path ? $this->getAlias($master_path) : "t0";
+						$linked_join->master_column = "id";
+						$linked_join->mode = $join->mode;
+						$this->joins[$master_path . "@link"] = $linked_join;
+					}
 				}
 				else {
 					$join->master_column  = "id_" . $master_property_name;

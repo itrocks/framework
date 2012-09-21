@@ -90,6 +90,28 @@ class Sql_Joins_Test extends Unit_Test
 		);
 	}
 
+	//---------------------------------------------------------------------------------- testLinkJoin
+	public function testLinkJoin()
+	{
+		$this->assume(
+			__METHOD__,
+			Sql_Joins::newInstance("Test_Order")
+				->addMultiple(array("date", "number", "salesmen.name"))
+				->getJoins(),
+			array(
+				"date" => null,
+				"number" => null,
+				"salesmen@link" => Sql_Join::newInstance(
+					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen_links", "id_order"
+				),
+				"salesmen" => Sql_Join::newInstance(
+					Sql_Join::LEFT, "t1", "id_salesman", "t2", "salesmen", "id"
+				),
+				"salesmen.name" => null
+			)
+		);
+	}
+
 	//------------------------------------------------------------------------------------ testObject
 	public function testObject()
 	{

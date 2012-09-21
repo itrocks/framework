@@ -20,11 +20,20 @@ class Test_Order extends Test_Document
 	/**
 	 * Lines
 	 *
-	 * @contained
 	 * @mandatory
 	 * @var multitype:Test_Order_Line
 	 * @foreign order
 	 */
 	private $lines;
+
+	//------------------------------------------------------------------------------------- $salesmen
+	/**
+	 * Links to salesmen
+	 *
+	 * @var multitype:Test_Salesman
+	 * @foreign order
+	 * @link salesman
+	 */
+	private $salesmen;
 
 }

@@ -16,10 +16,11 @@ class Reflection_Test extends Unit_Test
 			__METHOD__ . ".1",
 			$properties = $class->accessProperties(),
 			array(
-				"date"   => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "date"),
-				"number" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "number"),
-				"client" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "client"),
-				"lines"  => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "lines")
+				"date"     => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "date"),
+				"number"   => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "number"),
+				"client"   => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "client"),
+				"lines"    => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "lines"),
+				"salesmen" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "salesmen")
 			)
 		);
 		if ($test1) {
@@ -61,7 +62,7 @@ class Reflection_Test extends Unit_Test
 		$this->assume(
 			__METHOD__,
 			$check,
-			array("date" => null, "number" => null, "client" => null, "lines" => null)
+			array("date" => null, "number" => null, "client" => null, "lines" => null, "salesmen" => null)
 		);
 	}
 
@@ -72,10 +73,11 @@ class Reflection_Test extends Unit_Test
 			__METHOD__,
 			Reflection_Class::getInstanceOf(__NAMESPACE__ . "\\Test_Order")->getAllProperties(),
 			array(
-				"date"   => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "date"),
-				"number" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "number"),
-				"client" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "client"),
-				"lines"  => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "lines")
+				"date"     => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "date"),
+				"number"   => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Document", "number"),
+				"client"   => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "client"),
+				"lines"    => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "lines"),
+				"salesmen" => Reflection_Property::getInstanceOf(__NAMESPACE__ . "\\Test_Order",    "salesmen")
 			)
 		);
 	}
