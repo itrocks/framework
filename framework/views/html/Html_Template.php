@@ -128,7 +128,7 @@ class Html_Template
 			if ($i = strrpos($path, "/")) {
 				$path = substr($path, 0, $i);
 			}
-			$path = $_SERVER["SAF_ROOT"] . substr($path, strlen(Application::getSafRootPath()));
+			$path = $_SERVER["SAF_ROOT"] . substr($path, strlen($_SERVER["SAF_PATH"]));
 			$css_path[$css] = $path;
 		}
 		return $path;
@@ -466,7 +466,7 @@ class Html_Template
 					$file_path = $_SERVER["SAF_ROOT"] . "dojo/dojo/dojo.js";
 				} else {
 					$file_path = $_SERVER["SAF_ROOT"] . substr(
-						stream_resolve_include_path($file_name), strlen(Application::getSafRootPath())
+						stream_resolve_include_path($file_name), strlen($_SERVER["SAF_PATH"])
 					);
 				}
 				$content = substr($content, 0, $i) . $file_path . substr($content, $j);

@@ -34,22 +34,6 @@ abstract class Application
 		return $directories;
 	}
 
-	//-------------------------------------------------------------------------------- getSafRootPath
-	/**
-	 * @return string | null
-	 */
-	public static function getSafRootPath()
-	{
-		static $path = null;
-		if (!isset($path)) {
-			$path = str_replace("\\", "/", __FILE__);
-			$i = strrpos($path, "/");
-			$i = strrpos(substr($path, 0, $i), "/");
-			$path = substr($path, 0, $i + 1);
-		}
-		return $path;
-	}
-
 	//-------------------------------------------------------------------------- getSourceDirectories
 	/**
 	 * Returns the full directory list for the application, including parent's applications directory.
