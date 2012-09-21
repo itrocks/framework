@@ -1,7 +1,10 @@
 <?php
 namespace SAF\Framework;
 
-class User_Acl_Group
+/**
+ * @set Acl_Groups_Users
+ */
+class Acl_Group_User
 {
 
 	//---------------------------------------------------------------------------------------- $group
