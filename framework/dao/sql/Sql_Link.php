@@ -34,7 +34,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct($parameters)
 	{
-		$this->tables = $parameters["tables"];
+		$this->tables = isset($parameters["tables"]) ? $parameters["tables"] : array();
 	}
 
 	//----------------------------------------------------------------------------------------- begin
