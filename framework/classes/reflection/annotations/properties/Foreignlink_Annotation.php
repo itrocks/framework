@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Foreignlink_Annotation extends Annotation implements Reflection_Object_Annotation
+class Foreignlink_Annotation extends Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct

@@ -16,6 +16,6 @@ interface Class_Controller extends Controller
 	 * @param array  $files
 	 * @param string $class_name
 	 */
-	public function run($parameters, $form, $files, $class_name);
+	public function run(Controller_Parameters $parameters, $form, $files, $class_name);
 
 }

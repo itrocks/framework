@@ -13,11 +13,15 @@ class Displayable extends String
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @var string
-	 * @values "class", "method", "property", "string"
+	 * @values class, method, property, string
 	 */
 	private $type;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param string $value
+	 * @param string $type the type of the displayable object : class, method, property or string 
+	 */
 	public function __construct($value, $type)
 	{
 		parent::__construct($value);
@@ -25,6 +29,9 @@ class Displayable extends String
 	}
 
 	//--------------------------------------------------------------------------------------- display
+	/**
+	 * @return string
+	 */
 	public function display()
 	{
 		switch ($this->type) {
@@ -36,30 +43,45 @@ class Displayable extends String
 	}
 
 	//----------------------------------------------------------------------------------------- lower
+	/**
+	 * @return string
+	 */
 	public function lower()
 	{
 		return strtolower($this->display());
 	}
 
 	//--------------------------------------------------------------------------------------- ucfirst
+	/**
+	 * @return string
+	 */
 	public function ucfirst()
 	{
 		return ucfirst($this->display());
 	}
 
 	//--------------------------------------------------------------------------------------- ucwords
+	/**
+	 * @return string
+	 */
 	public function ucwords()
 	{
 		return ucwords($this->display());
 	}
 
 	//----------------------------------------------------------------------------------------- under
+	/**
+	 * @return string
+	 */
 	public function under()
 	{
 		return str_replace(" ", "_", $this->display());
 	}
 
 	//----------------------------------------------------------------------------------------- upper
+	/**
+	 * @return string
+	 */
 	public function upper()
 	{
 		return strtoupper($this->display());

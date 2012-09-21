@@ -10,7 +10,7 @@ class Main_Error_Handler implements Error_Handler
 	 *
 	 * @param Handled_Error $error
 	 */
-	public function handle($error)
+	public function handle(Handled_Error $error)
 	{
 		echo "<div class=\"Main_Error_Handler_handle\">"
 			. $error->getErrorNumber() . " " . $error->getErrorMessage()

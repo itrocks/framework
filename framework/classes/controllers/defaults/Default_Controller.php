@@ -17,7 +17,7 @@ class Default_Controller implements Controller
 	 * @param string $class_name
 	 * @param string $feature_name
 	 */
-	public function run($parameters, $form, $files, $class_name, $feature_name)
+	public function run(Controller_Parameters $parameters, $form, $files, $class_name, $feature_name)
 	{
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);

@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use AopJoinPoint;
 
 class Mysql_Logger
 {
@@ -61,7 +62,7 @@ class Mysql_Logger
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public function onError($joinpoint)
+	public function onError(AopJoinPoint $joinpoint)
 	{
 		if (mysql_errno()) {
 			$arguments = $joinpoint->getArguments();

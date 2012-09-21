@@ -106,7 +106,7 @@ class Controller_Uri
 	 * Change a text URI into an array URI 
 	 *
 	 * @example "/Order/148/form" will become array("Order", "148", "form")
-	 * @param  string $uri
+	 * @param string $uri
 	 * @return multitype:string
 	 */
 	private function uriToArray($uri)

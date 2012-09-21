@@ -2,7 +2,7 @@
 namespace SAF\Framework\Tests;
 
 /**
- * @dataset salesmen
+ * @dataset Salesmen
  */
 class Test_Salesman
 {

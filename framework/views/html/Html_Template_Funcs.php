@@ -12,7 +12,7 @@ abstract class Html_Template_Funcs
 	 * @param object $object
 	 * @return string
 	 */
-	public static function getApplication($template, $object)
+	public static function getApplication(Html_Template $template, $object)
 	{
 		return new Displayable(
 			Configuration::current()->getApplicationName(), Displayable::TYPE_CLASS
@@ -27,7 +27,7 @@ abstract class Html_Template_Funcs
 	 * @param object $object
 	 * @return string
 	 */
-	public static function getClass($template, $object)
+	public static function getClass(Html_Template $template, $object)
 	{
 		return is_object($object)
 			? new Displayable(Namespaces::shortClassName(get_class($object)), Displayable::TYPE_CLASS)
@@ -54,7 +54,7 @@ abstract class Html_Template_Funcs
 	 * @param object $object
 	 * @return multitype:Reflection_Property
 	 */
-	public static function getProperties($template, $object)
+	public static function getProperties(Html_Template $template, $object)
 	{
 		$class = Reflection_Class::getInstanceOf($object);
 		$properties = $class->accessProperties();
@@ -75,7 +75,7 @@ abstract class Html_Template_Funcs
 	 * @param object $object
 	 * @return object
 	 */
-	public static function getTop($template, $object)
+	public static function getTop(Html_Template $template, $object)
 	{
 		return $template->getObject();
 	}

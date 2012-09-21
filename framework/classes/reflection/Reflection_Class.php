@@ -31,7 +31,6 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * Accessibility should be set back with a call to done() after use.
 	 * If class properties are set to accessible several times, they will become non-accessible after the same number of done() calls.
 	 *
-	 * @param Reflection_Class $object_class
 	 * @return multitype:Reflection_Property
 	 */
 	public function accessProperties()
@@ -126,11 +125,12 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * Only a method of current class can be retrieved, not one from parent classes or traits.
 	 *
+	 * @param string
 	 * @return Reflection_Method
 	 */
-	public function getMethod($name)
+	public function getMethod($method_name)
 	{
-		$method = parent::getMethod($name);
+		$method = parent::getMethod($method_name);
 		return $method ? Reflection_Method::getInstanceOf($method) : $method;
 	}
 
@@ -138,9 +138,11 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Gets an array of methods for the class
 	 *
-	 * Only methods of current class are retrieved, not those from parents or traits.
+	 * Only methods visible for current class are retrieved, not the privates ones from parents or traits.
 	 *
-	 * @return multitype:Reflection_Method
+	 * @param string $filter any combination of Reflection_Method::IS_* constants
+	 * @param boolean $by_name if true, only the last override of each method name will be kept
+	 * @return multitype:Reflection_Method indice is the method name if $by_name is true, else this will be an integer
 	 */
 	public function getMethods($filter = Reflection_Method::ALL, $by_name = true)
 	{
@@ -168,9 +170,11 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Gets an array of properties for the class
 	 *
-	 * Properties for current class, parents and traits are retrieved.
+	 * Properties visible for current class, not the privates ones from parents and traits are retrieved.
 	 *
-	 * @return multitype:Reflection_Property
+	 * @param string $filter any combination of Reflection_Property::IS_* constants
+	 * @param boolean $by_name if true, only the last override of each property will be kept
+	 * @return multitype:Reflection_Property indice is the property name if $by_name is true, else this will be an integer
 	 */
 	public function getProperties($filter = Reflection_Property::ALL, $by_name = true)
 	{
@@ -186,8 +190,9 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Retrieves reflected properties
 	 *
-	 * Only a property of current class can be retrieved, not one from parent classes or traits.
+	 * Only a property visible for current class can be retrieved, not the privates ones from parent classes or traits.
 	 *
+	 * @param string
 	 * @return Reflection_Property
 	 */
 	public function getProperty($name)

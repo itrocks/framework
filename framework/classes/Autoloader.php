@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use AopJoinPoint;
 
 // needed
 require_once "framework/Application.php";
@@ -39,8 +40,8 @@ abstract class Autoloader
 	 *
 	 * Will return the short class name, or null if the class file was not found.
 	 *
-	 * @todo   restrict to the class namespace's corresponding application, in order to enable inclusion of classes that have the same name in several namespaces / applications.
-	 * @param  string $class class name (with or without namespace)
+	 * @todo restrict to the class namespace's corresponding application, in order to enable inclusion of classes that have the same name in several namespaces / applications.
+	 * @param string $class class name (with or without namespace)
 	 * @return string | null found class name (without namespace)
 	 */
 	public static function autoLoad($class_name)
@@ -146,7 +147,7 @@ abstract class Autoloader
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public static function resetOnCurrentConfigurationChange($joinpoint)
+	public static function resetOnCurrentConfigurationChange(AopJoinPoint $joinpoint)
 	{
 		if (count($joinpoint->getArguments())) {
 			Autoloader::reset();

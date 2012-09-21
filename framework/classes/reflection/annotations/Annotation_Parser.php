@@ -11,13 +11,13 @@ abstract class Annotation_Parser
 	/**
 	 * Parse a given annotation from a reflection class / method / property / etc. doc comment
 	 * 
-	 * @param  Has_Doc_Comment $reflection_object
-	 * @param  string $annotation_name
+	 * @param Has_Doc_Comment $reflection_object
+	 * @param string $annotation_name
 	 * @return Annotation
 	 */
 	public static function byName(Has_Doc_Comment $reflection_object, $annotation_name)
 	{
-		$annotation_class = Annotation_Parser::getAnnotationClass($annotation_name);
+		$annotation_class = Annotation_Parser::getAnnotationClassName($annotation_name);
 		$multiple = is_subclass_of($annotation_class, "\\SAF\\Framework\\Multiple_Annotation");
 		$doc_comment = $reflection_object->getDocComment();
 		$annotations = array();
@@ -54,14 +54,14 @@ abstract class Annotation_Parser
 		return $annotation;
 	}
 
-	//---------------------------------------------------------------------------- getAnnotationClass
+	//------------------------------------------------------------------------ getAnnotationClassName
 	/**
 	 * Gets annotation class name (including namespace) for a given annotation name
 	 *
 	 * @param string $annotation_name
 	 * @return string
 	 */
-	public static function getAnnotationClass($annotation_name)
+	public static function getAnnotationClassName($annotation_name)
 	{
 		static $annotations_classes = array();
 		if (isset($annotations_classes[$annotation_name])) {

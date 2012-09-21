@@ -6,7 +6,7 @@ interface IView
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param multitype:object $parameters
+	 * @param array $parameters
 	 * @param array $form
 	 * @param array $files
 	 * @param string $class_name

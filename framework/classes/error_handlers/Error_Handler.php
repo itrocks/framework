@@ -8,6 +8,6 @@ interface Error_Handler
 	/**
 	 * @param Handled_Error $handled_error
 	 */
-	public function handle($error);
+	public function handle(Handled_Error $error);
 
 }

@@ -116,8 +116,8 @@ class Sql_Joins
 	) {
 		$linked_join = new Sql_Join();
 		$linked_join->foreign_column = "id_" . $foreign_property_name;
-		$linked_join->foreign_table = $master_property->getDeclaringclass()->getAnnotation("dataset")
-			. "_" . Reflection_Class::getInstanceOf($foreign_class_name)->getAnnotation("dataset")
+		$linked_join->foreign_table = Dao::storeNameOf($master_property->class)
+			. "_" . Dao::storeNameOf($foreign_class_name)
 			. "_links";
 		$linked_join->master_column = "id";
 		$linked_join->mode = $join->mode;
@@ -233,7 +233,7 @@ class Sql_Joins
 	/**
 	 * Gets the list of Reflection_Property objects for a given property path
 	 *
-	 * @param  string $master_path
+	 * @param string $master_path
 	 * @return multitype:Reflection_Property
 	 */
 	public function getProperties($master_path)
@@ -246,8 +246,8 @@ class Sql_Joins
 	/**
 	 * Gets a Reflection_Property object for a given property path
 	 *
-	 * @param  string $master_path
-	 * @param  string $property_name
+	 * @param string $master_path
+	 * @param string $property_name
 	 * @return Reflection_Property
 	 */
 	private function getProperty($master_path, $property_name)

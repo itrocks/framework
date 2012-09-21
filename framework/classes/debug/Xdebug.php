@@ -21,7 +21,7 @@ abstract class Xdebug
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public static function removeXdebugParams($joinpoint)
+	public static function removeXdebugParams(AopJoinPoint $joinpoint)
 	{
 		$arguments = $joinpoint->getArguments();
 		if (isset($arguments[0]["XDEBUG_SESSION_START"]) && is_numeric($arguments[0]["KEY"])) {

@@ -26,7 +26,7 @@ class Controller_Parameters
 	 * Object is of class $parameter name, and is read from current data link using the parameter
 	 * value as identifier.
 	 *
-	 * @param  string $parameter_name
+	 * @param string $parameter_name
 	 * @return object
 	 */
 	public function getObject($parameter_name)
@@ -73,7 +73,7 @@ class Controller_Parameters
 	/**
 	 * Get URI parameter raw value, as it was on original URI
 	 *
-	 * @param  string  $parameter_name
+	 * @param string  $parameter_name
 	 * @return integer
 	 */
 	public function getRaw($parameter_name)

@@ -19,13 +19,14 @@ class Error_Handlers
 	 *
 	 * You should call setAsErrorHandler() after add of error handlers, as error numbers may not have been registered
 	 *
-	 * @param  integer       $err_no
-	 * @param  Error_Handler $error_handler
-	 * @param  integer       $priority
+	 * @param integer       $err_no
+	 * @param Error_Handler $error_handler
+	 * @param integer       $priority
 	 * @return Error_Handlers
 	 */
-	public function addHandler($err_no, $error_handler, $priority = Error_Handler_Priority::NORMAL)
-	{
+	public function addHandler(
+		$err_no, Error_Handler $error_handler, $priority = Error_Handler_Priority::NORMAL
+	) {
 		$this->error_handlers[$err_no][$priority][] = $error_handler;
 		ksort($this->error_handlers[$err_no]);
 		return $this;

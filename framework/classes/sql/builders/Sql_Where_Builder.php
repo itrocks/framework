@@ -161,8 +161,9 @@ trait Sql_Where_Builder
 	 * @param array    $where_array where array expression, indices are columns names
 	 * @param Sql_Link $sql_link
 	 */
-	protected function constructSqlWhereBuilder($class, $where_array = null, $sql_link = null)
-	{
+	protected function constructSqlWhereBuilder(
+		$class, $where_array = null, Sql_Link $sql_link = null
+	) {
 		$this->joins       = new Sql_Joins($class);
 		$this->class       = $class;
 		$this->sql_link    = $sql_link ? $sql_link : Dao::current();

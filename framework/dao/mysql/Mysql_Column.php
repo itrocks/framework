@@ -60,7 +60,7 @@ class Mysql_Column implements Dao_Column
 	 * A list of options, the most common is "auto_increment" for primary auto-increment indexes.
 	 *
 	 * @var string
-	 * @values auto_increment,
+	 * @values auto_increment
 	 */
 	private $Extra;
 

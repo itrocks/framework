@@ -24,6 +24,6 @@ Error_Handlers::getInstance()->addHandler(
 	new Main_Error_Handler()
 )->setAsErrorHandler();
 
-$_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/"; 
+$_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
 
 Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);

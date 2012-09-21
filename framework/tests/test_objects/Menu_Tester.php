@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework\Tests;
-
+use AopJoinPoint;
 use SAF\Framework\Aop;
 use SAF\Framework\Menu_Block;
 use SAF\Framework\Menu_Item;
@@ -14,7 +14,7 @@ abstract class Menu_Tester
 	 * 
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public static function menuInitDemo($joinpoint)
+	public static function menuInitDemo(AopJoinPoint $joinpoint)
 	{
 		static $antiloop = false;
 		if ($antiloop) return;

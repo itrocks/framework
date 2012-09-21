@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 use DateTime;
+use DateTimeZone;
 
 class Date_Time extends DateTime
 {
@@ -16,12 +17,12 @@ class Date_Time extends DateTime
 
 	//------------------------------------------------------------------------------ createFromFormat
 	/**
-	 * @param  string $format
-	 * @param  string $time
-	 * @param  DateTimeZone $timezone
+	 * @param string $format
+	 * @param string $time
+	 * @param DateTimeZone $timezone
 	 * @return Date_Time
 	 */
-	public static function createFromFormat($format, $time, $timezone = null)
+	public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
 	{
 		$dateTime = $timezone
 			? DateTime::createFromFormat($format, $time, $timezone)
@@ -33,7 +34,7 @@ class Date_Time extends DateTime
 
 	//--------------------------------------------------------------------------------------- fromISO
 	/**
-	 * @param  string $date
+	 * @param string $date
 	 * @return Date_Time
 	 */
 	public static function fromISO($date)

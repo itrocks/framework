@@ -22,7 +22,7 @@ class Callback_Error_Handler implements Error_Handler
 	 *
 	 * @param Handled_Error $handled_error
 	 */
-	public function handle($handled_error)
+	public function handle(Handled_Error $handled_error)
 	{
 		call_user_func($this->callback_function, $handled_error);
 	}

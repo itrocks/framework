@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Foreign_Annotation extends Annotation implements Reflection_Object_Annotation
+class Foreign_Annotation extends Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct
@@ -9,7 +9,7 @@ class Foreign_Annotation extends Annotation implements Reflection_Object_Annotat
 	 * @param string $value
 	 * @param Reflection_Property $reflection_object
 	 */
-	public function __construct($value, $reflection_object)
+	public function __construct($value, Reflection_Property $reflection_object)
 	{
 		parent::__construct($value);
 		if (!$this->value) {

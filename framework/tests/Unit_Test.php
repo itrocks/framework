@@ -5,6 +5,12 @@ class Unit_Test
 {
 
 	//---------------------------------------------------------------------------------------- assume
+	/**
+	 * @param string $test name of the test
+	 * @param mixed $check
+	 * @param mixed $assume
+	 * @return boolean
+	 */
 	protected function assume($test, $check, $assume)
 	{
 		if (is_array($check) && is_array($assume)) {

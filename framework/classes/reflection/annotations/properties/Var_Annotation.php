@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Var_Annotation extends Documented_Type_Annotation implements Reflection_Object_Annotation
+class Var_Annotation extends Documented_Type_Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct
@@ -10,7 +10,7 @@ class Var_Annotation extends Documented_Type_Annotation implements Reflection_Ob
 	 * @param string $value
 	 * @param Reflection_Property $reflection_object
 	 */
-	public function __construct($value, $reflection_object)
+	public function __construct($value, Reflection_Property $reflection_object)
 	{
 		parent::__construct($value, $reflection_object);
 		if (!$this->value) {

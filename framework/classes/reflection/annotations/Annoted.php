@@ -19,6 +19,7 @@ trait Annoted
 	/**
 	 * Gets an annotation of the reflected property
 	 *
+	 * @param string
 	 * @return Annotation
 	 */
 	public function getAnnotation($annotation_name)

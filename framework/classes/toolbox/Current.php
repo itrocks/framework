@@ -11,7 +11,7 @@ trait Current
 	/**
 	 * Gets/sets current environment's object
 	 *
-	 * @param object $set_current
+	 * @param Current $set_current
 	 */
 	public static function current($set_current = null)
 	{

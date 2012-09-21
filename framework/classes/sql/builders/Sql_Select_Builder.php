@@ -18,7 +18,7 @@ class Sql_Select_Builder
 	 * @param array            $where_array where array expression, indices are columns names
 	 * @param Sql_Link         $sql_link
 	 */
-	public function __construct($class, $properties, $where_array = null, $sql_link = null)
+	public function __construct($class, $properties, $where_array = null, Sql_Link $sql_link = null)
 	{
 		$this->constructSqlColumnsBuilder($class, $properties);
 		$this->constructSqlWhereBuilder($class, $where_array, $sql_link);

@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use AopJoinPoint;
 
 require_once "framework/classes/reflection/Reflection_Class.php";
 require_once "framework/classes/reflection/Reflection_Property.php";
@@ -13,7 +14,7 @@ abstract class Aop_Getter
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public static function getCollection($joinpoint)
+	public static function getCollection(AopJoinPoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -38,7 +39,7 @@ abstract class Aop_Getter
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public static function getDateTime($joinpoint)
+	public static function getDateTime(AopJoinPoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -60,7 +61,7 @@ abstract class Aop_Getter
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public static function getObject($joinpoint)
+	public static function getObject(AopJoinPoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -84,7 +85,7 @@ abstract class Aop_Getter
 	 *
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public static function _registerPropertiesGetters($joinpoint)
+	public static function _registerPropertiesGetters(AopJoinPoint $joinpoint)
 	{
 		if ($joinpoint->getReturnedValue()) {
 			list($class_name) = $joinpoint->getArguments();

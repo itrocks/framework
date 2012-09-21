@@ -17,7 +17,9 @@ trait Sql_Columns_Builder
 	/**
 	 * Build SQL query section for a single column
 	 *
-	 * @param unknown_type $path
+	 * @param string $path the past of the matching property
+	 * @param boolean $first_property
+	 * @return string
 	 */
 	private function buildColumn($path, &$first_property)
 	{
@@ -35,7 +37,7 @@ trait Sql_Columns_Builder
 	/**
 	 * Build the columns list, based on properties paths
 	 *
-	 * @param multitype:string $properties properties list
+	 * @return string
 	 */
 	protected function buildColumns()
 	{
@@ -58,10 +60,12 @@ trait Sql_Columns_Builder
 	/**
 	 * Build columns list for an object, in order to instantiate this object when read
 	 *
+	 * @param string $path
 	 * @param Sql_Join $join
 	 * @param boolean $first_property
+	 * @return string
 	 */
-	private function buildObjectColumns($path, $join, &$first_property)
+	private function buildObjectColumns($path, Sql_Join $join, &$first_property)
 	{
 		$sql_columns = "";
 		foreach ($this->joins->getProperties($path) as $property) {

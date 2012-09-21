@@ -49,7 +49,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 *
 	 * Sql_Link inherited classes must implement SQL query calls only into this method.
 	 *
-	 * @param  string $query
+	 * @param string $query
 	 * @return mixed  the sql query result set (type and use may depends on each SQL data link) 
 	 */
 	protected abstract function executeQuery($query);
@@ -73,7 +73,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 *
 	 * Sql_Link inherited classes must implement freeing result sets only into this method.
 	 *
-	 * @param mixed  $result_set The result set : in most cases, will come from executeQuery()
+	 * @param mixed $result_set The result set : in most cases, will come from executeQuery()
 	 */
 	protected abstract function free($result_set);
 
@@ -104,7 +104,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	/**
 	 * Executes an SQL query and returns the inserted record identifier (if applyable)
 	 *
-	 * @param  string $query
+	 * @param string $query
 	 * @return integer
 	 */
 	public abstract function query($query);

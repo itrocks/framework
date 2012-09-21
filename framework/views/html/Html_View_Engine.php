@@ -11,6 +11,9 @@ class Html_View_Engine implements View_Engine
 	private $css = "default";
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param array $parameters
+	 */
 	public function __construct($parameters)
 	{
 		foreach ($parameters as $key => $value) {
@@ -28,6 +31,11 @@ class Html_View_Engine implements View_Engine
 	}
 
 	//-------------------------------------------------------------------------- getPossibleTemplates
+	/**
+	 * @param string $class_name
+	 * @param string $feature_name
+	 * @return multitype:string
+	 */
 	public static function getPossibleTemplates($class_name, $feature_name)
 	{
 		return array(

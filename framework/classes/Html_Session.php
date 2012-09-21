@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use AopJoinPoint;
 
 require_once "framework/classes/toolbox/Aop.php";
 
@@ -14,7 +15,7 @@ abstract class Html_Session
 	 *
 	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function postSessionId($joinpoint)
+	public static function postSessionId(AopJoinPoint $joinpoint)
 	{
 		$content = $joinpoint->getReturnedValue();
 		// $_POST

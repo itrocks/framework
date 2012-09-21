@@ -285,7 +285,7 @@ class Mysql_Link extends Sql_Link
 	//-------------------------------------------------------------------------------------- writeMap
 	/**
 	 * @todo not really implemented here
-	 * @param unknown_type $map
+	 * @param array $map
 	 */
 	private function writeMap($map)
 	{

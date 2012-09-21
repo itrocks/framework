@@ -45,7 +45,7 @@ abstract class Reflection_Class_Properties_Access
 	 * @return multitype:Reflection_Property
 	 * @see Reflection_Class::accessProperties()
 	 */
-	public static function access($object_class)
+	public static function access(Reflection_Class $object_class)
 	{
 		$class_name = $object_class->name;
 		if (isset(Reflection_Class_Properties_Access::$properties_map[$class_name])) {
@@ -86,7 +86,7 @@ abstract class Reflection_Class_Properties_Access
 	 * @param Reflection_Class $object_class
 	 * @see Reflection_Class::accessPropertiesDone()
 	 */
-	public static function done($object_class)
+	public static function done(Reflection_Class $object_class)
 	{
 		$class_name = $object_class->name;
 		$count = Reflection_Class_Properties_Access::$count[$class_name];

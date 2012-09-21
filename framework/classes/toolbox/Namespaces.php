@@ -14,6 +14,7 @@ abstract class Namespaces
 	 *
 	 * @param string $class_name
 	 * @param string $model_class_name
+	 * @return string
 	 */
 	public static function defaultFullClassName($class_name, $model_class_name)
 	{

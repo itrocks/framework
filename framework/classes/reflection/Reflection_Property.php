@@ -111,21 +111,6 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		return parent::getDocComment();
 	}
 
-	//---------------------------------------------------------------------------- getForeignProperty
-	/**
-	 * Gets the foreign class Reflection_Property for the reflected property
-	 *
-	 * This uses the @foreign annotation, or searches automatically using the property's class name.
-	 *
-	 * @return Reflection_Property
-	 */
-	public function getForeignProperty()
-	{
-		return Reflection_Property::getInstanceOf(
-			$this->getType(), $this->Annotation("foreign")->value
-		);
-	}
-
 	//--------------------------------------------------------------------------------------- getType
 	public function getType()
 	{

@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use AopJoinPoint;
 
 abstract class Aop_Logger
 {
@@ -8,7 +9,7 @@ abstract class Aop_Logger
 	/**
 	 * @param AopJoinPoint $joinpoint
 	 */
-	public static function log($joinpoint)
+	public static function log(AopJoinPoint $joinpoint)
 	{
 		$arguments = $joinpoint->getArguments();
 		echo "<div class=\"Aop logger " . $joinpoint->getMethodName() . "\">"

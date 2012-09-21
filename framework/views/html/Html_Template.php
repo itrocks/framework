@@ -193,7 +193,7 @@ class Html_Template
 	/**
 	 * Replace code before <!--BEGIN--> and after <!--END--> by the html main container's code
 	 *
-	 * @param  string $content
+	 * @param string $content
 	 * @return string updated content
 	 */
 	private function parseContainer($content)
@@ -230,6 +230,13 @@ class Html_Template
 	}
 
 	//---------------------------------------------------------------------------------- parseInclude
+	/**
+	 * Parse included view controller call result (must be an html view)
+	 *
+	 * @param object $object
+	 * @param string $include_uri
+	 * @return string
+	 */
 	private function parseInclude($object, $include_uri)
 	{
 		ob_start();
@@ -241,8 +248,8 @@ class Html_Template
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
-	 * @param  object $object
-	 * @param  string $var_name
+	 * @param object $object
+	 * @param string $var_name
 	 * @return string
 	 */
 	private function parseVar($object, $var_name)
@@ -290,8 +297,8 @@ class Html_Template
 	 *     <!--methodName()-->(...)<!--methodName()-->
 	 *     <!--@function-->(...)<!--@function-->
 	 *
-	 * @param  string $content
-	 * @param  object $object
+	 * @param string $content
+	 * @param object $object
 	 * @return string
 	 */
 	private function parseVars($content, $object)
@@ -323,8 +330,8 @@ class Html_Template
 	 *   <!--methodName()-->(...)<!--methodName()-->
 	 *   <!--@function-->(...)<!--@function-->
 	 *
-	 * @param  string $string
-	 * @param  object $object
+	 * @param string $string
+	 * @param object $object
 	 * @return string updated content
 	 */
 	private function parseLoops($content, $object)
@@ -370,7 +377,7 @@ class Html_Template
 	/**
 	 * Remove <!--separator-->(...) code from a loop content, and returns the separator content
 	 *
-	 * @param  string $content
+	 * @param string $content
 	 * @return string the separator content
 	 */
 	private function parseSeparator(&$content)
@@ -389,8 +396,8 @@ class Html_Template
 	/**
 	 * Return true if the text at position $i of $content is a variable, function name, an include
 	 *
-	 * @param  string $content
-	 * @param  integer $i
+	 * @param string $content
+	 * @param integer $i
 	 * @return boolean
 	 */
 	private function parseThis($content, $i)
@@ -440,7 +447,7 @@ class Html_Template
 	/**
 	 * Replace URIs with correct URIs paths into $content
 	 *
-	 * @param  string $content
+	 * @param string $content
 	 * @return string updated content
 	 */
 	private function replaceUris($content)
@@ -469,6 +476,9 @@ class Html_Template
 	}
 
 	//---------------------------------------------------------------------------------------- setCss
+	/**
+	 * @param string $css
+	 */
 	public function setCss($css)
 	{
 		$this->css = $css;

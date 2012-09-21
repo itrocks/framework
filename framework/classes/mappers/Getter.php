@@ -31,8 +31,8 @@ abstract class Getter
 	/**
 	 * Generic getter for an object
 	 *
-	 * @param  mixed  $object       actual value of the object (will be returned if already an object)
-	 * @param  string $object_class the object class
+	 * @param mixed  $object       actual value of the object (will be returned if already an object)
+	 * @param string $object_class the object class
 	 */
 	public static function getObject($object, $object_class)
 	{

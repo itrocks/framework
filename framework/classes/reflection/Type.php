@@ -23,7 +23,7 @@ abstract class Type
 	 * Basic types are boolean, integer, float, string, array, resource, callable, null, NULL
 	 * Not basic types are multitype:*, objects, class names
 	 *
-	 * @param  string $type_name
+	 * @param string $type_name
 	 * @return boolean
 	 */
 	public static function isBasic($type_name)

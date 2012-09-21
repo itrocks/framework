@@ -6,6 +6,11 @@ abstract class View
 	use Current;
 
 	//------------------------------------------------------------------------------ getPossibleViews
+	/**
+	 * @param string $class_name
+	 * @param string $feature_name
+	 * @return multitype:string
+	 */
 	public static function getPossibleViews($class_name, $feature_name)
 	{
 		$view_engine_name = Namespaces::shortClassName(get_class(View::current()));
@@ -22,7 +27,7 @@ abstract class View
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param Controller_Parameters $parameters
+	 * @param array  $parameters
 	 * @param array  $form
 	 * @param array  $files
 	 * @param string $class_name
