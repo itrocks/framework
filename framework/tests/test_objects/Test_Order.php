@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework\Tests;
 
-/**
- * @dataset orders
- */
 class Test_Order extends Test_Document
 {
 
@@ -33,6 +30,7 @@ class Test_Order extends Test_Document
 	 * @var multitype:Test_Salesman
 	 * @foreign order
 	 * @foreignlink salesman
+	 * @master
 	 */
 	private $salesmen;
 

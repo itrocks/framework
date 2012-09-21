@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Dataset_Annotation extends Annotation
+class Set_Annotation extends Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct

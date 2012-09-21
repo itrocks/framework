@@ -3,7 +3,7 @@ namespace SAF\Framework\Tests;
 use SAF\Framework\Aop;
 
 /**
- * @dataset orders_lines
+ * @set Test_Orders_Lines
  */
 class Test_Order_Line
 {

@@ -67,7 +67,7 @@ class Sql_Joins
 	/**
 	 * Adds a property path to the joins list
 	 *
-	 * @param string $path full path to desired property, starting from starting class
+	 * @param string  $path full path to desired property, starting from starting class
 	 * @param integer $depth for internal use : please do not use this
 	 * @return Sql_Join the added join, or null if $path does not generate any join
 	 */
@@ -91,8 +91,16 @@ class Sql_Joins
 	}
 
 	//----------------------------------------------------------------------------------- addFinalize
-	private function addFinalize($join, $master_path, $foreign_class_name, $foreign_path, $depth)
-	{
+	/**
+	 * @param Sql_Join $join
+	 * @param string   $master_path
+	 * @param string   $foreign_class_name
+	 * @param string   $foreign_path
+	 * @param integer  $depth
+	 */
+	private function addFinalize(
+		Sql_Join $join, $master_path, $foreign_class_name, $foreign_path, $depth
+	) {
 		if (!$depth) {
 			$join->type = Sql_Join::OBJECT;
 		}
@@ -110,15 +118,29 @@ class Sql_Joins
 	}
 
 	//--------------------------------------------------------------------------------- addLinkedJoin
+	/**
+	 * @param Sql_Join $join
+	 * @param string $master_path
+	 * @param Reflection_Property $master_property
+	 * @param string $foreign_path
+	 * @param string $foreign_class_name
+	 * @param string $foreign_property_name
+	 */
 	private function addLinkedJoin(
-		$join, $master_path, $master_property,
+		Sql_Join $join, $master_path, Reflection_Property $master_property,
 		$foreign_path, $foreign_class_name, $foreign_property_name
 	) {
 		$linked_join = new Sql_Join();
 		$linked_join->foreign_column = "id_" . $foreign_property_name;
-		$linked_join->foreign_table = Dao::storeNameOf($master_property->class)
-			. "_" . Dao::storeNameOf($foreign_class_name)
+		if ($master_property->getAnnotation("master")->value) {
+			$linked_join->foreign_table = Dao::storeNameOf($master_property->class)
+				. "_" . Dao::storeNameOf($foreign_class_name)
+				. "_links";
+		} else {
+			$linked_join->foreign_table = Dao::storeNameOf($foreign_class_name)
+			. "_" . Dao::storeNameOf($master_property->class)
 			. "_links";
+		}
 		$linked_join->master_column = "id";
 		$linked_join->mode = $join->mode;
 		$this->joins[$foreign_path . "-link"] = $this->addFinalize(
@@ -145,7 +167,12 @@ class Sql_Joins
 	}
 
 	//-------------------------------------------------------------------------------- addReverseJoin
-	private function addReverseJoin($join, $master_property_name)
+	/**
+	 * @param Sql_Join $join
+	 * @param string   $master_property_name
+	 * @return string
+	 */
+	private function addReverseJoin(Sql_Join $join, $master_property_name)
 	{
 		list($foreign_class_name, $property) = explode("->", $master_property_name);
 		if (strpos($property, "=")) {
@@ -160,7 +187,14 @@ class Sql_Joins
 	}
 
 	//--------------------------------------------------------------------------------- addSimpleJoin
-	private function addSimpleJoin($join, $master_path, $master_property_name, $foreign_path)
+	/**
+	 * @param Sql_Join $join
+	 * @param string   $master_path
+	 * @param string   $master_property_name
+	 * @param string   $foreign_path
+	 * @return string
+	 */
+	private function addSimpleJoin(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
 	{
 		$foreign_class_name = null;
 		$master_property = $this->getProperty($master_path, $master_property_name);

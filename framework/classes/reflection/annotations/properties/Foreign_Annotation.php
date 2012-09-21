@@ -9,11 +9,11 @@ class Foreign_Annotation extends Annotation
 	 * @param string $value
 	 * @param Reflection_Property $reflection_object
 	 */
-	public function __construct($value, Reflection_Property $reflection_object)
+	public function __construct($value, Reflection_Property $reflection_property)
 	{
 		parent::__construct($value);
 		if (!$this->value) {
-			$this->value = Names::classToProperty($reflection_object->class);
+			$this->value = Names::classToProperty($reflection_property->class);
 		}
 	}
 

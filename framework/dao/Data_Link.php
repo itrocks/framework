@@ -121,7 +121,7 @@ abstract class Data_Link
 	 */
 	public function storeNameOf($class_name)
 	{
-		return strtolower(Reflection_Class::getInstanceOf($class_name)->getAnnotation("dataset"));
+		return strtolower(Reflection_Class::getInstanceOf($class_name)->getAnnotation("set"));
 	}
 
 	//----------------------------------------------------------------------------------------- write
