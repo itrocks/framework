@@ -83,7 +83,7 @@ class Sql_Joins
 		$join = new Sql_Join();
 		$foreign_class_name = (strpos($master_property_name, "->"))
 			? $this->addReverseJoin($join, $master_property_name)
-			: $this->addSimpleJoin($join, $master_path, $master_property_name);
+			: $this->addSimpleJoin($join, $master_path, $master_property_name, $path);
 		$this->joins[$path] = $join->mode
 			? $this->addFinalize($join, $master_path, $foreign_class_name, $path, $depth)
 			: null;
@@ -97,12 +97,36 @@ class Sql_Joins
 			$join->type = Sql_Join::OBJECT;
 		}
 		$join->foreign_alias = "t" . $this->alias_counter ++;
-		$join->foreign_table = Dao::current()->storeNameOf($foreign_class_name);
-		$join->master_alias  = $master_path ? $this->getAlias($master_path) : "t0";
+		if (!isset($join->foreign_table)) {
+			$join->foreign_table = Dao::current()->storeNameOf($foreign_class_name);
+		}
+		if (!isset($join->master_alias)) {
+			$join->master_alias = $master_path ? $this->getAlias($master_path) : "t0";
+		}
 		$this->classes[$foreign_path] = $foreign_class_name;
 		$foreign_class = Reflection_Class::getInstanceOf($foreign_class_name);
 		$this->properties[$foreign_class_name] = $foreign_class->getAllProperties();
 		return $join;
+	}
+
+	//--------------------------------------------------------------------------------- addLinkedJoin
+	private function addLinkedJoin(
+		$join, $master_path, $master_property,
+		$foreign_path, $foreign_class_name, $foreign_property_name
+	) {
+		$linked_join = new Sql_Join();
+		$linked_join->foreign_column = "id_" . $foreign_property_name;
+		$linked_join->foreign_table = $master_property->getDeclaringclass()->getAnnotation("dataset")
+			. "_" . Reflection_Class::getInstanceOf($foreign_class_name)->getAnnotation("dataset")
+			. "_links";
+		$linked_join->master_column = "id";
+		$linked_join->mode = $join->mode;
+		$this->joins[$foreign_path . "-link"] = $this->addFinalize(
+			$linked_join, $master_path, $foreign_class_name, $foreign_path, 1 
+		);
+		$join->foreign_column = "id";
+		$join->master_column = "id_" . $master_property->getAnnotation("foreignlink");
+		$join->master_alias = $linked_join->foreign_alias;
 	}
 
 	//----------------------------------------------------------------------------------- addMultiple
@@ -136,33 +160,29 @@ class Sql_Joins
 	}
 
 	//--------------------------------------------------------------------------------- addSimpleJoin
-	private function addSimpleJoin($join, $master_path, $master_property_name)
+	private function addSimpleJoin($join, $master_path, $master_property_name, $foreign_path)
 	{
 		$foreign_class_name = null;
 		$master_property = $this->getProperty($master_path, $master_property_name);
 		if ($master_property) {
 			$foreign_class_name = $master_property->getType();
 			if (!Type::isBasic($foreign_class_name)) {
-				$join->mode = $master_property->isMandatory() ? Sql_Join::INNER : Sql_Join::LEFT;
-				if (substr($foreign_class_name, 0, 10) === "multitype:") {
-					$foreign_class_name = substr($foreign_class_name, 10);
-					$foreign_property_name = $master_property->getForeignName();
+				$join->mode = $master_property->getAnnotation("mandatory")->value
+					? Sql_Join::INNER
+					: Sql_Join::LEFT;
+				if ($single_class_name = Type::isMultiple($foreign_class_name)) {
+					$foreign_class_name = $single_class_name;
+					$foreign_property_name = $master_property->getAnnotation("foreign")->value;
 					if (property_exists(
 						Namespaces::fullClassName($foreign_class_name), $foreign_property_name
 					)) {
-						$join->foreign_column = "id_" . $master_property->getForeignName();
+						$join->foreign_column = "id_" . $foreign_property_name;
 						$join->master_column  = "id";
 					} else {
-						$join->foreign_column = "id";
-						$join->master_column = "id_" . Names::classToProperty($foreign_class_name);
-						$linked_join = new Sql_Join();
-						$linked_join->foreign_alias = "t" . $this->alias_counter ++;
-						$linked_join->foreign_column = "id_" . $master_property->getForeignName();
-						$linked_join->foreign_table = $master_property->getDeclaringclass()->getDataset() . "_" . Reflection_Class::getInstanceOf($foreign_class_name)->getDataset() . "_links";
-						$linked_join->master_alias = $master_path ? $this->getAlias($master_path) : "t0";
-						$linked_join->master_column = "id";
-						$linked_join->mode = $join->mode;
-						$this->joins[$master_path . "@link"] = $linked_join;
+						$this->addLinkedJoin(
+							$join, $master_path, $master_property,
+							$foreign_path, $foreign_class_name, $foreign_property_name
+						);
 					}
 				}
 				else {

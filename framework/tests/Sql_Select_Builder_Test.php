@@ -62,6 +62,20 @@ class Sql_Select_Builder_Test extends Unit_Test
 		);
 	}
 
+	//--------------------------------------------------------------------------------- testLinkQuery
+	public function testLinkQuery()
+	{
+		$builder = new Sql_Select_builder(
+			__NAMESPACE__ . "\\Test_Order",
+			array("date", "number", "salesmen.name")
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t2.`name` AS `salesmen.name` FROM `orders` t0 LEFT JOIN `orders_salesmen_links` t1 ON t1.id_order = t0.id LEFT JOIN `salesmen` t2 ON t2.id = t1.id_salesman"
+		);
+	}
+
 	//------------------------------------------------------------------------- testObjectObjectQuery
 	public function testObjectQuery()
 	{

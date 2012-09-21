@@ -95,13 +95,13 @@ class Sql_Joins_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Sql_Joins::newInstance("Test_Order")
+			$joins = Sql_Joins::newInstance("Test_Order")
 				->addMultiple(array("date", "number", "salesmen.name"))
 				->getJoins(),
 			array(
 				"date" => null,
 				"number" => null,
-				"salesmen@link" => Sql_Join::newInstance(
+				"salesmen-link" => Sql_Join::newInstance(
 					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen_links", "id_order"
 				),
 				"salesmen" => Sql_Join::newInstance(

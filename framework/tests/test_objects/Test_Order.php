@@ -32,7 +32,7 @@ class Test_Order extends Test_Document
 	 *
 	 * @var multitype:Test_Salesman
 	 * @foreign order
-	 * @link salesman
+	 * @foreignlink salesman
 	 */
 	private $salesmen;
 
