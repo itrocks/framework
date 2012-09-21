@@ -4,16 +4,22 @@ namespace SAF\Framework;
 class Acl_Group
 {
 
-	//----------------------------------------------------------------------------------------- $acls
+	//-------------------------------------------------------------------------------------- $caption
 	/**
-	 * @var multitype:Acl
+	 * @var string
 	 */
-	public $acls;
+	public $caption;
 
 	//--------------------------------------------------------------------------------------- $groups
 	/**
-	 * @var multitype:Acl_Group
+	 * @var multitype:Acl_Link
 	 */
-	public $groups;
+	public $contains;
+
+	//--------------------------------------------------------------------------------------- $rights
+	/**
+	 * @var multitype:Acl_Right
+	 */
+	public $rights;
 
 }
