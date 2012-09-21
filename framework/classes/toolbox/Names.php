@@ -16,10 +16,20 @@ abstract class Names
 		return strtolower(preg_replace('/([a-z])([A-Z])/', '$1 $2', $method_name));
 	}
 
+	//------------------------------------------------------------------------------ methodToProperty
+	public static function methodToProperty($method_name)
+	{
+		$property_name = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $method_name));
+		if ((substr($property_name, 0, 4) == "get_") || (substr($property_name, 0, 4) == "set_")) {
+			$property_name = substr($property_name, 4);
+		}
+		return $property_name;
+	}
+
 	//-------------------------------------------------------------------------------- classToDisplay
 	public static function classToDisplay($class_name)
 	{
-		return strtolower(str_replace("_", " ", $class_name));
+		return strtolower(str_replace("_", " ", Namespaces::shortClassName($class_name)));
 	}
 
 	//--------------------------------------------------------------------------------- classToMethod
@@ -27,6 +37,12 @@ abstract class Names
 	{
 		$method_name = str_replace('_', '', Namespaces::shortClassName($class_name));
 		return $prefix ? $prefix . $method_name : lcfirst($method_name);
+	}
+
+	//------------------------------------------------------------------------------- classToProperty
+	public static function classToProperty($class_name)
+	{
+		return strtolower(Namespaces::shortClassName($class_name));
 	}
 
 	//------------------------------------------------------------------------------- propertyToClass
