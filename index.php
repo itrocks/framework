@@ -9,10 +9,10 @@ require_once "framework/classes/locale/Html_Translator.php";
 
 // debug
 ini_set("xdebug.scream", false);
-require_once "framework/classes/debug/Execution_Timer.php";
-require_once "framework/classes/debug/Xdebug.php";
-require_once "framework/classes/loggers/Aop_Logger.php";
-require_once "framework/dao/mysql/Mysql_Logger.php";
+//require_once "framework/classes/debug/Execution_Timer.php";
+//require_once "framework/classes/debug/Xdebug.php";
+//require_once "framework/classes/loggers/Aop_Logger.php";
+//require_once "framework/dao/mysql/Mysql_Logger.php";
 
 //Aop::registerBefore(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
 
