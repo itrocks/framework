@@ -181,6 +181,9 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 		if (!is_string($this->foreign)) {
 			$foreign = $this->getAnnotation("foreign");
 			$this->foreign = $foreign ? $foreign->value : "";
+			if (!$this->foreign) {
+				$this->foreign = Names::classToProperty($this->getDeclaringClass()->name);
+			}
 		}
 		return $this->foreign;
 	}
