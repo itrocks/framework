@@ -4,6 +4,9 @@ namespace SAF\Framework;
 trait Current
 {
 
+	//-------------------------------------------------------------------------------------- $current
+	private static $current = null;
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * Gets/sets current environment's object
@@ -12,11 +15,10 @@ trait Current
 	 */
 	public static function current($set_current = null)
 	{
-		static $current = null;
 		if ($set_current) {
-			$current = $set_current;
+			self::$current = $set_current;
 		}
-		return $current;
+		return self::$current;
 	}
 
 }
