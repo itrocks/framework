@@ -6,10 +6,12 @@ use ReflectionMethod;
 require_once "framework/classes/reflection/annotations/Annotation.php";
 require_once "framework/classes/reflection/annotations/Annotation_Parser.php";
 require_once "framework/classes/reflection/annotations/Annoted.php";
+require_once "framework/classes/reflection/Has_Doc_Comment.php";
 require_once "framework/classes/reflection/Reflection_Class.php";
 
-class Reflection_Method extends ReflectionMethod implements Annoted
+class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 {
+	use Annoted;
 
 	//------------------------------------------------------------------------------------------- ALL
 	/**
@@ -55,28 +57,6 @@ class Reflection_Method extends ReflectionMethod implements Annoted
 			Reflection_Method::$cache[$of_class][$of_name] = $method;
 		}
 		return $method;
-	}
-
-	//--------------------------------------------------------------------------------- getAnnotation
-	/**
-	 * Gets an annotation of the reflected method
-	 *
-	 * @return Annotation
-	 */
-	public function getAnnotation($annotation_name)
-	{
-		return Annotation_Parser::byName($this->getDocComment(), $annotation_name);
-	}
-
-	//--------------------------------------------------------------------------------- getReturnType
-	/**
-	 * Gets the returned value main type for the reflected method
-	 *
-	 * @return string
-	 */
-	public function getReturnType()
-	{
-		return $this->getAnnotation("return")->type;
 	}
 
 }

@@ -11,42 +11,72 @@ abstract class Annotation_Parser
 	/**
 	 * Parse a given annotation from a reflection class / method / property / etc. doc comment
 	 * 
-	 * @param  string $doc_comment
+	 * @param  Has_Doc_Comment $reflection_object
 	 * @param  string $annotation_name
 	 * @return Annotation
 	 */
-	public static function byName($doc_comment, $annotation_name)
+	public static function byName(Has_Doc_Comment $reflection_object, $annotation_name)
 	{
+		$annotation_class = Annotation_Parser::getAnnotationClass($annotation_name);
+		$multiple = is_subclass_of($annotation_class, "\\SAF\\Framework\\Multiple_Annotation");
+		$doc_comment = $reflection_object->getDocComment();
 		$annotations = array();
 		$annotation = null;
-		$multiple = false;
 		$i = 0;
 		while (($i = strpos($doc_comment, "@" . $annotation_name, $i)) !== false) {
 			$i += strlen($annotation_name) + 1;
-			if (($doc_comment[$i] == " ") || ($doc_comment[$i] == "\t")) {
-				$i ++;
-				$j = strpos($doc_comment, "\n", $i);
-				$value = trim(substr($doc_comment, $i, $j - $i));
+			$next_char = $doc_comment[$i];
+			switch ($next_char) {
+				case " ": case "\t":
+					$i ++;
+					$j = strpos($doc_comment, "\n", $i);
+					$value = trim(substr($doc_comment, $i, $j - $i));
+					break;
+				case "\r": case "\n":
+					$value = true;
+					break;
+				default:
+					$value = null;
 			}
-			else {
-				$value = true;
-			}
-			if (!isset($annotation_class)) {
-				$annotation_class = Namespaces::fullClassName(
-					Names::propertyToClass($annotation_name) . "_Annotation"
-				);
-				if (!class_exists($annotation_class)) {
-					$annotation_class = __NAMESPACE__ . "\\Annotation";
+			if (isset($value)) {
+				$annotation = new $annotation_class($value, $reflection_object);
+				if ($multiple) {
+					$annotations[] = $annotation;
 				}
-				$multiple = is_subclass_of($annotation_class, __NAMESPACE__ . "\\Multiple_Annotation");
-			}
-			$annotation = new $annotation_class($value);
-			$annotations[] = $annotation;
-			if (!$multiple) {
-				break;
+				else {
+					break;
+				}
 			}
 		}
-		return $multiple ? $annotations : $annotation;
+		$annotation = $multiple ? $annotations : (
+			$annotation ? $annotation : new $annotation_class(null, $reflection_object)
+		);
+		return $annotation;
+	}
+
+	//---------------------------------------------------------------------------- getAnnotationClass
+	/**
+	 * Gets annotation class name (including namespace) for a given annotation name
+	 *
+	 * @param string $annotation_name
+	 * @return string
+	 */
+	public static function getAnnotationClass($annotation_name)
+	{
+		static $annotations_classes = array();
+		if (isset($annotations_classes[$annotation_name])) {
+			$annotation_class = $annotations_classes[$annotation_name];
+		}
+		else {
+			$annotation_class = Namespaces::fullClassName(
+					Names::propertyToClass($annotation_name) . "_Annotation"
+			);
+			if (!class_exists($annotation_class)) {
+				$annotation_class = __NAMESPACE__ . "\\Annotation";
+			}
+			$annotations_classes[$annotation_name] = $annotation_class;
+		}
+		return $annotation_class;
 	}
 
 }

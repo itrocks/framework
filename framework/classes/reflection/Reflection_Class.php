@@ -6,12 +6,14 @@ use ReflectionException;
 require_once "framework/classes/reflection/annotations/Annotation.php";
 require_once "framework/classes/reflection/annotations/Annotation_Parser.php";
 require_once "framework/classes/reflection/annotations/Annoted.php";
+require_once "framework/classes/reflection/Has_Doc_Comment.php";
 require_once "framework/classes/reflection/Reflection_Class_Properties_Access.php";
 require_once "framework/classes/reflection/Reflection_Method.php";
 require_once "framework/classes/reflection/Reflection_Property.php";
 
-class Reflection_Class extends ReflectionClass implements Annoted
+class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 {
+	use Annoted;
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
@@ -20,22 +22,6 @@ class Reflection_Class extends ReflectionClass implements Annoted
 	 * @var multitype:Reflection_Class
 	 */
 	private static $cache = array();
-
-	//-------------------------------------------------------------------------------------- $dataset
-	/**
-	 * Cached value for the @dataset annotation value
-	 *
-	 * @var string
-	 */
-	private $dataset;
-
-	//------------------------------------------------------------------------------------------ $use
-	/**
-	 * Cached values for the @use annotations values
-	 *
-	 * @var multitype:string
-	 */
-	private $use;
 
 	//------------------------------------------------------------------------------ accessProperties
 	/**
@@ -92,17 +78,6 @@ class Reflection_Class extends ReflectionClass implements Annoted
 		return $properties;
 	}
 
-	//--------------------------------------------------------------------------------- getAnnotation
-	/**
-	 * Gets an annotation of the reflected class
-	 *
-	 * @return Annotation
-	 */
-	public function getAnnotation($annotation_name)
-	{
-		return Annotation_Parser::byName($this->getDocComment(), $annotation_name);
-	}
-
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
 	 * Gets the constructor of the reflected class
@@ -113,21 +88,6 @@ class Reflection_Class extends ReflectionClass implements Annoted
 	{
 		$constructor = parent::getConstructor();
 		return $constructor ? Reflection_Method::getInstanceOf($constructor) : $constructor;
-	}
-
-	//------------------------------------------------------------------------------------ getDataset
-	/**
-	 * Gets the dataset annotation value
-	 *
-	 * @return string
-	 */
-	public function getDataset()
-	{
-		if (!is_string($this->dataset)) {
-			$annotation = $this->getAnnotation("dataset");
-			$this->dataset = $annotation ? $annotation->value : "";
-		}
-		return $this->dataset;
 	}
 
 	//--------------------------------------------------------------------------------- getInstanceOf
@@ -234,31 +194,6 @@ class Reflection_Class extends ReflectionClass implements Annoted
 	{
 		$property = parent::getProperty($name);
 		return $property ? Reflection_Property::getInstanceOf($property) : $property;
-	}
-
-	//---------------------------------------------------------------------------------------- getUse
-	/**
-	 * Gets the @use annotation value
-	 *
-	 * This annotation defines the list of fields which annotations must be read into the current class.
-	 * This is used for trait herited fields, as they can't be overridden and new phpdocs are ignored.
-	 *
-	 * @return multitype:string
-	 */
-	public function getUse()
-	{
-		if (!is_array($this->use)) {
-			$this->use = array();
-			$annotations = $this->getAnnotation("use");
-			if ($annotations) {
-				foreach ($annotations as $annotation) {
-					$this->use[] = $annotation->value;
-				}
-			} else {
-				$this->use = array();
-			}
-		}
-		return $this->use;
 	}
 
 }

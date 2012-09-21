@@ -108,7 +108,7 @@ abstract class Aop_Getter
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->getProperties() as $property) {
 				if ($property->class == $class_name) {
-					$getter = $property->getGetterName();
+					$getter = $property->getAnnotation("getter")->value;
 					if ($getter) {
 						if (substr($getter, 0, 5) === "Aop::") {
 							Aop::registerBefore(

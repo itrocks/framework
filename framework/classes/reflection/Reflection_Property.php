@@ -7,11 +7,13 @@ require_once "framework/classes/reflection/annotations/Annotation.php";
 require_once "framework/classes/reflection/annotations/Annotation_Parser.php";
 require_once "framework/classes/reflection/annotations/Annoted.php";
 require_once "framework/classes/reflection/Field.php";
+require_once "framework/classes/reflection/Has_Doc_Comment.php";
 require_once "framework/classes/reflection/Reflection_Class.php";
 require_once "framework/classes/reflection/Reflection_Method.php";
 
-class Reflection_Property extends ReflectionProperty implements Annoted, Field
+class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_Comment
 {
+	use Annoted;
 
 	//------------------------------------------------------------------------------------------- ALL
 	/**
@@ -29,14 +31,6 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 	private static $cache = array();
 
-	//------------------------------------------------------------------------------------ $contained
-	/**
-	 * Cached value of the @contained annotation value
-	 *
-	 * @var boolean
-	 */
-	private $contained;
-
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * Cached value for the doc comment (set by getDocComment() only when $use is true)
@@ -44,46 +38,6 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 * @var string
 	 */
 	private $doc_comment;
-
-	//-------------------------------------------------------------------------------------- $foreign
-	/**
-	 * Cached value for the @foreign annotation value
-	 *
-	 * @var string
-	 */
-	private $foreign;
-
-	//--------------------------------------------------------------------------------------- $getter
-	/**
-	 * Cached value for the @getter annotation value
-	 *
-	 * @var string
-	 */
-	private $getter;
-
-	//------------------------------------------------------------------------------------ $mandatory
-	/**
-	 * Cached value for the @mandatory annotation value
-	 *
-	 * @var boolean
-	 */
-	private $mandatory;
-
-	//--------------------------------------------------------------------------------------- $setter
-	/**
-	 * Cached value for the @setter annotation value
-	 *
-	 * @var string
-	 */
-	private $setter;
-
-	//----------------------------------------------------------------------------------------- $type
-	/**
-	 * Cached value for the @type annotation value
-	 *
-	 * @var string
-	 */
-	private $type;
 
 	//------------------------------------------------------------------------------------------ $use
 	/**
@@ -126,17 +80,6 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 		return $property;
 	}
 
-	//--------------------------------------------------------------------------------- getAnnotation
-	/**
-	 * Gets an annotation of the reflected property
-	 *
-	 * @return string
-	 */
-	public function getAnnotation($annotation_name)
-	{
-		return Annotation_Parser::byName($this->getDocComment(), $annotation_name);
-	}
-
 	//----------------------------------------------------------------------------- getDeclaringClass
 	/**
 	 * Gets the declaring class for the reflected property
@@ -168,123 +111,25 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 		return parent::getDocComment();
 	}
 
-	//------------------------------------------------------------------------------------ getForeign
-	/**
-	 * Gets the foreign class property name for the reflected property
-	 *
-	 * This uses the @foreign annotation.
-	 *
-	 * @return string
-	 */
-	public function getForeignName()
-	{
-		if (!is_string($this->foreign)) {
-			$foreign = $this->getAnnotation("foreign");
-			$this->foreign = $foreign ? $foreign->value : "";
-			if (!$this->foreign) {
-				$this->foreign = Names::classToProperty($this->getDeclaringClass()->name);
-			}
-		}
-		return $this->foreign;
-	}
-
 	//---------------------------------------------------------------------------- getForeignProperty
 	/**
 	 * Gets the foreign class Reflection_Property for the reflected property
 	 *
-	 * This uses the @foreign annotation.
+	 * This uses the @foreign annotation, or searches automatically using the property's class name.
 	 *
 	 * @return Reflection_Property
 	 */
 	public function getForeignProperty()
 	{
-		return Reflection_Property::getInstanceOf($this->getType(), $this->getForeignName());
-	}
-
-	//------------------------------------------------------------------------------- getGetterMethod
-	/**
-	 * Gets the getter method associated to the reflected property
-	 *
-	 * This uses the @getter annotation
-	 *
-	 * @return Reflection_Method | null
-	 */
-	public function getGetterMethod()
-	{
-		$getter_name = $this->getGetterName();
-		return $getter_name
-			? Reflection_Method::getInstanceOf($this->getDeclaringClass()->name, $getter_name)
-			: null;
-	}
-
-	//--------------------------------------------------------------------------------- getGetterName
-	/**
-	 * Gets the getter method name associated to the reflected property
-	 *
-	 * This uses the @getter annotation
-	 *
-	 * @return string | null
-	 */
-	public function getGetterName()
-	{
-		if (!is_string($this->getter)) {
-			$getter = $this->getAnnotation("getter");
-			$this->getter = $getter ? $getter->value : "";
-		}
-		return $this->getter;
-	}
-
-	//------------------------------------------------------------------------------- getSetterMethod
-	/**
-	 * Gets the setter method associated to the reflected property
-	 *
-	 * This uses the @setter annotation
-	 * 
-	 * @return Reflection_Method
-	 */
-	public function getSetterMethod()
-	{
-		return Reflection_Method::getInstanceOf($this->getDeclaringClass(), $this->getSetterName());
-	}
-
-	//--------------------------------------------------------------------------------- getSetterName
-	/**
-	 * Gets the setter method name associated to the reflected property
-	 *
-	 * This uses the @setter annotation
-	 *
-	 * @return string
-	 */
-	public function getSetterName()
-	{
-		if (!is_string($this->setter)) {
-			$setter = $this->getAnnotation("setter");
-			$this->setter = $setter ? $setter->value : "";
-		}
-		return $this->setter;
+		return Reflection_Property::getInstanceOf(
+			$this->getType(), $this->Annotation("foreign")->value
+		);
 	}
 
 	//--------------------------------------------------------------------------------------- getType
-	/**
-	 * Gets the main declared type of the reflected property
-	 *
-	 * This uses the @var annotation
-	 *
-	 * @return string
-	 */
 	public function getType()
 	{
-		if (!is_string($this->type)) {
-			$type = $this->getAnnotation("var");
-			if ($type && $type->value) {
-				$this->type = $type->value;
-			}
-			else {
-				$types = $this->getDeclaringClass()->getDefaultProperties();
-				$this->type = gettype($types[$this->name]);
-			}
-		}
-		return $this->type;
+		return $this->getAnnotation("var")->value;
 	}
 
 	//---------------------------------------------------------------------------------------- getUse
@@ -297,41 +142,11 @@ class Reflection_Property extends ReflectionProperty implements Annoted, Field
 	 */
 	private function getUse()
 	{
-		if (!is_bool($this->use)) {
-			$use = $this->getDeclaringClass()->getUse();
+		if (!isset($this->use)) {
+			$use = $this->getDeclaringClass()->getAnnotation("use");
 			$this->use = $use ? in_array($this->name, $use) : false;
 		}
 		return $this->use;
 	}
 
-	//----------------------------------------------------------------------------------- isContained
-	/**
-	 * Returns true if the reflected property @contained annotation is set 
-	 *
-	 * @return boolean
-	 */
-	public function isContained()
-	{
-		if (!is_bool($this->contained)) {
-			$contained = $this->getAnnotation("contained");
-			$this->contained = $contained ? $contained->value : false;
-		}
-		return $this->contained;
-	}
-
-	//----------------------------------------------------------------------------------- isMandatory
-	/**
-	 * Returns true if the reflected property @mandatory annotation is set 
-	 *
-	 * @return boolean
-	 */
-		public function isMandatory()
-	{
-		if (!is_bool($this->mandatory)) {
-			$mandatory = $this->getAnnotation("mandatory");
-			$this->mandatory = $mandatory ? $mandatory->value : false;
-		}
-		return $this->mandatory;
-	}
-	
 }

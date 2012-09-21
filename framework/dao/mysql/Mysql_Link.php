@@ -36,7 +36,7 @@ class Mysql_Link extends Sql_Link
 		if ($id) {
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->accessProperties() as $property) {
-				if ($property->isContained()) {
+				if ($property->getAnnotation("contained")->value) {
 					$this->deleteCollection($object, $property, $property->get($object));
 				}
 			}
@@ -61,7 +61,7 @@ class Mysql_Link extends Sql_Link
 	private function deleteCollection($parent, $property, $value)
 	{
 		$parent->$property = null;
-		$getter = $property->getGetterName();
+		$getter = $property->getAnnotation("getter")->value;
 		$old_collection = $parent->$getter();
 		$parent->$property = $value;
 		foreach ($old_collection as $old_element) {
@@ -201,7 +201,7 @@ class Mysql_Link extends Sql_Link
 			elseif (in_array("id_" . $property->name, $table_columns_names)) {
 				$this->writeIdColumn($write, $property->name, $value);
 			}
-			elseif ($property->isContained()) {
+			elseif ($property->getAnnotation("contained")->value) {
 				$write_collections[$property->name] = $value;
 			}
 			elseif (is_array($value)) {
@@ -242,14 +242,14 @@ class Mysql_Link extends Sql_Link
 	private function writeCollection($parent, $property_name, $collection)
 	{
 		$property = Reflection_Property::getInstanceOf($parent, $property_name);
-		$getter = $property->getGetterName();
+		$getter = $property->getAnnotation("getter")->value;
 		// old values
 		$parent->$property_name = null;
 		$old_collection = $parent->$getter();
 		$parent->$property_name = $collection;
 		// collection properties : write each of them
 		$id_set = array();
-		if ($property->isContained()) {
+		if ($property->getAnnotation("contained")->value) {
 			foreach ($collection as $element) {
 				$id = $this->getObjectIdentifier($element);
 				if ($id !== null) $id_set[] = $id;
