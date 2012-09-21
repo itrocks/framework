@@ -1,8 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+require_once "framework/classes/toolbox/Current.php";
+
 class Configuration
 {
+	use Current;
 
 	//------------------------------------------------------------------------------------------ $app
 	/**
@@ -26,22 +29,6 @@ class Configuration
 		if (isset($configuration_options["default"]) && $configuration_options["default"]) {
 			Configuration::current($this);
 		}
-	}
-
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * Gets/sets the current configuration object, as set by default into the configuration file or by setCurrent()
-	 *
-	 * @param Configuration $set_current
-	 * @return Configuration
-	 */
-	public static function current($set_current = null)
-	{
-		static $current = null;
-		if ($set_current) {
-			$current = $set_current;
-		}
-		return $current;
 	}
 
 	//---------------------------------------------------------------------------- getApplicationName

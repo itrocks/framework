@@ -3,19 +3,7 @@ namespace SAF\Framework;
 
 abstract class View
 {
-
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * @param View_Engine $set_current
-	 */
-	public static function current($set_current = null)
-	{
-		static $current = null;
-		if ($set_current) {
-			$current = $set_current;
-		}
-		return $current;
-	}
+	use Current;
 
 	//------------------------------------------------------------------------------ getPossibleViews
 	public static function getPossibleViews($class_name, $feature_name)

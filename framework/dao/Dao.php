@@ -3,6 +3,7 @@ namespace SAF\Framework;
 
 abstract class Dao
 {
+	use Current;
 
 	//----------------------------------------------------------------------------------------- begin
 	/**
@@ -36,21 +37,6 @@ abstract class Dao
 		else {
 			return null;
 		}
-	}
-
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * Gets/sets current data link object 
-	 *
-	 * @return Data_Link
-	 */
-	public static function current($set_current = null)
-	{
-		static $current = null;
-		if ($set_current) {
-			$current = $set_current;
-		}
-		return $current;
 	}
 
 	//---------------------------------------------------------------------------------------- delete

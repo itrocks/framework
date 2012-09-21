@@ -3,12 +3,14 @@ namespace SAF\Framework;
 
 class User
 {
+	use Current;
 
-	//-------------------------------------------------------------------------------------- $current
+	//----------------------------------------------------------------------------------------- $acls
 	/**
-	 * @var User
+	 * @foreign user
+	 * @var multitype:Acl_Group
 	 */
-	private static $current;
+	public $acls;
 
 	//---------------------------------------------------------------------------------------- $login
 	/**
@@ -33,28 +35,6 @@ class User
 	{
 		$this->login    = $login;
 		$this->password = $password;
-	}
-
-	//------------------------------------------------------------------------------------ getCurrent
-	/**
-	 * Get current user from current environment
-	 * 
-	 * @return \SAF\Framework\User
-	 */
-	public static function getCurrent()
-	{
-		return User::$current;
-	}
-
-	//------------------------------------------------------------------------------------ setCurrent
-	/**
-	 * Set current environment's user
-	 *
-	 * @param User $user
-	 */
-	public static function setCurrent($user)
-	{
-		User::$current = $user;
 	}
 
 }

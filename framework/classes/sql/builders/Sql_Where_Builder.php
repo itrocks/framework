@@ -165,7 +165,7 @@ trait Sql_Where_Builder
 	{
 		$this->joins       = new Sql_Joins($class);
 		$this->class       = $class;
-		$this->sql_link    = $sql_link ? $sql_link : Dao::getDataLink();
+		$this->sql_link    = $sql_link ? $sql_link : Dao::current();
 		$this->where_array = $where_array;
 	}
 
