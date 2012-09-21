@@ -121,16 +121,7 @@ abstract class Data_Link
 	 */
 	public function storeNameOf($class_name)
 	{
-		$dataset = Reflection_Class::getInstanceOf($class_name)->getDataSet();
-		if ($dataset) {
-			return strtolower($dataset);
-		}
-		else {
-			$class_name = Namespaces::shortClassName($class_name);
-			return (substr($class_name, -1) === "y")
-			? (strtolower(substr($class_name, 0, -1)) . "ies")
-			: (strtolower($class_name) . "s");
-		}
+		return strtolower(Reflection_Class::getInstanceOf($class_name)->getAnnotation("dataset"));
 	}
 
 	//----------------------------------------------------------------------------------------- write

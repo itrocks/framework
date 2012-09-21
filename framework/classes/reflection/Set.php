@@ -12,6 +12,8 @@ class Set
 
 	//--------------------------------------------------------------------------- $element_class_name
 	/**
+	 * Element class name, with namespace
+	 *
 	 * @var string
 	 */
 	public $element_class_name;
@@ -29,7 +31,7 @@ class Set
 
 	//---------------------------------------------------------------------------- elementClassNameOf
 	/**
-	 * Gets element class name of a given set class name
+	 * Gets element class name of a given set class name (namespace needed)
 	 *
 	 * @param string $class_name
 	 * @return string
@@ -39,15 +41,8 @@ class Set
 		if (class_exists($class_name)) {
 			$set = new $class_name();
 			return $set->element_class_name;
-		}
-		elseif (substr($class_name, -3) == "ies") {
-			return substr($class_name, 0, -3) . "y";
-		}
-		elseif (substr($class_name, -1) == "s") {
-			return substr($class_name, 0, -1);
-		}
-		else {
-			return $class_name;
+		} else {
+			return Namespaces::fullClassName(Names::setToClass($class_name));
 		}
 	}
 
