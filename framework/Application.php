@@ -84,19 +84,24 @@ abstract class Application
 	public static function getNamespaces()
 	{
 		if (!Application::$namespaces) {
-			$application_name = Configuration::current()->getApplicationName();
-			$app_dir = strtolower($application_name);
-			Application::$namespaces = array(""); 
-			$application = $application_name;
-			while ($application != "Framework") {
-				Application::$namespaces[] = "SAF\\" . $application;
-				$application =  mParse(file_get_contents("{$app_dir}/Application.php"),
-					" extends \\SAF\\", "\\Application"
-				);
+			$current_configuration = Configuration::current();
+			if (!$current_configuration) {
+				return array(__NAMESPACE__);
+			} else {
+				$application_name = $current_configuration->getApplicationName();
+				$app_dir = strtolower($application_name);
+				Application::$namespaces = array(""); 
+				$application = $application_name;
+				while ($application != "Framework") {
+					Application::$namespaces[] = "SAF\\" . $application;
+					$application =  mParse(file_get_contents("{$app_dir}/Application.php"),
+						" extends \\SAF\\", "\\Application"
+					);
+				}
+				Application::$namespaces[] = __NAMESPACE__;
+				// TODO should found another way to make it smarter (prehaps framework_test application ?)
+				Application::$namespaces[] = __NAMESPACE__ . "\\Tests";
 			}
-			Application::$namespaces[] = __NAMESPACE__;
-			// TODO should found another way to make it smarter (prehaps framework_test application ?)
-			Application::$namespaces[] = __NAMESPACE__ . "\\Tests";
 		}
 		return Application::$namespaces;
 	}
