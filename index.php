@@ -6,6 +6,7 @@ require_once "framework/classes/Autoloader.php";
 
 // modules
 require_once "framework/classes/locale/Html_Translator.php";
+require_once "framework/views/html/Html_Cleaner.php";
 
 // debug
 ini_set("xdebug.scream", false);
