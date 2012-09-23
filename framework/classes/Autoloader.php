@@ -60,6 +60,7 @@ abstract class Autoloader
 		}
 		// TODO this should be defined using AOP into Aop_Getter, but doesn't work with AOP-PHP 0.2.0
 		Aop_Getter::registerPropertiesGetters(Namespaces::fullClassName($class_name));
+		Aop_Setter::registerPropertiesSetters(Namespaces::fullClassName($class_name));
 		return $class_name;
 	}
 

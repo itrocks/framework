@@ -2,10 +2,10 @@
 namespace SAF\Framework;
 use AopJoinPoint;
 
-require_once "framework/classes/reflection/Reflection_Class.php";
+require_once "framework/classes/toolbox/Aop.php";
 require_once "framework/classes/reflection/Reflection_Property.php";
 
-abstract class Aop_Getter
+abstract class Aop_Getter extends Aop
 {
 
 	//--------------------------------------------------------------------------------- getCollection
@@ -105,29 +105,7 @@ abstract class Aop_Getter
 	 */
 	public static function registerPropertiesGetters($class_name)
 	{
-		if (@class_exists($class_name)) {
-			$class = Reflection_Class::getInstanceOf($class_name);
-			foreach ($class->getProperties() as $property) {
-				if ($property->class == $class_name) {
-					$getter = $property->getAnnotation("getter")->value;
-					if ($getter) {
-						if (substr($getter, 0, 5) === "Aop::") {
-							Aop::registerBefore(
-								"read " . $class_name . "->" . $property->name,
-								array(__CLASS__, substr($getter, 5))
-							);
-						}
-						else {
-							Aop::registerAround(
-								"read " . $class_name . "->" . $property->name,
-								array($class_name, $getter)
-							);
-						}
-					}
-				} else {
-				}
-			}
-		}
+		parent::registerProperties($class_name, "getter", "read");
 	}
 
 }

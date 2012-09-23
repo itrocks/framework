@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+require_once "framework/classes/reflection/Reflection_Class.php";
+
 abstract class Aop
 {
 
@@ -41,6 +43,38 @@ abstract class Aop
 	public static function registerBefore($function, $call_back)
 	{
 		aop_add_before($function, $call_back);
+	}
+
+	//---------------------------------------------------------------------------- registerProperties
+	/**
+	 * @param string $class_name
+	 * @param string $annotation ie getter, setter
+	 * @param string $function ie read, write
+	 */
+	public static function registerProperties($class_name, $annotation, $function)
+	{
+		if (@class_exists($class_name)) {
+			$class = Reflection_Class::getInstanceOf($class_name);
+			foreach ($class->getProperties() as $property) {
+				if ($property->class == $class_name) {
+					$getter = $property->getAnnotation($annotation)->value;
+					if ($getter) {
+						if (substr($getter, 0, 5) === "Aop::") {
+							Aop::registerBefore(
+									$function . " " . $class_name . "->" . $property->name,
+									array(__CLASS__, substr($getter, 5))
+							);
+						}
+						else {
+							Aop::registerAround(
+									$function . " " . $class_name . "->" . $property->name,
+									array($class_name, $getter)
+							);
+						}
+					}
+				}
+			}
+		}
 	}
 
 }

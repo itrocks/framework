@@ -24,9 +24,27 @@ class Set
 	 *
 	 * @param string $element_class_name
 	 */
-	public function __construct($element_class_name)
+	public function __construct($element_class_name = null)
 	{
-		$this->element_class_name = $element_class_name;
+		$this->element_class_name = $element_class_name
+			? $element_class_name
+			: Names::setToClass(get_class($this));
+	}
+
+	//------------------------------------------------------------------------------------------- add
+	/**
+	 * Adds an element to the set
+	 *
+	 * @param string | object $key identity of the element in the set, or element if $element is null
+	 * @param object | null $element element to add to the set (null if no $key)
+	 */
+	public function add($key, $element = null)
+	{
+		if ($element) {
+			$this->elements[$key] = $element;
+		} else {
+			$this->elements[] = $element;
+		}
 	}
 
 	//---------------------------------------------------------------------------- elementClassNameOf
