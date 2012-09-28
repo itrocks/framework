@@ -31,10 +31,12 @@ class Translation
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct($text = null, $language = null, $context = null, $translation = null)
 	{
-		$this->context     = $context;
-		$this->language    = $language;
-		$this->text        = $text;
-		$this->translation = $translation;
+		if (isset($text)) {
+			$this->context     = $context;
+			$this->language    = $language;
+			$this->text        = $text;
+			$this->translation = $translation;
+		}
 	}
 
 }

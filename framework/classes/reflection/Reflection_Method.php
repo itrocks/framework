@@ -49,12 +49,12 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 		elseif (is_object($of_class)) {
 			$of_class = get_class($of_class); 
 		}
-		if (isset(Reflection_Method::$cache[$of_class][$of_name])) {
-			$method = Reflection_Method::$cache[$of_class][$of_name];
+		if (isset(self::$cache[$of_class][$of_name])) {
+			$method = self::$cache[$of_class][$of_name];
 		}
 		else {
 			$method = new Reflection_Method($of_class, $of_name);
-			Reflection_Method::$cache[$of_class][$of_name] = $method;
+			self::$cache[$of_class][$of_name] = $method;
 		}
 		return $method;
 	}

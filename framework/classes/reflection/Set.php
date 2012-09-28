@@ -80,7 +80,7 @@ class Set
 			return new $class_name();
 		}
 		else {
-			$element_class_name = Set::elementClassNameOf($class_name);
+			$element_class_name = static::elementClassNameOf($class_name);
 			return new Set($element_class_name);
 		}
 	}

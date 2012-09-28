@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework;
-use AopJoinPoint;
+use AopJoinpoint;
 
 require_once "framework/classes/toolbox/Aop.php";
 require_once "framework/classes/reflection/Reflection_Property.php";
@@ -12,9 +12,9 @@ abstract class Aop_Getter extends Aop
 	/**
 	 * Register this for any object collection property using "@getter Aop::getCollection" annotation
 	 *
-	 * @param AopJoinPoint $joinpoint
+	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function getCollection(AopJoinPoint $joinpoint)
+	public static function getCollection(AopJoinpoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -37,9 +37,9 @@ abstract class Aop_Getter extends Aop
 	/**
 	 * Register this for any Date_Time property using "@getter Aop::getDateTime" annotation
 	 *
-	 * @param AopJoinPoint $joinpoint
+	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function getDateTime(AopJoinPoint $joinpoint)
+	public static function getDateTime(AopJoinpoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -59,9 +59,9 @@ abstract class Aop_Getter extends Aop
 	/**
 	 * Register this for any object property using "@getter Aop::getObject" annotation
 	 *
-	 * @param AopJoinPoint $joinpoint
+	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function getObject(AopJoinPoint $joinpoint)
+	public static function getObject(AopJoinpoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -79,21 +79,16 @@ abstract class Aop_Getter extends Aop
 		}
 	}
 
-	//--------------------------------------------------------------------- registerPropertiesGetters
-	/**
-	 * AOP auto-registerer call (to register after Autoloader->autoload(), crashes with AOP-PHP 0.2.0)
-	 *
-	 * @param AopJoinPoint $joinpoint
-	 */
-	public static function _registerPropertiesGetters(AopJoinPoint $joinpoint)
+	//-------------------------------------------------------------------------------------- register
+	public static function register()
 	{
-		if ($joinpoint->getReturnedValue()) {
-			list($class_name) = $joinpoint->getArguments();
-			Aop_Getter::registerPropertiesGetters($class_name);
-		}
+		aop_add_after(
+			__NAMESPACE__ . "\\Autoloader->autoload()",
+			array(__CLASS__, "registerGettersAop")
+		);
 	}
 
-	//---------------------------------------------------------------------- registerPropertiesGetter
+	//------------------------------------------------------------------------------- registerGetters
 	/**
 	 * Auto-register properties getters for a given class name
 	 *
@@ -103,18 +98,23 @@ abstract class Aop_Getter extends Aop
 	 *
 	 * @param string $class_name
 	 */
-	public static function registerPropertiesGetters($class_name)
+	public static function registerGetters($class_name)
 	{
 		parent::registerProperties($class_name, "getter", "read");
 	}
 
-}
+	//---------------------------------------------------------------------------- registerGettersAop
+	/**
+	 * AOP auto-registerer call (to register after Autoloader->autoload(), crashes with AOP-PHP 0.2.0)
+	 *
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function registerGettersAop(AopJoinpoint $joinpoint)
+	{
+		if ($joinpoint->getReturnedValue()) {
+			list($class_name) = $joinpoint->getArguments();
+			parent::registerProperties($class_name, "getter", "read");
+		}
+	}
 
-// TODO test this with further versions of AOP-PHP, where issue #34 will be complete
-/*
-// commented because AOP-PHP version 0.2.0 crashes when registering into an advice !
-Aop::registerAfter(
-	__NAMESPACE__ . "\\Autoloader->autoload()",
-	__NAMESPACE__ . "\\Aop_Getter::_registerPropertiesGetters"
-);
-*/
+}

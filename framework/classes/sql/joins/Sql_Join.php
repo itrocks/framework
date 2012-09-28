@@ -70,7 +70,7 @@ class Sql_Join
 	 * @var string
 	 * @values SIMPLE, OBJECT
 	 */
-	public $type = Sql_Join::SIMPLE;
+	public $type = self::SIMPLE;
 
 	//-------------------------------------------------------------------------------------- toString
 	public function __toString()
@@ -95,7 +95,7 @@ class Sql_Join
 	 */
 	public static function newInstance(
 		$mode, $master_alias, $master_column, $foreign_alias, $foreign_table, $foreign_column,
-		$type = Sql_Join::SIMPLE
+		$type = self::SIMPLE
 	) {
 		$sql_join = new Sql_Join();
 		$sql_join->foreign_alias  = $foreign_alias;

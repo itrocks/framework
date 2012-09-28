@@ -35,9 +35,9 @@ class Displayable extends String
 	public function display()
 	{
 		switch ($this->type) {
-			case Displayable::TYPE_CLASS:    return Names::classToDisplay($this->value);
-			case Displayable::TYPE_METHOD:   return Names::methodToDisplay($this->value);
-			case Displayable::TYPE_PROPERTY: return Names::propertyToDisplay($this->value);
+			case self::TYPE_CLASS:    return Names::classToDisplay($this->value);
+			case self::TYPE_METHOD:   return Names::methodToDisplay($this->value);
+			case self::TYPE_PROPERTY: return Names::propertyToDisplay($this->value);
 		}
 		return $this->value;
 	}

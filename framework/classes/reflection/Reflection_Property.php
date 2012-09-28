@@ -68,14 +68,14 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			$of_class = get_class($of_class); 
 		}
 		if (
-			isset(Reflection_Property::$cache[$of_class])
-			&& isset(Reflection_Property::$cache[$of_class][$of_name])
+			isset(self::$cache[$of_class])
+			&& isset(self::$cache[$of_class][$of_name])
 		) {
-			$property = Reflection_Property::$cache[$of_class][$of_name];
+			$property = self::$cache[$of_class][$of_name];
 		}
 		else {
 			$property = new Reflection_Property($of_class, $of_name);
-			Reflection_Property::$cache[$of_class][$of_name] = $property;
+			self::$cache[$of_class][$of_name] = $property;
 		}
 		return $property;
 	}

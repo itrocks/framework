@@ -48,14 +48,14 @@ abstract class Reflection_Class_Properties_Access
 	public static function access(Reflection_Class $object_class)
 	{
 		$class_name = $object_class->name;
-		if (isset(Reflection_Class_Properties_Access::$properties_map[$class_name])) {
-			$properties = Reflection_Class_Properties_Access::$properties_map[$class_name];
-			Reflection_Class_Properties_Access::$count[$class_name] ++;
+		if (isset(self::$properties_map[$class_name])) {
+			$properties = self::$properties_map[$class_name];
+			self::$count[$class_name] ++;
 		}
 		else {
 			$parent_class = $object_class->getParentClass();
 			$parent_properties = $parent_class
-				? Reflection_Class_Properties_Access::access($parent_class)
+				? static::access($parent_class)
 				: array();
 			$properties = $parent_properties;
 			$private = array();
@@ -67,9 +67,9 @@ abstract class Reflection_Class_Properties_Access
 				}
 				$properties[$property->name] = $property;
 			}
-			Reflection_Class_Properties_Access::$count[$class_name]          = 0;
-			Reflection_Class_Properties_Access::$properties_map[$class_name] = $properties;
-			Reflection_Class_Properties_Access::$private_map[$class_name]    = $private;
+			self::$count[$class_name]          = 0;
+			self::$properties_map[$class_name] = $properties;
+			self::$private_map[$class_name]    = $private;
 		}
 		return $properties;
 	}
@@ -89,20 +89,20 @@ abstract class Reflection_Class_Properties_Access
 	public static function done(Reflection_Class $object_class)
 	{
 		$class_name = $object_class->name;
-		$count = Reflection_Class_Properties_Access::$count[$class_name];
+		$count = self::$count[$class_name];
 		if ($count > 0) {
-			Reflection_Class_Properties_Access::$count[$class_name] --;
+			self::$count[$class_name] --;
 		}
 		else {
-			foreach (Reflection_Class_Properties_Access::$private_map[$class_name] as $private) {
+			foreach (self::$private_map[$class_name] as $private) {
 				$private->setAccessible(false);
 			}
-			unset(Reflection_Class_Properties_Access::$private_map[$class_name]);
-			unset(Reflection_Class_Properties_Access::$properties_map[$class_name]);
-			unset(Reflection_Class_Properties_Access::$count[$class_name]);
+			unset(self::$private_map[$class_name]);
+			unset(self::$properties_map[$class_name]);
+			unset(self::$count[$class_name]);
 			$parent_class = $object_class->getParentClass();
 			if ($parent_class) {
-				Reflection_Class_Properties_Access::done($parent_class);
+				static::done($parent_class);
 			}
 		}
 	}

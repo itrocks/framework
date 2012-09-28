@@ -25,8 +25,8 @@ class Date_Time extends DateTime
 	public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
 	{
 		$dateTime = $timezone
-			? DateTime::createFromFormat($format, $time, $timezone)
-			: DateTime::createFromFormat($format, $time);
+			? parent::createFromFormat($format, $time, $timezone)
+			: parent::createFromFormat($format, $time);
 		return $timezone
 			? new Date_Time($dateTime->format("Y-m-d H:i:s"), $timezone)
 			: new Date_Time($dateTime->format("Y-m-d H:i:s"));

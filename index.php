@@ -1,24 +1,27 @@
 <?php
 namespace SAF\Framework;
+use SAF\Framework\Tests\Menu_Tester;
 
 error_reporting(E_ALL);
 require_once "framework/classes/Autoloader.php";
-
-// modules
-require_once "framework/classes/locale/Html_Translator.php";
-require_once "framework/views/html/Html_Cleaner.php";
+Autoloader::register();
 
 // debug
 ini_set("xdebug.scream", false);
-//require_once "framework/classes/debug/Execution_Timer.php";
-//require_once "framework/classes/debug/Xdebug.php";
-//require_once "framework/classes/loggers/Aop_Logger.php";
-//require_once "framework/dao/mysql/Mysql_Logger.php";
+Aop_Logger::register();
+Execution_Timer::register();
+Mysql_Logger::register();
+Xdebug::register();
+//aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
 
-//Aop::registerBefore(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
+// modules
+Aop_Getter::register();
+Aop_Setter::register();
+Html_Translator::register();
+Html_Cleaner::register();
 
 // tests
-require_once "framework/tests/test_objects/Menu_Tester.php";
+Menu_Tester::register();
 
 Error_Handlers::getInstance()->addHandler(
 	E_ALL & !E_NOTICE,

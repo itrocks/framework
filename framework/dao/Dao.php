@@ -14,8 +14,8 @@ abstract class Dao
 	 */
 	public static function begin()
 	{
-		if (Dao::current() instanceof Transactional_Data_Link) {
-			return Dao::current()->begin();
+		if (self::current() instanceof Transactional_Data_Link) {
+			return self::current()->begin();
 		}
 		else {
 			return null;
@@ -31,8 +31,8 @@ abstract class Dao
 	 */
 	public static function commit()
 	{
-		if (Dao::current() instanceof Transactional_Data_Link) {
-			return Dao::current()->commit();
+		if (self::current() instanceof Transactional_Data_Link) {
+			return self::current()->commit();
 		}
 		else {
 			return null;
@@ -52,7 +52,7 @@ abstract class Dao
 	 */
 	public static function delete($object)
 	{
-		return dao::current()->delete($object);
+		return self::current()->delete($object);
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -66,7 +66,7 @@ abstract class Dao
 	 */
 	public static function read($value, $object_class)
 	{
-		return Dao::current()->read($value, $object_class);
+		return self::current()->read($value, $object_class);
 	}
 
 	//--------------------------------------------------------------------------------------- readAll
@@ -79,7 +79,7 @@ abstract class Dao
 	 */
 	public static function readAll($object_class)
 	{
-		return Dao::current()->readAll($object_class);
+		return self::current()->readAll($object_class);
 	}
 
 	//--------------------------------------------------------------------------------------- replace
@@ -96,7 +96,7 @@ abstract class Dao
 	 */
 	public static function replace($destination, $source)
 	{
-		return Dao::current()->replace($destination, $source);
+		return self::current()->replace($destination, $source);
 	}
 
 	//-------------------------------------------------------------------------------------- rollback
@@ -108,8 +108,8 @@ abstract class Dao
 	 */
 	public static function rollback()
 	{
-		if (Dao::current() instanceof Transactional_Data_Link) {
-			return Dao::current()->rollback();
+		if (self::current() instanceof Transactional_Data_Link) {
+			return self::current()->rollback();
 		}
 		else {
 			return null;
@@ -130,7 +130,7 @@ abstract class Dao
 	 */
 	public static function search($what)
 	{
-		return Dao::current()->search($what);
+		return self::current()->search($what);
 	}
 
 	//------------------------------------------------------------------------------------- searchOne
@@ -147,7 +147,7 @@ abstract class Dao
 	 */
 	public static function searchOne($what)
 	{
-		return Dao::current()->searchOne($what);
+		return self::current()->searchOne($what);
 	}
 
 	//----------------------------------------------------------------------------------- storeNameOf
@@ -159,7 +159,7 @@ abstract class Dao
 	 */
 	public static function storeNameOf($class_name)
 	{
-		return Dao::current()->storeNameOf($class_name);
+		return self::current()->storeNameOf($class_name);
 	}
 
 	//----------------------------------------------------------------------------------------- write
@@ -176,7 +176,7 @@ abstract class Dao
 	 */
 	public static function write($object)
 	{
-		Dao::current()->write($object);
+		self::current()->write($object);
 	}
 
 }

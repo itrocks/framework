@@ -28,7 +28,7 @@ abstract class Application
 		$dir = dir($path);
 		while ($entry = $dir->read()) {
 			if (is_dir("$path/$entry") && ($entry[0] != ".")) {
-				$directories = array_merge($directories, Application::getDirectories("$path/$entry"));
+				$directories = array_merge($directories, static::getDirectories("$path/$entry"));
 			}
 		}
 		return $directories;
@@ -54,9 +54,9 @@ abstract class Application
 			$extends = mParse(file_get_contents("{$app_dir}/Application.php"),
 				" extends \\SAF\\", "\\Application"
 			);
-			$directories = Application::getSourceDirectories($extends);
+			$directories = static::getSourceDirectories($extends);
 		}
-		return array_merge(Application::getDirectories($app_dir), $directories);
+		return array_merge(static::getDirectories($app_dir), $directories);
 	}
 
 	//--------------------------------------------------------------------------------- getNamespaces
@@ -70,27 +70,27 @@ abstract class Application
 	 */
 	public static function getNamespaces()
 	{
-		if (!Application::$namespaces) {
+		if (!self::$namespaces) {
 			$current_configuration = Configuration::current();
 			if (!$current_configuration) {
 				return array(__NAMESPACE__);
 			} else {
 				$application_name = $current_configuration->getApplicationName();
 				$app_dir = strtolower($application_name);
-				Application::$namespaces = array(""); 
+				self::$namespaces = array(""); 
 				$application = $application_name;
 				while ($application != "Framework") {
-					Application::$namespaces[] = "SAF\\" . $application;
+					self::$namespaces[] = "SAF\\" . $application;
 					$application =  mParse(file_get_contents("{$app_dir}/Application.php"),
 						" extends \\SAF\\", "\\Application"
 					);
 				}
-				Application::$namespaces[] = __NAMESPACE__;
+				self::$namespaces[] = __NAMESPACE__;
 				// TODO should found another way to make it smarter (prehaps framework_test application ?)
-				Application::$namespaces[] = __NAMESPACE__ . "\\Tests";
+				self::$namespaces[] = __NAMESPACE__ . "\\Tests";
 			}
 		}
-		return Application::$namespaces;
+		return self::$namespaces;
 	}
 
 }

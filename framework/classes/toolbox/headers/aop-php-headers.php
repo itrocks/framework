@@ -130,14 +130,14 @@ const AOP_KIND_RETURN = 512;
 const AOP_KIND_WRITE = 16;
 
 /**
- * An instance of AopJoinPoint will always be passed to your advices.
+ * An instance of AopJoinpoint will always be passed to your advices.
  * This object contains several informations, such as the pointcut who triggered the joinpoint,
  * the arguments, the returned value (if available), the raised exception (if available), and will
  * enables you to run the expected method in case you are "around" it.
  *
  * @link https://github.com/AOP-PHP/AOP/blob/master/doc/Contents/chapter2.md#aopjoinpoint-complete-reference
  */
-class AopJoinPoint
+class AopJoinpoint
 {
 
 	//---------------------------------------------------------------------------------- getArguments

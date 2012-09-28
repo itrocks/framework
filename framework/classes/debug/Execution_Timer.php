@@ -19,7 +19,7 @@ abstract class Execution_Timer
 	 */
 	public static function begin()
 	{
-		Execution_Timer::$start_time = microtime(true);
+		self::$start_time = microtime(true);
 	}
 
 	//------------------------------------------------------------------------------------------- end
@@ -28,7 +28,7 @@ abstract class Execution_Timer
 	 */
 	public static function end()
 	{
-		$duration = number_format(microtime(true) - Execution_Timer::$start_time, 3, ",", " ");
+		$duration = number_format(microtime(true) - self::$start_time, 3, ",", " ");
 		echo "<script type=\"text/javascript\">"
 			. " document.getElementById(\"main_page\").innerHTML"
 			. " += '<div class=\"Timer logger duration\">$duration</div>';"
@@ -41,13 +41,11 @@ abstract class Execution_Timer
 	 */
 	public static function register()
 	{
-		Execution_Timer::begin();
-		Aop::registerAfter(
+		self::begin();
+		aop_add_after(
 			__NAMESPACE__ . "\\Main_Controller->run()",
 			array(__CLASS__, "end")
 		);
 	}
 
 }
-
-Execution_Timer::register();

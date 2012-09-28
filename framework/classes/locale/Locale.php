@@ -18,9 +18,16 @@ class Locale
 	 */
 	public $translations;
 
-	//----------------------------------------------------------------------------------- setLanguage
-	public function setLanguage()
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct($parameters)
 	{
+		$this->language = $parameters["language"];
+	}
+
+	//----------------------------------------------------------------------------------- setLanguage
+	public function setLanguage($language)
+	{
+		$this->language = $language;
 		$this->translations = new Translations($this->language);
 	}
 

@@ -1,48 +1,30 @@
 <?php
 namespace SAF\Framework;
+use AopJoinpoint;
 
 require_once "framework/classes/reflection/Reflection_Class.php";
 
 abstract class Aop
 {
 
-	//--------------------------------------------------------------------------------- registerAfter
-	/**
-	 * Register a call_back advice, called after the execution of a function or before
-	 * the read/write of a property
-	 *
-	 * @param string $function ie "Class_Name->functionName()" or "Class_Name->property_name"
-	 * @param string $call_back valid callback function descriptor : "Class_Name::functionName()
-	 */
-	public static function registerAfter($function, $call_back)
-	{
-		aop_add_after($function, $call_back);
-	}
+	//----------------------------------------------------------------------------------- $joinpoints
+	static $joinpoints = array(); 
 
-	//-------------------------------------------------------------------------------- registerAround
+	//------------------------------------------------------------------------------- methodJoinpoint
 	/**
-	 * Register a call_back advice, called around the execution of a function or before
-	 * the read/write of a property
-	 *
-	 * @param string $function ie "Class_Name->functionName()" or "Class_Name->property_name"
-	 * @param string $call_back valid callback function descriptor : "Class_Name::functionName()
+	 * AopJoinpoint $joinpoint
 	 */
-	public static function registerAround($function, $call_back)
+	public static function propertyJoinpoint(AopJoinpoint $joinpoint)
 	{
-		aop_add_around($function, $call_back);
-	}
-
-	//-------------------------------------------------------------------------------- registerBefore
-	/**
-	 * Register a call_back advice, called before the execution of a function or before
-	 * the read/write of a property
-	 *
-	 * @param string $function ie "Class_Name->functionName()" or "Class_Name->property_name"
-	 * @param string $call_back valid callback function descriptor : "Class_Name::functionName()
-	 */
-	public static function registerBefore($function, $call_back)
-	{
-		aop_add_before($function, $call_back);
+		static $antiloop = array();
+		$class_name = $joinpoint->getClassName();
+		$property_name = $joinpoint->getPropertyName();
+		$call = self::$joinpoints[$class_name][$property_name];
+		if (!isset($antiloop[$class_name]) && !isset($antiloop[$class_name][$property_name])) {
+			$antiloop[$class_name][$property_name] = true;
+			call_user_func(array($joinpoint->getObject(), $call), $joinpoint->getAssignedValue());
+			unset($antiloop[$class_name][$property_name]);
+		}
 	}
 
 	//---------------------------------------------------------------------------- registerProperties
@@ -57,19 +39,27 @@ abstract class Aop
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->getProperties() as $property) {
 				if ($property->class == $class_name) {
-					$getter = $property->getAnnotation($annotation)->value;
-					if ($getter) {
-						if (substr($getter, 0, 5) === "Aop::") {
-							Aop::registerBefore(
-									$function . " " . $class_name . "->" . $property->name,
-									array(__CLASS__, substr($getter, 5))
+					$call = $property->getAnnotation($annotation)->value;
+					if ($call) {
+						if (substr($call, 0, 5) === "Aop::") {
+							aop_add_before(
+								$function . " " . $class_name . "->" . $property->name,
+								array(get_called_class(), substr($call, 5))
 							);
 						}
 						else {
-							Aop::registerAround(
+							if ($class->getMethod($call)->isStatic()) {
+								aop_add_after(
 									$function . " " . $class_name . "->" . $property->name,
-									array($class_name, $getter)
-							);
+									array($class_name, $call)
+								);
+							} else {
+								aop_add_after(
+									$function . " " . $class_name . "->" . $property->name,
+									array(__CLASS__, "propertyJoinpoint")
+								);
+								self::$joinpoints[$class_name][$property->name] = $call;
+							}
 						}
 					}
 				}

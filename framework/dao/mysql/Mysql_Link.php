@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use mysqli, mysqli_result;
 
 /**
  * @todo Mysql_Link must be rewritten : call query(), executeQuery(), and standard protected methods instead of mysql_*
@@ -7,6 +8,14 @@ namespace SAF\Framework;
  */
 class Mysql_Link extends Sql_Link
 {
+
+	//----------------------------------------------------------------------------------- $connection
+	/**
+	 * Connection to the mysqli server is a mysqli object
+	 *
+	 * @var mysqli
+	 */
+	protected $connection;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -19,13 +28,12 @@ class Mysql_Link extends Sql_Link
 	public function __construct($parameters)
 	{
 		parent::__construct($parameters);
-		$this->connection = mysql_connect(
-			$parameters["host"], $parameters["user"], $parameters["password"]
-		);
 		if (isset($parameters["databases"]) && !isset($parameters["database"])) {
 			$parameters["database"] = str_replace("*", "", $parameters["databases"]);
 		}
-		mysql_select_db($parameters["database"], $this->connection);
+		$this->connection = new mysqli(
+			$parameters["host"], $parameters["user"], $parameters["password"], $parameters["database"]
+		);
 	}
 
 	//---------------------------------------------------------------------------------------- delete
@@ -79,33 +87,49 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//---------------------------------------------------------------------------------- executeQuery
+	/**
+	 * Execute an SQL query
+	 *
+	 * Sql_Link inherited classes must implement SQL query calls only into this method.
+	 *
+	 * @param string $query
+	 * @return mysqli_result the sql query result set 
+	 */
 	protected function executeQuery($query)
 	{
-		return mysql_query($query, $this->connection);
+		return $this->connection->query($query);
 	}
 
 	//----------------------------------------------------------------------------------------- fetch
+	/**
+	 * Fetch a result from a result set to an object
+	 *
+	 * @param mysqli_result $result_set The result set : in most cases, will come from executeQuery()
+	 * @param string $class_name The class name to store the result data into
+	 * @return object
+	 */
 	protected function fetch($result_set, $class_name = null)
 	{
-		return mysql_fetch_object($result_set, $class_name);
+		$object = $result_set->fetch_object($class_name);
+		return $object;
 	}
 
 	//------------------------------------------------------------------------------------------ free
 	protected function free($result_set)
 	{
-		mysql_free_result($result_set);
+		$result_set->free();
 	}
 
 	//--------------------------------------------------------------------------------- getColumnName
 	protected function getColumnName($result_set, $index)
 	{
-		return mysql_field_name($result_set, $index);
+		return $result_set->fetch_field_direct($index)->name;
 	}
 
 	//------------------------------------------------------------------------------- getColumnsCount
 	protected function getColumnsCount($result_set)
 	{
-		return mysql_num_fields($result_set);
+		return count($result_set->fetch_fields());
 	}
 
 	//--------------------------------------------------------------------------- getStoredProperties
@@ -114,18 +138,17 @@ class Mysql_Link extends Sql_Link
 		if (is_string($class)) {
 			$class = Reflection_Class::getInstanceOf($class);
 		}
-		$result_set = mysql_query(
-			"SHOW COLUMNS FROM `" . $this->storeNameOf($class->name) . "`",
-			$this->connection
+		$result_set = $this->connection->query(
+			"SHOW COLUMNS FROM `" . $this->storeNameOf($class->name) . "`"
 		);
-		while ($column = mysql_fetch_object($result_set, __NAMESPACE__ . "\\Mysql_Column")) {
+		while ($column = $result_set->fetch_object(__NAMESPACE__ . "\\Mysql_Column")) {
 			$column_name = $column->getName();
 			if (substr($column_name, 0, 3) == "id_") {
 				$column_name = substr($column_name, 3);
 			}
 			$columns[$column_name] = $column;
 		}
-		mysql_free_result($result_set);
+		$result_set->free();
 		$object_properties = $class->getAllProperties();
 		return array_intersect_key($object_properties, $columns);
 	}
@@ -135,7 +158,7 @@ class Mysql_Link extends Sql_Link
 	{
 		if ($query) {
 			$this->executeQuery($query);
-			return @mysql_insert_id($this->connection);
+			return $this->connection->insert_id;
 		}
 		else {
 			return null;
@@ -146,12 +169,11 @@ class Mysql_Link extends Sql_Link
 	public function read($id, $class)
 	{
 		if (!$id) return null;
-		$result_set = mysql_query(
-			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $id,
-			$this->connection
+		$result_set = $this->connection->query(
+			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $id
 		);
-		$object = mysql_fetch_object($result_set, $class);
-		mysql_free_result($result_set);
+		$object = $result_set->fetch_object($class);
+		$result_set->free();
 		$this->setObjectIdentifier($object, $id);
 		return $object;
 	}
@@ -160,15 +182,14 @@ class Mysql_Link extends Sql_Link
 	public function readAll($class)
 	{
 		$read_result = array();
-		$result_set = mysql_query(
-			"SELECT * FROM `" . $this->storeNameOf(objectClass) . "`",
-			$this->connection
+		$result_set = $this->connection->query(
+			"SELECT * FROM `" . $this->storeNameOf(objectClass) . "`"
 		);
-		while ($object = mysql_fetch_object($result_set, $class)) {
+		while ($object = $result_set->fetch_object($class)) {
 			$this->setOjectIdentifier($object, $object->id);
 			$read_result[] = $object;
 		}
-		mysql_free_result($result_set);
+		$result_set->free();
 		return $read_result;
 	}
 
@@ -178,12 +199,12 @@ class Mysql_Link extends Sql_Link
 		$class = get_class($what);
 		$search_result = array();
 		$builder = new Sql_Select_Builder(get_class($what), null, $what, $this);
-		$result_set = mysql_query($builder->buildQuery(), $this->connection);
-		while ($object = mysql_fetch_object($result_set, $class)) {
+		$result_set = $this->connection->query($builder->buildQuery());
+		while ($object = $result_set->fetch_object($class)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$search_result[] = $object;
 		}
-		mysql_free_result($result_set);
+		$result_set->free();
 		return $search_result;
 	}
 
@@ -193,6 +214,7 @@ class Mysql_Link extends Sql_Link
 		$class = Reflection_Class::getInstanceOf($object);
 		$table_columns_names = array_keys($this->getStoredProperties($class));
 		$id = $this->getObjectIdentifier($object);
+		$write_collections = array();
 		foreach ($class->accessProperties() as $property) {
 			$value = $property->getValue($object);
 			if (in_array($property->name, $table_columns_names)) {
@@ -213,13 +235,13 @@ class Mysql_Link extends Sql_Link
 			$id = null;
 		}
 		if ($id === null) {
-			$id = $this->query(Sql_Builder::buildInsert($class, $write));
+			$id = $this->query(Sql_Builder::buildInsert($class->name, $write));
 			if ($id != null) {
 				$this->setObjectIdentifier($object, $id);
 			}
 		}
 		else {
-			$this->query(Sql_Builder::buildUpdate($class, $write, $id));
+			$this->query(Sql_Builder::buildUpdate($class->name, $write, $id));
 		}
 		foreach ($write_collections as $property_name => $value) {
 			$this->writeCollection($object, $property_name, $value);

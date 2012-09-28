@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework;
-use AopJoinPoint;
+use AopJoinpoint;
 
 require_once "framework/classes/toolbox/Aop.php";
 
@@ -14,7 +14,7 @@ abstract class Aop_Tracer
 	 * @example Aop::registerBefore("Class_Name->methodName()", __NAMESPACE__ . "\\Aop_Tracer::method")
 	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function method(AopJoinPoint $joinpoint)
+	public static function method(AopJoinpoint $joinpoint)
 	{
 		if ($joinpoint->getKindOfAdvice() | AOP_KIND_BEFORE) {
 			echo ".. before ";

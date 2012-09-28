@@ -104,8 +104,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		elseif (is_object($of_class)) {
 			$of_class = get_class($of_class);
 		}
-		if (isset(Reflection_Class::$cache[$of_class])) {
-			$class = Reflection_Class::$cache[$of_class];
+		if (isset(self::$cache[$of_class])) {
+			$class = self::$cache[$of_class];
 		}
 		else {
 			try {
@@ -114,7 +114,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 			catch (ReflectionException $e) {
 				$class = new Reflection_Class(Namespaces::fullClassName($of_class));
 			}
-			Reflection_Class::$cache[$of_class] = $class;
+			self::$cache[$of_class] = $class;
 		}
 		return $class;
 	}
@@ -163,7 +163,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	public function getParentClass()
 	{
 		$parent_class = parent::getParentClass();
-		return $parent_class ? Reflection_Class::getInstanceOf($parent_class) : $parent_class;
+		return $parent_class ? static::getInstanceOf($parent_class) : $parent_class;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties

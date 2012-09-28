@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework;
-use AopJoinPoint;
+use AopJoinpoint;
 
 // needed
 require_once "framework/Application.php";
@@ -48,8 +48,8 @@ abstract class Autoloader
 	{
 		$class_short_name = Namespaces::shortClassName($class_name);
 		if (!@include_once("$class_short_name.php")) {
-			if (!Autoloader::$initialized) {
-				Autoloader::init();
+			if (!self::$initialized) {
+				static::init();
 				if (!@include_once("$class_short_name.php")) {
 					return null;
 				}
@@ -58,9 +58,6 @@ abstract class Autoloader
 				return null;
 			}
 		}
-		// TODO this should be defined using AOP into Aop_Getter, but doesn't work with AOP-PHP 0.2.0
-		Aop_Getter::registerPropertiesGetters(Namespaces::fullClassName($class_name));
-		Aop_Setter::registerPropertiesSetters(Namespaces::fullClassName($class_name));
 		return $class_name;
 	}
 
@@ -72,10 +69,10 @@ abstract class Autoloader
 	 */
 	public static function getOriginIncludePath()
 	{
-		if (!Autoloader::$origin_include_path) {
-			Autoloader::$origin_include_path = get_include_path();
+		if (!self::$origin_include_path) {
+			self::$origin_include_path = get_include_path();
 		}
-		return Autoloader::$origin_include_path;
+		return self::$origin_include_path;
 	}
 
 	//------------------------------------------------------------------------------ includeSeparator
@@ -107,13 +104,13 @@ abstract class Autoloader
 				$application_name = "Framework";
 			}
 			$include_path = join(
-				Autoloader::includeSeparator(), Application::getSourceDirectories($application_name)
+				static::includeSeparator(), Application::getSourceDirectories($application_name)
 			);
-			$_SESSION["php_ini"]["include_path"] = Autoloader::getOriginIncludePath()
-				. Autoloader::includeSeparator() . $include_path;
+			$_SESSION["php_ini"]["include_path"] = static::getOriginIncludePath()
+				. static::includeSeparator() . $include_path;
 		}
 		set_include_path($_SESSION["php_ini"]["include_path"]);
-		Autoloader::$initialized = true;
+		self::$initialized = true;
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -123,7 +120,7 @@ abstract class Autoloader
 	public static function register()
 	{
 		spl_autoload_register(array(__CLASS__, "autoLoad"));
-		Aop::registerBefore(
+		aop_add_before(
 			__NAMESPACE__ . "\\Configuration->current()",
 			array(__CLASS__, "resetOnCurrentConfigurationChange")
 		);
@@ -137,24 +134,22 @@ abstract class Autoloader
 	 */
 	public static function reset()
 	{
-		Autoloader::$initialized = false;
+		self::$initialized = false;
 		unset($_SESSION["php_ini"]["include_path"]);
-		set_include_path(Autoloader::$origin_include_path);
+		set_include_path(self::$origin_include_path);
 	}
 
 	//------------------------------------------------------------- resetOnCurrentConfigurationChange
 	/**
 	 * Reset the include path for applications if current configuration changes.
 	 *
-	 * @param AopJoinPoint $joinpoint
+	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function resetOnCurrentConfigurationChange(AopJoinPoint $joinpoint)
+	public static function resetOnCurrentConfigurationChange(AopJoinpoint $joinpoint)
 	{
 		if (count($joinpoint->getArguments())) {
-			Autoloader::reset();
+			static::reset();
 		}
 	}
 
 }
-
-Autoloader::register();

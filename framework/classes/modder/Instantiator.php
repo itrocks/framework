@@ -23,8 +23,8 @@ abstract class Instantiator
 	 */
 	public static function getClass($class_name)
 	{
-		return isset(Instantiator::$substitutions[$class_name])
-			? Instantiator::$substitutions[$class_name]
+		return isset(self::$substitutions[$class_name])
+			? self::$substitutions[$class_name]
 			: $class_name;
 	}
 
@@ -37,7 +37,7 @@ abstract class Instantiator
 	 */
 	public static function newInstance($class_name)
 	{
-		$class_name = Instantiator::getClass($class_name);
+		$class_name = static::getClass($class_name);
 		return new $class_name();
 	}
 
@@ -54,12 +54,12 @@ abstract class Instantiator
 	public static function register($class_name, $herited_class)
 	{
 		if (is_subclass_of($herited_class, $class_name)) {
-			if (!($already = Instantiator::$substitutions[$class_name])) {
-				Instantiator::$substitutions[$class_name] = $herited_class;
+			if (!($already = self::$substitutions[$class_name])) {
+				self::$substitutions[$class_name] = $herited_class;
 			}
 			else {
 				if (is_subclass_of($herited_class, $already)) {
-					Instantiator::$substitutions[$class_name] = $herited_class;
+					self::$substitutions[$class_name] = $herited_class;
 				}
 			}
 		}

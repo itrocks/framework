@@ -67,14 +67,16 @@ abstract class Sql_Builder
 	 */
 	public static function buildInsert($class, $write)
 	{
-		$build_columns = Sql_Builder::buildColumns(array_keys($write));
+		$build_columns = static::buildColumns(array_keys($write));
 		if (!$build_columns) {
 			return null;
 		}
 		else {
-			return "INSERT INTO `" . Dao::current()->storeNameOf($class) . "`"
+			$insert = "INSERT INTO `" . Dao::current()->storeNameOf($class) . "`"
 				. " (" . $build_columns . ") VALUES ("
-				. Sql_Builder::buildValues($write) . ")";
+				. static::buildValues($write) . ")";
+echo "insert = $insert<br>";
+			return $insert;
 		}
 	}
 
@@ -118,6 +120,12 @@ abstract class Sql_Builder
 		}
 		$sql_update .= " WHERE id = " . $id;
 		return $sql_update;
+	}
+
+	//----------------------------------------------------------------------------------- buildValues
+	public static function buildValues($values)
+	{
+		return join(", ", array_map(array("SAF\\Framework\\Sql_Value", "escape"), $values));
 	}
 
 	//----------------------------------------------------------------------------- splitPropertyPath

@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework;
-use AopJoinPoint;
+use AopJoinpoint;
 
 require_once "framework/classes/toolbox/Aop.php";
 
@@ -15,7 +15,7 @@ abstract class Html_Session
 	 *
 	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function postSessionId(AopJoinPoint $joinpoint)
+	public static function postSessionId(AopJoinpoint $joinpoint)
 	{
 		$content = $joinpoint->getReturnedValue();
 		// $_POST
@@ -46,7 +46,7 @@ abstract class Html_Session
 	 */
 	public static function register()
 	{
-		Aop::registerAfter(
+		aop_add_after(
 			__NAMESPACE__ . "\\Html_Template->parse()",
 			array(__CLASS__, "postSessionId")
 		);

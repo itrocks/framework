@@ -116,7 +116,9 @@ class Main_Controller
 			Configuration::current()->getClassesConfigurations() as $class_name => $configuration
 		) {
 			$class_name = Namespaces::fullClassName($class_name);
-			$configuration_class_name = Namespaces::fullClassName($configuration["class"]);
+			$configuration_class_name = isset($configuration["class"])
+				? Namespaces::fullClassName($configuration["class"])
+				: $class_name;
 			$class_name::current(new $configuration_class_name($configuration));
 		}
 	}

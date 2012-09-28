@@ -461,7 +461,7 @@ class Html_Template
 				$file_name = substr($content, $i, $j - $i);
 				$file_name = substr($file_name, strrpos($file_name, "/") + 1);
 				if (substr($file_name, -4) == ".css") {
-					$file_path = Html_Template::getCssPath($this->css) . "/" . $file_name;
+					$file_path = static::getCssPath($this->css) . "/" . $file_name;
 				} elseif ($file_name == "dojo.js") {
 					$file_path = $_SERVER["SAF_ROOT"] . "dojo/dojo/dojo.js";
 				} else {

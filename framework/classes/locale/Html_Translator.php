@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework;
-use AopJoinPoint;
+use AopJoinpoint;
 
 abstract class Html_Translator
 {
@@ -11,7 +11,7 @@ abstract class Html_Translator
 	 */
 	public static function register()
 	{
-		Aop::registerAfter(
+		aop_add_after(
 			__NAMESPACE__ . "\\Html_Template->parse()",
 			array(__CLASS__, "translatePage")
 		);
@@ -24,7 +24,7 @@ abstract class Html_Translator
 	 *
 	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function translatePage(AopJoinPoint $joinpoint)
+	public static function translatePage(AopJoinpoint $joinpoint)
 	{
 		$content = $joinpoint->getReturnedValue();
 		$i = 0;
@@ -32,12 +32,10 @@ abstract class Html_Translator
 			$i ++;
 			$j = strpos($content, "]", $i);
 			$text = substr($content, $i, $j - $i);
-			$translation = Loc::tr($content);
+			$translation = Loc::tr($text);
 			$content = substr($content, 0, $i - 1) . $translation . substr($content, $j + 1);
 		}
 		$joinpoint->setReturnedValue($content);
 	}
 
 }
-
-Html_Translator::register();

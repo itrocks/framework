@@ -28,7 +28,7 @@ abstract class Type
 	 */
 	public static function isBasic($type_name)
 	{
-		return in_array(Namespaces::shortClassName($type_name), Type::$basic_types);
+		return in_array(Namespaces::shortClassName($type_name), self::$basic_types);
 	}
 
 	//------------------------------------------------------------------------------------ isMultiple

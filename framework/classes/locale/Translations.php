@@ -32,15 +32,18 @@ class Translations extends Set
 	{
 		if (!isset($this->cache[$text]) || !isset($this->cache[$text][$context])) {
 			$search = new Translation($text, $this->language, $context);
-			while ($search->context && !($translation = Dao::search($search))) {
+			$translation = Dao::searchOne($search);
+			while ($search->context && !$translation) {
 				$i = strrpos($search->context, ".");
 				$search->context = $i ? substr($search->context, 0, $i) : "";
-				$translation = Dao::search($search);
+				$translation = Dao::searchOne($search);
 			}
 			if (!$translation) {
-				$search->translation = $text;
-				Dao::write($search);
+				$translation = $search;
+				$translation->translation = "";
+				Dao::write($translation);
 			}
+			$translation = $translation ? $translation->translation : $text;
 			$this->cache[$text][$context] = $translation;
 		}
 		return $this->cache[$text][$context];

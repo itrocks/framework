@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework;
-use AopJoinPoint;
+use AopJoinpoint;
 
 class Mysql_Logger
 {
@@ -47,7 +47,7 @@ class Mysql_Logger
 	/**
 	 * Called each time before a mysql_query() call is done : log the query
 	 *
-	 * @param AopJoinPoint $joinpoint
+	 * @param AopJoinpoint $joinpoint
 	 */
 	public function onQuery($joinpoint)
 	{
@@ -60,13 +60,15 @@ class Mysql_Logger
 	/**
 	 * Called each time after a mysql_query() call is done : log the error (if some)
 	 *
-	 * @param AopJoinPoint $joinpoint
+	 * @param AopJoinpoint $joinpoint
 	 */
-	public function onError(AopJoinPoint $joinpoint)
+	public function onError(AopJoinpoint $joinpoint)
 	{
-		if (mysql_errno()) {
+		$mysqli = $joinpoint->getObject();
+		if ($mysqli->errno) {
+			
 			$arguments = $joinpoint->getArguments();
-			$error = mysql_errno() . ": " . mysql_error() . "[" . $arguments[0] . "]"; 
+			$error = $mysqli->errno . ": " . $mysqli->error . "[" . $arguments[0] . "]"; 
 			echo "<div class=\"Mysql logger error\">" . $error . "</div>\n";
 			$this->errors_log[] = $error;
 		}
@@ -75,10 +77,9 @@ class Mysql_Logger
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::registerBefore("mysql_query()", array(Mysql_Logger::getInstance(), "onQuery"));
-		Aop::registerAfter("mysql_query()", array(Mysql_Logger::getInstance(), "onError"));
+		$mysql_logger = self::getInstance();
+		aop_add_before("mysqli->query()", array($mysql_logger, "onQuery"));
+		aop_add_after("mysqli->query()", array($mysql_logger, "onError"));
 	}
 
 }
-
-Mysql_Logger::register();

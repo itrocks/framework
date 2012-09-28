@@ -35,7 +35,7 @@ abstract class View
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		foreach (View::getPossibleViews($class_name, $feature_name) as $call) {
+		foreach (static::getPossibleViews($class_name, $feature_name) as $call) {
 			list($view_class_name, $view_method_name) = $call;
 			foreach (Application::getNamespaces() as $namespace) {
 				$view = $namespace . "\\" . $view_class_name;

@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use AopJoinpoint;
 
 require_once "framework/classes/toolbox/Aop.php";
 
@@ -9,9 +10,9 @@ abstract class Xdebug
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::registerBefore(
+		aop_add_before(
 			__NAMESPACE__ . "\\Main_Controller->dispatchParams()",
-			__NAMESPACE__ . "\\Xdebug::removeXdebugParams"
+			array(__CLASS__, "removeXdebugParams")
 		);
 	}
 
@@ -19,9 +20,9 @@ abstract class Xdebug
 	/**
 	 * Remove Xdebug params
 	 *
-	 * @param AopJoinPoint $joinpoint
+	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function removeXdebugParams(AopJoinPoint $joinpoint)
+	public static function removeXdebugParams(AopJoinpoint $joinpoint)
 	{
 		$arguments = $joinpoint->getArguments();
 		if (isset($arguments[0]["XDEBUG_SESSION_START"]) && is_numeric($arguments[0]["KEY"])) {
@@ -31,5 +32,3 @@ abstract class Xdebug
 	}
 
 }
-
-Xdebug::register();

@@ -27,7 +27,7 @@ class Configuration
 			$this->$name = $value;
 		}
 		if (isset($configuration_options["default"]) && $configuration_options["default"]) {
-			Configuration::current($this);
+			self::current($this);
 		}
 	}
 
