@@ -80,7 +80,7 @@ class Main_Controller
 	 */
 	public function runController($uri, $get = array(), $post = array(), $files = array())
 	{
-		$uri = new Controller_Uri($uri, $get, "output");
+		$uri = new Controller_Uri($uri, $get, "output", "list");
 		foreach ($uri->getPossibleControllerCalls() as $call) {
 			list($controller_class_name, $method_name) = $call;
 			foreach (Application::getNamespaces() as $namespace) {

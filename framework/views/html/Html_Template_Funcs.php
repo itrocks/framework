@@ -30,7 +30,14 @@ abstract class Html_Template_Funcs
 	public static function getClass(Html_Template $template, $object)
 	{
 		return is_object($object)
-			? new Displayable(Namespaces::shortClassName(get_class($object)), Displayable::TYPE_CLASS)
+			? (
+					($object instanceof Set)
+					? new Displayable(
+						Names::classToSet(Namespaces::shortClassName($object->element_class_name)),
+						Displayable::TYPE_CLASS
+					)
+					: new Displayable(Namespaces::shortClassName(get_class($object)), Displayable::TYPE_CLASS)
+				)
 			: new Displayable(Namespaces::shortClassName($object), Displayable::TYPE_CLASS);
 	}
 
