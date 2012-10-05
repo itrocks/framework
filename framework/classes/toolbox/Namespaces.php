@@ -47,6 +47,9 @@ abstract class Namespaces
 						break;
 					}
 				}
+				if (!isset($cache[$class_name])) {
+					$full_class_name = $class_name;
+				}
 			}
 		}
 		else {
