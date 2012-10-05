@@ -43,7 +43,7 @@ abstract class Aop_Setter extends Aop
 	{
 		if ($joinpoint->getReturnedValue()) {
 			list($class_name) = $joinpoint->getArguments();
-			parent::registerProperties($class_name, "setter", "write");
+			parent::registerProperties(Namespaces::fullClassName($class_name), "setter", "write");
 		}
 	}
 

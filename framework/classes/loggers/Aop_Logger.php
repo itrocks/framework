@@ -45,6 +45,18 @@ abstract class Aop_Logger
 		}
 	}
 
+	//----------------------------------------------------------------------------------- logRegister
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function logRegister(AopJoinpoint $joinpoint)
+	{
+		$arguments = $joinpoint->getArguments();
+		echo "<div class=\"Aop logger register\">Register "
+			. $arguments[0] . " " . $arguments[1] . " " . $arguments[2]
+			. "</div>";
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
@@ -56,6 +68,7 @@ abstract class Aop_Logger
 		aop_add_before("aop_add_around()", array(__CLASS__, "log"));
 		aop_add_before("aop_add_before()", array(__CLASS__, "log"));
 		self::$active = true;
+		aop_add_before(__NAMESPACE__ . "\\Aop->registerProperties()", array(__CLASS__, "logRegister"));
 	}
 
 }

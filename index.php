@@ -8,9 +8,9 @@ Autoloader::register();
 
 // debug
 ini_set("xdebug.scream", false);
-Aop_Logger::register();
-Execution_Timer::register();
-Mysql_Logger::register();
+//Aop_Logger::register();
+//Execution_Timer::register();
+//Mysql_Logger::register();
 Xdebug::register();
 //aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
 
