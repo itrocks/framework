@@ -182,11 +182,9 @@ class Mysql_Link extends Sql_Link
 	public function readAll($class)
 	{
 		$read_result = array();
-		$result_set = $this->connection->query(
-			"SELECT * FROM `" . $this->storeNameOf(objectClass) . "`"
-		);
+		$result_set = $this->connection->query("SELECT * FROM `" . $this->storeNameOf($class) . "`");
 		while ($object = $result_set->fetch_object($class)) {
-			$this->setOjectIdentifier($object, $object->id);
+			$this->setObjectIdentifier($object, $object->id);
 			$read_result[] = $object;
 		}
 		$result_set->free();

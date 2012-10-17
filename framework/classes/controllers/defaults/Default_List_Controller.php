@@ -15,9 +15,10 @@ class Default_List_Controller implements Class_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
+		$parameters = $parameters->getObjects();
 		$element_class_name = Set::elementClassNameOf($class_name);
-		$objects = Dao::readAll($element_class_name);
-		$parameters = array_merge(array($class_name => $objects), $parameters);
+		$set = Set::instantiate($class_name, Dao::readAll($element_class_name));
+		$parameters = array_merge(array($class_name => $set), $parameters);
 		View::run($parameters, $form, $files, $class_name, "list");
 	}
 

@@ -24,11 +24,12 @@ class Set
 	 *
 	 * @param string $element_class_name
 	 */
-	public function __construct($element_class_name = null)
+	public function __construct($element_class_name = null, $elements = array())
 	{
 		$this->element_class_name = $element_class_name
 			? $element_class_name
 			: Names::setToClass(get_class($this));
+		$this->elements = $elements;
 	}
 
 	//------------------------------------------------------------------------------------------- add
@@ -74,14 +75,14 @@ class Set
 	 * @param string $class_name
 	 * @return Set
 	 */
-	public static function instantiate($class_name)
+	public static function instantiate($class_name, $elements = array())
 	{
 		if (class_exists($class_name)) {
-			return new $class_name();
+			return new $class_name($elements);
 		}
 		else {
 			$element_class_name = static::elementClassNameOf($class_name);
-			return new Set($element_class_name);
+			return new Set($element_class_name, $elements);
 		}
 	}
 
