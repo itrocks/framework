@@ -69,12 +69,20 @@ abstract class Aop_Getter extends Aop
 		static $antiloop = array();
 		if (!isset($antiloop[$hash][$property])) {
 			$antiloop[$hash][$property] = true;
+			$id_property = "id_" . $property;
 			$value = $object->$property;
-			unset($antiloop[$hash][$property]);
 			if (!is_object($value)) {
 				$class = $joinpoint->getClassName();
-				$type = Reflection_Property::getInstanceOf($class, $property)->getType();
-				$object->$property = Getter::getObject($value, $type);
+				$type = Namespaces::fullClassName(
+					Reflection_Property::getInstanceOf($class, $property)->getType()
+				);
+				if (isset($value)) {
+					$object->$property = Getter::getObject($value, $type);
+				} else {
+					$id_property = "id_" . $property;
+					$object->$property = Getter::getObject($object->$id_property, $type);
+				}
+			} else {
 			}
 		}
 	}

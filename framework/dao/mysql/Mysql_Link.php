@@ -174,7 +174,9 @@ class Mysql_Link extends Sql_Link
 		);
 		$object = $result_set->fetch_object($class);
 		$result_set->free();
-		$this->setObjectIdentifier($object, $id);
+		if ($object) {
+			$this->setObjectIdentifier($object, $id);
+		}
 		return $object;
 	}
 
