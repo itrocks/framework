@@ -3,6 +3,13 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Default list template</title>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#list').dataTable();
+		});
+	</script>
 	<style type="text/css">
 		@import "style/default/style.css";
 	</style>
@@ -10,12 +17,65 @@
 <body>
 
 	<!--BEGIN-->
+	<table class="{@class} {@feature}" id="list">
+	<thead>
+	<tr>
+		<!--elementClass.getAllProperties-->
+		<th>{@display}</th>
+		<!--sample-->
+		<th>column2</th>
+		<!--elementClass.getAllProperties-->
+	</tr>
+	</thead>
+	<tbody>
 	<!--elements-->
-	{number}<br>
-	<!--lines-->
-	- {item.code} = {net_price}<br>
-	<!--lines-->
+	<tr>
+		<!--@properties-->
+		<td>{value}</td>
+		<!--sample-->
+		<td>12,00</td>
+		<!--@properties-->
+	</tr>
+	<!--sample-->
+	<tr>
+		<td>code2</td>
+		<td>3,18</td>
+	</tr>
+	<tr>
+		<td>code3</td>
+		<td>2,29</td>
+	</tr>
+	<tr>
+		<td>code4</td>
+		<td>12,39</td>
+	</tr>
+	<tr>
+		<td>code5</td>
+		<td>6,10</td>
+	</tr>
+	<tr>
+		<td>code6</td>
+		<td>10 091,11</td>
+	</tr>
+	<tr>
+		<td>code7</td>
+		<td>2,29</td>
+	</tr>
+	<tr>
+		<td>code8</td>
+		<td>2,44</td>
+	</tr>
+	<tr>
+		<td>code9</td>
+		<td>2,59</td>
+	</tr>
+	<tr>
+		<td>code10</td>
+		<td>3,00</td>
+	</tr>
 	<!--elements-->
+	</tbody>
+	</table>
 	<!--END-->
 
 </body>

@@ -41,6 +41,30 @@ abstract class Html_Template_Funcs
 			: new Displayable(Namespaces::shortClassName($object), Displayable::TYPE_CLASS);
 	}
 
+	//------------------------------------------------------------------------------------ getDisplay
+	/**
+	 * Return object's display
+	 *
+	 * @param Html_Template $template
+	 * @param object $object
+	 * @return string
+	 */
+	public static function getDisplay(Html_Template $template, $object)
+	{
+		if ($object instanceof Reflection_Property) {
+			return Names::propertyToDisplay($object->name);
+		}
+		elseif ($object instanceof Reflection_Class) {
+			return Names::classToDisplay($object->name);
+		}
+		elseif ($object instanceof Reflection_Method) {
+			return Names::methodToDisplay($object->name);
+		}
+		else {
+			return new Displayable(get_class($object)->display());
+		}
+	}
+
 	//------------------------------------------------------------------------------------ getFeature
 	/**
 	 * Returns template's feature method name

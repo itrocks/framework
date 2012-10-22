@@ -48,6 +48,12 @@ class Set
 		}
 	}
 
+	//---------------------------------------------------------------------------------- elementClass
+	public function elementClass()
+	{
+		return Reflection_Class::getInstanceOf($this->element_class_name);
+	}
+
 	//---------------------------------------------------------------------------- elementClassNameOf
 	/**
 	 * Gets element class name of a given set class name (namespace needed)
@@ -63,6 +69,12 @@ class Set
 		} else {
 			return Namespaces::fullClassName(Names::setToClass($class_name));
 		}
+	}
+
+	//----------------------------------------------------------------------------------------- first
+	public function first()
+	{
+		return reset($this->elements);
 	}
 
 	//----------------------------------------------------------------------------------- instantiate
@@ -84,6 +96,18 @@ class Set
 			$element_class_name = static::elementClassNameOf($class_name);
 			return new Set($element_class_name, $elements);
 		}
+	}
+
+	//------------------------------------------------------------------------------------------ last
+	public function last()
+	{
+		return end($this->elements);
+	}
+
+	//---------------------------------------------------------------------------------------- object
+	public function object()
+	{
+		return $this->elements ? reset($this->elements) : $this->elementClass();
 	}
 
 }
