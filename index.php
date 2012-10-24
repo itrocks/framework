@@ -7,7 +7,7 @@ require_once "framework/classes/Autoloader.php";
 Autoloader::register();
 
 // debug
-ini_set("xdebug.scream", false);
+//ini_set("xdebug.scream", true);
 //Aop_Logger::register();
 //Execution_Timer::register();
 //Mysql_Logger::register();
