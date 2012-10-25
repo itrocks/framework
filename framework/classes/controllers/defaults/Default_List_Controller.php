@@ -1,8 +1,14 @@
 <?php
 namespace SAF\Framework;
 
-class Default_List_Controller implements Class_Controller
+class Default_List_Controller implements List_Controller
 {
+
+	//----------------------------------------------------------------------------- getListProperties
+	public function getListProperties()
+	{
+		if (Default_List_Controller_Configuration::current()->get)
+	}
 
 	//------------------------------------------------------------------------------------------- run
 	/**

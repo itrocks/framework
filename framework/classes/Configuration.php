@@ -31,6 +31,16 @@ class Configuration
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @param Configuration $set_current
+	 * @return Configuration
+	 */
+	public static function current(Configuration $set_current = null)
+	{
+		return parent::current($set_current);
+	}
+
 	//---------------------------------------------------------------------------- getApplicationName
 	/**
 	 * Get the configuration's application name

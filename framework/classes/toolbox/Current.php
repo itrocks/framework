@@ -12,8 +12,9 @@ trait Current
 	 * Gets/sets current environment's object
 	 *
 	 * @param Current $set_current
+	 * @return Current
 	 */
-	public static function current($set_current = null)
+	public static function current(Current $set_current = null)
 	{
 		if ($set_current) {
 			self::$current = $set_current;

@@ -10,8 +10,9 @@ trait Current_With_Default
 	 * Gets/sets current environment's object
 	 *
 	 * @param Current_With_Default $set_current
+	 * @return Current_With_Default
 	 */
-		public static function current($set_current = null)
+		public static function current(Current_With_Default $set_current = null)
 	{
 		$current = parent::current($set_current);
 		if (!isset($current)) {

@@ -24,6 +24,16 @@ class Locale
 		$this->language = $parameters["language"];
 	}
 
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @param Locale $set_current
+	 * @return Locale
+	 */
+	public static function current(Locale $set_current = null)
+	{
+		return parent::current($set_current);
+	}
+
 	//----------------------------------------------------------------------------------- setLanguage
 	public function setLanguage($language)
 	{

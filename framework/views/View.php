@@ -5,6 +5,16 @@ abstract class View
 {
 	use Current;
 
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @param View $set_current
+	 * @return View
+	 */
+	public static function current(View $set_current = null)
+	{
+		return parent::current($set_current);
+	}
+
 	//------------------------------------------------------------------------------ getPossibleViews
 	/**
 	 * @param string $class_name
@@ -46,6 +56,15 @@ abstract class View
 				}
 			}
 		} 
+	}
+
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @return View
+	 */
+	public static function current(View $set_current = null)
+	{
+		return parent::current($set_current);
 	}
 
 }

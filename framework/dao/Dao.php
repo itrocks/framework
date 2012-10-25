@@ -150,6 +150,16 @@ abstract class Dao
 		return self::current()->searchOne($what);
 	}
 
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @param Dao $set_current
+	 * @return Dao
+	 */
+	public static function current(Dao $set_current = null)
+	{
+		return parent::current($set_current);
+	}
+
 	//----------------------------------------------------------------------------------- storeNameOf
 	/**
 	 * Gets the store name for records typed as $class_name
