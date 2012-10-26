@@ -104,11 +104,9 @@ abstract class Data_Link
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param string $class class for the read object
-	 * @param array  $columns the list of the columns names : only those properties will be read.
-	 *   You can use "column.sub_column" to get values from linked objects from the same data source.
-	 * @param object $filter_object source object for filter, not-null properties will be used for search
-	 * @return multitype:mixed a list of read records.
-	 *   Each record values (may be objects) are stored in the same order than columns.
+	 * @param array  $columns the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param mixed $filter_object source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 * @return multitype:mixed a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
 	abstract public function select($class, $columns, $filter_object = null);
 

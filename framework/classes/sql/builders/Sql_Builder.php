@@ -97,7 +97,7 @@ echo "insert = $insert<br>";
 		$class, $properties, $where_columns = null, Sql_Link $sql_link = null
 	) {
 		$sql_select_builder = new Sql_Select_Builder($class, $properties, $where_columns, $sql_link);
-		return $sql_select_builder->getQuery();
+		return $sql_select_builder->buildQuery();
 	}
 
 	//----------------------------------------------------------------------------------- buildUpdate

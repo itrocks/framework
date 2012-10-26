@@ -8,7 +8,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	/**
 	 * clear() can't be done with current implementation, as each id is stored into the object itself
 	 */
-	public function clear() {}
+	protected function clear() {}
 
 	//--------------------------------------------------------------------------- getObjectIdentifier
 	/**
@@ -22,6 +22,22 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	public function getObjectIdentifier($object)
 	{
 		return isset($object->id) ? $object->id : null;
+	}
+
+	//---------------------------------------------------------------------------- objectToProperties
+	/**
+	 * Changes an object into an array associating properties and their values
+	 *
+	 * @param array|object $object if already an array, nothing will be done
+	 * @return multitype:mixed indices ar properties paths
+	 */
+	protected function objectToProperties($object)
+	{
+		if (is_object($object)) {
+			$id = $this->getObjectIdentifier($object);
+			$object = isset($id) ? array("id" => $id) : get_object_vars($object);
+		}
+		return $object;
 	}
 
 	//------------------------------------------------------------------------ removeObjectIdentifier

@@ -3,7 +3,7 @@ namespace SAF\Framework;
 
 trait Current_With_Default
 {
-	use Current;
+	use Current { current as private pCurrent; }
 
 	//--------------------------------------------------------------------------------------- current
 	/**
@@ -12,12 +12,12 @@ trait Current_With_Default
 	 * @param Current_With_Default $set_current
 	 * @return Current_With_Default
 	 */
-		public static function current(Current_With_Default $set_current = null)
+	public static function current(Current_With_Default $set_current = null)
 	{
-		$current = parent::current($set_current);
+		$current = self::pCurrent($set_current);
 		if (!isset($current)) {
 			$class = get_called_class();
-			$current = parent::current(new $class());
+			$current = self::pCurrent(new $class());
 		}
 		return $current;
 	}

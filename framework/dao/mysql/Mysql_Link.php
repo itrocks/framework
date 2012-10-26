@@ -114,6 +114,20 @@ class Mysql_Link extends Sql_Link
 		return $object;
 	}
 
+	//-------------------------------------------------------------------------------------- fetchRow
+	/**
+	 * Fetch a result from a result set to an array
+	 *
+	 * @param mysqli_result $result_set The result set : in most cases, will come from executeQuery()
+	 * @param string $class_name The class name to store the result data into
+	 * @return object
+	 */
+	protected function fetchRow($result_set, $class_name = null)
+	{
+		$object = $result_set->fetch_row();
+		return $object;
+	}
+
 	//------------------------------------------------------------------------------------------ free
 	protected function free($result_set)
 	{

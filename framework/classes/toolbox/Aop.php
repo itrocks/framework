@@ -22,7 +22,12 @@ abstract class Aop
 		$call = self::$joinpoints[$class_name][$property_name];
 		if (!isset($antiloop[$class_name]) && !isset($antiloop[$class_name][$property_name])) {
 			$antiloop[$class_name][$property_name] = true;
-			call_user_func(array($joinpoint->getObject(), $call), $joinpoint->getAssignedValue());
+			if ($joinpoint->getKindOfAdvice() & AOP_KIND_WRITE) {
+				call_user_func(array($joinpoint->getObject(), $call), $joinpoint->getAssignedValue());
+			}
+			else {
+				call_user_func(array($joinpoint->getObject(), $call));
+			}
 			unset($antiloop[$class_name][$property_name]);
 		}
 	}

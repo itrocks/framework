@@ -113,33 +113,19 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	public function rollback() {}
 
 	//---------------------------------------------------------------------------------------- select
+	/**
+	 * @todo factorize
+	 */
 	public function select($object_class, $columns, $filter_object = null)
 	{
-		if ($filter_object) {
-			$filter_map["id_" . strtolower(get_class($filter_object))]
-				= $this->getObjectIdentifier($filter_object);
-		}
-		$query = Sql_Builder::buildSelect($object_class, $columns, $this);
-		if ($filter_object) {
-			$query .= Sql_Builder::builderWhere($filter_map);
-		}
-		return $this->selectCore($query, count($columns));
-	}
-
-	//---------------------------------------------------------------------------------------- select
-	/**
-	 * This is the core of the select() call
-	 *
-	 * @todo factorize
-	 * @param string $query
-	 * @param string $list_length
-	 * @return string 
-	 */
-	private function selectCore($query, $list_length)
-	{
-		$list = array();
+		$filter_object = $this->objectToProperties($filter_object);
+		$columns[] = "id";
+		$query = Sql_Builder::buildSelect($object_class, $columns, $filter_object, $this);
+		$list_length = count($columns);
+		$list = new Default_List_Data();
 		$result_set = $this->executeQuery($query);
-		$column_count = $this->getColumnCount($result_set);
+		$column_count = $this->getColumnsCount($result_set);
+		$classes = array();
 		$classes_index = array();
 		$j = 0;
 		for ($i = 0; $i < $column_count; $i++) {
@@ -168,30 +154,33 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 			}
 		}
 		$first = true;
-		while ($result = $this->nextRow($result_set)) {
+		$properties = array();
+		while ($result = $this->fetchRow($result_set)) {
+			$object = Search_Object::newInstance($object_class);
 			for ($i = 0; $i < $column_count; $i++) {
 				$j = $itoj[$i];
-				if (!is_object($classes[$j])) {
-					$row[$j] = $result[$i];
+				if (!isset($classes[$j]) || !is_object($classes[$j])) {
+					$row[$columns[$j]] = $result[$i];
 				}
 				else {
-					if (!is_object($row[$j])) {
+					if (!is_object($row[$columns[$j]])) {
 						// TODO try to get the object from an object map (avoid several instances of the same)
-						$row[$j] = Instantiator::newInstance($classes[$j]);
+						$row[$columns[$j]] = Instantiator::newInstance($classes[$j]);
 						if ($first) {
 							$class = Reflection_Class::getInstanceOf($classes[$j]);
 							$properties[$classes[$j]] = $class->accessProperties();
 						}
 					}
 					if ($column_names[$i] === "id") {
-						$this->setObjectIdentifier($row[$j], $result[$i]);
+						$this->setObjectIdentifier($row[$columns[$j]], $result[$i]);
 					}
 					else {
 						$object->$column_names[$i] = $result[$i];
 					}
 				}
 			}
-			$list[] = row;
+			$id = array_pop($row);
+			$list->add(new Default_List_Row($object_class, $id, $row));
 			$first = false;
 		}
 		foreach (array_keys($properties) as $class) if ($class) {

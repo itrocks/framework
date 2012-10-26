@@ -3,7 +3,7 @@ namespace SAF\Framework;
 
 class Default_List_Controller_Configuration
 {
-	use Current;
+	use Current { current as private pCurrent; }
 
 	private $list_properties;
 
@@ -20,18 +20,20 @@ class Default_List_Controller_Configuration
 	 */
 	public static function current(Default_List_Controller_Configuration $set_current = null)
 	{
-		return parent::current($set_current);
+		return self::pCurrent($set_current);
 	}
 
 	//----------------------------------------------------------------------------- getListProperties
+	/**
+	 * @param string $class_name
+	 * @return multitype:string
+	 */
 	public function getListProperties($class_name)
 	{
-		echo "getListProperties($class_name)<br>";
-		if (!isset($this->getListProperties($class_name))) {
+		if (!isset($this->list_properties[$class_name])) {
 			$parents = array_merge(class_parents($class_name), class_uses($class_name));
 			while ($parents) { 
 				foreach ($parents as $class_name) {
-					echo "- check $class_name<br>";
 					if (isset($this->list_properties[$class_name])) {
 						break 2;
 					}
@@ -43,8 +45,8 @@ class Default_List_Controller_Configuration
 				$parents = $next_parents;
 			}
 		}
-		echo "- remember $class_name = " . print_r($this->list_properties[$class_name], true) . "<br>";
-		return $this->list_properties[$class_name];
+		return isset($this->list_properties[$class_name])
+			? $this->list_properties[$class_name] : array();
 	}
 
 }

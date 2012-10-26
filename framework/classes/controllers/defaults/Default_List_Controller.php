@@ -4,10 +4,13 @@ namespace SAF\Framework;
 class Default_List_Controller implements List_Controller
 {
 
+	//----------------------------------------------------------------------------------- $class_name
+	private $class_name;
+
 	//----------------------------------------------------------------------------- getListProperties
 	public function getListProperties()
 	{
-		if (Default_List_Controller_Configuration::current()->get)
+		return Default_List_Controller_Configuration::current()->getListProperties($this->class_name);
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -22,9 +25,10 @@ class Default_List_Controller implements List_Controller
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $parameters->getObjects();
-		$element_class_name = Set::elementClassNameOf($class_name);
-		$set = Set::instantiate($class_name, Dao::readAll($element_class_name));
-		$parameters = array_merge(array($class_name => $set), $parameters);
+		$this->class_name = Set::elementClassNameOf($class_name);
+		$set = Set::instantiate($class_name, Dao::readAll($this->class_name));
+		$list = Dao::select($this->class_name, $this->getListProperties());
+		$parameters = array_merge(array($this->class_name => $list), $parameters);
 		View::run($parameters, $form, $files, $class_name, "list");
 	}
 

@@ -5,7 +5,7 @@ require_once "framework/classes/toolbox/Current.php";
 
 class Configuration
 {
-	use Current;
+	use Current { current as private pCurrent; }
 
 	//------------------------------------------------------------------------------------------ $app
 	/**
@@ -38,7 +38,7 @@ class Configuration
 	 */
 	public static function current(Configuration $set_current = null)
 	{
-		return parent::current($set_current);
+		return self::pCurrent($set_current);
 	}
 
 	//---------------------------------------------------------------------------- getApplicationName

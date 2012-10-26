@@ -3,7 +3,7 @@ namespace SAF\Framework;
 
 class User
 {
-	use Current;
+	use Current { current as private pCurrent; }
 
 	//---------------------------------------------------------------------------------------- $login
 	/**
@@ -28,6 +28,16 @@ class User
 	{
 		$this->login    = $login;
 		$this->password = $password;
+	}
+
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @param User $set_current
+	 * @return User
+	 */
+	public static function current(User $set_current = null)
+	{
+		return self::pCurrent($set_current);
 	}
 
 }

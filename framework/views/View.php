@@ -3,16 +3,16 @@ namespace SAF\Framework;
 
 abstract class View
 {
-	use Current;
+	use Current { current as private pCurrent; }
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param View $set_current
-	 * @return View
+	 * @param View_Engine $set_current
+	 * @return View_Engine
 	 */
-	public static function current(View $set_current = null)
+	public static function current(View_Engine $set_current = null)
 	{
-		return parent::current($set_current);
+		return self::pCurrent($set_current);
 	}
 
 	//------------------------------------------------------------------------------ getPossibleViews
@@ -56,15 +56,6 @@ abstract class View
 				}
 			}
 		} 
-	}
-
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * @return View
-	 */
-	public static function current(View $set_current = null)
-	{
-		return parent::current($set_current);
 	}
 
 }

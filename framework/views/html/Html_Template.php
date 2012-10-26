@@ -266,7 +266,9 @@ class Html_Template
 			}
 			elseif (!is_object($object)) {
 				$object = new String($object);
-				$object = $object->$property_name();
+				$object = method_exists($object, $property_name)
+					? $object->$property_name()
+					: $object->$property_name;
 			}
 			elseif (method_exists($object, $property_name)) {
 				$object = $object->$property_name();

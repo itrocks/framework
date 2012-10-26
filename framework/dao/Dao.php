@@ -3,7 +3,7 @@ namespace SAF\Framework;
 
 abstract class Dao
 {
-	use Current;
+	use Current { current as private pCurrent; }
 
 	//----------------------------------------------------------------------------------------- begin
 	/**
@@ -37,6 +37,16 @@ abstract class Dao
 		else {
 			return null;
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @param Data_Link $set_current
+	 * @return Data_Link
+	 */
+	public static function current(Data_Link $set_current = null)
+	{
+		return self::pCurrent($set_current);
 	}
 
 	//---------------------------------------------------------------------------------------- delete
@@ -150,14 +160,18 @@ abstract class Dao
 		return self::current()->searchOne($what);
 	}
 
-	//--------------------------------------------------------------------------------------- current
+	//---------------------------------------------------------------------------------------- select
 	/**
-	 * @param Dao $set_current
-	 * @return Dao
+	 * Read selected columns only from data source, using optional filter
+	 *
+	 * @param string $class class for the read object
+	 * @param array  $columns the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param mixed $filter_object source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 * @return multitype:mixed a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
-	public static function current(Dao $set_current = null)
+	public static function select($class, $columns, $filter_object = null)
 	{
-		return parent::current($set_current);
+		return self::current()->select($class, $columns, $filter_object);
 	}
 
 	//----------------------------------------------------------------------------------- storeNameOf

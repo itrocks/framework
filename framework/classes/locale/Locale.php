@@ -3,7 +3,7 @@ namespace SAF\Framework;
 
 class Locale
 {
-	use Current;
+	use Current { current as private pCurrent; }
 
 	//------------------------------------------------------------------------------------- $language
 	/**
@@ -31,7 +31,7 @@ class Locale
 	 */
 	public static function current(Locale $set_current = null)
 	{
-		return parent::current($set_current);
+		return self::pCurrent($set_current);
 	}
 
 	//----------------------------------------------------------------------------------- setLanguage

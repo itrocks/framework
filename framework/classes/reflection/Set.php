@@ -41,10 +41,11 @@ class Set
 	 */
 	public function add($key, $element = null)
 	{
-		if ($element) {
+		if (isset($element)) {
 			$this->elements[$key] = $element;
-		} else {
-			$this->elements[] = $element;
+		}
+		else {
+			$this->elements[] = $key;
 		}
 	}
 
@@ -66,7 +67,8 @@ class Set
 		if (class_exists($class_name)) {
 			$set = new $class_name();
 			return $set->element_class_name;
-		} else {
+		}
+		else {
 			return Namespaces::fullClassName(Names::setToClass($class_name));
 		}
 	}
@@ -75,6 +77,12 @@ class Set
 	public function first()
 	{
 		return reset($this->elements);
+	}
+
+	//------------------------------------------------------------------------------------------- get
+	public function get($key)
+	{
+		return isset($this->elements[$key]) ? $this->elements[$key] : null;
 	}
 
 	//----------------------------------------------------------------------------------- instantiate

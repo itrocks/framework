@@ -8,7 +8,7 @@ class String
 	/**
 	 * @var string
 	 */
-	protected $value;
+	public $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

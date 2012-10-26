@@ -200,7 +200,12 @@ class Sql_Joins
 		$master_property = $this->getProperty($master_path, $master_property_name);
 		if ($master_property) {
 			$foreign_class_name = $master_property->getType();
-			if (!Type::isBasic($foreign_class_name)) {
+			if ($foreign_class_name === "multitype:string") {
+				// TODO : multitype:string can have multiple implementations, depending on database engine
+				// linked strings table, mysql's set.. should find a way to make this common without
+				// knowing anything about the specific
+			}
+			elseif (!Type::isBasic($foreign_class_name)) {
 				$join->mode = $master_property->getAnnotation("mandatory")->value
 					? Sql_Join::INNER
 					: Sql_Join::LEFT;
