@@ -46,7 +46,8 @@ class Translations extends Set
 			$translation = $translation ? $translation->translation : $text;
 			$this->cache[$text][$context] = $translation;
 		}
-		return $this->cache[$text][$context];
+		$translation = $this->cache[$text][$context];
+		return strlen($translation) ? $translation : $text;
 	}
 
 }
