@@ -12,6 +12,14 @@ interface List_Data
 	 */
 	public function add(List_Row $row);
 
+	//-------------------------------------------------------------------------------------- getClass
+	/**
+	 * Get element's class name
+	 *
+	 * @return string
+	 */
+	public function getClass();
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Gets object associated to a row index
@@ -20,6 +28,14 @@ interface List_Data
 	 * @return object
 	 */
 	public function getObject($row_index);
+
+	//--------------------------------------------------------------------------------- getProperties
+	/**
+	 * Return properties path list
+	 *
+	 * @return multitype:string
+	 */
+	public function getProperties();
 
 	//---------------------------------------------------------------------------------------- getRow
 	/**

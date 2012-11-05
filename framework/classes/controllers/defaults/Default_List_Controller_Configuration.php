@@ -5,6 +5,7 @@ class Default_List_Controller_Configuration
 {
 	use Current { current as private pCurrent; }
 
+	//------------------------------------------------------------------------------ $list_properties
 	private $list_properties;
 
 	//----------------------------------------------------------------------------------- __construct

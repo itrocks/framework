@@ -26,7 +26,6 @@ class Default_List_Controller implements List_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$this->class_name = Set::elementClassNameOf($class_name);
-		$set = Set::instantiate($class_name, Dao::readAll($this->class_name));
 		$list = Dao::select($this->class_name, $this->getListProperties());
 		$parameters = array_merge(array($this->class_name => $list), $parameters);
 		View::run($parameters, $form, $files, $class_name, "list");

@@ -4,16 +4,41 @@ namespace SAF\Framework;
 class Default_List_Data extends Set implements List_Data
 {
 
+	//----------------------------------------------------------------------------------- $properties
+	/**
+	 * @var multitype:string
+	 */
+	private $properties;
+
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct($element_class_name, $properties)
+	{
+		parent::__construct($element_class_name);
+		$this->properties = $properties;
+	}
+
 	//------------------------------------------------------------------------------------------- add
 	public function add(List_Row $row)
 	{
 		parent::add($row);
 	}
 
+	//-------------------------------------------------------------------------------------- getClass
+	public function getClass()
+	{
+		return $this->elementClass();
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	public function getObject($row_index)
 	{
 		return $this->getRow($row_index)->getObject();
+	}
+
+	//--------------------------------------------------------------------------------- getProperties
+	public function getProperties()
+	{
+		return $this->properties;
 	}
 
 	//---------------------------------------------------------------------------------------- getRow
