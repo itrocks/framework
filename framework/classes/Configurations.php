@@ -49,6 +49,9 @@ class Configurations
 	{
 		$config = array();
 		include $file_name;
+		if (isset($GLOBALS["CONFIG"])) {
+			$config = arrayMergeRecursive($config, $GLOBALS["CONFIG"]);
+		}
 		$this->configurations = array();
 		foreach ($config as $config_name => $config_options) {
 			if (isset($config_options["extends"])) {

@@ -255,7 +255,7 @@ class AopJoinpoint
 	 *
 	 * The process method will only be available for advices of kind around. Any call to process in
 	 * advices of other kinds will launch an AopException with a message like "Cannot launch the
-	 * process method in an advice of kind XXX".
+	 * process method in an advice of kind xxx".
 	 *
 	 * @throws AopException
 	 */

@@ -35,7 +35,10 @@ class Default_List_Controller_Configuration
 			$parents = array_merge(class_parents($class_name), class_uses($class_name));
 			while ($parents) { 
 				foreach ($parents as $class_name) {
-					if (isset($this->list_properties[$class_name])) {
+					if (
+						isset($this->list_properties[$class_name])
+						|| isset($this->list_properties[Namespaces::shortClassName($class_name)])
+					) {
 						break 2;
 					}
 				}
@@ -47,7 +50,12 @@ class Default_List_Controller_Configuration
 			}
 		}
 		return isset($this->list_properties[$class_name])
-			? $this->list_properties[$class_name] : array();
+			? $this->list_properties[$class_name]
+			: (
+				isset($this->list_properties[Namespaces::shortClassName($class_name)])
+				? $this->list_properties[Namespaces::shortClassName($class_name)]
+				: array()
+			);
 	}
 
 }

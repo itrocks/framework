@@ -119,10 +119,10 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	public function select($object_class, $columns, $filter_object = null)
 	{
 		$filter_object = $this->objectToProperties($filter_object);
+		$list = new Default_List_Data($object_class, $columns);
 		$columns[] = "id";
 		$query = Sql_Builder::buildSelect($object_class, $columns, $filter_object, $this);
 		$list_length = count($columns);
-		$list = new Default_List_Data($object_class, $columns);
 		$result_set = $this->executeQuery($query);
 		$column_count = $this->getColumnsCount($result_set);
 		$classes = array();

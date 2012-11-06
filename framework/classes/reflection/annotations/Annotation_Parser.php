@@ -18,7 +18,7 @@ abstract class Annotation_Parser
 	public static function byName(Has_Doc_Comment $reflection_object, $annotation_name)
 	{
 		$annotation_class = static::getAnnotationClassName($annotation_name);
-		$multiple = is_subclass_of($annotation_class, "\\SAF\\Framework\\Multiple_Annotation");
+		$multiple = is_subclass_of($annotation_class, "SAF\\Framework\\Multiple_Annotation");
 		$doc_comment = $reflection_object->getDocComment();
 		$annotations = array();
 		$annotation = null;

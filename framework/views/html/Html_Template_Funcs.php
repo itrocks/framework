@@ -60,8 +60,11 @@ abstract class Html_Template_Funcs
 		elseif ($object instanceof Reflection_Method) {
 			return Names::methodToDisplay($object->name);
 		}
-		else {
+		elseif (is_object($object)) {
 			return new Displayable(get_class($object)->display());
+		}
+		else {
+			return $object;
 		}
 	}
 

@@ -223,7 +223,7 @@ class Html_Template
 	private function parseFunc($object, $func_name)
 	{
 		return $this->callFunc(
-			"\\SAF\\Framework\\Html_Template_Funcs",
+			"SAF\\Framework\\Html_Template_Funcs",
 			Names::propertyToMethod($func_name, "get"),
 			$object
 		);
