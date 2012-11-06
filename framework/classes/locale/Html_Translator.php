@@ -31,9 +31,11 @@ abstract class Html_Translator
 		while (($i = strpos($content, "[", $i)) !== false) {
 			$i ++;
 			$j = strpos($content, "]", $i);
-			$text = substr($content, $i, $j - $i);
-			$translation = Loc::tr($text);
-			$content = substr($content, 0, $i - 1) . $translation . substr($content, $j + 1);
+			if ($j > $i) {
+				$text = substr($content, $i, $j - $i);
+				$translation = Loc::tr($text);
+				$content = substr($content, 0, $i - 1) . $translation . substr($content, $j + 1);
+			}
 		}
 		$joinpoint->setReturnedValue($content);
 	}

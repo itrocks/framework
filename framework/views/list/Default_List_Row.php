@@ -42,4 +42,10 @@ class Default_List_Row implements List_Row
 		return $this->values[$property];
 	}
 
+	//-------------------------------------------------------------------------------------------- id
+	public function id()
+	{
+		return 1;
+	}
+
 }

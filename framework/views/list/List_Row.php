@@ -21,4 +21,12 @@ interface List_Row
 	 */
 	public function getValue($property);
 
+	//-------------------------------------------------------------------------------------------- id
+	/**
+	 * Returns the row's DAO identifier
+	 *
+	 * @return mixed
+	 */
+	public function id();
+
 }
