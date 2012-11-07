@@ -4,14 +4,6 @@ namespace SAF\Framework;
 class Html_Template
 {
 
-	//------------------------------------------------------------------------------------ $as_widget
-	/**
-	 * Display template as a widget
-	 *
-	 * @var boolean
-	 */
-	private $as_widget;
-
 	//-------------------------------------------------------------------------------------- $content
 	/**
 	 * Content of the template file, changed by calculated result HTML content during parse()
@@ -36,21 +28,17 @@ class Html_Template
 	 */
 	private $feature;
 
-	//---------------------------------------------------------------------------------- $is_included
-	/**
-	 * Template is included into another one
-	 *
-	 * If true, links and URIs will not be parsed, as this will be done by the container 
-	 *
-	 * @var boolean
-	 */
-	private $is_included;
-
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @var object
 	 */
 	private $object;
+
+	//----------------------------------------------------------------------------------- $parameters
+	/**
+	 * @var multitype:string
+	 */
+	private $parameters;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -74,20 +62,6 @@ class Html_Template
 		$this->path    = substr($template_file, 0, strrpos($template_file, "/"));
 		$this->content = file_get_contents($template_file);
 		$this->feature = $feature_name;
-	}
-
-	//-------------------------------------------------------------------------------------- asWidget
-	/**
-	 * Template will be output as a widget
-	 *
-	 * This means that in <!--BEGIN-->...<!--END--> case, main HTML template will NOT be loaded.
-	 * Use this to include templates in others, or for ajax calls.
-	 *
-	 * @param boolean $output_template_as_widget
-	 */
-	public function asWidget($output_template_as_widget = true)
-	{
-		$this->as_widget = $output_template_as_widget;
 	}
 
 	//-------------------------------------------------------------------------------------- callFunc
@@ -154,23 +128,6 @@ class Html_Template
 		return $this->object;
 	}
 
-	//------------------------------------------------------------------------------------ isIncluded
-	/**
-	 * Template is treated as as included template
-	 *
-	 * This means that links and URIs will not be parsed, as this will be done by the container.
-	 * If template is included, it will automatically considered as a widget too.
-	 *
-	 * @param boolean $template_is_included
-	 */
-	public function isIncluded($template_is_included = true)
-	{
-		if ($template_is_included) {
-			$this->asWidget();
-		}
-		$this->is_included = $template_is_included;
-	}
-
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * Parse the template replacing templating codes by object's properties and functions results
@@ -182,7 +139,7 @@ class Html_Template
 		$content = $this->content;
 		$content = $this->parseContainer($content);
 		$content = $this->parseVars($content, $this->object);
-		if (!$this->is_included) {
+		if (!isset($this->parameters["is_included"]) || !$this->parameters["is_included"]) {
 			$content = $this->replaceLinks($content);
 			$content = $this->replaceUris($content);
 		}
@@ -202,7 +159,7 @@ class Html_Template
 		if ($i !== false) {
 			$i += 12;
 			$j = strrpos($content, "<!--END-->", $i);
-			if ($this->as_widget) {
+			if (isset($this->parameters["as_widget"]) && $this->parameters["as_widget"]) {
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
@@ -272,8 +229,12 @@ class Html_Template
 			}
 			elseif (method_exists($object, $property_name)) {
 				$object = $object->$property_name();
-			} else {
+			}
+			elseif (property_exists($object, $property_name)) {
 				$object = $object->$property_name;
+			}
+			else {
+				$object = isset($this->parameters[$property_name]) ? $this->parameters[$property_name] : "";
 			}
 		}
 		if (is_object($object)) {
@@ -347,17 +308,44 @@ class Html_Template
 				$length = strlen($var_name);
 				$i += $length + 3;
 				$j = strpos($content, "<!--" . $var_name . "-->", $j);
+				if (strpos($var_name, "<")) list($var_name, $run_to)  = explode("<", $var_name);
+				else $run_to = null;
+				if (strpos($var_name, ">")) list($var_name, $stop_at) = explode(">", $var_name);
+				else $stop_at = null;
+				if (strpos($var_name, "=")) list($var_name, $equal)   = explode("=", $var_name);
+				else $equal = null;
 				$loop_content = substr($content, $i, $j - $i);
 				$this->removeSample($loop_content);
 				$separator = $this->parseSeparator($loop_content);
 				$elements = $this->parseVar($object, $var_name);
 				if (is_array($elements)) {
+					/*
+					if (isset($run_to))  $run_to  = $this->parseVars($run_to,  $elements);
+					if (isset($stop_at)) $stop_at = $this->parseVars($stop_at, $elements);
+					if (isset($equal))   $equal   = $this->parseVars($equal,   $elements);
+					*/
 					$do = false;
 					$loop_insert = "";
+					if (isset($equal)) {
+						$stop_at = $equal;
+						$run_to  = $equal;
+					}
+					$counter = 0;
 					foreach ($elements as $element) {
+						$counter ++;
+						if (isset($stop_at) && ($counter > $stop_at)) break;
 						if ($do) $loop_insert .= $this->parseVars($separator, $element); else $do = true;
 						$sub_content = $this->parseVars($loop_content, $element);
 						$loop_insert .= $sub_content;
+					}
+					if (isset($run_to)) {
+						$element = new \StdClass();
+						while ($counter < $run_to) {
+							$counter ++;
+							if ($do) $loop_insert .= $this->parseVars($separator, $element); else $do = true;
+							$sub_content = $this->parseVars($loop_content, $element);
+							$loop_insert .= $sub_content;
+						}
 					}
 				}
 				elseif (strlen($elements)) {
@@ -484,6 +472,15 @@ class Html_Template
 	public function setCss($css)
 	{
 		$this->css = $css;
+	}
+
+	//--------------------------------------------------------------------------------- setParameters
+	public function setParameters($parameters)
+	{
+		if (isset($parameters["is_included"]) && $parameters["is_included"]) {
+			$parameters["as_widget"] = true;
+		}
+		$this->parameters = $parameters;
 	}
 
 }

@@ -42,6 +42,12 @@ class Default_List_Row implements List_Row
 		return $this->values[$property];
 	}
 
+	//------------------------------------------------------------------------------------------ size
+	public function count()
+	{
+		return count($this->values);
+	}
+
 	//-------------------------------------------------------------------------------------------- id
 	public function id()
 	{

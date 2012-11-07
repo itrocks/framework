@@ -44,4 +44,28 @@ class Html_View_Engine implements View_Engine
 		);
 	}
 
+	//------------------------------------------------------------------------------------------ link
+	public function link($object, $parameters = null)
+	{
+		$link = is_object($object)
+			? (Namespaces::shortClassName(get_class($object)) . "/" . Dao::getObjectIdentifier($object))
+			: $object;
+		if (isset($parameters)) {
+			if (!is_array($parameters)) {
+				$link .= "/" . $parameters;
+			}
+			else {
+				foreach ($parameters as $key => $value) {
+					if (!is_numeric($key)) {
+						$link .= "/" . $value;
+					}
+					else {
+						$link .= "/" . $key . "/" . $value;
+					}
+				}
+			}
+		}
+		return $link;
+	}
+
 }

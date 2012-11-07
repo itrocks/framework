@@ -35,6 +35,12 @@ abstract class View
 		);
 	}
 
+	//------------------------------------------------------------------------------------------ link
+	public static function link($object, $parameters = null)
+	{
+		return self::current()->link($object, $parameters);
+	}
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @param array  $parameters

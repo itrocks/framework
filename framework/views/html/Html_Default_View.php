@@ -15,12 +15,7 @@ class Html_Default_View implements IView
 			$template_file = stream_resolve_include_path($template_file);
 			if ($template_file) {
 				$template = new Html_Template(reset($parameters), $template_file, $feature_name);
-				if (isset($parameters["as_widget"])) {
-					$template->asWidget($parameters["as_widget"]);
-				}
-				if (isset($parameters["is_included"])) {
-					$template->isIncluded($parameters["is_included"]);
-				}
+				$template->setParameters($parameters);
 				if ($css = View::current()->getCss()) {
 					$template->setCss($css);
 				}

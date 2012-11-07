@@ -17,6 +17,11 @@
 <body>
 
 	<!--BEGIN-->
+	<div class="general button_bar">
+		<!--general_buttons-->
+		<a class="button" href="{link}">[{caption}]</a>
+		<!--general_buttons-->
+	</div>
 	<table class="{@class} {@feature}" id="list">
 	<thead>
 	<tr>
@@ -29,7 +34,7 @@
 	</tr>
 	</thead>
 	<tbody>
-	<!--elements-->
+	<!--elements=20-->
 	<tr>
 		<td><input type="checkbox" name="s[]" value="{id}"></td>
 		<!--values-->
@@ -75,9 +80,15 @@
 		<td>code10</td>
 		<td>3,00</td>
 	</tr>
-	<!--elements-->
+	<!--elements=20-->
 	</tbody>
 	</table>
+	<div class="selection button_bar">
+		<span class="selection arrow">[select]</span>
+		<!--selection_buttons-->
+		<a class="button {feature}" href="{link}">[{caption}]</a>
+		<!--selection_buttons-->
+	</div>
 	<!--END-->
 
 </body>

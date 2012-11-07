@@ -7,10 +7,27 @@ class Default_List_Controller implements List_Controller
 	//----------------------------------------------------------------------------------- $class_name
 	private $class_name;
 
+	//----------------------------------------------------------------------------- getGeneralButtons
+	public function getGeneralButtons($class_name)
+	{
+		return array(
+			new Button("Add", View::link($class_name), "add"),
+		);
+	}
+
 	//----------------------------------------------------------------------------- getListProperties
 	public function getListProperties()
 	{
 		return Default_List_Controller_Configuration::current()->getListProperties($this->class_name);
+	}
+
+	//--------------------------------------------------------------------------- getSelectionButtons
+	public function getSelectionButtons($class_name)
+	{
+		return array(
+			new Button("Delete", View::link($class_name, "delete"), "delete"),
+			new Button("Print", View::link($class_name, "print"), "print")
+		);
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -28,6 +45,8 @@ class Default_List_Controller implements List_Controller
 		$this->class_name = Set::elementClassNameOf($class_name);
 		$list = Dao::select($this->class_name, $this->getListProperties());
 		$parameters = array_merge(array($this->class_name => $list), $parameters);
+		$parameters["general_buttons"]   = $this->getGeneralButtons($this->class_name);
+		$parameters["selection_buttons"] = $this->getSelectionButtons($this->class_name);
 		View::run($parameters, $form, $files, $class_name, "list");
 	}
 

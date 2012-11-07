@@ -65,6 +65,23 @@ abstract class Dao
 		return self::current()->delete($object);
 	}
 
+	//--------------------------------------------------------------------------- getObjectIdentifier
+	/**
+	 * Read an object's identifier, if known for current data link
+	 *
+	 * A null value will be returned for an object that is not linked to current data link. 
+	 *
+	 * @param object $object
+	 * @return mixed
+	 */
+	public function getObjectIdentifier($object)
+	{
+		$data_link = self::current();
+		return ($data_link instanceof Identifier_Map_Data_Link)
+			? $data_link->getObjectIdentifier($object)
+			: null;
+	}
+
 	//------------------------------------------------------------------------------------------ read
 	/**
 	 * Read an object from current data link

@@ -4,6 +4,18 @@ namespace SAF\Framework;
 abstract class Html_Template_Funcs
 {
 
+	//----------------------------------------------------------------------------------------- count
+	/**
+	 * Returns array count
+	 *
+	 * @param Html_Template $template
+	 * @param mixed $object
+	 */
+	public static function count(Html_Template $template, $object)
+	{
+		return count($object);
+	}
+
 	//-------------------------------------------------------------------------------- getApplication
 	/**
 	 * Returns application name
@@ -61,7 +73,7 @@ abstract class Html_Template_Funcs
 			return Names::methodToDisplay($object->name);
 		}
 		elseif (is_object($object)) {
-			return new Displayable(get_class($object)->display());
+			return (new Displayable(get_class($object)))->display();
 		}
 		else {
 			return $object;
