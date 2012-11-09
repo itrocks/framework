@@ -74,7 +74,7 @@ abstract class Dao
 	 * @param object $object
 	 * @return mixed
 	 */
-	public function getObjectIdentifier($object)
+	public static function getObjectIdentifier($object)
 	{
 		$data_link = self::current();
 		return ($data_link instanceof Identifier_Map_Data_Link)

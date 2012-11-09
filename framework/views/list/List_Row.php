@@ -4,6 +4,20 @@ namespace SAF\Framework;
 interface List_Row
 {
 
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct($class_name, $object, $values);
+
+	//----------------------------------------------------------------------------------------- count
+	public function count();
+
+	//---------------------------------------------------------------------------------- getClassName
+	/**
+	 * Returns list row element class name
+	 *
+	 * @return string
+	 */
+	public function getClassName();
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Returns object associated to the list row

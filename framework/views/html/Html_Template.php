@@ -68,12 +68,12 @@ class Html_Template
 	/**
 	 * Calls a function an returns result
 	 *
-	 * @param mixed  $object    object or class name
+	 * @param multitype:object $objects objects stack
 	 * @param string $func_call "functionName(param1value,param2value,...)" or "functionName"
 	 */
-	public function callFunc($object_call, $func_call, $object = null)
+	public function callFunc($object_call, $func_call, $objects = null)
 	{
-		$params = $object ? array($this, $object) : array();
+		$params = $objects ? array_merge($this, $objects) : array();
 		if ($i = strpos($func_call, "(")) {
 			$func_name = substr($func_call, 0, $i);
 			$i ++;
@@ -138,7 +138,7 @@ class Html_Template
 	{
 		$content = $this->content;
 		$content = $this->parseContainer($content);
-		$content = $this->parseVars($content, $this->object);
+		$content = $this->parseVars($content, array($this->object));
 		if (!isset($this->parameters["is_included"]) || !$this->parameters["is_included"]) {
 			$content = $this->replaceLinks($content);
 			$content = $this->replaceUris($content);
@@ -174,15 +174,15 @@ class Html_Template
 	/**
 	 * Parse a special data / function and returns its return value
 	 *
-	 * @param object $object
+	 * @param multitype:object $objects
 	 * @param string $func_name
 	 */
-	private function parseFunc($object, $func_name)
+	private function parseFunc($objects, $func_name)
 	{
 		return $this->callFunc(
 			"SAF\\Framework\\Html_Template_Funcs",
 			Names::propertyToMethod($func_name, "get"),
-			$object
+			$objects
 		);
 	}
 
@@ -190,11 +190,11 @@ class Html_Template
 	/**
 	 * Parse included view controller call result (must be an html view)
 	 *
-	 * @param object $object
+	 * @param multitype:object $objects
 	 * @param string $include_uri
 	 * @return string
 	 */
-	private function parseInclude($object, $include_uri)
+	private function parseInclude($objects, $include_uri)
 	{
 		ob_start();
 		Main_Controller::getInstance()->runController($include_uri, array("is_included" => true));
@@ -205,21 +205,22 @@ class Html_Template
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
-	 * @param object $object
+	 * @param multitype:object $objects
 	 * @param string $var_name
 	 * @return string
 	 */
-	private function parseVar($object, $var_name)
+	private function parseVar($objects, $var_name)
 	{
+		$object = first($objects);
 		foreach (explode(".", $var_name) as $property_name) {
 			if ($property_name[0] === "@") {
-				$object = $this->parseFunc($object, substr($property_name, 1));
+				$object = $this->parseFunc($objects, substr($property_name, 1));
 			}
 			elseif ($property_name[0] === "/") {
-				$object = $this->parseInclude($object, $property_name);
+				$object = $this->parseInclude($objects, $property_name);
 			}
 			elseif ($i = strpos($property_name, "(")) {
-				$object = $this->callFunc($object, $property_name);
+				$object = $this->callFunc($objects, $property_name);
 			}
 			elseif (!is_object($object)) {
 				$object = new String($object);
@@ -264,16 +265,16 @@ class Html_Template
 	 * @param object $object
 	 * @return string
 	 */
-	private function parseVars($content, $object)
+	private function parseVars($content, $objects)
 	{
-		$content = $this->parseLoops($content, $object);
+		$content = $this->parseLoops($content, $objects);
 		$i = 0;
 		while (($i = strpos($content, "{", $i)) !== false) {
 			$i ++;
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, "}", $i);
 				$var_name = substr($content, $i, $j - $i);
-				$value = $this->parseVar($object, $var_name);
+				$value = $this->parseVar($objects, $var_name);
 				if (is_array($value)) {
 					$value = "...";
 				}
@@ -294,10 +295,10 @@ class Html_Template
 	 *   <!--@function-->(...)<!--@function-->
 	 *
 	 * @param string $string
-	 * @param object $object
+	 * @param multitype:object $objects
 	 * @return string updated content
 	 */
-	private function parseLoops($content, $object)
+	private function parseLoops($content, $objects)
 	{
 		$i = 0;
 		while (($i = strpos($content, "<!--" , $i)) !== false) {
@@ -317,13 +318,9 @@ class Html_Template
 				$loop_content = substr($content, $i, $j - $i);
 				$this->removeSample($loop_content);
 				$separator = $this->parseSeparator($loop_content);
-				$elements = $this->parseVar($object, $var_name);
+				$elements = $this->parseVar($objects, $var_name);
 				if (is_array($elements)) {
-					/*
-					if (isset($run_to))  $run_to  = $this->parseVars($run_to,  $elements);
-					if (isset($stop_at)) $stop_at = $this->parseVars($stop_at, $elements);
-					if (isset($equal))   $equal   = $this->parseVars($equal,   $elements);
-					*/
+
 					$do = false;
 					$loop_insert = "";
 					if (isset($equal)) {
@@ -349,7 +346,7 @@ class Html_Template
 					}
 				}
 				elseif (strlen($elements)) {
-					$loop_insert = $this->parseVars($loop_content, $object);
+					$loop_insert = $this->parseVars($loop_content, $objects);
 				}
 				else {
 					$loop_insert  = "";

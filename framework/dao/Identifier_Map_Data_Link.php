@@ -14,14 +14,15 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	/**
 	 * Used to get an object's identifier
 	 *
-	 * A null value will be returned for an object that is not linked to data link. 
+	 * A null value will be returned for an object that is not linked to data link.
+	 * If $object is already an identifier, the identifier is returned.
 	 *
 	 * @param object $object
 	 * @return mixed
 	 */
 	public function getObjectIdentifier($object)
 	{
-		return isset($object->id) ? $object->id : null;
+		return is_object($object) ? (isset($object->id) ? $object->id : null) : $object;
 	}
 
 	//---------------------------------------------------------------------------- objectToProperties

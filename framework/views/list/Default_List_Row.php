@@ -10,11 +10,11 @@ class Default_List_Row implements List_Row
 	 */
 	private $object;
 
-	//--------------------------------------------------------------------------------- $object_class
+	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @var string
 	 */
-	public $object_class;
+	public $class_name;
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
@@ -23,11 +23,23 @@ class Default_List_Row implements List_Row
 	public $values;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct($object_class, $object, $values)
+	public function __construct($class_name, $object, $values)
 	{
-		$this->object_class = $object_class;
+		$this->class_name = $class_name;
 		$this->object = $object;
 		$this->values = $values;
+	}
+
+	//----------------------------------------------------------------------------------------- count
+	public function count()
+	{
+		return count($this->values);
+	}
+
+	//---------------------------------------------------------------------------------- getClassName
+	public function getClassName()
+	{
+		return $this->object_class;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
@@ -42,16 +54,10 @@ class Default_List_Row implements List_Row
 		return $this->values[$property];
 	}
 
-	//------------------------------------------------------------------------------------------ size
-	public function count()
-	{
-		return count($this->values);
-	}
-
 	//-------------------------------------------------------------------------------------------- id
 	public function id()
 	{
-		return 1;
+		return $this->object;
 	}
 
 }
