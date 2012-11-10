@@ -13,6 +13,15 @@ class Error_Handlers
 	//----------------------------------------------------------------------------------- __construct
 	private function __construct() {}
 
+	//-------------------------------------------------------------------------------------- activate
+	/**
+	 * Activate error handler instance as the main error handler
+	 */
+	public static function activate()
+	{
+		Error_Handlers::getInstance()->setAsErrorHandler();
+	}
+
 	//------------------------------------------------------------------------------------ addHandler
 	/**
 	 * Add an error handler to the handled errors list
@@ -100,6 +109,18 @@ class Error_Handlers
 			}
 		}
 		return !$handled_error->isStandardPhpErrorHandlerCalled();
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * Register an error handler for error types
+	 *
+	 * @param integer $error_types
+	 * @param Error_Handler $error_handler
+	 */
+	public static function register($error_types, Error_Handler $error_handler)
+	{
+		Error_Handlers::getInstance()->addHandler($error_types, $error_handler);
 	}
 
 	//----------------------------------------------------------------------------- setAsErrorHandler
