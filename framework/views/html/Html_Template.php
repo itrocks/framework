@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use StdClass;
 
 class Html_Template
 {
@@ -73,7 +74,7 @@ class Html_Template
 	 */
 	public function callFunc($object_call, $func_call, $objects = null)
 	{
-		$params = $objects ? array_merge($this, $objects) : array();
+		$params = $objects ? array_merge(array($this), $objects) : array();
 		if ($i = strpos($func_call, "(")) {
 			$func_name = substr($func_call, 0, $i);
 			$i ++;
@@ -190,11 +191,10 @@ class Html_Template
 	/**
 	 * Parse included view controller call result (must be an html view)
 	 *
-	 * @param multitype:object $objects
 	 * @param string $include_uri
 	 * @return string
 	 */
-	private function parseInclude($objects, $include_uri)
+	private function parseInclude($include_uri)
 	{
 		ob_start();
 		Main_Controller::getInstance()->runController($include_uri, array("is_included" => true));
@@ -211,13 +211,17 @@ class Html_Template
 	 */
 	private function parseVar($objects, $var_name)
 	{
-		$object = first($objects);
+		$object = reset($objects);
 		foreach (explode(".", $var_name) as $property_name) {
-			if ($property_name[0] === "@") {
+			if (!strlen($property_name)) {
+				array_shift($objects);
+				$object = reset($objects);
+			}
+			elseif ($property_name[0] === "@") {
 				$object = $this->parseFunc($objects, substr($property_name, 1));
 			}
 			elseif ($property_name[0] === "/") {
-				$object = $this->parseInclude($objects, $property_name);
+				$object = $this->parseInclude($property_name);
 			}
 			elseif ($i = strpos($property_name, "(")) {
 				$object = $this->callFunc($objects, $property_name);
@@ -300,50 +304,84 @@ class Html_Template
 	 */
 	private function parseLoops($content, $objects)
 	{
-		$i = 0;
-		while (($i = strpos($content, "<!--" , $i)) !== false) {
-			$i += 4;
+		$icontent = 0;
+		while (($icontent = strpos($content, "<!--" , $icontent)) !== false) {
+			$i = $icontent + 4;
 			$j = strpos($content, "-->", $i);
 			if ($this->parseThis($content, $i)) {
 				$var_name = substr($content, $i, $j - $i);
 				$length = strlen($var_name);
 				$i += $length + 3;
-				$j = strpos($content, "<!--" . $var_name . "-->", $j);
-				if (strpos($var_name, "<")) list($var_name, $run_to)  = explode("<", $var_name);
-				else $run_to = null;
-				if (strpos($var_name, ">")) list($var_name, $stop_at) = explode(">", $var_name);
-				else $stop_at = null;
-				if (strpos($var_name, "=")) list($var_name, $equal)   = explode("=", $var_name);
-				else $equal = null;
+				if (strpos($var_name, ":")) {
+					list($var_name, $expr) = explode(":", $var_name);
+					if (strpos($expr, "-") !== false) {
+						list($from, $to) = explode("-", $expr);
+					}
+					else {
+						$from = $to = $expr;
+					}
+					$to = (($to == "") ? null : $to);
+				}
+				else {
+					$expr = null;
+					$from = 0;
+					$to = null;
+				}
+				$length2 = isset($expr) ? strlen($var_name) : $length;
+				$j = strpos($content, "<!--" . $var_name . "-->", $j + 3);
 				$loop_content = substr($content, $i, $j - $i);
 				$this->removeSample($loop_content);
 				$separator = $this->parseSeparator($loop_content);
 				$elements = $this->parseVar($objects, $var_name);
-				if (is_array($elements)) {
-
+				if ($from && !is_numeric($from)) {
+					array_unshift($objects, $elements);
+					$from = $this->parseVar($objects, $from);
+					array_shift($objects);
+				}
+				if ($to && !is_numeric($to)) {
+					array_unshift($objects, $elements);
+					$to = $this->parseVar($objects, $to);
+					array_shift($objects);
+				}
+				if (is_array($elements) || isset($expr)) {
+					array_unshift($objects, $elements);
 					$do = false;
 					$loop_insert = "";
-					if (isset($equal)) {
-						$stop_at = $equal;
-						$run_to  = $equal;
-					}
 					$counter = 0;
-					foreach ($elements as $element) {
+					if (is_array($elements)) foreach ($elements as $element) {
 						$counter ++;
-						if (isset($stop_at) && ($counter > $stop_at)) break;
-						if ($do) $loop_insert .= $this->parseVars($separator, $element); else $do = true;
-						$sub_content = $this->parseVars($loop_content, $element);
-						$loop_insert .= $sub_content;
-					}
-					if (isset($run_to)) {
-						$element = new \StdClass();
-						while ($counter < $run_to) {
-							$counter ++;
-							if ($do) $loop_insert .= $this->parseVars($separator, $element); else $do = true;
-							$sub_content = $this->parseVars($loop_content, $element);
+						if (isset($to) && ($counter > $to)) break;
+						if ($counter >= $from) {
+							array_unshift($objects, $element);
+							if ($do) {
+								$loop_insert .= $this->parseVars($separator, $objects);
+							}
+							else {
+								$do = true;
+							}
+							$sub_content = $this->parseVars($loop_content, $objects);
 							$loop_insert .= $sub_content;
+							array_shift($objects);
 						}
 					}
+					if (isset($to) && ($counter < $to)) {
+						array_unshift($objects, new StdClass());
+						while ($counter < $to) {
+							$counter ++;
+							if ($counter >= $from) {
+								if ($do) {
+									$loop_insert .= $this->parseVars($separator, $objects);
+								}
+								else {
+									$do = true;
+								}
+								$sub_content = $this->parseVars($loop_content, $objects);
+								$loop_insert .= $sub_content;
+							}
+						}
+						array_shift($objects);
+					}
+					array_shift($objects);
 				}
 				elseif (strlen($elements)) {
 					$loop_insert = $this->parseVars($loop_content, $objects);
@@ -353,8 +391,7 @@ class Html_Template
 				}
 				$content = substr($content, 0, $i - $length - 7)
 					. $loop_insert
-					. substr($content, $j + $length + 7);
-				$i -= 4;
+					. substr($content, $j + $length2 + 7);
 			}
 		}
 		return $content;
@@ -390,7 +427,7 @@ class Html_Template
 	private function parseThis($content, $i)
 	{
 		$c = $content[$i];
-		return (($c >= "a") && ($c <= "z")) || ($c == "@") || ($c == "/");		
+		return (($c >= "a") && ($c <= "z")) || ($c == "@") || ($c == "/") || ($c == ".");		
 	}
 
 	//---------------------------------------------------------------------------------- removeSample

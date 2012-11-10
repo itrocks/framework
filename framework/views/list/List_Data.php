@@ -12,6 +12,9 @@ interface List_Data
 	 */
 	public function add(List_Row $row);
 
+	//----------------------------------------------------------------------------------------- count
+	public function count();
+
 	//-------------------------------------------------------------------------------------- getClass
 	/**
 	 * Get element's class name

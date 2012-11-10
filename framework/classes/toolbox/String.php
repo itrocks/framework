@@ -37,6 +37,15 @@ class String
 		return strtolower($this->value);
 	}
 
+	//----------------------------------------------------------------------------------------- short
+	/**
+	 * @return string
+	 */
+	public function short()
+	{
+		return Namespaces::shortClassName($this->value);
+	}
+
 	//--------------------------------------------------------------------------------------- ucfirst
 	/**
 	 * @return string

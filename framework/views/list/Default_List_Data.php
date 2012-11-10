@@ -23,6 +23,12 @@ class Default_List_Data extends Set implements List_Data
 		parent::add($row);
 	}
 
+	//----------------------------------------------------------------------------------------- count
+	public function count()
+	{
+		return count($this->properties);
+	}
+
 	//-------------------------------------------------------------------------------------- getClass
 	public function getClass()
 	{
