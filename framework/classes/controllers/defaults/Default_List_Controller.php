@@ -25,7 +25,6 @@ class Default_List_Controller implements List_Controller
 	public function getSelectionButtons($class_name)
 	{
 		return array(
-			new Button("Delete", View::link($class_name, "delete"), "delete"),
 			new Button("Print", View::link($class_name, "print"), "print")
 		);
 	}
