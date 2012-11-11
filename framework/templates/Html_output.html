@@ -3,6 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Default output template</title>
+	<script type="text/javascript" src="js/jquery.js"></script>
 	<style type="text/css">
 		@import "style/default/style.css";
 	</style>
@@ -14,20 +15,20 @@
 		<!--@properties-->
 		<div class="field">
 			<span class="label">[{display}]</span>
-			<span class="value">{value}</span>
+			<span class="edit value" id="{name}">{value}</span>
 		</div>
 		<!--sample-->
 		<div class="field">
-			<span class="label">first_name</span>
-			<span class="value">Robert</span>
+			<span class="label">first name</span>
+			<span class="edit value" id="first_name">Robert</span>
 		</div>
 		<div class="field">
-			<span class="label">last_name</span>
-			<span class="value">Cheramy</span>
+			<span class="label">last name</span>
+			<span class="edit value" id="last_name">Cheramy</span>
 		</div>
 		<div class="field">
 			<span class="label">age</span>
-			<span class="value">35</span>
+			<span class="edit value" id="age">35</span>
 		</div>
 		<!--@properties-->
 	</div>
