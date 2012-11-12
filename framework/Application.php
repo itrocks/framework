@@ -84,6 +84,7 @@ abstract class Application
 					$application =  mParse(file_get_contents("{$app_dir}/Application.php"),
 						" extends SAF\\", "\\Application"
 					);
+					$app_dir = strtolower($application);
 				}
 				self::$namespaces[] = __NAMESPACE__;
 				// TODO should found another way to make it smarter (prehaps framework_test application ?)
