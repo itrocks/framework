@@ -49,7 +49,7 @@ class Html_View_Engine implements View_Engine
 	{
 		$link = is_object($object)
 			? (Namespaces::shortClassName(get_class($object)) . "/" . Dao::getObjectIdentifier($object))
-			: $object;
+			: Namespaces::shortClassName($object);
 		if (isset($parameters)) {
 			if (!is_array($parameters)) {
 				$link .= "/" . $parameters;
@@ -65,7 +65,7 @@ class Html_View_Engine implements View_Engine
 				}
 			}
 		}
-		return $link;
+		return "/" . $link;
 	}
 
 }

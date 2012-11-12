@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-interface List_Controller
+interface List_Controller extends Output_Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
@@ -14,5 +14,3 @@ interface List_Controller
 	public function getSelectionButtons($class_name);
 
 }
-
-?>

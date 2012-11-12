@@ -11,7 +11,7 @@ class Default_List_Controller implements List_Controller
 	public function getGeneralButtons($class_name)
 	{
 		return array(
-			new Button("Add", View::link($class_name), "add"),
+			new Button("Add", View::link($class_name, "new"), "add"),
 		);
 	}
 
@@ -31,7 +31,7 @@ class Default_List_Controller implements List_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * Default run method for default "list-typed" controller
+	 * Default run method for default "list-typed" view controller
 	 *
 	 * @param Controller_Parameters $parameters
 	 * @param array  $form
