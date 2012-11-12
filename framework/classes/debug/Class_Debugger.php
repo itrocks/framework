@@ -88,12 +88,18 @@ class Class_Debugger
 	public static function register($class_name)
 	{
 		$class_debugger = self::getInstance();
-		aop_add_before(
-			Namespaces::fullClassName($class_name) . "->*()", array(get_called_class(), "before")
-		);
-		aop_add_after(
-			Namespaces::fullClassName($class_name) . "->*()", array(get_called_class(), "after")
-		);
+		if ($class_name == "*") {
+			aop_add_before("*->*()", array(get_called_class(), "before"));
+			aop_add_after("*->*()", array(get_called_class(), "after"));
+		}
+		else {
+			aop_add_before(
+				Namespaces::fullClassName($class_name) . "->*()", array(get_called_class(), "before")
+			);
+			aop_add_after(
+				Namespaces::fullClassName($class_name) . "->*()", array(get_called_class(), "after")
+			);
+		}
 	}
 
 }
