@@ -8,8 +8,12 @@ class Default_Output_Controller implements Output_Controller
 	public function getGeneralButtons($object)
 	{
 		return array(
-			new Button("Write", View::link($object, "write"), "write", ".ifedit"),
-			new Button("Duplicate", View::link($object, "duplicate"), "duplicate")
+			new Button(
+				"Write", View::link($object, "write"), "write", array(".ifedit", ".submit", "#message")
+			),
+			new Button(
+				"Duplicate", View::link($object, "duplicate"), "duplicate"
+			)
 		);
 	}
 

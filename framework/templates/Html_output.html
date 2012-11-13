@@ -11,32 +11,34 @@
 <body>
 
 	<!--BEGIN-->
-	<div class="general button_bar">
-		<!--general_buttons-->
-		<a class="button {class}" href="{link}">[{caption}]</a>
-		<!--general_buttons-->
-	</div>
-	<div class="fieldset">
-		<!--@properties-->
-		<div class="field">
-			<span class="label">[{display}]</span>
-			<span class="edit value" id="{name}">{value}</span>
+	<form class="editable">
+		<div class="general button_bar">
+			<!--general_buttons-->
+			<a class="button {?class}" href="{link}" target="{?target}">[{caption}]</a>
+			<!--general_buttons-->
 		</div>
-		<!--sample-->
-		<div class="field">
-			<span class="label">first name</span>
-			<span class="edit value" id="first_name">Robert</span>
+		<div class="fieldset">
+			<!--@properties-->
+			<div class="field">
+				<span class="label">[{display}]</span>
+				<span class="edit value" id="{name}">{value}</span>
+			</div>
+			<!--sample-->
+			<div class="field">
+				<span class="label">first name</span>
+				<span class="edit value" id="first_name">Robert</span>
+			</div>
+			<div class="field">
+				<span class="label">last name</span>
+				<span class="edit value" id="last_name">Cheramy</span>
+			</div>
+			<div class="field">
+				<span class="label">age</span>
+				<span class="edit value" id="age">35</span>
+			</div>
+			<!--@properties-->
 		</div>
-		<div class="field">
-			<span class="label">last name</span>
-			<span class="edit value" id="last_name">Cheramy</span>
-		</div>
-		<div class="field">
-			<span class="label">age</span>
-			<span class="edit value" id="age">35</span>
-		</div>
-		<!--@properties-->
-	</div>
+	</form>
 	<!--END-->
 
 </body>

@@ -278,12 +278,29 @@ class Html_Template
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, "}", $i);
 				$var_name = substr($content, $i, $j - $i);
+				if ($var_name[0] === "?") {
+					$var_name = substr($var_name, 1);
+					$auto_remove = true;
+				}
+				else {
+					$auto_remove = false;
+				}
 				$value = $this->parseVar($objects, $var_name);
 				if (is_array($value)) {
 					$value = "...";
 				}
-				$content = substr($content, 0, $i - 1) . $value . substr($content, $j + 1);
 				$i --;
+				if ($auto_remove && !strlen($value)) {
+					if (
+						(($content[$i - 1] === "'") && ($content[$j + 1] === "'"))
+						|| (($content[$i - 1] === '"') && ($content[$j + 1] === '"'))
+					) {
+						$i --;
+						$j ++;
+					}
+					while (($content[$i] != " ") && ($content[$i] != ",")) $i--;
+				}
+				$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
 			}
 		}
 		return $content;
@@ -427,7 +444,7 @@ class Html_Template
 	private function parseThis($content, $i)
 	{
 		$c = $content[$i];
-		return (($c >= "a") && ($c <= "z")) || ($c == "@") || ($c == "/") || ($c == ".");		
+		return (($c >= "a") && ($c <= "z")) || ($c == "@") || ($c == "/") || ($c == ".") || ($c == "?");		
 	}
 
 	//---------------------------------------------------------------------------------- removeSample

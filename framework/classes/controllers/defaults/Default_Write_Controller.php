@@ -19,10 +19,31 @@ class Default_Write_Controller implements Class_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
-		echo "<pre>" . print_r($parameters, true) . "</pre>";
-		echo "form = $form<br>";
-		echo "files = $files<br>";
-		echo "class_name = $class_name<br>";
+		echo $_SERVER["REQUEST_URI"] . "<br>";
+		echo "<pre>" . print_r($form, true) . "</pre>";
+		echo date("Y-m-d H:i:s");
+		$parameters = $parameters->getObjects();
+		$object = reset($parameters);
+		if (!$object || !is_object($object) || (get_class($object) !== $class_name)) {
+			$object = new $class_name();
+			$parameters = array_merge(array($class_name => $object), $parameters);
+		}
+		$changed = false;
+		foreach ($form as $name => $value) {
+			// TODO remove "..." when forms will not include those scary values anymore
+			if (($object->$name != $value) && ($value != "...")) {
+				echo "WRITE $name = $value<br>";
+				$object->$name = $value;
+				$changed = true;
+			}
+		}
+		if ($changed) {
+			Dao::write($object);
+			View::run($parameters, $form, $files, $class_name, "written");
+		}
+		else {
+			View::run($parameters, $form, $files, $class_name, "unchanged");
+		}
 	}
 
 }

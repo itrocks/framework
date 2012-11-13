@@ -12,7 +12,7 @@ if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr(__DIR__, strlen(
 // debug
 //ini_set("xdebug.scream", true);
 //Aop_Logger::register();
-Execution_Timer::register();
+//Execution_Timer::register();
 //Mysql_Logger::register();
 Xdebug::register();
 //Class_Debugger::register("Html_Template");

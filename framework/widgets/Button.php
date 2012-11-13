@@ -33,6 +33,15 @@ class Button
 	 */
 	public $link;
 
+	//--------------------------------------------------------------------------------------- $target
+	/**
+	 * Target for the link
+	 * Name of a targetted window / iframe
+	 * If starts with "#", target is the identifier of a DOM element in the page (for ajax call)
+	 * @var string
+	 */
+	public $target;
+
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct($caption, $link, $feature = null, $options = array())
 	{
@@ -42,9 +51,12 @@ class Button
 		if (!is_array($options)) {
 			$options = array($options);
 		}
-		foreach ($options as $option) {
-			if (substr($option, 0, 1) == ".") {
+		foreach ($options as $key => $option) {
+			if (($key === "class") || is_numeric($key) && substr($option, 0, 1) == ".") {
 				$this->class .= (isset($this->class) ? " " : "") . substr($option, 1);
+			}
+			if (($key === "target") || is_numeric($key) && substr($option, 0, 1) == "#") {
+				$this->target = $option;
 			}
 		}
 	}

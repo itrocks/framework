@@ -15,18 +15,17 @@ $("document").ready(function() {
 				.css({
 					"width": getInputTextWidth(element.text())
 				})
-				.keyup(function() {
-					$(this).width(getInputTextWidth(this.value));
-				});
+				.keyup(function() { $(this).width(getInputTextWidth(this.value)); });
 			};
 			var input = newInput($this);
 			$this.html(input);
 			input.focus();
-			$(".edit").not(".editing").html(function() {
-				var $this = $(this);
-				$this.addClass("editing");
-				return newInput($(this));
-			});
+			$(".edit").not(".editing")
+				.html(function() {
+					var $this = $(this);
+					$this.addClass("editing");
+					return newInput($(this));
+				});
 			$(".ifedit").css("display", "inline-block");
 		}
 	});
