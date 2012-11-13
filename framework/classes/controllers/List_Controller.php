@@ -4,9 +4,6 @@ namespace SAF\Framework;
 interface List_Controller extends Output_Controller
 {
 
-	//----------------------------------------------------------------------------- getGeneralButtons
-	public function getGeneralButtons($class_name);
-
 	//----------------------------------------------------------------------------- getListProperties
 	public function getListProperties();
 

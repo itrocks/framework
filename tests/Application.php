@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Tests;
+namespace SAF\Framework\Tests;
 
-abstract class Tests extends SAF\Framework\Application
+abstract class Tests extends \SAF\Framework\Application
 {
 
 }

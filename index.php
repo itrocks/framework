@@ -12,7 +12,7 @@ if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr(__DIR__, strlen(
 // debug
 //ini_set("xdebug.scream", true);
 //Aop_Logger::register();
-//Execution_Timer::register();
+Execution_Timer::register();
 //Mysql_Logger::register();
 Xdebug::register();
 //Class_Debugger::register("Html_Template");
@@ -26,7 +26,9 @@ Aop_Getter::register();
 Aop_Setter::register();
 Html_Cleaner::register();
 Html_Translator::register();
-if(is_array($MODULES)) foreach (array_reverse($MODULES) as $MODULE) $MODULE();
+// TODO 'better use something like a Modules::register() call 
+if (!isset($MODULES)) $MODULES = array();
+foreach (array_reverse($MODULES) as $MODULE) $MODULE();
 
 // run
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";

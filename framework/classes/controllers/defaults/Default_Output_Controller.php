@@ -9,7 +9,7 @@ class Default_Output_Controller implements Output_Controller
 	{
 		return array(
 			new Button(
-				"Write", View::link($object, "write"), "write", array(".ifedit", ".submit", "#message")
+				"Write", View::link($object, "write"), "write", array(".ifedit", ".submit", "#messages")
 			),
 			new Button(
 				"Duplicate", View::link($object, "duplicate"), "duplicate"

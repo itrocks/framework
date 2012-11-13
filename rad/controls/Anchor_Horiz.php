@@ -1,7 +1,7 @@
 <?php
 namespace SAF\RAD;
 
-class Anchor_Horiz extends Aim
+class Anchor_Horiz extends Anchor
 {
 
 	const LEFT = "left";
