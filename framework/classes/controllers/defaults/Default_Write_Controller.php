@@ -19,6 +19,10 @@ class Default_Write_Controller implements Class_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
+		echo "<pre>" . print_r($parameters, true) . "</pre>";
+		echo "form = $form<br>";
+		echo "files = $files<br>";
+		echo "class_name = $class_name<br>";
 	}
 
 }

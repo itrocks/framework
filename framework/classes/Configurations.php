@@ -50,7 +50,7 @@ class Configurations
 		$config = array();
 		include $file_name;
 		if (isset($GLOBALS["CONFIG"])) {
-			$config = arrayMergeRecursive($config, $GLOBALS["CONFIG"]);
+			$config = arrayMergeRecursive($config, array_reverse($GLOBALS["CONFIG"], true));
 		}
 		$this->configurations = array();
 		foreach ($config as $config_name => $config_options) {
@@ -61,6 +61,9 @@ class Configurations
 				);
 			}
 			$this->configurations[$config_name] = new Configuration($config_options);
+		}
+		if (!Configuration::current()) {
+			Configuration::current(end($this->configurations));
 		}
 	}
 

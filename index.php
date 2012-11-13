@@ -1,10 +1,13 @@
 <?php
 namespace SAF\Framework;
-use SAF\Framework\Tests\Menu_Tester;
 
+// init
 error_reporting(E_ALL);
 require_once "framework/classes/Autoloader.php";
 Autoloader::register();
+
+if (!isset($_SERVER["SAF_PATH"])) $_SERVER["SAF_PATH"] = __DIR__;
+if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr(__DIR__, strlen($_SERVER["DOCUMENT_ROOT"]));
 
 // debug
 //ini_set("xdebug.scream", true);
@@ -23,10 +26,8 @@ Aop_Getter::register();
 Aop_Setter::register();
 Html_Cleaner::register();
 Html_Translator::register();
+if(is_array($MODULES)) foreach (array_reverse($MODULES) as $MODULE) $MODULE();
 
-// tests
-Menu_Tester::register();
-
+// run
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
-
 Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
