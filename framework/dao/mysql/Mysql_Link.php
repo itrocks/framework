@@ -271,24 +271,25 @@ class Mysql_Link extends Sql_Link
 	 * Ie when you write an order, it's implicitely needed to write it's lines
 	 *
 	 * @todo verify source and test it correctly
-	 * @param object $parent
+	 * @param object $object
 	 * @param string $property_name
 	 * @param array  $collection
 	 */
-	private function writeCollection($parent, $property_name, $collection)
+	private function writeCollection($object, $property_name, $collection)
 	{
-		$property = Reflection_Property::getInstanceOf($parent, $property_name);
-		$getter = $property->getAnnotation("getter")->value;
-		// old values
-		$parent->$property_name = null;
-		$old_collection = $parent->$getter();
-		$parent->$property_name = $collection;
+		// old collection
+		$old_object = Search_Object::newInstance(get_class($object));
+		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
+		$old_collection = $old_object->$property_name;
 		// collection properties : write each of them
 		$id_set = array();
+		$property = Reflection_Property::getInstanceOf(get_class($object), $property_name);
 		if ($property->getAnnotation("contained")->value) {
 			foreach ($collection as $element) {
 				$id = $this->getObjectIdentifier($element);
-				if ($id !== null) $id_set[] = $id;
+				if ($id !== null) {
+					$id_set[] = $id;
+				}
 				$this->write($element);
 			}
 		}
@@ -315,6 +316,7 @@ class Mysql_Link extends Sql_Link
 			}
 		}
 		$write["id_" . $property_name] = $int_value;
+		unset($write[$property_name]);
 		return $int_value;
 	}
 

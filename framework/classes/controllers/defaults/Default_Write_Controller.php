@@ -19,9 +19,6 @@ class Default_Write_Controller implements Class_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
-		echo $_SERVER["REQUEST_URI"] . "<br>";
-		echo "<pre>" . print_r($form, true) . "</pre>";
-		echo date("Y-m-d H:i:s");
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
 		if (!$object || !is_object($object) || (get_class($object) !== $class_name)) {
@@ -32,7 +29,6 @@ class Default_Write_Controller implements Class_Controller
 		foreach ($form as $name => $value) {
 			// TODO remove "..." when forms will not include those scary values anymore
 			if (($object->$name != $value) && ($value != "...")) {
-				echo "WRITE $name = $value<br>";
 				$object->$name = $value;
 				$changed = true;
 			}

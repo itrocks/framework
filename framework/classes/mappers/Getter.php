@@ -15,7 +15,7 @@ abstract class Getter
 	 */
 	public static function getCollection($collection, $element_class, $parent)
 	{
-		if ($collection == null) {
+		if (!isset($collection)) {
 			$search_element = Search_Object::newInstance($element_class);
 			$search_element->setParent($parent);
 			$collection = Dao::search($search_element);

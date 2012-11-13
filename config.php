@@ -18,24 +18,24 @@ $config["framework"] = array(
 );
 
 //--------------------------------------------------------------------------------------------- rad
-$config["rad"] = array(
-	"app" => "RAD",
-	"extends" => "framework",
-	"Dao" => array(
-		"database" => "saf_rad"
-	)
-);
-
-//--------------------------------------------------------------------------------------------- rad
 $config["tests"] = array(
 		"app" => "Tests",
 		"extends" => "framework",
 		"Dao" => array(
-			"database" => "saf_test",
+			"database" => "saf-tests",
 			"tables" => array(
 				"Test_Order"      => "orders",
 				"Test_Order_Line" => "orders_lines",
 				"Test_Salesman"   => "salesmen"
 			)
 		)
+);
+
+//--------------------------------------------------------------------------------------------- rad
+$config["rad"] = array(
+	"app" => "RAD",
+	"extends" => "framework",
+	"Dao" => array(
+		"database" => "saf-rad"
+	)
 );

@@ -22,7 +22,7 @@ abstract class Aop_Getter extends Aop
 		static $antiloop = array();
 		if (!isset($antiloop[$hash][$property])) {
 			$antiloop[$hash][$property] = true;
-			$value = $object->$property;
+			$value = isset($object->$property) ? $object->$property : null;
 			unset($antiloop[$hash][$property]);
 			if (!is_array($value)) {
 				$class = $joinpoint->getClassName();
@@ -68,9 +68,10 @@ abstract class Aop_Getter extends Aop
 		$hash     = spl_object_hash($object);
 		static $antiloop = array();
 		if (!isset($antiloop[$hash][$property])) {
-			$antiloop[$hash][$property] = true;
 			$id_property = "id_" . $property;
+			$antiloop[$hash][$property] = true;
 			$value = $object->$property;
+			unset($antiloop[$hash][$property]);
 			if (!is_object($value)) {
 				$class = $joinpoint->getClassName();
 				$type = Namespaces::fullClassName(
@@ -82,7 +83,6 @@ abstract class Aop_Getter extends Aop
 					$id_property = "id_" . $property;
 					$object->$property = Getter::getObject($object->$id_property, $type);
 				}
-			} else {
 			}
 		}
 	}
