@@ -8,6 +8,15 @@ require_once "framework/classes/reflection/Reflection_Property.php";
 abstract class Aop_Getter extends Aop
 {
 
+	//--------------------------------------------------------------------------------------- $ignore
+	/**
+	 * If true, Aop_Getter getters are ignored to avoid side effects
+	 * Don't forget to bring it back to false when you're done !
+	 *
+	 * @var boolean
+	 */
+	public static $ignore = false;
+
 	//--------------------------------------------------------------------------------- getCollection
 	/**
 	 * Register this for any object collection property using "@getter Aop::getCollection" annotation
@@ -16,19 +25,21 @@ abstract class Aop_Getter extends Aop
 	 */
 	public static function getCollection(AopJoinpoint $joinpoint)
 	{
-		$object   = $joinpoint->getObject();
-		$property = $joinpoint->getPropertyName();
-		$hash     = spl_object_hash($object);
-		static $antiloop = array();
-		if (!isset($antiloop[$hash][$property])) {
-			$antiloop[$hash][$property] = true;
-			$value = isset($object->$property) ? $object->$property : null;
-			unset($antiloop[$hash][$property]);
-			if (!is_array($value)) {
-				$class = $joinpoint->getClassName();
-				$type = Reflection_Property::getInstanceOf($class, $property)->getType();
-				$type = Namespaces::defaultFullClassName(substr($type, strpos($type, ":") + 1), $class);
-				$object->$property = Getter::getCollection($value, $type, $object);
+		if (!Aop_Getter::$ignore) {
+			$object   = $joinpoint->getObject();
+			$property = $joinpoint->getPropertyName();
+			$hash     = spl_object_hash($object);
+			static $antiloop = array();
+			if (!isset($antiloop[$hash][$property])) {
+				$antiloop[$hash][$property] = true;
+				$value = isset($object->$property) ? $object->$property : null;
+				unset($antiloop[$hash][$property]);
+				if (!is_array($value)) {
+					$class = $joinpoint->getClassName();
+					$type = Reflection_Property::getInstanceOf($class, $property)->getType();
+					$type = Namespaces::defaultFullClassName(substr($type, strpos($type, ":") + 1), $class);
+					$object->$property = Getter::getCollection($value, $type, $object);
+				}
 			}
 		}
 	}
@@ -41,16 +52,18 @@ abstract class Aop_Getter extends Aop
 	 */
 	public static function getDateTime(AopJoinpoint $joinpoint)
 	{
-		$object   = $joinpoint->getObject();
-		$property = $joinpoint->getPropertyName();
-		$hash     = spl_object_hash($object);
-		static $antiloop = array();
-		if (!isset($antiloop[$hash][$property])) {
-			$antiloop[$hash][$property] = true;
-			$value = $object->$property;
-			unset($antiloop[$hash][$property]);
-			if (is_string($value)) {
-				$object->$property = Date_Time::fromISO($value);
+		if (!Aop_Getter::$ignore) {
+			$object   = $joinpoint->getObject();
+			$property = $joinpoint->getPropertyName();
+			$hash     = spl_object_hash($object);
+			static $antiloop = array();
+			if (!isset($antiloop[$hash][$property])) {
+				$antiloop[$hash][$property] = true;
+				$value = $object->$property;
+				unset($antiloop[$hash][$property]);
+				if (is_string($value)) {
+					$object->$property = Date_Time::fromISO($value);
+				}
 			}
 		}
 	}
@@ -63,25 +76,28 @@ abstract class Aop_Getter extends Aop
 	 */
 	public static function getObject(AopJoinpoint $joinpoint)
 	{
-		$object   = $joinpoint->getObject();
-		$property = $joinpoint->getPropertyName();
-		$hash     = spl_object_hash($object);
-		static $antiloop = array();
-		if (!isset($antiloop[$hash][$property])) {
-			$id_property = "id_" . $property;
-			$antiloop[$hash][$property] = true;
-			$value = $object->$property;
-			unset($antiloop[$hash][$property]);
-			if (!is_object($value)) {
-				$class = $joinpoint->getClassName();
-				$type = Namespaces::fullClassName(
-					Reflection_Property::getInstanceOf($class, $property)->getType()
-				);
-				if (isset($value)) {
-					$object->$property = Getter::getObject($value, $type);
-				} else {
-					$id_property = "id_" . $property;
-					$object->$property = Getter::getObject($object->$id_property, $type);
+		if (!Aop_Getter::$ignore) {
+			$object   = $joinpoint->getObject();
+			$property = $joinpoint->getPropertyName();
+			$hash     = spl_object_hash($object);
+			static $antiloop = array();
+			if (!isset($antiloop[$hash][$property])) {
+				$id_property = "id_" . $property;
+				$antiloop[$hash][$property] = true;
+				$value = $object->$property;
+				unset($antiloop[$hash][$property]);
+				if (!is_object($value)) {
+					$class = $joinpoint->getClassName();
+					$type = Namespaces::fullClassName(
+						Reflection_Property::getInstanceOf($class, $property)->getType()
+					);
+					if (isset($value)) {
+						$object->$property = Getter::getObject($value, $type);
+					}
+					else {
+						$id_property = "id_" . $property;
+						$object->$property = Getter::getObject($object->$id_property, $type);
+					}
 				}
 			}
 		}

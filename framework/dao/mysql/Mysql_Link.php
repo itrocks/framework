@@ -227,23 +227,36 @@ class Mysql_Link extends Sql_Link
 	{
 		$class = Reflection_Class::getInstanceOf($object);
 		$table_columns_names = array_keys($this->getStoredProperties($class));
-		$id = $this->getObjectIdentifier($object);
 		$write_collections = array();
+		$write_maps = array();
+		$aop_getter_ignore = Aop_Getter::$ignore;
+		Aop_Getter::$ignore = true;
 		foreach ($class->accessProperties() as $property) {
 			$value = $property->getValue($object);
 			if (in_array($property->name, $table_columns_names)) {
-				$write[$property->name] = $value;
+				if (Type::isBasic($property->getType())) {
+					$write[$property->name] = $value;
+				}
+				else {
+					$column_name = "id_" . $property->name;
+					if (is_object($value) && !isset($object->$column_name)) {
+						$class->$column_name = $this->write($value);
+					}
+					if (property_exists($object, $column_name)) {
+						$write[$column_name] = $object->$column_name;
+					}
+				}
 			}
-			elseif (in_array("id_" . $property->name, $table_columns_names)) {
-				$this->writeIdColumn($write, $property->name, $value);
-			}
-			elseif ($property->getAnnotation("contained")->value) {
+				elseif ($property->getAnnotation("contained")->value) {
 				$write_collections[$property->name] = $value;
 			}
 			elseif (is_array($value)) {
-				$this->writeMap($value);
+				$write_maps[$property->name] = $value;
 			}
 		}
+		$class->accessPropertiesDone();
+		Aop_Getter::$ignore = $aop_getter_ignore;
+		$id = $this->getObjectIdentifier($object);
 		if ($id === 0) {
 			$this->removeObjectIdentifier($object);
 			$id = null;
@@ -260,7 +273,9 @@ class Mysql_Link extends Sql_Link
 		foreach ($write_collections as $property_name => $value) {
 			$this->writeCollection($object, $property_name, $value);
 		}
-		$class->accessPropertiesDone();
+		foreach ($write_maps as $property_name => $value) {
+			$this->writeMap($value);
+		}
 		return $id;
 	}
 
@@ -300,24 +315,6 @@ class Mysql_Link extends Sql_Link
 				$this->delete($old_element);
 			}
 		}
-	}
-
-	//--------------------------------------------------------------------------------- writeIdColumn
-	private function writeIdColumn(&$write, $property_name, $value)
-	{
-		$int_value = is_numeric($value) ? $value : $this->getObjectIdentifier($value);
-		if (!$int_value === null) {
-			if ($value) {
-				$this->write($value);
-				$int_value = $this->getObjectIdentifier($value);
-			}
-			else {
-				$int_value = 0;
-			}
-		}
-		$write["id_" . $property_name] = $int_value;
-		unset($write[$property_name]);
-		return $int_value;
 	}
 
 	//-------------------------------------------------------------------------------------- writeMap
