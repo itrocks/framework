@@ -67,7 +67,10 @@ trait Sql_Where_Builder
 				case "NOT": $sql .= "NOT (" . $this->build($path, $value, "AND") . ")";  break;
 				case "AND": $sql .= $this->build($path, $value, $subclause);             break;
 				case "OR":  $sql .= "(" . $this->build($path, $value, $subclause) . ")"; break;
-				default:    $sql .= $this->build(is_numeric($key) ? $path : $key, $value, $clause);
+				default:
+					$build = $this->build(is_numeric($key) ? $path : $key, $value, $clause);
+					if (!empty($build))   $sql .= $build;
+					elseif (!empty($sql)) $sql = substr($sql, 0, -strlen(" $clause "));
 			}
 		}
 		return $sql;
@@ -97,7 +100,11 @@ trait Sql_Where_Builder
 			}
 		}
 		$class->accessPropertiesDone();
-		return $this->buildArray($path, $array, "AND");
+		$sql = $this->buildArray($path, $array, "AND");
+		if (!$sql) {
+			$sql = "FALSE";
+		}
+		return $sql;
 	}
 
 	//----------------------------------------------------------------------------------- buildTables

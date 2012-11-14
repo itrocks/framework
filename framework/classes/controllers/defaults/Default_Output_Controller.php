@@ -34,7 +34,7 @@ class Default_Output_Controller implements Output_Controller
 			$object = new $class_name();
 			$parameters = array_merge(array($class_name => $object), $parameters);
 		}
-		$parameters["general_buttons"]   = $this->getGeneralButtons($object);
+		$parameters["general_buttons"] = $this->getGeneralButtons($object);
 		View::run($parameters, $form, $files, $class_name, "output");
 	}
 

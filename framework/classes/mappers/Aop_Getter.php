@@ -96,7 +96,12 @@ abstract class Aop_Getter extends Aop
 					}
 					else {
 						$id_property = "id_" . $property;
-						$object->$property = Getter::getObject($object->$id_property, $type);
+						if (isset($object->$id_property)) {
+							$object->$property = Getter::getObject($object->$id_property, $type);
+						}
+						else {
+							$object->$property = new $type();
+						}
 					}
 				}
 			}

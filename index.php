@@ -13,7 +13,7 @@ if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr(__DIR__, strlen(
 //ini_set("xdebug.scream", true);
 //Aop_Logger::register();
 //Execution_Timer::register();
-//Mysql_Logger::register();
+Mysql_Logger::register();
 Xdebug::register();
 //Class_Debugger::register("Html_Template");
 //aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
