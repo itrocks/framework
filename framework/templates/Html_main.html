@@ -16,19 +16,17 @@
 
 <body id="main">
 
-<div class="Application top">
+<div class="application top">
 	[{@application.ucwords}]
 </div>
-<div class="Application breadcrumb">
+
+<div class="application breadcrumb">
 	<!--@class--><span class="entry">[{@class.display}]</span><!--@class-->
 	<!--@feature--><span class="entry">[{@feature.display}]</span><!--@feature-->
 	<!--@top--><span class="entry">{@top}</span><!--@top-->
 </div>
 
-<div class="{@class} {@feature} window">
-	<h2>[{@class.ucfirst} {@feature.display}]</h2>
-	{@content}
-</div>
+{@content}
 
 </body>
 </html>

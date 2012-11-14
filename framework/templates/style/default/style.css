@@ -34,7 +34,7 @@ hr {
 	white-space: nowrap;
 }
 
-.Application.top {
+.application.top {
 	background-color: lightgray;
 	font-size: 120%;
 	font-weight: bold;
@@ -42,10 +42,10 @@ hr {
 	padding: 0 2px;
 }
 
-.User.login form {
+.user.login form {
 	display: table;
 }
 
-.User.login form input[type="submit"] {
+.user.login form input[type="submit"] {
 	float: right;
 }

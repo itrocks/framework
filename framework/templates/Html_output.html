@@ -10,36 +10,37 @@
 </head>
 <body>
 
-	<!--BEGIN-->
-	<form class="editable">
-		<div class="general button_bar">
-			<!--general_buttons-->
-			<a class="button {?class}" href="{link}" target="{?target}">[{caption}]</a>
-			<!--general_buttons-->
+<!--BEGIN-->
+<div class="window {@class.lower} output trashable form">
+	<h2>{@class.ucfirst} output</h2>
+	<div class="general button_bar">
+		<!--general_buttons-->
+		<a class="button {?class.lower}" href="{link}" target="{?target}">[{caption}]</a>
+		<!--general_buttons-->
+	</div>
+	<div class="fieldset">
+		<!--@properties-->
+		<div class="field">
+			<span class="label">[{display}]</span>
+			<span class="edit value" id="{name}">{value}</span>
 		</div>
-		<div class="fieldset">
-			<!--@properties-->
-			<div class="field">
-				<span class="label">[{display}]</span>
-				<span class="edit value" id="{name}">{value}</span>
-			</div>
-			<!--sample-->
-			<div class="field">
-				<span class="label">first name</span>
-				<span class="edit value" id="first_name">Robert</span>
-			</div>
-			<div class="field">
-				<span class="label">last name</span>
-				<span class="edit value" id="last_name">Cheramy</span>
-			</div>
-			<div class="field">
-				<span class="label">age</span>
-				<span class="edit value" id="age">35</span>
-			</div>
-			<!--@properties-->
+		<!--sample-->
+		<div class="field">
+			<span class="label">first name</span>
+			<span class="edit value" id="first_name">Robert</span>
 		</div>
-	</form>
-	<!--END-->
+		<div class="field">
+			<span class="label">last name</span>
+			<span class="edit value" id="last_name">Cheramy</span>
+		</div>
+		<div class="field">
+			<span class="label">age</span>
+			<span class="edit value" id="age">35</span>
+		</div>
+		<!--@properties-->
+	</div>
+</div>
+<!--END-->
 
 </body>
 </html>

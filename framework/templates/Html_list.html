@@ -16,20 +16,22 @@
 </head>
 <body>
 
-	<!--BEGIN-->
+<!--BEGIN-->
+<div class="window {@class.lower} list">
+	<h2>{@class.ucfirst} list</h2>
 	<div class="general button_bar">
 		<!--general_buttons-->
 		<a class="button" href="{link}">[{caption}]</a>
 		<!--general_buttons-->
 	</div>
-	<table class="{@class} {@feature}" id="list">
+	<table class="{@class.lower} {@feature.lower}" id="list">
 	<thead>
 	<tr>
 		<th class="columns_select"></th>
 		<!--getProperties-->
-		<th>[{@display}]</th>
+		<th class="trashable">[{@display}]</th>
 		<!--sample-->
-		<th>column2</th>
+		<th class="trashable">column2</th>
 		<!--getProperties-->
 	</tr>
 	</thead>
@@ -66,10 +68,11 @@
 	<div class="selection button_bar">
 		<span class="selection arrow">[select]</span>
 		<!--selection_buttons-->
-		<a class="button {feature}" href="{link}">[{caption}]</a>
+		<a class="button {feature.lower}" href="{link}">[{caption}]</a>
 		<!--selection_buttons-->
 	</div>
-	<!--END-->
+</div>
+<!--END-->
 
 </body>
 </html>
