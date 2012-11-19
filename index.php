@@ -22,6 +22,7 @@ Xdebug::register();
 Error_Handlers::register(E_ALL & !E_NOTICE, new Main_Error_Handler());
 Error_Handlers::register(E_RECOVERABLE_ERROR, new To_Exception_Error_Handler());
 Error_Handlers::activate();
+Aop_Dynamics::register();
 Aop_Getter::register();
 Aop_Setter::register();
 Html_Cleaner::register();

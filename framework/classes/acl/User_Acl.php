@@ -2,9 +2,9 @@
 namespace SAF\Framework;
 
 /**
- * @set Acl_Groups_Users
+ * @set User
  */
-class Acl_Group_User
+class User_Acl
 {
 
 	//---------------------------------------------------------------------------------------- $group

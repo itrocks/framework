@@ -10,9 +10,25 @@ abstract class Aop
 	//----------------------------------------------------------------------------------- $joinpoints
 	static $joinpoints = array(); 
 
-	//------------------------------------------------------------------------------- methodJoinpoint
+	//------------------------------------------------------------------------------------------ add
 	/**
-	 * AopJoinpoint $joinpoint
+	 * Launch advice $call_back after the execution of the joinpoint function $function
+	 *
+	 * @param string $where when to do the capture : "after", "after_returning", "after_throwing", "around", "before"
+	 * @param string $function can be "functionName()" or "Class_Name->methodName()"
+	 *   or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
+	 * @param mixed  $call_back string(function name) or array(class name or object, method)
+	 *   or function as a closure
+	 */
+	public static function add($when, $function, $call_back)
+	{
+		$aop_call = "aop_add_" . $when;
+		$aop_call($function, $call_back); 
+	}
+
+	//----------------------------------------------------------------------------- propertyJoinpoint
+	/**
+	 * @param AopJoinpoint $joinpoint
 	 */
 	public static function propertyJoinpoint(AopJoinpoint $joinpoint)
 	{

@@ -44,7 +44,7 @@ abstract class Autoloader
 	 * @param string $class class name (with or without namespace)
 	 * @return string | null found class name (without namespace)
 	 */
-	public static function autoLoad($class_name)
+	public static function autoload($class_name)
 	{
 		$class_short_name = Namespaces::shortClassName($class_name);
 		if (!@include_once("$class_short_name.php")) {
@@ -119,7 +119,7 @@ abstract class Autoloader
 	 */
 	public static function register()
 	{
-		spl_autoload_register(array(__CLASS__, "autoLoad"));
+		spl_autoload_register(array(__CLASS__, "autoload"));
 		aop_add_before(
 			__NAMESPACE__ . "\\Configuration->current()",
 			array(__CLASS__, "resetOnCurrentConfigurationChange")

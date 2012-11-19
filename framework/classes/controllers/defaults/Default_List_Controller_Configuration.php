@@ -26,6 +26,8 @@ class Default_List_Controller_Configuration
 
 	//----------------------------------------------------------------------------- getListProperties
 	/**
+	 * Get list properties list from configuration file
+	 *
 	 * @param string $class_name
 	 * @return multitype:string
 	 */

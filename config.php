@@ -2,6 +2,11 @@
 
 //--------------------------------------------------------------------------------------- framework
 $config["framework"] = array(
+	"Aop_Dynamics" => array(
+		"List_Controller" => array(
+			array("around", "Default_List_Controller_Configuration", "getListProperties()", "List_Controller_Acls", "getListPropertiesAop")
+		) 
+	),
 	"Dao" => array(
 		"class"     => "Mysql_Link",
 		"host"      => "localhost",
@@ -19,16 +24,16 @@ $config["framework"] = array(
 
 //--------------------------------------------------------------------------------------------- rad
 $config["tests"] = array(
-		"app" => "Tests",
-		"extends" => "framework",
-		"Dao" => array(
-			"database" => "saf-tests",
-			"tables" => array(
-				"Test_Order"      => "orders",
-				"Test_Order_Line" => "orders_lines",
-				"Test_Salesman"   => "salesmen"
-			)
+	"app" => "Tests",
+	"extends" => "framework",
+	"Dao" => array(
+		"database" => "saf-tests",
+		"tables" => array(
+			"Test_Order"      => "orders",
+			"Test_Order_Line" => "orders_lines",
+			"Test_Salesman"   => "salesmen"
 		)
+	)
 );
 
 //--------------------------------------------------------------------------------------------- rad

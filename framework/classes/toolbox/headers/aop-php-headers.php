@@ -330,7 +330,7 @@ function aop_add_after_throwing($function, $call_back) {}
  * @param mixed  $call_back string(function name) or array(class name or object, method)
  *   or function as a closure
  */
-function aop_add_around($function , $call_back) {}
+function aop_add_around($function, $call_back) {}
 
 //---------------------------------------------------------------------------------- aop_add_before
 /**

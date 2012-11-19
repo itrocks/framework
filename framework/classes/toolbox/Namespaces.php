@@ -58,6 +58,30 @@ abstract class Namespaces
 		return $full_class_name;
 	}
 
+	//------------------------------------------------------------------------------- isFullClassName
+	/**
+	 * Returns true if $class_name is a full class name, with namespace
+	 *
+	 * @param string $class_name
+	 * @return boolean
+	 */
+	public static function isFullClassName($class_name)
+	{
+		return strpos($class_name, "\\") !== false;
+	}
+
+	//------------------------------------------------------------------------------ isShortClassName
+	/**
+	 * Returns true if $class_name is a short class name, without namespace
+	 *
+	 * @param string $class_name
+	 * @return boolean
+	 */
+	public static function isShortClassName($class_name)
+	{
+		return strpos($class_name, "\\") === false;
+	}
+
 	//-------------------------------------------------------------------------------- shortClassName
 	/**
 	 * Get the short class name (without it's namespace) for a given class name
