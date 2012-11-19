@@ -1,10 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-/**
- * @set User
- */
-class User_Acl
+class Acls_User extends User
 {
 
 	//---------------------------------------------------------------------------------------- $group
@@ -12,11 +9,5 @@ class User_Acl
 	 * @var Acl_Group
 	 */
 	public $group;
-
-	//----------------------------------------------------------------------------------------- $user
-	/**
-	 * @var User
-	 */
-	public $user;
 
 }

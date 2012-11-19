@@ -96,7 +96,7 @@ trait Sql_Where_Builder
 		$class = Reflection_Class::getInstanceOf(get_class($object));
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (isset($object->$property_name)) {
-				$array[$path . "." . $property_name] = $object->$property_name; 
+				$array[$path . "." . $property_name] = $object->$property_name;
 			}
 		}
 		$class->accessPropertiesDone();

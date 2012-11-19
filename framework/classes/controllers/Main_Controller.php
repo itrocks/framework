@@ -13,31 +13,6 @@ class Main_Controller
 	//----------------------------------------------------------------------------------- __construct
 	private function __construct() {}
 
-	//-------------------------------------------------------------------------------- dispatchParams
-	/**
-	 * Dispatch some get params to post (login, password and app all already awaited as post vars)
-	 *
-	 * get params are added to $post, and removed from $get
-	 *
-	 * @param array $get
-	 * @param array $post
-	 */
-	private function dispatchParams(&$get, &$post)
-	{
-		if (isset($get["app"])) {
-			$post["app"] = $get["app"];
-			unset($get["app"]);
-		}
-		if (isset($get["login"])) {
-			$post["login"] = $get["login"];
-			unset($get["login"]);
-		}
-		if (isset($get["password"])) {
-			$post["password"] = $get["password"];
-			unset($get["password"]);
-		}
-	}
-
 	//----------------------------------------------------------------------------------- getInstance
 	/**
 	 * Get the Main_Controller instance
@@ -64,8 +39,7 @@ class Main_Controller
 	 */
 	public function run($uri, $get, $post, $files)
 	{
-		$this->dispatchParams($get, $post);
-		$this->sessionStart();
+		$this->sessionStart($get, $post);
 		$this->runController($uri, $get, $post, $files);
 	}
 
@@ -100,17 +74,25 @@ class Main_Controller
 	//---------------------------------------------------------------------------------- sessionStart
 	/**
 	 * Start PHP session and reload already existing session parameters
+	 *
+	 * @param array $get
+	 * @param array $post
 	 */
-	private function sessionStart()
+	private function sessionStart(&$get, &$post)
 	{
-		session_start();
-		if (isset($_SESSION["Configuration"])) {
-			foreach ($_SESSION as $class_name => $value) {
-				$class_name::current($value);
+		$session = Session::start();
+		unset($get[session_name()]);
+		unset($post[session_name()]);
+		if (!is_null($session->get("Configuration"))) {
+			foreach ($session->getAll() as $class_name => $value) {
+				if (is_object($value)) {
+					$class_name::current($value);
+				}
 			}
 		} else {
 			$configurations = new Configurations();
 			$configurations->load();
+			$session->set(Configuration::current());
 		}
 		foreach (
 			Configuration::current()->getClassesConfigurations() as $class_name => $configuration

@@ -13,22 +13,10 @@ class User
 
 	//------------------------------------------------------------------------------------- $password
 	/**
+	 * @password sha1
 	 * @var string
 	 */
 	public $password;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Build a User object, optionnaly with it's login and password initialization
-	 *
-	 * @param string $login
-	 * @param string $password
-	 */
-	public function __construct($login = "", $password = "")
-	{
-		$this->login    = $login;
-		$this->password = $password;
-	}
 
 	//--------------------------------------------------------------------------------------- current
 	/**

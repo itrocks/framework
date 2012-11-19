@@ -129,6 +129,18 @@ class Html_Template
 		return $this->object;
 	}
 
+	//---------------------------------------------------------------------------------- getParameter
+	/**
+	 * Gets parameter value
+	 *
+	 * @param string $parameter
+	 * @return mixed
+	 */
+	public function getParameter($parameter)
+	{
+		return isset($this->parameters[$parameter]) ? $this->parameters[$parameter] : null;
+	}
+
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * Parse the template replacing templating codes by object's properties and functions results

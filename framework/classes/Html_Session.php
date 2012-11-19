@@ -17,27 +17,29 @@ abstract class Html_Session
 	 */
 	public static function postSessionId(AopJoinpoint $joinpoint)
 	{
-		$content = $joinpoint->getReturnedValue();
-		// $_POST
-		$content = str_replace(
-			"</form>",
-			"<input type=\"hidden\" name=\"" . session_name() . "\" value=\"" . session_id() . "\">"
-				. "</form>",
-			$content
-		);
-		// $_GET
-		$i = 0;
-		while (($i = strpos($content, 'href="', $i)) !== false) {
-			$i += 6;
-			$j = strpos($content, '"', $i);
-			$link = substr($content, $i, $j - $i);
-			$sep = strpos($link, "?") ? "&" : "?"; 
-			$content = substr($content, 0, $j) . $sep
-				. session_name() . "=" . session_id()
-				. substr($content, $j);
+		if (!$joinpoint->getObject()->getParameter("is_included")) {
+			$content = $joinpoint->getReturnedValue();
+			// $_POST
+			$content = str_replace(
+				"</form>",
+				"<input type=\"hidden\" name=\"" . session_name() . "\" value=\"" . session_id() . "\">"
+					. "</form>",
+				$content
+			);
+			// $_GET
+			$i = 0;
+			while (($i = strpos($content, 'href="', $i)) !== false) {
+				$i += 6;
+				$j = strpos($content, '"', $i);
+				$link = substr($content, $i, $j - $i);
+				$sep = strpos($link, "?") ? "&" : "?"; 
+				$content = substr($content, 0, $j) . $sep
+					. session_name() . "=" . session_id()
+					. substr($content, $j);
+			}
+			// done
+			$joinpoint->setReturnedValue($content);
 		}
-		// done
-		$joinpoint->setReturnedValue($content);
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -53,5 +55,3 @@ abstract class Html_Session
 	}
 
 }
-
-Html_Session::register();
