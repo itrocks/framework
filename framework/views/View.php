@@ -23,16 +23,29 @@ abstract class View
 	 */
 	public static function getPossibleViews($class_name, $feature_name)
 	{
+		$class_name = Namespaces::shortClassName($class_name);
 		$view_engine_name = Namespaces::shortClassName(get_class(View::current()));
 		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, "_View_Engine"));
 		$feature_class = Names::methodToClass($feature_name);
-		return array(
-			array($view_engine_name . "_" . $class_name . "_" . $feature_class, "run"),
-			array($view_engine_name . "_" . $class_name, $feature_name),
-			array($view_engine_name . "_" . $feature_class, "run"),
-			array($view_engine_name . "_Default_View", $feature_name),
-			array($view_engine_name . "_Default_View", "run")
-		);
+		$views = array();
+		$namespaces = Application::getNamespaces();
+		foreach ($namespaces as $namespace) {
+			$class = $namespace . "\\" . $class_name;
+			while ($class) {
+				$i = strrpos($class, "\\") + 1;
+				$view = $namespace . "\\" . $view_engine_name . "_" . substr($class, $i);
+				$views[] = array($view . "_" . $feature_class, "run");
+				$views[] = array($view, $feature_name);
+				$class = get_parent_class($class);
+			} 
+		}
+		foreach ($namespaces as $namespace) {
+			$view = $namespace . "\\" . $view_engine_name;
+			$views[] = array($view . "_" . $feature_class, "run");
+			$views[] = array($view . "_Default_View", $feature_name);
+			$views[] = array($view . "_Default_View", "run");
+		}
+		return $views;
 	}
 
 	//------------------------------------------------------------------------------------------ link
@@ -52,14 +65,11 @@ abstract class View
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
 		foreach (static::getPossibleViews($class_name, $feature_name) as $call) {
-			list($view_class_name, $view_method_name) = $call;
-			foreach (Application::getNamespaces() as $namespace) {
-				$view = $namespace . "\\" . $view_class_name;
-				if (@method_exists($view, $view_method_name)) {
-					$view_object = new $view();
-					$view_object->$view_method_name($parameters, $form, $files, $class_name, $feature_name);
-					break 2;
-				}
+			list($view, $view_method_name) = $call;
+			if (@method_exists($view, $view_method_name)) {
+				$view_object = new $view();
+				$view_object->$view_method_name($parameters, $form, $files, $class_name, $feature_name);
+				break ;
 			}
 		} 
 	}

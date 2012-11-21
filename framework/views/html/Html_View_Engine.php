@@ -38,10 +38,14 @@ class Html_View_Engine implements View_Engine
 	 */
 	public static function getPossibleTemplates($class_name, $feature_name)
 	{
-		return array(
-			$class_name . "_" . $feature_name . ".html",
-			"Html_$feature_name.html"
-		);
+		$templates = array();
+		$class_name = Namespaces::fullClassName($class_name);
+		while ($class_name) {
+			$templates[] = Namespaces::shortClassName($class_name) . "_" . $feature_name . ".html";
+			$class_name = get_parent_class($class_name);
+		}
+		$templates[] = "Html_$feature_name.html";
+		return $templates;
 	}
 
 	//------------------------------------------------------------------------------------------ link

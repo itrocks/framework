@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * @set Users
+ */
 class Acls_User extends User
 {
 

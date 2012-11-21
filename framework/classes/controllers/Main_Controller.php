@@ -56,17 +56,14 @@ class Main_Controller
 	{
 		$uri = new Controller_Uri($uri, $get, "output", "list");
 		foreach ($uri->getPossibleControllerCalls() as $call) {
-			list($controller_class_name, $method_name) = $call;
-			foreach (Application::getNamespaces() as $namespace) {
-				$controller = $namespace . "\\" . $controller_class_name;
-				if (@method_exists($controller, $method_name)) {
-					$controller = new $controller();
-					$controller->$method_name(
-						$uri->parameters, $post, $files,
-						Namespaces::fullClassName($uri->controller_name), $uri->feature_name
-					);
-					break 2;
-				}
+			list($controller, $method_name) = $call;
+			if (@method_exists($controller, $method_name)) {
+				$controller = new $controller();
+				$controller->$method_name(
+					$uri->parameters, $post, $files,
+					Namespaces::fullClassName($uri->controller_name), $uri->feature_name
+				);
+				break;
 			}
 		}
 	}

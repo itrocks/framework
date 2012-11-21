@@ -23,11 +23,9 @@ class User_Authenticate_Controller implements Feature_Controller
 		if (isset($found)) {
 			User::current($found);
 			Session::current()->set($found, "User");
-			echo "authenticated !";
 		}
 		else {
 			Session::current()->remove("User");
-			echo "user not found !";
 		}
 		(new Default_Controller())->run(
 			$parameters, $form, $files, get_class($search), "authenticate"

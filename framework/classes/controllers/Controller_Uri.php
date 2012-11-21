@@ -70,13 +70,22 @@ class Controller_Uri
 		$controller_name = $this->controller_name;
 		$feature_name_for_method = $this->feature_name;
 		$feature_name_for_class = Names::methodToClass($feature_name_for_method);
-		return array(
-			array($controller_name . "_" . $feature_name_for_class . "_Controller", "run"),
-			array($controller_name . "_Controller", $feature_name_for_method),
-			array("Default_" . $feature_name_for_class . "_Controller", "run"),
-			array("Default_Controller", $feature_name_for_method),
-			array("Default_Controller", "run")
-		);
+		$controllers = array();
+		$namespaces = Application::getNamespaces();
+		foreach ($namespaces as $namespace) {
+			$controller = $namespace . "\\" . $controller_name;
+			while ($controller) {
+				$controllers[] = array($controller . "_" . $feature_name_for_class . "_Controller", "run");
+				$controllers[] = array($controller . "_Controller", $feature_name_for_method);
+				$controller = get_parent_class($controller);
+			}
+		}
+		foreach ($namespaces as $namespace) {
+			$controllers[] = array($namespace . "\\Default_" . $feature_name_for_class . "_Controller", "run");
+			$controllers[] = array($namespace . "\\Default_Controller", $feature_name_for_method);
+			$controllers[] = array($namespace . "\\Default_Controller", "run");
+		}
+		return $controllers;
 	}
 
 	//----------------------------------------------------------------------------------------- parse

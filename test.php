@@ -1,4 +1,43 @@
 <?php
+
+//------------------------------------------------------------------------------ SET ASSIGNED VALUE
+
+class Developper
+{
+	public $preferences;
+}
+
+$spread_the_love = function (AopJoinPoint $aop_tjp)
+{
+	$assigned = $aop_tjp->getAssignedValue();
+	if ($assigned !== 'PHP') {
+		$assigned .= ' and PHP';
+	}
+};
+
+$spread_the_love2 = function (AopJoinPoint $aop_tjp)
+{
+	static $dont_recurse = false;
+	if (!$dont_recurse) {
+		$assigned = $aop_tjp->getAssignedValue();
+		$object = $aop_tjp->getObject();
+		$property = $aop_tjp->getPropertyName();
+		$dont_recurse = true;
+		$object->$property = 'PHP';
+		$dont_recurse = false;
+	}
+};
+
+//will be triggered before writing the property privateStuff
+aop_add_after('write Developper->preferences', $spread_the_love2);
+
+$developper = new Developper();
+$developper->preferences = 'Java';
+
+echo "This developper loves ", $developper->preferences;
+
+/*
+
 //---------------------------------------------------------------------------------- ADVICE RECURSE
 
 class MyClass {
