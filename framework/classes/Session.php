@@ -38,6 +38,24 @@ class Session
 		return $_SESSION;
 	}
 
+	//---------------------------------------------------------------------------------------- getAny
+	/**
+	 * Get all objects from session having $class_name as class or parent class
+	 *
+	 * @param string $class_name
+	 * @return multitype:object key is the class name of the object
+	 */
+	public function getAny($class_name)
+	{
+		$get = array(); 
+		foreach ($this->getAll() as $key => $value) {
+			if (isset(class_parents($key)[$class_name])) {
+				$get[$key] = $value;
+			}
+		}
+		return $get;
+	}
+
 	//---------------------------------------------------------------------------------------- remove
 	/**
 	 * Remove an object from session
@@ -49,16 +67,35 @@ class Session
 		unset($_SESSION[is_string($object_class) ? $object_class : get_class($object_class)]);
 	}
 
+	//------------------------------------------------------------------------------------- removeAny
+	/**
+	 * Remove any session variable that has $object_class as class or parent class
+	 *
+	 * @param string | object $object_class
+	 */
+	public function removeAny($object_class)
+	{
+		$class_name = is_string($object_class) ? $object_class : get_class($object_class);
+		$this->remove($class_name);
+		foreach ($this->getAll() as $key => $value) {
+			if (isset(class_parents($key)[$class_name])) {
+				$this->remove($key);
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------------------- set
 	/**
 	 * Set a session's object
 	 *
-	 * @param object $object
+	 * @param object $object can be null (then nothing is set)
 	 * @param string $class_name if not set, object class will be the session object identifier
 	 */
 	public function set($object, $class_name = null)
 	{
-		$_SESSION[isset($class_name) ? $class_name : get_class($object)] = $object;
+		if (isset($object)) {
+			$_SESSION[isset($class_name) ? $class_name : get_class($object)] = $object;
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- start

@@ -48,6 +48,7 @@ abstract class Html_Session
 	 */
 	public static function register()
 	{
+		ini_set("session.use_cookies", false);
 		aop_add_after(
 			__NAMESPACE__ . "\\Html_Template->parse()",
 			array(__CLASS__, "postSessionId")

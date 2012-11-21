@@ -22,10 +22,10 @@ class User_Authenticate_Controller implements Feature_Controller
 		}
 		if (isset($found)) {
 			User::current($found);
-			Session::current()->set($found, "User");
+			Session::current()->set($found);
 		}
 		else {
-			Session::current()->remove("User");
+			Session::current()->removeAny(__NAMESPACE__ . "\\User");
 		}
 		(new Default_Controller())->run(
 			$parameters, $form, $files, get_class($search), "authenticate"

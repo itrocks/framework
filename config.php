@@ -4,14 +4,17 @@
 $config["framework"] = array(
 	"Aop_Dynamics" => array(
 		"List_Controller" => array(
-			array("around", "Default_List_Controller_Configuration", "getListProperties()", "List_Controller_Acls", "getListPropertiesAop")
+			//array("around", "Default_List_Controller_Configuration", "getListProperties()", "List_Controller_Acls", "getListPropertiesAop")
 		) 
 	),
 	"Dao" => array(
-		"class"     => "Mysql_Link",
-		"host"      => "localhost",
-		"user"      => "SAF-php",
-		"password"  => "SAF-php"
+		"class"    => "Mysql_Link",
+		"host"     => "localhost",
+		"user"     => "SAF-php",
+		"password" => "SAF-php",
+		"tables"   => array(
+			"Acls_User" => "users",
+		)
 	),
 	"Locale" => array(
 		"language" => "fr"

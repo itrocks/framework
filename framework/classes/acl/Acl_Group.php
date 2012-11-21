@@ -12,12 +12,14 @@ class Acl_Group
 
 	//--------------------------------------------------------------------------------------- $groups
 	/**
+	 * @getter Aop::getCollection
 	 * @var multitype:Acl_Link
 	 */
 	public $contains;
 
 	//--------------------------------------------------------------------------------------- $rights
 	/**
+	 * @getter Aop::getCollection
 	 * @var multitype:Acl_Right
 	 */
 	public $rights;

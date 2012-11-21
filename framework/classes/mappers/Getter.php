@@ -17,11 +17,15 @@ abstract class Getter
 	{
 		if (!isset($collection)) {
 			$search_element = Search_Object::newInstance($element_class);
-			$search_element->setParent($parent);
+			if ($search_element instanceof Contained) {
+				$search_element->setParent($parent);
+			}
 			$collection = Dao::search($search_element);
-			// this to avoid getter calls on $element->getParent() call (parent is already loaded)
-			foreach ($collection as $element) {
-				$element->setParent($parent);
+			if ($search_element instanceof Contained) {
+				// this to avoid getter calls on $element->getParent() call (parent is already loaded)
+				foreach ($collection as $element) {
+					$element->setParent($parent);
+				}
 			}
 		}
 		return $collection;

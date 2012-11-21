@@ -141,7 +141,7 @@ abstract class Aop_Getter extends Aop
 	public static function registerGettersAop(AopJoinpoint $joinpoint)
 	{
 		if ($joinpoint->getReturnedValue()) {
-			list($class_name) = $joinpoint->getArguments();
+			$class_name = $joinpoint->getArguments()[0];
 			parent::registerProperties(Namespaces::fullClassName($class_name), "getter", "read");
 		}
 	}

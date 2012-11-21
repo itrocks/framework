@@ -20,14 +20,33 @@ class List_Controller_Acls
 	 */
 	public static function getListProperties($class_name)
 	{
+		$acls = Acls::current();
 		return null;
 	}
 
-	//-------------------------------------------------------------------------- getListPropertiesAop
-	public static function getListPropertiesAop(AopJoinpoint $joinpoint)
+	//------------------------------------------------ onListControllerConfigurationGetListProperties
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 * @return 
+	 */
+	public static function onListControllerConfigurationGetListProperties(AopJoinpoint $joinpoint)
 	{
-		$result = List_Controller_Acls::getListProperties($joinpoint->getArguments()[0]);
-		return ($result == null) ? $joinpoint->process() : $result;
+		$result = self::getListProperties($joinpoint->getArguments()[0]);
+		if (isset($result)) {
+			$joinpoint->setReturnedValue($result);
+		}
+		else {
+			$joinpoint->process();
+		}
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	public static function register()
+	{
+		aop_add_around(
+			__NAMESPACE__ . "\\Default_List_Controller_Configuration->getListProperties()",
+			array(__CLASS__, "onListControllerConfigurationGetListProperties")
+		);
 	}
 
 	//---------------------------------------------------------------------------- removeListProperty

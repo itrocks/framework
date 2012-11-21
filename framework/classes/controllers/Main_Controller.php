@@ -80,13 +80,13 @@ class Main_Controller
 		$session = Session::start();
 		unset($get[session_name()]);
 		unset($post[session_name()]);
-		if (!is_null($session->get("Configuration"))) {
-			foreach ($session->getAll() as $class_name => $value) {
-				if (is_object($value)) {
-					$class_name::current($value);
-				}
+		foreach ($session->getAll() as $class_name => $value) {
+echo "<pre>sets $class_name as " . print_r($value, true) . "</pre>";
+			if (is_object($value) && isset(class_uses($value)[__NAMESPACE__ . "\\Current"])) {
+				$class_name::current($value);
 			}
-		} else {
+		}
+		if (!Configuration::current()) {
 			$configurations = new Configurations();
 			$configurations->load();
 			$session->set(Configuration::current());

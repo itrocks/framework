@@ -23,7 +23,7 @@ abstract class Aop
 	public static function add($when, $function, $call_back)
 	{
 		$aop_call = "aop_add_" . $when;
-		$aop_call($function, $call_back); 
+		$aop_call($function, $call_back);
 	}
 
 	//----------------------------------------------------------------------------- propertyJoinpoint
