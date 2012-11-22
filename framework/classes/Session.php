@@ -78,7 +78,7 @@ class Session
 		$class_name = is_string($object_class) ? $object_class : get_class($object_class);
 		$this->remove($class_name);
 		foreach ($this->getAll() as $key => $value) {
-			if (isset(class_parents($key)[$class_name])) {
+			if (class_exists($key) && isset(class_parents($key)[$class_name])) {
 				$this->remove($key);
 			}
 		}

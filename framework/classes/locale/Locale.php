@@ -21,7 +21,7 @@ class Locale
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct($parameters)
 	{
-		$this->language = $parameters["language"];
+		$this->setLanguage($parameters["language"]);
 	}
 
 	//--------------------------------------------------------------------------------------- current

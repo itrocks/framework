@@ -160,7 +160,7 @@ class AopJoinpoint
  	 *
  	 * @return mixed
  	 */
- 	public function  getAssignedValue() {}
+ 	public function getAssignedValue() {}
 
 	//---------------------------------------------------------------------------------- getClassName
 	/**
@@ -175,6 +175,16 @@ class AopJoinpoint
 	 */
 	public function getClassName() {}
 
+	//---------------------------------------------------------------------------------- getException
+	/**
+	 * Returns the throwed exception of the triggered joinpoint.
+	 *
+	 * The joinpoint must have been triggered by an after_throwing operation, or will raise an error.
+	 *
+	 * @return string
+	 */
+	public function getException() {}
+
 	//------------------------------------------------------------------------------- getFunctionName
 	/**
 	 * Returns the name of the function of the triggered joinpoint.
@@ -184,7 +194,7 @@ class AopJoinpoint
 	 *
 	 * @return string
 	 */
-	public function  getFunctionName() {}
+	public function getFunctionName() {}
 
 	//------------------------------------------------------------------------------- getKindOfAdvice
 	/**
@@ -272,9 +282,9 @@ class AopJoinpoint
 	 */
 	public function setArguments($new_args) {}
 
-	//------------------------------------------------------------------------------ setReturnedValue
+	//------------------------------------------------------------------------------ setAssignedValue
 	/**
-	 * Enables you to define the resulting value of the triggering method.
+	 * Enables you to define the assigned value of the triggering method.
 	 *
 	 * This function makes sense for advices of kind after, around, exception and final.
 	 *
@@ -283,6 +293,14 @@ class AopJoinpoint
 	 * original reference, just proceed as explained in the getReturnedValue() documentation.
 	 *
 	 * @param mixed $new_returned_value The new triggering method returned value.
+	 */
+	public function setAssignedValue($new_assigned_value) {}
+
+	//------------------------------------------------------------------------------ setReturnedValue
+	/**
+	 * Enables you to define the value of the property of the triggered joinpoint.
+	 *
+	 * @param mixed $new_assigned_value The new value assigned to the property.
 	 */
 	public function setReturnedValue($new_returned_value) {}
 

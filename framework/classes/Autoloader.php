@@ -16,6 +16,14 @@ require_once "framework/classes/toolbox/String.php";
 abstract class Autoloader
 {
 
+	//----------------------------------------------------------------------------- $included_classes
+	/**
+	 * Included classes list
+	 *
+	 * @var multitype:string keys are arbitrary numeric
+	 */
+	private static $included_classes = array();
+
 	//---------------------------------------------------------------------------------- $initialized
 	/**
 	 * This is true when Autoloader has been initialized first
@@ -36,7 +44,7 @@ abstract class Autoloader
 
 	//-------------------------------------------------------------------------------------- autoLoad
 	/**
-	 * Includes the php file that contains the given named class
+	 * Includes the php file that contains the given class (must contain namespace)
 	 *
 	 * Will return the short class name, or null if the class file was not found.
 	 *
@@ -46,19 +54,25 @@ abstract class Autoloader
 	 */
 	public static function autoload($class_name)
 	{
-		$class_short_name = Namespaces::shortClassName($class_name);
-		if (!@include_once("$class_short_name.php")) {
-			if (!self::$initialized) {
-				static::init();
-				if (!@include_once("$class_short_name.php")) {
+		$short_class_name = Namespaces::shortClassName($class_name);
+		if (!isset(self::$included_classes[$short_class_name])) {
+			if (!@include_once($short_class_name . ".php")) {
+				if (!self::$initialized) {
+					static::init();
+					if (!@include_once($short_class_name . ".php")) {
+						return null;
+					}
+				}
+				else {
 					return null;
 				}
 			}
-			else {
-				return null;
-			}
+			self::$included_classes[$short_class_name] = $class_name;
+			$class_name = Namespaces::fullClassName($class_name);
+			self::$included_classes[$short_class_name] = $class_name;
+			self::classLoadEvent($class_name);
 		}
-		return $class_name;
+		return $short_class_name;
 	}
 
 	//-------------------------------------------------------------------------- getOriginIncludePath
@@ -111,6 +125,16 @@ abstract class Autoloader
 		}
 		set_include_path($_SESSION["php_ini"]["include_path"]);
 		self::$initialized = true;
+	}
+
+	//-------------------------------------------------------------------------------- classLoadEvent
+	/**
+	 * This event can be used as pointcut when a new class has been loaded
+	 *
+	 * @param string $class_name full class name, with namespace
+	 */
+	private static function classLoadEvent($class_name)
+	{
 	}
 
 	//-------------------------------------------------------------------------------------- register

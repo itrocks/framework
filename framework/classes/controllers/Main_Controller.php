@@ -81,8 +81,7 @@ class Main_Controller
 		unset($get[session_name()]);
 		unset($post[session_name()]);
 		foreach ($session->getAll() as $class_name => $value) {
-echo "<pre>sets $class_name as " . print_r($value, true) . "</pre>";
-			if (is_object($value) && isset(class_uses($value)[__NAMESPACE__ . "\\Current"])) {
+			if (is_object($value)) {
 				$class_name::current($value);
 			}
 		}

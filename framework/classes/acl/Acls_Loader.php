@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use AopJoinpoint;
 
 abstract class Acls_Loader
 {
@@ -14,9 +15,7 @@ abstract class Acls_Loader
 		if (!isset($acls)) {
 			$acls = new Acls();
 		}
-		$search = new Acl_Right();
-		$search->group = $group;
-		foreach (Dao::search($search) as $right) {
+		foreach ($group->rights as $right) {
 			$acls->add($right);
 		}
 		return $acls;
@@ -33,8 +32,45 @@ abstract class Acls_Loader
 		if (!isset($acls)) {
 			$acls = new Acls();
 		}
-		$this->loadGroupAcl($user->group, $acls);
+		if ($user->group) {
+			self::loadGroupAcls($user->group, $acls);
+		}
 		return $acls;
+	}
+
+	//---------------------------------------------------------------------------- onUserAuthenticate
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function onUserAuthenticate(AopJoinpoint $joinpoint)
+	{
+		$arguments = $joinpoint->getArguments();
+		if (isset($arguments)) {
+			Session::current()->set(Acls::current(self::loadUserAcls($arguments[0])));
+		}
+	}
+
+	//------------------------------------------------------------------------------ onUserDisconnect
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function onUserDisconnect(AopJoinpoint $joinpoint)
+	{
+		Acls::current(new Acls());
+		Session::current()->removeAny(__NAMESPACE__ . "\\Acls");
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	public static function register()
+	{
+		aop_add_after(
+			__NAMESPACE__ . "\\User_Authenticate_Controller->authenticate()",
+			array(__CLASS__, "onUserAuthenticate")
+		);
+		aop_add_after(
+			__NAMESPACE__ . "\\User_Authenticate_Controller->disconnect()",
+			array(__CLASS__, "onUserDisconnect")
+		);
 	}
 
 }

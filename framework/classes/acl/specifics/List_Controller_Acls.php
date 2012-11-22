@@ -21,7 +21,8 @@ class List_Controller_Acls
 	public static function getListProperties($class_name)
 	{
 		$acls = Acls::current();
-		return null;
+		$list = $acls->get($class_name . ".list.properties.list");
+		return isset($list) ? array_keys($list) : null;
 	}
 
 	//------------------------------------------------ onListControllerConfigurationGetListProperties

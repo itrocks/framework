@@ -112,7 +112,7 @@ abstract class Aop_Getter extends Aop
 	public static function register()
 	{
 		aop_add_after(
-			__NAMESPACE__ . "\\Autoloader->autoload()",
+			__NAMESPACE__ . "\\Autoloader->classLoadEvent()",
 			array(__CLASS__, "registerGettersAop")
 		);
 	}
@@ -140,10 +140,8 @@ abstract class Aop_Getter extends Aop
 	 */
 	public static function registerGettersAop(AopJoinpoint $joinpoint)
 	{
-		if ($joinpoint->getReturnedValue()) {
-			$class_name = $joinpoint->getArguments()[0];
-			parent::registerProperties(Namespaces::fullClassName($class_name), "getter", "read");
-		}
+		$class_name = $joinpoint->getArguments()[0];
+		parent::registerProperties(Namespaces::fullClassName($class_name), "getter", "read");
 	}
 
 }
