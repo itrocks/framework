@@ -49,7 +49,6 @@ class User_Authenticate_Controller implements Feature_Controller
 	 */
 	private function disconnect(User $user)
 	{
-echo "disconnect<br>";
 		User::current(new User());
 		Session::current()->removeAny(__NAMESPACE__ . "\\User");
 	}

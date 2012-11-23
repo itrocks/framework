@@ -223,35 +223,40 @@ class Html_Template
 	 */
 	private function parseVar($objects, $var_name)
 	{
-		$object = reset($objects);
-		foreach (explode(".", $var_name) as $property_name) {
-			if (!strlen($property_name)) {
-				array_shift($objects);
-				$object = reset($objects);
-			}
-			elseif ($property_name[0] === "@") {
-				$object = $this->parseFunc($objects, substr($property_name, 1));
-			}
-			elseif ($property_name[0] === "/") {
-				$object = $this->parseInclude($property_name);
-			}
-			elseif ($i = strpos($property_name, "(")) {
-				$object = $this->callFunc($objects, $property_name);
-			}
-			elseif (!is_object($object)) {
-				$object = new String($object);
-				$object = method_exists($object, $property_name)
-					? $object->$property_name()
-					: $object->$property_name;
-			}
-			elseif (method_exists($object, $property_name)) {
-				$object = $object->$property_name();
-			}
-			elseif (property_exists($object, $property_name)) {
-				$object = $object->$property_name;
-			}
-			else {
-				$object = isset($this->parameters[$property_name]) ? $this->parameters[$property_name] : "";
+		if ($var_name == ".") {
+			return reset($objects);
+		}
+		else {
+			$object = reset($objects);
+			foreach (explode(".", $var_name) as $property_name) {
+				if (!strlen($property_name)) {
+					array_shift($objects);
+					$object = reset($objects);
+				}
+				elseif ($property_name[0] === "@") {
+					$object = $this->parseFunc($objects, substr($property_name, 1));
+				}
+				elseif ($property_name[0] === "/") {
+					$object = $this->parseInclude($property_name);
+				}
+				elseif ($i = strpos($property_name, "(")) {
+					$object = $this->callFunc($objects, $property_name);
+				}
+				elseif (!is_object($object)) {
+					$object = new String($object);
+					$object = method_exists($object, $property_name)
+						? $object->$property_name()
+						: $object->$property_name;
+				}
+				elseif (method_exists($object, $property_name)) {
+					$object = $object->$property_name();
+				}
+				elseif (property_exists($object, $property_name)) {
+					$object = $object->$property_name;
+				}
+				else {
+					$object = isset($this->parameters[$property_name]) ? $this->parameters[$property_name] : "";
+				}
 			}
 		}
 		if (is_object($object)) {

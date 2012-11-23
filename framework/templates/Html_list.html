@@ -17,21 +17,21 @@
 <body>
 
 <!--BEGIN-->
-<div class="window {@class.lower} list">
+<div class="window list" id="{@class}/{@feature}">
 	<h2>{@class.ucfirst} list</h2>
 	<div class="general button_bar">
 		<!--general_buttons-->
 		<a class="button" href="{link}">[{caption}]</a>
 		<!--general_buttons-->
 	</div>
-	<table class="{@class.lower} {@feature.lower}" id="list">
+	<table>
 	<thead>
 	<tr>
 		<th class="columns_select"></th>
 		<!--getProperties-->
-		<th class="trashable">[{@display}]</th>
+		<th id="{.}" class="trashable">[{@display}]</th>
 		<!--sample-->
-		<th class="trashable">column2</th>
+		<th id="column2" class="trashable">column2</th>
 		<!--getProperties-->
 	</tr>
 	</thead>

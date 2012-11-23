@@ -6,7 +6,7 @@ class Controller_Uri
 
 	//------------------------------------------------------------------------------ $controller_name
 	/**
-	 * The controller name : concat of all parameters names, separated by "_"
+	 * The controller name : concat of the two first parameters names, separated by "_"
 	 *
 	 * @var string
 	 */
@@ -67,13 +67,12 @@ class Controller_Uri
 	 */
 	public function getPossibleControllerCalls()
 	{
-		$controller_name = $this->controller_name;
 		$feature_name_for_method = $this->feature_name;
 		$feature_name_for_class = Names::methodToClass($feature_name_for_method);
 		$controllers = array();
 		$namespaces = Application::getNamespaces();
 		foreach ($namespaces as $namespace) {
-			$controller = $namespace . "\\" . $controller_name;
+			$controller = $namespace . "\\" . $this->controller_name;
 			while ($controller) {
 				$controllers[] = array($controller . "_" . $feature_name_for_class . "_Controller", "run");
 				$controllers[] = array($controller . "_Controller", $feature_name_for_method);
@@ -100,15 +99,33 @@ class Controller_Uri
 		$this->parameters = new Controller_Parameters();
 		$controller_elements = array();
 		$last_controller_element = "";
+		$free_parameters_count = 0;
+		$count = 0;
 		foreach ($uri as $uri_element) {
 			if (is_numeric($uri_element)) {
-				$this->parameters->set($last_controller_element, $uri_element);
+				$this->parameters->set(
+					str_replace(" ", "_", ucwords(str_replace("_", " ", $last_controller_element))),
+					$uri_element
+				);
+				$last_controller_element = "";
 			}
 			else {
-				$controller_element = str_replace(" ", "_", ucwords(str_replace("_", " ", $uri_element)));
-				$controller_elements[] = $controller_element;
-				$last_controller_element = $controller_element;
+				if ($count < 2) {
+					$controller_elements[] = str_replace(
+						" ", "_", ucwords(str_replace("_", " ", $uri_element))
+					);
+				}
+				else {
+					if ($last_controller_element) {
+						$this->parameters->set($free_parameters_count++, $last_controller_element);
+					}
+					$last_controller_element = $uri_element;
+				}
+				$count++;
 			}
+		}
+		if ($last_controller_element) {
+			$this->parameters->set($free_parameters_count++, $last_controller_element);
 		}
 		$this->feature_name = lcfirst(array_pop($controller_elements));
 		$this->controller_name = join("_", $controller_elements);
