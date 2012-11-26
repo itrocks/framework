@@ -50,7 +50,7 @@ abstract class Html_Session
 	{
 		ini_set("session.use_cookies", false);
 		ini_set("session.use_only_cookies", false);
-		aop_add_after(
+		Aop::add("after",
 			__NAMESPACE__ . "\\Html_Template->parse()",
 			array(__CLASS__, "postSessionId")
 		);

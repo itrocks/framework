@@ -1,4 +1,7 @@
 <?php
+ini_set("xdebug.scream", true);
+echo 1;
+
 /**
  * School case for AOP-PHP
  *
@@ -50,9 +53,9 @@ abstract class Main_Class
 	public static function main()
 	{
 		self::init();
-		echo Name::read(1) . "<br>";
-		echo Name::read(2) . "<br>";
-		echo Name::read(3) . "<br>";
+		echo Name::read(1) . "<br>\n";
+		echo Name::read(2) . "<br>\n";
+		echo Name::read(3) . "<br>\n";
 	}
 
 }
@@ -126,7 +129,7 @@ abstract class Mysql_Logger
 	public static function log($query)
 	{
 		// imagine this is a write into a log file
-		echo "<div>" . $query . "</div>";
+		echo "<div>" . $query . "</div>\n";
 	}
 
 }
@@ -141,7 +144,12 @@ abstract class Mysql_Logger_Extension
 	 */
 	public static function register()
 	{
-		aop_add_before("mysql_query()", "Mysql_Logger_Extension::onMysqlQuery");
+		aop_add_before("mysql_query()", array("Mysql_Logger_Extension", "onMysqlQuery"));
+		/*
+		aop_add_before("mysql_query()", function(AopJoinpoint $joinpoint) {
+			Mysql_Logger::log($joinpoint->getArguments()[0]);
+		});
+		*/
 	}
 
 	//---------------------------------------------------------------------------------- onMysqlQuery
@@ -216,7 +224,12 @@ abstract class Name_With_City_Extension
 	 */
 	public static function register()
 	{
-		aop_add_around("Name->read()", "Name_With_City_Extension::onNameRead");
+		aop_add_around("Name->read()", array("Name_With_City_Extension", "onNameRead"));
+		/*
+		aop_add_around("Name->read()", function(AopJoinpoint $joinpoint) {
+			return Name_With_City::read($joinpoint->getArguments()[0]);
+		});
+		*/
 	}
 
 	//------------------------------------------------------------------------------------ onNameRead
@@ -242,7 +255,7 @@ abstract class Name_With_City_Extension
 
 //---------------------------------------------------------------------------------------------- #1
 
-echo "<h2>----- #1 Main Process without extension</h2>";
+echo "\n<h2>----- #1 Main Process without extension</h2>\n";
 Main_Class::main();
 
 /*
@@ -255,7 +268,7 @@ The main process, alone, displays :
 
 //---------------------------------------------------------------------------------------------- #2
 
-echo "<h2>----- #2 Main Process with extension Mysql_Logger</h2>";
+echo "\n<h2>----- #2 Main Process with extension Mysql_Logger</h2>\n";
 Mysql_Logger_Extension::register();
 Main_Class::main();
 
@@ -274,7 +287,7 @@ Cool !
 
 //---------------------------------------------------------------------------------------------- #3
 
-echo "<h2>----- #3 Main Process with both extensions Mysql_Logger and Name_With_City</h2>";
+echo "\n<h2>----- #3 Main Process with both extensions Mysql_Logger and Name_With_City</h2>\n";
 Name_With_City_Extension::register();
 Main_Class::main();
 

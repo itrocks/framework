@@ -11,7 +11,7 @@ abstract class Html_Translator
 	 */
 	public static function register()
 	{
-		aop_add_after(
+		Aop::add("after",
 			__NAMESPACE__ . "\\Html_Template->parse()",
 			array(__CLASS__, "translatePage")
 		);

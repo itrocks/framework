@@ -111,7 +111,7 @@ abstract class Aop_Getter extends Aop
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		aop_add_after(
+		Aop::add("after",
 			__NAMESPACE__ . "\\Autoloader->classLoadEvent()",
 			array(__CLASS__, "registerGettersAop")
 		);

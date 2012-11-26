@@ -133,19 +133,19 @@ class Object_Builder
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		aop_add_after(
+		Aop::add("after",
 			"write " . __NAMESPACE__ . "\\Controller_Uri->controller_name",
 			array(__NAMESPACE__ . "\\Object_Builder", "onShortClassNamePropertyWrite")
 		);
-		aop_add_before(
+		Aop::add("before",
 			__NAMESPACE__ . "\\Getter->getCollection()",
 			array(__NAMESPACE__ . "\\Object_Builder", "onMethodWithClassName1")
 		);
-		aop_add_before(
+		Aop:add("before",
 			__NAMESPACE__ . "\\Getter->getObject()",
 			array(__NAMESPACE__ . "\\Object_Builder", "onMethodWithClassName1")
 		);
-		aop_add_before(
+		Aop::add("before",
 			__NAMESPACE__ . "\\Search_Object->newInstance()",
 			array(__NAMESPACE__ . "\\Object_Builder", "onMethodWithClassName0")
 		);

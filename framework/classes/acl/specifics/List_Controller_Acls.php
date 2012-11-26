@@ -44,7 +44,7 @@ class List_Controller_Acls
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		aop_add_around(
+		Aop::add("around",
 			__NAMESPACE__ . "\\Default_List_Controller_Configuration->getListProperties()",
 			array(__CLASS__, "onListControllerConfigurationGetListProperties")
 		);

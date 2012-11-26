@@ -144,7 +144,7 @@ abstract class Autoloader
 	public static function register()
 	{
 		spl_autoload_register(array(__CLASS__, "autoload"));
-		aop_add_before(
+		Aop::add("before",
 			__NAMESPACE__ . "\\Configuration->current()",
 			array(__CLASS__, "resetOnCurrentConfigurationChange")
 		);

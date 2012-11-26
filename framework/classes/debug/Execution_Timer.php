@@ -42,7 +42,7 @@ abstract class Execution_Timer
 	public static function register()
 	{
 		self::begin();
-		aop_add_after(
+		Aop::add("after",
 			__NAMESPACE__ . "\\Main_Controller->run()",
 			array(__CLASS__, "end")
 		);

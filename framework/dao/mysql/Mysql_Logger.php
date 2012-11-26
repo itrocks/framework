@@ -78,8 +78,8 @@ class Mysql_Logger
 	public static function register()
 	{
 		$mysql_logger = self::getInstance();
-		aop_add_before("mysqli->query()", array($mysql_logger, "onQuery"));
-		aop_add_after("mysqli->query()", array($mysql_logger, "onError"));
+		Aop::add("before", "mysqli->query()", array($mysql_logger, "onQuery"));
+		Aop::add("after", "mysqli->query()", array($mysql_logger, "onError"));
 	}
 
 }

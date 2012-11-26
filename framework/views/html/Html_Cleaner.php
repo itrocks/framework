@@ -20,7 +20,7 @@ abstract class Html_Cleaner
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		aop_add_after(__NAMESPACE__ . "\\Html_Template->parse()", array(__CLASS__, "clean"));
+		Aop::add("after", __NAMESPACE__ . "\\Html_Template->parse()", array(__CLASS__, "clean"));
 	}
 
 }

@@ -61,14 +61,17 @@ abstract class Aop_Logger
 	public static function register()
 	{
 		self::$active = false;
-		aop_add_after("aop_add_after()",  array(__CLASS__, "log"));
-		aop_add_after("aop_add_around()", array(__CLASS__, "log"));
-		aop_add_after("aop_add_before()", array(__CLASS__, "log"));
-		aop_add_before("aop_add_after()",  array(__CLASS__, "log"));
-		aop_add_before("aop_add_around()", array(__CLASS__, "log"));
-		aop_add_before("aop_add_before()", array(__CLASS__, "log"));
+		Aop::add("After",  "aop_add_after()",  array(__CLASS__, "log"));
+		Aop::add("after",  "aop_add_around()", array(__CLASS__, "log"));
+		Aop::add("after",  "aop_add_before()", array(__CLASS__, "log"));
+		Aop::add("before", "aop_add_after()",  array(__CLASS__, "log"));
+		Aop::add("before", "aop_add_around()", array(__CLASS__, "log"));
+		Aop::add("before", "aop_add_before()", array(__CLASS__, "log"));
 		self::$active = true;
-		aop_add_before(__NAMESPACE__ . "\\Aop->registerProperties()", array(__CLASS__, "logRegister"));
+		Aop::add("before",
+			__NAMESPACE__ . "\\Aop->registerProperties()",
+			array(__CLASS__, "logRegister")
+		);
 	}
 
 }

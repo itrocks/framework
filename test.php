@@ -1,4 +1,72 @@
 <?php
+class Markus
+{
+
+	function loves() { echo "[Markus begins] "; echo get_class($this) . " loves cookies "; }
+
+}
+
+class Miky extends Markus
+{
+
+	function loves() { echo "[Miky begins] "; parent::loves(); echo " and cheesecakes"; }
+
+}
+
+aop_add_before("Markus->loves()", function(AopJoinpoint $joinpoint) {
+	echo "What does " . get_class($joinpoint->getObject()) . " love (called from " . $joinpoint->getClassName() . ") ? ";
+});
+
+$miky = new Miky();
+$miky->loves();
+	
+/*
+//------------------------------------------------------------------------------ OVERRIDES PROBLEMS
+
+class Markus
+{
+
+	function loves() { echo "Markus love cookies "; } 
+
+}
+
+class Miky extends Markus
+{
+
+	function loves() { parent::loves(); }
+
+}
+
+aop_add_before("Markus->loves()", function(AopJoinpoint $joinpoint) {
+	if ($joinpoint->getClassName() === "Markus") {
+		echo "What does " . $joinpoint->getClassName() . " love ? ";
+	}
+});
+
+$miky = new Miky();
+$miky->loves();
+
+/*
+//------------------------------------------------------ RECURSIVITY PROBLEM ON FUNCTIONS / METHODS
+class Night {
+	public static function end() { echo "the night ends "; }
+}
+
+class Day {
+	public static function begin() { echo "the sun rises "; }
+}
+
+class Man {
+	public function wakeup() { echo "the man wakes up "; }
+}
+
+aop_add_before("Day->begin()", array("Night", "end"));
+aop_add_before("Man->wakeup()", array("Day", "begin"));
+
+$me = new Man();
+$me->wakeup();
+
+/*
 //---------------------------------------------------- RECURSIVITY BETWEEN PROPERTIES AND FUNCTIONS
 
 class Test
@@ -46,10 +114,10 @@ class Test
 
 $test = new Test();
 
-aop_add_before("Test->method1()", array($test, "methodAdvice1"));
-aop_add_before("Test->method2()", array($test, "methodAdvice2"));
-aop_add_before("Test->property1", array($test, "propertyAdvice1"));
-aop_add_before("Test->property2", array($test, "propertyAdvice2"));
+aop_add_before("Test->method1()", function() { $test->methodAdvice1(); } );
+aop_add_before("Test->method2()", function() { $test->methodAdvice2(); } );
+aop_add_before("Test->property1", function() { $test->propertyAdvice1(); } );
+aop_add_before("Test->property2", function() { $test->propertyAdvice2(); } );
 
 $test = new Test();
 //echo $test->property1;

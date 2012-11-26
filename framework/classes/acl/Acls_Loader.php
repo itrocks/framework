@@ -63,11 +63,11 @@ abstract class Acls_Loader
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		aop_add_after(
+		Aop::add("after",
 			__NAMESPACE__ . "\\User_Authenticate_Controller->authenticate()",
 			array(__CLASS__, "onUserAuthenticate")
 		);
-		aop_add_after(
+		Aop::add("after",
 			__NAMESPACE__ . "\\User_Authenticate_Controller->disconnect()",
 			array(__CLASS__, "onUserDisconnect")
 		);

@@ -89,14 +89,14 @@ class Class_Debugger
 	{
 		$class_debugger = self::getInstance();
 		if ($class_name == "*") {
-			aop_add_before("*->*()", array(get_called_class(), "before"));
-			aop_add_after("*->*()", array(get_called_class(), "after"));
+			Aop::add("before", "*->*()", array(get_called_class(), "before"));
+			Aop::add("after", "*->*()", array(get_called_class(), "after"));
 		}
 		else {
-			aop_add_before(
+			Aop::add("before",
 				Namespaces::fullClassName($class_name) . "->*()", array(get_called_class(), "before")
 			);
-			aop_add_after(
+			Aop::add("after",
 				Namespaces::fullClassName($class_name) . "->*()", array(get_called_class(), "after")
 			);
 		}

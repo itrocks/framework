@@ -10,7 +10,7 @@ abstract class Aop
 	//----------------------------------------------------------------------------------- $joinpoints
 	static $joinpoints = array(); 
 
-	//------------------------------------------------------------------------------------------ add
+	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Launch advice $call_back after the execution of the joinpoint function $function
 	 *
@@ -23,7 +23,19 @@ abstract class Aop
 	public static function add($when, $function, $call_back)
 	{
 		$aop_call = "aop_add_" . $when;
-		$aop_call($function, $call_back);
+		if (is_string($call_back) && strpos("::", $call_back)) {
+			$call_back = split("::", $call_back);
+		}
+		if (is_array($call_back)) {
+			$aop_call($function, function(AopJoinpoint $joinpoint) use ($call_back) {
+				if (get_class($joinpoint->getObject()) === $joinpoint->getClassName()) {
+					call_user_func($call_back, $joinpoint);
+				}
+			});
+		}
+		else {
+			$aop_call($function, $call_back);
+		}
 	}
 
 	//----------------------------------------------------------------------------- propertyJoinpoint
@@ -51,8 +63,8 @@ abstract class Aop
 	//---------------------------------------------------------------------------- registerProperties
 	/**
 	 * @param string $class_name
-	 * @param string $annotation ie getter, setter
-	 * @param string $function ie read, write
+	 * @param string $annotation ie "getter", "setter"
+	 * @param string $function ie "read", "write"
 	 */
 	public static function registerProperties($class_name, $annotation, $function)
 	{
@@ -63,19 +75,19 @@ abstract class Aop
 					$call = $property->getAnnotation($annotation)->value;
 					if ($call) {
 						if (substr($call, 0, 5) === "Aop::") {
-							aop_add_before(
+							Aop::add("before",
 								$function . " " . $class_name . "->" . $property->name,
 								array(get_called_class(), substr($call, 5))
 							);
 						}
 						else {
 							if ($class->getMethod($call)->isStatic()) {
-								aop_add_after(
+								Aop::add("after",
 									$function . " " . $class_name . "->" . $property->name,
 									array($class_name, $call)
 								);
 							} else {
-								aop_add_after(
+								Aop::add("after",
 									$function . " " . $class_name . "->" . $property->name,
 									array(__CLASS__, "propertyJoinpoint")
 								);
