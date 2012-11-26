@@ -1,4 +1,61 @@
 <?php
+//---------------------------------------------------- RECURSIVITY BETWEEN PROPERTIES AND FUNCTIONS
+
+class Test
+{
+
+	public $property1 = "property1 ";
+
+	public $property2 = "property2 ";
+
+	public function method1()
+	{
+		echo "method1 ";
+	}
+
+	public function method2()
+	{
+		echo "method2 ";
+	}
+
+	public function methodAdvice1()
+	{
+		echo "methodAdvice1 ";
+		//(new Test())->method2();
+		echo (new Test())->property1;
+	}
+
+	public function methodAdvice2()
+	{
+		echo "methodAdvice2 ";
+		//echo (new Test())->property2;
+	}
+
+	public function propertyAdvice1()
+	{
+		echo "propertyAdvice1 ";
+		echo (new Test())->property2;
+	}
+
+	public function propertyAdvice2()
+	{
+		echo "propertyAdvice2 ";
+	}
+
+}
+
+$test = new Test();
+
+aop_add_before("Test->method1()", array($test, "methodAdvice1"));
+aop_add_before("Test->method2()", array($test, "methodAdvice2"));
+aop_add_before("Test->property1", array($test, "propertyAdvice1"));
+aop_add_before("Test->property2", array($test, "propertyAdvice2"));
+
+$test = new Test();
+//echo $test->property1;
+echo $test->method1();
+
+die();
 
 //------------------------------------------------------------------------------ SET ASSIGNED VALUE
 

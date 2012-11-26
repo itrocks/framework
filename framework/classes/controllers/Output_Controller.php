@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-interface Output_Controller
+interface Output_Controller extends Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
