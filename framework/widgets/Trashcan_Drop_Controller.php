@@ -25,8 +25,6 @@ class Trashcan_Drop_Controller implements Feature_Controller
 			Main_Controller::getInstance()->runController(
 				"/" . $class_name . "/" . $feature . "Remove/" . $element
 			);
-			echo Names::classToDisplay($class_name) . " " . Names::methodToDisplay($feature)
-				. " " . Names::propertyToDisplay($element) ." was removed";
 		}
 	}
 

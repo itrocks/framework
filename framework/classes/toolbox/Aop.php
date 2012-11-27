@@ -23,7 +23,7 @@ abstract class Aop
 	public static function add($when, $function, $call_back)
 	{
 		$aop_call = "aop_add_" . $when;
-		$class_name = strpos("->", $function) ? substr($function, 0, strpos("->", $function)) : null;
+		$class_name = strpos($function, "->") ? substr($function, 0, strpos($function, "->")) : null;
 		if (isset($class)) {
 			$aop_call($function, function(AopJoinpoint $joinpoint) use ($call_back, $class_name) {
 				if (get_class($joinpoint->getClassName()) === $class_name) {

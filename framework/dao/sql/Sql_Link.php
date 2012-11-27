@@ -1,19 +1,13 @@
 <?php
 namespace SAF\Framework;
+use Serializable;
 
 /**
  * @todo having executeQuery() and query() is perhaps not a good idea
  */
-abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactional_Data_Link
+abstract class Sql_Link extends Identifier_Map_Data_Link
+	implements Serializable, Transactional_Data_Link
 {
-
-	//----------------------------------------------------------------------------------- $connection
-	/**
-	 * Connection to a SQL driver
-	 *
-	 * @var mixed
-	 */
-	protected $connection;
 
 	//--------------------------------------------------------------------------------------- $tables
 	/**
@@ -189,6 +183,12 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		return $list;
 	}
 
+	//------------------------------------------------------------------------------------- serialize
+	public function serialize()
+	{
+		return serialize(get_object_vars($this));
+	}
+
 	//----------------------------------------------------------------------------------- storeNameOf
 	public function storeNameOf($class_name)
 	{
@@ -202,6 +202,17 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 			$store_name = parent::storeNameOf($class_name);
 		}
 		return $store_name;
+	}
+
+	//----------------------------------------------------------------------------------- unserialize
+	public function unserialize($data)
+	{
+		$data = unserialize($data);
+		foreach (get_object_vars($this) as $property_name => $value) {
+			if (isset($data[$property_name])) {
+				$this->$property_name = $value;
+			}
+		}
 	}
 
 }

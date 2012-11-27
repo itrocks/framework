@@ -176,7 +176,8 @@ class Html_Template
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
-				$container = file_get_contents(Html_Configuration::$main_template, true);
+				$file_name = Html_Configuration::$main_template;
+				$container = file_get_contents($file_name, true);
 				$content = str_replace("{@content}", substr($content, $i, $j - $i), $container);
 			}
 		}

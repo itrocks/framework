@@ -33,12 +33,39 @@ class Configuration
 
 	//--------------------------------------------------------------------------------------- current
 	/**
+	 * Sets / gets current configuration
+	 *
+	 * When current configuration is set, each "class" property is changed into it's current object initialised with configuration parameters
+	 *
 	 * @param Configuration $set_current
 	 * @return Configuration
 	 */
 	public static function current(Configuration $set_current = null)
 	{
-		return self::pCurrent($set_current);
+		if (isset($set_current)) {
+			$set_current = self::pCurrent($set_current);
+			foreach (
+				$set_current->getClassesConfigurations() as $class_name => $configuration
+			) {
+				if (is_object($configuration)) {
+					$full_class_name = Namespaces::fullClassName($class_name);
+					$full_class_name::current($configuration);
+				}
+				else {
+					$full_class_name = Namespaces::fullClassName($class_name);
+					$configuration_class_name = isset($configuration["class"])
+						? Namespaces::fullClassName($configuration["class"])
+						: $full_class_name;
+					$set_current->$class_name = $full_class_name::current(
+						new $configuration_class_name($configuration)
+					);
+				}
+			}
+			return $set_current;
+		}
+		else {
+			return self::pCurrent($set_current);
+		}
 	}
 
 	//---------------------------------------------------------------------------- getApplicationName
