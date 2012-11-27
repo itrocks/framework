@@ -7,8 +7,8 @@ require_once "framework/classes/reflection/Reflection_Class.php";
 abstract class Aop
 {
 
-	//----------------------------------------------------------------------------------- $joinpoints
-	static $joinpoints = array(); 
+	//-------------------------------------------------------------------------- $property_joinpoints
+	private static $property_joinpoints = array(); 
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -23,12 +23,10 @@ abstract class Aop
 	public static function add($when, $function, $call_back)
 	{
 		$aop_call = "aop_add_" . $when;
-		if (is_string($call_back) && strpos("::", $call_back)) {
-			$call_back = split("::", $call_back);
-		}
-		if (is_array($call_back)) {
-			$aop_call($function, function(AopJoinpoint $joinpoint) use ($call_back) {
-				if (get_class($joinpoint->getObject()) === $joinpoint->getClassName()) {
+		$class_name = strpos("->", $function) ? substr($function, 0, strpos("->", $function)) : null;
+		if (isset($class)) {
+			$aop_call($function, function(AopJoinpoint $joinpoint) use ($call_back, $class_name) {
+				if (get_class($joinpoint->getClassName()) === $class_name) {
 					call_user_func($call_back, $joinpoint);
 				}
 			});
@@ -47,7 +45,7 @@ abstract class Aop
 		static $antiloop = array();
 		$class_name = $joinpoint->getClassName();
 		$property_name = $joinpoint->getPropertyName();
-		$call = self::$joinpoints[$class_name][$property_name];
+		$call = self::$property_joinpoints[$class_name][$property_name];
 		if (!isset($antiloop[$class_name]) && !isset($antiloop[$class_name][$property_name])) {
 			$antiloop[$class_name][$property_name] = true;
 			if ($joinpoint->getKindOfAdvice() & AOP_KIND_WRITE) {
@@ -91,7 +89,7 @@ abstract class Aop
 									$function . " " . $class_name . "->" . $property->name,
 									array(__CLASS__, "propertyJoinpoint")
 								);
-								self::$joinpoints[$class_name][$property->name] = $call;
+								self::$property_joinpoints[$class_name][$property->name] = $call;
 							}
 						}
 					}

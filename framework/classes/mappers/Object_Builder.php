@@ -141,7 +141,7 @@ class Object_Builder
 			__NAMESPACE__ . "\\Getter->getCollection()",
 			array(__NAMESPACE__ . "\\Object_Builder", "onMethodWithClassName1")
 		);
-		Aop:add("before",
+		Aop::add("before",
 			__NAMESPACE__ . "\\Getter->getObject()",
 			array(__NAMESPACE__ . "\\Object_Builder", "onMethodWithClassName1")
 		);
