@@ -24,10 +24,28 @@ abstract class Aop
 	{
 		$aop_call = "aop_add_" . $when;
 		$class_name = strpos($function, "->") ? substr($function, 0, strpos($function, "->")) : null;
-		if (isset($class)) {
-			$aop_call($function, function(AopJoinpoint $joinpoint) use ($call_back, $class_name) {
-				if (get_class($joinpoint->getClassName()) === $class_name) {
+		if ($i = strrpos($class_name, " ")) $class_name = substr($class_name, $i + 1);
+		if (isset($class_name)) {
+			$aop_call($function, function(AopJoinpoint $joinpoint) use ($call_back, $class_name, $when) {
+				// TODO this test is not complete : test all cases for herited methods
+				if (
+					($joinpoint->getClassName() === $class_name)
+					|| (get_class($joinpoint->getObject()) === $class_name)
+					|| (
+						Reflection_Method::getInstanceOf($class_name, $joinpoint->getMethodName())->class
+						=== $class_name
+					)
+				) {
 					call_user_func($call_back, $joinpoint);
+				}
+				else {
+					trigger_error(
+						"don't call " . $joinpoint->getClassName() . " which is not $class_name", E_USER_NOTICE
+					);
+					if ($when == "around") {
+						echo "do this<br>";
+						$joinpoint->process();
+					}
 				}
 			});
 		}

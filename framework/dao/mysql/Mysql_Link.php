@@ -66,6 +66,7 @@ class Mysql_Link extends Sql_Link
 				}
 			}
 			$class->accessPropertiesDone();
+			$this->connection->context_class = $class_name;
 			$this->query(Sql_Builder::buildDelete($class_name, $id));
 			$this->removeObjectIdentifier($object);
 			return true;
@@ -166,10 +167,11 @@ class Mysql_Link extends Sql_Link
 	//--------------------------------------------------------------------------- getStoredProperties
 	public function getStoredProperties($class)
 	{
+		$this->connection->context_class = $class;
 		if (is_string($class)) {
 			$class = Reflection_Class::getInstanceOf($class);
 		}
-		$result_set = $this->connection->query(
+		$result_set = $this->executeQuery(
 			"SHOW COLUMNS FROM `" . $this->storeNameOf($class->name) . "`"
 		);
 		while ($column = $result_set->fetch_object(__NAMESPACE__ . "\\Mysql_Column")) {
@@ -200,7 +202,8 @@ class Mysql_Link extends Sql_Link
 	public function read($id, $class)
 	{
 		if (!$id) return null;
-		$result_set = $this->connection->query(
+		$this->connection->context_class = $class;
+		$result_set = $this->executeQuery(
 			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $id
 		);
 		$object = $result_set->fetch_object($class);
@@ -215,7 +218,8 @@ class Mysql_Link extends Sql_Link
 	public function readAll($class)
 	{
 		$read_result = array();
-		$result_set = $this->connection->query("SELECT * FROM `" . $this->storeNameOf($class) . "`");
+		$this->connection->context_class = $class;
+		$result_set = $this->executeQuery("SELECT * FROM `" . $this->storeNameOf($class) . "`");
 		while ($object = $result_set->fetch_object($class)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$read_result[] = $object;
@@ -229,8 +233,9 @@ class Mysql_Link extends Sql_Link
 	{
 		$class = get_class($what);
 		$search_result = array();
+		$this->connection->context_class = $class;
 		$builder = new Sql_Select_Builder(get_class($what), null, $what, $this);
-		$result_set = $this->connection->query($builder->buildQuery());
+		$result_set = $this->executeQuery($builder->buildQuery());
 		while ($object = $result_set->fetch_object($class)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$search_result[] = $object;
@@ -289,6 +294,7 @@ class Mysql_Link extends Sql_Link
 			$this->removeObjectIdentifier($object);
 			$id = null;
 		}
+		$this->connection->context_class = $class->name;
 		if ($id === null) {
 			$id = $this->query(Sql_Builder::buildInsert($class->name, $write));
 			if ($id != null) {

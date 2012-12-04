@@ -34,11 +34,11 @@ abstract class List_Annotation
 					$i = $j;
 				}
 				else {
-					user_error(
+					trigger_error(
 						"Badly formatted @" . strtolower(lParse(get_class($this), "_"))
 						. " $value at position $i : "
 						. (($in_quote === '"') ? "double " : "") . "quote must be followed by a comma",
-						E_ERROR
+						E_USER_ERROR
 					);
 				}
 			}
@@ -53,7 +53,7 @@ abstract class List_Annotation
 			$i ++;
 		}
 		if ($in_quote) {
-			user_error(
+			trigger_error(
 				"Badly formatted @" . strtolower(lParse(get_class($this), "_"))
 				. " $value at position $i : "
 				. (($in_quote === '"') ? "double " : "") . "quote not closed",

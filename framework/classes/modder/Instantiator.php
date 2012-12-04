@@ -64,7 +64,7 @@ abstract class Instantiator
 			}
 		}
 		else {
-			user_error("Can't substitute : $herited_class is not subclass of $class_name");
+			trigger_error("Can't substitute : $herited_class is not subclass of $class_name");
 		}
 	}
 

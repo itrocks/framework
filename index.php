@@ -18,10 +18,10 @@ Xdebug::register();
 //Class_Debugger::register("Html_Template");
 //aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
 
-// high priority modules
+// high priority main error handlers
 Error_Handlers::register(E_ALL & !E_NOTICE, new Main_Error_Handler());
 Error_Handlers::register(E_RECOVERABLE_ERROR, new To_Exception_Error_Handler());
-Error_Handlers::activate();
+// high priority modules (will disapear with 5.5, cool)
 Aop_Getter::register();
 Aop_Setter::register();
 // normal priority modules
@@ -31,7 +31,10 @@ Html_Cleaner::register();
 Html_Session::register();
 Html_Translator::register();
 List_Controller_Acls::register();
+Mysql_Maintainer::register();
 Object_Builder::register();
+// activate errors handlers
+Error_Handlers::activate();
 
 // TODO 'better use something like a Modules::register() call 
 if (!isset($MODULES)) $MODULES = array();

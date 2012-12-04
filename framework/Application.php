@@ -77,7 +77,7 @@ abstract class Application
 			} else {
 				$application = $current_configuration->getApplicationName();
 				$app_path = strtolower($application);
-				self::$namespaces = array(""); 
+				self::$namespaces = array();
 				while ($application != "Framework") {
 					self::$namespaces[] = "SAF\\" . $application;
 					$application =  mParse(file_get_contents("$app_path/Application.php"),
@@ -90,6 +90,7 @@ abstract class Application
 				self::$namespaces[] = __NAMESPACE__;
 				// TODO should found another way to make it smarter (prehaps framework_test application ?)
 				self::$namespaces[] = __NAMESPACE__ . "\\Tests";
+				self::$namespaces[] = "";
 			}
 		}
 		return self::$namespaces;
