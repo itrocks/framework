@@ -18,14 +18,6 @@ class Mysql_Link extends Sql_Link
 	 */
 	private $connection;
 
-	//----------------------------------------------------------------------------------- $parameters
-	/**
-	 * Connection parameters
-	 *
-	 * @var multitype:string key is the parameter name
-	 */
-	private $parameters;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Construct a new Mysql_Link using a parameters array, and connect to mysql database
@@ -37,19 +29,18 @@ class Mysql_Link extends Sql_Link
 	public function __construct($parameters)
 	{
 		parent::__construct($parameters);
-		if (isset($parameters["databases"]) && !isset($parameters["database"])) {
-			$parameters["database"] = str_replace("*", "", $parameters["databases"]);
-		}
-		$this->parameters = $parameters;
-		$this->connect();
+		$this->connect($parameters);
 	}
 
 	//--------------------------------------------------------------------------------------- connect
-	private function connect()
+	private function connect($parameters)
 	{
+		if (!isset($parameters["database"]) && isset($parameters["databases"])) {
+			$parameters["database"] = str_replace('*', '', $parameters["databases"]);
+		}
 		$this->connection = new mysqli(
-			$this->parameters["host"], $this->parameters["user"],
-			$this->parameters["password"], $this->parameters["database"]
+			$parameters["host"], $parameters["user"],
+			$parameters["password"], $parameters["database"]
 		);
 	}
 
@@ -244,17 +235,6 @@ class Mysql_Link extends Sql_Link
 		return $search_result;
 	}
 
-	//------------------------------------------------------------------------------------- serialize
-	public function serialize()
-	{
-		$this->parameters["user"]     = base64_encode($this->parameters["user"]);
-		$this->parameters["password"] = base64_encode($this->parameters["password"]);
-		return serialize(array(
-			"parameters" => $this->parameters,
-			"Sql_Link"   => parent::serialize()
-		));
-	}
-
 	//----------------------------------------------------------------------------------------- write
 	public function write($object)
 	{
@@ -364,20 +344,6 @@ class Mysql_Link extends Sql_Link
 			// TODO write with linked values ($element_key id must be written into $element_value property)
 			$this->write($element_value);
 		}
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * When regenerating a serialized Mysql_Link, it needs to connect back to mysql !
-	 */
-	public function unserialize($data)
-	{
-		$data = unserialize($data);
-		parent::unserialize($data["Sql_Link"]);
-		$this->parameters = $data["parameters"];
-		$this->parameters["user"]     = base64_decode($this->parameters["user"]);
-		$this->parameters["password"] = base64_decode($this->parameters["password"]);
-		$this->connect();
 	}
 
 }

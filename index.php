@@ -31,7 +31,7 @@ Html_Cleaner::register();
 Html_Session::register();
 Html_Translator::register();
 List_Controller_Acls::register();
-Mysql_Maintainer::register();
+//Mysql_Maintainer::register();
 Object_Builder::register();
 // activate errors handlers
 Error_Handlers::activate();

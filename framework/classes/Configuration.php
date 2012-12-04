@@ -47,19 +47,11 @@ class Configuration
 			foreach (
 				$set_current->getClassesConfigurations() as $class_name => $configuration
 			) {
-				if (is_object($configuration)) {
-					$full_class_name = Namespaces::fullClassName($class_name);
-					$full_class_name::current($configuration);
-				}
-				else {
-					$full_class_name = Namespaces::fullClassName($class_name);
-					$configuration_class_name = isset($configuration["class"])
-						? Namespaces::fullClassName($configuration["class"])
-						: $full_class_name;
-					$set_current->$class_name = $full_class_name::current(
-						new $configuration_class_name($configuration)
-					);
-				}
+				$full_class_name = Namespaces::fullClassName($class_name);
+				$configuration_class_name = isset($configuration["class"])
+					? Namespaces::fullClassName($configuration["class"])
+					: $full_class_name;
+				$full_class_name::current(new $configuration_class_name($configuration));
 			}
 			return $set_current;
 		}

@@ -13,7 +13,7 @@ abstract class Mysql_Table_Builder_Class
 		$mysql_column_class = Reflection_Class::getInstanceOf(__NAMESPACE__ . "\\Mysql_Column");
 		$mysql_column_class->accessProperties();
 		foreach ($class->accessProperties() as $property) {
-			$table->columns[] = Mysql_Column_Builder_Property($property);
+			$table->columns[] = Mysql_Column_Builder_Property::build($property);
 		}
 		$mysql_column_class->accessPropertiesDone();
 		$class->accessPropertiesDone();

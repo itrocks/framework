@@ -13,7 +13,7 @@ $config["framework"] = array(
 		"user"     => "SAF-php",
 		"password" => "SAF-php",
 		"tables"   => array(
-			"Acls_User" => "users",
+			"\\SAF\\Framework\\Acls_User" => "users",
 		)
 	),
 	"Locale" => array(
