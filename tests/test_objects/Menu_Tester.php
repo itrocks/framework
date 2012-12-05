@@ -36,6 +36,12 @@ abstract class Menu_Tester
 		$item = new Menu_Item(); $item->caption = "Invoices"; $item->link = "/Sales_Invoices";
 		$block->items[] = $item;
 		$menu->blocks[] = $block;
+		$block = new Menu_Block(); $block->title = "Sales data"; $block->color = "green";
+		$item = new Menu_Item(); $item->caption = "Sales items"; $item->link = "/Items";
+		$block->items[] = $item;
+		$item = new Menu_Item(); $item->caption = "Clients"; $item->link = "/Client_Organisations";
+		$block->items[] = $item;
+		$menu->blocks[] = $block;
 		$antiloop = false;
 	}
 
