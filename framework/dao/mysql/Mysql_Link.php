@@ -57,7 +57,7 @@ class Mysql_Link extends Sql_Link
 				}
 			}
 			$class->accessPropertiesDone();
-			$this->connection->context_class = $class_name;
+			$this->setContext($class_name);
 			$this->query(Sql_Builder::buildDelete($class_name, $id));
 			$this->removeObjectIdentifier($object);
 			return true;
@@ -152,13 +152,13 @@ class Mysql_Link extends Sql_Link
 	//------------------------------------------------------------------------------- getColumnsCount
 	protected function getColumnsCount($result_set)
 	{
-		return count($result_set->fetch_fields());
+		return $result_set->field_count;
 	}
 
 	//--------------------------------------------------------------------------- getStoredProperties
 	public function getStoredProperties($class)
 	{
-		$this->connection->context_class = $class;
+		$this->setContextClass($class);
 		if (is_string($class)) {
 			$class = Reflection_Class::getInstanceOf($class);
 		}
@@ -193,7 +193,7 @@ class Mysql_Link extends Sql_Link
 	public function read($id, $class)
 	{
 		if (!$id) return null;
-		$this->connection->context_class = $class;
+		$this->setContextClass($class);
 		$result_set = $this->executeQuery(
 			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $id
 		);
@@ -209,7 +209,7 @@ class Mysql_Link extends Sql_Link
 	public function readAll($class)
 	{
 		$read_result = array();
-		$this->connection->context_class = $class;
+		$this->setContextClass($class);
 		$result_set = $this->executeQuery("SELECT * FROM `" . $this->storeNameOf($class) . "`");
 		while ($object = $result_set->fetch_object($class)) {
 			$this->setObjectIdentifier($object, $object->id);
@@ -224,7 +224,7 @@ class Mysql_Link extends Sql_Link
 	{
 		$class = get_class($what);
 		$search_result = array();
-		$this->connection->context_class = $class;
+		$this->setContextClass($class);
 		$builder = new Sql_Select_Builder(get_class($what), null, $what, $this);
 		$result_set = $this->executeQuery($builder->buildQuery());
 		while ($object = $result_set->fetch_object($class)) {
@@ -233,6 +233,12 @@ class Mysql_Link extends Sql_Link
 		}
 		$result_set->free();
 		return $search_result;
+	}
+
+	//------------------------------------------------------------------------------- setContextClass
+	public function setContextClass($class_name)
+	{
+		$this->connection->context_class = $class_name;
 	}
 
 	//----------------------------------------------------------------------------------------- write
@@ -274,7 +280,7 @@ class Mysql_Link extends Sql_Link
 			$this->removeObjectIdentifier($object);
 			$id = null;
 		}
-		$this->connection->context_class = $class->name;
+		$this->setContextClass($class->name);
 		if ($id === null) {
 			$id = $this->query(Sql_Builder::buildInsert($class->name, $write));
 			if ($id != null) {

@@ -11,9 +11,10 @@ if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr(__DIR__, strlen(
 
 // debug priority modules
 //ini_set("xdebug.scream", true);
+ini_set("xdebug.collect_params", 4);
 //Aop_Logger::register();
 //Execution_Timer::register();
-//Mysql_Logger::register();
+Mysql_Logger::register();
 Xdebug::register();
 //Class_Debugger::register("Html_Template");
 //aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
@@ -21,7 +22,7 @@ Xdebug::register();
 // high priority main error handlers
 Error_Handlers::register(E_ALL & !E_NOTICE, new Main_Error_Handler());
 Error_Handlers::register(E_RECOVERABLE_ERROR, new To_Exception_Error_Handler());
-// high priority modules (will disapear with 5.5, cool)
+// high priority modules (Aop_Getter and Aop_Setter will disapear with 5.5, hopefully)
 Aop_Getter::register();
 Aop_Setter::register();
 // normal priority modules
@@ -31,7 +32,7 @@ Html_Cleaner::register();
 Html_Session::register();
 Html_Translator::register();
 List_Controller_Acls::register();
-//Mysql_Maintainer::register();
+Mysql_Maintainer::register();
 Object_Builder::register();
 // activate errors handlers
 Error_Handlers::activate();

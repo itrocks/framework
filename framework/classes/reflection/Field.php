@@ -6,7 +6,7 @@ interface Field
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
-	 * Get the field name
+	 * Gets the field name
 	 *
 	 * @return string
 	 */
@@ -14,7 +14,7 @@ interface Field
 
 	//--------------------------------------------------------------------------------------- getType
 	/**
-	 * Get the php data type for the field
+	 * Gets the php data type for the field
 	 *
 	 * @return string
 	 * @values float, integer, string, Date_Time, *

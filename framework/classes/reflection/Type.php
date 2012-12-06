@@ -16,6 +16,26 @@ abstract class Type
 		"Date_Time"
 	);
 
+	//---------------------------------------------------------------------------------- $sized_types
+	/**
+	 * These are the basic types having size
+	 *
+	 * @var multitype:string
+	 */
+	private static $sized_types = array("integer", "float", "string");
+
+	//--------------------------------------------------------------------------------------- hasSize
+	/**
+	 * Tell if a type has a siez or not
+	 *
+	 * @param string $type_name
+	 * @return boolean
+	 */
+	public static function hasSize($type_name)
+	{
+		return in_array($type_name, self::$sized_types);
+	}
+
 	//--------------------------------------------------------------------------------------- isBasic
 	/**
 	 * Tell if a type is a basic type or not

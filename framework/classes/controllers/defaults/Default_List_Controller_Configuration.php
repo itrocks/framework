@@ -61,7 +61,7 @@ class Default_List_Controller_Configuration
 			: (
 				isset($this->list_properties[Namespaces::shortClassName($class_name)])
 				? $this->list_properties[Namespaces::shortClassName($class_name)]
-				: array()
+				: array_keys(Reflection_Class::getInstanceOf($class_name)->getallProperties())
 			);
 	}
 

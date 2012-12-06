@@ -113,6 +113,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 */
 	public function select($object_class, $columns, $filter_object = null)
 	{
+		$this->setContextClass($object_class);
 		$filter_object = $this->objectToProperties($filter_object);
 		$list = new Default_List_Data($object_class, $columns);
 		$columns[] = "id";
@@ -183,6 +184,14 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		}
 		return $list;
 	}
+
+	//------------------------------------------------------------------------------- setContextClass
+	/**
+	 * Set context class name for sql query
+	 *
+	 * @param string $class_name
+	 */
+	public abstract function setContextClass($class_name);
 
 	//----------------------------------------------------------------------------------- storeNameOf
 	public function storeNameOf($class_name)

@@ -64,10 +64,43 @@ class Mysql_Column implements Dao_Column
 	 */
 	private $Extra;
 
+	//------------------------------------------------------------------------------------- canBeNull
+	public function canBeNull()
+	{
+		return $this->Null == "Yes";
+	}
+
+	//----------------------------------------------------------------------------------------- equiv
+	/**
+	 * Returns true if the column is an equivalent of the other column
+	 *
+	 * @param Mysql_Column $column
+	 */
+	public function equiv($column)
+	{
+		return ($this->Field === $column->Field)
+			&& ($this->Type    === $column->Type)
+			&& ($this->Null    === $column->Null)
+			&& ($this->Default === $column->Default)
+			&& ($this->Extra   === $column->Extra);
+	}
+
+	//------------------------------------------------------------------------------- getDefaultValue
+	public function getDefaultValue()
+	{
+		return $this->Default;
+	}
+
 	//--------------------------------------------------------------------------------------- getName
 	public function getName()
 	{
 		return $this->Field;
+	}
+
+	//------------------------------------------------------------------------------------ getSqlType
+	public function getSqlType()
+	{
+		return $this->Type;
 	}
 
 	//--------------------------------------------------------------------------------------- getType

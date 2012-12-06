@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Mysql_Table
+class Mysql_Table implements Dao_Table
 {
 
 	//-------------------------------------------------------------------------------------- $columns
@@ -38,10 +38,22 @@ class Mysql_Table
 		}
 	}
 
+	//------------------------------------------------------------------------------------ getColumns
+	public function getColumns()
+	{
+		return $this->columns;
+	}
+
 	//--------------------------------------------------------------------------------------- getName
 	public function getName()
 	{
 		return $this->Name;
+	}
+
+	//--------------------------------------------------------------------------------- getSqlPostfix
+	public function getSqlPostfix()
+	{
+		return " ENGINE=" . $this->Engine;
 	}
 
 }

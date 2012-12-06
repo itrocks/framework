@@ -1,4 +1,72 @@
 <?php
+
+class Papa
+{
+
+	static $nom;
+
+	public function setNom($nom)
+	{
+		self::$nom = $nom;
+	}
+
+	public function getNom()
+	{
+		return self::$nom;
+	}
+
+	public static function met()
+	{
+		return "Papa";
+	}
+
+	public static function retour()
+	{
+		return self::met();
+	}
+
+}
+
+class Fils1 extends Papa
+{
+
+	static $nom;
+
+	public static function met()
+	{
+		return "Fils1";
+	}
+
+}
+
+class Fils2 extends Papa
+{
+	
+	static $nom;
+
+	public static function met()
+	{
+		return "Fils2";
+	}
+
+}
+
+$papa = new Papa();
+$fils1 = new Fils1();
+$fils2 = new Fils2();
+$papa->setNom("papa");
+$fils1->setNom("fils1");
+$fils2->setNom("fils2");
+
+echo "papa = " . $papa->getNom() . "<br>";
+echo "fils1 = " . $fils1->getNom() . "<br>";
+echo "fils2 = " . $fils2->getNom() . "<br>";
+
+echo "papa = " . Papa::retour() . "<br>";
+echo "fils1 = " . Papa::retour() . "<br>";
+echo "fils2 = " . Papa::retour() . "<br>";
+
+/*
 class Markus
 {
 
@@ -20,6 +88,7 @@ aop_add_before("Markus->loves()", function(AopJoinpoint $joinpoint) {
 $miky = new Miky();
 $miky->loves();
 	
+*/
 /*
 //------------------------------------------------------------------------------ OVERRIDES PROBLEMS
 

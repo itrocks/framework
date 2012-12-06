@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Mysql_Key
+class Mysql_Key implements Dao_Key
 {
 
 	//---------------------------------------------------------------------------------- $Cardinality
