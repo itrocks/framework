@@ -3,7 +3,10 @@ namespace SAF\Framework;
 
 class Sql_Select_Builder
 {
-	use Sql_Columns_Builder, Sql_Where_Builder;
+	use Sql_Columns_Builder, Sql_Where_Builder {
+		Sql_Columns_Builder::getClasses    insteadof Sql_Where_Builder;
+		Sql_Columns_Builder::getClassNames insteadof Sql_Where_Builder;
+	}
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

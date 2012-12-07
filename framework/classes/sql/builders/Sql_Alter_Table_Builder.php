@@ -20,6 +20,21 @@ class Sql_Alter_Table_builder
 	 */
 	private $alter_columns = array();
 
+	//---------------------------------------------------------------------------------------- $table
+	/**
+	 * @var Dao_Table
+	 */
+	private $table;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param string $class_name
+	 */
+	public function __construct(Dao_Table $table)
+	{
+		$this->table = $table;
+	}
+
 	//------------------------------------------------------------------------------------- addColumn
 	/**
 	 * Adds an added column
@@ -51,7 +66,28 @@ class Sql_Alter_Table_builder
 	 */
 	public function build()
 	{
-		// TODO
+		$sqls = array();
+		foreach ($this->add_columns as $add) {
+			$sqls[] = "ADD COLUMN " . $add->toSql();
+		}
+		foreach ($this->alter_columns as $column_name => $alter) {
+			$sqls[] = " ALTER COLUMN `" . $column_name . "` " . $alter->toSql();
+		}
+		return "ALTER TABLE `" . $this->table->getName() . "` "
+			. join(", ", $sqls);
+	}
+
+	//--------------------------------------------------------------------------------------- isReady
+	/**
+	 * Returns true if the builder is ready to build
+	 *
+	 * The builder is ready if there is something to do
+	 *
+	 * @return boolean
+	 */
+	public function isReady()
+	{
+		return $this->add_columns || $this->alter_columns;
 	}
 
 }

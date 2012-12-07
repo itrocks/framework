@@ -1,6 +1,14 @@
 <?php
 namespace SAF\Framework;
 
+// php settings
+set_time_limit(5);
+//ini_set("xdebug.scream", true);
+ini_set("xdebug.collect_params", 4);
+ini_set("xdebug.var_display_max_children", 1000);
+ini_set("xdebug.var_display_max_data", 10000);
+ini_set("xdebug.var_display_max_depth", 10000);
+
 // init
 error_reporting(E_ALL);
 require_once "framework/classes/Autoloader.php";
@@ -12,8 +20,6 @@ if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr(__DIR__, strlen(
 // highest priority modules
 Mysql_Maintainer::register(); // TODO problem : if maintainer is after logger, maintainer's setResultValue() seems to be ignored !
 // debug priority modules
-//ini_set("xdebug.scream", true);
-ini_set("xdebug.collect_params", 4);
 //Aop_Logger::register();
 //Execution_Timer::register();
 //Mysql_Logger::register();

@@ -37,9 +37,9 @@ abstract class Mysql_Column_Builder_Property
 		$class = Reflection_Class::getInstanceOf(get_class($column));
 		$class->accessProperties();
 		$class->getProperty("Field")->setValue($column, "id");
-		$class->getProperty("Type")->setValue($column, "bigint(18)");
+		$class->getProperty("Type")->setValue($column, "bigint(18) unsigned");
 		$class->getProperty("Null")->setValue($column, "NO");
-		$class->getProperty("Default")->setValue($column, 0);
+		$class->getProperty("Default")->setValue($column, null);
 		$class->getProperty("Extra")->setValue($column, "auto_increment");
 		$class->accessPropertiesDone();
 		return $column;
@@ -59,22 +59,26 @@ abstract class Mysql_Column_Builder_Property
 		Reflection_Property $property, Mysql_Column $column
 	) {
 		$default = $property->getDeclaringClass()->getDefaultProperties()[$property->name];
-		if (!isset($default)) {
+		if (isset($default)) {
+			$property_type = $column->getType();
+			if (Type::isNumeric($property_type)) {
+				$default = strval($default + 0);
+			}
+		}
+		else {
 			if ($column->canBeNull()) {
 				$default = null;
 			}
 			else {
 				$property_type = $column->getType();
-				switch ($property_type) {
-					case "integer":
-						$default = 0;
-						break;
-					case "string":
-						$default = "";
-						break;
-					case "Date_Time":
-						$default = "0000-00-00 00:00:00";
-						break; 
+				if (Type::isNumeric($property_type)) {
+					$default = 0;
+				}
+				elseif ($property_type === "string") {
+					$default = "";
+				}
+				elseif ($property_type === "Date_Time") {
+					$default = "0000-00-00 00:00:00";
 				}
 			}
 		}

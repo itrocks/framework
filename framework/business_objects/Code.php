@@ -16,4 +16,10 @@ class Code
 	 */
 	public $description;
 
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString()
+	{
+		return trim($this->code . " " . $this->description);
+	}
+
 }

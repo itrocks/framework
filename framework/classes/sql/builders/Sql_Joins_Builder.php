@@ -12,4 +12,26 @@ trait Sql_Joins_Builder
 	 */
 	protected $joins;
 
+	//------------------------------------------------------------------------------------ getClasses
+	/**
+	 * Gets the class names list used for each property path
+	 *
+	 * @return multitype:string
+	 */
+	public function getClasses()
+	{
+		return $this->joins->getClasses();
+	}
+
+	//--------------------------------------------------------------------------------- getClassNames
+	/**
+	 * Gets the class names list used for joins
+	 *
+	 * @return multitype:string
+	 */
+	public function getClassNames()
+	{
+		return $this->joins->getClassNames();
+	}
+
 }

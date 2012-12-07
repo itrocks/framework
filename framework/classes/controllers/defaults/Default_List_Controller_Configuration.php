@@ -38,6 +38,7 @@ class Default_List_Controller_Configuration
 	 */
 	public function getListProperties($class_name)
 	{
+		$main_class_name = $class_name;
 		if (!isset($this->list_properties[$class_name])) {
 			$parents = array_merge(class_parents($class_name), class_uses($class_name));
 			while ($parents) { 
@@ -56,13 +57,14 @@ class Default_List_Controller_Configuration
 				$parents = $next_parents;
 			}
 		}
-		return isset($this->list_properties[$class_name])
+		$properties = isset($this->list_properties[$class_name])
 			? $this->list_properties[$class_name]
 			: (
 				isset($this->list_properties[Namespaces::shortClassName($class_name)])
 				? $this->list_properties[Namespaces::shortClassName($class_name)]
-				: array_keys(Reflection_Class::getInstanceOf($class_name)->getallProperties())
+				: array_keys(Reflection_Class::getInstanceOf($main_class_name)->getAllProperties())
 			);
+		return $properties;
 	}
 
 	//---------------------------------------------------------------------------- removeListProperty

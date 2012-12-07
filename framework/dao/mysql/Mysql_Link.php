@@ -158,10 +158,10 @@ class Mysql_Link extends Sql_Link
 	//--------------------------------------------------------------------------- getStoredProperties
 	public function getStoredProperties($class)
 	{
-		$this->setContextClass($class);
 		if (is_string($class)) {
 			$class = Reflection_Class::getInstanceOf($class);
 		}
+		$this->setContext($class->name);
 		$result_set = $this->executeQuery(
 			"SHOW COLUMNS FROM `" . $this->storeNameOf($class->name) . "`"
 		);
@@ -193,7 +193,7 @@ class Mysql_Link extends Sql_Link
 	public function read($id, $class)
 	{
 		if (!$id) return null;
-		$this->setContextClass($class);
+		$this->setContext($class);
 		$result_set = $this->executeQuery(
 			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $id
 		);
@@ -209,7 +209,7 @@ class Mysql_Link extends Sql_Link
 	public function readAll($class)
 	{
 		$read_result = array();
-		$this->setContextClass($class);
+		$this->setContext($class);
 		$result_set = $this->executeQuery("SELECT * FROM `" . $this->storeNameOf($class) . "`");
 		while ($object = $result_set->fetch_object($class)) {
 			$this->setObjectIdentifier($object, $object->id);
@@ -224,9 +224,10 @@ class Mysql_Link extends Sql_Link
 	{
 		$class = get_class($what);
 		$search_result = array();
-		$this->setContextClass($class);
 		$builder = new Sql_Select_Builder(get_class($what), null, $what, $this);
-		$result_set = $this->executeQuery($builder->buildQuery());
+		$query = $builder->buildQuery();
+		$this->setContext($builder->getClassNames());
+		$result_set = $this->executeQuery($query);
 		while ($object = $result_set->fetch_object($class)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$search_result[] = $object;
@@ -235,10 +236,10 @@ class Mysql_Link extends Sql_Link
 		return $search_result;
 	}
 
-	//------------------------------------------------------------------------------- setContextClass
-	public function setContextClass($class_name)
+	//------------------------------------------------------------------------------------ setContext
+	public function setContext($context_object)
 	{
-		$this->connection->context_class = $class_name;
+		$this->connection->context = $context_object;
 	}
 
 	//----------------------------------------------------------------------------------------- write
@@ -280,7 +281,7 @@ class Mysql_Link extends Sql_Link
 			$this->removeObjectIdentifier($object);
 			$id = null;
 		}
-		$this->setContextClass($class->name);
+		$this->setContext($class->name);
 		if ($id === null) {
 			$id = $this->query(Sql_Builder::buildInsert($class->name, $write));
 			if ($id != null) {

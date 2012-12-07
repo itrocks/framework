@@ -79,26 +79,6 @@ abstract class Sql_Builder
 		}
 	}
 
-	//----------------------------------------------------------------------------------- buildSelect
-	/**
-	 * Construct a SQL SELECT query
-	 *
-	 * Supported columns naming forms are :
-	 * column_name : column_name must correspond to a property of class
-	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's @var class
-	 *
-	 * @param string           $class base object class name
-	 * @param multitype:string $properties properties paths list
-	 * @param array            $where_array where array expression, indices are columns names
-	 * @param Sql_Link         $sql_link
-	 */
-	public static function buildSelect(
-		$class, $properties, $where_columns = null, Sql_Link $sql_link = null
-	) {
-		$sql_select_builder = new Sql_Select_Builder($class, $properties, $where_columns, $sql_link);
-		return $sql_select_builder->buildQuery();
-	}
-
 	//----------------------------------------------------------------------------------- buildUpdate
 	/**
 	 * Build a SQL UPDATE query

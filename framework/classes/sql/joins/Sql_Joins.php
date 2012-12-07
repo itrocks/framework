@@ -210,11 +210,9 @@ class Sql_Joins
 					? Sql_Join::INNER
 					: Sql_Join::LEFT;
 				if ($single_class_name = Type::isMultiple($foreign_class_name)) {
-					$foreign_class_name = $single_class_name;
+					$foreign_class_name = Namespaces::fullClassName($single_class_name);
 					$foreign_property_name = $master_property->getAnnotation("foreign")->value;
-					if (property_exists(
-						Namespaces::fullClassName($foreign_class_name), $foreign_property_name
-					)) {
+					if (property_exists($foreign_class_name, $foreign_property_name)) {
 						$join->foreign_column = "id_" . $foreign_property_name;
 						$join->master_column  = "id";
 					} else {
@@ -225,6 +223,7 @@ class Sql_Joins
 					}
 				}
 				else {
+					$foreign_class_name = Namespaces::fullClassName($foreign_class_name);
 					$join->master_column  = "id_" . $master_property_name;
 					$join->foreign_column = "id";
 				}
@@ -243,6 +242,32 @@ class Sql_Joins
 	public function getAlias($path)
 	{
 		return $this->joins[$path]->foreign_alias;
+	}
+
+	//------------------------------------------------------------------------------------ getClasses
+	/**
+	 * Gets an array of used classes names
+	 *
+	 * Classes can be returned twice if they are used by several property paths
+	 *
+	 * @return multitype:string key is the path of the matching property
+	 */
+	public function getClasses()
+	{
+		return $this->classes;
+	}
+ 
+	//--------------------------------------------------------------------------------- getClassNames
+	/**
+	 * Gets an array of used classes names
+	 *
+	 * Classes are always returned once
+	 *
+	 * @return multitype:string key is an arbitrary counter
+	 */
+	public function getClassNames()
+	{
+		return array_values($this->classes);
 	}
  
 	//-------------------------------------------------------------------------------------- getJoins

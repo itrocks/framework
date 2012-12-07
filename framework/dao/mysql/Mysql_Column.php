@@ -15,13 +15,15 @@ class Mysql_Column implements Dao_Column
 	//----------------------------------------------------------------------------------------- $Type
 	/**
 	 * Mysql data type
-	 * Value can be "TINYINT", "SMALLINT", "MEDIUMINT", "INT", "INTEGER", "BIGINT",
-	 * "FLOAT(p)", "DOUBLE", "REAL", "DECIMAL(l,d)", "NUMERIC(l,d)", "BIT(l)",
-	 * "DATE", "TIME", "DATETIME", "TIMESTAMP", "YEAR",
-	 * "CHAR", "BINARY(l)", "VARCHAR(l)", "VARBINARY(l)",
-	 * "TINYBLOB", "TINYTEXT", "BLOB", "TEXT", "MEDIUMBLOB", "MEDIUMTEXT", "LONGBLOB", "LONGTEXT",
-	 * "ENUM('v',...)", "SET('v',...)"
-	 * Where "p" = "precision", "l" = "length", "d" = "decimals", "v" = "value".
+	 *
+	 * Value can be "tinyint(l)", "smallint(l)", "mediumint(l)", "int(l)", "integer(l)", "bigint(l)",
+	 * "float(p)", "double", "real", "decimal(l,d)", "numeric(l,d)", "bit(l)",
+	 * "date", "time", "datetime", "timestamp", "year",
+	 * "char", "binary(l)", "varchar(l)", "varbinary(l)",
+	 * "tinyblob", "tinytext", "blob", "text", "mediumblob", "mediumtext", "longblob", "longtxt",
+	 * "enum('v',...)", "set('v',...)"
+	 * where "p" = "precision", "l" = "length", "d" = "decimals", "v" = "value"
+	 * numeric types can be followed with " unsigned"
 	 *
 	 * @var string
 	 */
@@ -41,7 +43,7 @@ class Mysql_Column implements Dao_Column
 	 * Is the data part of an index key ?
 	 *
 	 * @var string
-	 * @values PRI, MUL, UNI,
+	 * @values PRI, MUL, UNI
 	 */
 	private $Key;
 
@@ -64,10 +66,33 @@ class Mysql_Column implements Dao_Column
 	 */
 	private $Extra;
 
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct()
+	{
+		$this->cleanupDefault();
+	}
+
 	//------------------------------------------------------------------------------------- canBeNull
 	public function canBeNull()
 	{
-		return $this->Null == "Yes";
+		return $this->Null === "YES";
+	}
+
+	//-------------------------------------------------------------------------------- cleanupDefault
+	/**
+	 * Gives the default value the correct type
+	 *
+	 * @example remplace "0" by 0 for a numeric value (ie mysqli->fetch_object gets Default as string)
+	 * @return Mysql_Column
+	 */
+	private function cleanupDefault()
+	{
+		if (isset($this->Default)) {
+			if (Type::isNumeric($this->getType())) {
+				$this->Default += 0;
+			}
+		}
+		return $this;
 	}
 
 	//----------------------------------------------------------------------------------------- equiv
@@ -127,6 +152,26 @@ class Mysql_Column implements Dao_Column
 			case "tinyblob": case "blob": case "mediumblob": case "longblob":
 				return "string";
 		}
+	}
+
+	//----------------------------------------------------------------------------------------- toSql
+	public function toSql()
+	{
+		$column_name = $this->getName();
+		$type = $this->getSqlType();
+		$postfix = $this->getSqlPostfix();
+		$sql = "`" . $column_name. "` " . $type;
+		if (!$this->canBeNull()) {
+			$sql .= " NOT NULL";
+		}
+		if ($postfix != " auto_increment") {
+			$sql .= " DEFAULT " . Sql_Value::escape($this->getDefaultValue());
+		}
+		$sql .= $postfix;
+		if ($postfix === " auto_increment") {
+			$sql .= ", PRIMARY KEY (`" . $column_name . "`)";
+		}
+		return $sql;
 	}
 
 }

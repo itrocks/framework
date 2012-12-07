@@ -75,6 +75,8 @@ trait Sql_Columns_Builder
 				$sql_columns .= "$join->foreign_alias.`$column_name` AS `$path:$property->name`";
 			}
 		}
+		if ($first_property) $first_property = false; else $sql_columns .= ", ";
+		$sql_columns .= "$join->foreign_alias.id AS `$path:id`";
 		return $sql_columns;
 	}
 

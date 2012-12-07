@@ -67,7 +67,6 @@ abstract class Autoloader
 					return null;
 				}
 			}
-			self::$included_classes[$short_class_name] = $class_name;
 			$class_name = Namespaces::fullClassName($class_name);
 			self::$included_classes[$short_class_name] = $class_name;
 			self::classLoadEvent($class_name);

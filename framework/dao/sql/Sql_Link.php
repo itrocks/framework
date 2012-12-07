@@ -113,16 +113,19 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 */
 	public function select($object_class, $columns, $filter_object = null)
 	{
-		$this->setContextClass($object_class);
 		$filter_object = $this->objectToProperties($filter_object);
 		$list = new Default_List_Data($object_class, $columns);
 		$columns[] = "id";
-		$query = Sql_Builder::buildSelect($object_class, $columns, $filter_object, $this);
+		$sql_select_builder = new Sql_Select_Builder($object_class, $columns, $filter_object, $this);
+		$query = $sql_select_builder->buildQuery();
 		$list_length = count($columns);
+		$path_classes = $sql_select_builder->getClasses();
+		$this->setContext($sql_select_builder->getClassNames());
 		$result_set = $this->executeQuery($query);
 		$column_count = $this->getColumnsCount($result_set);
 		$classes = array();
 		$classes_index = array();
+		$itoj = array();
 		$j = 0;
 		for ($i = 0; $i < $column_count; $i++) {
 			$column_names[$i] = $this->getColumnName($result_set, $i);
@@ -130,48 +133,48 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 				$itoj[$i] = $j++;
 			}
 			else {
-				$split = explode("\\:", $column_names[$i]);
+				$split = explode(":", $column_names[$i]);
 				$column_names[$i] = $split[1];
-				$object_class = $split[0];
-				$hisj = $classes_index[$object_class];
-				if (!$hisj) {
+				$main_property = $split[0];
+				$hisj = isset($classes_index[$main_property]) ? $classes_index[$main_property] : null;
+				if (!isset($hisj)) {
 					$hisj = $j;
-					$classes_index[$object_class] = $j;
-					$create_object[$j] = true;
+					$classes[$hisj] = $path_classes[$main_property];
+					$classes_index[$main_property] = $j;
 					$itoj[$i] = $j++;
 				}
 				else {
 					$itoj[$i] = $hisj;
 				}
-				$classes[$hisj] = $object_class;
 			}
-			if ((count($column_names[$i]) > 3) && substr($column_names[$i], 0, 3) === "id_") {
+			if (substr($column_names[$i], 0, 3) === "id_") {
 				$column_names[$i] = substr($column_names[$i], 3);
 			}
 		}
 		$first = true;
 		$properties = array();
 		while ($result = $this->fetchRow($result_set)) {
-			$object = Search_Object::newInstance($object_class);
 			for ($i = 0; $i < $column_count; $i++) {
 				$j = $itoj[$i];
-				if (!isset($classes[$j]) || !is_object($classes[$j])) {
+				if (!isset($classes[$j])) {
 					$row[$columns[$j]] = $result[$i];
 				}
 				else {
-					if (!is_object($row[$columns[$j]])) {
+					if (!isset($row[$columns[$j]])) {
 						// TODO try to get the object from an object map (avoid several instances of the same)
 						$row[$columns[$j]] = Instantiator::newInstance($classes[$j]);
-						if ($first) {
+						if ($first && !isset($properties[$classes[$j]])) {
 							$class = Reflection_Class::getInstanceOf($classes[$j]);
-							$properties[$classes[$j]] = $class->accessProperties();
+							$class->accessProperties();
+							$properties[$classes[$j]] = $class; 
 						}
 					}
-					if ($column_names[$i] === "id") {
+					$property_name = $column_names[$i];
+					if ($property_name === "id") {
 						$this->setObjectIdentifier($row[$columns[$j]], $result[$i]);
 					}
 					else {
-						$object->$column_names[$i] = $result[$i];
+						$row[$columns[$j]]->$property_name = $result[$i];
 					}
 				}
 			}
@@ -179,19 +182,19 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 			$list->add(new Default_List_Row($object_class, $id, $row));
 			$first = false;
 		}
-		foreach (array_keys($properties) as $class) if ($class) {
+		foreach ($properties as $class) {
 			$class->accessPropertiesDone();
 		}
 		return $list;
 	}
 
-	//------------------------------------------------------------------------------- setContextClass
+	//------------------------------------------------------------------------------------ setContext
 	/**
-	 * Set context class name for sql query
+	 * Set context for sql query
 	 *
-	 * @param string $class_name
+	 * @param mixed $context_object Can be a class name or an array of class names
 	 */
-	public abstract function setContextClass($class_name);
+	public abstract function setContext($context_object);
 
 	//----------------------------------------------------------------------------------- storeNameOf
 	public function storeNameOf($class_name)

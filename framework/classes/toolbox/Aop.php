@@ -25,7 +25,7 @@ abstract class Aop
 		$aop_call = "aop_add_" . $when;
 		$class_name = strpos($function, "->") ? substr($function, 0, strpos($function, "->")) : null;
 		if ($i = strrpos($class_name, " ")) $class_name = substr($class_name, $i + 1);
-		if (isset($class_name)) {
+		if (isset($class_name) && (substr($function, -2) === "()")) {
 			$aop_call($function, function(AopJoinpoint $joinpoint) use ($call_back, $class_name, $when) {
 				// TODO this test is not complete : test all cases for herited methods
 				if (

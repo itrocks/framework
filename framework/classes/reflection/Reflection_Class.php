@@ -68,7 +68,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		$parent = $this->getParentClass();
 		if ($parent) {
 			$properties = array_merge(
-				$parent->getAllProperties($filter, $by_name), $this->getProperties($filter)
+				$parent->getAllProperties($filter, $by_name), $this->getProperties($filter, $by_name)
 			);
 		}
 		else {
