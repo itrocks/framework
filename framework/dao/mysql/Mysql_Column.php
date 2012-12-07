@@ -97,6 +97,12 @@ class Mysql_Column implements Dao_Column
 		return $this->Field;
 	}
 
+	//--------------------------------------------------------------------------------- getSqlPostfix
+	public function getSqlPostfix()
+	{
+		return $this->Extra ? " " . $this->Extra : "";
+	}
+
 	//------------------------------------------------------------------------------------ getSqlType
 	public function getSqlType()
 	{

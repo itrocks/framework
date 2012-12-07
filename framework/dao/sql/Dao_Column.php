@@ -25,6 +25,14 @@ interface Dao_Column extends Field
 	 */
 	public function getDefaultValue();
 
+	//--------------------------------------------------------------------------------- getSqlPostfix
+	/**
+	 * Gets the SQL postfix for the column
+	 *
+	 * @return string
+	 */
+	public function getSqlPostfix();
+
 	//------------------------------------------------------------------------------------ getSqlType
 	/**
 	 * Gets the SQL version of the type

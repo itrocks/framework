@@ -66,7 +66,6 @@ class Mysql_Logger
 	{
 		$mysqli = $joinpoint->getObject();
 		if ($mysqli->errno) {
-			
 			$arguments = $joinpoint->getArguments();
 			$error = $mysqli->errno . ": " . $mysqli->error . "[" . $arguments[0] . "]"; 
 			echo "<div class=\"Mysql logger error\">" . $error . "</div>\n";

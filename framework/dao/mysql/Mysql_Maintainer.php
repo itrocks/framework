@@ -9,7 +9,6 @@ class Mysql_Maintainer
 	//--------------------------------------------------------------------------------- onMysqliQuery
 	private static function addTable(mysqli $mysqli, $class_name)
 	{
-		echo "mysqli add table $class_name<br>";
 		$class_table = Mysql_Table_Builder_Class::build($class_name);
 		$query = (new Sql_Create_Table_Builder($class_table))->build();
 		$mysqli->query($query);
@@ -21,6 +20,7 @@ class Mysql_Maintainer
 		$mysqli = $joinpoint->getObject();
 		if ($mysqli->errno && isset($mysqli->context_class)) {
 			$query = $joinpoint->getArguments()[0];
+			$retry = true;
 			switch ($mysqli->errno) {
 				case Mysql_Errors::ER_NO_SUCH_TABLE:
 					self::addTable($mysqli, $mysqli->context_class);
@@ -30,7 +30,12 @@ class Mysql_Maintainer
 					break;
 				default:
 					echo "erreur " . $mysqli->errno . "<br>";
+					$retry = false;
 					break;
+			}
+			if ($retry) {
+				$result = $mysqli->query($query);
+				$joinpoint->setReturnedValue($result);
 			}
 		}
 	}
@@ -61,9 +66,7 @@ class Mysql_Maintainer
 	{
 		echo "mysqli update for $class_name<br>";
 		$class_table = Mysql_Table_Builder_Class::build($class_name);
-echo "<pre>class_table = " . print_r($class_table, true) . "</pre>";
 		$mysql_table = Mysql_Table_Builder_Mysqli::build($mysqli, Dao::storeNameOf($class_name));
-echo "<pre>mysql_table = " . print_r($mysql_table, true) . "</pre>";
 		$mysql_columns = $mysql_table->getColumns();
 		$builder = new Sql_Alter_Table_Builder();
 		foreach ($class_table->getColumns() as $column) {
@@ -74,7 +77,7 @@ echo "<pre>mysql_table = " . print_r($mysql_table, true) . "</pre>";
 				$builder->alterColumn($column->getName(), $column);
 			}
 		}
-		echo "<pre>" . print_r($builder, true) . "</pre>";
+		echo "<pre>update builder = " . print_r($builder, true) . "</pre>";
 	}
 
 }

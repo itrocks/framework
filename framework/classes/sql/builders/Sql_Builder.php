@@ -75,7 +75,6 @@ abstract class Sql_Builder
 			$insert = "INSERT INTO `" . Dao::current()->storeNameOf($class) . "`"
 				. " (" . $build_columns . ") VALUES ("
 				. static::buildValues($write) . ")";
-echo "insert = $insert<br>";
 			return $insert;
 		}
 	}

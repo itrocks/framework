@@ -39,7 +39,7 @@ abstract class Mysql_Column_Builder_Property
 		$class->getProperty("Field")->setValue($column, "id");
 		$class->getProperty("Type")->setValue($column, "bigint(18)");
 		$class->getProperty("Null")->setValue($column, "NO");
-		$class->getProperty("Default")->setValue($column, null);
+		$class->getProperty("Default")->setValue($column, 0);
 		$class->getProperty("Extra")->setValue($column, "auto_increment");
 		$class->accessPropertiesDone();
 		return $column;

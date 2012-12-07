@@ -9,12 +9,14 @@ Autoloader::register();
 if (!isset($_SERVER["SAF_PATH"])) $_SERVER["SAF_PATH"] = __DIR__;
 if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr(__DIR__, strlen($_SERVER["DOCUMENT_ROOT"]));
 
+// highest priority modules
+Mysql_Maintainer::register(); // TODO problem : if maintainer is after logger, maintainer's setResultValue() seems to be ignored !
 // debug priority modules
 //ini_set("xdebug.scream", true);
 ini_set("xdebug.collect_params", 4);
 //Aop_Logger::register();
 //Execution_Timer::register();
-Mysql_Logger::register();
+//Mysql_Logger::register();
 Xdebug::register();
 //Class_Debugger::register("Html_Template");
 //aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
@@ -32,7 +34,6 @@ Html_Cleaner::register();
 Html_Session::register();
 Html_Translator::register();
 List_Controller_Acls::register();
-Mysql_Maintainer::register();
 Object_Builder::register();
 // activate errors handlers
 Error_Handlers::activate();
