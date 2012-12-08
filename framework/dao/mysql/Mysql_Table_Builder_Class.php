@@ -21,8 +21,11 @@ abstract class Mysql_Table_Builder_Class
 		$table = new Mysql_Table($table_name);
 		$table->columns["id"] = Mysql_Column_Builder_Property::buildId();
 		foreach ($class->accessProperties() as $property) {
-			$column = Mysql_Column_Builder_Property::build($property);
-			$table->columns[$column->getName()] = $column;
+			$type = $property->getType();
+			if ((($type === "multitype:string") || !Type::isMultiple($type)) && !$property->isStatic()) {
+				$column = Mysql_Column_Builder_Property::build($property);
+				$table->columns[$column->getName()] = $column;
+			}
 		}
 		$class->accessPropertiesDone();
 		return $table;

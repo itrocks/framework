@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-abstract class List_Annotation
+abstract class List_Annotation extends Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct
@@ -17,50 +17,39 @@ abstract class List_Annotation
 		$values = array();
 		$value = trim($value);
 		$length = strlen($value);
-		$in_quote = $length && (($value[0] === "'") || ($value[0] === '"'));
+		$in_quote = ($length && (($value[0] === "'") || ($value[0] === '"')))
+			? $value[0] : false;
 		$start = ($in_quote ? 1 : 0);
 		$stop = null;
-		$i = 0;
+		$i = $start;
 		while ($i < $length) {
-			if ($value[$i] === "\\") {
+			if (($value[$i] === "\\") && ($i < ($length - 1))) {
 				$i++;
 			}
-			elseif ($value[$i] === $in_quote) {
+			if ($value[$i] === $in_quote) {
 				$j = $i + 1;
 				while (($j < $length) && ($value[$j] === " ")) $j ++;
-				if ($value[$j] === ",") {
-					$stop = $i;
-					$in_quote = false;
-					$i = $j;
-				}
-				else {
-					trigger_error(
-						"Badly formatted @" . strtolower(lParse(get_class($this), "_"))
-						. " $value at position $i : "
-						. (($in_quote === '"') ? "double " : "") . "quote must be followed by a comma",
-						E_USER_ERROR
-					);
-				}
+				$stop = $i;
+				$in_quote = false;
+				$i = $j;
 			}
-			elseif (($value[$i] === ",") && !$in_quote) {
-				if (!isset($stop)) $stop = $i;
+			if (($i == $length) || ($value[$i] === ",") && !$in_quote) {
+				if (!isset($stop)) {
+					$stop = $i;
+				}
 				$values[] = substr($value, $start, $stop - $start);
 				$i ++;
 				while (($i < $length) && ($value[$i] === " ")) $i ++;
-				$in_quote = ($i < $length) && (($value[$i] === "'") || ($value[$i] === '"'));
+				$in_quote = (($i < $length) && (($value[$i] === "'") || ($value[$i] === '"')))
+					? $value[$i] : false;
 				$start = ($in_quote ? ($i + 1) : $i);
+				$stop = null;
 			}
 			$i ++;
 		}
-		if ($in_quote) {
-			trigger_error(
-				"Badly formatted @" . strtolower(lParse(get_class($this), "_"))
-				. " $value at position $i : "
-				. (($in_quote === '"') ? "double " : "") . "quote not closed",
-				E_WARNING
-			);
+		if ($i == $length) {
+			$values[] = substr($value, $start, $i - $start);
 		}
-echo "values as " . print_r($values, true) . "<br>";
 		parent::__construct($values);
 	}
 

@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Set_Annotation extends Annotation
+class Class_Set_Annotation extends Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct

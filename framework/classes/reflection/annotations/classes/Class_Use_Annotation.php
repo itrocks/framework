@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Use_Annotation extends Annotation implements Multiple_Annotation
+class Class_Use_Annotation extends Annotation implements Multiple_Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct

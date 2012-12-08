@@ -145,8 +145,9 @@ class Mysql_Column implements Dao_Column
 			case "tinyint": case "smallint": case "mediumint": case "int": case "bigint":
 				return "integer";
 			case "char": case "varchar": case "tinytext": case "text": case "mediumtext": case "longtext":
-			case "enum": case "set":
 				return "string";
+			case "enum": case "set":
+				return "multitype:string";
 			case "date": case "datetime": case "timestamp": case "time": case "year":
 				return "Date_Time";
 			case "tinyblob": case "blob": case "mediumblob": case "longblob":

@@ -6,6 +6,13 @@ use mysqli;
 class Mysql_Maintainer
 {
 
+	//----------------------------------------------------------------------------------- createTable
+	private static function createTable($mysqli, $class_name)
+	{
+		$class_table = Mysql_Table_Builder_Class::build($class_name);
+		$mysqli->query((new Sql_Create_Table_Builder($class_table))->build());
+	}
+
 	//--------------------------------------------------------------------------------- onMysqliQuery
 	public static function onMysqliQuery(AopJoinpoint $joinpoint)
 	{
@@ -19,8 +26,13 @@ class Mysql_Maintainer
 			foreach ($context as $context_class) {
 				switch ($errno) {
 					case Mysql_Errors::ER_NO_SUCH_TABLE:
+						if (Dao::storeNameOf($context_class) === self::parseNameFromError($error)) {
+							self::createTable($mysqli, $context_class);
+							$retry = true;
+						}
+						break;
 					case Mysql_Errors::ER_BAD_FIELD_ERROR:
-						self::updateTable($mysqli, $context_class, $errno, $error);
+						self::updateTable($mysqli, $context_class);
 						$retry = true;
 						break;
 				}
@@ -54,36 +66,22 @@ class Mysql_Maintainer
 	}
 
 	//----------------------------------------------------------------------------------- updateTable
-	private static function updateTable($mysqli, $class_name, $errno, $error)
+	private static function updateTable($mysqli, $class_name)
 	{
 		$class_table = Mysql_Table_Builder_Class::build($class_name);
-		if (
-			($errno == Mysql_Errors::ER_NO_SUCH_TABLE)
-			&& (self::parseNameFromError($error) === Dao::storeNameOf($class_name))
-		) {
-			$mysql_table = null;
-		}
-		else {
-			$mysql_table = Mysql_Table_Builder_Mysqli::build($mysqli, Dao::storeNameOf($class_name));
-		}
-		if (!isset($mysql_table)) {
-			$class_table = Mysql_Table_Builder_Class::build($class_name);
-			$mysqli->query((new Sql_Create_Table_Builder($class_table))->build());
-		}
-		else {
-			$mysql_columns = $mysql_table->getColumns();
-			$builder = new Sql_Alter_Table_Builder($mysql_table);
-			foreach ($class_table->getColumns() as $column) {
-				if (!isset($mysql_columns[$column->getName()])) {
-					$builder->addColumn($column);
-				}
-				elseif (!$column->equiv($mysql_columns[$column->getName()])) {
-					$builder->alterColumn($column->getName(), $column);
-				}
+		$mysql_table = Mysql_Table_Builder_Mysqli::build($mysqli, Dao::storeNameOf($class_name));
+		$mysql_columns = $mysql_table->getColumns();
+		$builder = new Sql_Alter_Table_Builder($mysql_table);
+		foreach ($class_table->getColumns() as $column) {
+			if (!isset($mysql_columns[$column->getName()])) {
+				$builder->addColumn($column);
 			}
-			if ($builder->isReady()) {
-				$mysqli->query($builder->build());
+			elseif (!$column->equiv($mysql_columns[$column->getName()])) {
+				$builder->alterColumn($column->getName(), $column);
 			}
+		}
+		if ($builder->isReady()) {
+			$mysqli->query($builder->build());
 		}
 	}
 
