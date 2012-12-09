@@ -34,4 +34,15 @@ trait Sql_Joins_Builder
 		return $this->joins->getClassNames();
 	}
 
+	//------------------------------------------------------------------------------- getLinkedTables
+	/**
+	 * Gets the implicit linked tables used for joins
+	 *
+	 * @return multitype:multitype:string key is the table name, each has two field names
+	 */
+	public function getLinkedTables()
+	{
+		return $this->joins->getLinkedTables();
+	}
+
 }

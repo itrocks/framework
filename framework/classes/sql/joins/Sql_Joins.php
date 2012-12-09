@@ -28,6 +28,14 @@ class Sql_Joins
 	 */
 	private $joins = array();
 
+	//-------------------------------------------------------------------------------- $linked_tables
+	/**
+	 * linked tables
+	 *
+	 * @var multitype:string indice is 
+	 */
+	private $linked_tables = array();
+
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * link class names to their properties
@@ -149,6 +157,9 @@ class Sql_Joins
 		$join->foreign_column = "id";
 		$join->master_column = "id_" . $master_property->getAnnotation("foreignlink");
 		$join->master_alias = $linked_join->foreign_alias;
+		$this->linked_tables[$linked_join->foreign_table] = array(
+			$join->master_column, $linked_join->foreign_column
+		);
 	}
 
 	//----------------------------------------------------------------------------------- addMultiple
@@ -291,6 +302,18 @@ class Sql_Joins
 	public function getJoins()
 	{
 		return $this->joins;
+	}
+
+	//------------------------------------------------------------------------------- getLinkedTables
+	/**
+	 * Gets the list of linked tables.
+	 * There are tables which do not have any matching class
+	 *
+	 * @return multitype:multitype:string main key is the table name, contained arrays contains two fields names
+	 */
+	public function getLinkedTables()
+	{
+		return $this->linked_tables;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties

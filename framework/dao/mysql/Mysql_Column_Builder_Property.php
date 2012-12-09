@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+// TODO buildId() and buildLink() should be in another Mysql_Column_Builder_? class
 abstract class Mysql_Column_Builder_Property
 {
 
@@ -41,6 +42,26 @@ abstract class Mysql_Column_Builder_Property
 		$class->getProperty("Null")->setValue($column, "NO");
 		$class->getProperty("Default")->setValue($column, null);
 		$class->getProperty("Extra")->setValue($column, "auto_increment");
+		$class->accessPropertiesDone();
+		return $column;
+	}
+
+	//------------------------------------------------------------------------------------- buildLink
+	/**
+	 * Builds a Mysql_Column object for a standard "id_*" link column
+	 *
+	 * @param string $column_name
+	 * @return Mysql_Column
+	 */
+	public static function buildLink($column_name)
+	{
+		$column = new Mysql_Column();
+		$class = Reflection_Class::getInstanceOf(get_class($column));
+		$class->accessProperties();
+		$class->getProperty("Field")->setValue($column, $column_name);
+		$class->getProperty("Type")->setValue($column, "bigint(18) unsigned");
+		$class->getProperty("Null")->setValue($column, "NO");
+		$class->getProperty("Default")->setValue($column, 0);
 		$class->accessPropertiesDone();
 		return $column;
 	}

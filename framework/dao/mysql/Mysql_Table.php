@@ -38,6 +38,12 @@ class Mysql_Table implements Dao_Table
 		}
 	}
 
+	//------------------------------------------------------------------------------------- addColumn
+	public function addColumn(Mysql_Column $column)
+	{
+		$this->columns[] = $column;
+	}
+
 	//------------------------------------------------------------------------------------ getColumns
 	public function getColumns()
 	{
