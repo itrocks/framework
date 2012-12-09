@@ -119,8 +119,8 @@ class Controller_Uri
 					if ($last_controller_element) {
 						$this->parameters->set($free_parameters_count++, $last_controller_element);
 					}
-					$last_controller_element = $uri_element;
 				}
+				$last_controller_element = $uri_element;
 				$count++;
 			}
 		}
