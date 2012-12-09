@@ -521,8 +521,6 @@ class Html_Template
 				$file_name = substr($file_name, strrpos($file_name, "/") + 1);
 				if (substr($file_name, -4) == ".css") {
 					$file_path = static::getCssPath($this->css) . "/" . $file_name;
-				} elseif ($file_name == "dojo.js") {
-					$file_path = $_SERVER["SAF_ROOT"] . "dojo/dojo/dojo.js";
 				} else {
 					$file_path = $_SERVER["SAF_ROOT"] . substr(
 						stream_resolve_include_path($file_name), strlen($_SERVER["SAF_PATH"])
