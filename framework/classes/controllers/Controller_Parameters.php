@@ -19,6 +19,19 @@ class Controller_Parameters
 	 */
 	private $parameters = array();
 
+	//-------------------------------------------------------------------------------------- addValue
+	/**
+	 * Adds a parameter without name value
+	 *
+	 * @param mixed $value
+	 * @return Controller_Parameters
+	 */
+	public function addValue($parameter_value)
+	{
+		$this->parameters[] = $parameter_value;
+		return $this;
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Get URI parameter as an object

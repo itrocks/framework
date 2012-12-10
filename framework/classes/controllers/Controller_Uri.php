@@ -37,7 +37,7 @@ class Controller_Uri
 	 * @param string $default_feature the default feature name, ie put "output" for "/Order/3"
 	 */
 	public function __construct(
-		$uri, $get, $default_element_feature = null, $default_collection_feature = null
+		$uri, $get = array(), $default_element_feature = null, $default_collection_feature = null
 	) {
 		$uri = $this->uriToArray($uri);
 		if (isset($default_element_feature) && is_numeric(end($uri))) {
@@ -96,39 +96,67 @@ class Controller_Uri
 	 */
 	private function parse($uri)
 	{
+		$this->feature_name = "";
 		$this->parameters = new Controller_Parameters();
-		$controller_elements = array();
 		$last_controller_element = "";
-		$free_parameters_count = 0;
-		$count = 0;
-		foreach ($uri as $uri_element) {
+		$has_numeric = false;
+		foreach ($uri as $key => $uri_element) {
 			if (is_numeric($uri_element)) {
-				$this->parameters->set(
-					str_replace(" ", "_", ucwords(str_replace("_", " ", $last_controller_element))),
-					$uri_element
-				);
-				$last_controller_element = "";
+				$has_numeric = $key;
+				break;
 			}
-			else {
-				if ($count < 2) {
-					$controller_elements[] = str_replace(
-						" ", "_", ucwords(str_replace("_", " ", $uri_element))
-					);
+		}
+		if ($has_numeric) {
+			$i = 0;
+			$length = count($uri);
+			$controller_elements = array();
+			while (($i < $length) && !is_numeric($uri[$i])) {
+				$last_controller_element = str_replace(" ", "_", ucwords(str_replace("_", " ", $uri[$i])));
+				$controller_elements[] = $last_controller_element;
+				$i ++;
+			}
+			if (($i < $length) && is_numeric($uri[$i])) {
+				$this->parameters->set($last_controller_element, $uri[$i] + 0);
+				$last_controller_element = "";
+				$i ++;
+				if (($i < $length) && !is_numeric($uri[$i])) {
+					$this->feature_name = lcfirst($uri[$i]);
+					$i ++;
+				}
+			}
+			if (!$this->feature_name) {
+				$this->feature_name = lcfirst(array_pop($controller_elements));
+				$last_controller_element = end($controller_elements);
+			}
+			$this->controller_name = join("_", $controller_elements);
+			while ($i < $length) {
+				if (is_numeric($i)) {
+					if ($last_controller_element) {
+						$this->parameters->set($last_controller_element, $uri[$i] + 0);
+						$last_controller_element = "";
+					}
+					else {
+						$this->parameters->addValue($uri[$i]);
+					}
 				}
 				else {
 					if ($last_controller_element) {
-						$this->parameters->set($free_parameters_count++, $last_controller_element);
+						$this->parameters->addValue($last_controller_element);
 					}
+					$last_controller_element = $uri[$i];
 				}
-				$last_controller_element = $uri_element;
-				$count++;
+				$i ++;
 			}
 		}
-		if ($last_controller_element) {
-			$this->parameters->set($free_parameters_count++, $last_controller_element);
+		else {
+			$this->controller_name = str_replace(
+				" ", "_", ucwords(str_replace("_", " ", array_shift($uri)))
+			);
+			$this->feature_name = lcfirst(array_shift($uri));
+			foreach ($uri as $uri_element) {
+				$this->parameters->addValue($uri_element);
+			}
 		}
-		$this->feature_name = lcfirst(array_pop($controller_elements));
-		$this->controller_name = join("_", $controller_elements);
 	}
 
 	//------------------------------------------------------------------------------------ uriToArray

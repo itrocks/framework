@@ -52,4 +52,4 @@ foreach (array_reverse($MODULES) as $MODULE) $MODULE();
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
 Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
-echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
+//echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
