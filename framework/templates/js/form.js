@@ -2,11 +2,17 @@ $("document").ready(function() {
 
 	$(".edit").click(function() {
 		var $this = $(this);
-		if ($this.hasClass("editing")) {
+		if ($this.parents("form").length) {
 			$this.children(":first").focus();
 		}
 		else {
-			$this.addClass("editing");
+			$this.parents(".form").replaceWith(function(){
+				$this = $(this);
+				return $("<form>", {
+					"class": $this.attr("class"),
+					"id":    $this.attr("id")
+				}).append($this.children());
+			});
 			var newInput = function(element) {
 				return $("<input>", {
 					"name": element.attr("id"),
@@ -20,10 +26,8 @@ $("document").ready(function() {
 			var input = newInput($this);
 			$this.html(input);
 			input.focus();
-			$(".edit").not(".editing")
+			$(".edit").not("input")
 				.html(function() {
-					var $this = $(this);
-					$this.addClass("editing");
 					return newInput($(this));
 				});
 			$(".ifedit").css("display", "inline-block");
