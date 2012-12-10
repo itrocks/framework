@@ -17,7 +17,7 @@ class Mysql_Index implements Dao_Index
 	public $keys;
 
 	//--------------------------------------------------------------------------------------- getKeys
-	public function geyKeys()
+	public function getKeys()
 	{
 		return $this->keys;
 	}
