@@ -69,16 +69,27 @@ class Controller_Parameters
 		return $parameters;
 	}
 
-	//---------------------------------------------------------------------------------------- getRaw
+	//------------------------------------------------------------------------------- getRawParameter
 	/**
 	 * Get URI parameter raw value, as it was on original URI
 	 *
 	 * @param string  $parameter_name
-	 * @return integer
+	 * @return mixed
 	 */
-	public function getRaw($parameter_name)
+	public function getRawParameter($parameter_name)
 	{
 		return $this->parameters[$parameter_name];
+	}
+
+	//--------------------------------------------------------------------------------- getParameters
+	/**
+	 * Get URI parameters raw values, as they were on original URI
+	 *
+	 * @return multitype:mixed indice is the parameter name
+	 */
+	public function getRawParameters()
+	{
+		return $this->parameters;
 	}
 
 	//------------------------------------------------------------------------------------------- set
@@ -87,10 +98,12 @@ class Controller_Parameters
 	 *
 	 * @param string  $name
 	 * @param integer $value
+	 * @return Controller_Parameters
 	 */
 	public function set($parameter_name, $parameter_value)
 	{
 		$this->parameters[$parameter_name] = $parameter_value;
+		return $this;
 	}
 
 }

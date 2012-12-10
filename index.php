@@ -18,7 +18,7 @@ if (!isset($_SERVER["SAF_PATH"])) $_SERVER["SAF_PATH"] = substr($_SERVER["SCRIPT
 if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr($_SERVER["SAF_PATH"], strlen($_SERVER["DOCUMENT_ROOT"]));
 
 // highest priority modules
-Mysql_Maintainer::register(); // TODO problem : if maintainer is after logger, maintainer's setResultValue() seems to be ignored !
+Mysql_Maintainer::register(); // TODO problem : if maintainer is after logger, maintainer's setReturnedValue() seems to be ignored !
 // debug priority modules
 //Aop_Logger::register();
 //Execution_Timer::register();

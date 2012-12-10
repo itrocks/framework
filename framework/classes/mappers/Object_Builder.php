@@ -5,7 +5,7 @@ use ReflectionClass;
 
 class Object_Builder
 {
-	use Current { Current as private pCurrent; }
+	use Current_With_Default { current as private dCurrent; }
 
 	//---------------------------------------------------------------------------------- $new_classes
 	/**
@@ -17,7 +17,7 @@ class Object_Builder
 	/**
 	 * @param multitype:string $new_classes key is parent class name associated to replacement class
 	 */
-	public function __construct($new_classes)
+	public function __construct($new_classes = array())
 	{
 		$this->new_classes = $new_classes;
 	}
@@ -29,7 +29,7 @@ class Object_Builder
 	 */
 	public static function current(Object_Builder $set_current = null)
 	{
-		return self::pCurrent($set_current);
+		return self::dCurrent($set_current);
 	}
 
 	//----------------------------------------------------------------------------------- newInstance

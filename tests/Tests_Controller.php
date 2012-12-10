@@ -9,7 +9,7 @@ class Tests_Controller
 	//------------------------------------------------------------------------------------------ test
 	public function run()
 	{
-		$dir = dir("framework/tests");
+		$dir = dir("tests");
 		while ($entry = $dir->read()) {
 			if (substr($entry, -9) == "_Test.php") {
 				$class = __NAMESPACE__ . "\\" . substr($entry, 0, strpos($entry, "."));
