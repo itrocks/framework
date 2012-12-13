@@ -22,16 +22,17 @@ class Trashcan_Drop_Controller implements Feature_Controller
 		}
 		else {
 			$class_name = array_shift($objects);
-			$feature    = array_shift($objects);
+			$feature = array_shift($objects);
+			$get = array();
 			foreach ($objects as $key => $value) {
-				if (!is_numeric($key)) {
+				if (is_numeric($value) || !is_numeric($key)) {
 					unset($objects[$key]);
 					$get[$key] = $value;
 				}
 			}
 			$elements = join("/", $objects);
 			Main_Controller::getInstance()->runController(
-				"/" . $class_name . "/" . $feature . "Remove/" . $elements, $form
+				"/" . $class_name . "/" . $feature . "Remove/" . $elements, $get
 			);
 		}
 	}

@@ -54,10 +54,13 @@ class Main_Controller
 	 */
 	public function runController($uri, $get = array(), $post = array(), $files = array())
 	{
+echo "uri = $uri<br>";
 		$uri = new Controller_Uri($uri, $get, "output", "list");
 		foreach ($uri->getPossibleControllerCalls() as $call) {
 			list($controller, $method_name) = $call;
+echo "try $controller->$method_name()<br>";
 			if (@method_exists($controller, $method_name)) {
+echo "RUN<br>";
 				$controller = new $controller();
 				$controller->$method_name(
 					$uri->parameters, $post, $files,

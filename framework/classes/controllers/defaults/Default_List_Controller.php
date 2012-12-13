@@ -18,7 +18,7 @@ class Default_List_Controller implements List_Controller
 	//----------------------------------------------------------------------------- getListProperties
 	public function getListProperties()
 	{
-		return Default_List_Controller_Configuration::current()->getListProperties($this->class_name);
+		return Default_List_Controller_Configuration::current()->getClassProperties($this->class_name);
 	}
 
 	//--------------------------------------------------------------------------- getSelectionButtons

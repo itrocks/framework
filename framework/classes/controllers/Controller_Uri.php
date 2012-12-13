@@ -100,9 +100,10 @@ class Controller_Uri
 		$this->parameters = new Controller_Parameters();
 		$last_controller_element = "";
 		$has_numeric = false;
-		foreach ($uri as $key => $uri_element) {
+		foreach ($uri as $i => $uri_element) {
 			if (is_numeric($uri_element)) {
-				$has_numeric = $key;
+				$uri[$i] = $uri_element + 0;
+				$has_numeric = $i;
 				break;
 			}
 		}
@@ -110,7 +111,7 @@ class Controller_Uri
 			$i = 0;
 			$length = count($uri);
 			$controller_elements = array();
-			while (($i < $length) && !is_numeric($uri[$i])) {
+			while (($i < $length) && ($i < 2) && !is_numeric($uri[$i])) {
 				$last_controller_element = str_replace(" ", "_", ucwords(str_replace("_", " ", $uri[$i])));
 				$controller_elements[] = $last_controller_element;
 				$i ++;
@@ -128,11 +129,14 @@ class Controller_Uri
 				$this->feature_name = lcfirst(array_pop($controller_elements));
 				$last_controller_element = end($controller_elements);
 			}
+			if (($i >= $length) || !is_numeric($uri[$i])) {
+				$last_controller_element = "";
+			}
 			$this->controller_name = join("_", $controller_elements);
 			while ($i < $length) {
 				if (is_numeric($i)) {
 					if ($last_controller_element) {
-						$this->parameters->set($last_controller_element, $uri[$i] + 0);
+						$this->parameters->set($last_controller_element, $uri[$i]);
 						$last_controller_element = "";
 					}
 					else {
