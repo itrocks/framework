@@ -42,7 +42,7 @@ class Default_List_Controller_Configuration
 		if (!isset($this->list_properties[$class_name])) {
 			$parents = array_merge(class_parents($class_name), class_uses($class_name));
 			while ($parents) { 
-				foreach ($parents as $class_name) {
+					foreach ($parents as $class_name) {
 					if (
 						isset($this->list_properties[$class_name])
 						|| isset($this->list_properties[Namespaces::shortClassName($class_name)])
@@ -77,9 +77,10 @@ class Default_List_Controller_Configuration
 	public function removeListProperty($class_name, $property_name)
 	{
 		$list_properties = $this->getListProperties($class_name);
-		$key = in_array($property_name, $list_properties);
-		if ($key) {
+		$key = array_search($property_name, $list_properties);
+		if ($key !== false) {
 			unset($list_properties[$key]);
+			$list_properties = array_values($list_properties);
 			$this->setListProperties($class_name, $list_properties);
 		}
 	}
@@ -93,6 +94,10 @@ class Default_List_Controller_Configuration
 	public function setListProperties($class_name, $list_properties)
 	{
 		$this->list_properties[$class_name] = $list_properties;
+		// TODO what is this ? no hard link please !
+		$_SESSION["SAF\\Framework\\Configuration"]
+			->Default_List_Controller_Configuration["list_properties"][$class_name]
+			= $list_properties;
 	}
 
 }

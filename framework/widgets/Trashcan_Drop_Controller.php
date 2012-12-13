@@ -21,9 +21,17 @@ class Trashcan_Drop_Controller implements Feature_Controller
 			echo Names::classToDisplay(get_class($object)) . " was deleted";
 		}
 		else {
-			list($drop, $class_name, $feature, $element) = $parameters->getObjects();
+			$class_name = array_shift($objects);
+			$feature    = array_shift($objects);
+			foreach ($objects as $key => $value) {
+				if (!is_numeric($key)) {
+					unset($objects[$key]);
+					$get[$key] = $value;
+				}
+			}
+			$elements = join("/", $objects);
 			Main_Controller::getInstance()->runController(
-				"/" . $class_name . "/" . $feature . "Remove/" . $element
+				"/" . $class_name . "/" . $feature . "Remove/" . $elements, $form
 			);
 		}
 	}

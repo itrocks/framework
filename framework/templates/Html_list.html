@@ -17,7 +17,7 @@
 <body>
 
 <!--BEGIN-->
-<div class="window list" id="{@class}/{@feature}">
+<div class="window list form" id="{@class}/{@feature}">
 	<h2>{@class.ucfirst} list</h2>
 	<div class="general button_bar">
 		<!--general_buttons-->
@@ -40,10 +40,10 @@
 	<tr>
 		<td><input type="checkbox" name="s[]" value="{id}"></td>
 		<!--values:1-->
-		<td><!--..class_name--><a href="/{..class_name.short}/{..id}">{value}<!--..class_name--></a></td>
+		<td><!--..class_name--><a href="/{..class_name.short}/{..id}" class="edit">{value}<!--..class_name--></a></td>
 		<!--values-->
 		<!--values:2-...count-->
-		<td>{value}</td>
+		<td class="edit">{value}</td>
 		<!--values-->
 	</tr>
 	<!--sample-->
