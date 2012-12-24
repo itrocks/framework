@@ -27,6 +27,10 @@ abstract class Menu_Tester
 		$block->items[] = $item;
 		$item = new Menu_Item(); $item->caption = "Sales order Nr 1"; $item->link = "/Sales_Order/1";
 		$block->items[] = $item;
+		$item = new Menu_Item(); $item->caption = "Addresses"; $item->link = "/Addresses";
+		$block->items[] = $item;
+		$item = new Menu_Item(); $item->caption = "Cities"; $item->link = "/Cities";
+		$block->items[] = $item;
 		$menu->blocks[] = $block;
 		$block = new Menu_Block(); $block->title = "Sales"; $block->color = "green";
 		$item = new Menu_Item(); $item->caption = "Quotes"; $item->link = "/Sales_Quotes";

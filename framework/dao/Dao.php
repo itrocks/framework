@@ -91,9 +91,9 @@ abstract class Dao
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
 	 */
-	public static function read($value, $object_class)
+	public static function read($identifier, $object_class)
 	{
-		return self::current()->read($value, $object_class);
+		return self::current()->read($identifier, $object_class);
 	}
 
 	//--------------------------------------------------------------------------------------- readAll

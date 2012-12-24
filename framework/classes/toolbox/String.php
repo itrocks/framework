@@ -77,7 +77,7 @@ class String
 
 //----------------------------------------------------------------------------- function lLastParse
 /**
- * Renvoie la partie de chaine à gauche de la dernière occurence du séparateur
+ * Renvoie la partie de chaine ï¿½ gauche de la derniï¿½re occurence du sï¿½parateur
  *
  * @param string $str
  * @param string $sep
@@ -101,7 +101,7 @@ function lLastParse($str, $sep, $cnt = 1, $complete_if_not = true)
 
 //--------------------------------------------------------------------------------- function lParse
 /**
- * Renvoie la partie de chaine à gauche de la première occurence du séparateur
+ * Renvoie la partie de chaine ï¿½ gauche de la premiï¿½re occurence du sï¿½parateur
  *
  * @param string $str
  * @param string $sep
@@ -124,7 +124,7 @@ function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
 
 //--------------------------------------------------------------------------- function maxRowLength
 /**
- * Renvoie la plus grande longueur de ligne d'un texte dont les lignes sont séparées par "\n"
+ * Renvoie la plus grande longueur de ligne d'un texte dont les lignes sont sï¿½parï¿½es par "\n"
  *
  * @param string $str
  * @return int
@@ -143,11 +143,11 @@ function maxRowLength($str)
 
 //--------------------------------------------------------------------------------- function mParse
 /**
- * Renvoie la partie de la chaîne située entre le délimiteur de début et le délimiteur de fin
- * Si le délimiteur est un tableau, les délimiteurs seront recherchés successivement.
+ * Renvoie la partie de la chaï¿½ne situï¿½e entre le dï¿½limiteur de dï¿½but et le dï¿½limiteur de fin
+ * Si le dï¿½limiteur est un tableau, les dï¿½limiteurs seront recherchï¿½s successivement.
  *
- * @example echo mParse("il a mangé, a bu, a digéré", array(",", "a "), ",")
- *          recherchera ce qui entre le "a " qui est après "," et le "," qui suit,
+ * @example echo mParse("il a mangï¿½, a bu, a digï¿½rï¿½", array(",", "a "), ",")
+ *          recherchera ce qui entre le "a " qui est aprï¿½s "," et le "," qui suit,
  *          et affichera "bu"
  * @param string $str
  * @param mixed  $begin_sep array, string
@@ -166,7 +166,7 @@ function mParse($str, $begin_sep, $end_sep, $cnt = 1)
 		}
 		$begin_sep = $sep;
 	}
-	// if $end_sep is an array, lärse each $end_sep element, starting from the last one
+	// if $end_sep is an array, lï¿½rse each $end_sep element, starting from the last one
 	if (is_array($end_sep)) {
 		$end_sep = array_reverse($end_sep);
 		$sep = array_pop($end_sep);
@@ -180,7 +180,7 @@ function mParse($str, $begin_sep, $end_sep, $cnt = 1)
 
 //----------------------------------------------------------------------------- function rLastParse
 /**
- * Renvoie la partie de chaine à droite de la dernière occurence du séparateur
+ * Renvoie la partie de chaine ï¿½ droite de la derniï¿½re occurence du sï¿½parateur
  *
  * @param string $str
  * @param string $sep
@@ -204,20 +204,19 @@ function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
 
 //------------------------------------------------------------------------------- function rowCount
 /**
- * Renvoie le nombre de lignes dans un texte dont les lignes sont séparées par "\n"
+ * Renvoie le nombre de lignes dans un texte dont les lignes sont sï¿½parï¿½es par "\n"
  *
  * @param string $str
  * @return string
  */
 function rowCount($str)
 {
-	$str = explode("\n", $str);
-	return count($str);
+	return substr_count($str, "\n");
 }
 
 //--------------------------------------------------------------------------------- function rParse
 /**
- * Renvoie la partie de chaine à droite de la première occurence du séparateur
+ * Renvoie la partie de chaine ï¿½ droite de la premiï¿½re occurence du sï¿½parateur
  *
  * @param string $str
  * @param string $sep
