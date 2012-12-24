@@ -10,6 +10,12 @@ interface Dao_Table
 	 */
 	public function getColumns();
 
+	//------------------------------------------------------------------------------------ getIndexes
+	/**
+	 * @return multitype:Dao_Index
+	 */
+	public function getIndexes();
+
 	//--------------------------------------------------------------------------------------- getName
 	/**
 	 * @return string

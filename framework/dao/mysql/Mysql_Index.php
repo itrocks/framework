@@ -4,12 +4,6 @@ namespace SAF\Framework;
 class Mysql_Index implements Dao_Index
 {
 
-	//------------------------------------------------------------------------------------- $Key_name
-	/**
-	 * @var string
-	 */
-	private $Key_name;
-
 	//----------------------------------------------------------------------------------------- $keys
 	/**
 	 * @var multitype:Mysql_Key
@@ -25,7 +19,24 @@ class Mysql_Index implements Dao_Index
 	//--------------------------------------------------------------------------------------- getName
 	public function getName()
 	{
-		return $this->Key_name;
+		return reset($this->keys)->getName();
+	}
+
+	//------------------------------------------------------------------------------------ getSqlType
+	public function getSqlType()
+	{
+		return reset($this->keys)->getSqlType();
+	}
+
+	//----------------------------------------------------------------------------------------- toSql
+	public function toSql()
+	{
+		foreach ($this->keys as $key) {
+			$column_names[] = $key->toSql();
+		}
+		return "`" . $this->getName() . "` "
+			. $this->getSqlType() . " "
+			. "(" . join(", ", $column_names) . ")";
 	}
 
 }

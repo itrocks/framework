@@ -71,7 +71,7 @@ class Sql_Alter_Table_builder
 			$sqls[] = "ADD COLUMN " . $add->toSql();
 		}
 		foreach ($this->alter_columns as $column_name => $alter) {
-			$sqls[] = " ALTER COLUMN `" . $column_name . "` " . $alter->toSql();
+			$sqls[] = " CHANGE COLUMN `" . $column_name . "` " . $alter->toSql();
 		}
 		return "ALTER TABLE `" . $this->table->getName() . "` "
 			. join(", ", $sqls);

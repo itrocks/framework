@@ -5,9 +5,9 @@ namespace SAF\Framework;
 set_time_limit(5);
 //ini_set("xdebug.scream", true);
 ini_set("xdebug.collect_params", 4);
-ini_set("xdebug.var_display_max_children", 1000);
-ini_set("xdebug.var_display_max_data", 10000);
-ini_set("xdebug.var_display_max_depth", 10000);
+ini_set("xdebug.var_display_max_children", 1000000);
+ini_set("xdebug.var_display_max_data", 1000000);
+ini_set("xdebug.var_display_max_depth", 1000000);
 
 // init
 error_reporting(E_ALL);
@@ -52,4 +52,4 @@ foreach (array_reverse($MODULES) as $MODULE) $MODULE();
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
 Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
-echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
+//echo "<pre>" . print_r($GLOBALS, true) . "</pre>";

@@ -22,10 +22,13 @@ trait Class_Properties
 	public function getClassProperties($class_name)
 	{
 		$main_class_name = $class_name;
-		if (!isset($this->properties[$class_name])) {
+		if (
+			!isset($this->properties[$class_name])
+			&& !isset($this->properties[Namespaces::shortClassName($class_name)])
+		) {
 			$parents = array_merge(class_parents($class_name), class_uses($class_name));
-			while ($parents) { 
-					foreach ($parents as $class_name) {
+			while ($parents) {
+				foreach ($parents as $class_name) {
 					if (
 						isset($this->properties[$class_name])
 						|| isset($this->properties[Namespaces::shortClassName($class_name)])

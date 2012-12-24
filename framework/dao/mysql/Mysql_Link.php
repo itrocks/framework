@@ -253,6 +253,9 @@ class Mysql_Link extends Sql_Link
 		Aop_Getter::$ignore = true;
 		foreach ($class->accessProperties() as $property) {
 			$value = $property->getValue($object);
+			if (is_null($value) && !$property->getAnnotation("null")->value) {
+				$value = "";
+			}
 			if (in_array($property->name, $table_columns_names)) {
 				if (Type::isBasic($property->getType())) {
 					$write[$property->name] = $value;

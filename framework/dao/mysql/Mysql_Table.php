@@ -50,6 +50,12 @@ class Mysql_Table implements Dao_Table
 		return $this->columns;
 	}
 
+	//------------------------------------------------------------------------------------ getIndexes
+	public function getIndexes()
+	{
+		return $this->indexes;
+	}
+
 	//--------------------------------------------------------------------------------------- getName
 	public function getName()
 	{

@@ -3,20 +3,21 @@ $("document").ready(function() {
 	$(".edit").click(function() {
 		var $this = $(this);
 		if ($this.parents("form").length) {
-			$this.children(":first").focus();
+			$this.find("input").focus();
 		}
 		else {
 			var $form;
 			$this.parents(".form").replaceWith(function(){
 				$this = $(this);
-				return $form = $("<form>", {
-					"class": $this.attr("class"),
-					"id":    $this.attr("id")
+				return $form = $('<form>', {
+					"class":  $this.attr("class"),
+					"id":     $this.attr("id"),
+					"method": "POST"
 				}).append($this.children());
 			});
-			$form.find(".edit").not("input").html(function() {
+			$form.find(".edit").html(function() {
 				$this = $(this);
-				return $("<input>", { "name": $this.attr("id"), "value": $this.text() })
+				return $('<input>', { "name": $this.parent().attr("id"), "value": $this.text() })
 					.css({ "width": getInputTextWidth($this.text()) })
 					.keyup(function() { $(this).width(getInputTextWidth(this.value)); });
 			});

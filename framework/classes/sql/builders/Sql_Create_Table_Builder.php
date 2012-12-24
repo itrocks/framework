@@ -22,8 +22,12 @@ class Sql_Create_Table_Builder
 		foreach ($this->table->getColumns() as $column) {
 			$columns[] = $column->toSql();
 		}
+		foreach ($this->table->getIndexes() as $index) {
+			$indexes[] = $index->toSql();
+		}
 		return "CREATE TABLE `" . $this->table->getName() . "` ("
 			. join(", ", $columns)
+			. (isset($indexes) ? ", " : "") . join(", ", $indexes)
 			. ")";
 	}
 

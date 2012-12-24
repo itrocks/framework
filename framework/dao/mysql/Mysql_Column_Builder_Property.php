@@ -152,7 +152,13 @@ abstract class Mysql_Column_Builder_Property
 				$signed     = $property->getAnnotation("signed")->value;
 				$signed_length = $max_length + ($signed ? 1 : 0);
 				if (!isset($max_length)) {
-					$max_length = 255;
+					if (Type::isNumeric($property_type)) {
+						$max_length = 18;
+						$signed_length = 18;
+					}
+					else {
+						$max_length = 255;
+					}
 				}
 			}
 			switch ($property_type) {
