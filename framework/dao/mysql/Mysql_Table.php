@@ -53,7 +53,7 @@ class Mysql_Table implements Dao_Table
 	//------------------------------------------------------------------------------------ getIndexes
 	public function getIndexes()
 	{
-		return $this->indexes;
+		return is_array($this->indexes) ? $this->indexes : array();
 	}
 
 	//--------------------------------------------------------------------------------------- getName

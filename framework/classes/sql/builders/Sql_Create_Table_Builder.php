@@ -22,6 +22,7 @@ class Sql_Create_Table_Builder
 		foreach ($this->table->getColumns() as $column) {
 			$columns[] = $column->toSql();
 		}
+		$indexes = array();
 		foreach ($this->table->getIndexes() as $index) {
 			$indexes[] = $index->toSql();
 		}
