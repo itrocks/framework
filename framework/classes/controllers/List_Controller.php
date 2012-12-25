@@ -1,13 +1,13 @@
 <?php
 namespace SAF\Framework;
 
-interface List_Controller extends Output_Controller
+abstract class List_Controller extends Output_Controller
 {
 
 	//----------------------------------------------------------------------------- getListProperties
-	public function getListProperties();
+	abstract protected function getListProperties();
 
 	//--------------------------------------------------------------------------- getSelectionButtons
-	public function getSelectionButtons($class_name);
+	abstract protected function getSelectionButtons($class_name);
 
 }

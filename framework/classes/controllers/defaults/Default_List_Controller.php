@@ -1,14 +1,14 @@
 <?php
 namespace SAF\Framework;
 
-class Default_List_Controller implements List_Controller
+class Default_List_Controller extends List_Controller
 {
 
 	//----------------------------------------------------------------------------------- $class_name
 	private $class_name;
 
 	//----------------------------------------------------------------------------- getGeneralButtons
-	public function getGeneralButtons($class_name)
+	protected function getGeneralButtons($class_name)
 	{
 		return array(
 			new Button("Add", View::link($class_name, "new"), "add"),
@@ -16,13 +16,13 @@ class Default_List_Controller implements List_Controller
 	}
 
 	//----------------------------------------------------------------------------- getListProperties
-	public function getListProperties()
+	protected function getListProperties()
 	{
 		return Default_List_Controller_Configuration::current()->getClassProperties($this->class_name);
 	}
 
 	//--------------------------------------------------------------------------- getSelectionButtons
-	public function getSelectionButtons($class_name)
+	protected function getSelectionButtons($class_name)
 	{
 		return array(
 			new Button("Print", View::link($class_name, "print"), "print")

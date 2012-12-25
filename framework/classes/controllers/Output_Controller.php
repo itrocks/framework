@@ -1,10 +1,10 @@
 <?php
 namespace SAF\Framework;
 
-interface Output_Controller extends Controller
+abstract class Output_Controller implements Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
-	public function getGeneralButtons($class_name);
+	abstract protected function getGeneralButtons($class_name);
 
 }

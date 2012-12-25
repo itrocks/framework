@@ -222,7 +222,7 @@ class Html_Template
 	 * @param string $var_name
 	 * @return string
 	 */
-	private function parseVar($objects, $var_name)
+	protected function parseVar($objects, $var_name)
 	{
 		if ($var_name == ".") {
 			return reset($objects);
