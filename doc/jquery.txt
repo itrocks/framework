@@ -1,0 +1,13 @@
+
+jquery 1.8.3
+
+jquery-ui 1.9.2
+
+- UI Core : All
+- Interactions :
+	- Draggable
+	- Droppable
+- Widgets :
+	- Autocomplete
+		- Menu
+	- Datepicker
