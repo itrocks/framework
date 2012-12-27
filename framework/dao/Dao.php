@@ -152,12 +152,13 @@ abstract class Dao
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
 	 * @param object $what source object for filter, only set properties will be used for search
+	 * @param string $class_name must be set if $what is not a filter array
 	 * @return multitype:object a collection of read objects
 	 * @see Data_Link::search()
 	 */
-	public static function search($what)
+	public static function search($what, $class_name = null)
 	{
-		return self::current()->search($what);
+		return self::current()->search($what, $class_name);
 	}
 
 	//------------------------------------------------------------------------------------- searchOne
@@ -169,12 +170,13 @@ abstract class Dao
 	 * If several result exist, only one will be taked, the first on the list (may be random). 
 	 *
 	 * @param object $what source object for filter, only set properties will be used for search
+	 * @param string $class_name must be set if $what is not a filter array
 	 * @return object | null the found object, or null if no object was found
 	 * @see Data_Link::searchOne()
 	 */
-	public static function searchOne($what)
+	public static function searchOne($what, $class_name = null)
 	{
-		return self::current()->searchOne($what);
+		return self::current()->searchOne($what, $class_name);
 	}
 
 	//---------------------------------------------------------------------------------------- select

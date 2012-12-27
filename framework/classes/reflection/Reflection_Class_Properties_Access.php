@@ -41,25 +41,25 @@ abstract class Reflection_Class_Properties_Access
 	 * Accessibility should be set back with a call to done() after use.
 	 * If class properties are set to accessible several times, they will become non-accessible after the same number of done() calls.
 	 *
-	 * @param Reflection_Class $object_class
+	 * @param Reflection_Class $class
 	 * @return multitype:Reflection_Property
 	 * @see Reflection_Class::accessProperties()
 	 */
-	public static function access(Reflection_Class $object_class)
+	public static function access(Reflection_Class $class)
 	{
-		$class_name = $object_class->name;
+		$class_name = $class->name;
 		if (isset(self::$properties_map[$class_name])) {
 			$properties = self::$properties_map[$class_name];
 			self::$count[$class_name] ++;
 		}
 		else {
-			$parent_class = $object_class->getParentClass();
+			$parent_class = $class->getParentClass();
 			$parent_properties = $parent_class
 				? static::access($parent_class)
 				: array();
 			$properties = $parent_properties;
 			$private = array();
-			foreach ($object_class->getProperties() as $property) {
+			foreach ($class->getProperties() as $property) {
 				$is_accessible = $property->isPublic();
 				if (!$is_accessible) {
 					$property->setAccessible(true);
@@ -83,12 +83,12 @@ abstract class Reflection_Class_Properties_Access
 	 * This must be called after the properties used with access() are no longer needed as accessible.
 	 * If more than one access() has been called for the class, the release will be done only on the last done() access.
 	 *
-	 * @param Reflection_Class $object_class
+	 * @param Reflection_Class $class
 	 * @see Reflection_Class::accessPropertiesDone()
 	 */
-	public static function done(Reflection_Class $object_class)
+	public static function done(Reflection_Class $class)
 	{
-		$class_name = $object_class->name;
+		$class_name = $class->name;
 		$count = self::$count[$class_name];
 		if ($count > 0) {
 			self::$count[$class_name] --;
@@ -100,7 +100,7 @@ abstract class Reflection_Class_Properties_Access
 			unset(self::$private_map[$class_name]);
 			unset(self::$properties_map[$class_name]);
 			unset(self::$count[$class_name]);
-			$parent_class = $object_class->getParentClass();
+			$parent_class = $class->getParentClass();
 			if ($parent_class) {
 				static::done($parent_class);
 			}

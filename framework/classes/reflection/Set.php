@@ -112,6 +112,12 @@ class Set
 		return end($this->elements);
 	}
 
+	//---------------------------------------------------------------------------------------- length
+	public function length()
+	{
+		return count($this->elements); 
+	}
+
 	//---------------------------------------------------------------------------------------- object
 	public function object()
 	{

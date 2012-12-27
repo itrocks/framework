@@ -50,6 +50,9 @@ trait Sql_Columns_Builder
 					? $this->buildObjectColumns($path, $join, $first_property)
 					: $this->buildColumn($path, $first_property);
 			}
+		} elseif ($this->joins->getJoins()) {
+			// TODO why not read all properties of all tables in order to fill in result set ?
+			$sql_columns = "t0.*";
 		} else {
 			$sql_columns = "*";
 		}

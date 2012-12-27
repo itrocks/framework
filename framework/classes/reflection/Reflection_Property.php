@@ -92,9 +92,9 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment
-	public function getDocComment()
+	public function getDocComment($get_use = true)
 	{
-		if ($this->getUse()) {
+		if ($get_use && $this->getUse()) {
 			if (!is_string($this->doc_comment)) {
 				$name = $this->name;
 				$visibility = $this->isPublic()

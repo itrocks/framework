@@ -3,7 +3,7 @@ namespace SAF\Framework;
 use AopJoinpoint;
 use ReflectionClass;
 
-class Object_Builder
+class Object_Builder implements Plugin
 {
 	use Current_With_Default { current as private dCurrent; }
 

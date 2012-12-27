@@ -10,7 +10,16 @@ $("document").ready(function() {
 
 	// .object
 	$("input.combo").autocomplete({
-		source: ["CLI1: Client Un", "CLI2: Client Deux"],
+		autoFocus: true,
+		minLength: 0,
+		source: function(request, response) {
+			request["PHPSESSID"] = PHPSESSID;
+			$.getJSON(
+				uri_root + "/" + script_name + "/" + $(this.element).classVar("class") + "/json",
+				request,
+				function(data, status, xhr) { response(data); }
+			);
+		},
 		close: function(event) { $(event.target).keyup(); }
 	});
 

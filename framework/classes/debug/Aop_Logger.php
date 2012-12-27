@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-abstract class Aop_Logger
+abstract class Aop_Logger implements Plugin
 {
 
 	public static $active;

@@ -4,7 +4,7 @@ use AopJoinpoint;
 
 require_once "framework/classes/toolbox/Aop.php";
 
-abstract class Html_Session
+abstract class Html_Session implements Plugin
 {
 
 	//--------------------------------------------------------------------------------- postSessionId

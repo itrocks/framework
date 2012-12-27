@@ -14,9 +14,6 @@ error_reporting(E_ALL);
 require_once "framework/classes/Autoloader.php";
 Autoloader::register();
 
-if (!isset($_SERVER["SAF_PATH"])) $_SERVER["SAF_PATH"] = substr($_SERVER["SCRIPT_FILENAME"], 0, strrpos($_SERVER["SCRIPT_FILENAME"], "/"));
-if (!isset($_SERVER["SAF_ROOT"])) $_SERVER["SAF_ROOT"] = substr($_SERVER["SAF_PATH"], strlen($_SERVER["DOCUMENT_ROOT"]));
-
 // highest priority modules
 Mysql_Maintainer::register(); // TODO problem : if maintainer is after logger, maintainer's setReturnedValue() seems to be ignored !
 // debug priority modules

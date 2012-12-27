@@ -4,21 +4,19 @@ namespace SAF\Framework;
 class Default_List_Controller extends List_Controller
 {
 
-	//----------------------------------------------------------------------------------- $class_name
-	private $class_name;
-
 	//----------------------------------------------------------------------------- getGeneralButtons
 	protected function getGeneralButtons($class_name)
 	{
 		return array(
-			new Button("Add", View::link($class_name, "new"), "add"),
+			new Button("Add", View::link($class_name, "new"), "add")
 		);
 	}
 
 	//----------------------------------------------------------------------------- getListProperties
-	protected function getListProperties()
+	protected function getListProperties($class_name)
 	{
-		return Default_List_Controller_Configuration::current()->getClassProperties($this->class_name);
+		return Reflection_Class::getInstanceOf($class_name)->getAnnotation("representative")->value;
+		//return Default_List_Controller_Configuration::current()->getClassProperties($this->class_name);
 	}
 
 	//--------------------------------------------------------------------------- getSelectionButtons
@@ -41,11 +39,11 @@ class Default_List_Controller extends List_Controller
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $parameters->getObjects();
-		$this->class_name = Set::elementClassNameOf($class_name);
-		$list = Dao::select($this->class_name, $this->getListProperties());
-		$parameters = array_merge(array($this->class_name => $list), $parameters);
-		$parameters["general_buttons"]   = $this->getGeneralButtons($this->class_name);
-		$parameters["selection_buttons"] = $this->getSelectionButtons($this->class_name);
+		$element_class_name = Set::elementClassNameOf($class_name);
+		$list = Dao::select($element_class_name, $this->getListProperties($element_class_name));
+		$parameters = array_merge(array($element_class_name => $list), $parameters);
+		$parameters["general_buttons"]   = $this->getGeneralButtons($element_class_name);
+		$parameters["selection_buttons"] = $this->getSelectionButtons($element_class_name);
 		View::run($parameters, $form, $files, $class_name, "list");
 	}
 

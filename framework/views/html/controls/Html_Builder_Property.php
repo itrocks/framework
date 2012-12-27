@@ -91,12 +91,13 @@ class Html_Builder_Property
 	private function buildObject()
 	{
 		$id_input = new Html_Input($this->property->name, Dao::getObjectIdentifier($this->value));
-		$id_input->addClass("id");
 		$id_input->setAttribute("type", "hidden");
+		$id_input->addClass("id");
 		$input = new Html_Input(null, $this->value);
 		$input->setAttribute("autocomplete", "off");
 		$input->addClass("combo");
 		$input->addClass("autowidth");
+		$input->addClass("class:" . Names::classToSet($this->property->getType()));
 		return $id_input . $input;
 	}
 

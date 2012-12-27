@@ -1,13 +1,15 @@
 <?php
 namespace SAF\Framework\Tests;
+use SAF\Framework\Controller_Parameters;
+use SAF\Framework\Feature_Controller;
 use SAF\Framework\Reflection_Class;
 use SAF\Framework\Reflection_Method;
 
-class Tests_Controller
+class Tests_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------ test
-	public function run()
+	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$dir = dir("tests");
 		while ($entry = $dir->read()) {

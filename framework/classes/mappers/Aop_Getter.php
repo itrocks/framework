@@ -5,7 +5,7 @@ use AopJoinpoint;
 require_once "framework/classes/toolbox/Aop.php";
 require_once "framework/classes/reflection/Reflection_Property.php";
 
-abstract class Aop_Getter extends Aop
+abstract class Aop_Getter extends Aop implements Plugin
 {
 
 	//--------------------------------------------------------------------------------------- $ignore

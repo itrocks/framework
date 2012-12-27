@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-abstract class Html_Cleaner
+abstract class Html_Cleaner implements Plugin
 {
 
 	//----------------------------------------------------------------------------------------- clean

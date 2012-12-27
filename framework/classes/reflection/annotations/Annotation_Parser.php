@@ -23,7 +23,7 @@ abstract class Annotation_Parser
 			: $annotation_name
 		);
 		$multiple = is_subclass_of($annotation_class, "SAF\\Framework\\Multiple_Annotation");
-		$doc_comment = $reflection_object->getDocComment();
+		$doc_comment = $reflection_object->getDocComment(true);
 		$annotations = array();
 		$annotation = null;
 		$i = 0;

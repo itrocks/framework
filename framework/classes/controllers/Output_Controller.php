@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-abstract class Output_Controller implements Controller
+abstract class Output_Controller implements Default_Feature_Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons

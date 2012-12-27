@@ -4,8 +4,9 @@ use AopJoinpoint;
 use SAF\Framework\Aop;
 use SAF\Framework\Menu_Block;
 use SAF\Framework\Menu_Item;
+use SAF\Framework\Plugin;
 
-abstract class Menu_Tester
+abstract class Menu_Tester implements Plugin
 {
 
 	//---------------------------------------------------------------------------------- menuInitDemo

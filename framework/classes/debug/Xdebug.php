@@ -4,7 +4,7 @@ use AopJoinpoint;
 
 require_once "framework/classes/toolbox/Aop.php";
 
-abstract class Xdebug
+abstract class Xdebug implements Plugin
 {
 
 	//-------------------------------------------------------------------------------------- register

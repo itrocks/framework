@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-class Aop_Dynamics
+class Aop_Dynamics implements Plugin
 {
 	use Current { current as private pCurrent; }
 

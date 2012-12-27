@@ -98,12 +98,12 @@ class Html_Template
 	{
 		static $css_path = array();
 		$path = isset($css_path[$css]) ? $css_path[$css] : null;
-		if (!$path) {
+		if (!isset($path)) {
 			$path = str_replace("\\", "/", stream_resolve_include_path($css . "/style.css"));
 			if ($i = strrpos($path, "/")) {
 				$path = substr($path, 0, $i);
 			}
-			$path = $_SERVER["SAF_ROOT"] . substr($path, strlen($_SERVER["SAF_PATH"]));
+			$path = Paths::$uri_root . substr($path, strlen(Paths::$file_root));
 			$css_path[$css] = $path;
 		}
 		return $path;
@@ -145,7 +145,7 @@ class Html_Template
 	/**
 	 * Parse the template replacing templating codes by object's properties and functions results
 	 *
-	 * @return string
+	 * @return string html content of the parsed page
 	 */
 	public function parse()
 	{
@@ -157,6 +157,23 @@ class Html_Template
 			$content = $this->replaceUris($content);
 		}
 		return $content;
+	}
+
+	//------------------------------------------------------------------------------------ parseConst
+	/**
+	 * Parse a constant and returns its return value
+	 *
+	 * @param multitype:object $objects
+	 * @param mixed $object
+	 * @param string $const_name
+	 * @return mixed the value of the constant
+	 */
+	private function parseConst($objects, $object, $const_name)
+	{
+		return (is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
+			isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
+			isset($GLOBALS["_" . $const_name]) ? $GLOBALS["_" . $const_name] : null
+		));
 	}
 
 	//-------------------------------------------------------------------------------- parseContainer
@@ -190,6 +207,7 @@ class Html_Template
 	 *
 	 * @param multitype:object $objects
 	 * @param string $func_name
+	 * @return mixed
 	 */
 	private function parseFunc($objects, $func_name)
 	{
@@ -205,7 +223,7 @@ class Html_Template
 	 * Parse included view controller call result (must be an html view)
 	 *
 	 * @param string $include_uri
-	 * @return string
+	 * @return string included template, parsed
 	 */
 	private function parseInclude($include_uri)
 	{
@@ -219,8 +237,8 @@ class Html_Template
 	 * Parse a variable / function / include and returns its return value
 	 *
 	 * @param multitype:object $objects
-	 * @param string $var_name
-	 * @return string
+	 * @param string $var_name can be an unique var or path.of.vars
+	 * @return string var value after reading value / executing specs
 	 */
 	protected function parseVar($objects, $var_name)
 	{
@@ -228,11 +246,28 @@ class Html_Template
 			return reset($objects);
 		}
 		else {
+			$class_name = null;
 			$object = reset($objects);
 			foreach (explode(".", $var_name) as $property_name) {
 				if (!strlen($property_name)) {
 					array_shift($objects);
 					$object = reset($objects);
+				}
+				elseif (isset($class_name)) {
+					$object = method_exists($class_name, $property_name)
+						? $class_name::$property_name()
+						: $class_name::$$property_name;
+					$class_name = null;
+				}
+				elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
+					if (
+						(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
+					) {
+						$class_name = Namespaces::fullClassName($property_name);
+					}
+					else {
+						$object = $this->parseConst($objects, $object, $property_name);
+					}
 				}
 				elseif ($property_name[0] === "@") {
 					$object = $this->parseFunc($objects, substr($property_name, 1));
@@ -256,7 +291,8 @@ class Html_Template
 					$object = $object->$property_name;
 				}
 				else {
-					$object = isset($this->parameters[$property_name]) ? $this->parameters[$property_name] : "";
+					$object = isset($this->parameters[$property_name])
+						? $this->parameters[$property_name] : "";
 				}
 			}
 		}
@@ -285,7 +321,7 @@ class Html_Template
 	 *
 	 * @param string $content
 	 * @param object $object
-	 * @return string
+	 * @return string updated content
 	 */
 	private function parseVars($content, $objects)
 	{
@@ -462,7 +498,8 @@ class Html_Template
 	private function parseThis($content, $i)
 	{
 		$c = $content[$i];
-		return (($c >= "a") && ($c <= "z")) || ($c == "@") || ($c == "/") || ($c == ".") || ($c == "?");		
+		return (($c >= "a") && ($c <= "z")) || (($c >= "A") && ($c <= "Z"))
+			|| ($c == "@") || ($c == "/") || ($c == ".") || ($c == "?");		
 	}
 
 	//---------------------------------------------------------------------------------- removeSample
@@ -483,6 +520,7 @@ class Html_Template
 	 * Replace links with correct absolute paths into $content
 	 *
 	 * @param string $content
+	 * @return string updated content
 	 */
 	private function replaceLinks($content)
 	{
@@ -493,8 +531,7 @@ class Html_Template
 				$i += strlen($link);
 				$j = strpos($content, '"', $i);
 				if (substr($content, $i, 1) === "/") {
-					$full_path = substr($_SERVER["PHP_SELF"], 0, strpos($_SERVER["PHP_SELF"], ".php"))
-						. substr($content, $i, $j - $i);
+					$full_path = Paths::$uri_root . "/" . Paths::$script_name . substr($content, $i, $j - $i);
 					$content = substr($content, 0, $i) . $full_path . substr($content, $j);
 				}
 			}
@@ -522,8 +559,8 @@ class Html_Template
 				if (substr($file_name, -4) == ".css") {
 					$file_path = static::getCssPath($this->css) . "/" . $file_name;
 				} else {
-					$file_path = $_SERVER["SAF_ROOT"] . substr(
-						stream_resolve_include_path($file_name), strlen($_SERVER["SAF_PATH"])
+					$file_path = Paths::$uri_root . substr(
+						stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 					);
 				}
 				$content = substr($content, 0, $i) . $file_path . substr($content, $j);
@@ -542,6 +579,17 @@ class Html_Template
 	}
 
 	//--------------------------------------------------------------------------------- setParameters
+	/**
+	 * Set template parameters
+	 * <ul>
+	 * <li>is_included (boolean) : true if template is included into a page
+	 *   main html head and foot will not be loaded
+	 * <li>as_widget (boolean) : true if template is to load as a widget
+	 *   main html head and foot will not be loaded
+	 * </ul>
+	 *
+	 * @param multitype:mixed $parameters key is parameter name
+	 */
 	public function setParameters($parameters)
 	{
 		if (isset($parameters["is_included"]) && $parameters["is_included"]) {

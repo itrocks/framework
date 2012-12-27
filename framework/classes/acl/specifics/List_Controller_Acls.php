@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-class List_Controller_Acls
+class List_Controller_Acls implements Plugin
 {
 
 	//------------------------------------------------------------------------------- addListProperty

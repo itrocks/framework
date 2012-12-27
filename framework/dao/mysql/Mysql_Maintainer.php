@@ -3,7 +3,7 @@ namespace SAF\Framework;
 use AopJoinpoint;
 use mysqli;
 
-class Mysql_Maintainer
+class Mysql_Maintainer implements Plugin
 {
 
 	//----------------------------------------------------------------------------------- createTable

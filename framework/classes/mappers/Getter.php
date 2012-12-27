@@ -35,13 +35,13 @@ abstract class Getter
 	/**
 	 * Generic getter for an object
 	 *
-	 * @param mixed  $object       actual value of the object (will be returned if already an object)
-	 * @param string $object_class the object class
+	 * @param mixed  $object     actual value of the object (will be returned if already an object)
+	 * @param string $class_name the object class name
 	 */
-	public static function getObject($object, $object_class)
+	public static function getObject($object, $class_name)
 	{
 		if (!is_object($object)) {
-			$object = Dao::read($object, $object_class);
+			$object = Dao::read($object, $class_name);
 		}
 		return $object;
 	}

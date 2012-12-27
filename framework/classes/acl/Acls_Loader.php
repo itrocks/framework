@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-abstract class Acls_Loader
+abstract class Acls_Loader implements Plugin
 {
 
 	//--------------------------------------------------------------------------------- loadGroupAcls

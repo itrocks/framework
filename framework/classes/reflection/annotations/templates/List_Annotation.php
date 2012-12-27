@@ -47,7 +47,7 @@ abstract class List_Annotation extends Annotation
 			}
 			$i ++;
 		}
-		if ($i == $length) {
+		if (($i == $length) && ($values || ($i > $start))) {
 			$values[] = substr($value, $start, $i - $start);
 		}
 		parent::__construct($values);

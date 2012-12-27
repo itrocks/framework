@@ -77,10 +77,11 @@ abstract class Data_Link
 	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
-	 * @param object $what source object for filter, only set properties will be used for search
+	 * @param mixed $what source object for filter, or filter array (need class_name) only set properties will be used for search
+	 * @param string $class_name must be set if $what is not a filter array
 	 * @return multitype:object a collection of read objects
 	 */
-	abstract public function search($what);
+	abstract public function search($what, $class_name = null);
 
 	//------------------------------------------------------------------------------------- searchOne
 	/**
@@ -91,11 +92,12 @@ abstract class Data_Link
 	 * If several result exist, only one will be taked, the first on the list (may be random). 
 	 *
 	 * @param object $what source object for filter, only set properties will be used for search
+	 * @param string $class_name must be set if $what is not a filter array
 	 * @return object | null the found object, or null if no object was found
 	 */
-	public function searchOne($what)
+	public function searchOne($what, $class_name = null)
 	{
-		$result = $this->search($what);
+		$result = $this->search($what, $class_name);
 		return $result ? $result[0] : null;
 	}
 
@@ -106,7 +108,7 @@ abstract class Data_Link
 	 * @param string $class class for the read object
 	 * @param array  $columns the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
 	 * @param mixed $filter_object source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
-	 * @return multitype:mixed a list of read records. Each record values (may be objects) are stored in the same order than columns.
+	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
 	abstract public function select($class, $columns, $filter_object = null);
 
@@ -119,7 +121,7 @@ abstract class Data_Link
 	 */
 	public function storeNameOf($class_name)
 	{
-		return strtolower(Reflection_Class::getInstanceOf($class_name)->getAnnotation("set"));
+		return strtolower(Names::classToSet($class_name));
 	}
 
 	//----------------------------------------------------------------------------------------- write

@@ -7,7 +7,7 @@ use ReflectionException;
 class Reflection_Test extends Unit_Test
 {
 
-	//----------------------------------------------------------------------- testaccessProperties
+	//----------------------------------------------------------------------- testAccessProperties
 	public function testAccessProperties()
 	{
 		// does access properties return properties list ?

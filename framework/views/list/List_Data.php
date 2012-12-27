@@ -13,11 +13,16 @@ interface List_Data
 	public function add(List_Row $row);
 
 	//----------------------------------------------------------------------------------------- count
+	/**
+	 * Gets the properties count for each element
+	 *
+	 * @return integer
+	 */
 	public function count();
 
 	//-------------------------------------------------------------------------------------- getClass
 	/**
-	 * Get element's class name
+	 * Gets the element's class name
 	 *
 	 * @return string
 	 */
@@ -34,7 +39,7 @@ interface List_Data
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
-	 * Return properties path list
+	 * Returns the properties path list
 	 *
 	 * @return multitype:string
 	 */
@@ -58,5 +63,13 @@ interface List_Data
 	 * @return string
 	 */
 	public function getValue($row_index, $property);
+
+	//---------------------------------------------------------------------------------------- length
+	/**
+	 * Gets the number of elements into the list
+	 *
+	 * @return integer
+	 */
+	public function length();
 
 }

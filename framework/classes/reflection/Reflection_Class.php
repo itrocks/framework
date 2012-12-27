@@ -23,6 +23,14 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	private static $cache = array();
 
+	//---------------------------------------------------------------------------------- $doc_comment
+	/**
+	 * Cached value for the doc comment (set by getDocComment() only when $use is true)
+	 *
+	 * @var string
+	 */
+	private $doc_comment;
+
 	//------------------------------------------------------------------------------ accessProperties
 	/**
 	 * Change all properties accessibility to true for a given class, and return all class and parents properties list
@@ -44,12 +52,10 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * This must be called after the properties used with access() are no longer needed as accessible.
 	 * If more than one access() has been called for the class, the release will be done only on the last done() access.
-	 *
-	 * @param Reflection_Class $object_class
 	 */
 	public function accessPropertiesDone()
 	{
-		return Reflection_Class_Properties_Access::done($this);
+		Reflection_Class_Properties_Access::done($this);
 	}
 
 	//------------------------------------------------------------------------------ getAllProperties
@@ -87,6 +93,29 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	{
 		$constructor = parent::getConstructor();
 		return $constructor ? Reflection_Method::getInstanceOf($constructor) : $constructor;
+	}
+
+	//--------------------------------------------------------------------------------- getDocComment
+	/**
+	 * Return doc comment of the class
+	 *
+	 * @param boolean $get_parents if true, get doc comment of parent classes too
+	 */
+	public function getDocComment($get_parents = false)
+	{
+		if (!$get_parents) {
+			return parent::getDocComment();
+		}
+		if (!is_string($this->doc_comment)) {
+			$this->doc_comment = parent::getDocComment();
+			if ($parent_class = $this->getParentClass()) {
+				$this->doc_comment .= $parent_class->getDocComment(true);
+			}
+			foreach ($this->getTraits() as $trait) {
+				$this->doc_comment .= $trait->getDocComment();
+			}
+		}
+		return $this->doc_comment;
 	}
 
 	//--------------------------------------------------------------------------------- getInstanceOf

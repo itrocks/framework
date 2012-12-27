@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-abstract class Html_Translator
+abstract class Html_Translator implements Plugin
 {
 
 	//-------------------------------------------------------------------------------------- register

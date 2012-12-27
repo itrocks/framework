@@ -220,15 +220,17 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//---------------------------------------------------------------------------------------- search
-	public function search($what)
+	public function search($what, $class_name = null)
 	{
-		$class = get_class($what);
+		if (!isset($class_name)) {
+			$class_name = get_class($what);
+		}
 		$search_result = array();
-		$builder = new Sql_Select_Builder(get_class($what), null, $what, $this);
+		$builder = new Sql_Select_Builder($class_name, null, $what, $this);
 		$query = $builder->buildQuery();
 		$this->setContext($builder->getClassNames());
 		$result_set = $this->executeQuery($query);
-		while ($object = $result_set->fetch_object($class)) {
+		while ($object = $result_set->fetch_object($class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$search_result[] = $object;
 		}

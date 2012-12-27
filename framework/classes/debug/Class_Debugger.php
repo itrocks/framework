@@ -3,7 +3,7 @@ namespace SAF\Framework;
 use AopJoinpoint;
 use ErrorException;
 
-class Class_Debugger
+class Class_Debugger implements Plugin
 {
 
 	private static $depth = 1;

@@ -43,13 +43,7 @@ abstract class Names
 	 */
 	public static function classToSet($class_name)
 	{
-		$class_name = Namespaces::shortClassName($class_name);
-		if (substr($class_name, -1) === "y")
-			return substr($class_name, 0, -1) . "ies";
-		elseif (substr($class_name, -2) === "an")
-			return substr($class_name, 0, -2) . "en";
-		else
-			return $class_name . "s";
+		return Reflection_Class::getInstanceOf($class_name)->getAnnotation("set")->value;
 	}
 
 	//--------------------------------------------------------------------------------- methodToClass

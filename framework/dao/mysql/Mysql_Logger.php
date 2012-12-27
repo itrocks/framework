@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-class Mysql_Logger
+class Mysql_Logger implements Plugin
 {
 
 	//----------------------------------------------------------------------------------- $errors_log

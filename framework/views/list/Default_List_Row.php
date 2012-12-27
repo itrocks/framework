@@ -39,13 +39,13 @@ class Default_List_Row implements List_Row
 	//---------------------------------------------------------------------------------- getClassName
 	public function getClassName()
 	{
-		return $this->object_class;
+		return $this->class_name;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
 	public function getObject()
 	{
-		return Getter::getObject($this->object, $this->object_class);
+		return Getter::getObject($this->object, $this->class_name);
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
