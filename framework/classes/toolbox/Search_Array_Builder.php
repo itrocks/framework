@@ -11,6 +11,12 @@ class Search_Array_Builder
 	public $or = ",";
 
 	//----------------------------------------------------------------------------------------- build
+	/**
+	 * @param string $property_name
+	 * @param string $search_phrase
+	 * @param string $append
+	 * @return array
+	 */
 	public function build($property_name, $search_phrase, $append = "")
 	{
 		$search_phrase = trim($search_phrase);
@@ -48,8 +54,17 @@ class Search_Array_Builder
 	}
 
 	//--------------------------------------------------------------------------------- buildMultiple
-	public function buildMultiple($property_names, $search_phrase, $append = "")
+	/**
+	 * @param multiple:string | Reflection_Class $property_names_or_class
+	 * @param string $search_phrase
+	 * @param string $append
+	 * @return Ambigous <multitype:, string, multitype:string , mixed, multitype:unknown multitype: , unknown>
+	 */
+	public function buildMultiple($property_names_or_class, $search_phrase, $append = "")
 	{
+		$property_names = ($property_names_or_class instanceof Reflection_Class)
+			? $this->classRepresentativeProperties($property_names_or_class)
+			: $property_names_or_class;
 		$result = array();
 		// search phrase contains OR
 		if (strpos($search_phrase, $this->or) !== false) {
@@ -70,6 +85,28 @@ class Search_Array_Builder
 			}
 		}
 		return $result;
+	}
+
+	//----------------------------------------------------------------- classRepresentativeProperties
+	/**
+	 * @param Reflection_Class $class
+	 * @return multitype:string
+	 */
+	private function classRepresentativeProperties($class)
+	{
+		$property_names = $class->getAnnotation("representative")->value;
+		foreach ($property_names as $key => $property_name) {
+			$property = $class->getProperty($property_name);
+			$type = $property->getType();
+			if (!Type::isBasic($type)) {
+				unset($property_names[$key]);
+				$sub_class = Reflection_Class::getInstanceOf(Namespaces::fullClassName($type));
+				foreach ($this->classRepresentativeProperties($sub_class) as $sub_property_name) {
+					$property_names[] = $property_name . "." . $sub_property_name;
+				}
+			}
+		}
+		return $property_names;
 	}
 
 }

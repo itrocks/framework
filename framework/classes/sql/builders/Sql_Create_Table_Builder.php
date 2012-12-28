@@ -28,7 +28,7 @@ class Sql_Create_Table_Builder
 		}
 		return "CREATE TABLE `" . $this->table->getName() . "` ("
 			. join(", ", $columns)
-			. (isset($indexes) ? ", " : "") . join(", ", $indexes)
+			. ($indexes ? ", " : "") . join(", ", $indexes)
 			. ")";
 	}
 

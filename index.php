@@ -8,6 +8,7 @@ ini_set("xdebug.collect_params", 4);
 ini_set("xdebug.var_display_max_children", 1000000);
 ini_set("xdebug.var_display_max_data", 1000000);
 ini_set("xdebug.var_display_max_depth", 1000000);
+ini_set("default_charset", "UTF-8");
 
 // init
 error_reporting(E_ALL);
@@ -41,7 +42,7 @@ Object_Builder::register();
 // activate errors handlers
 Error_Handlers::activate();
 
-// TODO 'better use something like a Modules::register() call 
+// TODO 'better use something like a Modules::register() call
 if (!isset($MODULES)) $MODULES = array();
 foreach (array_reverse($MODULES) as $MODULE) $MODULE();
 

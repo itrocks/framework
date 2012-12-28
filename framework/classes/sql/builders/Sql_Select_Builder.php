@@ -41,7 +41,7 @@ class Sql_Select_Builder
 		$where   = $this->buildWhere();
 		$columns = $this->buildColumns();
 		$tables  = $this->buildTables();
-		return "SELECT " . $columns . " FROM " . $tables . $this->buildWhere();
+		return "SELECT " . $columns . " FROM " . $tables . $where;
 	}
 
 }

@@ -158,7 +158,7 @@ trait Sql_Where_Builder
 
 	//---------------------------------------------------------------------- constructSqlWhereBuilder
 	/**
-	 * Construct the SQL WHERE section of a query 
+	 * Construct the SQL WHERE section of a query
 	 *
 	 * Supported columns naming forms are :
 	 * column_name : column_name must correspond to a property of class

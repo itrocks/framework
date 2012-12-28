@@ -12,6 +12,9 @@ $("document").ready(function() {
 	$("input.combo").autocomplete({
 		autoFocus: true,
 		minLength: 0,
+		close: function(event) {
+			$(event.target).keyup();
+		},
 		source: function(request, response) {
 			request["PHPSESSID"] = PHPSESSID;
 			$.getJSON(
@@ -20,7 +23,9 @@ $("document").ready(function() {
 				function(data, status, xhr) { response(data); }
 			);
 		},
-		close: function(event) { $(event.target).keyup(); }
+		select: function(event, ui) {
+			this.previousSibling.value = ui.item.id;
+		}
 	});
 
 	// .autowidth

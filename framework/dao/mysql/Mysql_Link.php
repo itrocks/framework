@@ -42,6 +42,7 @@ class Mysql_Link extends Sql_Link
 			$parameters["host"], $parameters["user"],
 			$parameters["password"], $parameters["database"]
 		);
+		$this->query("SET NAMES UTF8");
 	}
 
 	//---------------------------------------------------------------------------------------- delete
@@ -102,7 +103,7 @@ class Mysql_Link extends Sql_Link
 	 * Sql_Link inherited classes must implement SQL query calls only into this method.
 	 *
 	 * @param string $query
-	 * @return mysqli_result the sql query result set 
+	 * @return mysqli_result the sql query result set
 	 */
 	protected function executeQuery($query)
 	{
