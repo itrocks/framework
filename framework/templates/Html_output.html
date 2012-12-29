@@ -11,7 +11,7 @@
 <body>
 
 <!--BEGIN-->
-<div class="window output trashable form" id="{@class}/{@feature}/1">
+<div class="window trashable {@feature.lower}" id="{@class}/{@feature}/1">
 	<h2>{@class.ucfirst} {display}</h2>
 	<div class="general button_bar">
 		<!--general_buttons-->
@@ -22,20 +22,20 @@
 	</div>
 	<div class="fieldset">
 		<!--@properties-->
-		<div class="field">
+		<div class="field {getType.first}">
 			<span class="label trashable">[{display}]</span>
 			<span class="value">{value}</span>
 		</div>
 		<!--sample-->
-		<div class="field">
+		<div class="field string">
 			<span class="label trashable">first name</span>
 			<span class="value">Robert</span>
 		</div>
-		<div class="field">
+		<div class="field string">
 			<span class="label trashable">last name</span>
 			<span class="value">Cheramy</span>
 		</div>
-		<div class="field">
+		<div class="field integer">
 			<span class="label trashable">age</span>
 			<span class="value">35</span>
 		</div>

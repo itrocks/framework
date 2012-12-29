@@ -30,7 +30,7 @@ class List_Controller_Acls implements Plugin
 	 * @param AopJoinpoint $joinpoint
 	 * @return 
 	 */
-	public static function onListControllerConfigurationGetListProperties(AopJoinpoint $joinpoint)
+	public static function onListControllerGetListProperties(AopJoinpoint $joinpoint)
 	{
 		$result = self::getListProperties($joinpoint->getArguments()[0]);
 		if (isset($result)) {
@@ -45,8 +45,8 @@ class List_Controller_Acls implements Plugin
 	public static function register()
 	{
 		Aop::add("around",
-			__NAMESPACE__ . "\\Default_List_Controller_Configuration->getListProperties()",
-			array(__CLASS__, "onListControllerConfigurationGetListProperties")
+			__NAMESPACE__ . "\\Default_List_Controller->getListProperties()",
+			array(__CLASS__, "onListControllerGetListProperties")
 		);
 	}
 

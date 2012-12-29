@@ -40,7 +40,12 @@ class Html_Builder_Property
 			case "string":  return $this->buildString();
 		}
 		if (Type::isMultiple($type)) {
-			return "...";
+			if ($this->property->getAnnotation("contained")->value) {
+				return $this->buildCollection();
+			}
+			else {
+				return $this->buildMap();
+			}
 		}
 		$type = Namespaces::fullClassName($type);
 		if (is_subclass_of($type, "DateTime")) {
@@ -50,6 +55,12 @@ class Html_Builder_Property
 			return $this->buildObject();
 		}
 		return $this->value;
+	}
+
+	//------------------------------------------------------------------------------- buildCollection
+	private function buildCollection()
+	{
+		return "collection et on peut mettre un paquet de baratin regardes ça dépassera pas";
 	}
 
 	//--------------------------------------------------------------------------------- buildDateTime
@@ -87,10 +98,18 @@ class Html_Builder_Property
 		return $input;
 	}
 
+	//-------------------------------------------------------------------------------------- buildMap
+	private function buildMap()
+	{
+		return "map";
+	}
+
 	//----------------------------------------------------------------------------------- buildObject
 	private function buildObject()
 	{
-		$id_input = new Html_Input($this->property->name, Dao::getObjectIdentifier($this->value));
+		$id_input = new Html_Input(
+			"id_" . $this->property->name, Dao::getObjectIdentifier($this->value)
+		);
 		$id_input->setAttribute("type", "hidden");
 		$id_input->addClass("id");
 		$input = new Html_Input(null, $this->value);

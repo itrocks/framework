@@ -96,6 +96,16 @@ class Search_Array_Builder
 	{
 		$property_names = $class->getAnnotation("representative")->value;
 		foreach ($property_names as $key => $property_name) {
+			$property_class = $class;
+			$i = strpos($property_name, ".");
+			while ($i !== false) {
+				$property = $property_class->getProperty(substr($property_name, 0, $i));
+				$property_class = Reflection_Class::getInstanceOf(
+					Namespaces::fullClassName($property->getType())
+				);
+				$property_name = substr($property_name, $i + 1);
+				$i = strpos($property_name, ".");
+			}
 			$property = $class->getProperty($property_name);
 			$type = $property->getType();
 			if (!Type::isBasic($type)) {

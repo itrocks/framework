@@ -4,14 +4,14 @@ namespace SAF\Framework;
 abstract class Html_Template_Funcs
 {
 
-	//----------------------------------------------------------------------------------------- count
+	//-------------------------------------------------------------------------------------- getCount
 	/**
 	 * Returns array count
 	 *
 	 * @param Html_Template $template
 	 * @param mixed $object
 	 */
-	public static function count(Html_Template $template, $object)
+	public static function getCount(Html_Template $template, $object)
 	{
 		return count($object);
 	}

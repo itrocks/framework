@@ -11,9 +11,6 @@ class Default_List_Remove_Controller implements Class_Controller
 		$properties = $parameters->getObjects();
 		foreach ($properties as $key => $property_name) {
 			if (is_numeric($key)) {
-				Default_List_Controller_Configuration::current()->removeClassProperty(
-					$full_class_name, $property_name
-				);
 			}
 		}
 		(new Default_List_Controller())->run(new Controller_Parameters(), array(), array(), $class_name);

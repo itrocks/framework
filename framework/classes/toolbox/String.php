@@ -28,6 +28,38 @@ class String
 		return $this->value;
 	}
 
+	//----------------------------------------------------------------------------------------- first
+	/**
+	 * First element of a separated string
+	 *
+	 * @param array | string $object
+	 */
+	public function first()
+	{
+		foreach (array(":", ".", "-", ",") as $char) {
+			if (strpos($this->value, $char) !== false) {
+				return substr($this->value, 0, strpos($this->value, $char));
+			}
+		}
+		return $this->value;
+	}
+
+	//------------------------------------------------------------------------------------------ last
+	/**
+	 * Last element of a separated string
+	 *
+	 * @param array | string $object
+	 */
+	public function last()
+	{
+		foreach (array(":", ".", "-", ",") as $char) {
+			if (strpos($this->value, $char) !== false) {
+				return substr($this->value, strpos($this->value, $char) + 1);
+			}
+		}
+		return $this->value;
+	}
+
 	//----------------------------------------------------------------------------------------- lower
 	/**
 	 * @return string

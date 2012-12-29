@@ -16,7 +16,6 @@ class Default_List_Controller extends List_Controller
 	protected function getListProperties($class_name)
 	{
 		return Reflection_Class::getInstanceOf($class_name)->getAnnotation("representative")->value;
-		//return Default_List_Controller_Configuration::current()->getClassProperties($this->class_name);
 	}
 
 	//--------------------------------------------------------------------------- getSelectionButtons

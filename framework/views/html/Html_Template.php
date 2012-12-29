@@ -168,7 +168,7 @@ class Html_Template
 	 * @param string $const_name
 	 * @return mixed the value of the constant
 	 */
-	private function parseConst($objects, $object, $const_name)
+	protected function parseConst($objects, $object, $const_name)
 	{
 		return (is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
 			isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
@@ -183,7 +183,7 @@ class Html_Template
 	 * @param string $content
 	 * @return string updated content
 	 */
-	private function parseContainer($content)
+	protected function parseContainer($content)
 	{
 		$i = strpos($content, "<!--BEGIN-->");
 		if ($i !== false) {
@@ -209,7 +209,7 @@ class Html_Template
 	 * @param string $func_name
 	 * @return mixed
 	 */
-	private function parseFunc($objects, $func_name)
+	protected function parseFunc($objects, $func_name)
 	{
 		return $this->callFunc(
 			"SAF\\Framework\\Html_Template_Funcs",
@@ -225,7 +225,7 @@ class Html_Template
 	 * @param string $include_uri
 	 * @return string included template, parsed
 	 */
-	private function parseInclude($include_uri)
+	protected function parseInclude($include_uri)
 	{
 		ob_start();
 		Main_Controller::getInstance()->runController($include_uri, array("is_included" => true));
@@ -238,9 +238,10 @@ class Html_Template
 	 *
 	 * @param multitype:object $objects
 	 * @param string $var_name can be an unique var or path.of.vars
-	 * @return string var value after reading value / executing specs
+	 * @param boolean $as_string if true, returned value will always be a string
+	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	protected function parseVar($objects, $var_name)
+	protected function parseVar($objects, $var_name, $as_string = true)
 	{
 		if ($var_name == ".") {
 			return reset($objects);
@@ -296,7 +297,7 @@ class Html_Template
 				}
 			}
 		}
-		if (is_object($object)) {
+		if ($as_string && is_object($object)) {
 			return method_exists($object, "__toString") ? strval($object) : "";
 		}
 		else {
@@ -475,7 +476,7 @@ class Html_Template
 	 * @param string $content
 	 * @return string the separator content
 	 */
-	private function parseSeparator(&$content)
+	protected function parseSeparator(&$content)
 	{
 		if (($k = strpos($content, "<!--separator-->")) !== false) {
 			$separator = substr($content, $k + 16);
@@ -522,7 +523,7 @@ class Html_Template
 	 * @param string $content
 	 * @return string updated content
 	 */
-	private function replaceLinks($content)
+	protected function replaceLinks($content)
 	{
 		$links = array('action="', 'href="');
 		foreach ($links as $link) {
@@ -546,7 +547,7 @@ class Html_Template
 	 * @param string $content
 	 * @return string updated content
 	 */
-	private function replaceUris($content)
+	protected function replaceUris($content)
 	{
 		$links = array('@import "', 'src="');
 		foreach ($links as $link) {
