@@ -27,8 +27,7 @@ class Default_Write_Controller implements Class_Controller
 		}
 		$changed = false;
 		foreach ($form as $name => $value) {
-			// TODO remove "..." when forms will not include those scary values anymore
-			if (($object->$name != $value) && ($value != "...")) {
+			if ($object->$name != $value) {
 				$object->$name = $value;
 				$changed = true;
 			}

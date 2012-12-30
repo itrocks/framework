@@ -4,27 +4,6 @@ namespace SAF\Framework;
 class User_Authenticate_Controller implements Feature_Controller
 {
 
-	//------------------------------------------------------------------------------------------- run
-	public function run(Controller_Parameters $parameters, $form, $files)
-	{
-		$current = User::current();
-		if ($current) {
-			$this->disconnect(User::current());
-		}
-		$user = $this->login($form["login"], $form["password"]);
-		if (isset($user)) {
-			$this->authenticate($user);
-			(new Default_Controller())->run(
-				$parameters, $form, $files, get_class($user), "authenticate"
-			);
-		}
-		else {
-			(new Default_Controller())->run(
-				$parameters, $form, $files, get_class($user), "authenticateError"
-			);
-		}
-	}
-
 	//---------------------------------------------------------------------------------- authenticate
 	/**
 	 * Sets user as current for script and session
@@ -75,6 +54,27 @@ class User_Authenticate_Controller implements Feature_Controller
 			}
 		}
 		return null; 
+	}
+
+	//------------------------------------------------------------------------------------------- run
+	public function run(Controller_Parameters $parameters, $form, $files)
+	{
+		$current = User::current();
+		if ($current) {
+			$this->disconnect(User::current());
+		}
+		$user = $this->login($form["login"], $form["password"]);
+		if (isset($user)) {
+			$this->authenticate($user);
+			(new Default_Controller())->run(
+				$parameters, $form, $files, get_class($user), "authenticate"
+			);
+		}
+		else {
+			(new Default_Controller())->run(
+				$parameters, $form, $files, get_class($user), "authenticateError"
+			);
+		}
 	}
 
 }
