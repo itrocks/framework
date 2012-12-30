@@ -27,13 +27,14 @@ abstract class Html_Translator implements Plugin
 	public static function translatePage(AopJoinpoint $joinpoint)
 	{
 		$content = $joinpoint->getReturnedValue();
+		$context = get_class($joinpoint->getObject()->getObject());
 		$i = 0;
 		while (($i = strpos($content, "[", $i)) !== false) {
 			$i ++;
 			$j = strpos($content, "]", $i);
 			if ($j > $i) {
 				$text = substr($content, $i, $j - $i);
-				$translation = Loc::tr($text);
+				$translation = Loc::tr($text, $context);
 				$content = substr($content, 0, $i - 1) . $translation . substr($content, $j + 1);
 			}
 		}

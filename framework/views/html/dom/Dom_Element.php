@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Dom_Element
+abstract class Dom_Element
 {
 
 	//----------------------------------------------------------------------------------- $attributes
@@ -23,6 +23,12 @@ class Dom_Element
 	 * @var string
 	 */
 	private $name;
+
+	//--------------------------------------------------------------------------------------- $styles
+	/**
+	 * @var multitype:string
+	 */
+	private $styles = array();
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -97,9 +103,18 @@ class Dom_Element
 		$this->content = $content;
 	}
 
+	//-------------------------------------------------------------------------------------- setStyle
+	public function setStyle($key, $value)
+	{
+		$this->styles[$key] = new Dom_Style($key, $value);
+	}
+
 	//------------------------------------------------------------------------------------ __toString
 	public function __toString()
 	{
+		if ($this->styles) {
+			$this->setAttribute("style", join("; ", $this->styles));
+		}
 		return "<" . $this->name . ($this->attributes ? (" " . join(" ", $this->attributes)) : "") . ">"
 			. (isset($this->content) ? ($this->content . "</" . $this->name . ">") : "");
 	}

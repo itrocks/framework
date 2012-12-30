@@ -159,6 +159,18 @@ class Html_Template
 		return $content;
 	}
 
+	//------------------------------------------------------------------------------- parseCollection
+	/**
+	 * Parse a collection of objects
+	 *
+	 * @param Reflection_Property $property
+	 * @param multitype:object $value
+	 */
+	protected function parseCollection(Reflection_Property $property, $collection)
+	{
+		return (new Html_Builder_Collection($property, $collection))->build();
+	}
+
 	//------------------------------------------------------------------------------------ parseConst
 	/**
 	 * Parse a constant and returns its return value
@@ -341,8 +353,8 @@ class Html_Template
 					$auto_remove = false;
 				}
 				$value = $this->parseVar($objects, $var_name);
-				if (is_array($value)) {
-					$value = "...";
+				if (is_array($value) && (reset($objects) instanceof Reflection_Property)) {
+					$value = $this->parseCollection(reset($objects), $value);
 				}
 				$i --;
 				if ($auto_remove && !strlen($value)) {

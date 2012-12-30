@@ -111,8 +111,11 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 			if ($parent_class = $this->getParentClass()) {
 				$this->doc_comment .= $parent_class->getDocComment(true);
 			}
+			foreach ($this->getInterfaces() as $interface) {
+				$this->doc_comment .= $interface->getDocComment(true);
+			}
 			foreach ($this->getTraits() as $trait) {
-				$this->doc_comment .= $trait->getDocComment();
+				$this->doc_comment .= $trait->getDocComment(true);
 			}
 		}
 		return $this->doc_comment;
@@ -146,6 +149,22 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 			self::$cache[$of_class] = $class;
 		}
 		return $class;
+	}
+
+	//--------------------------------------------------------------------------------- getInterfaces
+	/**
+	 * Gets interfaces
+	 *
+	 * @param boolean $by_name
+	 * @return multitype:Reflection_Class
+	 */
+	public function getInterfaces($by_name = true)
+	{
+		$interfaces = array();
+		foreach (parent::getInterfaces() as $key => $interface) {
+			$interfaces[$by_name ? $interface->name : $key] = Reflection_Class::getInstanceOf($interface);
+		}
+		return $interfaces;
 	}
 
 	//------------------------------------------------------------------------------------- getMethod
@@ -208,8 +227,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	public function getProperties($filter = Reflection_Property::ALL, $by_name = true)
 	{
 		$properties = array();
-		$props = parent::getProperties($filter);
-		foreach ($props as $key => $property) {
+		foreach (parent::getProperties($filter) as $key => $property) {
 			$properties[$by_name ? $property->name : $key] = Reflection_Property::getInstanceOf($property);
 		}
 		return $properties;
@@ -228,6 +246,22 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	{
 		$property = parent::getProperty($name);
 		return $property ? Reflection_Property::getInstanceOf($property) : $property;
+	}
+
+	//------------------------------------------------------------------------------------- getTraits
+	/**
+	 * Gets traits
+	 *
+	 * @param boolean $by_name
+	 * @return multitype:Reflection_Class
+	 */
+	public function getTraits($by_name = true)
+	{
+		$traits = array();
+		foreach (parent::getTraits() as $key => $trait) {
+			$traits[$by_name ? $trait->name : $key] = Reflection_Class::getInstanceOf($trait);
+		}
+		return $traits;
 	}
 
 }

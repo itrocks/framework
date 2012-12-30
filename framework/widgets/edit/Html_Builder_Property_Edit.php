@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Html_Builder_Property
+class Html_Builder_Property_Edit
 {
 
 	//------------------------------------------------------------------------------------- $property
@@ -58,9 +58,13 @@ class Html_Builder_Property
 	}
 
 	//------------------------------------------------------------------------------- buildCollection
+	/**
+	 * @return Html_Table
+	 */
 	private function buildCollection()
 	{
-		return "collection et on peut mettre un paquet de baratin regardes ça dépassera pas";
+		$collection = new Html_Builder_Collection_Edit($this->property, $this->value);
+		return $collection->build();
 	}
 
 	//--------------------------------------------------------------------------------- buildDateTime
@@ -99,12 +103,18 @@ class Html_Builder_Property
 	}
 
 	//-------------------------------------------------------------------------------------- buildMap
+	/**
+	 * @return string
+	 */
 	private function buildMap()
 	{
 		return "map";
 	}
 
 	//----------------------------------------------------------------------------------- buildObject
+	/**
+	 * @return string
+	 */
 	private function buildObject()
 	{
 		$id_input = new Html_Input(

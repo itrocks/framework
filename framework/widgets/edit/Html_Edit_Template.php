@@ -26,7 +26,7 @@ class Html_Edit_Template extends Html_Template
 		$property = reset($objects);
 		$value = parent::parseVar($objects, $var_name, false);
 		return (($var_name == "value") && ($property instanceof Reflection_Property))
-			? (new Html_Builder_Property($property, $value))->build()
+			? (new Html_Builder_Property_Edit($property, $value))->build()
 			: $value;
 	}
 
