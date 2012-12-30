@@ -2,16 +2,15 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-require_once "framework/classes/toolbox/Array.php";
-require_once "framework/classes/toolbox/String.php";
+require_once "framework/core/toolbox/Array.php";
+require_once "framework/core/toolbox/String.php";
 
-require_once "framework/classes/toolbox/Plugin.php";
+require_once "framework/core/toolbox/Plugin.php";
 
 require_once "framework/Application.php";
-require_once "framework/classes/Configuration.php";
-require_once "framework/classes/mappers/Aop_Getter.php";
-require_once "framework/classes/toolbox/Aop.php";
-require_once "framework/classes/toolbox/Namespaces.php";
+require_once "framework/core/configuration/Configuration.php";
+require_once "framework/core/toolbox/Aop.php";
+require_once "framework/core/toolbox/Namespaces.php";
 
 abstract class Autoloader implements Plugin
 {

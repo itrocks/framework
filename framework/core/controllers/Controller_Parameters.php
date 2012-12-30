@@ -1,8 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-require_once "framework/classes/mappers/Getter.php";
-require_once "framework/classes/toolbox/Namespaces.php";
+require_once "framework/core/mappers/Getter.php";
+require_once "framework/core/toolbox/Namespaces.php";
 
 class Controller_Parameters
 {

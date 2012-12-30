@@ -12,7 +12,7 @@ ini_set("default_charset", "UTF-8");
 
 // init
 error_reporting(E_ALL);
-require_once "framework/classes/Autoloader.php";
+require_once "framework/core/Autoloader.php";
 Autoloader::register();
 
 // highest priority modules

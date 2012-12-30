@@ -1,8 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-require_once "framework/classes/Configuration.php";
-require_once "framework/classes/toolbox/String.php";
+require_once "framework/core/configuration/Configuration.php";
+require_once "framework/core/toolbox/String.php";
 
 abstract class Application
 {

@@ -2,8 +2,8 @@
 namespace SAF\Framework;
 
 require_once "framework/Application.php";
-require_once "framework/classes/Configuration.php";
-require_once "framework/classes/toolbox/Namespaces.php";
+require_once "framework/core/configuration/Configuration.php";
+require_once "framework/core/toolbox/Namespaces.php";
 require_once "framework/dao/Dao.php";
 require_once "framework/views/View.php";
 

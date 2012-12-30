@@ -3,13 +3,13 @@ namespace SAF\Framework;
 use ReflectionClass;
 use ReflectionProperty;
 
-require_once "framework/classes/reflection/annotations/Annotation.php";
-require_once "framework/classes/reflection/annotations/Annotation_Parser.php";
-require_once "framework/classes/reflection/annotations/Annoted.php";
-require_once "framework/classes/reflection/Field.php";
-require_once "framework/classes/reflection/Has_Doc_Comment.php";
-require_once "framework/classes/reflection/Reflection_Class.php";
-require_once "framework/classes/reflection/Reflection_Method.php";
+require_once "framework/core/reflection/annotations/Annotation.php";
+require_once "framework/core/reflection/annotations/Annotation_Parser.php";
+require_once "framework/core/reflection/annotations/Annoted.php";
+require_once "framework/core/toolbox/Field.php";
+require_once "framework/core/reflection/Has_Doc_Comment.php";
+require_once "framework/core/reflection/Reflection_Class.php";
+require_once "framework/core/reflection/Reflection_Method.php";
 
 class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_Comment
 {

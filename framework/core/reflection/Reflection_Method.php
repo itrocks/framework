@@ -3,11 +3,11 @@ namespace SAF\Framework;
 use ReflectionClass;
 use ReflectionMethod;
 
-require_once "framework/classes/reflection/annotations/Annotation.php";
-require_once "framework/classes/reflection/annotations/Annotation_Parser.php";
-require_once "framework/classes/reflection/annotations/Annoted.php";
-require_once "framework/classes/reflection/Has_Doc_Comment.php";
-require_once "framework/classes/reflection/Reflection_Class.php";
+require_once "framework/core/reflection/annotations/Annotation.php";
+require_once "framework/core/reflection/annotations/Annotation_Parser.php";
+require_once "framework/core/reflection/annotations/Annoted.php";
+require_once "framework/core/reflection/Has_Doc_Comment.php";
+require_once "framework/core/reflection/Reflection_Class.php";
 
 class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 {

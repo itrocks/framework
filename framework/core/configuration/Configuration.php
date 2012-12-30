@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-require_once "framework/classes/toolbox/Current.php";
+require_once "framework/core/toolbox/Current.php";
 
 class Configuration
 {

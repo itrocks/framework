@@ -7,11 +7,20 @@
 		[{@application.ucwords}] - [{@class.ucfirst}]<!--@top--> {@top}<!--@top--> [{@feature.display}]
 	</title>
 	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.classvar.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.js"></script>
 	<script type="text/javascript" src="js/jquery.form.js"></script>
 	<script type="text/javascript" src="js/saf.functions.js"></script>
-	<script type="text/javascript" src="js/saf.form.js"></script>
+	<script type="text/javascript" src="../widgets/edit/saf.edit.js"></script>
+	<script type="text/javascript">
+		uri_root = "{Paths.uri_root}";
+		script_name = "{Paths.script_name}";
+		PHPSESSID = "{GET.PHPSESSID}";
+	</script>
 	<style type="text/css">
-		@import "style/default/style.css";
+		@import "../skins/default/application.css";
+		@import "../skins/default/form.css";
+		@import "../skins/default/user.css";
 	</style>
 </head>
 

@@ -1,8 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-require_once "framework/classes/reflection/annotations/Annotation.php";
-require_once "framework/classes/reflection/annotations/templates/Multiple_Annotation.php";
+require_once "framework/core/reflection/annotations/Annotation.php";
+require_once "framework/core/reflection/annotations/templates/Multiple_Annotation.php";
 
 abstract class Annotation_Parser
 {

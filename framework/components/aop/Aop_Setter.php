@@ -2,8 +2,8 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-require_once "framework/classes/toolbox/Aop.php";
-require_once "framework/classes/reflection/Reflection_Property.php";
+require_once "framework/core/toolbox/Aop.php";
+require_once "framework/core/reflection/Reflection_Property.php";
 
 abstract class Aop_Setter extends Aop implements Plugin
 {

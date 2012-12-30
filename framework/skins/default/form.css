@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+
+.fieldset {
+	display: table;
+}
+
+.fieldset .field {
+	display: table-row;
+}
+
+.fieldset .field .label {
+	background-color: lightgray;
+	display: table-cell;
+	padding: 0 2px;
+	white-space: nowrap;
+}
+
+.fieldset .field .label:after {
+	content: ' : ';
+}
+
+.fieldset .field .value {
+	display: table-cell;
+	padding: 0 2px;
+	white-space: nowrap;
+}

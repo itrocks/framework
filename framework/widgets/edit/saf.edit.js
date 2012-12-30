@@ -1,4 +1,5 @@
-$("document").ready(function() {
+$("document").ready(function()
+{
 
 	// .datetime
 	$.datepicker.setDefaults($.datepicker.regional["fr"]);

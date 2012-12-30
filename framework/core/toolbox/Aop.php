@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-require_once "framework/classes/reflection/Reflection_Class.php";
+require_once "framework/core/reflection/Reflection_Class.php";
 
 abstract class Aop
 {

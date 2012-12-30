@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+
+.user.login form {
+	display: table;
+}
+
+.user.login form input[type="submit"] {
+	float: right;
+}
