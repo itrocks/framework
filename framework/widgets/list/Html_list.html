@@ -13,10 +13,12 @@
 
 <!--BEGIN-->
 <div class="window list form" id="{@class}/{@feature}">
-	<h2>{@class.ucfirst} list</h2>
+	<h2>|¦{@class.ucfirst}¦ list|</h2>
 	<div class="general button_bar">
 		<!--general_buttons-->
-		<a class="button" href="{link}">[{caption}]</a>
+		<a class="button" href="{link}">|{caption}|</a>
+		<!--sample-->
+		<a class="button new" href="/Class/new">New</a>
 		<!--general_buttons-->
 	</div>
 	<table>
@@ -24,7 +26,7 @@
 	<tr>
 		<th class="columns_select"></th>
 		<!--getProperties-->
-		<th id="{.}" class="trashable">[{@display}]</th>
+		<th id="{.}" class="trashable">|{@display}|</th>
 		<!--sample-->
 		<th id="column2" class="trashable">column2</th>
 		<!--getProperties-->
@@ -63,7 +65,9 @@
 	<div class="selection button_bar">
 		<span class="selection arrow">[select]</span>
 		<!--selection_buttons-->
-		<a class="button {feature.lower}" href="{link}">[{caption}]</a>
+		<a class="button {feature.lower}" href="{link}">|{caption}|</a>
+		<!--sample-->
+		<a class="button print" href="/Class/print">Print</a>
 		<!--selection_buttons-->
 	</div>
 </div>

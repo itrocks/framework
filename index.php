@@ -37,6 +37,7 @@ Aop_Dynamics::register();
 Html_Cleaner::register();
 Html_Session::register();
 Html_Translator::register();
+Translation_String_Composer::register();
 List_Controller_Acls::register();
 Object_Builder::register();
 // activate errors handlers
