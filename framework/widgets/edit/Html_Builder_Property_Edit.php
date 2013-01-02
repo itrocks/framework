@@ -4,27 +4,35 @@ namespace SAF\Framework;
 class Html_Builder_Property_Edit
 {
 
+	//-------------------------------------------------------------------------------------- $preprop
+	/**
+	 * @var string
+	 */
+	private $preprop;
+
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property
 	 */
-	public $property;
+	private $property;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var string
 	 */
-	public $value;
+	private $value;
 
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * @param Reflection_Property $property
 	 * @param mixed $value
+	 * @param string $preprop
 	 */
-	public function __construct(Reflection_Property $property = null, $value = null)
+	public function __construct(Reflection_Property $property = null, $value = null, $preprop = null)
 	{
 		if (isset($property)) $this->property = $property;
 		if (isset($value))    $this->value = $value;
+		if (isset($preprop))  $this->preprop = $preprop;
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -40,12 +48,9 @@ class Html_Builder_Property_Edit
 			case "string":  return $this->buildString();
 		}
 		if (Type::isMultiple($type)) {
-			if ($this->property->getAnnotation("contained")->value) {
-				return $this->buildCollection();
-			}
-			else {
-				return $this->buildMap();
-			}
+			return $this->property->getAnnotation("contained")->value
+				? $this->buildCollection()
+				: $this->buildMap();
 		}
 		$type = Namespaces::fullClassName($type);
 		if (is_subclass_of($type, "DateTime")) {
@@ -73,7 +78,7 @@ class Html_Builder_Property_Edit
 	 */
 	private function buildDateTime()
 	{
-		$input = new Html_Input($this->property->name, $this->value);
+		$input = new Html_Input($this->getFieldName(), $this->value);
 		$input->addClass("datetime");
 		return $input;
 	}
@@ -84,7 +89,7 @@ class Html_Builder_Property_Edit
 	 */
 	private function buildFloat()
 	{
-		$input = new Html_Input($this->property->name, $this->value);
+		$input = new Html_Input($this->getFieldName(), $this->value);
 		$input->addClass("float");
 		$input->addClass("autowidth");
 		return $input;
@@ -96,7 +101,7 @@ class Html_Builder_Property_Edit
 	 */
 	private function buildInteger()
 	{
-		$input = new Html_Input($this->property->name, $this->value);
+		$input = new Html_Input($this->getFieldName(), $this->value);
 		$input->addClass("integer");
 		$input->addClass("autowidth");
 		return $input;
@@ -118,7 +123,7 @@ class Html_Builder_Property_Edit
 	private function buildObject()
 	{
 		$id_input = new Html_Input(
-			"id_" . $this->property->name, Dao::getObjectIdentifier($this->value)
+			$this->getFieldName("id_"), Dao::getObjectIdentifier($this->value)
 		);
 		$id_input->setAttribute("type", "hidden");
 		$id_input->addClass("id");
@@ -137,14 +142,29 @@ class Html_Builder_Property_Edit
 	private function buildString()
 	{
 		if ($this->property->getAnnotation("multiline")->value) {
-			$input = new Html_Textarea($this->property->name, $this->value);
+			$input = new Html_Textarea($this->getFieldName(), $this->value);
 			$input->addClass("autoheight");
 		}
 		else {
-			$input = new Html_Input($this->property->name, $this->value);
+			$input = new Html_Input($this->getFieldName(), $this->value);
 		}
 		$input->addClass("autowidth");
 		return $input;
+	}
+
+	//---------------------------------------------------------------------------------- getFieldName
+	private function getFieldName($prefix = "")
+	{
+		if (!isset($this->preprop)) {
+			$field_name = $prefix . $this->property->name;
+		}
+		elseif (substr($this->preprop, -2) == "[]") {
+			$field_name = substr($this->preprop, 0, -2) . "[" . $prefix . $this->property->name . "][]";
+		}
+		else {
+			$field_name = $this->preprop . "[" . $prefix . $this->property->name . "]";
+		}
+		return $field_name;
 	}
 
 }
