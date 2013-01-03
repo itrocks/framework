@@ -140,7 +140,7 @@ trait Sql_Where_Builder
 			: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_field . "`");
 		$expr = is_null($value)
 			? " IS NULL"
-			: (" " . (Sql_Value::isLike($value) ? "LIKE" : "=") . " " . Sql_Value::escape($value));
+			: (" " . (Sql_Value::isLike($value) ? "LIKE" : "=") . " " . Sql_Value::escape($value, true));
 		return $column . $expr;
 	}
 
