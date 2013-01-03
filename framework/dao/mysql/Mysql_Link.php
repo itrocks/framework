@@ -265,9 +265,10 @@ class Mysql_Link extends Sql_Link
 				}
 				else {
 					$column_name = "id_" . $property->name;
-					if (is_object($value) && !isset($object->$column_name)) {
-						$class->$column_name = $this->write($value);
+					if (is_object($value) && (!isset($object->$column_name) || !$object->$column_name)) {
+						$object->$column_name = $this->write($value);
 					}
+					
 					if (property_exists($object, $column_name)) {
 						$write[$column_name] = $object->$column_name;
 					}
@@ -352,11 +353,11 @@ class Mysql_Link extends Sql_Link
 	private function writeMap($map)
 	{
 		// map properties : write each of them
-		foreach ($map as $element_key => $element_value) {
-			$this->write($element_key);
-			// TODO write with linked values ($element_key id must be written into $element_value property)
-			$this->write($element_value);
-		}
+// 		foreach ($map as $element_key => $element_value) {
+// 			$this->write($element_key);
+// 			// TODO write with linked values ($element_key id must be written into $element_value property)
+// 			$this->write($element_value);
+// 		}
 	}
 
 }

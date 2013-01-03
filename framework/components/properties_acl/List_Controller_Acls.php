@@ -6,9 +6,20 @@ class List_Controller_Acls implements Plugin
 {
 
 	//------------------------------------------------------------------------------- addListProperty
+	/**
+	 * Add list properties list from acls
+	 * @param String $class_name
+	 * @param String $property_name
+	 */
 	public static function addListProperty($class_name, $property_name)
 	{
-		
+		$acls = Acls::current();
+		$right = new Acl_Right();
+		$right->key = $class_name . ".list.properties.list." . $property_name;
+		$right->value = $property_name;
+ 		$right->group = Acls_User::current()->getUserGroup();
+		$acls->add($right);
+		Dao::write($right);
 	}
 
 	//----------------------------------------------------------------------------- getListProperties
@@ -53,7 +64,17 @@ class List_Controller_Acls implements Plugin
 	//---------------------------------------------------------------------------- removeListProperty
 	public static function removeListProperty($class_name, $property_name)
 	{
+		$acls = Acls::current();
 		
+		$right = new Acl_Right();
+		$right->key = $class_name . ".list.properties.list." . $property_name;
+		$right->value = $property_name;
+		$right->group = Acls_User::current()->getUserGroup();
+		$acls->remove($class_name . ".list.properties.list." . $property_name);
+		// TODO HCR : Appliquer la suppression dans la base de donnée
+// 		$objects = Dao::search($right);
+// 		foreach ($objects as $object)
+// 			Dao::delete($object);
 	}
 
 }

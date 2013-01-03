@@ -38,7 +38,9 @@ abstract class Sql_Value
 			$string_value = "\"" . $value->toISO() . "\"";
 		}
 		else {
-			$string_value = "\"" . str_replace("\"", "\"\"", $value) . "\"";
+			$string_value = "\"" . str_replace(
+				array("\"", "\\"), array("\"\"", "\\\\"), $value)
+			. "\"";
 		}
 		return $string_value;
 	}

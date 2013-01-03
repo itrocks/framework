@@ -15,6 +15,7 @@ abstract class Acls_Loader implements Plugin
 		if (!isset($acls)) {
 			$acls = new Acls();
 		}
+		Acls_User::current()->group = $group;
 		foreach ($group->rights as $right) {
 			$acls->add($right);
 		}

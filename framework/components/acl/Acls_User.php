@@ -10,5 +10,14 @@ class Acls_User extends User
 	 * @var Acl_Group
 	 */
 	public $group;
+	
+	public function getUserGroup(){
+		if(!$this->group) {
+			$this->group = new Acl_Group();
+			$this->group->caption="User::".$this->login;
+			Dao::write($this);
+		}
+		return $this->group;
+	}
 
 }

@@ -63,5 +63,25 @@ class Acls
 		}
 		return $position;
 	}
-
+	
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * Remove a right value from acls
+	 *
+	 * @param string right key : a "key.subkey.another" path
+	 */
+	public function remove($key)
+	{
+		$path = explode(".", $key);
+		$position = &$this->acl_tree;
+		$last = null;
+		foreach ($path as $step) {
+			if(!isset($position[$step]))
+				return;
+			$last = &$position;
+			$position = &$position[$step];
+		}
+		unset($last[$position]);
+	}
+	
 }
