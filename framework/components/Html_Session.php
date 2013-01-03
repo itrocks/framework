@@ -11,7 +11,7 @@ abstract class Html_Session implements Plugin
 	/**
 	 * Send session ID as a POST var
 	 *
-	 * This is done at end of html templates parsing. 
+	 * This is done at end of html templates parsing.
 	 *
 	 * @param AopJoinpoint $joinpoint
 	 */
@@ -27,15 +27,20 @@ abstract class Html_Session implements Plugin
 				$content
 			);
 			// $_GET
-			$i = 0;
-			while (($i = strpos($content, 'href="', $i)) !== false) {
-				$i += 6;
-				$j = strpos($content, '"', $i);
-				$link = substr($content, $i, $j - $i);
-				$sep = strpos($link, "?") ? "&" : "?"; 
-				$content = substr($content, 0, $j) . $sep
-					. session_name() . "=" . session_id()
-					. substr($content, $j);
+			$links = array("action=", "href=", "location=");
+			$quotes = array("'", '"');
+			foreach ($links as $link) {
+				foreach ($quotes as $quote) {
+					$i = 0;
+					while (($i = strpos($content, $link . $quote, $i)) !== false) {
+						$i += strlen($link) + 1;
+						$j = strpos($content, $quote, $i);
+						$sep = strpos(substr($content, $i, $j - $i), "?") ? "&" : "?";
+						$add = $sep . session_name() . "=" . session_id();
+						$content = substr($content, 0, $j) . $add . substr($content, $j);
+						$i += strlen($add) + 1;
+					}
+				}
 			}
 			// done
 			$joinpoint->setReturnedValue($content);

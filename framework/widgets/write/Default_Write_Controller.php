@@ -27,7 +27,7 @@ class Default_Write_Controller implements Class_Controller
 		}
 		$changed = false;
 		foreach ($form as $name => $value) {
-			if ($object->$name != $value) {
+			if ((isset($value) && !isset($object->$name)) || ($object->$name != $value)) {
 				$object->$name = $value;
 				$changed = true;
 			}

@@ -18,6 +18,12 @@ abstract class Dom_Element
 	 */
 	private $content;
 
+	//-------------------------------------------------------------------------------------- $end_tag
+	/**
+	 * @var boolean
+	 */
+	protected $end_tag;
+
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
@@ -34,9 +40,10 @@ abstract class Dom_Element
 	/**
 	 * @param string $name
 	 */
-	public function __construct($name = null)
+	public function __construct($name = null, $end_tag = true)
 	{
 		if(isset($name)) $this->name = $name;
+		$this->end_tag = $end_tag;
 	}
 
 	//-------------------------------------------------------------------------------------- addClass
@@ -116,7 +123,7 @@ abstract class Dom_Element
 			$this->setAttribute("style", join("; ", $this->styles));
 		}
 		return "<" . $this->name . ($this->attributes ? (" " . join(" ", $this->attributes)) : "") . ">"
-			. (isset($this->content) ? ($this->content . "</" . $this->name . ">") : "");
+			. (($this->end_tag || isset($this->content)) ? ($this->content . "</" . $this->name . ">") : "");
 	}
 
 }
