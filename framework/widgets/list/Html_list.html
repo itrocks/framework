@@ -37,10 +37,14 @@
 	<tr>
 		<td><input type="checkbox" name="s[]" value="{id}"></td>
 		<!--values:1-->
-		<td><!--..class_name--><a href="/{..class_name.short}/{..id}" class="edit">{value}<!--..class_name--></a></td>
+		<td class="trashable" onclick="location='/{..class_name.short}/{?..id}'">
+			<!--..class_name-->
+			<a href="/{..class_name.short}/{..id}">{value}</a>
+			<!--..class_name-->
+		</td>
 		<!--values-->
 		<!--values:2-...count-->
-		<td class="edit">{value}</td>
+		<td>{value}</td>
 		<!--values-->
 	</tr>
 	<!--sample-->

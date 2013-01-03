@@ -365,7 +365,14 @@ class Html_Template
 						$i --;
 						$j ++;
 					}
-					while (($content[$i] != " ") && ($content[$i] != ",")) $i--;
+					while (($content[$i] != " ") && ($content[$i] != ",")) {
+						if (($content[$i] == '"') || ($content[$i] == "'")) {
+							while ($content[$j] != $content[$i]) {
+								$j ++;
+							}
+						}
+						$i--;
+					}
 				}
 				$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
 			}
@@ -512,7 +519,7 @@ class Html_Template
 	{
 		$c = $content[$i];
 		return (($c >= "a") && ($c <= "z")) || (($c >= "A") && ($c <= "Z"))
-			|| ($c == "@") || ($c == "/") || ($c == ".") || ($c == "?");		
+			|| ($c == "@") || ($c == "/") || ($c == ".") || ($c == "?");
 	}
 
 	//---------------------------------------------------------------------------------- removeSample
@@ -537,15 +544,18 @@ class Html_Template
 	 */
 	protected function replaceLinks($content)
 	{
-		$links = array('action="', 'href="');
+		$links = array("action=", "href=", "location=");
+		$quotes = array("'", '"');
 		foreach ($links as $link) {
-			$i = 0;
-			while (($i = strpos($content, $link, $i)) !== false) {
-				$i += strlen($link);
-				$j = strpos($content, '"', $i);
-				if (substr($content, $i, 1) === "/") {
-					$full_path = Paths::$uri_root . "/" . Paths::$script_name . substr($content, $i, $j - $i);
-					$content = substr($content, 0, $i) . $full_path . substr($content, $j);
+			foreach ($quotes as $quote) {
+				$i = 0;
+				while (($i = strpos($content, $link . $quote, $i)) !== false) {
+					$i += strlen($link) + 1;
+					$j = strpos($content, $quote, $i);
+					if (substr($content, $i, 1) === "/") {
+						$full_path = Paths::$uri_root . "/" . Paths::$script_name . substr($content, $i, $j - $i);
+						$content = substr($content, 0, $i) . $full_path . substr($content, $j);
+					}
 				}
 			}
 		}

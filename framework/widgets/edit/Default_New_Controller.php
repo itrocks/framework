@@ -10,7 +10,7 @@ class Default_New_Controller extends Default_Edit_Controller
 		$class = get_class($object);
 		return array(
 			new Button(
-				"Write", View::link($class . "/write"), "write", array(".ifedit", ".submit", "#messages")
+				"Write", View::link($class . "/write"), "write", array(".submit", "#messages")
 			)
 		);
 	}

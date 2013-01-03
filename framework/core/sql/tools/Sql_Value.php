@@ -11,7 +11,7 @@ abstract class Sql_Value
 	 * @param mixed $value
 	 * @return string
 	 */
-	public static function escape($value)
+	public static function escape($value, $double_backquote = false)
 	{
 		if (is_numeric($value)) {
 			$string_value = "$value";
@@ -28,7 +28,7 @@ abstract class Sql_Value
 			foreach ($value as $object_value) {
 				if ($object_value !== null) {
 					if ($do) $string_value .= ",";
-					$string_value .= str_replace("'", "''", $object_value); 
+					$string_value .= str_replace("'", "''", $object_value);
 					$do = true;
 				}
 			}
@@ -42,7 +42,7 @@ abstract class Sql_Value
 				array("\"", "\\"), array("\"\"", "\\\\"), $value)
 			. "\"";
 		}
-		return $string_value;
+		return $double_backquote ? str_replace("\\", "\\\\\\\\", $string_value) : $string_value;
 	}
 
 	//---------------------------------------------------------------------------------------- isLike

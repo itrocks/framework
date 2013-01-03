@@ -32,7 +32,7 @@ class Sql_Joins
 	/**
 	 * linked tables
 	 *
-	 * @var multitype:string indice is 
+	 * @var multitype:string indice is
 	 */
 	private $linked_tables = array();
 
@@ -40,7 +40,7 @@ class Sql_Joins
 	/**
 	 * link class names to their properties
 	 *
-	 * @var multitype:multitype:Reflection_Property indices are : class name, property name 
+	 * @var multitype:multitype:Reflection_Property indices are : class name, property name
 	 */
 	private $properties = array();
 
@@ -152,7 +152,7 @@ class Sql_Joins
 		$linked_join->master_column = "id";
 		$linked_join->mode = $join->mode;
 		$this->joins[$foreign_path . "-link"] = $this->addFinalize(
-			$linked_join, $master_path, $foreign_class_name, $foreign_path, 1 
+			$linked_join, $master_path, $foreign_class_name, $foreign_path, 1
 		);
 		$join->foreign_column = "id";
 		$join->master_column = "id_" . $master_property->getAnnotation("foreignlink");
@@ -267,7 +267,7 @@ class Sql_Joins
 	{
 		return $this->classes;
 	}
- 
+
 	//--------------------------------------------------------------------------------- getClassNames
 	/**
 	 * Gets an array of used classes names
@@ -280,7 +280,7 @@ class Sql_Joins
 	{
 		return array_values($this->classes);
 	}
- 
+
 	//-------------------------------------------------------------------------------------- getJoins
 	/**
 	 * Gets Sql_Join object for a given property path
