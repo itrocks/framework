@@ -20,14 +20,18 @@ class Html_Edit_Template extends Html_Template
 		return parent::parseContainer($content);
 	}
 
-	//-------------------------------------------------------------------------------------- parseVar
-	protected function parseVar($objects, $var_name)
+	//------------------------------------------------------------------------------------ parseValue
+	protected function parseValue($objects, $var_name)
 	{
-		$property = reset($objects);
-		$value = parent::parseVar($objects, $var_name, false);
-		return (($var_name == "value") && ($property instanceof Reflection_Property))
-			? (new Html_Builder_Property_Edit($property, $value))->build()
-			: $value;
+		if ($var_name == "value") {
+			$property = reset($objects);
+			$value = parent::parseValue($objects, $var_name, false);
+			$value = (new Html_Builder_Property_Edit($property, $value))->build();
+		}
+		else {
+			$value = parent::parseValue($objects, $var_name);
+		}
+		return $value;
 	}
 
 }

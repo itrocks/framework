@@ -244,7 +244,7 @@ class Html_Template
 		return ob_get_clean();
 	}
 
-	//-------------------------------------------------------------------------------------- parseVar
+	//------------------------------------------------------------------------------------ parseValue
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
@@ -253,7 +253,7 @@ class Html_Template
 	 * @param boolean $as_string if true, returned value will always be a string
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	protected function parseVar($objects, $var_name, $as_string = true)
+	protected function parseValue($objects, $var_name, $as_string = true)
 	{
 		if ($var_name == ".") {
 			return reset($objects);
@@ -317,6 +317,56 @@ class Html_Template
 		}
 	}
 
+	//-------------------------------------------------------------------------------------- parseVar
+	protected function parseVar(&$content, $objects, $i, $j)
+	{
+		$var_name = substr($content, $i, $j - $i);
+		$auto_remove = $this->parseVarWillAutoremove($var_name);
+		$value = $this->parseValue($objects, $var_name);
+		if (is_array($value) && (reset($objects) instanceof Reflection_Property)) {
+			$value = $this->parseCollection(reset($objects), $value);
+		}
+		$i --;
+		if ($auto_remove && !strlen($value)) {
+			$this->parseVarRemove($content, $i, $j);
+		}
+		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
+		return $i;
+	}
+
+	//------------------------------------------------------------------------ parseVarWillAutoremove
+	protected function parseVarWillAutoremove(&$var_name)
+	{
+		if ($var_name[0] === "?") {
+			$var_name = substr($var_name, 1);
+			$auto_remove = true;
+		}
+		else {
+			$auto_remove = false;
+		}
+		return $auto_remove;
+	}
+
+	//-------------------------------------------------------------------------------- parseVarRemove
+	protected function parseVarRemove($content, &$i, &$j)
+	{
+		if (
+			(($content[$i - 1] === "'") && ($content[$j + 1] === "'"))
+			|| (($content[$i - 1] === '"') && ($content[$j + 1] === '"'))
+		) {
+			$i --;
+			$j ++;
+		}
+		while (($content[$i] != " ") && ($content[$i] != ",")) {
+			if (($content[$i] == '"') || ($content[$i] == "'")) {
+				while ($content[$j] != $content[$i]) {
+					$j ++;
+				}
+			}
+			$i--;
+		}
+	}
+
 	//------------------------------------------------------------------------------------- parseVars
 	/**
 	 * Parse all variables from the template
@@ -344,40 +394,99 @@ class Html_Template
 			$i ++;
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, "}", $i);
-				$var_name = substr($content, $i, $j - $i);
-				if ($var_name[0] === "?") {
-					$var_name = substr($var_name, 1);
-					$auto_remove = true;
-				}
-				else {
-					$auto_remove = false;
-				}
-				$value = $this->parseVar($objects, $var_name);
-				if (is_array($value) && (reset($objects) instanceof Reflection_Property)) {
-					$value = $this->parseCollection(reset($objects), $value);
-				}
-				$i --;
-				if ($auto_remove && !strlen($value)) {
-					if (
-						(($content[$i - 1] === "'") && ($content[$j + 1] === "'"))
-						|| (($content[$i - 1] === '"') && ($content[$j + 1] === '"'))
-					) {
-						$i --;
-						$j ++;
-					}
-					while (($content[$i] != " ") && ($content[$i] != ",")) {
-						if (($content[$i] == '"') || ($content[$i] == "'")) {
-							while ($content[$j] != $content[$i]) {
-								$j ++;
-							}
-						}
-						$i--;
-					}
-				}
-				$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
+				$i = $this->parseVar($content, $objects, $i, $j);
 			}
 		}
 		return $content;
+	}
+
+	//------------------------------------------------------------------------------------- parseLoop
+	private function parseLoop(&$content, $objects, $i, $j)
+	{
+		$var_name = substr($content, $i, $j - $i);
+		$length = strlen($var_name);
+		$i += $length + 3;
+		if (strpos($var_name, ":")) {
+			list($var_name, $expr) = explode(":", $var_name);
+			if (strpos($expr, "-") !== false) {
+				list($from, $to) = explode("-", $expr);
+			}
+			else {
+				$from = $to = $expr;
+			}
+			$to = (($to == "") ? null : $to);
+		}
+		else {
+			$expr = null;
+			$from = 0;
+			$to = null;
+		}
+		$length2 = isset($expr) ? strlen($var_name) : $length;
+		$j = strpos($content, "<!--" . $var_name . "-->", $j + 3);
+		$loop_content = substr($content, $i, $j - $i);
+		$this->removeSample($loop_content);
+		$separator = $this->parseSeparator($loop_content);
+		$elements = $this->parseValue($objects, $var_name);
+		if ($from && !is_numeric($from)) {
+			array_unshift($objects, $elements);
+			$from = $this->parseValue($objects, $from);
+			array_shift($objects);
+		}
+		if ($to && !is_numeric($to)) {
+			array_unshift($objects, $elements);
+			$to = $this->parseValue($objects, $to);
+			array_shift($objects);
+		}
+		if (is_array($elements) || isset($expr)) {
+			array_unshift($objects, $elements);
+			$do = false;
+			$loop_insert = "";
+			$counter = 0;
+			if (is_array($elements)) foreach ($elements as $element) {
+				$counter ++;
+				if (isset($to) && ($counter > $to)) break;
+				if ($counter >= $from) {
+					array_unshift($objects, $element);
+					if ($do) {
+						$loop_insert .= $this->parseVars($separator, $objects);
+					}
+					else {
+						$do = true;
+					}
+					$sub_content = $this->parseVars($loop_content, $objects);
+					$loop_insert .= $sub_content;
+					array_shift($objects);
+				}
+			}
+			if (isset($to) && ($counter < $to)) {
+				array_unshift($objects, new StdClass());
+				while ($counter < $to) {
+					$counter ++;
+					if ($counter >= $from) {
+						if ($do) {
+							$loop_insert .= $this->parseVars($separator, $objects);
+						}
+						else {
+							$do = true;
+						}
+						$sub_content = $this->parseVars($loop_content, $objects);
+						$loop_insert .= $sub_content;
+					}
+				}
+				array_shift($objects);
+			}
+			array_shift($objects);
+		}
+		elseif (strlen($elements)) {
+			$loop_insert = $this->parseVars($loop_content, $objects);
+		}
+		else {
+			$loop_insert  = "";
+		}
+		$content = substr($content, 0, $i - $length - 7)
+			. $loop_insert
+			. substr($content, $j + $length2 + 7);
+		return $i;
 	}
 
 	//------------------------------------------------------------------------------------ parseLoops
@@ -398,91 +507,9 @@ class Html_Template
 		$icontent = 0;
 		while (($icontent = strpos($content, "<!--" , $icontent)) !== false) {
 			$i = $icontent + 4;
-			$j = strpos($content, "-->", $i);
 			if ($this->parseThis($content, $i)) {
-				$var_name = substr($content, $i, $j - $i);
-				$length = strlen($var_name);
-				$i += $length + 3;
-				if (strpos($var_name, ":")) {
-					list($var_name, $expr) = explode(":", $var_name);
-					if (strpos($expr, "-") !== false) {
-						list($from, $to) = explode("-", $expr);
-					}
-					else {
-						$from = $to = $expr;
-					}
-					$to = (($to == "") ? null : $to);
-				}
-				else {
-					$expr = null;
-					$from = 0;
-					$to = null;
-				}
-				$length2 = isset($expr) ? strlen($var_name) : $length;
-				$j = strpos($content, "<!--" . $var_name . "-->", $j + 3);
-				$loop_content = substr($content, $i, $j - $i);
-				$this->removeSample($loop_content);
-				$separator = $this->parseSeparator($loop_content);
-				$elements = $this->parseVar($objects, $var_name);
-				if ($from && !is_numeric($from)) {
-					array_unshift($objects, $elements);
-					$from = $this->parseVar($objects, $from);
-					array_shift($objects);
-				}
-				if ($to && !is_numeric($to)) {
-					array_unshift($objects, $elements);
-					$to = $this->parseVar($objects, $to);
-					array_shift($objects);
-				}
-				if (is_array($elements) || isset($expr)) {
-					array_unshift($objects, $elements);
-					$do = false;
-					$loop_insert = "";
-					$counter = 0;
-					if (is_array($elements)) foreach ($elements as $element) {
-						$counter ++;
-						if (isset($to) && ($counter > $to)) break;
-						if ($counter >= $from) {
-							array_unshift($objects, $element);
-							if ($do) {
-								$loop_insert .= $this->parseVars($separator, $objects);
-							}
-							else {
-								$do = true;
-							}
-							$sub_content = $this->parseVars($loop_content, $objects);
-							$loop_insert .= $sub_content;
-							array_shift($objects);
-						}
-					}
-					if (isset($to) && ($counter < $to)) {
-						array_unshift($objects, new StdClass());
-						while ($counter < $to) {
-							$counter ++;
-							if ($counter >= $from) {
-								if ($do) {
-									$loop_insert .= $this->parseVars($separator, $objects);
-								}
-								else {
-									$do = true;
-								}
-								$sub_content = $this->parseVars($loop_content, $objects);
-								$loop_insert .= $sub_content;
-							}
-						}
-						array_shift($objects);
-					}
-					array_shift($objects);
-				}
-				elseif (strlen($elements)) {
-					$loop_insert = $this->parseVars($loop_content, $objects);
-				}
-				else {
-					$loop_insert  = "";
-				}
-				$content = substr($content, 0, $i - $length - 7)
-					. $loop_insert
-					. substr($content, $j + $length2 + 7);
+				$j = strpos($content, "-->", $i);
+				$i = $this->parseLoop($content, $objects, $i, $j);
 			}
 		}
 		return $content;
