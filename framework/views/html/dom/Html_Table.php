@@ -31,7 +31,7 @@ class Html_Table extends Dom_Element
 		if (isset($this->head)) $content .= "\n" . $this->head;
 		if (isset($this->body)) $content .= "\n" . $this->body;
 		$this->setContent($content . "\n");
-		return parent::__toString();
+		return "\n" . parent::__toString() . "\n";
 	}
 
 	//--------------------------------------------------------------------------------------- setBody

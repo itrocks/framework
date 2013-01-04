@@ -20,14 +20,44 @@ class Html_Edit_Template extends Html_Template
 		return parent::parseContainer($content);
 	}
 
-	//-------------------------------------------------------------------------------------- parseVar
-	protected function parseVar($objects, $var_name)
+	//----------------------------------------------------------------------------- parseDisplayAfter
+	protected function parseDisplayAfter(&$content, $objects, $i)
 	{
 		$property = reset($objects);
-		$value = parent::parseVar($objects, $var_name, false);
-		return (($var_name == "value") && ($property instanceof Reflection_Property))
-			? (new Html_Builder_Property_Edit($property, $value))->build()
-			: $value;
+		$type = $property->getType();
+		if ($class_name = Type::isMultiple($type)) {
+			$span = new Html_Span("+");
+			$span->addClass("plus");
+			$content = substr($content, 0, $i) . $span . substr($content, $i);
+		}
+	}
+
+	//------------------------------------------------------------------------------------ parseValue
+	protected function parseValue($objects, $var_name)
+	{
+		$property = reset($objects);
+		if (($var_name == "value") && ($property instanceof Reflection_Property)) {
+			$value = parent::parseValue($objects, $var_name, false);
+			$value = (new Html_Builder_Property_Edit($property, $value))->build();
+		}
+		else {
+			$value = parent::parseValue($objects, $var_name);
+		}
+		return $value;
+	}
+
+	//-------------------------------------------------------------------------------------- parseVar
+	protected function parseVar(&$content, $objects, $i, $j)
+	{
+		$var_name = substr($content, $i, $j - $i);
+		if (($var_name == "display") && (reset($objects) instanceof Reflection_Property)) {
+			$k = $j + 1;
+			if ($content[$k] == "|") {
+				$k ++;
+			}
+			$this->parseDisplayAfter($content, $objects, $k);
+		}
+		return parent::parseVar($content, $objects, $i, $j);
 	}
 
 }
