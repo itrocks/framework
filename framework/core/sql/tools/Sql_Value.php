@@ -42,7 +42,7 @@ abstract class Sql_Value
 				array("\"", "\\"), array("\"\"", "\\\\"), $value)
 			. "\"";
 		}
-		return $double_backquote ? str_replace("\\", "\\\\\\\\", $string_value) : $string_value;
+		return $double_backquote ? str_replace("\\", "\\\\", $string_value) : $string_value;
 	}
 
 	//---------------------------------------------------------------------------------------- isLike
