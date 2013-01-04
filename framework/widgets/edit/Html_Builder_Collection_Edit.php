@@ -14,4 +14,14 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		return new Html_Table_Standard_Cell($input);
 	}
 
+	//-------------------------------------------------------------------------------------- buildRow
+	protected function buildRow($object)
+	{
+		$row = parent::buildRow($object);
+		$cell = new Html_Table_Standard_Cell("-");
+		$cell->addClass("minus");
+		$row->addCell($cell);
+		return $row;
+	}
+
 }
