@@ -138,9 +138,13 @@ trait Sql_Where_Builder
 		$column = ((!$master_path) || ($master_path === "id"))
 			? ("t0.`" . $prefix . $foreign_field . "`")
 			: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_field . "`");
-		$expr = is_null($value)
-			? " IS NULL"
-			: (" " . (Sql_Value::isLike($value) ? "LIKE" : "=") . " " . Sql_Value::escape($value, true));
+		if (is_null($value)) {
+			$expr = " IS NULL";
+		}
+		else {
+			$is_like = Sql_Value::isLike($value);
+			$expr = (" " . ($is_like ? "LIKE" : "=") . " " . Sql_Value::escape($value, $is_like));
+		}
 		return $column . $expr;
 	}
 
