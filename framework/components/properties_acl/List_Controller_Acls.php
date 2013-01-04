@@ -75,7 +75,7 @@ class List_Controller_Acls implements Plugin
 		$right->value = $property_name;
 		$right->group = Acls_User::current()->getUserGroup();
 		// Delete from current acl
-		$acls->remove($class_name . ".list.properties.list." . $property_name);
+		$acls->remove($right);
 		// Delete from bdd
 		$objects = Dao::search($right);
 		foreach ($objects as $object)
