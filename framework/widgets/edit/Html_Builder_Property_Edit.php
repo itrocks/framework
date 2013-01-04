@@ -127,7 +127,7 @@ class Html_Builder_Property_Edit
 		);
 		$id_input->setAttribute("type", "hidden");
 		$id_input->addClass("id");
-		$input = new Html_Input(null, $this->value);
+		$input = new Html_Input(null, strval($this->value));
 		$input->setAttribute("autocomplete", "off");
 		$input->addClass("combo");
 		$input->addClass("autowidth");

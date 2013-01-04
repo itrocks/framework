@@ -5,6 +5,11 @@ class Html_Input extends Dom_Element
 {
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param string $name
+	 * @param string $value
+	 * @param string $id
+	 */
 	public function __construct($name = null, $value = null, $id = null)
 	{
 		parent::__construct("input", false);

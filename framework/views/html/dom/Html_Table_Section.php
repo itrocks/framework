@@ -9,7 +9,7 @@ abstract class Html_Table_Section extends Dom_Element
 	 * @contained
 	 * @var multitype:Html_Table_Row
 	 */
-	private $rows = array();
+	public $rows = array();
 
 	//------------------------------------------------------------------------------------ __toString
 	public function __toString()

@@ -44,23 +44,32 @@ class Html_Builder_Collection
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * @return string
+	 * @return Html_Table
 	 */
 	public function build()
 	{
 		$table = new Html_Table();
+		$table->addClass("collection");
 		$table->setHead($this->buildHead());
 		$table->setBody($this->buildBody());
 		return $table;
 	}
 
 	//------------------------------------------------------------------------------------- buildCell
+	/**
+	 * @param object $object
+	 * @param string $property_name
+	 * @return Html_Table_Standard_Cell
+	 */
 	protected function buildCell($object, $property_name)
 	{
 		return new Html_Table_Standard_Cell($object->$property_name);
 	}
 
 	//------------------------------------------------------------------------------------- buildBody
+	/**
+	 * @return Html_Table_Body
+	 */
 	protected function buildBody()
 	{
 		$body = new Html_Table_Body();
