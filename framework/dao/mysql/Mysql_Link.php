@@ -268,7 +268,7 @@ class Mysql_Link extends Sql_Link
 					if (is_object($value) && (!isset($object->$column_name) || !$object->$column_name)) {
 						$object->$column_name = $this->write($value);
 					}
-					
+
 					if (property_exists($object, $column_name)) {
 						$write[$column_name] = $object->$column_name;
 					}

@@ -19,7 +19,11 @@ class List_Controller_Acls implements Plugin
 		$right->value = $property_name;
  		$right->group = Acls_User::current()->getUserGroup();
 		$acls->add($right);
-		Dao::write($right);
+		// Add in bdd
+		// Test if the key exist in bdd
+		$tmp = Dao::search($right);
+		if(!$tmp)
+			Dao::write($right);
 	}
 
 	//----------------------------------------------------------------------------- getListProperties
@@ -39,7 +43,7 @@ class List_Controller_Acls implements Plugin
 	//------------------------------------------------ onListControllerConfigurationGetListProperties
 	/**
 	 * @param AopJoinpoint $joinpoint
-	 * @return 
+	 * @return
 	 */
 	public static function onListControllerGetListProperties(AopJoinpoint $joinpoint)
 	{
@@ -65,16 +69,16 @@ class List_Controller_Acls implements Plugin
 	public static function removeListProperty($class_name, $property_name)
 	{
 		$acls = Acls::current();
-		
+		// Create the Acl_Right
 		$right = new Acl_Right();
 		$right->key = $class_name . ".list.properties.list." . $property_name;
 		$right->value = $property_name;
 		$right->group = Acls_User::current()->getUserGroup();
+		// Delete from current acl
 		$acls->remove($class_name . ".list.properties.list." . $property_name);
-		// TODO HCR : Appliquer la suppression dans la base de donnée
-// 		$objects = Dao::search($right);
-// 		foreach ($objects as $object)
-// 			Dao::delete($object);
+		// Delete from bdd
+		$objects = Dao::search($right);
+		foreach ($objects as $object)
+			Dao::delete($object);
 	}
-
 }
