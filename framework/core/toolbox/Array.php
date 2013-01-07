@@ -1,5 +1,7 @@
 <?php
 
+use SAF\Framework\Object_Builder;
+
 //------------------------------------------------------------------------------ arrayDiffRecursive
 function arrayDiffRecursive($array1, $array2, $show_type = false)
 {
@@ -32,6 +34,42 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
 	return $diff ? $diff : false;
 }
 
+//------------------------------------------------------------------------ function arrayFormRevert
+/**
+ * Reverts an array comming from a dynmamic form result
+ *
+ * @example
+ * Source array is array($field_name => array($n => $value))
+ * Destination array is array($n => array($field_name => $value))
+ * other example that works
+ * Source array is array($field_name => array($sub_field_name => array($n => $value))
+ * Destination array is array($n => array($field_name => array($sub_field_name => $value))
+ * @param array $array
+ * return array
+ */
+function arrayFormRevert($array)
+{
+	if (is_array($array)) {
+		$result = array ();
+		foreach ($array as $field_name => $sub_array) {
+			if (is_array ($sub_array)) {
+				foreach ($sub_array as $n => $value) {
+					if (!is_array($value)) {
+						$result[$n][$field_name] = $value;
+					} else {
+						foreach ($value as $n2 => $value2) {
+							$result[$n2][$field_name][$n] = $value2;
+						}
+					}
+				}
+			}
+		}
+		return $result;
+	} else {
+		return $array;
+	}
+}
+
 //----------------------------------------------------------------------------- arrayMergeRecursive
 /**
  * Merges two arrays, with recursion
@@ -52,4 +90,30 @@ function arrayMergeRecursive($array1, $array2)
 			: $value2;
 	}
 	return $array1;
+}
+
+//------------------------------------------------------------------------------- arrayToCollection
+function arrayToCollection($array, $class_name)
+{
+	$collection = array();
+	if ($array) {
+		reset($array);
+		if (!is_numeric(key($array))) {
+			$array = arrayFormRevert($array);
+		}
+		foreach ($array as $key => $element) {
+			$collection[$key] = arrayToObject($element, $class_name);
+		}
+	}
+	return $collection;
+}
+
+//----------------------------------------------------------------------------------- arrayToObject
+function arrayToObject($array, $class_name)
+{
+	$object = Object_Builder::current()->newInstance($class_name);
+	foreach ($array as $property_name => $value) {
+		$object->$property_name = $value;
+	}
+	return $object;
 }

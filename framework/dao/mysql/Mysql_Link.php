@@ -328,6 +328,10 @@ class Mysql_Link extends Sql_Link
 		$id_set = array();
 		$property = Reflection_Property::getInstanceOf(get_class($object), $property_name);
 		if ($property->getAnnotation("contained")->value) {
+			if ($collection && is_array(reset($collection))) {
+				$class_name = Namespaces::fullClassName(Type::isMultiple($property->getType()));
+				$collection = arrayToCollection($collection, $class_name);
+			}
 			foreach ($collection as $element) {
 				$id = $this->getObjectIdentifier($element);
 				if ($id !== null) {

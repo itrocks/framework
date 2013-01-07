@@ -21,6 +21,11 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		$input = (new Html_Builder_Property_Edit(
 			$property, $object->$property_name, $this->property->name . "[]"
 		))->build();
+		if ($property_name == reset($this->properties)) {
+			$id_input = new Html_Input($this->property->name . "[id][]", isset($object->id) ? $object->id : null);
+			$id_input->setAttribute("type", "hidden");
+			$input = $id_input . $input;
+		}
 		return new Html_Table_Standard_Cell($input);
 	}
 

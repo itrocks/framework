@@ -88,9 +88,11 @@ class Html_Builder_Collection
 		$head = new Html_Table_Head();
 		$row = new Html_Table_Row();
 		foreach ($this->properties as $property_name) {
-			$row->addCell(new Html_Table_Header_Cell(
+			$cell = new Html_Table_Header_Cell(
 				Loc::tr(Names::propertyToDisplay($property_name), $this->class_name)
-			));
+			);
+			$cell->addClass("trashable");
+			$row->addCell($cell);
 		}
 		$head->addRow($row);
 		return $head;
