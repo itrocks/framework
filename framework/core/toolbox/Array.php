@@ -52,7 +52,7 @@ function arrayFormRevert($array)
 	if (is_array($array)) {
 		$result = array ();
 		foreach ($array as $field_name => $sub_array) {
-			if (is_array ($sub_array)) {
+			if (is_array($sub_array)) {
 				foreach ($sub_array as $n => $value) {
 					if (!is_array($value)) {
 						$result[$n][$field_name] = $value;
@@ -113,7 +113,9 @@ function arrayToObject($array, $class_name)
 {
 	$object = Object_Builder::current()->newInstance($class_name);
 	foreach ($array as $property_name => $value) {
-		$object->$property_name = $value;
+		if (($property_name != "id") || !empty($value)) {
+			$object->$property_name = $value;
+		}
 	}
 	return $object;
 }

@@ -53,4 +53,25 @@ abstract class Aop_Setter extends Aop implements Plugin
 		echo "setter";
 	}
 
+	//------------------------------------------------------------------------------------- setParent
+	/**
+	 * When setting an object, set its object identifier too
+	 *
+	 * @todo unused : please test it
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function setObject(AopJoinpoint $joinpoint)
+	{
+		$object = $joinpoint->getObject();
+		$id_property = "id_" . $joinpoint->getPropertyName();
+		$value = $joinpoint->getAssignedValue();
+		$identifier = Dao::getObjectIdentifier($value);
+		if (is_object($value) && !empty($identifier)) {
+			$object->$id_property = $identifier;
+		}
+		else {
+			unset($object->$id_property);
+		}
+	}
+
 }

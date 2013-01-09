@@ -265,16 +265,18 @@ class Mysql_Link extends Sql_Link
 				}
 				else {
 					$column_name = "id_" . $property->name;
-					if (is_object($value) && (!isset($object->$column_name) || !$object->$column_name)) {
-						$object->$column_name = $this->write($value);
+					if (is_object($value) && (empty($object->$column_name))) {
+						$object->$column_name = $this->getObjectIdentifier($value);
+						if (empty($object->$column_name)) {
+							$object->$column_name = $this->write($value);
+						}
 					}
-
 					if (property_exists($object, $column_name)) {
 						$write[$column_name] = $object->$column_name;
 					}
 				}
 			}
-				elseif ($property->getAnnotation("contained")->value) {
+			elseif ($property->getAnnotation("contained")->value) {
 				$write_collections[$property->name] = $value;
 			}
 			elseif (is_array($value)) {
@@ -333,17 +335,35 @@ class Mysql_Link extends Sql_Link
 				$collection = arrayToCollection($collection, $class_name);
 			}
 			foreach ($collection as $element) {
-				$id = $this->getObjectIdentifier($element);
-				if ($id !== null) {
-					$id_set[] = $id;
+				if (!isset($representative_properties)) {
+					$element_class = Reflection_Class::getInstanceOf(get_class($element));
+					$representative_properties = $element_class->getAnnotation("representative")->value;
+					$default = $element_class->getDefaultProperties();
 				}
-				$this->write($element);
+				$do_write = false;
+				foreach ($representative_properties as $property_name) {
+					$element_value = $element->$property_name;
+					if (!empty($element_value) && ($element_value != strval($default[$property_name]))) {
+						$do_write = true;
+						break;
+					}
+				}
+				if ($do_write) {
+					if ($element instanceof Contained) {
+						$element->setParent($object);
+					}
+					$id = $this->getObjectIdentifier($element);
+					if (!empty($id)) {
+						$id_set[$id] = true;
+					}
+					$this->write($element);
+				}
 			}
 		}
 		// remove old unused elements
 		foreach ($old_collection as $old_element) {
 			$id = $this->getObjectIdentifier($old_element);
-			if (!in_array($id, $id_set)) {
+			if (!isset($id_set[$id])) {
 				$this->delete($old_element);
 			}
 		}

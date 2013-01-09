@@ -5,7 +5,10 @@ $("document").ready(function() {
 		var $this = $(this);
 
 		// .autowidth
-		var width_function = function() { $(this).width(getInputTextWidth(this.value)); };
+		var width_function = function() {
+			var $this = $(this);
+			$this.width(getInputTextWidth($this.val()));
+		};
 		$this.find(".autowidth").each(width_function);
 		$this.find(".autowidth").keyup(width_function);
 
@@ -40,8 +43,10 @@ $("document").ready(function() {
 		});
 
 		// .object
+		$this.find("input.combo").each(function(){ console.log(this); });
 		$this.find("input.combo").autocomplete({
 			autoFocus: true,
+			delay: 100,
 			minLength: 0,
 			close: function(event) {
 				$(event.target).keyup();
@@ -55,7 +60,8 @@ $("document").ready(function() {
 				);
 			},
 			select: function(event, ui) {
-				this.previousSibling.value = ui.item.id;
+				console.log("select " + ui.item.id);
+				$(this).prev().val(ui.item.id);
 			}
 		});
 	});

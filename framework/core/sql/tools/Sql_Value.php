@@ -13,7 +13,7 @@ abstract class Sql_Value
 	 */
 	public static function escape($value, $double_backquote = false)
 	{
-		if (is_numeric($value)) {
+		if (is_numeric($value) && ($value[0] !== '0')) {
 			$string_value = "$value";
 		}
 		elseif (is_bool($value)) {
