@@ -9,6 +9,7 @@ class Default_List_Remove_Controller implements Class_Controller
 	{
 		$full_class_name = Namespaces::fullClassName(Set::elementClassNameOf($class_name));
 		$properties = $parameters->getObjects();
+		// TODO default removal should not use acls, which is an independant plugin
 		foreach ($properties as $key => $property_name) {
 			if (is_numeric($key)) {
 				List_Controller_Acls::removeListProperty($full_class_name, $property_name);

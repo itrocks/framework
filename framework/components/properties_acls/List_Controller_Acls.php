@@ -44,7 +44,6 @@ class List_Controller_Acls implements Plugin
 	//------------------------------------------------ onListControllerConfigurationGetListProperties
 	/**
 	 * @param AopJoinpoint $joinpoint
-	 * @return
 	 */
 	public static function onListControllerGetListProperties(AopJoinpoint $joinpoint)
 	{
@@ -83,4 +82,5 @@ class List_Controller_Acls implements Plugin
 			Dao::delete($object);
 		}
 	}
+
 }

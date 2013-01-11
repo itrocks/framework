@@ -66,7 +66,7 @@ abstract class Autoloader implements Plugin
 					return null;
 				}
 			}
-			$class_name = Namespaces::fullClassName($class_name);
+			$class_name = Namespaces::fullClassName($short_class_name);
 			self::$included_classes[$short_class_name] = $class_name;
 			self::classLoadEvent($class_name);
 		}

@@ -39,6 +39,7 @@ Html_Session::register();
 Html_Translator::register();
 Translation_String_Composer::register();
 List_Controller_Acls::register();
+Output_Controller_Acls::register();
 Object_Builder::register();
 // activate errors handlers
 Error_Handlers::activate();
@@ -51,5 +52,5 @@ foreach (array_reverse($MODULES) as $MODULE) $MODULE();
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
 Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
-//echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
+echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
 //echo "<pre>\$_POST=unserialize(\"" . str_replace("\"", "\\\"", serialize($_POST)) . "\")</pre>";

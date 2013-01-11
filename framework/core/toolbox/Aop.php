@@ -43,7 +43,6 @@ abstract class Aop
 						"don't call " . $joinpoint->getClassName() . " which is not $class_name", E_USER_NOTICE
 					);
 					if ($when == "around") {
-						echo "do this<br>";
 						$joinpoint->process();
 					}
 				}

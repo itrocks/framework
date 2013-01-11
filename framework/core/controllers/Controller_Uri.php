@@ -134,7 +134,7 @@ class Controller_Uri
 			}
 			$this->controller_name = join("_", $controller_elements);
 			while ($i < $length) {
-				if (is_numeric($i)) {
+				if (is_numeric($uri[$i])) {
 					if ($last_controller_element) {
 						$this->parameters->set($last_controller_element, $uri[$i]);
 						$last_controller_element = "";
@@ -150,6 +150,9 @@ class Controller_Uri
 					$last_controller_element = $uri[$i];
 				}
 				$i++;
+			}
+			if ($last_controller_element) {
+				$this->parameters->addValue($last_controller_element);
 			}
 		}
 		else {

@@ -123,7 +123,7 @@ class Controller_Uri_Test extends Unit_Test
 	//------------------------------------------------------------------------ testTrashcanDropOutput
 	public function testTrashcanDropOutput()
 	{
-		$controller_uri = new Controller_Uri("/Trashcan/drop/Test_Order/output/1/date/number", array("as_widget" => 1, "_" => 2));
+		$controller_uri = new Controller_Uri("/Trashcan/drop/Test_Order/1/output/date/number", array("as_widget" => 1, "_" => 2));
 		$this->assume(
 			__METHOD__,
 			array(
@@ -134,7 +134,7 @@ class Controller_Uri_Test extends Unit_Test
 			array(
 				"controller_name" => "Trashcan",
 				"feature_name" => "drop",
-				"parameters" => (new Controller_Parameters())->addValue("Test_Order")->addValue("output")->addValue(1)->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
+				"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->addValue("output")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
 			)
 		);
 	}

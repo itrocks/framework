@@ -99,11 +99,17 @@ abstract class Html_Template_Funcs
 	 */
 	public static function getProperties(Html_Template $template, $object)
 	{
+		$properties_filter = $template->getParameter("properties_filter");
 		$class = Reflection_Class::getInstanceOf($object);
 		$properties = $class->accessProperties();
 		foreach ($properties as $property_name => $property) {
-			$property->display = Names::propertyToDisplay($property_name);
-			$property->value = $object->$property_name;
+			if (isset($properties_filter) && !in_array($property_name, $properties_filter)) {
+				unset($properties[$property_name]);
+			}
+			else {
+				$property->display = Names::propertyToDisplay($property_name);
+				$property->value = $object->$property_name;
+			}
 		}
 		$class->accessPropertiesDone();
 		return $properties;

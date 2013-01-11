@@ -5,32 +5,30 @@ class Trashcan_Drop_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
-	/**
-	 * This will be called for this controller, always.
-	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		$objects = $parameters->getObjects();
-		if (is_object($objects[0])) {
-			$object = $objects[0];
-			Dao::delete($object);
-			echo Names::classToDisplay(get_class($object)) . " was deleted";
+		$parameters = $parameters->getObjects();
+		$object = reset($parameters);
+		if (is_object($object) && !isset($parameters[1])) {
+			Main_Controller::getInstance()->runController(
+				"/" . Namespaces::shortClassName(get_class($object))
+				. "/" . Dao::getObjectIdentifier($object) . "/delete"
+			);
 		}
 		else {
-			$class_name = array_shift($objects);
-			$feature = array_shift($objects);
+			$class_name = array_shift($parameters);
+			if (is_object($class_name)) {
+				$class_name = Namespaces::shortClassName(get_class($class_name));
+			}
+			$feature = array_shift($parameters);
 			$get = array();
-			foreach ($objects as $key => $value) {
+			foreach ($parameters as $key => $value) {
 				if (is_numeric($value) || !is_numeric($key)) {
-					unset($objects[$key]);
+					unset($parameters[$key]);
 					$get[$key] = $value;
 				}
 			}
-			$elements = join("/", $objects);
+			$elements = join("/", $parameters);
 			Main_Controller::getInstance()->runController(
 				"/" . $class_name . "/" . $feature . "Remove/" . $elements, $get
 			);

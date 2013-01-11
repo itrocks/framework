@@ -30,6 +30,7 @@ class Default_Output_Controller extends Output_Controller
 			$parameters = array_merge(array($class_name => $object), $parameters);
 		}
 		$parameters["general_buttons"] = $this->getGeneralButtons($object);
+		$parameters["properties_filter"] = $this->getPropertiesList($class_name);
 		return $parameters;
 	}
 
