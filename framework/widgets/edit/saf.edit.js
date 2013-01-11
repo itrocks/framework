@@ -14,22 +14,22 @@ $("document").ready(function() {
 
 		// .collection
 		$this.find(".minus").click(function() {
-			var row = $(this).parents("tr")[0];
+			var row = $(this).closest("tr");
 			row.parentNode.removeChild(row);
 		});
 
 		$this.find(".plus").each(function() {
-			this.saf_add = $(this).parents("table").find("tr.new").clone();
+			this.saf_add = $(this).closest("table").find("tr.new").clone();
 		});
 
 		$this.find(".plus").click(function() {
 			var row = this.saf_add.clone();
-			$(this).parents("table").children("tbody").append(row);
+			$(this).closest("table").children("tbody").append(row);
 			row.build();
 		});
 
 		$this.find(".plusplus").click(function() {
-			var plus = $(this).parents("table").find(".plus");
+			var plus = $(this).closest("table").find(".plus");
 			for (var i = 0; i < 10; i ++) {
 				plus.click();
 			}
@@ -43,7 +43,6 @@ $("document").ready(function() {
 		});
 
 		// .object
-		$this.find("input.combo").each(function(){ console.log(this); });
 		$this.find("input.combo").autocomplete({
 			autoFocus: true,
 			delay: 100,
@@ -54,13 +53,12 @@ $("document").ready(function() {
 			source: function(request, response) {
 				request["PHPSESSID"] = PHPSESSID;
 				$.getJSON(
-					uri_root + "/" + script_name + "/" + $(this.element).classVar("class") + "/json",
+					uri_root + script_name + "/" + $(this.element).classVar("class") + "/json",
 					request,
 					function(data, status, xhr) { response(data); }
 				);
 			},
 			select: function(event, ui) {
-				console.log("select " + ui.item.id);
 				$(this).prev().val(ui.item.id);
 			}
 		});

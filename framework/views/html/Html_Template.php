@@ -581,7 +581,7 @@ class Html_Template
 					$i += strlen($link) + 1;
 					$j = strpos($content, $quote, $i);
 					if (substr($content, $i, 1) === "/") {
-						$full_path = Paths::$uri_root . "/" . Paths::$script_name . substr($content, $i, $j - $i);
+						$full_path = Paths::$uri_root . Paths::$script_name . substr($content, $i, $j - $i);
 						$content = substr($content, 0, $i) . $full_path . substr($content, $j);
 					}
 				}
