@@ -6,7 +6,7 @@ class Var_Annotation extends Documented_Type_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * 
+	 *
 	 * @param string $value
 	 * @param Reflection_Property $reflection_object
 	 */

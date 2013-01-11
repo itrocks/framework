@@ -12,9 +12,8 @@ class Main_Error_Handler implements Error_Handler
 	 */
 	public function handle(Handled_Error $error)
 	{
-		echo "<div class=\"Main_Error_Handler_handle\">"
-			. $error->getErrorNumber() . " " . $error->getErrorMessage()
-			. "<pre>" . print_r($error->getVariables(), true) . "</pre>"
+		echo "<div class=\"Main_Error_Handler_handle\">" . $error->getErrorNumber() . " "
+			. $error->getErrorMessage() . "<pre>" . print_r($error->getVariables(), true) . "</pre>"
 			. "</div>\n";
 	}
 

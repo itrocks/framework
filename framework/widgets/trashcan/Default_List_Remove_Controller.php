@@ -14,7 +14,9 @@ class Default_List_Remove_Controller implements Class_Controller
 				List_Controller_Acls::removeListProperty($full_class_name, $property_name);
 			}
 		}
-		(new Default_List_Controller())->run(new Controller_Parameters(), array(), array(), $class_name);
+		(new Default_List_Controller())->run(
+			new Controller_Parameters(), array(), array(), $class_name
+		);
 	}
 
 }

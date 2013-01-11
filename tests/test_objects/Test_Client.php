@@ -26,6 +26,6 @@ class Test_Client
 	 *
 	 * @var Test_Client
 	 */
-	public $client; 
+	public $client;
 
 }

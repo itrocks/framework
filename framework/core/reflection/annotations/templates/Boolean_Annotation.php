@@ -17,7 +17,7 @@ abstract class Boolean_Annotation extends Annotation
 	/**
 	 * Register value as boolean
 	 *
-	 * If a boolean annotation has no value or is not "false" or zero, annotation's value will be true. 
+	 * If a boolean annotation has no value or is not "false" or zero, annotation's value will be true.
 	 *
 	 * @param string $value
 	 */

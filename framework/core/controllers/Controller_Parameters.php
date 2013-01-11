@@ -54,12 +54,14 @@ class Controller_Parameters
 				// object parameter
 				$object = Getter::getObject($this->parameters[$parameter_name] + 0, $class_name);
 				$this->objects[$parameter_name] = $object;
-			} else {
+			}
+			else {
 				// free parameter
 				$object = $this->parameters[$parameter_name];
 				$this->objects[$parameter_name] = $object;
 			}
-		} else {
+		}
+		else {
 			// text parameter
 			$object = $this->parameters[$parameter_name];
 			$this->objects[$parameter_name] = $object;

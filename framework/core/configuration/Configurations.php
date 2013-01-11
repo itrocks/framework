@@ -9,7 +9,7 @@ class Configurations
 	//------------------------------------------------------------------------------- $configurations
 	/**
 	 * Configuration objects array, indice is configuration name
-	 * 
+	 *
 	 * @var multitype:Configuration
 	 */
 	private $configurations;
@@ -28,7 +28,7 @@ class Configurations
 	//------------------------------------------------------------------------------ getConfiguration
 	/**
 	 * Get the named $configuration_name Configuration object
-	 * 
+	 *
 	 * @param string $configuration_name
 	 * @return Configuration
 	 */
@@ -41,7 +41,7 @@ class Configurations
 	/**
 	 * Load the config.php configuration file an store it into the configurations list
 	 *
-	 * If a default configuration is set into the loaded configuration file, current configuration is switched to this configuration. 
+	 * If a default configuration is set into the loaded configuration file, current configuration is switched to this configuration.
 	 *
 	 * @param string $file_name
 	 */

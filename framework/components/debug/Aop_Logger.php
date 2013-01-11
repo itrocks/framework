@@ -18,26 +18,24 @@ abstract class Aop_Logger implements Plugin
 		if (self::$active) {
 			if ($joinpoint->getKindOfAdvice() & AOP_KIND_BEFORE) {
 				if (isset(self::$inside)) {
-					echo "<div>Essaie de faire de l'aop depuis l'aop ! " . print_r(self::$inside, true) . "</div>";
+					echo "<div>Essaie de faire de l'aop depuis l'aop ! " . print_r(self::$inside, true)
+						. "</div>";
 					die();
 				}
 				self::$inside = $joinpoint;
-			} elseif ($joinpoint->getKindOfAdvice() & AOP_KIND_AFTER) {
+			}
+			elseif ($joinpoint->getKindOfAdvice() & AOP_KIND_AFTER) {
 				if (!isset(self::$inside)) {
-					echo "<div>Là c'est n'importe quoi !</div>";
+					echo "<div>Lï¿½ c'est n'importe quoi !</div>";
 				}
 				self::$inside = null;
 			}
 			$arguments = $joinpoint->getArguments();
 			$side = ($joinpoint->getKindOfAdvice() & AOP_KIND_BEFORE)
 				? "before"
-				:  (($joinpoint->getKindOfAdvice() & AOP_KIND_AFTER)
-					? "after"
-					: "");
+				: (($joinpoint->getKindOfAdvice() & AOP_KIND_AFTER) ? "after" : "");
 			if ($side == "after") {
-				echo "<div class=\"Aop logger "
-					. $joinpoint->getFunctionName()
-					. "\">"
+				echo "<div class=\"Aop logger " . $joinpoint->getFunctionName() . "\">"
 					. "<b>" . $joinpoint->getFunctionName() . "</b> "
 					. print_r($arguments[0], true) . " -&gt; " . print_r($arguments[1], true)
 					. "</div>";
@@ -52,8 +50,8 @@ abstract class Aop_Logger implements Plugin
 	public static function logRegister(AopJoinpoint $joinpoint)
 	{
 		$arguments = $joinpoint->getArguments();
-		echo "<div class=\"Aop logger register\">Register "
-			. $arguments[0] . " " . $arguments[1] . " " . $arguments[2]
+		echo "<div class=\"Aop logger register\">"
+			. "Register " . $arguments[0] . " " . $arguments[1] . " " . $arguments[2]
 			. "</div>";
 	}
 

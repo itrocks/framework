@@ -4,7 +4,7 @@ use ErrorException;
 
 class To_Exception_Error_Handler implements Error_Handler
 {
-	
+
 	//---------------------------------------------------------------------------------------- handle
 	/**
 	 * Change error to an exception

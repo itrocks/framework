@@ -27,7 +27,12 @@ abstract class Aop_Tracer
 		$first = true;
 		echo "(<br>";
 		foreach ($joinpoint->getArguments() as $argument) {
-			if (!$first) echo ","; else $first = false;
+			if (!$first) {
+				echo ",";
+			}
+			else {
+				$first = false;
+			}
 			echo " &nbsp; &nbsp; - " . print_r($argument, true) . "<br>";
 		}
 		echo ")<br>";

@@ -50,7 +50,7 @@ class Controller_Uri
 		foreach ($get as $key => $value) {
 			$this->parameters->set($key, $value);
 		}
-	} 
+	}
 
 	//-------------------------------------------------------------------- getPossibleControllerCalls
 	/**
@@ -89,7 +89,7 @@ class Controller_Uri
 
 	//----------------------------------------------------------------------------------------- parse
 	/**
-	 * Parse URI text elements to transform them into parameters, feature name and controller name 
+	 * Parse URI text elements to transform them into parameters, feature name and controller name
 	 *
 	 * @example $uri = array("order", 148, "form") will result on controller "Order_Form" with parameter "Order" = 148
 	 * @param multitype:string $uri
@@ -114,15 +114,15 @@ class Controller_Uri
 			while (($i < $length) && ($i < 2) && !is_numeric($uri[$i])) {
 				$last_controller_element = str_replace(" ", "_", ucwords(str_replace("_", " ", $uri[$i])));
 				$controller_elements[] = $last_controller_element;
-				$i ++;
+				$i++;
 			}
 			if (($i < $length) && is_numeric($uri[$i])) {
 				$this->parameters->set($last_controller_element, $uri[$i] + 0);
 				$last_controller_element = "";
-				$i ++;
+				$i++;
 				if (($i < $length) && !is_numeric($uri[$i])) {
 					$this->feature_name = lcfirst($uri[$i]);
-					$i ++;
+					$i++;
 				}
 			}
 			if (!$this->feature_name) {
@@ -149,7 +149,7 @@ class Controller_Uri
 					}
 					$last_controller_element = $uri[$i];
 				}
-				$i ++;
+				$i++;
 			}
 		}
 		else {
@@ -165,7 +165,7 @@ class Controller_Uri
 
 	//------------------------------------------------------------------------------------ uriToArray
 	/**
-	 * Change a text URI into an array URI 
+	 * Change a text URI into an array URI
 	 *
 	 * @example "/Order/148/form" will become array("Order", "148", "form")
 	 * @param string $uri

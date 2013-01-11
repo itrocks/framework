@@ -18,7 +18,7 @@ abstract class Application
 	//-------------------------------------------------------------------------------- getDirectories
 	/**
 	 * This is called by getSourceDirectories() for recursive directories reading.
-	 * 
+	 *
 	 * @param string $path base path
 	 * @return multitype:string an array of directories names
 	 */
@@ -74,7 +74,8 @@ abstract class Application
 			$current_configuration = Configuration::current();
 			if (!$current_configuration) {
 				return array(__NAMESPACE__);
-			} else {
+			}
+			else {
 				$application = $current_configuration->getApplicationName();
 				$app_path = strtolower($application);
 				self::$namespaces = array();

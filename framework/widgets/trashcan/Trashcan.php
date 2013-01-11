@@ -12,7 +12,6 @@ class Trashcan
 	 */
 	public function drop($object)
 	{
-		
 	}
 
 }

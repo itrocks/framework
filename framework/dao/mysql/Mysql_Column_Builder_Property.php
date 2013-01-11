@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
-
 // TODO buildId() and buildLink() should be in another Mysql_Column_Builder_? class
+
 abstract class Mysql_Column_Builder_Property
 {
 
@@ -70,7 +70,7 @@ abstract class Mysql_Column_Builder_Property
 	/**
 	 * Gets mysql default value for a property
 	 *
-	 * Must be called only after $column's Null and Type has been set 
+	 * Must be called only after $column's Null and Type has been set
 	 *
 	 * @param Reflection_Property $property
 	 * @param Mysql_Column $column

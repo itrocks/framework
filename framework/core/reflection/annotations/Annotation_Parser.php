@@ -10,7 +10,7 @@ abstract class Annotation_Parser
 	//---------------------------------------------------------------------------------------- byName
 	/**
 	 * Parse a given annotation from a reflection class / method / property / etc. doc comment
-	 * 
+	 *
 	 * @param Has_Doc_Comment $reflection_object
 	 * @param string $annotation_name
 	 * @return Annotation

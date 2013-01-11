@@ -1,5 +1,4 @@
 <?php
-
 use SAF\Framework\Object_Builder;
 
 //------------------------------------------------------------------------------ arrayDiffRecursive
@@ -50,13 +49,14 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
 function arrayFormRevert($array)
 {
 	if (is_array($array)) {
-		$result = array ();
+		$result = array();
 		foreach ($array as $field_name => $sub_array) {
 			if (is_array($sub_array)) {
 				foreach ($sub_array as $n => $value) {
 					if (!is_array($value)) {
 						$result[$n][$field_name] = $value;
-					} else {
+					}
+					else {
 						foreach ($value as $n2 => $value2) {
 							$result[$n2][$field_name][$n] = $value2;
 						}
@@ -65,7 +65,8 @@ function arrayFormRevert($array)
 			}
 		}
 		return $result;
-	} else {
+	}
+	else {
 		return $array;
 	}
 }

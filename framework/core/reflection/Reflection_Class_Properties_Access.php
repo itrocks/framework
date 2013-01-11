@@ -50,7 +50,7 @@ abstract class Reflection_Class_Properties_Access
 		$class_name = $class->name;
 		if (isset(self::$properties_map[$class_name])) {
 			$properties = self::$properties_map[$class_name];
-			self::$count[$class_name] ++;
+			self::$count[$class_name]++;
 		}
 		else {
 			$parent_class = $class->getParentClass();
@@ -91,7 +91,7 @@ abstract class Reflection_Class_Properties_Access
 		$class_name = $class->name;
 		$count = self::$count[$class_name];
 		if ($count > 0) {
-			self::$count[$class_name] --;
+			self::$count[$class_name]--;
 		}
 		else {
 			foreach (self::$private_map[$class_name] as $private) {

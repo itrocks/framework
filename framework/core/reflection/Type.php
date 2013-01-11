@@ -80,7 +80,7 @@ abstract class Type
 	//------------------------------------------------------------------------------------- isNumeric
 	/**
 	 * Tells if a type is numeric or not
-	 * 
+	 *
 	 * @param string $type_name
 	 * @return boolean
 	 */

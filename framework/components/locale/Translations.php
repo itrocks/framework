@@ -4,6 +4,7 @@ namespace SAF\Framework;
 class Translations extends Set
 {
 
+	//---------------------------------------------------------------------------------------- $cache
 	/**
 	 * @var multitype:string
 	 */

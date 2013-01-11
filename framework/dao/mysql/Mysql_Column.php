@@ -161,7 +161,7 @@ class Mysql_Column implements Dao_Column
 		$column_name = $this->getName();
 		$type = $this->getSqlType();
 		$postfix = $this->getSqlPostfix();
-		$sql = "`" . $column_name. "` " . $type;
+		$sql = "`" . $column_name . "` " . $type;
 		if (!$this->canBeNull()) {
 			$sql .= " NOT NULL";
 		}

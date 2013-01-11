@@ -35,7 +35,7 @@ class User_Authenticate_Controller implements Feature_Controller
 	//----------------------------------------------------------------------------------------- login
 	/**
 	 * Login to current environment using login and password
-	 * 
+	 *
 	 * @param string $login
 	 * @param string $password
 	 * @return User null if user not found
@@ -53,7 +53,7 @@ class User_Authenticate_Controller implements Feature_Controller
 				return $user;
 			}
 		}
-		return null; 
+		return null;
 	}
 
 	//------------------------------------------------------------------------------------------- run

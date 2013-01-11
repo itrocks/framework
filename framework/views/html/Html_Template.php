@@ -77,14 +77,15 @@ class Html_Template
 		$params = $objects ? array_merge(array($this), $objects) : array();
 		if ($i = strpos($func_call, "(")) {
 			$func_name = substr($func_call, 0, $i);
-			$i ++;
+			$i++;
 			$j = strpos($func_call, ")", $i);
 			$params = array_merge(
 				split(",", substr($func_call, $i, $j - $i)),
 				$params
 			);
 			return call_user_func_array(array($object_call, $func_name), $params);
-		} else {
+		}
+		else {
 			return call_user_func_array(array($object_call, $func_call), $params);
 		}
 	}
@@ -168,7 +169,7 @@ class Html_Template
 	 */
 	protected function parseCollection(Reflection_Property $property, $collection)
 	{
-		return (new Html_Builder_Collection($property, $collection))->build();
+		return( new Html_Builder_Collection($property, $collection))->build();
 	}
 
 	//------------------------------------------------------------------------------------ parseConst
@@ -326,7 +327,7 @@ class Html_Template
 		if (is_array($value) && (reset($objects) instanceof Reflection_Property)) {
 			$value = $this->parseCollection(reset($objects), $value);
 		}
-		$i --;
+		$i--;
 		if ($auto_remove && !strlen($value)) {
 			$this->parseVarRemove($content, $i, $j);
 		}
@@ -354,13 +355,13 @@ class Html_Template
 			(($content[$i - 1] === "'") && ($content[$j + 1] === "'"))
 			|| (($content[$i - 1] === '"') && ($content[$j + 1] === '"'))
 		) {
-			$i --;
-			$j ++;
+			$i--;
+			$j++;
 		}
 		while (($content[$i] != " ") && ($content[$i] != ",")) {
 			if (($content[$i] == '"') || ($content[$i] == "'")) {
 				while ($content[$j] != $content[$i]) {
-					$j ++;
+					$j++;
 				}
 			}
 			$i--;
@@ -391,7 +392,7 @@ class Html_Template
 		$content = $this->parseLoops($content, $objects);
 		$i = 0;
 		while (($i = strpos($content, "{", $i)) !== false) {
-			$i ++;
+			$i++;
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, "}", $i);
 				$i = $this->parseVar($content, $objects, $i, $j);
@@ -443,7 +444,7 @@ class Html_Template
 			$loop_insert = "";
 			$counter = 0;
 			if (is_array($elements)) foreach ($elements as $element) {
-				$counter ++;
+				$counter++;
 				if (isset($to) && ($counter > $to)) break;
 				if ($counter >= $from) {
 					array_unshift($objects, $element);
@@ -461,7 +462,7 @@ class Html_Template
 			if (isset($to) && ($counter < $to)) {
 				array_unshift($objects, new StdClass());
 				while ($counter < $to) {
-					$counter ++;
+					$counter++;
 					if ($counter >= $from) {
 						if ($do) {
 							$loop_insert .= $this->parseVars($separator, $objects);
@@ -481,7 +482,7 @@ class Html_Template
 			$loop_insert = $this->parseVars($loop_content, $objects);
 		}
 		else {
-			$loop_insert  = "";
+			$loop_insert = "";
 		}
 		$content = substr($content, 0, $i - $length - 7)
 			. $loop_insert
@@ -505,7 +506,7 @@ class Html_Template
 	private function parseLoops($content, $objects)
 	{
 		$icontent = 0;
-		while (($icontent = strpos($content, "<!--" , $icontent)) !== false) {
+		while (($icontent = strpos($content, "<!--", $icontent)) !== false) {
 			$i = $icontent + 4;
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, "-->", $i);
@@ -608,7 +609,8 @@ class Html_Template
 				$file_name = substr($file_name, strrpos($file_name, "/") + 1);
 				if (substr($file_name, -4) == ".css") {
 					$file_path = static::getCssPath($this->css) . "/" . $file_name;
-				} else {
+				}
+				else {
 					$file_path = Paths::$uri_root . substr(
 						stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 					);

@@ -112,7 +112,7 @@ class Sql_Joins
 		if (!$depth) {
 			$join->type = Sql_Join::OBJECT;
 		}
-		$join->foreign_alias = "t" . $this->alias_counter ++;
+		$join->foreign_alias = "t" . $this->alias_counter++;
 		if (!isset($join->foreign_table)) {
 			$join->foreign_table = Dao::current()->storeNameOf($foreign_class_name);
 		}
@@ -144,7 +144,8 @@ class Sql_Joins
 			$linked_join->foreign_table = Dao::storeNameOf($master_property->class)
 				. "_" . Dao::storeNameOf($foreign_class_name)
 				. "_links";
-		} else {
+		}
+		else {
 			$linked_join->foreign_table = Dao::storeNameOf($foreign_class_name)
 			. "_" . Dao::storeNameOf($master_property->class)
 			. "_links";
@@ -189,7 +190,8 @@ class Sql_Joins
 		if (strpos($property, "=")) {
 			list($join->foreign_column, $join->master_column) = explode("=", $property);
 			$join->foreign_column = "id_" . $join->foreign_column;
-		} else {
+		}
+		else {
 			$join->foreign_column = "id_" . $property;
 			$join->master_column = "id";
 		}
@@ -226,7 +228,8 @@ class Sql_Joins
 					if (property_exists($foreign_class_name, $foreign_property_name)) {
 						$join->foreign_column = "id_" . $foreign_property_name;
 						$join->master_column  = "id";
-					} else {
+					}
+					else {
 						$this->addLinkedJoin(
 							$join, $master_path, $master_property,
 							$foreign_path, $foreign_class_name, $foreign_property_name

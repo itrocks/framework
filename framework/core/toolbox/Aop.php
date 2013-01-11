@@ -8,7 +8,7 @@ abstract class Aop
 {
 
 	//-------------------------------------------------------------------------- $property_joinpoints
-	private static $property_joinpoints = array(); 
+	private static $property_joinpoints = array();
 
 	//------------------------------------------------------------------------------------------- add
 	/**

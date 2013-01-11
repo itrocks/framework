@@ -11,7 +11,7 @@ interface Transactional_Data_Link
 	 * @return boolean | null true if begin succeeds, false if error, null if not a transactional SQL engine
 	 */
 	public function begin();
-	
+
 	//---------------------------------------------------------------------------------------- commit
 	/**
 	 * Commit a transaction (non-transactional SQL engines will do nothing and return null)

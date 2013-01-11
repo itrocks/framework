@@ -18,7 +18,7 @@ abstract class Locks
 	 */
 	public static function delock($lock_name)
 	{
-		Locks::$locks[$lock_name] --;
+		Locks::$locks[$lock_name]--;
 		if (!Locks::$locks[$lock_name]) {
 			unset(Locks::$locks[$lock_name]);
 			return true;
@@ -29,9 +29,9 @@ abstract class Locks
 	//------------------------------------------------------------------------------------------ lock
 	/**
 	 * Locks the given lock name
-	 * 
+	 *
 	 * At first call : set lock to true and return false
-	 * At next calls until noRecurseEnd() is called : return true to stop recursivity 
+	 * At next calls until noRecurseEnd() is called : return true to stop recursivity
 	 *
 	 * @param string $class_name
 	 * @param string $property_name
@@ -40,7 +40,7 @@ abstract class Locks
 	public static function lock($lock_name)
 	{
 		if (isset(Locks::$locks[$lock_name])) {
-			Locks::$locks[$lock_name] ++;
+			Locks::$locks[$lock_name]++;
 			return true;
 		}
 		Locks::$locks[$lock_name] = 1;
@@ -53,7 +53,8 @@ abstract class Locks
 	 *
 	 * @param string $lock_name
 	 */
-	public static function unlock($lock_name) {
+	public static function unlock($lock_name)
+	{
 		if (isset(Locks::$locks[$lock_name])) {
 			unset(Locks::$locks[$lock_name]);
 		}

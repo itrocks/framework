@@ -45,7 +45,7 @@ abstract class List_Annotation extends Annotation
 				$start = ($in_quote ? ($i + 1) : $i);
 				$stop = null;
 			}
-			$i ++;
+			$i++;
 		}
 		if (($i == $length) && ($values || ($i > $start))) {
 			$values[] = substr($value, $start, $i - $start);

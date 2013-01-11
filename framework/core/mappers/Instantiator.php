@@ -15,9 +15,9 @@ abstract class Instantiator
 	//-------------------------------------------------------------------------------------- getClass
 	/**
 	 * Get substituted class name for a given class name
-	 * 
+	 *
 	 * If there is no substitution for class name, it will be returned unchanged.
-	 * 
+	 *
 	 * @param string $class_name
 	 * @return string
 	 */
@@ -30,7 +30,7 @@ abstract class Instantiator
 
 	//----------------------------------------------------------------------------------- newInstance
 	/**
-	 * Returns a new instance of given class name, using substition table if exists. 
+	 * Returns a new instance of given class name, using substition table if exists.
 	 *
 	 * @param string $class_name
 	 * @return object

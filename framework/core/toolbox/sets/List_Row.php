@@ -31,7 +31,7 @@ interface List_Row
 	 * Gets a value from the row
 	 *
 	 * @param string $property the path of the property
-	 * @return mixed 
+	 * @return mixed
 	 */
 	public function getValue($property);
 

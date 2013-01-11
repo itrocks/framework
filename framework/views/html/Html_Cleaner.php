@@ -13,7 +13,7 @@ abstract class Html_Cleaner implements Plugin
 	{
 		$content = $joinpoint->getReturnedValue();
 		$content = str_replace("\r", "", $content);
-		$content = preg_replace("/(\n)([\\s|\\t]+)(\n)/","\n", $content);
+		$content = preg_replace("/(\n)([\\s|\\t]+)(\n)/", "\n", $content);
 		$joinpoint->setReturnedValue($content);
 	}
 

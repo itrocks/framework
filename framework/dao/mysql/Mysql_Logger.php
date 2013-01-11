@@ -52,11 +52,11 @@ class Mysql_Logger implements Plugin
 	 */
 	public function afterMainControllerRun(AopJoinpoint $joinpoint)
 	{
-		$this->main_controller_counter --;
+		$this->main_controller_counter--;
 		if (!$this->main_controller_counter) {
 			echo "<div class=\"Mysql logger query\">\n";
 			echo "<pre>" . print_r($this->queries_log, true) . "</pre>\n";
-			echo" </div>\n";
+			echo " </div>\n";
 		}
 	}
 
@@ -110,7 +110,7 @@ class Mysql_Logger implements Plugin
 	//--------------------------------------------------------------------------- onMainControllerRun
 	public function onMainControllerRun(AopJoinpoint $joinpoint)
 	{
-		$this->main_controller_counter ++;
+		$this->main_controller_counter++;
 	}
 
 	//-------------------------------------------------------------------------------------- register

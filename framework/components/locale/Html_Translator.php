@@ -38,7 +38,7 @@ abstract class Html_Translator implements Plugin
 	//--------------------------------------------------------------------------------- translatePage
 	/**
 	 * Translate terms from html pages
-	 * This is done at end of html templates parsing 
+	 * This is done at end of html templates parsing
 	 *
 	 * @param AopJoinpoint $joinpoint
 	 */
@@ -48,7 +48,7 @@ abstract class Html_Translator implements Plugin
 		$context = get_class($joinpoint->getObject()->getObject());
 		$i = 0;
 		while (($i = strpos($content, "|", $i)) !== false) {
-			$i ++;
+			$i++;
 			if (($i < strlen($content)) && (!in_array($content[$i], array(" ", "\n", "\r", "\t")))) {
 				self::translateElement($content, $i, $context);
 			}

@@ -24,7 +24,7 @@ interface Dao_Key extends Field
 	/**
 	 * Gets the SQL version of the column definition
 	 *
-	 * @returns tring
+	 * @return string
 	 */
 	public function toSql();
 

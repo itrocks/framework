@@ -49,7 +49,7 @@ class Sql_Alter_Table_builder
 	//------------------------------------------------------------------------------------- addColumn
 	/**
 	 * Adds an altered column
-	 * 
+	 *
 	 * @param string $old_column_name
 	 * @param Dao_Column $column
 	 */

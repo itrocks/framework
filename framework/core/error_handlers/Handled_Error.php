@@ -58,14 +58,14 @@ class Handled_Error
 	/**
 	 * Variables that existed in the scope the error was triggered in.
 	 * User error handler must not modify error context.
-	 * 
+	 *
 	 * @var array
 	 */
 	private $vars;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Handled error construction is done by Error_Handlers::handle() and should not be done manually 
+	 * Handled error construction is done by Error_Handlers::handle() and should not be done manually
 	 *
 	 * @param integer $err_no   php error number
 	 * @param string  $err_msg  php error message
@@ -128,7 +128,7 @@ class Handled_Error
 	//------------------------------------------------------------------------------- getErrorMessage
 	/**
 	 * Get handled error message
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getErrorMessage()
@@ -173,7 +173,7 @@ class Handled_Error
 	/**
 	 * Returns true if standard php error handler will be called
 	 *
-	 * This is to true if callStandardPhpErrorHandler(true) has been called in the error handler or a previous one. 
+	 * This is to true if callStandardPhpErrorHandler(true) has been called in the error handler or a previous one.
 	 *
 	 * @return boolean
 	 */

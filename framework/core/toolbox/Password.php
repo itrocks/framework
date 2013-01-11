@@ -15,10 +15,10 @@ class Password
 	{
 		switch ($algorithm) {
 			case "crypt": return crypt($password);
-			case "md5":  return md5($password);
-			case "sha1": return sha1($password);
-			default:     return self::mysqlPassword($password);
+			case "md5":   return md5($password);
+			case "sha1":  return sha1($password);
 		}
+		return self::mysqlPassword($password);
 	}
 
 	//--------------------------------------------------------------------------------- mysqlPassword

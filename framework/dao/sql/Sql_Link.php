@@ -27,7 +27,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct($parameters)
 	{
-		if (isset($parameters)) { 
+		if (isset($parameters)) {
 			$this->tables = isset($parameters["tables"]) ? $parameters["tables"] : array();
 		}
 	}
@@ -169,7 +169,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 						if ($first && !isset($properties[$classes[$j]])) {
 							$class = Reflection_Class::getInstanceOf($classes[$j]);
 							$class->accessProperties();
-							$properties[$classes[$j]] = $class; 
+							$properties[$classes[$j]] = $class;
 						}
 					}
 					$property_name = $column_names[$i];

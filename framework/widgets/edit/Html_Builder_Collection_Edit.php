@@ -22,7 +22,10 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 			$property, $object->$property_name, $this->property->name . "[]"
 		))->build();
 		if ($property_name == reset($this->properties)) {
-			$id_input = new Html_Input($this->property->name . "[id][]", isset($object->id) ? $object->id : null);
+			$id_input = new Html_Input(
+				$this->property->name . "[id][]",
+				isset($object->id) ? $object->id : null
+			);
 			$id_input->setAttribute("type", "hidden");
 			$input = $id_input . $input;
 		}

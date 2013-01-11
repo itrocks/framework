@@ -17,13 +17,14 @@ class List_Controller_Acls implements Plugin
 		$right = new Acl_Right();
 		$right->key = $class_name . ".list.properties.list." . $property_name;
 		$right->value = $property_name;
- 		$right->group = Acls_User::current()->getUserGroup();
+		$right->group = Acls_User::current()->getUserGroup();
 		$acls->add($right);
 		// Add in bdd
 		// Test if the key exist in bdd
 		$tmp = Dao::search($right);
-		if(!$tmp)
+		if (!$tmp) {
 			Dao::write($right);
+		}
 	}
 
 	//----------------------------------------------------------------------------- getListProperties
@@ -78,7 +79,8 @@ class List_Controller_Acls implements Plugin
 		$acls->remove($right);
 		// Delete from bdd
 		$objects = Dao::search($right);
-		foreach ($objects as $object)
+		foreach ($objects as $object) {
 			Dao::delete($object);
+		}
 	}
 }

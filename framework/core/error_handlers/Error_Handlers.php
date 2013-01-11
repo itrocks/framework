@@ -43,7 +43,7 @@ class Error_Handlers
 
 	//-------------------------------------------------------------------------- getHandledErrorTypes
 	/**
-	 * Get the handled error types list 
+	 * Get the handled error types list
 	 *
 	 * @return multitype:integer
 	 */

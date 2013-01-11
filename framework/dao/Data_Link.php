@@ -89,7 +89,7 @@ abstract class Data_Link
 	 *
 	 * Same as search(), but expected result is one object only.
 	 * It is highly recommended to use this search with primary keys properties values searches.
-	 * If several result exist, only one will be taked, the first on the list (may be random). 
+	 * If several result exist, only one will be taked, the first on the list (may be random).
 	 *
 	 * @param object $what source object for filter, only set properties will be used for search
 	 * @param string $class_name must be set if $what is not a filter array

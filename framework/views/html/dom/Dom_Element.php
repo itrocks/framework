@@ -42,7 +42,7 @@ abstract class Dom_Element
 	 */
 	public function __construct($name = null, $end_tag = true)
 	{
-		if(isset($name)) $this->name = $name;
+		if (isset($name)) $this->name = $name;
 		$this->end_tag = $end_tag;
 	}
 

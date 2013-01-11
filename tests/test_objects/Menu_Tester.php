@@ -12,7 +12,7 @@ abstract class Menu_Tester implements Plugin
 	//---------------------------------------------------------------------------------- menuInitDemo
 	/**
 	 * Initialises a demo menu object
-	 * 
+	 *
 	 * @param AopJoinpoint $joinpoint
 	 */
 	public static function menuInitDemo(AopJoinpoint $joinpoint)

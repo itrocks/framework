@@ -17,5 +17,5 @@ class Test_Order_Output_Controller implements Feature_Controller
 		$parameters = $parameters->getObjects();
 		echo "<pre>test order output controller " . print_r($parameters, true) . "</pre>";
 	}
-	
+
 }

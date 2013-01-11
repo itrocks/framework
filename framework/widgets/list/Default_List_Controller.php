@@ -40,7 +40,7 @@ class Default_List_Controller extends List_Controller
 		$parameters = $parameters->getObjects();
 		$element_class_name = Set::elementClassNameOf($class_name);
 		$list = Dao::select($element_class_name, $this->getListProperties($element_class_name));
-		foreach ($list->getProperties() as $column){
+		foreach ($list->getProperties() as $column) {
 			List_Controller_Acls::addListProperty($element_class_name, $column);
 		}
 		$parameters = array_merge(array($element_class_name => $list), $parameters);
