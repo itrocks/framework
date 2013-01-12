@@ -39,9 +39,6 @@ abstract class Aop
 					call_user_func($call_back, $joinpoint);
 				}
 				else {
-					trigger_error(
-						"don't call " . $joinpoint->getClassName() . " which is not $class_name", E_USER_NOTICE
-					);
 					if ($when == "around") {
 						$joinpoint->process();
 					}

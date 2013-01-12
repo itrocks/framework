@@ -36,9 +36,9 @@ abstract class Translation_String_Composer implements Plugin
 				$j = strpos($text, "¦", $i);
 				if ($j >= $i) {
 					$nelement ++;
-					$elements["$" . $nelement] = $translations->translate(
-						substr($text, $i, $j - $i), $context
-					);
+					$elements["$" . $nelement] = (substr($text, $i, 1) == "$")
+						? substr($text, $i + 1, $j - $i - 1)
+						: $translations->translate(substr($text, $i, $j - $i), $context);
 					$text = substr($text, 0, $i - 2) . "$" . $nelement . substr($text, $j + 2);
 					$i += strlen($nelement) - 1;
 				}

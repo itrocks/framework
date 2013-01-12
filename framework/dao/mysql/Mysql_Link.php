@@ -54,7 +54,12 @@ class Mysql_Link extends Sql_Link
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->accessProperties() as $property) {
 				if ($property->getAnnotation("contained")->value) {
-					$this->deleteCollection($object, $property, $property->get($object));
+					if (Type::isMultiple($property->getType())) {
+						$this->deleteCollection($object, $property, $property->get($object));
+					}
+					else {
+						$this->delete($property->get($object));
+					}
 				}
 			}
 			$class->accessPropertiesDone();
@@ -79,11 +84,12 @@ class Mysql_Link extends Sql_Link
 	private function deleteCollection($parent, $property, $value)
 	{
 		$parent->$property = null;
-		$getter = $property->getAnnotation("getter")->value;
-		$old_collection = $parent->$getter();
+		$old_collection = $parent->$property;
 		$parent->$property = $value;
-		foreach ($old_collection as $old_element) {
-			$this->delete($old_element);
+		if (isset($old_collection)) {
+			foreach ($old_collection as $old_element) {
+				$this->delete($old_element);
+			}
 		}
 	}
 

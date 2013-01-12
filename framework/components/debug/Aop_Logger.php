@@ -26,7 +26,7 @@ abstract class Aop_Logger implements Plugin
 			}
 			elseif ($joinpoint->getKindOfAdvice() & AOP_KIND_AFTER) {
 				if (!isset(self::$inside)) {
-					echo "<div>L� c'est n'importe quoi !</div>";
+					echo "<div>Là c'est n'importe quoi !</div>";
 				}
 				self::$inside = null;
 			}

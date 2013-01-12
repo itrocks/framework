@@ -14,8 +14,7 @@ $("document").ready(function() {
 
 		// .collection
 		$this.find(".minus").click(function() {
-			var row = $(this).closest("tr");
-			row.parentNode.removeChild(row);
+			$(this).closest("tr").remove();
 		});
 
 		$this.find(".plus").each(function() {
