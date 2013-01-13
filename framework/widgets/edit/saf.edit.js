@@ -7,7 +7,35 @@ $("document").ready(function() {
 		// .autowidth
 		var width_function = function() {
 			var $this = $(this);
-			$this.width(getInputTextWidth($this.val()));
+			var already = this.text_width;
+			this.text_width = getInputTextWidth($this.val());
+			$table = $this.closest("table.collection");
+			if ($table.length) {
+				var name = $this.attr("name");
+				var next_input = false;
+				if (name == undefined) {
+					name = $this.prev("input").attr("name");
+					next_input = true;
+				}
+				var width = this.text_width;
+				var $list = $table.find("[name='" + name + "']");
+				$list.each(function() {
+					var $element = next_input ? $(this).next("input") : $(this);
+					element = $element.get();
+					// TODO : is always undefined, should not
+					if (element.text_width == undefined) {
+						element.text_width = getInputTextWidth($element.val());
+					}
+					width = Math.max(width, element.text_width);
+				});
+				$list.each(function() {
+					var $this = next_input ? $(this).next("input") : $(this);
+					$this.width(width);
+				});
+			}
+			else {
+				$this.width(this.text_width);
+			}
 		};
 		$this.find(".autowidth").each(width_function);
 		$this.find(".autowidth").keyup(width_function);
@@ -37,8 +65,17 @@ $("document").ready(function() {
 		// .datetime
 		$this.find("input.datetime").datepicker({
 			dateFormat: "dd/mm/yy",
+			showOn: "button",
 			showOtherMonths: true,
 			selectOtherMonths: true
+		});
+
+		$this.find("input.datetime").blur(function() {
+			$(this).datepicker("hide");
+		});
+
+		$this.find("input.datetime").keyup(function() {
+			$(this).datepicker("show");
 		});
 
 		// .object
