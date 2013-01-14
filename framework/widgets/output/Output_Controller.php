@@ -24,4 +24,43 @@ abstract class Output_Controller implements Default_Feature_Controller
 		return null;
 	}
 
+	//--------------------------------------------------------------------------------------- getTabs
+	/**
+	 * Get output tabs list for a given object
+	 *
+	 * @param object $object
+	 * @param multitype:string $properties Can be null
+	 * @return multitype:Tab
+	 */
+	protected function getTabs($object, $properties)
+	{
+		return array(Tabs_Builder_Class::build(Reflection_Class::getInstanceOf(get_class($object))));
+	}
+
+	//----------------------------------------------------------------------------- getViewParameters
+	/**
+	 * @param Controller_Parameters $parameters
+	 * @param string $class_name
+	 * @return multitype:mixed
+	 */
+	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
+	{
+		return $parameters->getObjects();
+	}
+
+	//------------------------------------------------------------------------------------------- run
+	/**
+	 * Default run method for default output view controller
+	 *
+	 * @param Controller_Parameters $parameters
+	 * @param array  $form
+	 * @param array  $files
+	 * @param string $class_name
+	 */
+	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
+	{
+		$parameters = $this->getViewParameters($parameters, $class_name);
+		View::run($parameters, $form, $files, $class_name, "output");
+	}
+
 }

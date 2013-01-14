@@ -14,20 +14,12 @@ class Default_Edit_Controller extends Default_Output_Controller
 		);
 	}
 
-	//------------------------------------------------------------------------------------------- run
-	/**
-	 * Default run method for default form edit view controller
-	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
-	 */
-	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
+	//----------------------------------------------------------------------------- getViewParameters
+	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
 	{
-		$parameters = $this->getViewParameters($parameters, $class_name);
+		$parameters = parent::getViewParameters($parameters, $class_name);
 		$parameters["template_mode"] = "edit";
-		View::run($parameters, $form, $files, $class_name, "output");
+		return $parameters;
 	}
 
 }

@@ -29,24 +29,10 @@ class Default_Output_Controller extends Output_Controller
 			$object = new $class_name();
 			$parameters = array_merge(array($class_name => $object), $parameters);
 		}
-		$parameters["general_buttons"] = $this->getGeneralButtons($object);
+		$parameters["general_buttons"]   = $this->getGeneralButtons($object);
 		$parameters["properties_filter"] = $this->getPropertiesList($class_name);
+		$parameters["tabs"]              = $this->getTabs($object, $parameters["properties_filter"]);
 		return $parameters;
-	}
-
-	//------------------------------------------------------------------------------------------- run
-	/**
-	 * Default run method for default output view controller
-	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
-	 */
-	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
-	{
-		$parameters = $this->getViewParameters($parameters, $class_name);
-		View::run($parameters, $form, $files, $class_name, "output");
 	}
 
 }

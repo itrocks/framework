@@ -26,16 +26,8 @@ class Default_List_Controller extends List_Controller
 		);
 	}
 
-	//------------------------------------------------------------------------------------------- run
-	/**
-	 * Default run method for default "list-typed" view controller
-	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
-	 */
-	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
+	//----------------------------------------------------------------------------- getViewParameters
+	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
 	{
 		$parameters = $parameters->getObjects();
 		$element_class_name = Set::elementClassNameOf($class_name);
@@ -47,6 +39,21 @@ class Default_List_Controller extends List_Controller
 		);
 		$parameters["general_buttons"]   = $this->getGeneralButtons($element_class_name);
 		$parameters["selection_buttons"] = $this->getSelectionButtons($element_class_name);
+		return $parameters;
+	}
+
+	//------------------------------------------------------------------------------------------- run
+	/**
+	 * Default run method for default "list-typed" view controller
+	 *
+	 * @param Controller_Parameters $parameters
+	 * @param array  $form
+	 * @param array  $files
+	 * @param string $class_name
+	 */
+	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
+	{
+		$parameters = $this->getViewParameters($parameters, $class_name);
 		View::run($parameters, $form, $files, $class_name, "list");
 	}
 
