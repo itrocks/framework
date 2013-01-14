@@ -32,27 +32,11 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		return new Html_Table_Standard_Cell($input);
 	}
 
-	//------------------------------------------------------------------------------------- buildHead
-	protected function buildHead()
-	{
-		$head = parent::buildHead();
-		$cell = new Html_Table_Standard_Cell("++");
-		$cell->setAttribute("title", "|add lines|");
-		$cell->addClass("plusplus");
-		$head->rows[0]->addCell($cell);
-		$cell = new Html_Table_Standard_Cell("+");
-		$cell->setAttribute("title", "|add line|");
-		$cell->addClass("plus");
-		$head->rows[0]->addCell($cell);
-		return $head;
-	}
-
 	//-------------------------------------------------------------------------------------- buildRow
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
 		$cell = new Html_Table_Standard_Cell("-");
-		$cell->setAttribute("colspan", 2);
 		$cell->setAttribute("title", "|remove line|");
 		$cell->addClass("minus");
 		$row->addCell($cell);
