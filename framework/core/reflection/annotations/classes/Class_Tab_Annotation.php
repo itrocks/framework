@@ -15,7 +15,11 @@ class Class_Tab_Annotation extends List_Annotation implements Multiple_Annotatio
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct($value)
 	{
-		$i = strrpos(substr($value, 0, strpos($value, ",")), " ");
+		$i = strpos($value, ",");
+		if ($i === false) {
+			$i = strlen($value);
+		}
+		$i = strrpos(substr($value, 0, $i), " ");
 		$this->name = substr($value, 0, $i);
 		parent::__construct(substr($value, $i + 1));
 	}

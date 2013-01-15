@@ -13,16 +13,62 @@ abstract class Tabs_Builder_Class
 	 */
 	public static function build(Reflection_Class $class)
 	{
-		$properties = $class->getAllProperties();
 		$tab_annotations = $class->getAnnotation("tab");
-		if ($tab_annotations instanceof Class_Tab_Annotation) {
+		$properties = $class->getAllProperties();
+		return self::buildProperties($properties, $tab_annotations);
+	}
+
+	//------------------------------------------------------------------------------- buildProperties
+	/**
+	 * Build tabs containing class properties
+	 *
+	 * @param multitype:Reflection_Property $properties
+	 * @param multitype:Class_Annotation_Tab $tab_annotations
+	 * @return multitype:Tab
+	 */
+	protected static function buildProperties($properties, $tab_annotations)
+	{
+		if (!empty($tab_annotations)) {
+			$tabs = array();
 			foreach ($tab_annotations as $tab_annotation) {
-				$tabs[$tab_annotation->name] = new Tab(
-					$tab_annotation->name,
-					self::getProperties($properties, $tab_annotation->value)
-				);
+				$tab =& $tabs;
+				$prec = null;
+				$prec_name = null;
+				foreach (explode(".", $tab_annotation->name) as $tab_name) {
+					if (is_numeric($tab_name)) {
+						if (empty($tab->columns)) {
+							if (!empty($tab->content)) {
+								$tab->columns[0] = new Tab(0, $tab->content);
+								$tab->content = array();
+							}
+						}
+						if (!isset($tab->columns[$tab_name])) {
+							$tab->columns[$tab_name] = new Tab($tab_name, array());
+						}
+						$tab =& $tab->columns[$tab_name];
+					}
+					elseif ($tab instanceof Tab) {
+						if (!isset($tab->tabs[$tab_name])) {
+							$tab->tabs[$tab_name] = new Tab($tab_name, array());
+						}
+						$tab =& $tab->tabs[$tab_name];
+					}
+					else {
+						if (!isset($tab[$tab_name])) {
+							$tab[$tab_name] = new Tab($tab_name, array());
+						}
+						$tab =& $tab[$tab_name];
+					}
+				}
+				if (!empty($tab->columns)) {
+					if (!isset($tab->columns[0])) {
+						$tab->columns[0] = new Tab(0, array());
+						ksort($tab->columns);
+					}
+					$tab =& $tab->columns[0];
+				}
+				$tab->add(self::getProperties($properties, $tab_annotation->value));
 			}
-			return $tabs;
 		}
 		else {
 			$tabs = array(new Tab("_top", $properties));

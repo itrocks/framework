@@ -34,7 +34,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 */
 	protected function getTabs($object, $properties)
 	{
-		return array(Tabs_Builder_Class::build(Reflection_Class::getInstanceOf(get_class($object))));
+		return array(Tabs_Builder_Object::build($object));
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
@@ -45,7 +45,16 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 */
 	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
 	{
-		return $parameters->getObjects();
+		$parameters = $parameters->getObjects();
+		$object = reset($parameters);
+		if (empty($object) || !is_object($object) || (get_class($object) !== $class_name)) {
+			$object = new $class_name();
+			$parameters = array_merge(array($class_name => $object), $parameters);
+		}
+		$parameters["general_buttons"]   = $this->getGeneralButtons($object);
+		$parameters["properties_filter"] = $this->getPropertiesList($class_name);
+		$parameters["tabs"]              = $this->getTabs($object, $parameters["properties_filter"]);
+		return $parameters;
 	}
 
 	//------------------------------------------------------------------------------------------- run
