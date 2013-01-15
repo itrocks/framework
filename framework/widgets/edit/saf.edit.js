@@ -4,12 +4,23 @@ $("document").ready(function() {
 	$("form").build(function() {
 		var $this = $(this);
 
+		// .autoheight
+		var autoheight_function = function() {
+			var $this = $(this);
+			var match = ($this.val().indexOf("\n") > -1);
+			if (match) {
+				$this.attr("rows", $this.val().split("\n").length);
+			}
+		}
+		$this.find(".autoheight").each(autoheight_function);
+		$this.find(".autoheight").keyup(autoheight_function);
+
 		// .autowidth
 		var autowidth_function = function() {
 			var $this = $(this);
-			var previous_width = $this.width();
+			var previous_width = parseInt($this.attr("ui-text-width"));
 			var new_width = getInputTextWidth($this.val());
-			this.text_width = new_width;
+			$this.attr("ui-text-width", new_width);
 			if (new_width != previous_width) {
 				$table = $this.closest("table.collection");
 				if (!$table.length) {
@@ -31,7 +42,7 @@ $("document").ready(function() {
 					var previous_max_width = $td.width();
 					if (new_width > previous_max_width) {
 						// the element became wider than the widest element
-						$td.width(new_width);
+						$td.width(new_width + $td.css("padding-left") + $td.css("padding-right"));
 						$td.css("max-width", new_width + "px");
 						$td.css("min-width", new_width + "px");
 					}
@@ -40,11 +51,17 @@ $("document").ready(function() {
 						new_width = 0;
 						$table.find("[name='" + name + "']").each(function() {
 							var $this = $(this);
-							if (this.text_width == undefined) {
-								this.text_width = getInputTextWidth($this.val());
+							if (next_input) {
+								$this = $this.next("input");
 							}
-							if (this.text_width > new_width) {
-								new_width = this.text_width;
+							var ui_text_width = parseInt($this.attr("ui-text-width"));
+							if (ui_text_width == 0) {
+								$this.attr(
+									"ui-text-width", ui_text_width = getInputTextWidth($this.val())
+								);
+							}
+							if (ui_text_width > new_width) {
+								new_width = ui_text_width;
 							}
 						});
 						$td.width(new_width);
@@ -52,7 +69,6 @@ $("document").ready(function() {
 						$td.css("min-width", new_width + "px");
 					}
 				}
-				console.log("width was set to " + new_width);
 			}
 		};
 		$this.find(".autowidth").each(autowidth_function);
