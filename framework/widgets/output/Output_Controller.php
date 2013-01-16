@@ -34,7 +34,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 */
 	protected function getTabs($object, $properties)
 	{
-		return array(Tabs_Builder_Object::build($object));
+		return Tabs_Builder_Object::build($object);
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters

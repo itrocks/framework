@@ -12,7 +12,6 @@ class Output_Controller_Acls implements Plugin
 		$list = isset($acls)
 			? $acls->get($class_name . ".output.properties.list")
 			: null;
-echo "<pre>" . print_r($list, true) . "</pre>";
 		return isset($list) ? array_keys($list) : null;
 	}
 

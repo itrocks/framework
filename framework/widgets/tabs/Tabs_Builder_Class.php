@@ -48,10 +48,10 @@ abstract class Tabs_Builder_Class
 						$tab =& $tab->columns[$tab_name];
 					}
 					elseif ($tab instanceof Tab) {
-						if (!isset($tab->tabs[$tab_name])) {
-							$tab->tabs[$tab_name] = new Tab($tab_name, array());
+						if (!isset($tab->includes[$tab_name])) {
+							$tab->includes[$tab_name] = new Tab($tab_name, array());
 						}
-						$tab =& $tab->tabs[$tab_name];
+						$tab =& $tab->includes[$tab_name];
 					}
 					else {
 						if (!isset($tab[$tab_name])) {
@@ -67,7 +67,7 @@ abstract class Tabs_Builder_Class
 					}
 					$tab =& $tab->columns[0];
 				}
-				$tab->add(self::getProperties($properties, $tab_annotation->value));
+				$tab->add(self::getProperties($properties, $tab_annotation->value, $tab_annotation->name));
 			}
 		}
 		else {
@@ -82,13 +82,15 @@ abstract class Tabs_Builder_Class
 	 *
 	 * @param multitype:Reflection_Property $properties
 	 * @param multitype:string $property_names
+	 * @param string $tab_path
 	 * @return multitype:Reflection_Property
 	 */
-	private static function getProperties($properties, $property_names)
+	private static function getProperties($properties, $property_names, $tab_path)
 	{
 		$result = array();
 		foreach ($property_names as $property_name) {
 			if (isset($properties[$property_name])) {
+				$properties[$property_name]->tab_path = $tab_path;
 				$result[$property_name] = $properties[$property_name];
 			}
 		}

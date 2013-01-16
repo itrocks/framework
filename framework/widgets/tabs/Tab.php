@@ -26,13 +26,13 @@ class Tab
 	 */
 	public $columns = array();
 
-	//----------------------------------------------------------------------------------------- $tabs
+	//------------------------------------------------------------------------------------- $includes
 	/**
 	 * For contained tabs
 	 *
 	 * @var multitype:Tab
 	 */
-	public $tabs = array();
+	public $includes = array();
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -65,6 +65,15 @@ class Tab
 			$this->content .= $content;
 		}
 		return $this;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->title;
 	}
 
 }

@@ -169,7 +169,7 @@ class Html_Template
 	 */
 	protected function parseCollection(Reflection_Property $property, $collection)
 	{
-		return( new Html_Builder_Collection($property, $collection))->build();
+		return (new Html_Builder_Collection($property, $collection))->build();
 	}
 
 	//------------------------------------------------------------------------------------ parseConst
@@ -292,6 +292,9 @@ class Html_Template
 				elseif ($i = strpos($property_name, "(")) {
 					$object = $this->callFunc($objects, $property_name);
 				}
+				elseif (is_array($object)) {
+					$object = isset($object[$property_name]) ? $object[$property_name] : null;
+				}
 				elseif (!is_object($object)) {
 					$object = new String($object);
 					$object = method_exists($object, $property_name)
@@ -407,6 +410,7 @@ class Html_Template
 		$var_name = substr($content, $i, $j - $i);
 		$length = strlen($var_name);
 		$i += $length + 3;
+		$force_condition = (substr($var_name, -1) == "?");
 		if (strpos($var_name, ":")) {
 			list($var_name, $expr) = explode(":", $var_name);
 			if (strpos($expr, "-") !== false) {
@@ -424,10 +428,13 @@ class Html_Template
 		}
 		$length2 = isset($expr) ? strlen($var_name) : $length;
 		$j = strpos($content, "<!--" . $var_name . "-->", $j + 3);
+		if ($force_condition) {
+			$var_name = substr($var_name, 0, -1);
+		}
 		$loop_content = substr($content, $i, $j - $i);
 		$this->removeSample($loop_content);
 		$separator = $this->parseSeparator($loop_content);
-		$elements = $this->parseValue($objects, $var_name);
+		$elements = $this->parseValue($objects, $var_name, false);
 		if ($from && !is_numeric($from)) {
 			array_unshift($objects, $elements);
 			$from = $this->parseValue($objects, $from);
@@ -438,7 +445,7 @@ class Html_Template
 			$to = $this->parseValue($objects, $to);
 			array_shift($objects);
 		}
-		if (is_array($elements) || isset($expr)) {
+		if ((is_array($elements) && !$force_condition) || isset($expr)) {
 			array_unshift($objects, $elements);
 			$do = false;
 			$loop_insert = "";
@@ -476,6 +483,14 @@ class Html_Template
 				}
 				array_shift($objects);
 			}
+			array_shift($objects);
+		}
+		elseif (is_array($elements)) {
+			$loop_insert = empty($elements) ? "" : $this->parseVars($loop_content, $objects);
+		}
+		elseif (is_object($elements)) {
+			array_unshift($objects, $elements);
+			$loop_insert = $this->parseVars($loop_content, $objects);
 			array_shift($objects);
 		}
 		elseif (strlen($elements)) {
@@ -558,8 +573,11 @@ class Html_Template
 	 */
 	private function removeSample(&$content)
 	{
-		if (($i = strrpos($content, "<!--sample-->")) !== false) {
-			$content = substr($content, 0, $i);
+		$i = strrpos($content, "<!--sample-->");
+		if ($i !== false) {
+			if (strpos($content, "<!--", $i + 1) === false) {
+				$content = substr($content, 0, $i);
+			}
 		}
 	}
 

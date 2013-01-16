@@ -89,6 +89,20 @@ abstract class Html_Template_Funcs
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
 	}
 
+	//---------------------------------------------------------------------------------------- getHas
+	/**
+	 * Returns true if the element is not empty
+	 * (usefull for conditions on arrays)
+	 *
+	 * @param Html_Template $template
+	 * @param object $object
+	 * @return boolean
+	 */
+	public static function getHas(Html_Template $template, $object)
+	{
+		return !empty($object);
+	}
+
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * Returns object's properties, and their display and value
@@ -112,6 +126,24 @@ abstract class Html_Template_Funcs
 			}
 		}
 		$class->accessPropertiesDone();
+		return $properties;
+	}
+
+	//------------------------------------------------------------------------ getPropertiesOutOfTabs
+	/**
+	 * Returns object's properties, and their display and value, but only if they are not already into a tab
+	 *
+	 * @param Html_Template $template
+	 * @param object $object
+	 * @return multitype:Reflection_Property
+	 */
+	public static function getPropertiesOutOfTabs(Html_Template $template, $object)
+	{
+		foreach (self::getProperties($template, $object) as $property_name => $property) {
+			if (!isset($property->tab_path)) {
+				$properties[$property_name] = $property;
+			}
+		}
 		return $properties;
 	}
 

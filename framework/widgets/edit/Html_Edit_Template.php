@@ -21,7 +21,7 @@ class Html_Edit_Template extends Html_Template
 	}
 
 	//------------------------------------------------------------------------------------ parseValue
-	protected function parseValue($objects, $var_name)
+	protected function parseValue($objects, $var_name, $as_string = true)
 	{
 		$property = reset($objects);
 		if (($var_name == "value") && ($property instanceof Reflection_Property)) {
@@ -29,7 +29,7 @@ class Html_Edit_Template extends Html_Template
 			$value = (new Html_Builder_Property_Edit($property, $value))->build();
 		}
 		else {
-			$value = parent::parseValue($objects, $var_name);
+			$value = parent::parseValue($objects, $var_name, $as_string);
 		}
 		return $value;
 	}

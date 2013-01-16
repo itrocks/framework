@@ -20,8 +20,19 @@
 		<a class="button trashable" href="/abook/Contact/1/write" target="#messages">Write</a>
 		<!--general_buttons-->
 	</div>
-	<div class="fieldset">
-		<!--@properties-->
+	<!--tabs._top-->
+	<div class="top fieldset">
+	<!--content-->
+		<div class="field {getType.first}" id="{name}">
+			<span class="label trashable">|{display}|</span>
+			<span class="value">{value}</span>
+		</div>
+	<!--content-->
+	</div>
+	<!--tabs._top-->
+	<!--@propertiesOutOfTabs?-->
+	<div class="others fieldset">
+		<!--@propertiesOutOfTabs-->
 		<div class="field {getType.first}" id="{name}">
 			<span class="label trashable">|{display}|</span>
 			<span class="value">{value}</span>
@@ -39,8 +50,9 @@
 			<span class="label trashable">age</span>
 			<span class="value">35</span>
 		</div>
-		<!--@properties-->
+		<!--@propertiesOutOfTabs-->
 	</div>
+	<!--@propertiesOutOfTabs?-->
 </div>
 <!--END-->
 
