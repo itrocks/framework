@@ -35,10 +35,20 @@ abstract class Html_Session implements Plugin
 					while (($i = strpos($content, $link . $quote, $i)) !== false) {
 						$i += strlen($link) + 1;
 						$j = strpos($content, $quote, $i);
-						$sep = strpos(substr($content, $i, $j - $i), "?") ? "&" : "?";
-						$add = $sep . session_name() . "=" . session_id();
-						$content = substr($content, 0, $j) . $add . substr($content, $j);
-						$i += strlen($add) + 1;
+						$old = substr($content, $i, $j - $i);
+						$sep = strpos($link, "?") ? "&" : "?";
+						$add = session_name() . "=" . session_id();
+						if (
+							(substr($old, 0, 1) != "#")
+							&& (strpos($old, $add) === false)
+							&& (strpos($old, "://") === false)
+						) {
+							$content = substr($content, 0, $j) . $sep . $add . substr($content, $j);
+							$i = $j + strlen($sep . $add) + 1;
+						}
+						else {
+							$i = $j + 1;
+						}
 					}
 				}
 			}

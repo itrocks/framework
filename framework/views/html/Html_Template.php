@@ -304,7 +304,7 @@ class Html_Template
 				elseif (method_exists($object, $property_name)) {
 					$object = $object->$property_name();
 				}
-				elseif (property_exists($object, $property_name)) {
+				elseif (isset($object->$property_name)) {
 					$object = $object->$property_name;
 				}
 				else {

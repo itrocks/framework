@@ -13,6 +13,7 @@
 <!--BEGIN-->
 <div class="window modifiable trashable {@feature.lower}" id="/{@class}<!--id-->/{id}<!--id-->/{@feature}">
 	<h2>|{@class.ucfirst}| |{display}|</h2>
+
 	<div class="general button_bar">
 		<!--general_buttons-->
 		<a class="button trashable {?class.lower}" href="{link}" target="{?target}">|{caption}|</a>
@@ -20,39 +21,92 @@
 		<a class="button trashable" href="/abook/Contact/1/write" target="#messages">Write</a>
 		<!--general_buttons-->
 	</div>
+
 	<!--tabs._top-->
-	<div class="top fieldset">
-	<!--content-->
+	<div class="fieldset" id="top">
+		<!--content-->
 		<div class="field {getType.first}" id="{name}">
 			<span class="label trashable">|{display}|</span>
 			<span class="value">{value}</span>
 		</div>
-	<!--content-->
+		<!--content-->
 	</div>
 	<!--tabs._top-->
+
+	<!--tabs.included?-->
+	<div class="tabber" id="{title}">
+		<!--tabs.included-->
+		<div class="fieldset tab" id="{title}">
+			<h2 class="tab"><a href="#{title}">{title}</a></h2>
+			<!--included?-->
+			<div class="tabber" id="{title}">
+				<!--included-->
+				<div class="fieldset tab" id="{title}">
+					<h2 class="tab"><a href="#{title}">{title}</a></h2>
+					<!--content-->
+					<div class="field {getType.first}" id="{name}">
+						<span class="label trashable">|{display}|</span>
+						<span class="value">{value}</span>
+					</div>
+					<!--content-->
+				</div>
+				<!--included-->
+			</div>
+			<!--included?-->
+			<!--columns-->
+			<div class="column">
+				<!--content-->
+				<div class="field {getType.first}" id="{name}">
+					<span class="label trashable">|{display}|</span>
+					<span class="value">{value}</span>
+				</div>
+				<!--content-->
+			</div>
+			<!--columns-->
+			<!--content-->
+				<div class="field {getType.first}" id="{name}">
+					<span class="label trashable">|{display}|</span>
+					<span class="value">{value}</span>
+				</div>
+			<!--content-->
+		</div>
+		<!--tabs.included-->
+	</div>
+	<!--tabs.included?-->
+
 	<!--@propertiesOutOfTabs?-->
-	<div class="others fieldset">
+	<div class="fieldset" id="others">
 		<!--@propertiesOutOfTabs-->
 		<div class="field {getType.first}" id="{name}">
 			<span class="label trashable">|{display}|</span>
 			<span class="value">{value}</span>
 		</div>
-		<!--sample-->
-		<div class="field string">
-			<span class="label trashable">first name</span>
-			<span class="value">Robert</span>
-		</div>
-		<div class="field string">
-			<span class="label trashable">last name</span>
-			<span class="value">Cheramy</span>
-		</div>
-		<div class="field integer">
-			<span class="label trashable">age</span>
-			<span class="value">35</span>
-		</div>
 		<!--@propertiesOutOfTabs-->
 	</div>
 	<!--@propertiesOutOfTabs?-->
+
+	<!--tabs._middle-->
+	<div class="fieldset" id="middle">
+		<!--content-->
+		<div class="field {getType.first}" id="{name}">
+			<span class="label trashable">|{display}|</span>
+			<span class="value">{value}</span>
+		</div>
+		<!--content-->
+	</div>
+	<!--tabs._middle-->
+
+	<!--tabs._bottom-->
+	<div class="fieldset" id="others">
+		<!--tabs._bottom.content-->
+		<div class="field {getType.first}" id="{name}">
+			<span class="label trashable">|{display}|</span>
+			<span class="value">{value}</span>
+		</div>
+		<!--tabs._bottom.content-->
+	</div>
+	<!--tabs._bottom-->
+
 </div>
 <!--END-->
 

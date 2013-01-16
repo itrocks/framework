@@ -49,6 +49,33 @@ class Tab
 		}
 	}
 
+	//----------------------------------------------------------------------------------------- __get
+	public function __get($key)
+	{
+		return $this->includes[$key];
+	}
+
+	//--------------------------------------------------------------------------------------- __isset
+	public function __isset($key)
+	{
+		return isset($this->includes[$key]);
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->title;
+	}
+
+	//--------------------------------------------------------------------------------------- __unset
+	public function __unset($key)
+	{
+		unset($this->includes[$key]);
+	}
+
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Add content to the tab (eg content is an array, new elements are added)
@@ -67,13 +94,21 @@ class Tab
 		return $this;
 	}
 
-	//------------------------------------------------------------------------------------ __toString
+	//--------------------------------------------------------------------------------------- getList
 	/**
-	 * @return string
+	 * Return included tabs, but not those which identifier begins with "_"
+	 *
+	 * @return multitype:Tab
 	 */
-	public function __toString()
+	public function included()
 	{
-		return $this->title;
+		$list = array();
+		foreach ($this->includes as $key => $tab) {
+			if (substr($key, 0, 1) != "_") {
+				$list[$key] = $tab;
+			}
+		}
+		return $list;
 	}
 
 }
