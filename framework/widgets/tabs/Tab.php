@@ -94,6 +94,15 @@ class Tab
 		return $this;
 	}
 
+	//-------------------------------------------------------------------------------------------- id
+	/**
+	 * Return a calculated id for the tab, calculated from its title
+	 */
+	public function id()
+	{
+		return Names::displayToProperty($this->title);
+	}
+
 	//--------------------------------------------------------------------------------------- getList
 	/**
 	 * Return included tabs, but not those which identifier begins with "_"

@@ -46,6 +46,16 @@ abstract class Names
 		return Reflection_Class::getInstanceOf($class_name)->getAnnotation("set")->value;
 	}
 
+	//----------------------------------------------------------------------------- displayToProperty
+	/**
+	 * @param string $display
+	 * @return string
+	 */
+	public static function displayToProperty($display)
+	{
+		return self::classToProperty(str_replace(" ", "_", $display));
+	}
+
 	//--------------------------------------------------------------------------------- methodToClass
 	/**
 	 * @param string $method_name

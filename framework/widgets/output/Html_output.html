@@ -12,7 +12,7 @@
 
 <!--BEGIN-->
 <div class="window modifiable trashable {@feature.lower}" id="/{@class}<!--id-->/{id}<!--id-->/{@feature}">
-	<h2>|{@class.ucfirst}| |{display}|</h2>
+	<h2 class="window title">|{@class.ucfirst}| |{display}|</h2>
 
 	<div class="general button_bar">
 		<!--general_buttons-->
@@ -35,14 +35,24 @@
 
 	<!--tabs.included?-->
 	<div class="tabber" id="{title}">
+		<ul>
+			<!--tabs.included-->
+			<li><a href="#{id}">|{title}|</a></li>
+			<!--tabs.included-->
+		</ul>
 		<!--tabs.included-->
-		<div class="fieldset tab" id="{title}">
-			<h2 class="tab"><a href="#{title}">{title}</a></h2>
+		<div class="fieldset" id="{id}">
+			<h2>{title}</h2>
 			<!--included?-->
 			<div class="tabber" id="{title}">
+				<ul>
+					<!--included-->
+					<li><a href="#{id}">|{title}|</a></li>
+					<!--included-->
+				</ul>
 				<!--included-->
-				<div class="fieldset tab" id="{title}">
-					<h2 class="tab"><a href="#{title}">{title}</a></h2>
+				<div class="fieldset" id="{id}">
+					<h2>{title}</h2>
 					<!--content-->
 					<div class="field {getType.first}" id="{name}">
 						<span class="label trashable">|{display}|</span>
