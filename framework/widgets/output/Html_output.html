@@ -16,7 +16,7 @@
 
 	<div class="general button_bar">
 		<!--general_buttons-->
-		<a class="button trashable {?class.lower}" href="{link}" target="{?target}">|{caption}|</a>
+		<a class="button trashable" href="{link}" target="{?target}">|{caption}|</a>
 		<!--sample-->
 		<a class="button trashable" href="/abook/Contact/1/write" target="#messages">Write</a>
 		<!--general_buttons-->
@@ -37,7 +37,7 @@
 	<div class="tabber" id="{title}">
 		<ul>
 			<!--tabs.included-->
-			<li><a href="#{id}">|{title}|</a></li>
+			<li class="trashable"><a href="#{id}">|{title}|</a></li>
 			<!--tabs.included-->
 		</ul>
 		<!--tabs.included-->
@@ -47,7 +47,7 @@
 			<div class="tabber" id="{title}">
 				<ul>
 					<!--included-->
-					<li><a href="#{id}">|{title}|</a></li>
+					<li class="trashable"><a href="#{id}">|{title}|</a></li>
 					<!--included-->
 				</ul>
 				<!--included-->
@@ -67,12 +67,14 @@
 			<div class="columns">
 				<!--columns-->
 				<div class="column">
-					<!--content-->
-					<div class="field {getType.first}" id="{name}">
-						<span class="label trashable">|{display}|</span>
-						<span class="value">{value}</span>
+					<div class="fieldset">
+						<!--content-->
+						<div class="field {getType.first}" id="{name}">
+							<span class="label trashable">|{display}|</span>
+							<span class="value">{value}</span>
+						</div>
+						<!--content-->
 					</div>
-					<!--content-->
 				</div>
 				<!--columns-->
 			</div>

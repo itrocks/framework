@@ -16,9 +16,9 @@
 	<h2 class="window title">|¦{@class.ucfirst}¦ list|</h2>
 	<div class="general button_bar">
 		<!--general_buttons-->
-		<a class="button" href="{link}">|{caption}|</a>
+		<a class="button trashable" href="{link}" target="#main">|{caption}|</a>
 		<!--sample-->
-		<a class="button new" href="/Class/new">New</a>
+		<a class="button trashable" href="/Class/new" target="#main">New</a>
 		<!--general_buttons-->
 	</div>
 	<table>
@@ -37,9 +37,9 @@
 	<tr>
 		<td><input type="checkbox" name="s[]" value="{id}"></td>
 		<!--values:1-->
-		<td class="trashable" onclick="location='/{..class_name.short}/{?..id}'">
+		<td class="trashable" id="/{..class_name.short}/{..id}">
 			<!--..class_name-->
-			<a href="/{..class_name.short}/{..id}">{value}</a>
+			<a href="/{..class_name.short}/{..id}" target="#main">{value}</a>
 			<!--..class_name-->
 		</td>
 		<!--values-->
@@ -67,7 +67,7 @@
 	</tbody>
 	</table>
 	<div class="selection button_bar">
-		<span class="selection arrow">[select]</span>
+		<span class="selection arrow trashable">[select]</span>
 		<!--selection_buttons-->
 		<a class="button {feature.lower}" href="{link}">|{caption}|</a>
 		<!--sample-->

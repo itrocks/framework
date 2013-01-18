@@ -625,10 +625,14 @@ class Html_Template
 				$j = strpos($content, '"', $i);
 				$file_name = substr($content, $i, $j - $i);
 				$file_name = substr($file_name, strrpos($file_name, "/") + 1);
+				$file_path = null;
 				if (substr($file_name, -4) == ".css") {
 					$file_path = static::getCssPath($this->css) . "/" . $file_name;
+					if (!file_exists(Paths::$file_root . $file_path)) {
+						$file_path = null;
+					}
 				}
-				else {
+				if (!isset($file_path)) {
 					$file_path = Paths::$uri_root . substr(
 						stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 					);

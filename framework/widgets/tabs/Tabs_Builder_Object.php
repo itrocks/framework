@@ -16,7 +16,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	public static function build($object)
 	{
 		$class = Reflection_Class::getInstanceOf(get_class($object));
-		$tab_annotations = $class->getAnnotation("tab");
+		$tab_annotations = $class->getAnnotation("group");
 		$properties = $class->accessProperties();
 		foreach ($properties as $property_name => $property) {
 			$property->display = Names::propertyToDisplay($property_name);

@@ -44,9 +44,21 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	//------------------------------------------------------------------------------------------- run
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
+		echo "$_SERVER[REQUEST_URI]<br>";
 		$parameters = $parameters->getObjects();
+		$object_position = 0;
 		$object = reset($parameters);
-		if (is_object($object) && !isset($parameters[1])) {
+		while (isset($object) && !is_object($object)) {
+			$object = next($parameters);
+			$object_position ++;
+		}
+		if (is_object($object) && ($object_position + 3) >= sizeof($parameters)) {
+			foreach ($parameters as $key => $object) {
+				if (is_object($object)) {
+					break;
+				}
+				unset($parameters[$key]);
+			}
 			$this->deleteObject($parameters);
 		}
 		else {

@@ -13,7 +13,7 @@ abstract class Tabs_Builder_Class
 	 */
 	public static function build(Reflection_Class $class)
 	{
-		$tab_annotations = $class->getAnnotation("tab");
+		$tab_annotations = $class->getAnnotation("group");
 		$properties = $class->getAllProperties();
 		return self::buildProperties($properties, $tab_annotations);
 	}

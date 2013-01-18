@@ -19,6 +19,7 @@ class Default_Write_Controller implements Class_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
+		Dao::begin();
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
 		if (!$object || !is_object($object) || (get_class($object) !== $class_name)) {
@@ -39,6 +40,7 @@ class Default_Write_Controller implements Class_Controller
 		else {
 			View::run($parameters, $form, $files, $class_name, "unchanged");
 		}
+		Dao::commit();
 	}
 
 }

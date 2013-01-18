@@ -41,7 +41,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 
 	//------------------------------------------------------------------------------------------ $use
 	/**
-	 * If true, phpdoc must be read directly into php file, as phpDocComment may not be the right one 
+	 * If true, phpdoc must be read directly into php file, as phpDocComment may not be the right one
 	 *
 	 * @var boolean
 	 */
@@ -65,7 +65,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			$of_class = $of_class->name;
 		}
 		elseif (is_object($of_class)) {
-			$of_class = get_class($of_class); 
+			$of_class = get_class($of_class);
 		}
 		if (
 			isset(self::$cache[$of_class])

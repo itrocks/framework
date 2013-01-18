@@ -32,6 +32,18 @@ class Mysql_Link extends Sql_Link
 		$this->connect($parameters);
 	}
 
+	//----------------------------------------------------------------------------------------- begin
+	public function begin()
+	{
+		$this->query("START TRANSACTION");
+	}
+
+	//---------------------------------------------------------------------------------------- commit
+	public function commit()
+	{
+		$this->query("COMMIT");
+	}
+
 	//--------------------------------------------------------------------------------------- connect
 	private function connect($parameters)
 	{
@@ -55,10 +67,10 @@ class Mysql_Link extends Sql_Link
 			foreach ($class->accessProperties() as $property) {
 				if ($property->getAnnotation("contained")->value) {
 					if (Type::isMultiple($property->getType())) {
-						$this->deleteCollection($object, $property, $property->get($object));
+						$this->deleteCollection($object, $property, $property->getValue($object));
 					}
 					else {
-						$this->delete($property->get($object));
+						$this->delete($property->getValue($object));
 					}
 				}
 			}
@@ -83,9 +95,10 @@ class Mysql_Link extends Sql_Link
 	 */
 	private function deleteCollection($parent, $property, $value)
 	{
-		$parent->$property = null;
-		$old_collection = $parent->$property;
-		$parent->$property = $value;
+		$property_name = $property->name;
+		$parent->$property_name = null;
+		$old_collection = $parent->$property_name;
+		$parent->$property_name = $value;
 		if (isset($old_collection)) {
 			foreach ($old_collection as $old_element) {
 				$this->delete($old_element);
@@ -224,6 +237,12 @@ class Mysql_Link extends Sql_Link
 		}
 		$result_set->free();
 		return $read_result;
+	}
+
+	//-------------------------------------------------------------------------------------- rollback
+	public function rollback()
+	{
+		$this->query("ROLLBACK");
 	}
 
 	//---------------------------------------------------------------------------------------- search

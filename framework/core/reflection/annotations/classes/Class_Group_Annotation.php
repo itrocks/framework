@@ -1,12 +1,12 @@
 <?php
 namespace SAF\Framework;
 
-class Class_Tab_Annotation extends List_Annotation implements Multiple_Annotation
+class Class_Group_Annotation extends List_Annotation implements Multiple_Annotation
 {
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
-	 * The tab name
+	 * The group name
 	 *
 	 * @var string
 	 */
