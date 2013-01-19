@@ -71,7 +71,7 @@ abstract class Tabs_Builder_Class
 			}
 		}
 		else {
-			$tabs = array(new Tab("_top", $properties));
+			$tabs = array();
 		}
 		return $tabs;
 	}
