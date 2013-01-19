@@ -23,4 +23,20 @@ class Menu_Block
 	 */
 	public $title;
 
+	//----------------------------------------------------------------------------------- $title_link
+	/**
+	 * link for the title
+	 *
+	 * @var string
+	 */
+	public $title_link;
+
+	//---------------------------------------------------------------------------- $title_link_target
+	/**
+	 * target of the title link
+	 *
+	 * @var string
+	 */
+	public $title_link_target;
+
 }

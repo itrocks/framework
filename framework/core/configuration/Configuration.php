@@ -51,7 +51,15 @@ class Configuration
 				$configuration_class_name = isset($configuration["class"])
 					? Namespaces::fullClassName($configuration["class"])
 					: $full_class_name;
-				$full_class_name::current(new $configuration_class_name($configuration));
+				$builder_class_name = Namespaces::fullClassName(
+					rLastParse($configuration_class_name, "\\") . "_Builder_Configuration"
+				);
+				if (class_exists($builder_class_name)) {
+					$full_class_name::current((new $builder_class_name())->build($configuration));
+				}
+				else {
+					$full_class_name::current(new $configuration_class_name($configuration));
+				}
 			}
 			return $set_current;
 		}
