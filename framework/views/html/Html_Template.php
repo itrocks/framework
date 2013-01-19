@@ -295,7 +295,7 @@ class Html_Template
 				elseif (is_array($object)) {
 					$object = isset($object[$property_name]) ? $object[$property_name] : null;
 				}
-				elseif (!is_object($object)) {
+				elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
 					$object = new String($object);
 					$object = method_exists($object, $property_name)
 						? $object->$property_name()

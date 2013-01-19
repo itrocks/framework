@@ -45,7 +45,7 @@ abstract class Html_Translator implements Plugin
 	public static function translatePage(AopJoinpoint $joinpoint)
 	{
 		$content = $joinpoint->getReturnedValue();
-		$context = get_class($joinpoint->getObject()->getObject());
+		$context = get_class($joinpoint->getObject());
 		$i = 0;
 		while (($i = strpos($content, "|", $i)) !== false) {
 			$i++;

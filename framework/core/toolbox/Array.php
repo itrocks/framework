@@ -93,6 +93,24 @@ function arrayMergeRecursive($array1, $array2)
 	return $array1;
 }
 
+//-------------------------------------------------------------------------------- arrayNamedValues
+/**
+ * Returns only values which key is not numeric
+ *
+ * @param multitype:mixed $array
+ * @return multitype:mixed
+ */
+function arrayNamedValues($array)
+{
+	$result = array();
+	foreach ($array as $key => $value) {
+		if (!is_numeric($key)) {
+			$result[$key] = $value;
+		}
+	}
+	return $result;
+}
+
 //------------------------------------------------------------------------------- arrayToCollection
 function arrayToCollection($array, $class_name)
 {
@@ -119,4 +137,22 @@ function arrayToObject($array, $class_name)
 		}
 	}
 	return $object;
+}
+
+//------------------------------------------------------------------------------ arrayUnnamedValues
+/**
+ * Returns only values which key is numeric
+ *
+ * @param multitype:mixed $array
+ * @return multitype:mixed
+ */
+function arrayUnnamedValues($array)
+{
+	$result = array();
+	foreach ($array as $key => $value) {
+		if (is_numeric($key)) {
+			$result[$key] = $value;
+		}
+	}
+	return $result;
 }

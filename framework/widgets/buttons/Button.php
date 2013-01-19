@@ -43,11 +43,11 @@ class Button
 	public $target;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct($caption, $link, $feature = null, $options = array())
+	public function __construct($caption = null, $link = null, $feature = null, $options = array())
 	{
-		$this->caption = $caption;
-		$this->feature = $feature;
-		$this->link    = $link;
+		if ($caption != null) $this->caption = $caption;
+		if ($link    != null) $this->link    = $link;
+		if ($feature != null) $this->feature = $feature;
 		if (!is_array($options)) {
 			$options = array($options);
 		}

@@ -107,6 +107,15 @@ class Controller_Parameters
 		return $this->parameters;
 	}
 
+	//-------------------------------------------------------------------------- getUnnamedParameters
+	/**
+	 * Get URI parameters raw values, only those which have no name
+	 */
+	public function getUnnamedParameters()
+	{
+		return arrayUnnamedValues($this->parameters);
+	}
+
 	//------------------------------------------------------------------------------------------- set
 	/**
 	 * Set URI parameter raw value

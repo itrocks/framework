@@ -139,6 +139,7 @@ abstract class Html_Template_Funcs
 	 */
 	public static function getPropertiesOutOfTabs(Html_Template $template, $object)
 	{
+		$properties = array();
 		foreach (self::getProperties($template, $object) as $property_name => $property) {
 			if (!isset($property->tab_path)) {
 				$properties[$property_name] = $property;

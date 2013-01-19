@@ -1,3 +1,5 @@
+
+//-------------------------------------------------------------------------------------- lLastParse
 String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 {
 	var str = this;
@@ -11,5 +13,39 @@ String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 		return complete_if_not ? str : "";
 	} else {
 		return str.substr(0, i);
+	}
+}
+
+//------------------------------------------------------------------------------------------ lParse
+String.prototype.lParse = function (sep, cnt, complete_if_not)
+{
+	if (cnt == undefined) cnt = 1;
+	if (complete_if_not == undefined) complete_if_not = true;
+	i = -1;
+	while (cnt --) {
+		i = this.indexOf(sep, i + 1);
+	}
+	if (i == -1) {
+		return complete_if_not ? this : "";
+	}
+	else {
+		return this.substr(0, i);
+	}
+}
+
+//-------------------------------------------------------------------------------------- rLastParse
+String.prototype.rLastParse = function (sep, cnt, complete_if_not)
+{
+	var str = this;
+	if (cnt == undefined) cnt = 1;
+	if (complete_if_not == undefined) complete_if_not = false;
+	if (cnt > 1) {
+		str = this.rLastParse(sep, cnt - 1);
+	}
+	i = str.lastIndexOf(sep);
+	if (i == -1) {
+		return complete_if_not ? str : "";
+	} else {
+		return str.substr(i + sep.length);
 	}
 }

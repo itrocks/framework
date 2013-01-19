@@ -14,13 +14,15 @@
 <!--BEGIN-->
 <div class="window list form" id="/{@class}/{@feature}">
 	<h2 class="window title">|¦{@class.ucfirst}¦ list|</h2>
-	<div class="general button_bar">
+
+	<div class="general buttons">
 		<!--general_buttons-->
-		<a class="button trashable" href="{link}" target="#main">|{caption}|</a>
+		<a class="button trashable {feature.lower}" href="{link}" target="#main">|{caption}|</a>
 		<!--sample-->
-		<a class="button trashable" href="/Class/new" target="#main">New</a>
+		<a class="button trashable new" href="/Class/new" target="#main">New</a>
 		<!--general_buttons-->
 	</div>
+
 	<table>
 	<thead>
 	<tr>
@@ -66,14 +68,16 @@
 	<!--elements-->
 	</tbody>
 	</table>
-	<div class="selection button_bar">
+
+	<div class="selection buttons">
 		<span class="selection arrow trashable">[select]</span>
 		<!--selection_buttons-->
-		<a class="button {feature.lower}" href="{link}">|{caption}|</a>
+		<a class="button trashable {feature.lower}" href="{link}">|{caption}|</a>
 		<!--sample-->
-		<a class="button print" href="/Class/print">Print</a>
+		<a class="button trashable print" href="/Class/print">Print</a>
 		<!--selection_buttons-->
 	</div>
+
 </div>
 <!--END-->
 

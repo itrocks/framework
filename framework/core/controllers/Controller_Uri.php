@@ -29,7 +29,7 @@ class Controller_Uri
 	 */
 	public $parameters;
 
-	//----------------------------------------------------------------------------------------- parse
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Build a new Controller_Uri object knowing the URI as a text
 	 *
@@ -46,10 +46,8 @@ class Controller_Uri
 		if (isset($default_collection_feature) && count($uri) == 1) {
 			$uri[] = $default_collection_feature;
 		}
-		$this->parse($uri);
-		foreach ($get as $key => $value) {
-			$this->parameters->set($key, $value);
-		}
+		$this->parseUri($uri);
+		$this->parseGet($get);
 	}
 
 	//-------------------------------------------------------------------- getPossibleControllerCalls
@@ -87,14 +85,32 @@ class Controller_Uri
 		return $controllers;
 	}
 
-	//----------------------------------------------------------------------------------------- parse
+	//-------------------------------------------------------------------------------------- parseGet
+	/**
+	 * Parse get parameters array
+	 *
+	 * @param multitype:string $get
+	 */
+	private function parseGet($get)
+	{
+		foreach ($get as $key => $value) {
+			if (is_numeric($key)) {
+				$this->parameters->addValue($value);
+			}
+			else {
+				$this->parameters->set($key, $value);
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------- parseUri
 	/**
 	 * Parse URI text elements to transform them into parameters, feature name and controller name
 	 *
 	 * @example $uri = array("order", 148, "form") will result on controller "Order_Form" with parameter "Order" = 148
 	 * @param multitype:string $uri
 	 */
-	private function parse($uri)
+	private function parseUri($uri)
 	{
 		$this->feature_name = "";
 		$this->parameters = new Controller_Parameters();

@@ -6,6 +6,28 @@ use SAF\Framework\Controller_Uri;
 class Controller_Uri_Test extends Unit_Test
 {
 
+	//------------------------------------------------------------------------- testDeleteControllers
+	public function testDeleteControllers()
+	{
+		$controller_uri = new Controller_Uri(
+			"/Tab/remove/SAF\\Framework\\Tests\\Orders/list/date/number",
+			array("as_widget" => 1, "_" => 2)
+		);
+		$this->assume(
+			__METHOD__,
+			array(
+				"controller_name" => $controller_uri->controller_name,
+				"feature_name"    => $controller_uri->feature_name,
+				"parameters"      => $controller_uri->parameters->getRawParameters()
+			),
+			array(
+				"controller_name" => "Tab",
+				"feature_name" => "remove",
+				"parameters" => (new Controller_Parameters())->addValue("SAF\\Framework\\Tests\\Orders")->addValue("list")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
+			)
+		);
+	}
+
 	//---------------------------------------------------------------------------- testExclicitOutput
 	public function testExclicitOutput()
 	{
