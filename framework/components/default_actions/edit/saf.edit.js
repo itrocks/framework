@@ -1,6 +1,5 @@
 $("document").ready(function() {
 
-	$.datepicker.setDefaults($.datepicker.regional["fr"]);
 	$("form").build(function() {
 		var $this = $(this);
 
@@ -95,7 +94,7 @@ $("document").ready(function() {
 
 		// .datetime
 		$this.find("input.datetime").datepicker({
-			dateFormat: "dd/mm/yy",
+			dateFormat: dateFormatToDatepicker(date_format),
 			showOn: "button",
 			showOtherMonths: true,
 			selectOtherMonths: true
@@ -105,8 +104,10 @@ $("document").ready(function() {
 			$(this).datepicker("hide");
 		});
 
-		$this.find("input.datetime").keyup(function() {
-			$(this).datepicker("show");
+		$this.find("input.datetime").keyup(function(event) {
+			if ((event.keyCode != 13) && (event.keyCode != 27)) {
+				$(this).datepicker("show");
+			}
 		});
 
 		// .object

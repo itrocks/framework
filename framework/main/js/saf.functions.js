@@ -1,3 +1,10 @@
+
+//-------------------------------------------------------------------------- dateFormatToDatepicker
+dateFormatToDatepicker = function(text)
+{
+	return text.replace("d", "dd").replace("m", "mm").replace("Y", "yy");
+}
+
 //------------------------------------------------------------------------------- getInputTextWidth
 // TODO limit cache size as it could gros too much !
 getInputTextWidth = function(text)

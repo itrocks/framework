@@ -17,6 +17,7 @@ $config["framework"] = array(
 		)
 	),
 	"Locale" => array(
+		"date" => "d/m/Y",
 		"language" => "fr"
 	),
 	"View" => array(

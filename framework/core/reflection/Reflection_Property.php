@@ -57,6 +57,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public static function getInstanceOf($of_class, $of_name = null)
 	{
+		// flexible parameters
 		if ($of_class instanceof ReflectionProperty) {
 			$of_name  = $of_class->name;
 			$of_class = $of_class->class;
@@ -67,15 +68,41 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		elseif (is_object($of_class)) {
 			$of_class = get_class($of_class);
 		}
+		// use cache ?
 		if (
 			isset(self::$cache[$of_class])
 			&& isset(self::$cache[$of_class][$of_name])
 		) {
+			// use cache
 			$property = self::$cache[$of_class][$of_name];
 		}
 		else {
-			$property = new Reflection_Property($of_class, $of_name);
-			self::$cache[$of_class][$of_name] = $property;
+			// no cache : calculate
+			$of_name_cache = $of_name;
+			$i = 0;
+			if (($j = strpos($of_name, ".", $i)) !== false) {
+				// $of_name is a "property.path"
+				do {
+					$property = Reflection_Property::getInstanceOf($of_class, substr($of_name, $i, $j - $i));
+					$of_class = $property->getType();
+					if ($is_multiple = Type::isMultiple($of_class)) {
+						$of_class = Namespaces::fullClassName($is_multiple);
+					}
+					else {
+						$of_class = Namespaces::fullClassName($of_class);
+					}
+					$i = $j + 1;
+				} while (($j = strpos($of_name, ".", $i)) !== false);
+				if ($i) {
+					$of_name = substr($of_name, $i);
+				}
+				$property = Reflection_Property::getInstanceOf($of_class, $of_name);
+			}
+			else {
+				// $of_name is a simple property name
+				$property = new Reflection_Property($of_class, $of_name);
+			}
+			self::$cache[$of_class][$of_name_cache] = $property;
 		}
 		return $property;
 	}
