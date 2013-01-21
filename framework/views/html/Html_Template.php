@@ -160,6 +160,29 @@ class Html_Template
 		return $content;
 	}
 
+	//----------------------------------------------------------------------------- parseArrayElement
+	/**
+	 * @param multitype:mixed $objects
+	 * @param array $array
+	 * @param string|integer $index
+	 * @return mixed
+	 */
+	protected function parseArrayElement($objects, $array, $index)
+	{
+		return isset($array[$inde]) ? $array[$index] : null;
+	}
+
+	//-------------------------------------------------------------------------------- parseClassName
+	/**
+	 * @param multitype:mixed $objects
+	 * @param string $class_name
+	 * @return string
+	 */
+	protected function parseClassName($objects, $class_name)
+	{
+		return Namespaces::fullClassName($class_name);
+	}
+
 	//------------------------------------------------------------------------------- parseCollection
 	/**
 	 * Parse a collection of objects
@@ -264,20 +287,19 @@ class Html_Template
 			$object = reset($objects);
 			foreach (explode(".", $var_name) as $property_name) {
 				if (!strlen($property_name)) {
-					array_shift($objects);
-					$object = reset($objects);
+					$object = $this->parseParent($objects);
 				}
 				elseif (isset($class_name)) {
 					$object = method_exists($class_name, $property_name)
-						? $class_name::$property_name()
-						: $class_name::$$property_name;
+						? $this->parseStaticMethod($objects, $class_name, $property_name)
+						: $this->parseStaticProperty($objects, $class_name, $property_name);
 					$class_name = null;
 				}
 				elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
 					if (
 						(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
 					) {
-						$class_name = Namespaces::fullClassName($property_name);
+						$class_name = $this->parseClassName($objects, $property_name);
 					}
 					else {
 						$object = $this->parseConst($objects, $object, $property_name);
@@ -293,23 +315,19 @@ class Html_Template
 					$object = $this->callFunc($objects, $property_name);
 				}
 				elseif (is_array($object)) {
-					$object = isset($object[$property_name]) ? $object[$property_name] : null;
+					$object = $this->parseArrayElement($objects, $object, $property_name);
 				}
 				elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
-					$object = new String($object);
-					$object = method_exists($object, $property_name)
-						? $object->$property_name()
-						: $object->$property_name;
+					$object = $this->parseString($objects, $object, $property_name);
 				}
 				elseif (method_exists($object, $property_name)) {
-					$object = $object->$property_name();
+					$object = $this->parseMethod($objects, $object, $property_name);
 				}
 				elseif (isset($object->$property_name)) {
-					$object = $object->$property_name;
+					$object = $this->parseProperty($objects, $object, $property_name);
 				}
 				else {
-					$object = isset($this->parameters[$property_name])
-						? $this->parameters[$property_name] : "";
+					$object = $this->parseParameter($objects, $object, $property_name);
 				}
 			}
 		}
@@ -531,6 +549,53 @@ class Html_Template
 		return $content;
 	}
 
+	//----------------------------------------------------------------------------------- parseMethod
+	/**
+	 * @param multitype:mixed $objects
+	 * @param object $object
+	 * @param string $property_name
+	 */
+	protected function parseMethod($objects, $object, $property_name)
+	{
+		return $object->$property_name();
+	}
+
+	//-------------------------------------------------------------------------------- parseParameter
+	/**
+	 * @param multitype:mixed $objects
+	 * @param mixed $object
+	 * @param string $parameter_name
+	 * @return mixed
+	 */
+	protected function parseParameter($objects, $object, $parameter_name)
+	{
+		return isset($this->parameters[$parameter_name])
+			? $this->parameters[$parameter_name]
+			: "";
+	}
+
+	//----------------------------------------------------------------------------------- parseParent
+	/**
+	 * @param multitype:mixed $objects
+	 * @return mixed
+	 */
+	protected function parseParent(&$objects)
+	{
+		array_shift($objects);
+		return reset($objects);
+	}
+
+	//--------------------------------------------------------------------------------- parseProperty
+	/**
+	 * @param multitype:mixed $objects
+	 * @param object $object
+	 * @param string $property_name
+	 */
+	protected function parseProperty($objects, $object, $property_name)
+	{
+		return $object->$property_name;
+	}
+
 	//-------------------------------------------------------------------------------- parseSeparator
 	/**
 	 * Remove <!--separator-->(...) code from a loop content, and returns the separator content
@@ -548,6 +613,66 @@ class Html_Template
 			$separator = "";
 		}
 		return $separator;
+	}
+
+	//----------------------------------------------------------------------------- parseStaticMethod
+	/**
+	 * @param multitype:mixed $objects
+	 * @param string $class_name
+	 * @param string $method_name
+	 * @return mixed
+	 */
+	protected function parseStaticMethod($objects, $class_name, $method_name)
+	{
+		return $class_name::$method_name();
+	}
+
+	//--------------------------------------------------------------------------- parseStaticProperty
+	/**
+	 * @param multitype:mixed $objects
+	 * @param string $class_name
+	 * @param string $method_name
+	 * @return mixed
+	 */
+	protected function parseStaticProperty($objects, $class_name, $property_name)
+	{
+		return $class_name::$$property_name;
+	}
+
+	//----------------------------------------------------------------------------------- parseString
+	/**
+	 * @param multitype:mixed $objects
+	 * @param string $object
+	 * @param string $property_name
+	 */
+	protected function parseString($objects, $object, $property_name)
+	{
+		$object = new String($object);
+		return method_exists($object, $property_name)
+		? $this->parseStringMethod($objects, $object, $property_name)
+		: $this->parseStringProperty($objects, $object, $property_name);
+	}
+
+	//----------------------------------------------------------------------------- parseStringMethod
+	/**
+	 * @param multitype:mixed $objects
+	 * @param string $object
+	 * @param string $property_name
+	 */
+	protected function parseStringMethod($objects, $object, $method_name)
+	{
+		return $object->$method_name();
+	}
+
+	//--------------------------------------------------------------------------- parseStringProperty
+	/**
+	 * @param multitype:mixed $objects
+	 * @param string $object
+	 * @param string $property_name
+	 */
+	protected function parseStringProperty($objects, $object, $property_name)
+	{
+		return $object->$property_name;
 	}
 
 	//------------------------------------------------------------------------------------- parseThis

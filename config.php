@@ -18,7 +18,13 @@ $config["framework"] = array(
 	),
 	"Locale" => array(
 		"date" => "d/m/Y",
-		"language" => "fr"
+		"language" => "fr",
+		"numbers" => array(
+				"decimal_minimal_count" => 2,
+				"decimal_maximal_count" => 4,
+				"decimal_separator"     => ",",
+				"thousand_separator"    => " ",
+		)
 	),
 	"View" => array(
 		"class" => "Html_View_Engine",
