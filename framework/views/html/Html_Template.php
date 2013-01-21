@@ -268,160 +268,6 @@ class Html_Template
 		return ob_get_clean();
 	}
 
-	//------------------------------------------------------------------------------------ parseValue
-	/**
-	 * Parse a variable / function / include and returns its return value
-	 *
-	 * @param multitype:object $objects
-	 * @param string $var_name can be an unique var or path.of.vars
-	 * @param boolean $as_string if true, returned value will always be a string
-	 * @return string var value after reading value / executing specs (can be an object)
-	 */
-	protected function parseValue($objects, $var_name, $as_string = true)
-	{
-		if ($var_name == ".") {
-			return reset($objects);
-		}
-		else {
-			$class_name = null;
-			$object = reset($objects);
-			foreach (explode(".", $var_name) as $property_name) {
-				if (!strlen($property_name)) {
-					$object = $this->parseParent($objects);
-				}
-				elseif (isset($class_name)) {
-					$object = method_exists($class_name, $property_name)
-						? $this->parseStaticMethod($objects, $class_name, $property_name)
-						: $this->parseStaticProperty($objects, $class_name, $property_name);
-					$class_name = null;
-				}
-				elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
-					if (
-						(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
-					) {
-						$class_name = $this->parseClassName($objects, $property_name);
-					}
-					else {
-						$object = $this->parseConst($objects, $object, $property_name);
-					}
-				}
-				elseif ($property_name[0] === "@") {
-					$object = $this->parseFunc($objects, substr($property_name, 1));
-				}
-				elseif ($property_name[0] === "/") {
-					$object = $this->parseInclude($property_name);
-				}
-				elseif ($i = strpos($property_name, "(")) {
-					$object = $this->callFunc($objects, $property_name);
-				}
-				elseif (is_array($object)) {
-					$object = $this->parseArrayElement($objects, $object, $property_name);
-				}
-				elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
-					$object = $this->parseString($objects, $object, $property_name);
-				}
-				elseif (method_exists($object, $property_name)) {
-					$object = $this->parseMethod($objects, $object, $property_name);
-				}
-				elseif (isset($object->$property_name)) {
-					$object = $this->parseProperty($objects, $object, $property_name);
-				}
-				else {
-					$object = $this->parseParameter($objects, $object, $property_name);
-				}
-			}
-		}
-		if ($as_string && is_object($object)) {
-			return method_exists($object, "__toString") ? strval($object) : "";
-		}
-		else {
-			return $object;
-		}
-	}
-
-	//-------------------------------------------------------------------------------------- parseVar
-	protected function parseVar(&$content, $objects, $i, $j)
-	{
-		$var_name = substr($content, $i, $j - $i);
-		$auto_remove = $this->parseVarWillAutoremove($var_name);
-		$value = $this->parseValue($objects, $var_name);
-		if (is_array($value) && (reset($objects) instanceof Reflection_Property)) {
-			$value = $this->parseCollection(reset($objects), $value);
-		}
-		$i--;
-		if ($auto_remove && !strlen($value)) {
-			$this->parseVarRemove($content, $i, $j);
-		}
-		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
-		return $i;
-	}
-
-	//------------------------------------------------------------------------ parseVarWillAutoremove
-	protected function parseVarWillAutoremove(&$var_name)
-	{
-		if ($var_name[0] === "?") {
-			$var_name = substr($var_name, 1);
-			$auto_remove = true;
-		}
-		else {
-			$auto_remove = false;
-		}
-		return $auto_remove;
-	}
-
-	//-------------------------------------------------------------------------------- parseVarRemove
-	protected function parseVarRemove($content, &$i, &$j)
-	{
-		if (
-			(($content[$i - 1] === "'") && ($content[$j + 1] === "'"))
-			|| (($content[$i - 1] === '"') && ($content[$j + 1] === '"'))
-		) {
-			$i--;
-			$j++;
-		}
-		while (($content[$i] != " ") && ($content[$i] != ",")) {
-			if (($content[$i] == '"') || ($content[$i] == "'")) {
-				while ($content[$j] != $content[$i]) {
-					$j++;
-				}
-			}
-			$i--;
-		}
-	}
-
-	//------------------------------------------------------------------------------------- parseVars
-	/**
-	 * Parse all variables from the template
-	 *
-	 * @example parsed variables will have those forms :
-	 *   simply display variable or function /method result value :
-	 *     {variable_name}
-	 *     {methodName()}
-	 *     {object_property.sub-object_property}
-	 *     {@html_template_function_name}
-	 *   condition / loop on variable or function / method result :
-	 *     <!--variable_name-->(...)<!--variable_name-->
-	 *     <!--methodName()-->(...)<!--methodName()-->
-	 *     <!--@function-->(...)<!--@function-->
-	 *
-	 * @param string $content
-	 * @param object $object
-	 * @return string updated content
-	 */
-	private function parseVars($content, $objects)
-	{
-		$content = $this->parseLoops($content, $objects);
-		$i = 0;
-		while (($i = strpos($content, "{", $i)) !== false) {
-			$i++;
-			if ($this->parseThis($content, $i)) {
-				$j = strpos($content, "}", $i);
-				$i = $this->parseVar($content, $objects, $i, $j);
-			}
-		}
-		return $content;
-	}
-
 	//------------------------------------------------------------------------------------- parseLoop
 	private function parseLoop(&$content, $objects, $i, $j)
 	{
@@ -688,6 +534,160 @@ class Html_Template
 		$c = $content[$i];
 		return (($c >= "a") && ($c <= "z")) || (($c >= "A") && ($c <= "Z"))
 			|| ($c == "@") || ($c == "/") || ($c == ".") || ($c == "?");
+	}
+
+	//------------------------------------------------------------------------------------ parseValue
+	/**
+	 * Parse a variable / function / include and returns its return value
+	 *
+	 * @param multitype:object $objects
+	 * @param string $var_name can be an unique var or path.of.vars
+	 * @param boolean $as_string if true, returned value will always be a string
+	 * @return string var value after reading value / executing specs (can be an object)
+	 */
+	protected function parseValue($objects, $var_name, $as_string = true)
+	{
+		if ($var_name == ".") {
+			return reset($objects);
+		}
+		else {
+			$class_name = null;
+			$object = reset($objects);
+			foreach (explode(".", $var_name) as $property_name) {
+				if (!strlen($property_name)) {
+					$object = $this->parseParent($objects);
+				}
+				elseif (isset($class_name)) {
+					$object = method_exists($class_name, $property_name)
+						? $this->parseStaticMethod($objects, $class_name, $property_name)
+						: $this->parseStaticProperty($objects, $class_name, $property_name);
+					$class_name = null;
+				}
+				elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
+					if (
+						(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
+					) {
+						$class_name = $this->parseClassName($objects, $property_name);
+					}
+					else {
+						$object = $this->parseConst($objects, $object, $property_name);
+					}
+				}
+				elseif ($property_name[0] === "@") {
+					$object = $this->parseFunc($objects, substr($property_name, 1));
+				}
+				elseif ($property_name[0] === "/") {
+					$object = $this->parseInclude($property_name);
+				}
+				elseif ($i = strpos($property_name, "(")) {
+					$object = $this->callFunc($objects, $property_name);
+				}
+				elseif (is_array($object)) {
+					$object = $this->parseArrayElement($objects, $object, $property_name);
+				}
+				elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
+					$object = $this->parseString($objects, $object, $property_name);
+				}
+				elseif (method_exists($object, $property_name)) {
+					$object = $this->parseMethod($objects, $object, $property_name);
+				}
+				elseif (isset($object->$property_name)) {
+					$object = $this->parseProperty($objects, $object, $property_name);
+				}
+				else {
+					$object = $this->parseParameter($objects, $object, $property_name);
+				}
+			}
+		}
+		if ($as_string && is_object($object)) {
+			return method_exists($object, "__toString") ? strval($object) : "";
+		}
+		else {
+			return $object;
+		}
+	}
+
+	//-------------------------------------------------------------------------------------- parseVar
+	protected function parseVar(&$content, $objects, $i, $j)
+	{
+		$var_name = substr($content, $i, $j - $i);
+		$auto_remove = $this->parseVarWillAutoremove($var_name);
+		$value = $this->parseValue($objects, $var_name);
+		if (is_array($value) && (reset($objects) instanceof Reflection_Property)) {
+			$value = $this->parseCollection(reset($objects), $value);
+		}
+		$i--;
+		if ($auto_remove && !strlen($value)) {
+			$this->parseVarRemove($content, $i, $j);
+		}
+		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
+		return $i;
+	}
+
+	//-------------------------------------------------------------------------------- parseVarRemove
+	protected function parseVarRemove($content, &$i, &$j)
+	{
+		if (
+			(($content[$i - 1] === "'") && ($content[$j + 1] === "'"))
+			|| (($content[$i - 1] === '"') && ($content[$j + 1] === '"'))
+		) {
+			$i--;
+			$j++;
+		}
+		while (($content[$i] != " ") && ($content[$i] != ",")) {
+			if (($content[$i] == '"') || ($content[$i] == "'")) {
+				while ($content[$j] != $content[$i]) {
+					$j++;
+				}
+			}
+			$i--;
+		}
+	}
+
+	//------------------------------------------------------------------------------------- parseVars
+	/**
+	 * Parse all variables from the template
+	 *
+	 * @example parsed variables will have those forms :
+	 *   simply display variable or function /method result value :
+	 *     {variable_name}
+	 *     {methodName()}
+	 *     {object_property.sub-object_property}
+	 *     {@html_template_function_name}
+	 *   condition / loop on variable or function / method result :
+	 *     <!--variable_name-->(...)<!--variable_name-->
+	 *     <!--methodName()-->(...)<!--methodName()-->
+	 *     <!--@function-->(...)<!--@function-->
+	 *
+	 * @param string $content
+	 * @param object $object
+	 * @return string updated content
+	 */
+	private function parseVars($content, $objects)
+	{
+		$content = $this->parseLoops($content, $objects);
+		$i = 0;
+		while (($i = strpos($content, "{", $i)) !== false) {
+			$i++;
+			if ($this->parseThis($content, $i)) {
+				$j = strpos($content, "}", $i);
+				$i = $this->parseVar($content, $objects, $i, $j);
+			}
+		}
+		return $content;
+	}
+
+	//------------------------------------------------------------------------ parseVarWillAutoremove
+	protected function parseVarWillAutoremove(&$var_name)
+	{
+		if ($var_name[0] === "?") {
+			$var_name = substr($var_name, 1);
+			$auto_remove = true;
+		}
+		else {
+			$auto_remove = false;
+		}
+		return $auto_remove;
 	}
 
 	//---------------------------------------------------------------------------------- removeSample
