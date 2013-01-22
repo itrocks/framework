@@ -9,11 +9,11 @@ abstract class Html_Template_Funcs
 	 * Returns array count
 	 *
 	 * @param Html_Template $template
-	 * @param mixed $object
+	 * @param multitype:mixed $object
 	 */
-	public static function getCount(Html_Template $template, $object)
+	public static function getCount(Html_Template $template, $objects)
 	{
-		return count($object);
+		return count($objects);
 	}
 
 	//-------------------------------------------------------------------------------- getApplication
@@ -21,10 +21,10 @@ abstract class Html_Template_Funcs
 	 * Returns application name
 	 *
 	 * @param Html_Template $template
-	 * @param object $object
+	 * @param multitype:mixed $objects
 	 * @return string
 	 */
-	public static function getApplication(Html_Template $template, $object)
+	public static function getApplication(Html_Template $template, $objects)
 	{
 		return new Displayable(
 			Configuration::current()->getApplicationName(), Displayable::TYPE_CLASS
@@ -36,11 +36,12 @@ abstract class Html_Template_Funcs
 	 * Returns object's class name
 	 *
 	 * @param Html_Template $template
-	 * @param object $object
+	 * @param multitype:mixed $objects
 	 * @return string
 	 */
-	public static function getClass(Html_Template $template, $object)
+	public static function getClass(Html_Template $template, $objects)
 	{
+		$object = reset($objects);
 		return is_object($object)
 			? (
 					($object instanceof Set)
@@ -55,11 +56,12 @@ abstract class Html_Template_Funcs
 	 * Return object's display
 	 *
 	 * @param Html_Template $template
-	 * @param object $object
+	 * @param multitype:mixed $objects
 	 * @return string
 	 */
-	public static function getDisplay(Html_Template $template, $object)
+	public static function getDisplay(Html_Template $template, $objects)
 	{
+		$object = reset($objects);
 		if ($object instanceof Reflection_Property) {
 			return Names::propertyToDisplay($object->name);
 		}
@@ -82,11 +84,25 @@ abstract class Html_Template_Funcs
 	 * Returns template's feature method name
 	 *
 	 * @param string $template
-	 * @param string $object
+	 * @param multitype:mixed $objects
 	 */
-	public static function getFeature($template, $object)
+	public static function getFeature(Html_Template $template, $objects)
 	{
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
+	}
+
+	//------------------------------------------------------------------------------------- getFormat
+	/**
+	 * Return formatted value
+	 *
+	 * @param Html_Template $template
+	 * @param multitype:mixed $object
+	 */
+	public static function getFormat(Html_Template $template, $objects)
+	{
+		$object = self::getObject($template, $objects);
+echo "! format " . get_class($object) . " = " . var_dump(reset($objects)) . "<br>";
+		return reset($objects);
 	}
 
 	//---------------------------------------------------------------------------------------- getHas
@@ -95,12 +111,30 @@ abstract class Html_Template_Funcs
 	 * (usefull for conditions on arrays)
 	 *
 	 * @param Html_Template $template
-	 * @param object $object
+	 * @param multitype:mixed $objects
 	 * @return boolean
 	 */
-	public static function getHas(Html_Template $template, $object)
+	public static function getHas(Html_Template $template, $objects)
 	{
+		$object = reset($objects);
 		return !empty($object);
+	}
+
+	//------------------------------------------------------------------------------------- getObject
+	/**
+	 * Returns nearest object from templating tree
+	 *
+	 * @param Html_Template $template
+	 * @param multitype:mixed $objects
+	 * @return object
+	 */
+	public static function getObject(Html_Template $template, $objects)
+	{
+		$object = reset($objects);
+		while (isset($object) && !is_object($object)) {
+			$object = next($objects);
+		}
+		return $object;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
@@ -108,25 +142,26 @@ abstract class Html_Template_Funcs
 	 * Returns object's properties, and their display and value
 	 *
 	 * @param Html_Template $template
-	 * @param object $object
-	 * @return multitype:Reflection_Property
+	 * @param multitype:mixed $objects
+	 * @return multitype:Reflection_Property_Value
 	 */
-	public static function getProperties(Html_Template $template, $object)
+	public static function getProperties(Html_Template $template, $objects)
 	{
+		$object = reset($objects);
 		$properties_filter = $template->getParameter("properties_filter");
 		$class = Reflection_Class::getInstanceOf($object);
 		$properties = $class->accessProperties();
+		$result_properties = array();
 		foreach ($properties as $property_name => $property) {
 			if (isset($properties_filter) && !in_array($property_name, $properties_filter)) {
 				unset($properties[$property_name]);
 			}
 			else {
-				$property->display = Names::propertyToDisplay($property_name);
-				$property->value = $object->$property_name;
+				$result_properties[$property_name] = new Reflection_Property_Value($object, $property);
 			}
 		}
 		$class->accessPropertiesDone();
-		return $properties;
+		return $result_properties;
 	}
 
 	//------------------------------------------------------------------------ getPropertiesOutOfTabs
@@ -134,13 +169,13 @@ abstract class Html_Template_Funcs
 	 * Returns object's properties, and their display and value, but only if they are not already into a tab
 	 *
 	 * @param Html_Template $template
-	 * @param object $object
-	 * @return multitype:Reflection_Property
+	 * @param multitype:mixed $objects
+	 * @return multitype:Reflection_Property_Value
 	 */
-	public static function getPropertiesOutOfTabs(Html_Template $template, $object)
+	public static function getPropertiesOutOfTabs(Html_Template $template, $objects)
 	{
 		$properties = array();
-		foreach (self::getProperties($template, $object) as $property_name => $property) {
+		foreach (self::getProperties($template, $objects) as $property_name => $property) {
 			if (!isset($property->tab_path)) {
 				$properties[$property_name] = $property;
 			}
@@ -154,10 +189,10 @@ abstract class Html_Template_Funcs
 	 * (use it inside of loops)
 	 *
 	 * @param Html_Template $template
-	 * @param object $object
+	 * @param multitype:mixed $objects
 	 * @return object
 	 */
-	public static function getTop(Html_Template $template, $object)
+	public static function getTop(Html_Template $template, $objects)
 	{
 		return $template->getObject();
 	}

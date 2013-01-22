@@ -17,9 +17,10 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	//------------------------------------------------------------------------------------- buildCell
 	protected function buildCell($object, $property_name)
 	{
-		$property = Reflection_Class::getInstanceOf(get_class($object))->getProperty($property_name);
+		$property = Reflection_Property::getInstanceOf($object, $property_name);
+		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
 		$input = (new Html_Builder_Property_Edit(
-			$property, $object->$property_name, $this->property->name . "[]"
+			$property, $value, $this->property->name . "[]"
 		))->build();
 		if ($property_name == reset($this->properties)) {
 			$id_input = new Html_Input(

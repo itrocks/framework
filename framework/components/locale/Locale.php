@@ -20,6 +20,13 @@ class Locale
 	 */
 	public $language;
 
+	//--------------------------------------------------------------------------------------- $number
+	/**
+	 * @setter setNumber
+	 * @var Number_Format
+	 */
+	public $number;
+
 	//--------------------------------------------------------------------------------- $translations
 	/**
 	 * @var Translations
@@ -27,10 +34,13 @@ class Locale
 	public $translations;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct($parameters)
+	public function __construct($parameters = null)
 	{
-		$this->setDate($parameters["date"]);
-		$this->setLanguage($parameters["language"]);
+		if (isset($parameters)) {
+			$this->setDate($parameters["date"]);
+			$this->setLanguage($parameters["language"]);
+			$this->setNumber($parameters["number"]);
+		}
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -49,12 +59,9 @@ class Locale
 	 */
 	public function setDate($date)
 	{
-		if ($date instanceof Date_Locale) {
-			$this->date = $date;
-		}
-		else {
-			$this->date = new Date_Locale($date);
-		}
+		$this->date = ($date instanceof Date_Locale)
+			? $date
+			: new Date_Locale($date);
 	}
 
 	//----------------------------------------------------------------------------------- setLanguage
@@ -65,6 +72,19 @@ class Locale
 	{
 		$this->language = $language;
 		$this->translations = new Translations($this->language);
+	}
+
+	//------------------------------------------------------------------------------------- setNumber
+	/**
+	 * Set locale's number
+	 *
+	 * @param Number_Locale | multitype:mixed
+	 */
+	public function setNumber($number)
+	{
+		$this->number = ($number instanceof Number_Locale)
+			? $number
+			: new Number_Locale($number);
 	}
 
 }

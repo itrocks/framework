@@ -5,98 +5,13 @@ use AopJoinpoint;
 abstract class Loc implements Plugin
 {
 
-	//------------------------------------------------------------------------ $date_time_locale_mode
+	//--------------------------------------------------------------------------- $parse_before_write
 	/**
-	 * When > 0, Date_Time::__toString() will parse date using current locale
+	 * When > 0, data written with Dao will be parsed as an user input before being written
 	 *
 	 * @var integer
 	 */
-	private static $date_time_locale_mode = 0;
-
-	//--------------------------------------------------------------------------- afterDataLinkSelect
-	/**
-	 * When $date_time_locale mode is true, Data_Link::select return datetimes as locale
-	 * $date_time_locale mode is set to true by 
-	 *
-	 * @param AopJoinpoint $joinpoint
-	 */
-	public static function afterDataLinkSelect(AopJoinpoint $joinpoint)
-	{
-		if (self::$date_time_locale_mode) {
-			$arguments = $joinpoint->getArguments();
-			$class_name = $arguments[0];
-			$columns = $arguments[1];
-			$dates_columns = array();
-			$number_columns = array();
-			foreach ($columns as $key => $column_name) {
-				$type = Reflection_Property::getInstanceOf($class_name, $column_name)->getType();
-				if ($type == "Date_Time") {
-					$dates_columns[] = $column_name;
-				}
-				elseif ($type == "float") {
-					$number_columns[] = $column_name;
-				}
-			}
-			if ($dates_columns) {
-				$list = $joinpoint->getReturnedValue();
-				foreach ($list->elements as $row) {
-					foreach ($dates_columns as $column_name) {
-						$row->values[$column_name] = self::dateToLocale($row->values[$column_name]);
-					}
-				}
-			}
-			if ($number_columns) {
-				$list = $joinpoint->getReturnedValue();
-				foreach ($list->elements as $row) {
-					foreach ($dates_columns as $column_name) {
-						$row->values[$column_name] = self::numberToLocale($row->values[$column_name]);
-					}
-				}
-			}
-		}
-	}
-
-	//------------------------------------------------------------------------- afterDateTimeToString
-	/**
-	 * @param AopJoinpoint $joinpoint
-	 */
-	public static function afterDateTimeToString(AopJoinpoint $joinpoint)
-	{
-		if (self::$date_time_locale_mode) {
-			$joinpoint->setReturnedValue(self::dateToLocale($joinpoint->getReturnedValue()));
-		}
-	}
-
-	//------------------------------------------------------------------- afterHtmlTemplateParseValue
-	/**
-	 * @param AopJoinpoint $joinpoint
-	 */
-	public static function afterHtmlTemplateParseValue(AopJoinpoint $joinpoint)
-	{
-		/*
-		$args = $joinpoint->getArguments();
-		$var_name = $args[1];
-		if ($var_name == "value") {
-			$objects = $args[0];
-			foreach ($objects as $object) echo " - " . $object;
-			echo "<br>";
-			if ($object instanceof Reflection_Property) {
-				if ($object->getType() == "float") {
-					echo $var_name . "<br>"; // . " " . print_r($joinpoint->getReturnedValue(), true) . "<br>";
-				}
-			}
-		}
-		*/
-		/*
-		if (self::$date_time_locale_mode) {
-			if (is_numeric($joinpoint->getReturnedValue())) {
-				$args = $joinpoint->getArguments();
-				echo "- ouaich ? " . $joinpoint->getReturnedValue() . "<br>";
-				//echo "<pre>" . $joinpoint->getReturnedValue() . " = " . print_r($args, true) . "</pre>";
-			}
-		}
-		*/
-	}
+	private static $parse_before_write = 0;
 
 	//--------------------------------------------------------------------------- beforeDataLinkWrite
 	/**
@@ -104,14 +19,19 @@ abstract class Loc implements Plugin
 	 */
 	public static function beforeDataLinkWrite(AopJoinpoint $joinpoint)
 	{
-		if (self::$date_time_locale_mode) {
+		if (self::$parse_before_write) {
 			$object = $joinpoint->getArguments()[0];
 			$class = Reflection_Class::getInstanceOf($object);
 			foreach ($class->accessProperties() as $property) {
-				if ($property->getType() == "Date_Time") {
-					if (is_string($value = $property->getValue($object))) {
-						$property->setValue(Loc::dateToIso($value));
-					}
+				$type = $property->getType();
+				if ($type == "Date_Time") {
+					$property->getValue($object);
+				}
+				if ($type == "float") {
+					$property->setValue($object, self::floatToIso($property->getValue($object), $property));
+				}
+				elseif ($type == "integer") {
+					$property->setValue($object, self::integerToIso($property->getValue($object), $property));
 				}
 			}
 			$class->accessPropertiesDone();
@@ -124,7 +44,7 @@ abstract class Loc implements Plugin
 	 */
 	public static function beforeDateTimeFromIso(AopJoinpoint $joinpoint)
 	{
-		if (self::$date_time_locale_mode) {
+		if (self::$parse_before_write) {
 			$args = $joinpoint->getArguments();
 			$date = $args[0];
 			if (
@@ -160,6 +80,15 @@ abstract class Loc implements Plugin
 		return Locale::current()->date->toLocale($date);
 	}
 
+	//----------------------------------------------------------------- dateTimeReturnedValueToLocale
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function dateTimeReturnedValueToLocale(AopJoinpoint $joinpoint)
+	{
+		$joinpoint->setReturnedValue(self::dateToLocale($joinpoint->getReturnedValue()));
+	}
+
 	//------------------------------------------------------------------------------------- dateToIso
 	/**
 	 * Takes a locale date and make it ISO
@@ -172,25 +101,66 @@ abstract class Loc implements Plugin
 		return Locale::current()->date->toIso($date);
 	}
 
-	//-------------------------------------------------------------------------------- numberToLocale
+	//-------------------------------------------------------------------- floatReturnedValueToLocale
 	/**
-	 * Takes a number and make it locale
-	 *
-	 * @param float $number ie 1000 1000.28
-	 * @return string ie "1 000" "1 000,28"
+	 * @param AopJoinpoint $joinpoint
 	 */
-	public static function numberToLocale($number)
+	public static function floatReturnedValueToLocale(AopJoinpoint $joinpoint)
 	{
-		return number_format($number, 2, ",", " ");
-		//return Locale::current()->number->toLocale($number);
+		$joinpoint->setReturnedValue(self::floatToLocale($joinpoint->getReturnedValue()));
 	}
 
-	//-------------------------------------------------------------------- dateTimeLocaleModeOnAround
-	public static function dateTimeLocaleModeOnAround(AopJoinpoint $joinpoint)
+	//------------------------------------------------------------------------------------ floatToIso
+	/**
+	 * @param float $float
+	 * @param Reflection_Property $property
+	 */
+	public static function floatToIso($float, Reflection_Property $property = null)
 	{
-		self::$date_time_locale_mode ++;
-		$joinpoint->process();
-		self::$date_time_locale_mode --;
+		return Locale::current()->number->floatToIso($float, $property);
+	}
+
+	//--------------------------------------------------------------------------------- floatToLocale
+	/**
+	 * Takes a float number and make it locale
+	 *
+	 * @param float $number ie 1000 1000.28 1000.2148
+	 * @return string ie "1 000,00" "1 000,28" "1 000,2148"
+	 */
+	public static function floatToLocale($float)
+	{
+		return Locale::current()->number->floatToLocale($float);
+	}
+
+	//------------------------------------------------------------------ integerReturnedValueToLocale
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function integerReturnedValueToLocale(AopJoinpoint $joinpoint)
+	{
+		$joinpoint->setReturnedValue(self::integerToLocale($joinpoint->getReturnedValue()));
+	}
+
+	//---------------------------------------------------------------------------------- integerToIso
+	/**
+	 * @param integer $integer
+	 * @param Reflection_Property $property
+	 */
+	public static function integerToIso($integer, Reflection_Property $property = null)
+	{
+		return Locale::current()->number->integerToIso($integer, $property);
+	}
+
+	//------------------------------------------------------------------------------- integerToLocale
+	/**
+	 * Takes an integer and make it locale
+	 *
+	 * @param integer $number ie 1000
+	 * @return string ie "1 000"
+	 */
+	public static function integerToLocale($float)
+	{
+		return Locale::current()->number->integerToLocale($float);
 	}
 
 	//-------------------------------------------------------------------------------------- language
@@ -204,55 +174,67 @@ abstract class Loc implements Plugin
 		return Locale::current()->language;
 	}
 
+	//------------------------------------------------------------------------ parseBeforeWriteAround
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function parseBeforeWriteAround(AopJoinpoint $joinpoint)
+	{
+		self::$parse_before_write ++;
+		$joinpoint->process();
+		self::$parse_before_write --;
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		// activate date time locale mode
+		// format from locale user input to ISO and standard formats
 		Aop::add("around",
 			__NAMESPACE__ . "\\Default_Write_Controller->run()",
-			array(__CLASS__, "dateTimeLocaleModeOnAround")
-		);
-		Aop::add("around",
-			__NAMESPACE__ . "\\Default_List_Controller->getViewParameters()",
-			array(__CLASS__, "dateTimeLocaleModeOnAround")
-		);
-		Aop::add("around",
-			__NAMESPACE__ . "\\Html_Template->parse()",
-			array(__CLASS__, "dateTimeLocaleModeOnAround")
-		);
-		// on data link instructions that can pass some string date times arguments
-		Aop::add("after",
-			__NAMESPACE__ . "\\Data_Link->select()",
-			array(__CLASS__, "afterDataLinkSelect")
+			array(__CLASS__, "parseBeforeWriteAround")
 		);
 		Aop::add("before",
 			__NAMESPACE__ . "\\Data_Link->write()",
 			array(__CLASS__, "beforeDataLinkWrite")
 		);
-		// on date time from iso casting
 		Aop::add("before",
 			__NAMESPACE__ . "\\Date_Time->fromISO()",
 			array(__CLASS__, "beforeDateTimeFromIso")
 		);
-		// on date time to string casting
+		// format to locale
 		Aop::add("after",
-			__NAMESPACE__ . "\\Date_Time->__toString()",
-			array(__CLASS__, "afterDateTimeToString")
+			__NAMESPACE__ . "\\Reflection_Property_View->formatDateTime()",
+			array(__CLASS__, "dateTimeReturnedValueToLocale")
 		);
-		// on float parsing
 		Aop::add("after",
-			__NAMESPACE__ . "\\Html_Template->parseValue()",
-			array(__CLASS__, "afterHtmlTemplateParseValue")
+			__NAMESPACE__ . "\\Reflection_Property_View->formatFloat()",
+			array(__CLASS__, "floatReturnedValueToLocale")
+		);
+		Aop::add("after",
+			__NAMESPACE__ . "\\Reflection_Property_View->formatInteger()",
+			array(__CLASS__, "integerReturnedValueToLocale")
 		);
 	}
 
 	//------------------------------------------------------------------------------------------- rtr
+	/**
+	 * Reverse translation
+	 *
+	 * @param string $translation
+	 * @param string $context
+	 */
 	public static function rtr($translation, $context = "")
 	{
 		return Locale::current()->translations->reverse($translation, $context);
 	}
 
 	//-------------------------------------------------------------------------------------------- tr
+	/**
+	 * Translation
+	 *
+	 * @param string $text
+	 * @param string $context
+	 */
 	public static function tr($text, $context = "")
 	{
 		return Locale::current()->translations->translate($text, $context);

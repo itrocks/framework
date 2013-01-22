@@ -4,17 +4,17 @@ namespace SAF\Framework;
 class Default_List_Row implements List_Row
 {
 
-	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @var object
-	 */
-	private $object;
-
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @var string
 	 */
 	public $class_name;
+
+	//--------------------------------------------------------------------------------------- $object
+	/**
+	 * @var object
+	 */
+	private $object;
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
@@ -34,6 +34,29 @@ class Default_List_Row implements List_Row
 	public function count()
 	{
 		return count($this->values);
+	}
+
+	//---------------------------------------------------------------------------------- formatValues
+	/**
+	 * Return values ready for display
+	 *
+	 * @return multitype:string
+	 */
+	public function formatValues()
+	{
+		$values = array();
+		static $cache = array();
+		foreach ($this->values as $property_path => $value) {
+			$property_view = isset($cache[$this->class_name][$property_path])
+				? $cache[$this->class_name][$property_path]
+				: (
+					$cache[$this->class_name][$property_path] = new Reflection_Property_View(
+						Reflection_Property::getInstanceOf($this->class_name, $property_path)
+					)
+				);
+			$values[$property_path] = $property_view->formatValue($value);
+		}
+		return $values;
 	}
 
 	//---------------------------------------------------------------------------------- getClassName

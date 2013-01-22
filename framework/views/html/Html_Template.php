@@ -74,7 +74,7 @@ class Html_Template
 	 */
 	public function callFunc($object_call, $func_call, $objects = null)
 	{
-		$params = $objects ? array_merge(array($this), $objects) : array();
+		$params = $objects ? array_merge(array($this), array($objects)) : array();
 		if ($i = strpos($func_call, "(")) {
 			$func_name = substr($func_call, 0, $i);
 			$i++;
@@ -550,13 +550,14 @@ class Html_Template
 
 	//------------------------------------------------------------------------------ parseSingleValue
 	/**
-	 * 
+	 *
 	 * @param multitype:mixed $objects
 	 * @param string $property_name
 	 * @param string $class_name
 	 */
 	protected function parseSingleValue(&$objects, $object, &$class_name, $property_name)
 	{
+		$source_object = $object;
 		if (!strlen($property_name)) {
 			$object = $this->parseParent($objects);
 		}
@@ -599,6 +600,9 @@ class Html_Template
 		}
 		else {
 			$object = $this->parseParameter($objects, $object, $property_name);
+		}
+		if (($source_object instanceof Reflection_Property) && ($property_name == "value")) {
+			$object = (new Reflection_Property_View($source_object))->formatValue($object);
 		}
 		return $object;
 	}
