@@ -406,6 +406,18 @@ class Html_Template
 		return $object->$property_name();
 	}
 
+	//--------------------------------------------------------------------------- parseObjectToString
+	/**
+	 * @param multitype:mixed $objects
+	 * @param mixed $object
+	 * @param string $property_name
+	 * @return string
+	 */
+	protected function parseObjectToString($objects, $object, $property_name)
+	{
+		return method_exists($object, "__toString") ? strval($object) : "";
+	}
+
 	//-------------------------------------------------------------------------------- parseParameter
 	/**
 	 * @param multitype:mixed $objects
@@ -536,6 +548,61 @@ class Html_Template
 			|| ($c == "@") || ($c == "/") || ($c == ".") || ($c == "?");
 	}
 
+	//------------------------------------------------------------------------------ parseSingleValue
+	/**
+	 * 
+	 * @param multitype:mixed $objects
+	 * @param string $property_name
+	 * @param string $class_name
+	 */
+	protected function parseSingleValue(&$objects, $object, &$class_name, $property_name)
+	{
+		if (!strlen($property_name)) {
+			$object = $this->parseParent($objects);
+		}
+		elseif (isset($class_name)) {
+			$object = method_exists($class_name, $property_name)
+			? $this->parseStaticMethod($objects, $class_name, $property_name)
+			: $this->parseStaticProperty($objects, $class_name, $property_name);
+			$class_name = null;
+		}
+		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
+			if (
+					(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
+			) {
+				$class_name = $this->parseClassName($objects, $property_name);
+			}
+			else {
+				$object = $this->parseConst($objects, $object, $property_name);
+			}
+		}
+		elseif ($property_name[0] === "@") {
+			$object = $this->parseFunc($objects, substr($property_name, 1));
+		}
+		elseif ($property_name[0] === "/") {
+			$object = $this->parseInclude($property_name);
+		}
+		elseif ($i = strpos($property_name, "(")) {
+			$object = $this->callFunc($objects, $property_name);
+		}
+		elseif (is_array($object)) {
+			$object = $this->parseArrayElement($objects, $object, $property_name);
+		}
+		elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
+			$object = $this->parseString($objects, $object, $property_name);
+		}
+		elseif (method_exists($object, $property_name)) {
+			$object = $this->parseMethod($objects, $object, $property_name);
+		}
+		elseif (isset($object->$property_name)) {
+			$object = $this->parseProperty($objects, $object, $property_name);
+		}
+		else {
+			$object = $this->parseParameter($objects, $object, $property_name);
+		}
+		return $object;
+	}
+
 	//------------------------------------------------------------------------------------ parseValue
 	/**
 	 * Parse a variable / function / include and returns its return value
@@ -554,57 +621,13 @@ class Html_Template
 			$class_name = null;
 			$object = reset($objects);
 			foreach (explode(".", $var_name) as $property_name) {
-				if (!strlen($property_name)) {
-					$object = $this->parseParent($objects);
-				}
-				elseif (isset($class_name)) {
-					$object = method_exists($class_name, $property_name)
-						? $this->parseStaticMethod($objects, $class_name, $property_name)
-						: $this->parseStaticProperty($objects, $class_name, $property_name);
-					$class_name = null;
-				}
-				elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
-					if (
-						(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
-					) {
-						$class_name = $this->parseClassName($objects, $property_name);
-					}
-					else {
-						$object = $this->parseConst($objects, $object, $property_name);
-					}
-				}
-				elseif ($property_name[0] === "@") {
-					$object = $this->parseFunc($objects, substr($property_name, 1));
-				}
-				elseif ($property_name[0] === "/") {
-					$object = $this->parseInclude($property_name);
-				}
-				elseif ($i = strpos($property_name, "(")) {
-					$object = $this->callFunc($objects, $property_name);
-				}
-				elseif (is_array($object)) {
-					$object = $this->parseArrayElement($objects, $object, $property_name);
-				}
-				elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
-					$object = $this->parseString($objects, $object, $property_name);
-				}
-				elseif (method_exists($object, $property_name)) {
-					$object = $this->parseMethod($objects, $object, $property_name);
-				}
-				elseif (isset($object->$property_name)) {
-					$object = $this->parseProperty($objects, $object, $property_name);
-				}
-				else {
-					$object = $this->parseParameter($objects, $object, $property_name);
-				}
+				$object = $this->parseSingleValue($objects, $object, $class_name, $property_name);
 			}
 		}
 		if ($as_string && is_object($object)) {
-			return method_exists($object, "__toString") ? strval($object) : "";
+			$object = $this->parseObjectToString($objects, $object, $property_name);
 		}
-		else {
-			return $object;
-		}
+		return $object;
 	}
 
 	//-------------------------------------------------------------------------------------- parseVar

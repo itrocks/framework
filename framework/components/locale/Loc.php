@@ -27,11 +27,14 @@ abstract class Loc implements Plugin
 			$class_name = $arguments[0];
 			$columns = $arguments[1];
 			$dates_columns = array();
+			$number_columns = array();
 			foreach ($columns as $key => $column_name) {
-				if (
-					Reflection_Property::getInstanceOf($class_name, $column_name)->getType() == "Date_Time"
-				) {
+				$type = Reflection_Property::getInstanceOf($class_name, $column_name)->getType();
+				if ($type == "Date_Time") {
 					$dates_columns[] = $column_name;
+				}
+				elseif ($type == "float") {
+					$number_columns[] = $column_name;
 				}
 			}
 			if ($dates_columns) {
@@ -39,6 +42,14 @@ abstract class Loc implements Plugin
 				foreach ($list->elements as $row) {
 					foreach ($dates_columns as $column_name) {
 						$row->values[$column_name] = self::dateToLocale($row->values[$column_name]);
+					}
+				}
+			}
+			if ($number_columns) {
+				$list = $joinpoint->getReturnedValue();
+				foreach ($list->elements as $row) {
+					foreach ($dates_columns as $column_name) {
+						$row->values[$column_name] = self::numberToLocale($row->values[$column_name]);
 					}
 				}
 			}
@@ -54,6 +65,37 @@ abstract class Loc implements Plugin
 		if (self::$date_time_locale_mode) {
 			$joinpoint->setReturnedValue(self::dateToLocale($joinpoint->getReturnedValue()));
 		}
+	}
+
+	//------------------------------------------------------------------- afterHtmlTemplateParseValue
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function afterHtmlTemplateParseValue(AopJoinpoint $joinpoint)
+	{
+		/*
+		$args = $joinpoint->getArguments();
+		$var_name = $args[1];
+		if ($var_name == "value") {
+			$objects = $args[0];
+			foreach ($objects as $object) echo " - " . $object;
+			echo "<br>";
+			if ($object instanceof Reflection_Property) {
+				if ($object->getType() == "float") {
+					echo $var_name . "<br>"; // . " " . print_r($joinpoint->getReturnedValue(), true) . "<br>";
+				}
+			}
+		}
+		*/
+		/*
+		if (self::$date_time_locale_mode) {
+			if (is_numeric($joinpoint->getReturnedValue())) {
+				$args = $joinpoint->getArguments();
+				echo "- ouaich ? " . $joinpoint->getReturnedValue() . "<br>";
+				//echo "<pre>" . $joinpoint->getReturnedValue() . " = " . print_r($args, true) . "</pre>";
+			}
+		}
+		*/
 	}
 
 	//--------------------------------------------------------------------------- beforeDataLinkWrite
@@ -130,6 +172,19 @@ abstract class Loc implements Plugin
 		return Locale::current()->date->toIso($date);
 	}
 
+	//-------------------------------------------------------------------------------- numberToLocale
+	/**
+	 * Takes a number and make it locale
+	 *
+	 * @param float $number ie 1000 1000.28
+	 * @return string ie "1 000" "1 000,28"
+	 */
+	public static function numberToLocale($number)
+	{
+		return number_format($number, 2, ",", " ");
+		//return Locale::current()->number->toLocale($number);
+	}
+
 	//-------------------------------------------------------------------- dateTimeLocaleModeOnAround
 	public static function dateTimeLocaleModeOnAround(AopJoinpoint $joinpoint)
 	{
@@ -183,6 +238,11 @@ abstract class Loc implements Plugin
 		Aop::add("after",
 			__NAMESPACE__ . "\\Date_Time->__toString()",
 			array(__CLASS__, "afterDateTimeToString")
+		);
+		// on float parsing
+		Aop::add("after",
+			__NAMESPACE__ . "\\Html_Template->parseValue()",
+			array(__CLASS__, "afterHtmlTemplateParseValue")
 		);
 	}
 
