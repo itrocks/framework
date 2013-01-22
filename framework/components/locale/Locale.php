@@ -53,6 +53,36 @@ class Locale
 		return self::pCurrent($set_current);
 	}
 
+	//--------------------------------------------------------------------------------- propertyToIso
+	/**
+	 * Change a locale value into an ISO formatted value, knowing it's property
+	 *
+	 * @param Reflection_Property $property
+	 * @param string $value
+	 */
+	public function propertyToIso(Reflection_Property $property, $value = null)
+	{
+		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
+			$value = $property->value();
+		}
+		return $this->toIso($value, $property->getType());
+	}
+
+	//------------------------------------------------------------------------------ propertyToLocale
+	/**
+	 * Change an ISO value into a locale formatted value, knowing it's property
+	 *
+	 * @param Reflection_Property $property
+	 * @param string $value
+	 */
+	public function propertyToLocale(Reflection_Property $property, $value = null)
+	{
+		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
+			$value = $property->value();
+		}
+		return $this->toLocale($value, $property->getType());
+	}
+
 	//--------------------------------------------------------------------------------------- setDate
 	/**
 	 * @param Date_Locale | string $date if string, must be a date format (ie "d/m/Y")
@@ -85,6 +115,40 @@ class Locale
 		$this->number = ($number instanceof Number_Locale)
 			? $number
 			: new Number_Locale($number);
+	}
+
+	//----------------------------------------------------------------------------------------- toIso
+	/**
+	 * Change a locale value into an ISO formatted value, knowing it's data type
+	 *
+	 * @param string $type
+	 * @param string $value
+	 */
+	public function toIso($value, $type = null)
+	{
+		switch ($type) {
+			case "Date_Time": return $this->date->toIso($value);
+			case "float":     return $this->number->floatToIso($value);
+			case "integer":   return $this->number->integerToIso($value);
+		}
+		return $value;
+	}
+
+	//-------------------------------------------------------------------------------------- toLocale
+	/**
+	 * Change an ISO value into a locale formatted value, knowing it's data type
+	 *
+	 * @param string $type
+	 * @param string $value
+	 */
+	public function toLocale($value, $type = null)
+	{
+		switch ($type) {
+			case "Date_Time": return $this->date->toLocale($value);
+			case "float":     return $this->number->floatToLocale($value);
+			case "integer":   return $this->number->integerToLocale($value);
+		}
+		return $value;
 	}
 
 }

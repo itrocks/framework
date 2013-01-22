@@ -52,7 +52,7 @@ class Button
 			$options = array($options);
 		}
 		foreach ($options as $key => $option) {
-			if (($key === "class") || is_numeric($key) && substr($option, 0, 1) == ".") {
+			if (($key === "class") || (is_numeric($key) && (substr($option, 0, 1) == "."))) {
 				$this->class .= (isset($this->class) ? " " : "") . substr($option, 1);
 			}
 			if (($key === "target") || is_numeric($key) && substr($option, 0, 1) == "#") {

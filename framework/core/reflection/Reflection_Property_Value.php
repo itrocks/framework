@@ -8,9 +8,22 @@ class Reflection_Property_Value extends Reflection_Property
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
+	 * The object or the value of the property
+	 *
+	 * The object must have the same class than the property's class
+	 * If not, then this stores the value of the property
+	 *
 	 * @var object
 	 */
 	public $object;
+
+	//----------------------------------------------------------------------------------------- $path
+	/**
+	 * The original property path
+	 *
+	 * @var string
+	 */
+	public $path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -23,7 +36,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @param string|ReflectionClass|Reflection_Class|ReflectionProperty|Reflection_Property|object $class
 	 * @param string|ReflectionProperty|Reflection_Property $name
-	 * @param object $object
+	 * @param object|mixed $object the object containing the value, or the value itself
 	 */
 	public function __construct($class, $name = null, $object = null)
 	{
@@ -47,9 +60,18 @@ class Reflection_Property_Value extends Reflection_Property
 			$class = $name->class;
 			$name = $name->name;
 		}
-		parent::__construct($class, $name);
+		if (strpos($name, ".")) {
+			$model = Reflection_Property::getInstanceOf($class, $name);
+			parent::__construct($model->class, $model->name);
+		}
+		else {
+			parent::__construct($class, $name);
+		}
+		$this->path = $name;
 		$this->getAdditionalProperties();
-		$this->object = $object;
+		if (!isset($this->object)) {
+			$this->object = $object;
+		}
 	}
 
 	//--------------------------------------------------------------------------------------- display
@@ -88,9 +110,19 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * @return mixed
 	 */
-	public function value()
+	public function value($value = null)
 	{
-		return $this->getValue($this->object);
+		if ($value !== null) {
+			if (is_object($this->object) && (get_class($this->object) == $this->class)) {
+				$this->setValue($this->object, $value);
+			}
+			else {
+				$this->object = $value;
+			}
+		}
+		return (is_object($this->object) && (get_class($this->object) == $this->class))
+			? $this->getValue($this->object)
+			: $this->object;
 	}
 
 }

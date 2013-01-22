@@ -38,6 +38,13 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 			$id = $this->getObjectIdentifier($object);
 			$object = isset($id) ? array("id" => $id) : get_object_vars($object);
 		}
+		elseif (is_array($object)) {
+			foreach ($object as $path => $value) {
+				if ($value instanceof Reflection_Property_Value) {
+					$object[$path] = $value->value();
+				}
+			}
+		}
 		return $object;
 	}
 
@@ -47,7 +54,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 *
 	 * After this call, object will no longer be linked to data link.
 	 * You can use this to clone objects into data links.
-	 * This must be called when an object is deleted from data link, too. 
+	 * This must be called when an object is deleted from data link, too.
 	 *
 	 * @param object $object
 	 */

@@ -59,15 +59,17 @@ class Number_Locale
 	 */
 	public function floatToLocale($float)
 	{
-		$float = number_format(
-			$float, $this->decimal_maximal_count, $this->decimal_separator, $this->thousand_separator
-		);
-		if ($pos = strrpos($float, $this->decimal_separator)) {
-			$decimals = strlen($float) - $pos - 1;
-			while (($float[$pos + $decimals] == "0") && ($decimals > $this->decimal_minimal_count)) {
-				$decimals--;
+		if ($float == (string)(float)$float) {
+			$float = number_format(
+				$float, $this->decimal_maximal_count, $this->decimal_separator, $this->thousand_separator
+			);
+			if ($pos = strrpos($float, $this->decimal_separator)) {
+				$decimals = strlen($float) - $pos - 1;
+				while (($float[$pos + $decimals] == "0") && ($decimals > $this->decimal_minimal_count)) {
+					$decimals--;
+				}
+				$float = substr($float, 0, $pos + $decimals + 1);
 			}
-			$float = substr($float, 0, $pos + $decimals + 1);
 		}
 		return $float;
 	}

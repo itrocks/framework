@@ -91,6 +91,9 @@ abstract class Dom_Element
 	 */
 	public function setAttribute($name, $value)
 	{
+		if ($name == "name") {
+			$value = str_replace(".", ">", $value);
+		}
 		return $this->setAttributeNode(new Dom_Attribute($name, $value));
 	}
 

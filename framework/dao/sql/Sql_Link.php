@@ -10,7 +10,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 
 	//--------------------------------------------------------------------------------------- $tables
 	/**
-	 * Links each class name to it's storage table name 
+	 * Links each class name to it's storage table name
 	 *
 	 * @var multitype:string indice is the class name, with or without namespace
 	 */
@@ -45,7 +45,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 * Sql_Link inherited classes must implement SQL query calls only into this method.
 	 *
 	 * @param string $query
-	 * @return mixed  the sql query result set (type and use may depends on each SQL data link) 
+	 * @return mixed  the sql query result set (type and use may depends on each SQL data link)
 	 */
 	protected abstract function executeQuery($query);
 

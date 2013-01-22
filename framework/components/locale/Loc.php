@@ -13,6 +13,33 @@ abstract class Loc implements Plugin
 	 */
 	private static $parse_before_write = 0;
 
+	//----------------------------------------------------- afterHtmlTemplateFuncsToEditPropertyExtra
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function afterHtmlTemplateFuncsToEditPropertyExtra(AopJoinpoint $joinpoint)
+	{
+		$result = $joinpoint->getReturnedValue();
+		$result[2] = self::propertyToLocale($result[0], $result[2]);
+		$joinpoint->setReturnedValue($result);
+	}
+
+	//------------------------------------------------------------------------- afterListSearchValues
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function afterListSearchValues(AopJoinpoint $joinpoint)
+	{
+		$search = $joinpoint->getReturnedValue();
+		if (isset($search)) {
+			$class_name = $joinpoint->getArguments()[0];
+			foreach ($search as $property) {
+				$property->value(self::propertyToIso($property));
+			}
+			$joinpoint->setReturnedValue($search);
+		}
+	}
+
 	//--------------------------------------------------------------------------- beforeDataLinkWrite
 	/**
 	 * @param AopJoinpoint $joinpoint
@@ -24,15 +51,10 @@ abstract class Loc implements Plugin
 			$class = Reflection_Class::getInstanceOf($object);
 			foreach ($class->accessProperties() as $property) {
 				$type = $property->getType();
-				if ($type == "Date_Time") {
-					$property->getValue($object);
-				}
-				if ($type == "float") {
-					$property->setValue($object, self::floatToIso($property->getValue($object), $property));
-				}
-				elseif ($type == "integer") {
-					$property->setValue($object, self::integerToIso($property->getValue($object), $property));
-				}
+				$property->setValue(
+					$object,
+					self::propertyToIso($property, $property->getValue($object))
+				);
 			}
 			$class->accessPropertiesDone();
 		}
@@ -185,10 +207,38 @@ abstract class Loc implements Plugin
 		self::$parse_before_write --;
 	}
 
+	//--------------------------------------------------------------------------------- propertyToIso
+	/**
+	 * Change a locale value into an ISO formatted value, knowing it's property
+	 *
+	 * @param Reflection_Property $property
+	 * @param string $value
+	 */
+	public static function propertyToIso(Reflection_Property $property, $value = null)
+	{
+		return Locale::current()->propertyToIso($property, $value);
+	}
+
+	//------------------------------------------------------------------------------ propertyToLocale
+	/**
+	 * Change an ISO value into a locale formatted value, knowing it's property
+	 *
+	 * @param Reflection_Property $property
+	 * @param string $value
+	 */
+	public static function propertyToLocale(Reflection_Property $property, $value = null)
+	{
+		return Locale::current()->propertyToLocale($property, $value);
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
 		// format from locale user input to ISO and standard formats
+		Aop::add("after",
+			__NAMESPACE__ . "\\Default_List_Controller->getSearchValues()",
+			array(__CLASS__, "afterListSearchValues")
+		);
 		Aop::add("around",
 			__NAMESPACE__ . "\\Default_Write_Controller->run()",
 			array(__CLASS__, "parseBeforeWriteAround")
@@ -202,6 +252,10 @@ abstract class Loc implements Plugin
 			array(__CLASS__, "beforeDateTimeFromIso")
 		);
 		// format to locale
+		Aop::add("after",
+			__NAMESPACE__ . "\\Html_Template_Funcs->toEditPropertyExtra()",
+			array(__CLASS__, "afterHtmlTemplateFuncsToEditPropertyExtra")
+		);
 		Aop::add("after",
 			__NAMESPACE__ . "\\Reflection_Property_View->formatDateTime()",
 			array(__CLASS__, "dateTimeReturnedValueToLocale")

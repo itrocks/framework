@@ -79,6 +79,55 @@ abstract class Html_Template_Funcs
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- getEdit
+	/**
+	 * Return an HTML edit component for current property or List_Data property
+	 *
+	 * @param Html_Template $template
+	 * @param multitype:mixed $objects
+	 * @return string
+	 */
+	public static function getEdit(Html_Template $template, $objects, $prefix = null)
+	{
+		if (count($objects) > 2) {
+			// from a List_Data
+			$property = reset($objects);
+			next($objects);
+			$list_data = next($objects);
+			if ($list_data instanceof Default_List_Data) {
+				$class_name = $list_data->element_class_name;
+				list($property, $property_path, $value) = self::toEditPropertyExtra($class_name, $property);
+				$property_edit = new Html_Builder_Property_Edit($property, $value, $prefix);
+				$property_edit->name = $property_path;
+				return $property_edit->build();
+			}
+		}
+		else {
+			// from any sub-part of ...
+			$property = self::getObject($template, $objects);
+			if ($property instanceof Reflection_Property_Value) {
+				// ... a Reflection_Property_Value
+				return (new Html_Builder_Property_Edit($property, $property->value()))->build();
+			}
+			elseif ($property instanceof Reflection_Property) {
+				// ... a Reflection_Property
+				return (new Html_Builder_Property_Edit($property))->build();
+			}
+			elseif (is_object($property)) {
+				// ... an object and it's property name
+				$property_name = prev($objects);
+				$property = Reflection_Property::getInstanceOf($property, $property_name);
+				if ($property != null) {
+					return (new Html_Builder_Property_Edit($property))->build();
+				}
+			}
+		}
+		// default html input component
+		$input = new Html_Input();
+		$input->setAttribute("name", reset($objects));
+		return $input;
+	}
+
 	//------------------------------------------------------------------------------------ getFeature
 	/**
 	 * Returns template's feature method name
@@ -89,20 +138,6 @@ abstract class Html_Template_Funcs
 	public static function getFeature(Html_Template $template, $objects)
 	{
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
-	}
-
-	//------------------------------------------------------------------------------------- getFormat
-	/**
-	 * Return formatted value
-	 *
-	 * @param Html_Template $template
-	 * @param multitype:mixed $object
-	 */
-	public static function getFormat(Html_Template $template, $objects)
-	{
-		$object = self::getObject($template, $objects);
-echo "! format " . get_class($object) . " = " . var_dump(reset($objects)) . "<br>";
-		return reset($objects);
 	}
 
 	//---------------------------------------------------------------------------------------- getHas
@@ -195,6 +230,32 @@ echo "! format " . get_class($object) . " = " . var_dump(reset($objects)) . "<br
 	public static function getTop(Html_Template $template, $objects)
 	{
 		return $template->getObject();
+	}
+
+	//--------------------------------------------------------------------------- toEditPropertyExtra
+	/**
+	 * Gets property extra data needed for edit component
+	 *
+	 * @param string $class_name
+	 * @param Reflection_Property_Value|Reflection_Property|string $property
+	 * @return multitype:mixed Reflection_Property $property, string $property path, mixed $value
+	 */
+	private static function toEditPropertyExtra($class_name, $property)
+	{
+		if ($property instanceof Reflection_Property_Value) {
+			$property_path = $property->path;
+			$value = $property->value();
+		}
+		elseif ($property instanceof Reflection_Property) {
+			$property_path = $property->name;
+			$value = "";
+		}
+		else {
+			$property_path = $property;
+			$value = "";
+			$property = Reflection_Property::getInstanceOf($class_name, $property);
+		}
+		return array($property, $property_path, $value);
 	}
 
 }

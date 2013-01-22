@@ -85,10 +85,13 @@ $("document").ready(function() {
 		$this.find("input, textarea").focus(function() {
 			var $tr = $(this).closest("tr");
 			if ($tr.length && !$tr.next("tr").length) {
-				var table = $tr.closest("table.collection")[0];
-				var $new_row = table.saf_add.clone();
-				$(table).children("tbody").append($new_row);
-				$new_row.build();
+				var $collection = $tr.closest("table.collection");
+				if ($collection.length) {
+					var table = $collection[0];
+					var $new_row = table.saf_add.clone();
+					$(table).children("tbody").append($new_row);
+					$new_row.build();
+				}
 			}
 		});
 

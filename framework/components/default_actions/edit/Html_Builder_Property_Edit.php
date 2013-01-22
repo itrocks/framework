@@ -4,6 +4,12 @@ namespace SAF\Framework;
 class Html_Builder_Property_Edit
 {
 
+	//----------------------------------------------------------------------------------------- $name
+	/**
+	 * @var string
+	 */
+	public $name;
+
 	//-------------------------------------------------------------------------------------- $preprop
 	/**
 	 * @var string
@@ -155,14 +161,15 @@ class Html_Builder_Property_Edit
 	//---------------------------------------------------------------------------------- getFieldName
 	private function getFieldName($prefix = "")
 	{
+		$field_name = isset($this->name) ? $this->name : $this->property->name;
 		if (!isset($this->preprop)) {
-			$field_name = $prefix . $this->property->name;
+			$field_name = $prefix . $field_name;
 		}
 		elseif (substr($this->preprop, -2) == "[]") {
-			$field_name = substr($this->preprop, 0, -2) . "[" . $prefix . $this->property->name . "][]";
+			$field_name = substr($this->preprop, 0, -2) . "[" . $prefix . $field_name . "][]";
 		}
 		else {
-			$field_name = $this->preprop . "[" . $prefix . $this->property->name . "]";
+			$field_name = $this->preprop . "[" . $prefix . $field_name . "]";
 		}
 		return $field_name;
 	}

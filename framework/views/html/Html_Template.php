@@ -79,10 +79,8 @@ class Html_Template
 			$func_name = substr($func_call, 0, $i);
 			$i++;
 			$j = strpos($func_call, ")", $i);
-			$params = array_merge(
-				split(",", substr($func_call, $i, $j - $i)),
-				$params
-			);
+			$more_params = $this->parseFuncParams(substr($func_call, $i, $j - $i), $objects);
+			$params = array_merge($params, $more_params);
 			return call_user_func_array(array($object_call, $func_name), $params);
 		}
 		else {
@@ -169,7 +167,8 @@ class Html_Template
 	 */
 	protected function parseArrayElement($objects, $array, $index)
 	{
-		return isset($array[$inde]) ? $array[$index] : null;
+echo "parse array element $index from " . print_r($array, true) . "</pre>";
+		return isset($array[$index]) ? $array[$index] : null;
 	}
 
 	//-------------------------------------------------------------------------------- parseClassName
@@ -252,6 +251,34 @@ class Html_Template
 			Names::propertyToMethod($func_name, "get"),
 			$objects
 		);
+	}
+
+	//------------------------------------------------------------------------------- parseFuncParams
+	/**
+	 * Parse a list of function parameters, separated by ","
+	 *
+	 * Accept quoted "constants" and 'constants'
+	 * All other parameters values will be parsed as values
+	 *
+	 * @param string $params_string
+	 * @param multitype:mixed $objects
+	 * @return mixed
+	 */
+	protected function parseFuncParams($params_string, $objects)
+	{
+		$params = explode(",", $params_string);
+		foreach ($params as $key => $param) {
+			if (
+					((substr($param, 0, 1) == '"') && (substr($param, -1) == '"'))
+					|| ((substr($param, 0, 1) == "'") && (substr($param, -1) == "'"))
+			) {
+				$params[$key] = substr($param, 1, -1);
+			}
+			else {
+				$params[$key] = $this->parseValue($objects, $param);
+			}
+		}
+		return $params;
 	}
 
 	//---------------------------------------------------------------------------------- parseInclude

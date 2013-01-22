@@ -42,14 +42,19 @@ class Date_Locale
 			return "0000-00-00";
 		}
 		if (strlen($date) == 10) {
-			return DateTime::createFromFormat($this->format, $date)->format("Y-m-d");
+			$datetime = DateTime::createFromFormat($this->format, $date);
+			return $datetime ? $datetime->format("Y-m-d") : $date;
 		}
 		else {
 			list($date, $time) = explode(" ", $date);
 			while (strlen($time) < 8) {
 				$time .= ":00";
 			}
-			return DateTime::createFromFormat($this->format, $date)->format("Y-m-d") . " " . $time;
+			$datetime = DateTime::createFromFormat($this->format, $date);
+			return trim($datetime
+				? ($datetime->format("Y-m-d") . " " . $time)
+				: $date . " " . $time
+			);
 		}
 	}
 
