@@ -91,18 +91,11 @@ abstract class Aop_Getter extends Aop implements Plugin
 					$type = Namespaces::fullClassName(
 						Reflection_Property::getInstanceOf($class, $property)->getType()
 					);
-					if (isset($value)) {
-						$object->$property = Getter::getObject($value, $type);
+					$value = Getter::getObject($value, $type, $object, $property);
+					if (!is_object($value)) {
+						$value = Object_Builder::current()->newInstance($type);
 					}
-					else {
-						$id_property = "id_" . $property;
-						if (isset($object->$id_property)) {
-							$object->$property = Getter::getObject($object->$id_property, $type);
-						}
-						else {
-							$object->$property = new $type();
-						}
-					}
+					$object->$property = $value;
 				}
 			}
 		}

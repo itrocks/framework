@@ -66,7 +66,7 @@ abstract class Aop
 				call_user_func(array($joinpoint->getObject(), $call), $joinpoint->getAssignedValue());
 			}
 			else {
-				call_user_func(array($joinpoint->getObject(), $call));
+				$joinpoint->setReturnedValue(call_user_func(array($joinpoint->getObject(), $call)));
 			}
 			unset($antiloop[$class_name][$property_name]);
 		}
