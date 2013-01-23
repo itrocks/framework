@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Mysql column
+ */
 class Mysql_Column implements Dao_Column
 {
 
@@ -43,7 +46,7 @@ class Mysql_Column implements Dao_Column
 	 * Is the data part of an index key ?
 	 *
 	 * @var string
-	 * @values PRI, MUL, UNI
+	 * @values PRI, MUL, UNI,
 	 */
 	private $Key;
 
@@ -67,12 +70,18 @@ class Mysql_Column implements Dao_Column
 	private $Extra;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 *
+	 */
 	public function __construct()
 	{
 		$this->cleanupDefault();
 	}
 
 	//------------------------------------------------------------------------------------- canBeNull
+	/**
+	 * @return bool
+	 */
 	public function canBeNull()
 	{
 		return $this->Null === "YES";
@@ -100,6 +109,7 @@ class Mysql_Column implements Dao_Column
 	 * Returns true if the column is an equivalent of the other column
 	 *
 	 * @param Mysql_Column $column
+	 * @return bool
 	 */
 	public function equiv($column)
 	{
@@ -111,30 +121,45 @@ class Mysql_Column implements Dao_Column
 	}
 
 	//------------------------------------------------------------------------------- getDefaultValue
+	/**
+	 * @return mixed
+	 */
 	public function getDefaultValue()
 	{
 		return $this->Default;
 	}
 
 	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->Field;
 	}
 
 	//--------------------------------------------------------------------------------- getSqlPostfix
+	/**
+	 * @return string
+	 */
 	public function getSqlPostfix()
 	{
 		return $this->Extra ? " " . $this->Extra : "";
 	}
 
 	//------------------------------------------------------------------------------------ getSqlType
+	/**
+	 * @return string
+	 */
 	public function getSqlType()
 	{
 		return $this->Type;
 	}
 
 	//--------------------------------------------------------------------------------------- getType
+	/**
+	 * @return string
+	 */
 	public function getType()
 	{
 		$i = strpos($this->Type, "(");
@@ -144,18 +169,28 @@ class Mysql_Column implements Dao_Column
 				return "float";
 			case "tinyint": case "smallint": case "mediumint": case "int": case "bigint":
 				return "integer";
-			case "char": case "varchar": case "tinytext": case "text": case "mediumtext": case "longtext":
-				return "string";
 			case "enum": case "set":
-				return "multitype:string";
+				return "string[]";
 			case "date": case "datetime": case "timestamp": case "time": case "year":
 				return "Date_Time";
-			case "tinyblob": case "blob": case "mediumblob": case "longblob":
+			default:
 				return "string";
 		}
 	}
 
+	//---------------------------------------------------------------------------------------- hasKey
+	/**
+	 * @return bool
+	 */
+	public function hasKey()
+	{
+		return !empty($this->Key);
+	}
+
 	//----------------------------------------------------------------------------------------- toSql
+	/**
+	 * @return string
+	 */
 	public function toSql()
 	{
 		$column_name = $this->getName();

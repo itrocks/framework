@@ -17,7 +17,7 @@ class Aop_Dynamics implements Plugin
 	 * 3 : the advice class name (can be short or long)
 	 * 4 : the name of the static method to call into the advice class
 	 *
-	 * @var multitype:array key is the short / long class name
+	 * @var array[] key is the short / long class name
 	 */
 	private $links = array();
 
@@ -25,7 +25,7 @@ class Aop_Dynamics implements Plugin
 	/**
 	 * Constructor with default links
 	 *
-	 * @param multitype:array $links
+	 * @param array[] $links
 	 */
 	public function __construct($links = array())
 	{
@@ -43,7 +43,7 @@ class Aop_Dynamics implements Plugin
 	 * 3 : the advice class name (can be short or long)
 	 * 4 : the name of the static method to call into the advice class
 	 *
-	 * @param multitype:array $links key is the short / long class name
+	 * @param array[] $links key is the short / long class name
 	 */
 	public function add($links)
 	{

@@ -6,7 +6,7 @@ class Set
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
-	 * @var multitype:object
+	 * @var object[]
 	 */
 	public $elements;
 

@@ -8,7 +8,7 @@ trait Class_Properties
 	/**
 	 * List properties for each class
 	 *
-	 * @var multitype:multitype:string
+	 * @var string[]
 	 */
 	private $properties;
 
@@ -17,7 +17,7 @@ trait Class_Properties
 	 * Gets properties names list from configuration, or from class definition is configuration is not set
 	 *
 	 * @param string $class_name
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public function getClassProperties($class_name)
 	{

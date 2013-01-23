@@ -9,7 +9,7 @@ abstract class Reflection_Class_Properties_Access
 	 * Associates each class name to the number of time properties accessibility have been forced
 	 * Each entry will be released when counter was zero before done() for the matching class name.
 	 *
-	 * @var multitype:integer
+	 * @var integer[]
 	 */
 	private static $count = array();
 
@@ -18,7 +18,7 @@ abstract class Reflection_Class_Properties_Access
 	 * Associates each class name to an array associating property name and Reflection_Property
 	 * This is used for caching and will be released once counter becomes zero for a given class name.
 	 *
-	 * @var multitype:multitype:Reflection_Property
+	 * @var Reflection_Property[]
 	 */
 	private static $properties_map = array();
 
@@ -27,7 +27,7 @@ abstract class Reflection_Class_Properties_Access
 	 * Associates each class name to an array associating property name and Reflection_Property
 	 * This is used for caching and will be released once counter becomes zero for a given class name.
 	 *
-	 * @var multitype:multitype:Reflection_Property
+	 * @var Reflection_Property[]
 	 */
 	private static $private_map = array();
 
@@ -42,7 +42,7 @@ abstract class Reflection_Class_Properties_Access
 	 * If class properties are set to accessible several times, they will become non-accessible after the same number of done() calls.
 	 *
 	 * @param Reflection_Class $class
-	 * @return multitype:Reflection_Property
+	 * @return Reflection_Property[]
 	 * @see Reflection_Class::accessProperties()
 	 */
 	public static function access(Reflection_Class $class)

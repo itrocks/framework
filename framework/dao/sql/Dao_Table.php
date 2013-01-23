@@ -6,13 +6,13 @@ interface Dao_Table
 
 	//------------------------------------------------------------------------------------ getColumns
 	/**
-	 * @return multitype:Dao_Column
+	 * @return Dao_Column[]
 	 */
 	public function getColumns();
 
 	//------------------------------------------------------------------------------------ getIndexes
 	/**
-	 * @return multitype:Dao_Index
+	 * @return Dao_Index[]
 	 */
 	public function getIndexes();
 

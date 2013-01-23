@@ -48,7 +48,7 @@ class Class_Debugger implements Plugin
 	/**
 	 * Convert arguments list into an html output string
 	 *
-	 * @param multitype:mixed $arguments
+	 * @param mixed[] $arguments
 	 * @return string
 	 */
 	private static function outputArguments($arguments)
@@ -85,7 +85,13 @@ class Class_Debugger implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register($class_name)
+	public static function register()
+	{
+		self::registerClass("*");
+	}
+
+	//--------------------------------------------------------------------------------- registerClass
+	public static function registerClass($class_name)
 	{
 		$class_debugger = self::getInstance();
 		if ($class_name == "*") {

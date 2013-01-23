@@ -41,7 +41,7 @@ abstract class Sql_Builder
 	 * Build a SQL columns list
 	 *
 	 * @example used for INSERT INTO (columns), SELECT columns
-	 * @param multitype:string $column_names
+	 * @param string[] $column_names
 	 * @return string
 	 */
 	public static function buildColumns($column_names)
@@ -62,7 +62,7 @@ abstract class Sql_Builder
 	 * Build a SQL INSERT query
 	 * 
 	 * @param Reflection_Class | string $class
-	 * @param multitype:mixed $write the data to write for each column : key is the column name
+	 * @param mixed[] $write the data to write for each column : key is the column name
 	 * @return string
 	 */
 	public static function buildInsert($class, $write)

@@ -8,7 +8,7 @@ abstract class Dom_Element
 	/**
 	 * Available attributes
 	 *
-	 * @var multitype:Dom_Attribute key is the attribute name
+	 * @var Dom_Attribute[] key is the attribute name
 	 */
 	private $attributes = array();
 
@@ -32,7 +32,7 @@ abstract class Dom_Element
 
 	//--------------------------------------------------------------------------------------- $styles
 	/**
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	private $styles = array();
 
@@ -76,7 +76,7 @@ abstract class Dom_Element
 	//--------------------------------------------------------------------------------- getAttributes
 	/**
 	 * @param string $name
-	 * @return multitype::Dom_Attribute
+	 * @return :Dom_Attribute[]
 	 */
 	public function getAttributes()
 	{

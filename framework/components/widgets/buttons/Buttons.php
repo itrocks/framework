@@ -6,7 +6,7 @@ class Buttons
 
 	//-------------------------------------------------------------------------------------- $buttons
 	/**
-	 * @var multitype:Button
+	 * @var Button[]
 	 */
 	public $buttons;
 

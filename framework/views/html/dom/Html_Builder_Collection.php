@@ -12,13 +12,13 @@ class Html_Builder_Collection
 
 	//----------------------------------------------------------------------------------- $collection
 	/**
-	 * @var multitype:object
+	 * @var object[]
 	 */
 	protected $collection;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	protected $properties;
 
@@ -31,7 +31,7 @@ class Html_Builder_Collection
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param Reflection_Property $property
-	 * @param multitype:object $collection
+	 * @param object[] $collection
 	 */
 	public function __construct(Reflection_Property $property, $collection)
 	{

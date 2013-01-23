@@ -8,7 +8,7 @@ abstract class Type
 	/**
 	 * These are the basic non-object php types
 	 *
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	private static $basic_types = array(
 		"boolean", "integer", "float", "string",
@@ -20,7 +20,7 @@ abstract class Type
 	/**
 	 * These are the numeric types
 	 *
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	private static $numeric_types = array("integer", "float");
 
@@ -28,7 +28,7 @@ abstract class Type
 	/**
 	 * These are the basic types having size
 	 *
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	private static $sized_types = array("integer", "float", "string");
 
@@ -49,7 +49,7 @@ abstract class Type
 	 * Tells if a type is a basic type or not
 	 *
 	 * Basic types are boolean, integer, float, string, array, resource, callable, null, NULL
-	 * Not basic types are multitype:*, objects, class names
+	 * Not basic types are *,[] objects, class names
 	 *
 	 * @param string $type_name
 	 * @return boolean
@@ -64,16 +64,16 @@ abstract class Type
 	 * Tells if a type is an array / multitype or not
 	 *
 	 * If type is a generic array, then returns true.
-	 * If type is a typed array ("multitype:what"), then returns the array element type (ie "what").
+	 * If type is a typed array ("what"),[] then returns the array element type (ie "what").
 	 * If type is no one of those, then returns false.
 	 *
 	 * @param string $type_name
-	 * @return boolean | string
+	 * @return boolean|string
 	 */
 	public static function isMultiple($type_name)
 	{
-		return (substr($type_name, 0, 10) === "multitype:")
-			? substr($type_name, 10)
+		return (substr($type_name, -1) === "]")
+			? substr($type_name, 0, strpos($type_name, "["))
 			: (($type_name == "array") ? true : false);
 	}
 

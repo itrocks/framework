@@ -25,7 +25,7 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	/**
 	 * Cache Reflection_Method objects for each class and method name
 	 *
-	 * @var multitype:multitype:Reflection_Class
+	 * @var Reflection_Class[]
 	 */
 	private static $cache = array();
 

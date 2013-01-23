@@ -83,7 +83,7 @@ class Configuration
 	/**
 	 * Returns full configuration array for each class configuration
 	 *
-	 * @return multitype:array
+	 * @return array[]
 	 */
 	public function getClassesConfigurations()
 	{

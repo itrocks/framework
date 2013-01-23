@@ -27,7 +27,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	/**
 	 * Cache Reflection_Property objects for each class and property name
 	 *
-	 * @var multitype:multitype:Reflection_Property
+	 * @var Reflection_Property[]
 	 */
 	private static $cache = array();
 

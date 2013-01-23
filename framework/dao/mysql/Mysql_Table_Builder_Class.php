@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Builds Mysql_Table object with a structure matching the structure of a PHP class
+ */
 abstract class Mysql_Table_Builder_Class
 {
 
@@ -22,7 +25,7 @@ abstract class Mysql_Table_Builder_Class
 		$table->columns["id"] = Mysql_Column_Builder_Property::buildId();
 		foreach ($class->accessProperties() as $property) {
 			$type = $property->getType();
-			if ((($type === "multitype:string") || !Type::isMultiple($type)) && !$property->isStatic()) {
+			if ((($type === "string[]") || !Type::isMultiple($type)) && !$property->isStatic()) {
 				$column = Mysql_Column_Builder_Property::build($property);
 				$table->columns[$column->getName()] = $column;
 			}

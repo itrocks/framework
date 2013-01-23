@@ -13,7 +13,7 @@ class Menu_Block
 
 	//---------------------------------------------------------------------------------------- $items
 	/**
-	 * @var multitype:Menu_Item
+	 * @var Menu_Item[]
 	 */
 	public $items;
 

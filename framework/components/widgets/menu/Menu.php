@@ -7,7 +7,7 @@ class Menu
 
 	//--------------------------------------------------------------------------------------- $blocks
 	/**
-	 * @var multitype:Menu_Block
+	 * @var Menu_Block[]
 	 */
 	public $blocks;
 

@@ -8,7 +8,7 @@ abstract class Instantiator
 	/**
 	 * Class names substitutions table : indexes are the parent class names, values the herited class names
 	 *
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	private static $substitutions = array();
 

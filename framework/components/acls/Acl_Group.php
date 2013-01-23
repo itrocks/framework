@@ -20,14 +20,14 @@ class Acl_Group
 	//--------------------------------------------------------------------------------------- $groups
 	/**
 	 * @getter Aop::getCollection
-	 * @var multitype:Acl_Link
+	 * @var Acl_Link[]
 	 */
 	public $content;
 
 	//--------------------------------------------------------------------------------------- $rights
 	/**
 	 * @getter Aop::getCollection
-	 * @var multitype:Acl_Right
+	 * @var Acl_Right[]
 	 */
 	public $rights;
 

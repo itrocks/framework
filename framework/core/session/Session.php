@@ -31,7 +31,7 @@ class Session
 	/**
 	 * Get all objects from session
 	 *
-	 * @return multitype:object index is class name, value is an object
+	 * @return object[] index is class name, value is an object
 	 */
 	public function getAll()
 	{
@@ -43,7 +43,7 @@ class Session
 	 * Get all objects from session having $class_name as class or parent class
 	 *
 	 * @param string $class_name
-	 * @return multitype:object key is the class name of the object
+	 * @return object[] key is the class name of the object
 	 */
 	public function getAny($class_name)
 	{

@@ -7,7 +7,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param string $class_name
-	 * @return multitype:Button
+	 * @return Button[]
 	 */
 	protected function getGeneralButtons($class_name)
 	{
@@ -17,7 +17,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 	//----------------------------------------------------------------------------- getPropertiesList
 	/**
 	 * @param string $class_name
-	 * @return multitype:string property names list
+	 * @return string[] property names list
 	 */
 	protected function getPropertiesList($class_name)
 	{
@@ -29,8 +29,8 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 * Get output tabs list for a given object
 	 *
 	 * @param object $object
-	 * @param multitype:string $properties Can be null
-	 * @return multitype:Tab
+	 * @param string[] $properties Can be null
+	 * @return Tab[]
 	 */
 	protected function getTabs($object, $properties)
 	{
@@ -43,7 +43,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 	/**
 	 * @param Controller_Parameters $parameters
 	 * @param string $class_name
-	 * @return multitype:mixed
+	 * @return mixed[]
 	 */
 	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
 	{

@@ -116,7 +116,7 @@ abstract class Mysql_Column_Builder_Property
 	private static function propertyNameToMysql(Reflection_Property $property)
 	{
 		$type = $property->getType();
-		return (Type::isBasic($type) || ($type === "multitype:string"))
+		return (Type::isBasic($type) || ($type === "string[]"))
 			? $property->name
 			: "id_" . $property->name;
 	}
@@ -195,9 +195,11 @@ abstract class Mysql_Column_Builder_Property
 					)));
 				case "Date_Time":
 					return "datetime";
+				default:
+					return "char(255)";
 			}
 		}
-		elseif ($property_type === "multitype:string") {
+		elseif ($property_type === "string[]") {
 			$values = $property->getAnnotation("values")->value;
 			foreach ($values as $key => $value) {
 				$values[$key] = str_replace("'", "''", $value);

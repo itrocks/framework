@@ -6,7 +6,7 @@ class Default_List_Data extends Set implements List_Data
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	private $properties;
 

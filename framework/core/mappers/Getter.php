@@ -8,10 +8,10 @@ abstract class Getter
 	/**
 	 * Generic getter for a collection of objects
 	 *
-	 * @param multitype:Contained $collection    actual value of the property (will be returned if not null)
-	 * @param string              $element_class the class for each collection's object
-	 * @param object              $parent        the parent object
-	 * @return multitype:object
+	 * @param Contained[]|null $collection    actual value of the property (will be returned if not null)
+	 * @param string|null $element_class the class for each collection's object
+	 * @param object      $parent        the parent object
+	 * @return object[]
 	 */
 	public static function getCollection($collection, $element_class, $parent)
 	{
@@ -25,7 +25,9 @@ abstract class Getter
 				if ($search_element instanceof Contained) {
 					// this to avoid getter calls on $element->getParent() call (parent is already loaded)
 					foreach ($collection as $element) {
-						$element->setParent($parent);
+						if ($element instanceof Contained) {
+							$element->setParent($parent);
+						}
 					}
 				}
 			}
@@ -43,7 +45,8 @@ abstract class Getter
 	 * @param mixed  $object          actual value of the object (will be returned if already an object)
 	 * @param string $class_name      the object class name
 	 * @param object $parent          the parent object
-	 * @param string $paremt_property the parent property name
+	 * @param string $parent_property the parent property name
+	 * @return object
 	 */
 	public static function getObject($object, $class_name, $parent = null, $parent_property = null)
 	{

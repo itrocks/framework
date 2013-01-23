@@ -9,13 +9,13 @@ class Controller_Parameters
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
-	 * @var multitype:object indices are parameters names (ie object class short name)
+	 * @var object[] indices are parameters names (ie object class short name)
 	 */
 	private $objects = array();
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
-	 * @var multitype:integer indices are parameters names (ie object class short name)
+	 * @var integer[] indices are parameters names (ie object class short name)
 	 */
 	private $parameters = array();
 
@@ -73,7 +73,7 @@ class Controller_Parameters
 	/**
 	 * Get parameters list as objects
 	 *
-	 * @return multitype:object indiced by parameter name
+	 * @return object[] indiced by parameter name
 	 */
 	public function getObjects()
 	{
@@ -100,7 +100,7 @@ class Controller_Parameters
 	/**
 	 * Get URI parameters raw values, as they were on original URI
 	 *
-	 * @return multitype:mixed indice is the parameter name
+	 * @return mixed[] indice is the parameter name
 	 */
 	public function getRawParameters()
 	{

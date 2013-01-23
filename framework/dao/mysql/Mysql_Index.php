@@ -6,7 +6,7 @@ class Mysql_Index implements Dao_Index
 
 	//----------------------------------------------------------------------------------------- $keys
 	/**
-	 * @var multitype:Mysql_Key
+	 * @var Mysql_Key[]
 	 */
 	public $keys;
 

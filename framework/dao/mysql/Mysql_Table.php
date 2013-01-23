@@ -6,13 +6,13 @@ class Mysql_Table implements Dao_Table
 
 	//-------------------------------------------------------------------------------------- $columns
 	/**
-	 * @var multitype:Mysql_Column key is the column name
+	 * @var Mysql_Column[] key is the column name
 	 */
 	public $columns;
 
 	//-------------------------------------------------------------------------------------- $indexes
 	/**
-	 * @var multitype:Mysql_Index key is the index name
+	 * @var Mysql_Index[] key is the index name
 	 */
 	public $indexes;
 

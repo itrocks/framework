@@ -6,7 +6,7 @@ class Translations extends Set
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	public $cache = array();
 

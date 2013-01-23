@@ -32,7 +32,7 @@ class List_Controller_Acls implements Plugin
 	 * Get list properties list from acls
 	 *
 	 * @param string $class_name
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public static function getListProperties($class_name)
 	{

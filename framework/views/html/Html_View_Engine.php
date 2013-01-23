@@ -34,7 +34,7 @@ class Html_View_Engine implements View_Engine
 	/**
 	 * @param string $class_name
 	 * @param string $feature_name
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public static function getPossibleTemplates($class_name, $feature_name)
 	{

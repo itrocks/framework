@@ -30,7 +30,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 * Changes an object into an array associating properties and their values
 	 *
 	 * @param array|object $object if already an array, nothing will be done
-	 * @return multitype:mixed indices ar properties paths
+	 * @return mixed[] indices ar properties paths
 	 */
 	protected function objectToProperties($object)
 	{

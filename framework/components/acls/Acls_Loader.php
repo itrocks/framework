@@ -27,10 +27,10 @@ abstract class Acls_Loader
 	//---------------------------------------------------------------------------------- loadUserAcls
 	/**
 	 * @param Acls_User $user
-	 * @param Acls $acls
-	 * @return Acls
+	 * @param Acls_Rights $acls
+	 * @return Acls_Rights
 	 */
-	public static function loadUserAcls(Acls_User $user, Acls $acls = null)
+	public static function loadUserAcls(Acls_User $user, Acls_Rights $acls = null)
 	{
 		if (!isset($acls)) {
 			$acls = new Acls_Rights();
@@ -51,13 +51,10 @@ abstract class Acls_Loader
 	}
 
 	//------------------------------------------------------------------------------ onUserDisconnect
-	/**
-	 * @param AopJoinpoint $joinpoint
-	 */
-	public static function onUserDisconnect(AopJoinpoint $joinpoint)
+	public static function onUserDisconnect()
 	{
 		Acls_Rights::current(new Acls_Rights());
-		Session::current()->removeAny(__NAMESPACE__ . "\\Acls");
+		Session::current()->removeAny(__NAMESPACE__ . "\\Acls_Rights");
 	}
 
 }

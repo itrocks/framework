@@ -37,7 +37,7 @@ class Html_Template
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	private $parameters;
 
@@ -69,7 +69,7 @@ class Html_Template
 	/**
 	 * Calls a function an returns result
 	 *
-	 * @param multitype:object $objects objects stack
+	 * @param object[] $objects objects stack
 	 * @param string $func_call "functionName(param1value,param2value,...)" or "functionName"
 	 */
 	public function callFunc($object_call, $func_call, $objects = null)
@@ -160,7 +160,7 @@ class Html_Template
 
 	//----------------------------------------------------------------------------- parseArrayElement
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param array $array
 	 * @param string|integer $index
 	 * @return mixed
@@ -173,7 +173,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//-------------------------------------------------------------------------------- parseClassName
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param string $class_name
 	 * @return string
 	 */
@@ -187,7 +187,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 * Parse a collection of objects
 	 *
 	 * @param Reflection_Property $property
-	 * @param multitype:object $value
+	 * @param object[] $value
 	 */
 	protected function parseCollection(Reflection_Property $property, $collection)
 	{
@@ -198,7 +198,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a constant and returns its return value
 	 *
-	 * @param multitype:object $objects
+	 * @param object[] $objects
 	 * @param mixed $object
 	 * @param string $const_name
 	 * @return mixed the value of the constant
@@ -240,7 +240,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a special data / function and returns its return value
 	 *
-	 * @param multitype:object $objects
+	 * @param object[] $objects
 	 * @param string $func_name
 	 * @return mixed
 	 */
@@ -261,7 +261,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 * All other parameters values will be parsed as values
 	 *
 	 * @param string $params_string
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @return mixed
 	 */
 	protected function parseFuncParams($params_string, $objects)
@@ -406,7 +406,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 *   <!--@function-->(...)<!--@function-->
 	 *
 	 * @param string $string
-	 * @param multitype:object $objects
+	 * @param object[] $objects
 	 * @return string updated content
 	 */
 	private function parseLoops($content, $objects)
@@ -424,7 +424,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------------- parseMethod
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param object $object
 	 * @param string $property_name
 	 */
@@ -435,7 +435,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------- parseObjectToString
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param mixed $object
 	 * @param string $property_name
 	 * @return string
@@ -447,7 +447,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//-------------------------------------------------------------------------------- parseParameter
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param mixed $object
 	 * @param string $parameter_name
 	 * @return mixed
@@ -461,7 +461,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------------- parseParent
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @return mixed
 	 */
 	protected function parseParent(&$objects)
@@ -472,7 +472,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------------- parseProperty
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param object $object
 	 * @param string $property_name
 	 */
@@ -502,7 +502,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------- parseStaticMethod
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param string $class_name
 	 * @param string $method_name
 	 * @return mixed
@@ -514,7 +514,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------- parseStaticProperty
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param string $class_name
 	 * @param string $method_name
 	 * @return mixed
@@ -526,7 +526,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------------- parseString
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param string $object
 	 * @param string $property_name
 	 */
@@ -540,7 +540,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------- parseStringMethod
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param string $object
 	 * @param string $property_name
 	 */
@@ -551,7 +551,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------- parseStringProperty
 	/**
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param string $object
 	 * @param string $property_name
 	 */
@@ -578,7 +578,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	//------------------------------------------------------------------------------ parseSingleValue
 	/**
 	 *
-	 * @param multitype:mixed $objects
+	 * @param mixed[] $objects
 	 * @param string $property_name
 	 * @param string $class_name
 	 */
@@ -638,7 +638,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
-	 * @param multitype:object $objects
+	 * @param object[] $objects
 	 * @param string $var_name can be an unique var or path.of.vars
 	 * @param boolean $as_string if true, returned value will always be a string
 	 * @return string var value after reading value / executing specs (can be an object)
@@ -841,7 +841,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 *   main html head and foot will not be loaded
 	 * </ul>
 	 *
-	 * @param multitype:mixed $parameters key is parameter name
+	 * @param mixed[] $parameters key is parameter name
 	 */
 	public function setParameters($parameters)
 	{

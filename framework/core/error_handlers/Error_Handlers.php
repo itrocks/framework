@@ -45,7 +45,7 @@ class Error_Handlers
 	/**
 	 * Get the handled error types list
 	 *
-	 * @return multitype:integer
+	 * @return integer[]
 	 */
 	public function getHandledErrorTypes()
 	{

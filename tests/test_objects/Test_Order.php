@@ -18,7 +18,7 @@ class Test_Order extends Test_Document
 	 * Lines
 	 *
 	 * @mandatory
-	 * @var multitype:Test_Order_Line
+	 * @var Test_Order_Line[]
 	 * @foreign order
 	 */
 	private $lines;
@@ -27,7 +27,7 @@ class Test_Order extends Test_Document
 	/**
 	 * Links to salesmen
 	 *
-	 * @var multitype:Test_Salesman
+	 * @var Test_Salesman[]
 	 * @foreign order
 	 * @foreignlink salesman
 	 * @master

@@ -41,7 +41,7 @@ interface List_Data
 	/**
 	 * Returns the properties path list
 	 *
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public function getProperties();
 

@@ -9,7 +9,7 @@ class Acls_Rights
 	/**
 	 * $acl_tree store acls into a recursive tree
 	 *
-	 * @var multitype:mixed
+	 * @var mixed[]
 	 */
 	private $acl_tree;
 
@@ -46,7 +46,7 @@ class Acls_Rights
 	/**
 	 * Gets a right value from acls rights
 	 *
-	 * @param string right key : a "key.subkey.another" path
+	 * @param string $key right key : a "key.subkey.another" path
 	 * @return mixed right value
 	 */
 	public function get($key)
@@ -68,22 +68,21 @@ class Acls_Rights
 	/**
 	 * Remove a right value from acls rights
 	 *
-	 * @param Acls_Rights|string right key : a "key.subkey.another" path
+	 * @param Acl_Right|string right key : a "key.subkey.another" path
 	 */
 	public function remove($right)
 	{
-		$path = explode(".", (is_string($right) ? $right : $right->key));
 		$position = $this->acl_tree;
 		$last_position = null;
-		foreach ($path as $step) {
-			if (!isset($position[$step])) {
+		foreach (explode(".", (is_string($right) ? $right : $right->key)) as $right) {
+			if (!isset($position[$right])) {
 				return;
 			}
 			$last_position = $position;
-			$position = $position[$step];
+			$position = $position[$right];
 		}
-		if (isset($last_position) && isset($last[$step])) {
-			unset($last_position[$step]);
+		if (isset($last_position) && isset($last[$right])) {
+			unset($last_position[$right]);
 		}
 	}
 

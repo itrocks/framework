@@ -19,7 +19,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Cache Reflection_Class objects for each class name
 	 *
-	 * @var multitype:Reflection_Class
+	 * @var Reflection_Class[]
 	 */
 	private static $cache = array();
 
@@ -39,7 +39,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * Accessibility should be set back with a call to done() after use.
 	 * If class properties are set to accessible several times, they will become non-accessible after the same number of done() calls.
 	 *
-	 * @return multitype:Reflection_Property
+	 * @return Reflection_Property[]
 	 */
 	public function accessProperties()
 	{
@@ -67,7 +67,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * @param string  $filter
 	 * @param boolean $by_name
-	 * @return multitype:Reflection_Property
+	 * @return Reflection_Property[]
 	 */
 	public function getAllProperties($filter = Reflection_Property::ALL, $by_name = true)
 	{
@@ -156,7 +156,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * Gets interfaces
 	 *
 	 * @param boolean $by_name
-	 * @return multitype:Reflection_Class
+	 * @return Reflection_Class[]
 	 */
 	public function getInterfaces($by_name = true)
 	{
@@ -190,7 +190,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * @param string $filter any combination of Reflection_Method::IS_* constants
 	 * @param boolean $by_name if true, only the last override of each method name will be kept
-	 * @return multitype:Reflection_Method indice is the method name if $by_name is true, else this will be an integer
+	 * @return Reflection_Method[] indice is the method name if $by_name is true, else this will be an integer
 	 */
 	public function getMethods($filter = Reflection_Method::ALL, $by_name = true)
 	{
@@ -222,7 +222,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * @param string $filter any combination of Reflection_Property::IS_* constants
 	 * @param boolean $by_name if true, only the last override of each property will be kept
-	 * @return multitype:Reflection_Property indice is the property name if $by_name is true, else this will be an integer
+	 * @return Reflection_Property[] indice is the property name if $by_name is true, else this will be an integer
 	 */
 	public function getProperties($filter = Reflection_Property::ALL, $by_name = true)
 	{
@@ -253,7 +253,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * Gets traits
 	 *
 	 * @param boolean $by_name
-	 * @return multitype:Reflection_Class
+	 * @return Reflection_Class[]
 	 */
 	public function getTraits($by_name = true)
 	{

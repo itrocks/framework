@@ -18,7 +18,7 @@ class Default_List_Row implements List_Row
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	public $values;
 
@@ -40,7 +40,7 @@ class Default_List_Row implements List_Row
 	/**
 	 * Return values ready for display
 	 *
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public function formatValues()
 	{

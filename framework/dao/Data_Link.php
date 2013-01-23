@@ -33,7 +33,7 @@ abstract class Data_Link
 	 * If data link stores properties not existing into $class, they are listed too, as if they where official properties of $class, but they storage object is a Dao_Column and not a Reflection_Property.
 	 *
 	 * @param string | Reflection_Class $class
-	 * @return multitype:Reflection_Property | multitype:Dao_Column
+	 * @return Reflection_Property[] | Dao_Column[]
 	 */
 	abstract public function getStoredProperties($class);
 
@@ -52,7 +52,7 @@ abstract class Data_Link
 	 * Read all objects of a given class from data source
 	 *
 	 * @param string $class class for read objects
-	 * @return multitype:object a collection of read objects
+	 * @return object[] a collection of read objects
 	 */
 	abstract public function readAll($class);
 
@@ -79,7 +79,7 @@ abstract class Data_Link
 	 *
 	 * @param mixed $what source object for filter, or filter array (need class_name) only set properties will be used for search
 	 * @param string $class_name must be set if $what is not a filter array
-	 * @return multitype:object a collection of read objects
+	 * @return object[] a collection of read objects
 	 */
 	abstract public function search($what, $class_name = null);
 

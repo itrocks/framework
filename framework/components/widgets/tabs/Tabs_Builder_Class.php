@@ -9,7 +9,7 @@ abstract class Tabs_Builder_Class
 	 * Build tabs containing class properties
 	 *
 	 * @param Reflection_Class $class
-	 * @return multitype:Tab
+	 * @return Tab[]
 	 */
 	public static function build(Reflection_Class $class)
 	{
@@ -22,9 +22,9 @@ abstract class Tabs_Builder_Class
 	/**
 	 * Build tabs containing class properties
 	 *
-	 * @param multitype:Reflection_Property $properties
-	 * @param multitype:Class_Annotation_Tab $tab_annotations
-	 * @return multitype:Tab
+	 * @param Reflection_Property[] $properties
+	 * @param Class_Annotation_Tab[] $tab_annotations
+	 * @return Tab[]
 	 */
 	protected static function buildProperties($properties, $tab_annotations)
 	{
@@ -80,10 +80,10 @@ abstract class Tabs_Builder_Class
 	/**
 	 * Filter class properties using an array of properties names
 	 *
-	 * @param multitype:Reflection_Property $properties
-	 * @param multitype:string $property_names
+	 * @param Reflection_Property[] $properties
+	 * @param string[] $property_names
 	 * @param string $tab_path
-	 * @return multitype:Reflection_Property
+	 * @return Reflection_Property[]
 	 */
 	private static function getProperties($properties, $property_names, $tab_path)
 	{

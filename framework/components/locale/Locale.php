@@ -108,7 +108,7 @@ class Locale
 	/**
 	 * Set locale's number
 	 *
-	 * @param Number_Locale | multitype:mixed
+	 * @param Number_Locale | mixed[]
 	 */
 	public function setNumber($number)
 	{

@@ -18,7 +18,7 @@ class Sql_Select_Builder
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's @var class
 	 *
 	 * @param string           $class base object class name
-	 * @param multitype:string $properties properties paths list
+	 * @param string[] $properties properties paths list
 	 * @param array            $where_array where array expression, indices are columns names
 	 * @param Sql_Link         $sql_link
 	 */

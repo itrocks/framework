@@ -19,7 +19,7 @@ abstract class Autoloader implements Plugin
 	/**
 	 * Included classes list
 	 *
-	 * @var multitype:string keys are arbitrary numeric
+	 * @var string[] keys are arbitrary numeric
 	 */
 	private static $included_classes = array();
 

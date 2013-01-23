@@ -19,7 +19,7 @@ abstract class View
 	/**
 	 * @param string $class_name
 	 * @param string $feature_name
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public static function getPossibleViews($class_name, $feature_name)
 	{

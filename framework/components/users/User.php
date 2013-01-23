@@ -23,7 +23,7 @@ class User
 	 * @param User $set_current
 	 * @return User
 	 */
-	public static function current(User $set_current = null)
+	public static function current($set_current = null)
 	{
 		return self::pCurrent($set_current);
 	}

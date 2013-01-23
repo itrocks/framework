@@ -97,8 +97,8 @@ function arrayMergeRecursive($array1, $array2)
 /**
  * Returns only values which key is not numeric
  *
- * @param multitype:mixed $array
- * @return multitype:mixed
+ * @param mixed[] $array
+ * @return mixed[]
  */
 function arrayNamedValues($array)
 {
@@ -143,8 +143,8 @@ function arrayToObject($array, $class_name)
 /**
  * Returns only values which key is numeric
  *
- * @param multitype:mixed $array
- * @return multitype:mixed
+ * @param mixed[] $array
+ * @return mixed[]
  */
 function arrayUnnamedValues($array)
 {

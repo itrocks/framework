@@ -5,6 +5,9 @@ use AopJoinpoint;
 require_once "framework/core/toolbox/Aop.php";
 require_once "framework/core/reflection/Reflection_Property.php";
 
+/**
+ * Aop calls getter
+ */
 abstract class Aop_Getter extends Aop implements Plugin
 {
 
@@ -37,7 +40,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 				if (!is_array($value)) {
 					$class = $joinpoint->getClassName();
 					$type = Reflection_Property::getInstanceOf($class, $property)->getType();
-					$type = Namespaces::defaultFullClassName(substr($type, strpos($type, ":") + 1), $class);
+					$type = Namespaces::defaultFullClassName(Type::isMultiple($type), $class);
 					$object->$property = Getter::getCollection($value, $type, $object);
 				}
 			}
@@ -82,7 +85,6 @@ abstract class Aop_Getter extends Aop implements Plugin
 			$hash     = spl_object_hash($object);
 			static $antiloop = array();
 			if (!isset($antiloop[$hash][$property])) {
-				$id_property = "id_" . $property;
 				$antiloop[$hash][$property] = true;
 				$value = $object->$property;
 				unset($antiloop[$hash][$property]);

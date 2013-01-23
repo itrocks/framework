@@ -9,13 +9,13 @@ class Object_Builder implements Plugin
 
 	//---------------------------------------------------------------------------------- $new_classes
 	/**
-	 * @var multitype:string key is parent class name associated to replacement class
+	 * @var string[] key is parent class name associated to replacement class
 	 */
 	private $new_classes;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param multitype:string $new_classes key is parent class name associated to replacement class
+	 * @param string[] $new_classes key is parent class name associated to replacement class
 	 */
 	public function __construct($new_classes = array())
 	{

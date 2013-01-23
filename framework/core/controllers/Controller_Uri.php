@@ -61,7 +61,7 @@ class Controller_Uri
 	 * - "Default_Sub_Form_Controller", "run"
 	 * - "Default_Controller", "subForm"
 	 * - "Default_Controller", "run"
-	 * @return multitype:multitype:string
+	 * @return string[]
 	 */
 	public function getPossibleControllerCalls()
 	{
@@ -89,7 +89,7 @@ class Controller_Uri
 	/**
 	 * Parse get parameters array
 	 *
-	 * @param multitype:string $get
+	 * @param string[] $get
 	 */
 	private function parseGet($get)
 	{
@@ -108,7 +108,7 @@ class Controller_Uri
 	 * Parse URI text elements to transform them into parameters, feature name and controller name
 	 *
 	 * @example $uri = array("order", 148, "form") will result on controller "Order_Form" with parameter "Order" = 148
-	 * @param multitype:string $uri
+	 * @param string[] $uri
 	 */
 	private function parseUri($uri)
 	{
@@ -188,7 +188,7 @@ class Controller_Uri
 	 *
 	 * @example "/Order/148/form" will become array("Order", "148", "form")
 	 * @param string $uri
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	private function uriToArray($uri)
 	{

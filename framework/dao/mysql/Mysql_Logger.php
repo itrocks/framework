@@ -19,7 +19,7 @@ class Mysql_Logger implements Plugin
 	 *
 	 * Errors are full text looking like "errno: Error message [SQL Query]".
 	 *
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	public $errors_log = array();
 
@@ -37,7 +37,7 @@ class Mysql_Logger implements Plugin
 	 *
 	 * All executed queries are logged here.
 	 *
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	public $queries_log = array();
 

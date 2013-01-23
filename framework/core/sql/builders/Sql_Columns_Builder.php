@@ -9,7 +9,7 @@ trait Sql_Columns_Builder
 	/**
 	 * Properties paths list
 	 *
-	 * @var multitype:string
+	 * @var string[]
 	 */
 	private $properties;
 
@@ -88,7 +88,7 @@ trait Sql_Columns_Builder
 	 * Construct the SQL columns list section of a query
 	 *
 	 * @param string          $class       root class name
-	 * @param multitype:string $properties properties paths list
+	 * @param string[] $properties properties paths list
 	 */
 	protected function constructSqlColumnsBuilder($class, $properties)
 	{

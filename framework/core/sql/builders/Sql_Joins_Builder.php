@@ -16,7 +16,7 @@ trait Sql_Joins_Builder
 	/**
 	 * Gets the class names list used for each property path
 	 *
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public function getClasses()
 	{
@@ -27,7 +27,7 @@ trait Sql_Joins_Builder
 	/**
 	 * Gets the class names list used for joins
 	 *
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public function getClassNames()
 	{
@@ -38,7 +38,7 @@ trait Sql_Joins_Builder
 	/**
 	 * Gets the implicit linked tables used for joins
 	 *
-	 * @return multitype:multitype:string key is the table name, each has two field names
+	 * @return string[] key is the table name, each has two field names[]
 	 */
 	public function getLinkedTables()
 	{

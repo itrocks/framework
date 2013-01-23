@@ -22,7 +22,7 @@ class Tab
 	/**
 	 * For content grouped by column
 	 *
-	 * @var multitype:mixed
+	 * @var mixed[]
 	 */
 	public $columns = array();
 
@@ -30,7 +30,7 @@ class Tab
 	/**
 	 * For contained tabs
 	 *
-	 * @var multitype:Tab
+	 * @var Tab[]
 	 */
 	public $includes = array();
 
@@ -107,7 +107,7 @@ class Tab
 	/**
 	 * Return included tabs, but not those which identifier begins with "_"
 	 *
-	 * @return multitype:Tab
+	 * @return Tab[]
 	 */
 	public function included()
 	{

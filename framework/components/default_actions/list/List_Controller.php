@@ -7,7 +7,7 @@ abstract class List_Controller extends Output_Controller
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
 	 * @param string $class_name
-	 * @return multitype:Button
+	 * @return Button[]
 	 */
 	protected function getSelectionButtons($class_name)
 	{

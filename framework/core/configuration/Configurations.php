@@ -10,7 +10,7 @@ class Configurations
 	/**
 	 * Configuration objects array, indice is configuration name
 	 *
-	 * @var multitype:Configuration
+	 * @var Configuration[]
 	 */
 	private $configurations;
 
@@ -18,7 +18,7 @@ class Configurations
 	/*
 	 * Get all the loaded configurations
 	 *
-	 * @return multitype:Configuration
+	 * @return Configuration[]
 	 */
 	public function getAllConfigurations()
 	{

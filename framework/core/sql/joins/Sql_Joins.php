@@ -16,7 +16,7 @@ class Sql_Joins
 	/**
 	 * link property full path to their class name
 	 *
-	 * @var multitype:string indice is property full path
+	 * @var string[] indice is property full path
 	 */
 	private $classes = array();
 
@@ -24,7 +24,7 @@ class Sql_Joins
 	/**
 	 * link property path to sql join
 	 *
-	 * @var multitype:Sql_Join indice is property full path
+	 * @var Sql_Join[] indice is property full path
 	 */
 	private $joins = array();
 
@@ -32,7 +32,7 @@ class Sql_Joins
 	/**
 	 * linked tables
 	 *
-	 * @var multitype:string indice is
+	 * @var string[] indice is
 	 */
 	private $linked_tables = array();
 
@@ -40,7 +40,7 @@ class Sql_Joins
 	/**
 	 * link class names to their properties
 	 *
-	 * @var multitype:multitype:Reflection_Property indices are : class name, property name
+	 * @var Reflection_Property[] indices are : class name, property name[]
 	 */
 	private $properties = array();
 
@@ -105,6 +105,7 @@ class Sql_Joins
 	 * @param string   $foreign_class_name
 	 * @param string   $foreign_path
 	 * @param integer  $depth
+	 * @return Sql_Join
 	 */
 	private function addFinalize(
 		Sql_Join $join, $master_path, $foreign_class_name, $foreign_path, $depth
@@ -167,7 +168,7 @@ class Sql_Joins
 	/**
 	 * Adds multiple properties paths to the joins list
 	 *
-	 * @param multitype:string $paths_array
+	 * @param string[] $paths_array
 	 * @return Sql_Joins
 	 */
 	public function addMultiple($paths_array)
@@ -213,8 +214,8 @@ class Sql_Joins
 		$master_property = $this->getProperty($master_path, $master_property_name);
 		if ($master_property) {
 			$foreign_class_name = $master_property->getType();
-			if ($foreign_class_name === "multitype:string") {
-				// TODO : multitype:string can have multiple implementations, depending on database engine
+			if ($foreign_class_name === "string[]") {
+				// TODO : string[] can have multiple implementations, depending on database engine
 				// linked strings table, mysql's set.. should find a way to make this common without
 				// knowing anything about the specific
 			}
@@ -264,7 +265,7 @@ class Sql_Joins
 	 *
 	 * Classes can be returned twice if they are used by several property paths
 	 *
-	 * @return multitype:string key is the path of the matching property
+	 * @return string[] key is the path of the matching property
 	 */
 	public function getClasses()
 	{
@@ -277,7 +278,7 @@ class Sql_Joins
 	 *
 	 * Classes are always returned once
 	 *
-	 * @return multitype:string key is an arbitrary counter
+	 * @return string[] key is an arbitrary counter
 	 */
 	public function getClassNames()
 	{
@@ -312,7 +313,7 @@ class Sql_Joins
 	 * Gets the list of linked tables.
 	 * There are tables which do not have any matching class
 	 *
-	 * @return multitype:multitype:string main key is the table name, contained arrays contains two fields names
+	 * @return string[] main key is the table name, contained arrays contains two fields names[]
 	 */
 	public function getLinkedTables()
 	{
@@ -324,7 +325,7 @@ class Sql_Joins
 	 * Gets the list of Reflection_Property objects for a given property path
 	 *
 	 * @param string $master_path
-	 * @return multitype:Reflection_Property
+	 * @return Reflection_Property[]
 	 */
 	public function getProperties($master_path)
 	{

@@ -11,7 +11,7 @@ abstract class Application
 	/**
 	 * Namespaces list cache : initialized at first use
 	 *
-	 * @var multitype:string
+	 * @var (.*)[]
 	 */
 	protected static $namespaces;
 
@@ -20,7 +20,7 @@ abstract class Application
 	 * This is called by getSourceDirectories() for recursive directories reading.
 	 *
 	 * @param string $path base path
-	 * @return multitype:string an array of directories names
+	 * @return string[] an array of directories names
 	 */
 	private static function getDirectories($path)
 	{
@@ -44,7 +44,7 @@ abstract class Application
 	 * Paths are relative to the SAF index.php base script position.
 	 *
 	 * @param string $application_name
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public static function getSourceDirectories($application_name)
 	{
@@ -66,7 +66,7 @@ abstract class Application
 	 * Namespaces strings are sorted from higher-level application to basis "SAF\Framework" namespace.
 	 * An empty namespace will always be given first.
 	 *
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	public static function getNamespaces()
 	{
@@ -89,7 +89,7 @@ abstract class Application
 					);
 				}
 				self::$namespaces[] = __NAMESPACE__;
-				// TODO should found another way to make it smarter (prehaps framework_test application ?)
+				// TODO should found another way to make it smarter (perhaps framework_test application ?)
 				self::$namespaces[] = __NAMESPACE__ . "\\Tests";
 				self::$namespaces[] = "";
 			}

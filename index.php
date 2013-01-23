@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 // php settings
-set_time_limit(25);
+set_time_limit(5);
 ini_set("max_input_vars", 1000000);
 ini_set("memory_limit", "1024M");
 //ini_set("xdebug.scream", true);
@@ -56,5 +56,5 @@ foreach (array_reverse($MODULES) as $MODULE) $MODULE();
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
 Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
-//echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
+echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
 //echo "<pre>\$_POST=unserialize(\"" . str_replace("\"", "\\\"", serialize($_POST)) . "\")</pre>";

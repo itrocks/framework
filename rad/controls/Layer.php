@@ -5,7 +5,7 @@ class Layer extends Control
 {
 
 	/**
-	 * @var multitype:Control;
+	 * @var Control;[]
 	 */
 	public $content = array();
 

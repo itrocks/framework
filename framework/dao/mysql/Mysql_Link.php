@@ -24,7 +24,7 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * The $parameters array keys are : "host", "user", "password", "database".
 	 *
-	 * @param multitype:string $parameters
+	 * @param string[] $parameters
 	 */
 	public function __construct($parameters)
 	{
@@ -192,6 +192,7 @@ class Mysql_Link extends Sql_Link
 		$result_set = $this->executeQuery(
 			"SHOW COLUMNS FROM `" . $this->storeNameOf($class->name) . "`"
 		);
+        $columns = array();
 		while ($column = $result_set->fetch_object(__NAMESPACE__ . "\\Mysql_Column")) {
 			$column_name = $column->getName();
 			if (substr($column_name, 0, 3) == "id_") {

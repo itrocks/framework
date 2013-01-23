@@ -55,10 +55,10 @@ class Search_Array_Builder
 
 	//--------------------------------------------------------------------------------- buildMultiple
 	/**
-	 * @param multiple:string | Reflection_Class $property_names_or_class
-	 * @param string $search_phrase
-	 * @param string $append
-	 * @return Ambigous <multitype:, string, multitype:string , mixed, multitype:unknown multitype: , unknown>
+	 * @param string[]|Reflection_Class $property_names_or_class
+	 * @param string                    $search_phrase
+	 * @param string                    $append
+	 * @return array
 	 */
 	public function buildMultiple($property_names_or_class, $search_phrase, $append = "")
 	{
@@ -90,7 +90,7 @@ class Search_Array_Builder
 	//----------------------------------------------------------------- classRepresentativeProperties
 	/**
 	 * @param Reflection_Class $class
-	 * @return multitype:string
+	 * @return string[]
 	 */
 	private function classRepresentativeProperties($class)
 	{

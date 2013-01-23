@@ -24,7 +24,7 @@ class Default_List_Controller extends List_Controller
 	 *
 	 * @param string $class_name element class name
 	 * @param array $form the values, key is the name/path of each property into the class
-	 * @return multitype:Reflection_Property_Value Search values
+	 * @return Reflection_Property_Value[] Search values
 	 */
 	protected function getSearchValues($class_name, $form)
 	{

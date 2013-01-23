@@ -12,7 +12,7 @@ interface Dao_Index
 
 	//--------------------------------------------------------------------------------------- getKeys
 	/**
-	 * @return multitype:Dao_Key
+	 * @return Dao_Key[]
 	 */
 	public function getKeys();
 

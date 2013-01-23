@@ -7,7 +7,7 @@ abstract class Html_Table_Section extends Dom_Element
 	//----------------------------------------------------------------------------------------- $rows
 	/**
 	 * @contained
-	 * @var multitype:Html_Table_Row
+	 * @var Html_Table_Row[]
 	 */
 	public $rows = array();
 
