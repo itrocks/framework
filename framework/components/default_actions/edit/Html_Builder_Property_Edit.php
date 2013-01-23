@@ -85,6 +85,7 @@ class Html_Builder_Property_Edit
 	private function buildDateTime()
 	{
 		$input = new Html_Input($this->getFieldName(), $this->value);
+		$input->setAttribute("autocomplete", "off");
 		$input->addClass("datetime");
 		return $input;
 	}
