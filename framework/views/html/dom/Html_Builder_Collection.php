@@ -63,9 +63,12 @@ class Html_Builder_Collection
 	 */
 	protected function buildCell($object, $property_name)
 	{
-		return new Html_Table_Standard_Cell((new Reflection_Property_View(
-			Reflection_Property::getInstanceOf($object, $property_name)
-		))->getFormattedValue($object));
+		$property = Reflection_Property::getInstanceOf($object, $property_name);
+		$cell = new Html_Table_Standard_Cell(
+			(new Reflection_Property_View($property))->getFormattedValue($object)
+		);
+		$cell->addClass($property->getType());
+		return $cell;
 	}
 
 	//------------------------------------------------------------------------------------- buildBody

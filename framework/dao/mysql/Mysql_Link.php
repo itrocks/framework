@@ -30,6 +30,9 @@ class Mysql_Link extends Sql_Link
 	{
 		parent::__construct($parameters);
 		$this->connect($parameters);
+		if (isset($parameters["limit"])) {
+			$this->limit($parameters["limit"]);
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- begin
@@ -126,6 +129,10 @@ class Mysql_Link extends Sql_Link
 	 */
 	protected function executeQuery($query)
 	{
+		$limit = $this->limit();
+		if (!empty($limit) && (substr($query, 0, 6) === "SELECT")) {
+			$query .= " LIMIT 0, $limit";
+		}
 		return $this->connection->query($query);
 	}
 

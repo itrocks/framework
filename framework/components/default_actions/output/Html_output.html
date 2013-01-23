@@ -23,40 +23,40 @@
 	</div>
 
 	<!--tabs._top-->
-	<div class="fieldset" id="top">
+	<div class="fieldset">
 		<!--content-->
 		<div class="field {getType.first}" id="{name}">
-			<span class="label trashable">|{display}|</span>
-			<span class="value">{value}</span>
+			<div class="label trashable">|{display}|</div>
+			<div class="value">{value}</div>
 		</div>
 		<!--content-->
 	</div>
 	<!--tabs._top-->
 
 	<!--tabs.included?-->
-	<div class="tabber" id="{title}">
+	<div class="tabber">
 		<ul>
 			<!--tabs.included-->
-			<li class="trashable"><a href="#{id}">|{title}|</a></li>
+			<li class="trashable"><a href="#tab_{id}">|{title}|</a></li>
 			<!--tabs.included-->
 		</ul>
 		<!--tabs.included-->
-		<div class="fieldset" id="{id}">
+		<div class="fieldset" id="tab_{id}">
 			<h2>{title}</h2>
 			<!--included?-->
-			<div class="tabber" id="{title}">
+			<div class="tabber">
 				<ul>
 					<!--included-->
-					<li class="trashable"><a href="#{id}">|{title}|</a></li>
+					<li class="trashable"><a href="#tab_{id}">|{title}|</a></li>
 					<!--included-->
 				</ul>
 				<!--included-->
-				<div class="fieldset" id="{id}">
+				<div class="fieldset" id="tab_{id}">
 					<h2>{title}</h2>
 					<!--content-->
 					<div class="field {getType.first}" id="{name}">
-						<span class="label trashable">|{display}|</span>
-						<span class="value">{value}</span>
+						<div class="label trashable">|{display}|</div>
+						<div class="value">{value}</div>
 					</div>
 					<!--content-->
 				</div>
@@ -70,8 +70,8 @@
 					<div class="fieldset">
 						<!--content-->
 						<div class="field {getType.first}" id="{name}">
-							<span class="label trashable">|{display}|</span>
-							<span class="value">{value}</span>
+							<div class="label trashable">|{display}|</div>
+							<div class="value">{value}</div>
 						</div>
 						<!--content-->
 					</div>
@@ -81,8 +81,8 @@
 			<!--columns?-->
 			<!--content-->
 			<div class="field {getType.first}" id="{name}">
-				<span class="label trashable">|{display}|</span>
-				<span class="value">{value}</span>
+				<div class="label trashable">|{display}|</div>
+				<div class="value">{value}</div>
 			</div>
 			<!--content-->
 		</div>
@@ -91,33 +91,33 @@
 	<!--tabs.included?-->
 
 	<!--@propertiesOutOfTabs?-->
-	<div class="fieldset" id="others">
+	<div class="fieldset">
 		<!--@propertiesOutOfTabs-->
 		<div class="field {getType.first}" id="{name}">
-			<span class="label trashable">|{display}|</span>
-			<span class="value">{value}</span>
+			<div class="label trashable">|{display}|</div>
+			<div class="value">{value}</div>
 		</div>
 		<!--@propertiesOutOfTabs-->
 	</div>
 	<!--@propertiesOutOfTabs?-->
 
 	<!--tabs._middle-->
-	<div class="fieldset" id="middle">
+	<div class="fieldset">
 		<!--content-->
 		<div class="field {getType.first}" id="{name}">
-			<span class="label trashable">|{display}|</span>
-			<span class="value">{value}</span>
+			<div class="label trashable">|{display}|</div>
+			<div class="value">{value}</div>
 		</div>
 		<!--content-->
 	</div>
 	<!--tabs._middle-->
 
 	<!--tabs._bottom-->
-	<div class="fieldset" id="others">
+	<div class="fieldset">
 		<!--tabs._bottom.content-->
 		<div class="field {getType.first}" id="{name}">
-			<span class="label trashable">|{display}|</span>
-			<span class="value">{value}</span>
+			<div class="label trashable">|{display}|</div>
+			<div class="value">{value}</div>
 		</div>
 		<!--tabs._bottom.content-->
 	</div>

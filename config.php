@@ -10,6 +10,7 @@ $config["framework"] = array(
 	"Dao" => array(
 		"class"    => "Mysql_Link",
 		"host"     => "localhost",
+		"limit"    => 1000,
 		"user"     => "SAF-php",
 		"password" => "SAF-php",
 		"tables"   => array(

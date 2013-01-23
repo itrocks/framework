@@ -8,6 +8,15 @@ use Serializable;
 abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactional_Data_Link
 {
 
+	//---------------------------------------------------------------------------------------- $limit
+	/**
+	 * Limits the number of records returned by queries
+	 * null or zero : no limit
+	 *
+	 * @var integer
+	 */
+	private $limit;
+
 	//--------------------------------------------------------------------------------------- $tables
 	/**
 	 * Links each class name to it's storage table name
@@ -94,6 +103,21 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 * @return integer
 	 */
 	protected abstract function getColumnsCount($result_set);
+
+	//----------------------------------------------------------------------------------------- limit
+	/**
+	 * Sets/returns limit length
+	 *
+	 * @param integer $length
+	 * @return integer
+	 */
+	public function limit($length = null)
+	{
+		if (isset($length)) {
+			$this->limit = $length;
+		}
+		return $this->limit;
+	}
 
 	//----------------------------------------------------------------------------------------- query
 	/**

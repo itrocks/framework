@@ -8,7 +8,7 @@ class Reflection_Property_View
 	/**
 	 * @var Reflection_Property
 	 */
-	private $property;
+	public $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -83,6 +83,18 @@ class Reflection_Property_View
 		return $value + 0;
 	}
 
+	//---------------------------------------------------------------------------------- formatString
+	/**
+	 * Returns the value with string format
+	 *
+	 * @param string $value
+	 * @return string
+	 */
+	protected function formatString($value)
+	{
+		return $value;
+	}
+
 	//----------------------------------------------------------------------------------- formatValue
 	/**
 	 * @param mixed $value
@@ -95,6 +107,7 @@ class Reflection_Property_View
 			case "Date_Time": return $this->formatDateTime($value);
 			case "float":     return $this->formatFloat($value);
 			case "integer":   return $this->formatInteger($value);
+			case "string":    return $this->formatString($value);
 			default:          return $this->formatDefault($value);
 		}
 	}

@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 // php settings
-set_time_limit(5);
+set_time_limit(25);
 ini_set("max_input_vars", 1000000);
 ini_set("memory_limit", "1024M");
 //ini_set("xdebug.scream", true);
@@ -44,6 +44,7 @@ List_Controller_Acls::register();
 Loc::register();
 Output_Controller_Acls::register();
 Object_Builder::register();
+Wiki::register();
 // activate errors handlers
 Error_Handlers::activate();
 

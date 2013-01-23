@@ -33,6 +33,16 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		return new Html_Table_Standard_Cell($input);
 	}
 
+	//------------------------------------------------------------------------------------- buildHead
+	protected function buildHead()
+	{
+		$head = parent::buildHead();
+		foreach ($head->rows as $row) {
+			$row->addCell(new Html_Table_Standard_Cell(""));
+		}
+		return $head;
+	}
+
 	//-------------------------------------------------------------------------------------- buildRow
 	protected function buildRow($object)
 	{
