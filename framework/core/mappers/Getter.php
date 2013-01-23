@@ -50,7 +50,9 @@ abstract class Getter
 		if (!is_object($object)) {
 			if (is_object($parent) && is_string($parent_property)) {
 				$parent_property = "id_" . $parent_property;
-				$object = $parent->$parent_property;
+				if (isset($parent->$parent_property)) {
+					$object = $parent->$parent_property;
+				}
 			}
 			if (isset($object)) {
 				$object = Dao::read($object, $class_name);
