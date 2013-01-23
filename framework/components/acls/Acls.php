@@ -1,87 +1,86 @@
 <?php
 namespace SAF\Framework;
 
-class Acls
+abstract class Acls implements Plugin
 {
-	use Current { current as private pCurrent; }
-
-	//------------------------------------------------------------------------------------- $acl_tree
-	/**
-	 * $acl_tree store acls into a recursive tree
-	 *
-	 * @var multitype:mixed
-	 */
-	private $acl_tree;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * Adds a right value to acls
+	 * Add a new Acl to current user's group and to current connection's Acls
 	 *
-	 * @param Acl_Right $right
+	 * To write result rights using Dao, call Dao::write(Acls_User::current()->group) after add.
+	 * If you do not write them, modified Acls will keep active for current session only.
+	 *
+	 * @param string     $key
+	 * @param mixed      $value default is true
+	 * @param Acls_Group $group default is current user group
 	 */
-	public function add(Acl_Right $right)
+	public static function add($key, $value = null, $group = null)
 	{
-		$path = explode(".", $right->key);
-		$position = &$this->acl_tree;
-		foreach ($path as $step) {
-			if (!isset($position[$step])) {
-				$position[$step] = array();
-			}
-			$position = &$position[$step];
+		if (!isset($group)) {
+			$group = Acls_User::current()->group;
 		}
-		$position = $right->value;
+		if (!isset($value)) {
+			$value = true;
+		}
+		$right = new Acl_Right();
+		$right->group = $group;
+		$right->key   = $key;
+		$right->value = $value;
+		self::current()->add($right);
+		$group->rights[] = $right;
 	}
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Acls $set_current
-	 * @return Acls
+	 * @param Acls_Rights $set_current
+	 * @return Acls_Rights
 	 */
 	public static function current(Acls $set_current = null)
 	{
-		return self::pCurrent($set_current);
+		return Acls_Rights::current($set_current);
 	}
 
 	//------------------------------------------------------------------------------------------- get
-	/**
-	 * Gets a right value from acls
-	 *
-	 * @param string right key : a "key.subkey.another" path
-	 * @return mixed right value
-	 */
-	public function get($key)
+	public static function get($key)
 	{
-		$path = explode(".", $key);
-		$position = $this->acl_tree;
-		if ($key) {
-			foreach ($path as $step) {
-				if (!isset($position[$step])) {
-					return null;
-				}
-				$position = $position[$step];
-			}
-		}
-		return $position;
+		return self::current()->get($key);
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	public static function register()
+	{
+		Aop::add("after",
+			__NAMESPACE__ . "\\User_Authenticate_Controller->authenticate()",
+			array(__NAMESPACE__ . "\\Acls_Loader", "onUserAuthenticate")
+		);
+		Aop::add("after",
+			__NAMESPACE__ . "\\User_Authenticate_Controller->disconnect()",
+			array(__NAMESPACE__ . "\\Acls_Loader", "onUserDisconnect")
+		);
 	}
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
-	 * Remove a right value from acls
+	 * Remove an Acls to current group and from current connection's Acls
 	 *
-	 * @param string right key : a "key.subkey.another" path
+	 * To write result rights using Dao, call Dao::write(Acls_User::current()->group) after remove
+	 * If you do not write them, modified Acls will keep active for current session only.
+	 *
+	 * @param string     $key
+	 * @param Acls_Group $group default is current use group
 	 */
-	public function remove(Acl_Right $right)
+	public static function remove($key, $group = null)
 	{
-		$path = explode(".", $right->key);
-		$position = &$this->acl_tree;
-		$last = null;
-		foreach ($path as $step) {
-			if(!isset($position[$step]))
-				return;
-			$last = &$position;
-			$position = &$position[$step];
+		if (!isset($group)) {
+			$group = Acls_User::current()->group;
+			self::current()->remove($key);
+			foreach ($group->rights as $key => $right) {
+				if ($right->key == $key) {
+					unset($group->rights[$key]);
+				}
+			}
 		}
-		unset($last[$position]);
 	}
 
 }

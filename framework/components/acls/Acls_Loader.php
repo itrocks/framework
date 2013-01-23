@@ -2,25 +2,26 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-abstract class Acls_Loader implements Plugin
+abstract class Acls_Loader
 {
 
 	//--------------------------------------------------------------------------------- loadGroupAcls
 	/**
 	 * @param Acl_Group $group
-	 * @return Acls
+	 * @param Acls_Rights $acls_rights
+	 * @return Acls_Rights
 	 */
-	public static function loadGroupAcls(Acl_Group $group, Acls $acls = null)
+	public static function loadGroupAcls(Acl_Group $group, Acls_Rights $acls_rights = null)
 	{
-		if (!isset($acls)) {
-			$acls = new Acls();
+		if (!isset($acls_rights)) {
+			$acls_rights = new Acls_Rights();
 		}
 		// TODO next line is a dangerous thing, see what it is needed for and if it can be removed
 		Acls_User::current()->group = $group;
 		foreach ($group->rights as $right) {
-			$acls->add($right);
+			$acls_rights->add($right);
 		}
-		return $acls;
+		return $acls_rights;
 	}
 
 	//---------------------------------------------------------------------------------- loadUserAcls
@@ -32,12 +33,9 @@ abstract class Acls_Loader implements Plugin
 	public static function loadUserAcls(Acls_User $user, Acls $acls = null)
 	{
 		if (!isset($acls)) {
-			$acls = new Acls();
+			$acls = new Acls_Rights();
 		}
-		if ($user->group) {
-			self::loadGroupAcls($user->group, $acls);
-		}
-		return $acls;
+		return self::loadGroupAcls($user->group, $acls);
 	}
 
 	//---------------------------------------------------------------------------- onUserAuthenticate
@@ -48,7 +46,7 @@ abstract class Acls_Loader implements Plugin
 	{
 		$arguments = $joinpoint->getArguments();
 		if (isset($arguments)) {
-			Session::current()->set(Acls::current(self::loadUserAcls($arguments[0])));
+			Session::current()->set(Acls_Rights::current(self::loadUserAcls($arguments[0])));
 		}
 	}
 
@@ -58,21 +56,8 @@ abstract class Acls_Loader implements Plugin
 	 */
 	public static function onUserDisconnect(AopJoinpoint $joinpoint)
 	{
-		Acls::current(new Acls());
+		Acls_Rights::current(new Acls_Rights());
 		Session::current()->removeAny(__NAMESPACE__ . "\\Acls");
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	public static function register()
-	{
-		Aop::add("after",
-			__NAMESPACE__ . "\\User_Authenticate_Controller->authenticate()",
-			array(__CLASS__, "onUserAuthenticate")
-		);
-		Aop::add("after",
-			__NAMESPACE__ . "\\User_Authenticate_Controller->disconnect()",
-			array(__CLASS__, "onUserDisconnect")
-		);
 	}
 
 }

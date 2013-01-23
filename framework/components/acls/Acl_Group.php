@@ -13,6 +13,7 @@ class Acl_Group
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @var string
+	 * @values user,
 	 */
 	public $type;
 
@@ -21,7 +22,7 @@ class Acl_Group
 	 * @getter Aop::getCollection
 	 * @var multitype:Acl_Link
 	 */
-	public $contains;
+	public $content;
 
 	//--------------------------------------------------------------------------------------- $rights
 	/**

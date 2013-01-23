@@ -34,7 +34,7 @@ Error_Handlers::register(E_RECOVERABLE_ERROR, new To_Exception_Error_Handler());
 Aop_Getter::register();
 Aop_Setter::register();
 // normal priority modules
-Acls_Loader::register();
+Acls::register();
 Aop_Dynamics::register();
 Html_Cleaner::register();
 Html_Session::register();
