@@ -38,7 +38,8 @@ abstract class Dom_Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $name
+	 * @param $name    string
+	 * @param $end_tag boolean
 	 */
 	public function __construct($name = null, $end_tag = true)
 	{

@@ -32,7 +32,7 @@ class String
 	/**
 	 * First element of a separated string
 	 *
-	 * @param array | string $object
+	 * @return string
 	 */
 	public function first()
 	{
@@ -48,7 +48,7 @@ class String
 	/**
 	 * Last element of a separated string
 	 *
-	 * @param array | string $object
+	 * @return string
 	 */
 	public function last()
 	{
@@ -166,10 +166,10 @@ function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
 function maxRowLength($str)
 {
 	$length = 0;
-	$str = explode("\n", $str);
-	foreach ($str as $str) {
-		if (strlen($str) > $length) {
-			$length = strlen($str);
+	$rows = explode("\n", $str);
+	foreach ($rows as $row) {
+		if (strlen($row) > $length) {
+			$length = strlen($row);
 		}
 	}
 	return $length;
@@ -252,10 +252,10 @@ function rowCount($str)
 /**
  * Renvoie la partie de chaine à droite de la première occurence du séparateur
  *
- * @param string $str
- * @param string $sep
- * @param number $cnt
- * @param bool $complete_if_not
+ * @param $str             string
+ * @param $sep             string
+ * @param $cnt             integer
+ * @param $complete_if_not boolean
  * @return string
  */
 function rParse($str, $sep, $cnt = 1, $complete_if_not = false)

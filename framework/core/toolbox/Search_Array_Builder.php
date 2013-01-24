@@ -94,7 +94,8 @@ class Search_Array_Builder
 	 */
 	private function classRepresentativeProperties($class)
 	{
-		$property_names = $class->getAnnotation("representative")->value;
+		/** @var $property_names List_Annotation */
+		$property_names = $class->getAnnotation("representative")->get();
 		foreach ($property_names as $key => $property_name) {
 			$property_class = $class;
 			$i = strpos($property_name, ".");

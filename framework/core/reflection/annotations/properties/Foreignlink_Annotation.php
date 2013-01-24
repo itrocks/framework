@@ -9,8 +9,8 @@ class Foreignlink_Annotation extends Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $value
-	 * @param Reflection_Property $reflection_object
+	 * @param $value               string
+	 * @param $reflection_property Reflection_Property
 	 */
 	public function __construct($value, Reflection_Property $reflection_property)
 	{

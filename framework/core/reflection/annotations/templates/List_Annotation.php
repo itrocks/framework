@@ -4,6 +4,14 @@ namespace SAF\Framework;
 abstract class List_Annotation extends Annotation
 {
 
+	//---------------------------------------------------------------------------------------- $value
+	/**
+	 * Annotation value
+	 *
+	 * @var string[]
+	 */
+	protected $value;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * List string value is a values list, each one separated by a comma.
@@ -51,6 +59,15 @@ abstract class List_Annotation extends Annotation
 			$values[] = substr($value, $start, $i - $start);
 		}
 		parent::__construct($values);
+	}
+
+	//------------------------------------------------------------------------------------------- get
+	/**
+	 * @return string[]
+	 */
+	public function get()
+	{
+		return $this->value;
 	}
 
 }

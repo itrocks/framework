@@ -279,6 +279,7 @@ abstract class Loc implements Plugin
 	 */
 	public static function rtr($translation, $context = "")
 	{
+		/** @noinspection PhpVoidFunctionResultUsedInspection */
 		return Locale::current()->translations->reverse($translation, $context);
 	}
 

@@ -15,12 +15,12 @@ class Sql_Select_Builder
 	 *
 	 * Supported columns naming forms are :
 	 * column_name : column_name must correspond to a property of class
-	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's @var class
+	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's type class
 	 *
-	 * @param string           $class base object class name
-	 * @param string[] $properties properties paths list
-	 * @param array            $where_array where array expression, indices are columns names
-	 * @param Sql_Link         $sql_link
+	 * @param string        $class base object class name
+	 * @param string[]|null $properties properties paths list
+	 * @param array         $where_array where array expression, indices are columns names
+	 * @param Sql_Link      $sql_link
 	 */
 	public function __construct($class, $properties, $where_array = null, Sql_Link $sql_link = null)
 	{

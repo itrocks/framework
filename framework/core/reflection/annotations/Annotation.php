@@ -10,7 +10,7 @@ class Annotation
 	 *
 	 * @var string
 	 */
-	public $value;
+	protected $value;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -27,6 +27,15 @@ class Annotation
 
 	//------------------------------------------------------------------------------------ __toString
 	public function __toString()
+	{
+		return strval($this->value);
+	}
+
+	//------------------------------------------------------------------------------------------- get
+	/**
+	 * @return string
+	 */
+	public function get()
 	{
 		return strval($this->value);
 	}

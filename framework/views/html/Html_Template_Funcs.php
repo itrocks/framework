@@ -8,8 +8,9 @@ abstract class Html_Template_Funcs
 	/**
 	 * Returns array count
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $object
+	 * @param $template Html_Template
+	 * @param $objects  mixed[]
+	 * @return integer
 	 */
 	public static function getCount(Html_Template $template, $objects)
 	{

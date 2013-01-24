@@ -23,8 +23,9 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Create a table in database, which has no associated class, using fields names
 	 *
-	 * @param mysqli $mysqli
-	 * @param unknown_type $columns
+	 * @param $mysqli mysqli mysqli
+	 * @param $table_name    string
+	 * @param $column_names  string[]
 	 */
 	private static function createImplicitTable($mysqli, $table_name, $column_names)
 	{

@@ -8,7 +8,7 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	/**
 	 * Delete an object
 	 *
-	 * @param object $object
+	 * @param $parameters object
 	 */
 	private function deleteObject($parameters)
 	{

@@ -14,27 +14,27 @@ class Menu_Builder_Configuration
 	public function build($configuration)
 	{
 		$menu = new Menu();
-		foreach ($configuration as $key => $value) {
+		foreach ($configuration as $key => $values) {
 			if (is_numeric($key)) {
-				foreach ($value as $val) {
-					if     (substr($val, 0, 1) == "/") $menu->title_link        = $val;
-					elseif (substr($val, 0, 1) == "#") $menu->title_link_target = $val;
-					else                               $menu->title             = $val;
+				foreach ($values as $value) {
+					if     (substr($value, 0, 1) == "/") $menu->title_link        = $value;
+					elseif (substr($value, 0, 1) == "#") $menu->title_link_target = $value;
+					else                                 $menu->title             = $value;
 				}
 			}
 			else {
 				$block = new Menu_Block();
 				if (substr($key, 0, 1) == "/") $block->title_link  = $key;
 				else                           $block->title       = $key;
-				foreach ($value as $key => $value) {
-					if     ($key == "color")  $block->color            = $value;
+				foreach ($values as $sub_key => $value) {
+					if     ($key == "color")  $block->color             = $value;
 					elseif ($key == "title")  $block->title             = $value;
 					elseif ($key == "link")   $block->title_link        = $value;
 					elseif ($key == "target") $block->title_link_target = $value;
 					else {
 						$item = new Menu_Item();
 						$item->caption  = $value;
-						$item->link     = $key;
+						$item->link     = $sub_key;
 						$block->items[] = $item;
 					}
 				}

@@ -22,7 +22,8 @@ class Set
 	/**
 	 * Constructs a Set object for given element class name
 	 *
-	 * @param string $element_class_name
+	 * @param $element_class_name string   the class name
+	 * @param $elements           object[] the set can be initialized with this set of elements 
 	 */
 	public function __construct($element_class_name = null, $elements = array())
 	{

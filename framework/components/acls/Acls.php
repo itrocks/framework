@@ -33,10 +33,10 @@ abstract class Acls implements Plugin
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Acls_Rights $set_current
+	 * @param $set_current Acls_Rights
 	 * @return Acls_Rights
 	 */
-	public static function current(Acls $set_current = null)
+	public static function current(Acls_Rights $set_current = null)
 	{
 		return Acls_Rights::current($set_current);
 	}

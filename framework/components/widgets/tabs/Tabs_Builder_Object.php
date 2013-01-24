@@ -10,7 +10,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	 *
 	 * This fills in properties "display" and "value" special properties, usefull ie for Html_Template_Funcs
 	 *
-	 * @param object $class
+	 * @param $object object
 	 * @return Tab[]
 	 */
 	public static function build($object)

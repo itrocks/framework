@@ -6,7 +6,7 @@ interface Error_Handler
 
 	//---------------------------------------------------------------------------------------- handle
 	/**
-	 * @param Handled_Error $handled_error
+	 * @param $error Handled_Error
 	 */
 	public function handle(Handled_Error $error);
 

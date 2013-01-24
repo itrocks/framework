@@ -49,7 +49,8 @@ class Object_Builder implements Plugin
 	/**
 	 * Return a new instance of given $class_name, using replacement class if exist
 	 *
-	 * @param string $class_name may be short or full class name
+	 * @param $class_name string may be short or full class name
+	 * @param $args       array
 	 * @return object
 	 */
 	public function newInstanceArgs($class_name, $args)

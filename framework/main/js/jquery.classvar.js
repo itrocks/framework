@@ -40,7 +40,9 @@
 			else {
 				this.attr("class", var_name + set_value);
 			}
+			return $set_value;
 		}
+		return undefined;
 	}
 
 })( jQuery );

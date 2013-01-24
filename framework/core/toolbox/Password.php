@@ -8,8 +8,9 @@ class Password
 	/**
 	 * Crypt a password using crypt algorithm
 	 *
-	 * @param unknown_type $password
-	 * @param unknown_type $mode
+	 * @param $password  string
+	 * @param $algorithm string
+	 * @return string
 	 */
 	public static function crypt($password, $algorithm)
 	{

@@ -7,10 +7,10 @@
 /**
  * Decodes a gzip compressed string
  * @link http://www.php.net/manual/en/function.gzdecode.php
- * @param data string <p>
+ * @param $data string <p>
  * The data to decode, encoded by gzencode.
  * </p>
- * @param length int[optional] <p>
+ * @param $length integer [optional] <p>
  * The maximum length of data to decode.
  * </p>
  * @return string The decoded string, or false if an error occured.

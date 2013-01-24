@@ -33,8 +33,10 @@ class Controller_Uri
 	/**
 	 * Build a new Controller_Uri object knowing the URI as a text
 	 *
-	 * @param string $uri ie "/Order/3/Line/2/output", or "User/login"
-	 * @param string $default_feature the default feature name, ie put "output" for "/Order/3"
+	 * @param $uri                        string ie "/Order/3/Line/2/output", or "User/login"
+	 * @param $get                        array
+	 * @param $default_element_feature    string the default feature name, ie put "output" for "/Order/3"
+	 * @param $default_collection_feature string
 	 */
 	public function __construct(
 		$uri, $get = array(), $default_element_feature = null, $default_collection_feature = null

@@ -33,8 +33,7 @@ abstract class Locks
 	 * At first call : set lock to true and return false
 	 * At next calls until noRecurseEnd() is called : return true to stop recursivity
 	 *
-	 * @param string $class_name
-	 * @param string $property_name
+	 * @param $lock_name string
 	 * @return boolean
 	 */
 	public static function lock($lock_name)

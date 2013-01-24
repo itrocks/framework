@@ -23,7 +23,7 @@ class Controller_Parameters
 	/**
 	 * Adds a parameter without name value
 	 *
-	 * @param mixed $value
+	 * @param $parameter_value mixed
 	 * @return Controller_Parameters
 	 */
 	public function addValue($parameter_value)
@@ -120,8 +120,8 @@ class Controller_Parameters
 	/**
 	 * Set URI parameter raw value
 	 *
-	 * @param string  $name
-	 * @param integer $value
+	 * @param $parameter_name  string
+	 * @param $parameter_value integer
 	 * @return Controller_Parameters
 	 */
 	public function set($parameter_name, $parameter_value)

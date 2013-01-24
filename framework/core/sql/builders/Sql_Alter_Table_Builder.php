@@ -8,7 +8,7 @@ class Sql_Alter_Table_builder
 	/**
 	 * Columns to add
 	 *
-	 * @var :Dao_Column[]
+	 * @var Dao_Column[]
 	 */
 	private $add_columns = array();
 
@@ -16,7 +16,7 @@ class Sql_Alter_Table_builder
 	/**
 	 * Columns to alter
 	 *
-	 * @var :Dao_Column[] key is the old name of the column
+	 * @var Dao_Column[] key is the old name of the column
 	 */
 	private $alter_columns = array();
 
@@ -28,7 +28,7 @@ class Sql_Alter_Table_builder
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $class_name
+	 * @param $table Dao_Table
 	 */
 	public function __construct(Dao_Table $table)
 	{

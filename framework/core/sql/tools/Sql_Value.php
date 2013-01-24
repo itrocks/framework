@@ -8,7 +8,8 @@ abstract class Sql_Value
 	/**
 	 * Escape a column value, in order to insert it into a SQL query
 	 *
-	 * @param mixed $value
+	 * @param $value            mixed
+	 * @param $double_backquote boolean
 	 * @return string
 	 */
 	public static function escape($value, $double_backquote = false)

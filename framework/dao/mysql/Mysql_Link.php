@@ -68,7 +68,7 @@ class Mysql_Link extends Sql_Link
 		if ($id) {
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->accessProperties() as $property) {
-				if ($property->getAnnotation("contained")->value) {
+				if ($property->getAnnotation("contained")->get()) {
 					if (Type::isMultiple($property->getType())) {
 						$this->deleteCollection($object, $property, $property->getValue($object));
 					}
@@ -109,15 +109,6 @@ class Mysql_Link extends Sql_Link
 		}
 	}
 
-	//------------------------------------------------------------------------------------- deleteMap
-	/**
-	 * @todo implementation and use
-	 * @param object $value
-	 */
-	private function deleteMap($value)
-	{
-	}
-
 	//---------------------------------------------------------------------------------- executeQuery
 	/**
 	 * Execute an SQL query
@@ -155,10 +146,9 @@ class Mysql_Link extends Sql_Link
 	 * Fetch a result from a result set to an array
 	 *
 	 * @param mysqli_result $result_set The result set : in most cases, will come from executeQuery()
-	 * @param string $class_name The class name to store the result data into
 	 * @return object
 	 */
-	protected function fetchRow($result_set, $class_name = null)
+	protected function fetchRow($result_set)
 	{
 		$object = $result_set->fetch_row();
 		return $object;
@@ -289,7 +279,7 @@ class Mysql_Link extends Sql_Link
 		Aop_Getter::$ignore = true;
 		foreach ($class->accessProperties() as $property) {
 			$value = $property->getValue($object);
-			if (is_null($value) && !$property->getAnnotation("null")->value) {
+			if (is_null($value) && !$property->getAnnotation("null")->get()) {
 				$value = "";
 			}
 			if (in_array($property->name, $table_columns_names)) {
@@ -309,7 +299,7 @@ class Mysql_Link extends Sql_Link
 					}
 				}
 			}
-			elseif ($property->getAnnotation("contained")->value) {
+			elseif ($property->getAnnotation("contained")->get()) {
 				$write_collections[$property->name] = $value;
 			}
 			elseif (is_array($value)) {
@@ -362,7 +352,7 @@ class Mysql_Link extends Sql_Link
 		// collection properties : write each of them
 		$id_set = array();
 		$property = Reflection_Property::getInstanceOf(get_class($object), $property_name);
-		if ($property->getAnnotation("contained")->value) {
+		if ($property->getAnnotation("contained")->get()) {
 			if ($collection && is_array(reset($collection))) {
 				$class_name = Namespaces::fullClassName(Type::isMultiple($property->getType()));
 				$collection = arrayToCollection($collection, $class_name);
@@ -370,7 +360,7 @@ class Mysql_Link extends Sql_Link
 			foreach ($collection as $element) {
 				if (!isset($representative_properties)) {
 					$element_class = Reflection_Class::getInstanceOf(get_class($element));
-					$representative_properties = $element_class->getAnnotation("representative")->value;
+					$representative_properties = $element_class->getAnnotation("representative")->get();
 					$default = $element_class->getDefaultProperties();
 				}
 				$do_write = false;

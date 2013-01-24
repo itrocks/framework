@@ -14,11 +14,9 @@ abstract class Aop
 	/**
 	 * Launch advice $call_back after the execution of the joinpoint function $function
 	 *
-	 * @param string $where when to do the capture : "after", "after_returning", "after_throwing", "around", "before"
-	 * @param string $function can be "functionName()" or "Class_Name->methodName()"
-	 *   or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
-	 * @param mixed  $call_back string(function name) or array(class name or object, method)
-	 *   or function as a closure
+	 * @param $when     string when to do the capture : "after", "after_returning", "after_throwing", "around", "before"
+	 * @param $function string can be "functionName()" or "Class_Name->methodName()" or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
+	 * @param $call_back string|array|function function name, array(class name or object, method) or function as a closure
 	 */
 	public static function add($when, $function, $call_back)
 	{
@@ -84,7 +82,7 @@ abstract class Aop
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->getProperties() as $property) {
 				if ($property->class == $class_name) {
-					$call = $property->getAnnotation($annotation)->value;
+					$call = $property->getAnnotation($annotation)->get();
 					if ($call) {
 						if (substr($call, 0, 5) === "Aop::") {
 							Aop::add("before",

@@ -10,6 +10,7 @@ class To_Exception_Error_Handler implements Error_Handler
 	 * Change error to an exception
 	 *
 	 * @param Handled_Error $error
+	 * @throws ErrorException
 	 */
 	public function handle(Handled_Error $error)
 	{

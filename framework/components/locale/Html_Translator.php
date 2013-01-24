@@ -21,8 +21,9 @@ abstract class Html_Translator implements Plugin
 	/**
 	 * Translate a term from an html pages
 	 *
-	 * @param string $content
-	 * @param integer $i
+	 * @param $content string
+	 * @param $i       integer
+	 * @param $context string
 	 */
 	public static function translateElement(&$content, &$i, $context)
 	{
