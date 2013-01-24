@@ -3,14 +3,14 @@
 dateFormatToDatepicker = function(text)
 {
 	return text.replace("d", "dd").replace("m", "mm").replace("Y", "yy");
-}
+};
 
 //------------------------------------------------------------------------------- getInputTextWidth
 // TODO limit cache size as it could gros too much !
 getInputTextWidth = function(text)
 {
 	return Math.max(40, getTextWidth(text) + 16);
-}
+};
 
 //----------------------------------------------------------------------------------- getTextHeight
 getTextHeight = function(text)
@@ -19,7 +19,7 @@ getTextHeight = function(text)
 	var height = $('#height').height();
 	$('#height').remove();
 	return height;
-}
+};
 
 //------------------------------------------------------------------------------------ getTextWidth
 get_text_width_cache = new Array();
@@ -36,4 +36,4 @@ getTextWidth = function(text)
 		get_text_width_cache[text] = width;
 		return width;
 	}
-}
+};

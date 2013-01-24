@@ -8,8 +8,8 @@
 	 * Call build(callback) what callback functions you want to be called for future added dom elements
 	 * call this.build() after you add dom elements (ie dynamic javascript add, ajax calls) to apply the same changes
 	 *
-	 * @param function callback the callback function
-	 * @param boolean call_now default is true
+	 * @param callback function the callback function
+	 * @param call_now boolean default is true
 	 */
 	$.fn.build = function(callback, call_now)
 	{
@@ -23,7 +23,7 @@
 		}
 		else {
 			for (var key in jquery_build_callback) {
-				var callback = jquery_build_callback[key];
+				callback = jquery_build_callback[key];
 				this.tmpBuildCaller = callback;
 				this.tmpBuildCaller();
 			}

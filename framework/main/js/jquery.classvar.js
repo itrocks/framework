@@ -10,8 +10,8 @@
 	 *   <input id="sample" class="count:10">
 	 *   console.log($("#sample").classVar("count")); // will display : "10"
 	 *   $("#sample"].classVar("new", 1);             // will add a "new:1" class
-	 * @param string var_name
-	 * @param string set_value
+	 * @param var_name string
+	 * @param set_value string
 	 * @return string
 	 */
 	$.fn.classVar = function(var_name, set_value)

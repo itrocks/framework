@@ -59,8 +59,8 @@ abstract class Dom_Element
 		}
 		elseif (strpos(" " . $class->value . " ", $class_name) === false) {
 			$class->value .= " " . $class_name;
-			return $class;
 		}
+		return $class;
 	}
 
 	//---------------------------------------------------------------------------------- getAttribute

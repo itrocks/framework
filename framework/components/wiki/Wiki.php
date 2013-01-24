@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework;
 use AopJoinpoint;
-use Textile;
 
 abstract class Wiki implements Plugin
 {
@@ -47,6 +46,7 @@ abstract class Wiki implements Plugin
 	public static function stringWiki(AopJoinpoint $joinpoint)
 	{
 		if (!static::$dont_parse_wiki) {
+			/** @var $property Reflection_Property */
 			$property = $joinpoint->getObject()->property;
 			if ($property->getAnnotation("multiline")->value) {
 				$joinpoint->setReturnedValue(self::textile($joinpoint->getReturnedValue()));

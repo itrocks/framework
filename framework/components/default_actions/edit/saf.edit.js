@@ -10,7 +10,7 @@ $("document").ready(function() {
 			if (match) {
 				$this.attr("rows", $this.val().split("\n").length);
 			}
-		}
+		};
 		$this.find(".autoheight").each(autoheight_function);
 		$this.find(".autoheight").keyup(autoheight_function);
 

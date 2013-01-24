@@ -14,7 +14,7 @@ String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 	} else {
 		return str.substr(0, i);
 	}
-}
+};
 
 //------------------------------------------------------------------------------------------ lParse
 String.prototype.lParse = function (sep, cnt, complete_if_not)
@@ -31,7 +31,7 @@ String.prototype.lParse = function (sep, cnt, complete_if_not)
 	else {
 		return this.substr(0, i);
 	}
-}
+};
 
 //-------------------------------------------------------------------------------------- rLastParse
 String.prototype.rLastParse = function (sep, cnt, complete_if_not)
@@ -48,7 +48,7 @@ String.prototype.rLastParse = function (sep, cnt, complete_if_not)
 	} else {
 		return str.substr(i + sep.length);
 	}
-}
+};
 
 //------------------------------------------------------------------------------------------ rParse
 String.prototype.rParse = function (sep, cnt, complete_if_not)
@@ -65,4 +65,4 @@ String.prototype.rParse = function (sep, cnt, complete_if_not)
 	else {
 		return this.substr(i + sep.length);
 	}
-}
+};
