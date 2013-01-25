@@ -31,9 +31,19 @@ class Html_Template
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
+	 * The root data object
+	 *
 	 * @var object
 	 */
 	private $object;
+
+	//-------------------------------------------------------------------------------------- $objects
+	/**
+	 * The objects queue, updated during the parsing
+	 *
+	 * @var mixed[]
+	 */
+	public $objects;
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
@@ -163,13 +173,13 @@ class Html_Template
 	//----------------------------------------------------------------------------- parseArrayElement
 	/**
 	 * @param $objects mixed[]
-	 * @param $array array
-	 * @param $index string|integer
+	 * @param $array   array
+	 * @param $index   string|integer
 	 * @return mixed
 	 */
-	protected function parseArrayElement($objects, $array, $index)
-	{
-echo "parse array element $index from " . print_r($array, true) . "</pre>";
+	protected function parseArrayElement(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $array, $index
+	) {
 		return isset($array[$index]) ? $array[$index] : null;
 	}
 
@@ -179,8 +189,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 * @param $class_name string
 	 * @return string
 	 */
-	protected function parseClassName($objects, $class_name)
-	{
+	protected function parseClassName(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $class_name
+	) {
 		return Namespaces::fullClassName($class_name);
 	}
 
@@ -190,7 +201,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 *
 	 * @param $property   Reflection_Property
 	 * @param $collection object[]
-	 * @return Html_Builder_Collection
+	 * @return string
 	 */
 	protected function parseCollection(Reflection_Property $property, $collection)
 	{
@@ -201,13 +212,14 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a constant and returns its return value
 	 *
-	 * @param $objects object[]
-	 * @param $object mixed
+	 * @param $objects    mixed[]
+	 * @param $object     mixed
 	 * @param $const_name string
 	 * @return mixed the value of the constant
 	 */
-	protected function parseConst($objects, $object, $const_name)
-	{
+	protected function parseConst(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $const_name
+	) {
 		return (is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
 			isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
 			isset($GLOBALS["_" . $const_name]) ? $GLOBALS["_" . $const_name] : null
@@ -243,7 +255,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a special data / function and returns its return value
 	 *
-	 * @param $objects object[]
+	 * @param $objects   mixed[]
 	 * @param $func_name string
 	 * @return mixed
 	 */
@@ -408,8 +420,8 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 *   <!--methodName()-->(...)<!--methodName()-->
 	 *   <!--@function-->(...)<!--@function-->
 	 *
-	 * @param $string string
-	 * @param $objects object[]
+	 * @param $content string
+	 * @param $objects  mixed[]
 	 * @return string updated content
 	 */
 	private function parseLoops($content, $objects)
@@ -419,7 +431,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 			$i = $icontent + 4;
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, "-->", $i);
-				$i = $this->parseLoop($content, $objects, $i, $j);
+				$this->parseLoop($content, $objects, $i, $j);
 			}
 		}
 		return $content;
@@ -427,36 +439,42 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------------- parseMethod
 	/**
-	 * @param $objects mixed[]
-	 * @param $object object
+	 * @param $objects       mixed[]
+	 * @param $object        object
 	 * @param $property_name string
 	 */
-	protected function parseMethod($objects, $object, $property_name)
-	{
+	protected function parseMethod(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $property_name
+	) {
 		return $object->$property_name();
 	}
 
 	//--------------------------------------------------------------------------- parseObjectToString
 	/**
-	 * @param $objects mixed[]
-	 * @param $object mixed
+	 * @param $objects       mixed[]
+	 * @param $object        mixed
 	 * @param $property_name string
 	 * @return string
 	 */
-	protected function parseObjectToString($objects, $object, $property_name)
-	{
+	protected function parseObjectToString(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $object,
+		/** @noinspection PhpUnusedParameterInspection */ $property_name
+	) {
 		return method_exists($object, "__toString") ? strval($object) : "";
 	}
 
 	//-------------------------------------------------------------------------------- parseParameter
 	/**
-	 * @param $objects mixed[]
-	 * @param $object mixed
+	 * @param $objects        mixed[]
+	 * @param $object         mixed
 	 * @param $parameter_name string
 	 * @return mixed
 	 */
-	protected function parseParameter($objects, $object, $parameter_name)
-	{
+	protected function parseParameter(
+		/** @noinspection PhpUnusedParameterInspection */ $objects,
+		/** @noinspection PhpUnusedParameterInspection */ $object,
+		$parameter_name
+	) {
 		return isset($this->parameters[$parameter_name])
 			? $this->parameters[$parameter_name]
 			: "";
@@ -475,12 +493,13 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------------- parseProperty
 	/**
-	 * @param $objects mixed[]
-	 * @param $object object
+	 * @param $objects       mixed[]
+	 * @param $object        object
 	 * @param $property_name string
 	 */
-	protected function parseProperty($objects, $object, $property_name)
-	{
+	protected function parseProperty(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $property_name
+	) {
 		return $object->$property_name;
 	}
 
@@ -505,33 +524,36 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------- parseStaticMethod
 	/**
-	 * @param $objects mixed[]
-	 * @param $class_name string
+	 * @param $objects     mixed[]
+	 * @param $class_name  string
 	 * @param $method_name string
 	 * @return mixed
 	 */
-	protected function parseStaticMethod($objects, $class_name, $method_name)
-	{
+	protected function parseStaticMethod(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $class_name, $method_name
+	)	{
 		return $class_name::$method_name();
 	}
 
 	//--------------------------------------------------------------------------- parseStaticProperty
 	/**
-	 * @param $objects mixed[]
-	 * @param $class_name string
-	 * @param $method_name string
+	 * @param $objects       mixed[]
+	 * @param $class_name    string
+	 * @param $property_name string
 	 * @return mixed
 	 */
-	protected function parseStaticProperty($objects, $class_name, $property_name)
-	{
+	protected function parseStaticProperty(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $class_name, $property_name
+	)	{
 		return $class_name::$$property_name;
 	}
 
 	//----------------------------------------------------------------------------------- parseString
 	/**
-	 * @param $objects mixed[]
-	 * @param $object string
+	 * @param $objects       mixed[]
+	 * @param $object        string
 	 * @param $property_name string
+	 * @return mixed
 	 */
 	protected function parseString($objects, $object, $property_name)
 	{
@@ -543,23 +565,26 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------- parseStringMethod
 	/**
-	 * @param $objects mixed[]
-	 * @param $object string
-	 * @param $property_name string
+	 * @param $objects     mixed[]
+	 * @param $object      string
+	 * @param $method_name string
+	 * @return mixed
 	 */
-	protected function parseStringMethod($objects, $object, $method_name)
-	{
+	protected function parseStringMethod(
+		/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $method_name
+	)	{
 		return $object->$method_name();
 	}
 
 	//--------------------------------------------------------------------------- parseStringProperty
 	/**
-	 * @param $objects mixed[]
-	 * @param $object string
+	 * @param $objects       mixed[]
+	 * @param $object        string
 	 * @param $property_name string
 	 */
-	protected function parseStringProperty($objects, $object, $property_name)
-	{
+	protected function parseStringProperty(
+			/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $property_name
+	)	{
 		return $object->$property_name;
 	}
 
@@ -568,7 +593,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 * Return true if the text at position $i of $content is a variable, function name, an include
 	 *
 	 * @param $content string
-	 * @param $i integer
+	 * @param $i       integer
 	 * @return boolean
 	 */
 	private function parseThis($content, $i)
@@ -580,10 +605,11 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//------------------------------------------------------------------------------ parseSingleValue
 	/**
-	 *
-	 * @param $objects mixed[]
+	 * @param $objects       mixed[]
+	 * @param $object        mixed
+	 * @param $class_name    string
 	 * @param $property_name string
-	 * @param $class_name string
+	 * @return mixed
 	 */
 	protected function parseSingleValue(&$objects, $object, &$class_name, $property_name)
 	{
@@ -641,8 +667,8 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
-	 * @param $objects object[]
-	 * @param $var_name string can be an unique var or path.of.vars
+	 * @param $objects   mixed[]
+	 * @param $var_name  string can be an unique var or path.of.vars
 	 * @param $as_string boolean if true, returned value will always be a string
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
@@ -651,12 +677,11 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 		if ($var_name == ".") {
 			return reset($objects);
 		}
-		else {
-			$class_name = null;
-			$object = reset($objects);
-			foreach (explode(".", $var_name) as $property_name) {
-				$object = $this->parseSingleValue($objects, $object, $class_name, $property_name);
-			}
+		$class_name = null;
+		$property_name = null;
+		$object = reset($objects);
+		foreach (explode(".", $var_name) as $property_name) {
+			$object = $this->parseSingleValue($objects, $object, $class_name, $property_name);
 		}
 		if ($as_string && is_object($object)) {
 			$object = $this->parseObjectToString($objects, $object, $property_name);
@@ -665,6 +690,13 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	}
 
 	//-------------------------------------------------------------------------------------- parseVar
+	/**
+	 * @param $content string
+	 * @param $objects mixed[]
+	 * @param $i       integer
+	 * @param $j       integer
+	 * @return mixed
+	 */
 	protected function parseVar(&$content, $objects, $i, $j)
 	{
 		$var_name = substr($content, $i, $j - $i);
@@ -682,6 +714,11 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	}
 
 	//-------------------------------------------------------------------------------- parseVarRemove
+	/**
+	 * @param $content string
+	 * @param $i       integer
+	 * @param $j       integer
+	 */
 	protected function parseVarRemove($content, &$i, &$j)
 	{
 		if (
@@ -717,7 +754,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 *     <!--@function-->(...)<!--@function-->
 	 *
 	 * @param $content string
-	 * @param $object object
+	 * @param $objects mixed[]
 	 * @return string updated content
 	 */
 	private function parseVars($content, $objects)
@@ -735,6 +772,10 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	}
 
 	//------------------------------------------------------------------------ parseVarWillAutoremove
+	/**
+	 * @param $var_name string
+	 * @return bool
+	 */
 	protected function parseVarWillAutoremove(&$var_name)
 	{
 		if ($var_name[0] === "?") {

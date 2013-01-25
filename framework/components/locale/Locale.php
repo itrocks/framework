@@ -133,10 +133,10 @@ class Locale
 			if ($type->isDateTime()) {
 				return $this->date->toIso($value);
 			}
-			elseif ($type->asString() == "float") {
+			elseif ($type->isFloat()) {
 				return $this->number->floatToIso($value);
 			}
-			elseif ($type->asString() == "integer") {
+			elseif ($type->isInteger()) {
 				return $this->number->integerToIso($value);
 			}
 		}
@@ -157,10 +157,10 @@ class Locale
 			if ($type->isDateTime()) {
 				return $this->date->toLocale($value);
 			}
-			elseif ($type->asString() == "float") {
+			elseif ($type->isFloat()) {
 				return $this->number->floatToLocale($value);
 			}
-			elseif ($type->asString() == "integer") {
+			elseif ($type->isInteger()) {
 				return $this->number->integerToLocale($value);
 			}
 		}

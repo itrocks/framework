@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework;
 use mysqli, mysqli_result;
-use Serializable;
 
 /**
  * @todo Mysql_Link must be rewritten : call query(), executeQuery(), and standard protected methods instead of mysql_*
@@ -339,9 +338,9 @@ class Mysql_Link extends Sql_Link
 	 * Ie when you write an order, it's implicitely needed to write it's lines
 	 *
 	 * @todo verify source and test it correctly
-	 * @param $object object
+	 * @param $object        object
 	 * @param $property_name string
-	 * @param $collection array
+	 * @param $collection    array
 	 */
 	private function writeCollection($object, $property_name, $collection)
 	{
@@ -357,29 +356,28 @@ class Mysql_Link extends Sql_Link
 				$class_name = $property->getType()->getElementTypeAsString();
 				$collection = arrayToCollection($collection, $class_name);
 			}
-			foreach ($collection as $element) {
-				if (!isset($representative_properties)) {
-					$element_class = Reflection_Class::getInstanceOf(get_class($element));
-					$representative_properties = $element_class->getListAnnotation("representative")->values();
-					$default = $element_class->getDefaultProperties();
-				}
-				$do_write = false;
-				foreach ($representative_properties as $property_name) {
-					$element_value = $element->$property_name;
-					if (!empty($element_value) && ($element_value != strval($default[$property_name]))) {
-						$do_write = true;
-						break;
+			if ($collection) {
+				$element_class = Reflection_Class::getInstanceOf(get_class(reset($collection)));
+				$representative_properties = $element_class->getListAnnotation("representative")->values();
+				$default = $element_class->getDefaultProperties();
+				foreach ($collection as $element) {
+					$do_write = false;
+					foreach ($representative_properties as $property_name) {
+						if ($this->valueChanged($element, $property_name, $default[$property_name])) {
+							$do_write = true;
+							break;
+						}
 					}
-				}
-				if ($do_write) {
-					if ($element instanceof Contained) {
-						$element->setParent($object);
+					if ($do_write) {
+						if ($element instanceof Contained) {
+							$element->setParent($object);
+						}
+						$id = $this->getObjectIdentifier($element);
+						if (!empty($id)) {
+							$id_set[$id] = true;
+						}
+						$this->write($element);
 					}
-					$id = $this->getObjectIdentifier($element);
-					if (!empty($id)) {
-						$id_set[$id] = true;
-					}
-					$this->write($element);
 				}
 			}
 		}

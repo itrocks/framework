@@ -50,7 +50,17 @@ class Translations extends Set
 			$this->cache[$text][$context] = $translation;
 		}
 		$translation = $this->cache[$text][$context];
-		return strlen($translation) ? $translation : $text;
+		if (strlen($translation)) {
+			if (($text[0] >= 'A') && ($text[0] <= 'Z')) {
+				return ucfirst($translation);
+			}
+			else {
+				return $translation;
+			}
+		}
+		else {
+			return $text;
+		}
 	}
 
 }

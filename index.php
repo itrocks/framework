@@ -23,7 +23,7 @@ Mysql_Maintainer::register(); // TODO problem : if maintainer is after logger, m
 //Aop_Logger::register();
 //Execution_Timer::register();
 //Mysql_Logger::register();
-Xdebug::register();
+//Xdebug::register();
 //Class_Debugger::register("Html_Template");
 //aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
 

@@ -77,8 +77,8 @@ abstract class Data_Link
 	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
-	 * @param $what mixed source object for filter, or filter array (need class_name) only set properties will be used for search
-	 * @param $what string $class_name must be set if is not a filter array
+	 * @param $what       mixed source object for filter, or filter array (need class_name) only set properties will be used for search
+	 * @param $class_name string must be set if is not a filter array
 	 * @return object[] a collection of read objects
 	 */
 	abstract public function search($what, $class_name = null);
@@ -91,9 +91,9 @@ abstract class Data_Link
 	 * It is highly recommended to use this search with primary keys properties values searches.
 	 * If several result exist, only one will be taked, the first on the list (may be random).
 	 *
-	 * @param $what object source object for filter, only set properties will be used for search
-	 * @param $what string $class_name must be set if is not a filter array
-	 * @return object | null the found object, or null if no object was found
+	 * @param $what       object source object for filter, only set properties will be used for search
+	 * @param $class_name string must be set if is not a filter array
+	 * @return object|null the found object, or null if no object was found
 	 */
 	public function searchOne($what, $class_name = null)
 	{
@@ -105,8 +105,8 @@ abstract class Data_Link
 	/**
 	 * Read selected columns only from data source, using optional filter
 	 *
-	 * @param $class string class for the read object
-	 * @param $columns array  the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param $class         string class for the read object
+	 * @param $columns       array  the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
 	 * @param $filter_object mixed source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
@@ -122,6 +122,23 @@ abstract class Data_Link
 	public function storeNameOf($class_name)
 	{
 		return strtolower(Names::classToSet($class_name));
+	}
+
+	//---------------------------------------------------------------------------------- valueChanged
+	/**
+	 * Returns true if the element's property value changed since previous value and if it is not empty
+	 *
+	 * @param $element       object
+	 * @param $property_name string
+	 * @param $default_value mixed
+	 * @return boolean
+	 */
+	protected function valueChanged($element, $property_name, $default_value)
+	{
+		$element_value = $element->$property_name;
+		return isset($element_value)
+			&& (strval($element_value) != "")
+			&& (strval($element_value) != strval($default_value));
 	}
 
 	//----------------------------------------------------------------------------------------- write

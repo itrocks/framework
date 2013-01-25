@@ -6,16 +6,21 @@ use ReflectionProperty;
 class Reflection_Property_Value extends Reflection_Property
 {
 
+	//---------------------------------------------------------------------------------- $final_value
+	/**
+	 * If set to true, $object contains the final value instead of the object containing the valued property
+	 *
+	 * @var boolean
+	 */
+	private $final_value;
+
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * The object or the value of the property
-	 *
-	 * The object must have the same class than the property's class
-	 * If not, then this stores the value of the property
+	 * The object ($final_value = false) or the value ($final_value = true) of the property
 	 *
 	 * @var object
 	 */
-	public $object;
+	private $object;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -35,11 +40,12 @@ class Reflection_Property_Value extends Reflection_Property
 	 * $pv = new Reflection_Property_Value($reflection_property, $object);
 	 * $pv = new Reflection_Property_Value($reflection_property, $value);
 	 *
-	 * @param $class string|ReflectionClass|Reflection_Class|ReflectionProperty|Reflection_Property|object
-	 * @param $name string|ReflectionProperty|Reflection_Property
-	 * @param $object object|mixed the object containing the value, or the value itself
+	 * @param $class       string|ReflectionClass|Reflection_Class|ReflectionProperty|Reflection_Property|object
+	 * @param $name        string|ReflectionProperty|Reflection_Property
+	 * @param $object      object|mixed the object containing the value, or the value itself (in this case set $final_value tu true)
+	 * @param $final_value boolean set to true if $object is a final value instead of the object containing the valued property
 	 */
-	public function __construct($class, $name = null, $object = null)
+	public function __construct($class, $name = null, $object = null, $final_value = false)
 	{
 		if ($class instanceof ReflectionClass) {
 			$class = $name->class;
@@ -68,8 +74,9 @@ class Reflection_Property_Value extends Reflection_Property
 		else {
 			parent::__construct($class, $name);
 		}
-		$this->path = $name;
 		$this->getAdditionalProperties();
+		$this->final_value = $final_value;
+		$this->path = $name;
 		if (!isset($this->object)) {
 			$this->object = $object;
 		}
@@ -84,7 +91,8 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function __get($key)
 	{
-		return Reflection_Property::getInstanceOf($this->class, $this->name)->$key;
+		$property = Reflection_Property::getInstanceOf($this->class, $this->name);
+		return isset($property->$key) ? $property->$key : null;
 	}
 
 	//----------------------------------------------------------------------------------------- __set
@@ -138,16 +146,14 @@ class Reflection_Property_Value extends Reflection_Property
 	public function value($value = null)
 	{
 		if ($value !== null) {
-			if (is_object($this->object) && (get_class($this->object) == $this->class)) {
-				$this->setValue($this->object, $value);
-			}
-			else {
+			if ($this->final_value) {
 				$this->object = $value;
 			}
+			else {
+				$this->setValue($this->object, $value);
+			}
 		}
-		return (is_object($this->object) && (get_class($this->object) == $this->class))
-			? $this->getValue($this->object)
-			: $this->object;
+		return $this->final_value ? $this->object : $this->getValue($this->object);
 	}
 
 }

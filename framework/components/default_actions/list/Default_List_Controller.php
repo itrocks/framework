@@ -34,7 +34,7 @@ class Default_List_Controller extends List_Controller
 			if (strlen($value)) {
 				$property_name = str_replace(">", ".", $property_name);
 				$search[$property_name] = new Reflection_Property_Value(
-					$class_name, $property_name, $value
+					$class_name, $property_name, $value, true
 				);
 			}
 		}

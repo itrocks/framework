@@ -19,9 +19,12 @@ abstract class Loc implements Plugin
 	 */
 	public static function afterHtmlTemplateFuncsToEditPropertyExtra(AopJoinpoint $joinpoint)
 	{
-		$result = $joinpoint->getReturnedValue();
-		$result[2] = self::propertyToLocale($result[0], $result[2]);
-		$joinpoint->setReturnedValue($result);
+		/** @var $property      Reflection_Property */
+		/** @var $property_path string */
+		/** @var $value         mixed */
+		list($property, $property_path, $value) = $joinpoint->getReturnedValue();
+		$value = self::propertyToLocale($property, $value);
+		$joinpoint->setReturnedValue(array($property, $property_path, $value));
 	}
 
 	//------------------------------------------------------------------------- afterListSearchValues
@@ -30,14 +33,27 @@ abstract class Loc implements Plugin
 	 */
 	public static function afterListSearchValues(AopJoinpoint $joinpoint)
 	{
+		/** @var $search Reflection_Property_Value[] */
 		$search = $joinpoint->getReturnedValue();
 		if (isset($search)) {
-			$class_name = $joinpoint->getArguments()[0];
 			foreach ($search as $property) {
 				$property->value(self::propertyToIso($property));
 			}
 			$joinpoint->setReturnedValue($search);
 		}
+	}
+
+	//-------------------------------------------------------------------- beforeDataLinkValueChanged
+	/**
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function beforeDataLinkValueChanged(AopJoinpoint $joinpoint)
+	{
+		/** @var $object        object */
+		/** @var $property_name string */
+		list($object, $property_name, ) = $joinpoint->getArguments();
+		$property = Reflection_Property::getInstanceOf($object, $property_name);
+		$property->setValue($object, self::propertyToIso($property, $property->getValue($object)));
 	}
 
 	//--------------------------------------------------------------------------- beforeDataLinkWrite
@@ -47,6 +63,7 @@ abstract class Loc implements Plugin
 	public static function beforeDataLinkWrite(AopJoinpoint $joinpoint)
 	{
 		if (self::$parse_before_write) {
+			/** @var $object object */
 			$object = $joinpoint->getArguments()[0];
 			$class = Reflection_Class::getInstanceOf($object);
 			foreach ($class->accessProperties() as $property) {
@@ -66,14 +83,13 @@ abstract class Loc implements Plugin
 	public static function beforeDateTimeFromIso(AopJoinpoint $joinpoint)
 	{
 		if (self::$parse_before_write) {
-			$args = $joinpoint->getArguments();
-			$date = $args[0];
+			/** @var $date string */
+			$date = $joinpoint->getArguments()[0];
 			if (
 				((strlen($date) != 10) && (strlen($date) != 19))
 				|| ($date[4] != "-") || ($date[7] != "-")
 			) {
-				$args[0] = self::dateToIso($date);
-				$joinpoint->setArguments($args);
+				$joinpoint->setArguments(array(self::dateToIso($date)));
 			}
 		}
 	}
@@ -133,8 +149,9 @@ abstract class Loc implements Plugin
 
 	//------------------------------------------------------------------------------------ floatToIso
 	/**
-	 * @param $float float
+	 * @param $float    string
 	 * @param $property Reflection_Property
+	 * @return float
 	 */
 	public static function floatToIso($float, Reflection_Property $property = null)
 	{
@@ -145,7 +162,7 @@ abstract class Loc implements Plugin
 	/**
 	 * Takes a float number and make it locale
 	 *
-	 * @param $number float ie 1000 1000.28 1000.2148
+	 * @param $float float ie 1000 1000.28 1000.2148
 	 * @return string ie "1 000,00" "1 000,28" "1 000,2148"
 	 */
 	public static function floatToLocale($float)
@@ -164,8 +181,9 @@ abstract class Loc implements Plugin
 
 	//---------------------------------------------------------------------------------- integerToIso
 	/**
-	 * @param $integer integer
+	 * @param $integer  string
 	 * @param $property Reflection_Property
+	 * @return integer
 	 */
 	public static function integerToIso($integer, Reflection_Property $property = null)
 	{
@@ -176,12 +194,12 @@ abstract class Loc implements Plugin
 	/**
 	 * Takes an integer and make it locale
 	 *
-	 * @param $number integer ie 1000
+	 * @param $integer integer ie 1000
 	 * @return string ie "1 000"
 	 */
-	public static function integerToLocale($float)
+	public static function integerToLocale($integer)
 	{
-		return Locale::current()->number->integerToLocale($float);
+		return Locale::current()->number->integerToLocale($integer);
 	}
 
 	//-------------------------------------------------------------------------------------- language
@@ -212,7 +230,7 @@ abstract class Loc implements Plugin
 	 *
 	 * @param $property Reflection_Property
 	 * @param $value    string
-	 * @return string|integer
+	 * @return mixed
 	 */
 	public static function propertyToIso(Reflection_Property $property, $value = null)
 	{
@@ -224,7 +242,8 @@ abstract class Loc implements Plugin
 	 * Change an ISO value into a locale formatted value, knowing it's property
 	 *
 	 * @param $property Reflection_Property
-	 * @param $value string
+	 * @param $value    mixed
+	 * @return string
 	 */
 	public static function propertyToLocale(Reflection_Property $property, $value = null)
 	{
@@ -242,6 +261,10 @@ abstract class Loc implements Plugin
 		Aop::add("around",
 			__NAMESPACE__ . "\\Default_Write_Controller->run()",
 			array(__CLASS__, "parseBeforeWriteAround")
+		);
+		Aop::add("before",
+			__NAMESPACE__ . "\\Data_Link->valueChanged()",
+			array(__CLASS__, "beforeDataLinkValueChanged")
 		);
 		Aop::add("before",
 			__NAMESPACE__ . "\\Data_Link->write()",
@@ -275,7 +298,8 @@ abstract class Loc implements Plugin
 	 * Reverse translation
 	 *
 	 * @param $translation string
-	 * @param $context string
+	 * @param $context     string
+	 * @return string
 	 */
 	public static function rtr($translation, $context = "")
 	{
@@ -287,8 +311,9 @@ abstract class Loc implements Plugin
 	/**
 	 * Translation
 	 *
-	 * @param $text string
+	 * @param $text    string
 	 * @param $context string
+	 * @return string
 	 */
 	public static function tr($text, $context = "")
 	{

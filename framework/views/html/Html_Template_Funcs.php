@@ -194,7 +194,7 @@ abstract class Html_Template_Funcs
 				unset($properties[$property_name]);
 			}
 			else {
-				$result_properties[$property_name] = new Reflection_Property_Value($object, $property);
+				$result_properties[$property_name] = new Reflection_Property_Value($property, $object);
 			}
 		}
 		$class->accessPropertiesDone();
@@ -239,7 +239,7 @@ abstract class Html_Template_Funcs
 	 * Gets property extra data needed for edit component
 	 *
 	 * @param $class_name string
-	 * @param $property Reflection_Property_Value|Reflection_Property|string
+	 * @param $property   Reflection_Property_Value|Reflection_Property|string
 	 * @return mixed[] Reflection_Property $property, string $property path, mixed $value
 	 */
 	private static function toEditPropertyExtra($class_name, $property)

@@ -98,8 +98,9 @@ $("document").ready(function() {
 		});
 
 		// .datetime
+		console.log(app.date_format);
 		$this.find("input.datetime").datepicker({
-			dateFormat:        app.date_format,
+			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            "button",
 			showOtherMonths:   true,
 			selectOtherMonths: true
@@ -124,9 +125,10 @@ $("document").ready(function() {
 				$(event.target).keyup();
 			},
 			source: function(request, response) {
-				request["PHPSESSID"] = PHPSESSID;
+				var app = window.app;
+				request["PHPSESSID"] = app.PHPSESSID;
 				$.getJSON(
-					uri_root + script_name + "/" + $(this.element).classVar("class") + "/json",
+					app.uri_root + app.script_name + "/" + $(this.element).classVar("class") + "/json",
 					request,
 					function(data, status, xhr) { response(data); }
 				);
