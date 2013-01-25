@@ -10,8 +10,8 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Create a table in database, using a data class structure
 	 *
-	 * @param mysqli $mysqli
-	 * @param string $class_name
+	 * @param $mysqli mysqli
+	 * @param $class_name string
 	 */
 	private static function createTable(mysqli $mysqli, $class_name)
 	{
@@ -42,7 +42,7 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * This is called after each mysql query in order to update automatically database structure in case of errors
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function onMysqliQuery(AopJoinpoint $joinpoint)
 	{
@@ -88,7 +88,7 @@ class Mysql_Maintainer implements Plugin
 	 *
 	 * ie table name or field name
 	 *
-	 * @param string $error
+	 * @param $error string
 	 * @return string
 	 */
 	private static function parseNameFromError($error)
@@ -115,8 +115,8 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Update table structure corresponding to a data class
 	 *
-	 * @param mysqli $mysqli
-	 * @param string $class_name
+	 * @param $mysqli mysqli
+	 * @param $class_name string
 	 * @return boolean true if an update query has been generated and executed
 	 */
 	private static function updateTable(mysqli $mysqli, $class_name)

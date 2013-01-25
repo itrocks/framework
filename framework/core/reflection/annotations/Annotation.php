@@ -10,7 +10,7 @@ class Annotation
 	 *
 	 * @var string
 	 */
-	protected $value;
+	public $value;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -18,7 +18,7 @@ class Annotation
 	 *
 	 * Annotation class will have to parse it ie for several parameters or specific syntax, or if they want to store specific typed or calculated value
 	 *
-	 * @param string $value
+	 * @param $value string
 	 */
 	public function __construct($value)
 	{
@@ -27,15 +27,6 @@ class Annotation
 
 	//------------------------------------------------------------------------------------ __toString
 	public function __toString()
-	{
-		return strval($this->value);
-	}
-
-	//------------------------------------------------------------------------------------------- get
-	/**
-	 * @return string
-	 */
-	public function get()
 	{
 		return strval($this->value);
 	}

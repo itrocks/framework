@@ -36,8 +36,8 @@ class Tab
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $title
-	 * @param mixed $content
+	 * @param $title string
+	 * @param $content mixed
 	 */
 	public function __construct($title = null, $content = null)
 	{
@@ -80,7 +80,7 @@ class Tab
 	/**
 	 * Add content to the tab (eg content is an array, new elements are added)
 	 *
-	 * @param mixed $content
+	 * @param $content mixed
 	 * @return Tab
 	 */
 	public function add($content)

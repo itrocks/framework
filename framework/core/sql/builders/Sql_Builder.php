@@ -11,23 +11,23 @@ abstract class Sql_Builder
 	 * If property data type is an object, the property name will be prefixed with "id_".
 	 * Array properties will return null as no column should be associated to them.
 	 *
-	 * @param Reflection_Property $property
-	 * @return string | null
+	 * @param $property Reflection_Property
+	 * @return string|null
 	 */
 	public static function buildColumnName(Reflection_Property $property)
 	{
 		$type = $property->getType();
-		return Type::isBasic($type)
+		return $type->isBasic()
 			? $property->name
-			: (Type::isMultiple($type) ? null : ("id_" . $property->name));
+			: ($type->isMultiple() ? null : ("id_" . $property->name));
 	}
 
 	//----------------------------------------------------------------------------------- buildDelete
 	/**
 	 * Build a SQL DELETE query
-	 * 
-	 * @param Reflection_Class | string $class
-	 * @param integer $id
+	 *
+	 * @param $class Reflection_Class | string
+	 * @param $id integer
 	 * @return string
 	 */
 	public static function buildDelete($class, $id)
@@ -41,7 +41,7 @@ abstract class Sql_Builder
 	 * Build a SQL columns list
 	 *
 	 * @example used for INSERT INTO (columns), SELECT columns
-	 * @param string[] $column_names
+	 * @param $column_names string[]
 	 * @return string
 	 */
 	public static function buildColumns($column_names)
@@ -60,9 +60,9 @@ abstract class Sql_Builder
 	//----------------------------------------------------------------------------------- buildInsert
 	/**
 	 * Build a SQL INSERT query
-	 * 
-	 * @param Reflection_Class | string $class
-	 * @param mixed[] $write the data to write for each column : key is the column name
+	 *
+	 * @param $class Reflection_Class | string
+	 * @param $write mixed[] the data to write for each column : key is the column name
 	 * @return string
 	 */
 	public static function buildInsert($class, $write)
@@ -83,9 +83,9 @@ abstract class Sql_Builder
 	/**
 	 * Build a SQL UPDATE query
 	 *
-	 * @param Reflection_Class | string $class
-	 * @param array $write the data to write for each column : key is the column name
-	 * @param integer $id
+	 * @param $class Reflection_Class | string
+	 * @param $write array the data to write for each column : key is the column name
+	 * @param $id integer
 	 * @return string
 	 */
 	public static function buildUpdate($class, $write, $id)
@@ -117,7 +117,7 @@ abstract class Sql_Builder
 	 *
 	 * @example list($master_path, $foreign_property) = Sql_Builder::splitPropertyPath("a.full.path");
 	 * $master_path will be "a.full" and $foreign_property "path"
-	 * @param string $path
+	 * @param $path string
 	 * @return array First element is the master property path, second element is the foreign property name
 	 */
 	public static function splitPropertyPath($path)

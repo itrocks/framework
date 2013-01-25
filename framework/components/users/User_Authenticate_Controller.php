@@ -10,7 +10,7 @@ class User_Authenticate_Controller implements Feature_Controller
 	 *
 	 * Called each time a user authenticates
 	 *
-	 * @param User $user
+	 * @param $user User
 	 */
 	private function authenticate(User $user)
 	{
@@ -24,7 +24,7 @@ class User_Authenticate_Controller implements Feature_Controller
 	 *
 	 * Called each time a user disconnects
 	 *
-	 * @param User $user
+	 * @param $user User
 	 */
 	private function disconnect(User $user)
 	{
@@ -36,8 +36,8 @@ class User_Authenticate_Controller implements Feature_Controller
 	/**
 	 * Login to current environment using login and password
 	 *
-	 * @param string $login
-	 * @param string $password
+	 * @param $login string
+	 * @param $password string
 	 * @return User null if user not found
 	 */
 	private function login($login, $password)
@@ -46,7 +46,8 @@ class User_Authenticate_Controller implements Feature_Controller
 		$search->login = $login;
 		$password = Password::crypt(
 			$password,
-			Reflection_Property::getInstanceOf(get_class($search), "password")->getAnnotation("password")
+			Reflection_Property::getInstanceOf(get_class($search), "password")
+				->getAnnotation("password")->value
 		);
 		foreach (Dao::search($search) as $user) {
 			if ($user->password === $password) {

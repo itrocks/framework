@@ -18,8 +18,8 @@ class Dom_Attribute
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $name
-	 * @param string $value
+	 * @param $name string
+	 * @param $value string
 	 */
 	public function __construct($name = null, $value = null)
 	{
@@ -29,7 +29,7 @@ class Dom_Attribute
 
 	//----------------------------------------------------------------------------------- escapeValue
 	/**
-	 * @param string $value
+	 * @param $value string
 	 * @return string
 	 */
 	public static function escapeValue($value)

@@ -19,7 +19,7 @@ abstract class Application
 	/**
 	 * This is called by getSourceDirectories() for recursive directories reading.
 	 *
-	 * @param string $path base path
+	 * @param $path string base path
 	 * @return string[] an array of directories names
 	 */
 	private static function getDirectories($path)
@@ -43,7 +43,7 @@ abstract class Application
 	 *
 	 * Paths are relative to the SAF index.php base script position.
 	 *
-	 * @param string $application_name
+	 * @param $application_name string
 	 * @return string[]
 	 */
 	public static function getSourceDirectories($application_name)

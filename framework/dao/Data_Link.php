@@ -10,7 +10,7 @@ abstract class Data_Link
 	 *
 	 * Parameters will depend on each data link type.
 	 *
-	 * @param array $parameters
+	 * @param $parameters array
 	 */
 	abstract public function __construct($parameters);
 
@@ -21,7 +21,7 @@ abstract class Data_Link
 	 * If object was originally read from data source, corresponding data will be overwritten.
 	 * If object was not originally read from data source, nothing is done and returns false.
 	 *
-	 * @param object $object object to delete from data source
+	 * @param $object object object to delete from data source
 	 * @return bool true if deleted
 	 */
 	abstract public function delete($object);
@@ -32,7 +32,7 @@ abstract class Data_Link
 	 *
 	 * If data link stores properties not existing into $class, they are listed too, as if they where official properties of $class, but they storage object is a Dao_Column and not a Reflection_Property.
 	 *
-	 * @param string | Reflection_Class $class
+	 * @param $class string | Reflection_Class
 	 * @return Reflection_Property[] | Dao_Column[]
 	 */
 	abstract public function getStoredProperties($class);
@@ -41,8 +41,8 @@ abstract class Data_Link
 	/**
 	 * Read an object from data source
 	 *
-	 * @param object $identifier   identifier for the object
-	 * @param string $class class for read object
+	 * @param $identifier object   identifier for the object
+	 * @param $class string class for read object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 */
 	abstract public function read($identifier, $class);
@@ -51,7 +51,7 @@ abstract class Data_Link
 	/**
 	 * Read all objects of a given class from data source
 	 *
-	 * @param string $class class for read objects
+	 * @param $class string class for read objects
 	 * @return object[] a collection of read objects
 	 */
 	abstract public function readAll($class);
@@ -63,8 +63,8 @@ abstract class Data_Link
 	 * The source object overwrites the destination object into the data source, even if the source object was not originally read from the data source.
 	 * Warning: as destination object will stay independent from source object but also linked to the same data source identifier. You will still be able to write() either source or destination after call to replace().
 	 *
-	 * @param object $destination destination object
-	 * @param object $source source object
+	 * @param $destination object destination object
+	 * @param $source object source object
 	 * @return object the resulting $destination object
 	 */
 	abstract public function replace($destination, $source);
@@ -77,8 +77,8 @@ abstract class Data_Link
 	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
-	 * @param mixed $what source object for filter, or filter array (need class_name) only set properties will be used for search
-	 * @param string $class_name must be set if $what is not a filter array
+	 * @param $what mixed source object for filter, or filter array (need class_name) only set properties will be used for search
+	 * @param $what string $class_name must be set if is not a filter array
 	 * @return object[] a collection of read objects
 	 */
 	abstract public function search($what, $class_name = null);
@@ -91,8 +91,8 @@ abstract class Data_Link
 	 * It is highly recommended to use this search with primary keys properties values searches.
 	 * If several result exist, only one will be taked, the first on the list (may be random).
 	 *
-	 * @param object $what source object for filter, only set properties will be used for search
-	 * @param string $class_name must be set if $what is not a filter array
+	 * @param $what object source object for filter, only set properties will be used for search
+	 * @param $what string $class_name must be set if is not a filter array
 	 * @return object | null the found object, or null if no object was found
 	 */
 	public function searchOne($what, $class_name = null)
@@ -105,9 +105,9 @@ abstract class Data_Link
 	/**
 	 * Read selected columns only from data source, using optional filter
 	 *
-	 * @param string $class class for the read object
-	 * @param array  $columns the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
-	 * @param mixed $filter_object source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 * @param $class string class for the read object
+	 * @param $columns array  the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param $filter_object mixed source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
 	abstract public function select($class, $columns, $filter_object = null);
@@ -116,7 +116,7 @@ abstract class Data_Link
 	/**
 	 * Gets the store name for records typed as $class_name
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public function storeNameOf($class_name)
@@ -132,7 +132,7 @@ abstract class Data_Link
 	 * If object was not originally read from data source nor linked to it using replace(), a new
 	 * record will be written into data source using this object's data.
 	 *
-	 * @param object $object object to write into data source
+	 * @param $object object object to write into data source
 	 * @return object the written object
 	 */
 	abstract public function write($object);

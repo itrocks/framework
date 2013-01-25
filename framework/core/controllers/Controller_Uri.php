@@ -91,7 +91,7 @@ class Controller_Uri
 	/**
 	 * Parse get parameters array
 	 *
-	 * @param string[] $get
+	 * @param $get string[]
 	 */
 	private function parseGet($get)
 	{
@@ -110,7 +110,7 @@ class Controller_Uri
 	 * Parse URI text elements to transform them into parameters, feature name and controller name
 	 *
 	 * @example $uri = array("order", 148, "form") will result on controller "Order_Form" with parameter "Order" = 148
-	 * @param string[] $uri
+	 * @param $uri string[]
 	 */
 	private function parseUri($uri)
 	{
@@ -189,7 +189,7 @@ class Controller_Uri
 	 * Change a text URI into an array URI
 	 *
 	 * @example "/Order/148/form" will become array("Order", "148", "form")
-	 * @param string $uri
+	 * @param $uri string
 	 * @return string[]
 	 */
 	private function uriToArray($uri)

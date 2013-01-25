@@ -9,7 +9,7 @@ trait Current_With_Default
 	/**
 	 * Gets/sets current environment's object
 	 *
-	 * @param Current_With_Default $set_current
+	 * @param $set_current Current_With_Default
 	 * @return Current_With_Default
 	 */
 	public static function current($set_current = null)

@@ -17,8 +17,8 @@ trait Sql_Columns_Builder
 	/**
 	 * Build SQL query section for a single column
 	 *
-	 * @param string $path the past of the matching property
-	 * @param boolean $first_property
+	 * @param $path string the past of the matching property
+	 * @param $first_property boolean
 	 * @return string
 	 */
 	private function buildColumn($path, &$first_property)
@@ -63,9 +63,9 @@ trait Sql_Columns_Builder
 	/**
 	 * Build columns list for an object, in order to instantiate this object when read
 	 *
-	 * @param string $path
-	 * @param Sql_Join $join
-	 * @param boolean $first_property
+	 * @param $path string
+	 * @param $join Sql_Join
+	 * @param $first_property boolean
 	 * @return string
 	 */
 	private function buildObjectColumns($path, Sql_Join $join, &$first_property)
@@ -87,8 +87,8 @@ trait Sql_Columns_Builder
 	/**
 	 * Construct the SQL columns list section of a query
 	 *
-	 * @param string          $class       root class name
-	 * @param string[] $properties properties paths list
+	 * @param $class string                root class name
+	 * @param $properties string[] properties paths list
 	 */
 	protected function constructSqlColumnsBuilder($class, $properties)
 	{

@@ -8,10 +8,10 @@ interface Default_Feature_Controller extends Controller
 	/**
 	 * Run method for a feature controller working for any class
 	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
+	 * @param $parameters Controller_Parameters
+	 * @param $form array
+	 * @param $files array
+	 * @param $class_name string
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name);
 

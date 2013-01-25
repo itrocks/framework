@@ -26,7 +26,7 @@ class Html_Table_Row extends Dom_Element
 
 	//--------------------------------------------------------------------------------------- addCell
 	/**
-	 * @param Html_Table_Cell $cell
+	 * @param $cell Html_Table_Cell
 	 */
 	public function addCell(Html_Table_Cell $cell)
 	{

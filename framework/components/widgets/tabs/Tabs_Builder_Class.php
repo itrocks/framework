@@ -8,33 +8,32 @@ abstract class Tabs_Builder_Class
 	/**
 	 * Build tabs containing class properties
 	 *
-	 * @param Reflection_Class $class
+	 * @param $class Reflection_Class
 	 * @return Tab[]
 	 */
 	public static function build(Reflection_Class $class)
 	{
-		$tab_annotations = $class->getAnnotation("group");
+		/** @var $group_annotations Class_Group_Annotation[] */
+		$group_annotations = $class->getAnnotations("group");
 		$properties = $class->getAllProperties();
-		return self::buildProperties($properties, $tab_annotations);
+		return self::buildProperties($properties, $group_annotations);
 	}
 
 	//------------------------------------------------------------------------------- buildProperties
 	/**
 	 * Build tabs containing class properties
 	 *
-	 * @param Reflection_Property[] $properties
-	 * @param Class_Annotation_Tab[] $tab_annotations
+	 * @param $properties        Reflection_Property[]
+	 * @param $group_annotations Class_Group_Annotation[]
 	 * @return Tab[]
 	 */
-	protected static function buildProperties($properties, $tab_annotations)
+	protected static function buildProperties($properties, $group_annotations)
 	{
-		if (!empty($tab_annotations)) {
-			$tabs = array();
-			foreach ($tab_annotations as $tab_annotation) {
-				$tab =& $tabs;
-				$prec = null;
-				$prec_name = null;
-				foreach (explode(".", $tab_annotation->name) as $tab_name) {
+		$root_tab = new Tab();
+		if (!empty($group_annotations)) {
+			foreach ($group_annotations as $group_annotation) {
+				$tab = $root_tab;
+				foreach (explode(".", $group_annotation->name) as $tab_name) {
 					if (is_numeric($tab_name)) {
 						if (empty($tab->columns)) {
 							if (!empty($tab->content)) {
@@ -45,19 +44,13 @@ abstract class Tabs_Builder_Class
 						if (!isset($tab->columns[$tab_name])) {
 							$tab->columns[$tab_name] = new Tab($tab_name, array());
 						}
-						$tab =& $tab->columns[$tab_name];
+						$tab = $tab->columns[$tab_name];
 					}
-					elseif ($tab instanceof Tab) {
+					else {
 						if (!isset($tab->includes[$tab_name])) {
 							$tab->includes[$tab_name] = new Tab($tab_name, array());
 						}
-						$tab =& $tab->includes[$tab_name];
-					}
-					else {
-						if (!isset($tab[$tab_name])) {
-							$tab[$tab_name] = new Tab($tab_name, array());
-						}
-						$tab =& $tab[$tab_name];
+						$tab = $tab->includes[$tab_name];
 					}
 				}
 				if (!empty($tab->columns)) {
@@ -65,24 +58,23 @@ abstract class Tabs_Builder_Class
 						$tab->columns[0] = new Tab(0, array());
 						ksort($tab->columns);
 					}
-					$tab =& $tab->columns[0];
+					$tab = $tab->columns[0];
 				}
-				$tab->add(self::getProperties($properties, $tab_annotation->value, $tab_annotation->name));
+				$tab->add(self::getProperties(
+					$properties, $group_annotation->value, $group_annotation->name
+				));
 			}
 		}
-		else {
-			$tabs = array();
-		}
-		return $tabs;
+		return $root_tab->includes;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * Filter class properties using an array of properties names
 	 *
-	 * @param Reflection_Property[] $properties
-	 * @param string[] $property_names
-	 * @param string $tab_path
+	 * @param $properties Reflection_Property[]
+	 * @param $property_names string[]
+	 * @param $tab_path string
 	 * @return Reflection_Property[]
 	 */
 	private static function getProperties($properties, $property_names, $tab_path)

@@ -20,7 +20,7 @@ class Callback_Error_Handler implements Error_Handler
 	/**
 	 * Call error handled callback function using handled error object
 	 *
-	 * @param Handled_Error $handled_error
+	 * @param $handled_error Handled_Error
 	 */
 	public function handle(Handled_Error $handled_error)
 	{

@@ -30,9 +30,9 @@ class Html_Builder_Property_Edit
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * @param Reflection_Property $property
-	 * @param mixed $value
-	 * @param string $preprop
+	 * @param $property Reflection_Property
+	 * @param $value mixed
+	 * @param $preprop string
 	 */
 	public function __construct(Reflection_Property $property = null, $value = null, $preprop = null)
 	{
@@ -48,21 +48,20 @@ class Html_Builder_Property_Edit
 	public function build()
 	{
 		$type = $this->property->getType();
-		switch ($type) {
+		switch ($type->asString()) {
 			case "float":   return $this->buildFloat();
 			case "integer": return $this->buildInteger();
 			case "string":  return $this->buildString();
 		}
-		if (Type::isMultiple($type)) {
+		if ($type->isMultiple()) {
 			return $this->property->getAnnotation("contained")->value
 				? $this->buildCollection()
 				: $this->buildMap();
 		}
-		$type = Namespaces::fullClassName($type);
-		if (is_subclass_of($type, "DateTime")) {
+		elseif ($type->isSubClassOf("DateTime")) {
 			return $this->buildDateTime();
 		}
-		if (class_exists($type)) {
+		elseif ($type->isClass()) {
 			return $this->buildObject();
 		}
 		return $this->value;
@@ -138,7 +137,7 @@ class Html_Builder_Property_Edit
 		$input->setAttribute("autocomplete", "off");
 		$input->addClass("combo");
 		$input->addClass("autowidth");
-		$input->addClass("class:" . Names::classToSet($this->property->getType()));
+		$input->addClass("class:" . Names::classToSet($this->property->getType()->asString()));
 		return $id_input . $input;
 	}
 

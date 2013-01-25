@@ -8,7 +8,7 @@ class Menu_Builder_Configuration
 	/**
 	 * Build a menu using a configuration recursive array
 	 *
-	 * @param array $configuration
+	 * @param $configuration array
 	 * @return Menu
 	 */
 	public function build($configuration)

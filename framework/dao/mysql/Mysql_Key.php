@@ -84,35 +84,57 @@ class Mysql_Key implements Dao_Key
 	private $Table;
 
 	//----------------------------------------------------------------------------------------- equiv
+	/**
+	 * @todo to be tested
+	 *
+	 * @param Mysql_Key $key
+	 * @return boolean
+	 */
 	public function equiv($key)
 	{
+		return $key->Column_name === $this->Column_name;
 	}
 
 	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->Key_name;
 	}
 
 	//------------------------------------------------------------------------------ getSqlColumnName
+	/**
+	 * @return string
+	 */
 	public function getSqlColumnName()
 	{
 		return $this->Column_name;
 	}
 
 	//------------------------------------------------------------------------------------ getSqlType
+	/**
+	 * @return string
+	 */
 	public function getSqlType()
 	{
 		return $this->Index_type;
 	}
 
 	//--------------------------------------------------------------------------------------- getType
+	/**
+	 * @return string
+	 */
 	public function getType()
 	{
 		return $this->Index_type;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
+	/**
+	 * @return string
+	 */
 	public function toSql()
 	{
 		return "`" . $this->Column_name . "`";

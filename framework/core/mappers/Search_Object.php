@@ -10,7 +10,7 @@ abstract class Search_Object
 	 *
 	 * This creates an object with unset properties, as only set properties are used for searches.
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return object
 	 */
 	public static function newInstance($class_name)

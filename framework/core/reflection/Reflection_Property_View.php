@@ -12,7 +12,7 @@ class Reflection_Property_View
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param Reflection_Property $property
+	 * @param $property Reflection_Property
 	 */
 	public function __construct(Reflection_Property $property = null)
 	{
@@ -25,7 +25,7 @@ class Reflection_Property_View
 	/**
 	 * Format the property value, taken from the input object, depending on it's type
 	 *
-	 * @param object $object
+	 * @param $object object
 	 * @return string
 	 */
 	public function getFormattedValue($object)
@@ -39,7 +39,7 @@ class Reflection_Property_View
 	 *
 	 * Default format is ISO "0000-00-00 00:00:00"
 	 *
-	 * @param mixed $value
+	 * @param $value mixed
 	 * @return mixed
 	 */
 	protected function formatDateTime($value)
@@ -51,7 +51,7 @@ class Reflection_Property_View
 	/**
 	 * Returns the value itself
 	 *
-	 * @param mixed $value
+	 * @param $value mixed
 	 * @return mixed
 	 */
 	protected function formatDefault($value)
@@ -63,7 +63,7 @@ class Reflection_Property_View
 	/**
 	 * Returns the value with float format
 	 *
-	 * @param float $value
+	 * @param $value float
 	 * @return string
 	 */
 	protected function formatFloat($value)
@@ -75,7 +75,7 @@ class Reflection_Property_View
 	/**
 	 * Returns the value with integer format
 	 *
-	 * @param integer $value
+	 * @param $value integer
 	 * @return string
 	 */
 	protected function formatInteger($value)
@@ -87,7 +87,7 @@ class Reflection_Property_View
 	/**
 	 * Returns the value with string format
 	 *
-	 * @param string $value
+	 * @param $value string
 	 * @return string
 	 */
 	protected function formatString($value)
@@ -97,18 +97,21 @@ class Reflection_Property_View
 
 	//----------------------------------------------------------------------------------- formatValue
 	/**
-	 * @param mixed $value
+	 * @param $value mixed
 	 * @return string
 	 */
 	public function formatValue($value)
 	{
 		$type = $this->property->getType();
-		switch ($type) {
-			case "Date_Time": return $this->formatDateTime($value);
-			case "float":     return $this->formatFloat($value);
-			case "integer":   return $this->formatInteger($value);
-			case "string":    return $this->formatString($value);
-			default:          return $this->formatDefault($value);
+		if ($type->isDateTime()) {
+			return $this->formatDateTime($value);
+		} else {
+			switch ($type) {
+				case "float":   return $this->formatFloat($value);
+				case "integer": return $this->formatInteger($value);
+				case "string":  return $this->formatString($value);
+			}
+			return $this->formatDefault($value);
 		}
 	}
 

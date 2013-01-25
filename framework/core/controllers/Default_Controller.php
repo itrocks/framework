@@ -11,11 +11,11 @@ class Default_Controller implements Controller
 	 * Loads data from objects given as parameters, then run the view associated to the first parameter class.
 	 * This is called when no other controller was found for the first parameter object.
 	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
-	 * @param string $feature_name
+	 * @param $parameters Controller_Parameters
+	 * @param $form array
+	 * @param $files array
+	 * @param $class_name string
+	 * @param $feature_name string
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name, $feature_name)
 	{

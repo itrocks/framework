@@ -39,7 +39,7 @@ class Sql_Alter_Table_builder
 	/**
 	 * Adds an added column
 	 *
-	 * @param Dao_Column $column
+	 * @param $column Dao_Column
 	 */
 	public function addColumn(Dao_Column $column)
 	{
@@ -50,8 +50,8 @@ class Sql_Alter_Table_builder
 	/**
 	 * Adds an altered column
 	 *
-	 * @param string $old_column_name
-	 * @param Dao_Column $column
+	 * @param $old_column_name string
+	 * @param $column Dao_Column
 	 */
 	public function alterColumn($old_column_name, Dao_Column $column)
 	{

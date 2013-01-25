@@ -8,9 +8,9 @@ abstract class Getter
 	/**
 	 * Generic getter for a collection of objects
 	 *
-	 * @param Contained[]|null $collection    actual value of the property (will be returned if not null)
-	 * @param string|null $element_class the class for each collection's object
-	 * @param object      $parent        the parent object
+	 * @param $collection Contained[]|null    actual value of the property (will be returned if not null)
+	 * @param $element_class string|null the class for each collection's object
+	 * @param $parent object             the parent object
 	 * @return object[]
 	 */
 	public static function getCollection($collection, $element_class, $parent)
@@ -42,10 +42,10 @@ abstract class Getter
 	/**
 	 * Generic getter for an object
 	 *
-	 * @param mixed  $object          actual value of the object (will be returned if already an object)
-	 * @param string $class_name      the object class name
-	 * @param object $parent          the parent object
-	 * @param string $parent_property the parent property name
+	 * @param $object mixed           actual value of the object (will be returned if already an object)
+	 * @param $class_name string      the object class name
+	 * @param $parent object          the parent object
+	 * @param $parent_property string the parent property name
 	 * @return object
 	 */
 	public static function getObject($object, $class_name, $parent = null, $parent_property = null)

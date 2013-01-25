@@ -48,7 +48,7 @@ class Mysql_Logger implements Plugin
 	/**
 	 * Display query log
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public function afterMainControllerRun(AopJoinpoint $joinpoint)
 	{
@@ -79,7 +79,7 @@ class Mysql_Logger implements Plugin
 	/**
 	 * Called each time before a mysql_query() call is done : log the query
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public function onQuery(AopJoinpoint $joinpoint)
 	{
@@ -94,7 +94,7 @@ class Mysql_Logger implements Plugin
 	/**
 	 * Called each time after a mysql_query() call is done : log the error (if some)
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public function onError(AopJoinpoint $joinpoint)
 	{

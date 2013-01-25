@@ -33,9 +33,10 @@ trait Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section for given path and value
 	 *
-	 * @param string | integer $path   Property path starting by a root class property (may be a numeric key, or a structure keyword)
-	 * @param mixed            $value  May be a value, or a structured array of multiple where clauses
-	 * @param string           $clause For multiple where clauses, tell if they are linked with "OR" or "AND"
+	 * @param $path string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
+	 * @param $value mixed         May be a value, or a structured array of multiple where clauses
+	 * @param $clause string       For multiple where clauses, tell if they are linked with "OR" or "AND"
+	 * @return string
 	 */
 	private function build($path, $value, $clause)
 	{
@@ -51,9 +52,9 @@ trait Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section for multiple where clauses
 	 *
-	 * @param string $path   Base property path for values (if keys are numeric or structure keywords)
-	 * @param array  $array  An array of where conditions
-	 * @param string $clause For multiple where clauses, tell if they are linked with "OR" or "AND"
+	 * @param $path string   Base property path for values (if keys are numeric or structure keywords)
+	 * @param $array array   An array of where conditions
+	 * @param $clause string For multiple where clauses, tell if they are linked with "OR" or "AND"
 	 * @return string
 	 */
 	private function buildArray($path, $array, $clause)
@@ -80,8 +81,8 @@ trait Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section for an object
 	 *
-	 * @param string $path   Base property path pointing to the object
-	 * @param object $object The value is an object, which will be used for search
+	 * @param $path string   Base property path pointing to the object
+	 * @param $object object The value is an object, which will be used for search
 	 * @return string
 	 */
 	private function buildObject($path, $object)
@@ -127,8 +128,8 @@ trait Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section for a unique value
 	 *
-	 * @param string $path  search property path
-	 * @param mixed  $value search property value
+	 * @param $path string  search property path
+	 * @param $value mixed  search property value
 	 * @return string
 	 */
 	private function buildValue($path, $value, $prefix = "")
@@ -168,9 +169,9 @@ trait Sql_Where_Builder
 	 * column_name : column_name must correspond to a property of class
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's @var class
 	 *
-	 * @param string   $class base object class name
-	 * @param array    $where_array where array expression, indices are columns names
-	 * @param Sql_Link $sql_link
+	 * @param $class string   base object class name
+	 * @param $where_array array    where array expression, indices are columns names
+	 * @param $sql_link Sql_Link
 	 */
 	protected function constructSqlWhereBuilder(
 		$class, $where_array = null, Sql_Link $sql_link = null

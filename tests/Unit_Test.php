@@ -7,9 +7,9 @@ class Unit_Test
 
 	//---------------------------------------------------------------------------------------- assume
 	/**
-	 * @param string $test name of the test
-	 * @param mixed $check
-	 * @param mixed $assume
+	 * @param $test string name of the test
+	 * @param $check mixed
+	 * @param $assume mixed
 	 * @return boolean
 	 */
 	protected function assume($test, $check, $assume)

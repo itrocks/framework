@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-abstract class Type
+class Type
 {
 
 	//---------------------------------------------------------------------------------- $basic_types
@@ -12,8 +12,7 @@ abstract class Type
 	 */
 	private static $basic_types = array(
 		"boolean", "integer", "float", "string",
-		"array", "resource", "callable", "null", "NULL",
-		"Date_Time"
+		"array", "resource", "callable", "null", "NULL"
 	);
 
 	//-------------------------------------------------------------------------------- $numeric_types
@@ -32,16 +31,81 @@ abstract class Type
 	 */
 	private static $sized_types = array("integer", "float", "string");
 
+	//----------------------------------------------------------------------------------------- $type
+	/**
+	 * @var string
+	 */
+	public $type;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $type_string
+	 */
+	public function __construct($type_string)
+	{
+		$this->type = $type_string;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->type;
+	}
+
+	//-------------------------------------------------------------------------------------- asString
+	public function asString()
+	{
+		return $this->type;
+	}
+
+	//-------------------------------------------------------------------------------- getElementType
+	/**
+	 * Gets a multiple type single element type
+	 *
+	 * @return Type
+	 */
+	public function getElementType()
+	{
+		return ($this->isMultiple())
+			? new Type($this->getElementTypeAsString())
+			: $this;
+	}
+
+	//------------------------------------------------------------------------ getElementTypeAsString
+	/**
+	 * Gets a multiple type single element class name
+	 *
+	 * @return string
+	 */
+	public function getElementTypeAsString()
+	{
+		$i = strpos($this->type, "[");
+		return ($i !== false)
+			? substr($this->type, 0, $i)
+			: $this->type;
+	}
+
 	//--------------------------------------------------------------------------------------- hasSize
 	/**
-	 * Tells if a type has a siez or not
+	 * Tells if a type has a size or not
 	 *
-	 * @param string $type_name
 	 * @return boolean
 	 */
-	public static function hasSize($type_name)
+	public function hasSize()
 	{
-		return in_array($type_name, self::$sized_types);
+		return in_array($this->type, self::$sized_types);
+	}
+
+	//--------------------------------------------------------------------------------------- isArray
+	/**
+	 * @return boolean
+	 */
+	public function isArray()
+	{
+		return $this->type == "array";
 	}
 
 	//--------------------------------------------------------------------------------------- isBasic
@@ -51,42 +115,128 @@ abstract class Type
 	 * Basic types are boolean, integer, float, string, array, resource, callable, null, NULL
 	 * Not basic types are *,[] objects, class names
 	 *
-	 * @param string $type_name
 	 * @return boolean
 	 */
-	public static function isBasic($type_name)
+	public function isBasic()
 	{
-		return in_array(Namespaces::shortClassName($type_name), self::$basic_types);
+		return $this->isStrictlyBasic() || $this->isDateTime();
+	}
+
+	//--------------------------------------------------------------------------------------- isClass
+	/**
+	 * Returns true if type is a class or multiple classes
+	 *
+	 * @return bool
+	 */
+	public function isClass()
+	{
+		return !$this->getElementType()->isStrictlyBasic();
+	}
+
+	//------------------------------------------------------------------------------------ isDateTime
+	/**
+	 * @return boolean
+	 */
+	public function isDateTime()
+	{
+		return $this->isSubClassOf("DateTime");
+	}
+
+	//--------------------------------------------------------------------------------------- isFloat
+	/**
+	 * @return boolean
+	 */
+	public function isFloat()
+	{
+		return $this->type == "float";
+	}
+
+	//------------------------------------------------------------------------------------- isInteger
+	/**
+	 * @return boolean
+	 */
+	public function isInteger()
+	{
+		return $this->type == "integer";
 	}
 
 	//------------------------------------------------------------------------------------ isMultiple
 	/**
-	 * Tells if a type is an array / multitype or not
+	 * Tells if a type is an array / multiple type or not
 	 *
 	 * If type is a generic array, then returns true.
 	 * If type is a typed array ("what"),[] then returns the array element type (ie "what").
 	 * If type is no one of those, then returns false.
 	 *
-	 * @param string $type_name
-	 * @return boolean|string
+	 * @return boolean|string "multiple" if is multiple (useful for display), else false
 	 */
-	public static function isMultiple($type_name)
+	public function isMultiple()
 	{
-		return (substr($type_name, -1) === "]")
-			? substr($type_name, 0, strpos($type_name, "["))
-			: (($type_name == "array") ? true : false);
+		return ((substr($this->type, -1) === "]") || $this->isArray()) ? "multiple" : false;
+	}
+
+	//------------------------------------------------------------------------------ isMultipleString
+	/**
+	 * @return boolean
+	 */
+	public function isMultipleString()
+	{
+		return $this->type == "string[]";
 	}
 
 	//------------------------------------------------------------------------------------- isNumeric
 	/**
 	 * Tells if a type is numeric or not
 	 *
-	 * @param string $type_name
 	 * @return boolean
 	 */
-	public static function isNumeric($type_name)
+	public function isNumeric()
 	{
-		return in_array($type_name, self::$numeric_types);
+		return in_array($this->type, self::$numeric_types);
+	}
+
+	//------------------------------------------------------------------------------- isStrictlyBasic
+	/**
+	 * Tells if a type is strictly a basic type or not
+	 *
+	 * Basic types are boolean, integer, float, string, array, resource, callable, null, NULL
+	 * Not basic types are *,[] objects, class names, including DateTime
+	 *
+	 * @return boolean
+	 */
+	public function isStrictlyBasic()
+	{
+		return in_array($this->type, self::$basic_types);
+	}
+
+	//-------------------------------------------------------------------------------------- isString
+	/**
+	 * @return boolean
+	 */
+	public function isString()
+	{
+		return $this->type == "string";
+	}
+
+	//---------------------------------------------------------------------------------- isSubClassOf
+	/**
+	 * @param $class_name string
+	 * @return boolean
+	 */
+	public function isSubClassOf($class_name)
+	{
+		return is_subclass_of($this->type, $class_name);
+	}
+
+	//-------------------------------------------------------------------------------------- multiple
+	/**
+	 * Return the multiple type for given type
+	 *
+	 * @return Type
+	 */
+	public function multiple()
+	{
+		return new Type($this->type . "[]");
 	}
 
 }

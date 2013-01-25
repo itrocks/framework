@@ -278,7 +278,7 @@ class AopJoinpoint
 	 * Beware that if you want to keep references, you will have to explicitely pass them back
 	 * to setArguments.
 	 *
-	 * @param array $new_args Indexes must be argument number (0..n), values the new arguments values.
+	 * @param $new_args array Indexes must be argument number (0..n), values the new arguments values.
 	 */
 	public function setArguments($new_args) {}
 
@@ -292,7 +292,7 @@ class AopJoinpoint
 	 * the original reference will be lost and won't be replaced. To replace the content of an
 	 * original reference, just proceed as explained in the getReturnedValue() documentation.
 	 *
-	 * @param mixed $new_returned_value The new triggering method returned value.
+	 * @param $new_returned_value mixed The new triggering method returned value.
 	 */
 	public function setAssignedValue($new_assigned_value) {}
 
@@ -300,7 +300,7 @@ class AopJoinpoint
 	/**
 	 * Enables you to define the value of the property of the triggered joinpoint.
 	 *
-	 * @param mixed $new_assigned_value The new value assigned to the property.
+	 * @param $new_assigned_value mixed The new value assigned to the property.
 	 */
 	public function setReturnedValue($new_returned_value) {}
 
@@ -310,9 +310,9 @@ class AopJoinpoint
 /**
  * Launch advice $call_back after the execution of the joinpoint function $function
  *
- * @param string $function can be "functionName()" or "Class_Name->methodName()"
+ * @param $function string can be "functionName()" or "Class_Name->methodName()"
  *   or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
- * @param mixed  $call_back string(function name) or array(class name or object, method)
+ * @param $call_back mixed  string(function name) or array(class name or object, method)
  *   or function as a closure
  */
 function aop_add_after($function, $call_back) {}
@@ -321,9 +321,9 @@ function aop_add_after($function, $call_back) {}
 /**
  * Launch advice $call_back after the joinpoint function $function calls return
  *
- * @param string $function can be "functionName()" or "Class_Name->methodName()"
+ * @param $function string can be "functionName()" or "Class_Name->methodName()"
  *   or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
- * @param mixed  $call_back string(function name) or array(class name or object, method)
+ * @param $call_back mixed  string(function name) or array(class name or object, method)
  *   or function as a closure
  */
 function aop_add_after_returning($function, $call_back) {}
@@ -332,9 +332,9 @@ function aop_add_after_returning($function, $call_back) {}
 /**
  * Launch advice $call_back after the joinpoint function $function throws an exception
  *
- * @param string $function can be "functionName()" or "Class_Name->methodName()"
+ * @param $function string can be "functionName()" or "Class_Name->methodName()"
  *   or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
- * @param mixed  $call_back string(function name) or array(class name or object, method)
+ * @param $call_back mixed  string(function name) or array(class name or object, method)
  *   or function as a closure
  */
 function aop_add_after_throwing($function, $call_back) {}
@@ -343,9 +343,9 @@ function aop_add_after_throwing($function, $call_back) {}
 /**
  * Launch advice $call_back after the execution of the joinpoint function $function
  *
- * @param string $function can be "functionName()" or "Class_Name->methodName()"
+ * @param $function string can be "functionName()" or "Class_Name->methodName()"
  *   or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
- * @param mixed  $call_back string(function name) or array(class name or object, method)
+ * @param $call_back mixed  string(function name) or array(class name or object, method)
  *   or function as a closure
  */
 function aop_add_around($function, $call_back) {}
@@ -354,9 +354,9 @@ function aop_add_around($function, $call_back) {}
 /**
  * Launch advice $call_back as a replacement of the execution of the joinpoint function $function
  *
- * @param string $function can be "functionName()" or "Class_Name->methodName()"
+ * @param $function string can be "functionName()" or "Class_Name->methodName()"
  *   or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
- * @param mixed  $call_back string(function name) or array(class name or object, method)
+ * @param $call_back mixed  string(function name) or array(class name or object, method)
  *   or function as a closure
  */
 function aop_add_before($function, $call_back) {}

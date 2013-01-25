@@ -12,8 +12,8 @@ abstract class Namespaces
 	 * If source $class_name has no namespace, namespace will be taken from $model_class_name
 	 * If $model_class_name has no namespace too, $class_name will be kept without namespace
 	 *
-	 * @param string $class_name
-	 * @param string $model_class_name
+	 * @param $class_name string
+	 * @param $model_class_name string
 	 * @return string
 	 */
 	public static function defaultFullClassName($class_name, $model_class_name)
@@ -29,7 +29,7 @@ abstract class Namespaces
 	/**
 	 * Get full class name (with namespace) for a given class name (with or without namespace)
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public static function fullClassName($class_name)
@@ -62,7 +62,7 @@ abstract class Namespaces
 	/**
 	 * Returns true if $class_name is a full class name, with namespace
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return boolean
 	 */
 	public static function isFullClassName($class_name)
@@ -74,7 +74,7 @@ abstract class Namespaces
 	/**
 	 * Returns true if $class_name is a short class name, without namespace
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return boolean
 	 */
 	public static function isShortClassName($class_name)
@@ -87,7 +87,7 @@ abstract class Namespaces
 	 * Get the short class name (without it's namespace) for a given class name
 	 * (with or without namespace)
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public static function shortClassName($class_name)

@@ -8,8 +8,8 @@ interface View_Engine
 	/**
 	 * Generate a link for class name and parameters
 	 *
-	 * @param string $object object or class name
-	 * @param mixed  $parameters string or array : parameters list (feature and other parameters)
+	 * @param $object string object or class name
+	 * @param $parameters mixed  string or array : parameters list (feature and other parameters)
 	 * @return string
 	 */
 	public function link($object, $parameters = null);

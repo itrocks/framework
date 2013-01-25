@@ -6,7 +6,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return Button[]
 	 */
 	protected function getGeneralButtons($class_name)
@@ -16,7 +16,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 
 	//----------------------------------------------------------------------------- getPropertiesList
 	/**
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string[] property names list
 	 */
 	protected function getPropertiesList($class_name)
@@ -28,8 +28,8 @@ abstract class Output_Controller implements Default_Feature_Controller
 	/**
 	 * Get output tabs list for a given object
 	 *
-	 * @param object $object
-	 * @param string[] $properties Can be null
+	 * @param $object object
+	 * @param $properties string[] Can be null
 	 * @return Tab[]
 	 */
 	protected function getTabs($object, $properties)
@@ -41,8 +41,8 @@ abstract class Output_Controller implements Default_Feature_Controller
 
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
-	 * @param Controller_Parameters $parameters
-	 * @param string $class_name
+	 * @param $parameters Controller_Parameters
+	 * @param $class_name string
 	 * @return mixed[]
 	 */
 	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
@@ -63,10 +63,10 @@ abstract class Output_Controller implements Default_Feature_Controller
 	/**
 	 * Default run method for default output view controller
 	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
+	 * @param $parameters Controller_Parameters
+	 * @param $form array
+	 * @param $files array
+	 * @param $class_name string
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{

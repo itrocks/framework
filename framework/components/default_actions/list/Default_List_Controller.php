@@ -15,15 +15,16 @@ class Default_List_Controller extends List_Controller
 	//----------------------------------------------------------------------------- getPropertiesList
 	protected function getPropertiesList($class_name)
 	{
-		return Reflection_Class::getInstanceOf($class_name)->getAnnotation("representative")->value;
+		return Reflection_Class::getInstanceOf($class_name)
+			->getListAnnotation("representative")->values();
 	}
 
 	//------------------------------------------------------------------------------- getSearchValues
 	/**
 	 * Get search values from form's "search" array
 	 *
-	 * @param string $class_name element class name
-	 * @param array $form the values, key is the name/path of each property into the class
+	 * @param $class_name string element class name
+	 * @param $form array the values, key is the name/path of each property into the class
 	 * @return Reflection_Property_Value[] Search values
 	 */
 	protected function getSearchValues($class_name, $form)
@@ -74,10 +75,10 @@ class Default_List_Controller extends List_Controller
 	/**
 	 * Default run method for default "list-typed" view controller
 	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
+	 * @param $parameters Controller_Parameters
+	 * @param $form array
+	 * @param $files array
+	 * @param $class_name string
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{

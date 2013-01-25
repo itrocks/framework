@@ -43,8 +43,8 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
  * other example that works
  * Source array is array($field_name => array($sub_field_name => array($n => $value))
  * Destination array is array($n => array($field_name => array($sub_field_name => $value))
- * @param array $array
- * return array
+ * @param $array array
+ * @return array
  */
 function arrayFormRevert($array)
 {
@@ -78,8 +78,8 @@ function arrayFormRevert($array)
  * Elements of $array1 and $array2 with same index (even if numeric) : $array2 element replaces $array1 element.
  * If $array2 element is an array : merge $array1 and $array2 array element, recursively.
  *
- * @param array $array1
- * @param array $array2
+ * @param $array1 array
+ * @param $array2 array
  * @return array
  */
 function arrayMergeRecursive($array1, $array2)
@@ -97,7 +97,7 @@ function arrayMergeRecursive($array1, $array2)
 /**
  * Returns only values which key is not numeric
  *
- * @param mixed[] $array
+ * @param $array mixed[]
  * @return mixed[]
  */
 function arrayNamedValues($array)
@@ -143,7 +143,7 @@ function arrayToObject($array, $class_name)
 /**
  * Returns only values which key is numeric
  *
- * @param mixed[] $array
+ * @param $array mixed[]
  * @return mixed[]
  */
 function arrayUnnamedValues($array)

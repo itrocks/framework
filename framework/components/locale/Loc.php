@@ -15,7 +15,7 @@ abstract class Loc implements Plugin
 
 	//----------------------------------------------------- afterHtmlTemplateFuncsToEditPropertyExtra
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function afterHtmlTemplateFuncsToEditPropertyExtra(AopJoinpoint $joinpoint)
 	{
@@ -26,7 +26,7 @@ abstract class Loc implements Plugin
 
 	//------------------------------------------------------------------------- afterListSearchValues
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function afterListSearchValues(AopJoinpoint $joinpoint)
 	{
@@ -42,7 +42,7 @@ abstract class Loc implements Plugin
 
 	//--------------------------------------------------------------------------- beforeDataLinkWrite
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function beforeDataLinkWrite(AopJoinpoint $joinpoint)
 	{
@@ -50,7 +50,6 @@ abstract class Loc implements Plugin
 			$object = $joinpoint->getArguments()[0];
 			$class = Reflection_Class::getInstanceOf($object);
 			foreach ($class->accessProperties() as $property) {
-				$type = $property->getType();
 				$property->setValue(
 					$object,
 					self::propertyToIso($property, $property->getValue($object))
@@ -62,7 +61,7 @@ abstract class Loc implements Plugin
 
 	//------------------------------------------------------------------------- beforeDateTimeFromIso
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function beforeDateTimeFromIso(AopJoinpoint $joinpoint)
 	{
@@ -94,7 +93,7 @@ abstract class Loc implements Plugin
 	/**
 	 * Takes an ISO date and make it locale
 	 *
-	 * @param string $date ie "2001-12-25" "2001-12-25 12:20:00" "2001-12-25 12:20:16"
+	 * @param $date string ie "2001-12-25" "2001-12-25 12:20:00" "2001-12-25 12:20:16"
 	 * @return string "25/12/2011" "25/12/2001 12:20" "25/12/2001 12:20:16"
 	 */
 	public static function dateToLocale($date)
@@ -104,7 +103,7 @@ abstract class Loc implements Plugin
 
 	//----------------------------------------------------------------- dateTimeReturnedValueToLocale
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function dateTimeReturnedValueToLocale(AopJoinpoint $joinpoint)
 	{
@@ -115,7 +114,7 @@ abstract class Loc implements Plugin
 	/**
 	 * Takes a locale date and make it ISO
 	 *
-	 * @param string $date ie "25/12/2001" "25/12/2001 12:20" "25/12/2001 12:20:16"
+	 * @param $date string ie "25/12/2001" "25/12/2001 12:20" "25/12/2001 12:20:16"
 	 * @return string ie "2001-12-25" "2001-12-25 12:20:00" "2001-12-25 12:20:16"
 	 */
 	public static function dateToIso($date)
@@ -125,7 +124,7 @@ abstract class Loc implements Plugin
 
 	//-------------------------------------------------------------------- floatReturnedValueToLocale
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function floatReturnedValueToLocale(AopJoinpoint $joinpoint)
 	{
@@ -134,8 +133,8 @@ abstract class Loc implements Plugin
 
 	//------------------------------------------------------------------------------------ floatToIso
 	/**
-	 * @param float $float
-	 * @param Reflection_Property $property
+	 * @param $float float
+	 * @param $property Reflection_Property
 	 */
 	public static function floatToIso($float, Reflection_Property $property = null)
 	{
@@ -146,7 +145,7 @@ abstract class Loc implements Plugin
 	/**
 	 * Takes a float number and make it locale
 	 *
-	 * @param float $number ie 1000 1000.28 1000.2148
+	 * @param $number float ie 1000 1000.28 1000.2148
 	 * @return string ie "1 000,00" "1 000,28" "1 000,2148"
 	 */
 	public static function floatToLocale($float)
@@ -156,7 +155,7 @@ abstract class Loc implements Plugin
 
 	//------------------------------------------------------------------ integerReturnedValueToLocale
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function integerReturnedValueToLocale(AopJoinpoint $joinpoint)
 	{
@@ -165,8 +164,8 @@ abstract class Loc implements Plugin
 
 	//---------------------------------------------------------------------------------- integerToIso
 	/**
-	 * @param integer $integer
-	 * @param Reflection_Property $property
+	 * @param $integer integer
+	 * @param $property Reflection_Property
 	 */
 	public static function integerToIso($integer, Reflection_Property $property = null)
 	{
@@ -177,7 +176,7 @@ abstract class Loc implements Plugin
 	/**
 	 * Takes an integer and make it locale
 	 *
-	 * @param integer $number ie 1000
+	 * @param $number integer ie 1000
 	 * @return string ie "1 000"
 	 */
 	public static function integerToLocale($float)
@@ -198,7 +197,7 @@ abstract class Loc implements Plugin
 
 	//------------------------------------------------------------------------ parseBeforeWriteAround
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function parseBeforeWriteAround(AopJoinpoint $joinpoint)
 	{
@@ -211,8 +210,9 @@ abstract class Loc implements Plugin
 	/**
 	 * Change a locale value into an ISO formatted value, knowing it's property
 	 *
-	 * @param Reflection_Property $property
-	 * @param string $value
+	 * @param $property Reflection_Property
+	 * @param $value    string
+	 * @return string|integer
 	 */
 	public static function propertyToIso(Reflection_Property $property, $value = null)
 	{
@@ -223,8 +223,8 @@ abstract class Loc implements Plugin
 	/**
 	 * Change an ISO value into a locale formatted value, knowing it's property
 	 *
-	 * @param Reflection_Property $property
-	 * @param string $value
+	 * @param $property Reflection_Property
+	 * @param $value string
 	 */
 	public static function propertyToLocale(Reflection_Property $property, $value = null)
 	{
@@ -274,8 +274,8 @@ abstract class Loc implements Plugin
 	/**
 	 * Reverse translation
 	 *
-	 * @param string $translation
-	 * @param string $context
+	 * @param $translation string
+	 * @param $context string
 	 */
 	public static function rtr($translation, $context = "")
 	{
@@ -287,8 +287,8 @@ abstract class Loc implements Plugin
 	/**
 	 * Translation
 	 *
-	 * @param string $text
-	 * @param string $context
+	 * @param $text string
+	 * @param $context string
 	 */
 	public static function tr($text, $context = "")
 	{

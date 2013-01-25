@@ -18,7 +18,7 @@ abstract class Instantiator
 	 *
 	 * If there is no substitution for class name, it will be returned unchanged.
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public static function getClass($class_name)
@@ -32,7 +32,7 @@ abstract class Instantiator
 	/**
 	 * Returns a new instance of given class name, using substition table if exists.
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return object
 	 */
 	public static function newInstance($class_name)
@@ -48,8 +48,8 @@ abstract class Instantiator
 	 * If a substitution has already been registered for $class_name, this will register the lower level class between $herited_class and the already registered class.
 	 * $herited_class must be a subclass of $class_name, or an error will occur.
 	 *
-	 * @param string $class_name    the parent class
-	 * @param string $herited_class the herited class that will always replace the parent class
+	 * @param $class_name string    the parent class
+	 * @param $herited_class string the herited class that will always replace the parent class
 	 */
 	public static function register($class_name, $herited_class)
 	{

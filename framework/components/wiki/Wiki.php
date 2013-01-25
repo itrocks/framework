@@ -15,7 +15,7 @@ abstract class Wiki implements Plugin
 
 	//----------------------------------------------------------------------------------- noParseZone
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function noParseZone(AopJoinpoint $joinpoint)
 	{
@@ -41,7 +41,7 @@ abstract class Wiki implements Plugin
 	/**
 	 * Add wiki to strings
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function stringWiki(AopJoinpoint $joinpoint)
 	{

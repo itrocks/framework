@@ -12,7 +12,7 @@ class String
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $value
+	 * @param $value string
 	 */
 	public function __construct($value)
 	{
@@ -112,10 +112,10 @@ class String
 /**
  * Renvoie la partie de chaine à gauche de la dernière occurence du séparateur
  *
- * @param string $str
- * @param string $sep
- * @param int $cnt
- * @param bool $complete_if_not
+ * @param $str string
+ * @param $sep string
+ * @param $cnt int
+ * @param $complete_if_not bool
  * @return string
  */
 function lLastParse($str, $sep, $cnt = 1, $complete_if_not = true)
@@ -136,10 +136,10 @@ function lLastParse($str, $sep, $cnt = 1, $complete_if_not = true)
 /**
  * Renvoie la partie de chaine à gauche de la première occurence du séparateur
  *
- * @param string $str
- * @param string $sep
- * @param int $cnt
- * @param bool $complete_if_not
+ * @param $str string
+ * @param $sep string
+ * @param $cnt int
+ * @param $complete_if_not bool
  * @return string
  */
 function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
@@ -160,7 +160,7 @@ function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
 /**
  * Renvoie la plus grande longueur de ligne d'un texte dont les lignes sont séparées par "\n"
  *
- * @param string $str
+ * @param $str string
  * @return int
  */
 function maxRowLength($str)
@@ -183,10 +183,10 @@ function maxRowLength($str)
  * @example echo mParse("il a mangé, a bu, a digéré", array(",", "a "), ",")
  *          recherchera ce qui entre le "a " qui est après "," et le "," qui suit,
  *          et affichera "bu"
- * @param string $str
- * @param mixed  $begin_sep array, string
- * @param mixed  $end_sep   array, string
- * @param int    $cnt
+ * @param $str string
+ * @param $begin_sep mixed  array, string
+ * @param $end_sep mixed    array, string
+ * @param $cnt int
  * @return string
  */
 function mParse($str, $begin_sep, $end_sep, $cnt = 1)
@@ -216,10 +216,10 @@ function mParse($str, $begin_sep, $end_sep, $cnt = 1)
 /**
  * Renvoie la partie de chaine à droite de la dernière occurence du séparateur
  *
- * @param string $str
- * @param string $sep
- * @param int    $cnt
- * @param bool $complete_if_not
+ * @param $str string
+ * @param $sep string
+ * @param $cnt int
+ * @param $complete_if_not bool
  * @return string
  */
 function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
@@ -240,7 +240,7 @@ function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
 /**
  * Renvoie le nombre de lignes dans un texte dont les lignes sont séparées par "\n"
  *
- * @param string $str
+ * @param $str string
  * @return string
  */
 function rowCount($str)

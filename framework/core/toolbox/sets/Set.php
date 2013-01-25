@@ -23,7 +23,7 @@ class Set
 	 * Constructs a Set object for given element class name
 	 *
 	 * @param $element_class_name string   the class name
-	 * @param $elements           object[] the set can be initialized with this set of elements 
+	 * @param $elements           object[] the set can be initialized with this set of elements
 	 */
 	public function __construct($element_class_name = null, $elements = array())
 	{
@@ -37,8 +37,8 @@ class Set
 	/**
 	 * Adds an element to the set
 	 *
-	 * @param string | object $key identity of the element in the set, or element if $element is null
-	 * @param object | null $element element to add to the set (null if no $key)
+	 * @param $element string | object $key identity of the element in the set, or element if is null
+	 * @param $key) object | null $element element to add to the set (null if no
 	 */
 	public function add($key, $element = null)
 	{
@@ -60,7 +60,7 @@ class Set
 	/**
 	 * Gets element class name of a given set class name (namespace needed)
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public static function elementClassNameOf($class_name)
@@ -93,7 +93,7 @@ class Set
 	 * If this class does not exist, this will return a generic Set object constructed with
 	 * the matching element class name.
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return Set
 	 */
 	public static function instantiate($class_name, $elements = array())

@@ -12,9 +12,9 @@ class Search_Array_Builder
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * @param string $property_name
-	 * @param string $search_phrase
-	 * @param string $append
+	 * @param $property_name string
+	 * @param $search_phrase string
+	 * @param $append string
 	 * @return array
 	 */
 	public function build($property_name, $search_phrase, $append = "")
@@ -55,9 +55,9 @@ class Search_Array_Builder
 
 	//--------------------------------------------------------------------------------- buildMultiple
 	/**
-	 * @param string[]|Reflection_Class $property_names_or_class
-	 * @param string                    $search_phrase
-	 * @param string                    $append
+	 * @param $property_names_or_class string[]|Reflection_Class
+	 * @param $search_phrase string
+	 * @param $append string
 	 * @return array
 	 */
 	public function buildMultiple($property_names_or_class, $search_phrase, $append = "")
@@ -89,29 +89,27 @@ class Search_Array_Builder
 
 	//----------------------------------------------------------------- classRepresentativeProperties
 	/**
-	 * @param Reflection_Class $class
+	 * @param $class Reflection_Class
 	 * @return string[]
 	 */
 	private function classRepresentativeProperties($class)
 	{
 		/** @var $property_names List_Annotation */
-		$property_names = $class->getAnnotation("representative")->get();
+		$property_names = $class->getAnnotations("representative")->values();
 		foreach ($property_names as $key => $property_name) {
 			$property_class = $class;
 			$i = strpos($property_name, ".");
 			while ($i !== false) {
 				$property = $property_class->getProperty(substr($property_name, 0, $i));
-				$property_class = Reflection_Class::getInstanceOf(
-					Namespaces::fullClassName($property->getType())
-				);
+				$property_class = Reflection_Class::getInstanceOf($property->getType());
 				$property_name = substr($property_name, $i + 1);
 				$i = strpos($property_name, ".");
 			}
 			$property = $class->getProperty($property_name);
 			$type = $property->getType();
-			if (!Type::isBasic($type)) {
+			if (!$type->isBasic()) {
 				unset($property_names[$key]);
-				$sub_class = Reflection_Class::getInstanceOf(Namespaces::fullClassName($type));
+				$sub_class = Reflection_Class::getInstanceOf($type);
 				foreach ($this->classRepresentativeProperties($sub_class) as $sub_property_name) {
 					$property_names[] = $property_name . "." . $sub_property_name;
 				}

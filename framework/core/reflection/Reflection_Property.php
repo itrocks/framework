@@ -23,14 +23,6 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	const ALL = 1793;
 
-	//---------------------------------------------------------------------------------------- $cache
-	/**
-	 * Cache Reflection_Property objects for each class and property name
-	 *
-	 * @var Reflection_Property[]
-	 */
-	private static $cache = array();
-
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * Cached value for the doc comment (set by getDocComment() only when $use is true)
@@ -49,16 +41,21 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 
 	//--------------------------------------------------------------------------------- getInstanceOf
 	/**
-	 * Return Reflection_Property instance for a class name, object, ReflectionClass, Reflection_Class, ReflectionProperty object
+	 * Gets the Reflection_Property instance
 	 *
-	 * @param string | object | ReflectionClass | ReflectionProperty $of_class
-	 * @param string $of_name do not set this if $of_class is a ReflectionProperty
+	 * @param $of_class string|object|Reflection_Class|Reflection_Property|ReflectionClass|ReflectionProperty|Type
+	 * @param $of_name  string $of_name do not set this if is a ReflectionProperty
 	 * @return Reflection_Property
 	 */
 	public static function getInstanceOf($of_class, $of_name = null)
 	{
+		/** @var Reflection_Property[] */
+		static $cache = array();
 		// flexible parameters
-		if ($of_class instanceof ReflectionProperty) {
+		if ($of_class instanceof Type) {
+			$of_class = $of_class->asString();
+		}
+		elseif ($of_class instanceof ReflectionProperty) {
 			$of_name  = $of_class->name;
 			$of_class = $of_class->class;
 		}
@@ -69,12 +66,9 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			$of_class = get_class($of_class);
 		}
 		// use cache ?
-		if (
-			isset(self::$cache[$of_class])
-			&& isset(self::$cache[$of_class][$of_name])
-		) {
+		if (isset($cache[$of_class]) && isset($cache[$of_class][$of_name])) {
 			// use cache
-			$property = self::$cache[$of_class][$of_name];
+			$property = $cache[$of_class][$of_name];
 		}
 		else {
 			// no cache : calculate
@@ -84,13 +78,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 				// $of_name is a "property.path"
 				do {
 					$property = Reflection_Property::getInstanceOf($of_class, substr($of_name, $i, $j - $i));
-					$of_class = $property->getType();
-					if ($is_multiple = Type::isMultiple($of_class)) {
-						$of_class = Namespaces::fullClassName($is_multiple);
-					}
-					else {
-						$of_class = Namespaces::fullClassName($of_class);
-					}
+					$of_class = $property->getType()->getElementTypeAsString();
 					$i = $j + 1;
 				} while (($j = strpos($of_name, ".", $i)) !== false);
 				if ($i) {
@@ -102,7 +90,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 				// $of_name is a simple property name
 				$property = new Reflection_Property($of_class, $of_name);
 			}
-			self::$cache[$of_class][$of_name_cache] = $property;
+			$cache[$of_class][$of_name_cache] = $property;
 		}
 		return $property;
 	}
@@ -139,9 +127,29 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	}
 
 	//--------------------------------------------------------------------------------------- getType
+	/**
+	 * @return Type
+	 */
 	public function getType()
 	{
-		return $this->getAnnotation("var")->value;
+		$type_string = $this->getAnnotation("var")->value;
+		// take only the first type if multiple
+		if (($i = strpos($type_string, "|")) !== false) {
+			$type_string = substr($type_string, 0, $i);
+		}
+		$type = new Type($type_string);
+		// automatically add current class namespace when not told
+		$single = $type->getElementType();
+		if ($type->isMultiple()) {
+			if ($single->isClass()) {
+				$single = new Type(Namespaces::defaultFullClassName($single->asString(), $this->class));
+			}
+			$type = new Type($single->asString() . substr($type_string, strpos($type_string, "[")));
+		}
+		elseif ($type->isClass()) {
+			$type = new Type(Namespaces::defaultFullClassName($type->asString(), $this->class));
+		}
+		return $type;
 	}
 
 	//---------------------------------------------------------------------------------------- getUse
@@ -155,8 +163,12 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	private function getUse()
 	{
 		if (!isset($this->use)) {
-			$use = $this->getDeclaringClass()->getAnnotation("use");
-			$this->use = $use ? in_array($this->name, $use) : false;
+			foreach ($this->getDeclaringClass()->getListAnnotations("use") as $use) {
+				if (in_array($this->name, $use->values())) {
+					$this->use = true;
+					break;
+				}
+			}
 		}
 		return $this->use;
 	}

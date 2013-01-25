@@ -9,10 +9,10 @@ class Default_Json_Controller implements Default_Feature_Controller
 	/**
 	 * Run the default json controller
 	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
+	 * @param $parameters Controller_Parameters
+	 * @param $form array
+	 * @param $files array
+	 * @param $class_name string
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{

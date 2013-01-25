@@ -97,7 +97,7 @@ class Mysql_Column implements Dao_Column
 	private function cleanupDefault()
 	{
 		if (isset($this->Default)) {
-			if (Type::isNumeric($this->getType())) {
+			if ($this->getType()->isNumeric()) {
 				$this->Default += 0;
 			}
 		}
@@ -108,7 +108,7 @@ class Mysql_Column implements Dao_Column
 	/**
 	 * Returns true if the column is an equivalent of the other column
 	 *
-	 * @param Mysql_Column $column
+	 * @param $column Mysql_Column
 	 * @return bool
 	 */
 	public function equiv($column)
@@ -158,7 +158,7 @@ class Mysql_Column implements Dao_Column
 
 	//--------------------------------------------------------------------------------------- getType
 	/**
-	 * @return string
+	 * @return Type
 	 */
 	public function getType()
 	{
@@ -166,15 +166,15 @@ class Mysql_Column implements Dao_Column
 		$type = ($i === false) ? $this->Type : substr($this->Type, 0, $i);
 		switch ($type) {
 			case "decimal": case "float": case "double":
-				return "float";
+				return new Type("float");
 			case "tinyint": case "smallint": case "mediumint": case "int": case "bigint":
-				return "integer";
+				return new Type("integer");
 			case "enum": case "set":
-				return "string[]";
+				return (new Type("string"))->multiple();
 			case "date": case "datetime": case "timestamp": case "time": case "year":
-				return "Date_Time";
+				return new Type(__NAMESPACE__ . "\\Date_Time");
 			default:
-				return "string";
+				return new Type("string");
 		}
 	}
 

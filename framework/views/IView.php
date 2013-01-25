@@ -6,11 +6,11 @@ interface IView
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param array $parameters
-	 * @param array $form
-	 * @param array $files
-	 * @param string $class_name
-	 * @param string $feature_name
+	 * @param $parameters array
+	 * @param $form array
+	 * @param $files array
+	 * @param $class_name string
+	 * @param $feature_name string
 	 */
 	public function run($parameters, $form, $files, $class_name, $feature_name);
 

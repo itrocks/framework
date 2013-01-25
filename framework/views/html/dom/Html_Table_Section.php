@@ -20,7 +20,7 @@ abstract class Html_Table_Section extends Dom_Element
 
 	//---------------------------------------------------------------------------------------- addRow
 	/**
-	 * @param Html_Table_Row $row
+	 * @param $row Html_Table_Row
 	 */
 	public function addRow(Html_Table_Row $row)
 	{

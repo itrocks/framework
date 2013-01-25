@@ -11,7 +11,7 @@ abstract class Aop_Logger implements Plugin
 
 	//------------------------------------------------------------------------------------------- log
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function log(AopJoinpoint $joinpoint)
 	{
@@ -45,7 +45,7 @@ abstract class Aop_Logger implements Plugin
 
 	//----------------------------------------------------------------------------------- logRegister
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function logRegister(AopJoinpoint $joinpoint)
 	{

@@ -33,10 +33,11 @@ class Reflection_Property_Value extends Reflection_Property
 	 * $pv = new Reflection_Property_Value($object, "property_name");
 	 * $pv = new Reflection_Property_Value("Class_Name", "property_name", $object);
 	 * $pv = new Reflection_Property_Value($reflection_property, $object);
+	 * $pv = new Reflection_Property_Value($reflection_property, $value);
 	 *
-	 * @param string|ReflectionClass|Reflection_Class|ReflectionProperty|Reflection_Property|object $class
-	 * @param string|ReflectionProperty|Reflection_Property $name
-	 * @param object|mixed $object the object containing the value, or the value itself
+	 * @param $class string|ReflectionClass|Reflection_Class|ReflectionProperty|Reflection_Property|object
+	 * @param $name string|ReflectionProperty|Reflection_Property
+	 * @param $object object|mixed the object containing the value, or the value itself
 	 */
 	public function __construct($class, $name = null, $object = null)
 	{
@@ -72,6 +73,30 @@ class Reflection_Property_Value extends Reflection_Property
 		if (!isset($this->object)) {
 			$this->object = $object;
 		}
+	}
+
+	//----------------------------------------------------------------------------------------- __get
+	/**
+	 * Sets additional properties to matching Reflection_Property (common for all instances of this property)
+	 *
+	 * @param $key string
+	 * @return mixed
+	 */
+	public function __get($key)
+	{
+		return Reflection_Property::getInstanceOf($this->class, $this->name)->$key;
+	}
+
+	//----------------------------------------------------------------------------------------- __set
+	/**
+	 * Sets additional properties to matching Reflection_Property (common for all instances of this property)
+	 *
+	 * @param $key   string
+	 * @param $value mixed
+	 */
+	public function __set($key, $value)
+	{
+		Reflection_Property::getInstanceOf($this->class, $this->name)->$key = $value;
 	}
 
 	//--------------------------------------------------------------------------------------- display

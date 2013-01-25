@@ -19,7 +19,7 @@ abstract class Boolean_Annotation extends Annotation
 	 *
 	 * If a boolean annotation has no value or is not "false" or zero, annotation's value will be true.
 	 *
-	 * @param string $value
+	 * @param $value string
 	 */
 	public function __construct($value)
 	{

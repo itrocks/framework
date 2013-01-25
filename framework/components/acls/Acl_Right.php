@@ -39,7 +39,7 @@ class Acl_Right implements Contained
 
 	//------------------------------------------------------------------------------------- setParent
 	/**
-	 * @param Acl_Group $object
+	 * @param $object Acl_Group
 	 * @return Acl_Right
 	 */
 	public function setParent($object)

@@ -21,8 +21,8 @@ abstract class Html_Template_Funcs
 	/**
 	 * Returns application name
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return string
 	 */
 	public static function getApplication(Html_Template $template, $objects)
@@ -36,8 +36,8 @@ abstract class Html_Template_Funcs
 	/**
 	 * Returns object's class name
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return string
 	 */
 	public static function getClass(Html_Template $template, $objects)
@@ -56,8 +56,8 @@ abstract class Html_Template_Funcs
 	/**
 	 * Return object's display
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return string
 	 */
 	public static function getDisplay(Html_Template $template, $objects)
@@ -84,8 +84,8 @@ abstract class Html_Template_Funcs
 	/**
 	 * Return an HTML edit component for current property or List_Data property
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return string
 	 */
 	public static function getEdit(Html_Template $template, $objects, $prefix = null)
@@ -133,8 +133,9 @@ abstract class Html_Template_Funcs
 	/**
 	 * Returns template's feature method name
 	 *
-	 * @param string $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects  mixed[]
+	 * @return Displayable
 	 */
 	public static function getFeature(Html_Template $template, $objects)
 	{
@@ -146,8 +147,8 @@ abstract class Html_Template_Funcs
 	 * Returns true if the element is not empty
 	 * (usefull for conditions on arrays)
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return boolean
 	 */
 	public static function getHas(Html_Template $template, $objects)
@@ -160,8 +161,8 @@ abstract class Html_Template_Funcs
 	/**
 	 * Returns nearest object from templating tree
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return object
 	 */
 	public static function getObject(Html_Template $template, $objects)
@@ -177,8 +178,8 @@ abstract class Html_Template_Funcs
 	/**
 	 * Returns object's properties, and their display and value
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return Reflection_Property_Value[]
 	 */
 	public static function getProperties(Html_Template $template, $objects)
@@ -204,15 +205,15 @@ abstract class Html_Template_Funcs
 	/**
 	 * Returns object's properties, and their display and value, but only if they are not already into a tab
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return Reflection_Property_Value[]
 	 */
 	public static function getPropertiesOutOfTabs(Html_Template $template, $objects)
 	{
 		$properties = array();
 		foreach (self::getProperties($template, $objects) as $property_name => $property) {
-			if (!isset($property->tab_path)) {
+			if (!$property->tab_path) {
 				$properties[$property_name] = $property;
 			}
 		}
@@ -224,8 +225,8 @@ abstract class Html_Template_Funcs
 	 * Returns template's top object
 	 * (use it inside of loops)
 	 *
-	 * @param Html_Template $template
-	 * @param mixed[] $objects
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
 	 * @return object
 	 */
 	public static function getTop(Html_Template $template, $objects)
@@ -237,8 +238,8 @@ abstract class Html_Template_Funcs
 	/**
 	 * Gets property extra data needed for edit component
 	 *
-	 * @param string $class_name
-	 * @param Reflection_Property_Value|Reflection_Property|string $property
+	 * @param $class_name string
+	 * @param $property Reflection_Property_Value|Reflection_Property|string
 	 * @return mixed[] Reflection_Property $property, string $property path, mixed $value
 	 */
 	private static function toEditPropertyExtra($class_name, $property)

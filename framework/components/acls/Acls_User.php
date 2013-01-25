@@ -14,7 +14,7 @@ class Acls_User extends User
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @see \SAF\Framework\User::current($set_current)
-	 * @param Acls_User $user
+	 * @param $user Acls_User
 	 * @return Acls_User
 	 */
 	public static function current($user = null)

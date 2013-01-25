@@ -6,9 +6,9 @@ class Html_Input extends Dom_Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $name
-	 * @param string $value
-	 * @param string $id
+	 * @param $name string
+	 * @param $value string
+	 * @param $id string
 	 */
 	public function __construct($name = null, $value = null, $id = null)
 	{

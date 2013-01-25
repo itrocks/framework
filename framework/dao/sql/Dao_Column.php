@@ -14,7 +14,7 @@ interface Dao_Column extends Field
 	/**
 	 * Returns true if the column is an equivalent of the other column
 	 *
-	 * @param Dao_Column $column
+	 * @param $column Dao_Column
 	 */
 	public function equiv($column);
 

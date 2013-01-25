@@ -24,7 +24,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	/**
 	 * Register this for any object collection property using "@getter Aop::getCollection" annotation
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function getCollection(AopJoinpoint $joinpoint)
 	{
@@ -39,9 +39,9 @@ abstract class Aop_Getter extends Aop implements Plugin
 				unset($antiloop[$hash][$property]);
 				if (!is_array($value)) {
 					$class = $joinpoint->getClassName();
-					$type = Reflection_Property::getInstanceOf($class, $property)->getType();
-					$type = Namespaces::defaultFullClassName(Type::isMultiple($type), $class);
-					$object->$property = Getter::getCollection($value, $type, $object);
+					$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
+						->getElementTypeAsString();
+					$object->$property = Getter::getCollection($value, $type_name, $object);
 				}
 			}
 		}
@@ -51,7 +51,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	/**
 	 * Register this for any Date_Time property using "@getter Aop::getDateTime" annotation
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function getDateTime(AopJoinpoint $joinpoint)
 	{
@@ -75,7 +75,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	/**
 	 * Register this for any object property using "@getter Aop::getObject" annotation
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function getObject(AopJoinpoint $joinpoint)
 	{
@@ -90,9 +90,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 				unset($antiloop[$hash][$property]);
 				if (!is_object($value)) {
 					$class = $joinpoint->getClassName();
-					$type = Namespaces::fullClassName(
-						Reflection_Property::getInstanceOf($class, $property)->getType()
-					);
+					$type = Reflection_Property::getInstanceOf($class, $property)->getType()->asString();
 					$value = Getter::getObject($value, $type, $object, $property);
 					if (!is_object($value)) {
 						$value = Object_Builder::current()->newInstance($type);
@@ -120,7 +118,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * This uses the property @getter annotation to know what getter to use.
 	 * Specific Aop::getMethod() getters are allowed shortcuts for SAF\Framework\Aop_Getter::getMethod().
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 */
 	public static function registerGetters($class_name)
 	{
@@ -131,7 +129,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	/**
 	 * AOP auto-registerer call (to register after Autoloader->autoload(), crashes with AOP-PHP 0.2.0)
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function registerGettersAop(AopJoinpoint $joinpoint)
 	{

@@ -40,7 +40,7 @@ class Number_Locale
 
 	//------------------------------------------------------------------------------------ floatToIso
 	/**
-	 * @param string $float
+	 * @param $float string
 	 * @return float
 	 */
 	public function floatToIso($float)
@@ -54,7 +54,7 @@ class Number_Locale
 
 	//--------------------------------------------------------------------------------- floatToLocale
 	/**
-	 * @param float $float
+	 * @param $float float
 	 * @return string
 	 */
 	public function floatToLocale($float)
@@ -76,7 +76,7 @@ class Number_Locale
 
 	//---------------------------------------------------------------------------------- integerToIso
 	/**
-	 * @param string $integer
+	 * @param $integer string
 	 * @return integer
 	 */
 	public function integerToIso($integer)
@@ -86,7 +86,7 @@ class Number_Locale
 
 	//------------------------------------------------------------------------------- integerToLocale
 	/**
-	 * @param integer $integer
+	 * @param $integer integer
 	 * @return string
 	 */
 	public function integerToLocale($integer)

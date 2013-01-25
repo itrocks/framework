@@ -7,7 +7,7 @@ abstract class View
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param View_Engine $set_current
+	 * @param $set_current View_Engine
 	 * @return View_Engine
 	 */
 	public static function current(View_Engine $set_current = null)
@@ -17,8 +17,8 @@ abstract class View
 
 	//------------------------------------------------------------------------------ getPossibleViews
 	/**
-	 * @param string $class_name
-	 * @param string $feature_name
+	 * @param $class_name string
+	 * @param $feature_name string
 	 * @return string[]
 	 */
 	public static function getPossibleViews($class_name, $feature_name)
@@ -37,7 +37,7 @@ abstract class View
 				$views[] = array($view . "_" . $feature_class, "run");
 				$views[] = array($view, $feature_name);
 				$class = get_parent_class($class);
-			} 
+			}
 		}
 		foreach ($namespaces as $namespace) {
 			$view = $namespace . "\\" . $view_engine_name;
@@ -56,11 +56,11 @@ abstract class View
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param array  $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
-	 * @param string $feature_name
+	 * @param $parameters array
+	 * @param $form array
+	 * @param $files array
+	 * @param $class_name string
+	 * @param $feature_name string
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
@@ -71,7 +71,7 @@ abstract class View
 				$view_object->$view_method_name($parameters, $form, $files, $class_name, $feature_name);
 				break ;
 			}
-		} 
+		}
 	}
 
 }

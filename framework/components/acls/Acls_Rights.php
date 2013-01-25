@@ -17,7 +17,7 @@ class Acls_Rights
 	/**
 	 * Adds a right value to acls rights
 	 *
-	 * @param Acl_Right $right
+	 * @param $right Acl_Right
 	 */
 	public function add(Acl_Right $right)
 	{
@@ -34,7 +34,7 @@ class Acls_Rights
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Acls_Rights $set_current
+	 * @param $set_current Acls_Rights
 	 * @return Acls_Rights
 	 */
 	public static function current(Acls_Rights $set_current = null)
@@ -46,7 +46,7 @@ class Acls_Rights
 	/**
 	 * Gets a right value from acls rights
 	 *
-	 * @param string $key right key : a "key.subkey.another" path
+	 * @param $key string right key : a "key.subkey.another" path
 	 * @return mixed right value
 	 */
 	public function get($key)

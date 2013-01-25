@@ -130,7 +130,7 @@ abstract class Autoloader implements Plugin
 	/**
 	 * This event can be used as pointcut when a new class has been loaded
 	 *
-	 * @param string $class_name full class name, with namespace
+	 * @param $class_name string full class name, with namespace
 	 */
 	private static function classLoadEvent($class_name)
 	{
@@ -166,7 +166,7 @@ abstract class Autoloader implements Plugin
 	/**
 	 * Reset the include path for applications if current configuration changes.
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function resetOnCurrentConfigurationChange(AopJoinpoint $joinpoint)
 	{

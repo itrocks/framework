@@ -23,7 +23,7 @@ class Locale
 	//--------------------------------------------------------------------------------------- $number
 	/**
 	 * @setter setNumber
-	 * @var Number_Format
+	 * @var Number_Locale
 	 */
 	public $number;
 
@@ -45,7 +45,7 @@ class Locale
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Locale $set_current
+	 * @param $set_current Locale
 	 * @return Locale
 	 */
 	public static function current(Locale $set_current = null)
@@ -57,8 +57,9 @@ class Locale
 	/**
 	 * Change a locale value into an ISO formatted value, knowing it's property
 	 *
-	 * @param Reflection_Property $property
-	 * @param string $value
+	 * @param $property Reflection_Property
+	 * @param $value    string
+	 * @return string|integer|float
 	 */
 	public function propertyToIso(Reflection_Property $property, $value = null)
 	{
@@ -72,8 +73,9 @@ class Locale
 	/**
 	 * Change an ISO value into a locale formatted value, knowing it's property
 	 *
-	 * @param Reflection_Property $property
-	 * @param string $value
+	 * @param $property Reflection_Property
+	 * @param $value    string
+	 * @return string
 	 */
 	public function propertyToLocale(Reflection_Property $property, $value = null)
 	{
@@ -85,7 +87,7 @@ class Locale
 
 	//--------------------------------------------------------------------------------------- setDate
 	/**
-	 * @param Date_Locale | string $date if string, must be a date format (ie "d/m/Y")
+	 * @param $date Date_Locale | string if string, must be a date format (ie "d/m/Y")
 	 */
 	public function setDate($date)
 	{
@@ -96,7 +98,7 @@ class Locale
 
 	//----------------------------------------------------------------------------------- setLanguage
 	/**
-	 * @param string $language
+	 * @param $language string
 	 */
 	public function setLanguage($language)
 	{
@@ -121,15 +123,22 @@ class Locale
 	/**
 	 * Change a locale value into an ISO formatted value, knowing it's data type
 	 *
-	 * @param string $type
-	 * @param string $value
+	 * @param $value string
+	 * @param $type  Type
+	 * @return string|integer|float
 	 */
-	public function toIso($value, $type = null)
+	public function toIso($value, Type $type = null)
 	{
-		switch ($type) {
-			case "Date_Time": return $this->date->toIso($value);
-			case "float":     return $this->number->floatToIso($value);
-			case "integer":   return $this->number->integerToIso($value);
+		if (isset($type)) {
+			if ($type->isDateTime()) {
+				return $this->date->toIso($value);
+			}
+			elseif ($type->asString() == "float") {
+				return $this->number->floatToIso($value);
+			}
+			elseif ($type->asString() == "integer") {
+				return $this->number->integerToIso($value);
+			}
 		}
 		return $value;
 	}
@@ -138,15 +147,22 @@ class Locale
 	/**
 	 * Change an ISO value into a locale formatted value, knowing it's data type
 	 *
-	 * @param string $type
-	 * @param string $value
+	 * @param $type  Type
+	 * @param $value string
+	 * @return string
 	 */
-	public function toLocale($value, $type = null)
+	public function toLocale($value, Type $type = null)
 	{
-		switch ($type) {
-			case "Date_Time": return $this->date->toLocale($value);
-			case "float":     return $this->number->floatToLocale($value);
-			case "integer":   return $this->number->integerToLocale($value);
+		if (isset($type)) {
+			if ($type->isDateTime()) {
+				return $this->date->toLocale($value);
+			}
+			elseif ($type->asString() == "float") {
+				return $this->number->floatToLocale($value);
+			}
+			elseif ($type->asString() == "integer") {
+				return $this->number->integerToLocale($value);
+			}
 		}
 		return $value;
 	}

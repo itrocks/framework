@@ -8,7 +8,7 @@ class Ignore_Error_Handler implements Error_Handler
 	/**
 	 * This error handler simply ignores those fucking errors and does nothing
 	 *
-	 * @param Handled_Error $error
+	 * @param $error Handled_Error
 	 */
 	public function handle(Handled_Error $error)
 	{

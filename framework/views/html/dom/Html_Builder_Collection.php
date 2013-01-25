@@ -30,16 +30,16 @@ class Html_Builder_Collection
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param Reflection_Property $property
-	 * @param object[] $collection
+	 * @param $property Reflection_Property
+	 * @param $collection object[]
 	 */
 	public function __construct(Reflection_Property $property, $collection)
 	{
 		$this->property = $property;
 		$this->collection = $collection;
-		$this->class_name = Namespaces::fullClassName(Type::isMultiple($this->property->getType()));
+		$this->class_name = $this->property->getType()->getElementTypeAsString();
 		$class = Reflection_Class::getInstanceOf($this->class_name);
-		$this->properties = $class->getAnnotation("representative")->value;
+		$this->properties = $class->getListAnnotation("representative")->values();
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -57,8 +57,8 @@ class Html_Builder_Collection
 
 	//------------------------------------------------------------------------------------- buildCell
 	/**
-	 * @param object $object
-	 * @param string $property_name
+	 * @param $object object
+	 * @param $property_name string
 	 * @return Html_Table_Standard_Cell
 	 */
 	protected function buildCell($object, $property_name)
@@ -67,7 +67,11 @@ class Html_Builder_Collection
 		$cell = new Html_Table_Standard_Cell(
 			(new Reflection_Property_View($property))->getFormattedValue($object)
 		);
-		$cell->addClass($property->getType());
+		$type = $property->getType();
+		if ($type->isMultiple()) {
+			$cell->addClass("multiple");
+		}
+		$cell->addClass($type->asString());
 		return $cell;
 	}
 
@@ -105,7 +109,7 @@ class Html_Builder_Collection
 
 	//-------------------------------------------------------------------------------------- buildRow
 	/**
-	 * @param object $object
+	 * @param $object object
 	 * @return Html_Table_Row
 	 */
 	protected function buildRow($object)

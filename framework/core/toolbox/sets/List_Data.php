@@ -8,7 +8,7 @@ interface List_Data
 	/**
 	 * Adds a row to the list
 	 *
-	 * @param List_Row $row
+	 * @param $row List_Row
 	 */
 	public function add(List_Row $row);
 
@@ -32,7 +32,7 @@ interface List_Data
 	/**
 	 * Gets object associated to a row index
 	 *
-	 * @param integer $row_index 0..n
+	 * @param $row_index integer 0..n
 	 * @return object
 	 */
 	public function getObject($row_index);
@@ -49,7 +49,7 @@ interface List_Data
 	/**
 	 * Gets row associated to a row index
 	 *
-	 * @param integer $row_index
+	 * @param $row_index integer
 	 * @return List_Row
 	 */
 	public function getRow($row_index);
@@ -58,8 +58,8 @@ interface List_Data
 	/**
 	 * Gets displayable value from a list data cell
 	 *
-	 * @param integer $row_index
-	 * @param string $property
+	 * @param $row_index integer
+	 * @param $property string
 	 * @return string
 	 */
 	public function getValue($row_index, $property);

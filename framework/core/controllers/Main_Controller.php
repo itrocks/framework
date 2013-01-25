@@ -32,10 +32,10 @@ class Main_Controller
 	/**
 	 * Run main controller for given uri, get, post and files vars comming from the web call
 	 *
-	 * @param string $uri
-	 * @param array  $get
-	 * @param array  $post
-	 * @param array  $files
+	 * @param $uri string
+	 * @param $get array
+	 * @param $post array
+	 * @param $files array
 	 */
 	public function run($uri, $get, $post, $files)
 	{
@@ -47,10 +47,10 @@ class Main_Controller
 	/**
 	 * Parse URI and run matching controller
 	 *
-	 * @param string $uri
-	 * @param array  $get
-	 * @param array  $post
-	 * @param array  $files
+	 * @param $uri string
+	 * @param $get array
+	 * @param $post array
+	 * @param $files array
 	 */
 	public function runController($uri, $get = array(), $post = array(), $files = array())
 	{
@@ -72,8 +72,8 @@ class Main_Controller
 	/**
 	 * Start PHP session and reload already existing session parameters
 	 *
-	 * @param array $get
-	 * @param array $post
+	 * @param $get array
+	 * @param $post array
 	 */
 	private function sessionStart(&$get, &$post)
 	{

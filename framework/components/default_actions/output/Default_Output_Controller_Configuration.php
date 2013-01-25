@@ -14,7 +14,7 @@ class Default_Output_Controller_Configuration
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Default_Output_Controller_Configuration $set_current
+	 * @param $set_current Default_Output_Controller_Configuration
 	 * @return Default_Output_Controller_Configuration
 	 */
 	public static function current(Default_Output_Controller_Configuration $set_current = null)

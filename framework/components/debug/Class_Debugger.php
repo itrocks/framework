@@ -15,7 +15,7 @@ class Class_Debugger implements Plugin
 	/**
 	 * Advice called after each joinpoint method
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function after(AopJoinpoint $joinpoint)
 	{
@@ -32,7 +32,7 @@ class Class_Debugger implements Plugin
 	/**
 	 * Advice called before each joinpoint method
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function before(AopJoinpoint $joinpoint)
 	{
@@ -48,7 +48,7 @@ class Class_Debugger implements Plugin
 	/**
 	 * Convert arguments list into an html output string
 	 *
-	 * @param mixed[] $arguments
+	 * @param $arguments mixed[]
 	 * @return string
 	 */
 	private static function outputArguments($arguments)

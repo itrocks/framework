@@ -9,8 +9,8 @@ abstract class Mysql_Table_Builder_Mysqli
 	/**
 	 * Builds a Mysql_Table taken from database, using a mysqli connection
 	 *
-	 * @param mysqli $mysqli
-	 * @param string $table_name
+	 * @param $mysqli mysqli
+	 * @param $table_name string
 	 * @return Mysql_Table
 	 */
 	public static function build(mysqli $mysqli, $table_name)

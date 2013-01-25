@@ -8,7 +8,7 @@ class Trashcan implements Plugin
 	/**
 	 * Drop an object into the trashcan (store then delete)
 	 *
-	 * @param object $object
+	 * @param $object object
 	 */
 	public function drop($object)
 	{
@@ -19,7 +19,7 @@ class Trashcan implements Plugin
 	/**
 	 * Store an object into the trashcan
 	 *
-	 * @param object $object
+	 * @param $object object
 	 */
 	public function store($object)
 	{

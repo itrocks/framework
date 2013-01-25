@@ -7,8 +7,8 @@ abstract class Acls_Loader
 
 	//--------------------------------------------------------------------------------- loadGroupAcls
 	/**
-	 * @param Acl_Group $group
-	 * @param Acls_Rights $acls_rights
+	 * @param $group Acl_Group
+	 * @param $acls_rights Acls_Rights
 	 * @return Acls_Rights
 	 */
 	public static function loadGroupAcls(Acl_Group $group, Acls_Rights $acls_rights = null)
@@ -26,8 +26,8 @@ abstract class Acls_Loader
 
 	//---------------------------------------------------------------------------------- loadUserAcls
 	/**
-	 * @param Acls_User $user
-	 * @param Acls_Rights $acls
+	 * @param $user Acls_User
+	 * @param $acls Acls_Rights
 	 * @return Acls_Rights
 	 */
 	public static function loadUserAcls(Acls_User $user, Acls_Rights $acls = null)
@@ -40,7 +40,7 @@ abstract class Acls_Loader
 
 	//---------------------------------------------------------------------------- onUserAuthenticate
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function onUserAuthenticate(AopJoinpoint $joinpoint)
 	{

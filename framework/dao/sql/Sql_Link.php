@@ -53,7 +53,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 *
 	 * Sql_Link inherited classes must implement SQL query calls only into this method.
 	 *
-	 * @param string $query
+	 * @param $query string
 	 * @return mixed  the sql query result set (type and use may depends on each SQL data link)
 	 */
 	protected abstract function executeQuery($query);
@@ -65,8 +65,8 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 * Sql_Link inherited classes must implement fetching result rows only into this method.
 	 * If $class_name is null, a stdClass object will be created.
 	 *
-	 * @param mixed  $result_set The result set : in most cases, will come from executeQuery()
-	 * @param string $class_name The class name to store the result data into
+	 * @param $result_set mixed  The result set : in most cases, will come from executeQuery()
+	 * @param $class_name string The class name to store the result data into
 	 * @return object
 	 */
 	protected abstract function fetch($result_set, $class_name = null);
@@ -77,7 +77,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 *
 	 * Sql_Link inherited classes must implement freeing result sets only into this method.
 	 *
-	 * @param mixed $result_set The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mixed The result set : in most cases, will come from executeQuery()
 	 */
 	protected abstract function free($result_set);
 
@@ -87,8 +87,8 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 *
 	 * Sql_Link inherited classes must implement getting column name only into this method.
 	 *
-	 * @param mixed $result_set The result set : in most cases, will come from executeQuery()
-	 * @param mixed $index The index of the column we want to get the SQL name from
+	 * @param $result_set mixed The result set : in most cases, will come from executeQuery()
+	 * @param $index mixed The index of the column we want to get the SQL name from
 	 * @return string
 	 */
 	protected abstract function getColumnName($result_set, $index);
@@ -99,7 +99,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 *
 	 * Sql_Link inherited classes must implement getting columns count only into this method.
 	 *
-	 * @param mixed $result_set The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mixed The result set : in most cases, will come from executeQuery()
 	 * @return integer
 	 */
 	protected abstract function getColumnsCount($result_set);
@@ -108,7 +108,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	/**
 	 * Sets/returns limit length
 	 *
-	 * @param integer $length
+	 * @param $length integer
 	 * @return integer
 	 */
 	public function limit($length = null)
@@ -123,7 +123,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	/**
 	 * Executes an SQL query and returns the inserted record identifier (if applyable)
 	 *
-	 * @param string $query
+	 * @param $query string
 	 * @return integer
 	 */
 	public abstract function query($query);
@@ -219,7 +219,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	/**
 	 * Set context for sql query
 	 *
-	 * @param mixed $context_object Can be a class name or an array of class names
+	 * @param $context_object mixed Can be a class name or an array of class names
 	 */
 	public abstract function setContext($context_object);
 

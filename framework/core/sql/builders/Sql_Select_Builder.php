@@ -17,10 +17,10 @@ class Sql_Select_Builder
 	 * column_name : column_name must correspond to a property of class
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's type class
 	 *
-	 * @param string        $class base object class name
-	 * @param string[]|null $properties properties paths list
-	 * @param array         $where_array where array expression, indices are columns names
-	 * @param Sql_Link      $sql_link
+	 * @param $class string        base object class name
+	 * @param $properties string[]|null properties paths list
+	 * @param $where_array array         where array expression, indices are columns names
+	 * @param $sql_link Sql_Link
 	 */
 	public function __construct($class, $properties, $where_array = null, Sql_Link $sql_link = null)
 	{

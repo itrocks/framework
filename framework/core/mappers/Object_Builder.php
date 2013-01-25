@@ -15,7 +15,7 @@ class Object_Builder implements Plugin
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string[] $new_classes key is parent class name associated to replacement class
+	 * @param $new_classes string[] key is parent class name associated to replacement class
 	 */
 	public function __construct($new_classes = array())
 	{
@@ -24,7 +24,7 @@ class Object_Builder implements Plugin
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Object_Builder $set_current
+	 * @param $set_current Object_Builder
 	 * @return Object_Builder
 	 */
 	public static function current(Object_Builder $set_current = null)
@@ -36,7 +36,7 @@ class Object_Builder implements Plugin
 	/**
 	 * Return a new instance of given $class_name, using replacement class if exist
 	 *
-	 * @param string $class_name may be short or full class name
+	 * @param $class_name string may be short or full class name
 	 * @return object
 	 */
 	public function newInstance($class_name)
@@ -60,8 +60,8 @@ class Object_Builder implements Plugin
 
 	//---------------------------------------------------------------------- onClassNamePropertyWrite
 	/**
-	 * @param AopJoinpoint $joinpoint
-	 * @param boolean $full
+	 * @param $joinpoint AopJoinpoint
+	 * @param $full boolean
 	 */
 	private static function onClassNamePropertyWrite(AopJoinpoint $joinpoint, $full)
 	{
@@ -82,7 +82,7 @@ class Object_Builder implements Plugin
 
 	//------------------------------------------------------------------ onFullClassNamePropertyWrite
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function onFullClassNamePropertyWrite(AopJoinpoint $joinpoint)
 	{
@@ -91,8 +91,8 @@ class Object_Builder implements Plugin
 
 	//------------------------------------------------------------------------- onMethodWithClassName
 	/**
-	 * @param AopJoinpoint $joinpoint
-	 * @param integer $index
+	 * @param $joinpoint AopJoinpoint
+	 * @param $index integer
 	 */
 	private static function onMethodWithClassName(AopJoinpoint $joinpoint, $index)
 	{
@@ -106,7 +106,7 @@ class Object_Builder implements Plugin
 
 	//------------------------------------------------------------------------ onMethodWithClassName0
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function onMethodWithClassName0(AopJoinpoint $joinpoint)
 	{
@@ -115,7 +115,7 @@ class Object_Builder implements Plugin
 
 	//------------------------------------------------------------------------ onMethodWithClassName1
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function onMethodWithClassName1(AopJoinpoint $joinpoint)
 	{
@@ -124,7 +124,7 @@ class Object_Builder implements Plugin
 
 	//----------------------------------------------------------------- onShortClassNamePropertyWrite
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function onShortClassNamePropertyWrite(AopJoinpoint $joinpoint)
 	{
@@ -156,7 +156,7 @@ class Object_Builder implements Plugin
 	/**
 	 * Gets replacement class name for a parent class name
 	 *
-	 * @param string $class_name can be short or full class name
+	 * @param $class_name string can be short or full class name
 	 * @return string
 	 */
 	public function replacementClassName($class_name)

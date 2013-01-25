@@ -6,7 +6,7 @@ abstract class Names
 
 	//-------------------------------------------------------------------------------- classToDisplay
 	/**
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public static function classToDisplay($class_name)
@@ -16,8 +16,8 @@ abstract class Names
 
 	//--------------------------------------------------------------------------------- classToMethod
 	/**
-	 * @param string $class_name
-	 * @param string $prefix
+	 * @param $class_name string
+	 * @param $prefix string
 	 * @return string
 	 */
 	public static function classToMethod($class_name, $prefix = null)
@@ -28,7 +28,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------- classToProperty
 	/**
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public static function classToProperty($class_name)
@@ -38,7 +38,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------------ classToSet
 	/**
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public static function classToSet($class_name)
@@ -48,7 +48,7 @@ abstract class Names
 
 	//----------------------------------------------------------------------------- displayToProperty
 	/**
-	 * @param string $display
+	 * @param $display string
 	 * @return string
 	 */
 	public static function displayToProperty($display)
@@ -58,7 +58,7 @@ abstract class Names
 
 	//--------------------------------------------------------------------------------- methodToClass
 	/**
-	 * @param string $method_name
+	 * @param $method_name string
 	 * @return string
 	 */
 	public static function methodToClass($method_name)
@@ -68,7 +68,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------- methodToDisplay
 	/**
-	 * @param string $method_name
+	 * @param $method_name string
 	 * @return string
 	 */
 	public static function methodToDisplay($method_name)
@@ -78,7 +78,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------ methodToProperty
 	/**
-	 * @param string $method_name
+	 * @param $method_name string
 	 * @return string
 	 */
 	public static function methodToProperty($method_name)
@@ -92,7 +92,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------- propertyToClass
 	/**
-	 * @param string $property_name
+	 * @param $property_name string
 	 * @return string
 	 */
 	public static function propertyToClass($property_name)
@@ -102,7 +102,7 @@ abstract class Names
 
 	//----------------------------------------------------------------------------- propertyToDisplay
 	/**
-	 * @param string $property_name
+	 * @param $property_name string
 	 * @return string
 	 */
 	public static function propertyToDisplay($property_name)
@@ -112,8 +112,8 @@ abstract class Names
 
 	//------------------------------------------------------------------------------ propertyToMethod
 	/**
-	 * @param string $property_name
-	 * @param string $prefix
+	 * @param $property_name string
+	 * @param $prefix string
 	 * @return string
 	 */
 	public static function propertyToMethod($property_name, $prefix = null)
@@ -128,7 +128,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------------ setToClass
 	/**
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public static function setToClass($class_name)

@@ -13,7 +13,7 @@ abstract class Html_Session implements Plugin
 	 *
 	 * This is done at end of html templates parsing.
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function postSessionId(AopJoinpoint $joinpoint)
 	{

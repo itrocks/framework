@@ -14,7 +14,7 @@ abstract class Mysql_Table_Builder_Class
 	 * A Php class becomes a Mysql_Table
 	 * Non-static properties of the class will become Mysql_Column objects
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return Mysql_Table
 	 */
 	public static function build($class_name)
@@ -25,7 +25,7 @@ abstract class Mysql_Table_Builder_Class
 		$table->columns["id"] = Mysql_Column_Builder_Property::buildId();
 		foreach ($class->accessProperties() as $property) {
 			$type = $property->getType();
-			if ((($type === "string[]") || !Type::isMultiple($type)) && !$property->isStatic()) {
+			if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
 				$column = Mysql_Column_Builder_Property::build($property);
 				$table->columns[$column->getName()] = $column;
 			}

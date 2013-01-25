@@ -26,7 +26,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 * Specific Aop::getMethod() setters are allowed shortcuts for SAF\Framework\Aop_Setter::getMethod().
 	 *
 	 * @todo check phpdoc
-	 * @param string $class_name
+	 * @param $class_name string
 	 */
 	public static function registerSetters($class_name)
 	{
@@ -37,7 +37,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	/**
 	 * AOP auto-registerer call (to register after Autoloader->autoload(), crashes with AOP-PHP 0.2.0)
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function registerSettersAop(AopJoinpoint $joinpoint)
 	{
@@ -58,7 +58,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 * When setting an object, set its object identifier too
 	 *
 	 * @todo unused : please test it
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function setObject(AopJoinpoint $joinpoint)
 	{

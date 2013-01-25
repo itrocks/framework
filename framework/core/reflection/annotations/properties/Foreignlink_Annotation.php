@@ -16,10 +16,7 @@ class Foreignlink_Annotation extends Annotation
 	{
 		parent::__construct($value);
 		if (!$this->value) {
-			$this->value = Names::classToProperty($reflection_property->getType("var"));
-			if (substr($this->value, -1) === "]") {
-				$this->value = substr($this->value, 0, strpos($this->value, "["));
-			}
+			$this->value = $reflection_property->getType()->getElementTypeAsString();
 		}
 	}
 

@@ -8,7 +8,7 @@ interface Dao_Key extends Field
 	/**
 	 * Returns true if the key is an equivalent of the other key
 	 *
-	 * @param Dao_Key $key
+	 * @param $key Dao_Key
 	 */
 	public function equiv($key);
 

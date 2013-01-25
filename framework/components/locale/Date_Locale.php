@@ -17,7 +17,7 @@ class Date_Locale
 	 *
 	 * Default date format, if none told, is ISO "Y-m-d"
 	 *
-	 * @param string $format ie "d/m/Y" for french date format
+	 * @param $format string ie "d/m/Y" for french date format
 	 */
 	public function __construct($format = null)
 	{
@@ -33,7 +33,7 @@ class Date_Locale
 	/**
 	 * Takes a locale date and make it ISO
 	 *
-	 * @param string $date ie "25/12/2001" "25/12/2001 12:20" "25/12/2001 12:20:16"
+	 * @param $date string ie "25/12/2001" "25/12/2001 12:20" "25/12/2001 12:20:16"
 	 * @return string ie "2001-12-25" "2001-12-25 12:20:00" "2001-12-25 12:20:16"
 	 */
 	public function toIso($date)
@@ -62,7 +62,7 @@ class Date_Locale
 	/**
 	 * Takes an ISO date and make it locale
 	 *
-	 * @param string $date ie "2001-12-25" "2001-12-25 12:20:00" "2001-12-25 12:20:16"
+	 * @param $date string ie "2001-12-25" "2001-12-25 12:20:00" "2001-12-25 12:20:16"
 	 * @return string "25/12/2011" "25/12/2001 12:20" "25/12/2001 12:20:16"
 	 */
 	public function toLocale($date)

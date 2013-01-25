@@ -8,8 +8,8 @@ abstract class MLocks
 	/**
 	 * Lock an object's method call
 	 *
-	 * @param object $object
-	 * @param string $method_name
+	 * @param $object object
+	 * @param $method_name string
 	 * @return boolean
 	 */
 	public static function lock($object, $method_name)
@@ -21,8 +21,8 @@ abstract class MLocks
 	/**
 	 * Unlock an object's method call
 	 *
-	 * @param object $object
-	 * @param string $method_name
+	 * @param $object object
+	 * @param $method_name string
 	 */
 	public static function unlock($object, $method_name)
 	{

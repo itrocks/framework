@@ -8,8 +8,8 @@ class List_Controller_Acls implements Plugin
 	//------------------------------------------------------------------------------- addListProperty
 	/**
 	 * Add list properties list from acls
-	 * @param String $class_name
-	 * @param String $property_name
+	 * @param $class_name String
+	 * @param $property_name String
 	 */
 	public static function addListProperty($class_name, $property_name)
 	{
@@ -31,7 +31,7 @@ class List_Controller_Acls implements Plugin
 	/**
 	 * Get list properties list from acls
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string[]
 	 */
 	public static function getListProperties($class_name)
@@ -43,7 +43,7 @@ class List_Controller_Acls implements Plugin
 
 	//------------------------------------------------ onListControllerConfigurationGetListProperties
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function onListControllerGetListProperties(AopJoinpoint $joinpoint)
 	{

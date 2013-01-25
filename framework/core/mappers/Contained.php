@@ -22,7 +22,7 @@ interface Contained
 	/**
 	 * Set parents object
 	 *
-	 * @param object $object
+	 * @param $object object
 	 * @return Contained
 	 */
 	public function setParent($object);

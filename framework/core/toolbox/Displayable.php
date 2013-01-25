@@ -19,8 +19,8 @@ class Displayable extends String
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $value
-	 * @param string $type the type of the displayable object : class, method, property or string
+	 * @param $value string
+	 * @param $type string the type of the displayable object : class, method, property or string
 	 */
 	public function __construct($value, $type)
 	{

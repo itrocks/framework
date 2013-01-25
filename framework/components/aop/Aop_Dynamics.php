@@ -25,7 +25,7 @@ class Aop_Dynamics implements Plugin
 	/**
 	 * Constructor with default links
 	 *
-	 * @param array[] $links
+	 * @param $links array[]
 	 */
 	public function __construct($links = array())
 	{
@@ -43,7 +43,7 @@ class Aop_Dynamics implements Plugin
 	 * 3 : the advice class name (can be short or long)
 	 * 4 : the name of the static method to call into the advice class
 	 *
-	 * @param array[] $links key is the short / long class name
+	 * @param $links array[] key is the short / long class name
 	 */
 	public function add($links)
 	{
@@ -52,7 +52,7 @@ class Aop_Dynamics implements Plugin
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Aop_Dynamics $set_current
+	 * @param $set_current Aop_Dynamics
 	 * @return Aop_Dynamics
 	 */
 	public static function current(Aop_Dynamics $set_current = null)
@@ -62,9 +62,9 @@ class Aop_Dynamics implements Plugin
 
 	//------------------------------------------------------------------------------------- linkClass
 	/**
-	 * Register callback advices for joinpoints associated to the class name 
+	 * Register callback advices for joinpoints associated to the class name
 	 *
-	 * @param string $class_name class name can be short or long
+	 * @param $class_name string class name can be short or long
 	 */
 	private function linkClass($class_name)
 	{
@@ -90,7 +90,7 @@ class Aop_Dynamics implements Plugin
 	 *
 	 * This is the joinpoint form of linkClass(), designed to be called at Autoloader::autoload()'s end
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function linkClassAop(AopJoinpoint $joinpoint)
 	{

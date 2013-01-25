@@ -21,7 +21,7 @@ class Trashcan_Drop_Controller implements Feature_Controller
 
 	//----------------------------------------------------------------------------------- parseAndRun
 	/**
-	 * @param mixed[] $parameters
+	 * @param $parameters mixed[]
 	 */
 	private function parseAndRun($parameters)
 	{
@@ -47,10 +47,10 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	/**
 	 * Remove element(s) of a given class from context
 	 *
-	 * @param string $class_name The element class name
-	 * @param string $context_class_name The context class where to remove the element from
-	 * @param string $context_feature The context feature to remove the element from
-	 * @param mixed[] $parameters The elements to be removed, and additional parameters
+	 * @param $class_name string The element class name
+	 * @param $context_class_name string The context class where to remove the element from
+	 * @param $context_feature string The context feature to remove the element from
+	 * @param $parameters mixed[] The elements to be removed, and additional parameters
 	 */
 	private function removeElement($class_name, $context_class_name, $context_feature, $parameters)
 	{

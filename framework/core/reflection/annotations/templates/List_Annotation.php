@@ -10,7 +10,7 @@ abstract class List_Annotation extends Annotation
 	 *
 	 * @var string[]
 	 */
-	protected $value;
+	public $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -18,7 +18,7 @@ abstract class List_Annotation extends Annotation
 	 * Spaces before and after commas are ignored.
 	 *
 	 * @example "@values First value, Second one, etc"
-	 * @param string $value
+	 * @param $value string
 	 */
 	public function __construct($value)
 	{
@@ -61,11 +61,11 @@ abstract class List_Annotation extends Annotation
 		parent::__construct($values);
 	}
 
-	//------------------------------------------------------------------------------------------- get
+	//---------------------------------------------------------------------------------------- values
 	/**
 	 * @return string[]
 	 */
-	public function get()
+	public function values()
 	{
 		return $this->value;
 	}

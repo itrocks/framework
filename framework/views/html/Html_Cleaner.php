@@ -7,7 +7,7 @@ abstract class Html_Cleaner implements Plugin
 
 	//----------------------------------------------------------------------------------------- clean
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function clean(AopJoinpoint $joinpoint)
 	{

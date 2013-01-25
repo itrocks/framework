@@ -50,7 +50,7 @@ abstract class Aop
 
 	//----------------------------------------------------------------------------- propertyJoinpoint
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function propertyJoinpoint(AopJoinpoint $joinpoint)
 	{
@@ -72,9 +72,9 @@ abstract class Aop
 
 	//---------------------------------------------------------------------------- registerProperties
 	/**
-	 * @param string $class_name
-	 * @param string $annotation ie "getter", "setter"
-	 * @param string $function ie "read", "write"
+	 * @param $class_name string
+	 * @param $annotation string ie "getter", "setter"
+	 * @param $function string ie "read", "write"
 	 */
 	public static function registerProperties($class_name, $annotation, $function)
 	{
@@ -82,7 +82,7 @@ abstract class Aop
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->getProperties() as $property) {
 				if ($property->class == $class_name) {
-					$call = $property->getAnnotation($annotation)->get();
+					$call = $property->getAnnotation($annotation)->value;
 					if ($call) {
 						if (substr($call, 0, 5) === "Aop::") {
 							Aop::add("before",

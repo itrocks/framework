@@ -6,7 +6,7 @@ abstract class List_Controller extends Output_Controller
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return Button[]
 	 */
 	protected function getSelectionButtons($class_name)

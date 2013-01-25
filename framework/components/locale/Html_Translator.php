@@ -41,7 +41,7 @@ abstract class Html_Translator implements Plugin
 	 * Translate terms from html pages
 	 * This is done at end of html templates parsing
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function translatePage(AopJoinpoint $joinpoint)
 	{

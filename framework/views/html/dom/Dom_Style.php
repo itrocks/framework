@@ -18,8 +18,8 @@ class Dom_Style
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $key
-	 * @param string $value
+	 * @param $key string
+	 * @param $value string
 	 */
 	public function __construct($key = null, $value = null)
 	{

@@ -9,10 +9,11 @@
 	 * call this.build() after you add dom elements (ie dynamic javascript add, ajax calls) to apply the same changes
 	 *
 	 * @param callback function the callback function
-	 * @param call_now boolean default is true
+	 * @param call_now boolean optional default true
 	 */
-	$.fn.build = function(callback, call_now)
+	$.fn.build = function (callback, call_now)
 	{
+		call_now = call_now || true;
 		if (callback != undefined) {
 			jquery_build_callback.push(callback);
 			if ((call_now == undefined) || call_now) {

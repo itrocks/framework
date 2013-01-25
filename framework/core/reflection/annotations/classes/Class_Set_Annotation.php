@@ -6,8 +6,8 @@ class Class_Set_Annotation extends Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $value
-	 * @param Reflection_Class $class
+	 * @param $value string
+	 * @param $class Reflection_Class
 	 */
 	public function __construct($value, Reflection_Class $class)
 	{

@@ -2,6 +2,7 @@ $("document").ready(function() {
 
 	$("form").build(function() {
 		var $this = $(this);
+		var app = window.app;
 
 		// .autoheight
 		var autoheight_function = function() {
@@ -79,7 +80,8 @@ $("document").ready(function() {
 		});
 
 		$this.find("table.collection").each(function() {
-			this.saf_add = $(this).find("tr.new").clone();
+			var $this = $(this);
+			$this.data("saf_add", $this.find("tr.new").clone());
 		});
 
 		$this.find("input, textarea").focus(function() {
@@ -87,9 +89,9 @@ $("document").ready(function() {
 			if ($tr.length && !$tr.next("tr").length) {
 				var $collection = $tr.closest("table.collection");
 				if ($collection.length) {
-					var table = $collection[0];
-					var $new_row = table.saf_add.clone();
-					$(table).children("tbody").append($new_row);
+					var $table = $($collection[0]);
+					var $new_row = $table.data("saf_add").clone();
+					$table.children("tbody").append($new_row);
 					$new_row.build();
 				}
 			}
@@ -97,9 +99,9 @@ $("document").ready(function() {
 
 		// .datetime
 		$this.find("input.datetime").datepicker({
-			dateFormat: dateFormatToDatepicker(date_format),
-			showOn: "button",
-			showOtherMonths: true,
+			dateFormat:        app.date_format,
+			showOn:            "button",
+			showOtherMonths:   true,
 			selectOtherMonths: true
 		});
 

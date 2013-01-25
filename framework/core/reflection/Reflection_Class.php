@@ -65,8 +65,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * If a property overrides a parent property, parent AND child properties will be listed (only if $by_name keeps false).
 	 * If $by_name is set to true, result array will be indiced by names. With this option parent properties will be replace by overriden child properties.
 	 *
-	 * @param string  $filter
-	 * @param boolean $by_name
+	 * @param $filter string
+	 * @param $by_name boolean
 	 * @return Reflection_Property[]
 	 */
 	public function getAllProperties($filter = Reflection_Property::ALL, $by_name = true)
@@ -99,7 +99,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Return doc comment of the class
 	 *
-	 * @param boolean $get_parents if true, get doc comment of parent classes too
+	 * @param $get_parents boolean if true, get doc comment of parent classes too
+	 * @return string
 	 */
 	public function getDocComment($get_parents = false)
 	{
@@ -125,12 +126,15 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Return Reflection_Class instance for a class name, an object or a php ReflectionClass object
 	 *
-	 * @param string | object | ReflectionClass $of_class
+	 * @param $of_class string|object|ReflectionClass|Type
 	 * @return Reflection_Class
 	 */
 	public static function getInstanceOf($of_class)
 	{
-		if ($of_class instanceof ReflectionClass) {
+		if ($of_class instanceof Type) {
+			$of_class = $of_class->asString();
+		}
+		elseif ($of_class instanceof ReflectionClass) {
 			$of_class = $of_class->name;
 		}
 		elseif (is_object($of_class)) {
@@ -155,7 +159,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Gets interfaces
 	 *
-	 * @param boolean $by_name
+	 * @param $by_name boolean
 	 * @return Reflection_Class[]
 	 */
 	public function getInterfaces($by_name = true)
@@ -188,8 +192,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * Only methods visible for current class are retrieved, not the privates ones from parents or traits.
 	 *
-	 * @param string $filter any combination of Reflection_Method::IS_* constants
-	 * @param boolean $by_name if true, only the last override of each method name will be kept
+	 * @param $filter string any combination of Reflection_Method::IS_* constants
+	 * @param $by_name boolean if true, only the last override of each method name will be kept
 	 * @return Reflection_Method[] indice is the method name if $by_name is true, else this will be an integer
 	 */
 	public function getMethods($filter = Reflection_Method::ALL, $by_name = true)
@@ -220,8 +224,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * Properties visible for current class, not the privates ones from parents and traits are retrieved.
 	 *
-	 * @param string $filter any combination of Reflection_Property::IS_* constants
-	 * @param boolean $by_name if true, only the last override of each property will be kept
+	 * @param $filter string any combination of Reflection_Property::IS_* constants
+	 * @param $by_name boolean if true, only the last override of each property will be kept
 	 * @return Reflection_Property[] indice is the property name if $by_name is true, else this will be an integer
 	 */
 	public function getProperties($filter = Reflection_Property::ALL, $by_name = true)
@@ -252,7 +256,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Gets traits
 	 *
-	 * @param boolean $by_name
+	 * @param $by_name boolean
 	 * @return Reflection_Class[]
 	 */
 	public function getTraits($by_name = true)

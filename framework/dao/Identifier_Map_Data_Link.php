@@ -17,7 +17,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 * A null value will be returned for an object that is not linked to data link.
 	 * If $object is already an identifier, the identifier is returned.
 	 *
-	 * @param object $object
+	 * @param $object object
 	 * @return mixed
 	 */
 	public function getObjectIdentifier($object)
@@ -29,7 +29,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	/**
 	 * Changes an object into an array associating properties and their values
 	 *
-	 * @param array|object $object if already an array, nothing will be done
+	 * @param $object array|object if already an array, nothing will be done
 	 * @return mixed[] indices ar properties paths
 	 */
 	protected function objectToProperties($object)
@@ -56,7 +56,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 * You can use this to clone objects into data links.
 	 * This must be called when an object is deleted from data link, too.
 	 *
-	 * @param object $object
+	 * @param $object object
 	 */
 	protected function removeObjectIdentifier($object)
 	{
@@ -77,8 +77,8 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 *
 	 * Use it after an object is read from data link to associate it's identifier to it.
 	 *
-	 * @param object $object
-	 * @param mixed  $id
+	 * @param $object object
+	 * @param $id mixed
 	 * @return Identifier_Map_Data_Link
 	 */
 	protected function setObjectIdentifier($object, $id)

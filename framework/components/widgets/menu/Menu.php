@@ -35,7 +35,7 @@ class Menu
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Menu $set_current
+	 * @param $set_current Menu
 	 * @return Menu
 	 */
 	public static function current(Menu $set_current = null)

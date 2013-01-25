@@ -12,7 +12,7 @@
 	 *   $("#sample"].classVar("new", 1);             // will add a "new:1" class
 	 * @param var_name string
 	 * @param set_value string
-	 * @return string
+	 * @return string|undefined
 	 */
 	$.fn.classVar = function(var_name, set_value)
 	{
@@ -40,7 +40,7 @@
 			else {
 				this.attr("class", var_name + set_value);
 			}
-			return $set_value;
+			return set_value;
 		}
 		return undefined;
 	}

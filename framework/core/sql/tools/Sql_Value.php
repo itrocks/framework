@@ -52,7 +52,7 @@ abstract class Sql_Value
 	 *
 	 * Checks if value contains non-escaped "%" or "_".
 	 *
-	 * @param mixed $value
+	 * @param $value mixed
 	 * @return string
 	 */
 	public static function isLike($value)

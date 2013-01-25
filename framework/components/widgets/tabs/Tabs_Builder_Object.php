@@ -16,14 +16,14 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	public static function build($object)
 	{
 		$class = Reflection_Class::getInstanceOf(get_class($object));
-		$tab_annotations = $class->getAnnotation("group");
+		/** @var $group_annotations Class_Group_Annotation[] */
+		$group_annotations = $class->getAnnotations("group");
 		$properties = $class->accessProperties();
 		foreach ($properties as $property_name => $property) {
-			$property->display = Names::propertyToDisplay($property_name);
-			$property->value = $object->$property_name;
+			$properties[$property_name] = new Reflection_Property_Value($property, $object);
 		}
 		$class->accessPropertiesDone();
-		return parent::buildProperties($properties, $tab_annotations);
+		return parent::buildProperties($properties, $group_annotations);
 	}
 
 }

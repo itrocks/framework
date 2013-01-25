@@ -11,9 +11,9 @@ abstract class Acls implements Plugin
 	 * To write result rights using Dao, call Dao::write(Acls_User::current()->group) after add.
 	 * If you do not write them, modified Acls will keep active for current session only.
 	 *
-	 * @param string    $key
-	 * @param mixed     $value default is true
-	 * @param Acl_Group $group default is current user group
+	 * @param $key string
+	 * @param $value mixed     default is true
+	 * @param $group Acl_Group default is current user group
 	 */
 	public static function add($key, $value = null, $group = null)
 	{
@@ -67,8 +67,8 @@ abstract class Acls implements Plugin
 	 * To write result rights using Dao, call Dao::write(Acls_User::current()->group) after remove
 	 * If you do not write them, modified Acls will keep active for current session only.
 	 *
-	 * @param string    $key
-	 * @param Acl_Group $group default is current use group
+	 * @param $key string
+	 * @param $group Acl_Group default is current use group
 	 */
 	public static function remove($key, $group = null)
 	{

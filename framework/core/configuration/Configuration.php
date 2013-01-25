@@ -19,7 +19,7 @@ class Configuration
 	 *
 	 * Default configuration is set to the configuration if the "default" option is set to true.
 	 *
-	 * @param array $configuration_options recursive configuration array from the config.php file 
+	 * @param $configuration_options array recursive configuration array from the config.php file
 	 */
 	public function __construct($configuration_options)
 	{
@@ -37,7 +37,7 @@ class Configuration
 	 *
 	 * When current configuration is set, each "class" property is changed into it's current object initialised with configuration parameters
 	 *
-	 * @param Configuration $set_current
+	 * @param $set_current Configuration
 	 * @return Configuration
 	 */
 	public static function current(Configuration $set_current = null)

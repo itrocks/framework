@@ -17,7 +17,7 @@ class Output_Controller_Acls implements Plugin
 
 	//----------------------------------------------------------- onOutputControllerGetPropertiesList
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function onOutputControllerGetPropertiesList(AopJoinpoint $joinpoint)
 	{

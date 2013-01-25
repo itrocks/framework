@@ -13,7 +13,7 @@ abstract class Locks
 	 * If lock name is still locked : return false
 	 * If lock name is unlocked : return true
 	 *
-	 * @param string $lock_name
+	 * @param $lock_name string
 	 * @return boolean
 	 */
 	public static function delock($lock_name)
@@ -50,7 +50,7 @@ abstract class Locks
 	/**
 	 * Unlock the given lock name, even if it has been locked several times
 	 *
-	 * @param string $lock_name
+	 * @param $lock_name string
 	 */
 	public static function unlock($lock_name)
 	{

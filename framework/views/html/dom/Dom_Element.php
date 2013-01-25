@@ -49,7 +49,7 @@ abstract class Dom_Element
 
 	//-------------------------------------------------------------------------------------- addClass
 	/**
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return Dom_Attribute
 	 */
 	public function addClass($class_name)
@@ -66,7 +66,7 @@ abstract class Dom_Element
 
 	//---------------------------------------------------------------------------------- getAttribute
 	/**
-	 * @param string $name
+	 * @param $name string
 	 * @return Dom_Attribute
 	 */
 	public function getAttribute($name)
@@ -76,7 +76,7 @@ abstract class Dom_Element
 
 	//--------------------------------------------------------------------------------- getAttributes
 	/**
-	 * @param string $name
+	 * @param $name string
 	 * @return :Dom_Attribute[]
 	 */
 	public function getAttributes()
@@ -86,8 +86,8 @@ abstract class Dom_Element
 
 	//---------------------------------------------------------------------------------- setAttribute
 	/**
-	 * @param string $name
-	 * @param string $value
+	 * @param $name string
+	 * @param $value string
 	 * @return Dom_Attribute
 	 */
 	public function setAttribute($name, $value)
@@ -100,7 +100,7 @@ abstract class Dom_Element
 
 	//---------------------------------------------------------------------------------- setAttribute
 	/**
-	 * @param Dom_Attribute $attr
+	 * @param $attr Dom_Attribute
 	 * @return Dom_Attribute
 	 */
 	public function setAttributeNode(Dom_Attribute $attr)

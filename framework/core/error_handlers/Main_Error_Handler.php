@@ -8,7 +8,7 @@ class Main_Error_Handler implements Error_Handler
 	/**
 	 * This is the framework's main "simple" error handler : simple display of the error
 	 *
-	 * @param Handled_Error $error
+	 * @param $error Handled_Error
 	 */
 	public function handle(Handled_Error $error)
 	{

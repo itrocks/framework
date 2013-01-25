@@ -7,7 +7,7 @@ class Session
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Session $set_current
+	 * @param $set_current Session
 	 * @return Session
 	 */
 	public static function current(Session $set_current = null)
@@ -19,7 +19,7 @@ class Session
 	/**
 	 * Get the object of class $class_name from session
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return object | null
 	 */
 	public function get($class_name)
@@ -42,12 +42,12 @@ class Session
 	/**
 	 * Get all objects from session having $class_name as class or parent class
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return object[] key is the class name of the object
 	 */
 	public function getAny($class_name)
 	{
-		$get = array(); 
+		$get = array();
 		foreach ($this->getAll() as $key => $value) {
 			if (isset(class_parents($key)[$class_name])) {
 				$get[$key] = $value;
@@ -60,7 +60,7 @@ class Session
 	/**
 	 * Remove an object from session
 	 *
-	 * @param string | object $object_class
+	 * @param $object_class string | object
 	 */
 	public function remove($object_class)
 	{
@@ -71,7 +71,7 @@ class Session
 	/**
 	 * Remove any session variable that has $object_class as class or parent class
 	 *
-	 * @param string | object $object_class
+	 * @param $object_class string | object
 	 */
 	public function removeAny($object_class)
 	{
@@ -88,8 +88,8 @@ class Session
 	/**
 	 * Set a session's object
 	 *
-	 * @param object $object can be null (then nothing is set)
-	 * @param string $class_name if not set, object class will be the session object identifier
+	 * @param $object object can be null (then nothing is set)
+	 * @param $class_name string if not set, object class will be the session object identifier
 	 */
 	public function set($object, $class_name = null)
 	{

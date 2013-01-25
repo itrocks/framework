@@ -18,7 +18,7 @@ abstract class Translation_String_Composer implements Plugin
 
 	//----------------------------------------------------------------------------------- onTranslate
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $joinpoint AopJoinpoint
 	 * @return string
 	 */
 	public static function onTranslate(AopJoinpoint $joinpoint)

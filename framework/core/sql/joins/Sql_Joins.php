@@ -56,8 +56,8 @@ class Sql_Joins
 	/**
 	 * Construct Sql_Joins object and prepare joins for a list of property paths
 	 *
-	 * @param string $starting_class_name the class name for the root of property paths
-	 * @param array $paths a property paths list to add at construction
+	 * @param $starting_class_name string the class name for the root of property paths
+	 * @param $paths array a property paths list to add at construction
 	 */
 	public function __construct($starting_class_name, $paths = array())
 	{
@@ -75,8 +75,8 @@ class Sql_Joins
 	/**
 	 * Adds a property path to the joins list
 	 *
-	 * @param string  $path full path to desired property, starting from starting class
-	 * @param integer $depth for internal use : please do not use this
+	 * @param $path string  full path to desired property, starting from starting class
+	 * @param $depth integer for internal use : please do not use this
 	 * @return Sql_Join the added join, or null if $path does not generate any join
 	 */
 	public function add($path, $depth = 0)
@@ -100,11 +100,11 @@ class Sql_Joins
 
 	//----------------------------------------------------------------------------------- addFinalize
 	/**
-	 * @param Sql_Join $join
-	 * @param string   $master_path
-	 * @param string   $foreign_class_name
-	 * @param string   $foreign_path
-	 * @param integer  $depth
+	 * @param $join Sql_Join
+	 * @param $master_path string
+	 * @param $foreign_class_name string
+	 * @param $foreign_path string
+	 * @param $depth integer
 	 * @return Sql_Join
 	 */
 	private function addFinalize(
@@ -128,12 +128,12 @@ class Sql_Joins
 
 	//--------------------------------------------------------------------------------- addLinkedJoin
 	/**
-	 * @param Sql_Join $join
-	 * @param string $master_path
-	 * @param Reflection_Property $master_property
-	 * @param string $foreign_path
-	 * @param string $foreign_class_name
-	 * @param string $foreign_property_name
+	 * @param $join Sql_Join
+	 * @param $master_path string
+	 * @param $master_property Reflection_Property
+	 * @param $foreign_path string
+	 * @param $foreign_class_name string
+	 * @param $foreign_property_name string
 	 */
 	private function addLinkedJoin(
 		Sql_Join $join, $master_path, Reflection_Property $master_property,
@@ -157,7 +157,7 @@ class Sql_Joins
 			$linked_join, $master_path, $foreign_class_name, $foreign_path, 1
 		);
 		$join->foreign_column = "id";
-		$join->master_column = "id_" . $master_property->getAnnotation("foreignlink");
+		$join->master_column = "id_" . $master_property->getAnnotation("foreignlink")->value;
 		$join->master_alias = $linked_join->foreign_alias;
 		$this->linked_tables[$linked_join->foreign_table] = array(
 			$join->master_column, $linked_join->foreign_column
@@ -168,7 +168,7 @@ class Sql_Joins
 	/**
 	 * Adds multiple properties paths to the joins list
 	 *
-	 * @param string[] $paths_array
+	 * @param $paths_array string[]
 	 * @return Sql_Joins
 	 */
 	public function addMultiple($paths_array)
@@ -181,8 +181,8 @@ class Sql_Joins
 
 	//-------------------------------------------------------------------------------- addReverseJoin
 	/**
-	 * @param Sql_Join $join
-	 * @param string   $master_property_name
+	 * @param $join Sql_Join
+	 * @param $master_property_name string
 	 * @return string
 	 */
 	private function addReverseJoin(Sql_Join $join, $master_property_name)
@@ -202,10 +202,10 @@ class Sql_Joins
 
 	//--------------------------------------------------------------------------------- addSimpleJoin
 	/**
-	 * @param Sql_Join $join
-	 * @param string   $master_path
-	 * @param string   $master_property_name
-	 * @param string   $foreign_path
+	 * @param $join                 Sql_Join
+	 * @param $master_path          string
+	 * @param $master_property_name string
+	 * @param $foreign_path         string
 	 * @return string
 	 */
 	private function addSimpleJoin(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
@@ -213,18 +213,19 @@ class Sql_Joins
 		$foreign_class_name = null;
 		$master_property = $this->getProperty($master_path, $master_property_name);
 		if ($master_property) {
-			$foreign_class_name = $master_property->getType();
-			if ($foreign_class_name === "string[]") {
+			$foreign_type = $master_property->getType();
+			if ($foreign_type->isMultiple() && ($foreign_type->getElementTypeAsString() == "string")) {
 				// TODO : string[] can have multiple implementations, depending on database engine
 				// linked strings table, mysql's set.. should find a way to make this common without
 				// knowing anything about the specific
+				$foreign_class_name = $foreign_type->asString();
 			}
-			elseif (!Type::isBasic($foreign_class_name)) {
+			elseif (!$foreign_type->isBasic()) {
 				$join->mode = $master_property->getAnnotation("mandatory")->value
 					? Sql_Join::INNER
 					: Sql_Join::LEFT;
-				if ($single_class_name = Type::isMultiple($foreign_class_name)) {
-					$foreign_class_name = Namespaces::fullClassName($single_class_name);
+				if ($foreign_type->isMultiple()) {
+					$foreign_class_name = $foreign_type->getElementType();
 					$foreign_property_name = $master_property->getAnnotation("foreign")->value;
 					if (property_exists($foreign_class_name, $foreign_property_name)) {
 						$join->foreign_column = "id_" . $foreign_property_name;
@@ -238,7 +239,7 @@ class Sql_Joins
 					}
 				}
 				else {
-					$foreign_class_name = Namespaces::fullClassName($foreign_class_name);
+					$foreign_class_name = $foreign_type->asString();
 					$join->master_column  = "id_" . $master_property_name;
 					$join->foreign_column = "id";
 				}
@@ -251,7 +252,7 @@ class Sql_Joins
 	/**
 	 * Gets foreign table alias for a given property path
 	 *
-	 * @param string $path
+	 * @param $path string
 	 * @return string
 	 */
 	public function getAlias($path)
@@ -289,7 +290,7 @@ class Sql_Joins
 	/**
 	 * Gets Sql_Join object for a given property path
 	 *
-	 * @param string $path full property path
+	 * @param $path string full property path
 	 * @return Sql_Join may be null if no join have been generated with $path
 	 */
 	public function getJoin($path)
@@ -324,7 +325,7 @@ class Sql_Joins
 	/**
 	 * Gets the list of Reflection_Property objects for a given property path
 	 *
-	 * @param string $master_path
+	 * @param $master_path string
 	 * @return Reflection_Property[]
 	 */
 	public function getProperties($master_path)
@@ -337,8 +338,8 @@ class Sql_Joins
 	/**
 	 * Gets a Reflection_Property object for a given property path
 	 *
-	 * @param string $master_path
-	 * @param string $property_name
+	 * @param $master_path string
+	 * @param $property_name string
 	 * @return Reflection_Property
 	 */
 	private function getProperty($master_path, $property_name)
@@ -353,8 +354,8 @@ class Sql_Joins
 	 *
 	 * Construct Sql_Joins object and prepare joins for a list of property paths.
 	 *
-	 * @param string $starting_class_name the class name for the root of property paths
-	 * @param array $paths a property paths list to add at construction
+	 * @param $starting_class_name string the class name for the root of property paths
+	 * @param $paths array a property paths list to add at construction
 	 * @return Sql_Joins
 	 */
 	public static function newInstance($starting_class_name, $paths = array())

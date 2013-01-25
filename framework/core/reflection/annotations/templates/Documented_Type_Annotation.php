@@ -17,7 +17,7 @@ abstract class Documented_Type_Annotation extends Annotation
 	 * Annotation string value is a value type separated from a a documentation with a single space
 	 *
 	 * @example "@var Class_Name A documentation text can come after that"
-	 * @param string $value
+	 * @param $value string
 	 */
 	public function __construct($value)
 	{

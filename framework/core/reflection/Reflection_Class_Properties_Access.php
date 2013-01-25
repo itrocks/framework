@@ -41,7 +41,7 @@ abstract class Reflection_Class_Properties_Access
 	 * Accessibility should be set back with a call to done() after use.
 	 * If class properties are set to accessible several times, they will become non-accessible after the same number of done() calls.
 	 *
-	 * @param Reflection_Class $class
+	 * @param $class Reflection_Class
 	 * @return Reflection_Property[]
 	 * @see Reflection_Class::accessProperties()
 	 */
@@ -83,7 +83,7 @@ abstract class Reflection_Class_Properties_Access
 	 * This must be called after the properties used with access() are no longer needed as accessible.
 	 * If more than one access() has been called for the class, the release will be done only on the last done() access.
 	 *
-	 * @param Reflection_Class $class
+	 * @param $class Reflection_Class
 	 * @see Reflection_Class::accessPropertiesDone()
 	 */
 	public static function done(Reflection_Class $class)

@@ -29,7 +29,7 @@ class Configurations
 	/**
 	 * Get the named $configuration_name Configuration object
 	 *
-	 * @param string $configuration_name
+	 * @param $configuration_name string
 	 * @return Configuration
 	 */
 	public function getConfiguration($configuration_name)
@@ -43,7 +43,7 @@ class Configurations
 	 *
 	 * If a default configuration is set into the loaded configuration file, current configuration is switched to this configuration.
 	 *
-	 * @param string $file_name
+	 * @param $file_name string
 	 */
 	public function load($file_name = "config.php")
 	{

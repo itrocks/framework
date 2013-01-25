@@ -53,9 +53,9 @@ class Html_Template
 	/**
 	 * Constructs a template object, initializing the source data object and the template access path
 	 *
-	 * @param object $object
-	 * @param string $template_file full path to template file
-	 * @param string $feature_name feature name
+	 * @param $object object
+	 * @param $template_file string full path to template file
+	 * @param $feature_name string feature name
 	 */
 	public function __construct($object, $template_file, $feature_name)
 	{
@@ -69,8 +69,10 @@ class Html_Template
 	/**
 	 * Calls a function an returns result
 	 *
-	 * @param object[] $objects objects stack
-	 * @param string $func_call "functionName(param1value,param2value,...)" or "functionName"
+	 * @param $object_call object|string object or class name
+	 * @param $func_call   string "functionName(param1value,param2value,...)" or "functionName"
+	 * @param $objects     mixed[] objects stack
+	 * @return mixed
 	 */
 	public function callFunc($object_call, $func_call, $objects = null)
 	{
@@ -90,7 +92,7 @@ class Html_Template
 
 	//------------------------------------------------------------------------------------ getCssPath
 	/**
-	 * @param string $css
+	 * @param $css string
 	 * @return string
 	 */
 	public static function getCssPath($css)
@@ -132,7 +134,7 @@ class Html_Template
 	/**
 	 * Gets parameter value
 	 *
-	 * @param string $parameter
+	 * @param $parameter string
 	 * @return mixed
 	 */
 	public function getParameter($parameter)
@@ -160,9 +162,9 @@ class Html_Template
 
 	//----------------------------------------------------------------------------- parseArrayElement
 	/**
-	 * @param mixed[] $objects
-	 * @param array $array
-	 * @param string|integer $index
+	 * @param $objects mixed[]
+	 * @param $array array
+	 * @param $index string|integer
 	 * @return mixed
 	 */
 	protected function parseArrayElement($objects, $array, $index)
@@ -173,8 +175,8 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//-------------------------------------------------------------------------------- parseClassName
 	/**
-	 * @param mixed[] $objects
-	 * @param string $class_name
+	 * @param $objects mixed[]
+	 * @param $class_name string
 	 * @return string
 	 */
 	protected function parseClassName($objects, $class_name)
@@ -186,8 +188,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a collection of objects
 	 *
-	 * @param Reflection_Property $property
-	 * @param object[] $value
+	 * @param $property   Reflection_Property
+	 * @param $collection object[]
+	 * @return Html_Builder_Collection
 	 */
 	protected function parseCollection(Reflection_Property $property, $collection)
 	{
@@ -198,9 +201,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a constant and returns its return value
 	 *
-	 * @param object[] $objects
-	 * @param mixed $object
-	 * @param string $const_name
+	 * @param $objects object[]
+	 * @param $object mixed
+	 * @param $const_name string
 	 * @return mixed the value of the constant
 	 */
 	protected function parseConst($objects, $object, $const_name)
@@ -215,7 +218,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Replace code before <!--BEGIN--> and after <!--END--> by the html main container's code
 	 *
-	 * @param string $content
+	 * @param $content string
 	 * @return string updated content
 	 */
 	protected function parseContainer($content)
@@ -240,8 +243,8 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a special data / function and returns its return value
 	 *
-	 * @param object[] $objects
-	 * @param string $func_name
+	 * @param $objects object[]
+	 * @param $func_name string
 	 * @return mixed
 	 */
 	protected function parseFunc($objects, $func_name)
@@ -260,8 +263,8 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 * Accept quoted "constants" and 'constants'
 	 * All other parameters values will be parsed as values
 	 *
-	 * @param string $params_string
-	 * @param mixed[] $objects
+	 * @param $params_string string
+	 * @param $objects mixed[]
 	 * @return mixed
 	 */
 	protected function parseFuncParams($params_string, $objects)
@@ -285,7 +288,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse included view controller call result (must be an html view)
 	 *
-	 * @param string $include_uri
+	 * @param $include_uri string
 	 * @return string included template, parsed
 	 */
 	protected function parseInclude($include_uri)
@@ -405,8 +408,8 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 *   <!--methodName()-->(...)<!--methodName()-->
 	 *   <!--@function-->(...)<!--@function-->
 	 *
-	 * @param string $string
-	 * @param object[] $objects
+	 * @param $string string
+	 * @param $objects object[]
 	 * @return string updated content
 	 */
 	private function parseLoops($content, $objects)
@@ -424,9 +427,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------------- parseMethod
 	/**
-	 * @param mixed[] $objects
-	 * @param object $object
-	 * @param string $property_name
+	 * @param $objects mixed[]
+	 * @param $object object
+	 * @param $property_name string
 	 */
 	protected function parseMethod($objects, $object, $property_name)
 	{
@@ -435,9 +438,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------- parseObjectToString
 	/**
-	 * @param mixed[] $objects
-	 * @param mixed $object
-	 * @param string $property_name
+	 * @param $objects mixed[]
+	 * @param $object mixed
+	 * @param $property_name string
 	 * @return string
 	 */
 	protected function parseObjectToString($objects, $object, $property_name)
@@ -447,9 +450,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//-------------------------------------------------------------------------------- parseParameter
 	/**
-	 * @param mixed[] $objects
-	 * @param mixed $object
-	 * @param string $parameter_name
+	 * @param $objects mixed[]
+	 * @param $object mixed
+	 * @param $parameter_name string
 	 * @return mixed
 	 */
 	protected function parseParameter($objects, $object, $parameter_name)
@@ -461,7 +464,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------------- parseParent
 	/**
-	 * @param mixed[] $objects
+	 * @param $objects mixed[]
 	 * @return mixed
 	 */
 	protected function parseParent(&$objects)
@@ -472,9 +475,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------------- parseProperty
 	/**
-	 * @param mixed[] $objects
-	 * @param object $object
-	 * @param string $property_name
+	 * @param $objects mixed[]
+	 * @param $object object
+	 * @param $property_name string
 	 */
 	protected function parseProperty($objects, $object, $property_name)
 	{
@@ -485,7 +488,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Remove <!--separator-->(...) code from a loop content, and returns the separator content
 	 *
-	 * @param string $content
+	 * @param $content string
 	 * @return string the separator content
 	 */
 	protected function parseSeparator(&$content)
@@ -502,9 +505,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------- parseStaticMethod
 	/**
-	 * @param mixed[] $objects
-	 * @param string $class_name
-	 * @param string $method_name
+	 * @param $objects mixed[]
+	 * @param $class_name string
+	 * @param $method_name string
 	 * @return mixed
 	 */
 	protected function parseStaticMethod($objects, $class_name, $method_name)
@@ -514,9 +517,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------- parseStaticProperty
 	/**
-	 * @param mixed[] $objects
-	 * @param string $class_name
-	 * @param string $method_name
+	 * @param $objects mixed[]
+	 * @param $class_name string
+	 * @param $method_name string
 	 * @return mixed
 	 */
 	protected function parseStaticProperty($objects, $class_name, $property_name)
@@ -526,9 +529,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------------- parseString
 	/**
-	 * @param mixed[] $objects
-	 * @param string $object
-	 * @param string $property_name
+	 * @param $objects mixed[]
+	 * @param $object string
+	 * @param $property_name string
 	 */
 	protected function parseString($objects, $object, $property_name)
 	{
@@ -540,9 +543,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//----------------------------------------------------------------------------- parseStringMethod
 	/**
-	 * @param mixed[] $objects
-	 * @param string $object
-	 * @param string $property_name
+	 * @param $objects mixed[]
+	 * @param $object string
+	 * @param $property_name string
 	 */
 	protected function parseStringMethod($objects, $object, $method_name)
 	{
@@ -551,9 +554,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//--------------------------------------------------------------------------- parseStringProperty
 	/**
-	 * @param mixed[] $objects
-	 * @param string $object
-	 * @param string $property_name
+	 * @param $objects mixed[]
+	 * @param $object string
+	 * @param $property_name string
 	 */
 	protected function parseStringProperty($objects, $object, $property_name)
 	{
@@ -564,8 +567,8 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Return true if the text at position $i of $content is a variable, function name, an include
 	 *
-	 * @param string $content
-	 * @param integer $i
+	 * @param $content string
+	 * @param $i integer
 	 * @return boolean
 	 */
 	private function parseThis($content, $i)
@@ -578,9 +581,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	//------------------------------------------------------------------------------ parseSingleValue
 	/**
 	 *
-	 * @param mixed[] $objects
-	 * @param string $property_name
-	 * @param string $class_name
+	 * @param $objects mixed[]
+	 * @param $property_name string
+	 * @param $class_name string
 	 */
 	protected function parseSingleValue(&$objects, $object, &$class_name, $property_name)
 	{
@@ -638,9 +641,9 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
-	 * @param object[] $objects
-	 * @param string $var_name can be an unique var or path.of.vars
-	 * @param boolean $as_string if true, returned value will always be a string
+	 * @param $objects object[]
+	 * @param $var_name string can be an unique var or path.of.vars
+	 * @param $as_string boolean if true, returned value will always be a string
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
 	protected function parseValue($objects, $var_name, $as_string = true)
@@ -713,8 +716,8 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 *     <!--methodName()-->(...)<!--methodName()-->
 	 *     <!--@function-->(...)<!--@function-->
 	 *
-	 * @param string $content
-	 * @param object $object
+	 * @param $content string
+	 * @param $object object
 	 * @return string updated content
 	 */
 	private function parseVars($content, $objects)
@@ -748,7 +751,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Remove <!--sample-->(...) code from loop content
 	 *
-	 * @param string $content
+	 * @param $content string
 	 */
 	private function removeSample(&$content)
 	{
@@ -764,7 +767,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Replace links with correct absolute paths into $content
 	 *
-	 * @param string $content
+	 * @param $content string
 	 * @return string updated content
 	 */
 	protected function replaceLinks($content)
@@ -791,7 +794,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	/**
 	 * Replace URIs with correct URIs paths into $content
 	 *
-	 * @param string $content
+	 * @param $content string
 	 * @return string updated content
 	 */
 	protected function replaceUris($content)
@@ -824,7 +827,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 
 	//---------------------------------------------------------------------------------------- setCss
 	/**
-	 * @param string $css
+	 * @param $css string
 	 */
 	public function setCss($css)
 	{
@@ -841,7 +844,7 @@ echo "parse array element $index from " . print_r($array, true) . "</pre>";
 	 *   main html head and foot will not be loaded
 	 * </ul>
 	 *
-	 * @param mixed[] $parameters key is parameter name
+	 * @param $parameters mixed[] key is parameter name
 	 */
 	public function setParameters($parameters)
 	{

@@ -17,9 +17,9 @@ class Date_Time extends DateTime
 
 	//------------------------------------------------------------------------------ createFromFormat
 	/**
-	 * @param string $format
-	 * @param string $time
-	 * @param DateTimeZone $timezone
+	 * @param $format string
+	 * @param $time string
+	 * @param $timezone DateTimeZone
 	 * @return Date_Time
 	 */
 	public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
@@ -34,7 +34,7 @@ class Date_Time extends DateTime
 
 	//--------------------------------------------------------------------------------------- fromISO
 	/**
-	 * @param string $date
+	 * @param $date string
 	 * @return Date_Time
 	 */
 	public static function fromISO($date)

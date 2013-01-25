@@ -11,10 +11,10 @@ interface Class_Controller extends Controller
 	 *
 	 * Class controllers must implement this method if you want the controller to work.
 	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
-	 * @param string $class_name
+	 * @param $parameters Controller_Parameters
+	 * @param $form array
+	 * @param $files array
+	 * @param $class_name string
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name);
 

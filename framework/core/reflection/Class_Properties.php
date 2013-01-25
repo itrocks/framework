@@ -16,7 +16,7 @@ trait Class_Properties
 	/**
 	 * Gets properties names list from configuration, or from class definition is configuration is not set
 	 *
-	 * @param string $class_name
+	 * @param $class_name string
 	 * @return string[]
 	 */
 	public function getClassProperties($class_name)

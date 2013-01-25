@@ -24,7 +24,7 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * The $parameters array keys are : "host", "user", "password", "database".
 	 *
-	 * @param string[] $parameters
+	 * @param $parameters string[]
 	 */
 	public function __construct($parameters)
 	{
@@ -68,8 +68,8 @@ class Mysql_Link extends Sql_Link
 		if ($id) {
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->accessProperties() as $property) {
-				if ($property->getAnnotation("contained")->get()) {
-					if (Type::isMultiple($property->getType())) {
+				if ($property->getAnnotation("contained")->value) {
+					if ($property->getType()->isMultiple()) {
 						$this->deleteCollection($object, $property, $property->getValue($object));
 					}
 					else {
@@ -92,9 +92,9 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * This is called by delete() for hard-linked object collection properties : only if the matching property has @contained.
 	 *
-	 * @param object              $parent
-	 * @param Reflection_Property $property
-	 * @param mixed               $value
+	 * @param $parent object
+	 * @param $property Reflection_Property
+	 * @param $value mixed
 	 */
 	private function deleteCollection($parent, $property, $value)
 	{
@@ -115,7 +115,7 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * Sql_Link inherited classes must implement SQL query calls only into this method.
 	 *
-	 * @param string $query
+	 * @param $query string
 	 * @return mysqli_result the sql query result set
 	 */
 	protected function executeQuery($query)
@@ -131,8 +131,8 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Fetch a result from a result set to an object
 	 *
-	 * @param mysqli_result $result_set The result set : in most cases, will come from executeQuery()
-	 * @param string $class_name The class name to store the result data into
+	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 * @param $class_name string The class name to store the result data into
 	 * @return object
 	 */
 	protected function fetch($result_set, $class_name = null)
@@ -145,7 +145,7 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Fetch a result from a result set to an array
 	 *
-	 * @param mysqli_result $result_set The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
 	 * @return object
 	 */
 	protected function fetchRow($result_set)
@@ -279,11 +279,11 @@ class Mysql_Link extends Sql_Link
 		Aop_Getter::$ignore = true;
 		foreach ($class->accessProperties() as $property) {
 			$value = $property->getValue($object);
-			if (is_null($value) && !$property->getAnnotation("null")->get()) {
+			if (is_null($value) && !$property->getAnnotation("null")->value) {
 				$value = "";
 			}
 			if (in_array($property->name, $table_columns_names)) {
-				if (Type::isBasic($property->getType())) {
+				if ($property->getType()->isBasic()) {
 					$write[$property->name] = $value;
 				}
 				else {
@@ -299,7 +299,7 @@ class Mysql_Link extends Sql_Link
 					}
 				}
 			}
-			elseif ($property->getAnnotation("contained")->get()) {
+			elseif ($property->getAnnotation("contained")->value) {
 				$write_collections[$property->name] = $value;
 			}
 			elseif (is_array($value)) {
@@ -339,9 +339,9 @@ class Mysql_Link extends Sql_Link
 	 * Ie when you write an order, it's implicitely needed to write it's lines
 	 *
 	 * @todo verify source and test it correctly
-	 * @param object $object
-	 * @param string $property_name
-	 * @param array  $collection
+	 * @param $object object
+	 * @param $property_name string
+	 * @param $collection array
 	 */
 	private function writeCollection($object, $property_name, $collection)
 	{
@@ -352,15 +352,15 @@ class Mysql_Link extends Sql_Link
 		// collection properties : write each of them
 		$id_set = array();
 		$property = Reflection_Property::getInstanceOf(get_class($object), $property_name);
-		if ($property->getAnnotation("contained")->get()) {
+		if ($property->getAnnotation("contained")->value) {
 			if ($collection && is_array(reset($collection))) {
-				$class_name = Namespaces::fullClassName(Type::isMultiple($property->getType()));
+				$class_name = $property->getType()->getElementTypeAsString();
 				$collection = arrayToCollection($collection, $class_name);
 			}
 			foreach ($collection as $element) {
 				if (!isset($representative_properties)) {
 					$element_class = Reflection_Class::getInstanceOf(get_class($element));
-					$representative_properties = $element_class->getAnnotation("representative")->get();
+					$representative_properties = $element_class->getListAnnotation("representative")->values();
 					$default = $element_class->getDefaultProperties();
 				}
 				$do_write = false;
@@ -395,7 +395,7 @@ class Mysql_Link extends Sql_Link
 	//-------------------------------------------------------------------------------------- writeMap
 	/**
 	 * @todo not really implemented here
-	 * @param array $map
+	 * @param $map array
 	 */
 	private function writeMap($map)
 	{

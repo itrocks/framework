@@ -9,7 +9,7 @@ abstract class Mysql_Column_Builder_Property
 	/**
 	 * Builds a Mysql_Column object using a class property
 	 *
-	 * @param Reflection_Property $property
+	 * @param $property Reflection_Property
 	 * @return Mysql_Column
 	 */
 	public static function build(Reflection_Property $property)
@@ -50,7 +50,7 @@ abstract class Mysql_Column_Builder_Property
 	/**
 	 * Builds a Mysql_Column object for a standard "id_*" link column
 	 *
-	 * @param string $column_name
+	 * @param $column_name string
 	 * @return Mysql_Column
 	 */
 	public static function buildLink($column_name)
@@ -72,8 +72,8 @@ abstract class Mysql_Column_Builder_Property
 	 *
 	 * Must be called only after $column's Null and Type has been set
 	 *
-	 * @param Reflection_Property $property
-	 * @param Mysql_Column $column
+	 * @param $property Reflection_Property
+	 * @param $column Mysql_Column
 	 * @return mixed
 	 */
 	private static function propertyDefaultToMysql(
@@ -82,7 +82,7 @@ abstract class Mysql_Column_Builder_Property
 		$default = $property->getDeclaringClass()->getDefaultProperties()[$property->name];
 		if (isset($default)) {
 			$property_type = $column->getType();
-			if (Type::isNumeric($property_type)) {
+			if ($property_type->isNumeric()) {
 				$default = strval($default + 0);
 			}
 		}
@@ -92,13 +92,13 @@ abstract class Mysql_Column_Builder_Property
 			}
 			else {
 				$property_type = $column->getType();
-				if (Type::isNumeric($property_type)) {
+				if ($property_type->isNumeric()) {
 					$default = 0;
 				}
-				elseif ($property_type === "string") {
+				elseif ($property_type->isString()) {
 					$default = "";
 				}
-				elseif ($property_type === "Date_Time") {
+				elseif ($property_type->isDateTime()) {
 					$default = "0000-00-00 00:00:00";
 				}
 			}
@@ -110,13 +110,13 @@ abstract class Mysql_Column_Builder_Property
 	/**
 	 * Gets the mysql field name for a property
 	 *
-	 * @param Reflection_Property $property
+	 * @param $property Reflection_Property
 	 * @return string
 	 */
 	private static function propertyNameToMysql(Reflection_Property $property)
 	{
 		$type = $property->getType();
-		return (Type::isBasic($type) || ($type === "string[]"))
+		return ($type->isBasic() || ($type->isMultiple() && $type->getElementType()->isString()))
 			? $property->name
 			: "id_" . $property->name;
 	}
@@ -125,34 +125,34 @@ abstract class Mysql_Column_Builder_Property
 	/**
 	 * Gets mysql expression for a property that can be null (or not)
 	 *
-	 * @param Reflection_Property $property
+	 * @param $property Reflection_Property
 	 * @return string
 	 */
 	private static function propertyNullToMysql(Reflection_Property $property)
 	{
-		return $property->getAnnotation("null")->get() ? "YES" : "NO";
+		return $property->getAnnotation("null")->value ? "YES" : "NO";
 	}
 
 	//--------------------------------------------------------------------------- propertyTypeToMysql
 	/**
 	 * Gets mysql expression for a property type
 	 *
-	 * @param Reflection_Property $property
+	 * @param $property Reflection_Property
 	 * @return string
 	 */
 	private static function propertyTypeToMysql(Reflection_Property $property)
 	{
 		$property_type = $property->getType();
-		if (Type::isBasic($property_type)) {
-			if (Type::hasSize($property_type)) {
-				$max_length = $property->getAnnotation("max_length")->get();
-				$max_value  = $property->getAnnotation("max_value")->get();
-				$min_value  = $property->getAnnotation("min_value")->get();
-				$precision  = $property->getAnnotation("precision")->get();
-				$signed     = $property->getAnnotation("signed")->get();
+		if ($property_type->isBasic()) {
+			if ($property_type->hasSize()) {
+				$max_length = $property->getAnnotation("max_length")->value;
+				$max_value  = $property->getAnnotation("max_value")->value;
+				$min_value  = $property->getAnnotation("min_value")->value;
+				$precision  = $property->getAnnotation("precision")->value;
+				$signed     = $property->getAnnotation("signed")->value;
 				$signed_length = $max_length + ($signed ? 1 : 0);
 				if (!isset($max_length)) {
-					if (Type::isNumeric($property_type)) {
+					if ($property_type->isNumeric()) {
 						$max_length = 18;
 						$signed_length = 18;
 					}
@@ -160,20 +160,20 @@ abstract class Mysql_Column_Builder_Property
 						$max_length = 255;
 					}
 				}
-				if ($property_type == "integer") {
+				if ($property_type->isInteger()) {
 					return ($max_length <= 3 && $min_value >= -128 && $max_value <= 127 && $signed) ? "tinyint($signed_length)" : (
-					($max_length <= 3 && $min_value >= 0 && $max_value <= 255 && !$signed) ? "tinyint($max_length) unsigned" : (
-					($max_length <= 5 && $min_value >= -32768 && $max_value <= 32767) ? "smallint($signed_length)" : (
-					($max_length <= 5 && $min_value >= 0 && $max_value <= 65535) ? "smallint($max_length) unsigned" : (
-					($max_length <= 7 && $min_value >= -8388608 && $max_value <= 8388607) ? "mediumint($signed_length)" : (
-					($max_length <= 8 && $min_value >= 0 && $max_value <= 16777215) ? "mediumint($max_length) unsigned" : (
-					($max_length <= 10 && $min_value >= -2147483648 && $max_value <= 2147483647) ? "int($signed_length)" : (
-					($max_length <= 10 && $min_value >= 0 && $max_value <= 4294967295) ? "int($max_length) unsigned" : (
-					($max_length <= 19 && $min_value >= -9223372036854775808 && $max_value <= 9223372036854775806) ? "bigint($signed_length)" : (
-					"bigint($max_length) unsigned"
+						($max_length <= 3 && $min_value >= 0 && $max_value <= 255 && !$signed) ? "tinyint($max_length) unsigned" : (
+						($max_length <= 5 && $min_value >= -32768 && $max_value <= 32767) ? "smallint($signed_length)" : (
+						($max_length <= 5 && $min_value >= 0 && $max_value <= 65535) ? "smallint($max_length) unsigned" : (
+						($max_length <= 7 && $min_value >= -8388608 && $max_value <= 8388607) ? "mediumint($signed_length)" : (
+						($max_length <= 8 && $min_value >= 0 && $max_value <= 16777215) ? "mediumint($max_length) unsigned" : (
+						($max_length <= 10 && $min_value >= -2147483648 && $max_value <= 2147483647) ? "int($signed_length)" : (
+						($max_length <= 10 && $min_value >= 0 && $max_value <= 4294967295) ? "int($max_length) unsigned" : (
+						($max_length <= 19 && $min_value >= -9223372036854775808 && $max_value <= 9223372036854775806) ? "bigint($signed_length)" : (
+						"bigint($max_length) unsigned"
 					)))))))));
 				}
-				elseif ($property_type == "float") {
+				elseif ($property_type->isFloat()) {
 					return ($precision ? "decimal($signed_length, $precision)" : "float");
 				}
 				else {
@@ -204,11 +204,11 @@ abstract class Mysql_Column_Builder_Property
 		}
 		elseif ($property_type === "string[]") {
 			/** @var $values string[] */
-			$values = $property->getAnnotation("values")->get();
-			foreach ($values as $key => $value) {
+			$values = array();
+			foreach ($property->getListAnnotation("values")->values() as $key => $value) {
 				$values[$key] = str_replace("'", "''", $value);
 			}
-			return $property->getAnnotation("set")
+			return $property->getAnnotation("set")->value
 				? "set('"  . join("','", $values) . "')"
 				: "enum('" . join("','", $values) . "')";
 		}

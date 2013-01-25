@@ -9,9 +9,9 @@ interface Feature_Controller extends Controller
 	/**
 	 * This will be called for this controller, always.
 	 *
-	 * @param Controller_Parameters $parameters
-	 * @param array  $form
-	 * @param array  $files
+	 * @param $parameters Controller_Parameters
+	 * @param $form array
+	 * @param $files array
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files);
 

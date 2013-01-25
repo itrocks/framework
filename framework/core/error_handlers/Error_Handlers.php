@@ -28,9 +28,9 @@ class Error_Handlers
 	 *
 	 * You should call setAsErrorHandler() after add of error handlers, as error numbers may not have been registered
 	 *
-	 * @param integer       $err_no
-	 * @param Error_Handler $error_handler
-	 * @param integer       $priority
+	 * @param $err_no integer
+	 * @param $error_handler Error_Handler
+	 * @param $priority integer
 	 * @return Error_Handlers
 	 */
 	public function addHandler(
@@ -86,11 +86,11 @@ class Error_Handlers
 	/**
 	 * This method is automatically called when a registered error type occurs
 	 *
-	 * @param int    $err_no
-	 * @param string $err_msg
-	 * @param string $filename
-	 * @param int    $line_num
-	 * @param array  $vars
+	 * @param $err_no int
+	 * @param $err_msg string
+	 * @param $filename string
+	 * @param $line_num int
+	 * @param $vars array
 	 * @return bool
 	 */
 	public function handle($err_no, $err_msg, $filename, $line_num, $vars)
@@ -115,8 +115,8 @@ class Error_Handlers
 	/**
 	 * Register an error handler for error types
 	 *
-	 * @param integer $error_types
-	 * @param Error_Handler $error_handler
+	 * @param $error_types integer
+	 * @param $error_handler Error_Handler
 	 */
 	public static function register($error_types, Error_Handler $error_handler)
 	{

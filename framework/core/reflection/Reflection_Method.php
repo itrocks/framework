@@ -33,8 +33,8 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	/**
 	 * Return Reflection_Method instance for a class name, object, ReflectionClass, Reflection_Class, ReflectionMethod object
 	 *
-	 * @param string | object | ReflectionClass | ReflectionMethod $of_class
-	 * @param string $of_name do not set this if $of_class is a ReflectionMethod
+	 * @param $of_class string | object | ReflectionClass | ReflectionMethod
+	 * @param $of_class string $of_name do not set this if is a ReflectionMethod
 	 * @return Reflection_Method
 	 */
 	public static function getInstanceOf($of_class, $of_name = null)
@@ -47,7 +47,7 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 			$of_class = $of_class->name;
 		}
 		elseif (is_object($of_class)) {
-			$of_class = get_class($of_class); 
+			$of_class = get_class($of_class);
 		}
 		if (isset(self::$cache[$of_class][$of_name])) {
 			$method = self::$cache[$of_class][$of_name];
