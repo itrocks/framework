@@ -25,7 +25,6 @@
 					var replace = (i > 0) ? " " + classes[i] : (
 						(i < classes.length - 1) ? classes[i] + " " : classes[i]
 					);
-					console.log("[remove " + replace + " from " + this.attr("class"));
 					this.attr("class", this.attr("class").replace(replace, ""));
 				}
 				else {

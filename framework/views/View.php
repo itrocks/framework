@@ -56,11 +56,11 @@ abstract class View
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param $parameters array
-	 * @param $form array
-	 * @param $files array
-	 * @param $class_name string
-	 * @param $feature_name string
+	 * @param $parameters   array  Parameters for the view. The first must be the context object.
+	 * @param $form         array  Form parameters
+	 * @param $files        array  Files parameters
+	 * @param $class_name   string The context class name (class of the first parameter)
+	 * @param $feature_name string The feature class name
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{

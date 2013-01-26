@@ -28,25 +28,25 @@ Mysql_Maintainer::register(); // TODO problem : if maintainer is after logger, m
 //aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
 
 // high priority main error handlers
-Error_Handlers::register(E_ALL & !E_NOTICE, new Main_Error_Handler());
-Error_Handlers::register(E_RECOVERABLE_ERROR, new To_Exception_Error_Handler());
+Error_Handlers::add(E_ALL & !E_NOTICE, new Main_Error_Handler());
+Error_Handlers::add(E_RECOVERABLE_ERROR, new To_Exception_Error_Handler());
 // high priority modules (Aop_Getter and Aop_Setter will disapear with 5.5, hopefully)
 Aop_Getter::register();
 Aop_Setter::register();
 // normal priority modules
 Acls::register();
+Acls_List_Properties::register();
+Acls_Output_Properties::register();
 Aop_Dynamics::register();
 Html_Cleaner::register();
 Html_Session::register();
 Html_Translator::register();
 Translation_String_Composer::register();
-List_Controller_Acls::register();
 Loc::register();
-Output_Controller_Acls::register();
 Object_Builder::register();
 Wiki::register();
 // activate errors handlers
-Error_Handlers::activate();
+Error_Handlers::on();
 
 // TODO 'better use something like a Modules::register() call
 if (!isset($MODULES)) $MODULES = array();

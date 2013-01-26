@@ -55,6 +55,17 @@ class Type
 		return $this->type;
 	}
 
+	//----------------------------------------------------------------------------- asReflectionClass
+	/**
+	 * Gets a single or multiple class type as its Reflection_Class
+	 *
+	 * @return Reflection_Class
+	 */
+	public function asReflectionClass()
+	{
+		return Reflection_Class::getInstanceOf($this->getElementTypeAsString());
+	}
+
 	//-------------------------------------------------------------------------------------- asString
 	public function asString()
 	{

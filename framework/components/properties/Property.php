@@ -12,20 +12,41 @@ class Property implements Field
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
-	 * @var string
+	 * @var Type
 	 */
 	private $type;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $name string
+	 * @param $type Type
+	 */
+	public function __construct($name = null, $type = null)
+	{
+		if ($name != null) {
+			$this->name = $name;
+		}
+		if ($type != null) {
+			$this->type = $type;
+		}
+	}
+
 	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->name;
 	}
 
 	//--------------------------------------------------------------------------------------- getType
+	/**
+	 * @return Type
+	 */
 	public function getType()
 	{
-		return $this->type;
+		return new Type($this->type);
 	}
 
 }

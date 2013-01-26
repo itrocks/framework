@@ -17,7 +17,7 @@ class Error_Handlers
 	/**
 	 * Activate error handler instance as the main error handler
 	 */
-	public static function activate()
+	public static function on()
 	{
 		Error_Handlers::getInstance()->setAsErrorHandler();
 	}
@@ -118,7 +118,7 @@ class Error_Handlers
 	 * @param $error_types integer
 	 * @param $error_handler Error_Handler
 	 */
-	public static function register($error_types, Error_Handler $error_handler)
+	public static function add($error_types, Error_Handler $error_handler)
 	{
 		Error_Handlers::getInstance()->addHandler($error_types, $error_handler);
 	}

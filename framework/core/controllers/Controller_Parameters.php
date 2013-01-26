@@ -116,18 +116,59 @@ class Controller_Parameters
 		return arrayUnnamedValues($this->parameters);
 	}
 
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * Remove a parameter
+	 *
+	 * @param $key integer|string
+	 */
+	public function remove($key)
+	{
+		if (isset($this->parameters[$key])) {
+			unset($this->parameters[$key]);
+		}
+	}
+
 	//------------------------------------------------------------------------------------------- set
 	/**
 	 * Set URI parameter raw value
 	 *
 	 * @param $parameter_name  string
-	 * @param $parameter_value integer
+	 * @param $parameter_value mixed
 	 * @return Controller_Parameters
 	 */
 	public function set($parameter_name, $parameter_value)
 	{
 		$this->parameters[$parameter_name] = $parameter_value;
 		return $this;
+	}
+
+	//----------------------------------------------------------------------------------------- shift
+	/**
+	 * Returns and remove the first unnamed parameter (which key is an integer and value is not an object)
+	 *
+	 * @return mixed|null
+	 */
+	public function shift()
+	{
+		foreach ($this->parameters as $key => $value) {
+			if (is_numeric($key) && !is_object($value)) {
+				unset($this->parameters[$key]);
+				return $value;
+			}
+		}
+		return null;
+	}
+
+	//--------------------------------------------------------------------------------------- unshift
+	/**
+	 * Adds an unnamed parameter as first parameter
+	 *
+	 * @param $parameter_value mixed
+	 */
+	public function unshift($parameter_value)
+	{
+		array_unshift($this->parameters, $parameter_value);
 	}
 
 }

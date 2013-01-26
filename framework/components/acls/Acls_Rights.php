@@ -72,16 +72,16 @@ class Acls_Rights
 	 */
 	public function remove($right)
 	{
-		$position = $this->acl_tree;
+		$position =& $this->acl_tree;
 		$last_position = null;
 		foreach (explode(".", (is_string($right) ? $right : $right->key)) as $right) {
 			if (!isset($position[$right])) {
 				return;
 			}
-			$last_position = $position;
-			$position = $position[$right];
+			$last_position =& $position;
+			$position =& $position[$right];
 		}
-		if (isset($last_position) && isset($last[$right])) {
+		if (isset($last_position) && isset($last_position[$right])) {
 			unset($last_position[$right]);
 		}
 	}

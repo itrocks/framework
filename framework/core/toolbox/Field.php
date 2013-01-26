@@ -14,9 +14,9 @@ interface Field
 
 	//--------------------------------------------------------------------------------------- getType
 	/**
-	 * Gets the php data type for the field
+	 * Gets the type for the field
 	 *
-	 * @return string
+	 * @return Type
 	 * @values float, integer, string, Date_Time, *
 	 */
 	public function getType();

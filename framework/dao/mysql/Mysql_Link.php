@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework;
-use mysqli, mysqli_result;
+use mysqli_result;
 
 /**
  * @todo Mysql_Link must be rewritten : call query(), executeQuery(), and standard protected methods instead of mysql_*
@@ -13,7 +13,7 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Connection to the mysqli server is a mysqli object
 	 *
-	 * @var mysqli
+	 * @var Contextual_Mysqli
 	 */
 	private $connection;
 
@@ -47,12 +47,15 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//--------------------------------------------------------------------------------------- connect
+	/**
+	 * @param $parameters string[]
+	 */
 	private function connect($parameters)
 	{
 		if (!isset($parameters["database"]) && isset($parameters["databases"])) {
 			$parameters["database"] = str_replace('*', '', $parameters["databases"]);
 		}
-		$this->connection = new mysqli(
+		$this->connection = new Contextual_Mysqli(
 			$parameters["host"], $parameters["user"],
 			$parameters["password"], $parameters["database"]
 		);
@@ -274,6 +277,7 @@ class Mysql_Link extends Sql_Link
 		$table_columns_names = array_keys($this->getStoredProperties($class));
 		$write_collections = array();
 		$write_maps = array();
+		$write = array();
 		$aop_getter_ignore = Aop_Getter::$ignore;
 		Aop_Getter::$ignore = true;
 		foreach ($class->accessProperties() as $property) {
@@ -325,7 +329,7 @@ class Mysql_Link extends Sql_Link
 		foreach ($write_collections as $property_name => $value) {
 			$this->writeCollection($object, $property_name, $value);
 		}
-		foreach ($write_maps as $property_name => $value) {
+		foreach ($write_maps as $value) {
 			$this->writeMap($value);
 		}
 		return $id;

@@ -136,9 +136,12 @@ abstract class Data_Link
 	protected function valueChanged($element, $property_name, $default_value)
 	{
 		$element_value = $element->$property_name;
-		return isset($element_value)
-			&& (strval($element_value) != "")
-			&& (strval($element_value) != strval($default_value));
+		return isset($element_value) && (
+			is_object($element_value) || (
+				(strval($element_value) != "")
+					&& (strval($element_value) != strval($default_value))
+			)
+		);
 	}
 
 	//----------------------------------------------------------------------------------------- write

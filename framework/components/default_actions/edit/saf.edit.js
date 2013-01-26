@@ -98,7 +98,6 @@ $("document").ready(function() {
 		});
 
 		// .datetime
-		console.log(app.date_format);
 		$this.find("input.datetime").datepicker({
 			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            "button",

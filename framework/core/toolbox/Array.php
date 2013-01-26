@@ -156,3 +156,25 @@ function arrayUnnamedValues($array)
 	}
 	return $result;
 }
+
+//------------------------------------------------------------------------------------- treeToArray
+/**
+ * Linearize a tree to an array
+ *
+ * Keys are cumulated to a single "key.sub_key.final_key" key name
+ *
+ * @param $array mixed[]
+ * @return mixed[]
+ */
+function treeToArray($array)
+{
+	foreach ($array as $key => $val) {
+		if (is_array($val)) {
+			unset($array[$key]);
+			foreach (treeToArray($val) as $sub_key => $sub_val) {
+				$array[$key . "." . $sub_key] = $sub_val;
+			}
+		}
+	}
+	return $array;
+}
