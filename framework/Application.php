@@ -27,7 +27,7 @@ abstract class Application
 		$directories = array($path);
 		$dir = dir($path);
 		while ($entry = $dir->read()) {
-			if (is_dir("$path/$entry") && ($entry[0] != ".")) {
+			if (is_dir("$path/$entry") && ($entry[0] != ".") && ($entry != "vendor")) {
 				$directories = array_merge($directories, static::getDirectories("$path/$entry"));
 			}
 		}

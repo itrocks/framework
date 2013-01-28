@@ -178,7 +178,8 @@ class Html_Template
 	 * @return mixed
 	 */
 	protected function parseArrayElement(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $array, $index
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $array, $index
 	) {
 		return isset($array[$index]) ? $array[$index] : null;
 	}
@@ -190,7 +191,8 @@ class Html_Template
 	 * @return string
 	 */
 	protected function parseClassName(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $class_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $class_name
 	) {
 		return Namespaces::fullClassName($class_name);
 	}
@@ -218,7 +220,8 @@ class Html_Template
 	 * @return mixed the value of the constant
 	 */
 	protected function parseConst(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $const_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $object, $const_name
 	) {
 		return (is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
 			isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
@@ -444,7 +447,8 @@ class Html_Template
 	 * @param $property_name string
 	 */
 	protected function parseMethod(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $property_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $object, $property_name
 	) {
 		return $object->$property_name();
 	}
@@ -457,8 +461,8 @@ class Html_Template
 	 * @return string
 	 */
 	protected function parseObjectToString(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $object,
-		/** @noinspection PhpUnusedParameterInspection */ $property_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $object, $property_name
 	) {
 		return method_exists($object, "__toString") ? strval($object) : "";
 	}
@@ -471,9 +475,8 @@ class Html_Template
 	 * @return mixed
 	 */
 	protected function parseParameter(
-		/** @noinspection PhpUnusedParameterInspection */ $objects,
-		/** @noinspection PhpUnusedParameterInspection */ $object,
-		$parameter_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $object, $parameter_name
 	) {
 		return isset($this->parameters[$parameter_name])
 			? $this->parameters[$parameter_name]
@@ -498,7 +501,8 @@ class Html_Template
 	 * @param $property_name string
 	 */
 	protected function parseProperty(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $property_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $object, $property_name
 	) {
 		return $object->$property_name;
 	}
@@ -530,7 +534,8 @@ class Html_Template
 	 * @return mixed
 	 */
 	protected function parseStaticMethod(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $class_name, $method_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $class_name, $method_name
 	)	{
 		return $class_name::$method_name();
 	}
@@ -543,7 +548,8 @@ class Html_Template
 	 * @return mixed
 	 */
 	protected function parseStaticProperty(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $class_name, $property_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $class_name, $property_name
 	)	{
 		return $class_name::$$property_name;
 	}
@@ -557,10 +563,10 @@ class Html_Template
 	 */
 	protected function parseString($objects, $object, $property_name)
 	{
-		$object = new String($object);
-		return method_exists($object, $property_name)
-		? $this->parseStringMethod($objects, $object, $property_name)
-		: $this->parseStringProperty($objects, $object, $property_name);
+		$string = new String($object);
+		return method_exists($string, $property_name)
+			? $this->parseStringMethod($objects, $string, $property_name)
+			: $this->parseStringProperty($objects, $string, $property_name);
 	}
 
 	//----------------------------------------------------------------------------- parseStringMethod
@@ -571,7 +577,8 @@ class Html_Template
 	 * @return mixed
 	 */
 	protected function parseStringMethod(
-		/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $method_name
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $object, $method_name
 	)	{
 		return $object->$method_name();
 	}
@@ -583,7 +590,8 @@ class Html_Template
 	 * @param $property_name string
 	 */
 	protected function parseStringProperty(
-			/** @noinspection PhpUnusedParameterInspection */ $objects, $object, $property_name
+			/** @noinspection PhpUnusedParameterInspection */
+		$objects, $object, $property_name
 	)	{
 		return $object->$property_name;
 	}
@@ -659,6 +667,9 @@ class Html_Template
 		}
 		if (($source_object instanceof Reflection_Property) && ($property_name == "value")) {
 			$object = (new Reflection_Property_View($source_object))->formatValue($object);
+		}
+		if (strlen($property_name)) {
+			array_unshift($objects, $object);
 		}
 		return $object;
 	}

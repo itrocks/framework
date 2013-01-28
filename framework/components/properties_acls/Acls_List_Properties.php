@@ -47,7 +47,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 		 */
 		list($parameters, $form, $files, ) = $joinpoint->getArguments();
 		if ($parameters->getRawParameter(1) == "list") {
-			$parameters->unshift(__CLASS__);
+			$parameters->unshiftUnnamed(__CLASS__);
 			(new Acls_Property_Remove_Controller())->run($parameters, $form, $files);
 		}
 		else {

@@ -173,4 +173,13 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		return $this->use;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string The name of the property
+	 */
+	public function __toString()
+	{
+		return $this->name;
+	}
+
 }

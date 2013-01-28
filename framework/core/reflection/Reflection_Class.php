@@ -268,4 +268,13 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		return $traits;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string The name of the class
+	 */
+	public function __toString()
+	{
+		return $this->name;
+	}
+
 }

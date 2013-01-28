@@ -16,10 +16,10 @@ class Acls_Property_Remove_Controller implements Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		$acls_properties = Object_Builder::current()->newInstance($parameters->shift());
-		$acls_properties->context_class_name = $parameters->shift();
+		$acls_properties = Object_Builder::current()->newInstance($parameters->shiftUnnamed());
+		$acls_properties->context_class_name = $parameters->shiftUnnamed();
 		$context_class_name = $acls_properties->context_class_name;
-		$context_feature_name = $parameters->shift();
+		$context_feature_name = $parameters->shiftUnnamed();
 		$parameters->set("class_name", $context_class_name);
 		$parameters->set("feature_name", $context_feature_name);
 		$removed = array();
@@ -29,8 +29,8 @@ class Acls_Property_Remove_Controller implements Feature_Controller
 		}
 		$parameters->set("removed", $removed);
 		$objects = $parameters->getObjects();
-		$class_name = __NAMESPACE__ . "\\Property";
-		array_unshift($objects, Object_Builder::current()->newInstance($class_name));
+		$property = new Property();
+		array_unshift($objects, $property);
 		/**
 		 * $objects for the view :
 		 * - first : an empty Property
@@ -39,10 +39,10 @@ class Acls_Property_Remove_Controller implements Feature_Controller
 		 * - key "removed" : array of the removed properties names
 		 */
 		if ($removed) {
-			View::run($objects, $form, $files, $class_name, "removed");
+			View::run($objects, $form, $files, get_class($property), "removed");
 		}
 		else {
-			View::run($objects, $form, $files, $class_name, "remove_nothing_selected");
+			View::run($objects, $form, $files, get_class($property), "remove_nothing_selected");
 		}
 	}
 

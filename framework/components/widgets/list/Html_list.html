@@ -27,7 +27,7 @@
 	<thead>
 	<tr>
 		<th class="column_select">
-			<a href="/Property/select/{{$class}}" target="#column_select">|select columns|</a>
+			<a href="/Property/select/{@class}" target="#column_select">|select columns|</a>
 		</th>
 		<!--getProperties-->
 		<th id="{.}" class="trashable">|{@display}|</th>
@@ -51,7 +51,7 @@
 		<!--formatValues:1-->
 		<td>
 			<!--..class_name-->
-			<a href="/{..class_name.short}/{..id}" target="#main" class="trashable">{value}</a>
+			<a href="/{...class_name.short}/{..id}" target="#main" class="trashable">{value}</a>
 			<!--..class_name-->
 		</td>
 		<!--formatValues-->

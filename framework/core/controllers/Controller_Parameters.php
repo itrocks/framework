@@ -143,13 +143,13 @@ class Controller_Parameters
 		return $this;
 	}
 
-	//----------------------------------------------------------------------------------------- shift
+	//---------------------------------------------------------------------------------- shiftUnnamed
 	/**
 	 * Returns and remove the first unnamed parameter (which key is an integer and value is not an object)
 	 *
 	 * @return mixed|null
 	 */
-	public function shift()
+	public function shiftUnnamed()
 	{
 		foreach ($this->parameters as $key => $value) {
 			if (is_numeric($key) && !is_object($value)) {
@@ -160,13 +160,13 @@ class Controller_Parameters
 		return null;
 	}
 
-	//--------------------------------------------------------------------------------------- unshift
+	//-------------------------------------------------------------------------------- unshiftUnnamed
 	/**
 	 * Adds an unnamed parameter as first parameter
 	 *
 	 * @param $parameter_value mixed
 	 */
-	public function unshift($parameter_value)
+	public function unshiftUnnamed($parameter_value)
 	{
 		array_unshift($this->parameters, $parameter_value);
 	}
