@@ -25,7 +25,7 @@
 
 			$tabs.children("a").click(function(event) {
 				event.preventDefault();
-				$this = $(this);
+				var $this = $(this);
 				$tabs.removeClass("active");
 				$pages.removeClass("active");
 				$this.closest(".ui-tabber-tab").addClass("active");

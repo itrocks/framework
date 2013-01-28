@@ -6,7 +6,7 @@ class Callback_Error_Handler implements Error_Handler
 
 	//---------------------------------------------------------------------------- $callback_function
 	/**
-	 * @var ambigous<string,ambigous<string,object>>[] "functionName", "Class_Name::functionName", array("Class_Name", "functionName"), array($object, "functionName")
+	 * @var mixed<string,mixed<string,object>>[] "functionName", "Class_Name::functionName", array("Class_Name", "functionName"), array($object, "functionName")
 	 */
 	private $callback_function;
 

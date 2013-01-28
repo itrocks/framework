@@ -19,6 +19,7 @@ class Sql_Create_Table_Builder
 	//----------------------------------------------------------------------------------------- build
 	public function build()
 	{
+		$columns = array();
 		foreach ($this->table->getColumns() as $column) {
 			$columns[] = $column->toSql();
 		}

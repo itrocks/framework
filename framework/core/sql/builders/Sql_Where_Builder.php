@@ -130,6 +130,7 @@ trait Sql_Where_Builder
 	 *
 	 * @param $path string  search property path
 	 * @param $value mixed  search property value
+	 * @param $prefix string
 	 * @return string
 	 */
 	private function buildValue($path, $value, $prefix = "")
@@ -167,7 +168,7 @@ trait Sql_Where_Builder
 	 *
 	 * Supported columns naming forms are :
 	 * column_name : column_name must correspond to a property of class
-	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's @var class
+	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
 	 *
 	 * @param $class string   base object class name
 	 * @param $where_array array    where array expression, indices are columns names

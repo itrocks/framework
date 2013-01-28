@@ -73,7 +73,7 @@ class Controller_Parameters
 	/**
 	 * Get parameters list as objects
 	 *
-	 * @return object[] indiced by parameter name
+	 * @return mixed[] indiced by parameter name
 	 */
 	public function getObjects()
 	{

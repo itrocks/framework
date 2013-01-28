@@ -22,7 +22,7 @@ getTextHeight = function(text)
 };
 
 //------------------------------------------------------------------------------------ getTextWidth
-get_text_width_cache = new Array();
+get_text_width_cache = [];
 getTextWidth = function(text)
 {
 	var width = get_text_width_cache[text];

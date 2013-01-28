@@ -92,7 +92,7 @@ trait Annoted
 	 * Sets an annotation value for the reflected property (use it when no annotation found)
 	 *
 	 * @param $annotation_name string
-	 * @param $annotation Annotation
+	 * @param $annotation      Annotation
 	 */
 	protected function setAnnotation($annotation_name, Annotation $annotation)
 	{
@@ -104,7 +104,7 @@ trait Annoted
 	 * Sets a multiple annotations value for the reflected property (use it when no annotation found)
 	 *
 	 * @param $annotation_name string
-	 * @param $annotations Annotation[]
+	 * @param $annotations     Annotation[]
 	 */
 	protected function setAnnotations($annotation_name, $annotations)
 	{

@@ -8,12 +8,15 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	/**
 	 * Delete an object
 	 *
-	 * @param $parameters object
+	 * @param $parameters mixed[]
+	 * - first : the deleted object
+	 * - second : the feature name
+	 * - other parameters are kept and sent to the object delete controller
 	 */
 	private function deleteObject($parameters)
 	{
 		$object = array_shift($parameters);
-		$feature = array_shift($parameters);
+		array_shift($parameters); // $feature
 		$controller_uri = "/" . Namespaces::shortClassName(get_class($object))
 			. "/" . Dao::getObjectIdentifier($object) . "/delete";
 		Main_Controller::getInstance()->runController($controller_uri, $parameters);
@@ -63,12 +66,12 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$trash = $parameters->GetUnnamedParameters();
-		$parameters = $parameters->getObjects();
+		$objects = $parameters->getObjects();
 		if (count($trash) <= 1) {
-			$this->deleteObject($parameters);
+			$this->deleteObject($objects);
 		}
 		else {
-			$this->parseAndRun($parameters);
+			$this->parseAndRun($objects);
 		}
 	}
 

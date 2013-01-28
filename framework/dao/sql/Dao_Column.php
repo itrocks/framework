@@ -45,7 +45,7 @@ interface Dao_Column extends Field
 	/**
 	 * Gets the SQL version of the column definition
 	 *
-	 * @returns tring
+	 * @returns String
 	 */
 	public function toSql();
 

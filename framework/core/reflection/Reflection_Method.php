@@ -34,7 +34,7 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	 * Return Reflection_Method instance for a class name, object, ReflectionClass, Reflection_Class, ReflectionMethod object
 	 *
 	 * @param $of_class string | object | ReflectionClass | ReflectionMethod
-	 * @param $of_class string $of_name do not set this if is a ReflectionMethod
+	 * @param $of_name string $of_name do not set this if is a ReflectionMethod
 	 * @return Reflection_Method
 	 */
 	public static function getInstanceOf($of_class, $of_name = null)

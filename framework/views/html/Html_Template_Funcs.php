@@ -85,7 +85,8 @@ abstract class Html_Template_Funcs
 	 * Return an HTML edit component for current property or List_Data property
 	 *
 	 * @param $template Html_Template
-	 * @param $objects mixed[]
+	 * @param $objects  mixed[]
+	 * @param $prefix object
 	 * @return string
 	 */
 	public static function getEdit(Html_Template $template, $objects, $prefix = null)

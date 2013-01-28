@@ -120,7 +120,7 @@ abstract class Names
 	{
 		$method = "";
 		$name = explode("_", $property_name);
-		foreach ($name as $key => $value) {
+		foreach ($name as $value) {
 			$method .= ucfirst($value);
 		}
 		return $prefix ? $prefix . $method : lcfirst($method);

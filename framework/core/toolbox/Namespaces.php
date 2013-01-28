@@ -34,6 +34,7 @@ abstract class Namespaces
 	 */
 	public static function fullClassName($class_name)
 	{
+		$full_class_name = $class_name;
 		if (strpos($class_name, "\\") === false) {
 			static $cache = array();
 			if (isset($cache[$class_name])) {
@@ -51,9 +52,6 @@ abstract class Namespaces
 					$full_class_name = $class_name;
 				}
 			}
-		}
-		else {
-			$full_class_name = $class_name;
 		}
 		return $full_class_name;
 	}
