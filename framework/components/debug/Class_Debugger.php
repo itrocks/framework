@@ -93,7 +93,6 @@ class Class_Debugger implements Plugin
 	//--------------------------------------------------------------------------------- registerClass
 	public static function registerClass($class_name)
 	{
-		$class_debugger = self::getInstance();
 		if ($class_name == "*") {
 			Aop::add("before", "*->*()", array(get_called_class(), "before"));
 			Aop::add("after", "*->*()", array(get_called_class(), "after"));

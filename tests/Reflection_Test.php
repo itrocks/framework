@@ -51,6 +51,7 @@ class Reflection_Test extends Unit_Test
 		$class = Reflection_Class::getInstanceOf(__NAMESPACE__ . "\\Test_Order");
 		$properties = $class->accessProperties();
 		$class->accessPropertiesDone();
+		$check = array();
 		foreach ($properties as $property) {
 			try {
 				$check[$property->name] = $property->getValue($test_order);

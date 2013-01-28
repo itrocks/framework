@@ -202,7 +202,7 @@ class AopJoinpoint
 	 *
 	 * Returned value may have any AOP_KIND_* constant value
 	 *
-	 * @return constant
+	 * @return int
 	 */
 	public function getKindOfAdvice() {}
 
@@ -292,7 +292,7 @@ class AopJoinpoint
 	 * the original reference will be lost and won't be replaced. To replace the content of an
 	 * original reference, just proceed as explained in the getReturnedValue() documentation.
 	 *
-	 * @param $new_returned_value mixed The new triggering method returned value.
+	 * @param $new_assigned_value mixed The new triggering method returned value.
 	 */
 	public function setAssignedValue($new_assigned_value) {}
 
@@ -300,7 +300,7 @@ class AopJoinpoint
 	/**
 	 * Enables you to define the value of the property of the triggered joinpoint.
 	 *
-	 * @param $new_assigned_value mixed The new value assigned to the property.
+	 * @param $new_returned_value mixed The new value assigned to the property.
 	 */
 	public function setReturnedValue($new_returned_value) {}
 

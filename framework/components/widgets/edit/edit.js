@@ -22,7 +22,7 @@ $("document").ready(function() {
 			var new_width = getInputTextWidth($this.val());
 			$this.attr("ui-text-width", new_width);
 			if (new_width != previous_width) {
-				$table = $this.closest("table.collection");
+				var $table = $this.closest("table.collection");
 				if (!$table.length) {
 					// single element
 					$this.width(new_width);

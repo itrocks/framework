@@ -1,7 +1,7 @@
 (function($) {
 
 	// this (global) static variable stores all wished build() callbacks
-	jquery_build_callback = new Array();
+	var jquery_build_callback = [];
 
 	//--------------------------------------------------------------------------------------- build
 	/**

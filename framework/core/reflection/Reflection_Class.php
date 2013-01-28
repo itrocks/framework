@@ -65,7 +65,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * If a property overrides a parent property, parent AND child properties will be listed (only if $by_name keeps false).
 	 * If $by_name is set to true, result array will be indiced by names. With this option parent properties will be replace by overriden child properties.
 	 *
-	 * @param $filter string
+	 * @param int|string $filter  string
 	 * @param $by_name boolean
 	 * @return Reflection_Property[]
 	 */
@@ -192,7 +192,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * Only methods visible for current class are retrieved, not the privates ones from parents or traits.
 	 *
-	 * @param $filter string any combination of Reflection_Method::IS_* constants
+	 * @param $filter int|null|string any combination of Reflection_Method::IS_* constants
 	 * @param $by_name boolean if true, only the last override of each method name will be kept
 	 * @return Reflection_Method[] indice is the method name if $by_name is true, else this will be an integer
 	 */
@@ -224,7 +224,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * Properties visible for current class, not the privates ones from parents and traits are retrieved.
 	 *
-	 * @param $filter string any combination of Reflection_Property::IS_* constants
+	 * @param $filter int|null|string any combination of Reflection_Property::IS_* constants
 	 * @param $by_name boolean if true, only the last override of each property will be kept
 	 * @return Reflection_Property[] indice is the property name if $by_name is true, else this will be an integer
 	 */

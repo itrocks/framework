@@ -23,7 +23,7 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Create a table in database, which has no associated class, using fields names
 	 *
-	 * @param $mysqli mysqli mysqli
+	 * @param $mysqli object
 	 * @param $table_name    string
 	 * @param $column_names  string[]
 	 */

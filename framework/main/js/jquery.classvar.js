@@ -17,7 +17,7 @@
 	$.fn.classVar = function(var_name, set_value)
 	{
 		var_name += ":";
-		length = var_name.length;
+		var length = var_name.length;
 		var classes = this.attr("class").split(" ");
 		for (var i in classes) {
 			if (classes[i].substr(0, length) == var_name) {

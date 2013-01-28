@@ -16,7 +16,7 @@ abstract class Aop
 	 *
 	 * @param $when     string when to do the capture : "after", "after_returning", "after_throwing", "around", "before"
 	 * @param $function string can be "functionName()" or "Class_Name->methodName()" or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
-	 * @param $call_back string|array|function function name, array(class name or object, method) or function as a closure
+	 * @param $call_back string|array|mixed function name, array(class name or object, method) or function as a closure
 	 */
 	public static function add($when, $function, $call_back)
 	{

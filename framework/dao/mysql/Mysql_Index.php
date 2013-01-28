@@ -31,6 +31,7 @@ class Mysql_Index implements Dao_Index
 	//----------------------------------------------------------------------------------------- toSql
 	public function toSql()
 	{
+		$column_names = array();
 		foreach ($this->keys as $key) {
 			$column_names[] = $key->toSql();
 		}

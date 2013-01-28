@@ -94,6 +94,7 @@ class Set
 	 * the matching element class name.
 	 *
 	 * @param $class_name string
+	 * @param array $elements
 	 * @return Set
 	 */
 	public static function instantiate($class_name, $elements = array())

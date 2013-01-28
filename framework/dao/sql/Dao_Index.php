@@ -20,7 +20,7 @@ interface Dao_Index
 	/**
 	 * Gets the SQL version of the column definition
 	 *
-	 * @returns tring
+	 * @returns String
 	 */
 	public function toSql();
 

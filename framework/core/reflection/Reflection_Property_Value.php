@@ -141,6 +141,7 @@ class Reflection_Property_Value extends Reflection_Property
 
 	//----------------------------------------------------------------------------------------- value
 	/**
+	 * @param null $value object
 	 * @return mixed
 	 */
 	public function value($value = null)

@@ -218,7 +218,7 @@ class Textile
     var $pnct;
     var $rel;
     var $fn;
-    
+
     var $shelf = array();
     var $restricted = false;
     var $noimage = false;
@@ -226,7 +226,7 @@ class Textile
     var $url_schemes = array();
     var $glyph = array();
     var $hu = '';
-    
+
     var $ver = '2.0.0';
     var $rev = '$Rev: 216 $';
 
@@ -514,7 +514,7 @@ class Textile
         $content = preg_replace("@(.+)(?<!<br>|<br />)\n(?![#*\s|])@", '$1<br />', $m[3]);
         return '<'.$m[1].$m[2].'>'.$content.$m[4];
     }
-	
+
 // -------------------------------------------------------------
     function block($text)
     {

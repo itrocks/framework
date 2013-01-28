@@ -76,8 +76,7 @@ abstract class Dom_Element
 
 	//--------------------------------------------------------------------------------- getAttributes
 	/**
-	 * @param $name string
-	 * @return :Dom_Attribute[]
+	 * @return Dom_Attribute[]
 	 */
 	public function getAttributes()
 	{

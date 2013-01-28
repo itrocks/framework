@@ -1,6 +1,5 @@
 <?php
 namespace SAF\Framework;
-use Serializable;
 
 /**
  * @todo having executeQuery() and query() is perhaps not a good idea
@@ -142,7 +141,6 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		$columns[] = "id";
 		$sql_select_builder = new Sql_Select_Builder($object_class, $columns, $filter_object, $this);
 		$query = $sql_select_builder->buildQuery();
-		$list_length = count($columns);
 		$path_classes = $sql_select_builder->getClasses();
 		$this->setContext(array_merge(
 			$sql_select_builder->getClassNames(),
@@ -153,6 +151,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		$classes = array();
 		$classes_index = array();
 		$itoj = array();
+		$column_names = array();
 		$j = 0;
 		for ($i = 0; $i < $column_count; $i++) {
 			$column_names[$i] = $this->getColumnName($result_set, $i);

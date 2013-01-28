@@ -91,6 +91,7 @@ class Sql_Join
 	 * @param $foreign_table string
 	 * @param $foreign_alias string
 	 * @param $foreign_column string
+	 * @param $type string
 	 * @return Sql_Join
 	 */
 	public static function newInstance(
