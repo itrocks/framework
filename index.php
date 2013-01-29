@@ -17,37 +17,6 @@ error_reporting(E_ALL);
 require_once "framework/core/Autoloader.php";
 Autoloader::register();
 
-// highest priority modules
-Mysql_Maintainer::register(); // TODO problem : if maintainer is after logger, maintainer's setReturnedValue() seems to be ignored !
-// debug priority modules
-//Aop_Logger::register();
-//Execution_Timer::register();
-//Mysql_Logger::register();
-//Xdebug::register();
-//Class_Debugger::register("Html_Template");
-//aop_add_before(__NAMESPACE__ . "\\Aop_Getter->getDatetime()", __NAMESPACE__ . "\\Aop_Tracer::method");
-
-// high priority main error handlers
-Error_Handlers::add(E_ALL & !E_NOTICE, new Main_Error_Handler());
-Error_Handlers::add(E_RECOVERABLE_ERROR, new To_Exception_Error_Handler());
-// high priority modules (Aop_Getter and Aop_Setter will disapear with 5.5, hopefully)
-Aop_Getter::register();
-Aop_Setter::register();
-// normal priority modules
-Acls::register();
-Acls_List_Properties::register();
-Acls_Output_Properties::register();
-Aop_Dynamics::register();
-Html_Cleaner::register();
-Html_Session::register();
-Html_Translator::register();
-Translation_String_Composer::register();
-Loc::register();
-Object_Builder::register();
-Wiki::register();
-// activate errors handlers
-Error_Handlers::on();
-
 // TODO 'better use something like a Modules::register() call
 if (!isset($MODULES)) $MODULES = array();
 foreach (array_reverse($MODULES) as $MODULE) $MODULE();

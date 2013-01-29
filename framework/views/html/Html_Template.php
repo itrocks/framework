@@ -870,6 +870,9 @@ class Html_Template
 					$file_path = Paths::$uri_root . substr(
 						stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 					);
+					if (!is_file($file_path)) {
+						$file_path = "unknown";
+					}
 				}
 				$content = substr($content, 0, $i) . $file_path . substr($content, $j);
 			}
