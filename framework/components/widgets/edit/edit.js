@@ -5,7 +5,8 @@ $("document").ready(function() {
 		var app = window.app;
 
 		// .autoheight
-		var autoheight_function = function() {
+		var autoheight_function = function()
+		{
 			var $this = $(this);
 			var match = ($this.val().indexOf("\n") > -1);
 			if (match) {
@@ -16,7 +17,8 @@ $("document").ready(function() {
 		$this.find(".autoheight").keyup(autoheight_function);
 
 		// .autowidth
-		var autowidth_function = function() {
+		var autowidth_function = function()
+		{
 			var $this = $(this);
 			var previous_width = parseInt($this.attr("ui-text-width"));
 			var new_width = getInputTextWidth($this.val());
@@ -49,7 +51,8 @@ $("document").ready(function() {
 					else if (previous_width == previous_max_width) {
 						// the element was the widest element : grow or shorten
 						new_width = 0;
-						$table.find("[name='" + name + "']").each(function() {
+						$table.find("[name='" + name + "']").each(function()
+						{
 							var $this = $(this);
 							if (next_input) {
 								$this = $this.next("input");
@@ -75,7 +78,8 @@ $("document").ready(function() {
 		$this.find(".autowidth").keyup(autowidth_function);
 
 		// .collection
-		$this.find(".minus").click(function() {
+		$this.find(".minus").click(function()
+		{
 			// On empêche la suppression du dernier élément
 			if($(this).closest("tbody").children().length > 1)
 				$(this).closest("tr").remove();
@@ -86,7 +90,8 @@ $("document").ready(function() {
 			$this.data("saf_add", $this.find("tr.new").clone());
 		});
 
-		$this.find("input, textarea").focus(function() {
+		$this.find("input, textarea").focus(function()
+		{
 			var $tr = $(this).closest("tr");
 			if ($tr.length && !$tr.next("tr").length) {
 				var $collection = $tr.closest("table.collection");
@@ -107,11 +112,13 @@ $("document").ready(function() {
 			selectOtherMonths: true
 		});
 
-		$this.find("input.datetime").blur(function() {
+		$this.find("input.datetime").blur(function()
+		{
 			$(this).datepicker("hide");
 		});
 
-		$this.find("input.datetime").keyup(function(event) {
+		$this.find("input.datetime").keyup(function(event)
+		{
 			if ((event.keyCode != 13) && (event.keyCode != 27)) {
 				$(this).datepicker("show");
 			}
@@ -138,6 +145,7 @@ $("document").ready(function() {
 				$(this).prev().val(ui.item.id);
 			}
 		});
+
 	});
 
 });

@@ -64,10 +64,28 @@ $("document").ready(function()
 						var left = $prev.offset().left + $prev.width();
 						var right = $this.offset().left + $this.width();
 						if ((draggable_left > left) && (draggable_left <= right)) {
-							found = (draggable_left > ((left + right) / 2)) ? count + 1 : count;
+							found = (draggable_left <= ((left + right) / 2))
+								? count
+								: (count + 1);
+							var old = $droppable.data("insert_after");
+							if (found != old) {
+								if (old != undefined) {
+									$droppable.find("th:nth-child(" + old + "),td:nth-child(" + old + ")")
+										.removeClass("insert_after");
+								}
+								$droppable.find("th:nth-child(" + found + "),td:nth-child(" + found + ")")
+									.addClass("insert_after");
+								$droppable.data("insert_after", found);
+							}
 						}
 					});
-					console.log("found " + found);
+				}
+			},
+
+			stop: function(event, ui)
+			{
+				var $droppable = $(this).data("over_droppable");
+				if ($droppable != undefined) {
 				}
 			}
 
