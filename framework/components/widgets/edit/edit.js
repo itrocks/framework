@@ -76,7 +76,9 @@ $("document").ready(function() {
 
 		// .collection
 		$this.find(".minus").click(function() {
-			$(this).closest("tr").remove();
+			// On empêche la suppression du dernier élément
+			if($(this).closest("tbody").children().length > 1)
+				$(this).closest("tr").remove();
 		});
 
 		$this.find("table.collection").each(function() {

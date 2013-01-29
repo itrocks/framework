@@ -54,5 +54,3 @@ class Date_Time extends DateTime
 	}
 
 }
-
-date_default_timezone_set();
