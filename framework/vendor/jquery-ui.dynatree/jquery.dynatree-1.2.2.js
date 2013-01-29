@@ -5,6 +5,7 @@
 /* jsHint options*/
 // Note: We currently allow eval() to parse the 'data' attribtes, when initializing from HTML.
 // TODO: pass jsHint with the options given in grunt.js only.
+// TODO: pass jsHint with the options given in grunt.js only.
 //       The following should not be required:
 /*global alert */
 /*jshint nomen:false, smarttabs:true, eqeqeq:false, evil:true, regexp:false */

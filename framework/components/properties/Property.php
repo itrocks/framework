@@ -18,7 +18,6 @@ class Property implements Field
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
-	 * @getter getType
 	 * @var Type
 	 */
 	private $type;
@@ -42,22 +41,25 @@ class Property implements Field
 		}
 	}
 
-	//--------------------------------------------------------------------------------------- getName
+	//--------------------------------------------------------------------------------------- display
 	/**
 	 * @return string
 	 */
+	public function display()
+	{
+		return Names::propertyToDisplay($this->name);
+	}
+
+	//--------------------------------------------------------------------------------------- getName
 	public function getName()
 	{
 		return $this->name;
 	}
 
-	//--------------------------------------------------------------------------------------- getType
-	/**
-	 * @return Type
-	 */
+	//--------------------------------------------------------------------------------------- getName
 	public function getType()
 	{
-		return new Type($this->type);
+		return $this->type;
 	}
 
 }
