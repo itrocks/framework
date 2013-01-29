@@ -10,6 +10,7 @@ interface Plugin
 	 *
 	 * Will be executed at plugin's initialization
 	 */
+	/** @noinspection PhpAbstractStaticMethodInspection */
 	public static function register();
 
 }

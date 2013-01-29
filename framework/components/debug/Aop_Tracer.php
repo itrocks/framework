@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Aop.php";
 
 abstract class Aop_Tracer

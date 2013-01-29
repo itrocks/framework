@@ -18,7 +18,7 @@ abstract class Reflection_Class_Properties_Access
 	 * Associates each class name to an array associating property name and Reflection_Property
 	 * This is used for caching and will be released once counter becomes zero for a given class name.
 	 *
-	 * @var Reflection_Property[]
+	 * @var Reflection_Property[][]
 	 */
 	private static $properties_map = array();
 
@@ -27,7 +27,7 @@ abstract class Reflection_Class_Properties_Access
 	 * Associates each class name to an array associating property name and Reflection_Property
 	 * This is used for caching and will be released once counter becomes zero for a given class name.
 	 *
-	 * @var Reflection_Property[]
+	 * @var Reflection_Property[][]
 	 */
 	private static $private_map = array();
 
@@ -94,6 +94,7 @@ abstract class Reflection_Class_Properties_Access
 			self::$count[$class_name]--;
 		}
 		else {
+			/** @var $private Reflection_Property */
 			foreach (self::$private_map[$class_name] as $private) {
 				$private->setAccessible(false);
 			}

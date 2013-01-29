@@ -8,19 +8,19 @@ class Mysql_Key implements Dao_Key
 	/**
 	 * @var integer
 	 */
-	private $Cardinality;
+	//private $Cardinality;
 
 	//-------------------------------------------------------------------------------------- $Comment
 	/**
 	 * @var string
 	 */
-	private $Comment;
+	//private $Comment;
 
 	//------------------------------------------------------------------------------------ $Collation
 	/**
 	 * @var string
 	 */
-	private $Collation;
+	//private $Collation;
 
 	//---------------------------------------------------------------------------------- $Column_name
 	/**
@@ -32,7 +32,7 @@ class Mysql_Key implements Dao_Key
 	/**
 	 * @var string
 	 */
-	private $Index_comment;
+	//private $Index_comment;
 
 	//----------------------------------------------------------------------------------- $Index_type
 	/**
@@ -51,37 +51,37 @@ class Mysql_Key implements Dao_Key
 	/**
 	 * @var boolean
 	 */
-	private $Non_unique;
+	//private $Non_unique;
 
 	//----------------------------------------------------------------------------------------- $Null
 	/**
 	 * @var boolean
 	 */
-	private $Null;
+	//private $Null;
 
 	//--------------------------------------------------------------------------------------- $Packed
 	/**
 	 * @var boolean
 	 */
-	private $Packed;
+	//private $Packed;
 
 	//--------------------------------------------------------------------------------- $Seq_in_index
 	/**
 	 * @var integer
 	 */
-	private $Seq_in_index;
+	//private $Seq_in_index;
 
 	//------------------------------------------------------------------------------------- $Sub_part
 	/**
 	 * @var mixed
 	 */
-	private $Sub_part;
+	//private $Sub_part;
 
 	//---------------------------------------------------------------------------------------- $Table
 	/**
 	 * @var string
 	 */
-	private $Table;
+	//private $Table;
 
 	//----------------------------------------------------------------------------------------- equiv
 	/**

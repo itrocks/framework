@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Current.php";
 
 class Configuration
@@ -43,6 +44,7 @@ class Configuration
 	public static function current(Configuration $set_current = null)
 	{
 		if (isset($set_current)) {
+			/** @var $set_current Configuration */
 			$set_current = self::pCurrent($set_current);
 			foreach (
 				$set_current->getClassesConfigurations() as $class_name => $configuration
@@ -55,10 +57,16 @@ class Configuration
 					rLastParse($configuration_class_name, "\\") . "_Builder_Configuration"
 				);
 				if (class_exists($builder_class_name)) {
-					$full_class_name::current((new $builder_class_name())->build($configuration));
+					/** @var $builder_object Configuration_Builder */
+					$builder_object = new $builder_class_name();
+					call_user_func(
+						array($full_class_name, "current"), $builder_object->build($configuration)
+					);
 				}
 				else {
-					$full_class_name::current(new $configuration_class_name($configuration));
+					call_user_func(
+						array($full_class_name, "current"), new $configuration_class_name($configuration)
+					);
 				}
 			}
 			return $set_current;

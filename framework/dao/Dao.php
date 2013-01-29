@@ -14,8 +14,9 @@ abstract class Dao
 	 */
 	public static function begin()
 	{
-		if (self::current() instanceof Transactional_Data_Link) {
-			return self::current()->begin();
+		$current = self::current();
+		if ($current instanceof Transactional_Data_Link) {
+			return $current->begin();
 		}
 		else {
 			return null;
@@ -31,8 +32,9 @@ abstract class Dao
 	 */
 	public static function commit()
 	{
-		if (self::current() instanceof Transactional_Data_Link) {
-			return self::current()->commit();
+		$current = self::current();
+		if ($current instanceof Transactional_Data_Link) {
+			return $current->commit();
 		}
 		else {
 			return null;
@@ -135,8 +137,9 @@ abstract class Dao
 	 */
 	public static function rollback()
 	{
-		if (self::current() instanceof Transactional_Data_Link) {
-			return self::current()->rollback();
+		$current = self::current();
+		if ($current instanceof Transactional_Data_Link) {
+			return $current->rollback();
 		}
 		else {
 			return null;

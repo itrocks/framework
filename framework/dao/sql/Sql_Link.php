@@ -70,6 +70,15 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 */
 	protected abstract function fetch($result_set, $class_name = null);
 
+	//-------------------------------------------------------------------------------------- fetchRow
+	/**
+	 * Fetch a result from a result set to an array
+	 *
+	 * @param $result_set mixed The result set : in most cases, will come from executeQuery()
+	 * @return mixed[]
+	 */
+	protected abstract function fetchRow($result_set);
+
 	//------------------------------------------------------------------------------------------ free
 	/**
 	 * Free a result set
@@ -141,7 +150,9 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		$columns[] = "id";
 		$sql_select_builder = new Sql_Select_Builder($object_class, $columns, $filter_object, $this);
 		$query = $sql_select_builder->buildQuery();
+		/** @noinspection PhpUndefinedMethodInspection inspector does not like my traits */
 		$path_classes = $sql_select_builder->getClasses();
+		/** @noinspection PhpUndefinedMethodInspection inspector does not like my traits */
 		$this->setContext(array_merge(
 			$sql_select_builder->getClassNames(),
 			$sql_select_builder->getLinkedTables()
@@ -178,6 +189,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 			}
 		}
 		$first = true;
+		/** @var $properties Reflection_Class[] */
 		$properties = array();
 		while ($result = $this->fetchRow($result_set)) {
 			for ($i = 0; $i < $column_count; $i++) {

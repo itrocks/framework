@@ -153,14 +153,12 @@ class Sql_Select_Builder_Test extends Unit_Test
 	//-------------------------------------------------------------------------- testWhereObjectQuery
 	public function testWhereObjectQuery()
 	{
+		/** @var $client Test_Client */
 		$client = Search_Object::newInstance(__NAMESPACE__ . "\\Test_Client");
 		$client->number = 1;
 		$client->name = "Roger%";
-		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Client",
-			array("number", "name", "client"),
-			$client
-		);
+		$properties = array("number", "name", "client");
+		$builder = new Sql_Select_Builder(__NAMESPACE__ . "\\Test_Client", $properties, $client);
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),

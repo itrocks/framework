@@ -23,9 +23,11 @@ class Html_Default_View implements IView
 				else {
 					$template_class = __NAMESPACE__ . "\\Html_Template";
 				}
+				/** @var $template Html_Template */
 				$template = new $template_class(reset($parameters), $template_file, $feature_name);
 				$template->setParameters($parameters);
-				if ($css = View::current()->getCss()) {
+				$current = View::current();
+				if (($current instanceof Html_View_Engine) && ($css = $current->getCss())) {
 					$template->setCss($css);
 				}
 				echo $template->parse();

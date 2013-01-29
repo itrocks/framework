@@ -45,9 +45,10 @@ $("document").ready(function() {
 				event.target.href = event.target.pathname + "/drop";
 				var $window = ui.draggable.parent().closest("div.window");
 				if ($window.length) {
+					//noinspection JSUnresolvedVariable
+					var app = window.app;
 					// - a sub-element of a window
 					event.target.href += $window.attr("id");
-					var app = window.app;
 					var trash = (ui.draggable.classVar("trash"));
 					var id = (ui.draggable.attr("id") != undefined)
 						? ui.draggable.attr("id")

@@ -50,8 +50,10 @@ class Mysql_Logger implements Plugin
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */
-	public function afterMainControllerRun(AopJoinpoint $joinpoint)
-	{
+	public function afterMainControllerRun(
+		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
+		AopJoinpoint $joinpoint
+	) {
 		$this->main_controller_counter--;
 		if (!$this->main_controller_counter) {
 			echo "<div class=\"Mysql logger query\">\n";
@@ -108,8 +110,10 @@ class Mysql_Logger implements Plugin
 	}
 
 	//--------------------------------------------------------------------------- onMainControllerRun
-	public function onMainControllerRun(AopJoinpoint $joinpoint)
-	{
+	public function onMainControllerRun(
+		/** @noinspection PhpUnusedParameterInspection */
+		AopJoinpoint $joinpoint
+	) {
 		$this->main_controller_counter++;
 	}
 

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * @todo $objects will become a public property of Html_Template, then remove $objects arguments
+ */
 abstract class Html_Template_Funcs
 {
 

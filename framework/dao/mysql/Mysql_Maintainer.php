@@ -46,6 +46,7 @@ class Mysql_Maintainer implements Plugin
 	 */
 	public static function onMysqliQuery(AopJoinpoint $joinpoint)
 	{
+		/** @var $mysqli Contextual_Mysqli */
 		$mysqli = $joinpoint->getObject();
 		$errno = $mysqli->errno;
 		if ($errno && isset($mysqli->context)) {

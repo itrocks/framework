@@ -11,7 +11,8 @@ class Test_Order extends Test_Document
 	 * @mandatory
 	 * @var Test_Client
 	 */
-	private $client;
+	private
+		/** @noinspection PhpUnusedPrivateFieldInspection */ $client;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
@@ -21,7 +22,8 @@ class Test_Order extends Test_Document
 	 * @var Test_Order_Line[]
 	 * @foreign order
 	 */
-	private $lines;
+	private
+		/** @noinspection PhpUnusedPrivateFieldInspection */ $lines;
 
 	//------------------------------------------------------------------------------------- $salesmen
 	/**
@@ -32,6 +34,8 @@ class Test_Order extends Test_Document
 	 * @foreignlink salesman
 	 * @master
 	 */
-	private $salesmen;
+	/** @noinspection PhpUnusedPrivateFieldInspection */
+	private
+		/** @noinspection PhpUnusedPrivateFieldInspection */ $salesmen;
 
 }

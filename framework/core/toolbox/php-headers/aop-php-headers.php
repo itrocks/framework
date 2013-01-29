@@ -267,7 +267,7 @@ class AopJoinpoint
 	 * advices of other kinds will launch an AopException with a message like "Cannot launch the
 	 * process method in an advice of kind xxx".
 	 *
-	 * @throws AopException
+	 * @throws Exception
 	 */
 	public function process() {}
 

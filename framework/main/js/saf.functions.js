@@ -16,8 +16,9 @@ getInputTextWidth = function(text)
 getTextHeight = function(text)
 {
 	$('<span id="height">').append(text.split("\n").join("<br>")).appendTo('body');
-	var height = $('#height').height();
-	$('#height').remove();
+	var $height = $('#height');
+	var height = $height.height();
+	$height.remove();
 	return height;
 };
 
@@ -31,8 +32,9 @@ getTextWidth = function(text)
 	}
 	else {
 		$('<span id="width">').append(text.split("\n").join("<br>")).appendTo('body');
-		width = $('#width').width();
-		$('#width').remove();
+		var $width = $('#width');
+		width = $width.width();
+		$width.remove();
 		get_text_width_cache[text] = width;
 		return width;
 	}

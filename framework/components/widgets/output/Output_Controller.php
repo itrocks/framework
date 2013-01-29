@@ -9,8 +9,10 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 * @param $class_name string
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons($class_name)
-	{
+	protected function getGeneralButtons(
+		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
+		$class_name
+	) {
 		return array();
 	}
 
@@ -19,8 +21,10 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 * @param $class_name string
 	 * @return string[] property names list
 	 */
-	protected function getPropertiesList($class_name)
-	{
+	protected function getPropertiesList(
+		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
+		$class_name
+	) {
 		return null;
 	}
 

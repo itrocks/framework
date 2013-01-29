@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Menu_Builder_Configuration
+class Menu_Builder_Configuration implements Configuration_Builder
 {
 
 	//----------------------------------------------------------------------------------------- build

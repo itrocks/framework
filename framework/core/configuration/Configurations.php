@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/configuration/Configurations.php";
 
 class Configurations
@@ -48,6 +50,7 @@ class Configurations
 	public function load($file_name = "config.php")
 	{
 		$config = array();
+		/** @noinspection PhpIncludeInspection */
 		include $file_name;
 		if (isset($GLOBALS["CONFIG"])) {
 			$config = arrayMergeRecursive($config, array_reverse($GLOBALS["CONFIG"], true));

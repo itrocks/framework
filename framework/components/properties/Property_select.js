@@ -31,6 +31,7 @@ $("document").ready(function()
 		});
 
 		// draggable items
+		//noinspection JSUnusedLocalSymbols,JSUnusedLocalSymbols,JSUnusedLocalSymbols,JSUnusedLocalSymbols,JSUnusedLocalSymbols
 		$this.find(".property").draggable({
 
 			appendTo:    "body",
@@ -82,7 +83,7 @@ $("document").ready(function()
 				}
 			},
 
-			stop: function(event, ui)
+			stop: function()
 			{
 				var $droppable = $(this).data("over_droppable");
 				if ($droppable != undefined) {

@@ -9,7 +9,7 @@ abstract class Test_Document
 	 * Document date
 	 *
 	 * @mandatory
-	 * @var Date_Time
+	 * @var \SAF\Framework\Date_Time
 	 */
 	private $date;
 

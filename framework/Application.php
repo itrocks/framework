@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/configuration/Configuration.php";
 require_once "framework/core/toolbox/String.php";
 

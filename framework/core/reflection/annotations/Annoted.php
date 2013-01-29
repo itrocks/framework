@@ -47,7 +47,10 @@ trait Annoted
 	 */
 	private function getCachedAnnotation($annotation_name, $multiple)
 	{
-		if (!isset($this->annotations[$annotation_name][$multiple])) {
+		if (
+			!isset($this->annotations[$annotation_name][$multiple])
+			&& ($this instanceof Has_Doc_Comment)
+		) {
 			$this->annotations[$annotation_name][$multiple] = Annotation_Parser::byName(
 				$this, $annotation_name, $multiple
 			);

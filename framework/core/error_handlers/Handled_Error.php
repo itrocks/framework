@@ -127,7 +127,7 @@ class Handled_Error
 
 	//------------------------------------------------------------------------------- getErrorMessage
 	/**
-	 * Get handled error message
+	 * Gets handled error message
 	 *
 	 * @return string
 	 */
@@ -138,7 +138,7 @@ class Handled_Error
 
 	//-------------------------------------------------------------------------------- getErrorNumber
 	/**
-	 * Get the level of the error raised
+	 * Gets the level of the error raised
 	 *
 	 * @return integer
 	 */
@@ -149,7 +149,7 @@ class Handled_Error
 
 	//----------------------------------------------------------------------------------- getFilename
 	/**
-	 * Get the filename that the error was raised in
+	 * Gets the filename that the error was raised in
 	 *
 	 * @return string
 	 */
@@ -160,13 +160,25 @@ class Handled_Error
 
 	//--------------------------------------------------------------------------------- getLineNumber
 	/**
-	 * Get the line number the error was raised at
+	 * Gets the line number the error was raised at
 	 *
 	 * @return integer
 	 */
 	public function getLineNumber()
 	{
 		return $this->line_num;
+	}
+
+	//---------------------------------------------------------------------------------- getVariables
+	/**
+	 * Gets the variables active when the error occured
+	 *
+	 * @return mixed[]
+	 */
+	public function getVariables()
+	{
+		// TODO all :)
+		return array();
 	}
 
 	//--------------------------------------------------------------- isStandardPhpErrorHandlerCalled

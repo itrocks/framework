@@ -1,7 +1,7 @@
 (function($) {
 
 	// this (global) static variable stores all wished build() callbacks
-	var jquery_build_callback = [];
+	window.jquery_build_callback = [];
 
 	//--------------------------------------------------------------------------------------- build
 	/**
@@ -15,7 +15,7 @@
 	{
 		call_now = call_now || true;
 		if (callback != undefined) {
-			jquery_build_callback.push(callback);
+			window.jquery_build_callback.push(callback);
 			if ((call_now == undefined) || call_now) {
 				this.tmpBuildCaller = callback;
 				this.tmpBuildCaller();
@@ -24,7 +24,7 @@
 		}
 		else {
 			for (var key in jquery_build_callback) {
-				callback = jquery_build_callback[key];
+				callback = window.jquery_build_callback[key];
 				this.tmpBuildCaller = callback;
 				this.tmpBuildCaller();
 			}

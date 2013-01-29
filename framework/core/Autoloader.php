@@ -2,14 +2,19 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Array.php";
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/String.php";
-
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Plugin.php";
-
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/Application.php";
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/configuration/Configuration.php";
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Aop.php";
+/** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Namespaces.php";
 
 abstract class Autoloader implements Plugin
@@ -56,9 +61,11 @@ abstract class Autoloader implements Plugin
 	{
 		$short_class_name = Namespaces::shortClassName($class_name);
 		if (!isset(self::$included_classes[$short_class_name])) {
+			/** @noinspection PhpIncludeInspection */
 			if (!@include_once($short_class_name . ".php")) {
 				if (!self::$initialized) {
 					static::init();
+					/** @noinspection PhpIncludeInspection */
 					if (!@include_once($short_class_name . ".php")) {
 						return null;
 					}

@@ -26,8 +26,10 @@ class User_Authenticate_Controller implements Feature_Controller
 	 *
 	 * @param $user User
 	 */
-	private function disconnect(User $user)
-	{
+	private function disconnect(
+		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
+		User $user
+	) {
 		User::current(new User());
 		Session::current()->removeAny(__NAMESPACE__ . "\\User");
 	}

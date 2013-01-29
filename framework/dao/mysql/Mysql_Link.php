@@ -254,6 +254,7 @@ class Mysql_Link extends Sql_Link
 		$search_result = array();
 		$builder = new Sql_Select_Builder($class_name, null, $what, $this);
 		$query = $builder->buildQuery();
+		/** @noinspection PhpUndefinedMethodInspection The inspector does not like my traits */
 		$this->setContext($builder->getClassNames());
 		$result_set = $this->executeQuery($query);
 		while ($object = $result_set->fetch_object($class_name)) {

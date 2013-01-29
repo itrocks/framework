@@ -1,8 +1,11 @@
-$("document").ready(function() {
+$("document").ready(function()
+{
 
-	$("form").build(function() {
-		var $this = $(this);
+	$("form").build(function()
+	{
+		//noinspection JSUnresolvedVariable
 		var app = window.app;
+		var $this = $(this);
 
 		// .autoheight
 		var autoheight_function = function()
@@ -85,7 +88,8 @@ $("document").ready(function() {
 				$(this).closest("tr").remove();
 		});
 
-		$this.find("table.collection").each(function() {
+		$this.find("table.collection").each(function()
+		{
 			var $this = $(this);
 			$this.data("saf_add", $this.find("tr.new").clone());
 		});
@@ -129,21 +133,29 @@ $("document").ready(function() {
 			autoFocus: true,
 			delay: 100,
 			minLength: 0,
-			close: function(event) {
+
+			close: function(event)
+			{
 				$(event.target).keyup();
 			},
-			source: function(request, response) {
+
+			source: function(request, response)
+			{
+				//noinspection JSUnresolvedVariable
 				var app = window.app;
 				request["PHPSESSID"] = app.PHPSESSID;
 				$.getJSON(
 					app.uri_root + app.script_name + "/" + $(this.element).classVar("class") + "/json",
 					request,
-					function(data, status, xhr) { response(data); }
+					function(data) { response(data); }
 				);
 			},
-			select: function(event, ui) {
+
+			select: function(event, ui)
+			{
 				$(this).prev().val(ui.item.id);
 			}
+
 		});
 
 	});
