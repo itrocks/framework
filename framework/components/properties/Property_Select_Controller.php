@@ -1,17 +1,24 @@
 <?php
 namespace SAF\Framework;
 
-class Property_Select_Controller implements Feature_Controller
+class Property_Select_Controller implements Controller
 {
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @param $class Reflection_Class
-	 * @return Reflection_Property[]
+	 * @param $path  string
+	 * @return Reflection_Property_Value[]
 	 */
-	public function getProperties(Reflection_Class $class)
+	public function getProperties(Reflection_Class $class, $path = null)
 	{
-		return $class->getAllProperties();
+		$properties = array();
+		foreach ($class->getAllProperties() as $property) {
+			$property = new Reflection_Property_Value($property);
+			$property->path = isset($path) ? $path . "." . $property->name : $property->name;
+			$properties[] = $property;
+		}
+		return $properties;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -27,15 +34,21 @@ class Property_Select_Controller implements Feature_Controller
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$property = new Property();
-		$objects = $parameters->getObjects();
+		$class_name = $parameters->shiftUnnamed();
+		$property_path = $parameters->shiftUnnamed();
 		$property->class = Reflection_Class::getInstanceOf(
-			Set::elementClassNameOf($parameters->shiftUnnamed($objects))
+			Set::elementClassNameOf(Namespaces::fullClassName($class_name))
 		);
-		if ($objects) {
-			$property->name = $parameters->shiftUnnamed($objects);
+		if (!empty($property_path)) {
+			$property->name = rLastParse($property_path, ".", 1, true);
+			$parameters->set("container", "subtree");
 		}
+		else {
+			$property_path = null;
+		}
+		$objects = $parameters->getObjects();
 		array_unshift($objects, $property);
-		$objects["properties"] = $this->getProperties($property->class);
+		$objects["properties"] = $this->getProperties($property->class, $property_path);
 		/**
 		 * Objects for the view :
 		 * first        Property the property object (with selected property name, or not)

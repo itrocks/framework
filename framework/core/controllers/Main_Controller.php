@@ -82,7 +82,7 @@ class Main_Controller
 		unset($post[session_name()]);
 		foreach ($session->getAll() as $class_name => $value) {
 			if (is_object($value)) {
-				$class_name::current($value);
+				call_user_func(array($class_name, "current"), $value);
 			}
 		}
 		if (!Configuration::current()) {

@@ -11,7 +11,7 @@ class Html_Template
 	 *
 	 * @var string
 	 */
-	private $content;
+	protected $content;
 
 	//------------------------------------------------------------------------------------------ $css
 	/**
@@ -19,7 +19,7 @@ class Html_Template
 	 *
 	 * @var string
 	 */
-	private $css;
+	protected $css;
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
@@ -27,7 +27,7 @@ class Html_Template
 	 *
 	 * @var string
 	 */
-	private $feature;
+	protected $feature;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -35,7 +35,7 @@ class Html_Template
 	 *
 	 * @var object
 	 */
-	private $object;
+	protected $object;
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
@@ -49,7 +49,7 @@ class Html_Template
 	/**
 	 * @var string[]
 	 */
-	private $parameters;
+	protected $parameters;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -57,7 +57,7 @@ class Html_Template
 	 *
 	 * @var string
 	 */
-	private $path;
+	protected $path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -210,9 +210,29 @@ class Html_Template
 		return (new Html_Builder_Collection($property, $collection))->build();
 	}
 
+	//------------------------------------------------------------------------------ parseConditional
+	protected function parseConditional($objects, $property_name)
+	{
+		$i = strpos($property_name, "?");
+		if ($i !== false) {
+			$condition_path = substr($property_name, 0, $i);
+			$j = strrpos($property_name, ":");
+			if ($this->parseValue($objects, $condition_path, true)) {
+				if ($j === false) {
+					$j = strlen($property_name);
+				}
+				return $this->parseValue($objects, substr($property_name, $i + 1, $j - $i - 1));
+			}
+			elseif ($j !== false) {
+				return $this->parseValue($objects, substr($property_name, $j + 1));
+			}
+		}
+		return false;
+	}
+
 	//------------------------------------------------------------------------------------ parseConst
 	/**
-	 * Parse a constant and returns its return value
+	 * Parse a global constant and returns its return value
 	 *
 	 * @param $objects    mixed[]
 	 * @param $object     mixed
@@ -229,6 +249,21 @@ class Html_Template
 		));
 	}
 
+	//--------------------------------------------------------------------------------- parseConstant
+	/**
+	 * Parse a string constant delimiter by quotes at start and end
+	 *
+	 * @param $objects      mixed[]
+	 * @param $const_string string
+	 * @return string
+	 */
+	protected function parseConstant(
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $const_string
+	) {
+		return substr($const_string, 1, -1);
+	}
+
 	//-------------------------------------------------------------------------------- parseContainer
 	/**
 	 * Replace code before <!--BEGIN--> and after <!--END--> by the html main container's code
@@ -238,10 +273,18 @@ class Html_Template
 	 */
 	protected function parseContainer($content)
 	{
-		$i = strpos($content, "<!--BEGIN-->");
+		if (isset($this->parameters["container"])) {
+			$container_begin = "BEGIN:" . $this->parameters["container"];
+			$container_end = "END:" . $this->parameters["container"];
+		}
+		else {
+			$container_begin = "BEGIN";
+			$container_end = "END";
+		}
+		$i = strpos($content, "<!--" . $container_begin . "-->");
 		if ($i !== false) {
-			$i += 12;
-			$j = strrpos($content, "<!--END-->", $i);
+			$i += strlen($container_begin) + 7;
+			$j = strrpos($content, "<!--" . $container_end . "-->", $i);
 			if (isset($this->parameters["as_widget"]) && $this->parameters["as_widget"]) {
 				$content = substr($content, $i, $j - $i);
 			}
@@ -314,7 +357,7 @@ class Html_Template
 	}
 
 	//------------------------------------------------------------------------------------- parseLoop
-	private function parseLoop(&$content, $objects, $i, $j)
+	protected function parseLoop(&$content, $objects, $i, $j)
 	{
 		$var_name = substr($content, $i, $j - $i);
 		$length = strlen($var_name);
@@ -427,7 +470,7 @@ class Html_Template
 	 * @param $objects  mixed[]
 	 * @return string updated content
 	 */
-	private function parseLoops($content, $objects)
+	protected function parseLoops($content, $objects)
 	{
 		$icontent = 0;
 		while (($icontent = strpos($content, "<!--", $icontent)) !== false) {
@@ -435,6 +478,9 @@ class Html_Template
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, "-->", $i);
 				$this->parseLoop($content, $objects, $i, $j);
+			}
+			else {
+				$icontent = strpos($content, "-->", $i) + 3;
 			}
 		}
 		return $content;
@@ -451,6 +497,19 @@ class Html_Template
 		$objects, $object, $property_name
 	) {
 		return $object->$property_name();
+	}
+
+	//-------------------------------------------------------------------------------------- parseNot
+	/**
+	 * Returns the reverse boolean value for property value
+	 *
+	 * @param $objects       mixed[]
+	 * @param $property_name string
+	 * @return boolean
+	 */
+	protected function parseNot($objects, $property_name)
+	{
+		return !$this->parseValue($objects, substr($property_name, 1));
 	}
 
 	//--------------------------------------------------------------------------- parseObjectToString
@@ -524,6 +583,81 @@ class Html_Template
 			$separator = "";
 		}
 		return $separator;
+	}
+
+	//------------------------------------------------------------------------------ parseSingleValue
+	/**
+	 * @param $objects       mixed[]
+	 * @param $object        mixed
+	 * @param $class_name    string
+	 * @param $property_name string
+	 * @return mixed
+	 */
+	protected function parseSingleValue(&$objects, $object, &$class_name, $property_name)
+	{
+		$source_object = $object;
+		if (!strlen($property_name)) {
+			$object = $this->parseParent($objects);
+		}
+		elseif (strpos($property_name, "?")) {
+			$object = $this->parseConditional($objects, $property_name);
+		}
+		elseif ($property_name[0] == "!") {
+			$object = $this->parseNot($objects, $property_name);
+		}
+		elseif (
+			($property_name[0] == "'" && substr($property_name, -1) == "'")
+			|| ($property_name[0] == '"' && substr($property_name, -1) == '"')
+		) {
+			$object = $this->parseConstant($objects, $property_name);
+		}
+		elseif (isset($class_name)) {
+			$object = method_exists($class_name, $property_name)
+				? $this->parseStaticMethod($objects, $class_name, $property_name)
+				: $this->parseStaticProperty($objects, $class_name, $property_name);
+			$class_name = null;
+		}
+		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
+			if (
+				(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
+			) {
+				$class_name = $this->parseClassName($objects, $property_name);
+			}
+			else {
+				$object = $this->parseConst($objects, $object, $property_name);
+			}
+		}
+		elseif ($property_name[0] === "@") {
+			$object = $this->parseFunc($objects, substr($property_name, 1));
+		}
+		elseif ($property_name[0] === "/") {
+			$object = $this->parseInclude($property_name);
+		}
+		elseif ($i = strpos($property_name, "(")) {
+			$object = $this->callFunc($objects, $property_name);
+		}
+		elseif (is_array($object)) {
+			$object = $this->parseArrayElement($objects, $object, $property_name);
+		}
+		elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
+			$object = $this->parseString($objects, $object, $property_name);
+		}
+		elseif (method_exists($object, $property_name)) {
+			$object = $this->parseMethod($objects, $object, $property_name);
+		}
+		elseif (isset($object->$property_name)) {
+			$object = $this->parseProperty($objects, $object, $property_name);
+		}
+		else {
+			$object = $this->parseParameter($objects, $object, $property_name);
+		}
+		if (($source_object instanceof Reflection_Property) && ($property_name == "value")) {
+			$object = (new Reflection_Property_View($source_object))->formatValue($object);
+		}
+		if (strlen($property_name)) {
+			array_unshift($objects, $object);
+		}
+		return $object;
 	}
 
 	//----------------------------------------------------------------------------- parseStaticMethod
@@ -604,74 +738,15 @@ class Html_Template
 	 * @param $i       integer
 	 * @return boolean
 	 */
-	private function parseThis($content, $i)
+	protected function parseThis($content, $i)
 	{
 		$c = $content[$i];
-		return (($c >= "a") && ($c <= "z")) || (($c >= "A") && ($c <= "Z"))
+		return (($c >= "a") && ($c <= "z"))
+			|| (
+				($c >= "A") && ($c <= "Z")
+				&& (substr($content, $i, 6) != "BEGIN:") && (substr($content, $i, 4) != "END:")
+			)
 			|| ($c == "@") || ($c == "/") || ($c == ".") || ($c == "?");
-	}
-
-	//------------------------------------------------------------------------------ parseSingleValue
-	/**
-	 * @param $objects       mixed[]
-	 * @param $object        mixed
-	 * @param $class_name    string
-	 * @param $property_name string
-	 * @return mixed
-	 */
-	protected function parseSingleValue(&$objects, $object, &$class_name, $property_name)
-	{
-		$source_object = $object;
-		if (!strlen($property_name)) {
-			$object = $this->parseParent($objects);
-		}
-		elseif (isset($class_name)) {
-			$object = method_exists($class_name, $property_name)
-			? $this->parseStaticMethod($objects, $class_name, $property_name)
-			: $this->parseStaticProperty($objects, $class_name, $property_name);
-			$class_name = null;
-		}
-		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
-			if (
-					(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
-			) {
-				$class_name = $this->parseClassName($objects, $property_name);
-			}
-			else {
-				$object = $this->parseConst($objects, $object, $property_name);
-			}
-		}
-		elseif ($property_name[0] === "@") {
-			$object = $this->parseFunc($objects, substr($property_name, 1));
-		}
-		elseif ($property_name[0] === "/") {
-			$object = $this->parseInclude($property_name);
-		}
-		elseif ($i = strpos($property_name, "(")) {
-			$object = $this->callFunc($objects, $property_name);
-		}
-		elseif (is_array($object)) {
-			$object = $this->parseArrayElement($objects, $object, $property_name);
-		}
-		elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
-			$object = $this->parseString($objects, $object, $property_name);
-		}
-		elseif (method_exists($object, $property_name)) {
-			$object = $this->parseMethod($objects, $object, $property_name);
-		}
-		elseif (isset($object->$property_name)) {
-			$object = $this->parseProperty($objects, $object, $property_name);
-		}
-		else {
-			$object = $this->parseParameter($objects, $object, $property_name);
-		}
-		if (($source_object instanceof Reflection_Property) && ($property_name == "value")) {
-			$object = (new Reflection_Property_View($source_object))->formatValue($object);
-		}
-		if (strlen($property_name)) {
-			array_unshift($objects, $object);
-		}
-		return $object;
 	}
 
 	//------------------------------------------------------------------------------------ parseValue
@@ -687,6 +762,9 @@ class Html_Template
 	{
 		if ($var_name == ".") {
 			return reset($objects);
+		}
+		elseif ($var_name == "") {
+			return "";
 		}
 		$class_name = null;
 		$property_name = null;
@@ -768,7 +846,7 @@ class Html_Template
 	 * @param $objects mixed[]
 	 * @return string updated content
 	 */
-	private function parseVars($content, $objects)
+	protected function parseVars($content, $objects)
 	{
 		$content = $this->parseLoops($content, $objects);
 		$i = 0;
@@ -805,7 +883,7 @@ class Html_Template
 	 *
 	 * @param $content string
 	 */
-	private function removeSample(&$content)
+	protected function removeSample(&$content)
 	{
 		$i = strrpos($content, "<!--sample-->");
 		if ($i !== false) {

@@ -11,14 +11,18 @@
 
 <!--BEGIN-->
 <div class="property select">
-	<input>
-	<div class="tree">
-		<ul>
-		<!--properties-->
-			<li class="{getType}" id="{name}">|{@display}|</li>
-		<!--properties-->
-		</ul>
-	</div>
+	<div id="search"><input></div>
+	<!--BEGIN:subtree-->
+	<ul class="treeview">
+	<!--properties-->
+		<li>
+			<!--getType.!isBasic--><a href="/Property/select/{getType.getElementTypeAsString.short}/{path}" target="#tree:{path}"><!--getType.!isBasic-->
+			<span class="property" id="{path}">|{@display}|</span>
+			<!--getType.!isBasic--></a><!--getType.!isBasic-->
+		</li>
+	<!--properties-->
+	</ul>
+	<!--END:subtree-->
 </div>
 <!--END-->
 

@@ -65,12 +65,14 @@ class Set
 	 */
 	public static function elementClassNameOf($class_name)
 	{
-		if (class_exists($class_name)) {
-			$set = new $class_name();
-			return $set->element_class_name;
+		if (is_subclass_of($class_name, __CLASS__)) {
+			return (new $class_name())->element_class_name;
+		}
+		elseif (!class_exists($class_name)) {
+			return Namespaces::fullClassName(Names::setToClass($class_name));
 		}
 		else {
-			return Namespaces::fullClassName(Names::setToClass($class_name));
+			return $class_name;
 		}
 	}
 
