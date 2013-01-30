@@ -114,7 +114,7 @@ class Html_Template
 			if ($i = strrpos($path, "/")) {
 				$path = substr($path, 0, $i);
 			}
-			$path = Paths::$uri_root . substr($path, strlen(Paths::$file_root));
+			$path = substr($path, strlen(Paths::$file_root));
 			$css_path[$css] = $path;
 		}
 		return $path;
@@ -945,14 +945,19 @@ class Html_Template
 					}
 				}
 				if (!isset($file_path)) {
-					$file_path = Paths::$uri_root . substr(
+					$file_path = substr(
 						stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 					);
+					if (!is_file($file_path)) {
+						$file_path = substr(
+							stream_resolve_include_path(ucfirst($file_name)), strlen(Paths::$file_root)
+						);
+					}
 					if (!is_file(Paths::$file_root . $file_path)) {
 						$file_path = "unknown";
 					}
 				}
-				$content = substr($content, 0, $i) . $file_path . substr($content, $j);
+				$content = substr($content, 0, $i) . Paths::$uri_root . $file_path . substr($content, $j);
 			}
 		}
 		return $content;
