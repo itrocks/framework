@@ -5,7 +5,7 @@ namespace SAF\Framework;
 require_once "framework/core/configuration/Configuration.php";
 require_once "framework/core/toolbox/String.php";
 
-abstract class Application
+class Application
 {
 
 	//----------------------------------------------------------------------------------- $namespaces

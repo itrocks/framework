@@ -33,6 +33,12 @@ class Controller_Parameters
 		return $this;
 	}
 
+	//----------------------------------------------------------------------------------------- count
+	public function count()
+	{
+		return count($this->parameters);
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Get URI parameter as an object

@@ -50,6 +50,16 @@ class Controller_Uri
 		}
 		$this->parseUri($uri);
 		$this->parseGet($get);
+		$this->setDefaults();
+	}
+
+	//----------------------------------------------------------------------------------- setDefaults
+	private function setDefaults()
+	{
+		if (!$this->controller_name && !$this->feature_name) {
+			$this->controller_name = "Application";
+			$this->feature_name = "home";
+		}
 	}
 
 	//-------------------------------------------------------------------- getPossibleControllerCalls
