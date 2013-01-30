@@ -948,11 +948,6 @@ class Html_Template
 					$file_path = substr(
 						stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 					);
-					if (!is_file($file_path)) {
-						$file_path = substr(
-							stream_resolve_include_path(ucfirst($file_name)), strlen(Paths::$file_root)
-						);
-					}
 					if (!is_file(Paths::$file_root . $file_path)) {
 						$file_path = "unknown";
 					}
