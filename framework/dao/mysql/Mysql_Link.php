@@ -23,14 +23,16 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * The $parameters array keys are : "host", "user", "password", "database".
 	 *
-	 * @param $parameters string[]
+	 * @param $parameters array
 	 */
-	public function __construct($parameters)
+	public function __construct($parameters = null)
 	{
 		parent::__construct($parameters);
-		$this->connect($parameters);
-		if (isset($parameters["limit"])) {
-			$this->limit($parameters["limit"]);
+		if (isset($parameters)) {
+			$this->connect($parameters);
+			if (isset($parameters["limit"])) {
+				$this->limit($parameters["limit"]);
+			}
 		}
 	}
 

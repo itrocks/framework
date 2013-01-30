@@ -1,18 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-abstract class Data_Link
+abstract class Data_Link implements Configurable
 {
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Construct data link using parameters array
-	 *
-	 * Parameters will depend on each data link type.
-	 *
-	 * @param $parameters array
-	 */
-	abstract public function __construct($parameters);
 
 	//---------------------------------------------------------------------------------------- delete
 	/**

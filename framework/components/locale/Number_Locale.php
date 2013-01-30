@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Number_Locale
+class Number_Locale implements Configurable
 {
 
 	//------------------------------------------------------------------------ $decimal_minimal_count

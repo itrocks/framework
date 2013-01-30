@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Html_View_Engine implements View_Engine
+class Html_View_Engine implements Configurable, View_Engine
 {
 
 	//------------------------------------------------------------------------------------------ $css
@@ -11,13 +11,12 @@ class Html_View_Engine implements View_Engine
 	private $css = "default";
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $parameters array
-	 */
-	public function __construct($parameters)
+	public function __construct($parameters = null)
 	{
-		foreach ($parameters as $key => $value) {
-			$this->$key = $value;
+		if (isset($parameters)) {
+			foreach ($parameters as $key => $value) {
+				$this->$key = $value;
+			}
 		}
 	}
 

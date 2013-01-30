@@ -1,8 +1,9 @@
 <?php
 namespace SAF\Framework;
 
-class Error_Handlers
+class Error_Handlers implements Configurable
 {
+	use Current { current as private pCurrent; }
 
 	//------------------------------------------------------------------------------- $error_handlers
 	/**
@@ -10,8 +11,32 @@ class Error_Handlers
 	 */
 	private $error_handlers = array();
 
+	//------------------------------------------------------------------------------------- $instance
+	/**
+	 * @var Error_Handlers
+	 */
+	private static $instance;
+
 	//----------------------------------------------------------------------------------- __construct
-	private function __construct() {}
+	public function __construct($parameters = null)
+	{
+		foreach ($parameters as $handle) {
+			list($err_no, $error_handler_class) = $handle;
+			$error_handler_class = Namespaces::fullClassName($error_handler_class);
+			$this->addHandler($err_no, new $error_handler_class());
+		}
+		$this->setAsErrorHandler();
+	}
+
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @param $set_current Error_Handlers
+	 * @return Error_Handlers
+	 */
+	public static function current(Error_Handlers $set_current = null)
+	{
+		return self::pCurrent($set_current);
+	}
 
 	//-------------------------------------------------------------------------------------- activate
 	/**
@@ -75,11 +100,7 @@ class Error_Handlers
 	 */
 	public static function getInstance()
 	{
-		static $instance = null;
-		if (!isset($instance)) {
-			$instance = new Error_Handlers();
-		}
-		return $instance;
+		return self::$instance;
 	}
 
 	//---------------------------------------------------------------------------------------- handle

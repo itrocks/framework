@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Locale
+class Locale implements Configurable
 {
 	use Current { current as private pCurrent; }
 
