@@ -7,19 +7,6 @@ namespace SAF\Framework;
 abstract class Html_Template_Funcs
 {
 
-	//-------------------------------------------------------------------------------------- getCount
-	/**
-	 * Returns array count
-	 *
-	 * @param $template Html_Template
-	 * @param $objects  mixed[]
-	 * @return integer
-	 */
-	public static function getCount(Html_Template $template, $objects)
-	{
-		return count($objects);
-	}
-
 	//-------------------------------------------------------------------------------- getApplication
 	/**
 	 * Returns application name
@@ -53,6 +40,19 @@ abstract class Html_Template_Funcs
 					: new Displayable(Namespaces::shortClassName(get_class($object)), Displayable::TYPE_CLASS)
 				)
 			: new Displayable(Namespaces::shortClassName($object), Displayable::TYPE_CLASS);
+	}
+
+	//-------------------------------------------------------------------------------------- getCount
+	/**
+	 * Returns array count
+	 *
+	 * @param $template Html_Template
+	 * @param $objects  mixed[]
+	 * @return integer
+	 */
+	public static function getCount(Html_Template $template, $objects)
+	{
+		return count($objects);
 	}
 
 	//------------------------------------------------------------------------------------ getDisplay
@@ -171,9 +171,11 @@ abstract class Html_Template_Funcs
 	 */
 	public static function getObject(Html_Template $template, $objects)
 	{
-		$object = reset($objects);
-		while (isset($object) && !is_object($object)) {
-			$object = next($objects);
+		$object = null;
+		foreach ($objects as $object) {
+			if (is_object($object)) {
+				break;
+			}
 		}
 		return $object;
 	}
@@ -219,6 +221,25 @@ abstract class Html_Template_Funcs
 			}
 		}
 		return $properties;
+	}
+
+	//--------------------------------------------------------------------------------- getRootObject
+	/**
+	 * Returns root object from templating tree
+	 *
+	 * @param $template Html_Template
+	 * @param $objects mixed[]
+	 * @return object
+	 */
+	public static function getRootObject(Html_Template $template, $objects)
+	{
+		$object = null;
+		foreach (array_reverse($objects) as $object) {
+			if (is_object($object)) {
+				break;
+			}
+		}
+		return $object;
 	}
 
 	//---------------------------------------------------------------------------------------- getTop
