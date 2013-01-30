@@ -51,6 +51,15 @@ class Html_Template
 	 */
 	protected $parameters;
 
+	//----------------------------------------------------------------------------- $parse_class_name
+	/**
+	 * Currently parsing full class name
+	 * For static calls like {User.current}
+	 *
+	 * @var string
+	 */
+	public $parse_class_name;
+
 	//----------------------------------------------------------------------------------------- $path
 	/**
 	 * Template file path (base for css / javascript links)
@@ -160,6 +169,7 @@ class Html_Template
 	 */
 	public function parse()
 	{
+		$this->parse_class_name = null;
 		$content = $this->content;
 		$content = $this->parseContainer($content);
 		$content = $this->parseVars($content, array($this->object));
@@ -291,7 +301,11 @@ class Html_Template
 			else {
 				$file_name = Html_Configuration::$main_template;
 				$container = file_get_contents($file_name, true);
-				$content = str_replace("{@content}", substr($content, $i, $j - $i), $container);
+				$content = str_replace(
+					"{@content}",
+					"<!--@rootObject-->" . substr($content, $i, $j - $i) . "<!--@rootObject-->",
+					$container
+				);
 			}
 		}
 		return $content;
@@ -509,7 +523,7 @@ class Html_Template
 	 */
 	protected function parseNot($objects, $property_name)
 	{
-		return !$this->parseValue($objects, substr($property_name, 1));
+		return !$this->parseValue($objects, substr($property_name, 1), false);
 	}
 
 	//--------------------------------------------------------------------------- parseObjectToString
@@ -589,11 +603,10 @@ class Html_Template
 	/**
 	 * @param $objects       mixed[]
 	 * @param $object        mixed
-	 * @param $class_name    string
 	 * @param $property_name string
 	 * @return mixed
 	 */
-	protected function parseSingleValue(&$objects, $object, &$class_name, $property_name)
+	protected function parseSingleValue(&$objects, $object, $property_name)
 	{
 		$source_object = $object;
 		if (!strlen($property_name)) {
@@ -611,17 +624,17 @@ class Html_Template
 		) {
 			$object = $this->parseConstant($objects, $property_name);
 		}
-		elseif (isset($class_name)) {
-			$object = method_exists($class_name, $property_name)
-				? $this->parseStaticMethod($objects, $class_name, $property_name)
-				: $this->parseStaticProperty($objects, $class_name, $property_name);
-			$class_name = null;
+		elseif (isset($this->parse_class_name)) {
+			$object = method_exists($this->parse_class_name, $property_name)
+				? $this->parseStaticMethod($objects, $this->parse_class_name, $property_name)
+				: $this->parseStaticProperty($objects, $this->parse_class_name, $property_name);
+			$this->parse_class_name = null;
 		}
 		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
 			if (
 				(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
 			) {
-				$class_name = $this->parseClassName($objects, $property_name);
+				$this->parse_class_name = $this->parseClassName($objects, $property_name);
 			}
 			else {
 				$object = $this->parseConst($objects, $object, $property_name);
@@ -766,15 +779,15 @@ class Html_Template
 		elseif ($var_name == "") {
 			return "";
 		}
-		$class_name = null;
 		$property_name = null;
 		$object = reset($objects);
 		foreach (explode(".", $var_name) as $property_name) {
-			$object = $this->parseSingleValue($objects, $object, $class_name, $property_name);
+			$object = $this->parseSingleValue($objects, $object, $property_name);
 		}
 		if ($as_string && is_object($object)) {
 			$object = $this->parseObjectToString($objects, $object, $property_name);
 		}
+		$this->parse_class_name = null;
 		return $object;
 	}
 
