@@ -48,13 +48,14 @@ class String
 	/**
 	 * Last element of a separated string
 	 *
+	 * @param $count integer
 	 * @return string
 	 */
-	public function last()
+	public function last($count = 1)
 	{
 		foreach (array(":", ".", "-", ",") as $char) {
-			if (strpos($this->value, $char) !== false) {
-				return substr($this->value, strpos($this->value, $char) + 1);
+			if (strrpos($this->value, $char) !== false) {
+				return rLastParse($this->value, $char, $count, true);
 			}
 		}
 		return $this->value;
@@ -76,6 +77,18 @@ class String
 	public function short()
 	{
 		return Namespaces::shortClassName($this->value);
+	}
+
+	//--------------------------------------------------------------------------------------- twoLast
+	/**
+	 * The two last elements of a separated string
+	 *
+	 * @todo remove and replace .twoLast by .last(2) (needs debugging of Html_Template)
+	 * @return string
+	 */
+	public function twoLast()
+	{
+		return $this->last(2);
 	}
 
 	//--------------------------------------------------------------------------------------- ucfirst
@@ -224,10 +237,11 @@ function mParse($str, $begin_sep, $end_sep, $cnt = 1)
  */
 function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
 {
-	if ($cnt > 1) {
-		$str = lLastParse($str, $sep, $cnt - 1);
-	}
 	$i = strrpos($str, $sep);
+	while (($cnt > 1) && ($i !== false)) {
+		$i = strrpos(substr($str, 0, $i), $sep);
+		$cnt--;
+	}
 	if ($i === false) {
 		return $complete_if_not ? $str : "";
 	}

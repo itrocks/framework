@@ -31,7 +31,17 @@ class Translations extends Set
 	//------------------------------------------------------------------------------------- translate
 	public function translate($text, $context = "")
 	{
-		if (!isset($this->cache[$text]) || !isset($this->cache[$text][$context])) {
+		if (empty($text)) {
+			return $text;
+		}
+		elseif (strpos($text, ".") !== false) {
+			$translation = array();
+			foreach (explode(".", $text) as $sentence) {
+				$translation[] = $this->translate($sentence, $context);
+			}
+			return implode(".", $translation);
+		}
+		elseif (!isset($this->cache[$text]) || !isset($this->cache[$text][$context])) {
 			$search = new Translation($text, $this->language, $context);
 			$translations = Dao::search($search);
 			foreach ($translations as $translation) if ($translation->text === $text) break;
