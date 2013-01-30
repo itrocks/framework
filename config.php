@@ -17,6 +17,10 @@ $config["framework"] = array(
 			"Acls_User" => "users",
 		)
 	),
+	"Error_Handlers" => array(
+		array(E_ALL & !E_NOTICE,   "Main_Error_Handler"),
+		array(E_RECOVERABLE_ERROR, "To_Exception_Error_Handler"),
+	),
 	"Locale" => array(
 		"date" => "d/m/Y",
 		"language" => "fr",
@@ -25,6 +29,25 @@ $config["framework"] = array(
 				"decimal_maximal_count" => 4,
 				"decimal_separator"     => ",",
 				"thousand_separator"    => " ",
+		)
+	),
+	"Plugins" => array(
+		"highest" => array(
+			"Mysql_Maintainer",
+			"Aop_Getter",
+			"Aop_Setter",
+		),
+		"higher" => array(
+			//"Aop_Logger",
+			//"Mysql_Logger",
+			//"Xdebug",
+		),
+		"normal" => array(
+			"Html_Cleaner",
+			"Html_Session",
+			"Html_Translator",
+			"Translation_String_Composer",
+			"Loc"
 		)
 	),
 	"View" => array(

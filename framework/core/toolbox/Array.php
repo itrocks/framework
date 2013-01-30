@@ -86,9 +86,14 @@ function arrayMergeRecursive($array1, $array2)
 {
 	foreach ($array2 as $index => $value2) {
 		$value1 = isset($array1[$index]) ? $array1[$index] : null;
-		$array1[$index] = is_array($value2)
-			? arrayMergeRecursive(is_array($value1) ? $value1 : array(), $value2)
-			: $value2;
+		if (is_numeric($index) && !is_array($value1) && !is_array($value2)) {
+			$array1[] = $value2;
+		}
+		else {
+			$array1[$index] = is_array($value2)
+				? arrayMergeRecursive(is_array($value1) ? $value1 : array(), $value2)
+				: $value2;
+		}
 	}
 	return $array1;
 }
