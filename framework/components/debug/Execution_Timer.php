@@ -29,6 +29,9 @@ abstract class Execution_Timer implements Plugin
 	 */
 	public static function end()
 	{
+		if (!isset(self::$start_time)) {
+			self::$start_time = $_SERVER["REQUEST_TIME_FLOAT"];
+		}
 		$duration = number_format(microtime(true) - self::$start_time, 3, ",", " ");
 		echo "<script type=\"text/javascript\">"
 			. " document.getElementById(\"main\").innerHTML"

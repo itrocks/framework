@@ -13,6 +13,7 @@ ini_set("xdebug.collect_params", 4);
 ini_set("xdebug.var_display_max_children", 1000000);
 ini_set("xdebug.var_display_max_data", 1000000);
 ini_set("xdebug.var_display_max_depth", 1000000);
+//&XDEBUG_PROFILE=1
 
 // init
 error_reporting(E_ALL);
@@ -23,5 +24,6 @@ Autoloader::register();
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
 Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
-echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
+//echo "<pre>" . print_r($GLOBALS, true) . "</pre>";
 //echo "<pre>\$_POST=unserialize(\"" . str_replace("\"", "\\\"", serialize($_POST)) . "\")</pre>";
+//Execution_Timer::end();
