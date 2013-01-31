@@ -222,7 +222,7 @@ abstract class Dao
 	 */
 	public static function write($object)
 	{
-		self::current()->write($object);
+		return self::current()->write($object);
 	}
 
 }
