@@ -1,9 +1,9 @@
-(function($) {
+(function($)
+{
 
 	// this (global) static variable stores all wished build() callbacks
 	window.jquery_build_callback = [];
 
-	//--------------------------------------------------------------------------------------- build
 	/**
 	 * Call build(callback) what callback functions you want to be called for future added dom elements
 	 * call this.build() after you add dom elements (ie dynamic javascript add, ajax calls) to apply the same changes

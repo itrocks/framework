@@ -1,6 +1,6 @@
-(function($) {
+(function($)
+{
 
-	//------------------------------------------------------------------------------------ classVar
 	/**
 	 * Read the value of a variable stored into the class attribute of the dom element
 	 *
