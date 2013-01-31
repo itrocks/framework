@@ -577,7 +577,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $property_name
 	) {
-		return $object->$property_name;
+		return @($object->$property_name);
 	}
 
 	//-------------------------------------------------------------------------------- parseSeparator
@@ -661,8 +661,11 @@ class Html_Template
 		elseif (isset($object->$property_name)) {
 			$object = $this->parseProperty($objects, $object, $property_name);
 		}
-		else {
+		elseif (isset($this->parameters[$property_name])) {
 			$object = $this->parseParameter($objects, $object, $property_name);
+		}
+		else {
+			$object = $this->parseProperty($objects, $object, $property_name);
 		}
 		if (($source_object instanceof Reflection_Property) && ($property_name == "value")) {
 			$object = (new Reflection_Property_View($source_object))->formatValue($object);
