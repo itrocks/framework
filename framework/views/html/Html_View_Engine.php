@@ -43,7 +43,7 @@ class Html_View_Engine implements Configurable, View_Engine
 			$templates[] = Namespaces::shortClassName($class_name) . "_" . $feature_name . ".html";
 			$class_name = get_parent_class($class_name);
 		}
-		$templates[] = "Html_$feature_name.html";
+		$templates[] = "Default_$feature_name.html";
 		return $templates;
 	}
 
