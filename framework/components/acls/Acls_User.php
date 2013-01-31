@@ -7,7 +7,7 @@ class Acls_User extends User
 	//---------------------------------------------------------------------------------------- $group
 	/**
 	 * @getter getGroup
-	 * @var Acl_Group
+	 * @var Acls_Group
 	 */
 	public $group;
 
@@ -25,9 +25,9 @@ class Acls_User extends User
 	//-------------------------------------------------------------------------------------- getGroup
 	public function getGroup()
 	{
-		$this->group = Getter::getObject($this->group, __NAMESPACE__ . "\\Acl_Group", $this, "group");
+		$this->group = Getter::getObject($this->group, __NAMESPACE__ . "\\Acls_Group", $this, "group");
 		if (empty($this->group)) {
-			$this->group = new Acl_Group();
+			$this->group = new Acls_Group();
 			$this->group->caption = $this->login;
 			$this->group->type = "user";
 			Dao::write($this);

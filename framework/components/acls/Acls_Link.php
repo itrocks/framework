@@ -1,20 +1,20 @@
 <?php
 namespace SAF\Framework;
 
-class Acl_Link implements Contained
+class Acls_Link implements Contained
 {
 
 	//------------------------------------------------------------------------------------ $container
 	/**
 	 * @getter Aop::getObject
-	 * @var Acl_Group
+	 * @var Acls_Group
 	 */
 	public $container;
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
 	 * @getter Aop::getObject
-	 * @var Acl_Group
+	 * @var Acls_Group
 	 */
 	public $content;
 
@@ -34,7 +34,7 @@ class Acl_Link implements Contained
 	/**
 	 * Get parent object
 	 *
-	 * @return Acl_Group
+	 * @return Acls_Group
 	 */
 	public function getParent()
 	{
@@ -45,8 +45,8 @@ class Acl_Link implements Contained
 	/**
 	 * Set parents object
 	 *
-	 * @param $object Acl_Group
-	 * @return Acl_Link
+	 * @param $object Acls_Group
+	 * @return Acls_Link
 	 */
 	public function setParent($object)
 	{

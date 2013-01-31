@@ -1,13 +1,13 @@
 <?php
 namespace SAF\Framework;
 
-class Acl_Right implements Contained
+class Acls_Right implements Contained
 {
 
 	//---------------------------------------------------------------------------------------- $group
 	/**
 	 * @getter Aop::getObject
-	 * @var Acl_Group
+	 * @var Acls_Group
 	 */
 	public $group;
 
@@ -25,11 +25,11 @@ class Acl_Right implements Contained
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $group Acl_Group
+	 * @param $group Acls_Group
 	 * @param $key   string
 	 * @param $value string
 	 */
-	public function __construct(Acl_Group $group = null, $key = null, $value = null)
+	public function __construct(Acls_Group $group = null, $key = null, $value = null)
 	{
 		if (isset($group)) $this->group = $group;
 		if (isset($key))   $this->key   = $key;
@@ -44,7 +44,7 @@ class Acl_Right implements Contained
 
 	//------------------------------------------------------------------------------------- getParent
 	/**
-	 * @return Acl_Group
+	 * @return Acls_Group
 	 */
 	public function getParent()
 	{
@@ -53,8 +53,8 @@ class Acl_Right implements Contained
 
 	//------------------------------------------------------------------------------------- setParent
 	/**
-	 * @param $object Acl_Group
-	 * @return Acl_Right
+	 * @param $object Acls_Group
+	 * @return Acls_Right
 	 */
 	public function setParent($object)
 	{

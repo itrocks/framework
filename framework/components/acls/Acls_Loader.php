@@ -7,11 +7,11 @@ abstract class Acls_Loader
 
 	//--------------------------------------------------------------------------------- loadGroupAcls
 	/**
-	 * @param $group Acl_Group
+	 * @param $group Acls_Group
 	 * @param $acls_rights Acls_Rights
 	 * @return Acls_Rights
 	 */
-	public static function loadGroupAcls(Acl_Group $group, Acls_Rights $acls_rights = null)
+	public static function loadGroupAcls(Acls_Group $group, Acls_Rights $acls_rights = null)
 	{
 		if (!isset($acls_rights)) {
 			$acls_rights = new Acls_Rights();

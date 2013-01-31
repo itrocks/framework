@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Acl_Group
+class Acls_Group
 {
 
 	//-------------------------------------------------------------------------------------- $caption
@@ -13,7 +13,7 @@ class Acl_Group
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @var string
-	 * @values user,
+	 * @values template, software, module, object, feature, users_group, group, user,
 	 */
 	public $type;
 
@@ -21,7 +21,7 @@ class Acl_Group
 	/**
 	 * @contained
 	 * @getter Aop::getCollection
-	 * @var Acl_Link[]
+	 * @var Acls_Link[]
 	 */
 	public $content;
 
@@ -29,32 +29,32 @@ class Acl_Group
 	/**
 	 * @contained
 	 * @getter Aop::getCollection
-	 * @var Acl_Right[]
+	 * @var Acls_Right[]
 	 */
 	public $rights;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * Add an Acl_Link to $content or an Acl_Right to rights
+	 * Add an Acls_Link to $content or an Acls_Right to rights
 	 *
-	 * @param $object Acl_Link|Acl_Right
-	 * @return Acl_Group
+	 * @param $object Acls_Link|Acls_Right
+	 * @return Acls_Group
 	 */
 	public function add($object)
 	{
-		array_push(($object instanceof Acl_Right) ? $this->rights : $this->content, $object);
+		array_push(($object instanceof Acls_Right) ? $this->rights : $this->content, $object);
 		return $this;
 	}
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
-	 * Remove an Acl_Link from $content, or an Acl_Right from rights
+	 * Remove an Acls_Link from $content, or an Acls_Right from rights
 	 *
-	 * @param $object Acl_Link|Acl_Right
+	 * @param $object Acls_Link|Acls_Right
 	 */
 	public function remove($object)
 	{
-		if ($object instanceof Acl_Right) $collection =& $this->rights;
+		if ($object instanceof Acls_Right) $collection =& $this->rights;
 		else                              $collection =& $this->content;
 		foreach ($collection as $key => $collection_object) {
 			if ($object == $collection_object) {

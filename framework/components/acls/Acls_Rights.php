@@ -5,24 +5,24 @@ class Acls_Rights
 {
 	use Current { current as private pCurrent; }
 
-	//------------------------------------------------------------------------------------- $acl_tree
+	//------------------------------------------------------------------------------------ $acls_tree
 	/**
-	 * $acl_tree store acls into a recursive tree
+	 * stores acls into a recursive tree
 	 *
 	 * @var mixed[]
 	 */
-	private $acl_tree;
+	private $acls_tree;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Adds a right value to acls rights
 	 *
-	 * @param $right Acl_Right
+	 * @param $right Acls_Right
 	 */
-	public function add(Acl_Right $right)
+	public function add(Acls_Right $right)
 	{
 		$path = explode(".", $right->key);
-		$position = &$this->acl_tree;
+		$position = &$this->acls_tree;
 		foreach ($path as $step) {
 			if (!isset($position[$step])) {
 				$position[$step] = array();
@@ -52,7 +52,7 @@ class Acls_Rights
 	public function get($key)
 	{
 		$path = explode(".", $key);
-		$position = $this->acl_tree;
+		$position = $this->acls_tree;
 		if ($key) {
 			foreach ($path as $step) {
 				if (!isset($position[$step])) {
@@ -68,11 +68,11 @@ class Acls_Rights
 	/**
 	 * Remove a right value from acls rights
 	 *
-	 * @param Acl_Right|string right key : a "key.subkey.another" path
+	 * @param Acls_Right|string right key : a "key.subkey.another" path
 	 */
 	public function remove($right)
 	{
-		$position =& $this->acl_tree;
+		$position =& $this->acls_tree;
 		$last_position = null;
 		foreach (explode(".", (is_string($right) ? $right : $right->key)) as $right) {
 			if (!isset($position[$right])) {
