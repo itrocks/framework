@@ -4,13 +4,29 @@ namespace SAF\Framework;
 abstract class Getter
 {
 
+	//---------------------------------------------------------------------------------------- getAll
+	/**
+	 * Generic getter for getting all objects of a given class
+	 *
+	 * @param $collection
+	 * @param $element_class
+	 * @return object[]
+	 */
+	public static function getAll($collection, $element_class)
+	{
+		if (!isset($collection)) {
+			$collection = Dao::readAll($element_class);
+		}
+		return $collection;
+	}
+
 	//--------------------------------------------------------------------------------- getCollection
 	/**
 	 * Generic getter for a collection of objects
 	 *
-	 * @param $collection Contained[]|null    actual value of the property (will be returned if not null)
-	 * @param $element_class string|null the class for each collection's object
-	 * @param $parent object             the parent object
+	 * @param $collection    Contained[]|null actual value of the property (will be returned if not null)
+	 * @param $element_class string|null      the class for each collection's object
+	 * @param $parent        object           the parent object
 	 * @return object[]
 	 */
 	public static function getCollection($collection, $element_class, $parent)
@@ -42,9 +58,9 @@ abstract class Getter
 	/**
 	 * Generic getter for an object
 	 *
-	 * @param $object mixed           actual value of the object (will be returned if already an object)
-	 * @param $class_name string      the object class name
-	 * @param $parent object          the parent object
+	 * @param $object          mixed  actual value of the object (will be returned if already an object)
+	 * @param $class_name      string the object class name
+	 * @param $parent          object the parent object
 	 * @param $parent_property string the parent property name
 	 * @return object
 	 */

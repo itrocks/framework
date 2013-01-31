@@ -22,6 +22,33 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 */
 	public static $ignore = false;
 
+	//---------------------------------------------------------------------------------------- getAll
+	/**
+	 * Register this using "@getter Aop::getAll" for a property that points on all existing elements of a collection
+	 *
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function getAll(AopJoinpoint $joinpoint)
+	{
+		if (!Aop_Getter::$ignore) {
+			$object   = $joinpoint->getObject();
+			$property = $joinpoint->getPropertyName();
+			$hash     = spl_object_hash($object);
+			static $antiloop = array();
+			if (!isset($antiloop[$hash][$property])) {
+				$antiloop[$hash][$property] = true;
+				$value = isset($object->$property) ? $object->$property : null;
+				unset($antiloop[$hash][$property]);
+				if (!is_array($value)) {
+					$class = $joinpoint->getClassName();
+					$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
+						->getElementTypeAsString();
+					$object->$property = Getter::getAll($value, $type_name);
+				}
+			}
+		}
+	}
+
 	//--------------------------------------------------------------------------------- getCollection
 	/**
 	 * Register this for any object collection property using "@getter Aop::getCollection" annotation
