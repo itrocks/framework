@@ -97,7 +97,12 @@ abstract class Aop
 								$hash     = spl_object_hash($object) . $when . $function . $property;
 								if (!isset(Aop::$antiloop[$hash])) {
 									Aop::$antiloop[$hash] = true;
-									if ($joinpoint->getKindOfAdvice() & AOP_KIND_READ) {
+									if ($static) {
+										call_user_func(
+											array($static ? $call_class : $object, $call_method), $joinpoint
+										);
+									}
+									elseif ($joinpoint->getKindOfAdvice() & AOP_KIND_READ) {
 										$value = call_user_func(array($static ? $call_class : $object, $call_method));
 										if (isset($value)) {
 											$joinpoint->setReturnedValue($value);

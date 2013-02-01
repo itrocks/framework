@@ -32,7 +32,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 */
 	public static function registerSetters($class_name)
 	{
-		parent::registerProperties($class_name, "setter", "around", "write");
+		parent::registerProperties($class_name, "setter", "before", "write");
 	}
 
 	//---------------------------------------------------------------------------- registerSettersAop
@@ -45,7 +45,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	{
 		if ($joinpoint->getReturnedValue()) {
 			list($class_name) = $joinpoint->getArguments();
-			parent::registerProperties(Namespaces::fullClassName($class_name), "setter", "around", "write");
+			parent::registerProperties(Namespaces::fullClassName($class_name), "setter", "before", "write");
 		}
 	}
 

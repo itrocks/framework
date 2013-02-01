@@ -110,7 +110,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 */
 	public static function registerGetters($class_name)
 	{
-		parent::registerProperties($class_name, "getter", "around", "read");
+		parent::registerProperties($class_name, "getter", "after", "read");
 	}
 
 	//---------------------------------------------------------------------------- registerGettersAop
@@ -122,7 +122,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	public static function registerGettersAop(AopJoinpoint $joinpoint)
 	{
 		$class_name = $joinpoint->getArguments()[0];
-		parent::registerProperties(Namespaces::fullClassName($class_name), "getter", "around", "read");
+		parent::registerProperties(Namespaces::fullClassName($class_name), "getter", "before", "read");
 	}
 
 }
