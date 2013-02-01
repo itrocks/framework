@@ -30,6 +30,9 @@
 		//---------------------------------------------------------------------------------------- ajax
 		var ajax =
 		{
+			//------------------------------------------------------------------------------- ajax.target
+			target: undefined,
+
 			//-------------------------------------------------------------------------------- ajax.error
 			error: function(xhr, status, error)
 			{
@@ -87,18 +90,20 @@
 			var $this = $(this);
 			var done = false;
 			if ($this.hasClass(settings["submit"])) {
-				var parent_form = $this.closest("form");
-				if (parent_form.length) {
-					$(parent_form).ajaxSubmit($.extend(ajax, {
+				var $parent_form = $this.closest("form");
+				if ($parent_form.length) {
+					$parent_form.ajaxSubmit($.extend(ajax, {
 						url: urlAppend(this.href, this.search)
-					})).from = this;
+					}));
+					$parent_form.data("jqxhr").from = this;
 					done = true;
 				}
 			}
 			if (!done) {
-				$.ajax($.extend(ajax, {
+				var $xhr = $.ajax($.extend(ajax, {
 					url: urlAppend(this.href, this.search)
-				})).from = this;
+				}));
+				$xhr.from = this;
 			}
 		});
 
@@ -108,10 +113,12 @@
 		 */
 		this.find('form[target^="#"]').submit(function(event)
 		{
+			var $this = $(this);
 			event.preventDefault();
-			$.ajaxSubmit($.extend(ajax, {
+			$this.ajaxSubmit($.extend(ajax, {
 				url: urlAppend(this.action, this.search)
-			})).from = this;
+			}));
+			$this.data("jqxhr").from = this;
 		});
 
 		return this;
