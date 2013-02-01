@@ -33,18 +33,12 @@ abstract class Aop_Getter extends Aop implements Plugin
 		if (!Aop_Getter::$ignore) {
 			$object   = $joinpoint->getObject();
 			$property = $joinpoint->getPropertyName();
-			$hash     = spl_object_hash($object);
-			static $antiloop = array();
-			if (!isset($antiloop[$hash][$property])) {
-				$antiloop[$hash][$property] = true;
-				$value = isset($object->$property) ? $object->$property : null;
-				unset($antiloop[$hash][$property]);
-				if (!is_array($value)) {
-					$class = $joinpoint->getClassName();
-					$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
-						->getElementTypeAsString();
-					$object->$property = Getter::getAll($value, $type_name);
-				}
+			$value = isset($object->$property) ? $object->$property : null;
+			if (!is_array($value)) {
+				$class = $joinpoint->getClassName();
+				$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
+					->getElementTypeAsString();
+				$object->$property = Getter::getAll($value, $type_name);
 			}
 		}
 	}
@@ -60,18 +54,12 @@ abstract class Aop_Getter extends Aop implements Plugin
 		if (!Aop_Getter::$ignore) {
 			$object   = $joinpoint->getObject();
 			$property = $joinpoint->getPropertyName();
-			$hash     = spl_object_hash($object);
-			static $antiloop = array();
-			if (!isset($antiloop[$hash][$property])) {
-				$antiloop[$hash][$property] = true;
-				$value = isset($object->$property) ? $object->$property : null;
-				unset($antiloop[$hash][$property]);
-				if (!is_array($value)) {
-					$class = $joinpoint->getClassName();
-					$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
-						->getElementTypeAsString();
-					$object->$property = Getter::getCollection($value, $type_name, $object);
-				}
+			$value = isset($object->$property) ? $object->$property : null;
+			if (!is_array($value)) {
+				$class = $joinpoint->getClassName();
+				$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
+					->getElementTypeAsString();
+				$object->$property = Getter::getCollection($value, $type_name, $object);
 			}
 		}
 	}
@@ -87,15 +75,9 @@ abstract class Aop_Getter extends Aop implements Plugin
 		if (!Aop_Getter::$ignore) {
 			$object   = $joinpoint->getObject();
 			$property = $joinpoint->getPropertyName();
-			$hash     = spl_object_hash($object);
-			static $antiloop = array();
-			if (!isset($antiloop[$hash][$property])) {
-				$antiloop[$hash][$property] = true;
-				$value = $object->$property;
-				unset($antiloop[$hash][$property]);
-				if (is_string($value)) {
-					$object->$property = Date_Time::fromISO($value);
-				}
+			$value = $object->$property;
+			if (is_string($value)) {
+				$object->$property = Date_Time::fromISO($value);
 			}
 		}
 	}
@@ -111,21 +93,15 @@ abstract class Aop_Getter extends Aop implements Plugin
 		if (!Aop_Getter::$ignore) {
 			$object   = $joinpoint->getObject();
 			$property = $joinpoint->getPropertyName();
-			$hash     = spl_object_hash($object);
-			static $antiloop = array();
-			if (!isset($antiloop[$hash][$property])) {
-				$antiloop[$hash][$property] = true;
-				$value = $object->$property;
-				unset($antiloop[$hash][$property]);
+			$value = $object->$property;
+			if (!is_object($value)) {
+				$class = $joinpoint->getClassName();
+				$type = Reflection_Property::getInstanceOf($class, $property)->getType()->asString();
+				$value = Getter::getObject($value, $type, $object, $property);
 				if (!is_object($value)) {
-					$class = $joinpoint->getClassName();
-					$type = Reflection_Property::getInstanceOf($class, $property)->getType()->asString();
-					$value = Getter::getObject($value, $type, $object, $property);
-					if (!is_object($value)) {
-						$value = Object_Builder::current()->newInstance($type);
-					}
-					$object->$property = $value;
+					$value = Object_Builder::current()->newInstance($type);
 				}
+				$object->$property = $value;
 			}
 		}
 	}
@@ -151,7 +127,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 */
 	public static function registerGetters($class_name)
 	{
-		parent::registerProperties($class_name, "getter", "read");
+		parent::registerProperties($class_name, "getter", "before", "read");
 	}
 
 	//---------------------------------------------------------------------------- registerGettersAop
@@ -163,7 +139,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	public static function registerGettersAop(AopJoinpoint $joinpoint)
 	{
 		$class_name = $joinpoint->getArguments()[0];
-		parent::registerProperties(Namespaces::fullClassName($class_name), "getter", "read");
+		parent::registerProperties(Namespaces::fullClassName($class_name), "getter", "before", "read");
 	}
 
 }

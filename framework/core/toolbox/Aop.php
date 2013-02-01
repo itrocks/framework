@@ -8,8 +8,8 @@ require_once "framework/core/reflection/Reflection_Class.php";
 abstract class Aop
 {
 
-	//-------------------------------------------------------------------------- $property_joinpoints
-	private static $property_joinpoints = array();
+	//------------------------------------------------------------------------------------- $antiloop
+	private static $antiloop = array();
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -49,35 +49,14 @@ abstract class Aop
 		}
 	}
 
-	//----------------------------------------------------------------------------- propertyJoinpoint
-	/**
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function propertyJoinpoint(AopJoinpoint $joinpoint)
-	{
-		static $antiloop = array();
-		$class_name = $joinpoint->getClassName();
-		$property_name = $joinpoint->getPropertyName();
-		$call = self::$property_joinpoints[$class_name][$property_name];
-		if (!isset($antiloop[$class_name]) && !isset($antiloop[$class_name][$property_name])) {
-			$antiloop[$class_name][$property_name] = true;
-			if ($joinpoint->getKindOfAdvice() & AOP_KIND_WRITE) {
-				call_user_func(array($joinpoint->getObject(), $call), $joinpoint->getAssignedValue());
-			}
-			else {
-				$joinpoint->setReturnedValue(call_user_func(array($joinpoint->getObject(), $call)));
-			}
-			unset($antiloop[$class_name][$property_name]);
-		}
-	}
-
 	//---------------------------------------------------------------------------- registerProperties
 	/**
 	 * @param $class_name string
 	 * @param $annotation string ie "getter", "setter"
-	 * @param $function string ie "read", "write"
+	 * @param $when       string ie "after", "around", "before"
+	 * @param $function   string ie "read", "write"
 	 */
-	public static function registerProperties($class_name, $annotation, $function)
+	public static function registerProperties($class_name, $annotation, $when, $function)
 	{
 		if (@class_exists($class_name)) {
 			$class = Reflection_Class::getInstanceOf($class_name);
@@ -85,26 +64,36 @@ abstract class Aop
 				if ($property->class == $class_name) {
 					$call = $property->getAnnotation($annotation)->value;
 					if ($call) {
-						if (substr($call, 0, 5) === "Aop::") {
-							Aop::add("before",
-								$function . " " . $class_name . "->" . $property->name,
-								array(get_called_class(), substr($call, 5))
-							);
-						}
-						else {
-							if ($class->getMethod($call)->isStatic()) {
-								Aop::add("after",
-									$function . " " . $class_name . "->" . $property->name,
-									array($class_name, $call)
-								);
-							} else {
-								Aop::add("after",
-									$function . " " . $class_name . "->" . $property->name,
-									array(__CLASS__, "propertyJoinpoint")
-								);
-								self::$property_joinpoints[$class_name][$property->name] = $call;
+						if (strpos($call, "::")) {
+							$static = true;
+							if (substr($call, 0, 5) === "Aop::") {
+								$call_class  = get_called_class();
+								$call_method = substr($call, 5);
+							}
+							else {
+								list($call_class, $call_method) = explode("::", $call);
 							}
 						}
+						else {
+							$call_class  = $class_name;
+							$call_method = $call;
+							$static = $class->getMethod($call_method)->isStatic();
+						}
+						$antiloopCall = function(AopJoinpoint $joinpoint)
+							use($call_class, $call_method, $function, $static, $when)
+						{
+							$object   = $joinpoint->getObject();
+							$property = $joinpoint->getPropertyName();
+							$hash     = spl_object_hash($object) . $when . $function . $property;
+							if (!isset(Aop::$antiloop[$hash])) {
+								Aop::$antiloop[$hash] = true;
+								call_user_func(array($static ? $call_class : $object, $call_method), $joinpoint);
+								unset(Aop::$antiloop[$hash]);
+							}
+						};
+						Aop::add(
+							$when, $function . " " . $class_name . "->" . $property->name, $antiloopCall
+						);
 					}
 				}
 			}
