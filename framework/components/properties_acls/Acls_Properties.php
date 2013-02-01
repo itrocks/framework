@@ -56,12 +56,32 @@ abstract class Acls_Properties
 	{
 		$prefix = $this->getAclPrefix($context_feature_name);
 		$properties = $this->getPropertiesNames($context_feature_name);
-		if (!isset($properties)) {
-			$properties = $this->getDefaultProperties();
+		if (isset($properties)) {
+			if (!in_array($property_name, $properties)) {
+				// insert properties into existing acls
+				$count = 0;
+				foreach ($properties as $key => $property) {
+					$property[$key] = $count++;
+				}
+				Dao::write(Acls_User::current()->group);
+			}
 		}
-		if (!in_array($property_name, $properties)) {
-			Acls::add($prefix . $property_name, true);
-			Dao::write(Acls_User::current()->getGroup());
+		else {
+			$properties = $this->getDefaultProperties();
+			if (!in_array($property_name, $properties)) {
+				// properties were not in acls : add them
+				$count = 1;
+				if (empty($after_property_name)) {
+					Acls::set($prefix . $property_name, $count++);
+				}
+				foreach ($properties as $property) {
+					Acls::set($prefix . $property, $count++);
+					if ($property == $after_property_name) {
+						Acls::set($prefix . $property_name, $count++);
+					}
+				}
+				Dao::write(Acls_User::current()->group);
+			}
 		}
 	}
 
@@ -75,7 +95,18 @@ abstract class Acls_Properties
 	 */
 	public function addBefore($context_feature_name, $property_name, $before_property_name = null)
 	{
-		echo "add $context_feature_name::$this->context_class_name : $property_name before $before_property_name";
+		$prefix = $this->getAclPrefix($context_feature_name);
+		$properties = $this->getPropertiesNames($context_feature_name);
+		if (!isset($properties)) {
+			$properties = $this->getDefaultProperties();
+			foreach ($properties as $property) {
+				Acls::set($prefix . $property);
+			}
+		}
+		if (!in_array($property_name, $properties)) {
+			Acls::set($prefix . $property_name, true);
+			Dao::write(Acls_User::current()->group);
+		}
 	}
 
 	//---------------------------------------------------------------------------------- getAclPrefix
@@ -107,10 +138,10 @@ abstract class Acls_Properties
 			$properties = $this->getDefaultProperties();
 			foreach ($properties as $property) {
 				if ($property != $property_name) {
-					Acls::add($prefix . $property);
+					Acls::set($prefix . $property);
 				}
 			}
-			Dao::write(Acls_User::current()->getGroup());
+			Dao::write(Acls_User::current()->group);
 		}
 	}
 
