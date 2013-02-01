@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * @representative group, key
+ */
 class Acls_Right implements Contained
 {
 

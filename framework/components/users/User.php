@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * @representative login
+ */
 class User
 {
 	use Current { current as private pCurrent; }

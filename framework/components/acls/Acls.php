@@ -4,31 +4,6 @@ namespace SAF\Framework;
 abstract class Acls implements Plugin
 {
 
-	//------------------------------------------------------------------------------------------- add
-	/**
-	 * Add a new Acl to current user's group and to current connection's Acls
-	 *
-	 * @param $key   string
-	 * @param $value mixed      default is true
-	 * @param $group Acls_Group default is current user group
-	 * @param $save  boolean    if true, Modifier acls group is saved
-	 */
-	public static function add($key, $value = null, $group = null, $save = false)
-	{
-		if (!isset($group)) {
-			$group = Acls_User::current()->group;
-		}
-		if (!isset($value)) {
-			$value = true;
-		}
-		$right = new Acls_Right($group, $key, $value);
-		$group->rights[] = $right;
-		if ($save) {
-			Dao::write($group);
-		};
-		self::current()->add($right);
-	}
-
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Acls_Rights
@@ -82,6 +57,31 @@ abstract class Acls implements Plugin
 		if ($save && $removed) {
 			Dao::write($group);
 		};
+	}
+
+	//------------------------------------------------------------------------------------------- set
+	/**
+	 * Add a new Acl to current user's group and to current connection's Acls
+	 *
+	 * @param $key   string
+	 * @param $value mixed      default is true
+	 * @param $group Acls_Group default is current user group
+	 * @param $save  boolean    if true, Modifier acls group is saved
+	 */
+	public static function set($key, $value = null, $group = null, $save = false)
+	{
+		if (!isset($group)) {
+			$group = Acls_User::current()->group;
+		}
+		if (!isset($value)) {
+			$value = true;
+		}
+		$group->add(new Acls_Right($group, $key, $value));
+		$group->rights[] = $right;
+		if ($save) {
+			Dao::write($group);
+		};
+		self::current()->set($right);
 	}
 
 }

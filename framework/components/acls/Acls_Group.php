@@ -1,14 +1,17 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * @representative name
+ */
 class Acls_Group
 {
 
-	//-------------------------------------------------------------------------------------- $caption
+	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
 	 */
-	public $caption;
+	public $name;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -17,10 +20,10 @@ class Acls_Group
 	 */
 	public $type;
 
-	//--------------------------------------------------------------------------------------- $groups
+	//-------------------------------------------------------------------------------------- $content
 	/**
 	 * @contained
-	 * @getter Aop::getCollection
+	 * @getter getLinks
 	 * @var Acls_Link[]
 	 */
 	public $content;
@@ -28,38 +31,96 @@ class Acls_Group
 	//--------------------------------------------------------------------------------------- $rights
 	/**
 	 * @contained
-	 * @getter Aop::getCollection
-	 * @var Acls_Right[]
+	 * @getter getRights
+	 * @var Acls_Right[] key is the property key
 	 */
 	public $rights;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * Add an Acls_Link to $content or an Acls_Right to rights
+	 * Adds an Acls_Link, an Acl_Group or an Acl_Link
 	 *
-	 * @param $object Acls_Link|Acls_Right
+	 * @param $object   Acls_Right|Acls_Group|Acls_Link
+	 * @param $priority integer
 	 * @return Acls_Group
 	 */
-	public function add($object)
+	public function add($object, $priority = 1)
 	{
-		array_push(($object instanceof Acls_Right) ? $this->rights : $this->content, $object);
+		if ($object instanceof Acls_Right) {
+			$this->rights[$object->key] = $object;
+		}
+		elseif ($object instanceof Acls_Group) {
+			$this->content[$object->name] = new Acls_Link($this, $object, $priority);
+		}
+		elseif ($object instanceof Acls_Link) {
+			$this->content[$object->content->name] = $object;
+		}
 		return $this;
+	}
+
+	//------------------------------------------------------------------------------------ getContent
+	/**
+	 * @return Acls_Group[]
+	 */
+	public function getContent()
+	{
+		$content = array();
+		foreach ($this->content as $link) {
+			$content[$link->content->name] = $link->content;
+		}
+		return $content;
+	}
+
+	//-------------------------------------------------------------------------------------- getLinks
+	/**
+	 * @return Acls_Link[]
+	 */
+	public function getLinks()
+	{
+		$links = $this->content;
+		if (!isset($links)) {
+			$links = array();
+			foreach (Getter::getCollection($links, __NAMESPACE__ . "\\Acls_Link", $this) as $link) {
+				$links[$link->content->name] = $link;
+			}
+			$this->content = $links;
+		}
+		return $links;
+	}
+
+	//------------------------------------------------------------------------------------- getRights
+	/**
+	 * @return Acls_Right[]
+	 */
+	public function getRights()
+	{
+		$rights = $this->rights;
+		if (!isset($rights)) {
+			$rights = array();
+			foreach (Getter::getCollection($rights, __NAMESPACE__ . "\\Acls_Right", $this) as $right) {
+				$rights[$right->key] = $right;
+			}
+			$this->rights = $rights;
+		}
+		return $rights;
 	}
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
-	 * Remove an Acls_Link from $content, or an Acls_Right from rights
+	 * Removes an Acls_Right, an Acls_Group or an Acls_Link
 	 *
-	 * @param $object Acls_Link|Acls_Right
+	 * @param $object Acls_Right|Acls_Group|Acls_Link
 	 */
 	public function remove($object)
 	{
-		if ($object instanceof Acls_Right) $collection =& $this->rights;
-		else                              $collection =& $this->content;
-		foreach ($collection as $key => $collection_object) {
-			if ($object == $collection_object) {
-				unset($collection[$key]);
-			}
+		if ($object instanceof Acls_Right) {
+			unset($this->rights[$object->key]);
+		}
+		elseif ($object instanceof Acls_Group) {
+			unset($this->content[$object->name]);
+		}
+		elseif ($object instanceof Acls_Link) {
+			unset($this->content[$object->content->name]);
 		}
 	}
 

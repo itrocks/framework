@@ -23,16 +23,26 @@ class Acls_User extends User
 	}
 
 	//-------------------------------------------------------------------------------------- getGroup
+	/**
+	 * @return Acls_Group
+	 */
 	public function getGroup()
 	{
-		$this->group = Getter::getObject($this->group, __NAMESPACE__ . "\\Acls_Group", $this, "group");
-		if (empty($this->group)) {
-			$this->group = new Acls_Group();
-			$this->group->caption = $this->login;
-			$this->group->type = "user";
-			Dao::write($this);
+		$group = $this->group;
+		if (!isset($group)) {
+			$group = Getter::getObject($group, __NAMESPACE__ . "\\Acls_Group", $this);
+			if (empty($group)) {
+				$group = new Acls_Group();
+				$group->name = $this->login;
+				$group->type = "user";
+				$this->group = $group;
+				Dao::write($this);
+			}
+			else {
+				$this->group = $group;
+			}
 		}
-		return $this->group;
+		return $group;
 	}
 
 }
