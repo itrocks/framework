@@ -11,6 +11,15 @@ abstract class Aop
 	//------------------------------------------------------------------------------------- $antiloop
 	private static $antiloop = array();
 
+	//--------------------------------------------------------------------------------------- $ignore
+	/**
+	 * If true, the aop class's calls are ignored to avoid side effects
+	 * Don't forget to bring it back to false when you're done !
+	 *
+	 * @var boolean
+	 */
+	public static $ignore = false;
+
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Launch advice $call_back after the execution of the joinpoint function $function
@@ -82,13 +91,26 @@ abstract class Aop
 						$antiloopCall = function(AopJoinpoint $joinpoint)
 							use($call_class, $call_method, $function, $static, $when)
 						{
-							$object   = $joinpoint->getObject();
-							$property = $joinpoint->getPropertyName();
-							$hash     = spl_object_hash($object) . $when . $function . $property;
-							if (!isset(Aop::$antiloop[$hash])) {
-								Aop::$antiloop[$hash] = true;
-								call_user_func(array($static ? $call_class : $object, $call_method), $joinpoint);
-								unset(Aop::$antiloop[$hash]);
+							if (!self::$ignore) {
+								$object   = $joinpoint->getObject();
+								$property = $joinpoint->getPropertyName();
+								$hash     = spl_object_hash($object) . $when . $function . $property;
+								if (!isset(Aop::$antiloop[$hash])) {
+									Aop::$antiloop[$hash] = true;
+									if ($joinpoint->getKindOfAdvice() & AOP_KIND_READ) {
+										$value = call_user_func(array($static ? $call_class : $object, $call_method));
+										if (isset($value)) {
+											$joinpoint->setReturnedValue($value);
+										}
+									}
+									else {
+										call_user_func(
+											array($static ? $call_class : $object, $call_method),
+											$joinpoint->getAssignedValue()
+										);
+									}
+									unset(Aop::$antiloop[$hash]);
+								}
 							}
 						};
 						Aop::add(
