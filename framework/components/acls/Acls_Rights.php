@@ -17,19 +17,33 @@ class Acls_Rights
 	/**
 	 * Adds a right value to acls rights
 	 *
-	 * @param $right Acls_Right
+	 * @param $right Acls_Right|string
+	 * @param $value string
 	 */
-	public function add(Acls_Right $right)
+	public function add($right, $value = null)
 	{
-		$path = explode(".", $right->key);
+		if ($right instanceof Acls_Right) {
+			$key = $right->key;
+			if (!isset($value)) {
+				$value = $right->value;
+			}
+		}
+		else {
+			$key = $right;
+			if (!isset($value)) {
+				$value = true;
+			}
+		}
 		$position = &$this->acls_tree;
-		foreach ($path as $step) {
+		$step = "";
+		foreach (explode(".", $key) as $step) {
 			if (!isset($position[$step])) {
 				$position[$step] = array();
 			}
+			$last_position = &$position;
 			$position = &$position[$step];
 		}
-		$position = $right->value;
+		$last_position[$step] = $value;
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -47,14 +61,13 @@ class Acls_Rights
 	 * Gets a right value from acls rights
 	 *
 	 * @param $key string right key : a "key.subkey.another" path
-	 * @return mixed right value
+	 * @return string|array right value, may be an array if key is not a final node
 	 */
 	public function get($key)
 	{
-		$path = explode(".", $key);
 		$position = $this->acls_tree;
 		if ($key) {
-			foreach ($path as $step) {
+			foreach (explode(".", $key) as $step) {
 				if (!isset($position[$step])) {
 					return null;
 				}
@@ -72,17 +85,19 @@ class Acls_Rights
 	 */
 	public function remove($right)
 	{
+		$key = is_string($right) ? $right : $right->key;
 		$position =& $this->acls_tree;
 		$last_position = null;
-		foreach (explode(".", (is_string($right) ? $right : $right->key)) as $right) {
-			if (!isset($position[$right])) {
+		$step = "";
+		foreach (explode(".", $key) as $step) {
+			if (!isset($position[$step])) {
 				return;
 			}
 			$last_position =& $position;
-			$position =& $position[$right];
+			$position =& $position[$step];
 		}
-		if (isset($last_position) && isset($last_position[$right])) {
-			unset($last_position[$right]);
+		if (isset($last_position) && isset($last_position[$step])) {
+			unset($last_position[$step]);
 		}
 	}
 

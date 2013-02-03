@@ -21,6 +21,64 @@ abstract class Acls_Properties
 		}
 	}
 
+	//------------------------------------------------------------------------------------------- add
+	/**
+	 * Adds property to acls list, after another existing propery
+	 *
+	 * @param $context_feature_name  string
+	 * @param $property_name         string
+	 * @param $where                 string "before" or "after"
+	 * @param $where_property_name   string
+	 */
+	public function add($context_feature_name, $property_name, $where, $where_property_name = null)
+	{
+		if ($property_name == $where_property_name) return;
+		$prefix = $this->getAclPrefix($context_feature_name);
+		/** @var $properties integer[] key is the property path */
+		$properties = $this->getPropertiesNames($context_feature_name);
+		if (!isset($properties)) {
+			$properties = $this->getDefaultProperties();
+		}
+		// unset property_name from properties as it may have moved
+		if (($key = array_search($property_name, $properties)) !== false) {
+			unset($properties[$key]);
+		}
+		// insert property_name into properties and recalc position for each of them
+		$result = array();
+		$count = 1;
+		if (($where == "after") && empty($when_property_name)) {
+			$result[$count++] = $property_name;
+		}
+		foreach ($properties as $key) {
+			if (($where == "before") && ($key == $where_property_name)) {
+				$result[$count++] = $property_name;
+			}
+			$result[$count++] = $key;
+			if (($where == "after") && ($key == $where_property_name)) {
+				$result[$count++] = $property_name;
+			}
+		}
+		if (($where == "before") && empty($where_property_name)) {
+			$result[$count] = $property_name;
+		}
+		// save properties list into user's group and loaded access rights
+		$group = Acls_User::current()->group;
+		foreach ($result as $position => $property_name) {
+			Acls::set($prefix . $property_name, $position);
+		}
+		Dao::write($group);
+	}
+
+	//---------------------------------------------------------------------------------- getAclPrefix
+	/**
+	 * @param $context_feature_name string
+	 * @return string
+	 */
+	public function getAclPrefix($context_feature_name)
+	{
+		return $this->context_class_name . "." . $context_feature_name . ".properties.";
+	}
+
 	//-------------------------------------------------------------------------- getDefaultProperties
 	/**
 	 * @return string[]
@@ -41,82 +99,12 @@ abstract class Acls_Properties
 	public function getPropertiesNames($context_feature_name)
 	{
 		$list = Acls::get($this->context_class_name . "." . $context_feature_name . ".properties");
-		return isset($list) ? array_keys(treeToArray($list)) : null;
-	}
-
-	//-------------------------------------------------------------------------------------- addAfter
-	/**
-	 * Adds property to acls list, after another existing propery
-	 *
-	 * @param $context_feature_name string
-	 * @param $property_name        string
-	 * @param $after_property_name  string
-	 */
-	public function addAfter($context_feature_name, $property_name, $after_property_name = null)
-	{
-		$prefix = $this->getAclPrefix($context_feature_name);
-		$properties = $this->getPropertiesNames($context_feature_name);
-		if (isset($properties)) {
-			if (!in_array($property_name, $properties)) {
-				// insert properties into existing acls
-				$count = 0;
-				foreach ($properties as $key => $property) {
-					$property[$key] = $count++;
-				}
-				Dao::write(Acls_User::current()->group);
-			}
+		if (isset($list)) {
+			$list = treeToArray($list);
+			asort($list);
+			return array_keys($list);
 		}
-		else {
-			$properties = $this->getDefaultProperties();
-			if (!in_array($property_name, $properties)) {
-				// properties were not in acls : add them
-				$count = 1;
-				if (empty($after_property_name)) {
-					Acls::set($prefix . $property_name, $count++);
-				}
-				foreach ($properties as $property) {
-					Acls::set($prefix . $property, $count++);
-					if ($property == $after_property_name) {
-						Acls::set($prefix . $property_name, $count++);
-					}
-				}
-				Dao::write(Acls_User::current()->group);
-			}
-		}
-	}
-
-	//------------------------------------------------------------------------------------- addBefore
-	/**
-	 * Adds property to acls list, before another existing propery
-	 *
-	 * @param $context_feature_name string
-	 * @param $property_name        string
-	 * @param $before_property_name string
-	 */
-	public function addBefore($context_feature_name, $property_name, $before_property_name = null)
-	{
-		$prefix = $this->getAclPrefix($context_feature_name);
-		$properties = $this->getPropertiesNames($context_feature_name);
-		if (!isset($properties)) {
-			$properties = $this->getDefaultProperties();
-			foreach ($properties as $property) {
-				Acls::set($prefix . $property);
-			}
-		}
-		if (!in_array($property_name, $properties)) {
-			Acls::set($prefix . $property_name, true);
-			Dao::write(Acls_User::current()->group);
-		}
-	}
-
-	//---------------------------------------------------------------------------------- getAclPrefix
-	/**
-	 * @param $context_feature_name string
-	 * @return string
-	 */
-	public function getAclPrefix($context_feature_name)
-	{
-		return $this->context_class_name . "." . $context_feature_name . ".properties.";
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------------- remove
@@ -129,20 +117,7 @@ abstract class Acls_Properties
 	public function remove($context_feature_name, $property_name)
 	{
 		$prefix = $this->getAclPrefix($context_feature_name);
-		$properties = $this->getPropertiesNames($context_feature_name);
-		if (isset($properties)) {
-			Acls::remove($prefix . $property_name, null, true);
-		}
-		else {
-			// if no acls properties add all default properties but not the removed property
-			$properties = $this->getDefaultProperties();
-			foreach ($properties as $property) {
-				if ($property != $property_name) {
-					Acls::set($prefix . $property);
-				}
-			}
-			Dao::write(Acls_User::current()->group);
-		}
+		Acls::remove($prefix . $property_name, null, true);
 	}
 
 }

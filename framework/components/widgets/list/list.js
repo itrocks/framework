@@ -3,9 +3,17 @@ $("document").ready(function()
 
 	$(".window.list").build(function()
 	{
-		var $this = $(this);
 
-		$this.find(".column_select a").click(function(event)
+		// search objects
+		this.in(".search input, .search textarea").keydown(function(event)
+		{
+			if (event.keyCode == 13) {
+				$(this).closest("form").submit();
+			}
+		});
+
+		// column select popup
+		this.in(".column_select a").click(function(event)
 		{
 			var $this = $(this);
 			var $div = $this.closest(".column_select").find("#column_select");
@@ -21,6 +29,7 @@ $("document").ready(function()
 			}
 		});
 
+		// property drop into column
 		var end = function($this, event, ui)
 		{
 			var insert_after = $this.data("insert_after");
@@ -32,7 +41,8 @@ $("document").ready(function()
 			ui.draggable.removeData("over_droppable");
 		};
 
-		$this.find("table.list").droppable({
+		this.in("table.list").droppable({
+
 			accept:    ".property",
 			tolerance: "touch",
 
@@ -48,24 +58,25 @@ $("document").ready(function()
 					var $draggable = ui.draggable;
 					var property_name = $draggable.attr("id");
 					var after_property_name = $th.attr("id");
-					var url = app.uri_root + app.script_name + "/Property/add";
-					url += "/" + $window.attr("id") + "/" + property_name;
-					if (after_property_name != undefined) {
-						url += "?after=" + after_property_name + "&as_widget=1&PHPSESSID=" + app.PHPSESSID;
-					}
+					var url = app.uri_base + "/Property/add";
+					url += $window.attr("id") + "/" + property_name
+						+ "?PHPSESSID=" + app.PHPSESSID + "&as_widget=1"
+						+ "&after=" + ((after_property_name != undefined) ? after_property_name : "");
 					end($this, event, ui);
 					$draggable.closest(".column_select").find("#column_select").hide();
+
 					$.ajax({ url: url, success: function()
 					{
-						var url = app.uri_root + app.script_name + $window.attr("id");
-						url += "?as_widget=1&PHPSESSID=" + app.PHPSESSID;
+						var url = app.uri_base + $window.attr("id")
+							+ "?PHPSESSID=" + app.PHPSESSID + "&as_widget=1";
 						$.ajax({ url: url, success: function(data)
 						{
 							var $container = $window.parent();
 							$container.html(data);
-							$container.build();
+							$container.children().build();
 						} });
 					} });
+
 				}
 			},
 

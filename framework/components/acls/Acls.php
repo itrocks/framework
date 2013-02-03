@@ -15,6 +15,10 @@ abstract class Acls implements Plugin
 	}
 
 	//------------------------------------------------------------------------------------------- get
+	/**
+	 * @param $key string
+	 * @return string|array
+	 */
 	public static function get($key)
 	{
 		return self::current()->get($key);
@@ -37,24 +41,19 @@ abstract class Acls implements Plugin
 	/**
 	 * Remove an Acls to current group and from current connection's Acls
 	 *
-	 * @param $key   string
-	 * @param $group Acls_Group default is current use group
-	 * @param $save  boolean    if true, Modifier acls group is saved
+	 * @param $object Acls_Right|string
+	 * @param $group  Acls_Group default is current use group
+	 * @param $save   boolean if true, Modifier acls group is saved
 	 */
-	public static function remove($key, $group = null, $save = false)
+	public static function remove($object, $group = null, $save = false)
 	{
-		self::current()->remove($key);
 		if (!isset($group)) {
 			$group = Acls_User::current()->group;
 		}
-		$removed = false;
-		foreach ($group->rights as $k => $right) {
-			if ($right->key == $key) {
-				unset($group->rights[$k]);
-				$removed = true;
-			}
-		}
-		if ($save && $removed) {
+		$key = ($object instanceof Acls_Right) ? $object : $object;
+		self::current()->remove($key);
+		$group->remove($key);
+		if ($save) {
 			Dao::write($group);
 		};
 	}
@@ -63,25 +62,24 @@ abstract class Acls implements Plugin
 	/**
 	 * Add a new Acl to current user's group and to current connection's Acls
 	 *
-	 * @param $key   string
-	 * @param $value mixed      default is true
-	 * @param $group Acls_Group default is current user group
-	 * @param $save  boolean    if true, Modifier acls group is saved
+	 * @param $object Acls_Right|string
+	 * @param $value  string     default is string value of true
+	 * @param $group  Acls_Group default is current user group
+	 * @param $save   boolean    if true, Modifier acls group is saved
 	 */
-	public static function set($key, $value = null, $group = null, $save = false)
+	public static function set($object, $value = null, $group = null, $save = false)
 	{
 		if (!isset($group)) {
 			$group = Acls_User::current()->group;
 		}
-		if (!isset($value)) {
+		if (!isset($value) && !($object instanceof Acls_Right)) {
 			$value = true;
 		}
-		$group->add(new Acls_Right($group, $key, $value));
-		$group->rights[] = $right;
+		self::current()->add($object, $value);
+		$group->add($object, $value);
 		if ($save) {
 			Dao::write($group);
 		};
-		self::current()->set($right);
 	}
 
 }

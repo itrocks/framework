@@ -3,13 +3,12 @@ $("document").ready(function()
 
 	$(".window").build(function()
 	{
-		var $this = $(this);
 
 		// decoration
-		$this.find(".property.select").prepend($("<span>").addClass("joint"));
+		this.in(".property.select").prepend($("<span>").addClass("joint"));
 
 		// create tree
-		$this.find("ul.treeview li a").click(function(event)
+		this.in("ul.treeview a").click(function(event)
 		{
 			var $this = $(this);
 			var $li = $(this).closest("li");
@@ -31,8 +30,7 @@ $("document").ready(function()
 		});
 
 		// draggable items
-		//noinspection JSUnusedLocalSymbols,JSUnusedLocalSymbols,JSUnusedLocalSymbols,JSUnusedLocalSymbols,JSUnusedLocalSymbols
-		$this.find(".property").draggable({
+		this.in(".property").draggable({
 
 			appendTo:    "body",
 			containment: "body",
@@ -93,7 +91,7 @@ $("document").ready(function()
 		});
 
 		// focus into search input
-		$this.find(".property.select .search input").focus();
+		this.in(".property.select .search input").focus();
 
 	});
 

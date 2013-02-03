@@ -40,17 +40,32 @@ class Acls_Group
 	/**
 	 * Adds an Acls_Link, an Acl_Group or an Acl_Link
 	 *
-	 * @param $object   Acls_Right|Acls_Group|Acls_Link
-	 * @param $priority integer
+	 * @param $object         Acls_Right|string|Acls_Group|Acls_Link
+	 * @param $priority_value string|integer value of acls right, or position of acls group in links
 	 * @return Acls_Group
 	 */
-	public function add($object, $priority = 1)
+	public function add($object, $priority_value = null)
 	{
-		if ($object instanceof Acls_Right) {
+		if (is_string($object)) {
+			$value = isset($priority_value) ? $priority_value : true;
+			if (isset($this->rights[$object])) {
+				$this->rights[$object]->value = $value;
+			}
+			else {
+				$this->rights[$object] = new Acls_Right(Acls_User::current()->group, $object, $value);
+			}
+		}
+		elseif ($object instanceof Acls_Right) {
+			if (isset($priority_value)) {
+				$object->value = $priority_value;
+			}
 			$this->rights[$object->key] = $object;
 		}
 		elseif ($object instanceof Acls_Group) {
-			$this->content[$object->name] = new Acls_Link($this, $object, $priority);
+			if (!isset($priority_value)) {
+				$priority_value = 1;
+			}
+			$this->content[$object->name] = new Acls_Link($this, $object, $priority_value);
 		}
 		elseif ($object instanceof Acls_Link) {
 			$this->content[$object->content->name] = $object;
@@ -58,17 +73,17 @@ class Acls_Group
 		return $this;
 	}
 
-	//------------------------------------------------------------------------------------ getContent
+	//------------------------------------------------------------------------------ getContentGroups
 	/**
 	 * @return Acls_Group[]
 	 */
-	public function getContent()
+	public function getContentGroups()
 	{
-		$content = array();
-		foreach ($this->content as $link) {
-			$content[$link->content->name] = $link->content;
+		$groups = array();
+		foreach ($this->getLinks() as $link) {
+			$groups[$link->content->name] = $link->content;
 		}
-		return $content;
+		return $groups;
 	}
 
 	//-------------------------------------------------------------------------------------- getLinks
@@ -77,10 +92,10 @@ class Acls_Group
 	 */
 	public function getLinks()
 	{
-		$links = $this->content;
+		$links = isset($this->content) ? $this->content : null;
 		if (!isset($links)) {
 			$links = array();
-			foreach (Getter::getCollection($links, __NAMESPACE__ . "\\Acls_Link", $this) as $link) {
+			foreach (Getter::getCollection(null, __NAMESPACE__ . "\\Acls_Link", $this) as $link) {
 				$links[$link->content->name] = $link;
 			}
 			$this->content = $links;
@@ -94,10 +109,10 @@ class Acls_Group
 	 */
 	public function getRights()
 	{
-		$rights = $this->rights;
+		$rights = isset($this->rights) ? $this->rights : null;
 		if (!isset($rights)) {
 			$rights = array();
-			foreach (Getter::getCollection($rights, __NAMESPACE__ . "\\Acls_Right", $this) as $right) {
+			foreach (Getter::getCollection(null, __NAMESPACE__ . "\\Acls_Right", $this) as $right) {
 				$rights[$right->key] = $right;
 			}
 			$this->rights = $rights;
@@ -109,11 +124,15 @@ class Acls_Group
 	/**
 	 * Removes an Acls_Right, an Acls_Group or an Acls_Link
 	 *
-	 * @param $object Acls_Right|Acls_Group|Acls_Link
+	 * @param $object string|Acls_Right|Acls_Group|Acls_Link
+	 * @return Acls_Group
 	 */
 	public function remove($object)
 	{
-		if ($object instanceof Acls_Right) {
+		if (is_string($object)) {
+			unset($this->rights[$object]);
+		}
+		elseif ($object instanceof Acls_Right) {
 			unset($this->rights[$object->key]);
 		}
 		elseif ($object instanceof Acls_Group) {
@@ -122,6 +141,7 @@ class Acls_Group
 		elseif ($object instanceof Acls_Link) {
 			unset($this->content[$object->content->name]);
 		}
+		return $this;
 	}
 
 }

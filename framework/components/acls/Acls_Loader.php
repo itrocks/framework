@@ -16,8 +16,6 @@ abstract class Acls_Loader
 		if (!isset($acls_rights)) {
 			$acls_rights = new Acls_Rights();
 		}
-		// TODO next line is a dangerous thing, see what it is needed for and if it can be removed
-		Acls_User::current()->group = $group;
 		foreach ($group->rights as $right) {
 			$acls_rights->add($right);
 		}

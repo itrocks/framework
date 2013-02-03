@@ -1,11 +1,10 @@
 $("document").ready(function() {
 
 	$("body").build(function() {
-		var $this = $(this);
 
 		// trashable objects
 		window.zindex_counter = 0;
-		$this.find(".trashable:has(h2)").draggable({
+		this.in(".trashable:has(h2)").draggable({
 			appendTo: ":parent(div):first",
 			containment: "body",
 			cursorAt: { left: 2, top: 16 },
@@ -18,7 +17,7 @@ $("document").ready(function() {
 					.css("z-index", ++window.zindex_counter);
 			}
 		});
-		$this.find(".trashable:not(:has(h2))").draggable({
+		this.in(".trashable:not(:has(h2))").draggable({
 			appendTo: ":parent(div):first",
 			containment: "body",
 			cursorAt: { left: 2, top: 16 },
@@ -32,21 +31,35 @@ $("document").ready(function() {
 		});
 
 		// trash is droppable
-		$this.find(".trashcan a").droppable({
+		this.in(".trashcan a").droppable({
 			accept: ".trashable",
 			hoverClass: "candrop",
 			tolerance: "touch",
 			drop: function(event, ui) {
 				// start
-				var href = event.target.href;
+				var href =   event.target.href;
 				var search = event.target.search;
-				var hash = event.target.hash;
+				var hash =   event.target.hash;
 				// click
 				event.target.href = event.target.pathname + "/drop";
 				var $window = ui.draggable.parent().closest("div.window");
 				if ($window.length) {
 					//noinspection JSUnresolvedVariable
 					var app = window.app;
+					// after trash call is complete, the source window is reloaded to update displayed content
+					var window_id = $window.attr("id");
+					if ((window_id != undefined) && (window_id.indexOf("/") != -1)) {
+						$(event.target).data("on.success", function() {
+							$.ajax({
+								url:     app.uri_base + window_id + "?as_widget=1&PHPSESSID=" + app.PHPSESSID,
+								success: function(data) {
+									var $parent = $window.parent();
+									$parent.html(data);
+									$parent.children().build();
+								}
+							});
+						});
+					}
 					// - a sub-element of a window
 					event.target.href += $window.attr("id");
 					var trash = (ui.draggable.classVar("trash"));
@@ -66,7 +79,7 @@ $("document").ready(function() {
 						}
 						else if (
 							(id != undefined) && (id.indexOf("/") == -1)
-							) {
+						) {
 							trash = "Property";
 						}
 						else if (ui.draggable.hasClass("ui-tabber-tab")) {
@@ -96,7 +109,7 @@ $("document").ready(function() {
 		});
 
 		// trash message can be hidden
-		$this.find(".trashcan .delete.message").click(function() { $(this).remove(); });
+		this.in(".trashcan .delete.message").click(function() { $(this).remove(); });
 
 	});
 

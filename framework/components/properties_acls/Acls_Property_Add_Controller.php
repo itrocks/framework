@@ -29,13 +29,13 @@ class Acls_Property_Add_Controller implements Feature_Controller
 		$objects = $parameters->getObjects();
 		foreach ($parameters->getUnnamedParameters() as $property_name) {
 			if (isset($objects["after"])) {
-				$acls_properties->addAfter($context_feature_name, $property_name, $objects["after"]);
+				$acls_properties->add($context_feature_name, $property_name, "after", $objects["after"]);
 			}
 			elseif (isset($objects["before"])) {
-				$acls_properties->addBefore($context_feature_name, $property_name, $objects["before"]);
+				$acls_properties->add($context_feature_name, $property_name, "before", $objects["before"]);
 			}
 			else {
-				$acls_properties->addBefore($context_feature_name, $property_name);
+				$acls_properties->add($context_feature_name, $property_name, "before");
 			}
 		}
 	}

@@ -5,7 +5,6 @@ $("document").ready(function()
 	{
 		//noinspection JSUnresolvedVariable
 		var app = window.app;
-		var $this = $(this);
 
 		// .autoheight
 		var autoheight_function = function()
@@ -16,8 +15,8 @@ $("document").ready(function()
 				$this.attr("rows", $this.val().split("\n").length);
 			}
 		};
-		$this.find(".autoheight").each(autoheight_function);
-		$this.find(".autoheight").keyup(autoheight_function);
+		this.in(".autoheight").each(autoheight_function);
+		this.in(".autoheight").keyup(autoheight_function);
 
 		// .autowidth
 		var autowidth_function = function()
@@ -77,24 +76,24 @@ $("document").ready(function()
 				}
 			}
 		};
-		$this.find(".autowidth").each(autowidth_function);
-		$this.find(".autowidth").keyup(autowidth_function);
+		this.in(".autowidth").each(autowidth_function);
+		this.in(".autowidth").keyup(autowidth_function);
 
 		// .collection
-		$this.find(".minus").click(function()
+		this.in(".minus").click(function()
 		{
 			// On empêche la suppression du dernier élément
 			if($(this).closest("tbody").children().length > 1)
 				$(this).closest("tr").remove();
 		});
 
-		$this.find("table.collection").each(function()
+		this.in("table.collection").each(function()
 		{
 			var $this = $(this);
 			$this.data("saf_add", $this.find("tr.new").clone());
 		});
 
-		$this.find("input, textarea").focus(function()
+		this.in("input, textarea").focus(function()
 		{
 			var $tr = $(this).closest("tr");
 			if ($tr.length && !$tr.next("tr").length) {
@@ -109,19 +108,19 @@ $("document").ready(function()
 		});
 
 		// .datetime
-		$this.find("input.datetime").datepicker({
+		this.in("input.datetime").datepicker({
 			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            "button",
 			showOtherMonths:   true,
 			selectOtherMonths: true
 		});
 
-		$this.find("input.datetime").blur(function()
+		this.in("input.datetime").blur(function()
 		{
 			$(this).datepicker("hide");
 		});
 
-		$this.find("input.datetime").keyup(function(event)
+		this.in("input.datetime").keyup(function(event)
 		{
 			if ((event.keyCode != 13) && (event.keyCode != 27)) {
 				$(this).datepicker("show");
@@ -129,7 +128,7 @@ $("document").ready(function()
 		});
 
 		// .object
-		$this.find("input.combo").autocomplete({
+		this.in("input.combo").autocomplete({
 			autoFocus: true,
 			delay: 100,
 			minLength: 0,
@@ -145,7 +144,7 @@ $("document").ready(function()
 				var app = window.app;
 				request["PHPSESSID"] = app.PHPSESSID;
 				$.getJSON(
-					app.uri_root + app.script_name + "/" + $(this.element).classVar("class") + "/json",
+					app.uri_base + "/" + $(this.element).classVar("class") + "/json",
 					request,
 					function(data) { response(data); }
 				);

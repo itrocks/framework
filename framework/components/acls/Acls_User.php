@@ -28,9 +28,9 @@ class Acls_User extends User
 	 */
 	public function getGroup()
 	{
-		$group = $this->group;
+		$group = isset($this->group) ? $this->group : null;
 		if (!isset($group)) {
-			$group = Getter::getObject($group, __NAMESPACE__ . "\\Acls_Group", $this);
+			$group = Getter::getObject($group, __NAMESPACE__ . "\\Acls_Group", $this, "group");
 			if (empty($group)) {
 				$group = new Acls_Group();
 				$group->name = $this->login;
