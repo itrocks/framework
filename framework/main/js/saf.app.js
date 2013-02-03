@@ -35,6 +35,12 @@ App = function(PHPSESSID, uri_root, script_name, language, date_format)
 	 */
 	this.script_name = script_name;
 
+	//-------------------------------------------------------------------------------------- uri_base
+	/**
+	 * @type string
+	 */
+	this.uri_base = uri_root + script_name;
+
 	//-------------------------------------------------------------------------------------- uri_root
 	/**
 	 * @var string
