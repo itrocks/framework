@@ -1,48 +1,63 @@
-$("document").ready(function() {
+$("document").ready(function()
+{
 
-	$("body").build(function() {
+	$("body").build(function()
+	{
 
-		// trashable objects
+		// trashable objects : those which have <h2> are windows
 		window.zindex_counter = 0;
 		this.in(".trashable:has(h2)").draggable({
+
 			appendTo: ":parent(div):first",
 			containment: "body",
 			cursorAt: { left: 2, top: 16 },
 			delay: 500,
 			handle: "h2",
 			scroll: false,
-			helper: function() {
+
+			helper: function()
+			{
 				return $('<div class="dragging">' + $(this).children("h2").text() + "</div>")
 					.css("background-image", $(this).children("h2").css("background-image"))
 					.css("z-index", ++window.zindex_counter);
 			}
+
 		});
+
+		// trashable objects : all the others
 		this.in(".trashable:not(:has(h2))").draggable({
+
 			appendTo: ":parent(div):first",
 			containment: "body",
 			cursorAt: { left: 2, top: 16 },
 			delay: 500,
 			scroll: false,
-			helper: function() {
+
+			helper: function()
+			{
 				return $('<div class="dragging">' + $(this).text() + "</div>")
 					.css("background-image", $(this).css("background-image"))
 					.css("z-index", ++zindex_counter);
 			}
+
 		});
 
 		// trash is droppable
 		this.in(".trashcan a").droppable({
+
 			accept: ".trashable",
 			hoverClass: "candrop",
 			tolerance: "touch",
-			drop: function(event, ui) {
+
+			drop: function(event, ui)
+			{
 				// start
 				var href =   event.target.href;
 				var search = event.target.search;
 				var hash =   event.target.hash;
 				// click
 				event.target.href = event.target.pathname + "/drop";
-				var $window = ui.draggable.parent().closest("div.window");
+				var $window = ui.draggable.closest("div.window");
 				if ($window.length) {
 					//noinspection JSUnresolvedVariable
 					var app = window.app;
