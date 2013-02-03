@@ -5,7 +5,7 @@
 	 * Allow your pages to contain implicit ajax calls, using the power of selector targets
 	 *
 	 * - Works with <a> and <form> links
-	 * - Initialise this feature with a single $("body").xTarget(); call
+	 * - Initialise this feature with a single $("body").xtarget(); call
 	 *
 	 * @example
 	 * <div id="position"></div>
@@ -15,7 +15,7 @@
 	 * <div id="position"></div>
 	 * <form action="linked_page" target="#position">(...)</form>
 	 */
-	$.fn.xTarget = function(options)
+	$.fn.xtarget = function(options)
 	{
 
 		//------------------------------------------------------------------------------------ settings
@@ -43,21 +43,31 @@
 			//------------------------------------------------------------------------------ ajax.success
 			success: function(data, status, xhr)
 			{
+				var $from = $(xhr.from);
 				var $target = $(xhr.from.target);
+				var build_target = false;
+				// popup a new element
 				if (!$target.length) {
 					$target = $("<div>").attr("id", xhr.from.target.substr(1));
-					var $from = $(xhr.from);
 					if (settings["keep"] && $from.hasClass(settings["keep"])) {
 						$target.addClass(settings["keep"]);
 					}
 					$target.insertAfter($from);
+					build_target = true;
 				}
+				// write result into destination element, and build jquery active contents
 				$target.html(data);
+				if ($target.build != undefined) {
+					if (build_target) $target.build();
+					else              $target.children().build();
+				}
+				// on.success callbacks
 				if (settings["success"] != undefined) {
 					settings["success"](data, status, xhr);
 				}
-				if ($target.build != undefined) {
-					$target.build();
+				var on_success = $from.data("on.success");
+				if (on_success != undefined) {
+					on_success(data, status, xhr);
 				}
 			}
 		};
@@ -92,18 +102,26 @@
 			if ($this.hasClass(settings["submit"])) {
 				var $parent_form = $this.closest("form");
 				if ($parent_form.length) {
-					$parent_form.ajaxSubmit($.extend(ajax, {
-						url: urlAppend(this.href, this.search)
-					}));
-					$parent_form.data("jqxhr").from = this;
+					if ($parent_form.ajaxSubmit != undefined) {
+						$parent_form.ajaxSubmit($.extend(ajax, {
+							url: urlAppend(this.href, this.search)
+						}));
+						$parent_form.data("jqxhr").from = this;
+					}
+					else {
+						$.ajax($.extend(ajax, {
+							url:  urlAppend(this.href, this.search),
+							data: $parent_form.serialize(),
+							type: $parent_form.attr("method")
+						})).from = this;
+					}
 					done = true;
 				}
 			}
 			if (!done) {
-				var $xhr = $.ajax($.extend(ajax, {
+				$.ajax($.extend(ajax, {
 					url: urlAppend(this.href, this.search)
-				}));
-				$xhr.from = this;
+				})).from = this;
 			}
 		});
 
@@ -115,10 +133,19 @@
 		{
 			var $this = $(this);
 			event.preventDefault();
-			$this.ajaxSubmit($.extend(ajax, {
-				url: urlAppend(this.action, this.search)
-			}));
-			$this.data("jqxhr").from = this;
+			if ($this.ajaxSubmit != undefined) {
+				$this.ajaxSubmit($.extend(ajax, {
+					url: urlAppend(this.action, this.search)
+				}));
+				$this.data("jqxhr").from = this;
+			}
+			else {
+				$.ajax($.extend(ajax, {
+					url:  urlAppend(this.action, this.search),
+					data: $this.serialize(),
+					type: $this.attr("method")
+				})).from = this;
+			}
 		});
 
 		return this;
