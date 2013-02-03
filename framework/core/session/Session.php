@@ -89,7 +89,7 @@ class Session
 	 * Set a session's object
 	 *
 	 * @param $object object can be null (then nothing is set)
-	 * @param $class_name string if not set, object class will be the session object identifier
+	 * @param $class_name string if not set, object class will be the object identifier
 	 */
 	public function set($object, $class_name = null)
 	{

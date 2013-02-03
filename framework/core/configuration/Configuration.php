@@ -1,10 +1,11 @@
 <?php
 namespace SAF\Framework;
+use \Serializable;
 
 /** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Current.php";
 
-class Configuration
+class Configuration implements Serializable
 {
 	use Current { current as private pCurrent; }
 
@@ -104,6 +105,17 @@ class Configuration
 		return $classes;
 	}
 
+	//------------------------------------------------------------------------------------- serialize
+	/**
+	 * Serialization compatible with unserialize()
+	 *
+	 * @return string
+	 */
+	public function serialize()
+	{
+		return serialize(get_object_vars($this));
+	}
+
 	//--------------------------------------------------------------------------------------- toArray
 	/**
 	 * Returns a configuration as an associative array like in config.php file
@@ -113,6 +125,27 @@ class Configuration
 	public function toArray()
 	{
 		return get_object_vars($this);
+	}
+
+	//----------------------------------------------------------------------------------- unserialize
+	/**
+	 * Current configuration is set once unserialized from session
+	 *
+	 * This enables loading of plugins before any other session class unserializing.
+	 * If any current is already set, it is not overwritten so you can use serialization for other configuration objects.
+	 *
+	 * @param string $serialized
+	 * @return void
+	 */
+	public function unserialize($serialized)
+	{
+		foreach (unserialize($serialized) as $key => $value) {
+			$this->$key = $value;
+		}
+		$current = self::current();
+		if (!isset($current)) {
+			self::current($this);
+		}
 	}
 
 }
