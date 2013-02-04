@@ -117,7 +117,20 @@ abstract class Acls_Properties
 	public function remove($context_feature_name, $property_name)
 	{
 		$prefix = $this->getAclPrefix($context_feature_name);
-		Acls::remove($prefix . $property_name, null, true);
+		$properties = $this->getPropertiesNames($context_feature_name);
+		if (!isset($properties)) {
+			// no acls properties : remove from default properties list (create acls properties)
+			foreach ($this->getDefaultProperties() as $position => $property) {
+				if ($property != $property_name) {
+					Acls::set($prefix . $property, $position + 1);
+				}
+			}
+			Dao::write(Acls_User::current()->group);
+		}
+		else {
+			// acls properties : simple remove
+			Acls::remove($prefix . $property_name, null, true);
+		}
 	}
 
 }
