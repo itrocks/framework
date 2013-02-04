@@ -46,7 +46,7 @@ abstract class Acls_Properties
 		// insert property_name into properties and recalc position for each of them
 		$result = array();
 		$count = 1;
-		if (($where == "after") && empty($when_property_name)) {
+		if (($where == "after") && empty($where_property_name)) {
 			$result[$count++] = $property_name;
 		}
 		foreach ($properties as $key) {
