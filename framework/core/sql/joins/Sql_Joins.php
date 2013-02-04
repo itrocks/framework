@@ -225,7 +225,7 @@ class Sql_Joins
 					? Sql_Join::INNER
 					: Sql_Join::LEFT;
 				if ($foreign_type->isMultiple()) {
-					$foreign_class_name = $foreign_type->getElementType();
+					$foreign_class_name = $foreign_type->getElementTypeAsString();
 					$foreign_property_name = $master_property->getAnnotation("foreign")->value;
 					if (property_exists($foreign_class_name, $foreign_property_name)) {
 						$join->foreign_column = "id_" . $foreign_property_name;
