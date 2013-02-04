@@ -37,6 +37,9 @@ class Acls_Rights
 		$position = &$this->acls_tree;
 		$step = "";
 		foreach (explode(".", $key) as $step) {
+			if (isset($position) && !is_array($position)) {
+				$position = array("=" => $position);
+			}
 			if (!isset($position[$step])) {
 				$position[$step] = array();
 			}
@@ -73,6 +76,9 @@ class Acls_Rights
 				}
 				$position = $position[$step];
 			}
+		}
+		if (is_array($position)) {
+			$position = treeToArray($position, "=");
 		}
 		return $position;
 	}

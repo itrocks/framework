@@ -170,18 +170,22 @@ function arrayUnnamedValues($array)
  *
  * Keys are cumulated to a single "key.sub_key.final_key" key name
  *
- * @param $array mixed[]
+ * @param $array      mixed[]
+ * @param $ignore_key string if set, this key is ignored and set as the "main" value of a node
  * @return mixed[]
  */
-function treeToArray($array)
+function treeToArray($array, $ignore_key = null)
 {
+	$result = array();
 	foreach ($array as $key => $val) {
 		if (is_array($val)) {
-			unset($array[$key]);
-			foreach (treeToArray($val) as $sub_key => $sub_val) {
-				$array[$key . "." . $sub_key] = $sub_val;
+			foreach (treeToArray($val, $ignore_key) as $sub_key => $sub_val) {
+				$result[$key . (("$sub_key" === "$ignore_key") ? "" : ("." . $sub_key))] = $sub_val;
 			}
 		}
+		else {
+			$result[$key] = $val;
+		}
 	}
-	return $array;
+	return $result;
 }
