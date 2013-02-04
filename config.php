@@ -11,8 +11,8 @@ $config["framework"] = array(
 		"class"    => "Mysql_Link",
 		"host"     => "localhost",
 		"limit"    => 1000,
-		"user"     => "SAF-php",
-		"password" => "SAF-php",
+		"user"     => "saf",
+		"password" => "saf",
 		"tables"   => array(
 			"Acls_User" => "users",
 		)

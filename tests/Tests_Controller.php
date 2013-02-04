@@ -13,7 +13,7 @@ class Tests_Controller implements Feature_Controller
 	{
 		$dir = dir("tests");
 		while ($entry = $dir->read()) {
-			if (substr($entry, -9) == "_Test.php") {
+			if ((substr($entry, -9) == "_Test.php") && ($entry != "Runnable_Unit_Test.php")) {
 				$class = __NAMESPACE__ . "\\" . substr($entry, 0, strpos($entry, "."));
 				/** @var $unit_test Unit_Test|Runnable_Unit_Test use run method to launch unit tests */
 				$unit_test = new $class();
