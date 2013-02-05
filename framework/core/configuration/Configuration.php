@@ -64,10 +64,13 @@ class Configuration implements Serializable
 						array($full_class_name, "current"), $builder_object->build($configuration)
 					);
 				}
-				else {
+				elseif (method_exists($full_class_name, "current")) {
 					call_user_func(
 						array($full_class_name, "current"), new $configuration_class_name($configuration)
 					);
+				}
+				elseif (method_exists($full_class_name, "configure")) {
+					call_user_func(array($full_class_name, "configure"), $configuration);
 				}
 			}
 			return $set_current;
