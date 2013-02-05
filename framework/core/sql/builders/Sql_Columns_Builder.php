@@ -101,4 +101,13 @@ trait Sql_Columns_Builder
 		$this->properties = $properties;
 	}
 
+	//-------------------------------------------------------------------------------------- getJoins
+	/**
+	 * @return Sql_Joins
+	 */
+	public function getJoins()
+	{
+		return $this->joins;
+	}
+
 }
