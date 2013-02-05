@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Acls_Link implements Contained
+class Acls_Link implements Component
 {
 
 	//------------------------------------------------------------------------------------ $container

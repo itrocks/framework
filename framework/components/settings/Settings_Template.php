@@ -20,7 +20,7 @@ class Settings_Template
 	/**
 	 * @getter Aop::getCollection
 	 * @var Settings_Template_Element[]
-	 * @contained
+	 * @component
 	 */
 	public $elements;
 

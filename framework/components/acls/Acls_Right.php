@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * @representative group, key
  */
-class Acls_Right implements Contained
+class Acls_Right implements Component
 {
 
 	//---------------------------------------------------------------------------------------- $group

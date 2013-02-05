@@ -72,7 +72,7 @@ class Mysql_Link extends Sql_Link
 		if ($id) {
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->accessProperties() as $property) {
-				if ($property->getAnnotation("contained")->value) {
+				if ($property->getAnnotation("component")->value) {
 					if ($property->getType()->isMultiple()) {
 						$this->deleteCollection($object, $property, $property->getValue($object));
 					}
@@ -94,7 +94,7 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Delete a collection of object
 	 *
-	 * This is called by delete() for hard-linked object collection properties : only if the matching property has @contained.
+	 * This is called by delete() for hard-linked object collection properties : only if the matching property has @component.
 	 *
 	 * @param $parent object
 	 * @param $property Reflection_Property
@@ -307,7 +307,7 @@ class Mysql_Link extends Sql_Link
 					}
 				}
 			}
-			elseif ($property->getAnnotation("contained")->value) {
+			elseif ($property->getAnnotation("component")->value) {
 				$write_collections[$property->name] = $value;
 			}
 			elseif (is_array($value)) {
@@ -342,7 +342,7 @@ class Mysql_Link extends Sql_Link
 
 	//------------------------------------------------------------------------------- writeCollection
 	/**
-	 * Write a contained collection property value
+	 * Write a component collection property value
 	 *
 	 * Ie when you write an order, it's implicitely needed to write it's lines
 	 *
@@ -360,7 +360,7 @@ class Mysql_Link extends Sql_Link
 		// collection properties : write each of them
 		$id_set = array();
 		$property = Reflection_Property::getInstanceOf(get_class($object), $property_name);
-		if ($property->getAnnotation("contained")->value) {
+		if ($property->getAnnotation("component")->value) {
 			if ($collection && is_array(reset($collection))) {
 				$class_name = $property->getType()->getElementTypeAsString();
 				$collection = arrayToCollection($collection, $class_name);
@@ -378,7 +378,7 @@ class Mysql_Link extends Sql_Link
 						}
 					}
 					if ($do_write) {
-						if ($element instanceof Contained) {
+						if ($element instanceof Component) {
 							$element->setParent($object);
 						}
 						$id = $this->getObjectIdentifier($element);

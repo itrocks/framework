@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-interface Contained
+interface Component
 {
 
 	//--------------------------------------------------------------------------------------- dispose
@@ -23,7 +23,7 @@ interface Contained
 	 * Set parents object
 	 *
 	 * @param $object object
-	 * @return Contained
+	 * @return Component
 	 */
 	public function setParent($object);
 

@@ -28,8 +28,9 @@ class Tab
 
 	//------------------------------------------------------------------------------------- $includes
 	/**
-	 * For contained tabs
+	 * For component tabs
 	 *
+	 * @component
 	 * @var Tab[]
 	 */
 	public $includes = array();

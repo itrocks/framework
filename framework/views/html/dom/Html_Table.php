@@ -6,14 +6,14 @@ class Html_Table extends Dom_Element
 
 	//----------------------------------------------------------------------------------------- $body
 	/**
-	 * @contained
+	 * @component
 	 * @var Html_Table_Body
 	 */
 	private $body;
 
 	//----------------------------------------------------------------------------------------- $head
 	/**
-	 * @contained
+	 * @component
 	 * @var Html_Table_Head
 	 */
 	private $head;

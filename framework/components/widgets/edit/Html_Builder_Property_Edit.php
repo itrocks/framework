@@ -54,7 +54,7 @@ class Html_Builder_Property_Edit
 			case "string":  return $this->buildString();
 		}
 		if ($type->isMultiple()) {
-			return $this->property->getAnnotation("contained")->value
+			return $this->property->getAnnotation("component")->value
 				? $this->buildCollection()
 				: $this->buildMap();
 		}

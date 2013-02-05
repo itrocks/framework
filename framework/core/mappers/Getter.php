@@ -24,7 +24,7 @@ abstract class Getter
 	/**
 	 * Generic getter for a collection of objects
 	 *
-	 * @param $collection    Contained[]|null actual value of the property (will be returned if not null)
+	 * @param $collection    Component[]|null actual value of the property (will be returned if not null)
 	 * @param $element_class string|null      the class for each collection's object
 	 * @param $parent        object           the parent object
 	 * @return object[]
@@ -34,14 +34,14 @@ abstract class Getter
 		if (!isset($collection)) {
 			if (Dao::getObjectIdentifier($parent)) {
 				$search_element = Search_Object::newInstance($element_class);
-				if ($search_element instanceof Contained) {
+				if ($search_element instanceof Component) {
 					$search_element->setParent($parent);
 				}
 				$collection = Dao::search($search_element);
-				if ($search_element instanceof Contained) {
+				if ($search_element instanceof Component) {
 					// this to avoid getter calls on $element->getParent() call (parent is already loaded)
 					foreach ($collection as $element) {
-						if ($element instanceof Contained) {
+						if ($element instanceof Component) {
 							$element->setParent($parent);
 						}
 					}

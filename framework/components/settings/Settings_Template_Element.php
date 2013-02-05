@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * @set Settings_Templates_Elements
  */
-class Settings_Template_Element implements Contained
+class Settings_Template_Element implements Component
 {
 
 	//----------------------------------------------------------------------------- $setting_template
