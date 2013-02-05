@@ -119,11 +119,11 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 			if ($parent_class = $this->getParentClass()) {
 				$this->doc_comment .= $parent_class->getDocComment(true);
 			}
-			foreach ($this->getInterfaces() as $interface) {
-				$this->doc_comment .= $interface->getDocComment(true);
-			}
 			foreach ($this->getTraits() as $trait) {
 				$this->doc_comment .= $trait->getDocComment(true);
+			}
+			foreach ($this->getInterfaces() as $interface) {
+				$this->doc_comment .= $interface->getDocComment(true);
 			}
 		}
 		return $this->doc_comment;

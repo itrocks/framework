@@ -22,7 +22,7 @@ abstract class Annotation_Parser
 	) {
 		$annotation_class = static::getAnnotationClassName(
 			($reflection_object instanceof Reflection_Class)
-			? "class_" . $annotation_name
+			? "Class_" . Names::propertyToClass($annotation_name)
 			: $annotation_name
 		);
 		if (!isset($multiple)) {

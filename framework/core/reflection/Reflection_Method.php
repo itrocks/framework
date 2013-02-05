@@ -34,6 +34,13 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	 */
 	private static $cache = array();
 
+	//--------------------------------------------------------------------------------- getDocComment
+	public function getDocComment($parent = false)
+	{
+		// TODO parent methods read
+		return parent::getDocComment();
+	}
+
 	//--------------------------------------------------------------------------------- getInstanceOf
 	/**
 	 * Return Reflection_Method instance for a class name, object, ReflectionClass, Reflection_Class, ReflectionMethod object
