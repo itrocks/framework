@@ -91,7 +91,9 @@ class Number_Locale implements Configurable
 	 */
 	public function integerToLocale($integer)
 	{
-		return number_format($integer, 0, $this->decimal_separator, $this->thousand_separator);
+		return ($integer == (string)(integer)$integer)
+			? number_format($integer + 0, 0, $this->decimal_separator, $this->thousand_separator)
+			: $integer;
 	}
 
 }
