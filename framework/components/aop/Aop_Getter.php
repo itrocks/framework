@@ -65,6 +65,23 @@ abstract class Aop_Getter extends Aop implements Plugin
 		}
 	}
 
+	//---------------------------------------------------------------------------------------- getMap
+	/**
+	 * Register this for any object map property using "@getter Aop::getMap" annotation
+	 *
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function getMap(AopJoinpoint $joinpoint)
+	{
+		$object = $joinpoint->getObject();
+		$property = $joinpoint->getPropertyName();
+		if (!isset($object->$property)) {
+			$class = $joinpoint->getClassName();
+			$property = Reflection_Property::getInstanceOf($class, $property);
+			$object->$property = Getter::getMap(null, $property, $object);
+		}
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Register this for any object property using "@getter Aop::getObject" annotation

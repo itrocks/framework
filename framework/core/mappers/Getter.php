@@ -39,11 +39,10 @@ abstract class Getter
 				}
 				$collection = Dao::search($search_element);
 				if ($search_element instanceof Component) {
+					/** @var Component[] $collection */
 					// this to avoid getter calls on $element->getParent() call (parent is already loaded)
 					foreach ($collection as $element) {
-						if ($element instanceof Component) {
-							$element->setParent($parent);
-						}
+						$element->setParent($parent);
 					}
 				}
 			}
@@ -52,6 +51,31 @@ abstract class Getter
 			}
 		}
 		return $collection;
+	}
+
+	//---------------------------------------------------------------------------------------- getMap
+	/**
+	 * Generic getter for mapped objects
+	 *
+	 * @param $map      Component[]|null actual value of the property (will be returned if not null)
+	 * @param $property Reflection_Property the source property for map reading
+	 * @param $parent   object the parent object
+	 * @return object[]
+	 */
+	public static function getMap($map, Reflection_Property $property, $parent)
+	{
+		if (!isset($map)) {
+			if (Dao::getObjectIdentifier($parent)) {
+				$map = Dao::search(
+					array(get_class($parent) . "->" . $property->name => $parent),
+					$property->getType()->getElementTypeAsString()
+				);
+			}
+			else {
+				$map = array();
+			}
+		}
+		return $map;
 	}
 
 	//------------------------------------------------------------------------------------- getObject

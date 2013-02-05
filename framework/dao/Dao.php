@@ -155,7 +155,7 @@ abstract class Dao
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
 	 * @param $what       mixed source object for filter, only set properties will be used for search
-	 * @param $class_name string must be set if is not a filter array
+	 * @param $class_name string must be set if $what is a filter array
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::search()
 	 */
