@@ -7,9 +7,9 @@ class Default_List_Controller extends List_Controller
 	//----------------------------------------------------------------------------- getGeneralButtons
 	protected function getGeneralButtons($class_name)
 	{
-		return array(
-			new Button("Add", View::link($class_name, "new"), "add")
-		);
+		return Button::newCollection(array(
+			array("Add", View::link($class_name, "new"), "add", Color::of("green"))
+		));
 	}
 
 	//----------------------------------------------------------------------------- getPropertiesList

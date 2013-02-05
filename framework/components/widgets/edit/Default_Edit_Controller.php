@@ -7,11 +7,10 @@ class Default_Edit_Controller extends Default_Output_Controller
 	//----------------------------------------------------------------------------- getGeneralButtons
 	protected function getGeneralButtons($object)
 	{
-		return array(
-			new Button(
-				"Write", View::link($object, "write"), "write", array(".submit", "#messages")
-			)
-		);
+		return Button::newCollection(array(
+			array("Cancel", View::link($object, "output"), "cancel", array(Color::of("red"), "#main")),
+			array("Write",  View::link($object, "write"),  "write",  array(Color::of("green"), "#messages", ".submit"))
+		));
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
