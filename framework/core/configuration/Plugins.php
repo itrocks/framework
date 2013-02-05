@@ -15,6 +15,9 @@ class Plugins implements Configurable
 	);
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $parameters array
+	 */
 	public function __construct($parameters = null)
 	{
 		$plugins = $this->parametersToPlugins($parameters);

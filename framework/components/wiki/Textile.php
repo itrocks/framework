@@ -6,6 +6,14 @@ require_once "vendor/textile/classTextile.php";
 class Textile extends \Textile
 {
 
+	//----------------------------------------------------------------------------------- $span_depth
+	/**
+	 * This overrides the Textile::$span_depth property, which declaration has been forgotten
+	 *
+	 * @var integer
+	 */
+	public $span_depth;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * This override replace '_' by '/' for em and '+' by '_' for ins

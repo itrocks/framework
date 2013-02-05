@@ -32,7 +32,7 @@
 				nop = true;
 				i = selector.indexOf(" ");
 				if (i > -1) {
-					return this.in(selector.substr(0, i)).find(selector.substr(i + 1));
+					return this.in(selector.substr(0, i), nop).find(selector.substr(i + 1));
 				}
 			}
 			// filtered object itself, added to find into it's children
