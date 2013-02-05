@@ -3,11 +3,7 @@ namespace SAF\Framework;
 
 class Sql_Select_Builder
 {
-	use Sql_Columns_Builder, Sql_Where_Builder {
-		Sql_Columns_Builder::getClasses      insteadof Sql_Where_Builder;
-		Sql_Columns_Builder::getClassNames   insteadof Sql_Where_Builder;
-		Sql_Columns_Builder::getLinkedTables insteadof Sql_Where_Builder;
-	}
+	use Sql_Columns_Builder, Sql_Where_Builder;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -24,8 +20,9 @@ class Sql_Select_Builder
 	 */
 	public function __construct($class, $properties, $where_array = null, Sql_Link $sql_link = null)
 	{
-		$this->constructSqlColumnsBuilder($class, $properties);
-		$this->constructSqlWhereBuilder($class, $where_array, $sql_link);
+		$joins = new Sql_Joins($class);
+		$this->constructSqlColumnsBuilder($joins, $properties);
+		$this->constructSqlWhereBuilder($joins, $class, $where_array, $sql_link);
 	}
 
 	//-------------------------------------------------------------------------------------- getQuery

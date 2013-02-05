@@ -3,7 +3,12 @@ namespace SAF\Framework;
 
 trait Sql_Columns_Builder
 {
-	use Sql_Joins_Builder;
+
+	//---------------------------------------------------------------------------------------- $joins
+	/**
+	 * @var Sql_Joins
+	 */
+	private $joins;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -87,12 +92,12 @@ trait Sql_Columns_Builder
 	/**
 	 * Construct the SQL columns list section of a query
 	 *
-	 * @param $class string                root class name
+	 * @param $joins      Sql_Joins
 	 * @param $properties string[] properties paths list
 	 */
-	protected function constructSqlColumnsBuilder($class, $properties)
+	protected function constructSqlColumnsBuilder(Sql_Joins $joins, $properties)
 	{
-		$this->joins = new Sql_Joins($class);
+		$this->joins = $joins;
 		$this->properties = $properties;
 	}
 

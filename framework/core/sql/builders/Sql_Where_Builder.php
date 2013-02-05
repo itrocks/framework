@@ -3,7 +3,6 @@ namespace SAF\Framework;
 
 trait Sql_Where_Builder
 {
-	use Sql_Joins_Builder;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
@@ -12,6 +11,12 @@ trait Sql_Where_Builder
 	 * @var string
 	 */
 	private $class;
+
+	//---------------------------------------------------------------------------------------- $joins
+	/**
+	 * @var Sql_Joins
+	 */
+	private $joins;
 
 	//------------------------------------------------------------------------------------- $sql_link
 	/**
@@ -170,17 +175,27 @@ trait Sql_Where_Builder
 	 * column_name : column_name must correspond to a property of class
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
 	 *
-	 * @param $class string   base object class name
-	 * @param $where_array array    where array expression, indices are columns names
-	 * @param $sql_link Sql_Link
+	 * @param $joins       Sql_Joins
+	 * @param $class       string base object class name
+	 * @param $where_array array  where array expression, indices are columns names
+	 * @param $sql_link    Sql_Link
 	 */
 	protected function constructSqlWhereBuilder(
-		$class, $where_array = null, Sql_Link $sql_link = null
+		Sql_Joins $joins, $class, $where_array = null, Sql_Link $sql_link = null
 	) {
-		$this->joins       = new Sql_Joins($class);
+		$this->joins       = $joins;
 		$this->class       = $class;
 		$this->sql_link    = $sql_link ? $sql_link : Dao::current();
 		$this->where_array = $where_array;
+	}
+
+	//-------------------------------------------------------------------------------------- getJoins
+	/**
+	 * @return Sql_Joins
+	 */
+	public function getJoins()
+	{
+		return $this->joins;
 	}
 
 }

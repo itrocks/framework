@@ -150,12 +150,10 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		$columns[] = "id";
 		$sql_select_builder = new Sql_Select_Builder($object_class, $columns, $filter_object, $this);
 		$query = $sql_select_builder->buildQuery();
-		/** @noinspection PhpUndefinedMethodInspection inspector does not like my traits */
-		$path_classes = $sql_select_builder->getClasses();
-		/** @noinspection PhpUndefinedMethodInspection inspector does not like my traits */
+		$path_classes = $sql_select_builder->getJoins()->getClasses();
 		$this->setContext(array_merge(
-			$sql_select_builder->getClassNames(),
-			$sql_select_builder->getLinkedTables()
+			$sql_select_builder->getJoins()->getClassNames(),
+			$sql_select_builder->getJoins()->getLinkedTables()
 		));
 		$result_set = $this->executeQuery($query);
 		$column_count = $this->getColumnsCount($result_set);
