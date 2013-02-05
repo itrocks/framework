@@ -141,7 +141,7 @@ class Sql_Joins
 	) {
 		$linked_join = new Sql_Join();
 		$linked_join->foreign_column = "id_" . $foreign_property_name;
-		if ($master_property->getAnnotation("master")->value) {
+		if ($master_property->class < $foreign_class_name) {
 			$linked_join->foreign_table = Dao::storeNameOf($master_property->class)
 				. "_" . Dao::storeNameOf($foreign_class_name)
 				. "_links";
