@@ -179,6 +179,8 @@ class Mysql_Link extends Sql_Link
 	//--------------------------------------------------------------------------- getStoredProperties
 	public function getStoredProperties($class)
 	{
+		return $class->getAllProperties();
+		/*
 		if (is_string($class)) {
 			$class = Reflection_Class::getInstanceOf($class);
 		}
@@ -197,6 +199,7 @@ class Mysql_Link extends Sql_Link
 		$result_set->free();
 		$object_properties = $class->getAllProperties();
 		return array_intersect_key($object_properties, $columns);
+		*/
 	}
 
 	//----------------------------------------------------------------------------------------- query
