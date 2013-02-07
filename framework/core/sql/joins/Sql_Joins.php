@@ -90,7 +90,7 @@ class Sql_Joins
 		}
 		$join = new Sql_Join();
 		$foreign_class_name = (strpos($master_property_name, "->"))
-			? $this->addReverseJoin($join, $master_property_name)
+			? $this->addReverseJoin($join, $master_path, $master_property_name, $path)
 			: $this->addSimpleJoin($join, $master_path, $master_property_name, $path);
 		$this->joins[$path] = $join->mode
 			? $this->addFinalize($join, $master_path, $foreign_class_name, $path, $depth)
@@ -181,22 +181,38 @@ class Sql_Joins
 
 	//-------------------------------------------------------------------------------- addReverseJoin
 	/**
-	 * @param $join Sql_Join
+	 * @param $join                 Sql_Join
+	 * @param $master_path          string
 	 * @param $master_property_name string
+	 * @param $foreign_path         string
 	 * @return string
 	 */
-	private function addReverseJoin(Sql_Join $join, $master_property_name)
+	private function addReverseJoin(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
 	{
-		list($foreign_class_name, $property) = explode("->", $master_property_name);
-		if (strpos($property, "=")) {
-			list($join->foreign_column, $join->master_column) = explode("=", $property);
-			$join->foreign_column = "id_" . $join->foreign_column;
+		list($foreign_class_name, $foreign_property_name) = explode("->", $master_property_name);
+		$foreign_class_name = Namespaces::fullClassName($foreign_class_name);
+		if (strpos($foreign_property_name, "=")) {
+			list($foreign_property_name, $master_property_name) = explode("=", $foreign_property_name);
+			$join->master_column  = "id_" . $master_property_name;
 		}
 		else {
-			$join->foreign_column = "id_" . $property;
 			$join->master_column = "id";
 		}
+		$join->foreign_column = "id_" . $foreign_property_name;
 		$join->mode = Sql_Join::LEFT;
+		$foreign_property = Reflection_Property::getInstanceOf(
+			$foreign_class_name, $foreign_property_name
+		);
+		if ($foreign_property->getType()->isMultiple()) {
+			if ($foreign_property->getAnnotation("component")->value && class_implements(
+				$this->getProperty($master_path, $master_property_name)->class, 'SAF\Framework\Component'
+			)) {
+				echo "multiple component or collection<br>";
+			}
+			else {
+				echo "multiple map<br>";
+			}
+		}
 		return $foreign_class_name;
 	}
 

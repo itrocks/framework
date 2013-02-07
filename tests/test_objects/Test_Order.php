@@ -17,11 +17,10 @@ class Test_Order extends Test_Document
 	/**
 	 * Lines
 	 *
-	 * @mandatory
 	 * @component
 	 * @getter getCollection
+	 * @mandatory
 	 * @var Test_Order_Line[]
-	 * @foreign order
 	 */
 	private $lines;
 
@@ -31,8 +30,6 @@ class Test_Order extends Test_Document
 	 *
 	 * @getter getMap
 	 * @var Test_Salesman[]
-	 * @foreign order
-	 * @foreignlink salesman
 	 */
 	private $salesmen;
 
