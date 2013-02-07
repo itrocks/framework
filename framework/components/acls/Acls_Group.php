@@ -6,6 +6,7 @@ namespace SAF\Framework;
  */
 class Acls_Group
 {
+	use Remover;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -24,6 +25,7 @@ class Acls_Group
 	/**
 	 * @component
 	 * @getter getLinks
+	 * @remover remove
 	 * @var Acls_Link[]
 	 */
 	public $content;
@@ -32,6 +34,7 @@ class Acls_Group
 	/**
 	 * @component
 	 * @getter getRights
+	 * @remover remove
 	 * @var Acls_Right[] key is the property key
 	 */
 	public $rights;
@@ -59,6 +62,7 @@ class Acls_Group
 			if (isset($priority_value)) {
 				$object->value = $priority_value;
 			}
+			$object->setParent($this);
 			$this->rights[$object->key] = $object;
 		}
 		elseif ($object instanceof Acls_Group) {
@@ -68,6 +72,7 @@ class Acls_Group
 			$this->content[$object->name] = new Acls_Link($this, $object, $priority_value);
 		}
 		elseif ($object instanceof Acls_Link) {
+			$object->setParent($this);
 			$this->content[$object->content->name] = $object;
 		}
 		return $this;
