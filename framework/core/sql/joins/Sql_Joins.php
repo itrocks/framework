@@ -136,19 +136,19 @@ class Sql_Joins
 	 * @param $foreign_property_name string
 	 */
 	private function addLinkedJoin(
-		Sql_Join $join, $master_path, Reflection_Property $master_property,
+		Sql_Join $join, $master_path, $master_class_name, $master_property_foreignlink,
 		$foreign_path, $foreign_class_name, $foreign_property_name
 	) {
 		$linked_join = new Sql_Join();
 		$linked_join->foreign_column = "id_" . $foreign_property_name;
-		if ($master_property->class < $foreign_class_name) {
-			$linked_join->foreign_table = Dao::storeNameOf($master_property->class)
+		if ($master_class_name < $foreign_class_name) {
+			$linked_join->foreign_table = Dao::storeNameOf($master_class_name)
 				. "_" . Dao::storeNameOf($foreign_class_name)
 				. "_links";
 		}
 		else {
 			$linked_join->foreign_table = Dao::storeNameOf($foreign_class_name)
-			. "_" . Dao::storeNameOf($master_property->class)
+			. "_" . Dao::storeNameOf($master_class_name)
 			. "_links";
 		}
 		$linked_join->master_column = "id";
@@ -157,7 +157,7 @@ class Sql_Joins
 			$linked_join, $master_path, $foreign_class_name, $foreign_path, 1
 		);
 		$join->foreign_column = "id";
-		$join->master_column = "id_" . $master_property->getAnnotation("foreignlink")->value;
+		$join->master_column = "id_" . $master_property_foreignlink;
 		$join->master_alias = $linked_join->foreign_alias;
 		$this->linked_tables[$linked_join->foreign_table] = array(
 			$join->master_column, $linked_join->foreign_column
@@ -210,7 +210,12 @@ class Sql_Joins
 				echo "multiple component or collection<br>";
 			}
 			else {
-				echo "multiple map<br>";
+				$foreignlink = $foreign_property->getAnnotation("foreignlink")->value;
+				$this->addLinkedJoin(
+					$join, $master_path, $this->classes[$master_path], $foreignlink,
+					$foreign_path, $foreign_class_name, $foreignlink
+				);
+				$join->master_column = "id_" . $foreign_property->getAnnotation("foreign")->value;
 			}
 		}
 		return $foreign_class_name;
@@ -249,7 +254,7 @@ class Sql_Joins
 					}
 					else {
 						$this->addLinkedJoin(
-							$join, $master_path, $master_property,
+							$join, $master_path, $master_property->class, $master_property->getAnnotation("foreignlink")->value,
 							$foreign_path, $foreign_class_name, $foreign_property_name
 						);
 					}

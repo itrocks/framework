@@ -4,75 +4,100 @@ namespace SAF\Framework;
 trait Component
 {
 
-	//------------------------------------------------------------------------- $parent_property_name
+	//---------------------------------------------------------------------- $composite_property_name
 	/**
-	 * Parent property name
-	 * Indice is the called class, as parent property name can be different for each class
+	 * Composite property name
+	 *
+	 * Indices are :
+	 * - the called class, as composite property name can be different for each class
+	 * - the filter condition (a class or property name)
 	 *
 	 * @var string[]
 	 */
-	private static $parent_property_name;
+	private static $composite_property_name;
 
 	//--------------------------------------------------------------------------------------- dispose
 	/**
 	 * Default disposer call the remove
 	 *
-	 * @return object
+	 * @param $filter string|object The composite class name or object, or the composite property name
 	 */
-	public function dispose()
+	public function dispose($filter = null)
 	{
-		$parent = $this->getParent();
-		if (is_subclass_of($parent, 'SAF\Framework\Component_Remover')) {
-			$parent->removeComponent($this);
+		foreach (self::getCompositeProperties($filter) as $property) {
+			$composite = $property->getValue($this);
+			if (isset($composite)) {
+				if ((new Type(get_class($composite)))->usesTrait('SAF\Framework\Remover')) {
+					/** @var $composite Remover */
+					$composite->remove($this);
+				}
+				else Remover_Tool::removeObjectFromComposite($composite, $this);
+			}
 		}
 	}
 
-	//------------------------------------------------------------------------------------- getParent
+	//---------------------------------------------------------------------------------- getComposite
 	/**
-	 * Gets parent object
+	 * Gets composite object
 	 *
+	 * @param $filter string|object The composite class name or object, or the composite property name
 	 * @return object
 	 */
-	public function getParent()
+	public function getComposite($filter = null)
 	{
-		$property_name = $this->getParentPropertyName();
+		$properties = self::getCompositeProperties($filter);
+		$property_name = reset($properties)->name;
 		return $this->$property_name;
 	}
 
-	//------------------------------------------------------------------------- getParentPropertyName
+	//------------------------------------------------------------------------ getCompositeProperties
 	/**
-	 * Get parent property name
+	 * Get composite properties
 	 *
-	 * @return string
+	 * @param $filter string|object The composite class name or object, or the composite property name
+	 * @return Reflection_Property[]
 	 */
-	public static function getParentPropertyName()
+	public static function getCompositeProperties($filter = null)
 	{
+		if (is_object($filter)) {
+			$filter_is_property = false;
+			$filter = get_class($filter);
+		}
+		else {
+			$filter_is_property = ($filter[0] >= 'a') || ($filter[0] <= 'z') || ($filter[0] == '_');
+		}
 		$class = get_called_class();
-		if (!isset(self::$parent_property_name[$class])) {
-			// reverse because child class parent property must be used instead of its parent one
-			foreach (
-				array_reverse(Reflection_Class::getInstanceOf($class)->getAllProperties()) as $property
-			) {
-				$parent = $property->getAnnotation("parent");
-				if ($parent->value) {
-					self::$parent_property_name[$class] = $property->name;
-					break;
+		if (!isset(self::$composite_property_name[$class][$filter])) {
+			$properties = Reflection_Class::getInstanceOf($class)->getAnnotedProperties("composite");
+			foreach ($properties as $property) {
+				if (
+					empty($filter)
+					|| ($filter_is_property && ($property->getAnnotation("foreign") == $filter))
+					|| (!$filter_is_property && is_subclass_of($class, $filter))
+				) {
+					$composite_property_name[$class][$filter][$property->name] = $property;
 				}
 			}
 		}
-		return self::$parent_property_name[$class];
+		return self::$composite_property_name[$class][$filter];
 	}
 
-	//------------------------------------------------------------------------------------- setParent
+	//---------------------------------------------------------------------------------- setComposite
 	/**
-	 * Sets parent object
+	 * Sets composite object
 	 *
-	 * @param $object object
+	 * @param $object object The composite object
+	 * @param $filter string|null If set, the name of the foreign property into composite (needed if multiple)
 	 */
-	public function setParent($object)
+	public function setComposite($object, $filter = null)
 	{
-		$property_name = $this->getParentPropertyName();
-		$this->$property_name = $object;
+		if (!isset($filter)) {
+			$filter = $object;
+		}
+		foreach (self::getCompositeProperties($filter) as $property) {
+			$property_name = $property->name;
+			$this->$property_name = $object;
+		}
 	}
 
 }

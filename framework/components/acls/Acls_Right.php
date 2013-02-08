@@ -10,9 +10,9 @@ class Acls_Right
 
 	//---------------------------------------------------------------------------------------- $group
 	/**
+	 * @composite
 	 * @getter Aop::getObject
 	 * @var Acls_Group
-	 * @parent
 	 */
 	public $group;
 

@@ -124,6 +124,7 @@ class Type
 	 * Tells if a type is a basic type or not
 	 *
 	 * Basic types are boolean, integer, float, string, array, resource, callable, null, NULL
+	 * DateTime and Date_Time are considered comme basic too ! Use isStrictlyBasic if you don't want them
 	 * Not basic types are *,[] objects, class names
 	 *
 	 * @return boolean
@@ -236,18 +237,29 @@ class Type
 	 */
 	public function isSubClassOf($class_name)
 	{
-		return is_subclass_of($this->type, $class_name);
+		return $this->isClass() && is_subclass_of($this->type, $class_name);
 	}
 
 	//-------------------------------------------------------------------------------------- multiple
 	/**
-	 * Return the multiple type for given type
+	 * Returns the multiple type for given type
 	 *
 	 * @return Type
 	 */
 	public function multiple()
 	{
 		return new Type($this->type . "[]");
+	}
+
+	//------------------------------------------------------------------------------------- usesTrait
+	/**
+	 * Returns true if the class type uses the given trait
+	 * @param $trait_name string
+	 * @return boolean
+	 */
+	public function usesTrait($trait_name)
+	{
+		return $this->isClass() && in_array($trait_name, class_uses($this->getElementTypeAsString()));
 	}
 
 }

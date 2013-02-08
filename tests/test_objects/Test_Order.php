@@ -17,7 +17,6 @@ class Test_Order extends Test_Document
 	/**
 	 * Lines
 	 *
-	 * @component
 	 * @getter getCollection
 	 * @mandatory
 	 * @var Test_Order_Line[]
@@ -30,6 +29,8 @@ class Test_Order extends Test_Document
 	 *
 	 * @getter getMap
 	 * @var Test_Salesman[]
+	 * @foreign order Optional, default would have been automatically calculated to "test_order"
+	 * @foreignlink salesman Optional, default would have been automatically calculated to "test_salesman"
 	 */
 	private $salesmen;
 
