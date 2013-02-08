@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * Foreignlink annotation tells which type is mapped by the property
  */
-class Foreignlink_Annotation extends Annotation
+class Foreignlink_Annotation extends Documented_Type_Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct
@@ -16,6 +16,7 @@ class Foreignlink_Annotation extends Annotation
 	{
 		parent::__construct($value);
 		if (!$this->value) {
+			// if @foreignlink is not set, calculates the field name using the linked class name
 			$this->value = Names::classToProperty(
 				$reflection_property->getType()->getElementTypeAsString()
 			);
