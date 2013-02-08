@@ -62,7 +62,7 @@ class Acls_Group
 			if (isset($priority_value)) {
 				$object->value = $priority_value;
 			}
-			$object->setParent($this);
+			$object->setComposite($this);
 			$this->rights[$object->key] = $object;
 		}
 		elseif ($object instanceof Acls_Group) {
@@ -72,7 +72,7 @@ class Acls_Group
 			$this->content[$object->name] = new Acls_Link($this, $object, $priority_value);
 		}
 		elseif ($object instanceof Acls_Link) {
-			$object->setParent($this);
+			$object->setComposite($this);
 			$this->content[$object->content->name] = $object;
 		}
 		return $this;
