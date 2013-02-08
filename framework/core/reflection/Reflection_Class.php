@@ -90,6 +90,52 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		return $properties;
 	}
 
+	//-------------------------------------------------------------------------- getAnnotedProperties
+	/**
+	 * Gets all properties which annotation has given value (or are not empty, if value is not set)
+	 *
+	 * @param $annotation_name  string
+	 * @param $annotation_value mixed
+	 * @return Reflection_Property[]
+	 */
+	public function getAnnotedProperties($annotation_name, $annotation_value = null)
+	{
+		$properties = array();
+		foreach ($this->getAllProperties() as $property) {
+			$annotation = $property->getAnnotation($annotation_name);
+			if (
+				(isset($annotation_value) && ($annotation->value == $annotation_value))
+				|| (!isset($annotation_value) && !empty($annotation->value))
+			) {
+				$properties[] = $annotation;
+			}
+		}
+		return $properties;
+	}
+
+	//---------------------------------------------------------------------------- getAnnotedProperty
+	/**
+	 * Gets higher level property which annotation has given value (or is not empty, if value is not set)
+	 *
+	 * @param $annotation_name  string
+	 * @param $annotation_value mixed
+	 * @return Reflection_Property|null
+	 */
+	public function getAnnotedProperty($annotation_name, $annotation_value = null)
+	{
+		/** @var $property Reflection_Property */
+		foreach (array_reverse($this->getAllProperties()) as $property) {
+			$annotation = $property->getAnnotation($annotation_name);
+			if (
+				(isset($annotation_value) && ($annotation->value == $annotation_value))
+				|| (!isset($annotation_value) && !empty($annotation->value))
+			) {
+				return $property;
+			}
+		}
+		return null;
+	}
+
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
 	 * Gets the constructor of the reflected class
