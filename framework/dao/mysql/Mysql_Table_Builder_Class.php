@@ -22,7 +22,7 @@ abstract class Mysql_Table_Builder_Class
 		$class = Reflection_Class::getInstanceOf($class_name);
 		$table_name = Dao::current()->storeNameOf($class_name);
 		$table = new Mysql_Table($table_name);
-		$table->columns["id"] = Mysql_Column_Builder_Property::buildId();
+		$table->columns["id"] = Mysql_Column_Builder::buildId();
 		foreach ($class->accessProperties() as $property) {
 			$type = $property->getType();
 			if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {

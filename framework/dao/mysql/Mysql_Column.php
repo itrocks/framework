@@ -71,10 +71,13 @@ class Mysql_Column implements Dao_Column
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 *
+	 * @param $name string
+	 * @param $type string
 	 */
-	public function __construct()
+	public function __construct($name = null, $type = null)
 	{
+		if (isset($name)) $this->Field = $name;
+		if (isset($type)) $this->Type  = $type;
 		$this->cleanupDefault();
 	}
 

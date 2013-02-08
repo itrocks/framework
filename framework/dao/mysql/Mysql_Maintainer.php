@@ -23,19 +23,44 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Create a table in database, which has no associated class, using fields names
 	 *
-	 * @param $mysqli object
-	 * @param $table_name    string
-	 * @param $column_names  string[]
+	 * @param $mysqli       object
+	 * @param $table_name   string
+	 * @param $column_names string[]
+	 * @return boolean
 	 */
 	private static function createImplicitTable($mysqli, $table_name, $column_names)
 	{
 		$table = new Mysql_Table($table_name);
-		$table->addColumn(Mysql_Column_Builder_Property::buildId());
+		$table->addColumn(Mysql_Column_Builder::buildId());
 		foreach ($column_names as $column_name) {
-			$table->addColumn(Mysql_Column_Builder_Property::buildLink($column_name));
+			$table->addColumn(Mysql_Column_Builder::buildLink($column_name));
 		}
-		$create_builder = new Sql_Create_Table_Builder($table);
-		$mysqli->query($create_builder->build());
+		$mysqli->query((new Sql_Create_Table_Builder($table))->build());
+		return true;
+	}
+
+	//--------------------------------------------------------------------- createTableWithoutContext
+	/**
+	 * Create table (probably links table) without context
+	 *
+	 * @param $mysqli     Contextual_Mysqli
+	 * @param $table_name string
+	 * @param $query      string
+	 * @return boolean
+	 */
+	private static function createTableWithoutContext($mysqli, $table_name, $query)
+	{
+		$alias = "t" . (
+			(substr($query, strpos($query, "`" . $table_name . "` t") + strlen($table_name) + 4)) + 0
+		);
+		$i = 0;
+		$column_names = array();
+		while (($i = strpos($query, $alias . ".", $i)) !== false) {
+			$i += strlen($alias) + 1;
+			$field_name = substr($query, $i, strpos($query, " ", $i) - $i);
+			$column_names[] = $field_name;
+		}
+		return self::createImplicitTable($mysqli, $table_name, $column_names);
 	}
 
 	//--------------------------------------------------------------------------------- onMysqliQuery
@@ -67,6 +92,9 @@ class Mysql_Maintainer implements Plugin
 						}
 						$retry = true;
 					}
+				}
+				if (!$retry) {
+					$retry = self::createTableWithoutContext($mysqli, $error_table_name, $query);
 				}
 			}
 			elseif ($errno == Mysql_Errors::ER_BAD_FIELD_ERROR) {
