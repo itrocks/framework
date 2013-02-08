@@ -99,7 +99,7 @@ abstract class User_Authentication
 	 */
 	public static function getRegisterInputs(){
 		return array(
-			array("name" => "login", "type" => "", "isMultiple" => "false"),
+			array("name" => "login", "type" => "text", "isMultiple" => "false"),
 			array("name" => "password", "type" => "password", "isMultiple" => "false"));
 	}
 
