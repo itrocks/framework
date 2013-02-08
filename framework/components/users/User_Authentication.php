@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-abstract class User_authentication
+abstract class User_Authentication
 {
 	//---------------------------------------------------------------------------------- authenticate
 	/**
@@ -90,6 +90,10 @@ abstract class User_authentication
 		return $form["login"] != "" && $form["password"] != ""
 			&& str_replace(" ", "", $form["login"]) != ""
 			&& str_replace(" ", "", $form["password"]) != "";
+	}
+
+	public static function getRegisterInputs(){
+		return array("login", "password");
 	}
 
 
