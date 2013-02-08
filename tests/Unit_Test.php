@@ -36,7 +36,7 @@ class Unit_Test
 			. ($diff1 ? ("<pre style='color:orange;font-weight:bold;'>[" . print_r($diff1, true) . "]</pre>") : "")
 			. ($diff2 ? ("<pre style='color:orange;font-weight:bold;'>[" . print_r($diff2, true) . "]</pre>") : "");
 		}
-		echo "<li>" . substr($test, strpos($test, "::") + 2) . " : " . $result;
+		echo "<li>" . $result . " : " . str_replace(get_class($this) . "::", "", $test);
 		return ($result === "OK");
 	}
 

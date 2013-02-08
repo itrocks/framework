@@ -6,11 +6,61 @@ use SAF\Framework\Sql_Joins;
 class Sql_Joins_Test extends Unit_Test
 {
 
-	//---------------------------------------------------------------------------- testCollectionJoin
-	public function testCollectionJoin()
+	//------------------------------------------------------------------------------------ testSimple
+	public function testSimple()
 	{
 		$this->assume(
-			__METHOD__,
+			"simple properties (Test_Order::number)",
+			Sql_Joins::newInstance("Test_Order")
+				->addMultiple(array("date", "number"))
+				->getJoins(),
+			array("date" => null, "number" => null)
+		);
+	}
+
+	//-------------------------------------------------------------------------------------- testJoin
+	public function testJoin()
+	{
+		$this->assume(
+			"simple join (Test_Order_Line::order.date)",
+			Sql_Joins::newInstance("Test_Order_Line")
+				->addMultiple(array("order.date", "order.number", "number", "quantity"))
+				->getJoins(),
+			array(
+				"order" => Sql_Join::newInstance(
+					Sql_Join::INNER, "t0", "id_order", "t1", "orders", "id"
+				),
+				"order.date" => null,
+				"order.number" => null,
+				"number" => null,
+				"quantity" => null
+			)
+		);
+	}
+
+	//------------------------------------------------------------------------------------ testObject
+	public function testObject()
+	{
+		$this->assume(
+			"object property (Test_Order_Line::order)",
+			Sql_Joins::newInstance("Test_Order_Line")
+				->addMultiple(array("number", "quantity", "order"))
+				->getJoins(),
+			array(
+				"number" => null,
+				"quantity" => null,
+				"order" => Sql_Join::newInstance(
+					Sql_Join::INNER, "t0", "id_order", "t1", "orders", "id", Sql_Join::OBJECT
+				)
+			)
+		);
+	}
+
+	//-------------------------------------------------------------------------------- testCollection
+	public function testCollection()
+	{
+		$this->assume(
+			"one-level collection property (Test_Order::lines.number)",
 			Sql_Joins::newInstance("Test_Order")
 				->addMultiple(array("date", "number", "lines.number", "lines.quantity"))
 				->getJoins(),
@@ -24,13 +74,8 @@ class Sql_Joins_Test extends Unit_Test
 				"lines.quantity" => null
 			)
 		);
-	}
-
-	//------------------------------------------------------------------------------- testComplexJoin
-	public function testComplexJoin()
-	{
 		$this->assume(
-			__METHOD__,
+			"multi-levels collection (Test_Order::client.number and Test_Order::client.client.number)",
 			Sql_Joins::newInstance("Test_Order")
 				->addMultiple(array("number", "client.number", "client.client.number", "client.name"))
 				->getJoins(),
@@ -49,52 +94,11 @@ class Sql_Joins_Test extends Unit_Test
 		);
 	}
 
-	//----------------------------------------------------------------------------- testComplexObject
-	public function testComplexObject()
+	//--------------------------------------------------------------------------------------- testMap
+	public function testMap()
 	{
 		$this->assume(
-			__METHOD__,
-			Sql_Joins::newInstance("Test_Client")
-				->addMultiple(array("number", "name", "Test_Order_Line->client.order"))
-				->getJoins(),
-			array(
-				"number" => null,
-				"name" => null,
-				"Test_Order_Line->client" => Sql_Join::newInstance(
-					Sql_Join::LEFT, "t0", "id", "t1", "orders_lines", "id_client"
-				),
-				"Test_Order_Line->client.order" => Sql_Join::newInstance(
-					Sql_Join::INNER, "t1", "id_order", "t2", "orders", "id", Sql_Join::OBJECT
-				)
-			)
-		);
-	}
-
-	//-------------------------------------------------------------------------------------- testJoin
-	public function testJoin()
-	{
-		$this->assume(
-			__METHOD__,
-			Sql_Joins::newInstance("Test_Order_Line")
-				->addMultiple(array("order.date", "order.number", "number", "quantity"))
-				->getJoins(),
-			array(
-				"order" => Sql_Join::newInstance(
-					Sql_Join::INNER, "t0", "id_order", "t1", "orders", "id"
-				),
-				"order.date" => null,
-				"order.number" => null,
-				"number" => null,
-				"quantity" => null
-			)
-		);
-	}
-
-	//---------------------------------------------------------------------------------- testLinkJoin
-	public function testLinkJoin()
-	{
-		$this->assume(
-			__METHOD__,
+			"one-level map property (Test_Order::salesmen.name)",
 			$joins = Sql_Joins::newInstance("Test_Order")
 				->addMultiple(array("date", "number", "salesmen.name"))
 				->getJoins(),
@@ -112,50 +116,11 @@ class Sql_Joins_Test extends Unit_Test
 		);
 	}
 
-	//----------------------------------------------------------------------------------- testMapJoin
-	public function testMapJoin()
+	//----------------------------------------------------------------------------------- testReverse
+	public function testReverse()
 	{
 		$this->assume(
-			__METHOD__,
-			Sql_Joins::newInstance("Test_Salesman")
-				->addMultiple(array("Test_Order->salesmen.number", "name"))
-				->getJoins(),
-			array(
-				"Test_Order->salesmen-link" => Sql_Join::newInstance(
-					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen_links", "id_salesman"
-				),
-				"Test_Order->salesmen" => Sql_Join::newInstance(
-					Sql_Join::LEFT, "t1", "id_order", "t2", "orders", "id"
-				),
-				"Test_Order->salesmen.number" => null,
-				"name" => null
-			)
-		);
-	}
-
-	//------------------------------------------------------------------------------------ testObject
-	public function testObject()
-	{
-		$this->assume(
-			__METHOD__,
-			Sql_Joins::newInstance("Test_Order_Line")
-				->addMultiple(array("number", "quantity", "order"))
-				->getJoins(),
-			array(
-				"number" => null,
-				"quantity" => null,
-				"order" => Sql_Join::newInstance(
-					Sql_Join::INNER, "t0", "id_order", "t1", "orders", "id", Sql_Join::OBJECT
-				)
-			)
-		);
-	}
-
-	//------------------------------------------------------------------------------- testReverseJoin
-	public function testReverseJoin()
-	{
-		$this->assume(
-			__METHOD__,
+			"reverse join (Test_Order::Test_Order_Line->order.number)",
 			Sql_Joins::newInstance("Test_Order")
 				->addMultiple(array(
 					"date", "number", "Test_Order_Line->order.number", "Test_Order_Line->order.quantity"
@@ -171,17 +136,37 @@ class Sql_Joins_Test extends Unit_Test
 				"Test_Order_Line->order.quantity" => null
 			)
 		);
-	}
-
-	//------------------------------------------------------------------------------------ testSimple
-	public function testSimple()
-	{
 		$this->assume(
-			__METHOD__,
-			Sql_Joins::newInstance("Test_Order")
-				->addMultiple(array("date", "number"))
+			"reverse object (Test_Client::Test_Order_Line->client.order)",
+			Sql_Joins::newInstance("Test_Client")
+				->addMultiple(array("number", "name", "Test_Order_Line->client.order"))
 				->getJoins(),
-			array("date" => null, "number" => null)
+			array(
+				"number" => null,
+				"name" => null,
+				"Test_Order_Line->client" => Sql_Join::newInstance(
+					Sql_Join::LEFT, "t0", "id", "t1", "orders_lines", "id_client"
+				),
+				"Test_Order_Line->client.order" => Sql_Join::newInstance(
+					Sql_Join::INNER, "t1", "id_order", "t2", "orders", "id", Sql_Join::OBJECT
+				)
+			)
+		);
+		$this->assume(
+			"reverse map (Test_Salesman::Test_Order->salesmen.number)",
+			Sql_Joins::newInstance("Test_Salesman")
+				->addMultiple(array("Test_Order->salesmen.number", "name"))
+				->getJoins(),
+			array(
+				"Test_Order->salesmen-link" => Sql_Join::newInstance(
+					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen_links", "id_salesman"
+				),
+				"Test_Order->salesmen" => Sql_Join::newInstance(
+					Sql_Join::LEFT, "t1", "id_order", "t2", "orders", "id"
+				),
+				"Test_Order->salesmen.number" => null,
+				"name" => null
+			)
 		);
 	}
 
