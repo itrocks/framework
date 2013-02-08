@@ -92,8 +92,29 @@ abstract class User_Authentication
 			&& str_replace(" ", "", $form["password"]) != "";
 	}
 
+	//----------------------------------------------------------------- controlRegisterFormParameters
+	/**
+	 * Return the list of the inputs necessary to register
+	 * @return array
+	 */
 	public static function getRegisterInputs(){
-		return array("login", "password");
+		return array(
+			array("name" => "login", "type" => "", "isMultiple" => "false"),
+			array("name" => "password", "type" => "password", "isMultiple" => "false"));
+	}
+
+	//---------------------------------------------------------------------------- controlNameNotUsed
+	/**
+	 * Control if the name is not already used.
+	 * @param $login String The name of the user
+	 * @return bool True if the login is not used, false if the login is already used.
+	 */
+	public static function controlNameNotUsed($login){
+		$search = Search_Object::newInstance("User");
+		$search->login = $login;
+		if(Dao::search($search))
+			return false;
+		return true;
 	}
 
 

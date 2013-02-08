@@ -14,14 +14,12 @@
 	<h2>|User register|</h2>
 	<form name="user_register" action="/User/register" method="post">
 		<div class="fieldset">
-			<div class="field">
-				<span class="label">|login|</span>
-				<span class="value"><input name="login"></span>
+			<!--inputs-->
+			<div class="field {isMultiple}">
+				<span class="label">|{name}|</span>
+				<span class="value"><input name="{name}" type="{type}"></span>
 			</div>
-			<div class="field">
-				<span class="label">|password|</span>
-				<span class="value"><input name="password" type="password"></span>
-			</div>
+			<!--inputs-->
 		</div>
 		<input type="submit" value="|register|">
 	</form>
