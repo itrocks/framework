@@ -7,9 +7,9 @@ class Acls_Link
 
 	//------------------------------------------------------------------------------------ $container
 	/**
+	 * @composite
 	 * @getter Aop::getObject
 	 * @var Acls_Group
-	 * @parent
 	 */
 	public $container;
 

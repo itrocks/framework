@@ -32,9 +32,9 @@ class Test_Order_Line
 	/**
 	 * Order
 	 *
+	 * @composite
 	 * @getter Aop::getObject
 	 * @mandatory
-	 * @parent
 	 * @var Test_Order
 	 */
 	public $order;
