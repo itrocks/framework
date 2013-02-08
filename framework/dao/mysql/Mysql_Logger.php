@@ -92,10 +92,11 @@ class Mysql_Logger implements Plugin
 	public function onQuery(AopJoinpoint $joinpoint)
 	{
 		$arguments = $joinpoint->getArguments();
+		$log = $arguments[0];
 		if ($this->continue) {
-			echo "<div class=\"Mysql logger query\">" . $arguments[0] . "</div>\n";
+			echo "<div class=\"Mysql logger query\">" . $log . "</div>\n";
 		}
-		$this->queries_log[] = $arguments[0];
+		$this->queries_log[] = $log;
 	}
 
 	//--------------------------------------------------------------------------------------- onQuery
