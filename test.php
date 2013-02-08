@@ -41,7 +41,7 @@ class Fils1 extends Papa
 
 class Fils2 extends Papa
 {
-	
+
 	static $nom;
 
 	public static function met()
@@ -87,7 +87,7 @@ aop_add_before("Markus->loves()", function(AopJoinpoint $joinpoint) {
 
 $miky = new Miky();
 $miky->loves();
-	
+
 */
 /*
 //------------------------------------------------------------------------------ OVERRIDES PROBLEMS
@@ -95,7 +95,7 @@ $miky->loves();
 class Markus
 {
 
-	function loves() { echo "Markus love cookies "; } 
+	function loves() { echo "Markus love cookies "; }
 
 }
 
@@ -343,8 +343,8 @@ aop_add_before("Man->beforeWakeup()", array("Day", "begin"));
 
 $me = new Man();
 $me->wakeup();
-// devrait �crire : NIGHT the night ends DAY the sun rises MAN the man wakes up
-// mais n'�crit que : DAY the sun rises MAN the man wakes up
+// devrait écrire : NIGHT the night ends DAY the sun rises MAN the man wakes up
+// mais n'écrit que : DAY the sun rises MAN the man wakes up
 
 function getNightName(AopJoinpoint $joinpoint)
 {
@@ -412,17 +412,17 @@ $une->prop = 1;
 die();
 
 //------------------------------------------------------------------------------------------ STATIC
-// static::$xxx la propri�t� pour la classe de plus haut niveau par rapport � la classe appel�e
-// Si la propri�t� n'est pas surcharg�e, la donn�e est li�e � la classe o� elle est d�clar�e
-// Si la propri�t� est surcharg�e, la donn�e est li�e � li�e � la classe o� a lieu la surcharge
-// Si la propri�t� est d�clar�e dans un Trait, la donn�e est li�e � la classe qui utilise le trait
+// static::$xxx la propriété pour la classe de plus haut niveau par rapport à la classe appelée
+// Si la propriété n'est pas surchargée, la donnée est liée à la classe où elle est déclarée
+// Si la propriété est surchargée, la donnée est liée à la classe où a lieu la surcharge
+// Si la propriété est déclarée dans un Trait, la donnée est liée à la classe qui utilise le trait
 
-// self::$xxx la propri�t� pour la classe o� a lieu l'appel � self
-// Si l'appel � self a lieu dans un Trait, la donn�e sera li�e � la classe qui utilise le trait
+// self::$xxx la propriété pour la classe où a lieu l'appel à self
+// Si l'appel à self a lieu dans un Trait, la donnée sera liée à la classe qui utilise le trait
 
-// Classe::$xxx la propri�t� pour la classe o� a lieu l'appel � self
-// Si l'appel � self � lieu dans un Trait, la donn�e sera li�e au trait ! 
- 
+// Classe::$xxx la propriété pour la classe où a lieu l'appel à self
+// Si l'appel à self a lieu dans un Trait, la donnée sera liée au trait !
+
 // trait et static
 
 trait Current
@@ -506,15 +506,15 @@ class Com extends Doc
 
 class Com_Vente extends Vente
 {
-	
+
 }
 
-// h�ritage multiple : Com_Vente doit �galement h�riter de Com
+// héritage multiple : Com_Vente doit également hériter de Com
 
 $com = new ReflectionClass("Com");
 foreach ($com->getMethods() as $method) {
 	$name = $method->name;
-	
+
 }
 
 // test
@@ -558,7 +558,7 @@ die();
 
 //-------------------------------------------------------------------------------------------------
 
-echo "<H3>Test 1 : h�ritage</H3>";
+echo "<H3>Test 1 : héritage</H3>";
 
 class MyServices
 {
@@ -576,9 +576,9 @@ class HeritedService extends MyServices
 
 function aFaireAvantMonTest($joinpoint)
 {
-	echo "<pre>captur� !<br>" . print_r ($joinpoint, true) . "</pre>";
+	echo "<pre>capturé !<br>" . print_r ($joinpoint, true) . "</pre>";
 	$args = $joinpoint->getArguments();
-	$args [0] = "tr�s bidon";
+	$args [0] = "très bidon";
 	$joinpoint->setArguments($args);
 	echo "method = " . $joinpoint->getMethodName() . "<br>";
 }
@@ -596,14 +596,14 @@ $services->monTest("bidon");
 
 //-------------------------------------------------------------------------------------------------
 
-echo "<H3>Test 2 : annule ex�cution d'origine</H3>";
+echo "<H3>Test 2 : annule exécution d'origine</H3>";
 
 class Une_Classe
 {
 
 	public function monTest()
 	{
-		echo "On ex�cute un truc<br>";
+		echo "On exécute un truc<br>";
 		return "chose";
 	}
 
@@ -622,7 +622,7 @@ echo $un_objet->monTest();
 
 //-------------------------------------------------------------------------------------------------
 
-echo "<H3>Test 3 : modifier objet renvoy� (�a on peut pas)</H3>";
+echo "<H3>Test 3 : modifier objet renvoyé (ça on peut pas)</H3>";
 
 class Une_Classe_Parente
 {
@@ -644,12 +644,12 @@ class Une_Classe_Heritee extends Une_Classe_Parente
 
 	public function __construct()
 	{
-		echo "construction d'une classe h�rit�e<br>";
+		echo "construction d'une classe héritée<br>";
 	}
 
 	public function monTest()
 	{
-		echo "Finalement on teste autre chose, c'est l'h�rit�e qui bosse<br>";
+		echo "Finalement on teste autre chose, c'est l'héritée qui bosse<br>";
 	}
 
 }
@@ -668,7 +668,7 @@ echo $un_objet->monTest();
 
 //-------------------------------------------------------------------------------------------------
 
-echo "<H3>Test 4 : getter implicite (souci = g�rer double appel)</H3>";
+echo "<H3>Test 4 : getter implicite (souci = gérer double appel)</H3>";
 
 class Un_Truc
 {
@@ -704,7 +704,7 @@ echo "propriete = $un_truc->propriete<br>";
 
 //-------------------------------------------------------------------------------------------------
 
-echo "<H3>Test 5 : via la r�flexion</H3>";
+echo "<H3>Test 5 : via la réflexion</H3>";
 
 class Un_Autre
 {
@@ -730,7 +730,7 @@ echo "valeur = " . $prop->getValue($un_autre);
 
 //-------------------------------------------------------------------------------------------------
 
-echo "<H3>Test 6 : manipulation de propri�t�</H3>";
+echo "<H3>Test 6 : manipulation de propriété</H3>";
 
 class A_Class
 {
