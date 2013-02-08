@@ -22,8 +22,12 @@ class Plugins implements Configurable
 	{
 		$plugins = $this->parametersToPlugins($parameters);
 		foreach ($plugins as $class_names) {
-			foreach ($class_names as $class_name) {
-				$this->registerPlugin(Namespaces::fullClassName($class_name));
+			foreach ($class_names as $class_name => $parameters) {
+				if (is_numeric($class_name)) {
+					$class_name = $parameters;
+					$parameters = null;
+				}
+				$this->registerPlugin(Namespaces::fullClassName($class_name), $parameters);
 			}
 		}
 	}
@@ -57,14 +61,15 @@ class Plugins implements Configurable
 	//-------------------------------------------------------------------------------- registerPlugin
 	/**
 	 * @param $class_name string
+	 * @param $parameters mixed[]|null
 	 */
-	public function registerPlugin($class_name)
+	public function registerPlugin($class_name, $parameters = null)
 	{
 		if (!is_subclass_of($class_name, 'SAF\Framework\Plugin')) {
 			user_error($class_name . " is not an instance of Plugin");
 		}
 		else {
-			call_user_func(array($class_name, "register"));
+			call_user_func(array($class_name, "register"), $parameters);
 		}
 	}
 
