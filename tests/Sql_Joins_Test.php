@@ -121,12 +121,13 @@ class Sql_Joins_Test extends Unit_Test
 				->addMultiple(array("Test_Order->salesmen.number", "name"))
 				->getJoins(),
 			array(
-				"Test_Order->salesmen.number-link" => Sql_Join::newInstance(
+				"Test_Order->salesmen-link" => Sql_Join::newInstance(
 					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen_links", "id_salesman"
 				),
-				"Test_Order->salesmen.number" => Sql_Join::newInstance(
+				"Test_Order->salesmen" => Sql_Join::newInstance(
 					Sql_Join::LEFT, "t1", "id_order", "t2", "orders", "id"
 				),
+				"Test_Order->salesmen.number" => null,
 				"name" => null
 			)
 		);
