@@ -107,7 +107,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 				(isset($annotation_value) && ($annotation->value == $annotation_value))
 				|| (!isset($annotation_value) && !empty($annotation->value))
 			) {
-				$properties[] = $annotation;
+				$properties[] = $property;
 			}
 		}
 		return $properties;

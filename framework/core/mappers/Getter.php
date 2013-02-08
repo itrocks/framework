@@ -24,25 +24,29 @@ abstract class Getter
 	/**
 	 * Generic getter for a collection of objects
 	 *
-	 * @param $collection    Component[]|null actual value of the property (will be returned if not null)
-	 * @param $element_class string|null      the class for each collection's object
-	 * @param $parent        object           the parent object
+	 * @param $collection      Component[]|null actual value of the property (will be returned if not null)
+	 * @param $element_class   string|null      the class for each collection's object
+	 * @param $parent          object           the parent object
+	 * @param $parent_property string           the parent property name
 	 * @return object[]
 	 */
-	public static function getCollection($collection, $element_class, $parent)
+	public static function getCollection($collection, $element_class, $parent, $parent_property = null)
 	{
 		if (!isset($collection)) {
 			if (Dao::getObjectIdentifier($parent)) {
 				$search_element = Search_Object::newInstance($element_class);
-				if ($search_element instanceof Component) {
-					$search_element->setParent($parent);
+				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
+				if ($is_component) {
+					$search_element->setComposite($parent, Reflection_Property::getInstanceOf(
+						$parent, $parent_property
+					)->getAnnotation("foreign")->value);
 				}
 				$collection = Dao::search($search_element);
-				if ($search_element instanceof Component) {
+				if ($is_component) {
 					/** @var Component[] $collection */
-					// this to avoid getter calls on $element->getParent() call (parent is already loaded)
+					// this to avoid getter calls on $element->getComposite() call (parent is already loaded)
 					foreach ($collection as $element) {
-						$element->setParent($parent);
+						$element->setComposite($parent);
 					}
 				}
 			}

@@ -351,7 +351,8 @@ class Mysql_Link extends Sql_Link
 	private function writeCollection($object, $property_name, $collection)
 	{
 		// old collection
-		$old_object = Search_Object::newInstance(get_class($object));
+		$class_name = get_class($object);
+		$old_object = Search_Object::newInstance($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
 		$old_collection = $old_object->$property_name;
 		// collection properties : write each of them
@@ -359,8 +360,7 @@ class Mysql_Link extends Sql_Link
 		$property = Reflection_Property::getInstanceOf(get_class($object), $property_name);
 		if ($property->getAnnotation("component")->value) {
 			if ($collection && is_array(reset($collection))) {
-				$class_name = $property->getType()->getElementTypeAsString();
-				$collection = arrayToCollection($collection, $class_name);
+				$collection = arrayToCollection($collection, $property->getType()->getElementTypeAsString());
 			}
 			if ($collection) {
 				$element_class = Reflection_Class::getInstanceOf(get_class(reset($collection)));
@@ -375,8 +375,9 @@ class Mysql_Link extends Sql_Link
 						}
 					}
 					if ($do_write) {
-						if ($element instanceof Component) {
-							$element->setParent($object);
+						if (class_uses_trait($element, 'SAF\Framework\Component')) {
+							/** @var $element Component */
+							$element->setComposite($object, $class_name, $property_name);
 						}
 						$id = $this->getObjectIdentifier($element);
 						if (!empty($id)) {

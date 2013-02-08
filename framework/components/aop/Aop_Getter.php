@@ -45,7 +45,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 			$class = $joinpoint->getClassName();
 			$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
 				->getElementTypeAsString();
-			$object->$property = Getter::getCollection(null, $type_name, $object);
+			$object->$property = Getter::getCollection(null, $type_name, $object, $property);
 		}
 	}
 
