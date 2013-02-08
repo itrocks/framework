@@ -21,7 +21,7 @@ class Acls_Property_Add_Controller implements Feature_Controller
 		/** @var $acls_properties Acls_Properties */
 		$acls_properties = Object_Builder::current()->newInstance($parameters->shiftUnnamed());
 		$class_name = Namespaces::fullClassName($parameters->shiftUnnamed());
-		if (!class_exists($class_name) || is_subclass_of($class_name, __NAMESPACE__ . "\\Set")) {
+		if (!class_exists($class_name) || is_subclass_of($class_name, 'SAF\Framework\Set')) {
 			$class_name = Set::elementClassNameOf($class_name);
 		}
 		$acls_properties->context_class_name = $class_name;
