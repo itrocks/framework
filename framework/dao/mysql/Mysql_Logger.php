@@ -11,7 +11,7 @@ class Mysql_Logger implements Plugin
 	 *
 	 * @var boolean
 	 */
-	private $continue;
+	private $continue = false;
 
 	//----------------------------------------------------------------------------------- $errors_log
 	/**
@@ -46,20 +46,26 @@ class Mysql_Logger implements Plugin
 
 	//------------------------------------------------------------------------ afterMainControllerRun
 	/**
-	 * Display query log
-	 *
-	 * @param $joinpoint AopJoinpoint
+	 * After main controller run, display query log
 	 */
-	public function afterMainControllerRun(
-		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
-		AopJoinpoint $joinpoint
-	) {
+	public function afterMainControllerRun()
+	{
 		$this->main_controller_counter--;
 		if (!$this->main_controller_counter) {
-			echo "<div class=\"Mysql logger query\">\n";
-			echo "<pre>" . print_r($this->queries_log, true) . "</pre>\n";
-			echo " </div>\n";
+			$this->dumpLog();
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- dumpLog
+	/**
+	 * Display query log
+	 */
+	public function dumpLog()
+	{
+		echo "<h3>Mysql log</h3>";
+		echo "<div class=\"Mysql logger query\">\n";
+		echo "<pre>" . print_r($this->queries_log, true) . "</pre>\n";
+		echo " </div>\n";
 	}
 
 	//----------------------------------------------------------------------------------- getInstance
@@ -110,27 +116,27 @@ class Mysql_Logger implements Plugin
 	}
 
 	//--------------------------------------------------------------------------- onMainControllerRun
-	public function onMainControllerRun(
-		/** @noinspection PhpUnusedParameterInspection */
-		AopJoinpoint $joinpoint
-	) {
+	public function onMainControllerRun()
+	{
 		$this->main_controller_counter++;
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register($continue = false)
+	public static function register($parameters = null)
 	{
 		$mysql_logger = self::getInstance();
-		$mysql_logger->continue = $continue;
+		if (isset($parameters["continue"])) {
+			$mysql_logger->continue = $parameters["continue"];
+		}
 		Aop::add("before", "mysqli->query()", array($mysql_logger, "onQuery"));
-		Aop::add("after", "mysqli->query()", array($mysql_logger, "onError"));
-		if (!$continue) {
+		Aop::add("after",  "mysqli->query()", array($mysql_logger, "onError"));
+		if (!$mysql_logger->continue) {
 			Aop::add("before",
-				__NAMESPACE__ . "\\Main_Controller->run()",
+				'SAF\Framework\Main_Controller->runController()',
 				array($mysql_logger, "onMainControllerRun")
 			);
 			Aop::add("after",
-				__NAMESPACE__ . "\\Main_Controller->run()",
+				'SAF\Framework\Main_Controller->runController()',
 				array($mysql_logger, "afterMainControllerRun")
 			);
 		}
