@@ -57,10 +57,8 @@ abstract class Instantiator
 			if (!($already = self::$substitutions[$class_name])) {
 				self::$substitutions[$class_name] = $herited_class;
 			}
-			else {
-				if (is_subclass_of($herited_class, $already)) {
-					self::$substitutions[$class_name] = $herited_class;
-				}
+			elseif (is_subclass_of($herited_class, $already)) {
+				self::$substitutions[$class_name] = $herited_class;
 			}
 		}
 		else {

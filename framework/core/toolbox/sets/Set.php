@@ -65,7 +65,7 @@ class Set
 	 */
 	public static function elementClassNameOf($class_name)
 	{
-		if (is_subclass_of($class_name, __CLASS__)) {
+		if (class_instanceof($class_name, __CLASS__)) {
 			return (new $class_name())->element_class_name;
 		}
 		elseif (!class_exists($class_name)) {

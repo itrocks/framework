@@ -151,7 +151,7 @@ class Type
 	 */
 	public function isDateTime()
 	{
-		return $this->isSubClassOf("DateTime");
+		return $this->isInstanceOf("DateTime");
 	}
 
 	//--------------------------------------------------------------------------------------- isFloat
@@ -161,6 +161,20 @@ class Type
 	public function isFloat()
 	{
 		return $this->type == "float";
+	}
+
+	//---------------------------------------------------------------------------------- isInstanceOf
+	/**
+	 * Returns true if the class type is an instance of a class or interface
+	 *
+	 * This does not work with traits ! Use usesTrait instead.
+	 *
+	 * @param $class_name string
+	 * @return bool
+	 */
+	public function isInstanceOf($class_name)
+	{
+		return $this->isClass() && class_instanceof($this->getElementTypeAsString(), $class_name);
 	}
 
 	//------------------------------------------------------------------------------------- isInteger
@@ -230,14 +244,18 @@ class Type
 		return $this->type == "string";
 	}
 
-	//---------------------------------------------------------------------------------- isSubClassOf
+	//---------------------------------------------------------------------------------- isSubclassOf
 	/**
+	 * Returns true if the class type is a subclass of a class or interface
+	 *
+	 * This does not work with traits ! Use usesTrait instead.
+	 *
 	 * @param $class_name string
 	 * @return boolean
 	 */
 	public function isSubClassOf($class_name)
 	{
-		return $this->isClass() && is_subclass_of($this->type, $class_name);
+		return $this->isClass() && is_subclass_of($this->getElementTypeAsString(), $class_name);
 	}
 
 	//-------------------------------------------------------------------------------------- multiple
@@ -254,12 +272,67 @@ class Type
 	//------------------------------------------------------------------------------------- usesTrait
 	/**
 	 * Returns true if the class type uses the given trait
+	 *
+	 * This goes into parents traits
+	 *
 	 * @param $trait_name string
 	 * @return boolean
 	 */
 	public function usesTrait($trait_name)
 	{
-		return $this->isClass() && in_array($trait_name, class_uses($this->getElementTypeAsString()));
+		return $this->isClass() && class_uses_trait($this->getElementTypeAsString(), $trait_name);
 	}
 
+}
+
+//-------------------------------------------------------------------------------- class_instanceof
+/**
+ * Returns true if an object / class (of one of its parents) uses (or is) a class
+ *
+ * All parent classes and interfaces are scanned recursively
+ * This works if $class_name is an interface name or class name, but not if it is a trait name
+ *
+ * @param $object     object|string object or class name or interface name
+ * @param $class_name object|string An object or object name or interface name
+ * @return boolean
+ */
+function class_instanceof($object, $class_name)
+{
+	if (is_object($object))     $object     = get_class($object);
+	if (is_object($class_name)) $class_name = get_class($class_name);
+	return ($object === $class_name) || is_subclass_of($object, $class_name);
+}
+
+//-------------------------------------------------------------------------------- class_uses_trait
+/**
+ * Returns true if an object / class (or one of its parents) uses (or is) a trait
+ *
+ * All parent classes and traits are scanned recursively
+ * This works if $trait_name is a class name too, but not if it is an interface name
+ *
+ * @param $object     object|string object or class name
+ * @param $trait_name object|string a trait name
+ * @return boolean
+ */
+function class_uses_trait($object, $trait_name)
+{
+	if (is_object($object))     $object     = get_class($object);
+	if (is_object($trait_name)) $trait_name = get_class($trait_name);
+	if ($object == $trait_name) {
+		return true;
+	}
+	$traits = class_uses($object);
+	if (in_array($trait_name, $traits)) {
+		return true;
+	}
+	$parent_class = get_parent_class($object);
+	if (!empty($parent_class) && class_uses_trait($parent_class, $trait_name)) {
+		return true;
+	}
+	foreach (class_uses($object) as $trait) {
+		if (class_uses_trait($trait, $trait_name)) {
+			return true;
+		}
+	}
+	return false;
 }

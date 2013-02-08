@@ -18,7 +18,7 @@ abstract class Remover_Tool
 		$class = Reflection_Class::getInstanceOf($composite);
 		foreach ($class->accessProperties() as $property) {
 			$type = $property->getType();
-			if ($type->isClass() && is_subclass_of($object, $type->getElementTypeAsString())) {
+			if ($type->isClass() && class_instanceof($object, $type->getElementTypeAsString())) {
 				$property_name = $property->name;
 				if ($type->isMultiple()) {
 					$remover = $property->getAnnotation("remover");

@@ -6,6 +6,7 @@ require_once "framework/Application.php";
 require_once "framework/core/configuration/Configuration.php";
 require_once "framework/core/toolbox/Namespaces.php";
 require_once "framework/dao/Dao.php";
+require_once "framework/core/reflection/Type.php";
 require_once "framework/views/View.php";
 
 class Main_Controller
