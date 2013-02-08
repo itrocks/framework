@@ -63,20 +63,30 @@ abstract class User_Authentication
 	/**
 	 * Register with current environment using login and password
 	 *
-	 * @param $login string
-	 * @param $password string
+	 * @param $form array List of the inputs
 	 * @return User null if user not insert
 	 */
-	public static function register($login, $password)
+	public static function register($form)
 	{
-		$object = Search_Object::newInstance("User");
-		$object->login = $login;
-		$object->password = Password::crypt(
-			$password,
-			Reflection_Property::getInstanceOf(get_class($object), "password")
+		$user = self::buildUserForRegister($form);
+		return Dao::write($user);
+	}
+
+	//-------------------------------------------------------------------------- buildUserForRegister
+	/**
+	 * List all of properties to write in user object for the register
+	 * @param $form array The return of the form
+	 * @return User A list of properties as "property" => "value"
+	 */
+	public static function buildUserForRegister($form){
+		$user = Search_Object::newInstance("User");
+		$user->login = $form["login"];
+		$user->password = Password::crypt(
+			$form["password"],
+			Reflection_Property::getInstanceOf(get_class($user), "password")
 				->getAnnotation("password")->value
 		);
-		return Dao::write($object);
+		return $user;
 	}
 
 	//----------------------------------------------------------------- controlRegisterFormParameters
