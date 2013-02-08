@@ -37,11 +37,6 @@ $config["framework"] = array(
 			"Aop_Getter",
 			"Aop_Setter",
 		),
-		"higher" => array(
-			//"Aop_Logger",
-			//"Mysql_Logger",
-			//"Xdebug",
-		),
 		"normal" => array(
 			"Html_Cleaner",
 			"Html_Session",
