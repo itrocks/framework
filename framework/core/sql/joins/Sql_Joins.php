@@ -128,12 +128,13 @@ class Sql_Joins
 
 	//--------------------------------------------------------------------------------- addLinkedJoin
 	/**
-	 * @param $join Sql_Join
-	 * @param $master_path string
-	 * @param $master_property Reflection_Property
-	 * @param $foreign_path string
-	 * @param $foreign_class_name string
-	 * @param $foreign_property_name string
+	 * @param $join                        Sql_Join
+	 * @param $master_path                 string
+	 * @param $master_class_name           string
+	 * @param $master_property_foreignlink string
+	 * @param $foreign_path                string
+	 * @param $foreign_class_name          string
+	 * @param $foreign_property_name       string
 	 */
 	private function addLinkedJoin(
 		Sql_Join $join, $master_path, $master_class_name, $master_property_foreignlink,
@@ -207,6 +208,7 @@ class Sql_Joins
 			if ($foreign_property->getAnnotation("component")->value && class_implements(
 				$this->getProperty($master_path, $master_property_name)->class, 'SAF\Framework\Component'
 			)) {
+				// TODO addReversejoin() multiple component or collection
 				echo "multiple component or collection<br>";
 			}
 			else {
@@ -312,7 +314,7 @@ class Sql_Joins
 	 * Gets Sql_Join object for a given property path
 	 *
 	 * @param $path string full property path
-	 * @return Sql_Join may be null if no join have been generated with $path
+	 * @return Sql_Join|null may be null if no join have been generated with $path
 	 */
 	public function getJoin($path)
 	{

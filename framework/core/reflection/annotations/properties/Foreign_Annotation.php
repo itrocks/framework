@@ -24,7 +24,9 @@ class Foreign_Annotation extends Documented_Type_Annotation
 					}
 				}
 				if (!$this->value) {
-					$this->value = Names::classToProperty($reflection_property->class);
+					$this->value = Names::classToProperty(Names::setToClass(
+						$reflection_property->getDeclaringClass()->getAnnotation("set")->value
+					));
 				}
 			}
 		}

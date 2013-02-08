@@ -141,10 +141,16 @@ trait Sql_Where_Builder
 	private function buildValue($path, $value, $prefix = "")
 	{
 		$this->joins->add($path);
-		list($master_path, $foreign_field) = Sql_Builder::splitPropertyPath($path);
-		$column = ((!$master_path) || ($master_path === "id"))
-			? ("t0.`" . $prefix . $foreign_field . "`")
-			: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_field . "`");
+		$join = $this->joins->getJoin($path);
+		if (isset($join)) {
+			$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
+		}
+		else {
+			list($master_path, $foreign_column) = Sql_Builder::splitPropertyPath($path);
+			$column = ((!$master_path) || ($master_path === "id"))
+				? ("t0.`" . $prefix . $foreign_column . "`")
+				: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_column . "`");
+		}
 		if (is_null($value)) {
 			$expr = " IS NULL";
 		}
