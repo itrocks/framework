@@ -8,11 +8,11 @@ class User_Authenticate_Controller implements Feature_Controller
 	{
 		$current = User::current();
 		if ($current) {
-			User_authentication::disconnect(User::current());
+			User_Authentication::disconnect(User::current());
 		}
-		$user = User_authentication::login($form["login"], $form["password"]);
+		$user = User_Authentication::login($form["login"], $form["password"]);
 		if (isset($user)) {
-			User_authentication::authenticate($user);
+			User_Authentication::authenticate($user);
 			(new Default_Controller())->run(
 				$parameters, $form, $files, get_class($user), "authenticate"
 			);

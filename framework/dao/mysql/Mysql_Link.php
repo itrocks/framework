@@ -179,8 +179,6 @@ class Mysql_Link extends Sql_Link
 	//--------------------------------------------------------------------------- getStoredProperties
 	public function getStoredProperties($class)
 	{
-		return $class->getAllProperties();
-		/*
 		if (is_string($class)) {
 			$class = Reflection_Class::getInstanceOf($class);
 		}
@@ -188,7 +186,7 @@ class Mysql_Link extends Sql_Link
 		$result_set = $this->executeQuery(
 			"SHOW COLUMNS FROM `" . $this->storeNameOf($class->name) . "`"
 		);
-        $columns = array();
+		$columns = array();
 		while ($column = $result_set->fetch_object(__NAMESPACE__ . "\\Mysql_Column")) {
 			$column_name = $column->getName();
 			if (substr($column_name, 0, 3) == "id_") {
@@ -199,7 +197,6 @@ class Mysql_Link extends Sql_Link
 		$result_set->free();
 		$object_properties = $class->getAllProperties();
 		return array_intersect_key($object_properties, $columns);
-		*/
 	}
 
 	//----------------------------------------------------------------------------------------- query
