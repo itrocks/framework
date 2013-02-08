@@ -49,16 +49,17 @@ class Html_Builder_Property_Edit
 	{
 		$type = $this->property->getType();
 		switch ($type->asString()) {
-			case "float":   return $this->buildFloat();
-			case "integer": return $this->buildInteger();
-			case "string":  return $this->buildString();
+			case "float":    return $this->buildFloat();
+			case "integer":  return $this->buildInteger();
+			case "string":   return $this->buildString();
+			case "string[]": return "string[]";
 		}
 		if ($type->isMultiple()) {
 			return $this->property->getAnnotation("component")->value
 				? $this->buildCollection()
 				: $this->buildMap();
 		}
-		elseif ($type->isSubClassOf("DateTime")) {
+		elseif ($type->isInstanceOf("DateTime")) {
 			return $this->buildDateTime();
 		}
 		elseif ($type->isClass()) {
@@ -119,7 +120,8 @@ class Html_Builder_Property_Edit
 	 */
 	private function buildMap()
 	{
-		return "map";
+		$map = new Html_Builder_Collection_Edit($this->property, $this->value);
+		return $map->build();
 	}
 
 	//----------------------------------------------------------------------------------- buildObject
