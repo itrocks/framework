@@ -54,13 +54,18 @@ abstract class User_Authentication
 	/**
 	 * Control if the parameters put in form are right for register
 	 * @param $form
-	 * @return bool false if a form is incorrect
+	 * @return array A list of errors.
 	 */
 	public static function controlRegisterFormParameters($form)
 	{
-		return $form["login"] != "" && $form["password"] != ""
-			&& str_replace(" ", "", $form["login"]) != ""
-			&& str_replace(" ", "", $form["password"]) != "";
+		$messages = array();
+		if(!($form["login"] != "" && str_replace(" ", "", $form["login"]) != "" ))
+			$messages[] = array("name" => "Login incorrect",
+			                     "message" => "The login is incorrect, a login must be not void.");
+		if(!($form["password"] != "" && str_replace(" ", "", $form["password"]) != ""))
+			$messages[] = array("name" => "Password incorrect",
+			                     "message" => "The password is incorrect, must be not void.");
+		return $messages;
 	}
 
 	//------------------------------------------------------------------------------------ disconnect
