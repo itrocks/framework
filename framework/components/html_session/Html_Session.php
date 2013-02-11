@@ -4,9 +4,13 @@ use AopJoinpoint;
 
 /** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Aop.php";
+require_once "framework/core/toolbox/Plugin.php";
 
 abstract class Html_Session implements Plugin
 {
+
+	//----------------------------------------------------------------------------------- $registered
+	private static $registered = false;
 
 	//--------------------------------------------------------------------------------- postSessionId
 	/**
@@ -58,18 +62,31 @@ abstract class Html_Session implements Plugin
 		}
 	}
 
+	//----------------------------------------------------------------------------------- useTransSid
+	public static function useTransSid()
+	{
+		ini_set("session.use_trans_sid", true);
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * always add session id at end of html documents parsing
 	 */
 	public static function register()
 	{
-		ini_set("session.use_cookies", false);
-		ini_set("session.use_only_cookies", false);
+		if (!self::$registered) {
+			self::$registered = true;
+			ini_set("session.use_cookies", false);
+			ini_set("session.use_only_cookies", false);
+			Aop::add("before", "session_start()", array(__CLASS__, "useTransSid"));
+		}
+		//
+		/*
 		Aop::add("after",
-			__NAMESPACE__ . "\\Html_Template->parse()",
+			'SAF\Framework\Html_Template->parse()',
 			array(__CLASS__, "postSessionId")
 		);
+		*/
 	}
 
 }
