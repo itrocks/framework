@@ -59,3 +59,7 @@ $config["rad"] = array(
 		"database" => "saf-rad"
 	)
 );
+
+// top-top level plugins (temporary place)
+require_once "framework/components/html_session/Html_Session.php";
+SAF\Framework\Html_Session::register();
