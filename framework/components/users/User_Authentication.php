@@ -3,11 +3,31 @@ namespace SAF\Framework;
 
 abstract class User_Authentication
 {
+
+	//----------------------------------------------------------------------------------- arrayToUser
+	/**
+	 * List all of properties to write in user object for the register
+	 *
+	 * @param $array string[] The form content
+	 * @return User A list of properties as "property" => "value"
+	 */
+	public static function arrayToUser($array)
+	{
+		$user = Search_Object::newInstance("User");
+		$user->login = $array["login"];
+		$user->password = Password::crypt(
+			$array["password"],
+			Reflection_Property::getInstanceOf(get_class($user), "password")
+				->getAnnotation("password")->value
+		);
+		return $user;
+	}
+
 	//---------------------------------------------------------------------------------- authenticate
 	/**
 	 * Sets user as current for script and session
 	 *
-	 * Called each time a user authenticates
+	 * Call this to authenticate a user
 	 *
 	 * @param $user User
 	 */
@@ -17,29 +37,69 @@ abstract class User_Authentication
 		Session::current()->set($user);
 	}
 
+	//---------------------------------------------------------------------------- controlNameNotUsed
+	/**
+	 * Control if the name is not already used.
+	 * @param $login String The name of the user
+	 * @return bool True if the login is not used, false if the login is already used.
+	 */
+	public static function controlNameNotUsed($login)
+	{
+		$search = Search_Object::newInstance("User");
+		$search->login = $login;
+		return !Dao::search($search);
+	}
+
+	//----------------------------------------------------------------- controlRegisterFormParameters
+	/**
+	 * Control if the parameters put in form are right for register
+	 * @param $form
+	 * @return bool false if a form is incorrect
+	 */
+	public static function controlRegisterFormParameters($form)
+	{
+		return $form["login"] != "" && $form["password"] != ""
+			&& str_replace(" ", "", $form["login"]) != ""
+			&& str_replace(" ", "", $form["password"]) != "";
+	}
+
 	//------------------------------------------------------------------------------------ disconnect
 	/**
 	 * Remove current user from script and session
 	 *
-	 * Called each time a user disconnects
+	 * Call this to disconnect user
 	 *
 	 * @param $user User
 	 */
-	public static function disconnect(
-		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
-		User $user
-	) {
+	public static function disconnect(User $user)
+	{
 		User::current(new User());
-		Session::current()->removeAny(__NAMESPACE__ . "\\User");
+		Session::current()->removeAny('SAF\Framework\User');
+	}
+
+	//----------------------------------------------------------------------------- getRegisterInputs
+	/**
+	 * Return the list of the inputs necessary to register
+	 *
+	 * @return array
+	 */
+	public static function getRegisterInputs()
+	{
+		return array(
+			array("name" => "login", "type" => "text", "isMultiple" => "false"),
+			array("name" => "password", "type" => "password", "isMultiple" => "false"));
 	}
 
 	//----------------------------------------------------------------------------------------- login
 	/**
 	 * Login to current environment using login and password
 	 *
-	 * @param $login string
+	 * Returns logged user if success
+	 * To set logger user as current for environment, you must call authenticate()
+	 *
+	 * @param $login    string
 	 * @param $password string
-	 * @return User null if user not found
+	 * @return User|null
 	 */
 	public static function login($login, $password)
 	{
@@ -58,74 +118,17 @@ abstract class User_Authentication
 		return null;
 	}
 
-
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Register with current environment using login and password
 	 *
-	 * @param $form array List of the inputs
-	 * @return User null if user not insert
+	 * @param $form string[] The form content
+	 * @return User user
 	 */
 	public static function register($form)
 	{
-		$user = self::buildUserForRegister($form);
+		$user = self::arrayToUser($form);
 		return Dao::write($user);
 	}
-
-	//-------------------------------------------------------------------------- buildUserForRegister
-	/**
-	 * List all of properties to write in user object for the register
-	 * @param $form array The return of the form
-	 * @return User A list of properties as "property" => "value"
-	 */
-	public static function buildUserForRegister($form){
-		$user = Search_Object::newInstance("User");
-		$user->login = $form["login"];
-		$user->password = Password::crypt(
-			$form["password"],
-			Reflection_Property::getInstanceOf(get_class($user), "password")
-				->getAnnotation("password")->value
-		);
-		return $user;
-	}
-
-	//----------------------------------------------------------------- controlRegisterFormParameters
-	/**
-	 * Control if the parameters put in form are right for register
-	 * @param $form
-	 * @return bool false if a form is incorrect
-	 */
-	public static function controlRegisterFormParameters($form)
-	{
-		return $form["login"] != "" && $form["password"] != ""
-			&& str_replace(" ", "", $form["login"]) != ""
-			&& str_replace(" ", "", $form["password"]) != "";
-	}
-
-	//----------------------------------------------------------------- controlRegisterFormParameters
-	/**
-	 * Return the list of the inputs necessary to register
-	 * @return array
-	 */
-	public static function getRegisterInputs(){
-		return array(
-			array("name" => "login", "type" => "text", "isMultiple" => "false"),
-			array("name" => "password", "type" => "password", "isMultiple" => "false"));
-	}
-
-	//---------------------------------------------------------------------------- controlNameNotUsed
-	/**
-	 * Control if the name is not already used.
-	 * @param $login String The name of the user
-	 * @return bool True if the login is not used, false if the login is already used.
-	 */
-	public static function controlNameNotUsed($login){
-		$search = Search_Object::newInstance("User");
-		$search->login = $login;
-		if(Dao::search($search))
-			return false;
-		return true;
-	}
-
 
 }

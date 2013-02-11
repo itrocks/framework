@@ -73,7 +73,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 */
 	public static function getMap(AopJoinpoint $joinpoint)
 	{
-		$object = $joinpoint->getObject();
+		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
 		if (!isset($object->$property)) {
 			$class = $joinpoint->getClassName();
@@ -107,7 +107,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	public static function register()
 	{
 		Aop::add("after",
-			__NAMESPACE__ . "\\Autoloader->classLoadEvent()",
+			'SAF\Framework\Autoloader->classLoadEvent()',
 			array(__CLASS__, "registerGettersAop")
 		);
 	}

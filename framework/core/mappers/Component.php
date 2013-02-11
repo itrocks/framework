@@ -76,8 +76,8 @@ trait Component
 		$path = $self . "." . $class_name . "." . $property_name;
 		if (!isset(self::$composite_property_name[$path])) {
 			self::$composite_property_name[$path] = array();
-			$properties = empty($property_name) ?
-				Reflection_Class::getInstanceOf($self)->getAnnotedProperties("composite")
+			$properties = empty($property_name)
+				? Reflection_Class::getInstanceOf($self)->getAnnotedProperties("composite")
 				: array(Reflection_Property::getInstanceOf($self, $property_name));
 			foreach ($properties as $property) {
 				if (!isset($class_name) || $property->getType()->isInstanceOf($class_name)) {
