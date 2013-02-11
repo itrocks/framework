@@ -31,8 +31,8 @@ class User_Register_Controller implements Feature_Controller
 		$parameters = $this->getViewParameters($parameters, $class_name);
 		if(isset($form["login"]) && isset($form["password"])){
 			$user = null;
-			$messagesErrors = User_Authentication::controlRegisterFormParameters($form);
-			if(!$messagesErrors && empty($messagesErrors)){
+			$errors_messages = User_Authentication::controlRegisterFormParameters($form);
+			if(!$errors_messages && empty($errors_messages)){
 				if(User_Authentication::controlNameNotUsed($form["login"])){
 					$user = User_Authentication::register($form);
 				}
@@ -41,7 +41,7 @@ class User_Register_Controller implements Feature_Controller
 				View::run($parameters, $form, $files, $class_name, "registerConfirm");
 			}
 			else {
-				$parameters["errors"] = $messagesErrors;
+				$parameters["errors"] = $errors_messages;
 				View::run($parameters, $form, $files, $class_name, "registerError");
 			}
 		}
