@@ -125,13 +125,26 @@ abstract class Data_Link implements Configurable
 	 */
 	protected function valueChanged($element, $property_name, $default_value)
 	{
+		$id_property_name = "id_" . $property_name;
+		if (!isset($element->$property_name) && empty($id_property_name)) {
+			return false;
+		}
 		$element_value = $element->$property_name;
-		return isset($element_value) && (
-			is_object($element_value) || (
-				(strval($element_value) != "")
-					&& (strval($element_value) != strval($default_value))
-			)
-		);
+		if (is_object($element_value)) {
+			$class = Reflection_Class::getInstanceOf(get_class($element_value));
+			$defaults = $class->getDefaultProperties();
+			foreach ($class->getListAnnotation("representative")->values() as $property_name) {
+				if ($this->valueChanged($element_value, $property_name, $defaults[$property_name])) {
+					return true;
+				}
+			}
+			return false;
+		}
+		else {
+			return isset($element_value)
+				&& (strval($element_value) != "")
+				&& (strval($element_value) != strval($default_value));
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- write

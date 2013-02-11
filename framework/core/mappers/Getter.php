@@ -37,17 +37,20 @@ abstract class Getter
 				$search_element = Search_Object::newInstance($element_class);
 				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
 				if ($is_component) {
-					$search_element->setComposite($parent, Reflection_Property::getInstanceOf(
-						$parent, $parent_property
-					)->getAnnotation("foreign")->value);
-				}
-				$collection = Dao::search($search_element);
-				if ($is_component) {
+					$property_name = isset($parent_property)
+						? Reflection_Property::getInstanceOf($parent, $parent_property)
+							->getAnnotation("foreign")->value
+						: null;
+					$search_element->setComposite($parent, $property_name);
 					/** @var Component[] $collection */
+					$collection = Dao::search($search_element);
 					// this to avoid getter calls on $element->getComposite() call (parent is already loaded)
 					foreach ($collection as $element) {
-						$element->setComposite($parent);
+						$element->setComposite($parent, $property_name);
 					}
+				}
+				else {
+					$collection = Dao::search($search_element);
 				}
 			}
 			else {

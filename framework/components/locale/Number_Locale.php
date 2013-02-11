@@ -40,16 +40,18 @@ class Number_Locale implements Configurable
 
 	//------------------------------------------------------------------------------------ floatToIso
 	/**
-	 * @param $float string
-	 * @return float
+	 * @param $float string|null
+	 * @return float|null
 	 */
 	public function floatToIso($float)
 	{
-		return str_replace(
+		return (!isset($float) || !strlen($float))
+			? null
+			: str_replace(
 				array($this->thousand_separator, $this->decimal_separator),
 				array("", "."),
 				$float
-		) + 0;
+			) + 0;
 	}
 
 	//--------------------------------------------------------------------------------- floatToLocale
@@ -76,12 +78,14 @@ class Number_Locale implements Configurable
 
 	//---------------------------------------------------------------------------------- integerToIso
 	/**
-	 * @param $integer string
-	 * @return integer
+	 * @param $integer string|null
+	 * @return integer|null
 	 */
 	public function integerToIso($integer)
 	{
-		return str_replace($this->thousand_separator, "", $integer) + 0;
+		return (!isset($integer) || !strlen($integer))
+			? null
+			: str_replace($this->thousand_separator, "", $integer) + 0;
 	}
 
 	//------------------------------------------------------------------------------- integerToLocale

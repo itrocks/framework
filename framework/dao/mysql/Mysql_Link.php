@@ -305,10 +305,10 @@ class Mysql_Link extends Sql_Link
 				}
 			}
 			elseif ($property->getAnnotation("component")->value) {
-				$write_collections[$property->name] = $value;
+				$write_collections[] = array($property, $value);
 			}
 			elseif (is_array($value)) {
-				$write_maps[$property->name] = $value;
+				$write_maps[] = $value;
 			}
 		}
 		$class->accessPropertiesDone();
@@ -328,8 +328,9 @@ class Mysql_Link extends Sql_Link
 		else {
 			$this->query(Sql_Builder::buildUpdate($class->name, $write, $id));
 		}
-		foreach ($write_collections as $property_name => $value) {
-			$this->writeCollection($object, $property_name, $value);
+		foreach ($write_collections as $write) {
+			list($property, $value) = $write;
+			$this->writeCollection($object, $property, $value);
 		}
 		foreach ($write_maps as $value) {
 			$this->writeMap($value);
@@ -344,20 +345,20 @@ class Mysql_Link extends Sql_Link
 	 * Ie when you write an order, it's implicitely needed to write it's lines
 	 *
 	 * @todo verify source and test it correctly
-	 * @param $object        object
-	 * @param $property_name string
-	 * @param $collection    array
+	 * @param $object     object
+	 * @param $property   Reflection_Property
+	 * @param $collection array
 	 */
-	private function writeCollection($object, $property_name, $collection)
+	private function writeCollection($object, Reflection_Property $property, $collection)
 	{
 		// old collection
+		$property_name = $property->name;
 		$class_name = get_class($object);
 		$old_object = Search_Object::newInstance($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
 		$old_collection = $old_object->$property_name;
 		// collection properties : write each of them
 		$id_set = array();
-		$property = Reflection_Property::getInstanceOf(get_class($object), $property_name);
 		if ($property->getAnnotation("component")->value) {
 			if ($collection && is_array(reset($collection))) {
 				$collection = arrayToCollection($collection, $property->getType()->getElementTypeAsString());
@@ -365,11 +366,13 @@ class Mysql_Link extends Sql_Link
 			if ($collection) {
 				$element_class = Reflection_Class::getInstanceOf(get_class(reset($collection)));
 				$representative_properties = $element_class->getListAnnotation("representative")->values();
-				$default = $element_class->getDefaultProperties();
+				$defaults = $element_class->getDefaultProperties();
 				foreach ($collection as $element) {
 					$do_write = false;
-					foreach ($representative_properties as $property_name) {
-						if ($this->valueChanged($element, $property_name, $default[$property_name])) {
+					foreach ($representative_properties as $representative_property) {
+						if ($this->valueChanged(
+							$element, $representative_property, $defaults[$representative_property]
+						)) {
 							$do_write = true;
 							break;
 						}
@@ -377,7 +380,7 @@ class Mysql_Link extends Sql_Link
 					if ($do_write) {
 						if (class_uses_trait($element, 'SAF\Framework\Component')) {
 							/** @var $element Component */
-							$element->setComposite($object, $class_name, $property_name);
+							$element->setComposite($object, $property->getAnnotation("foreign")->value);
 						}
 						$id = $this->getObjectIdentifier($element);
 						if (!empty($id)) {
