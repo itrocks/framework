@@ -15,9 +15,9 @@
 	<form name="user_register" action="/User/register" method="post">
 		<div class="fieldset">
 			<!--inputs-->
-			<div class="field {isMultiple}">
-				<label class="label" for="{name}">|{name}|</label>
-				<input id="{name}" name="{name}" type="{type}">
+			<div class="field {?isMultiple}">
+				<label class="label" for="{name}">{label}</label>
+				<input id="{name}" name="{name}" type="{type}" value="{?value}">
 			</div>
 			<!--inputs-->
 		</div>
