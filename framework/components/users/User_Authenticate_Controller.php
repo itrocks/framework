@@ -13,12 +13,12 @@ class User_Authenticate_Controller implements Feature_Controller
 		$user = User_Authentication::login($form["login"], $form["password"]);
 		if (isset($user)) {
 			User_Authentication::authenticate($user);
-			(new Default_Controller())->run(
+			return (new Default_Controller())->run(
 				$parameters, $form, $files, get_class($user), "authenticate"
 			);
 		}
 		else {
-			(new Default_Controller())->run(
+			return (new Default_Controller())->run(
 				$parameters, $form, $files, "User", "authenticateError"
 			);
 		}

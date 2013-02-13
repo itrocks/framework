@@ -37,16 +37,16 @@ class User_Register_Controller implements Feature_Controller
 				}
 			}
 			if($user){
-				View::run($parameters, $form, $files, $class_name, "registerConfirm");
+				return View::run($parameters, $form, $files, $class_name, "registerConfirm");
 			}
 			else {
 				$parameters["errors"] = $errors_messages;
-				View::run($parameters, $form, $files, $class_name, "registerError");
+				return View::run($parameters, $form, $files, $class_name, "registerError");
 			}
 		}
 		else {
 			$parameters["inputs"] = User_Authentication::getRegisterInputs();
-			View::run($parameters, $form, $files, $class_name, "register");
+			return View::run($parameters, $form, $files, $class_name, "register");
 		}
 	}
 

@@ -71,11 +71,12 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 * @param $form array
 	 * @param $files array
 	 * @param $class_name string
+	 * return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $this->getViewParameters($parameters, $class_name);
-		View::run($parameters, $form, $files, $class_name, "output");
+		return View::run($parameters, $form, $files, $class_name, "output");
 	}
 
 }

@@ -13,6 +13,7 @@ class Acls_Property_Remove_Controller implements Feature_Controller
 	 * - keys 2 and next : the identifiers of the removed elements (ie property names)
 	 * @param $form array
 	 * @param $files array
+	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
@@ -40,10 +41,10 @@ class Acls_Property_Remove_Controller implements Feature_Controller
 		 * - key "removed" : array of the removed properties names
 		 */
 		if ($removed) {
-			View::run($objects, $form, $files, get_class($property), "removed");
+			return View::run($objects, $form, $files, get_class($property), "removed");
 		}
 		else {
-			View::run($objects, $form, $files, get_class($property), "remove_nothing_selected");
+			return View::run($objects, $form, $files, get_class($property), "remove_nothing_selected");
 		}
 	}
 

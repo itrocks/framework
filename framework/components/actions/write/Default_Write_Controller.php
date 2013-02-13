@@ -16,6 +16,7 @@ class Default_Write_Controller implements Class_Controller
 	 * @param $form array
 	 * @param $files array
 	 * @param $class_name string
+	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
@@ -36,10 +37,10 @@ class Default_Write_Controller implements Class_Controller
 			Dao::begin();
 			Dao::write($object);
 			Dao::commit();
-			View::run($parameters, $form, $files, $class_name, "written");
+			return View::run($parameters, $form, $files, $class_name, "written");
 		}
 		else {
-			View::run($parameters, $form, $files, $class_name, "unchanged");
+			return View::run($parameters, $form, $files, $class_name, "unchanged");
 		}
 	}
 

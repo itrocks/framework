@@ -61,6 +61,7 @@ abstract class View
 	 * @param $files        array  Files parameters
 	 * @param $class_name   string The context class name (class of the first parameter)
 	 * @param $feature_name string The feature class name
+	 * @return mixed
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
@@ -68,8 +69,9 @@ abstract class View
 			list($view, $view_method_name) = $call;
 			if (@method_exists($view, $view_method_name)) {
 				$view_object = new $view();
-				$view_object->$view_method_name($parameters, $form, $files, $class_name, $feature_name);
-				break ;
+				return $view_object->$view_method_name(
+					$parameters, $form, $files, $class_name, $feature_name
+				);
 			}
 		}
 	}

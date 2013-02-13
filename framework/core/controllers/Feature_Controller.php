@@ -12,6 +12,7 @@ interface Feature_Controller extends Controller
 	 * @param $parameters Controller_Parameters
 	 * @param $form array
 	 * @param $files array
+	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files);
 

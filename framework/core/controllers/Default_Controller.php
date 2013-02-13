@@ -16,6 +16,7 @@ class Default_Controller implements Controller
 	 * @param $files array
 	 * @param $class_name string
 	 * @param $feature_name string
+	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name, $feature_name)
 	{
@@ -27,7 +28,7 @@ class Default_Controller implements Controller
 				: Set::instantiate($class_name);
 			$parameters = array_merge(array($class_name => $object), $parameters);
 		}
-		View::run($parameters, $form, $files, $class_name, $feature_name);
+		return View::run($parameters, $form, $files, $class_name, $feature_name);
 	}
 
 }

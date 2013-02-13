@@ -79,11 +79,12 @@ class Default_List_Controller extends List_Controller
 	 * @param $form array
 	 * @param $files array
 	 * @param $class_name string
+	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		View::run($parameters, $form, $files, $class_name, "list");
+		return View::run($parameters, $form, $files, $class_name, "list");
 	}
 
 }

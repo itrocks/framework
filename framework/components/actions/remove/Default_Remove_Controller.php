@@ -14,6 +14,7 @@ class Default_Remove_Controller implements Feature_Controller
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
 	 * @param $form       array not used
 	 * @param $files      array not used
+	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
@@ -27,7 +28,7 @@ class Default_Remove_Controller implements Feature_Controller
 		 * - key "class_name" : the context class name (ie a business class)
 		 * - key "feature_name" : the context feature name (ie "output", "list")
 		 */
-		View::run($objects, $form, $files, get_class(reset($objects)), "remove_unavailable");
+		return View::run($objects, $form, $files, get_class(reset($objects)), "remove_unavailable");
 	}
 
 }

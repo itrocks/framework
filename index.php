@@ -26,4 +26,4 @@ Autoloader::register();
 
 // run
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
-Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
+echo Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);

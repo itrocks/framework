@@ -38,11 +38,12 @@ class Main_Controller
 	 * @param $get array
 	 * @param $post array
 	 * @param $files array
+	 * @return mixed
 	 */
 	public function run($uri, $get, $post, $files)
 	{
 		$this->sessionStart($get, $post);
-		$this->runController($uri, $get, $post, $files);
+		return $this->runController($uri, $get, $post, $files);
 	}
 
 	//--------------------------------------------------------------------------------- runController
@@ -53,6 +54,7 @@ class Main_Controller
 	 * @param $get array
 	 * @param $post array
 	 * @param $files array
+	 * @return mixed
 	 */
 	public function runController($uri, $get = array(), $post = array(), $files = array())
 	{
@@ -61,11 +63,10 @@ class Main_Controller
 			list($controller, $method_name) = $call;
 			if (@method_exists($controller, $method_name)) {
 				$controller = new $controller();
-				$controller->$method_name(
+				return $controller->$method_name(
 					$uri->parameters, $post, $files,
 					Namespaces::fullClassName($uri->controller_name), $uri->feature_name
 				);
-				break;
 			}
 		}
 	}

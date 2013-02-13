@@ -9,7 +9,7 @@ class Menu_Output_Controller implements Feature_Controller
 	{
 		$parameters = $parameters->getObjects();
 		array_unshift($parameters, Menu::current());
-		View::run($parameters, $form, $files, "Menu", "output");
+		return View::run($parameters, $form, $files, "Menu", "output");
 	}
 
 }

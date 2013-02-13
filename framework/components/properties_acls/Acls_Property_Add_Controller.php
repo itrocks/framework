@@ -15,6 +15,7 @@ class Acls_Property_Add_Controller implements Feature_Controller
 	 * - key "before" : the name of the property to add the property after (optional)
 	 * @param $form array
 	 * @param $files array
+	 * @return null
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{

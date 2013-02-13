@@ -13,20 +13,19 @@ class Default_Json_Controller implements Default_Feature_Controller
 	 * @param $form array
 	 * @param $files array
 	 * @param $class_name string
+	 * @return string
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $parameters->getObjects();
 		// read all objects corresponding to class name
 		if (!$parameters) {
-			echo json_encode(Dao::readAll(Namespaces::fullClassName(Names::setToClass($class_name))));
-			return;
+			return json_encode(Dao::readAll(Namespaces::fullClassName(Names::setToClass($class_name))));
 		}
 		// read object
 		$first_parameter = reset($parameters);
 		if (is_object($first_parameter)) {
-			echo json_encode($first_parameter);
-			return;
+			return json_encode($first_parameter);
 		}
 		// search objects
 		if (isset($parameters["term"])) {
@@ -43,7 +42,7 @@ class Default_Json_Controller implements Default_Feature_Controller
 				$object->value = "" . $source_object;
 				$objects[$key] = $object;
 			}
-			echo json_encode($objects);
+			return json_encode($objects);
 		}
 	}
 

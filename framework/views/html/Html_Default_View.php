@@ -30,8 +30,7 @@ class Html_Default_View implements IView
 				if (($current instanceof Html_View_Engine) && ($css = $current->getCss())) {
 					$template->setCss($css);
 				}
-				echo $template->parse();
-				break;
+				return $template->parse();
 			}
 		}
 	}

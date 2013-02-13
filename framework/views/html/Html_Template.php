@@ -365,9 +365,9 @@ class Html_Template
 	 */
 	protected function parseInclude($include_uri)
 	{
-		ob_start();
-		Main_Controller::getInstance()->runController($include_uri, array("is_included" => true));
-		return ob_get_clean();
+		return Main_Controller::getInstance()->runController(
+			$include_uri, array("is_included" => true)
+		);
 	}
 
 	//------------------------------------------------------------------------------------- parseLoop

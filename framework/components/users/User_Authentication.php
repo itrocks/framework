@@ -61,10 +61,10 @@ abstract class User_Authentication
 		$errors_messages = array();
 		if(!($form["login"] != "" && str_replace(" ", "", $form["login"]) != "" ))
 			$errors_messages[] = array("name" => "Incorrect login",
-			                     "message" => "The login is incorrect, a login must be not void.");
+			                    "message" => "The login is incorrect, a login must be not void.");
 		if(!($form["password"] != "" && str_replace(" ", "", $form["password"]) != ""))
 			$errors_messages[] = array("name" => "Incorrect password",
-			                     "message" => "The password is incorrect, must be not void.");
+			                    "message" => "The password is incorrect, must be not void.");
 		return $errors_messages;
 	}
 
@@ -93,7 +93,7 @@ abstract class User_Authentication
 		return Input::newCollection(array(
 				array("login", "Login", "text"),
 				array("password",  "Password",  "password")
-			));
+		));
 	}
 
 	//----------------------------------------------------------------------------------------- login

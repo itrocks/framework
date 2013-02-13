@@ -1,4 +1,5 @@
 <?php
+namespace SAF\Framework;
 
 class String
 {

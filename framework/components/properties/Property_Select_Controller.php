@@ -54,7 +54,7 @@ class Property_Select_Controller implements Controller
 		 * first        Property the property object (with selected property name, or not)
 		 * "properties" Reflection_Property[] all properties from the reference class
 		 */
-		View::run($objects, $form, $files, get_class($property), "select");
+		return View::run($objects, $form, $files, get_class($property), "select");
 	}
 
 }
