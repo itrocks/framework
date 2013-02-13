@@ -58,14 +58,14 @@ abstract class User_Authentication
 	 */
 	public static function controlRegisterFormParameters($form)
 	{
-		$messages = array();
+		$errors_messages = array();
 		if(!($form["login"] != "" && str_replace(" ", "", $form["login"]) != "" ))
-			$messages[] = array("name" => "Login incorrect",
+			$errors_messages[] = array("name" => "Incorrect login",
 			                     "message" => "The login is incorrect, a login must be not void.");
 		if(!($form["password"] != "" && str_replace(" ", "", $form["password"]) != ""))
-			$messages[] = array("name" => "Password incorrect",
+			$errors_messages[] = array("name" => "Incorrect password",
 			                     "message" => "The password is incorrect, must be not void.");
-		return $messages;
+		return $errors_messages;
 	}
 
 	//------------------------------------------------------------------------------------ disconnect
@@ -90,9 +90,10 @@ abstract class User_Authentication
 	 */
 	public static function getRegisterInputs()
 	{
-		return array(
-			array("name" => "login", "type" => "text", "isMultiple" => "false"),
-			array("name" => "password", "type" => "password", "isMultiple" => "false"));
+		return Input::newCollection(array(
+				array("login", "Login", "text"),
+				array("password",  "Password",  "password")
+			));
 	}
 
 	//----------------------------------------------------------------------------------------- login
