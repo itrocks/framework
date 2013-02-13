@@ -17,7 +17,6 @@ class User_Register_Controller implements Feature_Controller
 			$object = new $class_name();
 			$parameters = array_merge(array($class_name => $object), $parameters);
 		}
-		$parameters["inputs"] = User_Authentication::getRegisterInputs();
 		return $parameters;
 	}
 	//------------------------------------------------------------------------------------------- run
@@ -46,6 +45,7 @@ class User_Register_Controller implements Feature_Controller
 			}
 		}
 		else {
+			$parameters["inputs"] = User_Authentication::getRegisterInputs();
 			View::run($parameters, $form, $files, $class_name, "register");
 		}
 	}
