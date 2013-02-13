@@ -189,3 +189,62 @@ function treeToArray($array, $ignore_key = null)
 	}
 	return $result;
 }
+
+//--------------------------------------------------------------- explodeStringInArrayToSimpleArray
+/**
+ * Explode strings in array and return a larger array.
+ * @param $delimiter string The boundary string.
+ * @param $array array The input array.
+ * @return array Return a larger array explode by delimiter.
+ * @example explodeStringInArrayToSimpleArray(" ", array("Dot", "a cat", "the cat run"))
+ * return : array("Dot", "a", "cat", "the", "cat", "run")
+ */
+function explodeStringInArrayToSimpleArray($delimiter, $array)
+{
+	$tab = array();
+	foreach($array as $element){
+		$explode = explode($delimiter, $element);
+		if(!empty($explode)){
+			foreach($explode as $part){
+				$tab[] = $part;
+			}
+		}
+		else {
+			$tab[] = $element;
+		}
+	}
+	return $tab;
+}
+
+//--------------------------------------------------------------- explodeStringInArrayToDoubleArray
+/**
+ * Explode strings in array or in array of array, and return an array of array of string.
+ * @param $delimiter string The boundary string.
+ * @param $array array The input array, can be an array of string or an array of array of string.
+ * @return array Return an array of array of string.
+ * @example
+ * explodeStringInArrayToDoubleArray(" ", array("Dot", "a cat", "the cat run"))
+ * return : array(array("Dot"), array("a", "cat"), array("the", "cat", "run"))
+ *
+ * explodeStringInArrayToDoubleArray(" ", array(array("Dot a"), array("the cat run"))
+ * return : array(array("Dot", "a"), array("the", "cat", "run"))
+ */
+function explodeStringInArrayToDoubleArray($delimiter, $array)
+{
+	$tab = array();
+	foreach($array as $element){
+		if(is_array($element)){
+			$tab[] = self::explodeStringInArrayToSimpleArray($delimiter, $element);
+		}
+		else {
+			$explode = explode($delimiter, $element);
+			if(!empty($explode)){
+				$tab[] = $explode;
+			}
+			else {
+				$tab[] = array($element);
+			}
+		}
+	}
+	return $tab;
+}

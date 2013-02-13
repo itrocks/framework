@@ -1,5 +1,4 @@
 <?php
-namespace SAF\Framework;
 
 class String
 {
@@ -284,4 +283,28 @@ function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
 	else {
 		return substr($str, $i + strlen($sep));
 	}
+}
+
+//------------------------------------------------------------------------------------------ isWord
+/**
+ * Test is the string put in parameter like a word
+ * @param $word The string to test
+ * @return int Return 0 if it's not a word.
+ */
+function isWord($word)
+{
+	return preg_match("#[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]#", $word);
+}
+
+//--------------------------------------------------------------------------------------- cleanWord
+/**
+ * Clean a word put in parameter, this delete all character who don't have a place in a current word.
+ * @param $word The word that clean.
+ * @return string Return the clean word.
+ * @example
+ * cleanWord("Albert, ") => return "Albert"
+ * cleanWord(" list : ") => return "list"
+ */
+function cleanWord($word){
+	return preg_replace("#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#", "", $word);
 }
