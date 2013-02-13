@@ -14,13 +14,13 @@ $("document").ready(function()
 			var new_width = getInputTextWidth($this);
 			$this.attr("ui-text-width", new_width);
 			if (new_width != previous_width) {
-				var $table = $this.closest("table.collection");
+				var $table = $this.closest("table.collection, table.map");
 				if (!$table.length) {
 					// single element
 					$this.width(new_width);
 				}
 				else {
-					// element into a collection
+					// element into a collection / map
 					// is element not named and next to a named element ? next_input = true
 					var name = $this.attr("name");
 					var next_input = false;
@@ -75,14 +75,14 @@ $("document").ready(function()
 			var new_height = getInputTextHeight($this);
 			$this.attr("ui-text-height", new_height);
 			if (new_height != previous_height) {
-				var $table = $this.closest("table.collection");
+				var $table = $this.closest("table.collection, table.map");
 				if (!$table.length) {
 					// single element
 					$this.height(new_height);
 					$this.css("overflow","hidden");
 				}
 				else {
-					// element into a collection
+					// element into a collection / map
 					// is element not named and next to a named element ? next_input = true
 					var name = $this.attr("name");
 					var next_input = false;
@@ -129,15 +129,15 @@ $("document").ready(function()
 		this.in(".autoheight").each(autoheight_function);
 		this.in(".autoheight").keyup(autoheight_function);
 
-		// .collection
+		// .collection / .map
 		this.in(".minus").click(function()
 		{
-			// On empêche la suppression du dernier élément
-			if($(this).closest("tbody").children().length > 1)
+			if ($(this).closest("tbody").children().length > 1) {
 				$(this).closest("tr").remove();
+			}
 		});
 
-		this.in("table.collection").each(function()
+		this.in("table.collection, table.map").each(function()
 		{
 			var $this = $(this);
 			$this.data("saf_add", $this.find("tr.new").clone());
@@ -147,7 +147,7 @@ $("document").ready(function()
 		{
 			var $tr = $(this).closest("tr");
 			if ($tr.length && !$tr.next("tr").length) {
-				var $collection = $tr.closest("table.collection");
+				var $collection = $tr.closest("table.collection, table.map");
 				if ($collection.length) {
 					var $table = $($collection[0]);
 					var $new_row = $table.data("saf_add").clone();

@@ -209,7 +209,7 @@ class Html_Template
 
 	//------------------------------------------------------------------------------- parseCollection
 	/**
-	 * Parse a collection of objects
+	 * Parse a collection of objects (in case of composition)
 	 *
 	 * @param $property   Reflection_Property
 	 * @param $collection object[]
@@ -498,6 +498,19 @@ class Html_Template
 			}
 		}
 		return $content;
+	}
+
+	//-------------------------------------------------------------------------------------- parseMap
+	/**
+	 * Parse a map of objects (in case of aggregation)
+	 *
+	 * @param $property   Reflection_Property
+	 * @param $collection object[]
+	 * @return string
+	 */
+	protected function parseMap(Reflection_Property $property, $collection)
+	{
+		return (new Html_Builder_Map($property, $collection))->build();
 	}
 
 	//----------------------------------------------------------------------------------- parseMethod
@@ -807,8 +820,14 @@ class Html_Template
 		$var_name = substr($content, $i, $j - $i);
 		$auto_remove = $this->parseVarWillAutoremove($var_name);
 		$value = $this->parseValue($objects, $var_name);
-		if (is_array($value) && (reset($objects) instanceof Reflection_Property)) {
-			$value = $this->parseCollection(reset($objects), $value);
+		$object = reset($objects);
+		if (is_array($value) && ($object instanceof Reflection_Property)) {
+			if ($object->getType()->usesTrait('SAF\Framework\Component')) {
+				$value = $this->parseCollection($object, $value);
+			}
+			else {
+				$value = $this->parseMap($object, $value);
+			}
 		}
 		$i--;
 		if ($auto_remove && !strlen($value)) {
