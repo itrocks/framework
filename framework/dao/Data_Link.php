@@ -88,7 +88,9 @@ abstract class Data_Link implements Configurable
 	public function searchOne($what, $class_name = null)
 	{
 		$result = $this->search($what, $class_name);
-		return $result ? $result[0] : null;
+		foreach($result as $item)
+			return $item;
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------------- select
