@@ -31,7 +31,6 @@ class Mysql_Maintainer implements Plugin
 	private static function createImplicitTable($mysqli, $table_name, $column_names)
 	{
 		$table = new Mysql_Table($table_name);
-		$table->addColumn(Mysql_Column_Builder::buildId());
 		foreach ($column_names as $column_name) {
 			$table->addColumn(Mysql_Column_Builder::buildLink($column_name));
 		}

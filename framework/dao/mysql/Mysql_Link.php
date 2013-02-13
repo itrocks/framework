@@ -2,10 +2,6 @@
 namespace SAF\Framework;
 use mysqli_result;
 
-/**
- * @todo Mysql_Link must be rewritten : call query(), executeQuery(), and standard protected methods instead of mysql_*
- * @todo some unitary tests to check all of this
- */
 class Mysql_Link extends Sql_Link
 {
 
@@ -235,7 +231,7 @@ class Mysql_Link extends Sql_Link
 		$result_set = $this->executeQuery("SELECT * FROM `" . $this->storeNameOf($class) . "`");
 		while ($object = $result_set->fetch_object($class)) {
 			$this->setObjectIdentifier($object, $object->id);
-			$read_result[] = $object;
+			$read_result[$object->id] = $object;
 		}
 		$result_set->free();
 		return $read_result;
@@ -260,7 +256,7 @@ class Mysql_Link extends Sql_Link
 		$result_set = $this->executeQuery($query);
 		while ($object = $result_set->fetch_object($class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
-			$search_result[] = $object;
+			$search_result[$object->id] = $object;
 		}
 		$result_set->free();
 		return $search_result;
@@ -308,7 +304,18 @@ class Mysql_Link extends Sql_Link
 				$write_collections[] = array($property, $value);
 			}
 			elseif (is_array($value)) {
-				$write_maps[] = $value;
+				foreach ($value as $key => $val) {
+					if (!is_object($val)) {
+						$val = Dao::read($val, $property->getType()->getElementTypeAsString());
+						if (isset($val)) {
+							$value[$key] = $val;
+						}
+						else {
+							unset($value[$key]);
+						}
+					}
+				}
+				$write_maps[] = array($property, $value);
 			}
 		}
 		$class->accessPropertiesDone();
@@ -332,8 +339,9 @@ class Mysql_Link extends Sql_Link
 			list($property, $value) = $write;
 			$this->writeCollection($object, $property, $value);
 		}
-		foreach ($write_maps as $value) {
-			$this->writeMap($value);
+		foreach ($write_maps as $write) {
+			list($property, $value) = $write;
+			$this->writeMap($object, $property, $value);
 		}
 		return $id;
 	}
@@ -344,10 +352,9 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * Ie when you write an order, it's implicitely needed to write it's lines
 	 *
-	 * @todo verify source and test it correctly
 	 * @param $object     object
 	 * @param $property   Reflection_Property
-	 * @param $collection array
+	 * @param $collection object[]
 	 */
 	private function writeCollection($object, Reflection_Property $property, $collection)
 	{
@@ -402,17 +409,38 @@ class Mysql_Link extends Sql_Link
 
 	//-------------------------------------------------------------------------------------- writeMap
 	/**
-	 * @todo not really implemented here
-	 * @param $map array
+	 * @param $object   object
+	 * @param $property Reflection_Property
+	 * @param $map      object[]
 	 */
-	private function writeMap($map)
+	private function writeMap($object, Reflection_Property $property, $map)
 	{
+		// old map
+		$property_name = $property->name;
+		$class_name = get_class($object);
+		$old_object = Search_Object::newInstance($class_name);
+		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
+		$old_map = $old_object->$property_name;
 		// map properties : write each of them
-// 		foreach ($map as $element_key => $element_value) {
-// 			$this->write($element_key);
-// 			// TODO write with linked values ($element_key id must be written into $element_value property)
-// 			$this->write($element_value);
-// 		}
+		$insert_builder = new Sql_Map_Insert_Builder($property);
+		$id_set = array();
+		foreach ($map as $element) {
+			$id = $this->getObjectIdentifier($element);
+			if (!isset($old_map[$id])) {
+				$query = $insert_builder->buildQuery($object, $element);
+				$this->executeQuery($query);
+			}
+			$id_set[$id] = true;
+		}
+		// remove old unused elements
+		$delete_builder = new Sql_Map_Delete_Builder($property);
+		foreach ($old_map as $old_element) {
+			$id = $this->getObjectIdentifier($old_element);
+			if (!isset($id_set[$id])) {
+				$query = $delete_builder->buildQuery($object, $old_element);
+				$this->executeQuery($query);
+			}
+		}
 	}
 
 }

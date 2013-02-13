@@ -30,7 +30,7 @@ class Html_Builder_Collection
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property Reflection_Property
+	 * @param $property   Reflection_Property
 	 * @param $collection object[]
 	 */
 	public function __construct(Reflection_Property $property, $collection)
@@ -55,9 +55,22 @@ class Html_Builder_Collection
 		return $table;
 	}
 
+	//------------------------------------------------------------------------------------- buildBody
+	/**
+	 * @return Html_Table_Body
+	 */
+	protected function buildBody()
+	{
+		$body = new Html_Table_Body();
+		foreach ($this->collection as $object) {
+			$body->addRow($this->buildRow($object));
+		}
+		return $body;
+	}
+
 	//------------------------------------------------------------------------------------- buildCell
 	/**
-	 * @param $object object
+	 * @param $object        object
 	 * @param $property_name string
 	 * @return Html_Table_Standard_Cell
 	 */
@@ -73,19 +86,6 @@ class Html_Builder_Collection
 		}
 		$cell->addClass($type->asString());
 		return $cell;
-	}
-
-	//------------------------------------------------------------------------------------- buildBody
-	/**
-	 * @return Html_Table_Body
-	 */
-	protected function buildBody()
-	{
-		$body = new Html_Table_Body();
-		foreach ($this->collection as $object) {
-			$body->addRow($this->buildRow($object));
-		}
-		return $body;
 	}
 
 	//------------------------------------------------------------------------------------- buildHead
