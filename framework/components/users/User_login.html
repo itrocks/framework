@@ -16,14 +16,12 @@
 	<h2>|User login|</h2>
 	<form name="user_login" action="/User/authenticate" method="post">
 		<div class="fieldset">
-			<div class="field">
-				<label class="label" for="login">|login|</label>
-				<span class="value"><input name="login" id="login"></span>
+			<!--User_Authentication.getLoginInputs-->
+			<div class="field {?isMultiple}">
+				<label class="label" for="{name}">|{label}|</label>
+				<input id="{name}" name="{name}" type="{type}" value="{?value}">
 			</div>
-			<div class="field">
-				<label class="label" for="password">|password|</label>
-				<span class="value"><input name="password" type="password" id="password"></span>
-			</div>
+			<!--User_Authentication.getLoginInputs-->
 		</div>
 		<input type="submit" value="|connection|">
 	</form>

@@ -9,17 +9,17 @@ dateFormatToDatepicker = function(text)
 // TODO limit cache size as it could gros too much !
 getInputTextWidth = function(context)
 {
-	return Math.max(40, getTextWidth(context) + 16);
+	return Math.max(40, getTextWidth(context, 16));
 };
 
 //------------------------------------------------------------------------------ getInputTextHeight
 getInputTextHeight = function(context)
 {
-	return Math.max(20, getTextHeight(context));
+	return Math.max(20, getTextHeight(context, 16));
 };
 
 //----------------------------------------------------------------------------------- getTextHeight
-getTextHeight = function(context)
+getTextHeight = function(context, extraHeight)
 {
 	var $content = context.val().split("\n");
 	// If the last element is empty, need put a character to prevent the browser ignores the character
@@ -31,16 +31,16 @@ getTextHeight = function(context)
 	var $height = $('#height');
 	copyCssPropertyTo(context, $height);
 	$height.css("position", "absolute");
-	var $width = getTextWidth(context);
+	var $width = getInputTextWidth(context);
 	$height.width($width);
-	var height = $height.height();
+	var height = $height.height() + extraHeight;
 	$('#height').remove();
 	 return height;
 };
 
 //------------------------------------------------------------------------------------ getTextWidth
 get_text_width_cache = [];
-getTextWidth = function(context)
+getTextWidth = function(context, extraWidth)
 {
 	var width = get_text_width_cache[context.val()];
 	if (width != undefined) {
@@ -55,14 +55,14 @@ getTextWidth = function(context)
 		var $pos = context.position();
 		$width.css("top", $pos.top);
 		$width.css("left", $pos.left);
-		width = $width.width();
+		width = $width.width() + extraWidth;
 		var $parent = context.parent();
 		var $margins = parseInt($parent.css("margin-right"))
 			+ parseInt($parent.css("padding-right"))
 			+ parseInt(context.css("margin-right"));
 		var ending_right_parent = ($(window).width() - ($parent.offset().left + $parent.outerWidth()));
 		ending_right_parent += $margins;
-		var ending_right = ($(window).width() - ($width.offset().left + $width.outerWidth()));
+		var ending_right = ($(window).width() - ($width.offset().left + $width.outerWidth()) - extraWidth);
 		if(ending_right < ending_right_parent){
 			width = width - (ending_right_parent - ending_right);
 		}

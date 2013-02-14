@@ -82,6 +82,20 @@ abstract class User_Authentication
 		Session::current()->removeAny('SAF\Framework\User');
 	}
 
+	//-------------------------------------------------------------------------------- getLoginInputs
+	/**
+	 * Return the list of the inputs necessary to register
+	 *
+	 * @return array
+	 */
+	public static function getLoginInputs()
+	{
+		return Input::newCollection(array(
+				array("login", "login", "text"),
+				array("password",  "password",  "password")
+			));
+	}
+
 	//----------------------------------------------------------------------------- getRegisterInputs
 	/**
 	 * Return the list of the inputs necessary to register
