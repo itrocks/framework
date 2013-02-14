@@ -134,7 +134,10 @@ abstract class Data_Link implements Configurable
 			$class = Reflection_Class::getInstanceOf(get_class($element_value));
 			$defaults = $class->getDefaultProperties();
 			foreach ($class->getListAnnotation("representative")->values() as $property_name) {
-				if ($this->valueChanged($element_value, $property_name, $defaults[$property_name])) {
+				if (
+					isset($defaults[$property_name])
+					&& $this->valueChanged($element_value, $property_name, $defaults[$property_name])
+				) {
 					return true;
 				}
 			}

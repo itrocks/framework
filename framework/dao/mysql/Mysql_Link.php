@@ -178,11 +178,11 @@ class Mysql_Link extends Sql_Link
 		$properties = Reflection_Class::getInstanceOf($class)->getAllProperties();
 		foreach ($properties as $key => $property) {
 			$type = $property->getType();
-			if ($type->isClass()) {
-				$properties["id_" . $property->name] = new Mysql_Column("id_" . $property->name);
-			}
-			elseif ($property->isStatic() || $type->isMultiple()) {
+			if ($property->isStatic() || $type->isMultiple()) {
 				unset($properties[$key]);
+			}
+			elseif ($type->isClass()) {
+				$properties["id_" . $property->name] = new Mysql_Column("id_" . $property->name);
 			}
 		}
 		return $properties;
@@ -271,7 +271,7 @@ class Mysql_Link extends Sql_Link
 		$write = array();
 		$aop_getter_ignore = Aop_Getter::$ignore;
 		Aop_Getter::$ignore = true;
-		foreach ($class->accessProperties() as $property) {
+		foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
 			$value = $property->getValue($object);
 			if (is_null($value) && !$property->getAnnotation("null")->value) {
 				$value = "";
