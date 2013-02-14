@@ -14,7 +14,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	public static function register()
 	{
 		Aop::add("after",
-			__NAMESPACE__ . "\\Autoloader->classLoadEvent()",
+			'SAF\Framework\Autoloader->classLoadEvent()',
 			array(__CLASS__, "registerSettersAop")
 		);
 	}

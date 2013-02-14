@@ -175,7 +175,7 @@ class Mysql_Column implements Dao_Column
 			case "enum": case "set":
 				return (new Type("string"))->multiple();
 			case "date": case "datetime": case "timestamp": case "time": case "year":
-				return new Type(__NAMESPACE__ . "\\Date_Time");
+				return new Type('SAF\Framework\Date_Time');
 			default:
 				return new Type("string");
 		}

@@ -34,11 +34,11 @@ abstract class Wiki implements Plugin
 	public static function register()
 	{
 		Aop::add("around",
-			__NAMESPACE__ . "\\Html_Edit_Template->parseValue()",
+			'SAF\Framework\Html_Edit_Template->parseValue()',
 			array(__CLASS__, "noParseZone")
 		);
 		Aop::add("after",
-			__NAMESPACE__ . "\\Reflection_Property_View->formatString()",
+			'SAF\Framework\Reflection_Property_View->formatString()',
 			array(__CLASS__, "stringWiki")
 		);
 	}

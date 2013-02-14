@@ -146,23 +146,23 @@ class Object_Builder implements Plugin
 	public static function register()
 	{
 		Aop::add("after",
-			"write " . __NAMESPACE__ . "\\Controller_Uri->controller_name",
+			"write " . 'SAF\Framework\Controller_Uri->controller_name',
 			array(__CLASS__, "onShortClassNamePropertyWrite")
 		);
 		Aop::add("after",
-			__NAMESPACE__ . "\\Set->elementClassNameOf()",
+			'SAF\Framework\Set->elementClassNameOf()',
 			array(__CLASS__, "onMethodWithReturnedValue")
 		);
 		Aop::add("before",
-			__NAMESPACE__ . "\\Getter->getCollection()",
+			'SAF\Framework\Getter->getCollection()',
 			array(__CLASS__, "onMethodWithClassName1")
 		);
 		Aop::add("before",
-			__NAMESPACE__ . "\\Getter->getObject()",
+			'SAF\Framework\Getter->getObject()',
 			array(__CLASS__, "onMethodWithClassName1")
 		);
 		Aop::add("before",
-			__NAMESPACE__ . "\\Search_Object->newInstance()",
+			'SAF\Framework\Search_Object->newInstance()',
 			array(__CLASS__, "onMethodWithClassName0")
 		);
 	}

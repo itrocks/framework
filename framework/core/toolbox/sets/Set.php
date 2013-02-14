@@ -37,8 +37,8 @@ class Set
 	/**
 	 * Adds an element to the set
 	 *
-	 * @param $element string | object $key identity of the element in the set, or element if is null
-	 * @param $key) object | null $element element to add to the set (null if no
+	 * @param $key     string|object identity of the element in the set, or element if is null
+	 * @param $element object|null $element element to add to the set (null if no or in key)
 	 */
 	public function add($key, $element = null)
 	{

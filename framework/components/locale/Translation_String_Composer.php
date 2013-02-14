@@ -57,7 +57,7 @@ abstract class Translation_String_Composer implements Plugin
 	public static function register()
 	{
 		Aop::add("around",
-			__NAMESPACE__ . "\\Translations->translate()",
+			'SAF\Framework\Translations->translate()',
 			array(__CLASS__, "onTranslate")
 		);
 	}

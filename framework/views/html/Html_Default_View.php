@@ -21,7 +21,7 @@ class Html_Default_View implements IView
 					unset($parameters["template_mode"]);
 				}
 				else {
-					$template_class = __NAMESPACE__ . "\\Html_Template";
+					$template_class = 'SAF\Framework\Html_Template';
 				}
 				/** @var $template Html_Template */
 				$template = new $template_class(reset($parameters), $template_file, $feature_name);
@@ -33,6 +33,7 @@ class Html_Default_View implements IView
 				return $template->parse();
 			}
 		}
+		return null;
 	}
 
 }

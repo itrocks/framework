@@ -255,40 +255,40 @@ abstract class Loc implements Plugin
 	{
 		// format from locale user input to ISO and standard formats
 		Aop::add("after",
-			__NAMESPACE__ . "\\Default_List_Controller->getSearchValues()",
+			'SAF\Framework\Default_List_Controller->getSearchValues()',
 			array(__CLASS__, "afterListSearchValues")
 		);
 		Aop::add("around",
-			__NAMESPACE__ . "\\Default_Write_Controller->run()",
+			'SAF\Framework\Default_Write_Controller->run()',
 			array(__CLASS__, "parseBeforeWriteAround")
 		);
 		Aop::add("before",
-			__NAMESPACE__ . "\\Data_Link->valueChanged()",
+			'SAF\Framework\Data_Link->valueChanged()',
 			array(__CLASS__, "beforeDataLinkValueChanged")
 		);
 		Aop::add("before",
-			__NAMESPACE__ . "\\Data_Link->write()",
+			'SAF\Framework\Data_Link->write()',
 			array(__CLASS__, "beforeDataLinkWrite")
 		);
 		Aop::add("before",
-			__NAMESPACE__ . "\\Date_Time->fromISO()",
+			'SAF\Framework\Date_Time->fromISO()',
 			array(__CLASS__, "beforeDateTimeFromIso")
 		);
 		// format to locale
 		Aop::add("after",
-			__NAMESPACE__ . "\\Html_Template_Funcs->toEditPropertyExtra()",
+			'SAF\Framework\Html_Template_Funcs->toEditPropertyExtra()',
 			array(__CLASS__, "afterHtmlTemplateFuncsToEditPropertyExtra")
 		);
 		Aop::add("after",
-			__NAMESPACE__ . "\\Reflection_Property_View->formatDateTime()",
+			'SAF\Framework\Reflection_Property_View->formatDateTime()',
 			array(__CLASS__, "dateTimeReturnedValueToLocale")
 		);
 		Aop::add("after",
-			__NAMESPACE__ . "\\Reflection_Property_View->formatFloat()",
+			'SAF\Framework\Reflection_Property_View->formatFloat()',
 			array(__CLASS__, "floatReturnedValueToLocale")
 		);
 		Aop::add("after",
-			__NAMESPACE__ . "\\Reflection_Property_View->formatInteger()",
+			'SAF\Framework\Reflection_Property_View->formatInteger()',
 			array(__CLASS__, "integerReturnedValueToLocale")
 		);
 	}

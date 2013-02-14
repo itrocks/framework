@@ -67,7 +67,7 @@ abstract class Aop_Logger implements Plugin
 		Aop::add("before", "aop_add_before()", array(__CLASS__, "log"));
 		self::$active = true;
 		Aop::add("before",
-			__NAMESPACE__ . "\\Aop->registerProperties()",
+			'SAF\Framework\Aop->registerProperties()',
 			array(__CLASS__, "logRegister")
 		);
 	}

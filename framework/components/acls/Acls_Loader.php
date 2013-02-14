@@ -52,7 +52,7 @@ abstract class Acls_Loader
 	public static function onUserDisconnect()
 	{
 		Acls_Rights::current(new Acls_Rights());
-		Session::current()->removeAny(__NAMESPACE__ . "\\Acls_Rights");
+		Session::current()->removeAny('SAF\Framework\Acls_Rights');
 	}
 
 }

@@ -81,6 +81,16 @@ abstract class Autoloader implements Plugin
 		return $short_class_name;
 	}
 
+	//-------------------------------------------------------------------------------- classLoadEvent
+	/**
+	 * This event can be used as pointcut when a new class has been loaded
+	 *
+	 * @param $class_name string full class name, with namespace
+	 */
+	public static function classLoadEvent($class_name)
+	{
+	}
+
 	//-------------------------------------------------------------------------- getOriginIncludePath
 	/**
 	 * Returns PHP origin include path
@@ -133,16 +143,6 @@ abstract class Autoloader implements Plugin
 		self::$initialized = true;
 	}
 
-	//-------------------------------------------------------------------------------- classLoadEvent
-	/**
-	 * This event can be used as pointcut when a new class has been loaded
-	 *
-	 * @param $class_name string full class name, with namespace
-	 */
-	private static function classLoadEvent($class_name)
-	{
-	}
-
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Register autoloader, always reset autoloader when current Configuration changes
@@ -151,7 +151,7 @@ abstract class Autoloader implements Plugin
 	{
 		spl_autoload_register(array(__CLASS__, "autoload"));
 		Aop::add("before",
-			__NAMESPACE__ . "\\Configuration->current()",
+			'SAF\Framework\Configuration->current()',
 			array(__CLASS__, "resetOnCurrentConfigurationChange")
 		);
 	}

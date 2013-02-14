@@ -2,26 +2,26 @@
 
 //--------------------------------------------------------------------------------------- framework
 $config["framework"] = array(
-	"Aop_Dynamics" => array(
-		"List_Controller" => array(
+	'Aop_Dynamics' => array(
+		'List_Controller' => array(
 			//array("around", "Default_List_Controller_Configuration", "getListProperties()", "List_Controller_Acls", "getListPropertiesAop")
 		)
 	),
-	"Dao" => array(
+	'Dao' => array(
 		"class"    => "Mysql_Link",
 		"host"     => "localhost",
 		"limit"    => 1000,
 		"user"     => "saf",
 		"password" => "saf",
 		"tables"   => array(
-			"Acls_User" => "users",
+			'Acls_User' => "users",
 		)
 	),
-	"Error_Handlers" => array(
-		array(E_ALL & !E_NOTICE,   "Main_Error_Handler"),
-		array(E_RECOVERABLE_ERROR, "To_Exception_Error_Handler"),
+	'Error_Handlers' => array(
+		array(E_ALL & !E_NOTICE,   'Main_Error_Handler'),
+		array(E_RECOVERABLE_ERROR, 'To_Exception_Error_Handler'),
 	),
-	"Locale" => array(
+	'Locale' => array(
 		"date" => "d/m/Y",
 		"language" => "fr",
 		"number" => array(
@@ -31,22 +31,22 @@ $config["framework"] = array(
 				"thousand_separator"    => " ",
 		)
 	),
-	"Plugins" => array(
+	'Plugins' => array(
 		"highest" => array(
-			"Mysql_Maintainer",
-			"Aop_Getter",
-			"Aop_Setter",
+			'Mysql_Maintainer',
+			'Aop_Getter',
+			'Aop_Setter',
 		),
 		"normal" => array(
-			"Html_Cleaner",
-			"Html_Session",
-			"Html_Translator",
-			"Translation_String_Composer",
-			"Loc"
+			'Html_Cleaner',
+			'Html_Session',
+			'Html_Translator',
+			'Translation_String_Composer',
+			'Loc'
 		)
 	),
-	"View" => array(
-		"class" => "Html_View_Engine",
+	'View' => array(
+		"class" => 'Html_View_Engine',
 		"css"   => "default"
 	)
 );
@@ -55,7 +55,7 @@ $config["framework"] = array(
 $config["rad"] = array(
 	"app" => "RAD",
 	"extends" => "framework",
-	"Dao" => array(
-		"database" => "saf-rad"
+	'Dao' => array(
+		"database" => "saf_rad"
 	)
 );

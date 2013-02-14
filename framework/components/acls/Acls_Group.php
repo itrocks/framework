@@ -100,7 +100,7 @@ class Acls_Group
 		$links = isset($this->content) ? $this->content : null;
 		if (!isset($links)) {
 			$links = array();
-			foreach (Getter::getCollection(null, __NAMESPACE__ . "\\Acls_Link", $this) as $link) {
+			foreach (Getter::getCollection(null, 'SAF\Framework\Acls_Link', $this) as $link) {
 				$links[$link->content->name] = $link;
 			}
 			$this->content = $links;
@@ -117,7 +117,7 @@ class Acls_Group
 		$rights = isset($this->rights) ? $this->rights : null;
 		if (!isset($rights)) {
 			$rights = array();
-			foreach (Getter::getCollection(null, __NAMESPACE__ . "\\Acls_Right", $this) as $right) {
+			foreach (Getter::getCollection(null, 'SAF\Framework\Acls_Right', $this) as $right) {
 				$rights[$right->key] = $right;
 			}
 			$this->rights = $rights;

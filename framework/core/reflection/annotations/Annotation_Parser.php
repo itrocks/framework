@@ -81,7 +81,7 @@ abstract class Annotation_Parser
 					Names::propertyToClass($annotation_name) . "_Annotation"
 			);
 			if (!class_exists($annotation_class)) {
-				$annotation_class = __NAMESPACE__ . "\\Annotation";
+				$annotation_class = 'SAF\Framework\Annotation';
 			}
 			$annotations_classes[$annotation_name] = $annotation_class;
 		}

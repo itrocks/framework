@@ -10,7 +10,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testCollectionJoinQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number", "lines.number", "lines.quantity")
 		);
 		$this->assume(
@@ -24,7 +24,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testComplexJoinQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("number", "client.number", "client.client.number", "client.name")
 		);
 		$this->assume(
@@ -38,7 +38,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testComplexObjectQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Client",
+			'SAF\Framework\Tests\Test_Client',
 			array("number", "name", "Test_Order_Line->client.order")
 		);
 		$this->assume(
@@ -52,7 +52,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testJoinQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order_Line",
+			'SAF\Framework\Tests\Test_Order_Line',
 			array("order.date", "order.number", "number", "quantity")
 		);
 		$this->assume(
@@ -66,7 +66,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testLinkQuery()
 	{
 		$builder = new Sql_Select_builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number", "salesmen.name")
 		);
 		$this->assume(
@@ -80,7 +80,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testObjectQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order_Line",
+			'SAF\Framework\Tests\Test_Order_Line',
 			array("number", "quantity", "order")
 		);
 		$this->assume(
@@ -94,7 +94,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testReverseJoinQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number", "Test_Order_Line->order.number", "Test_Order_Line->order.quantity")
 		);
 		$this->assume(
@@ -108,7 +108,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testSimpleQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number")
 		);
 		$this->assume(
@@ -121,10 +121,10 @@ class Sql_Select_Builder_Test extends Unit_Test
 	//------------------------------------------------------------------------- testWhereComplexQuery
 	public function testWhereComplexQuery()
 	{
-		$client = Search_Object::newInstance(__NAMESPACE__ . "\\Test_Client");
+		$client = Search_Object::newInstance('SAF\Framework\Tests\Test_Client');
 		$client->number = 1;
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number", "lines"),
 			array("OR" => array("lines.client.number" => $client->number, "number" => 2))
 		);
@@ -139,7 +139,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testWhereDeepQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number"),
 			array("number" => 1, "lines.number" => 2)
 		);
@@ -154,11 +154,11 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testWhereObjectQuery()
 	{
 		/** @var $client Test_Client */
-		$client = Search_Object::newInstance(__NAMESPACE__ . "\\Test_Client");
+		$client = Search_Object::newInstance('SAF\Framework\Tests\Test_Client');
 		$client->number = 1;
 		$client->name = "Roger%";
 		$properties = array("number", "name", "client");
-		$builder = new Sql_Select_Builder(__NAMESPACE__ . "\\Test_Client", $properties, $client);
+		$builder = new Sql_Select_Builder('SAF\Framework\Tests\Test_Client', $properties, $client);
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
@@ -169,10 +169,10 @@ class Sql_Select_Builder_Test extends Unit_Test
 	//----------------------------------------------------------------------- testWhereSubObjectQuery
 	public function testWhereSubObjectQuery()
 	{
-		$client = Search_Object::newInstance(__NAMESPACE__ . "\\Test_Client");
+		$client = Search_Object::newInstance('SAF\Framework\Tests\Test_Client');
 		$client->number = 1;
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number", "lines"),
 			array("lines.client" => $client, "number" => 2)
 		);
@@ -187,7 +187,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testWhereQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number"),
 			array("number" => 1)
 		);
@@ -202,7 +202,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 	public function testWhereReverseJoinQuery()
 	{
 		$builder = new Sql_Select_Builder(
-			__NAMESPACE__ . "\\Test_Order",
+			'SAF\Framework\Tests\Test_Order',
 			array("date", "number", "Test_Order_Line->order.number", "Test_Order_Line->order.quantity"),
 			array("Test_Order_Line->order.number" => "2")
 		);

@@ -12,7 +12,7 @@ abstract class Html_Translator implements Plugin
 	public static function register()
 	{
 		Aop::add("after",
-			__NAMESPACE__ . "\\Html_Template->parse()",
+			'SAF\Framework\Html_Template->parse()',
 			array(__CLASS__, "translatePage")
 		);
 	}
