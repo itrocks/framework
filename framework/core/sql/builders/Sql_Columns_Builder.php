@@ -8,7 +8,7 @@ trait Sql_Columns_Builder
 	/**
 	 * @var Sql_Joins
 	 */
-	private $joins;
+	private $columns_joins;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -31,7 +31,7 @@ trait Sql_Columns_Builder
 		$sql_columns = "";
 		if ($first_property) $first_property = false; else $sql_columns = ", ";
 		list($master_path, $column_name) = Sql_Builder::splitPropertyPath($path);
-		$join = $this->joins->getJoin($master_path);
+		$join = $this->columns_joins->getJoin($master_path);
 		$sql_columns .= $join
 			? "$join->foreign_alias.`$column_name` AS `$path`"
 			: "t0.`$path` AS `$path`";
@@ -50,12 +50,12 @@ trait Sql_Columns_Builder
 			$sql_columns = "";
 			$first_property = true;
 			foreach ($this->properties as $path) {
-				$join = $this->joins->add($path);
+				$join = $this->columns_joins->add($path);
 				$sql_columns .= $join
 					? $this->buildObjectColumns($path, $join, $first_property)
 					: $this->buildColumn($path, $first_property);
 			}
-		} elseif ($this->joins->getJoins()) {
+		} elseif ($this->columns_joins->getJoins()) {
 			// TODO why not read all properties of all tables in order to fill in result set ?
 			$sql_columns = "t0.*";
 		} else {
@@ -76,7 +76,7 @@ trait Sql_Columns_Builder
 	private function buildObjectColumns($path, Sql_Join $join, &$first_property)
 	{
 		$sql_columns = "";
-		foreach ($this->joins->getProperties($path) as $property) {
+		foreach ($this->columns_joins->getProperties($path) as $property) {
 			$column_name = Sql_Builder::buildColumnName($property);
 			if ($column_name) {
 				if ($first_property) $first_property = false; else $sql_columns .= ", ";
@@ -97,7 +97,7 @@ trait Sql_Columns_Builder
 	 */
 	protected function constructSqlColumnsBuilder(Sql_Joins $joins, $properties)
 	{
-		$this->joins = $joins;
+		$this->columns_joins = $joins;
 		$this->properties = $properties;
 	}
 
@@ -107,7 +107,7 @@ trait Sql_Columns_Builder
 	 */
 	public function getJoins()
 	{
-		return $this->joins;
+		return $this->columns_joins;
 	}
 
 }

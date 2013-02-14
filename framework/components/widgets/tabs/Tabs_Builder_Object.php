@@ -4,7 +4,7 @@ namespace SAF\Framework;
 abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 {
 
-	//----------------------------------------------------------------------------------------- build
+	//----------------------------------------------------------------------------------- buildObject
 	/**
 	 * Build tabs containing object properties
 	 *
@@ -14,7 +14,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	 * @param $filter_properties string[]
 	 * @return Tab[]
 	 */
-	public static function build($object, $filter_properties = null)
+	public static function buildObject($object, $filter_properties = null)
 	{
 		$class = Reflection_Class::getInstanceOf($object);
 		/** @var $group_annotations Class_Group_Annotation[] */

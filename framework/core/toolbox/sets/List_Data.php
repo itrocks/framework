@@ -10,7 +10,7 @@ interface List_Data
 	 *
 	 * @param $row List_Row
 	 */
-	public function add(List_Row $row);
+	public function add($row);
 
 	//----------------------------------------------------------------------------------------- count
 	/**

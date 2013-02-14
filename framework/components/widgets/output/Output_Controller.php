@@ -39,7 +39,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 	protected function getTabs($object, $properties)
 	{
 		$tab = new Tab("main");
-		$tab->includes = Tabs_Builder_Object::build($object, $properties);
+		$tab->includes = Tabs_Builder_Object::buildObject($object, $properties);
 		return $tab;
 	}
 

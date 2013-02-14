@@ -16,7 +16,7 @@ trait Sql_Where_Builder
 	/**
 	 * @var Sql_Joins
 	 */
-	private $joins;
+	private $where_joins;
 
 	//------------------------------------------------------------------------------------- $sql_link
 	/**
@@ -97,7 +97,7 @@ trait Sql_Where_Builder
 			return $this->buildValue($path, $id, "id_");
 		}
 		// object is a search object : each property is a search entry, and must join table
-		$this->joins->add($path);
+		$this->where_joins->add($path);
 		$array = array();
 		$class = Reflection_Class::getInstanceOf(get_class($object));
 		foreach ($class->accessProperties() as $property_name => $property) {
@@ -122,7 +122,7 @@ trait Sql_Where_Builder
 	protected function buildTables()
 	{
 		$tables = "`" . Dao::current()->storeNameOf($this->class) . "` t0";
-		foreach ($this->joins->getJoins() as $join) if ($join) {
+		foreach ($this->where_joins->getJoins() as $join) if ($join) {
 			$tables .= " $join->mode JOIN `$join->foreign_table` $join->foreign_alias"
 			. " ON $join->foreign_alias.$join->foreign_column = $join->master_alias.$join->master_column";
 		}
@@ -140,8 +140,8 @@ trait Sql_Where_Builder
 	 */
 	private function buildValue($path, $value, $prefix = "")
 	{
-		$this->joins->add($path);
-		$join = $this->joins->getJoin($path);
+		$this->where_joins->add($path);
+		$join = $this->where_joins->getJoin($path);
 		if (isset($join)) {
 			$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
 		}
@@ -149,7 +149,7 @@ trait Sql_Where_Builder
 			list($master_path, $foreign_column) = Sql_Builder::splitPropertyPath($path);
 			$column = ((!$master_path) || ($master_path === "id"))
 				? ("t0.`" . $prefix . $foreign_column . "`")
-				: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_column . "`");
+				: ($this->where_joins->getAlias($master_path) . ".`" . $prefix . $foreign_column . "`");
 		}
 		if (is_null($value)) {
 			$expr = " IS NULL";
@@ -189,7 +189,7 @@ trait Sql_Where_Builder
 	protected function constructSqlWhereBuilder(
 		Sql_Joins $joins, $class, $where_array = null, Sql_Link $sql_link = null
 	) {
-		$this->joins       = $joins;
+		$this->where_joins       = $joins;
 		$this->class       = $class;
 		$this->sql_link    = $sql_link ? $sql_link : Dao::current();
 		$this->where_array = $where_array;
@@ -201,7 +201,7 @@ trait Sql_Where_Builder
 	 */
 	public function getJoins()
 	{
-		return $this->joins;
+		return $this->where_joins;
 	}
 
 }

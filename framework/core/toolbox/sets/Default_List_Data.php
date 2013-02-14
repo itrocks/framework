@@ -18,9 +18,13 @@ class Default_List_Data extends Set implements List_Data
 	}
 
 	//------------------------------------------------------------------------------------------- add
-	public function add(List_Row $row)
+	/**
+	 * @param List_Row $row list row element
+	 * @param null     $element (kept for compatibility with Set), keep null
+	 */
+	public function add($row, $element = null)
 	{
-		parent::add($row);
+		parent::add($row, $element);
 	}
 
 	//----------------------------------------------------------------------------------------- count

@@ -15,14 +15,14 @@ ini_set("xdebug.var_display_max_data", 1000000);
 ini_set("xdebug.var_display_max_depth", 1000000);
 //&XDEBUG_PROFILE=1
 
-// top-top level plugins (temporary place)
-require_once "framework/components/html_session/Html_Session.php";
-Html_Session::register();
-
 // init
 error_reporting(E_ALL);
 require_once "framework/core/Autoloader.php";
 Autoloader::register();
+
+// top-top level plugins (temporary place)
+require_once "framework/components/html_session/Html_Session.php";
+Html_Session::register();
 
 // run
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";

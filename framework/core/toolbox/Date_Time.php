@@ -17,12 +17,12 @@ class Date_Time extends DateTime
 
 	//------------------------------------------------------------------------------ createFromFormat
 	/**
-	 * @param $format string
-	 * @param $time string
+	 * @param $format   string
+	 * @param $time     string
 	 * @param $timezone DateTimeZone
 	 * @return Date_Time
 	 */
-	public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
+	public static function createFromFormat($format, $time, $timezone = null)
 	{
 		$dateTime = $timezone
 			? parent::createFromFormat($format, $time, $timezone)
