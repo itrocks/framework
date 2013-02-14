@@ -134,7 +134,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 * @param $query string
 	 * @return integer
 	 */
-	public abstract function query($query);
+	abstract public function query($query);
 
 	//-------------------------------------------------------------------------------------- rollback
 	public function rollback() {}
@@ -230,7 +230,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 *
 	 * @param $context_object mixed Can be a class name or an array of class names
 	 */
-	public abstract function setContext($context_object);
+	abstract public function setContext($context_object);
 
 	//----------------------------------------------------------------------------------- storeNameOf
 	public function storeNameOf($class_name)
