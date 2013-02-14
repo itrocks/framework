@@ -22,8 +22,8 @@ abstract class Data_Link implements Configurable
 	 *
 	 * If data link stores properties not existing into $class, they are listed too, as if they where official properties of $class, but they storage object is a Dao_Column and not a Reflection_Property.
 	 *
-	 * @param $class string | Reflection_Class
-	 * @return Reflection_Property[] | Dao_Column[]
+	 * @param $class string|Reflection_Class
+	 * @return Reflection_Property[]|Dao_Column[]
 	 */
 	abstract public function getStoredProperties($class);
 
@@ -31,8 +31,8 @@ abstract class Data_Link implements Configurable
 	/**
 	 * Read an object from data source
 	 *
-	 * @param $identifier object   identifier for the object
-	 * @param $class string class for read object
+	 * @param $identifier mixed identifier for the object
+	 * @param $class      string class for read object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 */
 	abstract public function read($identifier, $class);
@@ -54,7 +54,7 @@ abstract class Data_Link implements Configurable
 	 * Warning: as destination object will stay independent from source object but also linked to the same data source identifier. You will still be able to write() either source or destination after call to replace().
 	 *
 	 * @param $destination object destination object
-	 * @param $source object source object
+	 * @param $source      object source object
 	 * @return object the resulting $destination object
 	 */
 	abstract public function replace($destination, $source);

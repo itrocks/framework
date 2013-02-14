@@ -9,7 +9,7 @@ abstract class Dao
 	/**
 	 * Begin a transaction with the current data link (non-transactional SQL engines will do nothing and return null)
 	 *
-	 * @return boolean | null true if begin succeeds, false if error, null if not a transactional SQL engine
+	 * @return boolean|null true if begin succeeds, false if error, null if not a transactional SQL engine
 	 * @see Transactional_Data_Link::begin()
 	 */
 	public static function begin()
@@ -27,7 +27,7 @@ abstract class Dao
 	/**
 	 * Commit a transaction using the current data link (non-transactional SQL engines will do nothing and return null)
 	 *
-	 * @return boolean | null true if commit succeeds, false if error, null if not a transactional SQL engine
+	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL engine
 	 * @see Transactional_Data_Link::commit()
 	 */
 	public static function commit()
@@ -59,7 +59,7 @@ abstract class Dao
 	 * If object was not originally read from data source, nothing is done and returns false.
 	 *
 	 * @param $object object object to delete from data source
-	 * @return bool true if deleted
+	 * @return boolean true if deleted
 	 * @see Data_Link::delete()
 	 */
 	public static function delete($object)
@@ -88,7 +88,7 @@ abstract class Dao
 	/**
 	 * Read an object from current data link
 	 *
-	 * @param $identifier object   identifier for the object
+	 * @param $identifier   mixed identifier for the object
 	 * @param $object_class string class for read object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
@@ -102,7 +102,7 @@ abstract class Dao
 	/**
 	 * Read all objects of a given class from current data link
 	 *
-	 * @param $object_class string   class for read objects
+	 * @param $object_class string class for read objects
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::readAll()
 	 */
@@ -119,7 +119,7 @@ abstract class Dao
 	 * Warning: as destination object will stay independent from source object but also linked to the same data source identifier. You will still be able to write() either source or destination after call to replace().
 	 *
 	 * @param $destination object destination object
-	 * @param $source object source object
+	 * @param $source      object source object
 	 * @return object the resulting $destination object
 	 * @see Data_Link::replace()
 	 */
@@ -132,7 +132,7 @@ abstract class Dao
 	/**
 	 * Rollback a transaction with the current data link (non-transactional SQL engines will do nothing and return null)
 	 *
-	 * @return boolean | null true if commit succeeds, false if error, null if not a transactional SQL engine
+	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL engine
 	 * @see Transactional_Data_Link::rollback()
 	 */
 	public static function rollback()
@@ -186,8 +186,8 @@ abstract class Dao
 	/**
 	 * Read selected columns only from data source, using optional filter
 	 *
-	 * @param $class string class for the read object
-	 * @param $columns array  the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param $class         string class for the read object
+	 * @param $columns       array the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
 	 * @param $filter_object mixed source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
 	 * @return mixed[] a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
