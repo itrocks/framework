@@ -178,7 +178,10 @@ class Mysql_Link extends Sql_Link
 		$properties = Reflection_Class::getInstanceOf($class)->getAllProperties();
 		foreach ($properties as $key => $property) {
 			$type = $property->getType();
-			if ($property->isStatic() || $type->isMultiple() || $type->isClass()) {
+			if ($type->isClass()) {
+				$properties["id_" . $property->name] = new Mysql_Column("id_" . $property->name);
+			}
+			elseif ($property->isStatic() || $type->isMultiple()) {
 				unset($properties[$key]);
 			}
 		}
