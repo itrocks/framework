@@ -38,6 +38,14 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	private $doc_comment;
 
+	//----------------------------------------------------------------------------------------- $path
+	/**
+	 * Full path of the property, if built with getInstanceOf() and a $property.path
+	 *
+	 * @var string
+	 */
+	public $path;
+
 	//------------------------------------------------------------------------------------------ $use
 	/**
 	 * If true, phpdoc must be read directly into php file, as phpDocComment may not be the right one
@@ -88,10 +96,12 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 					$of_class = $property->getType()->getElementTypeAsString();
 					$i = $j + 1;
 				} while (($j = strpos($of_name, ".", $i)) !== false);
+				$parent_property = $property;
 				if ($i) {
 					$of_name = substr($of_name, $i);
 				}
-				$property = Reflection_Property::getInstanceOf($of_class, $of_name);
+				$property = new Reflection_Property($of_class, $of_name);
+				$property->path = $of_name_cache;
 			}
 			else {
 				// $of_name is a simple property name
@@ -131,6 +141,20 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			return $this->doc_comment;
 		}
 		return parent::getDocComment();
+	}
+
+	//----------------------------------------------------------------------------- getParentProperty
+	/**
+	 * Gets the parent property for a $property.path
+	 *
+	 * @return Reflection_Property|null
+	 */
+	public function getParentProperty()
+	{
+		if (!empty($this->path) && ($i = strrpos($this->path, "."))) {
+			return self::getInstanceOf(substr($this->path, 0, $i));
+		}
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------------- getType

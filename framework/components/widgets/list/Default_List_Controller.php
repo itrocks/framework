@@ -32,10 +32,15 @@ class Default_List_Controller extends List_Controller
 		$search = array();
 		foreach ($form as $property_name => $value) {
 			if (strlen($value)) {
-				$property_name = str_replace(">", ".", $property_name);
-				$search[$property_name] = new Reflection_Property_Value(
-					$class_name, $property_name, $value, true
-				);
+				$property_name = str_replace(".id_", ".", str_replace(">", ".", $property_name));
+				if (substr($property_name, 0, 3) == "id_") {
+					$property_name = substr($property_name, 3);
+				}
+				$property = new Reflection_Property_Value($class_name, $property_name, $value, true);
+				if ($property->getType()->isClass()) {
+					$property->value(Dao::read($value, $property->getType()->asString()));
+				}
+				$search[$property_name] = $property;
 			}
 		}
 		return $search;
