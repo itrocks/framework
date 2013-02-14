@@ -126,8 +126,15 @@ class Mysql_Logger implements Plugin
 	public static function register($parameters = null)
 	{
 		$mysql_logger = self::getInstance();
-		if (isset($parameters["continue"])) {
-			$mysql_logger->continue = $parameters["continue"];
+		if (isset($parameters)) {
+			if (isset($parameters["continue"])) {
+				$mysql_logger->continue = $parameters["continue"];
+			}
+			foreach ($parameters as $key => $value) if (is_numeric($key)) {
+				if (strpos($_SERVER["REQUEST_URI"], $value)) {
+					return;
+				}
+			}
 		}
 		Aop::add("before", "mysqli->query()", array($mysql_logger, "onQuery"));
 		Aop::add("after",  "mysqli->query()", array($mysql_logger, "onError"));
