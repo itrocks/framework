@@ -15,6 +15,16 @@ class Type
 		"array", "resource", "callable", "null", "NULL"
 	);
 
+	//---------------------------------------------------------------------------------- $can_be_null
+	/**
+	 * true if the type accepts null values
+	 *
+	 * @example for @var object|null type definition
+	 *
+	 * @var boolean
+	 */
+	private $can_be_null = false;
+
 	//-------------------------------------------------------------------------------- $numeric_types
 	/**
 	 * These are the numeric types
@@ -33,9 +43,11 @@ class Type
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
+	 * The type name itself (only one type, does not include "|null" or any secondary types)
+	 *
 	 * @var string
 	 */
-	public $type;
+	private $type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -43,7 +55,13 @@ class Type
 	 */
 	public function __construct($type_string)
 	{
-		$this->type = $type_string;
+		if (($i = strpos($type_string, "|")) !== false) {
+			$this->can_be_null = strpos($type_string, "|null");
+			$this->type = substr($type_string, 0, $i);
+		}
+		else {
+			$this->type = $type_string;
+		}
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -70,6 +88,17 @@ class Type
 	public function asString()
 	{
 		return $this->type;
+	}
+
+	//------------------------------------------------------------------------------------- canBeNull
+	/**
+	 * Returns true if the type accepts null values
+	 *
+	 * @return boolean
+	 */
+	public function canBeNull()
+	{
+		return $this->can_be_null;
 	}
 
 	//-------------------------------------------------------------------------------- getElementType
