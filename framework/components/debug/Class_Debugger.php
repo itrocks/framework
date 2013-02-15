@@ -99,10 +99,10 @@ class Class_Debugger implements Plugin
 		}
 		else {
 			Aop::add("before",
-				Namespaces::fullClassName($class_name) . "->*()", array(get_called_class(), "before")
+				$class_name . "->*()", array(get_called_class(), "before")
 			);
 			Aop::add("after",
-				Namespaces::fullClassName($class_name) . "->*()", array(get_called_class(), "after")
+				$class_name . "->*()", array(get_called_class(), "after")
 			);
 		}
 	}

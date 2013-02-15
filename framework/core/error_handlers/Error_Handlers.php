@@ -22,7 +22,7 @@ class Error_Handlers implements Configurable
 	{
 		foreach ($parameters as $handle) {
 			list($err_no, $error_handler_class) = $handle;
-			$error_handler_class = Namespaces::fullClassName($error_handler_class);
+			$error_handler_class = $error_handler_class;
 			$this->addHandler($err_no, new $error_handler_class());
 		}
 		$this->setAsErrorHandler();

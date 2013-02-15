@@ -13,12 +13,15 @@ class Class_Set_Annotation extends Annotation
 	{
 		parent::__construct($value);
 		if (!$this->value) {
-			$class_name = Namespaces::shortClassName($class->name);
+			$class_name = $class->name;
 			$this->value =
 				(substr($class_name, -1) === "y") ? substr($class_name, 0, -1) . "ies" : (
 				(substr($class_name, -2) === "an") ? substr($class_name, 0, -2) . "en" : (
 				$class_name . "s"
 			));
+		}
+		else {
+			$this->value = Namespaces::defaultFullClassName($this->value, $class->name);
 		}
 	}
 

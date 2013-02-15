@@ -22,17 +22,11 @@ trait Class_Properties
 	public function getClassProperties($class_name)
 	{
 		$main_class_name = $class_name;
-		if (
-			!isset($this->properties[$class_name])
-			&& !isset($this->properties[Namespaces::shortClassName($class_name)])
-		) {
+		if (!isset($this->properties[$class_name])) {
 			$parents = array_merge(class_parents($class_name), class_uses($class_name));
 			while ($parents) {
 				foreach ($parents as $class_name) {
-					if (
-						isset($this->properties[$class_name])
-						|| isset($this->properties[Namespaces::shortClassName($class_name)])
-					) {
+					if (isset($this->properties[$class_name])) {
 						break 2;
 					}
 				}
@@ -46,9 +40,9 @@ trait Class_Properties
 		$properties = isset($this->properties[$class_name])
 			? $this->properties[$class_name]
 			: (
-				isset($this->properties[Namespaces::shortClassName($class_name)])
-				? $this->properties[Namespaces::shortClassName($class_name)]
-				: array_keys(Reflection_Class::getInstanceOf($main_class_name)->getAllProperties())
+				isset($this->properties[$class_name])
+					? $this->properties[$class_name]
+					: array_keys(Reflection_Class::getInstanceOf($main_class_name)->getAllProperties())
 			);
 		return $properties;
 	}
@@ -86,9 +80,8 @@ trait Class_Properties
 	private function setClassProperties($class_name, $properties)
 	{
 		$this->properties[$class_name] = $properties;
-		// TODO what is this ? no hard link please !
-		$properties_class = Namespaces::shortClassName(get_class($this));
-		$config = &$_SESSION["SAF\\Framework\\Configuration"]->$properties_class;
+		$properties_class = get_class($this);
+		$config =& Configuration::current()->$properties_class;
 		$config["properties"][$class_name] = $properties;
 	}
 

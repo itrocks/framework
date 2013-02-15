@@ -37,9 +37,9 @@ abstract class Html_Template_Funcs
 			? (
 					($object instanceof Set)
 					? new Displayable(Names::classToSet($object->element_class_name), Displayable::TYPE_CLASS)
-					: new Displayable(Namespaces::shortClassName(get_class($object)), Displayable::TYPE_CLASS)
+					: new Displayable(get_class($object), Displayable::TYPE_CLASS)
 				)
-			: new Displayable(Namespaces::shortClassName($object), Displayable::TYPE_CLASS);
+			: new Displayable($object, Displayable::TYPE_CLASS);
 	}
 
 	//-------------------------------------------------------------------------------------- getCount

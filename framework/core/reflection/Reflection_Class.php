@@ -201,7 +201,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 				$class = new Reflection_Class($of_class);
 			}
 			catch (ReflectionException $e) {
-				$class = new Reflection_Class(Namespaces::fullClassName($of_class));
+				$class = new Reflection_Class($of_class);
 			}
 			self::$cache[$of_class] = $class;
 		}

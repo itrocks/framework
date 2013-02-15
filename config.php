@@ -2,51 +2,55 @@
 
 //--------------------------------------------------------------------------------------- framework
 $config["framework"] = array(
-	'Aop_Dynamics' => array(
-		'List_Controller' => array(
-			//array("around", "Default_List_Controller_Configuration", "getListProperties()", "List_Controller_Acls", "getListPropertiesAop")
+	'SAF\Framework\Application' => "@static",
+	'SAF\Framework\Aop_Dynamics' => array(
+		'SAF\Framework\List_Controller' => array(
+			//array("around", "SAF\Framework\Default_List_Controller_Configuration", "getListProperties()", "SAF\Framework\List_Controller_Acls", "getListPropertiesAop")
 		)
 	),
-	'Dao' => array(
-		"class"    => "Mysql_Link",
+	'SAF\Framework\Dao' => array(
+		"class"    => 'SAF\Framework\Mysql_Link',
 		"host"     => "localhost",
 		"limit"    => 1000,
 		"user"     => "saf",
 		"password" => "saf",
 		"tables"   => array(
-			'Acls_User' => "users",
+			'SAF\Framework\Acls_User' => "users",
 		)
 	),
-	'Error_Handlers' => array(
-		array(E_ALL & !E_NOTICE,   'Main_Error_Handler'),
-		array(E_RECOVERABLE_ERROR, 'To_Exception_Error_Handler'),
+	'SAF\Framework\Error_Handlers' => array(
+	array(E_ALL & !E_NOTICE,     'SAF\Framework\Main_Error_Handler'),
+		array(E_RECOVERABLE_ERROR, 'SAF\Framework\To_Exception_Error_Handler'),
 	),
-	'Locale' => array(
+	'SAF\Framework\Locale' => array(
 		"date" => "d/m/Y",
 		"language" => "fr",
 		"number" => array(
-				"decimal_minimal_count" => 2,
-				"decimal_maximal_count" => 4,
-				"decimal_separator"     => ",",
-				"thousand_separator"    => " ",
+			"decimal_minimal_count" => 2,
+			"decimal_maximal_count" => 4,
+			"decimal_separator"     => ",",
+			"thousand_separator"    => " ",
 		)
 	),
-	'Plugins' => array(
+	'SAF\Framework\Plugins' => array(
+		"top" => array(
+			'SAF\Framework\Builder'
+		),
 		"highest" => array(
-			'Mysql_Maintainer',
-			'Aop_Getter',
-			'Aop_Setter',
+			'SAF\Framework\Mysql_Maintainer',
+			'SAF\Framework\Aop_Getter',
+			'SAF\Framework\Aop_Setter',
 		),
 		"normal" => array(
-			'Html_Cleaner',
-			'Html_Session',
-			'Html_Translator',
-			'Translation_String_Composer',
-			'Loc'
+			'SAF\Framework\Html_Cleaner',
+			'SAF\Framework\Html_Session',
+			'SAF\Framework\Html_Translator',
+			'SAF\Framework\Translation_String_Composer',
+			'SAF\Framework\Loc'
 		)
 	),
-	'View' => array(
-		"class" => 'Html_View_Engine',
+	'SAF\Framework\View' => array(
+		"class" => 'SAF\Framework\Html_View_Engine',
 		"css"   => "default"
 	)
 );
@@ -55,7 +59,7 @@ $config["framework"] = array(
 $config["rad"] = array(
 	"app" => "RAD",
 	"extends" => "framework",
-	'Dao' => array(
+	'SAF\Framework\Dao' => array(
 		"database" => "saf_rad"
 	)
 );

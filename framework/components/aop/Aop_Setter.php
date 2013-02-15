@@ -14,7 +14,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	public static function register()
 	{
 		Aop::add("after",
-			'SAF\Framework\Autoloader->classLoadEvent()',
+			'SAF\Framework\Autoloader->includeClass()',
 			array(__CLASS__, "registerSettersAop")
 		);
 	}
@@ -37,15 +37,14 @@ abstract class Aop_Setter extends Aop implements Plugin
 
 	//---------------------------------------------------------------------------- registerSettersAop
 	/**
-	 * AOP auto-registerer call (to register after Autoloader->autoload(), crashes with AOP-PHP 0.2.0)
+	 * AOP auto-registerer call
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function registerSettersAop(AopJoinpoint $joinpoint)
 	{
 		if ($joinpoint->getReturnedValue()) {
-			list($class_name) = $joinpoint->getArguments();
-			parent::registerProperties(Namespaces::fullClassName($class_name), "setter", "before", "write");
+			parent::registerProperties($joinpoint->getArguments()[0], "setter", "before", "write");
 		}
 	}
 

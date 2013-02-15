@@ -238,11 +238,9 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		if (isset($this->tables[$class_name])) {
 			$store_name = $this->tables[$class_name];
 		}
-		elseif (isset($this->tables[Namespaces::shortClassName($class_name)])) {
-			$store_name = $this->tables[Namespaces::shortClassName($class_name)];
-		}
 		else {
 			$store_name = parent::storeNameOf($class_name);
+			$this->tables[$class_name] = $store_name;
 		}
 		return $store_name;
 	}

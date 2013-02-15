@@ -27,7 +27,7 @@ class Plugins implements Configurable
 					$class_name = $parameters;
 					$parameters = null;
 				}
-				$this->registerPlugin(Namespaces::fullClassName($class_name), $parameters);
+				$this->registerPlugin($class_name, $parameters);
 			}
 		}
 	}

@@ -17,8 +17,8 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	{
 		$object = array_shift($parameters);
 		array_shift($parameters); // $feature
-		$controller_uri = "/" . Namespaces::shortClassName(get_class($object))
-			. "/" . Dao::getObjectIdentifier($object) . "/delete";
+		$controller_uri = "/" . get_class($object) . "/" . Dao::getObjectIdentifier($object)
+			. "/delete";
 		Main_Controller::getInstance()->runController($controller_uri, $parameters);
 	}
 

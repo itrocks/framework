@@ -64,22 +64,13 @@ class Aop_Dynamics implements Plugin
 	/**
 	 * Register callback advices for joinpoints associated to the class name
 	 *
-	 * @param $class_name string class name can be short or long
+	 * @param $class_name string class name
 	 */
 	private function linkClass($class_name)
 	{
-		$class_names = array(
-			Namespaces::shortClassName($class_name), Namespaces::fullClassName($class_name)
-		);
-		foreach ($class_names as $class_name) {
-			if (isset($this->links[$class_name])) {
-				foreach ($this->links[$class_name] as $link) {
-					Aop::add(
-						$link[0],
-						Namespaces::fullClassName($link[1]) . "::" . $link[2],
-						array(Namespaces::fullClassName($link[3]), $link[4])
-					);
-				}
+		if (isset($this->links[$class_name])) {
+			foreach ($this->links[$class_name] as $link) {
+				Aop::add($link[0], $link[1] . "::" . $link[2], array($link[3]), $link[4]);
 			}
 		}
 	}
@@ -94,11 +85,10 @@ class Aop_Dynamics implements Plugin
 	 */
 	public static function linkClassAop(AopJoinpoint $joinpoint)
 	{
-		$class_name = $joinpoint->getReturnedValue();
-		if ($class_name) {
+		if ($joinpoint->getReturnedValue()) {
 			$current = Aop_dynamics::current();
 			if (isset($current)) {
-				$current->linkClass($class_name);
+				$current->linkClass($joinpoint->getArguments()[0]);
 			}
 		}
 	}
@@ -109,7 +99,10 @@ class Aop_Dynamics implements Plugin
 	 */
 	public static function register()
 	{
-		Aop::add("after", 'SAF\Framework\Autoloader->autoload()', array(__CLASS__, "linkClassAop"));
+		Aop::add("after",
+			'SAF\Framework\Autoloader->includeClass()',
+			array(__CLASS__, "linkClassAop")
+		);
 	}
 
 }

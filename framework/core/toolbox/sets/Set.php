@@ -69,7 +69,7 @@ class Set
 			return (new $class_name())->element_class_name;
 		}
 		elseif (!class_exists($class_name)) {
-			return Namespaces::fullClassName(Names::setToClass($class_name));
+			return Names::setToClass($class_name);
 		}
 		else {
 			return $class_name;

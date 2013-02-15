@@ -20,7 +20,7 @@ class Default_Json_Controller implements Default_Feature_Controller
 		$parameters = $parameters->getObjects();
 		// read all objects corresponding to class name
 		if (!$parameters) {
-			return json_encode(Dao::readAll(Namespaces::fullClassName(Names::setToClass($class_name))));
+			return json_encode(Dao::readAll(Names::setToClass($class_name)));
 		}
 		// read object
 		$first_parameter = reset($parameters);
