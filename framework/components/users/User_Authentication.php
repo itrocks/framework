@@ -13,7 +13,7 @@ abstract class User_Authentication
 	 */
 	public static function arrayToUser($array)
 	{
-		$user = Search_Object::newInstance("User");
+		$user = Search_Object::newInstance('SAF\Framework\User');
 		$user->login = $array["login"];
 		$user->password = Password::crypt(
 			$array["password"],
@@ -45,7 +45,7 @@ abstract class User_Authentication
 	 */
 	public static function controlNameNotUsed($login)
 	{
-		$search = Search_Object::newInstance("User");
+		$search = Search_Object::newInstance('SAF\Framework\User');
 		$search->login = $login;
 		return !Dao::search($search);
 	}
@@ -123,7 +123,7 @@ abstract class User_Authentication
 	 */
 	public static function login($login, $password)
 	{
-		$search = Search_Object::newInstance("User");
+		$search = Search_Object::newInstance('SAF\Framework\User');
 		$search->login = $login;
 		$password = Password::crypt(
 			$password,

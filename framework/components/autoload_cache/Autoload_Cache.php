@@ -106,15 +106,11 @@ abstract class Autoload_Cache implements Plugin, Updatable
 				$buffer = file_get_contents($file_path);
 				$namespace = trim(mParse($buffer, "namespace ", ";"));
 				$short_class = trim(mParse($buffer, "\nclass ", "\n"));
-				if (!$short_class) {
-					$short_class = trim(mParse($buffer, "\nabstract class ", "\n"));
-				}
-				if (!$short_class) {
-					$short_class = trim(mParse($buffer, "\ninterface ", "\n"));
-				}
-				if (!$short_class) {
-					$short_class = trim(mParse($buffer, "\ntrait ", "\n"));
-				}
+				if (!$short_class) $short_class = trim(mParse($buffer, "\nfinal class ", "\n"));
+				if (!$short_class) $short_class = trim(mParse($buffer, "\nabstract class ", "\n"));
+				if (!$short_class) $short_class = trim(mParse($buffer, "\nfinal abstract class ", "\n"));
+				if (!$short_class) $short_class = trim(mParse($buffer, "\ninterface ", "\n"));
+				if (!$short_class) $short_class = trim(mParse($buffer, "\ntrait ", "\n"));
 				if ($i = strpos($short_class, " ")) {
 					$short_class = substr($short_class, 0, $i);
 				}

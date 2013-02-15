@@ -111,7 +111,7 @@ abstract class Data_Link implements Configurable
 	 */
 	public function storeNameOf($class_name)
 	{
-		return strtolower(Names::classToSet($class_name));
+		return strtolower(Namespaces::shortClassName(Names::classToSet($class_name)));
 	}
 
 	//---------------------------------------------------------------------------------- valueChanged

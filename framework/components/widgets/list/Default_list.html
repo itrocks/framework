@@ -11,7 +11,7 @@
 <body>
 
 <!--BEGIN-->
-<div class="window list" id="/{@class}/{@feature}">
+<div class="window list" id="/{@class.short}/{@feature}">
 	<h2 class="window title">|¦{@class.ucfirst}¦ list|</h2>
 
 	<div class="general buttons">
@@ -22,12 +22,12 @@
 		<!--general_buttons-->
 	</div>
 
-	<form action="/{@class}/{@feature}" method="POST">
+	<form action="/{@class.short}/{@feature}" method="POST">
 	<table class="list">
 	<thead>
 	<tr>
 		<th class="column_select">
-			<a href="/Property/select/{@class}" class="popup" target="#column_select">|select columns|</a>
+			<a href="/Property/select/{@class.short}" class="popup" target="#column_select">|select columns|</a>
 		</th>
 		<!--getProperties-->
 		<th id="{.}" class="property trashable">|{@display.twoLast}|</th>

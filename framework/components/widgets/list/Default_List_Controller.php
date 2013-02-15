@@ -58,7 +58,7 @@ class Default_List_Controller extends List_Controller
 	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
 		$parameters = $parameters->getObjects();
-		$element_class_name = Set::elementClassNameOf($class_name);
+		$element_class_name = Namespaces::fullClassName(Set::elementClassNameOf($class_name));
 		$properties_list = $this->getPropertiesList($element_class_name);
 		$search_values = $this->getSearchValues($element_class_name, $form);
 		$search = isset($search_values)

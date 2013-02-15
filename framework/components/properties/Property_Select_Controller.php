@@ -30,6 +30,7 @@ class Property_Select_Controller implements Controller
 	 * - second : if set, the selected property name into the reference class name
 	 * @param $form array  not used
 	 * @param $files array not used
+	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
@@ -37,7 +38,7 @@ class Property_Select_Controller implements Controller
 		$class_name = $parameters->shiftUnnamed();
 		$property_path = $parameters->shiftUnnamed();
 		$property->class = Reflection_Class::getInstanceOf(
-			Set::elementClassNameOf(Namespaces::fullClassName($class_name))
+			Namespaces::fullClassName(Set::elementClassNameOf($class_name))
 		);
 		if (!empty($property_path)) {
 			$property->name = rLastParse($property_path, ".", 1, true);

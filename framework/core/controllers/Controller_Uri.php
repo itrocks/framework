@@ -57,7 +57,7 @@ class Controller_Uri
 	private function setDefaults()
 	{
 		if (!$this->controller_name && !$this->feature_name) {
-			$this->controller_name = "Application";
+			$this->controller_name = Configuration::current()->getApplicationClassName();
 			$this->feature_name = "home";
 		}
 	}
