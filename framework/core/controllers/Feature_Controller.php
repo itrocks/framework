@@ -1,7 +1,9 @@
 <?php
 namespace SAF\Framework;
 
-// TODO doc : what will a feature controller be ?
+/**
+ * A feature controller is a single controller class devoted to one class and one feature
+ */
 interface Feature_Controller extends Controller
 {
 
