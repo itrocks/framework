@@ -8,7 +8,7 @@ class Html_Builder_Map_Edit extends Html_Builder_Map
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
-		$row = $this->buildRow(Object_Builder::current()->newInstance($this->class_name));
+		$row = $this->buildRow(Builder::create($this->class_name));
 		$row->addClass("new");
 		$body->addRow($row);
 		return $body;

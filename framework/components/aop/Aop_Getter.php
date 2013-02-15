@@ -97,7 +97,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 			$type = Reflection_Property::getInstanceOf($class, $property)->getType()->asString();
 			$value = Getter::getObject(null, $type, $object, $property);
 			if (!is_object($value)) {
-				$value = Object_Builder::current()->newInstance($type);
+				$value = Builder::create($type);
 			}
 			$object->$property = $value;
 		}
@@ -107,7 +107,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	public static function register()
 	{
 		Aop::add("after",
-			'SAF\Framework\Autoloader->classLoadEvent()',
+			'SAF\Framework\Autoloader->includeClass()',
 			array(__CLASS__, "registerGettersAop")
 		);
 	}
@@ -129,14 +129,15 @@ abstract class Aop_Getter extends Aop implements Plugin
 
 	//---------------------------------------------------------------------------- registerGettersAop
 	/**
-	 * AOP auto-registerer call (to register after Autoloader->autoload(), crashes with AOP-PHP 0.2.0)
+	 * AOP auto-registerer call
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */
 	public static function registerGettersAop(AopJoinpoint $joinpoint)
 	{
-		$class_name = $joinpoint->getArguments()[0];
-		parent::registerProperties(Namespaces::fullClassName($class_name), "getter", "before", "read");
+		if ($joinpoint->getReturnedValue()) {
+			parent::registerProperties($joinpoint->getArguments()[0], "getter", "before", "read");
+		}
 	}
 
 }

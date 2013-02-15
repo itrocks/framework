@@ -3,31 +3,44 @@ namespace SAF\Framework;
 use AopJoinpoint;
 use ReflectionClass;
 
-class Object_Builder implements Plugin
+class Builder implements Plugin
 {
 	use Current_With_Default { current as private dCurrent; }
 
-	//---------------------------------------------------------------------------------- $new_classes
+	//--------------------------------------------------------------------------------- $replacements
 	/**
 	 * @var string[] key is parent class name associated to replacement class
 	 */
-	private $new_classes;
+	private $replacements;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $new_classes string[] key is parent class name associated to replacement class
+	 * @param $replacements string[] key is parent class name associated to replacement class
 	 */
-	public function __construct($new_classes = array())
+	public function __construct($replacements = array())
 	{
-		$this->new_classes = $new_classes;
+		$this->replacements = $replacements;
+	}
+
+	//---------------------------------------------------------------------------------------- create
+	/**
+	 * @param $class_name string
+	 * @param $args       array|null
+	 * @return object
+	 */
+	public static function create($class_name, $args = null)
+	{
+		return isset($args)
+			? self::current()->newInstanceArgs($class_name, $args)
+			: self::current()->newInstance($class_name);
 	}
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Object_Builder
-	 * @return Object_Builder
+	 * @param $set_current Builder
+	 * @return Builder
 	 */
-	public static function current(Object_Builder $set_current = null)
+	public static function current(Builder $set_current = null)
 	{
 		return self::dCurrent($set_current);
 	}
@@ -61,20 +74,17 @@ class Object_Builder implements Plugin
 	//---------------------------------------------------------------------- onClassNamePropertyWrite
 	/**
 	 * @param $joinpoint AopJoinpoint
-	 * @param $full boolean
 	 */
-	private static function onClassNamePropertyWrite(AopJoinpoint $joinpoint, $full)
+	public static function onClassNamePropertyWrite(AopJoinpoint $joinpoint)
 	{
 		static $antiloop = false;
 		if (!$antiloop) {
 			$assigned_value = $joinpoint->getAssignedValue();
-			$class_name = Object_Builder::current()->replacementClassName($assigned_value);
+			$class_name = Builder::current()->replacementClassName($assigned_value);
 			if ($class_name !== $assigned_value) {
 				$property_name = $joinpoint->getPropertyName();
 				$antiloop = true;
-				$joinpoint->getObject()->$property_name = $full
-					? $class_name
-					: Namespaces::shortClassName($class_name);
+				$joinpoint->getObject()->$property_name = $class_name;
 				$antiloop = false;
 			}
 		}
@@ -86,7 +96,7 @@ class Object_Builder implements Plugin
 	 */
 	public static function onFullClassNamePropertyWrite(AopJoinpoint $joinpoint)
 	{
-		Object_Builder::onClassNamePropertyWrite($joinpoint, true);
+		Builder::onClassNamePropertyWrite($joinpoint, true);
 	}
 
 	//------------------------------------------------------------------------- onMethodWithClassName
@@ -97,7 +107,7 @@ class Object_Builder implements Plugin
 	private static function onMethodWithClassName(AopJoinpoint $joinpoint, $index)
 	{
 		$arguments = $joinpoint->getArguments();
-		$class_name = Object_Builder::current()->replacementClassName($arguments[$index]);
+		$class_name = Builder::current()->replacementClassName($arguments[$index]);
 		if ($class_name !== $arguments[$index]) {
 			$arguments[$index] = $class_name;
 			$joinpoint->setArguments($arguments);
@@ -110,7 +120,7 @@ class Object_Builder implements Plugin
 	 */
 	public static function onMethodWithClassName0(AopJoinpoint $joinpoint)
 	{
-		Object_Builder::onMethodWithClassName($joinpoint, 0);
+		Builder::onMethodWithClassName($joinpoint, 0);
 	}
 
 	//------------------------------------------------------------------------ onMethodWithClassName1
@@ -119,7 +129,7 @@ class Object_Builder implements Plugin
 	 */
 	public static function onMethodWithClassName1(AopJoinpoint $joinpoint)
 	{
-		Object_Builder::onMethodWithClassName($joinpoint, 1);
+		Builder::onMethodWithClassName($joinpoint, 1);
 	}
 
 	//----------------------------------------------------------------------- onMethodWithReturnValue
@@ -129,25 +139,16 @@ class Object_Builder implements Plugin
 	public static function onMethodWithReturnedValue(AopJoinpoint $joinpoint)
 	{
 		$joinpoint->setReturnedValue(
-			Object_Builder::current()->replacementClassName($joinpoint->getReturnedValue())
+			Builder::current()->replacementClassName($joinpoint->getReturnedValue())
 		);
-	}
-
-	//----------------------------------------------------------------- onShortClassNamePropertyWrite
-	/**
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function onShortClassNamePropertyWrite(AopJoinpoint $joinpoint)
-	{
-		Object_Builder::onClassNamePropertyWrite($joinpoint, false);
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
 		Aop::add("after",
-			"write " . 'SAF\Framework\Controller_Uri->controller_name',
-			array(__CLASS__, "onShortClassNamePropertyWrite")
+			'write SAF\Framework\Controller_Uri->controller_name',
+			array(__CLASS__, "onClassNamePropertyWrite")
 		);
 		Aop::add("after",
 			'SAF\Framework\Set->elementClassNameOf()',
@@ -169,18 +170,19 @@ class Object_Builder implements Plugin
 
 	//-------------------------------------------------------------------------- replacementClassName
 	/**
-	 * Gets replacement class name for a parent class name
+	 * Gets replacement class name for a parent class name or a list of traits to implement
 	 *
 	 * @param $class_name string can be short or full class name
 	 * @return string
 	 */
-	public function replacementClassName($class_name)
+	private function replacementClassName($class_name)
 	{
-		$class_name = Namespaces::fullClassName($class_name);
-		$result = isset($this->new_classes[$class_name])
-			? $this->new_classes[$class_name]
+		$result = isset($this->replacements[$class_name])
+			? $this->replacements[$class_name]
 			: $class_name;
-		return Namespaces::defaultFullClassName($result, $class_name);
+		return is_array($result)
+			? Class_Builder::build($class_name, $result)
+			: $result;
 	}
 
 }

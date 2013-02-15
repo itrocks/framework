@@ -137,7 +137,7 @@ function arrayToCollection($array, $class_name)
 //----------------------------------------------------------------------------------- arrayToObject
 function arrayToObject($array, $class_name)
 {
-	$object = Object_Builder::current()->newInstance($class_name);
+	$object = Builder::create($class_name);
 	foreach ($array as $property_name => $value) {
 		if (($property_name != "id") || !empty($value)) {
 			$object->$property_name = $value;

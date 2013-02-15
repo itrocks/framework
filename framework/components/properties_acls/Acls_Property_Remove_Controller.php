@@ -18,7 +18,7 @@ class Acls_Property_Remove_Controller implements Feature_Controller
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		/** @var $acls_properties Acls_Properties */
-		$acls_properties = Object_Builder::current()->newInstance($parameters->shiftUnnamed());
+		$acls_properties = Builder::create($parameters->shiftUnnamed());
 		$acls_properties->context_class_name = $parameters->shiftUnnamed();
 		$context_class_name = $acls_properties->context_class_name;
 		$context_feature_name = $parameters->shiftUnnamed();

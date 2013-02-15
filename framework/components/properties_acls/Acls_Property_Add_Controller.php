@@ -20,7 +20,7 @@ class Acls_Property_Add_Controller implements Feature_Controller
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		/** @var $acls_properties Acls_Properties */
-		$acls_properties = Object_Builder::current()->newInstance($parameters->shiftUnnamed());
+		$acls_properties = Builder::create($parameters->shiftUnnamed());
 		$class_name = Namespaces::fullClassName($parameters->shiftUnnamed());
 		if (!class_exists($class_name) || class_instanceof($class_name, 'SAF\Framework\Set')) {
 			$class_name = Set::elementClassNameOf($class_name);

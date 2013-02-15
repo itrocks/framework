@@ -15,8 +15,7 @@ abstract class Search_Object
 	 */
 	public static function newInstance($class_name)
 	{
-		$class_name = Namespaces::fullClassName($class_name);
-		$object = new $class_name();
+		$object = Builder::create($class_name);
 		$class = Reflection_Class::getInstanceOf($class_name);
 		$class->accessProperties();
 		foreach (array_keys(get_object_vars($object)) as $property_name) {

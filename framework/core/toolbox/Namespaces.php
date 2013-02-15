@@ -81,6 +81,20 @@ abstract class Namespaces
 		return strpos($class_name, "\\") === false;
 	}
 
+	//-------------------------------------------------------------------------------------------- of
+	/**
+	 * Returns the namespace from a class name, or an empty string if the class is in the global scope
+	 *
+	 * @param $class_name
+	 * @return string
+	 */
+	public static function of($class_name)
+	{
+		if ($i = strrpos($class_name, "\\")) {
+			return substr($class_name, 0, $i);
+		}
+	}
+
 	//-------------------------------------------------------------------------------- shortClassName
 	/**
 	 * Get the short class name (without it's namespace) for a given class name
