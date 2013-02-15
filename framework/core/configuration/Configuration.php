@@ -1,6 +1,6 @@
 <?php
 namespace SAF\Framework;
-use \Serializable;
+use Serializable;
 
 /** @noinspection PhpIncludeInspection called from index.php */
 require_once "framework/core/toolbox/Current.php";
@@ -14,6 +14,12 @@ class Configuration implements Serializable
 	 * @var string
 	 */
 	private $app;
+
+	//--------------------------------------------------------------------------------------- $author
+	/**
+	 * @var string
+	 */
+	private $author;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -47,30 +53,47 @@ class Configuration implements Serializable
 		if (isset($set_current)) {
 			/** @var $set_current Configuration */
 			$set_current = self::pCurrent($set_current);
-			foreach (
-				$set_current->getClassesConfigurations() as $class_name => $configuration
-			) {
-				$full_class_name = Namespaces::fullClassName($class_name);
-				$configuration_class_name = isset($configuration["class"])
-					? Namespaces::fullClassName($configuration["class"])
-					: $full_class_name;
-				$builder_class_name = Namespaces::fullClassName(
-					rLastParse($configuration_class_name, "\\") . "_Builder_Configuration"
-				);
-				if (class_exists($builder_class_name)) {
-					/** @var $builder_object Configuration_Builder */
-					$builder_object = new $builder_class_name();
-					call_user_func(
-						array($full_class_name, "current"), $builder_object->build($configuration)
-					);
+			foreach ($set_current->getClassesConfigurations() as $class_name => $configuration) {
+				if ($configuration == "@static") {
+					$self_configuration = array();
+					$set_current->$class_name =& $self_configuration;
+					$class = Reflection_Class::getInstanceOf($class_name);
+					foreach ($class->accessProperties() as $property) if ($property->isStatic()) {
+						$property_name = $property->name;
+						$self_configuration[$property_name] =& $class_name::$$property_name;
+					}
+					$class->accessPropertiesDone();
 				}
-				elseif (method_exists($full_class_name, "current")) {
-					call_user_func(
-						array($full_class_name, "current"), new $configuration_class_name($configuration)
-					);
+				if (method_exists($class_name, "current")) {
+					$configuration_class_name = isset($configuration["class"])
+						? $configuration["class"]
+						: $class_name;
+					$builder_class_name = $configuration_class_name . "_Builder_Configuration";
+					if (class_exists($builder_class_name)) {
+						/** @var $builder_object Configuration_Builder */
+						$builder_object = Builder::create($builder_class_name);
+						call_user_func(array($class_name, "current"), $builder_object->build($configuration));
+					}
+					else {
+						call_user_func(
+							array($class_name, "current"),
+							Builder::create($configuration_class_name, array($configuration))
+						);
+					}
 				}
-				elseif (method_exists($full_class_name, "configure")) {
-					call_user_func(array($full_class_name, "configure"), $configuration);
+				elseif (method_exists($class_name, "configure")) {
+					call_user_func(array($class_name, "configure"), $configuration);
+				}
+				else {
+					$self_configuration =& $set_current->$class_name;
+					$class = Reflection_Class::getInstanceOf($class_name);
+					foreach ($class->accessProperties() as $property) {
+						$property_name = $property->name;
+						if ($property->isStatic() && isset($self_configuration[$property_name])) {
+							$class_name::$$property_name =& $self_configuration[$property_name];
+						}
+					}
+					$class->accessPropertiesDone();
 				}
 			}
 			return $set_current;
@@ -78,6 +101,12 @@ class Configuration implements Serializable
 		else {
 			return self::pCurrent($set_current);
 		}
+	}
+
+	//----------------------------------------------------------------------- getApplicationClassName
+	public function getApplicationClassName()
+	{
+		return (isset($this->author) ? $this->author : "SAF") . "\\" . $this->app . "\\Application";
 	}
 
 	//---------------------------------------------------------------------------- getApplicationName
