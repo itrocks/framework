@@ -84,7 +84,7 @@ abstract class User_Authentication
 
 	//-------------------------------------------------------------------------------- getLoginInputs
 	/**
-	 * Return the list of the inputs necessary to register
+	 * Return the list of the inputs necessary to login
 	 *
 	 * @return array
 	 */
