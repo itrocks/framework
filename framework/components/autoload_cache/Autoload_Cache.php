@@ -25,21 +25,48 @@ abstract class Autoload_Cache implements Plugin, Updatable
 
 	//-------------------------------------------------------------------------------------- autoload
 	/**
-	 * Autoload replacement, with cache
-	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $class_name string
 	 */
-	public static function autoload(AopJoinpoint $joinpoint)
+	public static function autoload($class_name)
 	{
-		$class_name = $joinpoint->getArguments()[0];
 		if ((strpos($class_name, "/") !== false) && isset(self::$full_class_names[$class_name])) {
 			$class_name = self::$full_class_names[$class_name];
 		}
 		if (isset(self::$paths[$class_name])) {
-			include_once self::$paths[$class_name];
-			$joinpoint->setReturnedValue(Namespaces::shortClassName($class_name));
-			Autoloader::classLoadEvent($class_name);
+			Autoloader::includeClass($class_name, self::$paths[$class_name]);
 		}
+	}
+
+	//--------------------------------------------------------------------------------- fullClassName
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function fullClassName($class_name)
+	{
+		return isset(self::$full_class_names[$class_name])
+			? self::$full_class_names[$class_name]
+			: $class_name;
+	}
+
+	//------------------------------------------------------------------------------------ onAutoload
+	/**
+	 * Autoload replacement, with cache
+	 *
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function onAutoload(AopJoinpoint $joinpoint)
+	{
+		self::autoload($joinpoint->getArguments()[0]);
+	}
+
+	//------------------------------------------------------------------------------- onFullClassName
+	/**
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function onFullClassName(AopJoinpoint $joinpoint)
+	{
+		$joinpoint->setReturnedValue(self::fullClassName($joinpoint->getArguments()[0]));
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -50,11 +77,18 @@ abstract class Autoload_Cache implements Plugin, Updatable
 	{
 		Application_Updater::addUpdatable(get_called_class());
 		self::$cache_path = strtolower(Configuration::current()->getApplicationName()) . "/cache";
-		include(self::$cache_path . "/autoload.php");
+		@include self::$cache_path . "/autoload.php";
 		if (!self::$paths) {
 			self::update();
 		}
-		Aop::add("around", 'SAF\Framework\Autoloader->autoload()', array(__CLASS__, "autoload"));
+		Aop::add("around",
+			'SAF\Framework\Autoloader->autoload()',
+			array(__CLASS__, "onAutoload")
+		);
+		Aop::add("around",
+			'SAF\Framework\Namespaces->fullClassName()',
+			array(__CLASS__, "onFullClassName")
+		);
 	}
 
 	//---------------------------------------------------------------------------------------- update
@@ -65,6 +99,7 @@ abstract class Autoload_Cache implements Plugin, Updatable
 	{
 		$application_name = Configuration::current()->getApplicationName();
 		$directories = Application::getSourceFiles($application_name);
+		self::$full_class_names = array();
 		self::$paths = array();
 		foreach ($directories as $file_path) {
 			if (substr($file_path, -4) == ".php") {

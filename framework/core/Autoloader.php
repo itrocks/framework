@@ -24,7 +24,7 @@ abstract class Autoloader implements Plugin
 	/**
 	 * Included classes list
 	 *
-	 * @var string[] keys are arbitrary numeric
+	 * @var mixed[] keys are arbitrary numeric, value is false if class not found, or the class file path if class was found and included
 	 */
 	private static $included_classes = array();
 
@@ -50,45 +50,17 @@ abstract class Autoloader implements Plugin
 	/**
 	 * Includes the php file that contains the given class (must contain namespace)
 	 *
-	 * Will return the short class name, or null if the class file was not found.
-	 *
-	 * @todo restrict to the class namespace's corresponding application, in order to enable inclusion of classes that have the same name in several namespaces / applications.
-	 *
 	 * @param $class_name string class name (with or without namespace)
-	 * @return string|null found class name (without namespace)
 	 */
 	public static function autoload($class_name)
 	{
-		$short_class_name = Namespaces::shortClassName($class_name);
-		if (!isset(self::$included_classes[$short_class_name])) {
-			/** @noinspection PhpIncludeInspection */
-			if (!@include_once($short_class_name . ".php")) {
-				if (!self::$initialized) {
-					static::init();
-					/** @noinspection PhpIncludeInspection */
-					if (!@include_once($short_class_name . ".php")) {
-						return null;
-					}
-				}
-				else {
-					return null;
-				}
+		if (!isset(self::$included_classes[$class_name])) {
+			if (!self::$initialized) {
+				static::init();
 			}
-			$class_name = Namespaces::fullClassName($short_class_name);
-			self::$included_classes[$short_class_name] = $class_name;
-			self::classLoadEvent($class_name);
+			$short_class_name = Namespaces::shortClassName($class_name);
+			self::$included_classes[$class_name] = self::includeClass($short_class_name);
 		}
-		return $short_class_name;
-	}
-
-	//-------------------------------------------------------------------------------- classLoadEvent
-	/**
-	 * This event can be used as pointcut when a new class has been loaded
-	 *
-	 * @param $class_name string full class name, with namespace
-	 */
-	public static function classLoadEvent($class_name)
-	{
 	}
 
 	//-------------------------------------------------------------------------- getOriginIncludePath
@@ -103,6 +75,23 @@ abstract class Autoloader implements Plugin
 			self::$origin_include_path = get_include_path();
 		}
 		return self::$origin_include_path;
+	}
+
+	//---------------------------------------------------------------------------------- includeClass
+	/**
+	 * @param $class_name string The class name
+	 * @param $file_path  string The file path. If null, this will be automatically searched into include path
+	 * @return string|boolean The full path for the file if class file was included, false if not found
+	 */
+	public static function includeClass($class_name, $file_path = null)
+	{
+		if (!isset($file_path)) {
+			$file_path = stream_resolve_include_path($class_name . ".php");
+		}
+		if ($file_path) {
+			include_once $file_path;
+		}
+		return $file_path;
 	}
 
 	//------------------------------------------------------------------------------ includeSeparator
