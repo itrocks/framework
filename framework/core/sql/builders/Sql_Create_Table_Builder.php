@@ -30,7 +30,7 @@ class Sql_Create_Table_Builder
 		return "CREATE TABLE `" . $this->table->getName() . "` ("
 			. join(", ", $columns)
 			. ($indexes ? ", " : "") . join(", ", $indexes)
-			. ")";
+			. ") DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 	}
 
 }
