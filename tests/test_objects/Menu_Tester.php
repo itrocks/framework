@@ -53,8 +53,8 @@ abstract class Menu_Tester implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		aop_add_before("read SAF\\Framework\\Menu->blocks", array(__CLASS__, "menuInitDemo"));
-		aop_add_before("read SAF\\Framework\\Menu->title",  array(__CLASS__, "menuInitDemo"));
+		aop_add_before('read SAF\Framework\Menu->blocks', array(__CLASS__, "menuInitDemo"));
+		aop_add_before('read SAF\Framework\Menu->title',  array(__CLASS__, "menuInitDemo"));
 	}
 
 }

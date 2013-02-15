@@ -12,9 +12,9 @@ class Application
 	/**
 	 * Namespaces list cache : initialized at first use
 	 *
-	 * @var (.*)[]
+	 * @var string[]
 	 */
-	protected static $namespaces;
+	public static $namespaces = array();
 
 	//-------------------------------------------------------------------------------- getDirectories
 	/**
@@ -56,6 +56,44 @@ class Application
 			}
 		}
 		return $files;
+	}
+
+	//--------------------------------------------------------------------------------- getNamespaces
+	/**
+	 * Returns the used namespaces list for the application, including parent's applications namespaces
+	 *
+	 * Namespaces strings are sorted from higher-level application to basis "SAF\Framework" namespace
+	 * An empty namespace will always be given first
+	 *
+	 * @return string[]
+	 */
+	public static function getNamespaces()
+	{
+		if (!self::$namespaces) {
+			$current_configuration = Configuration::current();
+			if (!$current_configuration) {
+				return array(__NAMESPACE__);
+			}
+			else {
+				$application_class = $current_configuration->getApplicationClassName();
+				while (!empty($application_class) && ($application_class != 'SAF\Framework\Application')) {
+					$namespace = Namespaces::of($application_class);
+					self::$namespaces[] = $namespace;
+					$path = Names::classToProperty(substr($namespace, strpos($namespace, "/") + 1));
+					$dir = dir($path);
+					while ($entry = $dir->read()) if (($entry[0] != '.') && is_dir($path . "/" . $entry)) {
+						self::$namespaces[] = $namespace . "\\" . Names::propertyToClass($entry);
+					}
+					$dir->close();
+					$application_class = get_parent_class($application_class);
+				}
+				self::$namespaces[] = 'SAF\Framework';
+				self::$namespaces[] = 'SAF\Framework\Tests';
+
+				self::$namespaces[] = "";
+			}
+		}
+		return self::$namespaces;
 	}
 
 	//-------------------------------------------------------------------------- getSourceDirectories
@@ -107,44 +145,6 @@ class Application
 			$directories = static::getSourceFiles($extends, $include_vendor);
 		}
 		return array_merge(static::getFiles($app_dir, $include_vendor), $directories);
-	}
-
-	//--------------------------------------------------------------------------------- getNamespaces
-	/**
-	 * Returns the used namespaces list for the application, including parent's applications namespaces
-	 *
-	 * Namespaces strings are sorted from higher-level application to basis "SAF\Framework" namespace
-	 * An empty namespace will always be given first
-	 *
-	 * @return string[]
-	 */
-	public static function getNamespaces()
-	{
-		if (!self::$namespaces) {
-			$current_configuration = Configuration::current();
-			if (!$current_configuration) {
-				return array(__NAMESPACE__);
-			}
-			else {
-				$application = $current_configuration->getApplicationName();
-				$app_path = strtolower($application);
-				self::$namespaces = array();
-				while ($application != "Framework") {
-					self::$namespaces[] = "SAF\\" . $application;
-					$application =  mParse(file_get_contents("$app_path/Application.php"),
-						" extends \\SAF\\", "\\Application"
-					);
-					$app_path = strtolower(
-						is_dir(strtolower($application)) ? $application : "_" . $application
-					);
-				}
-				self::$namespaces[] = __NAMESPACE__;
-				// TODO should found another way to make it smarter (perhaps framework_test application ?)
-				self::$namespaces[] = __NAMESPACE__ . "\\Tests";
-				self::$namespaces[] = "";
-			}
-		}
-		return self::$namespaces;
 	}
 
 }
