@@ -138,11 +138,12 @@ abstract class Mysql_Column_Builder_Property
 				}
 				else {
 					return ($max_length <= 3) ? "char($max_length)" : (
-					($max_length <= 255) ? "varchar($max_length)" : (
-					($max_length <= 65535) ? "text" : (
-					($max_length <= 16777215) ? "mediumtext" :
-						"longtext"
-					)));
+						($max_length <= 255) ? "varchar($max_length)" : (
+						($max_length <= 65535) ? "text" : (
+						($max_length <= 16777215) ? "mediumtext" :
+							"longtext"
+						)))
+						. " CHARACTER SET utf8 COLLATE utf8_general_ci";
 				}
 			}
 			switch ($property_type) {
