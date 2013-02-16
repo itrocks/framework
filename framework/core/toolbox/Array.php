@@ -1,7 +1,12 @@
 <?php
-use SAF\Framework\Object_Builder;
 
 //------------------------------------------------------------------------------ arrayDiffRecursive
+/**
+ * @param $array1    array
+ * @param $array2    array
+ * @param $show_type boolean
+ * @return array|boolean
+ */
 function arrayDiffRecursive($array1, $array2, $show_type = false)
 {
 	$diff = array();
@@ -119,6 +124,11 @@ function arrayNamedValues($array)
 }
 
 //------------------------------------------------------------------------------- arrayToCollection
+/**
+ * @param $array      array
+ * @param $class_name string
+ * @return object[]
+ */
 function arrayToCollection($array, $class_name)
 {
 	$collection = array();
@@ -135,9 +145,14 @@ function arrayToCollection($array, $class_name)
 }
 
 //----------------------------------------------------------------------------------- arrayToObject
+/**
+ * @param $array      mixed[]
+ * @param $class_name string
+ * @return object
+ */
 function arrayToObject($array, $class_name)
 {
-	$object = Builder::create($class_name);
+	$object = SAF\Framework\Builder::create($class_name);
 	foreach ($array as $property_name => $value) {
 		if (($property_name != "id") || !empty($value)) {
 			$object->$property_name = $value;
@@ -218,27 +233,30 @@ function explodeStringInArrayToSimpleArray($delimiter, $array)
 
 //--------------------------------------------------------------- explodeStringInArrayToDoubleArray
 /**
- * Explode strings in array or in array of array, and return an array of array of string.
- * @param $delimiter string The boundary string.
- * @param $array array The input array, can be an array of string or an array of array of string.
- * @return array Return an array of array of string.
+ * Explodes strings in array or in array of array, and return an array of array of string.
+ *
  * @example
  * explodeStringInArrayToDoubleArray(" ", array("Dot", "a cat", "the cat run"))
  * return : array(array("Dot"), array("a", "cat"), array("the", "cat", "run"))
  *
+ * @example
  * explodeStringInArrayToDoubleArray(" ", array(array("Dot a"), array("the cat run"))
  * return : array(array("Dot", "a"), array("the", "cat", "run"))
+ *
+ * @param $delimiter string The boundary string.
+ * @param $array     array The input array, can be an array of string or an array of array of string.
+ * @return array Return an array of array of string.
  */
 function explodeStringInArrayToDoubleArray($delimiter, $array)
 {
 	$tab = array();
-	foreach($array as $element){
-		if(is_array($element)){
-			$tab[] = self::explodeStringInArrayToSimpleArray($delimiter, $element);
+	foreach ($array as $element) {
+		if (is_array($element)) {
+			$tab[] = explodeStringInArrayToDoubleArray($delimiter, $element);
 		}
 		else {
 			$explode = explode($delimiter, $element);
-			if(!empty($explode)){
+			if (!empty($explode)) {
 				$tab[] = $explode;
 			}
 			else {

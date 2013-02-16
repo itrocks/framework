@@ -23,12 +23,12 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Create a table in database, which has no associated class, using fields names
 	 *
-	 * @param $mysqli       object
+	 * @param $mysqli       mysqli
 	 * @param $table_name   string
 	 * @param $column_names string[]
 	 * @return boolean
 	 */
-	private static function createImplicitTable($mysqli, $table_name, $column_names)
+	private static function createImplicitTable(mysqli $mysqli, $table_name, $column_names)
 	{
 		$table = new Mysql_Table($table_name);
 		foreach ($column_names as $column_name) {
@@ -42,12 +42,12 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Create table (probably links table) without context
 	 *
-	 * @param $mysqli     Contextual_Mysqli
+	 * @param $mysqli     mysqli
 	 * @param $table_name string
 	 * @param $query      string
 	 * @return boolean
 	 */
-	private static function createTableWithoutContext($mysqli, $table_name, $query)
+	private static function createTableWithoutContext(mysqli $mysqli, $table_name, $query)
 	{
 		$alias = "t" . (
 			(substr($query, strpos($query, "`" . $table_name . "` t") + strlen($table_name) + 4)) + 0

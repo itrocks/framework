@@ -116,7 +116,9 @@ class Html_Builder_Type_Edit
 		$input->setAttribute("autocomplete", "off");
 		$input->addClass("combo");
 		$input->addClass("autowidth");
-		$input->addClass("class:" . Names::classToSet($this->type->asString()));
+		$input->addClass(
+			"class:" . Namespaces::shortClassName(Names::classToSet($this->type->asString()))
+		);
 		return $id_input . $input;
 	}
 

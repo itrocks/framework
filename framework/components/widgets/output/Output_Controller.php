@@ -6,25 +6,19 @@ abstract class Output_Controller implements Default_Feature_Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
-	 * @param $class_name string
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons(
-		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
-		$class_name
-	) {
+	protected function getGeneralButtons()
+	{
 		return array();
 	}
 
 	//----------------------------------------------------------------------------- getPropertiesList
 	/**
-	 * @param $class_name string
 	 * @return string[] property names list
 	 */
-	protected function getPropertiesList(
-		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
-		$class_name
-	) {
+	protected function getPropertiesList()
+	{
 		return null;
 	}
 
@@ -68,10 +62,10 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 * Default run method for default output view controller
 	 *
 	 * @param $parameters Controller_Parameters
-	 * @param $form array
-	 * @param $files array
+	 * @param $form       array
+	 * @param $files      array
 	 * @param $class_name string
-	 * return mixed
+	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{

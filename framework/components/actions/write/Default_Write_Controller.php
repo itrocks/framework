@@ -11,10 +11,9 @@ class Default_Write_Controller implements Class_Controller
 	 * Save data from the posted form into the first parameter object using standard method.
 	 * Create a new instance of this object if no identifier was given.
 	 *
-	 * @todo not implemented yet, please do something
 	 * @param $parameters Controller_Parameters
-	 * @param $form array
-	 * @param $files array
+	 * @param $form       array
+	 * @param $files      array
 	 * @param $class_name string
 	 * @return mixed
 	 */

@@ -49,6 +49,11 @@ abstract class View
 	}
 
 	//------------------------------------------------------------------------------------------ link
+	/**
+	 * @param $object     object|string object or class name
+	 * @param $parameters string|string[] string or array : parameters list (feature and other parameters)
+	 * @return string
+	 */
 	public static function link($object, $parameters = null)
 	{
 		return self::current()->link($object, $parameters);

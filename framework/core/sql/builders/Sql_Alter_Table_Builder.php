@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Sql_Alter_Table_builder
+class Sql_Alter_Table_Builder
 {
 
 	//---------------------------------------------------------------------------------- $add_columns
