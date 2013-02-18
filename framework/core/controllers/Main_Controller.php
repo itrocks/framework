@@ -63,12 +63,15 @@ class Main_Controller
 			list($controller, $method_name) = $call;
 			if (@method_exists($controller, $method_name)) {
 				$controller = new $controller();
+				$class_name = ($controller instanceof List_Controller)
+					? Namespaces::fullClassName(Set::elementClassNameOf($uri->controller_name))
+					: $uri->controller_name;
 				return $controller->$method_name(
-					$uri->parameters, $post, $files,
-					Namespaces::fullClassName($uri->controller_name), $uri->feature_name
+					$uri->parameters, $post, $files, $class_name, $uri->feature_name
 				);
 			}
 		}
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------- sessionStart

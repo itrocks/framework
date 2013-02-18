@@ -35,11 +35,9 @@ class Property_Select_Controller implements Controller
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$property = new Property();
-		$class_name = $parameters->shiftUnnamed();
+		$class_name = Namespaces::fullClassName(Set::elementClassNameOf($parameters->shiftUnnamed()));
 		$property_path = $parameters->shiftUnnamed();
-		$property->class = Reflection_Class::getInstanceOf(
-			Namespaces::fullClassName(Set::elementClassNameOf($class_name))
-		);
+		$property->class = Reflection_Class::getInstanceOf($class_name);
 		if (!empty($property_path)) {
 			$property->name = rLastParse($property_path, ".", 1, true);
 			$parameters->set("container", "subtree");

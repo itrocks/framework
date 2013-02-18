@@ -22,6 +22,27 @@ class Builder implements Plugin
 		$this->replacements = $replacements;
 	}
 
+	//------------------------------------------------------------------ afterNamespacesFullClassName
+	/**
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function afterNamespacesFullClassName(AopJoinpoint $joinpoint)
+	{
+		if (Namespaces::isShortClassName($joinpoint->getArguments()[0])) {
+			self::onMethodWithReturnedValue($joinpoint);
+		}
+	}
+
+	//------------------------------------------------------------------------------------- className
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function className($class_name)
+	{
+		return self::current()->replacementClassName($class_name);
+	}
+
 	//---------------------------------------------------------------------------------------- create
 	/**
 	 * @param $class_name string
@@ -147,12 +168,12 @@ class Builder implements Plugin
 	public static function register()
 	{
 		Aop::add("after",
-			'write SAF\Framework\Controller_Uri->controller_name',
-			array(__CLASS__, "onClassNamePropertyWrite")
-		);
-		Aop::add("after",
 			'SAF\Framework\Set->elementClassNameOf()',
 			array(__CLASS__, "onMethodWithReturnedValue")
+		);
+		Aop::add("after",
+			'SAF\Framework\Namespaces->fullClassName()',
+			array(__CLASS__, "afterNamespacesFullClassName")
 		);
 		Aop::add("before",
 			'SAF\Framework\Getter->getCollection()',

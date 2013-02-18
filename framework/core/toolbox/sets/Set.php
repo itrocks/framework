@@ -66,14 +66,12 @@ class Set
 	public static function elementClassNameOf($class_name)
 	{
 		if (class_instanceof($class_name, __CLASS__)) {
-			return (new $class_name())->element_class_name;
+			$class_name = (new $class_name())->element_class_name;
 		}
 		elseif (!class_exists($class_name)) {
-			return Names::setToClass($class_name);
+			$class_name = Names::setToClass($class_name);
 		}
-		else {
-			return $class_name;
-		}
+		return $class_name;
 	}
 
 	//----------------------------------------------------------------------------------------- first

@@ -79,10 +79,17 @@ class Controller_Uri
 	{
 		$feature_name_for_method = $this->feature_name;
 		$feature_name_for_class = Names::methodToClass($feature_name_for_method);
+		$controller = $this->controller_name;
+		$controller_root = Namespaces::shortClassName($this->controller_name);
 		$controllers = array();
 		$namespaces = Application::getNamespaces();
+		while ($controller) {
+			$controllers[] = array($controller . "_" . $feature_name_for_class . "_Controller", "run");
+			$controllers[] = array($controller . "_Controller", $feature_name_for_method);
+			$controller = get_parent_class($controller);
+		}
 		foreach ($namespaces as $namespace) {
-			$controller = $namespace . "\\" . $this->controller_name;
+			$controller = $namespace . "\\" . $controller_root;
 			while ($controller) {
 				$controllers[] = array($controller . "_" . $feature_name_for_class . "_Controller", "run");
 				$controllers[] = array($controller . "_Controller", $feature_name_for_method);
@@ -160,7 +167,7 @@ class Controller_Uri
 			if (($i >= $length) || !is_numeric($uri[$i])) {
 				$last_controller_element = "";
 			}
-			$this->controller_name = join("_", $controller_elements);
+			$controller_name = join("_", $controller_elements);
 			while ($i < $length) {
 				if (is_numeric($uri[$i])) {
 					if ($last_controller_element) {
@@ -184,7 +191,7 @@ class Controller_Uri
 			}
 		}
 		else {
-			$this->controller_name = str_replace(
+			$controller_name = str_replace(
 				" ", "_", ucwords(str_replace("_", " ", array_shift($uri)))
 			);
 			$this->feature_name = lcfirst(array_shift($uri));
@@ -192,6 +199,7 @@ class Controller_Uri
 				$this->parameters->addValue($uri_element);
 			}
 		}
+		$this->controller_name = Namespaces::fullClassName($controller_name);
 	}
 
 	//------------------------------------------------------------------------------------ uriToArray
