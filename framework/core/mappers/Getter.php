@@ -25,35 +25,49 @@ abstract class Getter
 	 * Generic getter for a collection of objects
 	 *
 	 * @param $collection      Component[]|null actual value of the property (will be returned if not null)
-	 * @param $element_class   string|null      the class for each collection's object
-	 * @param $parent          object           the parent object
-	 * @param $parent_property string           the parent property name
+	 * @param $element_class   string|null      Class for each collection's object
+	 * @param $parent          object           Parent object
+	 * @param $parent_property string           Parent property name. Recommended but can be ommited if foreign class is a Component
 	 * @return object[]
 	 */
-	public static function getCollection($collection, $element_class, $parent, $parent_property = null)
-	{
+	public static function getCollection(
+		$collection, $element_class, $parent, $parent_property = null
+	) {
 		if (!isset($collection)) {
 			if (Dao::getObjectIdentifier($parent)) {
 				$search_element = Search_Object::newInstance($element_class);
 				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
+				$property_name = isset($parent_property)
+					? Reflection_Property::getInstanceOf($parent, $parent_property)
+						->getAnnotation("foreign")->value
+					: null;
 				if ($is_component) {
-					$property_name = isset($parent_property)
-						? Reflection_Property::getInstanceOf($parent, $parent_property)
-							->getAnnotation("foreign")->value
-						: null;
+					/** @var $search_element Component */
 					$search_element->setComposite($parent, $property_name);
 					/** @var Component[] $collection */
 					$collection = Dao::search($search_element);
-					// this to avoid getter calls on $element->getComposite() call (parent is already loaded)
-					foreach ($collection as $element) {
-						$element->setComposite($parent, $property_name);
-					}
 				}
-				else {
+				elseif (isset($property_name)) {
+					$property = Reflection_Property::getInstanceOf($search_element, $property_name);
+					$accessible = $property->isPublic();
+					if (!$accessible) {
+						$property->setAccessible(true);
+					}
+					$property->setValue($search_element, $parent);
+					if (!$accessible) {
+						$property->setAccessible(false);
+					}
+					/** @var Component[] $collection */
 					$collection = Dao::search($search_element);
 				}
+				else {
+					user_error(
+						"getCollection() must be called for a component foreign type"
+						. " or with a parent property name"
+					);
+				}
 			}
-			else {
+			if (!isset($collection)) {
 				$collection = array();
 			}
 		}

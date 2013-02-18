@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/**
- * Foreignlink annotation tells which type is mapped by the property
- */
 class Foreignlink_Annotation extends Documented_Type_Annotation
 {
 

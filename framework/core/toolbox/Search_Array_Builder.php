@@ -105,7 +105,7 @@ class Search_Array_Builder
 				$property_name = substr($property_name, $i + 1);
 				$i = strpos($property_name, ".");
 			}
-			$property = $class->getProperty($property_name);
+			$property = $property_class->getProperty($property_name);
 			$type = $property->getType();
 			if (!$type->isBasic()) {
 				unset($property_names[$key]);
