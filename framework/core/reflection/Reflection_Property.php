@@ -96,7 +96,6 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 					$of_class = $property->getType()->getElementTypeAsString();
 					$i = $j + 1;
 				} while (($j = strpos($of_name, ".", $i)) !== false);
-				$parent_property = $property;
 				if ($i) {
 					$of_name = substr($of_name, $i);
 				}
@@ -121,6 +120,25 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	public function getDeclaringClass()
 	{
 		return Reflection_Class::getInstanceOf(parent::getDeclaringClass());
+	}
+
+	//----------------------------------------------------------------------------- getDeclaringTrait
+	/**
+	 * Gets the real declaring trait (or class if declared in class) of a property
+	 *
+	 * @return Reflection_Class
+	 */
+	public function getDeclaringTrait()
+	{
+		foreach ($this->getDeclaringClass()->getTraits() as $trait) {
+			$properties = $trait->getProperties();
+			if (isset($properties[$this->name])) {
+				$property = $properties[$this->name];
+				$declaring_trait = $property->getDeclaringTrait();
+				return isset($declaring_trait) ? $declaring_trait : $property->getDeclaringClass();
+			}
+		}
+		return $this->getDeclaringClass();
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment
@@ -164,21 +182,17 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	public function getType()
 	{
 		$type_string = $this->getAnnotation("var")->value;
-		// take only the first type if multiple
-		if (($i = strpos($type_string, "|")) !== false) {
-			$type_string = substr($type_string, 0, $i);
-		}
 		$type = new Type($type_string);
-		// automatically add current class namespace when not told
-		$single = $type->getElementType();
-		if ($type->isMultiple()) {
-			if ($single->isClass()) {
-				$single = new Type(Namespaces::defaultFullClassName($single->asString(), $this->class));
+		// automatically add current class namespace
+		if ($type->isClass()) {
+			$element_class_name = $type->getElementTypeAsString();
+			if (Namespaces::isShortClassName($element_class_name)) {
+				$declaring_trait = $this->getDeclaringTrait()->name;
+				$class_name = Namespaces::defaultFullClassName($element_class_name, $declaring_trait);
+				$type = $type->isMultiple()
+					? (new Type($class_name, $type->canBeNull()))->multiple()
+					: (new Type($class_name, $type->canBeNull()));
 			}
-			$type = new Type($single->asString() . substr($type_string, strpos($type_string, "[")));
-		}
-		elseif ($type->isClass()) {
-			$type = new Type(Namespaces::defaultFullClassName($type->asString(), $this->class));
 		}
 		return $type;
 	}

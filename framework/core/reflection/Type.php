@@ -51,16 +51,24 @@ class Type
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $type_string
+	 * @param $type_string string
+	 * @param $can_be_null boolean
 	 */
-	public function __construct($type_string)
+	public function __construct($type_string = null, $can_be_null = null)
 	{
-		if (($i = strpos($type_string, "|")) !== false) {
-			$this->can_be_null = strpos($type_string, "|null");
-			$this->type = substr($type_string, 0, $i);
+		if (isset($type_string)) {
+			if (($i = strpos($type_string, "|")) !== false) {
+				if (!isset($can_be_null)) {
+					$this->can_be_null = strpos($type_string, "|null");
+				}
+				$this->type = substr($type_string, 0, $i);
+			}
+			else {
+				$this->type = $type_string;
+			}
 		}
-		else {
-			$this->type = $type_string;
+		if (isset($can_be_null)) {
+			$this->can_be_null = $can_be_null;
 		}
 	}
 
@@ -291,11 +299,12 @@ class Type
 	/**
 	 * Returns the multiple type for given type
 	 *
+	 * @param $can_be_null boolean
 	 * @return Type
 	 */
-	public function multiple()
+	public function multiple($can_be_null = false)
 	{
-		return new Type($this->type . "[]");
+		return new Type($this->type . "[]", $can_be_null);
 	}
 
 	//------------------------------------------------------------------------------------- usesTrait

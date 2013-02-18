@@ -67,7 +67,11 @@ abstract class Aop
 	 */
 	public static function registerProperties($class_name, $annotation, $when, $function)
 	{
-		if (@class_exists($class_name)) {
+		if (
+			@class_exists($class_name, false)
+			|| @trait_exists($class_name, false)
+			|| @interface_exists($class_name, false)
+		) {
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->getProperties() as $property) {
 				if ($property->class == $class_name) {

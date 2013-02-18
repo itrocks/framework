@@ -31,7 +31,11 @@ class Class_Builder
 			$traits_names = "\\" . implode(", \\", $traits);
 			$namespace = Namespaces::of($class_name) . "\\Built$count";
 			$short_class = Namespaces::shortClassName($class_name);
-			$source = "namespace $namespace { final class $short_class { use $traits_names; } }";
+			$source = "namespace $namespace {"
+			. " final class $short_class"
+			. " extends \\$class_name"
+			. " { use $traits_names; }"
+			. " }";
 			eval($source);
 			$built_class = $namespace . "\\" . $short_class;
 			self::$builds[$class_name][$key] = $built_class;
