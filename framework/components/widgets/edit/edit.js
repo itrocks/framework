@@ -178,6 +178,15 @@ $("document").ready(function()
 		});
 
 		// .object
+		this.in("input.combo").change(function()
+		{
+			var $this = $(this);
+			if (!$this.val().length) {
+				$this.prev().removeAttr("value");
+			}
+		});
+
+		// .object
 		this.in("input.combo").autocomplete({
 			autoFocus: true,
 			delay: 100,

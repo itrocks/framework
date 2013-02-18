@@ -109,6 +109,31 @@ class Type
 		return $this->can_be_null;
 	}
 
+	//------------------------------------------------------------------------------- getDefaultValue
+	/**
+	 * Gets default value for the type
+	 *
+	 * Depends on if it can be null or not, and depends on simple type
+	 *
+	 * @return mixed
+	 */
+	public function getDefaultValue()
+	{
+		if ($this->canBeNull()) {
+			return null;
+		}
+		if ($this->isMultiple()) {
+			return array();
+		}
+		else switch ($this->asString()) {
+			case "boolean": return false;
+			case "integer": return 0;
+			case "float":   return 0.0;
+			case "string":  return "";
+		}
+		return null;
+	}
+
 	//-------------------------------------------------------------------------------- getElementType
 	/**
 	 * Gets a multiple type single element type

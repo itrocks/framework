@@ -66,6 +66,37 @@ class Builder implements Plugin
 		return self::dCurrent($set_current);
 	}
 
+	//----------------------------------------------------------------------------------- isObjectSet
+	/**
+	 * Returns true if any property of $object is set and different than its default value
+	 *
+	 * @param $object
+	 * @return boolean
+	 */
+	public static function isObjectSet($object)
+	{
+		$result = false;
+		$class = Reflection_Class::getInstanceOf($object);
+		$defaults = $class->getDefaultProperties();
+		foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
+			$value = $property->getValue($object);
+			if (isset($value)) {
+				$default = isset($defaults[$property->name])
+					? $defaults[$property->name]
+					: ($property->getType()->getDefaultValue());
+				if (is_object($value) && !self::isObjectSet($value)) {
+					$value = null;
+				}
+				if ($value != $default) {
+					$result = true;
+					break;
+				}
+			}
+		}
+		$class->accessPropertiesDone();
+		return $result;
+	}
+
 	//----------------------------------------------------------------------------------- newInstance
 	/**
 	 * Return a new instance of given $class_name, using replacement class if exist

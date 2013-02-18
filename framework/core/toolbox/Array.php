@@ -125,11 +125,12 @@ function arrayNamedValues($array)
 
 //------------------------------------------------------------------------------- arrayToCollection
 /**
- * @param $array      array
- * @param $class_name string
+ * @param $array             array
+ * @param $class_name        string
+ * @param $create_if_default boolean
  * @return object[]
  */
-function arrayToCollection($array, $class_name)
+function arrayToCollection($array, $class_name, $create_if_default = true)
 {
 	$collection = array();
 	if ($array) {
@@ -138,7 +139,10 @@ function arrayToCollection($array, $class_name)
 			$array = arrayFormRevert($array);
 		}
 		foreach ($array as $key => $element) {
-			$collection[$key] = arrayToObject($element, $class_name);
+			$object = arrayToObject($element, $class_name, $create_if_default);
+			if (isset($object)) {
+				$collection[$key] = $object;
+			}
 		}
 	}
 	return $collection;
@@ -146,19 +150,28 @@ function arrayToCollection($array, $class_name)
 
 //----------------------------------------------------------------------------------- arrayToObject
 /**
- * @param $array      mixed[]
- * @param $class_name string
- * @return object
+ * @param $array             mixed[]
+ * @param $class_name        string
+ * @param $create_if_default boolean
+ * @return object|null
  */
-function arrayToObject($array, $class_name)
+function arrayToObject($array, $class_name, $create_if_default = true)
 {
+	$create = $create_if_default;
+	$defaults = get_class_vars($class_name);
 	$object = SAF\Framework\Builder::create($class_name);
 	foreach ($array as $property_name => $value) {
-		if (($property_name != "id") || !empty($value)) {
+		if (
+			isset($defaults[$property_name]) && (strval($value) !== strval($defaults[$property_name]))
+			|| !isset($defaults[$property_name]) && !empty($value)
+		) {
 			$object->$property_name = $value;
+			if ($property_name != "id") {
+				$create = true;
+			}
 		}
 	}
-	return $object;
+	return $create ? $object : null;
 }
 
 //------------------------------------------------------------------------------ arrayUnnamedValues

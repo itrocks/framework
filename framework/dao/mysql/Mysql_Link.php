@@ -359,36 +359,17 @@ class Mysql_Link extends Sql_Link
 		$old_collection = $old_object->$property_name;
 		// collection properties : write each of them
 		$id_set = array();
-		if ($property->getAnnotation("component")->value) {
-			if ($collection && is_array(reset($collection))) {
-				$collection = arrayToCollection($collection, $property->getType()->getElementTypeAsString());
-			}
-			if ($collection) {
-				$element_class = Reflection_Class::getInstanceOf(get_class(reset($collection)));
-				$representative_properties = $element_class->getListAnnotation("representative")->values();
-				$defaults = $element_class->getDefaultProperties();
-				foreach ($collection as $element) {
-					$do_write = false;
-					foreach ($representative_properties as $representative_property) {
-						if ($this->valueChanged(
-							$element, $representative_property, $defaults[$representative_property]
-						)) {
-							$do_write = true;
-							break;
-						}
-					}
-					if ($do_write) {
-						if (class_uses_trait($element, 'SAF\Framework\Component')) {
-							/** @var $element Component */
-							$element->setComposite($object, $property->getAnnotation("foreign")->value);
-						}
-						$id = $this->getObjectIdentifier($element);
-						if (!empty($id)) {
-							$id_set[$id] = true;
-						}
-						$this->write($element);
-					}
+		if ($property->getAnnotation("component")->value && $collection) {
+			foreach ($collection as $element) {
+				if (class_uses_trait($element, 'SAF\Framework\Component')) {
+					/** @var $element Component */
+					$element->setComposite($object, $property->getAnnotation("foreign")->value);
 				}
+				$id = $this->getObjectIdentifier($element);
+				if (!empty($id)) {
+					$id_set[$id] = true;
+				}
+				$this->write($element);
 			}
 		}
 		// remove old unused elements

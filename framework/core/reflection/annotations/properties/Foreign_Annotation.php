@@ -27,25 +27,15 @@ class Foreign_Annotation extends Documented_Type_Annotation
 				$foreign_class = Reflection_Class::getInstanceOf($type->getElementTypeAsString());
 				if ($type->usesTrait('SAF\Framework\Component')) {
 					// gets the property which has @composite set from the foreign class
-					foreach ($foreign_class->getAnnotedProperties("composite") as $foreign_property) {
-						if (class_instanceof(
-							$reflection_property->class, $foreign_property->getType()->asString()
-						)) {
-							$this->value = $foreign_property->name;
-							break;
-						}
-					}
+					$this->value = $this->scanProperties(
+						$reflection_property, $foreign_class->getAnnotedProperties("composite")
+					);
 				}
 				if (!$this->value) {
 					// gets the property which type is superclass of the main class
-					foreach ($foreign_class->getAllProperties() as $foreign_property) {
-						if (class_instanceof(
-							$reflection_property->class, $foreign_property->getType()->asString()
-						)) {
-							$this->value = $foreign_property->name;
-							break;
-						}
-					}
+					$this->value = $this->scanProperties(
+						$reflection_property, $foreign_class->getAllProperties()
+					);
 				}
 				if (!$this->value) {
 					// build an arbitrary name built from the set class name of the main property class name
@@ -55,6 +45,35 @@ class Foreign_Annotation extends Documented_Type_Annotation
 				}
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------------------- scanProperties
+	/**
+	 * @param $reflection_property Reflection_Property
+	 * @param $foreign_properties  Reflection_Property[]
+	 * @return string|null
+	 */
+	private function scanProperties($reflection_property, $foreign_properties)
+	{
+		$value = null;
+		foreach ($foreign_properties as $foreign_property) {
+			if (class_instanceof($reflection_property->class, $foreign_property->getType()->asString())) {
+				if (empty($value)) {
+					$value = $foreign_property->name;
+				}
+				else {
+					trigger_error(
+						$reflection_property->class . '::$' . $reflection_property->name
+							. ": ambigous foreign properties " . $this->value
+							. " and " . $foreign_property->name . " match class",
+						E_USER_ERROR
+					);
+					$value = null;
+					break;
+				}
+			}
+		}
+		return $value;
 	}
 
 }

@@ -4,6 +4,57 @@ namespace SAF\Framework;
 class Default_Write_Controller implements Class_Controller
 {
 
+	//-------------------------------------------------------------------- formElementToPropertyValue
+	/**
+	 * @param $property Reflection_Property
+	 * @param $value    mixed
+	 * @return mixed
+	 */
+	private static function formElementToPropertyValue(Reflection_Property $property, $value)
+	{
+		$type = $property->getType();
+		if (
+			is_array($value)
+			&& $type->isMultiple() && $type->isClass() && $type->usesTrait('SAF\Framework\Component')
+		) {
+			$value = arrayToCollection($value, $type->getElementTypeAsString(), false);
+		}
+		return $value;
+	}
+
+	//---------------------------------------------------------------------------------- formToObject
+	/**
+	 * Returns the object that form data represents
+	 *
+	 * @param $object object The object or class name to fill-in
+	 * @param $form array    The form data
+	 * @return object The result object (same as $object if it was an object)
+	 */
+	public static function formToObject($object, $form)
+	{
+		if (is_string($object)) {
+			$object = Builder::create($object);
+		}
+		$class = Reflection_Class::getInstanceOf($object);
+		$properties = $class->accessProperties();
+		foreach ($form as $name => $value) {
+			if (isset($properties[$name])) {
+				$object->$name = self::formElementToPropertyValue($properties[$name], $value);
+			}
+			else {
+				$object->$name = $value;
+				if ((substr($name, 0, 3) == "id_")) {
+					$name = substr($name, 3);
+					if (isset($object->$name)) {
+						unset($object->$name);
+					}
+				}
+			}
+		}
+		$class->accessPropertiesDone();
+		return $object;
+	}
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Default run method for default "write-typed" controller
@@ -22,25 +73,14 @@ class Default_Write_Controller implements Class_Controller
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
 		if (!$object || !is_object($object) || (get_class($object) !== $class_name)) {
-			$object = new $class_name();
+			$object = Builder::create($class_name);
 			$parameters = array_merge(array($class_name => $object), $parameters);
 		}
-		$changed = false;
-		foreach ($form as $name => $value) {
-			if ((isset($value) && !isset($object->$name)) || ($object->$name !== $value)) {
-				$object->$name = $value;
-				$changed = true;
-			}
-		}
-		if ($changed) {
-			Dao::begin();
-			Dao::write($object);
-			Dao::commit();
-			return View::run($parameters, $form, $files, $class_name, "written");
-		}
-		else {
-			return View::run($parameters, $form, $files, $class_name, "unchanged");
-		}
+		$object = self::formToObject($object, $form);
+		Dao::begin();
+		Dao::write($object);
+		Dao::commit();
+		return View::run($parameters, $form, $files, $class_name, "written");
 	}
 
 }

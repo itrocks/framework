@@ -5,14 +5,6 @@ use AopJoinpoint;
 abstract class Loc implements Plugin
 {
 
-	//--------------------------------------------------------------------------- $parse_before_write
-	/**
-	 * When > 0, data written with Dao will be parsed as an user input before being written
-	 *
-	 * @var integer
-	 */
-	private static $parse_before_write = 0;
-
 	//----------------------------------------------------- afterHtmlTemplateFuncsToEditPropertyExtra
 	/**
 	 * @param $joinpoint AopJoinpoint
@@ -43,53 +35,43 @@ abstract class Loc implements Plugin
 		}
 	}
 
-	//-------------------------------------------------------------------- beforeDataLinkValueChanged
+	//---------------------------------------- beforeDefaultWriteControllerFormElementToPropertyValue
 	/**
 	 * @param $joinpoint AopJoinpoint
 	 */
-	public static function beforeDataLinkValueChanged(AopJoinpoint $joinpoint)
-	{
-		/** @var $object        object */
-		/** @var $property_name string */
-		list($object, $property_name, ) = $joinpoint->getArguments();
-		$property = Reflection_Property::getInstanceOf($object, $property_name);
-		$property->setValue($object, self::propertyToIso($property, $property->getValue($object)));
-	}
-
-	//--------------------------------------------------------------------------- beforeDataLinkWrite
-	/**
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function beforeDataLinkWrite(AopJoinpoint $joinpoint)
-	{
-		if (self::$parse_before_write) {
-			/** @var $object object */
-			$object = $joinpoint->getArguments()[0];
-			$class = Reflection_Class::getInstanceOf($object);
-			foreach ($class->accessProperties() as $property) {
-				$property->setValue(
-					$object,
-					self::propertyToIso($property, $property->getValue($object))
-				);
+	public static function beforeDefaultWriteControllerFormElementToPropertyValue(
+		AopJoinpoint $joinpoint
+	) {
+		/** @var $property Reflection_Property */
+		list($property, $value) = $joinpoint->getArguments();
+		if (isset($value)) {
+			if (is_array($value) && !empty($value)) {
+				$type = $property->getType();
+				if (
+					$type->isMultiple() && $type->isClass()
+					&& $type->getElementType()->usesTrait('SAF\Framework\Component')
+				) {
+					$class = Reflection_Class::getInstanceOf($type->getElementTypeAsString());
+					$properties = $class->accessProperties();
+					reset($value);
+					if (!is_numeric(key($value))) {
+						$value = arrayFormRevert($value);
+					}
+					foreach ($value as $key => $element) {
+						foreach ($element as $property_name => $property_value) {
+							if (isset($property_value) && isset($properties[$property_name])) {
+								$value[$key][$property_name] = self::propertyToIso(
+									$properties[$property_name], $property_value
+								);
+							}
+						}
+					}
+					$class->accessPropertiesDone();
+					$joinpoint->setArguments(array($property, $value));
+				}
 			}
-			$class->accessPropertiesDone();
-		}
-	}
-
-	//------------------------------------------------------------------------- beforeDateTimeFromIso
-	/**
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function beforeDateTimeFromIso(AopJoinpoint $joinpoint)
-	{
-		if (self::$parse_before_write) {
-			/** @var $date string */
-			$date = $joinpoint->getArguments()[0];
-			if (
-				((strlen($date) != 10) && (strlen($date) != 19))
-				|| ($date[4] != "-") || ($date[7] != "-")
-			) {
-				$joinpoint->setArguments(array(self::dateToIso($date)));
+			else {
+				$joinpoint->setArguments(array($property, self::propertyToIso($property, $value)));
 			}
 		}
 	}
@@ -213,17 +195,6 @@ abstract class Loc implements Plugin
 		return Locale::current()->language;
 	}
 
-	//------------------------------------------------------------------------ parseBeforeWriteAround
-	/**
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function parseBeforeWriteAround(AopJoinpoint $joinpoint)
-	{
-		self::$parse_before_write ++;
-		$joinpoint->process();
-		self::$parse_before_write --;
-	}
-
 	//--------------------------------------------------------------------------------- propertyToIso
 	/**
 	 * Change a locale value into an ISO formatted value, knowing it's property
@@ -254,25 +225,13 @@ abstract class Loc implements Plugin
 	public static function register()
 	{
 		// format from locale user input to ISO and standard formats
+		Aop::add("before",
+			'SAF\Framework\Default_Write_Controller->formElementToPropertyValue()',
+			array(__CLASS__, "beforeDefaultWriteControllerFormElementToPropertyValue")
+		);
 		Aop::add("after",
 			'SAF\Framework\Default_List_Controller->getSearchValues()',
 			array(__CLASS__, "afterListSearchValues")
-		);
-		Aop::add("around",
-			'SAF\Framework\Default_Write_Controller->run()',
-			array(__CLASS__, "parseBeforeWriteAround")
-		);
-		Aop::add("before",
-			'SAF\Framework\Data_Link->valueChanged()',
-			array(__CLASS__, "beforeDataLinkValueChanged")
-		);
-		Aop::add("before",
-			'SAF\Framework\Data_Link->write()',
-			array(__CLASS__, "beforeDataLinkWrite")
-		);
-		Aop::add("before",
-			'SAF\Framework\Date_Time->fromISO()',
-			array(__CLASS__, "beforeDateTimeFromIso")
 		);
 		// format to locale
 		Aop::add("after",

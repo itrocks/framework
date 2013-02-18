@@ -47,7 +47,7 @@ abstract class Getter
 					/** @var Component[] $collection */
 					$collection = Dao::search($search_element);
 				}
-				elseif (isset($property_name)) {
+				elseif (!empty($property_name)) {
 					$property = Reflection_Property::getInstanceOf($search_element, $property_name);
 					$accessible = $property->isPublic();
 					if (!$accessible) {
