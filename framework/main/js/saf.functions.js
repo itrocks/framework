@@ -1,8 +1,37 @@
 
+//------------------------------------------------------------------------------- copyCssPropertyTo
+copyCssPropertyTo = function(context, element)
+{
+	var tab = ["font-size",
+		"font-family",
+		"line-height",
+		"border-bottom-width",
+		"border-left-width",
+		"border-top-width",
+		"border-right-width",
+		"border-color",
+		"margin-bottom",
+		"margin-left",
+		"margin-right",
+		"margin-top",
+		"text-rendering",
+		"word-wrap"
+	];
+	for (var i = 0; i < tab.length; i++) {
+		element.css(tab[i], context.css(tab[i]));
+	}
+}
+
 //-------------------------------------------------------------------------- dateFormatToDatepicker
 dateFormatToDatepicker = function(text)
 {
 	return text.replace("d", "dd").replace("m", "mm").replace("Y", "yy");
+};
+
+//------------------------------------------------------------------------------ getInputTextHeight
+getInputTextHeight = function(context)
+{
+	return Math.max(20, getTextHeight(context, 16));
 };
 
 //------------------------------------------------------------------------------- getInputTextWidth
@@ -10,12 +39,6 @@ dateFormatToDatepicker = function(text)
 getInputTextWidth = function(context)
 {
 	return Math.max(40, getTextWidth(context, 16));
-};
-
-//------------------------------------------------------------------------------ getInputTextHeight
-getInputTextHeight = function(context)
-{
-	return Math.max(20, getTextHeight(context, 16));
 };
 
 //----------------------------------------------------------------------------------- getTextHeight
@@ -72,23 +95,21 @@ getTextWidth = function(context, extraWidth)
 	}
 };
 
-copyCssPropertyTo = function(context, element){
-	var $tab = ["font-size",
-		"font-family",
-		"line-height",
-		"border-bottom-width",
-		"border-left-width",
-		"border-top-width",
-		"border-right-width",
-		"border-color",
-		"margin-bottom",
-		"margin-left",
-		"margin-right",
-		"margin-top",
-		"text-rendering",
-		"word-wrap"
-	];
-	for ( var i = 0; i < $tab.length; i++ ) {
-		element.css($tab[i], context.css($tab[i]));
+//---------------------------------------------------------------------------------------- redirect
+/**
+ *
+ *
+ * @param uri
+ * @param target
+ */
+redirect = function(uri, target)
+{
+	var more = ((target != undefined) && (target != "") && (target[0] == '#')) ? "&as_widget=1" : "";
+	uri = app.uri_base + uri + "?PHPSESSID=" + app.PHPSESSID;
+	if (!more) {
+		window.location = uri;
+	}
+	else {
+		$.ajax({ url: uri + more, success: function(data) { $(target).html(data).build(); } });
 	}
 }
