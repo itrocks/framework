@@ -142,16 +142,11 @@ class Sql_Joins
 	) {
 		$linked_join = new Sql_Join();
 		$linked_join->foreign_column = "id_" . $foreign_property_name;
-		if ($master_class_name < $foreign_class_name) {
-			$linked_join->foreign_table = Dao::storeNameOf($master_class_name)
-				. "_" . Dao::storeNameOf($foreign_class_name)
-				. "_links";
-		}
-		else {
-			$linked_join->foreign_table = Dao::storeNameOf($foreign_class_name)
-			. "_" . Dao::storeNameOf($master_class_name)
-			. "_links";
-		}
+		$master_table = Dao::storeNameOf($master_class_name);
+		$foreign_table = Dao::storeNameOf($foreign_class_name);
+		$linked_join->foreign_table = ($master_table < $foreign_table)
+			? ($master_table . "_" . $foreign_table . "_links")
+			: ($foreign_table . "_" . $master_table . "_links");
 		$linked_join->master_column = "id";
 		$linked_join->mode = $join->mode;
 		$this->joins[$foreign_path . "-link"] = $this->addFinalize(

@@ -27,9 +27,9 @@ class Set
 	 */
 	public function __construct($element_class_name = null, $elements = array())
 	{
-		$this->element_class_name = $element_class_name
-			? $element_class_name
-			: Names::setToClass(get_class($this));
+		$this->element_class_name = empty($element_class_name)
+			? Names::setToClass(get_class($this))
+			: $element_class_name;
 		$this->elements = $elements;
 	}
 

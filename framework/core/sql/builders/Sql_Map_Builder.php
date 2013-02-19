@@ -21,12 +21,9 @@ abstract class Sql_Map_Builder
 		// build table name
 		$table1 = Dao::storeNameOf(get_class($object));
 		$table2 = Dao::storeNameOf(get_class($foreign_object));
-		if ($table2 < $table1) {
-			$table = $table2;
-			$table2 = $table1;
-			$table1 = $table;
-		}
-		$table = $table1 . "_" . $table2 . "_links";
+		$table = ($table1 < $table2)
+			? ($table1 . "_" . $table2 . "_links")
+			: ($table2 . "_" . $table1 . "_links");
 		// build fields names
 		$field1 = "id_" . $property->getAnnotation("foreign")->value;
 		$field2 = "id_" . $property->getAnnotation("foreignlink")->value;
