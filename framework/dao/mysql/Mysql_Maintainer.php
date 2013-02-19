@@ -59,6 +59,17 @@ class Mysql_Maintainer implements Plugin
 			$field_name = substr($query, $i, strpos($query, " ", $i) - $i);
 			$column_names[] = $field_name;
 		}
+		if (!$column_names) {
+			if (substr($query, 0, 11) == "INSERT INTO") {
+				$column_names = explode(",", str_replace(array("`", " "), "", mParse($query, "(", ")")));
+			}
+			elseif (substr($query, 0, 6) == "UPDATE") {
+				// @todo create table without context UPDATE columns detection
+			}
+			elseif (substr($query, 0, 6) == "DELETE") {
+				// @todo create table without context DELETE columns detection
+			}
+		}
 		return self::createImplicitTable($mysqli, $table_name, $column_names);
 	}
 
