@@ -9,6 +9,7 @@ ini_set("memory_limit", "1024M");
 ini_set("session.use_cookies", false);
 ini_set("session.use_only_cookies", false);
 ini_set("xdebug.collect_params", 4);
+ini_set("xdebug.max_nesting_level", 100);
 //ini_set("xdebug.scream", true);
 ini_set("xdebug.var_display_max_children", 1000000);
 ini_set("xdebug.var_display_max_data", 1000000);
