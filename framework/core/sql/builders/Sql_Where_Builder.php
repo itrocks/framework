@@ -140,8 +140,7 @@ trait Sql_Where_Builder
 	 */
 	private function buildValue($path, $value, $prefix = "")
 	{
-		$this->where_joins->add($path);
-		$join = $this->where_joins->getJoin($path);
+		$join = $this->where_joins->add($path);
 		if (isset($join)) {
 			$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
 		}
