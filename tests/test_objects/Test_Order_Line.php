@@ -3,9 +3,6 @@ namespace SAF\Framework\Tests;
 use SAF\Framework\Aop;
 use SAF\Framework\Component;
 
-/**
- * @set Test_Orders_Lines
- */
 class Test_Order_Line
 {
 	use Component;

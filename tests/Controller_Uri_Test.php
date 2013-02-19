@@ -21,7 +21,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Tab",
+				"controller_name" => 'SAF\Framework\Tab',
 				"feature_name" => "remove",
 				"parameters" => (new Controller_Parameters())->addValue("SAF\\Framework\\Tests\\Orders")->addValue("list")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
 			)
@@ -40,7 +40,7 @@ class Controller_Uri_Test extends Unit_Test
 						"parameters"      => $controller_uri->parameters->getRawParameters()
 				),
 				array(
-						"controller_name" => "Test_Order",
+						"controller_name" => 'SAF\Framework\Tests\Test_Order',
 						"feature_name" => "output",
 						"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->getRawParameters()
 				)
@@ -59,7 +59,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Test_Orders",
+				"controller_name" => 'Test_Orders',
 				"feature_name" => "list",
 				"parameters" => (new Controller_Parameters())->getRawParameters()
 			)
@@ -78,7 +78,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Test_Order",
+				"controller_name" => 'SAF\Framework\Tests\Test_Order',
 				"feature_name" => "output",
 				"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->getRawParameters()
 			)
@@ -97,7 +97,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Test_Orders",
+				"controller_name" => 'Test_Orders',
 				"feature_name" => "listRemove",
 				"parameters" => (new Controller_Parameters())->addValue("date")->getRawParameters()
 			)
@@ -116,7 +116,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Test_Orders",
+				"controller_name" => 'Test_Orders',
 				"feature_name" => "listRemove",
 				"parameters" => (new Controller_Parameters())->addValue("date")->addValue("number")->getRawParameters()
 			)
@@ -135,7 +135,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Test_Orders",
+				"controller_name" => 'Test_Orders',
 				"feature_name" => "listRemove",
 				"parameters" => (new Controller_Parameters())->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
 			)
@@ -154,7 +154,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Trashcan",
+				"controller_name" => 'SAF\Framework\Trashcan',
 				"feature_name" => "drop",
 				"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->addValue("output")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
 			)
@@ -173,7 +173,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Trashcan",
+				"controller_name" => 'SAF\Framework\Trashcan',
 				"feature_name" => "drop",
 				"parameters" => (new Controller_Parameters())->addValue("Test_Orders")->addValue("list")->addValue("date")->addValue("number")->getRawParameters()
 			)
@@ -192,7 +192,7 @@ class Controller_Uri_Test extends Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => "Trashcan",
+				"controller_name" => 'SAF\Framework\Trashcan',
 				"feature_name" => "drop",
 				"parameters" => (new Controller_Parameters())->addValue("Test_Orders")->addValue("list")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
 			)
