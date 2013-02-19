@@ -12,6 +12,7 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	 * - first : the deleted object
 	 * - second : the feature name
 	 * - other parameters are kept and sent to the object delete controller
+	 * @return mixed
 	 */
 	private function deleteObject($parameters)
 	{
@@ -19,12 +20,13 @@ class Trashcan_Drop_Controller implements Feature_Controller
 		array_shift($parameters); // $feature
 		$controller_uri = "/" . get_class($object) . "/" . Dao::getObjectIdentifier($object)
 			. "/delete";
-		Main_Controller::getInstance()->runController($controller_uri, $parameters);
+		return Main_Controller::getInstance()->runController($controller_uri, $parameters);
 	}
 
 	//----------------------------------------------------------------------------------- parseAndRun
 	/**
 	 * @param $parameters mixed[]
+	 * @return mixed
 	 */
 	private function parseAndRun($parameters)
 	{
@@ -33,16 +35,16 @@ class Trashcan_Drop_Controller implements Feature_Controller
 			$context_class_name = get_class($first_parameter);
 		}
 		else {
-			$context_class_name = Set::elementClassNameOf($first_parameter);
+			$context_class_name = Namespaces::fullClassName(Set::elementClassNameOf($first_parameter));
 		}
 		$context_feature = array_shift($parameters);
 		$third_parameter = reset($parameters);
 		if (is_object($third_parameter)) {
-			$this->deleteObject($parameters);
+			return $this->deleteObject($parameters);
 		}
 		else {
 			$class_name = array_shift($parameters);
-			$this->removeElement($class_name, $context_class_name, $context_feature, $parameters);
+			return $this->removeElement($class_name, $context_class_name, $context_feature, $parameters);
 		}
 	}
 
@@ -54,10 +56,11 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	 * @param $context_class_name string The context class where to remove the element from
 	 * @param $context_feature string The context feature to remove the element from
 	 * @param $parameters mixed[] The elements to be removed, and additional parameters
+	 * @return mixed
 	 */
 	private function removeElement($class_name, $context_class_name, $context_feature, $parameters)
 	{
-		Main_Controller::getInstance()->runController(
+		return Main_Controller::getInstance()->runController(
 			"/" . $class_name . "/remove/" . $context_class_name . "/" . $context_feature, $parameters
 		);
 	}
@@ -67,12 +70,9 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	{
 		$trash = $parameters->GetUnnamedParameters();
 		$objects = $parameters->getObjects();
-		if (count($trash) <= 1) {
-			$this->deleteObject($objects);
-		}
-		else {
-			$this->parseAndRun($objects);
-		}
+		return (count($trash) <= 1)
+			? $this->deleteObject($objects)
+			: $this->parseAndRun($objects);
 	}
 
 }

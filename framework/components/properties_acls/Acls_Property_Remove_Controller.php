@@ -40,12 +40,9 @@ class Acls_Property_Remove_Controller implements Feature_Controller
 		 * - key "feature_name" : the context feature name (ie "output", "list")
 		 * - key "removed" : array of the removed properties names
 		 */
-		if ($removed) {
-			return View::run($objects, $form, $files, get_class($property), "removed");
-		}
-		else {
-			return View::run($objects, $form, $files, get_class($property), "remove_nothing_selected");
-		}
+		return $removed
+			? View::run($objects, $form, $files, get_class($property), "removed")
+			: View::run($objects, $form, $files, get_class($property), "remove_nothing_selected");
 	}
 
 }
