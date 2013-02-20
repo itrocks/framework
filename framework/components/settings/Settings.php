@@ -6,7 +6,7 @@ class Settings
 
 	//------------------------------------------------------------------------------------ $templates
 	/**
-	 * @getter Aop::getAll
+	 * @link All
 	 * @var Settings_Template[]
 	 */
 	public $templates;

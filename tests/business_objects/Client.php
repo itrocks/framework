@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Tests;
 
-class Test_Client
+class Client
 {
 
 	//--------------------------------------------------------------------------------------- $number
@@ -24,7 +24,8 @@ class Test_Client
 	/**
 	 * Link to it's own client (for recursivity tests)
 	 *
-	 * @var Test_Client
+	 * @link object
+	 * @var Client
 	 */
 	public $client;
 

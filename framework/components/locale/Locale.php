@@ -7,7 +7,7 @@ class Locale implements Configurable
 
 	//----------------------------------------------------------------------------------------- $date
 	/**
-	 * @getter Aop::getObject
+	 * @link Object
 	 * @setter setDate
 	 * @var Date_Locale
 	 */

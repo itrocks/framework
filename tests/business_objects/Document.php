@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Tests;
 
-abstract class Test_Document
+abstract class Document
 {
 
 	//----------------------------------------------------------------------------------------- $date

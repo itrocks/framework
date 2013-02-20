@@ -1,10 +1,7 @@
 <?php
 namespace SAF\Tests;
 
-/**
- * @set Salesmen
- */
-class Test_Salesman
+class Salesman
 {
 
 	//----------------------------------------------------------------------------------------- $name

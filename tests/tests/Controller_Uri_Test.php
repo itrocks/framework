@@ -31,7 +31,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//---------------------------------------------------------------------------- testExclicitOutput
 	public function testExclicitOutput()
 	{
-		$controller_uri = new Controller_Uri("/Test_Order/1/output", array(), "output", "list");
+		$controller_uri = new Controller_Uri("/Order/1/output", array(), "output", "list");
 		$this->assume(
 				__METHOD__,
 				array(
@@ -40,9 +40,9 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 						"parameters"      => $controller_uri->parameters->getRawParameters()
 				),
 				array(
-						"controller_name" => 'SAF\Tests\Test_Order',
+						"controller_name" => 'SAF\Tests\Order',
 						"feature_name" => "output",
-						"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->getRawParameters()
+						"parameters" => (new Controller_Parameters())->set("Order", 1)->getRawParameters()
 				)
 		);
 	}
@@ -50,7 +50,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//------------------------------------------------------------------------------ testImplicitList
 	public function testImplicitList()
 	{
-		$controller_uri = new Controller_Uri("/Test_Orders", array(), "output", "list");
+		$controller_uri = new Controller_Uri("/Orders", array(), "output", "list");
 		$this->assume(
 			__METHOD__,
 			array(
@@ -59,7 +59,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => 'Test_Orders',
+				"controller_name" => 'Orders',
 				"feature_name" => "list",
 				"parameters" => (new Controller_Parameters())->getRawParameters()
 			)
@@ -69,7 +69,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//---------------------------------------------------------------------------- testImplicitOutput
 	public function testImplicitOutput()
 	{
-		$controller_uri = new Controller_Uri("/Test_Order/1", array(), "output", "list");
+		$controller_uri = new Controller_Uri("/Order/1", array(), "output", "list");
 		$this->assume(
 			__METHOD__,
 			array(
@@ -78,9 +78,9 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => 'SAF\Tests\Test_Order',
+				"controller_name" => 'SAF\Tests\Order',
 				"feature_name" => "output",
-				"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->getRawParameters()
+				"parameters" => (new Controller_Parameters())->set("Order", 1)->getRawParameters()
 			)
 		);
 	}
@@ -88,7 +88,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//----------------------------------------------------------------------- testListRemoveParameter
 	public function testListRemoveParameter()
 	{
-		$controller_uri = new Controller_Uri("/Test_Orders/listRemove/date");
+		$controller_uri = new Controller_Uri("/Orders/listRemove/date");
 		$this->assume(
 			__METHOD__,
 			array(
@@ -97,7 +97,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => 'Test_Orders',
+				"controller_name" => 'Orders',
 				"feature_name" => "listRemove",
 				"parameters" => (new Controller_Parameters())->addValue("date")->getRawParameters()
 			)
@@ -107,7 +107,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//---------------------------------------------------------------------- testListRemoveParameters
 	public function testListRemoveParameters()
 	{
-		$controller_uri = new Controller_Uri("/Test_Orders/listRemove/date/number");
+		$controller_uri = new Controller_Uri("/Orders/listRemove/date/number");
 		$this->assume(
 			__METHOD__,
 			array(
@@ -116,7 +116,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => 'Test_Orders',
+				"controller_name" => 'Orders',
 				"feature_name" => "listRemove",
 				"parameters" => (new Controller_Parameters())->addValue("date")->addValue("number")->getRawParameters()
 			)
@@ -126,7 +126,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//------------------------------------------------------------------- testListRemoveWithArguments
 	public function testListRemoveWithArguments()
 	{
-		$controller_uri = new Controller_Uri("/Test_Orders/listRemove/date/number", array("as_widget" => 1, "_" => 2));
+		$controller_uri = new Controller_Uri("/Orders/listRemove/date/number", array("as_widget" => 1, "_" => 2));
 		$this->assume(
 			__METHOD__,
 			array(
@@ -135,7 +135,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => 'Test_Orders',
+				"controller_name" => 'Orders',
 				"feature_name" => "listRemove",
 				"parameters" => (new Controller_Parameters())->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
 			)
@@ -145,7 +145,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//------------------------------------------------------------------------ testTrashcanDropOutput
 	public function testTrashcanDropOutput()
 	{
-		$controller_uri = new Controller_Uri("/Trashcan/drop/Test_Order/1/output/date/number", array("as_widget" => 1, "_" => 2));
+		$controller_uri = new Controller_Uri("/Trashcan/drop/Order/1/output/date/number", array("as_widget" => 1, "_" => 2));
 		$this->assume(
 			__METHOD__,
 			array(
@@ -156,7 +156,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 			array(
 				"controller_name" => 'SAF\Framework\Trashcan',
 				"feature_name" => "drop",
-				"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->addValue("output")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
+				"parameters" => (new Controller_Parameters())->set("Order", 1)->addValue("output")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
 			)
 		);
 	}
@@ -164,7 +164,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//-------------------------------------------------------------------- testTrashcanDropParameters
 	public function testTrashcanDropParameters()
 	{
-		$controller_uri = new Controller_Uri("/Trashcan/drop/Test_Orders/list/date/number");
+		$controller_uri = new Controller_Uri("/Trashcan/drop/Orders/list/date/number");
 		$this->assume(
 			__METHOD__,
 			array(
@@ -175,7 +175,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 			array(
 				"controller_name" => 'SAF\Framework\Trashcan',
 				"feature_name" => "drop",
-				"parameters" => (new Controller_Parameters())->addValue("Test_Orders")->addValue("list")->addValue("date")->addValue("number")->getRawParameters()
+				"parameters" => (new Controller_Parameters())->addValue("Orders")->addValue("list")->addValue("date")->addValue("number")->getRawParameters()
 			)
 		);
 	}
@@ -183,7 +183,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	//----------------------------------------------------------------- testTrashcanDropWithArguments
 	public function testTrashcanDropWithArguments()
 	{
-		$controller_uri = new Controller_Uri("/Trashcan/drop/Test_Orders/list/date/number", array("as_widget" => 1, "_" => 2));
+		$controller_uri = new Controller_Uri("/Trashcan/drop/Orders/list/date/number", array("as_widget" => 1, "_" => 2));
 		$this->assume(
 			__METHOD__,
 			array(
@@ -194,7 +194,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 			array(
 				"controller_name" => 'SAF\Framework\Trashcan',
 				"feature_name" => "drop",
-				"parameters" => (new Controller_Parameters())->addValue("Test_Orders")->addValue("list")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
+				"parameters" => (new Controller_Parameters())->addValue("Orders")->addValue("list")->addValue("date")->addValue("number")->set("as_widget", 1)->set("_", 2)->getRawParameters()
 			)
 		);
 	}

@@ -33,7 +33,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 
 	//--------------------------------------------------------------------------------- getCollection
 	/**
-	 * Register this for any object collection property using "@getter Aop::getCollection" annotation
+	 * Register this for any object collection property using "@link Collection" annotation
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */
@@ -51,7 +51,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 
 	//----------------------------------------------------------------------------------- getDateTime
 	/**
-	 * Register this for any Date_Time property using "@getter Aop::getDateTime" annotation
+	 * Register this for any Date_Time property using "@link DateTime" annotation
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */
@@ -67,7 +67,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 
 	//---------------------------------------------------------------------------------------- getMap
 	/**
-	 * Register this for any object map property using "@getter Aop::getMap" annotation
+	 * Register this for any object map property using "@link Map" annotation
 	 *
 	 * @param AopJoinpoint $joinpoint
 	 */
@@ -84,7 +84,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 
 	//------------------------------------------------------------------------------------- getObject
 	/**
-	 * Register this for any object property using "@getter Aop::getObject" annotation
+	 * Register this for any object property using "@link Object" annotation
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */

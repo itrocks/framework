@@ -11,7 +11,7 @@ class Settings_Template_Element
 	//----------------------------------------------------------------------------- $setting_template
 	/**
 	 * @composite
-	 * @getter Aop::getObject
+	 * @link Object
 	 * @var Settings_Template
 	 */
 	public $template;
