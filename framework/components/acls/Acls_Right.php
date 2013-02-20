@@ -11,7 +11,7 @@ class Acls_Right
 	//---------------------------------------------------------------------------------------- $group
 	/**
 	 * @composite
-	 * @getter Aop::getObject
+	 * @link Object
 	 * @var Acls_Group
 	 */
 	public $group;

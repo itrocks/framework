@@ -6,7 +6,7 @@ use SAF\Framework\Component;
 /**
  * @set Orders_Lines
  */
-class Test_Order_Line
+class Order_Line
 {
 	use Component;
 
@@ -14,10 +14,19 @@ class Test_Order_Line
 	/**
 	 * Delivery client for the line (for recursivity tests)
 	 *
-	 * @getter Aop::getObject
-	 * @var Test_Client
+	 * @link object
+	 * @var Client
 	 */
 	public $client;
+
+	//----------------------------------------------------------------------------------------- $item
+	/**
+	 * Item
+	 *
+	 * @link object
+	 * @var Item
+	 */
+	public $item;
 
 	//--------------------------------------------------------------------------------------- $number
 	/**
@@ -33,9 +42,9 @@ class Test_Order_Line
 	 * Order
 	 *
 	 * @composite
-	 * @getter Aop::getObject
 	 * @mandatory
-	 * @var Test_Order
+	 * @link object
+	 * @var Order
 	 */
 	public $order;
 

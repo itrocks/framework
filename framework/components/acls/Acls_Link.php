@@ -8,14 +8,14 @@ class Acls_Link
 	//------------------------------------------------------------------------------------ $container
 	/**
 	 * @composite
-	 * @getter Aop::getObject
+	 * @link Object
 	 * @var Acls_Group
 	 */
 	public $container;
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * @getter Aop::getObject
+	 * @link Object
 	 * @var Acls_Group
 	 */
 	public $content;

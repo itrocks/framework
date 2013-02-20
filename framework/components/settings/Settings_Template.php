@@ -18,7 +18,7 @@ class Settings_Template
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
-	 * @getter Aop::getCollection
+	 * @link Collection
 	 * @var Settings_Template_Element[]
 	 * @component
 	 */
