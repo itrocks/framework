@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace SAF\Tests;
 use SAF\Framework\Search_Array_Builder;
 
 class Search_Array_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test

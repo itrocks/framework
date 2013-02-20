@@ -1,6 +1,9 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace SAF\Tests;
 
+/**
+ * @set Salesmen
+ */
 class Test_Salesman
 {
 

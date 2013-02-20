@@ -88,7 +88,7 @@ class Application
 					$application_class = get_parent_class($application_class);
 				}
 				self::$namespaces[] = 'SAF\Framework';
-				self::$namespaces[] = 'SAF\Framework\Tests';
+				self::$namespaces[] = 'SAF\Framework\Unit_Tests';
 
 				self::$namespaces[] = "";
 			}
@@ -110,7 +110,7 @@ class Application
 	 */
 	public static function getSourceDirectories($application_name)
 	{
-		$app_dir = strtolower($application_name);
+		$app_dir = self::getSourceDirectory($application_name);
 		$directories = array();
 		if ($application_name != "Framework") {
 			$extends = mParse(file_get_contents("{$app_dir}/Application.php"),
@@ -119,6 +119,16 @@ class Application
 			$directories = static::getSourceDirectories($extends);
 		}
 		return array_merge(static::getDirectories($app_dir), $directories);
+	}
+
+	//---------------------------------------------------------------------------- getSourceDirectory
+	/**
+	 * @param $application_name string
+	 * @return string
+	 */
+	public static function getSourceDirectory($application_name)
+	{
+		return strtolower($application_name);
 	}
 
 	//-------------------------------------------------------------------------------- getSourceFiles

@@ -1,5 +1,12 @@
 <?php
 namespace SAF\Framework\Unit_Tests;
+use SAF\Framework\Application;
+use SAF\Framework\Configuration;
+use SAF\Framework\Namespaces;
+use SAF\Framework\Reflection_Class;
+use SAF\Framework\Reflection_Method;
+use SAF\Framework\Unit_Tests\Runnable_Unit_Test;
+use SAF\Framework\Unit_Tests\Unit_Test;
 
 class Tests
 {
@@ -7,15 +14,15 @@ class Tests
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
-		$this->runDir("tests");
+		$this->runDir(
+			Application::getSourceDirectory(Configuration::current()->getApplicationName()) . "/tests"
+		);
 	}
 
 	//-------------------------------------------------------------------------------------- runClass
 	private function runClass($class_name)
 	{
-		/** @var $unit_test Unit_Test */
-		echo "run class $class_name<br>";
-		/**
+		/** @var $unit_test Runnable_Unit_Test|Unit_Test */
 		$unit_test = new $class_name();
 		if ($unit_test instanceof Runnable_Unit_Test) {
 			$unit_test->begin();
@@ -25,7 +32,7 @@ class Tests
 		else {
 			// automatically call each test* public method
 			$call_methods = array();
-			$methods = Reflection_Class::getInstanceOf($class)->getMethods(
+			$methods = Reflection_Class::getInstanceOf($class_name)->getMethods(
 				Reflection_Method::IS_PUBLIC
 			);
 			foreach ($methods as $method) {
@@ -41,7 +48,6 @@ class Tests
 				$unit_test->end();
 			}
 		}
-		*/
 	}
 
 	//---------------------------------------------------------------------------------------- runDir
@@ -72,8 +78,9 @@ class Tests
 		include_once $file_name;
 		$slash = strrpos($file_name, "/");
 		$dot = strrpos($file_name, ".");
-		$class_name = substr($file_name, $slash + 1, $dot - $slash - 1);
-		if (is_subclass_of($class_name, 'SAF\Framework\Unit_Test')) {
+		$namespace = Namespaces::of(Configuration::current()->getApplicationClassName());
+		$class_name = $namespace . "\\Tests\\" . substr($file_name, $slash + 1, $dot - $slash - 1);
+		if (is_subclass_of($class_name, 'SAF\Framework\Unit_Tests\Unit_Test')) {
 			$this->runClass($class_name);
 		}
 	}

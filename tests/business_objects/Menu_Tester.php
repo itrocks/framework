@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace SAF\Tests;
 use AopJoinpoint;
 use SAF\Framework\Aop;
 use SAF\Framework\Menu_Block;

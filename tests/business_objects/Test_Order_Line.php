@@ -1,8 +1,11 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace SAF\Tests;
 use SAF\Framework\Aop;
 use SAF\Framework\Component;
 
+/**
+ * @set Orders_Lines
+ */
 class Test_Order_Line
 {
 	use Component;

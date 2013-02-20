@@ -1,6 +1,9 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace SAF\Tests;
 
+/**
+ * @set Orders
+ */
 class Test_Order extends Test_Document
 {
 

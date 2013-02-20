@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace SAF\Tests\Tests;
 use SAF\Framework\Controller_Parameters;
 use SAF\Framework\Controller_Uri;
 
@@ -40,7 +40,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 						"parameters"      => $controller_uri->parameters->getRawParameters()
 				),
 				array(
-						"controller_name" => 'SAF\Framework\Tests\Test_Order',
+						"controller_name" => 'SAF\Tests\Test_Order',
 						"feature_name" => "output",
 						"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->getRawParameters()
 				)
@@ -78,7 +78,7 @@ class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 				"parameters"      => $controller_uri->parameters->getRawParameters()
 			),
 			array(
-				"controller_name" => 'SAF\Framework\Tests\Test_Order',
+				"controller_name" => 'SAF\Tests\Test_Order',
 				"feature_name" => "output",
 				"parameters" => (new Controller_Parameters())->set("Test_Order", 1)->getRawParameters()
 			)
