@@ -18,15 +18,11 @@ abstract class Sql_Map_Builder
 	 */
 	public static function sqlElementsOf($object, $property, $foreign_object)
 	{
-		// build table name
-		$table1 = Dao::storeNameOf(get_class($object));
-		$table2 = Dao::storeNameOf(get_class($foreign_object));
-		$table = ($table1 < $table2)
-			? ($table1 . "_" . $table2 . "_links")
-			: ($table2 . "_" . $table1 . "_links");
-		// build fields names
-		$field1 = "id_" . $property->getAnnotation("foreign")->value;
-		$field2 = "id_" . $property->getAnnotation("foreignlink")->value;
+		// build table and fields
+		$sql_link = new Sql_Link_Table($property);
+		$table = $sql_link->table();
+		$field1 = $sql_link->masterColumn();
+		$field2 = $sql_link->foreignColumn();
 		// build values
 		$id1 = Dao::getObjectIdentifier($object);
 		$id2 = Dao::getObjectIdentifier($foreign_object);

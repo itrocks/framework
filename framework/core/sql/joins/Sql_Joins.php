@@ -135,25 +135,23 @@ class Sql_Joins
 	 * @param $foreign_path                string
 	 * @param $foreign_class_name          string
 	 * @param $foreign_property_name       string
+	 * @param $property                    Reflection_Property
 	 */
 	private function addLinkedJoin(
-		Sql_Join $join, $master_path, $master_class_name, $master_property_foreignlink,
-		$foreign_path, $foreign_class_name, $foreign_property_name
+		Sql_Join $join, $master_path, $foreign_path, $foreign_class_name,
+		Reflection_Property $property, $reverse = false
 	) {
+		$link_table = new Sql_Link_Table($property);
 		$linked_join = new Sql_Join();
-		$linked_join->foreign_column = "id_" . $foreign_property_name;
-		$master_table = Dao::storeNameOf($master_class_name);
-		$foreign_table = Dao::storeNameOf($foreign_class_name);
-		$linked_join->foreign_table = ($master_table < $foreign_table)
-			? ($master_table . "_" . $foreign_table . "_links")
-			: ($foreign_table . "_" . $master_table . "_links");
+		$linked_join->foreign_column = $reverse ? $link_table->foreignColumn() : $link_table->masterColumn();
+		$linked_join->foreign_table = $link_table->table();
 		$linked_join->master_column = "id";
 		$linked_join->mode = $join->mode;
 		$this->joins[$foreign_path . "-link"] = $this->addFinalize(
 			$linked_join, $master_path, $foreign_class_name, $foreign_path, 1
 		);
 		$join->foreign_column = "id";
-		$join->master_column = "id_" . $master_property_foreignlink;
+		$join->master_column = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
 		$join->master_alias = $linked_join->foreign_alias;
 		$this->linked_tables[$linked_join->foreign_table] = array(
 			$join->master_column, $linked_join->foreign_column
@@ -183,8 +181,9 @@ class Sql_Joins
 	 * @param $foreign_path         string
 	 * @return string
 	 */
-	private function addReverseJoin(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
-	{
+	private function addReverseJoin(
+		Sql_Join $join, $master_path, $master_property_name, $foreign_path
+	) {
 		list($foreign_class_name, $foreign_property_name) = explode("->", $master_property_name);
 		$foreign_class_name = Namespaces::fullClassName($foreign_class_name);
 		if (strpos($foreign_property_name, "=")) {
@@ -200,12 +199,9 @@ class Sql_Joins
 			$foreign_class_name, $foreign_property_name
 		);
 		if ($foreign_property->getType()->isMultiple()) {
-			$foreignlink = $foreign_property->getAnnotation("foreignlink")->value;
 			$this->addLinkedJoin(
-				$join, $master_path, $this->classes[$master_path], $foreignlink,
-				$foreign_path, $foreign_class_name, $foreignlink
+				$join, $master_path, $foreign_path, $foreign_class_name, $foreign_property, true
 			);
-			$join->master_column = "id_" . $foreign_property->getAnnotation("foreign")->value;
 		}
 		return $foreign_class_name;
 	}
@@ -243,8 +239,7 @@ class Sql_Joins
 					}
 					else {
 						$this->addLinkedJoin(
-							$join, $master_path, $master_property->class, $master_property->getAnnotation("foreignlink")->value,
-							$foreign_path, $foreign_class_name, $foreign_property_name
+							$join, $master_path, $foreign_path, $foreign_class_name, $master_property
 						);
 					}
 				}

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A library of feature to transform PHP elements names
+ */
 abstract class Names
 {
 

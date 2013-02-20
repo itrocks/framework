@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The property name into the virtual link class that contains foreign object
+ *
+ * this is a virtual property name
+ */
 class Foreignlink_Annotation extends Documented_Type_Annotation
 {
 
@@ -12,14 +17,52 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	public function __construct($value, Reflection_Property $reflection_property)
 	{
 		parent::__construct($value);
-		if (!$this->value) {
-			// if @foreignlink is not set, calculates the field name using the linked class name
-			$this->value = Names::setToClass(Names::classToProperty(
-				Reflection_Class::getInstanceOf(
-					$reflection_property->getType()->getElementTypeAsString()
-				)->getAnnotation("set")->value
-			));
+		if (empty($this->value)) {
+			$link = $reflection_property->getAnnotation("link")->value;
+			$possibles = null;
+			if ($link == "Collection") {
+				$possibles = $this->defaultCollection($reflection_property);
+			}
+			elseif ($link == "Map") {
+				$possibles = $this->defaultMap($reflection_property);
+			}
+			elseif ($link == "Object") {
+				$possibles = $this->defaultObject($reflection_property);
+			}
+			if (is_array($possibles) && count($possibles) == 1) {
+				$this->value = reset($possibles);
+			}
 		}
+	}
+
+	//----------------------------------------------------------------------------- defaultCollection
+	/**
+	 * @param $reflection_property Reflection_Property
+	 * @return string[]
+	 */
+	private function defaultCollection(Reflection_Property $reflection_property)
+	{
+		return array($reflection_property->name);
+	}
+
+	//------------------------------------------------------------------------------------ defaultMap
+	/**
+	 * @param $reflection_property Reflection_Property
+	 * @return string[]
+	 */
+	private function defaultMap(Reflection_Property $reflection_property)
+	{
+		return array(Names::setToClass($reflection_property->name));
+	}
+
+	//--------------------------------------------------------------------------------- defaultObject
+	/**
+	 * @param Reflection_Property $reflection_property
+	 * @return string[]
+	 */
+	private function defaultObject(Reflection_Property $reflection_property)
+	{
+		return array($reflection_property->name);
 	}
 
 }

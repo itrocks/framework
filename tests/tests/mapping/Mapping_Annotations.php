@@ -62,15 +62,9 @@ class Mapping_Annotations extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->testAnnotation("map response", 'Category', "shops", "foreignlink", "shop"); // 3C
 		$this->testAnnotation("map myself response", 'Category', "super_categories", "foreignlink", "super_category"); // 3D
 		$this->testAnnotation("map myself response", 'Category', "sub_categories", "foreignlink", "sub_category"); // 3D
-		$this->testAnnotation("map source concurrence no reponse", 'Item', "secondary_categories", "foreignlink", "category"); // 3E
+		$this->testAnnotation("map source concurrence no reponse", 'Item', "secondary_categories", "foreignlink", "secondary_category"); // 3E
 		$this->testAnnotation("map component no response", 'Best_Line', "lines", "foreignlink", "line"); // 3F
 		$this->testAnnotation("map component response", 'Item', "lines", "foreignlink", "line"); // 3G
-	}
-
-	//-------------------------------------------------------------------------------------- testLink
-	public function testLink()
-	{
-
 	}
 
 }
