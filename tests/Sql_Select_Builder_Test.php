@@ -3,7 +3,7 @@ namespace SAF\Framework\Tests;
 use SAF\Framework\Search_Object;
 use SAF\Framework\Sql_Select_Builder;
 
-class Sql_Select_Builder_Test extends Unit_Test
+class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 {
 
 	//----------------------------------------------------------------------- testCollectionJoinQuery

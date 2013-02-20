@@ -3,7 +3,7 @@ namespace SAF\Framework\Tests;
 use SAF\Framework\Sql_Join;
 use SAF\Framework\Sql_Joins;
 
-class Sql_Joins_Test extends Unit_Test
+class Sql_Joins_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 {
 
 	//------------------------------------------------------------------------------------ testSimple

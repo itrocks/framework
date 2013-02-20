@@ -2,7 +2,7 @@
 namespace SAF\Framework\Tests;
 use SAF\Framework\Search_Array_Builder;
 
-class Search_Array_Builder_Test extends Unit_Test
+class Search_Array_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 {
 
 	//------------------------------------------------------------------------------------- testBuild

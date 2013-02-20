@@ -4,7 +4,7 @@ use SAF\Framework\Reflection_Class;
 use SAF\Framework\Reflection_Property;
 use ReflectionException;
 
-class Reflection_Test extends Unit_Test
+class Reflection_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 {
 
 	//----------------------------------------------------------------------- testAccessProperties

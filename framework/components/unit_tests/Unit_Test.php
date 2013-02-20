@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace SAF\Framework\Unit_Tests;
 use SAF\Framework\Reflection_Class;
 
 class Unit_Test
@@ -54,6 +54,10 @@ class Unit_Test
 	}
 
 	//--------------------------------------------------------------------------------------- toArray
+	/**
+	 * @param $array mixed
+	 * @return mixed
+	 */
 	private function toArray($array)
 	{
 		if (is_object($array)) {

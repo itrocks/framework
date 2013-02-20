@@ -3,7 +3,7 @@ namespace SAF\Framework\Tests;
 use SAF\Framework\Controller_Parameters;
 use SAF\Framework\Controller_Uri;
 
-class Controller_Uri_Test extends Unit_Test
+class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 {
 
 	//------------------------------------------------------------------------- testDeleteControllers
