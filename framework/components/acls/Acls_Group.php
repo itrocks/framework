@@ -23,7 +23,7 @@ class Acls_Group
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * @component
+	 * @link Collection
 	 * @getter getLinks
 	 * @remover remove
 	 * @var Acls_Link[]
@@ -32,7 +32,7 @@ class Acls_Group
 
 	//--------------------------------------------------------------------------------------- $rights
 	/**
-	 * @component
+	 * @link Collection
 	 * @getter getRights
 	 * @remover remove
 	 * @var Acls_Right[] key is the property key

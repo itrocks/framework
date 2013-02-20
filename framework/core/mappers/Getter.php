@@ -48,6 +48,7 @@ abstract class Getter
 					$collection = Dao::search($search_element);
 				}
 				elseif (!empty($property_name)) {
+echo "-- IS THIS DEAD CODE Getter line 51 ? --";
 					$property = Reflection_Property::getInstanceOf($search_element, $property_name);
 					$accessible = $property->isPublic();
 					if (!$accessible) {

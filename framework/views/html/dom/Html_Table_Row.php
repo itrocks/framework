@@ -6,7 +6,6 @@ class Html_Table_Row extends Dom_Element
 
 	//---------------------------------------------------------------------------------------- $cells
 	/**
-	 * @component
 	 * @var Html_Table_Cell[]
 	 */
 	private $cells = array();

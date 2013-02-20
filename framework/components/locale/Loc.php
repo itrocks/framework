@@ -46,12 +46,8 @@ abstract class Loc implements Plugin
 		list($property, $value) = $joinpoint->getArguments();
 		if (isset($value)) {
 			if (is_array($value) && !empty($value)) {
-				$type = $property->getType();
-				if (
-					$type->isMultiple() && $type->isClass()
-					&& $type->getElementType()->usesTrait('SAF\Framework\Component')
-				) {
-					$class = Reflection_Class::getInstanceOf($type->getElementTypeAsString());
+				if ($property->getAnnotation("link")->value == "Collection") {
+					$class = Reflection_Class::getInstanceOf($property->getType()->getElementTypeAsString());
 					$properties = $class->accessProperties();
 					reset($value);
 					if (!is_numeric(key($value))) {

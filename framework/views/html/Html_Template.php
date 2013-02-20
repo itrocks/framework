@@ -822,7 +822,7 @@ class Html_Template
 		$value = $this->parseValue($objects, $var_name);
 		$object = reset($objects);
 		if (is_array($value) && ($object instanceof Reflection_Property)) {
-			if ($object->getType()->usesTrait('SAF\Framework\Component')) {
+			if ($object->getAnnotation("link")->value == "Collection") {
 				$value = $this->parseCollection($object, $value);
 			}
 			else {

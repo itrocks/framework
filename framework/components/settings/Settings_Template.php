@@ -20,7 +20,6 @@ class Settings_Template
 	/**
 	 * @link Collection
 	 * @var Settings_Template_Element[]
-	 * @component
 	 */
 	public $elements;
 

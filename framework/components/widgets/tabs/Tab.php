@@ -30,7 +30,7 @@ class Tab
 	/**
 	 * For component tabs
 	 *
-	 * @component
+	 * @link Collection
 	 * @var Tab[]
 	 */
 	public $includes = array();

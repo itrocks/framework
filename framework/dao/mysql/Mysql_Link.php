@@ -68,7 +68,7 @@ class Mysql_Link extends Sql_Link
 		if ($id) {
 			$class = Reflection_Class::getInstanceOf($class_name);
 			foreach ($class->accessProperties() as $property) {
-				if ($property->getAnnotation("component")->value) {
+				if ($property->getAnnotation("link")->value == "Collection") {
 					if ($property->getType()->isMultiple()) {
 						$this->deleteCollection($object, $property, $property->getValue($object));
 					}
@@ -90,7 +90,7 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Delete a collection of object
 	 *
-	 * This is called by delete() for hard-linked object collection properties : only if the matching property has @component.
+	 * This is called by delete() for linked object collection properties
 	 *
 	 * @param $parent object
 	 * @param $property Reflection_Property
@@ -293,7 +293,7 @@ class Mysql_Link extends Sql_Link
 					}
 				}
 			}
-			elseif ($property->getAnnotation("component")->value) {
+			elseif ($property->getAnnotation("link")->value == "Collection") {
 				$write_collections[] = array($property, $value);
 			}
 			elseif (is_array($value)) {
@@ -347,7 +347,7 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * @param $object     object
 	 * @param $property   Reflection_Property
-	 * @param $collection object[]
+	 * @param $collection Component[]
 	 */
 	private function writeCollection($object, Reflection_Property $property, $collection)
 	{
@@ -359,12 +359,9 @@ class Mysql_Link extends Sql_Link
 		$old_collection = $old_object->$property_name;
 		// collection properties : write each of them
 		$id_set = array();
-		if ($property->getAnnotation("component")->value && $collection) {
+		if ($collection) {
 			foreach ($collection as $element) {
-				if (class_uses_trait($element, 'SAF\Framework\Component')) {
-					/** @var $element Component */
-					$element->setComposite($object, $property->getAnnotation("foreign")->value);
-				}
+				$element->setComposite($object, $property->getAnnotation("foreign")->value);
 				$id = $this->getObjectIdentifier($element);
 				if (!empty($id)) {
 					$id_set[$id] = true;

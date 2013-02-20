@@ -15,7 +15,10 @@ class Link_Annotation extends Annotation
 	 */
 	public function __construct($value)
 	{
-		if (!in_array($value, array("All", "Collection", "DateTime", "Map", "Object"))) {
+		if (
+			!empty($value)
+			&& !in_array($value, array("All", "Collection", "DateTime", "Map", "Object"))
+		) {
 			trigger_error(
 				"@link $value is a bad value, only All, Collection, DateTime, Map and Object can be used",
 				E_USER_ERROR

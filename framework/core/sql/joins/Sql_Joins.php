@@ -200,20 +200,12 @@ class Sql_Joins
 			$foreign_class_name, $foreign_property_name
 		);
 		if ($foreign_property->getType()->isMultiple()) {
-			if ($foreign_property->getAnnotation("component")->value && class_implements(
-				$this->getProperty($master_path, $master_property_name)->class, 'SAF\Framework\Component'
-			)) {
-				// TODO addReversejoin() multiple component or collection
-				echo "multiple component or collection<br>";
-			}
-			else {
-				$foreignlink = $foreign_property->getAnnotation("foreignlink")->value;
-				$this->addLinkedJoin(
-					$join, $master_path, $this->classes[$master_path], $foreignlink,
-					$foreign_path, $foreign_class_name, $foreignlink
-				);
-				$join->master_column = "id_" . $foreign_property->getAnnotation("foreign")->value;
-			}
+			$foreignlink = $foreign_property->getAnnotation("foreignlink")->value;
+			$this->addLinkedJoin(
+				$join, $master_path, $this->classes[$master_path], $foreignlink,
+				$foreign_path, $foreign_class_name, $foreignlink
+			);
+			$join->master_column = "id_" . $foreign_property->getAnnotation("foreign")->value;
 		}
 		return $foreign_class_name;
 	}

@@ -14,6 +14,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @todo component should be replace with a use of reflection property's @link annotation
 	 * @param $value               string
 	 * @param $reflection_property Reflection_Property
 	 */

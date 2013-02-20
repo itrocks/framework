@@ -85,7 +85,7 @@ abstract class Html_Template_Funcs
 
 	//--------------------------------------------------------------------------------------- getEdit
 	/**
-	 * Return an HTML edit component for current property or List_Data property
+	 * Return an HTML edit widget for current property or List_Data property
 	 *
 	 * @param $template Html_Template
 	 * @param $objects  mixed[]
@@ -127,7 +127,7 @@ abstract class Html_Template_Funcs
 				}
 			}
 		}
-		// default html input component
+		// default html input widget
 		$input = new Html_Input();
 		$input->setAttribute("name", reset($objects));
 		return $input;
@@ -258,7 +258,7 @@ abstract class Html_Template_Funcs
 
 	//--------------------------------------------------------------------------- toEditPropertyExtra
 	/**
-	 * Gets property extra data needed for edit component
+	 * Gets property extra data needed for edit widget
 	 *
 	 * @param $class_name string
 	 * @param $property   Reflection_Property_Value|Reflection_Property|string

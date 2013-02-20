@@ -12,12 +12,8 @@ class Default_Write_Controller implements Class_Controller
 	 */
 	private static function formElementToPropertyValue(Reflection_Property $property, $value)
 	{
-		$type = $property->getType();
-		if (
-			is_array($value)
-			&& $type->isMultiple() && $type->isClass() && $type->usesTrait('SAF\Framework\Component')
-		) {
-			$value = arrayToCollection($value, $type->getElementTypeAsString(), false);
+		if (is_array($value) && ($property->getAnnotation("link")->value == "Collection")) {
+			$value = arrayToCollection($value, $property->getType()->getElementTypeAsString(), false);
 		}
 		return $value;
 	}

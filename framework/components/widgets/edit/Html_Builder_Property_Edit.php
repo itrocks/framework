@@ -30,13 +30,12 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 */
 	public function build()
 	{
-		$type = $this->type;
-		if ($type->isClass() && $type->isMultiple()) {
-			return $this->property->getType()->usesTrait('SAF\Framework\Component')
-				? $this->buildCollection()
-				: $this->buildMap();
+		$link = $this->property->getAnnotation("link");
+		switch ($link) {
+			case "Collection": return $this->buildCollection();
+			case "Map":        return $this->buildMap();
+			default: return parent::build();
 		}
-		return parent::build();
 	}
 
 	//------------------------------------------------------------------------------- buildCollection
