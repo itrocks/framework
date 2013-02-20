@@ -9,7 +9,7 @@ class Order extends Document
 	 * Client
 	 *
 	 * @mandatory
-	 * @link object
+	 * @link Object
 	 * @var Client
 	 */
 	private $client;
@@ -18,7 +18,7 @@ class Order extends Document
 	/**
 	 * Delivery client
 	 *
-	 * @link object
+	 * @link Object
 	 * @var Client
 	 */
 	private $delivery_client;
@@ -27,7 +27,7 @@ class Order extends Document
 	/**
 	 * Lines
 	 *
-	 * @link collection
+	 * @link Collection
 	 * @mandatory
 	 * @var Order_Line[]
 	 */
@@ -37,10 +37,10 @@ class Order extends Document
 	/**
 	 * Links to salesmen
 	 *
-	 * @link map
+	 * @link Map
 	 * @var Salesman[]
-	 * @(foreign) order Optional, default would have been automatically calculated to "test_order"
-	 * @(foreignlink) salesman Optional, default would have been automatically calculated to "test_salesman"
+	 * @(forgn) order Optional, default would have been automatically calculated to "test_order"
+	 * @(forgnlink) salesman Optional, default would have been automatically calculated to "test_salesman"
 	 */
 	private $salesmen;
 

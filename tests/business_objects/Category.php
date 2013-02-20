@@ -12,28 +12,28 @@ class Category
 
 	//-------------------------------------------------------------------------- $main_super_category
 	/**
-	 * @link object
+	 * @link Object
 	 * @var Category
 	 */
 	public $main_super_category;
 
 	//----------------------------------------------------------------------------- $super_categories
 	/**
-	 * @link map
+	 * @link Map
 	 * @var Category[]
 	 */
 	public $super_categories;
 
 	//------------------------------------------------------------------------------- $sub_categories
 	/**
-	 * @link map
+	 * @link Map
 	 * @var Category[]
 	 */
 	public $sub_categories;
 
 	//---------------------------------------------------------------------------------------- $shops
 	/**
-	 * @link collection
+	 * @link Map
 	 * @var Shop[]
 	 */
 	public $shops;

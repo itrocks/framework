@@ -24,7 +24,7 @@ class Client
 	/**
 	 * Link to it's own client (for recursivity tests)
 	 *
-	 * @link object
+	 * @link Object
 	 * @var Client
 	 */
 	public $client;

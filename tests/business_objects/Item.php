@@ -12,30 +12,37 @@ class Item
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
-	 * @link map
+	 * @link Map
 	 * @var Order_Line[]
 	 */
 	public $lines;
 
 	//---------------------------------------------------------------------------------------- $model
 	/**
-	 * @link object
+	 * @link Object
 	 * @var Item
 	 */
 	public $model;
 
 	//-------------------------------------------------------------------------------- $main_category
 	/**
-	 * @link object
+	 * @link Object
 	 * @var Category
 	 */
 	public $main_category;
 
 	//------------------------------------------------------------------------- $secondary_categories
 	/**
-	 * @link map
+	 * @link Map
 	 * @var Category[]
 	 */
 	public $secondary_categories;
+
+	//-------------------------------------------------------------------------------- $cross_selling
+	/**
+	 * @link Map
+	 * @var Item[]
+	 */
+	public $cross_selling;
 
 }

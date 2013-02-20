@@ -12,7 +12,7 @@ class Shop
 
 	//----------------------------------------------------------------------------------- $categories
 	/**
-	 * @link collection
+	 * @link Map
 	 * @var Category[]
 	 */
 	public $categories;

@@ -27,16 +27,16 @@ class Unit_Test
 			$ok = ($check === $assume);
 		}
 		if ($ok) {
-			$result = "<span style='color:green;font-weight:bold;'>OK</span>";
+			$result = "<span style='color:green;font-weight:bold'>OK</span>";
 		}
 		else {
-			$result = "BAD"
+			$result = "<span style='color:red;font-weight:bold'>BAD</span>"
 			. "<pre style='color:red;font-weight:bold;'>[" . print_r($check, true) . "]</pre>"
 			. "<pre style='color:blue;font-weight:bold;'>[" . print_r($assume, true) . "]</pre>"
 			. ($diff1 ? ("<pre style='color:orange;font-weight:bold;'>[" . print_r($diff1, true) . "]</pre>") : "")
 			. ($diff2 ? ("<pre style='color:orange;font-weight:bold;'>[" . print_r($diff2, true) . "]</pre>") : "");
 		}
-		echo "<li>" . $result . " : " . str_replace(get_class($this) . "::", "", $test);
+		echo "<li>" . str_replace(get_class($this) . "::", "", $test) . " : " . $result;
 		return ($result === "OK");
 	}
 

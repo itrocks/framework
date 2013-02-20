@@ -14,7 +14,7 @@ class Order_Line
 	/**
 	 * Delivery client for the line (for recursivity tests)
 	 *
-	 * @link object
+	 * @link Object
 	 * @var Client
 	 */
 	public $client;
@@ -23,7 +23,7 @@ class Order_Line
 	/**
 	 * Item
 	 *
-	 * @link object
+	 * @link Object
 	 * @var Item
 	 */
 	public $item;
@@ -43,7 +43,7 @@ class Order_Line
 	 *
 	 * @composite
 	 * @mandatory
-	 * @link object
+	 * @link Object
 	 * @var Order
 	 */
 	public $order;
