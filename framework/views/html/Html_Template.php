@@ -29,6 +29,14 @@ class Html_Template
 	 */
 	protected $feature;
 
+	//-------------------------------------------------------------------------------- $main_template
+	/**
+	 * The main template template
+	 *
+	 * @var string
+	 */
+	public $main_template = "Default_main.html";
+
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * The root data object
@@ -76,7 +84,7 @@ class Html_Template
 	 * @param $template_file string full path to template file
 	 * @param $feature_name string feature name
 	 */
-	public function __construct($object, $template_file, $feature_name)
+	public function __construct($object, $template_file, $feature_name = "")
 	{
 		$this->object  = $object;
 		$this->path    = substr($template_file, 0, strrpos($template_file, "/"));
@@ -299,8 +307,8 @@ class Html_Template
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
-				$file_name = Html_Configuration::$main_template;
-				$container = file_get_contents($file_name, true);
+				$file_name = $this->main_template;
+				$container = file_get_contents($file_name, !strpos($this->main_template, "/"));
 				$content = str_replace(
 					"{@content}",
 					"<!--@rootObject-->" . substr($content, $i, $j - $i) . "<!--@rootObject-->",

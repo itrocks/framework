@@ -14,9 +14,10 @@
 	<script type="text/javascript" src="js/saf.string.js"></script>
 	<script type="text/javascript" src="../components/widgets/edit/edit.js"></script>
 	<script type="text/javascript">
-		uri_root = "{Paths.uri_root}";
-		script_name = "{Paths.script_name}";
-		PHPSESSID = "{GET.PHPSESSID}";
+		window.app = new App(
+			"{GET.PHPSESSID}", "{Paths.uri_root}", "{Paths.script_name}",
+			"{Loc.language}", "{Loc.date.format}"
+		);
 	</script>
 	<style type="text/css">
 		@import "../skins/default/application.css";

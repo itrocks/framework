@@ -196,8 +196,10 @@ abstract class Html_Template_Funcs
 		$properties = $class->accessProperties();
 		$result_properties = array();
 		foreach ($properties as $property_name => $property) {
-			if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
-				$result_properties[$property_name] = new Reflection_Property_Value($property, $object);
+			if (!$property->isStatic()) {
+				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
+					$result_properties[$property_name] = new Reflection_Property_Value($property, $object);
+				}
 			}
 		}
 		$class->accessPropertiesDone();
@@ -216,8 +218,10 @@ abstract class Html_Template_Funcs
 	{
 		$properties = array();
 		foreach (self::getProperties($template, $objects) as $property_name => $property) {
-			if (!$property->tab_path) {
-				$properties[$property_name] = $property;
+			if (!$property->isStatic()) {
+				if (!$property->tab_path) {
+					$properties[$property_name] = $property;
+				}
 			}
 		}
 		return $properties;

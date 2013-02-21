@@ -3,13 +3,15 @@ namespace SAF\Framework;
 
 class User_Register_Controller implements Feature_Controller
 {
+
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
 	 * @param $parameters Controller_Parameters
+	 * @param $form       array
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
+	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
@@ -19,6 +21,7 @@ class User_Register_Controller implements Feature_Controller
 		}
 		return $parameters;
 	}
+
 	//------------------------------------------------------------------------------------------- run
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
@@ -27,16 +30,16 @@ class User_Register_Controller implements Feature_Controller
 		if ($current) {
 			User_Authentication::disconnect(User::current());
 		}
-		$parameters = $this->getViewParameters($parameters, $class_name);
-		if(isset($form["login"]) && isset($form["password"])){
+		$parameters = $this->getViewParameters($parameters, $form, $class_name);
+		if (isset($form["login"]) && isset($form["password"])) {
 			$user = null;
 			$errors_messages = User_Authentication::controlRegisterFormParameters($form);
-			if(!$errors_messages && empty($errors_messages)){
-				if(User_Authentication::controlNameNotUsed($form["login"])){
+			if (!$errors_messages && empty($errors_messages)) {
+				if (User_Authentication::controlNameNotUsed($form["login"])) {
 					$user = User_Authentication::register($form);
 				}
 			}
-			if($user){
+			if ($user) {
 				return View::run($parameters, $form, $files, $class_name, "registerConfirm");
 			}
 			else {

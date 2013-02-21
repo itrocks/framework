@@ -149,4 +149,13 @@ class Acls_Group
 		return $this;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->name);
+	}
+
 }

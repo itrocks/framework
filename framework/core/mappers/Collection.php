@@ -9,11 +9,18 @@ class Collection
 	 * Add an object into an objects array
 	 *
 	 * @param $array   array
-	 * @param $element object
+	 * @param $element object|object[]
 	 */
 	public static function add(&$array, $element)
 	{
-		$array[Dao::getObjectIdentifier($element)] = $element;
+		if (is_array($element)) {
+			foreach ($element as $elem) {
+				self::add($array, $elem);
+			}
+		}
+		else {
+			$array[Dao::getObjectIdentifier($element)] = $element;
+		}
 	}
 
 	//------------------------------------------------------------------------------------------- has
@@ -35,13 +42,20 @@ class Collection
 	 * Remove an object from an objects array
 	 *
 	 * @param $array   array
-	 * @param $element object
+	 * @param $element object|object[]
 	 */
 	public static function remove(&$array, $element)
 	{
-		$key = Dao::getObjectIdentifier($element);
-		if (!array_key_exists($key, $array)) {
-			$array[$key] = $element;
+		if (is_array($element)) {
+			foreach ($element as $elem) {
+				self::remove($array, $elem);
+			}
+		}
+		else {
+			$key = Dao::getObjectIdentifier($element);
+			if (!array_key_exists($key, $array)) {
+				$array[$key] = $element;
+			}
 		}
 	}
 

@@ -20,12 +20,13 @@ class Default_Edit_Controller extends Default_Output_Controller
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
 	 * @param $parameters Controller_Parameters
+	 * @param $form       array
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
+	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
-		$parameters = parent::getViewParameters($parameters, $class_name);
+		$parameters = parent::getViewParameters($parameters, $form, $class_name);
 		$parameters["template_mode"] = "edit";
 		return $parameters;
 	}

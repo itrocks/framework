@@ -7,6 +7,7 @@ class Acls_User extends User
 	//---------------------------------------------------------------------------------------- $group
 	/**
 	 * @getter getGroup
+	 * @link Object
 	 * @var Acls_Group
 	 */
 	public $group;

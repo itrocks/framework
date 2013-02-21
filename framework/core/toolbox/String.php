@@ -308,3 +308,52 @@ function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
 		return substr($str, $i + strlen($sep));
 	}
 }
+
+//---------------------------------------------------------------------------- function strSimplify
+/**
+ * Returns a very simplified version of string :
+ * no space, no accents, no special characters
+ * 1/ accents are replaced with non-accentuated characters
+ * 2/ string is lowercased
+ * 3/ only a..z, 0..9, dot (.,) characters are allowed
+ *
+ * @param $str      string
+ * @param $extended boolean|string|array
+ * @return string
+ */
+function strSimplify($str, $extended = false)
+{
+	$str_simplify_from = "ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ&";
+	$str_simplify_to   = "AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyye";
+	$result = "";
+	if ($extended && !is_string($extended)) {
+		if (is_array($extended)) {
+			$extended = join("", $extended);
+		} else {
+			$extended = ".,/- ";
+		}
+	}
+	$str = strtr($str, $str_simplify_from, $str_simplify_to);
+	for ($i = 0; $i < strlen($str); $i ++) {
+		$c = $str{$i};
+		if (
+			(($c >= "a") && ($c <= "z")) || (($c >= "A") && ($c <= "Z")) || (($c >= "0") && ($c <= "9"))
+			|| ($extended && (strpos($extended, $c) !== false))
+		) {
+			$result .= $c;
+		}
+	}
+	return $result;
+}
+
+//------------------------------------------------------------------------------------------ strUri
+/**
+ * Returns a string as a well formed HTTP URI
+ *
+ * @param $str string
+ * @return string
+ */
+function strUri($str)
+{
+	return strtolower(strSimplify(str_replace(" ", "_", $str), "/-_"));
+}

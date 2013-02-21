@@ -76,7 +76,7 @@ abstract class Autoload_Cache implements Plugin, Updatable
 	public static function register()
 	{
 		Application_Updater::addUpdatable(get_called_class());
-		self::$cache_path = strtolower(Configuration::current()->getApplicationName()) . "/cache";
+		self::$cache_path = strtolower(Application::getSourceDirectory()) . "/cache";
 		@include self::$cache_path . "/autoload.php";
 		if (!self::$paths || Application_Updater::mustUpdate()) {
 			self::update();

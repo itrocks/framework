@@ -44,6 +44,7 @@ class Default_Json_Controller implements Default_Feature_Controller
 			}
 			return json_encode($objects);
 		}
+		return "";
 	}
 
 }

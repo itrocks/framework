@@ -6,18 +6,20 @@ abstract class Output_Controller implements Default_Feature_Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
+	 * @param $class_name string
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons()
+	protected function getGeneralButtons($class_name)
 	{
 		return array();
 	}
 
 	//----------------------------------------------------------------------------- getPropertiesList
 	/**
+	 * @param $class_name string
 	 * @return string[] property names list
 	 */
-	protected function getPropertiesList()
+	protected function getPropertiesList($class_name)
 	{
 		return null;
 	}
@@ -40,10 +42,11 @@ abstract class Output_Controller implements Default_Feature_Controller
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
 	 * @param $parameters Controller_Parameters
+	 * @param $form       array
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Controller_Parameters $parameters, $class_name)
+	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
@@ -69,7 +72,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
-		$parameters = $this->getViewParameters($parameters, $class_name);
+		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		return View::run($parameters, $form, $files, $class_name, "output");
 	}
 

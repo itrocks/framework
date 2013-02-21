@@ -79,7 +79,7 @@ class Application
 				while (!empty($application_class) && ($application_class != 'SAF\Framework\Application')) {
 					$namespace = Namespaces::of($application_class);
 					self::$namespaces[] = $namespace;
-					$path = Names::classToProperty(substr($namespace, strpos($namespace, "/") + 1));
+					$path = str_replace("_", "", Names::classToProperty(substr($namespace, strpos($namespace, "/") + 1)));
 					$dir = dir($path);
 					while ($entry = $dir->read()) if (($entry[0] != '.') && is_dir($path . "/" . $entry)) {
 						self::$namespaces[] = $namespace . "\\" . Names::propertyToClass($entry);
@@ -105,11 +105,14 @@ class Application
 	 *
 	 * Paths are relative to the SAF index.php base script position
 	 *
-	 * @param $application_name string
+	 * @param $application_name string|null
 	 * @return string[]
 	 */
-	public static function getSourceDirectories($application_name)
+	public static function getSourceDirectories($application_name = null)
 	{
+		if (!isset($application_name)) {
+			$application_name = Configuration::current()->getApplicationName();
+		}
 		$app_dir = self::getSourceDirectory($application_name);
 		$directories = array();
 		if ($application_name != "Framework") {
@@ -124,11 +127,14 @@ class Application
 	//---------------------------------------------------------------------------- getSourceDirectory
 	/**
 	 * @param $application_name string
-	 * @return string
+	 * @return string|null
 	 */
-	public static function getSourceDirectory($application_name)
+	public static function getSourceDirectory($application_name = null)
 	{
-		return strtolower($application_name);
+		if (!isset($application_name)) {
+			$application_name = Configuration::current()->getApplicationName();
+		}
+		return str_replace("_", "", strtolower($application_name));
 	}
 
 	//-------------------------------------------------------------------------------- getSourceFiles
@@ -144,9 +150,12 @@ class Application
 	 * @param $include_vendor   boolean
 	 * @return string[]
 	 */
-	public static function getSourceFiles($application_name, $include_vendor = false)
+	public static function getSourceFiles($application_name = null, $include_vendor = false)
 	{
-		$app_dir = strtolower($application_name);
+		if (!isset($application_name)) {
+			$application_name = Configuration::current()->getApplicationName();
+		}
+		$app_dir = self::getSourceDirectory($application_name);
 		$directories = array();
 		if ($application_name != "Framework") {
 			$extends = mParse(file_get_contents("{$app_dir}/Application.php"),
