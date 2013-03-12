@@ -25,7 +25,7 @@ class User_Register_Controller implements Feature_Controller
 	//------------------------------------------------------------------------------------------- run
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		$class_name = "\\SAF\\Framework\\User";
+		$class_name = 'SAF\Framework\User';
 		$current = User::current();
 		if ($current) {
 			User_Authentication::disconnect(User::current());
