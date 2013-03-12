@@ -3,19 +3,19 @@ namespace SAF\Framework;
 use ReflectionClass;
 use ReflectionException;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/annotations/Annotation.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/annotations/Annotation_Parser.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/annotations/Annoted.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Has_Doc_Comment.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Class_Properties_Access.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Method.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Property.php";
 
 class Reflection_Class extends ReflectionClass implements Has_Doc_Comment

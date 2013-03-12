@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Aop.php";
 
 abstract class Xdebug implements Plugin

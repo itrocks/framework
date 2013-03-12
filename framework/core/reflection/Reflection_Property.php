@@ -3,19 +3,19 @@ namespace SAF\Framework;
 use ReflectionClass;
 use ReflectionProperty;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/annotations/Annotation.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/annotations/Annotation_Parser.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/annotations/Annoted.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Field.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Has_Doc_Comment.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Class.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Method.php";
 
 class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_Comment

@@ -3,6 +3,7 @@ namespace SAF\Framework;
 
 class User_Authenticate_Controller implements Feature_Controller
 {
+
 	//------------------------------------------------------------------------------------------- run
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{

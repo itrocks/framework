@@ -2,8 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Aop.php";
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Plugin.php";
 
 abstract class Html_Session implements Plugin

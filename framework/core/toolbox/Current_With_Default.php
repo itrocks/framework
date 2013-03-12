@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/** @noinspection PhpIncludeInspection */
+require_once "framework/core/toolbox/Current.php";
+
 trait Current_With_Default
 {
 	use Current { current as private pCurrent; }

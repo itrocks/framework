@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/annotations/Annotation.php";
 require_once "framework/core/reflection/annotations/templates/Multiple_Annotation.php";
 

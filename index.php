@@ -27,4 +27,5 @@ Html_Session::register();
 
 // run
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
+require_once "framework/core/controllers/Main_Controller.php";
 echo Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);

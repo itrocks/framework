@@ -2,9 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Aop.php";
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Property.php";
 
 /**

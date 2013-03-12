@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/mappers/Getter.php";
 require_once "framework/core/toolbox/Namespaces.php";
 
