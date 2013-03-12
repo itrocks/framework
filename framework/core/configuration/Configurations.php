@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection called from index.php */
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/configuration/Configurations.php";
 
@@ -58,10 +57,15 @@ class Configurations
 		$this->configurations = array();
 		foreach ($config as $config_name => $config_options) {
 			if (isset($config_options["extends"])) {
-				$config_options = arrayMergeRecursive(
-					$this->getConfiguration($config_options["extends"])->toArray(),
-					$config_options
-				);
+				$extends_array = is_array($config_options["extends"])
+					? $config_options["extends"]
+					: array($config_options["extends"]);
+				foreach ($extends_array as $extends) {
+					$config_options = arrayMergeRecursive(
+						$this->getConfiguration($extends)->toArray(),
+						$config_options
+					);
+				}
 			}
 			$this->configurations[$config_name] = new Configuration($config_options);
 		}
