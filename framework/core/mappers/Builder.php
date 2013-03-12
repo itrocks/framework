@@ -3,6 +3,11 @@ namespace SAF\Framework;
 use AopJoinpoint;
 use ReflectionClass;
 
+/** @noinspection PhpIncludeInspection */
+require_once "framework/core/toolbox/Current_With_Default.php";
+/** @noinspection PhpIncludeInspection */
+require_once "framework/core/toolbox/Plugin.php";
+
 class Builder implements Plugin
 {
 	use Current_With_Default { current as private dCurrent; }

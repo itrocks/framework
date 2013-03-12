@@ -2,7 +2,9 @@
 namespace SAF\Framework;
 use Serializable;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
+require_once "framework/core/mappers/Builder.php";
+/** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Current.php";
 
 class Configuration implements Serializable
@@ -53,6 +55,11 @@ class Configuration implements Serializable
 		if (isset($set_current)) {
 			/** @var $set_current Configuration */
 			$set_current = self::pCurrent($set_current);
+			/** @noinspection PhpIncludeInspection */
+			require_once Names::classToDirectory($set_current->app) . "/Application.php";
+			/** @var $application Application */
+			$application = Builder::create("SAF\\" . $set_current->app . "\\Application");
+			Application::current($application);
 			foreach ($set_current->getClassesConfigurations() as $class_name => $configuration) {
 				if ($configuration == "@static") {
 					$self_configuration = array();

@@ -7,6 +7,12 @@ namespace SAF\Framework;
 abstract class Names
 {
 
+	//------------------------------------------------------------------------------ classToDirectory
+	public static function classToDirectory($class_name)
+	{
+		return strtolower(Namespaces::shortClassName($class_name));
+	}
+
 	//-------------------------------------------------------------------------------- classToDisplay
 	/**
 	 * @param $class_name string

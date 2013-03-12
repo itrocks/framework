@@ -28,7 +28,7 @@ abstract class View
 		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, "_View_Engine"));
 		$feature_class = Names::methodToClass($feature_name);
 		$views = array();
-		$namespaces = Application::getNamespaces();
+		$namespaces = Application::getCurrentNamespaces();
 		foreach ($namespaces as $namespace) {
 			$class = $namespace . "\\" . $class_name;
 			while ($class) {
@@ -79,6 +79,7 @@ abstract class View
 				);
 			}
 		}
+		return "";
 	}
 
 }

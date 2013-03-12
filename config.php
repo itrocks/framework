@@ -2,7 +2,6 @@
 
 //--------------------------------------------------------------------------------------- framework
 $config["framework"] = array(
-	'SAF\Framework\Application' => "@static",
 	'SAF\Framework\Aop_Dynamics' => array(
 		'SAF\Framework\List_Controller' => array(
 			//array("around", "SAF\Framework\Default_List_Controller_Configuration", "getListProperties()", "SAF\Framework\List_Controller_Acls", "getListPropertiesAop")

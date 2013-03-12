@@ -82,7 +82,7 @@ class Controller_Uri
 		$controller = $this->controller_name;
 		$controller_root = Namespaces::shortClassName($this->controller_name);
 		$controllers = array();
-		$namespaces = Application::getNamespaces();
+		$namespaces = Application::getCurrentNamespaces();
 		while ($controller) {
 			$controllers[] = array($controller . "_" . $feature_name_for_class . "_Controller", "run");
 			$controllers[] = array($controller . "_Controller", $feature_name_for_method);

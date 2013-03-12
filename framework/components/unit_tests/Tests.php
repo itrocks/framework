@@ -14,7 +14,7 @@ class Tests
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
-		$this->runDir(Application::getSourceDirectory() . "/tests");
+		$this->runDir(Application::current()->getSourceDirectory() . "/tests");
 	}
 
 	//-------------------------------------------------------------------------------------- runClass

@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection called from index.php */
+/** @noinspection PhpIncludeInspection */
 require_once "framework/Application.php";
 
 abstract class Namespaces
@@ -42,7 +42,7 @@ abstract class Namespaces
 				$full_class_name = $cache[$class_name];
 			}
 			else {
-				foreach (Application::getNamespaces() as $namespace) {
+				foreach (Application::getCurrentNamespaces() as $namespace) {
 					$full_class_name = $namespace . "\\" . $class_name;
 					if (@class_exists($full_class_name) || @interface_exists($full_class_name)) {
 						$cache[$class_name] = $full_class_name;
@@ -90,8 +90,14 @@ abstract class Namespaces
 	 */
 	public static function of($class_name)
 	{
+		if (is_object($class_name)) {
+			$class_name = get_class($class_name);
+		}
 		if ($i = strrpos($class_name, "\\")) {
 			return substr($class_name, 0, $i);
+		}
+		else {
+			return "";
 		}
 	}
 
