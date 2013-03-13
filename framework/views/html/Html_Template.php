@@ -169,6 +169,24 @@ class Html_Template
 		return isset($this->parameters[$parameter]) ? $this->parameters[$parameter] : null;
 	}
 
+	//------------------------------------------------------------------------------------- getUriRoot
+	/**
+	 * @return string
+	 */
+	protected function getUriRoot()
+	{
+		return Paths::$uri_root;
+	}
+
+	//--------------------------------------------------------------------------------- getScriptName
+	/**
+	 * @return string
+	 */
+	protected function getScriptName()
+	{
+		return Paths::$script_name;
+	}
+
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * Parse the template replacing templating codes by object's properties and functions results
@@ -945,6 +963,7 @@ class Html_Template
 	 */
 	protected function replaceLinks($content)
 	{
+		$uri_path = $this->getUriRoot() . $this->getScriptName();
 		$links = array("action=", "href=", "location=");
 		$quotes = array("'", '"');
 		foreach ($links as $link) {
@@ -954,7 +973,8 @@ class Html_Template
 					$i += strlen($link) + 1;
 					$j = strpos($content, $quote, $i);
 					if (substr($content, $i, 1) === "/") {
-						$full_path = Paths::$uri_root . Paths::$script_name . substr($content, $i, $j - $i);
+						$full_path = str_replace("/./", "/", $uri_path . substr($content, $i, $j - $i));
+						if (substr($full_path, 0, 2) == "./") $full_path = substr($full_path, 2);
 						$content = substr($content, 0, $i) . $full_path . substr($content, $j);
 					}
 				}
@@ -972,6 +992,7 @@ class Html_Template
 	 */
 	protected function replaceUris($content)
 	{
+		$uri_root = $this->getUriRoot();
 		$links = array('@import "', 'src="');
 		foreach ($links as $link) {
 			$i = 0;
@@ -995,7 +1016,7 @@ class Html_Template
 						$file_path = "unknown";
 					}
 				}
-				$content = substr($content, 0, $i) . Paths::$uri_root . $file_path . substr($content, $j);
+				$content = substr($content, 0, $i) . $uri_root . $file_path . substr($content, $j);
 			}
 		}
 		return $content;
