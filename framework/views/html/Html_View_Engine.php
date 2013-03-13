@@ -44,6 +44,7 @@ class Html_View_Engine implements Configurable, View_Engine
 			$class_name = get_parent_class($class_name);
 		}
 		$templates[] = "Default_$feature_name.html";
+		$templates[] = $feature_name . ".html";
 		return $templates;
 	}
 
