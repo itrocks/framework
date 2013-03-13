@@ -71,7 +71,7 @@ class Configuration implements Serializable
 					}
 					$class->accessPropertiesDone();
 				}
-				if (method_exists($class_name, "current")) {
+				if (class_uses_trait($class_name, 'SAF\Framework\Current')) {
 					$configuration_class_name = isset($configuration["class"])
 						? $configuration["class"]
 						: $class_name;
