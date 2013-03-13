@@ -75,9 +75,9 @@ class Main_Controller
 				$class_name = ($controller instanceof List_Controller)
 					? Namespaces::fullClassName(Set::elementClassNameOf($uri->controller_name))
 					: $uri->controller_name;
-				return $controller->$method_name(
+				return call_user_func_array(array($controller, $method_name), array(
 					$uri->parameters, $post, $files, $class_name, $uri->feature_name
-				);
+				));
 			}
 		}
 		return null;
