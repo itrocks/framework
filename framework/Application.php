@@ -131,29 +131,6 @@ class Application
 		return $directories;
 	}
 
-	//-------------------------------------------------------------------------------------- getFiles
-	/**
-	 * This is called by getSourceFiles() for recursive files reading
-	 *
-	 * @param $path           string base path
-	 * @param $include_vendor boolean
-	 * @return string[] an array of files names (empty directories are not included)
-	 */
-	private function getFiles($path, $include_vendor = false)
-	{
-		$files = array();
-		$dir = dir($path);
-		while ($entry = $dir->read()) if (($entry[0] != ".")) {
-			if (is_file("$path/$entry")) {
-				$files[] = "$path/$entry";
-			}
-			elseif (is_dir("$path/$entry") && ($include_vendor || ($entry != "vendor"))) {
-				$files = array_merge($files, $this->getFiles("$path/$entry"));
-			}
-		}
-		return $files;
-	}
-
 	//-------------------------------------------------------------------------------- getIncludePath
 	public function getIncludePath()
 	{
@@ -280,15 +257,20 @@ class Application
 	 */
 	public function getSourceFiles($include_vendor = false)
 	{
-		$app_dir = $this->getSourceDirectory();
-		$directories = array();
-		if (get_class($this) != 'SAF\Framework\Application') {
-			$extends = mParse(file_get_contents("{$app_dir}/Application.php"),
-				" extends \\SAF\\", "\\Application"
-			);
-			$directories = $this->getSourceFiles($extends, $include_vendor);
+		$files = array();
+		foreach ($this->getSourceDirectories() as $directory) {
+			if ($include_vendor || substr($directory, -7) != "/vendor") {
+				$dir = dir($directory);
+				while ($entry = $dir->read()) if ($entry[0] != ".") {
+					$file_path = $directory . "/" . $entry;
+					if (is_file($file_path)) {
+						$files[] = $file_path;
+					}
+				}
+				$dir->close();
+			}
 		}
-		return array_merge($this->getFiles($app_dir, $include_vendor), $directories);
+		return $files;
 	}
 
 }
