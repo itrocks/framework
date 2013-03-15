@@ -323,8 +323,23 @@ function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
  */
 function strSimplify($str, $extended = false)
 {
-	$str_simplify_from = "ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ&";
-	$str_simplify_to   = "AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyye";
+	$str_simplify = array(
+		"À" => "A", "Á" => "A", "Â" => "A", "Ã" => "A", "Ä" => "A", "Å" => "A",
+		"Ç" => "C",
+		"È" => "E", "É" => "E", "Ê" => "E", "Ë" => "E",
+		"Ì" => "I", "Í" => "I", "Î" => "I", "Ï" => "I",
+		"Ò" => "O", "Ó" => "O", "Ô" => "O", "Õ" => "O", "Ö" => "O",
+		"Ù" => "U", "Ú" => "U", "Û" => "U", "Ü" => "U",
+		"Ý" => "Y", "Ÿ" => "Y",
+		"à" => "a", "á" => "a", "â" => "a", "ã" => "a", "ä" => "a", "å" => "a",
+		"ç" => "c",
+		"è" => "e", "é" => "e", "ê" => "e", "ë" => "e",
+		"ì" => "i", "í" => "i", "î" => "i", "ï" => "i",
+		"ð" => "o", "ò" => "o", "ó" => "o", "ô" => "o", "õ" => "o", "ö" => "o",
+		"ù" => "u", "ú" => "u", "û" => "u", "ü" => "u",
+		"ý" => "y", "ÿ" => "y",
+		"&" => "e"
+	);
 	$result = "";
 	if ($extended && !is_string($extended)) {
 		if (is_array($extended)) {
@@ -333,7 +348,7 @@ function strSimplify($str, $extended = false)
 			$extended = ".,/- ";
 		}
 	}
-	$str = strtr($str, $str_simplify_from, $str_simplify_to);
+	$str = strtr($str, $str_simplify);
 	for ($i = 0; $i < strlen($str); $i ++) {
 		$c = $str{$i};
 		if (

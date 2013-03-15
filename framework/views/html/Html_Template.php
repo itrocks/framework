@@ -281,8 +281,21 @@ class Html_Template
 	) {
 		return (is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
 			isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
-			isset($GLOBALS["_" . $const_name]) ? $GLOBALS["_" . $const_name] : null
+			isset($GLOBALS["_" . $const_name]) ? $GLOBALS["_" . $const_name] : (
+				$this->parseConstSpec($objects, $object, $const_name)
+			)
 		));
+	}
+
+	//-------------------------------------------------------------------------------- parseConstSpec
+	protected function parseConstSpec(
+		/** @noinspection PhpUnusedParameterInspection */
+		$objects, $object, $const_name
+	) {
+		switch ($const_name) {
+			case "PHPSESSID": return session_id();
+		}
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------- parseConstant
@@ -954,6 +967,22 @@ class Html_Template
 		}
 	}
 
+	//----------------------------------------------------------------------------------- replaceLink
+	/**
+	 * Replace link with correct link path
+	 *
+	 * @param $link string
+	 * @return string
+	 */
+	protected function replaceLink($link)
+	{
+		$full_path = str_replace("/./", "/", $this->getUriRoot() . $this->getScriptName() . $link);
+		if (substr($full_path, 0, 2) == "./") {
+			$full_path = substr($full_path, 2);
+		}
+		return $full_path;
+	}
+
 	//---------------------------------------------------------------------------------- replaceLinks
 	/**
 	 * Replace links with correct absolute paths into $content
@@ -963,7 +992,6 @@ class Html_Template
 	 */
 	protected function replaceLinks($content)
 	{
-		$uri_path = $this->getUriRoot() . $this->getScriptName();
 		$links = array("action=", "href=", "location=");
 		$quotes = array("'", '"');
 		foreach ($links as $link) {
@@ -973,14 +1001,42 @@ class Html_Template
 					$i += strlen($link) + 1;
 					$j = strpos($content, $quote, $i);
 					if (substr($content, $i, 1) === "/") {
-						$full_path = str_replace("/./", "/", $uri_path . substr($content, $i, $j - $i));
-						if (substr($full_path, 0, 2) == "./") $full_path = substr($full_path, 2);
-						$content = substr($content, 0, $i) . $full_path . substr($content, $j);
+						$content = substr($content, 0, $i)
+							. $this->replaceLink(substr($content, $i, $j - $i))
+							. substr($content, $j);
 					}
 				}
 			}
 		}
 		return $content;
+	}
+
+	//------------------------------------------------------------------------------------ replaceUri
+	/**
+	 * Replace URI with correct URI path
+	 *
+	 * @param $uri string
+	 * @return string updated uri
+	 */
+	protected function replaceUri($uri)
+	{
+		$file_name = substr($uri, strrpos($uri, "/") + 1);
+		$file_path = null;
+		if (substr($file_name, -4) == ".css") {
+			$file_path = static::getCssPath($this->css) . "/" . $file_name;
+			if (!file_exists(Paths::$file_root . $file_path)) {
+				$file_path = null;
+			}
+		}
+		if (!isset($file_path)) {
+			$file_path = substr(
+				stream_resolve_include_path($file_name), strlen(Paths::$file_root)
+			);
+			if (!is_file(Paths::$file_root . $file_path)) {
+				$file_path = "unknown";
+			}
+		}
+		return $this->getUriRoot() . $file_path;
 	}
 
 	//----------------------------------------------------------------------------------- replaceUris
@@ -992,31 +1048,15 @@ class Html_Template
 	 */
 	protected function replaceUris($content)
 	{
-		$uri_root = $this->getUriRoot();
 		$links = array('@import "', 'src="');
 		foreach ($links as $link) {
 			$i = 0;
 			while (($i = strpos($content, $link, $i)) !== false) {
 				$i += strlen($link);
 				$j = strpos($content, '"', $i);
-				$file_name = substr($content, $i, $j - $i);
-				$file_name = substr($file_name, strrpos($file_name, "/") + 1);
-				$file_path = null;
-				if (substr($file_name, -4) == ".css") {
-					$file_path = static::getCssPath($this->css) . "/" . $file_name;
-					if (!file_exists(Paths::$file_root . $file_path)) {
-						$file_path = null;
-					}
-				}
-				if (!isset($file_path)) {
-					$file_path = substr(
-						stream_resolve_include_path($file_name), strlen(Paths::$file_root)
-					);
-					if (!is_file(Paths::$file_root . $file_path)) {
-						$file_path = "unknown";
-					}
-				}
-				$content = substr($content, 0, $i) . $uri_root . $file_path . substr($content, $j);
+				$content = substr($content, 0, $i)
+					. $this->replaceUri(substr($content, $i, $j - $i))
+					. substr($content, $j);
 			}
 		}
 		return $content;
