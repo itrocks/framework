@@ -150,7 +150,7 @@ abstract class Mysql_Column_Builder_Property
 				case "array":
 					return null;
 				case "boolean":
-					return "TINYINT(1)";
+					return "tinyint(1)";
 				case "callable":
 					return null;
 				case "null": case "NULL":
