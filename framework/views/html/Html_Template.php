@@ -790,12 +790,13 @@ class Html_Template
 	 * @param $objects       mixed[]
 	 * @param $object        string
 	 * @param $property_name string
+	 * @return mixed
 	 */
 	protected function parseStringProperty(
 			/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $property_name
 	)	{
-		return $object->$property_name;
+		return isset($object->$property_name) ? $object->$property_name : null;
 	}
 
 	//------------------------------------------------------------------------------------- parseThis
