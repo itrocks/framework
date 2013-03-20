@@ -14,9 +14,11 @@ class Property_Select_Controller implements Controller
 	{
 		$properties = array();
 		foreach ($class->getAllProperties() as $property) {
-			$property = new Reflection_Property_Value($property);
-			$property->path = isset($path) ? $path . "." . $property->name : $property->name;
-			$properties[] = $property;
+			if (!$property->isStatic()) {
+				$property = new Reflection_Property_Value($property);
+				$property->path = isset($path) ? $path . "." . $property->name : $property->name;
+				$properties[] = $property;
+			}
 		}
 		return $properties;
 	}

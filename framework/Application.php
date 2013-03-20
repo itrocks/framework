@@ -259,7 +259,11 @@ class Application
 	{
 		$files = array();
 		foreach ($this->getSourceDirectories() as $directory) {
-			if ($include_vendor || substr($directory, -7) != "/vendor") {
+			$directory_slash = $directory . "/";
+			if (
+				(strpos($directory_slash, "/webshop/templates/") === false)
+				&& ($include_vendor || strpos($directory_slash, "/vendor/") === false)
+			) {
 				$dir = dir($directory);
 				while ($entry = $dir->read()) if ($entry[0] != ".") {
 					$file_path = $directory . "/" . $entry;

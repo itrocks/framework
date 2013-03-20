@@ -70,7 +70,7 @@ abstract class View
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		foreach (static::getPossibleViews($class_name, $feature_name) as $call) {
+		foreach (self::getPossibleViews($class_name, $feature_name) as $call) {
 			list($view, $view_method_name) = $call;
 			if (@method_exists($view, $view_method_name)) {
 				$view_object = new $view();

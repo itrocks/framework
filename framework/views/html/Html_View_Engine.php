@@ -37,14 +37,17 @@ class Html_View_Engine implements Configurable, View_Engine
 	 */
 	public static function getPossibleTemplates($class_name, $feature_name)
 	{
+		if (!strpos($feature_name, ".")) {
+			$feature_name .= ".html";
+		}
 		$templates = array();
 		$class_name = Namespaces::fullClassName($class_name);
 		while ($class_name) {
-			$templates[] = Namespaces::shortClassName($class_name) . "_" . $feature_name . ".html";
+			$templates[] = Namespaces::shortClassName($class_name) . "_" . $feature_name;
 			$class_name = get_parent_class($class_name);
 		}
-		$templates[] = "Default_$feature_name.html";
-		$templates[] = $feature_name . ".html";
+		$templates[] = "Default_$feature_name";
+		$templates[] = $feature_name;
 		return $templates;
 	}
 

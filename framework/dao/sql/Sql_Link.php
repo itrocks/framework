@@ -233,6 +233,10 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	abstract public function setContext($context_object);
 
 	//----------------------------------------------------------------------------------- storeNameOf
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
 	public function storeNameOf($class_name)
 	{
 		if (isset($this->tables[$class_name])) {

@@ -117,6 +117,16 @@ class Html_Template
 		}
 	}
 
+	//--------------------------------------------------------------------------- getContainerContent
+	/**
+	 * @param $file_name string
+	 * @return string
+	 */
+	protected function getContainerContent($file_name)
+	{
+		return file_get_contents($file_name, !strpos($this->main_template, "/"));
+	}
+
 	//------------------------------------------------------------------------------------ getCssPath
 	/**
 	 * @param $css string
@@ -339,7 +349,7 @@ class Html_Template
 			}
 			else {
 				$file_name = $this->main_template;
-				$container = file_get_contents($file_name, !strpos($this->main_template, "/"));
+				$container = $this->getContainerContent($file_name);
 				$content = str_replace(
 					"{@content}",
 					"<!--@rootObject-->" . substr($content, $i, $j - $i) . "<!--@rootObject-->",
@@ -695,9 +705,6 @@ class Html_Template
 		elseif ($property_name[0] === "@") {
 			$object = $this->parseFunc($objects, substr($property_name, 1));
 		}
-		elseif ($property_name[0] === "/") {
-			$object = $this->parseInclude($property_name);
-		}
 		elseif ($i = strpos($property_name, "(")) {
 			$object = $this->callFunc($objects, $property_name);
 		}
@@ -834,6 +841,9 @@ class Html_Template
 		}
 		elseif ($var_name == "") {
 			return "";
+		}
+		elseif ($var_name[0] === "/") {
+			return $this->parseInclude($var_name);
 		}
 		$property_name = null;
 		$object = reset($objects);
