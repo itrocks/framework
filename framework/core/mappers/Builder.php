@@ -242,4 +242,26 @@ class Builder implements Plugin
 			: $result;
 	}
 
+	//-------------------------------------------------------------------------------- setReplacement
+	/**
+	 * Sets a new replacement
+	 *
+	 * Returns the ole replacement class name as you can set it back at will
+	 *
+	 * @param $class_name             string
+	 * @param $replacement_class_name string|null
+	 * @return string|null old replacement class name
+	 */
+	public function setReplacement($class_name, $replacement_class_name)
+	{
+		$result = isset($this->replacements[$class_name]) ? $this->replacements[$class_name] : null;
+		if (!isset($replacement_class_name)) {
+			unset($this->replacements[$class_name]);
+		}
+		else {
+			$this->replacements[$class_name] = $replacement_class_name;
+		}
+		return $result;
+	}
+
 }

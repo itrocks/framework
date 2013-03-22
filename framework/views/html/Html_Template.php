@@ -208,11 +208,7 @@ class Html_Template
 		$this->parse_class_name = null;
 		$content = $this->content;
 		$content = $this->parseContainer($content);
-		$content = $this->parseVars($content, array($this->object));
-		if (!isset($this->parameters["is_included"]) || !$this->parameters["is_included"]) {
-			$content = $this->replaceLinks($content);
-			$content = $this->replaceUris($content);
-		}
+		$content = $this->parseFullPage($content);
 		return $content;
 	}
 
@@ -356,6 +352,21 @@ class Html_Template
 					$container
 				);
 			}
+		}
+		return $content;
+	}
+
+	//--------------------------------------------------------------------------------- parseFullPage
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	protected function parseFullPage($content)
+	{
+		$content = $this->parseVars($content, array($this->object));
+		if (!isset($this->parameters["is_included"]) || !$this->parameters["is_included"]) {
+			$content = $this->replaceLinks($content);
+			$content = $this->replaceUris($content);
 		}
 		return $content;
 	}
