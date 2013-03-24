@@ -142,11 +142,14 @@ abstract class Names
 	 */
 	public static function setToClass($class_name)
 	{
-		if     (substr($class_name, -3) === "ies")  return substr($class_name, 0, -3) . "y";
-		elseif (substr($class_name, -2) === "en")   return substr($class_name, 0, -2) . "an";
-		elseif (substr($class_name, -4) === "sses") return substr($class_name, 0, -2);
-		elseif (substr($class_name, -1) === "s")    return substr($class_name, 0, -1);
-		else                                        return $class_name;
+		if (substr($class_name, -2) !== "ss") {
+			if     (substr($class_name, -3) === "ies")  return substr($class_name, 0, -3) . "y";
+			elseif (substr($class_name, -2) === "en")   return substr($class_name, 0, -2) . "an";
+			elseif (substr($class_name, -4) === "sses") return substr($class_name, 0, -2);
+			elseif (substr($class_name, -1) === "s")    return substr($class_name, 0, -1);
+			else                                        return $class_name;
+		}
+		else return $class_name;
 	}
 
 }
