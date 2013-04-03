@@ -3,19 +3,12 @@ namespace SAF\Framework;
 
 /** @noinspection PhpIncludeInspection */
 require_once "framework/Application.php";
-/** @noinspection PhpIncludeInspection */
 require_once "framework/core/configuration/Configuration.php";
-/** @noinspection PhpIncludeInspection */
 require_once "framework/core/configuration/Configurations.php";
-/** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Namespaces.php";
-/** @noinspection PhpIncludeInspection */
 require_once "framework/dao/Dao.php";
-/** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Type.php";
-/** @noinspection PhpIncludeInspection */
 require_once "framework/core/session/Session.php";
-/** @noinspection PhpIncludeInspection */
 require_once "framework/views/View.php";
 
 class Main_Controller
