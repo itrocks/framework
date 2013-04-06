@@ -16,7 +16,7 @@ class User_Register_Controller implements Feature_Controller
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
 		if (empty($object) || !is_object($object) || (get_class($object) !== $class_name)) {
-			$object = new $class_name();
+			$object = Builder::create($class_name);
 			$parameters = array_merge(array($class_name => $object), $parameters);
 		}
 		return $parameters;
