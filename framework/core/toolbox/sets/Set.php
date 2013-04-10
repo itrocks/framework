@@ -104,7 +104,7 @@ class Set
 		}
 		else {
 			$element_class_name = static::elementClassNameOf($class_name);
-			return new Set($element_class_name, $elements);
+			return new Set(Namespaces::fullClassName($element_class_name), $elements);
 		}
 	}
 
