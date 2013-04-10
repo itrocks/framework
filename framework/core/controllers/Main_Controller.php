@@ -5,10 +5,10 @@ namespace SAF\Framework;
 require_once "framework/Application.php";
 require_once "framework/core/configuration/Configuration.php";
 require_once "framework/core/configuration/Configurations.php";
-require_once "framework/core/toolbox/Namespaces.php";
-require_once "framework/dao/Dao.php";
 require_once "framework/core/reflection/Type.php";
 require_once "framework/core/session/Session.php";
+require_once "framework/core/toolbox/Namespaces.php";
+require_once "framework/dao/Dao.php";
 require_once "framework/views/View.php";
 
 class Main_Controller
@@ -68,9 +68,16 @@ class Main_Controller
 				$class_name = ($controller instanceof List_Controller)
 					? Namespaces::fullClassName(Set::elementClassNameOf($uri->controller_name))
 					: $uri->controller_name;
-				return call_user_func_array(array($controller, $method_name), array(
-					$uri->parameters, $post, $files, $class_name, $uri->feature_name
-				));
+				if ($controller instanceof Class_Controller) {
+					return call_user_func_array(array($controller, $method_name), array(
+						$uri->parameters, $post, $files, $uri->feature_name, $class_name
+					));
+				}
+				else {
+					return call_user_func_array(array($controller, $method_name), array(
+						$uri->parameters, $post, $files, $class_name, $uri->feature_name
+					));
+				}
 			}
 		}
 		return null;

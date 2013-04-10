@@ -84,22 +84,36 @@ class Controller_Uri
 		$controllers = array();
 		$namespaces = Application::getCurrentNamespaces();
 		while ($controller) {
-			$controllers[] = array($controller . "_" . $feature_name_for_class . "_Controller", "run");
-			$controllers[] = array($controller . "_Controller", $feature_name_for_method);
+			$controllers[] = array(
+				$controller . "_" . $feature_name_for_class . "_Controller", "run"
+			);
+			$controllers[] = array(
+				$controller . "_Controller", "run" . ucfirst($feature_name_for_method)
+			);
 			$controller = get_parent_class($controller);
 		}
 		foreach ($namespaces as $namespace) {
 			$controller = $namespace . "\\" . $controller_root;
 			while ($controller) {
-				$controllers[] = array($controller . "_" . $feature_name_for_class . "_Controller", "run");
-				$controllers[] = array($controller . "_Controller", $feature_name_for_method);
+				$controllers[] = array(
+					$controller . "_" . $feature_name_for_class . "_Controller", "run"
+				);
+				$controllers[] = array(
+					$controller . "_Controller", "run" . ucfirst($feature_name_for_method)
+				);
 				$controller = get_parent_class($controller);
 			}
 		}
 		foreach ($namespaces as $namespace) {
-			$controllers[] = array($namespace . "\\Default_" . $feature_name_for_class . "_Controller", "run");
-			$controllers[] = array($namespace . "\\Default_Controller", $feature_name_for_method);
-			$controllers[] = array($namespace . "\\Default_Controller", "run");
+			$controllers[] = array(
+				$namespace . "\\Default_" . $feature_name_for_class . "_Controller", "run"
+			);
+			$controllers[] = array(
+				$namespace . "\\Default_Controller", "run" . ucfirst($feature_name_for_method)
+			);
+			$controllers[] = array(
+				$namespace . "\\Default_Controller", "run"
+			);
 		}
 		return $controllers;
 	}

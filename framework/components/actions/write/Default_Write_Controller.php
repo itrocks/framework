@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-class Default_Write_Controller implements Class_Controller
+class Default_Write_Controller implements Default_Class_Controller
 {
 
 	//-------------------------------------------------------------------- formElementToPropertyValue
