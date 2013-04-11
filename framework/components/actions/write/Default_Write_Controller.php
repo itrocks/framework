@@ -66,17 +66,18 @@ class Default_Write_Controller implements Default_Class_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
-		$parameters = $parameters->getObjects();
-		$object = reset($parameters);
+		$objects = $parameters->getObjects();
+		$object = reset($objects);
 		if (!$object || !is_object($object) || (get_class($object) !== $class_name)) {
 			$object = Builder::create($class_name);
-			$parameters = array_merge(array($class_name => $object), $parameters);
+			$objects = array_merge(array($class_name => $object), $objects);
+			$parameters->unshift($object);
 		}
 		$object = self::formToObject($object, $form);
 		Dao::begin();
 		Dao::write($object);
 		Dao::commit();
-		return View::run($parameters, $form, $files, $class_name, "written");
+		return View::run($objects, $form, $files, $class_name, "written");
 	}
 
 }

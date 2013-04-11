@@ -181,4 +181,17 @@ class Controller_Parameters
 		array_unshift($this->parameters, $parameter_value);
 	}
 
+	//--------------------------------------------------------------------------------------- unshift
+	public function unshift($parameter_value)
+	{
+		if (is_object($parameter_value)) {
+			$this->parameters = arrayMergeRecursive(
+				array(get_class($parameter_value) => $parameter_value), $this->parameters
+			);
+		}
+		else {
+			$this->unshiftUnnamed($parameter_value);
+		}
+	}
+
 }
