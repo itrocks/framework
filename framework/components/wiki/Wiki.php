@@ -52,9 +52,13 @@ class Wiki implements Plugin
 				$k = strpos($string . $cr . "\n", "\n`" . $language . "\n", $j + $length);
 				if ($k !== false) {
 					$k++;
-					$geshi = GeSHi::parse(
-						substr($string, $j + 1, $k - $j - 2 - strlen($cr)), str_replace("\r", "", $language)
+					$content = substr($string, $j + 1, $k - $j - 2 - strlen($cr));
+					$content = str_replace(
+						array("&lt;", "&gt;", "&#123;", "&#125;"),
+						array("<",    ">",    "{",      "}"),
+						$content
 					);
+					$geshi = GeSHi::parse($content, str_replace("\r", "", $language));
 					$replacement = "`#" . (++$count) . "`";
 					$this->geshi_replace[$replacement] = $geshi;
 					$k += $length + 2;
@@ -79,7 +83,15 @@ class Wiki implements Plugin
 	public function geshiSolve($string)
 	{
 		foreach ($this->geshi_replace as $replacement => $geshi) {
-			$string = str_replace("<p>" . $replacement . "</p>", $geshi, $string);
+			$string = str_replace(
+				"<p>" . $replacement . "</p>",
+				str_replace(
+					array("{",      "}"),
+					array("&#123;", "&#125;"),
+					$geshi
+				),
+				$string
+			);
 		}
 		return $string;
 	}
