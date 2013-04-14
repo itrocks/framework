@@ -197,6 +197,24 @@ class Html_Template
 		return Paths::$script_name;
 	}
 
+	//---------------------------------------------------------------------------------- htmlEntities
+	/**
+	 * Returns value replacing html entities with coded html, only if this is a displayable value
+	 *
+	 * @param $value mixed
+	 * @return mixed
+	 */
+	private function htmlEntities($value)
+	{
+		return (is_array($value) || is_object($value) || is_resource($value) || !isset($value))
+			? $value
+			: str_replace(
+				array("{",      "}",      "<!--",    "-->"),
+				array("&#123;", "&#125;", "&lt;!--", "--&gt;"),
+				$value
+			);
+	}
+
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * Parse the template replacing templating codes by object's properties and functions results
@@ -223,7 +241,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $array, $index
 	) {
-		return isset($array[$index]) ? $array[$index] : null;
+		return $this->htmlEntities(isset($array[$index]) ? $array[$index] : null);
 	}
 
 	//-------------------------------------------------------------------------------- parseClassName
@@ -285,12 +303,14 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $const_name
 	) {
-		return (is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
-			isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
-			isset($GLOBALS["_" . $const_name]) ? $GLOBALS["_" . $const_name] : (
-				$this->parseConstSpec($objects, $object, $const_name)
-			)
-		));
+		return $this->htmlEntities(
+			(is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
+				isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
+				isset($GLOBALS["_" . $const_name]) ? $GLOBALS["_" . $const_name] : (
+					$this->parseConstSpec($objects, $object, $const_name)
+				)
+			))
+		);
 	}
 
 	//-------------------------------------------------------------------------------- parseConstSpec
@@ -381,11 +401,11 @@ class Html_Template
 	 */
 	protected function parseFunc($objects, $func_name)
 	{
-		return $this->callFunc(
+		return $this->htmlEntities($this->callFunc(
 			"SAF\\Framework\\Html_Template_Funcs",
 			Names::propertyToMethod($func_name, "get"),
 			$objects
-		);
+		));
 	}
 
 	//------------------------------------------------------------------------------- parseFuncParams
@@ -528,6 +548,7 @@ class Html_Template
 		$content = substr($content, 0, $i - $length - 7)
 			. $loop_insert
 			. substr($content, $j + $length2 + 7);
+		$i += strlen($loop_insert) - $length - 7;
 		return $i;
 	}
 
@@ -583,7 +604,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $property_name
 	) {
-		return $object->$property_name();
+		return $this->htmlEntities($object->$property_name());
 	}
 
 	//-------------------------------------------------------------------------------------- parseNot
@@ -610,7 +631,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $property_name
 	) {
-		return method_exists($object, "__toString") ? strval($object) : "";
+		return method_exists($object, "__toString") ? $this->htmlEntities($object) : "";
 	}
 
 	//-------------------------------------------------------------------------------- parseParameter
@@ -624,9 +645,9 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $parameter_name
 	) {
-		return isset($this->parameters[$parameter_name])
-			? $this->parameters[$parameter_name]
-			: "";
+		return $this->htmlEntities(
+			isset($this->parameters[$parameter_name]) ? $this->parameters[$parameter_name] : ""
+		);
 	}
 
 	//----------------------------------------------------------------------------------- parseParent
@@ -650,7 +671,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $property_name
 	) {
-		return @($object->$property_name);
+		return $this->htmlEntities(@($object->$property_name));
 	}
 
 	//-------------------------------------------------------------------------------- parseSeparator
@@ -757,7 +778,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $class_name, $method_name
 	)	{
-		return $class_name::$method_name();
+		return $this->htmlEntities($class_name::$method_name());
 	}
 
 	//--------------------------------------------------------------------------- parseStaticProperty
@@ -771,7 +792,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $class_name, $property_name
 	)	{
-		return $class_name::$$property_name;
+		return $this->htmlEntities($class_name::$$property_name);
 	}
 
 	//----------------------------------------------------------------------------------- parseString
@@ -800,7 +821,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $method_name
 	)	{
-		return $object->$method_name();
+		return $this->htmlEntities($object->$method_name());
 	}
 
 	//--------------------------------------------------------------------------- parseStringProperty
@@ -814,7 +835,7 @@ class Html_Template
 			/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $property_name
 	)	{
-		return isset($object->$property_name) ? $object->$property_name : null;
+		return $this->htmlEntities(isset($object->$property_name) ? $object->$property_name : null);
 	}
 
 	//------------------------------------------------------------------------------------- parseThis
@@ -895,6 +916,7 @@ class Html_Template
 			$this->parseVarRemove($content, $i, $j);
 		}
 		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
+		$i += strlen($value);
 		return $i;
 	}
 
@@ -1023,9 +1045,9 @@ class Html_Template
 					$i += strlen($link) + 1;
 					$j = strpos($content, $quote, $i);
 					if (substr($content, $i, 1) === "/") {
-						$content = substr($content, 0, $i)
-							. $this->replaceLink(substr($content, $i, $j - $i))
-							. substr($content, $j);
+						$replacement_link = $this->replaceLink(substr($content, $i, $j - $i));
+						$content = substr($content, 0, $i) . $replacement_link . substr($content, $j);
+						$i += strlen($replacement_link);
 					}
 				}
 			}
@@ -1076,9 +1098,9 @@ class Html_Template
 			while (($i = strpos($content, $link, $i)) !== false) {
 				$i += strlen($link);
 				$j = strpos($content, '"', $i);
-				$content = substr($content, 0, $i)
-					. $this->replaceUri(substr($content, $i, $j - $i))
-					. substr($content, $j);
+				$replaced_uri = $this->replaceUri(substr($content, $i, $j - $i));
+				$content = substr($content, 0, $i) . $replaced_uri . substr($content, $j);
+				$i += strlen($replaced_uri);
 			}
 		}
 		return $content;
