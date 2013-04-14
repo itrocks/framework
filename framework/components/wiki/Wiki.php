@@ -49,9 +49,12 @@ class Wiki implements Plugin
 				$language = substr($string, $i, $j - $i);
 				$cr = strpos($language, "\r") ? "\r" : "";
 				$length = strlen($language);
-				$k = strpos($string . $cr . "\n", "`" . $language . "\n", $j + $length);
+				$k = strpos($string . $cr . "\n", "\n`" . $language . "\n", $j + $length);
 				if ($k !== false) {
-					$geshi = GeSHi::parse(substr($string, $j, $k - $j), str_replace("\r", "", $language));
+					$k++;
+					$geshi = GeSHi::parse(
+						substr($string, $j + 1, $k - $j - 2 - strlen($cr)), str_replace("\r", "", $language)
+					);
 					$replacement = "`#" . (++$count) . "`";
 					$this->geshi_replace[$replacement] = $geshi;
 					$k += $length + 2;
