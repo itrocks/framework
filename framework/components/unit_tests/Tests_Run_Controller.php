@@ -5,7 +5,7 @@ use SAF\Framework\Feature_Controller;
 use SAF\Framework\Reflection_Class;
 use SAF\Framework\Reflection_Method;
 
-class Tests_Controller implements Feature_Controller
+class Tests_Run_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------ test
