@@ -1,8 +1,16 @@
 <?php
 namespace SAF\Framework;
 
-@include_once "framework/vendor/geshi/geshi.php";
+if (!@include_once("framework/vendor/geshi/geshi.php")) {
+	@include_once("/usr/share/php-geshi/geshi.php");
+}
 
+/**
+ * GeSHi generic multi-languages syntax highlighter
+ *
+ * This offers a SAF interface to the PHP GeSHi library
+ * To install it on a Debian Linux server : apt-get install php-geshi
+ */
 class GeSHi
 {
 
