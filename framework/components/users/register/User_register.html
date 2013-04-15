@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>User register template</title>
+	<style type="text/css">
+		@import "../../../skins/default/application.css";
+	</style>
+</head>
+
+<body>
+
+<!--BEGIN-->
+<div class="window user register">
+	<h2 class="window title">|User register|</h2>
+	<form name="user_login" action="/User/authenticate" method="post">
+		<div class="fieldset">
+			<div class="field">
+				<div class="label">|Login|</div>
+				<div class="value"><input name="login" value="{?login}"></div>
+			</div>
+			<div class="field">
+				<div class="label">|Password|</div>
+				<div class="value"><input name="password" type="password" value="{?password}"></div>
+			</div>
+			<div class="field">
+				<div class="label">|Email|</div>
+				<div class="value"><input name="email" type="password" value="{?password}"></div>
+			</div>
+		</div>
+		<input type="submit" value="|Register|">
+	</form>
+	<script type="text/javascript"> document.user_login.login.focus(); </script>
+</div>
+<!--END-->
+
+</body>
+
+</html>

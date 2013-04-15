@@ -13,21 +13,24 @@
 
 <!--BEGIN-->
 <div class="window user login">
-	<h2>|User login|</h2>
+	<h2 class="window title">|User login|</h2>
 	<form name="user_login" action="/User/authenticate" method="post">
 		<div class="fieldset">
-			<!--User_Authentication.getLoginInputs-->
-			<div class="field {?isMultiple}">
-				<label class="label" for="{name}">|{label}|</label>
-				<input id="{name}" name="{name}" type="{type}" value="{?value}">
+			<div class="field">
+				<div class="label">|Login|</div>
+				<div class="value"><input name="login" value="{?login}"></div>
 			</div>
-			<!--User_Authentication.getLoginInputs-->
+			<div class="field">
+				<div class="label">|Password|</div>
+				<div class="value"><input name="password" type="password" value="{?password}"></div>
+			</div>
 		</div>
-		<input type="submit" value="|connection|">
+		<input type="submit" value="|Connection|">
 	</form>
 	<script type="text/javascript"> document.user_login.login.focus(); </script>
 </div>
 <!--END-->
 
 </body>
+
 </html>
