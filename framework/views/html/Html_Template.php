@@ -1064,7 +1064,10 @@ class Html_Template
 	 */
 	protected function replaceUri($uri)
 	{
-		$file_name = substr($uri, strrpos($uri, "/") + 1);
+		$position = strrpos($uri, "/vendor/");
+		$file_name = ($position !== false)
+			? substr($uri, $position + 1)
+			: substr($uri, strrpos($uri, "/") + 1);
 		$file_path = null;
 		if (substr($file_name, -4) == ".css") {
 			$file_path = static::getCssPath($this->css) . "/" . $file_name;
