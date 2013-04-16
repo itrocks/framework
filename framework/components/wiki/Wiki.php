@@ -40,16 +40,16 @@ class Wiki implements Plugin
 	 */
 	public function geshi($string, $solve = true)
 	{
+		$lf = "\n";
 		$count = count($this->geshi_replace);
 		$i = 0;
 		while (($i < strlen($string)) && (($i = strpos($string, "`", $i)) !== false)) {
 			$i ++;
-			$j = strpos($string, "\n", $i);
+			$j = strpos($string, $lf, $i);
 			if ($j !== false) {
 				$language = substr($string, $i, $j - $i);
 				$cr = strpos($language, "\r") ? "\r" : "";
-				$length = strlen($language);
-				$k = strpos($string . $cr . "\n", "\n`" . $language . "\n", $j);
+				$k = strpos($string . $cr . $lf, "$lf`$cr$lf", $j);
 				if ($k !== false) {
 					$k++;
 					$content = substr($string, $j + 1, $k - $j - 2 - strlen($cr));
@@ -58,11 +58,11 @@ class Wiki implements Plugin
 						array("<",    ">",    "{",      "}"),
 						$content
 					);
-					$geshi = GeSHi::parse($content, str_replace("\r", "", $language));
+					$geshi = GeSHi::parse($content, $cr ? substr($language, 0, -1) : $language);
 					$replacement = "`#" . (++$count) . "`";
 					$this->geshi_replace[$replacement] = $geshi;
-					$k += $length + 2;
-					$string = substr($string, 0, $i - 1) . $replacement . $cr . "\n" . substr($string, $k);
+					$k += strlen($cr) + 2;
+					$string = substr($string, 0, $i - 1) . $replacement . $cr . $lf . substr($string, $k);
 					$i += strlen($replacement . $cr) - 1;
 				}
 			}
@@ -84,7 +84,7 @@ class Wiki implements Plugin
 	{
 		foreach ($this->geshi_replace as $replacement => $geshi) {
 			$string = str_replace(
-				"<p>" . $replacement . "</p>",
+				$replacement,
 				str_replace(
 					array("{",      "}"),
 					array("&#123;", "&#125;"),
