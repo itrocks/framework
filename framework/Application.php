@@ -124,7 +124,7 @@ class Application
 		$directories = array($path);
 		$dir = dir($path);
 		while ($entry = $dir->read()) if ($entry[0] != ".") {
-			if (is_dir("$path/$entry")) {
+			if (is_dir("$path/$entry") && ($entry != "vendor")) {
 				$directories = array_merge($directories, $this->getDirectories("$path/$entry"));
 			}
 		}
