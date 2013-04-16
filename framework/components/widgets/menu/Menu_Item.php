@@ -16,4 +16,10 @@ class Menu_Item
 	 */
 	public $link;
 
+	//---------------------------------------------------------------------------------- $link_target
+	/**
+	 * @var string
+	 */
+	public $link_target;
+
 }

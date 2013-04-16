@@ -33,8 +33,19 @@ class Menu_Builder_Configuration implements Configuration_Builder
 					elseif ($item_key == "target") $block->title_link_target = $item;
 					else {
 						$menu_item = new Menu_Item();
-						$menu_item->caption = $item;
 						$menu_item->link = $item_key;
+						if (is_array($item)) {
+							foreach ($item as $property_key => $property) {
+								if (is_numeric($property_key)) {
+									if     (substr($property, 0, 1) == "/") $menu_item->link        = $property;
+									elseif (substr($property, 0, 1) == "#") $menu_item->link_target = $property;
+									else                                    $menu_item->caption     = $property;
+								}
+							}
+						}
+						else {
+							$menu_item->caption = $item;
+						}
 						$block->items[] = $menu_item;
 					}
 				}
