@@ -24,12 +24,7 @@ class Mysql_Link extends Sql_Link
 	public function __construct($parameters = null)
 	{
 		parent::__construct($parameters);
-		if (isset($parameters)) {
-			$this->connect($parameters);
-			if (isset($parameters["limit"])) {
-				$this->limit($parameters["limit"]);
-			}
-		}
+		$this->connect($parameters);
 	}
 
 	//----------------------------------------------------------------------------------------- begin

@@ -4,6 +4,30 @@ namespace SAF\Framework;
 abstract class Data_Link implements Configurable
 {
 
+	//---------------------------------------------------------------------------------------- $limit
+	/**
+	 * Limits the maximum count of objects that can be read at each call
+	 * null or zero : no limit
+	 *
+	 * @var integer
+	 */
+	private $limit;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Construct a new data link using parameters
+	 *
+	 * The $parameters array keys are : "limit".
+	 *
+	 * @param $parameters array
+	 */
+	public function __construct($parameters = null)
+	{
+		if (isset($parameters) && isset($parameters["limit"])) {
+			$this->limit($parameters["limit"]);
+		}
+	}
+
 	//---------------------------------------------------------------------------------------- delete
 	/**
 	 * Delete an object from data source
@@ -26,6 +50,21 @@ abstract class Data_Link implements Configurable
 	 * @return Reflection_Property[]|Dao_Column[]
 	 */
 	abstract public function getStoredProperties($class);
+
+	//----------------------------------------------------------------------------------------- limit
+	/**
+	 * Sets/gets the count of read objects limit
+	 *
+	 * @param $length integer
+	 * @return integer
+	 */
+	public function limit($length = null)
+	{
+		if (isset($length)) {
+			$this->limit = $length;
+		}
+		return $this->limit;
+	}
 
 	//------------------------------------------------------------------------------------------ read
 	/**
