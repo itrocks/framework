@@ -15,10 +15,10 @@ class Wiki implements Plugin
 
 	//-------------------------------------------------------------------------------- $geshi_replace
 	/**
-	 * geshi parsing replaces `code ... `code by `#1` ̀#2` etc.
+	 * geshi parsing replaces @language ... @ by `#1` `#2` etc.
 	 * after geshi parsing, these specific codes will be replaced with geshi replacement
 	 *
-	 * @var string[] indice is the replacement code ̀#1̀, value is the geshi parsed code
+	 * @var string[] indice is the replacement code `#1`, value is the geshi parsed code
 	 */
 	private $geshi_replace = array();
 
@@ -27,11 +27,11 @@ class Wiki implements Plugin
 	 * Parse source code using GeSHi
 	 *
 	 * Source code is delimited between those full lines :
-	 * `language
+	 * @language
 	 * ... code here
-	 * `language
+	 * @
 	 *
-	 * It is replaced by a geshi replacement code like ̀#1` that will be solved later by geshiSolve()
+	 * It is replaced by a geshi replacement code like `#1` that will be solved later by geshiSolve()
 	 * or now if $solve is true (default)
 	 *
 	 * @param $string string
@@ -43,27 +43,29 @@ class Wiki implements Plugin
 		$lf = "\n";
 		$count = count($this->geshi_replace);
 		$i = 0;
-		while (($i < strlen($string)) && (($i = strpos($string, "`", $i)) !== false)) {
+		while (($i < strlen($string)) && (($i = strpos($string, "@", $i)) !== false)) {
 			$i ++;
 			$j = strpos($string, $lf, $i);
-			if ($j !== false) {
+			if (($j !== false) && ($j < strpos($string, " ", $i))) {
 				$language = substr($string, $i, $j - $i);
-				$cr = strpos($language, "\r") ? "\r" : "";
-				$k = strpos($string . $cr . $lf, "$lf`$cr$lf", $j);
-				if ($k !== false) {
-					$k++;
-					$content = substr($string, $j + 1, $k - $j - 2 - strlen($cr));
-					$content = str_replace(
-						array("&lt;", "&gt;", "&#123;", "&#125;"),
-						array("<",    ">",    "{",      "}"),
-						$content
-					);
-					$geshi = GeSHi::parse($content, $cr ? substr($language, 0, -1) : $language);
-					$replacement = "`#" . (++$count) . "`";
-					$this->geshi_replace[$replacement] = $geshi;
-					$k += strlen($cr) + 2;
-					$string = substr($string, 0, $i - 1) . $replacement . $cr . $lf . substr($string, $k);
-					$i += strlen($replacement . $cr) - 1;
+				if (trim($language) && !strpos($language, "@")) {
+					$cr = strpos($language, "\r") ? "\r" : "";
+					$k = strpos($string . $cr . $lf, "$lf@$cr$lf", $j);
+					if ($k !== false) {
+						$k++;
+						$content = substr($string, $j + 1, $k - $j - 2 - strlen($cr));
+						$content = str_replace(
+							array("&lt;", "&gt;", "&#123;", "&#125;"),
+							array("<",    ">",    "{",      "}"),
+							$content
+						);
+						$geshi = GeSHi::parse($content, $cr ? substr($language, 0, -1) : $language);
+						$replacement = "`#" . (++$count) . "`";
+						$this->geshi_replace[$replacement] = $geshi;
+						$k += strlen($cr) + 2;
+						$string = substr($string, 0, $i - 1) . $replacement . $cr . $lf . substr($string, $k);
+						$i += strlen($replacement . $cr) - 1;
+					}
 				}
 			}
 		}
