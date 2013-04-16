@@ -1020,6 +1020,9 @@ class Html_Template
 	 */
 	protected function replaceLink($link)
 	{
+		if (strpos($link, "://")) {
+			return $link;
+		}
 		$full_path = str_replace("/./", "/", $this->getUriRoot() . $this->getScriptName() . $link);
 		if (substr($full_path, 0, 2) == "./") {
 			$full_path = substr($full_path, 2);
@@ -1064,6 +1067,9 @@ class Html_Template
 	 */
 	protected function replaceUri($uri)
 	{
+		if (strpos($uri, "://")) {
+			return $uri;
+		}
 		$position = strrpos($uri, "/vendor/");
 		$file_name = ($position !== false)
 			? substr($uri, $position + 1)
