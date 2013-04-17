@@ -109,7 +109,7 @@ class Html_Template
 			$i++;
 			$j = strpos($func_call, ")", $i);
 			$more_params = $this->parseFuncParams(substr($func_call, $i, $j - $i), $objects);
-			$params = array_merge($params, $more_params);
+			$params = array_merge($more_params, $params);
 			return call_user_func_array(array($object_call, $func_name), $params);
 		}
 		else {
