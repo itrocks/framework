@@ -85,7 +85,7 @@ abstract class User_Authentication
 	public static function disconnect(User $user)
 	{
 		User::current(new User());
-		Session::current()->removeAny('SAF\Framework\User');
+		Session::current()->removeAny(get_class($user));
 	}
 
 	//-------------------------------------------------------------------------------- getLoginInputs
