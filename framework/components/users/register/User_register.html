@@ -14,7 +14,7 @@
 <!--BEGIN-->
 <div class="window user register">
 	<h2 class="window title">|User register|</h2>
-	<form name="user_login" action="/User/authenticate" method="post">
+	<form name="user_login" action="/User/register" method="post">
 		<div class="fieldset">
 			<div class="field">
 				<div class="label">|Login|</div>
@@ -26,7 +26,7 @@
 			</div>
 			<div class="field">
 				<div class="label">|Email|</div>
-				<div class="value"><input name="email" type="password" value="{?password}"></div>
+				<div class="value"><input name="email" type="text" value="{?email}"></div>
 			</div>
 		</div>
 		<input type="submit" value="|Register|">
