@@ -29,8 +29,7 @@ abstract class Autoloader implements Plugin
 	public static function autoload($class_name)
 	{
 		if (!isset(self::$included_classes[$class_name])) {
-			$short_class_name = Namespaces::shortClassName($class_name);
-			self::$included_classes[$class_name] = self::includeClass($short_class_name);
+			self::$included_classes[$class_name] = self::includeClass($class_name);
 		}
 	}
 
@@ -43,7 +42,7 @@ abstract class Autoloader implements Plugin
 	public static function includeClass($class_name, $file_path = null)
 	{
 		if (!isset($file_path)) {
-			$file_path = stream_resolve_include_path($class_name . ".php");
+			$file_path = stream_resolve_include_path(Namespaces::shortClassName($class_name) . ".php");
 		}
 		if ($file_path) {
 			/** @noinspection PhpIncludeInspection */
