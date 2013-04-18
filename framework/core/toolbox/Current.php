@@ -5,7 +5,7 @@ trait Current
 {
 
 	//-------------------------------------------------------------------------------------- $current
-	private static $current = null;
+	protected static $current = null;
 
 	//--------------------------------------------------------------------------------------- current
 	/**
@@ -17,9 +17,9 @@ trait Current
 	public static function current($set_current = null)
 	{
 		if ($set_current) {
-			self::$current = $set_current;
+			static::$current = $set_current;
 		}
-		return self::$current;
+		return static::$current;
 	}
 
 }
