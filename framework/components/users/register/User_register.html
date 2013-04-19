@@ -16,18 +16,12 @@
 	<h2 class="window title">|User register|</h2>
 	<form name="user_login" action="/User/register" method="post">
 		<div class="fieldset">
+			<!--User_Authentication.getRegisterInputs-->
 			<div class="field">
-				<div class="label">|Login|</div>
-				<div class="value"><input name="login" value="{?login}"></div>
+				<div class="label">|{label}|</div>
+				<div class="value"><input name="{name}" type="{type}"></div>
 			</div>
-			<div class="field">
-				<div class="label">|Password|</div>
-				<div class="value"><input name="password" type="password" value="{?password}"></div>
-			</div>
-			<div class="field">
-				<div class="label">|Email|</div>
-				<div class="value"><input name="email" type="text" value="{?email}"></div>
-			</div>
+			<!--User_Authentication.getRegisterInputs-->
 		</div>
 		<input type="submit" value="|Register|">
 	</form>
