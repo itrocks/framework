@@ -1,25 +1,12 @@
 <?php
 namespace SAF\Framework;
 
-/**
+/*
  * @representative login
  */
 class User
 {
-	use Current { current as private pCurrent; }
-
-	//---------------------------------------------------------------------------------------- $login
-	/**
-	 * @var string
-	 */
-	public $login;
-
-	//------------------------------------------------------------------------------------- $password
-	/**
-	 * @password sha1
-	 * @var string
-	 */
-	public $password;
+	use Account, Current { current as private pCurrent; };
 
 	//--------------------------------------------------------------------------------------- current
 	/**
