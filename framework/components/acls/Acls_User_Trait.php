@@ -3,7 +3,6 @@ namespace SAF\Framework;
 
 trait Acls_User_Trait
 {
-	use Current { current as private pCurrent; }
 
 	//---------------------------------------------------------------------------------------- $group
 	/**
@@ -12,17 +11,6 @@ trait Acls_User_Trait
 	 * @var Acls_Group
 	 */
 	public $group;
-
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * @param $set_current Acls_User
-	 * @return Acls_User
-	 * @see User::current()
-	 */
-	public static function current($set_current = null)
-	{
-		return self::pcurrent($set_current);
-	}
 
 	//-------------------------------------------------------------------------------------- getGroup
 	/**
