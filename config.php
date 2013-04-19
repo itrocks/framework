@@ -1,4 +1,6 @@
 <?php
+global $pwd;
+include_once "pwd.php";
 
 //--------------------------------------------------------------------------------------- framework
 $config["framework"] = array(
@@ -12,7 +14,7 @@ $config["framework"] = array(
 		"host"     => "localhost",
 		"limit"    => 1000,
 		"user"     => "saf",
-		"password" => "saf",
+		"password" => $pwd["saf"],
 		"tables"   => array(
 			'SAF\Framework\Acls_User' => "users",
 		)

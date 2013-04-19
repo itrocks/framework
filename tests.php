@@ -1,4 +1,6 @@
 <?php
+global $pwd;
+include_once "pwd.php";
 
 //------------------------------------------------------------------------------------- my_business
 $CONFIG["tests"] = array(
@@ -7,7 +9,7 @@ $CONFIG["tests"] = array(
 	'SAF\Framework\Dao' => array(
 		"database" => "saf-tests",
 		"user"     => "saf-tests",
-		"password" => "d4fe8ss4",
+		"password" => $pwd["saf-tests"],
 		"tables" => array(
 			'SAF\Framework\Tests\Test_Order'      => "orders",
 			'SAF\Framework\Tests\Test_Order_Line' => "orders_lines",
