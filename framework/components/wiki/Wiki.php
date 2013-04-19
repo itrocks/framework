@@ -159,7 +159,7 @@ class Wiki implements Plugin
 	 */
 	public function textile($string)
 	{
-		return (new Textile())->TextileThis($string);
+		return Textile::parse($string);
 	}
 
 }

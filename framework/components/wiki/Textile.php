@@ -39,6 +39,16 @@ class Textile extends \Textile
 		);
 	}
 
+	//----------------------------------------------------------------------------------------- parse
+	/**
+	 * @param $text string
+	 * @return string
+	 */
+	public static function parse($text)
+	{
+		return (new Textile())->textileThis($text);
+	}
+
 	//----------------------------------------------------------------------------------------- spans
 	/**
 	 * This override replaces '/' by '`' as REGEX separator
