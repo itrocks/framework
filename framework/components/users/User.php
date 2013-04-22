@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+require_once "framework/components/users/Account.php";
+
 /*
  * @representative login
  */
