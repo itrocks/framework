@@ -6,7 +6,7 @@ namespace SAF\Framework;
  */
 class User
 {
-	use Account, Current { current as private pCurrent; };
+	use Account, Current { current as private pCurrent; }
 
 	//--------------------------------------------------------------------------------------- current
 	/**
