@@ -44,14 +44,6 @@ class Sql_Joins
 	 */
 	private $properties = array();
 
-	//-------------------------------------------------------------------------- $starting_class_name
-	/**
-	 * Starting class name : all properties path must start from this class
-	 *
-	 * @var string
-	 */
-	private $starting_class_name;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Construct Sql_Joins object and prepare joins for a list of property paths
@@ -65,7 +57,6 @@ class Sql_Joins
 		$this->classes[""] = $starting_class_name;
 		$class = Reflection_Class::getInstanceOf($starting_class_name);
 		$this->properties[$starting_class_name] = $class->getAllProperties();
-		$this->starting_class_name = $starting_class_name;
 		foreach ($paths as $path) {
 			$this->add($path);
 		}
@@ -115,6 +106,7 @@ class Sql_Joins
 		}
 		$join->foreign_alias = "t" . $this->alias_counter++;
 		if (!isset($join->foreign_table)) {
+			$join->foreign_class = $foreign_class_name;
 			$join->foreign_table = Dao::current()->storeNameOf($foreign_class_name);
 		}
 		if (!isset($join->master_alias)) {
@@ -128,14 +120,12 @@ class Sql_Joins
 
 	//--------------------------------------------------------------------------------- addLinkedJoin
 	/**
-	 * @param $join                        Sql_Join
-	 * @param $master_path                 string
-	 * @param $master_class_name           string
-	 * @param $master_property_foreignlink string
-	 * @param $foreign_path                string
-	 * @param $foreign_class_name          string
-	 * @param $foreign_property_name       string
-	 * @param $property                    Reflection_Property
+	 * @param $join               Sql_Join
+	 * @param $master_path        string
+	 * @param $foreign_path       string
+	 * @param $foreign_class_name string
+	 * @param $property           Reflection_Property
+	 * @param $reverse            boolean
 	 */
 	private function addLinkedJoin(
 		Sql_Join $join, $master_path, $foreign_path, $foreign_class_name,
@@ -351,6 +341,17 @@ class Sql_Joins
 	{
 		$properties = $this->getProperties($master_path);
 		return isset($properties[$property_name]) ? $properties[$property_name] : null;
+	}
+
+	//-------------------------------------------------------------------------- getStartingClassName
+	/**
+	 * Gets starting class name as defined in constructor
+	 *
+	 * @return string
+	 */
+	public function getStartingClassName()
+	{
+		return $this->classes[""];
 	}
 
 	//----------------------------------------------------------------------------------- newInstance

@@ -22,6 +22,14 @@ class Sql_Join
 	 */
 	public $foreign_alias;
 
+	//-------------------------------------------------------------------------------- $foreign_class
+	/**
+	 * Foreign class name. Can be null if foreign table has no associated class (ie link table)
+	 *
+	 * @var string
+	 */
+	public $foreign_class;
+
 	//------------------------------------------------------------------------------- $foreign_column
 	/**
 	 * Foreign column name
@@ -96,10 +104,11 @@ class Sql_Join
 	 */
 	public static function newInstance(
 		$mode, $master_alias, $master_column, $foreign_alias, $foreign_table, $foreign_column,
-		$type = self::SIMPLE
+		$type = self::SIMPLE, $foreign_class = null
 	) {
 		$sql_join = new Sql_Join();
 		$sql_join->foreign_alias  = $foreign_alias;
+		$sql_join->foreign_class  = $foreign_class;
 		$sql_join->foreign_column = $foreign_column;
 		$sql_join->foreign_table  = $foreign_table;
 		$sql_join->master_alias   = $master_alias;
