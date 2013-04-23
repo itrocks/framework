@@ -126,7 +126,10 @@ abstract class Data_Link implements Configurable
 	 */
 	public function searchOne($what, $class_name = null)
 	{
+		$limit = isset($this->limit) ? $this->limit : null;
+		$this->limit = 1;
 		$result = $this->search($what, $class_name);
+		$this->limit = $limit;
 		return $result ? reset($result) : null;
 	}
 
