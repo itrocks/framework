@@ -20,6 +20,7 @@ abstract class Mysql_Column_Builder_Property
 		$class->getProperty("Field")->setValue($column, self::propertyNameToMysql($property));
 		$class->getProperty("Type")->setValue($column, self::propertyTypeToMysql($property));
 		$class->getProperty("Null")->setValue($column, self::propertyNullToMysql($property));
+		$class->getProperty("Key")->setValue($column, self::propertyKeyToMysql($property));
 		$class->getProperty("Default")->setValue($column, self::propertyDefaultToMysql($property, $column));
 		$class->getProperty("Extra")->setValue($column, "");
 		$class->accessPropertiesDone();
@@ -66,6 +67,13 @@ abstract class Mysql_Column_Builder_Property
 		return $default;
 	}
 
+	//---------------------------------------------------------------------------- propertyKeyToMysql
+	private static function propertyKeyToMysql(Reflection_Property $property)
+	{
+		// todo automatic keys on object linked tables
+		return "";
+	}
+
 	//--------------------------------------------------------------------------- propertyNameToMysql
 	/**
 	 * Gets the mysql field name for a property
@@ -105,6 +113,7 @@ abstract class Mysql_Column_Builder_Property
 		$property_type = $property->getType();
 		if ($property_type->isBasic()) {
 			if ($property_type->hasSize()) {
+				/** @var integer $max_length */
 				$max_length = $property->getAnnotation("max_length")->value;
 				$max_value  = $property->getAnnotation("max_value")->value;
 				$min_value  = $property->getAnnotation("min_value")->value;

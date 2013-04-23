@@ -49,6 +49,7 @@ class Mysql_Maintainer implements Plugin
 	 */
 	private static function createTableWithoutContext(mysqli $mysqli, $table_name, $query)
 	{
+		/** @noinspection PhpWrongStringConcatenationInspection */
 		$alias = "t" . (
 			(substr($query, strpos($query, "`" . $table_name . "` t") + strlen($table_name) + 4)) + 0
 		);
