@@ -93,13 +93,14 @@ class Sql_Join
 	/**
 	 * Generate a new Sql_Join instance, with initialization of all it's properties
 	 *
-	 * @param $mode integer
-	 * @param $master_alias string
-	 * @param $master_column string
-	 * @param $foreign_table string
-	 * @param $foreign_alias string
+	 * @param $mode           integer
+	 * @param $master_alias   string
+	 * @param $master_column  string
+	 * @param $foreign_table  string
+	 * @param $foreign_alias  string
 	 * @param $foreign_column string
-	 * @param $type string
+	 * @param $type           string
+	 * @param $foreign_class  string
 	 * @return Sql_Join
 	 */
 	public static function newInstance(
