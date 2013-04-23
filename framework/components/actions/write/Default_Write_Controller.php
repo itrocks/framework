@@ -29,7 +29,7 @@ class Default_Write_Controller implements Default_Class_Controller
 		return $value;
 	}
 
-	//---------------------------------------------------------------------------------- formToObject
+	//--------------------------------------------------------------------------------- formToObjects
 	/**
 	 * Returns the object that form data represents
 	 *
@@ -42,11 +42,15 @@ class Default_Write_Controller implements Default_Class_Controller
 		if (is_string($object)) {
 			$object = Builder::create($object);
 		}
+		$objects = array($object);
 		$class = Reflection_Class::getInstanceOf($object);
 		$properties = $class->accessProperties();
 		foreach ($form as $name => $value) {
 			if (isset($properties[$name])) {
 				$object->$name = $this->formElementToPropertyValue($properties[$name], $value);
+				if ($properties[$name]->getAnnotation("link")->value == "Object") {
+					$objects[] = $object->$name;
+				}
 			}
 			else {
 				$object->$name = $value;
@@ -59,7 +63,7 @@ class Default_Write_Controller implements Default_Class_Controller
 			}
 		}
 		$class->accessPropertiesDone();
-		return array($object);
+		return $objects;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -84,10 +88,10 @@ class Default_Write_Controller implements Default_Class_Controller
 			$objects = array_merge(array($class_name => $object), $objects);
 			$parameters->unshift($object);
 		}
-		$objects = $this->formToObjects($object, $form);
+		$write_objects = $this->formToObjects($object, $form);
 		Dao::begin();
-		foreach ($objects as $object) {
-			Dao::write($object);
+		foreach ($write_objects as $write_object) {
+			Dao::write($write_object);
 		}
 		Dao::commit();
 		return View::run($objects, $form, $files, $class_name, "written");
