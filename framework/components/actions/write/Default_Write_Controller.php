@@ -30,9 +30,9 @@ class Default_Write_Controller implements Default_Class_Controller
 	 *
 	 * @param $object object The object or class name to fill-in
 	 * @param $form array    The form data
-	 * @return object The result object (same as $object if it was an object)
+	 * @return object[] The result objects (same as $object if it was an object)
 	 */
-	public function formToObject($object, $form)
+	public function formToObjects($object, $form)
 	{
 		if (is_string($object)) {
 			$object = Builder::create($object);
@@ -54,7 +54,7 @@ class Default_Write_Controller implements Default_Class_Controller
 			}
 		}
 		$class->accessPropertiesDone();
-		return $object;
+		return array($object);
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -79,9 +79,11 @@ class Default_Write_Controller implements Default_Class_Controller
 			$objects = array_merge(array($class_name => $object), $objects);
 			$parameters->unshift($object);
 		}
-		$object = $this->formToObject($object, $form);
+		$objects = $this->formToObjects($object, $form);
 		Dao::begin();
-		Dao::write($object);
+		foreach ($objects as $object) {
+			Dao::write($object);
+		}
 		Dao::commit();
 		return View::run($objects, $form, $files, $class_name, "written");
 	}
