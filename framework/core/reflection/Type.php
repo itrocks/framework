@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * PHP types manager
+ */
 class Type
 {
 
@@ -93,6 +96,9 @@ class Type
 	}
 
 	//-------------------------------------------------------------------------------------- asString
+	/**
+	 * @return string
+	 */
 	public function asString()
 	{
 		return $this->type;
@@ -196,11 +202,22 @@ class Type
 		return $this->isStrictlyBasic() || $this->isDateTime();
 	}
 
+	//------------------------------------------------------------------------------------- isBoolean
+	/**
+	 * Returns true if type is a boolean
+	 *
+	 * @return boolean
+	 */
+	public function isBoolean()
+	{
+		return $this->type == "boolean";
+	}
+
 	//--------------------------------------------------------------------------------------- isClass
 	/**
 	 * Returns true if type is a class or multiple classes
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	public function isClass()
 	{

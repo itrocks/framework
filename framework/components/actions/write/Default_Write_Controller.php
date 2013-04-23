@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Default write controller
+ */
 class Default_Write_Controller implements Default_Class_Controller
 {
 
@@ -10,9 +13,12 @@ class Default_Write_Controller implements Default_Class_Controller
 	 * @param $value    mixed
 	 * @return mixed
 	 */
-	private static function formElementToPropertyValue(Reflection_Property $property, $value)
+	private function formElementToPropertyValue(Reflection_Property $property, $value)
 	{
-		if (is_array($value) && ($property->getAnnotation("link")->value == "Collection")) {
+		if ($property->getType()->isBoolean()) {
+			$value = !(empty($value) || ($value === "false"));
+		}
+		elseif (is_array($value) && ($property->getAnnotation("link")->value == "Collection")) {
 			$value = arrayToCollection($value, $property->getType()->getElementTypeAsString(), false);
 		}
 		return $value;
@@ -26,7 +32,7 @@ class Default_Write_Controller implements Default_Class_Controller
 	 * @param $form array    The form data
 	 * @return object The result object (same as $object if it was an object)
 	 */
-	public static function formToObject($object, $form)
+	public function formToObject($object, $form)
 	{
 		if (is_string($object)) {
 			$object = Builder::create($object);
@@ -35,7 +41,7 @@ class Default_Write_Controller implements Default_Class_Controller
 		$properties = $class->accessProperties();
 		foreach ($form as $name => $value) {
 			if (isset($properties[$name])) {
-				$object->$name = self::formElementToPropertyValue($properties[$name], $value);
+				$object->$name = $this->formElementToPropertyValue($properties[$name], $value);
 			}
 			else {
 				$object->$name = $value;
@@ -73,7 +79,7 @@ class Default_Write_Controller implements Default_Class_Controller
 			$objects = array_merge(array($class_name => $object), $objects);
 			$parameters->unshift($object);
 		}
-		$object = self::formToObject($object, $form);
+		$object = $this->formToObject($object, $form);
 		Dao::begin();
 		Dao::write($object);
 		Dao::commit();

@@ -93,7 +93,7 @@ trait Component
 	 * Sets composite object
 	 *
 	 * @param $object        object The composite object
-	 * @param $property_name string The composite property name (needed if multiple
+	 * @param $property_name string The composite property name (needed if multiple)
 	 */
 	public function setComposite($object, $property_name = null)
 	{

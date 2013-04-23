@@ -31,4 +31,13 @@ trait Account
 	 */
 	public $email;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->login);
+	}
+
 }

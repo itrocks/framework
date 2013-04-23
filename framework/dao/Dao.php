@@ -154,7 +154,7 @@ abstract class Dao
 	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
-	 * @param $what       mixed source object for filter, only set properties will be used for search
+	 * @param $what       object|array source object for filter, only set properties will be used for search
 	 * @param $class_name string must be set if $what is a filter array
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::search()
@@ -172,7 +172,7 @@ abstract class Dao
 	 * It is highly recommended to use this search with primary keys properties values searches.
 	 * If several result exist, only one will be taked, the first on the list (may be random).
 	 *
-	 * @param $what object source object for filter, only set properties will be used for search
+	 * @param $what       object|array source object for filter, only set properties will be used for search
 	 * @param $class_name string must be set if is not a filter array
 	 * @return object | null the found object, or null if no object was found
 	 * @see Data_Link::searchOne()
