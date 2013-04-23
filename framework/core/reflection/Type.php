@@ -383,6 +383,44 @@ function class_instanceof($object, $class_name)
 	return ($object === $class_name) || is_subclass_of($object, $class_name);
 }
 
+//-------------------------------------------------------------------------------------- class_tree
+/**
+ * Gets full class names tree, recursively
+ *
+ * @param $object     object|string object or class name or interface name or trait name
+ * @param $classes    boolean get parent classes list
+ * @param $traits     boolean get parent traits list
+ * @param $interfaces boolean get parent interfaces list
+ * @param $self       boolean get the object / class name itself
+ * @return string[] keys and values are classes / traits / interfaces names
+ */
+function class_tree($object, $classes = true, $traits = true, $interfaces = true, $self = true)
+{
+	$class_name = is_object($object) ? get_class($object) : $object;
+	$tree = array();
+	if ($classes) {
+		$parent = get_parent_class($class_name);
+		if (isset($parent)) {
+			$tree = array_merge($tree, array($parent => $parent));
+		}
+	}
+	if ($traits) {
+		$parents = class_uses($class_name);
+		$tree = array_merge($tree, array_combine($parents, $parents));
+	}
+	if ($interfaces) {
+		$parents = class_implements($class_name);
+		$tree = array_merge($tree, array_combine($parents, $parents));
+	}
+	foreach ($tree as $parent) {
+		$tree = array_merge($tree, class_tree($parent, $classes, $traits, $interfaces, false));
+	}
+	if ($self) {
+		$tree[$class_name] = $class_name;
+	}
+	return $tree;
+}
+
 //-------------------------------------------------------------------------------- class_uses_trait
 /**
  * Returns true if an object / class (or one of its parents) uses (or is) a trait
