@@ -1,22 +1,14 @@
 <?php
 namespace SAF\Framework;
 
-trait Sql_Where_Builder
+class Sql_Where_Builder
 {
-
-	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * Root class
-	 *
-	 * @var string
-	 */
-	private $class;
 
 	//---------------------------------------------------------------------------------------- $joins
 	/**
 	 * @var Sql_Joins
 	 */
-	private $where_joins;
+	private $joins;
 
 	//------------------------------------------------------------------------------------- $sql_link
 	/**
@@ -34,23 +26,37 @@ trait Sql_Where_Builder
 	 */
 	private $where_array;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Construct the SQL WHERE section of a query
+	 *
+	 * Supported columns naming forms are :
+	 * column_name : column_name must correspond to a property of class
+	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
+	 *
+	 * @param $class_name  string base object class name
+	 * @param $where_array array  where array expression, indices are columns names
+	 * @param $sql_link    Sql_Link
+	 * @param $joins       Sql_Joins
+	 */
+	public function __construct(
+		$class_name, $where_array = null, Sql_Link $sql_link = null, Sql_Joins $joins = null
+	) {
+		$this->joins       = $joins ? $joins : new Sql_Joins($class_name);
+		$this->sql_link    = $sql_link ? $sql_link : Dao::current();
+		$this->where_array = $where_array;
+	}
+
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * Build SQL WHERE section for given path and value
+	 * Build SQL WHERE section, add add joins for search criterion
 	 *
-	 * @param $path string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
-	 * @param $value mixed         May be a value, or a structured array of multiple where clauses
-	 * @param $clause string       For multiple where clauses, tell if they are linked with "OR" or "AND"
 	 * @return string
 	 */
-	private function build($path, $value, $clause)
+	public function build()
 	{
-		switch (gettype($value)) {
-			case "NULL":   return "";
-			case "array":  return $this->buildArray($path, $value, $clause);
-			case "object": return $this->buildObject($path, $value);
-			default:       return $this->buildValue($path, $value);
-		}
+		$sql = is_null($this->where_array) ? "" : $this->buildPath("id", $this->where_array, "AND");
+		return $sql ? " WHERE " . $sql : $sql;
 	}
 
 	//------------------------------------------------------------------------------------ buildArray
@@ -70,11 +76,11 @@ trait Sql_Where_Builder
 			if ($first) $first = false; else $sql .= " $clause ";
 			$subclause = strtoupper($key);
 			switch ($subclause) {
-				case "NOT": $sql .= "NOT (" . $this->build($path, $value, "AND") . ")";  break;
-				case "AND": $sql .= $this->build($path, $value, $subclause);             break;
-				case "OR":  $sql .= "(" . $this->build($path, $value, $subclause) . ")"; break;
+				case "NOT": $sql .= "NOT (" . $this->buildPath($path, $value, "AND") . ")";  break;
+				case "AND": $sql .= $this->buildPath($path, $value, $subclause);             break;
+				case "OR":  $sql .= "(" . $this->buildPath($path, $value, $subclause) . ")"; break;
 				default:
-					$build = $this->build(is_numeric($key) ? $path : $key, $value, $clause);
+					$build = $this->buildPath(is_numeric($key) ? $path : $key, $value, $clause);
 					if (!empty($build))   $sql .= $build;
 					elseif (!empty($sql)) $sql = substr($sql, 0, -strlen(" $clause "));
 			}
@@ -97,7 +103,7 @@ trait Sql_Where_Builder
 			return $this->buildValue($path, $id, "id_");
 		}
 		// object is a search object : each property is a search entry, and must join table
-		$this->where_joins->add($path);
+		$this->joins->add($path);
 		$array = array();
 		$class = Reflection_Class::getInstanceOf(get_class($object));
 		foreach ($class->accessProperties() as $property_name => $property) {
@@ -113,20 +119,23 @@ trait Sql_Where_Builder
 		return $sql;
 	}
 
-	//----------------------------------------------------------------------------------- buildTables
+	//------------------------------------------------------------------------------------- buildPath
 	/**
-	 * Build SQL tables list, based on calculated joins for where array properties paths
+	 * Build SQL WHERE section for given path and value
 	 *
+	 * @param $path string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
+	 * @param $value mixed         May be a value, or a structured array of multiple where clauses
+	 * @param $clause string       For multiple where clauses, tell if they are linked with "OR" or "AND"
 	 * @return string
 	 */
-	protected function buildTables()
+	private function buildPath($path, $value, $clause)
 	{
-		$tables = "`" . Dao::current()->storeNameOf($this->class) . "` t0";
-		foreach ($this->where_joins->getJoins() as $join) if ($join) {
-			$tables .= " $join->mode JOIN `$join->foreign_table` $join->foreign_alias"
-			. " ON $join->foreign_alias.$join->foreign_column = $join->master_alias.$join->master_column";
+		switch (gettype($value)) {
+			case "NULL":   return "";
+			case "array":  return $this->buildArray($path, $value, $clause);
+			case "object": return $this->buildObject($path, $value);
+			default:       return $this->buildValue($path, $value);
 		}
-		return $tables;
 	}
 
 	//------------------------------------------------------------------------------------ buildValue
@@ -140,7 +149,7 @@ trait Sql_Where_Builder
 	 */
 	private function buildValue($path, $value, $prefix = "")
 	{
-		$join = $this->where_joins->add($path);
+		$join = $this->joins->add($path);
 		if (isset($join)) {
 			$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
 		}
@@ -148,7 +157,7 @@ trait Sql_Where_Builder
 			list($master_path, $foreign_column) = Sql_Builder::splitPropertyPath($path);
 			$column = ((!$master_path) || ($master_path === "id"))
 				? ("t0.`" . $prefix . $foreign_column . "`")
-				: ($this->where_joins->getAlias($master_path) . ".`" . $prefix . $foreign_column . "`");
+				: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_column . "`");
 		}
 		if (is_null($value)) {
 			$expr = " IS NULL";
@@ -160,47 +169,24 @@ trait Sql_Where_Builder
 		return $column . $expr;
 	}
 
-	//------------------------------------------------------------------------------------ buildWhere
-	/**
-	 * Build SQL WHERE section, add add joins for search criterion
-	 *
-	 * @return string
-	 */
-	protected function buildWhere()
-	{
-		$sql = is_null($this->where_array) ? "" : $this->build("id", $this->where_array, "AND");
-		return $sql ? " WHERE " . $sql : $sql;
-	}
-
-	//---------------------------------------------------------------------- constructSqlWhereBuilder
-	/**
-	 * Construct the SQL WHERE section of a query
-	 *
-	 * Supported columns naming forms are :
-	 * column_name : column_name must correspond to a property of class
-	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
-	 *
-	 * @param $joins       Sql_Joins
-	 * @param $class       string base object class name
-	 * @param $where_array array  where array expression, indices are columns names
-	 * @param $sql_link    Sql_Link
-	 */
-	protected function constructSqlWhereBuilder(
-		Sql_Joins $joins, $class, $where_array = null, Sql_Link $sql_link = null
-	) {
-		$this->where_joins       = $joins;
-		$this->class       = $class;
-		$this->sql_link    = $sql_link ? $sql_link : Dao::current();
-		$this->where_array = $where_array;
-	}
-
 	//-------------------------------------------------------------------------------------- getJoins
 	/**
 	 * @return Sql_Joins
 	 */
 	public function getJoins()
 	{
-		return $this->where_joins;
+		return $this->joins;
+	}
+
+	//------------------------------------------------------------------------------------ getSqlLink
+	/**
+	 * Gets used Sql_Link as defined on constructor call
+	 *
+	 * @return Sql_Link
+	 */
+	public function getSqlLink()
+	{
+		return $this->sql_link;
 	}
 
 }

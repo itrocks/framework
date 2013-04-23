@@ -3,9 +3,24 @@ namespace SAF\Framework;
 
 class Sql_Select_Builder
 {
-	use Sql_Columns_Builder, Sql_Where_Builder {
-		Sql_Columns_Builder::getJoins insteadof Sql_Where_Builder;
-	}
+
+	//------------------------------------------------------------------------------ $columns_builder
+	/**
+	 * @var Sql_Columns_Builder
+	 */
+	private $columns_builder;
+
+	//------------------------------------------------------------------------------- $tables_builder
+	/**
+	 * @var Sql_Tables_Builder
+	 */
+	private $tables_builder;
+
+	//-------------------------------------------------------------------------------- $where_builder
+	/**
+	 * @var Sql_Where_Builder
+	 */
+	private $where_builder;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -23,8 +38,9 @@ class Sql_Select_Builder
 	public function __construct($class, $properties, $where_array = null, Sql_Link $sql_link = null)
 	{
 		$joins = new Sql_Joins($class);
-		$this->constructSqlColumnsBuilder($joins, $properties);
-		$this->constructSqlWhereBuilder($joins, $class, $where_array, $sql_link);
+		$this->columns_builder = new Sql_Columns_Builder($class, $properties, $joins);
+		$this->tables_builder  = new Sql_Tables_Builder($class, $joins);
+		$this->where_builder   = new Sql_Where_Builder($class, $where_array, $sql_link, $joins);
 	}
 
 	//-------------------------------------------------------------------------------------- getQuery
@@ -37,10 +53,36 @@ class Sql_Select_Builder
 	{
 		// call buildWhere() before buildColumns(), as all joins must be done to correctly deal with all properties
 		// call buildColumns() and buildWhere() before buildTables(), to get joins ready
-		$where   = $this->buildWhere();
-		$columns = $this->buildColumns();
-		$tables  = $this->buildTables();
+		$where   = $this->where_builder->build();
+		$columns = $this->columns_builder->build();
+		$tables  = $this->tables_builder->build();
+		return $this->finalize($columns, $where, $tables);
+	}
+
+	//-------------------------------------------------------------------------------------- finalize
+	/**
+	 * Finalize SQL query
+	 *
+	 * @param $columns string columns list, separated by ", "
+	 * @param $tables  string tables list, including joins, without "FROM"
+	 * @param $where   string where clause, including " WHERE " or empty if no filter on read
+	 * @return string
+	 */
+	private function finalize($columns, $where, $tables)
+	{
 		return "SELECT " . $columns . " FROM " . $tables . $where;
+	}
+
+	//-------------------------------------------------------------------------------------- getJoins
+	public function getJoins()
+	{
+		return $this->columns_builder->getJoins();
+	}
+
+	//------------------------------------------------------------------------------------ getSqlLink
+	public function getSqlLink()
+	{
+		return $this->where_builder->getSqlLink();
 	}
 
 }
