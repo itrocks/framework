@@ -20,6 +20,9 @@ class User_Disconnect_Controller implements Feature_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$current_user = User::current();
+		if (!isset($current_user)) {
+			$current_user = new User();
+		}
 		User_Authentication::disconnect($current_user);
 		array_unshift($parameters, $current_user);
 		return View::run($parameters, $form, $files, get_class($current_user), "disconnect");
