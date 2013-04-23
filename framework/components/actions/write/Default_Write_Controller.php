@@ -18,8 +18,13 @@ class Default_Write_Controller implements Default_Class_Controller
 		if ($property->getType()->isBoolean()) {
 			$value = !(empty($value) || ($value === "false"));
 		}
-		elseif (is_array($value) && ($property->getAnnotation("link")->value == "Collection")) {
-			$value = arrayToCollection($value, $property->getType()->getElementTypeAsString(), false);
+		elseif (is_array($value)) {
+			if ($property->getAnnotation("link")->value == "Object") {
+				$value = arrayToObject($value, $property->getType()->getElementTypeAsString(), false);
+			}
+			elseif ($property->getAnnotation("link")->value == "Collection") {
+				$value = arrayToCollection($value, $property->getType()->getElementTypeAsString(), false);
+			}
 		}
 		return $value;
 	}
