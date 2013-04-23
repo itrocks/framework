@@ -221,28 +221,28 @@ abstract class Loc implements Plugin
 	public static function register()
 	{
 		// format from locale user input to ISO and standard formats
-		Aop::add("before",
+		Aop::add(Aop::BEFORE,
 			'SAF\Framework\Default_Write_Controller->formElementToPropertyValue()',
 			array(__CLASS__, "beforeDefaultWriteControllerFormElementToPropertyValue")
 		);
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Default_List_Controller->getSearchValues()',
 			array(__CLASS__, "afterListSearchValues")
 		);
 		// format to locale
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Html_Template_Funcs->toEditPropertyExtra()',
 			array(__CLASS__, "afterHtmlTemplateFuncsToEditPropertyExtra")
 		);
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Reflection_Property_View->formatDateTime()',
 			array(__CLASS__, "dateTimeReturnedValueToLocale")
 		);
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Reflection_Property_View->formatFloat()',
 			array(__CLASS__, "floatReturnedValueToLocale")
 		);
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Reflection_Property_View->formatInteger()',
 			array(__CLASS__, "integerReturnedValueToLocale")
 		);

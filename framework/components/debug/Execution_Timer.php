@@ -46,7 +46,7 @@ abstract class Execution_Timer implements Plugin
 	public static function register()
 	{
 		self::begin();
-		Aop::add("after", 'SAF\Framework\Main_Controller->runController()', array(__CLASS__, "end"));
+		Aop::add(Aop::AFTER, 'SAF\Framework\Main_Controller->runController()', array(__CLASS__, "end"));
 	}
 
 }

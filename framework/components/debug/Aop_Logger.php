@@ -59,14 +59,14 @@ abstract class Aop_Logger implements Plugin
 	public static function register()
 	{
 		self::$active = false;
-		Aop::add("After",  "aop_add_after()",  array(__CLASS__, "log"));
-		Aop::add("after",  "aop_add_around()", array(__CLASS__, "log"));
-		Aop::add("after",  "aop_add_before()", array(__CLASS__, "log"));
-		Aop::add("before", "aop_add_after()",  array(__CLASS__, "log"));
-		Aop::add("before", "aop_add_around()", array(__CLASS__, "log"));
-		Aop::add("before", "aop_add_before()", array(__CLASS__, "log"));
+		Aop::add(Aop::AFTER,  "aop_add_after()",  array(__CLASS__, "log"));
+		Aop::add(Aop::AFTER,  "aop_add_around()", array(__CLASS__, "log"));
+		Aop::add(Aop::AFTER,  "aop_add_before()", array(__CLASS__, "log"));
+		Aop::add(Aop::BEFORE, "aop_add_after()",  array(__CLASS__, "log"));
+		Aop::add(Aop::BEFORE, "aop_add_around()", array(__CLASS__, "log"));
+		Aop::add(Aop::BEFORE, "aop_add_before()", array(__CLASS__, "log"));
 		self::$active = true;
-		Aop::add("before",
+		Aop::add(Aop::BEFORE,
 			'SAF\Framework\Aop->registerProperties()',
 			array(__CLASS__, "logRegister")
 		);

@@ -136,14 +136,14 @@ class Mysql_Logger implements Plugin
 				}
 			}
 		}
-		Aop::add("before", "mysqli->query()", array($mysql_logger, "onQuery"));
-		Aop::add("after",  "mysqli->query()", array($mysql_logger, "onError"));
+		Aop::add(Aop::BEFORE, "mysqli->query()", array($mysql_logger, "onQuery"));
+		Aop::add(Aop::AFTER,  "mysqli->query()", array($mysql_logger, "onError"));
 		if (!$mysql_logger->continue) {
-			Aop::add("before",
+			Aop::add(Aop::BEFORE,
 				'SAF\Framework\Main_Controller->runController()',
 				array($mysql_logger, "onMainControllerRun")
 			);
-			Aop::add("after",
+			Aop::add(Aop::AFTER,
 				'SAF\Framework\Main_Controller->runController()',
 				array($mysql_logger, "afterMainControllerRun")
 			);

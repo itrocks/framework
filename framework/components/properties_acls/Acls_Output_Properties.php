@@ -48,11 +48,11 @@ class Acls_Output_Properties extends Acls_Properties implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add("around",
+		Aop::add(Aop::AROUND,
 			'SAF\Framework\Default_Output_Controller->getPropertiesList()',
 			array(__CLASS__, "outputControllerGetProperties")
 		);
-		Aop::add("around",
+		Aop::add(Aop::AROUND,
 			'SAF\Framework\Property_Remove_Controller->run()',
 			array(__CLASS__, "propertyRemoveController")
 		);

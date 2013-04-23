@@ -82,15 +82,15 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add("around",
+		Aop::add(Aop::AROUND,
 			'SAF\Framework\Default_List_Controller->getPropertiesList()',
 			array(__CLASS__, "listControllerGetProperties")
 		);
-		Aop::add("around",
+		Aop::add(Aop::AROUND,
 			'SAF\Framework\Property_Add_Controller->run()',
 			array(__CLASS__, "propertyAddController")
 		);
-		Aop::add("around",
+		Aop::add(Aop::AROUND,
 			'SAF\Framework\Property_Remove_Controller->run()',
 			array(__CLASS__, "propertyRemoveController")
 		);

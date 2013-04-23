@@ -79,11 +79,11 @@ abstract class Html_Session implements Plugin
 			self::$registered = true;
 			ini_set("session.use_cookies", false);
 			ini_set("session.use_only_cookies", false);
-			Aop::add("before", "session_start()", array(__CLASS__, "useTransSid"));
+			Aop::add(Aop::BEFORE, "session_start()", array(__CLASS__, "useTransSid"));
 		}
 		//
 		/*
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Html_Template->parse()',
 			array(__CLASS__, "postSessionId")
 		);

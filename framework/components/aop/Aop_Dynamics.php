@@ -99,7 +99,7 @@ class Aop_Dynamics implements Plugin
 	 */
 	public static function register()
 	{
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Autoloader->includeClass()',
 			array(__CLASS__, "linkClassAop")
 		);

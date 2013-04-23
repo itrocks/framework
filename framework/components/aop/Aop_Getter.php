@@ -106,7 +106,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Autoloader->includeClass()',
 			array(__CLASS__, "registerGettersAop")
 		);

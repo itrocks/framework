@@ -70,7 +70,7 @@ abstract class Application_Updater implements Plugin
 	 */
 	public static function register()
 	{
-		Aop::add("before",
+		Aop::add(Aop::BEFORE,
 			'SAF\Framework\Main_Controller->runController()', array(__CLASS__, "autoUpdate")
 		);
 	}

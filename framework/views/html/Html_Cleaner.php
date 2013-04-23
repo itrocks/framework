@@ -20,7 +20,7 @@ abstract class Html_Cleaner implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add("after", 'SAF\Framework\Html_Template->parse()', array(__CLASS__, "clean"));
+		Aop::add(Aop::AFTER, 'SAF\Framework\Html_Template->parse()', array(__CLASS__, "clean"));
 	}
 
 }

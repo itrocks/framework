@@ -203,23 +203,23 @@ class Builder implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Set->elementClassNameOf()',
 			array(__CLASS__, "onMethodWithReturnedValue")
 		);
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Namespaces->fullClassName()',
 			array(__CLASS__, "afterNamespacesFullClassName")
 		);
-		Aop::add("before",
+		Aop::add(Aop::BEFORE,
 			'SAF\Framework\Getter->getCollection()',
 			array(__CLASS__, "onMethodWithClassName1")
 		);
-		Aop::add("before",
+		Aop::add(Aop::BEFORE,
 			'SAF\Framework\Getter->getObject()',
 			array(__CLASS__, "onMethodWithClassName1")
 		);
-		Aop::add("before",
+		Aop::add(Aop::BEFORE,
 			'SAF\Framework\Search_Object->newInstance()',
 			array(__CLASS__, "onMethodWithClassName0")
 		);

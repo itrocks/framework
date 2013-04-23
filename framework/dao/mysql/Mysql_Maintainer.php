@@ -147,7 +147,7 @@ class Mysql_Maintainer implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add("after", "mysqli->query()", array(__CLASS__, "onMysqliQuery"));
+		Aop::add(Aop::AFTER, "mysqli->query()", array(__CLASS__, "onMysqliQuery"));
 	}
 
 	//----------------------------------------------------------------------------------- updateTable

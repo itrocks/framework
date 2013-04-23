@@ -82,11 +82,11 @@ abstract class Autoload_Cache implements Plugin, Updatable
 		if (!self::$paths || Application_Updater::mustUpdate()) {
 			self::update();
 		}
-		Aop::add("around",
+		Aop::add(Aop::AROUND,
 			'SAF\Framework\Autoloader->autoload()',
 			array(__CLASS__, "onAutoload")
 		);
-		Aop::add("around",
+		Aop::add(Aop::AROUND,
 			'SAF\Framework\Namespaces->fullClassName()',
 			array(__CLASS__, "onFullClassName")
 		);

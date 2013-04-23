@@ -94,14 +94,14 @@ class Class_Debugger implements Plugin
 	public static function registerClass($class_name)
 	{
 		if ($class_name == "*") {
-			Aop::add("before", "*->*()", array(get_called_class(), "before"));
-			Aop::add("after", "*->*()", array(get_called_class(), "after"));
+			Aop::add(Aop::BEFORE, "*->*()", array(get_called_class(), "before"));
+			Aop::add(Aop::AFTER, "*->*()", array(get_called_class(), "after"));
 		}
 		else {
-			Aop::add("before",
+			Aop::add(Aop::BEFORE,
 				$class_name . "->*()", array(get_called_class(), "before")
 			);
-			Aop::add("after",
+			Aop::add(Aop::AFTER,
 				$class_name . "->*()", array(get_called_class(), "after")
 			);
 		}

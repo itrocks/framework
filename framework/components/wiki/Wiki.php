@@ -118,11 +118,11 @@ class Wiki implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add("around",
+		Aop::add(Aop::AROUND,
 			'SAF\Framework\Html_Edit_Template->parseValue()',
 			array(__CLASS__, "noParseZone")
 		);
-		Aop::add("after",
+		Aop::add(Aop::AFTER,
 			'SAF\Framework\Reflection_Property_View->formatString()',
 			array(__CLASS__, "stringWiki")
 		);
