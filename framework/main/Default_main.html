@@ -9,10 +9,16 @@
 	<script type="text/javascript" src="../vendor/jquery/jquery-1.8.3.js"></script>
 	<script type="text/javascript" src="../vendor/jquery-ui/jquery-ui-1.9.2.custom.js"></script>
 	<script type="text/javascript" src="../vendor/jquery.form/jquery.form.js"></script>
+	<script type="text/javascript" src="js/jquery.aform.js"></script>
+	<script type="text/javascript" src="js/jquery.build.js"></script>
 	<script type="text/javascript" src="js/jquery.classvar.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.tabber.js"></script>
+	<script type="text/javascript" src="js/jquery.xtarget.js"></script>
+	<script type="text/javascript" src="js/saf.app.js"></script>
 	<script type="text/javascript" src="js/saf.functions.js"></script>
 	<script type="text/javascript" src="js/saf.string.js"></script>
 	<script type="text/javascript" src="../components/widgets/edit/edit.js"></script>
+	<script type="text/javascript" src="js/default.application.js"></script>
 	<script type="text/javascript">
 		window.app = new App(
 			"{PHPSESSID}", "{Paths.uri_root}", "{Paths.script_name}",
@@ -26,23 +32,25 @@
 	</style>
 </head>
 
-<body id="main">
+<body>
 
-<div class="application top">
+<div class="application top" id="title">
 	|{@application.ucwords}|
 </div>
 
-<div class="application left menu output">
+<div class="application left menu output" id="menu">
 	{/Menu/output}
 </div>
 
-<div class="application breadcrumb">
+<div class="application breadcrumb" id="breadcrumb">
 	<!--@class--><span class="entry">|{@class.display}|</span><!--@class-->
 	<!--@feature--><span class="entry">|{@feature.display}|</span><!--@feature-->
 	<!--@top--><span class="entry">|{@top}|</span><!--@top-->
 </div>
 
+<div id="main">
 {@content}
+</div>
 
 </body>
 </html>

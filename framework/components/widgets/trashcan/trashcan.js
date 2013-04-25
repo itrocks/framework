@@ -5,7 +5,6 @@ $("document").ready(function()
 	{
 
 		// trashable objects : those which have <h2> are windows
-		window.zindex_counter = 0;
 		this.in(".trashable:has(h2)").draggable({
 
 			appendTo: ":parent(div):first",

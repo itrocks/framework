@@ -17,8 +17,9 @@ class Class_Set_Annotation extends Annotation
 			$this->value =
 				(substr($class_name, -1) === "y") ? substr($class_name, 0, -1) . "ies" : (
 				(substr($class_name, -2) === "an") ? substr($class_name, 0, -2) . "en" : (
+				(substr($class_name, -2) === "ss") ? $class_name . "es" : (
 				$class_name . "s"
-			));
+			)));
 		}
 		else {
 			$this->value = Namespaces::defaultFullClassName($this->value, $class->name);
