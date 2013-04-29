@@ -89,6 +89,7 @@ class Default_Write_Controller implements Default_Class_Controller
 			$parameters->unshift($object);
 		}
 		$write_objects = $this->formToObjects($object, $form);
+		$write_objects = array_reverse($write_objects);
 		Dao::begin();
 		foreach ($write_objects as $write_object) {
 			Dao::write($write_object);
