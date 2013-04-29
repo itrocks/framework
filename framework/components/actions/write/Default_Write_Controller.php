@@ -49,7 +49,7 @@ class Default_Write_Controller implements Default_Class_Controller
 			if (isset($properties[$name])) {
 				$object->$name = $this->formElementToPropertyValue($properties[$name], $value);
 				if ($properties[$name]->getAnnotation("link")->value == "Object") {
-					$objects[] = $object->$name;
+					$objects = array_merge($objects, $this->formToObjects($object->$name, $value));
 				}
 			}
 			else {
