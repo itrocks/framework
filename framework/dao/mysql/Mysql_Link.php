@@ -349,7 +349,7 @@ class Mysql_Link extends Sql_Link
 		// old collection
 		$property_name = $property->name;
 		$class_name = get_class($object);
-		$old_object = Search_Object::newInstance($class_name);
+		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
 		$old_collection = $old_object->$property_name;
 		// collection properties : write each of them
@@ -384,7 +384,7 @@ class Mysql_Link extends Sql_Link
 		// old map
 		$property_name = $property->name;
 		$class_name = get_class($object);
-		$old_object = Search_Object::newInstance($class_name);
+		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
 		$old_map = $old_object->$property_name;
 		// map properties : write each of them

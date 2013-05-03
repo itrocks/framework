@@ -97,7 +97,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 			$type = Reflection_Property::getInstanceOf($class, $property)->getType()->asString();
 			$value = Getter::getObject(null, $type, $object, $property);
 			if (!is_object($value)) {
-				$value = Builder::create($type);
+				$value = Null_Object::create($type);
 			}
 			$object->$property = $value;
 		}

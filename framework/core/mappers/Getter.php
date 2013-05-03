@@ -35,7 +35,7 @@ abstract class Getter
 	) {
 		if (!isset($collection)) {
 			if (Dao::getObjectIdentifier($parent)) {
-				$search_element = Search_Object::newInstance($element_class);
+				$search_element = Search_Object::create($element_class);
 				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
 				$property_name = isset($parent_property)
 					? Reflection_Property::getInstanceOf($parent, $parent_property)
