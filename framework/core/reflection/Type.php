@@ -184,7 +184,7 @@ class Type
 	 */
 	public function isArray()
 	{
-		return $this->type == "array";
+		return $this->type === "array";
 	}
 
 	//--------------------------------------------------------------------------------------- isBasic
@@ -210,7 +210,7 @@ class Type
 	 */
 	public function isBoolean()
 	{
-		return $this->type == "boolean";
+		return $this->type === "boolean";
 	}
 
 	//--------------------------------------------------------------------------------------- isClass
@@ -239,7 +239,7 @@ class Type
 	 */
 	public function isFloat()
 	{
-		return $this->type == "float";
+		return $this->type === "float";
 	}
 
 	//---------------------------------------------------------------------------------- isInstanceOf
@@ -262,7 +262,7 @@ class Type
 	 */
 	public function isInteger()
 	{
-		return $this->type == "integer";
+		return $this->type === "integer";
 	}
 
 	//------------------------------------------------------------------------------------ isMultiple
@@ -286,7 +286,16 @@ class Type
 	 */
 	public function isMultipleString()
 	{
-		return $this->type == "string[]";
+		return $this->type === "string[]";
+	}
+
+	//---------------------------------------------------------------------------------------- isNull
+	/**
+	 * @return boolean
+	 */
+	public function isNull()
+	{
+		return $this->type === "NULL";
 	}
 
 	//------------------------------------------------------------------------------------- isNumeric
@@ -320,7 +329,7 @@ class Type
 	 */
 	public function isString()
 	{
-		return $this->type == "string";
+		return $this->type === "string";
 	}
 
 	//---------------------------------------------------------------------------------- isSubclassOf

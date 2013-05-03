@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+use Exception;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -178,6 +179,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	//--------------------------------------------------------------------------------------- getType
 	/**
 	 * @return Type
+	 * @throws Exception
 	 */
 	public function getType()
 	{
@@ -193,6 +195,12 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 					? (new Type($class_name, $type->canBeNull()))->multiple()
 					: (new Type($class_name, $type->canBeNull()));
 			}
+		}
+		if ($type->isNull()) {
+			throw new Exception(
+				$this->class . '::$' . $this->name . " type not set using @var annotation",
+				E_USER_ERROR
+			);
 		}
 		return $type;
 	}
