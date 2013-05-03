@@ -1,6 +1,6 @@
-hr {
-	clear: both;
-	visibility: hidden;
+body {
+	border: 0;
+	margin: 0;
 }
 
 .breadcrumb .entry:before {
@@ -8,9 +8,45 @@ hr {
 }
 
 .application.top {
-	background-color: lightgray;
+	background-color: #e0e0e0;
+	border-bottom: 1px solid darkgray;
+	box-shadow: 0 1px 2px 2px lightgray;
 	font-size: 120%;
 	font-weight: bold;
 	margin-bottom: .25em;
 	padding: 0 2px;
+}
+
+.menu {
+	background-color: #e0e0e0;
+	border-bottom: 1px solid darkgray;
+	border-right: 1px solid darkgray;
+	border-bottom-right-radius: 4px;
+	NO-box-shadow: 1px 2px 2px 1px lightgray;
+	display: inline-block;
+	float: left;
+	margin-top: -6px;
+	padding: .5em;
+}
+
+.menu.output ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.menu.output ul h2,
+.menu.output ul h3
+{
+	margin: .5em 0 0;
+	padding: 0;
+}
+
+.breadcrumb {
+	display: none;
+	float: left;
+}
+
+#main {
+	margin: .5em;
+	display: inline-block;
 }
