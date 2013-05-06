@@ -28,4 +28,21 @@ class Password
 		return $password;
 	}
 
+	//---------------------------------------------------------------------------------------- random
+	/**
+	 * Generate a random password.
+	 * @param int $size the size of returned password
+	 * @return string A random password with size equals to size parameter
+	 */
+	public static function random($size = 9)
+	{
+		$string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		$size_string = strlen($string);
+		$password = "";
+		for ($i = 1; $i <= $size; $i++) {
+			$random = mt_rand(0, ($size_string - 1));
+			$password .= $string[$random];
+		}
+		return $password;
+	}
 }
