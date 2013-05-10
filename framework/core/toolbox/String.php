@@ -140,6 +140,14 @@ class String
 		return preg_replace("#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#", "", $this->value);
 	}
 
+	//------------------------------------------------------------------------------------------- uri
+	/**
+	 * @return string
+	 */
+	public function uri()
+	{
+		return strUri($this->value);
+	}
 
 }
 }

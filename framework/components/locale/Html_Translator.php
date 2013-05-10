@@ -15,6 +15,29 @@ abstract class Html_Translator implements Plugin
 			'SAF\Framework\Html_Template->parse()',
 			array(__CLASS__, "translatePage")
 		);
+		Aop::add(Aop::BEFORE,
+			'SAF\Framework\Html_Template->parseString()',
+			array(__CLASS__, "translateString")
+		);
+	}
+
+	//------------------------------------------------------------------------------ translateContent
+	/**
+	 * Translate a content in a context
+	 * @param $content  string
+	 * @param $context  string
+	 * @return string
+	 */
+	public static function translateContent(&$content, $context)
+	{
+		$i = 0;
+		while (($i = strpos($content, "|", $i)) !== false) {
+			$i++;
+			if (($i < strlen($content)) && (!in_array($content[$i], array(" ", "\n", "\r", "\t")))) {
+				self::translateElement($content, $i, $context);
+			}
+		}
+		return $content;
 	}
 
 	//------------------------------------------------------------------------------ translateElement
@@ -47,14 +70,22 @@ abstract class Html_Translator implements Plugin
 	{
 		$content = $joinpoint->getReturnedValue();
 		$context = get_class($joinpoint->getObject());
-		$i = 0;
-		while (($i = strpos($content, "|", $i)) !== false) {
-			$i++;
-			if (($i < strlen($content)) && (!in_array($content[$i], array(" ", "\n", "\r", "\t")))) {
-				self::translateElement($content, $i, $context);
-			}
-		}
-		$joinpoint->setReturnedValue($content);
+		$joinpoint->setReturnedValue(self::translateContent($content, $context));
+	}
+
+	//--------------------------------------------------------------------------------- translatePage
+	/**
+	 * Translate string.
+	 *
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function translateString(AopJoinpoint $joinpoint)
+	{
+		$arguments = $joinpoint->getArguments();
+		$content = $arguments[1];
+		$context = get_class($joinpoint->getObject());
+		$arguments[1] = self::translateContent($content, $context);
+		$joinpoint->setArguments($arguments);
 	}
 
 }

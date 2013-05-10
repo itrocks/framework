@@ -87,4 +87,13 @@ class Displayable extends String
 		return strtoupper($this->display());
 	}
 
+	//------------------------------------------------------------------------------------------- uri
+	/**
+	 * @return string
+	 */
+	public function uri()
+	{
+		return strUri($this->value);
+	}
+
 }
