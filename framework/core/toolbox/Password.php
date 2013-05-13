@@ -19,30 +19,27 @@ class Password
 			case "md5":   return md5($password);
 			case "sha1":  return sha1($password);
 		}
-		return self::mysqlPassword($password);
-	}
-
-	//--------------------------------------------------------------------------------- mysqlPassword
-	private static function mysqlPassword($password)
-	{
 		return $password;
 	}
 
-	//---------------------------------------------------------------------------------------- random
+	//-------------------------------------------------------------------------------------- generate
 	/**
-	 * Generate a random password.
-	 * @param int $size the size of returned password
-	 * @return string A random password with size equals to size parameter
+	 * Generates a random password
+	 *
+	 * @param $length   integer wished lengthfor the password
+	 * @param $specials string special characters that can be used
+	 * @return string A randomly generated password
 	 */
-	public static function random($size = 9)
+	public static function generate($length = 9, $specials = "()[]-_+-*/\\")
 	{
-		$string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		$size_string = strlen($string);
+		$string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" . $specials;
+		$maximum_position = strlen($string) - 1;
 		$password = "";
-		for ($i = 1; $i <= $size; $i++) {
-			$random = mt_rand(0, ($size_string - 1));
-			$password .= $string[$random];
+		for ($i = 1; $i <= $length; $i++) {
+			$position = mt_rand(0, $maximum_position);
+			$password .= $string[$position];
 		}
 		return $password;
 	}
+
 }
