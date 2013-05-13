@@ -73,6 +73,9 @@ abstract class Output_Controller implements Default_Feature_Controller
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
+		if (!isset($parameters["feature"])) {
+			$parameters["feature"] = "output";
+		}
 		return View::run($parameters, $form, $files, $class_name, "output");
 	}
 

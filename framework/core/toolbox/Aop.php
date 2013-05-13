@@ -46,7 +46,8 @@ abstract class Aop
 			$aop_call($function, function(AopJoinpoint $joinpoint) use ($call_back, $class_name, $when) {
 				// TODO this test is not complete : test all cases for herited methods
 				if (
-					($joinpoint->getClassName() === $class_name)
+					true
+					|| ($joinpoint->getClassName() === $class_name)
 					|| (get_class($joinpoint->getObject()) === $class_name)
 					|| (
 						Reflection_Method::getInstanceOf($class_name, $joinpoint->getMethodName())->class
