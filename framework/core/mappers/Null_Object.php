@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A null object is an object which all properties have a value equals to null
+ */
 abstract class Null_Object
 {
 
@@ -13,14 +16,21 @@ abstract class Null_Object
 	 */
 	public static function isNull($object)
 	{
-		return !get_object_vars($object);
+		$is_null = true;
+		$class = Reflection_Class::getInstanceOf($object);
+		foreach ($class->accessProperties() as $property) {
+			if ($property->getValue($object) !== null) {
+				$is_null = false;
+				break;
+			}
+		}
+		$class->accessPropertiesDone();
+		return $is_null;
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
 	/**
-	 * Returns a new instance of a search-formatter object of given class
-	 *
-	 * This creates an object with unset properties, as only set properties are used for searches.
+	 * Returns a new instance of an object, but sets all its properties values to null
 	 *
 	 * @param $class_name string
 	 * @return object
@@ -29,9 +39,8 @@ abstract class Null_Object
 	{
 		$object = Builder::create($class_name);
 		$class = Reflection_Class::getInstanceOf($class_name);
-		$class->accessProperties();
-		foreach (array_keys(get_object_vars($object)) as $property_name) {
-			unset($object->$property_name);
+		foreach ($class->accessProperties() as $property) {
+			$property->setValue($object, null);
 		}
 		$class->accessPropertiesDone();
 		return $object;
