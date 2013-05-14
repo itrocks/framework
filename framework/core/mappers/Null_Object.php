@@ -19,7 +19,7 @@ abstract class Null_Object
 		$is_null = true;
 		$class = Reflection_Class::getInstanceOf($object);
 		foreach ($class->accessProperties() as $property) {
-			if ($property->getValue($object) !== null) {
+			if ((!$property->isStatic()) && ($property->getValue($object) !== null)) {
 				$is_null = false;
 				break;
 			}

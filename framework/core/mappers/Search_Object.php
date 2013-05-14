@@ -25,12 +25,14 @@ abstract class Search_Object extends Null_Object
 		$object = Builder::create($class_name);
 		$class = Reflection_Class::getInstanceOf($class_name);
 		foreach ($class->accessProperties() as $property) {
-			if ($property->isPublic()) {
-				$name = $property->name;
-				unset($object->$name);
-			}
-			else if(!$property->isStatic()) {
-				$property->setValue($object, null);
+			if (!$property->isStatic()) {
+				if ($property->isPublic()) {
+					$name = $property->name;
+					unset($object->$name);
+				}
+				else {
+					$property->setValue($object, null);
+				}
 			}
 		}
 		$class->accessPropertiesDone();
