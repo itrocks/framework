@@ -29,7 +29,7 @@ abstract class Search_Object extends Null_Object
 				$name = $property->name;
 				unset($object->$name);
 			}
-			else {
+			else if(!$property->isStatic()) {
 				$property->setValue($object, null);
 			}
 		}
