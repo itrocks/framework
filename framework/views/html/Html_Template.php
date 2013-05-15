@@ -539,7 +539,7 @@ class Html_Template
 			$loop_insert = $this->parseVars($loop_content, $objects);
 			array_shift($objects);
 		}
-		elseif (strlen($elements)) {
+		elseif (!empty($elements)) {
 			$loop_insert = $this->parseVars($loop_content, $objects);
 		}
 		else {
