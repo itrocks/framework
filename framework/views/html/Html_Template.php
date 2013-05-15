@@ -438,16 +438,32 @@ class Html_Template
 
 	//---------------------------------------------------------------------------------- parseInclude
 	/**
-	 * Parse included view controller call result (must be an html view)
+	 * Parses included view controller call result (must be an html view) or includes html template
 	 *
 	 * @param $include_uri string
 	 * @return string included template, parsed
 	 */
 	protected function parseInclude($include_uri)
 	{
-		return Main_Controller::getInstance()->runController(
-			$include_uri, array("is_included" => true)
-		);
+		if (substr($include_uri, -5) === ".html") {
+			// includes html template
+			if (($i = strrpos($include_uri, "/")) !== false) {
+				$include_uri = substr($include_uri, $i + 1);
+			}
+			$included = file_get_contents(stream_resolve_include_path($include_uri));
+			if (($i = strpos($included, "<!--BEGIN-->")) !== false) {
+				$i += 12;
+				$j = strpos($included, "<!--END-->");
+				$included = substr($included, $i, $j - $i);
+			}
+			return $included;
+		}
+		else {
+			// includes controller result
+			return Main_Controller::getInstance()->runController(
+				$include_uri, array("is_included" => true)
+			);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- parseLoop
