@@ -23,7 +23,7 @@ trait Acls_User_Trait
 			$group = Getter::getObject($group, 'SAF\Framework\Acls_Group', $this, "group");
 			if (empty($group)) {
 				/** @var $group Acls_Group */
-				$group = Builder::create("Acls_Group");
+				$group = Builder::create('SAF\Framework\Acls_Group');
 				$group->name = ($this instanceof User) ? $this->login : "";
 				$group->type = "user";
 				$this->group = $group;
