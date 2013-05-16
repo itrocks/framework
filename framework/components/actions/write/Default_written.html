@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Default written template</title>
@@ -11,7 +11,18 @@
 
 	<!--BEGIN-->
 	|¦{@class.display.ucfirst}¦ written|
-	<script> redirect("/{@class.short}/{id}", "#main"); </script>
+
+	<!--fill_combo-->
+	<script>
+	document.{fill_combo}.value = {id};
+	document.{fill_combo}.nextSibling.value = "{.}";
+	$(document.{fill_combo}.nextSibling).keyup();
+	</script>
+	<!--fill_combo-->
+
+	<!--close--><script> $("#{close}").remove(); </script><!--close-->
+	<!--!close--><script> redirect("/{@class.short}/{.id}", "#main"); </script><!--!close-->
+
 	<!--END-->
 
 </body>

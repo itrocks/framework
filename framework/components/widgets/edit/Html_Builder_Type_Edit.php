@@ -10,6 +10,13 @@ class Html_Builder_Type_Edit
 	 */
 	public $name;
 
+	//------------------------------------------------------------------------------------- $template
+	/**
+	 * @link Object
+	 * @var Html_Edit_Template
+	 */
+	public $template;
+
 	//-------------------------------------------------------------------------------------- $preprop
 	/**
 	 * @var string
@@ -107,6 +114,7 @@ class Html_Builder_Type_Edit
 	 */
 	protected function buildObject()
 	{
+		$class_name = $this->type->asString();
 		$id_input = new Html_Input(
 			$this->getFieldName("id_"), Dao::getObjectIdentifier($this->value)
 		);
@@ -117,9 +125,23 @@ class Html_Builder_Type_Edit
 		$input->addClass("combo");
 		$input->addClass("autowidth");
 		$input->addClass(
-			"class:" . Namespaces::shortClassName(Names::classToSet($this->type->asString()))
+			"class:" . Namespaces::shortClassName(Names::classToSet($class_name))
 		);
-		return $id_input . $input;
+		$add = new Html_Anchor(
+			"/" . View::current()->link($this->value, "new")
+			. (
+				isset($this->template)
+				? ("?fill_combo=" . $this->template->getFormId() . "." . $this->getFieldName("id_")) : ""
+			),
+			"add"
+		);
+		$add->addClass("add");
+		$add->addClass("action");
+		$add->setAttribute("target", "#_blank");
+		$add->setAttribute("title",
+			"|New ¦" . strtolower(Namespaces::shortClassName($class_name)) . "¦|"
+		);
+		return $id_input . $input . $add;
 	}
 
 	//----------------------------------------------------------------------------------- buildString
@@ -135,6 +157,7 @@ class Html_Builder_Type_Edit
 		}
 		else {
 			$input = new Html_Input($this->getFieldName(), $this->value);
+			$input->setAttribute("autocomplete", "off");
 		}
 		$input->addClass("autowidth");
 		return $input;
@@ -161,6 +184,17 @@ class Html_Builder_Type_Edit
 			$field_name = $this->preprop . "[" . $prefix . $field_name . "]";
 		}
 		return $field_name;
+	}
+
+	//----------------------------------------------------------------------------------- setTemplate
+	/**
+	 * @param $template Html_Edit_Template
+	 * @return Html_Builder_Type_Edit
+	 */
+	public function setTemplate(Html_Edit_Template $template)
+	{
+		$this->template = $template;
+		return $this;
 	}
 
 }

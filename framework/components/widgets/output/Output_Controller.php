@@ -7,9 +7,10 @@ abstract class Output_Controller implements Default_Feature_Controller
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $class_name string
+	 * @param $parameters string[]
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons($class_name)
+	protected function getGeneralButtons($class_name, $parameters)
 	{
 		return array();
 	}
@@ -54,7 +55,7 @@ abstract class Output_Controller implements Default_Feature_Controller
 			$object = new $class_name();
 			$parameters = array_merge(array($class_name => $object), $parameters);
 		}
-		$parameters["general_buttons"]   = $this->getGeneralButtons($object);
+		$parameters["general_buttons"]   = $this->getGeneralButtons($object, $parameters);
 		$parameters["properties_filter"] = $this->getPropertiesList($class_name);
 		$parameters["tabs"]              = $this->getTabs($object, $parameters["properties_filter"]);
 		return $parameters;

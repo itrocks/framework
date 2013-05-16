@@ -5,7 +5,12 @@ class Default_List_Controller extends List_Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
-	protected function getGeneralButtons($class_name)
+	/**
+	 * @param $class_name string object or class name
+	 * @param $parameters string[] parameters
+	 * @return Button[]
+	 */
+	protected function getGeneralButtons($class_name, $parameters)
 	{
 		return Button::newCollection(array(
 			array("Add", View::link($class_name, "new"), "add", Color::of("green"))
@@ -71,7 +76,7 @@ class Default_List_Controller extends List_Controller
 			),
 			$parameters
 		);
-		$parameters["general_buttons"]   = $this->getGeneralButtons($element_class_name);
+		$parameters["general_buttons"]   = $this->getGeneralButtons($element_class_name, $parameters);
 		$parameters["selection_buttons"] = $this->getSelectionButtons($element_class_name);
 		return $parameters;
 	}

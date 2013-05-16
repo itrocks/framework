@@ -7,13 +7,23 @@ class Default_Edit_Controller extends Default_Output_Controller
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $object object|string object or class name
+	 * @param $parameters string[] parameters
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons($object)
+	protected function getGeneralButtons($object, $parameters)
 	{
+		$fill_combo = isset($parameters["fill_combo"])
+			? "?fill_combo=" . $parameters["fill_combo"] : "";
 		return Button::newCollection(array(
-			array("Cancel", View::link($object, "output"), "cancel", array(Color::of("close"), "#main")),
-			array("Write",  View::link($object, "write"),  "write",  array(Color::of("green"), "#messages", ".submit"))
+			array("Cancel",
+				View::link($object, "output"),
+				"cancel",
+				array(Color::of("close"), "#main")
+			),
+			array("Write",
+				View::link($object, "write") . $fill_combo,
+				"write",
+				array(Color::of("green"), "#messages", ".submit"))
 		));
 	}
 

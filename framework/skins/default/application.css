@@ -50,3 +50,7 @@ body {
 	margin: .5em;
 	display: inline-block;
 }
+
+.application.add {
+	position: absolute;
+}

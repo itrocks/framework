@@ -4,6 +4,17 @@ namespace SAF\Framework;
 class Html_Edit_Template extends Html_Template
 {
 
+	//-------------------------------------------------------------------------------------- $form_id
+	/**
+	 * @var string
+	 */
+	private $form_id;
+
+	public function getFormId()
+	{
+		return $this->form_id;
+	}
+
 	//-------------------------------------------------------------------------------- parseContainer
 	protected function parseContainer($content)
 	{
@@ -12,10 +23,10 @@ class Html_Edit_Template extends Html_Template
 			$i += 12;
 			$j = strrpos($content, "<!--END-->", $i);
 			$short_class = Namespaces::shortClassName(get_class($this->object));
-			$id = strtolower($short_class) . "_edit";
+			$this->form_id = strtolower($short_class) . "_edit";
 			$action = "/" . $short_class . "/write";
 			$content = substr($content, 0, $i)
-				. '<form method="POST" id="' . $id . '" action="' . $action . '">'
+				. '<form method="POST" name="' . $this->form_id . '" action="' . $action . '">'
 				. substr($content, $i, $j - $i)
 				. '</form>'
 				. substr($content, $j);
@@ -29,7 +40,7 @@ class Html_Edit_Template extends Html_Template
 		$property = reset($objects);
 		if (($property instanceof Reflection_Property) && ($var_name == "value")) {
 			$value = parent::parseValue($objects, $var_name, false);
-			$value = (new Html_Builder_Property_Edit($property, $value))->build();
+			$value = (new Html_Builder_Property_Edit($property, $value))->setTemplate($this)->build();
 		}
 		else {
 			$value = parent::parseValue($objects, $var_name, $as_string);

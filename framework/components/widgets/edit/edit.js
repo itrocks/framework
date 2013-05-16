@@ -64,8 +64,9 @@ $("document").ready(function()
 				}
 			}
 		};
-		this.in(".autowidth").each(autowidth_function);
-		this.in(".autowidth").keyup(autowidth_function);
+		var autowidth_elements = this.in(".autowidth");
+		autowidth_elements.each(autowidth_function);
+		autowidth_elements.keyup(autowidth_function);
 
 		// .autoheight
 		var autoheight_function = function()
@@ -126,8 +127,9 @@ $("document").ready(function()
 				}
 			}
 		};
-		this.in(".autoheight").each(autoheight_function);
-		this.in(".autoheight").keyup(autoheight_function);
+		var autoheight_elements = this.in(".autoheight");
+		autoheight_elements.each(autoheight_function);
+		autoheight_elements.keyup(autoheight_function);
 
 		// .collection / .map
 		this.in(".minus").click(function()
@@ -186,7 +188,7 @@ $("document").ready(function()
 			}
 		});
 
-		// .object
+		// .object combo
 		this.in("input.combo").autocomplete({
 			autoFocus: true,
 			delay: 100,
@@ -214,6 +216,42 @@ $("document").ready(function()
 				$(this).prev().val(ui.item.id);
 			}
 
+		});
+
+		// .object add button
+		this.in("a.add.action").attr("tabindex", -1);
+		if (this.attr("id") && (this.attr("id").substr(0, 6) == "window")) {
+			this.in(".close.button")
+				.attr("href", "javascript:$('#" + this.attr("id") + "').remove()")
+				.attr("target", "");
+			var $write = this.in(".write.button");
+			$write.attr("href", $write.attr("href") +
+				(($write.attr("href").indexOf("?") > -1) ? "&" : "?")
+				+ "close=" + this.attr("id")
+			);
+		}
+		this.in("input.combo").each(function()
+		{
+			var $this = $(this);
+			var $field = $this.parents("div.field");
+			var $anchor = $this.parent().children("a.add.action");
+			$field.mouseenter(function()
+			{
+				if ($anchor.data("saf_visibility")) {
+					$anchor.data("saf_visibility", $anchor.data("saf_visibility") + 1);
+				}
+				else {
+					$anchor.data("saf_visibility", 1);
+				}
+				$anchor.addClass("visible");
+			});
+			$field.mouseleave(function()
+			{
+				$anchor.data("saf_visibility", $anchor.data("saf_visibility") - 1);
+				if (!$anchor.data("saf_visibility")) {
+					$anchor.removeClass("visible");
+				}
+			});
 		});
 
 	});
