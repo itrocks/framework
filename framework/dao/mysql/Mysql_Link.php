@@ -104,6 +104,16 @@ class Mysql_Link extends Sql_Link
 		}
 	}
 
+	//---------------------------------------------------------------------------------- escapeString
+	/**
+	 * @param $string string
+	 * @return string
+	 */
+	public function escapeString($string)
+	{
+		return $this->connection->escape_string($string);
+	}
+
 	//---------------------------------------------------------------------------------- executeQuery
 	/**
 	 * Execute an SQL query

@@ -38,6 +38,13 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	//---------------------------------------------------------------------------------------- commit
 	public function commit() {}
 
+	//---------------------------------------------------------------------------------- escapeString
+	/**
+	 * @param $string string
+	 * @return string
+	 */
+	public abstract function escapeString($string);
+
 	//---------------------------------------------------------------------------------- executeQuery
 	/**
 	 * Execute an SQL query
