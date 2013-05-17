@@ -132,9 +132,9 @@ class Html_Builder_Type_Edit
 		$input->addClass(
 			"class:" . Namespaces::shortClassName(Names::classToSet($class_name))
 		);
-		// add anchor
+		// "add" anchor
 		$add = new Html_Anchor(
-			"/" . View::current()->link(get_class($this->value), "new")
+			View::current()->link(get_class($this->value), "new")
 			. (isset($this->template)
 				? ("?fill_combo=" . $this->template->getFormId() . "." . $this->getFieldName("id_", false))
 				: ""
@@ -145,10 +145,15 @@ class Html_Builder_Type_Edit
 		$add->addClass("action");
 		$add->setAttribute("target", "#_blank");
 		$add->setAttribute("title",
-			"|New ¦" . strtolower(Namespaces::shortClassName($class_name)) . "¦|"
+			"|Edit ¦" . strtolower(Namespaces::shortClassName($class_name)) . "¦|"
 		);
+		// "more" button
+		$more = new Html_Button("more");
+		$more->addClass("more");
+		$more->addClass("action");
+		$more->setAttribute("tabindex", -1);
 
-		return $id_input . $input . $add;
+		return $id_input . $input . $more . $add;
 	}
 
 	//----------------------------------------------------------------------------------- buildString

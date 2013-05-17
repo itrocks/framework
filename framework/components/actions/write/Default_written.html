@@ -15,8 +15,7 @@
 	<!--fill_combo-->
 	<script>
 	document.{fill_combo}.value = {id};
-	document.{fill_combo}.nextSibling.value = "{.}";
-	$(document.{fill_combo}.nextSibling).keyup();
+	$(document.{fill_combo}.nextSibling).val("{.}").keyup().select();
 	</script>
 	<!--fill_combo-->
 

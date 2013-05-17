@@ -225,16 +225,28 @@ $("document").ready(function()
 		this.in("input.combo").click(function(event)
 		{
 			if (event.ctrlKey) {
-				var $this = $(this);
-				var $action = $this.parent().children("a.add.action");
-				var href = $action.attr("href");
-				$action.attr("href", href.repl("/new?", "/" + $this.prev().val() + "/edit?"));
-				$action.click();
-				$action.attr("href", href);
+				$(this).parent().children("a.add.action").click();
+			}
+		})
+		.keyup(function(event) {
+			if (event.keyCode == 27) {
+				$(this).val("");
+				$(this).prev().val("");
 			}
 		});
 
-		// .object add button
+		// .object add action
+		this.in("a.add.action").click(function(event)
+		{
+			var $this = $(this);
+			var $input = $this.parent().children("input.combo");
+			if (!$this.data("link")) {
+				$this.data("link", $this.attr("href"));
+			}
+			var href = $this.data("link");
+			var id = $input.prev().val();
+			$this.attr("href", id ? href.repl("/new?", "/" + $input.prev().val() + "/edit?") : href);
+		});
 		this.in("a.add.action").attr("tabindex", -1);
 		if (this.attr("id") && (this.attr("id").substr(0, 6) == "window")) {
 			this.in(".close.button")
@@ -252,6 +264,17 @@ $("document").ready(function()
 				.mouseenter(function() { $(this).children("a.add.action").addClass("visible"); })
 				.mouseleave(function() { $(this).children("a.add.action").removeClass("visible"); });
 		});
+
+		// .object more action
+		this.in("button.more.action").click(function(event)
+		{
+			event.preventDefault();
+			var $combo = $($(this).parent().find("input.combo"));
+			if (!$combo.autocomplete("widget").is(":visible")) {
+				$combo.focus();
+				$combo.autocomplete("search", "");
+			}
+		})
 
 	});
 
