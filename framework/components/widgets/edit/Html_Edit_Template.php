@@ -35,10 +35,11 @@ class Html_Edit_Template extends Html_Template
 			$i += 12;
 			$j = strrpos($content, "<!--END-->", $i);
 			$short_class = Namespaces::shortClassName(get_class($this->object));
-			$this->form_id = strtolower($short_class) . "_edit_" . $this->nextFormCounter();
+			$short_form_id = strtolower($short_class) . "_edit";
+			$this->form_id = $short_form_id . "_" . $this->nextFormCounter();
 			$action = "/" . $short_class . "/write";
 			$content = substr($content, 0, $i)
-				. '<form method="POST" name="' . $this->form_id . '" action="' . $action . '">'
+				. '<form method="POST" id=' . $short_form_id . ' name="' . $this->form_id . '" action="' . $action . '">'
 				. substr($content, $i, $j - $i)
 				. '</form>'
 				. substr($content, $j);
