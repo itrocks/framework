@@ -4,6 +4,12 @@ namespace SAF\Framework;
 class Html_Builder_Collection_Edit extends Html_Builder_Collection
 {
 
+	//------------------------------------------------------------------------------------- $template
+	/**
+	 * @var Html_Edit_Template
+	 */
+	private $template = null;
+
 	//------------------------------------------------------------------------------------- buildBody
 	protected function buildBody()
 	{
@@ -21,10 +27,12 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
 		$input = (new Html_Builder_Property_Edit(
 			$property, $value, $this->property->name . "[]"
-		))->build();
+		))->setTemplate($this->template)->build();
 		if ($property_name == reset($this->properties)) {
+			$property_builder = new Html_Builder_Property_Edit();
+			$property_builder->setTemplate($this->template);
 			$id_input = new Html_Input(
-				$this->property->name . "[id][]",
+				$this->property->name . "[id][" . $property_builder->nextCounter("id[]") . "]",
 				isset($object->id) ? $object->id : null
 			);
 			$id_input->setAttribute("type", "hidden");
@@ -38,7 +46,7 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	{
 		$head = parent::buildHead();
 		foreach ($head->rows as $row) {
-			$row->addCell(new Html_Table_Standard_Cell(""));
+			$row->addCell(new Html_Table_Header_Cell());
 		}
 		return $head;
 	}
@@ -52,6 +60,17 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		$cell->addClass("minus");
 		$row->addCell($cell);
 		return $row;
+	}
+
+	//----------------------------------------------------------------------------------- setTemplate
+	/**
+	 * @param $template Html_Edit_Template
+	 * @return Html_Builder_Type_Edit
+	 */
+	public function setTemplate(Html_Edit_Template $template)
+	{
+		$this->template = $template;
+		return $this;
 	}
 
 }

@@ -153,7 +153,9 @@ $("document").ready(function()
 				if ($collection.length) {
 					var $table = $($collection[0]);
 					var $new_row = $table.data("saf_add").clone();
+					var indice = $table.find("tr:has(td)").length;
 					$table.children("tbody").append($new_row);
+					$new_row.html($new_row.html().repl("][0]", "][" + indice + "]"));
 					$new_row.build();
 				}
 			}
@@ -189,7 +191,8 @@ $("document").ready(function()
 		});
 
 		// .object combo
-		this.in("input.combo").autocomplete({
+		this.in("input.combo").autocomplete(
+		{
 			autoFocus: true,
 			delay: 100,
 			minLength: 0,
@@ -218,40 +221,36 @@ $("document").ready(function()
 
 		});
 
+		// ctrl+click on combo
+		this.in("input.combo").click(function(event)
+		{
+			if (event.ctrlKey) {
+				var $this = $(this);
+				var $action = $this.parent().children("a.add.action");
+				var href = $action.attr("href");
+				$action.attr("href", href.repl("/new?", "/" + $this.prev().val() + "/edit?"));
+				$action.click();
+				$action.attr("href", href);
+			}
+		});
+
 		// .object add button
 		this.in("a.add.action").attr("tabindex", -1);
 		if (this.attr("id") && (this.attr("id").substr(0, 6) == "window")) {
 			this.in(".close.button")
 				.attr("href", "javascript:$('#" + this.attr("id") + "').remove()")
 				.attr("target", "");
-			var $write = this.in(".write.button");
-			$write.attr("href", $write.attr("href") +
-				(($write.attr("href").indexOf("?") > -1) ? "&" : "?")
+			var $button = this.in(".write.button");
+			$button.attr("href", $button.attr("href") +
+				(($button.attr("href").indexOf("?") > -1) ? "&" : "?")
 				+ "close=" + this.attr("id")
 			);
 		}
 		this.in("input.combo").each(function()
 		{
-			var $this = $(this);
-			var $field = $this.parents("div.field");
-			var $anchor = $this.parent().children("a.add.action");
-			$field.mouseenter(function()
-			{
-				if ($anchor.data("saf_visibility")) {
-					$anchor.data("saf_visibility", $anchor.data("saf_visibility") + 1);
-				}
-				else {
-					$anchor.data("saf_visibility", 1);
-				}
-				$anchor.addClass("visible");
-			});
-			$field.mouseleave(function()
-			{
-				$anchor.data("saf_visibility", $anchor.data("saf_visibility") - 1);
-				if (!$anchor.data("saf_visibility")) {
-					$anchor.removeClass("visible");
-				}
-			});
+			$(this).parent()
+				.mouseenter(function() { $(this).children("a.add.action").addClass("visible"); })
+				.mouseleave(function() { $(this).children("a.add.action").removeClass("visible"); });
 		});
 
 	});

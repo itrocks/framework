@@ -64,8 +64,8 @@
 					$target.insertAfter($where);
 					if ($where != $from) {
 						$target.css("position", "absolute");
-						$target.css("left", xhr.mouse_x);
-						$target.css("top",  xhr.mouse_y);
+						$target.css("left", document.mouse.x);
+						$target.css("top",  document.mouse.y);
 						$target.css("z-index", window.zindex_counter);
 						if (settings["draggable_blank"] != undefined) {
 							$target.draggable({ handle: settings["draggable_blank"] });
@@ -142,8 +142,8 @@
 				}));
 			}
 			xhr.from    = this;
-			xhr.mouse_x = event.pageX;
-			xhr.mouse_y = event.pageY;
+			xhr.mouse_x = (document.mouse == undefined) ? event.pageX : document.mouse.x;
+			xhr.mouse_y = (document.mouse == undefined) ? event.pageY : document.mouse.y;
 		});
 
 		//---------------------------------------------------------------- $('form[target^="#"]').click

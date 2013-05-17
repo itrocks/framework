@@ -15,6 +15,18 @@ class Html_Edit_Template extends Html_Template
 		return $this->form_id;
 	}
 
+	//------------------------------------------------------------------------------- nextFormCounter
+	/**
+	 * @return integer
+	 */
+	private function nextFormCounter()
+	{
+		$counter = isset($_SESSION["Html_Edit_Template"]["form_counter"])
+			? $_SESSION["Html_Edit_Template"]["form_counter"] + 1 : 0;
+		$_SESSION["Html_Edit_Template"]["form_counter"] = $counter;
+		return $counter;
+	}
+
 	//-------------------------------------------------------------------------------- parseContainer
 	protected function parseContainer($content)
 	{
@@ -23,7 +35,7 @@ class Html_Edit_Template extends Html_Template
 			$i += 12;
 			$j = strrpos($content, "<!--END-->", $i);
 			$short_class = Namespaces::shortClassName(get_class($this->object));
-			$this->form_id = strtolower($short_class) . "_edit";
+			$this->form_id = strtolower($short_class) . "_edit_" . $this->nextFormCounter();
 			$action = "/" . $short_class . "/write";
 			$content = substr($content, 0, $i)
 				. '<form method="POST" name="' . $this->form_id . '" action="' . $action . '">'

@@ -22,6 +22,9 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 			parent::__construct($property->name, $property->getType(), $value, $preprop);
 			$this->property = $property;
 		}
+		else {
+			parent::__construct(null, null, $value, $preprop);
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -34,7 +37,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 		switch ($link) {
 			case "Collection": return $this->buildCollection();
 			case "Map":        return $this->buildMap();
-			default: return parent::build();
+			default:           return parent::build();
 		}
 	}
 
@@ -45,7 +48,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	private function buildCollection()
 	{
 		$collection = new Html_Builder_Collection_Edit($this->property, $this->value);
-		return $collection->build();
+		return $collection->setTemplate($this->template)->build();
 	}
 
 	//-------------------------------------------------------------------------------------- buildMap

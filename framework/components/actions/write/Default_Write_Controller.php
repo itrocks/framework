@@ -95,6 +95,10 @@ class Default_Write_Controller implements Default_Class_Controller
 			Dao::write($write_object);
 		}
 		Dao::commit();
+		if (isset($objects["fill_combo"]) && strpos($objects["fill_combo"], "[")) {
+			$elements = explode(".", $objects["fill_combo"]);
+			$objects["fill_combo"] = $elements[0] . '.elements["' . $elements[1] . '"]';
+		}
 		return View::run($objects, $form, $files, $class_name, "written");
 	}
 

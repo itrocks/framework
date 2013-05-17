@@ -66,3 +66,22 @@ String.prototype.rParse = function (sep, cnt, complete_if_not)
 		return this.substr(i + sep.length);
 	}
 };
+
+//-------------------------------------------------------------------------------------------- repl
+String.prototype.repl = function(from, to)
+{
+	var replaced = "";
+	var start = 0;
+	var length = from.length;
+	i = this.indexOf(from, start);
+	while (i > -1) {
+		if (i > start) {
+			replaced += this.substring(start, i);
+		}
+		replaced += to;
+		start = i + length;
+		i = this.indexOf(from, start);
+	}
+	replaced += this.substring(start);
+	return replaced;
+}

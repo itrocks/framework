@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Builds a standard form input matching a given data type and value
+ */
 class Html_Builder_Type_Edit
 {
 
@@ -115,11 +118,13 @@ class Html_Builder_Type_Edit
 	protected function buildObject()
 	{
 		$class_name = $this->type->asString();
+		// id input
 		$id_input = new Html_Input(
 			$this->getFieldName("id_"), Dao::getObjectIdentifier($this->value)
 		);
 		$id_input->setAttribute("type", "hidden");
 		$id_input->addClass("id");
+		// visible input
 		$input = new Html_Input(null, strval($this->value));
 		$input->setAttribute("autocomplete", "off");
 		$input->addClass("combo");
@@ -127,11 +132,12 @@ class Html_Builder_Type_Edit
 		$input->addClass(
 			"class:" . Namespaces::shortClassName(Names::classToSet($class_name))
 		);
+		// add anchor
 		$add = new Html_Anchor(
-			"/" . View::current()->link($this->value, "new")
-			. (
-				isset($this->template)
-				? ("?fill_combo=" . $this->template->getFormId() . "." . $this->getFieldName("id_")) : ""
+			"/" . View::current()->link(get_class($this->value), "new")
+			. (isset($this->template)
+				? ("?fill_combo=" . $this->template->getFormId() . "." . $this->getFieldName("id_", false))
+				: ""
 			),
 			"add"
 		);
@@ -141,6 +147,7 @@ class Html_Builder_Type_Edit
 		$add->setAttribute("title",
 			"|New ¦" . strtolower(Namespaces::shortClassName($class_name)) . "¦|"
 		);
+
 		return $id_input . $input . $add;
 	}
 
@@ -165,10 +172,11 @@ class Html_Builder_Type_Edit
 
 	//---------------------------------------------------------------------------------- getFieldName
 	/**
-	 * @param string $prefix
+	 * @param $prefix            string
+	 * @param $counter_increment boolean
 	 * @return string
 	 */
-	protected function getFieldName($prefix = "")
+	public function getFieldName($prefix = "", $counter_increment = true)
 	{
 		$field_name = $this->name;
 		if (empty($field_name) && $this->preprop) {
@@ -178,12 +186,34 @@ class Html_Builder_Type_Edit
 			$field_name = $prefix . $field_name;
 		}
 		elseif (substr($this->preprop, -2) == "[]") {
-			$field_name = substr($this->preprop, 0, -2) . "[" . $prefix . $field_name . "][]";
+			$field_name = substr($this->preprop, 0, -2) . "[" . $prefix . $field_name . "]";
+			$count = $this->nextCounter($field_name, $counter_increment);
+			$field_name .= "[$count]";
 		}
 		else {
 			$field_name = $this->preprop . "[" . $prefix . $field_name . "]";
 		}
 		return $field_name;
+	}
+
+	//----------------------------------------------------------------------------------- nextCounter
+	/**
+	 * Returns next counter for field name into current form context
+	 *
+	 * @param $field_name string
+	 * @param $increment  boolean
+	 * @return integer
+	 */
+	public function nextCounter($field_name, $increment = true)
+	{
+		static $counter = array();
+		$form = $this->template->getFormId();
+		if (!isset($counter[$form])) {
+			$counter[$form] = array();
+		}
+		$count = isset($counter[$form][$field_name]) ? $counter[$form][$field_name] + $increment : 0;
+		$counter[$form][$field_name] = $count;
+		return $count;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate
