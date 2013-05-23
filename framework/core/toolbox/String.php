@@ -28,6 +28,18 @@ class String
 		return $this->value;
 	}
 
+	//------------------------------------------------------------------------------------- cleanWord
+	/**
+	 * Clean the word, this delete all character who don't have a place in a current word.
+	 * @return string Return the clean word.
+	 * @example
+	 * cleanWord("Albert, ") => return "Albert"
+	 * cleanWord(" list : ") => return "list"
+	 */
+	function cleanWord(){
+		return preg_replace("#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#", "", $this->value);
+	}
+
 	//----------------------------------------------------------------------------------------- first
 	/**
 	 * First element of a separated string
@@ -42,6 +54,16 @@ class String
 			}
 		}
 		return $this->value;
+	}
+
+	//---------------------------------------------------------------------------------------- isWord
+	/**
+	 * Test is the string like a word
+	 * @return int Return 0 if it's not a word.
+	 */
+	function isWord()
+	{
+		return preg_match("#[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]#", $this->value);
 	}
 
 	//------------------------------------------------------------------------------------------ last
@@ -77,6 +99,17 @@ class String
 	public function short()
 	{
 		return Namespaces::shortClassName($this->value);
+	}
+
+	//--------------------------------------------------------------------------------------- textile
+	/**
+	 * Parse to textile
+	 *
+	 * @return string
+	 */
+	public function textile()
+	{
+		return (new Textile())->parse($this);
 	}
 
 	//--------------------------------------------------------------------------------------- twoLast
@@ -116,28 +149,6 @@ class String
 	public function upper()
 	{
 		return strtoupper($this->value);
-	}
-
-	//---------------------------------------------------------------------------------------- isWord
-	/**
-	 * Test is the string like a word
-	 * @return int Return 0 if it's not a word.
-	 */
-	function isWord()
-	{
-		return preg_match("#[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]#", $this->value);
-	}
-
-	//------------------------------------------------------------------------------------- cleanWord
-	/**
-	 * Clean the word, this delete all character who don't have a place in a current word.
-	 * @return string Return the clean word.
-	 * @example
-	 * cleanWord("Albert, ") => return "Albert"
-	 * cleanWord(" list : ") => return "list"
-	 */
-	function cleanWord(){
-		return preg_replace("#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#", "", $this->value);
 	}
 
 	//------------------------------------------------------------------------------------------- uri
