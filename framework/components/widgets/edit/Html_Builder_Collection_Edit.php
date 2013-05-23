@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Takes a collection of objects and build a HTML edit subform containing their data
+ */
 class Html_Builder_Collection_Edit extends Html_Builder_Collection
 {
 
@@ -11,6 +14,9 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	private $template = null;
 
 	//------------------------------------------------------------------------------------- buildBody
+	/**
+	 * @return Html_Table_Body
+	 */
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
@@ -21,6 +27,11 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	}
 
 	//------------------------------------------------------------------------------------- buildCell
+	/**
+	 * @param $object        object
+	 * @param $property_name string
+	 * @return Html_Table_Standard_Cell
+	 */
 	protected function buildCell($object, $property_name)
 	{
 		$property = Reflection_Property::getInstanceOf($object, $property_name);
@@ -32,7 +43,9 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 			$property_builder = new Html_Builder_Property_Edit();
 			$property_builder->setTemplate($this->template);
 			$id_input = new Html_Input(
-				$this->property->name . "[id][" . $property_builder->nextCounter("id[]") . "]",
+				$this->property->name . "[id]["
+				. $property_builder->nextCounter($this->property->name . "[id][]")
+				. "]",
 				isset($object->id) ? $object->id : null
 			);
 			$id_input->setAttribute("type", "hidden");
@@ -42,6 +55,9 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	}
 
 	//------------------------------------------------------------------------------------- buildHead
+	/**
+	 * @return Html_Table_Head
+	 */
 	protected function buildHead()
 	{
 		$head = parent::buildHead();
@@ -52,6 +68,10 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	}
 
 	//-------------------------------------------------------------------------------------- buildRow
+	/**
+	 * @param $object object
+	 * @return Html_Table_Row
+	 */
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
