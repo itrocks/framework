@@ -3,6 +3,10 @@ namespace SAF\Framework;
 use ReflectionClass;
 use ReflectionProperty;
 
+/**
+ * Class Reflection_Property_Value
+ * @package SAF\Framework
+ */
 class Reflection_Property_Value extends Reflection_Property
 {
 
@@ -21,14 +25,6 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @var object
 	 */
 	private $object;
-
-	//----------------------------------------------------------------------------------------- $path
-	/**
-	 * The original property path
-	 *
-	 * @var string
-	 */
-	public $path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
