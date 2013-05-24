@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use StdClass;
 
+/**
+ * built-in SAF HTML template engine
+ */
 class Html_Template
 {
 
@@ -179,6 +182,29 @@ class Html_Template
 		return isset($this->parameters[$parameter]) ? $this->parameters[$parameter] : null;
 	}
 
+	//------------------------------------------------------------------------------- getParentObject
+	/**
+	 * Gets the first parent of current (last) object that is an object
+	 *
+	 * @param $objects     mixed[]
+	 * @param $instance_of string class name
+	 * @return object
+	 */
+	public function getParentObject($objects, $instance_of = null)
+	{
+		$object = null;
+		if (reset($objects)) {
+			do {
+				$object = next($objects);
+			}
+			while (
+				($object && !is_object($object))
+				|| (isset($instance_of) && !class_instanceof($object, $instance_of))
+			);
+		}
+		return $object;
+	}
+
 	//------------------------------------------------------------------------------------- getUriRoot
 	/**
 	 * @return string
@@ -271,6 +297,11 @@ class Html_Template
 	}
 
 	//------------------------------------------------------------------------------ parseConditional
+	/**
+	 * @param $objects       mixed[]
+	 * @param $property_name string
+	 * @return string|boolean
+	 */
 	protected function parseConditional($objects, $property_name)
 	{
 		$i = strpos($property_name, "?");
@@ -314,6 +345,12 @@ class Html_Template
 	}
 
 	//-------------------------------------------------------------------------------- parseConstSpec
+	/**
+	 * @param $objects    mixed[]
+	 * @param $object     object
+	 * @param $const_name string
+	 * @return string
+	 */
 	protected function parseConstSpec(
 		/** @noinspection PhpUnusedParameterInspection */
 		$objects, $object, $const_name
@@ -467,6 +504,13 @@ class Html_Template
 	}
 
 	//------------------------------------------------------------------------------------- parseLoop
+	/**
+	 * @param $content string
+	 * @param $objects mixed[]
+	 * @param $i       integer
+	 * @param $j       integer
+	 * @return integer
+	 */
 	protected function parseLoop(&$content, $objects, $i, $j)
 	{
 		$var_name = substr($content, $i, $j - $i);
@@ -615,6 +659,7 @@ class Html_Template
 	 * @param $objects       mixed[]
 	 * @param $object        object
 	 * @param $property_name string
+	 * @return string
 	 */
 	protected function parseMethod(
 		/** @noinspection PhpUnusedParameterInspection */
@@ -682,6 +727,7 @@ class Html_Template
 	 * @param $objects       mixed[]
 	 * @param $object        object
 	 * @param $property_name string
+	 * @return string
 	 */
 	protected function parseProperty(
 		/** @noinspection PhpUnusedParameterInspection */
