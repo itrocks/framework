@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Tabs builder : build tabs for a class
+ */
 abstract class Tabs_Builder_Class
 {
 
@@ -9,7 +12,7 @@ abstract class Tabs_Builder_Class
 	 * Build tabs containing class properties
 	 *
 	 * @param $class Reflection_Class
-	 * @return Tab[]
+	 * @return Tab[] Tabs will contain Reflection_Property[] as content
 	 */
 	public static function build(Reflection_Class $class)
 	{
@@ -60,9 +63,7 @@ abstract class Tabs_Builder_Class
 					}
 					$tab = $tab->columns[0];
 				}
-				$tab->add(self::getProperties(
-					$properties, $group_annotation->value, $group_annotation->name
-				));
+				$tab->add(self::getProperties($properties, $group_annotation->value));
 			}
 		}
 		return $root_tab->includes;
@@ -72,17 +73,15 @@ abstract class Tabs_Builder_Class
 	/**
 	 * Filter class properties using an array of properties names
 	 *
-	 * @param $properties Reflection_Property[]
+	 * @param $properties     Reflection_Property[]
 	 * @param $property_names string[]
-	 * @param $tab_path string
 	 * @return Reflection_Property[]
 	 */
-	private static function getProperties($properties, $property_names, $tab_path)
+	private static function getProperties($properties, $property_names)
 	{
 		$result = array();
 		foreach ($property_names as $property_name) {
 			if (isset($properties[$property_name])) {
-				$properties[$property_name]->tab_path = $tab_path;
 				$result[$property_name] = $properties[$property_name];
 			}
 		}

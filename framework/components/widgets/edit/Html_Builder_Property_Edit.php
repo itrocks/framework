@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Builds a standard form input matching a given property and value
+ */
 class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 {
 
@@ -19,7 +22,16 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	public function __construct(Reflection_Property $property = null, $value = null, $preprop = null)
 	{
 		if (isset($property)) {
-			parent::__construct($property->name, $property->getType(), $value, $preprop);
+			$name = ($property instanceof Reflection_Property_Value)
+				? $property->field() : $property->name;
+			if (strpos($name, "[")) {
+				$preprop2 = lLastParse($name, "[");
+				$preprop = $preprop
+					? ($preprop . "[" . lParse($preprop2, "[") . "[" . rParse($preprop2, "["))
+					: $preprop2;
+				$name = lParse(rLastParse($name, "["), "]");
+			}
+			parent::__construct($name, $property->getType(), $value, $preprop);
 			$this->property = $property;
 		}
 		else {

@@ -16,6 +16,22 @@ use AopJoinpoint;
 abstract class Translation_String_Composer implements Plugin
 {
 
+	//---------------------------------------------------- afterReflectionPropertyValueForHtmlDisplay
+	/**
+	 * This patch changes HTML properties displays from a.property.display
+	 * to ¦a¦.¦property¦.¦display¦ to minimize needed translations.
+	 *
+	 * @param AopJoinpoint $joinpoint
+	 * @return string
+	 */
+	public static function afterReflectionPropertyValueDisplay(AopJoinpoint $joinpoint)
+	{
+		$result = $joinpoint->getReturnedValue();
+		if (strpos($result, ".") !== false) {
+			$joinpoint->setReturnedValue("¦" . str_replace(".", "¦.¦", $result) . "¦");
+		}
+	}
+
 	//----------------------------------------------------------------------------------- onTranslate
 	/**
 	 * @param $joinpoint AopJoinpoint
@@ -59,6 +75,10 @@ abstract class Translation_String_Composer implements Plugin
 		Aop::add(Aop::AROUND,
 			'SAF\Framework\Translations->translate()',
 			array(__CLASS__, "onTranslate")
+		);
+		Aop::add(Aop::AFTER,
+			'SAF\Framework\Reflection_Property_Value->display()',
+			array(__CLASS__, "afterReflectionPropertyValueDisplay")
 		);
 	}
 

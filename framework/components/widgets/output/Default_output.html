@@ -17,85 +17,85 @@
 
 	<div class="general buttons">
 		<!--general_buttons-->
-		<a class="button trashable {feature.lower} {?class} {color}" href="{link}" target="{?target}">|{caption}|</a>
+		<a class="trashable {feature.lower} {?class} button {color}" href="{link}" target="{?target}">|{caption}|</a>
 		<!--sample-->
-		<a class="button trashable write submit {color}" href="/abook/Contact/1/write" target="#messages">Write</a>
+		<a class="trashable write submit button {color}" href="/abook/Contact/1/write" target="#messages">Write</a>
 		<!--general_buttons-->
 	</div>
 
 	<!--tabs._top-->
-	<div class="fieldset">
-		<!--content-->
-		<div class="field {name} {?getType.isMultiple}" id="{name}">
-			<div class="label trashable">|{display}|</div>
+	<div class="top fieldset">
+		<!--content--><!--@expand-->
+		<div class="{name} {?getType.isMultiple} field" id="{path}">
+			<div class="trashable label">|{display}|</div>
 			<div class="value">{value}</div>
 		</div>
-		<!--content-->
+		<!--@expand--><!--content-->
 	</div>
 	<!--tabs._top-->
 
 	<!--tabs.included?-->
-	<div class="tabber">
+	<div class="tabber one">
 		<ul>
 			<!--tabs.included-->
-			<li class="trashable"><a href="#tab_{id}">|{title}|</a></li>
+			<li class="trashable {getClass}"><a href="#tab_{id}">|{title}|</a></li>
 			<!--tabs.included-->
 		</ul>
 		<!--tabs.included-->
-		<div class="fieldset" id="tab_{id}">
+		<div class="{getClass} fieldset" id="tab_{id}">
 			<h2>{title}</h2>
 			<!--included?-->
-			<div class="tabber">
+			<div class="tabber two">
 				<ul>
 					<!--included-->
-					<li class="trashable"><a href="#tab_{id}">|{title}|</a></li>
+					<li class="trashable {getClass}"><a href="#tab_{id}">|{title}|</a></li>
 					<!--included-->
 				</ul>
 				<!--included-->
-				<div class="fieldset" id="tab_{id}">
+				<div class="{getClass} fieldset" id="tab_{id}">
 					<h2>{title}</h2>
-					<!--content-->
-					<div class="field {name} {?getType.isMultiple}" id="{name}">
-						<div class="label trashable">|{display}|</div>
+					<!--content--><!--@expand-->
+					<div class="{name} {?getType.isMultiple} field" id="{path}">
+						<div class="trashable label">|{display}|</div>
 						<div class="value">{value}</div>
 					</div>
-					<!--content-->
+					<!--@expand--><!--content-->
 				</div>
 				<!--included-->
 			</div>
 			<!--included?-->
 			<!--columns?-->
-			<div class="columns">
+			<div class="{getClass} columns">
 				<!--columns-->
 				<div class="column">
 					<div class="fieldset">
-						<!--content-->
-						<div class="field {name} {?getType.isMultiple}" id="{name}">
-							<div class="label trashable">|{display}|</div>
+						<!--content--><!--@expand-->
+						<div class="{name} {?getType.isMultiple} field" id="{path}">
+							<div class="trashable label">|{display}|</div>
 							<div class="value">{value}</div>
 						</div>
-						<!--content-->
+						<!--@expand--><!--content-->
 					</div>
 				</div>
 				<!--columns-->
 			</div>
 			<!--columns?-->
-			<!--content-->
-			<div class="field {name} {?getType.isMultiple}" id="{name}">
-				<div class="label trashable">|{display}|</div>
+			<!--content--><!--@expand-->
+			<div class="{name} {?getType.isMultiple} field" id="{path}">
+				<div class="trashable label">|{display}|</div>
 				<div class="value">{value}</div>
 			</div>
-			<!--content-->
+			<!--@expand--><!--content-->
 		</div>
 		<!--tabs.included-->
 	</div>
 	<!--tabs.included?-->
 
 	<!--@propertiesOutOfTabs?-->
-	<div class="fieldset">
+	<div class="outoftabs fieldset">
 		<!--@propertiesOutOfTabs-->
-		<div class="field {name} {?getType.isMultiple}" id="{name}">
-			<div class="label trashable">|{display}|</div>
+		<div class="{name} {?getType.isMultiple} field" id="{path}">
+			<div class="trashable label">|{display}|</div>
 			<div class="value">{value}</div>
 		</div>
 		<!--@propertiesOutOfTabs-->
@@ -103,24 +103,24 @@
 	<!--@propertiesOutOfTabs?-->
 
 	<!--tabs._middle-->
-	<div class="fieldset">
-		<!--content-->
-		<div class="field {name} {?getType.isMultiple}" id="{name}">
-			<div class="label trashable">|{display}|</div>
+	<div class="middle fieldset">
+		<!--content--><!--@expand-->
+		<div class="{name} {?getType.isMultiple} field" id="{path}">
+			<div class="trashable label">|{display}|</div>
 			<div class="value">{value}</div>
 		</div>
-		<!--content-->
+		<!--@expand--><!--content-->
 	</div>
 	<!--tabs._middle-->
 
 	<!--tabs._bottom-->
-	<div class="fieldset">
-		<!--tabs._bottom.content-->
-		<div class="field {name} {?getType.isMultiple}" id="{name}">
-			<div class="label trashable">|{display}|</div>
+	<div class="bottom fieldset">
+		<!--content--><!--@expand-->
+		<div class="{name} {?getType.isMultiple} field" id="{path}">
+			<div class="trashable label">|{display}|</div>
 			<div class="value">{value}</div>
 		</div>
-		<!--tabs._bottom.content-->
+		<!--@expand--><!--content-->
 	</div>
 	<!--tabs._bottom-->
 

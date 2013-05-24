@@ -60,17 +60,22 @@ class Html_Builder_Type_Edit
 	public function build()
 	{
 		$type = $this->type;
-		switch ($type->asString()) {
-			case "float":    return $this->buildFloat();
-			case "integer":  return $this->buildInteger();
-			case "string":   return $this->buildString();
-			case "string[]": return "string[]";
+		if (!isset($type)) {
+			return $this->buildId();
 		}
-		if ($type->isInstanceOf("DateTime")) {
-			return $this->buildDateTime();
-		}
-		elseif ($type->isClass()) {
-			return $this->buildObject();
+		else {
+			switch ($type->asString()) {
+				case "float":    return $this->buildFloat();
+				case "integer":  return $this->buildInteger();
+				case "string":   return $this->buildString();
+				case "string[]": return "string[]";
+			}
+			if ($type->isInstanceOf("DateTime")) {
+				return $this->buildDateTime();
+			}
+			elseif ($type->isClass()) {
+				return $this->buildObject();
+			}
 		}
 		return $this->value;
 	}
@@ -96,6 +101,18 @@ class Html_Builder_Type_Edit
 		$input = new Html_Input($this->getFieldName(), $this->value);
 		$input->addClass("float");
 		$input->addClass("autowidth");
+		return $input;
+	}
+
+	//--------------------------------------------------------------------------------------- buildId
+	/**
+	 * @return Dom_Element
+	 */
+	protected function buildId()
+	{
+		$input = new Html_Input($this->getFieldName(), $this->value);
+		$input->setAttribute("type", "hidden");
+		$input->addClass("id");
 		return $input;
 	}
 
@@ -211,13 +228,15 @@ class Html_Builder_Type_Edit
 	 */
 	public function nextCounter($field_name, $increment = true)
 	{
-		static $counter = array();
 		$form = $this->template->getFormId();
+		$counter = isset($this->template->cache["counter"])
+			? $this->template->cache["counter"] : array();
 		if (!isset($counter[$form])) {
 			$counter[$form] = array();
 		}
 		$count = isset($counter[$form][$field_name]) ? $counter[$form][$field_name] + $increment : 0;
 		$counter[$form][$field_name] = $count;
+		$this->template->cache["counter"] = $counter;
 		return $count;
 	}
 

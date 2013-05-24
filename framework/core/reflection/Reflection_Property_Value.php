@@ -10,6 +10,16 @@ use ReflectionProperty;
 class Reflection_Property_Value extends Reflection_Property
 {
 
+	//-------------------------------------------------------------------------------------- $display
+	/**
+	 * What will be displayed by the display() function
+	 *
+	 * Keep this null to calculate automatically, fill this only to force display
+	 *
+	 * @var string|null
+	 */
+	public $display = null;
+
 	//---------------------------------------------------------------------------------- $final_value
 	/**
 	 * If set to true, $object contains the final value instead of the object containing the valued property
@@ -109,7 +119,21 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function display()
 	{
-		return Names::propertyToDisplay($this->name);
+		return $this->display
+			? $this->display
+			: Names::propertyToDisplay($this->path ? $this->path : $this->name);
+	}
+
+	//----------------------------------------------------------------------------------------- field
+	/**
+	 * Returns path formatted as field : uses [] instead of .
+	 *
+	 * @example if $this->path is "a.field.path", will return "a[field][path]"
+	 * @return string
+	 */
+	public function field()
+	{
+		return Names::propertyPathToField($this->path ? $this->path : $this->name);
 	}
 
 	//---------------------------------------------------------------------------------------- format

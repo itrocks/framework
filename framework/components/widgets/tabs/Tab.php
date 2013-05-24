@@ -1,18 +1,29 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A tab is a data organisation for multiple items $content classification into a graphical tab
+ *
+ * A tab :
+ * - has a $title for display
+ * - can contain multiple columns into $columns, each column is a content array
+ * - can contain multiple content rows into $content
+ * - can contain included sub-tabs into $includes
+ */
 class Tab
 {
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
+	 * Displayable tab title
+	 *
 	 * @var string
 	 */
 	public $title;
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * For content
+	 * Content can be simple entry or most often rows of multiple entries of the same class
 	 *
 	 * @var mixed
 	 */
@@ -20,7 +31,7 @@ class Tab
 
 	//-------------------------------------------------------------------------------------- $columns
 	/**
-	 * For content grouped by column
+	 * Group multiple contents collections into some columns
 	 *
 	 * @var mixed[]
 	 */
@@ -28,7 +39,7 @@ class Tab
 
 	//------------------------------------------------------------------------------------- $includes
 	/**
-	 * For component tabs
+	 * Included sub-tabs collection
 	 *
 	 * @link Collection
 	 * @var Tab[]
@@ -51,12 +62,20 @@ class Tab
 	}
 
 	//----------------------------------------------------------------------------------------- __get
+	/**
+	 * @param $key string
+	 * @return Tab
+	 */
 	public function __get($key)
 	{
 		return $this->includes[$key];
 	}
 
 	//--------------------------------------------------------------------------------------- __isset
+	/**
+	 * @param $key string
+	 * @return boolean
+	 */
 	public function __isset($key)
 	{
 		return isset($this->includes[$key]);
@@ -72,6 +91,9 @@ class Tab
 	}
 
 	//--------------------------------------------------------------------------------------- __unset
+	/**
+	 * @param $key string
+	 */
 	public function __unset($key)
 	{
 		unset($this->includes[$key]);
@@ -119,6 +141,15 @@ class Tab
 			}
 		}
 		return $list;
+	}
+
+	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * return @string
+	 */
+	public function getName()
+	{
+		return Names::displayToProperty($this->title);
 	}
 
 }
