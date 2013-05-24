@@ -8,6 +8,12 @@ abstract class Names
 {
 
 	//------------------------------------------------------------------------------ classToDirectory
+	/**
+	 * Changes 'A\Namespace\Class_Name' into "class_name"
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
 	public static function classToDirectory($class_name)
 	{
 		return strtolower(Namespaces::shortClassName($class_name));
@@ -15,6 +21,8 @@ abstract class Names
 
 	//-------------------------------------------------------------------------------- classToDisplay
 	/**
+	 * Changes 'A\Namespace\Class_Name' into "class name"
+	 *
 	 * @param $class_name string
 	 * @return string
 	 */
@@ -25,18 +33,22 @@ abstract class Names
 
 	//--------------------------------------------------------------------------------- classToMethod
 	/**
+	 * Changes 'A\Namespace\Class_Name' into "className"
+	 *
 	 * @param $class_name string
 	 * @param $prefix string
 	 * @return string
 	 */
 	public static function classToMethod($class_name, $prefix = null)
 	{
-		$method_name = str_replace('_', '', Namespaces::shortClassName($class_name));
+		$method_name = str_replace("_", "", Namespaces::shortClassName($class_name));
 		return $prefix ? $prefix . $method_name : lcfirst($method_name);
 	}
 
 	//------------------------------------------------------------------------------- classToProperty
 	/**
+	 * Changes 'A\Namespace\Class_Name' into "class_name"
+	 *
 	 * @param $class_name string
 	 * @return string
 	 */
@@ -47,6 +59,8 @@ abstract class Names
 
 	//------------------------------------------------------------------------------------ classToSet
 	/**
+	 * Changes 'A\Namespace\Class_Name' into 'A\Namespace\Class_Names'
+	 *
 	 * @param $class_name string
 	 * @return string
 	 */
@@ -57,6 +71,8 @@ abstract class Names
 
 	//----------------------------------------------------------------------------- displayToProperty
 	/**
+	 * Changes "a text" into "a_text"
+	 *
 	 * @param $display string
 	 * @return string
 	 */
@@ -67,6 +83,8 @@ abstract class Names
 
 	//--------------------------------------------------------------------------------- methodToClass
 	/**
+	 * Changes "aMethodName" into "A_Method_Name"
+	 *
 	 * @param $method_name string
 	 * @return string
 	 */
@@ -77,6 +95,8 @@ abstract class Names
 
 	//------------------------------------------------------------------------------- methodToDisplay
 	/**
+	 * Changes "aMethodName" into "a method name"
+	 *
 	 * @param $method_name string
 	 * @return string
 	 */
@@ -87,6 +107,8 @@ abstract class Names
 
 	//------------------------------------------------------------------------------ methodToProperty
 	/**
+	 * Changes "aMethodName" into "a_method_name"
+	 *
 	 * @param $method_name string
 	 * @return string
 	 */
@@ -99,8 +121,26 @@ abstract class Names
 		return $property_name;
 	}
 
+	//--------------------------------------------------------------------------- propertyPathToField
+	/**
+	 * Changes "a.name.and.sub_name" into "a[name][and][sub_name]"
+	 *
+	 * @param $property_name string
+	 * @return string
+	 */
+	public static function propertyPathToField($property_name)
+	{
+		if ($i = strpos($property_name, ".")) {
+			$property_name = substr($property_name, 0, $i)
+				. "[" . str_replace(".", "][", substr($property_name, $i + 1)) . "]";
+		}
+		return $property_name;
+	}
+
 	//------------------------------------------------------------------------------- propertyToClass
 	/**
+	 * Changes "a_property_name" into "A_Property_Name"
+	 *
 	 * @param $property_name string
 	 * @return string
 	 */
@@ -111,6 +151,8 @@ abstract class Names
 
 	//----------------------------------------------------------------------------- propertyToDisplay
 	/**
+	 * Changes "a_property_name" into "a property name"
+	 *
 	 * @param $property_name string
 	 * @return string
 	 */
@@ -121,6 +163,8 @@ abstract class Names
 
 	//------------------------------------------------------------------------------ propertyToMethod
 	/**
+	 * Changes "a_property_name" into "aPropertyName"
+	 *
 	 * @param $property_name string
 	 * @param $prefix string
 	 * @return string
@@ -137,6 +181,8 @@ abstract class Names
 
 	//------------------------------------------------------------------------------------ setToClass
 	/**
+	 * Changes 'A\Namespace\Class_Names' into 'A\Namespace\Class_Name'
+	 *
 	 * @param $class_name string
 	 * @return string
 	 */

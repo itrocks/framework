@@ -1,14 +1,37 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Display methods for a displayable object
+ *
+ * Mainly built from any reflection class, method, or property names.
+ */
 class Displayable extends String
 {
 
-	//---------------------------------------------------------------------------------- const TYPE_*
-	const TYPE_CLASS    = "class";
-	const TYPE_METHOD   = "method";
+	//------------------------------------------------------------------------------------ TYPE_CLASS
+	/**
+	 * @var string "class"
+	 */
+	const TYPE_CLASS = "class";
+
+	//------------------------------------------------------------------------------------ TYPE_CLASS
+	/**
+	 * @var string "method"
+	 */
+	const TYPE_METHOD = "method";
+
+	//------------------------------------------------------------------------------------ TYPE_CLASS
+	/**
+	 * @var string "property"
+	 */
 	const TYPE_PROPERTY = "property";
-	const TYPE_STRING   = "string";
+
+	//------------------------------------------------------------------------------------ TYPE_CLASS
+	/**
+	 * @var string "string"
+	 */
+	const TYPE_STRING = "string";
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -39,7 +62,7 @@ class Displayable extends String
 			case self::TYPE_METHOD:   return Names::methodToDisplay($this->value);
 			case self::TYPE_PROPERTY: return Names::propertyToDisplay($this->value);
 		}
-		return $this->value;
+		return strval($this->value);
 	}
 
 	//----------------------------------------------------------------------------------------- lower

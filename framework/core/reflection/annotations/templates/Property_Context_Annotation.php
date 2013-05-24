@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A property context annotation needs the property to be properly built
+ */
 interface Property_Context_Annotation
 {
 

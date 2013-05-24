@@ -51,6 +51,7 @@ trait Annoted
 			!isset($this->annotations[$annotation_name][$multiple])
 			&& ($this instanceof Has_Doc_Comment)
 		) {
+			/** @var $this Annoted|Has_Doc_Comment (PhpStorm Inspector patch) */
 			$this->annotations[$annotation_name][$multiple] = Annotation_Parser::byName(
 				$this, $annotation_name, $multiple
 			);

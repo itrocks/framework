@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Built-in SAF HTML view engine
+ */
 class Html_View_Engine implements Configurable, View_Engine
 {
 
@@ -11,6 +14,9 @@ class Html_View_Engine implements Configurable, View_Engine
 	private $css = "default";
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $parameters array
+	 */
 	public function __construct($parameters = null)
 	{
 		if (isset($parameters)) {
@@ -52,6 +58,13 @@ class Html_View_Engine implements Configurable, View_Engine
 	}
 
 	//------------------------------------------------------------------------------------------ link
+	/**
+	 * Generate a link for class name and parameters
+	 *
+	 * @param $object     object|string object or class name
+	 * @param $parameters string|string[] string or array : parameters list (feature and other parameters)
+	 * @return string
+	 */
 	public function link($object, $parameters = null)
 	{
 		$link = is_object($object)

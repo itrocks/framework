@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Takes a collection of objects and build an HTML output containing their data
+ */
 class Html_Builder_Collection
 {
 

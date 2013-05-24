@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Tabs builder : build tabs for an object
+ */
 abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 {
 
@@ -12,7 +15,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	 *
 	 * @param $object            object
 	 * @param $filter_properties string[]
-	 * @return Tab[]
+	 * @return Tab[] tabs will contain Reflection_Property_Value[] as content
 	 */
 	public static function buildObject($object, $filter_properties = null)
 	{

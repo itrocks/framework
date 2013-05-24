@@ -92,6 +92,7 @@ abstract class Dom_Element
 	public function setAttribute($name, $value)
 	{
 		if ($name == "name") {
+			// this is because PHP does not like "." into names of GET/POST vars
 			$value = str_replace(".", ">", $value);
 		}
 		return $this->setAttributeNode(new Dom_Attribute($name, $value));

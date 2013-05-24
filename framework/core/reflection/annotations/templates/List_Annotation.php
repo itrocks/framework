@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A list annotation can store multiple values
+ *
+ * @example annotation value 1, value 2,"value 3", 'value 4'
+ */
 abstract class List_Annotation extends Annotation
 {
 
@@ -59,6 +64,18 @@ abstract class List_Annotation extends Annotation
 			$values[] = substr($value, $start, $i - $start);
 		}
 		parent::__construct($values);
+	}
+
+	//------------------------------------------------------------------------------------------- has
+	/**
+	 * Returns true if the list annotation has value into its values
+	 *
+	 * @param $value string
+	 * @return boolean
+	 */
+	public function has($value)
+	{
+		return in_array($value, $this->values());
 	}
 
 	//---------------------------------------------------------------------------------------- values
