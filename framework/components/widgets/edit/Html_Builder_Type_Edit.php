@@ -150,26 +150,30 @@ class Html_Builder_Type_Edit
 			"class:" . Namespaces::shortClassName(Names::classToSet($class_name))
 		);
 		// "add" anchor
-		$add = new Html_Anchor(
-			View::current()->link(get_class($this->value), "new")
-			. (isset($this->template)
-				? ("?fill_combo=" . $this->template->getFormId() . "." . $this->getFieldName("id_", false))
-				: ""
-			),
-			"add"
-		);
-		$add->addClass("add");
-		$add->addClass("action");
-		$add->setAttribute("target", "#_blank");
-		$add->setAttribute("title",
-			"|Edit ¦" . strtolower(Namespaces::shortClassName($class_name)) . "¦|"
-		);
+		if (is_object($this->value)) {
+			$add = new Html_Anchor(
+				View::current()->link(get_class($this->value), "new")
+				. (isset($this->template)
+					? ("?fill_combo=" . $this->template->getFormId() . "." . $this->getFieldName("id_", false))
+					: ""
+				),
+				"add"
+			);
+			$add->addClass("add");
+			$add->addClass("action");
+			$add->setAttribute("target", "#_blank");
+			$add->setAttribute("title",
+				"|Edit ¦" . strtolower(Namespaces::shortClassName($class_name)) . "¦|"
+			);
+		}
+		else {
+			$add = "";
+		}
 		// "more" button
 		$more = new Html_Button("more");
 		$more->addClass("more");
 		$more->addClass("action");
 		$more->setAttribute("tabindex", -1);
-
 		return $id_input . $input . $more . $add;
 	}
 
