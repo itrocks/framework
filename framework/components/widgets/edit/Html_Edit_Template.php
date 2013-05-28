@@ -93,7 +93,7 @@ class Html_Edit_Template extends Html_Template
 				)
 			) {
 				$this->cache["parsed_id"][$this->getFormId()][$preprop] = true;
-				$parent_object = $this->getParentObject($objects);
+				$parent_object = $property->getObject();
 				$id = isset($parent_object) ? Dao::getObjectIdentifier($parent_object) : null;
 				$id_value = (new Html_Builder_Type_Edit("id", null, $id, $preprop))->build();
 			}

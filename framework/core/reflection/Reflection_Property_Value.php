@@ -158,6 +158,17 @@ class Reflection_Property_Value extends Reflection_Property
 		}
 	}
 
+	//------------------------------------------------------------------------------------- getObject
+	/**
+	 * Gets the object containing the value (null if the value was set as a value)
+	 *
+	 * @return object|null
+	 */
+	public function getObject()
+	{
+		return $this->object;
+	}
+
 	//----------------------------------------------------------------------------------------- value
 	/**
 	 * @param null $value object
