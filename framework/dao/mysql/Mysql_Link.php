@@ -329,17 +329,25 @@ class Mysql_Link extends Sql_Link
 		if (!isset($class_name)) {
 			$class_name = get_class($what);
 		}
-		$search_result = array();
-		$builder = new Sql_Select_Builder($class_name, null, $what, $this);
-		$query = $builder->buildQuery();
-		$this->setContext($builder->getJoins()->getClassNames());
-		$result_set = $this->executeQuery($query);
-		if($result_set) {
-			while ($object = $result_set->fetch_object($class_name)) {
-				$this->setObjectIdentifier($object, $object->id);
-				$search_result[$object->id] = $object;
+		if (!(
+			class_instanceof($class_name, 'SAF\Framework\Before_Search_Listener')
+			&& !call_user_func(array($class_name, "beforeSearch"), $what)
+		)) {
+			$search_result = array();
+			$builder = new Sql_Select_Builder($class_name, null, $what, $this);
+			$query = $builder->buildQuery();
+			$this->setContext($builder->getJoins()->getClassNames());
+			$result_set = $this->executeQuery($query);
+			if($result_set) {
+				while ($object = $result_set->fetch_object($class_name)) {
+					$this->setObjectIdentifier($object, $object->id);
+					$search_result[$object->id] = $object;
+				}
+				$result_set->free();
 			}
-			$result_set->free();
+		}
+		else {
+			$search_result = array();
 		}
 		return $search_result;
 	}
@@ -373,7 +381,10 @@ class Mysql_Link extends Sql_Link
 		if (Null_Object::isNull($object)) {
 			$this->removeObjectIdentifier($object);
 		}
-		else {
+		elseif (!(
+			class_implements(get_class($object), 'SAF\Framework\Before_Write_Listener')
+			&& !$object->beforeWrite()
+		)) {
 			$class = Reflection_Class::getInstanceOf($object);
 			$table_columns_names = array_keys($this->getStoredProperties($class));
 			$write_collections = array();
@@ -442,6 +453,9 @@ class Mysql_Link extends Sql_Link
 			foreach ($write_maps as $write) {
 				list($property, $value) = $write;
 				$this->writeMap($object, $property, $value);
+			}
+			if (class_implements(get_class($object), 'SAF\Framework\After_Write_Listener')) {
+				$object->afterWrite();
 			}
 		}
 		return $object;
