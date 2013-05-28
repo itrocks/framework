@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM element class
+ */
 abstract class Dom_Element
 {
 
@@ -109,18 +112,28 @@ abstract class Dom_Element
 	}
 
 	//------------------------------------------------------------------------------------ setContent
+	/**
+	 * @param $content string
+	 */
 	public function setContent($content)
 	{
 		$this->content = $content;
 	}
 
 	//-------------------------------------------------------------------------------------- setStyle
+	/**
+	 * @param $key   string
+	 * @param $value string
+	 */
 	public function setStyle($key, $value)
 	{
 		$this->styles[$key] = new Dom_Style($key, $value);
 	}
 
 	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		if ($this->styles) {

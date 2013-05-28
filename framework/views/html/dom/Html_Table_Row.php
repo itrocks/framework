@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM element class for HTML tables rows <tr>
+ */
 class Html_Table_Row extends Dom_Element
 {
 
@@ -11,12 +14,17 @@ class Html_Table_Row extends Dom_Element
 	private $cells = array();
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 */
 	public function __construct()
 	{
 		parent::__construct("tr");
 	}
 
 	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		$this->setContent(join("", $this->cells));

@@ -1,9 +1,13 @@
 <?php
 namespace SAF\Framework;
-use PEAR, Mail;
 
-if (!@include_once "/usr/share/php/Mail.php") {
-	@include_once("framework/vendor/pear/Mail.php");
+use Mail;
+use Mail_smtp;
+use PEAR;
+
+/** @noinspection PhpIncludeInspection */
+if (!@include_once("framework/vendor/pear/Mail.php")) {
+	@include_once "/usr/share/php/Mail.php";
 }
 
 /**
@@ -45,9 +49,12 @@ abstract class Email_Sender
 			$policy = new Email_Policy();
 		}
 		$params["host"] = $email->account->smtp_accounts[0]->host;
-		$mail = Mail::factory("smtp", $params);
-		$send_result = $mail->send($email->getRecipients(), $email->getHeaders(), $email->body);
-		return !PEAR::isError($send_result);
+		/** @var $mail Mail_smtp */
+		$mail = (new Mail())->factory("smtp", $params);
+		$send_result = $mail->send(
+			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $email->content
+		);
+		return !(new PEAR())->isError($send_result);
 	}
 
 }

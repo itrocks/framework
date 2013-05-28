@@ -1,8 +1,15 @@
 <?php
 namespace SAF\Framework;
 
+/** @noinspection PhpIncludeInspection */
 require_once "vendor/textile/classTextile.php";
 
+/**
+ * Textile review B-Appli style, in order to be more ergonomic
+ *
+ * Replace textile's '_' by '/' for italic
+ * Replace textile's '+' by '_' for underlined
+ */
 class Textile extends \Textile
 {
 

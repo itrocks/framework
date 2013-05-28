@@ -10,7 +10,7 @@ namespace SAF\Framework;
 abstract class Search_Object extends Null_Object
 {
 
-	//----------------------------------------------------------------------------------- newInstance
+	//---------------------------------------------------------------------------------------- create
 	/**
 	 * Returns a new instance of a search-formatted object of given class
 	 *

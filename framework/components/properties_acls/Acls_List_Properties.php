@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * This plugin enables storage of properties displayed into lists as acls
+ */
 class Acls_List_Properties extends Acls_Properties implements Plugin
 {
 

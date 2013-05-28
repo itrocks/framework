@@ -1,6 +1,9 @@
 <?php
 namespace SAF\RAD;
 
+/**
+ * A graphical control
+ */
 class Control
 {
 

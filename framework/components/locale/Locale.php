@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A Locale object has all locale features, useful for specific locale conversions
+ */
 class Locale implements Configurable
 {
 	use Current { current as private pCurrent; }
@@ -34,6 +37,9 @@ class Locale implements Configurable
 	public $translations;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $parameters array
+	 */
 	public function __construct($parameters = null)
 	{
 		if (isset($parameters)) {

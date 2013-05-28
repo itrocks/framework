@@ -20,7 +20,7 @@ copyCssPropertyTo = function(context, element)
 	for (var i = 0; i < tab.length; i++) {
 		element.css(tab[i], context.css(tab[i]));
 	}
-}
+};
 
 //-------------------------------------------------------------------------- dateFormatToDatepicker
 dateFormatToDatepicker = function(text)
@@ -57,7 +57,7 @@ getTextHeight = function(context, extraHeight)
 	var $width = getInputTextWidth(context);
 	$height.width($width);
 	var height = $height.height() + extraHeight;
-	$('#height').remove();
+	$height.remove();
 	 return height;
 };
 
@@ -104,6 +104,8 @@ getTextWidth = function(context, extraWidth)
  */
 redirect = function(uri, target)
 {
+	//noinspection JSUnresolvedVariable
+	var app = window.app;
 	var more = ((target != undefined) && (target != "") && (target[0] == '#')) ? "&as_widget=1" : "";
 	uri = app.uri_base + uri + "?PHPSESSID=" + app.PHPSESSID;
 	if (!more) {
@@ -112,4 +114,4 @@ redirect = function(uri, target)
 	else {
 		$.ajax({ url: uri + more, success: function(data) { $(target).html(data).build(); } });
 	}
-}
+};

@@ -1,8 +1,13 @@
 <?php
 namespace SAF\Tests;
-use SAF\Framework\Search_Array_Builder;
 
-class Search_Array_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
+use SAF\Framework\Search_Array_Builder;
+use SAF\Framework\Unit_Tests\Unit_Test;
+
+/**
+ * Search array builder test
+ */
+class Search_Array_Builder_Test extends Unit_Test
 {
 
 	//------------------------------------------------------------------------------------- testBuild

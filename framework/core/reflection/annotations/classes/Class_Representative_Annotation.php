@@ -1,6 +1,13 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The @representative annotation stores the list of properties representative of the object's value
+ *
+ * The __toString() method of the class should always return the representative properties values.
+ *
+ * @example a property called "name" could be a representative property for a unique named object
+ */
 class Class_Representative_Annotation extends List_Annotation
 {
 

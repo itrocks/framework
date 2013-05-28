@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * SQL columns list expression builder
+ */
 class Sql_Columns_Builder
 {
 

@@ -5,6 +5,9 @@ use AopJoinpoint;
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Class.php";
 
+/**
+ * The Aop class is an interface to the Aop calls manager
+ */
 abstract class Aop
 {
 

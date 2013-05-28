@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * This is a way to display a property value into a view
+ *
+ * This is an entry point for localization plugins as Locale that need to format data being viewed.
+ */
 class Reflection_Property_View
 {
 

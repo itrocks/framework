@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A collection is an array of objects that are a component of the container object
+ *
+ * This means that each object of a collection should not exist without it's container object
+ */
 class Collection
 {
 

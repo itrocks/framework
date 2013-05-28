@@ -1,6 +1,32 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * All classes that have a global current value should use this trait to manage the current() method
+ *
+ * The current() method should be overridden to improve IDE's auto-completion capability, like this
+ * @example
+ * class A_Class
+ * {
+ *   use Current { current as private pCurrent; }
+ *   // doc-comment here with param $set_current A_Class and return A_Class annotations
+ *   public static function current($set_current = null)
+ *   {
+ *     return self::pCurrent($set_current);
+ *   }
+ * }
+ * @example
+ * Then overriden classes should override current too :
+ * class Another_Class extends A_Class
+ * {
+ *   // doc-comment here with param $set_current Another_Class and return Another_Class annotations
+ *   public static function current($set_current = null)
+ *   {
+ *     return parent::current($set_current);
+ *   }
+ * }
+ * @See User::current() for an example of use
+ */
 trait Current
 {
 

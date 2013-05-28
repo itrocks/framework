@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The default list controller is called if no list controller has beed defined for a business object class
+ */
 class Default_List_Controller extends List_Controller
 {
 
@@ -18,6 +21,10 @@ class Default_List_Controller extends List_Controller
 	}
 
 	//----------------------------------------------------------------------------- getPropertiesList
+	/**
+	 * @param $class_name string
+	 * @return string[] property names list
+	 */
 	protected function getPropertiesList($class_name)
 	{
 		return Reflection_Class::getInstanceOf($class_name)
@@ -52,6 +59,10 @@ class Default_List_Controller extends List_Controller
 	}
 
 	//--------------------------------------------------------------------------- getSelectionButtons
+	/**
+	 * @param $class_name string
+	 * @return Button[]
+	 */
 	protected function getSelectionButtons($class_name)
 	{
 		return array(
@@ -60,6 +71,12 @@ class Default_List_Controller extends List_Controller
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
+	/**
+	 * @param $parameters Controller_Parameters
+	 * @param $form       array
+	 * @param $class_name string
+	 * @return mixed[]
+	 */
 	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
 		$parameters = $parameters->getObjects();

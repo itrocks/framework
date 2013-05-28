@@ -1,10 +1,16 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Takes a map of objects and build a HTML edit subform containing their data
+ */
 class Html_Builder_Map_Edit extends Html_Builder_Map
 {
 
 	//------------------------------------------------------------------------------------- buildBody
+	/**
+	 * @return Html_Table_Body
+	 */
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
@@ -15,6 +21,10 @@ class Html_Builder_Map_Edit extends Html_Builder_Map
 	}
 
 	//------------------------------------------------------------------------------------- buildCell
+	/**
+	 * @param $object object
+	 * @return Html_Table_Standard_Cell
+	 */
 	protected function buildCell($object)
 	{
 		$property = $this->property;
@@ -26,6 +36,9 @@ class Html_Builder_Map_Edit extends Html_Builder_Map
 	}
 
 	//------------------------------------------------------------------------------------- buildHead
+	/**
+	 * @return string
+	 */
 	protected function buildHead()
 	{
 		$head = parent::buildHead();
@@ -36,6 +49,10 @@ class Html_Builder_Map_Edit extends Html_Builder_Map
 	}
 
 	//-------------------------------------------------------------------------------------- buildRow
+	/**
+	 * @param $object object
+	 * @return Html_Table_Row
+	 */
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);

@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The default controller launches a view corresponding to the original controller name
+ *
+ * It is called if no other specific or default controller is implemented
+ */
 class Default_Controller implements Controller
 {
 

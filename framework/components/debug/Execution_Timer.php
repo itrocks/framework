@@ -4,6 +4,9 @@ namespace SAF\Framework;
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Aop.php";
 
+/**
+ * An execution timer plugin, to enable the execution duration info on document's foot
+ */
 abstract class Execution_Timer implements Plugin
 {
 

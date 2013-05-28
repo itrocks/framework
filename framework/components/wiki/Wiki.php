@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * The wiki plugin enable wiki parsing of multiline properties values
+ */
 class Wiki implements Plugin
 {
 

@@ -2,6 +2,8 @@
 namespace SAF\Framework;
 
 /**
+ * An acls right
+ *
  * @representative group, key
  */
 class Acls_Right

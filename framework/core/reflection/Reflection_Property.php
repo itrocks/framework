@@ -19,6 +19,12 @@ require_once "framework/core/reflection/Reflection_Class.php";
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Method.php";
 
+/**
+ * A rich extension of the PHP ReflectionProperty class, adding :
+ * - annotations management
+ * - getType() method to get the real type of data stored into the property
+ * - getUse() method to help working with overriden properties
+ */
 class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_Comment
 {
 	use Annoted;
@@ -143,6 +149,10 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment
+	/**
+	 * @param $get_use boolean
+	 * @return string
+	 */
 	public function getDocComment($get_use = true)
 	{
 		if ($get_use && $this->getUse()) {

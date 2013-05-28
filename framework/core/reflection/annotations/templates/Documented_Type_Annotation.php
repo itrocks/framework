@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * This stores @annotation type and a documentation into two available annotation properties :
+ * - $value stores the type name as a string (ie "string", "Class_Name" or "Class_Name[]")
+ * - $documentation stores the documentation text, if set
+ */
 abstract class Documented_Type_Annotation extends Annotation
 {
 

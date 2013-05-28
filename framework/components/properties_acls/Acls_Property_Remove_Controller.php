@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A standard property remove controller to remove it from acls
+ */
 class Acls_Property_Remove_Controller implements Feature_Controller
 {
 

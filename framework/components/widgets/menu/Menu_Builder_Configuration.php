@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A Menu object builder that use a configuration array
+ */
 class Menu_Builder_Configuration implements Configuration_Builder
 {
 

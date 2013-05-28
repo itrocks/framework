@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+/** @noinspection PhpIncludeInspection */
 if (!@include_once("framework/vendor/pear/Mail/mimeDecode.php")) {
 	@include_once "/usr/share/php/Mail/mimeDecode.php";
 }

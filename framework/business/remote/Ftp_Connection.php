@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Ftp connection
+ */
 class Ftp_Connection implements Remote_Connection
 {
 
@@ -29,12 +32,18 @@ class Ftp_Connection implements Remote_Connection
 	}
 
 	//---------------------------------------------------------------------------------------- delete
+	/**
+	 * @param $file string
+	 */
 	public function delete($file)
 	{
 		// TODO: Implement delete() method.
 	}
 
 	//------------------------------------------------------------------------------------------- dir
+	/**
+	 * @param $path string
+	 */
 	public function dir($path)
 	{
 		// TODO: Implement dir() method.
@@ -47,18 +56,29 @@ class Ftp_Connection implements Remote_Connection
 	}
 
 	//----------------------------------------------------------------------------------------- mkdir
+	/**
+	 * @param $path string
+	 */
 	public function mkdir($path)
 	{
 		// TODO: Implement mkdir() method.
 	}
 
 	//--------------------------------------------------------------------------------------- receive
+	/**
+	 * @param $distant string
+	 * @param $local   string
+	 */
 	public function receive($distant, $local)
 	{
 		// TODO: Implement receive() method.
 	}
 
 	//------------------------------------------------------------------------------------------ send
+	/**
+	 * @param $local   string
+	 * @param $distant string
+	 */
 	public function send($local, $distant)
 	{
 		// TODO: Implement send() method.

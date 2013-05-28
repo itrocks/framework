@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Source of data link classes that use a map between internal identifiers and business objects
+ */
 abstract class Identifier_Map_Data_Link extends Data_Link
 {
 
@@ -17,8 +20,8 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 * A null value will be returned for an object that is not linked to data link.
 	 * If $object is already an identifier, the identifier is returned.
 	 *
-	 * @param $object object
-	 * @return mixed
+	 * @param $object object an object to get data link identifier from
+	 * @return mixed you can test if an object identifier is set with empty($of_this_result)
 	 */
 	public function getObjectIdentifier($object)
 	{
@@ -64,6 +67,12 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	}
 
 	//--------------------------------------------------------------------------------------- replace
+	/**
+	 * @param $destination object destination object
+	 * @param $source      object source object
+	 * @return object the resulting $destination object
+	 * @see Data_Link::replace()
+	 */
 	public function replace($destination, $source)
 	{
 		$this->setObjectIdentifier($destination, $this->getObjectIdentifier($source));

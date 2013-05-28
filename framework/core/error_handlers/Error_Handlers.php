@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A configurable (with a php array) error handlers collection
+ */
 class Error_Handlers implements Configurable
 {
 	use Current { current as private pCurrent; }
@@ -18,11 +21,13 @@ class Error_Handlers implements Configurable
 	private static $instance;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $parameters array
+	 */
 	public function __construct($parameters = null)
 	{
 		foreach ($parameters as $handle) {
 			list($err_no, $error_handler_class) = $handle;
-			$error_handler_class = $error_handler_class;
 			$this->addHandler($err_no, new $error_handler_class());
 		}
 		$this->setAsErrorHandler();

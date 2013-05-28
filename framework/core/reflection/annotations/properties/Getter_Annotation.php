@@ -1,6 +1,13 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Tells a method name that is the getter for that property.
+ *
+ * The getter will be called each time the program accesses the property.
+ * When there is a @link annotation and no @getter, a defaut @getter is set with the Dao access
+ * common method depending on the link type.
+ */
 class Getter_Annotation extends Annotation
 {
 

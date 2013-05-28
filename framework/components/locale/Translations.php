@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Translations give the programmer translations features, and store them into cache
+ */
 class Translations extends Set
 {
 
@@ -17,18 +20,34 @@ class Translations extends Set
 	public $language;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $language string
+	 */
 	public function __construct($language)
 	{
 		$this->language = $language;
 	}
 
 	//--------------------------------------------------------------------------------------- reverse
+	/**
+	 * Reverse translator : changes a translated text into an original text
+	 *
+	 * @param $translation string
+	 * @param $context     string
+	 */
 	public function reverse($translation, $context = "")
 	{
 		// TODO
 	}
 
 	//------------------------------------------------------------------------------------- translate
+	/**
+	 * Translates a text using current language and an optionnal given context
+	 *
+	 * @param $text    string
+	 * @param $context string
+	 * @return string
+	 */
 	public function translate($text, $context = "")
 	{
 		if (empty($text)) {

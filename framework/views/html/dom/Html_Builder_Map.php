@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Takes a map of objects and builds HTML code using their data
+ */
 class Html_Builder_Map
 {
 
@@ -69,6 +72,25 @@ class Html_Builder_Map
 	protected function buildCell($object)
 	{
 		return new Html_Table_Standard_Cell(strval($object));
+	}
+
+	//------------------------------------------------------------------------------------- buildHead
+	/**
+	 * @return Html_Table_Head
+	 */
+	protected function buildHead()
+	{
+		$head = new Html_Table_Head();
+		$row = new Html_Table_Row();
+		foreach ($this->properties as $property_name) {
+			$cell = new Html_Table_Header_Cell(
+				Loc::tr(Names::propertyToDisplay($property_name), $this->class_name)
+			);
+			$cell->addClass("trashable");
+			$row->addCell($cell);
+		}
+		$head->addRow($row);
+		return $head;
 	}
 
 	//-------------------------------------------------------------------------------------- buildRow

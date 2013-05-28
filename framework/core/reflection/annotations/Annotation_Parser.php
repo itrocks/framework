@@ -5,6 +5,9 @@ namespace SAF\Framework;
 require_once "framework/core/reflection/annotations/Annotation.php";
 require_once "framework/core/reflection/annotations/templates/Multiple_Annotation.php";
 
+/**
+ * The annotation parser process calculates the annotation value
+ */
 abstract class Annotation_Parser
 {
 

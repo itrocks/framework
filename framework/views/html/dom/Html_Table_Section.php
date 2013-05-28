@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM element class for HTML tables sections (multiple rows)
+ */
 abstract class Html_Table_Section extends Dom_Element
 {
 
@@ -11,6 +14,9 @@ abstract class Html_Table_Section extends Dom_Element
 	public $rows = array();
 
 	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		$this->setContent("\n" . join("\n", $this->rows) . "\n");

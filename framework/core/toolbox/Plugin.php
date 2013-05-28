@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The Plugin interface must be used to define plugins
+ */
 interface Plugin
 {
 

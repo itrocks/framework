@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The main error handler displays the error
+ */
 class Main_Error_Handler implements Error_Handler
 {
 

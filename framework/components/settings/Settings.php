@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The settings class, in order to manage application settings
+ */
 class Settings
 {
 
@@ -18,6 +21,8 @@ class Settings
 	public $groups;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 */
 	public function __construct()
 	{
 		if (!isset($this->groups)) {

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A remover class implements a remove() object to remove any of its possible composite objects
+ */
 trait Remover
 {
 

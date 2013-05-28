@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * A list annotation can store multiple values
+ * A list annotation can store multiple values, separated by commas
  *
  * @example annotation value 1, value 2,"value 3", 'value 4'
  */

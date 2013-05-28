@@ -1,14 +1,17 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Locks access to methods
+ */
 abstract class MLocks
 {
 
 	//------------------------------------------------------------------------------------------ lock
 	/**
-	 * Lock an object's method call
+	 * Locks an object's method call
 	 *
-	 * @param $object object
+	 * @param $object      object
 	 * @param $method_name string
 	 * @return boolean
 	 */
@@ -19,7 +22,7 @@ abstract class MLocks
 
 	//---------------------------------------------------------------------------------------- unlock
 	/**
-	 * Unlock an object's method call
+	 * Unlocks an object's method call
 	 *
 	 * @param $object object
 	 * @param $method_name string

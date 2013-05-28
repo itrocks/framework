@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Interface for classes that have doc comments.
+ *
+ * Common classes having doc comments are Reflection_Class, Reflection_Property and Reflection_Method
+ */
 interface Has_Doc_Comment
 {
 

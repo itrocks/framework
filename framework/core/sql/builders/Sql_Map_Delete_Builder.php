@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * SQL delete queries builder for a mapped object
+ */
 class Sql_Map_Delete_Builder
 {
 

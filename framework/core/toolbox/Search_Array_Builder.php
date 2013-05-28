@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The search array builder builds search arrays from properties paths and search phrases
+ */
 class Search_Array_Builder
 {
 

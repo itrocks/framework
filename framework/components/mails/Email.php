@@ -95,4 +95,28 @@ class Email
 	 */
 	public $attachments;
 
+	//--------------------------------------------------------------------------- getHeadersAsStrings
+	/**
+	 * @return string[]
+	 */
+	public function getHeadersAsStrings()
+	{
+		return array();
+	}
+
+	//------------------------------------------------------------------------ getRecipientsAsStrings
+	/**
+	 * @return string[]
+	 */
+	public function getRecipientsAsStrings()
+	{
+		$recipients = array();
+		/** @var $recipients_objects Email_Recipient[] */
+		foreach (array($this->to, $this->copy_to, $this->blind_copy_to) as $recipients_objects) {
+			foreach ($recipients_objects as $recipient) {
+				$recipients[$recipient->email] = $recipient->email;
+			}
+		}
+	}
+
 }

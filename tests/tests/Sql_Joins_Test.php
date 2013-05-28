@@ -1,9 +1,14 @@
 <?php
 namespace SAF\Tests\Tests;
+
 use SAF\Framework\Sql_Join;
 use SAF\Framework\Sql_Joins;
+use SAF\Framework\Unit_Tests\Unit_Test;
 
-class Sql_Joins_Test extends \SAF\Framework\Unit_Tests\Unit_Test
+/**
+ * Sql joins tests
+ */
+class Sql_Joins_Test extends Unit_Test
 {
 
 	//-------------------------------------------------------------------------------- testCollection

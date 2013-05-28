@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Tests;
 
+/**
+ * An item class
+ */
 class Item
 {
 

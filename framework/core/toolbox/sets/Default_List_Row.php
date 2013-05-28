@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The list row class for Default_List_Data
+ */
 class Default_List_Row implements List_Row
 {
 
@@ -23,6 +26,11 @@ class Default_List_Row implements List_Row
 	public $values;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name string
+	 * @param $object     object
+	 * @param $values     string[]
+	 */
 	public function __construct($class_name, $object, $values)
 	{
 		$this->class_name = $class_name;
@@ -31,6 +39,9 @@ class Default_List_Row implements List_Row
 	}
 
 	//----------------------------------------------------------------------------------------- count
+	/**
+	 * @return integer
+	 */
 	public function count()
 	{
 		return count($this->values);
@@ -60,24 +71,37 @@ class Default_List_Row implements List_Row
 	}
 
 	//---------------------------------------------------------------------------------- getClassName
+	/**
+	 * @return string
+	 */
 	public function getClassName()
 	{
 		return $this->class_name;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
+	/**
+	 * @return object
+	 */
 	public function getObject()
 	{
 		return Getter::getObject($this->object, $this->class_name);
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * @param string $property
+	 * @return mixed
+	 */
 	public function getValue($property)
 	{
 		return $this->values[$property];
 	}
 
 	//-------------------------------------------------------------------------------------------- id
+	/**
+	 * @return object
+	 */
 	public function id()
 	{
 		return $this->object;

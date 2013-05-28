@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Tests;
 
+/**
+ * A best line class
+ */
 class Best_Line
 {
 

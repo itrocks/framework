@@ -1,14 +1,25 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The Menu output controller outputs the current menu if none is passed as parameter
+ */
 class Menu_Output_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
+	/**
+	 * @param $parameters Controller_Parameters
+	 * @param $form       array
+	 * @param $files      array
+	 * @return mixed
+	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$parameters = $parameters->getObjects();
-		array_unshift($parameters, Menu::current());
+		if (!(reset($parameters)) instanceof Menu) {
+			array_unshift($parameters, Menu::current());
+		}
 		return View::run($parameters, $form, $files, "Menu", "output");
 	}
 

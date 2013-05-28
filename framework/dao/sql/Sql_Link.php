@@ -2,7 +2,9 @@
 namespace SAF\Framework;
 
 /**
- * @todo having executeQuery() and query() is perhaps not a good idea
+ * This is the common class for all SQL data links classes
+ *
+ * @todo having both executeQuery() and query() is perhaps not a good idea
  */
 abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactional_Data_Link
 {
@@ -24,6 +26,9 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	protected $transactional = false;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $parameters array
+	 */
 	public function __construct($parameters = null)
 	{
 		parent::__construct($parameters);
@@ -182,7 +187,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 				else {
 					if (!isset($row[$columns[$j]])) {
 						// TODO try to get the object from an object map (avoid several instances of the same)
-						$row[$columns[$j]] = Instantiator::newInstance($classes[$j]);
+						$row[$columns[$j]] = Builder::create($classes[$j]);
 						if ($first && !isset($properties[$classes[$j]])) {
 							$class = Reflection_Class::getInstanceOf($classes[$j]);
 							$class->accessProperties();
@@ -212,7 +217,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	/**
 	 * Set context for sql query
 	 *
-	 * @param $context_object mixed Can be a class name or an array of class names
+	 * @param $context_object string|string[] Can be a class name or an array of class names
 	 */
 	abstract public function setContext($context_object);
 

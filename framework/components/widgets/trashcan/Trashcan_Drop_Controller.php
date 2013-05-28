@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * This controller is called when objects are dropped into the trashcan
+ */
 class Trashcan_Drop_Controller implements Feature_Controller
 {
 
@@ -66,6 +69,12 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	}
 
 	//------------------------------------------------------------------------------------------- run
+	/**
+	 * @param $parameters Controller_Parameters
+	 * @param $form       array
+	 * @param $files      array
+	 * @return mixed
+	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$trash = $parameters->GetUnnamedParameters();

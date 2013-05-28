@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Tests;
 
+/**
+ * A client class
+ */
 class Client
 {
 

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An error handler that simply ignores errors (no side effects)
+ */
 class Ignore_Error_Handler implements Error_Handler
 {
 

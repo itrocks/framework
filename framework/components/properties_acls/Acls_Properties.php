@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * This is the common class for storage of a properties list as acls
+ */
 abstract class Acls_Properties
 {
 

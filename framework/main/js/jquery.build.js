@@ -50,7 +50,7 @@
 		}
 		else {
 			// execute all callback functions
-			for (var key in jquery_build_callback) {
+			for (var key in jquery_build_callback) if (jquery_build_callback.hasOwnProperty(key)) {
 				callback = window.jquery_build_callback[key];
 				this.tmpBuildCaller = callback;
 				this.tmpBuildCaller();

@@ -1,6 +1,10 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * This class stores methods common to all data links classes,
+ * and defines mandatory methods prototypes to be implemented by descendants
+ */
 abstract class Data_Link implements Configurable
 {
 

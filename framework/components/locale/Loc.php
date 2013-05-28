@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * Locale plugin concentrates locale translation / formatting features into simple static calls
+ */
 abstract class Loc implements Plugin
 {
 

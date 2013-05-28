@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * Integrated properties toolbox
+ * Integrated properties toolbox, used to expand properties list when @integrated annotation is used
  */
 abstract class Integrated_Properties
 {

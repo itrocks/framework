@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A common class for Dao index object representation
+ */
 interface Dao_Index
 {
 

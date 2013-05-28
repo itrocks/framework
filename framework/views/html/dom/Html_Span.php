@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM element class for HTML spans <span>
+ */
 class Html_Span extends Dom_Element
 {
 

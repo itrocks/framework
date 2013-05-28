@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * A logger for mysql queries
+ */
 class Mysql_Logger implements Plugin
 {
 
@@ -42,6 +45,9 @@ class Mysql_Logger implements Plugin
 	public $queries_log = array();
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Mysql_Logger is a singleton, you only can get it's instance with getInstance()
+	 */
 	private function __construct() {}
 
 	//------------------------------------------------------------------------ afterMainControllerRun
@@ -123,6 +129,9 @@ class Mysql_Logger implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
+	/**
+	 * @param $parameters array
+	 */
 	public static function register($parameters = null)
 	{
 		$mysql_logger = self::getInstance();

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Acls_Rights manages a rights tree
+ */
 class Acls_Rights
 {
 	use Current { current as private pCurrent; }

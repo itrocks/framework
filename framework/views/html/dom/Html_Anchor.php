@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM element class for HTML anchors <a>
+ */
 class Html_Anchor extends Dom_Element
 {
 

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A standard property add controller to store it into acls
+ */
 class Acls_Property_Add_Controller implements Feature_Controller
 {
 

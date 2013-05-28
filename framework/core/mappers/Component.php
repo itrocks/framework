@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A component is a class for objects that should not exist without their container object
+ */
 trait Component
 {
 

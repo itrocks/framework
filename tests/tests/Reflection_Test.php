@@ -1,11 +1,16 @@
 <?php
 namespace SAF\Tests\Tests;
+
 use ReflectionException;
 use SAF\Framework\Reflection_Class;
 use SAF\Framework\Reflection_Property;
+use SAF\Framework\Unit_Tests\Unit_Test;
 use SAF\Tests\Order;
 
-class Reflection_Test extends \SAF\Framework\Unit_Tests\Unit_Test
+/**
+ * Reflection tests
+ */
+class Reflection_Test extends Unit_Test
 {
 
 	//----------------------------------------------------------------------- testAccessProperties

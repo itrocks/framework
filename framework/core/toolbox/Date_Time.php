@@ -1,8 +1,12 @@
 <?php
 namespace SAF\Framework;
+
 use DateTime;
 use DateTimeZone;
 
+/**
+ * This class extends php's DateTime class : you should use this to be SAF compatible
+ */
 class Date_Time extends DateTime
 {
 
@@ -39,7 +43,7 @@ class Date_Time extends DateTime
 	 */
 	public static function fromISO($date)
 	{
-		return ($date + 0)
+		return (substr($date, 0, 4) !== "0000")
 			? new Date_Time($date . substr("2000-01-01 00:00:00", strlen($date)))
 			: null;
 	}

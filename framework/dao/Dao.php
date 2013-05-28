@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The Dao class enables direct access to the main Dao object of the application methods
+ */
 abstract class Dao
 {
 	use Current { current as private pCurrent; }

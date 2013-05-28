@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The controller URI contains the controller name, feature, and additional parameters
+ */
 class Controller_Uri
 {
 
@@ -166,6 +169,7 @@ class Controller_Uri
 				$i++;
 			}
 			if (($i < $length) && is_numeric($uri[$i])) {
+				/** @noinspection PhpWrongStringConcatenationInspection */
 				$this->parameters->set($last_controller_element, $uri[$i] + 0);
 				$last_controller_element = "";
 				$i++;

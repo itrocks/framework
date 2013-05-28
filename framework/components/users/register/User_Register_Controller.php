@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The user register controller offers a registration form view
+ */
 class User_Register_Controller implements Feature_Controller
 {
 
@@ -11,8 +14,11 @@ class User_Register_Controller implements Feature_Controller
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
-	{
+	protected function getViewParameters(
+		Controller_Parameters $parameters,
+		/** @noinspection PhpUnusedParameterInspection */ $form,
+		$class_name
+	) {
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
 		if (empty($object) || !is_object($object) || (get_class($object) !== $class_name)) {
@@ -23,6 +29,12 @@ class User_Register_Controller implements Feature_Controller
 	}
 
 	//------------------------------------------------------------------------------------------- run
+	/**
+	 * @param $parameters Controller_Parameters
+	 * @param $form       array
+	 * @param $files      array
+	 * @return mixed
+	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$class_name = 'SAF\Framework\User';

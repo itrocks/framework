@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An error handler with a callback function
+ */
 class Callback_Error_Handler implements Error_Handler
 {
 
@@ -11,6 +14,9 @@ class Callback_Error_Handler implements Error_Handler
 	private $callback_function;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $callback_function string|string[] the callback function (a function name or a class name and function name array)
+	 */
 	public function __construct($callback_function)
 	{
 		$this->callback_function = $callback_function;

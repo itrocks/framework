@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An email policy
+ */
 class Email_Policy
 {
 

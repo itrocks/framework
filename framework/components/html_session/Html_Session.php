@@ -7,6 +7,9 @@ require_once "framework/core/toolbox/Aop.php";
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Plugin.php";
 
+/**
+ * Pass session id thru HTML code using this plugin
+ */
 abstract class Html_Session implements Plugin
 {
 
@@ -75,13 +78,14 @@ abstract class Html_Session implements Plugin
 	 */
 	public static function register()
 	{
+		// PHP configuration method
 		if (!self::$registered) {
 			self::$registered = true;
 			ini_set("session.use_cookies", false);
 			ini_set("session.use_only_cookies", false);
 			Aop::add(Aop::BEFORE, "session_start()", array(__CLASS__, "useTransSid"));
 		}
-		//
+		// "manual" method
 		/*
 		Aop::add(Aop::AFTER,
 			'SAF\Framework\Html_Template->parse()',

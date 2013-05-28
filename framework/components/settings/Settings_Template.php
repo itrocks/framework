@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A settings template
+ */
 class Settings_Template
 {
 

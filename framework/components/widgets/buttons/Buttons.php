@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An HMI buttons collection
+ */
 class Buttons
 {
 

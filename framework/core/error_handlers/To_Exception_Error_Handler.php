@@ -1,7 +1,9 @@
 <?php
 namespace SAF\Framework;
-use ErrorException;
 
+/**
+ * An error handler that transforms an error to an exception
+ */
 class To_Exception_Error_Handler implements Error_Handler
 {
 
@@ -9,12 +11,13 @@ class To_Exception_Error_Handler implements Error_Handler
 	/**
 	 * Change error to an exception
 	 *
-	 * @param $error Handled_Error
-	 * @throws ErrorException
+	 * @param $error           Handled_Error
+	 * @param $exception_class string an exception class name
+	 * @throws $exception_class
 	 */
-	public function handle(Handled_Error $error)
+	public function handle(Handled_Error $error, $exception_class = '\Error_Exception')
 	{
-		throw new ErrorException(
+		throw new $exception_class(
 			$error->getErrorMessage(),
 			$error->getErrorNumber(),
 			0,

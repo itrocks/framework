@@ -8,6 +8,11 @@ require_once "framework/core/toolbox/Current_With_Default.php";
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Plugin.php";
 
+/**
+ * The Builder plugin replaces "new Class_Name" calls by "Builder::create('Class_Name')" in order to enable objects substitution
+ *
+ * You should always use these calls for SAF business objects instantiations.
+ */
 class Builder implements Plugin
 {
 	use Current_With_Default { current as private dCurrent; }

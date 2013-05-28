@@ -104,12 +104,12 @@ function ColumnResize(table) {
 			dragColumns[no+1].style.width = parseInt(dragColumns[no+1].style.width) - w + 'px';
 
 		return true;
-	}
+	};
 
 	// ============================================================
 	// do drag column width
 	this.columnDrag = function(e) {
-		var e = e || window.event;
+		e = e || window.event;
 		var X = e.clientX || e.pageX;
 		if (!self.changeColumnWidth(dragColumnNo, X-dragX)) {
 			// stop drag!
@@ -120,12 +120,12 @@ function ColumnResize(table) {
 		// prevent other event handling
 		preventEvent(e);
 		return false;
-	}
+	};
 
 	// ============================================================
 	// stops column dragging
 	this.stopColumnDrag = function(e) {
-		var e = e || window.event;
+		e = e || window.event;
 		if (!dragColumns) return;
 
 		// restore handlers & cursor
@@ -146,12 +146,12 @@ function ColumnResize(table) {
 			'; expires=' + expire.toGMTString();
 
 		preventEvent(e);
-	}
+	};
 
 	// ============================================================
 	// init data and start dragging
 	this.startColumnDrag = function(e) {
-		var e = e || window.event;
+		e = e || window.event;
 
 		// if not first button was clicked
 		//if (e.button != 0) return;
@@ -162,10 +162,11 @@ function ColumnResize(table) {
 
 		// set up current columns widths in their particular attributes
 		// do it in two steps to avoid jumps on page!
-		var colWidth = new Array();
-		for (var i=0; i<dragColumns.length; i++)
+		var colWidth = [];
+		var i;
+		for (i = 0; i<dragColumns.length; i++)
 			colWidth[i] = parseInt( getWidth(dragColumns[i]) );
-		for (var i=0; i<dragColumns.length; i++) {
+		for (i = 0; i<dragColumns.length; i++) {
 			dragColumns[i].width = ""; // for sure
 			dragColumns[i].style.width = colWidth[i] + "px";
 		}
@@ -181,25 +182,25 @@ function ColumnResize(table) {
 		document.onmousemove = self.columnDrag;
 
 		preventEvent(e);
-	}
+	};
 
 	// prepare table header to be draggable
 	// it runs during class creation
 	for (var i=0; i<dragColumns.length; i++) {
-		dragColumns[i].innerHTML = "<div style='position:relative;height:100%;width:100%'>"+
-			"<div style='"+
-			"position:absolute;height:100%;width:5px;margin-right:-5px;"+
-			"left:100%;top:0px;cursor:w-resize;z-index:10;'>"+
-			"</div>"+
-			dragColumns[i].innerHTML+
-			"</div>";
-			// BUGBUG: calculate real border width instead of 5px!!!
-			dragColumns[i].firstChild.firstChild.onmousedown = this.startColumnDrag;
-		}
+		dragColumns[i].innerHTML = "<div style='position:relative;height:100%;width:100%'>"
+			+ "<div style='"
+			+ "position:absolute;height:100%;width:5px;margin-right:-5px;"
+			+ "left:100%;top:0px;cursor:w-resize;z-index:10;'>"
+			+ "</div>"
+			+ dragColumns[i].innerHTML
+			+ "</div>";
+		// BUGBUG: calculate real border width instead of 5px!!!
+		dragColumns[i].firstChild.firstChild.onmousedown = this.startColumnDrag;
+	}
 }
 
 // select all tables and make resizable those that have 'resizable' class
-var resizableTables = new Array();
+var resizableTables = [];
 function ResizableColumns() {
 
 	var tables = document.getElementsByTagName('table');

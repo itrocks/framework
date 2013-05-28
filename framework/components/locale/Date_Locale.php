@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use DateTime;
 
+/**
+ * Date locale features : changes date format to comply with user's locale configuration
+ */
 class Date_Locale
 {
 

@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * An AOP logger plugin
+ */
 abstract class Aop_Logger implements Plugin
 {
 

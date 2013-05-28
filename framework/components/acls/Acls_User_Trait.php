@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Use this trait for users needing acls
+ */
 trait Acls_User_Trait
 {
 

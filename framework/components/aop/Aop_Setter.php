@@ -7,6 +7,9 @@ require_once "framework/core/toolbox/Aop.php";
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Property.php";
 
+/**
+ * Aop call setters
+ */
 abstract class Aop_Setter extends Aop implements Plugin
 {
 

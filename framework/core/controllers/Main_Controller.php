@@ -11,10 +11,16 @@ require_once "framework/core/toolbox/Namespaces.php";
 require_once "framework/dao/Dao.php";
 require_once "framework/views/View.php";
 
+/**
+ * The main controller is called to run the application, with the URI and get/postvars as parameters
+ */
 class Main_Controller
 {
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * You can't instantiate the Main_Controller with a constructor as this is a singleton
+	 */
 	private function __construct() {}
 
 	//----------------------------------------------------------------------------------- getInstance

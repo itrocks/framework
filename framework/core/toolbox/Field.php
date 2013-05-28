@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A generic field interface : usefull to define fields, columns and properties
+ */
 interface Field
 {
 

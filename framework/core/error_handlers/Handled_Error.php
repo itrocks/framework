@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An error that error handlers can handle
+ */
 class Handled_Error
 {
 

@@ -5,6 +5,9 @@ use AopJoinpoint;
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Aop.php";
 
+/**
+ * An AOP tracer plugin
+ */
 abstract class Aop_Tracer
 {
 

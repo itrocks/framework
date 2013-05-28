@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Getter default methods are common getters for Dao linked objects
+ */
 abstract class Getter
 {
 

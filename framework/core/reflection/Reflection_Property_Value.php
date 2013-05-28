@@ -4,8 +4,7 @@ use ReflectionClass;
 use ReflectionProperty;
 
 /**
- * Class Reflection_Property_Value
- * @package SAF\Framework
+ * A reflection property value is a reflection property enriched with it's display label and a value
  */
 class Reflection_Property_Value extends Reflection_Property
 {

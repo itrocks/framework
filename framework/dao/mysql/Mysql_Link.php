@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use mysqli_result;
 
+/**
+ * The mysql link for Dao
+ */
 class Mysql_Link extends Sql_Link
 {
 
@@ -56,6 +59,16 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//---------------------------------------------------------------------------------------- delete
+	/**
+	 * Delete an object from current data link
+	 *
+	 * If object was originally read from data source, corresponding data will be overwritten.
+	 * If object was not originally read from data source, nothing is done and returns false.
+	 *
+	 * @param $object object object to delete from data source
+	 * @return boolean true if deleted
+	 * @see Data_Link::delete()
+	 */
 	public function delete($object)
 	{
 		$class_name = get_class($object);
@@ -160,24 +173,58 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//------------------------------------------------------------------------------------------ free
+	/**
+	 * Free a result set
+	 *
+	 * Sql_Link inherited classes must implement freeing result sets only into this method.
+	 *
+	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 */
 	protected function free($result_set)
 	{
 		$result_set->free();
 	}
 
 	//--------------------------------------------------------------------------------- getColumnName
+	/**
+	 * Gets the column name from result set
+	 *
+	 * Sql_Link inherited classes must implement getting column name only into this method.
+	 *
+	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 * @param $index integer|string The index of the column we want to get the SQL name from
+	 * @return string
+	 */
 	protected function getColumnName($result_set, $index)
 	{
 		return $result_set->fetch_field_direct($index)->name;
 	}
 
 	//------------------------------------------------------------------------------- getColumnsCount
+	/**
+	 * Gets the column count from result set
+	 *
+	 * Sql_Link inherited classes must implement getting columns count only into this method.
+	 *
+	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 * @return integer
+	 */
 	protected function getColumnsCount($result_set)
 	{
 		return $result_set->field_count;
 	}
 
 	//--------------------------------------------------------------------------- getStoredProperties
+	/**
+	 * Returns the list of properties of class $class that are stored into data link
+	 *
+	 * If data link stores properties not existing into $class, they are listed too,
+	 * as if they where official properties of $class, but they storage object is a Dao_Column
+	 * and not a Reflection_Property.
+	 *
+	 * @param $class string|Reflection_Class
+	 * @return Reflection_Property[]|Mysql_Column[]
+	 */
 	public function getStoredProperties($class)
 	{
 		$properties = Reflection_Class::getInstanceOf($class)->getAllProperties();
@@ -194,6 +241,12 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//----------------------------------------------------------------------------------------- query
+	/**
+	 * Executes an SQL query and returns the inserted record identifier (if applyable)
+	 *
+	 * @param $query string
+	 * @return integer
+	 */
 	public function query($query)
 	{
 		if ($query) {
@@ -206,22 +259,35 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//------------------------------------------------------------------------------------------ read
-	public function read($id, $class)
+	/**
+	 * Read an object from data source
+	 *
+	 * @param $identifier integer identifier for the object
+	 * @param $class      string class for read object
+	 * @return object an object of class objectClass, read from data source, or null if nothing found
+	 */
+	public function read($identifier, $class)
 	{
-		if (!$id) return null;
+		if (!$identifier) return null;
 		$this->setContext($class);
 		$result_set = $this->executeQuery(
-			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $id
+			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $identifier
 		);
 		$object = $result_set->fetch_object($class);
 		$result_set->free();
 		if ($object) {
-			$this->setObjectIdentifier($object, $id);
+			$this->setObjectIdentifier($object, $identifier);
 		}
 		return $object;
 	}
 
 	//--------------------------------------------------------------------------------------- readAll
+	/**
+	 * Read all objects of a given class from data source
+	 *
+	 * @param $class string class for read objects
+	 * @return object[] a collection of read objects
+	 */
 	public function readAll($class)
 	{
 		$read_result = array();
@@ -236,12 +302,28 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//-------------------------------------------------------------------------------------- rollback
+	/**
+	 * Rollback a transaction (non-transactional MySQL engines as MyISAM will do nothing and return null)
+	 *
+	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL engine
+	 */
 	public function rollback()
 	{
 		$this->query("ROLLBACK");
 	}
 
 	//---------------------------------------------------------------------------------------- search
+	/**
+	 * Search objects from data source
+	 *
+	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in order to initialize all properties as unset and build a correct search object.
+	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
+	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
+	 *
+	 * @param $what       mixed source object for filter, or filter array (need class_name) only set properties will be used for search
+	 * @param $class_name string must be set if is not a filter array
+	 * @return object[] a collection of read objects
+	 */
 	public function search($what, $class_name = null)
 	{
 		if (!isset($class_name)) {
@@ -263,87 +345,106 @@ class Mysql_Link extends Sql_Link
 	}
 
 	//------------------------------------------------------------------------------------ setContext
+	/**
+	 * Set context for sql query
+	 *
+	 * @param $context_object string|string[] Can be a class name or an array of class names
+	 */
 	public function setContext($context_object)
 	{
 		$this->connection->context = $context_object;
 	}
 
 	//----------------------------------------------------------------------------------------- write
+	/**
+	 * Write an object into data source
+	 *
+	 * If object was originally read from data source, corresponding data will be overwritten
+	 * If object was not originally read from data source nor linked to it using replace(), a new
+	 * record will be written into data source using this object's data.
+	 * If object is null (all properties null or unset), the object will be removed from data source
+	 *
+	 * @todo factorize this to become SOLID
+	 * @param $object object object to write into data source
+	 * @return object the written object
+	 */
 	public function write($object)
 	{
-		$class = Reflection_Class::getInstanceOf($object);
-		$table_columns_names = array_keys($this->getStoredProperties($class));
-		$write_collections = array();
-		$write_maps = array();
-		$write = array();
-		$aop_getter_ignore = Aop_Getter::$ignore;
-		Aop_Getter::$ignore = true;
-		foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
-			$value = $property->getValue($object);
-			if (is_null($value) && !$property->getAnnotation("null")->value) {
-				$value = "";
-			}
-			if (in_array($property->name, $table_columns_names)) {
-				if ($property->getType()->isBasic()) {
-					$write[$property->name] = $value;
-				}
-				else {
-					$column_name = "id_" . $property->name;
-					if (is_object($value) && (empty($object->$column_name))) {
-						$object->$column_name = $this->getObjectIdentifier($value);
-						if (empty($object->$column_name)) {
-							$object->$column_name = $this->write($value);
-						}
-					}
-					if (property_exists($object, $column_name)) {
-						$write[$column_name] = $object->$column_name;
-					}
-				}
-			}
-			elseif ($property->getAnnotation("link")->value == "Collection") {
-				$write_collections[] = array($property, $value);
-			}
-			elseif (is_array($value)) {
-				foreach ($value as $key => $val) {
-					if (!is_object($val)) {
-						$val = Dao::read($val, $property->getType()->getElementTypeAsString());
-						if (isset($val)) {
-							$value[$key] = $val;
-						}
-						else {
-							unset($value[$key]);
-						}
-					}
-				}
-				$write_maps[] = array($property, $value);
-			}
-		}
-		$class->accessPropertiesDone();
-		Aop_Getter::$ignore = $aop_getter_ignore;
-		$id = $this->getObjectIdentifier($object);
-		if ($id === 0) {
+		if (Null_Object::isNull($object)) {
 			$this->removeObjectIdentifier($object);
-			$id = null;
-		}
-		$this->setContext($class->name);
-		if ($id === null) {
-			$id = $this->query(Sql_Builder::buildInsert($class->name, $write));
-			if ($id != null) {
-				$this->setObjectIdentifier($object, $id);
-			}
 		}
 		else {
-			$this->query(Sql_Builder::buildUpdate($class->name, $write, $id));
+			$class = Reflection_Class::getInstanceOf($object);
+			$table_columns_names = array_keys($this->getStoredProperties($class));
+			$write_collections = array();
+			$write_maps = array();
+			$write = array();
+			$aop_getter_ignore = Aop_Getter::$ignore;
+			Aop_Getter::$ignore = true;
+			foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
+				$value = $property->getValue($object);
+				if (is_null($value) && !$property->getAnnotation("null")->value) {
+					$value = "";
+				}
+				if (in_array($property->name, $table_columns_names)) {
+					if ($property->getType()->isBasic()) {
+						$write[$property->name] = $value;
+					}
+					else {
+						$column_name = "id_" . $property->name;
+						if (is_object($value) && (empty($object->$column_name))) {
+							$object->$column_name = $this->getObjectIdentifier($value);
+							if (empty($object->$column_name)) {
+								$object->$column_name = $this->getObjectIdentifier($this->write($value));
+							}
+						}
+						if (property_exists($object, $column_name)) {
+							$write[$column_name] = $object->$column_name;
+						}
+					}
+				}
+				elseif ($property->getAnnotation("link")->value == "Collection") {
+					$write_collections[] = array($property, $value);
+				}
+				elseif (is_array($value)) {
+					foreach ($value as $key => $val) {
+						if (!is_object($val)) {
+							$val = Dao::read($val, $property->getType()->getElementTypeAsString());
+							if (isset($val)) {
+								$value[$key] = $val;
+							}
+							else {
+								unset($value[$key]);
+							}
+						}
+					}
+					$write_maps[] = array($property, $value);
+				}
+			}
+			$class->accessPropertiesDone();
+			Aop_Getter::$ignore = $aop_getter_ignore;
+			$id = $this->getObjectIdentifier($object);
+			$this->setContext($class->name);
+			if (empty($id)) {
+				$this->removeObjectIdentifier($object);
+				$id = $this->query(Sql_Builder::buildInsert($class->name, $write));
+				if (!empty($id)) {
+					$this->setObjectIdentifier($object, $id);
+				}
+			}
+			else {
+				$this->query(Sql_Builder::buildUpdate($class->name, $write, $id));
+			}
+			foreach ($write_collections as $write) {
+				list($property, $value) = $write;
+				$this->writeCollection($object, $property, $value);
+			}
+			foreach ($write_maps as $write) {
+				list($property, $value) = $write;
+				$this->writeMap($object, $property, $value);
+			}
 		}
-		foreach ($write_collections as $write) {
-			list($property, $value) = $write;
-			$this->writeCollection($object, $property, $value);
-		}
-		foreach ($write_maps as $write) {
-			list($property, $value) = $write;
-			$this->writeMap($object, $property, $value);
-		}
-		return $id;
+		return $object;
 	}
 
 	//------------------------------------------------------------------------------- writeCollection

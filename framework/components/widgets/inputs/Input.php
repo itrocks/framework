@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An input object is used into HMI forms to enable the user to type in data
+ */
 class Input
 {
 

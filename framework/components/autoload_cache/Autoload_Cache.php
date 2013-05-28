@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * The autoload cache plugin  is here to make class autoload faster, but need update at each code update
+ */
 abstract class Autoload_Cache implements Plugin, Updatable
 {
 

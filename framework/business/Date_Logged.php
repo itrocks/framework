@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A trait for creation and modification date logged objects
+ */
 trait Date_Logged
 {
 

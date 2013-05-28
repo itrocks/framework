@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A standard menu for your application
+ */
 class Menu
 {
 	use Current { current as private pCurrent; }

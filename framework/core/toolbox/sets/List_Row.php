@@ -1,13 +1,24 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * List row is an interface for all list row storage classes (into a list data)
+ */
 interface List_Row
 {
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name string
+	 * @param $object     object
+	 * @param $values     string[]
+	 */
 	public function __construct($class_name, $object, $values);
 
 	//----------------------------------------------------------------------------------------- count
+	/**
+	 * @return integer
+	 */
 	public function count();
 
 	//---------------------------------------------------------------------------------- getClassName

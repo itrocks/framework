@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An email account : configuration of multi-protocols access to a given email box
+ */
 class Email_Account
 {
 

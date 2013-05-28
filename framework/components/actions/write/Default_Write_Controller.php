@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * Default write controller
+ * The default write controller will be called if no other write controller is defined
  */
 class Default_Write_Controller implements Default_Class_Controller
 {
@@ -45,11 +45,18 @@ class Default_Write_Controller implements Default_Class_Controller
 		$objects = array($object);
 		$class = Reflection_Class::getInstanceOf($object);
 		$properties = $class->accessProperties();
+		if (isset($form["id"]) && empty($form["id"])) {
+			unset($form["id"]);
+		}
 		foreach ($form as $name => $value) {
 			if (isset($properties[$name])) {
 				$object->$name = $this->formElementToPropertyValue($properties[$name], $value);
 				if ($properties[$name]->getAnnotation("link")->value == "Object") {
-					$objects = array_merge($objects, $this->formToObjects($object->$name, $value));
+					foreach ($this->formToObjects($object->$name, $value) as $sub_object) {
+						if (!Empty_Object::isEmpty($sub_object)) {
+							$objects[] = $sub_object;
+						}
+					}
 				}
 			}
 			else {

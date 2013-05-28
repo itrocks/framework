@@ -236,7 +236,7 @@ $("document").ready(function()
 		});
 
 		// .object add action
-		this.in("a.add.action").click(function(event)
+		this.in("a.add.action").click(function()
 		{
 			var $this = $(this);
 			var $input = $this.parent().children("input.combo");

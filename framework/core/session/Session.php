@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A class to manage variables and objects that are kept for the session time
+ */
 class Session
 {
 	use Current { current as private pCurrent; }

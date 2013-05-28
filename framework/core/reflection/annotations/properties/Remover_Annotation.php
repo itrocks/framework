@@ -1,13 +1,25 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Tells the remover which method must be called to remove a component object from a composite class
+ * for this property.
+ *
+ * The remover must be a current object's method, or a static method from another class.
+ *
+ * This can be used into classes that use trait Remover only.
+ */
 class Remover_Annotation extends Annotation implements Property_Context_Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct($value, Reflection_Property $context)
+	/**
+	 * @param $value    string
+	 * @param $property Reflection_Property ie the contextual Reflection_Property object
+	 */
+	public function __construct($value, Reflection_Property $property)
 	{
-		parent::__construct(Namespaces::defaultFullClassName($value, $context->class));
+		parent::__construct(Namespaces::defaultFullClassName($value, $property->class));
 	}
 
 }

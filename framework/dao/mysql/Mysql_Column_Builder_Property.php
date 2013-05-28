@@ -1,7 +1,9 @@
 <?php
 namespace SAF\Framework;
-// TODO buildId() and buildLink() should be in another Mysql_Column_Builder_? class
 
+/**
+ * This builds mysql columns associated to a class property
+ */
 abstract class Mysql_Column_Builder_Property
 {
 
@@ -68,9 +70,13 @@ abstract class Mysql_Column_Builder_Property
 	}
 
 	//---------------------------------------------------------------------------- propertyKeyToMysql
+	/**
+	 * @param $property Reflection_Property
+	 * @return string
+	 */
 	private static function propertyKeyToMysql(Reflection_Property $property)
 	{
-		// todo automatic keys on object linked tables
+		// TODO automatic keys on object linked tables
 		return "";
 	}
 

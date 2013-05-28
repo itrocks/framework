@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Tests;
 
+/**
+ * A salesman class
+ */
 class Salesman
 {
 

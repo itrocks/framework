@@ -14,6 +14,10 @@ require_once "framework/core/reflection/Has_Doc_Comment.php";
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Class.php";
 
+/**
+ * A rich extension of the PHP ReflectionMethod class, adding :
+ * - annotations management
+ */
 class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 {
 	use Annoted;
@@ -35,6 +39,10 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	private static $cache = array();
 
 	//--------------------------------------------------------------------------------- getDocComment
+	/**
+	 * @param $parent boolean
+	 * @return string
+	 */
 	public function getDocComment($parent = false)
 	{
 		// TODO parent methods read

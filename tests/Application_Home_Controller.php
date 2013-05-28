@@ -1,9 +1,14 @@
 <?php
 namespace SAF\Tests;
+
 use SAF\Framework\Controller_Parameters;
+use SAF\Framework\Feature_Controller;
 use SAF\Framework\Main_Controller;
 
-class Application_Home_Controller implements \SAF\Framework\Feature_Controller
+/**
+ * The home page runs the tests
+ */
+class Application_Home_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run

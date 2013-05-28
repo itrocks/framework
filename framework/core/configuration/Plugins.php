@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The configured plugins, as an element of an application configuration
+ */
 class Plugins implements Configurable
 {
 	use Current { current as private pCurrent; }

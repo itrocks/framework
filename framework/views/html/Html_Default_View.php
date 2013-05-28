@@ -1,10 +1,21 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The Html default view selects the template associated to wished class and feature names
+ */
 class Html_Default_View implements IView
 {
 
 	//------------------------------------------------------------------------------------------- run
+	/**
+	 * @param $parameters   array
+	 * @param $form         array
+	 * @param $files        array
+	 * @param $class_name   string
+	 * @param $feature_name string
+	 * @return mixed
+	 */
 	public function run($parameters, $form, $files, $class_name, $feature_name)
 	{
 		$templates_files = Html_View_Engine::getPossibleTemplates(

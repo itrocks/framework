@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The SQL queries builder
+ */
 abstract class Sql_Builder
 {
 
@@ -102,6 +105,10 @@ abstract class Sql_Builder
 	}
 
 	//----------------------------------------------------------------------------------- buildValues
+	/**
+	 * @param $values string[] keys are columns names
+	 * @return string
+	 */
 	public static function buildValues($values)
 	{
 		return join(", ", array_map(array("SAF\\Framework\\Sql_Value", "escape"), $values));

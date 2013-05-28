@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The SQL where section of SQL queries builder
+ */
 class Sql_Where_Builder
 {
 

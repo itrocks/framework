@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The SQL tables section (joins) of SQL queries builder
+ */
 class Sql_Tables_Builder
 {
 

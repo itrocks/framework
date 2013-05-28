@@ -3,12 +3,18 @@ namespace SAF\Framework;
 use AopJoinpoint;
 use ErrorException;
 
+/**
+ * A generic class debugger plugin
+ */
 class Class_Debugger implements Plugin
 {
 
 	private static $depth = 1;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * No public constructor
+	 */
 	private function __construct() {}
 
 	//----------------------------------------------------------------------------------------- after
@@ -91,6 +97,9 @@ class Class_Debugger implements Plugin
 	}
 
 	//--------------------------------------------------------------------------------- registerClass
+	/**
+	 * @param $class_name string
+	 */
 	public static function registerClass($class_name)
 	{
 		if ($class_name == "*") {

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Tests;
 
+/**
+ * A category class
+ */
 class Category
 {
 

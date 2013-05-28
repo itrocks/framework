@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * SQL alter table queries builder
+ */
 class Sql_Alter_Table_Builder
 {
 

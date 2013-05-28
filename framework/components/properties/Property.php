@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A property is a field into a programmed class
+ */
 class Property implements Field
 {
 
@@ -51,12 +54,18 @@ class Property implements Field
 	}
 
 	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->name;
 	}
 
 	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return Type
+	 */
 	public function getType()
 	{
 		return $this->type;

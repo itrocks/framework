@@ -8,6 +8,9 @@ use SAF\Framework\Reflection_Method;
 use SAF\Framework\Unit_Tests\Runnable_Unit_Test;
 use SAF\Framework\Unit_Tests\Unit_Test;
 
+/**
+ * The tests class enables running of unit test
+ */
 class Tests
 {
 
@@ -18,6 +21,9 @@ class Tests
 	}
 
 	//-------------------------------------------------------------------------------------- runClass
+	/**
+	 * @param $class_name string
+	 */
 	private function runClass($class_name)
 	{
 		/** @var $unit_test Runnable_Unit_Test|Unit_Test */

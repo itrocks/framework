@@ -1,6 +1,9 @@
 <?php
 namespace SAF\RAD;
 
+/**
+ * Controls anchor attributes helps placing attributes
+ */
 class Anchor
 {
 

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * SQL create table queries builder
+ */
 class Sql_Create_Table_Builder
 {
 
@@ -11,12 +14,18 @@ class Sql_Create_Table_Builder
 	private $table;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $table Dao_Table
+	 */
 	public function __construct(Dao_Table $table)
 	{
 		$this->table = $table;
 	}
 
 	//----------------------------------------------------------------------------------------- build
+	/**
+	 * @return string
+	 */
 	public function build()
 	{
 		$columns = array();

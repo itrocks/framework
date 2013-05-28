@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The application updater plugin detects if the application needs to be updated, and launch updates
+ *
+ * All updatable plugins should use the mustUpdate() method to know if they need to launch their update process.
+ */
 abstract class Application_Updater implements Plugin
 {
 

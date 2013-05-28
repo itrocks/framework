@@ -2,6 +2,8 @@
 namespace SAF\Framework;
 
 /**
+ * A settings template element
+ *
  * @set Settings_Templates_Elements
  */
 class Settings_Template_Element

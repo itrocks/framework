@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Application paths functions help you to find out usefull paths of your application
+ */
 abstract class Paths
 {
 

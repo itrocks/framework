@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Configurable classes can get php array configuration to be passed to their constructor
+ */
 interface Configurable
 {
 

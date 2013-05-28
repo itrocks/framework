@@ -5,6 +5,9 @@ namespace SAF\Framework;
 require_once "framework/core/mappers/Getter.php";
 require_once "framework/core/toolbox/Namespaces.php";
 
+/**
+ * Controller parameters contains what objects are passed into the controller's URI
+ */
 class Controller_Parameters
 {
 
@@ -34,6 +37,11 @@ class Controller_Parameters
 	}
 
 	//----------------------------------------------------------------------------------------- count
+	/**
+	 * Gets parameters count
+	 *
+	 * @return integer
+	 */
 	public function count()
 	{
 		return count($this->parameters);
@@ -41,7 +49,7 @@ class Controller_Parameters
 
 	//------------------------------------------------------------------------------------- getObject
 	/**
-	 * Get URI parameter as an object
+	 * Gets URI parameter as an object
 	 *
 	 * Object is of class $parameter name, and is read from current data link using the parameter
 	 * value as identifier.
@@ -78,7 +86,7 @@ class Controller_Parameters
 
 	//------------------------------------------------------------------------------------ getObjects
 	/**
-	 * Get parameters list as objects
+	 * Gets parameters list as objects
 	 *
 	 * @return mixed[] indiced by parameter name
 	 */
@@ -93,7 +101,7 @@ class Controller_Parameters
 
 	//------------------------------------------------------------------------------- getRawParameter
 	/**
-	 * Get URI parameter raw value, as it was on original URI
+	 * Gets URI parameter raw value, as it was on original URI
 	 *
 	 * @param $parameter_name string
 	 * @return mixed
@@ -108,7 +116,7 @@ class Controller_Parameters
 
 	//--------------------------------------------------------------------------------- getParameters
 	/**
-	 * Get URI parameters raw values, as they were on original URI
+	 * Gets URI parameters raw values, as they were on original URI
 	 *
 	 * @return mixed[] indice is the parameter name
 	 */
@@ -119,7 +127,7 @@ class Controller_Parameters
 
 	//-------------------------------------------------------------------------- getUnnamedParameters
 	/**
-	 * Get URI parameters raw values, only those which have no name
+	 * Gets URI parameters raw values, only those which have no name
 	 */
 	public function getUnnamedParameters()
 	{
@@ -128,7 +136,7 @@ class Controller_Parameters
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
-	 * Remove a parameter
+	 * Removes a parameter
 	 *
 	 * @param $key integer|string
 	 */
@@ -141,7 +149,7 @@ class Controller_Parameters
 
 	//------------------------------------------------------------------------------------------- set
 	/**
-	 * Set URI parameter raw value
+	 * Sets URI parameter raw value
 	 *
 	 * @param $parameter_name  string
 	 * @param $parameter_value mixed
@@ -182,6 +190,11 @@ class Controller_Parameters
 	}
 
 	//--------------------------------------------------------------------------------------- unshift
+	/**
+	 * Unshifts a parameter at beginning of the parameters array
+	 *
+	 * @param $parameter_value mixed
+	 */
 	public function unshift($parameter_value)
 	{
 		if (is_object($parameter_value)) {

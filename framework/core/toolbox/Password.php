@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Used for common "password-like" data encryptions
+ */
 class Password
 {
 

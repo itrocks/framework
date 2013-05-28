@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use mysqli;
 
+/**
+ * Builds a Mysql_Table object from a mysqli connection and table name
+ */
 abstract class Mysql_Table_Builder_Mysqli
 {
 

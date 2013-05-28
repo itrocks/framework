@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The class builder builds dynamically a virtual class composed of an existing class and additional traits
+ */
 class Class_Builder
 {
 

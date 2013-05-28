@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 
 /**
+ * An annoted class contains annotations.
+ *
+ * Common annoted classes are Reflection_Class, Reflection_Property, Reflection_Method.
  * Classes that use this trait must implement Has_Doc_Comment !
  */
 trait Annoted

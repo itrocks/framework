@@ -1,6 +1,13 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Use the @set annotation to define the name of the set class (virtual or real) associated to the business object class
+ *
+ * If the annotation is not specified by the programmer, a default value is calculated, adding an "s" to the name of the class
+ *
+ * @example @set Class_Sets_Annotations
+ */
 class Class_Set_Annotation extends Annotation
 {
 

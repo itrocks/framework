@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * Html translator plugin : translates "|non-translated text|" from html pages to "translated text"
+ */
 abstract class Html_Translator implements Plugin
 {
 

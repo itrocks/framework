@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Officiel mysql error codes, stored into constants
+ */
 class Mysql_Errors
 {
 

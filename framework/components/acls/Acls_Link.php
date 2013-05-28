@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Link between two acls : one is the container and the other is the content
+ */
 class Acls_Link
 {
 	use Component;

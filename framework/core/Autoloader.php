@@ -9,6 +9,9 @@ require_once "framework/core/toolbox/Plugin.php";
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Namespaces.php";
 
+/**
+ * This is the core autoloader : it searches and load PHP scripts containing classes
+ */
 abstract class Autoloader implements Plugin
 {
 

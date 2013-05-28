@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A common class for Dao table object representation
+ */
 interface Dao_Table
 {
 

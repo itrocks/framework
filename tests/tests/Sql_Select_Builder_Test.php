@@ -1,10 +1,15 @@
 <?php
 namespace SAF\Tests\Tests;
+
 use SAF\Framework\Search_Object;
 use SAF\Framework\Sql_Select_Builder;
+use SAF\Framework\Unit_Tests\Unit_Test;
 use SAF\Tests\Client;
 
-class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
+/**
+ * Sql select builder tests
+ */
+class Sql_Select_Builder_Test extends Unit_Test
 {
 
 	//----------------------------------------------------------------------- testCollectionJoinQuery
@@ -17,7 +22,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`number` AS `lines.number`, t1.`quantity` AS `lines.quantity` FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`number` AS `lines.number`, t1.`quantity` AS `lines.quantity`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id"
 		);
 	}
 
@@ -31,7 +37,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`number` AS `number`, t1.`number` AS `client.number`, t2.`number` AS `client.client.number`, t1.`name` AS `client.name` FROM `orders` t0 INNER JOIN `clients` t1 ON t1.id = t0.id_client LEFT JOIN `clients` t2 ON t2.id = t1.id_client"
+			"SELECT t0.`number` AS `number`, t1.`number` AS `client.number`, t2.`number` AS `client.client.number`, t1.`name` AS `client.name`"
+			. " FROM `orders` t0 INNER JOIN `clients` t1 ON t1.id = t0.id_client LEFT JOIN `clients` t2 ON t2.id = t1.id_client"
 		);
 	}
 
@@ -45,7 +52,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`number` AS `number`, t0.`name` AS `name`, t2.`date` AS `Order_Line->client.order:date`, t2.`number` AS `Order_Line->client.order:number`, t2.`id_client` AS `Order_Line->client.order:client`, t2.`id_delivery_client` AS `Order_Line->client.order:delivery_client`, t2.id AS `Order_Line->client.order:id` FROM `clients` t0 LEFT JOIN `orders_lines` t1 ON t1.id_client = t0.id INNER JOIN `orders` t2 ON t2.id = t1.id_order"
+			"SELECT t0.`number` AS `number`, t0.`name` AS `name`, t2.`date` AS `Order_Line->client.order:date`, t2.`number` AS `Order_Line->client.order:number`, t2.`id_client` AS `Order_Line->client.order:client`, t2.`id_delivery_client` AS `Order_Line->client.order:delivery_client`, t2.id AS `Order_Line->client.order:id`"
+			. " FROM `clients` t0 LEFT JOIN `orders_lines` t1 ON t1.id_client = t0.id INNER JOIN `orders` t2 ON t2.id = t1.id_order"
 		);
 	}
 
@@ -59,7 +67,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t1.`date` AS `order.date`, t1.`number` AS `order.number`, t0.`number` AS `number`, t0.`quantity` AS `quantity` FROM `orders_lines` t0 INNER JOIN `orders` t1 ON t1.id = t0.id_order"
+			"SELECT t1.`date` AS `order.date`, t1.`number` AS `order.number`, t0.`number` AS `number`, t0.`quantity` AS `quantity`"
+			. " FROM `orders_lines` t0 INNER JOIN `orders` t1 ON t1.id = t0.id_order"
 		);
 	}
 
@@ -73,7 +82,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t2.`name` AS `salesmen.name` FROM `orders` t0 LEFT JOIN `orders_salesmen_links` t1 ON t1.id_order = t0.id LEFT JOIN `salesmen` t2 ON t2.id = t1.id_salesman"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t2.`name` AS `salesmen.name`"
+			. " FROM `orders` t0 LEFT JOIN `orders_salesmen_links` t1 ON t1.id_order = t0.id LEFT JOIN `salesmen` t2 ON t2.id = t1.id_salesman"
 		);
 	}
 
@@ -87,7 +97,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`number` AS `number`, t0.`quantity` AS `quantity`, t1.`date` AS `order:date`, t1.`number` AS `order:number`, t1.`id_client` AS `order:client`, t1.`id_delivery_client` AS `order:delivery_client`, t1.id AS `order:id` FROM `orders_lines` t0 INNER JOIN `orders` t1 ON t1.id = t0.id_order"
+			"SELECT t0.`number` AS `number`, t0.`quantity` AS `quantity`, t1.`date` AS `order:date`, t1.`number` AS `order:number`, t1.`id_client` AS `order:client`, t1.`id_delivery_client` AS `order:delivery_client`, t1.id AS `order:id`"
+			. " FROM `orders_lines` t0 INNER JOIN `orders` t1 ON t1.id = t0.id_order"
 		);
 	}
 
@@ -101,7 +112,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity` FROM `orders` t0 LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity`"
+			. " FROM `orders` t0 LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id"
 		);
 	}
 
@@ -115,14 +127,15 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number` FROM `orders` t0"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0"
 		);
 	}
 
 	//------------------------------------------------------------------------- testWhereComplexQuery
 	public function testWhereComplexQuery()
 	{
-		$client = Search_Object::newInstance('SAF\Tests\Client');
+		$client = Search_Object::create('SAF\Tests\Client');
 		$client->number = 1;
 		$builder = new Sql_Select_Builder(
 			'SAF\Tests\Order',
@@ -132,7 +145,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id` FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `clients` t2 ON t2.id = t1.id_client WHERE (t2.`number` = 1 OR t0.`number` = 2)"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `clients` t2 ON t2.id = t1.id_client WHERE (t2.`number` = 1 OR t0.`number` = 2)"
 		);
 	}
 
@@ -147,7 +161,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number` FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id WHERE t0.`number` = 1 AND t1.`number` = 2"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id WHERE t0.`number` = 1 AND t1.`number` = 2"
 		);
 	}
 
@@ -155,7 +170,7 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 	public function testWhereObjectQuery()
 	{
 		/** @var $client Client */
-		$client = Search_Object::newInstance('SAF\Tests\Client');
+		$client = Search_Object::create('SAF\Tests\Client');
 		$client->number = 1;
 		$client->name = "Roger%";
 		$properties = array("number", "name", "client");
@@ -163,14 +178,15 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`number` AS `number`, t0.`name` AS `name`, t1.`number` AS `client:number`, t1.`name` AS `client:name`, t1.`id_client` AS `client:client`, t1.id AS `client:id` FROM `clients` t0 LEFT JOIN `clients` t1 ON t1.id = t0.id_client WHERE t0.`number` = 1 AND t0.`name` LIKE \"Roger%\""
+			"SELECT t0.`number` AS `number`, t0.`name` AS `name`, t1.`number` AS `client:number`, t1.`name` AS `client:name`, t1.`id_client` AS `client:client`, t1.id AS `client:id`"
+			. " FROM `clients` t0 LEFT JOIN `clients` t1 ON t1.id = t0.id_client WHERE t0.`number` = 1 AND t0.`name` LIKE \"Roger%\""
 		);
 	}
 
 	//----------------------------------------------------------------------- testWhereSubObjectQuery
 	public function testWhereSubObjectQuery()
 	{
-		$client = Search_Object::newInstance('SAF\Tests\Client');
+		$client = Search_Object::create('SAF\Tests\Client');
 		$client->number = 1;
 		$builder = new Sql_Select_Builder(
 			'SAF\Tests\Order',
@@ -180,7 +196,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id` FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `clients` t2 ON t2.id = t1.id_client WHERE t2.`number` = 1 AND t0.`number` = 2"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `clients` t2 ON t2.id = t1.id_client WHERE t2.`number` = 1 AND t0.`number` = 2"
 		);
 	}
 
@@ -195,7 +212,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number` FROM `orders` t0 WHERE t0.`number` = 1"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0 WHERE t0.`number` = 1"
 		);
 	}
 
@@ -210,7 +228,8 @@ class Sql_Select_Builder_Test extends \SAF\Framework\Unit_Tests\Unit_Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity` FROM `orders` t0 LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id WHERE t1.`number` = 2"
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity`"
+			. " FROM `orders` t0 LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id WHERE t1.`number` = 2"
 		);
 	}
 

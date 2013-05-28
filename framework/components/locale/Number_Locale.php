@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Number locale features : changes number format to comply with user's locale configuration
+ */
 class Number_Locale implements Configurable
 {
 
@@ -29,6 +32,9 @@ class Number_Locale implements Configurable
 	public $thousand_separator = "";
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $parameters array
+	 */
 	public function __construct($parameters = null)
 	{
 		if (isset($parameters)) {

@@ -73,7 +73,7 @@ String.prototype.repl = function(from, to)
 	var replaced = "";
 	var start = 0;
 	var length = from.length;
-	i = this.indexOf(from, start);
+	var i = this.indexOf(from, start);
 	while (i > -1) {
 		if (i > start) {
 			replaced += this.substring(start, i);
@@ -84,4 +84,4 @@ String.prototype.repl = function(from, to)
 	}
 	replaced += this.substring(start);
 	return replaced;
-}
+};

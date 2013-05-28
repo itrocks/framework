@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * List data is an interface for all list data storage classes
+ */
 interface List_Data
 {
 

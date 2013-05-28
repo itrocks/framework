@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+/** @noinspection PhpIncludeInspection */
 if (!@include_once("framework/vendor/geshi/geshi.php")) {
 	@include_once("/usr/share/php-geshi/geshi.php");
 }

@@ -1,6 +1,10 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The property select controller is a class properties tree view controller.
+ * It lists all properties from a class, display their names, and enable the user to drag them.
+ */
 class Property_Select_Controller implements Controller
 {
 

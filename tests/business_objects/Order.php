@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Tests;
 
+/**
+ * An order class
+ */
 class Order extends Document
 {
 

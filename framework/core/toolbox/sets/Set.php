@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The default Set class for set of objects
+ */
 class Set
 {
 
@@ -51,6 +54,9 @@ class Set
 	}
 
 	//---------------------------------------------------------------------------------- elementClass
+	/**
+	 * @return Reflection_Class
+	 */
 	public function elementClass()
 	{
 		return Reflection_Class::getInstanceOf($this->element_class_name);
@@ -75,12 +81,19 @@ class Set
 	}
 
 	//----------------------------------------------------------------------------------------- first
+	/**
+	 * @return object
+	 */
 	public function first()
 	{
 		return reset($this->elements);
 	}
 
 	//------------------------------------------------------------------------------------------- get
+	/**
+	 * @param $key integer
+	 * @return object
+	 */
 	public function get($key)
 	{
 		return isset($this->elements[$key]) ? $this->elements[$key] : null;
@@ -109,18 +122,29 @@ class Set
 	}
 
 	//------------------------------------------------------------------------------------------ last
+	/**
+	 * @return object
+	 */
 	public function last()
 	{
 		return end($this->elements);
 	}
 
 	//---------------------------------------------------------------------------------------- length
+	/**
+	 * @return integer
+	 */
 	public function length()
 	{
 		return count($this->elements);
 	}
 
 	//---------------------------------------------------------------------------------------- object
+	/**
+	 * Gets the first object, or a Reflection_Class of the object's class if no element
+	 *
+	 * @return object|Reflection_Class
+	 */
 	public function object()
 	{
 		return $this->elements ? reset($this->elements) : $this->elementClass();

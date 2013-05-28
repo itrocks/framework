@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM element class for HTML form inputs <input>
+ */
 class Html_Input extends Dom_Element
 {
 

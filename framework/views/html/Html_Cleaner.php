@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * This plugin cleans HTML code to avoid multiple blank lines, etc.
+ */
 abstract class Html_Cleaner implements Plugin
 {
 

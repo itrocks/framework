@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An email net account : host, login and password to access a distant email account
+ */
 abstract class Email_Net_Account
 {
 
@@ -23,6 +26,11 @@ abstract class Email_Net_Account
 	public $password;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $host     string
+	 * @param $login    string
+	 * @param $password string
+	 */
 	public function __construct($host = null, $login = null, $password = null)
 	{
 		if (isset($host))     $this->host     = $host;

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The common interface to all view engines
+ */
 interface View_Engine
 {
 

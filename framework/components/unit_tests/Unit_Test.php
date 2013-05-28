@@ -2,6 +2,9 @@
 namespace SAF\Framework\Unit_Tests;
 use SAF\Framework\Reflection_Class;
 
+/**
+ * All unit test classes must extend this, to access it's begin(), end() and assume() methods
+ */
 class Unit_Test
 {
 

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The View class offers static methods to call views from the application main view engine
+ */
 abstract class View
 {
 	use Current { current as private pCurrent; }

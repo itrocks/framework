@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * All output controllers should extend from this at it offers standard output elements methods and structure
+ */
 abstract class Output_Controller implements Default_Feature_Controller
 {
 

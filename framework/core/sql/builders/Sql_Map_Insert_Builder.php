@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * SQL insert queries builder for a mapped object
+ */
 class Sql_Map_Insert_Builder
 {
 

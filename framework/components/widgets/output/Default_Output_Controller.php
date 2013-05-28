@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The default output controller will be called if no output controller is available for a class
+ */
 class Default_Output_Controller extends Output_Controller
 {
 

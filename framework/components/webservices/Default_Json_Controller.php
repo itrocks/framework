@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use StdClass;
 
+/**
+ * A default json controller to output any object or objects collection into json format
+ */
 class Default_Json_Controller implements Default_Feature_Controller
 {
 

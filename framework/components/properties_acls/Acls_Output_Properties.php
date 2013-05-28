@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * This plugin enables storage of properties available into output / edit views as acls
+ */
 class Acls_Output_Properties extends Acls_Properties implements Plugin
 {
 

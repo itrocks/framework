@@ -2,6 +2,11 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * This configuration plugin enables to restrict read data
+ *
+ * TODO this has not been tested nor used yet, please finish and test this !
+ */
 class Sql_Link_Restrictor implements Configurable, Plugin
 {
 	use Current { current as private pCurrent; }
@@ -75,10 +80,11 @@ class Sql_Link_Restrictor implements Configurable, Plugin
 	}
 
 	//------------------------------------------------------------------------------ applyRestriction
-	/*
+	/**
 	 * Apply a restriction to the builder
 	 *
-	 * @param $builder Sql_Select_Builder
+	 * @param $builder     Sql_Select_Builder
+	 * @param $class_name  string
 	 * @param $restriction string|array a restriction callback
 	 */
 	private function applyRestriction(Sql_Select_Builder $builder, $class_name, $restriction)

@@ -1,9 +1,14 @@
 <?php
 namespace SAF\Tests\Tests;
+
 use SAF\Framework\Controller_Parameters;
 use SAF\Framework\Controller_Uri;
+use SAF\Framework\Unit_Tests\Unit_Test;
 
-class Controller_Uri_Test extends \SAF\Framework\Unit_Tests\Unit_Test
+/**
+ * Controller uri features tests
+ */
+class Controller_Uri_Test extends Unit_Test
 {
 
 	//------------------------------------------------------------------------- testDeleteControllers

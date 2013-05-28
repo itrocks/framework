@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * This offers OS specific detection and features
+ */
 abstract class OS
 {
 

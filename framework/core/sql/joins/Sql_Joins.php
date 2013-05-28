@@ -1,6 +1,10 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * This builds and stores SQL tables joins in order to make easy automatic joins generation
+ * knowing only a source business object and property paths.
+ */
 class Sql_Joins
 {
 

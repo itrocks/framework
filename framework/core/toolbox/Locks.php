@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Locks manager, to enable locking of features and disable multiple execution of the same thing the same time
+ */
 abstract class Locks
 {
 

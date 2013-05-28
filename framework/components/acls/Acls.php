@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Main acls plugin
+ */
 abstract class Acls implements Plugin
 {
 

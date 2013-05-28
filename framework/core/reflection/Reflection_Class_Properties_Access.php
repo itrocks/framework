@@ -1,6 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Internal properties access to enable listing and enablig read/write of all properties of a class,
+ * including its private / protected properties.
+ *
+ * For use by Reflection_Class
+ */
 abstract class Reflection_Class_Properties_Access
 {
 

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * All list controllers should herited List_Controller, that gives a default getSelectionButtons() implementation
+ */
 abstract class List_Controller extends Output_Controller
 {
 

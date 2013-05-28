@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Standard basic codes, with a code and a description
+ */
 class Code
 {
 
@@ -17,6 +20,9 @@ class Code
 	public $description;
 
 	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		return trim($this->code . " " . $this->description);

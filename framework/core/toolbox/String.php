@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework {
 
+/**
+ * A String class to get commonly used string features into an object
+ */
 class String
 {
 

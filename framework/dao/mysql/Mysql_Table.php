@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An object representation of a mysql table
+ */
 class Mysql_Table implements Dao_Table
 {
 
@@ -30,6 +33,9 @@ class Mysql_Table implements Dao_Table
 	private $Name;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $name string
+	 */
 	public function __construct($name = null)
 	{
 		if (isset($name)) {
@@ -39,30 +45,45 @@ class Mysql_Table implements Dao_Table
 	}
 
 	//------------------------------------------------------------------------------------- addColumn
+	/**
+	 * @param $column Mysql_Column
+	 */
 	public function addColumn(Mysql_Column $column)
 	{
 		$this->columns[] = $column;
 	}
 
 	//------------------------------------------------------------------------------------ getColumns
+	/**
+	 * @return Mysql_Column[]
+	 */
 	public function getColumns()
 	{
 		return $this->columns;
 	}
 
 	//------------------------------------------------------------------------------------ getIndexes
+	/**
+	 * @return Mysql_Index[]
+	 */
 	public function getIndexes()
 	{
 		return is_array($this->indexes) ? $this->indexes : array();
 	}
 
 	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->Name;
 	}
 
 	//--------------------------------------------------------------------------------- getSqlPostfix
+	/**
+	 * @return string
+	 */
 	public function getSqlPostfix()
 	{
 		return " ENGINE=" . $this->Engine;

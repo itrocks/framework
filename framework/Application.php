@@ -8,6 +8,11 @@ require_once "framework/core/toolbox/Names.php";
 require_once "framework/core/toolbox/OS.php";
 require_once "framework/core/toolbox/String.php";
 
+/**
+ * The class for the global application object
+ *
+ * The application class must be overriden by each application.
+ */
 class Application
 {
 	use Current { current as private pCurrent; }
@@ -132,6 +137,9 @@ class Application
 	}
 
 	//-------------------------------------------------------------------------------- getIncludePath
+	/**
+	 * @return string
+	 */
 	public function getIncludePath()
 	{
 		if (!isset($this->include_path)) {

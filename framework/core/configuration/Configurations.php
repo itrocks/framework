@@ -4,6 +4,9 @@ namespace SAF\Framework;
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/configuration/Configurations.php";
 
+/**
+ * The available applications configurations management class
+ */
 class Configurations
 {
 
@@ -16,7 +19,7 @@ class Configurations
 	private $configurations;
 
 	//-------------------------------------------------------------------------- getAllConfigurations
-	/*
+	/**
 	 * Get all the loaded configurations
 	 *
 	 * @return Configuration[]

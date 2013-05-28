@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An object representation of a mysql index key
+ */
 class Mysql_Key implements Dao_Key
 {
 

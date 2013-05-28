@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Some mysql column builders methods : if for a main identifier column, for a link column
+ */
 abstract class Mysql_Column_Builder
 {
 

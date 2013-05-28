@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The menu block is the main division of menus items
+ */
 class Menu_Block
 {
 

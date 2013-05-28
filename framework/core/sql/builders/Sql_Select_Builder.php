@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The SQL select queries builder
+ */
 class Sql_Select_Builder
 {
 
@@ -74,12 +77,18 @@ class Sql_Select_Builder
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins
+	/**
+	 * @return Sql_Joins
+	 */
 	public function getJoins()
 	{
 		return $this->columns_builder->getJoins();
 	}
 
 	//------------------------------------------------------------------------------------ getSqlLink
+	/**
+	 * @return Sql_Link
+	 */
 	public function getSqlLink()
 	{
 		return $this->where_builder->getSqlLink();

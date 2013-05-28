@@ -18,6 +18,12 @@ require_once "framework/core/reflection/Reflection_Method.php";
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/reflection/Reflection_Property.php";
 
+/**
+ * A rich extension of the PHP ReflectionClass class, adding :
+ * - properties access methods to write data into private properties
+ * - access to the full list of properties and parent properties
+ * - annotations management
+ */
 class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 {
 	use Annoted;

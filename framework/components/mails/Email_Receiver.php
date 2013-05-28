@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+/** @noinspection PhpIncludeInspection */
 if (!@include_once("framework/vendor/pear/Net/POP3.php")) {
 	@include_once "/usr/share/php/Net/POP3.php";
 }

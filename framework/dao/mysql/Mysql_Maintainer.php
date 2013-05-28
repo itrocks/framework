@@ -3,6 +3,10 @@ namespace SAF\Framework;
 use AopJoinpoint;
 use mysqli;
 
+/**
+ * This is an intelligent database maintainer that automatically updates a table structure if there
+ * is an error when executing a query.
+ */
 class Mysql_Maintainer implements Plugin
 {
 

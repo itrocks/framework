@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The default edit controller, when no edit controller is set for the class
+ */
 class Default_Edit_Controller extends Default_Output_Controller
 {
 

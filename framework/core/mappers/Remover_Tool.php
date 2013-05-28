@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The remover tool enables common process of removal of composite objects from a container object
+ */
 abstract class Remover_Tool
 {
 

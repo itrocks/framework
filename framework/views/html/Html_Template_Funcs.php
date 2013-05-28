@@ -2,6 +2,8 @@
 namespace SAF\Framework;
 
 /**
+ * Html template functions : those which are called using {@functionName} into templates
+ *
  * @todo $objects will become a public property of Html_Template, then remove $objects arguments
  */
 abstract class Html_Template_Funcs

@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * Sql value tool methods
+ */
 abstract class Sql_Value
 {
 

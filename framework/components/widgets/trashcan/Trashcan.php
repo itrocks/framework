@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The trashcan widget enables dropping objects for deletion
+ */
 class Trashcan implements Plugin
 {
 

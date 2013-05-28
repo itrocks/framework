@@ -19,7 +19,7 @@
 		var_name += ":";
 		var length = var_name.length;
 		var classes = this.attr("class").split(" ");
-		for (var i in classes) {
+		for (var i in classes) if (classes.hasOwnProperty(i)) {
 			if (classes[i].substr(0, length) == var_name) {
 				if (set_value != undefined) {
 					var replace = (i > 0) ? " " + classes[i] : (

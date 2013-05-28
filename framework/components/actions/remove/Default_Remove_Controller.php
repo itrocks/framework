@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The default remove controller will be called if no other remove controller is defined
+ */
 class Default_Remove_Controller implements Feature_Controller
 {
 

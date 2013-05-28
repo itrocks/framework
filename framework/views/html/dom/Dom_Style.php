@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM style attribute class
+ */
 class Dom_Style
 {
 
@@ -28,6 +31,9 @@ class Dom_Style
 	}
 
 	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		return $this->key . ": " . $this->value;

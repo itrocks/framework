@@ -7,6 +7,9 @@ require_once "framework/core/mappers/Builder.php";
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Current.php";
 
+/**
+ * A configuration set : current configuration for the global application configuration, secondary configurations can be worked with
+ */
 class Configuration implements Serializable
 {
 	use Current { current as private pCurrent; }
@@ -111,6 +114,9 @@ class Configuration implements Serializable
 	}
 
 	//----------------------------------------------------------------------- getApplicationClassName
+	/**
+	 * @return string
+	 */
 	public function getApplicationClassName()
 	{
 		return (isset($this->author) ? $this->author : "SAF") . "\\" . $this->app . "\\Application";

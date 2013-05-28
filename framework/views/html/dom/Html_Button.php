@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM element class for HTML buttons <button>
+ */
 class Html_Button extends Dom_Element
 {
 

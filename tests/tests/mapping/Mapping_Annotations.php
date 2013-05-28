@@ -1,10 +1,22 @@
 <?php
 namespace SAF\Tests\Tests;
 use SAF\Framework\Reflection_Property;
+use SAF\Framework\Unit_Tests\Unit_Test;
 
-class Mapping_Annotations extends \SAF\Framework\Unit_Tests\Unit_Test
+/**
+ * Mapping annotations tests
+ */
+class Mapping_Annotations extends Unit_Test
 {
 
+	//-------------------------------------------------------------------------------- testAnnotation
+	/**
+	 * @param $description     string
+	 * @param $class_name      string
+	 * @param $property_name   string
+	 * @param $annotation_name string
+	 * @param $assumed_value   mixed
+	 */
 	private function testAnnotation(
 		$description, $class_name, $property_name, $annotation_name, $assumed_value
 	) {

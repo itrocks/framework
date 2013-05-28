@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A DOM attribute class
+ */
 class Dom_Attribute
 {
 
@@ -46,6 +49,9 @@ class Dom_Attribute
 	}
 
 	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		return $this->name . "=" . self::escapeValue($this->value);

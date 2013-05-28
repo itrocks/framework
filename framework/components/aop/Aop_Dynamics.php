@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * Aop_Dynamics stores aop links to enable at each script start
+ */
 class Aop_Dynamics implements Plugin
 {
 	use Current { current as private pCurrent; }

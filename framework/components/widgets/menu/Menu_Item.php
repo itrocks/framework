@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A menu item is a displayed text and a link to apply when the user clicks on it
+ */
 class Menu_Item
 {
 

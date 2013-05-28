@@ -2,6 +2,9 @@
 namespace SAF\Framework;
 use AopJoinpoint;
 
+/**
+ * Acls loader tools load acls when needed
+ */
 abstract class Acls_Loader
 {
 

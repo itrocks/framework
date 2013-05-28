@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * The user authentication class gives direct access to login, register and disconnect user features
+ */
 abstract class User_Authentication
 {
 

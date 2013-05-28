@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A transactional data link defines a datalink that accepts transactionnal calls (maybe virtual...)
+ */
 interface Transactional_Data_Link
 {
 

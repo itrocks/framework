@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * An interface for error handlers
+ */
 interface Error_Handler
 {
 

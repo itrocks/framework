@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * All annotations classes must heritate from this or any annotation template
+ */
 class Annotation
 {
 
@@ -26,6 +29,9 @@ class Annotation
 	}
 
 	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		return strval($this->value);

@@ -8,7 +8,7 @@ require_once "framework/core/toolbox/Aop.php";
 require_once "framework/core/reflection/Reflection_Property.php";
 
 /**
- * Aop calls getter
+ * Aop calls getters
  */
 abstract class Aop_Getter extends Aop implements Plugin
 {

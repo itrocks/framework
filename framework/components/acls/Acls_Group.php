@@ -50,30 +50,34 @@ class Acls_Group
 	public function add($object, $priority_value = null)
 	{
 		if (is_string($object)) {
+			$right = $object;
 			$value = isset($priority_value) ? $priority_value : true;
-			if (isset($this->rights[$object])) {
-				$this->rights[$object]->value = $value;
+			if (isset($this->rights[$right])) {
+				$this->rights[$right]->value = $value;
 			}
 			else {
-				$this->rights[$object] = new Acls_Right(Acls_User::current()->group, $object, $value);
+				$this->rights[$right] = new Acls_Right(Acls_User::current()->group, $right, $value);
 			}
 		}
 		elseif ($object instanceof Acls_Right) {
+			$acls_right = $object;
 			if (isset($priority_value)) {
-				$object->value = $priority_value;
+				$acls_right->value = $priority_value;
 			}
-			$object->setComposite($this);
-			$this->rights[$object->key] = $object;
+			$acls_right->setComposite($this);
+			$this->rights[$acls_right->key] = $object;
 		}
 		elseif ($object instanceof Acls_Group) {
+			$acls_group = $object;
 			if (!isset($priority_value)) {
 				$priority_value = 1;
 			}
-			$this->content[$object->name] = new Acls_Link($this, $object, $priority_value);
+			$this->content[$acls_group->name] = new Acls_Link($this, $acls_group, $priority_value);
 		}
 		elseif ($object instanceof Acls_Link) {
-			$object->setComposite($this);
-			$this->content[$object->content->name] = $object;
+			$acls_link = $object;
+			$acls_link->setComposite($this);
+			$this->content[$acls_link->content->name] = $object;
 		}
 		return $this;
 	}
@@ -144,7 +148,8 @@ class Acls_Group
 			unset($this->content[$object->name]);
 		}
 		elseif ($object instanceof Acls_Link) {
-			unset($this->content[$object->content->name]);
+			$acls_link = $object;
+			unset($this->content[$acls_link->content->name]);
 		}
 		return $this;
 	}

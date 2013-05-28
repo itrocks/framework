@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * A remote connection interface
+ */
 interface Remote_Connection
 {
 
