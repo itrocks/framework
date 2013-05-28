@@ -9,9 +9,10 @@ interface Before_Search_Listener
 
 	//---------------------------------------------------------------------------------- beforeSearch
 	/**
+	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
 	 * @return boolean if returns true, then the object can be searched, else it won't and search
 	 * result will be an empty array !
 	 */
-	public static function beforeSearch();
+	public static function beforeSearch(&$what);
 
 }

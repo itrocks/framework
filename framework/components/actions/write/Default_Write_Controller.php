@@ -57,11 +57,19 @@ class Default_Write_Controller implements Default_Class_Controller
 							$objects[] = $sub_object;
 						}
 					}
+					if (empty($object->$name)) {
+						unset($object->$name);
+						$id_name = "id_" . $name;
+						$object->$id_name = 0;
+					}
 				}
 			}
 			else {
 				$object->$name = $value;
 				if ((substr($name, 0, 3) == "id_")) {
+					if (empty($value)) {
+						$object->$name = 0;
+					}
 					$name = substr($name, 3);
 					if (isset($object->$name)) {
 						unset($object->$name);

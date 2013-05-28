@@ -9,7 +9,7 @@ abstract class Empty_Object
 
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
-	 * Returns true if the object properties values are all empty (or null or unset)
+	 * Returns true if the object properties values are all empty (or null or unset) or empty objects
 	 *
 	 * @param $object
 	 * @return boolean
@@ -21,7 +21,7 @@ abstract class Empty_Object
 		foreach ($class->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				$value = $property->getValue($object);
-				if (!empty($value)) {
+				if (!empty($value) && ((!is_object($value)) || !Empty_Object::isEmpty($value))) {
 					$is_empty = false;
 					break;
 				}
