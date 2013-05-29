@@ -44,6 +44,15 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	private $doc_comment;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string The name of the class
+	 */
+	public function __toString()
+	{
+		return $this->name;
+	}
+
 	//------------------------------------------------------------------------------ accessProperties
 	/**
 	 * Change all properties accessibility to true for a given class, and return all class and parents properties list
@@ -325,15 +334,6 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 			$traits[$by_name ? $trait->name : $key] = Reflection_Class::getInstanceOf($trait);
 		}
 		return $traits;
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string The name of the class
-	 */
-	public function __toString()
-	{
-		return $this->name;
 	}
 
 }

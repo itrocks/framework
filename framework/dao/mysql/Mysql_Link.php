@@ -393,14 +393,16 @@ class Mysql_Link extends Sql_Link
 			$aop_getter_ignore = Aop_Getter::$ignore;
 			Aop_Getter::$ignore = true;
 			foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
-				$value = $property->getValue($object);
+				$value = isset($object->$property) ? $property->getValue($object) : null;
 				if (is_null($value) && !$property->getAnnotation("null")->value) {
 					$value = "";
 				}
 				if (in_array($property->name, $table_columns_names)) {
+					// write basic
 					if ($property->getType()->isBasic()) {
 						$write[$property->name] = $value;
 					}
+					// write object id if set or object if no id is set (new object)
 					else {
 						$column_name = "id_" . $property->name;
 						if (is_object($value) && (empty($object->$column_name))) {
@@ -410,13 +412,15 @@ class Mysql_Link extends Sql_Link
 							}
 						}
 						if (property_exists($object, $column_name)) {
-							$write[$column_name] = $object->$column_name;
+							$write[$column_name] = intval($object->$column_name);
 						}
 					}
 				}
+				// write collection
 				elseif ($property->getAnnotation("link")->value == "Collection") {
 					$write_collections[] = array($property, $value);
 				}
+				// write map
 				elseif (is_array($value)) {
 					foreach ($value as $key => $val) {
 						if (!is_object($val)) {

@@ -2,14 +2,15 @@
 namespace SAF\Framework;
 
 /**
- * An empty object is an object which all properties have an empty value
+ * An empty object is an object which all properties have an empty or default value
  */
 abstract class Empty_Object
 {
 
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
-	 * Returns true if the object properties values are all empty (or null or unset) or empty objects
+	 * Returns true if the object properties values are all empty (or null or unset or equal to
+	 * default value) or empty objects.
 	 *
 	 * @param $object
 	 * @return boolean
@@ -18,10 +19,15 @@ abstract class Empty_Object
 	{
 		$is_empty = true;
 		$class = Reflection_Class::getInstanceOf($object);
+		$default = get_class_vars($class->name);
 		foreach ($class->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				$value = $property->getValue($object);
-				if (!empty($value) && ((!is_object($value)) || !Empty_Object::isEmpty($value))) {
+				if (
+					!empty($value)
+					&& ((!is_object($value)) || !Empty_Object::isEmpty($value))
+					&& (is_object($value) || ($value !== $default[$property->name]))
+				) {
 					$is_empty = false;
 					break;
 				}
@@ -35,8 +41,8 @@ abstract class Empty_Object
 	/**
 	 * Returns a new instance of an object, but sets all its properties values to empty
 	 *
-	 * The empty value depends on the type of the property, simple type get an empty value of the same type.
-	 * Object, resource, callable properties get an empty value of null.
+	 * The empty value depends on the type of the property, simple type get an empty value of the
+	 * same type. Object, resource, callable properties get an empty value of null.
 	 *
 	 * @param $class_name string
 	 * @return object

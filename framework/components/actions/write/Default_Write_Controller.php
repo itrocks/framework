@@ -7,80 +7,6 @@ namespace SAF\Framework;
 class Default_Write_Controller implements Default_Class_Controller
 {
 
-	//-------------------------------------------------------------------- formElementToPropertyValue
-	/**
-	 * @param $property Reflection_Property
-	 * @param $value    mixed
-	 * @return mixed
-	 */
-	private function formElementToPropertyValue(Reflection_Property $property, $value)
-	{
-		if ($property->getType()->isBoolean()) {
-			$value = !(empty($value) || ($value === "false"));
-		}
-		elseif (is_array($value)) {
-			if ($property->getAnnotation("link")->value == "Object") {
-				$value = arrayToObject($value, $property->getType()->getElementTypeAsString(), false);
-			}
-			elseif ($property->getAnnotation("link")->value == "Collection") {
-				$value = arrayToCollection($value, $property->getType()->getElementTypeAsString(), false);
-			}
-		}
-		return $value;
-	}
-
-	//--------------------------------------------------------------------------------- formToObjects
-	/**
-	 * Returns the object that form data represents
-	 *
-	 * @param $object object The object or class name to fill-in
-	 * @param $form array    The form data
-	 * @return object[] The result objects (same as $object if it was an object)
-	 */
-	public function formToObjects($object, $form)
-	{
-		if (is_string($object)) {
-			$object = Builder::create($object);
-		}
-		$objects = array($object);
-		$class = Reflection_Class::getInstanceOf($object);
-		$properties = $class->accessProperties();
-		if (isset($form["id"]) && empty($form["id"])) {
-			unset($form["id"]);
-		}
-		foreach ($form as $name => $value) {
-			if (isset($properties[$name])) {
-				$object->$name = $this->formElementToPropertyValue($properties[$name], $value);
-				if ($properties[$name]->getAnnotation("link")->value == "Object") {
-					foreach ($this->formToObjects($object->$name, $value) as $sub_object) {
-						if (!Empty_Object::isEmpty($sub_object)) {
-							$objects[] = $sub_object;
-						}
-					}
-					if (empty($object->$name)) {
-						unset($object->$name);
-						$id_name = "id_" . $name;
-						$object->$id_name = 0;
-					}
-				}
-			}
-			else {
-				$object->$name = $value;
-				if ((substr($name, 0, 3) == "id_")) {
-					if (empty($value)) {
-						$object->$name = 0;
-					}
-					$name = substr($name, 3);
-					if (isset($object->$name)) {
-						unset($object->$name);
-					}
-				}
-			}
-		}
-		$class->accessPropertiesDone();
-		return $objects;
-	}
-
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Default run method for default "write-typed" controller
@@ -103,8 +29,14 @@ class Default_Write_Controller implements Default_Class_Controller
 			$objects = array_merge(array($class_name => $object), $objects);
 			$parameters->unshift($object);
 		}
-		$write_objects = $this->formToObjects($object, $form);
-		$write_objects = array_reverse($write_objects);
+		$builder = new Object_Builder_Array();
+		$builder->build($form, $object, true);
+		$write_objects = array();
+		foreach ($builder->getBuiltObjects() as $write_object) {
+			if (($write_object == $object) || Dao::getObjectIdentifier($write_object)) {
+				$write_objects[] = $write_object;
+			}
+		}
 		Dao::begin();
 		foreach ($write_objects as $write_object) {
 			Dao::write($write_object);

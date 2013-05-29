@@ -38,13 +38,12 @@ abstract class Loc implements Plugin
 		}
 	}
 
-	//---------------------------------------- beforeDefaultWriteControllerFormElementToPropertyValue
+	//------------------------------------------------------- beforeObjectBuilderArrayBuildBasicValue
 	/**
 	 * @param $joinpoint AopJoinpoint
 	 */
-	public static function beforeDefaultWriteControllerFormElementToPropertyValue(
-		AopJoinpoint $joinpoint
-	) {
+	public static function beforeObjectBuilderArrayBuildBasicValue(AopJoinpoint $joinpoint)
+	{
 		/** @var $property Reflection_Property */
 		list($property, $value) = $joinpoint->getArguments();
 		if (isset($value)) {
@@ -225,8 +224,8 @@ abstract class Loc implements Plugin
 	{
 		// format from locale user input to ISO and standard formats
 		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Default_Write_Controller->formElementToPropertyValue()',
-			array(__CLASS__, "beforeDefaultWriteControllerFormElementToPropertyValue")
+			'SAF\Framework\Object_Builder_Array->buildBasicValue()',
+			array(__CLASS__, "beforeObjectBuilderArrayBuildBasicValue")
 		);
 		Aop::add(Aop::AFTER,
 			'SAF\Framework\Default_List_Controller->getSearchValues()',
