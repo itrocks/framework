@@ -179,12 +179,21 @@ class Object_Builder_Array
 	 * @param $property      Reflection_Property
 	 * @param $array         array
 	 * @param $null_if_empty boolean
-	 * @return object[]
+	 * @return integer[]
 	 */
-	private function buildMapValue(Reflection_Property $property, $array, $null_if_empty)
-	{
-		// this is exactly the same than for a collection
-		return $this->buildCollectionValue($property, $array, $null_if_empty);
+	private function buildMapValue(
+		/** @noinspection PhpUnusedParameterInspection */
+		Reflection_Property $property, $array, $null_if_empty
+	) {
+		$map = array();
+		if ($array) {
+			foreach ($array as $key => $element) {
+				if (!empty($element)) {
+					$map[$key] = intval($element);
+				}
+			}
+		}
+		return $map;
 	}
 
 	//------------------------------------------------------------------------------ buildObjectValue

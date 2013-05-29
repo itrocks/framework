@@ -321,7 +321,7 @@ class Mysql_Link extends Sql_Link
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
 	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
-	 * @param $class_name string must be set if is not a filter array
+	 * @param $class_name string must be set if $what is a filter array and not an object
 	 * @return object[] a collection of read objects
 	 */
 	public function search($what, $class_name = null)
@@ -329,10 +329,10 @@ class Mysql_Link extends Sql_Link
 		if (!isset($class_name)) {
 			$class_name = get_class($what);
 		}
-		if (!(
-			class_instanceof($class_name, 'SAF\Framework\Before_Search_Listener')
-			&& !call_user_func(array($class_name, "beforeSearch"), $what)
-		)) {
+		if (
+			(is_a($class_name, 'SAF\Framework\Before_Search_Listener'))
+			? call_user_func(array($class_name, "beforeSearch"), $what) : true
+		) {
 			$search_result = array();
 			$builder = new Sql_Select_Builder($class_name, null, $what, $this);
 			$query = $builder->buildQuery();
@@ -378,13 +378,10 @@ class Mysql_Link extends Sql_Link
 	 */
 	public function write($object)
 	{
-		if (Null_Object::isNull($object)) {
-			$this->removeObjectIdentifier($object);
-		}
-		elseif (!(
-			class_implements(get_class($object), 'SAF\Framework\Before_Write_Listener')
-			&& !$object->beforeWrite()
-		)) {
+		if (($object instanceof Before_Write_Listener) ? $object->beforeWrite() : true) {
+			if (Null_Object::isNull($object)) {
+				$this->removeObjectIdentifier($object);
+			}
 			$class = Reflection_Class::getInstanceOf($object);
 			$table_columns_names = array_keys($this->getStoredProperties($class));
 			$write_collections = array();
@@ -458,7 +455,7 @@ class Mysql_Link extends Sql_Link
 				list($property, $value) = $write;
 				$this->writeMap($object, $property, $value);
 			}
-			if (class_implements(get_class($object), 'SAF\Framework\After_Write_Listener')) {
+			if ($object instanceof After_Write_Listener) {
 				$object->afterWrite();
 			}
 		}
