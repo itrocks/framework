@@ -14,8 +14,10 @@
 
 	<!--fill_combo-->
 	<script>
-	document.{fill_combo}.value = {id};
-	$(document.{fill_combo}.nextSibling).val("{.}").keyup().select();
+	if (document.{fill_combo} != undefined) {
+		document.{fill_combo}.value = {id};
+		$(document.{fill_combo}.nextSibling).val("{.}").keyup().select();
+	}
 	</script>
 	<!--fill_combo-->
 
