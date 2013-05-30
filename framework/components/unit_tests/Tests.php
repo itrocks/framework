@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework\Unit_Tests;
+
 use SAF\Framework\Application;
 use SAF\Framework\Configuration;
 use SAF\Framework\Namespaces;

@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+
 use Serializable;
 
 /** @noinspection PhpIncludeInspection */

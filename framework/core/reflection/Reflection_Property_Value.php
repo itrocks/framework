@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+
 use ReflectionClass;
 use ReflectionProperty;
 
