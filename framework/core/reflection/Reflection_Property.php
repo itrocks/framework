@@ -62,6 +62,15 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	private $use;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string The name of the property
+	 */
+	public function __toString()
+	{
+		return $this->name;
+	}
+
 	//--------------------------------------------------------------------------------- getInstanceOf
 	/**
 	 * Gets the Reflection_Property instance
@@ -147,6 +156,19 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			}
 		}
 		return $this->getDeclaringClass();
+	}
+
+	//------------------------------------------------------------------------------- getDefaultValue
+	/**
+	 * Gets the default value for the property
+	 *
+	 * This is not optimized and could be slower than getting the class's default values one time
+	 *
+	 * @return mixed
+	 */
+	public function getDefaultValue()
+	{
+		return $this->getDeclaringClass()->getDefaultProperties()[$this->name];
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment
@@ -237,13 +259,21 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		return $this->use;
 	}
 
-	//------------------------------------------------------------------------------------ __toString
+	//------------------------------------------------------------------------- isValueEmptyOrDefault
 	/**
-	 * @return string The name of the property
+	 * Returns true if property is empty or equals to the default value
+	 *
+	 * Date_Time properties are null if "0000-00-00" or empty date
+	 *
+	 * @param $value mixed
+	 * @return boolean
 	 */
-	public function __toString()
+	public function isValueEmptyOrDefault($value)
 	{
-		return $this->name;
+		return empty($value)
+			|| ($value === $this->getDefaultValue())
+			|| (($value === "0000-00-00") && $this->getType()->isDateTime())
+			|| (($value instanceof Date_Time) && $value->isEmpty());
 	}
 
 }

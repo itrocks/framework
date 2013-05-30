@@ -73,10 +73,11 @@ class Object_Builder_Array
 		if (!$this->started) {
 			$this->start(isset($object) ? get_class($object) : null);
 		}
-		$defaults = $this->defaults;
 		$properties = $this->properties;
 		if (!isset($object)) {
-			$object = $this->class->newInstance();
+			$object = $array["id"]
+				? Dao::read($array["id"], $this->class->name)
+				: $this->class->newInstance();
 		}
 		foreach ($array as $property_name => $value) {
 			$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
@@ -99,14 +100,9 @@ class Object_Builder_Array
 				}
 			}
 			// the property value is set only for official properties, if not default and not empty
-			if (
-				isset($defaults[$property_name]) && (strval($value) !== strval($defaults[$property_name]))
-				|| !isset($defaults[$property_name]) && !empty($value)
-			) {
-				$object->$property_name = $value;
-				if ($property_name != "id") {
-					$is_null = false;
-				}
+			$object->$property_name = $value;
+			if (isset($property) && !$property->isValueEmptyOrDefault($value)) {
+				$is_null = false;
 			}
 			// if an id_foo property is set and not empty, it can be set and associated object is removed
 			// id_foo must always be set before any forced foo[sub_property] values into the array
@@ -118,6 +114,7 @@ class Object_Builder_Array
 				if ($value) {
 					$linked_name = substr($property_name, 3);
 					unset($object->$linked_name);
+					$is_null = false;
 				}
 			}
 		}
@@ -142,7 +139,6 @@ class Object_Builder_Array
 			case "boolean": $value = !(empty($value) || ($value === "false")); break;
 			case "integer": $value = intval($value);                           break;
 			case "float":   $value = floatval($value);                         break;
-			case "string":  $value = strval($value);                           break;
 		}
 		return $value;
 	}
@@ -169,7 +165,6 @@ class Object_Builder_Array
 					$collection[$key] = $object;
 				}
 			}
-			$this->built_objects = array_merge($this->built_objects, $builder->built_objects);
 		}
 		return $collection;
 	}

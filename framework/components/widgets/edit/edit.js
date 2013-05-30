@@ -142,7 +142,8 @@ $("document").ready(function()
 		this.in("table.collection, table.map").each(function()
 		{
 			var $this = $(this);
-			$this.data("saf_add", $this.find("tr.new").clone());
+			$this.data("saf_add", $this.children("tbody").children("tr.new").clone());
+			$this.data("saf_add_indice", $this.children("tbody").children("tr").length - 1);
 		});
 
 		this.in("input, textarea").focus(function()
@@ -153,9 +154,10 @@ $("document").ready(function()
 				if ($collection.length) {
 					var $table = $($collection[0]);
 					var $new_row = $table.data("saf_add").clone();
-					var indice = $table.find("tr:has(td)").length;
+					var indice = $table.children("tbody").children("tr").length;
+					var old_indice = $table.data("saf_add_indice");
+					$new_row.html($new_row.html().repl("][" + old_indice + "]", "][" + indice + "]"));
 					$table.children("tbody").append($new_row);
-					$new_row.html($new_row.html().repl("][0]", "][" + indice + "]"));
 					$new_row.build();
 				}
 			}

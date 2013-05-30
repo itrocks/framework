@@ -15,7 +15,6 @@ class Html_Builder_Type_Edit
 
 	//------------------------------------------------------------------------------------- $template
 	/**
-	 * @link Object
 	 * @var Html_Edit_Template
 	 */
 	public $template;

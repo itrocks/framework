@@ -46,7 +46,9 @@ class Type
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
-	 * The type name itself (only one type, does not include "|null" or any secondary types)
+	 * The type name itself :
+	 * - only one type, does not include "|null" or any secondary types
+	 * - if this is a class name path, this will be full 'Namespace\Class' and never begin with '\'
 	 *
 	 * @var string
 	 */
@@ -73,6 +75,9 @@ class Type
 		if (isset($can_be_null)) {
 			$this->can_be_null = $can_be_null;
 		}
+		if (substr($this->type, 0, 1) == "\\") {
+			$this->type = substr($this->type, 1);
+		}
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -97,6 +102,11 @@ class Type
 
 	//-------------------------------------------------------------------------------------- asString
 	/**
+	 * Returns the type name as string
+	 * - basic types
+	 * - object types with their namespace, but never beginning with a '\'
+	 *
+	 * @example 'string', 'SAF\Framework\Date_Time'
 	 * @return string
 	 */
 	public function asString()
