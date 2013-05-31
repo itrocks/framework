@@ -65,7 +65,7 @@ abstract class Sql_Builder
 	 * Build a SQL INSERT query
 	 *
 	 * @param $class Reflection_Class | string
-	 * @param $write mixed[] the data to write for each column : key is the column name
+	 * @param $write string[] the data to write for each column : key is the column name
 	 * @return string
 	 */
 	public static function buildInsert($class, $write)

@@ -13,8 +13,10 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 * @param $parameters string[]
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons($class_name, $parameters)
-	{
+	protected function getGeneralButtons(
+		/** @noinspection PhpUnusedParameterInspection */
+		$class_name, $parameters
+	) {
 		return array();
 	}
 
@@ -23,8 +25,10 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 * @param $class_name string
 	 * @return string[] property names list
 	 */
-	protected function getPropertiesList($class_name)
-	{
+	protected function getPropertiesList(
+		/** @noinspection PhpUnusedParameterInspection */
+		$class_name
+	) {
 		return null;
 	}
 
@@ -50,8 +54,10 @@ abstract class Output_Controller implements Default_Feature_Controller
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
-	{
+	protected function getViewParameters(
+		/** @noinspection PhpUnusedParameterInspection */
+		Controller_Parameters $parameters, $form, $class_name
+	) {
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
 		if (empty($object) || !is_object($object) || (get_class($object) !== $class_name)) {

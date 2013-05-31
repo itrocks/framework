@@ -74,8 +74,10 @@ abstract class Mysql_Column_Builder_Property
 	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	private static function propertyKeyToMysql(Reflection_Property $property)
-	{
+	private static function propertyKeyToMysql(
+		/** @noinspection PhpUnusedParameterInspection */
+		Reflection_Property $property
+	) {
 		// TODO automatic keys on object linked tables
 		return "";
 	}
