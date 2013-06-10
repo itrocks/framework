@@ -34,12 +34,15 @@ class String
 	//------------------------------------------------------------------------------------- cleanWord
 	/**
 	 * Clean the word, this delete all character who don't have a place in a current word.
+	 *
+	 * @todo see if there is any conceptual difference with strSimplify. If not, replace it !
 	 * @return string Return the clean word.
 	 * @example
 	 * cleanWord("Albert, ") => return "Albert"
 	 * cleanWord(" list : ") => return "list"
 	 */
-	function cleanWord(){
+	function cleanWord()
+	{
 		return preg_replace("#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#", "", $this->value);
 	}
 
@@ -62,6 +65,7 @@ class String
 	//---------------------------------------------------------------------------------------- isWord
 	/**
 	 * Test is the string like a word
+	 *
 	 * @return int Return 0 if it's not a word.
 	 */
 	function isWord()
@@ -164,11 +168,13 @@ class String
 	}
 
 }
+
 }
 
+//=================================================================================================
 namespace {
 
-//----------------------------------------------------------------------------- function lLastParse
+	//-----------------------------------------------------------------------------------  lLastParse
 	/**
 	 * Renvoie la partie de chaine à gauche de la dernière occurence du séparateur
 	 *
@@ -192,7 +198,7 @@ namespace {
 		}
 	}
 
-//--------------------------------------------------------------------------------- function lParse
+	//---------------------------------------------------------------------------------------  lParse
 	/**
 	 * Renvoie la partie de chaine à gauche de la première occurence du séparateur
 	 *
@@ -216,7 +222,7 @@ namespace {
 		}
 	}
 
-//--------------------------------------------------------------------------- function maxRowLength
+	//---------------------------------------------------------------------------------  maxRowLength
 	/**
 	 * Renvoie la plus grande longueur de ligne d'un texte dont les lignes sont séparées par "\n"
 	 *
@@ -235,7 +241,7 @@ namespace {
 		return $length;
 	}
 
-//--------------------------------------------------------------------------------- function mParse
+	//---------------------------------------------------------------------------------------  mParse
 	/**
 	 * Renvoie la partie de la chaîne située entre le délimiteur de début et le délimiteur de fin
 	 * Si le délimiteur est un tableau, les délimiteurs seront recherchés successivement.
@@ -272,7 +278,7 @@ namespace {
 		return lParse(rParse($str, $begin_sep, $cnt), $end_sep);
 	}
 
-//----------------------------------------------------------------------------- function rLastParse
+	//-----------------------------------------------------------------------------------  rLastParse
 	/**
 	 * Renvoie la partie de chaine à droite de la dernière occurence du séparateur
 	 *
@@ -297,7 +303,7 @@ namespace {
 		}
 	}
 
-//------------------------------------------------------------------------------- function rowCount
+	//-------------------------------------------------------------------------------------  rowCount
 	/**
 	 * Renvoie le nombre de lignes dans un texte dont les lignes sont séparées par "\n"
 	 *
@@ -309,7 +315,7 @@ namespace {
 		return substr_count($str, "\n");
 	}
 
-//--------------------------------------------------------------------------------- function rParse
+	//---------------------------------------------------------------------------------------  rParse
 	/**
 	 * Renvoie la partie de chaine à droite de la première occurence du séparateur
 	 *
@@ -333,19 +339,21 @@ namespace {
 		}
 	}
 
-//---------------------------------------------------------------------------- function strSimplify
+	//----------------------------------------------------------------------------------  strSimplify
 	/**
 	 * Returns a very simplified version of string :
 	 * no space, no accents, no special characters
 	 * 1/ accents are replaced with non-accentuated characters
 	 * 2/ string is lowercased
 	 * 3/ only a..z, 0..9, dot (.,) characters are allowed
+	 * 4/ not allowed characters are replaced by a joker character, or removed if no joker character is set
 	 *
 	 * @param $str      string
-	 * @param $extended boolean|string|array
+	 * @param $extended boolean|string|string[] if true, default ".,/- " is used
+	 * @param $joker    string if set, replace refused characters with this one
 	 * @return string
 	 */
-	function strSimplify($str, $extended = false)
+	function strSimplify($str, $extended = false, $joker = null)
 	{
 		$str_simplify = array(
 			"À" => "A", "Á" => "A", "Â" => "A", "Ã" => "A", "Ä" => "A", "Å" => "A",
@@ -362,13 +370,14 @@ namespace {
 			"ð" => "o", "ò" => "o", "ó" => "o", "ô" => "o", "õ" => "o", "ö" => "o",
 			"ù" => "u", "ú" => "u", "û" => "u", "ü" => "u",
 			"ý" => "y", "ÿ" => "y",
-			"&" => "e"
+			"&" => "and"
 		);
 		$result = "";
 		if ($extended && !is_string($extended)) {
 			if (is_array($extended)) {
 				$extended = join("", $extended);
-			} else {
+			}
+			else {
 				$extended = ".,/- ";
 			}
 		}
@@ -381,11 +390,14 @@ namespace {
 			) {
 				$result .= $c;
 			}
+			elseif (isset($joker)) {
+				$result .= $joker;
+			}
 		}
 		return $result;
 	}
 
-//------------------------------------------------------------------------------------------ strUri
+	//---------------------------------------------------------------------------------------- strUri
 	/**
 	 * Returns a string as a well formed HTTP URI
 	 *

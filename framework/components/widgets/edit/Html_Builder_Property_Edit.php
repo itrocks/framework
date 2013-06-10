@@ -45,7 +45,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 */
 	public function build()
 	{
-		$link = $this->property->getAnnotation("link");
+		$link = $this->property->getAnnotation("link")->value;
 		switch ($link) {
 			case "Collection": return $this->buildCollection();
 			case "Map":        return $this->buildMap();
