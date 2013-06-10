@@ -91,15 +91,18 @@ class Mysql_Maintainer implements Plugin
 		$mysqli = $joinpoint->getObject();
 		$errno = $mysqli->errno;
 		if ($errno && isset($mysqli->context)) {
+			$query = $joinpoint->getArguments()[0];
 			$error = $mysqli->error;
 			$retry = false;
-			$query = $joinpoint->getArguments()[0];
 			$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
 			if ($errno == Mysql_Errors::ER_NO_SUCH_TABLE) {
-				$error_table_name = self::parseNameFromError($error);
+				$error_table_names = array(self::parseNameFromError($error));
+				if (!reset($error_table_names)) {
+					$error_table_names = self::parseNamesFromQuery($query);
+				}
 				foreach ($context as $key => $context_class) {
 					$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
-					if ($context_table === $error_table_name) {
+					if (in_array($context_table, $error_table_names)) {
 						if (!is_array($context_class)) {
 							self::createTable($mysqli, $context_class);
 						}
@@ -110,7 +113,9 @@ class Mysql_Maintainer implements Plugin
 					}
 				}
 				if (!$retry) {
-					$retry = self::createTableWithoutContext($mysqli, $error_table_name, $query);
+					foreach ($error_table_names as $error_table_name) {
+						$retry = $retry || self::createTableWithoutContext($mysqli, $error_table_name, $query);
+					}
 				}
 			}
 			elseif ($errno == Mysql_Errors::ER_BAD_FIELD_ERROR) {
@@ -150,7 +155,22 @@ class Mysql_Maintainer implements Plugin
 		return $name;
 	}
 
+	//--------------------------------------------------------------------------- parseNamesFromQuery
+	/**
+	 * Parse an SQL query to get all table names
+	 *
+	 * @param $query
+	 * @return string
+	 */
+	private static function parseNamesFromQuery($query)
+	{
+		return "";
+	}
+
 	//-------------------------------------------------------------------------------------- register
+	/**
+	 * Registers the Mysql maintainer plugin
+	 */
 	public static function register()
 	{
 		Aop::add(Aop::AFTER, "mysqli->query()", array(__CLASS__, "onMysqliQuery"));
