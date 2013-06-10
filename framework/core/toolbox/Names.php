@@ -69,6 +69,18 @@ abstract class Names
 		return Reflection_Class::getInstanceOf($class_name)->getAnnotation("set")->value;
 	}
 
+	//---------------------------------------------------------------------------- displayToDirectory
+	/**
+	 * Changes "a text" do a valid normalized directory name (without spaces nor special characters)
+	 *
+	 * @param $display string
+	 * @return string
+	 */
+	public static function displayToDirectory($display)
+	{
+		return strtolower(str_replace(" ", "_", $display));
+	}
+
 	//----------------------------------------------------------------------------- displayToProperty
 	/**
 	 * Changes "a text" into "a_text"
@@ -78,7 +90,7 @@ abstract class Names
 	 */
 	public static function displayToProperty($display)
 	{
-		return self::classToProperty(str_replace(" ", "_", $display));
+		return strtolower(str_replace(" ", "_", $display));
 	}
 
 	//--------------------------------------------------------------------------------- methodToClass
