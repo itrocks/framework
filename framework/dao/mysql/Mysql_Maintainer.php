@@ -15,7 +15,7 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Create a table in database, using a data class structure
 	 *
-	 * @param $mysqli mysqli
+	 * @param $mysqli     mysqli
 	 * @param $class_name string
 	 */
 	private static function createTable(mysqli $mysqli, $class_name)
@@ -54,6 +54,13 @@ class Mysql_Maintainer implements Plugin
 	 */
 	private static function createTableWithoutContext(mysqli $mysqli, $table_name, $query)
 	{
+		// if a class name exists for the table name, use it as context and create table from class
+		$class_name = Dao::classNameOf($table_name);
+		if (class_exists($class_name)) {
+			self::createTable($mysqli, $class_name);
+			return true;
+		}
+		// if no class name, create it from columns names in the query
 		/** @noinspection PhpWrongStringConcatenationInspection */
 		$alias = "t" . (
 			(substr($query, strpos($query, "`" . $table_name . "` t") + strlen($table_name) + 4)) + 0
@@ -63,17 +70,39 @@ class Mysql_Maintainer implements Plugin
 		while (($i = strpos($query, $alias . ".", $i)) !== false) {
 			$i += strlen($alias) + 1;
 			$field_name = substr($query, $i, strpos($query, " ", $i) - $i);
-			$column_names[] = $field_name;
+			$column_names[$field_name] = $field_name;
 		}
 		if (!$column_names) {
-			if (substr($query, 0, 11) == "INSERT INTO") {
+			if (substr($query, 0, 7) == "DELETE ") {
+				// @todo create table without context DELETE columns detection
+				trigger_error(
+					"TODO Mysql maintainer create table $table_name from a DELETE query without context",
+					E_USER_ERROR
+				);
+			}
+			elseif (substr($query, 0, 12) == "INSERT INTO ") {
 				$column_names = explode(",", str_replace(array("`", " "), "", mParse($query, "(", ")")));
 			}
-			elseif (substr($query, 0, 6) == "UPDATE") {
-				// @todo create table without context UPDATE columns detection
+			elseif (substr($query, 0, 7) == "SELECT ") {
+				// @todo create table without context SELECT columns detection (needs complete sql analyst)
+				trigger_error(
+					"TODO Mysql maintainer create table $table_name from a SELECT query without context",
+					E_USER_ERROR
+				);
 			}
-			elseif (substr($query, 0, 6) == "DELETE") {
-				// @todo create table without context DELETE columns detection
+			elseif (substr($query, 0, 9) == "TRUNCATE ") {
+				trigger_error(
+					"Mysql maintainer can't create table $table_name from a TRUNCATE query without context",
+					E_USER_ERROR
+				);
+				return false;
+			}
+			elseif (substr($query, 0, 7) == "UPDATE ") {
+				// @todo create table without context UPDATE columns detection
+				trigger_error(
+					"TODO Mysql maintainer create table $table_name from a UPDATE query without context",
+					E_USER_ERROR
+				);
 			}
 		}
 		return self::createImplicitTable($mysqli, $table_name, $column_names);
@@ -92,42 +121,46 @@ class Mysql_Maintainer implements Plugin
 		$errno = $mysqli->errno;
 		if ($errno && isset($mysqli->context)) {
 			$query = $joinpoint->getArguments()[0];
-			$error = $mysqli->error;
-			$retry = false;
-			$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
-			if ($errno == Mysql_Errors::ER_NO_SUCH_TABLE) {
-				$error_table_names = array(self::parseNameFromError($error));
-				if (!reset($error_table_names)) {
-					$error_table_names = self::parseNamesFromQuery($query);
-				}
-				foreach ($context as $key => $context_class) {
-					$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
-					if (in_array($context_table, $error_table_names)) {
-						if (!is_array($context_class)) {
-							self::createTable($mysqli, $context_class);
+			if (substr($query, 0, 9) !== "TRUNCATE ") {
+				$error = $mysqli->error;
+				$retry = false;
+				$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
+				if ($errno == Mysql_Errors::ER_NO_SUCH_TABLE) {
+					$error_table_names = array(self::parseNameFromError($error));
+					if (!reset($error_table_names)) {
+						$error_table_names = self::parseNamesFromQuery($query);
+					}
+					foreach ($context as $key => $context_class) {
+						$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
+						if (in_array($context_table, $error_table_names)) {
+							if (!is_array($context_class)) {
+								self::createTable($mysqli, $context_class);
+							}
+							else {
+								self::createImplicitTable($mysqli, $context_table, $context_class);
+							}
+							$retry = true;
 						}
-						else {
-							self::createImplicitTable($mysqli, $context_table, $context_class);
+					}
+					if (!$retry) {
+						foreach ($error_table_names as $error_table_name) {
+							$retry = $retry || self::createTableWithoutContext(
+								$mysqli, $error_table_name, $query
+							);
 						}
-						$retry = true;
 					}
 				}
-				if (!$retry) {
-					foreach ($error_table_names as $error_table_name) {
-						$retry = $retry || self::createTableWithoutContext($mysqli, $error_table_name, $query);
+				elseif ($errno == Mysql_Errors::ER_BAD_FIELD_ERROR) {
+					foreach ($context as $context_class) {
+						if (self::updateTable($mysqli, $context_class)) {
+							$retry = true;
+						}
 					}
 				}
-			}
-			elseif ($errno == Mysql_Errors::ER_BAD_FIELD_ERROR) {
-				foreach ($context as $context_class) {
-					if (self::updateTable($mysqli, $context_class)) {
-						$retry = true;
-					}
+				if ($retry) {
+					$result = $mysqli->query($query);
+					$joinpoint->setReturnedValue($result);
 				}
-			}
-			if ($retry) {
-				$result = $mysqli->query($query);
-				$joinpoint->setReturnedValue($result);
 			}
 		}
 	}
@@ -160,11 +193,11 @@ class Mysql_Maintainer implements Plugin
 	 * Parse an SQL query to get all table names
 	 *
 	 * @param $query
-	 * @return string
+	 * @return string[]
 	 */
 	private static function parseNamesFromQuery($query)
 	{
-		return "";
+		return array();
 	}
 
 	//-------------------------------------------------------------------------------------- register

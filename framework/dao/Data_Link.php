@@ -32,6 +32,21 @@ abstract class Data_Link implements Configurable
 		}
 	}
 
+	//----------------------------------------------------------------------------------- classNameOf
+	/**
+	 * Gets the class name associated to a store set name
+	 *
+	 * @example "my_addresses" will become 'A\Namespace\My\Address'
+	 * @param $store_name string
+	 * @return string Full class name with namespace
+	 */
+	public function classNameOf($store_name)
+	{
+		return Namespaces::fullClassName(Names::setToClass(
+			str_replace(" ", "_", ucwords(str_replace("_", " ", $store_name)))
+		));
+	}
+
 	//---------------------------------------------------------------------------------------- delete
 	/**
 	 * Delete an object from data source

@@ -26,6 +26,18 @@ abstract class Dao
 		}
 	}
 
+	//----------------------------------------------------------------------------------- classNameOf
+	/**
+	 * Gets the class name associated to a store set name
+	 *
+	 * @param $store_name string
+	 * @return string Full class name with namespace
+	 */
+	public static function classNameOf($store_name)
+	{
+		return self::current()->classNameOf($store_name);
+	}
+
 	//---------------------------------------------------------------------------------------- commit
 	/**
 	 * Commit a transaction using the current data link (non-transactional SQL engines will do nothing and return null)

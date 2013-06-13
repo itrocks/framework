@@ -16,10 +16,10 @@ class Default_Controller implements Controller
 	 * Loads data from objects given as parameters, then run the view associated to the first parameter class.
 	 * This is called when no other controller was found for the first parameter object.
 	 *
-	 * @param $parameters Controller_Parameters
-	 * @param $form array
-	 * @param $files array
-	 * @param $class_name string
+	 * @param $parameters   Controller_Parameters
+	 * @param $form         array
+	 * @param $files        array
+	 * @param $class_name   string
 	 * @param $feature_name string
 	 * @return mixed
 	 */
