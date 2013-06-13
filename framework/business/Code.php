@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * Standard basic codes, with a code and a description
+ * Standard basic codes, with a code and a full name
  */
 class Code
 {
@@ -13,11 +13,11 @@ class Code
 	 */
 	public $code;
 
-	//---------------------------------------------------------------------------------- $description
+	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
 	 */
-	public $description;
+	public $name;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -25,7 +25,7 @@ class Code
 	 */
 	public function __toString()
 	{
-		return trim($this->code . " " . $this->description);
+		return trim($this->code . " " . $this->name);
 	}
 
 }

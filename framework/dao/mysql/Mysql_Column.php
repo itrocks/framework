@@ -208,7 +208,7 @@ class Mysql_Column implements Dao_Column
 		}
 		$sql .= $postfix;
 		if ($postfix === " auto_increment") {
-			$sql .= ", PRIMARY KEY (`" . $column_name . "`)";
+			$sql .= " PRIMARY KEY";
 		}
 		return $sql;
 	}
