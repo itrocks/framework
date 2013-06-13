@@ -339,7 +339,7 @@ class Mysql_Link extends Sql_Link
 			$query = $builder->buildQuery();
 			$this->setContext($builder->getJoins()->getClassNames());
 			$result_set = $this->executeQuery($query);
-			if($result_set) {
+			if ($result_set) {
 				while ($object = $result_set->fetch_object($class_name)) {
 					$this->setObjectIdentifier($object, $object->id);
 					$search_result[$object->id] = $object;

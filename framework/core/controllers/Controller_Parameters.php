@@ -108,10 +108,9 @@ class Controller_Parameters
 	 */
 	public function getRawParameter($parameter_name)
 	{
-		if(isset($this->parameters[$parameter_name]))
-			return $this->parameters[$parameter_name];
-		else
-			return null;
+		return isset($this->parameters[$parameter_name])
+			? $this->parameters[$parameter_name]
+			: null;
 	}
 
 	//--------------------------------------------------------------------------------- getParameters

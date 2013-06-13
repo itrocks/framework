@@ -40,7 +40,7 @@ abstract class Null_Object
 		$object = Builder::create($class_name);
 		$class = Reflection_Class::getInstanceOf($class_name);
 		foreach ($class->accessProperties() as $property) {
-			if(!$property->isStatic()) {
+			if (!$property->isStatic()) {
 				$property->setValue($object, null);
 			}
 		}

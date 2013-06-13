@@ -179,10 +179,10 @@ function treeToArray($array, $ignore_key = null)
 function explodeStringInArrayToSimpleArray($delimiter, $array)
 {
 	$tab = array();
-	foreach($array as $element){
+	foreach ($array as $element) {
 		$explode = explode($delimiter, $element);
-		if(!empty($explode)){
-			foreach($explode as $part){
+		if (!empty($explode)) {
+			foreach ($explode as $part) {
 				$tab[] = $part;
 			}
 		}

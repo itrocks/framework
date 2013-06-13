@@ -52,7 +52,7 @@ abstract class Empty_Object
 		$object = Builder::create($class_name);
 		$class = Reflection_Class::getInstanceOf($class_name);
 		foreach ($class->accessProperties() as $property) {
-			if(!$property->isStatic()) {
+			if (!$property->isStatic()) {
 				switch ($property->getType()->asString()) {
 					case "integer":
 					case "float":   $value = 0;       break;

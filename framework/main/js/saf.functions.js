@@ -46,9 +46,9 @@ getTextHeight = function(context, extraHeight)
 {
 	var $content = context.val().split("\n");
 	// If the last element is empty, need put a character to prevent the browser ignores the character
-	var $lastIndex = $content.length -1;
-	if(!$content[$lastIndex]){
-		$content[$lastIndex] = "_";
+	var $last_index = $content.length -1;
+	if (!$content[$last_index]) {
+		$content[$last_index] = "_";
 	}
 	$('<div id="height">').append($content.join("<br>")).appendTo(context.parent());
 	var $height = $('#height');
@@ -86,7 +86,7 @@ getTextWidth = function(context, extraWidth)
 		var ending_right_parent = ($(window).width() - ($parent.offset().left + $parent.outerWidth()));
 		ending_right_parent += $margins;
 		var ending_right = ($(window).width() - ($width.offset().left + $width.outerWidth()) - extraWidth);
-		if(ending_right < ending_right_parent){
+		if (ending_right < ending_right_parent) {
 			width = width - (ending_right_parent - ending_right);
 		}
 		$width.remove();
