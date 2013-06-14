@@ -25,6 +25,11 @@ class Html_Session implements Configurable, Plugin
 	public static $use_cookie = false;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * The HTML Session contructor can set parameters
+	 *
+	 * @param null $parameters
+	 */
 	public function __construct($parameters = null)
 	{
 		if (is_string($parameters)) {
