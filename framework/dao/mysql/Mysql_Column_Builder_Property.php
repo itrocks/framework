@@ -163,7 +163,7 @@ abstract class Mysql_Column_Builder_Property
 						. " CHARACTER SET utf8 COLLATE utf8_general_ci";
 				}
 			}
-			switch ($property_type) {
+			switch ($property_type->asString()) {
 				case "array":
 					return null;
 				case "boolean":
@@ -174,7 +174,7 @@ abstract class Mysql_Column_Builder_Property
 					return null;
 				case "resource":
 					return null;
-				case "Date_Time":
+				case 'Date_Time': case 'SAF\Framework\Date_Time':
 					return "datetime";
 				default:
 					return "char(255)";

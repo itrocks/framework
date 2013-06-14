@@ -20,8 +20,9 @@ class Mysql_Maintainer implements Plugin
 	 */
 	private static function createTable(mysqli $mysqli, $class_name)
 	{
-		$table = Mysql_Table_Builder_Class::build($class_name);
-		$mysqli->query((new Sql_Create_Table_Builder($table))->build());
+		foreach ((new Mysql_Table_Builder_Class)->build($class_name) as $table) {
+			$mysqli->query((new Sql_Create_Table_Builder($table))->build());
+		}
 	}
 
 	//---------------------------------------------------------------------------- createImplicitType
@@ -123,6 +124,7 @@ class Mysql_Maintainer implements Plugin
 			$query = $joinpoint->getArguments()[0];
 			if (substr($query, 0, 9) !== "TRUNCATE ") {
 				$error = $mysqli->error;
+				//echo "$errno $error on $query context " . print_r($mysqli->context, true) . "<br>";
 				$retry = false;
 				$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
 				if ($errno == Mysql_Errors::ER_NO_SUCH_TABLE) {
@@ -195,8 +197,9 @@ class Mysql_Maintainer implements Plugin
 	 * @param $query
 	 * @return string[]
 	 */
-	private static function parseNamesFromQuery($query)
-	{
+	private static function parseNamesFromQuery(
+		/** @noinspection PhpUnusedParameterInspection */ $query
+	) {
 		return array();
 	}
 
@@ -219,23 +222,25 @@ class Mysql_Maintainer implements Plugin
 	 */
 	private static function updateTable(mysqli $mysqli, $class_name)
 	{
-		$class_table = Mysql_Table_Builder_Class::build($class_name);
-		$mysql_table = Mysql_Table_Builder_Mysqli::build($mysqli, Dao::storeNameOf($class_name));
-		$mysql_columns = $mysql_table->getColumns();
-		$builder = new Sql_Alter_Table_Builder($mysql_table);
-		foreach ($class_table->getColumns() as $column) {
-			if (!isset($mysql_columns[$column->getName()])) {
-				$builder->addColumn($column);
+		$result = false;
+		foreach ((new Mysql_Table_Builder_Class)->build($class_name) as $class_table) {;
+			$mysql_table = Mysql_Table_Builder_Mysqli::build($mysqli, Dao::storeNameOf($class_name));
+			$mysql_columns = $mysql_table->getColumns();
+			$builder = new Sql_Alter_Table_Builder($mysql_table);
+			foreach ($class_table->getColumns() as $column) {
+				if (!isset($mysql_columns[$column->getName()])) {
+					$builder->addColumn($column);
+				}
+				elseif (!$column->equiv($mysql_columns[$column->getName()])) {
+					$builder->alterColumn($column->getName(), $column);
+				}
 			}
-			elseif (!$column->equiv($mysql_columns[$column->getName()])) {
-				$builder->alterColumn($column->getName(), $column);
+			if ($builder->isReady()) {
+				$mysqli->query($builder->build());
+				$result = true;
 			}
 		}
-		if ($builder->isReady()) {
-			$mysqli->query($builder->build());
-			return true;
-		}
-		return false;
+		return $result;
 	}
 
 }
