@@ -226,7 +226,7 @@ class Object_Builder_Array
 		if ($this->started) {
 			$this->stop();
 		}
-		$this->class = new Reflection_Class(Builder::className($class_name));
+		$this->class = Reflection_Class::getInstanceOf(Builder::className($class_name));
 		$this->defaults = $this->class->getDefaultProperties();
 	}
 
