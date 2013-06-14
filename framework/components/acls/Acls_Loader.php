@@ -55,7 +55,7 @@ abstract class Acls_Loader
 	//------------------------------------------------------------------------------ onUserDisconnect
 	public static function onUserDisconnect()
 	{
-		Acls_Rights::current(new Acls_Rights());
+		Acls_Rights::current(new Acls_Rights);
 		Session::current()->removeAny('SAF\Framework\Acls_Rights');
 	}
 

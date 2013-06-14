@@ -87,7 +87,7 @@ abstract class User_Authentication
 	 */
 	public static function disconnect(User $user)
 	{
-		User::current(new User());
+		User::current(new User);
 		Session::current()->removeAny(get_class($user));
 	}
 

@@ -62,7 +62,7 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	{
 		$head = parent::buildHead();
 		foreach ($head->rows as $row) {
-			$row->addCell(new Html_Table_Header_Cell());
+			$row->addCell(new Html_Table_Header_Cell);
 		}
 		return $head;
 	}

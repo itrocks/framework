@@ -53,7 +53,7 @@ class Textile extends \Textile
 	 */
 	public static function parse($text)
 	{
-		return (new Textile())->textileThis($text);
+		return (new Textile)->textileThis($text);
 	}
 
 	//----------------------------------------------------------------------------------------- spans

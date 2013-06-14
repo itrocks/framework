@@ -21,7 +21,7 @@ class Tests_Run_Controller implements Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		(new Tests())->run();
+		(new Tests)->run();
 	}
 
 }

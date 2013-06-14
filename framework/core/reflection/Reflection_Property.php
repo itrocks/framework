@@ -226,7 +226,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 				$class_name = Namespaces::defaultFullClassName($element_class_name, $declaring_trait);
 				$type = $type->isMultiple()
 					? (new Type($class_name, $type->canBeNull()))->multiple()
-					: (new Type($class_name, $type->canBeNull()));
+					: new Type($class_name, $type->canBeNull());
 			}
 		}
 		if ($type->isNull()) {

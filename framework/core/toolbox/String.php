@@ -116,7 +116,7 @@ class String
 	 */
 	public function textile()
 	{
-		return (new Textile())->parse($this);
+		return (new Textile)->parse($this);
 	}
 
 	//--------------------------------------------------------------------------------------- twoLast

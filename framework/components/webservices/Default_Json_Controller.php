@@ -34,7 +34,7 @@ class Default_Json_Controller implements Default_Feature_Controller
 		// search objects
 		if (isset($parameters["term"])) {
 			$element_class_name = Namespaces::fullClassName(Names::setToClass($class_name));
-			$search = (new Search_Array_Builder())->buildMultiple(
+			$search = (new Search_Array_Builder)->buildMultiple(
 				Reflection_Class::getInstanceOf($element_class_name),
 				$parameters["term"],
 				"%"

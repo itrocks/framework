@@ -72,7 +72,7 @@ class Set
 	public static function elementClassNameOf($class_name)
 	{
 		if (class_instanceof($class_name, __CLASS__)) {
-			$class_name = (new $class_name())->element_class_name;
+			$class_name = (new $class_name)->element_class_name;
 		}
 		elseif (!class_exists($class_name)) {
 			$class_name = Names::setToClass($class_name);

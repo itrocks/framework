@@ -52,7 +52,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 		list($parameters, $form, $files) = $joinpoint->getArguments();
 		if ($parameters->getRawParameter(1) == "list") {
 			$parameters->unshiftUnnamed(__CLASS__);
-			(new Acls_Property_Add_Controller())->run($parameters, $form, $files);
+			(new Acls_Property_Add_Controller)->run($parameters, $form, $files);
 		}
 		else {
 			$joinpoint->process();
@@ -76,7 +76,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 		list($parameters, $form, $files) = $joinpoint->getArguments();
 		if ($parameters->getRawParameter(1) == "list") {
 			$parameters->unshiftUnnamed(__CLASS__);
-			(new Acls_Property_Remove_Controller())->run($parameters, $form, $files);
+			(new Acls_Property_Remove_Controller)->run($parameters, $form, $files);
 		}
 		else {
 			$joinpoint->process();

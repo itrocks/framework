@@ -45,7 +45,7 @@ class Acls_Output_Properties extends Acls_Properties implements Plugin
 		}
 		if ($parameters->getRawParameter(1) == "output") {
 			$parameters->unshiftUnnamed(__CLASS__);
-			(new Acls_Property_Remove_Controller())->run($parameters, $form, $files);
+			(new Acls_Property_Remove_Controller)->run($parameters, $form, $files);
 		}
 		else {
 			$joinpoint->process();
