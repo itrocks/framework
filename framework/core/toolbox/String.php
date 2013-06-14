@@ -116,7 +116,11 @@ class String
 	 */
 	public function textile()
 	{
-		return (new Textile)->parse($this);
+		$wiki = new Wiki();
+		$text = $wiki->geshi($this->value, false);
+		$text = $wiki->textile($text);
+		$text = $wiki->geshiSolve($text);
+		return $text;
 	}
 
 	//--------------------------------------------------------------------------------------- twoLast
