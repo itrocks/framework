@@ -9,7 +9,7 @@ class Default_Edit_Controller extends Default_Output_Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
-	 * @param $object object|string object or class name
+	 * @param $object     object|string object or class name
 	 * @param $parameters string[] parameters
 	 * @return Button[]
 	 */

@@ -20,16 +20,22 @@ abstract class View
 
 	//------------------------------------------------------------------------------ getPossibleViews
 	/**
-	 * @param $class_name string
-	 * @param $feature_name string
+	 * @param $class_name    string
+	 * @param $feature_names string|string[]
 	 * @return string[]
 	 */
-	public static function getPossibleViews($class_name, $feature_name)
+	public static function getPossibleViews($class_name, $feature_names)
 	{
+		if (!is_array($feature_names)) {
+			$feature_names = array($feature_names);
+		}
 		$class_name = Namespaces::shortClassName($class_name);
 		$view_engine_name = Namespaces::shortClassName(get_class(View::current()));
 		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, "_View_Engine"));
-		$feature_class = Names::methodToClass($feature_name);
+		$feature_classes = array();
+		foreach ($feature_names as $feature_name) {
+			$feature_classes[$feature_name] = Names::methodToClass($feature_name);
+		}
 		$views = array();
 		$namespaces = Application::getCurrentNamespaces();
 		foreach ($namespaces as $namespace) {
@@ -37,15 +43,19 @@ abstract class View
 			while ($class) {
 				$i = strrpos($class, "\\") + 1;
 				$view = $namespace . "\\" . $view_engine_name . "_" . substr($class, $i);
-				$views[] = array($view . "_" . $feature_class, "run");
-				$views[] = array($view, $feature_name);
+				foreach ($feature_classes as $feature_name => $feature_class) {
+					$views[] = array($view . "_" . $feature_class, "run");
+					$views[] = array($view, $feature_name);
+				}
 				$class = get_parent_class($class);
 			}
 		}
 		foreach ($namespaces as $namespace) {
 			$view = $namespace . "\\" . $view_engine_name;
-			$views[] = array($view . "_" . $feature_class, "run");
-			$views[] = array($view . "_Default_View", $feature_name);
+			foreach ($feature_classes as $feature_name => $feature_class) {
+				$views[] = array($view . "_" . $feature_class, "run");
+				$views[] = array($view . "_Default_View", $feature_name);
+			}
 			$views[] = array($view . "_Default_View", "run");
 		}
 		return $views;
@@ -73,7 +83,10 @@ abstract class View
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		foreach (self::getPossibleViews($class_name, $feature_name) as $call) {
+		$features = isset($parameters["feature"])
+			? array($parameters["feature"], $feature_name)
+			: $feature_name;
+		foreach (self::getPossibleViews($class_name, $features) as $call) {
 			list($view, $view_method_name) = $call;
 			if (@method_exists($view, $view_method_name)) {
 				$view_object = new $view();

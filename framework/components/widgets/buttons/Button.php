@@ -77,7 +77,7 @@ class Button
 			if ($option instanceof Color) {
 				$this->color = $option;
 			}
-			elseif ($key == "color") {
+			elseif ($key === "color") {
 				$this->color = Color::of($option);
 			}
 			elseif (($key === "class") || (is_numeric($key) && (substr($option, 0, 1) == "."))) {

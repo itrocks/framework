@@ -20,7 +20,7 @@ class Html_Default_View implements IView
 	{
 		$templates_files = Html_View_Engine::getPossibleTemplates(
 			Namespaces::shortClassName($class_name),
-			$feature_name
+			isset($parameters["feature"]) ? array($parameters["feature"], $feature_name) : $feature_name
 		);
 		foreach ($templates_files as $template_file) {
 			$template_file = stream_resolve_include_path($template_file);

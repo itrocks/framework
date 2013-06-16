@@ -37,23 +37,34 @@ class Html_View_Engine implements Configurable, View_Engine
 
 	//-------------------------------------------------------------------------- getPossibleTemplates
 	/**
-	 * @param $class_name string
-	 * @param $feature_name string
+	 * @param $class_name    string
+	 * @param $feature_names string|string[]
 	 * @return string[]
 	 */
-	public static function getPossibleTemplates($class_name, $feature_name)
+	public static function getPossibleTemplates($class_name, $feature_names)
 	{
-		if (!strpos($feature_name, ".")) {
-			$feature_name .= ".html";
+		if (!is_array($feature_names)) {
+			$feature_names = array($feature_names);
+		}
+		foreach ($feature_names as $key => $feature_name) {
+			if (!strpos($feature_name, ".")) {
+				$feature_names[$key] .= ".html";
+			}
 		}
 		$templates = array();
 		$class_name = Namespaces::fullClassName($class_name);
 		while ($class_name) {
-			$templates[] = Namespaces::shortClassName($class_name) . "_" . $feature_name;
+			foreach ($feature_names as $feature_name) {
+				$templates[] = Namespaces::shortClassName($class_name) . "_" . $feature_name;
+			}
 			$class_name = get_parent_class($class_name);
 		}
-		$templates[] = "Default_$feature_name";
-		$templates[] = $feature_name;
+		foreach ($feature_names as $feature_name) {
+			$templates[] = "Default_$feature_name";
+		}
+		foreach ($feature_names as $feature_name) {
+			$templates[] = $feature_name;
+		}
 		return $templates;
 	}
 
@@ -67,9 +78,9 @@ class Html_View_Engine implements Configurable, View_Engine
 	 */
 	public function link($object, $parameters = null)
 	{
-		$link = is_object($object)
+		$link = (is_object($object) && Dao::getObjectIdentifier($object))
 			? (Namespaces::shortClassName(get_class($object)) . "/" . Dao::getObjectIdentifier($object))
-			: Namespaces::shortClassName($object);
+			: Namespaces::shortClassName(is_object($object) ? get_class($object) : $object);
 		if (isset($parameters)) {
 			if (!is_array($parameters)) {
 				$link .= "/" . $parameters;

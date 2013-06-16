@@ -34,10 +34,22 @@ class Translations extends Set
 	 *
 	 * @param $translation string
 	 * @param $context     string
+	 * @return string
 	 */
 	public function reverse($translation, $context = "")
 	{
-		// TODO
+		if (empty($translation)) {
+			return $translation;
+		}
+		/** @var $search Translation */
+		$search = Search_Object::create('SAF\Framework\Translation');
+		$search->translation = strtolower($translation);
+		$search->language = $this->language;
+		/** @var $texts Translation[] */
+		$texts = Dao::search($search);
+		foreach ($texts as $text) if ($text->translation === $translation) break;
+		$text = isset($text) ? $text->text : $translation;
+		return $text;
 	}
 
 	//------------------------------------------------------------------------------------- translate
@@ -80,8 +92,8 @@ class Translations extends Set
 		}
 		$translation = $this->cache[$text][$context];
 		if (strlen($translation)) {
-			if (($text[0] >= 'A') && ($text[0] <= 'Z')) {
-				return ucfirst($translation);
+			if (strIsCapitals($text[0])) {
+				return ucfirsta($translation);
 			}
 			else {
 				return $translation;

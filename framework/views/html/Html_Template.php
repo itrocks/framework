@@ -478,10 +478,11 @@ class Html_Template
 	/**
 	 * Parses included view controller call result (must be an html view) or includes html template
 	 *
+	 * @param $objects    mixed[]
 	 * @param $include_uri string
 	 * @return string included template, parsed
 	 */
-	protected function parseInclude($include_uri)
+	protected function parseInclude($objects, $include_uri)
 	{
 		if (substr($include_uri, -5) === ".html") {
 			// includes html template
@@ -494,7 +495,7 @@ class Html_Template
 				$j = strpos($included, "<!--END-->");
 				$included = substr($included, $i, $j - $i);
 			}
-			return $included;
+			return $this->parseVars($included, $objects);
 		}
 		else {
 			// includes controller result
@@ -939,7 +940,7 @@ class Html_Template
 			return "";
 		}
 		elseif ($var_name[0] === "/") {
-			return $this->parseInclude($var_name);
+			return $this->parseInclude($objects, $var_name);
 		}
 		$property_name = null;
 		$object = reset($objects);

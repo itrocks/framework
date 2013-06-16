@@ -44,7 +44,7 @@ class Controller_Uri
 	public function __construct(
 		$uri, $get = array(), $default_element_feature = null, $default_collection_feature = null
 	) {
-		$uri = $this->uriToArray($uri);
+		$uri = self::uriToArray($uri);
 		if (isset($default_element_feature) && is_numeric(end($uri))) {
 			$uri[] = $default_element_feature;
 		}
@@ -54,6 +54,18 @@ class Controller_Uri
 		$this->parseUri($uri);
 		$this->parseGet($get);
 		$this->setDefaults();
+	}
+
+	//------------------------------------------------------------------------------------ arrayToUri
+	/**
+	 * Transforms an array to an URI
+	 *
+	 * @param $array string[]
+	 * @return string
+	 */
+	public static function arrayToUri($array)
+	{
+		return "/" . join("/", $array);
 	}
 
 	//----------------------------------------------------------------------------------- setDefaults
@@ -228,7 +240,7 @@ class Controller_Uri
 	 * @param $uri string
 	 * @return string[]
 	 */
-	private function uriToArray($uri)
+	public static function uriToArray($uri)
 	{
 		$uri = explode("/", str_replace(",", "/", $uri));
 		array_shift($uri);

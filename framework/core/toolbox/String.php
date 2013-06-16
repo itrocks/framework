@@ -245,6 +245,39 @@ namespace {
 		return $length;
 	}
 
+	//-------------------------------------------------------------------------------------- mb_strtr
+	/**
+	 * Translate characters or replace substrings
+	 * This works with multibytes characters (UTF-8 only)
+	 *
+	 * @param $str  string
+	 * @param $from string|string[]
+	 * @param $to   string|string[]
+	 * @return string
+	 */
+	function mb_strtr($str, $from, $to)
+	{
+		return str_replace(
+			is_array($from) ? $from : mb_str_split($from),
+			is_array($to)   ? $to   : mb_str_split($to),
+			$str
+		);
+	}
+
+	//---------------------------------------------------------------------------------- mb_str_split
+	/**
+	 * Split a string to an array containing each one of it's characters
+	 * Characters can be multibytes (this is UTF-8 compliant)
+	 *
+	 * @param $str string
+	 * @return string[]
+	 */
+	function mb_str_split($str)
+	{
+		$result = preg_split('~~u', $str, null, PREG_SPLIT_NO_EMPTY);
+		return $result;
+	}
+
 	//---------------------------------------------------------------------------------------  mParse
 	/**
 	 * Renvoie la partie de la chaîne située entre le délimiteur de début et le délimiteur de fin
@@ -343,6 +376,38 @@ namespace {
 		}
 	}
 
+	//---------------------------------------------------------------------------------- strHasAccent
+	/**
+	 * Returns true if string has at least one accentued character
+	 *
+	 * @param $str string
+	 * @return boolean
+	 */
+	function strHasAccent($str)
+	{
+		return (strpbrk($str, "àáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ") !== false);
+	}
+
+	//--------------------------------------------------------------------------------- strIsCapitals
+	/**
+	 * Returns true if string contains only capitals letters
+	 *
+	 * @param $str string
+	 * @return boolean
+	 */
+	function strIsCapitals($str)
+	{
+		for ($i = 0; $i < strlen($str); $i ++) {
+			if (
+				(($str[$i] < 'A') || ($str[$i] > 'Z'))
+				&& (strpos("ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ", $str[$i]) !== false)
+			) {
+				return false;
+			}
+		}
+		return !empty($str);
+	}
+
 	//----------------------------------------------------------------------------------  strSimplify
 	/**
 	 * Returns a very simplified version of string :
@@ -411,6 +476,35 @@ namespace {
 	function strUri($str)
 	{
 		return strtolower(strSimplify(str_replace(" ", "_", $str), "/-_"));
+	}
+
+	//-------------------------------------------------------------------------------------- ucfirsta
+	/**
+	 * Uppercase the first character, even if this is an accented character
+	 *
+	 * @param $str              string
+	 * @param $accented_capital boolean if true, "à" will become "À", or will become "A" if false
+	 * @return string
+	 */
+	function ucfirsta($str, $accented_capital = false)
+	{
+		//echo "ucfirsta of $str = ";
+		if (!empty($str)) {
+			if ($accented_capital) {
+				$str[0] = mb_strtr($str[0],
+					"abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïðòóôõöùúûüýÿ",
+					"ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ"
+				);
+			}
+			else {
+				$str[0] = mb_strtr($str[0],
+					"abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ",
+					"ABCDEFGHIJKLMNOPQRSTUVWXYZAAAAAACEEEEIIIIOOOOOOUUUUYYAAAAAACEEEEIIIIOOOOOOUUUUYY"
+				);
+			}
+		}
+		//echo "$str<br>";
+		return $str;
 	}
 
 }
