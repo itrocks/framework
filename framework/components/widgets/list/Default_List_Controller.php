@@ -88,7 +88,8 @@ class Default_List_Controller extends List_Controller
 			: $properties_list;
 		$parameters = array_merge(
 			array(
-				$element_class_name => Dao::select($element_class_name, $properties_list, $search_values),
+				$element_class_name
+					=> Dao::select($element_class_name, $properties_list, $search_values, Dao::sort()),
 				"search" => $search
 			),
 			$parameters

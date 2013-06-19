@@ -117,13 +117,14 @@ abstract class Dao
 	/**
 	 * Read all objects of a given class from current data link
 	 *
-	 * @param $object_class string class for read objects
+	 * @param $class_name string class name of read objects
+	 * @param $options    Dao_Option|Dao_Option[] some options for advanced read
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::readAll()
 	 */
-	public static function readAll($object_class)
+	public static function readAll($class_name, $options = null)
 	{
-		return self::current()->readAll($object_class);
+		return self::current()->readAll($class_name, $options);
 	}
 
 	//--------------------------------------------------------------------------------------- replace
@@ -170,13 +171,14 @@ abstract class Dao
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
 	 * @param $what       object|array source object for filter, only set properties will be used for search
-	 * @param $class_name string must be set if $what is a filter array
+	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $options    Dao_Option|Dao_Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::search()
 	 */
-	public static function search($what, $class_name = null)
+	public static function search($what, $class_name = null, $options = null)
 	{
-		return self::current()->search($what, $class_name);
+		return self::current()->search($what, $class_name, $options);
 	}
 
 	//------------------------------------------------------------------------------------- searchOne
@@ -202,13 +204,33 @@ abstract class Dao
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $columns       array the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
-	 * @param $filter_object mixed source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
-	 * @return mixed[] a list of read records. Each record values (may be objects) are stored in the same order than columns.
+	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 * @param $options    Dao_Option|Dao_Option[] some options for advanced search
+	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
-	public static function select($class, $columns, $filter_object = null)
+	public static function select($class, $columns, $filter_object = null, $options = null)
 	{
-		return self::current()->select($class, $columns, $filter_object);
+		return self::current()->select($class, $columns, $filter_object, $options);
+	}
+
+	//------------------------------------------------------------------------------------------ sort
+	/**
+	 * Gets a DAO sort option, used to sort objects read with Dao::readAll() or Dao::search()
+	 *
+	 * @example
+	 * $users = Dao::readAll(
+	 *   'SAF\Framework\User',
+	 *   Dao::sort(array("first_name", "last_name", "city.country.name")));
+	 * );
+	 *
+	 * @param $columns string|string[] A single or several column names.
+	 * If null, the value of annotations "sort" or "representative" will be taken as defaults.
+	 * @return Dao_Sort_Option
+	 */
+	public static function sort($columns = null)
+	{
+		return new Dao_Sort_Option($columns);
 	}
 
 	//----------------------------------------------------------------------------------- storeNameOf

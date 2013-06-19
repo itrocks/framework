@@ -132,12 +132,14 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	/**
 	 * @todo factorize
 	 */
-	public function select($object_class, $columns, $filter_object = null)
+	public function select($object_class, $columns, $filter_object = null, $options = null)
 	{
 		$filter_object = $this->objectToProperties($filter_object);
 		$list = new Default_List_Data($object_class, $columns);
 		$columns[] = "id";
-		$sql_select_builder = new Sql_Select_Builder($object_class, $columns, $filter_object, $this);
+		$sql_select_builder = new Sql_Select_Builder(
+			$object_class, $columns, $filter_object, $this, $options
+		);
 		$query = $sql_select_builder->buildQuery();
 		$path_classes = $sql_select_builder->getJoins()->getClasses();
 		$this->setContext(array_merge(

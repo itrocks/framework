@@ -286,15 +286,17 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Read all objects of a given class from data source
 	 *
-	 * @param $class string class for read objects
+	 * @param $class_name string class for read objects
+	 * @param $options    Dao_Option|Dao_Option[] some options for advanced read
 	 * @return object[] a collection of read objects
 	 */
-	public function readAll($class)
+	public function readAll($class_name, $options = null)
 	{
 		$read_result = array();
-		$this->setContext($class);
-		$result_set = $this->executeQuery("SELECT * FROM `" . $this->storeNameOf($class) . "`");
-		while ($object = $result_set->fetch_object($class)) {
+		$this->setContext($class_name);
+		$query = (new Sql_Select_Builder($class_name, null, null, null, $options))->buildQuery();
+		$result_set = $this->executeQuery($query);
+		while ($object = $result_set->fetch_object($class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$read_result[$object->id] = $object;
 		}
@@ -323,9 +325,10 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
 	 * @param $class_name string must be set if $what is a filter array and not an object
+	 * @param $options    Dao_Option|Dao_Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
-	public function search($what, $class_name = null)
+	public function search($what, $class_name = null, $options = null)
 	{
 		if (!isset($class_name)) {
 			$class_name = get_class($what);
@@ -335,7 +338,7 @@ class Mysql_Link extends Sql_Link
 			? call_user_func(array($class_name, "beforeSearch"), $what) : true
 		) {
 			$search_result = array();
-			$builder = new Sql_Select_Builder($class_name, null, $what, $this);
+			$builder = new Sql_Select_Builder($class_name, null, $what, $this, $options);
 			$query = $builder->buildQuery();
 			$this->setContext($builder->getJoins()->getClassNames());
 			$result_set = $this->executeQuery($query);

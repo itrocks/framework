@@ -7,8 +7,22 @@ namespace SAF\Framework;
 class Sql_Columns_Builder
 {
 
+	//--------------------------------------------------------------------------------------- $append
+	/**
+	 * If set : describes what must be appended after each SQL column description
+	 *
+	 * - each element being a string is an expression to append to each column, ie "DESC"
+	 * - each element being an array : the main key is the expression to be appended to the properties
+	 * names in the array, ie "DESC" => array("property.path.1", "property2")
+	 *
+	 * @var mixed[]|null
+	 */
+	private $append;
+
 	//---------------------------------------------------------------------------------------- $joins
 	/**
+	 * Sql joins
+	 *
 	 * @var Sql_Joins
 	 */
 	private $joins;
@@ -28,11 +42,39 @@ class Sql_Columns_Builder
 	 * @param $class_name string
 	 * @param $properties string[] properties paths list
 	 * @param $joins      Sql_Joins
+	 * @param $append     mixed[] appends expressions to some SQL columns
+	 * - each element being a string is an expression to append to each column, ie "DESC"
+	 * - each element being an array : the main key is the expression to be appended to the properties
+	 * names in the array, ie "DESC" => array("property.path.1", "property2")
 	 */
-	public function __construct($class_name, $properties, Sql_Joins $joins = null)
+	public function __construct($class_name, $properties, Sql_Joins $joins = null, $append = null)
 	{
 		$this->joins      = $joins ? $joins : new Sql_Joins($class_name);
 		$this->properties = $properties;
+		$this->append     = $append;
+	}
+
+	//---------------------------------------------------------------------------------------- append
+	/**
+	 * Uses $this->append to append expressions to the end of the SQL column description
+	 *
+	 * @param $property string property path
+	 * @return string the SQL expression to be appended to the column name (with needed spaces)
+	 */
+	private function append($property)
+	{
+		$appended = "";
+		if (isset($this->append)) {
+			foreach ($this->append as $append_key => $append) {
+				if (is_string($append)) {
+					$appended .= " " . $append;
+				}
+				elseif (is_array($append) && in_array($property, $append)) {
+					$appended .= " " . $append_key;
+				}
+			}
+		}
+		return $appended;
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -51,6 +93,7 @@ class Sql_Columns_Builder
 				$sql_columns .= $join
 					? $this->buildObjectColumns($path, $join, $first_property)
 					: $this->buildColumn($path, $first_property);
+				$sql_columns .=  $this->append($path);
 			}
 		} elseif ($this->joins->getJoins()) {
 			// TODO why not read all properties of all tables in order to fill in result set ?
@@ -76,8 +119,8 @@ class Sql_Columns_Builder
 		list($master_path, $column_name) = Sql_Builder::splitPropertyPath($path);
 		$join = $this->joins->getJoin($master_path);
 		$sql_columns .= $join
-			? "$join->foreign_alias.`$column_name` AS `$path`"
-			: "t0.`$path` AS `$path`";
+			? "$join->foreign_alias.`$column_name`" . ($this->append ? "" : " AS `$path`")
+			: "t0.`$path`" . ($this->append ? "" : " AS `$path`");
 		return $sql_columns;
 	}
 
@@ -97,11 +140,12 @@ class Sql_Columns_Builder
 			$column_name = Sql_Builder::buildColumnName($property);
 			if ($column_name) {
 				if ($first_property) $first_property = false; else $sql_columns .= ", ";
-				$sql_columns .= "$join->foreign_alias.`$column_name` AS `$path:$property->name`";
+				$sql_columns .= "$join->foreign_alias.`$column_name`"
+					. ($this->append ? "" : " AS `$path:$property->name`");
 			}
 		}
 		if ($first_property) $first_property = false; else $sql_columns .= ", ";
-		$sql_columns .= "$join->foreign_alias.id AS `$path:id`";
+		$sql_columns .= "$join->foreign_alias.id" . ($this->append ? "" : " AS `$path:id`");
 		return $sql_columns;
 	}
 

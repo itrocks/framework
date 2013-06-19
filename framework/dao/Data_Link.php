@@ -99,10 +99,11 @@ abstract class Data_Link implements Configurable
 	/**
 	 * Read all objects of a given class from data source
 	 *
-	 * @param $class string class for read objects
+	 * @param $class_name string class name of read objects
+	 * @param $options    string|array some options for advanced read
 	 * @return object[] a collection of read objects
 	 */
-	abstract public function readAll($class);
+	abstract public function readAll($class_name, $options = null);
 
 	//--------------------------------------------------------------------------------------- replace
 	/**
@@ -126,10 +127,11 @@ abstract class Data_Link implements Configurable
 	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
 	 *
 	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
-	 * @param $class_name string must be set if is not a filter array
+	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $options    Dao_Option|Dao_Option[] array some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
-	abstract public function search($what, $class_name = null);
+	abstract public function search($what, $class_name = null, $options = null);
 
 	//------------------------------------------------------------------------------------- searchOne
 	/**
@@ -157,11 +159,12 @@ abstract class Data_Link implements Configurable
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $columns       array  the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
-	 * @param $filter_object mixed source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 * @param $options    Dao_Option|Dao_Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
-	abstract public function select($class, $columns, $filter_object = null);
+	abstract public function select($class, $columns, $filter_object = null, $options = null);
 
 	//----------------------------------------------------------------------------------- storeNameOf
 	/**
