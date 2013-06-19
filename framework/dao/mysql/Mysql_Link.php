@@ -59,6 +59,30 @@ class Mysql_Link extends Sql_Link
 		$this->query("SET NAMES UTF8");
 	}
 
+	//----------------------------------------------------------------------------------------- count
+	/**
+	 * Count the number of elements that match filter
+	 *
+	 * @param $what       object|array source object for filter, only set properties will be used
+	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @return integer
+	 */
+	public function count($what, $class_name = null)
+	{
+		$builder = new Sql_Count_Builder($class_name, $what, $this);
+		$query = $builder->buildQuery();
+		$this->setContext($builder->getJoins()->getClassNames());
+		$result_set = $this->executeQuery($query);
+		if ($result_set) {
+			$row = $result_set->fetch_row();
+			$result_set->free();
+		}
+		else {
+			$row = array(0 => 0);
+		}
+		return $row[0];
+	}
+
 	//---------------------------------------------------------------------------------------- delete
 	/**
 	 * Delete an object from current data link

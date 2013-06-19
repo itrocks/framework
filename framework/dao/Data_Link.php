@@ -47,6 +47,16 @@ abstract class Data_Link implements Configurable
 		));
 	}
 
+	//----------------------------------------------------------------------------------------- count
+	/**
+	 * Count the number of elements that match filter
+	 *
+	 * @param $what       object|array source object for filter, only set properties will be used
+	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @return integer
+	 */
+	abstract public function count($what, $class_name = null);
+
 	//---------------------------------------------------------------------------------------- delete
 	/**
 	 * Delete an object from data source

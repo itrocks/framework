@@ -507,6 +507,7 @@ class Html_Template
 
 	//------------------------------------------------------------------------------------- parseLoop
 	/**
+	 * @todo factorize
 	 * @param $content string
 	 * @param $objects mixed[]
 	 * @param $i       integer
