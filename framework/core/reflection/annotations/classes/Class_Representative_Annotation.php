@@ -26,7 +26,7 @@ class Class_Representative_Annotation extends List_Annotation
 		parent::__construct($value, $class);
 		if (!$this->value) {
 			foreach ($class->getAllProperties() as $property) {
-				if (!$property->isStatic()) {
+				if (!$property->isStatic() && !$property->getAnnotation("link")->value) {
 					$this->value[] = $property->name;
 				}
 			}
