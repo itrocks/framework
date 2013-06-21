@@ -154,7 +154,12 @@ class Sql_Where_Builder
 	{
 		$join = $this->joins->add($path);
 		if (isset($join)) {
-			$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
+			if ($join->type === Sql_Join::LINK) {
+				$column = $join->foreign_alias . ".`" . rLastParse($path, ".", 1, true) . "`";
+			}
+			else {
+				$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
+			}
 		}
 		else {
 			list($master_path, $foreign_column) = Sql_Builder::splitPropertyPath($path);

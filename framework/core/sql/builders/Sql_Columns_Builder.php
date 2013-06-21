@@ -90,14 +90,17 @@ class Sql_Columns_Builder
 			$first_property = true;
 			foreach ($this->properties as $path) {
 				$join = $this->joins->add($path);
-				$sql_columns .= $join
+				$sql_columns .= ($join && ($join->type !== Sql_Join::LINK))
 					? $this->buildObjectColumns($path, $join, $first_property)
-					: $this->buildColumn($path, $first_property);
+					: $this->buildColumn($path, $join, $first_property);
 				$sql_columns .=  $this->append($path);
 			}
 		} elseif ($this->joins->getJoins()) {
 			// TODO why not read all properties of all tables in order to fill in result set ?
 			$sql_columns = "t0.*";
+			foreach ($this->joins->getLinkedJoins() as $join) {
+				$sql_columns .= ", " . $join->foreign_alias . ".*";
+			}
 		} else {
 			$sql_columns = "*";
 		}
@@ -108,16 +111,19 @@ class Sql_Columns_Builder
 	/**
 	 * Build SQL query section for a single column
 	 *
-	 * @param $path string the past of the matching property
+	 * @param $path           string the past of the matching property
+	 * @param $join           Sql_Join
 	 * @param $first_property boolean
 	 * @return string
 	 */
-	private function buildColumn($path, &$first_property)
+	private function buildColumn($path, $join, &$first_property)
 	{
 		$sql_columns = "";
 		if ($first_property) $first_property = false; else $sql_columns = ", ";
 		list($master_path, $column_name) = Sql_Builder::splitPropertyPath($path);
-		$join = $this->joins->getJoin($master_path);
+		if (!isset($join)) {
+			$join = $this->joins->getJoin($master_path);
+		}
 		$sql_columns .= $join
 			? "$join->foreign_alias.`$column_name`" . ($this->append ? "" : " AS `$path`")
 			: "t0.`$path`" . ($this->append ? "" : " AS `$path`");

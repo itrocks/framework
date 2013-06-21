@@ -32,11 +32,22 @@ class Sql_Joins
 	 */
 	private $joins = array();
 
+	//----------------------------------------------------------------------------------- $link_joins
+	/**
+	 * joins for properties comming from classes having the "link" annotation
+	 *
+	 * @var Sql_Join[] indice is property full path
+	 */
+	private $link_joins = array();
+
 	//-------------------------------------------------------------------------------- $linked_tables
 	/**
 	 * linked tables
 	 *
-	 * @var string[] indice is
+	 * Each indice is the linked table name
+	 * Each value is a string[] : element 0 is the master column name, 1 is the foreign column name
+	 *
+	 * @var string[]
 	 */
 	private $linked_tables = array();
 
@@ -44,7 +55,7 @@ class Sql_Joins
 	/**
 	 * link class names to their properties
 	 *
-	 * @var Reflection_Property[] indices are : class name, property name[]
+	 * @var array indice is class name, value is Reflection_Property[], sub-indice is property name[]
 	 */
 	private $properties = array();
 
@@ -59,8 +70,7 @@ class Sql_Joins
 	{
 		$this->alias_counter = 1;
 		$this->classes[""] = $starting_class_name;
-		$class = Reflection_Class::getInstanceOf($starting_class_name);
-		$this->properties[$starting_class_name] = $class->getAllProperties();
+		$this->addProperties("", $starting_class_name);
 		foreach ($paths as $path) {
 			$this->add($path);
 		}
@@ -78,6 +88,9 @@ class Sql_Joins
 	{
 		if (array_key_exists($path, $this->joins)) {
 			return $this->joins[$path];
+		}
+		elseif (isset($this->link_joins[$path])) {
+			return $this->link_joins[$path];
 		}
 		list($master_path, $master_property_name) = Sql_Builder::splitPropertyPath($path);
 		if ($master_path && !isset($this->joins[$master_path])) {
@@ -111,15 +124,52 @@ class Sql_Joins
 		$join->foreign_alias = "t" . $this->alias_counter++;
 		if (!isset($join->foreign_table)) {
 			$join->foreign_class = $foreign_class_name;
-			$join->foreign_table = Dao::current()->storeNameOf($foreign_class_name);
+			$join->foreign_table = Dao::storeNameOf($foreign_class_name);
 		}
 		if (!isset($join->master_alias)) {
 			$join->master_alias = $master_path ? $this->getAlias($master_path) : "t0";
 		}
 		$this->classes[$foreign_path] = $foreign_class_name;
-		$foreign_class = Reflection_Class::getInstanceOf($foreign_class_name);
-		$this->properties[$foreign_class_name] = $foreign_class->getAllProperties();
+		$this->addProperties($foreign_path, $foreign_class_name);
 		return $join;
+	}
+
+	//-------------------------------------------------------------------------------- addLinkedClass
+	/**
+	 * Add a link class (using the "link" class annotation) to joins
+	 *
+	 * @param $path               string
+	 * @param $linked_class_name  string
+	 * @return Reflection_Property[] the properties that come from the linked class,
+	 * for further exclusion
+	 */
+	private function addLinkedClass($path, $linked_class_name)
+	{
+		$linked_class = Reflection_Class::getInstanceOf($linked_class_name);
+		$more_linked_class_name = $linked_class->getAnnotation("link")->value;
+		$exclude_properties = $more_linked_class_name
+			? $this->addLinkedClass($path, $more_linked_class_name)
+			: array();
+		$join = new Sql_Join();
+		$join->master_alias   = "t" . ($this->alias_counter - 1);
+		$join->master_column  = "id_" . Names::classToProperty($linked_class_name);
+		$join->foreign_alias  = "t" . $this->alias_counter++;
+		$join->foreign_column = "id";
+		$join->foreign_class  = $linked_class_name;
+		$join->foreign_table  = Dao::storeNameOf($linked_class_name);
+		$join->mode           = Sql_Join::INNER;
+		$join->type           = Sql_Join::LINK;
+		$this->joins[$path . "-" . $join->foreign_table . "-@link"] = $join;
+		foreach ($linked_class->getAllProperties() as $property) if (!$property->isStatic()) {
+			if (!isset($exclude_properties[$property->name])) {
+				$this->properties[$linked_class_name][$property->name] = $property;
+				$property_path = ($path ? $path . "." : "") . $property->name;
+				$this->classes[$property_path] = $linked_class_name;
+				$this->link_joins[$property_path] = $join;
+				$exclude_properties[$property->name] = true;
+			}
+		}
+		return $exclude_properties;
 	}
 
 	//--------------------------------------------------------------------------------- addLinkedJoin
@@ -167,13 +217,50 @@ class Sql_Joins
 		return $this;
 	}
 
+	//--------------------------------------------------------------------------------- addProperties
+	/**
+	 * Adds properties of the class name into $properties
+	 *
+	 * Please always call this instead of adding properties manually : it manages "link"
+	 * class annotations.
+	 *
+	 * @param $path       string
+	 * @param $class_name string
+	 */
+	private function addProperties($path, $class_name)
+	{
+		$class = Reflection_Class::getInstanceOf($class_name);
+		$linked_class_name = $class->getAnnotation("link")->value;
+		//$linked_properties = array();
+		if ($linked_class_name) {
+			$this->addLinkedClass($path, $linked_class_name);
+			/*
+			while ($linked_class_name) {
+				// add linked class properties and join
+				$linked_class = $this->addLinkedClass($path, $linked_class_name, $linked_properties);
+				$linked_properties = array_merge($linked_properties, $this->properties[$linked_class_name]);
+				$linked_class_name = $linked_class->getAnnotation("link")->value;
+			}
+			// add linking class own properties (those that do not exist on linked class)
+			foreach ($class->getAllProperties() as $property) if (!$property->isStatic()) {
+				if (!isset($linked_properties[$property->name])) {
+					$this->properties[$class_name][$property->name] = $property;
+				}
+			}
+			*/
+		}
+		else {
+			$this->properties[$class_name] = $class->getAllProperties();
+		}
+	}
+
 	//-------------------------------------------------------------------------------- addReverseJoin
 	/**
 	 * @param $join                 Sql_Join
 	 * @param $master_path          string
 	 * @param $master_property_name string
 	 * @param $foreign_path         string
-	 * @return string
+	 * @return string the foreign class name
 	 */
 	private function addReverseJoin(
 		Sql_Join $join, $master_path, $master_property_name, $foreign_path
@@ -206,7 +293,7 @@ class Sql_Joins
 	 * @param $master_path          string
 	 * @param $master_property_name string
 	 * @param $foreign_path         string
-	 * @return string
+	 * @return string the foreign class name
 	 */
 	private function addSimpleJoin(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
 	{
@@ -306,6 +393,23 @@ class Sql_Joins
 	public function getJoins()
 	{
 		return $this->joins;
+	}
+
+	//-------------------------------------------------------------------------------- getLinkedJoins
+	/**
+	 * Gets the list of joins that come from a "link" class annotation
+	 *
+	 * @return Sql_Join[]
+	 */
+	public function getLinkedJoins()
+	{
+		$joins = array();
+		foreach ($this->joins as $key => $join) {
+			if (substr($key, -6) === "-@link") {
+				$joins[$key] = $join;
+			}
+		}
+		return $joins;
 	}
 
 	//------------------------------------------------------------------------------- getLinkedTables

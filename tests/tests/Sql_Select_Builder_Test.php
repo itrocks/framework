@@ -72,10 +72,46 @@ class Sql_Select_Builder_Test extends Unit_Test
 		);
 	}
 
+	//-------------------------------------------------------------------------- testLinkedClassQuery
+	public function testLinkedClassQuery()
+	{
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Quote_Salesman',
+			array("name", "percentage"),
+			array("name" => "Robert", "percentage" => 100)
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t1.`name` AS `name`, t0.`percentage` AS `percentage`"
+			. " FROM `quotes_salesmen_links` t0 INNER JOIN `salesmen` t1 ON t1.id = t0.id_salesman"
+			. " WHERE t1.`name` = \"Robert\" AND t0.`percentage` = 100"
+		);
+	}
+
+	//------------------------------------------------------------- testLinkedClassQueryWithTwoLevels
+	public function testLinkedClassQueryWithTwoLevels()
+	{
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Quote_Salesman_Additional',
+			array("name", "percentage", "additional_text"),
+			array("name" => "Robert", "percentage" => 100)
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t2.`name` AS `name`, t1.`percentage` AS `percentage`, t0.`additional_text` AS `additional_text`"
+			. " FROM `quotes_salesmen_additional_links` t0"
+			. " INNER JOIN `quotes_salesmen_links` t1 ON t1.id = t0.id_quote_salesman"
+			. " INNER JOIN `salesmen` t2 ON t2.id = t1.id_salesman"
+			. " WHERE t2.`name` = \"Robert\" AND t1.`percentage` = 100"
+		);
+	}
+
 	//--------------------------------------------------------------------------------- testLinkQuery
 	public function testLinkQuery()
 	{
-		$builder = new Sql_Select_builder(
+		$builder = new Sql_Select_Builder(
 			'SAF\Tests\Order',
 			array("date", "number", "salesmen.name")
 		);

@@ -8,14 +8,15 @@ class Sql_Join
 {
 
 	//------------------------------------------------------------------------------------- JOIN MODE
-	const INNER = "INNER";
-	const LEFT  = "LEFT";
-	const OUTER = "OUTER";
-	const RIGHT = "RIGHT";
+	const INNER = "INNER"; // inner join
+	const LEFT  = "LEFT";  // left join
+	const OUTER = "OUTER"; // outer join
+	const RIGHT = "RIGHT"; // right join
 
 	//------------------------------------------------------------------------------------- JOIN TYPE
-	const OBJECT = "OBJECT";
-	const SIMPLE = "SIMPLE";
+	const LINK   = "LINK";   // a property set here because of a "link" annotated class
+	const OBJECT = "OBJECT"; // an object property
+	const SIMPLE = "SIMPLE"; // a simple value property
 
 	//-------------------------------------------------------------------------------- $foreign_alias
 	/**

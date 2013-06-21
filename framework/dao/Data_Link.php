@@ -100,10 +100,10 @@ abstract class Data_Link implements Configurable
 	 * Read an object from data source
 	 *
 	 * @param $identifier mixed identifier for the object
-	 * @param $class      string class for read object
+	 * @param $class_name string class for read object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 */
-	abstract public function read($identifier, $class);
+	abstract public function read($identifier, $class_name);
 
 	//--------------------------------------------------------------------------------------- readAll
 	/**

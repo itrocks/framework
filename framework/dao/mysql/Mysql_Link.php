@@ -288,17 +288,23 @@ class Mysql_Link extends Sql_Link
 	 * Read an object from data source
 	 *
 	 * @param $identifier integer identifier for the object
-	 * @param $class      string class for read object
+	 * @param $class_name string class for read object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 */
-	public function read($identifier, $class)
+	public function read($identifier, $class_name)
 	{
 		if (!$identifier) return null;
-		$this->setContext($class);
-		$result_set = $this->executeQuery(
-			"SELECT * FROM `" . $this->storeNameOf($class) . "` WHERE id = " . $identifier
-		);
-		$object = $result_set->fetch_object($class);
+		if (Reflection_Class::getInstanceOf($class_name)->getAnnotation("link")->value) {
+			$query = (new Sql_Select_Builder($class_name, null, array("id" => $identifier), $this))
+				->buildQuery();
+		}
+		else {
+			// it's for optimisation purpose only
+			$query = "SELECT * FROM `" . $this->storeNameOf($class_name) . "` WHERE id = " . $identifier;
+		}
+		$this->setContext($class_name);
+		$result_set = $this->executeQuery($query);
+		$object = $result_set->fetch_object($class_name);
 		$result_set->free();
 		if ($object) {
 			$this->setObjectIdentifier($object, $identifier);
