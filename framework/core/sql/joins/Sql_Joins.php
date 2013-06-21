@@ -146,10 +146,6 @@ class Sql_Joins
 	private function addLinkedClass($path, $linked_class_name)
 	{
 		$linked_class = Reflection_Class::getInstanceOf($linked_class_name);
-		$more_linked_class_name = $linked_class->getAnnotation("link")->value;
-		$exclude_properties = $more_linked_class_name
-			? $this->addLinkedClass($path, $more_linked_class_name)
-			: array();
 		$join = new Sql_Join();
 		$join->master_alias   = "t" . ($this->alias_counter - 1);
 		$join->master_column  = "id_" . Names::classToProperty($linked_class_name);
@@ -160,6 +156,10 @@ class Sql_Joins
 		$join->mode           = Sql_Join::INNER;
 		$join->type           = Sql_Join::LINK;
 		$this->joins[$path . "-" . $join->foreign_table . "-@link"] = $join;
+		$more_linked_class_name = $linked_class->getAnnotation("link")->value;
+		$exclude_properties = $more_linked_class_name
+			? $this->addLinkedClass($path, $more_linked_class_name)
+			: array();
 		foreach ($linked_class->getAllProperties() as $property) if (!$property->isStatic()) {
 			if (!isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
