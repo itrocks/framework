@@ -14,13 +14,21 @@
 <div class="{@class.short.lower} list window" id="/{@class.short}/{@feature}">
 	<h2 class="window title">|¦{@class.ucfirst}¦ list|</h2>
 
-	<div class="general buttons">
+	<ul class="general buttons">
 		<!--general_buttons-->
-		<a class="button trashable {feature.lower} {?class} {color}" href="{link}" target="#main">|{caption}|</a>
+		<li class="button"><a class="{class?} {feature.lower} trashable button {color}" href="{link}" target="{?target}">|{caption}|</a>
+			<!--sub_buttons.@count-->
+			<ul class="sub_buttons">
+				<!--sub_buttons-->
+				<li class="sub_button"><a class="{class?} {feature.lower} trashable sub_button {color}" href="{link}" target="{?target}">|{caption}|</a></li>
+				<!--sub_buttons-->
+			</ul>
+			<!--sub_buttons.@count-->
+		</li>
 		<!--sample-->
-		<a class="button trashable new blue" href="/Class/new" target="#main">New</a>
+		<li class="button"><a class="new trashable button blue" href="/Class/new" target="#main">New</a></li>
 		<!--general_buttons-->
-	</div>
+	</ul>
 
 	<form action="/{@class.short}/{@feature}" method="POST">
 	<table class="list">
@@ -80,14 +88,22 @@
 	</table>
 	</form>
 
-	<div class="selection buttons">
-		<span class="selection arrow trashable">[select]</span>
+	<ul class="selection buttons">
+		<li class="selection arrow trashable">[select]</li>
 		<!--selection_buttons-->
-		<a class="button trashable {feature.lower}" href="{link}">|{caption}|</a>
+		<li class="button"><a class="{class?} {feature.lower} trashable button {color}" href="{link}" target="{?target}">|{caption}|</a>
+			<!--sub_buttons.@count-->
+			<ul class="sub_buttons">
+				<!--sub_buttons-->
+				<li class="sub_button"><a class="{class?} {feature.lower} trashable sub_button {color}" href="{link}" target="{?target}">|{caption}|</a></li>
+				<!--sub_buttons-->
+			</ul>
+			<!--sub_buttons.@count-->
+		</li>
 		<!--sample-->
-		<a class="button trashable print" href="/Class/print">Print</a>
+		<a class="button trashable new blue" href="/Class/new" target="#main">New</a>
 		<!--selection_buttons-->
-	</div>
+	</ul>
 
 </div>
 <!--END-->

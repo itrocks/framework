@@ -48,6 +48,14 @@ class Button
 	 */
 	public $link;
 
+	/**
+	 * A button can be linked to a collection of sub-buttons
+	 *
+	 * @link Collection
+	 * @var Button[]
+	 */
+	public $sub_buttons;
+
 	//--------------------------------------------------------------------------------------- $target
 	/**
 	 * Target for the link
@@ -85,6 +93,9 @@ class Button
 			}
 			elseif (($key === "target") || (is_numeric($key) && substr($option, 0, 1) == "#")) {
 				$this->target = $option;
+			}
+			elseif ($key === "sub_buttons") {
+				$this->sub_buttons = self::newCollection($option);
 			}
 		}
 		if (!isset($this->color)) {

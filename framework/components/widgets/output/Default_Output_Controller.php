@@ -25,6 +25,18 @@ class Default_Output_Controller extends Output_Controller
 				View::link($object, "edit"),
 				"edit",
 				array(Color::of("green"), "#main")
+			),
+			array("Print",
+				View::link($object, "print"),
+				"print",
+				array(Color::of("blue"), "#main", "sub_buttons" => array(
+					array(
+						"Models",
+						View::link('SAF\Framework\Print_Model', "output", get_class($object)),
+						"models",
+						array("#main")
+					)
+				))
 			)
 		));
 	}

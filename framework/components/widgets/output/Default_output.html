@@ -15,13 +15,21 @@
 <div class="{@class.short.lower} {feature.lower} window" id="/{@class.short}<!--id-->/{id}<!--id-->/{feature}">
 	<h2 class="window title">|{@class.ucfirst}| |{display}|</h2>
 
-	<div class="general buttons">
+	<ul class="general buttons">
 		<!--general_buttons-->
-		<a class="trashable {feature.lower} {?class} button {color}" href="{link}" target="{?target}">|{caption}|</a>
+		<li class="button"><a class="{class?} {feature.lower} trashable button {color}" href="{link}" target="{?target}">|{caption}|</a>
+			<!--sub_buttons.@count-->
+			<ul class="sub_buttons">
+				<!--sub_buttons-->
+				<li class="sub_button"><a class="{class?} {feature.lower} trashable sub_button {color}" href="{link}" target="{?target}">|{caption}|</a></li>
+				<!--sub_buttons-->
+			</ul>
+			<!--sub_buttons.@count-->
+		</li>
 		<!--sample-->
-		<a class="trashable write submit button {color}" href="/abook/Contact/1/write" target="#messages">Write</a>
+		<li><a class="trashable write submit button {color}" href="/abook/Contact/1/write" target="#messages">Write</a></li>
 		<!--general_buttons-->
-	</div>
+	</ul>
 
 	<!--tabs._top-->
 	<div class="top fieldset">
