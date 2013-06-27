@@ -57,7 +57,7 @@ abstract class Html_Template_Funcs
 	public static function getCount(
 		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
 	) {
-		return count($objects);
+		return count(reset($objects));
 	}
 
 	//------------------------------------------------------------------------------------ getDisplay
