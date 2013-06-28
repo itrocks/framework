@@ -5,8 +5,8 @@
 	<title>Print model</title>
 	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
 	<style type="text/css">
-		@import "../../../skins/default/application.css";
-		@import "../../../skins/default/form.css";
+		@import "../../skins/default/application.css";
+		@import "../../skins/default/form.css";
 	</style>
 </head>
 <body>
@@ -193,15 +193,7 @@
 					<textarea id="console" style="position:relative"></textarea>
 				</div>
 			</div>
-			<div class="fields_selector">
-				<div id="treecontrol">
-					<a title="Collapse the entire tree below" href="#"><img src="img/v2/bullet_arrow_up.png" />Replier tout</a>
-					<a title="Expand the entire tree below" href="#"><img src="img/v2/bullet_arrow_down.png" />D&eacute;plier tout</a>
-					<a title="Toggle the tree below, opening closed branches, closing open branches" href="#"><img src="img/v2/bullet_blue.png" />Basculer</a>
-				</div>
-				<input type="text" id="filter_fields" name="filter_fields" size="40" />
-				<ul id="treeview_fields" class="filetree" style="height: 500px;overflow:auto;margin:10px 0px;">{properties}</ul>
-			</div>
+			{/Property/select/Sales_Invoices}
 		</div>
 
 		<div class="tabs" id="pages_tabs">
