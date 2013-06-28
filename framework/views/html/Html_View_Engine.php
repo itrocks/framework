@@ -70,17 +70,21 @@ class Html_View_Engine implements Configurable, View_Engine
 
 	//------------------------------------------------------------------------------------------ link
 	/**
-	 * Generate a link for class name and parameters
+	 * Generates a link for to an object and feature, using parameters if needed
 	 *
-	 * @param $object     object|string object or class name
-	 * @param $parameters string|string[] string or array : parameters list (feature and other parameters)
+	 * @param $object     object|string linked object or class name
+	 * @param $feature    string linked feature name
+	 * @param $parameters string|string[] string or array : parameters list
 	 * @return string
 	 */
-	public function link($object, $parameters = null)
+	public function link($object, $feature = null, $parameters = null)
 	{
 		$link = (is_object($object) && Dao::getObjectIdentifier($object))
 			? (Namespaces::shortClassName(get_class($object)) . "/" . Dao::getObjectIdentifier($object))
 			: Namespaces::shortClassName(is_object($object) ? get_class($object) : $object);
+		if (isset($feature)) {
+			$link .= "/" . $feature;
+		}
 		if (isset($parameters)) {
 			if (!is_array($parameters)) {
 				$link .= "/" . $parameters;
