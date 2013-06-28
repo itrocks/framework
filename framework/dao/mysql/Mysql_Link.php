@@ -328,8 +328,7 @@ class Mysql_Link extends Sql_Link
 		$this->setContext($class_name);
 		$query = (new Sql_Select_Builder($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->executeQuery($query);
-		$list = $this->fetch($result_set, $class_name);
-		while ($object = $list) {
+		while ($object = $this->fetch($result_set, $class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
 			$read_result[$object->id] = $object;
 		}
@@ -375,8 +374,7 @@ class Mysql_Link extends Sql_Link
 			$query = $builder->buildQuery();
 			$this->setContext($builder->getJoins()->getClassNames());
 			$result_set = $this->executeQuery($query);
-			$list = $this->fetch($result_set, $class_name);
-			while ($object = $list) {
+			while ($object = $this->fetch($result_set, $class_name)) {
 				$this->setObjectIdentifier($object, $object->id);
 				$search_result[$object->id] = $object;
 			}
