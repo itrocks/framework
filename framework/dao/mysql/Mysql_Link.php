@@ -180,9 +180,7 @@ class Mysql_Link extends Sql_Link
 	 */
 	protected function fetch($result_set, $class_name = null)
 	{
-		$class_name = Builder::className($class_name);
-		$object = ($result_set ? $result_set->fetch_object($class_name) : null);
-		return $object;
+		return $result_set->fetch_object(Builder::className($class_name));
 	}
 
 	//-------------------------------------------------------------------------------------- fetchRow
@@ -208,9 +206,7 @@ class Mysql_Link extends Sql_Link
 	 */
 	protected function free($result_set)
 	{
-		if($result_set) {
-			$result_set->free();
-		}
+		$result_set->free();
 	}
 
 	//--------------------------------------------------------------------------------- getColumnName
