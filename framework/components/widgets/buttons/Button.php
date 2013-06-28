@@ -95,7 +95,7 @@ class Button
 				$this->target = $option;
 			}
 			elseif ($key === "sub_buttons") {
-				$this->sub_buttons = self::newCollection($option);
+				$this->sub_buttons = $option;
 			}
 		}
 		if (!isset($this->color)) {

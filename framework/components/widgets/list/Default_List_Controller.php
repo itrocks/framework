@@ -66,7 +66,18 @@ class Default_List_Controller extends List_Controller
 	protected function getSelectionButtons($class_name)
 	{
 		return array(
-			new Button("Print", View::link($class_name, "print"), "print")
+			new Button("Print", View::link($class_name, "print"), "print", array(
+				"sub_buttons" => array(
+					new Button(
+						"Models",
+						View::link(
+							'SAF\Framework\Print_Models', "list", Namespaces::shortClassName($class_name)
+						),
+						"models",
+						"#main"
+					)
+				)
+			))
 		);
 	}
 
