@@ -1,0 +1,248 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Print model</title>
+	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<style type="text/css">
+		@import "../../../skins/default/application.css";
+		@import "../../../skins/default/form.css";
+	</style>
+</head>
+<body>
+
+<!--BEGIN-->
+<div class="{@class.short.lower} {feature.lower} window" id="/{@class.short}<!--id-->/{id}<!--id-->/{feature}">
+	<h2 class="window title">|{@class.ucfirst}| |{display}|</h2>
+
+	{/general_buttons.html}
+
+	<div class="fieldset">
+		<!--@properties-->
+		<div class="{name} {?getType.isMultiple} field" id="{path}">
+			<div class="trashable label">|{display}|</div>
+			<div class="value">{value}</div>
+		</div>
+		<!--@properties-->
+	</div>
+
+	<div class="container">
+		<div class="fields" id="fields">
+			<div class="fields_toolbar">
+				<img src="img/v2/disk.png" title="enregistrer" id="button_save_templates" class="toolbar_button" />
+				<img src="img/v2/printer.png" title="imprimer aperçu" id="button_print_preview" class="toolbar_button"  />
+			</div>
+			<div class="tabs" id="fields_tabs">
+				<ul>
+					<li><a href="#fields_props"><span>Styles</span></a></li>
+					<li><a href="#fields_console"><span>Console</span></a></li>
+					<li><a href="#fields_tools"><span>Outils</span></a></li>
+				</ul>
+				<div class="fields_props" id="fields_props">
+					<label>
+						<img src="img/v2/font.png" title="police" />
+						<select id="props_fontFamily" name="props_fontFamily" class="zone_props" />
+						<option value="Arial">Arial</option>
+						<option value="Courier">Courrier</option>
+						<option value="Times">Times</option>
+						</select>
+					</label>
+					<label>
+						<img src="img/v2/text_smallcaps.png" title="taille" />
+						<input type="text" id="props_fontSize" name="props_fontSize" size="3" class="zone_props" value="10" />
+					</label>
+					<label>
+						<img src="img/v2/text_bold.png" title="gras" />
+						<input type="checkbox" id="props_fontWeight" name="props_fontWeight" class="zone_props" value="bold" />
+					</label>
+					<label>
+						<img src="img/v2/text_italic.png" title="italique" />
+						<input type="checkbox" id="props_fontStyle" name="props_fontStyle" class="zone_props" value="italic" />
+					</label>
+					<label>
+						<img src="img/v2/text_underline.png" title="souligné" />
+						<input type="checkbox" id="props_textDecoration" name="props_textDecoration" class="zone_props" value="underline" /><br />
+					</label>
+					<label>
+						<img src="img/v2/text_linespacing.png" title="hauteur de ligne" />
+						<input type="text" id="props_lineHeight" name="props_lineHeight" size="3" class="zone_props" value="15" />
+					</label>
+					<label>
+						<img src="img/v2/paintbrush.png" title="couleur de la police" />
+						<input type="text" id="props_color" name="props_color" class="zone_props colorpicker" size="6" value="000000" />
+					</label>
+					<label>
+						<img src="img/v2/paintcan.png" title="couleur du fond de zone" />
+						<input type="text" id="props_backgroundColor" name="props_backgroundColor" class="zone_props colorpicker" size="6" value="FFFFFF" />
+					</label>
+					<label>
+						<img src="img/v2/shading.png" title="zone transparente" />
+						<input type="checkbox" id="props_transparent" name="props_transparent" class="zone_props" value="transparent" checked="checked" />
+					</label>
+					<label>
+						<img src="img/v2/lock.png" title="vérouiller la zone" />
+						<input type="checkbox" id="props_lock" name="props_lock" class="zone_props" value="lock" />
+					</label>
+					<label>
+						<img src="img/v2/magnet-icon.png" title="activer l'aimantation de la zone" />
+						<input type="checkbox" id="props_snap" name="props_snap" class="zone_props" value="snap" checked="checked" />
+					</label>
+					<label>
+						<img src="img/v2/text_align_left.png" title="aligner le texte à gauche" />
+						<input type="radio" id="props_textAlign[left]" name="props_textAlign" class="zone_props" value="left" />
+					</label>
+					<label>
+						<img src="img/v2/text_align_center.png" title="aligner le texte au centre" />
+						<input type="radio" id="props_textAlign[center]" name="props_textAlign" class="zone_props" value="center" />
+					</label>
+					<label>
+						<img src="img/v2/text_align_right.png" title="aligner le texte à droite" />
+						<input type="radio" id="props_textAlign[right]" name="props_textAlign" class="zone_props" value="right" />
+					</label>
+					<label>
+						<img src="img/v2/text_align_justify.png" title="justifier le texte" />
+						<input type="radio" id="props_textAlign[justify]" name="props_textAlign" class="zone_props" value="justify" checked="checked" />
+					</label>
+					<br />
+					<label title="bordure zone">
+						<!--<img src="img/v2/picture_empty.png" title="bordure de zone" />-->
+						<input type="checkbox" id="props_border" name="props_border" class="zone_props" value="1" />
+					</label>
+					<label title="couleur bordure zone">
+						<img src="img/v2/color_swatch.png" />
+						<input type="text" id="props_borderColor" name="props_borderColor" class="zone_props colorpicker" size="5" value="000000" />
+					</label>
+
+					<label title="bordure zone">
+						<!--<img src="img/v2/picture_empty.png" title="bordure de zone" />-->
+						<input type="checkbox" id="props_vSepBorder" name="props_vSepBorder" class="zone_props" value="1" />
+					</label>
+					<label title="couleur separateurs verticaux">
+						<img src="img/v2/color_swatch.png" />
+						<input type="text" id="props_vSepColor" name="props_vSepColor" class="zone_props colorpicker" size="5" value="000000" />
+					</label>
+
+					<label title="bordure zone">
+						<!--<img src="img/v2/picture_empty.png" title="bordure de zone" />-->
+						<input type="checkbox" id="props_hSepBorder" name="props_hSepBorder" class="zone_props" value="1" />
+					</label>
+					<label title="couleur separateurs horizontaux">
+						<img src="img/v2/color_swatch.png" />
+						<input type="text" id="props_hSepColor" name="props_hSepColor" class="zone_props colorpicker" size="5" value="000000" />
+					</label>
+
+					<br />
+
+					<label title="new page if text over zone">
+						<img src="img/v2/page_white_put.png" title="report de texte sur page suivante si dépassement de zone" />
+						<input type="checkbox" id="props_overzone" name="props_overzone" class="zone_props" value="1" />
+					</label>
+
+
+					<label>
+						<img src="img/v2/text_padding_top.png" title="aligner le texte en haut" />
+						<input type="radio" id="props_textValign[top]" name="props_textValign" class="zone_props" value="top" checked="checked" />
+					</label>
+					<label>
+						<img src="img/v2/text_padding_left.png" title="aligner le texte au milieu" />
+						<input type="radio" id="props_textValign[middle]" name="props_textValign" class="zone_props" value="middle" />
+					</label>
+					<label>
+						<img src="img/v2/text_padding_bottom.png" title="aligner le texte en bas" />
+						<input type="radio" id="props_textValign[bottom]" name="props_textValign" class="zone_props" value="bottom" />
+					</label>
+
+					<label title="align text baseline on bottom zone">
+						<img src="img/v2/text_horizontalrule.png" />
+						<input type="checkbox" id="props_baseline" name="props_baseline" class="zone_props" value="1" />
+					</label>
+
+					<br />
+
+					<label>
+						<img src="img/v2/table_row_insert.png" title="espacement entre les lignes de tableau" />
+						<input type="text" id="props_lineSpace" name="props_lineSpace" class="zone_props" size="4" value="0" />
+					</label>
+
+
+				</div>
+				<div class="fields_props" id="fields_tools">
+					<button class="add_ruler" id="horizontal_ruler" onclick="return false;" title="ajouter règle horizontale">
+						<img src="img/v2/shape_align_bottom.png" />
+					</button>
+					<button class="add_ruler" id="vertical_ruler" onclick="return false;" title="ajouter règle verticale">
+						<img src="img/v2/shape_align_left.png" />
+					</button>
+					<button class="toggle_data_path_view" id="toggle_data_path_view" onclick="return false;" title="switch between data and data path">
+						<img src="img/v2/arrow_switch.png" />
+					</button>
+					<button class="copyzone" id="copyzone_to1" onclick="return false;" title="d&eacute;placer zone selectionn&eacute;e vers la premi&egrave;re page">
+						<img src="img/v2/control_start_blue.png" />
+					</button>
+					<button class="copyzone" id="copyzone_to0" onclick="return false;" title="d&eacute;placer zone selectionn&eacute;e vers toutes les pages">
+						<img src="img/v2/control_fastforward_blue.png" />
+					</button>
+					<button class="copyzone" id="copyzone_tox" onclick="return false;" title="d&eacute;placer zone selectionn&eacute;e vers derni&egrave;re page">
+						<img src="img/v2/control_end_blue.png" />
+					</button>
+				</div>
+				<div class="fields_props" id="fields_console">
+
+					<div style="border:1px solid lightgray;border-radius:3px;padding:4px;margin-bottom:2px;"><img src="img/v2/arrow_out.png" id="toggle_console"/></div>
+
+					<textarea id="console" style="position:relative"></textarea>
+				</div>
+			</div>
+			<div class="fields_selector">
+				<div id="treecontrol">
+					<a title="Collapse the entire tree below" href="#"><img src="img/v2/bullet_arrow_up.png" />Replier tout</a>
+					<a title="Expand the entire tree below" href="#"><img src="img/v2/bullet_arrow_down.png" />D&eacute;plier tout</a>
+					<a title="Toggle the tree below, opening closed branches, closing open branches" href="#"><img src="img/v2/bullet_blue.png" />Basculer</a>
+				</div>
+				<input type="text" id="filter_fields" name="filter_fields" size="40" />
+				<ul id="treeview_fields" class="filetree" style="height: 500px;overflow:auto;margin:10px 0px;">{properties}</ul>
+			</div>
+		</div>
+
+		<div class="tabs" id="pages_tabs">
+			<ul>
+				<li><a href="#page0"><span>Toutes</span></a></li>
+				<li><a href="#page1"><span>Premi&egrave;re</span></a></li>
+				<li><a href="#pagex"><span>Derni&egrave;re</span></a></li>
+				<!--<li><a href="#pagex"><span>+</span></a></li>-->
+			</ul>
+			<div class="page0" id="page0">
+				<div class="pdf_page" id="pdf_page0" style="background-image:url('{all_pages.background.link}');">
+			</div>
+		</div>
+		<div class="page1" id="page1">
+			<div class="pdf_page" id="pdf_page1" style="background-image:url('{first_page.background.link}');">
+		</div>
+	</div>
+	<div class="pagex" id="pagex">
+		<div class="pdf_page" id="pdf_pagex" style="background-image:url('{last_page.background.link}');">
+	</div>
+</div>
+</div>
+
+<script>
+	pdft = new PDF_Templates({id});
+	pdft.loadZones('', $('#pdf_page1'));
+	pdft.loadZones('', $('#pdf_pagex'));
+	pdft.loadZones('', $('#pdf_page0'));
+	pdft.loadRulers('', $('#pdf_page0'));
+	pdft.loadRulers('', $('#pdf_page1'));
+	pdft.loadRulers('', $('#pdf_pagex'));
+	pdft.loadZones('', $('#pdf_page1'));
+	pdft.loadZones('', $('#pdf_pagex'));
+	pdft.loadZones('', $('#pdf_page0'));
+	pdft.activeRulerDrag();
+</script>
+
+	</div>
+
+</div>
+<!--END-->
+
+</body>
+</html>
