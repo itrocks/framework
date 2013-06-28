@@ -180,7 +180,7 @@ class Mysql_Link extends Sql_Link
 	 */
 	protected function fetch($result_set, $class_name = null)
 	{
-		$object = $result_set->fetch_object($class_name);
+		$object = ($result_set ? $result_set->fetch_object($class_name) : null);
 		return $object;
 	}
 
@@ -207,7 +207,9 @@ class Mysql_Link extends Sql_Link
 	 */
 	protected function free($result_set)
 	{
-		$result_set->free();
+		if($result_set) {
+			$result_set->free();
+		}
 	}
 
 	//--------------------------------------------------------------------------------- getColumnName
@@ -304,8 +306,8 @@ class Mysql_Link extends Sql_Link
 		}
 		$this->setContext($class_name);
 		$result_set = $this->executeQuery($query);
-		$object = $result_set->fetch_object($class_name);
-		$result_set->free();
+		$object = $this->fetch($result_set, $class_name);
+		$this->free($result_set);
 		if ($object) {
 			$this->setObjectIdentifier($object, $identifier);
 		}
@@ -326,11 +328,12 @@ class Mysql_Link extends Sql_Link
 		$this->setContext($class_name);
 		$query = (new Sql_Select_Builder($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->executeQuery($query);
-		while ($object = $result_set->fetch_object($class_name)) {
+		$list = $this->fetch($result_set, $class_name);
+		while ($object = $list) {
 			$this->setObjectIdentifier($object, $object->id);
 			$read_result[$object->id] = $object;
 		}
-		$result_set->free();
+		$this->free($result_set);
 		return $read_result;
 	}
 
@@ -372,13 +375,12 @@ class Mysql_Link extends Sql_Link
 			$query = $builder->buildQuery();
 			$this->setContext($builder->getJoins()->getClassNames());
 			$result_set = $this->executeQuery($query);
-			if ($result_set) {
-				while ($object = $result_set->fetch_object($class_name)) {
-					$this->setObjectIdentifier($object, $object->id);
-					$search_result[$object->id] = $object;
-				}
-				$result_set->free();
+			$list = $this->fetch($result_set, $class_name);
+			while ($object = $list) {
+				$this->setObjectIdentifier($object, $object->id);
+				$search_result[$object->id] = $object;
 			}
+			$this->free($result_set);
 		}
 		else {
 			$search_result = array();
