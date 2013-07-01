@@ -14,21 +14,7 @@
 <div class="{@class.short.lower} list window" id="/{@class.short}/{@feature}">
 	<h2 class="window title">|¦{@class.ucfirst}¦ list|</h2>
 
-	<ul class="general buttons">
-		<!--general_buttons-->
-		<li class="button"><a class="{class?} {feature.lower} trashable button {color}" href="{link}" target="{?target}">|{caption}|</a>
-			<!--sub_buttons.@count-->
-			<ul class="sub_buttons">
-				<!--sub_buttons-->
-				<li class="sub_button"><a class="{class?} {feature.lower} trashable sub_button {color}" href="{link}" target="{?target}">|{caption}|</a></li>
-				<!--sub_buttons-->
-			</ul>
-			<!--sub_buttons.@count-->
-		</li>
-		<!--sample-->
-		<li class="button"><a class="new trashable button blue" href="/Class/new" target="#main">New</a></li>
-		<!--general_buttons-->
-	</ul>
+	{/general_buttons.html}
 
 	<form action="/{@class.short}/{@feature}" method="POST">
 	<table class="list">

@@ -103,25 +103,4 @@ class Button
 		}
 	}
 
-	//--------------------------------------------------------------------------------- newCollection
-	/**
-	 * Builds a new collection of buttons
-	 *
-	 * @param $buttons_arrays array[] each array is a set of arguments for Button's constructor
-	 * @return Button[]
-	 */
-	public static function newCollection($buttons_arrays)
-	{
-		$buttons = array();
-		foreach ($buttons_arrays as $array) {
-			switch (count($array)) {
-				case 4: $buttons[] = new Button($array[0], $array[1], $array[2], $array[3]); break;
-				case 3: $buttons[] = new Button($array[0], $array[1], $array[2]); break;
-				case 2: $buttons[] = new Button($array[0], $array[1]); break;
-				case 1: $buttons[] = new Button($array[0]); break;
-			}
-		}
-		return $buttons;
-	}
-
 }

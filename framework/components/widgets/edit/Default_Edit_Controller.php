@@ -17,17 +17,14 @@ class Default_Edit_Controller extends Default_Output_Controller
 	{
 		$fill_combo = isset($parameters["fill_combo"])
 			? "?fill_combo=" . $parameters["fill_combo"] : "";
-		return Button::newCollection(array(
-			array("Cancel",
-				View::link($object, "output"),
-				"cancel",
+		return array(
+			new Button("Cancel", View::link($object, "output"), "cancel",
 				array(Color::of("close"), "#main")
 			),
-			array("Write",
-				View::link($object, "write") . $fill_combo,
-				"write",
-				array(Color::of("green"), "#messages", ".submit"))
-		));
+			new Button("Write", View::link($object, "write") . $fill_combo, "write",
+				array(Color::of("green"), "#messages", ".submit")
+			)
+		);
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
