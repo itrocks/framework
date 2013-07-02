@@ -96,11 +96,12 @@ class Sql_Columns_Builder
 				$sql_columns .=  $this->append($path);
 			}
 		} elseif ($this->joins->getJoins()) {
-			// TODO why not read all properties of all tables in order to fill in result set ?
-			$sql_columns = "t0.*";
+			$sql_columns = "";
 			foreach ($this->joins->getLinkedJoins() as $join) {
-				$sql_columns .= ", " . $join->foreign_alias . ".*";
+				$sql_columns .= $join->foreign_alias . ".*, ";
 			}
+			// the main table comes last, as fields with the same name must have the main value (ie "id")
+			$sql_columns .= "t0.*";
 		} else {
 			$sql_columns = "*";
 		}

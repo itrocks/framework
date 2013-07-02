@@ -420,48 +420,54 @@ class Mysql_Link extends Sql_Link
 			$write = array();
 			$aop_getter_ignore = Aop_Getter::$ignore;
 			Aop_Getter::$ignore = true;
-			foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
-				$value = isset($object->$property) ? $property->getValue($object) : null;
-				if (is_null($value) && !$property->getAnnotation("null")->value) {
-					$value = "";
-				}
-				if (in_array($property->name, $table_columns_names)) {
-					// write basic
-					if ($property->getType()->isBasic()) {
-						$write[$property->name] = $value;
+			$link = $class->getAnnotation("link")->value;
+			$exclude_properties = $link
+				? array_keys(Reflection_Class::getInstanceOf($link)->getAllProperties())
+				: array();
+			foreach ($class->accessProperties() as $property) {
+				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
+					$value = isset($object->$property) ? $property->getValue($object) : null;
+					if (is_null($value) && !$property->getAnnotation("null")->value) {
+						$value = "";
 					}
-					// write object id if set or object if no id is set (new object)
-					else {
-						$column_name = "id_" . $property->name;
-						if (is_object($value) && (empty($object->$column_name))) {
-							$object->$column_name = $this->getObjectIdentifier($value);
-							if (empty($object->$column_name)) {
-								$object->$column_name = $this->getObjectIdentifier($this->write($value));
-							}
+					if (in_array($property->name, $table_columns_names)) {
+						// write basic
+						if ($property->getType()->isBasic()) {
+							$write[$property->name] = $value;
 						}
-						if (property_exists($object, $column_name)) {
-							$write[$column_name] = intval($object->$column_name);
-						}
-					}
-				}
-				// write collection
-				elseif ($property->getAnnotation("link")->value == "Collection") {
-					$write_collections[] = array($property, $value);
-				}
-				// write map
-				elseif (is_array($value)) {
-					foreach ($value as $key => $val) {
-						if (!is_object($val)) {
-							$val = Dao::read($val, $property->getType()->getElementTypeAsString());
-							if (isset($val)) {
-								$value[$key] = $val;
+						// write object id if set or object if no id is set (new object)
+						else {
+							$column_name = "id_" . $property->name;
+							if (is_object($value) && (empty($object->$column_name))) {
+								$object->$column_name = $this->getObjectIdentifier($value);
+								if (empty($object->$column_name)) {
+									$object->$column_name = $this->getObjectIdentifier($this->write($value));
+								}
 							}
-							else {
-								unset($value[$key]);
+							if (property_exists($object, $column_name)) {
+								$write[$column_name] = intval($object->$column_name);
 							}
 						}
 					}
-					$write_maps[] = array($property, $value);
+					// write collection
+					elseif ($property->getAnnotation("link")->value == "Collection") {
+						$write_collections[] = array($property, $value);
+					}
+					// write map
+					elseif (is_array($value)) {
+						foreach ($value as $key => $val) {
+							if (!is_object($val)) {
+								$val = Dao::read($val, $property->getType()->getElementTypeAsString());
+								if (isset($val)) {
+									$value[$key] = $val;
+								}
+								else {
+									unset($value[$key]);
+								}
+							}
+						}
+						$write_maps[] = array($property, $value);
+					}
 				}
 			}
 			$class->accessPropertiesDone();
@@ -506,11 +512,10 @@ class Mysql_Link extends Sql_Link
 	private function writeCollection($object, Reflection_Property $property, $collection)
 	{
 		// old collection
-		$property_name = $property->name;
 		$class_name = get_class($object);
 		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
-		$old_collection = isset($old_object->$property_name) ? $old_object->$property_name : array();
+		$old_collection = $property->getValue($old_object);
 		// collection properties : write each of them
 		$id_set = array();
 		if ($collection) {
@@ -541,11 +546,10 @@ class Mysql_Link extends Sql_Link
 	private function writeMap($object, Reflection_Property $property, $map)
 	{
 		// old map
-		$property_name = $property->name;
 		$class_name = get_class($object);
 		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
-		$old_map = isset($old_object->$property_name) ? $old_object->$property_name : array();
+		$old_map = $property->getValue($old_object);
 		// map properties : write each of them
 		$insert_builder = new Sql_Map_Insert_Builder($property);
 		$id_set = array();
