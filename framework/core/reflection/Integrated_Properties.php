@@ -87,7 +87,9 @@ abstract class Integrated_Properties
 				else {
 					if (isset($value)) {
 						$sub_property = new Reflection_Property_Value($sub_property, $value);
-						$sub_property->display = $integrated_simple ? $sub_property_name : $display;
+						$sub_property->display = $integrated_simple
+							? ($sub_property->getAnnotation("alias")->value ?: $sub_property_name)
+							: $display;
 					}
 					$sub_property->path = $property_name . "." . $sub_property_name;
 					$properties_list[$property_name . "." . $sub_property_name] = $sub_property;
