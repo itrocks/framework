@@ -450,11 +450,11 @@ class Mysql_Link extends Sql_Link
 						}
 					}
 					// write collection
-					elseif ($property->getAnnotation("link")->value == "Collection") {
+					elseif (is_array($value) && ($property->getAnnotation("link")->value == "Collection")) {
 						$write_collections[] = array($property, $value);
 					}
 					// write map
-					elseif (is_array($value)) {
+					elseif (is_array($value) && ($property->getAnnotation("link")->value == "Map")) {
 						foreach ($value as $key => $val) {
 							if (!is_object($val)) {
 								$val = Dao::read($val, $property->getType()->getElementTypeAsString());
