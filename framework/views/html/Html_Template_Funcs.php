@@ -9,6 +9,14 @@ namespace SAF\Framework;
 abstract class Html_Template_Funcs
 {
 
+	//-------------------------------------------------------------------------------- $inside_blocks
+	/**
+	 * Used by startingBlocks and stoppingBlocks calls
+	 *
+	 * @var string[] key equals value
+	 */
+	private static $inside_blocks = array();
+
 	//-------------------------------------------------------------------------------- getApplication
 	/**
 	 * Returns application name
@@ -271,6 +279,91 @@ abstract class Html_Template_Funcs
 		return $object;
 	}
 
+	//----------------------------------------------------------------------------- getStartingBlocks
+	/**
+	 * Returns the block names if current property starts one or several properties blocks
+	 * If not, returns an empty string array
+	 *
+	 * @param $template Html_Template
+	 * @param $objects  mixed[]
+	 * @return string[]
+	 */
+	public static function getStartingBlocks(Html_Template $template, $objects)
+	{
+		$blocks = array();
+		foreach ($objects as $property) if ($property instanceof Reflection_Property) {
+			$blocks = array_merge($blocks, self::getPropertyBlocks($property));
+		}
+		$starting_blocks = array();
+		foreach ($blocks as $block) {
+			if (!isset(self::$inside_blocks[$block])) {
+				$starting_blocks[$block] = $block;
+				self::$inside_blocks[$block] = $block;
+			}
+		}
+		foreach (self::$inside_blocks as $block) {
+			if (!isset($blocks[$block])) {
+				unset(self::$inside_blocks[$block]);
+			}
+		}
+		return $starting_blocks;
+	}
+
+	//----------------------------------------------------------------------------- getStoppingBlocks
+	/**
+	 * Returns the block names if current property stops one or several properties blocks
+	 * If not, returns an empty string array
+	 *
+	 * @param $template Html_Template
+	 * @param $objects  mixed[]
+	 * @return string[]
+	 */
+	public static function getStoppingBlocks(Html_Template $template, $objects)
+	{
+		if (self::$inside_blocks) {
+			$array_of = null;
+			$starting_objects = $objects;
+			foreach ($objects as $object_key => $object) {
+				if ($object instanceof Reflection_Property) {
+					$array_of = $object;
+				}
+				elseif ($array_of instanceof Reflection_Property) {
+					if (
+						!is_array($object) || !is_a(reset($object), 'SAF\Framework\Reflection_Property_Value')
+					) {
+						$array_of = null;
+					}
+					else {
+						$properties = $object;
+						$next_property = false;
+						foreach ($properties as $property) {
+							if ($property->path === $array_of->path) {
+								$next_property = true;
+							}
+							elseif ($next_property) {
+								array_unshift($starting_objects, $property);
+								$blocks = array();
+								foreach ($starting_objects as $prop) if ($prop instanceof Reflection_Property) {
+									$blocks = array_merge($blocks, self::getPropertyBlocks($prop));
+								}
+								break 2;
+							}
+						}
+					}
+				}
+				unset($starting_objects[$object_key]);
+			}
+			$stopping_blocks = array();
+			foreach (self::$inside_blocks as $block) {
+				if (!isset($blocks[$block])) {
+					$stopping_blocks[$block] = $block;
+				}
+			}
+			return $stopping_blocks;
+		}
+		return array();
+	}
+
 	//---------------------------------------------------------------------------------------- getTop
 	/**
 	 * Returns template's top object
@@ -284,6 +377,23 @@ abstract class Html_Template_Funcs
 		Html_Template $template, /** @noinspection PhpUnusedParameterInspection */ $objects
 	) {
 		return $template->getObject();
+	}
+
+	//----------------------------------------------------------------------------- getPropertyBlocks
+	/**
+	 * @param $property Reflection_Property
+	 * @return array[]
+	 */
+	private static function getPropertyBlocks(Reflection_Property $property)
+	{
+		$blocks = array();
+		if ($property->getListAnnotation("integrated")->has("block")) {
+			$blocks[$property->path] = $property->path;
+		}
+		foreach ($property->getListAnnotation("block")->values() as $block) {
+			$blocks[$block] = $block;
+		}
+		return $blocks;
 	}
 
 	//--------------------------------------------------------------------------- toEditPropertyExtra

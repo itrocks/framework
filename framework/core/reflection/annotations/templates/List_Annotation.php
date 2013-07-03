@@ -66,6 +66,19 @@ abstract class List_Annotation extends Annotation
 		parent::__construct($values);
 	}
 
+	//------------------------------------------------------------------------------------------- add
+	/**
+	 * Adds a value to the annotation list of values
+
+	 * @param $value string
+	 */
+	public function add($value)
+	{
+		if (!$this->has($value)) {
+			$this->value[] = $value;
+		}
+	}
+
 	//------------------------------------------------------------------------------------------- has
 	/**
 	 * Returns true if the list annotation has value into its values
@@ -75,7 +88,7 @@ abstract class List_Annotation extends Annotation
 	 */
 	public function has($value)
 	{
-		return in_array($value, $this->values());
+		return in_array($value, $this->value);
 	}
 
 	//---------------------------------------------------------------------------------------- values

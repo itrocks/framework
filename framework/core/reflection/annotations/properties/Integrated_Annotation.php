@@ -14,6 +14,8 @@ class Integrated_Annotation extends List_Annotation
 	/**
 	 * Default value is "full" when no value is given
 	 *
+	 * Can be empty (eq full) contain "full", "simple", "block" (implicitly "simple")
+	 *
 	 * @param $value string
 	 * @see List_Annotation::__construct()
 	 */
@@ -23,6 +25,9 @@ class Integrated_Annotation extends List_Annotation
 			$value = "full";
 		}
 		parent::__construct($value);
+		if ($this->value && !parent::has("simple") && parent::has("block")) {
+				$this->value[] = "simple";
+			}
 	}
 
 }

@@ -20,10 +20,12 @@
 	<!--tabs._top-->
 	<div class="top fieldset">
 		<!--content--><!--@expand-->
+		<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
 		<div class="{name} {?getType.isMultiple} field" id="{path}">
 			<div class="trashable label">|{display}|</div>
 			<div class="value">{value}</div>
 		</div>
+		<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
 		<!--@expand--><!--content-->
 	</div>
 	<!--tabs._top-->
@@ -49,10 +51,12 @@
 				<div class="{getClass} fieldset" id="tab_{id}">
 					<h2>{title}</h2>
 					<!--content--><!--@expand-->
+					<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
 					<div class="{name} {?getType.isMultiple} field" id="{path}">
 						<div class="trashable label">|{display}|</div>
 						<div class="value">{value}</div>
 					</div>
+					<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
 					<!--@expand--><!--content-->
 				</div>
 				<!--included-->
@@ -64,10 +68,12 @@
 				<div class="column">
 					<div class="fieldset">
 						<!--content--><!--@expand-->
+						<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
 						<div class="{name} {?getType.isMultiple} field" id="{path}">
 							<div class="trashable label">|{display}|</div>
 							<div class="value">{value}</div>
 						</div>
+						<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
 						<!--@expand--><!--content-->
 					</div>
 				</div>
@@ -75,10 +81,12 @@
 			</div>
 			<!--columns?-->
 			<!--content--><!--@expand-->
+				<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
 			<div class="{name} {?getType.isMultiple} field" id="{path}">
 				<div class="trashable label">|{display}|</div>
 				<div class="value">{value}</div>
 			</div>
+			<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
 			<!--@expand--><!--content-->
 		</div>
 		<!--tabs.included-->
@@ -87,22 +95,26 @@
 
 	<!--@propertiesOutOfTabs?-->
 	<div class="outoftabs fieldset">
-		<!--@propertiesOutOfTabs-->
+		<!--@propertiesOutOfTabs--><!--@expand-->
+		<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
 		<div class="{name} {?getType.isMultiple} field" id="{path}">
 			<div class="trashable label">|{display}|</div>
 			<div class="value">{value}</div>
 		</div>
-		<!--@propertiesOutOfTabs-->
+		<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
+		<!--@expand--><!--@propertiesOutOfTabs-->
 	</div>
 	<!--@propertiesOutOfTabs?-->
 
 	<!--tabs._middle-->
 	<div class="middle fieldset">
 		<!--content--><!--@expand-->
+		<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
 		<div class="{name} {?getType.isMultiple} field" id="{path}">
 			<div class="trashable label">|{display}|</div>
 			<div class="value">{value}</div>
 		</div>
+		<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
 		<!--@expand--><!--content-->
 	</div>
 	<!--tabs._middle-->
@@ -110,10 +122,12 @@
 	<!--tabs._bottom-->
 	<div class="bottom fieldset">
 		<!--content--><!--@expand-->
+		<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
 		<div class="{name} {?getType.isMultiple} field" id="{path}">
 			<div class="trashable label">|{display}|</div>
 			<div class="value">{value}</div>
 		</div>
+		<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
 		<!--@expand--><!--content-->
 	</div>
 	<!--tabs._bottom-->

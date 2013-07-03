@@ -62,15 +62,19 @@ abstract class Integrated_Properties
 	 * @param $object          object
 	 * @param $property_name   string
 	 * @param $display_prefix  string
+	 * @param $blocks          string[]
 	 * @return Reflection_Property[] added properties list (empty if none applies) indices are "property.sub_property"
 	 */
 	private static function expandUsingPropertyInternal(
-		&$properties_list, $property, $object, $property_name, $display_prefix = ""
+		&$properties_list, $property, $object, $property_name, $display_prefix = "", $blocks = array()
 	) {
 		$expanded = array();
 		/** @var $integrated Integrated_Annotation */
 		$integrated = $property->getAnnotation("integrated");
 		if ($integrated->value && !$property->isStatic()) {
+			if ($integrated->has("block")) {
+				$blocks[$property->path ?: $property->name] = $property->path ?: $property->name;
+			}
 			$integrated_simple = $integrated->has("simple");
 			$expand_properties = $property->getType()->asReflectionClass()->getAllProperties();
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
@@ -80,7 +84,7 @@ abstract class Integrated_Properties
 				$sub_prefix = $integrated_simple ? $display_prefix : $display;
 				if ($more_expanded = self::expandUsingPropertyInternal(
 					$properties_list, $sub_property, $value, $property_name . "." . $sub_property_name,
-					$sub_prefix
+					$sub_prefix, $blocks
 				)) {
 					$expanded = array_merge($expanded, $more_expanded);
 				}
@@ -90,6 +94,9 @@ abstract class Integrated_Properties
 						$sub_property->display = $integrated_simple
 							? ($sub_property->getAnnotation("alias")->value ?: $sub_property_name)
 							: $display;
+					}
+					foreach ($blocks as $block) {
+						$sub_property->getListAnnotation("block")->add($block);
 					}
 					$sub_property->path = $property_name . "." . $sub_property_name;
 					$properties_list[$property_name . "." . $sub_property_name] = $sub_property;
