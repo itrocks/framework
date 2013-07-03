@@ -48,7 +48,7 @@ abstract class Getter
 					/** @var $search_element Component */
 					$search_element->setComposite($parent, $property_name);
 					/** @var Component[] $collection */
-					$collection = Dao::search($search_element);
+					$collection = Dao::search($search_element, null, Dao::sort());
 				}
 				elseif (!empty($property_name)) {
 echo "-- IS THIS DEAD CODE Getter line 51 ? --";
@@ -93,7 +93,8 @@ echo "-- IS THIS DEAD CODE Getter line 51 ? --";
 			if (Dao::getObjectIdentifier($parent)) {
 				$map = Dao::search(
 					array(get_class($parent) . "->" . $property->name => $parent),
-					$property->getType()->getElementTypeAsString()
+					$property->getType()->getElementTypeAsString(),
+					Dao::sort()
 				);
 			}
 			else {
