@@ -92,7 +92,10 @@ abstract class Integrated_Properties
 					if (isset($value)) {
 						$sub_property = new Reflection_Property_Value($sub_property, $value);
 						$sub_property->display = $integrated_simple
-							? ($sub_property->getAnnotation("alias")->value ?: $sub_property_name)
+							? (
+								($integrated->has("alias") && $sub_property->getAnnotation("alias")->value)
+								? $sub_property->getAnnotation("alias")->value : $sub_property_name
+							)
 							: $display;
 					}
 					foreach ($blocks as $block) {

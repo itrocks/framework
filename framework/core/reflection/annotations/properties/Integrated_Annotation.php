@@ -25,7 +25,7 @@ class Integrated_Annotation extends List_Annotation
 			$value = "full";
 		}
 		parent::__construct($value);
-		if ($this->value && !parent::has("simple") && parent::has("block")) {
+		if ($this->value && !parent::has("simple") && (parent::has("block") || parent::has("alias"))) {
 				$this->value[] = "simple";
 			}
 	}
