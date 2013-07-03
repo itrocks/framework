@@ -80,8 +80,8 @@ class Sql_Link_Table
 			$master_table  = Dao::storeNameOf($this->property->class);
 			$foreign_table = Dao::storeNameOf($this->property->getType()->getElementTypeAsString());
 			$this->table = ($master_table < $foreign_table)
-				? $master_table . "_" . $foreign_table . "_links"
-				: $foreign_table . "_" . $master_table . "_links";
+				? ($master_table . "_" . $foreign_table)
+				: ($foreign_table . "_" . $master_table);
 		}
 		return $this->table;
 	}
