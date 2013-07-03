@@ -37,4 +37,17 @@ class Annotation
 		return strval($this->value);
 	}
 
+	//----------------------------------------------------------------------------- getAnnotationName
+	/**
+	 * Gets annotation name (the displayable root of the annotation class name, when set)
+	 *
+	 * @return string
+	 */
+	public function getAnnotationName()
+	{
+		return Names::classToDisplay(
+			lLastParse(Namespaces::shortClassName(get_class($this)), "_Annotation")
+		);
+	}
+
 }
