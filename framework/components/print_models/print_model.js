@@ -185,6 +185,8 @@ function PDF_Templates(id_print_model)
 			$(this.node).css("border-style", "dashed");
 		}
 		$(page).append(this.node);
+		// jquery.build plugin compatibility
+		if ($(this.node).build != undefined) $(this.node).build();
 	};
 
 	/**
@@ -193,7 +195,7 @@ function PDF_Templates(id_print_model)
 	this.zoneMouseDown = function(el) {
 
 		if ($(el).hasClass("zone") || $(el).hasClass("table_zone_dragger")) {
-			// la zone selectionnée apparait toujours au dessus des autres
+			// la zone selectionnï¿½e apparait toujours au dessus des autres
 			var zzz = pdf_tpl.findHightestZindex();
 			zzz = zzz  + 1;
 			$(el).css("z-index", zzz);
@@ -296,7 +298,7 @@ function PDF_Templates(id_print_model)
 
 	/**
 	 * updateProps
-	 * (quand on change les styles et propriété d'une zone dans l'interface, l'appliquer sur la zone)
+	 * (quand on change les styles et propriï¿½tï¿½ d'une zone dans l'interface, l'appliquer sur la zone)
 	 */
 	function updateProps() {
 		prop = this.name.substring(6);
@@ -426,7 +428,7 @@ function PDF_Templates(id_print_model)
 	/**
 	 * addFieldOnTemplate
 	 */
-	$('.pdf_templates_fields')
+	$('.pdf_templates_fields,.property')
 		.draggable({
 			snap: ".zone, .table_zone, .x_ruler_line, .y_ruler_line",
 			snapMode: "both",
@@ -455,7 +457,7 @@ function PDF_Templates(id_print_model)
 				//z.node.style.zIndex = 10;
 
 				return $(z.node);
-			},
+			}
 		})
 	;
 
@@ -463,7 +465,7 @@ function PDF_Templates(id_print_model)
 		.droppable({
 			greedy: false,
 			tolerance: "pointer",
-			accept: '.pdf_templates_fields',
+			accept: '.pdf_templates_fields,.property',
 			drop: function(event, ui) {
 				// empeche l'ajout d'une zone dans la page si le drop se fait au dessus d'une cellule de table zone.
 
@@ -575,7 +577,7 @@ function PDF_Templates(id_print_model)
 
 		copy_zone = $(current_zone).clone(false);
 
-		// pas trouvé le moyen de conserver ces données lors du clonage, donc copie manuelle ...
+		// pas trouvï¿½ le moyen de conserver ces donnï¿½es lors du clonage, donc copie manuelle ...
 		$(copy_zone)[0].border = $(current_zone)[0].border;
 		$(copy_zone)[0].hSepBorder = $(current_zone)[0].hSepBorder;
 		$(copy_zone)[0].hSepColor = $(current_zone)[0].hSepColor;
@@ -669,7 +671,7 @@ function PDF_Templates(id_print_model)
 		table_zonesx = pdf_tpl.jsonToStringEncode(getZonesByPage($("#pdf_pagex > .table_zone_dragger")));
 		rulersx = pdf_tpl.jsonToStringEncode(getRulersByPage($("#pdf_pagex > .x_ruler, #pdf_page0 > .y_ruler")));
 
-		// retour à l'onglet de départ
+		// retour ï¿½ l'onglet de dï¿½part
 		$("#pages_tabs").tabs( "option", "active", active_tab_index );
 		data = 'zones[zones0]=' + zones0 + '&zones[zones1]=' + zones1 + '&zones[zonesx]=' + zonesx;
 		data += '&rulers[rulers0]=' + rulers0 + '&rulers[rulers1]=' + rulers1 + '&rulers[rulersx]=' + rulersx;
@@ -788,7 +790,7 @@ function PDF_Templates(id_print_model)
 			}
 			zones[this.id]['style'] = s.style;
 
-			// largeur de la zone affichée par defaut si la zone n'est pas redimensionnée
+			// largeur de la zone affichï¿½e par defaut si la zone n'est pas redimensionnï¿½e
 			//if (!zones[this.id]['style']['width']) {
 			//	zones[this.id]['style']['width'] = $(this).width() + 'px';
 			//}
@@ -894,7 +896,7 @@ function PDF_Templates(id_print_model)
 			zo.node.vSepBorder = element.attr.vSepBorder;
 			zo.node.hSepBorder = element.attr.hSepBorder;
 
-			// astuce pour récuperer le outerHtml ...
+			// astuce pour rï¿½cuperer le outerHtml ...
 			rows = $('<div>').append($(content).clone());
 			$(rows).find('td:first').remove();
 			if (element.cells) {
@@ -927,12 +929,6 @@ function PDF_Templates(id_print_model)
 		$(".table_zone").colResizable({disable:true});
 		$(".table_zone").colResizable({disable:false});
 	}
-
-	$("#treeview_fields").treeview({
-		animated: "fast",
-		collapsed: true,
-		control: "#treecontrol"
-	});
 
 	$('.add_ruler').on('mouseup', function() {
 		if (this.id == 'vertical_ruler') {
@@ -1112,7 +1108,7 @@ function PDF_Templates(id_print_model)
 		toggle_data_view = !toggle_data_view;
 
 		if (toggle_data_view == true) {
-			// on affiche les donnée
+			// on affiche les donnï¿½e
 			$('.zone').each(function(index, element) {
 
 				// permet de reactiver le resize apres le changement de contenu, sinon resize inoperant ...
@@ -1125,7 +1121,7 @@ function PDF_Templates(id_print_model)
 			});
 		} else {
 
-			// on affiche les donnée
+			// on affiche les donnï¿½e
 			$('.zone').each(function(index, element) {
 				// permet de reactiver le resize apres le changement de contenu, sinon resize inoperant ...
 				options = $(element).resizable("option");
@@ -1153,11 +1149,11 @@ function PDF_Templates(id_print_model)
 	});
 
 	/**
-	 * déplacement des zones / rulers avec les fleches du clavier
+	 * dï¿½placement des zones / rulers avec les fleches du clavier
 	 */
 	$(document).keydown(function(e) {
-		// si le focus est sur un champ, on désactive la fonction de déplacement ou suppression de zone
-		// car les touches fleche et suppr y sont utilisés
+		// si le focus est sur un champ, on dï¿½sactive la fonction de dï¿½placement ou suppression de zone
+		// car les touches fleche et suppr y sont utilisï¿½s
 		if (!$("input").is(":focus") && !$("textarea").is(":focus")) {
 			zone_move = 1;
 		} else {
@@ -1207,7 +1203,7 @@ function PDF_Templates(id_print_model)
 	});
 
 	/**
-	 * recherche d'un mot clé dans le treeview
+	 * recherche d'un mot clï¿½ dans le treeview
 	 */
 	$("#filter_fields").change(function() {
 		var tval = $(this).val();
@@ -1219,7 +1215,7 @@ function PDF_Templates(id_print_model)
 	});
 
 	/**
-	 * recherche du z-index le plus elevé dans toutes les zones
+	 * recherche du z-index le plus elevï¿½ dans toutes les zones
 	 */
 	this.findHightestZindex = function() {
 		var index_highest = 0;
@@ -1233,7 +1229,7 @@ function PDF_Templates(id_print_model)
 	}
 
 	/**
-	 * permet de basculer automatiquement d'une console taille réduite à une console taille augmentée.
+	 * permet de basculer automatiquement d'une console taille rï¿½duite ï¿½ une console taille augmentï¿½e.
 	 */
 	$("#toggle_console").toggle(
 		function() {

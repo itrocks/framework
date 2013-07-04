@@ -44,6 +44,7 @@ $("document").ready(function()
 				return $('<div>')
 					.addClass("property")
 					.attr("id", $this.attr("id"))
+					.attr("title", $this.attr("title"))
 					.css("background-color", "white")
 					.css("z-index", ++zindex_counter)
 					.html($this.text());
