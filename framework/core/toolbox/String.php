@@ -400,7 +400,7 @@ namespace {
 		for ($i = 0; $i < strlen($str); $i ++) {
 			if (
 				(($str[$i] < 'A') || ($str[$i] > 'Z'))
-				&& (strpos("ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ", $str[$i]) !== false)
+				&& (strpos("ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ", $str[$i]) === false)
 			) {
 				return false;
 			}
