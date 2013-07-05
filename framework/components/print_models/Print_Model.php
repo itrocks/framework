@@ -20,4 +20,13 @@ class Print_Model
 	 */
 	public $pages;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->class);
+	}
+
 }
