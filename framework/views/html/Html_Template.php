@@ -414,6 +414,19 @@ class Html_Template
 		return $content;
 	}
 
+	//------------------------------------------------------------------------------------- parseFile
+	/**
+	 * Parse a property which content is a file object
+	 *
+	 * @param $property Reflection_Property
+	 * @param $file     File
+	 * @return string
+	 */
+	protected function parseFileToString($property, File $file)
+	{
+		return (new Html_Builder_File($property, $file))->build();
+	}
+
 	//--------------------------------------------------------------------------------- parseFullPage
 	/**
 	 * @param $content string
@@ -949,7 +962,12 @@ class Html_Template
 			$object = $this->parseSingleValue($objects, $object, $property_name);
 		}
 		if ($as_string && is_object($object)) {
-			$object = $this->parseObjectToString($objects, $object, $property_name);
+			if ($object instanceof File) {
+				$object = $this->parseFileToString(null, $object);
+			}
+			else {
+				$object = $this->parseObjectToString($objects, $object, $property_name);
+			}
 		}
 		$this->parse_class_name = null;
 		return $object;
@@ -970,10 +988,11 @@ class Html_Template
 		$value = $this->parseValue($objects, $var_name);
 		$object = reset($objects);
 		if (is_array($value) && ($object instanceof Reflection_Property)) {
-			if ($object->getAnnotation("link")->value == "Collection") {
+			$link = $object->getAnnotation("link")->value;
+			if ($link === "Collection") {
 				$value = $this->parseCollection($object, $value);
 			}
-			else {
+			elseif ($link === "Map") {
 				$value = $this->parseMap($object, $value);
 			}
 		}

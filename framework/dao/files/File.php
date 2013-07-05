@@ -3,8 +3,6 @@ namespace SAF\Framework;
 
 /**
  * File is a simple business object that stores files
- *
- * @dao File
  */
 class File
 {
@@ -17,28 +15,17 @@ class File
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * @getter getContent
-	 * @setter setContent
 	 * @var string
 	 */
 	public $content;
 
-	//------------------------------------------------------------------------------------ getContent
+	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string
 	 */
-	public function getContent()
+	public function __toString()
 	{
-
-	}
-
-	//------------------------------------------------------------------------------------ setContent
-	/**
-	 * @param $content string
-	 */
-	public function setContent($content)
-	{
-
+		return strval($this->name);
 	}
 
 }

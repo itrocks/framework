@@ -69,11 +69,17 @@ class Html_Builder_Type_Edit
 				case "string":   return $this->buildString();
 				case "string[]": return "string[]";
 			}
-			if ($type->isInstanceOf("DateTime")) {
-				return $this->buildDateTime();
-			}
-			elseif ($type->isClass()) {
-				return $this->buildObject();
+			if ($type->isClass()) {
+				$class_name = $type->asString();
+				if (is_a($class_name, 'DateTime', true)) {
+					return $this->buildDateTime();
+				}
+				elseif (is_a($class_name, 'SAF\Framework\File', true)) {
+					return $this->buildFile();
+				}
+				else {
+					return $this->buildObject();
+				}
 			}
 		}
 		return $this->value;
@@ -89,6 +95,23 @@ class Html_Builder_Type_Edit
 		$input->setAttribute("autocomplete", "off");
 		$input->addClass("datetime");
 		return $input;
+	}
+
+	//------------------------------------------------------------------------------------- buildFile
+	/**
+	 * @return Html_Span
+	 */
+	protected function buildFile()
+	{
+		if ($this->value instanceof File) {
+			$file = new Html_Input($this->getFieldName());
+			$file->setAttribute("type", "file");
+			$file->addClass("file");
+			return $this->value->name . $file;
+		}
+		else {
+			return "CRASH";
+		}
 	}
 
 	//------------------------------------------------------------------------------------ buildFloat
