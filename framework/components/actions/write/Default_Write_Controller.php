@@ -29,6 +29,8 @@ class Default_Write_Controller implements Default_Class_Controller
 			$objects = array_merge(array($class_name => $object), $objects);
 			$parameters->unshift($object);
 		}
+		$builder = new File_Builder_Post_Files();
+		$form = $builder->appendToForm($form, $files);
 		$builder = new Object_Builder_Array();
 		$builder->build($form, $object, true);
 		$write_objects = array();
