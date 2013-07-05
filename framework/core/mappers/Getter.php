@@ -18,7 +18,7 @@ abstract class Getter
 	public static function getAll($collection, $element_class)
 	{
 		if (!isset($collection)) {
-			$collection = Dao::readAll($element_class);
+			$collection = Dao::readAll($element_class, Dao::sort());
 		}
 		return $collection;
 	}
@@ -27,10 +27,10 @@ abstract class Getter
 	/**
 	 * Generic getter for a collection of objects
 	 *
-	 * @param $collection      Component[]|null actual value of the property (will be returned if not null)
-	 * @param $element_class   string|null      Class for each collection's object
-	 * @param $parent          object           Parent object
-	 * @param $parent_property string           Parent property name. Recommended but can be ommited if foreign class is a Component
+	 * @param $collection      Component[] Actual value of the property (will be returned if not null)
+	 * @param $element_class   string Class for each collection's object
+	 * @param $parent          object Parent object
+	 * @param $parent_property string|Reflection_Property Parent property (or property name). Recommended but can be ommited if foreign class is a Component
 	 * @return object[]
 	 */
 	public static function getCollection(
@@ -40,18 +40,26 @@ abstract class Getter
 			if (Dao::getObjectIdentifier($parent)) {
 				$search_element = Search_Object::create($element_class);
 				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
-				$property_name = isset($parent_property)
-					? Reflection_Property::getInstanceOf($parent, $parent_property)
-						->getAnnotation("foreign")->value
-					: null;
+				if (isset($parent_property)) {
+					if (!$parent_property instanceof Reflection_Property) {
+						$parent_property = Reflection_Property::getInstanceOf($parent, $parent_property);
+					}
+					$property_name = $parent_property->getAnnotation("foreign")->value;
+					$dao = ($dao = $parent_property->getAnnotation("dao")->value)
+						? Dao::get($dao) : Dao::current();
+				}
+				else {
+					$dao = Dao::current();
+					$property_name = null;
+				}
 				if ($is_component) {
 					/** @var $search_element Component */
 					$search_element->setComposite($parent, $property_name);
 					/** @var Component[] $collection */
-					$collection = Dao::search($search_element, null, Dao::sort());
+					$collection = $dao->search($search_element, null, Dao::sort());
 				}
 				elseif (!empty($property_name)) {
-echo "-- IS THIS DEAD CODE Getter line 51 ? --";
+echo "-- IS THIS DEAD CODE Getter line " . __LINE__ . " ? --";
 					$property = Reflection_Property::getInstanceOf($search_element, $property_name);
 					$accessible = $property->isPublic();
 					if (!$accessible) {
@@ -62,7 +70,7 @@ echo "-- IS THIS DEAD CODE Getter line 51 ? --";
 						$property->setAccessible(false);
 					}
 					/** @var Component[] $collection */
-					$collection = Dao::search($search_element);
+					$collection = $dao->search($search_element);
 				}
 				else {
 					user_error(
@@ -82,16 +90,20 @@ echo "-- IS THIS DEAD CODE Getter line 51 ? --";
 	/**
 	 * Generic getter for mapped objects
 	 *
-	 * @param $map      Component[]|null actual value of the property (will be returned if not null)
-	 * @param $property Reflection_Property the source property for map reading
+	 * @param $map      Component[] actual value of the property (will be returned if not null)
+	 * @param $property string|Reflection_Property the source property (or name) for map reading
 	 * @param $parent   object the parent object
 	 * @return object[]
 	 */
-	public static function getMap($map, Reflection_Property $property, $parent)
+	public static function getMap($map, $property, $parent)
 	{
 		if (!isset($map)) {
 			if (Dao::getObjectIdentifier($parent)) {
-				$map = Dao::search(
+				if (!($property instanceof Reflection_Property)) {
+					$property = Reflection_Property::getInstanceOf($parent, $property);
+				}
+				$dao = ($dao = $property->getAnnotation("dao")->value) ? Dao::get($dao) : Dao::current();
+				$map = $dao->search(
 					array(get_class($parent) . "->" . $property->name => $parent),
 					$property->getType()->getElementTypeAsString(),
 					Dao::sort()
@@ -108,23 +120,32 @@ echo "-- IS THIS DEAD CODE Getter line 51 ? --";
 	/**
 	 * Generic getter for an object
 	 *
-	 * @param $object          mixed  actual value of the object (will be returned if already an object)
-	 * @param $class_name      string the object class name
-	 * @param $parent          object the parent object
-	 * @param $parent_property string the parent property name
-	 * @return object
+	 * @param $object     mixed actual value of the object, or identifier to an object
+	 * @param $class_name string the object class name
+	 * @param $parent     object the parent object
+	 * @param $property   string|Reflection_Property the parent property
+	 * @return object will be $object if aleady an object, or the read object, or null if not found
 	 */
-	public static function getObject($object, $class_name, $parent = null, $parent_property = null)
+	public static function getObject($object, $class_name, $parent = null, $property = null)
 	{
 		if (!is_object($object)) {
-			if (is_object($parent) && is_string($parent_property)) {
-				$parent_property = "id_" . $parent_property;
-				if (isset($parent->$parent_property)) {
-					$object = $parent->$parent_property;
+			if ($property instanceof Reflection_Property) {
+				$property_name = $property->name;
+			}
+			elseif (is_string($property)) {
+				$property_name = $property;
+				$property = Reflection_Property::getInstanceOf($object, $property_name);
+			}
+			if (is_object($parent) && isset($property_name)) {
+				$id_property_name = "id_" . $property_name;
+				if (isset($parent->$id_property_name)) {
+					$object = $parent->$id_property_name;
 				}
 			}
 			if (isset($object)) {
-				$object = Dao::read($object, $class_name);
+				$object = (isset($property) && ($dao = $property->getAnnotation("dao")->value))
+					? Dao::get($dao)->read($object, $class_name)
+					: Dao::read($object, $class_name);
 			}
 		}
 		return $object;
