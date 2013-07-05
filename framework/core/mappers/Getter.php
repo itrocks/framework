@@ -132,9 +132,9 @@ echo "-- IS THIS DEAD CODE Getter line " . __LINE__ . " ? --";
 			if ($property instanceof Reflection_Property) {
 				$property_name = $property->name;
 			}
-			elseif (is_string($property)) {
+			elseif (is_string($property) && is_object($parent)) {
 				$property_name = $property;
-				$property = Reflection_Property::getInstanceOf($object, $property_name);
+				$property = Reflection_Property::getInstanceOf($parent, $property_name);
 			}
 			if (is_object($parent) && isset($property_name)) {
 				$id_property_name = "id_" . $property_name;
