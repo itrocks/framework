@@ -35,7 +35,8 @@ abstract class Annotation_Parser
 		$annotations = array();
 		$annotation = null;
 		$i = 0;
-		while (($i = strpos($doc_comment, "@" . $annotation_name, $i)) !== false) {
+		while (($i = strpos($doc_comment, "* @" . $annotation_name, $i)) !== false) {
+			$i += 2;
 			$annotation = self::parseAnnotationValue(
 				$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
 			);
@@ -66,7 +67,8 @@ abstract class Annotation_Parser
 		$doc_comment = $reflection_object->getDocComment(true);
 		$annotations = array();
 		$i = 0;
-		while (($i = strpos($doc_comment, "@", $i)) !== false) {
+		while (($i = strpos($doc_comment, "* @", $i)) !== false) {
+			$i += 2;
 			$j = strlen($doc_comment);
 			if (($k = strpos($doc_comment, "\n", $i)) < $j) $j = $k;
 			if (($k = strpos($doc_comment, " ", $i)) < $j)  $j = $k;
