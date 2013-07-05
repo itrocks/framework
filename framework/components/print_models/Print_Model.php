@@ -13,4 +13,11 @@ class Print_Model
 	 */
 	public $class;
 
+	//---------------------------------------------------------------------------------------- $pages
+	/**
+	 * @link Collection
+	 * @var Print_Model_Page[]
+	 */
+	public $pages;
+
 }
