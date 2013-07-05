@@ -8,6 +8,14 @@ abstract class Dao
 {
 	use Current { current as private pCurrent; }
 
+	//----------------------------------------------------------------------------------------- $list
+	/**
+	 * The list of available and referenced DAO
+	 *
+	 * @var Data_Link[]
+	 */
+	private static $list;
+
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Begin a transaction with the current data link (non-transactional SQL engines will do nothing and return null)
@@ -56,6 +64,26 @@ abstract class Dao
 		}
 	}
 
+	//------------------------------------------------------------------------------------- configure
+	/**
+	 * Configure DAO with specific DAO link elements
+	 *
+	 * @param $configuration array
+	 * @return array
+	 */
+	public static function configure($configuration)
+	{
+		if ($configuration["list"]) {
+			foreach ($configuration["list"] as $dao_identifier => $dao_configuration) {
+				$class_name = $dao_configuration["class"];
+				unset($dao_configuration["class"]);
+				self::set($dao_identifier, new $class_name($dao_configuration));
+			};
+			unset($configuration["list"]);
+		}
+		return $configuration;
+	}
+
 	//----------------------------------------------------------------------------------------- count
 	/**
 	 * Count the number of elements that match filter
@@ -93,6 +121,18 @@ abstract class Dao
 	public static function delete($object)
 	{
 		return self::current()->delete($object);
+	}
+
+	//------------------------------------------------------------------------------------------- get
+	/**
+	 * Get the data link identified by the $dao_identifier string
+	 *
+	 * @param $dao_identifier string
+	 * @return Data_Link
+	 */
+	public static function get($dao_identifier)
+	{
+		return self::$list[$dao_identifier];
 	}
 
 	//--------------------------------------------------------------------------- getObjectIdentifier
@@ -138,6 +178,19 @@ abstract class Dao
 	public static function readAll($class_name, $options = null)
 	{
 		return self::current()->readAll($class_name, $options);
+	}
+
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * Removes a data link which identifier is a string from the list of available data links
+	 *
+	 * @param $dao_identifier string
+	 */
+	public static function remove($dao_identifier)
+	{
+		if (isset(self::$list[$dao_identifier])) {
+			unset(self::$list[$dao_identifier]);
+		}
 	}
 
 	//--------------------------------------------------------------------------------------- replace
@@ -225,6 +278,18 @@ abstract class Dao
 	public static function select($class, $columns, $filter_object = null, $options = null)
 	{
 		return self::current()->select($class, $columns, $filter_object, $options);
+	}
+
+	//------------------------------------------------------------------------------------------- set
+	/**
+	 * Sets a data link into the data links list
+	 *
+	 * @param $dao_identifier string
+	 * @param $data_link      Data_Link
+	 */
+	public static function set($dao_identifier, Data_Link $data_link)
+	{
+		self::$list[$dao_identifier] = $data_link;
 	}
 
 	//------------------------------------------------------------------------------------------ sort
