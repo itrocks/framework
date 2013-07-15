@@ -73,7 +73,7 @@ abstract class Dao
 	 */
 	public static function configure($configuration)
 	{
-		if ($configuration["list"]) {
+		if (isset($configuration["list"])) {
 			foreach ($configuration["list"] as $dao_identifier => $dao_configuration) {
 				$class_name = $dao_configuration["class"];
 				unset($dao_configuration["class"]);
