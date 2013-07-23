@@ -69,6 +69,7 @@ class Dao_Sort_Option implements Dao_Option
 			isset($class_name) && ($class_name != $this->class_name)
 			&& (isset($this->class_name) || !isset($this->columns))
 		) {
+			$class_name = Builder::className($class_name);
 			$this->class_name = $class_name;
 			$columns = (new Reflection_Class($class_name))->getAnnotation("sort")->value;
 			if (!$columns) {
