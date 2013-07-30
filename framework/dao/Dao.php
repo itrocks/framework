@@ -78,7 +78,7 @@ abstract class Dao
 				$class_name = $dao_configuration["class"];
 				unset($dao_configuration["class"]);
 				self::set($dao_identifier, new $class_name($dao_configuration));
-			};
+			}
 			unset($configuration["list"]);
 		}
 		return $configuration;
