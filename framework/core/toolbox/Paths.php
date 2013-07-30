@@ -7,6 +7,13 @@ namespace SAF\Framework;
 abstract class Paths
 {
 
+	//------------------------------------------------------------------------------------- $env_root
+	/**
+	 * The root path for the current project files
+	 * @var
+	 */
+	public static $project_uri;
+
 	//------------------------------------------------------------------------------------ $file_root
 	/**
 	 * The root path for main script file, without the script name
@@ -44,6 +51,7 @@ abstract class Paths
 		);
 		self::$script_name = substr($_SERVER["SCRIPT_NAME"], $slash, $dotphp - $slash);
 		self::$uri_root = substr($_SERVER["SCRIPT_NAME"], 0, $slash);
+		self::$project_uri = substr(getcwd(), strlen(self::$file_root) - 1);
 	}
 
 }
