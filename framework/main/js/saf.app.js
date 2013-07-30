@@ -4,11 +4,12 @@
  * @param PHPSESSID   string
  * @param uri_root    string
  * @param script_name string
+ * @param project_uri string
  * @param language    string
  * @param date_format string
  * @constructor
  */
-App = function(PHPSESSID, uri_root, script_name, language, date_format)
+App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_format)
 {
 
 	//----------------------------------------------------------------------------------- date_format
@@ -28,6 +29,12 @@ App = function(PHPSESSID, uri_root, script_name, language, date_format)
 	 * @var string
 	 */
 	this.PHPSESSID = PHPSESSID;
+
+	//----------------------------------------------------------------------------------- project_uri
+	/**
+	 * @var string
+	 */
+	this.project_uri = project_uri;
 
 	//----------------------------------------------------------------------------------- script_name
 	/**
