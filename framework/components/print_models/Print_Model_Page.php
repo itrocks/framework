@@ -3,6 +3,8 @@ namespace SAF\Framework;
 
 /**
  * A print model page : a model linked to a unique page background and design
+ *
+ * @representative number, background
  */
 class Print_Model_Page
 {
@@ -28,7 +30,6 @@ class Print_Model_Page
 
 	//----------------------------------------------------------------------------------- $background
 	/**
-	 * @dao file
 	 * @link Object
 	 * @var File
 	 */
