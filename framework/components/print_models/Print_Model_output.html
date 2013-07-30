@@ -27,6 +27,7 @@
 	</div>
 
 	<div class="container">
+		<!--editing-->
 		<div class="fields" id="fields">
 			<div class="fields_toolbar">
 				<img src="img/v2/disk.png" title="enregistrer" id="button_save_templates" class="toolbar_button" />
@@ -195,43 +196,55 @@
 			</div>
 			{/Property/select/Sales_Invoices}
 		</div>
+		<!--editing-->
 
 		<div class="tabs" id="pages_tabs">
 			<ul>
-				<li><a href="#page0"><span>Toutes</span></a></li>
-				<li><a href="#page1"><span>Premi&egrave;re</span></a></li>
-				<li><a href="#pagex"><span>Derni&egrave;re</span></a></li>
-				<!--<li><a href="#pagex"><span>+</span></a></li>-->
+				<li><a href="#page1">|First|</a></li>
+				<li><a href="#page0">|All|</a></li>
+				<li><a href="#pagex">|Last|</a></li>
 			</ul>
+			<div class="page1" id="page1">
+				<div class="pdf_page" id="pdf_page1" style="background-image:url('{first_page.background.link}');">
+					<!--editing-->
+					<input type="file" name="background1" onchange='alert(this.value)' style='display:none;'>
+					<input type="button" value="|change background|" onclick=this.form.background1.click();>
+					<!--editing-->
+				</div>
+			</div>
 			<div class="page0" id="page0">
 				<div class="pdf_page" id="pdf_page0" style="background-image:url('{all_pages.background.link}');">
+					<!--editing-->
+					<input type="file" name="background0" onchange='alert(this.value)' style='display:none;'>
+					<input type="button" value="|change background|" onclick=this.form.background0.click();>
+					<!--editing-->
+				</div>
+			</div>
+			<div class="pagex" id="pagex">
+				<div class="pdf_page" id="pdf_pagex" style="background-image:url('{last_page.background.link}');">
+					<!--editing-->
+					<input type="file" name="backgroundx" onchange='alert(this.value)' style='display:none;'>
+					<input type="button" value="|change background|" onclick=this.form.backgroundx.click();>
+					<!--editing-->
+				</div>
 			</div>
 		</div>
-		<div class="page1" id="page1">
-			<div class="pdf_page" id="pdf_page1" style="background-image:url('{first_page.background.link}');">
-		</div>
-	</div>
-	<div class="pagex" id="pagex">
-		<div class="pdf_page" id="pdf_pagex" style="background-image:url('{last_page.background.link}');">
-	</div>
-</div>
-</div>
 
-<script>
-	pdft = new PDF_Templates({id});
-	/*
-	pdft.loadZones('', $('#pdf_page1'));
-	pdft.loadZones('', $('#pdf_pagex'));
-	pdft.loadZones('', $('#pdf_page0'));
-	pdft.loadRulers('', $('#pdf_page0'));
-	pdft.loadRulers('', $('#pdf_page1'));
-	pdft.loadRulers('', $('#pdf_pagex'));
-	pdft.loadZones('', $('#pdf_page1'));
-	pdft.loadZones('', $('#pdf_pagex'));
-	pdft.loadZones('', $('#pdf_page0'));
-	*/
-	pdft.activeRulerDrag();
-</script>
+		<script>
+			pdft = new PDF_Templates({id});
+			/*
+			pdft.loadZones('', $('#pdf_page1'));
+			pdft.loadZones('', $('#pdf_pagex'));
+			pdft.loadZones('', $('#pdf_page0'));
+			pdft.loadRulers('', $('#pdf_page0'));
+			pdft.loadRulers('', $('#pdf_page1'));
+			pdft.loadRulers('', $('#pdf_pagex'));
+			pdft.loadZones('', $('#pdf_page1'));
+			pdft.loadZones('', $('#pdf_pagex'));
+			pdft.loadZones('', $('#pdf_page0'));
+			*/
+			pdft.activeRulerDrag();
+		</script>
 
 	</div>
 

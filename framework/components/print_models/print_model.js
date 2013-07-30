@@ -39,11 +39,6 @@ function PDF_Templates(id_print_model)
 		this.counter = 0;
 		this.node = document.createElement("div");
 
-		//this.node.style.width = 75 + "px";
-		//this.node.style.padding = 5 + "px";
-		//this.node.style.left = 10 + "px";
-		//this.node.style.top = 10 + "px";
-
 		if (type == 'table_zone') {
 			this.node.className = 'table_zone_dragger';
 		} else {
@@ -81,28 +76,13 @@ function PDF_Templates(id_print_model)
 		this.node.path = id.path;
 		this.node.title = id.path;
 
-
-
-
 		$(this.node).attr('alt', value);
-
-
-
-		// ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se
-
-
-
-		//overzone = ($('#props_overzone').is(':checked')) ? "1" : "0";
 
 		linespace = $('#props_lineSpace').val();
 
 		$(this.node).data('id', id);
 
-		//$(this.node).data('overzone', overzone);
-
 		$(this.node).data('linespace', linespace);
-
-
 
 		if (type == 'table_zone') {
 			$(this.node).append(table_html);
@@ -195,7 +175,7 @@ function PDF_Templates(id_print_model)
 	this.zoneMouseDown = function(el) {
 
 		if ($(el).hasClass("zone") || $(el).hasClass("table_zone_dragger")) {
-			// la zone selectionn�e apparait toujours au dessus des autres
+			// la zone selectionnée apparait toujours au dessus des autres
 			var zzz = pdf_tpl.findHightestZindex();
 			zzz = zzz  + 1;
 			$(el).css("z-index", zzz);
@@ -298,7 +278,7 @@ function PDF_Templates(id_print_model)
 
 	/**
 	 * updateProps
-	 * (quand on change les styles et propri�t� d'une zone dans l'interface, l'appliquer sur la zone)
+	 * (quand on change les styles et propriété d'une zone dans l'interface, l'appliquer sur la zone)
 	 */
 	function updateProps() {
 		prop = this.name.substring(6);
@@ -428,38 +408,27 @@ function PDF_Templates(id_print_model)
 	/**
 	 * addFieldOnTemplate
 	 */
-	$('.pdf_templates_fields,.property')
-		.draggable({
-			snap: ".zone, .table_zone, .x_ruler_line, .y_ruler_line",
-			snapMode: "both",
-			snapTolerance: 10,
-			opacity: 0.5,
-			cursorAt: { top: 0, left: 0 },
-			helper: function(  ) {
-				var value = $(this).attr("alt");
+	$('.pdf_templates_fields,.property').draggable({
+		snap: ".zone, .table_zone, .x_ruler_line, .y_ruler_line",
+		snapMode: "both",
+		snapTolerance: 10,
+		opacity: 0.5,
+		cursorAt: { top: 0, left: 0 },
+		helper: function(  )
+		{
+			var value = $(this).attr("alt");
+			id = {};
+			id.path = $(this).attr("title");
+			id.name =  $(this).attr("id");
 
-				// @@@
-				//this.id
+			z = new zone(id, value);
+			z.node.path = this.id;
+			z.node.style.marginLeft = "2px";
+			z.node.style.marginTop = "2px";
 
-				id = {};
-				id.path = $(this).attr("title");
-				id.name =  $(this).attr("id");
-
-				//z = new zone(, value);
-				//zone_content = $(this).html();
-
-				z = new zone(id, value);
-
-				z.node.path = this.id;
-				z.node.style.marginLeft = "2px";
-				z.node.style.marginTop = "2px";
-
-				//z.node.style.zIndex = 10;
-
-				return $(z.node);
-			}
-		})
-	;
+			return $(z.node);
+		}
+	});
 
 	$('.pdf_page')
 		.droppable({
@@ -497,35 +466,14 @@ function PDF_Templates(id_print_model)
 					}
 					var value = ui.draggable.attr("alt");
 
+					z = new zone(id, value, type);
+					z.node.style.left = (drag.left - drop.left -1) + 'px';
+					z.node.style.top = (drag.top - drop.top -1) + 'px';
 					if (active_page_tab == 0) {
-
-						/*
-						 z = new zone(id, value, type);
-						 z.node.style.left = (drag.left - drop.left -1) + 'px';
-						 z.node.style.top = (drag.top - drop.top -1) + 'px';
-						 z.addToPage($('#pdf_page1'));
-
-						 z = new zone(id, value, type);
-						 z.node.style.left = (drag.left - drop.left -1) + 'px';
-						 z.node.style.top = (drag.top - drop.top -1) + 'px';
-						 z.addToPage($('#pdf_pagex'));
-						 */
-						z = new zone(id, value, type);
-						z.node.style.left = (drag.left - drop.left -1) + 'px';
-						z.node.style.top = (drag.top - drop.top -1) + 'px';
-						z.addToPage($('#pdf_page0'));
-
-						// z.
-
-					} else if (active_page_tab == 1) {
-						z = new zone(id, value, type);
-						z.node.style.left = (drag.left - drop.left -1) + 'px';
-						z.node.style.top = (drag.top - drop.top -1) + 'px';
 						z.addToPage($('#pdf_page1'));
+					} else if (active_page_tab == 1) {
+						z.addToPage($('#pdf_page0'));
 					} else if (active_page_tab == 2) {
-						z = new zone(id, value, type);
-						z.node.style.left = (drag.left - drop.left -1) + 'px';
-						z.node.style.top = (drag.top - drop.top -1) + 'px';
 						z.addToPage($('#pdf_pagex'));
 					}
 				}
@@ -577,7 +525,7 @@ function PDF_Templates(id_print_model)
 
 		copy_zone = $(current_zone).clone(false);
 
-		// pas trouv� le moyen de conserver ces donn�es lors du clonage, donc copie manuelle ...
+		// pas trouvé le moyen de conserver ces données lors du clonage, donc copie manuelle ...
 		$(copy_zone)[0].border = $(current_zone)[0].border;
 		$(copy_zone)[0].hSepBorder = $(current_zone)[0].hSepBorder;
 		$(copy_zone)[0].hSepColor = $(current_zone)[0].hSepColor;
@@ -671,7 +619,7 @@ function PDF_Templates(id_print_model)
 		table_zonesx = pdf_tpl.jsonToStringEncode(getZonesByPage($("#pdf_pagex > .table_zone_dragger")));
 		rulersx = pdf_tpl.jsonToStringEncode(getRulersByPage($("#pdf_pagex > .x_ruler, #pdf_page0 > .y_ruler")));
 
-		// retour � l'onglet de d�part
+		// retour à l'onglet de départ
 		$("#pages_tabs").tabs( "option", "active", active_tab_index );
 		data = 'zones[zones0]=' + zones0 + '&zones[zones1]=' + zones1 + '&zones[zonesx]=' + zonesx;
 		data += '&rulers[rulers0]=' + rulers0 + '&rulers[rulers1]=' + rulers1 + '&rulers[rulersx]=' + rulersx;
@@ -790,7 +738,7 @@ function PDF_Templates(id_print_model)
 			}
 			zones[this.id]['style'] = s.style;
 
-			// largeur de la zone affich�e par defaut si la zone n'est pas redimensionn�e
+			// largeur de la zone affichée par defaut si la zone n'est pas redimensionnée
 			//if (!zones[this.id]['style']['width']) {
 			//	zones[this.id]['style']['width'] = $(this).width() + 'px';
 			//}
@@ -896,7 +844,7 @@ function PDF_Templates(id_print_model)
 			zo.node.vSepBorder = element.attr.vSepBorder;
 			zo.node.hSepBorder = element.attr.hSepBorder;
 
-			// astuce pour r�cuperer le outerHtml ...
+			// astuce pour récuperer le outerHtml ...
 			rows = $('<div>').append($(content).clone());
 			$(rows).find('td:first').remove();
 			if (element.cells) {
@@ -1017,11 +965,11 @@ function PDF_Templates(id_print_model)
 	$('#pages_tabs').on('mouseenter', '.td_div', function() {
 		var button_rem = '';
 		if($(this).closest('.table_zone').find('td').length > 1) {
-			button_rem = '<img src="img/v2/delete.png" class="table_zone_rem" />';
+			button_rem = '<img src="' + window.app.project_uri + '/bappli/skins/bappli/print_model/delete.png" class="table_zone_rem" />';
 		}
 		var buttons =
 			'<div class="table_zone_buttons">' +
-				'<img src="img/v2/add.png" class="table_zone_add" />' +
+				'<img src="' + window.app.project_uri + '/bappli/skins/bappli/print_model/add.png" class="table_zone_add" />' +
 				button_rem +
 				'</div>';
 		$(this).css("backgroundColor", "rgba(0, 255, 0, 0.1)");
@@ -1121,7 +1069,7 @@ function PDF_Templates(id_print_model)
 			});
 		} else {
 
-			// on affiche les donn�e
+			// on affiche les donnée
 			$('.zone').each(function(index, element) {
 				// permet de reactiver le resize apres le changement de contenu, sinon resize inoperant ...
 				options = $(element).resizable("option");
@@ -1149,11 +1097,11 @@ function PDF_Templates(id_print_model)
 	});
 
 	/**
-	 * d�placement des zones / rulers avec les fleches du clavier
+	 * déplacement des zones / rulers avec les flêches du clavier
 	 */
 	$(document).keydown(function(e) {
-		// si le focus est sur un champ, on d�sactive la fonction de d�placement ou suppression de zone
-		// car les touches fleche et suppr y sont utilis�s
+		// si le focus est sur un champ, on désactive la fonction de déplacement ou suppression de zone
+		// car les touches fleche et suppr y sont utilisés
 		if (!$("input").is(":focus") && !$("textarea").is(":focus")) {
 			zone_move = 1;
 		} else {
@@ -1203,7 +1151,7 @@ function PDF_Templates(id_print_model)
 	});
 
 	/**
-	 * recherche d'un mot cl� dans le treeview
+	 * recherche d'un mot clé dans le treeview
 	 */
 	$("#filter_fields").change(function() {
 		var tval = $(this).val();
@@ -1215,7 +1163,7 @@ function PDF_Templates(id_print_model)
 	});
 
 	/**
-	 * recherche du z-index le plus elev� dans toutes les zones
+	 * recherche du z-index le plus elevé dans toutes les zones
 	 */
 	this.findHightestZindex = function() {
 		var index_highest = 0;
@@ -1229,7 +1177,7 @@ function PDF_Templates(id_print_model)
 	}
 
 	/**
-	 * permet de basculer automatiquement d'une console taille r�duite � une console taille augment�e.
+	 * permet de basculer automatiquement d'une console taille réduite à une console taille augmentée.
 	 */
 	$("#toggle_console").toggle(
 		function() {
@@ -1237,14 +1185,14 @@ function PDF_Templates(id_print_model)
 				width: "1000px",
 				height: "600px"
 			}, 400);
-			$("#toggle_console").attr("src", "img/v2/arrow_in.png");
+			$("#toggle_console").attr("src", window.app.project_uri + "/bappli/skins/bappli/print_model/arrow_in.png");
 		},
 		function() {
 			$("#console").stop().animate({
 				width: "100%",
 				height: "200px"
 			}, 400);
-			$("#toggle_console").attr("src", "img/v2/arrow_out.png");
+			$("#toggle_console").attr("src", window.app.project_uri + "/bappli/skins/bappli/print_model/arrow_out.png");
 		}
 	);
 

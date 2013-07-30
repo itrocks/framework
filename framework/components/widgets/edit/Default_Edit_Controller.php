@@ -37,6 +37,7 @@ class Default_Edit_Controller extends Default_Output_Controller
 	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
+		$parameters["editing"] = true;
 		$parameters["feature"] = "edit";
 		$parameters["template_mode"] = "edit";
 		return $parameters;

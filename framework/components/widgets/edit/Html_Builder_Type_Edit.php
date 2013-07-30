@@ -107,7 +107,8 @@ class Html_Builder_Type_Edit
 			$file = new Html_Input($this->getFieldName());
 			$file->setAttribute("type", "file");
 			$file->addClass("file");
-			return $this->value->name . $file;
+			$span = new Html_Span($this->value->name);
+			return $file . $span;
 		}
 		else {
 			return "CRASH";
