@@ -88,14 +88,19 @@ class Button
 			elseif ($key === "color") {
 				$this->color = Color::of($option);
 			}
+			elseif ($option instanceof Button) {
+				$this->sub_buttons[] = $option;
+			}
+			elseif ($key === "sub_buttons") {
+				$this->sub_buttons = is_array($this->sub_buttons)
+					? array_merge($this->sub_buttons, $option)
+					: $option;
+			}
 			elseif (($key === "class") || (is_numeric($key) && (substr($option, 0, 1) == "."))) {
 				$this->class .= (isset($this->class) ? " " : "") . substr($option, 1);
 			}
 			elseif (($key === "target") || (is_numeric($key) && substr($option, 0, 1) == "#")) {
 				$this->target = $option;
-			}
-			elseif ($key === "sub_buttons") {
-				$this->sub_buttons = $option;
 			}
 		}
 		if (!isset($this->color)) {
