@@ -83,7 +83,7 @@ trait Component
 				? Reflection_Class::getInstanceOf($self)->getAnnotedProperties("composite")
 				: array(Reflection_Property::getInstanceOf($self, $property_name));
 			foreach ($properties as $property) {
-				if (!isset($class_name) || $property->getType()->isInstanceOf($class_name)) {
+				if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
 					self::$composite_property_name[$path][$property->name] = $property;
 				}
 			}
