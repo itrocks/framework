@@ -138,7 +138,7 @@ abstract class Mysql_Column_Builder_Property
 					}
 				}
 				if ($property_type->isInteger()) {
-					return ($max_length <= 3 && $min_value >= -128 && $max_value <= 127 && $signed) ? "tinyint($signed_length)" : (
+					return ($max_length <= 3  && $min_value >= -128 && $max_value <= 127 && $signed) ? "tinyint($signed_length)" : (
 						($max_length <= 3 && $min_value >= 0 && $max_value <= 255 && !$signed) ? "tinyint($max_length) unsigned" : (
 						($max_length <= 5 && $min_value >= -32768 && $max_value <= 32767) ? "smallint($signed_length)" : (
 						($max_length <= 5 && $min_value >= 0 && $max_value <= 65535) ? "smallint($max_length) unsigned" : (
@@ -153,14 +153,19 @@ abstract class Mysql_Column_Builder_Property
 				elseif ($property_type->isFloat()) {
 					return ($precision ? "decimal($signed_length, $precision)" : "float");
 				}
+				elseif ($property->getAnnotation("binary")->value) {
+					return ($max_length <= 65535) ? "blob" : (
+						($max_length <= 16777215) ? "mediumblob" :
+						"longblob"
+					);
+				}
 				else {
 					return ($max_length <= 3) ? "char($max_length)" : (
 						($max_length <= 255) ? "varchar($max_length)" : (
 						($max_length <= 65535) ? "text" : (
 						($max_length <= 16777215) ? "mediumtext" :
-							"longtext"
-						)))
-						. " CHARACTER SET utf8 COLLATE utf8_general_ci";
+						"longtext"
+					))) . " CHARACTER SET utf8 COLLATE utf8_general_ci";
 				}
 			}
 			switch ($property_type->asString()) {

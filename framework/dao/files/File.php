@@ -15,10 +15,18 @@ class File
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
+	 * @binary
+	 * @max_length 4000000000
+	 * @setter setContent
 	 * @var string
-	 * @max-length 4000000000
 	 */
 	public $content;
+
+	//----------------------------------------------------------------------------------------- $hash
+	/**
+	 * @var string
+	 */
+	public $hash;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -27,6 +35,16 @@ class File
 	public function __toString()
 	{
 		return strval($this->name);
+	}
+
+	//------------------------------------------------------------------------------------ setContent
+	/**
+	 * @param $content string
+	 */
+	public function setContent($content)
+	{
+		$this->content = $content;
+		$this->hash = md5($content);
 	}
 
 }

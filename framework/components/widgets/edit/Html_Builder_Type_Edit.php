@@ -103,16 +103,13 @@ class Html_Builder_Type_Edit
 	 */
 	protected function buildFile()
 	{
-		if ($this->value instanceof File) {
-			$file = new Html_Input($this->getFieldName());
-			$file->setAttribute("type", "file");
-			$file->addClass("file");
-			$span = new Html_Span($this->value->name);
-			return $file . $span;
-		}
-		else {
-			return "CRASH";
-		}
+		$file = new Html_Input($this->getFieldName());
+		$file->setAttribute("type", "file");
+		$file->addClass("file");
+		$span = ($this->value && ($this->value instanceof File))
+			? new Html_Span($this->value->name)
+			: "";
+		return $file . $span;
 	}
 
 	//------------------------------------------------------------------------------------ buildFloat

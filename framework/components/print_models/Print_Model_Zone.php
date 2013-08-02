@@ -29,7 +29,7 @@ class Print_Model_Zone
 	/**
 	 * Raw zoning data (json)
 	 *
-	 * @max-length 1000000
+	 * @max_length 1000000
 	 * @var string
 	 */
 	public $zoning;

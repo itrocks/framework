@@ -433,7 +433,12 @@ class Mysql_Link extends Sql_Link
 					if (in_array($property->name, $table_columns_names)) {
 						// write basic
 						if ($property->getType()->isBasic()) {
-							$write[$property->name] = $value;
+							if ($property->getType()->isString() && $property->getAnnotation("binary")->value) {
+								$write[$property->name] = "\x07" . $value;
+							}
+							else {
+								$write[$property->name] = $value;
+							}
 						}
 						// write object id if set or object if no id is set (new object)
 						else {

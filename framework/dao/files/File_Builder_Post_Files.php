@@ -29,8 +29,11 @@ class File_Builder_Post_Files
 						$form[$top], $element["name"], $element["tmp_name"]
 					);
 				}
-				else {
-					$form[$top] = $element;
+				elseif (!(empty($element["name"]) || empty($element["tmp_name"]))) {
+					$file = new File();
+					$file->name = $element["name"];
+					$file->content = file_get_contents($element["tmp_name"]);
+					$form[$top] = $file;
 				}
 			}
 		}
