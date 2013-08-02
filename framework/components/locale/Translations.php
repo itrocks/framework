@@ -73,6 +73,13 @@ class Translations extends Set
 			return implode(".", $translation);
 		}
 		elseif (!isset($this->cache[$text]) || !isset($this->cache[$text][$context])) {
+			if (substr($text, -1) === "@") {
+				$str_uri = true;
+				$text = substr($text, 0, -1);
+			}
+			else {
+				$str_uri = false;
+			}
 			$search = new Translation($text, $this->language, $context);
 			$translations = Dao::search($search);
 			foreach ($translations as $translation) if ($translation->text === $text) break;
@@ -88,6 +95,10 @@ class Translations extends Set
 				Dao::write($translation);
 			}
 			$translation = $translation ? $translation->translation : $text;
+			if ($str_uri) {
+				$text .= "@";
+				$translation = strUri($translation);
+			}
 			$this->cache[$text][$context] = $translation;
 		}
 		$translation = $this->cache[$text][$context];
