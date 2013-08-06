@@ -42,20 +42,7 @@ abstract class Sql_Value
 			$string_value = "\"" . $value->toISO() . "\"";
 		}
 		else {
-			if (substr($value, 0, 1) === "\x07") {
-				$string_value = "0x";
-				$length = strlen($value);
-				for ($i = 1; $i < $length; $i ++) {
-					$hex = dechex(ord($value[$i]));
-					$string_value .= ((strlen($hex) < 2) ? ("0" . $hex) : $hex);
-
-				}
-			}
-			else {
-				$string_value = "\"" . str_replace(
-					array("\"", "\\"), array("\"\"", "\\\\"), $value)
-				. "\"";
-			}
+			$string_value = "\"" . mysql_real_escape_string($value) . "\"";
 		}
 		return $double_backquote ? str_replace("\\", "\\\\", $string_value) : $string_value;
 	}

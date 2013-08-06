@@ -266,16 +266,16 @@ class Mysql_Link extends Sql_Link
 
 	//----------------------------------------------------------------------------------------- query
 	/**
-	 * Executes an SQL query and returns the inserted record identifier (if applyable)
+	 * Executes an SQL query and returns the inserted record identifier or the mysqli result object
 	 *
 	 * @param $query string
-	 * @return integer
+	 * @return integer|mysqli_result
 	 */
 	public function query($query)
 	{
 		if ($query) {
-			$this->executeQuery($query);
-			return $this->connection->insert_id;
+			$result = $this->executeQuery($query);
+			return (substr($query, 0, 6) == "SELECT") ? $result : $this->connection->insert_id;
 		}
 		else {
 			return null;
@@ -433,12 +433,7 @@ class Mysql_Link extends Sql_Link
 					if (in_array($property->name, $table_columns_names)) {
 						// write basic
 						if ($property->getType()->isBasic()) {
-							if ($property->getType()->isString() && $property->getAnnotation("binary")->value) {
-								$write[$property->name] = "\x07" . $value;
-							}
-							else {
-								$write[$property->name] = $value;
-							}
+							$write[$property->name] = $value;
 						}
 						// write object id if set or object if no id is set (new object)
 						else {

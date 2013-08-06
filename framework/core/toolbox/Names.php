@@ -105,6 +105,24 @@ abstract class Names
 		return strtolower(str_replace(" ", "_", $display));
 	}
 
+	//--------------------------------------------------------------------------------- fileToDisplay
+	/**
+	 * Changes a "full/path/file_name.ext" into "file name"
+	 *
+	 * @param $file_name
+	 * @return string
+	 */
+	public static function fileToDisplay($file_name)
+	{
+		if (($i = strpos($file_name, "/")) !== false) {
+			$file_name = substr($file_name, $i + 1);
+		}
+		if (($i = strpos($file_name, ".")) !== false) {
+			$file_name = substr($file_name, 0, $i);
+		}
+		return str_replace("_", " ", $file_name);
+	}
+
 	//--------------------------------------------------------------------------------- methodToClass
 	/**
 	 * Changes "aMethodName" into "A_Method_Name"
