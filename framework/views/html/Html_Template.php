@@ -98,7 +98,7 @@ class Html_Template
 
 	//-------------------------------------------------------------------------------------- callFunc
 	/**
-	 * Calls a function an returns result
+	 * Calls a function and returns result
 	 *
 	 * @param $object_call object|string object or class name
 	 * @param $func_call   string "functionName(param1value,param2value,...)" or "functionName"
@@ -231,7 +231,7 @@ class Html_Template
 	 * @param $value mixed
 	 * @return mixed
 	 */
-	private function htmlEntities($value)
+	protected function htmlEntities($value)
 	{
 		return (is_array($value) || is_object($value) || is_resource($value) || !isset($value))
 			? $value
@@ -453,7 +453,7 @@ class Html_Template
 	protected function parseFunc($objects, $func_name)
 	{
 		return $this->htmlEntities($this->callFunc(
-			"SAF\\Framework\\Html_Template_Funcs",
+			'SAF\Framework\Html_Template_Functions',
 			Names::propertyToMethod($func_name, "get"),
 			$objects
 		));

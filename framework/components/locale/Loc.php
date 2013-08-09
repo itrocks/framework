@@ -234,7 +234,7 @@ abstract class Loc implements Plugin
 		);
 		// format to locale
 		Aop::add(Aop::AFTER,
-			'SAF\Framework\Html_Template_Funcs->toEditPropertyExtra()',
+			'SAF\Framework\Html_Template_Functions->toEditPropertyExtra()',
 			array(__CLASS__, "afterHtmlTemplateFuncsToEditPropertyExtra")
 		);
 		Aop::add(Aop::AFTER,
