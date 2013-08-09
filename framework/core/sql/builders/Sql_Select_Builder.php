@@ -89,10 +89,17 @@ class Sql_Select_Builder
 					array("DESC" => $option->reverse)
 				))->build();
 				if ($order_by) {
-					$options[] = " ORDER BY " . $order_by;
+					$options[10] = " ORDER BY " . $order_by;
 				}
 			}
+			elseif ($option instanceof Dao_Limit_Option) {
+				// todo this works only with Mysql so beware, this should be into Mysql_Link or something
+				$options[20] = " LIMIT "
+					. (isset($option->from) ? ($option->from - 1) . ", " : "")
+					. $option->count;
+			}
 		}
+		ksort($options);
 		return $options;
 	}
 

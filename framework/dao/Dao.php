@@ -152,6 +152,26 @@ abstract class Dao
 			: null;
 	}
 
+	//----------------------------------------------------------------------------------------- limit
+	/**
+	 * Gets a DAO limit option, used to limit the number of read objects with Dao::readAll()
+	 * or Dao::search()
+	 *
+	 * @example Dao::readAll('SAF\Framework\User', Dao::limit(2, 10));
+	 * Will return 10 read users objects, starting with the second read user
+	 * @example Dao::readAll('SAF\Framework\User', Dao::limit(10));
+	 * Will return the 10 first read users objects
+	 *
+	 * @param $from  integer The offset of the first object to return
+	 * (or the maximum number of objects to return if $count is null)
+	 * @param $count integer The maximum number of objects to return
+	 * @return Dao_Limit_Option
+	 */
+	public static function limit($from = null, $count = null)
+	{
+		return new Dao_Limit_Option($from, $count);
+	}
+
 	//------------------------------------------------------------------------------------------ read
 	/**
 	 * Read an object from current data link
@@ -272,7 +292,7 @@ abstract class Dao
 	 * @param $class         string class for the read object
 	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
 	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options    Dao_Option|Dao_Option[] some options for advanced search
+	 * @param $options       Dao_Option|Dao_Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
 	public static function select($class, $columns, $filter_object = null, $options = null)
@@ -299,7 +319,7 @@ abstract class Dao
 	 * @example
 	 * $users = Dao::readAll(
 	 *   'SAF\Framework\User',
-	 *   Dao::sort(array("first_name", "last_name", "city.country.name")));
+	 *   Dao::sort(array("first_name", "last_name", "city.country.name"))
 	 * );
 	 *
 	 * @param $columns string|string[] A single or several column names.
