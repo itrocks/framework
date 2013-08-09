@@ -62,7 +62,7 @@ class Translations extends Set
 	 */
 	public function translate($text, $context = "")
 	{
-		if (empty($text)) {
+		if (empty($text) || is_numeric($text)) {
 			return $text;
 		}
 		elseif (strpos($text, ".") !== false) {
