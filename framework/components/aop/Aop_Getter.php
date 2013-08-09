@@ -66,6 +66,17 @@ abstract class Aop_Getter extends Aop implements Plugin
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- getFile
+	/**
+	 * Register this for any object property using "@link File" annotation
+	 *
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function getFile(AopJoinpoint $joinpoint)
+	{
+		self::getObject($joinpoint);
+	}
+
 	//---------------------------------------------------------------------------------------- getMap
 	/**
 	 * Register this for any object map property using "@link Map" annotation
