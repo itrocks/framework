@@ -59,6 +59,20 @@ class Session
 		return $get;
 	}
 
+	//------------------------------------------------------------------------------------------- sid
+	/**
+	 * Returns current SID
+	 *
+	 * @example "PHPSESSID=6kldcf5gbuk0u34cmihlo9gl22"
+	 * @param $prefix string You can prefix your SID with "?" or "&" to append it to an URI or URL
+	 * @return string
+	 */
+	public static function sid($prefix = "")
+	{
+		/** @noinspection PhpUndefinedConstantInspection */
+		return SID ? ($prefix . SID) : "";
+	}
+
 	//---------------------------------------------------------------------------------------- remove
 	/**
 	 * Remove an object from session

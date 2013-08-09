@@ -11,7 +11,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	/**
 	 * Build tabs containing object properties
 	 *
-	 * This fills in properties "display" and "value" special properties, usefull ie for Html_Template_Funcs
+	 * This fills in properties "display" and "value" special properties, usefull ie for Html_Template_Functions
 	 *
 	 * @param $object            object
 	 * @param $filter_properties string[]

@@ -44,6 +44,7 @@ abstract class Translation_String_Composer implements Plugin
 		$text = $args[0];
 		$context = isset($args[1]) ? $args[1] : "";
 		if (strpos($text, "¦") !== false) {
+			/** @var $translations Translations */
 			$translations = $joinpoint->getObject();
 			$elements = array();
 			$nelement = 0;

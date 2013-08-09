@@ -7,10 +7,12 @@ namespace SAF\Framework;
 abstract class Paths
 {
 
-	//------------------------------------------------------------------------------------- $env_root
+	//---------------------------------------------------------------------------------- $project_uri
 	/**
 	 * The root path for the current project files
-	 * @var
+	 *
+	 * @example "prod/project_name";
+	 * @var string
 	 */
 	public static $project_uri;
 
