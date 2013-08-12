@@ -172,6 +172,21 @@ abstract class Dao
 		return new Dao_Limit_Option($from, $count);
 	}
 
+	//------------------------------------------------------------------------------------------ only
+	/**
+	 * This option enables to write only some properties values to the DAO
+	 *
+	 * Use this for optimizations and to avoid overridden writes if you are sure of what properties
+	 * have to been written
+	 *
+	 * @param $properties string[]|string
+	 * @return Dao_Only_Option
+	 */
+	public static function only($properties)
+	{
+		return new Dao_Only_Option($properties);
+	}
+
 	//------------------------------------------------------------------------------------------ read
 	/**
 	 * Read an object from current data link
@@ -351,13 +366,14 @@ abstract class Dao
 	 * If object was not originally read from data source nor linked to it using replace(), a new
 	 * record will be written into data source using this object's data.
 	 *
-	 * @param $object object object to write into data source
+	 * @param $object  object object to write into data source
+	 * @param $options Dao_Option[]|Dao_Option some options for advanced write
 	 * @return object the written object
 	 * @see Data_Link::write()
 	 */
-	public static function write($object)
+	public static function write($object, $options = array())
 	{
-		return self::current()->write($object);
+		return self::current()->write($object, $options);
 	}
 
 }

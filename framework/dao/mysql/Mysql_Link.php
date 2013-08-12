@@ -363,7 +363,7 @@ class Mysql_Link extends Sql_Link
 			$class_name = get_class($what);
 		}
 		if (
-			(is_a($class_name, 'SAF\Framework\Before_Search_Listener'))
+			(is_a($class_name, 'SAF\Framework\Before_Search'))
 			? call_user_func(array($class_name, "beforeSearch"), $what) : true
 		) {
 			$search_result = array();
@@ -404,12 +404,16 @@ class Mysql_Link extends Sql_Link
 	 * If object is null (all properties null or unset), the object will be removed from data source
 	 *
 	 * @todo factorize this to become SOLID
-	 * @param $object object object to write into data source
+	 * @param $object  object object to write into data source
+	 * @param $options Dao_Option[]|Dao_Option some options for advanced write
 	 * @return object the written object
 	 */
-	public function write($object)
+	public function write($object, $options = array())
 	{
-		if (($object instanceof Before_Write_Listener) ? $object->beforeWrite() : true) {
+		if ($options && !is_array($options)) {
+			$options = array($options);
+		}
+		if (($object instanceof Before_Write) ? $object->beforeWrite($options) : true) {
 			if (Null_Object::isNull($object)) {
 				$this->removeObjectIdentifier($object);
 			}
@@ -424,49 +428,56 @@ class Mysql_Link extends Sql_Link
 			$exclude_properties = $link
 				? array_keys(Reflection_Class::getInstanceOf($link)->getAllProperties())
 				: array();
+			foreach ($options as $option) {
+				if ($option instanceof Dao_Only_Option) {
+					$only = array_merge(isset($only) ? $only : array(), $option->properties);
+				}
+			}
 			foreach ($class->accessProperties() as $property) {
-				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-					$value = isset($object->$property) ? $property->getValue($object) : null;
-					if (is_null($value) && !$property->getAnnotation("null")->value) {
-						$value = "";
-					}
-					if (in_array($property->name, $table_columns_names)) {
-						// write basic
-						if ($property->getType()->isBasic()) {
-							$write[$property->name] = $value;
+				if (!isset($only) || in_array($property->name, $only)) {
+					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
+						$value = isset($object->$property) ? $property->getValue($object) : null;
+						if (is_null($value) && !$property->getAnnotation("null")->value) {
+							$value = "";
 						}
-						// write object id if set or object if no id is set (new object)
-						else {
-							$column_name = "id_" . $property->name;
-							if (is_object($value) && (empty($object->$column_name))) {
-								$object->$column_name = $this->getObjectIdentifier($value);
-								if (empty($object->$column_name)) {
-									$object->$column_name = $this->getObjectIdentifier($this->write($value));
-								}
+						if (in_array($property->name, $table_columns_names)) {
+							// write basic
+							if ($property->getType()->isBasic()) {
+								$write[$property->name] = $value;
 							}
-							if (property_exists($object, $column_name)) {
-								$write[$column_name] = intval($object->$column_name);
-							}
-						}
-					}
-					// write collection
-					elseif (is_array($value) && ($property->getAnnotation("link")->value == "Collection")) {
-						$write_collections[] = array($property, $value);
-					}
-					// write map
-					elseif (is_array($value) && ($property->getAnnotation("link")->value == "Map")) {
-						foreach ($value as $key => $val) {
-							if (!is_object($val)) {
-								$val = Dao::read($val, $property->getType()->getElementTypeAsString());
-								if (isset($val)) {
-									$value[$key] = $val;
+							// write object id if set or object if no id is set (new object)
+							else {
+								$column_name = "id_" . $property->name;
+								if (is_object($value) && (empty($object->$column_name))) {
+									$object->$column_name = $this->getObjectIdentifier($value);
+									if (empty($object->$column_name)) {
+										$object->$column_name = $this->getObjectIdentifier($this->write($value));
+									}
 								}
-								else {
-									unset($value[$key]);
+								if (property_exists($object, $column_name)) {
+									$write[$column_name] = intval($object->$column_name);
 								}
 							}
 						}
-						$write_maps[] = array($property, $value);
+						// write collection
+						elseif (is_array($value) && ($property->getAnnotation("link")->value == "Collection")) {
+							$write_collections[] = array($property, $value);
+						}
+						// write map
+						elseif (is_array($value) && ($property->getAnnotation("link")->value == "Map")) {
+							foreach ($value as $key => $val) {
+								if (!is_object($val)) {
+									$val = Dao::read($val, $property->getType()->getElementTypeAsString());
+									if (isset($val)) {
+										$value[$key] = $val;
+									}
+									else {
+										unset($value[$key]);
+									}
+								}
+							}
+							$write_maps[] = array($property, $value);
+						}
 					}
 				}
 			}
@@ -492,8 +503,8 @@ class Mysql_Link extends Sql_Link
 				list($property, $value) = $write;
 				$this->writeMap($object, $property, $value);
 			}
-			if ($object instanceof After_Write_Listener) {
-				$object->afterWrite();
+			if ($object instanceof After_Write) {
+				$object->afterWrite($options);
 			}
 		}
 		return $object;

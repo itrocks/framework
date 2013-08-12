@@ -232,9 +232,10 @@ abstract class Data_Link implements Configurable
 	 * If object was not originally read from data source nor linked to it using replace(), a new
 	 * record will be written into data source using this object's data.
 	 *
-	 * @param $object object object to write into data source
+	 * @param $object  object object to write into data source
+	 * @param $options Dao_Option[]|Dao_Option some options for advanced write
 	 * @return object the written object
 	 */
-	abstract public function write($object);
+	abstract public function write($object, $options = array());
 
 }
