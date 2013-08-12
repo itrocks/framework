@@ -19,25 +19,40 @@ class Class_Builder
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * @param $class_name string
-	 * @param $traits     string[]
+	 * @param $class_name        string The base class name
+	 * @param $interfaces_traits string[] The interfaces and traits names list
 	 * @return string the full name of the built class
 	 */
-	public static function build($class_name, $traits = array())
+	public static function build($class_name, $interfaces_traits = array())
 	{
-		$key = implode(".", $traits);
+		$key = implode(".", $interfaces_traits);
 		if (isset(self::$builds[$class_name][$key])) {
 			return self::$builds[$class_name][$key];
 		}
 		else {
 			$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : null;
-			$traits_names = "\\" . implode(", \\", $traits);
+			$interfaces = array();
+			$traits = array();
+			foreach ($interfaces_traits as $interface_trait) {
+				if (interface_exists($interface_trait)) {
+					$interfaces[] = $interface_trait;
+				}
+				elseif (trait_exists($interface_trait)) {
+					$traits[] = $interface_trait;
+				}
+				else {
+					user_error("Unknown interface/trait \"$interface_trait\" while building $class_name");
+				}
+			}
+			$interfaces_names = $interfaces ? ("\\" . implode(", \\", $interfaces)) : "";
+			$traits_names = $traits ? ("\\" . implode(", \\", $traits)) : "";
 			$namespace = Namespaces::of($class_name) . "\\Built$count";
 			$short_class = Namespaces::shortClassName($class_name);
 			$source = "namespace $namespace {"
 			. " final class $short_class"
 			. " extends \\$class_name"
-			. " { use $traits_names; }"
+			. ($interfaces_names ? " implements $interfaces_names" : "")
+			. " {" . ($traits_names ? " use $traits_names;" : "") . " }"
 			. " }";
 			eval($source);
 			$built_class = $namespace . "\\" . $short_class;
