@@ -56,6 +56,40 @@ class Textile extends \Textile
 		return (new Textile)->textileThis($text);
 	}
 
+	//------------------------------------------------------------------------------------ parseSpans
+	/**
+	 * Replaces <one+two: by <span class="one two">
+	 * Replaces :> by </span>
+	 *
+	 * This makes available all customizations of text formatting, linked to css stylesheets.
+	 *
+	 * @param $text
+	 * @return string
+	 */
+	private function parseSpans($text)
+	{
+		$length = strlen($text);
+		// replaces <one+two: by <span class="one two">
+		$i = 0;
+		while (($i = strpos($text, "<", $i)) !== false) {
+			$j = ++$i;
+			while (
+				($j < $length)
+				&& (strpos("abcdefghijklmnopqrstuvwxyz0123456789_+", $text[$j]) !== false)
+			) {
+				$j ++;
+			}
+			if (($j < $length) && ($text[$j] === ":")) {
+				$text = substr($text, 0, $i)
+					. "span class=\"" . str_replace("+", " ", substr($text, $i, $j - $i)) . "\">"
+					. substr($text, $j + 1);
+				$length += 13;
+			}
+		}
+		// replaces :> by </span>
+		return str_replace(":>", "</span>", $text);
+	}
+
 	//----------------------------------------------------------------------------------------- spans
 	/**
 	 * This override replaces '/' by '`' as REGEX separator
@@ -91,6 +125,24 @@ class Textile extends \Textile
 		}
 		$this->span_depth--;
 		return $text;
+	}
+
+	//----------------------------------------------------------------------------------- textileThis
+	/**
+	 * Parses the given Textile input in un-restricted mode.
+	 *
+	 * @param $text     string The Textile input to parse
+	 * @param $lite     boolean|string Switch to lite mode
+	 * @param $encode   string Encode input and return
+	 * @param $no_image string Disables images
+	 * @param $strict   boolean|string false to strip whitespace before parsing
+	 * @param $rel      string Relationship attribute applied to generated links
+	 * @return string Parsed $text
+	 */
+	public function textileThis(
+		$text, $lite = '', $encode = '', $no_image = '', $strict = '', $rel = ''
+	) {
+		return $this->parseSpans(parent::textileThis($text, $lite, $encode, $no_image, $strict, $rel));
 	}
 
 }
