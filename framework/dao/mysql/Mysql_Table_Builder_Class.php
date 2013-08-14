@@ -49,7 +49,9 @@ class Mysql_Table_Builder_Class
 	{
 		$table_name = Dao::current()->storeNameOf($class->name);
 		$table = new Mysql_Table($table_name);
-		$table->columns["id"] = Mysql_Column_Builder::buildId();
+		if (!in_array("id", $this->excluded_properties)) {
+			$table->columns["id"] = Mysql_Column_Builder::buildId();
+		}
 		if ($more_field) {
 			$table->columns[$more_field->getName()] = $more_field;
 		}
@@ -95,13 +97,12 @@ class Mysql_Table_Builder_Class
 	private function buildLinkTable($link, $class_name)
 	{
 		$link_class_name = Namespaces::defaultFullClassName($link, $class_name);
-		$tables = (new Mysql_Table_Builder_Class)->build(
-			$link_class_name,
-			Mysql_Column_Builder::buildLink("id_" . Names::classToProperty($link_class_name))
-		);
+		$tables = (new Mysql_Table_Builder_Class)->build($link_class_name);
+		//Mysql_Column_Builder::buildLink("id_" . Names::classToProperty($link_class_name))
 		$this->excluded_properties = array_keys(
 			Reflection_Class::getInstanceOf($link_class_name)->getAllProperties()
 		);
+		$this->excluded_properties[] = "id";
 		return $tables;
 	}
 

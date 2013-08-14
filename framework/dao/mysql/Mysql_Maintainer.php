@@ -224,7 +224,7 @@ class Mysql_Maintainer implements Plugin
 	{
 		$result = false;
 		foreach ((new Mysql_Table_Builder_Class)->build($class_name) as $class_table) {;
-			$mysql_table = Mysql_Table_Builder_Mysqli::build($mysqli, Dao::storeNameOf($class_name));
+			$mysql_table = Mysql_Table_Builder_Mysqli::build($mysqli, $class_table->getName());
 			$mysql_columns = $mysql_table->getColumns();
 			$builder = new Sql_Alter_Table_Builder($mysql_table);
 			foreach ($class_table->getColumns() as $column) {

@@ -46,7 +46,7 @@ abstract class Mysql_Column_Builder_Property
 		if (isset($default)) {
 			$property_type = $column->getType();
 			if ($property_type->isNumeric()) {
-				$default = strval($default + 0);
+				$default = $default + 0;
 			}
 		}
 		else {
