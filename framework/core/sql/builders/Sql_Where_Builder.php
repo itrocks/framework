@@ -103,7 +103,7 @@ class Sql_Where_Builder
 	{
 		if ($id = $this->sql_link->getObjectIdentifier($object)) {
 			// object is linked to stored data : search with object identifier
-			return $this->buildValue($path, $id, "id_");
+			return $this->buildValue($path, $id, ($path == "id") ? "" : "id_");
 		}
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
