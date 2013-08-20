@@ -3,6 +3,9 @@ namespace SAF\Framework;
 
 /**
  * Standard basic codes, with a code and a full name
+ *
+ * @representative code, name
+ * @sort name
  */
 class Code
 {
