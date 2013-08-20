@@ -24,7 +24,7 @@ class Default_Json_Controller implements Default_Feature_Controller
 		$parameters = $parameters->getObjects();
 		// read all objects corresponding to class name
 		if (!$parameters) {
-			return json_encode(Dao::readAll(Names::setToClass($class_name)));
+			return json_encode(Dao::readAll(Names::setToClass($class_name), Dao::sort()));
 		}
 		// read object
 		$first_parameter = reset($parameters);
@@ -40,10 +40,10 @@ class Default_Json_Controller implements Default_Feature_Controller
 				"%"
 			);
 			$objects = array();
-			foreach (Dao::search($search, $element_class_name) as $key => $source_object) {
+			foreach (Dao::search($search, $element_class_name, Dao::sort()) as $key => $source_object) {
 				$object = new StdClass();
 				$object->id = Dao::getObjectIdentifier($source_object);
-				$object->value = "" . $source_object;
+				$object->value = strval($source_object);
 				$objects[$key] = $object;
 			}
 			return json_encode($objects);

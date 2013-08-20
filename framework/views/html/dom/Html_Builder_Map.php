@@ -45,6 +45,7 @@ class Html_Builder_Map
 	 */
 	public function build()
 	{
+		Collection::sort($this->map);
 		$table = new Html_Table();
 		$table->addClass("map");
 		$table->setBody($this->buildBody());

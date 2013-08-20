@@ -11,7 +11,7 @@ class Dao_Sort_Option implements Dao_Option
 	/**
 	 * @var string
 	 */
-	private $class_name;
+	public $class_name;
 
 	//-------------------------------------------------------------------------------------- $columns
 	/**
@@ -19,7 +19,7 @@ class Dao_Sort_Option implements Dao_Option
 	 *
 	 * @var string[]
 	 */
-	private $columns;
+	public $columns;
 
 	//-------------------------------------------------------------------------------------- $reverse
 	/**
@@ -42,13 +42,16 @@ class Dao_Sort_Option implements Dao_Option
 	 *   Dao::sort(array("first_name", "last_name", "city.country.name")));
 	 * );
 	 *
-	 * @param $columns    string|string[] a single or several column names
+	 * @param $columns string|string[] a single or several column names, or a class name to apply
 	 * each column name can be followed by " reverse" into the string for reverse order sort
 	 * If null, the value of annotations "sort" or "representative" of the class will be taken.
 	 */
 	public function __construct($columns = null)
 	{
-		if (isset($columns)) {
+		if (is_string($columns) && (($columns[0] >= "A") && ($columns[0] <= "Z"))) {
+			$this->applyClassName($columns);
+		}
+		elseif (isset($columns)) {
 			$this->columns = is_array($columns) ? $columns : array($columns);
 			$this->calculateReverse();
 		}
@@ -66,7 +69,8 @@ class Dao_Sort_Option implements Dao_Option
 	private function applyClassName($class_name)
 	{
 		if (
-			isset($class_name) && ($class_name != $this->class_name)
+			isset($class_name)
+			&& ($class_name != $this->class_name)
 			&& (isset($this->class_name) || !isset($this->columns))
 		) {
 			$class_name = Builder::className($class_name);

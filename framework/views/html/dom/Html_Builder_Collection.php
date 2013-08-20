@@ -51,6 +51,7 @@ class Html_Builder_Collection
 	 */
 	public function build()
 	{
+		Collection::sort($this->collection);
 		$table = new Html_Table();
 		$table->addClass("collection");
 		$table->setHead($this->buildHead());

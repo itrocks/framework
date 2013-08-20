@@ -279,6 +279,25 @@ abstract class Html_Template_Functions
 		return $object;
 	}
 
+	//--------------------------------------------------------------------------------------- getSort
+	/**
+	 * Returns the sorted version of the objects collection
+	 *
+	 * @param $template Html_Template
+	 * @param $objects  mixed[] the parsed objects : the first one must be the objects collection
+	 * @return object[] the sorted objects collection
+	 */
+	public static function getSort(Html_Template $template, $objects)
+	{
+		if (is_array($collection = reset($objects)) && $collection && is_object(reset($collection))) {
+			Collection::sort($collection);
+			return $collection;
+		}
+		else {
+			return reset($objects);
+		}
+	}
+
 	//----------------------------------------------------------------------------- getStartingBlocks
 	/**
 	 * Returns the block names if current property starts one or several properties blocks
