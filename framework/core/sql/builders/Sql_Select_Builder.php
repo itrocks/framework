@@ -116,8 +116,8 @@ class Sql_Select_Builder
 		// Call of buildColumns() and buildWhere() before buildTables(), to get joins ready.
 		$where   = $this->where_builder->build();
 		$columns = $this->columns_builder->build();
-		$tables  = $this->tables_builder->build();
 		$options = $this->buildOptions();
+		$tables  = $this->tables_builder->build();
 		return $this->finalize($columns, $where, $tables, $options);
 	}
 
