@@ -69,16 +69,20 @@ class Collection
 	 * Sorts a collection of objects
 	 *
 	 * @param $objects object[] the objects collection to sort
+	 * @param $sort    Dao_Sort_Option
 	 * @return object[] the sorted objects collection
+	 *
+	 * @todo Dao_Sort_Option should become something as simple as Sort, used by Dao and Collection
 	 */
-	public static function sort($objects)
+	public static function sort($objects, Dao_Sort_Option $sort = null)
 	{
 		if ($objects) {
-			// todo Dao_Sort_Option should become something as simple as Sort, used by Dao and Collection
 			$object = reset($objects);
-			$sort = ($object instanceof List_Row)
-				? new Dao_Sort_Option($object->getClassName())
-				: new Dao_Sort_Option(get_class($object));
+			if (!isset($sort)) {
+				$sort = ($object instanceof List_Row)
+					? new Dao_Sort_Option($object->getClassName())
+					: new Dao_Sort_Option(get_class($object));
+			}
 			uasort($objects, function($object1, $object2) use ($sort)
 			{
 				if (($object1 instanceof List_Row) && ($object2 instanceof List_Row)) {
@@ -95,7 +99,7 @@ class Collection
 					}
 					$value1 = $object1->$sort_column;
 					$value2 = $object2->$sort_column;
-					$compare = $reverse ? -strcasecmp($value1, $value2) : strcasecmp($value1, $value2);
+					$compare = $reverse ? -strnatcasecmp($value1, $value2) : strnatcasecmp($value1, $value2);
 					if ($compare) return $compare;
 				}
 				return 0;
