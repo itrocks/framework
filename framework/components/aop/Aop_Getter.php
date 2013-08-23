@@ -30,6 +30,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 				->getElementTypeAsString();
 			$object->$property = Getter::getAll(null, $type_name);
 		}
+		return $object->$property;
 	}
 
 	//--------------------------------------------------------------------------------- getCollection
@@ -48,6 +49,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 				->getElementTypeAsString();
 			$object->$property = Getter::getCollection(null, $type_name, $object, $property);
 		}
+		return $object->$property;
 	}
 
 	//----------------------------------------------------------------------------------- getDateTime
@@ -64,6 +66,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 		if (is_string($value)) {
 			$object->$property = Date_Time::fromISO($value);
 		}
+		return $object->$property;
 	}
 
 	//--------------------------------------------------------------------------------------- getFile
@@ -74,7 +77,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 */
 	public static function getFile(AopJoinpoint $joinpoint)
 	{
-		self::getObject($joinpoint);
+		return self::getObject($joinpoint);
 	}
 
 	//---------------------------------------------------------------------------------------- getMap
@@ -92,6 +95,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 			$property = Reflection_Property::getInstanceOf($class, $property);
 			$object->$property = Getter::getMap(null, $property, $object);
 		}
+		return $object->$property;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
@@ -114,6 +118,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 			}
 			$property->setValue($object, $value);
 		}
+		return $object->$property;
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -149,7 +154,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	public static function registerGettersAop(AopJoinpoint $joinpoint)
 	{
 		if ($joinpoint->getReturnedValue()) {
-			parent::registerProperties($joinpoint->getArguments()[0], "getter", "before", "read");
+			parent::registerProperties($joinpoint->getArguments()[0], "getter", "after", "read");
 		}
 	}
 

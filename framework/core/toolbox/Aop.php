@@ -116,21 +116,22 @@ abstract class Aop
 								if (!isset(Aop::$antiloop[$hash])) {
 									Aop::$antiloop[$hash] = true;
 									if ($static) {
-										call_user_func(
-											array($static ? $call_class : $object, $call_method), $joinpoint
-										);
+										// static reader / writer
+										$value = call_user_func(array($call_class, $call_method), $joinpoint);
+										if (isset($value)) {
+											$joinpoint->setReturnedValue($value);
+										}
 									}
 									elseif ($joinpoint->getKindOfAdvice() & AOP_KIND_READ) {
-										$value = call_user_func(array($static ? $call_class : $object, $call_method));
+										// dynamic reader
+										$value = call_user_func(array($object, $call_method));
 										if (isset($value)) {
 											$joinpoint->setReturnedValue($value);
 										}
 									}
 									else {
-										call_user_func(
-											array($static ? $call_class : $object, $call_method),
-											$joinpoint->getAssignedValue()
-										);
+										// dynamic writer
+										call_user_func(array($object, $call_method), $joinpoint->getAssignedValue());
 									}
 									unset(Aop::$antiloop[$hash]);
 								}
