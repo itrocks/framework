@@ -92,7 +92,7 @@ abstract class Dom_Element
 	 * @param $value string
 	 * @return Dom_Attribute
 	 */
-	public function setAttribute($name, $value)
+	public function setAttribute($name, $value = null)
 	{
 		if ($name == "name") {
 			// this is because PHP does not like "." into names of GET/POST vars

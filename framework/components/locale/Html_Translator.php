@@ -23,6 +23,10 @@ abstract class Html_Translator implements Plugin
 			'SAF\Framework\Html_Template->parseString()',
 			array(__CLASS__, "translateString")
 		);
+		Aop::add(Aop::BEFORE,
+			'SAF\Framework\Html_Option->setContent()',
+			array(__CLASS__, "translateOptionContent")
+		);
 	}
 
 	//------------------------------------------------------------------------------ translateContent
@@ -61,6 +65,19 @@ abstract class Html_Translator implements Plugin
 			$content = substr($content, 0, $i - 1) . $translation . substr($content, $j + 1);
 			$i += strlen($translation) - 1;
 		}
+	}
+
+	//------------------------------------------------------------------------ translateOptionContent
+	/**
+	 * Translate content of html options in Html_Option objects
+	 *
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function translateOptionContent(AopJoinpoint $joinpoint)
+	{
+		$arguments = $joinpoint->getArguments();
+		$arguments[0] = Loc::tr($arguments[0]);
+		$joinpoint->setArguments($arguments);
 	}
 
 	//--------------------------------------------------------------------------------- translatePage

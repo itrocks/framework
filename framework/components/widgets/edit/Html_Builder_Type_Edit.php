@@ -64,6 +64,7 @@ class Html_Builder_Type_Edit
 		}
 		else {
 			switch ($type->asString()) {
+				case "boolean":  return $this->buildBoolean();
 				case "float":    return $this->buildFloat();
 				case "integer":  return $this->buildInteger();
 				case "string":   return $this->buildString();
@@ -83,6 +84,20 @@ class Html_Builder_Type_Edit
 			}
 		}
 		return $this->value;
+	}
+
+	//---------------------------------------------------------------------------------- buildBoolean
+	/**
+	 * @return Dom_Element
+	 */
+	protected function buildBoolean()
+	{
+		$input = new Html_Input($this->getFieldName());
+		$input->setAttribute("type", "checkbox");
+		if ($this->value) {
+			$input->setAttribute("checked");
+		}
+		return $input;
 	}
 
 	//--------------------------------------------------------------------------------- buildDateTime
@@ -200,19 +215,24 @@ class Html_Builder_Type_Edit
 	//----------------------------------------------------------------------------------- buildString
 	/**
 	 * @param $multiline boolean
+	 * @param $values    string[]
 	 * @return Dom_Element
 	 */
-	protected function buildString($multiline = false)
+	protected function buildString($multiline = false, $values = null)
 	{
 		if ($multiline) {
 			$input = new Html_Textarea($this->getFieldName(), $this->value);
+			$input->addClass("autowidth");
 			$input->addClass("autoheight");
+		}
+		elseif (isset($values) && $values) {
+			$input = new Html_Select($this->getFieldName(), $values, $this->value);
 		}
 		else {
 			$input = new Html_Input($this->getFieldName(), $this->value);
 			$input->setAttribute("autocomplete", "off");
+			$input->addClass("autowidth");
 		}
-		$input->addClass("autowidth");
 		return $input;
 	}
 

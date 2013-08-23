@@ -75,12 +75,16 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 
 	//----------------------------------------------------------------------------------- buildString
 	/**
-	 * @param $multiline boolean keep this value empty, it is not used as the @multiline annotation is taken instead
+	 * @param $multiline boolean keep this value empty, it is not used as the @multiline annotation is automatically used
+	 * @param $values    string[] keep this value empty, it is not used as the @values annotation is automatically used
 	 * @return Dom_Element
 	 */
-	protected function buildString($multiline = false)
+	protected function buildString($multiline = false, $values = null)
 	{
-		return parent::buildString($this->property->getAnnotation("multiline")->value);
+		return parent::buildString(
+			$this->property->getAnnotation("multiline")->value,
+			$this->property->getListAnnotation("values")->values()
+		);
 	}
 
 }
