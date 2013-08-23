@@ -249,6 +249,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	private function getUse()
 	{
 		if (!isset($this->use)) {
+			$this->use = false;
 			foreach ($this->getDeclaringClass()->getListAnnotations("use") as $use) {
 				if (in_array($this->name, $use->values())) {
 					$this->use = true;
