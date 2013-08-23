@@ -143,7 +143,7 @@ class Wiki implements Plugin
 		if (!static::$dont_parse_wiki) {
 			/** @var $property Reflection_Property */
 			$property = $joinpoint->getObject()->property;
-			if ($property->getAnnotation("multiline")->value) {
+			if ($property->getAnnotation("textile")->value) {
 				$value = $joinpoint->getReturnedValue();
 				$wiki = new Wiki();
 				$value = $wiki->geshi($value, false);
