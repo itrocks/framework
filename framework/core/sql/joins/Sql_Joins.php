@@ -192,7 +192,7 @@ class Sql_Joins
 		$linked_join->master_column = "id";
 		$linked_join->mode = $join->mode;
 		$this->joins[$foreign_path . "-link"] = $this->addFinalize(
-			$linked_join, $master_path, $foreign_class_name, $foreign_path, 1
+			$linked_join, $master_path ? $master_path : "id", $foreign_class_name, $foreign_path, 1
 		);
 		$join->foreign_column = "id";
 		$join->master_column = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
@@ -346,7 +346,7 @@ class Sql_Joins
 	 */
 	public function getAlias($path)
 	{
-		return $this->joins[$path]->foreign_alias;
+		return isset($this->joins[$path]) ? $this->joins[$path]->foreign_alias : "t0";
 	}
 
 	//------------------------------------------------------------------------------------ getClasses
