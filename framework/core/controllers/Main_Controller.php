@@ -102,7 +102,7 @@ class Main_Controller
 		unset($get[session_name()]);
 		unset($post[session_name()]);
 		foreach ($session->getAll() as $class_name => $value) {
-			if (is_object($value)) {
+			if (is_object($value) && method_exists($value, "current")) {
 				$current = call_user_func(array($class_name, "current"));
 				if (!isset($current)) {
 					call_user_func(array($class_name, "current"), $value);

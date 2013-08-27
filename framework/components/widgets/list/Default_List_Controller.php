@@ -7,6 +7,43 @@ namespace SAF\Framework;
 class Default_List_Controller extends List_Controller
 {
 
+	//------------------------------------------------------------------------ addSessionSearchValues
+	/**
+	 * @param $class_name string
+	 * @param $search     string[]
+	 * @return string[]
+	 */
+	protected function addSessionSearchValues($class_name, $search)
+	{
+		foreach (
+			Session::current()->get('SAF\Framework\Search_Values', true)->get($class_name)
+			as $property_name => $value
+		) {
+			if (!isset($search[$property_name])) {
+				$search[$property_name] = $value;
+			}
+		}
+		return $search;
+	}
+
+	//----------------------------------------------------------------------------------- descapeForm
+	/**
+	 * @param $form string[]
+	 * @return string[]
+	 */
+	protected function descapeForm($form)
+	{
+		$result = array();
+		foreach ($form as $property_name => $value) {
+			$property_name = str_replace(".id_", ".", str_replace(">", ".", $property_name));
+			if (substr($property_name, 0, 3) == "id_") {
+				$property_name = substr($property_name, 3);
+			}
+			$result[$property_name] = $value;
+		}
+		return $result;
+	}
+
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $class_name string object or class name
@@ -36,18 +73,16 @@ class Default_List_Controller extends List_Controller
 	 * Get search values from form's "search" array
 	 *
 	 * @param $class_name string element class name
-	 * @param $form array the values, key is the name/path of each property into the class
+	 * @param $form       string[] the values, key is the name/path of each property into the class
 	 * @return Reflection_Property_Value[] Search values
 	 */
 	protected function getSearchValues($class_name, $form)
 	{
+		$form = $this->descapeForm($form);
+		$this->saveSearchValuesToSession($class_name, $form);
 		$search = array();
-		foreach ($form as $property_name => $value) {
+		foreach ($this->addSessionSearchValues($class_name, $form) as $property_name => $value) {
 			if (strlen($value)) {
-				$property_name = str_replace(".id_", ".", str_replace(">", ".", $property_name));
-				if (substr($property_name, 0, 3) == "id_") {
-					$property_name = substr($property_name, 3);
-				}
 				$property = new Reflection_Property_Value($class_name, $property_name, $value, true);
 				if ($property->getType()->isClass()) {
 					$property->value(Dao::read($value, $property->getType()->asString()));
@@ -126,6 +161,25 @@ class Default_List_Controller extends List_Controller
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		return View::run($parameters, $form, $files, $class_name, "list");
+	}
+
+	//--------------------------------------------------------------------- saveSearchValuesToSession
+	/**
+	 * @param $class_name string
+	 * @param $form       string[]
+	 */
+	protected function saveSearchValuesToSession($class_name, $form)
+	{
+		/** @var $search_values Search_Values */
+		$search_values = Session::current()->get('SAF\Framework\Search_Values', true);
+		foreach ($form as $property_name => $value) {
+			if (strlen($value)) {
+				$search_values->set($class_name, $property_name, $value);
+			}
+			else {
+				$search_values->remove($class_name, $property_name);
+			}
+		}
 	}
 
 }

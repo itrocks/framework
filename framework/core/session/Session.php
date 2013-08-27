@@ -22,12 +22,21 @@ class Session
 	/**
 	 * Get the object of class $class_name from session
 	 *
-	 * @param $class_name string
-	 * @return object | null
+	 * @param $class_name     string
+	 * @param $create_default boolean Create a default object for the class name if does not exist
+	 * @return object|null
 	 */
-	public function get($class_name)
+	public function get($class_name, $create_default = false)
 	{
-		return isset($_SESSION[$class_name]) ? $_SESSION[$class_name] : null;
+		if (isset($_SESSION[$class_name])) {
+			return $_SESSION[$class_name];
+		}
+		elseif ($create_default) {
+			return $_SESSION[$class_name] = Builder::create($class_name);
+		}
+		else {
+			return null;
+		}
 	}
 
 	//---------------------------------------------------------------------------------------- getAll
