@@ -94,6 +94,7 @@ class Html_Builder_Type_Edit
 	{
 		$input = new Html_Input($this->getFieldName());
 		$input->setAttribute("type", "checkbox");
+		$input->setAttribute("value", true);
 		if ($this->value) {
 			$input->setAttribute("checked");
 		}
