@@ -69,6 +69,30 @@ abstract class Data_Link implements Configurable
 	 */
 	abstract public function delete($object);
 
+	//---------------------------------------------------------------------------- getKeyPropertyName
+	/**
+	 * Gets the key property name taken from any set Dao_Key_Option
+	 * Default will be "id"
+	 *
+	 * @param $options Dao_Option[]
+	 * @return string
+	 */
+	protected function getKeyPropertyName($options)
+	{
+		$key = "id";
+		if (isset($options)) {
+			if (!is_array($options)) {
+				$options = array($options);
+			}
+			foreach ($options as $option) {
+				if ($option instanceof Dao_Key_Option) {
+					$key = $option->property_name;
+				}
+			}
+		}
+		return $key;
+	}
+
 	//--------------------------------------------------------------------------- getStoredProperties
 	/**
 	 * Returns the list of properties of class $class that are stored into data link

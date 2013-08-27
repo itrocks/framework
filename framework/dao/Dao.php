@@ -152,6 +152,19 @@ abstract class Dao
 			: null;
 	}
 
+	//------------------------------------------------------------------------------------------- key
+	/**
+	 * An option to choose what property value will be used as keys for Dao::readAll()
+	 * or Dao::search() results
+	 *
+	 * @param $property_name string
+	 * @return Dao_Key_Option;
+	 */
+	public static function key($property_name)
+	{
+		return new Dao_Key_Option($property_name);
+	}
+
 	//----------------------------------------------------------------------------------------- limit
 	/**
 	 * Gets a DAO limit option, used to limit the number of read objects with Dao::readAll()
