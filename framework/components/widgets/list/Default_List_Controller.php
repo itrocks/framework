@@ -26,6 +26,34 @@ class Default_List_Controller extends List_Controller
 		return $search;
 	}
 
+	//----------------------------------------------------------------------------- addSessionReverse
+	/**
+	 * @param $class_name string the class name
+	 * @param $reverse    string the property path to reverse sort order
+	 */
+	protected function addToSessionReverse($class_name, $reverse)
+	{
+		/** @var $sort_options Sort_Options */
+		$sort_options = Session::current()->get('SAF\Framework\Sort_Options', true);
+		if ($reverse) {
+			$sort_options->reverse($class_name, $reverse);
+		}
+	}
+
+	//-------------------------------------------------------------------------------- addSessionSort
+	/**
+	 * @param $class_name string the class name
+	 * @param $sort       string the property path to add to sort list
+	 */
+	protected function addToSessionSort($class_name, $sort)
+	{
+		/** @var $sort_options Sort_Options */
+		$sort_options = Session::current()->get('SAF\Framework\Sort_Options', true);
+		if ($sort) {
+			$sort_options->add($class_name, $sort);
+		}
+	}
+
 	//----------------------------------------------------------------------------------- descapeForm
 	/**
 	 * @param $form string[]
@@ -35,13 +63,24 @@ class Default_List_Controller extends List_Controller
 	{
 		$result = array();
 		foreach ($form as $property_name => $value) {
-			$property_name = str_replace(".id_", ".", str_replace(">", ".", $property_name));
-			if (substr($property_name, 0, 3) == "id_") {
-				$property_name = substr($property_name, 3);
-			}
+			$property_name = $this->descapePropertyName($property_name);
 			$result[$property_name] = $value;
 		}
 		return $result;
+	}
+
+	//--------------------------------------------------------------------------- descapePropertyName
+	/**
+	 * @param $property_name string
+	 * @return string
+	 */
+	protected function descapePropertyName($property_name)
+	{
+		$property_name = str_replace(".id_", ".", str_replace(">", ".", $property_name));
+		if (substr($property_name, 0, 3) == "id_") {
+			$property_name = substr($property_name, 3);
+		}
+		return $property_name;
 	}
 
 	//----------------------------------------------------------------------------- getGeneralButtons
@@ -116,6 +155,18 @@ class Default_List_Controller extends List_Controller
 		);
 	}
 
+	//-------------------------------------------------------------------------------- getSessionSort
+	/**
+	 * @param $class_name string
+	 * @return Dao_Sort_Option
+	 */
+	protected function getSessionSort($class_name)
+	{
+		/** @var $sort_options Sort_Options */
+		$sort_options = Session::current()->get('SAF\Framework\Sort_Options', true);
+		return $sort_options->get($class_name);
+	}
+
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
 	 * @param $parameters Controller_Parameters
@@ -127,21 +178,56 @@ class Default_List_Controller extends List_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$element_class_name = Namespaces::fullClassName(Set::elementClassNameOf($class_name));
+		// properties
 		$properties_list = $this->getPropertiesList($element_class_name);
+		// sort option object
+		if (isset($parameters["sort"])) {
+			$this->addToSessionSort($element_class_name, $parameters["sort"]);
+			unset($parameters["sort"]);
+		}
+		if (isset($parameters["reverse"])) {
+			$this->addToSessionReverse($element_class_name, $parameters["reverse"]);
+			unset($parameters["reverse"]);
+		}
+		$sort = $this->getSessionSort($element_class_name);
+		// sorted classes
+		$sorted = array();
+		$sort_count = 0;
+		foreach ($sort->getColumns() as $sort_column) {
+			$sorted[$sort_column] = ++$sort_count;
+		}
+		// reversed classes
+		$reversed = array();
+		foreach ($sort->reverse as $reverse) {
+			$reversed[$reverse] = "reverse";
+		}
+		// sort links
+		$sort_options = array();
+		foreach ($properties_list as $property_name) {
+			$sort_options[$property_name] = "sort";
+		}
+		if (reset($sorted)) {
+			$sort_options[key($sorted)] = "reverse";
+		}
+		// search
 		$search_values = $this->getSearchValues($element_class_name, $form);
 		$search = isset($search_values)
 			? array_merge(array_combine($properties_list, $properties_list), $search_values)
 			: $properties_list;
+		// read data
 		$parameters = array_merge(
 			array(
 				$element_class_name => Dao::select(
-					$element_class_name, $properties_list, $search_values,
-					array(Dao::sort(), Dao::limit(1, 20))
+					$element_class_name, $properties_list, $search_values, array($sort, Dao::limit(20))
 				),
-				"search" => $search
+				"search"       => $search,
+				"sorted"       => $sorted,
+				"reversed"     => $reversed,
+				"sort_options" => $sort_options
 			),
 			$parameters
 		);
+		// buttons
 		$parameters["general_buttons"]   = $this->getGeneralButtons($element_class_name, $parameters);
 		$parameters["selection_buttons"] = $this->getSelectionButtons($element_class_name);
 		return $parameters;

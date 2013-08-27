@@ -16,7 +16,7 @@
 
 	{/general_buttons.html}
 
-	<form action="/{@class.short}/{@feature}" method="POST">
+	<form action="/{@class.short}/{@feature}" method="POST" target="#main">
 	<table class="list">
 	<thead>
 	<tr>
@@ -24,9 +24,13 @@
 			<a href="/Property/select/{@class.short}" class="popup" target="#column_select">|select columns|</a>
 		</th>
 		<!--getProperties-->
-		<th id="{.}" class="property trashable">|{@display.twoLast}|</th>
+		<th id="{.}" class="property trashable sort{sorted.{.}} {?reversed.{.}}">
+			<a href="/{..@class.short}/{@feature}?{sort_options.{.}}={.}" target="#main">|{@display.twoLast}|</a>
+		</th>
 		<!--sample-->
-		<th id="column2" class="property trashable">column2</th>
+		<th id="column2" class="property trashable">
+			<a href="/Class/feature?sort=column2" target="#main">column2</a>
+		</th>
 		<!--getProperties-->
 	</tr>
 	<tr class="search">

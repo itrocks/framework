@@ -107,7 +107,9 @@ class Dao_Sort_Option implements Dao_Option
 	 */
 	public function getColumns($class_name = null)
 	{
-		$this->applyClassName($class_name);
+		if (isset($class_name)) {
+			$this->applyClassName($class_name);
+		}
 		return $this->columns;
 	}
 
