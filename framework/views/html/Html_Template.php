@@ -984,6 +984,11 @@ class Html_Template
 	protected function parseVar(&$content, $objects, $i, $j)
 	{
 		$var_name = substr($content, $i, $j - $i);
+		while (($k = strpos($var_name, "{")) !== false) {
+			$this->parseVar($content, $objects, $k + $i + 1, $j);
+			$j = strpos($content, "}", $i);
+			$var_name = substr($content, $i, $j - $i);
+		}
 		$auto_remove = $this->parseVarWillAutoremove($var_name);
 		$value = $this->parseValue($objects, $var_name);
 		$object = reset($objects);
