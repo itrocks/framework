@@ -259,6 +259,26 @@ abstract class Html_Template_Functions
 		return $properties;
 	}
 
+	//---------------------------------------------------------------------------------- getRootClass
+	/**
+	 * Returns root class from templating tree
+	 *
+	 * @param $template Html_Template
+	 * @param $objects  mixed[]
+	 * @return object
+	 */
+	public static function getRootClass(
+		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
+	) {
+		$object = null;
+		foreach (array_reverse($objects) as $object) {
+			if (is_object($object)) {
+				break;
+			}
+		}
+		return isset($object) ? get_class($object) : null;
+	}
+
 	//--------------------------------------------------------------------------------- getRootObject
 	/**
 	 * Returns root object from templating tree
