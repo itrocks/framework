@@ -34,18 +34,29 @@ class Class_Builder
 			$interfaces = array();
 			$traits = array();
 			foreach ($interfaces_traits as $interface_trait) {
+				$interface_trait = Namespaces::defaultFullClassName($interface_trait, $class_name);
+				if ($interface_trait[0] != "\\") {
+					$interface_trait = "\\" . $interface_trait;
+				}
 				if (interface_exists($interface_trait)) {
-					$interfaces[] = $interface_trait;
+					$interfaces[$interface_trait] = $interface_trait;
 				}
 				elseif (trait_exists($interface_trait)) {
-					$traits[] = $interface_trait;
+					$traits[$interface_trait] = $interface_trait;
+					foreach (
+						(new Reflection_Class($interface_trait))->getListAnnotation("implements")->values()
+						as $implements
+					) {
+						$implements = Namespaces::defaultFullClassName($implements, $interface_trait);
+						$interfaces[$implements] = $implements;
+					}
 				}
 				else {
 					user_error("Unknown interface/trait \"$interface_trait\" while building $class_name");
 				}
 			}
-			$interfaces_names = $interfaces ? ("\\" . implode(", \\", $interfaces)) : "";
-			$traits_names = $traits ? ("\\" . implode(", \\", $traits)) : "";
+			$interfaces_names = $interfaces ? implode(", ", $interfaces) : "";
+			$traits_names = $traits ? implode(", ", $traits) : "";
 			$namespace = Namespaces::of($class_name) . "\\Built$count";
 			$short_class = Namespaces::shortClassName($class_name);
 			$source = "namespace $namespace {"
