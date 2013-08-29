@@ -108,19 +108,26 @@ abstract class Autoload_Cache implements Plugin, Updatable
 		foreach ($directories as $file_path) {
 			if (substr($file_path, -4) == ".php") {
 				$buffer = file_get_contents($file_path);
-				$namespace = trim(mParse($buffer, "namespace ", ";"));
-				$short_class = trim(mParse($buffer, "\nclass ", "\n"));
-				if (!$short_class) $short_class = trim(mParse($buffer, "\nfinal class ", "\n"));
-				if (!$short_class) $short_class = trim(mParse($buffer, "\nabstract class ", "\n"));
-				if (!$short_class) $short_class = trim(mParse($buffer, "\nfinal abstract class ", "\n"));
-				if (!$short_class) $short_class = trim(mParse($buffer, "\ninterface ", "\n"));
-				if (!$short_class) $short_class = trim(mParse($buffer, "\ntrait ", "\n"));
-				if ($i = strpos($short_class, " ")) {
-					$short_class = substr($short_class, 0, $i);
+				$short_class = trim(mParse($buffer, "\n" . "class ", "\n"))
+					?: trim(mParse($buffer, "\n" . "final class ", "\n"))
+					?: trim(mParse($buffer, "\n" . "abstract class ", "\n"))
+					?: trim(mParse($buffer, "\n" . "final abstract class ", "\n"));
+				if ($short_class) $type = "class";
+				else {
+					$short_class = trim(mParse($buffer, "\n" . "interface ", "\n"));
+					if ($short_class) $type = "interface";
+					else {
+						$short_class = trim(mParse($buffer, "\n" . "trait ", "\n"));
+						if ($short_class) $type = "trait";
+					}
 				}
-				if ($short_class) {
+				if ($short_class && isset($type)) {
+					if ($i = strpos($short_class, " ")) {
+						$short_class = substr($short_class, 0, $i);
+					}
+					$namespace = trim(mParse($buffer, "namespace ", ";"));
 					$full_class = $namespace . "\\" . $short_class;
-					if (!isset(self::$full_class_names[$short_class])) {
+					if (($type == "class") && !isset(self::$full_class_names[$short_class])) {
 						self::$full_class_names[$short_class] = $full_class;
 					}
 					if (!isset(self::$paths[$full_class])) {
@@ -135,10 +142,10 @@ abstract class Autoload_Cache implements Plugin, Updatable
 		file_put_contents(
 			self::$cache_path . "/autoload.php",
 			"<?php\n\n"
-			. "SAF\\Framework\\Autoload_Cache::\$full_class_names = "
+			. 'SAF\Framework\Autoload_Cache::$full_class_names = '
 			. var_export(self::$full_class_names, true) . ";\n"
 			. "\n"
-			. "SAF\\Framework\\Autoload_Cache::\$paths = "
+			. 'SAF\Framework\Autoload_Cache::$paths = '
 			. var_export(self::$paths, true) . ";\n"
 		);
 	}
