@@ -21,7 +21,8 @@ class Mysql_Maintainer implements Plugin
 	private static function createTable(mysqli $mysqli, $class_name)
 	{
 		foreach ((new Mysql_Table_Builder_Class)->build($class_name) as $table) {
-			$mysqli->query((new Sql_Create_Table_Builder($table))->build());
+			$query = (new Sql_Create_Table_Builder($table))->build();
+			$mysqli->query($query);
 		}
 	}
 
@@ -38,7 +39,15 @@ class Mysql_Maintainer implements Plugin
 	{
 		$table = new Mysql_Table($table_name);
 		foreach ($column_names as $column_name) {
-			$table->addColumn(Mysql_Column_Builder::buildLink($column_name));
+			$table->addColumn(
+				($column_name === "id")
+				? Mysql_Column_Builder::buildId()
+				: Mysql_Column_Builder::buildLink($column_name)
+			);
+			if (substr($column_name, 0, 3) === "id_") {
+				$index = Mysql_Index_Builder::buildLink($column_name);
+				$table->addIndex($index);
+			}
 		}
 		$mysqli->query((new Sql_Create_Table_Builder($table))->build());
 		return true;
@@ -127,7 +136,16 @@ class Mysql_Maintainer implements Plugin
 				//echo "$errno $error on $query context " . print_r($mysqli->context, true) . "<br>";
 				$retry = false;
 				$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
-				if ($errno == Mysql_Errors::ER_NO_SUCH_TABLE) {
+				if (($errno == Mysql_Errors::ER_CANT_CREATE_TABLE) && strpos($error, "(errno: 150)")) {
+					$error_table_names = self::parseNamesFromQuery($query);
+					foreach ($error_table_names as $error_table_name) {
+						if (!$mysqli->exists($error_table_name)) {
+							self::createImplicitTable($mysqli, $error_table_name, array("id"));
+						}
+						$retry = true;
+					}
+				}
+				elseif ($errno == Mysql_Errors::ER_NO_SUCH_TABLE) {
 					$error_table_names = array(self::parseNameFromError($error));
 					if (!reset($error_table_names)) {
 						$error_table_names = self::parseNamesFromQuery($query);
@@ -197,10 +215,18 @@ class Mysql_Maintainer implements Plugin
 	 * @param $query
 	 * @return string[]
 	 */
-	private static function parseNamesFromQuery(
-		/** @noinspection PhpUnusedParameterInspection */ $query
-	) {
-		return array();
+	private static function parseNamesFromQuery($query)
+	{
+		$tables = array();
+		$i = 0;
+		while (($i = strpos($query, "REFERENCES ", $i)) !== false) {
+			$i = strpos($query, "`", $i) + 1;
+			$j = strpos($query, "`", $i);
+			$table_name = substr($query, $i, $j - $i);
+			$tables[substr($query, $i, $j - $i)] = $table_name;
+			$i = $j + 1;
+		}
+		return $tables;
 	}
 
 	//-------------------------------------------------------------------------------------- register

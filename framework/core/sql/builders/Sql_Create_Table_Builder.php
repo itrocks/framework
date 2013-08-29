@@ -36,9 +36,14 @@ class Sql_Create_Table_Builder
 		foreach ($this->table->getIndexes() as $index) {
 			$indexes[] = $index->toSql();
 		}
+		$foreign_keys = array();
+		foreach ($this->table->getForeignKeys() as $foreign_key) {
+			$foreign_keys[] = $foreign_key->toSql();
+		}
 		return "CREATE TABLE `" . $this->table->getName() . "` ("
 			. join(", ", $columns)
 			. ($indexes ? ", " : "") . join(", ", $indexes)
+			. ($foreign_keys ? ", " : "") . join(", ", $foreign_keys)
 			. ") DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
 	}
 

@@ -40,7 +40,7 @@ class Mysql_Key implements Dao_Key
 	//----------------------------------------------------------------------------------- $Index_type
 	/**
 	 * @var string
-	 * @values UNIQUE, FULLTEXT, SPATIAL
+	 * @values BTREE, FULLTEXT, SPATIAL, UNIQUE,
 	 */
 	private $Index_type;
 

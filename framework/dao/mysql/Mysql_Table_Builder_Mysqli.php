@@ -13,24 +13,26 @@ abstract class Mysql_Table_Builder_Mysqli
 	/**
 	 * Builds a Mysql_Table taken from database, using a mysqli connection
 	 *
-	 * @param $mysqli mysqli
+	 * @param $mysqli     mysqli
 	 * @param $table_name string
 	 * @return Mysql_Table
 	 */
 	public static function build(mysqli $mysqli, $table_name)
 	{
 		$result = $mysqli->query("SHOW TABLE STATUS LIKE '$table_name'");
+		/** @var $table Mysql_Table */
 		$table = $result->fetch_object('SAF\Framework\Mysql_Table');
 		$result->free();
 		$result = $mysqli->query(
 			"SELECT column_name `Field`,"
-				. " IFNULL(CONCAT(column_type, ' CHARACTER SET ', character_set_name, ' COLLATE ', collation_name), column_type) `Type`,"
+			. " IFNULL(CONCAT(column_type, ' CHARACTER SET ', character_set_name, ' COLLATE ', collation_name), column_type) `Type`,"
 			. " is_nullable `Null`, column_key `Key`, column_default `Default`, extra `Extra`"
 			. " FROM information_schema.columns"
 			. " WHERE table_schema = DATABASE() AND table_name = '$table_name'"
 		);
+		/** @var $column Mysql_Column */
 		while ($column = $result->fetch_object('SAF\Framework\Mysql_Column')) {
-			$table->columns[$column->getName()] = $column;
+			$table->addColumn($column);
 		}
 		$result->free();
 		return $table;

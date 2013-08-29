@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * A common class for Dao key object representation
+ * A common interface for Dao key object representation
  */
 interface Dao_Key extends Field
 {

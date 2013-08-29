@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * A common class for Dao table object representation
+ * A common interface for Dao table object representation
  */
 interface Dao_Table
 {
@@ -12,6 +12,12 @@ interface Dao_Table
 	 * @return Dao_Column[]
 	 */
 	public function getColumns();
+
+	//-------------------------------------------------------------------------------- getForeignKeys
+	/**
+	 * @return Dao_Foreign_Key[]
+	 */
+	public function getForeignKeys();
 
 	//------------------------------------------------------------------------------------ getIndexes
 	/**

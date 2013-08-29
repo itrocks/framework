@@ -50,17 +50,20 @@ class Mysql_Table_Builder_Class
 		$table_name = Dao::current()->storeNameOf($class->name);
 		$table = new Mysql_Table($table_name);
 		if (!in_array("id", $this->excluded_properties)) {
-			$table->columns["id"] = Mysql_Column_Builder::buildId();
+			$table->addColumn(Mysql_Column_Builder::buildId());
 		}
 		if ($more_field) {
-			$table->columns[$more_field->getName()] = $more_field;
+			$table->addColumn($more_field);
 		}
 		foreach ($class->accessProperties() as $property) {
 			if (!in_array($property->name, $this->excluded_properties)) {
 				$type = $property->getType();
 				if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
-					$column = Mysql_Column_Builder_Property::build($property);
-					$table->columns[$column->getName()] = $column;
+					$table->addColumn(Mysql_Column_Builder_Property::build($property));
+					if ($property->getAnnotation("link")->value == "Object") {
+						$table->addForeignKey(Mysql_Foreign_Key_Builder_Property::build($property));
+						$table->addIndex(Mysql_Index_Builder::buildLink($property->name));
+					}
 				}
 			}
 		}

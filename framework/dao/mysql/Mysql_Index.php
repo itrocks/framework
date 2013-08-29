@@ -50,8 +50,9 @@ class Mysql_Index implements Dao_Index
 		foreach ($this->keys as $key) {
 			$column_names[] = $key->toSql();
 		}
-		return "`" . $this->getName() . "` "
-			. $this->getSqlType() . " "
+		$type = $this->getSqlType();
+		return "KEY `" . $this->getName() . "` "
+			. ($type ? ($type . " ") : "")
 			. "(" . join(", ", $column_names) . ")";
 	}
 

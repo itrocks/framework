@@ -11,13 +11,19 @@ class Mysql_Table implements Dao_Table
 	/**
 	 * @var Mysql_Column[] key is the column name
 	 */
-	public $columns;
+	private $columns;
+
+	//--------------------------------------------------------------------------------- $foreign_keys
+	/**
+	 * @var Mysql_Foreign_Key[] key is the column name
+	 */
+	private $foreign_keys;
 
 	//-------------------------------------------------------------------------------------- $indexes
 	/**
 	 * @var Mysql_Index[] key is the index name
 	 */
-	public $indexes;
+	private $indexes;
 
 	//--------------------------------------------------------------------------------------- $Engine
 	/**
@@ -50,7 +56,25 @@ class Mysql_Table implements Dao_Table
 	 */
 	public function addColumn(Mysql_Column $column)
 	{
-		$this->columns[] = $column;
+		$this->columns[$column->getName()] = $column;
+	}
+
+	//--------------------------------------------------------------------------------- addForeignKey
+	/**
+	 * @param $foreign_key Mysql_Foreign_Key
+	 */
+	public function addForeignKey(Mysql_Foreign_Key $foreign_key)
+	{
+		$this->foreign_keys[$foreign_key->getConstraint()] = $foreign_key;
+	}
+
+	//-------------------------------------------------------------------------------------- addIndex
+	/**
+	 * @param $index Mysql_Index
+	 */
+	public function addIndex(Mysql_Index $index)
+	{
+		$this->indexes[$index->getName()] = $index;
 	}
 
 	//------------------------------------------------------------------------------------ getColumns
@@ -60,6 +84,15 @@ class Mysql_Table implements Dao_Table
 	public function getColumns()
 	{
 		return $this->columns;
+	}
+
+	//-------------------------------------------------------------------------------- getForeignKeys
+	/**
+	 * @return Mysql_Foreign_Key[]
+	 */
+	public function getForeignKeys()
+	{
+		return is_array($this->foreign_keys) ? $this->foreign_keys : array();
 	}
 
 	//------------------------------------------------------------------------------------ getIndexes

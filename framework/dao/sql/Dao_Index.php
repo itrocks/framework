@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * A common class for Dao index object representation
+ * A common interface for Dao index object representation
  */
 interface Dao_Index
 {

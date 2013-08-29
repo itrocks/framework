@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * A common class for Dao column object representation
+ * A common interface for Dao column object representation
  */
 interface Dao_Column extends Field
 {
