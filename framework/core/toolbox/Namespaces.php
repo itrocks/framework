@@ -22,9 +22,10 @@ abstract class Namespaces
 	 */
 	public static function defaultFullClassName($class_name, $model_class_name)
 	{
-		$i = strrpos($model_class_name, "\\");
-		if (($i !== false) && (strrpos($class_name, "\\") === false)) {
-			$class_name = substr($model_class_name, 0, $i + 1) . $class_name;
+		if (strpos($class_name, "\\") === false) {
+			if (($i = strrpos($model_class_name, "\\")) !== false) {
+				$class_name = substr($model_class_name, 0, $i + 1) . $class_name;
+			}
 		}
 		return $class_name;
 	}
