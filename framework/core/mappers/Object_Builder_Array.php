@@ -108,7 +108,12 @@ class Object_Builder_Array
 			// id_foo must always be set before any forced foo[sub_property] values into the array
 			if (!isset($property) && (substr($property_name, 0, 3) == "id_")) {
 				if (empty($value)) {
-					$value = 0;
+					$real_property_name = substr($property_name, 3);
+					$real_property = isset($properties[$real_property_name])
+						? $properties[$real_property_name] : null;
+					$value = (isset($real_property) && $real_property->getAnnotation("null")->value)
+						? null
+						: 0;
 				}
 				$object->$property_name = $value;
 				if ($value) {

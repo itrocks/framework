@@ -439,7 +439,8 @@ class Mysql_Link extends Sql_Link
 				if (!isset($only) || in_array($property->name, $only)) {
 					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
 						$value = isset($object->$property) ? $property->getValue($object) : null;
-						if (is_null($value) && !$property->getAnnotation("null")->value) {
+						$property_is_null = $property->getAnnotation("null")->value;
+						if (is_null($value) && !$property_is_null) {
 							$value = "";
 						}
 						if (in_array($property->name, $table_columns_names)) {
@@ -457,7 +458,9 @@ class Mysql_Link extends Sql_Link
 									}
 								}
 								if (property_exists($object, $column_name)) {
-									$write[$column_name] = intval($object->$column_name);
+									$write[$column_name] = ($property_is_null && !isset($object->$column_name))
+										? null
+										: intval($object->$column_name);
 								}
 							}
 						}

@@ -34,7 +34,9 @@ abstract class Checker
 		$report_lines = array();
 		if (is_null($value)) {
 			if (!$property->getAnnotation("null")) {
-				self::checkValue($report_lines, false, $property, new Null_Annotation(false), $value);
+				self::checkValue(
+					$report_lines, false, $property, new Null_Annotation(false, $property), $value
+				);
 			}
 		}
 		else {
