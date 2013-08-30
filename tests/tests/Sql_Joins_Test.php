@@ -85,7 +85,7 @@ class Sql_Joins_Test extends Unit_Test
 				"date" => null,
 				"number" => null,
 				"salesmen-link" => Sql_Join::newInstance(
-					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen_links", "id_order"
+					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen", "id_order"
 				),
 				"salesmen" => Sql_Join::newInstance(
 					Sql_Join::LEFT, "t1", "id_salesman", "t2", "salesmen", "id",
@@ -161,7 +161,7 @@ class Sql_Joins_Test extends Unit_Test
 				->getJoins(),
 			array(
 				'SAF\Tests\Order->salesmen-link' => Sql_Join::newInstance(
-					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen_links", "id_salesman"
+					Sql_Join::LEFT, "t0", "id", "t1", "orders_salesmen", "id_salesman"
 				),
 				'SAF\Tests\Order->salesmen' => Sql_Join::newInstance(
 					Sql_Join::LEFT, "t1", "id_order", "t2", "orders", "id",
