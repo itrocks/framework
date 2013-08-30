@@ -23,7 +23,7 @@ class Mysql_Column implements Dao_Column
 	 * "float(p)", "double", "real", "decimal(l,d)", "numeric(l,d)", "bit(l)",
 	 * "date", "time", "datetime", "timestamp", "year",
 	 * "char", "binary(l)", "varchar(l)", "varbinary(l)",
-	 * "tinyblob", "tinytext", "blob", "text", "mediumblob", "mediumtext", "longblob", "longtxt",
+	 * "tinyblob", "tinytext", "blob", "text", "mediumblob", "mediumtext", "longblob", "longtext",
 	 * "enum('v',...)", "set('v',...)"
 	 * where "p" = "precision", "l" = "length", "d" = "decimals", "v" = "value"
 	 * numeric types can be followed with " unsigned"
@@ -94,7 +94,7 @@ class Mysql_Column implements Dao_Column
 	/**
 	 * Gives the default value the correct type
 	 *
-	 * @example remplace "0" by 0 for a numeric value (ie mysqli->fetch_object gets Default as string)
+	 * @example replace "0" by 0 for a numeric value (ie mysqli->fetch_object gets Default as string)
 	 * @return Mysql_Column
 	 */
 	private function cleanupDefault()

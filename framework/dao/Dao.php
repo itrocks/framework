@@ -301,7 +301,7 @@ abstract class Dao
 	 *
 	 * Same as search(), but expected result is one object only.
 	 * It is highly recommended to use this search with primary keys properties values searches.
-	 * If several result exist, only one will be taked, the first on the list (may be random).
+	 * If several result exist, only one will be taken, the first on the list (may be random).
 	 *
 	 * @param $what       object|array source object for filter, only set properties will be used for search
 	 * @param $class_name string must be set if is not a filter array

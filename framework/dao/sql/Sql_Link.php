@@ -13,7 +13,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	/**
 	 * Links each class name to it's storage table name
 	 *
-	 * @var string[] indice is the class name, with or without namespace
+	 * @var string[] key is the class name, with or without namespace
 	 */
 	private $tables;
 
@@ -118,7 +118,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 
 	//----------------------------------------------------------------------------------------- query
 	/**
-	 * Executes an SQL query and returns the inserted record identifier (if applyable)
+	 * Executes an SQL query and returns the inserted record identifier (if applicable)
 	 *
 	 * @param $query string
 	 * @return integer

@@ -29,7 +29,7 @@ class Mysql_Logger implements Plugin
 
 	//---------------------------------------------------------------------- $main_controller_counter
 	/**
-	 * Counts Main_Controller->run() recursivity, to avoid logging after each sub-call
+	 * Counts Main_Controller->run() recursion, to avoid logging after each sub-call
 	 *
 	 * @var integer
 	 */
@@ -37,7 +37,7 @@ class Mysql_Logger implements Plugin
 
 	//---------------------------------------------------------------------------------- $queries_log
 	/**
-	 * The queryies log
+	 * The queries log
 	 *
 	 * All executed queries are logged here.
 	 *

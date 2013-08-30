@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * A transactional data link defines a datalink that accepts transactionnal calls (maybe virtual...)
+ * A transactional data link defines a data link that accepts transactional calls (maybe virtual...)
  */
 interface Transactional_Data_Link
 {

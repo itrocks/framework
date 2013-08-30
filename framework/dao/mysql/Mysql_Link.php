@@ -516,7 +516,7 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Write a component collection property value
 	 *
-	 * Ie when you write an order, it's implicitely needed to write it's lines
+	 * Ie when you write an order, it's implicitly needed to write it's lines
 	 *
 	 * @param $object     object
 	 * @param $property   Reflection_Property

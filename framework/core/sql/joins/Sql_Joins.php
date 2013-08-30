@@ -20,7 +20,7 @@ class Sql_Joins
 	/**
 	 * link property full path to their class name
 	 *
-	 * @var string[] indice is property full path
+	 * @var string[] key is property full path
 	 */
 	private $classes = array();
 
@@ -28,15 +28,15 @@ class Sql_Joins
 	/**
 	 * link property path to sql join
 	 *
-	 * @var Sql_Join[] indice is property full path
+	 * @var Sql_Join[] key is property full path
 	 */
 	private $joins = array();
 
 	//----------------------------------------------------------------------------------- $link_joins
 	/**
-	 * joins for properties comming from classes having the "link" annotation
+	 * joins for properties coming from classes having the "link" annotation
 	 *
-	 * @var Sql_Join[] indice is property full path
+	 * @var Sql_Join[] key is property full path
 	 */
 	private $link_joins = array();
 
@@ -44,7 +44,7 @@ class Sql_Joins
 	/**
 	 * linked tables
 	 *
-	 * Each indice is the linked table name
+	 * Each key is the linked table name
 	 * Each value is a string[] : element 0 is the master column name, 1 is the foreign column name
 	 *
 	 * @var string[]
@@ -55,7 +55,7 @@ class Sql_Joins
 	/**
 	 * link class names to their properties
 	 *
-	 * @var array indice is class name, value is Reflection_Property[], sub-indice is property name[]
+	 * @var array key is class name, value is Reflection_Property[], sub-key is property name[]
 	 */
 	private $properties = array();
 
@@ -303,7 +303,7 @@ class Sql_Joins
 			$foreign_type = $master_property->getType();
 			if ($foreign_type->isMultiple() && ($foreign_type->getElementTypeAsString() == "string")) {
 				// TODO : string[] can have multiple implementations, depending on database engine
-				// linked strings table, mysql's set.. should find a way to make this common without
+				// linked strings table, mysql set.. should find a way to make this common without
 				// knowing anything about the specific
 				$foreign_class_name = $foreign_type->asString();
 			}

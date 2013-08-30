@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * The SQL map builder builds elements usefull for the database representation of an objects map
+ * The SQL map builder builds elements useful for the database representation of an objects map
  */
 abstract class Sql_Map_Builder
 {
