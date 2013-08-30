@@ -17,6 +17,14 @@ class Mysql_Logger implements Plugin
 	 */
 	private $continue = false;
 
+	//---------------------------------------------------------------------------------- $display_log
+	/**
+	 * Displays queries log. If false, only errors will be displayed
+	 *
+	 * @var boolean
+	 */
+	private $display_log = true;
+
 	//----------------------------------------------------------------------------------- $errors_log
 	/**
 	 * The errors log
@@ -58,7 +66,7 @@ class Mysql_Logger implements Plugin
 	public function afterMainControllerRun()
 	{
 		$this->main_controller_counter--;
-		if (!$this->main_controller_counter) {
+		if ($this->display_log && !$this->main_controller_counter) {
 			$this->dumpLog();
 		}
 	}
@@ -100,7 +108,7 @@ class Mysql_Logger implements Plugin
 	{
 		$arguments = $joinpoint->getArguments();
 		$log = $arguments[0];
-		if ($this->continue) {
+		if ($this->continue && $this->display_log) {
 			echo "<div class=\"Mysql logger query\">" . $log . "</div>\n";
 		}
 		$this->queries_log[] = $log;
@@ -139,6 +147,9 @@ class Mysql_Logger implements Plugin
 		if (isset($parameters)) {
 			if (isset($parameters["continue"])) {
 				$mysql_logger->continue = $parameters["continue"];
+			}
+			if (isset($parameters["display_log"])) {
+				$mysql_logger->display_log = $parameters["display_log"];
 			}
 			foreach ($parameters as $key => $value) if (is_numeric($key)) {
 				if (strpos($_SERVER["REQUEST_URI"], $value)) {
