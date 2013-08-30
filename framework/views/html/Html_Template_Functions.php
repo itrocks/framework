@@ -118,6 +118,7 @@ abstract class Html_Template_Functions
 				list($property, $property_path, $value) = self::toEditPropertyExtra($class_name, $property);
 				$property_edit = new Html_Builder_Property_Edit($property, $value, $prefix);
 				$property_edit->name = $property_path;
+				$property_edit->preprop = null;
 				return $property_edit->build();
 			}
 		}
