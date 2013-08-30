@@ -159,13 +159,12 @@ class Mysql_Maintainer implements Plugin
 	{
 		/** @var $mysqli Contextual_Mysqli */
 		$mysqli = $joinpoint->getObject();
-		$errno = $mysqli->errno;
-		if ($errno && !isset($mysqli->context)) {
-			$mysqli->context = self::guessContext($joinpoint->getArguments()[0]);
-		}
-		if ($errno && isset($mysqli->context)) {
-			$query = $joinpoint->getArguments()[0];
-			if (substr($query, 0, 9) !== "TRUNCATE ") {
+		if ($errno = $mysqli->errno) {
+			if (!isset($mysqli->context)) {
+				$mysqli->context = self::guessContext($joinpoint->getArguments()[0]);
+			}
+			if (isset($mysqli->context)) {
+				$query = $joinpoint->getArguments()[0];
 				$error = $mysqli->error;
 				$retry = false;
 				$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
