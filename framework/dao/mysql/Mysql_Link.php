@@ -391,7 +391,7 @@ class Mysql_Link extends Sql_Link
 	 *
 	 * @param $context_object string|string[] Can be a class name or an array of class names
 	 */
-	public function setContext($context_object)
+	public function setContext($context_object = null)
 	{
 		$this->connection->context = $context_object;
 	}

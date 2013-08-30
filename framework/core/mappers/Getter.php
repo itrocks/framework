@@ -105,7 +105,7 @@ echo "-- IS THIS DEAD CODE Getter line " . __LINE__ . " ? --";
 				$dao = ($dao = $property->getAnnotation("dao")->value) ? Dao::get($dao) : Dao::current();
 				$map = $dao->search(
 					array(get_class($parent) . "->" . $property->name => $parent),
-					$property->getType()->getElementTypeAsString(),
+					Builder::className($property->getType()->getElementTypeAsString()),
 					Dao::sort()
 				);
 			}

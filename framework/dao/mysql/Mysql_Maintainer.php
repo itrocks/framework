@@ -118,6 +118,37 @@ class Mysql_Maintainer implements Plugin
 		return self::createImplicitTable($mysqli, $table_name, $column_names);
 	}
 
+	//---------------------------------------------------------------------------------- guessContext
+	/**
+	 * @param $query string
+	 * @return string[]|null
+	 */
+	private static function guessContext($query)
+	{
+		$context = array();
+		// first clause between `...` is probably the name of the table
+		$table_name = mParse($query, "`", "`");
+		if ($table_name) {
+			$class_name = Dao::classNameOf($table_name);
+			if ($class_name) {
+				$context[] = $class_name;
+			}
+		}
+		// every JOIN `...` may be the name of a table
+		$joins = explode("JOIN `", $query);
+		array_shift($joins);
+		foreach ($joins as $join) {
+			$table_name = lParse($join, "`");
+			if ($table_name) {
+				$class_name = Dao::classNameOf($table_name);
+				if ($class_name) {
+					$context[] = $class_name;
+				}
+			}
+		}
+		return $context ? $context : null;
+	}
+
 	//--------------------------------------------------------------------------------- onMysqliQuery
 	/**
 	 * This is called after each mysql query in order to update automatically database structure in case of errors
@@ -129,11 +160,13 @@ class Mysql_Maintainer implements Plugin
 		/** @var $mysqli Contextual_Mysqli */
 		$mysqli = $joinpoint->getObject();
 		$errno = $mysqli->errno;
+		if ($errno && !isset($mysqli->context)) {
+			$mysqli->context = self::guessContext($joinpoint->getArguments()[0]);
+		}
 		if ($errno && isset($mysqli->context)) {
 			$query = $joinpoint->getArguments()[0];
 			if (substr($query, 0, 9) !== "TRUNCATE ") {
 				$error = $mysqli->error;
-				//echo "$errno $error on $query context " . print_r($mysqli->context, true) . "<br>";
 				$retry = false;
 				$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
 				if (($errno == Mysql_Errors::ER_CANT_CREATE_TABLE) && strpos($error, "(errno: 150)")) {

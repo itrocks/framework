@@ -48,7 +48,8 @@ abstract class Mysql_Foreign_Key_Builder_Property
 	 */
 	private static function propertyConstraintToMysql(Reflection_Property $property)
 	{
-		return $property->name;
+		return Dao::storeNameOf($property->class) . "."
+		. ($property->getAnnotation("link")->value ? ("id_" . $property->name) : $property->name);
 	}
 
 	//------------------------------------------------------------------------- propertyFieldsToMysql

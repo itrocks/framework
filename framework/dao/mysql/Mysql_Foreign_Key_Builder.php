@@ -16,7 +16,7 @@ abstract class Mysql_Foreign_Key_Builder
 	 * @param $constraint  string CASCADE, NO ACTION, RESTRICT, SET NULL
 	 * @return Mysql_Foreign_Key
 	 */
-	public static function buildLink($column_name, $class_name, $constraint = "CASCADE")
+	public static function buildLink($table_name, $column_name, $class_name, $constraint = "CASCADE")
 	{
 		if (substr($column_name, 0, 3) !== "id_") {
 			$column_name = "id_" . $column_name;
@@ -24,8 +24,8 @@ abstract class Mysql_Foreign_Key_Builder
 		$foreign_key = new Mysql_Foreign_Key();
 		$class = Reflection_Class::getInstanceOf($foreign_key);
 		$class->accessProperties();
-		$class->getProperty("Constraint")->setValue($foreign_key, $column_name);
-		$class->getProperty("Fields")->setValue($foreign_key, "id_" . $column_name);
+		$class->getProperty("Constraint")->setValue($foreign_key, $table_name . "." . $column_name);
+		$class->getProperty("Fields")->setValue($foreign_key, $column_name);
 		$class->getProperty("On_delete")->setValue($foreign_key, $constraint);
 		$class->getProperty("On_update")->setValue($foreign_key, $constraint);
 		$class->getProperty("Reference_fields")->setValue($foreign_key, "id");
