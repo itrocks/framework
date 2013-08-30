@@ -11,16 +11,17 @@ abstract class Mysql_Foreign_Key_Builder_Property
 	/**
 	 * Builds a Mysql_Column object using a class property
 	 *
-	 * @param $property Reflection_Property
+	 * @param $table_name string
+	 * @param $property   Reflection_Property
 	 * @return Mysql_Foreign_Key
 	 */
-	public static function build(Reflection_Property $property)
+	public static function build($table_name, Reflection_Property $property)
 	{
 		$foreign_key = new Mysql_Foreign_Key();
 		$class = Reflection_Class::getInstanceOf(get_class($foreign_key));
 		$class->accessProperties();
 		$class->getProperty("Constraint")->setValue(
-			$foreign_key, self::propertyConstraintToMysql($property)
+			$foreign_key, self::propertyConstraintToMysql($table_name, $property)
 		);
 		$class->getProperty("Fields")->setValue(
 			$foreign_key, self::propertyFieldsToMysql($property)
@@ -43,12 +44,13 @@ abstract class Mysql_Foreign_Key_Builder_Property
 
 	//--------------------------------------------------------------------- propertyConstraintToMysql
 	/**
-	 * @param $property Reflection_Property
+	 * @param $table_name string
+	 * @param $property   Reflection_Property
 	 * @return string
 	 */
-	private static function propertyConstraintToMysql(Reflection_Property $property)
+	private static function propertyConstraintToMysql($table_name, Reflection_Property $property)
 	{
-		return Dao::storeNameOf($property->class) . "."
+		return $table_name . "."
 		. ($property->getAnnotation("link")->value ? ("id_" . $property->name) : $property->name);
 	}
 

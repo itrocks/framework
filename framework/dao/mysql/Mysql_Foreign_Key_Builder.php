@@ -11,6 +11,7 @@ abstract class Mysql_Foreign_Key_Builder
 	/**
 	 * Builds a Mysql_Foreign_Key for a column name that links to a given class name
 	 *
+	 * @param $table_name  string the table name
 	 * @param $column_name string the column name linking to the foreign key (with or without "id_")
 	 * @param $class_name  string the foreign class name
 	 * @param $constraint  string CASCADE, NO ACTION, RESTRICT, SET NULL

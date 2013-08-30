@@ -61,7 +61,7 @@ class Mysql_Table_Builder_Class
 				if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
 					$table->addColumn(Mysql_Column_Builder_Property::build($property));
 					if ($property->getAnnotation("link")->value == "Object") {
-						$table->addForeignKey(Mysql_Foreign_Key_Builder_Property::build($property));
+						$table->addForeignKey(Mysql_Foreign_Key_Builder_Property::build($table_name, $property));
 						$table->addIndex(Mysql_Index_Builder::buildLink($property->name));
 					}
 				}
