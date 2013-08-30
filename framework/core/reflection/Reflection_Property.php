@@ -110,7 +110,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 				// $of_name is a "property.path"
 				do {
 					$property = Reflection_Property::getInstanceOf($of_class, substr($of_name, $i, $j - $i));
-					$of_class = $property->getType()->getElementTypeAsString();
+					$of_class = Builder::className($property->getType()->getElementTypeAsString());
 					$i = $j + 1;
 				} while (($j = strpos($of_name, ".", $i)) !== false);
 				if ($i) {
