@@ -77,6 +77,18 @@ abstract class Data_Link implements Configurable
 	 */
 	abstract public function delete($object);
 
+	//---------------------------------------------------------------------------------- escapeString
+	/**
+	 * Escape string into string or binary values
+	 *
+	 * @param $value string
+	 * @return string
+	 */
+	public function escapeString($value)
+	{
+		return str_replace(array("'", "\""), array("\\'", "\\\""), $value);
+	}
+
 	//---------------------------------------------------------------------------- getKeyPropertyName
 	/**
 	 * Gets the key property name taken from any set Dao_Key_Option

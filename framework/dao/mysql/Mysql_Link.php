@@ -144,12 +144,14 @@ class Mysql_Link extends Sql_Link
 
 	//---------------------------------------------------------------------------------- escapeString
 	/**
-	 * @param $string string
+	 * Escape string into string or binary values
+	 *
+	 * @param $value string
 	 * @return string
 	 */
-	public function escapeString($string)
+	public function escapeString($value)
 	{
-		return $this->connection->escape_string($string);
+		return $this->connection->escape_string($value);
 	}
 
 	//---------------------------------------------------------------------------------- executeQuery

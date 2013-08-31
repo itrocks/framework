@@ -42,7 +42,7 @@ abstract class Sql_Value
 			$string_value = "\"" . $value->toISO() . "\"";
 		}
 		else {
-			$string_value = "\"" . mysql_real_escape_string($value) . "\"";
+			$string_value = "\"" . Dao::current()->escapeString($value) . "\"";
 		}
 		return $double_backquote ? str_replace("\\", "\\\\", $string_value) : $string_value;
 	}
