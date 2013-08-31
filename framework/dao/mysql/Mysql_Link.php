@@ -364,7 +364,7 @@ class Mysql_Link extends Sql_Link
 			$class_name = get_class($what);
 		}
 		if (
-			(is_a($class_name, 'SAF\Framework\Before_Search'))
+			(is_a($class_name, 'SAF\Framework\Before_Search', true))
 			? call_user_func(array($class_name, "beforeSearch"), $what) : true
 		) {
 			$search_result = array();

@@ -23,7 +23,7 @@ abstract class Search_Object extends Null_Object
 	public static function create($class_name)
 	{
 		$object = Builder::create($class_name);
-		$class = Reflection_Class::getInstanceOf($class_name);
+		$class = Reflection_Class::getInstanceOf(get_class($object));
 		foreach ($class->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				if ($property->isPublic()) {
