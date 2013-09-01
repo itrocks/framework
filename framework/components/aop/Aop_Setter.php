@@ -47,8 +47,9 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 */
 	public static function registerSettersAop(AopJoinpoint $joinpoint)
 	{
-		if ($joinpoint->getReturnedValue()) {
-			parent::registerProperties($joinpoint->getArguments()[0], "setter", "before", "write");
+		if ($file_path = $joinpoint->getReturnedValue()) {
+			$class_name = Autoloader::rectifyClassName($joinpoint->getArguments()[0], $file_path);
+			parent::registerProperties($class_name, "setter", "before", "write");
 		}
 	}
 

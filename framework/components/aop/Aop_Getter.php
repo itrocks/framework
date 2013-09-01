@@ -153,8 +153,9 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 */
 	public static function registerGettersAop(AopJoinpoint $joinpoint)
 	{
-		if ($joinpoint->getReturnedValue()) {
-			parent::registerProperties($joinpoint->getArguments()[0], "getter", "after", "read");
+		if ($file_path = $joinpoint->getReturnedValue()) {
+			$class_name = Autoloader::rectifyClassName($joinpoint->getArguments()[0], $file_path);
+			parent::registerProperties($class_name, "getter", "after", "read");
 		}
 	}
 
