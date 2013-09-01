@@ -404,9 +404,10 @@ class Html_Template
 			else {
 				$file_name = $this->main_template;
 				$container = $this->getContainerContent($file_name);
+				$root_object = (is_object($this->object)) ? "<!--@rootObject-->" : "";
 				$content = str_replace(
 					"{@content}",
-					"<!--@rootObject-->" . substr($content, $i, $j - $i) . "<!--@rootObject-->",
+					$root_object . substr($content, $i, $j - $i) . $root_object,
 					$container
 				);
 			}
