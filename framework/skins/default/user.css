@@ -1,7 +1,11 @@
-.user.login form {
+.application.center.user.login {
+	text-align: center;
+}
+
+div.window.User.login form {
 	display: table;
 }
 
-.user.login form input[type="submit"] {
+div.window.user.login form input[type="submit"] {
 	float: right;
 }

@@ -1,0 +1,10 @@
+.support.applicationbutton {
+	background: url("img/support_24.png") 6px 2px no-repeat, url("img/tab_background.png");
+	margin-right: 10px;
+	margin-top: 5px;
+	padding-left: 32px;
+}
+
+.support.applicationbutton:hover {
+	color: #2D8F8D;
+}

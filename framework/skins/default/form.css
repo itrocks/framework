@@ -1,5 +1,69 @@
+input:not([type=submit]):not([type=file]):not([type=button]),
+select,
+textarea {
+	background-color: white;
+	border: 1px solid #a3a3a3;
+	border-radius: 2px;
+	font: inherit;
+	margin: 2px 0;
+	padding: 1px 2px;
+}
+
 .fieldset {
 	display: table;
+	width: 100%;
+}
+
+.fieldset .block {
+	display: table-row-group;
+}
+
+.fieldset .block h3 {
+	border-radius: 2px;
+	color: #202020;
+	display: block;
+	position: relative;
+	font-size: 14px;
+	padding-left: 4px;
+	padding-top: 4px;
+	white-space: nowrap;
+}
+
+.fieldset .block h3:after {
+	content : " :";
+}
+
+.fieldset .block .field:nth-child(2) div {
+	border-top: 1px solid #a3a3a3;
+}
+
+.fieldset .block .field:last-child div {
+	border-bottom: 1px solid #a3a3a3;
+}
+
+.fieldset .block .field div:first-child {
+	border-left: 1px solid #a3a3a3;
+	padding-left: 4px;
+}
+
+.fieldset .block .field div:last-child {
+	border-right: 1px solid #a3a3a3;
+}
+
+.fieldset .block .field:nth-child(2) .label {
+	border-top-left-radius: 4px 4px;
+}
+
+.fieldset .block .field:nth-child(2) .value {
+	border-top-right-radius: 4px 4px;
+}
+
+.fieldset .block .field:last-child .label {
+	border-bottom-left-radius: 4px 4px;
+}
+
+.fieldset .block .field:last-child .value {
+	border-bottom-right-radius: 4px 4px;
 }
 
 .fieldset .field {
@@ -7,18 +71,164 @@
 }
 
 .fieldset .field .label {
-	background-color: lightgray;
 	display: table-cell;
-	padding: 0 2px;
+	font-weight: bold;
+	text-align: left;
 	white-space: nowrap;
 }
 
 .fieldset .field .label:after {
-	content: ' : ';
+	content: " : ";
+}
+
+.fieldset .multiple.field .label:after {
+	content: "";
 }
 
 .fieldset .field .value {
 	display: table-cell;
 	padding: 0 2px;
+}
+
+.fieldset .field .label {
+	vertical-align: top;
+}
+
+.fieldset .multiple.field {
+	border: lightgrey 1px solid;
+	caption-side: bottom;
+	display: table-caption;
+	margin-bottom: -1px;
+	padding: 0 0 3px;
+}
+
+.fieldset .multiple.field .value {
 	white-space: nowrap;
+}
+
+.fieldset .multiple.field .label {
+	background-color: #e9ede7;
+	height: 14px;
+	padding: 3px 0 0 16px;
+}
+
+.fieldset .multiple.field .label,
+.fieldset .multiple.field .value {
+	display: block;
+}
+
+.edit .columns,
+.output .columns {
+	display: table;
+	width: 100%;
+}
+
+.edit .column,
+.output .column {
+	display: table-cell;
+	vertical-align: top;
+}
+
+.edit .column:last-child,
+.output .column:last-child {
+	text-align: right;
+}
+
+.edit .column:last-child .fieldset,
+.output .column:last-child .fieldset {
+	display: inline-block;
+}
+
+form .fieldset .field .label {
+	padding-top: 4px;
+}
+
+.collection,
+.map {
+	border-spacing: 2px;
+}
+
+form .collection td,
+form .map td {
+	width: 1px;
+}
+
+.collection tr:hover td,
+.map tr:hover td {
+	background-color: #DEFDAF;
+}
+
+.collection th,
+.map th {
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+form .collection .minus,
+form .map .minus {
+	background: url("img/remove_row.png") right no-repeat;
+	color: transparent;
+	cursor: pointer;
+	height: 14px;
+	max-width: 16px;
+	min-width: 16px;
+	width: 16px;
+	text-align: right;
+}
+
+form .collection input:not([type=submit]):not([type=file]):not([type=button]),
+form .collection textarea,
+form .map input,
+form .map textarea {
+	width: 100%;
+}
+
+input.datetime {
+	background: white url("img/input_datetime.png") right top no-repeat;
+}
+
+.ui-datepicker-trigger {
+	display: none;
+}
+
+.ui-helper-hidden-accessible {
+	display: none;
+}
+
+.float,
+.integer {
+	text-align: right;
+}
+
+.action {
+	color: transparent;
+	height: 16px;
+	font-size: 1px;
+	margin: 2px 0;
+	padding: 0 2px;
+	vertical-align: top;
+	width: 16px;
+}
+
+a.add.action {
+	background: url("img/add_action.png") no-repeat center 2px;
+	display: none;
+	position: absolute;
+}
+
+a.add.action.visible {
+	display: inline-block;
+}
+
+button.more.action {
+	background: url("img/input_combo.png") no-repeat center 1px;
+	border: 0;
+	cursor: pointer;
+	display: inline-block;
+	margin-left: -16px;
+}
+
+.tabber.one {
+	border-bottom: 1px solid #575757;
+	padding-bottom: 2px;
 }

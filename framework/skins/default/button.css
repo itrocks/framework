@@ -1,0 +1,121 @@
+.general.buttons {
+	height: 20px;
+	padding-bottom: 4px;
+}
+
+.selection.buttons {
+	padding-left: 6px;
+	padding-top: 6px;
+}
+
+ul.buttons {
+	display: block;
+}
+
+li.button {
+	display: inline-block;
+	float: left;
+	position: relative;
+}
+
+ul.sub_buttons {
+	background-color: white;
+	border: 1px solid black;
+	border-top: 1px solid #D0D0D0;
+	display: none;
+	left: 8px;
+	position: absolute;
+}
+
+li.button:hover ul.sub_buttons {
+	display: block;
+}
+
+li.sub_button {
+	display: block;
+}
+
+li.sub_button a {
+	color: black;
+	display: block;
+	padding: 4px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+li.sub_button a:hover {
+	background-color: #AEDC5F;
+}
+
+.selection.arrow {
+	background: url("img/left_up_arrow.png") no-repeat;
+	color: transparent;
+	cursor: pointer;
+	display: inline-block;
+	float: left;
+	font-size: 1px;
+	width: 28px;
+	height: 15px;
+}
+
+a.button {
+	background:
+		url("img/buttons/17/left_blue.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+	border-radius: 4px 2px 2px 4px;
+	box-shadow: 0 1px 0 0 #D0D0D0;
+	color: #1C2E6C;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: bold;
+	height: 17px;
+	line-height: 17px;
+	margin: 0 2px;
+	padding: 0 4px 0 10px;
+	text-decoration: none;
+	vertical-align: bottom;
+}
+
+a.button.close {
+	background:
+		url("img/buttons/17/left_close.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+a.button.green {
+	background:
+		url("img/buttons/17/left_green.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+a.button.magenta {
+	background:
+		url("img/buttons/17/left_magenta.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+a.button.orange {
+	background:
+		url("img/buttons/17/left_orange.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+a.button.red {
+	background:
+		url("img/buttons/17/left_red.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+a.button:hover {
+	color: #2D8F8D;
+}
+
+.ifedit {
+	display: none;
+}

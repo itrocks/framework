@@ -1,0 +1,105 @@
+.list table {
+	font: 12px Arial, Sans-serif;
+}
+
+.list table.list {
+	min-width: 300px;
+}
+
+.list tr:nth-child(odd) {
+	background-color: white;
+}
+
+.list tr:nth-child(even) {
+	background-color: #ECECED;
+}
+
+.list tr:last-child {
+	border-bottom: 1px solid lightgray;
+}
+
+.list tr:hover {
+	background-color: #AEDC5F;
+}
+
+.list th {
+	background: url("img/list_head_left.png") left 3px no-repeat,
+		url("img/list_head_right.png") right 3px no-repeat,
+		url("img/list_head_background.png") repeat-x;
+	height: 17px;
+	vertical-align: bottom;
+	white-space: nowrap;
+}
+
+.list th.column_select {
+	background: url("img/list_head_right.png") right 3px no-repeat,
+		url("img/column_select.png") center 7px no-repeat,
+		url("img/list_head_background.png") repeat-x;
+	cursor: pointer;
+	width: 16px;
+	position: relative;
+}
+
+.list th.column_select a.popup {
+	color: transparent;
+	display: block;
+	font-size: 1px;
+	height: 17px;
+	margin: 0 -3px;
+	white-space: nowrap;
+}
+
+.list th:first-child,
+.list td:first-child {
+	border-left: 1px solid lightgray;
+}
+
+.list th:last-child,
+.list td:last-child {
+	border-right: 1px solid lightgray;
+}
+
+.list th a {
+	background: right 2px no-repeat;
+	color: black;
+	display: block;
+	text-decoration: none;
+}
+
+.list th.sort1 a {
+	background-image: url("img/arrow_black_up.gif");
+	padding-right: 12px;
+}
+
+.list th.sort1.reverse a {
+	background-image: url("img/arrow_black_down.gif");
+}
+
+.list th.sort2 a {
+	background-image: url("img/arrow_gray_up.gif");
+	padding-right: 12px;
+}
+
+.list th.sort2.reverse a {
+	background-image: url("img/arrow_gray_down.gif");
+}
+
+.list td {
+	border-right: 1px dotted lightgray;
+	height: 22px;
+	padding-top: 2px;
+	white-space: nowrap;
+}
+
+.list td a {
+	color: black;
+	display: block;
+	height: 100%;
+	padding: 3px 0 0 0;
+	text-decoration: none;
+}
+
+.list td.insert_after,
+.list th.insert_after {
+	border-right: 2px solid #adff2f;
+}
