@@ -211,9 +211,12 @@ class Default_List_Controller extends List_Controller
 		}
 		// search
 		$search_values = $this->getSearchValues($element_class_name, $form);
-		$search = isset($search_values)
-			? array_merge(array_combine($properties_list, $properties_list), $search_values)
-			: $properties_list;
+		$search = array_combine($properties_list, $properties_list);
+		foreach ($search_values as $search_key => $search_value) {
+			if (($search_value instanceof Reflection_Property_Value) && isset($search[$search_key])) {
+				$search[$search_key] = $search_value;
+			}
+		}
 		// read data
 		$parameters = array_merge(
 			array(
