@@ -33,7 +33,9 @@ abstract class Loc implements Plugin
 		$search = $joinpoint->getReturnedValue();
 		if (isset($search)) {
 			foreach ($search as $property) {
-				$property->value(self::propertyToIso($property));
+				if ($property instanceof Reflection_Property_Value) {
+					$property->value(self::propertyToIso($property));
+				}
 			}
 			$joinpoint->setReturnedValue($search);
 		}
