@@ -92,10 +92,11 @@ class Search_Array_Builder
 
 	//----------------------------------------------------------------- classRepresentativeProperties
 	/**
-	 * @param $class Reflection_Class
+	 * @param $class   Reflection_Class
+	 * @param $already string[] For recursion limits : already got classes
 	 * @return string[]
 	 */
-	private function classRepresentativeProperties($class)
+	private function classRepresentativeProperties($class, $already = array())
 	{
 		/** @var $property_names List_Annotation */
 		$property_names = $class->getListAnnotation("representative")->values();
@@ -110,11 +111,18 @@ class Search_Array_Builder
 			}
 			$property = $property_class->getProperty($property_name);
 			$type = $property->getType();
+			$type_string = $type->asString();
 			if (!$type->isBasic()) {
 				unset($property_names[$key]);
-				$sub_class = Reflection_Class::getInstanceOf($type);
-				foreach ($this->classRepresentativeProperties($sub_class) as $sub_property_name) {
-					$property_names[] = $property_name . "." . $sub_property_name;
+				if (!isset($already[$type_string])) {
+					$sub_class = Reflection_Class::getInstanceOf($type_string);
+					$sub_already = $already;
+					$sub_already[$type_string] = $type_string;
+					foreach (
+						$this->classRepresentativeProperties($sub_class, $sub_already) as $sub_property_name
+					) {
+						$property_names[] = $property_name . "." . $sub_property_name;
+					}
 				}
 			}
 		}
