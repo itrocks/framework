@@ -3,6 +3,8 @@ namespace SAF\Framework;
 
 /**
  * A print model gives the way to print an object of a given class
+ *
+ * @representative class
  */
 class Print_Model
 {
