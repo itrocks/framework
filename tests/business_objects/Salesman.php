@@ -13,4 +13,13 @@ class Salesman
 	 */
 	public $name;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->name);
+	}
+
 }

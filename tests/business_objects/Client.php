@@ -3,6 +3,8 @@ namespace SAF\Tests;
 
 /**
  * A client class
+ *
+ * @representative number, name
  */
 class Client
 {
@@ -31,5 +33,14 @@ class Client
 	 * @var Client
 	 */
 	public $client;
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->number) . " " . strval($this->name);
+	}
 
 }

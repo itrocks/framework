@@ -48,4 +48,13 @@ class Item
 	 */
 	public $cross_selling;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->code);
+	}
+
 }

@@ -61,4 +61,13 @@ class Order_Line
 	 */
 	public $quantity;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->number) . " : " . $this->item;
+	}
+
 }

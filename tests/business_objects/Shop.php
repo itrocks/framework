@@ -19,4 +19,14 @@ class Shop
 	 * @var Category[]
 	 */
 	public $categories;
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->name);
+	}
+
 }

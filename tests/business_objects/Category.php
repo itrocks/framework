@@ -41,4 +41,13 @@ class Category
 	 */
 	public $shops;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->name);
+	}
+
 }
