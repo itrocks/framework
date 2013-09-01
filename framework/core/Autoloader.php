@@ -31,7 +31,6 @@ abstract class Autoloader implements Plugin
 	public static function autoload($class_name)
 	{
 		if (!isset(self::$included_classes[$class_name])) {
-			if (strpos($class_name, "Print_Model") !== false) echo "include class $class_name<br>";
 			$included_classes[$class_name] = self::includeClass($class_name);
 		}
 	}
