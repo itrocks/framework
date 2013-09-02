@@ -44,6 +44,20 @@ strong {
 	height: 52px;
 }
 
+.bappli.logo {
+	background: url("img/bappli_studio_36.png") 20px 5px no-repeat white;
+	border: 1px solid #9ab3b7;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .2);
+	color: transparent;
+	display: block;
+	height: 46px;
+	margin-top: -1px;
+	margin-right: 10px;
+	width: 200px;
+}
+
 .saf.logo {
 	background: url("img/fingers_40.png");
 	color: transparent;
