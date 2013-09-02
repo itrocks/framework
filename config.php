@@ -36,6 +36,7 @@ $config["framework"] = array(
 			'SAF\Framework\Builder'
 		),
 		"highest" => array(
+			'SAF\Framework\Mysql_Logger' => array("display_log" => false),
 			'SAF\Framework\Mysql_Maintainer',
 			'SAF\Framework\Aop_Getter',
 			'SAF\Framework\Aop_Setter',
