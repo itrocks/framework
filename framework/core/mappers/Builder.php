@@ -57,13 +57,13 @@ class Builder implements Plugin
 	//---------------------------------------------------------------------------------------- create
 	/**
 	 * @param $class_name string
-	 * @param $args       array|null
+	 * @param $args       mixed[]|mixed some arguments into an array, or a single non-array argument
 	 * @return object
 	 */
 	public static function create($class_name, $args = null)
 	{
 		return isset($args)
-			? self::current()->newInstanceArgs($class_name, $args)
+			? self::current()->newInstanceArgs($class_name, is_array($args) ? $args : array($args))
 			: self::current()->newInstance($class_name);
 	}
 
