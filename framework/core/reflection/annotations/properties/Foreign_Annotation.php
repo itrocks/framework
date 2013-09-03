@@ -74,13 +74,17 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	{
 		$type = $reflection_property->getType();
 		$possibles = array();
-		$foreign_class = Reflection_Class::getInstanceOf($type->getElementTypeAsString());
+		$foreign_class = Reflection_Class::getInstanceOf(
+			Builder::className($type->getElementTypeAsString())
+		);
 		foreach ($foreign_class->getAllProperties() as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
 			if (
 				$foreign_type->isClass()
 				&& $foreign_type->isMultiple()
-				&& $foreign_type->isInstanceOf($reflection_property->class)
+				&& (new Type(Builder::className($foreign_type->getElementTypeAsString())))->isInstanceOf(
+					$reflection_property->class
+				)
 				&& $foreign_property->getAnnotation("link")->value == "Map"
 				&& (
 					$foreign_property->class != $reflection_property->class

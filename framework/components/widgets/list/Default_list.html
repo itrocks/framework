@@ -25,7 +25,7 @@
 		</th>
 		<!--getProperties-->
 		<th id="{.}" class="property trashable sort{sorted.{.}} {?reversed.{.}}">
-			<a href="/{..@class.short}/{@feature}?{sort_options.{.}}={.}" target="#main">|{@display.twoLast}|</a>
+			<a href="/{--@class.short}/{@feature}?{sort_options.{.}}={.}" target="#main">|{@display.twoLast}|</a>
 		</th>
 		<!--sample-->
 		<th id="column2" class="property trashable">
@@ -48,12 +48,12 @@
 		<td><input type="checkbox" name="s[]" value="{id}"></td>
 		<!--formatValues:1-->
 		<td>
-			<!--..class_name-->
-			<a href="/{..class_name.short}/{..id}" target="#main" class="trashable">{value}</a>
-			<!--..class_name-->
+			<!----class_name?-->
+			<a href="/{--class_name.short}/{--id}" target="#main" class="trashable">{value}</a>
+			<!----class_name?-->
 		</td>
 		<!--formatValues-->
-		<!--formatValues:2-...count-->
+		<!--formatValues:2----count-->
 		<td>{value}</td>
 		<!--formatValues-->
 	</tr>
@@ -82,16 +82,16 @@
 		<li class="selection arrow trashable">[select]</li>
 		<!--selection_buttons-->
 		<li class="button"><a class="{class?} {feature.lower} trashable button {color}" href="{link}" target="{?target}">|{caption}|</a>
-			<!--sub_buttons.@count-->
+			<!--sub_buttons?-->
 			<ul class="sub_buttons">
 				<!--sub_buttons-->
 				<li class="sub_button"><a class="{class?} {feature.lower} trashable sub_button {color}" href="{link}" target="{?target}">|{caption}|</a></li>
 				<!--sub_buttons-->
 			</ul>
-			<!--sub_buttons.@count-->
+			<!--sub_buttons?-->
 		</li>
 		<!--sample-->
-		<a class="button trashable new blue" href="/Class/new" target="#main">New</a>
+		<li><a class="button trashable new blue" href="/Class/new" target="#main">New</a></li>
 		<!--selection_buttons-->
 	</ul>
 

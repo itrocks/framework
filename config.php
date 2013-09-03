@@ -49,8 +49,7 @@ $config["framework"] = array(
 		)
 	),
 	'SAF\Framework\View' => array(
-		"class" => 'SAF\Framework\Html_View_Engine',
-		"css"   => "default"
+		"class" => 'SAF\Framework\Html_View_Engine'
 	)
 );
 

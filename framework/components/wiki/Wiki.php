@@ -108,7 +108,7 @@ class Wiki implements Plugin
 	 */
 	public static function noParseZone(AopJoinpoint $joinpoint)
 	{
-		$varname = $joinpoint->getArguments()[1];
+		$varname = $joinpoint->getArguments()[0];
 		$is_include = substr($varname, 0, 1) == "/";
 		if (!$is_include) {
 			self::$dont_parse_wiki ++;

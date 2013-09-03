@@ -55,7 +55,7 @@ class Html_Edit_Template extends Html_Template
 		if ($i !== false) {
 			$i += 12;
 			$j = strrpos($content, "<!--END-->", $i);
-			$short_class = Namespaces::shortClassName(get_class($this->object));
+			$short_class = Namespaces::shortClassName(get_class(reset($this->objects)));
 			$short_form_id = strtolower($short_class) . "_edit";
 			$this->form_id = $short_form_id . "_" . $this->nextFormCounter();
 			$action = "/" . $short_class . "/write";
@@ -73,16 +73,15 @@ class Html_Edit_Template extends Html_Template
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
-	 * @param $objects   mixed[]
 	 * @param $var_name  string can be an unique var or path.of.vars
 	 * @param $as_string boolean if true, returned value will always be a string
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	protected function parseValue($objects, $var_name, $as_string = true)
+	protected function parseValue($var_name, $as_string = true)
 	{
-		$property = reset($objects);
+		$property = reset($this->objects);
 		if (($property instanceof Reflection_Property) && ($var_name == "value")) {
-			$value = parent::parseValue($objects, $var_name, false);
+			$value = parent::parseValue($var_name, false);
 			if (
 				($property instanceof Reflection_Property_Value)
 				&& ($preprop = lLastParse($property->field(), "[", 1, false))
@@ -104,7 +103,7 @@ class Html_Edit_Template extends Html_Template
 				. (new Html_Builder_Property_Edit($property, $value))->setTemplate($this)->build();
 		}
 		else {
-			$value = parent::parseValue($objects, $var_name, $as_string);
+			$value = parent::parseValue($var_name, $as_string);
 		}
 		return $value;
 	}
