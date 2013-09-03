@@ -189,14 +189,12 @@ abstract class Html_Template_Functions
 	 */
 	public static function getLoc(Html_Template $template)
 	{
-		reset($template->var_names);
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
-				$property= Reflection_Property::getInstanceOf($object, current($template->var_names));
-				return Loc::propertyToLocale($property, reset($object));
+				$property= Reflection_Property::getInstanceOf($object, reset($template->var_names));
+				return Loc::propertyToLocale($property, reset($template->objects));
 				break;
 			}
-			next($template->var_names);
 		}
 		return reset($object);
 	}

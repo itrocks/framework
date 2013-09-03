@@ -33,6 +33,14 @@ class Html_Template
 	 */
 	protected $descendants = array();
 
+	//---------------------------------------------------------------------------- $descendants_names
+	/**
+	 * Descendant objects names are set when calls to parents are done, in order to get them back
+	 *
+	 * @var mixed[]
+	 */
+	protected $descendants_names = array();
+
 	//-------------------------------------------------------------------------------------- $feature
 	/**
 	 * Feature name (name of a controller's method, end of the view name)
@@ -521,8 +529,6 @@ class Html_Template
 	 */
 	protected function parseLoop(&$content, $i, $j)
 	{
-		$descendants = $this->descendants;
-		$objects = $this->objects;
 		$var_name = substr($content, $i, $j - $i);
 		$length = strlen($var_name);
 		$i += $length + 3;
@@ -624,8 +630,6 @@ class Html_Template
 			. $loop_insert
 			. substr($content, $j + $length2 + 7);
 		$i += strlen($loop_insert) - $length - 7;
-		$this->objects = $objects;
-		$this->descendants = $descendants;
 		return $i;
 	}
 
@@ -764,13 +768,12 @@ class Html_Template
 
 	//------------------------------------------------------------------------------ parseSingleValue
 	/**
-	 * @param $object        mixed
 	 * @param $property_name string
 	 * @return mixed
 	 */
-	protected function parseSingleValue($object, $property_name)
+	protected function parseSingleValue($property_name)
 	{
-		$source_object = $object;
+		$source_object = $object = reset($this->objects);
 		if (!strlen($property_name)) {
 			$object = $this->parseParent();
 		}
@@ -928,18 +931,37 @@ class Html_Template
 		elseif ($var_name[0] === "/") {
 			return $this->parseInclude($var_name);
 		}
-		while ($var_name[0] === "-") {
-			array_unshift($this->descendants, array_shift($this->objects));
-			$var_name = substr($var_name, 1);
-		}
-		while ($var_name[0] === "+") {
-			array_unshift($this->objects, array_shift($this->descendants));
-			$var_name = substr($var_name, 1);
+		if (strpos("-+", $var_name[0]) !== false) {
+			$descendants_names = $this->descendants_names;
+			$descendants = $this->descendants;
+			$var_names = $this->var_names;
+			$objects = $this->objects;
+			while ($var_name[0] === "-") {
+				array_unshift($this->descendants_names, array_shift($this->var_names));
+				array_unshift($this->descendants, array_shift($this->objects));
+				$var_name = substr($var_name, 1);
+			}
+			while ($var_name[0] === "+") {
+				array_unshift($this->var_names, array_shift($this->descendants_names));
+				array_unshift($this->objects, array_shift($this->descendants));
+				$var_name = substr($var_name, 1);
+			}
 		}
 		$property_name = null;
-		$object = reset($this->objects);
-		foreach (explode(".", $var_name) as $property_name) {
-			$object = $this->parseSingleValue($object, $property_name);
+		/** @var $object mixed */
+		if (strpos($var_name, ".") !== false) {
+			if (!isset($var_names)) $var_names = $this->var_names;
+			if (!isset($objects))   $objects = $this->objects;
+			foreach (explode(".", $var_name) as $property_name) {
+				$object = $this->parseSingleValue($property_name);
+				array_unshift($this->var_names, $property_name);
+				array_unshift($this->objects, $object);
+			}
+		}
+		else {
+			foreach (explode(".", $var_name) as $property_name) {
+				$object = $this->parseSingleValue($property_name);
+			}
 		}
 		if ($as_string && is_object($object)) {
 			if ($object instanceof File) {
@@ -950,6 +972,10 @@ class Html_Template
 			}
 		}
 		$this->parse_class_name = null;
+		if (isset($objects))           $this->objects = $objects;
+		if (isset($var_names)) 	       $this->var_names = $var_names;
+		if (isset($descendants))       $this->descendants = $descendants;
+		if (isset($descendants_names)) $this->descendants_names = $descendants_names;
 		return $object;
 	}
 
@@ -962,8 +988,6 @@ class Html_Template
 	 */
 	protected function parseVar(&$content, $i, $j)
 	{
-		$descendants = $this->descendants;
-		$objects = $this->objects;
 		$var_name = substr($content, $i, $j - $i);
 		while (($k = strpos($var_name, "{")) !== false) {
 			$this->parseVar($content, $k + $i + 1, $j);
@@ -988,8 +1012,6 @@ class Html_Template
 		}
 		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
 		$i += strlen($value);
-		$this->objects = $objects;
-		$this->descendants = $descendants;
 		return $i;
 	}
 
