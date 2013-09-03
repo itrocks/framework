@@ -3,8 +3,6 @@ namespace SAF\Framework;
 
 /**
  * Html template functions : those which are called using {@functionName} into templates
- *
- * @todo $objects will become a public property of Html_Template, then remove $objects arguments
  */
 abstract class Html_Template_Functions
 {
@@ -22,11 +20,10 @@ abstract class Html_Template_Functions
 	 * Returns application name
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return string
 	 */
 	public static function getApplication(
-		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
+		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template
 	) {
 		return new Displayable(
 			Configuration::current()->getApplicationName(), Displayable::TYPE_CLASS
@@ -38,13 +35,11 @@ abstract class Html_Template_Functions
 	 * Returns object's class name
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return string
 	 */
-	public static function getClass(
-		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
-	) {
-		$object = reset($objects);
+	public static function getClass(Html_Template $template)
+	{
+		$object = reset($template->objects);
 		return is_object($object)
 			? (
 					($object instanceof Set)
@@ -59,13 +54,11 @@ abstract class Html_Template_Functions
 	 * Returns array count
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return integer
 	 */
-	public static function getCount(
-		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
-	) {
-		return count(reset($objects));
+	public static function getCount(Html_Template $template)
+	{
+		return count(reset($template->objects));
 	}
 
 	//------------------------------------------------------------------------------------ getDisplay
@@ -73,13 +66,11 @@ abstract class Html_Template_Functions
 	 * Return object's display
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return string
 	 */
-	public static function getDisplay(
-		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
-	) {
-		$object = reset($objects);
+	public static function getDisplay(Html_Template $template)
+	{
+		$object = reset($template->objects);
 		if ($object instanceof Reflection_Property) {
 			return Names::propertyToDisplay($object->name);
 		}
@@ -102,17 +93,16 @@ abstract class Html_Template_Functions
 	 * Returns an HTML edit widget for current property or List_Data property
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
-	 * @param $prefix   object
+	 * @param $prefix   string
 	 * @return string
 	 */
-	public static function getEdit(Html_Template $template, $objects, $prefix = null)
+	public static function getEdit(Html_Template $template, $prefix = null)
 	{
-		if (count($objects) > 2) {
+		if (count($template->objects) > 2) {
 			// from a List_Data
-			$property = reset($objects);
-			next($objects);
-			$list_data = next($objects);
+			$property = reset($template->objects);
+			next($template->objects);
+			$list_data = next($template->objects);
 			if ($list_data instanceof Default_List_Data) {
 				$class_name = $list_data->element_class_name;
 				list($property, $property_path, $value) = self::toEditPropertyExtra($class_name, $property);
@@ -124,7 +114,7 @@ abstract class Html_Template_Functions
 		}
 		else {
 			// from any sub-part of ...
-			$property = self::getObject($template, $objects);
+			$property = self::getObject($template);
 			if ($property instanceof Reflection_Property_Value) {
 				// ... a Reflection_Property_Value
 				return (new Html_Builder_Property_Edit($property, $property->value()))->build();
@@ -135,7 +125,7 @@ abstract class Html_Template_Functions
 			}
 			elseif (is_object($property)) {
 				// ... an object and it's property name
-				$property_name = prev($objects);
+				$property_name = prev($template->objects);
 				$property = Reflection_Property::getInstanceOf($property, $property_name);
 				if ($property != null) {
 					return (new Html_Builder_Property_Edit($property))->build();
@@ -144,7 +134,7 @@ abstract class Html_Template_Functions
 		}
 		// default html input widget
 		$input = new Html_Input();
-		$input->setAttribute("name", reset($objects));
+		$input->setAttribute("name", reset($template->objects));
 		return $input;
 	}
 
@@ -153,14 +143,13 @@ abstract class Html_Template_Functions
 	 * Returns an expanded list of properties. Source element must be a list of Reflection_Property
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[] first element must be a Reflection_Property
 	 * @return Reflection_Property
 	 */
-	public static function getExpand(Html_Template $template, $objects)
+	public static function getExpand(Html_Template $template)
 	{
-		$property = reset($objects);
+		$property = reset($template->objects);
 		$expanded = Integrated_Properties::expandUsingProperty(
-			$expanded, $property, $template->getParentObject($objects, $property->class)
+			$expanded, $property, $template->getParentObject($property->class)
 		);
 		return $expanded ? $expanded : array($property);
 	}
@@ -170,12 +159,10 @@ abstract class Html_Template_Functions
 	 * Returns template's feature method name
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return Displayable
 	 */
-	public static function getFeature(
-		Html_Template $template, /** @noinspection PhpUnusedParameterInspection */ $objects
-	) {
+	public static function getFeature(Html_Template $template)
+	{
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
 	}
 
@@ -185,14 +172,33 @@ abstract class Html_Template_Functions
 	 * (usefull for conditions on arrays)
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return boolean
 	 */
-	public static function getHas(
-		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
-	) {
-		$object = reset($objects);
+	public static function getHas(Html_Template $template)
+	{
+		$object = reset($template->objects);
 		return !empty($object);
+	}
+
+	//---------------------------------------------------------------------------------------- getLoc
+	/**
+	 * Returns a value with application of current locales
+	 *
+	 * @param $template Html_Template
+	 * @return object
+	 */
+	public static function getLoc(Html_Template $template)
+	{
+		reset($template->var_names);
+		foreach ($template->objects as $object) {
+			if (is_object($object)) {
+				$property= Reflection_Property::getInstanceOf($object, current($template->var_names));
+				return Loc::propertyToLocale($property, reset($object));
+				break;
+			}
+			next($template->var_names);
+		}
+		return reset($object);
 	}
 
 	//------------------------------------------------------------------------------------- getObject
@@ -200,14 +206,12 @@ abstract class Html_Template_Functions
 	 * Returns nearest object from templating tree
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return object
 	 */
-	public static function getObject(
-		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
-	) {
+	public static function getObject(Html_Template $template)
+	{
 		$object = null;
-		foreach ($objects as $object) {
+		foreach ($template->objects as $object) {
 			if (is_object($object)) {
 				break;
 			}
@@ -220,12 +224,11 @@ abstract class Html_Template_Functions
 	 * Returns object's properties, and their display and value
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return Reflection_Property_Value[]
 	 */
-	public static function getProperties(Html_Template $template, $objects)
+	public static function getProperties(Html_Template $template)
 	{
-		$object = reset($objects);
+		$object = reset($template->objects);
 		$properties_filter = $template->getParameter("properties_filter");
 		$class = Reflection_Class::getInstanceOf($object);
 		$properties = $class->accessProperties();
@@ -246,13 +249,12 @@ abstract class Html_Template_Functions
 	 * Returns object's properties, and their display and value, but only if they are not already into a tab
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return Reflection_Property_Value[]
 	 */
-	public static function getPropertiesOutOfTabs(Html_Template $template, $objects)
+	public static function getPropertiesOutOfTabs(Html_Template $template)
 	{
 		$properties = array();
-		foreach (self::getProperties($template, $objects) as $property_name => $property) {
+		foreach (self::getProperties($template, $template->objects) as $property_name => $property) {
 			if (!$property->isStatic() && !$property->getAnnotation("group")->value) {
 				$properties[$property_name] = $property;
 			}
@@ -265,14 +267,12 @@ abstract class Html_Template_Functions
 	 * Returns root class from templating tree
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return object
 	 */
-	public static function getRootClass(
-		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
-	) {
+	public static function getRootClass(Html_Template $template)
+	{
 		$object = null;
-		foreach (array_reverse($objects) as $object) {
+		foreach (array_reverse($template->objects) as $object) {
 			if (is_object($object)) {
 				break;
 			}
@@ -285,14 +285,12 @@ abstract class Html_Template_Functions
 	 * Returns root object from templating tree
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return object
 	 */
-	public static function getRootObject(
-		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template, $objects
-	) {
+	public static function getRootObject(Html_Template $template)
+	{
 		$object = null;
-		foreach (array_reverse($objects) as $object) {
+		foreach (array_reverse($template->objects) as $object) {
 			if (is_object($object)) {
 				break;
 			}
@@ -305,17 +303,19 @@ abstract class Html_Template_Functions
 	 * Returns the sorted version of the objects collection
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[] the parsed objects : the first one must be the objects collection
 	 * @return object[] the sorted objects collection
 	 */
-	public static function getSort(Html_Template $template, $objects)
+	public static function getSort(Html_Template $template)
 	{
-		if (is_array($collection = reset($objects)) && $collection && is_object(reset($collection))) {
+		if (
+			is_array($collection = reset($template->objects))
+			&& $collection && is_object(reset($collection))
+		) {
 			Collection::sort($collection);
 			return $collection;
 		}
 		else {
-			return reset($objects);
+			return reset($template->objects);
 		}
 	}
 
@@ -325,13 +325,12 @@ abstract class Html_Template_Functions
 	 * If not, returns an empty string array
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return string[]
 	 */
-	public static function getStartingBlocks(Html_Template $template, $objects)
+	public static function getStartingBlocks(Html_Template $template)
 	{
 		$blocks = array();
-		foreach ($objects as $property) if ($property instanceof Reflection_Property) {
+		foreach ($template->objects as $property) if ($property instanceof Reflection_Property) {
 			$blocks = array_merge($blocks, self::getPropertyBlocks($property));
 		}
 		$starting_blocks = array();
@@ -355,15 +354,14 @@ abstract class Html_Template_Functions
 	 * If not, returns an empty string array
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return string[]
 	 */
-	public static function getStoppingBlocks(Html_Template $template, $objects)
+	public static function getStoppingBlocks(Html_Template $template)
 	{
 		if (self::$inside_blocks) {
 			$array_of = null;
-			$starting_objects = $objects;
-			foreach ($objects as $object_key => $object) {
+			$starting_objects = $template->objects;
+			foreach ($template->objects as $object_key => $object) {
 				if ($object instanceof Reflection_Property) {
 					$array_of = $object;
 				}
@@ -410,12 +408,10 @@ abstract class Html_Template_Functions
 	 * (use it inside of loops)
 	 *
 	 * @param $template Html_Template
-	 * @param $objects  mixed[]
 	 * @return object
 	 */
-	public static function getTop(
-		Html_Template $template, /** @noinspection PhpUnusedParameterInspection */ $objects
-	) {
+	public static function getTop(Html_Template $template)
+	{
 		return $template->getObject();
 	}
 
