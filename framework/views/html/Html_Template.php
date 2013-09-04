@@ -532,7 +532,8 @@ class Html_Template
 		$var_name = substr($content, $i, $j - $i);
 		$length = strlen($var_name);
 		$i += $length + 3;
-		$force_condition = (substr($var_name, -1) == "?");
+		$force_equality = ($var_name[0] === "=");
+		$force_condition = (substr($var_name, -1) === "?");
 		if (strpos($var_name, ":")) {
 			list($var_name, $expr) = explode(":", $var_name);
 			if (($sep = strpos($expr, "-")) !== false) {
@@ -551,6 +552,9 @@ class Html_Template
 		}
 		$length2 = isset($expr) ? strlen($var_name) : $length;
 		$j = strpos($content, "<!--" . $var_name . "-->", $j + 3);
+		if ($force_equality) {
+			$var_name = substr($var_name, 1);
+		}
 		if ($force_condition) {
 			$var_name = substr($var_name, 0, -1);
 		}
@@ -568,7 +572,10 @@ class Html_Template
 		if ($to && !is_numeric($to)) {
 			$to = $this->parseValue($to);
 		}
-		if ((is_array($elements) && !$force_condition) || isset($expr)) {
+		if ($force_equality) {
+			$loop_insert = $elements;
+		}
+		elseif ((is_array($elements) && !$force_condition) || isset($expr)) {
 			$do = false;
 			$loop_insert = "";
 			$counter = 0;
@@ -909,7 +916,7 @@ class Html_Template
 				($c >= "A") && ($c <= "Z")
 				&& (substr($content, $i, 6) != "BEGIN:") && (substr($content, $i, 4) != "END:")
 			)
-			|| (strpos("@/.-+?!\"|", $c) !== false);
+			|| (strpos("@/.-+?!|=\"", $c) !== false);
 	}
 
 	//------------------------------------------------------------------------------------ parseValue
