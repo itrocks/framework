@@ -23,7 +23,8 @@ class Html_Default_View implements IView
 			isset($parameters["feature"]) ? array($parameters["feature"], $feature_name) : $feature_name
 		);
 		foreach ($templates_files as $template_file) {
-			$template_file = stream_resolve_include_path($template_file);
+			$template_file = stream_resolve_include_path($template_file . ".html")
+				?: stream_resolve_include_path($template_file . ".php");
 			if ($template_file) {
 				if (isset($parameters["template_mode"])) {
 					$template_class = Namespaces::fullClassName(

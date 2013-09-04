@@ -498,7 +498,7 @@ class Html_Template
 	 */
 	protected function parseInclude($include_uri)
 	{
-		if (substr($include_uri, -5) === ".html") {
+		if ((substr($include_uri, -5) === ".html") || (substr($include_uri, -4) === ".php")) {
 			// includes html template
 			if (($i = strrpos($include_uri, "/")) !== false) {
 				$include_uri = substr($include_uri, $i + 1);
