@@ -46,11 +46,6 @@ class Html_View_Engine implements Configurable, View_Engine
 		if (!is_array($feature_names)) {
 			$feature_names = array($feature_names);
 		}
-		foreach ($feature_names as $key => $feature_name) {
-			if (!strpos($feature_name, ".")) {
-				$feature_names[$key] .= ".html";
-			}
-		}
 		$templates = array();
 		$class_name = Namespaces::fullClassName($class_name);
 		while ($class_name) {
