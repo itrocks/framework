@@ -552,11 +552,11 @@ class Html_Template
 		}
 		$length2 = isset($expr) ? strlen($var_name) : $length;
 		$j = strpos($content, "<!--" . $var_name . "-->", $j + 3);
-		if ($force_equality) {
-			$var_name = substr($var_name, 1);
-		}
 		if ($force_condition) {
 			$var_name = substr($var_name, 0, -1);
+		}
+		elseif ($force_equality) {
+			$var_name = substr($var_name, 1);
 		}
 		$loop_content = substr($content, $i, $j - $i);
 		$this->removeSample($loop_content);
@@ -633,10 +633,10 @@ class Html_Template
 			array_shift($this->objects);
 			array_shift($this->var_names);
 		}
-		$content = substr($content, 0, $i - $length - 7)
-			. $loop_insert
-			. substr($content, $j + $length2 + 7);
-		$i += strlen($loop_insert) - $length - 7;
+		$i = $i - $length - 7;
+		$j = $j + $length2 + 7;
+		$content = substr($content, 0, $i) . $loop_insert . substr($content, $j);
+		$i += strlen($loop_insert);
 		return $i;
 	}
 
