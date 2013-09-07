@@ -3,40 +3,36 @@ namespace SAF\Framework;
 
 /**
  * A DOM element class for HTML form select inputs <select><option>...</select>
- *
- * @use content
  */
 class Html_Select extends Dom_Element
 {
 
-	//-------------------------------------------------------------------------------------- $content
+	//------------------------------------------------------------------------------------- $selected
 	/**
-	 * @getter getContent
-	 * @override
-	 * @var string[]
+	 * @var string
 	 */
-	public $content;
+	private $selected;
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
-	 * @var Html_Option[]
+	 * @var string[]
 	 */
 	private $values = array();
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name   string
-	 * @param $values string[]
-	 * @param $value  string
-	 * @param $id     string
+	 * @param $name     string
+	 * @param $values   string[]
+	 * @param $selected string
+	 * @param $id       string
 	 */
-	public function __construct($name = null, $values = null, $value = null, $id = null)
+	public function __construct($name = null, $values = null, $selected = null, $id = null)
 	{
 		parent::__construct("select", true);
-		if (isset($name))   $this->setAttribute("name",   $name);
-		if (isset($values)) $this->values = $values;
-		if (isset($value))  $this->setAttribute("value",  $value);
-		if (isset($id))     $this->setAttribute("id",     $id);
+		if (isset($id))       $this->setAttribute("id",   $id);
+		if (isset($name))     $this->setAttribute("name", $name);
+		if (isset($values))   $this->values = $values;
+		if (isset($selected)) $this->selected($selected);
 	}
 
 	//-------------------------------------------------------------------------------------- addValue
@@ -49,7 +45,7 @@ class Html_Select extends Dom_Element
 	public function addValue($value, $caption = null)
 	{
 		$this->values[$value] = isset($caption) ? $caption : $value;
-		unset($this->content);
+		$this->setContent(null);
 	}
 
 	//------------------------------------------------------------------------------------ getContent
@@ -60,19 +56,35 @@ class Html_Select extends Dom_Element
 	 */
 	public function getContent()
 	{
-		if (isset($this->content)) {
-			return $this->content;
-		}
-		else {
+		$content = parent::getContent();
+		if (!isset($content)) {
 			$values = $this->values;
 			asort($values);
 			$content = "";
+			$selected = $this->selected();
 			foreach ($values as $value => $caption) {
-				$content .= strval(new Html_Option($value, $caption));
+				$html_option = new Html_Option($value, $caption);
+				if ($value === $selected) {
+					$html_option->setAttribute("selected");
+				}
+				$content .= strval($html_option);
 			}
-			$this->content = $content;
-			return $content;
+			$this->setContent($content);
 		}
+		return $content;
+	}
+
+	//-------------------------------------------------------------------------------------- selected
+	/**
+	 * @param $selected string if not set, selected will return current value without removing it
+	 * @return string
+	 */
+	public function selected($selected = null)
+	{
+		if (isset($selected)) {
+			$this->selected = $selected;
+		}
+		return $this->selected;
 	}
 
 }

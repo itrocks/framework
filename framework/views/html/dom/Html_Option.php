@@ -17,15 +17,33 @@ class Html_Option extends Dom_Element
 		parent::__construct("option", true);
 		if (isset($value)) {
 			if (!isset($caption)) {
-				$caption = $value;
+				$this->setContent($value);
 			}
-			elseif ($caption !== $value) {
-				$this->setAttribute("value", $value);
-			}
+			$this->setAttribute("value", $value);
 		}
 		if (isset($caption)) {
+			if (!isset($value)) {
+				$this->setAttribute("value", $value);
+			}
 			$this->setContent($caption);
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		if ($this->getContent() == ($value = $this->getAttribute("value"))) {
+			$this->removeAttribute($value);
+			$back = true;
+		}
+		$string = parent::__toString();
+		if (isset($back)) {
+			$this->setAttribute("value", $value);
+		}
+		return $string;
 	}
 
 }

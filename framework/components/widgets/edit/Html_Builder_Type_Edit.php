@@ -227,6 +227,9 @@ class Html_Builder_Type_Edit
 			$input->addClass("autoheight");
 		}
 		elseif (isset($values) && $values) {
+			if (!isset($values[""])) {
+				$values = array("" => "") + $values;
+			}
 			$input = new Html_Select($this->getFieldName(), $values, $this->value);
 		}
 		else {

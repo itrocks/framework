@@ -86,6 +86,26 @@ abstract class Dom_Element
 		return $this->attributes;
 	}
 
+	//------------------------------------------------------------------------------------ getContent
+	/**
+	 * @return string
+	 */
+	public function getContent()
+	{
+		return $this->content;
+	}
+
+	//------------------------------------------------------------------------------- removeAttribute
+	/**
+	 * @param $name string
+	 */
+	public function removeAttribute($name)
+	{
+		if (isset($this->attributes[$name])) {
+			unset($this->attributes[$name]);
+		}
+	}
+
 	//---------------------------------------------------------------------------------- setAttribute
 	/**
 	 * @param $name string
@@ -139,8 +159,9 @@ abstract class Dom_Element
 		if ($this->styles) {
 			$this->setAttribute("style", join("; ", $this->styles));
 		}
+		$content = $this->getContent();
 		return "<" . $this->name . ($this->attributes ? (" " . join(" ", $this->attributes)) : "") . ">"
-			. (($this->end_tag || isset($this->content)) ? ($this->content . "</" . $this->name . ">") : "");
+			. (($this->end_tag || isset($content)) ? ($content . "</" . $this->name . ">") : "");
 	}
 
 }
