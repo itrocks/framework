@@ -65,6 +65,7 @@ abstract class Autoloader implements Plugin
 			!@class_exists($class_name, false)
 			&& !@trait_exists($class_name, false)
 			&& !@interface_exists($class_name, false)
+			&& is_file($file_path)
 		) {
 			$file = fopen($file_path, "r");
 			do {
