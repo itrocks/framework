@@ -11,7 +11,8 @@ class Mysql_Logger implements Plugin
 
 	//------------------------------------------------------------------------------------- $continue
 	/**
-	 * If true, log will be displayed once each query is executed. If false, will be display at script's end.
+	 * If true, log will be displayed each time a query is executed.
+	 * If false, will be display at script's end.
 	 *
 	 * @var boolean
 	 */
