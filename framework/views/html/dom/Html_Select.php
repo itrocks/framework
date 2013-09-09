@@ -60,6 +60,11 @@ class Html_Select extends Dom_Element
 		if (!isset($content)) {
 			$values = $this->values;
 			asort($values);
+			if (isset($values[""])) {
+				$value = $values[""];
+				unset($values[""]);
+				$values = array("" => $value) + $values;
+			}
 			$content = "";
 			$selected = $this->selected();
 			foreach ($values as $value => $caption) {
