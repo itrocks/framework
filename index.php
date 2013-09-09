@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 // php settings
-set_time_limit(10);
+set_time_limit(20);
 ini_set("default_charset", "UTF-8");
 ini_set("max_input_vars", 1000000);
 ini_set("memory_limit", "1024M");
