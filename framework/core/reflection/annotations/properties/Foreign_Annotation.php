@@ -51,8 +51,8 @@ class Foreign_Annotation extends Documented_Type_Annotation
 			if (
 				$foreign_type->isClass()
 				&& !$foreign_type->isMultiple()
-				&& $foreign_type->isInstanceOf($reflection_property->class)
-				&& $foreign_property->getAnnotation("link")->value == "Object"
+				&& is_a($reflection_property->class, $foreign_type->asString(), true)
+				&& ($foreign_property->getAnnotation("link")->value == "Object")
 			) {
 				$possibles[] = $foreign_property->name;
 				if ($foreign_property->getAnnotation("composite")) {
