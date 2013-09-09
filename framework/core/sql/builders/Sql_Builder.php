@@ -29,14 +29,15 @@ abstract class Sql_Builder
 	/**
 	 * Build a SQL DELETE query
 	 *
-	 * @param $class Reflection_Class | string
-	 * @param $id integer
+	 * @param $class     Reflection_Class | string
+	 * @param $id        integer
+	 * @param $id_column string
 	 * @return string
 	 */
-	public static function buildDelete($class, $id)
+	public static function buildDelete($class, $id, $id_column = "id")
 	{
 		return "DELETE FROM `" . Dao::current()->storeNameOf($class) . "`"
-			. " WHERE id = " . $id;
+			. " WHERE $id_column = " . $id;
 	}
 
 	//---------------------------------------------------------------------------------- buildColumns
