@@ -159,7 +159,7 @@ class Mysql_Maintainer implements Plugin
 	{
 		/** @var $mysqli Contextual_Mysqli */
 		$mysqli = $joinpoint->getObject();
-		if ($errno = $mysqli->errno) {
+		if ($error_number = $mysqli->errno) {
 			if (!isset($mysqli->context)) {
 				$mysqli->context = self::guessContext($joinpoint->getArguments()[0]);
 			}
@@ -168,7 +168,10 @@ class Mysql_Maintainer implements Plugin
 				$error = $mysqli->error;
 				$retry = false;
 				$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
-				if (($errno == Mysql_Errors::ER_CANT_CREATE_TABLE) && strpos($error, "(errno: 150)")) {
+				if (
+					($error_number == Mysql_Errors::ER_CANT_CREATE_TABLE)
+					&& strpos($error, "(errno: 150)")
+				) {
 					$error_table_names = self::parseNamesFromQuery($query);
 					foreach ($error_table_names as $error_table_name) {
 						if (!$mysqli->exists($error_table_name)) {
@@ -177,7 +180,7 @@ class Mysql_Maintainer implements Plugin
 						$retry = true;
 					}
 				}
-				elseif ($errno == Mysql_Errors::ER_NO_SUCH_TABLE) {
+				elseif ($error_number == Mysql_Errors::ER_NO_SUCH_TABLE) {
 					$error_table_names = array(self::parseNameFromError($error));
 					if (!reset($error_table_names)) {
 						$error_table_names = self::parseNamesFromQuery($query);
@@ -202,7 +205,7 @@ class Mysql_Maintainer implements Plugin
 						}
 					}
 				}
-				elseif ($errno == Mysql_Errors::ER_BAD_FIELD_ERROR) {
+				elseif ($error_number == Mysql_Errors::ER_BAD_FIELD_ERROR) {
 					foreach ($context as $context_class) {
 						if (self::updateTable($mysqli, $context_class)) {
 							$retry = true;
