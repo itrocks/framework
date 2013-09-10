@@ -101,11 +101,9 @@ class Mysql_Table_Builder_Class
 	{
 		$link_class_name = Namespaces::defaultFullClassName($link, $class_name);
 		$tables = (new Mysql_Table_Builder_Class)->build($link_class_name);
-		//Mysql_Column_Builder::buildLink("id_" . Names::classToProperty($link_class_name))
 		$this->excluded_properties = array_keys(
 			Reflection_Class::getInstanceOf($link_class_name)->getAllProperties()
 		);
-		$this->excluded_properties[] = "id";
 		return $tables;
 	}
 

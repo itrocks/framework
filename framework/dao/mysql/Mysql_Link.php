@@ -106,11 +106,7 @@ class Mysql_Link extends Sql_Link
 				: array();
 			foreach ($class->accessProperties() as $property) {
 				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-					$property_link = $property->getAnnotation("link")->value;
-					if (($property_link == "Object") && is_a($property->getType()->asString(), $link, true)) {
-						$link_property_name = $property->name;
-					}
-					elseif ($property_link == "Collection") {
+					if ($property->getAnnotation("link")->value == "Collection") {
 						if ($property->getType()->isMultiple()) {
 							$this->deleteCollection($object, $property, $property->getValue($object));
 						}
@@ -122,9 +118,7 @@ class Mysql_Link extends Sql_Link
 			}
 			$class->accessPropertiesDone();
 			$this->setContext($class_name);
-			$this->query(Sql_Builder::buildDelete(
-				$class_name, $id, isset($link_property_name) ? "id_" . $link_property_name : "id")
-			);
+			$this->query(Sql_Builder::buildDelete($class_name, $id));
 			$this->removeObjectIdentifier($object);
 			return true;
 		}

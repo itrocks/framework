@@ -155,7 +155,7 @@ class Sql_Joins
 		$join->foreign_table  = Dao::storeNameOf($linked_class_name);
 		$join->mode           = Sql_Join::INNER;
 		$join->type           = Sql_Join::LINK;
-		$this->joins[$path ? ($path . "-" . $join->foreign_table . "-@link") : "id"] = $join;
+		$this->joins[($path ? ($path . "-") : "") . $join->foreign_table . "-@link"] = $join;
 		$more_linked_class_name = $linked_class->getAnnotation("link")->value;
 		$exclude_properties = $more_linked_class_name
 			? $this->addLinkedClass($path, $more_linked_class_name)

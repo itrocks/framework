@@ -34,10 +34,10 @@ abstract class Sql_Builder
 	 * @param $id_column string
 	 * @return string
 	 */
-	public static function buildDelete($class, $id, $id_column = "id")
+	public static function buildDelete($class, $id)
 	{
 		return "DELETE FROM `" . Dao::current()->storeNameOf($class) . "`"
-			. " WHERE $id_column = " . $id;
+			. " WHERE id = " . $id;
 	}
 
 	//---------------------------------------------------------------------------------- buildColumns
