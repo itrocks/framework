@@ -470,12 +470,13 @@ namespace {
 	/**
 	 * Returns a string as a well formed HTTP URI
 	 *
-	 * @param $str string
+	 * @param $str   string
+	 * @param $joker string if set, replace refused characters with this one instead of removing it
 	 * @return string
 	 */
-	function strUri($str)
+	function strUri($str, $joker = null)
 	{
-		return strtolower(strSimplify(str_replace(" ", "_", $str), "/-_"));
+		return strtolower(strSimplify(str_replace(" ", "_", $str), "/-_", $joker));
 	}
 
 	//-------------------------------------------------------------------------------------- ucfirsta
