@@ -148,9 +148,12 @@ form .fieldset .field .label {
 	border-spacing: 2px;
 }
 
-form .collection td,
+form .collection td {
+	width: 200px;
+}
+
 form .map td {
-	width: 1px;
+	width: 100px;
 }
 
 .collection tr:hover td,
