@@ -88,20 +88,23 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * If a property overrides a parent property, parent AND child properties will be listed (only if $by_name keeps false).
 	 * If $by_name is set to true, result array will be indiced by names. With this option parent properties will be replace by overriden child properties.
 	 *
-	 * @param int|string $filter  string
-	 * @param $by_name boolean
+	 * @param $filter      integer|string
+	 * @param $by_name     boolean
+	 * @param $final_class string
 	 * @return Reflection_Property[]
 	 */
-	public function getAllProperties($filter = Reflection_Property::ALL, $by_name = true)
-	{
+	public function getAllProperties(
+		$filter = Reflection_Property::ALL, $by_name = true, $final_class = null
+	) {
 		$parent = $this->getParentClass();
 		if ($parent) {
 			$properties = array_merge(
-				$parent->getAllProperties($filter, $by_name), $this->getProperties($filter, $by_name)
+				$parent->getAllProperties($filter, $by_name, $final_class),
+				$this->getProperties($filter, $by_name, $final_class)
 			);
 		}
 		else {
-			$properties = $this->getProperties($filter, $by_name);
+			$properties = $this->getProperties($filter, $by_name, $final_class);
 		}
 		return $properties;
 	}
@@ -293,15 +296,21 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * Properties visible for current class, not the privates ones from parents and traits are retrieved.
 	 *
-	 * @param $filter int|null|string any combination of Reflection_Property::IS_* constants
-	 * @param $by_name boolean if true, only the last override of each property will be kept
+	 * @param $filter      integer|string any combination of Reflection_Property::IS_* constants
+	 * @param $by_name     boolean if true, only the last override of each property will be kept
+	 * @param $final_class string
 	 * @return Reflection_Property[] indice is the property name if $by_name is true, else this will be an integer
 	 */
-	public function getProperties($filter = Reflection_Property::ALL, $by_name = true)
-	{
+	public function getProperties(
+		$filter = Reflection_Property::ALL, $by_name = true, $final_class = null
+	) {
+		if (!isset($final_class)) {
+			$final_class = $this->name;
+		}
 		$properties = array();
 		foreach (parent::getProperties($filter) as $key => $property) {
-			$properties[$by_name ? $property->name : $key] = Reflection_Property::getInstanceOf($property);
+			$properties[$by_name ? $property->name : $key]
+				= Reflection_Property::getInstanceOf($final_class, $property->name);
 		}
 		return $properties;
 	}
@@ -317,7 +326,12 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function getProperty($name)
 	{
-		$property = parent::getProperty($name);
+		try {
+			$property = parent::getProperty($name);
+		}
+		catch (ReflectionException $e) {
+			$property = null;
+		}
 		return $property ? Reflection_Property::getInstanceOf($property) : $property;
 	}
 

@@ -21,10 +21,7 @@ require_once "framework/core/reflection/Reflection_Class.php";
 require_once "framework/core/reflection/Reflection_Method.php";
 
 /**
- * A rich extension of the PHP ReflectionProperty class, adding :
- * - annotations management
- * - getType() method to get the real type of data stored into the property
- * - getUse() method to help working with overriden properties
+ * A rich extension of the PHP ReflectionProperty class
  */
 class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_Comment
 {
@@ -46,6 +43,25 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	private $doc_comment;
 
+	//---------------------------------------------------------------------------------- $final_class
+	/**
+	 * Final class asked when calling getInstanceOf()
+	 *
+	 * It may not be the class where the property is declared, but the class which was asked
+	 *
+	 * @var string
+	 */
+	public $final_class;
+
+	//---------------------------------------------------------------------------- $override_property
+	/**
+	 * Only if the property is declared into a parent class as well as into the child class
+	 * If not, this will be false
+	 *
+	 * @var Reflection_Property|boolean
+	 */
+	private $overridden_property;
+
 	//----------------------------------------------------------------------------------------- $path
 	/**
 	 * Full path of the property, if built with getInstanceOf() and a $property.path
@@ -54,14 +70,6 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public $path;
 
-	//------------------------------------------------------------------------------------------ $use
-	/**
-	 * If true, phpdoc must be read directly into php file, as phpDocComment may not be the right one
-	 *
-	 * @var boolean
-	 */
-	private $use;
-
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string The name of the property
@@ -69,6 +77,15 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	public function __toString()
 	{
 		return $this->name;
+	}
+
+	//--------------------------------------------------------------------------------- getFinalClass
+	/**
+	 * @return Reflection_Class
+	 */
+	public function getFinalClass()
+	{
+		return Reflection_Class::getInstanceOf($this->final_class);
 	}
 
 	//--------------------------------------------------------------------------------- getInstanceOf
@@ -86,6 +103,10 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		// flexible parameters
 		if ($of_class instanceof Type) {
 			$of_class = $of_class->asString();
+		}
+		elseif ($of_class instanceof Reflection_Property) {
+			$of_name  = $of_class->name;
+			$of_class = $of_class->final_class;
 		}
 		elseif ($of_class instanceof ReflectionProperty) {
 			$of_name  = $of_class->name;
@@ -123,6 +144,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 				// $of_name is a simple property name
 				$property = new Reflection_Property($of_class, $of_name);
 			}
+			$property->final_class = $of_class;
 			$cache[$of_class][$of_name_cache] = $property;
 		}
 		return $property;
@@ -178,21 +200,26 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function getDocComment($get_use = true)
 	{
-		if ($get_use && $this->getUse()) {
-			if (!is_string($this->doc_comment)) {
-				$name = $this->name;
-				$visibility = $this->isPublic()
-					? "public"
-					: ($this->isProtected() ? "protected" : "private");
-				$doc = file_get_contents($this->getDeclaringClass()->getFileName());
-				$doc = substr($doc, 0, strpos($doc, "$visibility \$$name"));
-				$i = strrpos($doc, "/**");
-				$j = strrpos($doc, "*/", $i) + 2;
-				$this->doc_comment = substr($doc, $i, $j - $i) . parent::getDocComment();
-			}
-			return $this->doc_comment;
+		if (!isset($this->doc_comment)) {
+			$overridden_property = $this->getOverriddenProperty();
+			$this->doc_comment = parent::getDocComment()
+				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : "");
+			$this->doc_comment = parent::getDocComment() . $this->doc_comment;
 		}
-		return parent::getDocComment();
+		return $this->doc_comment;
+	}
+
+	//------------------------------------------------------------------------- getOverriddenProperty
+	/**
+	 * @return Reflection_Property
+	 */
+	public function getOverriddenProperty()
+	{
+		if (!isset($this->overridden_property)) {
+			$parent = $this->getDeclaringClass()->getParentClass();
+			$this->overridden_property = $parent ? ($parent->getProperty($this->name) ?: false) : false;
+		}
+		return $this->overridden_property ?: null;
 	}
 
 	//----------------------------------------------------------------------------- getParentProperty
@@ -236,28 +263,6 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			);
 		}
 		return $type;
-	}
-
-	//---------------------------------------------------------------------------------------- getUse
-	/**
-	 * Returns true if property doc comment is to be taken in this class instead of parent trait
-	 *
-	 * This is true when declaring class has a @use $field_name doc comment.
-	 *
-	 * @return boolean
-	 */
-	private function getUse()
-	{
-		if (!isset($this->use)) {
-			$this->use = false;
-			foreach ($this->getDeclaringClass()->getListAnnotations("use") as $use) {
-				if (in_array($this->name, $use->values())) {
-					$this->use = true;
-					break;
-				}
-			}
-		}
-		return $this->use;
 	}
 
 	//------------------------------------------------------------------------- isValueEmptyOrDefault
