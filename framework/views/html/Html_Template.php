@@ -500,10 +500,7 @@ class Html_Template
 	{
 		if ((substr($include_uri, -5) === ".html") || (substr($include_uri, -4) === ".php")) {
 			// includes html template
-			if (($i = strrpos($include_uri, "/")) !== false) {
-				$include_uri = substr($include_uri, $i + 1);
-			}
-			$included = file_get_contents(stream_resolve_include_path($include_uri));
+			$included = file_get_contents($this->parseIncludeResolve($include_uri));
 			if (($i = strpos($included, "<!--BEGIN-->")) !== false) {
 				$i += 12;
 				$j = strpos($included, "<!--END-->");
@@ -517,6 +514,19 @@ class Html_Template
 				$include_uri, array("is_included" => true)
 			);
 		}
+	}
+
+	//--------------------------------------------------------------------------- parseIncludeResolve
+	/**
+	 * @param $include_uri string
+	 * @return string
+	 */
+	protected function parseIncludeResolve($include_uri)
+	{
+		if (($i = strrpos($include_uri, "/")) !== false) {
+			$include_uri = substr($include_uri, $i + 1);
+		}
+		return stream_resolve_include_path($include_uri);
 	}
 
 	//------------------------------------------------------------------------------------- parseLoop
