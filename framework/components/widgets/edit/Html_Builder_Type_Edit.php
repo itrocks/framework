@@ -68,7 +68,7 @@ class Html_Builder_Type_Edit
 				case "float":    return $this->buildFloat();
 				case "integer":  return $this->buildInteger();
 				case "string":   return $this->buildString();
-				case "string[]": return "string[]";
+				case "string[]": return $this->buildString();
 			}
 			if ($type->isClass()) {
 				$class_name = $type->asString();

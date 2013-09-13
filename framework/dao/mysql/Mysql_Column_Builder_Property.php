@@ -187,15 +187,18 @@ abstract class Mysql_Column_Builder_Property
 					return "char(255)";
 			}
 		}
-		elseif ($property_type === "string[]") {
+		elseif ($property_type->asString() === "string[]") {
 			/** @var $values string[] */
 			$values = array();
 			foreach ($property->getListAnnotation("values")->values() as $key => $value) {
 				$values[$key] = str_replace("'", "''", $value);
 			}
-			return $property->getAnnotation("set")->value
-				? "set('"  . join("','", $values) . "')"
-				: "enum('" . join("','", $values) . "')";
+			return $values
+				? (
+					($property->getAnnotation("set")->value ? "set" : "enum")
+					. "('" . join("','", $values) . "')"
+				)
+				: "char(255)";
 		}
 		else {
 			return "bigint(18) unsigned";

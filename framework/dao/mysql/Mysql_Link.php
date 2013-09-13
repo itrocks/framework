@@ -262,7 +262,7 @@ class Mysql_Link extends Sql_Link
 		$properties = Reflection_Class::getInstanceOf($class)->getAllProperties();
 		foreach ($properties as $key => $property) {
 			$type = $property->getType();
-			if ($property->isStatic() || $type->isMultiple()) {
+			if ($property->isStatic() || ($type->isMultiple() && !$type->getElementType()->isBasic())) {
 				unset($properties[$key]);
 			}
 			elseif ($type->isClass()) {
@@ -453,7 +453,7 @@ class Mysql_Link extends Sql_Link
 						}
 						if (in_array($property->name, $table_columns_names)) {
 							// write basic
-							if ($property->getType()->isBasic()) {
+							if ($property->getType()->getElementType()->isBasic()) {
 								$write[$property->name] = $value;
 							}
 							// write object id if set or object if no id is set (new object)
