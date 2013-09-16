@@ -32,6 +32,17 @@ class Foreign_Annotation extends Documented_Type_Annotation
 			if (is_array($possibles) && count($possibles) == 1) {
 				$this->value = reset($possibles);
 			}
+			else {
+				$class = $reflection_property->class;
+				$property = $reflection_property->name;
+				$type = $reflection_property->getType()->getElementTypeAsString();
+				trigger_error(
+					"Can't guess @foreign for $class::$property : "
+					. "please set @composite on one (and one only) $type property of type $class object, "
+					. "or force the $class::$property @foreign property name.",
+					E_USER_ERROR
+				);
+			}
 		}
 	}
 
@@ -55,7 +66,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 				&& ($foreign_property->getAnnotation("link")->value == "Object")
 			) {
 				$possibles[] = $foreign_property->name;
-				if ($foreign_property->getAnnotation("composite")) {
+				if ($foreign_property->getAnnotation("composite")->value) {
 					$composites[] = $foreign_property->name;
 				}
 			}
