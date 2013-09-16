@@ -52,7 +52,10 @@ class Class_Builder
 					}
 				}
 				else {
-					user_error("Unknown interface/trait \"$interface_trait\" while building $class_name");
+					trigger_error(
+						"Unknown interface/trait \"$interface_trait\" while building $class_name",
+						E_USER_ERROR
+					);
 				}
 			}
 			$interfaces_names = $interfaces ? implode(", ", $interfaces) : "";

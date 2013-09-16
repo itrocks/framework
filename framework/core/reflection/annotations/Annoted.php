@@ -82,7 +82,7 @@ trait Annoted
 	{
 		$annotation = $this->getCachedAnnotation($annotation_name, false);
 		if (!($annotation instanceof List_Annotation)) {
-			user_error("Bad annotation type getListAnnotation('$annotation_name')");
+			trigger_error("Bad annotation type getListAnnotation('$annotation_name')", E_USER_ERROR);
 		}
 		return $annotation;
 	}
@@ -98,7 +98,7 @@ trait Annoted
 	{
 		$annotations = $this->getCachedAnnotation($annotation_name, true);
 		if ($annotations && !(reset($annotations) instanceof List_Annotation)) {
-			user_error("Bad annotation type getListAnnotations('$annotation_name')");
+			trigger_error("Bad annotation type getListAnnotations('$annotation_name')", E_USER_ERROR);
 		}
 		return $annotations;
 	}

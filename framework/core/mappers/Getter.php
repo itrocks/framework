@@ -73,9 +73,10 @@ echo "-- IS THIS DEAD CODE Getter line " . __LINE__ . " ? --";
 					$collection = $dao->search($search_element);
 				}
 				else {
-					user_error(
+					trigger_error(
 						"getCollection() must be called for a component foreign type"
-						. " or with a parent property name"
+						. " or with a parent property name",
+						E_USER_ERROR
 					);
 				}
 			}
