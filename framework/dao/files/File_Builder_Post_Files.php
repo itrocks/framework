@@ -32,7 +32,7 @@ class File_Builder_Post_Files
 				elseif (!(empty($element["name"]) || empty($element["tmp_name"]))) {
 					$file = new File();
 					$file->name = $element["name"];
-					$file->content = file_get_contents($element["tmp_name"]);
+					$file->temporary_file_name = $element["tmp_name"];
 					$form[$top] = $file;
 				}
 			}
@@ -61,7 +61,7 @@ class File_Builder_Post_Files
 			else {
 				$file = new File();
 				$file->name = $name_sub_element;
-				$file->content = file_get_contents($tmp_name_element[$key]);
+				$file->temporary_file_name = $tmp_name_element[$key];
 				$form[$key] = $file;
 			}
 		}
