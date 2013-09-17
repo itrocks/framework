@@ -98,38 +98,37 @@ abstract class Html_Template_Functions
 	 */
 	public static function getEdit(Html_Template $template, $prefix = null)
 	{
-		if (count($template->objects) > 2) {
-			// from a List_Data
-			$property = reset($template->objects);
-			next($template->objects);
-			$list_data = next($template->objects);
-			if ($list_data instanceof Default_List_Data) {
-				$class_name = $list_data->element_class_name;
-				list($property, $property_path, $value) = self::toEditPropertyExtra($class_name, $property);
-				$property_edit = new Html_Builder_Property_Edit($property, $value, $prefix);
-				$property_edit->name = $property_path;
-				$property_edit->preprop = null;
-				return $property_edit->build();
+		$object = reset($template->objects);
+		// find the first next object
+		if (!($object instanceof Reflection_Property)) {
+			$object = next($template->objects);
+			$property_name = reset($template->var_names);
+			while (($object !== false) && !is_object($object)) {
+				$object        = next($template->objects);
+				$property_name = next($template->var_names);
 			}
 		}
-		else {
-			// from any sub-part of ...
-			$property = self::getObject($template);
-			if ($property instanceof Reflection_Property_Value) {
-				// ... a Reflection_Property_Value
-				return (new Html_Builder_Property_Edit($property, $property->value()))->build();
-			}
-			elseif ($property instanceof Reflection_Property) {
-				// ... a Reflection_Property
+		if ($object instanceof Default_List_Data) {
+			$class_name = $object->element_class_name;
+			$property_name = prev($template->var_names);
+			list($property, $property_path, $value) = self::toEditPropertyExtra(
+				$class_name, $property_name
+			);
+			$property_edit = new Html_Builder_Property_Edit($property, $value, $prefix);
+			$property_edit->name = $property_path;
+			$property_edit->preprop = null;
+			return $property_edit->build();
+		}
+		if ($object instanceof Reflection_Property_Value) {
+			return (new Html_Builder_Property_Edit($object, $object->value()))->build();
+		}
+		if ($object instanceof Reflection_Property) {
+			return (new Html_Builder_Property_Edit($object))->build();
+		}
+		if (is_object($object) && isset($property_name) && is_string($property_name)) {
+			$property = Reflection_Property::getInstanceOf($object, $property_name);
+			if (isset($property)) {
 				return (new Html_Builder_Property_Edit($property))->build();
-			}
-			elseif (is_object($property)) {
-				// ... an object and it's property name
-				$property_name = prev($template->objects);
-				$property = Reflection_Property::getInstanceOf($property, $property_name);
-				if ($property != null) {
-					return (new Html_Builder_Property_Edit($property))->build();
-				}
 			}
 		}
 		// default html input widget
@@ -203,16 +202,20 @@ abstract class Html_Template_Functions
 	/**
 	 * Returns nearest object from templating tree
 	 *
+	 * After this call, current($template->var_names) will give you the var name of the object
+	 *
 	 * @param $template Html_Template
 	 * @return object
 	 */
 	public static function getObject(Html_Template $template)
 	{
 		$object = null;
+		reset($template->var_names);
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
 				break;
 			}
+			next($template->var_names);
 		}
 		return $object;
 	}
