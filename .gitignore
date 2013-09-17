@@ -4,7 +4,9 @@
 /.buildpath
 /.project
 /phpdoc
+/*/vendor/excel_reader
 /*/vendor/geshi
 /*/vendor/pear
+/*/vendor/PHPExcel
 /vendor
 /pwd.php

@@ -285,4 +285,17 @@ class Application
 		return $files;
 	}
 
+	//------------------------------------------------------------------------- getTemporaryFilesPath
+	/**
+	 * @return string
+	 */
+	public function getTemporaryFilesPath()
+	{
+		if (!is_dir("tmp")) {
+			mkdir("tmp");
+			file_put_contents("tmp/.htaccess", "Deny From All");
+		}
+		return "tmp";
+	}
+
 }

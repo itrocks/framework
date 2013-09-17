@@ -92,7 +92,8 @@ class Default_List_Controller extends List_Controller
 	protected function getGeneralButtons($class_name, $parameters)
 	{
 		return array(
-			new Button("Add", View::link($class_name, "new"), "add", Color::of("green"))
+			new Button("Add", View::link($class_name, "new"), "add", Color::of("green")),
+			new Button("Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("blue"))
 		);
 	}
 

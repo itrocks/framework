@@ -47,6 +47,27 @@ class Controller_Parameters
 		return count($this->parameters);
 	}
 
+	//--------------------------------------------------------------------------------- getMainObject
+	/**
+	 * Gets the main object from the parameters
+	 * If no main object is set (eq first parameter is not an object), create it using class name
+	 * Beware : the create object will then automatically be added on beggining of the parameters list
+	 *
+	 * @param $class_name string
+	 * @return object
+	 */
+	public function getMainObject($class_name)
+	{
+		$object = reset($this->parameters);
+		if (!$object || !is_object($object) || !is_a($object, $class_name)) {
+			$object = class_exists($class_name)
+				? new $class_name()
+				: Set::instantiate($class_name);
+			$this->parameters = array_merge(array($class_name => $object), $this->parameters);
+		}
+		return $object;
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Gets URI parameter as an object

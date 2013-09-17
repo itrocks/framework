@@ -7,6 +7,12 @@ namespace SAF\Framework;
 class Object_Builder_Array
 {
 
+	//------------------------------------------------------------------------------------- $builders
+	/**
+	 * @var Object_Builder_Array[] key is the property name
+	 */
+	private $builders;
+
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var Reflection_Class
@@ -75,52 +81,31 @@ class Object_Builder_Array
 		}
 		$properties = $this->properties;
 		if (!isset($object)) {
-			$object = $array["id"]
+			$object = (isset($array["id"]) && $array["id"])
 				? Dao::read($array["id"], $this->class->name)
 				: $this->class->newInstance();
 		}
+		$objects = array();
 		foreach ($array as $property_name => $value) {
-			$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
-			$type = isset($property) ? $property->getType() : null;
-			if (isset($type)) {
-				if ($type->isBasic()) {
-					$value = $this->buildBasicValue($property, $value);
-				}
-				elseif (is_array($value)) {
-					$link = $property->getAnnotation("link")->value;
-					if ($link == "Object") {
-						$value = $this->buildObjectValue($property, $value, $null_if_empty);
-					}
-					elseif ($link == "Collection") {
-						$value = $this->buildCollectionValue($property, $value, $null_if_empty);
-					}
-					elseif ($link == "Map") {
-						$value = $this->buildMapValue($property, $value, $null_if_empty);
-					}
+			if ($pos = strpos($property_name, ".")) {
+				$property_path = substr($property_name, $pos + 1);
+				$property_name = substr($property_name, 0, $pos);
+				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
+				if (isset($property)) {
+					$objects[$property->name][$property_path] = $value;
 				}
 			}
-			// the property value is set only for official properties, if not default and not empty
-			$object->$property_name = $value;
-			if (isset($property) && !$property->isValueEmptyOrDefault($value)) {
-				$is_null = false;
-			}
-			// if an id_foo property is set and not empty, it can be set and associated object is removed
-			// id_foo must always be set before any forced foo[sub_property] values into the array
-			if (!isset($property) && (substr($property_name, 0, 3) == "id_")) {
-				if (empty($value)) {
-					$real_property_name = substr($property_name, 3);
-					$real_property = isset($properties[$real_property_name])
-						? $properties[$real_property_name] : null;
-					$value = (isset($real_property) && $real_property->getAnnotation("null")->value)
-						? null
-						: 0;
-				}
-				$object->$property_name = $value;
-				if ($value) {
-					$linked_name = substr($property_name, 3);
-					unset($object->$linked_name);
+			else {
+				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
+				if (!$this->buildProperty($object, $property, $value, $null_if_empty)) {
 					$is_null = false;
 				}
+			}
+		}
+		foreach ($objects as $property_name => $value) {
+			$property = $properties[$property_name];
+			if (!$this->buildSubObject($object, $property, $value, $null_if_empty)) {
+				$is_null = false;
 			}
 		}
 		if ($is_null) {
@@ -150,21 +135,34 @@ class Object_Builder_Array
 
 	//-------------------------------------------------------------------------- buildCollectionValue
 	/**
-	 * @param $property      Reflection_Property
+	 * @param $class_name    string
 	 * @param $array         array
 	 * @param $null_if_empty boolean
 	 * @return object[]
 	 */
-	private function buildCollectionValue(Reflection_Property $property, $array, $null_if_empty)
+	public function buildCollection($class_name, $array, $null_if_empty = false)
 	{
 		$collection = array();
 		if ($array) {
-			$builder = new Object_Builder_Array($property->getType()->getElementTypeAsString());
-			reset($array);
+			$builder = new Object_Builder_Array($class_name);
+			$first_row = reset($array);
 			if (!is_numeric(key($array))) {
 				$array = arrayFormRevert($array);
 			}
+			$combine = true;
+			foreach (array_keys($first_row) as $key) {
+				if (!is_numeric($key)) {
+					$combine = false;
+					break;
+				}
+			}
+			if ($combine) {
+				unset($array[key($array)]);
+			}
 			foreach ($array as $key => $element) {
+				if ($combine) {
+					$element = array_combine($first_row, $element);
+				}
 				$object = $builder->build($element, null, $null_if_empty);
 				if (isset($object)) {
 					$collection[$key] = $object;
@@ -176,14 +174,13 @@ class Object_Builder_Array
 
 	//--------------------------------------------------------------------------------- buildMapValue
 	/**
-	 * @param $property      Reflection_Property
+	 * @param $class_name    string
 	 * @param $array         array
 	 * @param $null_if_empty boolean
 	 * @return integer[]
 	 */
-	private function buildMapValue(
-		/** @noinspection PhpUnusedParameterInspection */
-		Reflection_Property $property, $array, $null_if_empty
+	private function buildMap(
+		/** @noinspection PhpUnusedParameterInspection */ $class_name, $array, $null_if_empty = false
 	) {
 		$map = array();
 		if ($array) {
@@ -198,17 +195,109 @@ class Object_Builder_Array
 
 	//------------------------------------------------------------------------------ buildObjectValue
 	/**
-	 * @param $property      Reflection_Property
+	 * @param $class_name    string
 	 * @param $array         array
 	 * @param $null_if_empty boolean
 	 * @return object
 	 */
-	private function buildObjectValue(Reflection_Property $property, $array, $null_if_empty)
+	private function buildObjectValue($class_name, $array, $null_if_empty = false)
 	{
-		$builder = new Object_Builder_Array($property->getType()->asString());
+		$builder = new Object_Builder_Array($class_name);
 		$object = $builder->build($array, null, $null_if_empty);
 		$this->built_objects = array_merge($this->built_objects, $builder->built_objects);
 		return $object;
+	}
+
+	//--------------------------------------------------------------------------------- buildProperty
+	/**
+	 * @param $object        object
+	 * @param $property      Reflection_Property
+	 * @param $value         string
+	 * @param $null_if_empty boolean
+	 * @return boolean true if property value is null
+	 */
+	private function buildProperty($object, Reflection_Property $property, $value, $null_if_empty)
+	{
+		$is_null = $null_if_empty;
+		$type = isset($property) ? $property->getType() : null;
+		if (isset($type)) {
+			if ($type->isBasic()) {
+				$value = $this->buildBasicValue($property, $value);
+			}
+			elseif (is_array($value)) {
+				$link = $property->getAnnotation("link")->value;
+				if ($link == "Object") {
+					$class_name = $property->getType()->asString();
+					$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
+				}
+				elseif ($link == "Collection") {
+					$class_name = $property->getType()->getElementTypeAsString();
+					$value = $this->buildCollection($class_name, $value, $null_if_empty);
+				}
+				elseif ($link == "Map") {
+					$class_name = $property->getType()->getElementTypeAsString();
+					$value = $this->buildMap($class_name, $value, $null_if_empty);
+				}
+			}
+		}
+		// the property value is set only for official properties, if not default and not empty
+		$property_name = $property->name;
+		$object->$property_name = $value;
+		if (isset($property) && !$property->isValueEmptyOrDefault($value)) {
+			$is_null = false;
+		}
+		// if an id_foo property is set and not empty, it can be set and associated object is removed
+		// id_foo must always be set before any forced foo[sub_property] values into the array
+		if (!isset($property) && (substr($property_name, 0, 3) == "id_")) {
+			if (empty($value)) {
+				$real_property_name = substr($property_name, 3);
+				$real_property = isset($this->properties[$real_property_name])
+					? $this->properties[$real_property_name] : null;
+				$value = (isset($real_property) && $real_property->getAnnotation("null")->value)
+					? null
+					: 0;
+			}
+			$object->$property_name = $value;
+			if ($value) {
+				$linked_name = substr($property_name, 3);
+				unset($object->$linked_name);
+				$is_null = false;
+			}
+		}
+		return $is_null;
+	}
+
+	//-------------------------------------------------------------------------------- buildSubObject
+	/**
+	 * @param $object        object
+	 * @param $property      Reflection_Property
+	 * @param $value         object
+	 * @param $null_if_empty boolean
+	 * @return boolean
+	 */
+	private function buildSubObject($object, Reflection_Property $property, $value, $null_if_empty)
+	{
+		$is_null = $null_if_empty;
+		$property_name = $property->name;
+		$type = $property->getType();
+		if (!isset($this->builders[$property_name])) {
+			$this->builders[$property_name] = new Object_Builder_Array($type->getElementTypeAsString());
+		}
+		$builder = $this->builders[$property_name];
+		$value = $builder->build($value, null, $null_if_empty);
+		if (isset($value)) {
+			if ($type->isMultiple()) {
+				$object->$property_name;
+				array_push($object->$property_name, $value);
+			}
+			else {
+				$object->$property_name = $value;
+			}
+		}
+		else {
+			$is_null = false;
+		}
+		return $is_null;
 	}
 
 	//------------------------------------------------------------------------------- getBuiltObjects

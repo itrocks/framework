@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Import form template</title>
+	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<style type="text/css">
+		@import "../../skins/default/application.css";
+	</style>
+</head>
+<body>
+
+<!--BEGIN-->
+<div class="{@class.short.lower} {@feature} window" id="/{@class.short}/{@feature}">
+	<h2 class="window title">|{@class.ucfirst}|</h2>
+
+	<form action="/Import/preview" method="post" enctype="multipart/form-data" target="#import_execute">
+		<div class="format field">
+			<div class="label">Format</div>
+			<div class="value">{import_format.@edit}</div>
+		</div>
+		<div class="file field">
+			<div class="label">File</div>
+			<div class="value">{file.@edit}</div>
+		</div>
+		<input type="submit" value="|Preview|">
+	</form>
+
+	<div id="import_execute">
+	</div>
+
+</div>
+<!--END-->
+
+</body>
+</html>
