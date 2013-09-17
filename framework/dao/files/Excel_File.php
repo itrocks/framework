@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+/*
 use \PHPExcel;
 use \PHPExcel_IOFactory;
 
 require dirname(__FILE__) . "/../../vendor/PHPExcel/Classes/PHPExcel.php";
+*/
 
 /**
  * Excel file
@@ -18,7 +20,7 @@ require dirname(__FILE__) . "/../../vendor/PHPExcel/Classes/PHPExcel.php";
  * cd framework/vendor
  * git pull https://github.com/PHPOffice/PHPExcel.git
  */
-class Excel_File extends PHPExcel
+class Excel_File // extends PHPExcel
 {
 
 	//----------------------------------------------------------------------------------- fileToArray
@@ -34,6 +36,7 @@ class Excel_File extends PHPExcel
 	public static function fileToArray($file_name)
 	{
 		$csv_file = Application::current()->getTemporaryFilesPath() . "/" . uniqid() . ".csv";
+		echo "ssconvert \"$file_name\" \"$csv_file\" -S<br>";
 		exec("ssconvert \"$file_name\" \"$csv_file\" -S");
 		$count = 0;
 		$result = array();

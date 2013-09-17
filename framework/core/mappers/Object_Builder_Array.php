@@ -86,6 +86,7 @@ class Object_Builder_Array
 				: $this->class->newInstance();
 		}
 		$objects = array();
+		$read_properties = array();
 		foreach ($array as $property_name => $value) {
 			if ($pos = strpos($property_name, ".")) {
 				$property_path = substr($property_name, $pos + 1);
@@ -96,9 +97,15 @@ class Object_Builder_Array
 				}
 			}
 			else {
+				if ($asterisk = (substr($property_name, -1) === "*")) {
+					$property_name = substr($property_name, 0, -1);
+				}
 				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
 				if (!$this->buildProperty($object, $property, $value, $null_if_empty)) {
 					$is_null = false;
+				}
+				if ($asterisk) {
+					$read_properties[$property_name] = $value;
 				}
 			}
 		}
@@ -112,6 +119,9 @@ class Object_Builder_Array
 			return null;
 		}
 		else {
+			if ($read_properties) {
+				$object = $this->readObject($object, $read_properties);
+			}
 			$this->built_objects[] = $object;
 			return $object;
 		}
@@ -271,7 +281,7 @@ class Object_Builder_Array
 	/**
 	 * @param $object        object
 	 * @param $property      Reflection_Property
-	 * @param $value         object
+	 * @param $value         mixed
 	 * @param $null_if_empty boolean
 	 * @return boolean
 	 */
@@ -293,8 +303,6 @@ class Object_Builder_Array
 			else {
 				$object->$property_name = $value;
 			}
-		}
-		else {
 			$is_null = false;
 		}
 		return $is_null;
@@ -309,6 +317,34 @@ class Object_Builder_Array
 	public function getBuiltObjects()
 	{
 		return $this->built_objects;
+	}
+
+	//------------------------------------------------------------------------------------ readObject
+	/**
+	 *
+	 * @param $object          object
+	 * @param $read_properties string[] properties names
+	 * @return object
+	 */
+	public function readObject($object, $read_properties)
+	{
+		$objects = Dao::search($read_properties, get_class($object));
+		if (count($objects) != 1) {
+			trigger_error("Unique object not found " . print_r($read_properties, true), E_USER_ERROR);
+		}
+		else {
+			$class = Reflection_Class::getInstanceOf(get_class($object));
+			$new_object = reset($objects);
+			foreach ($class->accessProperties() as $property) {
+				$property_name = $property->name;
+				if (isset($object->$property_name) && !isset($read_properties[$property->name])) {
+					$property->setValue($new_object, $property->getValue($object, $property_name));
+				}
+			}
+			$class->accessPropertiesDone();
+			$object = $new_object;
+		}
+		return $object;
 	}
 
 	//-------------------------------------------------------------------------------------- setClass

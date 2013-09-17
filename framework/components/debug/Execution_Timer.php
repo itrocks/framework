@@ -7,7 +7,7 @@ require_once "framework/core/toolbox/Aop.php";
 /**
  * An execution timer plugin, to enable the execution duration info on document's foot
  */
-abstract class Execution_Timer implements Plugin
+class Execution_Timer implements Plugin
 {
 
 	/**
@@ -15,31 +15,35 @@ abstract class Execution_Timer implements Plugin
 	 *
 	 * @var float
 	 */
-	private static $start_time;
+	private $start_time;
+
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct()
+	{
+		$this->start_time = microtime(true);
+	}
 
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Record actual microtime as beginnig of the timer
 	 */
-	public static function begin()
+	public function begin()
 	{
-		self::$start_time = microtime(true);
+		$this->start_time = microtime(true);
 	}
 
 	//------------------------------------------------------------------------------------------- end
 	/**
 	 * Calculates and display execution duration
+	 *
+	 * @return float
 	 */
-	public static function end()
+	public function end()
 	{
-		if (!isset(self::$start_time)) {
-			self::$start_time = $_SERVER["REQUEST_TIME_FLOAT"];
+		if (!isset($this->start_time)) {
+			$this->start_time = $_SERVER["REQUEST_TIME_FLOAT"];
 		}
-		$duration = number_format(microtime(true) - self::$start_time, 3, ",", " ");
-		echo "<script type=\"text/javascript\">"
-			. " document.getElementById(\"main\").innerHTML"
-			. " += '<div class=\"Timer logger duration\">$duration</div>';"
-			. " </script>";
+		return (microtime(true) - $this->start_time);
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -48,8 +52,17 @@ abstract class Execution_Timer implements Plugin
 	 */
 	public static function register()
 	{
-		self::begin();
-		Aop::add(Aop::AFTER, 'SAF\Framework\Main_Controller->runController()', array(__CLASS__, "end"));
+		$timer = new Execution_Timer();
+		Aop::add(
+			Aop::AFTER, 'SAF\Framework\Main_Controller->runController()',
+			function() use($timer) {
+				$duration = number_format($timer->end(), 3, ",", " ");
+				echo "<script type=\"text/javascript\">"
+					. " document.getElementById(\"main\").innerHTML"
+					. " += '<div class=\"Timer logger duration\">$duration</div>';"
+					. " </script>";
+			}
+		);
 	}
 
 }
