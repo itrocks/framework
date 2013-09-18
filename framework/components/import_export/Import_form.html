@@ -14,10 +14,10 @@
 <div class="{@class.short.lower} {@feature} window" id="/{@class.short}/{@feature}">
 	<h2 class="window title">|{@class.ucfirst}|</h2>
 
-	<form action="/Import/preview" method="post" enctype="multipart/form-data" target="#import_execute">
+	<form action="/Import/preview" method="post" enctype="multipart/form-data" target="#import_preview">
 		<div class="format field">
 			<div class="label">Format</div>
-			<div class="value">{import_format.@edit}</div>
+			<div class="value">{format.@edit}</div>
 		</div>
 		<div class="file field">
 			<div class="label">File</div>
@@ -25,6 +25,9 @@
 		</div>
 		<input type="submit" value="|Preview|">
 	</form>
+
+	<div id="import_preview">
+	</div>
 
 	<div id="import_execute">
 	</div>

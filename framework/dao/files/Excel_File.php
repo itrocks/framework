@@ -36,12 +36,12 @@ class Excel_File // extends PHPExcel
 	public static function fileToArray($file_name)
 	{
 		$csv_file = Application::current()->getTemporaryFilesPath() . "/" . uniqid() . ".csv";
-		echo "ssconvert \"$file_name\" \"$csv_file\" -S<br>";
+		//echo "ssconvert \"$file_name\" \"$csv_file\" -S<br>";
 		exec("ssconvert \"$file_name\" \"$csv_file\" -S");
 		$count = 0;
 		$result = array();
 		while (is_file($csv_file . "." . $count)) {
-			$result[] = array_map("str_getcsv", file($csv_file . "." . $count));
+			$result[$csv_file . "." . $count] = array_map("str_getcsv", file($csv_file . "." . $count));
 			$count ++;
 		}
 		return $result;

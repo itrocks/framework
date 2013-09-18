@@ -1,0 +1,106 @@
+.import.preview.window .worksheet:not(:last-child) {
+	border-bottom: 2px solid black;
+	padding-bottom: 6px;
+	margin-bottom: 1em;
+}
+
+.import.preview.window .class:not(:first-child) {
+	border-top: 1px solid darkgray;
+	padding-top: 4px;
+	margin-top: 4px;
+}
+
+.import.preview.window h3 {
+	font-size: 1.4em;
+	font-weight: normal;
+	text-decoration: underline;
+	margin-bottom: .25em;
+}
+
+.import.preview.window h3 span:not(:last-child):after {
+	content: "/";
+}
+
+.import.preview.window .class div span {
+	font-weight: bold;
+}
+
+.import.preview.window ul {
+	display: inline-block;
+	text-decoration: none;
+}
+
+.import.preview.window ul:empty {
+	padding: .25em;
+}
+
+.import.preview.window .identify ul:empty:after {
+	content: "(aucune valeur pour identifier)";
+	font-style: italic;
+}
+
+.import.preview.window .write ul:empty:after {
+	content: "(aucune valeur à écrire)";
+	font-style: italic;
+}
+
+.import.preview.window .ignore ul:empty:after {
+	content: "(aucune valeur n'est ignorée)";
+	font-style: italic;
+}
+
+.import.preview.window li {
+	border: 1px solid;
+	color: white;
+	cursor: pointer;
+	display: inline-block;
+	font-weight: bold;
+	margin: 0 2px;
+	padding: .25em;
+}
+
+.import.preview.window .identify li {
+	background-color: green;
+	border-color: darkgreen;
+}
+
+.import.preview.window .write li {
+	background-color: blue;
+	border-color: darkblue;
+}
+
+.import.preview.window li:not(:last-child):after {
+	content: ", ";
+}
+
+.import.preview.window option {
+	background-color: white;
+	color: black;
+}
+
+.import.preview.window option[value="create_new_value"] {
+	background-color: blue;
+	color: white;
+}
+
+.import.preview.window option[value="tell_it_and_stop_import"] {
+	background-color: red;
+	color: white;
+}
+
+.import.preview.window table {
+	margin-top: .5em;
+	width: 100%;
+}
+
+.import.preview.window table td,
+.import.preview.window table th {
+	border: 1px solid darkgray;
+	padding: 3px;
+	white-space: nowrap;
+}
+
+.import.preview.window table th {
+	background: #606060;
+	color: white;
+}

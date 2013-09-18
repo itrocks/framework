@@ -91,6 +91,9 @@ class Object_Builder_Array
 			if ($pos = strpos($property_name, ".")) {
 				$property_path = substr($property_name, $pos + 1);
 				$property_name = substr($property_name, 0, $pos);
+				if ($asterisk = (substr($property_name, -1) === "*")) {
+					$property_name = substr($property_name, 0, -1);
+				}
 				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
 				if (isset($property)) {
 					$objects[$property->name][$property_path] = $value;
@@ -338,7 +341,7 @@ class Object_Builder_Array
 			foreach ($class->accessProperties() as $property) {
 				$property_name = $property->name;
 				if (isset($object->$property_name) && !isset($read_properties[$property->name])) {
-					$property->setValue($new_object, $property->getValue($object, $property_name));
+					$property->setValue($new_object, $property->getValue($object));
 				}
 			}
 			$class->accessPropertiesDone();

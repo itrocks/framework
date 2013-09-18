@@ -7,12 +7,12 @@ namespace SAF\Framework;
 class Import
 {
 
-	//-------------------------------------------------------------------------------- $import_format
+	//--------------------------------------------------------------------------------------- $format
 	/**
 	 * @link Object
 	 * @var Import_Export_Format
 	 */
-	public $import_format;
+	public $format;
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
@@ -20,5 +20,11 @@ class Import
 	 * @var File
 	 */
 	public $file;
+
+	//----------------------------------------------------------------------------------- $worksheets
+	/**
+	 * @var Import_Worksheet[]
+	 */
+	public $worksheets;
 
 }

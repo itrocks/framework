@@ -38,6 +38,20 @@ class File
 	 */
 	public $temporary_file_name;
 
+	//-------------------------------------------------------------------------- $temporary_file_name
+	/**
+	 * @param $temporary_file_name string
+	 */
+	public function __construct($temporary_file_name = null)
+	{
+		if (isset($temporary_file_name)) {
+			if (!isset($this->name)) {
+				$this->name = rLastParse($temporary_file_name, "/", 1, true);
+			}
+			$this->temporary_file_name = $temporary_file_name;
+		}
+	}
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string

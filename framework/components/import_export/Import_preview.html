@@ -12,7 +12,54 @@
 
 <!--BEGIN-->
 <div class="{@class.short.lower} {@feature} window" id="/{@class.short}/{@feature}">
-	<h2 class="window title">Hey how !</h2>
+	<h2 class="window title">|Import preview|</h2>
+
+	<form action="/Import/execute" method="post" target="#import_execute">
+
+		<!--worksheets-->
+		<div class="worksheet">
+			<input type="hidden" name="worksheets[{name}][file][name]" value="{file.name}">
+
+			<!--settings.classes-->
+			<div class="{name} class">
+				<h3><!--class_path_display--><span>|{.}|</span><!--class_path_display--></h3>
+				<div class="identify">
+					<input type="hidden" name="worksheets[{--name}][classes][{name}][identify]" value="{getIdentifyValue}">
+					Identifie chaque <span>|{name}|</span> par
+					<ul><!--identify_properties--><li>|{name}|</li><!--identify_properties--></ul>.
+				</div>
+				<div class="none">
+					Si aucun <span>|{name}|</span> n'a été trouvé,
+					{object_not_found_behaviour.@edit}
+				</div>
+				<div class="write">
+					<input type="hidden" name="worksheets[{--name}][classes][{name}][write]" value="{getWriteValue}">
+					Remplace la valeur de
+					<ul><!--write_properties--><li>{name}</li><!--write_properties--></ul>.
+				</div>
+				<div class="ignore">
+					<input type="hidden" name="worksheets[{--name}][classes][{name}][ignore]" value="{getIgnoreValue}">
+					Ignore la valeur de
+					<ul><!--ignore_properties--><li>{name}</li><!--ignore_properties--></ul>
+				</div>
+			</div>
+			<!--settings.classes-->
+
+			<!--preview-->
+				<table class="preview">
+					<tr><!--properties--><th>{.}</th><!--properties--></tr>
+					<!--data:3--->
+					<tr><!--.--><td>{.}</td><!--.--></tr>
+					<!--data-->
+				</table>
+			<!--preview-->
+
+		</div>
+		<!--worksheets-->
+
+		<div class="warning">Une fois bien vérifiés les réglages ci-dessus, vous pouvez</div>
+		<input type="submit" value="Lancer l'import">
+	</form>
 
 </div>
 <!--END-->

@@ -1,0 +1,27 @@
+<?php
+namespace SAF\Framework;
+
+/**
+ * Import execution controller
+ */
+class Import_Execute_Controller implements Feature_Controller
+{
+
+	//------------------------------------------------------------------------------------------- run
+	/**
+	 * This will be called for this controller, always.
+	 *
+	 * @param $parameters Controller_Parameters
+	 * @param $form       array
+	 * @param $files      array
+	 * @return mixed
+	 */
+	public function run(Controller_Parameters $parameters, $form, $files)
+	{
+		$parameters = $parameters->getObjects();
+		$import = Import_Builder_Form::build($form);
+		array_unshift($parameters, $import);
+		return View::run($parameters, $form, $files, 'SAF\Framework\Import', 'execute');
+	}
+
+}

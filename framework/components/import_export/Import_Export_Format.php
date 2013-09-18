@@ -13,4 +13,13 @@ class Import_Export_Format
 	 */
 	public $name;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->name);
+	}
+
 }
