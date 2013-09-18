@@ -81,10 +81,14 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 */
 	protected function buildString($multiline = false, $values = null)
 	{
+		$values_captions = array();
 		$values = $this->property->getListAnnotation("values")->values();
+		foreach ($values as $value) {
+			$values_captions[$value] = Names::propertyToDisplay($value);
+		}
 		return parent::buildString(
 			$this->property->getAnnotation("multiline")->value,
-			array_combine($values, $values)
+			$values_captions
 		);
 	}
 

@@ -17,7 +17,7 @@ class Html_Option extends Dom_Element
 		parent::__construct("option", true);
 		if (isset($value)) {
 			if (!isset($caption)) {
-				$this->setContent($value);
+				$this->setContent(Names::propertyToDisplay($value));
 			}
 			$this->setAttribute("value", $value);
 		}
