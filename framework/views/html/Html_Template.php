@@ -88,6 +88,14 @@ class Html_Template
 	 */
 	protected $path;
 
+	//------------------------------------------------------------------------------------- $preprops
+	/**
+	 * This prepare preprops for @edit calls : each loop adds the property name and value to $preprops
+	 *
+	 * @var string[]
+	 */
+	public $preprops = array();
+
 	//------------------------------------------------------------------------------------ $var_names
 	/**
 	 * Var names
@@ -589,7 +597,9 @@ class Html_Template
 			$do = false;
 			$loop_insert = "";
 			$counter = 0;
+			array_push($this->preprops, $var_name);
 			if (is_array($elements)) foreach ($elements as $key => $element) {
+				array_push($this->preprops, $element);
 				$counter++;
 				if (isset($to) && ($counter > $to)) break;
 				if ($counter >= $from) {
@@ -606,7 +616,9 @@ class Html_Template
 					array_shift($this->objects);
 					array_shift($this->var_names);
 				}
+				array_pop($this->preprops);
 			}
+			array_pop($this->preprops);
 			if (isset($to) && ($counter < $to)) {
 				array_unshift($this->var_names, null);
 				array_unshift($this->objects, new StdClass());

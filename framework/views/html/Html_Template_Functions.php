@@ -128,7 +128,24 @@ abstract class Html_Template_Functions
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
 			$property = Reflection_Property::getInstanceOf($object, $property_name);
 			if (isset($property)) {
-				return (new Html_Builder_Property_Edit($property))->build();
+				if ($template->preprops) {
+					$preprop = reset($template->preprops);
+					while ($next = next($template->preprops)) {
+						if ($i = strrpos($next, ".")) {
+							$next = substr($next, $i + 1);
+						}
+						if ((strpos($next, "\\") !== false) && class_exists($next)) {
+							$next = Names::classToDisplay($next);
+						}
+						$preprop .= "[" . $next . "]";
+					}
+				}
+				else {
+					$preprop = null;
+				}
+				return (
+					new Html_Builder_Property_Edit($property, $property->getValue($object), $preprop)
+				)->build();
 			}
 		}
 		// default html input widget
