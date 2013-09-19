@@ -32,7 +32,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 			if (is_array($possibles) && count($possibles) == 1) {
 				$this->value = reset($possibles);
 			}
-			else {
+			elseif (count($possibles) > 1) {
 				$class = $reflection_property->class;
 				$property = $reflection_property->name;
 				$type = $reflection_property->getType()->getElementTypeAsString();
