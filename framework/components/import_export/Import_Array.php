@@ -160,6 +160,7 @@ class Import_Array
 	 *
 	 * $array is a reference to avoid array replication.
 	 * Beware : if $array begins with a "Class_Name" row, this first row will be removed !
+	 * Beware : first row must contain property paths, and will be removed !
 	 *
 	 * @param $array array two dimension (keys are row and column number) array
 	 */
@@ -189,24 +190,39 @@ class Import_Array
 			$property_path = substr($property_path, 0, $i);
 			$property_column[$property_path][$property_name] = $icol;
 		}
-		foreach (array_keys($property_column) as $property_path) {
-			$i = 0;
-			while ($i = strpos($property_path, ".", $i)) {
-				$property_name = substr($property_path, 0, $i);
-				if (!isset($property_column[$property_name])) {
-					$property_column[$property_name] = $property_name;
+		foreach (array_keys($property_column) as $property_path) if ($property_path) {
+			$path = "";
+			foreach (explode(".", $property_path) as $property_name) {
+				if (!isset($property_column[$path][$property_name])) {
+					$property_column[$path][$property_name] = $path . ($path ? "." : "") . $property_name;
 				}
-				$i++;
+				$path .= ($path ? "." : "") . $property_name;
 			}
+			/*
+			$property_path = "." . $property_path;
+			$i = 0;
+			while (($i = strpos($property_path, ".", $i)) !== false) {
+				$property_name = substr($property_path, 1, $i);
+				$j = strpos($property_path, ".", $i + 1);
+				if (!$j) $j = strlen($property_path);
+				$sub_property = substr($property_path, $i + 1, $j - $i);
+				if (!isset($property_column[$property_name][$sub_property])) {
+					$property_column[$property_name][$sub_property]
+						= ($property_name ? ($property_name . ".") : "") . $sub_property;
+				}
+				$i = $j;
+			}
+			*/
 		}
 		echo "<pre>columns = " . print_r($property_column, true) . "</pre>";
+		unset($array[key($array)]);
 		foreach ($this->sortedClasses() as $class) {
 			echo "<pre>class $class->class_name " . print_r($class, true) . "</pre>";
 			$property_path = implode(".", $class->property_path);
 			$property_cols = $property_column[$property_path];
 			reset($array);
-			echo "property_cols for $property_path = " . print_r($property_cols, true) . "<br>";
-			while (is_array($row = next($array))) {
+echo "property_cols for $property_path = " . print_r($property_cols, true) . "<br>";
+			foreach ($array as $irow => $row) {
 				$empty_object = true;
 				$search = array();
 				foreach (array_keys($class->identify_properties) as $property_name) {
@@ -227,9 +243,10 @@ echo "found " . print_r($found, true) . "<br>";
 						}
 					}
 					if ($do_write) {
-echo "WILL UPDATE " . print_r($object, true) . "<br>";
-						$this->will_write[] = $object;
+echo "WILL UPDATE $property_path : " . print_r($object, true) . "<br>";
+						Dao::write($object);
 					}
+					$array[$irow][$property_path] = $object;
 				}
 				elseif (isset($found) && !count($found)) {
 					if ($class->object_not_found_behaviour === "create_new_value") {
@@ -240,13 +257,18 @@ echo "WILL UPDATE " . print_r($object, true) . "<br>";
 						foreach (array_keys($class->write_properties) as $property_name) {
 							$object->$property_name = $row[$property_cols[$property_name]];
 						}
-echo "WILL CREATE " . print_r($object, true) . "<br>";
-						$this->will_write[] = $object;
+echo "WILL CREATE $property_path : " . print_r($object, true) . "<br>";
+						Dao::write($object);
+						$array[$irow][$property_path] = $object;
 					}
 					elseif ($class->object_not_found_behaviour === "tell_it_and_stop_import") {
 						trigger_error(
 							"Not found " . $class->class_name . " " . print_r($search, true), E_USER_ERROR
 						);
+					}
+					else {
+echo "WILL IGNORE $property_path<br>";
+						$array[$irow][$property_path] = null;
 					}
 				}
 			}

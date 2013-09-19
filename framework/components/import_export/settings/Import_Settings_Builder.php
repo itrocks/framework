@@ -22,7 +22,7 @@ abstract class Import_Settings_Builder
 	{
 		$settings = new Import_Settings();
 		$row = reset($array);
-		$class_name = Namespaces::fullClassName(reset($row));
+		$class_name = Builder::className(Namespaces::fullClassName(reset($row)));
 		/** @var $classes Import_Class[] */
 		$classes = array();
 		foreach (next($array) as $property_path) {
@@ -53,7 +53,7 @@ abstract class Import_Settings_Builder
 					$class->write_properties[$property_name] = $property;
 				}
 				$property = Reflection_Property::getInstanceOf($sub_class, $property_name);
-				$sub_class = $property->getType()->getElementTypeAsString();
+				$sub_class = Builder::className($property->getType()->getElementTypeAsString());
 				$last_identify = $identify;
 				$class_path .= $sub_class . ".";
 				$property_path_for_class[] = $property_name;
