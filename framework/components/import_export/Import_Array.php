@@ -45,7 +45,7 @@ class Import_Array
 	 */
 	public function importRow($row)
 	{
-		echo "import " . $this->class_name . " : " . print_r($row, true) . "<br>";
+		//echo "import " . $this->class_name . " : " . print_r($row, true) . "<br>";
 	}
 
 }

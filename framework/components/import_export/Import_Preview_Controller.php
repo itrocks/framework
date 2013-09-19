@@ -30,12 +30,10 @@ class Import_Preview_Controller implements Feature_Controller
 				//$timer = new Execution_Timer();
 				$worksheet_number = 0;
 				foreach ($excel as $temporary_file_name => $worksheet) {
-					reset($worksheet);
-					$properties = next($worksheet);
 					$import->worksheets[] = new Import_Worksheet(
 						$worksheet_number ++,
 						Import_Settings_Builder::buildArray($worksheet),
-						new Import_Preview($properties, $worksheet),
+						new Import_Preview($worksheet),
 						new File($temporary_file_name)
 					);
 					//echo "<h2>IMPORT OBJECTS</h2>";
@@ -44,7 +42,7 @@ class Import_Preview_Controller implements Feature_Controller
 				//echo "importArray duration = " . $timer->end() . "<br>";
 			}
 		}
-		echo "<h2>IMPORT PREVIEW / SETTINGS</h2><pre>" . print_r($import, true) . "</pre>";
+		//echo "<h2>IMPORT PREVIEW / SETTINGS</h2><pre>" . print_r($import, true) . "</pre>";
 		return View::run($parameters, $form, $files, 'SAF\Framework\Import', "preview");
 	}
 

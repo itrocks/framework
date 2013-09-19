@@ -29,21 +29,22 @@ abstract class Import_Settings_Builder
 			$sub_class = $class_name;
 			$last_identify = false;
 			$class_path = "";
-			$class_path_display = array();
+			$property_path_for_class = array();
 			foreach (explode(".", $property_path) as $property_name) {
-				$class_path_display[] = Names::classToDisplay($sub_class);
+				$class_key = Namespaces::shortClassName($class_name)
+					. ($property_path_for_class ? ("." . join(".", $property_path_for_class)) : "");
 				$identify = substr($property_name, -1) === "*";
 				if ($identify) {
 					$property_name = substr($property_name, 0, -1);
 				}
-				if (!isset($classes[$class_path . $sub_class])) {
-					$classes[$class_path . $sub_class] = new Import_Class(
+				if (!isset($classes[$class_key])) {
+					$classes[$class_key] = new Import_Class(
 						$sub_class,
-						$last_identify ? "tell_it_and_stop_import" : "create_new_value",
-						$class_path_display
+						$property_path_for_class,
+						$last_identify ? "tell_it_and_stop_import" : "create_new_value"
 					);
 				}
-				$class = $classes[$class_path . $sub_class];
+				$class = $classes[$class_key];
 				$property = new Import_Property($sub_class, $property_name);
 				if ($identify) {
 					$class->identify_properties[$property_name] = $property;
@@ -55,6 +56,7 @@ abstract class Import_Settings_Builder
 				$sub_class = $property->getType()->getElementTypeAsString();
 				$last_identify = $identify;
 				$class_path .= $sub_class . ".";
+				$property_path_for_class[] = $property_name;
 			}
 		}
 		$settings->classes = $classes;

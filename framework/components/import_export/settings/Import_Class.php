@@ -13,11 +13,11 @@ class Import_Class
 	 */
 	public $class_name;
 
-	//--------------------------------------------------------------------------- $class_path_display
+	//-------------------------------------------------------------------------------- $property_path
 	/**
 	 * @var string[]
 	 */
-	public $class_path_display;
+	public $property_path;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -53,11 +53,11 @@ class Import_Class
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name                 string
+	 * @param $property_path              string[]
 	 * @param $object_not_found_behaviour string create_new_value, do_nothing, tell_it_and_stop_import
-	 * @param $class_path_display         string[]
 	 */
 	public function __construct(
-		$class_name = null, $object_not_found_behaviour = null, $class_path_display = null
+		$class_name = null, $property_path = null, $object_not_found_behaviour = null
 	) {
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
@@ -66,8 +66,8 @@ class Import_Class
 		if (isset($object_not_found_behaviour)) {
 			$this->object_not_found_behaviour = $object_not_found_behaviour;
 		}
-		if (isset($class_path_display)) {
-			$this->class_path_display = $class_path_display;
+		if (isset($property_path)) {
+			$this->property_path = $property_path;
 		}
 	}
 
@@ -77,7 +77,7 @@ class Import_Class
 	 */
 	public function __toString()
 	{
-		return strval($this->class_name);
+		return $this->getPropertyPathValue();
 	}
 
 	//------------------------------------------------------------------------------ getIdentifyValue
@@ -104,6 +104,17 @@ class Import_Class
 			$properties[] = $property->name;
 		}
 		return join(",", $properties);
+	}
+
+	//-------------------------------------------------------------------------- getPropertyPathValue
+	/**
+	 * @return string
+	 */
+	public function getPropertyPathValue()
+	{
+		return $this->property_path
+			? (join(">", $this->property_path))
+			: Namespaces::shortClassName($this->class_name);
 	}
 
 	//--------------------------------------------------------------------------------- getWriteValue

@@ -21,13 +21,21 @@ class Import_Preview
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $properties string[]
 	 * @param $data       array
+	 * @param $properties string[]
 	 */
-	public function __construct($properties = null, $data = null)
+	public function __construct($data = null, $properties = null)
 	{
-		if (isset($data))       $this->data       = $data;
-		if (isset($properties)) $this->properties = $properties;
+		if (isset($properties)) {
+			$this->properties = $properties;
+		}
+		if (isset($data)) {
+			$this->data = $data;
+			if (!isset($this->properties)) {
+				reset($data);
+				$this->properties = next($data);
+			}
+		}
 	}
 
 }
