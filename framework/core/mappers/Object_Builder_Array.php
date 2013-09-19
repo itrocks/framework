@@ -104,6 +104,9 @@ class Object_Builder_Array
 					$property_name = substr($property_name, 0, -1);
 				}
 				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
+				if (!isset($property)) {
+					trigger_error("Unknown property $property_name into " . $this->class->name, E_USER_ERROR);
+				}
 				if (!$this->buildProperty($object, $property, $value, $null_if_empty)) {
 					$is_null = false;
 				}
@@ -332,10 +335,13 @@ class Object_Builder_Array
 	public function readObject($object, $read_properties)
 	{
 		$objects = Dao::search($read_properties, get_class($object));
-		if (count($objects) != 1) {
-			trigger_error("Unique object not found " . print_r($read_properties, true), E_USER_ERROR);
+		if (count($objects) > 1) {
+			trigger_error(
+				"Unique object not found " . get_class($object) . " " . print_r($read_properties, true),
+				E_USER_ERROR
+			);
 		}
-		else {
+		elseif ($objects) {
 			$class = Reflection_Class::getInstanceOf(get_class($object));
 			$new_object = reset($objects);
 			foreach ($class->accessProperties() as $property) {

@@ -33,8 +33,8 @@ class Import_Preview_Controller implements Feature_Controller
 					$import->worksheets[] = new Import_Worksheet(
 						$worksheet_number ++,
 						Import_Settings_Builder::buildArray($worksheet),
-						new Import_Preview($worksheet),
-						new File($temporary_file_name)
+						new File($temporary_file_name),
+						new Import_Preview($worksheet)
 					);
 					//echo "<h2>IMPORT OBJECTS</h2>";
 					//(new Import_Array())->importArray($worksheet);

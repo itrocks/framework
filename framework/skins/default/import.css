@@ -34,21 +34,21 @@
 	text-decoration: none;
 }
 
-.import.preview.window ul:empty {
-	padding: .25em;
+.inport.preview.window .properties {
+	border: 1px solid white;
 }
 
-.import.preview.window .identify ul:empty:after {
-	content: "(aucune valeur pour identifier)";
+.import.preview.window .identify.properties ul:empty:after {
+	content: "(crée systématiquement un nouvel enregistrement)";
 	font-style: italic;
 }
 
-.import.preview.window .write ul:empty:after {
+.import.preview.window .write.properties ul:empty:after {
 	content: "(aucune valeur à écrire)";
 	font-style: italic;
 }
 
-.import.preview.window .ignore ul:empty:after {
+.import.preview.window .ignore.properties ul:empty:after {
 	content: "(aucune valeur n'est ignorée)";
 	font-style: italic;
 }
@@ -71,6 +71,12 @@
 .import.preview.window .write li {
 	background-color: blue;
 	border-color: darkblue;
+}
+
+.import.preview.window .ignore li {
+	background-color: #eee;
+	border-color: #ccc;
+	color: #333;
 }
 
 .import.preview.window li:not(:last-child):after {

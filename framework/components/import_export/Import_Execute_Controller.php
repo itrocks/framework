@@ -18,10 +18,15 @@ class Import_Execute_Controller implements Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
+		$timer = new Execution_Timer();
 		$parameters = $parameters->getObjects();
 		$import = Import_Builder_Form::build($form);
-		array_unshift($parameters, $import);
-		return View::run($parameters, $form, $files, 'SAF\Framework\Import', 'execute');
+		foreach ($import->worksheets as $worksheet) {
+			$array = $worksheet->getCsvContent();
+			(new Import_Array($worksheet->settings))->importArray($array);
+		}
+		echo "duration = " . $timer->end() . "<br>";
+		return View::run($parameters, $form, $files, 'SAF\Framework\Import', "execute");
 	}
 
 }

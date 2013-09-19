@@ -22,11 +22,9 @@ abstract class Import_Builder_Form
 				$file_name = Application::current()->getTemporaryFilesPath()
 					. "/" . $worksheet["file"]["name"];
 				$file = new File($file_name);
-				$preview = new Import_Preview(array_map("str_getcsv", file($file_name)));
 				$import->worksheets[$worksheet_name] = new Import_Worksheet(
 					$worksheet_name,
 					$settings,
-					$preview,
 					$file
 				);
 			}

@@ -23,24 +23,25 @@
 			<!--settings.classes-->
 			<div class="{name} class">
 				<h3><!--property_path--><span class="property">|{.}|</span><!--property_path--></h3>
-				<div class="identify">
+				<div class="identify properties">
 					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue}][identify]" value="{getIdentifyValue}">
 					Identifie chaque <span>|{name}|</span> par
-					<ul><!--identify_properties--><li>|{name}|</li><!--identify_properties--></ul>.
+					<ul><!--identify_properties--><li class="{name}">|{name}|</li><!--identify_properties--></ul>
+					(doit être unique).
 				</div>
 				<div class="none">
 					Si aucun <span>|{name}|</span> n'a été trouvé,
 					{object_not_found_behaviour.@edit}
 				</div>
-				<div class="write">
+				<div class="write properties">
 					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue}][write]" value="{getWriteValue}">
 					Remplace la valeur de
-					<ul><!--write_properties--><li>{name}</li><!--write_properties--></ul>.
+					<ul><!--write_properties--><li class="{name}">|{name}|</li><!--write_properties--></ul>.
 				</div>
-				<div class="ignore">
+				<div class="ignore properties">
 					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue}][ignore]" value="{getIgnoreValue}">
 					Ignore la valeur de
-					<ul><!--ignore_properties--><li>{name}</li><!--ignore_properties--></ul>
+					<ul><!--ignore_properties--><li class="{name}">|{name}|</li><!--ignore_properties--></ul>
 				</div>
 			</div>
 			<!--settings.classes-->
