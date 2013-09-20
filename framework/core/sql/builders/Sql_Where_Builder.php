@@ -38,7 +38,7 @@ class Sql_Where_Builder
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
 	 *
 	 * @param $class_name  string base object class name
-	 * @param $where_array array  where array expression, indices are columns names
+	 * @param $where_array array where array expression, indices are columns names
 	 * @param $sql_link    Sql_Link
 	 * @param $joins       Sql_Joins
 	 */
@@ -66,9 +66,9 @@ class Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section for multiple where clauses
 	 *
-	 * @param $path string   Base property path for values (if keys are numeric or structure keywords)
-	 * @param $array array   An array of where conditions
-	 * @param $clause string For multiple where clauses, tell if they are linked with "OR" or "AND"
+	 * @param $path        string Base property path for values (if keys are numeric or structure keywords)
+	 * @param $array       array An array of where conditions
+	 * @param $clause      string For multiple where clauses, tell if they are linked with "OR" or "AND"
 	 * @return string
 	 */
 	private function buildArray($path, $array, $clause)
@@ -83,9 +83,28 @@ class Sql_Where_Builder
 				case "AND": $sql .= $this->buildPath($path, $value, $subclause);             break;
 				case "OR":  $sql .= "(" . $this->buildPath($path, $value, $subclause) . ")"; break;
 				default:
-					$build = $this->buildPath(is_numeric($key) ? $path : $key, $value, $clause);
-					if (!empty($build))   $sql .= $build;
-					elseif (!empty($sql)) $sql = substr($sql, 0, -strlen(" $clause "));
+					if (is_numeric($key)) {
+						$build = $this->buildPath($path, $value, $clause);
+					}
+					else {
+						$prefix = "";
+						$master_path = (($i = strrpos($path, ".")) !== false) ? substr($path, 0, $i) : "";
+						$property_name = ($i !== false) ? substr($path, $i + 1) : $path;
+						$properties = $this->joins->getProperties($master_path);
+						if (isset($properties[$property_name])) {
+							$link = $properties[$property_name]->getAnnotation("link")->value;
+							if ($link) {
+								$prefix = ($master_path ? ($master_path . ".") : "") . $property_name . ".";
+							}
+						}
+						$build = $this->buildPath($prefix . $key, $value, $clause);
+					}
+					if (!empty($build)) {
+						$sql .= $build;
+					}
+					elseif (!empty($sql)) {
+						$sql = substr($sql, 0, -strlen(" $clause "));
+					}
 			}
 		}
 		return $sql;
@@ -95,8 +114,8 @@ class Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section for an object
 	 *
-	 * @param $path string   Base property path pointing to the object
-	 * @param $object object The value is an object, which will be used for search
+	 * @param $path        string Base property path pointing to the object
+	 * @param $object      object The value is an object, which will be used for search
 	 * @return string
 	 */
 	private function buildObject($path, $object)
@@ -111,7 +130,7 @@ class Sql_Where_Builder
 		$class = Reflection_Class::getInstanceOf(get_class($object));
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (isset($object->$property_name)) {
-				$sub_path = ($path === "id") ? $property_name : ($path . "." . $property_name);
+				$sub_path = $property_name;
 				$array[$sub_path] = $object->$property_name;
 			}
 		}
@@ -127,18 +146,18 @@ class Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section for given path and value
 	 *
-	 * @param $path string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
-	 * @param $value mixed         May be a value, or a structured array of multiple where clauses
-	 * @param $clause string       For multiple where clauses, tell if they are linked with "OR" or "AND"
+	 * @param $path        string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
+	 * @param $value       mixed May be a value, or a structured array of multiple where clauses
+	 * @param $clause      string For multiple where clauses, tell if they are linked with "OR" or "AND"
 	 * @return string
 	 */
 	private function buildPath($path, $value, $clause)
 	{
 		switch (gettype($value)) {
 			case "NULL":   return "";
-			case "array":  return $this->buildArray($path, $value, $clause);
+			case "array":  return $this->buildArray ($path, $value, $clause);
 			case "object": return $this->buildObject($path, $value);
-			default:       return $this->buildValue($path, $value);
+			default:       return $this->buildValue ($path, $value);
 		}
 	}
 
@@ -146,9 +165,9 @@ class Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section for a unique value
 	 *
-	 * @param $path string  search property path
-	 * @param $value mixed  search property value
-	 * @param $prefix string
+	 * @param $path   string search property path
+	 * @param $value  mixed search property value
+	 * @param $prefix string Prefix for column name
 	 * @return string
 	 */
 	private function buildValue($path, $value, $prefix = "")

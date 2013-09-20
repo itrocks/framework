@@ -12,6 +12,86 @@ use SAF\Tests\Client;
 class Sql_Select_Builder_Test extends Unit_Test
 {
 
+	//--------------------------------------------------------------------------- testArrayWhereQuery
+	public function testArrayWhereQuery()
+	{
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Order',
+			array("date", "number"),
+			array("number" => 1, "lines" => array(array("number" => 2)))
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id WHERE t0.`number` = 1 AND t1.`number` = 2"
+		);
+	}
+
+	//--------------------------------------------------------------------------- testArrayWhereQuery
+	public function testArrayWhereDeepQuery()
+	{
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Order',
+			array("date", "number"),
+			array("number" => 1, "lines" => array(array("number" => 2, "item" => array("code" => 1))))
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `items` t2 ON t2.id = t1.id_item WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1"
+		);
+	}
+
+	//--------------------------------------------------------------------------- testArrayWhereQuery
+	public function testArrayWhereDeepQueryShort()
+	{
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Order',
+			array("date", "number"),
+			array("number" => 1, "lines" => array("number" => 2, "item" => array("code" => 1)))
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `items` t2 ON t2.id = t1.id_item WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1"
+		);
+	}
+
+	//-------------------------------------------------------------------------- testArrayWhereQuery2
+	public function testArrayWhereDeepQuery2()
+	{
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Order',
+			array("date", "number"),
+			array("number" => 1, "lines" => array(array("number" => 2, "item" => array("code" => 1, "cross_selling" => array(array("code" => 3))))))
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `items` t2 ON t2.id = t1.id_item LEFT JOIN `items_items` t3 ON t3.id_item = t2.id LEFT JOIN `items` t4 ON t4.id = t3.id_cross_selling WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1 AND t4.`code` = 3"
+		);
+	}
+
+	//-------------------------------------------------------------------------- testArrayWhereQuery2
+	public function testArrayWhereDeepQuery2Short()
+	{
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Order',
+			array("date", "number"),
+			array("number" => 1, "lines" => array("number" => 2, "item" => array("code" => 1, "cross_selling" => array("code" => 3))))
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `items` t2 ON t2.id = t1.id_item LEFT JOIN `items_items` t3 ON t3.id_item = t2.id LEFT JOIN `items` t4 ON t4.id = t3.id_cross_selling WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1 AND t4.`code` = 3"
+		);
+	}
+
 	//----------------------------------------------------------------------- testCollectionJoinQuery
 	public function testCollectionJoinQuery()
 	{
