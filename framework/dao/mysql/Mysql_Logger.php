@@ -16,7 +16,7 @@ class Mysql_Logger implements Plugin
 	 *
 	 * @var boolean
 	 */
-	private $continue = false;
+	public $continue = false;
 
 	//---------------------------------------------------------------------------------- $display_log
 	/**
@@ -24,7 +24,7 @@ class Mysql_Logger implements Plugin
 	 *
 	 * @var boolean
 	 */
-	private $display_log = true;
+	public $display_log = true;
 
 	//----------------------------------------------------------------------------------- $errors_log
 	/**
@@ -153,7 +153,7 @@ class Mysql_Logger implements Plugin
 				$mysql_logger->display_log = $parameters["display_log"];
 			}
 			foreach ($parameters as $key => $value) if (is_numeric($key)) {
-				if (strpos($_SERVER["REQUEST_URI"], $value)) {
+				if (strpos("/" . $_SERVER["REQUEST_URI"] . "/", "/" . $value . "/")) {
 					return;
 				}
 			}

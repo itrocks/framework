@@ -139,3 +139,30 @@ div.popup {
 .ui-draggable .window.title {
 	cursor: move;
 }
+
+.logger.query {
+	background-color: lightcyan;
+	border: 1px solid lightblue;
+	color: darkblue;
+	margin: 4px;
+	padding: 4px;
+}
+
+.logger.error {
+	background-color: darkred;
+	border: 1px solid red;
+	color: white;
+	margin: 4px;
+	padding: 4px;
+}
+
+.logger.error:before {
+	content: "ERREUR : ";
+}
+
+.xdebug-error {
+	background-color: #ffe0e0;
+	border: 1px solid darkred;
+	color: #400000;
+	margin: 4px;
+}
