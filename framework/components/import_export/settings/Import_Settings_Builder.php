@@ -21,11 +21,10 @@ abstract class Import_Settings_Builder
 	public static function buildArray($array)
 	{
 		$settings = new Import_Settings();
-		$row = reset($array);
-		$class_name = Builder::className(Namespaces::fullClassName(reset($row)));
+		$class_name = Import_Array::getClassNameFromArray($array);
 		/** @var $classes Import_Class[] */
 		$classes = array();
-		foreach (next($array) as $property_path) {
+		foreach (Import_Array::getPropertiesFromArray($array) as $property_path) {
 			$sub_class = $class_name;
 			$last_identify = false;
 			$class_path = "";

@@ -13,6 +13,22 @@ class Import_Array
 	 */
 	public $class_name;
 
+	//---------------------------------------------------------------------------- $properties_column
+	/**
+	 * $properties_column[$property_path][$property_name]
+	 *
+	 * @var array Two dimensional array : keys are property path without final name and property name
+	 */
+	private $properties_column;
+
+	//------------------------------------------------------------------------------ $properties_link
+	/**
+	 * $properties_link[$property_path] = value of the property @link annotation
+	 *
+	 * @var string[] key is the property path
+	 */
+	private $properties_link;
+
 	//------------------------------------------------------------------------------------- $settings
 	/**
 	 * @var Import_Settings
@@ -30,6 +46,129 @@ class Import_Array
 		if (isset($class_name)) $this->class_name = $class_name;
 	}
 
+	//-------------------------------------------------------------------------- createArrayReference
+	/**
+	 * @param $class_name string
+	 * @param $search     array
+	 * @return array
+	 */
+	private function createArrayReference($class_name, $search)
+	{
+		if (isset($search)) {
+			$object = Builder::create($class_name);
+			foreach ($search as $property_name => $value) {
+				$object->$property_name = $value;
+			}
+			$object = array($object);
+		}
+		else {
+			$object = null;
+		}
+		return $object;
+	}
+
+	//------------------------------------------------------------------------- getClassNameFromArray
+	/**
+	 * Returns class name if the first value of the array is a class name
+	 *
+	 * A class name is alone of its row, and begins with an uppercase letter
+	 * If the first row of the array is not a class name, this will return null
+	 *
+	 * @param $array array Two dimensional array : keys are row and column number
+	 * @return string
+	 */
+	public static function getClassNameFromArray($array)
+	{
+		$row = reset($array);
+		$class_name = reset($row);
+		return (
+			$class_name
+			&& ($class_name[0] === strtoupper($class_name[0]))
+			&& (count($row) == 1) || !$row[1]
+		) ? self::getClassNameFromValue($class_name)
+			: null;
+	}
+
+	//------------------------------------------------------------------------- getClassNameFromValue
+	/**
+	 * @param $value  string class name taken from the import array
+	 * @return string class name (built and with added namespace, if needed)
+	 */
+	public static function getClassNameFromValue($value)
+	{
+		return Builder::className(Namespaces::fullClassName($value));
+	}
+
+	//------------------------------------------------------------------------ getPropertiesFromArray
+	/**
+	 * Returns the properties paths list of the array
+	 *
+	 * The property list is the first or the second line of the array, depending on if the first line
+	 * is a class name or not.
+	 *
+	 * @param $array array Two dimensional array : keys are row and column number
+	 * @return string[] key is the column number, value is a property path
+	 */
+	public static function getPropertiesFromArray($array)
+	{
+		reset($array);
+		return self::getClassNameFromArray($array) ? next($array) : current($array);
+	}
+
+	//---------------------------------------------------------------------- getPropertyLinkAndColumn
+	/**
+	 * @param $class_name      string Main class name
+	 * @param $properties_path string[]
+	 * @return array First element is property link, second is property column
+	 */
+	private static function getPropertiesLinkAndColumn($class_name, $properties_path)
+	{
+		$properties_link = array("" => "Object");
+		$properties_column = array();
+		foreach ($properties_path as $icol => $property_path) {
+			$property_path = str_replace("*", "", $property_path);
+			$path = "";
+			foreach (explode(".", $property_path) as $property_name) {
+				$path .= ($path ? "." : "") . $property_name;
+				$property = Reflection_Property::getInstanceOf($class_name, $path);
+				$properties_link[$path] = $property->getAnnotation("link")->value;
+			}
+			$i = strrpos($property_path, ".");
+			$property_name = substr($property_path, ($i === false) ? 0 : ($i + 1));
+			$property_path = substr($property_path, 0, $i);
+			$properties_column[$property_path][$property_name] = $icol;
+		}
+		foreach (array_keys($properties_column) as $property_path) if ($property_path) {
+			$path = "";
+			foreach (explode(".", $property_path) as $property_name) {
+				if (!isset($properties_column[$path][$property_name])) {
+					$properties_column[$path][$property_name] = $path . ($path ? "." : "") . $property_name;
+				}
+				$path .= ($path ? "." : "") . $property_name;
+			}
+		}
+		return array($properties_link, $properties_column);
+	}
+
+	//------------------------------------------------------------------------------- getSearchObject
+	/**
+	 * @param $row                     string[] imported row of data
+	 * @param $identify_properties     Import_Property[] properties used to identify the read object
+	 * @param $class_properties_column integer[] column index for each property of the current class
+	 * @return array Dao::search compliant array / objects
+	 */
+	private function getSearchObject($row, $identify_properties, $class_properties_column)
+	{
+		$empty_object = true;
+		$search = array();
+		foreach (array_keys($identify_properties) as $property_name) {
+			$value = $row[$class_properties_column[$property_name]];
+			$search[$property_name] = $value;
+			$empty_object = $empty_object && empty($value);
+		}
+		return $empty_object ? null : $search;
+	}
+
 	//----------------------------------------------------------------------------------- importArray
 	/**
 	 * Imports a data array using settings
@@ -42,139 +181,98 @@ class Import_Array
 	 */
 	public function importArray(&$array)
 	{
+		echo date("H:i:s") . "<br>";
 		Mysql_Logger::getInstance()->continue = true;
 		Mysql_Logger::getInstance()->display_log = true;
-		// --- first row may contain class name if only one value beggining with an uppercase character
-		$row = reset($array);
-		$class_name = reset($row);
-		if (($class_name[0] === strtoupper($class_name[0])) && (count($row) == 1) || !$row[1]) {
-			if (isset($this->class_name)) {
-				$want_class_name = Namespaces::shortClassName($this->class_name);
-				if ($class_name !== $want_class_name) {
-					trigger_error("Bad class name " . $class_name . ", should be a " . $want_class_name);
-				}
-			}
-			else {
-				$this->class_name = Namespaces::fullClassName($class_name);
-			}
-			unset($array[key($array)]);
-		}
 
-		// --- sets $property_column[$property_path][$property_name] = $icol
-		/** @var $property_class_name string[] */
-		$property_class_name = array();
-		/** @var $property_link string[] */
-		$property_link = array("" => "Object");
-		$property_column = array();
-		foreach (reset($array) as $icol => $property_path) {
-			$property_path = str_replace("*", "", $property_path);
-			$path = "";
-			foreach (explode(".", $property_path) as $property_name) {
-				$path .= ($path ? "." : "") . $property_name;
-				$property = Reflection_Property::getInstanceOf($this->class_name, $path);
-				$property_link[$path] = $property->getAnnotation("link")->value;
-				$property_class_name[$path] = $property->getType()->getElementTypeAsString();
-			}
-			$i = strrpos($property_path, ".");
-			$property_name = substr($property_path, ($i === false) ? 0 : ($i + 1));
-			$property_path = substr($property_path, 0, $i);
-			$property_column[$property_path][$property_name] = $icol;
+		$class_name = self::getClassNameFromArray($array);
+		if (isset($class_name)) {
+			unset($array[key($array)]);
+			$this->setClassName($class_name);
 		}
-		foreach (array_keys($property_column) as $property_path) if ($property_path) {
-			$path = "";
-			foreach (explode(".", $property_path) as $property_name) {
-				if (!isset($property_column[$path][$property_name])) {
-					$property_column[$path][$property_name] = $path . ($path ? "." : "") . $property_name;
-				}
-				$path .= ($path ? "." : "") . $property_name;
-			}
-		}
+		list($this->properties_link, $this->properties_column) = self::getPropertiesLinkAndColumn(
+			$this->class_name, self::getPropertiesFromArray($array)
+		);
 		unset($array[key($array)]);
 
-		// --- for each class
 		foreach ($this->sortedClasses() as $class) {
+			$this->importArrayClass($class, $array);
+		}
+	}
+
+	//------------------------------------------------------------------------------ importArrayClass
+	private function importArrayClass(Import_Class $class, &$array)
+	{
 echo "<h2>class $class->class_name</h2><pre>" . print_r($class, true) . "</pre>";
-			$property_path = implode(".", $class->property_path);
-			$property_cols = $property_column[$property_path];
-			reset($array);
-//echo "property_cols for $property_path = " . print_r($property_cols, true) . "<br>";
-			foreach ($array as $irow => $row) {
+		$property_path = implode(".", $class->property_path);
+		/** @var $class_properties_column integer[] key is the property name of the current class */
+		$class_properties_column = $this->properties_column[$property_path];
+		reset($array);
+		foreach ($array as $irow => $row) {
 echo "<p><pre>- line " . print_r($row, true) . "</pre><br>";
-				$empty_object = true;
-				$search = array();
-				foreach (array_keys($class->identify_properties) as $property_name) {
-					$value = $row[$property_cols[$property_name]];
-					$search[$property_name] = $value;
-					$empty_object = $empty_object && empty($value);
+			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
+			if (in_array($this->properties_link[$property_path], array("Collection", "Map"))) {
+				$object = $this->createArrayReference($class->class_name, $search);
+echo "store search object $class->class_name $property_path = " . print_r($object, true) . "<br>";
+			}
+			else {
+echo "search $class->class_name " . (isset($search) ? ("<pre>" . print_r($search, true) . "</pre>") : " empty object") . "<br>";
+				$found = isset($search) ? Dao::search($search, $class->class_name) : null;
+echo "found " . (isset($found) ? print_r($found, true) : "empty value => no object") . "<br>";
+				if (!isset($found)) {
+					$object = null;
 				}
-				if (in_array($property_link[$property_path], array("Collection", "Map"))) {
-					if ($empty_object) {
+				elseif (count($found) == 1) {
+					$object = $this->updateExistingObject(
+						reset($found), $row, $class, $class_properties_column
+					);
+echo "<h2>HAS UPDATED $class->class_name $property_path</h2>" . print_r($object, true) . "<p>";
+				}
+				elseif (!count($found)) {
+					if ($class->object_not_found_behaviour === "create_new_value") {
+						$object = $this->writeNewObject($row, $class, $class_properties_column);
+echo "<h2>HAS CREATED $class->class_name $property_path</h2>" . print_r($object, true) . "<p>";
+					}
+					elseif ($class->object_not_found_behaviour === "tell_it_and_stop_import") {
+						trigger_error(
+							"Not found " . $class->class_name . " " . print_r($search, true), E_USER_ERROR
+						);
 						$object = null;
 					}
 					else {
-						$object = Builder::create($class->class_name);
-						foreach ($search as $property_name => $value) {
-							$object->$property_name = $value;
-						}
-						$object = array($object);
+echo "<h2>IGNORED not found $class->class_name $property_path</h2>";
+						$object = null;
 					}
-echo "store search object $class->class_name $property_path = " . print_r($object, true) . "<br>";
 				}
 				else {
-echo "search $class->class_name " . ($empty_object ? " empty object" : ("<pre>" . print_r($search, true) . "</pre>")) . "<br>";
-					$found = $empty_object ? null : Dao::search($search, $class->class_name);
-					echo "found " . (isset($found) ? print_r($found, true) : "empty value => no object") . "<br>";
-					if (!isset($found)) {
-						$object = null;
-					}
-					elseif (count($found) == 1) {
-						$object = reset($found);
-						$do_write = false;
-						foreach (array_keys($class->write_properties) as $property_name) {
-							if ($object->$property_name !== $row[$property_cols[$property_name]]) {
-								$object->$property_name = $row[$property_cols[$property_name]];
-								$do_write = true;
-							}
-						}
-						if ($do_write) {
-	echo "<h2>WILL UPDATE $class->class_name $property_path</h2>" . print_r($object, true) . "<p>";
-							Dao::write($object);
-						}
-					}
-					elseif (!count($found)) {
-						if ($class->object_not_found_behaviour === "create_new_value") {
-							$object = Builder::create($class->class_name);
-							foreach (array_keys($class->identify_properties) as $property_name) {
-								$object->$property_name = $row[$property_cols[$property_name]];
-							}
-							foreach (array_keys($class->write_properties) as $property_name) {
-								$object->$property_name = $row[$property_cols[$property_name]];
-							}
-	echo "<h2>WILL CREATE $class->class_name $property_path</h2>" . print_r($object, true) . "<p>";
-							Dao::write($object);
-						}
-						elseif ($class->object_not_found_behaviour === "tell_it_and_stop_import") {
-							trigger_error(
-								"Not found " . $class->class_name . " " . print_r($search, true), E_USER_ERROR
-							);
-							$object = null;
-						}
-						else {
-	echo "<h2>WILL IGNORE $class->class_name $property_path</h2>";
-							$object = null;
-						}
-					}
-					else {
-						trigger_error(
-							"Multiple $class->class_name found for " . print_r($search, true), E_USER_ERROR
-						);
-						$object = -1;
-					}
+					trigger_error(
+						"Multiple $class->class_name found for " . print_r($search, true), E_USER_ERROR
+					);
+					$object = -1;
 				}
-				$array[$irow][$property_path] = $object;
+			}
+			$array[$irow][$property_path] = $object;
 echo "- result line " . print_r($array[$irow], true);
+		}
+	}
+
+	//----------------------------------------------------------------------------------- $class_name
+	/**
+	 * Sets class name
+	 *
+	 * If class name was already set, checks if it is the same. If not, this will trigger an error.
+	 * To change class name, do not use setClassName and directly access to the $class_name property.
+	 *
+	 * @param $class_name string
+	 */
+	private function setClassName($class_name)
+	{
+		if (isset($this->class_name)) {
+			if ($class_name !== $this->class_name) {
+				trigger_error("Bad class name " . $class_name . ", should be a " . $this->class_name);
 			}
 		}
+		$this->class_name = $class_name;
 	}
 
 	//--------------------------------------------------------------------------------- sortedClasses
@@ -190,6 +288,50 @@ echo "- result line " . print_r($array[$irow], true);
 			return substr_count($class_path_1, ".") < substr_count($class_path_2, ".");
 		});
 		return $this->settings->classes;
+	}
+
+	//-------------------------------------------------------------------------- updateExistingObject
+	/**
+	 * @param $object                  object
+	 * @param $row                     array
+	 * @param $class                   Import_Class
+	 * @param $class_properties_column integer[]|string[]
+	 * @return object
+	 */
+	private function updateExistingObject(
+		$object, $row, Import_Class $class, $class_properties_column
+	) {
+		$do_write = false;
+		foreach (array_keys($class->write_properties) as $property_name) {
+			if ($object->$property_name !== $row[$class_properties_column[$property_name]]) {
+				$object->$property_name = $row[$class_properties_column[$property_name]];
+				$do_write = true;
+			}
+		}
+		if ($do_write) {
+			Dao::write($object);
+		}
+		return $object;
+	}
+
+	//-------------------------------------------------------------------------------- writeNewObject
+	/**
+	 * @param $row                     array
+	 * @param $class                   Import_Class
+	 * @param $class_properties_column integer[]|string[]
+	 * @return object
+	 */
+	private function writeNewObject($row, Import_Class $class, $class_properties_column)
+	{
+		$object = Builder::create($class->class_name);
+		foreach (array_keys($class->identify_properties) as $property_name) {
+			$object->$property_name = $row[$class_properties_column[$property_name]];
+		}
+		foreach (array_keys($class->write_properties) as $property_name) {
+			$object->$property_name = $row[$class_properties_column[$property_name]];
+		}
+		Dao::write($object);
+		return $object;
 	}
 
 }
