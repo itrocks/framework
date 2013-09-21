@@ -99,7 +99,7 @@ echo "<h2>class $class->class_name</h2><pre>" . print_r($class, true) . "</pre>"
 			reset($array);
 //echo "property_cols for $property_path = " . print_r($property_cols, true) . "<br>";
 			foreach ($array as $irow => $row) {
-echo "<p>- line " . print_r($row, true) . "<br>";
+echo "<p><pre>- line " . print_r($row, true) . "</pre><br>";
 				$empty_object = true;
 				$search = array();
 				foreach (array_keys($class->identify_properties) as $property_name) {
@@ -108,7 +108,16 @@ echo "<p>- line " . print_r($row, true) . "<br>";
 					$empty_object = $empty_object && empty($value);
 				}
 				if (in_array($property_link[$property_path], array("Collection", "Map"))) {
-					$object = $empty_object ? null : $search;
+					if ($empty_object) {
+						$object = null;
+					}
+					else {
+						$object = Builder::create($class->class_name);
+						foreach ($search as $property_name => $value) {
+							$object->$property_name = $value;
+						}
+						$object = array($object);
+					}
 echo "store search object $class->class_name $property_path = " . print_r($object, true) . "<br>";
 				}
 				else {

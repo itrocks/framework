@@ -5,6 +5,7 @@ use SAF\Framework\Search_Object;
 use SAF\Framework\Sql_Select_Builder;
 use SAF\Framework\Unit_Tests\Unit_Test;
 use SAF\Tests\Client;
+use SAF\Tests\Item;
 
 /**
  * Sql select builder tests
@@ -35,6 +36,24 @@ class Sql_Select_Builder_Test extends Unit_Test
 			'SAF\Tests\Order',
 			array("date", "number"),
 			array("number" => 1, "lines" => array(array("number" => 2, "item" => array("code" => 1))))
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t0.`date` AS `date`, t0.`number` AS `number`"
+			. " FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `items` t2 ON t2.id = t1.id_item WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1"
+		);
+	}
+
+	//--------------------------------------------------------------------- testArrayWhereQueryObject
+	public function testArrayWhereDeepQueryObject()
+	{
+		$item = new Item();
+		$item->code = 1;
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Order',
+			array("date", "number"),
+			array("number" => 1, "lines" => array(array("number" => 2, "item" => $item)))
 		);
 		$this->assume(
 			__METHOD__,
