@@ -181,10 +181,6 @@ class Import_Array
 	 */
 	public function importArray(&$array)
 	{
-		echo date("H:i:s") . "<br>";
-		Mysql_Logger::getInstance()->continue = true;
-		Mysql_Logger::getInstance()->display_log = true;
-
 		$class_name = self::getClassNameFromArray($array);
 		if (isset($class_name)) {
 			unset($array[key($array)]);
@@ -207,21 +203,16 @@ class Import_Array
 	 */
 	private function importArrayClass(Import_Class $class, &$array)
 	{
-echo "<h2>class $class->class_name</h2><pre>" . print_r($class, true) . "</pre>";
 		$property_path = implode(".", $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
 		foreach ($array as $irow => $row) {
-echo "<p><pre>- line " . print_r($row, true) . "</pre><br>";
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
 			if (in_array($this->properties_link[$property_path], array("Collection", "Map"))) {
 				$object = $this->createArrayReference($class->class_name, $search);
-echo "store search object $class->class_name $property_path = " . print_r($object, true) . "<br>";
 			}
 			else {
-echo "search $class->class_name " . (isset($search) ? ("<pre>" . print_r($search, true) . "</pre>") : " empty object") . "<br>";
 				$found = isset($search) ? Dao::search($search, $class->class_name) : null;
-echo "found " . (isset($found) ? print_r($found, true) : "empty value => no object") . "<br>";
 				if (!isset($found)) {
 					$object = null;
 				}
@@ -229,12 +220,10 @@ echo "found " . (isset($found) ? print_r($found, true) : "empty value => no obje
 					$object = $this->updateExistingObject(
 						reset($found), $row, $class, $class_properties_column
 					);
-echo "<h2>HAS UPDATED $class->class_name $property_path</h2>" . print_r($object, true) . "<p>";
 				}
 				elseif (!count($found)) {
 					if ($class->object_not_found_behaviour === "create_new_value") {
 						$object = $this->writeNewObject($row, $class, $class_properties_column);
-echo "<h2>HAS CREATED $class->class_name $property_path</h2>" . print_r($object, true) . "<p>";
 					}
 					elseif ($class->object_not_found_behaviour === "tell_it_and_stop_import") {
 						trigger_error(
@@ -243,7 +232,6 @@ echo "<h2>HAS CREATED $class->class_name $property_path</h2>" . print_r($object,
 						$object = null;
 					}
 					else {
-echo "<h2>IGNORED not found $class->class_name $property_path</h2>";
 						$object = null;
 					}
 				}
@@ -255,7 +243,6 @@ echo "<h2>IGNORED not found $class->class_name $property_path</h2>";
 				}
 			}
 			$array[$irow][$property_path] = $object;
-echo "- result line " . print_r($array[$irow], true);
 		}
 	}
 
