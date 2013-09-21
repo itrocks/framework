@@ -46,6 +46,45 @@ class Import_Array
 		if (isset($class_name)) $this->class_name = $class_name;
 	}
 
+	//--------------------------------------------------------------------------- addConstantsToArray
+	/**
+	 * Adds properties path and values of constants to the whole array
+	 *
+	 * The cursor on $array must be set to properties path row before calling this method
+	 * The cursor will stay on the properties path row
+	 *
+	 * @param $this_constants string[] key is property path, value will be written into array
+	 * @param $array          array Two dimensional array : keys are row and column nummber
+	 */
+	private static function addConstantsToArray($this_constants, &$array)
+	{
+		if ($this_constants) {
+			$constants = array();
+			$column_first = $column_number = count(current($array));
+			// $this_constants["property*.path"] = "value"
+			// $constants[$column_number] = "value"
+			foreach ($this_constants as $value) {
+				$constants[$column_number++] = $value;
+			}
+			$properties_key = key($array);
+			$column_number = $column_first;
+			foreach (array_keys($this_constants) as $property_path) {
+				$array[$properties_key][$column_number++] = $property_path;
+			}
+			while ($row = next($array)) {
+				$key = key($array);
+				foreach ($constants as $column_number => $value) {
+					$array[$key][$column_number] = $value;
+				}
+			}
+			// sets array cursor to original properties path position
+			reset($array);
+			while (key($array) !== $properties_key) {
+				next($array);
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------- createArrayReference
 	/**
 	 * @param $class_name string
@@ -74,10 +113,12 @@ class Import_Array
 	 * A class name is alone of its row, and begins with an uppercase letter
 	 * If the first row of the array is not a class name, this will return null
 	 *
+	 * The cursor on $array is reset to the first row of the array
+	 *
 	 * @param $array array Two dimensional array : keys are row and column number
 	 * @return string
 	 */
-	public static function getClassNameFromArray($array)
+	public static function getClassNameFromArray(&$array)
 	{
 		$row = reset($array);
 		$class_name = reset($row);
@@ -99,6 +140,26 @@ class Import_Array
 		return Builder::className(Namespaces::fullClassName($value));
 	}
 
+	//------------------------------------------------------------------------- getConstantsFromArray
+	/**
+	 * Gets the constants properties path and value from array
+	 *
+	 * The cursor on $array is set to the row containing the definitive properties path
+	 *
+	 * @param $array array Two dimensional array : keys are row and column number
+	 * @return string[] key is property path, value is it's fixed value for the import
+	 */
+	public static function getConstantsFromArray(&$array)
+	{
+		$constants = array();
+		$row = (self::getClassNameFromArray($array)) ? next($array) : current($array);
+		while ($row && (count($row) > 1) && ($row[1] == "=")) {
+			$constants[$row[0]] = isset($row[2]) ? $row[2] : "";
+			$row = next($array);
+		}
+		return $constants;
+	}
+
 	//------------------------------------------------------------------------ getPropertiesFromArray
 	/**
 	 * Returns the properties paths list of the array
@@ -106,13 +167,21 @@ class Import_Array
 	 * The property list is the first or the second line of the array, depending on if the first line
 	 * is a class name or not.
 	 *
+	 * The cursor on $array is set to the row containing the properties path.
+	 *
 	 * @param $array array Two dimensional array : keys are row and column number
 	 * @return string[] key is the column number, value is a property path
 	 */
-	public static function getPropertiesFromArray($array)
+	public static function getPropertiesFromArray(&$array)
 	{
-		reset($array);
-		return self::getClassNameFromArray($array) ? next($array) : current($array);
+		self::addConstantsToArray(self::getConstantsFromArray($array), $array);
+		$properties = array();
+		foreach (current($array) as $key => $value) {
+			if ($value) {
+				$properties[$key] = $value;
+			}
+		}
+		return $properties;
 	}
 
 	//---------------------------------------------------------------------- getPropertyLinkAndColumn
@@ -183,21 +252,28 @@ class Import_Array
 	{
 		$class_name = self::getClassNameFromArray($array);
 		if (isset($class_name)) {
-			unset($array[key($array)]);
 			$this->setClassName($class_name);
 		}
 		list($this->properties_link, $this->properties_column) = self::getPropertiesLinkAndColumn(
 			$this->class_name, self::getPropertiesFromArray($array)
 		);
-		unset($array[key($array)]);
-
+		$key = key($array);
 		foreach ($this->sortedClasses() as $class) {
+			reset($array);
+			while (key($array) !== $key) {
+				next($array);
+			}
 			$this->importArrayClass($class, $array);
 		}
 	}
 
 	//------------------------------------------------------------------------------ importArrayClass
 	/**
+	 * Imports data stored into array
+	 *
+	 * The cursor on $array must be set to the properties path row before calling this method
+	 * At the end, the cursor will be at the end of the array (out of the array, in fact)
+	 *
 	 * @param $class Import_Class
 	 * @param $array array Two dimensional array : keys are row and column number
 	 */
@@ -206,7 +282,8 @@ class Import_Array
 		$property_path = implode(".", $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
-		foreach ($array as $irow => $row) {
+		while ($row = next($array)) {
+			$irow = key($array);
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
 			if (in_array($this->properties_link[$property_path], array("Collection", "Map"))) {
 				$object = $this->createArrayReference($class->class_name, $search);

@@ -18,7 +18,7 @@ abstract class Import_Settings_Builder
 	 * @param $array array two dimensional array (keys are row, col)
 	 * @return Import_Settings
 	 */
-	public static function buildArray($array)
+	public static function buildArray(&$array)
 	{
 		$settings = new Import_Settings();
 		$class_name = Import_Array::getClassNameFromArray($array);
@@ -30,8 +30,7 @@ abstract class Import_Settings_Builder
 			$class_path = "";
 			$property_path_for_class = array();
 			foreach (explode(".", $property_path) as $property_name) {
-				$class_key = Namespaces::shortClassName($class_name)
-					. ($property_path_for_class ? ("." . join(".", $property_path_for_class)) : "");
+				$class_key = join(".", $property_path_for_class);
 				$identify = substr($property_name, -1) === "*";
 				if ($identify) {
 					$property_name = substr($property_name, 0, -1);
