@@ -92,14 +92,12 @@ abstract class Loc implements Plugin
 	public static function classNameDisplayReverse(AopJoinpoint $joinpoint)
 	{
 		$class_name = $joinpoint->getArguments()[0];
-echo "translate class name $class_name<br>";
 		if (isset($class_name)) {
 			$class_name = explode("\\", $class_name);
 			foreach ($class_name as $key => $class_part) {
 				$class_name[$key] = Names::displayToClass(self::rtr($class_part));
 			}
 			$class_name = join("\\", $class_name);
-echo "translated to $class_name<br>";
 			$joinpoint->setArguments(array($class_name));
 		}
 	}
@@ -252,7 +250,6 @@ echo "translated to $class_name<br>";
 		/** @var $properties string[]*/
 		$properties = $joinpoint->getReturnedValue();
 		foreach ($properties as $key => $property_path) {
-echo "- reverse translation of $property_path please<br>";
 			$reverse_path = "";
 			foreach (explode(".", $property_path) as $property_name) {
 				if ($asterisk = (substr($property_name, -1) === "*")) {
@@ -264,7 +261,6 @@ echo "- reverse translation of $property_path please<br>";
 				$reverse_path .= ($reverse_path ? "." : "") . $property_name . ($asterisk ? "*" : "");
 			}
 			$properties[$key] = $reverse_path;
-echo "> translated to " . $properties[$key] . "<br>";
 		}
 		$joinpoint->setReturnedValue($properties);
 	}
