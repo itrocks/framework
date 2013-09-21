@@ -201,13 +201,16 @@ class Import_Array
 	}
 
 	//------------------------------------------------------------------------------ importArrayClass
+	/**
+	 * @param $class Import_Class
+	 * @param $array array Two dimensional array : keys are row and column number
+	 */
 	private function importArrayClass(Import_Class $class, &$array)
 	{
 echo "<h2>class $class->class_name</h2><pre>" . print_r($class, true) . "</pre>";
 		$property_path = implode(".", $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
-		reset($array);
 		foreach ($array as $irow => $row) {
 echo "<p><pre>- line " . print_r($row, true) . "</pre><br>";
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
