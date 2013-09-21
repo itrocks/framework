@@ -9,6 +9,14 @@ use AopJoinpoint;
 abstract class Loc implements Plugin
 {
 
+	//-------------------------------------------------------------------------------------- $context
+	/**
+	 * Current context for translations
+	 *
+	 * @var string
+	 */
+	private static $context;
+
 	//----------------------------------------------------- afterHtmlTemplateFuncsToEditPropertyExtra
 	/**
 	 * @param $joinpoint AopJoinpoint
@@ -74,6 +82,39 @@ abstract class Loc implements Plugin
 			else {
 				$joinpoint->setArguments(array($property, self::propertyToIso($property, $value)));
 			}
+		}
+	}
+
+	//----------------------------------------------------------------------- classNameDisplayReverse
+	/**
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function classNameDisplayReverse(AopJoinpoint $joinpoint)
+	{
+		$class_name = $joinpoint->getArguments()[0];
+echo "translate class name $class_name<br>";
+		if (isset($class_name)) {
+			$class_name = explode("\\", $class_name);
+			foreach ($class_name as $key => $class_part) {
+				$class_name[$key] = Names::displayToClass(self::rtr($class_part));
+			}
+			$class_name = join("\\", $class_name);
+echo "translated to $class_name<br>";
+			$joinpoint->setArguments(array($class_name));
+		}
+	}
+
+	//--------------------------------------------------------------- classNameReturnedValueToContext
+	/**
+	 * Sets context to returned value class name, if not null
+	 *
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function classNameReturnedValueToContext(AopJoinpoint $joinpoint)
+	{
+		$class_name = $joinpoint->getReturnedValue();
+		if (isset($class_name)) {
+			self::setContext($class_name);
 		}
 	}
 
@@ -196,6 +237,38 @@ abstract class Loc implements Plugin
 		return Locale::current()->language;
 	}
 
+	//---------------------------------------------------------------------- propertiesDisplayReverse
+	/**
+	 * Reverse translation of an array of properties path returned value
+	 *
+	 * Accepts properties name ending with a "*" (used by ie imports)
+	 *
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function propertiesDisplayReverse(AopJoinpoint $joinpoint)
+	{
+		/** @var $class_name string */
+		$class_name = self::$context;
+		/** @var $properties string[]*/
+		$properties = $joinpoint->getReturnedValue();
+		foreach ($properties as $key => $property_path) {
+echo "- reverse translation of $property_path please<br>";
+			$reverse_path = "";
+			foreach (explode(".", $property_path) as $property_name) {
+				if ($asterisk = (substr($property_name, -1) === "*")) {
+					$property_name = substr($property_name, 0, -1);
+				}
+				$property_name = Names::displayToProperty(self::rtr(
+					$property_name, $class_name, $reverse_path
+				));
+				$reverse_path .= ($reverse_path ? "." : "") . $property_name . ($asterisk ? "*" : "");
+			}
+			$properties[$key] = $reverse_path;
+echo "> translated to " . $properties[$key] . "<br>";
+		}
+		$joinpoint->setReturnedValue($properties);
+	}
+
 	//--------------------------------------------------------------------------------- propertyToIso
 	/**
 	 * Change a locale value into an ISO formatted value, knowing it's property
@@ -251,20 +324,47 @@ abstract class Loc implements Plugin
 			'SAF\Framework\Reflection_Property_View->formatInteger()',
 			array(__CLASS__, "integerReturnedValueToLocale")
 		);
+		// translation/reverse of export/import procedures
+		Aop::add(Aop::BEFORE,
+			'SAF\Framework\Import_Array->getClassNameFromValue()',
+			array(__CLASS__, "classNameDisplayReverse")
+		);
+		Aop::add(Aop::AFTER,
+			'SAF\Framework\Import_Array->getClassNameFromArray()',
+			array(__CLASS__, "classNameReturnedValueToContext")
+		);
+		Aop::add(Aop::AFTER,
+			'SAF\Framework\Import_Array->getPropertiesFromArray()',
+			array(__CLASS__, "propertiesDisplayReverse")
+		);
 	}
 
 	//------------------------------------------------------------------------------------------- rtr
 	/**
 	 * Reverse translation
 	 *
-	 * @param $translation string
-	 * @param $context     string
+	 * @param $translation           string
+	 * @param $context               string
+	 * @param $context_property_path string
 	 * @return string
 	 */
-	public static function rtr($translation, $context = "")
+	public static function rtr($translation, $context = "", $context_property_path = "")
 	{
-		/** @noinspection PhpVoidFunctionResultUsedInspection */
-		return Locale::current()->translations->reverse($translation, $context);
+		return Locale::current()->translations->reverse($translation, $context, $context_property_path);
+	}
+
+	//------------------------------------------------------------------------------------ setContext
+	/**
+	 * Set current context for translations
+	 *
+	 * Some hooks automatically set it : classNameDisplayReverse()
+	 * Used by hooks that need it : propertiesDisplayReverse()
+	 *
+	 * @param $context
+	 */
+	public static function setContext($context)
+	{
+		self::$context = $context;
 	}
 
 	//-------------------------------------------------------------------------------------------- tr

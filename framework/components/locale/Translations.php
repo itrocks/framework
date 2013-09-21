@@ -3,6 +3,8 @@ namespace SAF\Framework;
 
 /**
  * Translations give the programmer translations features, and store them into cache
+ *
+ * TODO : translations maintainer : only one text per context, and only one translation per context
  */
 class Translations extends Set
 {
@@ -32,24 +34,48 @@ class Translations extends Set
 	/**
 	 * Reverse translator : changes a translated text into an original text
 	 *
-	 * @param $translation string
-	 * @param $context     string
+	 * @param $translation           string
+	 * @param $context               string
+	 * @param $context_property_path string ie "property_name.sub_property", accepts (and ignore) "*"
 	 * @return string
 	 */
-	public function reverse($translation, $context = "")
+	public function reverse($translation, $context = "", $context_property_path = "")
 	{
 		if (empty($translation)) {
 			return $translation;
 		}
 		/** @var $search Translation */
 		$search = Search_Object::create('SAF\Framework\Translation');
-		$search->translation = strtolower($translation);
 		$search->language = $this->language;
-		/** @var $texts Translation[] */
-		$texts = Dao::search($search);
-		foreach ($texts as $text) if ($text->translation === $translation) break;
+		$search->translation = strtolower($translation);
+		if ($context_property_path) {
+			$context_properties = Reflection_Property::getInstanceOf(
+				$context, str_replace("*", "", $context_property_path)
+			)->getFinalClass()->getAllProperties();
+			/** @var $texts Translation[] */
+			$texts = Dao::search($search);
+			foreach ($texts as $text) {
+				if (($text->translation === $translation) && isset($context_properties[$text->text])) break;
+			}
+		}
+		else {
+			$search->context = $context;
+			/** @var $texts Translation[] */
+			$texts = Dao::search($search);
+			foreach ($texts as $text) if ($text->translation === $translation) break;
+		}
+		while (isset($search->context) && $search->context && !isset($text)) {
+			$i = strrpos($search->context, ".");
+			$search->context = $i ? substr($search->context, 0, $i) : "";
+			$texts = Dao::search($search);
+			foreach ($texts as $text) if ($text->translation === $translation) break;
+		}
 		$text = isset($text) ? $text->text : $translation;
-		return $text;
+		return empty($text) ? $text : (
+			strIsCapitals($translation[0])
+			? ucfirsta($text)
+			: $text
+		);
 	}
 
 	//------------------------------------------------------------------------------------- translate
@@ -102,17 +128,11 @@ class Translations extends Set
 			$this->cache[$text][$context] = $translation;
 		}
 		$translation = $this->cache[$text][$context];
-		if (strlen($translation)) {
-			if (strIsCapitals($text[0])) {
-				return ucfirsta($translation);
-			}
-			else {
-				return $translation;
-			}
-		}
-		else {
-			return $text;
-		}
+		return empty($translation) ? $text : (
+			strIsCapitals($text[0])
+			? ucfirsta($translation)
+			: $translation
+		);
 	}
 
 }
