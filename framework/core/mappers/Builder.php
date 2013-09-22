@@ -77,6 +77,25 @@ class Builder implements Plugin
 		return self::dCurrent($set_current);
 	}
 
+	//------------------------------------------------------------------------------------- fromArray
+	/**
+	 * Changes an array into an object
+	 *
+	 * You should set only public and non-static properties values
+	 *
+	 * @param $class_name string
+	 * @param $array      array
+	 * @return object
+	 */
+	public static function fromArray($class_name, $array)
+	{
+		$object = self::create($class_name);
+		foreach ($array as $property_name => $value) {
+			$object->$property_name = $value;
+		}
+		return $object;
+	}
+
 	//----------------------------------------------------------------------------------- isObjectSet
 	/**
 	 * Returns true if any property of $object is set and different than its default value

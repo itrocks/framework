@@ -93,17 +93,7 @@ class Import_Array
 	 */
 	private function createArrayReference($class_name, $search)
 	{
-		if (isset($search)) {
-			$object = Builder::create($class_name);
-			foreach ($search as $property_name => $value) {
-				$object->$property_name = $value;
-			}
-			$object = array($object);
-		}
-		else {
-			$object = null;
-		}
-		return $object;
+		return (isset($search)) ? array(Builder::fromArray($class_name, $search)) : null;
 	}
 
 	//------------------------------------------------------------------------- getClassNameFromArray
@@ -194,7 +184,7 @@ class Import_Array
 	{
 		$properties_link = array("" => "Object");
 		$properties_column = array();
-		foreach ($properties_path as $icol => $property_path) {
+		foreach ($properties_path as $col_number => $property_path) {
 			$property_path = str_replace("*", "", $property_path);
 			$path = "";
 			foreach (explode(".", $property_path) as $property_name) {
@@ -205,7 +195,7 @@ class Import_Array
 			$i = strrpos($property_path, ".");
 			$property_name = substr($property_path, ($i === false) ? 0 : ($i + 1));
 			$property_path = substr($property_path, 0, $i);
-			$properties_column[$property_path][$property_name] = $icol;
+			$properties_column[$property_path][$property_name] = $col_number;
 		}
 		foreach (array_keys($properties_column) as $property_path) if ($property_path) {
 			$path = "";
@@ -283,44 +273,56 @@ class Import_Array
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
 		while ($row = next($array)) {
-			$irow = key($array);
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
-			if (in_array($this->properties_link[$property_path], array("Collection", "Map"))) {
-				$object = $this->createArrayReference($class->class_name, $search);
+			$object = (in_array($this->properties_link[$property_path], array("Collection", "Map")))
+				? $this->createArrayReference($class->class_name, $search)
+				: $this->importSearchObject($search, $row, $class, $class_properties_column, $property_path);
+			$array[key($array)][$property_path] = $object;
+		}
+	}
+
+	//---------------------------------------------------------------------------- importSearchObject
+	/**
+	 * @param $search                  array|object
+	 * @param $row                     array
+	 * @param $class                   Import_Class
+	 * @param $class_properties_column integer[]
+	 * @param $property_path           string
+	 * @return object
+	 */
+	public function importSearchObject(
+		$search, $row, $class, $class_properties_column, $property_path
+	) {
+		$found = isset($search) ? Dao::search($search, $class->class_name) : null;
+		if (!isset($found)) {
+			$object = null;
+		}
+		elseif (count($found) == 1) {
+			$object = $this->updateExistingObject(
+				reset($found), $row, $class, $class_properties_column, $property_path
+			);
+		}
+		elseif (!count($found)) {
+			if ($class->object_not_found_behaviour === "create_new_value") {
+				$object = $this->writeNewObject($row, $class, $class_properties_column);
+			}
+			elseif ($class->object_not_found_behaviour === "tell_it_and_stop_import") {
+				trigger_error(
+					"Not found " . $class->class_name . " " . print_r($search, true), E_USER_ERROR
+				);
+				$object = null;
 			}
 			else {
-				$found = isset($search) ? Dao::search($search, $class->class_name) : null;
-				if (!isset($found)) {
-					$object = null;
-				}
-				elseif (count($found) == 1) {
-					$object = $this->updateExistingObject(
-						reset($found), $row, $class, $class_properties_column
-					);
-				}
-				elseif (!count($found)) {
-					if ($class->object_not_found_behaviour === "create_new_value") {
-						$object = $this->writeNewObject($row, $class, $class_properties_column);
-					}
-					elseif ($class->object_not_found_behaviour === "tell_it_and_stop_import") {
-						trigger_error(
-							"Not found " . $class->class_name . " " . print_r($search, true), E_USER_ERROR
-						);
-						$object = null;
-					}
-					else {
-						$object = null;
-					}
-				}
-				else {
-					trigger_error(
-						"Multiple $class->class_name found for " . print_r($search, true), E_USER_ERROR
-					);
-					$object = -1;
-				}
+				$object = null;
 			}
-			$array[$irow][$property_path] = $object;
 		}
+		else {
+			trigger_error(
+				"Multiple $class->class_name found for " . print_r($search, true), E_USER_ERROR
+			);
+			$object = null;
+		}
+		return $object;
 	}
 
 	//----------------------------------------------------------------------------------- $class_name
@@ -363,13 +365,30 @@ class Import_Array
 	 * @param $row                     array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]|string[]
+	 * @param $property_path           string
 	 * @return object
 	 */
 	private function updateExistingObject(
-		$object, $row, Import_Class $class, $class_properties_column
+		$object, $row, Import_Class $class, $class_properties_column, $property_path
 	) {
 		$do_write = false;
 		foreach (array_keys($class->write_properties) as $property_name) {
+			/*
+			$link = $this->properties_link[
+				$path = ($property_path . ($property_path ? "." : "") . $property_name)
+			];
+			if (in_array($link, array("Collection"))) {
+echo "do it";
+				foreach ($object->$property_name as $key => $value) {
+					if ($link === "Collection") {
+						$value->setComposite($object);
+					}
+					$object->$property_name[$key] = $this->importSearchObject(
+						$value, $row, $class, $class_properties_column, $path
+					);
+				}
+			}
+			*/
 			if ($object->$property_name !== $row[$class_properties_column[$property_name]]) {
 				$object->$property_name = $row[$class_properties_column[$property_name]];
 				$do_write = true;
