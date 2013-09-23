@@ -9,7 +9,7 @@
  * @param date_format string
  * @constructor
  */
-App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_format)
+App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_format, use_cookies)
 {
 
 	//----------------------------------------------------------------------------------- date_format
@@ -48,10 +48,51 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 */
 	this.uri_base = uri_root + script_name;
 
+	//----------------------------------------------------------------------------------- use_cookies
+	/**
+	 * @type boolean
+	 */
+	this.use_cookies = use_cookies;
+
 	//-------------------------------------------------------------------------------------- uri_root
 	/**
 	 * @var string
 	 */
 	this.uri_root = uri_root;
+
+	//---------------------------------------------------------------------------------------- andSID
+	/**
+	 * Gets session id expression
+	 *
+	 * @return string "" if session id is stored into a cookie, else "&PHPSESSID=xxxx"
+	 */
+	this.andSID = function()
+	{
+		console.log("cookies = " + this.use_cookies);
+		return this.use_cookies ? "" : ("&PHPSESSID=" + this.PHPSESSID);
+	};
+
+	//---------------------------------------------------------------------------------------- askSID
+	/**
+	 * Gets session id expression
+	 *
+	 * @return string "" if session id is stored into a cookie, else "?PHPSESSID=xxxx"
+	 */
+	this.askSID = function()
+	{
+		console.log("cookies = " + this.use_cookies);
+		return this.use_cookies ? "" : ("?PHPSESSID=" + this.PHPSESSID);
+	};
+
+	/**
+	 * Gets session id expression
+	 *
+	 * @return string "?" if session id is stored into a cookie, else "?PHPSESSID=xxxx&"
+	 */
+	this.askSIDand = function()
+	{
+		console.log("cookies = " + this.use_cookies);
+		return this.use_cookies ? "?" : ("?PHPSESSID=" + this.PHPSESSID + "&");
+	}
 
 };

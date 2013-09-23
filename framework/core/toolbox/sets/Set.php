@@ -38,10 +38,10 @@ class Set
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * Adds an element to the set
+	 * Adds an element into the set, if not already present (same key)
 	 *
-	 * @param $key     string|object identity of the element in the set, or element if is null
-	 * @param $element object|null $element element to add to the set (null if no or in key)
+	 * @param $key     string|integer|object identity of the element in the set, or element if is null
+	 * @param $element object $element element to add to the set (null if no or in key)
 	 */
 	public function add($key, $element = null)
 	{
@@ -91,7 +91,7 @@ class Set
 
 	//------------------------------------------------------------------------------------------- get
 	/**
-	 * @param $key integer
+	 * @param $key string|integer
 	 * @return object
 	 */
 	public function get($key)
@@ -107,7 +107,7 @@ class Set
 	 * the matching element class name.
 	 *
 	 * @param $class_name string
-	 * @param array $elements
+	 * @param $elements   object[]
 	 * @return Set
 	 */
 	public static function instantiate($class_name, $elements = array())

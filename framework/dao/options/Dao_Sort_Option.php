@@ -90,10 +90,10 @@ class Dao_Sort_Option implements Dao_Option
 		if (isset($this->columns) && !isset($this->reverse)) {
 			$this->reverse = array();
 			foreach ($this->columns as $key => $column_name) {
-				if ($i = strpos(" " . $column_name . " ", " reverse ")) {
-					$i --;
-					$this->reverse[$column_name] = true;
-					$this->columns[$key] = substr($column_name, 0, $i) . substr($column_name, $i + 8);
+				if (strpos(" " . $column_name . " ", " reverse ") !== false) {
+					$column_name = trim(str_replace(" reverse ", "", " " . $column_name . " "));
+					$this->reverse[$column_name] = $column_name;
+					$this->columns[$key] = $column_name;
 				}
 			}
 		}

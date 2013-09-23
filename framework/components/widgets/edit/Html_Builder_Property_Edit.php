@@ -59,8 +59,15 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 */
 	private function buildCollection()
 	{
+		if (!isset($this->template)) {
+			$this->template = new Html_Edit_Template();
+		}
+		if (!$this->value) {
+			$this->value = array();
+		}
 		$collection = new Html_Builder_Collection_Edit($this->property, $this->value);
-		return $collection->setTemplate($this->template)->build();
+		$collection->setTemplate($this->template);
+		return $collection->build();
 	}
 
 	//-------------------------------------------------------------------------------------- buildMap
@@ -69,6 +76,9 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 */
 	private function buildMap()
 	{
+		if (!$this->value) {
+			$this->value = array();
+		}
 		$map = new Html_Builder_Map_Edit($this->property, $this->value);
 		return $map->build();
 	}

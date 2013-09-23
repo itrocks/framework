@@ -93,10 +93,9 @@ abstract class Html_Template_Functions
 	 * Returns an HTML edit widget for current property or List_Data property
 	 *
 	 * @param $template Html_Template
-	 * @param $prefix   string
 	 * @return string
 	 */
-	public static function getEdit(Html_Template $template, $prefix = null)
+	public static function getEdit(Html_Template $template)
 	{
 		$object = reset($template->objects);
 		// find the first next object
@@ -114,16 +113,22 @@ abstract class Html_Template_Functions
 			list($property, $property_path, $value) = self::toEditPropertyExtra(
 				$class_name, $property_name
 			);
-			$property_edit = new Html_Builder_Property_Edit($property, $value, $prefix);
+			$property_edit = new Html_Builder_Property_Edit($property, $value);
 			$property_edit->name = $property_path;
 			$property_edit->preprop = null;
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property_Value) {
-			return (new Html_Builder_Property_Edit($object, $object->value()))->build();
+			$property_edit = new Html_Builder_Property_Edit($object, $object->value());
+			$property_edit->name = $object->path;
+			$property_edit->preprop = null;
+			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property) {
-			return (new Html_Builder_Property_Edit($object))->build();
+			$property_edit = new Html_Builder_Property_Edit($object);
+			$property_edit->name = $object->path;
+			$property_edit->preprop = null;
+			return $property_edit->build();
 		}
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
 			$property = Reflection_Property::getInstanceOf($object, $property_name);

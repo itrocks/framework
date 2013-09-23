@@ -113,13 +113,19 @@ class Html_Template
 	 * @param $template_file string full path to template file
 	 * @param $feature_name string feature name
 	 */
-	public function __construct($object, $template_file, $feature_name = "")
+	public function __construct($object = null, $template_file = null, $feature_name = null)
 	{
-		array_unshift($this->var_names, "root");
-		array_unshift($this->objects, $object);
-		$this->path    = substr($template_file, 0, strrpos($template_file, "/"));
-		$this->content = file_get_contents($template_file);
-		$this->feature = $feature_name;
+		if (isset($object)) {
+			array_unshift($this->var_names, "root");
+			array_unshift($this->objects, $object);
+		}
+		if (isset($template_file)) {
+			$this->path    = substr($template_file, 0, strrpos($template_file, "/"));
+			$this->content = file_get_contents($template_file);
+		}
+		if (isset($feature_name)) {
+			$this->feature = $feature_name;
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- callFunc
@@ -953,6 +959,9 @@ class Html_Template
 	{
 		if ($var_name === ".") {
 			return reset($this->objects);
+		}
+		elseif ($var_name === "#") {
+			return reset($this->var_names);
 		}
 		elseif ($var_name == "") {
 			return "";

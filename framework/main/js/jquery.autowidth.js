@@ -1,7 +1,7 @@
 (function($)
 {
 
-	$.fn.autowidth = function ()
+	$.fn.autowidth = function()
 	{
 		this.keyup(function()
 		{
