@@ -27,7 +27,7 @@ class Html_Edit_Template extends Html_Template
 	 */
 	public function getFormId()
 	{
-		return $this->form_id;
+		return strval($this->form_id);
 	}
 
 	//------------------------------------------------------------------------------- nextFormCounter

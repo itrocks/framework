@@ -34,11 +34,13 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	 */
 	protected function buildCell($object, $property_name)
 	{
+		if (!isset($this->template)) {
+			$this->template = new Html_Edit_Template();
+		}
 		$property = Reflection_Property::getInstanceOf($object, $property_name);
 		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
-		$input = (new Html_Builder_Property_Edit(
-			$property, $value, $this->property->name . "[]"
-		))->setTemplate($this->template)->build();
+		$builder = (new Html_Builder_Property_Edit($property, $value, $this->property->name . "[]"));
+		$input = $builder->setTemplate($this->template)->build();
 		if ($property_name == reset($this->properties)) {
 			$property_builder = new Html_Builder_Property_Edit();
 			$property_builder->setTemplate($this->template);

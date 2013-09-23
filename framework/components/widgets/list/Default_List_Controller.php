@@ -93,7 +93,7 @@ class Default_List_Controller extends List_Controller
 	{
 		return array(
 			new Button("Add", View::link($class_name, "new"), "add", Color::of("green")),
-			new Button("Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("blue"))
+			new Button("Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("green"))
 		);
 	}
 
