@@ -59,6 +59,9 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 */
 	private function buildCollection()
 	{
+		if (!isset($this->template)) {
+			$this->template = new Html_Edit_Template();
+		}
 		if (!$this->value) {
 			$this->value = array();
 		}
