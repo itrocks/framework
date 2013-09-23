@@ -34,7 +34,7 @@ $("document").ready(function()
 				},
 				out: function()
 				{
-					$(this).css({ "background": "transparent", "border": "1px solid white" });
+					$(this).css({ "background": "white", "border": "1px solid white" });
 				}
 			});
 		});

@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * The settings groups collection class
  */
-class Settings_Groups
+class Settings_Groups_Manager
 {
 
 	//----------------------------------------------------------------------------------------- __get

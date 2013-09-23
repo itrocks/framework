@@ -45,6 +45,20 @@ class Html_Session implements Configurable, Plugin
 		}
 	}
 
+	//------------------------------------------------------------------------------------ useCookies
+	/**
+	 * @param $cookies boolean
+	 * @return boolean
+	 */
+	public static function useCookies($cookies = null)
+	{
+		if (isset($cookies)) {
+			self::$use_cookie = true;
+			ini_set("session.use_cookies", $cookies);
+		}
+		return ini_get("session.use_cookies");
+	}
+
 	//----------------------------------------------------------------------------------- useTransSid
 	public static function useTransSid()
 	{

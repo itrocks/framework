@@ -2,32 +2,51 @@
 namespace SAF\Framework;
 
 /**
- * The settings class, in order to manage application settings
+ * Set of settings
  */
-class Settings
+class Settings extends Set
 {
-
-	//------------------------------------------------------------------------------------ $templates
-	/**
-	 * @link All
-	 * @var Settings_Template[]
-	 */
-	public $templates;
-
-	//--------------------------------------------------------------------------------------- $groups
-	/**
-	 * @var Settings_Groups
-	 */
-	public $groups;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @param $elements Setting[]
 	 */
-	public function __construct()
+	public function __construct($elements = null)
 	{
-		if (!isset($this->groups)) {
-			$this->groups = new Settings_Groups();
+		parent::__construct(Builder::className('SAF\Framework\Setting'), $elements);
+	}
+
+	//------------------------------------------------------------------------------------------- add
+	/**
+	 * Sets a value for a given setting
+	 *
+	 * @param $code  string|integer|Setting
+	 * @param $value string|Setting
+	 */
+	public function add($code, $value = null)
+	{
+		if ($value instanceof Setting) {
+			parent::add($code, $value);
 		}
+		else {
+			$setting = $this->get($code);
+			if (isset($setting)) {
+				$setting->value = $value;
+			}
+			else {
+				parent::add($code, new Setting($code, $value));
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------------- get
+	/**
+	 * @param string $code
+	 * @return Setting
+	 */
+	public function get($code)
+	{
+		return parent::get($code);
 	}
 
 }

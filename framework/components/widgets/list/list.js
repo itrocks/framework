@@ -4,6 +4,7 @@ $("document").ready(function()
 	$(".window.list").build(function()
 	{
 
+		//--------------------------------------------------- .search input, .search textarea keydown()
 		// search objects
 		this.in(".search input, .search textarea").keydown(function(event)
 		{
@@ -29,6 +30,7 @@ $("document").ready(function()
 			}
 		});
 
+		//---------------------------------------------------------------------- table.list droppable()
 		// property drop into column
 		var end = function($this, event, ui)
 		{
@@ -58,17 +60,23 @@ $("document").ready(function()
 					var $draggable = ui.draggable;
 					var property_name = $draggable.attr("id");
 					var after_property_name = $th.attr("id");
+					var class_name = $this.closest(".list.window").attr("id").split("/")[1];
+					var url = app.uri_base + "/" + class_name + "/listSetting"
+						+ window.app.askSIDand() + "as_widget=1"
+						+ "&add_property=" + property_name
+						+ "&after=" + ((after_property_name != undefined) ? after_property_name : "");
+					/*
 					var url = app.uri_base + "/Property/add";
 					url += $window.attr("id") + "/" + property_name
-						+ "?PHPSESSID=" + app.PHPSESSID + "&as_widget=1"
+						+ window.app.askSID() + "&as_widget=1"
 						+ "&after=" + ((after_property_name != undefined) ? after_property_name : "");
+					*/
 					end($this, event, ui);
-					$draggable.closest(".column_select").find("#column_select").hide();
 
 					$.ajax({ url: url, success: function()
 					{
 						var url = app.uri_base + $window.attr("id")
-							+ "?PHPSESSID=" + app.PHPSESSID + "&as_widget=1";
+							+ window.app.askSIDand() + "as_widget=1";
 						$.ajax({ url: url, success: function(data)
 						{
 							var $container = $window.parent();
@@ -90,6 +98,33 @@ $("document").ready(function()
 				end($(this), event, ui);
 			}
 
+		});
+
+		//---------------------------------------- .window.title, table.list th.property a modifiable()
+
+		var className = function($this)
+		{
+			return $this.closest(".list.window").attr("id").split("/")[1];
+		};
+
+		var propertyPath = function($this)
+		{
+			return $this.closest("th").attr("id");
+		};
+
+		var uri = window.app.uri_base + "/{className}/listSetting"
+			+ window.app.askSIDand() + "as_widget=1";
+
+		// list title double-click
+		this.in(".window.title").modifiable({
+			done: uri + "&title={value}",
+			aliases: { "className": className },
+			target: "#messages"
+		});
+		this.in("table.list th.property a").modifiable({
+			done: uri + "&property_path={propertyPath}&property_title={value}",
+			aliases: { "className": className, "propertyPath": propertyPath },
+			target: "#messages"
 		});
 
 	});

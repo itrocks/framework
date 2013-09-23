@@ -1,7 +1,7 @@
 (function($)
 {
 
-	$.fn.autoheight = function ()
+	$.fn.autoheight = function()
 	{
 		this.keyup(function()
 		{

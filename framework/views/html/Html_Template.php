@@ -960,6 +960,9 @@ class Html_Template
 		if ($var_name === ".") {
 			return reset($this->objects);
 		}
+		elseif ($var_name === "#") {
+			return reset($this->var_names);
+		}
 		elseif ($var_name == "") {
 			return "";
 		}

@@ -114,8 +114,8 @@ class Session
 	/**
 	 * Set a session's object
 	 *
-	 * @param $object object can be null (then nothing is set)
-	 * @param $class_name string if not set, object class will be the object identifier
+	 * @param $object object|mixed can be null (then nothing is set)
+	 * @param $class_name string if not set, object class is be the object identifier. Can be a free string too
 	 */
 	public function set($object, $class_name = null)
 	{

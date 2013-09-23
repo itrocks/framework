@@ -12,10 +12,7 @@ $config["framework"] = array(
 		"host"     => "localhost",
 		"limit"    => 0,
 		"user"     => "saf",
-		"password" => "saf",
-		"tables"   => array(
-			'SAF\Framework\Acls_User' => "users",
-		)
+		"password" => "saf"
 	),
 	'SAF\Framework\Error_Handlers' => array(
 	array(E_ALL & !E_NOTICE,     'SAF\Framework\Main_Error_Handler'),

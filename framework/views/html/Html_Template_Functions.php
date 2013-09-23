@@ -119,10 +119,16 @@ abstract class Html_Template_Functions
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property_Value) {
-			return (new Html_Builder_Property_Edit($object, $object->value()))->build();
+			$property_edit = new Html_Builder_Property_Edit($object, $object->value());
+			$property_edit->name = $object->path;
+			$property_edit->preprop = null;
+			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property) {
-			return (new Html_Builder_Property_Edit($object))->build();
+			$property_edit = new Html_Builder_Property_Edit($object);
+			$property_edit->name = $object->path;
+			$property_edit->preprop = null;
+			return $property_edit->build();
 		}
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
 			$property = Reflection_Property::getInstanceOf($object, $property_name);
