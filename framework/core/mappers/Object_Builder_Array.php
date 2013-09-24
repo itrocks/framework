@@ -108,7 +108,9 @@ class Object_Builder_Array
 				}
 				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
 				if (substr($property_name, 0, 3) === "id_") {
-					$this->buildIdProperty($object, $property_name, $value, $null_if_empty);
+					if (!$this->buildIdProperty($object, $property_name, $value, $null_if_empty)) {
+						$is_null = false;
+					}
 				}
 				elseif (($property_name != "id") && !isset($property)) {
 					trigger_error("Unknown property $property_name into " . $this->class->name, E_USER_ERROR);
@@ -211,6 +213,9 @@ class Object_Builder_Array
 	{
 		$is_null = $null_if_empty;
 		$real_property_name = substr($property_name, 3);
+		if (empty($value)) {
+			$value = $this->properties[$real_property_name]->getAnnotation("null")->value ? null : 0;
+		}
 		$object->$property_name = $value;
 		$object->$real_property_name = null;
 		if ($value) {
