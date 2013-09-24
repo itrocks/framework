@@ -55,6 +55,12 @@ class List_Settings
 	 */
 	public $search = array();
 
+	//-------------------------------------------------------------------------------------- $setting
+	/**
+	 * @var Setting
+	 */
+	public $setting;
+
 	//----------------------------------------------------------------------------------------- $sort
 	/**
 	 * Sort option (sort properties and reverse)
@@ -66,14 +72,18 @@ class List_Settings
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string
+	 * @param $setting    Setting
 	 */
-	public function __construct($class_name = null)
+	public function __construct($class_name = null, Setting $setting = null)
 	{
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
 		}
+		if (isset($setting)) {
+			$this->setting = $setting;
+		}
 		if (!isset($this->sort)) {
-			$this->sort = new Dao_Sort_Option($this->class_name);
+			$this->sort = new Dao_Sort_Option();
 		}
 		if (!isset($this->properties_path) && isset($this->class_name)) {
 			$this->properties_path = Reflection_Class::getInstanceOf($this->class_name)
@@ -174,6 +184,14 @@ class List_Settings
 		}
 		else {
 			$this->properties_title[$property_path] = $title;
+		}
+	}
+
+	//------------------------------------------------------------------------------------------ save
+	public function save()
+	{
+		if ($this->setting) {
+			Dao::write($this->setting);
 		}
 	}
 

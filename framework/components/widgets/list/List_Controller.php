@@ -14,10 +14,12 @@ abstract class List_Controller extends Output_Controller
 	 * @param $list_settings List_Settings
 	 * @param $parameters    array
 	 * @param $search        array
+	 * @return boolean true if parameters did change
 	 */
 	public function applyParametersToListSettings(
 		List_Settings $list_settings, $parameters, $search = null
 	) {
+		$did_change = true;
 		if (isset($parameters["add_property"])) {
 			$list_settings->addProperty(
 				$parameters["add_property"],
@@ -27,26 +29,33 @@ abstract class List_Controller extends Output_Controller
 					: (isset($parameters["after"]) ? $parameters["after"] : "")
 			);
 		}
-		if (isset($parameters["remove_property"])) {
+		elseif (isset($parameters["remove_property"])) {
 			$list_settings->removeProperty($parameters["remove_property"]);
 		}
-		if (isset($parameters["property_path"])) {
+		elseif (isset($parameters["property_path"])) {
 			if (isset($parameters["property_title"])) {
 				$list_settings->propertyTitle($parameters["property_path"], $parameters["property_title"]);
 			}
 		}
-		if (isset($parameters["reverse"])) {
+		elseif (isset($parameters["reverse"])) {
 			$list_settings->reverse($parameters["reverse"]);
 		}
-		if (!empty($search)) {
+		elseif (!empty($search)) {
 			$list_settings->search(self::descapeForm($search));
 		}
-		if (isset($parameters["sort"])) {
+		elseif (isset($parameters["sort"])) {
 			$list_settings->sort($parameters["sort"]);
 		}
-		if (isset($parameters["title"])) {
+		elseif (isset($parameters["title"])) {
 			$list_settings->title = $parameters["title"];
 		}
+		else {
+			$did_change = false;
+		}
+		if ($did_change) {
+			$list_settings->save();
+		}
+		return $did_change;
 	}
 
 	//----------------------------------------------------------------------------------- descapeForm
@@ -105,15 +114,18 @@ abstract class List_Controller extends Output_Controller
 	public static function getListSettings($class_name)
 	{
 		/** @var $settings Settings */
-		$settings = Session::current()->get('SAF\Framework\Settings', true);
+		$settings = Settings::ofCurrentSession();
 		/** @var $setting Setting */
 		$setting = $settings->get($class_name . ".list");
 		if (!isset($setting)) {
 			$list_settings = new List_Settings($class_name);
-			$settings->add($class_name . ".list", $list_settings);
+			$list_settings->setting = $settings->add(
+				new User_Setting($class_name . ".list", $list_settings)
+			);
 		}
 		else {
 			$list_settings = $setting->value;
+			$list_settings->setting = $setting;
 		}
 		return $list_settings;
 	}

@@ -157,6 +157,9 @@ class Mysql_Link extends Sql_Link
 	 */
 	public function escapeString($value)
 	{
+		if (is_object($value)) {
+			$value = serialize($value);
+		}
 		return $this->connection->escape_string($value);
 	}
 
