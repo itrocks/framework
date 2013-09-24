@@ -42,7 +42,7 @@ class Html_Builder_Collection
 		$this->collection = $collection;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
 		$class = Reflection_Class::getInstanceOf($this->class_name);
-		$this->properties = $class->getListAnnotation("representative")->values();
+		$this->properties = $this->getProperties();
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -123,6 +123,40 @@ class Html_Builder_Collection
 			$row->addCell($this->buildCell($object, $property_name));
 		}
 		return $row;
+	}
+
+	//--------------------------------------------------------------------------------- getProperties
+	/**
+	 * @return string[]
+	 */
+	protected function getProperties()
+	{
+		// gets all properties from collection element class
+		$class = Reflection_Class::getInstanceOf($this->class_name);
+		$properties = $class->getAllProperties();
+		// remove linked class properties
+		$linked_class = $class->getAnnotation("link")->value;
+		if ($linked_class) {
+			foreach (
+				array_keys(Reflection_Class::getInstanceOf($linked_class)->getAllProperties())
+				as $property_name
+			) {
+				unset($properties[$property_name]);
+			}
+		}
+		// remove composite property
+		$property_name = $this->property->getAnnotation("foreign")->value;
+		if (isset($properties[$property_name])) {
+			unset($properties[$property_name]);
+		}
+		// remove static properties
+		foreach ($properties as $property_name => $property) {
+			if ($property->isStatic()) {
+				unset($properties[$property_name]);
+			}
+		}
+		// returns properties names only
+		return array_keys($properties);
 	}
 
 }

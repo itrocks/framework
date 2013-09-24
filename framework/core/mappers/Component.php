@@ -11,7 +11,7 @@ trait Component
 	/**
 	 * Composite property name
 	 *
-	 * Indices are :
+	 * Keys are :
 	 * - the called class, as composite property name can be different for each class
 	 * - the filter condition (a class or property name)
 	 *
