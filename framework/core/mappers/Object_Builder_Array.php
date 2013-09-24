@@ -84,6 +84,9 @@ class Object_Builder_Array
 			$object = (isset($array["id"]) && $array["id"])
 				? Dao::read($array["id"], $this->class->name)
 				: $this->class->newInstance();
+			if (isset($array["id"])) {
+				unset($array["id"]);
+			}
 		}
 		$objects = array();
 		$read_properties = array();
@@ -104,10 +107,13 @@ class Object_Builder_Array
 					$property_name = substr($property_name, 0, -1);
 				}
 				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
-				if (!isset($property)) {
+				if (substr($property_name, 0, 3) === "id_") {
+					$this->buildIdProperty($object, $property_name, $value, $null_if_empty);
+				}
+				elseif (($property_name != "id") && !isset($property)) {
 					trigger_error("Unknown property $property_name into " . $this->class->name, E_USER_ERROR);
 				}
-				if (!$this->buildProperty($object, $property, $value, $null_if_empty)) {
+				elseif (!$this->buildProperty($object, $property, $value, $null_if_empty)) {
 					$is_null = false;
 				}
 				if ($asterisk) {
@@ -151,6 +157,11 @@ class Object_Builder_Array
 
 	//-------------------------------------------------------------------------- buildCollectionValue
 	/**
+	 * Accepted arrays :
+	 * $array[$object_number][$property_name] = $value
+	 * $array[$property_name][$object_number] = $value
+	 * $array[0][$column_number] = "property_name" then $array[$object_number][$column_number] = $value
+	 *
 	 * @param $class_name    string
 	 * @param $array         array
 	 * @param $null_if_empty boolean
@@ -161,18 +172,15 @@ class Object_Builder_Array
 		$collection = array();
 		if ($array) {
 			$builder = new Object_Builder_Array($class_name);
-			$first_row = reset($array);
+			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
+			reset($array);
 			if (!is_numeric(key($array))) {
 				$array = arrayFormRevert($array);
 			}
-			$combine = true;
-			foreach (array_keys($first_row) as $key) {
-				if (!is_numeric($key)) {
-					$combine = false;
-					break;
-				}
-			}
-			if ($combine) {
+			// check if the first row contains column names
+			$first_row = reset($array);
+			reset($first_row);
+			if ($combine = is_numeric(key($first_row))) {
 				unset($array[key($array)]);
 			}
 			foreach ($array as $key => $element) {
@@ -186,6 +194,29 @@ class Object_Builder_Array
 			}
 		}
 		return $collection;
+	}
+
+	//------------------------------------------------------------------------------- buildIdProperty
+	/**
+	 * If an id_foo property is set and not empty, it can be set and associated object is removed
+	 * id_foo must always be set before any forced foo[sub_property] values into the array
+	 *
+	 * @param $object        object
+	 * @param $property_name string must start with "id_"
+	 * @param $value         integer
+	 * @param $null_if_empty boolean
+	 * @return boolean
+	 */
+	private function buildIdProperty($object, $property_name, $value, $null_if_empty)
+	{
+		$is_null = $null_if_empty;
+		$real_property_name = substr($property_name, 3);
+		$object->$property_name = $value;
+		$object->$real_property_name = null;
+		if ($value) {
+			$is_null = false;
+		}
+		return $is_null;
 	}
 
 	//--------------------------------------------------------------------------------- buildMapValue
@@ -235,50 +266,30 @@ class Object_Builder_Array
 	private function buildProperty($object, Reflection_Property $property, $value, $null_if_empty)
 	{
 		$is_null = $null_if_empty;
-		$type = isset($property) ? $property->getType() : null;
-		if (isset($type)) {
-			if ($type->isBasic()) {
-				$value = $this->buildBasicValue($property, $value);
+		$type = $property->getType();
+		if ($type->isBasic()) {
+			$value = $this->buildBasicValue($property, $value);
+		}
+		elseif (is_array($value)) {
+			$link = $property->getAnnotation("link")->value;
+			if ($link == "Object") {
+				$class_name = $property->getType()->asString();
+				$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
 			}
-			elseif (is_array($value)) {
-				$link = $property->getAnnotation("link")->value;
-				if ($link == "Object") {
-					$class_name = $property->getType()->asString();
-					$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
-				}
-				elseif ($link == "Collection") {
-					$class_name = $property->getType()->getElementTypeAsString();
-					$value = $this->buildCollection($class_name, $value, $null_if_empty);
-				}
-				elseif ($link == "Map") {
-					$class_name = $property->getType()->getElementTypeAsString();
-					$value = $this->buildMap($class_name, $value, $null_if_empty);
-				}
+			elseif ($link == "Collection") {
+				$class_name = $property->getType()->getElementTypeAsString();
+				$value = $this->buildCollection($class_name, $value, $null_if_empty);
+			}
+			elseif ($link == "Map") {
+				$class_name = $property->getType()->getElementTypeAsString();
+				$value = $this->buildMap($class_name, $value, $null_if_empty);
 			}
 		}
 		// the property value is set only for official properties, if not default and not empty
 		$property_name = $property->name;
 		$object->$property_name = $value;
-		if (isset($property) && !$property->isValueEmptyOrDefault($value)) {
+		if (!$property->isValueEmptyOrDefault($value)) {
 			$is_null = false;
-		}
-		// if an id_foo property is set and not empty, it can be set and associated object is removed
-		// id_foo must always be set before any forced foo[sub_property] values into the array
-		if (!isset($property) && (substr($property_name, 0, 3) == "id_")) {
-			if (empty($value)) {
-				$real_property_name = substr($property_name, 3);
-				$real_property = isset($this->properties[$real_property_name])
-					? $this->properties[$real_property_name] : null;
-				$value = (isset($real_property) && $real_property->getAnnotation("null")->value)
-					? null
-					: 0;
-			}
-			$object->$property_name = $value;
-			if ($value) {
-				$linked_name = substr($property_name, 3);
-				unset($object->$linked_name);
-				$is_null = false;
-			}
 		}
 		return $is_null;
 	}
