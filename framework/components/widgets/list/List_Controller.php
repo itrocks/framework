@@ -139,16 +139,18 @@ abstract class List_Controller extends Output_Controller
 	{
 		$search = array_combine($list_settings->properties_path, $list_settings->properties_path);
 		foreach ($list_settings->search as $property_path => $search_value) {
-			$property = new Reflection_Property_Value(
-				$list_settings->class_name, $property_path, $search_value, true
-			);
-			if ($property->getType()->isClass()) {
-				$property->value(Dao::read($search_value, $property->getType()->asString()));
+			if (isset($search[$property_path])) {
+				$property = new Reflection_Property_Value(
+					$list_settings->class_name, $property_path, $search_value, true
+				);
+				if ($property->getType()->isClass()) {
+					$property->value(Dao::read($search_value, $property->getType()->asString()));
+				}
+				else {
+					$property->value($search_value);
+				}
+				$search[$property_path] = $property;
 			}
-			else {
-				$property->value($search_value);
-			}
-			$search[$property_path] = $property;
 		}
 		return $search;
 	}

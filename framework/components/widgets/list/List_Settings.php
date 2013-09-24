@@ -108,7 +108,9 @@ class List_Settings
 			if (($where == "before") && ($key == $where_property_path)) {
 				$properties_path[$count++] = $property_path;
 			}
-			$properties_path[$count++] = $key;
+			if ($key !== $property_path) {
+				$properties_path[$count++] = $key;
+			}
 			if (($where == "after") && ($key == $where_property_path)) {
 				$properties_path[$count++] = $property_path;
 			}
