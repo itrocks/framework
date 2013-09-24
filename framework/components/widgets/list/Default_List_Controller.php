@@ -16,8 +16,9 @@ class Default_List_Controller extends List_Controller
 	protected function getGeneralButtons($class_name, $parameters)
 	{
 		return array(
-			new Button("Add", View::link($class_name, "new"), "add", Color::of("green")),
-			new Button("Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("green"))
+			new Button("Add",    View::link($class_name, "new"), "add", Color::of("green")),
+			new Button("Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("green")),
+			new Button("Save",   View::link($class_name, "saveList"), "save_list", Color::of("blue"))
 		);
 	}
 
@@ -54,30 +55,31 @@ class Default_List_Controller extends List_Controller
 	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
 		$parameters = $parameters->getObjects();
-		$element_class_name = Namespaces::fullClassName(Set::elementClassNameOf($class_name));
-		$list_settings = $this->getListSettings($element_class_name);
+		$list_settings = $this->getListSettings($class_name);
 		$this->applyParametersToListSettings($list_settings, $parameters, $form);
 		// read data
 		$parameters = array_merge(
 			array(
-				$element_class_name => Dao::select(
-					$element_class_name,
+				$class_name => Dao::select(
+					$class_name,
 					$list_settings->properties_path,
 					$list_settings->search,
 					array($list_settings->sort, Dao::limit(20))
 				),
-				"search"       => $this->getSearchValues($list_settings),
-				"sorted"       => $this->getSortClasses($list_settings),
+				"customized"   => $this->getCustomizedListSettings($list_settings),
 				"reversed"     => $this->getReverseClasses($list_settings),
+				"search"       => $this->getSearchValues($list_settings),
+				"short_titles" => $this->getShortTitles($list_settings),
 				"sort_options" => $this->getSortLinks($list_settings),
-				"titles"       => $this->getTitles($list_settings),
-				"short_titles" => $this->getShortTitles($list_settings)
+				"sorted"       => $this->getSortClasses($list_settings),
+				"title"        => $list_settings->title(),
+				"titles"       => $this->getTitles($list_settings)
 			),
 			$parameters
 		);
 		// buttons
-		$parameters["general_buttons"]   = $this->getGeneralButtons($element_class_name, $parameters);
-		$parameters["selection_buttons"] = $this->getSelectionButtons($element_class_name);
+		$parameters["general_buttons"]   = $this->getGeneralButtons($class_name, $parameters);
+		$parameters["selection_buttons"] = $this->getSelectionButtons($class_name);
 		return $parameters;
 	}
 

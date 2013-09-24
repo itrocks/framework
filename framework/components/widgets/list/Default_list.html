@@ -12,7 +12,13 @@
 
 <!--BEGIN-->
 <div class="{@class.short.lower} list window" id="/{@class.short}/{@feature}">
-	<h2 class="window title">|¦{@class.ucfirst}¦ list|</h2>
+	<h2 class="window title">{title}</h2>
+
+	<!--customized_lists?-->
+	<select class="customized">
+		<!--customized_lists--><option>{name}</option><!--customized_lists-->
+	</select>
+	<!--customized_lists?-->
 
 	{/general_buttons.html}
 

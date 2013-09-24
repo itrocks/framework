@@ -78,6 +78,25 @@ abstract class List_Controller extends Output_Controller
 		return $property_name;
 	}
 
+	//--------------------------------------------------------------------- getCustomizedListSettings
+	/**
+	 * @param $list_settings List_Settings
+	 * @return List_Settings[]
+	 */
+	public function getCustomizedListSettings(List_Settings $list_settings)
+	{
+		$list = array();
+		$search["code"] = $list_settings->class_name . ".list.%";
+		/** @var $setting Setting */
+		foreach (Dao::search($search, 'SAF\Framework\Setting') as $setting) {
+			$list[] = $setting->value;
+		}
+		uasort($list, function(List_Settings $s1, List_Settings $s2) {
+			return $s1->name > $s2->name;
+		});
+		return $list;
+	}
+
 	//------------------------------------------------------------------------------- getListSettings
 	/**
 	 * @param $class_name string

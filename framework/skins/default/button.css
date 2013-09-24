@@ -15,6 +15,7 @@ ul.buttons {
 li.button {
 	display: inline-block;
 	float: left;
+	margin: 0 2px;
 	position: relative;
 }
 
@@ -54,66 +55,70 @@ li.sub_button a:hover {
 	display: inline-block;
 	float: left;
 	font-size: 1px;
-	width: 28px;
 	height: 15px;
+	width: 28px;
 }
 
-a.button {
-	background:
-		url("img/buttons/17/left_blue.gif") left no-repeat,
-		url("img/buttons/17/right.gif") right no-repeat,
-		url("img/buttons/17/background.gif");
-	border-radius: 4px 2px 2px 4px;
-	box-shadow: 0 1px 0 0 #D0D0D0;
+a.button,
+.button a {
 	color: #1C2E6C;
 	display: inline-block;
 	font-size: 11px;
 	font-weight: bold;
 	height: 17px;
 	line-height: 17px;
-	margin: 0 2px;
 	padding: 0 4px 0 10px;
 	text-decoration: none;
 	vertical-align: bottom;
 }
 
-a.button.close {
+a.button:hover,
+.button a:hover {
+	color: #2D8F8D;
+}
+
+.button {
+	background:
+		url("img/buttons/17/left_blue.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+	border-radius: 4px 2px 2px 4px;
+	box-shadow: 0 1px 0 0 #D0D0D0;
+}
+
+.button.close {
 	background:
 		url("img/buttons/17/left_close.gif") left no-repeat,
 		url("img/buttons/17/right.gif") right no-repeat,
 		url("img/buttons/17/background.gif");
 }
 
-a.button.green {
+.button.green {
 	background:
 		url("img/buttons/17/left_green.gif") left no-repeat,
 		url("img/buttons/17/right.gif") right no-repeat,
 		url("img/buttons/17/background.gif");
 }
 
-a.button.magenta {
+.button.magenta {
 	background:
 		url("img/buttons/17/left_magenta.gif") left no-repeat,
 		url("img/buttons/17/right.gif") right no-repeat,
 		url("img/buttons/17/background.gif");
 }
 
-a.button.orange {
+.button.orange {
 	background:
 		url("img/buttons/17/left_orange.gif") left no-repeat,
 		url("img/buttons/17/right.gif") right no-repeat,
 		url("img/buttons/17/background.gif");
 }
 
-a.button.red {
+.button.red {
 	background:
 		url("img/buttons/17/left_red.gif") left no-repeat,
 		url("img/buttons/17/right.gif") right no-repeat,
 		url("img/buttons/17/background.gif");
-}
-
-a.button:hover {
-	color: #2D8F8D;
 }
 
 .ifedit {
