@@ -15,10 +15,11 @@ abstract class Import_Settings_Builder
 	 * Second line must contain the fields paths, relative to the class
 	 * Other liens contain data, and are not used
 	 *
-	 * @param $array array two dimensional array (keys are row, col)
+	 * @param $array            array two dimensional array (keys are row, col)
+	 * @param $properties_alias string[]
 	 * @return Import_Settings
 	 */
-	public static function buildArray(&$array)
+	public static function buildArray(&$array, $properties_alias)
 	{
 		$settings = new Import_Settings();
 		$class_name = Import_Array::getClassNameFromArray($array);
@@ -30,6 +31,9 @@ abstract class Import_Settings_Builder
 			$class_path = "";
 			$property_path_for_class = array();
 			foreach (explode(".", $property_path) as $property_name) {
+				if (isset($properties_alias[$property_name])) {
+					$property_name = $properties_alias[$property_name];
+				}
 				$class_key = join(".", $property_path_for_class);
 				$identify = substr($property_name, -1) === "*";
 				if ($identify) {
