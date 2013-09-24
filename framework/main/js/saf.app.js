@@ -7,6 +7,7 @@
  * @param project_uri string
  * @param language    string
  * @param date_format string
+ * @param use_cookies boolean
  * @constructor
  */
 App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_format, use_cookies)
@@ -68,7 +69,6 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 */
 	this.andSID = function()
 	{
-		console.log("cookies = " + this.use_cookies);
 		return this.use_cookies ? "" : ("&PHPSESSID=" + this.PHPSESSID);
 	};
 
@@ -80,7 +80,6 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 */
 	this.askSID = function()
 	{
-		console.log("cookies = " + this.use_cookies);
 		return this.use_cookies ? "" : ("?PHPSESSID=" + this.PHPSESSID);
 	};
 
@@ -91,7 +90,6 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 */
 	this.askSIDand = function()
 	{
-		console.log("cookies = " + this.use_cookies);
 		return this.use_cookies ? "?" : ("?PHPSESSID=" + this.PHPSESSID + "&");
 	}
 
