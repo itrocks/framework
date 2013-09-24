@@ -109,6 +109,17 @@ class List_Settings
 		$this->properties_path = $properties_path;
 	}
 
+	//------------------------------------------------------------------------------- getDefaultTitle
+	/**
+	 * @return string
+	 */
+	private function getDefaultTitle()
+	{
+		return ucfirst(Names::classToDisplay(
+			Reflection_Class::getInstanceOf($this->class_name)->getAnnotation("set")
+		));
+	}
+
 	//-------------------------------------------------------------------------------- removeProperty
 	/**
 	 * @param $property_path string
@@ -187,6 +198,21 @@ class List_Settings
 				$this->search[$property_path] = $value;
 			}
 		}
+	}
+
+	//----------------------------------------------------------------------------------------- title
+	/**
+	 * @param $title string
+	 * @return string
+	 */
+	public function title($title = null)
+	{
+		if (isset($title)) {
+			$this->title = $title;
+		}
+		return (empty($this->title))
+			? $this->getDefaultTitle()
+			: $this->title;
 	}
 
 }

@@ -320,6 +320,11 @@ abstract class Loc implements Plugin
 			'SAF\Framework\Reflection_Property_View->formatInteger()',
 			array(__CLASS__, "integerReturnedValueToLocale")
 		);
+		// translations
+		Aop::add(Aop::AFTER,
+			'SAF\Framework\List_Settings->getDefaultTitle()',
+			array(__CLASS__, "translateReturnedValue")
+		);
 		// translation/reverse of export/import procedures
 		Aop::add(Aop::BEFORE,
 			'SAF\Framework\Import_Array->getClassNameFromValue()',
@@ -374,6 +379,17 @@ abstract class Loc implements Plugin
 	public static function tr($text, $context = "")
 	{
 		return Locale::current()->translations->translate($text, $context);
+	}
+
+	//------------------------------------------------------------------------ translateReturnedValue
+	/**
+	 * Translate returned value
+	 *
+	 * @param AopJoinpoint $joinpoint
+	 */
+	public static function translateReturnedValue(AopJoinpoint $joinpoint)
+	{
+		$joinpoint->setReturnedValue(self::tr($joinpoint->getReturnedValue()));
 	}
 
 }
