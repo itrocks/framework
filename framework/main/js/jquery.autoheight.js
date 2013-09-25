@@ -61,6 +61,8 @@
 				}
 			}
 		});
+
+		return this;
 	}
 
 })( jQuery );

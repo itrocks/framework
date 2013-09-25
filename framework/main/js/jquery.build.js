@@ -58,6 +58,7 @@
 			delete this.tmpBuildCaller;
 		}
 		delete this.in;
+
 		return this;
 	}
 

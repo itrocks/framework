@@ -19,6 +19,7 @@
 			$(elements[position]).fadeIn(1000);
 		}, 5000);
 
+		return this;
 	}
 
 })( jQuery );

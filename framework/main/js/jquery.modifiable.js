@@ -14,7 +14,6 @@
 		//------------------------------------------------------------------------------------- click()
 		this.click(function(event)
 		{
-console.log("click confirm=" + modifiable_confirm + " waiting=" + modifiable_waiting + " dblclick=" + modifiable_dblclick);
 			if (!modifiable_confirm) {
 				var clickable = this;
 				event.preventDefault();
@@ -43,7 +42,6 @@ console.log("click confirm=" + modifiable_confirm + " waiting=" + modifiable_wai
 		//---------------------------------------------------------------------------------- dblclick()
 		this.dblclick(function(event)
 		{
-console.log("dblclick");
 			modifiable_dblclick = true;
 			event.preventDefault();
 			event.stopImmediatePropagation();
@@ -60,7 +58,6 @@ console.log("dblclick");
 						done = done.replace("{" + alias + "}", encodeURI(value));
 					}
 					done = done.replace("{value}", encodeURI($input.val()));
-					console.log(done);
 					$.ajax({
 						url: done,
 						target: settings.target,
@@ -79,6 +76,8 @@ console.log("dblclick");
 			$input.blur(function() { done(); });
 			$input.focus();
 		});
+
+		return this;
 	}
 
 })( jQuery );
