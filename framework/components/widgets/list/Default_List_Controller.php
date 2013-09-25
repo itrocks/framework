@@ -16,9 +16,18 @@ class Default_List_Controller extends List_Controller
 	protected function getGeneralButtons($class_name, $parameters)
 	{
 		return array(
-			new Button("Add",    View::link($class_name, "new"), "add", Color::of("green")),
-			new Button("Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("green")),
-			new Button("Save",   View::link($class_name, "saveList"), "save_list", Color::of("blue"))
+			"add" => new Button("Add", View::link($class_name, "new"), "add", Color::of("green")),
+			"import" => new Button(
+				"Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("green")
+			),
+			"delete" => new Button(
+				"Delete", View::link($class_name, "list", null, array("delete_list" => true)),
+				"delete_list", array(Color::of("red"), "#main", ".submit")
+			),
+			"save" => new Button(
+				"Save", View::link($class_name, "list"),
+				"save_list", array(Color::of("blue"), "#main", ".submit")
+			)
 		);
 	}
 
@@ -56,7 +65,9 @@ class Default_List_Controller extends List_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$list_settings = $this->getListSettings($class_name);
-		$this->applyParametersToListSettings($list_settings, $parameters, $form);
+		$list_settings = $this->applyParametersToListSettings($list_settings, $parameters, $form)
+			?: $list_settings;
+		$customized_list_settings = $this->getCustomizedListSettings($list_settings);
 		// read data
 		$parameters = array_merge(
 			array(
@@ -66,20 +77,24 @@ class Default_List_Controller extends List_Controller
 					$list_settings->search,
 					array($list_settings->sort, Dao::limit(20))
 				),
-				"customized"   => $this->getCustomizedListSettings($list_settings),
-				"reversed"     => $this->getReverseClasses($list_settings),
-				"search"       => $this->getSearchValues($list_settings),
-				"short_titles" => $this->getShortTitles($list_settings),
-				"sort_options" => $this->getSortLinks($list_settings),
-				"sorted"       => $this->getSortClasses($list_settings),
-				"title"        => $list_settings->title(),
-				"titles"       => $this->getTitles($list_settings)
+				"customized_lists" => $this->getCustomizedListSettings($list_settings),
+				"reversed"         => $this->getReverseClasses($list_settings),
+				"search"           => $this->getSearchValues($list_settings),
+				"settings"         => $list_settings,
+				"short_titles"     => $this->getShortTitles($list_settings),
+				"sort_options"     => $this->getSortLinks($list_settings),
+				"sorted"           => $this->getSortClasses($list_settings),
+				"title"            => $list_settings->title(),
+				"titles"           => $this->getTitles($list_settings)
 			),
 			$parameters
 		);
 		// buttons
 		$parameters["general_buttons"]   = $this->getGeneralButtons($class_name, $parameters);
 		$parameters["selection_buttons"] = $this->getSelectionButtons($class_name);
+		if (!isset($customized_list_settings[$list_settings->name])) {
+			unset($parameters["general_buttons"]["delete"]);
+		}
 		return $parameters;
 	}
 

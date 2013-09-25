@@ -13,12 +13,15 @@ abstract class List_Controller extends Output_Controller
 	 *
 	 * @param $list_settings List_Settings
 	 * @param $parameters    array
-	 * @param $search        array
-	 * @return boolean true if parameters did change
+	 * @param $form          array
+	 * @return List_Setting set if parameters did change
 	 */
 	public function applyParametersToListSettings(
-		List_Settings $list_settings, $parameters, $search = null
+		List_Settings $list_settings, $parameters, $form = null
 	) {
+		if (isset($form)) {
+			$parameters = array_merge($parameters, $form);
+		}
 		$did_change = true;
 		if (isset($parameters["add_property"])) {
 			$list_settings->addProperty(
@@ -40,8 +43,8 @@ abstract class List_Controller extends Output_Controller
 		elseif (isset($parameters["reverse"])) {
 			$list_settings->reverse($parameters["reverse"]);
 		}
-		elseif (!empty($search)) {
-			$list_settings->search(self::descapeForm($search));
+		elseif (isset($parameters["search"])) {
+			$list_settings->search(self::descapeForm($form["search"]));
 		}
 		elseif (isset($parameters["sort"])) {
 			$list_settings->sort($parameters["sort"]);
@@ -55,7 +58,21 @@ abstract class List_Controller extends Output_Controller
 		if ($did_change) {
 			$list_settings->save();
 		}
-		return $did_change;
+		if (isset($parameters["load_name"])) {
+			$list_settings = List_Settings::load($list_settings->class_name, $parameters["load_name"]);
+			$did_change = true;
+		}
+		elseif (isset($parameters["save_name"])) {
+			$list_settings->name = $parameters["save_name"];
+			$list_settings->save($parameters["save_name"]);
+			$did_change = true;
+		}
+		elseif (isset($parameters) && isset($parameters["delete_list"])) {
+			$list_settings->delete();
+			$list_settings = new List_Settings($list_settings->class_name);
+			$did_change = true;
+		}
+		return $did_change ? $list_settings : null;
 	}
 
 	//----------------------------------------------------------------------------------- descapeForm
@@ -98,11 +115,11 @@ abstract class List_Controller extends Output_Controller
 		$search["code"] = $list_settings->class_name . ".list.%";
 		/** @var $setting Setting */
 		foreach (Dao::search($search, 'SAF\Framework\Setting') as $setting) {
-			$list[] = $setting->value;
+			/** @var $list_settings List_Settings*/
+			$settings = unserialize($setting->value);
+			$list[$settings->name] = (($settings->name == $list_settings->name) ? "selected" : "");
 		}
-		uasort($list, function(List_Settings $s1, List_Settings $s2) {
-			return $s1->name > $s2->name;
-		});
+		ksort($list);
 		return $list;
 	}
 

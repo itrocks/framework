@@ -1,4 +1,4 @@
-input:not([type=submit]):not([type=file]):not([type=button]),
+input:not([type=submit]):not([type=file]):not([type=button]):not(.customized),
 select,
 textarea {
 	background-color: white;

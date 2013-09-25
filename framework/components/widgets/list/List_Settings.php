@@ -121,6 +121,23 @@ class List_Settings
 		$this->properties_path = $properties_path;
 	}
 
+	//---------------------------------------------------------------------------------------- delete
+	/**
+	 * Delete the List_Settings object from the Settings set
+	 */
+	public function delete()
+	{
+		if ($this->name) {
+			$code = $this->class_name . ".list";
+			$setting = Search_Object::create('SAF\Framework\Setting');
+			$setting->code = $code . "." . $this->name;
+			$setting = Dao::searchOne($setting);
+			if (isset($setting)) {
+				Dao::delete($setting);
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------- getDefaultTitle
 	/**
 	 * @return string
@@ -130,6 +147,34 @@ class List_Settings
 		return ucfirst(Names::classToDisplay(
 			Reflection_Class::getInstanceOf($this->class_name)->getAnnotation("set")
 		));
+	}
+
+	//------------------------------------------------------------------------------------------ load
+	/**
+	 * Loads a List_Settings from the Settings set
+	 *
+	 * If no List_Settings named $name is stored, a new one will be returned
+	 *
+	 * @param $class_name string
+	 * @param $name       string
+	 * @return List_Settings
+	 */
+	public static function load($class_name, $name)
+	{
+		$code = $class_name . ".list";
+		$setting = Search_Object::create('SAF\Framework\Setting');
+		$setting->code = $code . "." . $name;
+		$setting = Dao::searchOne($setting);
+		if (isset($setting)) {
+			$list_settings = unserialize($setting->value);
+		}
+		else {
+			$list_settings = new List_Settings($class_name);
+		}
+		$list_settings->setting = Settings::ofCurrentSession()->get($code);
+		$list_settings->setting->value = $list_settings;
+		$list_settings->save();
+		return $list_settings;
 	}
 
 	//-------------------------------------------------------------------------------- removeProperty
@@ -190,9 +235,21 @@ class List_Settings
 	}
 
 	//------------------------------------------------------------------------------------------ save
-	public function save()
+	/**
+	 * If $save_name is set : saves the List_Settings object into the Settings set
+	 * If $save_name is not set : saves the List_Settings object for current user and session
+	 *
+	 * @param $save_name string
+	 */
+	public function save($save_name = null)
 	{
-		if ($this->setting) {
+		if (isset($save_name)) {
+			$setting = new Setting($this->class_name . ".list." . $save_name);
+			$setting = Dao::searchOne($setting) ?: $setting;
+			$setting->value = $this;
+			Dao::write($setting);
+		}
+		elseif ($this->setting) {
 			Dao::write($this->setting);
 		}
 	}
