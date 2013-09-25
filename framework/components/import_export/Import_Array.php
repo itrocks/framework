@@ -150,6 +150,21 @@ class Import_Array
 		return $constants;
 	}
 
+	//---------------------------------------------------------------------------- getPropertiesAlias
+	/**
+	 * @param $class_name string
+	 * @return string[]
+	 */
+	private static function getPropertiesAlias($class_name)
+	{
+		$list_settings = List_Controller::getListSettings($class_name);
+		$properties_alias = array();
+		foreach ($list_settings->properties_title as $property_path => $property_title) {
+			$properties_alias[Names::displayToProperty($property_title)] = $property_path;
+		}
+		return $properties_alias;
+	}
+
 	//------------------------------------------------------------------------ getPropertiesFromArray
 	/**
 	 * Returns the properties paths list of the array
@@ -159,16 +174,41 @@ class Import_Array
 	 *
 	 * The cursor on $array is set to the row containing the properties path.
 	 *
-	 * @param $array array Two dimensional array : keys are row and column number
+	 * @param $array      array Two dimensional array : keys are row and column number
+	 * @param $class_name string class name : if set, will use current list settings properties alias
 	 * @return string[] key is the column number, value is a property path
 	 */
-	public static function getPropertiesFromArray(&$array)
+	public static function getPropertiesFromArray(&$array, $class_name = null)
 	{
+		$use_reverse_translation = Locale::current() ? true : false;
+		if (isset($class_name)) {
+			$properties_alias = self::getPropertiesAlias($class_name);
+		}
 		self::addConstantsToArray(self::getConstantsFromArray($array), $array);
 		$properties = array();
-		foreach (current($array) as $key => $value) {
-			if ($value) {
-				$properties[$key] = $value;
+		foreach (current($array) as $column_number => $property_path) {
+			if ($property_path) {
+				if (isset($properties_alias[$property_path])) {
+					$property_path = $properties_alias[$property_path];
+				}
+				elseif ($use_reverse_translation) {
+					$property_class_name = $class_name;
+					$property_names = array();
+					foreach (explode(".", $property_path) as $property_name) {
+						if ($asterisk = (substr($property_name, -1) == "*")) {
+							$property_name = substr($property_name, 0, -1);
+						}
+						$property_name = Loc::rtr($property_name, $property_class_name);
+						$property_names[] = $property_name . ($asterisk ? "*" : "");
+						$property_class_name = Builder::className(
+							Reflection_Property::getInstanceOf(
+								$property_class_name, $property_name
+							)->getType()->getElementTypeAsString()
+						);
+					}
+					$property_path = join(".", $property_names);
+				}
+				$properties[$column_number] = $property_path;
 			}
 		}
 		return $properties;
@@ -245,7 +285,7 @@ class Import_Array
 			$this->setClassName($class_name);
 		}
 		list($this->properties_link, $this->properties_column) = self::getPropertiesLinkAndColumn(
-			$this->class_name, self::getPropertiesFromArray($array)
+			$this->class_name, self::getPropertiesFromArray($array, $this->class_name)
 		);
 		$key = key($array);
 		foreach ($this->sortedClasses() as $class) {

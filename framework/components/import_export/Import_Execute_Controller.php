@@ -21,7 +21,7 @@ class Import_Execute_Controller implements Feature_Controller
 		Mysql_Logger::getInstance()->continue = true;
 		Mysql_Logger::getInstance()->display_log = true;
 		$parameters = $parameters->getObjects();
-		$import = Import_Builder_Form::build($form);
+		$import = Import_Builder_Form::build($form, false);
 		foreach ($import->worksheets as $worksheet) {
 			$array = $worksheet->getCsvContent();
 			(new Import_Array($worksheet->settings))->importArray($array);

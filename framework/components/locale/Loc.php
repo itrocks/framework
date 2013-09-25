@@ -235,36 +235,6 @@ abstract class Loc implements Plugin
 		return Locale::current()->language;
 	}
 
-	//---------------------------------------------------------------------- propertiesDisplayReverse
-	/**
-	 * Reverse translation of an array of properties path returned value
-	 *
-	 * Accepts properties name ending with a "*" (used by ie imports)
-	 *
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function propertiesDisplayReverse(AopJoinpoint $joinpoint)
-	{
-		/** @var $class_name string */
-		$class_name = self::$context;
-		/** @var $properties string[]*/
-		$properties = $joinpoint->getReturnedValue();
-		foreach ($properties as $key => $property_path) {
-			$reverse_path = "";
-			foreach (explode(".", $property_path) as $property_name) {
-				if ($asterisk = (substr($property_name, -1) === "*")) {
-					$property_name = substr($property_name, 0, -1);
-				}
-				$property_name = Names::displayToProperty(self::rtr(
-					$property_name, $class_name, $reverse_path
-				));
-				$reverse_path .= ($reverse_path ? "." : "") . $property_name . ($asterisk ? "*" : "");
-			}
-			$properties[$key] = $reverse_path;
-		}
-		$joinpoint->setReturnedValue($properties);
-	}
-
 	//--------------------------------------------------------------------------------- propertyToIso
 	/**
 	 * Change a locale value into an ISO formatted value, knowing it's property
@@ -333,10 +303,6 @@ abstract class Loc implements Plugin
 		Aop::add(Aop::AFTER,
 			'SAF\Framework\Import_Array->getClassNameFromArray()',
 			array(__CLASS__, "classNameReturnedValueToContext")
-		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Import_Array->getPropertiesFromArray()',
-			array(__CLASS__, "propertiesDisplayReverse")
 		);
 	}
 

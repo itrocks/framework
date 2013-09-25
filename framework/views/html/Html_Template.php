@@ -568,6 +568,12 @@ class Html_Template
 				$from = $to = $expr;
 			}
 			$to = (($to == "") ? null : $to);
+			if (!empty($from) && ($from[0] === "{") && (substr($from, -1) === "}")) {
+				$from = $this->parseValue(substr($from, 1, -1));
+			}
+			if (!empty($to) && ($to[0] === "{") && (substr($to, -1) === "}")) {
+				$to = $this->parseValue(substr($to, 1, -1));
+			}
 		}
 		else {
 			$expr = null;
