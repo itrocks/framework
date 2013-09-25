@@ -134,23 +134,24 @@ class Html_Template
 	 *
 	 * @param $object_call object|string object or class name
 	 * @param $func_call   string "functionName(param1value,param2value,...)" or "functionName"
-	 * @param $objects     mixed[] objects stack
 	 * @return mixed
 	 */
-	public function callFunc($object_call, $func_call, $objects = null)
+	public function callFunc($object_call, $func_call)
 	{
-		$params = $objects ? array_merge(array($this), array($objects)) : array();
 		if ($i = strpos($func_call, "(")) {
 			$func_name = substr($func_call, 0, $i);
 			$i++;
 			$j = strpos($func_call, ")", $i);
-			$more_params = $this->parseFuncParams(substr($func_call, $i, $j - $i), $objects);
-			$params = array_merge($more_params, $params);
-			return call_user_func_array(array($object_call, $func_name), $params);
+			$params = $this->parseFuncParams(substr($func_call, $i, $j - $i));
 		}
 		else {
-			return call_user_func_array(array($object_call, $func_call), $params);
+			$func_name = $func_call;
+			$params = array();
 		}
+		if (is_a($object_call, 'SAF\Framework\Html_Template_Functions', true)) {
+			$params = array_merge(array($this), $params);
+		}
+		return call_user_func_array(array($object_call, $func_name), $params);
 	}
 
 	//--------------------------------------------------------------------------- getContainerContent
@@ -471,8 +472,7 @@ class Html_Template
 	{
 		return $this->htmlEntities($this->callFunc(
 			'SAF\Framework\Html_Template_Functions',
-			Names::propertyToMethod($func_name, "get"),
-			$this->objects
+			Names::propertyToMethod($func_name, "get")
 		));
 	}
 
@@ -606,7 +606,7 @@ class Html_Template
 			$loop_insert = $elements;
 		}
 		elseif ((is_array($elements) && !$force_condition) || isset($expr)) {
-			$do = false;
+			$first = true;
 			$loop_insert = "";
 			$counter = 0;
 			array_push($this->preprops, $var_name);
@@ -617,11 +617,11 @@ class Html_Template
 				if ($counter >= $from) {
 					array_unshift($this->var_names, $key);
 					array_unshift($this->objects, $element);
-					if ($do) {
-						$loop_insert .= $this->parseVars($separator);
+					if ($first) {
+						$first = false;
 					}
 					else {
-						$do = true;
+						$loop_insert .= $this->parseVars($separator);
 					}
 					$sub_content = $this->parseVars($loop_content);
 					$loop_insert .= $sub_content;
@@ -637,11 +637,11 @@ class Html_Template
 				while ($counter < $to) {
 					$counter++;
 					if ($counter >= $from) {
-						if ($do) {
-							$loop_insert .= $this->parseVars($separator);
+						if ($first) {
+							$first = true;
 						}
 						else {
-							$do = true;
+							$loop_insert .= $this->parseVars($separator);
 						}
 						$sub_content = $this->parseVars($loop_content);
 						$loop_insert .= $sub_content;
@@ -850,7 +850,7 @@ class Html_Template
 			$object = $this->parseFunc(substr($property_name, 1));
 		}
 		elseif ($i = strpos($property_name, "(")) {
-			$object = $this->callFunc($this->objects, $property_name);
+			$object = $this->callFunc(reset($this->objects), $property_name);
 		}
 		elseif (is_array($object)) {
 			$object = $this->parseArrayElement($object, $property_name);
@@ -950,7 +950,7 @@ class Html_Template
 				($c >= "A") && ($c <= "Z")
 				&& (substr($content, $i, 6) != "BEGIN:") && (substr($content, $i, 4) != "END:")
 			)
-			|| (strpos("@/.-+?!|=\"", $c) !== false);
+			|| (strpos("#@/.-+?!|=\"", $c) !== false);
 	}
 
 	//------------------------------------------------------------------------------------ parseValue
