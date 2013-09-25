@@ -67,12 +67,13 @@ abstract class View
 	 *
 	 * @param $object     object|string linked object or class name
 	 * @param $feature    string linked feature name
-	 * @param $parameters string|string[] string or array : parameters list
+	 * @param $parameters string|string[] optional parameters list
+	 * @param $arguments  string|string[] optional arguments list
 	 * @return string
 	 */
-	public static function link($object, $feature = null, $parameters = null)
+	public static function link($object, $feature = null, $parameters = null, $arguments = null)
 	{
-		return self::current()->link($object, $feature, $parameters);
+		return self::current()->link($object, $feature, $parameters, $arguments);
 	}
 
 	//------------------------------------------------------------------------------------------- run

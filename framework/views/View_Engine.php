@@ -13,9 +13,10 @@ interface View_Engine
 	 *
 	 * @param $object     object|string linked object or class name
 	 * @param $feature    string linked feature name
-	 * @param $parameters string|string[] string or array : parameters list
+	 * @param $parameters string|string[] optional parameters list
+	 * @param $arguments  string|string[] optional arguments list
 	 * @return string
 	 */
-	public function link($object, $feature = null, $parameters = null);
+	public function link($object, $feature = null, $parameters = null, $arguments = null);
 
 }
