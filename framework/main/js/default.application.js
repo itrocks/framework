@@ -19,6 +19,9 @@ $("document").ready(function()
 			$(this).css("z-index", ++window.zindex_counter);
 		});
 
+		// fix a growing td height bug when contained anchor is empty
+		this.in("td a:empty").html("&nbsp;");
+
 	});
 
 });
