@@ -129,7 +129,7 @@ $("document").ready(function()
 		});
 		this.in("a.add.action").attr("tabindex", -1);
 		if (this.attr("id") && (this.attr("id").substr(0, 6) == "window")) {
-			this.in(".close.button")
+			this.in(".close.button a")
 				.attr("href", "javascript:$('#" + this.attr("id") + "').remove()")
 				.attr("target", "");
 			var $button = this.in(".write.button");
