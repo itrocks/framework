@@ -98,7 +98,7 @@
 .list th {
 	background: url("img/list_head_left.png") left 3px no-repeat,
 		url("img/list_head_right.png") right 3px no-repeat,
-		url("img/list_head_background.png") repeat-x;
+		url("img/list_head_background.png") #aaa repeat-x;
 	height: 17px;
 	vertical-align: bottom;
 	white-space: nowrap;
@@ -107,7 +107,7 @@
 .list th.column_select {
 	background: url("img/list_head_right.png") right 3px no-repeat,
 		url("img/column_select.png") center 7px no-repeat,
-		url("img/list_head_background.png") repeat-x;
+		url("img/list_head_background.png") #aaa repeat-x;
 	cursor: pointer;
 	width: 16px;
 	position: relative;
