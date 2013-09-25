@@ -254,7 +254,7 @@ class Import_Array
 	 * @param $row                     string[] imported row of data
 	 * @param $identify_properties     Import_Property[] properties used to identify the read object
 	 * @param $class_properties_column integer[] column index for each property of the current class
-	 * @return array Dao::search compliant array / objects
+	 * @return array search array for Dao::search() using $this->class_name
 	 */
 	private function getSearchObject($row, $identify_properties, $class_properties_column)
 	{
@@ -394,7 +394,8 @@ class Import_Array
 	{
 		uksort($this->settings->classes, function($class_path_1, $class_path_2)
 		{
-			return substr_count($class_path_1, ".") < substr_count($class_path_2, ".");
+			return ($class_path_1 == "")
+				|| (substr_count($class_path_1, ".") < substr_count($class_path_2, "."));
 		});
 		return $this->settings->classes;
 	}

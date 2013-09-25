@@ -82,7 +82,7 @@ abstract class Import_Settings_Builder
 				// property paths for next elements
 				$property_path = str_replace(">", ".", $property_path);
 				$property = Reflection_Property::getInstanceOf($main_class_name, $property_path);
-				$class_name = $property->getType()->getElementTypeAsString();
+				$class_name = Builder::className($property->getType()->getElementTypeAsString());
 			}
 			$settings->classes[$property_path] = self::buildFormClass(
 				$class_name, $property_path, $class

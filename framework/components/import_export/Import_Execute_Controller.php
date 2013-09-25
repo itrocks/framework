@@ -18,8 +18,9 @@ class Import_Execute_Controller implements Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		Mysql_Logger::getInstance()->continue = true;
-		Mysql_Logger::getInstance()->display_log = true;
+		//Mysql_Logger::getInstance()->continue = true;
+		//Mysql_Logger::getInstance()->display_log = true;
+
 		$parameters = $parameters->getObjects();
 		$import = Import_Builder_Form::build($form, false);
 		foreach ($import->worksheets as $worksheet) {
