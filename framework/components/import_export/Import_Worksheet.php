@@ -21,6 +21,7 @@ class Import_Worksheet
 
 	//-------------------------------------------------------------------------------------- $preview
 	/**
+	 * @gette getPreview
 	 * @var Import_Preview
 	 */
 	public $preview;
@@ -41,15 +42,10 @@ class Import_Worksheet
 	public function __construct(
 		$name = null, Import_Settings $settings = null, $file = null, Import_Preview $preview = null
 	) {
+		if (isset($file))     $this->file     = $file;
 		if (isset($name))     $this->name     = $name;
-		if (isset($settings)) $this->settings = $settings;
 		if (isset($preview))  $this->preview  = $preview;
-		if (isset($file)) {
-			$this->file = $file;
-			if (!isset($this->preview)) {
-				$this->preview = new Import_Preview($this->getCsvContent());
-			}
-		}
+		if (isset($settings)) $this->settings = $settings;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -61,13 +57,16 @@ class Import_Worksheet
 		return strval($this->name);
 	}
 
-	//--------------------------------------------------------------------------------- getCsvContent
+	//------------------------------------------------------------------------------------ getPreview
 	/**
-	 * @return array Two dimensional array (keys are row, column)
+	 * @return Import_Preview
 	 */
-	public function getCsvContent()
+	public function getPreview()
 	{
-		return array_map("str_getcsv", file($this->file->temporary_file_name));
+		if (!isset($this->preview)) {
+			$this->preview = new Import_Preview($this->file->getCsvContent());
+		}
+		return $this->preview;
 	}
 
 }

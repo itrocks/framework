@@ -12,7 +12,7 @@ abstract class Import_Builder_Form
 	 * @param $form array
 	 * @return Import
 	 */
-	public static function build($form, $with_preview = false)
+	public static function build($form)
 	{
 		//echo "<h2>IMPORT SETTINGS FORM CONTENT :</h2><pre>" . print_r($form, true) . "</pre>";
 		$import = new Import();
@@ -21,11 +21,8 @@ abstract class Import_Builder_Form
 				$settings = Import_Settings_Builder::buildForm($worksheet);
 				$file_name = Application::current()->getTemporaryFilesPath()
 					. "/" . $worksheet["file"]["name"];
-				$file = new File($file_name);
 				$import->worksheets[$worksheet_name] = new Import_Worksheet(
-					$worksheet_name,
-					$settings,
-					$file
+					$worksheet_name, $settings, new File($file_name)
 				);
 			}
 		}

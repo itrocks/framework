@@ -70,6 +70,17 @@ class File
 		$this->hash = md5($this->content);
 	}
 
+	//--------------------------------------------------------------------------------- getCsvContent
+	/**
+	 * @return array Two dimensional array (keys are row, column)
+	 */
+	public function getCsvContent()
+	{
+		return isset($this->content)
+			? array_map("str_getcsv", explode(str_replace("\r", "", $this->content), "\n"))
+			: array_map("str_getcsv", file($this->temporary_file_name));
+	}
+
 	//------------------------------------------------------------------------------------ getContent
 	/**
 	 * Gets $content, or load it from temporary file name if not set
