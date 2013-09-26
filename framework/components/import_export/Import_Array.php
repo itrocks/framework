@@ -157,7 +157,7 @@ class Import_Array
 	 */
 	private static function getPropertiesAlias($class_name)
 	{
-		$list_settings = List_Controller::getListSettings($class_name);
+		$list_settings = List_Settings::current($class_name);
 		$properties_alias = array();
 		foreach ($list_settings->properties_title as $property_path => $property_title) {
 			$properties_alias[Names::displayToProperty($property_title)] = $property_path;
