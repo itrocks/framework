@@ -69,17 +69,20 @@ class Default_List_Controller extends List_Controller
 			?: $list_settings;
 		$customized_list_settings = $this->getCustomizedListSettings($list_settings);
 		// read data
+		$count = new Dao_Count_Option();
 		$parameters = array_merge(
 			array(
 				$class_name => Dao::select(
 					$class_name,
 					$list_settings->properties_path,
 					$list_settings->search,
-					array($list_settings->sort, Dao::limit(20))
+					array($list_settings->sort, Dao::limit(20), $count)
 				),
 				"customized_lists" => $this->getCustomizedListSettings($list_settings),
 				"reversed"         => $this->getReverseClasses($list_settings),
+				"rows_count"       => $count->count,
 				"search"           => $this->getSearchValues($list_settings),
+				"search_summary"   => $this->getSearchSummary($list_settings),
 				"settings"         => $list_settings,
 				"short_titles"     => $this->getShortTitles($list_settings),
 				"sort_options"     => $this->getSortLinks($list_settings),

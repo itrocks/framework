@@ -213,6 +213,7 @@ class List_Settings
 			unset($this->sort->columns[array_search($property_path, $this->sort->columns)]);
 		}
 		array_unshift($this->sort->columns, $property_path);
+		$this->sort->columns = array_slice($this->sort->columns, 0, 3);
 	}
 
 	//--------------------------------------------------------------------------------- propertyTitle

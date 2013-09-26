@@ -27,6 +27,7 @@
 		<!--customized_lists?-->
 
 		<table class="list">
+		<caption class="search_summary">{search_summary}</caption>
 		<thead>
 		<tr>
 			<th class="column_select">
@@ -34,7 +35,7 @@
 			</th>
 			<!--getProperties-->
 			<th id="{.}" class="property trashable sort{sorted.{#}} {?reversed.{.}}">
-				<a href="/{--@class.short}/{@feature}?{sort_options.{#}}={.}" target="#main" title="|{.}|">|{short_titles.{#}}|</a>
+				<a href="/{--@class.short}/{@feature}?{sort_options.{#}}={.}" target="#main" title="|{.}|">{short_titles.{#}}</a>
 			</th>
 			<!--sample-->
 			<th id="column2" class="property trashable">
@@ -89,7 +90,7 @@
 	</form>
 
 	<ul class="selection buttons">
-		<li class="selection arrow trashable">[select]</li>
+		<li class="selection_arrow trashable">[select]</li>
 		<!--selection_buttons-->
 		<li class="button"><a class="{class?} {feature.lower} trashable button {color}" href="{link}" target="{?target}">|{caption}|</a>
 			<!--sub_buttons?-->
@@ -101,8 +102,9 @@
 			<!--sub_buttons?-->
 		</li>
 		<!--sample-->
-		<li><a class="button trashable new blue" href="/Class/new" target="#main">New</a></li>
+		<li class="button"><a class="button trashable new blue" href="/Class/new" target="#main">New</a></li>
 		<!--selection_buttons-->
+		<li class="rows_count">|!{rows_count}! ¦{@class.short.lower}¦ match your search|</li>
 	</ul>
 
 </div>

@@ -48,7 +48,7 @@ li.sub_button a:hover {
 	background-color: #AEDC5F;
 }
 
-.selection.arrow {
+.selection_arrow {
 	background: url("img/left_up_arrow.png") no-repeat;
 	color: transparent;
 	cursor: pointer;

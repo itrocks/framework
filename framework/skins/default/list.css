@@ -1,4 +1,14 @@
 
+.list .search_summary {
+	color: #333;
+	font-weight: bold;
+	text-align: left;
+}
+
+.list .search_summary:empty {
+	display: none;
+}
+
 .list input.customized {
 	background: white;
 	display: none;
@@ -175,4 +185,9 @@
 .list td.insert_after,
 .list th.insert_after {
 	border-right: 2px solid #adff2f;
+}
+
+.list li.rows_count {
+	color: #333;
+	float: right;
 }

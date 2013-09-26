@@ -43,6 +43,12 @@ class Sql_Select_Builder
 	 */
 	private $where_builder;
 
+	//---------------------------------------------------------------------- $additional_where_clause
+	/**
+	 * @var string
+	 */
+	private $additional_where_clause;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Construct a SQL SELECT query
@@ -98,6 +104,9 @@ class Sql_Select_Builder
 					. (isset($option->from) ? ($option->from - 1) . ", " : "")
 					. $option->count;
 			}
+			elseif ($option instanceof Dao_Count_Option) {
+				$this->additional_where_clause = " SQL_CALC_FOUND_ROWS";
+			}
 		}
 		ksort($options);
 		return $options;
@@ -114,6 +123,7 @@ class Sql_Select_Builder
 		// Call of buildWhere() before buildColumns(), as all joins must be done to correctly deal with
 		// all properties.
 		// Call of buildColumns() and buildWhere() before buildTables(), to get joins ready.
+		$this->additional_where_clause = "";
 		$where   = $this->where_builder->build();
 		$columns = $this->columns_builder->build();
 		$options = $this->buildOptions();
@@ -133,7 +143,12 @@ class Sql_Select_Builder
 	 */
 	private function finalize($columns, $where, $tables, $options)
 	{
-		return "SELECT " . $columns . " FROM " . $tables . $where . join("", $options);
+		return "SELECT"
+			. $this->additional_where_clause . " "
+			. $columns . " "
+			. "FROM " . $tables
+			. $where
+			. join("", $options);
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins
