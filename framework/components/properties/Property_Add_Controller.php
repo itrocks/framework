@@ -15,7 +15,7 @@ class Property_Add_Controller implements Feature_Controller
 	public function addPropertyToList($class_name, $property_path)
 	{
 		$list_controller = new Default_List_Controller();
-		$list_settings = $list_controller->getListSettings($class_name);
+		$list_settings = List_Settings::current($class_name);
 		$list_settings->addProperty($property_path);
 		$list_settings->save();
 	}

@@ -20,8 +20,8 @@ abstract class Import_Settings_Builder
 	 */
 	public static function buildArray(&$array)
 	{
-		$settings = new Import_Settings();
 		$class_name = Import_Array::getClassNameFromArray($array);
+		$settings = new Import_Settings($class_name);
 		/** @var $classes Import_Class[] */
 		$classes = array();
 		foreach (Import_Array::getPropertiesFromArray($array, $class_name) as $property_path) {
@@ -65,17 +65,18 @@ abstract class Import_Settings_Builder
 	/**
 	 * Builds import settings using a recursive array coming from an input form
 	 *
-	 * @param $worksheet array
+	 * @param $worksheet  array
 	 * @return Import_Settings
 	 */
 	public static function buildForm($worksheet)
 	{
-		$settings = new Import_Settings();
 		$main_class_name = null;
+		$settings = new Import_Settings();
 		foreach ($worksheet["classes"] as $property_path => $class) {
 			if ($property_path[0] === strtoupper($property_path[0])) {
 				// the first element is always the main class name
 				$class_name = $main_class_name = Namespaces::fullClassName($property_path);
+				$settings->class_name = $class_name;
 				$property_path = "";
 			}
 			else {

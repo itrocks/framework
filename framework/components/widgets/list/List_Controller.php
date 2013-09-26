@@ -123,28 +123,33 @@ abstract class List_Controller extends Output_Controller
 		return $list;
 	}
 
-	//------------------------------------------------------------------------------- getListSettings
+	//------------------------------------------------------------------------------ getSearchSummary
 	/**
-	 * @param $class_name string
-	 * @return List_Settings
+	 * @param $list_settings List_Settings
+	 * @return string
 	 */
-	public static function getListSettings($class_name)
+	public function getSearchSummary(List_Settings $list_settings)
 	{
-		/** @var $settings Settings */
-		$settings = Settings::ofCurrentSession();
-		/** @var $setting Setting */
-		$setting = $settings->get($class_name . ".list");
-		if (!isset($setting)) {
-			$list_settings = new List_Settings($class_name);
-			$list_settings->setting = $settings->add(
-				new User_Setting($class_name . ".list", $list_settings)
+		if ($list_settings->search) {
+			if (Locale::current()) {
+				$t = "|";
+				$i = "¦";
+			}
+			else {
+				$t = $i = "";
+			}
+			$class_display = Names::classToDisplay(
+				Reflection_Class::getInstanceOf($list_settings->class_name)->getAnnotation("set")->value
 			);
+			$summary = $t . $i. ucfirst($class_display) . $i . " filtered by" . $t;
+			$first = true;
+			foreach ($list_settings->search as $property_path => $value) {
+				if ($first) $first = false; else $summary .= ",";
+				$summary .= " " . $t . $property_path . $t . " = \"" . $value . "\"";
+			}
+			return $summary;
 		}
-		else {
-			$list_settings = $setting->value;
-			$list_settings->setting = $setting;
-		}
-		return $list_settings;
+		return null;
 	}
 
 	//------------------------------------------------------------------------------- getSearchValues
@@ -272,11 +277,12 @@ abstract class List_Controller extends Output_Controller
 	 */
 	protected function getTitles(List_Settings $list_settings)
 	{
+		$locale = Locale::current();
 		$titles = array();
 		foreach ($list_settings->properties_path as $property_path) {
 			$titles[$property_path] = isset($list_settings->properties_title[$property_path])
 				? $list_settings->properties_title[$property_path]
-				: $property_path;
+				: (isset($locale) ? Loc::tr($property_path) : $property_path);
 			$key = array_search($property_path, $list_settings->properties_path);
 			if ($key !== false) {
 				$titles[$key] = $titles[$property_path];

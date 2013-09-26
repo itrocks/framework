@@ -54,11 +54,19 @@ abstract class Translation_String_Composer implements Plugin
 				$j = strpos($text, "¦", $i);
 				if ($j >= $i) {
 					$nelement ++;
-					$elements["$" . $nelement] = (substr($text, $i, 1) == "$")
-						? substr($text, $i + 1, $j - $i - 1)
-						: $translations->translate(substr($text, $i, $j - $i), $context);
+					$elements["$" . $nelement] = $translations->translate(substr($text, $i, $j - $i), $context);
 					$text = substr($text, 0, $i - 2) . "$" . $nelement . substr($text, $j + 2);
 					$i += strlen($nelement) - 1;
+				}
+			}
+			$i = 0;
+			while (($i = strpos($text, "!", $i)) !== false) {
+				$i++;
+				$j = strpos($text, "!", $i);
+				if (($j > $i) && (strpos(" \t\n\r", $text[$i]) === false)) {
+					$nelement ++;
+					$elements["$" . $nelement] = substr($text, $i, $j - $i);
+					$text = substr($text, 0, $i - 1) . "$" . $nelement . substr($text, $j + 1);
 				}
 			}
 			$translation = str_replace(

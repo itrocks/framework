@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Default list template</title>
+	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<style type="text/css">
+		@import "../../../skins/default/application.css";
+	</style>
+</head>
+<body>
+
+<!--BEGIN-->
+
+<input class="customized" value="{?settings.name}">
+
+<!--customized_lists?-->
+<select class="customized">
+	<option></option>
+	<!--customized_lists--><option {?.}>{#}</option><!--customized_lists-->
+</select>
+<!--customized_lists?-->
+
+<!--END-->
+
+</body>
+</html>

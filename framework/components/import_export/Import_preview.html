@@ -15,10 +15,11 @@
 	<h2 class="window title">|Import preview|</h2>
 
 	<form action="/Import/execute" method="post" target="#import_execute">
+		{/general_buttons.html}
+		{/custom.html}
 
 		<!--worksheets-->
 		<div class="worksheet">
-			<input type="hidden" name="worksheets[{name}][file][name]" value="{file.name}">
 
 			<!--settings.classes-->
 			<div class="{name} class">

@@ -199,7 +199,7 @@ class Html_Builder_Type_Edit
 			$add->addClass("action");
 			$add->setAttribute("target", "#_blank");
 			$add->setAttribute("title",
-				"|Edit ¦" . strtolower(Namespaces::shortClassName($class_name)) . "¦|"
+				"|Edit ¦" . Names::classToDisplay($class_name) . "¦|"
 			);
 		}
 		else {

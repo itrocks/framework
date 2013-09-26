@@ -157,7 +157,7 @@ class Import_Array
 	 */
 	private static function getPropertiesAlias($class_name)
 	{
-		$list_settings = List_Controller::getListSettings($class_name);
+		$list_settings = List_Settings::current($class_name);
 		$properties_alias = array();
 		foreach ($list_settings->properties_title as $property_path => $property_title) {
 			$properties_alias[Names::displayToProperty($property_title)] = $property_path;
@@ -357,8 +357,10 @@ class Import_Array
 			}
 		}
 		else {
+			echo "<pre class='error'>SEARCH = " . print_r($search, true) . "</pre>";
+			echo "<pre class='error'>FOUND = " . print_r($found, true) . "</pre>";
 			trigger_error(
-				"Multiple $class->class_name found for " . print_r($search, true), E_USER_ERROR
+				"Multiple " . Namespaces::shortClassName($class->class_name) . " found", E_USER_ERROR
 			);
 			$object = null;
 		}

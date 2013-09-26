@@ -6,22 +6,7 @@ namespace SAF\Framework;
  */
 class List_Settings
 {
-
-	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * The name of the class which list settings apply
-	 *
-	 * @var string
-	 */
-	public $class_name;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * A readable for the list settings
-	 *
-	 * @var string
-	 */
-	public $name;
+	use Custom_Settings { current as private pCurrent; load as private pLoad; }
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
@@ -54,12 +39,6 @@ class List_Settings
 	 * @var string[] key is the property path, value is the value or search expression
 	 */
 	public $search = array();
-
-	//-------------------------------------------------------------------------------------- $setting
-	/**
-	 * @var Setting
-	 */
-	public $setting;
 
 	//----------------------------------------------------------------------------------------- $sort
 	/**
@@ -121,21 +100,16 @@ class List_Settings
 		$this->properties_path = $properties_path;
 	}
 
-	//---------------------------------------------------------------------------------------- delete
+	//--------------------------------------------------------------------------------------- current
 	/**
-	 * Delete the List_Settings object from the Settings set
+	 * Get current session / user custom settings object
+	 *
+	 * @param $class_name string
+	 * @return List_Settings
 	 */
-	public function delete()
+	public static function current($class_name)
 	{
-		if ($this->name) {
-			$code = $this->class_name . ".list";
-			$setting = Search_Object::create('SAF\Framework\Setting');
-			$setting->code = $code . "." . $this->name;
-			$setting = Dao::searchOne($setting);
-			if (isset($setting)) {
-				Dao::delete($setting);
-			}
-		}
+		return self::pCurrent($class_name);
 	}
 
 	//------------------------------------------------------------------------------- getDefaultTitle
@@ -161,20 +135,7 @@ class List_Settings
 	 */
 	public static function load($class_name, $name)
 	{
-		$code = $class_name . ".list";
-		$setting = Search_Object::create('SAF\Framework\Setting');
-		$setting->code = $code . "." . $name;
-		$setting = Dao::searchOne($setting);
-		if (isset($setting)) {
-			$list_settings = unserialize($setting->value);
-		}
-		else {
-			$list_settings = new List_Settings($class_name);
-		}
-		$list_settings->setting = Settings::ofCurrentSession()->get($code);
-		$list_settings->setting->value = $list_settings;
-		$list_settings->save();
-		return $list_settings;
+		return self::pLoad($class_name, $name);
 	}
 
 	//-------------------------------------------------------------------------------- removeProperty
@@ -213,6 +174,7 @@ class List_Settings
 			unset($this->sort->columns[array_search($property_path, $this->sort->columns)]);
 		}
 		array_unshift($this->sort->columns, $property_path);
+		$this->sort->columns = array_slice($this->sort->columns, 0, 3);
 	}
 
 	//--------------------------------------------------------------------------------- propertyTitle
@@ -231,26 +193,6 @@ class List_Settings
 		}
 		else {
 			$this->properties_title[$property_path] = $title;
-		}
-	}
-
-	//------------------------------------------------------------------------------------------ save
-	/**
-	 * If $save_name is set : saves the List_Settings object into the Settings set
-	 * If $save_name is not set : saves the List_Settings object for current user and session
-	 *
-	 * @param $save_name string
-	 */
-	public function save($save_name = null)
-	{
-		if (isset($save_name)) {
-			$setting = new Setting($this->class_name . ".list." . $save_name);
-			$setting = Dao::searchOne($setting) ?: $setting;
-			$setting->value = $this;
-			Dao::write($setting);
-		}
-		elseif ($this->setting) {
-			Dao::write($this->setting);
 		}
 	}
 

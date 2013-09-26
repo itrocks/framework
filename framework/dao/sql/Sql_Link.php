@@ -102,12 +102,25 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	/**
 	 * Gets the column count from result set
 	 *
-	 * Sql_Link inherited classes must implement getting columns count only into this method.
+	 * Sql_Link inherited classes must implement getting columns count only into this method
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from executeQuery()
 	 * @return integer
 	 */
 	protected abstract function getColumnsCount($result_set);
+
+	//---------------------------------------------------------------------------------- getRowsCount
+	/**
+	 * Gets the count of rows read / changed by the last query
+	 *
+	 * Sql_Link inherited classes must implement getting rows count only into this method
+	 *
+	 * @param $result_set mixed The result set : in most cases, will come from executeQuery()
+	 * @param $clause     string The SQL query was starting with this clause
+	 * @param $options    Dao_Option[] If set, will set the result into Dao_Count_Option::$count
+	 * @return integer will return null if $options is set but contains no Dao_Count_Option
+	 */
+	protected abstract function getRowsCount($result_set, $clause, $options = null);
 
 	//----------------------------------------------------------------------------------------- query
 	/**
@@ -141,6 +154,9 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		));
 		$result_set = $this->executeQuery($query);
 		$column_count = $this->getColumnsCount($result_set);
+		if (isset($options)) {
+			$this->getRowsCount($result_set, "SELECT", $options);
+		}
 		$classes = array();
 		$classes_index = array();
 		$itoj = array();

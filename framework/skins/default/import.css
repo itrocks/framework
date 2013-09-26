@@ -29,7 +29,7 @@
 	font-weight: bold;
 }
 
-.import.preview.window ul {
+.import.preview.window .class ul {
 	display: inline-block;
 	text-decoration: none;
 }
@@ -53,7 +53,7 @@
 	font-style: italic;
 }
 
-.import.preview.window li {
+.import.preview.window .class li {
 	border: 1px solid;
 	color: white;
 	cursor: pointer;
@@ -63,24 +63,24 @@
 	padding: .25em;
 }
 
-.import.preview.window .identify li {
+.import.preview.window .class li:not(:last-child):after {
+	content: ", ";
+}
+
+.import.preview.window .class .identify li {
 	background-color: green;
 	border-color: darkgreen;
 }
 
-.import.preview.window .write li {
+.import.preview.window .class .write li {
 	background-color: blue;
 	border-color: darkblue;
 }
 
-.import.preview.window .ignore li {
+.import.preview.window .class .ignore li {
 	background-color: #eee;
 	border-color: #ccc;
 	color: #333;
-}
-
-.import.preview.window li:not(:last-child):after {
-	content: ", ";
 }
 
 .import.preview.window option {

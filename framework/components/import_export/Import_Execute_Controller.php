@@ -21,8 +21,11 @@ class Import_Execute_Controller implements Feature_Controller
 		//Mysql_Logger::getInstance()->continue = true;
 		//Mysql_Logger::getInstance()->display_log = true;
 
+		set_time_limit(900);
 		$parameters = $parameters->getObjects();
-		$import = Import_Builder_Form::build($form, false);
+		$import = Import_Builder_Form::build(
+			$form, Session::current()->get('SAF\Framework\Session_Files')->files
+		);
 		foreach ($import->worksheets as $worksheet) {
 			$array = $worksheet->file->getCsvContent();
 			(new Import_Array($worksheet->settings))->importArray($array);

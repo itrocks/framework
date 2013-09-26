@@ -5,6 +5,7 @@ $("document").ready(function()
 	{
 
 		//----------------------------------------------------- li.draggable(), .properties.droppable()
+		// drag and drop property names inside imported class settings
 		this.in("div.class").each(function()
 		{
 			var $this = $(this);
@@ -40,7 +41,8 @@ $("document").ready(function()
 		});
 
 		//----------------------------------------------------------------------------- select.change()
-		this.in("select").change(function()
+		// change color of "if no value found"
+		this.in("div.class select").change(function()
 		{
 			var $this = $(this);
 			var $selected = $this.find(":selected");

@@ -249,6 +249,39 @@ class Mysql_Link extends Sql_Link
 		return $result_set->field_count;
 	}
 
+	//---------------------------------------------------------------------------------- getRowsCount
+	/**
+	 * Gets the count of rows read / changed by the last query
+	 *
+	 * Sql_Link inherited classes must implement getting rows count only into this method
+	 *
+	 * @param $result_set mixed The result set : in most cases, will come from executeQuery()
+	 * @param $clause     string The SQL query was starting with this clause
+	 * @param $options    Dao_Option[] If set, will set the result into Dao_Count_Option::$count
+	 * @return integer will return null if $options is set but contains no Dao_Count_Option
+	 */
+	protected function getRowsCount($result_set, $clause, $options = null)
+	{
+		if (isset($options)) {
+			foreach ($options as $option) {
+				if ($option instanceof Dao_Count_Option) {
+					$option->count = $this->getRowsCount($result_set, "SELECT");
+					return $option->count;
+				}
+			}
+			return null;
+		}
+		else {
+			if ($clause == "SELECT") {
+				$result = $this->executeQuery("SELECT FOUND_ROWS()");
+				$row = $result->fetch_row();
+				$result->free();
+				return $row[0];
+			}
+			return $this->connection->affected_rows;
+		}
+	}
+
 	//--------------------------------------------------------------------------- getStoredProperties
 	/**
 	 * Returns the list of properties of class $class that are stored into data link
@@ -336,6 +369,9 @@ class Mysql_Link extends Sql_Link
 		$this->setContext($class_name);
 		$query = (new Sql_Select_Builder($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->executeQuery($query);
+		if (isset($options)) {
+			$this->getRowsCount($result_set, "SELECT", $options);
+		}
 		$key = $this->getKeyPropertyName($options);
 		while ($object = $this->fetch($result_set, $class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
