@@ -8,6 +8,20 @@
 	padding-bottom: 10px;
 }
 
+.menu.output .minimize {
+	background: url("img/arrow_black_up.gif") center no-repeat;
+	color: transparent;
+	cursor: pointer;
+	float: left;
+	font-size: 1px;
+	height: 24px;
+	width: 24px;
+}
+
+.menu.output.minimized .minimize {
+	background: url("img/arrow_black_down.gif") center no-repeat;
+}
+
 .menu.output h2 {
 	border-bottom: 1px solid #c0c0c0;
 	margin-bottom: 4px;
@@ -38,6 +52,7 @@
 	font: bold 12px arial;
 	margin: 0 0 0 0;
 	padding: 0 6px 0 6px;
+	white-space: nowrap;
 }
 
 .menu.output .items {
