@@ -116,6 +116,7 @@ trait Custom_Settings
 	public function save($save_name = null)
 	{
 		if (isset($save_name)) {
+			$this->name = $save_name;
 			$setting = new Setting($this->class_name . "." . static::customId() . "." . $save_name);
 			$setting = Dao::searchOne($setting) ?: $setting;
 			$setting->value = $this;

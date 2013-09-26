@@ -12,21 +12,14 @@
 
 <!--BEGIN-->
 
-<ul class="general buttons">
-	<!--general_buttons-->
-	<li class="{feature.lower} trashable button {color}"><a class="{?class}" href="{link}" target="{?target}">|{caption}|</a>
-		<!--sub_buttons?-->
-		<ul class="sub_buttons">
-			<!--sub_buttons-->
-			<li class="{feature.lower} trashable sub_button {color}"><a class="{?class}" href="{link}" target="{?target}">|{caption}|</a></li>
-			<!--sub_buttons-->
-		</ul>
-		<!--sub_buttons?-->
-	</li>
-	<!--sample-->
-	<li class="trashable write submit button {color}"><a href="/abook/Contact/1/write" target="#messages">Write</a></li>
-	<!--general_buttons-->
-</ul>
+<input class="customized" value="{?settings.name}">
+
+<!--customized_lists?-->
+<select class="customized">
+	<option></option>
+	<!--customized_lists--><option {?.}>{#}</option><!--customized_lists-->
+</select>
+<!--customized_lists?-->
 
 <!--END-->
 
