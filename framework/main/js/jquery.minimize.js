@@ -6,7 +6,7 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			duration: 500,
+			duration: 150,
 			minimized_class: "minimized",
 			min_height: 24,
 			min_width: 24
