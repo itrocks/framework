@@ -123,30 +123,6 @@ abstract class List_Controller extends Output_Controller
 		return $list;
 	}
 
-	//------------------------------------------------------------------------------- getListSettings
-	/**
-	 * @param $class_name string
-	 * @return List_Settings
-	 */
-	public static function getListSettings($class_name)
-	{
-		/** @var $settings Settings */
-		$settings = Settings::ofCurrentSession();
-		/** @var $setting Setting */
-		$setting = $settings->get($class_name . ".list");
-		if (!isset($setting)) {
-			$list_settings = new List_Settings($class_name);
-			$list_settings->setting = $settings->add(
-				new User_Setting($class_name . ".list", $list_settings)
-			);
-		}
-		else {
-			$list_settings = $setting->value;
-			$list_settings->setting = $setting;
-		}
-		return $list_settings;
-	}
-
 	//------------------------------------------------------------------------------ getSearchSummary
 	/**
 	 * @param $list_settings List_Settings

@@ -14,8 +14,7 @@ class Property_Remove_Controller extends Default_Remove_Controller
 	 */
 	public function removePropertyFromList($class_name, $property_path)
 	{
-		$list_controller = new Default_List_Controller();
-		$list_settings = $list_controller->getListSettings($class_name);
+		$list_settings = List_Settings::current($class_name);
 		$list_settings->removeProperty($property_path);
 		$list_settings->save();
 	}

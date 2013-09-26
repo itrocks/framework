@@ -20,13 +20,13 @@ class Default_List_Controller extends List_Controller
 			"import" => new Button(
 				"Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("green")
 			),
-			"delete" => new Button(
-				"Delete", View::link($class_name, "list", null, array("delete_list" => true)),
-				"delete_list", array(Color::of("red"), "#main", ".submit")
-			),
 			"save" => new Button(
 				"Save", View::link($class_name, "list"),
-				"save_list", array(Color::of("blue"), "#main", ".submit")
+				"custom_save", array(Color::of("blue"), "#main", ".submit")
+			),
+			"delete" => new Button(
+				"Delete", View::link($class_name, "list", null, array("delete_list" => true)),
+				"custom_delete", array(Color::of("red"), "#main", ".submit")
 			)
 		);
 	}
@@ -64,7 +64,7 @@ class Default_List_Controller extends List_Controller
 	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
 		$parameters = $parameters->getObjects();
-		$list_settings = $this->getListSettings($class_name);
+		$list_settings = List_Settings::current($class_name);
 		$list_settings = $this->applyParametersToListSettings($list_settings, $parameters, $form)
 			?: $list_settings;
 		$customized_list_settings = $this->getCustomizedListSettings($list_settings);

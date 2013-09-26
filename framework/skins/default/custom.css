@@ -1,0 +1,70 @@
+input.customized {
+	background: white;
+	display: none;
+	padding: 1px 2px;
+	z-index: 1;
+}
+
+select.customized {
+	text-align: right;
+}
+
+.customized {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	float: right;
+	height: 20px;
+	margin-top: -2px;
+	margin-bottom: -20px;
+	position: relative;
+	top: -50px;
+}
+
+.button.custom_delete,
+.button.custom_save {
+	border: none;
+	border-radius: inherit;
+	box-shadow: none;
+	float: right;
+}
+
+.button.custom_delete:hover,
+.button.custom_save:hover {
+	background: none;
+}
+
+.button.custom_delete a,
+.button.custom_save a {
+	color: transparent;
+	font-size: 1px;
+	height: 17px;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	width: 17px;
+}
+
+.button.custom_delete a:hover:before,
+.button.custom_save a:hover:before {
+	left: 0;
+	opacity: .5;
+	position: absolute;
+	top: 0;
+}
+
+.button.custom_delete {
+	background: url("img/delete.png") no-repeat;
+}
+
+.button.custom_delete a:hover:before {
+	content: url("img/delete.png");
+}
+
+.button.custom_save {
+	background: url("img/floppy.png") no-repeat;
+}
+
+.button.custom_save a:hover:before {
+	content: url("img/floppy.png");
+}

@@ -17,14 +17,7 @@
 	<form action="/{@class.short}/{@feature}" method="POST" target="#main">
 
 		{/general_buttons.html}
-
-		<input class="customized" value="{?settings.name}">
-		<!--customized_lists?-->
-		<select class="customized">
-			<option></option>
-			<!--customized_lists--><option {?.}>{#}</option><!--customized_lists-->
-		</select>
-		<!--customized_lists?-->
+		{/custom.html}
 
 		<table class="list">
 		<caption class="search_summary">{search_summary}</caption>
