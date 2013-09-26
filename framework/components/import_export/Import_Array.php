@@ -357,8 +357,10 @@ class Import_Array
 			}
 		}
 		else {
+			echo "<pre class='error'>SEARCH = " . print_r($search, true) . "</pre>";
+			echo "<pre class='error'>FOUND = " . print_r($found, true) . "</pre>";
 			trigger_error(
-				"Multiple $class->class_name found for " . print_r($search, true), E_USER_ERROR
+				"Multiple " . Namespaces::shortClassName($class->class_name) . " found", E_USER_ERROR
 			);
 			$object = null;
 		}

@@ -17,7 +17,9 @@ abstract class Sql_Value
 	 */
 	public static function escape($value, $double_backquote = false)
 	{
-		if (is_numeric($value) && ($value[0] !== '0')) {
+		// no is_numeric(), as sql numeric search make numeric conversion of string fields
+		// ie WHERE NAME = 500 instead of "500" will give you "500" and "500L", which is not correct
+		if (is_integer($value) || is_float($value)) {
 			$string_value = "$value";
 		}
 		elseif (is_bool($value)) {
