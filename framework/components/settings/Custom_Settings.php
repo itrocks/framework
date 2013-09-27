@@ -81,6 +81,26 @@ trait Custom_Settings
 		}
 	}
 
+	//----------------------------------------------------------------------------- getCustomSettings
+	/**
+	 * @param $custom_settings object Custom_Settings
+	 * @return Custom_Settings[]
+	 */
+	public static function getCustomSettings($custom_settings)
+	{
+		/** @var $custom_settings Custom_Settings */
+		$list = array();
+		$search["code"] = $custom_settings->class_name . "." . static::customId() . ".%";
+		/** @var $setting Setting */
+		foreach (Dao::search($search, 'SAF\Framework\Setting') as $setting) {
+			/** @var $settings Custom_Settings */
+			$settings = unserialize($setting->value);
+			$list[$settings->name] = (($settings->name == $custom_settings->name) ? "selected" : "");
+		}
+		ksort($list);
+		return $list;
+	}
+
 	//------------------------------------------------------------------------------------------ load
 	/**
 	 * Loads a List_Settings from the Settings set
@@ -121,6 +141,7 @@ trait Custom_Settings
 			$setting = Dao::searchOne($setting) ?: $setting;
 			$setting->value = $this;
 			Dao::write($setting);
+			$this->setting = $setting;
 		}
 		elseif ($this->setting) {
 			Dao::write($this->setting);

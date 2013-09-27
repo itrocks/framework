@@ -48,15 +48,20 @@ class Import_Preview
 		if (isset($data)) {
 			$this->data = $data;
 			$row = reset($data);
-			$constants_count = 0;
-			while (current($data) && ((count($row) < 2) || ($row[1] == "") || ($row[1] == "="))) {
-				if (!isset($properties) && ($row[1] == "=")) {
-					$constants_count ++;
-				}
+			$constants = array();
+			if ((count($row) < 2) || $row[1] == "") {
 				$row = next($data);
 			}
-			if (!isset($properties)) {
-				$this->properties = array_slice(current($data), 0, count(current($data)) - $constants_count);
+			while (current($data) && (count($row) == 3) && ($row[1] == "=")) {
+				$constants[$row[0]] = $row[2];
+				$row = next($data);
+			}
+			if (!isset($this->properties)) {
+				foreach ($row as $column_number => $property_path) {
+					if (!isset($constants[$property_path])) {
+						$this->properties[$column_number] = $property_path;
+					}
+				}
 				next($data);
 			}
 			// next row is the first row (in 1..n keys instead of 0..n of the $data array)

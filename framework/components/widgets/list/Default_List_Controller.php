@@ -16,13 +16,17 @@ class Default_List_Controller extends List_Controller
 	protected function getGeneralButtons($class_name, $parameters)
 	{
 		return array(
-			"add" => new Button("Add", View::link($class_name, "new"), "add", Color::of("green")),
+			"add" => new Button(
+				"Add", View::link($class_name, "new"),
+				"add", Color::of("green")
+			),
 			"import" => new Button(
-				"Import", View::link('SAF\Framework\Import', "form"), "import", Color::of("green")
+				"Import", View::link('SAF\Framework\Import', "form"),
+				"import", "#main", Color::of("green")
 			),
 			"save" => new Button(
 				"Save", View::link($class_name, "list"),
-				"custom_save", array(Color::of("blue"), "#main", ".submit")
+				"custom_save", array(Color::of("green"), "#main", ".submit")
 			),
 			"delete" => new Button(
 				"Delete", View::link($class_name, "list", null, array("delete_list" => true)),
@@ -67,7 +71,7 @@ class Default_List_Controller extends List_Controller
 		$list_settings = List_Settings::current($class_name);
 		$list_settings = $this->applyParametersToListSettings($list_settings, $parameters, $form)
 			?: $list_settings;
-		$customized_list_settings = $this->getCustomizedListSettings($list_settings);
+		$customized_list_settings = List_Settings::getCustomSettings($list_settings);
 		// read data
 		$count = new Dao_Count_Option();
 		$parameters = array_merge(
@@ -78,7 +82,7 @@ class Default_List_Controller extends List_Controller
 					$list_settings->search,
 					array($list_settings->sort, Dao::limit(20), $count)
 				),
-				"customized_lists" => $this->getCustomizedListSettings($list_settings),
+				"customized_lists" => $customized_list_settings,
 				"reversed"         => $this->getReverseClasses($list_settings),
 				"rows_count"       => $count->count,
 				"search"           => $this->getSearchValues($list_settings),

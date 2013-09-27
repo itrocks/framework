@@ -14,7 +14,7 @@ abstract class List_Controller extends Output_Controller
 	 * @param $list_settings List_Settings
 	 * @param $parameters    array
 	 * @param $form          array
-	 * @return List_Setting set if parameters did change
+	 * @return List_Settings set if parameters did change
 	 */
 	public function applyParametersToListSettings(
 		List_Settings $list_settings, $parameters, $form = null
@@ -58,18 +58,9 @@ abstract class List_Controller extends Output_Controller
 		if ($did_change) {
 			$list_settings->save();
 		}
-		if (isset($parameters["load_name"])) {
-			$list_settings = List_Settings::load($list_settings->class_name, $parameters["load_name"]);
-			$did_change = true;
-		}
-		elseif (isset($parameters["save_name"])) {
-			$list_settings->name = $parameters["save_name"];
-			$list_settings->save($parameters["save_name"]);
-			$did_change = true;
-		}
-		elseif (isset($parameters) && isset($parameters["delete_list"])) {
-			$list_settings->delete();
-			$list_settings = new List_Settings($list_settings->class_name);
+		if ($list_settings = Custom_Settings_Controller::applyParametersToCustomSettings(
+			$list_settings, $parameters
+		)) {
 			$did_change = true;
 		}
 		return $did_change ? $list_settings : null;
@@ -102,25 +93,6 @@ abstract class List_Controller extends Output_Controller
 			$property_name = substr($property_name, 3);
 		}
 		return $property_name;
-	}
-
-	//--------------------------------------------------------------------- getCustomizedListSettings
-	/**
-	 * @param $list_settings List_Settings
-	 * @return List_Settings[]
-	 */
-	public function getCustomizedListSettings(List_Settings $list_settings)
-	{
-		$list = array();
-		$search["code"] = $list_settings->class_name . ".list.%";
-		/** @var $setting Setting */
-		foreach (Dao::search($search, 'SAF\Framework\Setting') as $setting) {
-			/** @var $list_settings List_Settings*/
-			$settings = unserialize($setting->value);
-			$list[$settings->name] = (($settings->name == $list_settings->name) ? "selected" : "");
-		}
-		ksort($list);
-		return $list;
 	}
 
 	//------------------------------------------------------------------------------ getSearchSummary

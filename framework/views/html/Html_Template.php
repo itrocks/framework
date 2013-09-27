@@ -591,6 +591,10 @@ class Html_Template
 		$loop_content = substr($content, $i, $j - $i);
 		$this->removeSample($loop_content);
 		$separator = $this->parseSeparator($loop_content);
+		while (($k = strpos($var_name, "{")) !== false) {
+			$l = strpos($var_name, "}");
+			$this->parseVar($var_name, $k + 1, $l);
+		}
 		$elements = $this->parseValue($var_name, false);
 		if (!$force_condition) {
 			array_unshift($this->var_names, is_object($elements) ? get_class($elements) : "");

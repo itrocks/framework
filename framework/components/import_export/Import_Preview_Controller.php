@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use \StdClass;
+
 /**
  * Import preview controller
  */
@@ -51,8 +53,7 @@ class Import_Preview_Controller implements Feature_Controller
 						$import->worksheets[] = new Import_Worksheet(
 							$worksheet_number ++,
 							Import_Settings_Builder::buildArray($worksheet),
-							$csv_file = new File($temporary_file_name),
-							new Import_Preview($worksheet)
+							$csv_file = new File($temporary_file_name)
 						);
 						$session_files->files[] = $csv_file;
 					}
@@ -66,13 +67,28 @@ class Import_Preview_Controller implements Feature_Controller
 		}
 		// convert from form and session files to worksheets
 		else {
-			$parameters->unshift(Import_Builder_Form::build(
+			$parameters->unshift($import = Import_Builder_Form::build(
 				$form, Session::current()->get('SAF\Framework\Session_Files')->files
 			));
 		}
-		// view
+		// prepare parameters
 		$parameters = $parameters->getObjects();
-		$parameters["general_buttons"] = $this->getGeneralButtons('SAF\Framework\Import');
+		$general_buttons = $this->getGeneralButtons('SAF\Framework\Import');
+		// apply controller parameters, get other custom parameters
+		foreach ($import->worksheets as $worksheet_number => $worksheet) {
+			$customized_import_settings = Import_Settings::getCustomSettings($worksheet->settings);
+			$worksheet_general_buttons = $general_buttons;
+			$worksheet->settings = Custom_Settings_Controller::applyParametersToCustomSettings(
+				$worksheet->settings, array_merge($form, $parameters)
+			) ?: $worksheet->settings;
+			if (!isset($customized_import_settings[$worksheet->settings->name])) {
+				unset($worksheet_general_buttons["delete"]);
+			}
+			$parameters["custom"][$worksheet_number] = new StdClass();
+			$parameters["custom"][$worksheet_number]->customized_lists = $customized_import_settings;
+			$parameters["custom"][$worksheet_number]->general_buttons = $worksheet_general_buttons;
+		}
+		// view
 		return View::run($parameters, $form, $files, 'SAF\Framework\Import', "preview");
 	}
 

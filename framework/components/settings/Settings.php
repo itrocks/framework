@@ -12,7 +12,7 @@ class Settings extends Set
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $elements Setting[]
+	 * @param $elements object[] Setting[]
 	 */
 	public function __construct($elements = null)
 	{

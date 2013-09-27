@@ -21,7 +21,7 @@ class Import_Worksheet
 
 	//-------------------------------------------------------------------------------------- $preview
 	/**
-	 * @gette getPreview
+	 * @getter getPreview
 	 * @var Import_Preview
 	 */
 	public $preview;

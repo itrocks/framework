@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Import form template</title>
-	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../../vendor/jquery/jquery-1.8.3.js"></script>
 	<style type="text/css">
 		@import "../../skins/default/application.css";
 	</style>
@@ -15,11 +15,14 @@
 	<h2 class="window title">|Import preview|</h2>
 
 	<form action="/Import/execute" method="post" target="#import_execute">
-		{/general_buttons.html}
-		{/custom.html}
 
 		<!--worksheets-->
 		<div class="worksheet">
+
+			<!--custom.{#}-->
+			{/general_buttons.html}
+			{/custom.html}
+			<!--custom.{#}-->
 
 			<!--settings.classes-->
 			<div class="{name} class">
