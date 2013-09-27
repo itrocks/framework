@@ -149,7 +149,14 @@ class Html_Template
 			$params = array();
 		}
 		if (is_a($object_call, 'SAF\Framework\Html_Template_Functions', true)) {
-			$params = array_merge(array($this), $params);
+			if (method_exists($object_call, $func_name)) {
+				$params = array_merge(array($this), $params);
+			}
+			else {
+				$func_name = substr($func_name, 3);
+				$func_name[0] = strtolower($func_name[0]);
+				return call_user_func_array($func_name, $params);
+			}
 		}
 		return call_user_func_array(array($object_call, $func_name), $params);
 	}
@@ -553,13 +560,18 @@ class Html_Template
 	 */
 	protected function parseLoop(&$content, $i, $j)
 	{
-		$var_name = substr($content, $i, $j - $i);
+		$var_name = $search_var_name = substr($content, $i, $j - $i);
 		$length = strlen($var_name);
 		$i += $length + 3;
+		while (($k = strpos($var_name, "{")) !== false) {
+			$l = strpos($var_name, "}");
+			$this->parseVar($var_name, $k + 1, $l);
+		}
 		$force_equality = ($var_name[0] === "=");
 		$force_condition = (substr($var_name, -1) === "?");
 		if (strpos($var_name, ":")) {
 			list($var_name, $expr) = explode(":", $var_name);
+			$search_var_name = lParse($search_var_name, ":");
 			if (($sep = strpos($expr, "-")) !== false) {
 				$from = substr($expr, 0, $sep);
 				$to = substr($expr, $sep + 1);
@@ -568,20 +580,14 @@ class Html_Template
 				$from = $to = $expr;
 			}
 			$to = (($to == "") ? null : $to);
-			if (!empty($from) && ($from[0] === "{") && (substr($from, -1) === "}")) {
-				$from = $this->parseValue(substr($from, 1, -1));
-			}
-			if (!empty($to) && ($to[0] === "{") && (substr($to, -1) === "}")) {
-				$to = $this->parseValue(substr($to, 1, -1));
-			}
 		}
 		else {
 			$expr = null;
 			$from = 0;
 			$to = null;
 		}
-		$length2 = isset($expr) ? strlen($var_name) : $length;
-		$j = strpos($content, "<!--" . $var_name . "-->", $j + 3);
+		$length2 = strlen($search_var_name);
+		$j = strpos($content, "<!--" . $search_var_name . "-->", $j + 3);
 		if ($force_condition) {
 			$var_name = substr($var_name, 0, -1);
 		}
@@ -591,10 +597,6 @@ class Html_Template
 		$loop_content = substr($content, $i, $j - $i);
 		$this->removeSample($loop_content);
 		$separator = $this->parseSeparator($loop_content);
-		while (($k = strpos($var_name, "{")) !== false) {
-			$l = strpos($var_name, "}");
-			$this->parseVar($var_name, $k + 1, $l);
-		}
 		$elements = $this->parseValue($var_name, false);
 		if (!$force_condition) {
 			array_unshift($this->var_names, is_object($elements) ? get_class($elements) : "");

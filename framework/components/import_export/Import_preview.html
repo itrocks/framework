@@ -14,7 +14,9 @@
 <div class="{@class.short.lower} {@feature} window" id="/{@class.short}/{@feature}">
 	<h2 class="window title">|Import preview|</h2>
 
-	<form action="/Import/execute" method="post" target="#import_execute">
+	{@date("H:i:s")}
+
+	<form action="/Import/preview" method="post" target="#main">
 
 		<!--worksheets-->
 		<div class="worksheet">
@@ -62,10 +64,15 @@
 		</div>
 		<!--worksheets-->
 
-		<div class="warning">Une fois bien vérifiés les réglages ci-dessus, vous pouvez</div>
-		<input type="submit" value="Lancer l'import">
+		<p class="warning">
+			<span>Une fois vérifiés les réglages ci-dessus, vous pouvez</span>
+			<a class="green button submit" href="/Import/execute" target="#import_execute">Lancer l'import</a>
+		</p>
+
 	</form>
 
+</div>
+<div id="import_execute">
 </div>
 <!--END-->
 

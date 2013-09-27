@@ -29,29 +29,35 @@ trait Custom_Settings
 	 */
 	public $setting;
 
+	//---------------------------------------------------------------------------- currentUserSetting
+	/**
+	 * @param $class_name string
+	 * @return Setting
+	 */
+	public static function currentUserSetting($class_name)
+	{
+		$setting = new User_Setting($class_name . "." . static::customId());
+		return Dao::search($setting) ?: $setting;
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * Get current session / user custom settings object
 	 *
-	 * @param $class_name string
+	 * @param $class_name string class name that identifies setting
 	 * @return Custom_Settings
 	 */
 	public static function current($class_name)
 	{
-		/** @var $settings Settings */
-		$settings = Settings::ofCurrentSession();
-		/** @var $setting Setting */
-		$setting = $settings->get($class_name . "." . static::customId());
-		if (!isset($setting)) {
-			$custom_settings = Builder::create(get_called_class(), array($class_name));
-			$custom_settings->setting = $settings->add(
-				new User_Setting($class_name . "." . static::customId(), $custom_settings)
-			);
+		$setting = self::currentUserSetting($class_name);
+		if (isset($setting->value)) {
+			$custom_settings = $setting->value;
 		}
 		else {
-			$custom_settings = $setting->value;
-			$custom_settings->setting = $setting;
+			$custom_settings = Builder::create(get_called_class(), array($class_name));
+			$setting->value = $custom_settings;
 		}
+		$custom_settings->setting = $setting;
 		return $custom_settings;
 	}
 
@@ -72,8 +78,7 @@ trait Custom_Settings
 	{
 		if ($this->name) {
 			$code = $this->class_name . "." . static::customId();
-			$setting = Search_Object::create('SAF\Framework\Setting');
-			$setting->code = $code . "." . $this->name;
+			$setting = new Setting($code . "." . $this->name);
 			$setting = Dao::searchOne($setting);
 			if (isset($setting)) {
 				Dao::delete($setting);
@@ -113,16 +118,13 @@ trait Custom_Settings
 	 */
 	public static function load($class_name, $name)
 	{
-		$code = $class_name . "." . static::customId();
-		$setting = Search_Object::create('SAF\Framework\Setting');
-		$setting->code = $code . "." . $name;
+		$setting = new Setting($class_name . "." . static::customId() . "." . $name);
 		$setting = Dao::searchOne($setting);
-		$custom_settings = (isset($setting))
+		$custom_settings = isset($setting)
 			? unserialize($setting->value)
-			: Builder::create($class_name);
-		$custom_settings->setting = Settings::ofCurrentSession()->get($code);
+			: Builder::create(get_called_class(), array($class_name));
+		$custom_settings->setting = self::currentUserSetting($class_name);
 		$custom_settings->setting->value = $custom_settings;
-		$custom_settings->save();
 		return $custom_settings;
 	}
 
@@ -141,9 +143,8 @@ trait Custom_Settings
 			$setting = Dao::searchOne($setting) ?: $setting;
 			$setting->value = $this;
 			Dao::write($setting);
-			$this->setting = $setting;
 		}
-		elseif ($this->setting) {
+		elseif ($this) {
 			Dao::write($this->setting);
 		}
 	}

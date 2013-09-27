@@ -74,13 +74,14 @@ class Import_Preview_Controller implements Feature_Controller
 		// prepare parameters
 		$parameters = $parameters->getObjects();
 		$general_buttons = $this->getGeneralButtons('SAF\Framework\Import');
-		// apply controller parameters, get other custom parameters
 		foreach ($import->worksheets as $worksheet_number => $worksheet) {
-			$customized_import_settings = Import_Settings::getCustomSettings($worksheet->settings);
-			$worksheet_general_buttons = $general_buttons;
+			// apply controller parameters
 			$worksheet->settings = Custom_Settings_Controller::applyParametersToCustomSettings(
 				$worksheet->settings, array_merge($form, $parameters)
 			) ?: $worksheet->settings;
+			// get general buttons and customized import settings
+			$customized_import_settings = Import_Settings::getCustomSettings($worksheet->settings);
+			$worksheet_general_buttons = $general_buttons;
 			if (!isset($customized_import_settings[$worksheet->settings->name])) {
 				unset($worksheet_general_buttons["delete"]);
 			}

@@ -12,7 +12,7 @@ class Settings extends Set
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $elements object[] Setting[]
+	 * @param $elements Setting[]
 	 */
 	public function __construct($elements = null)
 	{
@@ -73,33 +73,6 @@ class Settings extends Set
 			$setting->value = unserialize($setting->value);
 		}
 		return $setting;
-	}
-
-	//------------------------------------------------------------------------------ ofCurrentSession
-	/**
-	 * @return Settings
-	 */
-	public static function ofCurrentSession()
-	{
-		$settings = Session::current()->get('SAF\Framework\Settings');
-		if (!isset($settings)) {
-			$settings = self::ofCurrentUser();
-			Session::current()->set($settings);
-		}
-		return $settings;
-	}
-
-	//--------------------------------------------------------------------------------- ofCurrentUser
-	/**
-	 * Get settings of the currently connected user
-	 *
-	 * @return Settings
-	 */
-	public static function ofCurrentUser()
-	{
-		/** @var $user User|User_Has_Settings*/
-		$user = User::current();
-		return new Settings($user->settings);
 	}
 
 }

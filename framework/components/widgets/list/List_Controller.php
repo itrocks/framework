@@ -59,7 +59,7 @@ abstract class List_Controller extends Output_Controller
 			$list_settings->save();
 		}
 		if ($list_settings = Custom_Settings_Controller::applyParametersToCustomSettings(
-			$list_settings, $parameters
+			$list_settings, $parameters, true
 		)) {
 			$did_change = true;
 		}
