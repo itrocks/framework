@@ -88,18 +88,19 @@ trait Custom_Settings
 
 	//----------------------------------------------------------------------------- getCustomSettings
 	/**
-	 * @param $custom_settings object|Custom_Settings
-	 * @return Custom_Settings[]
+	 * Gets custom settings list
+	 *
+	 * @return Custom_Settings[] key is the name of the setting, value is "" or "selected"
 	 */
-	public static function getCustomSettings($custom_settings)
+	public function getCustomSettings()
 	{
 		$list = array();
-		$search["code"] = $custom_settings->class_name . "." . static::customId() . ".%";
+		$search["code"] = $this->class_name . "." . static::customId() . ".%";
 		/** @var $setting Setting */
 		foreach (Dao::search($search, 'SAF\Framework\Setting') as $setting) {
 			/** @var $settings Custom_Settings */
 			$settings = $setting->value;
-			$list[$settings->name] = (($settings->name == $custom_settings->name) ? "selected" : "");
+			$list[$settings->name] = (($settings->name == $this->name) ? "selected" : "");
 		}
 		ksort($list);
 		return $list;

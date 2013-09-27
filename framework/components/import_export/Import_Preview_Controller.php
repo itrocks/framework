@@ -22,7 +22,7 @@ class Import_Preview_Controller implements Feature_Controller
 				"custom_save", array(Color::of("blue"), "#main", ".submit")
 			),
 			"delete" => new Button(
-				"Delete", View::link($class_name, "preview", null, array("delete_import" => true)),
+				"Delete", View::link($class_name, "preview", null, array("delete_name" => true)),
 				"custom_delete", array(Color::of("red"), "#main", ".submit")
 			)
 		);
@@ -67,20 +67,37 @@ class Import_Preview_Controller implements Feature_Controller
 		}
 		// convert from form and session files to worksheets
 		else {
-			$parameters->unshift($import = Import_Builder_Form::build(
-				$form, Session::current()->get('SAF\Framework\Session_Files')->files
-			));
+			$files = Session::current()->get('SAF\Framework\Session_Files')->files;
+			$parameters->unshift($import = Import_Builder_Form::build($form, $files));
 		}
 		// prepare parameters
 		$parameters = $parameters->getObjects();
 		$general_buttons = $this->getGeneralButtons('SAF\Framework\Import');
+		/*
+		// todo when coming back to empty, it crashes
+		if (empty(reset($import->worksheets)->settings->classes)) {
+			$files = Session::current()->get('SAF\Framework\Session_Files')->files;
+			$import->worksheets = array();
+			foreach ($files as $file) {
+				$excel = Excel_File::fileToArray($file->temporary_file_name);
+				$worksheet_number = 0;
+				foreach ($excel as $file->temporary_file_name => $worksheet) {
+					$import->worksheets[] = new Import_Worksheet(
+						$worksheet_number ++,
+						Import_Settings_Builder::buildArray($worksheet),
+						$csv_file = $file
+					);
+				}
+			}
+		}
+		*/
 		foreach ($import->worksheets as $worksheet_number => $worksheet) {
 			// apply controller parameters
-			$worksheet->settings = Custom_Settings_Controller::applyParametersToCustomSettings(
+			Custom_Settings_Controller::applyParametersToCustomSettings(
 				$worksheet->settings, array_merge($form, $parameters)
-			) ?: $worksheet->settings;
+			);
 			// get general buttons and customized import settings
-			$customized_import_settings = Import_Settings::getCustomSettings($worksheet->settings);
+			$customized_import_settings = $worksheet->settings->getCustomSettings();
 			$worksheet_general_buttons = $general_buttons;
 			if (!isset($customized_import_settings[$worksheet->settings->name])) {
 				unset($worksheet_general_buttons["delete"]);
@@ -89,6 +106,7 @@ class Import_Preview_Controller implements Feature_Controller
 			$parameters["custom"][$worksheet_number]->customized_lists = $customized_import_settings;
 			$parameters["custom"][$worksheet_number]->general_buttons = $worksheet_general_buttons;
 		}
+		//echo "<pre>" . print_r(reset($parameters), true) . "</pre>";
 		// view
 		return View::run($parameters, $form, $files, 'SAF\Framework\Import', "preview");
 	}

@@ -72,22 +72,27 @@ abstract class Import_Settings_Builder
 	{
 		$main_class_name = null;
 		$settings = new Import_Settings();
-		foreach ($worksheet["classes"] as $property_path => $class) {
-			if ($property_path[0] === strtoupper($property_path[0])) {
-				// the first element is always the main class name
-				$class_name = $main_class_name = Namespaces::fullClassName($property_path);
-				$settings->class_name = $class_name;
-				$property_path = "";
+		if (isset($worksheet["name"])) {
+			$settings->name = $worksheet["name"];
+		}
+		if (isset($worksheet["classes"])) {
+			foreach ($worksheet["classes"] as $property_path => $class) {
+				if ($property_path[0] === strtoupper($property_path[0])) {
+					// the first element is always the main class name
+					$class_name = $main_class_name = Namespaces::fullClassName($property_path);
+					$settings->class_name = $class_name;
+					$property_path = "";
+				}
+				else {
+					// property paths for next elements
+					$property_path = str_replace(">", ".", $property_path);
+					$property = Reflection_Property::getInstanceOf($main_class_name, $property_path);
+					$class_name = Builder::className($property->getType()->getElementTypeAsString());
+				}
+				$settings->classes[$property_path] = self::buildFormClass(
+					$class_name, $property_path, $class
+				);
 			}
-			else {
-				// property paths for next elements
-				$property_path = str_replace(">", ".", $property_path);
-				$property = Reflection_Property::getInstanceOf($main_class_name, $property_path);
-				$class_name = Builder::className($property->getType()->getElementTypeAsString());
-			}
-			$settings->classes[$property_path] = self::buildFormClass(
-				$class_name, $property_path, $class
-			);
 		}
 		return $settings;
 	}

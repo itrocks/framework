@@ -15,7 +15,7 @@ class Import_Preview
 
 	//------------------------------------------------------------------------------------ $first_row
 	/**
-	 * First visible row (to avoid display of class name, constants and properties rows
+	 * First visible row (to avoid display of class name, constants and properties rows)
 	 *
 	 * @var integer
 	 */
@@ -28,6 +28,14 @@ class Import_Preview
 	 * @var integer
 	 */
 	public $last_column;
+
+	//------------------------------------------------------------------------------------- $last_row
+	/**
+	 * Last visible row (remember we display a preview, not the entire file)
+	 *
+	 * @var integer
+	 */
+	public $last_row;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -66,6 +74,7 @@ class Import_Preview
 			}
 			// next row is the first row (in 1..n keys instead of 0..n of the $data array)
 			$this->first_row = key($data) + 1;
+			$this->last_row = $this->first_row + 10;
 			$this->last_column = count($this->properties);
 		}
 	}

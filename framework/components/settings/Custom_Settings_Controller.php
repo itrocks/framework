@@ -16,7 +16,7 @@ abstract class Custom_Settings_Controller
 	public static function applyParametersToCustomSettings(&$custom_settings, $parameters)
 	{
 		$did_change = false;
-		if (isset($parameters) && isset($parameters["delete_list"])) {
+		if (isset($parameters) && isset($parameters["delete_name"])) {
 			$custom_settings->delete();
 			$did_change = true;
 		}

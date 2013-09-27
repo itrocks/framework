@@ -14,12 +14,11 @@
 <div class="{@class.short.lower} {@feature} window" id="/{@class.short}/{@feature}">
 	<h2 class="window title">|Import preview|</h2>
 
-	{@date("H:i:s")}
-
 	<form action="/Import/preview" method="post" target="#main">
 
 		<!--worksheets-->
 		<div class="worksheet">
+			<input type="hidden" name="worksheets[{name}][name]" value="{settings.name}">
 
 			<!--custom.{#}-->
 			{/general_buttons.html}
@@ -28,7 +27,11 @@
 
 			<!--settings.classes-->
 			<div class="{name} class">
-				<h3><!--property_path--><span class="property">|{.}|</span><!--property_path--></h3>
+				<h3>
+					|{--settings.getClassName.short}|
+					<!--property_path?-->:<!--property_path?-->
+					<!--property_path--><span class="property">|{.}|</span><!--property_path-->
+				</h3>
 				<div class="identify properties">
 					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue}][identify]" value="{getIdentifyValue}">
 					Identifie chaque <span>|{name}|</span> par
@@ -55,7 +58,7 @@
 			<!--preview-->
 				<table class="preview">
 					<tr><!--properties--><th>{.}</th><!--properties--></tr>
-					<!--data:{first_row}--->
+					<!--data:{first_row}-{last_row}-->
 					<tr><!--.:-{--last_column}--><td>{.}</td><!--.--></tr>
 					<!--data-->
 				</table>

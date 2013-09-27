@@ -29,7 +29,7 @@ class Default_List_Controller extends List_Controller
 				"custom_save", array(Color::of("green"), "#main", ".submit")
 			),
 			"delete" => new Button(
-				"Delete", View::link($class_name, "list", null, array("delete_list" => true)),
+				"Delete", View::link($class_name, "list", null, array("delete_name" => true)),
 				"custom_delete", array(Color::of("red"), "#main", ".submit")
 			)
 		);
@@ -70,7 +70,7 @@ class Default_List_Controller extends List_Controller
 		$parameters = $parameters->getObjects();
 		$list_settings = List_Settings::current($class_name);
 		$this->applyParametersToListSettings($list_settings, $parameters, $form);
-		$customized_list_settings = List_Settings::getCustomSettings($list_settings);
+		$customized_list_settings = $list_settings->getCustomSettings();
 		// read data
 		$count = new Dao_Count_Option();
 		$parameters = array_merge(

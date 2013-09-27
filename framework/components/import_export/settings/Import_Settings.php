@@ -40,6 +40,22 @@ class Import_Settings
 		return self::pCurrent($class_name);
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function getClassName()
+	{
+		if (empty($this->class_name)) {
+			foreach ($this->classes as $class_key => $class) {
+				if (!$class_key) {
+					return ($this->class_name = $class->class_name);
+				}
+			}
+		}
+		return $this->class_name;
+	}
+
 	//------------------------------------------------------------------------------------------ load
 	/**
 	 * Loads a List_Settings from the Settings set

@@ -36,8 +36,8 @@ class Import_Worksheet
 	/**
 	 * @param $name     string
 	 * @param $settings Import_Settings
-	 * @param $preview  Import_Preview
 	 * @param $file     File
+	 * @param $preview  Import_Preview
 	 */
 	public function __construct(
 		$name = null, Import_Settings $settings = null, $file = null, Import_Preview $preview = null
