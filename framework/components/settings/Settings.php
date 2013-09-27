@@ -62,17 +62,7 @@ class Settings extends Set
 	 */
 	public function get($code)
 	{
-		/** @var $setting Setting */
-		$setting = parent::get($code);
-		if (
-			isset($setting)
-			&& is_string($setting->value)
-			&& (substr($setting->value, 0, 2) == "O:")
-			&& substr($setting->value, -1) === "}"
-		) {
-			$setting->value = unserialize($setting->value);
-		}
-		return $setting;
+		return parent::get($code);
 	}
 
 }

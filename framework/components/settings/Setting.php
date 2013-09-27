@@ -15,6 +15,7 @@ class Setting
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
+	 * @getter getValue
 	 * @max-length 1000000000
 	 * @var string|object
 	 */
@@ -29,6 +30,22 @@ class Setting
 	{
 		if (isset($code))  $this->code = $code;
 		if (isset($value)) $this->value = $value;
+	}
+
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * @return string|object
+	 */
+	public function getValue()
+	{
+		$value = $this->value;
+		return (
+			isset($value)
+			&& is_string($value)
+			&& (substr($value, 0, 2) == "O:")
+			&& substr($value, -1) === "}"
+		) ? ($this->value = unserialize($value))
+			: $value;
 	}
 
 }

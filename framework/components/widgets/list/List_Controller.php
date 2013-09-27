@@ -17,7 +17,7 @@ abstract class List_Controller extends Output_Controller
 	 * @return List_Settings set if parameters did change
 	 */
 	public function applyParametersToListSettings(
-		List_Settings $list_settings, $parameters, $form = null
+		List_Settings &$list_settings, $parameters, $form = null
 	) {
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
@@ -55,13 +55,11 @@ abstract class List_Controller extends Output_Controller
 		else {
 			$did_change = false;
 		}
+		if (Custom_Settings_Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
+			$did_change = true;
+		}
 		if ($did_change) {
 			$list_settings->save();
-		}
-		if ($list_settings = Custom_Settings_Controller::applyParametersToCustomSettings(
-			$list_settings, $parameters, true
-		)) {
-			$did_change = true;
 		}
 		return $did_change ? $list_settings : null;
 	}

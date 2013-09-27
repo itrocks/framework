@@ -69,8 +69,7 @@ class Default_List_Controller extends List_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$list_settings = List_Settings::current($class_name);
-		$list_settings = $this->applyParametersToListSettings($list_settings, $parameters, $form)
-			?: $list_settings;
+		$this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$customized_list_settings = List_Settings::getCustomSettings($list_settings);
 		// read data
 		$count = new Dao_Count_Option();
