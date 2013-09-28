@@ -73,30 +73,26 @@ class Import_Preview_Controller implements Feature_Controller
 		// prepare parameters
 		$parameters = $parameters->getObjects();
 		$general_buttons = $this->getGeneralButtons('SAF\Framework\Import');
-		/*
-		// todo when coming back to empty, it crashes
-		if (empty(reset($import->worksheets)->settings->classes)) {
-			$files = Session::current()->get('SAF\Framework\Session_Files')->files;
-			$import->worksheets = array();
-			foreach ($files as $file) {
-				$excel = Excel_File::fileToArray($file->temporary_file_name);
-				$worksheet_number = 0;
-				foreach ($excel as $file->temporary_file_name => $worksheet) {
-					$import->worksheets[] = new Import_Worksheet(
-						$worksheet_number ++,
-						Import_Settings_Builder::buildArray($worksheet),
-						$csv_file = $file
-					);
-				}
-			}
-		}
-		*/
-		foreach ($import->worksheets as $worksheet_number => $worksheet) {
+		foreach ($import->worksheets as $worksheet) {
 			// apply controller parameters
 			Custom_Settings_Controller::applyParametersToCustomSettings(
 				$worksheet->settings, array_merge($form, $parameters)
 			);
-			// get general buttons and customized import settings
+		}
+		// recover empty Import_Settings (after loading empty one)
+		/** @var $files File[] */
+		$files = Session::current()->get('SAF\Framework\Session_Files')->files;
+		foreach ($import->worksheets as $worksheet_number => $worksheet) {
+			if (empty($worksheet->settings->classes)) {
+				$file = $files[$worksheet_number];
+				$array = $file->getCsvContent();
+				$import->worksheets[$worksheet_number] = new Import_Worksheet(
+					$worksheet_number, Import_Settings_Builder::buildArray($array), $file
+				);
+			}
+		}
+		// get general buttons and customized import settings
+		foreach ($import->worksheets as $worksheet_number => $worksheet) {
 			$customized_import_settings = $worksheet->settings->getCustomSettings();
 			$worksheet_general_buttons = $general_buttons;
 			if (!isset($customized_import_settings[$worksheet->settings->name])) {
@@ -106,7 +102,6 @@ class Import_Preview_Controller implements Feature_Controller
 			$parameters["custom"][$worksheet_number]->customized_lists = $customized_import_settings;
 			$parameters["custom"][$worksheet_number]->general_buttons = $worksheet_general_buttons;
 		}
-		//echo "<pre>" . print_r(reset($parameters), true) . "</pre>";
 		// view
 		return View::run($parameters, $form, $files, 'SAF\Framework\Import', "preview");
 	}
