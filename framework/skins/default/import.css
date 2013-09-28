@@ -17,6 +17,14 @@
 	margin-bottom: .25em;
 }
 
+.import.preview.window .fieldset .field .label {
+	padding: 0;
+}
+
+.import.preview.window .fieldset .field .label:after {
+	content : " = ";
+}
+
 .import.preview.window h3 span.class:after {
 	content: " :";
 }

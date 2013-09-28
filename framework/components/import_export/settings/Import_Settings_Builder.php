@@ -58,6 +58,7 @@ abstract class Import_Settings_Builder
 			}
 		}
 		$settings->classes = $classes;
+		$settings->setConstants(Import_Array::getConstantsFromArray($array));
 		return $settings;
 	}
 

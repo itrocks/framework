@@ -615,9 +615,9 @@ class Html_Template
 			$first = true;
 			$loop_insert = "";
 			$counter = 0;
-			array_push($this->preprops, $var_name);
+			$this->preprop($var_name);
 			if (is_array($elements)) foreach ($elements as $key => $element) {
-				array_push($this->preprops, $element);
+				$this->preprop($element);
 				$counter++;
 				if (isset($to) && ($counter > $to)) break;
 				if ($counter >= $from) {
@@ -634,9 +634,9 @@ class Html_Template
 					array_shift($this->objects);
 					array_shift($this->var_names);
 				}
-				array_pop($this->preprops);
+				$this->preprop();
 			}
-			array_pop($this->preprops);
+			$this->preprop();
 			if (isset($to) && ($counter < $to)) {
 				array_unshift($this->var_names, null);
 				array_unshift($this->objects, new StdClass());
@@ -1137,6 +1137,23 @@ class Html_Template
 			$auto_remove = false;
 		}
 		return $auto_remove;
+	}
+
+	//--------------------------------------------------------------------------------------- preprop
+	/**
+	 * @param $preprop object|string
+	 */
+	protected function preprop($preprop = null)
+	{
+		if (isset($preprop)) {
+			array_push($this->preprops, is_string($preprop)
+				? (($i = strrpos($preprop, ".")) ? substr($preprop, $i + 1) : $preprop)
+				: $preprop
+			);
+		}
+		else {
+			array_pop($this->preprops);
+		}
 	}
 
 	//---------------------------------------------------------------------------------- removeSample

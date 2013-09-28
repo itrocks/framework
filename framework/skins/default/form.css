@@ -11,6 +11,9 @@ textarea {
 
 .fieldset {
 	display: table;
+}
+
+.form .fieldset {
 	width: 100%;
 }
 

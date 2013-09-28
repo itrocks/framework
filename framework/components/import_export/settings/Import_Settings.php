@@ -33,7 +33,7 @@ class Import_Settings
 	 * Get current session / user custom settings object
 	 *
 	 * @param $class_name string
-	 * @return List_Settings
+	 * @return Import_Settings
 	 */
 	public static function current($class_name)
 	{
@@ -56,19 +56,52 @@ class Import_Settings
 		return $this->class_name;
 	}
 
+	//------------------------------------------------------------------------------------ getSummary
+	/**
+	 * @return string
+	 */
+	public function getSummary()
+	{
+
+	}
+
 	//------------------------------------------------------------------------------------------ load
 	/**
-	 * Loads a List_Settings from the Settings set
+	 * Loads Import_Settings from the Settings set
 	 *
-	 * If no List_Settings named $name is stored, a new one will be returned
+	 * If no Import_Settings named $name is stored, a new one will be returned
 	 *
 	 * @param $class_name string
 	 * @param $name       string
-	 * @return List_Settings
+	 * @return Import_Settings
 	 */
 	public static function load($class_name, $name)
 	{
 		return self::pLoad($class_name, $name);
+	}
+
+	//---------------------------------------------------------------------------------- setConstants
+	/**
+	 * @param $constants string[] key is the property path (can be translated or alias)
+	 */
+	public function setConstants($constants)
+	{
+		$class_name = $this->getClassName();
+		$properties_alias = Import_Array::getPropertiesAlias($class_name);
+		$use_reverse_translation = Locale::current() ? true : false;
+		foreach ($constants as $property_path => $value) {
+			$property_path = Import_Array::propertyPathOf(
+				$class_name, $property_path, $use_reverse_translation, $properties_alias
+			);
+			$property_name = (($i = strrpos($property_path, ".")) === false)
+				? $property_path : substr($property_path, $i + 1);
+			$master_path = substr($property_path, 0, $i);
+			if (isset($this->classes[$master_path])) {
+				$this->classes[$master_path]->constants[$property_name] = new Reflection_Property_Value(
+					$this->classes[$master_path]->class_name, $property_name, $value, true
+				);
+			}
+		}
 	}
 
 }

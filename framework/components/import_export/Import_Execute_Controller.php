@@ -28,7 +28,8 @@ class Import_Execute_Controller implements Feature_Controller
 		);
 		foreach ($import->worksheets as $worksheet) {
 			$array = $worksheet->file->getCsvContent();
-			(new Import_Array($worksheet->settings))->importArray($array);
+			$import_array = new Import_Array($worksheet->settings);
+			$import_array->importArray($array);
 		}
 		return View::run($parameters, $form, $files, 'SAF\Framework\Import', "done");
 	}

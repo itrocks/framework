@@ -13,6 +13,12 @@ class Import_Class
 	 */
 	public $class_name;
 
+	//------------------------------------------------------------------------------------ $constants
+	/**
+	 * @var Reflection_Property_Value[] key is the name of the property
+	 */
+	public $constants = array();
+
 	//-------------------------------------------------------------------------------- $property_path
 	/**
 	 * @var string[]
@@ -113,7 +119,7 @@ class Import_Class
 	public function getPropertyPathValue()
 	{
 		return $this->property_path
-			? (join(">", $this->property_path))
+			? (join(".", $this->property_path))
 			: Namespaces::shortClassName($this->class_name);
 	}
 

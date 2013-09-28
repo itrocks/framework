@@ -93,11 +93,14 @@ abstract class Html_Template_Functions
 	 * Returns an HTML edit widget for current property or List_Data property
 	 *
 	 * @param $template Html_Template
-	 * @param $preprop  string
+	 * @param $name     string
 	 * @return string
 	 */
-	public static function getEdit(Html_Template $template, $preprop = null)
+	public static function getEdit(Html_Template $template, $name = null)
 	{
+		if (isset($name)) {
+			$name = str_replace(".", ">", $name);
+		}
 		$object = reset($template->objects);
 		// find the first next object
 		if (!($object instanceof Reflection_Property)) {
@@ -115,19 +118,19 @@ abstract class Html_Template_Functions
 				$class_name, $property_name
 			);
 			$property_edit = new Html_Builder_Property_Edit($property, $value);
-			$property_edit->name = $property_path;
-			$property_edit->preprop = $preprop;
+			$property_edit->name = $name ?: $property_path;
+			$property_edit->preprop = null;
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property_Value) {
 			$property_edit = new Html_Builder_Property_Edit($object, $object->value());
-			$property_edit->name = $object->path;
-			$property_edit->preprop = $preprop;
+			$property_edit->name = $name ?: $object->path;
+			$property_edit->preprop = null;
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property) {
 			$property_edit = new Html_Builder_Property_Edit($object);
-			$property_edit->name = $object->path;
+			$property_edit->name = $name ?: $object->path;
 			$property_edit->preprop = null;
 			return $property_edit->build();
 		}
@@ -139,11 +142,16 @@ abstract class Html_Template_Functions
 						? ($preprop . "[" . reset($template->preprops) . "]")
 						: reset($template->preprops);
 					while ($next = next($template->preprops)) {
+						/*
 						if ($i = strrpos($next, ".")) {
 							$next = substr($next, $i + 1);
 						}
+						*/
 						if ((strpos($next, "\\") !== false) && class_exists($next)) {
 							$next = Names::classToDisplay($next);
+						}
+						else {
+							$next = str_replace(".", ">", $next);
 						}
 						$preprop .= "[" . $next . "]";
 					}
@@ -223,6 +231,19 @@ abstract class Html_Template_Functions
 		return reset($object);
 	}
 
+	//--------------------------------------------------------------------------------- getEscapeName
+	/**
+	 * Escape strings that will be used as form names. in HTML "." will be replaced by ">" as PHP
+	 * does not like variables named "a.b.c"
+	 *
+	 * @param $template Html_Template
+	 * @return string
+	 */
+	public static function getEscapeName(Html_Template $template)
+	{
+		return str_replace(".", ">", reset($template->objects));
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Returns nearest object from templating tree
@@ -286,6 +307,25 @@ abstract class Html_Template_Functions
 			}
 		}
 		return $properties;
+	}
+
+	//----------------------------------------------------------------------------- getPropertySelect
+	/**
+	 * @param $template Html_Template
+	 * @param $name     string
+	 * @return string
+	 */
+	public static function getPropertySelect(Html_Template $template, $name = null)
+	{
+		foreach ($template->objects as $property) {
+			if ($property instanceof Reflection_Property) {
+				break;
+			}
+		}
+		if (isset($property)) {
+			return (new Html_Builder_Property_Select($property, $name))->build();
+		}
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------- getRootClass

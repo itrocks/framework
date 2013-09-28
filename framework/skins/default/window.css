@@ -9,7 +9,7 @@ div.window {
 	position: relative;
 	text-align: left;
 	min-height: 50px;
-	min-width: 300px;
+	min-width: 400px;
 }
 
 div.window h2.window.title {

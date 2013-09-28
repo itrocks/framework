@@ -35,6 +35,14 @@ class Import_Array
 	 */
 	public $settings;
 
+	//----------------------------------------------------------------------------------- $simulation
+	/**
+	 * Simulation pass : false or number of rows to simulate
+	 *
+	 * @var integer|boolean
+	 */
+	public $simulation = false;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $settings   Import_Settings
@@ -152,10 +160,13 @@ class Import_Array
 
 	//---------------------------------------------------------------------------- getPropertiesAlias
 	/**
+	 * Gets properties alias from current list settings
+	 *
+	 * @todo user must place himself into the list settings matching the import, should search it
 	 * @param $class_name string
 	 * @return string[]
 	 */
-	private static function getPropertiesAlias($class_name)
+	public static function getPropertiesAlias($class_name)
 	{
 		$list_settings = List_Settings::current($class_name);
 		$properties_alias = array();
@@ -181,34 +192,14 @@ class Import_Array
 	public static function getPropertiesFromArray(&$array, $class_name = null)
 	{
 		$use_reverse_translation = Locale::current() ? true : false;
-		if (isset($class_name)) {
-			$properties_alias = self::getPropertiesAlias($class_name);
-		}
+		$properties_alias = isset($class_name) ? self::getPropertiesAlias($class_name) : null;
 		self::addConstantsToArray(self::getConstantsFromArray($array), $array);
 		$properties = array();
 		foreach (current($array) as $column_number => $property_path) {
 			if ($property_path) {
-				if (isset($properties_alias[$property_path])) {
-					$property_path = $properties_alias[$property_path];
-				}
-				elseif ($use_reverse_translation) {
-					$property_class_name = $class_name;
-					$property_names = array();
-					foreach (explode(".", $property_path) as $property_name) {
-						if ($asterisk = (substr($property_name, -1) == "*")) {
-							$property_name = substr($property_name, 0, -1);
-						}
-						$property_name = Loc::rtr($property_name, $property_class_name);
-						$property_names[] = $property_name . ($asterisk ? "*" : "");
-						$property_class_name = Builder::className(
-							Reflection_Property::getInstanceOf(
-								$property_class_name, $property_name
-							)->getType()->getElementTypeAsString()
-						);
-					}
-					$property_path = join(".", $property_names);
-				}
-				$properties[$column_number] = $property_path;
+				$properties[$column_number] = self::propertyPathOf(
+					$class_name, $property_path, $use_reverse_translation, $properties_alias
+				);
 			}
 		}
 		return $properties;
@@ -280,6 +271,7 @@ class Import_Array
 	 */
 	public function importArray(&$array)
 	{
+		Dao::begin();
 		$class_name = self::getClassNameFromArray($array);
 		if (isset($class_name)) {
 			$this->setClassName($class_name);
@@ -294,6 +286,12 @@ class Import_Array
 				next($array);
 			}
 			$this->importArrayClass($class, $array);
+		}
+		if ($this->simulation) {
+			Dao::rollback();
+		}
+		else {
+			Dao::commit();
 		}
 	}
 
@@ -312,12 +310,14 @@ class Import_Array
 		$property_path = implode(".", $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
-		while ($row = next($array)) {
+		$simulation = $this->simulation;
+		while (($row = next($array)) && $this->simulation && $simulation) {
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
 			$object = (in_array($this->properties_link[$property_path], array("Collection", "Map")))
 				? $this->createArrayReference($class->class_name, $search)
 				: $this->importSearchObject($search, $row, $class, $class_properties_column, $property_path);
 			$array[key($array)][$property_path] = $object;
+			$simulation --;
 		}
 	}
 
@@ -327,20 +327,19 @@ class Import_Array
 	 * @param $row                     array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]
-	 * @param $property_path           string
 	 * @return object
 	 */
-	public function importSearchObject(
-		$search, $row, $class, $class_properties_column, $property_path
-	) {
+	public function importSearchObject($search, $row, Import_Class $class, $class_properties_column)
+	{
+		if ($this->simulation && isset($search)) {
+			$this->simulateSearch($class, $search, $class->class_name);
+		}
 		$found = isset($search) ? Dao::search($search, $class->class_name) : null;
 		if (!isset($found)) {
 			$object = null;
 		}
 		elseif (count($found) == 1) {
-			$object = $this->updateExistingObject(
-				reset($found), $row, $class, $class_properties_column, $property_path
-			);
+			$object = $this->updateExistingObject(reset($found), $row, $class, $class_properties_column);
 		}
 		elseif (!count($found)) {
 			if ($class->object_not_found_behaviour === "create_new_value") {
@@ -367,6 +366,40 @@ class Import_Array
 		return $object;
 	}
 
+	//-------------------------------------------------------------------------------- propertyPathOf
+	/**
+	 * @param $class_name              string
+	 * @param $property_path           string
+	 * @param $use_reverse_translation boolean if true, will try reverse translation of property names
+	 * @param $properties_alias        string[] key is alias, value is property path
+	 * @return string
+	 */
+	public static function propertyPathOf(
+		$class_name, $property_path, $use_reverse_translation = false, $properties_alias = null
+	) {
+		if (isset($properties_alias) && isset($properties_alias[$property_path])) {
+			$property_path = $properties_alias[$property_path];
+		}
+		elseif ($use_reverse_translation) {
+			$property_class_name = $class_name;
+			$property_names = array();
+			foreach (explode(".", $property_path) as $property_name) {
+				if ($asterisk = (substr($property_name, -1) == "*")) {
+					$property_name = substr($property_name, 0, -1);
+				}
+				$property_name = Loc::rtr($property_name, $property_class_name);
+				$property_names[] = $property_name . ($asterisk ? "*" : "");
+				$property_class_name = Builder::className(
+					Reflection_Property::getInstanceOf(
+						$property_class_name, $property_name
+					)->getType()->getElementTypeAsString()
+				);
+			}
+			$property_path = join(".", $property_names);
+		}
+		return $property_path;
+	}
+
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * Sets class name
@@ -384,6 +417,37 @@ class Import_Array
 			}
 		}
 		$this->class_name = $class_name;
+	}
+
+	//----------------------------------------------------------------------------------- simulateNew
+	/**
+	 * @param $class  Import_Class
+	 * @param $object object
+	 */
+	protected function simulateNew(Import_Class $class, $object)
+	{
+		echo "- write new " . print_r($object, true);
+	}
+
+	//-------------------------------------------------------------------------------- simulateSearch
+	/**
+	 * @param $class  Import_Class
+	 * @param $search     string[]
+	 * @param $class_name string
+	 */
+	protected function simulateSearch(Import_Class $class, $search, $class_name)
+	{
+		echo "- search $class_name = " . print_r($search, true) . "<br>";
+	}
+
+	//-------------------------------------------------------------------------------- simulateUpdate
+	/**
+	 * @param $class  Import_Class
+	 * @param $object object
+	 */
+	protected function simulateUpdate(Import_Class $class, $object)
+	{
+		echo "- update " . print_r($object, true) . "<br>";
 	}
 
 	//--------------------------------------------------------------------------------- sortedClasses
@@ -408,36 +472,22 @@ class Import_Array
 	 * @param $row                     array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]|string[]
-	 * @param $property_path           string
 	 * @return object
 	 */
 	private function updateExistingObject(
-		$object, $row, Import_Class $class, $class_properties_column, $property_path
+		$object, $row, Import_Class $class, $class_properties_column
 	) {
 		$do_write = false;
 		foreach (array_keys($class->write_properties) as $property_name) {
-			/*
-			$link = $this->properties_link[
-				$path = ($property_path . ($property_path ? "." : "") . $property_name)
-			];
-			if (in_array($link, array("Collection"))) {
-echo "do it";
-				foreach ($object->$property_name as $key => $value) {
-					if ($link === "Collection") {
-						$value->setComposite($object);
-					}
-					$object->$property_name[$key] = $this->importSearchObject(
-						$value, $row, $class, $class_properties_column, $path
-					);
-				}
-			}
-			*/
 			if ($object->$property_name !== $row[$class_properties_column[$property_name]]) {
 				$object->$property_name = $row[$class_properties_column[$property_name]];
 				$do_write = true;
 			}
 		}
 		if ($do_write) {
+			if ($this->simulation) {
+				$this->simulateUpdate($class, $object);
+			}
 			Dao::write($object);
 		}
 		return $object;
@@ -458,6 +508,9 @@ echo "do it";
 		}
 		foreach (array_keys($class->write_properties) as $property_name) {
 			$object->$property_name = $row[$class_properties_column[$property_name]];
+		}
+		if ($this->simulation) {
+			$this->simulateNew($class, $object);
 		}
 		Dao::write($object);
 		return $object;

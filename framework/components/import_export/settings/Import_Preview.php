@@ -55,15 +55,8 @@ class Import_Preview
 		}
 		if (isset($data)) {
 			$this->data = $data;
-			$row = reset($data);
-			$constants = array();
-			if ((count($row) < 2) || $row[1] == "") {
-				$row = next($data);
-			}
-			while (current($data) && (count($row) == 3) && ($row[1] == "=")) {
-				$constants[$row[0]] = $row[2];
-				$row = next($data);
-			}
+			$constants = Import_Array::getConstantsFromArray($data);
+			$row = current($data);
 			if (!isset($this->properties)) {
 				foreach ($row as $column_number => $property_path) {
 					if (!isset($constants[$property_path])) {
