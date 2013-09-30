@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-use \ReflectionClass;
+use ReflectionClass;
 
 /**
  * Debug functions that are missing in standard

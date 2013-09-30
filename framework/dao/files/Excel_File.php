@@ -2,8 +2,8 @@
 namespace SAF\Framework;
 
 /*
-use \PHPExcel;
-use \PHPExcel_IOFactory;
+use PHPExcel;
+use PHPExcel_IOFactory;
 
 require dirname(__FILE__) . "/../../vendor/PHPExcel/Classes/PHPExcel.php";
 */

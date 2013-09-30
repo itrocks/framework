@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-use \Serializable;
+use Serializable;
 
 /**
  * Temporary files collection, stored into session
