@@ -102,7 +102,7 @@ abstract class Import_Settings_Builder
 	/**
 	 * @param $class_name    string
 	 * @param $property_path string
-	 * @param $class         string[]
+	 * @param $class         array
 	 * @return Import_Class
 	 */
 	private static function buildFormClass($class_name, $property_path, $class)
@@ -111,6 +111,13 @@ abstract class Import_Settings_Builder
 		$import_class = new Import_Class(
 			$class_name, $property_path, $class["object_not_found_behaviour"]
 		);
+		if (isset($class["constants"]) && is_array($class["constants"])) {
+			foreach ($class["constants"] as $constant) {
+				$import_class->constants[$constant["name"]] = new Reflection_Property_Value(
+					$import_class->class_name, $constant["name"], $constant["value"], true
+				);
+			}
+		}
 		if ($class["identify"]) {
 			foreach (explode(",", $class["identify"]) as $property_name) {
 				$import_class->identify_properties[$property_name] = new Import_Property(

@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-use \StdClass;
+use StdClass;
 
 /**
  * Import preview controller
@@ -101,6 +101,7 @@ class Import_Preview_Controller implements Feature_Controller
 			$parameters["custom"][$worksheet_number] = new StdClass();
 			$parameters["custom"][$worksheet_number]->customized_lists = $customized_import_settings;
 			$parameters["custom"][$worksheet_number]->general_buttons = $worksheet_general_buttons;
+			$parameters["custom"][$worksheet_number]->settings = $worksheet->settings;
 		}
 		// view
 		return View::run($parameters, $form, $files, 'SAF\Framework\Import', "preview");

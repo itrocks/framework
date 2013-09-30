@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use Serializable;
+
 /**
  * Import class
  */
-class Import_Class
+class Import_Class implements Serializable
 {
 
 	//----------------------------------------------------------------------------------- $class_name
@@ -134,6 +136,48 @@ class Import_Class
 			$properties[] = $property->name;
 		}
 		return join(",", $properties);
+	}
+
+	//------------------------------------------------------------------------------------- serialize
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		$serialize = get_object_vars($this);
+		if (isset($serialize["constants"]) && is_array($serialize["constants"])) {
+			/** @var $value Reflection_Property_Value */
+			foreach ($serialize["constants"] as $key => $value) {
+				$serialize["constants"][$key] = array(
+					"class" => $value->class, "name" => $value->name, "value" => $value->value(),
+					"final_object" => true
+				);
+			}
+		}
+		return serialize($serialize);
+	}
+
+	//----------------------------------------------------------------------------------- unserialize
+	/**
+	 * @param $serialized string
+	 */
+	public function unserialize($serialized)
+	{
+		foreach (unserialize($serialized) as $key => $value) {
+			if ($key == "constants") {
+				foreach ($value as $constant_key => $constant_value) {
+					$this->constants[$constant_key] = new Reflection_Property_Value(
+						$constant_value["class"],
+						$constant_value["name"],
+						$constant_value["value"],
+						$constant_value["final_object"]
+					);
+				}
+			}
+			else {
+				$this->$key = $value;
+			}
+		}
 	}
 
 }

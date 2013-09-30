@@ -311,7 +311,7 @@ class Import_Array
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
 		$simulation = $this->simulation;
-		while (($row = next($array)) && $this->simulation && $simulation) {
+		while (($row = next($array)) && (!$this->simulation || $simulation)) {
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
 			$object = (in_array($this->properties_link[$property_path], array("Collection", "Map")))
 				? $this->createArrayReference($class->class_name, $search)
