@@ -57,6 +57,20 @@ class Dao_Sort_Option implements Dao_Option
 		}
 	}
 
+	//--------------------------------------------------------------------------------- addSortColumn
+	/**
+	 * @param $property_path      string
+	 * @param $sort_columns_count integer number of sort columns to keep after adding
+	 */
+	public function addSortColumn($property_path, $sort_columns_count = 3)
+	{
+		if (in_array($property_path, $this->columns)) {
+			unset($this->columns[array_search($property_path, $this->columns)]);
+		}
+		array_unshift($this->columns, $property_path);
+		$this->columns = array_slice($this->columns, 0, $sort_columns_count);
+	}
+
 	//-------------------------------------------------------------------------------- applyClassName
 	/**
 	 * Apply class name : if constructor was called without columns, this will initialize columns list

@@ -62,7 +62,7 @@ class List_Settings
 			$this->setting = $setting;
 		}
 		if (!isset($this->sort)) {
-			$this->sort = new Dao_Sort_Option();
+			$this->sort = new Dao_Sort_Option($class_name);
 		}
 		if (!isset($this->properties_path) && isset($this->class_name)) {
 			$this->properties_path = Reflection_Class::getInstanceOf($this->class_name)
@@ -170,11 +170,7 @@ class List_Settings
 	 */
 	public function sort($property_path)
 	{
-		if (in_array($property_path, $this->sort->columns)) {
-			unset($this->sort->columns[array_search($property_path, $this->sort->columns)]);
-		}
-		array_unshift($this->sort->columns, $property_path);
-		$this->sort->columns = array_slice($this->sort->columns, 0, 3);
+		$this->sort->addSortColumn($property_path);
 	}
 
 	//--------------------------------------------------------------------------------- propertyTitle
