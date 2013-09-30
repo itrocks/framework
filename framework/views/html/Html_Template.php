@@ -824,6 +824,9 @@ class Html_Template
 		if (!strlen($property_name)) {
 			$object = $this->parseParent();
 		}
+		elseif ($property_name === "#") {
+			return reset($this->var_names);
+		}
 		elseif (strpos($property_name, "?")) {
 			$object = $this->parseConditional($property_name);
 		}
@@ -971,9 +974,6 @@ class Html_Template
 	{
 		if ($var_name === ".") {
 			return reset($this->objects);
-		}
-		elseif ($var_name === "#") {
-			return reset($this->var_names);
 		}
 		elseif ($var_name == "") {
 			return "";
