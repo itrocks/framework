@@ -46,6 +46,23 @@
 	border: 1px solid white;
 }
 
+.import.preview.window .constants a.constant.add {
+	display: table-caption;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.import.preview.window .constants a.constant.remove {
+	background: url("img/delete.png") center no-repeat;
+	color: transparent;
+	display: table-cell;
+	height: 18px;
+	font-size: 1px;
+	vertical-align: top;
+	white-space: nowrap;
+	width: 20px;
+}
+
 .import.preview.window .identify.properties ul:empty:after {
 	content: "(crée systématiquement un nouvel enregistrement)";
 	font-style: italic;

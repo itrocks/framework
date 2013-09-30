@@ -88,6 +88,21 @@ class Import_Class implements Serializable
 		return $this->getPropertyPathValue();
 	}
 
+	//----------------------------------------------------------------------------------- addConstant
+	/**
+	 * Adds a new constant to the list : default value is empty and default name is random
+	 */
+	public function addConstant()
+	{
+		$properties = Reflection_Class::getInstanceOf($this->class_name)->getAllProperties();
+		foreach ($properties as $property) {
+			if (!$property->isStatic() && !isset($this->constants[$property->name])) {
+				$this->constants[$property->name] = Reflection_Property_Value::getInstanceOf($property);
+				break;
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------ getIdentifyValue
 	/**
 	 * @return string
@@ -136,6 +151,17 @@ class Import_Class implements Serializable
 			$properties[] = $property->name;
 		}
 		return join(",", $properties);
+	}
+
+	//-------------------------------------------------------------------------------- removeConstant
+	/**
+	 * Removes a constant from the list
+	 */
+	public function removeConstant($property_name)
+	{
+		if (isset($this->constants[$property_name])) {
+			unset($this->constants[$property_name]);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- serialize

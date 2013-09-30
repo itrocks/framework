@@ -37,6 +37,9 @@
 					<div class="field">
 						<div class="label">{@propertySelect("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][name]")}</div>
 						<div class="value">{@edit("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][value]")}</div>
+						<a class="constant remove submit" href="/Import/preview?constant_remove={--getPropertyPathValue}.{#}" target="#main">
+							|Remove constant|
+						</a>
 					</div>
 					<!--constants-->
 					<a class="constant add submit" href="/Import/preview?constant_add={#}" target="#main">
@@ -68,7 +71,7 @@
 
 			<!--preview-->
 				<table class="preview">
-					<tr><!--properties--><th>{.}</th><!--properties--></tr>
+					<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--properties--></tr>
 					<!--data:{first_row}-{last_row}-->
 					<tr><!--.:-{--last_column}--><td>{.}</td><!--.--></tr>
 					<!--data-->
