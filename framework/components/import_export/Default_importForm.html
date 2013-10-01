@@ -11,10 +11,10 @@
 <body>
 
 <!--BEGIN-->
-<div class="{@class.short.lower} {@feature} window" id="/{@class.short}/{@feature}">
+<div class="{class_name.short.lower} import form window" id="/{@class.short}/{@feature}">
 	<h2 class="window title">|{@class.ucfirst}|</h2>
 
-	<form action="/Import/preview" method="post" enctype="multipart/form-data" target="#main">
+	<form action="/{class_name.short}/import/preview" method="post" enctype="multipart/form-data" target="#import_preview">
 		<div class="file field">
 			<div class="label">|File|</div>
 			<div class="value">{file.@edit}</div>

@@ -15,12 +15,13 @@ abstract class Import_Settings_Builder
 	 * Second line must contain the fields paths, relative to the class
 	 * Other liens contain data, and are not used
 	 *
-	 * @param $array            array two dimensional array (keys are row, col)
+	 * @param $array      array two dimensional array (keys are row, col)
+	 * @param $class_name default class name (if not found into array)
 	 * @return Import_Settings
 	 */
-	public static function buildArray(&$array)
+	public static function buildArray(&$array, $class_name = null)
 	{
-		$class_name = Import_Array::getClassNameFromArray($array);
+		$class_name = Import_Array::getClassNameFromArray($array, $class_name);
 		$settings = new Import_Settings($class_name);
 		/** @var $classes Import_Class[] */
 		$classes = array();

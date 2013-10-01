@@ -6,7 +6,7 @@ use StdClass;
 /**
  * Import preview controller
  */
-class Import_Preview_Controller implements Feature_Controller
+class Default_Import_Preview_Controller implements Default_Feature_Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
@@ -18,11 +18,11 @@ class Import_Preview_Controller implements Feature_Controller
 	{
 		return array(
 			"save" => new Button(
-				"Save", View::link($class_name, "preview"),
+				"Save", View::link($class_name, "import", "preview"),
 				"custom_save", array(Color::of("blue"), "#main", ".submit")
 			),
 			"delete" => new Button(
-				"Delete", View::link($class_name, "preview", null, array("delete_name" => true)),
+				"Delete", View::link($class_name, "import", "preview", null, array("delete_name" => true)),
 				"custom_delete", array(Color::of("red"), "#main", ".submit")
 			)
 		);
@@ -33,14 +33,16 @@ class Import_Preview_Controller implements Feature_Controller
 	 * @param $parameters Controller_Parameters
 	 * @param $form       array
 	 * @param $files      array
+	 * @param $class_name string
 	 * @return mixed
 	 */
-	public function run(Controller_Parameters $parameters, $form, $files)
+	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
 		// convert form files to worksheets and session files
 		if ($files) {
 			/** @var $import Import */
 			$import = $parameters->getMainObject('SAF\Framework\Import');
+			$import->class_name = $class_name;
 			$form = (new File_Builder_Post_Files())->appendToForm($form, $files);
 			foreach ($form as $file) {
 				if ($file instanceof File) {
@@ -52,7 +54,7 @@ class Import_Preview_Controller implements Feature_Controller
 					foreach ($excel as $temporary_file_name => $worksheet) {
 						$import_worksheet = new Import_Worksheet(
 							$worksheet_number ++,
-							Import_Settings_Builder::buildArray($worksheet),
+							Import_Settings_Builder::buildArray($worksheet, $class_name),
 							$csv_file = new File($temporary_file_name)
 						);
 						$session_files->files[] = $csv_file;
@@ -73,7 +75,7 @@ class Import_Preview_Controller implements Feature_Controller
 		}
 		// prepare parameters
 		$parameters = $parameters->getObjects();
-		$general_buttons = $this->getGeneralButtons('SAF\Framework\Import');
+		$general_buttons = $this->getGeneralButtons($class_name);
 		if (
 			isset($parameters["constant_remove"])
 			&& (strtoupper($parameters["constant_remove"][0]) === $parameters["constant_remove"][0])

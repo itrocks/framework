@@ -7,6 +7,12 @@ namespace SAF\Framework;
 class Import
 {
 
+	//----------------------------------------------------------------------------------- $class_name
+	/**
+	 * @var string
+	 */
+	public $class_name;
+
 	//--------------------------------------------------------------------------------------- $format
 	/**
 	 * @link Object
@@ -26,5 +32,16 @@ class Import
 	 * @var Import_Worksheet[]
 	 */
 	public $worksheets;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name string
+	 */
+	public function __construct($class_name = null)
+	{
+		if (isset($class_name)) {
+			$this->class_name = $class_name;
+		}
+	}
 
 }

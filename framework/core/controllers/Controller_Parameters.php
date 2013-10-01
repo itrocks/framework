@@ -56,14 +56,17 @@ class Controller_Parameters
 	 * @param $class_name string
 	 * @return object
 	 */
-	public function getMainObject($class_name)
+	public function getMainObject($class_name = null)
 	{
 		$object = reset($this->parameters);
-		if (!$object || !is_object($object) || !is_a($object, $class_name)) {
-			$object = class_exists($class_name)
-				? new $class_name()
+		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
+			$object = (isset($class_name) && class_exists($class_name))
+				? Builder::create($class_name)
 				: Set::instantiate($class_name);
-			$this->parameters = array_merge(array($class_name => $object), $this->parameters);
+			$this->parameters = array_merge(
+				array(isset($class_name) ? $class_name : get_class($object) => $object),
+				$this->parameters
+			);
 		}
 		return $object;
 	}
@@ -129,9 +132,7 @@ class Controller_Parameters
 	 */
 	public function getRawParameter($parameter_name)
 	{
-		return isset($this->parameters[$parameter_name])
-			? $this->parameters[$parameter_name]
-			: null;
+		return isset($this->parameters[$parameter_name]) ? $this->parameters[$parameter_name] : null;
 	}
 
 	//--------------------------------------------------------------------------------- getParameters
@@ -181,6 +182,51 @@ class Controller_Parameters
 		return $this;
 	}
 
+	//----------------------------------------------------------------------------------------- shift
+	/**
+	 * Returns and remove the first parameter
+	 *
+	 * @return mixed
+	 */
+	public function shift()
+	{
+		return array_shift($this->parameters);
+	}
+
+	//------------------------------------------------------------------------------------ shiftNamed
+	/**
+	 * Returns and remove the first parameter which key is not an integer and value is not an object
+	 *
+	 * @return string[] first element is the name of the parameter, second element is its value
+	 */
+	public function shiftNamed()
+	{
+		foreach ($this->parameters as $key => $value) {
+			if (!is_numeric($key) && !is_object($value)) {
+				unset($this->parameters[$key]);
+				return array($key, $value);
+			}
+		}
+		return null;
+	}
+
+	//----------------------------------------------------------------------------------- shiftObject
+	/**
+	 * Returns and remove the first parameter which is an object
+	 *
+	 * @return object
+	 */
+	public function shiftObject()
+	{
+		foreach ($this->parameters as $key => $value) {
+			if (is_object($value)) {
+				unset($this->parameters[$key]);
+				return $value;
+			}
+		}
+		return null;
+	}
+
 	//---------------------------------------------------------------------------------- shiftUnnamed
 	/**
 	 * Returns and remove the first unnamed parameter (which key is an integer and value is not an object)
@@ -207,6 +253,27 @@ class Controller_Parameters
 	public function unshiftUnnamed($parameter_value)
 	{
 		array_unshift($this->parameters, $parameter_value);
+	}
+
+	//----------------------------------------------------------------------------------------- toGet
+	/**
+	 * Changes named parameters (which name is not numeric and value not object) into a "get-like" argument
+	 *
+	 * @param boolean $shift if true, get elements will be removed from parameters
+	 * @return array
+	 */
+	public function toGet($shift = false)
+	{
+		$get = array();
+		foreach ($this->parameters as $key => $value) {
+			if (!is_numeric($key) && !is_object($value)) {
+				$get[$key] = $value;
+				if ($shift) {
+					unset($this->parameters[$key]);
+				}
+			}
+		}
+		return $get;
 	}
 
 	//--------------------------------------------------------------------------------------- unshift

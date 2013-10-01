@@ -21,7 +21,7 @@ class Default_List_Controller extends List_Controller
 				"add", Color::of("green")
 			),
 			"import" => new Button(
-				"Import", View::link('SAF\Framework\Import', "form"),
+				"Import", View::link($class_name, "import"),
 				"import", "#main", Color::of("green")
 			),
 			"save" => new Button(

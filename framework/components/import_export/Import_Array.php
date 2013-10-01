@@ -113,19 +113,23 @@ class Import_Array
 	 *
 	 * The cursor on $array is reset to the first row of the array
 	 *
-	 * @param $array array Two dimensional array : keys are row and column number
+	 * @param $array      array Two dimensional array : keys are row and column number
+	 * @param $class_name string default class name (if not found on the first row of the array)
 	 * @return string
 	 */
-	public static function getClassNameFromArray(&$array)
+	public static function getClassNameFromArray(&$array, $class_name = null)
 	{
 		$row = reset($array);
-		$class_name = reset($row);
-		return (
-			$class_name
-			&& ($class_name[0] === strtoupper($class_name[0]))
-			&& (count($row) == 1) || !$row[1]
-		) ? self::getClassNameFromValue($class_name)
-			: null;
+		$array_class_name = reset($row);
+		return self::getClassNameFromValue(
+			(
+				$array_class_name
+				&& ($array_class_name[0] === strtoupper($array_class_name[0]))
+				&& ((count($row) == 1) || !$row[1])
+			)
+			? $array_class_name
+			: $class_name
+		);
 	}
 
 	//------------------------------------------------------------------------- getClassNameFromValue
@@ -135,7 +139,7 @@ class Import_Array
 	 */
 	public static function getClassNameFromValue($value)
 	{
-		return Builder::className(Namespaces::fullClassName($value));
+		return isset($value) ? Builder::className(Namespaces::fullClassName($value)) : null;
 	}
 
 	//------------------------------------------------------------------------- getConstantsFromArray
@@ -150,7 +154,7 @@ class Import_Array
 	public static function getConstantsFromArray(&$array)
 	{
 		$constants = array();
-		$row = (self::getClassNameFromArray($array)) ? next($array) : current($array);
+		$row = self::getClassNameFromArray($array) ? next($array) : current($array);
 		while ($row && (count($row) > 1) && ($row[1] == "=")) {
 			$constants[$row[0]] = isset($row[2]) ? $row[2] : "";
 			$row = next($array);
@@ -272,7 +276,7 @@ class Import_Array
 	public function importArray(&$array)
 	{
 		Dao::begin();
-		$class_name = self::getClassNameFromArray($array);
+		$class_name = self::getClassNameFromArray($array, $this->class_name);
 		if (isset($class_name)) {
 			$this->setClassName($class_name);
 		}
@@ -389,11 +393,8 @@ class Import_Array
 				}
 				$property_name = Loc::rtr($property_name, $property_class_name);
 				$property_names[] = $property_name . ($asterisk ? "*" : "");
-				$property_class_name = Builder::className(
-					Reflection_Property::getInstanceOf(
-						$property_class_name, $property_name
-					)->getType()->getElementTypeAsString()
-				);
+				$property = Reflection_Property::getInstanceOf($property_class_name, $property_name);
+				$property_class_name = Builder::className($property->getType()->getElementTypeAsString());
 			}
 			$property_path = join(".", $property_names);
 		}
