@@ -4,9 +4,8 @@ namespace SAF\Framework;
 /**
  * Import settings
  */
-class Import_Settings
+class Import_Settings extends Custom_Settings
 {
-	use Custom_Settings { current as private pCurrent; load as private pLoad; }
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
@@ -37,7 +36,7 @@ class Import_Settings
 	 */
 	public static function current($class_name)
 	{
-		return self::pCurrent($class_name);
+		return parent::current($class_name);
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -77,7 +76,7 @@ class Import_Settings
 	 */
 	public static function load($class_name, $name)
 	{
-		return self::pLoad($class_name, $name);
+		return parent::load($class_name, $name);
 	}
 
 	//---------------------------------------------------------------------------------- setConstants

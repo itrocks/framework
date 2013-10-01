@@ -9,11 +9,11 @@ abstract class Custom_Settings_Controller
 
 	//--------------------------------------------------------------- applyParametersToCustomSettings
 	/**
-	 * @param $custom_settings   object|Custom_Settings
+	 * @param $custom_settings   Custom_Settings
 	 * @param $parameters        array
 	 * @return Custom_Settings
 	 */
-	public static function applyParametersToCustomSettings(&$custom_settings, $parameters)
+	public static function applyParametersToCustomSettings(Custom_Settings&$custom_settings, $parameters)
 	{
 		$did_change = false;
 		if (isset($parameters) && isset($parameters["delete_name"])) {

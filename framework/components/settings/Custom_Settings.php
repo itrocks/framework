@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * Custom settings objects can be loaded and saved from user configuration
  */
-trait Custom_Settings
+abstract class Custom_Settings
 {
 
 	//----------------------------------------------------------------------------------- $class_name

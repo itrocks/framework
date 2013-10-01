@@ -4,9 +4,8 @@ namespace SAF\Framework;
 /**
  * List settings : all that can be customized into a list view
  */
-class List_Settings
+class List_Settings extends Custom_Settings
 {
-	use Custom_Settings { current as private pCurrent; load as private pLoad; }
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
@@ -109,7 +108,7 @@ class List_Settings
 	 */
 	public static function current($class_name)
 	{
-		return self::pCurrent($class_name);
+		return parent::current($class_name);
 	}
 
 	//------------------------------------------------------------------------------- getDefaultTitle
@@ -135,7 +134,7 @@ class List_Settings
 	 */
 	public static function load($class_name, $name)
 	{
-		return self::pLoad($class_name, $name);
+		return parent::load($class_name, $name);
 	}
 
 	//-------------------------------------------------------------------------------- removeProperty
