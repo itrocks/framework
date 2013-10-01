@@ -72,6 +72,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 		else {
 			$files = Session::current()->get('SAF\Framework\Session_Files')->files;
 			$parameters->unshift($import = Import_Builder_Form::build($form, $files));
+			$import->class_name = $class_name;
 		}
 		// prepare parameters
 		$parameters = $parameters->getObjects();
@@ -132,7 +133,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 			);
 		}
 		// view
-		return View::run($parameters, $form, $files, 'SAF\Framework\Import', "preview");
+		return View::run($parameters, $form, $files, $class_name, "importPreview");
 	}
 
 }

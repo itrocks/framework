@@ -11,10 +11,10 @@
 <body>
 
 <!--BEGIN-->
-<div class="{@class.short.lower} {@feature} window" id="/{@class.short}/{@feature}">
+<div class="{class_name.short.lower} import preview window" id="/{class_name.short}/import/preview">
 	<h2 class="window title">|Import preview|</h2>
 
-	<form action="/Import/preview" method="post" target="#main">
+	<form action="/{class_name.short}/import/preview" method="post" target="#main">
 
 		<!--worksheets-->
 		<div class="worksheet">
@@ -83,14 +83,16 @@
 
 		<p class="warning">
 			<span>Une fois vérifiés les réglages ci-dessus, vous pouvez</span>
-			<a class="green button submit" href="/Import/execute" target="#import_execute">Lancer l'import</a>
+			<a class="green button submit" href="/{class_name.short}/import/execute" target="#import_execute">|Execute import|</a>
 		</p>
 
 	</form>
 
 </div>
+
 <div id="import_execute">
 </div>
+
 <!--END-->
 
 </body>
