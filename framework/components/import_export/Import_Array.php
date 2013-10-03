@@ -393,7 +393,12 @@ class Import_Array
 				}
 				$property_name = Loc::rtr($property_name, $property_class_name);
 				$property_names[] = $property_name . ($asterisk ? "*" : "");
-				$property = Reflection_Property::getInstanceOf($property_class_name, $property_name);
+				try {
+					$property = Reflection_Property::getInstanceOf($property_class_name, $property_name);
+				}
+				catch (ReflectionException $e) {
+					break;
+				}
 				$property_class_name = Builder::className($property->getType()->getElementTypeAsString());
 			}
 			$property_path = join(".", $property_names);

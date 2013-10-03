@@ -121,7 +121,7 @@ abstract class Checker
 		&$report_lines, $test, Reflection_Property $property, Annotation $annotation, $value
 	) {
 		if (!$test) {
-			$report_line = new Check_Report_Line($property, $annotation, $value);
+			$report_line = new Annotation_Check_Report_Line($property, $annotation, $value);
 			$report_lines[] = $report_line;
 		}
 	}

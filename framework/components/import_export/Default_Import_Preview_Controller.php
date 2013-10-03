@@ -49,7 +49,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 					if (!isset($session_files)) {
 						$session_files = new Session_Files();
 					}
-					$excel = Excel_File::fileToArray($file->temporary_file_name);
+					$excel = Spreadsheet_File::fileToArray($file->temporary_file_name);
 					$worksheet_number = 0;
 					foreach ($excel as $temporary_file_name => $worksheet) {
 						$import_worksheet = new Import_Worksheet(

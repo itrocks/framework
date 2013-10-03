@@ -20,7 +20,7 @@ require dirname(__FILE__) . "/../../vendor/PHPExcel/Classes/PHPExcel.php";
  * cd framework/vendor
  * git pull https://github.com/PHPOffice/PHPExcel.git
  */
-class Excel_File // extends PHPExcel
+class Spreadsheet_File // extends PHPExcel
 {
 
 	//----------------------------------------------------------------------------------- fileToArray
@@ -50,12 +50,12 @@ class Excel_File // extends PHPExcel
 	//-------------------------------------------------------------------------------- createFromFile
 	/**
 	 * @param $file_name string The Excel file name to be read
-	 * @return Excel_File
+	 * @return Spreadsheet_File
 	 */
 	public static function createFromFile($file_name)
 	{
 		$source_object = PHPExcel_IOFactory::load($file_name);
-		$destination_object = new Excel_File();
+		$destination_object = new Spreadsheet_File();
 		$source_class = Reflection_Class::getInstanceOf(get_class($source_object));
 		$destination_class = Reflection_Class::getInstanceOf(__CLASS__);
 		$destination_properties = $destination_class->accessProperties();

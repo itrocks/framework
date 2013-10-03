@@ -16,7 +16,7 @@ abstract class Import_Settings_Builder
 	 * Other liens contain data, and are not used
 	 *
 	 * @param $array      array two dimensional array (keys are row, col)
-	 * @param $class_name default class name (if not found into array)
+	 * @param $class_name string default class name (if not found into array)
 	 * @return Import_Settings
 	 */
 	public static function buildArray(&$array, $class_name = null)
