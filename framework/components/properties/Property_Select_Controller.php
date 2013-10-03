@@ -10,18 +10,41 @@ class Property_Select_Controller implements Controller
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
-	 * @param $class Reflection_Class
-	 * @param $path  string
+	 * @param $class                   Reflection_Class
+	 * @param $composite_class_name    string
 	 * @return Reflection_Property_Value[]
 	 */
-	public function getProperties(Reflection_Class $class, $path = null)
+	public function getProperties(Reflection_Class $class, $composite_class_name = null)
 	{
 		$properties = array();
-		foreach ($class->getAllProperties() as $property) {
-			if (!$property->isStatic()) {
-				$property = new Reflection_Property_Value($property);
-				$property->path = isset($path) ? $path . "." . $property->name : $property->name;
-				$properties[] = $property;
+		if (isset($composite_class_name) && class_uses_trait($class->name, 'SAF\Framework\Component')) {
+			$composite_property = call_user_func(
+				array($class->name, "getCompositeProperties"),
+				$composite_class_name
+			);
+			$composite_property = reset($composite_property);
+		}
+		if ($class->getAnnotation("link")->value) {
+			$link_class = new Link_Class($class->name);
+			$composite_link_property = $link_class->getCompositeProperty();
+			foreach ($link_class->getAllProperties() as $property) {
+				if (
+					(!isset($composite_property) || ($property->name !== $composite_property->name))
+					&& ($property->name !== $composite_link_property->name)
+					&& !$property->isStatic()
+				) {
+					$properties[] = $property;
+				}
+			}
+		}
+		else {
+			foreach ($class->getAllProperties() as $property) {
+				if (
+					(!isset($composite_property) || ($property->name !== $composite_property->name))
+					&& !$property->isStatic()
+				) {
+					$properties[] = $property;
+				}
 			}
 		}
 		return $properties;
@@ -32,34 +55,45 @@ class Property_Select_Controller implements Controller
 	 * Property select controller, starting from a given root class
 	 *
 	 * @param $parameters Controller_Parameters
-	 * - first : the reference class name (ie a business object)
-	 * - second : if set, the selected property name into the reference class name
+	 * - first : the root reference class name (ie a business object)
+	 * - second : if set, the selected property path into the root reference class name
 	 * @param $form array  not used
 	 * @param $files array not used
 	 * @return mixed
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		$property = new Property();
 		$class_name = Namespaces::fullClassName(Set::elementClassNameOf($parameters->shiftUnnamed()));
 		$property_path = $parameters->shiftUnnamed();
-		$property->class = Reflection_Class::getInstanceOf($class_name);
-		if (!empty($property_path)) {
-			$property->name = rLastParse($property_path, ".", 1, true);
-			$parameters->set("container", "subtree");
+		if (empty($property_path)) {
+			$top_property = new Property();
+			$top_property->class = $class_name;
+			$properties = $this->getProperties(Reflection_Class::getInstanceOf($class_name));
+			foreach ($properties as $property) {
+				$property->path = $property->name;
+			}
 		}
 		else {
-			$property_path = null;
+			$top_property = Reflection_Property::getInstanceOf($class_name, $property_path);
+			$properties = $this->getProperties(
+				Reflection_Class::getInstanceOf($top_property->getType()->getElementTypeAsString()),
+				$class_name
+			);
+			foreach ($properties as $property) {
+				$property->path = $property_path . "." . $property->name;
+			}
+			$parameters->set("container", "subtree");
 		}
 		$objects = $parameters->getObjects();
-		array_unshift($objects, $property);
-		$objects["properties"] = $this->getProperties($property->class, $property_path);
+		array_unshift($objects, $top_property);
+		$objects["properties"] = $properties;
+		$objects["class_name"] = $class_name;
 		/**
 		 * Objects for the view :
 		 * first        Property the property object (with selected property name, or not)
 		 * "properties" Reflection_Property[] all properties from the reference class
 		 */
-		return View::run($objects, $form, $files, get_class($property), "select");
+		return View::run($objects, $form, $files, 'SAF\Framework\Property', "select");
 	}
 
 }

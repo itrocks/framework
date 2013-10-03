@@ -61,13 +61,13 @@ trait Component
 	 *
 	 * @param $class_name    string|object The composite class name or object
 	 * @param $property_name string The composite property name
-	 * @return Reflection_Property[]
+	 * @return Reflection_Property[] key is the name of the property
 	 */
 	public static function getCompositeProperties($class_name = null, $property_name = null)
 	{
 		// flexible parameters : first parameter can be a property name alone
 		if (!isset($property_name) && is_string($class_name) && !empty($class_name)) {
-			if ($class_name[0] >= 'a' && $class_name[0] <= 'z') {
+			if (($class_name[0] >= 'a') && ($class_name[0] <= 'z')) {
 				$property_name = $class_name;
 				$class_name = null;
 			}

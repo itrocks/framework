@@ -364,7 +364,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 			__METHOD__,
 			$builder->buildQuery(),
 			"SELECT t0.`date` AS `date`, t0.`number` AS `number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity`"
-			. " FROM `orders` t0 LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id WHERE t1.`number` = 2"
+			. ' FROM `orders` t0 LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id WHERE t1.`number` = "2"'
 		);
 	}
 

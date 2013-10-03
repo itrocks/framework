@@ -132,7 +132,7 @@ $("document").ready(function()
 			this.in(".close.button a")
 				.attr("href", "javascript:$('#" + this.attr("id") + "').remove()")
 				.attr("target", "");
-			var $button = this.in(".write.button");
+			var $button = this.in(".write.button a");
 			$button.attr("href", $button.attr("href") +
 				(($button.attr("href").indexOf("?") > -1) ? "&" : "?")
 				+ "close=" + this.attr("id")
