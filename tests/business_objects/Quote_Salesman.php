@@ -28,4 +28,11 @@ class Quote_Salesman extends Salesman
 	 */
 	public $quote;
 
+	//------------------------------------------------------------------------------------- $salesman
+	/**
+	 * @link Object
+	 * @var Salesman
+	 */
+	private $salesman;
+
 }

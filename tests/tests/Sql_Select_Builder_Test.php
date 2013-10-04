@@ -207,6 +207,21 @@ class Sql_Select_Builder_Test extends Unit_Test
 		);
 	}
 
+	//-------------------------------------------------------------------- testLinkedClassSelectQuery
+	public function testLinkedClassSelectQuery()
+	{
+		$builder = new Sql_Select_Builder(
+			'SAF\Tests\Quote',
+			array("number", "salesmen.name", "salesmen.percentage")
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			"SELECT t0.`number` AS `number`, t2.`name` AS `salesmen.name`, t1.`percentage` AS `salesmen.percentage`"
+			. " FROM `quotes` t0 LEFT JOIN `quotes_salesmen` t1 ON t1.id_quote = t0.id LEFT JOIN `salesmen` t2 ON t2.id = t1.id_salesman"
+		);
+	}
+
 	//--------------------------------------------------------------------------------- testLinkQuery
 	public function testLinkQuery()
 	{

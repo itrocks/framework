@@ -116,6 +116,18 @@ class Default_List_Controller extends List_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
+		Mysql_Logger::getInstance()->continue = true;
+		Mysql_Logger::getInstance()->display_log = true;
+		Dao::select(
+			Builder::className('SAF\Bappli\Items\Item'),
+			array(
+				"code",
+				"name",
+				"characteristics.name"
+			)
+		);
+		Mysql_Logger::getInstance()->continue = false;
+		Mysql_Logger::getInstance()->display_log = false;
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		return View::run($parameters, $form, $files, $class_name, "list");
 	}

@@ -89,12 +89,12 @@ class Sql_Joins
 		if (array_key_exists($path, $this->joins)) {
 			return $this->joins[$path];
 		}
-		elseif (isset($this->link_joins[$path])) {
-			return $this->link_joins[$path];
-		}
 		list($master_path, $master_property_name) = Sql_Builder::splitPropertyPath($path);
 		if ($master_path && !isset($this->joins[$master_path])) {
 			$this->add($master_path, $depth + 1);
+		}
+		if (isset($this->link_joins[$path])) {
+			return $this->link_joins[$path];
 		}
 		$join = new Sql_Join();
 		$foreign_class_name = (strpos($master_property_name, "->"))
@@ -130,7 +130,7 @@ class Sql_Joins
 			$join->master_alias = $master_path ? $this->getAlias($master_path) : "t0";
 		}
 		$this->classes[$foreign_path] = $foreign_class_name;
-		$this->addProperties($foreign_path, $foreign_class_name);
+		$this->addProperties($foreign_path, $foreign_class_name, $join->mode);
 		return $join;
 	}
 
@@ -140,10 +140,11 @@ class Sql_Joins
 	 *
 	 * @param $path               string
 	 * @param $linked_class_name  string
+	 * @param $join_mode          string
 	 * @return Reflection_Property[] the properties that come from the linked class,
 	 * for further exclusion
 	 */
-	private function addLinkedClass($path, $linked_class_name)
+	private function addLinkedClass($path, $linked_class_name, $join_mode)
 	{
 		$linked_class = Reflection_Class::getInstanceOf($linked_class_name);
 		$join = new Sql_Join();
@@ -153,12 +154,16 @@ class Sql_Joins
 		$join->foreign_column = "id";
 		$join->foreign_class  = $linked_class_name;
 		$join->foreign_table  = Dao::storeNameOf($linked_class_name);
-		$join->mode           = Sql_Join::INNER;
+		$join->mode           = ($join_mode == Sql_Join::LEFT) ? Sql_Join::LEFT : Sql_Join::INNER;
 		$join->type           = Sql_Join::LINK;
+		if (!isset($this->joins[$path])) {
+			// this ensures that the main path is set before the linked path
+			$this->joins[$path] = null;
+		}
 		$this->joins[($path ? ($path . "-") : "") . $join->foreign_table . "-@link"] = $join;
 		$more_linked_class_name = $linked_class->getAnnotation("link")->value;
 		$exclude_properties = $more_linked_class_name
-			? $this->addLinkedClass($path, $more_linked_class_name)
+			? $this->addLinkedClass($path, $more_linked_class_name, $join_mode)
 			: array();
 		foreach ($linked_class->getAllProperties() as $property) if (!$property->isStatic()) {
 			if (!isset($exclude_properties[$property->name])) {
@@ -226,28 +231,14 @@ class Sql_Joins
 	 *
 	 * @param $path       string
 	 * @param $class_name string
+	 * @param $join_mode  string
 	 */
-	private function addProperties($path, $class_name)
+	private function addProperties($path, $class_name, $join_mode = null)
 	{
 		$class = Reflection_Class::getInstanceOf($class_name);
 		$linked_class_name = $class->getAnnotation("link")->value;
-		//$linked_properties = array();
 		if ($linked_class_name) {
-			$this->addLinkedClass($path, $linked_class_name);
-			/*
-			while ($linked_class_name) {
-				// add linked class properties and join
-				$linked_class = $this->addLinkedClass($path, $linked_class_name, $linked_properties);
-				$linked_properties = array_merge($linked_properties, $this->properties[$linked_class_name]);
-				$linked_class_name = $linked_class->getAnnotation("link")->value;
-			}
-			// add linking class own properties (those that do not exist on linked class)
-			foreach ($class->getAllProperties() as $property) if (!$property->isStatic()) {
-				if (!isset($linked_properties[$property->name])) {
-					$this->properties[$class_name][$property->name] = $property;
-				}
-			}
-			*/
+			$this->addLinkedClass($path, $linked_class_name, $join_mode);
 		}
 		else {
 			$this->properties[$class_name] = $class->getAllProperties();

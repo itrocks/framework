@@ -31,7 +31,6 @@ abstract class Sql_Builder
 	 *
 	 * @param $class     Reflection_Class | string
 	 * @param $id        integer
-	 * @param $id_column string
 	 * @return string
 	 */
 	public static function buildDelete($class, $id)
