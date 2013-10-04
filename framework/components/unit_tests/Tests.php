@@ -23,9 +23,10 @@ class Tests
 
 	//-------------------------------------------------------------------------------------- runClass
 	/**
-	 * @param $class_name string
+	 * @param $class_name   string
+	 * @param $method_name string
 	 */
-	private function runClass($class_name)
+	public function runClass($class_name, $method_name = null)
 	{
 		/** @var $unit_test Runnable_Unit_Test|Unit_Test */
 		$unit_test = new $class_name();
@@ -36,14 +37,19 @@ class Tests
 		}
 		else {
 			// automatically call each test* public method
-			$call_methods = array();
-			$methods = Reflection_Class::getInstanceOf($class_name)->getMethods(
-				Reflection_Method::IS_PUBLIC
-			);
-			foreach ($methods as $method) {
-				if (substr($method->name, 0, 4) === "test") {
-					$call_methods[] = $method->name;
+			if (empty($method_name)) {
+				$call_methods = array();
+				$methods = Reflection_Class::getInstanceOf($class_name)->getMethods(
+					Reflection_Method::IS_PUBLIC
+				);
+				foreach ($methods as $method) {
+					if (substr($method->name, 0, 4) === "test") {
+						$call_methods[] = $method->name;
+					}
 				}
+			}
+			else {
+				$call_methods = array($method_name);
 			}
 			if ($call_methods) {
 				$unit_test->begin();
@@ -78,7 +84,7 @@ class Tests
 	/**
 	 * @param $file_name string
 	 */
-	private function runFile($file_name)
+	public function runFile($file_name)
 	{
 		include_once $file_name;
 		$slash = strrpos($file_name, "/");
