@@ -236,12 +236,10 @@ class Sql_Joins
 	private function addProperties($path, $class_name, $join_mode = null)
 	{
 		$class = Reflection_Class::getInstanceOf($class_name);
+		$this->properties[$class_name] = $class->getAllProperties();
 		$linked_class_name = $class->getAnnotation("link")->value;
 		if ($linked_class_name) {
 			$this->addLinkedClass($path, $linked_class_name, $join_mode);
-		}
-		else {
-			$this->properties[$class_name] = $class->getAllProperties();
 		}
 	}
 
