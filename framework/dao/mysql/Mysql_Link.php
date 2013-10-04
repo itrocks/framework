@@ -578,7 +578,10 @@ class Mysql_Link extends Sql_Link
 		$class_name = get_class($object);
 		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
+		$aop_getter_ignore = Aop_Getter::$ignore;
+		Aop_Getter::$ignore = false;
 		$old_collection = $property->getValue($old_object);
+		Aop_Getter::$ignore = $aop_getter_ignore;
 		// collection properties : write each of them
 		$id_set = array();
 		if ($collection) {
@@ -612,7 +615,10 @@ class Mysql_Link extends Sql_Link
 		$class_name = get_class($object);
 		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
+		$aop_getter_ignore = Aop_Getter::$ignore;
+		Aop_Getter::$ignore = false;
 		$old_map = $property->getValue($old_object);
+		Aop_Getter::$ignore = $aop_getter_ignore;
 		// map properties : write each of them
 		$insert_builder = new Sql_Map_Insert_Builder($property);
 		$id_set = array();
