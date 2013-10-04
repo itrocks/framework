@@ -40,7 +40,7 @@ class Property_Select_Controller implements Controller
 		else {
 			foreach ($class->getAllProperties() as $property) {
 				if (
-					(!isset($composite_property) || ($property->name !== $composite_property->name))
+					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& !$property->isStatic()
 				) {
 					$properties[] = $property;
@@ -76,8 +76,10 @@ class Property_Select_Controller implements Controller
 		else {
 			$top_property = Reflection_Property::getInstanceOf($class_name, $property_path);
 			$properties = $this->getProperties(
-				Reflection_Class::getInstanceOf($top_property->getType()->getElementTypeAsString()),
-				$class_name
+				Reflection_Class::getInstanceOf(
+					Builder::className($top_property->getType()->getElementTypeAsString())
+				),
+				$top_property->final_class
 			);
 			foreach ($properties as $property) {
 				$property->path = $property_path . "." . $property->name;
