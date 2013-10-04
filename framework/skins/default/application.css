@@ -166,3 +166,12 @@ div.popup {
 	color: #400000;
 	margin: 4px;
 }
+
+.xdebug-error td {
+	white-space: normal;
+}
+
+.xdebug-error th {
+	text-align: left;
+	white-space: normal;
+}
