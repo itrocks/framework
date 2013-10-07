@@ -67,7 +67,7 @@ class Import_Preview
 			}
 			// next row is the first row (in 1..n keys instead of 0..n of the $data array)
 			$this->first_row = key($data) + 1;
-			$this->last_row = $this->first_row + 10;
+			$this->last_row = min($this->first_row + 10, count($this->data));
 			$this->last_column = count($this->properties);
 		}
 	}

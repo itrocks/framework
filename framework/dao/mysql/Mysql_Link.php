@@ -119,7 +119,7 @@ class Mysql_Link extends Sql_Link
 			$class->accessPropertiesDone();
 			$this->setContext($class_name);
 			$this->query(Sql_Builder::buildDelete($class_name, $id));
-			$this->removeObjectIdentifier($object);
+			$this->disconnect($object);
 			return true;
 		}
 		return false;
@@ -372,10 +372,13 @@ class Mysql_Link extends Sql_Link
 		if (isset($options)) {
 			$this->getRowsCount($result_set, "SELECT", $options);
 		}
-		$key = $this->getKeyPropertyName($options);
+		$keys = explode(".", $this->getKeyPropertyName($options));
+		$object_key = array_pop($keys);
 		while ($object = $this->fetch($result_set, $class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
-			$read_result[$object->$key] = $object;
+			$key_object = $object;
+			foreach ($keys as $key) $key_object = $key_object->$key;
+			$search_result[$key_object->$object_key] = $object;
 		}
 		$this->free($result_set);
 		return $read_result;
@@ -419,10 +422,13 @@ class Mysql_Link extends Sql_Link
 			$query = $builder->buildQuery();
 			$this->setContext($builder->getJoins()->getClassNames());
 			$result_set = $this->executeQuery($query);
-			$key = $this->getKeyPropertyName($options);
+			$keys = explode(".", $this->getKeyPropertyName($options));
+			$object_key = array_pop($keys);
 			while ($object = $this->fetch($result_set, $class_name)) {
 				$this->setObjectIdentifier($object, $object->id);
-				$search_result[$object->$key] = $object;
+				$key_object = $object;
+				foreach ($keys as $key) $key_object = $key_object->$key;
+				$search_result[$key_object->$object_key] = $object;
 			}
 			$this->free($result_set);
 		}
@@ -464,7 +470,7 @@ class Mysql_Link extends Sql_Link
 		}
 		if (($object instanceof Before_Write) ? $object->beforeWrite($options) : true) {
 			if (Null_Object::isNull($object)) {
-				$this->removeObjectIdentifier($object);
+				$this->disconnect($object);
 			}
 			$class = Reflection_Class::getInstanceOf($object);
 			$table_columns_names = array_keys($this->getStoredProperties($class));
@@ -498,7 +504,7 @@ class Mysql_Link extends Sql_Link
 							// write object id if set or object if no id is set (new object)
 							else {
 								$column_name = "id_" . $property->name;
-								if (is_object($value) && (empty($object->$column_name))) {
+								if (is_object($value)) {
 									$object->$column_name = $this->getObjectIdentifier($value);
 									if (empty($object->$column_name)) {
 										$object->$column_name = $this->getObjectIdentifier($this->write($value));
@@ -538,7 +544,7 @@ class Mysql_Link extends Sql_Link
 			$id = $this->getObjectIdentifier($object);
 			$this->setContext($class->name);
 			if (empty($id)) {
-				$this->removeObjectIdentifier($object);
+				$this->disconnect($object);
 				$id = $this->query(Sql_Builder::buildInsert($class->name, $write));
 				if (!empty($id)) {
 					$this->setObjectIdentifier($object, $id);

@@ -77,6 +77,15 @@ abstract class Data_Link implements Configurable
 	 */
 	abstract public function delete($object);
 
+	//------------------------------------------------------------------------------------ disconnect
+	/**
+	 * Disconnect an object from current data link
+	 *
+	 * @param $object object object to disconnect from data source
+	 * @see Data_Link::disconnect()
+	 */
+	abstract public function disconnect($object);
+
 	//---------------------------------------------------------------------------------- escapeString
 	/**
 	 * Escape string into string or binary values

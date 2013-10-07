@@ -13,6 +13,20 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 */
 	protected function clear() {}
 
+	//------------------------------------------------------------------------------------ disconnect
+	/**
+	 * Disconnect an object from current data link
+	 *
+	 * @param $object object object to disconnect from data source
+	 * @see Data_Link::disconnect()
+	 */
+	public function disconnect($object)
+	{
+		if (isset($object->id)) {
+			unset($object->id);
+		}
+	}
+
 	//--------------------------------------------------------------------------- getObjectIdentifier
 	/**
 	 * Used to get an object's identifier
@@ -49,21 +63,6 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 			}
 		}
 		return $object;
-	}
-
-	//------------------------------------------------------------------------ removeObjectIdentifier
-	/**
-	 * Remove object identifier from object
-	 *
-	 * After this call, object will no longer be linked to data link.
-	 * You can use this to clone objects into data links.
-	 * This must be called when an object is deleted from data link, too.
-	 *
-	 * @param $object object
-	 */
-	protected function removeObjectIdentifier($object)
-	{
-		unset($object->id);
 	}
 
 	//--------------------------------------------------------------------------------------- replace

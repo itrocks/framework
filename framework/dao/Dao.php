@@ -123,6 +123,18 @@ abstract class Dao
 		return self::current()->delete($object);
 	}
 
+	//------------------------------------------------------------------------------------ disconnect
+	/**
+	 * Disconnect an object from current data link
+	 *
+	 * @param $object object object to disconnect from data source
+	 * @see Data_Link::disconnect()
+	 */
+	public static function disconnect($object)
+	{
+		return self::current()->disconnect($object);
+	}
+
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Get the data link identified by the $dao_identifier string
