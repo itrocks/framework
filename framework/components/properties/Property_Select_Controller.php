@@ -24,13 +24,16 @@ class Property_Select_Controller implements Controller
 			);
 			$composite_property = reset($composite_property);
 		}
+		else {
+			$composite_property = null;
+		}
 		if ($class->getAnnotation("link")->value) {
 			$link_class = new Link_Class($class->name);
 			$composite_link_property = $link_class->getCompositeProperty();
 			foreach ($link_class->getAllProperties() as $property) {
 				if (
-					(!isset($composite_property) || ($property->name !== $composite_property->name))
-					&& ($property->name !== $composite_link_property->name)
+					(!$composite_property || ($property->name !== $composite_property->name))
+					&& (!$composite_link_property || ($property->name !== $composite_link_property->name))
 					&& !$property->isStatic()
 				) {
 					$properties[] = $property;
