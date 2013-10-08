@@ -101,7 +101,21 @@ class Import_Array
 	 */
 	private function createArrayReference($class_name, $search)
 	{
-		return (isset($search)) ? array(Builder::fromArray($class_name, $search)) : null;
+		$array = (isset($search)) ? array(Builder::fromArray($class_name, $search)) : null;
+		$class = new Link_Class($class_name);
+		$link_class = $class->getAnnotation("link")->value;
+		if ($link_class) {
+			$object = reset($array);
+			$link_search = Builder::create($link_class);
+			$composite_property_name = $class->getCompositeProperty()->name;
+			foreach (array_keys($class->getLinkProperties()) as $property_name) {
+				if (isset($search[$property_name])) {
+					$link_search->$property_name = $search[$property_name];
+				}
+			}
+			$object->$composite_property_name = Dao::searchOne($link_search) ?: $link_search;
+		}
+		return $array;
 	}
 
 	//------------------------------------------------------------------------- getClassNameFromArray

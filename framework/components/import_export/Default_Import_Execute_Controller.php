@@ -19,9 +19,6 @@ class Default_Import_Execute_Controller implements Default_Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
-		//Mysql_Logger::getInstance()->continue = true;
-		//Mysql_Logger::getInstance()->display_log = true;
-
 		set_time_limit(900);
 		$parameters = $parameters->getObjects();
 		$import = Import_Builder_Form::build(
@@ -30,7 +27,7 @@ class Default_Import_Execute_Controller implements Default_Feature_Controller
 		$import->class_name = $class_name;
 		foreach ($import->worksheets as $worksheet) {
 			$array = $worksheet->file->getCsvContent();
-			$import_array = new Import_Array($worksheet->settings);
+			$import_array = new Import_Array($worksheet->settings, $import->class_name);
 			$import_array->importArray($array);
 		}
 		return View::run($parameters, $form, $files, $class_name, "importDone");
