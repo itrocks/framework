@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use ReflectionException;
+
 /**
  * Import data into the application from array
  */
