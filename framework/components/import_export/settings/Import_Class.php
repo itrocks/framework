@@ -23,7 +23,7 @@ class Import_Class implements Serializable
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
-	 * @var string[]
+	 * @var string[] key is the name of the property
 	 */
 	public $property_path;
 
@@ -42,19 +42,25 @@ class Import_Class implements Serializable
 
 	//-------------------------------------------------------------------------- $identify_properties
 	/**
-	 * @var Import_Property[]
+	 * @var Import_Property[] key is the name of the property
 	 */
 	public $identify_properties = array();
 
 	//---------------------------------------------------------------------------- $ignore_properties
 	/**
-	 * @var Import_Property[]
+	 * @var Import_Property[] key is the name of the property
 	 */
 	public $ignore_properties = array();
 
+	//--------------------------------------------------------------------------- $unknown_properties
+	/**
+	 * @var Import_Property[] key is the name of the property
+	 */
+	public $unknown_properties = array();
+
 	//----------------------------------------------------------------------------- $write_properties
 	/**
-	 * @var Import_Property[]
+	 * @var Import_Property[] key is the name of the property
 	 */
 	public $write_properties = array();
 
@@ -111,7 +117,7 @@ class Import_Class implements Serializable
 	{
 		$properties = array();
 		foreach ($this->identify_properties as $property) {
-			$properties[] = $property->name;
+			$properties[$property->name] = $property->name;
 		}
 		return join(",", $properties);
 	}
@@ -124,7 +130,7 @@ class Import_Class implements Serializable
 	{
 		$properties = array();
 		foreach ($this->ignore_properties as $property) {
-			$properties[] = $property->name;
+			$properties[$property->name] = $property->name;
 		}
 		return join(",", $properties);
 	}
@@ -148,7 +154,7 @@ class Import_Class implements Serializable
 	{
 		$properties = array();
 		foreach ($this->write_properties as $property) {
-			$properties[] = $property->name;
+			$properties[$property->name] = $property->name;
 		}
 		return join(",", $properties);
 	}

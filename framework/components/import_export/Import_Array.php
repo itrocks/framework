@@ -240,8 +240,13 @@ class Import_Array
 			$path = "";
 			foreach (explode(".", $property_path) as $property_name) {
 				$path .= ($path ? "." : "") . $property_name;
-				$property = Reflection_Property::getInstanceOf($class_name, $path);
-				$properties_link[$path] = $property->getAnnotation("link")->value;
+				try {
+					$property = Reflection_Property::getInstanceOf($class_name, $path);
+					$properties_link[$path] = $property->getAnnotation("link")->value;
+				}
+				catch (ReflectionException $exception) {
+					$properties_link[$path] = "";
+				}
 			}
 			$i = strrpos($property_path, ".");
 			$property_name = substr($property_path, ($i === false) ? 0 : ($i + 1));

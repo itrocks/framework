@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use ReflectionException;
+
 /**
  * Import settings builder
  */
@@ -44,17 +46,23 @@ abstract class Import_Settings_Builder
 					);
 				}
 				$class = $classes[$class_key];
-				$property = new Import_Property($sub_class, $property_name);
-				if ($identify) {
-					$class->identify_properties[$property_name] = $property;
+				$import_property = new Import_Property($sub_class, $property_name);
+				try {
+					$property = Reflection_Property::getInstanceOf($sub_class, $property_name);
+					if ($identify) {
+						$class->identify_properties[$property_name] = $import_property;
+					}
+					else {
+						$class->write_properties[$property_name] = $import_property;
+					}
+					$sub_class = Builder::className($property->getType()->getElementTypeAsString());
+					$class_path .= $sub_class . ".";
 				}
-				else {
-					$class->write_properties[$property_name] = $property;
+				catch (ReflectionException $exception) {
+					$class->ignore_properties[$property_name] = $import_property;
+					$class->unknown_properties[$property_name] = $import_property;
 				}
-				$property = Reflection_Property::getInstanceOf($sub_class, $property_name);
-				$sub_class = Builder::className($property->getType()->getElementTypeAsString());
 				$last_identify = $identify;
-				$class_path .= $sub_class . ".";
 				$property_path_for_class[] = $property_name;
 			}
 		}
@@ -128,9 +136,14 @@ abstract class Import_Settings_Builder
 		}
 		if ($class["write"]) {
 			foreach (explode(",", $class["write"]) as $property_name) {
-				$import_class->write_properties[$property_name] = new Import_Property(
-					$class_name, $property_name
-				);
+				$import_property = new Import_Property($class_name, $property_name);
+				$import_class->write_properties[$property_name] = $import_property;
+				try {
+					Reflection_Property::getInstanceOf($class_name, $property_name);
+				}
+				catch (ReflectionException $exception) {
+					$import_class->unknown_properties[$property_name] = $import_property;
+				}
 			}
 		}
 		if ($class["ignore"]) {
