@@ -63,13 +63,24 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 
 	//---------------------------------------------------------------------------------------- andSID
 	/**
+	 * Adds session id expression to a given URI
+	 *
+	 * @return string the URI with PHPSESSID request argument if session is not stored into a cookie
+	 */
+	this.addSID = function(uri)
+	{
+		return uri + ((uri.indexOf("?") >= -1) ? this.andSID() : this.askSID());
+	}
+
+	//---------------------------------------------------------------------------------------- andSID
+	/**
 	 * Gets session id expression
 	 *
 	 * @return string "" if session id is stored into a cookie, else "&PHPSESSID=xxxx"
 	 */
 	this.andSID = function()
 	{
-		return this.use_cookies ? "" : ("&PHPSESSID=" + this.PHPSESSID);
+		return this.use_cookies ? "" : ("&amp;PHPSESSID=" + this.PHPSESSID);
 	};
 
 	//---------------------------------------------------------------------------------------- askSID
@@ -90,7 +101,7 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 */
 	this.askSIDand = function()
 	{
-		return this.use_cookies ? "?" : ("?PHPSESSID=" + this.PHPSESSID + "&");
+		return this.use_cookies ? "?" : ("?PHPSESSID=" + this.PHPSESSID + "&amp;");
 	}
 
 };

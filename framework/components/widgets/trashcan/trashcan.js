@@ -65,7 +65,7 @@ $("document").ready(function()
 					if ((window_id != undefined) && (window_id.indexOf("/") != -1)) {
 						$(event.target).data("on.success", function() {
 							$.ajax({
-								url:     app.uri_base + window_id + "?as_widget=1&PHPSESSID=" + app.PHPSESSID,
+								url:     app.uri_base + window_id + "?as_widget=1" + app.andSID(),
 								success: function(data) {
 									var $parent = $window.parent();
 									$parent.html(data);

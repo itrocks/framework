@@ -74,9 +74,12 @@ class Html_Session implements Configurable, Plugin
 		// PHP configuration method
 		if (!self::$registered) {
 			self::$registered = true;
+			ini_set("arg_separator.output", "&amp;");
 			ini_set("session.use_cookies", self::$use_cookie);
 			ini_set("session.use_only_cookies", false);
-			Aop::add(Aop::BEFORE, "session_start()", array(__CLASS__, "useTransSid"));
+			if (!self::$use_cookie) {
+				Aop::add(Aop::BEFORE, "session_start()", array(__CLASS__, "useTransSid"));
+			}
 		}
 	}
 

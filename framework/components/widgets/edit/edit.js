@@ -86,9 +86,18 @@ $("document").ready(function()
 			{
 				//noinspection JSUnresolvedVariable
 				var app = window.app;
-				request["PHPSESSID"] = app.PHPSESSID;
+				var $element = $(this.element);
+				if (!app.use_cookies) request["PHPSESSID"] = app.PHPSESSID;
+				var filters = $element.attr("data-combo-filters");
+				if (filters != undefined) {
+					filters = filters.split(",");
+					for (var key in filters) if (filters.hasOwnProperty(key)) {
+						var filter = filters.key.split("=");
+						request["filters[" + filter[0] + "]"] = $(filter[1]).val();
+					}
+				}
 				$.getJSON(
-					app.uri_base + "/" + $(this.element).classVar("class") + "/json",
+					app.uri_base + "/" + $element.attr("data-combo-class") + "/json",
 					request,
 					function(data) { response(data); }
 				);

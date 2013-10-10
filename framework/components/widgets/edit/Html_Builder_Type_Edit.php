@@ -180,27 +180,25 @@ class Html_Builder_Type_Edit
 		// visible input
 		$input = new Html_Input(null, strval($this->value));
 		$input->setAttribute("autocomplete", "off");
-		$input->addClass("combo");
-		$input->addClass("autowidth");
-		$input->addClass(
-			"class:" . Namespaces::shortClassName(Names::classToSet($class_name))
+		$input->setAttribute(
+			"data-combo-class", Namespaces::shortClassName(Names::classToSet($class_name))
 		);
+		$input->addClass("autowidth");
+		$input->addClass("combo");
 		// "add" anchor
 		if (is_object($this->value)) {
+			$fill_combo = isset($this->template)
+				? array(
+					"fill_combo" => $this->template->getFormId() . "." . $this->getFieldName("id_", false)
+				)
+				: "";
 			$add = new Html_Anchor(
-				View::current()->link(get_class($this->value), "new")
-				. (isset($this->template)
-					? ("?fill_combo=" . $this->template->getFormId() . "." . $this->getFieldName("id_", false))
-					: ""
-				),
-				"add"
+				View::current()->link(get_class($this->value), "new", null, $fill_combo), "add"
 			);
 			$add->addClass("add");
 			$add->addClass("action");
 			$add->setAttribute("target", "#_blank");
-			$add->setAttribute("title",
-				"|Edit ¦" . Names::classToDisplay($class_name) . "¦|"
-			);
+			$add->setAttribute("title", "|Edit ¦" . Names::classToDisplay($class_name) . "¦|");
 		}
 		else {
 			$add = "";

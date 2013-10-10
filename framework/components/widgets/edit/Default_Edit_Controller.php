@@ -16,12 +16,12 @@ class Default_Edit_Controller extends Default_Output_Controller
 	protected function getGeneralButtons($object, $parameters)
 	{
 		$fill_combo = isset($parameters["fill_combo"])
-			? "?fill_combo=" . $parameters["fill_combo"] : "";
+			? array("fill_combo" => $parameters["fill_combo"]) : array();
 		return array(
 			new Button("Cancel", View::link($object, "output"), "cancel",
 				array(Color::of("close"), "#main")
 			),
-			new Button("Write", View::link($object, "write") . $fill_combo, "write",
+			new Button("Write", View::link($object, "write", null, $fill_combo), "write",
 				array(Color::of("green"), "#messages", ".submit")
 			)
 		);

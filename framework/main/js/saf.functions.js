@@ -106,12 +106,15 @@ redirect = function(uri, target)
 {
 	//noinspection JSUnresolvedVariable
 	var app = window.app;
-	var more = ((target != undefined) && (target != "") && (target[0] == '#')) ? "&as_widget=1" : "";
-	uri = app.uri_base + uri + "?PHPSESSID=" + app.PHPSESSID;
+	var more = ((target != undefined) && (target != "") && (target[0] == '#')) ? "?as_widget=1" : "";
+	uri = app.uri_base + uri;
 	if (!more) {
-		window.location = uri;
+		window.location = app.addSID(uri);
 	}
 	else {
-		$.ajax({ url: uri + more, success: function(data) { $(target).html(data).build(); } });
+		$.ajax({
+			url:     app.addSID(uri + more),
+			success: function(data) { $(target).html(data).build(); }
+		});
 	}
 };
