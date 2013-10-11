@@ -6,10 +6,11 @@ $("document").ready(function()
 		//noinspection JSUnresolvedVariable
 		var app = window.app;
 
+		//--------------------------------------------------------------------- .autoheight, .autowidth
 		this.in(".autoheight").autoheight();
 		this.in(".autowidth").autowidth();
 
-		// .collection / .map
+		//-------------------------------------------------------------------------------------- .minus
 		this.in(".minus").click(function()
 		{
 			if ($(this).closest("tbody").children().length > 1) {
@@ -17,6 +18,7 @@ $("document").ready(function()
 			}
 		});
 
+		//----------------------------------------------------------------- table.collection, table.map
 		this.in("table.collection, table.map").each(function()
 		{
 			var $this = $(this);
@@ -41,7 +43,7 @@ $("document").ready(function()
 			}
 		});
 
-		// .datetime
+		//------------------------------------------------------------------- input.datetime datepicker
 		this.in("input.datetime").datepicker({
 			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            "button",
@@ -61,7 +63,7 @@ $("document").ready(function()
 			}
 		});
 
-		// .object
+		//-------------------------------------------------------------------------- input.combo change
 		this.in("input.combo").change(function()
 		{
 			var $this = $(this);
@@ -70,7 +72,7 @@ $("document").ready(function()
 			}
 		});
 
-		// .object combo
+		//-------------------------------------------------------------------- input.combo autocomplete
 		this.in("input.combo").autocomplete(
 		{
 			autoFocus: true,
@@ -113,7 +115,7 @@ $("document").ready(function()
 
 		});
 
-		// ctrl+click on combo
+		// --------------------------------------------------------------------- input.combo ctrl+click
 		this.in("input.combo").click(function(event)
 		{
 			if (event.ctrlKey) {
@@ -127,7 +129,7 @@ $("document").ready(function()
 			}
 		});
 
-		// .object add action
+		// ------------------------------------------------------------------------------- a.add.action
 		this.in("a.add.action").click(function()
 		{
 			var $this = $(this);
@@ -157,7 +159,7 @@ $("document").ready(function()
 				.mouseleave(function() { $(this).children("a.add.action").removeClass("visible"); });
 		});
 
-		// .object more action
+		//-------------------------------------------------------------------------- button.more.action
 		this.in("button.more.action").click(function(event)
 		{
 			event.preventDefault();
@@ -166,7 +168,46 @@ $("document").ready(function()
 				$combo.focus();
 				$combo.autocomplete("search", "");
 			}
-		})
+		});
+
+		//---------------------------------------------------------------------- input[data-conditions]
+		this.in("input[data-conditions]").each(function()
+		{
+			var $this = $(this);
+			var conditions = $this.attr("data-conditions");
+			if (conditions != undefined) {
+				conditions = conditions.split(",");
+				for (var key in conditions) if (conditions.hasOwnProperty(key)) {
+					var condition = conditions[key].split("=");
+					var $condition_element = $($this.get(0).form).find('[name="' + condition[0] + '"]');
+					if ($condition_element.data("condition_of") == undefined) {
+						$condition_element.data("condition_of", [{ element: $this, value: condition[1] }]);
+
+						$condition_element.change(function()
+						{
+							var $this = $(this);
+							var condition_of = $this.data("condition_of");
+							for (var key in condition_of) if (condition_of.hasOwnProperty(key)) {
+								var condition = condition_of[key];
+								if ($this.val() == condition.value) {
+									condition.element.parent().find("input, button").show();
+								}
+								else {
+									condition.element.parent().find("input, button").hide();
+								}
+							}
+						});
+
+					}
+					else {
+						var condition_of = $condition_element.data("condition_of");
+						condition_of.push({ element: $this, value: condition[1] });
+						$condition_element.data("condition_of", condition_of);
+					}
+					$condition_element.change();
+				}
+			}
+		});
 
 	});
 

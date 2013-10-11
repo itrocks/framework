@@ -85,12 +85,28 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
+	 * @param $conditions string[] the key is the name of the condition, the value is the name of the
+	 *   value that enables the condition
 	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
 	 *   containing its value
 	 * @return string
 	 */
-	protected function buildObject($filters = null)
+	protected function buildObject($conditions = null, $filters = null)
 	{
+		if (!isset($conditions)) {
+			$conditions_values = $this->property->getListAnnotation("conditions")->values();
+			if ($conditions_values) {
+				foreach ($conditions_values as $condition) {
+					if (strpos($condition, "=")) {
+						list($name, $condition) = explode("=", $condition);
+					}
+					else {
+						$name = $condition;
+					}
+					$conditions[$name] = $condition;
+				}
+			}
+		}
 		if (!isset($filters)) {
 			$filters_values = $this->property->getListAnnotation("filters")->values();
 			if ($filters_values) {
@@ -103,7 +119,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 				}
 			}
 		}
-		return parent::buildObject($filters);
+		return parent::buildObject($conditions, $filters);
 	}
 
 	//----------------------------------------------------------------------------------- buildString

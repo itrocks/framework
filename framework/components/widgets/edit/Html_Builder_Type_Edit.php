@@ -166,11 +166,13 @@ class Html_Builder_Type_Edit
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
+	 * @param $conditions string[] the key is the name of the condition, the value is the name of the
+	 *   value that enables the condition
 	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
 	 *   element containing its value
 	 * @return string
 	 */
-	protected function buildObject($filters = null)
+	protected function buildObject($conditions = null, $filters = null)
 	{
 		$class_name = $this->type->asString();
 		// id input
@@ -195,6 +197,17 @@ class Html_Builder_Type_Edit
 			}
 			$this->name = $old_name;
 			$input->setAttribute("data-combo-filters", join(",", $html_filters));
+		}
+		if ($conditions) {
+			$html_conditions = array();
+			$old_name = $this->name;
+			foreach ($conditions as $condition_name => $condition_value) {
+				$this->name = $condition_name;
+				$name = $this->getFieldName("", false);
+				$html_conditions[] = $name . "=" . $condition_value;
+			}
+			$this->name = $old_name;
+			$input->setAttribute("data-conditions", join(",", $html_conditions));
 		}
 		$input->addClass("autowidth");
 		$input->addClass("combo");
