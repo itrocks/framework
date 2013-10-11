@@ -130,7 +130,7 @@
 				if ($parent_form.length) {
 					if ($parent_form.ajaxSubmit != undefined) {
 						$parent_form.ajaxSubmit($.extend(ajax, {
-							url: urlAppend(this.href, this.search),
+							url: urlAppend(this.href, this.search)
 						}));
 						xhr = $parent_form.data("jqxhr");
 					}
@@ -138,14 +138,14 @@
 						xhr = $.ajax($.extend(ajax, {
 							url:  urlAppend(this.href, this.search),
 							data: $parent_form.serialize(),
-							type: $parent_form.attr("method"),
+							type: $parent_form.attr("method")
 						}));
 					}
 				}
 			}
 			if (!xhr) {
 				xhr = $.ajax($.extend(ajax, {
-					url: urlAppend(this.href, this.search),
+					url: urlAppend(this.href, this.search)
 				}));
 			}
 			xhr.from    = this;
