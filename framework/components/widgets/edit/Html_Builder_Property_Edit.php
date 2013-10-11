@@ -83,6 +83,29 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 		return $map->build();
 	}
 
+	//----------------------------------------------------------------------------------- buildObject
+	/**
+	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
+	 *   containing its value
+	 * @return string
+	 */
+	protected function buildObject($filters = null)
+	{
+		if (!isset($filters)) {
+			$filters_values = $this->property->getListAnnotation("filters")->values();
+			if ($filters_values) {
+				$properties = $this->property->getDeclaringClass()->getAllProperties();
+				foreach ($filters_values as $filter) {
+					if ($properties[$filter]->getType()->isClass()) {
+						$filter = "id_" . $filter;
+					}
+					$filters[$filter] = $filter;
+				}
+			}
+		}
+		return parent::buildObject($filters);
+	}
+
 	//----------------------------------------------------------------------------------- buildString
 	/**
 	 * @param $multiline boolean keep this value empty, it is not used as the @multiline annotation is automatically used

@@ -86,19 +86,23 @@ $("document").ready(function()
 			{
 				//noinspection JSUnresolvedVariable
 				var app = window.app;
-				var $element = $(this.element);
+				var $element = this.element;
 				if (!app.use_cookies) request["PHPSESSID"] = app.PHPSESSID;
 				var filters = $element.attr("data-combo-filters");
 				if (filters != undefined) {
 					filters = filters.split(",");
 					for (var key in filters) if (filters.hasOwnProperty(key)) {
-						var filter = filters.key.split("=");
-						request["filters[" + filter[0] + "]"] = $(filter[1]).val();
+						var filter = filters[key].split("=");
+						var $filter_element = $(this.element.get(0).form).find('[name="' + filter[1] + '"]');
+						if ((filter[0].substr(0, 3) != "id_") || $filter_element.val()) {
+							request["filters[" + filter[0] + "]"] = $filter_element.val();
+						}
 					}
 				}
+				$("#messages").html(app.uri_base + "/" + $element.attr("data-combo-class") + "/json");
 				$.getJSON(
 					app.uri_base + "/" + $element.attr("data-combo-class") + "/json",
-					request,
+					$.param(request),
 					function(data) { response(data); }
 				);
 			},

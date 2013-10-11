@@ -166,9 +166,11 @@ class Html_Builder_Type_Edit
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
+	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
+	 *   element containing its value
 	 * @return string
 	 */
-	protected function buildObject()
+	protected function buildObject($filters = null)
 	{
 		$class_name = $this->type->asString();
 		// id input
@@ -183,6 +185,17 @@ class Html_Builder_Type_Edit
 		$input->setAttribute(
 			"data-combo-class", Namespaces::shortClassName(Names::classToSet($class_name))
 		);
+		if ($filters) {
+			$html_filters = array();
+			$old_name = $this->name;
+			foreach ($filters as $filter_name => $filter_value) {
+				$this->name = $filter_value;
+				$name = $this->getFieldName("", false);
+				$html_filters[] = $filter_name . "=" . $name;
+			}
+			$this->name = $old_name;
+			$input->setAttribute("data-combo-filters", join(",", $html_filters));
+		}
 		$input->addClass("autowidth");
 		$input->addClass("combo");
 		// "add" anchor

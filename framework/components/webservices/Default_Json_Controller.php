@@ -34,11 +34,20 @@ class Default_Json_Controller implements Default_Feature_Controller
 		// search objects
 		if (isset($parameters["term"])) {
 			$element_class_name = Namespaces::fullClassName(Names::setToClass($class_name));
-			$search = (new Search_Array_Builder)->buildMultiple(
-				Reflection_Class::getInstanceOf($element_class_name),
-				$parameters["term"],
-				"%"
-			);
+			$search = null;
+			if (!empty($parameters["term"])) {
+				$search = (new Search_Array_Builder)->buildMultiple(
+					Reflection_Class::getInstanceOf($element_class_name), $parameters["term"], "%"
+				);
+			}
+			if (isset($parameters["filters"])) {
+				foreach ($parameters["filters"] as $filter_name => $filter_value) {
+					$search[$filter_name] = $filter_value;
+				}
+				if (count($search) > 1) {
+					$search = array("AND" => $search);
+				}
+			}
 			$objects = array();
 			foreach (Dao::search($search, $element_class_name, Dao::sort()) as $key => $source_object) {
 				$object = new StdClass();

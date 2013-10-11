@@ -120,13 +120,13 @@ class Sql_Select_Builder
 	 */
 	public function buildQuery()
 	{
-		// Call of buildWhere() before buildColumns(), as all joins must be done to correctly deal with
-		// all properties.
+		// Call of buildOptions() and buildWhere() before buildColumns(), as all joins must be done to
+		// correctly deal with all properties.
 		// Call of buildColumns() and buildWhere() before buildTables(), to get joins ready.
 		$this->additional_where_clause = "";
 		$where   = $this->where_builder->build();
-		$columns = $this->columns_builder->build();
 		$options = $this->buildOptions();
+		$columns = $this->columns_builder->build();
 		$tables  = $this->tables_builder->build();
 		return $this->finalize($columns, $where, $tables, $options);
 	}
