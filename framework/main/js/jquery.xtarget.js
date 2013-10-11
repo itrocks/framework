@@ -35,6 +35,13 @@
 			//------------------------------------------------------------------------------- ajax.target
 			target: undefined,
 
+			//---------------------------------------------------------------------------------- complete
+			complete: function(xhr)
+			{
+				clearTimeout(xhr.time_out);
+				$("body").css({cursor: ""});
+			},
+
 			//-------------------------------------------------------------------------------- ajax.error
 			error: function(xhr, status, error)
 			{
@@ -118,12 +125,14 @@
 			event.preventDefault();
 			var $this = $(this);
 			var xhr = undefined;
+			var time_out = setTimeout(function(){ $("body").css({cursor: "wait"}); }, 500);
 			if ($this.hasClass(settings["submit"])) {
 				var $parent_form = $this.closest("form");
 				if ($parent_form.length) {
 					if ($parent_form.ajaxSubmit != undefined) {
 						$parent_form.ajaxSubmit($.extend(ajax, {
-							url: urlAppend(this.href, this.search)
+							url: urlAppend(this.href, this.search),
+							time_out: time_out
 						}));
 						xhr = $parent_form.data("jqxhr");
 					}
@@ -131,14 +140,16 @@
 						xhr = $.ajax($.extend(ajax, {
 							url:  urlAppend(this.href, this.search),
 							data: $parent_form.serialize(),
-							type: $parent_form.attr("method")
+							type: $parent_form.attr("method"),
+							time_out: time_out
 						}));
 					}
 				}
 			}
 			if (!xhr) {
 				xhr = $.ajax($.extend(ajax, {
-					url: urlAppend(this.href, this.search)
+					url: urlAppend(this.href, this.search),
+					time_out: time_out
 				}));
 			}
 			xhr.from    = this;
