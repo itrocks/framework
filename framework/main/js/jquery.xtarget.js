@@ -39,7 +39,7 @@
 			complete: function(xhr)
 			{
 				clearTimeout(xhr.time_out);
-				$("body").css({cursor: ""});
+				$("body").css({cursor: "auto"});
 			},
 
 			//-------------------------------------------------------------------------------- ajax.error
@@ -125,14 +125,12 @@
 			event.preventDefault();
 			var $this = $(this);
 			var xhr = undefined;
-			var time_out = setTimeout(function(){ $("body").css({cursor: "wait"}); }, 500);
 			if ($this.hasClass(settings["submit"])) {
 				var $parent_form = $this.closest("form");
 				if ($parent_form.length) {
 					if ($parent_form.ajaxSubmit != undefined) {
 						$parent_form.ajaxSubmit($.extend(ajax, {
 							url: urlAppend(this.href, this.search),
-							time_out: time_out
 						}));
 						xhr = $parent_form.data("jqxhr");
 					}
@@ -141,7 +139,6 @@
 							url:  urlAppend(this.href, this.search),
 							data: $parent_form.serialize(),
 							type: $parent_form.attr("method"),
-							time_out: time_out
 						}));
 					}
 				}
@@ -149,12 +146,12 @@
 			if (!xhr) {
 				xhr = $.ajax($.extend(ajax, {
 					url: urlAppend(this.href, this.search),
-					time_out: time_out
 				}));
 			}
 			xhr.from    = this;
 			xhr.mouse_x = (document.mouse == undefined) ? event.pageX : document.mouse.x;
 			xhr.mouse_y = (document.mouse == undefined) ? event.pageY : document.mouse.y;
+			xhr.time_out = setTimeout(function(){ $("body").css({cursor: "wait"}); }, 500);
 		});
 
 		//---------------------------------------------------------------- $('form[target^="#"]').click

@@ -99,7 +99,6 @@ $("document").ready(function()
 						}
 					}
 				}
-				$("#messages").html(app.uri_base + "/" + $element.attr("data-combo-class") + "/json");
 				$.getJSON(
 					app.uri_base + "/" + $element.attr("data-combo-class") + "/json",
 					$.param(request),
