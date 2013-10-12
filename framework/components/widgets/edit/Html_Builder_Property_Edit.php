@@ -103,7 +103,9 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 					else {
 						$name = $condition;
 					}
-					$conditions[$name] = $condition;
+					$conditions[$name] = isset($conditions[$name])
+						? ($conditions[$name] . "," . $condition)
+						: $condition;
 				}
 			}
 		}

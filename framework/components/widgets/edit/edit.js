@@ -90,7 +90,7 @@ $("document").ready(function()
 				var app = window.app;
 				var $element = this.element;
 				if (!app.use_cookies) request["PHPSESSID"] = app.PHPSESSID;
-				var filters = $element.attr("data-combo-filters");
+				var filters = $element.data("combo-filters");
 				if (filters != undefined) {
 					filters = filters.split(",");
 					for (var key in filters) if (filters.hasOwnProperty(key)) {
@@ -102,7 +102,7 @@ $("document").ready(function()
 					}
 				}
 				$.getJSON(
-					app.uri_base + "/" + $element.attr("data-combo-class") + "/json",
+					app.uri_base + "/" + $element.data("combo-class") + "/json",
 					$.param(request),
 					function(data) { response(data); }
 				);
@@ -171,42 +171,60 @@ $("document").ready(function()
 		});
 
 		//---------------------------------------------------------------------- input[data-conditions]
-		this.in("input[data-conditions]").each(function()
-		{
+		var will_change = {};
+		this.in("input[data-conditions]").each(function() {
 			var $this = $(this);
-			var conditions = $this.attr("data-conditions");
-			if (conditions != undefined) {
-				conditions = conditions.split(",");
-				for (var key in conditions) if (conditions.hasOwnProperty(key)) {
-					var condition = conditions[key].split("=");
-					var $condition_element = $($this.get(0).form).find('[name="' + condition[0] + '"]');
-					if ($condition_element.data("condition_of") == undefined) {
-						$condition_element.data("condition_of", [{ element: $this, value: condition[1] }]);
-
-						$condition_element.change(function()
-						{
-							var $this = $(this);
-							var condition_of = $this.data("condition_of");
-							for (var key in condition_of) if (condition_of.hasOwnProperty(key)) {
-								var condition = condition_of[key];
-								if ($this.val() == condition.value) {
-									condition.element.parent().find("input, button").show();
-								}
-								else {
-									condition.element.parent().find("input, button").hide();
-								}
-							}
-						});
-
-					}
-					else {
-						var condition_of = $condition_element.data("condition_of");
-						condition_of.push({ element: $this, value: condition[1] });
-						$condition_element.data("condition_of", condition_of);
-					}
-					$condition_element.change();
+			var conditions = $this.data("conditions").replace(/\(.*\)/g);
+			$.each(conditions.split(";"), function(condition_key, condition) {
+				condition = condition.split("=");
+				var $condition;
+				if (will_change.hasOwnProperty(condition[0])) {
+					$condition = will_change[condition[0]];
 				}
+				else {
+					$condition = $($this.get(0).form).find('[name="' + condition[0] + '"]');
+					will_change[condition[0]] = $condition;
+				}
+				var condition_name = $condition.attr("name");
+				if (!condition_name) condition_name = $condition.prev().attr("name");
+				if (typeof $this.data("conditions") == "string") $this.data("conditions", {});
+				if (!$this.data("conditions").hasOwnProperty(condition_name)) {
+					$this.data("conditions")[condition_name] = { element: $condition, values: {}};
+				}
+				$.each(condition[1].split(","), function(value_key, value) {
+					$this.data("conditions")[condition_name].values[value] = value;
+				});
+				var this_name = $this.attr("name");
+				if (!this_name) this_name = $this.prev().attr("name");
+				if ($condition.data("condition-of") == undefined) $condition.data("condition-of", {});
+				$condition.data("condition-of")[this_name] = $this;
+			});
+		});
+		$.each(will_change, function(condition_name, $condition) {
+			if (!$condition.data("condition-change")) {
+				$condition.data("condition-change", true);
+				$condition.change(function()
+				{
+					var $this = $(this);
+					$.each($this.data("condition-of"), function(element_name, $element) {
+						var show = true;
+						$.each($element.data("conditions"), function(condition_name, condition) {
+							var found = false;
+							$.each(condition.values, function(value) {
+								return !(found = (condition.element.val() == value));
+							});
+							return (show = found);
+						});
+						if (show) {
+							$element.parent().find("input,button").show();
+						}
+						else {
+							$element.parent().find("input,button").hide();
+						}
+					});
+				});
 			}
+			$condition.change();
 		});
 
 	});

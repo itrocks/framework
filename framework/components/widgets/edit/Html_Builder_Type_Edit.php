@@ -207,7 +207,7 @@ class Html_Builder_Type_Edit
 				$html_conditions[] = $name . "=" . $condition_value;
 			}
 			$this->name = $old_name;
-			$input->setAttribute("data-conditions", join(",", $html_conditions));
+			$input->setAttribute("data-conditions", join(";", $html_conditions));
 		}
 		$input->addClass("autowidth");
 		$input->addClass("combo");
