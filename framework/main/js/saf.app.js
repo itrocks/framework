@@ -70,7 +70,7 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	this.addSID = function(uri)
 	{
 		return uri + ((uri.indexOf("?") >= -1) ? this.andSID() : this.askSID());
-	}
+	};
 
 	//---------------------------------------------------------------------------------------- andSID
 	/**
@@ -80,7 +80,7 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 */
 	this.andSID = function()
 	{
-		return this.use_cookies ? "" : ("&amp;PHPSESSID=" + this.PHPSESSID);
+		return this.use_cookies ? "" : ("&PHPSESSID=" + this.PHPSESSID);
 	};
 
 	//---------------------------------------------------------------------------------------- askSID
@@ -101,7 +101,7 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 */
 	this.askSIDand = function()
 	{
-		return this.use_cookies ? "?" : ("?PHPSESSID=" + this.PHPSESSID + "&amp;");
-	}
+		return this.use_cookies ? "?" : ("?PHPSESSID=" + this.PHPSESSID + "&");
+	};
 
 };

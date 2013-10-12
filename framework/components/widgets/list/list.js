@@ -33,7 +33,7 @@ $("document").ready(function()
 
 		//------------------------------------------------------------------------ table.list droppable
 		// when a property is dropped between two columns
-		var end = function($this, event, ui)
+		var complete = function($this, event, ui)
 		{
 			var insert_after = $this.data("insert_after");
 			if (insert_after != undefined) {
@@ -63,16 +63,11 @@ $("document").ready(function()
 					var after_property_name = $th.attr("id");
 					var class_name = $this.closest(".list.window").attr("id").split("/")[1];
 					var url = app.uri_base + "/" + class_name + "/listSetting"
-						+ window.app.askSIDand() + "as_widget=1"
-						+ "&add_property=" + property_name
-						+ "&after=" + ((after_property_name != undefined) ? after_property_name : "");
-					/*
-					var url = app.uri_base + "/Property/add";
-					url += $window.attr("id") + "/" + property_name
-						+ window.app.askSID() + "&as_widget=1"
-						+ "&after=" + ((after_property_name != undefined) ? after_property_name : "");
-					*/
-					end($this, event, ui);
+						+ "?add_property=" + property_name
+						+ "&after=" + ((after_property_name != undefined) ? after_property_name : "")
+						+ "&as_widget=1"
+						+ app.andSID();
+					complete($this, event, ui);
 
 					$.ajax({ url: url, success: function()
 					{
@@ -96,7 +91,7 @@ $("document").ready(function()
 
 			out: function(event, ui)
 			{
-				end($(this), event, ui);
+				complete($(this), event, ui);
 			}
 
 		});
