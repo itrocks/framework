@@ -22,7 +22,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 				"custom_save", array(Color::of("blue"), "#main", ".submit")
 			),
 			"delete" => new Button(
-				"Delete", View::link($class_name, "import", "preview", null, array("delete_name" => true)),
+				"Delete", View::link($class_name, "import", "preview", array("delete_name" => true)),
 				"custom_delete", array(Color::of("red"), "#main", ".submit")
 			)
 		);
