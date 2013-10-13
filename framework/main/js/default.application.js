@@ -4,7 +4,12 @@ $("document").ready(function()
 	$("body").build(function()
 	{
 
+		// implicit ajax links
 		this.xtarget({ url_append: "as_widget=1" });
+		this.aform();
+
+		// can enter tab characters into textarea
+		this.in("textarea").presstab();
 
 		// messages is draggable
 		this.in("#messages").draggable();
