@@ -68,7 +68,7 @@ class Plugins implements Configurable
 	 */
 	public function registerPlugin($class_name, $parameters = null)
 	{
-		if (!is_subclass_of($class_name, 'SAF\Framework\Plugin')) {
+		if (!is_subclass_of($class_name, 'SAF\Framework\Plugin', true)) {
 			trigger_error($class_name . " is not an instance of Plugin", E_USER_ERROR);
 		}
 		else {
