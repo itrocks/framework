@@ -76,9 +76,7 @@ class File
 	 */
 	public function getCsvContent()
 	{
-		return isset($this->content)
-			? array_map("str_getcsv", explode(str_replace("\r", "", $this->content), "\n"))
-			: array_map("str_getcsv", file($this->temporary_file_name));
+		return Spreadsheet_File::readCsvFile($this->temporary_file_name);
 	}
 
 	//------------------------------------------------------------------------------------ getContent
