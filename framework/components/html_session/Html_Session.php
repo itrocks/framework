@@ -59,12 +59,6 @@ class Html_Session implements Configurable, Plugin
 		return ini_get("session.use_cookies");
 	}
 
-	//----------------------------------------------------------------------------------- useTransSid
-	public static function useTransSid()
-	{
-		ini_set("session.use_trans_sid", true);
-	}
-
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * always add session id at end of html documents parsing
@@ -77,9 +71,7 @@ class Html_Session implements Configurable, Plugin
 			ini_set("arg_separator.output", "&amp;");
 			ini_set("session.use_cookies", self::$use_cookie);
 			ini_set("session.use_only_cookies", false);
-			if (!self::$use_cookie) {
-				Aop::add(Aop::BEFORE, "session_start()", array(__CLASS__, "useTransSid"));
-			}
+			ini_set("session.use_trans_sid", !self::$use_cookie);
 		}
 	}
 
