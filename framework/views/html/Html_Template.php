@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use StdClass;
-
 /**
  * built-in SAF HTML template engine
  */
@@ -639,7 +637,7 @@ class Html_Template
 			$this->preprop();
 			if (isset($to) && ($counter < $to)) {
 				array_unshift($this->var_names, null);
-				array_unshift($this->objects, new StdClass());
+				array_unshift($this->objects, "");
 				while ($counter < $to) {
 					$counter++;
 					if ($counter >= $from) {
