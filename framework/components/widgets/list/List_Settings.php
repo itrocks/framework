@@ -47,6 +47,20 @@ class List_Settings extends Custom_Settings
 	 */
 	public $sort;
 
+	//---------------------------------------------------------------- $maximum_displayed_lines_count
+	/**
+	 * Maximum displayed lines count
+	 *
+	 * @var integer
+	 */
+	public $maximum_displayed_lines_count = 20;
+
+	//-------------------------------------------------------------------- $start_display_line_number
+	/**
+	 * @var integer
+	 */
+	public $start_display_line_number = 1;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string

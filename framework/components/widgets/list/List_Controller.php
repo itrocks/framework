@@ -32,6 +32,32 @@ abstract class List_Controller extends Output_Controller
 					: (isset($parameters["after"]) ? $parameters["after"] : "")
 			);
 		}
+		elseif (isset($parameters["less"])) {
+			if ($parameters["less"] == 20) {
+				$list_settings->maximum_displayed_lines_count = 20;
+			}
+			else {
+				$list_settings->maximum_displayed_lines_count = max(
+					20, $list_settings->maximum_displayed_lines_count - $parameters["less"]
+				);
+			}
+		}
+		elseif (isset($parameters["more"])) {
+			$list_settings->maximum_displayed_lines_count = round(min(
+				1000, $list_settings->maximum_displayed_lines_count + $parameters["more"]
+			) / 100) * 100;
+		}
+		elseif (isset($parameters["move"])) {
+			if ($parameters["move"] == "down") {
+				$list_settings->start_display_line_number += $list_settings->maximum_displayed_lines_count;
+			}
+			elseif ($parameters["move"] == "up") {
+				$list_settings->start_display_line_number -= $list_settings->maximum_displayed_lines_count;
+			}
+			elseif (is_numeric($parameters["move"])) {
+				$list_settings->start_display_line_number = $parameters["move"];
+			}
+		}
 		elseif (isset($parameters["remove_property"])) {
 			$list_settings->removeProperty($parameters["remove_property"]);
 		}
@@ -54,6 +80,10 @@ abstract class List_Controller extends Output_Controller
 		}
 		else {
 			$did_change = false;
+		}
+		if ($list_settings->start_display_line_number < 1) {
+			$list_settings->start_display_line_number = 1;
+			$did_change = true;
 		}
 		if (Custom_Settings_Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
 			$did_change = true;

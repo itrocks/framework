@@ -107,6 +107,18 @@ a.button:hover,
 		url("img/buttons/17/background.gif");
 }
 
+.button.neutral {
+	background:
+		url("img/buttons/17/left.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+a.button.neutral,
+.button.neutral a {
+	padding-left: 4px;
+}
+
 .button.orange {
 	background:
 		url("img/buttons/17/left_orange.gif") left no-repeat,
