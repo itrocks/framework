@@ -17,20 +17,21 @@ class Default_List_Controller extends List_Controller
 	{
 		return array(
 			"add" => new Button(
-				"Add", View::link($class_name, "new"),
-				"add", Color::of("green")
+				"Add", View::link($class_name, "new"), "add",
+				array("#main", Color::of("green"))
 			),
 			"import" => new Button(
-				"Import", View::link($class_name, "import"),
-				"import", "#main", Color::of("green")
+				"Import", View::link($class_name, "import"), "import",
+				array("#main", Color::of("green"))
 			),
 			"save" => new Button(
-				"Save", View::link($class_name, "list"),
-				"custom_save", array(Color::of("green"), "#main", ".submit")
+				"Save", View::link($class_name, "list"), "custom_save",
+				array("#main", Color::of("green"), ".submit", "title" => "save this view as a custom list")
 			),
 			"delete" => new Button(
 				"Delete", View::link($class_name, "list", null, array("delete_name" => true)),
-				"custom_delete", array(Color::of("red"), "#main", ".submit")
+				"custom_delete",
+				array("#main", Color::of("red"), ".submit", "title" => "delete this custom list")
 			)
 		);
 	}
@@ -69,6 +70,7 @@ class Default_List_Controller extends List_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$list_settings = List_Settings::current($class_name);
+		$customized_list_settings = $list_settings->getCustomSettings();
 		$this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$count = new Dao_Count_Option();
 		$limit = new Dao_Limit_Option(
@@ -99,7 +101,7 @@ class Default_List_Controller extends List_Controller
 		$parameters = array_merge(
 			array(
 				$class_name             => $data,
-				"customized_lists"      => $list_settings->getCustomSettings(),
+				"customized_lists"      => $customized_list_settings,
 				"displayed_lines_count" => $displayed_lines_count,
 				"less_twenty"           => $less_twenty,
 				"more_hundred"          => $more_hundred,
