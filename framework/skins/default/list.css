@@ -1,4 +1,3 @@
-
 .list .search_summary {
 	color: #333;
 	font-weight: bold;
@@ -116,7 +115,95 @@
 	border-right: 2px solid #adff2f;
 }
 
+.list .scrollbar {
+	background-color: white;
+	border: 1px solid darkgray;
+	height: auto;
+	overflow:  hidden;
+	padding: 0;
+	vertical-align: top;
+	width: 21px;
+}
+
+.list .scrollbar .up,
+.list .scrollbar .down,
+.list .scrollbar .position {
+	color: transparent;
+	font-size: 1px;
+	padding: 0;
+}
+
+.list .scrollbar .position {
+	background-color: lightgray;
+	border: 1px solid darkgray;
+	display: block;
+}
+
+.list .growth {
+	display: inline-block;
+}
+
+.list .growth .less.twenty {
+	background:
+		url("img/bullet_arrow_top.png") 3px 1px no-repeat,
+		url("img/buttons/17/left.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+.list .growth .less.twenty:hover {
+	background:
+		url("img/lighter50.png"),
+		url("img/bullet_arrow_top.png") 3px 1px no-repeat,
+		url("img/buttons/17/left.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+.list .growth .more.hundred {
+	background:
+		url("img/bullet_arrow_down.png") 3px 1px no-repeat,
+		url("img/buttons/17/left.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+.list .growth .more.hundred:hover {
+	background:
+		url("img/lighter50.png"),
+		url("img/bullet_arrow_down.png") 3px 1px no-repeat,
+		url("img/buttons/17/left.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+.list .growth .more.thousand {
+	background:
+		url("img/bullet_arrow_bottom.png") 3px 1px no-repeat,
+		url("img/buttons/17/left.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+.list .growth .more.thousand:hover {
+	background:
+		url("img/lighter50.png"),
+		url("img/bullet_arrow_bottom.png") 3px 1px no-repeat,
+		url("img/buttons/17/left.gif") left no-repeat,
+		url("img/buttons/17/right.gif") right no-repeat,
+		url("img/buttons/17/background.gif");
+}
+
+.list .growth a {
+	color: transparent;
+	font-size: 1px;
+	padding: 0;
+	text-decoration: none;
+	width: 21px;
+}
+
 .list li.rows_count {
 	color: #333;
 	float: right;
+	text-align: right;
 }

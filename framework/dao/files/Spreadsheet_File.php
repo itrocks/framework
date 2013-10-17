@@ -23,30 +23,6 @@ require dirname(__FILE__) . "/../../vendor/PHPExcel/Classes/PHPExcel.php";
 class Spreadsheet_File // extends PHPExcel
 {
 
-	//----------------------------------------------------------------------------------- fileToArray
-	/**
-	 * This is a direct, fast and optimized feature to read an excel file and return it's workseets
-	 * into a simple PHP array, as fastest as possible, using gnumeric.
-	 *
-	 * This enable you to import huge xls files of 10MB and more
-	 *
-	 * @param $file_name
-	 * @return array three dimensions (worksheet, row, column) array of read data
-	 */
-	public static function fileToArray($file_name)
-	{
-		$csv_file = Application::current()->getTemporaryFilesPath() . "/" . uniqid() . ".csv";
-		//echo "ssconvert \"$file_name\" \"$csv_file\" -S<br>";
-		exec("ssconvert \"$file_name\" \"$csv_file\" -S");
-		$count = 0;
-		$result = array();
-		while (is_file($csv_file . "." . $count)) {
-			$result[$csv_file . "." . $count] = array_map("str_getcsv", file($csv_file . "." . $count));
-			$count ++;
-		}
-		return $result;
-	}
-
 	//-------------------------------------------------------------------------------- createFromFile
 	/**
 	 * @param $file_name string The Excel file name to be read
@@ -71,6 +47,45 @@ class Spreadsheet_File // extends PHPExcel
 		$source_class->accessPropertiesDone();
 		$destination_class->accessPropertiesDone();
 		return $destination_object;
+	}
+
+	//----------------------------------------------------------------------------------- fileToArray
+	/**
+	 * This is a direct, fast and optimized feature to read an excel file and return it's workseets
+	 * into a simple PHP array, as fastest as possible, using gnumeric.
+	 *
+	 * This enable you to import huge xls files of 10MB and more
+	 *
+	 * @param $file_name
+	 * @return array three dimensions (worksheet, row, column) array of read data
+	 */
+	public static function fileToArray($file_name)
+	{
+		$csv_file = Application::current()->getTemporaryFilesPath() . "/" . uniqid() . ".csv";
+		exec("ssconvert \"$file_name\" \"$csv_file\" -S");
+		$count = 0;
+		$result = array();
+		while (is_file($csv_file . "." . $count)) {
+			$result[$csv_file . "." . $count] = self::readCsvFile($csv_file . "." . $count);
+			$count ++;
+		}
+		return $result;
+	}
+
+	//----------------------------------------------------------------------------------- readCsvFile
+	/**
+	 * @param $csv_file string
+	 * @return array
+	 */
+	public static function readCsvFile($csv_file)
+	{
+		$lines = array();
+		$f = fopen($csv_file, "r");
+		if ($f) while ($buf = fgetcsv($f)) {
+			$lines[] = $buf;
+		}
+		fclose($f);
+		return $lines;
 	}
 
 }

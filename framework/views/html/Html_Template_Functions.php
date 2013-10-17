@@ -244,6 +244,46 @@ abstract class Html_Template_Functions
 		return str_replace(".", ">", reset($template->objects));
 	}
 
+	//------------------------------------------------------------------------------------ getIsFirst
+	/**
+	 * Returns true if the current array element is the first one
+	 *
+	 * @param $template Html_Template
+	 * @return boolean
+	 */
+	public static function getIsFirst(Html_Template $template)
+	{
+		$var_name = null;
+		foreach ($template->objects as $array) {
+			if (is_array($array)) {
+				reset($array);
+				return (key($array) == $var_name);
+			}
+			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
+		}
+		return null;
+	}
+
+	//------------------------------------------------------------------------------------- getIsLast
+	/**
+	 * Returns true if the current array element is the last one
+	 *
+	 * @param $template Html_Template
+	 * @return boolean
+	 */
+	public static function getIsLast(Html_Template $template)
+	{
+		$var_name = null;
+		foreach ($template->objects as $array) {
+			if (is_array($array)) {
+				end($array);
+				return (key($array) == $var_name);
+			}
+			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
+		}
+		return null;
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Returns nearest object from templating tree

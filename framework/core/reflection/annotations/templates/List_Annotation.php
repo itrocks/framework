@@ -52,6 +52,10 @@ abstract class List_Annotation extends Annotation
 				}
 				$values[] = substr($value, $start, $stop - $start);
 				$i ++;
+				if ($i == $length) {
+					$start = $i;
+					break;
+				}
 				while (($i < $length) && ($value[$i] === " ")) $i ++;
 				$in_quote = (($i < $length) && (($value[$i] === "'") || ($value[$i] === '"')))
 					? $value[$i] : false;

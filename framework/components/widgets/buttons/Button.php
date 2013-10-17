@@ -66,6 +66,14 @@ class Button
 	 */
 	public $target;
 
+	//---------------------------------------------------------------------------------------- $title
+	/**
+	 * A title for the link
+	 *
+	 * @var string
+	 */
+	public $title = "";
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $caption string Displayed caption
@@ -101,6 +109,9 @@ class Button
 			}
 			elseif (($key === "target") || (is_numeric($key) && substr($option, 0, 1) == "#")) {
 				$this->target = $option;
+			}
+			elseif ($key === "title") {
+				$this->title = $option;
 			}
 		}
 		if (!isset($this->color)) {

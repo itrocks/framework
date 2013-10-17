@@ -24,6 +24,9 @@ $("document").ready(function()
 			$(this).css("z-index", ++window.zindex_counter);
 		});
 
+		// focus first form element
+		this.autofocus();
+
 	});
 
 });

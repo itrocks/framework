@@ -23,6 +23,7 @@
 		<caption class="search_summary">{search_summary}</caption>
 		<thead>
 		<tr>
+			<th></th>
 			<th class="column_select">
 				<a href="/Property/select/{@class.short}" class="popup" target="#column_select">|select columns|</a>
 			</th>
@@ -38,6 +39,7 @@
 		</tr>
 		<tr class="search">
 			<td></td>
+			<td></td>
 			<!--search-->
 			<td>{@edit("search[{#.@escapeName}]")}</td>
 			<!--sample-->
@@ -46,8 +48,15 @@
 		</tr>
 		</thead>
 		<tbody>
-		<!--elements:-20-->
+		<!--elements:-{displayed_lines_count}-->
 		<tr>
+			<!--@isFirst?-->
+			<td class="vertical scrollbar" data-start="{--display_start}" data-length="{--displayed_lines_count}" data-total="{--rows_count}" rowspan="{--displayed_lines_count}">
+				<a class="up" href="/{--@class.short}/{@feature}?move=up" target="#main">/\</a>
+				<a class="position" href="/{--@class.short}/{@feature}?move={--display_start}" target="#main">=</a>
+				<a class="down" href="/{--@class.short}/{@feature}?move=down" target="#main">\/</a>
+			</td>
+			<!--@isFirst?-->
 			<td><input type="checkbox" name="s[]" value="{id}"></td>
 			<!--formatValues:1-->
 			<td>
@@ -85,19 +94,24 @@
 	<ul class="selection buttons">
 		<li class="selection_arrow trashable">[select]</li>
 		<!--selection_buttons-->
-		<li class="button"><a class="{class?} {feature.lower} trashable button {color}" href="{link}" target="{?target}">|{caption}|</a>
+		<li class="button"><a class="{class?} {feature.lower} trashable {color} button" href="{link}" target="{?target}">|{caption}|</a>
 			<!--sub_buttons?-->
 			<ul class="sub_buttons">
 				<!--sub_buttons-->
-				<li class="sub_button"><a class="{class?} {feature.lower} trashable sub_button {color}" href="{link}" target="{?target}">|{caption}|</a></li>
+				<li class="sub_button"><a class="{class?} {feature.lower} trashable {color} sub_button" href="{link}" target="{?target}">|{caption}|</a></li>
 				<!--sub_buttons-->
 			</ul>
 			<!--sub_buttons?-->
 		</li>
 		<!--sample-->
-		<li class="button"><a class="button trashable new blue" href="/Class/new" target="#main">New</a></li>
+		<li class="button"><a class="new trashable blue button" href="/Class/new" target="#main">New</a></li>
 		<!--selection_buttons-->
-		<li class="rows_count">|!{rows_count}! ¦{@class.short.lower}¦ match your search|</li>
+		<li class="growth">
+		<!--less_twenty?--><a class="less twenty neutral button" href="/{@class.short}/{@feature}?less=20" target="#main" title="|Display the standard lines count|">|Less lines|</a><!--less_twenty?-->
+		<!--more_hundred?--><a class="more hundred neutral button" href="/{@class.short}/{@feature}?more=100" target="#main" title="|Display more lines|">|More lines|</a><!--more_hundred?-->
+		<!--more_thousand?--><a class="more thousand neutral button" href="/{@class.short}/{@feature}?more=1000" target="#main" title="|Display the maximal lines count|">|Max lines|</a><!--more_thousand?-->
+		</li>
+		<li class="rows_count">|!{rows_count}! ¦lines¦ match your search|<br>|!{displayed_lines_count}! ¦lines¦ starting from !{display_start}! displayed|</li>
 	</ul>
 
 </div>
