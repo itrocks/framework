@@ -1,10 +1,14 @@
 $("document").ready(function()
 {
+	window.zindex_counter = 0;
 
 	$("body").build(function()
 	{
 
-		this.xtarget({ url_append: "as_widget=1" });
+		this.xtarget({
+			url_append: "as_widget=1",
+			success: function() { $(this).autofocus(); }
+		});
 
 		// messages is draggable
 		this.in("#messages").draggable();
@@ -19,9 +23,8 @@ $("document").ready(function()
 			$(this).css("z-index", ++window.zindex_counter);
 		});
 
-		// focus first form element
-		this.autofocus();
-
 	});
+
+	$(this).autofocus();
 
 });
