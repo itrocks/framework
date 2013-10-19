@@ -1,11 +1,14 @@
 $("document").ready(function()
 {
+	window.zindex_counter = 0;
 
 	$("body").build(function()
 	{
 
-		// implicit ajax links
-		this.xtarget({ url_append: "as_widget=1" });
+		this.xtarget({
+			url_append: "as_widget=1",
+			success: function() { $(this).autofocus(); }
+		});
 		this.aform();
 
 		// can enter tab characters into textarea
@@ -24,9 +27,9 @@ $("document").ready(function()
 			$(this).css("z-index", ++window.zindex_counter);
 		});
 
-		// focus first form element
-		this.autofocus();
-
 	});
+
+	// focus first form element
+	this.autofocus();
 
 });

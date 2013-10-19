@@ -166,7 +166,9 @@ class Html_Template
 	 */
 	protected function getContainerContent($file_name)
 	{
-		return file_get_contents($file_name, !strpos($this->main_template, "/"));
+		return isset($this->main_template)
+			? file_get_contents($file_name, !strpos($this->main_template, "/"))
+			: "{@content}";
 	}
 
 	//------------------------------------------------------------------------------------ getCssPath

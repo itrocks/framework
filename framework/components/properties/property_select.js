@@ -91,9 +91,6 @@ $("document").ready(function()
 
 		});
 
-		// focus into search input
-		this.in(".property.select .search input").focus();
-
 	});
 
 });

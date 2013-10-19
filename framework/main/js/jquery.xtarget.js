@@ -87,12 +87,17 @@
 					else              $target.children().build();
 				}
 				// on.success callbacks
+				var target = $target.get()[0];
 				if (settings["success"] != undefined) {
-					settings["success"](data, status, xhr);
+					target.success = settings["success"];
+					target.success(data, status, xhr);
+					target.success = undefined;
 				}
 				var on_success = $from.data("on.success");
 				if (on_success != undefined) {
-					on_success(data, status, xhr);
+					target.success = on_success;
+					target.success(data, status, xhr);
+					target.success = undefined;
 				}
 			}
 
