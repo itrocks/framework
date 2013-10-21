@@ -1080,7 +1080,7 @@ class Html_Template
 			$i--;
 			$j++;
 		}
-		while (($content[$i] != " ") && ($content[$i] != ",")) {
+		while (($content[$i] != " ") && ($content[$i] != ",") && ($content[$i] != "/")) {
 			if (($content[$i] == '"') || ($content[$i] == "'")) {
 				while ($content[$j] != $content[$i]) {
 					$j++;
