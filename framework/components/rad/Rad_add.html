@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Default list template</title>
+	<script type="text/javascript" src="../../vendor/jquery/jquery-1.8.3.js"></script>
+	<style type="text/css">
+		@import "../../skins/default/application.css";
+	</style>
+</head>
+<body>
+
+<div id="rad_add">
+<!--BEGIN-->
+
+	Vous souhaitez ajouter :
+	<ul>
+		<li><a href="/Rad/add/action" target="#rad_add">une action</a></li>
+		<li><a href="/Rad/add/data" target="#rad_add">une donnée</a></li>
+	</ul>
+
+	<script type="text/javascript">
+
+		$(".menu .blocks").radAdd(".block");
+		$(".menu .items").radAdd(".item");
+		$(".buttons").radAdd(".button");
+		$(".sub_buttons").radAdd(".sub_button");
+		$("table.list thead tr:first-child").radAdd("th.property");
+
+	</script>
+
+	<!--END-->
+</div>
+
+</body>
+</html>
