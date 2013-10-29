@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -9,24 +9,27 @@
 	</style>
 </head>
 <body>
-
 <!--BEGIN-->
-<div class="{class_name.short.lower} import form window" id="/{class_name.short}/import/form">
-	<h2 class="window title">|{@class.ucfirst}|</h2>
 
-	<form action="/{class_name.short}/import/preview" method="post" enctype="multipart/form-data" target="#import_preview">
+<form action="/{class_name.short}/import/preview" class="{class_name.short.lower} import form window" id="/{class_name.short}/import/form" method="post" enctype="multipart/form-data" target="#import_preview">
+	<h2>|{@class.ucfirst}|</h2>
+
+	<fieldset>
 		<div class="file field">
-			<div class="label">|File|</div>
-			<div class="value">{file.@edit}</div>
+			<label>|File|</label>
+			<div>{file.@edit}</div>
 		</div>
-		<input type="submit" value="|Preview|">
-	</form>
+	</fieldset>
 
-	<div id="import_preview">
-	</div>
+	<ul class="actions">
+		<li class="import preview"><input type="submit" value="|Preview|"></li>
+	</ul>
 
-</div>
+</form>
+
+<section id="import_preview">
+</section>
+
 <!--END-->
-
 </body>
 </html>

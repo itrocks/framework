@@ -2,34 +2,50 @@
 /* features colors and action left button part */
 /* modules */
 /* actions */
-ul.actions > li.cancel > *, ul.actions > li.close > * {
-  padding-left: 12px;
-  background: url("img/buttons/17/left_close.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
-ul.actions > li.add > *, ul.actions > li.import > *, ul.actions > li.write > * {
+.action.import {
   padding-left: 12px;
   background: url("img/buttons/17/left_green.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
-ul.actions > li.export > *, ul.actions > li.print > * {
+
+.actions > .cancel > *, .actions > .close > * {
+  padding-left: 12px;
+  background: url("img/buttons/17/left_close.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
+.actions > .add > *, .actions > .edit > *, .actions > .import > *, .actions > .write > * {
+  padding-left: 12px;
+  background: url("img/buttons/17/left_green.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
+.actions > .export > *, .actions > .print > * {
   padding-left: 12px;
   background: url("img/buttons/17/left_blue.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
 
 /* modules on menu */
 .menu > ul li.sales > h3 {
-  background-color: #93c437; }
+  background-color: #93c437;
+  color: white; }
 .menu > ul li.purchases > h3 {
-  background-color: #5184d2; }
-.menu > ul li.catalog > h3 {
-  background-color: #93c437; }
+  background-color: #5184d2;
+  color: white; }
+.menu > ul li.items_catalog > h3 {
+  background-color: #b2a5ec;
+  color: white; }
+.menu > ul li.webshop > h3 {
+  background-color: #93c437;
+  color: white; }
 .menu > ul li.administration > h3 {
   background-color: #222222;
   color: white; }
 .menu > ul li.base_data > h3 {
-  background-color: #222222;
+  background-color: #b2a5ec;
   color: white; }
 
 /* modules windows */
-.window.purchases_order > h2, .window.purchases_orders > h2 {
+.window.purchases_order > h2, .window.purchases_orders > h2, .window.purchases_reception > h2, .window.purchases_receptions > h2, .window.purchases_invoice > h2, .window.purchases_invoices > h2, .window.purchases_credit > h2, .window.purchases_credits > h2, .window.supplier > h2, .window.suppliers > h2 {
   background-color: #5184d2; }
-.window.sales_order > h2, .window.sales_orders > h2 {
+.window.sales_quote > h2, .window.sales_quotes > h2, .window.sales_order > h2, .window.sales_orders > h2, .window.sales_invoice > h2, .window.sales_invoices > h2, .window.sales_preparation > h2, .window.sales_preparations > h2, .window.sales_credit > h2, .window.sales_credits > h2, .window.client > h2, .window.clients > h2, .window.salesman > h2, .window.salesmen > h2 {
   background-color: #93c437; }
-.window.item > h2, .window.item > h2 {
+.window.category > h2, .window.categories > h2, .window.characteristic > h2, .window.characteristics > h2, .window.item > h2, .window.items > h2, .window.value > h2, .window.values > h2 {
+  background-color: #b2a5ec; }
+.window.webshop > h2, .window.webshops > h2, .window.account > h2, .window.accounts > h2, .window.cart > h2, .window.carts > h2 {
   background-color: #93c437; }
+.window.user > h2, .window.users > h2, .window.company > h2, .window.companies > h2, .window.agency > h2, .window.agencies > h2, .window.setting > h2, .window.settings > h2 {
+  background-color: #222222; }
+.window.address > h2, .window.addresses > h2, .window.contact > h2, .window.contacts > h2, .window.civility > h2, .window.civilities > h2, .window.city > h2, .window.cities > h2, .window.mean_of_payment > h2, .window.mean_of_payments > h2, .window.term_of_payment > h2, .window.term_of_payments > h2, .window.vat_code > h2, .window.vat_codes > h2, .window.vat_value > h2, .window.vat_values > h2, .window.size_unit > h2, .window.size_units > h2, .window.weight_unit > h2, .window.weight_units > h2 {
+  background-color: #b2a5ec; }

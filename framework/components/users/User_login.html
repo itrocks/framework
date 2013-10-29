@@ -12,15 +12,15 @@
 
 <form class="user login window" name="user_login" action="/User/authenticate" method="post">
 	<h2>|User login|</h2>
-	<fieldset class="main">
-		<p class="login">
+	<fieldset>
+		<div class="login">
 			<label for="login">|Login|</label>
 			<input id="login" name="login" value="{?login}"/>
-		</p>
-		<p class="password">
+		</div>
+		<div class="password">
 			<label for="password">|Password|</label>
 			<input id="password" name="password" type="password" value="{?password}"/>
-		</p>
+		</div>
 	</fieldset>
 	<ul class="actions">
 		<li><input type="submit" value="|Connection|"/></li>

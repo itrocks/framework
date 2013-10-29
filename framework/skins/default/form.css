@@ -101,6 +101,8 @@ fieldset {
       width: 100%; }
       fieldset > div:not(.tabber).columns > .column {
         vertical-align: top; }
+        fieldset > div:not(.tabber).columns > .column:not(:first-child) {
+          margin-left: 4px; }
         fieldset > div:not(.tabber).columns > .column:not(:last-child) {
           float: left; }
         fieldset > div:not(.tabber).columns > .column:last-child {
@@ -111,25 +113,15 @@ fieldset {
     display: table-row-group;
     border: 1px solid #a3a3a3;
     border-radius: 4px;
-    padding: 0 0.25em; }
+    padding: 0 .25em; }
     fieldset.block > legend {
       color: #202020;
       font-size: 14px;
       margin-left: .25em;
-      padding: 0 0.25em;
+      padding: 0 .25em;
       white-space: nowrap; }
 
 /* main tabber */
 form > fieldset > .tabber {
   border-bottom: 1px solid #575757;
   padding-bottom: 2px; }
-
-/* TODO include */
-/*
-
-.collection tr:hover td,
-.map tr:hover td {
-	background-color: #DEFDAF;
-}
-
-*/

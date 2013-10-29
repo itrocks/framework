@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -9,91 +9,86 @@
 	</style>
 </head>
 <body>
-
 <!--BEGIN-->
-<div class="{class_name.short.lower} import preview window" id="/{class_name.short}/import/preview">
-	<h2 class="window title">|Import preview|</h2>
 
-	<form action="/{class_name.short}/import/preview" method="post" target="#main">
+<form action="/{class_name.short}/import/preview" class="{class_name.short.lower} import preview window" id="/{class_name.short}/import/preview" method="post" target="#main">
+	<h2>|Import preview|</h2>
 
-		<!--worksheets-->
-		<div class="worksheet">
-			<input type="hidden" name="worksheets[{name}][name]" value="{settings.name}">
+	<!--worksheets-->
+	<fieldset class="worksheet">
+		<input type="hidden" name="worksheets[{name}][name]" value="{settings.name}">
 
-			<!--custom.{#}-->
-			{/general_buttons.html}
-			{/custom.html}
-			<!--custom.{#}-->
+		<!--custom.{#}-->
+		{/general_buttons.html}
+		{/custom.html}
+		<!--custom.{#}-->
 
-			<!--settings.classes-->
-			<div class="{name} class">
-				<h3>
-					|{--settings.getClassName.short}|
-					<!--property_path?-->:<!--property_path?-->
-					<!--property_path--><span class="property">|{.}|</span><!--property_path-->
-				</h3>
-				<div class="constants fieldset">
-					<!--constants-->
-					<div class="field">
-						<div class="label">{@propertySelect("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][name]")}</div>
-						<div class="value">{@edit("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][value]")}</div>
-						<a class="constant remove submit" href="/Import/preview?constant_remove={--getPropertyPathValue}.{#}" target="#main">
-							|Remove constant|
-						</a>
-					</div>
-					<!--constants-->
-					<a class="constant add submit" href="/Import/preview?constant_add={#}" target="#main">
-						|Add a constant|
+		<!--settings.classes-->
+		<fieldset class="{name} class">
+			<h3>
+				|{--settings.getClassName.short}|
+				<!--property_path?-->:<!--property_path?-->
+				<!--property_path--><span class="property">|{.}|</span><!--property_path-->
+			</h3>
+			<fieldset class="constants">
+				<!--constants-->
+				<div>
+					<label>{@propertySelect("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][name]")}</label>
+					<div>{@edit("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][value]")}</div>
+					<a class="constant remove submit" href="/Import/preview?constant_remove={--getPropertyPathValue}.{#}" target="#main">
+						|Remove constant|
 					</a>
 				</div>
-				<div class="identify properties">
-					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
-					Identifie chaque <span>|{name}|</span> par
-					<ul><!--identify_properties--><li class="{name}">|{name}|</li><!--identify_properties--></ul>
-					(doit être unique).
-				</div>
-				<div class="none">
-					Si aucun <span>|{name}|</span> ne correspond,
-					{object_not_found_behaviour.@edit}
-				</div>
-				<div class="write properties">
-					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
-					Met à jour la valeur de
-					<ul><!--write_properties--><li class="{name}">|{name}|</li><!--write_properties--></ul>.
-				</div>
-				<div class="ignore properties">
-					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
-					Ignore la valeur de
-					<ul><!--ignore_properties--><li class="{name}">|{name}|</li><!--ignore_properties--></ul>
-				</div>
-			</div>
-			<!--settings.classes-->
+				<!--constants-->
+				<a class="constant add submit action" href="/Import/preview?constant_add={#}" target="#main">
+					|Add a constant|
+				</a>
+			</fieldset>
+			<fieldset class="identify properties">
+				<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
+				Identifie chaque <span>|{name}|</span> par
+				<ul><!--identify_properties--><li class="{name}">|{name}|</li><!--identify_properties--></ul>
+				(doit être unique).
+			</fieldset>
+			<fieldset class="none">
+				Si aucun <span>|{name}|</span> ne correspond,
+				{object_not_found_behaviour.@edit}
+			</fieldset>
+			<fieldset class="write properties">
+				<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
+				Met à jour la valeur de
+				<ul><!--write_properties--><li class="{name}">|{name}|</li><!--write_properties--></ul>.
+			</fieldset>
+			<fieldset class="ignore properties">
+				<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
+				Ignore la valeur de
+				<ul><!--ignore_properties--><li class="{name}">|{name}|</li><!--ignore_properties--></ul>
+			</fieldset>
+		</fieldset>
+		<!--settings.classes-->
 
-			<!--preview-->
-			<table class="preview">
-				<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--properties--></tr>
-				<!--data:{first_row}-{last_row}-->
-				<tr><!--.:-{--last_column}--><td>{.}</td><!--.--></tr>
-				<!--data-->
-			</table>
-			<!--preview-->
+		<!--preview-->
+		<table class="preview">
+			<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--properties--></tr>
+			<!--data:{first_row}-{last_row}-->
+			<tr><!--.:-{--last_column}--><td>{.}</td><!--.--></tr>
+			<!--data-->
+		</table>
+		<!--preview-->
 
-		</div>
-		<!--worksheets-->
+	</fieldset>
+	<!--worksheets-->
 
-		<p class="warning">
-			<span>Une fois vérifiés les réglages ci-dessus, vous pouvez</span>
-			<a class="green button submit" href="/{class_name.short}/import/execute" target="#import_execute">|Execute import|</a>
-		</p>
+	<p class="warning">
+		<span>Une fois vérifiés les réglages ci-dessus, vous pouvez</span>
+		<a class="import execute action submit" href="/{class_name.short}/import/execute" target="#import_execute">|Execute import|</a>
+	</p>
 
-	</form>
+</form>
 
-</div>
-
-<div id="import_execute">
-</div>
+<section id="import_execute">
+</section>
 
 <!--END-->
-
 </body>
 </html>

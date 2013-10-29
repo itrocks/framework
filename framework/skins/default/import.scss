@@ -1,0 +1,147 @@
+.import.preview.window {
+
+	>.worksheet:not(:last-child) {
+		border-bottom: 2px solid black;
+		padding-bottom: 6px;
+		margin-bottom: 1em;
+
+		>.class:not(:nth-child(2)) {
+			border-top: 1px solid darkgray;
+			padding-top: 4px;
+			margin-top: 4px;
+
+			>h3 {
+				font-size: 1.4em;
+				font-weight: normal;
+				text-decoration: underline;
+				margin-bottom: .25em;
+
+				>span.property:not(:last-child):after {
+					content: ".";
+				}
+			}
+
+			>fieldset {
+
+				&.constants {
+
+					>div>label {
+						padding: 0;
+						&:after {
+							content : " = ";
+						}
+					}
+
+					a.constant.add {
+						display: table-caption;
+						text-align: left;
+						white-space: nowrap;
+					}
+
+					a.constant.remove {
+						background: url("img/delete.png") center no-repeat;
+						color: transparent;
+						display: table-cell;
+						height: 18px;
+						font-size: 1px;
+						vertical-align: top;
+						white-space: nowrap;
+						width: 20px;
+					}
+				}
+
+				&.properties {
+					border: 1px solid white;
+
+					li {
+						border: 1px solid;
+						color: white;
+						cursor: pointer;
+						display: inline-block;
+						font-weight: bold;
+						margin: 0 2px;
+						padding: .25em;
+						&:not(:last-child):after {
+							content: ", ";
+						}
+					}
+
+					&.identify {
+						li {
+							background-color: green;
+							border-color: darkgreen;
+						}
+						ul:empty:after {
+							content: "(crée systématiquement un nouvel enregistrement)";
+							font-style: italic;
+						}
+					}
+
+					&.ignore {
+						li {
+							background-color: #eee;
+							border-color: #ccc;
+							color: #333;
+						}
+						ul:empty:after {
+							content: "(aucune valeur n'est ignorée)";
+							font-style: italic;
+						}
+					}
+
+					&.write {
+						li {
+							background-color: blue;
+							border-color: darkblue;
+						}
+						ul:empty:after {
+							content: "(aucune valeur à écrire)";
+							font-style: italic;
+						}
+					}
+				}
+
+				option {
+					background-color: white;
+					color: black;
+
+					&[value="create_new_value"] {
+						background-color: blue;
+						color: white;
+					}
+
+					&[value="tell_it_and_stop_import"] {
+						background-color: red;
+						color: white;
+					}
+				}
+
+				div span {
+					font-weight: bold;
+				}
+
+				ul {
+					display: inline-block;
+					text-decoration: none;
+				}
+			}
+		}
+	}
+
+	table {
+		margin-top: .5em;
+		width: 100%;
+
+		td {
+			border: 1px solid darkgray;
+			padding: 3px;
+			white-space: nowrap;
+		}
+
+		th {
+			@extend td;
+			background: #606060;
+			color: white;
+		}
+	}
+}

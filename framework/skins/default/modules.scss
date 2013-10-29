@@ -2,19 +2,28 @@
 
 /* actions */
 
-ul.actions>li {
+.action {
 
-	&.cancel>*, &.close>* {
-		padding-left: 12px;
-		background: $close_action;
-	}
-
-	&.add>*, &.import>*, &.write>* {
+	&.import {
 		padding-left: 12px;
 		background: $green_action;
 	}
 
-	&.export>*, &.print>* {
+}
+
+.actions {
+
+	>.cancel>*, >.close>* {
+		padding-left: 12px;
+		background: $close_action;
+	}
+
+	>.add>*, >.edit>*, >.import>*, >.write>* {
+		padding-left: 12px;
+		background: $green_action;
+	}
+
+	>.export>*, >.print>* {
 		padding-left: 12px;
 		background: $blue_action;
 	}
@@ -27,14 +36,22 @@ ul.actions>li {
 
 	li.sales>h3 {
 		background-color: $green;
+		color: white;
 	}
 
 	li.purchases>h3 {
 		background-color: $blue;
+		color: white;
 	}
 
-	li.catalog>h3 {
+	li.items_catalog>h3 {
+		background-color: $magenta;
+		color: white;
+	}
+
+	li.webshop>h3 {
 		background-color: $green;
+		color: white;
 	}
 
 	li.administration>h3 {
@@ -43,7 +60,7 @@ ul.actions>li {
 	}
 
 	li.base_data>h3 {
-		background-color: $black;
+		background-color: $magenta;
 		color: white;
 	}
 
@@ -53,16 +70,55 @@ ul.actions>li {
 
 .window {
 
-	&.purchases_order, &.purchases_orders { >h2 {
+	&.purchases_order, &.purchases_orders,
+	&.purchases_reception, &.purchases_receptions,
+	&.purchases_invoice, &.purchases_invoices,
+	&.purchases_credit, &.purchases_credits,
+	&.supplier, &.suppliers { >h2 {
 		background-color: $blue;
 	}}
 
-	&.sales_order, &.sales_orders { >h2 {
+	&.sales_quote, &.sales_quotes,
+	&.sales_order, &.sales_orders,
+	&.sales_invoice, &.sales_invoices,
+	&.sales_preparation, &.sales_preparations,
+	&.sales_credit, &.sales_credits,
+	&.client, &.clients,
+	&.salesman, &.salesmen { >h2 {
 		background-color: $green;
 	}}
 
-	&.item, &.item { >h2 {
+	&.category, &.categories,
+	&.characteristic, &.characteristics,
+	&.item, &.items,
+	&.value, &.values { >h2 {
+		background-color: $magenta;
+	}}
+
+	&.webshop, &.webshops,
+	&.account, &.accounts,
+	&.cart, &.carts { >h2 {
 		background-color: $green;
+	}}
+
+	&.user, &.users,
+	&.company, &.companies,
+	&.agency, &.agencies,
+	&.setting, &.settings { >h2 {
+		background-color: $black;
+	}}
+
+	&.address, &.addresses,
+	&.contact, &.contacts,
+	&.civility, &.civilities,
+	&.city, &.cities,
+	&.mean_of_payment, &.mean_of_payments,
+	&.term_of_payment, &.term_of_payments,
+	&.vat_code, &.vat_codes,
+	&.vat_value, &.vat_values,
+	&.size_unit, &.size_units,
+	&.weight_unit, &.weight_units { >h2 {
+		background-color: $magenta;
 	}}
 
 }

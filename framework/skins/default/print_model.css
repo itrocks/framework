@@ -1,181 +1,145 @@
-
 #pages_tabs {
-	display: inline-block;
-	vertical-align: top;
-	border-radius: 4px;
-	margin: 5px 0 5px 5px;
-	font-weight: normal;
-}
+  display: inline-block;
+  vertical-align: top;
+  border-radius: 4px;
+  margin: 5px 0 5px 5px;
+  font-weight: normal; }
 
 #page0, #page1, #pagex {
-	padding: 10px;
-	margin: -10px;
-	display: inline-block;
-	vertical-align: top;
-}
+  padding: 10px;
+  margin: -10px;
+  display: inline-block;
+  vertical-align: top; }
 
 .x_ruler, .y_ruler {
-	position: absolute;
-}
+  position: absolute; }
 
 .y_ruler {
-	cursor: ns-resize;
-	width: 100%;
-	height: 11px;
-	top : 5px;
-}
+  cursor: ns-resize;
+  width: 100%;
+  height: 11px;
+  top: 5px; }
 
 .y_ruler_line {
-	background-color: lightgray;
-	width: 100%;
-	height: 1px;
-	margin-top: 5px;
-}
+  background-color: lightgray;
+  width: 100%;
+  height: 1px;
+  margin-top: 5px; }
 
 .x_ruler {
-	cursor: ew-resize;
-	width: 11px;
-	height: 100%;
-	left : 0;
-}
+  cursor: ew-resize;
+  width: 11px;
+  height: 100%;
+  left: 0; }
 
 .x_ruler_line {
-	background-color: lightgray;
-	width: 1px;
-	height: 100%;
-	margin: auto;
-}
+  background-color: lightgray;
+  width: 1px;
+  height: 100%;
+  margin: auto; }
 
 .zone, .table_zone_dragger {
-	position: absolute;
-	border: 1px solid gray;
-	overflow: hidden;
-}
+  position: absolute;
+  border: 1px solid gray;
+  overflow: hidden; }
 
 .container {
-	padding: 5px;
-	width: 1225px;
-}
+  padding: 5px;
+  width: 1225px; }
 
 .pdf_page {
-	position: relative;
-	border: 1px solid #B0B0B0;
-	width: 840px;
-	height: 1188px;
-	margin: 5px;
-	z-index: 0;
-}
+  position: relative;
+  border: 1px solid #B0B0B0;
+  width: 840px;
+  height: 1188px;
+  margin: 5px;
+  z-index: 0; }
 
 .fields_selector {
-	border: 1px solid #B0B0B0;
-	padding: 0 5px;
-	margin: 5px;
-	border-radius: 4px;
-	background-color: #FFF;
-}
+  border: 1px solid #B0B0B0;
+  padding: 0 5px;
+  margin: 5px;
+  border-radius: 4px;
+  background-color: #FFF; }
 
 .fields {
-	width: 350px;
-	display: inline-block;
-	vertical-align: top;
-}
+  width: 350px;
+  display: inline-block;
+  vertical-align: top; }
 
 .fields_props hr {
-	visibility: hidden;
-	margin: 0;
-	padding: 0;
-}
+  visibility: hidden;
+  margin: 0;
+  padding: 0; }
 
 .fields_props label {
-	display: inline-block;
-	margin: 0 0 0 1px;
-	height: 30px;
-	line-height: 30px;
-}
+  display: inline-block;
+  margin: 0 0 0 1px;
+  height: 30px;
+  line-height: 30px; }
 
 .fields_props label img {
-	margin: 0 0 0 0;
-}
+  margin: 0 0 0 0; }
 
 .pdf_templates_fields {
-	cursor: pointer;
-}
+  cursor: pointer; }
 
 .fields .ui-tabs {
-	width: 333px;
-	margin: 5px;
-	border-radius: 4px;
-}
+  width: 333px;
+  margin: 5px;
+  border-radius: 4px; }
 
 .fields_toolbar {
-	border: 1px solid #B0B0B0;
-	margin: 5px;
-	padding: 4px 4px 4px 8px;
-	border-radius: 4px;
-	background-color: #FFF;
-}
+  border: 1px solid #B0B0B0;
+  margin: 5px;
+  padding: 4px 4px 4px 8px;
+  border-radius: 4px;
+  background-color: #FFF; }
 
 .toolbar_button {
-	cursor: pointer;
-	vertical-align: middle;
-	margin-right: 5px;
-}
-
-.ui-tabs {
-
-}
+  cursor: pointer;
+  vertical-align: middle;
+  margin-right: 5px; }
 
 .ui-tabs .ui-tabs-panel {
-	padding: 6px;
-}
+  padding: 6px; }
 
 #treecontrol img {
-	vertical-align: top;
-}
+  vertical-align: top; }
 
 .file {
-	border: none;
-}
+  border: none; }
 
 .table_zone_dragger {
-	width:300px;
-	height:200px;
-}
+  width: 300px;
+  height: 200px; }
 
 .table_zone {
-	border: none;
-}
+  border: none; }
 
 .table_zone td {
-	height: 100%;
-	border: 1px solid gray;
-}
+  height: 100%;
+  border: 1px solid gray; }
 
 .td_div {
-	position: relative;
-	height: 100%;
-	width: 100%;
-}
+  position: relative;
+  height: 100%;
+  width: 100%; }
 
 .table_zone_buttons {
-	position: absolute;
-	right: 0;
-	top: 0;
-}
+  position: absolute;
+  right: 0;
+  top: 0; }
 
 .table_zone_buttons img {
-	cursor: pointer;
-}
+  cursor: pointer; }
 
 #fields_console textarea {
-	width: 100%;
-	height: 200px;
-}
+  width: 100%;
+  height: 200px; }
 
 .td_div {
-	width: 100%;
-}
+  width: 100%; }
 
 #treeview_fields {
-	font-weight: normal;
-}
+  font-weight: normal; }

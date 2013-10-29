@@ -125,7 +125,7 @@
 		 *
 		 * If the a element is inside a form and the a class "submit" is set, the link submits the form with the a href attribute as action
 		 */
-		this.find('a[target^="#"]').click(function(event)
+		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
 			event.preventDefault();
 			var $this = $(this);
@@ -163,7 +163,7 @@
 		/**
 		 * <form> with target "#*" are ajax calls
 		 */
-		this.find('form[target^="#"]').submit(function(event)
+		this.find('form[target^="#"]').add(this.filter('form[target^="#"]')).submit(function(event)
 		{
 			var $this = $(this);
 			event.preventDefault();

@@ -14,6 +14,7 @@ textarea {
 input.datetime {
 	background: white url("img/input_datetime.png") right top no-repeat;
 }
+
 .ui-datepicker-trigger {
 	display: none;
 }
@@ -62,7 +63,6 @@ input.combo {
 
 form>fieldset {
 	display: table;
-
 }
 
 fieldset>fieldset {
@@ -153,6 +153,10 @@ fieldset {
 			>.column {
 				vertical-align: top;
 
+				&:not(:first-child) {
+					margin-left: 4px;
+				}
+
 				&:not(:last-child) {
 					float: left;
 				}
@@ -191,14 +195,3 @@ form>fieldset>.tabber {
 	border-bottom: 1px solid #575757;
 	padding-bottom: 2px;
 }
-
-/* TODO include */
-
-/*
-
-.collection tr:hover td,
-.map tr:hover td {
-	background-color: #DEFDAF;
-}
-
-*/

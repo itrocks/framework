@@ -21,6 +21,9 @@
   .action:hover, ul.actions > li > a:hover, ul.actions > li > button:hover, ul.actions > li > input:hover {
     color: #2d8f8d; }
 
+input.action, ul.actions > li > input {
+  height: 17px; }
+
 .ifedit {
   display: none; }
 

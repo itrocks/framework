@@ -22,6 +22,10 @@
 	}
 }
 
+input.action {
+	height: 17px;
+}
+
 .ifedit {
 	display: none;
 }
@@ -44,6 +48,10 @@ ul.actions {
 
 		>a, >button, >input {
 			@extend .action;
+		}
+
+		>input {
+			@extend input.action;
 		}
 
 		>ul {

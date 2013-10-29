@@ -20,11 +20,12 @@ class Default_Import_Execute_Controller implements Default_Feature_Controller
 	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
 	{
 		set_time_limit(900);
-		$parameters = $parameters->getObjects();
 		$import = Import_Builder_Form::build(
 			$form, Session::current()->get('SAF\Framework\Session_Files')->files
 		);
 		$import->class_name = $class_name;
+		$parameters->getMainObject($import);
+		$parameters = $parameters->getObjects();
 		foreach ($import->worksheets as $worksheet) {
 			$array = $worksheet->file->getCsvContent();
 			$import_array = new Import_Array($worksheet->settings, $import->class_name);

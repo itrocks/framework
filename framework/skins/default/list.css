@@ -22,9 +22,9 @@
       .list.window > table > colgroup > col:nth-child(1), .list.window > table > colgroup > col:nth-child(2) {
         max-width: 16px; }
     .list.window > table > tbody, .list.window > table > thead {
-      border-bottom: 1px solid lightgrey;
-      border-left: 1px solid lightgrey;
-      border-right: 1px solid lightgrey; }
+      border-bottom: 1px solid lightgray;
+      border-left: 1px solid lightgray;
+      border-right: 1px solid lightgray; }
     .list.window > table > thead > tr {
       height: 17px; }
       .list.window > table > thead > tr > th {
@@ -67,7 +67,7 @@
       .list.window > table > tbody > tr:hover {
         background-color: #aedc5f; }
       .list.window > table > tbody > tr > td {
-        border-right: 1px dotted lightgrey;
+        border-right: 1px dotted lightgray;
         white-space: nowrap; }
         .list.window > table > tbody > tr > td > a {
           color: black;
@@ -77,7 +77,7 @@
           text-decoration: none; }
     .list.window > table .vertical.scrollbar {
       background-color: white;
-      border: 1px solid darkgrey;
+      border: 1px solid darkgray;
       height: auto;
       overflow: hidden;
       padding: 0;
@@ -89,7 +89,7 @@
         padding: 0; }
       .list.window > table .vertical.scrollbar .position {
         background-color: lightgray;
-        border: 1px solid darkgrey;
+        border: 1px solid darkgray;
         display: block; }
 
 ul.actions > li.growth > a {
