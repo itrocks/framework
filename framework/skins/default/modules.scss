@@ -1,0 +1,68 @@
+@import "colors.scss";
+
+/* actions */
+
+ul.actions>li {
+
+	&.cancel>*, &.close>* {
+		padding-left: 12px;
+		background: $close_action;
+	}
+
+	&.add>*, &.import>*, &.write>* {
+		padding-left: 12px;
+		background: $green_action;
+	}
+
+	&.export>*, &.print>* {
+		padding-left: 12px;
+		background: $blue_action;
+	}
+
+}
+
+/* modules on menu */
+
+.menu>ul {
+
+	li.sales>h3 {
+		background-color: $green;
+	}
+
+	li.purchases>h3 {
+		background-color: $blue;
+	}
+
+	li.catalog>h3 {
+		background-color: $green;
+	}
+
+	li.administration>h3 {
+		background-color: $black;
+		color: white;
+	}
+
+	li.base_data>h3 {
+		background-color: $black;
+		color: white;
+	}
+
+}
+
+/* modules windows */
+
+.window {
+
+	&.purchases_order, &.purchases_orders { >h2 {
+		background-color: $blue;
+	}}
+
+	&.sales_order, &.sales_orders { >h2 {
+		background-color: $green;
+	}}
+
+	&.item, &.item { >h2 {
+		background-color: $green;
+	}}
+
+}

@@ -1,0 +1,13 @@
+#trashcan {
+  border-radius: 2px;
+  display: inline-block;
+  bottom: 8px;
+  position: absolute;
+  right: 8px; }
+  #trashcan a {
+    background: url("img/trashcan.png");
+    color: transparent;
+    display: inline-block;
+    float: right;
+    height: 32px;
+    width: 32px; }

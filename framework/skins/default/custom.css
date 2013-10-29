@@ -1,70 +1,47 @@
+.customized {
+  border-style: none;
+  cursor: pointer;
+  float: right;
+  height: 20px;
+  margin-top: -6px;
+  margin-bottom: -20px;
+  position: relative;
+  top: -50px; }
+
 input.customized {
-	background: white;
-	display: none;
-	padding: 1px 2px;
-	z-index: 1;
-}
+  background: white;
+  display: none;
+  padding: 1px 2px;
+  z-index: 1; }
 
 select.customized {
-	text-align: right;
-}
+  background: transparent;
+  text-align: right; }
 
-.customized {
-	background: transparent;
-	border: none;
-	cursor: pointer;
-	float: right;
-	height: 20px;
-	margin-top: -2px;
-	margin-bottom: -20px;
-	position: relative;
-	top: -50px;
-}
-
-.button.custom_delete,
-.button.custom_save {
-	border: none;
-	border-radius: inherit;
-	box-shadow: none;
-	float: right;
-}
-
-.button.custom_delete:hover,
-.button.custom_save:hover {
-	background: none;
-}
-
-.button.custom_delete a,
-.button.custom_save a {
-	color: transparent;
-	font-size: 1px;
-	height: 17px;
-	margin: 0;
-	padding: 0;
-	position: relative;
-	width: 17px;
-}
-
-.button.custom_delete a:hover:before,
-.button.custom_save a:hover:before {
-	left: 0;
-	opacity: .5;
-	position: absolute;
-	top: 0;
-}
-
-.button.custom_delete {
-	background: url("img/delete.png") no-repeat;
-}
-
-.button.custom_delete a:hover:before {
-	content: url("img/delete.png");
-}
-
-.button.custom_save {
-	background: url("img/floppy.png") no-repeat;
-}
-
-.button.custom_save a:hover:before {
-	content: url("img/floppy.png");
-}
+ul.actions > li.custom_delete, ul.actions > li.custom_save {
+  box-shadow: none;
+  float: right; }
+  ul.actions > li.custom_delete:hover, ul.actions > li.custom_save:hover {
+    background: none; }
+  ul.actions > li.custom_delete a, ul.actions > li.custom_save a {
+    border-style: none;
+    box-shadow: none;
+    color: transparent;
+    font-size: 1px;
+    height: 17px;
+    padding: 0;
+    position: relative;
+    width: 17px; }
+    ul.actions > li.custom_delete a:hover:before, ul.actions > li.custom_save a:hover:before {
+      left: 0;
+      opacity: .5;
+      position: absolute;
+      top: 0; }
+ul.actions > li.custom_delete a {
+  background: url("img/delete.png") no-repeat; }
+  ul.actions > li.custom_delete a:hover:before {
+    content: url("img/delete.png"); }
+ul.actions > li.custom_save a {
+  background: url("img/floppy.png") no-repeat; }
+  ul.actions > li.custom_save a:hover:before {
+    content: url("img/floppy.png"); }

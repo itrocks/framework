@@ -1,17 +1,4 @@
-.support.applicationbutton {
-	background: url("img/support_24.png") 6px 2px no-repeat, url("img/tab_background.png");
-	margin-right: 10px;
-	margin-top: 5px;
-	padding-left: 32px;
-}
-
-.support.applicationbutton:hover {
-	color: #2D8F8D;
-}
-
-.support.toptab {
-	border-bottom: 1px solid #9ab3b7;
-	border-radius: 0 0 10px 10px;
-	border-top: 1px solid #d6dadc;
-	display: inline-block;
-}
+body > header > ul > li.support {
+  background: url("img/support_24.png") 6px 2px no-repeat, url("img/tab_background.png"); }
+  body > header > ul > li.support > a {
+    padding-left: 32px; }

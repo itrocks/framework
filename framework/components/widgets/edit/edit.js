@@ -63,15 +63,6 @@ $("document").ready(function()
 			}
 		});
 
-		//-------------------------------------------------------------------------- input.combo change
-		this.in("input.combo").change(function()
-		{
-			var $this = $(this);
-			if (!$this.val().length) {
-				$this.prev().removeAttr("value");
-			}
-		});
-
 		//-------------------------------------------------------------------- input.combo autocomplete
 		this.in("input.combo").autocomplete(
 		{
@@ -115,11 +106,20 @@ $("document").ready(function()
 
 		});
 
+		//-------------------------------------------------------------------------- input.combo change
+		this.in("input.combo").change(function()
+		{
+			var $this = $(this);
+			if (!$this.val().length) {
+				$this.prev().removeAttr("value");
+			}
+		});
+
 		// --------------------------------------------------------------------- input.combo ctrl+click
 		this.in("input.combo").click(function(event)
 		{
 			if (event.ctrlKey) {
-				$(this).parent().children("a.add.action").click();
+				$(this).siblings(".edit").click();
 			}
 		})
 		.keyup(function(event) {
@@ -129,11 +129,11 @@ $("document").ready(function()
 			}
 		});
 
-		// ------------------------------------------------------------------------------- a.add.action
-		this.in("a.add.action").click(function()
+		// -------------------------------------------------------------------------- input.combo~.edit
+		this.in("input.combo~.edit").click(function()
 		{
 			var $this = $(this);
-			var $input = $this.parent().children("input.combo");
+			var $input = $this.siblings("input.combo");
 			if (!$this.data("link")) {
 				$this.data("link", $this.attr("href"));
 			}
@@ -141,29 +141,30 @@ $("document").ready(function()
 			var id = $input.prev().val();
 			$this.attr("href", id ? href.repl("/new?", "/" + $input.prev().val() + "/edit?") : href);
 		});
-		this.in("a.add.action").attr("tabindex", -1);
+		this.in("input.combo~.edit").attr("tabindex", -1);
 		if (this.attr("id") && (this.attr("id").substr(0, 6) == "window")) {
-			this.in(".close.button a")
+			this.in(".actions>.cancel>a")
 				.attr("href", "javascript:$('#" + this.attr("id") + "').remove()")
 				.attr("target", "");
-			var $button = this.in(".write.button a");
-			$button.attr("href", $button.attr("href") +
-				(($button.attr("href").indexOf("?") > -1) ? "&" : "?")
+			var $button = this.in(".actions>.write>a");
+			$button.attr("href",
+				$button.attr("href")
+				+ (($button.attr("href").indexOf("?") > -1) ? "&" : "?")
 				+ "close=" + this.attr("id")
 			);
 		}
 		this.in("input.combo").each(function()
 		{
 			$(this).parent()
-				.mouseenter(function() { $(this).children("a.add.action").addClass("visible"); })
-				.mouseleave(function() { $(this).children("a.add.action").removeClass("visible"); });
+				.mouseenter(function() { $(this).children(".edit").show(); })
+				.mouseleave(function() { $(this).children(".edit").hide(); });
 		});
 
-		//-------------------------------------------------------------------------- button.more.action
-		this.in("button.more.action").click(function(event)
+		//--------------------------------------------------------------------------- input.combo~.more
+		this.in("input.combo~.more").click(function(event)
 		{
 			event.preventDefault();
-			var $combo = $($(this).parent().find("input.combo"));
+			var $combo = $($(this).siblings("input.combo"));
 			if (!$combo.autocomplete("widget").is(":visible")) {
 				$combo.focus();
 				$combo.autocomplete("search", "");

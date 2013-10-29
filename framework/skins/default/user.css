@@ -1,11 +1,2 @@
-.application.center.user.login {
-	text-align: center;
-}
-
-div.window.User.login form {
-	display: table;
-}
-
-div.window.user.login form input[type="submit"] {
-	float: right;
-}
+.user.login.window .actions {
+  text-align: center; }

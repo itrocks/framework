@@ -218,23 +218,21 @@ class Html_Builder_Type_Edit
 					"fill_combo" => $this->template->getFormId() . "." . $this->getFieldName("id_", false)
 				)
 				: "";
-			$add = new Html_Anchor(
-				View::current()->link(get_class($this->value), "new", null, $fill_combo), "add"
+			$edit = new Html_Anchor(
+				View::current()->link(get_class($this->value), "new", null, $fill_combo), "edit"
 			);
-			$add->addClass("add");
-			$add->addClass("action");
-			$add->setAttribute("target", "#_blank");
-			$add->setAttribute("title", "|Edit ¦" . Names::classToDisplay($class_name) . "¦|");
+			$edit->addClass("edit");
+			$edit->setAttribute("target", "#_blank");
+			$edit->setAttribute("title", "|Edit ¦" . Names::classToDisplay($class_name) . "¦|");
 		}
 		else {
-			$add = "";
+			$edit = "";
 		}
 		// "more" button
 		$more = new Html_Button("more");
 		$more->addClass("more");
-		$more->addClass("action");
 		$more->setAttribute("tabindex", -1);
-		return $id_input . $input . $more . $add;
+		return $id_input . $input . $more . $edit;
 	}
 
 	//----------------------------------------------------------------------------------- buildString

@@ -1,44 +1,32 @@
-div.window {
-	background: white;
-	border: 1px solid darkgray;
-	border-radius: 4px;
-	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.10);
-	display: inline-block;
-	margin: 4px;
-	padding: 10px;
-	position: relative;
-	text-align: left;
-	min-height: 50px;
-	min-width: 400px;
-}
+.window {
+  background: white;
+  border: 1px solid darkgrey;
+  border-radius: 4px;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  margin: 4px;
+  padding: 8px;
+  position: relative; }
+  .window > h2 {
+    background-color: darkgray;
+    border: 1px solid darkgrey;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    margin: -9px -9px 8px;
+    padding: 0 8px;
+    white-space: nowrap; }
 
-div.window h2.window.title {
-	background-color: darkgray;
-	border: 1px solid darkgray;
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-	color: white;
-	font-size: 16px;
-	font-weight: bold;
-	height: 24px;
-	left: 24px;
-	line-height: 24px;
-	margin: -11px -11px 6px;
-	padding: 0 8px;
-	vertical-align: top;
-	white-space: nowrap;
-}
+/* components */
+/* features colors and action left button part */
+/* modules */
+.categories.window > h2, .category.window > h2,
+.item.window > h2, .items.window > h2 {
+  background-color: #5184d2; }
 
-div.client.window h2.window.title,
-div.clients.window h2.window.title,
-div.salesman.window h2.window.title,
-div.salesmen.window h2.window.title {
-	background-color: #93c437;
-}
-
-div.item.window h2.window.title,
-div.items.window h2.window.title,
-div.categories.window h2.window.title,
-div.category.window h2.window.title {
-	background-color: #5184d2;
-}
+.client.window > h2, .clients.window > h2,
+.salesman.window > h2, .salesmen.window > h2 {
+  background-color: #93c437; }

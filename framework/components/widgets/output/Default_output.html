@@ -12,127 +12,127 @@
 <body>
 
 <!--BEGIN-->
-<div class="{@class.short.lower} {feature.lower} window" id="/{@class.short}<!--id-->/{id}<!--id-->/{feature}">
-	<h2 class="window title">|{@class.ucfirst}| |{display}|</h2>
+<form action="{@class.short}/write" class="{@class.short.lower} {feature.lower} window" id="/{@class.short}<!--id-->/{id}<!--id-->/{feature}" method="post" name="{form_id}">
+	<h2>|{@class.ucfirst}| |{display}|</h2>
 
 	{/general_buttons.html}
 
-	<!--tabs._top-->
-	<div class="top fieldset">
-		<!--content--><!--@expand-->
-		<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
-		<div class="{name} {?getType.isMultiple} field" id="{path}">
-			<div class="trashable label">|{display}|</div>
-			<div class="value">{value}</div>
-		</div>
-		<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
-		<!--@expand--><!--content-->
-	</div>
-	<!--tabs._top-->
-
-	<!--tabs.included?-->
-	<div class="tabber one">
-		<ul>
-			<!--tabs.included-->
-			<li class="trashable {getClass}"><a href="#tab_{id}">|{title}|</a></li>
-			<!--tabs.included-->
-		</ul>
-		<!--tabs.included-->
-		<div class="{getClass} fieldset" id="tab_{id}">
-			<h2>|{title}|</h2>
-			<!--included?-->
-			<div class="tabber two">
-				<ul>
-					<!--included-->
-					<li class="trashable {getClass}"><a href="#tab_{id}">|{title}|</a></li>
-					<!--included-->
-				</ul>
-				<!--included-->
-				<div class="{getClass} fieldset" id="tab_{id}">
-					<h2>|{title}|</h2>
-					<!--content--><!--@expand-->
-					<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
-					<div class="{name} {?getType.isMultiple} field" id="{path}">
-						<div class="trashable label">|{display}|</div>
-						<div class="value">{value}</div>
-					</div>
-					<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
-					<!--@expand--><!--content-->
-				</div>
-				<!--included-->
-			</div>
-			<!--included?-->
-			<!--columns?-->
-			<div class="{getClass} columns">
-				<!--columns-->
-				<div class="column">
-					<div class="fieldset">
-						<!--content--><!--@expand-->
-						<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
-						<div class="{name} {?getType.isMultiple} field" id="{path}">
-							<div class="trashable label">|{display}|</div>
-							<div class="value">{value}</div>
-						</div>
-						<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
-						<!--@expand--><!--content-->
-					</div>
-				</div>
-				<!--columns-->
-			</div>
-			<!--columns?-->
+	<fieldset>
+		<!--tabs._top-->
+		<fieldset class="top">
 			<!--content--><!--@expand-->
-				<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
-			<div class="{name} {?getType.isMultiple} field" id="{path}">
-				<div class="trashable label">|{display}|</div>
-				<div class="value">{value}</div>
+			<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+			<div class="{name} {?getType.isMultiple}" id="{path}">
+				<label>|{display}|</label>
+				<div>{value}</div>
 			</div>
-			<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
+			<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
 			<!--@expand--><!--content-->
-		</div>
-		<!--tabs.included-->
-	</div>
-	<!--tabs.included?-->
+		</fieldset>
+		<!--tabs._top-->
 
-	<!--@propertiesOutOfTabs?-->
-	<div class="outoftabs fieldset">
-		<!--@propertiesOutOfTabs--><!--@expand-->
-		<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
-		<div class="{name} {?getType.isMultiple} field" id="{path}">
-			<div class="trashable label">|{display}|</div>
-			<div class="value">{value}</div>
+		<!--tabs.included?-->
+		<div class="tabber">
+			<ul>
+				<!--tabs.included-->
+				<li class="{getClass}"><a href="#tab_{id}">|{title}|</a></li>
+				<!--tabs.included-->
+			</ul>
+			<!--tabs.included-->
+			<fieldset class="{getClass}" id="tab_{id}">
+				<legend>|{title}|</legend>
+				<!--included?-->
+				<div class="tabber">
+					<ul>
+						<!--included-->
+						<li class="{getClass}"><a href="#tab_{id}">|{title}|</a></li>
+						<!--included-->
+					</ul>
+					<!--included-->
+					<fieldset class="{?getClass}" id="tab_{id}">
+						<legend>|{title}|</legend>
+						<!--content--><!--@expand-->
+						<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+						<div class="{name} {?getType.isMultiple}" id="{path}">
+							<label>|{display}|</label>
+							<div>{value}</div>
+						</div>
+						<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+						<!--@expand--><!--content-->
+					</fieldset>
+					<!--included-->
+				</div>
+				<!--included?-->
+				<!--columns?-->
+				<div class="{getClass?} columns">
+					<!--columns-->
+					<fieldset class="column">
+						<!--content--><!--@expand-->
+						<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+						<div class="{name} {?getType.isMultiple}" id="{path}">
+							<label>|{display}|</label>
+							<div>{value}</div>
+						</div>
+						<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+						<!--@expand--><!--content-->
+					</fieldset>
+					<!--columns-->
+				</div>
+				<!--columns?-->
+				<!--content--><!--@expand-->
+				<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+				<div class="{name} {?getType.isMultiple}" id="{path}">
+					<label>|{display}|</label>
+					<div>{value}</div>
+				</div>
+				<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+				<!--@expand--><!--content-->
+			</fieldset>
+			<!--tabs.included-->
 		</div>
-		<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
-		<!--@expand--><!--@propertiesOutOfTabs-->
-	</div>
-	<!--@propertiesOutOfTabs?-->
+		<!--tabs.included?-->
 
-	<!--tabs._middle-->
-	<div class="middle fieldset">
-		<!--content--><!--@expand-->
-		<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
-		<div class="{name} {?getType.isMultiple} field" id="{path}">
-			<div class="trashable label">|{display}|</div>
-			<div class="value">{value}</div>
-		</div>
-		<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
-		<!--@expand--><!--content-->
-	</div>
-	<!--tabs._middle-->
+		<!--@propertiesOutOfTabs?-->
+		<fieldset class="outoftabs">
+			<!--@propertiesOutOfTabs--><!--@expand-->
+			<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+			<div class="{name} {?getType.isMultiple}" id="{path}">
+				<label>|{display}|</label>
+				<div>{value}</div>
+			</div>
+			<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+			<!--@expand--><!--@propertiesOutOfTabs-->
+		</fieldset>
+		<!--@propertiesOutOfTabs?-->
 
-	<!--tabs._bottom-->
-	<div class="bottom fieldset">
-		<!--content--><!--@expand-->
-		<!--@startingBlocks--><div class="{.} block start"><h3>|{.}|</h3><!--@startingBlocks-->
-		<div class="{name} {?getType.isMultiple} field" id="{path}">
-			<div class="trashable label">|{display}|</div>
-			<div class="value">{value}</div>
-		</div>
-		<!--@stoppingBlocks--></div><!--@stoppingBlocks-->
-		<!--@expand--><!--content-->
-	</div>
-	<!--tabs._bottom-->
+		<!--tabs._middle-->
+		<fieldset class="middle">
+			<!--content--><!--@expand-->
+			<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+			<div class="{name} {?getType.isMultiple}" id="{path}">
+				<label>|{display}|</label>
+				<div>{value}</div>
+			</div>
+			<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+			<!--@expand--><!--content-->
+		</fieldset>
+		<!--tabs._middle-->
 
-</div>
+		<!--tabs._bottom-->
+		<fieldset class="bottom">
+			<!--content--><!--@expand-->
+			<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+			<div class="{name} {?getType.isMultiple}" id="{path}">
+				<label>|{display}|</label>
+				<div>{value}</div>
+			</div>
+			<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+			<!--@expand--><!--content-->
+		</fieldset>
+		<!--tabs._bottom-->
+	</fieldset>
+
+</form>
 <!--END-->
 
 </body>

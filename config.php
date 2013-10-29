@@ -39,7 +39,6 @@ $config["framework"] = array(
 		),
 		"normal" => array(
 			'SAF\Framework\Html_Cleaner',
-			'SAF\Framework\Html_Session',
 			'SAF\Framework\Html_Translator',
 			'SAF\Framework\Translation_String_Composer',
 			'SAF\Framework\Loc'

@@ -1,10 +1,10 @@
-<!doctype html>
-<html lang="fr">
+<!DOCTYPE HTML>
+<html>
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>
-		|{@application.ucwords}| - |{@class.ucfirst}|<!--@top--> {@top}<!--@top--> |{@feature.display}|
+		|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|
 	</title>
 
 	<script type="text/javascript" src="../vendor/jquery/jquery-1.8.3.js"></script>
@@ -18,11 +18,15 @@
 
 	<script type="text/javascript" src="../vendor/jscolor/jscolor.js"></script>
 
+	<script type="text/javascript" src="../main/js/jquery.aform.js"></script>
 	<script type="text/javascript" src="../main/js/jquery.autofocus.js"></script>
+	<script type="text/javascript" src="../main/js/jquery.autoheight.js"></script>
+	<script type="text/javascript" src="../main/js/jquery.autowidth.js"></script>
 	<script type="text/javascript" src="../main/js/jquery.build.js"></script>
 	<script type="text/javascript" src="../main/js/jquery.classvar.js"></script>
 	<script type="text/javascript" src="../main/js/jquery.modifiable.js"></script>
 	<script type="text/javascript" src="../main/js/jquery.mouse.js"></script>
+	<script type="text/javascript" src="../main/js/jquery.presstab.js"></script>
 	<script type="text/javascript" src="../main/js/jquery-ui.tabber.js"></script>
 
 	<script type="text/javascript" src="../main/js/saf.app.js"></script>
@@ -48,24 +52,29 @@
 	</script>
 
 	<style type="text/css">
+		@import "../vendor/reset5/reset.css";
+
 		@import "../vendor/jquery-ui/smoothness/jquery-ui.css";
 		@import "../vendor/jquery-ui/smoothness/jquery.ui.theme.css";
 
 		@import "../components/print_models/pdf_template.css";
 
-		@import "../skins/default/reset.css";
-		@import "../skins/default/style.css";
 		@import "../skins/default/application.css";
 
-		@import "../skins/default/button.css";
+		@import "../skins/default/actions.css";
+		@import "../skins/default/custom.css";
 		@import "../skins/default/form.css";
 		@import "../skins/default/import.css";
 		@import "../skins/default/list.css";
 		@import "../skins/default/menu.css";
+		@import "../skins/default/modules.css";
 		@import "../skins/default/print_model.css";
 		@import "../skins/default/property.css";
-		@import "../skins/default/tabs.css";
+		@import "../skins/default/rad.css";
+		@import "../skins/default/tabber.css";
+		@import "../skins/default/trashcan.css";
 		@import "../skins/default/window.css";
+		@import "../skins/default/xdebug.css";
 
 		@import "../skins/default/support.css";
 		@import "../skins/default/user.css";
@@ -75,29 +84,26 @@
 
 <body>
 
-<div class="application top">
-	<div class="left messages" id="messages"></div>
-	<div class="right">
-		<a class="saf logo" href="http://saf.re" target="_blank" title="saf.re">
-			SAF
-		</a>
-		{/Support/applicationButton}
-	</div>
-</div>
+<header>
+	<div id="messages"></div>
+	<ul>
+		<li class="provider saf"><a href="http://saf.re" target="_blank" title="saf.re">SAF</a></li>
+		<li class="rad add"><a href="/Rad/add" target="#rad_add">add</a></li>
+	</ul>
+</header>
 
-<div class="application left menu output">
+<nav class="menu output">
 	{/Menu/output}
-</div>
+</nav>
 
-<div id="main" class="application center">
+<section id="main">
 	{@content}
-</div>
+</section>
 
-<div id="trashcan" class="trashcan">
-	<div id="content"></div>
-	<a href="/Trashcan" target="#trashcan #content">bin</a>
-</div>
+<section id="trashcan">
+	<div></div>
+	<a href="/Trashcan" target="#trashcan>div">bin</a>
+</section>
 
 </body>
-
 </html>

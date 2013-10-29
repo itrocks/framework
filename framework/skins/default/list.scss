@@ -1,0 +1,182 @@
+@import "colors.scss";
+
+.list.window {
+
+	/* search summary */
+	.search_summary {
+		color: #333;
+		font-weight: bold;
+		text-align: left;
+		&:empty {
+			display: none;
+		}
+	}
+
+	/* table */
+	>table {
+		clear: both;
+		font: 12px Arial, Sans-serif;
+
+		/* columns */
+		>colgroup>col {
+			min-width: 16px;
+			&:nth-child(1), &:nth-child(2) {
+				max-width: 16px;
+			}
+		}
+
+		/* head */
+		>tbody, >thead {
+			border-bottom: 1px solid lightgray;
+			border-left: 1px solid lightgray;
+			border-right: 1px solid lightgray;
+		}
+
+		>thead>tr {
+			height: 17px;
+
+			>th {
+				background: url("img/list_head_left.png") left 3px no-repeat,
+				url("img/list_head_right.png") right 3px no-repeat,
+				url("img/list_head_background.png") #aaa repeat-x;
+				vertical-align: bottom;
+				white-space: nowrap;
+
+				/* column select */
+				&.column_select {
+					background: url("img/list_head_right.png") right 3px no-repeat,
+					url("img/column_select.png") center 5px no-repeat,
+					url("img/list_head_background.png") #aaa repeat-x;
+					position: relative;
+
+					>a {
+						color: transparent;
+						display: block;
+						font-size: 1px;
+						height: 17px;
+					}
+				}
+
+				/* head anchor */
+				>a {
+					background: padding-box right 5px no-repeat;
+					border-right: 4px solid transparent;
+					color: black;
+					display: block;
+					padding: 0 14px 0 4px;
+					text-decoration: none;
+					line-height: 17px;
+				}
+
+				/* sorting */
+				&.sort1:not(.reverse) >a {
+					background-image: url("img/arrow_black_up.gif");
+				}
+				&.sort1.reverse >a {
+					background-image: url("img/arrow_black_down.gif");
+				}
+				&.sort2:not(.reverse) >a {
+					background-image: url("img/arrow_gray_up.gif");
+				}
+				&.sort2.reverse >a {
+					background-image: url("img/arrow_gray_down.gif");
+				}
+			}
+		}
+
+		/* lines */
+		>tbody>tr {
+			height: 22px;
+			&:nth-child(even) {
+				background-color: $table_even_line;
+			}
+			&:nth-child(odd) {
+				background-color: $table_odd_line;
+			}
+			&:hover {
+				background-color: $table_line_hover;
+			}
+
+			>td {
+				border-right: 1px dotted lightgray;
+				white-space: nowrap;
+
+				>a {
+					color: black;
+					display: block;
+					height: 22px;
+					padding: 3px 0 0 0;
+					text-decoration: none;
+				}
+			}
+		}
+
+		/* vertical scrollbar */
+		.vertical.scrollbar {
+			background-color: white;
+			border: 1px solid darkgray;
+			height: auto;
+			overflow:  hidden;
+			padding: 0;
+			vertical-align: top;
+			width: 17px;
+
+			.up, .down, .position {
+				color: transparent;
+				font-size: 1px;
+				padding: 0;
+			}
+
+			.position {
+				background-color: lightgray;
+				border: 1px solid darkgray;
+				display: block;
+			}
+		}
+	}
+}
+
+ul.actions {
+
+	>li.growth {
+
+		>a {
+			color: transparent;
+			font-size: 1px;
+			line-height: 17px;
+			padding: 0;
+			text-decoration: none;
+			width: 21px;
+		}
+
+		@mixin background($arrow) {
+			background:
+				url("img/bullet_arrow_" + $arrow + ".png") 3px 1px no-repeat,
+				url("img/buttons/17/background.gif");
+			&:hover {
+				background:
+					url("img/lighter50.png"),
+					url("img/bullet_arrow_" + $arrow + ".png") 3px 1px no-repeat,
+					url("img/buttons/17/background.gif");
+			}
+		}
+
+		&.less.twenty>a {
+			@include background("top");
+		}
+
+		&.more.hundred>a {
+			@include background("down");
+		}
+
+		&.more.thousand>a {
+			@include background("bottom");
+		}
+	}
+
+	>li.rows_count {
+		color: #333;
+		float: right;
+		text-align: right;
+	}
+}

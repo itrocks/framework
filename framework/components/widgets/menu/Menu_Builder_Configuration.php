@@ -30,7 +30,7 @@ class Menu_Builder_Configuration implements Configuration_Builder
 				if (substr($block_key, 0, 1) == "/") $block->title_link = $block_key;
 				else                                 $block->title      = $block_key;
 				foreach ($items as $item_key => $item) {
-					if     ($item_key == "color")  $block->color             = $item;
+					if     ($item_key == "module") $block->module            = $item;
 					elseif ($item_key == "title")  $block->title             = $item;
 					elseif ($item_key == "link")   $block->title_link        = $item;
 					elseif ($item_key == "target") $block->title_link_target = $item;
@@ -51,6 +51,9 @@ class Menu_Builder_Configuration implements Configuration_Builder
 						}
 						$block->items[] = $menu_item;
 					}
+				}
+				if (!isset($block->module)) {
+					$block->module = Names::displayToProperty($block_key);
 				}
 				$menu->blocks[] = $block;
 			}

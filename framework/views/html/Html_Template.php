@@ -181,7 +181,7 @@ class Html_Template
 		static $css_path = array();
 		$path = isset($css_path[$css]) ? $css_path[$css] : null;
 		if (!isset($path)) {
-			$path = str_replace("\\", "/", stream_resolve_include_path($css . "/style.css"));
+			$path = str_replace("\\", "/", stream_resolve_include_path($css . "/application.css"));
 			if ($i = strrpos($path, "/")) {
 				$path = substr($path, 0, $i);
 			}

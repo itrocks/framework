@@ -1,6 +1,5 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
-
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>User login template</title>
@@ -8,28 +7,26 @@
 		@import "../../skins/default/application.css";
 	</style>
 </head>
-
 <body>
-
 <!--BEGIN-->
-<div class="window user login">
-	<h2 class="window title">|User login|</h2>
-	<form name="user_login" action="/User/authenticate" method="post">
-		<div class="fieldset">
-			<div class="field">
-				<div class="label">|Login|</div>
-				<div class="value"><input name="login" value="{?login}"></div>
-			</div>
-			<div class="field">
-				<div class="label">|Password|</div>
-				<div class="value"><input name="password" type="password" value="{?password}"></div>
-			</div>
-		</div>
-		<input type="submit" value="|Connection|">
-	</form>
-</div>
+
+<form class="user login window" name="user_login" action="/User/authenticate" method="post">
+	<h2>|User login|</h2>
+	<fieldset class="main">
+		<p class="login">
+			<label for="login">|Login|</label>
+			<input id="login" name="login" value="{?login}"/>
+		</p>
+		<p class="password">
+			<label for="password">|Password|</label>
+			<input id="password" name="password" type="password" value="{?password}"/>
+		</p>
+	</fieldset>
+	<ul class="actions">
+		<li><input type="submit" value="|Connection|"/></li>
+	</ul>
+</form>
+
 <!--END-->
-
 </body>
-
 </html>

@@ -62,9 +62,9 @@
 					var $where = $from;
 					if (destination == "_blank") {
 						destination = "window" + ++window.zindex_counter;
-						$where = $($("body").children().last());
+						$where = $($("body").children(":last-child"));
 					}
-					$target = $("<div>").attr("id", destination);
+					$target = $("<section>").attr("id", destination);
 					if (settings["keep"] && $from.hasClass(settings["keep"])) {
 						$target.addClass(settings["keep"]);
 					}

@@ -1,0 +1,12 @@
+body>header>ul>li.rad.add>a {
+	color: transparent;
+	font-size: 1px;
+	&:before {
+		color: #222;
+		content: "+";
+		font-size: 16px;
+	}
+	&:hover:before {
+		color: #2D8F8D;
+	}
+}

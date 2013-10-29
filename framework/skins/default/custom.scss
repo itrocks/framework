@@ -1,0 +1,65 @@
+.customized {
+	border-style: none;
+	cursor: pointer;
+	float: right;
+	height: 20px;
+	margin-top: -6px;
+	margin-bottom: -20px;
+	position: relative;
+	top: -50px;
+}
+
+input.customized {
+	background: white;
+	display: none;
+	padding: 1px 2px;
+	z-index: 1;
+}
+
+select.customized {
+	background: transparent;
+	text-align: right;
+}
+
+ul.actions >li {
+
+	&.custom_delete,
+	&.custom_save {
+		box-shadow: none;
+		float: right;
+		&:hover {
+			background: none;
+		}
+
+		a {
+			border-style: none;
+			box-shadow: none;
+			color: transparent;
+			font-size: 1px;
+			height: 17px;
+			padding: 0;
+			position: relative;
+			width: 17px;
+			&:hover:before {
+				left: 0;
+				opacity: .5;
+				position: absolute;
+				top: 0;
+			}
+		}
+	}
+
+	&.custom_delete a {
+		background: url("img/delete.png") no-repeat;
+		&:hover:before {
+			content: url("img/delete.png");
+		}
+	}
+
+	&.custom_save a {
+		background: url("img/floppy.png") no-repeat;
+		&:hover:before {
+			content: url("img/floppy.png");
+		}
+	}
+}

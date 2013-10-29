@@ -14,14 +14,14 @@
 		{
 			var $tabber = $(this);
 			var $tabs = $tabber.children("ul:first").addClass("ui-tabber-tabs").children("li");
-			var $pages = $tabber.children("div");
+			var $pages = $tabber.children(":not(ul)");
 
 			$tabber.addClass("ui-tabber");
 			$tabs.addClass("ui-tabber-tab");
 			$tabs.first().addClass("active");
 			$pages.addClass("ui-tabber-page");
 			$pages.first().addClass("active");
-			$pages.each(function() { $(this).children("h2:first").css("display", "none"); });
+			$pages.each(function() { $(this).children(":first").css("display", "none"); });
 
 			$tabs.children("a").click(function(event) {
 				event.preventDefault();

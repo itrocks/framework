@@ -104,7 +104,6 @@ class Html_Builder_Collection
 			$cell = new Html_Table_Header_Cell(
 				Loc::tr(Names::propertyToDisplay($property_name), $this->class_name)
 			);
-			$cell->addClass("trashable");
 			$row->addCell($cell);
 		}
 		$head->addRow($row);

@@ -1,0 +1,30 @@
+/* components */
+
+$button_border: #98989a;
+$button_color: #1c2e6c;
+$button_hover: #2d8f8d;
+
+$field_hover: #defdaf;
+
+$table_even_line: #ececed;
+$table_odd_line: white;
+$table_line_hover: #aedc5f;
+
+/* features colors and action left button part */
+
+$black: #222;
+$blue: #5184d2;
+$green: #93c437;
+
+$blue_action:    url("img/buttons/17/left_blue.gif") -1px no-repeat, url("img/buttons/17/background.gif");
+$close_action:   url("img/buttons/17/left_close.gif") -1px no-repeat, url("img/buttons/17/background.gif");
+$green_action:   url("img/buttons/17/left_green.gif") -1px no-repeat, url("img/buttons/17/background.gif");
+$magenta_action: url("img/buttons/17/left_magenta.gif") -1px no-repeat, url("img/buttons/17/background.gif");
+$orange_action:  url("img/buttons/17/left_orange.gif") -1px no-repeat, url("img/buttons/17/background.gif");
+$red_action:     url("img/buttons/17/left_red.gif") -1px no-repeat, url("img/buttons/17/background.gif");
+
+/* modules */
+
+$catalog:   $blue;
+$purchases: $blue;
+$sales:     $green;

@@ -60,10 +60,14 @@ class Html_Edit_Template extends Html_Template
 			$this->form_id = $short_form_id . "_" . $this->nextFormCounter();
 			$action = "/" . $short_class . "/write";
 			$content = substr($content, 0, $i)
+				/*
 				. '<form method="POST"'
-				  . ' id=' . $short_form_id . ' name="' . $this->form_id . '" action="' . $action . '">'
+				. ' id=' . $short_form_id . ' name="' . $this->form_id . '" action="' . $action . '">'
+				*/
 				. substr($content, $i, $j - $i)
+				/*
 				. '</form>'
+				*/
 				. substr($content, $j);
 		}
 		return parent::parseContainer($content);

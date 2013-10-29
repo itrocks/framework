@@ -30,6 +30,6 @@ $("document").ready(function()
 	});
 
 	// focus first form element
-	this.autofocus();
+	$(this).autofocus();
 
 });

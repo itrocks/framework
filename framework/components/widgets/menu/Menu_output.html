@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -9,33 +9,37 @@
 </head>
 <body>
 
+<nav class="menu output">
 <!--BEGIN-->
+
 	<h2><a href="{title_link}" target="#main">{Configuration.current.getApplicationName}</a></h2>
-	<ul class="blocks">
+	<ul>
 		<!--blocks-->
-		<li class="block {color}">
+		<li class="{module}">
 			<h3>|{title}|</h3>
-			<ul class="items">
+			<ul>
 				<!--items-->
-				<li class="item trashable"><a href="{link}" target="#main">|{caption}|</a></li>
+				<li><a href="{link}" target="#main">|{caption}|</a></li>
 				<!--sample-->
-				<li class="item trashable"><a href="#" target="#main">Un autre caption</a></li>
-				<li class="item trashable"><a href="#" target="#main">Et un dernier</a></li>
+				<li><a href="#" target="#main">Another caption</a></li>
+				<li><a href="#" target="#main">The last one</a></li>
 				<!--items-->
 			</ul>
 		</li>
 		<!--sample-->
-		<li class="block green">
-			<h3>Ventes</h3>
-			<ul class="items">
-				<li class="item trashable"><a href="#" target="#main">Devis</a></li>
-				<li class="item trashable"><a href="#" target="#main">Commandes</a></li>
-				<li class="item trashable"><a href="#" target="#main">Factures</a></li>
+		<li class="sales">
+			<h3>Sales</h3>
+			<ul>
+				<li><a href="#" target="#main">Quotes</a></li>
+				<li><a href="#" target="#main">Orders</a></li>
+				<li><a href="#" target="#main">Invoices</a></li>
 			</ul>
 		</li>
 		<!--blocks-->
 	</ul>
+
 <!--END-->
+</nav>
 
 </body>
 </html>

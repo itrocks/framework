@@ -1,209 +1,117 @@
-.list .search_summary {
-	color: #333;
-	font-weight: bold;
-	text-align: left;
-}
+/* components */
+/* features colors and action left button part */
+/* modules */
+.list.window {
+  /* search summary */
+  /* table */ }
+  .list.window .search_summary {
+    color: #333;
+    font-weight: bold;
+    text-align: left; }
+    .list.window .search_summary:empty {
+      display: none; }
+  .list.window > table {
+    clear: both;
+    font: 12px Arial, Sans-serif;
+    /* columns */
+    /* head */
+    /* lines */
+    /* vertical scrollbar */ }
+    .list.window > table > colgroup > col {
+      min-width: 16px; }
+      .list.window > table > colgroup > col:nth-child(1), .list.window > table > colgroup > col:nth-child(2) {
+        max-width: 16px; }
+    .list.window > table > tbody, .list.window > table > thead {
+      border-bottom: 1px solid lightgrey;
+      border-left: 1px solid lightgrey;
+      border-right: 1px solid lightgrey; }
+    .list.window > table > thead > tr {
+      height: 17px; }
+      .list.window > table > thead > tr > th {
+        background: url("img/list_head_left.png") left 3px no-repeat, url("img/list_head_right.png") right 3px no-repeat, url("img/list_head_background.png") #aaaaaa repeat-x;
+        vertical-align: bottom;
+        white-space: nowrap;
+        /* column select */
+        /* head anchor */
+        /* sorting */ }
+        .list.window > table > thead > tr > th.column_select {
+          background: url("img/list_head_right.png") right 3px no-repeat, url("img/column_select.png") center 5px no-repeat, url("img/list_head_background.png") #aaaaaa repeat-x;
+          position: relative; }
+          .list.window > table > thead > tr > th.column_select > a {
+            color: transparent;
+            display: block;
+            font-size: 1px;
+            height: 17px; }
+        .list.window > table > thead > tr > th > a {
+          background: padding-box right 5px no-repeat;
+          border-right: 4px solid transparent;
+          color: black;
+          display: block;
+          padding: 0 14px 0 4px;
+          text-decoration: none;
+          line-height: 17px; }
+        .list.window > table > thead > tr > th.sort1:not(.reverse) > a {
+          background-image: url("img/arrow_black_up.gif"); }
+        .list.window > table > thead > tr > th.sort1.reverse > a {
+          background-image: url("img/arrow_black_down.gif"); }
+        .list.window > table > thead > tr > th.sort2:not(.reverse) > a {
+          background-image: url("img/arrow_gray_up.gif"); }
+        .list.window > table > thead > tr > th.sort2.reverse > a {
+          background-image: url("img/arrow_gray_down.gif"); }
+    .list.window > table > tbody > tr {
+      height: 22px; }
+      .list.window > table > tbody > tr:nth-child(even) {
+        background-color: #ececed; }
+      .list.window > table > tbody > tr:nth-child(odd) {
+        background-color: white; }
+      .list.window > table > tbody > tr:hover {
+        background-color: #aedc5f; }
+      .list.window > table > tbody > tr > td {
+        border-right: 1px dotted lightgrey;
+        white-space: nowrap; }
+        .list.window > table > tbody > tr > td > a {
+          color: black;
+          display: block;
+          height: 22px;
+          padding: 3px 0 0 0;
+          text-decoration: none; }
+    .list.window > table .vertical.scrollbar {
+      background-color: white;
+      border: 1px solid darkgrey;
+      height: auto;
+      overflow: hidden;
+      padding: 0;
+      vertical-align: top;
+      width: 17px; }
+      .list.window > table .vertical.scrollbar .up, .list.window > table .vertical.scrollbar .down, .list.window > table .vertical.scrollbar .position {
+        color: transparent;
+        font-size: 1px;
+        padding: 0; }
+      .list.window > table .vertical.scrollbar .position {
+        background-color: lightgray;
+        border: 1px solid darkgrey;
+        display: block; }
 
-.list .search_summary:empty {
-	display: none;
-}
-
-.list table {
-	clear: both;
-	font: 12px Arial, Sans-serif;
-}
-
-.list table.list {
-	min-width: 400px;
-}
-
-.list tr:nth-child(odd) {
-	background-color: white;
-}
-
-.list tr:nth-child(even) {
-	background-color: #ECECED;
-}
-
-.list tr:last-child {
-	border-bottom: 1px solid lightgray;
-}
-
-.list tr:hover {
-	background-color: #AEDC5F;
-}
-
-.list th {
-	background: url("img/list_head_left.png") left 3px no-repeat,
-		url("img/list_head_right.png") right 3px no-repeat,
-		url("img/list_head_background.png") #aaa repeat-x;
-	height: 17px;
-	vertical-align: bottom;
-	white-space: nowrap;
-}
-
-.list th.column_select {
-	background: url("img/list_head_right.png") right 3px no-repeat,
-		url("img/column_select.png") center 7px no-repeat,
-		url("img/list_head_background.png") #aaa repeat-x;
-	cursor: pointer;
-	width: 16px;
-	position: relative;
-}
-
-.list th.column_select a.popup {
-	color: transparent;
-	display: block;
-	font-size: 1px;
-	height: 17px;
-	margin: 0 -3px;
-	white-space: nowrap;
-}
-
-.list th:first-child,
-.list td:first-child {
-	border-left: 1px solid lightgray;
-}
-
-.list th:last-child,
-.list td:last-child {
-	border-right: 1px solid lightgray;
-}
-
-.list th a {
-	background: right 2px no-repeat;
-	color: black;
-	display: block;
-	text-decoration: none;
-}
-
-.list th.sort1 a {
-	background-image: url("img/arrow_black_up.gif");
-	padding-right: 12px;
-}
-
-.list th.sort1.reverse a {
-	background-image: url("img/arrow_black_down.gif");
-}
-
-.list th.sort2 a {
-	background-image: url("img/arrow_gray_up.gif");
-	padding-right: 12px;
-}
-
-.list th.sort2.reverse a {
-	background-image: url("img/arrow_gray_down.gif");
-}
-
-.list td {
-	border-right: 1px dotted lightgray;
-	height: 22px;
-	padding-top: 2px;
-	white-space: nowrap;
-}
-
-.list td a {
-	color: black;
-	display: block;
-	height: 22px;
-	padding: 3px 0 0 0;
-	text-decoration: none;
-}
-
-.list td.insert_after,
-.list th.insert_after {
-	border-right: 2px solid #adff2f;
-}
-
-.list .scrollbar {
-	background-color: white;
-	border: 1px solid darkgray;
-	height: auto;
-	overflow:  hidden;
-	padding: 0;
-	vertical-align: top;
-	width: 17px;
-}
-
-.list .scrollbar .up,
-.list .scrollbar .down,
-.list .scrollbar .position {
-	color: transparent;
-	font-size: 1px;
-	padding: 0;
-}
-
-.list .scrollbar .position {
-	background-color: lightgray;
-	border: 1px solid darkgray;
-	display: block;
-}
-
-.list .growth {
-	display: inline-block;
-}
-
-.list .growth .less.twenty {
-	background:
-		url("img/bullet_arrow_top.png") 3px 1px no-repeat,
-		url("img/buttons/17/left.gif") left no-repeat,
-		url("img/buttons/17/right.gif") right no-repeat,
-		url("img/buttons/17/background.gif");
-}
-
-.list .growth .less.twenty:hover {
-	background:
-		url("img/lighter50.png"),
-		url("img/bullet_arrow_top.png") 3px 1px no-repeat,
-		url("img/buttons/17/left.gif") left no-repeat,
-		url("img/buttons/17/right.gif") right no-repeat,
-		url("img/buttons/17/background.gif");
-}
-
-.list .growth .more.hundred {
-	background:
-		url("img/bullet_arrow_down.png") 3px 1px no-repeat,
-		url("img/buttons/17/left.gif") left no-repeat,
-		url("img/buttons/17/right.gif") right no-repeat,
-		url("img/buttons/17/background.gif");
-}
-
-.list .growth .more.hundred:hover {
-	background:
-		url("img/lighter50.png"),
-		url("img/bullet_arrow_down.png") 3px 1px no-repeat,
-		url("img/buttons/17/left.gif") left no-repeat,
-		url("img/buttons/17/right.gif") right no-repeat,
-		url("img/buttons/17/background.gif");
-}
-
-.list .growth .more.thousand {
-	background:
-		url("img/bullet_arrow_bottom.png") 3px 1px no-repeat,
-		url("img/buttons/17/left.gif") left no-repeat,
-		url("img/buttons/17/right.gif") right no-repeat,
-		url("img/buttons/17/background.gif");
-}
-
-.list .growth .more.thousand:hover {
-	background:
-		url("img/lighter50.png"),
-		url("img/bullet_arrow_bottom.png") 3px 1px no-repeat,
-		url("img/buttons/17/left.gif") left no-repeat,
-		url("img/buttons/17/right.gif") right no-repeat,
-		url("img/buttons/17/background.gif");
-}
-
-.list .growth a {
-	color: transparent;
-	font-size: 1px;
-	padding: 0;
-	text-decoration: none;
-	width: 21px;
-}
-
-.list li.rows_count {
-	color: #333;
-	float: right;
-	text-align: right;
-}
+ul.actions > li.growth > a {
+  color: transparent;
+  font-size: 1px;
+  line-height: 17px;
+  padding: 0;
+  text-decoration: none;
+  width: 21px; }
+ul.actions > li.growth.less.twenty > a {
+  background: url("img/bullet_arrow_top.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
+  ul.actions > li.growth.less.twenty > a:hover {
+    background: url("img/lighter50.png"), url("img/bullet_arrow_top.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
+ul.actions > li.growth.more.hundred > a {
+  background: url("img/bullet_arrow_down.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
+  ul.actions > li.growth.more.hundred > a:hover {
+    background: url("img/lighter50.png"), url("img/bullet_arrow_down.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
+ul.actions > li.growth.more.thousand > a {
+  background: url("img/bullet_arrow_bottom.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
+  ul.actions > li.growth.more.thousand > a:hover {
+    background: url("img/lighter50.png"), url("img/bullet_arrow_bottom.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
+ul.actions > li.rows_count {
+  color: #333;
+  float: right;
+  text-align: right; }

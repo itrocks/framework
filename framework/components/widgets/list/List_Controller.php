@@ -70,7 +70,7 @@ abstract class List_Controller extends Output_Controller
 			$list_settings->reverse($parameters["reverse"]);
 		}
 		elseif (isset($parameters["search"])) {
-			$list_settings->search(self::descapeForm($form["search"]));
+			$list_settings->search(self::descapeForm($parameters["search"]));
 		}
 		elseif (isset($parameters["sort"])) {
 			$list_settings->sort($parameters["sort"]);

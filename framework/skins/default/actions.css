@@ -1,0 +1,65 @@
+/* components */
+/* features colors and action left button part */
+/* modules */
+.action, ul.actions > li > a, ul.actions > li > button, ul.actions > li > input {
+  background: url("img/buttons/17/background.gif");
+  border-color: #98989a;
+  border-radius: 4px 2px 2px 4px;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.2);
+  color: #1c2e6c;
+  cursor: pointer;
+  display: inline-block;
+  font: inherit;
+  font-weight: bold;
+  height: 15px;
+  line-height: 15px;
+  margin: 0 2px;
+  padding: 0 4px;
+  text-decoration: none; }
+  .action:hover, ul.actions > li > a:hover, ul.actions > li > button:hover, ul.actions > li > input:hover {
+    color: #2d8f8d; }
+
+.ifedit {
+  display: none; }
+
+ul.actions {
+  display: block;
+  height: 19px; }
+  ul.actions:not(:last-child) {
+    margin-bottom: 6px; }
+  ul.actions:not(:first-child) {
+    margin-top: 6px; }
+  ul.actions > li {
+    display: inline-block;
+    float: left;
+    position: relative; }
+    ul.actions > li > ul {
+      background-color: white;
+      border-color: #d0d0d0 black black;
+      border-style: solid;
+      border-width: 1px;
+      display: none;
+      left: 8px;
+      position: absolute; }
+      ul.actions > li > ul > li {
+        display: block; }
+        ul.actions > li > ul > li > a {
+          color: black;
+          display: block;
+          padding: 4px;
+          text-decoration: none;
+          white-space: nowrap; }
+          ul.actions > li > ul > li > a:hover {
+            background-color: #AEDC5F; }
+    ul.actions > li:hover > ul {
+      display: block; }
+  ul.actions.selection > .arrow {
+    background: url("img/left_up_arrow.png") no-repeat;
+    color: transparent;
+    cursor: pointer;
+    float: left;
+    font-size: 1px;
+    height: 15px;
+    width: 28px; }

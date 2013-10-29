@@ -14,10 +14,10 @@ $("document").ready(function()
 
 		//------------------------------------------------------------------- .save_list.button a click
 		// click on save button opens the save form between calling save
-		this.in("a.custom_save.button, .custom_save.button a").click(function(event)
+		this.in("a.custom_save, .custom_save>a").click(function(event)
 		{
 			var $this = $(this);
-			var $list = $this.closest(".window");
+			var $list = $this.closest("form");
 			var $input = $list.find("input.customized");
 			if (!$input.filter(":visible").length) {
 				event.preventDefault();
@@ -49,7 +49,7 @@ $("document").ready(function()
 		{
 			var $this = $(this);
 			if (event.keyCode == 13) {
-				$this.closest("form").find("a.custom_save.button, .custom_save.button a").click();
+				$this.closest("form").find("a.custom_save, .custom_save>a").click();
 				event.preventDefault();
 			}
 			if (event.keyCode == 27) {

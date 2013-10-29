@@ -1,177 +1,139 @@
-body {
-	background-color: white;
-	font-family: arial, helvetica, sans-serif;
-	font-size: 12px;
-}
+html, body {
+  height: 100%; }
 
-div {
-	white-space: normal;
-}
+body {
+  background-color: white;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 12px; }
+  body > header {
+    background-color: lightgrey;
+    border-bottom: solid darkgrey 1px;
+    height: 52px; }
+    body > header > ul {
+      float: right;
+      margin: 0 4px;
+      z-index: 1000000000; }
+      body > header > ul > li {
+        list-style: none; }
+      body > header > ul > li > a {
+        display: inline-block; }
+      body > header > ul > li.provider.bappli {
+        background: url("img/bappli_studio_36.png") 20px 5px no-repeat white;
+        border-color: #9ab3b7;
+        border-style: solid;
+        border-width: 0 1px 1px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2); }
+        body > header > ul > li.provider.bappli > a {
+          color: transparent;
+          height: 46px;
+          width: 200px; }
+      body > header > ul > li.provider.saf {
+        background: url("img/fingers_40.png");
+        margin: 12px 16px 0 6px; }
+        body > header > ul > li.provider.saf > a {
+          color: transparent;
+          height: 40px;
+          width: 44px; }
+      body > header > ul > li:not(.provider) {
+        border-color: #d6dadc #9ab3b7 #9ab3b7;
+        border-radius: 0 0 10px 10px;
+        border-style: solid;
+        border-width: 1px;
+        float: right;
+        margin: 5px 0 0 10px; }
+        body > header > ul > li:not(.provider) > a {
+          color: #222;
+          font-size: 16px;
+          font-weight: bold;
+          height: 25px;
+          line-height: 25px;
+          padding: 0 10px;
+          text-decoration: none;
+          white-space: nowrap; }
+          body > header > ul > li:not(.provider) > a:hover {
+            color: #2d8f8d; }
+
+div p:not(:first-child) {
+  padding: 1em 0 0; }
+div p:not(:last-child) {
+  padding: 0 0 1em; }
 
 em {
-	font-style: italic;
-}
+  font-style: italic; }
 
-p {
-	padding-bottom: 1em;
-	padding-top: 1em;
-}
-
-p:first-child {
-	padding-top: 0;
-}
-
-p:last-child {
-	padding-bottom: 0;
-}
+h2 {
+  font-size: 1.5em;
+  font-weight: bold; }
 
 strong {
-	font-weight: bold;
-}
+  font-weight: bold; }
+
+table, tbody, thead, tr, td, th {
+  border-spacing: 0; }
+
+th {
+  text-align: center; }
 
 #main {
-	white-space: nowrap;
-}
+  background-color: #fafafa;
+  height: 100%;
+  white-space: nowrap; }
 
-.application.center {
-	background-color: #fafafa;
-	height: 100%;
-}
-
-.application.top {
-	background-color: lightgrey;
-	border-bottom: solid darkgrey 1px;
-	height: 52px;
-}
-
-.bappli.logo {
-	background: url("img/bappli_studio_36.png") 20px 5px no-repeat white;
-	border: 1px solid #9ab3b7;
-	border-bottom-left-radius: 10px;
-	border-bottom-right-radius: 10px;
-	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .2);
-	color: transparent;
-	display: block;
-	height: 46px;
-	margin-top: -1px;
-	margin-right: 10px;
-	width: 200px;
-}
-
-.saf.logo {
-	background: url("img/fingers_40.png");
-	color: transparent;
-	display: inline-block;
-	height: 40px;
-	margin: 12px 16px 0 6px;
-	width: 44px;
-}
-
-.trashcan {
-	border-radius: 2px;
-	display: inline-block;
-	bottom: 8px;
-	position: absolute;
-	right: 8px;
-}
-
-.trashcan a {
-	background: url("img/trashcan.png");
-	color: transparent;
-	display: inline-block;
-	float: right;
-	height: 32px;
-	width: 32px;
-}
-
+/* TODO tidy */
 .delete.message,
 .remove.message {
-	background: url("img/talk_down.png") bottom right no-repeat;
-	padding-bottom: 7px;
-}
-
-.delete.message h2,
-.delete.message div,
-.remove.message h2,
-.remove.message div {
-	background-color: white;
-	border-right: 1px solid black;
-	display: block;
-	padding: 0 3px 1px 3px;
-}
-
-.dragging {
-	border: 1px solid lightgray;
-	border-radius: 2px;
-	box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-	cursor: move;
-	padding: 0 4px;
-}
+  background: url("img/talk_down.png") bottom right no-repeat;
+  padding-bottom: 7px; }
+  .delete.message div, .delete.message h2,
+  .remove.message div,
+  .remove.message h2 {
+    background-color: white;
+    border-right: 1px solid black;
+    display: block;
+    padding: 0 3px 1px 3px; }
 
 .candrop {
-	box-shadow: 0 0 3px 3px red;
-}
+  box-shadow: 0 0 3px 3px red; }
 
-div.popup {
-	position: absolute;
-}
+.dragging {
+  border: 1px solid lightgrey;
+  border-radius: 2px;
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+  cursor: move;
+  padding: 0 4px; }
 
 .visible {
-	display: inline-block;
-}
+  display: inline-block; }
 
-.messages {
-	background-color: white;
-	border: 1px solid lightgray;
-	box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-	display: inline-block;
-	left: 4px;
-	padding: 3px;
-	position: absolute;
-	top: 4px;
-	z-index: 1000000000;
-}
+#messages {
+  background-color: white;
+  border: 1px solid lightgrey;
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  left: 4px;
+  padding: 3px;
+  position: absolute;
+  top: 4px;
+  z-index: 1000000000; }
+  #messages:empty {
+    display: none; }
 
-.messages:empty {
-	display: none;
-}
-
-.ui-draggable .window.title {
-	cursor: move;
-}
+.ui-draggable > h2 {
+  cursor: move; }
 
 .logger.query {
-	background-color: lightcyan;
-	border: 1px solid lightblue;
-	color: darkblue;
-	margin: 4px;
-	padding: 4px;
-}
-
+  background-color: lightcyan;
+  border: 1px solid lightblue;
+  color: darkblue;
+  margin: 4px;
+  padding: 4px; }
 .logger.error {
-	background-color: darkred;
-	border: 1px solid red;
-	color: white;
-	margin: 4px;
-	padding: 4px;
-}
-
-.logger.error:before {
-	content: "ERREUR : ";
-}
-
-.xdebug-error {
-	background-color: #ffe0e0;
-	border: 1px solid darkred;
-	color: #400000;
-	margin: 4px;
-}
-
-.xdebug-error td {
-	white-space: normal;
-}
-
-.xdebug-error th {
-	text-align: left;
-	white-space: normal;
-}
+  background-color: darkred;
+  border: 1px solid red;
+  color: white;
+  margin: 4px;
+  padding: 4px; }
+  .logger.error:before {
+    content: "ERREUR : "; }

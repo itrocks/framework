@@ -1,0 +1,80 @@
+.menu.output {
+
+	background: white;
+	border: 1px solid darkgray;
+	border-radius: 3px;
+	box-shadow: 0 0 2px 2px rgba(0, 0, 0, .1);
+	display: inline-block;
+	float: left;
+	margin: -30px 4px 4px;
+	padding-bottom: 10px;
+
+	>.minimize {
+		background: url("img/arrow_black_up.gif") center no-repeat;
+		color: transparent;
+		cursor: pointer;
+		float: left;
+		font-size: 1px;
+		height: 24px;
+		width: 24px;
+	}
+
+	>h2 {
+		border-bottom: 1px solid #c0c0c0;
+		margin-bottom: 4px;
+		text-align: center;
+
+		>a {
+			color: black;
+			display: block;
+			padding: 6px 6px 4px;
+			text-decoration: none;
+		}
+	}
+
+	>ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+
+		>li {
+			background: 3px 3px no-repeat;
+			padding: 4px 0 0;
+
+			>h3 {
+				background-color: lightgrey;
+				color: black;
+				font: bold 12px arial;
+				margin: 0 0 0 0;
+				padding: 0 6px 0 6px;
+				white-space: nowrap;
+			}
+
+			>ul {
+				background-color: white;
+				list-style: none;
+				margin: 0 0 0 6px;
+				padding: 2px 0 8px;
+
+				>li {
+					>a {
+						color: black;
+						display: block;
+						font: 11px arial;
+						height: 14px;
+						padding: 0 4px;
+						text-decoration: none;
+					}
+					>a:hover {
+						color: darkred;
+						text-decoration: underline;
+					}
+				}
+			}
+		}
+	}
+}
+
+.menu.output.minimized >.minimize {
+	background: url("img/arrow_black_down.gif") center no-repeat;
+}

@@ -6,7 +6,7 @@ $("document").ready(function()
 
 		//----------------------------------------------------- .search input, .search textarea keydown
 		// reload list when #13 pressed into a search input
-		this.in(".search input, .search textarea").keydown(function(event)
+		this.in(".search").find("input, textarea").keydown(function(event)
 		{
 			if (event.keyCode == 13) {
 				$(this).closest("form").submit();
@@ -57,7 +57,7 @@ $("document").ready(function()
 					//noinspection JSUnresolvedVariable
 					var app = window.app;
 					var $window = $this.closest(".window.list");
-					var $th = $this.find("tr:first th:nth-child(" +insert_after + ")");
+					var $th = $this.find("thead>tr:first>th:nth-child(" + insert_after + ")");
 					var $draggable = ui.draggable;
 					var property_name = $draggable.attr("id");
 					var after_property_name = $th.attr("id");
@@ -109,13 +109,13 @@ $("document").ready(function()
 		var uri = window.app.uri_base + "/{className}/listSetting"
 			+ window.app.askSIDand() + "as_widget=1";
 		// list title (class name) double-click
-		this.in(".window.title").modifiable({
+		this.children("h2").modifiable({
 			done: uri + "&title={value}",
 			aliases: { "className": className },
 			target: "#messages"
 		});
 		// list column header (property path) double-click
-		this.in("table.list th.property a").modifiable({
+		this.in("table>thead>tr>th.property a").modifiable({
 			done: uri + "&property_path={propertyPath}&property_title={value}",
 			aliases: { "className": className, "propertyPath": propertyPath },
 			target: "#messages"
@@ -126,13 +126,14 @@ $("document").ready(function()
 		var redeem = function()
 		{
 			var $this     = $(this);
+			var $rowheight = $this.closest("tr").height() - 1;
 			var $up       = $this.children(".up");
 			var $position = $this.children(".position");
 			var $down     = $this.children(".down");
 			var start     = $this.data("start") - 1;
 			var length    = $this.data("length");
 			var total     = $this.data("total");
-			var height    = Math.max((27 * length) - 1, $this.innerHeight());
+			var height    = Math.max(($rowheight * length) - 1, $this.innerHeight());
 			var real_start  = Math.round((start * height) / total);
 			var real_height = Math.max(Math.round((length * height) / total), 16);
 			if ((real_start + real_height) > height) {
