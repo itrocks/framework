@@ -12,19 +12,19 @@
 <body>
 
 <!--BEGIN-->
-<div class="{@class.short.lower} {feature.lower} window" id="/{@class.short}<!--id-->/{id}<!--id-->/{feature}">
-	<h2 class="window title">|{@class.ucfirst}| |{display}|</h2>
+<form action="{@class.short}/write" class="{@class.short.lower} {feature.lower} window" id="/{@class.short}<!--id-->/{id}<!--id-->/{feature}" method="post" name="{form_id}">
+	<h2>|{@class.ucfirst}| |{display}|</h2>
 
 	{/general_buttons.html}
 
-	<div class="fieldset">
+	<fieldset>
 		<!--@properties-->
-		<div class="{name} {?getType.isMultiple} field" id="{path}">
-			<div class="trashable label">|{display}|</div>
-			<div class="value">{value}</div>
+		<div class="{name} {?getType.isMultiple}" id="{path}">
+			<label>|{display}|</label>
+			<div>{value}</div>
 		</div>
 		<!--@properties-->
-	</div>
+	</fieldset>
 
 	<div class="container">
 		<!--editing-->
@@ -248,7 +248,7 @@
 
 	</div>
 
-</div>
+</form>
 <!--END-->
 
 </body>

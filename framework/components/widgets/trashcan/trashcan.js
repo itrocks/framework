@@ -4,6 +4,7 @@ $("document").ready(function()
 	$("body").build(function()
 	{
 
+		/*
 		// trashable objects : those which have <h2> are windows
 		this.in(".trashable:has(h2)").draggable({
 
@@ -40,11 +41,12 @@ $("document").ready(function()
 			}
 
 		});
+		*/
 
 		// trash is droppable
-		this.in(".trashcan a").droppable({
+		this.in("#trashcan a").droppable({
 
-			accept: ".trashable",
+			accept: "label, .property",
 			hoverClass: "candrop",
 			tolerance: "touch",
 
@@ -56,7 +58,7 @@ $("document").ready(function()
 				var hash =   event.target.hash;
 				// click
 				event.target.href = event.target.pathname + "/drop";
-				var $window = ui.draggable.closest("div.window");
+				var $window = ui.draggable.closest(".window");
 				if ($window.length) {
 					//noinspection JSUnresolvedVariable
 					var app = window.app;
@@ -64,6 +66,7 @@ $("document").ready(function()
 					var window_id = $window.attr("id");
 					if ((window_id != undefined) && (window_id.indexOf("/") != -1)) {
 						$(event.target).data("on.success", function() {
+							console.log(app.uri_base + window_id + "?as_widget=1" + app.andSID());
 							$.ajax({
 								url:     app.uri_base + window_id + "?as_widget=1" + app.andSID(),
 								success: function(data) {
@@ -123,7 +126,7 @@ $("document").ready(function()
 		});
 
 		// trash message can be hidden
-		this.in(".trashcan .delete.message").click(function() { $(this).remove(); });
+		this.in("#trashcan .delete.message").click(function() { $(this).remove(); });
 
 	});
 

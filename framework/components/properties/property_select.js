@@ -29,7 +29,7 @@ $("document").ready(function()
 		});
 
 		// draggable items
-		this.in(".property").draggable({
+		this.in(".property, fieldset>div[id]>label").draggable({
 			appendTo:    "body",
 			containment: "body",
 			cursorAt:    { left: 2, top: 10 },
@@ -42,8 +42,6 @@ $("document").ready(function()
 				return $('<div>')
 					.addClass("property")
 					.attr("id", $this.attr("id"))
-					.css("background-color", "white")
-					.css("border", "1px solid lightgrey")
 					.css("z-index", ++zindex_counter)
 					.html($this.text());
 			},
@@ -72,20 +70,9 @@ $("document").ready(function()
 									$droppable.find("colgroup>col:nth-child(" + found + ")").addClass("insert_after");
 									$droppable.data("insert-after", found);
 								}
-								else {
-									$droppable.removeData("insert-after");
-								}
 							}
 						}
 					});
-				}
-			},
-
-			stop: function()
-			{
-				var $droppable = $(this).data("over-droppable");
-				if ($droppable != undefined) {
-					$droppable.removeData("insert-after");
 				}
 			}
 

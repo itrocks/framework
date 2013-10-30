@@ -42,8 +42,7 @@ $("document").ready(function()
 			{
 				var insert_after = $this.data("insert-after");
 				if (insert_after != undefined) {
-					$this.find("th:nth-child(" + insert_after + "), td:nth-child(" + insert_after + ")")
-						.removeClass("insert_after");
+					$this.find("colgroup>col:nth-child(" + insert_after + ")").removeClass("insert_after");
 					$this.removeData("insert-after");
 				}
 				ui.draggable.removeData("over-droppable");
@@ -99,7 +98,7 @@ $("document").ready(function()
 
 			});
 
-			//------------------------------------------ .window.title, table.list th.property a modifiable
+			//---------------------------------------- .window.title, table.list th.property a modifiable
 			// modifiable list and columns titles
 			var className = function($this)
 			{
@@ -124,7 +123,7 @@ $("document").ready(function()
 				target: "#messages"
 			});
 
-			//------------------------------------------------------------------------- .vertical.scrollbar
+			//----------------------------------------------------------------------- .vertical.scrollbar
 			// vertical scrollbar
 			var redeem = function()
 			{

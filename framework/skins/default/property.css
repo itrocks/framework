@@ -27,9 +27,13 @@
     .property_select ul > li {
       background: url("img/tree/string-right.png") 8px -2px no-repeat;
       cursor: default;
+      line-height: 1em;
+      margin: 1px 0;
       padding-left: 18px; }
       .property_select ul > li:last-child {
         background: url("img/tree/string-last.png") 8px -2px no-repeat; }
+      .property_select ul > li:hover {
+        background-color: #aedc5f; }
       .property_select ul > li > a {
         background: url("img/tree/plus.png") 4px 2px no-repeat;
         color: black;
@@ -45,3 +49,14 @@
         display: block; }
         .property_select ul > li span:hover {
           background-color: #aedc5f; }
+      .property_select ul > li > section > ul {
+        margin-left: -18px;
+        padding-left: 18px; }
+
+.property.ui-draggable-dragging {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid grey;
+  border-radius: 3px;
+  color: black;
+  font-weight: bold;
+  padding: 4px; }

@@ -70,8 +70,8 @@ class Default_List_Controller extends List_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$list_settings = List_Settings::current($class_name);
-		$customized_list_settings = $list_settings->getCustomSettings();
 		$this->applyParametersToListSettings($list_settings, $parameters, $form);
+		$customized_list_settings = $list_settings->getCustomSettings();
 		$count = new Dao_Count_Option();
 		$limit = new Dao_Limit_Option(
 			$list_settings->start_display_line_number,
