@@ -17,8 +17,9 @@ input.customized {
 }
 
 select.customized {
+	appearance: none;
 	background: transparent;
-	text-align: right;
+	direction: rtl;
 }
 
 ul.actions>li {
