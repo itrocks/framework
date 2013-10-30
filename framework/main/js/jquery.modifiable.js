@@ -1,3 +1,7 @@
+window.modifiable_confirm  = false;
+window.modifiable_dblclick = false;
+window.modifiable_waiting  = false;
+
 (function($)
 {
 
@@ -14,24 +18,24 @@
 		//------------------------------------------------------------------------------------- click()
 		this.click(function(event)
 		{
-			if (!modifiable_confirm) {
+			if (!window.modifiable_confirm) {
 				var clickable = this;
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				if (!modifiable_waiting) {
-					modifiable_waiting = true;
+				if (!window.modifiable_waiting) {
+					window.modifiable_waiting = true;
 					setTimeout(
 						function()
 						{
-							if (modifiable_dblclick) {
-								modifiable_dblclick = false;
+							if (window.modifiable_dblclick) {
+								window.modifiable_dblclick = false;
 							}
 							else {
-								modifiable_confirm = true;
+								window.modifiable_confirm = true;
 								$(clickable).click();
-								modifiable_confirm = false;
+								window.modifiable_confirm = false;
 							}
-							modifiable_waiting = false;
+							window.modifiable_waiting = false;
 						},
 						200
 					);
@@ -42,7 +46,7 @@
 		//---------------------------------------------------------------------------------- dblclick()
 		this.dblclick(function(event)
 		{
-			modifiable_dblclick = true;
+			window.modifiable_dblclick = true;
 			event.preventDefault();
 			event.stopImmediatePropagation();
 			var $this = $(this);
@@ -91,7 +95,3 @@
 	}
 
 })( jQuery );
-
-var modifiable_confirm  = false;
-var modifiable_dblclick = false;
-var modifiable_waiting  = false;
