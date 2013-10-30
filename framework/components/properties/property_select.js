@@ -1,25 +1,24 @@
 $("document").ready(function()
 {
 
-	$(".window").build(function()
+	$("body").build(function()
 	{
-
 		// decoration
-		this.in(".property.select").prepend($("<span>").addClass("joint"));
+		this.in(".property_select").prepend($("<span>").addClass("joint"));
 
 		// create tree
-		this.in("ul.treeview a").click(function(event)
+		this.in("ul.property_tree>li a").click(function(event)
 		{
 			var $this = $(this);
 			var $li = $(this).closest("li");
-			if ($li.children("div").length) {
-				if ($li.children("div:visible").length) {
+			if ($li.children("section").length) {
+				if ($li.children("section:visible").length) {
 					$this.removeClass("expanded");
-					$li.children("div:visible").hide();
+					$li.children("section:visible").hide();
 				}
 				else {
 					$this.addClass("expanded");
-					$li.children("div:not(:visible)").show();
+					$li.children("section:not(:visible)").show();
 				}
 				event.stopImmediatePropagation();
 				event.preventDefault();
@@ -31,7 +30,6 @@ $("document").ready(function()
 
 		// draggable items
 		this.in(".property").draggable({
-
 			appendTo:    "body",
 			containment: "body",
 			cursorAt:    { left: 2, top: 10 },
@@ -44,38 +42,39 @@ $("document").ready(function()
 				return $('<div>')
 					.addClass("property")
 					.attr("id", $this.attr("id"))
-					.attr("title", $this.attr("title"))
 					.css("background-color", "white")
+					.css("border", "1px solid lightgrey")
 					.css("z-index", ++zindex_counter)
 					.html($this.text());
 			},
 
 			drag: function(event, ui)
 			{
-				var $droppable = $(this).data("over_droppable");
+				var $droppable = $(this).data("over-droppable");
 				if ($droppable != undefined) {
 					var draggable_left = ui.offset.left;
 					var count = 0;
 					var found = 0;
-					$droppable.find("tr:first th:not(:first)").each(function() {
+					$droppable.find("thead>tr:first>th:not(:first)").each(function() {
 						count ++;
 						var $this = $(this);
 						var $prev = $this.prev("th");
 						var left = $prev.offset().left + $prev.width();
 						var right = $this.offset().left + $this.width();
 						if ((draggable_left > left) && (draggable_left <= right)) {
-							found = (draggable_left <= ((left + right) / 2))
-								? count
-								: (count + 1);
-							var old = $droppable.data("insert_after");
+							found = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
+							var old = $droppable.data("insert-after");
 							if (found != old) {
 								if (old != undefined) {
-									$droppable.find("th:nth-child(" + old + "),td:nth-child(" + old + ")")
-										.removeClass("insert_after");
+									$droppable.find("colgroup>col:nth-child(" + old + ")").removeClass("insert_after");
 								}
-								$droppable.find("th:nth-child(" + found + "),td:nth-child(" + found + ")")
-									.addClass("insert_after");
-								$droppable.data("insert_after", found);
+								if (found > 1) {
+									$droppable.find("colgroup>col:nth-child(" + found + ")").addClass("insert_after");
+									$droppable.data("insert-after", found);
+								}
+								else {
+									$droppable.removeData("insert-after");
+								}
 							}
 						}
 					});
@@ -84,8 +83,9 @@ $("document").ready(function()
 
 			stop: function()
 			{
-				var $droppable = $(this).data("over_droppable");
+				var $droppable = $(this).data("over-droppable");
 				if ($droppable != undefined) {
+					$droppable.removeData("insert-after");
 				}
 			}
 

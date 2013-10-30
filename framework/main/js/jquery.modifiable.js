@@ -47,6 +47,7 @@
 			event.stopImmediatePropagation();
 			var $this = $(this);
 			var $input = $("<input>").val($this.html());
+			$input.data("old", $input.val());
 			var done = function() {
 				var done = settings.done;
 				if (typeof(done) == "string") {
@@ -72,7 +73,16 @@
 			};
 			$this.html($input);
 			$input.autowidth();
-			$input.keydown(function(event) { if (event.keyCode == 13) done(); });
+			$input.keydown(function(event) {
+				if (event.keyCode == 13) {
+					done();
+				}
+				if (event.keyCode == 27) {
+					var $this = $(this);
+					$this.val($this.data("old"));
+					done();
+				}
+			});
 			$input.blur(function() { done(); });
 			$input.focus();
 		});

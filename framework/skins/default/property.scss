@@ -1,65 +1,65 @@
+@import "colors.scss";
 
-.property.select {
+.property_select {
 	background-color: #DCDCDD;
 	border: solid 1px #606060;
 	border-radius: 0 2px 2px 2px;
-	padding: 2px;
-	position: relative;
-	text-align: left;
-}
-
-.property.select .joint {
-	background-color: #DCDCDD;
 	display: inline-block;
-	height: 1px;
-	left: 1px;
+	padding: 2px 8px 2px 2px;
 	position: absolute;
-	top: -1px;
-	width: 16px;
-}
+	text-align: left;
 
-.property.select .search {
-	margin-bottom: 4px;
-}
+	.joint {
+		background-color: #DCDCDD;
+		display: inline-block;
+		height: 1px;
+		left: 1px;
+		position: absolute;
+		top: -1px;
+		width: 16px;
+	}
 
-.property.select .search input {
-	width: 100%;
-}
+	>input {
+		margin: 0 0 3px;
+		width: 100%;
+	}
 
-.property.select ul.treeview {
-	background-color: white;
-	border-radius: 2px;
-}
+	ul {
+		background-color: white;
+		border-radius: 2px;
+		list-style: none;
 
-.property.select ul.treeview li {
-	background: url("img/tree/string-right.png") 8px -2px no-repeat;
-	padding-left: 18px;
-}
+		>li {
+			background: url("img/tree/string-right.png") 8px -2px no-repeat;
+			cursor: default;
+			padding-left: 18px;
 
-.property.select ul.treeview li:last-child {
-	background: url("img/tree/string-last.png") 8px -2px no-repeat;
-	padding-left: 18px;
-}
+			&:last-child {
+				background: url("img/tree/string-last.png") 8px -2px no-repeat;
+			}
 
-.property.select ul.treeview li a {
-	background: url("img/tree/plus.png") 4px 2px no-repeat;
-	color: black;
-	cursor: pointer;
-	display: block;
-	margin-left: -18px;
-	padding-left: 18px;
-	text-decoration: none;
-	white-space: nowrap;
-}
+			>a {
+				background: url("img/tree/plus.png") 4px 2px no-repeat;
+				color: black;
+				cursor: pointer;
+				display: block;
+				margin-left: -18px;
+				padding-left: 18px;
+				text-decoration: none;
+				white-space: nowrap;
 
-.property.select ul.treeview li a.expanded {
-	background: url("img/tree/minus.png") 4px 2px no-repeat;
-}
+				&.expanded {
+					background: url("img/tree/minus.png") 4px 2px no-repeat;
+				}
+			}
 
-.property.select ul.treeview li span {
-	display: block;
-}
+			span {
+				display: block;
+				&:hover {
+					background-color: $table_line_hover;
+				}
+			}
+		}
+	}
 
-.property.select ul.treeview li span:hover {
-	background-color: #AEDC5F;
 }

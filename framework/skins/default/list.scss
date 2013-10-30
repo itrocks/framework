@@ -23,6 +23,9 @@
 			&:nth-child(1), &:nth-child(2) {
 				max-width: 16px;
 			}
+			&.insert_after {
+				border-right: 3px solid $table_line_hover;
+			}
 		}
 
 		/* head */
@@ -63,23 +66,34 @@
 					border-right: 4px solid transparent;
 					color: black;
 					display: block;
-					padding: 0 14px 0 4px;
 					text-decoration: none;
 					line-height: 17px;
 				}
 
+				&.property>a {
+					padding: 0 14px 0 4px;
+				}
+
 				/* sorting */
-				&.sort1:not(.reverse) >a {
+				&.sort1:not(.reverse)>a {
 					background-image: url("img/arrow_black_up.gif");
 				}
-				&.sort1.reverse >a {
+				&.sort1.reverse>a {
 					background-image: url("img/arrow_black_down.gif");
 				}
-				&.sort2:not(.reverse) >a {
+				&.sort2:not(.reverse)>a {
 					background-image: url("img/arrow_gray_up.gif");
 				}
-				&.sort2.reverse >a {
+				&.sort2.reverse>a {
 					background-image: url("img/arrow_gray_down.gif");
+				}
+			}
+
+			>td {
+				padding: 0 7px 0 0;
+
+				>input, >select, >textarea {
+					width: 100%;
 				}
 			}
 		}
@@ -99,6 +113,7 @@
 
 			>td {
 				border-right: 1px dotted lightgray;
+				padding: 0 2px;
 				white-space: nowrap;
 
 				>a {

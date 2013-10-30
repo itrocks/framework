@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -8,23 +8,23 @@
 	</style>
 </head>
 <body>
-
 <!--BEGIN-->
-<div class="property select">
-	<div id="search"><input></div>
+
+<div class="property_select">
+	<input name="property_select">
 	<!--BEGIN:subtree-->
-	<ul class="treeview">
+	<ul class="property_tree">
 	<!--properties-->
-		<li>
+		<li class="property" id="{path}" title="|{path}|">
 			<!--getType.!isBasic?--><a href="/Property/select/{--class_name.short}/{path}" target="#tree-{path}"><!--getType.!isBasic?-->
-			<span class="property" id="{path}" title="|{path}|">|{@display}|</span>
+			|{@display}|
 			<!--getType.!isBasic?--></a><!--getType.!isBasic?-->
 		</li>
 	<!--properties-->
 	</ul>
 	<!--END:subtree-->
 </div>
-<!--END-->
 
+<!--END-->
 </body>
 </html>

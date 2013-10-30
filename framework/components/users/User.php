@@ -11,7 +11,8 @@ require_once "framework/components/users/Account.php";
  */
 class User
 {
-	use Account, Current { current as private pCurrent; }
+	use Account;
+	use Current { current as private pCurrent; }
 
 	//--------------------------------------------------------------------------------------- current
 	/**
