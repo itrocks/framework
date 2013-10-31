@@ -36,37 +36,48 @@ class String
 	 * Clean the word, this delete all character who don't have a place in a current word.
 	 *
 	 * @todo see if there is any conceptual difference with strSimplify. If not, replace it !
-	 * @return string Return the clean word.
+	 * @return String the clean word.
 	 * @example
 	 * cleanWord("Albert, ") => return "Albert"
 	 * cleanWord(" list : ") => return "list"
 	 */
 	function cleanWord()
 	{
-		return preg_replace("#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#", "", $this->value);
+		return new String(
+			preg_replace("#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#", "", $this->value)
+		);
 	}
 
 	//----------------------------------------------------------------------------------------- first
 	/**
 	 * First element of a separated string
 	 *
-	 * @return string
+	 * @return String
 	 */
 	public function first()
 	{
 		foreach (array(":", ".", "-", ",") as $char) {
 			if (strpos($this->value, $char) !== false) {
-				return substr($this->value, 0, strpos($this->value, $char));
+				return new String(substr($this->value, 0, strpos($this->value, $char)));
 			}
 		}
-		return $this->value;
+		return new String($this->value);
+	}
+
+	//---------------------------------------------------------------------------------- htmlEntities
+	/**
+	 * @return String
+	 */
+	public function htmlEntities()
+	{
+		return new String(htmlentities($this->value, ENT_QUOTES|ENT_HTML5));
 	}
 
 	//---------------------------------------------------------------------------------------- isWord
 	/**
 	 * Test is the string like a word
 	 *
-	 * @return int Return 0 if it's not a word.
+	 * @return integer 0 if it's not a word.
 	 */
 	function isWord()
 	{
@@ -78,41 +89,79 @@ class String
 	 * Last element of a separated string
 	 *
 	 * @param $count integer
-	 * @return string
+	 * @return String
 	 */
 	public function last($count = 1)
 	{
 		foreach (array(":", ".", "-", ",") as $char) {
 			if (strrpos($this->value, $char) !== false) {
-				return rLastParse($this->value, $char, $count, true);
+				return new String(rLastParse($this->value, $char, $count, true));
 			}
 		}
-		return $this->value;
+		return new String($this->value);
 	}
 
 	//----------------------------------------------------------------------------------------- lower
 	/**
-	 * @return string
+	 * @return String
 	 */
 	public function lower()
 	{
-		return strtolower($this->value);
+		return new String(strtolower($this->value));
+	}
+
+	//-------------------------------------------------------------------------------------------- of
+	/**
+	 * Constructs a new String
+	 *
+	 * @param $string string
+	 * @return String
+	 */
+	public static function of($string)
+	{
+		return new String($string);
 	}
 
 	//----------------------------------------------------------------------------------------- short
 	/**
-	 * @return string
+	 * @return String
 	 */
 	public function short()
 	{
-		return Namespaces::shortClassName($this->value);
+		return new String(Namespaces::shortClassName($this->value));
+	}
+
+	//---------------------------------------------------------------------------------------- substr
+	/**
+	 * @param $index  integer
+	 * @param $length integer
+	 * @return String
+	 */
+	public function substr($index, $length = null)
+	{
+		return new String(
+			isset($length) ? substr($this->value, $index, $length) : substr($this->value, $index)
+		);
+	}
+
+	//------------------------------------------------------------------------------------- substring
+	/**
+	 * @param $start integer
+	 * @param $stop  integer
+	 * @return String
+	 */
+	public function substring($start, $stop = null)
+	{
+		return new String(
+			isset($stop) ? substr($this->value, $start, $stop - $start) : substr($this->value, $start)
+		);
 	}
 
 	//--------------------------------------------------------------------------------------- textile
 	/**
 	 * Parse to textile
 	 *
-	 * @return string
+	 * @return String
 	 */
 	public function textile()
 	{
@@ -120,7 +169,7 @@ class String
 		$text = $wiki->geshi($this->value, false);
 		$text = $wiki->textile($text);
 		$text = $wiki->geshiSolve($text);
-		return $text;
+		return new String($text);
 	}
 
 	//--------------------------------------------------------------------------------------- twoLast
@@ -128,7 +177,7 @@ class String
 	 * The two last elements of a separated string
 	 *
 	 * @todo remove and replace .twoLast by .last(2) (needs debugging of Html_Template)
-	 * @return string
+	 * @return String
 	 */
 	public function twoLast()
 	{
@@ -137,38 +186,38 @@ class String
 
 	//--------------------------------------------------------------------------------------- ucfirst
 	/**
-	 * @return string
+	 * @return String
 	 */
 	public function ucfirst()
 	{
-		return ucfirst($this->value);
+		return new String(ucfirst($this->value));
 	}
 
 	//--------------------------------------------------------------------------------------- ucwords
 	/**
-	 * @return string
+	 * @return String
 	 */
 	public function ucwords()
 	{
-		return ucwords($this->value);
+		return new String(ucwords($this->value));
 	}
 
 	//----------------------------------------------------------------------------------------- upper
 	/**
-	 * @return string
+	 * @return String
 	 */
 	public function upper()
 	{
-		return strtoupper($this->value);
+		return new String(strtoupper($this->value));
 	}
 
 	//------------------------------------------------------------------------------------------- uri
 	/**
-	 * @return string
+	 * @return String
 	 */
 	public function uri()
 	{
-		return strUri($this->value);
+		return new String(strUri($this->value));
 	}
 
 }
