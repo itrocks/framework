@@ -244,7 +244,7 @@ class Html_Builder_Type_Edit
 	protected function buildString($multiline = false, $values = null)
 	{
 		if ($multiline) {
-			$input = new Html_Textarea($this->getFieldName(), $this->value);
+			$input = new Html_Textarea($this->getFieldName(), String::of($this->value)->htmlEntities());
 			$input->addClass("autowidth");
 			$input->addClass("autoheight");
 		}
@@ -255,7 +255,7 @@ class Html_Builder_Type_Edit
 			$input = new Html_Select($this->getFieldName(), $values, $this->value);
 		}
 		else {
-			$input = new Html_Input($this->getFieldName(), $this->value);
+			$input = new Html_Input($this->getFieldName(), String::of($this->value)->htmlEntities());
 			$input->setAttribute("autocomplete", "off");
 			$input->addClass("autowidth");
 		}
