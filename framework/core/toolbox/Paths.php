@@ -7,41 +7,57 @@ namespace SAF\Framework;
 abstract class Paths
 {
 
-	//---------------------------------------------------------------------------------- $project_uri
-	/**
-	 * The root path for the current project files
-	 *
-	 * @example "prod/project_name";
-	 * @var string
-	 */
-	public static $project_uri;
-
 	//------------------------------------------------------------------------------------ $file_root
 	/**
 	 * The root path for main script file, without the script name
 	 *
-	 * @example /var/www/root/path
+	 * @example /var/www/root/path/
+	 * @example /home/saf/www/
 	 * @var string
 	 */
 	public static $file_root;
 
-	//------------------------------------------------------------------------------------- $uri_root
+	//---------------------------------------------------------------------------------- $project_uri
 	/**
-	 * The root path for uri, without the saf launch script name
+	 * The root path for the current project files (direct access, without the saf launch script name)
 	 *
-	 * @example /root/path
+	 * @example /environment/project
+	 * @example /test/bappli
 	 * @var string
 	 */
-	public static $uri_root;
+	public static $project_uri;
 
 	//---------------------------------------------------------------------------------- $script_name
 	/**
 	 * the script name, alone, without extension
 	 *
+	 * @example project
 	 * @example saf
+	 * @example bappli
 	 * @var string
 	 */
 	public static $script_name;
+
+	//------------------------------------------------------------------------------------- $uri_root
+	/**
+	 * The root path for uri, without the saf launch script name
+	 *
+	 * @example /root/path/
+	 * @example /
+	 * @var string
+	 */
+	public static $uri_root;
+
+	//------------------------------------------------------------------------------------- $uri_base
+	/**
+	 * The base uri for creating links between transactions
+	 *
+	 * @example /root/path/saf
+	 * @example /saf
+	 * @example /bappli
+	 * @var string
+	 */
+	public static $uri_base;
 
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
@@ -53,6 +69,7 @@ abstract class Paths
 		);
 		self::$script_name = substr($_SERVER["SCRIPT_NAME"], $slash, $dotphp - $slash);
 		self::$uri_root = substr($_SERVER["SCRIPT_NAME"], 0, $slash);
+		self::$uri_base = self::$uri_root . self::$script_name;
 		self::$project_uri = substr(getcwd(), strlen(self::$file_root) - 1);
 	}
 

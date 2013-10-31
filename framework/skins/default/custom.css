@@ -15,9 +15,7 @@ input.customized {
   z-index: 1; }
 
 select.customized {
-  appearance: none;
-  background: transparent;
-  direction: rtl; }
+  background: transparent; }
 
 ul.actions > li.custom_delete, ul.actions > li.custom_save {
   box-shadow: none;

@@ -119,6 +119,10 @@ fieldset {
 				font-weight: bold;
 			}
 
+			>div>table>thead>tr>th {
+				padding: 1px 2px;
+			}
+
 			>div>table>tbody>tr {
 
 				&:hover {
@@ -126,11 +130,16 @@ fieldset {
 				}
 
 				>td {
-					padding-right: 5px;
+					padding: 1px 5px 0 0;
 
-					>input, >select, >textarea {
-						margin: 0 0 1px;
+					>input, >textarea {
+						height: 18px;
 						width: 100%;
+					}
+
+					>select {
+						height: 22px;
+						margin-right: -6px;
 					}
 
 					&.minus {

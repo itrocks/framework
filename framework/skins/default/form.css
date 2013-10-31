@@ -82,13 +82,18 @@ fieldset {
         background-color: #e9ede7;
         height: 14px;
         font-weight: bold; }
+      fieldset > div:not(.tabber).multiple > div > table > thead > tr > th {
+        padding: 1px 2px; }
       fieldset > div:not(.tabber).multiple > div > table > tbody > tr:hover {
         background-color: #defdaf; }
       fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td {
-        padding-right: 5px; }
-        fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td > input, fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td > select, fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td > textarea {
-          margin: 0 0 1px;
+        padding: 1px 5px 0 0; }
+        fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td > input, fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td > textarea {
+          height: 18px;
           width: 100%; }
+        fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td > select {
+          height: 22px;
+          margin-right: -6px; }
         fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td.minus {
           background: url("img/remove_row.png") right no-repeat;
           color: transparent;
