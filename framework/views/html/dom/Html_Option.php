@@ -35,12 +35,20 @@ class Html_Option extends Dom_Element
 	 */
 	public function __toString()
 	{
-		if ($this->getContent() == ($value = $this->getAttribute("value"))) {
+		$content = $this->getContent();
+		if (!strlen($content)) {
+			$this->setContent(" ");
+			$back_content = true;
+		}
+		elseif ($content == ($value = $this->getAttribute("value"))) {
 			$this->removeAttribute($value);
 			$back = true;
 		}
 		$string = parent::__toString();
-		if (isset($back)) {
+		if (isset($back_content)) {
+			$this->setContent($content);
+		}
+		elseif (isset($back)) {
 			$this->setAttribute("value", $value);
 		}
 		return $string;

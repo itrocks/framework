@@ -27,7 +27,12 @@ class Html_Table_Row extends Dom_Element
 	 */
 	public function __toString()
 	{
-		$this->setContent(join("", $this->cells));
+		if (count($this->cells) > 1) {
+			$this->setContent("\n" . join("\n", $this->cells) . "\n");
+		}
+		else {
+			$this->setContent(join("", $this->cells));
+		}
 		return parent::__toString();
 	}
 
