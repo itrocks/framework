@@ -413,7 +413,7 @@ class Import_Array
 					$property_name = substr($property_name, 0, -1);
 				}
 				$property_name = Loc::rtr($property_name, $property_class_name);
-				$property_names[] = $property_name . ($asterisk ? "*" : "");
+				$property_names[] = Names::displayToProperty($property_name) . ($asterisk ? "*" : "");
 				try {
 					$property = Reflection_Property::getInstanceOf($property_class_name, $property_name);
 				}
