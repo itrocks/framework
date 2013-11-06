@@ -41,9 +41,11 @@ class GeSHi
 		}
 		else {
 			// php highlighter is always here
-			return "<pre>"
-				. (($language == "php") ? highlight_string($source, true) : htmlentities($source))
-				. "</pre>";
+			return "<pre>" . (
+				($language == "php")
+					? highlight_string($source, true)
+					: String::of($source)->htmlEntities()
+				) . "</pre>";
 		}
 	}
 
