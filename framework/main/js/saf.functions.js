@@ -3,18 +3,25 @@
 copyCssPropertyTo = function(context, element)
 {
 	var tab = ["font-size",
+		"font",
 		"font-family",
+		"font-size",
+		"font-weight",
+		"letter-spacing",
 		"line-height",
+		"border",
 		"border-bottom-width",
 		"border-left-width",
 		"border-top-width",
 		"border-right-width",
 		"border-color",
+		"margin",
 		"margin-bottom",
 		"margin-left",
 		"margin-right",
 		"margin-top",
 		"text-rendering",
+		"word-spacing",
 		"word-wrap"
 	];
 	for (var i = 0; i < tab.length; i++) {
@@ -35,7 +42,7 @@ getInputTextHeight = function(context)
 };
 
 //------------------------------------------------------------------------------- getInputTextWidth
-// TODO limit cache size as it could gros too much !
+// TODO limit cache size as it could grow too much !
 getInputTextWidth = function(context)
 {
 	return Math.max(40, getTextWidth(context, 16));
