@@ -31,7 +31,7 @@ $("document").ready(function()
 		// trash is droppable
 		this.in("#trashcan a").droppable({
 
-			accept:     ".column label, .object, .property",
+			accept:     ".column label, .object, .objects, .property",
 			hoverClass: "candrop",
 			tolerance:  "touch",
 

@@ -13,17 +13,17 @@
 
 .actions {
 
-	>.cancel>*, >.close>* {
+	>.cancel>a, >.close>a {
 		padding-left: 12px;
 		background: $close_action;
 	}
 
-	>.add>*, >.edit>*, >.import>*, >.write>* {
+	>.add>a, >.edit>a, >.import>a, >.write>a {
 		padding-left: 12px;
 		background: $green_action;
 	}
 
-	>.export>*, >.print>* {
+	>.export>a, >.print>a {
 		padding-left: 12px;
 		background: $blue_action;
 	}

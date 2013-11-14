@@ -6,13 +6,13 @@
   padding-left: 12px;
   background: url("img/buttons/17/left_green.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
 
-.actions > .cancel > *, .actions > .close > * {
+.actions > .cancel > a, .actions > .close > a {
   padding-left: 12px;
   background: url("img/buttons/17/left_close.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
-.actions > .add > *, .actions > .edit > *, .actions > .import > *, .actions > .write > * {
+.actions > .add > a, .actions > .edit > a, .actions > .import > a, .actions > .write > a {
   padding-left: 12px;
   background: url("img/buttons/17/left_green.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
-.actions > .export > *, .actions > .print > * {
+.actions > .export > a, .actions > .print > a {
   padding-left: 12px;
   background: url("img/buttons/17/left_blue.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
 

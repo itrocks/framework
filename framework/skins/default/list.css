@@ -106,3 +106,5 @@ ul.actions > li.rows_count {
   color: #333;
   float: right;
   text-align: right; }
+ul.actions > li.select_count:not(.selected) {
+  display: none; }

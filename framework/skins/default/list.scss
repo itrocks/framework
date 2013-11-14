@@ -165,11 +165,16 @@ ul.actions {
 		&.more.thousand>a {
 			@include background("bottom");
 		}
+
 	}
 
 	>li.rows_count {
 		color: #333;
 		float: right;
 		text-align: right;
+	}
+
+	>li.select_count:not(.selected) {
+		display: none;
 	}
 }

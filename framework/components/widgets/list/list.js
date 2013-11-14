@@ -1,5 +1,6 @@
 $("document").ready(function()
 {
+	var selection = [];
 
 	$(".list.window").build(function()
 	{
@@ -7,15 +8,6 @@ $("document").ready(function()
 		this.in(".list.window").each(function()
 		{
 			var $this = $(this);
-
-			//--------------------------------------------------- .search input, .search textarea keydown
-			// reload list when #13 pressed into a search input
-			$this.find(".search").find("input, textarea").keydown(function(event)
-			{
-				if (event.keyCode == 13) {
-					$(this).closest("form").submit();
-				}
-			});
 
 			//-------------------------------------------------------------- .column_select>a.popup click
 			// column select popup
@@ -33,6 +25,15 @@ $("document").ready(function()
 					}
 					event.stopImmediatePropagation();
 					event.preventDefault();
+				}
+			});
+
+			//--------------------------------------------------- .search input, .search textarea keydown
+			// reload list when #13 pressed into a search input
+			$this.find(".search").find("input, textarea").keydown(function(event)
+			{
+				if (event.keyCode == 13) {
+					$(this).closest("form").submit();
 				}
 			});
 
@@ -123,6 +124,29 @@ $("document").ready(function()
 				target: "#messages"
 			});
 
+			//--------------------------------------------------------------- input[type=checkbox] change
+			var checkboxes = $this.find("table>tbody>tr>td>input[type=checkbox]");
+			if ($this.id in selection) {
+				$this.find("input[name=selection]").val(selection[$this.id].join());
+				var sel = selection[$this.id];
+				checkboxes.each(function() {
+					if ((sel == "all") || (this.value in sel)) {
+						this.checked = true;
+					}
+				});
+			}
+			else {
+				selection[$this.id] = [];
+			}
+			checkboxes.change(function() {
+				if (this.checked && (selection[$this.id].indexOf(this.value) == -1)) {
+					selection[$this.id].push(this.value);
+				}
+				if (!this.checked && (selection[$this.id].indexOf(this.value) > -1)) {
+					selection[$this.id].splice(selection[$this.id].indexOf(this.value), 1);
+				}
+				$this.find("input[name=selection]").val(selection[$this.id].join());
+			});
 		});
 
 	});
