@@ -41,7 +41,6 @@ class Html_Builder_Collection
 		$this->property = $property;
 		$this->collection = $collection;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
-		$class = Reflection_Class::getInstanceOf($this->class_name);
 		$this->properties = $this->getProperties();
 	}
 
@@ -54,8 +53,8 @@ class Html_Builder_Collection
 		Collection::sort($this->collection);
 		$table = new Html_Table();
 		$table->addClass("collection");
-		$table->setHead($this->buildHead());
-		$table->setBody($this->buildBody());
+		$table->head = $this->buildHead();
+		$table->body = $this->buildBody();
 		return $table;
 	}
 

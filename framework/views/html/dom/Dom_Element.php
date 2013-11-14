@@ -106,9 +106,20 @@ abstract class Dom_Element
 		}
 	}
 
-	//---------------------------------------------------------------------------------- setAttribute
+	//------------------------------------------------------------------------------------ removeData
 	/**
 	 * @param $name string
+	 */
+	public function removeData($name)
+	{
+		if (isset($this->attributes["data-" . $name])) {
+			unset($this->attributes["data-" . $name]);
+		}
+	}
+
+	//---------------------------------------------------------------------------------- setAttribute
+	/**
+	 * @param $name  string
 	 * @param $value string
 	 * @return Dom_Attribute
 	 */
@@ -138,6 +149,17 @@ abstract class Dom_Element
 	public function setContent($content)
 	{
 		$this->content = $content;
+	}
+
+	//--------------------------------------------------------------------------------------- setData
+	/**
+	 * @param $name  string
+	 * @param $value string
+	 * @return Dom_Attribute
+	 */
+	public function setData($name, $value = null)
+	{
+		return $this->setAttributeNode(new Dom_Attribute("data-" . $name, $value));
 	}
 
 	//-------------------------------------------------------------------------------------- setStyle

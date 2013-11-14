@@ -38,11 +38,21 @@ class Html_Table_Row extends Dom_Element
 
 	//--------------------------------------------------------------------------------------- addCell
 	/**
-	 * @param $cell Html_Table_Cell
+	 * @param $cell            Html_Table_Cell
+	 * @param $before_position integer first cell position is 0
 	 */
-	public function addCell(Html_Table_Cell $cell)
+	public function addCell(Html_Table_Cell $cell, $before_position = null)
 	{
-		$this->cells[] = $cell;
+		if (isset($before_position)) {
+			$this->cells = array_merge(
+				array_slice($this->cells, 0, $before_position),
+				array($cell),
+				array_slice($this->cells, $before_position, count($this->cells) - $before_position)
+			);
+		}
+		else {
+			$this->cells[] = $cell;
+		}
 	}
 
 }
