@@ -53,12 +53,16 @@ body {
 			}
 
 			>li:not(.provider) {
+				background: url("img/tab_background.png");
 				border-color: #d6dadc #9ab3b7 #9ab3b7;
 				border-radius: 0 0 10px 10px;
 				border-style: solid;
 				border-width: 1px;
+				display: none;
 				float: right;
 				margin: 5px 0 0 10px;
+				position: relative;
+				z-index: 999999999;
 
 				>a {
 					color: #222;
@@ -73,6 +77,10 @@ body {
 						color: #2d8f8d;
 					}
 				}
+			}
+
+			&:hover>li:not(.provider) {
+				display: inline-block;
 			}
 		}
 	}

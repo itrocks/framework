@@ -37,12 +37,16 @@ body {
           height: 40px;
           width: 44px; }
       body > header > ul > li:not(.provider) {
+        background: url("img/tab_background.png");
         border-color: #d6dadc #9ab3b7 #9ab3b7;
         border-radius: 0 0 10px 10px;
         border-style: solid;
         border-width: 1px;
+        display: none;
         float: right;
-        margin: 5px 0 0 10px; }
+        margin: 5px 0 0 10px;
+        position: relative;
+        z-index: 999999999; }
         body > header > ul > li:not(.provider) > a {
           color: #222;
           font-size: 16px;
@@ -54,6 +58,8 @@ body {
           white-space: nowrap; }
           body > header > ul > li:not(.provider) > a:hover {
             color: #2d8f8d; }
+      body > header > ul:hover > li:not(.provider) {
+        display: inline-block; }
 
 div p:not(:first-child) {
   padding: 1em 0 0; }
