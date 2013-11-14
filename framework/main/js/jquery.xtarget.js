@@ -21,11 +21,16 @@
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
 			url_append: "",
-			keep:       "popup",
-			submit:     "submit",
-			error:      undefined,
-			success:    undefined,
-			draggable_blank: undefined
+			keep:            "popup",
+			submit:          "submit",
+			error:           undefined,
+			success:         undefined,
+			draggable_blank: undefined,
+			history: {
+				condition: "h2",
+				on_post:   false,
+				title:     "h2"
+			}
 		}, options);
 
 		//---------------------------------------------------------------------------------------- ajax
@@ -33,7 +38,9 @@
 		{
 
 			//------------------------------------------------------------------------------- ajax.target
+			data:   "",
 			target: undefined,
+			type:   "get",
 
 			//---------------------------------------------------------------------------------- complete
 			complete: function(xhr)
@@ -82,6 +89,23 @@
 				}
 				// write result into destination element, and build jquery active contents
 				$target.html(data);
+				// change browser's URL and title, push URL into history
+				if (
+					$target.find(settings["history"]["condition"]).length
+					&& (
+						settings["history"]["on_post"]
+						|| (xhr.ajax.type.toLowerCase() != "post")
+						|| !xhr.ajax.data.length
+					)
+				) {
+					var title = $target.find(settings["history"]["title"]).first().text();
+					if (!title.length) {
+						title = xhr.from.href;
+					}
+					document.title = title;
+					window.history.pushState({ reload: true }, title, xhr.from.href);
+				}
+				// If build plugin is active : build loaded DOM
 				if ($target.build != undefined) {
 					if (build_target) $target.build();
 					else              $target.children().build();
@@ -130,17 +154,18 @@
 			event.preventDefault();
 			var $this = $(this);
 			var xhr = undefined;
+			var jax;
 			if ($this.hasClass(settings["submit"])) {
 				var $parent_form = $this.closest("form");
 				if ($parent_form.length) {
 					if ($parent_form.ajaxSubmit != undefined) {
-						$parent_form.ajaxSubmit($.extend(ajax, {
+						$parent_form.ajaxSubmit(jax = $.extend(ajax, {
 							url: urlAppend(this.href, this.search)
 						}));
 						xhr = $parent_form.data("jqxhr");
 					}
 					else {
-						xhr = $.ajax($.extend(ajax, {
+						xhr = $.ajax(jax = $.extend(ajax, {
 							url:  urlAppend(this.href, this.search),
 							data: $parent_form.serialize(),
 							type: $parent_form.attr("method")
@@ -149,13 +174,14 @@
 				}
 			}
 			if (!xhr) {
-				xhr = $.ajax($.extend(ajax, {
+				xhr = $.ajax(jax = $.extend(ajax, {
 					url: urlAppend(this.href, this.search)
 				}));
 			}
-			xhr.from    = this;
-			xhr.mouse_x = (document.mouse == undefined) ? event.pageX : document.mouse.x;
-			xhr.mouse_y = (document.mouse == undefined) ? event.pageY : document.mouse.y;
+			xhr.ajax     = jax;
+			xhr.from     = this;
+			xhr.mouse_x  = (document.mouse == undefined) ? event.pageX : document.mouse.x;
+			xhr.mouse_y  = (document.mouse == undefined) ? event.pageY : document.mouse.y;
 			xhr.time_out = setTimeout(function(){ $("body").css({cursor: "wait"}); }, 500);
 		});
 
@@ -165,24 +191,38 @@
 		 */
 		this.find('form[target^="#"]').add(this.filter('form[target^="#"]')).submit(function(event)
 		{
+			var jax;
 			var $this = $(this);
+			var xhr;
 			event.preventDefault();
 			if ($this.ajaxSubmit != undefined) {
-				$this.ajaxSubmit($.extend(ajax, {
+				$this.ajaxSubmit(jax = $.extend(ajax, {
 					url: urlAppend(this.action, this.search)
 				}));
-				$this.data("jqxhr").from = this;
+				xhr = $this.data("jqxhr");
 			}
 			else {
-				$.ajax($.extend(ajax, {
+				xhr = $.ajax(jax = $.extend(ajax, {
 					url:  urlAppend(this.action, this.search),
 					data: $this.serialize(),
 					type: $this.attr("method")
-				})).from = this;
+				}));
 			}
+			xhr.ajax = jax;
+			xhr.from = this;
 		});
 
 		return this;
 	};
+
+	//----------------------------------------------------------------------------- window onpopstate
+	$(window).bind("popstate", function(event)
+	{
+		if (event.originalEvent.state != undefined) {
+			if ((event.originalEvent.state.reload !== undefined) && event.originalEvent.state.reload) {
+				document.location.reload();
+			}
+		}
+	});
 
 })( jQuery );
