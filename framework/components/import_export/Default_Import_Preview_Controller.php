@@ -52,13 +52,15 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 					$excel = Spreadsheet_File::fileToArray($file->temporary_file_name);
 					$worksheet_number = 0;
 					foreach ($excel as $temporary_file_name => $worksheet) {
-						$import_worksheet = new Import_Worksheet(
-							$worksheet_number ++,
-							Import_Settings_Builder::buildArray($worksheet, $class_name),
-							$csv_file = new File($temporary_file_name)
-						);
-						$session_files->files[] = $csv_file;
-						$import->worksheets[] = $import_worksheet;
+						if (filesize($temporary_file_name) > 1) {
+							$import_worksheet = new Import_Worksheet(
+								$worksheet_number ++,
+								Import_Settings_Builder::buildArray($worksheet, $class_name),
+								$csv_file = new File($temporary_file_name)
+							);
+							$session_files->files[] = $csv_file;
+							$import->worksheets[] = $import_worksheet;
+						}
 					}
 					// only one file once
 					break;
