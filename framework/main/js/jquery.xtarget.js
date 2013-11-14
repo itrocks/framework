@@ -27,9 +27,9 @@
 			success:         undefined,
 			draggable_blank: undefined,
 			history: {
-				condition: "h2",
+				condition: ".window>h2",
 				on_post:   false,
-				title:     "h2"
+				title:     ".window>h2"
 			}
 		}, options);
 

@@ -32,7 +32,7 @@ $("document").ready(function()
 		this.in(".property, fieldset>div[id]>label").draggable({
 			appendTo:    "body",
 			containment: "body",
-			cursorAt:    { left: 2, top: 10 },
+			cursorAt:    { left: 10, top: 10 },
 			delay:       500,
 			scroll:      false,
 
@@ -41,7 +41,7 @@ $("document").ready(function()
 				var $this = $(this);
 				return $('<div>')
 					.addClass("property")
-					.attr("id", $this.attr("id"))
+					.attr("id", $this.closest(".window").attr("id") + "/Property/" + $this.attr("id"))
 					.css("z-index", ++zindex_counter)
 					.html($this.text());
 			},

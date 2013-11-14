@@ -53,6 +53,7 @@
         margin-left: -18px;
         padding-left: 18px; }
 
+.object.ui-draggable-dragging,
 .property.ui-draggable-dragging {
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid grey;

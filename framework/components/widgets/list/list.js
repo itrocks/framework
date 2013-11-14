@@ -36,7 +36,7 @@ $("document").ready(function()
 				}
 			});
 
-			//-------------------------------------------------------------------------- >table droppable
+			//--------------------------------------------------------------------------- table droppable
 			// when a property is dropped between two columns
 			var complete = function($this, event, ui)
 			{
