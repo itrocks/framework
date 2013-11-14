@@ -99,8 +99,9 @@ class Default_List_Controller extends List_Controller
 		$more_hundred = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
 		$more_thousand = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
 		$parameters = array_merge(
+			array($class_name => $data),
+			$parameters,
 			array(
-				$class_name             => $data,
 				"customized_lists"      => $customized_list_settings,
 				"displayed_lines_count" => $displayed_lines_count,
 				"less_twenty"           => $less_twenty,
@@ -117,8 +118,7 @@ class Default_List_Controller extends List_Controller
 				"display_start"         => $list_settings->start_display_line_number,
 				"title"                 => $list_settings->title(),
 				"titles"                => $this->getTitles($list_settings)
-			),
-			$parameters
+			)
 		);
 		// buttons
 		$parameters["general_buttons"]   = $this->getGeneralButtons($class_name, $parameters);

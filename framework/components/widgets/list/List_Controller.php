@@ -116,7 +116,7 @@ abstract class List_Controller extends Output_Controller
 	 */
 	protected function descapePropertyName($property_name)
 	{
-		$property_name = str_replace(".id_", ".", str_replace(">", ".", $property_name));
+		$property_name = str_replace(array(".id_", ">id_", ">"), ".", $property_name);
 		if (substr($property_name, 0, 3) == "id_") {
 			$property_name = substr($property_name, 3);
 		}
