@@ -103,7 +103,6 @@ $("document").ready(function()
 			{
 				$(this).prev().val(ui.item.id);
 			}
-
 		});
 
 		//-------------------------------------------------------------------------- input.combo change
@@ -227,6 +226,9 @@ $("document").ready(function()
 			}
 			$condition.change();
 		});
+
+		//------------------------------------------------------------------------- .vertical.scrollbar
+		this.in(".vertical.scrollbar").verticalscrollbar();
 
 	});
 
