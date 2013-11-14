@@ -38,9 +38,7 @@
 		{
 
 			//------------------------------------------------------------------------------- ajax.target
-			data:   "",
 			target: undefined,
-			type:   "get",
 
 			//---------------------------------------------------------------------------------- complete
 			complete: function(xhr)
@@ -94,8 +92,8 @@
 					$target.find(settings["history"]["condition"]).length
 					&& (
 						settings["history"]["on_post"]
-						|| (xhr.ajax.type.toLowerCase() != "post")
-						|| !xhr.ajax.data.length
+						|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != "post")
+						|| (xhr.ajax.data == undefined) || !xhr.ajax.data.length
 					)
 				) {
 					var title = $target.find(settings["history"]["title"]).first().text();
@@ -160,7 +158,8 @@
 				if ($parent_form.length) {
 					if ($parent_form.ajaxSubmit != undefined) {
 						$parent_form.ajaxSubmit(jax = $.extend(ajax, {
-							url: urlAppend(this.href, this.search)
+							url:  urlAppend(this.href, this.search),
+							type: $parent_form.attr("type")
 						}));
 						xhr = $parent_form.data("jqxhr");
 					}
@@ -197,7 +196,8 @@
 			event.preventDefault();
 			if ($this.ajaxSubmit != undefined) {
 				$this.ajaxSubmit(jax = $.extend(ajax, {
-					url: urlAppend(this.action, this.search)
+					url:  urlAppend(this.action, this.search),
+					type: $this.attr("type")
 				}));
 				xhr = $this.data("jqxhr");
 			}
