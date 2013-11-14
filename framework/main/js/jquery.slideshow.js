@@ -20,6 +20,6 @@
 		}, 5000);
 
 		return this;
-	}
+	};
 
 })( jQuery );

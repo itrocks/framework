@@ -92,6 +92,6 @@ window.modifiable_waiting  = false;
 		});
 
 		return this;
-	}
+	};
 
 })( jQuery );

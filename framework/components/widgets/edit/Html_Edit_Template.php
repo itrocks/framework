@@ -58,7 +58,6 @@ class Html_Edit_Template extends Html_Template
 			$short_class = Namespaces::shortClassName(get_class(reset($this->objects)));
 			$short_form_id = strtolower($short_class) . "_edit";
 			$this->form_id = $short_form_id . "_" . $this->nextFormCounter();
-			$action = "/" . $short_class . "/write";
 			$content = substr($content, 0, $i)
 				/*
 				. '<form method="POST"'

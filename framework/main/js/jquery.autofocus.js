@@ -13,6 +13,6 @@
 			.focus();
 
 		return true;
-	}
+	};
 
 })( jQuery );

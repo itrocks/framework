@@ -60,6 +60,6 @@
 		delete this.in;
 
 		return this;
-	}
+	};
 
 })( jQuery );

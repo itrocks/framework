@@ -61,6 +61,6 @@
 		this.prepend($div);
 
 		return this;
-	}
+	};
 
 })( jQuery );

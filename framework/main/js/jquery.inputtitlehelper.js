@@ -68,6 +68,6 @@
 		});
 
 		return this;
-	}
+	};
 
 })( jQuery );
