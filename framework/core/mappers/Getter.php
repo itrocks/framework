@@ -70,7 +70,7 @@ echo "-- IS THIS DEAD CODE Getter line " . __LINE__ . " ? --";
 						$property->setAccessible(false);
 					}
 					/** @var Component[] $collection */
-					$collection = $dao->search($search_element);
+					$collection = $dao->search($search_element, null, Dao::sort());
 				}
 				else {
 					trigger_error(

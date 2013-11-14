@@ -422,6 +422,9 @@ class Mysql_Link extends Sql_Link
 			$query = $builder->buildQuery();
 			$this->setContext($builder->getJoins()->getClassNames());
 			$result_set = $this->executeQuery($query);
+			if (isset($options)) {
+				$this->getRowsCount($result_set, "SELECT", $options);
+			}
 			$keys = explode(".", $this->getKeyPropertyName($options));
 			$object_key = array_pop($keys);
 			while ($object = $this->fetch($result_set, $class_name)) {
