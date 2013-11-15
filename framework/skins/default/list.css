@@ -13,15 +13,17 @@
   .list.window > table {
     clear: both;
     font: 12px Arial, Sans-serif;
+    width: 100%;
     /* columns */
     /* head */
     /* lines */ }
-    .list.window > table > colgroup > col {
+    .list.window > table > colgroup > col:not(:last-child) {
       min-width: 16px; }
-      .list.window > table > colgroup > col:nth-child(1), .list.window > table > colgroup > col:nth-child(2) {
-        max-width: 16px; }
-      .list.window > table > colgroup > col.insert_after {
-        border-right: 3px solid #aedc5f; }
+    .list.window > table > colgroup > col:first-child, .list.window > table > colgroup > col:nth-child(2) {
+      max-width: 16px;
+      width: 16px; }
+    .list.window > table > colgroup > col.insert_after {
+      border-right: 3px solid #aedc5f; }
     .list.window > table > tbody, .list.window > table > thead {
       border-bottom: 1px solid lightgray;
       border-left: 1px solid lightgray;
@@ -74,8 +76,9 @@
         background-color: #aedc5f; }
       .list.window > table > tbody > tr > td {
         border-right: 1px dotted lightgray;
-        padding: 0 2px;
         white-space: nowrap; }
+        .list.window > table > tbody > tr > td:not(.vertical.scrollbar) {
+          padding: 0 2px; }
         .list.window > table > tbody > tr > td > a {
           color: black;
           display: block;

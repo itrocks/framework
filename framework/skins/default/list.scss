@@ -16,12 +16,16 @@
 	>table {
 		clear: both;
 		font: 12px Arial, Sans-serif;
+		width: 100%;
 
 		/* columns */
 		>colgroup>col {
-			min-width: 16px;
-			&:nth-child(1), &:nth-child(2) {
+			&:not(:last-child) {
+				min-width: 16px;
+			}
+			&:first-child, &:nth-child(2) {
 				max-width: 16px;
+				width: 16px;
 			}
 			&.insert_after {
 				border-right: 3px solid $table_line_hover;
@@ -113,8 +117,10 @@
 
 			>td {
 				border-right: 1px dotted lightgray;
-				padding: 0 2px;
 				white-space: nowrap;
+				&:not(.vertical.scrollbar) {
+					padding: 0 2px;
+				}
 
 				>a {
 					color: black;

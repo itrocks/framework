@@ -76,6 +76,8 @@
     .import.preview.window > .worksheet:not(:last-child) > .class:not(:nth-child(2)) > fieldset ul {
       display: inline-block;
       text-decoration: none; }
+.import.preview.window > .check {
+  padding: 0 1.5em; }
 .import.preview.window table {
   margin-top: .5em;
   width: 100%; }
