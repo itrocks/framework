@@ -54,7 +54,7 @@ $("document").ready(function()
 				if ($window.length) {
 					var window_id = $window.attr("id");
 					if ((window_id != undefined) && (window_id.indexOf("/") != -1)) {
-						$(event.target).data("on.success", function() {
+						$(event.target).data("on-success", function() {
 							$.ajax({
 								url:     app.uri_base + window_id + "?as_widget=1" + app.andSID(),
 								success: function(data) {

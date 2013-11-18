@@ -20,16 +20,17 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			url_append: "",
+			url_append:      "",
 			keep:            "popup",
 			submit:          "submit",
 			error:           undefined,
+			popup_element:   "div",
 			success:         undefined,
 			draggable_blank: undefined,
 			history: {
-				condition: ".window>h2",
+				condition: false,
 				on_post:   false,
-				title:     ".window>h2"
+				title:     false
 			}
 		}, options);
 
@@ -55,6 +56,75 @@
 				}
 			},
 
+			//---------------------------------------------------------------------------- ajax.historize
+			/**
+			 * @param xhr     object
+			 * @param $target jQuery
+			 */
+			historize: function(xhr, $target)
+			{
+				if (
+					(settings["history"]["condition"])
+					&& $target.find(settings["history"]["condition"]).length
+					&& (
+					settings["history"]["on_post"]
+						|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != "post")
+						|| (xhr.ajax.data == undefined) || !xhr.ajax.data.length
+					)
+				) {
+					var title;
+					if (
+						(settings["history"]["title"] != undefined)
+						&& settings["history"]["title"]
+					) {
+						title = $target.find(settings["history"]["title"]).first().text();
+						if (!title.length) {
+							title = xhr.from.href;
+						}
+					}
+					else {
+						title = xhr.from.href;
+					}
+					document.title = title;
+					window.history.pushState({ reload: true }, title, xhr.from.href);
+				}
+			},
+
+			//-------------------------------------------------------------------------------- ajax.popup
+			/**
+			 * @param $where jQuery
+			 * @param id     string
+			 * @return jQuery
+			 */
+			popup: function($where, id)
+			{
+				var $from = $where;
+				if (id == "_blank") {
+					id = "window" + ++window.zindex_counter;
+					$where = $($("body").children(":last-child"));
+				}
+				var $target = $("<" + settings.popup_element + ">").attr("id", id);
+				if (settings["keep"] && $where.hasClass(settings["keep"])) {
+					$target.addClass(settings["keep"]);
+				}
+				$target.insertAfter($where);
+				if ($where != $from) {
+					$target.css("position", "absolute");
+					$target.css("left", document.mouse.x);
+					$target.css("top",  document.mouse.y);
+					$target.css("z-index", window.zindex_counter);
+					if (settings["draggable_blank"] != undefined) {
+						if (settings["draggable_blank"] === true) {
+							$target.draggable();
+						}
+						else {
+							$target.draggable({ handle: settings["draggable_blank"] });
+						}
+					}
+				}
+				return $target;
+			},
+
 			//------------------------------------------------------------------------------ ajax.success
 			success: function(data, status, xhr)
 			{
@@ -63,59 +133,28 @@
 				var build_target = false;
 				// popup a new element
 				if (!$target.length) {
-					var destination = xhr.from.target.substr(1);
-					var $where = $from;
-					if (destination == "_blank") {
-						destination = "window" + ++window.zindex_counter;
-						$where = $($("body").children(":last-child"));
-					}
-					$target = $("<section>").attr("id", destination);
-					if (settings["keep"] && $from.hasClass(settings["keep"])) {
-						$target.addClass(settings["keep"]);
-					}
-					$target.insertAfter($where);
-					if ($where != $from) {
-						$target.css("position", "absolute");
-						$target.css("left", document.mouse.x);
-						$target.css("top",  document.mouse.y);
-						$target.css("z-index", window.zindex_counter);
-						if (settings["draggable_blank"] != undefined) {
-							$target.draggable({ handle: settings["draggable_blank"] });
-						}
-					}
+					$target = this.popup($from, xhr.from.target.substr(1));
 					build_target = true;
 				}
 				// write result into destination element, and build jquery active contents
 				$target.html(data);
 				// change browser's URL and title, push URL into history
-				if (
-					$target.find(settings["history"]["condition"]).length
-					&& (
-						settings["history"]["on_post"]
-						|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != "post")
-						|| (xhr.ajax.data == undefined) || !xhr.ajax.data.length
-					)
-				) {
-					var title = $target.find(settings["history"]["title"]).first().text();
-					if (!title.length) {
-						title = xhr.from.href;
-					}
-					document.title = title;
-					window.history.pushState({ reload: true }, title, xhr.from.href);
+				if (settings["history"]) {
+					this.historize(xhr, $target);
 				}
 				// If build plugin is active : build loaded DOM
 				if ($target.build != undefined) {
 					if (build_target) $target.build();
 					else              $target.children().build();
 				}
-				// on.success callbacks
+				// on success callbacks
 				var target = $target.get()[0];
 				if (settings["success"] != undefined) {
 					target.success = settings["success"];
 					target.success(data, status, xhr);
 					target.success = undefined;
 				}
-				var on_success = $from.data("on.success");
+				var on_success = $from.data("on-success");
 				if (on_success != undefined) {
 					target.success = on_success;
 					target.success(data, status, xhr);
@@ -212,17 +251,21 @@
 			xhr.from = this;
 		});
 
+		//--------------------------------------------------------------------------- window onpopstate
+		if (settings["history"]["condition"]) {
+			$(window).bind("popstate", function(event)
+			{
+				if (
+					(event.originalEvent.state != undefined)
+					&& (event.originalEvent.state.reload !== undefined)
+					&& event.originalEvent.state.reload
+				) {
+					document.location.reload();
+				}
+			});
+		}
+
 		return this;
 	};
-
-	//----------------------------------------------------------------------------- window onpopstate
-	$(window).bind("popstate", function(event)
-	{
-		if (event.originalEvent.state != undefined) {
-			if ((event.originalEvent.state.reload !== undefined) && event.originalEvent.state.reload) {
-				document.location.reload();
-			}
-		}
-	});
 
 })( jQuery );
