@@ -9,6 +9,43 @@ use ReflectionException;
 abstract class Import_Settings_Builder
 {
 
+	//---------------------------------------------------------------------------------- autoIdentify
+	/**
+	 * If no property contains the charater "*" in import file, automatically detects which property
+	 * names are used to identify records using the @representative classes annotation
+	 *
+	 * @param $class_name      string
+	 * @param $properties_path string[] $property_path = string[integer $column_number]
+	 * @return array $identified = boolean[string $property_path][integer $position]
+	 */
+	private static function autoIdentify($class_name, $properties_path)
+	{
+		foreach ($properties_path as $property_path) {
+			if (strpos($property_path, "*") !== false) {
+				return array();
+			}
+		}
+		$auto_identify = array();
+		foreach ($properties_path as $property_path) {
+			$class = Reflection_Class::getInstanceOf($class_name);
+			$representative = $class->getListAnnotation("representative")->values();
+			foreach (explode(".", $property_path) as $pos => $property_name) {
+				if (in_array($property_name, $representative)) {
+					$auto_identify[$property_path][$pos] = true;
+				}
+				$property = $class->getProperty($property_name);
+				if (isset($property)) {
+					$type = $property->getType();
+					if ($type->isClass()) {
+						$class = Reflection_Class::getInstanceOf($type->getElementTypeAsString());
+						$representative = $class->getListAnnotation("representative")->values();
+					}
+				}
+			}
+		}
+		return $auto_identify;
+	}
+
 	//------------------------------------------------------------------------------------ buildArray
 	/**
 	 * Builds import settings using a data array
@@ -27,12 +64,14 @@ abstract class Import_Settings_Builder
 		$settings = new Import_Settings($class_name);
 		/** @var $classes Import_Class[] */
 		$classes = array();
-		foreach (Import_Array::getPropertiesFromArray($array, $class_name) as $property_path) {
+		$properties_path = Import_Array::getPropertiesFromArray($array, $class_name);
+		$auto_identify = self::autoIdentify($class_name, $properties_path);
+		foreach ($properties_path as $property_path) {
 			$sub_class = $class_name;
 			$last_identify = false;
 			$class_path = "";
 			$property_path_for_class = array();
-			foreach (explode(".", $property_path) as $property_name) {
+			foreach (explode(".", $property_path) as $pos => $property_name) {
 				$identify = (substr($property_name, -1) !== "*");
 				if (!$identify) {
 					$property_name = substr($property_name, 0, -1);
@@ -49,7 +88,12 @@ abstract class Import_Settings_Builder
 				$import_property = new Import_Property($sub_class, $property_name);
 				try {
 					$property = Reflection_Property::getInstanceOf($sub_class, $property_name);
-					if ($identify) {
+					if (
+						($identify && !$auto_identify)
+						|| (
+							isset($auto_identify[$property_path]) && isset($auto_identify[$property_path][$pos])
+						)
+					) {
 						$class->identify_properties[$property_name] = $import_property;
 					}
 					else {
