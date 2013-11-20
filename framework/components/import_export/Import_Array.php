@@ -17,17 +17,15 @@ class Import_Array
 
 	//---------------------------------------------------------------------------- $properties_column
 	/**
-	 * $properties_column[$property_path][$property_name]
-	 *
-	 * @var array Two dimensional array : keys are property path without final name and property name
+	 * @var array $property_column_number integer[string $property_path][string $property_name]
 	 */
 	private $properties_column;
 
 	//------------------------------------------------------------------------------ $properties_link
 	/**
-	 * $properties_link[$property_path] = value of the property @link annotation
+	 * values of each property's @link annotation
 	 *
-	 * @var string[] key is the property path
+	 * @var string[] string[string $property_path]
 	 */
 	private $properties_link;
 
@@ -63,8 +61,8 @@ class Import_Array
 	 * The cursor on $array must be set to properties path row before calling this method
 	 * The cursor will stay on the properties path row
 	 *
-	 * @param $this_constants string[] key is property path, value will be written into array
-	 * @param $array          array Two dimensional array : keys are row and column nummber
+	 * @param $this_constants $value = string[$property_path]
+	 * @param $array          $value = string[integer $row_number][integer $column_number]
 	 */
 	private static function addConstantsToArray($this_constants, &$array)
 	{
@@ -129,7 +127,7 @@ class Import_Array
 	 *
 	 * The cursor on $array is reset to the first row of the array
 	 *
-	 * @param $array      array Two dimensional array : keys are row and column number
+	 * @param $array      array $value = string[$row_number][$column_number]
 	 * @param $class_name string default class name (if not found on the first row of the array)
 	 * @return string
 	 */
@@ -164,8 +162,8 @@ class Import_Array
 	 *
 	 * The cursor on $array is set to the row containing the definitive properties path
 	 *
-	 * @param $array array Two dimensional array : keys are row and column number
-	 * @return string[] key is property path, value is it's fixed value for the import
+	 * @param $array array $value = string[$row_number][$column_number]
+	 * @return string[] $fixed_value_for_import = string[string $property_path]
 	 */
 	public static function getConstantsFromArray(&$array)
 	{
@@ -184,7 +182,7 @@ class Import_Array
 	 *
 	 * @todo user must place himself into the list settings matching the import, should search it
 	 * @param $class_name string
-	 * @return string[]
+	 * @return string[] $property_alias = string[string $property_name]
 	 */
 	public static function getPropertiesAlias($class_name)
 	{
@@ -205,9 +203,9 @@ class Import_Array
 	 *
 	 * The cursor on $array is set to the row containing the properties path.
 	 *
-	 * @param $array      array Two dimensional array : keys are row and column number
+	 * @param $array      $value = string[integer $row_number][integer $column_number]
 	 * @param $class_name string class name : if set, will use current list settings properties alias
-	 * @return string[] key is the column number, value is a property path
+	 * @return string[] $property_path = string[integer $column_number]
 	 */
 	public static function getPropertiesFromArray(&$array, $class_name = null)
 	{
@@ -228,8 +226,8 @@ class Import_Array
 	//---------------------------------------------------------------------- getPropertyLinkAndColumn
 	/**
 	 * @param $class_name      string Main class name
-	 * @param $properties_path string[]
-	 * @return array First element is property link, second is property column
+	 * @param $properties_path string[] $property_path = string[integer $column_number]
+	 * @return array array($property_link = string[string $property_path], $property_column = string[string $property_path])
 	 */
 	private static function getPropertiesLinkAndColumn($class_name, $properties_path)
 	{
@@ -267,9 +265,9 @@ class Import_Array
 
 	//------------------------------------------------------------------------------- getSearchObject
 	/**
-	 * @param $row                     string[] imported row of data
+	 * @param $row                     string[] $value = string[integer $column_number]
 	 * @param $identify_properties     Import_Property[] properties used to identify the read object
-	 * @param $class_properties_column integer[] column index for each property of the current class
+	 * @param $class_properties_column integer[] $column_number = integer[string $property_name]
 	 * @return array search array for Dao::search() using $this->class_name
 	 */
 	private function getSearchObject($row, $identify_properties, $class_properties_column)
@@ -292,7 +290,7 @@ class Import_Array
 	 * Beware : if $array begins with a "Class_Name" row, this first row will be removed !
 	 * Beware : first row must contain property paths, and will be removed !
 	 *
-	 * @param $array array two dimension (keys are row and column number) array
+	 * @param $array array $value = string[$row_number][$column_number]
 	 */
 	public function importArray(&$array)
 	{
@@ -328,7 +326,7 @@ class Import_Array
 	 * At the end, the cursor will be at the end of the array (out of the array, in fact)
 	 *
 	 * @param $class Import_Class
-	 * @param $array array Two dimensional array : keys are row and column number
+	 * @param $array array $value = string[integer $row_number][integer $column_number]
 	 */
 	private function importArrayClass(Import_Class $class, &$array)
 	{
@@ -396,7 +394,7 @@ class Import_Array
 	 * @param $class_name              string
 	 * @param $property_path           string
 	 * @param $use_reverse_translation boolean if true, will try reverse translation of property names
-	 * @param $properties_alias        string[] key is alias, value is property path
+	 * @param $properties_alias        string[] $property_path = string[string $property_alias]
 	 * @return string
 	 */
 	public static function propertyPathOf(
