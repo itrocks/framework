@@ -18,7 +18,7 @@ class Default_Edit_Controller extends Default_Output_Controller
 		$fill_combo = isset($parameters["fill_combo"])
 			? array("fill_combo" => $parameters["fill_combo"]) : array();
 		return array(
-			new Button("Cancel", View::link($object, "list"), "cancel",
+			new Button("Close", View::link($object, "list"), "close",
 				array(Color::of("close"), "#main")
 			),
 			new Button("Write", View::link($object, "write", null, $fill_combo), "write",
