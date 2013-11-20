@@ -410,12 +410,26 @@ class Import_Array
 				if ($asterisk = (substr($property_name, -1) == "*")) {
 					$property_name = substr($property_name, 0, -1);
 				}
-				$property_name = Loc::rtr($property_name, $property_class_name);
-				$property_names[] = Names::displayToProperty($property_name) . ($asterisk ? "*" : "");
+				$property = null;
+				$property_name = Names::displayToProperty($property_name);
 				try {
 					$property = Reflection_Property::getInstanceOf($property_class_name, $property_name);
 				}
 				catch (ReflectionException $e) {
+					$translated_property_name = Names::displayToProperty(Loc::rtr(
+						$property_name, $property_class_name
+					));
+					try {
+						$property = Reflection_Property::getInstanceOf(
+							$property_class_name, $translated_property_name
+						);
+						$property_name = $translated_property_name;
+					}
+					catch (ReflectionException $e) {
+					}
+				}
+				$property_names[] = $property_name . ($asterisk ? "*" : "");
+				if (!isset($property)) {
 					break;
 				}
 				$property_class_name = Builder::className($property->getType()->getElementTypeAsString());
