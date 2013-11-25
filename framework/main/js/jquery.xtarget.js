@@ -35,8 +35,7 @@
 		}, options);
 
 		//---------------------------------------------------------------------------------------- ajax
-		var ajax =
-		{
+		var ajax = {
 
 			//------------------------------------------------------------------------------- ajax.target
 			target: undefined,
@@ -61,7 +60,7 @@
 			 * @param xhr     object
 			 * @param $target jQuery
 			 */
-			historize: function(xhr, $target)
+			pushHistory: function(xhr, $target)
 			{
 				if (
 					(settings["history"]["condition"])
@@ -140,7 +139,7 @@
 				$target.html(data);
 				// change browser's URL and title, push URL into history
 				if (settings["history"]) {
-					this.historize(xhr, $target);
+					this.pushHistory(xhr, $target);
 				}
 				// If build plugin is active : build loaded DOM
 				if ($target.build != undefined) {

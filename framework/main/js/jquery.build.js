@@ -9,13 +9,14 @@
 	 * Call build(callback) what callback functions you want to be called for future added dom elements
 	 * call this.build() after you add dom elements (ie dynamic javascript add, ajax calls) to apply the same changes
 	 *
-	 * @param callback function the callback function
-	 * @param call_now boolean optional default true
+	 * @param [callback] function the callback function
+	 * @param [call_now] boolean optional default true
 	 * @return jQuery
 	 */
 	$.fn.build = function (callback, call_now)
 	{
 		// use this.in(selector) in callback to build the elements
+		//noinspection ReservedWordAsName
 		this.in = function(selector, nop)
 		{
 			// accepts ".aclass, .another" : take each of them
@@ -59,6 +60,7 @@
 		}
 		delete this.in;
 
+		//noinspection JSValidateTypes
 		return this;
 	};
 

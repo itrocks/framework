@@ -1,6 +1,6 @@
 .menu.output {
   background: white;
-  border: 1px solid darkgray;
+  border: 1px solid darkgrey;
   border-radius: 3px;
   box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
   display: inline-block;
@@ -16,7 +16,7 @@
     height: 24px;
     width: 24px; }
   .menu.output > h2 {
-    border-bottom: 1px solid #c0c0c0;
+    border-bottom: 1px solid silver;
     margin-bottom: 4px;
     text-align: center; }
     .menu.output > h2 > a {
@@ -29,13 +29,12 @@
     margin: 0;
     padding: 0; }
     .menu.output > ul > li {
-      background: 3px 3px no-repeat;
-      padding: 4px 0 0; }
+      background: 3px 3px no-repeat; }
       .menu.output > ul > li > h3 {
         background-color: lightgrey;
         color: black;
         font: bold 12px arial;
-        margin: 0 0 0 0;
+        margin: 0;
         padding: 0 6px 0 6px;
         white-space: nowrap; }
       .menu.output > ul > li > ul {
