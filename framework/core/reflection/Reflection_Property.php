@@ -202,11 +202,35 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	{
 		if (!isset($this->doc_comment)) {
 			$overridden_property = $this->getOverriddenProperty();
-			$this->doc_comment = parent::getDocComment()
+			$this->doc_comment =
+				parent::getDocComment()
+				. $this->getOverriddenDocComment()
 				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : "");
-			$this->doc_comment = parent::getDocComment() . $this->doc_comment;
 		}
 		return $this->doc_comment;
+	}
+
+	//----------------------------------------------------------------------- getOverriddenDocComment
+	/**
+	 * @return Class_Override_Annotation[]
+	 */
+	private function getOverriddenDocComment()
+	{
+		$comment = "";
+		/** @var $annotation Class_Override_Annotation */
+		foreach (
+			Reflection_Class::getInstanceOf($this->final_class)->getListAnnotations("override")
+			as $annotation
+		) {
+			if ($annotation->property_name === $this->name) {
+				$comment .= "/**\n";
+				foreach ($annotation->values() as $key => $value) {
+					$comment .= "\t * @" . $key . " " . $value . "\n";
+				}
+				$comment .= "\t */";
+			}
+		}
+		return $comment;
 	}
 
 	//------------------------------------------------------------------------- getOverriddenProperty
