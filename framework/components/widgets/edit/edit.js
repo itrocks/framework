@@ -142,7 +142,7 @@ $("document").ready(function()
 		});
 		this.in("input.combo~.edit").attr("tabindex", -1);
 		if (this.attr("id") && (this.attr("id").substr(0, 6) == "window")) {
-			this.in(".actions>.cancel>a")
+			this.in(".actions>.close>a")
 				.attr("href", "javascript:$('#" + this.attr("id") + "').remove()")
 				.attr("target", "");
 			var $button = this.in(".actions>.write>a");
