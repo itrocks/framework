@@ -90,8 +90,25 @@ class Builder implements Plugin
 	public static function fromArray($class_name, $array)
 	{
 		$object = self::create($class_name);
-		foreach ($array as $property_name => $value) {
-			$object->$property_name = $value;
+		if (isset($array)) {
+			foreach ($array as $property_name => $value) {
+				if (is_array($value)) {
+					$property = Reflection_Property::getInstanceOf($class_name, $property_name);
+					if ($property->getType()->isClass()) {
+						$property_class_name = $property->getType()->getElementTypeAsString();
+						if ($property->getType()->isMultiple()) {
+							foreach ($value as $key => $val) {
+								$value[$key] = self::fromArray($property_class_name, $val);
+							}
+						}
+						else {
+							$value = self::fromArray($property_class_name, $value);
+						}
+						$property->setValue($object, $value);
+					}
+				}
+				$object->$property_name = $value;
+			}
 		}
 		return $object;
 	}
