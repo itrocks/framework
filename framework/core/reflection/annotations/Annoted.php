@@ -110,7 +110,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @param $annotation      Annotation
 	 */
-	protected function setAnnotation($annotation_name, Annotation $annotation)
+	public function setAnnotation($annotation_name, Annotation $annotation)
 	{
 		$this->annotations[$annotation_name][false] = $annotation;
 	}
@@ -122,7 +122,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @param $annotations     Annotation[]
 	 */
-	protected function setAnnotations($annotation_name, $annotations)
+	public function setAnnotations($annotation_name, $annotations)
 	{
 		$this->annotations[$annotation_name][true] = $annotations;
 	}
