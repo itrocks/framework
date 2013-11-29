@@ -796,21 +796,29 @@ class Html_Template
 
 	//-------------------------------------------------------------------------------- parseSeparator
 	/**
-	 * Remove <!--separator-->(...) code from a loop content, and returns the separator content
+	 * Removes <!--separator-->(...) code from a loop content, and returns the separator content.
 	 *
 	 * @param $content string
 	 * @return string the separator content
 	 */
 	protected function parseSeparator(&$content)
 	{
-		if (($k = strpos($content, "<!--separator-->")) !== false) {
-			$separator = substr($content, $k + 16);
-			$content = substr($content, 0, $k);
+		if (($i = strrpos($content, "<!--separator-->")) !== false) {
+			$separator = substr($content, $i + 16);
+			// this separator is not for me if there is any <!--block--> to parse into it's source code.
+			$j = 0;
+			while (strpos($separator, "<!--", $j) !== false) {
+				$j += 4;
+				if ($this->parseThis($separator, $j)) {
+					return "";
+				}
+				$j = strpos($separator, "-->", $j) + 3;
+			}
+			// nothing to parse inside of it ? This separator is for me.
+			$content = substr($content, 0, $i);
+			return $separator;
 		}
-		else {
-			$separator = "";
-		}
-		return $separator;
+		return "";
 	}
 
 	//------------------------------------------------------------------------------ parseSingleValue
