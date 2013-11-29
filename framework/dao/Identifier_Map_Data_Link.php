@@ -34,12 +34,29 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	 * A null value will be returned for an object that is not linked to data link.
 	 * If $object is already an identifier, the identifier is returned.
 	 *
-	 * @param $object object an object to get data link identifier from
+	 * @param $object        object an object to get data link identifier from
+	 * @param $property_name string a property name to get data link identifier from instead of object
 	 * @return mixed you can test if an object identifier is set with empty($of_this_result)
 	 */
-	public function getObjectIdentifier($object)
+	public function getObjectIdentifier($object, $property_name = null)
 	{
-		return is_object($object) ? (isset($object->id) ? $object->id : null) : $object;
+		if (is_object($object)) {
+			if (isset($property_name)) {
+				$id_property_name = "id_" . $property_name;
+				if (isset($object->$id_property_name)) {
+					return $object->$id_property_name;
+				}
+				else {
+					return self::getObjectIdentifier($object->$property_name);
+				}
+			}
+			else {
+				return isset($object->id) ? $object->id : null;
+			}
+		}
+		else {
+			return $object;
+		}
 	}
 
 	//---------------------------------------------------------------------------- objectToProperties

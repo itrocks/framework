@@ -149,18 +149,22 @@ abstract class Dao
 
 	//--------------------------------------------------------------------------- getObjectIdentifier
 	/**
-	 * Read an object's identifier, if known for current data link
-	 *
+	 * Read an object's identifier, if known for current data link.
 	 * A null value will be returned for an object that is not linked to current data link.
 	 *
-	 * @param $object object
+	 * If property name is set, the object property value identifier will be read instead of the
+	 * object's identifier. This enable you to get the property value id without reading the object
+	 * from the database.
+	 *
+	 * @param $object        object
+	 * @param $property_name string
 	 * @return mixed
 	 */
-	public static function getObjectIdentifier($object)
+	public static function getObjectIdentifier($object, $property_name = null)
 	{
 		$data_link = self::current();
 		return ($data_link instanceof Identifier_Map_Data_Link)
-			? $data_link->getObjectIdentifier($object)
+			? $data_link->getObjectIdentifier($object, $property_name)
 			: null;
 	}
 
