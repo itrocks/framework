@@ -58,8 +58,8 @@ abstract class Getter
 					/** @var Component[] $collection */
 					$collection = $dao->search($search_element, null, Dao::sort());
 				}
+				// when element class is not a component and a property name was found
 				elseif (!empty($property_name)) {
-echo "-- IS THIS DEAD CODE Getter line " . __LINE__ . " ? --";
 					$property = Reflection_Property::getInstanceOf($search_element, $property_name);
 					$accessible = $property->isPublic();
 					if (!$accessible) {
@@ -91,22 +91,25 @@ echo "-- IS THIS DEAD CODE Getter line " . __LINE__ . " ? --";
 	/**
 	 * Generic getter for mapped objects
 	 *
-	 * @param $map      Component[] actual value of the property (will be returned if not null)
-	 * @param $property string|Reflection_Property the source property (or name) for map reading
-	 * @param $parent   object the parent object
+	 * @param $map             Component[] actual value of the property (will be returned if not null)
+	 * @param $parent_property string|Reflection_Property the source property (or name) for map
+	 *                         reading
+	 * @param $parent object   the parent object
 	 * @return object[]
 	 */
-	public static function getMap($map, $property, $parent)
+	public static function getMap($map, $parent, $parent_property)
 	{
 		if (!isset($map)) {
 			if (Dao::getObjectIdentifier($parent)) {
-				if (!($property instanceof Reflection_Property)) {
-					$property = Reflection_Property::getInstanceOf($parent, $property);
+				if (!($parent_property instanceof Reflection_Property)) {
+					$parent_property = Reflection_Property::getInstanceOf($parent, $parent_property);
 				}
-				$dao = ($dao = $property->getAnnotation("dao")->value) ? Dao::get($dao) : Dao::current();
+				$dao = ($dao = $parent_property->getAnnotation("dao")->value)
+					? Dao::get($dao)
+					: Dao::current();
 				$map = $dao->search(
-					array(get_class($parent) . "->" . $property->name => $parent),
-					Builder::className($property->getType()->getElementTypeAsString()),
+					array(get_class($parent) . "->" . $parent_property->name => $parent),
+					Builder::className($parent_property->getType()->getElementTypeAsString()),
 					Dao::sort()
 				);
 			}
