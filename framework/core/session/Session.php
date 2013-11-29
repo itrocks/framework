@@ -78,8 +78,7 @@ class Session
 	 */
 	public static function sid($prefix = "")
 	{
-		/** @noinspection PhpUndefinedConstantInspection */
-		return SID ? ($prefix . SID) : "";
+		return session_id() ? ($prefix . session_name() . "=" . session_id()) : "";
 	}
 
 	//---------------------------------------------------------------------------------------- remove
