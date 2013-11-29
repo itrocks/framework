@@ -19,6 +19,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * Register this using "@getter Aop::getAll" for a property that points on all existing elements of a collection
 	 *
 	 * @param AopJoinpoint $joinpoint
+	 * @return object[]
 	 */
 	public static function getAll(AopJoinpoint $joinpoint)
 	{
@@ -38,6 +39,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * Register this for any object collection property using "@link Collection" annotation
 	 *
 	 * @param $joinpoint AopJoinpoint
+	 * @return Component[]
 	 */
 	public static function getCollection(AopJoinpoint $joinpoint)
 	{
@@ -57,6 +59,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * Register this for any Date_Time property using "@link DateTime" annotation
 	 *
 	 * @param $joinpoint AopJoinpoint
+	 * @return Date_Time
 	 */
 	public static function getDateTime(AopJoinpoint $joinpoint)
 	{
@@ -85,6 +88,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * Register this for any object map property using "@link Map" annotation
 	 *
 	 * @param AopJoinpoint $joinpoint
+	 * @return object[]
 	 */
 	public static function getMap(AopJoinpoint $joinpoint)
 	{
@@ -93,7 +97,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 		if (!isset($object->$property)) {
 			$class = $joinpoint->getClassName();
 			$property = Reflection_Property::getInstanceOf($class, $property);
-			$object->$property = Getter::getMap(null, $property, $object);
+			$object->$property = Getter::getMap(null, $object, $property);
 		}
 		return $object->$property;
 	}
@@ -126,8 +130,23 @@ abstract class Aop_Getter extends Aop implements Plugin
 	{
 		Aop::add(Aop::AFTER,
 			'SAF\Framework\Autoloader->includeClass()',
-			array(__CLASS__, "registerGettersAop")
+			array(__CLASS__, "registerIncludedGettersAop")
 		);
+		Aop::add(Aop::AFTER,
+			'SAF\Framework\Class_Builder->build()',
+			array(__CLASS__, "registerBuiltGettersAop")
+		);
+	}
+
+	//----------------------------------------------------------------------- registerBuiltGettersAop
+	/**
+	 * AOP auto-registerer call
+	 *
+	 * @param $joinpoint AopJoinpoint returned value must be a class name
+	 */
+	public static function registerBuiltGettersAop(AopJoinpoint $joinpoint)
+	{
+		parent::registerProperties($joinpoint->getReturnedValue(), "getter", "after", "read");
 	}
 
 	//------------------------------------------------------------------------------- registerGetters
@@ -145,13 +164,13 @@ abstract class Aop_Getter extends Aop implements Plugin
 		parent::registerProperties($class_name, "getter", "after", "read");
 	}
 
-	//---------------------------------------------------------------------------- registerGettersAop
+	//-------------------------------------------------------------------- registerIncludedGettersAop
 	/**
 	 * AOP auto-registerer call
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $joinpoint AopJoinpoint returned value must be a class name
 	 */
-	public static function registerGettersAop(AopJoinpoint $joinpoint)
+	public static function registerIncludedGettersAop(AopJoinpoint $joinpoint)
 	{
 		if ($file_path = $joinpoint->getReturnedValue()) {
 			$class_name = Autoloader::rectifyClassName($joinpoint->getArguments()[0], $file_path);

@@ -45,9 +45,8 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 
 	//---------------------------------------------------------------------------------- $final_class
 	/**
-	 * Final class asked when calling getInstanceOf()
-	 *
-	 * It may not be the class where the property is declared, but the class which was asked
+	 * Final class asked when calling getInstanceOf().
+	 * It may not be the class where the property is declared, but the class which was asked.
 	 *
 	 * @var string
 	 */
@@ -55,8 +54,8 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 
 	//---------------------------------------------------------------------------- $override_property
 	/**
-	 * Only if the property is declared into a parent class as well as into the child class
-	 * If not, this will be false
+	 * Only if the property is declared into a parent class as well as into the child class.
+	 * If not, this will be false.
 	 *
 	 * @var Reflection_Property|boolean
 	 */
@@ -203,18 +202,20 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		if (!isset($this->doc_comment)) {
 			$overridden_property = $this->getOverriddenProperty();
 			$this->doc_comment =
-				parent::getDocComment()
-				. $this->getOverriddenDocComment()
+				$this->getOverrideDocComment()
+				. parent::getDocComment()
 				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : "");
 		}
 		return $this->doc_comment;
 	}
 
-	//----------------------------------------------------------------------- getOverriddenDocComment
+	//------------------------------------------------------------------------- getOverrideDocComment
 	/**
+	 * Gets the class @override property doc comment that overrides the original property doc comment
+	 *
 	 * @return Class_Override_Annotation[]
 	 */
-	private function getOverriddenDocComment()
+	private function getOverrideDocComment()
 	{
 		$comment = "";
 		/** @var $annotation Class_Override_Annotation */
@@ -235,6 +236,8 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 
 	//------------------------------------------------------------------------- getOverriddenProperty
 	/**
+	 * Gets the parent property overridden by the current one from the parent class
+	 *
 	 * @return Reflection_Property
 	 */
 	public function getOverriddenProperty()

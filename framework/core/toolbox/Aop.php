@@ -82,13 +82,26 @@ abstract class Aop
 	public static function registerProperties($class_name, $annotation, $when, $function)
 	{
 		if (
-			@class_exists($class_name, false)
+			($is_class = @class_exists($class_name, false))
 			|| @trait_exists($class_name, false)
 			|| @interface_exists($class_name, false)
 		) {
 			$class = Reflection_Class::getInstanceOf($class_name);
+			// properties overridden in traits must be overridden into final class
+			$overridden_properties = array();
+			if ($is_class) {
+				foreach ($class->getListAnnotations("override") as $override) {
+					/** @var $override Class_Override_Annotation */
+					foreach ($override->values() as $overridden_annotation => $override_value) {
+						if (in_array($overridden_annotation, array("getter", "link", "setter"))) {
+							$overridden_properties[$override->property_name] = true;
+						}
+					}
+				}
+			}
+			// define getter / setter for each property
 			foreach ($class->getProperties() as $property) {
-				if ($property->class == $class_name) {
+				if (($property->class == $class_name) || isset($overridden_properties[$property->name])) {
 					$call = $property->getAnnotation($annotation)->value;
 					if ($call) {
 						if (strpos($call, "::")) {

@@ -19,8 +19,23 @@ abstract class Aop_Setter extends Aop implements Plugin
 	{
 		Aop::add(Aop::AFTER,
 			'SAF\Framework\Autoloader->includeClass()',
-			array(__CLASS__, "registerSettersAop")
+			array(__CLASS__, "registerIncludedSettersAop")
 		);
+		Aop::add(Aop::AFTER,
+			'SAF\Framework\Class_Builder->build()',
+			array(__CLASS__, "registerBuiltSettersAop")
+		);
+	}
+
+	//----------------------------------------------------------------------- registerBuiltSettersAop
+	/**
+	 * AOP auto-registerer call
+	 *
+	 * @param $joinpoint AopJoinpoint
+	 */
+	public static function registerBuiltSettersAop(AopJoinpoint $joinpoint)
+	{
+		parent::registerProperties($joinpoint->getReturnedValue(), "setter", "before", "write");
 	}
 
 	//------------------------------------------------------------------------------- registerSetters
@@ -39,13 +54,13 @@ abstract class Aop_Setter extends Aop implements Plugin
 		parent::registerProperties($class_name, "setter", "before", "write");
 	}
 
-	//---------------------------------------------------------------------------- registerSettersAop
+	//-------------------------------------------------------------------- registerIncludedSettersAop
 	/**
 	 * AOP auto-registerer call
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */
-	public static function registerSettersAop(AopJoinpoint $joinpoint)
+	public static function registerIncludedSettersAop(AopJoinpoint $joinpoint)
 	{
 		if ($file_path = $joinpoint->getReturnedValue()) {
 			$class_name = Autoloader::rectifyClassName($joinpoint->getArguments()[0], $file_path);
