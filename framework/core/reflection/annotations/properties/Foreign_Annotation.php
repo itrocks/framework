@@ -56,7 +56,9 @@ class Foreign_Annotation extends Documented_Type_Annotation
 		$type = $reflection_property->getType();
 		$composites = array();
 		$possibles = array();
-		$foreign_class = Reflection_Class::getInstanceOf($type->getElementTypeAsString());
+		$foreign_class = Reflection_Class::getInstanceOf(Builder::className(
+				$type->getElementTypeAsString()
+		));
 		foreach ($foreign_class->getAllProperties() as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
 			if (
@@ -85,9 +87,9 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	{
 		$type = $reflection_property->getType();
 		$possibles = array();
-		$foreign_class = Reflection_Class::getInstanceOf(
-			Builder::className($type->getElementTypeAsString())
-		);
+		$foreign_class = Reflection_Class::getInstanceOf(Builder::className(
+			$type->getElementTypeAsString()
+		));
 		foreach ($foreign_class->getAllProperties() as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
 			if (
@@ -122,7 +124,9 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	{
 		$type = $reflection_property->getType();
 		$possibles = array();
-		$foreign_class = Reflection_Class::getInstanceOf($type->asString());
+		$foreign_class = Reflection_Class::getInstanceOf(Builder::className(
+			$type->asString()
+		));
 		foreach ($foreign_class->getAllProperties() as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
 			if (
