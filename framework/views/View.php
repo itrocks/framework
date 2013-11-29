@@ -67,7 +67,7 @@ abstract class View
 	 *
 	 * @param $object     object|string linked object or class name
 	 * @param $feature    string linked feature name
-	 * @param $parameters string|string[] optional parameters list
+	 * @param $parameters string|string[]|object|object[] optional parameters list
 	 * @param $arguments  string|string[] optional arguments list
 	 * @return string
 	 */

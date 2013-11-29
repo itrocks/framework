@@ -69,7 +69,7 @@ class Html_View_Engine implements Configurable, View_Engine
 	 *
 	 * @param $object     object|string linked object or class name
 	 * @param $feature    string linked feature name
-	 * @param $parameters string|string[] optional parameters list
+	 * @param $parameters string|string[]|object|object[] optional parameters list
 	 * @param $arguments  string|string[] optional arguments list
 	 * @return string
 	 */
@@ -83,16 +83,18 @@ class Html_View_Engine implements Configurable, View_Engine
 		}
 		if (isset($parameters)) {
 			if (!is_array($parameters)) {
-				$link .= "/" . $parameters;
+				$parameters = array($parameters);
 			}
-			else {
-				foreach ($parameters as $key => $value) {
-					if (!is_numeric($key)) {
-						$link .= "/" . $value;
-					}
-					else {
-						$link .= "/" . $key . "/" . $value;
-					}
+			foreach ($parameters as $key => $value) {
+				if (!is_numeric($key)) {
+					$link .= "/" . $key;
+				}
+				if (is_object($value)) {
+					$link .= "/" . Namespaces::shortClassName(get_class($value))
+						. "/" . Dao::getObjectIdentifier($value);
+				}
+				else {
+					$link .= "/" . $value;
 				}
 			}
 		}
