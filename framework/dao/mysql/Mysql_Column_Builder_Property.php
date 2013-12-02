@@ -153,7 +153,7 @@ abstract class Mysql_Column_Builder_Property
 					)))))))));
 				}
 				elseif ($property_type->isFloat()) {
-					return ($precision ? "decimal($signed_length, $precision)" : "float");
+					return ($precision ? "decimal($signed_length, $precision)" : "double");
 				}
 				elseif ($property->getAnnotation("binary")->value) {
 					return ($max_length <= 65535) ? "blob" : (

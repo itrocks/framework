@@ -249,6 +249,17 @@ class Mysql_Link extends Sql_Link
 		return $result_set->field_count;
 	}
 
+	//--------------------------------------------------------------------------------- getConnection
+	/**
+	 * Gets raw connection object
+	 *
+	 * @return Contextual_Mysqli
+	 */
+	public function getConnection()
+	{
+		return $this->connection;
+	}
+
 	//---------------------------------------------------------------------------------- getRowsCount
 	/**
 	 * Gets the count of rows read / changed by the last query
