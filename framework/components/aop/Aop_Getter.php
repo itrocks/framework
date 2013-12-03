@@ -133,7 +133,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 			array(__CLASS__, "registerIncludedGettersAop")
 		);
 		Aop::add(Aop::AFTER,
-			'SAF\Framework\Class_Builder->build()',
+			'SAF\Framework\Class_Builder->buildClass()',
 			array(__CLASS__, "registerBuiltGettersAop")
 		);
 	}

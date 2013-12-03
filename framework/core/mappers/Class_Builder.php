@@ -30,7 +30,6 @@ class Class_Builder
 			return self::$builds[$class_name][$key];
 		}
 		else {
-			$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : null;
 			$interfaces = array();
 			$traits = array();
 			foreach ($interfaces_traits as $interface_trait) {
@@ -58,21 +57,34 @@ class Class_Builder
 					);
 				}
 			}
-			$interfaces_names = $interfaces ? implode(", ", $interfaces) : "";
-			$traits_names = $traits ? implode(", ", $traits) : "";
-			$namespace = Namespaces::of($class_name) . "\\Built$count";
-			$short_class = Namespaces::shortClassName($class_name);
-			$source = "namespace $namespace {"
+			$built_class = self::buildClass($class_name, $interfaces, $traits);
+			self::$builds[$class_name][$key] = $built_class;
+			return $built_class;
+		}
+	}
+
+	//------------------------------------------------------------------------------------ buildClass
+	/**
+	 * @param $class_name  string
+	 * @param $interfaces  string[]
+	 * @param $traits      string[]
+	 * @return string generated class name
+	 */
+	private static function buildClass($class_name, $interfaces, $traits)
+	{
+		$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : null;
+		$namespace = Namespaces::of($class_name) . "\\Built$count";
+		$interfaces_names = $interfaces ? implode(", ", $interfaces) : "";
+		$traits_names     = $traits     ? implode(", ", $traits)     : "";
+		$short_class = Namespaces::shortClassName($class_name);
+		$source = "namespace $namespace {"
 			. " final class $short_class"
 			. " extends \\$class_name"
 			. ($interfaces_names ? " implements $interfaces_names" : "")
 			. " {" . ($traits_names ? " use $traits_names;" : "") . " }"
 			. " }";
-			eval($source);
-			$built_class = $namespace . "\\" . $short_class;
-			self::$builds[$class_name][$key] = $built_class;
-			return $built_class;
-		}
+		eval($source);
+		return $namespace . "\\" . $short_class;
 	}
 
 }

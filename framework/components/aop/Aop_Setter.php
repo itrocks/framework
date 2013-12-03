@@ -22,7 +22,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 			array(__CLASS__, "registerIncludedSettersAop")
 		);
 		Aop::add(Aop::AFTER,
-			'SAF\Framework\Class_Builder->build()',
+			'SAF\Framework\Class_Builder->buildClass()',
 			array(__CLASS__, "registerBuiltSettersAop")
 		);
 	}
