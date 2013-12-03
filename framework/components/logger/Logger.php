@@ -29,7 +29,8 @@ class Logger implements Plugin
 	 */
 	public function start(AopJoinpoint $joinpoint)
 	{
-		list($uri, $get, $post, $files) = $joinpoint->getArguments();
+		// the controller may not receive $get, $post or $files arguments
+		@list($uri, $get, $post, $files) = $joinpoint->getArguments();
 		if (!$this->antiloop) {
 			$this->log_entry = new Log_Entry($uri, $get, $post, $files);
 			Dao::write($this->log_entry);
