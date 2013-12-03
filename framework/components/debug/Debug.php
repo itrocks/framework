@@ -63,8 +63,8 @@ abstract class Debug
 
 	//-------------------------------------------------------------------------------------- whatGrew
 	/**
-	 * This tells what variable from the global dump growed since the last call to whatGrowed.
-	 * Usefull for memory leaks detection, but doubles the quantity of memory used
+	 * This tells what variable from the global dump has grown since the last call to whatGrew().
+	 * Useful for memory leaks detection, but doubles the quantity of memory used
 	 * The first call does nothing but initialize the global dump history
 	 *
 	 * @param $old  mixed the old value
