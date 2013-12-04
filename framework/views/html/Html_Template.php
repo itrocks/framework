@@ -477,10 +477,11 @@ class Html_Template
 	 */
 	protected function parseFunc($func_name)
 	{
-		return $this->htmlEntities($this->callFunc(
-			'SAF\Framework\Html_Template_Functions',
-			Names::propertyToMethod($func_name, "get")
-		));
+		$func_name = ($p = strpos($func_name, "("))
+			? (Names::propertyToMethod(substr($func_name, 0, $p), "get") . substr($func_name, $p))
+			: Names::propertyToMethod($func_name, "get");
+		return $this->htmlEntities(
+			$this->callFunc('SAF\Framework\Html_Template_Functions', $func_name));
 	}
 
 	//------------------------------------------------------------------------------- parseFuncParams
