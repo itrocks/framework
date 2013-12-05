@@ -525,7 +525,7 @@ namespace {
 	 */
 	function strUri($str, $joker = null)
 	{
-		return strtolower(strSimplify(str_replace(" ", "_", $str), "/-_", $joker));
+		return strtolower(strSimplify(str_replace(" ", "_", $str), "/-_{}", $joker));
 	}
 
 	//-------------------------------------------------------------------------------------- ucfirsta
