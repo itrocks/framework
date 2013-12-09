@@ -187,13 +187,18 @@
 		 */
 		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
-			event.preventDefault();
 			var $this = $(this);
 			var xhr = undefined;
 			var jax;
 			if ($this.hasClass(settings["submit"])) {
 				var $parent_form = $this.closest("form");
 				if ($parent_form.length) {
+					/* this does not seem to work : default form submit is not blocking !
+					if (!$parent_form[0].checkValidity()) {
+						// this will execute default form submitting code, which will stop with validation messages
+						return;
+					}
+					*/
 					if ($parent_form.ajaxSubmit != undefined) {
 						$parent_form.ajaxSubmit(jax = $.extend(ajax, {
 							url:  urlAppend(this.href, this.search),
@@ -220,6 +225,7 @@
 			xhr.mouse_x  = (document.mouse == undefined) ? event.pageX : document.mouse.x;
 			xhr.mouse_y  = (document.mouse == undefined) ? event.pageY : document.mouse.y;
 			xhr.time_out = setTimeout(function(){ $("body").css({cursor: "wait"}); }, 500);
+			event.preventDefault();
 		});
 
 		//---------------------------------------------------------------- $('form[target^="#"]').click
