@@ -54,7 +54,15 @@ class Dom_Attribute
 	 */
 	public function __toString()
 	{
-		return $this->name . (isset($this->value) ? ("=" . self::escapeValue($this->value)) : "");
+		if ($this->value === true) {
+			return $this->name;
+		}
+		elseif ($this->value === false) {
+			return "";
+		}
+		else {
+			return $this->name . (isset($this->value) ? ("=" . self::escapeValue($this->value)) : "");
+		}
 	}
 
 }

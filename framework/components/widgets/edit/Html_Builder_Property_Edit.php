@@ -137,10 +137,14 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 		foreach ($values as $value) {
 			$values_captions[$value] = Names::propertyToDisplay($value);
 		}
-		return parent::buildString(
+		$element = parent::buildString(
 			$this->property->getAnnotation("multiline")->value,
 			$values_captions
 		);
+		if ($this->property->getAnnotation("mandatory")->value) {
+			$element->setAttribute("required", true);
+		}
+		return $element;
 	}
 
 }
