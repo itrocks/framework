@@ -2,17 +2,18 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Default output template</title>
-	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<title>|{@class.ucfirst}|</title>
+    <script type="application/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+    <script type="application/javascript"> path = "../../../"; </script>
+    <script type="application/javascript" src="../../../main/js/all.js"></script>
 	<style type="text/css">
-		@import "../../../skins/default/application.css";
-		@import "../../../skins/default/form.css";
+		@import "../../../skins/default/all.css";
 	</style>
 </head>
 <body>
-
 <!--BEGIN-->
-<form action="{@class.short}/write" class="{@class.short.lower} {feature.lower} <!--id?-->object <!--id?-->window" id="/{@class.short}<!--id?-->/{id}<!--id?-->/{feature}" method="post" enctype="multipart/form-data" name="{form_id}">
+
+<form action="{@class.short}/write" class="{@class.short.lower} {feature.lower} <!--id?-->object<!--id?--> window" id="/{@class.short}<!--id?-->/{id}<!--id?-->/{feature}" method="post" enctype="multipart/form-data" name="{form_id}">
 	<h2>|{@class.ucfirst}| |{display}|</h2>
 
 	{/general_buttons.html}
@@ -133,7 +134,7 @@
 	</fieldset>
 
 </form>
-<!--END-->
 
+<!--END-->
 </body>
 </html>

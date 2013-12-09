@@ -1,0 +1,33 @@
+/**
+ * this is less performant than <link rel=...>
+ * but offers every css needed by the application in only one css !
+ * and for a full-ajax application, the slowdown risk will only be on the first page loading
+ */
+
+@import "../../vendor/reset5/reset.css";
+
+@import "../../vendor/jquery-ui/smoothness/jquery-ui.css";
+@import "../../vendor/jquery-ui/smoothness/jquery.ui.theme.css";
+
+@import "../../components/print_models/pdf_template.css";
+
+@import "application.css";
+
+@import "actions.css";
+@import "custom.css";
+@import "form.css";
+@import "import.css";
+@import "list.css";
+@import "menu.css";
+@import "modules.css";
+@import "print_model.css";
+@import "property.css";
+@import "rad.css";
+@import "tabber.css";
+@import "trashcan.css";
+@import "vertical_scrollbar.css";
+@import "window.css";
+@import "xdebug.css";
+
+@import "support.css";
+@import "user.css";
