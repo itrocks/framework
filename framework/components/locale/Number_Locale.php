@@ -67,7 +67,7 @@ class Number_Locale implements Configurable
 	 */
 	public function floatToLocale($float)
 	{
-		if ($float == (string)(float)$float) {
+		if (is_numeric($float)) {
 			$float = number_format(
 				$float, $this->decimal_maximal_count, $this->decimal_separator, $this->thousand_separator
 			);
