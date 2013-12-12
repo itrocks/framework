@@ -398,7 +398,7 @@ namespace {
 	 */
 	function rowCount($str)
 	{
-		return substr_count($str, "\n");
+		return substr_count($str, "\n") + 1;
 	}
 
 	//---------------------------------------------------------------------------------------  rParse
