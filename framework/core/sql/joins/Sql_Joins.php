@@ -94,7 +94,13 @@ class Sql_Joins
 			$this->add($master_path, $depth + 1);
 		}
 		if (isset($this->link_joins[$path])) {
-			return $this->link_joins[$path];
+			$property_type = $this->getProperties($master_path)[$master_property_name]->getType();
+			if ($property_type->isClass()) {
+				$linked_master_alias = $this->link_joins[$path]->foreign_alias;
+			}
+			else {
+				return $this->link_joins[$path];
+			}
 		}
 		$join = new Sql_Join();
 		$foreign_class_name = (strpos($master_property_name, "->"))
@@ -103,6 +109,9 @@ class Sql_Joins
 		$this->joins[$path] = $join->mode
 			? $this->addFinalize($join, $master_path, $foreign_class_name, $path, $depth)
 			: null;
+		if (isset($linked_master_alias)) {
+			$join->master_alias = $linked_master_alias;
+		}
 		return $this->joins[$path];
 	}
 
@@ -169,7 +178,7 @@ class Sql_Joins
 			if (!isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
 				$property_path = ($path ? $path . "." : "") . $property->name;
-				$this->classes[$property_path] = $linked_class_name;
+				$this->classes[$property_path] = $property->getType()->getElementTypeAsString();
 				$this->link_joins[$property_path] = $join;
 				$exclude_properties[$property->name] = true;
 			}
