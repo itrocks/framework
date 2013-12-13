@@ -1,0 +1,59 @@
+body>div.tuto {
+	display: inline-block;
+	height: 32px;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 78px;
+
+	>.eye {
+		background: url('eye_white.png') no-repeat;
+		display: inline-block;
+		height: 16px;
+		position: absolute;
+		top: 4px;
+		width: 16px;
+		&.left {
+			left: 22px;
+		}
+		&.right {
+			left: 40px;
+		}
+		>span {
+			background: url('eye_inside.png') no-repeat;
+			display: inline-block;
+			height: 8px;
+			left: 4px;
+			position: absolute;
+			top: 4px;
+			width: 8px;
+		}
+	}
+
+	>.hand {
+		display: inline-block;
+		height: 16px;
+		position: absolute;
+		top: 16px;
+		width: 16px;
+		&.left {
+			background: url('hand_point_left.png') no-repeat;
+			left: 4px;
+		}
+		&.right {
+			background: url('hand_point_right.png') no-repeat;
+			left: 58px;
+		}
+	}
+
+	>.mouth {
+		background: url('mouth_smile.png') no-repeat;
+		display: inline-block;
+		left: 31px;
+		height: 8px;
+		position: absolute;
+		top: 24px;
+		width: 16px;
+	}
+
+}
