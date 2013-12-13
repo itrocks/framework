@@ -39,14 +39,18 @@ $("document").ready(function()
 		goLeftOf: function(selector)
 		{
 			selector = $(selector);
-			this.goto(selector.offset().left - this.$container.width(), selector.offset().top);
+			if (selector.length) {
+				this.goto(selector.offset().left - this.$container.width(), selector.offset().top);
+			}
 			return this;
 		},
 
 		goRightOf: function(selector)
 		{
 			selector = $(selector);
-			this.goto(selector.offset().left + selector.width(), selector.offset().top);
+			if (selector.length) {
+				this.goto(selector.offset().left + selector.width(), selector.offset().top);
+			}
 			return this;
 		},
 
