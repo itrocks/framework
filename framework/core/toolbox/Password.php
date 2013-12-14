@@ -2,47 +2,63 @@
 namespace SAF\Framework;
 
 /**
- * Used for common "password-like" data encryptions
+ * Used for common "password-like" data encryption
  */
 class Password
 {
 
-	//----------------------------------------------------------------------------------------- crypt
+	//------------------------------------------------------------------------- $encryption_algorithm
 	/**
-	 * Crypt a password using crypt algorithm
+	 * @var string
+	 */
+	public $encryption_algorithm = Encryption::SHA1;
+
+	//------------------------------------------------------------------------------------- $password
+	/**
+	 * @var string
+	 */
+	private $password;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $password             string
+	 * @param $encryption_algorithm string
+	 */
+	public function __construct($password = null, $encryption_algorithm = null)
+	{
+		if (isset($password))             $this->password             = $password;
+		if (isset($encryption_algorithm)) $this->encryption_algorithm = $encryption_algorithm;
+	}
+
+	//------------------------------------------------------------------------------------- encrypted
+	/**
+	 * Returns the password encrypted using the actual algorithm
 	 *
-	 * @param $password  string
-	 * @param $algorithm string
 	 * @return string
 	 */
-	public static function crypt($password, $algorithm)
+	public function encrypted()
 	{
-		switch ($algorithm) {
-			case "crypt": return crypt($password);
-			case "md5":   return md5($password);
-			case "sha1":  return sha1($password);
-		}
-		return $password;
+		return Encryption::encrypt($this->password, $this->encryption_algorithm);
 	}
 
 	//-------------------------------------------------------------------------------------- generate
 	/**
-	 * Generates a random password
+	 * Replaces the password by a randomly generated one
 	 *
-	 * @param $length   integer wished lengthfor the password
+	 * @param $length   integer wished length for the password
 	 * @param $specials string special characters that can be used
-	 * @return string A randomly generated password
+	 * @return Password
 	 */
-	public static function generate($length = 9, $specials = "()[]-_+-*/\\")
+	public function generate($length = 9, $specials = "()[]-_+-*/\\")
 	{
 		$string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" . $specials;
 		$maximum_position = strlen($string) - 1;
-		$password = "";
+		$this->password = "";
 		for ($i = 1; $i <= $length; $i++) {
 			$position = mt_rand(0, $maximum_position);
-			$password .= $string[$position];
+			$this->password .= $string[$position];
 		}
-		return $password;
+		return $this;
 	}
 
 }

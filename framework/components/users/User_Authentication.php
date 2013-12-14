@@ -18,11 +18,11 @@ abstract class User_Authentication
 	{
 		$user = Search_Object::create('SAF\Framework\User');
 		$user->login = $array["login"];
-		$user->password = Password::crypt(
+		$user->password = (new Password(
 			$array["password"],
-			Reflection_Property::getInstanceOf(get_class($user), "password")
-				->getAnnotation("password")->value
-		);
+			Reflection_Property::getInstanceOf(get_class($user), "password")->getAnnotation("password")
+				->value
+		))->encrypted();
 		return $user;
 	}
 
@@ -134,11 +134,11 @@ abstract class User_Authentication
 	{
 		$search = Search_Object::create('SAF\Framework\User');
 		$search->login = $login;
-		$password = Password::crypt(
+		$password = (new Password(
 			$password,
-			Reflection_Property::getInstanceOf(get_class($search), "password")
-				->getAnnotation("password")->value
-		);
+			Reflection_Property::getInstanceOf(get_class($search), "password")->getAnnotation("password")
+				->value
+		))->encrypted();
 		foreach (Dao::search($search) as $user) {
 			if ($user->password === $password) {
 				return $user;
