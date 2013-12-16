@@ -6,7 +6,7 @@ require_once "framework/Application.php";
 require_once "framework/core/configuration/Configuration.php";
 require_once "framework/core/configuration/Configurations.php";
 require_once "framework/core/reflection/Type.php";
-require_once "framework/core/session/Session.php";
+require_once "framework/core/Session.php";
 require_once "framework/core/toolbox/Namespaces.php";
 require_once "framework/dao/Dao.php";
 require_once "framework/views/View.php";

@@ -3,24 +3,14 @@ namespace SAF\Framework;
 
 /** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Array.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/toolbox/Plugin.php";
-/** @noinspection PhpIncludeInspection */
 require_once "framework/core/toolbox/Namespaces.php";
+require_once "framework/core/toolbox/Plugin.php";
 
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
  */
 abstract class Autoloader implements Plugin
 {
-
-	//----------------------------------------------------------------------------- $included_classes
-	/**
-	 * Included classes list
-	 *
-	 * @var mixed[] keys are arbitrary numeric, value is false if class not found, or the class file path if class was found and included
-	 */
-	private static $included_classes = array();
 
 	//-------------------------------------------------------------------------------------- autoLoad
 	/**
@@ -30,9 +20,7 @@ abstract class Autoloader implements Plugin
 	 */
 	public static function autoload($class_name)
 	{
-		if (!isset(self::$included_classes[$class_name])) {
-			$included_classes[$class_name] = self::includeClass($class_name);
-		}
+		self::includeClass($class_name);
 	}
 
 	//---------------------------------------------------------------------------------- includeClass
