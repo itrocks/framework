@@ -58,13 +58,13 @@ class Html_Edit_Template extends Html_Template
 			$short_class = Namespaces::shortClassName(get_class(reset($this->objects)));
 			$short_form_id = strtolower($short_class) . "_edit";
 			$this->form_id = $short_form_id . "_" . $this->nextFormCounter();
+			$action = "/" . $short_class . "/write";
 			$content = substr($content, 0, $i)
+				. $this->replaceSectionByForm(substr($content, $i, $j), $action)
 				/*
 				. '<form method="POST"'
 				. ' id=' . $short_form_id . ' name="' . $this->form_id . '" action="' . $action . '">'
-				*/
 				. substr($content, $i, $j - $i)
-				/*
 				. '</form>'
 				*/
 				. substr($content, $j);
@@ -109,6 +109,28 @@ class Html_Edit_Template extends Html_Template
 			$value = parent::parseValue($var_name, $as_string);
 		}
 		return $value;
+	}
+
+	//-------------------------------------------------------------------------- replaceSectionByForm
+	/**
+	 * @param $content string
+	 * @param $action string
+	 * @return string
+	 */
+	protected function replaceSectionByForm($content, $action)
+	{
+		$i = strpos($content, "<section");
+		$j = strpos($content, ">", $i) + 1;
+		$attributes = ' action="' . $action . '"'
+			. ' name="' . $this->form_id . '"'
+			. substr($content, $i + 8, $j - $i - 9)
+			. ' method="post"'
+			. ' enctype="multipart/form-data"';
+		$i = $j;
+		$j = strrpos($content, "</section>", $i);
+		return "<form" . $attributes . ">"
+			. substr($content, $i, $j - $i)
+			. "</form>";
 	}
 
 }
