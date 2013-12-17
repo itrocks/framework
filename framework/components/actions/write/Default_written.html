@@ -8,23 +8,22 @@
     </style>
 </head>
 <body>
+<!--BEGIN-->
 
-	<!--BEGIN-->
-	|¦{@class.display.ucfirst}¦ written|
+	|¦{@class.display.ucfirst}¦ !"{.}"! written|
 
-	<!--fill_combo-->
+	<!--fill_combo?-->
 	<script>
 	if (document.{fill_combo} != undefined) {
 		document.{fill_combo}.value = {id};
 		$(document.{fill_combo}.nextSibling).val("{.}").keyup().select();
 	}
 	</script>
-	<!--fill_combo-->
+	<!--fill_combo?-->
 
-	<!--close--><script> $("#{.}").remove(); </script><!--close-->
+	<!--close?--><script> $("#{close}").remove(); </script><!--close?-->
 	<!--!close?--><script> redirect("/{@class.short}/{id}", "#main"); </script><!--!close?-->
 
-	<!--END-->
-
+<!--END-->
 </body>
 </html>
