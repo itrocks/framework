@@ -17,17 +17,18 @@ class Search_Array_Builder
 	/**
 	 * @param $property_name string
 	 * @param $search_phrase string
+	 * @param $prepend string
 	 * @param $append string
 	 * @return array
 	 */
-	public function build($property_name, $search_phrase, $append = "")
+	public function build($property_name, $search_phrase, $prepend = "", $append = "")
 	{
 		$search_phrase = trim($search_phrase);
 		// search phrase contains OR
 		if (strpos($search_phrase, $this->or) !== false) {
 			$result = array();
 			foreach (explode($this->or, $search_phrase) as $search) {
-				$sub_result = $this->build("", $search, $append);
+				$sub_result = $this->build("", $search, $prepend, $append);
 				if ((!is_array($sub_result)) || (count($sub_result) > 1)) {
 					$result[$property_name][] = $sub_result;
 				}
@@ -44,15 +45,15 @@ class Search_Array_Builder
 		elseif (strpos($search_phrase, $this->and) !== false) {
 			$result = array();
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$result[$property_name]["AND"][] = $this->build("", $search, $append);
+				$result[$property_name]["AND"][] = $this->build("", $search, $prepend, $append);
 			}
 			return $property_name ? $result : reset($result);
 		}
 		// simple search phrase
 		else {
 			return $property_name
-				? array($property_name => $search_phrase . $append)
-				: ($search_phrase . $append);
+				? array($property_name => $prepend . $search_phrase . $append)
+				: ($prepend . $search_phrase . $append);
 		}
 	}
 
@@ -60,11 +61,13 @@ class Search_Array_Builder
 	/**
 	 * @param $property_names_or_class string[]|Reflection_Class
 	 * @param $search_phrase string
+	 * @param $prepend string
 	 * @param $append string
 	 * @return array
 	 */
-	public function buildMultiple($property_names_or_class, $search_phrase, $append = "")
-	{
+	public function buildMultiple(
+		$property_names_or_class, $search_phrase, $prepend = "", $append = ""
+	) {
 		$property_names = ($property_names_or_class instanceof Reflection_Class)
 			? $this->classRepresentativeProperties($property_names_or_class)
 			: $property_names_or_class;
@@ -72,19 +75,20 @@ class Search_Array_Builder
 		// search phrase contains OR
 		if (strpos($search_phrase, $this->or) !== false) {
 			foreach ($property_names as $property_name) {
-				$result["OR"][$property_name] = $this->build("", $search_phrase, $append);
+				$result["OR"][$property_name] = $this->build("", $search_phrase, $prepend, $append);
 			}
 		}
 		// search phrase contains AND
 		elseif (strpos($search_phrase, $this->and) !== false) {
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$result["AND"][] = $this->buildMultiple($property_names, $search, $append);
+				$result["AND"][] = $this->buildMultiple($property_names, $search, $prepend, $append);
+				$prepend = "%";
 			}
 		}
 		// simple search phrase
 		else {
 			foreach ($property_names as $property_name) {
-				$result["OR"][$property_name] = $search_phrase . $append;
+				$result["OR"][$property_name] = $prepend . $search_phrase . $append;
 			}
 		}
 		return $result;
