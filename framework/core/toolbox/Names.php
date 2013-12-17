@@ -224,21 +224,37 @@ abstract class Names
 	//------------------------------------------------------------------------------------ setToClass
 	/**
 	 * Changes 'A\Namespace\Class_Names' into 'A\Namespace\Class_Name'
+	 * or 'Class_Names' into 'Class_Name' (without namespace)
 	 *
 	 * @param $class_name string
 	 * @return string
 	 */
 	public static function setToClass($class_name)
 	{
-		if (substr($class_name, -2) !== "ss") {
-			if     (substr($class_name, -3) === "ies")  return substr($class_name, 0, -3) . "y";
-			elseif (substr($class_name, -4) === "sses") return substr($class_name, 0, -2);
-			elseif (substr($class_name, -4) === "ches") return substr($class_name, 0, -2);
-			elseif (substr($class_name, -1) === "s")    return substr($class_name, 0, -1);
-			elseif (substr($class_name, -2) === "en")   return substr($class_name, 0, -2) . "an";
-			else                                        return $class_name;
+		$set_class_name = $class_name;
+		$right = "";
+		do {
+			if (substr($class_name, -2) !== "ss") {
+				if     (substr($class_name, -3) === "ies")  $class_name = substr($class_name, 0, -3) . "y";
+				elseif (substr($class_name, -3) === "ses")  $class_name = substr($class_name, 0, -2);
+				elseif (substr($class_name, -4) === "ches") $class_name = substr($class_name, 0, -2);
+				elseif (substr($class_name, -1) === "s")    $class_name = substr($class_name, 0, -1);
+				elseif (substr($class_name, -2) === "en")   $class_name = substr($class_name, 0, -2) . "an";
+			}
+			$exists = class_exists(Namespaces::fullClassName($class_name . $right));
+			if (!$exists) {
+				$i = strrpos($class_name, "_");
+				if ($i === false) {
+					trigger_error("No class found for set " . $set_class_name, E_USER_ERROR);
+				}
+				else {
+					$right = substr($class_name, $i) . $right;
+					$class_name = substr($class_name, 0, $i);
+				}
+			}
 		}
-		else return $class_name;
+		while (!($exists || empty($class_name)));
+		return $class_name . $right;
 	}
 
 }
