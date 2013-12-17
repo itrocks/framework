@@ -63,6 +63,76 @@ $("document").ready(function()
 			}
 		});
 
+		//------------------------------------------------------------------------ input.combo comboUri
+		var comboUri = function($element)
+		{
+			return window.app.uri_base + "/" + $element.data("combo-class") + "/json"
+		};
+
+		//-------------------------------------------------------------------- input.combo comboRequest
+		var comboRequest = function($element, request)
+		{
+			if (request == undefined) {
+				request = [];
+			}
+			if (!window.app.use_cookies) request["PHPSESSID"] = window.app.PHPSESSID;
+			var filters = $element.data("combo-filters");
+			if (filters != undefined) {
+				filters = filters.split(",");
+				for (var key in filters) if (filters.hasOwnProperty(key)) {
+					var filter = filters[key].split("=");
+					var $filter_element = $(this.element.get(0).form).find('[name="' + filter[1] + '"]');
+					if ((filter[0].substr(0, 3) != "id_") || $filter_element.val()) {
+						request["filters[" + filter[0] + "]"] = $filter_element.val();
+					}
+				}
+			}
+			return request;
+		};
+
+		//-------------------------------------------------------------------- input.combo comboMatches
+		/**
+		 * Returns true if the typed value is the same as the data value read from the server
+		 * Returns false if do not match or if there is no data value
+		 *
+		 * @param $element string
+		 * @returns boolean
+		 */
+		var comboMatches = function($element)
+		{
+			if ($element.data("value")) {
+				var val = $element.val().toLowerCase();
+				var dat = $element.data("value").toLowerCase();
+				return (dat.substr(0, val.length) == val);
+			}
+			else {
+				return false;
+			}
+		};
+
+		//---------------------------------------------------------------------- input.combo comboForce
+		var comboForce = function($element)
+		{
+			$.getJSON(
+				comboUri($element),
+				$.param(comboRequest($element, { term: $element.val(), first: true })),
+				function(data) {
+					if (data.id) {
+						console.log("> found " + data.id + ": " + data.value);
+						$element.data("value", data.value);
+						$element.prev().val(data.id);
+						$element.val(data.value);
+					}
+					else {
+						console.log("> not found");
+						$element.prev().val("");
+						$element.val("");
+						$element.removeData("value");
+					}
+				}
+			);
+		};
+
 		//-------------------------------------------------------------------- input.combo autocomplete
 		this.in("input.combo").autocomplete(
 		{
@@ -78,57 +148,61 @@ $("document").ready(function()
 			source: function(request, response)
 			{
 				//noinspection JSUnresolvedVariable
-				var app = window.app;
 				var $element = this.element;
-				if (!app.use_cookies) request["PHPSESSID"] = app.PHPSESSID;
-				var filters = $element.data("combo-filters");
-				if (filters != undefined) {
-					filters = filters.split(",");
-					for (var key in filters) if (filters.hasOwnProperty(key)) {
-						var filter = filters[key].split("=");
-						var $filter_element = $(this.element.get(0).form).find('[name="' + filter[1] + '"]');
-						if ((filter[0].substr(0, 3) != "id_") || $filter_element.val()) {
-							request["filters[" + filter[0] + "]"] = $filter_element.val();
-						}
-					}
-				}
 				$.getJSON(
-					app.uri_base + "/" + $element.data("combo-class") + "/json",
-					$.param(request),
+					comboUri($element),
+					$.param(comboRequest($element, request)),
 					function(data) { response(data); }
 				);
 			},
 
 			select: function(event, ui)
 			{
-				$(this).prev().val(ui.item.id);
+				var $this = $(this);
+				console.log("selected " + ui.item.id + ": " + ui.item.value);
+				$this.prev().val(ui.item.id);
+				$this.data("value", ui.item.value);
+				if (!comboMatches($this)) {
+					console.log("> " + $this.val() + " does not match " + $this.data("value"));
+					comboForce($this);
+				}
 			}
-		});
+		})
 
-		//-------------------------------------------------------------------------- input.combo change
-		this.in("input.combo").change(function()
+		//---------------------------------------------------------------------------- input.combo blur
+		.blur(function()
 		{
 			var $this = $(this);
-			if (!$this.val().length) {
-				$this.prev().removeAttr("value");
+			if (comboMatches($this)) {
+				console.log($this.val() + " matches " + $this.data("value"));
+				$this.val($this.data("value"));
 			}
-		});
+			else {
+				console.log("blur : " + $this.val() + " does not match " + $this.data("value"));
+				comboForce($this);
+			}
+			$this.removeData("value");
+		})
 
-		// --------------------------------------------------------------------- input.combo ctrl+click
-		this.in("input.combo").click(function(event)
+		//---------------------------------------------------------------------- input.combo ctrl+click
+		.click(function(event)
 		{
 			if (event.ctrlKey) {
 				$(this).siblings(".edit").click();
 			}
 		})
-		.keyup(function(event) {
+
+		//----------------------------------------------------------------------------- input.combo ESC
+		.keyup(function(event)
+		{
 			if (event.keyCode == 27) {
-				$(this).val("");
+				$(this).removeData("value");
 				$(this).prev().val("");
+				$(this).val("");
 			}
 		});
 
-		// -------------------------------------------------------------------------- input.combo~.edit
+		//--------------------------------------------------------------------------- input.combo~.edit
 		this.in("input.combo~.edit").click(function()
 		{
 			var $this = $(this);
