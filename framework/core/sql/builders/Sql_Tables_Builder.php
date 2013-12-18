@@ -42,8 +42,7 @@ class Sql_Tables_Builder
 	{
 		$tables = "`" . Dao::current()->storeNameOf($this->class_name) . "` t0";
 		foreach ($this->joins->getJoins() as $join) if ($join) {
-			$tables .= " $join->mode JOIN `$join->foreign_table` $join->foreign_alias"
-				. " ON $join->foreign_alias.$join->foreign_column = $join->master_alias.$join->master_column";
+			$tables .= $join->toSql();
 		}
 		return $tables;
 	}

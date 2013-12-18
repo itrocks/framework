@@ -143,6 +143,20 @@ class Sql_Joins
 		return $join;
 	}
 
+	//--------------------------------------------------------------------------------------- addJoin
+	/**
+	 * Adds a join and automatically set its foreign alias to the next one (if not already set)
+	 *
+	 * @param Sql_Join $join
+	 */
+	public function addJoin(Sql_Join $join)
+	{
+		if (!isset($join->foreign_alias)) {
+			$join->foreign_alias = "t" . $this->alias_counter++;
+		}
+		$this->joins[] = $join;
+	}
+
 	//-------------------------------------------------------------------------------- addLinkedClass
 	/**
 	 * Add a link class (using the "link" class annotation) to joins

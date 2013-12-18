@@ -90,10 +90,7 @@ class Sql_Join
 	 */
 	public function __toString()
 	{
-		return $this->mode
-			. " $this->master_alias.$this->master_column"
-			. " = $this->foreign_table $this->foreign_alias.$this->foreign_column"
-			. " ($this->type)";
+		return $this->toSql() . " [" . $this->type . "]";
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
@@ -124,6 +121,17 @@ class Sql_Join
 		$sql_join->mode           = $mode;
 		$sql_join->type           = $type;
 		return $sql_join;
+	}
+
+	//----------------------------------------------------------------------------------------- toSql
+	/**
+	 * @return string
+	 */
+	public function toSql()
+	{
+		return " " . $this->mode . " JOIN `" . $this->foreign_table . "` " . $this->foreign_alias
+		. " ON " . $this->foreign_alias . "." . $this->foreign_column
+		. " = " . $this->master_alias . "." . $this->master_column;
 	}
 
 }

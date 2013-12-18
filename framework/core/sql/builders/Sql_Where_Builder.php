@@ -50,6 +50,15 @@ class Sql_Where_Builder
 		$this->where_array = $where_array;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->build();
+	}
+
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * Build SQL WHERE section, add add joins for search criterion
@@ -110,6 +119,32 @@ class Sql_Where_Builder
 		return $sql;
 	}
 
+	//----------------------------------------------------------------------------------- buildColumn
+	/**
+	 * @param $path   string
+	 * @param $prefix string
+	 * @return string
+	 */
+	public function buildColumn($path, $prefix = "")
+	{
+		$join = $this->joins->add($path);
+		if (isset($join)) {
+			if ($join->type === Sql_Join::LINK) {
+				$column = $join->foreign_alias . ".`" . rLastParse($path, ".", 1, true) . "`";
+			}
+			else {
+				$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
+			}
+		}
+		else {
+			list($master_path, $foreign_column) = Sql_Builder::splitPropertyPath($path);
+			$column = ((!$master_path) || ($master_path === "id"))
+				? ("t0.`" . $prefix . $foreign_column . "`")
+				: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_column . "`");
+		}
+		return $column;
+	}
+
 	//----------------------------------------------------------------------------------- buildObject
 	/**
 	 * Build SQL WHERE section for an object
@@ -153,6 +188,9 @@ class Sql_Where_Builder
 	 */
 	private function buildPath($path, $value, $clause)
 	{
+		if ($value instanceof Dao_Where_Function) {
+			return $value->toSql($this, $path);
+		}
 		switch (gettype($value)) {
 			case "NULL":   return "";
 			case "array":  return $this->buildArray ($path, $value, $clause);
@@ -172,29 +210,9 @@ class Sql_Where_Builder
 	 */
 	private function buildValue($path, $value, $prefix = "")
 	{
-		$join = $this->joins->add($path);
-		if (isset($join)) {
-			if ($join->type === Sql_Join::LINK) {
-				$column = $join->foreign_alias . ".`" . rLastParse($path, ".", 1, true) . "`";
-			}
-			else {
-				$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
-			}
-		}
-		else {
-			list($master_path, $foreign_column) = Sql_Builder::splitPropertyPath($path);
-			$column = ((!$master_path) || ($master_path === "id"))
-				? ("t0.`" . $prefix . $foreign_column . "`")
-				: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_column . "`");
-		}
-		if (is_null($value)) {
-			$expr = " IS NULL";
-		}
-		else {
-			$is_like = Sql_Value::isLike($value);
-			$expr = (" " . ($is_like ? "LIKE" : "=") . " " . Sql_Value::escape($value, $is_like));
-		}
-		return $column . $expr;
+		$column = $this->buildColumn($path, $prefix);
+		$is_like = Sql_Value::isLike($value);
+		return $column . " " . ($is_like ? "LIKE" : "=") . " " . Sql_Value::escape($value, $is_like);
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins

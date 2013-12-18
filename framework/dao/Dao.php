@@ -168,6 +168,16 @@ abstract class Dao
 			: null;
 	}
 
+	//--------------------------------------------------------------------------------------- groupBy
+	/**
+	 * @param $properties string[]|string
+	 * @return Dao_Group_By_Option
+	 */
+	public static function groupBy($properties)
+	{
+		return new Dao_Group_By_Option($properties);
+	}
+
 	//------------------------------------------------------------------------------------------- key
 	/**
 	 * An option to choose what property value will be used as keys for Dao::readAll()

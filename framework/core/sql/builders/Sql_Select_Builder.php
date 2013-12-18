@@ -77,6 +77,15 @@ class Sql_Select_Builder
 		$this->options = isset($options) ? (is_array($options) ? $options : array($options)) : array();
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->buildQuery();
+	}
+
 	//---------------------------------------------------------------------------------- buildOptions
 	/**
 	 * Builds optionnal SQL expressions, component of the SELECT query
@@ -87,7 +96,15 @@ class Sql_Select_Builder
 	{
 		$options = array();
 		foreach ($this->options as $option) {
-			if ($option instanceof Dao_Sort_Option) {
+			if ($option instanceof Dao_Group_By_Option) {
+				$group_by = (new Sql_Columns_Builder(
+					$this->class_name,
+					$option->properties,
+					$this->joins
+				))->build();
+				$options[10] = " GROUP BY " . $group_by;
+			}
+			elseif ($option instanceof Dao_Sort_Option) {
 				$order_by = (new Sql_Columns_Builder(
 					$this->class_name,
 					$option->getColumns($this->class_name),
@@ -95,12 +112,12 @@ class Sql_Select_Builder
 					array("DESC" => $option->reverse)
 				))->build();
 				if ($order_by) {
-					$options[10] = " ORDER BY " . $order_by;
+					$options[20] = " ORDER BY " . $order_by;
 				}
 			}
 			elseif ($option instanceof Dao_Limit_Option) {
 				// todo this works only with Mysql so beware, this should be into Mysql_Link or something
-				$options[20] = " LIMIT "
+				$options[30] = " LIMIT "
 					. (isset($option->from) ? ($option->from - 1) . ", " : "")
 					. $option->count;
 			}

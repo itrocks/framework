@@ -54,6 +54,15 @@ class Sql_Columns_Builder
 		$this->append     = $append;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->build();
+	}
+
 	//---------------------------------------------------------------------------------------- append
 	/**
 	 * Uses $this->append to append expressions to the end of the SQL column description
@@ -88,11 +97,16 @@ class Sql_Columns_Builder
 		if (isset($this->properties)) {
 			$sql_columns = "";
 			$first_property = true;
-			foreach ($this->properties as $path) {
-				$join = $this->joins->add($path);
-				$sql_columns .= ($join && ($join->type !== Sql_Join::LINK))
-					? $this->buildObjectColumns($path, $join, $first_property)
-					: $this->buildColumn($path, $join, $first_property);
+			foreach ($this->properties as $key_path => $path) {
+				if ($path instanceof Dao_Column_Function) {
+					$sql_columns .= $this->buildDaoSelectFunction($key_path, $path, $first_property);
+				}
+				else {
+					$join = $this->joins->add($path);
+					$sql_columns .= ($join && ($join->type !== Sql_Join::LINK))
+						? $this->buildObjectColumns($path, $join, $first_property)
+						: $this->buildNextColumn($path, $join, $first_property);
+				}
 				$sql_columns .=  $this->append($path);
 			}
 		} elseif ($this->joins->getJoins()) {
@@ -110,6 +124,26 @@ class Sql_Columns_Builder
 
 	//----------------------------------------------------------------------------------- buildColumn
 	/**
+	 * @param $path string
+	 * @param $join Sql_Join
+	 * @param $as   boolean
+	 * @return string
+	 */
+	public function buildColumn($path, $join = null, $as = true)
+	{
+		if (!isset($join)) {
+			$join = $this->joins->add($path);
+		}
+		list($master_path, $column_name) = Sql_Builder::splitPropertyPath($path);
+		if (!isset($join)) {
+			$join = $this->joins->getJoin($master_path);
+		}
+		return ($join ? "$join->foreign_alias.`$column_name`" : "t0.`$path`")
+			. (($as && $column_name !== $path) ? " AS `$path`" : false);
+	}
+
+	//------------------------------------------------------------------------------- buildNextColumn
+	/**
 	 * Build SQL query section for a single column
 	 *
 	 * @param $path           string the past of the matching property
@@ -117,18 +151,25 @@ class Sql_Columns_Builder
 	 * @param $first_property boolean
 	 * @return string
 	 */
-	private function buildColumn($path, $join, &$first_property)
+	private function buildNextColumn($path, $join, &$first_property)
 	{
 		$sql_columns = "";
 		if ($first_property) $first_property = false; else $sql_columns = ", ";
-		list($master_path, $column_name) = Sql_Builder::splitPropertyPath($path);
-		if (!isset($join)) {
-			$join = $this->joins->getJoin($master_path);
-		}
-		$sql_columns .= $join
-			? "$join->foreign_alias.`$column_name`" . ($this->append ? "" : " AS `$path`")
-			: "t0.`$path`" . ($this->append ? "" : " AS `$path`");
-		return $sql_columns;
+		return $sql_columns . $this->buildColumn($path, $join, !$this->append);
+	}
+
+	//------------------------------------------------------------------------ buildDaoSelectFunction
+	/**
+	 * @param $path           string
+	 * @param $function       Dao_Column_Function
+	 * @param $first_property boolean
+	 * @return string
+	 */
+	private function buildDaoSelectFunction($path, Dao_Column_Function $function, &$first_property)
+	{
+		$sql_columns = "";
+		if ($first_property) $first_property = false; else $sql_columns = ", ";
+		return $sql_columns . $function->toSql($this, $path);
 	}
 
 	//---------------------------------------------------------------------------- buildObjectColumns
