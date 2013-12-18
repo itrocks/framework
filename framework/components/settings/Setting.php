@@ -16,7 +16,7 @@ class Setting
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @getter getValue
-	 * @max-length 1000000000
+	 * @max_length 1000000000
 	 * @var string|object
 	 */
 	public $value;
