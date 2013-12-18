@@ -43,12 +43,12 @@ abstract class Data_Link implements Configurable
 	public function classNameOf($store_name)
 	{
 		$class_name = Namespaces::fullClassName(Names::setToClass(
-			str_replace(" ", "_", ucwords(str_replace("_", " ", $store_name)))
+			str_replace(" ", "_", ucwords(str_replace("_", " ", $store_name))), false
 		));
 		if (strpos($class_name, "\\") === false) {
 			$class_name = explode("_", $class_name);
 			foreach ($class_name as $key => $class_name_part) {
-				$class_name[$key] = Names::setToClass($class_name_part);
+				$class_name[$key] = Names::setToClass($class_name_part, false);
 			}
 			$class_name = Namespaces::fullClassName(join("_", $class_name));
 		}

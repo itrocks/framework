@@ -226,10 +226,11 @@ abstract class Names
 	 * Changes 'A\Namespace\Class_Names' into 'A\Namespace\Class_Name'
 	 * or 'Class_Names' into 'Class_Name' (without namespace)
 	 *
-	 * @param $class_name string
+	 * @param $class_name  string
+	 * @param $check_class boolean false if you don't want to check for existing classes
 	 * @return string
 	 */
-	public static function setToClass($class_name)
+	public static function setToClass($class_name, $check_class = true)
 	{
 		$set_class_name = $class_name;
 		$right = "";
@@ -244,7 +245,7 @@ abstract class Names
 			$exists = class_exists(Namespaces::fullClassName($class_name . $right));
 			if (!$exists) {
 				$i = strrpos($class_name, "_");
-				if ($i === false) {
+				if (($i === false) && $check_class) {
 					trigger_error("No class found for set " . $set_class_name, E_USER_ERROR);
 				}
 				else {

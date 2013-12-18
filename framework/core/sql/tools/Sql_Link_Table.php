@@ -50,7 +50,7 @@ class Sql_Link_Table
 	{
 		if (!isset($this->foreign_column)) {
 			$this->foreign_column = "id_" . Names::setToClass(
-				$this->property->getAnnotation("foreignlink")->value
+				$this->property->getAnnotation("foreignlink")->value, false
 			);
 		}
 		return $this->foreign_column;
@@ -64,7 +64,7 @@ class Sql_Link_Table
 	{
 		if (!isset($this->master_column)) {
 			$this->master_column = "id_" . Names::setToClass(
-				$this->property->getAnnotation("foreign")->value
+				$this->property->getAnnotation("foreign")->value, false
 			);
 		}
 		return $this->master_column;
