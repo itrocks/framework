@@ -103,7 +103,7 @@ $("document").ready(function()
 			if ($element.data("value")) {
 				var val = $element.val().toLowerCase();
 				var dat = $element.data("value").toLowerCase();
-				return (dat.substr(0, val.length) == val);
+				return (!val.length) || (dat.substr(0, val.length) == val);
 			}
 			else {
 				return false;
@@ -113,24 +113,32 @@ $("document").ready(function()
 		//---------------------------------------------------------------------- input.combo comboForce
 		var comboForce = function($element)
 		{
-			$.getJSON(
-				comboUri($element),
-				$.param(comboRequest($element, { term: $element.val(), first: true })),
-				function(data) {
-					if (data.id) {
-						console.log("> found " + data.id + ": " + data.value);
-						$element.data("value", data.value);
-						$element.prev().val(data.id);
-						$element.val(data.value);
+			if ($element.val().length) {
+				$.getJSON(
+					comboUri($element),
+					$.param(comboRequest($element, { term: $element.val(), first: true })),
+					function(data) {
+						if (data.id) {
+							console.log("> found " + data.id + ": " + data.value);
+							$element.data("value", data.value);
+							$element.prev().val(data.id);
+							$element.val(data.value);
+						}
+						else {
+							console.log("> not found");
+							$element.prev().val("");
+							$element.val("");
+							$element.removeData("value");
+						}
 					}
-					else {
-						console.log("> not found");
-						$element.prev().val("");
-						$element.val("");
-						$element.removeData("value");
-					}
-				}
-			);
+				);
+			}
+			else {
+				console.log("> empty value");
+				$element.prev().val("");
+				$element.val("");
+				$element.removeData("value");
+			}
 		};
 
 		//-------------------------------------------------------------------- input.combo autocomplete
@@ -167,6 +175,13 @@ $("document").ready(function()
 					comboForce($this);
 				}
 			}
+		})
+
+		//---------------------------------------------------------------------------- input.combo focus
+		.focus(function()
+		{
+			var $this = $(this);
+			$this.data("value", $this.val());
 		})
 
 		//---------------------------------------------------------------------------- input.combo blur
