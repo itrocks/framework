@@ -125,7 +125,8 @@ class Html_Edit_Template extends Html_Template
 			. ' name="' . $this->form_id . '"'
 			. substr($content, $i + 8, $j - $i - 9)
 			. ' method="post"'
-			. ' enctype="multipart/form-data"';
+			. ' enctype="multipart/form-data"'
+			. ' target="#messages"';
 		$i = $j;
 		$j = strrpos($content, "</section>", $i);
 		return "<form" . $attributes . ">"
