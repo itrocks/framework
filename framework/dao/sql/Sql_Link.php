@@ -6,7 +6,7 @@ namespace SAF\Framework;
  *
  * @todo having both executeQuery() and query() is perhaps not a good idea
  */
-abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactional_Data_Link
+abstract class Sql_Link extends Identifier_Map_Data_Link implements Configurable, Transactional_Data_Link
 {
 
 	//--------------------------------------------------------------------------------------- $tables
@@ -31,7 +31,6 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	 */
 	public function __construct($parameters = null)
 	{
-		parent::__construct($parameters);
 		if (isset($parameters)) {
 			$this->tables = isset($parameters["tables"]) ? $parameters["tables"] : array();
 		}
