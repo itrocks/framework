@@ -24,6 +24,9 @@ $("document").ready(function()
 			var $this = $(this);
 			$this.data("saf_add", $this.children("tbody").children("tr.new").clone());
 			$this.data("saf_add_indice", $this.children("tbody").children("tr").length - 1);
+			if ($this.data("saf_add_indice")) {
+				$this.children("tbody").children("tr.new").remove();
+			}
 		});
 
 		this.in("input, textarea").focus(function()
