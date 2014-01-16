@@ -84,7 +84,7 @@ $("document").ready(function()
 				filters = filters.split(",");
 				for (var key in filters) if (filters.hasOwnProperty(key)) {
 					var filter = filters[key].split("=");
-					var $filter_element = $(this.element.get(0).form).find('[name="' + filter[1] + '"]');
+					var $filter_element = $($element.get(0).form).find('[name="' + filter[1] + '"]');
 					if ((filter[0].substr(0, 3) != "id_") || $filter_element.val()) {
 						request["filters[" + filter[0] + "]"] = $filter_element.val();
 					}
