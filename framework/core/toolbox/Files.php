@@ -102,22 +102,52 @@ abstract class Files
 	 */
 	public static function mkdir($directory)
 	{
-		if (substr($directory, -1) === "/") {
-			$directory = substr($directory, 0, -1);
-		}
-		if (!is_dir($directory)) {
-			if (($slash_position = strrpos($directory, "/")) !== false) {
-				$parent_directory = substr($directory, 0, $slash_position);
-				if (!empty($parent_directory)) {
-					self::mkdir($parent_directory);
+		return mkdir($directory, 0777, true);
+	}
+
+	//----------------------------------------------------------------------------------------- rmdir
+	/**
+	 * Removes a directory if it exists, and recursively delete files
+	 *
+	 * @param $directory string path of the directory to be deleted
+	 * @return boolean true if a folder was created or existed, false if any error occurred
+	 */
+	public static function rmdir($directory)
+	{
+		if (!empty($directory) && is_dir($directory)) {
+			foreach (array_diff(scandir($directory), array(".", "..")) as $entry) {
+				if (is_dir($directory . "/" . $entry)) {
+					self::rmdir($directory . "/" . $entry);
+				}
+				else {
+					unlink($directory . "/" . $entry);
 				}
 			}
-			$result = mkdir($directory);
+			rmdir($directory);
 		}
-		else {
-			$result = true;
+	}
+
+	//------------------------------------------------------------------------------- scanDirForFiles
+	/**
+	 * Scan directory for files and return all files names
+	 *
+	 * @param $directory string
+	 * @return string[] each string is the path of the file, relative to the directory
+	 */
+	public static function scanDirForFiles($directory)
+	{
+		$files = array();
+		foreach (array_diff(scandir($directory), array(".", "..")) as $entry) {
+			if (is_dir($directory . "/" . $entry)) {
+				foreach (self::scanDirForFiles($directory . "/" . $entry) as $file_name) {
+					$files[] = $entry . "/" . $file_name;
+				}
+			}
+			else {
+				$files[] = $entry;
+			}
 		}
-		return $result;
+		return $files;
 	}
 
 }

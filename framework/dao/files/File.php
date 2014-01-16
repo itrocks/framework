@@ -25,6 +25,7 @@ class File
 
 	//----------------------------------------------------------------------------------------- $hash
 	/**
+	 * @getter getHash
 	 * @var string
 	 */
 	public $hash;
@@ -82,6 +83,8 @@ class File
 	//------------------------------------------------------------------------------------ getContent
 	/**
 	 * Gets $content, or load it from temporary file name if not set
+	 *
+	 * @return string
 	 */
 	public function getContent()
 	{
@@ -89,6 +92,21 @@ class File
 			$this->content = file_get_contents($this->temporary_file_name);
 			$this->calcHash();
 		}
+		return $this->content;
+	}
+
+	//--------------------------------------------------------------------------------------- getHash
+	/**
+	 * Gets $hash, or calculate it from content if not set
+	 *
+	 * @return string
+	 */
+	public function getHash()
+	{
+		if (!isset($this->hash)) {
+			$this->calcHash();
+		}
+		return $this->hash;
 	}
 
 	//---------------------------------------------------------------------------getTemporaryFileName
@@ -105,6 +123,9 @@ class File
 			if (!isset($this->temporary_file_name)) {
 				$this->temporary_file_name = Application::current()->getTemporaryFilesPath() . "/"
 					. uniqid() . "_" . $this->name;
+			}
+			if (strpos($this->temporary_file_name, "/") !== false) {
+				Files::mkdir(lLastParse($this->temporary_file_name, "/"));
 			}
 			file_put_contents($this->temporary_file_name, $this->content);
 		}

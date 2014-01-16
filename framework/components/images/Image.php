@@ -63,6 +63,15 @@ class Image
 		return new Image($size[0], $size[1], imagecreatefromstring($image), $size[2]);
 	}
 
+	//--------------------------------------------------------------------------------------- display
+	/**
+	 * @return string
+	 */
+	public function display()
+	{
+		$this->save(null);
+	}
+
 	//---------------------------------------------------------------------------------------- resize
 	/**
 	 * Gets a resized version of the image
@@ -108,7 +117,7 @@ class Image
 
 	//------------------------------------------------------------------------------------------ save
 	/**
-	 * @param $filename string
+	 * @param $filename string if null, the image is displayed instead of being saved
 	 * @param $type     integer Image type is one of the IMAGETYPE_XXX image types, or current if null
 	 * @param $quality  integer Image quality (percent)
 	 * @return Image
