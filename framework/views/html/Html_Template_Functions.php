@@ -212,6 +212,23 @@ abstract class Html_Template_Functions
 		return !empty($object);
 	}
 
+	//---------------------------------------------------------------------------------------- getKey
+	/**
+	 * Returns the current key of the current element of the currently read array
+	 *
+	 * @param Html_Template $template
+	 * @return string|integer
+	 */
+	public static function getKey(Html_Template $template)
+	{
+		foreach ($template->objects as $key => $array) {
+			if (is_array($array)) {
+				return $template->var_names[$key - 1];
+			}
+		}
+		return null;
+	}
+
 	//---------------------------------------------------------------------------------------- getLoc
 	/**
 	 * Returns a value with application of current locales
