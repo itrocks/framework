@@ -102,7 +102,7 @@ abstract class Files
 	 */
 	public static function mkdir($directory)
 	{
-		return mkdir($directory, 0777, true);
+		return is_dir($directory) ? true : mkdir($directory, 0777, true);
 	}
 
 	//----------------------------------------------------------------------------------------- rmdir
