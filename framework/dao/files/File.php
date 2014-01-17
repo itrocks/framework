@@ -118,9 +118,9 @@ class File
 	{
 		if (
 			isset($this->content)
-			&& (!isset($this->temporary_file_name) || !file_exists($this->temporary_file_name))
+			&& (empty($this->temporary_file_name) || !file_exists($this->temporary_file_name))
 		) {
-			if (!isset($this->temporary_file_name)) {
+			if (empty($this->temporary_file_name)) {
 				$this->temporary_file_name = Application::current()->getTemporaryFilesPath() . "/"
 					. uniqid() . "_" . $this->name;
 			}

@@ -122,10 +122,37 @@ class Html_Builder_Type_Edit
 		$file = new Html_Input($this->getFieldName());
 		$file->setAttribute("type", "file");
 		$file->addClass("file");
-		$span = ($this->value && ($this->value instanceof File))
-			? new Html_Span($this->value->name)
-			: "";
+		if ($this->value instanceof File) {
+			$span = $this->buildFileAnchor($this->value);
+		}
+		else {
+			$span = "";
+		}
 		return $file . $span;
+	}
+
+	//------------------------------------------------------------------------------- buildFileAnchor
+	/**
+	 * @param $file File
+	 * @return Html_Anchor
+	 */
+	protected function buildFileAnchor(File $file)
+	{
+		/** @var $session_files Session_Files */
+		$session_files = Session::current()->get('SAF\Framework\Session_Files');
+		$session_files->files[] = $file;
+		$image = ($file->getType()->is("image"))
+			? new Html_Image("/Session_File/output/" . $file->name . "?size=22")
+			: "";
+		$anchor = new Html_Anchor(
+			"/Session_File/image/" . $file->name,
+			$image . new Html_Span($file->name)
+		);
+		if ($file->getType()->is("image")) {
+			$anchor->setAttribute("target", "#_blank");
+			//$anchor->addClass("popup");
+		}
+		return $anchor;
 	}
 
 	//------------------------------------------------------------------------------------ buildFloat

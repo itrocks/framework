@@ -122,13 +122,13 @@ $("document").ready(function()
 					$.param(comboRequest($element, { term: $element.val(), first: true })),
 					function(data) {
 						if (data.id) {
-							console.log("> found " + data.id + ": " + data.value);
+							//console.log("> found " + data.id + ": " + data.value);
 							$element.data("value", data.value);
 							$element.prev().val(data.id);
 							$element.val(data.value);
 						}
 						else {
-							console.log("> not found");
+							//console.log("> not found");
 							$element.prev().val("");
 							$element.val("");
 							$element.removeData("value");
@@ -137,7 +137,7 @@ $("document").ready(function()
 				);
 			}
 			else {
-				console.log("> empty value");
+				//console.log("> empty value");
 				$element.prev().val("");
 				$element.val("");
 				$element.removeData("value");
@@ -170,11 +170,11 @@ $("document").ready(function()
 			select: function(event, ui)
 			{
 				var $this = $(this);
-				console.log("selected " + ui.item.id + ": " + ui.item.value);
+				//console.log("selected " + ui.item.id + ": " + ui.item.value);
 				$this.prev().val(ui.item.id);
 				$this.data("value", ui.item.value);
 				if (!comboMatches($this)) {
-					console.log("> " + $this.val() + " does not match " + $this.data("value"));
+					//console.log("> " + $this.val() + " does not match " + $this.data("value"));
 					comboForce($this);
 				}
 			}
@@ -192,11 +192,11 @@ $("document").ready(function()
 		{
 			var $this = $(this);
 			if (comboMatches($this)) {
-				console.log($this.val() + " matches " + $this.data("value"));
+				//console.log($this.val() + " matches " + $this.data("value"));
 				$this.val($this.data("value"));
 			}
 			else {
-				console.log("blur : " + $this.val() + " does not match " + $this.data("value"));
+				//console.log("blur : " + $this.val() + " does not match " + $this.data("value"));
 				comboForce($this);
 			}
 			$this.removeData("value");
@@ -238,11 +238,13 @@ $("document").ready(function()
 				.attr("href", "javascript:$('#" + this.attr("id") + "').remove()")
 				.attr("target", "");
 			var $button = this.in(".actions>.write>a");
-			$button.attr("href",
-				$button.attr("href")
-				+ (($button.attr("href").indexOf("?") > -1) ? "&" : "?")
-				+ "close=" + this.attr("id")
-			);
+			if ($button.length) {
+				$button.attr("href",
+					$button.attr("href")
+					+ (($button.attr("href").indexOf("?") > -1) ? "&" : "?")
+					+ "close=" + this.attr("id")
+				);
+			}
 		}
 		this.in("input.combo").each(function()
 		{

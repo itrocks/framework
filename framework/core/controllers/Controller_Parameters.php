@@ -256,7 +256,8 @@ class Controller_Parameters
 
 	//----------------------------------------------------------------------------------------- toGet
 	/**
-	 * Changes named parameters (which name is not numeric and value not object) into a "get-like" argument
+	 * Changes named parameters (which name is not numeric and value not object) into a "get-like"
+	 * argument
 	 *
 	 * @param boolean $shift if true, get elements will be removed from parameters
 	 * @return array
