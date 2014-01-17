@@ -451,7 +451,7 @@ class Import_Array
 	private function setClassName($class_name)
 	{
 		if (isset($this->class_name)) {
-			if ($class_name !== $this->class_name) {
+			if (!is_a($class_name, $this->class_name, true)) {
 				trigger_error("Bad class name " . $class_name . ", should be a " . $this->class_name);
 			}
 		}
