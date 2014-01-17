@@ -23,6 +23,23 @@ class Controller_Parameters
 	 */
 	private $parameters = array();
 
+	//------------------------------------------------------------------------------------------ $uri
+	/**
+	 * The controller URI that is originator of these parameters (if set)
+	 *
+	 * @var Controller_Uri
+	 */
+	public $uri;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $uri Controller_Uri
+	 */
+	public function __construct(Controller_Uri $uri = null)
+	{
+		if (isset($uri)) $this->uri = $uri;
+	}
+
 	//-------------------------------------------------------------------------------------- addValue
 	/**
 	 * Adds a parameter without name value

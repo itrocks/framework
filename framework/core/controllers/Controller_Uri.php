@@ -161,7 +161,7 @@ class Controller_Uri
 	private function parseUri($uri)
 	{
 		$this->feature_name = "";
-		$this->parameters = new Controller_Parameters();
+		$this->parameters = new Controller_Parameters($this);
 		$last_controller_element = "";
 		$has_numeric = false;
 		foreach ($uri as $i => $uri_element) {
