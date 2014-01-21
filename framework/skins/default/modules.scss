@@ -60,7 +60,7 @@
 	}
 
 	li.base_data>h3 {
-		background-color: $magenta;
+		background-color: $gray;
 		color: white;
 	}
 
@@ -118,7 +118,7 @@
 	&.vat_value, &.vat_values,
 	&.size_unit, &.size_units,
 	&.weight_unit, &.weight_units { >h2 {
-		background-color: $magenta;
+		background-color: $gray;
 	}}
 
 }

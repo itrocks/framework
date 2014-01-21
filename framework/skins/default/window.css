@@ -23,10 +23,3 @@
 /* components */
 /* features colors and action left button part */
 /* modules */
-.categories.window > h2, .category.window > h2,
-.item.window > h2, .items.window > h2 {
-  background-color: #5184d2; }
-
-.client.window > h2, .clients.window > h2,
-.salesman.window > h2, .salesmen.window > h2 {
-  background-color: #93c437; }

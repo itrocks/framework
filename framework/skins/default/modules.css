@@ -33,7 +33,7 @@
   background-color: #222222;
   color: white; }
 .menu > ul li.base_data > h3 {
-  background-color: #b2a5ec;
+  background-color: #a0a0a0;
   color: white; }
 
 /* modules windows */
@@ -48,4 +48,4 @@
 .window.user > h2, .window.users > h2, .window.company > h2, .window.companies > h2, .window.agency > h2, .window.agencies > h2, .window.setting > h2, .window.settings > h2 {
   background-color: #222222; }
 .window.address > h2, .window.addresses > h2, .window.contact > h2, .window.contacts > h2, .window.civility > h2, .window.civilities > h2, .window.city > h2, .window.cities > h2, .window.mean_of_payment > h2, .window.mean_of_payments > h2, .window.term_of_payment > h2, .window.term_of_payments > h2, .window.vat_code > h2, .window.vat_codes > h2, .window.vat_value > h2, .window.vat_values > h2, .window.size_unit > h2, .window.size_units > h2, .window.weight_unit > h2, .window.weight_units > h2 {
-  background-color: #b2a5ec; }
+  background-color: #a0a0a0; }

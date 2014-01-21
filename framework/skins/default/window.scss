@@ -24,13 +24,3 @@
 }
 
 @import "colors.scss";
-
-.categories.window >h2, .category.window >h2,
-.item.window >h2, .items.window >h2 {
-  background-color: $catalog;
-}
-
-.client.window >h2, .clients.window >h2,
-.salesman.window >h2, .salesmen.window >h2 {
-  background-color: $sales;
-}
