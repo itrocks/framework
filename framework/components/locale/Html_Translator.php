@@ -76,8 +76,10 @@ abstract class Html_Translator implements Plugin
 	public static function translateOptionContent(AopJoinpoint $joinpoint)
 	{
 		$arguments = $joinpoint->getArguments();
-		$arguments[0] = Loc::tr($arguments[0]);
-		$joinpoint->setArguments($arguments);
+		if (trim($arguments[0])) {
+			$arguments[0] = Loc::tr($arguments[0]);
+			$joinpoint->setArguments($arguments);
+		}
 	}
 
 	//--------------------------------------------------------------------------------- translatePage
