@@ -7,6 +7,14 @@ namespace SAF\Framework;
 class Import_Worksheet
 {
 
+	//--------------------------------------------------------------------------------------- $errors
+	/**
+	 * Csv import errors list (ie unsolved references)
+	 *
+	 * @var string[]
+	 */
+	public $errors;
+
 	//----------------------------------------------------------------------------------------- $file
 	/**
 	 * @var string

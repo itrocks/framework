@@ -49,7 +49,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 					if (!isset($session_files)) {
 						$session_files = new Session_Files();
 					}
-					$excel = Spreadsheet_File::fileToArray($file->temporary_file_name);
+					$excel = Spreadsheet_File::fileToArray($file->temporary_file_name, $errors);
 					$worksheet_number = 0;
 					foreach ($excel as $temporary_file_name => $worksheet) {
 						if (filesize($temporary_file_name) > 1) {
@@ -58,6 +58,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 								Import_Settings_Builder::buildArray($worksheet, $class_name),
 								$csv_file = new File($temporary_file_name)
 							);
+							$import_worksheet->errors = $errors;
 							$session_files->files[] = $csv_file;
 							$import->worksheets[] = $import_worksheet;
 						}

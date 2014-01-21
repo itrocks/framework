@@ -25,6 +25,19 @@
 		}
 	}
 
+	div.errors {
+		border: 2px solid red;
+		>h3 {
+			background-color: red;
+			color: white;
+			font-size: 1.4em;
+			padding: 2px;
+		}
+		>ul>li {
+			margin-left: 1.4em;
+		}
+	}
+
 	fieldset {
 
 		&.constants {

@@ -73,11 +73,12 @@ class File
 
 	//--------------------------------------------------------------------------------- getCsvContent
 	/**
+	 * @param $errors string[]
 	 * @return array Two dimensional array (keys are row, column)
 	 */
-	public function getCsvContent()
+	public function getCsvContent(&$errors = array())
 	{
-		return Spreadsheet_File::readCsvFile($this->temporary_file_name);
+		return Spreadsheet_File::readCsvFile($this->temporary_file_name, $errors);
 	}
 
 	//------------------------------------------------------------------------------------ getContent

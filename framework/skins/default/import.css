@@ -19,6 +19,15 @@
     .import.preview.window.media > ul > li > input {
       border: none !important;
       width: 140px; }
+.import.preview.window div.errors {
+  border: 2px solid red; }
+  .import.preview.window div.errors > h3 {
+    background-color: red;
+    color: white;
+    font-size: 1.4em;
+    padding: 2px; }
+  .import.preview.window div.errors > ul > li {
+    margin-left: 1.4em; }
 .import.preview.window fieldset.constants > div > label {
   padding: 0; }
   .import.preview.window fieldset.constants > div > label:after {

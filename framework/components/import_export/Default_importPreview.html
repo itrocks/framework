@@ -25,12 +25,23 @@
 		{/custom.html}
 		<!--custom.{#}-->
 
+		<!--errors?-->
+		<div class="errors">
+			<h3>|There were errors into your file : some data could not be imported|</h3>
+			<ul>
+				<!--errors-->
+				<li>{.}</li>
+				<!--errors-->
+			</ul>
+		</div>
+		<!--errors?-->
+
 		<!--settings.classes-->
 		<fieldset class="{name} class">
 			<h3>
 				|{--settings.getClassName.short}|
 				<!--property_path?-->:<!--property_path?-->
-				<!--property_path--><span class="property">|{.}|</span><!--property_path-->
+				<!--property_path--><span class="property">{.}</span><!--property_path-->
 			</h3>
 			<fieldset class="constants">
 				<!--constants-->

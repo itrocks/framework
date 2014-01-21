@@ -56,17 +56,18 @@ class Spreadsheet_File // extends PHPExcel
 	 *
 	 * This enable you to import huge xls files of 10MB and more
 	 *
-	 * @param $file_name
+	 * @param $file_name string
+	 * @param $errors    string[]
 	 * @return array three dimensions (worksheet, row, column) array of read data
 	 */
-	public static function fileToArray($file_name)
+	public static function fileToArray($file_name, &$errors = array())
 	{
 		$csv_file = Application::current()->getTemporaryFilesPath() . "/" . uniqid() . ".csv";
 		exec("ssconvert \"$file_name\" \"$csv_file\" -S");
 		$count = 0;
 		$result = array();
 		while (is_file($csv_file . "." . $count)) {
-			$result[$csv_file . "." . $count] = self::readCsvFile($csv_file . "." . $count);
+			$result[$csv_file . "." . $count] = self::readCsvFile($csv_file . "." . $count, $errors);
 			$count ++;
 		}
 		return $result;
@@ -75,13 +76,24 @@ class Spreadsheet_File // extends PHPExcel
 	//----------------------------------------------------------------------------------- readCsvFile
 	/**
 	 * @param $csv_file string
+	 * @param $errors   string[]
 	 * @return array
 	 */
-	public static function readCsvFile($csv_file)
+	public static function readCsvFile($csv_file, &$errors = array())
 	{
 		$lines = array();
+		$row   = 0;
 		$f = fopen($csv_file, "r");
 		if ($f) while ($buf = fgetcsv($f)) {
+			$row ++;
+			if (($column = array_search("#REF!", $buf)) !== false) {
+				$column ++;
+				$errors[] = str_replace(
+					array("$1", "$2"),
+					array($row, $column),
+					Loc::tr("unsolved reference at row $1 and column $2")
+				);
+			}
 			$lines[] = $buf;
 		}
 		fclose($f);
