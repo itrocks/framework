@@ -323,6 +323,20 @@ abstract class Html_Template_Functions
 		return $object;
 	}
 
+	//-------------------------------------------------------------------------------------- getParse
+	/**
+	 * Parse vars from the string value
+	 *
+	 * @param $template Html_Template
+	 * @return string
+	 */
+	public static function getParse(Html_Template $template)
+	{
+		return $template->parseVars(
+			str_replace(array("&#123;", "&#125;"), array("{", "}"), reset($template->objects))
+		);
+	}
+
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * Returns object's properties, and their display and value
