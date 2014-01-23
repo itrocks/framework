@@ -354,7 +354,9 @@ abstract class Html_Template_Functions
 		foreach ($properties as $property_name => $property) {
 			if (!$property->isStatic()) {
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
-					$result_properties[$property_name] = new Reflection_Property_Value($property, $object);
+					$result_properties[$property_name] = new Reflection_Property_Value(
+						$property->class, $property->name, $object
+					);
 				}
 			}
 		}

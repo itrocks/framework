@@ -104,7 +104,7 @@ class Import_Class implements Serializable
 		foreach ($properties as $property) {
 			if (!$property->isStatic() && !isset($this->constants[$property->name])) {
 				$this->constants[$property->name] = new Reflection_Property_Value(
-					$property->class, $property->class
+					$property->class, $property->name
 				);
 				break;
 			}

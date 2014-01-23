@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use ReflectionClass;
-use ReflectionProperty;
-
 /**
  * A reflection property value is a reflection property enriched with it's display label and a value
  */
@@ -41,50 +38,23 @@ class Reflection_Property_Value extends Reflection_Property
 	 * Constructs a reflection property with value
 	 *
 	 * @example
-	 * $pv = new Reflection_Property_Value($object, "property_name");
 	 * $pv = new Reflection_Property_Value("Class_Name", "property_name", $object);
-	 * $pv = new Reflection_Property_Value($reflection_property, $object);
-	 * $pv = new Reflection_Property_Value($reflection_property, $value);
 	 *
-	 * @param $class       string|ReflectionClass|Reflection_Class|ReflectionProperty|Reflection_Property|object
-	 * @param $name        string|ReflectionProperty|Reflection_Property
-	 * @param $object      object|mixed the object containing the value, or the value itself (in this case set $final_value tu true)
-	 * @param $final_value boolean set to true if $object is a final value instead of the object containing the valued property
+	 * @param $class_name    string
+	 * @param $property_name string
+	 * @param $object        object|mixed the object containing the value, or the value itself (in this case set $final_value tu true)
+	 * @param $final_value   boolean set to true if $object is a final value instead of the object containing the valued property
 	 */
-	public function __construct($class, $name = null, $object = null, $final_value = false)
+	public function __construct($class_name, $property_name, $object = null, $final_value = false)
 	{
-		if ($class instanceof ReflectionClass) {
-			$class = $name->class;
-		}
-		elseif ($class instanceof ReflectionProperty) {
-			if (isset($name) && !isset($object)) {
-				$object = $name;
-			}
-			$name = $class->name;
-			$class = $class->class;
-		}
-		elseif (is_object($class)) {
-			if (!isset($object)) {
-				$object = $class;
-			}
-			$class = get_class($class);
-		}
-		if ($name instanceof ReflectionProperty) {
-			$class = $name->class;
-			$name = $name->name;
-		}
-		if (strpos($name, ".")) {
-			$model = new Reflection_Property($class, $name);
-			parent::__construct($model->class, $model->name);
-		}
-		else {
-			parent::__construct($class, $name);
-		}
-		$this->getAdditionalProperties();
+		parent::__construct($class_name, $property_name);
 		$this->final_value = $final_value;
-		$this->path = $name;
+		$this->path = $property_name;
 		if (!isset($this->object)) {
 			$this->object = $object;
+		}
+		else {
+echo "DEAD CODE ? object is set for $class_name::$property_name<br>";
 		}
 	}
 
@@ -97,9 +67,10 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function __get($key)
 	{
-echo "Reflection_Property_Value::__get MAY CRASH !";
 		$property = new Reflection_Property($this->class, $this->name);
-		return isset($property->$key) ? $property->$key : null;
+		$value = isset($property->$key) ? $property->$key : null;
+echo "Reflection_Property_Value::__get($key) = $value MAY CRASH !<br>";
+		return $value;
 	}
 
 	//----------------------------------------------------------------------------------------- __set
@@ -111,8 +82,9 @@ echo "Reflection_Property_Value::__get MAY CRASH !";
 	 */
 	public function __set($key, $value)
 	{
-echo "Reflection_Property_Value::__set MAY CRASH !";
-		(new Reflection_Property($this->class, $this->name))->$key = $value;
+echo "Reflection_Property_Value::__set($key) = $value MAY CRASH !<br>";
+		$property = (new Reflection_Property($this->class, $this->name));
+		$property->$key = $value;
 	}
 
 	//--------------------------------------------------------------------------------------- display
@@ -145,21 +117,6 @@ echo "Reflection_Property_Value::__set MAY CRASH !";
 	public function format()
 	{
 		return (new Reflection_Property_View($this))->getFormattedValue($this->object);
-	}
-
-	//----------------------------------------------------------------------- getAdditionalProperties
-	/**
-	 * Reads additional properties from the matching Reflection_Property
-	 */
-	private function getAdditionalProperties()
-	{
-echo "Reflection_Property_Value::getAdditionalProperties MAY CRASH !";
-		$property = new Reflection_Property($this->class, $this->name);
-		foreach (get_object_vars($property) as $key => $value) {
-			if (($key != "class") && ($key != "name")) {
-				$this->$key = $value;
-			}
-		}
 	}
 
 	//------------------------------------------------------------------------------------- getObject
