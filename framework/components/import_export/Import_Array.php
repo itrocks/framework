@@ -297,7 +297,7 @@ class Import_Array
 		Dao::begin();
 		$class_name = self::getClassNameFromArray($array, $this->class_name);
 		if (isset($class_name)) {
-			$this->setClassName($class_name);
+			$this->class_name = $class_name;
 		}
 		list($this->properties_link, $this->properties_column) = self::getPropertiesLinkAndColumn(
 			$this->class_name, self::getPropertiesFromArray($array, $this->class_name)
@@ -437,25 +437,6 @@ class Import_Array
 			$property_path = join(".", $property_names);
 		}
 		return $property_path;
-	}
-
-	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * Sets class name
-	 *
-	 * If class name was already set, checks if it is the same. If not, this will trigger an error.
-	 * To change class name, do not use setClassName and directly access to the $class_name property.
-	 *
-	 * @param $class_name string
-	 */
-	private function setClassName($class_name)
-	{
-		if (isset($this->class_name)) {
-			if (!is_a($class_name, $this->class_name, true)) {
-				trigger_error("Bad class name " . $class_name . ", should be a " . $this->class_name);
-			}
-		}
-		$this->class_name = $class_name;
 	}
 
 	//----------------------------------------------------------------------------------- simulateNew
