@@ -35,7 +35,7 @@ class Default_Json_Controller implements Default_Feature_Controller
 			$search = null;
 			if (!empty($parameters["term"])) {
 				$search = (new Search_Array_Builder)->buildMultiple(
-					Reflection_Class::getInstanceOf($element_class_name), $parameters["term"], "", "%"
+					new Reflection_Class($element_class_name), $parameters["term"], "", "%"
 				);
 			}
 			if (isset($parameters["filters"])) {

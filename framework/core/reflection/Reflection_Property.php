@@ -2,7 +2,6 @@
 namespace SAF\Framework;
 
 use Exception;
-use ReflectionClass;
 use ReflectionProperty;
 
 /** @noinspection PhpIncludeInspection */
@@ -69,6 +68,29 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public $path;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name    string
+	 * @param $property_name string
+	 */
+	public function __construct($class_name, $property_name)
+	{
+		if (!(is_string($class_name) && is_string($property_name))) {
+			trigger_error(__CLASS__ . " constructor needs strings", E_USER_ERROR);
+		}
+		$this->path = $property_name;
+		$i = 0;
+		while (($j = strpos($property_name, ".", $i)) !== false) {
+			$property = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
+			$class_name = Builder::className($property->getType()->getElementTypeAsString());
+			$i = $j + 1;
+		}
+		if ($i) {
+			$property_name = substr($property_name, $i);
+		}
+		$this->final_class = $class_name;
+		parent::__construct($class_name, $property_name);
+	}
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string The name of the property
@@ -84,69 +106,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function getFinalClass()
 	{
-		return Reflection_Class::getInstanceOf($this->final_class);
-	}
-
-	//--------------------------------------------------------------------------------- getInstanceOf
-	/**
-	 * Gets the Reflection_Property instance
-	 *
-	 * @param $of_class string|object|Reflection_Class|Reflection_Property|ReflectionClass|ReflectionProperty|Type
-	 * @param $of_name  string $of_name do not set this if is a ReflectionProperty
-	 * @return Reflection_Property
-	 */
-	public static function getInstanceOf($of_class, $of_name = null)
-	{
-		/** @var Reflection_Property[] */
-		static $cache = array();
-		// flexible parameters
-		if ($of_class instanceof Type) {
-			$of_class = $of_class->asString();
-		}
-		elseif ($of_class instanceof Reflection_Property) {
-			$of_name  = $of_class->name;
-			$of_class = $of_class->final_class;
-		}
-		elseif ($of_class instanceof ReflectionProperty) {
-			$of_name  = $of_class->name;
-			$of_class = $of_class->class;
-		}
-		elseif ($of_class instanceof ReflectionClass) {
-			$of_class = $of_class->name;
-		}
-		elseif (is_object($of_class)) {
-			$of_class = get_class($of_class);
-		}
-		// use cache ?
-		if (isset($cache[$of_class]) && isset($cache[$of_class][$of_name])) {
-			// use cache
-			$property = $cache[$of_class][$of_name];
-		}
-		else {
-			// no cache : calculate
-			$of_name_cache = $of_name;
-			$i = 0;
-			if (($j = strpos($of_name, ".", $i)) !== false) {
-				// $of_name is a "property.path"
-				do {
-					$property = Reflection_Property::getInstanceOf($of_class, substr($of_name, $i, $j - $i));
-					$of_class = Builder::className($property->getType()->getElementTypeAsString());
-					$i = $j + 1;
-				} while (($j = strpos($of_name, ".", $i)) !== false);
-				if ($i) {
-					$of_name = substr($of_name, $i);
-				}
-				$property = new Reflection_Property($of_class, $of_name);
-				$property->path = $of_name_cache;
-			}
-			else {
-				// $of_name is a simple property name
-				$property = new Reflection_Property($of_class, $of_name);
-			}
-			$property->final_class = $of_class;
-			$cache[$of_class][$of_name_cache] = $property;
-		}
-		return $property;
+		return new Reflection_Class($this->final_class);
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass
@@ -157,7 +117,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function getDeclaringClass()
 	{
-		return Reflection_Class::getInstanceOf(parent::getDeclaringClass());
+		return new Reflection_Class(parent::getDeclaringClass()->name);
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringTrait
@@ -220,8 +180,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		$comment = "";
 		/** @var $annotation Class_Override_Annotation */
 		foreach (
-			Reflection_Class::getInstanceOf($this->final_class)->getListAnnotations("override")
-			as $annotation
+			(new Reflection_Class($this->final_class))->getListAnnotations("override") as $annotation
 		) {
 			if ($annotation->property_name === $this->name) {
 				$comment .= "/**\n";
@@ -258,7 +217,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	public function getParentProperty()
 	{
 		if (!empty($this->path) && ($i = strrpos($this->path, "."))) {
-			return self::getInstanceOf(substr($this->path, 0, $i));
+			return new Reflection_Property($this->class, substr($this->path, 0, $i));
 		}
 		return null;
 	}
@@ -271,6 +230,9 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	public function getType()
 	{
 		$type_string = $this->getAnnotation("var")->value;
+		if (ctype_upper($type_string[0])) {
+			$type_string = Namespaces::defaultFullClassName($type_string, $this->class);
+		}
 		$type = new Type($type_string);
 		// automatically add current class namespace
 		if ($type->isClass()) {

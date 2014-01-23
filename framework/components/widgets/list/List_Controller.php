@@ -139,7 +139,7 @@ abstract class List_Controller extends Output_Controller
 				$t = $i = "";
 			}
 			$class_display = Names::classToDisplay(
-				Reflection_Class::getInstanceOf($list_settings->class_name)->getAnnotation("set")->value
+				(new Reflection_Class($list_settings->class_name))->getAnnotation("set")->value
 			);
 			$summary = $t . $i. ucfirst($class_display) . $i . " filtered by" . $t;
 			$first = true;

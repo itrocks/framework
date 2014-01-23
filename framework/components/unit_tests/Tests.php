@@ -39,7 +39,7 @@ class Tests
 			// automatically call each test* public method
 			if (empty($method_name)) {
 				$call_methods = array();
-				$methods = Reflection_Class::getInstanceOf($class_name)->getMethods(
+				$methods = (new Reflection_Class($class_name))->getMethods(
 					Reflection_Method::IS_PUBLIC
 				);
 				foreach ($methods as $method) {

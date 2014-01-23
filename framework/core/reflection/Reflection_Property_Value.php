@@ -74,7 +74,7 @@ class Reflection_Property_Value extends Reflection_Property
 			$name = $name->name;
 		}
 		if (strpos($name, ".")) {
-			$model = Reflection_Property::getInstanceOf($class, $name);
+			$model = new Reflection_Property($class, $name);
 			parent::__construct($model->class, $model->name);
 		}
 		else {
@@ -97,7 +97,8 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function __get($key)
 	{
-		$property = Reflection_Property::getInstanceOf($this->class, $this->name);
+echo "Reflection_Property_Value::__get MAY CRASH !";
+		$property = new Reflection_Property($this->class, $this->name);
 		return isset($property->$key) ? $property->$key : null;
 	}
 
@@ -110,7 +111,8 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function __set($key, $value)
 	{
-		Reflection_Property::getInstanceOf($this->class, $this->name)->$key = $value;
+echo "Reflection_Property_Value::__set MAY CRASH !";
+		(new Reflection_Property($this->class, $this->name))->$key = $value;
 	}
 
 	//--------------------------------------------------------------------------------------- display
@@ -151,7 +153,8 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	private function getAdditionalProperties()
 	{
-		$property = Reflection_Property::getInstanceOf($this->class, $this->name);
+echo "Reflection_Property_Value::getAdditionalProperties MAY CRASH !";
+		$property = new Reflection_Property($this->class, $this->name);
 		foreach (get_object_vars($property) as $key => $value) {
 			if (($key != "class") && ($key != "name")) {
 				$this->$key = $value;

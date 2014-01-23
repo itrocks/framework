@@ -80,8 +80,8 @@ trait Component
 		if (!isset(self::$composite_property_name[$path])) {
 			self::$composite_property_name[$path] = array();
 			$properties = empty($property_name)
-				? Reflection_Class::getInstanceOf($self)->getAnnotedProperties("composite")
-				: array(Reflection_Property::getInstanceOf($self, $property_name));
+				? (new Reflection_Class($self))->getAnnotedProperties("composite")
+				: array(new Reflection_Property($self, $property_name));
 			foreach ($properties as $property) {
 				if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
 					self::$composite_property_name[$path][$property->name] = $property;

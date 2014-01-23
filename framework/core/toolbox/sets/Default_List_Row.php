@@ -62,7 +62,7 @@ class Default_List_Row implements List_Row
 				? $cache[$this->class_name][$property_path]
 				: (
 					$cache[$this->class_name][$property_path] = new Reflection_Property_View(
-						Reflection_Property::getInstanceOf($this->class_name, $property_path)
+						new Reflection_Property($this->class_name, $property_path)
 					)
 				);
 			$values[$property_path] = $property_view->formatValue($value);

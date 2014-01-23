@@ -26,7 +26,7 @@ class Link_Class extends Reflection_Class
 	 */
 	public function getLinkClass()
 	{
-		return Reflection_Class::getInstanceOf($this->getLinkClassName());
+		return new Reflection_Class($this->getLinkClassName());
 	}
 
 	//------------------------------------------------------------------------------ getLinkClassName

@@ -35,7 +35,7 @@ class Html_Builder_Map
 		$this->property = $property;
 		$this->map = $map;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
-		$class = Reflection_Class::getInstanceOf($this->class_name);
+		$class = new Reflection_Class($this->class_name);
 		$this->properties = $class->getListAnnotation("representative")->values();
 	}
 

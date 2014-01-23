@@ -84,7 +84,7 @@ class Mysql_Table_Builder_Class
 	 */
 	private function buildInternal($class_name, $more_field)
 	{
-		$class = Reflection_Class::getInstanceOf($class_name);
+		$class = new Reflection_Class($class_name);
 		$link = $class->getAnnotation("link")->value;
 		$tables = $link ? $this->buildLinkTable($link, $class_name) : array();
 		$tables[] = $this->buildClassTable($class, $more_field);
@@ -102,7 +102,7 @@ class Mysql_Table_Builder_Class
 		$link_class_name = Namespaces::defaultFullClassName($link, $class_name);
 		$tables = (new Mysql_Table_Builder_Class)->build($link_class_name);
 		$this->excluded_properties = array_keys(
-			Reflection_Class::getInstanceOf($link_class_name)->getAllProperties()
+			(new Reflection_Class($link_class_name))->getAllProperties()
 		);
 		return $tables;
 	}

@@ -78,7 +78,7 @@ class List_Settings extends Custom_Settings
 			$this->sort = new Dao_Sort_Option($class_name);
 		}
 		if (!isset($this->properties_path) && isset($this->class_name)) {
-			$this->properties_path = Reflection_Class::getInstanceOf($this->class_name)
+			$this->properties_path = (new Reflection_Class($this->class_name))
 				->getListAnnotation("representative")->values();
 		}
 	}
@@ -132,7 +132,7 @@ class List_Settings extends Custom_Settings
 	private function getDefaultTitle()
 	{
 		return ucfirst(Names::classToDisplay(
-			Reflection_Class::getInstanceOf($this->class_name)->getAnnotation("set")
+			(new Reflection_Class($this->class_name))->getAnnotation("set")
 		));
 	}
 

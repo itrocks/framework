@@ -66,7 +66,7 @@ abstract class Names
 	 */
 	public static function classToSet($class_name)
 	{
-		return Reflection_Class::getInstanceOf($class_name)->getAnnotation("set")->value;
+		return (new Reflection_Class($class_name))->getAnnotation("set")->value;
 	}
 
 	//-------------------------------------------------------------------------------- displayToClass

@@ -27,7 +27,7 @@ abstract class Import_Settings_Builder
 		}
 		$auto_identify = array();
 		foreach ($properties_path as $property_path) {
-			$class = Reflection_Class::getInstanceOf($class_name);
+			$class = new Reflection_Class($class_name);
 			$representative = $class->getListAnnotation("representative")->values();
 			foreach (explode(".", $property_path) as $pos => $property_name) {
 				if (in_array($property_name, $representative)) {
@@ -37,7 +37,7 @@ abstract class Import_Settings_Builder
 				if (isset($property)) {
 					$type = $property->getType();
 					if ($type->isClass()) {
-						$class = Reflection_Class::getInstanceOf($type->getElementTypeAsString());
+						$class = new Reflection_Class($type->getElementTypeAsString());
 						$representative = $class->getListAnnotation("representative")->values();
 					}
 				}
@@ -87,7 +87,7 @@ abstract class Import_Settings_Builder
 				$class = $classes[$class_key];
 				$import_property = new Import_Property($sub_class, $property_name);
 				try {
-					$property = Reflection_Property::getInstanceOf($sub_class, $property_name);
+					$property = new Reflection_Property($sub_class, $property_name);
 					if (
 						($identify && !$auto_identify)
 						|| (
@@ -140,7 +140,7 @@ abstract class Import_Settings_Builder
 				else {
 					// property paths for next elements
 					$property_path = str_replace(">", ".", $property_path);
-					$property = Reflection_Property::getInstanceOf($main_class_name, $property_path);
+					$property = new Reflection_Property($main_class_name, $property_path);
 					$class_name = Builder::className($property->getType()->getElementTypeAsString());
 				}
 				$settings->classes[$property_path] = self::buildFormClass(
@@ -183,7 +183,7 @@ abstract class Import_Settings_Builder
 				$import_property = new Import_Property($class_name, $property_name);
 				$import_class->write_properties[$property_name] = $import_property;
 				try {
-					Reflection_Property::getInstanceOf($class_name, $property_name);
+					new Reflection_Property($class_name, $property_name);
 				}
 				catch (ReflectionException $exception) {
 					$import_class->unknown_properties[$property_name] = $import_property;

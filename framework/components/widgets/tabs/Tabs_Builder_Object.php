@@ -19,7 +19,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	 */
 	public static function buildObject($object, $filter_properties = null)
 	{
-		$class = Reflection_Class::getInstanceOf($object);
+		$class = new Reflection_Class(get_class($object));
 		/** @var $group_annotations Class_Group_Annotation[] */
 		$group_annotations = $class->getAnnotations("group");
 		$properties = $class->accessProperties();

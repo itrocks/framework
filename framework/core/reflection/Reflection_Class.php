@@ -29,14 +29,6 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 {
 	use Annoted;
 
-	//---------------------------------------------------------------------------------------- $cache
-	/**
-	 * Cache Reflection_Class objects for each class name
-	 *
-	 * @var Reflection_Class[]
-	 */
-	private static $cache = array();
-
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * Cached value for the doc comment (set by getDocComment() only when $use is true)
@@ -44,6 +36,18 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * @var string
 	 */
 	private $doc_comment;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name string
+	 */
+	public function __construct($class_name)
+	{
+		if (!is_string($class_name)) {
+			trigger_error(__CLASS__ . " constructor needs a string", E_USER_ERROR);
+		}
+		parent::__construct($class_name);
+	}
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -164,7 +168,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	public function getConstructor()
 	{
 		$constructor = parent::getConstructor();
-		return $constructor ? Reflection_Method::getInstanceOf($constructor) : $constructor;
+		return $constructor
+			? new Reflection_Method($constructor->class, $constructor->name) : $constructor;
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment
@@ -194,39 +199,6 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		return $this->doc_comment;
 	}
 
-	//--------------------------------------------------------------------------------- getInstanceOf
-	/**
-	 * Return Reflection_Class instance for a class name, an object or a php ReflectionClass object
-	 *
-	 * @param $of_class string|object|ReflectionClass|Type
-	 * @return Reflection_Class
-	 */
-	public static function getInstanceOf($of_class)
-	{
-		if ($of_class instanceof Type) {
-			$of_class = $of_class->asString();
-		}
-		elseif ($of_class instanceof ReflectionClass) {
-			$of_class = $of_class->name;
-		}
-		elseif (is_object($of_class)) {
-			$of_class = get_class($of_class);
-		}
-		if (isset(self::$cache[$of_class])) {
-			$class = self::$cache[$of_class];
-		}
-		else {
-			try {
-				$class = new Reflection_Class($of_class);
-			}
-			catch (ReflectionException $e) {
-				$class = new Reflection_Class($of_class);
-			}
-			self::$cache[$of_class] = $class;
-		}
-		return $class;
-	}
-
 	//--------------------------------------------------------------------------------- getInterfaces
 	/**
 	 * Gets interfaces
@@ -238,7 +210,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	{
 		$interfaces = array();
 		foreach (parent::getInterfaces() as $key => $interface) {
-			$interfaces[$by_name ? $interface->name : $key] = Reflection_Class::getInstanceOf($interface);
+			$interfaces[$by_name ? $interface->name : $key] = new Reflection_Class($interface->name);
 		}
 		return $interfaces;
 	}
@@ -255,7 +227,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	public function getMethod($method_name)
 	{
 		$method = parent::getMethod($method_name);
-		return $method ? Reflection_Method::getInstanceOf($method) : $method;
+		return $method ? new Reflection_Method($method->class, $method->name) : $method;
 	}
 
 	//------------------------------------------------------------------------------------ getMethods
@@ -273,7 +245,9 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		$methods = array();
 		$meths = parent::getMethods($filter);
 		foreach ($meths as $key => $method) {
-			$methods[$by_name ? $method->name : $key] = Reflection_Method::getInstanceOf($method);
+			$methods[$by_name ? $method->name : $key] = new Reflection_Method(
+				$method->class, $method->name
+			);
 		}
 		return $methods;
 	}
@@ -287,7 +261,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	public function getParentClass()
 	{
 		$parent_class = parent::getParentClass();
-		return $parent_class ? static::getInstanceOf($parent_class) : $parent_class;
+		return $parent_class ? new Reflection_Class($parent_class->name) : $parent_class;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
@@ -310,7 +284,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		$properties = array();
 		foreach (parent::getProperties($filter) as $key => $property) {
 			$properties[$by_name ? $property->name : $key]
-				= Reflection_Property::getInstanceOf($final_class, $property->name);
+				= new Reflection_Property($final_class, $property->name);
 		}
 		return $properties;
 	}
@@ -332,7 +306,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		catch (ReflectionException $e) {
 			$property = null;
 		}
-		return $property ? Reflection_Property::getInstanceOf($property) : $property;
+		return $property ? new Reflection_Property($property->class, $property->name) : $property;
 	}
 
 	//------------------------------------------------------------------------------------- getTraits
@@ -346,7 +320,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	{
 		$traits = array();
 		foreach (parent::getTraits() as $key => $trait) {
-			$traits[$by_name ? $trait->name : $key] = Reflection_Class::getInstanceOf($trait);
+			$traits[$by_name ? $trait->name : $key] = new Reflection_Class($trait->name);
 		}
 		return $traits;
 	}

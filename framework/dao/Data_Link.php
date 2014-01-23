@@ -216,7 +216,7 @@ abstract class Data_Link
 		}
 		$element_value = $element->$property_name;
 		if (is_object($element_value)) {
-			$class = Reflection_Class::getInstanceOf(get_class($element_value));
+			$class = new Reflection_Class(get_class($element_value));
 			$defaults = $class->getDefaultProperties();
 			foreach ($class->getListAnnotation("representative")->values() as $property_name) {
 				if (

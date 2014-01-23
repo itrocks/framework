@@ -44,13 +44,13 @@ class Translations extends Set
 		if (empty($translation)) {
 			return $translation;
 		}
+		$context_property = str_replace("*", "", $context_property_path);
 		/** @var $search Translation */
 		$search = Search_Object::create('SAF\Framework\Translation');
 		$search->language = $this->language;
 		$search->translation = strtolower($translation);
 		$search->context = $context_property_path
-			? Reflection_Property::getInstanceOf($context, str_replace("*", "", $context_property_path))
-				->final_class
+			? (new Reflection_Property($context, $context_property))->final_class
 			: $context;
 		$texts = Dao::search($search);
 		foreach ($texts as $text) if ($text->translation === $translation) break;

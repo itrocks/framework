@@ -18,7 +18,7 @@ abstract class Mysql_Foreign_Key_Builder_Property
 	public static function build($table_name, Reflection_Property $property)
 	{
 		$foreign_key = new Mysql_Foreign_Key();
-		$class = Reflection_Class::getInstanceOf(get_class($foreign_key));
+		$class = new Reflection_Class(get_class($foreign_key));
 		$class->accessProperties();
 		$class->getProperty("Constraint")->setValue(
 			$foreign_key, self::propertyConstraintToMysql($table_name, $property)

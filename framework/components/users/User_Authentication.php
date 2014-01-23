@@ -20,8 +20,7 @@ abstract class User_Authentication
 		$user->login = $array["login"];
 		$user->password = (new Password(
 			$array["password"],
-			Reflection_Property::getInstanceOf(get_class($user), "password")->getAnnotation("password")
-				->value
+			(new Reflection_Property(get_class($user), "password"))->getAnnotation("password")->value
 		))->encrypted();
 		return $user;
 	}
@@ -136,7 +135,7 @@ abstract class User_Authentication
 		$search->login = $login;
 		$password = (new Password(
 			$password,
-			Reflection_Property::getInstanceOf(get_class($search), "password")->getAnnotation("password")
+			(new Reflection_Property(get_class($search), "password"))->getAnnotation("password")
 				->value
 		))->encrypted();
 		foreach (Dao::search($search) as $user) {

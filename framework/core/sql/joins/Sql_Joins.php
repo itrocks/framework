@@ -169,7 +169,7 @@ class Sql_Joins
 	 */
 	private function addLinkedClass($path, $linked_class_name, $join_mode)
 	{
-		$linked_class = Reflection_Class::getInstanceOf($linked_class_name);
+		$linked_class = new Reflection_Class($linked_class_name);
 		$join = new Sql_Join();
 		$join->master_alias   = "t" . ($this->alias_counter - 1);
 		$join->master_column  = "id_" . Names::classToProperty($linked_class_name);
@@ -258,7 +258,7 @@ class Sql_Joins
 	 */
 	private function addProperties($path, $class_name, $join_mode = null)
 	{
-		$class = Reflection_Class::getInstanceOf($class_name);
+		$class = new Reflection_Class($class_name);
 		$this->properties[$class_name] = $class->getAllProperties();
 		$linked_class_name = $class->getAnnotation("link")->value;
 		if ($linked_class_name) {
@@ -288,9 +288,7 @@ class Sql_Joins
 		}
 		$join->foreign_column = "id_" . $foreign_property_name;
 		$join->mode = Sql_Join::LEFT;
-		$foreign_property = Reflection_Property::getInstanceOf(
-			$foreign_class_name, $foreign_property_name
-		);
+		$foreign_property = new Reflection_Property($foreign_class_name, $foreign_property_name);
 		if ($foreign_property->getType()->isMultiple()) {
 			$this->addLinkedJoin(
 				$join, $master_path, $foreign_path, $foreign_class_name, $foreign_property, true

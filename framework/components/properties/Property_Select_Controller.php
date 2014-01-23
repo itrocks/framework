@@ -71,17 +71,15 @@ class Property_Select_Controller implements Controller
 		if (empty($property_path)) {
 			$top_property = new Property();
 			$top_property->class = $class_name;
-			$properties = $this->getProperties(Reflection_Class::getInstanceOf($class_name));
+			$properties = $this->getProperties(new Reflection_Class($class_name));
 			foreach ($properties as $property) {
 				$property->path = $property->name;
 			}
 		}
 		else {
-			$top_property = Reflection_Property::getInstanceOf($class_name, $property_path);
+			$top_property = new Reflection_Property($class_name, $property_path);
 			$properties = $this->getProperties(
-				Reflection_Class::getInstanceOf(
-					Builder::className($top_property->getType()->getElementTypeAsString())
-				),
+				new Reflection_Class(Builder::className($top_property->getType()->getElementTypeAsString())),
 				$top_property->final_class
 			);
 			foreach ($properties as $property) {

@@ -18,7 +18,7 @@ abstract class Remover_Tool
 	public static function removeObjectFromComposite($composite, $object)
 	{
 		$count = 0;
-		$class = Reflection_Class::getInstanceOf($composite);
+		$class = new Reflection_Class(get_class($composite));
 		foreach ($class->accessProperties() as $property) {
 			$type = $property->getType();
 			if ($type->isClass() && class_instanceof($object, $type->getElementTypeAsString())) {

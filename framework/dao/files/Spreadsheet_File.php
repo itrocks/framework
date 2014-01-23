@@ -32,8 +32,8 @@ class Spreadsheet_File // extends PHPExcel
 	{
 		$source_object = PHPExcel_IOFactory::load($file_name);
 		$destination_object = new Spreadsheet_File();
-		$source_class = Reflection_Class::getInstanceOf(get_class($source_object));
-		$destination_class = Reflection_Class::getInstanceOf(__CLASS__);
+		$source_class = new Reflection_Class(get_class($source_object));
+		$destination_class = new Reflection_Class(__CLASS__);
 		$destination_properties = $destination_class->accessProperties();
 		foreach ($source_class->accessProperties() as $source_property) {
 			if (!$source_property->isStatic()) {

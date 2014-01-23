@@ -23,7 +23,7 @@ abstract class Mysql_Foreign_Key_Builder
 			$column_name = "id_" . $column_name;
 		}
 		$foreign_key = new Mysql_Foreign_Key();
-		$class = Reflection_Class::getInstanceOf($foreign_key);
+		$class = new Reflection_Class(get_class($foreign_key));
 		$class->accessProperties();
 		$class->getProperty("Constraint")->setValue($foreign_key, $table_name . "." . $column_name);
 		$class->getProperty("Fields")->setValue($foreign_key, $column_name);

@@ -358,7 +358,7 @@ class Object_Builder_Array
 			);
 		}
 		elseif ($objects) {
-			$class = Reflection_Class::getInstanceOf(get_class($object));
+			$class = new Reflection_Class(get_class($object));
 			$new_object = reset($objects);
 			foreach ($class->accessProperties() as $property) {
 				$property_name = $property->name;
@@ -381,7 +381,7 @@ class Object_Builder_Array
 		if ($this->started) {
 			$this->stop();
 		}
-		$this->class = Reflection_Class::getInstanceOf(Builder::className($class_name));
+		$this->class = new Reflection_Class(Builder::className($class_name));
 		$this->defaults = $this->class->getDefaultProperties();
 	}
 

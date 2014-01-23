@@ -16,7 +16,7 @@ abstract class Mysql_Column_Builder
 	public static function buildId()
 	{
 		$column = new Mysql_Column();
-		$class = Reflection_Class::getInstanceOf(get_class($column));
+		$class = new Reflection_Class(get_class($column));
 		$class->accessProperties();
 		$class->getProperty("Field")->setValue($column, "id");
 		$class->getProperty("Type")->setValue($column, "bigint(18) unsigned");
@@ -37,7 +37,7 @@ abstract class Mysql_Column_Builder
 	public static function buildLink($column_name)
 	{
 		$column = new Mysql_Column();
-		$class = Reflection_Class::getInstanceOf(get_class($column));
+		$class = new Reflection_Class(get_class($column));
 		$class->accessProperties();
 		$class->getProperty("Field")->setValue($column, $column_name);
 		$class->getProperty("Type")->setValue($column, "bigint(18) unsigned");

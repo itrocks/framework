@@ -54,8 +54,7 @@ abstract class Aop
 					|| ($joinpoint->getClassName() === $class_name)
 					|| (get_class($joinpoint->getObject()) === $class_name)
 					|| (
-						Reflection_Method::getInstanceOf($class_name, $joinpoint->getMethodName())->class
-						=== $class_name
+						(new Reflection_Method($class_name, $joinpoint->getMethodName()))->class == $class_name
 					)
 				) {
 					call_user_func($call_back, $joinpoint);
@@ -86,7 +85,7 @@ abstract class Aop
 			|| @trait_exists($class_name, false)
 			|| @interface_exists($class_name, false)
 		) {
-			$class = Reflection_Class::getInstanceOf($class_name);
+			$class = new Reflection_Class($class_name);
 			// properties overridden in traits must be overridden into final class
 			$overridden_properties = array();
 			if ($is_class) {

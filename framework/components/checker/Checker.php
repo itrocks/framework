@@ -15,7 +15,7 @@ abstract class Checker
 	public static function check($object)
 	{
 		$check_report = new Check_Report();
-		$class = Reflection_Class::getInstanceOf($object);
+		$class = new Reflection_Class(get_class($object));
 		foreach ($class->accessProperties() as $property) {
 			$check_report->add(self::checkProperty($property, $property->getValue($object)));
 		}

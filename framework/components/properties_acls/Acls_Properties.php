@@ -88,8 +88,7 @@ abstract class Acls_Properties
 	 */
 	public function getDefaultProperties()
 	{
-		return array_keys(Reflection_Class::getInstanceOf($this->context_class_name)
-			->getAllProperties());
+		return array_keys((new Reflection_Class($this->context_class_name))->getAllProperties());
 	}
 
 	//---------------------------------------------------------------------------- getPropertiesNames

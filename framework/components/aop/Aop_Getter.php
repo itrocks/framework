@@ -27,8 +27,8 @@ abstract class Aop_Getter extends Aop implements Plugin
 		$property = $joinpoint->getPropertyName();
 		if (!isset($object->$property)) {
 			$class = $joinpoint->getClassName();
-			$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
-				->getElementTypeAsString();
+			$type_name = (new Reflection_Property($class, $property))->getType()
+				->getElementTypeAsString($class);
 			$object->$property = Getter::getAll(null, $type_name);
 		}
 		return $object->$property;
@@ -47,7 +47,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 		$property = $joinpoint->getPropertyName();
 		if (!isset($object->$property)) {
 			$class = $joinpoint->getClassName();
-			$type_name = Reflection_Property::getInstanceOf($class, $property)->getType()
+			$type_name = (new Reflection_Property($class, $property))->getType()
 				->getElementTypeAsString();
 			$object->$property = Getter::getCollection(null, $type_name, $object, $property);
 		}
@@ -96,7 +96,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 		$property = $joinpoint->getPropertyName();
 		if (!isset($object->$property)) {
 			$class = $joinpoint->getClassName();
-			$property = Reflection_Property::getInstanceOf($class, $property);
+			$property = new Reflection_Property($class, $property);
 			$object->$property = Getter::getMap(null, $object, $property);
 		}
 		return $object->$property;
@@ -114,7 +114,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 		$property = $joinpoint->getPropertyName();
 		if (!isset($object->$property)) {
 			$class = $joinpoint->getClassName();
-			$property = Reflection_Property::getInstanceOf($class, $property);
+			$property = new Reflection_Property($class, $property);
 			$type = $property->getType()->asString();
 			$value = Getter::getObject(null, $type, $object, $property->name);
 			if (!is_object($value)) {

@@ -99,10 +99,10 @@ class Mysql_Link extends Sql_Link
 		$class_name = get_class($object);
 		$id = $this->getObjectIdentifier($object);
 		if ($id) {
-			$class = Reflection_Class::getInstanceOf($class_name);
+			$class = new Reflection_Class($class_name);
 			$link = $class->getAnnotation("link")->value;
 			$exclude_properties = $link
-				? array_keys(Reflection_Class::getInstanceOf($link)->getAllProperties())
+				? array_keys((new Reflection_Class($link))->getAllProperties())
 				: array();
 			foreach ($class->accessProperties() as $property) {
 				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
@@ -297,12 +297,12 @@ class Mysql_Link extends Sql_Link
 	 * as if they where official properties of $class, but they storage object is a Dao_Column
 	 * and not a Reflection_Property.
 	 *
-	 * @param $class string|Reflection_Class
+	 * @param $class Reflection_Class
 	 * @return Reflection_Property[]|Mysql_Column[]
 	 */
 	public function getStoredProperties($class)
 	{
-		$properties = Reflection_Class::getInstanceOf($class)->getAllProperties();
+		$properties = $class->getAllProperties();
 		foreach ($properties as $key => $property) {
 			$type = $property->getType();
 			if ($property->isStatic() || ($type->isMultiple() && !$type->getElementType()->isBasic())) {
@@ -344,7 +344,7 @@ class Mysql_Link extends Sql_Link
 	public function read($identifier, $class_name)
 	{
 		if (!$identifier) return null;
-		if (Reflection_Class::getInstanceOf($class_name)->getAnnotation("link")->value) {
+		if ((new Reflection_Class($class_name))->getAnnotation("link")->value) {
 			$query = (new Sql_Select_Builder($class_name, null, array("id" => $identifier), $this))
 				->buildQuery();
 		}
@@ -482,7 +482,7 @@ class Mysql_Link extends Sql_Link
 			if (Null_Object::isNull($object)) {
 				$this->disconnect($object);
 			}
-			$class = Reflection_Class::getInstanceOf($object);
+			$class = new Reflection_Class(get_class($object));
 			$table_columns_names = array_keys($this->getStoredProperties($class));
 			$write_collections = array();
 			$write_maps = array();
@@ -491,7 +491,7 @@ class Mysql_Link extends Sql_Link
 			Aop_Getter::$ignore = true;
 			$link = $class->getAnnotation("link")->value;
 			$exclude_properties = $link
-				? array_keys(Reflection_Class::getInstanceOf($link)->getAllProperties())
+				? array_keys((new Reflection_Class($link))->getAllProperties())
 				: array();
 			foreach ($options as $option) {
 				if ($option instanceof Dao_Only_Option) {

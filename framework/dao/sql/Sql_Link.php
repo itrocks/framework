@@ -199,7 +199,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Configurable
 						// TODO try to get the object from an object map (avoid several instances of the same)
 						$row[$columns[$j]] = Builder::create($classes[$j]);
 						if ($first && !isset($properties[$classes[$j]])) {
-							$class = Reflection_Class::getInstanceOf($classes[$j]);
+							$class = new Reflection_Class($classes[$j]);
 							$class->accessProperties();
 							$properties[$classes[$j]] = $class;
 						}

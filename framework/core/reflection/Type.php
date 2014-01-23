@@ -98,7 +98,7 @@ class Type
 	 */
 	public function asReflectionClass()
 	{
-		return Reflection_Class::getInstanceOf($this->getElementTypeAsString());
+		return new Reflection_Class($this->getElementTypeAsString());
 	}
 
 	//-------------------------------------------------------------------------------------- asString

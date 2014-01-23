@@ -60,7 +60,7 @@ abstract class Loc implements Plugin
 		if (isset($value)) {
 			if (is_array($value) && !empty($value)) {
 				if ($property->getAnnotation("link")->value == "Collection") {
-					$class = Reflection_Class::getInstanceOf($property->getType()->getElementTypeAsString());
+					$class = new Reflection_Class($property->getType()->getElementTypeAsString());
 					$properties = $class->accessProperties();
 					reset($value);
 					if (!is_numeric(key($value))) {

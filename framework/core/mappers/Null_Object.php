@@ -11,13 +11,13 @@ abstract class Null_Object
 	/**
 	 * Returns true if the object has no set properties (ie was created with Null_Object:create())
 	 *
-	 * @param $object
+	 * @param $object object
 	 * @return boolean
 	 */
 	public static function isNull($object)
 	{
 		$is_null = true;
-		$class = Reflection_Class::getInstanceOf($object);
+		$class = new Reflection_Class(get_class($object));
 		foreach ($class->accessProperties() as $property) {
 			if ((!$property->isStatic()) && ($property->getValue($object) !== null)) {
 				$is_null = false;
@@ -38,7 +38,7 @@ abstract class Null_Object
 	public static function create($class_name)
 	{
 		$object = Builder::create($class_name);
-		$class = Reflection_Class::getInstanceOf($class_name);
+		$class = new Reflection_Class($class_name);
 		foreach ($class->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				$property->setValue($object, null);

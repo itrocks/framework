@@ -68,7 +68,7 @@ class Configuration implements Serializable
 				if ($configuration == "@static") {
 					$self_configuration = array();
 					$set_current->$class_name =& $self_configuration;
-					$class = Reflection_Class::getInstanceOf($class_name);
+					$class = new Reflection_Class($class_name);
 					foreach ($class->accessProperties() as $property) if ($property->isStatic()) {
 						$property_name = $property->name;
 						$self_configuration[$property_name] =& $class_name::$$property_name;
@@ -100,7 +100,7 @@ class Configuration implements Serializable
 				}
 				else {
 					$self_configuration =& $set_current->$class_name;
-					$class = Reflection_Class::getInstanceOf($class_name);
+					$class = new Reflection_Class($class_name);
 					foreach ($class->accessProperties() as $property) {
 						$property_name = $property->name;
 						if ($property->isStatic() && isset($self_configuration[$property_name])) {

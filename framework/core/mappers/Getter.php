@@ -42,7 +42,7 @@ abstract class Getter
 				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
 				if (isset($parent_property)) {
 					if (!$parent_property instanceof Reflection_Property) {
-						$parent_property = Reflection_Property::getInstanceOf($parent, $parent_property);
+						$parent_property = new Reflection_Property(get_class($parent), $parent_property);
 					}
 					$property_name = $parent_property->getAnnotation("foreign")->value;
 					$dao = ($dao = $parent_property->getAnnotation("dao")->value)
@@ -60,7 +60,7 @@ abstract class Getter
 				}
 				// when element class is not a component and a property name was found
 				elseif (!empty($property_name)) {
-					$property = Reflection_Property::getInstanceOf($search_element, $property_name);
+					$property = new Reflection_Property(get_class($search_element), $property_name);
 					$accessible = $property->isPublic();
 					if (!$accessible) {
 						$property->setAccessible(true);
@@ -102,7 +102,7 @@ abstract class Getter
 		if (!isset($map)) {
 			if (Dao::getObjectIdentifier($parent)) {
 				if (!($parent_property instanceof Reflection_Property)) {
-					$parent_property = Reflection_Property::getInstanceOf($parent, $parent_property);
+					$parent_property = new Reflection_Property(get_class($parent), $parent_property);
 				}
 				$dao = ($dao = $parent_property->getAnnotation("dao")->value)
 					? Dao::get($dao)
@@ -138,7 +138,7 @@ abstract class Getter
 			}
 			elseif (is_string($property) && is_object($parent)) {
 				$property_name = $property;
-				$property = Reflection_Property::getInstanceOf($parent, $property_name);
+				$property = new Reflection_Property(get_class($parent), $property_name);
 			}
 			if (is_object($parent) && isset($property_name)) {
 				$id_property_name = "id_" . $property_name;

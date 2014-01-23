@@ -17,7 +17,7 @@ abstract class Mysql_Column_Builder_Property
 	public static function build(Reflection_Property $property)
 	{
 		$column = new Mysql_Column();
-		$class = Reflection_Class::getInstanceOf(get_class($column));
+		$class = new Reflection_Class(get_class($column));
 		$class->accessProperties();
 		$class->getProperty("Field")->setValue($column, self::propertyNameToMysql($property));
 		$class->getProperty("Type")->setValue($column, self::propertyTypeToMysql($property));

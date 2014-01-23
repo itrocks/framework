@@ -17,17 +17,17 @@ class Reflection_Test extends Unit_Test
 	public function testAccessProperties()
 	{
 		// does access properties return properties list ?
-		$class = Reflection_Class::getInstanceOf('SAF\Tests\Order');
+		$class = new Reflection_Class('SAF\Tests\Order');
 		$test1 = $this->assume(
 			__METHOD__ . ".1",
 			$properties = $class->accessProperties(),
 			array(
-				"date"            => Reflection_Property::getInstanceOf('SAF\Tests\Document', "date"),
-				"number"          => Reflection_Property::getInstanceOf('SAF\Tests\Document', "number"),
-				"client"          => Reflection_Property::getInstanceOf('SAF\Tests\Order',    "client"),
-				"delivery_client" => Reflection_Property::getInstanceOf('SAF\Tests\Order',    "delivery_client"),
-				"lines"           => Reflection_Property::getInstanceOf('SAF\Tests\Order',    "lines"),
-				"salesmen"        => Reflection_Property::getInstanceOf('SAF\Tests\Order',    "salesmen")
+				"date"            => new Reflection_Property('SAF\Tests\Document', "date"),
+				"number"          => new Reflection_Property('SAF\Tests\Document', "number"),
+				"client"          => new Reflection_Property('SAF\Tests\Order',    "client"),
+				"delivery_client" => new Reflection_Property('SAF\Tests\Order',    "delivery_client"),
+				"lines"           => new Reflection_Property('SAF\Tests\Order',    "lines"),
+				"salesmen"        => new Reflection_Property('SAF\Tests\Order',    "salesmen")
 			)
 		);
 		if ($test1) {
@@ -55,7 +55,7 @@ class Reflection_Test extends Unit_Test
 	public function testAccessPropertiesDone()
 	{
 		$test_order = new Order(date("Y-m-d"), "CDE001");
-		$class = Reflection_Class::getInstanceOf('SAF\Tests\Order');
+		$class = new Reflection_Class('SAF\Tests\Order');
 		$properties = $class->accessProperties();
 		$class->accessPropertiesDone();
 		$check = array();
@@ -82,14 +82,14 @@ class Reflection_Test extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__,
-			Reflection_Class::getInstanceOf('SAF\Tests\Order')->getAllProperties(),
+			(new Reflection_Class('SAF\Tests\Order'))->getAllProperties(),
 			array(
-				"date"            => Reflection_Property::getInstanceOf('SAF\Tests\Document', "date"),
-				"number"          => Reflection_Property::getInstanceOf('SAF\Tests\Document', "number"),
-				"client"          => Reflection_Property::getInstanceOf('SAF\Tests\Order',    "client"),
-				"delivery_client" => Reflection_Property::getInstanceOf('SAF\Tests\Order',    "delivery_client"),
-				"lines"           => Reflection_Property::getInstanceOf('SAF\Tests\Order',    "lines"),
-				"salesmen"        => Reflection_Property::getInstanceOf('SAF\Tests\Order',    "salesmen")
+				"date"            => new Reflection_Property('SAF\Tests\Document', "date"),
+				"number"          => new Reflection_Property('SAF\Tests\Document', "number"),
+				"client"          => new Reflection_Property('SAF\Tests\Order',    "client"),
+				"delivery_client" => new Reflection_Property('SAF\Tests\Order',    "delivery_client"),
+				"lines"           => new Reflection_Property('SAF\Tests\Order',    "lines"),
+				"salesmen"        => new Reflection_Property('SAF\Tests\Order',    "salesmen")
 			)
 		);
 	}

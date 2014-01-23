@@ -37,7 +37,7 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		if (!isset($this->template)) {
 			$this->template = new Html_Edit_Template();
 		}
-		$property = Reflection_Property::getInstanceOf($object, $property_name);
+		$property = new Reflection_Property(get_class($object), $property_name);
 		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
 		$builder = (new Html_Builder_Property_Edit($property, $value, $this->property->name . "[]"));
 		$input = $builder->setTemplate($this->template)->build();

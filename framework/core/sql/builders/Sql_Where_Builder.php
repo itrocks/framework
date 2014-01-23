@@ -162,7 +162,7 @@ class Sql_Where_Builder
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
 		$array = array();
-		$class = Reflection_Class::getInstanceOf(get_class($object));
+		$class = new Reflection_Class(get_class($object));
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (isset($object->$property_name)) {
 				$sub_path = $property_name;

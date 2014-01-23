@@ -117,6 +117,7 @@ class Class_Builder
 	private static function buildClassSource(
 		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
 	) {
+		echo "build class $class_name<br>";
 		eval($source);
 	}
 

@@ -79,7 +79,7 @@ class Html_Builder_Collection
 	 */
 	protected function buildCell($object, $property_name)
 	{
-		$property = Reflection_Property::getInstanceOf($object, $property_name);
+		$property = new Reflection_Property(get_class($object), $property_name);
 		$cell = new Html_Table_Standard_Cell(
 			(new Reflection_Property_View($property))->getFormattedValue($object)
 		);
@@ -130,13 +130,13 @@ class Html_Builder_Collection
 	protected function getProperties()
 	{
 		// gets all properties from collection element class
-		$class = Reflection_Class::getInstanceOf($this->class_name);
+		$class = new Reflection_Class($this->class_name);
 		$properties = $class->getAllProperties();
 		// remove linked class properties
 		$linked_class = $class->getAnnotation("link")->value;
 		if ($linked_class) {
 			foreach (
-				array_keys(Reflection_Class::getInstanceOf($linked_class)->getAllProperties())
+				array_keys((new Reflection_Class($linked_class))->getAllProperties())
 				as $property_name
 			) {
 				unset($properties[$property_name]);

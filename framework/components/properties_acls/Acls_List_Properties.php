@@ -15,7 +15,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 	 */
 	public function getDefaultProperties()
 	{
-		return Reflection_Class::getInstanceOf($this->context_class_name)
+		return (new Reflection_Class($this->context_class_name))
 			->getListAnnotation("representative")->values();
 	}
 

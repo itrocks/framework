@@ -59,7 +59,7 @@ class Set
 	 */
 	public function elementClass()
 	{
-		return Reflection_Class::getInstanceOf($this->element_class_name);
+		return new Reflection_Class($this->element_class_name);
 	}
 
 	//---------------------------------------------------------------------------- elementClassNameOf

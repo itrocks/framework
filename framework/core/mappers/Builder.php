@@ -93,7 +93,7 @@ class Builder implements Plugin
 		if (isset($array)) {
 			foreach ($array as $property_name => $value) {
 				if (is_array($value)) {
-					$property = Reflection_Property::getInstanceOf($class_name, $property_name);
+					$property = new Reflection_Property($class_name, $property_name);
 					if ($property->getType()->isClass()) {
 						$property_class_name = $property->getType()->getElementTypeAsString();
 						if ($property->getType()->isMultiple()) {
@@ -123,7 +123,7 @@ class Builder implements Plugin
 	public static function isObjectSet($object)
 	{
 		$result = false;
-		$class = Reflection_Class::getInstanceOf($object);
+		$class = new Reflection_Class(get_class($object));
 		$defaults = $class->getDefaultProperties();
 		foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
 			$value = $property->getValue($object);

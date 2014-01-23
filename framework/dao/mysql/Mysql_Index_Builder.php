@@ -20,7 +20,7 @@ abstract class Mysql_Index_Builder
 			$column_name = "id_" . $column_name;
 		}
 		$key = new Mysql_Key();
-		$class = Reflection_Class::getInstanceOf($key);
+		$class = new Reflection_Class(get_class($key));
 		$class->accessProperties();
 		$class->getProperty("Column_name")->setValue($key, $column_name);
 		$class->getProperty("Key_name")->setValue($key, $column_name);

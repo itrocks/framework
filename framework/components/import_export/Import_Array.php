@@ -239,7 +239,7 @@ class Import_Array
 			foreach (explode(".", $property_path) as $property_name) {
 				$path .= ($path ? "." : "") . $property_name;
 				try {
-					$property = Reflection_Property::getInstanceOf($class_name, $path);
+					$property = new Reflection_Property($class_name, $path);
 					$properties_link[$path] = $property->getAnnotation("link")->value;
 				}
 				catch (ReflectionException $exception) {
@@ -413,16 +413,14 @@ class Import_Array
 				$property = null;
 				$property_name = Names::displayToProperty($property_name);
 				try {
-					$property = Reflection_Property::getInstanceOf($property_class_name, $property_name);
+					$property = new Reflection_Property($property_class_name, $property_name);
 				}
 				catch (ReflectionException $e) {
 					$translated_property_name = Names::displayToProperty(Loc::rtr(
 						$property_name, $property_class_name
 					));
 					try {
-						$property = Reflection_Property::getInstanceOf(
-							$property_class_name, $translated_property_name
-						);
+						$property = new Reflection_Property($property_class_name, $translated_property_name);
 						$property_name = $translated_property_name;
 					}
 					catch (ReflectionException $e) {

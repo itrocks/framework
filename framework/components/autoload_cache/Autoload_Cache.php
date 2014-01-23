@@ -37,7 +37,7 @@ abstract class Autoload_Cache implements Plugin, Updatable
 			$class_name = self::$full_class_names[$class_name];
 		}
 		if (isset(self::$paths[$class_name])) {
-			Autoloader::includeClass($class_name, self::$paths[$class_name]);
+			Autoloader::includeClass($class_name, getcwd() . "/" . self::$paths[$class_name]);
 		}
 	}
 

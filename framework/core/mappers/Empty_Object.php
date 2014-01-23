@@ -12,13 +12,13 @@ abstract class Empty_Object
 	 * Returns true if the object properties values are all empty (or null or unset or equal to
 	 * default value) or empty objects.
 	 *
-	 * @param $object
+	 * @param $object object
 	 * @return boolean
 	 */
 	public static function isEmpty($object)
 	{
 		$is_empty = true;
-		$class = Reflection_Class::getInstanceOf($object);
+		$class = new Reflection_Class(get_class($object));
 		$default = get_class_vars($class->name);
 		foreach ($class->accessProperties() as $property) {
 			if (!$property->isStatic()) {
@@ -50,7 +50,7 @@ abstract class Empty_Object
 	public static function create($class_name)
 	{
 		$object = Builder::create($class_name);
-		$class = Reflection_Class::getInstanceOf($class_name);
+		$class = new Reflection_Class($class_name);
 		foreach ($class->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				switch ($property->getType()->asString()) {

@@ -135,7 +135,7 @@ abstract class Html_Template_Functions
 			return $property_edit->build();
 		}
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
-			$property = Reflection_Property::getInstanceOf($object, $property_name);
+			$property = new Reflection_Property(get_class($object), $property_name);
 			if (isset($property)) {
 				if ($template->preprops) {
 					$preprop = isset($preprop)
@@ -240,7 +240,7 @@ abstract class Html_Template_Functions
 	{
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
-				$property= Reflection_Property::getInstanceOf($object, reset($template->var_names));
+				$property= new Reflection_Property(get_class($object), reset($template->var_names));
 				return Loc::propertyToLocale($property, reset($template->objects));
 				break;
 			}
@@ -348,7 +348,7 @@ abstract class Html_Template_Functions
 	{
 		$object = reset($template->objects);
 		$properties_filter = $template->getParameter("properties_filter");
-		$class = Reflection_Class::getInstanceOf($object);
+		$class = new Reflection_Class(get_class($object));
 		$properties = $class->accessProperties();
 		$result_properties = array();
 		foreach ($properties as $property_name => $property) {
@@ -590,7 +590,7 @@ abstract class Html_Template_Functions
 		else {
 			$property_path = $property;
 			$value = "";
-			$property = Reflection_Property::getInstanceOf($class_name, $property);
+			$property = new Reflection_Property($class_name, $property);
 		}
 		return array($property, $property_path, $value);
 	}

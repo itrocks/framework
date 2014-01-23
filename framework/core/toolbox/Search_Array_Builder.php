@@ -109,7 +109,7 @@ class Search_Array_Builder
 			$i = strpos($property_name, ".");
 			while ($i !== false) {
 				$property = $property_class->getProperty(substr($property_name, 0, $i));
-				$property_class = Reflection_Class::getInstanceOf($property->getType());
+				$property_class = new Reflection_Class($property->getType()->asString());
 				$property_name = substr($property_name, $i + 1);
 				$i = strpos($property_name, ".");
 			}
@@ -119,7 +119,7 @@ class Search_Array_Builder
 			if (!$type->isBasic()) {
 				unset($property_names[$key]);
 				if (!isset($already[$type_string])) {
-					$sub_class = Reflection_Class::getInstanceOf($type_string);
+					$sub_class = new Reflection_Class($type_string);
 					$sub_already = $already;
 					$sub_already[$type_string] = $type_string;
 					foreach (
