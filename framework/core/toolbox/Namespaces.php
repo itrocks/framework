@@ -10,6 +10,34 @@ require_once "framework/Application.php";
 abstract class Namespaces
 {
 
+	//--------------------------------------------------------------------------------- checkFilePath
+	/**
+	 * Check class file path for namespace
+	 *
+	 * @param $class_name string
+	 * @param $file_path  string
+	 * @return boolean
+	 */
+	public static function checkFilePath($class_name, $file_path)
+	{
+		if ($class_name[0] === "\\") {
+			$class_name = substr($class_name, 1);
+		}
+		$file_space = explode("/", substr($file_path, strlen(getcwd()) + 1));
+		$name_space = explode("\\", strtolower($class_name));
+		// remove main part of the namespace, and the class name too
+		array_pop($name_space);
+		array_shift($name_space);
+		$file = 0;
+		foreach ($name_space as $name) {
+			while (($file < count($file_space)) && ($file_space[$file] != $name)) {
+				$file ++;
+			}
+			$file ++;
+		}
+		return $file < count($file_space);
+	}
+
 	//-------------------------------------------------------------------------- defaultFullClassName
 	/**
 	 * Get full class name (with namespace) for a given class name (with or without namespace)

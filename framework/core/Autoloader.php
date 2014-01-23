@@ -27,18 +27,23 @@ abstract class Autoloader implements Plugin
 	/**
 	 * @param $class_name string The class name
 	 * @param $file_path  string The file path. If null, this will be automatically searched into include path
-	 * @return string|boolean The full path for the file if class file was included, false if not found
+	 * @return string the file path, if class was included. null if not.
 	 */
 	public static function includeClass($class_name, $file_path = null)
 	{
 		if (!isset($file_path)) {
 			$file_path = stream_resolve_include_path(Namespaces::shortClassName($class_name) . ".php");
 		}
-		if ($file_path) {
-			/** @noinspection PhpIncludeInspection */
-			include_once $file_path;
+		if (Namespaces::checkFilePath($class_name, $file_path)) {
+			if ($file_path) {
+				/** @noinspection PhpIncludeInspection */
+				include_once $file_path;
+			}
+			return $file_path;
 		}
-		return $file_path;
+		else {
+			return null;
+		}
 	}
 
 	//------------------------------------------------------------------------------ rectifyClassName
