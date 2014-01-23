@@ -133,7 +133,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 			array(__CLASS__, "registerIncludedGettersAop")
 		);
 		Aop::add(Aop::AFTER,
-			'SAF\Framework\Class_Builder->buildClass()',
+			'SAF\Framework\Class_Builder->buildClassSource()',
 			array(__CLASS__, "registerBuiltGettersAop")
 		);
 	}
@@ -146,7 +146,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 */
 	public static function registerBuiltGettersAop(AopJoinpoint $joinpoint)
 	{
-		parent::registerProperties($joinpoint->getReturnedValue(), "getter", "after", "read");
+		parent::registerProperties($joinpoint->getArguments()[0], "getter", "after", "read");
 	}
 
 	//------------------------------------------------------------------------------- registerGetters

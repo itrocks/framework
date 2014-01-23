@@ -22,7 +22,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 			array(__CLASS__, "registerIncludedSettersAop")
 		);
 		Aop::add(Aop::AFTER,
-			'SAF\Framework\Class_Builder->buildClass()',
+			'SAF\Framework\Class_Builder->buildClassSource()',
 			array(__CLASS__, "registerBuiltSettersAop")
 		);
 	}
@@ -35,7 +35,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 */
 	public static function registerBuiltSettersAop(AopJoinpoint $joinpoint)
 	{
-		parent::registerProperties($joinpoint->getReturnedValue(), "setter", "before", "write");
+		parent::registerProperties($joinpoint->getArguments()[0], "setter", "before", "write");
 	}
 
 	//------------------------------------------------------------------------------- registerSetters

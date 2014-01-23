@@ -41,14 +41,23 @@ class Class_Builder
 					$interfaces[$interface_trait] = $interface_trait;
 				}
 				elseif (trait_exists($interface_trait)) {
-					$traits[$interface_trait] = $interface_trait;
-					foreach (
-						(new Reflection_Class($interface_trait))->getListAnnotation("implements")->values()
-						as $implements
-					) {
+					$reflection = new Reflection_Class($interface_trait);
+					foreach ($reflection->getListAnnotation("implements")->values() as $implements) {
 						$implements = Namespaces::defaultFullClassName($implements, $interface_trait);
 						$interfaces[$implements] = $implements;
 					}
+					$level = 0;
+					foreach ($reflection->getListAnnotation("extends")->values() as $extends) {
+						$extends = Namespaces::defaultFullClassName($extends, $interface_trait);
+						if (trait_exists($extends)) {
+							foreach ($traits as $trait_level => $trait_names) {
+								if ($trait_names[$extends]) {
+									$level = max($level, $trait_level + 1);
+								}
+							}
+						}
+					}
+					$traits[$level][$interface_trait] = $interface_trait;
 				}
 				else {
 					trigger_error(
@@ -72,19 +81,43 @@ class Class_Builder
 	 */
 	private static function buildClass($class_name, $interfaces, $traits)
 	{
-		$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : null;
-		$namespace = Namespaces::of($class_name) . "\\Built$count";
-		$interfaces_names = $interfaces ? implode(", ", $interfaces) : "";
-		$traits_names     = $traits     ? implode(", ", $traits)     : "";
-		$short_class = Namespaces::shortClassName($class_name);
-		$source = "namespace $namespace {"
-			. " final class $short_class"
-			. " extends \\$class_name"
-			. ($interfaces_names ? " implements $interfaces_names" : "")
-			. " {" . ($traits_names ? " use $traits_names;" : "") . " }"
-			. " }";
-		eval($source);
+		if (!$traits) $traits = array(0 => array());
+		end($traits);
+		$end_level = key($traits);
+		$namespace = $short_class = null;
+		foreach ($traits as $level => $class_traits) {
+			// must be set before $shot_class and $namespace (extends last class)
+			$extends = "\\" . (isset($short_class) ? ($namespace . "\\" . $short_class) : $class_name);
+			$end = ($level == $end_level);
+			$final = $end ? "final " : "";
+			$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : "";
+			$sub_count = $end ? "" : ("_" . ($end - $level));
+			$namespace = Namespaces::of($class_name) . "\\Built" . $count . $sub_count;
+			$interfaces_names = ($end && $interfaces) ? implode(", ", $interfaces) : "";
+			$traits_names = $class_traits ? implode(", ", $class_traits ) : "";
+			$short_class = Namespaces::shortClassName($class_name);
+			$source = "namespace $namespace {\n"
+				. $final . "class $short_class"
+				. "\nextends " . $extends
+				. ($interfaces_names ? "\nimplements $interfaces_names" : "")
+				. "\n{\n"
+				. ($traits_names ? " use $traits_names;" : "")
+				. "\n}\n"
+				. "}";
+			self::buildClassSource($namespace . "\\" . $short_class, $source);
+		}
 		return $namespace . "\\" . $short_class;
+	}
+
+	//------------------------------------------------------------------------------ buildClassSource
+	/**
+	 * @param $class_name string
+	 * @param $source     string
+	 */
+	private static function buildClassSource(
+		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
+	) {
+		eval($source);
 	}
 
 }
