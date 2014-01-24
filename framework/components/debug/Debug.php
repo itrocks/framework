@@ -61,6 +61,39 @@ abstract class Debug
 		return true;
 	}
 
+	//------------------------------------------------------------------------------------------- log
+	/**
+	 * @param $text string
+	 */
+	public static function log($text)
+	{
+		$f = fopen("debug.log", "ab");
+		fputs($f, date("Y-m-d H:i:s") . " " . $text . "\n");
+		fclose($f);
+	}
+
+	//---------------------------------------------------------------------------------- logCallStack
+	public static function logCallStack()
+	{
+		self::log("CALL STACK :");
+		$f = fopen("debug.log", "ab");
+		foreach (debug_backtrace() as $key => $trace) {
+			if (!isset($trace["file"])) {
+				fputs($f,
+					">" . sprintf("%-3s", ($key + 1)) . " "
+					. str_replace("\n", " ", print_r($trace, true)) . "\n"
+				);
+			}
+			else {
+				fputs($f,
+					">" . sprintf("%-3s", ($key + 1)) . " "
+					. $trace["file"] . ":" . $trace["line"] . " : " . $trace["function"] . "()\n"
+				);
+			}
+		}
+		fclose($f);
+	}
+
 	//-------------------------------------------------------------------------------------- whatGrew
 	/**
 	 * This tells what variable from the global dump has grown since the last call to whatGrew().
