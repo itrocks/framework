@@ -156,6 +156,9 @@ abstract class Aop
 				}
 			}
 		}
+		else {
+			echo "- DEAD CODE : Register properties for non existing class $class_name : $annotation<br>";
+		}
 	}
 
 }
