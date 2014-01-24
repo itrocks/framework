@@ -153,7 +153,7 @@ class Builder implements Plugin
 	 */
 	public function newInstance($class_name)
 	{
-		// deprecated $class_name = $this->replacementClassName($class_name);
+		$class_name = $this->replacementClassName($class_name);
 		return new $class_name();
 	}
 
@@ -167,7 +167,7 @@ class Builder implements Plugin
 	 */
 	public function newInstanceArgs($class_name, $args)
 	{
-		// deprecated $class_name = $this->replacementClassName($class_name);
+		$class_name = $this->replacementClassName($class_name);
 		return (new ReflectionClass($class_name))->newInstanceArgs($args);
 	}
 
@@ -270,7 +270,8 @@ class Builder implements Plugin
 			'SAF\Framework\Sql_Joins->addSimpleJoin()',
 			array(__CLASS__, "onMethodWithReturnedValue")
 		);
-		set_new_overload(function($class_name) { return Builder::className($class_name); });
+		// TODO this is really slow : hardcode it in C
+		//set_new_overload(function($class_name) { return Builder::className($class_name); });
 	}
 
 	//-------------------------------------------------------------------------- replacementClassName
@@ -285,9 +286,11 @@ class Builder implements Plugin
 		$result = isset($this->replacements[$class_name])
 			? $this->replacements[$class_name]
 			: $class_name;
-		return is_array($result)
-			? Class_Builder::build($class_name, $result)
-			: $result;
+		if (is_array($result)) {
+			$result = Class_Builder::build($class_name, $result);
+			$this->replacements[$class_name] = $result;
+		}
+		return $result;
 	}
 
 	//-------------------------------------------------------------------------------- setReplacement
