@@ -12,11 +12,15 @@ trait Annoted
 
 	//---------------------------------------------------------------------------------- $annotations
 	/**
-	 * Annotations values
+	 * Global annotations cache
 	 *
-	 * @var Annotation[]
+	 * Annotation["Class_Name"]["@"]["annotation"]
+	 * Annotation["Class_Name"]["property"]["annotation"]
+	 * Annotation["Class_Name"]["methodName()"]["annotation"]
+	 *
+	 * @var array
 	 */
-	private $annotations = array();
+	private static $annotations_cache = array();
 
 	//--------------------------------------------------------------------------------- getAnnotation
 	/**
@@ -29,6 +33,12 @@ trait Annoted
 	{
 		return $this->getCachedAnnotation($annotation_name, false);
 	}
+
+	//------------------------------------------------------------------------ getAnnotationCachePath
+	/**
+	 * @return string[]
+	 */
+	protected abstract function getAnnotationCachePath();
 
 	//-------------------------------------------------------------------------------- getAnnotations
 	/**
@@ -59,16 +69,16 @@ trait Annoted
 	 */
 	private function getCachedAnnotation($annotation_name, $multiple)
 	{
+		$path = $this->getAnnotationCachePath();
 		if (
-			!isset($this->annotations[$annotation_name][$multiple])
+			!isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple])
 			&& ($this instanceof Has_Doc_Comment)
 		) {
-			/** @var $this Annoted|Has_Doc_Comment (PhpStorm Inspector patch) */
-			$this->annotations[$annotation_name][$multiple] = Annotation_Parser::byName(
-				$this, $annotation_name, $multiple
-			);
+			/** @var $this Annoted|Has_Doc_Comment */
+			self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple]
+				= Annotation_Parser::byName($this, $annotation_name, $multiple);
 		}
-		return $this->annotations[$annotation_name][$multiple];
+		return self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple];
 	}
 
 	//----------------------------------------------------------------------------- getListAnnotation
@@ -112,7 +122,8 @@ trait Annoted
 	 */
 	public function setAnnotation($annotation_name, Annotation $annotation)
 	{
-		$this->annotations[$annotation_name][false] = $annotation;
+		$path = $this->getAnnotationCachePath();
+		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][false] = $annotation;
 	}
 
 	//-------------------------------------------------------------------------------- setAnnotations
@@ -124,7 +135,8 @@ trait Annoted
 	 */
 	public function setAnnotations($annotation_name, $annotations)
 	{
-		$this->annotations[$annotation_name][true] = $annotations;
+		$path = $this->getAnnotationCachePath();
+		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true] = $annotations;
 	}
 
 }

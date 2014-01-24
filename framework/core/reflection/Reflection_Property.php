@@ -100,13 +100,13 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		return $this->name;
 	}
 
-	//--------------------------------------------------------------------------------- getFinalClass
+	//------------------------------------------------------------------------ getAnnotationCachePath
 	/**
-	 * @return Reflection_Class
+	 * @return string[]
 	 */
-	public function getFinalClass()
+	protected function getAnnotationCachePath()
 	{
-		return new Reflection_Class($this->final_class);
+		return array($this->class, $this->name);
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass
@@ -167,6 +167,15 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : "");
 		}
 		return $this->doc_comment;
+	}
+
+	//--------------------------------------------------------------------------------- getFinalClass
+	/**
+	 * @return Reflection_Class
+	 */
+	public function getFinalClass()
+	{
+		return new Reflection_Class($this->final_class);
 	}
 
 	//------------------------------------------------------------------------- getOverrideDocComment

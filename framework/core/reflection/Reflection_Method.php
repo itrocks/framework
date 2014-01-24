@@ -44,6 +44,15 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 		parent::__construct($class_name, $method_name);
 	}
 
+	//------------------------------------------------------------------------ getAnnotationCachePath
+	/**
+	 * @return string[]
+	 */
+	protected function getAnnotationCachePath()
+	{
+		return array($this->class, $this->name . "()");
+	}
+
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
 	 * @param $parent boolean

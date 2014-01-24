@@ -113,6 +113,15 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		return $properties;
 	}
 
+	//------------------------------------------------------------------------ getAnnotationCachePath
+	/**
+	 * @return string[]
+	 */
+	protected function getAnnotationCachePath()
+	{
+		return array($this->name, "@");
+	}
+
 	//-------------------------------------------------------------------------- getAnnotedProperties
 	/**
 	 * Gets all properties which annotation has given value (or are not empty, if value is not set)
