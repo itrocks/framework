@@ -153,7 +153,7 @@ class Builder implements Plugin
 	 */
 	public function newInstance($class_name)
 	{
-		$class_name = $this->replacementClassName($class_name);
+		// deprecated $class_name = $this->replacementClassName($class_name);
 		return new $class_name();
 	}
 
@@ -167,7 +167,8 @@ class Builder implements Plugin
 	 */
 	public function newInstanceArgs($class_name, $args)
 	{
-		return (new ReflectionClass($this->replacementClassName($class_name)))->newInstanceArgs($args);
+		// deprecated $class_name = $this->replacementClassName($class_name);
+		return (new ReflectionClass($class_name))->newInstanceArgs($args);
 	}
 
 	//---------------------------------------------------------------------- onClassNamePropertyWrite
@@ -269,6 +270,7 @@ class Builder implements Plugin
 			'SAF\Framework\Sql_Joins->addSimpleJoin()',
 			array(__CLASS__, "onMethodWithReturnedValue")
 		);
+		set_new_overload(function($class_name) { return Builder::className($class_name); });
 	}
 
 	//-------------------------------------------------------------------------- replacementClassName

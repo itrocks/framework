@@ -81,7 +81,6 @@ class Class_Builder
 	 */
 	private static function buildClass($class_name, $interfaces, $traits)
 	{
-echo "-- build class $class_name<br>";
 		if (!$traits) $traits = array(0 => array());
 		end($traits);
 		$end_level = key($traits);
@@ -118,7 +117,6 @@ echo "-- build class $class_name<br>";
 	private static function buildClassSource(
 		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
 	) {
-echo "build class $class_name<br>";
 		eval($source);
 	}
 

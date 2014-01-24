@@ -25,7 +25,7 @@ class User_Widget_Controller implements Feature_Controller
 			return View::run($parameters, $form, $files, get_class($user), "display");
 		}
 		else {
-			$user = Builder::create('SAF\Framework\User');
+			$user = new User();
 			array_unshift($parameters, $user);
 			return View::run($parameters, $form, $files, get_class($user), "login");
 		}
