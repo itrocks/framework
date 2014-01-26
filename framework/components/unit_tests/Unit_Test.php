@@ -1,13 +1,19 @@
 <?php
 namespace SAF\Framework\Unit_Tests;
 
-use SAF\Framework\Reflection_Class;
-
 /**
  * All unit test classes must extend this, to access it's begin(), end() and assume() methods
  */
 class Unit_Test
 {
+
+	//----------------------------------------------------------------------------------- $start_time
+	/**
+	 * The start time of each test
+	 *
+	 * @var float
+	 */
+	public $start_time;
 
 	//---------------------------------------------------------------------------------------- assume
 	/**
@@ -31,7 +37,8 @@ class Unit_Test
 			$ok = ($check === $assume);
 		}
 		if ($ok) {
-			$result = "<span style='color:green;font-weight:bold'>OK</span>";
+			$duration = round((microtime(true) - $this->start_time) * 1000);
+			$result = "<span style='color:green;font-weight:bold'>OK</span> (<i>" . $duration . "ms</i>)";
 		}
 		else {
 			$result = "<span style='color:red;font-weight:bold'>BAD</span>"

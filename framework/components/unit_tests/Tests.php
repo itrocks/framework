@@ -6,8 +6,6 @@ use SAF\Framework\Configuration;
 use SAF\Framework\Namespaces;
 use SAF\Framework\Reflection_Class;
 use SAF\Framework\Reflection_Method;
-use SAF\Framework\Unit_Tests\Runnable_Unit_Test;
-use SAF\Framework\Unit_Tests\Unit_Test;
 
 /**
  * The tests class enables running of unit test
@@ -54,6 +52,7 @@ class Tests
 			if ($call_methods) {
 				$unit_test->begin();
 				foreach ($call_methods as $method) {
+					$unit_test->start_time = microtime(true);
 					call_user_func(array($unit_test, $method));
 				}
 				$unit_test->end();
