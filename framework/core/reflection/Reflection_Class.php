@@ -168,6 +168,25 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		return null;
 	}
 
+	//------------------------------------------------------------------ getDeclaredClassesUsingTrait
+	/**
+	 * Returns a list of declared classes that use this trait
+	 *
+	 * Note : child classes of a class using a trait will not be listed here
+	 *
+	 * @return array
+	 */
+	public function getDeclaredClassesUsingTrait()
+	{
+		$classes = array();
+		foreach (get_declared_classes() as $class_name) {
+			if (in_array($this->name, class_uses($class_name))) {
+				$classes[$class_name] = new Reflection_Class($class_name);
+			}
+		}
+		return $classes;
+	}
+
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
 	 * Gets the constructor of the reflected class

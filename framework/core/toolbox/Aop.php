@@ -21,6 +21,12 @@ abstract class Aop
 	//---------------------------------------------------------------------------------------- BEFORE
 	const BEFORE = "before";
 
+	//------------------------------------------------------------------------------------------ READ
+	const READ = "read";
+
+	//----------------------------------------------------------------------------------------- WRITE
+	const WRITE = "write";
+
 	//------------------------------------------------------------------------------------- $antiloop
 	private static $antiloop = array();
 
@@ -32,6 +38,14 @@ abstract class Aop
 	 * @var boolean
 	 */
 	public static $ignore = false;
+
+	//----------------------------------------------------------------------------------- $joinpoints
+	/**
+	 * Keys are : class name, method name
+	 * values are : array(kind, advice)
+	 * @var array
+	 */
+	public static $joinpoints = array();
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -68,6 +82,173 @@ abstract class Aop
 		}
 		else {
 			$aop_call($function, $call_back);
+		}
+	}
+
+	//----------------------------------------------------------------------------- addOnPropertyRead
+	public static function addOnPropertyRead($joinpoint, $advice)
+	{
+	}
+
+	//---------------------------------------------------------------------------- addOnPropertyWrite
+	public static function addOnPropertyWrite($joinpoint, $advice)
+	{
+	}
+
+	//---------------------------------------------------------------------------- addAfterMethodCall
+	/**
+	 * Launch an advice after the execution of a given function or method
+	 *
+	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint method,
+	 * and finally the value returned by the joinpoint method call.
+	 * If set, the value returned by the advice will be the pointcut returned value.
+	 * If not set, the result value passed as argument (that can be modified) will be returned
+	 *
+	 * @param $joinpoint string[]|string the joinpoint defined like a call-back:
+	 *        array("class_name", "methodName"), "functionName"
+	 * @param $advice    string[]|string the call-back call of the advice :
+	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
+	 */
+	public static function addAfterMethodCall($joinpoint, $advice)
+	{
+		$trait = new Reflection_Class($joinpoint[0]);
+		if ($trait->isTrait()) {
+			foreach ($trait->getDeclaredClassesUsingTrait() as $class) {
+				self::addAfterMethodCall(array($class->name, $joinpoint[1]), $advice);
+			}
+		}
+		else {
+			$count = isset(self::$joinpoints[$joinpoint[0]][$joinpoint[1]])
+				? count(self::$joinpoints[$joinpoint[0]][$joinpoint[1]]) : 0;
+			$method = new Reflection_Method($joinpoint[0], $joinpoint[1]);
+			$arguments = join(", ", $method->getArguments());
+
+			$advice_string = "array('" . join("', '", $advice) . "')";
+			$advice_arguments = '$this'
+				. ($arguments ? (', &$' . join(', &$', array_keys($method->getArguments()))) : '')
+				. ', &$result';
+			$process_arguments = $arguments ? ('$' . join(', $', array_keys($method->getArguments()))) : '';
+
+			$process_call = "\$result = isset(\$result) ? \$result : \$this->_$joinpoint[1]_$count($process_arguments);";
+			$advice_call = "\$result2 = call_user_func_array($advice_string, array($advice_arguments));";
+			$return = 'return isset($result2) ? $result2 : $result';
+
+			$code = $process_call . "\n" . $advice_call . "\n" . $return;
+
+			if (!runkit_method_rename($joinpoint[0], $joinpoint[1], "_" . $joinpoint[1] . "_" . $count)) {
+				user_error(
+					"Could not rename $joinpoint[0]::$joinpoint[1] to _$joinpoint[1]_$count", E_USER_ERROR
+				);
+			}
+			if (!runkit_method_add($joinpoint[0], $joinpoint[1], $arguments, $code)) {
+				user_error(
+					"Could not add method $joinpoint[0]::$joinpoint[1](" . $arguments . ")", E_USER_ERROR
+				);
+			}
+			else {
+				self::$joinpoints[$joinpoint[0]][$joinpoint[1]][Aop::AFTER][] = $advice;
+			}
+		}
+	}
+
+	//--------------------------------------------------------------------------- addAroundMethodCall
+	/**
+	 * Launch an advice instead of the execution of a given function or method
+	 *
+	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint method,
+	 * and finally the value returned by the joinpoint method call.
+	 * The value returned by the advice will be the pointcut returned value.
+	 *
+	 * @param $joinpoint string[]|string the joinpoint defined like a call-back:
+	 *        array("class_name", "methodName"), "functionName"
+	 * @param $advice    string[]|string the call-back call of the advice :
+	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
+	 */
+	public static function addAroundMethodCall($joinpoint, $advice)
+	{
+		$trait = new Reflection_Class($joinpoint[0]);
+		if ($trait->isTrait()) {
+			foreach ($trait->getDeclaredClassesUsingTrait() as $class) {
+				self::addAroundMethodCall(array($class->name, $joinpoint[1]), $advice);
+			}
+		}
+		else {
+			$count = isset(self::$joinpoints[$joinpoint[0]][$joinpoint[1]])
+				? count(self::$joinpoints[$joinpoint[0]][$joinpoint[1]]) : 0;
+			$method = new Reflection_Method($joinpoint[0], $joinpoint[1]);
+			$arguments = join(", ", $method->getArguments());
+
+			$advice_string = "array('" . join("', '", $advice) . "')";
+			$advice_arguments = '$this'
+				. ($arguments ? (', &$' . join(', &$', array_keys($method->getArguments()))) : '');
+
+			$code = "return call_user_func_array($advice_string, array($advice_arguments));";
+
+			if (!runkit_method_rename($joinpoint[0], $joinpoint[1], "_" . $joinpoint[1] . "_" . $count)) {
+				user_error(
+					"Could not rename $joinpoint[0]::$joinpoint[1] to _$joinpoint[1]_$count", E_USER_ERROR
+				);
+			}
+			if (!runkit_method_add($joinpoint[0], $joinpoint[1], $arguments, $code)) {
+				user_error(
+					"Could not add method $joinpoint[0]::$joinpoint[1](" . $arguments . ")", E_USER_ERROR
+				);
+			}
+			else {
+				self::$joinpoints[$joinpoint[0]][$joinpoint[1]][Aop::AFTER][] = $advice;
+			}
+		}
+	}
+
+	//--------------------------------------------------------------------------- addBeforeMethodCall
+	/**
+	 * Launch an advice before the execution of a given function or method
+	 *
+	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint method
+	 * The advice can return a value : if this value is set, the execution of the joinpoint will be
+	 * cancelled and the returned value replaced by this one.
+	 *
+	 * @param $joinpoint string[]|string the joinpoint defined like a call-back:
+	 *        array("class_name", "methodName"), "functionName"
+	 * @param $advice    string[]|string the call-back call of the advice :
+	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
+	 */
+	public static function addBeforeMethodCall($joinpoint, $advice)
+	{
+		$trait = new Reflection_Class($joinpoint[0]);
+		if ($trait->isTrait()) {
+			foreach ($trait->getDeclaredClassesUsingTrait() as $class) {
+				self::addBeforeMethodCall(array($class->name, $joinpoint[1]), $advice);
+			}
+		}
+		else {
+			$count = isset(self::$joinpoints[$joinpoint[0]][$joinpoint[1]])
+				? count(self::$joinpoints[$joinpoint[0]][$joinpoint[1]]) : 0;
+			$method = new Reflection_Method($joinpoint[0], $joinpoint[1]);
+			$arguments = join(", ", $method->getArguments());
+
+			$advice_string = "array('" . join("', '", $advice) . "')";
+			$advice_arguments = '$this'
+				. ($arguments ? (', &$' . join(', &$', array_keys($method->getArguments()))) : '');
+			$process_arguments = $arguments ? ('$' . join(', $', array_keys($method->getArguments()))) : '';
+
+			$advice_call = "\$result = call_user_func_array($advice_string, array($advice_arguments));";
+			$process_call = "return isset(\$result) ? \$result : \$this->_$joinpoint[1]_$count($process_arguments);";
+			$code = $advice_call . "\n" . $process_call;
+
+			if (!runkit_method_rename($joinpoint[0], $joinpoint[1], "_" . $joinpoint[1] . "_" . $count)) {
+				user_error(
+					"Could not rename $joinpoint[0]::$joinpoint[1] to _$joinpoint[1]_$count", E_USER_ERROR
+				);
+			}
+			if (!runkit_method_add($joinpoint[0], $joinpoint[1], $arguments, $code)) {
+				user_error(
+					"Could not add method $joinpoint[0]::$joinpoint[1](" . $arguments . ")", E_USER_ERROR
+				);
+			}
+			else {
+				self::$joinpoints[$joinpoint[0]][$joinpoint[1]][Aop::BEFORE][] = $advice;
+			}
 		}
 	}
 
