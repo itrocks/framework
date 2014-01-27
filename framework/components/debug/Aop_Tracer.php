@@ -4,7 +4,7 @@ namespace SAF\Framework;
 use AopJoinpoint;
 
 /** @noinspection PhpIncludeInspection */
-require_once "framework/core/toolbox/Aop.php";
+require_once "framework/core/aop/Aop.php";
 
 /**
  * An AOP tracer plugin

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Tests\Tests {
 
+use AOPT\Advices;
 use AOPT\Business;
 use AOPT\Child_Business;
 use AOPT\Trait_Business;
@@ -15,69 +16,94 @@ use SAF\Framework\Unit_Tests\Unit_Test;
 class Aop_Test extends Unit_Test
 {
 
-	//---------------------------------------------------------------------- testAddBeforeMethodCallA
+	//--------------------------------------------- testAddBeforeMethodCallGetterChangesPropertyValue
 	/**
-	 * Simple advice : replace a property value before calling the method who will return it
+	 * Simple advice : replace a property value before calling its getter
 	 */
-	public function testAddBeforeMethodCallA()
+	public function testAddBeforeMethodCallGetterChangesPropertyValue()
 	{
 		Aop::addBeforeMethodCall(
-			array('AOPT\Business', 'joinPointA'),
-			array('AOPT\Advices', 'adviceA')
+			array('AOPT\Business', 'getterA'),
+			array('AOPT\Advices', 'adviceChangeProperty')
 		);
-		$this->assume(__METHOD__, (new Business())->joinPointA(), "A.a/advised");
+		$this->assume(__METHOD__, (new Business())->getterA(), "A.acp/advised");
 	}
 
-	//---------------------------------------------------------------------- testAddBeforeMethodCallB
+	//--------------------------------------------- testAddBeforeMethodCallGetterChangesReturnedValue
 	/**
-	 * An advice that force stopping of main call and directly return a modified value
+	 * A "before" advice that cancels standard call and returns a forced value
 	 */
-	public function testAddBeforeMethodCallB()
+	public function testAddBeforeMethodCallGetterChangesReturnedValue()
 	{
 		Aop::addBeforeMethodCall(
-			array('AOPT\Business', 'joinPointB'),
-			array('AOPT\Advices', 'adviceB')
+			array('AOPT\Business', 'getterB'),
+			array('AOPT\Advices', 'adviceReturnedValue')
 		);
-		$this->assume(__METHOD__, (new Business())->joinPointB(), "b/advised value");
+		$this->assume(__METHOD__, (new Business())->getterB(), "arv/advised value");
 	}
 
-	//---------------------------------------------------------------------- testAddBeforeMethodCallC
+	//-------------------------------------------------- testAddBeforeMethodCallGetterParentJoinpoint
 	/**
-	 * An advice on a method that is overloaded : will be called only when calling the parent method
+	 * An advice on a getter that is overloaded : will be called only when calling the parent method
 	 */
-	public function testAddBeforeMethodCallC()
+	public function testAddBeforeMethodCallGetterParentJoinpoint()
 	{
 		Aop::addBeforeMethodCall(
-			array('AOPT\Business', 'joinPointC'),
-			array('AOPT\Advices', 'adviceC')
+			array('AOPT\Business', 'getterC'),
+			array('AOPT\Advices', 'adviceReturnedValue')
 		);
-		$this->assume(__METHOD__, (new Child_Business())->joinPointC(), "Child.C.c/advised value");
+		$this->assume(__METHOD__ . ".parent", (new Business())->getterC(), "arv/advised value");
+		$this->assume(__METHOD__ . ".child", (new Child_Business())->getterC(), "ChildC.arv/advised value");
 	}
 
-	//---------------------------------------------------------------------- testAddBeforeMethodCallC
+	//--------------------------------------------------- testAddBeforeMethodCallGetterChildJoinpoint
 	/**
-	 * An advice on a trait : must be called on each classes using the trait
+	 * An advice on an overloaded getter : will be called only when calling the child method,
+	 * not for parent
 	 */
-	public function testAddBeforeMethodCallD()
+	public function testAddBeforeMethodCallGetterChildJoinpoint()
 	{
 		Aop::addBeforeMethodCall(
-			array('AOPT\Trait_Business', 'joinPointD'),
-			array('AOPT\Advices', 'adviceD')
+			array('AOPT\Child_Business', 'getterD'),
+			array('AOPT\Advices', 'adviceReturnedValue')
 		);
-		$this->assume(__METHOD__, (new Trait_Business_Class())->joinPointD(), "d/advised value");
+		$this->assume(__METHOD__ . ".parent", (new Business())->getterD(), "D.value");
+		$this->assume(__METHOD__ . ".child", (new Child_Business())->getterD(), "arv/advised value");
 	}
 
-	//---------------------------------------------------------------------- testAddBeforeMethodCallE
+	//---------------------------------------------------------------- testAddBeforeMethodCallOnTrait
 	/**
-	 * The advice on a trait should not be called on a child class of a class that uses the trait
+	 * An advice on a trait : must be called on each classes using the trait, but not on children
 	 */
-	public function testAddBeforeMethodCallE()
+	public function testAddBeforeMethodCallOnTrait()
 	{
 		Aop::addBeforeMethodCall(
-			array('AOPT\Trait_Business', 'joinPointE'),
-			array('AOPT\Advices', 'adviceE')
+			array('AOPT\Trait_Business', 'methodE'),
+			array('AOPT\Advices', 'adviceReturnedValue')
 		);
-		$this->assume(__METHOD__, (new Trait_Child_Business_Class())->joinPointE(), "overloaded.e/value");
+		$this->assume(__METHOD__ . ".parent", (new Trait_Business_Class())->methodE(), "arv/advised value");
+		$this->assume(__METHOD__ . ".child", (new Trait_Child_Business_Class())->methodE(), "over.E/value");
+	}
+
+	//----------------------------------------------------------- testAddBeforeMethodCallObjectAdvice
+	/**
+	 * An object advice
+	 */
+	public function testAddBeforeMethodCallObjectAdvice()
+	{
+		Aop::addBeforeMethodCall(
+			array('AOPT\Business', 'methodF'),
+			array(new Advices("advice"), 'adviceObject')
+		);
+		$this->assume(__METHOD__, (new Business())->methodF(), "ao/advised advice/value");
+	}
+
+	//------------------------------------------------------------- testAddOnPropertyReadStaticGetter
+	public function testAddOnPropertyReadStaticGetter()
+	{
+		Aop::addOnPropertyRead(array('AOPT\Business', 'property2'), array('AOPT\Business', 'getProperty2'));
+		$object = new Business();
+		$this->assume(__METHOD__, $object->property2, "get2.value2");
 	}
 
 }
@@ -89,178 +115,99 @@ namespace AOPT {
 /**
  * A class containing a lot of advices
  */
-abstract class Advices
+class Advices
 {
 
-	//---------------------------------------------------------------------------------------- advice
+	public $advice_property;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $arg string
+	 */
+	public function __construct($arg)
+	{
+		$this->advice_property = $arg;
+	}
+
+	//-------------------------------------------------------------------------- adviceChangeProperty
 	/**
 	 * This advice changes the business object property value
 	 *
 	 * @param $object Business
 	 */
-	public static function adviceA($object)
+	public static function adviceChangeProperty($object)
 	{
-		$object->property = "a/advised";
+		$object->property = "acp/advised";
 	}
 
-	//--------------------------------------------------------------------------------------- adviceB
+	//--------------------------------------------------------------------------- adviceReturnedValue
 	/**
 	 * This advice changes the business object property value
 	 *
 	 * @param $object Business
 	 * @return string
 	 */
-	public static function adviceB($object)
+	public static function adviceReturnedValue($object)
 	{
-		return "b/advised " . $object->property;
+		return "arv/advised " . $object->property;
 	}
 
-	//--------------------------------------------------------------------------------------- adviceC
+	//---------------------------------------------------------------------------------- adviceObject
 	/**
-	 * This advice prepends "advised" to the beginning of the object property value
-	 *
-	 * @param $object
-	 */
-	public static function adviceC($object)
-	{
-		$object->property = "c/advised " . $object->property;
-	}
-
-	//--------------------------------------------------------------------------------------- adviceD
-	/**
-	 * This advice prepends "advised" to the beginning of the object property value
+	 * This advice is called on an Advices object
 	 *
 	 * @param $object
 	 * @return string
 	 */
-	public static function adviceD($object)
+	public function adviceObject($object)
 	{
-		return "d/advised " . $object->property;
+		return "ao/advised " . $this->advice_property . "/" . $object->property;
 	}
 
-	//--------------------------------------------------------------------------------------- adviceE
-	/**
-	 * @param $object
-	 * @return string
-	 */
-	public static function adviceE($object)
-	{
-		return "e/advised " . $object->property;
-	}
 }
 
 //======================================================================================== Business
-/**
- * A business class example
- */
+/** A business class example */
 class Business
 {
-
-	//------------------------------------------------------------------------------------- $property
-	/**
-	 * @var string
-	 */
 	public $property = "value";
-
-	//------------------------------------------------------------------------------------ joinPointA
-	/**
-	 * @return string
-	 */
-	public function joinPointA()
-	{
-		return "A." . $this->property;
-	}
-
-	//------------------------------------------------------------------------------------ joinPointA
-	/**
-	 * @return string
-	 */
-	public function joinPointB()
-	{
-		return "B." . $this->property;
-	}
-
-	//------------------------------------------------------------------------------------ joinPointC
-	/**
-	 * @return string
-	 */
-	public function joinPointC()
-	{
-		return "C." . $this->property;
-	}
-
+	public $property2 = "value2";
+	/** @return string */ public function getterA() { return "A." . $this->property; }
+	/** @return string */ public function getterB() { return "B." . $this->property; }
+	/** @return string */ public function getterC() { return "C." . $this->property; }
+	/** @return string */ public function getterD() { return "D." . $this->property; }
+	/** @return string */ public function methodF() { return "F."; }
+	/** @return string */ public static function getProperty2($value) { return "get2." . $value; }
 }
 
 //================================================================================== Child_Business
-/**
- * Child business class example
- */
+/** Child business class example */
 class Child_Business extends Business
 {
-
-	//------------------------------------------------------------------------------------ joinPointC
-	/**
-	 * @return string
-	 */
-	public function joinPointC()
-	{
-		return "Child." . parent::joinPointC();
-	}
-
+	/** @return string */ public function getterC() { return "ChildC." . parent::getterC(); }
+	/** @return string */ public function getterD() { return "ChildD." . parent::getterC(); }
 }
 
 //================================================================================== Trait_Business
-/**
- * Business trait example
- */
+/** Business trait example */
 trait Trait_Business
 {
-
-	//------------------------------------------------------------------------------------ joinPointD
-	/**
-	 * @return string
-	 */
-	public function joinPointD()
-	{
-		return "d/value";
-	}
-
-	//------------------------------------------------------------------------------------ joinPointE
-	/**
-	 * @return string
-	 */
-	public function joinPointE()
-	{
-		return "e/value";
-	}
-
+	/** @return string */ public function methodE() { return "E/value"; }
 }
 
 //============================================================================ Trait_Business_Class
-/**
- * A business class that use a business trait
- */
+/** A business class that use a business trait */
 class Trait_Business_Class extends Child_Business
 {
 	use Trait_Business;
-
 }
 
 //====================================================================== Trait_Child_Business_Class
-	/**
-	 * A business class child of a class that use a business trait
-	 */
+/** A business class child of a class that use a business trait */
 class Trait_Child_Business_Class extends Trait_Business_Class
 {
-
 	//------------------------------------------------------------------------------------ joinPointE
-	/**
-	 * @return string
-	 */
-	public function joinPointE()
-	{
-		return "overloaded.e/value";
-	}
+	/** @return string */ public function methodE() { return "over.E/value"; }
 
 }
 
