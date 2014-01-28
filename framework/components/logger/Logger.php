@@ -58,13 +58,11 @@ class Logger implements Plugin
 	public static function register()
 	{
 		$logger = new Logger();
-		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Main_Controller->runController()',
-			array($logger, "start")
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Main_Controller', "runController"), array($logger, "start")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Main_Controller->runController()',
-			array($logger, "stop")
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Main_Controller', "runController"), array($logger, "stop")
 		);
 	}
 

@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * Locale plugin concentrates locale translation / formatting features into simple static calls
  */
@@ -19,44 +17,42 @@ abstract class Loc implements Plugin
 
 	//----------------------------------------------------- afterHtmlTemplateFuncsToEditPropertyExtra
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result array[]
+	 * @return array[]
 	 */
-	public static function afterHtmlTemplateFuncsToEditPropertyExtra(AopJoinpoint $joinpoint)
+	public static function afterHtmlTemplateFuncsToEditPropertyExtra($result)
 	{
 		/** @var $property      Reflection_Property */
 		/** @var $property_path string */
 		/** @var $value         mixed */
-		list($property, $property_path, $value) = $joinpoint->getReturnedValue();
+		list($property, $property_path, $value) = $result;
 		$value = self::propertyToLocale($property, $value);
-		$joinpoint->setReturnedValue(array($property, $property_path, $value));
+		return array($property, $property_path, $value);
 	}
 
 	//------------------------------------------------------------------------- afterListSearchValues
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result Reflection_Property_Value[]
 	 */
-	public static function afterListSearchValues(AopJoinpoint $joinpoint)
+	public static function afterListSearchValues(&$result)
 	{
-		/** @var $search Reflection_Property_Value[] */
-		$search = $joinpoint->getReturnedValue();
-		if (isset($search)) {
-			foreach ($search as $property) {
+		if (isset($result)) {
+			foreach ($result as $property) {
 				if ($property instanceof Reflection_Property_Value) {
 					$property->value(self::propertyToIso($property));
 				}
 			}
-			$joinpoint->setReturnedValue($search);
 		}
 	}
 
 	//------------------------------------------------------- beforeObjectBuilderArrayBuildBasicValue
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $property Reflection_Property
+	 * @param $value    boolean|integer|float|string|array
 	 */
-	public static function beforeObjectBuilderArrayBuildBasicValue(AopJoinpoint $joinpoint)
-	{
-		/** @var $property Reflection_Property */
-		list($property, $value) = $joinpoint->getArguments();
+	public static function beforeObjectBuilderArrayBuildBasicValue(
+		Reflection_Property $property, &$value
+	) {
 		if (isset($value)) {
 			if (is_array($value) && !empty($value)) {
 				if ($property->getAnnotation("link")->value == "Collection") {
@@ -76,29 +72,26 @@ abstract class Loc implements Plugin
 						}
 					}
 					$class->accessPropertiesDone();
-					$joinpoint->setArguments(array($property, $value));
 				}
 			}
 			else {
-				$joinpoint->setArguments(array($property, self::propertyToIso($property, $value)));
+				$value = self::propertyToIso($property, $value);
 			}
 		}
 	}
 
 	//----------------------------------------------------------------------- classNameDisplayReverse
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $value string class name taken from the import array
 	 */
-	public static function classNameDisplayReverse(AopJoinpoint $joinpoint)
+	public static function classNameDisplayReverse(&$value)
 	{
-		$class_name = $joinpoint->getArguments()[0];
-		if (isset($class_name)) {
-			$class_name = explode("\\", $class_name);
-			foreach ($class_name as $key => $class_part) {
-				$class_name[$key] = Names::displayToClass(self::rtr($class_part));
+		if (isset($value)) {
+			$value = explode("\\", $value);
+			foreach ($value as $key => $class_part) {
+				$value[$key] = Names::displayToClass(self::rtr($class_part));
 			}
-			$class_name = join("\\", $class_name);
-			$joinpoint->setArguments(array($class_name));
+			$value = join("\\", $value);
 		}
 	}
 
@@ -106,13 +99,12 @@ abstract class Loc implements Plugin
 	/**
 	 * Sets context to returned value class name, if not null
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result string
 	 */
-	public static function classNameReturnedValueToContext(AopJoinpoint $joinpoint)
+	public static function classNameReturnedValueToContext($result)
 	{
-		$class_name = $joinpoint->getReturnedValue();
-		if (isset($class_name)) {
-			self::setContext($class_name);
+		if (isset($result)) {
+			self::setContext($result);
 		}
 	}
 
@@ -141,11 +133,12 @@ abstract class Loc implements Plugin
 
 	//----------------------------------------------------------------- dateTimeReturnedValueToLocale
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result string
+	 * @return string
 	 */
-	public static function dateTimeReturnedValueToLocale(AopJoinpoint $joinpoint)
+	public static function dateTimeReturnedValueToLocale($result)
 	{
-		$joinpoint->setReturnedValue(self::dateToLocale($joinpoint->getReturnedValue()));
+		return self::dateToLocale($result);
 	}
 
 	//------------------------------------------------------------------------------------- dateToIso
@@ -162,11 +155,12 @@ abstract class Loc implements Plugin
 
 	//-------------------------------------------------------------------- floatReturnedValueToLocale
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result string
+	 * @return string
 	 */
-	public static function floatReturnedValueToLocale(AopJoinpoint $joinpoint)
+	public static function floatReturnedValueToLocale($result)
 	{
-		$joinpoint->setReturnedValue(self::floatToLocale($joinpoint->getReturnedValue()));
+		return self::floatToLocale($result);
 	}
 
 	//------------------------------------------------------------------------------------ floatToIso
@@ -194,11 +188,12 @@ abstract class Loc implements Plugin
 
 	//------------------------------------------------------------------ integerReturnedValueToLocale
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result string
+	 * @return string
 	 */
-	public static function integerReturnedValueToLocale(AopJoinpoint $joinpoint)
+	public static function integerReturnedValueToLocale($result)
 	{
-		$joinpoint->setReturnedValue(self::integerToLocale($joinpoint->getReturnedValue()));
+		return self::integerToLocale($result);
 	}
 
 	//---------------------------------------------------------------------------------- integerToIso
@@ -265,43 +260,43 @@ abstract class Loc implements Plugin
 	public static function register()
 	{
 		// format from locale user input to ISO and standard formats
-		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Object_Builder_Array->buildBasicValue()',
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Object_Builder_Array', "buildBasicValue"),
 			array(__CLASS__, "beforeObjectBuilderArrayBuildBasicValue")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Default_List_Controller->getSearchValues()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Default_List_Controller', "getSearchValues"),
 			array(__CLASS__, "afterListSearchValues")
 		);
 		// format to locale
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Html_Template_Functions->toEditPropertyExtra()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Html_Template_Functions', "toEditPropertyExtra"),
 			array(__CLASS__, "afterHtmlTemplateFuncsToEditPropertyExtra")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Reflection_Property_View->formatDateTime()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Reflection_Property_View', "formatDateTime"),
 			array(__CLASS__, "dateTimeReturnedValueToLocale")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Reflection_Property_View->formatFloat()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Reflection_Property_View', "formatFloat"),
 			array(__CLASS__, "floatReturnedValueToLocale")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Reflection_Property_View->formatInteger()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Reflection_Property_View', "formatInteger"),
 			array(__CLASS__, "integerReturnedValueToLocale")
 		);
 		// translations
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\List_Settings->getDefaultTitle()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\List_Settings', "getDefaultTitle"),
 			array(__CLASS__, "translateReturnedValue")
 		);
 		// translation/reverse of export/import procedures
-		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Import_Array->getClassNameFromValue()',
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Import_Array', "getClassNameFromValue"),
 			array(__CLASS__, "classNameDisplayReverse")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Import_Array->getClassNameFromArray()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Import_Array', "getClassNameFromArray"),
 			array(__CLASS__, "classNameReturnedValueToContext")
 		);
 	}
@@ -351,11 +346,12 @@ abstract class Loc implements Plugin
 	/**
 	 * Translate returned value
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $result string
+	 * @return string
 	 */
-	public static function translateReturnedValue(AopJoinpoint $joinpoint)
+	public static function translateReturnedValue($result)
 	{
-		$joinpoint->setReturnedValue(self::tr($joinpoint->getReturnedValue()));
+		return self::tr($result);
 	}
 
 }

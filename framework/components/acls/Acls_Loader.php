@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * Acls loader tools load acls when needed
  */
@@ -42,14 +40,11 @@ abstract class Acls_Loader
 
 	//---------------------------------------------------------------------------- onUserAuthenticate
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $user Acls_User
 	 */
-	public static function onUserAuthenticate(AopJoinpoint $joinpoint)
+	public static function onUserAuthenticate(Acls_User $user)
 	{
-		$arguments = $joinpoint->getArguments();
-		if (isset($arguments)) {
-			Session::current()->set(Acls_Rights::current(self::loadUserAcls($arguments[0])));
-		}
+		Session::current()->set(Acls_Rights::current(self::loadUserAcls($user)));
 	}
 
 	//------------------------------------------------------------------------------ onUserDisconnect

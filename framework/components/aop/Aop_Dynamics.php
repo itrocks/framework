@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * Aop_Dynamics stores aop links to enable at each script start
  */
@@ -74,7 +72,15 @@ class Aop_Dynamics implements Plugin
 	{
 		if (isset($this->links[$class_name])) {
 			foreach ($this->links[$class_name] as $link) {
-				Aop::add($link[0], $link[1] . "::" . $link[2], array($link[3]), $link[4]);
+				trigger_error("NOT DONE YED", E_USER_ERROR); // TODO implement Aop_Dynamics::linkClass()
+				switch ($link[0]) {
+					case Aop::AFTER:
+						break;
+					case Aop::AROUND:
+						break;
+					case Aop::BEFORE:
+						break;
+				}
 			}
 		}
 	}
@@ -85,14 +91,15 @@ class Aop_Dynamics implements Plugin
 	 *
 	 * This is the joinpoint form of linkClass(), designed to be called at Autoloader::autoload()'s end
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $class_name string
+	 * @param $result     string
 	 */
-	public static function linkClassAop(AopJoinpoint $joinpoint)
+	public static function linkClassAop($class_name, $result)
 	{
-		if ($joinpoint->getReturnedValue()) {
-			$current = Aop_dynamics::current();
+		if ($result) {
+			$current = Aop_Dynamics::current();
 			if (isset($current)) {
-				$current->linkClass($joinpoint->getArguments()[0]);
+				$current->linkClass($class_name);
 			}
 		}
 	}
@@ -103,8 +110,8 @@ class Aop_Dynamics implements Plugin
 	 */
 	public static function register()
 	{
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Autoloader->includeClass()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Autoloader', "includeClass"),
 			array(__CLASS__, "linkClassAop")
 		);
 	}

@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * The wiki plugin enable wiki parsing of multiline properties values
  */
@@ -104,30 +102,33 @@ class Wiki implements Plugin
 
 	//----------------------------------------------------------------------------------- noParseZone
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $var_name  string can be an unique var or path.of.vars
+	 * @param $as_string boolean if true, returned value will always be a string
+	 * @param $joinpoint Around_Method_Joinpoint
+	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	public static function noParseZone(AopJoinpoint $joinpoint)
+	public static function noParseZone($var_name, $as_string, Around_Method_Joinpoint $joinpoint)
 	{
-		$varname = $joinpoint->getArguments()[0];
-		$is_include = substr($varname, 0, 1) == "/";
+		$is_include = substr($var_name, 0, 1) == "/";
 		if (!$is_include) {
 			self::$dont_parse_wiki ++;
 		}
-		$joinpoint->process();
+		$result = $joinpoint->process($var_name, $as_string);
 		if (!$is_include) {
 			self::$dont_parse_wiki --;
 		}
+		return $result;
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add(Aop::AROUND,
-			'SAF\Framework\Html_Edit_Template->parseValue()',
+		Aop::addAroundMethodCall(
+			array('SAF\Framework\Html_Edit_Template', "parseValue"),
 			array(__CLASS__, "noParseZone")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Reflection_Property_View->formatString()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Reflection_Property_View', "formatString"),
 			array(__CLASS__, "stringWiki")
 		);
 	}
@@ -136,20 +137,18 @@ class Wiki implements Plugin
 	/**
 	 * Add wiki to strings
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $object Reflection_Property_View
+	 * @param $result string
 	 */
-	public static function stringWiki(AopJoinpoint $joinpoint)
+	public static function stringWiki(Reflection_Property_View $object, &$result)
 	{
 		if (!static::$dont_parse_wiki) {
-			/** @var $property Reflection_Property */
-			$property = $joinpoint->getObject()->property;
+			$property = $object->property;
 			if ($property->getAnnotation("textile")->value) {
-				$value = $joinpoint->getReturnedValue();
 				$wiki = new Wiki();
-				$value = $wiki->geshi($value, false);
-				$value = $wiki->textile($value);
-				$value = $wiki->geshiSolve($value);
-				$joinpoint->setReturnedValue($value);
+				$result = $wiki->geshi($result, false);
+				$result = $wiki->textile($result);
+				$result = $wiki->geshiSolve($result);
 			}
 		}
 	}

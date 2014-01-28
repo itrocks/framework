@@ -128,12 +128,12 @@ abstract class Aop_Getter extends Aop implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Autoloader->includeClass()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Autoloader', "includeClass"),
 			array(__CLASS__, "registerIncludedGettersAop")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Class_Builder->buildClassSource()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Class_Builder', "buildClassSource"),
 			array(__CLASS__, "registerBuiltGettersAop")
 		);
 	}
@@ -142,11 +142,11 @@ abstract class Aop_Getter extends Aop implements Plugin
 	/**
 	 * AOP auto-registerer call
 	 *
-	 * @param $joinpoint AopJoinpoint returned value must be a class name
+	 * @param $class_name string
 	 */
-	public static function registerBuiltGettersAop(AopJoinpoint $joinpoint)
+	public static function registerBuiltGettersAop($class_name)
 	{
-		parent::registerProperties($joinpoint->getArguments()[0], "getter", "after", "read");
+		parent::registerProperties($class_name, "getter", "read");
 	}
 
 	//------------------------------------------------------------------------------- registerGetters
@@ -161,20 +161,21 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 */
 	public static function registerGetters($class_name)
 	{
-		parent::registerProperties($class_name, "getter", "after", "read");
+		parent::registerProperties($class_name, "getter", "read");
 	}
 
 	//-------------------------------------------------------------------- registerIncludedGettersAop
 	/**
-	 * AOP auto-registerer call
+	 * AOP auto-register call
 	 *
-	 * @param $joinpoint AopJoinpoint returned value must be a class name
+	 * @param $class_name string
+	 * @param $result     string
 	 */
-	public static function registerIncludedGettersAop(AopJoinpoint $joinpoint)
+	public static function registerIncludedGettersAop($class_name, $result)
 	{
-		if ($file_path = $joinpoint->getReturnedValue()) {
-			$class_name = Autoloader::rectifyClassName($joinpoint->getArguments()[0], $file_path);
-			parent::registerProperties($class_name, "getter", "after", "read");
+		if ($result) {
+			$class_name = Autoloader::rectifyClassName($class_name, $result);
+			parent::registerProperties($class_name, "getter", "read");
 		}
 	}
 

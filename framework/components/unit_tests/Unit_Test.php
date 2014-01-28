@@ -7,6 +7,14 @@ namespace SAF\Framework\Unit_Tests;
 class Unit_Test
 {
 
+	//-------------------------------------------------------------------------------------- $capture
+	/**
+	 * Capture of the output, filled in by captureStart() and flushed by captureEnd()
+	 *
+	 * @var string
+	 */
+	private $capture;
+
 	//----------------------------------------------------------------------------------- $start_time
 	/**
 	 * The start time of each test
@@ -17,10 +25,12 @@ class Unit_Test
 
 	//---------------------------------------------------------------------------------------- assume
 	/**
-	 * @param $test string name of the test
-	 * @param $check mixed
-	 * @param $assume mixed
-	 * @return boolean
+	 * Assumes a checked value is the same than an assumed value
+	 *
+	 * @param $test   string the name of the test (ie "Method_Name[.test_name]")
+	 * @param $check  mixed the checked value
+	 * @param $assume mixed the assumed value
+	 * @return boolean true if the checked value corresponds to the assumed value
 	 */
 	protected function assume($test, $check, $assume)
 	{
@@ -51,11 +61,49 @@ class Unit_Test
 		return ($result === "OK");
 	}
 
+	//--------------------------------------------------------------------------------- assumeCapture
+	/**
+	 * Ends default output capture and assume result
+	 *
+	 * @param $test   string the name of the test (ie "Method_Name[.test_name]")
+	 * @param $assume string the assumed default output capture result
+	 * @return boolean if the checked default output capture string corresponds to the assumed string
+	 */
+	protected function assumeCapture($test, $assume)
+	{
+		return $this->assume($test . ".output", $this->captureEnd(), $assume);
+	}
+
 	//----------------------------------------------------------------------------------------- begin
 	public function begin()
 	{
 		echo "<h3>" . get_class($this) . "</h3>";
 		echo "<ul>";
+	}
+
+	//------------------------------------------------------------------------------------ captureEnd
+	/**
+	 * Stops capture of the standard output and returns the captured output
+	 *
+	 * @return string
+	 */
+	public function captureEnd()
+	{
+		return $this->capture . ob_get_flush();
+	}
+
+	//---------------------------------------------------------------------------------- captureStart
+	/**
+	 * Start capture of the standard output
+	 */
+	public function captureStart()
+	{
+		$test = $this;
+		$this->capture = "";
+		ob_start(function($buffer) use ($test)
+		{
+			$test->capture .= $buffer;
+		});
 	}
 
 	//------------------------------------------------------------------------------------------- end

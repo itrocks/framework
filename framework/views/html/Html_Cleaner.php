@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * This plugin cleans HTML code to avoid multiple blank lines, etc.
  */
@@ -11,20 +9,20 @@ abstract class Html_Cleaner implements Plugin
 
 	//----------------------------------------------------------------------------------------- clean
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result string
 	 */
-	public static function clean(AopJoinpoint $joinpoint)
+	public static function clean(&$result)
 	{
-		$content = $joinpoint->getReturnedValue();
-		$content = str_replace("\r", "", $content);
-		$content = preg_replace("/(\n)([\\s|\\t]+)(\n)/", "\n", $content);
-		$joinpoint->setReturnedValue($content);
+		$result = str_replace("\r", "", $result);
+		$result = preg_replace("/(\n)([\\s|\\t]+)(\n)/", "\n", $result);
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add(Aop::AFTER, 'SAF\Framework\Html_Template->parse()', array(__CLASS__, "clean"));
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Html_Template', "parse"), array(__CLASS__, "clean")
+		);
 	}
 
 }

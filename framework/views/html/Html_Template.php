@@ -245,6 +245,17 @@ class Html_Template
 		return $object;
 	}
 
+	//--------------------------------------------------------------------------------- getRootObject
+	/**
+	 * Gets the root object
+	 *
+	 * @return object
+	 */
+	public function getRootObject()
+	{
+		return end($this->objects);
+	}
+
 	//------------------------------------------------------------------------------------- getUriRoot
 	/**
 	 * @return string

@@ -29,7 +29,7 @@ class Contextual_Mysqli extends mysqli
 	{
 		if (isset($column_name)) {
 			$table = Mysql_Table_Builder_Mysqli::build($this, $table_name);
-			return isset($table->columns[$column_name]);
+			return $table->hasColumn($column_name);
 		}
 		else {
 			$res = $this->query("SHOW TABLES");
@@ -43,6 +43,18 @@ class Contextual_Mysqli extends mysqli
 			$res->free();
 			return false;
 		}
+	}
+
+	//----------------------------------------------------------------------------------------- query
+	/**
+	 * Big patch as this is needed for AOP, but AOP-Runkit does not work with php internal methods
+	 *
+	 * @todo patch for runkit-aop. remove as soon as possible
+	 * @see mysqli::query
+	 */
+	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
+	{
+		return parent::query($query, $result_mode);
 	}
 
 }

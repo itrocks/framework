@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * Compose translations with dynamic elements with separated translations
  *
@@ -22,30 +20,28 @@ abstract class Translation_String_Composer implements Plugin
 	 * This patch changes HTML properties displays from a.property.display
 	 * to ¦a¦.¦property¦.¦display¦ to minimize needed translations.
 	 *
-	 * @param AopJoinpoint $joinpoint
-	 * @return string
+	 * @param $result string
 	 */
-	public static function afterReflectionPropertyValueDisplay(AopJoinpoint $joinpoint)
+	public static function afterReflectionPropertyValueDisplay(&$result)
 	{
-		$result = $joinpoint->getReturnedValue();
 		if (strpos($result, ".") !== false) {
-			$joinpoint->setReturnedValue("¦" . str_replace(".", "¦.¦", $result) . "¦");
+			$result = "¦" . str_replace(".", "¦.¦", $result) . "¦";
 		}
 	}
 
 	//----------------------------------------------------------------------------------- onTranslate
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $object    Translations
+	 * @param $text      string
+	 * @param $context   string
+	 * @param $joinpoint Around_Method_Joinpoint
 	 * @return string
 	 */
-	public static function onTranslate(AopJoinpoint $joinpoint)
+	public static function onTranslate(Translations $object, $text, $context, $joinpoint)
 	{
-		$args = $joinpoint->getArguments();
-		$text = $args[0];
-		$context = isset($args[1]) ? $args[1] : "";
+		$context = isset($context) ? $context : "";
 		if (strpos($text, "¦") !== false) {
-			/** @var $translations Translations */
-			$translations = $joinpoint->getObject();
+			$translations = $object;
 			$elements = array();
 			$nelement = 0;
 			$i = 0;
@@ -72,22 +68,22 @@ abstract class Translation_String_Composer implements Plugin
 			$translation = str_replace(
 				array_keys($elements), $elements, $translations->translate($text, $context)
 			);
-			$joinpoint->setReturnedValue($translation);
+			return $translation;
 		}
 		else {
-			$joinpoint->process();
+			return $joinpoint->process();
 		}
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add(Aop::AROUND,
-			'SAF\Framework\Translations->translate()',
+		Aop::addAroundMethodCall(
+			array('SAF\Framework\Translations', "translate"),
 			array(__CLASS__, "onTranslate")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Reflection_Property_Value->display()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Reflection_Property_Value', "display"),
 			array(__CLASS__, "afterReflectionPropertyValueDisplay")
 		);
 	}

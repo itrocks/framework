@@ -4,6 +4,7 @@
 const RUNKIT_ACC_PRIVATE   = 0;
 const RUNKIT_ACC_PROTECTED = 1;
 const RUNKIT_ACC_PUBLIC    = 2;
+const RUNKIT_ACC_STATIC    = 3;
 
 //----------------------------------------------------------------------------- runkit_function_add
 /**
@@ -12,7 +13,7 @@ const RUNKIT_ACC_PUBLIC    = 2;
  * @param $function_name string Name of function to be created
  * @param $args          string Comma separated argument list
  * @param $code          string Code making up the function
- * @return boolean returns TRUE on success or FALSE on failure
+ * @return boolean Returns TRUE on success or FALSE on failure
  * @see create_function()
  */
 function runkit_function_add($function_name, $args, $code) {}
@@ -24,10 +25,19 @@ function runkit_function_add($function_name, $args, $code) {}
  * @param $function_name string Name of function to be redefined
  * @param $args          string Comma separated argument list
  * @param $code          string Code making up the function
- * @return boolean returns TRUE on success or FALSE on failure
+ * @return boolean Returns TRUE on success or FALSE on failure
  * @see create_function()
  */
 function runkit_function_redefine($function_name, $args, $code) {}
+
+//-------------------------------------------------------------------------- runkit_function_remove
+/**
+ * Remove a function definition
+ *
+ * @param $function_name string Name of function to be deleted
+ * @return boolean Returns TRUE on success or FALSE on failure
+ */
+function runkit_function_remove($function_name) {}
 
 //-------------------------------------------------------------------------- runkit_function_rename
 /**
@@ -76,6 +86,16 @@ function runkit_method_add($class_name, $method_name, $args, $code, $flags = RUN
  * @return boolean Returns TRUE on success or FALSE on failure
  */
 function runkit_method_redefine($class_name, $method_name, $args, $code, $flags = RUNKIT_ACC_PUBLIC) {}
+
+//---------------------------------------------------------------------------- runkit_method_remove
+/**
+ * Dynamically removes the given method
+ *
+ * @param $class_name  string The class in which to remove the method
+ * @param $method_name string The name of the method to remove
+ * @return boolean Returns TRUE on success or FALSE on failure
+ */
+function runkit_method_remove($class_name, $method_name) {}
 
 //---------------------------------------------------------------------------- runkit_method_rename
 /**

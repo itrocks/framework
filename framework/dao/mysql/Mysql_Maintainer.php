@@ -1,8 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
 use mysqli;
+use mysqli_result;
 
 /**
  * This is an intelligent database maintainer that automatically updates a table structure if there
@@ -153,18 +153,18 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * This is called after each mysql query in order to update automatically database structure in case of errors
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $object Contextual_Mysqli
+	 * @param $query  string
+	 * @param $result mysqli_result|boolean
 	 */
-	public static function onMysqliQuery(AopJoinpoint $joinpoint)
+	public static function onMysqliQuery(Contextual_Mysqli $object, $query, &$result)
 	{
-		/** @var $mysqli Contextual_Mysqli */
-		$mysqli = $joinpoint->getObject();
+		$mysqli = $object;
 		if ($error_number = $mysqli->errno) {
 			if (!isset($mysqli->context)) {
-				$mysqli->context = self::guessContext($joinpoint->getArguments()[0]);
+				$mysqli->context = self::guessContext($query);
 			}
 			if (isset($mysqli->context)) {
-				$query = $joinpoint->getArguments()[0];
 				$error = $mysqli->error;
 				$retry = false;
 				$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
@@ -214,7 +214,6 @@ class Mysql_Maintainer implements Plugin
 				}
 				if ($retry) {
 					$result = $mysqli->query($query);
-					$joinpoint->setReturnedValue($result);
 				}
 			}
 		}
@@ -270,7 +269,9 @@ class Mysql_Maintainer implements Plugin
 	 */
 	public static function register()
 	{
-		Aop::add(Aop::AFTER, "mysqli->query()", array(__CLASS__, "onMysqliQuery"));
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Contextual_Mysqli', "query"), array(__CLASS__, "onMysqliQuery")
+		);
 	}
 
 	//----------------------------------------------------------------------------------- updateTable

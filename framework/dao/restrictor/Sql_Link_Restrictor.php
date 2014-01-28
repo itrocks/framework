@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * This configuration plugin enables to restrict read data
  *
@@ -107,29 +105,20 @@ class Sql_Link_Restrictor implements Configurable, Plugin
 
 	//---------------------------------------------------------------- beforeSqlSelectBuilderFinalize
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $where string where clause, including " WHERE " or empty if no filter on read
 	 */
-	public static function beforeSqlSelectBuilderFinalize(AopJoinpoint $joinpoint)
+	public static function beforeSqlSelectBuilderFinalize(&$where)
 	{
-		/** @var $arguments string[] */
-		$arguments = $joinpoint->getArguments();
-		/** @var $where string */
-		$where = $arguments[1];
-		/** @var $builder Sql_Select_Builder */
-		$arguments[1] = self::current()->applyCurrentRestrictions($where);
-		if ($arguments[1] !== $where) {
-			$joinpoint->setArguments($arguments);
-		}
+		$where = self::current()->applyCurrentRestrictions($where);
 	}
+
 	//------------------------------------------------------------- beforeSqlSelectBuilderBuildTables
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $object Sql_Select_Builder
 	 */
-	public static function beforeSqlSelectBuilderBuildTables(AopJoinpoint $joinpoint)
+	public static function beforeSqlSelectBuilderBuildTables(Sql_Select_Builder $object)
 	{
-		/** @var $builder Sql_Select_Builder */
-		$builder = $joinpoint->getObject();
-		self::current()->restrict($builder);
+		self::current()->restrict($object);
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -172,10 +161,14 @@ class Sql_Link_Restrictor implements Configurable, Plugin
 	 */
 	public static function register()
 	{
-		Aop::add(Aop::BEFORE, 'SAF\Framework\Sql_Select_Builder->buildTables()',
+		/* @todo this method does not exist anymore into Sql_Select_Builder
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Sql_Select_Builder', "buildTables"),
 			array(__CLASS__, "beforeSqlSelectBuilderBuildTables")
 		);
-		Aop::add(Aop::BEFORE, 'SAF\Framework\Sql_Select_Builder->finalize()',
+		 */
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Sql_Select_Builder', "finalize"),
 			array(__CLASS__, "beforeSqlSelectBuilderFinalize")
 		);
 	}

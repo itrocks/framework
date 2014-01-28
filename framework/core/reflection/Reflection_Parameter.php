@@ -9,6 +9,15 @@ use ReflectionParameter;
 class Reflection_Parameter extends ReflectionParameter
 {
 
+	//---------------------------------------------------------------------------- $internal_defaults
+	/**
+	 * @todo it may be hard, but should copy all internal functions default values here
+	 * @var array
+	 */
+	private static $internal_defaults = array(
+		"chop" => array("character_mask" => " \\t\\n\\r\\0\\x0B")
+	);
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * Return the parameter as a PHP source string
@@ -21,13 +30,28 @@ class Reflection_Parameter extends ReflectionParameter
 	 */
 	public function __toString()
 	{
-echo "parent string = [" . parent::__toString() . "]<br>";
-		$default = $this->getDefaultValue();
+		$optional = $this->isOptional();
+		if ($optional) {
+			if ($this->isDefaultValueAvailable()) {
+				$default = $this->getDefaultValue();
+			}
+			elseif ($this->getDeclaringFunction()) {
+				$default = self::$internal_defaults[$this->getDeclaringFunction()->name][$this->name];
+			}
+			elseif ($this->getDeclaringClass()) {
+				$default = self::$internal_defaults[$this->getDeclaringClass()->name][$this->name];
+			}
+			else {
+				$default = null;
+			}
+		}
+		else {
+			$default = null;
+		}
+		if (!isset($default)) $default = "null";
+		elseif (!is_numeric($default)) $default = '"' . addslashes($default) . '"';
 		return ($this->isPassedByReference() ? '&' : '') . '$' . $this->name
-		. ($this->isOptional()
-			? (" = " . (is_numeric($default) ? $default : ("'" . $default. "'")))
-			: ""
-		);
+			. ($optional ? (" = " . $default) : "");
 	}
 
 }

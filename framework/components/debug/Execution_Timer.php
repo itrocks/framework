@@ -10,6 +10,7 @@ require_once "framework/core/aop/Aop.php";
 class Execution_Timer implements Plugin
 {
 
+	//----------------------------------------------------------------------------------- $start_time
 	/**
 	 * Program start time
 	 *
@@ -18,9 +19,22 @@ class Execution_Timer implements Plugin
 	private $start_time;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Constructor : initializes start time to "now"
+	 */
 	public function __construct()
 	{
 		$this->start_time = microtime(true);
+	}
+
+	//-------------------------------------------------------------- afterMainControllerRunController
+	public function afterMainControllerRunController()
+	{
+		$duration = number_format($this->end(), 3, ",", " ");
+		echo "<script type=\"text/javascript\">"
+			. " document.getElementById(\"main\").innerHTML"
+			. " += '<div class=\"Timer logger duration\">$duration</div>';"
+			. " </script>";
 	}
 
 	//----------------------------------------------------------------------------------------- begin
@@ -52,16 +66,9 @@ class Execution_Timer implements Plugin
 	 */
 	public static function register()
 	{
-		$timer = new Execution_Timer();
-		Aop::add(
-			Aop::AFTER, 'SAF\Framework\Main_Controller->runController()',
-			function() use($timer) {
-				$duration = number_format($timer->end(), 3, ",", " ");
-				echo "<script type=\"text/javascript\">"
-					. " document.getElementById(\"main\").innerHTML"
-					. " += '<div class=\"Timer logger duration\">$duration</div>';"
-					. " </script>";
-			}
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Main_Controller', "runController"),
+			array(new Execution_Timer(), "afterMainControllerRunController")
 		);
 	}
 

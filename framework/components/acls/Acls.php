@@ -30,12 +30,12 @@ abstract class Acls implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\User_Authentication->authenticate()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\User_Authentication', "authenticate"),
 			array('SAF\Framework\Acls_Loader', "onUserAuthenticate")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\User_Authentication->disconnect()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\User_Authentication', "disconnect"),
 			array('SAF\Framework\Acls_Loader', "onUserDisconnect")
 		);
 	}

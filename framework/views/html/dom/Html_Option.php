@@ -38,20 +38,28 @@ class Html_Option extends Dom_Element
 		$content = $this->getContent();
 		if (!strlen($content)) {
 			$this->setContent(" ");
-			$back_content = true;
-		}
-		elseif ($content == ($value = $this->getAttribute("value"))) {
-			$this->removeAttribute($value);
-			$back = true;
-		}
-		$string = parent::__toString();
-		if (isset($back_content)) {
+			$string = parent::__toString();
 			$this->setContent($content);
 		}
-		elseif (isset($back)) {
+		elseif ($content == ($value = $this->getAttribute("value"))) {
+			$this->removeAttribute("value");
+			$string = parent::__toString();
 			$this->setAttribute("value", $value);
 		}
+		else {
+			$string = parent::__toString();
+		}
 		return $string;
+	}
+
+	//------------------------------------------------------------------------------------ setContent
+	/**
+	 * @param $content string
+	 * @todo This is a patch to make Html_Option::setContent work. Remove this when it will work
+	 */
+	public function setContent($content)
+	{
+		parent::setContent($content);
 	}
 
 }

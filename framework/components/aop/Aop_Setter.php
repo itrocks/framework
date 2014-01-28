@@ -17,12 +17,12 @@ abstract class Aop_Setter extends Aop implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Autoloader->includeClass()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Autoloader', "includeClass"),
 			array(__CLASS__, "registerIncludedSettersAop")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Class_Builder->buildClassSource()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Class_Builder', "buildClassSource"),
 			array(__CLASS__, "registerBuiltSettersAop")
 		);
 	}
@@ -31,11 +31,11 @@ abstract class Aop_Setter extends Aop implements Plugin
 	/**
 	 * AOP auto-registerer call
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $class_name string
 	 */
-	public static function registerBuiltSettersAop(AopJoinpoint $joinpoint)
+	public static function registerBuiltSettersAop($class_name)
 	{
-		parent::registerProperties($joinpoint->getArguments()[0], "setter", "before", "write");
+		parent::registerProperties($class_name, "setter", "write");
 	}
 
 	//------------------------------------------------------------------------------- registerSetters
@@ -51,20 +51,21 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 */
 	public static function registerSetters($class_name)
 	{
-		parent::registerProperties($class_name, "setter", "before", "write");
+		parent::registerProperties($class_name, "setter", "write");
 	}
 
 	//-------------------------------------------------------------------- registerIncludedSettersAop
 	/**
 	 * AOP auto-registerer call
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $class_name string
+	 * @param $result     string
 	 */
-	public static function registerIncludedSettersAop(AopJoinpoint $joinpoint)
+	public static function registerIncludedSettersAop($class_name, $result)
 	{
-		if ($file_path = $joinpoint->getReturnedValue()) {
-			$class_name = Autoloader::rectifyClassName($joinpoint->getArguments()[0], $file_path);
-			parent::registerProperties($class_name, "setter", "before", "write");
+		if ($result) {
+			$class_name = Autoloader::rectifyClassName($class_name, $result);
+			parent::registerProperties($class_name, "setter", "write");
 		}
 	}
 

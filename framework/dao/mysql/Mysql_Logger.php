@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
+use mysqli;
 
 /**
  * A logger for mysql queries
@@ -103,30 +103,28 @@ class Mysql_Logger implements Plugin
 	/**
 	 * Called each time before a mysql_query() call is done : log the query
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $query string
 	 */
-	public function onQuery(AopJoinpoint $joinpoint)
+	public function onQuery($query)
 	{
-		$arguments = $joinpoint->getArguments();
-		$log = $arguments[0];
 		if ($this->continue && $this->display_log) {
-			echo "<div class=\"Mysql logger query\">" . $log . "</div>\n";
+			echo "<div class=\"Mysql logger query\">" . $query . "</div>\n";
 		}
-		$this->queries_log[] = $log;
+		$this->queries_log[] = $query;
 	}
 
-	//--------------------------------------------------------------------------------------- onQuery
+	//--------------------------------------------------------------------------------------- onError
 	/**
 	 * Called each time after a mysql_query() call is done : log the error (if some)
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $query  string
+	 * @param $object mysqli
 	 */
-	public function onError(AopJoinpoint $joinpoint)
+	public function onError($query, mysqli $object)
 	{
-		$mysqli = $joinpoint->getObject();
+		$mysqli = $object;
 		if ($mysqli->errno) {
-			$arguments = $joinpoint->getArguments();
-			$error = $mysqli->errno . ": " . $mysqli->error . "[" . $arguments[0] . "]";
+			$error = $mysqli->errno . ": " . $mysqli->error . "[" . $query . "]";
 			echo "<div class=\"Mysql logger error\">" . $error . "</div>\n";
 			$this->errors_log[] = $error;
 		}
@@ -158,15 +156,19 @@ class Mysql_Logger implements Plugin
 				}
 			}
 		}
-		Aop::add(Aop::BEFORE, "mysqli->query()", array($mysql_logger, "onQuery"));
-		Aop::add(Aop::AFTER,  "mysqli->query()", array($mysql_logger, "onError"));
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Contextual_Mysqli', "query"), array($mysql_logger, "onQuery")
+		);
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Contextual_Mysqli', "query"), array($mysql_logger, "onError")
+		);
 		if (!$mysql_logger->continue) {
-			Aop::add(Aop::BEFORE,
-				'SAF\Framework\Main_Controller->runController()',
+			Aop::addBeforeMethodCall(
+				array('SAF\Framework\Main_Controller', "runController"),
 				array($mysql_logger, "onMainControllerRun")
 			);
-			Aop::add(Aop::AFTER,
-				'SAF\Framework\Main_Controller->runController()',
+			Aop::addAfterMethodCall(
+				array('SAF\Framework\Main_Controller', "runController"),
 				array($mysql_logger, "afterMainControllerRun")
 			);
 		}

@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * The autoload cache plugin  is here to make class autoload faster, but need update at each code update
  */
@@ -53,26 +51,6 @@ abstract class Autoload_Cache implements Plugin, Updatable
 			: $class_name;
 	}
 
-	//------------------------------------------------------------------------------------ onAutoload
-	/**
-	 * Autoload replacement, with cache
-	 *
-	 * @param AopJoinpoint $joinpoint
-	 */
-	public static function onAutoload(AopJoinpoint $joinpoint)
-	{
-		self::autoload($joinpoint->getArguments()[0]);
-	}
-
-	//------------------------------------------------------------------------------- onFullClassName
-	/**
-	 * @param AopJoinpoint $joinpoint
-	 */
-	public static function onFullClassName(AopJoinpoint $joinpoint)
-	{
-		$joinpoint->setReturnedValue(self::fullClassName($joinpoint->getArguments()[0]));
-	}
-
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers the Autoload_Cache plugin
@@ -86,13 +64,11 @@ abstract class Autoload_Cache implements Plugin, Updatable
 		if (!self::$paths || Application_Updater::mustUpdate()) {
 			self::update();
 		}
-		Aop::add(Aop::AROUND,
-			'SAF\Framework\Autoloader->autoload()',
-			array(__CLASS__, "onAutoload")
+		Aop::addAroundMethodCall(
+			array('SAF\Framework\Autoloader', "autoload"), array(__CLASS__, "autoload")
 		);
-		Aop::add(Aop::AROUND,
-			'SAF\Framework\Namespaces->fullClassName()',
-			array(__CLASS__, "onFullClassName")
+		Aop::addAroundMethodCall(
+			array('SAF\Framework\Namespaces', "fullClassName"), array(__CLASS__, "fullClassName")
 		);
 	}
 

@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * This plugin enables storage of properties displayed into lists as acls
  */
@@ -21,81 +19,79 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 
 	//------------------------------------------------------------------- listControllerGetProperties
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $class_name string
+	 * @param $joinpoint Around_Method_Joinpoint
+	 * @return string[] property names list
 	 */
-	public static function listControllerGetProperties(AopJoinpoint $joinpoint)
-	{
-		$acls_list_properties = new Acls_List_Properties($joinpoint->getArguments()[0]);
+	public static function listControllerGetProperties(
+		$class_name, Around_Method_Joinpoint $joinpoint
+	) {
+		$acls_list_properties = new Acls_List_Properties($class_name);
 		$properties = $acls_list_properties->getPropertiesNames("list");
-		if (isset($properties)) {
-			$joinpoint->setReturnedValue($properties);
-		}
-		else {
-			$joinpoint->process();
-		}
+		return (isset($properties)) ? $properties : $joinpoint->process($class_name);
 	}
 
 	//------------------------------------------------------------------------- propertyAddController
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * @param $parameters Controller_Parameters removal parameters
+	 * - key 0 : context class name (ie a business class)
+	 * - key 1 : context feature name (ie "output", "list")
+	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
+	 * @param $form       array not used
+	 * @param $files      array not used
+	 * @param $joinpoint  Around_Method_Joinpoint
+	 * @return mixed
 	 */
-	public static function propertyAddController(AopJoinpoint $joinpoint)
-	{
-		/**
-		 * @var $parameters Controller_Parameters
-		 * - key 0 : context class name (ie a business object)
-		 * - key 1 : context feature name (ie "output", "list")
-		 * - keys 2 and more : the identifiers of the removed elements (ie property names)
-		 * @var $form  array  unused
-		 * @var $files array  unused
-		 */
-		list($parameters, $form, $files) = $joinpoint->getArguments();
+	public static function propertyAddController(
+		Controller_Parameters $parameters, $form, $files, Around_Method_Joinpoint $joinpoint
+	) {
 		if ($parameters->getRawParameter(1) == "list") {
 			$parameters->unshiftUnnamed(__CLASS__);
-			(new Acls_Property_Add_Controller)->run($parameters, $form, $files);
+			return (new Acls_Property_Add_Controller)->run($parameters, $form, $files);
 		}
 		else {
-			$joinpoint->process();
+			return $joinpoint->process($parameters, $form, $files);
 		}
 	}
 
 	//---------------------------------------------------------------------- propertyRemoveController
 	/**
-	 * @param AopJoinpoint $joinpoint
+	 * Call this to remove an element from a given class + feature context
+	 *
+	 * @param $parameters Controller_Parameters removal parameters
+	 * - key 0 : context class name (ie a business class)
+	 * - key 1 : context feature name (ie "output", "list")
+	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
+	 * @param $form       array not used
+	 * @param $files      array not used
+	 * @param $joinpoint  Around_Method_Joinpoint
+	 * @return mixed
 	 */
-	public static function propertyRemoveController(AopJoinpoint $joinpoint)
-	{
-		/**
-		 * @var $parameters Controller_Parameters
-		 * - key 0 : context class name (ie a business object)
-		 * - key 1 : context feature name (ie "output", "list")
-		 * - keys 2 and more : the identifiers of the removed elements (ie property names)
-		 * @var $form  array  unused
-		 * @var $files array  unused
-		 */
-		list($parameters, $form, $files) = $joinpoint->getArguments();
+	public static function propertyRemoveController(
+		Controller_Parameters $parameters, $form, $files, Around_Method_Joinpoint $joinpoint
+	) {
 		if ($parameters->getRawParameter(1) == "list") {
 			$parameters->unshiftUnnamed(__CLASS__);
-			(new Acls_Property_Remove_Controller)->run($parameters, $form, $files);
+			return (new Acls_Property_Remove_Controller)->run($parameters, $form, $files);
 		}
 		else {
-			$joinpoint->process();
+			return $joinpoint->process($parameters, $form, $files);
 		}
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add(Aop::AROUND,
-			'SAF\Framework\Default_List_Controller->getPropertiesList()',
+		Aop::addAroundMethodCall(
+			array('SAF\Framework\Default_List_Controller', "getPropertiesList"),
 			array(__CLASS__, "listControllerGetProperties")
 		);
-		Aop::add(Aop::AROUND,
-			'SAF\Framework\Property_Add_Controller->run()',
+		Aop::addAroundMethodCall(
+			array('SAF\Framework\Property_Add_Controller', "run"),
 			array(__CLASS__, "propertyAddController")
 		);
-		Aop::add(Aop::AROUND,
-			'SAF\Framework\Property_Remove_Controller->run()',
+		Aop::addAroundMethodCall(
+			array('SAF\Framework\Property_Remove_Controller', "run"),
 			array(__CLASS__, "propertyRemoveController")
 		);
 	}

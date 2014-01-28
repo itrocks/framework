@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * Html translator plugin : translates "|non-translated text|" from html pages to "translated text"
  */
@@ -15,17 +13,14 @@ abstract class Html_Translator implements Plugin
 	 */
 	public static function register()
 	{
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Html_Template->parse()',
-			array(__CLASS__, "translatePage")
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Html_Template', "parse"), array(__CLASS__, "translatePage")
 		);
-		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Html_Template->parseString()',
-			array(__CLASS__, "translateString")
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Html_Template', "parseString"), array(__CLASS__, "translateString")
 		);
-		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Html_Option->setContent()',
-			array(__CLASS__, "translateOptionContent")
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Html_Option', "setContent"), array(__CLASS__, "translateOptionContent")
 		);
 	}
 
@@ -71,14 +66,12 @@ abstract class Html_Translator implements Plugin
 	/**
 	 * Translate content of html options in Html_Option objects
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $content string
 	 */
-	public static function translateOptionContent(AopJoinpoint $joinpoint)
+	public static function translateOptionContent(&$content)
 	{
-		$arguments = $joinpoint->getArguments();
-		if (trim($arguments[0])) {
-			$arguments[0] = Loc::tr($arguments[0]);
-			$joinpoint->setArguments($arguments);
+		if (trim($content)) {
+			$content = Loc::tr($content);
 		}
 	}
 
@@ -87,28 +80,25 @@ abstract class Html_Translator implements Plugin
 	 * Translate terms from html pages
 	 * This is done at end of html templates parsing
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $object Html_Template
+	 * @param $result string
+	 * @return string
 	 */
-	public static function translatePage(AopJoinpoint $joinpoint)
+	public static function translatePage(Html_Template $object, $result)
 	{
-		$content = $joinpoint->getReturnedValue();
-		$context = get_class($joinpoint->getObject());
-		$joinpoint->setReturnedValue(self::translateContent($content, $context));
+		return self::translateContent($result, get_class($object->getRootObject()));
 	}
 
 	//--------------------------------------------------------------------------------- translatePage
 	/**
 	 * Translate string.
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $object        Html_Template
+	 * @param $property_name string
 	 */
-	public static function translateString(AopJoinpoint $joinpoint)
+	public static function translateString(Html_Template $object, &$property_name)
 	{
-		$arguments = $joinpoint->getArguments();
-		$content = $arguments[1];
-		$context = get_class($joinpoint->getObject());
-		$arguments[1] = self::translateContent($content, $context);
-		$joinpoint->setArguments($arguments);
+		self::translateContent($property_name, get_class($object->getRootObject()));
 	}
 
 }

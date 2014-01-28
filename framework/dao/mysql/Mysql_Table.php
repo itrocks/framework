@@ -77,6 +77,16 @@ class Mysql_Table implements Dao_Table
 		$this->indexes[$index->getName()] = $index;
 	}
 
+	//------------------------------------------------------------------------------------- getColumn
+	/**
+	 * @param $name string
+	 * @return Mysql_Column
+	 */
+	public function getColumn($name)
+	{
+		return $this->columns[$name];
+	}
+
 	//------------------------------------------------------------------------------------ getColumns
 	/**
 	 * @return Mysql_Column[]
@@ -120,6 +130,16 @@ class Mysql_Table implements Dao_Table
 	public function getSqlPostfix()
 	{
 		return " ENGINE=" . $this->Engine;
+	}
+
+	//------------------------------------------------------------------------------------- hasColumn
+	/**
+	 * @param $name string
+	 * @return boolean
+	 */
+	public function hasColumn($name)
+	{
+		return isset($this->columns[$name]);
 	}
 
 }

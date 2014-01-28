@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use DateTime;
+
 /**
  * This is a way to display a property value into a view
  *
@@ -44,7 +46,7 @@ class Reflection_Property_View
 	 *
 	 * Default format is ISO "0000-00-00 00:00:00"
 	 *
-	 * @param $value mixed
+	 * @param $value string|DateTime|Date_Time
 	 * @return mixed
 	 */
 	protected function formatDateTime($value)

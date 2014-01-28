@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
 use ReflectionClass;
 
 /** @noinspection PhpIncludeInspection */
@@ -35,13 +34,15 @@ class Builder implements Plugin
 
 	//------------------------------------------------------------------ afterNamespacesFullClassName
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $class_name string
+	 * @param $result     string
+	 * @return string
 	 */
-	public static function afterNamespacesFullClassName(AopJoinpoint $joinpoint)
+	public static function afterNamespacesFullClassName($class_name, $result)
 	{
-		if (Namespaces::isShortClassName($joinpoint->getArguments()[0])) {
-			self::onMethodWithReturnedValue($joinpoint);
-		}
+		return (Namespaces::isShortClassName($class_name))
+			? Builder::current()->replacementClassName($result)
+			: $result;
 	}
 
 	//------------------------------------------------------------------------------------- className
@@ -171,103 +172,59 @@ class Builder implements Plugin
 		return (new ReflectionClass($class_name))->newInstanceArgs($args);
 	}
 
-	//---------------------------------------------------------------------- onClassNamePropertyWrite
-	/**
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function onClassNamePropertyWrite(AopJoinpoint $joinpoint)
-	{
-		static $antiloop = false;
-		if (!$antiloop) {
-			$assigned_value = $joinpoint->getAssignedValue();
-			$class_name = Builder::current()->replacementClassName($assigned_value);
-			if ($class_name !== $assigned_value) {
-				$property_name = $joinpoint->getPropertyName();
-				$antiloop = true;
-				$joinpoint->getObject()->$property_name = $class_name;
-				$antiloop = false;
-			}
-		}
-	}
-
-	//------------------------------------------------------------------ onFullClassNamePropertyWrite
-	/**
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function onFullClassNamePropertyWrite(AopJoinpoint $joinpoint)
-	{
-		Builder::onClassNamePropertyWrite($joinpoint, true);
-	}
-
 	//------------------------------------------------------------------------- onMethodWithClassName
 	/**
-	 * @param $joinpoint AopJoinpoint
-	 * @param $index integer
+	 * @param $class_name string
 	 */
-	private static function onMethodWithClassName(AopJoinpoint $joinpoint, $index)
+	public static function onMethodWithClassName(&$class_name)
 	{
-		$arguments = $joinpoint->getArguments();
-		$class_name = Builder::current()->replacementClassName($arguments[$index]);
-		if ($class_name !== $arguments[$index]) {
-			$arguments[$index] = $class_name;
-			$joinpoint->setArguments($arguments);
-		}
+		$class_name = Builder::current()->replacementClassName($class_name);
 	}
 
-	//------------------------------------------------------------------------ onMethodWithClassName0
+	//---------------------------------------------------------------------- onMethodWithElementClass
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $element_class string
 	 */
-	public static function onMethodWithClassName0(AopJoinpoint $joinpoint)
+	public static function onMethodWithElementClass(&$element_class)
 	{
-		Builder::onMethodWithClassName($joinpoint, 0);
-	}
-
-	//------------------------------------------------------------------------ onMethodWithClassName1
-	/**
-	 * @param $joinpoint AopJoinpoint
-	 */
-	public static function onMethodWithClassName1(AopJoinpoint $joinpoint)
-	{
-		Builder::onMethodWithClassName($joinpoint, 1);
+		$element_class = Builder::current()->replacementClassName($element_class);
 	}
 
 	//----------------------------------------------------------------------- onMethodWithReturnValue
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result string
+	 * @return string
 	 */
-	public static function onMethodWithReturnedValue(AopJoinpoint $joinpoint)
+	public static function onMethodWithReturnedValue($result)
 	{
-		$joinpoint->setReturnedValue(
-			Builder::current()->replacementClassName($joinpoint->getReturnedValue())
-		);
+		return Builder::current()->replacementClassName($result);
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Getter->getCollection()',
-			array(__CLASS__, "onMethodWithClassName1")
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Getter', "getCollection"),
+			array(__CLASS__, "onMethodWithElementClass")
 		);
-		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Getter->getObject()',
-			array(__CLASS__, "onMethodWithClassName1")
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Getter', "getObject"),
+			array(__CLASS__, "onMethodWithClassName")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Namespaces->fullClassName()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Namespaces', "fullClassName"),
 			array(__CLASS__, "afterNamespacesFullClassName")
 		);
-		Aop::add(Aop::BEFORE,
-			'SAF\Framework\Search_Object->newInstance()',
-			array(__CLASS__, "onMethodWithClassName0")
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Search_Object', "create"),
+			array(__CLASS__, "onMethodWithClassName")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Set->elementClassNameOf()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Set', "elementClassNameOf"),
 			array(__CLASS__, "onMethodWithReturnedValue")
 		);
-		Aop::add(Aop::AFTER,
-			'SAF\Framework\Sql_Joins->addSimpleJoin()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Sql_Joins', "addSimpleJoin"),
 			array(__CLASS__, "onMethodWithReturnedValue")
 		);
 		// TODO this is really slow : hardcode it in C

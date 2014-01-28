@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * This plugin limits the count of elements a Collection or a Map can display on an edit form
  */
@@ -30,13 +28,12 @@ class Html_Edit_Multiple_Limiter implements Plugin
 
 	//----------------------------------------------------------------- afterHtmlBuilderMultipleBuild
 	/**
-	 * @param $joinpoint AopJoinpoint
+	 * @param $result Html_Table
 	 */
-	public function afterHtmlBuilderMultipleBuild(AopJoinpoint $joinpoint)
+	public function afterHtmlBuilderMultipleBuild(Html_Table $result)
 	{
 		if ($this->in_multiple == "build") {
-			/** @var $table Html_Table */
-			$table = $joinpoint->getReturnedValue();
+			$table = $result;
 			$length = count($table->body->rows) - 1;
 			if ($this->count->count > $length) {
 				// vertical scrollbar
@@ -68,12 +65,11 @@ class Html_Edit_Multiple_Limiter implements Plugin
 	/**
 	 * Activate plugin before HTML method parsing of a Reflection_Property_Value named "value"
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $object        object
+	 * @param $property_name string
 	 */
-	public function beforeHtmlEditTemplateParseMethod(AopJoinpoint $joinpoint)
+	public function beforeHtmlEditTemplateParseMethod($object, $property_name)
 	{
-		/** @var string $property_name */
-		list($object, $property_name) = $joinpoint->getArguments();
 		/** @noinspection PhpUndefinedMethodInspection */
 		if (
 			($object instanceof Reflection_Property_Value)
@@ -95,19 +91,16 @@ class Html_Edit_Multiple_Limiter implements Plugin
 	 * This results on an incomplete object, but the object is used for editing form only so we don't
 	 * care.
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $options Dao_Option|Dao_Option[] some options for advanced search
 	 */
-	public function beforeMysqlLinkSearch(AopJoinpoint $joinpoint)
+	public function beforeMysqlLinkSearch(&$options)
 	{
 		if ($this->in_multiple === "search") {
-			$arguments = $joinpoint->getArguments();
-			$options = &$arguments[2];
 			if (is_object($options)) {
 				$options = array($options);
 			}
 			$options[] = Dao::limit(10);
 			$options[] = $this->count = new Dao_Count_Option();
-			$joinpoint->setArguments($arguments);
 			$this->in_multiple = "build";
 		}
 	}
@@ -116,24 +109,20 @@ class Html_Edit_Multiple_Limiter implements Plugin
 	public static function register()
 	{
 		$plugin = new Html_Edit_Multiple_Limiter();
-		Aop::add(
-			Aop::BEFORE,
-			'SAF\Framework\Html_Edit_Template->parseMethod()',
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Html_Edit_Template', "parseMethod"),
 			array($plugin, "beforeHtmlEditTemplateParseMethod")
 		);
-		Aop::add(
-			Aop::BEFORE,
-			'SAF\Framework\Mysql_Link->search()',
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Mysql_Link', "search"),
 			array($plugin, "beforeMysqlLinkSearch")
 		);
-		Aop::add(
-			Aop::AFTER,
-			'SAF\Framework\Html_Builder_Collection->build()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Html_Builder_Collection', "build"),
 			array($plugin, "afterHtmlBuilderMultipleBuild")
 		);
-		Aop::add(
-			Aop::AFTER,
-			'SAF\Framework\Html_Builder_Map->build()',
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Html_Builder_Map', "build"),
 			array($plugin, "afterHtmlBuilderMultipleBuild")
 		);
 	}
