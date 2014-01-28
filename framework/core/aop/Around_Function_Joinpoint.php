@@ -2,9 +2,9 @@
 namespace SAF\Framework;
 
 /**
- * Around method joinpoint
+ * Around function joinpoint
  */
-class Around_Method_Joinpoint
+class Around_Function_Joinpoint
 {
 
 	//--------------------------------------------------------------------------------------- $advice
@@ -17,19 +17,7 @@ class Around_Method_Joinpoint
 	/**
 	 * @var string
 	 */
-	public $class_name;
-
-	//-------------------------------------------------------------------------------- $property_name
-	/**
-	 * @var string
-	 */
-	public $method_name;
-
-	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @var object
-	 */
-	public $object;
+	public $function_name;
 
 	//----------------------------------------------------------------------------- $process_callback
 	/**
@@ -39,17 +27,13 @@ class Around_Method_Joinpoint
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name       string
-	 * @param $object           object
-	 * @param $method_name      string
+	 * @param $function_name    string
 	 * @param $advice           string[]|object[]|string
-	 * @param $process_callback string[]|object[]
+	 * @param $process_callback array
 	 */
-	public function __construct($class_name, $object, $method_name, $advice, $process_callback)
+	public function __construct($function_name, $advice, $process_callback)
 	{
-		$this->class_name       = $class_name;
-		$this->object           = $object;
-		$this->method_name      = $method_name;
+		$this->function_name    = $function_name;
 		$this->advice           = $advice;
 		$this->process_callback = $process_callback;
 	}

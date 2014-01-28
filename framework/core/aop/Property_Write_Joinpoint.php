@@ -2,14 +2,14 @@
 namespace SAF\Framework;
 
 /**
- * The ge
+ * The joinpoint on property write
  */
 class Property_Write_Joinpoint
 {
 
 	//--------------------------------------------------------------------------------------- $advice
 	/**
-	 * @var string|string[]|array
+	 * @var string[]|object[]|string
 	 */
 	public $advice;
 

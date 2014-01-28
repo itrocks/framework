@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use ReflectionClass;
 use ReflectionMethod;
 
 /** @noinspection PhpIncludeInspection */
@@ -31,12 +30,6 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	 */
 	const ALL = 1799;
 
-	//------------------------------------------------------------------------------ $arguments_cache
-	/**
-	 * @var array
-	 */
-	private static $arguments_cache;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name  string
@@ -59,52 +52,30 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 		return array($this->class, $this->name . "()");
 	}
 
-	//----------------------------------------------------------------------------------- getArgument
+	//---------------------------------------------------------------------------------- getParameter
 	/**
-	 * @param $argument_name string
-	 * @return Reflection_Argument
+	 * @param $parameter_name string
+	 * @return Reflection_Parameter
 	 */
-	public function getArgument($argument_name)
+	public function getParameter($parameter_name)
 	{
-		return $this->getArguments()[$argument_name];
+		return $this->getParameters()[$parameter_name];
 	}
 
-	//---------------------------------------------------------------------------------- getArguments
+	//--------------------------------------------------------------------------------- getParameters
 	/**
-	 * @return Reflection_Argument[]
+	 * @param $by_name boolean
+	 * @return Reflection_Parameter[]
 	 */
-	public function getArguments()
+	public function getParameters($by_name = true)
 	{
-		if (!isset(self::$arguments_cache[$this->class][$this->name])) {
-			$arguments = array();
-			preg_match_all("/Parameter .* \[ (.*?) \]\n/", strval($this), $matches);
-			foreach ($matches[1] as $match) {
-				// required
-				list($required, $argument) = explode(" ", $match, 2);
-				$required = ($required == "<required>");
-				// default
-				if ($required) {
-					$default = null;
-				}
-				else {
-					list($argument, $default) = explode(" = ", $argument, 2);
-					if ((substr($default, 0, 1) === "'") && (substr($default, -1) === "'")) {
-						$default = substr($default, 1, -1);
-					}
-				}
-				// argument
-				$argument = substr($argument, 1);
-				// final argument
-				$arguments[$argument] = new Reflection_Argument(
-					$this->class, $this->name, $argument, $default, $required
-				);
-			}
-			self::$arguments_cache[$this->class][$this->name] = $arguments;
-			return $arguments;
+		$parameters = array();
+		foreach (parent::getParameters() as $key => $parameter) {
+			$parameters[$by_name ? $parameter->name : $key] = new Reflection_Parameter(
+				array($this->class, $this->name), $parameter->name
+			);
 		}
-		else {
-			return self::$arguments_cache[$this->class][$this->name];
-		}
+		return $parameters;
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment

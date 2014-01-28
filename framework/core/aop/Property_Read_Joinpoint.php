@@ -9,7 +9,7 @@ class Property_Read_Joinpoint
 
 	//--------------------------------------------------------------------------------------- $advice
 	/**
-	 * @var string|string[]|array
+	 * @var string[]|object[]|string
 	 */
 	public $advice;
 

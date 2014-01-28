@@ -2,14 +2,14 @@
 namespace SAF\Framework;
 
 /**
- * The ge
+ * After method joinpoint
  */
 class After_Method_Joinpoint
 {
 
 	//--------------------------------------------------------------------------------------- $advice
 	/**
-	 * @var string|string[]|array
+	 * @var string[]|object[]|string
 	 */
 	public $advice;
 
@@ -36,6 +36,7 @@ class After_Method_Joinpoint
 	 * @param $class_name  string
 	 * @param $object      object
 	 * @param $method_name string
+	 * @param $advice      string[]|object[]|string
 	 */
 	public function __construct($class_name, $object, $method_name, $advice)
 	{
