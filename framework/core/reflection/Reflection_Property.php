@@ -4,21 +4,6 @@ namespace SAF\Framework;
 use Exception;
 use ReflectionProperty;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annotation.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annotation_Parser.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annoted.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/toolbox/Field.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Has_Doc_Comment.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Reflection_Class.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Reflection_Method.php";
-
 /**
  * A rich extension of the PHP ReflectionProperty class
  */

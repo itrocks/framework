@@ -1,14 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-require_once "After_Method_Joinpoint.php";
-require_once "Around_Method_Joinpoint.php";
-require_once "Before_Method_Joinpoint.php";
-require_once "Property_Read_Joinpoint.php";
-require_once "Property_Write_Joinpoint.php";
-require_once "framework/core/reflection/Reflection_Class.php";
-require_once "framework/core/toolbox/Runkit_Patch.php";
-
 /**
  * The Aop class is an interface to the Aop calls manager
  */

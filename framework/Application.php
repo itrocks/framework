@@ -1,13 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/configuration/Configuration.php";
-require_once "framework/core/toolbox/Current_With_Default.php";
-require_once "framework/core/toolbox/Names.php";
-require_once "framework/core/toolbox/OS.php";
-require_once "framework/core/toolbox/String.php";
-
 /**
  * The class for the global application object
  *
@@ -143,8 +136,8 @@ class Application
 	public function getIncludePath()
 	{
 		if (!isset($this->include_path)) {
-			$include_path = join(OS::includeSeparator(), $this->getSourceDirectories());
-			$this->include_path = self::getOriginIncludePath() . OS::includeSeparator() . $include_path;
+			$include_path = join(OS::$include_separator, $this->getSourceDirectories());
+			$this->include_path = self::getOriginIncludePath() . OS::$include_separator . $include_path;
 			return $this->include_path;
 		}
 		return $this->include_path;

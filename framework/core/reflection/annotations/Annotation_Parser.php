@@ -1,10 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annotation.php";
-require_once "framework/core/reflection/annotations/templates/Multiple_Annotation.php";
-
 /**
  * The annotation parser process calculates the annotation value
  */

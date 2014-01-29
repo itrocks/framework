@@ -7,15 +7,14 @@ namespace SAF\Framework;
 abstract class OS
 {
 
-	//------------------------------------------------------------------------------ includeSeparator
+	//---------------------------------------------------------------------------- $include_separator
 	/**
 	 * The include separator is ":" under unix/linux and ";" under windows systems
 	 *
-	 * @return string
+	 * @var string
 	 */
-	public static function includeSeparator()
-	{
-		return (PHP_OS === "WINNT") ? ";" : ":";
-	}
+	public static $include_separator;
 
 }
+
+OS::$include_separator = (PHP_OS === "WINNT") ? ";" : ":";

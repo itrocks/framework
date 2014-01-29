@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/Application.php";
-
 /**
  * A functions library to deal with class names and namespaces
  */

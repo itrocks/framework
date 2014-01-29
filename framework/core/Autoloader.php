@@ -1,10 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/toolbox/Array.php";
-require_once "framework/core/toolbox/Namespaces.php";
-require_once "framework/core/toolbox/Plugin.php";
+/** @noinspection PhpIncludeInspection */ require_once "framework/core/toolbox/Namespaces.php";
+/** @noinspection PhpIncludeInspection */ require_once "framework/core/toolbox/Plugin.php";
 
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes

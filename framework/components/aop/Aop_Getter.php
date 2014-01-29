@@ -3,11 +3,6 @@ namespace SAF\Framework;
 
 use AopJoinpoint;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/Aop.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Reflection_Property.php";
-
 /**
  * Aop calls getters
  */

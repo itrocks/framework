@@ -4,21 +4,6 @@ namespace SAF\Framework;
 use ReflectionClass;
 use ReflectionException;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annotation.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annotation_Parser.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annoted.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Has_Doc_Comment.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Reflection_Class_Properties_Access.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Reflection_Method.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Reflection_Property.php";
-
 /**
  * A rich extension of the PHP ReflectionClass class, adding :
  * - properties access methods to write data into private properties

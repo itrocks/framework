@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/Aop.php";
-
 /**
  * The Xdebug plugin disable XDEBUG_SESSION_START and KEY get vars to avoid side effects
  */

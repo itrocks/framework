@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/toolbox/Current.php";
-
 /**
  * Use this trait into classes to have a default current value of an object into the current context
  *

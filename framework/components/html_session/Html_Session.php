@@ -1,10 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/Aop.php";
-require_once "framework/core/configuration/Configurable.php";
-require_once "framework/core/toolbox/Plugin.php";
+/** @noinspection PhpIncludeInspection */ require_once "framework/core/configuration/Configurable.php";
+/** @noinspection PhpIncludeInspection */ require_once "framework/core/toolbox/Plugin.php";
 
 /**
  * Pass session id thru HTML code using this plugin

@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/components/users/Account.php";
-
 /**
  * A user business object for all your uses in user authentication
  *

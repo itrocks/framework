@@ -3,17 +3,6 @@ namespace SAF\Framework;
 
 use ReflectionMethod;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annotation.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annotation_Parser.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/annotations/Annoted.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Has_Doc_Comment.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/reflection/Reflection_Class.php";
-
 /**
  * A rich extension of the PHP ReflectionMethod class, adding :
  * - annotations management

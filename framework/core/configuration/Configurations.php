@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/configuration/Configurations.php";
-
 /**
  * The available applications configurations management class
  */
@@ -48,15 +45,13 @@ class Configurations
 	 * If a default configuration is set into the loaded configuration file, current configuration is switched to this configuration.
 	 *
 	 * @param $file_name string
+	 * @return Configuration
 	 */
 	public function load($file_name = "config.php")
 	{
 		$config = array();
 		/** @noinspection PhpIncludeInspection */
 		include $file_name;
-		if (isset($GLOBALS["CONFIG"])) {
-			$config = arrayMergeRecursive($config, array_reverse($GLOBALS["CONFIG"], true));
-		}
 		$this->configurations = array();
 		foreach ($config as $config_name => $config_options) {
 			if (isset($config_options["extends"])) {
@@ -72,9 +67,11 @@ class Configurations
 			}
 			$this->configurations[$config_name] = new Configuration($config_options);
 		}
-		if (!Configuration::current()) {
-			Configuration::current(end($this->configurations));
+		$configuration = Configuration::current();
+		if (!$configuration) {
+			$configuration = Configuration::current(end($this->configurations));
 		}
+		return $configuration;
 	}
 
 }

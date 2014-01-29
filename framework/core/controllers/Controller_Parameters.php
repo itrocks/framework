@@ -1,10 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/mappers/Getter.php";
-require_once "framework/core/toolbox/Namespaces.php";
-
 /**
  * Controller parameters contains what objects are passed into the controller's URI
  */

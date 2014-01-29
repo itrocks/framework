@@ -2,11 +2,6 @@
 
 //--------------------------------------------------------------------------------------- framework
 $config["framework"] = array(
-	'SAF\Framework\Aop_Dynamics' => array(
-		'SAF\Framework\List_Controller' => array(
-			//array("around", "SAF\Framework\Default_List_Controller_Configuration", "getListProperties()", "SAF\Framework\List_Controller_Acls", "getListPropertiesAop")
-		)
-	),
 	'SAF\Framework\Dao' => array(
 		"class"    => 'SAF\Framework\Mysql_Link',
 		"host"     => "localhost",
@@ -14,7 +9,7 @@ $config["framework"] = array(
 		"password" => "saf"
 	),
 	'SAF\Framework\Error_Handlers' => array(
-	array(E_ALL & !E_NOTICE,     'SAF\Framework\Main_Error_Handler'),
+		array(E_ALL & !E_NOTICE,   'SAF\Framework\Main_Error_Handler'),
 		array(E_RECOVERABLE_ERROR, 'SAF\Framework\To_Exception_Error_Handler'),
 	),
 	'SAF\Framework\Locale' => array(

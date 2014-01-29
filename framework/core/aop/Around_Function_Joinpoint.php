@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-require_once "Function_Joinpoint.php";
-
 /**
  * Around function joinpoint
  */

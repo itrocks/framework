@@ -1,16 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/Application.php";
-require_once "framework/core/configuration/Configuration.php";
-require_once "framework/core/configuration/Configurations.php";
-require_once "framework/core/reflection/Type.php";
-require_once "framework/core/Session.php";
-require_once "framework/core/toolbox/Namespaces.php";
-require_once "framework/dao/Dao.php";
-require_once "framework/views/View.php";
-
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
  */
@@ -22,6 +12,18 @@ class Main_Controller
 	 * You can't instantiate the Main_Controller with a constructor as this is a singleton
 	 */
 	private function __construct() {}
+
+	//----------------------------------------------------------------------------- configurationLoad
+	/**
+	 * Load configuration
+	 */
+	private function configurationLoad()
+	{
+		if (!Session::current()->get('SAF\Framework\Configuration')) {
+			$script_name = $_SERVER["SCRIPT_NAME"];
+			(new Configurations())->load(substr($script_name, strrpos($script_name, '/') + 1));
+		}
+	}
 
 	//----------------------------------------------------------------------------------- getInstance
 	/**
@@ -50,6 +52,7 @@ class Main_Controller
 	 */
 	public function run($uri, $get, $post, $files)
 	{
+		$this->configurationLoad();
 		$this->sessionStart($get, $post);
 		return $this->runController($uri, $get, $post, $files);
 	}
@@ -91,29 +94,16 @@ class Main_Controller
 
 	//---------------------------------------------------------------------------------- sessionStart
 	/**
-	 * Start PHP session and reload already existing session parameters
+	 * Start PHP session and remove session id from parameters (if set)
 	 *
 	 * @param $get array
 	 * @param $post array
 	 */
 	private function sessionStart(&$get, &$post)
 	{
-		$session = Session::start();
+		Session::start();
 		unset($get[session_name()]);
 		unset($post[session_name()]);
-		foreach ($session->getAll() as $class_name => $value) {
-			if (is_object($value) && method_exists($value, "current")) {
-				$current = call_user_func(array($class_name, "current"));
-				if (!isset($current)) {
-					call_user_func(array($class_name, "current"), $value);
-				}
-			}
-		}
-		if (!Configuration::current()) {
-			$configurations = new Configurations();
-			$configurations->load();
-			$session->set(Configuration::current());
-		}
 	}
 
 }

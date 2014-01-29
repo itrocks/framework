@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/Aop.php";
-
 /**
  * An execution timer plugin, to enable the execution duration info on document's foot
  */

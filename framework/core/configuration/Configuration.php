@@ -3,10 +3,8 @@ namespace SAF\Framework;
 
 use Serializable;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/mappers/Builder.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/toolbox/Current.php";
+/** @noinspection PhpIncludeInspection */ require_once "framework/core/mappers/Builder.php";
+/** @noinspection PhpIncludeInspection */ require_once "framework/core/toolbox/Current.php";
 
 /**
  * A configuration set : current configuration for the global application configuration, secondary configurations can be worked with
@@ -57,8 +55,7 @@ class Configuration implements Serializable
 	public static function current(Configuration $set_current = null)
 	{
 		if (isset($set_current)) {
-			/** @var $set_current Configuration */
-			$set_current = self::pCurrent($set_current);
+			self::pCurrent($set_current);
 			/** @noinspection PhpIncludeInspection */
 			require_once Names::classToDirectory($set_current->app) . "/Application.php";
 			/** @var $application Application */
