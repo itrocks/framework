@@ -72,18 +72,6 @@ class Html_Edit_Template extends Html_Template
 		return parent::parseContainer($content);
 	}
 
-	//----------------------------------------------------------------------------------- parseMethod
-	/**
-	 * @param $object        object
-	 * @param $property_name string
-	 * @return string
-	 * @todo runkit-aop patch. to be removed
-	 */
-	protected function parseMethod($object, $property_name)
-	{
-		return parent::parseMethod($object, $property_name);
-	}
-
 	//------------------------------------------------------------------------------------ parseValue
 	/**
 	 * Parse a variable / function / include and returns its return value

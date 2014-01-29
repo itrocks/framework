@@ -1,53 +1,45 @@
 <?php
 namespace SAF\Framework;
 
+require_once "Function_Joinpoint.php";
+
 /**
  * Around function joinpoint
  */
-class Around_Function_Joinpoint
+class Around_Function_Joinpoint extends Function_Joinpoint
 {
 
-	//--------------------------------------------------------------------------------------- $advice
-	/**
-	 * @var string[]|object[]|string
-	 */
-	public $advice;
-
-	//----------------------------------------------------------------------------------- $class_name
+	//----------------------------------------------------------------------------- $process_function
 	/**
 	 * @var string
 	 */
-	public $function_name;
-
-	//----------------------------------------------------------------------------- $process_callback
-	/**
-	 * @var string[]|object[]
-	 */
-	private $process_callback;
+	private $process_function;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $function_name    string
+	 * @param $pointcut         string
+	 * @param $parameters       array
 	 * @param $advice           string[]|object[]|string
-	 * @param $process_callback array
+	 * @param $process_function string
 	 */
-	public function __construct($function_name, $advice, $process_callback)
+	public function __construct($pointcut, $parameters, $advice, $process_function)
 	{
-		$this->function_name    = $function_name;
 		$this->advice           = $advice;
-		$this->process_callback = $process_callback;
+		$this->parameters       = $parameters;
+		$this->pointcut         = $pointcut;
+		$this->process_function = $process_function;
 	}
 
-	//-------------------------------------------------------------------------------------- $process
+	//--------------------------------------------------------------------------------------- process
 	/**
-	 * Launch the method that which call was replaced by the advice
+	 * Launch the function that which call was replaced by the advice
 	 *
-	 * @param $args mixed The arguments the original method was expected to receive
+	 * @param $args mixed The arguments the original function was expected to receive
 	 * @return mixed
 	 */
 	public function process($args = null)
 	{
-		return call_user_func_array($this->process_callback, func_get_args());
+		return call_user_func_array($this->process_function, func_get_args());
 	}
 
 }

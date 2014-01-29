@@ -36,28 +36,6 @@ class Default_List_Controller extends List_Controller
 		);
 	}
 
-	//----------------------------------------------------------------------------- getPropertiesList
-	/**
-	 * @param $class_name string
-	 * @return string[] property names list
-	 * @todo patch for runkit-aop. to be removed when done
-	 */
-	protected function getPropertiesList($class_name)
-	{
-		return parent::getPropertiesList($class_name);
-	}
-
-	//------------------------------------------------------------------------------- getSearchValues
-	/**
-	 * @param $list_settings List_Settings
-	 * @return Reflection_Property_Value[] key is the property path
-	 * @todo remove this runkit-aop-compatibility patch as soon as it work
-	 */
-	public function getSearchValues(List_Settings $list_settings)
-	{
-		return parent::getSearchValues($list_settings);
-	}
-
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
 	 * @param $class_name string

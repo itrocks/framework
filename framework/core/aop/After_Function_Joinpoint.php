@@ -1,33 +1,27 @@
 <?php
 namespace SAF\Framework;
 
+require_once "Function_Joinpoint.php";
+
 /**
  * After function joinpoint
  */
-class After_Function_Joinpoint
+class After_Function_Joinpoint extends Function_Joinpoint
 {
-
-	//--------------------------------------------------------------------------------------- $advice
-	/**
-	 * @var string[]|object[]|string
-	 */
-	public $advice;
-
-	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
-	public $function_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $function_name string
-	 * @param $advice        string[]|object[]|string
+	 * @param $pointcut   string
+	 * @param $parameters array
+	 * @param $result     mixed
+	 * @param $advice     string[]|object[]|string
 	 */
-	public function __construct($function_name, $advice)
+	public function __construct($pointcut, $parameters, &$result, $advice)
 	{
-		$this->function_name = $function_name;
-		$this->advice        = $advice;
+		$this->advice     = $advice;
+		$this->parameters = $parameters;
+		$this->pointcut   = $pointcut;
+		$this->result     = &$result;
 	}
 
 }

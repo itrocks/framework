@@ -25,10 +25,7 @@ class Aop_Test extends Unit_Test
 		$this->captureStart();
 		$handler = Aop::addAfterFunctionCall("chop", array('AOPT\Advices', 'afterChop'));
 		$result = chop("Hello ");
-		$this->assumeCapture(__METHOD__,
-			"Hello | \t\n\r\0\x0B|Hello|"
-			. '{"advice":["AOPT\\\\Advices","afterChop"],"function_name":"chop"}'
-		);
+		$this->assumeCapture(__METHOD__, "Hello | \t\n\r\0\x0B|Hello");
 		$this->assume(__METHOD__, $result, "Hello.AFT.");
 		Aop::remove($handler);
 	}
@@ -42,7 +39,7 @@ class Aop_Test extends Unit_Test
 		$this->captureStart();
 		$handler = Aop::addAroundFunctionCall("chop", array('AOPT\Advices', 'aroundChop'));
 		$result = chop(" Hello ");
-		$this->assumeCapture(__METHOD__, "before= Hello |after= Hello");
+		$this->assumeCapture(__METHOD__, "before= Hello | \t\n\r\0\x0B|after= Hello");
 		$this->assume(__METHOD__, $result, "Hello");
 		Aop::remove($handler);
 	}
@@ -56,10 +53,7 @@ class Aop_Test extends Unit_Test
 		$this->captureStart();
 		$handler = Aop::addBeforeFunctionCall("chop", array('AOPT\Advices', 'beforeChop'));
 		$result = chop("Hello ");
-		$this->assumeCapture(__METHOD__,
-			"Hello | \t\n\r\0\x0B|"
-			. '{"advice":["AOPT\\\\Advices","beforeChop"],"function_name":"chop"}'
-		);
+		$this->assumeCapture(__METHOD__, "Hello | \t\n\r\0\x0B");
 		$this->assume(__METHOD__, $result, " [Hello ]");
 		Aop::remove($handler);
 	}
@@ -92,7 +86,7 @@ class Aop_Test extends Unit_Test
 			array('AOPT\Advices', 'adviceReturnedValue')
 		);
 		$result = (new Business())->getterB();
-		$this->assumeCapture(__METHOD__, "adviceReturnedValueStart.adviceReturnedValueEnd.");
+		$this->assumeCapture(__METHOD__, "adviceReturnedValueStart.adviceReturnedValueEnd.getterB.");
 		$this->assume(__METHOD__, $result, "arv/advised value");
 	}
 
@@ -111,8 +105,8 @@ class Aop_Test extends Unit_Test
 		echo "|";
 		$child_result = (new Child_Business())->getterC();
 		$this->assumeCapture(__METHOD__,
-			"adviceReturnedValueStart.adviceReturnedValueEnd."
-			. "|CBgetterC.adviceReturnedValueStart.adviceReturnedValueEnd."
+			"adviceReturnedValueStart.adviceReturnedValueEnd.getterC."
+			. "|CBgetterC.adviceReturnedValueStart.adviceReturnedValueEnd.getterC."
 		);
 		$this->assume(__METHOD__ . ".parent", $parent_result, "arv/advised value");
 		$this->assume(__METHOD__ . ".child", $child_result, "ChildC.arv/advised value");
@@ -133,7 +127,10 @@ class Aop_Test extends Unit_Test
 		$parent_result = (new Business())->getterD();
 		echo "|";
 		$child_result = (new Child_Business())->getterD();
-		$this->assumeCapture(__METHOD__, "getterD.|adviceReturnedValueStart.adviceReturnedValueEnd.");
+		$this->assumeCapture(__METHOD__,
+			"getterD.|adviceReturnedValueStart.adviceReturnedValueEnd."
+			. "CBgetterD.adviceReturnedValueStart.adviceReturnedValueEnd.getterC."
+		);
 		$this->assume(__METHOD__ . ".parent", $parent_result, "D.value");
 		$this->assume(__METHOD__ . ".child", $child_result, "arv/advised value");
 	}
@@ -153,7 +150,9 @@ class Aop_Test extends Unit_Test
 		$parent_result = (new Trait_Business_Class())->methodE();
 		echo "|";
 		$child_result = (new Trait_Child_Business_Class())->methodE();
-		$this->assumeCapture(__METHOD__, "adviceReturnedValueStart.adviceReturnedValueEnd.|TCmethodE.");
+		$this->assumeCapture(
+			__METHOD__, "adviceReturnedValueStart.adviceReturnedValueEnd.TmethodE.|TCmethodE."
+		);
 		$this->assume(__METHOD__ . ".parent", $parent_result, "arv/advised value");
 		$this->assume(__METHOD__ . ".child", $child_result, "over.E/value");
 	}
@@ -170,7 +169,7 @@ class Aop_Test extends Unit_Test
 			array(new Advices("advice"), 'adviceObject')
 		);
 		$result = (new Business())->methodF();
-		$this->assumeCapture(__METHOD__, "adviceObjectStart.adviceObjectEnd.");
+		$this->assumeCapture(__METHOD__, "adviceObjectStart.adviceObjectEnd.getterF.");
 		$this->assume(__METHOD__, $result, "ao/advised advice/value");
 	}
 
@@ -232,16 +231,11 @@ class Aop_Test extends Unit_Test
 namespace AOPT {
 
 use SAF\Framework\After_Function_Joinpoint;
-use SAF\Framework\After_Method_Joinpoint;
 use SAF\Framework\Around_Function_Joinpoint;
-use SAF\Framework\Around_Method_Joinpoint;
 use SAF\Framework\Before_Function_Joinpoint;
-use SAF\Framework\Before_Method_Joinpoint;
-use SAF\Framework\Property_Read_Joinpoint;
-use SAF\Framework\Property_Write_Joinpoint;
 
 //========================================================================================= Advices
-/**
+	/**
  * A class containing a lot of advices
  */
 class Advices
@@ -303,42 +297,42 @@ class Advices
 
 	//------------------------------------------------------------------------------------- afterChop
 	/**
-	 * @param $str       string
-	 * @param $charlist  string
-	 * @param $result    string
-	 * @param $joinpoint After_Function_Joinpoint
+	 * @param $str            string
+	 * @param $character_mask string
+	 * @param $result         string
+	 * @param $joinpoint      After_Function_Joinpoint
 	 * @return string
 	 */
-	public static function afterChop($str, $charlist, $result, After_Function_Joinpoint $joinpoint)
+	public static function afterChop($str, $character_mask, $result, After_Function_Joinpoint $joinpoint)
 	{
-		echo "$str|$charlist|$result|" . json_encode($joinpoint, true);
+		echo "$str|$character_mask|$result";
 		return $result . ".AFT.";
 	}
 
 	//------------------------------------------------------------------------------------ beforeChop
 	/**
-	 * @param $str       string
-	 * @param $charlist  string
-	 * @param $joinpoint Around_Function_Joinpoint
+	 * @param $str            string
+	 * @param $character_mask string
+	 * @param $joinpoint      Around_Function_Joinpoint
 	 * @return string
 	 */
-	public static function aroundChop($str, $charlist, Around_Function_Joinpoint $joinpoint)
+	public static function aroundChop($str, $character_mask, Around_Function_Joinpoint $joinpoint)
 	{
-		echo "before=$str";
-		$result = $joinpoint->process($str, $charlist);
+		echo "before=$str|$character_mask";
+		$result = $joinpoint->process($str, $character_mask);
 		echo "|after=$result";
 		return trim($result);
 	}
 
 	//------------------------------------------------------------------------------------ beforeChop
 	/**
-	 * @param $str       string
-	 * @param $charlist  string
-	 * @param $joinpoint Before_Function_Joinpoint
+	 * @param $str            string
+	 * @param $character_mask string
+	 * @param $joinpoint      Before_Function_Joinpoint
 	 */
-	public static function beforeChop(&$str, $charlist, Before_Function_Joinpoint $joinpoint)
+	public static function beforeChop(&$str, $character_mask, Before_Function_Joinpoint $joinpoint)
 	{
-		echo "$str|$charlist|" . json_encode($joinpoint, true);
+		echo "$str|$character_mask";
 		$str = " [" . $str . "] ";
 	}
 

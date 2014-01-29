@@ -1,25 +1,23 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/After_Method_Joinpoint.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/Around_Method_Joinpoint.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/Before_Method_Joinpoint.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/Property_Read_Joinpoint.php";
-/** @noinspection PhpIncludeInspection */
-require_once "framework/core/aop/Property_Write_Joinpoint.php";
-
-/** @noinspection PhpIncludeInspection */
+require_once "After_Method_Joinpoint.php";
+require_once "Around_Method_Joinpoint.php";
+require_once "Before_Method_Joinpoint.php";
+require_once "Property_Read_Joinpoint.php";
+require_once "Property_Write_Joinpoint.php";
 require_once "framework/core/reflection/Reflection_Class.php";
+require_once "framework/core/toolbox/Runkit_Patch.php";
 
 /**
  * The Aop class is an interface to the Aop calls manager
  */
 abstract class Aop
 {
+
+	//----------------------------------------------------------------------------------------- DEBUG
+	/** @todo remove this DEBUG const and echo when done */
+	const DEBUG = false;
 
 	//----------------------------------------------------------------------------------------- AFTER
 	const AFTER = "after";
@@ -41,37 +39,24 @@ abstract class Aop
 	 * Keys are : global counter (integer)
 	 * values are advices callable : array("Class_Name"|$object, "methodName") | "functionName"
 	 *
-	 * @var array
+	 * @var callable[]
 	 */
 	public static $advices = array();
 
 	//----------------------------------------------------------------------------------- $properties
-	public static $properties = array();
-
-	//--------------------------------------------------------------------------------------- $ignore
 	/**
-	 * If true, the aop class's calls are ignored to avoid side effects
-	 * Don't forget to bring it back to false when you're done !
-	 *
-	 * @var boolean
+	 * @var array
 	 */
-	public static $ignore = false;
+	public static $properties = array();
 
 	//----------------------------------------------------------------------------------- $joinpoints
 	/**
 	 * Keys are : global counter (integer)
-	 * values are advices callback : array(kind, advice)
-	 * @var array
+	 * Values are pointcuts callable : array("Class_Name", "methodName")
+	 *
+	 * @var callable[]
 	 */
 	private static $joinpoints = array();
-
-	//------------------------------------------------------------------------- $joinpoints_by_method
-	/**
-	 * Keys are : class name, method name
-	 * values are advices callback : array(kind, advice)
-	 * @var array
-	 */
-	public static $methods_joinpoints = array();
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -83,7 +68,7 @@ abstract class Aop
 	 */
 	public static function add($when, $function, $call_back)
 	{
-echo "ADD $when $function<br>";
+		echo "@deprecated call : Aop::add($when, $function)<br>";
 		if (strpos($function, " ")) {
 			list($what, $function) = explode(" ", $function, 1);
 			$joinpoint = explode("->", $function, 1);
@@ -120,19 +105,24 @@ echo "ADD $when $function<br>";
 	 * If not set, the result value passed as argument (that can be modified) will be returned
 	 *
 	 * @param $joinpoint string the joinpoint defined like a call-back : "functionName"
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice    callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return integer
 	 */
 	public static function addAfterFunctionCall($joinpoint, $advice)
 	{
+		if (self::DEBUG) echo "after ";
 		$code = '
-			$_joinpoint = new SAF\Framework\After_Function_Joinpoint("$joinpoint", $advice_string);
-			$result = isset($result) ? $result : _$joinpoint_$count($process_arguments);
+			$result = $joinpointF_$count($process_arguments);
 			$result2 = call_user_func_array($advice_string, array($advice_arguments));
 			return isset($result2) ? $result2 : $result;
 		';
-		return self::addFunctionCall($joinpoint, $advice, $code);
+		$joinpoint_code = '
+				new SAF\Framework\After_Function_Joinpoint(
+					"$joinpointF", $parameters_string, $result, $advice_string
+				)
+			';
+		return self::addFunctionCall($joinpoint, $advice, $code, $joinpoint_code);
 	}
 
 	//---------------------------------------------------------------------------- addAfterMethodCall
@@ -146,20 +136,24 @@ echo "ADD $when $function<br>";
 	 *
 	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *        array("class_name", "methodName")
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return integer|integer[]
 	 */
 	public static function addAfterMethodCall($joinpoint, $advice)
 	{
+		if (self::DEBUG) echo "after ";
 		$code = '
-			$object = $this;
-			$joinpoint = new SAF\Framework\After_Method_Joinpoint(__CLASS__, $this, "$joinpoint[1]", $advice_string);
-			$result = isset($result) ? $result : $this->_$joinpoint[1]_$count($process_arguments);
+			$result = $this->_$joinpointM_$count($process_arguments);
 			$result2 = call_user_func_array($advice_string, array($advice_arguments));
 			return isset($result2) ? $result2 : $result;
 		';
-		return self::addMethodCall($joinpoint, $advice, $code);
+		$joinpoint_code = '
+				new SAF\Framework\After_Method_Joinpoint(
+					__CLASS__, array($this, "$joinpointM"), $parameters_string, $result, $advice_string
+				)
+			';
+		return self::addMethodCall($joinpoint, $advice, $code, $joinpoint_code);
 	}
 
 	//------------------------------------------------------------------------- addAroundFunctionCall
@@ -171,17 +165,23 @@ echo "ADD $when $function<br>";
 	 * The value returned by the advice will be the pointcut returned value.
 	 *
 	 * @param $joinpoint string the joinpoint defined like a call-back : "functionName"
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return integer
 	 */
 	public static function addAroundFunctionCall($joinpoint, $advice)
 	{
+		if (self::DEBUG) echo "around ";
 		$code = '
-			$joinpoint = new SAF\Framework\Around_Function_Joinpoint("$joinpointF", $advice_string, "_$joinpointF_$count");
-			return call_user_func_array($advice_string, array($advice_arguments));
+			$result = call_user_func_array($advice_string, array($advice_arguments));
+			return isset($result) ? $result : $joinpoint->result;
 		';
-		return self::addFunctionCall($joinpoint, $advice, $code);
+		$joinpoint_code = '
+				$joinpoint = new SAF\Framework\Around_Function_Joinpoint(
+					"$joinpointF", $parameters_string, $advice_string, "$joinpointF_$count"
+				)
+			';
+		return self::addFunctionCall($joinpoint, $advice, $code, $joinpoint_code);
 	}
 
 	//--------------------------------------------------------------------------- addAroundMethodCall
@@ -194,18 +194,24 @@ echo "ADD $when $function<br>";
 	 *
 	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *        array("class_name", "methodName")
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return integer|integer[]
 	 */
 	public static function addAroundMethodCall($joinpoint, $advice)
 	{
+		if (self::DEBUG) echo "around ";
 		$code = '
-			$object = $this;
-			$joinpoint = new SAF\Framework\Around_Method_Joinpoint(__CLASS__, $this, "$joinpoint[1]", $advice_string, array($this, "_$joinpoint[1]_$count"));
-			return call_user_func_array($advice_string, array($advice_arguments));
+			$result = call_user_func_array($advice_string, array($advice_arguments));
+			return isset($result) ? $result : $joinpoint->result;
 		';
-		return self::addMethodCall($joinpoint, $advice, $code);
+		$joinpoint_code = '
+				$joinpoint = new SAF\Framework\Around_Method_Joinpoint(
+					__CLASS__, array($this, "$joinpointM"), $parameters_string, $advice_string,
+					"_$joinpointM_$count"
+				)
+			';
+		return self::addMethodCall($joinpoint, $advice, $code, $joinpoint_code);
 	}
 
 	//------------------------------------------------------------------------- addBeforeFunctionCall
@@ -218,18 +224,25 @@ echo "ADD $when $function<br>";
 	 *
 	 * @param $joinpoint string the joinpoint defined like a call-back :
 	 *        array("class_name", "methodName")
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return integer
 	 */
 	public static function addBeforeFunctionCall($joinpoint, $advice)
 	{
+		if (self::DEBUG) echo "before ";
 		$code = '
-			$_joinpoint = new SAF\Framework\Before_Function_Joinpoint("$joinpoint", $advice_string);
 			$result = call_user_func_array($advice_string, array($advice_arguments));
-			return isset($result) ? $result : _$joinpoint_$count($process_arguments);
+			if (!isset($result)) $result = $joinpoint->result;
+			$result2 = $joinpointF_$count($process_arguments);
+			return isset($result) ? $result : $result2;
 		';
-		return self::addFunctionCall($joinpoint, $advice, $code);
+		$joinpoint_code = '
+				$joinpoint = new SAF\Framework\Before_Function_Joinpoint(
+					"$joinpointF", $parameters_string, $advice_string
+				)
+			';
+		return self::addFunctionCall($joinpoint, $advice, $code, $joinpoint_code);
 	}
 
 	//--------------------------------------------------------------------------- addBeforeMethodCall
@@ -242,58 +255,125 @@ echo "ADD $when $function<br>";
 	 *
 	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *        array("class_name", "methodName")
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return integer|integer[]
 	 */
 	public static function addBeforeMethodCall($joinpoint, $advice)
 	{
+		if (self::DEBUG) echo "before ";
 		$code = '
-			$object = $this;
-			$joinpoint = new SAF\Framework\Before_Method_Joinpoint(__CLASS__, $this, "$joinpoint[1]", $advice_string);
 			$result = call_user_func_array($advice_string, array($advice_arguments));
-			return isset($result) ? $result : $this->_$joinpoint[1]_$count($process_arguments);
+			if (!isset($result)) $result = $joinpoint->result;
+			$result2 = $this->_$joinpointM_$count($process_arguments);
+			return isset($result) ? $result : $result2;
 		';
-		return self::addMethodCall($joinpoint, $advice, $code);
+		$joinpoint_code = '
+				$joinpoint = new SAF\Framework\Before_Method_Joinpoint(
+					__CLASS__, array($this, "$joinpointM"), $parameters_string, $advice_string
+				)
+			';
+		return self::addMethodCall($joinpoint, $advice, $code, $joinpoint_code);
 	}
 
 	//------------------------------------------------------------------------------- addFunctionCall
 	/**
 	 * @param $joinpoint string the joinpoint defined like a call-back : "functionName"
-	 * @param $advice string[]|object[]|string the call-back call of the advice :
+	 * @param $advice    callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @param $code string
+	 * @param $code           string
+	 * @param $joinpoint_code string
 	 * @return integer
 	 */
-	private static function addFunctionCall($joinpoint, $advice, $code)
+	private static function addFunctionCall($joinpoint, $advice, $code, $joinpoint_code)
 	{
 		$count = count(self::$joinpoints);
-
-		$arguments = (new Reflection_Function($joinpoint))->getParameters();
-		$arguments_names = array_keys($arguments);
-		$method_arguments = join(", ", $arguments);
-
-		$process_arguments = $arguments ? ('$' . join(', $', $arguments_names)) : '';
-
 		$advice_string = self::callbackString($advice, $count);
+
+		// joinpoint function and arguments
+		$function = (new Reflection_Function($joinpoint));
+		$arguments = $function->getParameters();
+		if ($arguments) {
+			$arguments_names = array_keys($arguments);
+
+			// runkit replacement function declaration arguments : all by reference and with $__ names
+			$function_arguments = str_replace('$', '$__', join(", ", $arguments));
+
+			// joinpoint method processing call arguments : all with $__ names
+			$process_arguments = '$__' . join(', $__', $arguments_names);
+
+			// the parameters used to initialize the joinpoint
+			$parameters_string = 'array(';
+			foreach ($arguments_names as $key => $name) {
+				if ($key) $parameters_string .= ', ';
+				$parameters_string .= $key . ' => &$__' . $name . ', "' . $name . '" => &$__' . $name;
+			}
+			$parameters_string .= ')';
+
+		}
+		else {
+			$function_arguments = "";
+			$process_arguments  = "";
+			$parameters_string  = "array()";
+		}
+
+		// advice arguments are the parameters of the advice method/function.
+		// They can be $joinpoint too, then the AOP values of these parameters will override the
+		// pointcut values. If they are $result or $object, the AOP values will be send only if
+		// the pointcut has no parameters with the same name.
 		$advice_method = is_array($advice)
-			? new Reflection_Method($advice[0], $advice[1])
+			? new Reflection_Method(is_object($advice[0]) ? get_class($advice[0]) : $advice[0], $advice[1])
 			: new Reflection_Function($advice);
-		$advice_arguments_names = array_keys($advice_method->getParameters());
-		$advice_arguments = ($advice_arguments_names) ? join(', &$', $advice_arguments_names) : '';
+		$advice_parameters = $advice_method->getParameters();
+		if ($advice_parameters) {
+			$advice_arguments = ('&$__' . join(', &$__', array_keys($advice_parameters)));
+			if (isset($advice_parameters["result"]) && !isset($arguments["result"])) {
+				$advice_arguments = str_replace('&$__result', '&$result', $advice_arguments);
+			}
+			if (isset($advice_parameters["object"]) && !isset($arguments["object"])) {
+				$advice_arguments = str_replace('&$__object', '&$this', $advice_arguments);
+			}
+			if (isset($advice_parameters["joinpoint"])) {
+				$advice_arguments = str_replace('&$__joinpoint', $joinpoint_code, $advice_arguments);
+				$joinpoint_advice_parameter = true;
+			}
+		}
+		else {
+			$advice_arguments = "";
+		}
+
+		if (!isset($joinpoint_advice_parameter)) {
+			$code = str_replace(
+				array('if (!isset($result)) $result = $joinpoint->result;', '$joinpoint->result'),
+				array('', 'null'),
+				$code
+			);
+		}
 
 		$code = str_replace(
-			array('$advice_string', '$joinpointF', '$count', '$advice_arguments', '$process_arguments'),
-			array($advice_string, $joinpoint, $count, $advice_arguments, $process_arguments),
+			array(
+				'$advice_arguments', '$process_arguments', '$parameters_string', '$advice_string',
+				'$joinpointF', '$count'
+			),
+			array(
+				$advice_arguments, $process_arguments, $parameters_string, $advice_string,
+				$joinpoint, $count
+			),
 			$code
 		);
 
-		if (!runkit_function_rename($joinpoint, "_" . $joinpoint . "_" . $count)) {
-			user_error("Could not rename $joinpoint to _{$joinpoint}_$count", E_USER_ERROR);
+		if (!runkit_function_rename($joinpoint, $joinpoint . "_" . $count)) {
+			trigger_error("Could not rename $joinpoint to {$joinpoint}_$count", E_USER_ERROR);
 		}
-		if (!runkit_function_add($joinpoint, $method_arguments, $code)) {
-			user_error("Could not add method $joinpoint($process_arguments)", E_USER_ERROR);
+
+		if (self::DEBUG) echo "$joinpoint<br>";
+		if (self::DEBUG) echo "<pre>$function_arguments : " . print_r($code, true) . "</pre>";
+
+		// add poincut function
+		if (!runkit_function_add($joinpoint, $function_arguments, $code)) {
+			trigger_error("Could not add function $joinpoint($process_arguments)", E_USER_ERROR);
 		}
+
 		self::$advices[$count] = $advice;
 		self::$joinpoints[$count] = $joinpoint;
 		return $count;
@@ -303,12 +383,13 @@ echo "ADD $when $function<br>";
 	/**
 	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *        array("class_name", "methodName")
-	 * @param $advice string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @param $code string
+	 * @param $code           string
+	 * @param $joinpoint_code string
 	 * @return integer|integer[]
 	 */
-	private static function addMethodCall($joinpoint, $advice, $code)
+	private static function addMethodCall($joinpoint, $advice, $code, $joinpoint_code)
 	{
 		$counts = array();
 		$trait = new Reflection_Class($joinpoint[0]);
@@ -318,54 +399,111 @@ echo "ADD $when $function<br>";
 			}
 		}
 		$count = count(self::$joinpoints);
+		$advice_string = self::callbackString($advice, $count);
 
+		// joinpoint method and arguments
 		$method = (new Reflection_Method($joinpoint[0], $joinpoint[1]));
 		$arguments = $method->getParameters();
-		$method_arguments = join(", ", $arguments);
+		if ($arguments) {
+			$arguments_names = array_keys($arguments);
 
-		$process_arguments = $arguments ? ('$' . join(', $', array_keys($arguments))) : '';
+			// runkit replacement method declaration arguments : all by reference and with $__ names
+			$method_arguments = str_replace('$', '$__', join(", ", $arguments));
 
-		$advice_string = self::callbackString($advice, $count);
+			// joinpoint method processing call arguments : all with $__ names
+			$process_arguments = '$__' . join(', $__', $arguments_names);
+
+			// the parameters used to initialize the joinpoint
+			$parameters_string = 'array(';
+			foreach ($arguments_names as $key => $name) {
+				if ($key) $parameters_string .= ', ';
+				$parameters_string .= $key . ' => &$__' . $name . ', "' . $name . '" => &$__' . $name;
+			}
+			$parameters_string .= ')';
+
+		}
+		else {
+			$method_arguments  = "";
+			$process_arguments = "";
+			$parameters_string = "array()";
+		}
+
+		// advice arguments are the parameters of the advice method/function.
+		// They can be $joinpoint too, then the AOP values of these parameters will override the
+		// pointcut values. If they are $result or $object, the AOP values will be send only if
+		// the pointcut has no parameters with the same name.
 		$advice_method = is_array($advice)
-			? new Reflection_Method($advice[0], $advice[1])
+			? new Reflection_Method(
+				is_object($advice[0]) ? get_class($advice[0]) : $advice[0], $advice[1]
+			)
 			: new Reflection_Function($advice);
-		$advice_arguments_names = array_keys($advice_method->getParameters());
-		$advice_arguments = ($advice_arguments_names)
-			? ('&$' . join(', &$', $advice_arguments_names))
-			: '';
+		$advice_parameters = $advice_method->getParameters();
+		if ($advice_parameters) {
+			$advice_arguments = ('&$__' . join(', &$__', array_keys($advice_parameters)));
+			if (isset($advice_parameters["result"]) && !isset($arguments["result"])) {
+				$advice_arguments = str_replace('&$__result', '&$result', $advice_arguments);
+			}
+			if (isset($advice_parameters["object"]) && !isset($arguments["object"])) {
+				$advice_arguments = str_replace('&$__object', '&$this', $advice_arguments);
+			}
+			if (isset($advice_parameters["joinpoint"])) {
+				$advice_arguments = str_replace('&$__joinpoint', $joinpoint_code, $advice_arguments);
+				$joinpoint_advice_parameter = true;
+			}
+		}
+		else {
+			$advice_arguments = "";
+		}
+
+		if (!isset($joinpoint_advice_parameter)) {
+			$code = str_replace(
+				array('if (!isset($result)) $result = $joinpoint->result;', '$joinpoint->result'),
+				array('', 'null'),
+				$code
+			);
+		}
 
 		$code = str_replace(
 			array(
-				'$advice_string', '$joinpoint[1]', '$count', '$advice_arguments', '$process_arguments',
-				'__CLASS__'
+				'$advice_arguments', '$process_arguments', '$parameters_string', '$advice_string',
+				'$joinpointM', '$count', '__CLASS__'
 			),
 			array(
-				$advice_string, $joinpoint[1], $count, $advice_arguments, $process_arguments,
-				"'$joinpoint[0]'"
+				$advice_arguments, $process_arguments, $parameters_string, $advice_string,
+				$joinpoint[1], $count, "'$joinpoint[0]'"
 			),
 			$code
 		);
 
 		if (!runkit_method_rename($joinpoint[0], $joinpoint[1], "_" . $joinpoint[1] . "_" . $count)) {
-			user_error(
+			trigger_error(
 				"Could not rename $joinpoint[0]::$joinpoint[1] to _$joinpoint[1]_$count", E_USER_ERROR
 			);
 		}
+
 		$acc = 0;
 		if ($method->isPublic())    $acc |= RUNKIT_ACC_PUBLIC;
 		if ($method->isProtected()) $acc |= RUNKIT_ACC_PROTECTED;
 		if ($method->isPrivate())   $acc |= RUNKIT_ACC_PRIVATE;
 		if ($method->isStatic()) {
 			$acc |= RUNKIT_ACC_STATIC;
-			$code = str_replace(array('$this->', '$this'), array('self::', 'null'), $code);
+			$code = str_replace(
+				array('$this->', '$this'),
+				array('self::', "get_called_class()"),
+				$code
+			);
 		}
-echo "$joinpoint[0]::$joinpoint[1]<br>";
-echo "<pre>$method_arguments : " . print_r($code, true) . "</pre>";
+
+		if (self::DEBUG) echo "$joinpoint[0]::$joinpoint[1]<br>";
+		if (self::DEBUG) echo "<pre>$method_arguments : " . print_r($code, true) . "</pre>";
+
+		// add poincut method
 		if (!runkit_method_add($joinpoint[0], $joinpoint[1], $method_arguments, $code, $acc)) {
-			user_error(
+			trigger_error(
 				"Could not add method $joinpoint[0]::$joinpoint[1]($process_arguments)", E_USER_ERROR
 			);
 		}
+
 		self::$advices[$count] = $advice;
 		self::$joinpoints[$count] = $joinpoint;
 		return $counts ? ($counts + array($count)) : $count;
@@ -375,7 +513,7 @@ echo "<pre>$method_arguments : " . print_r($code, true) . "</pre>";
 	/**
 	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *        array("class_name", "property_name")
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @param $side      string Aop::READ or Aop::WRITE
 	 */
@@ -384,84 +522,103 @@ echo "<pre>$method_arguments : " . print_r($code, true) . "</pre>";
 		list($class_name, $property_name) = $joinpoint;
 		if (!isset(Aop::$properties[$class_name])) {
 			$aop_properties = __CLASS__ . "::\$properties['$class_name']";
-			if (!method_exists($class_name, '__aop')) {
+			if (!(
+				method_exists($class_name, '__aop')
+				&& ((new Reflection_Method($class_name, '__aop'))->class == $class_name)
+			)) {
 				// magic method __aop : initializes aop, must be called on beginning of __construct
-				runkit_method_add($class_name, '__aop', '', '
+				if (!runkit_method_add($class_name, '__aop', '', '
 					foreach (array_keys(' . $aop_properties . ') as $property_name) {
 						$_property_name = "_" . $property_name;
 						$this->$_property_name = $this->$property_name;
 						unset($this->$property_name);
 					}
+				')) {
+					trigger_error("Could not add method $class_name::__aop", E_USER_ERROR);
+				}
+				// set magic methods for AOP
+				$replaced = self::rename($class_name, '__get');
+				runkit_method_add($class_name, '__get', '$property', '
+					if ($property[0] == "_") {
+						return ' . ($replaced ? '$this->__get_aop($property)' : 'null') . ';
+					}
+					$_property = "_" . $property;
+					$value = isset($this->$_property) ? $this->$_property : null;
+					if (isset(' . $aop_properties . '[$property]["read"])) {
+						$joinpoint = new SAF\Framework\Property_Read_Joinpoint(
+							"' . $joinpoint[0] . '", $this, $property
+						);
+						foreach (' . $aop_properties . '[$property]["read"] as $advice) {
+							if (is_array($advice) && isset($advice["dynamic"])) {
+								$advice[0] = $this;
+								unset($advice["dynamic"]);
+							}
+							$joinpoint->advice = $advice;
+							$value = call_user_func_array($advice, array($value, $joinpoint));
+						}
+					}
+					return $value;
 				');
-				// currently existing constructor renamed as __construct_aop
-				if (method_exists($class_name, '__construct')) {
+				$replaced = self::rename($class_name, '__isset');
+				runkit_method_add($class_name, '__isset', '$property', '
+					if ($property[0] == "_") {
+						return ' . ($replaced ? '$this->__isset_aop($property)' : 'false') . ';
+					}
+					$_property = "_" . $property;
+					return isset($this->$_property);
+				');
+				$replaced = self::rename($class_name, '__set');
+				runkit_method_add($class_name, '__set', '$property, $value', '
+					if ($property[0] == "_") {
+						' . ($replaced ? '$this->__set_aop($property, $value)' : '$this->$property = $value') . ';
+						return;
+					}
+					$_property = "_" . $property;
+					if (isset(' . $aop_properties . '[$property]["write"])) {
+						$joinpoint = new SAF\Framework\Property_Write_Joinpoint("' . $joinpoint[0] . '", $this, $property);
+						foreach (' . $aop_properties . '[$property]["write"] as $advice) {
+							if (is_array($advice) && isset($advice["dynamic"])) {
+								$advice[0] = $this;
+								unset($advice["dynamic"]);
+							}
+							$joinpoint->advice = $advice;
+							$value = call_user_func_array($advice, array($value, $joinpoint));
+						}
+					}
+					$this->$_property = $value;
+				');
+				$replaced = self::rename($class_name, '__unset');
+				runkit_method_add($class_name, '__unset', '$property', '
+					if ($property[0] != "_") {
+						$property = "_" . $property;
+						unset($this->$property);
+					}
+					' . ($replaced ? 'else $this->__unset_aop($property);' : '') . '
+				');
+				// currently existing constructor renamed as __construct_aop (if exists)
+				if (
+					method_exists($class_name, '__construct')
+					&& ((new Reflection_Method($class_name, '__construct'))->class == $class_name)
+				) {
 					$__construct = new Reflection_Method($class_name, '__construct');
 					$arguments = $__construct->getParameters();
 					$method_arguments = join(", ", $arguments);
-					$process_arguments = join(", ", array_keys($arguments));
+					$process_arguments = ($arguments ? '$' . join(', $', array_keys($arguments)) : '');
 					if ($class_name == $__construct->class) {
 						runkit_method_rename($class_name, '__construct', '__construct_aop');
-						$construct_call = "\n" . "self::__construct_aop($process_arguments);";
+						$construct_call = "\nself::__construct_aop($process_arguments);\n";
 					}
 					else {
-						$construct_call = "\n" . "parent::__construct($process_arguments)";
+						$construct_call = "\nparent::__construct($process_arguments);\n";
 					}
 				}
 				else {
 					$method_arguments = "";
 					$construct_call = "";
 				}
-				runkit_method_add(
-					$class_name, '__construct', $method_arguments,
-					"self::__aop();" . $construct_call
-				);
+				$code = "self::__aop();" . $construct_call;
+				runkit_method_add($class_name, '__construct', $method_arguments, $code);
 			}
-			// set magic methods for AOP
-			runkit_method_add($class_name, '__get', '$property', '
-				if ($property[0] == "_") return null;
-				$_property = "_" . $property;
-				$value = isset($this->$_property) ? $this->$_property : null;
-				if (isset(' . $aop_properties . '[$property]["read"])) {
-					$joinpoint = new SAF\Framework\Property_Read_Joinpoint("' . $joinpoint[0] . '", $this, $property);
-					foreach (' . $aop_properties . '[$property]["read"] as $advice) {
-						if (is_array($advice) && isset($advice["dynamic"])) {
-							$advice[0] = $this;
-							unset($advice["dynamic"]);
-						}
-						$joinpoint->advice = $advice;
-						$value = call_user_func_array($advice, array($value, $joinpoint));
-					}
-				}
-				return $value;
-			');
-			runkit_method_add($class_name, '__isset', '$property', '
-				if ($property[0] == "_") return false;
-				$_property = "_" . $property;
-				return isset($this->$_property);
-			');
-			runkit_method_add($class_name, '__set', '$property, $value', '
-				if ($property[0] == "_") {
-					$this->$property = $value;
-					return;
-				}
-				$_property = "_" . $property;
-				if (isset(' . $aop_properties . '[$property]["write"])) {
-					$joinpoint = new SAF\Framework\Property_Write_Joinpoint("' . $joinpoint[0] . '", $this, $property);
-					foreach (' . $aop_properties . '[$property]["write"] as $advice) {
-						if (is_array($advice) && isset($advice["dynamic"])) {
-							$advice[0] = $this;
-							unset($advice["dynamic"]);
-						}
-						$joinpoint->advice = $advice;
-						$value = call_user_func_array($advice, array($value, $joinpoint));
-					}
-				}
-				$this->$_property = $value;
-			');
-			runkit_method_add($class_name, '__unset', '$property', '
-				if ($property[0] != "_") $property = "_" . $property;
-				unset($this->$property);
-			');
 		}
 		if (!isset(self::$properties[$class_name][$property_name][$side])) {
 			self::$properties[$class_name][$property_name][$side] = array();
@@ -480,7 +637,7 @@ echo "<pre>$method_arguments : " . print_r($code, true) . "</pre>";
 	/**
 	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *        array("class_name", "property_name")
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 */
 	public static function addOnPropertyRead($joinpoint, $advice)
@@ -492,7 +649,7 @@ echo "<pre>$method_arguments : " . print_r($code, true) . "</pre>";
 	/**
 	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *        array("class_name", "property_name")
-	 * @param $advice    string[]|object[]|string the call-back call of the advice :
+	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 */
 	public static function addOnPropertyWrite($joinpoint, $advice)
@@ -578,7 +735,7 @@ echo "<pre>$method_arguments : " . print_r($code, true) . "</pre>";
 			}
 		}
 		else {
-			echo "- DEAD CODE : Register properties for non existing class $class_name : $annotation<br>";
+			//echo "- DEAD CODE : Register properties for non existing class $class_name : $annotation<br>";
 		}
 	}
 
@@ -604,11 +761,30 @@ echo "<pre>$method_arguments : " . print_r($code, true) . "</pre>";
 				}
 				else {
 					runkit_function_remove($joinpoint);
-					runkit_function_rename("_" . $joinpoint . "_" . $handler, $joinpoint);
+					runkit_function_rename($joinpoint . "_" . $handler, $joinpoint);
 				}
 				self::$joinpoints[$handler] = null;
 			}
 		}
+	}
+
+	//---------------------------------------------------------------------------------------- rename
+	/**
+	 * @param $class_name  string
+	 * @param $method_name string
+	 * @return boolean
+	 * @todo Works only with the last added advice on a joinpoint : do not remove a "middle" advice !
+	 */
+	public static function rename($class_name, $method_name)
+	{
+		if (
+			method_exists($class_name, $method_name)
+			&& ((new Reflection_Method($class_name, $method_name))->class == $class_name)
+		) {
+			runkit_method_rename($class_name, $method_name, $method_name . '_aop');
+			return true;
+		}
+		return false;
 	}
 
 }

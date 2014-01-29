@@ -37,15 +37,4 @@ class Default_Output_Controller extends Output_Controller
 		);
 	}
 
-	//----------------------------------------------------------------------------- getPropertiesList
-	/**
-	 * @param $class_name string
-	 * @return string[] property names list
-	 * @todo patch for runkit-aop. please remove it as soon as possible
-	 */
-	protected function getPropertiesList($class_name)
-	{
-		return parent::getPropertiesList($class_name);
-	}
-
 }

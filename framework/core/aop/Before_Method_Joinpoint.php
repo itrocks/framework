@@ -1,49 +1,12 @@
 <?php
 namespace SAF\Framework;
 
-	/**
-	 * Before method joinpoint
-	 */
-class Before_Method_Joinpoint
+require_once "Method_Joinpoint.php";
+
+/**
+ * Before method joinpoint
+ */
+class Before_Method_Joinpoint extends Method_Joinpoint
 {
-
-	//--------------------------------------------------------------------------------------- $advice
-	/**
-	 * @var string[]|object[]|string
-	 */
-	public $advice;
-
-	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
-	public $class_name;
-
-	//-------------------------------------------------------------------------------- $property_name
-	/**
-	 * @var string
-	 */
-	public $method_name;
-
-	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @var object
-	 */
-	public $object;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class_name  string
-	 * @param $object      object
-	 * @param $method_name string
-	 * @param $advice      string[]|object[]|string
-	 */
-	public function __construct($class_name, $object, $method_name, $advice)
-	{
-		$this->class_name  = $class_name;
-		$this->object      = $object;
-		$this->method_name = $method_name;
-		$this->advice      = $advice;
-	}
 
 }

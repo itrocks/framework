@@ -49,7 +49,7 @@ class Reflection_Parameter extends ReflectionParameter
 			$default = null;
 		}
 		if (!isset($default)) $default = "null";
-		elseif (!is_numeric($default)) $default = '"' . addslashes($default) . '"';
+		elseif (!is_numeric($default)) $default = '"' . str_replace('"', "\\\"", $default) . '"';
 		return ($this->isPassedByReference() ? '&' : '') . '$' . $this->name
 			. ($optional ? (" = " . $default) : "");
 	}

@@ -47,10 +47,9 @@ class Contextual_Mysqli extends mysqli
 
 	//----------------------------------------------------------------------------------------- query
 	/**
-	 * Big patch as this is needed for AOP, but AOP-Runkit does not work with php internal methods
-	 *
-	 * @todo patch for runkit-aop. remove as soon as possible
 	 * @see mysqli::query
+	 * @todo Big patch as this is needed for AOP, but AOP-runkit does not work with php internal
+	 * methods. Should be removed when a workaround is found
 	 */
 	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
 	{
