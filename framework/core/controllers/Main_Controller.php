@@ -83,6 +83,8 @@ class Main_Controller
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/toolbox/OS.php";
 		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/Runkit_Patch.php";
+		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/toolbox/String.php";
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/configuration/Plugin.php";

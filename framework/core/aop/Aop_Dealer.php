@@ -36,27 +36,6 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 		}
 	}
 
-	//--------------------------------------------------------------------------------- includedClass
-	/**
-	 * @param $class_name string
-	 * @param $result     boolean for Aop use. don't fill it for manual calls
-	 */
-	public function includedClass($class_name, $result = true)
-	{
-		if ($result) {
-			if (isset($this->links[$class_name])) {
-				foreach ($this->links[$class_name] as $key => $link) {
-					list($method, $joinpoint, $advice) = $link;
-					if (is_array($advice) && is_string($advice[0]) && ($advice[0][1] == ":")) {
-						$advice[0] = unserialize($this->serialized_objects[$advice[0]]);
-						$this->links[$class_name][$key][2][0] = $advice[0];
-					}
-					Aop::$method($joinpoint, $advice);
-				}
-			}
-		}
-	}
-
 	//------------------------------------------------------------------------------- afterMethodCall
 	/**
 	 * @param $joinpoint string[]
@@ -94,6 +73,27 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 			Aop::addBeforeMethodCall($joinpoint, $advice);
 		}
 		$this->links[$joinpoint[0]][] = array("addBeforeMethodCall", $joinpoint, $advice);
+	}
+
+	//--------------------------------------------------------------------------------- includedClass
+	/**
+	 * @param $class_name string
+	 * @param $result     boolean for Aop use. don't fill it for manual calls
+	 */
+	public function includedClass($class_name, $result = true)
+	{
+		if ($result) {
+			if (isset($this->links[$class_name])) {
+				foreach ($this->links[$class_name] as $key => $link) {
+					list($method, $joinpoint, $advice) = $link;
+					if (is_array($advice) && is_string($advice[0]) && ($advice[0][1] == ":")) {
+						$advice[0] = unserialize($this->serialized_objects[$advice[0]]);
+						$this->links[$class_name][$key][2][0] = $advice[0];
+					}
+					Aop::$method($joinpoint, $advice);
+				}
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- register

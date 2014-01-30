@@ -286,7 +286,7 @@ abstract class Aop
 		$function = (new Reflection_Function($joinpoint));
 		$arguments = $function->getParameters();
 		if ($arguments) {
-			$remove = (substr(reset($arguments)->name, 0, 3) == "__");
+			$remove = (substr(reset($arguments)->name, 0, 2) == "__");
 			$arguments_names = array_keys($arguments);
 
 			// runkit replacement function declaration arguments : all by reference and with $__ names
@@ -330,14 +330,12 @@ abstract class Aop
 		if ($advice_parameters) {
 			$advice_arguments = ('&$__' . join(', &$__', array_keys($advice_parameters)));
 			if (
-				isset($advice_parameters["result"])
-				&& !isset($arguments[$remove ? "__result" : "result"])
+				isset($advice_parameters["result"]) && !isset($arguments[$remove ? "__result" : "result"])
 			) {
 				$advice_arguments = str_replace('&$__result', '&$result', $advice_arguments);
 			}
 			if (
-				isset($advice_parameters["object"])
-				&& !isset($arguments[$remove ? "__object" : "object"])
+				isset($advice_parameters["object"]) && !isset($arguments[$remove ? "__object" : "object"])
 			) {
 				$advice_arguments = str_replace('&$__object', '&$this', $advice_arguments);
 			}
@@ -413,17 +411,26 @@ abstract class Aop
 		$method = (new Reflection_Method($joinpoint[0], $joinpoint[1]));
 		$arguments = $method->getParameters();
 		if ($arguments) {
+			$remove = (substr(reset($arguments)->name, 0, 2) == "__");
 			$arguments_names = array_keys($arguments);
 
 			// runkit replacement method declaration arguments : all by reference and with $__ names
-			$method_arguments = str_replace('$', '$__', join(", ", $arguments));
+			$method_arguments = $remove
+				? join(", ", $arguments)
+				: str_replace('$', '$__', join(", ", $arguments));
 
 			// joinpoint method processing call arguments : all with $__ names
-			$process_arguments = '$__' . join(', $__', $arguments_names);
+			$process_arguments = $remove
+				? ('$' . join(', $', $arguments_names))
+				: ('$__' . join(', $__', $arguments_names));
 
 			// the parameters used to initialize the joinpoint
 			$parameters_string = 'array(';
 			foreach ($arguments_names as $key => $name) {
+				if ($remove) {
+					$key = substr($key, 2);
+					$name = substr($name, 2);
+				}
 				if ($key) $parameters_string .= ', ';
 				$parameters_string .= $key . ' => &$__' . $name . ', "' . $name . '" => &$__' . $name;
 			}
@@ -434,6 +441,7 @@ abstract class Aop
 			$method_arguments  = "";
 			$process_arguments = "";
 			$parameters_string = "array()";
+			$remove = false;
 		}
 
 		// advice arguments are the parameters of the advice method/function.
@@ -448,10 +456,14 @@ abstract class Aop
 		$advice_parameters = $advice_method->getParameters();
 		if ($advice_parameters) {
 			$advice_arguments = ('&$__' . join(', &$__', array_keys($advice_parameters)));
-			if (isset($advice_parameters["result"]) && !isset($arguments["result"])) {
+			if (
+				isset($advice_parameters["result"]) && !isset($arguments[$remove ? "__result" : "result"])
+			) {
 				$advice_arguments = str_replace('&$__result', '&$result', $advice_arguments);
 			}
-			if (isset($advice_parameters["object"]) && !isset($arguments["object"])) {
+			if (
+				isset($advice_parameters["object"]) && !isset($arguments[$remove ? "__object" : "object"])
+			) {
 				$advice_arguments = str_replace('&$__object', '&$this', $advice_arguments);
 			}
 			if (isset($advice_parameters["joinpoint"])) {
@@ -625,7 +637,9 @@ abstract class Aop
 					$construct_call = "";
 				}
 				$code = "self::__aop();" . $construct_call;
-				runkit_method_add($class_name, '__construct', $method_arguments, $code);
+				if (!runkit_method_add($class_name, '__construct', $method_arguments, $code)) {
+					trigger_error("Could not add $class_name::__construct", E_USER_ERROR);
+				}
 			}
 		}
 		if (!isset(self::$properties[$class_name][$property_name][$side])) {
