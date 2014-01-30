@@ -6,19 +6,23 @@ use AopJoinpoint;
 /**
  * Aop call setters
  */
-abstract class Aop_Setter extends Aop implements Plugin
+class Aop_Setter extends Aop implements Plugin
 {
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
+	 */
+	public function register($dealer, $parameters)
 	{
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Autoloader', "includeClass"),
-			array(__CLASS__, "registerIncludedSettersAop")
+			array($this, "registerIncludedSettersAop")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Class_Builder', "buildClassSource"),
-			array(__CLASS__, "registerBuiltSettersAop")
+			array($this, "registerBuiltSettersAop")
 		);
 	}
 
@@ -28,7 +32,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 *
 	 * @param $class_name string
 	 */
-	public static function registerBuiltSettersAop($class_name)
+	public function registerBuiltSettersAop($class_name)
 	{
 		parent::registerProperties($class_name, "setter", "write");
 	}
@@ -44,7 +48,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 * @todo check phpdoc
 	 * @param $class_name string
 	 */
-	public static function registerSetters($class_name)
+	public function registerSetters($class_name)
 	{
 		parent::registerProperties($class_name, "setter", "write");
 	}
@@ -56,7 +60,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 * @param $class_name string
 	 * @param $result     string
 	 */
-	public static function registerIncludedSettersAop($class_name, $result)
+	public function registerIncludedSettersAop($class_name, $result)
 	{
 		if ($result) {
 			$class_name = Autoloader::rectifyClassName($class_name, $result);
@@ -71,7 +75,7 @@ abstract class Aop_Setter extends Aop implements Plugin
 	 * @todo unused : please test it
 	 * @param $joinpoint AopJoinpoint
 	 */
-	public static function setObject(AopJoinpoint $joinpoint)
+	public function setObject(AopJoinpoint $joinpoint)
 	{
 		$object = $joinpoint->getObject();
 		$id_property = "id_" . $joinpoint->getPropertyName();

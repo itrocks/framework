@@ -6,7 +6,7 @@ use AopJoinpoint;
 /**
  * Aop calls getters
  */
-abstract class Aop_Getter extends Aop implements Plugin
+class Aop_Getter extends Aop implements Plugin
 {
 
 	//---------------------------------------------------------------------------------------- getAll
@@ -16,7 +16,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * @param AopJoinpoint $joinpoint
 	 * @return object[]
 	 */
-	public static function getAll(AopJoinpoint $joinpoint)
+	public function getAll(AopJoinpoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -36,7 +36,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * @param $joinpoint AopJoinpoint
 	 * @return Component[]
 	 */
-	public static function getCollection(AopJoinpoint $joinpoint)
+	public function getCollection(AopJoinpoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -56,7 +56,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * @param $joinpoint AopJoinpoint
 	 * @return Date_Time
 	 */
-	public static function getDateTime(AopJoinpoint $joinpoint)
+	public function getDateTime(AopJoinpoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -73,9 +73,9 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */
-	public static function getFile(AopJoinpoint $joinpoint)
+	public function getFile(AopJoinpoint $joinpoint)
 	{
-		return self::getObject($joinpoint);
+		return $this->getObject($joinpoint);
 	}
 
 	//---------------------------------------------------------------------------------------- getMap
@@ -85,7 +85,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * @param AopJoinpoint $joinpoint
 	 * @return object[]
 	 */
-	public static function getMap(AopJoinpoint $joinpoint)
+	public function getMap(AopJoinpoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -103,7 +103,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 *
 	 * @param $joinpoint AopJoinpoint
 	 */
-	public static function getObject(AopJoinpoint $joinpoint)
+	public function getObject(AopJoinpoint $joinpoint)
 	{
 		$object   = $joinpoint->getObject();
 		$property = $joinpoint->getPropertyName();
@@ -121,15 +121,19 @@ abstract class Aop_Getter extends Aop implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
+	 */
+	public function register($dealer, $parameters)
 	{
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Autoloader', "includeClass"),
-			array(__CLASS__, "registerIncludedGettersAop")
+			array($this, "registerIncludedGettersAop")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Class_Builder', "buildClassSource"),
-			array(__CLASS__, "registerBuiltGettersAop")
+			array($this, "registerBuiltGettersAop")
 		);
 	}
 
@@ -139,7 +143,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 *
 	 * @param $class_name string
 	 */
-	public static function registerBuiltGettersAop($class_name)
+	public function registerBuiltGettersAop($class_name)
 	{
 		parent::registerProperties($class_name, "getter", "read");
 	}
@@ -154,7 +158,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 *
 	 * @param $class_name string
 	 */
-	public static function registerGetters($class_name)
+	public function registerGetters($class_name)
 	{
 		parent::registerProperties($class_name, "getter", "read");
 	}
@@ -166,7 +170,7 @@ abstract class Aop_Getter extends Aop implements Plugin
 	 * @param $class_name string
 	 * @param $result     string
 	 */
-	public static function registerIncludedGettersAop($class_name, $result)
+	public function registerIncludedGettersAop($class_name, $result)
 	{
 		if ($result) {
 			$class_name = Autoloader::rectifyClassName($class_name, $result);

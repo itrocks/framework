@@ -8,8 +8,9 @@ class Plugins implements Configurable
 {
 	use Current { current as private pCurrent; }
 
+	//----------------------------------------------------------------------------------- $priorities
 	public static $priorities = array(
-		"top"     => 0,
+		"core"    => 0,
 		"highest" => 1,
 		"higher"  => 2,
 		"normal"  => 3,

@@ -672,7 +672,7 @@ abstract class Aop
 	 * @param $annotation string ie "getter", "setter"
 	 * @param $function   string ie "read", "write"
 	 */
-	public static function registerProperties($class_name, $annotation, $function)
+	public function registerProperties($class_name, $annotation, $function)
 	{
 		if (
 			($is_class = @class_exists($class_name, false))
@@ -699,7 +699,7 @@ abstract class Aop
 					if ($call) {
 						if (strpos($call, "::")) {
 							if (substr($call, 0, 5) === "Aop::") {
-								$call_class  = get_called_class();
+								$call_class  = $this;
 								$call_method = substr($call, 5);
 							}
 							else {
@@ -736,6 +736,7 @@ abstract class Aop
 	 * Remove an AOP link, knowing its handler returned when calling the add* methods
 	 *
 	 * @param $handler integer|integer[]
+	 * @todo Works only with the last added advice on a joinpoint : do not remove a "middle" advice !
 	 */
 	public static function remove($handler)
 	{
@@ -765,9 +766,8 @@ abstract class Aop
 	 * @param $class_name  string
 	 * @param $method_name string
 	 * @return boolean
-	 * @todo Works only with the last added advice on a joinpoint : do not remove a "middle" advice !
 	 */
-	public static function rename($class_name, $method_name)
+	private static function rename($class_name, $method_name)
 	{
 		if (
 			method_exists($class_name, $method_name)

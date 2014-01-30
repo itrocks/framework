@@ -129,7 +129,6 @@ class Session
 	 */
 	public static function start()
 	{
-		session_start();
 		return is_null(self::current()) ? self::current(new Session()) : self::current();
 	}
 

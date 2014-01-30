@@ -25,6 +25,19 @@ class Configuration implements Serializable
 	 */
 	private $author;
 
+	//--------------------------------------------------------------------------------------- plugins
+	/**
+	 * @var array
+	 */
+	public $core;
+	public $highest;
+	public $higher;
+	public $high;
+	public $normal;
+	public $low;
+	public $lower;
+	public $lowest;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Build configuration using configurations options
@@ -56,11 +69,8 @@ class Configuration implements Serializable
 	{
 		if (isset($set_current)) {
 			self::pCurrent($set_current);
-			/** @noinspection PhpIncludeInspection */
-			require_once Names::classToDirectory($set_current->app) . "/Application.php";
-			/** @var $application Application */
-			$application = Builder::create("SAF\\" . $set_current->app . "\\Application");
-			Application::current($application);
+
+			/*
 			foreach ($set_current->getClassesConfigurations() as $class_name => $configuration) {
 				if ($configuration == "@static") {
 					$self_configuration = array();
@@ -81,7 +91,6 @@ class Configuration implements Serializable
 						: $class_name;
 					$builder_class_name = $configuration_class_name . "_Builder_Configuration";
 					if (class_exists($builder_class_name)) {
-						/** @var $builder_object Configuration_Builder */
 						$builder_object = Builder::create($builder_class_name);
 						call_user_func(array($class_name, "current"), $builder_object->build($configuration));
 					}
@@ -107,6 +116,7 @@ class Configuration implements Serializable
 					$class->accessPropertiesDone();
 				}
 			}
+			*/
 			return $set_current;
 		}
 		else {

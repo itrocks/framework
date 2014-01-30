@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * Main acls plugin
  */
-abstract class Acls implements Plugin
+class Acls implements Plugin
 {
 
 	//--------------------------------------------------------------------------------------- current
@@ -28,7 +28,7 @@ abstract class Acls implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	public function register()
 	{
 		Aop::addAfterMethodCall(
 			array('SAF\Framework\User_Authentication', "authenticate"),

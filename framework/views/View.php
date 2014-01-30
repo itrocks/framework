@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * The View class offers static methods to call views from the application main view engine
  */
-abstract class View
+class View implements Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -74,6 +74,15 @@ abstract class View
 	public static function link($object, $feature = null, $parameters = null, $arguments = null)
 	{
 		return self::current()->link($object, $feature, $parameters, $arguments);
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
+	 */
+	public function register($dealer, $parameters)
+	{
 	}
 
 	//------------------------------------------------------------------------------------------- run

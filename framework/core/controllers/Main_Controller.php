@@ -13,16 +13,19 @@ class Main_Controller
 	 */
 	private function __construct() {}
 
-	//----------------------------------------------------------------------------- configurationLoad
+	//----------------------------------------------------------------------------- createApplication
 	/**
-	 * Load configuration
+	 * Create the current application object
+	 *
+	 * @param $configuration
 	 */
-	private function configurationLoad()
+	private function createApplication(Configuration $configuration)
 	{
-		if (!Session::current()->get('SAF\Framework\Configuration')) {
-			$script_name = $_SERVER["SCRIPT_NAME"];
-			(new Configurations())->load(substr($script_name, strrpos($script_name, '/') + 1));
-		}
+		/** @noinspection PhpIncludeInspection */
+		include_once strtolower($configuration->getApplicationName()) . "/Application.php";
+		/** @var $application Application */
+		$application = Builder::create($configuration->getApplicationClassName());
+		Application::current($application);
 	}
 
 	//----------------------------------------------------------------------------------- getInstance
@@ -40,6 +43,76 @@ class Main_Controller
 		return $instance;
 	}
 
+	//-------------------------------------------------------------------------------------- includes
+	private function includes()
+	{
+		// Include_Path
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/OS.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/Include_Path.php";
+
+		// Autoloader
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Plugin.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/Autoloader.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/Namespaces.php";
+
+		// Functions includes
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/Array.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/String.php";
+	}
+
+	//----------------------------------------------------------------------------- loadConfiguration
+	/**
+	 * Load configuration
+	 *
+	 * @return Configuration
+	 */
+	private function loadConfiguration()
+	{
+		$configuration = Session::current()->get('SAF\Framework\Configuration');
+		if (!$configuration) {
+			$script_name = $_SERVER["SCRIPT_NAME"];
+			$configuration = (new Configurations())->load(
+				substr($script_name, strrpos($script_name, '/') + 1)
+			);
+			$this->loadPlugins($configuration);
+		}
+		return $configuration;
+	}
+
+	//------------------------------------------------------------------------------- loadCorePlugins
+	/**
+	 * Load core plugins
+	 *
+	 * @param $configuration Configuration
+	 */
+	private function loadPlugins(Configuration $configuration)
+	{
+		foreach (
+			array("core", "highest", "higher", "high", "normal", "low", "lower", "lowest") as $level
+		) {
+			foreach ($configuration->$level as $class_name => $plugin_configuration) {
+				if (is_numeric($class_name)) {
+					$class_name = $plugin_configuration;
+					$plugin_configuration = array();
+				}
+				/** @var $plugin Plugin */
+				$plugin = Builder::create($class_name);
+				if (!isset($aop_dealer) && ($class_name == 'SAF\Framework\Aop_Dealer')) {
+					/** @var $aop_dealer Aop_Dealer */
+					$aop_dealer = $plugin;
+				}
+				$plugin->register($aop_dealer, $plugin_configuration);
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Run main controller for given uri, get, post and files vars comming from the web call
@@ -52,8 +125,9 @@ class Main_Controller
 	 */
 	public function run($uri, $get, $post, $files)
 	{
-		$this->configurationLoad();
 		$this->sessionStart($get, $post);
+		$configuration = $this->loadConfiguration();
+		$this->createApplication($configuration);
 		return $this->runController($uri, $get, $post, $files);
 	}
 
@@ -101,9 +175,37 @@ class Main_Controller
 	 */
 	private function sessionStart(&$get, &$post)
 	{
+		if (empty($_SESSION)) {
+			session_start();
+		}
+		$this->includes();
+		$this->setFrameworkIncludePath($_SESSION);
+		$this->startAutoloader();
 		Session::start();
 		unset($get[session_name()]);
 		unset($post[session_name()]);
+	}
+
+	//----------------------------------------------------------------------- setFrameworkIncludePath
+	/**
+	 * @param $session array
+	 */
+	private function setFrameworkIncludePath(&$session)
+	{
+		if (isset($session["include_path"])) {
+			set_include_path($session["include_path"]);
+		}
+		else {
+			$include_path = (new Include_Path("framework"))->getIncludePath();
+			$session["include_path"] = $include_path;
+			set_include_path($include_path);
+		}
+	}
+
+	//------------------------------------------------------------------------------- startAutoloader
+	private function startAutoloader()
+	{
+		(new Autoloader())->register(null, null);
 	}
 
 }

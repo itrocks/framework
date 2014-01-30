@@ -9,11 +9,11 @@ interface Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * Register code for the plugin
+	 * Registration code for the plugin
 	 *
-	 * Will be executed at plugin's initialization
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
 	 */
-	/** @noinspection PhpAbstractStaticMethodInspection */
-	public static function register();
+	public function register($dealer, $parameters);
 
 }

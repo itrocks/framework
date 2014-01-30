@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * A Locale object has all locale features, useful for specific locale conversions
  */
-class Locale implements Configurable
+class Locale implements Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -35,19 +35,6 @@ class Locale implements Configurable
 	 * @var Translations
 	 */
 	public $translations;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $parameters array
-	 */
-	public function __construct($parameters = null)
-	{
-		if (isset($parameters)) {
-			$this->setDate($parameters["date"]);
-			$this->setLanguage($parameters["language"]);
-			$this->setNumber($parameters["number"]);
-		}
-	}
 
 	//--------------------------------------------------------------------------------------- current
 	/**
@@ -91,15 +78,27 @@ class Locale implements Configurable
 		return $this->toLocale($value, $property->getType());
 	}
 
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
+	 */
+	public function register($dealer, $parameters)
+	{
+		if (isset($parameters)) {
+			$this->setDate($parameters["date"]);
+			$this->setLanguage($parameters["language"]);
+			$this->setNumber($parameters["number"]);
+		}
+	}
+
 	//--------------------------------------------------------------------------------------- setDate
 	/**
 	 * @param $date Date_Locale | string if string, must be a date format (ie "d/m/Y")
 	 */
 	public function setDate($date)
 	{
-		$this->date = ($date instanceof Date_Locale)
-			? $date
-			: new Date_Locale($date);
+		$this->date = ($date instanceof Date_Locale) ? $date : new Date_Locale($date);
 	}
 
 	//----------------------------------------------------------------------------------- setLanguage

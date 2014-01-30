@@ -4,23 +4,26 @@ namespace SAF\Framework;
 /**
  * Html translator plugin : translates "|non-translated text|" from html pages to "translated text"
  */
-abstract class Html_Translator implements Plugin
+class Html_Translator implements Plugin
 {
 
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers translation of [terms] in HTML templates
+	 *
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
 	 */
-	public static function register()
+	public function register($dealer, $parameters)
 	{
-		Aop::addAfterMethodCall(
-			array('SAF\Framework\Html_Template', "parse"), array(__CLASS__, "translatePage")
+		$dealer->afterMethodCall(
+			array('SAF\Framework\Html_Template', "parse"), array($this, "translatePage")
 		);
-		Aop::addBeforeMethodCall(
-			array('SAF\Framework\Html_Template', "parseString"), array(__CLASS__, "translateString")
+		$dealer->beforeMethodCall(
+			array('SAF\Framework\Html_Template', "parseString"), array($this, "translateString")
 		);
-		Aop::addBeforeMethodCall(
-			array('SAF\Framework\Html_Option', "setContent"), array(__CLASS__, "translateOptionContent")
+		$dealer->beforeMethodCall(
+			array('SAF\Framework\Html_Option', "setContent"), array($this, "translateOptionContent")
 		);
 	}
 
@@ -31,13 +34,13 @@ abstract class Html_Translator implements Plugin
 	 * @param $context  string
 	 * @return string
 	 */
-	public static function translateContent(&$content, $context)
+	public function translateContent(&$content, $context)
 	{
 		$i = 0;
 		while (($i = strpos($content, "|", $i)) !== false) {
 			$i++;
 			if (($i < strlen($content)) && (!in_array($content[$i], array(" ", "\n", "\r", "\t")))) {
-				self::translateElement($content, $i, $context);
+				$this->translateElement($content, $i, $context);
 			}
 		}
 		return $content;
@@ -51,7 +54,7 @@ abstract class Html_Translator implements Plugin
 	 * @param $i       integer
 	 * @param $context string
 	 */
-	public static function translateElement(&$content, &$i, $context)
+	public function translateElement(&$content, &$i, $context)
 	{
 		$j = strpos($content, "|", $i);
 		if ($j >= $i) {
@@ -68,7 +71,7 @@ abstract class Html_Translator implements Plugin
 	 *
 	 * @param $content string
 	 */
-	public static function translateOptionContent(&$content)
+	public function translateOptionContent(&$content)
 	{
 		if (trim($content)) {
 			$content = Loc::tr($content);
@@ -84,9 +87,9 @@ abstract class Html_Translator implements Plugin
 	 * @param $result string
 	 * @return string
 	 */
-	public static function translatePage(Html_Template $object, $result)
+	public function translatePage(Html_Template $object, $result)
 	{
-		return self::translateContent($result, get_class($object->getRootObject()));
+		return $this->translateContent($result, get_class($object->getRootObject()));
 	}
 
 	//--------------------------------------------------------------------------------- translatePage
@@ -96,9 +99,9 @@ abstract class Html_Translator implements Plugin
 	 * @param $object        Html_Template
 	 * @param $property_name string
 	 */
-	public static function translateString(Html_Template $object, &$property_name)
+	public function translateString(Html_Template $object, &$property_name)
 	{
-		self::translateContent($property_name, get_class($object->getRootObject()));
+		$this->translateContent($property_name, get_class($object->getRootObject()));
 	}
 
 }

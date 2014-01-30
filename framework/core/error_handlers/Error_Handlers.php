@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * A configurable (with a php array) error handlers collection
  */
-class Error_Handlers implements Configurable
+class Error_Handlers implements Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -20,19 +20,6 @@ class Error_Handlers implements Configurable
 	 */
 	private static $instance;
 
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $parameters array
-	 */
-	public function __construct($parameters = null)
-	{
-		foreach ($parameters as $handle) {
-			list($err_no, $error_handler_class) = $handle;
-			$this->addHandler($err_no, new $error_handler_class());
-		}
-		$this->setAsErrorHandler();
-	}
-
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Error_Handlers
@@ -43,13 +30,16 @@ class Error_Handlers implements Configurable
 		return self::pCurrent($set_current);
 	}
 
-	//-------------------------------------------------------------------------------------- activate
+	//-------------------------------------------------------------------------------------- register
 	/**
-	 * Activate error handler instance as the main error handler
+	 * Register an error handler for error types
+	 *
+	 * @param $error_types integer
+	 * @param $error_handler Error_Handler
 	 */
-	public static function on()
+	public static function add($error_types, Error_Handler $error_handler)
 	{
-		Error_Handlers::getInstance()->setAsErrorHandler();
+		Error_Handlers::getInstance()->addHandler($error_types, $error_handler);
 	}
 
 	//------------------------------------------------------------------------------------ addHandler
@@ -138,16 +128,27 @@ class Error_Handlers implements Configurable
 		return !$handled_error->isStandardPhpErrorHandlerCalled();
 	}
 
+	//-------------------------------------------------------------------------------------- activate
+	/**
+	 * Activate error handler instance as the main error handler
+	 */
+	public static function on()
+	{
+		Error_Handlers::getInstance()->setAsErrorHandler();
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * Register an error handler for error types
-	 *
-	 * @param $error_types integer
-	 * @param $error_handler Error_Handler
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
 	 */
-	public static function add($error_types, Error_Handler $error_handler)
+	public function register($dealer, $parameters)
 	{
-		Error_Handlers::getInstance()->addHandler($error_types, $error_handler);
+		foreach ($parameters as $handle) {
+			list($err_no, $error_handler_class) = $handle;
+			$this->addHandler($err_no, new $error_handler_class());
+		}
+		$this->setAsErrorHandler();
 	}
 
 	//----------------------------------------------------------------------------- setAsErrorHandler

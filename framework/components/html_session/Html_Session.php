@@ -1,9 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */ require_once "framework/core/configuration/Configurable.php";
-/** @noinspection PhpIncludeInspection */ require_once "framework/core/toolbox/Plugin.php";
-
 /**
  * Pass session id thru HTML code using this plugin
  */
@@ -59,9 +56,12 @@ class Html_Session implements Configurable, Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * always add session id at end of html documents parsing
+	 * Always add session id at end of html documents parsing
+	 *
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
 	 */
-	public static function register()
+	public function register($dealer, $parameters)
 	{
 		// PHP configuration method
 		if (!self::$registered) {

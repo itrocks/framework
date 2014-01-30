@@ -1,13 +1,10 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */ require_once "framework/core/toolbox/Namespaces.php";
-/** @noinspection PhpIncludeInspection */ require_once "framework/core/toolbox/Plugin.php";
-
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
  */
-abstract class Autoloader implements Plugin
+class Autoloader implements Plugin
 {
 
 	//-------------------------------------------------------------------------------------- autoLoad
@@ -16,9 +13,9 @@ abstract class Autoloader implements Plugin
 	 *
 	 * @param $class_name string class name (with or without namespace)
 	 */
-	public static function autoload($class_name)
+	public function autoload($class_name)
 	{
-		self::includeClass($class_name);
+		$this->includeClass($class_name);
 	}
 
 	//---------------------------------------------------------------------------------- includeClass
@@ -27,7 +24,7 @@ abstract class Autoloader implements Plugin
 	 * @param $file_path  string The file path. If null, this will be automatically searched into include path
 	 * @return string the file path, if class was included. null if not.
 	 */
-	public static function includeClass($class_name, $file_path = null)
+	public function includeClass($class_name, $file_path = null)
 	{
 		if (!isset($file_path)) {
 			$file_path = stream_resolve_include_path(Namespaces::shortClassName($class_name) . ".php");
@@ -75,10 +72,13 @@ abstract class Autoloader implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers autoloader
+	 *
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
 	 */
-	public static function register()
+	public function register($dealer, $parameters)
 	{
-		spl_autoload_register(array(__CLASS__, "autoload"));
+		spl_autoload_register(array($this, "autoload"));
 	}
 
 }

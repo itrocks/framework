@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
  */
-abstract class Dao
+class Dao implements Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -62,26 +62,6 @@ abstract class Dao
 		else {
 			return null;
 		}
-	}
-
-	//------------------------------------------------------------------------------------- configure
-	/**
-	 * Configure DAO with specific DAO link elements
-	 *
-	 * @param $configuration array
-	 * @return array
-	 */
-	public static function configure($configuration)
-	{
-		if (isset($configuration["list"])) {
-			foreach ($configuration["list"] as $dao_identifier => $dao_configuration) {
-				$class_name = $dao_configuration["class"];
-				unset($dao_configuration["class"]);
-				self::set($dao_identifier, new $class_name($dao_configuration));
-			}
-			unset($configuration["list"]);
-		}
-		return $configuration;
 	}
 
 	//----------------------------------------------------------------------------------------- count
@@ -252,6 +232,25 @@ abstract class Dao
 	public static function readAll($class_name, $options = null)
 	{
 		return self::current()->readAll($class_name, $options);
+	}
+
+	//------------------------------------------------------------------------------------- configure
+	/**
+	 * Configure DAO with specific DAO link elements
+	 *
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
+	 */
+	public function register($dealer, $parameters)
+	{
+		if (isset($parameters["list"])) {
+			foreach ($parameters["list"] as $dao_identifier => $dao_configuration) {
+				$class_name = $dao_configuration["class"];
+				unset($dao_configuration["class"]);
+				self::set($dao_identifier, new $class_name($dao_configuration));
+			}
+			unset($parameters["list"]);
+		}
 	}
 
 	//---------------------------------------------------------------------------------------- remove

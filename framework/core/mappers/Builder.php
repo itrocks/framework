@@ -196,33 +196,37 @@ class Builder implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 * @param $dealer     Aop_Dealer
+	 * @param $parameters array
+	 */
+	public function register($dealer, $parameters)
 	{
-		Aop::addBeforeMethodCall(
+		$dealer->beforeMethodCall(
 			array('SAF\Framework\Getter', "getCollection"),
 			array(__CLASS__, "onMethodWithElementClass")
 		);
-		Aop::addBeforeMethodCall(
+		$dealer->beforeMethodCall(
 			array('SAF\Framework\Getter', "getObject"),
 			array(__CLASS__, "onMethodWithClassName")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Namespaces', "fullClassName"),
 			array(__CLASS__, "afterNamespacesFullClassName")
 		);
-		Aop::addBeforeMethodCall(
+		$dealer->beforeMethodCall(
 			array('SAF\Framework\Search_Object', "create"),
 			array(__CLASS__, "onMethodWithClassName")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Set', "elementClassNameOf"),
 			array(__CLASS__, "onMethodWithReturnedValue")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Sql_Joins', "addSimpleJoin"),
 			array(__CLASS__, "onMethodWithReturnedValue")
 		);
-		// TODO this is really slow : hardcode it in C
+		// TODO this is really slow : hardcode it and optimize it in C
 		//set_new_overload(function($class_name) { return Builder::className($class_name); });
 	}
 
