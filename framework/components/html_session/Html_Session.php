@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * Pass session id thru HTML code using this plugin
  */
-class Html_Session implements Activable_Plugin
+class Html_Session implements Configurable, Activable_Plugin
 {
 
 	//----------------------------------------------------------------------------------- $use_cookie
@@ -12,6 +12,15 @@ class Html_Session implements Activable_Plugin
 	 * @var boolean
 	 */
 	public static $use_cookie = false;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $configuration array
+	 */
+	public function __construct($configuration)
+	{
+		self::$use_cookie = isset($configuration["use_cookie"]) && $configuration["use_cookie"];
+	}
 
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
@@ -43,8 +52,6 @@ class Html_Session implements Activable_Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$configuration = $register->getConfiguration();
-		self::$use_cookie = isset($configuration["use_cookie"]) && $configuration["use_cookie"];
 	}
 
 }

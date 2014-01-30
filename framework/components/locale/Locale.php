@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * A Locale object has all locale features, useful for specific locale conversions
  */
-class Locale implements Plugin
+class Locale implements Configurable, Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -35,6 +35,17 @@ class Locale implements Plugin
 	 * @var Translations
 	 */
 	public $translations;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $configuration array
+	 */
+	public function __construct($configuration)
+	{
+		$this->setDate($configuration["date"]);
+		$this->setLanguage($configuration["language"]);
+		$this->setNumber($configuration["number"]);
+	}
 
 	//--------------------------------------------------------------------------------------- current
 	/**
@@ -84,10 +95,6 @@ class Locale implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$configuration = $register->getConfiguration();
-		$this->setDate($configuration["date"]);
-		$this->setLanguage($configuration["language"]);
-		$this->setNumber($configuration["number"]);
 	}
 
 	//--------------------------------------------------------------------------------------- setDate

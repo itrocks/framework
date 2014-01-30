@@ -1,11 +1,19 @@
 <?php
 namespace SAF\Framework;
 
+use Serializable;
+
 /**
  * A class to manage variables and objects that are kept for the session time
  */
-class Session
+class Session implements Serializable
 {
+
+	//-------------------------------------------------------------------------------------- $current
+	/**
+	 * @var object[]|string[]
+	 */
+	private $current;
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
@@ -37,11 +45,17 @@ class Session
 	 */
 	public function get($class_name, $create_default = false)
 	{
-		if (isset($_SESSION[$class_name])) {
-			return $_SESSION[$class_name];
+		if (isset($this->current[$class_name])) {
+			$current = $this->current[$class_name];
+			if (is_array($current)) {
+				//$class_name = $current[0]; // TODO Check if R: and r: work well
+				$current    = $current[1];
+				$this->current[$class_name] = $current = unserialize($current);
+			}
+			return $current;
 		}
 		elseif ($create_default) {
-			return $_SESSION[$class_name] = Builder::create($class_name);
+			return $this->current[$class_name] = Builder::create($class_name);
 		}
 		else {
 			return null;
@@ -56,7 +70,7 @@ class Session
 	 */
 	public function getAll()
 	{
-		return $_SESSION;
+		return $this->current;
 	}
 
 	//---------------------------------------------------------------------------------------- getAny
@@ -75,6 +89,20 @@ class Session
 			}
 		}
 		return $get;
+	}
+
+	//-------------------------------------------------------------------------------- getApplication
+	/**
+	 * Gets the current application name without having to unserialize it if serialized
+	 * @return Application
+	 */
+	public function getApplicationName()
+	{
+		$current = $this->current['Application'];
+		// TODO parse current[1] between '"' and replace array with string if R work well
+		$class_name = is_array($current) ? $current[0] : get_class($current);
+		$application_name = substr($class_name, 0, strrpos($class_name, "\\"));
+		return strtolower(substr($application_name, strrpos($application_name, "\\") + 1));
 	}
 
 	//------------------------------------------------------------------------------------------- sid
@@ -98,7 +126,7 @@ class Session
 	 */
 	public function remove($object_class)
 	{
-		unset($_SESSION[is_string($object_class) ? $object_class : get_class($object_class)]);
+		unset($this->current[is_string($object_class) ? $object_class : get_class($object_class)]);
 	}
 
 	//------------------------------------------------------------------------------------- removeAny
@@ -118,6 +146,40 @@ class Session
 		}
 	}
 
+	//------------------------------------------------------------------------------------- serialize
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		$data = array("current" => array());
+		foreach ($this->current as $class_name => $object) {
+			if (is_object($object)) {
+				$object = array($class_name, serialize($object));
+			}
+			$data["current"][$class_name] = $object;
+		}
+		foreach ($this->plugins as $level => $plugins) {
+			foreach ($plugins as $class_name => $object) {
+				if (is_object($object)) {
+					if ($object instanceof Serializable) {
+						$data["plugins"][$level][$class_name] = serialize($object);
+					}
+					elseif (isset($object->plugin_configuration)) {
+						$data["plugins"][$level][$class_name] = serialize($object->plugin_configuration);
+					}
+					else {
+						$data["plugins"][$level][$class_name] = true;
+					}
+				}
+				else {
+					$data["plugins"][$level][$class_name] = $object;
+				}
+			}
+		}
+		return serialize($data);
+	}
+
 	//------------------------------------------------------------------------------------------- set
 	/**
 	 * Set a session's object
@@ -128,8 +190,19 @@ class Session
 	public function set($object, $class_name = null)
 	{
 		if (isset($object)) {
-			$_SESSION[isset($class_name) ? $class_name : get_class($object)] = $object;
+			$this->current[isset($class_name) ? $class_name : get_class($object)] = $object;
 		}
+	}
+
+	//----------------------------------------------------------------------------------- unserialize
+	/**
+	 * @param $serialized string
+	 */
+	public function unserialize($serialized)
+	{
+		$data = unserialize($serialized);
+		$this->current = $data["current"];
+		$this->plugins = $data["plugins"];
 	}
 
 }

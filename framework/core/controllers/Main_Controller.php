@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use Serializable;
+
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
  */
@@ -15,19 +17,18 @@ class Main_Controller
 
 	//------------------------------------------------------------------------------- activatePlugins
 	/**
-	 * Activate all plugins (called only at session beginning)
+	 * Activate all plugins (called at each script beginning, for already loaded classes only)
 	 *
 	 * @param $plugins array
+	 * @param $core    boolean activate core plugins too
+	 *        please set this to true only if not already been activated by registerPlugins
 	 */
-	private function activatePlugins($plugins)
+	private function activatePlugins($plugins, $core)
 	{
 		foreach ($plugins as $level => $sub_plugins) {
-			if ($level != "core") {
+			if ($core || ($level != "core")) {
 				foreach ($sub_plugins as $class_name => $plugin) {
-					if (
-						(class_exists($class_name, false) || trait_exists($class_name, false))
-						&& ($plugin instanceof Activable_Plugin)
-					) {
+					if (class_exists($class_name, false) && ($plugin instanceof Activable_Plugin)) {
 						$plugin->activate();
 					}
 				}
@@ -97,6 +98,18 @@ class Main_Controller
 		include_once "framework/core/Session.php";
 	}
 
+	//-------------------------------------------------------------------------------- includesResume
+	private function includesResume()
+	{
+		// Core plugins
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/Autoloader.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/aop/Aop_Dealer.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/mappers/Builder.php";
+	}
+
 	//---------------------------------------------------------------------------------- includeStart
 	private function includesStart()
 	{
@@ -109,14 +122,8 @@ class Main_Controller
 		// Plugins
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/configuration/Plugin_Register.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/mappers/Builder.php";
 
-		// Core plugins
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/aop/Aop_Dealer.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/Autoloader.php";
+		$this->includesResume();
 	}
 
 	//----------------------------------------------------------------------------- loadConfiguration
@@ -144,15 +151,24 @@ class Main_Controller
 	{
 		$plugin_register = new Plugin_Register();
 		foreach ($plugins as $level => $sub_plugins) {
+			$plugin_objects = array();
 			foreach ($sub_plugins as $class_name => $plugin_configuration) {
 				if (is_numeric($class_name)) {
-					unset($plugins[$level][$class_name]);
 					$class_name = $plugin_configuration;
 					$plugin_configuration = array();
 				}
 				/** @var $plugin Plugin */
-				$plugin = Builder::create($class_name);
-				$plugins[$level][$class_name] = $plugin;
+				if (is_a($class_name, 'SAF\Framework\Configurable', true)) {
+					$plugin = Builder::create($class_name, array($plugin_configuration));
+					if (!($plugin instanceof Serializable)) {
+						/** @noinspection PhpUndefinedFieldInspection hidden property for serialization */
+						$plugin->plugin_configuration = $plugin_configuration;
+					}
+				}
+				else {
+					$plugin = Builder::create($class_name);
+				}
+				$plugin_objects[$class_name] = $plugin;
 				if (!isset($aop_dealer) && ($class_name == 'SAF\Framework\Aop_Dealer')) {
 					$plugin_register->dealer = $plugin;
 				}
@@ -165,6 +181,7 @@ class Main_Controller
 					$plugin->activate();
 				}
 			}
+			$plugins[$level] = $plugin_objects;
 		}
 	}
 
@@ -228,12 +245,13 @@ class Main_Controller
 	 */
 	private function sessionStart(&$get, &$post)
 	{
+		$this->includes();
 		if (empty($_SESSION)) {
 			session_start();
-			$_SESSION = array();
+//echo "<pre>" . print_r($_SESSION, true) . "</pre>";
+//$_SESSION = array();
 		}
 		$new_session = empty($_SESSION);
-		$this->includes();
 		$this->setIncludePath($_SESSION);
 		if ($new_session) {
 			$this->includesStart();
@@ -252,11 +270,37 @@ class Main_Controller
 
 		}
 		else {
-			$plugins = Session::current()->plugins;
+			$this->includesResume();
+			$session = Session::current();
+
+			$core_plugins =& $session->plugins["core"];
+			foreach ($core_plugins as $class_name => $serialized) {
+				/** @var $plugin Plugin */
+				if ($serialized === true) {
+					$plugin = Builder::create($class_name);
+				}
+				elseif (is_a($class_name, 'Serializable', true)) {
+					$plugin = unserialize($serialized);
+				}
+				else {
+					$plugin_configuration = unserialize($serialized);
+					/** @noinspection PhpUndefinedFieldInspection */
+					$plugin = Builder::create($class_name, array($plugin_configuration));
+					$plugin->plugin_configuration = $plugin_configuration;
+				}
+				if ($plugin instanceof Activable_Plugin) {
+					/** @var $plugin Activable_Plugin */
+					$plugin->activate();
+				}
+				$core_plugins[$class_name] = $plugin;
+			}
+
+			$plugins = $session->plugins;
 		}
 
 		// non-core plugins activation must be done after application has been created
-		$this->activatePlugins($plugins);
+		$this->activatePlugins($plugins, !$new_session);
+
 		unset($get[session_name()]);
 		unset($post[session_name()]);
 	}

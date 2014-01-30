@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
  */
-class Dao implements Activable_Plugin
+class Dao implements Configurable, Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -16,10 +16,23 @@ class Dao implements Activable_Plugin
 	 */
 	private static $list;
 
-	//-------------------------------------------------------------------------------------- activate
-	public function activate()
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $configuration array
+	 */
+	public function __construct($configuration)
 	{
-		// TODO connect to database
+		if (isset($configuration["list"])) {
+			foreach ($configuration["list"] as $dao_identifier => $dao_configuration) {
+				$class_name = $dao_configuration["class"];
+				unset($dao_configuration["class"]);
+				self::set($dao_identifier, new $class_name($dao_configuration));
+			}
+			unset($configuration["list"]);
+		}
+		$class_name = $configuration["class"];
+		unset($configuration["class"]);
+		Dao::current(new $class_name($configuration));
 	}
 
 	//----------------------------------------------------------------------------------------- begin
@@ -248,18 +261,6 @@ class Dao implements Activable_Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$configuration = $register->getConfiguration();
-		if (isset($configuration["list"])) {
-			foreach ($configuration["list"] as $dao_identifier => $dao_configuration) {
-				$class_name = $dao_configuration["class"];
-				unset($dao_configuration["class"]);
-				self::set($dao_identifier, new $class_name($dao_configuration));
-			}
-			unset($configuration["list"]);
-		}
-		$class_name = $configuration["class"];
-		unset($configuration["class"]);
-		Dao::current(new $class_name($configuration));
 	}
 
 	//---------------------------------------------------------------------------------------- remove

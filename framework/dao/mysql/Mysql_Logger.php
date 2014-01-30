@@ -6,7 +6,7 @@ use mysqli;
 /**
  * A logger for mysql queries
  */
-class Mysql_Logger implements Plugin
+class Mysql_Logger implements Configurable, Plugin
 {
 
 	//------------------------------------------------------------------------------------- $continue
@@ -58,7 +58,23 @@ class Mysql_Logger implements Plugin
 	/**
 	 * Mysql_Logger is a singleton, you only can get it's instance with getInstance()
 	 */
-	private function __construct() {}
+	public function __construct($configuration)
+	{
+		if (isset($configuration)) {
+			if (isset($configuration["continue"])) {
+				$this->continue = $configuration["continue"];
+			}
+			if (isset($configuration["display_log"])) {
+				$this->display_log = $configuration["display_log"];
+			}
+			// TODO this is dead code. What is it used for ?
+			foreach ($configuration as $key => $value) if (is_numeric($key)) {
+				if (strpos("/" . $_SERVER["REQUEST_URI"] . "/", "/" . $value . "/")) {
+					return;
+				}
+			}
+		}
+	}
 
 	//------------------------------------------------------------------------ afterMainControllerRun
 	/**
@@ -128,20 +144,6 @@ class Mysql_Logger implements Plugin
 	public function register(Plugin_Register $register)
 	{
 		$dealer = $register->dealer;
-		$parameters = $register->getConfiguration();
-		if (isset($parameters)) {
-			if (isset($parameters["continue"])) {
-				$this->continue = $parameters["continue"];
-			}
-			if (isset($parameters["display_log"])) {
-				$this->display_log = $parameters["display_log"];
-			}
-			foreach ($parameters as $key => $value) if (is_numeric($key)) {
-				if (strpos("/" . $_SERVER["REQUEST_URI"] . "/", "/" . $value . "/")) {
-					return;
-				}
-			}
-		}
 		$dealer->beforeMethodCall(
 			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onQuery")
 		);

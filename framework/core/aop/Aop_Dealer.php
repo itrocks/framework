@@ -1,12 +1,14 @@
 <?php
 namespace SAF\Framework;
 
+use Serializable;
+
 /**
  * Aop dealer
  *
  * Execute Aop links or store them until class is loaded
  */
-class Aop_Dealer implements Activable_Plugin
+class Aop_Dealer implements Activable_Plugin, Serializable
 {
 
 	//---------------------------------------------------------------------------------------- $links
@@ -15,9 +17,18 @@ class Aop_Dealer implements Activable_Plugin
 	 */
 	private $links = array();
 
+	//--------------------------------------------------------------------------- $serialized_objects
+	/**
+	 * @var string[]
+	 */
+	private $serialized_objects = array();
+
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Autoloader', "includeClass"), array($this, "includedClass")
+		);
 		foreach (array_keys($this->links) as $class_name) {
 			if (class_exists($class_name, false) || trait_exists($class_name, false)) {
 				$this->includedClass($class_name, true);
@@ -34,8 +45,12 @@ class Aop_Dealer implements Activable_Plugin
 	{
 		if ($result) {
 			if (isset($this->links[$class_name])) {
-				foreach ($this->links[$class_name] as $link) {
+				foreach ($this->links[$class_name] as $key => $link) {
 					list($method, $joinpoint, $advice) = $link;
+					if (is_array($advice) && is_string($advice[0]) && ($advice[0][1] == ":")) {
+						$advice[0] = unserialize($this->serialized_objects[$advice[0]]);
+						$this->links[$class_name][$key][2][0] = $advice[0];
+					}
 					Aop::$method($joinpoint, $advice);
 				}
 			}
@@ -87,10 +102,38 @@ class Aop_Dealer implements Activable_Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->afterMethodCall(
-			array('SAF\Framework\Autoloader', "includeClass"), array($this, "includedClass")
-		);
+	}
+
+	//------------------------------------------------------------------------------------- serialize
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		$serialized_objects = array();
+		foreach ($this->links as $class_name => $sub_links) {
+			foreach ($sub_links as $key => $link) {
+				if (is_array($link[2]) && is_object($link[2][0])) {
+					$serialized = serialize($link[2][0]);
+					if ($serialized[0] != "r") {
+						$reference = serialize($link[2][0]);
+						$serialized_objects[$reference] = $serialized;
+						$serialized = $reference;
+					}
+					$this->links[$class_name][$key][2][0] = $serialized;
+				}
+			}
+		}
+		return serialize(array($this->links, $serialized_objects));
+	}
+
+	//----------------------------------------------------------------------------------- unserialize
+	/**
+	 * @param string $serialized
+	 */
+	public function unserialize($serialized)
+	{
+		list($this->links, $this->serialized_objects) = unserialize($serialized);
 	}
 
 }

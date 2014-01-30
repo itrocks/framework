@@ -22,8 +22,8 @@ $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
 require_once "framework/core/controllers/Main_Controller.php";
 echo Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
-// boostrap debugging
-//Debug::globalDump();
+// Display result on client browser now, as session serialization could take a moment
+ob_flush(); flush();
 
 // When running php on cgi mode, getcwd() will return "/usr/lib/cgi-bin" on specific serialize()
 // calls. This is a php bug, calling session_write_close() here will serialize session variables

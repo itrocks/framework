@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * A configurable (with a php array) error handlers collection
  */
-class Error_Handlers implements Activable_Plugin
+class Error_Handlers implements Configurable, Activable_Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -19,6 +19,18 @@ class Error_Handlers implements Activable_Plugin
 	 * @var Error_Handlers
 	 */
 	private static $instance;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $configuration array
+	 */
+	public function __construct($configuration)
+	{
+		foreach ($configuration as $handle) {
+			list($err_no, $error_handler_class) = $handle;
+			$this->addHandler($err_no, new $error_handler_class());
+		}
+	}
 
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
@@ -149,11 +161,6 @@ class Error_Handlers implements Activable_Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$configuration = $register->getConfiguration();
-		foreach ($configuration as $handle) {
-			list($err_no, $error_handler_class) = $handle;
-			$this->addHandler($err_no, new $error_handler_class());
-		}
 	}
 
 	//----------------------------------------------------------------------------- setAsErrorHandler

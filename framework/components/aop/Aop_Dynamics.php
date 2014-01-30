@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * Aop_Dynamics stores aop links to enable at each script start
  */
-class Aop_Dynamics implements Plugin
+class Aop_Dynamics implements Configurable, Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -22,6 +22,15 @@ class Aop_Dynamics implements Plugin
 	 * @var array[] key is the short / long class name
 	 */
 	private $links = array();
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $configuration array
+	 */
+	public function __construct($configuration)
+	{
+		$this->links = $configuration;
+	}
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -99,7 +108,6 @@ class Aop_Dynamics implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$this->links = $register->getConfiguration();
 		$dealer = $register->dealer;
 		$dealer->afterMethodCall(
 			array('SAF\Framework\Autoloader', "includeClass"),

@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * A standard menu for your application
  */
-class Menu implements Plugin
+class Menu implements Configurable, Plugin
 {
 
 	//--------------------------------------------------------------------------------------- $blocks
@@ -35,15 +35,13 @@ class Menu implements Plugin
 	 */
 	public $title_link_target;
 
-	//-------------------------------------------------------------------------------------- register
+	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Build a menu using a configuration recursive array
-	 *
-	 * @parameter $register Plugin_Register
+	 * @param $configuration array
 	 */
-	public function register(Plugin_Register $register)
+	public function __construct($configuration)
 	{
-		foreach ($register->getConfiguration() as $block_key => $items) {
+		foreach ($configuration as $block_key => $items) {
 			if (is_numeric($block_key)) {
 				foreach ($items as $item) {
 					if     (substr($item, 0, 1) == "/") $this->title_link        = $item;
@@ -84,6 +82,16 @@ class Menu implements Plugin
 				$this->blocks[] = $block;
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * Build a menu using a configuration recursive array
+	 *
+	 * @parameter $register Plugin_Register
+	 */
+	public function register(Plugin_Register $register)
+	{
 	}
 
 }
