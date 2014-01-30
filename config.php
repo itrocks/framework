@@ -4,6 +4,7 @@
 $config["framework"] = array(
 	// core plugins are loaded first, at the beginning of each script
 	"core" => array(
+		'SAF\Framework\Autoloader',
 		'SAF\Framework\Aop_Dealer',
 		'SAF\Framework\Builder',
 		'SAF\Framework\Error_Handlers' => array(

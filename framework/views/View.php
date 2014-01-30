@@ -37,7 +37,7 @@ class View implements Plugin
 			$feature_classes[$feature_name] = Names::methodToClass($feature_name);
 		}
 		$views = array();
-		$namespaces = Application::getCurrentNamespaces();
+		$namespaces = Application::current()->getNamespaces();
 		foreach ($namespaces as $namespace) {
 			$class = $namespace . "\\" . $class_name;
 			while ($class) {
@@ -78,10 +78,9 @@ class View implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
 	}
 

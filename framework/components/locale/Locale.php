@@ -80,16 +80,14 @@ class Locale implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
-		if (isset($parameters)) {
-			$this->setDate($parameters["date"]);
-			$this->setLanguage($parameters["language"]);
-			$this->setNumber($parameters["number"]);
-		}
+		$configuration = $register->getConfiguration();
+		$this->setDate($configuration["date"]);
+		$this->setLanguage($configuration["language"]);
+		$this->setNumber($configuration["number"]);
 	}
 
 	//--------------------------------------------------------------------------------------- setDate

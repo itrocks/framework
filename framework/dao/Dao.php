@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
  */
-class Dao implements Plugin
+class Dao implements Activable_Plugin
 {
 	use Current { current as private pCurrent; }
 
@@ -15,6 +15,12 @@ class Dao implements Plugin
 	 * @var Data_Link[]
 	 */
 	private static $list;
+
+	//-------------------------------------------------------------------------------------- activate
+	public function activate()
+	{
+		// TODO connect to database
+	}
 
 	//----------------------------------------------------------------------------------------- begin
 	/**
@@ -238,18 +244,18 @@ class Dao implements Plugin
 	/**
 	 * Configure DAO with specific DAO link elements
 	 *
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
-		if (isset($parameters["list"])) {
-			foreach ($parameters["list"] as $dao_identifier => $dao_configuration) {
+		$configuration = $register->getConfiguration();
+		if (isset($configuration["list"])) {
+			foreach ($configuration["list"] as $dao_identifier => $dao_configuration) {
 				$class_name = $dao_configuration["class"];
 				unset($dao_configuration["class"]);
 				self::set($dao_identifier, new $class_name($dao_configuration));
 			}
-			unset($parameters["list"]);
+			unset($configuration["list"]);
 		}
 	}
 

@@ -72,7 +72,7 @@ class Controller_Uri
 	private function setDefaults()
 	{
 		if (!$this->controller_name && !$this->feature_name) {
-			$this->controller_name = Configuration::current()->getApplicationClassName();
+			$this->controller_name = get_class(Application::current());
 			$this->feature_name = "home";
 		}
 	}
@@ -97,7 +97,7 @@ class Controller_Uri
 		$controller = $this->controller_name;
 		$controller_root = Namespaces::shortClassName($this->controller_name);
 		$controllers = array();
-		$namespaces = Application::getCurrentNamespaces();
+		$namespaces = Application::current()->getNamespaces();
 		while ($controller) {
 			$controllers[] = array(
 				$controller . "_" . $feature_name_for_class . "_Controller", "run"

@@ -171,7 +171,7 @@ class Builder implements Plugin
 	/**
 	 * @param $class_name string
 	 */
-	public static function onMethodWithClassName(&$class_name)
+	public function onMethodWithClassName(&$class_name)
 	{
 		$class_name = Builder::current()->replacementClassName($class_name);
 	}
@@ -180,7 +180,7 @@ class Builder implements Plugin
 	/**
 	 * @param $element_class string
 	 */
-	public static function onMethodWithElementClass(&$element_class)
+	public function onMethodWithElementClass(&$element_class)
 	{
 		$element_class = Builder::current()->replacementClassName($element_class);
 	}
@@ -190,41 +190,41 @@ class Builder implements Plugin
 	 * @param $result string
 	 * @return string
 	 */
-	public static function onMethodWithReturnedValue($result)
+	public function onMethodWithReturnedValue($result)
 	{
 		return Builder::current()->replacementClassName($result);
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
+		$dealer = $register->dealer;
 		$dealer->beforeMethodCall(
 			array('SAF\Framework\Getter', "getCollection"),
-			array(__CLASS__, "onMethodWithElementClass")
+			array($this, "onMethodWithElementClass")
 		);
 		$dealer->beforeMethodCall(
 			array('SAF\Framework\Getter', "getObject"),
-			array(__CLASS__, "onMethodWithClassName")
+			array($this, "onMethodWithClassName")
 		);
 		$dealer->afterMethodCall(
 			array('SAF\Framework\Namespaces', "fullClassName"),
-			array(__CLASS__, "afterNamespacesFullClassName")
+			array($this, "afterNamespacesFullClassName")
 		);
 		$dealer->beforeMethodCall(
 			array('SAF\Framework\Search_Object', "create"),
-			array(__CLASS__, "onMethodWithClassName")
+			array($this, "onMethodWithClassName")
 		);
 		$dealer->afterMethodCall(
 			array('SAF\Framework\Set', "elementClassNameOf"),
-			array(__CLASS__, "onMethodWithReturnedValue")
+			array($this, "onMethodWithReturnedValue")
 		);
 		$dealer->afterMethodCall(
 			array('SAF\Framework\Sql_Joins', "addSimpleJoin"),
-			array(__CLASS__, "onMethodWithReturnedValue")
+			array($this, "onMethodWithReturnedValue")
 		);
 		// TODO this is really slow : hardcode it and optimize it in C
 		//set_new_overload(function($class_name) { return Builder::className($class_name); });

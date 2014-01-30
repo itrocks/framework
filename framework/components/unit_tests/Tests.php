@@ -2,7 +2,6 @@
 namespace SAF\Framework\Unit_Tests;
 
 use SAF\Framework\Application;
-use SAF\Framework\Configuration;
 use SAF\Framework\Namespaces;
 use SAF\Framework\Reflection_Class;
 use SAF\Framework\Reflection_Method;
@@ -16,7 +15,7 @@ class Tests
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
-		$this->runDir(Application::current()->getSourceDirectory() . "/tests");
+		$this->runDir(Application::current()->path->getSourceDirectory() . "/tests");
 	}
 
 	//-------------------------------------------------------------------------------------- runClass
@@ -88,7 +87,7 @@ class Tests
 		include_once $file_name;
 		$slash = strrpos($file_name, "/");
 		$dot = strrpos($file_name, ".");
-		$namespace = Namespaces::of(Configuration::current()->getApplicationClassName());
+		$namespace = Namespaces::of(get_class(Application::current()));
 		$class_name = $namespace . "\\Tests\\" . substr($file_name, $slash + 1, $dot - $slash - 1);
 		if (is_subclass_of($class_name, 'SAF\Framework\Unit_Tests\Unit_Test')) {
 			$this->runClass($class_name);

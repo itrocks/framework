@@ -42,7 +42,8 @@ class Configurations
 	/**
 	 * Load the config.php configuration file an store it into the configurations list
 	 *
-	 * If a default configuration is set into the loaded configuration file, current configuration is switched to this configuration.
+	 * If a default configuration is set into the loaded configuration file, current configuration is
+	 * switched to this configuration.
 	 *
 	 * @param $file_name string
 	 * @return Configuration
@@ -52,26 +53,30 @@ class Configurations
 		$config = array();
 		/** @noinspection PhpIncludeInspection */
 		include $file_name;
-		$this->configurations = array();
+		$configurations = array();
 		foreach ($config as $config_name => $config_options) {
 			if (isset($config_options["extends"])) {
 				$extends_array = is_array($config_options["extends"])
 					? $config_options["extends"]
 					: array($config_options["extends"]);
+				unset($config_options["extends"]);
 				foreach ($extends_array as $extends) {
-					$config_options = arrayMergeRecursive(
-						$this->getConfiguration($extends)->toArray(),
-						$config_options
-					);
+					$config_options = arrayMergeRecursive($configurations[$extends], $config_options);
 				}
 			}
+			if (!isset($config_options["app"])) {
+				$config_options["app"] = $config_name;
+			}
+			if (!isset($config_options["author"])) {
+				$config_options["author"] = "SAF";
+			}
+			$configurations[$config_name] = $config_options;
+		}
+		$this->configurations = array();
+		foreach ($configurations as $config_name => $config_options) {
 			$this->configurations[$config_name] = new Configuration($config_options);
 		}
-		$configuration = Configuration::current();
-		if (!$configuration) {
-			$configuration = Configuration::current(end($this->configurations));
-		}
-		return $configuration;
+		return end($this->configurations);
 	}
 
 }

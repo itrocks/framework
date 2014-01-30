@@ -29,15 +29,14 @@ abstract class Debug
 	 * - all static variables declared into functions
 	 * - all opened resources (ie files or mysql links)
 	 *
-	 * @param $return boolean true if you want to return the result instead of displaying it
-	 * @param $pre    boolean display result between <pre> and </pre>
-	 * @return boolean|array true if $return was false, else returns the result array
+	 * @param $display boolean|string true or "pre" if you want to displaying it
+	 * @return array returns the result array
 	 */
-	public static function globalDump($return = false, $pre = true)
+	public static function globalDump($display = "pre")
 	{
 		$dump['$GLOBALS'] = $GLOBALS;
 		$dump['$_SERVER'] = $_SERVER;
-		foreach (get_declared_classes() as $class) {
+		foreach (array_merge(get_declared_classes(), get_declared_traits()) as $class) {
 			foreach ((new ReflectionClass($class))->getProperties() as $property) {
 				if ($property->isStatic()) {
 					if (!$property->isPublic()) {
@@ -54,11 +53,11 @@ abstract class Debug
 				}
 			}
 		}
-		if ($return) {
-			return $dump;
+		if ($display) {
+			$pre = ($display === "pre");
+			echo ($pre ? "<pre>" : "") . print_r($dump, true) . ($pre ? "</pre>" : "");
 		}
-		echo ($pre ? "<pre>" : "") . print_r($dump, true) . ($pre ? "</pre>" : "");
-		return true;
+		return $dump;
 	}
 
 	//------------------------------------------------------------------------------------------- log

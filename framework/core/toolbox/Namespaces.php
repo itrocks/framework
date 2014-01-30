@@ -17,9 +17,6 @@ abstract class Namespaces
 	 */
 	public static function checkFilePath($class_name, $file_path)
 	{
-		if ($class_name[0] === "\\") {
-			$class_name = substr($class_name, 1);
-		}
 		$file_space = explode("/", substr($file_path, strlen(getcwd()) + 1));
 		$name_space = explode("\\", strtolower($class_name));
 		// remove main part of the namespace, and the class name too
@@ -71,7 +68,7 @@ abstract class Namespaces
 				$full_class_name = $cache[$class_name];
 			}
 			else {
-				foreach (Application::getCurrentNamespaces() as $namespace) {
+				foreach (Application::current()->getNamespaces() as $namespace) {
 					$full_class_name = $namespace . "\\" . $class_name;
 					if (@class_exists($full_class_name) || @interface_exists($full_class_name)) {
 						$cache[$class_name] = $full_class_name;
@@ -128,6 +125,30 @@ abstract class Namespaces
 		else {
 			return "";
 		}
+	}
+
+	//------------------------------------------------------------------------------- resolveFilePath
+	/**
+	 * Resolve file path using the namespace method
+	 * Slower than stream_resolve_include_path() but checks namespace
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function resolveFilePath($class_name)
+	{
+		$namespace = substr($class_name, strpos($class_name, "\\") + 1);
+		$short_class_name = substr($class_name, strrpos($class_name, "\\") + 1);
+		$namespace = substr($namespace, 0, strrpos($namespace, "\\"));
+		$include_path = ":" . get_include_path() . ":";
+		$preg = "|:([^:]*" . strtolower(str_replace("\\", "/[^:]*/", $namespace)) . "[^:]*?):|";
+		preg_match_all($preg, $include_path, $match);
+		foreach ($match[1] as $file_path) {
+			if (file_exists($file_path . "/" . $short_class_name . ".php")) {
+				return $file_path . "/" . $short_class_name . ".php";
+			}
+		}
+		return null;
 	}
 
 	//-------------------------------------------------------------------------------- shortClassName

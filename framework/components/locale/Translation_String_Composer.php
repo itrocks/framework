@@ -12,7 +12,7 @@ namespace SAF\Framework;
  * "¦Sales orders¦ list" will be dynamically translated : first "Sales orders", then "$1 list"
  * "¦Sales¦ ¦orders¦ list" will translate "Sales" then "orders" then "$1 $2 list"
  */
-abstract class Translation_String_Composer implements Plugin
+class Translation_String_Composer implements Plugin
 {
 
 	//---------------------------------------------------- afterReflectionPropertyValueForHtmlDisplay
@@ -22,7 +22,7 @@ abstract class Translation_String_Composer implements Plugin
 	 *
 	 * @param $result string
 	 */
-	public static function afterReflectionPropertyValueDisplay(&$result)
+	public function afterReflectionPropertyValueDisplay(&$result)
 	{
 		if (strpos($result, ".") !== false) {
 			$result = "¦" . str_replace(".", "¦.¦", $result) . "¦";
@@ -37,7 +37,7 @@ abstract class Translation_String_Composer implements Plugin
 	 * @param $joinpoint Around_Method_Joinpoint
 	 * @return string
 	 */
-	public static function onTranslate(Translations $object, $text, $context, $joinpoint)
+	public function onTranslate(Translations $object, $text, $context, $joinpoint)
 	{
 		$context = isset($context) ? $context : "";
 		if (strpos($text, "¦") !== false) {
@@ -76,15 +76,19 @@ abstract class Translation_String_Composer implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 * @param $register Plugin_Register
+	 */
+	public function register(Plugin_Register $register)
 	{
-		Aop::addAroundMethodCall(
+		$dealer = $register->dealer;
+		$dealer->aroundMethodCall(
 			array('SAF\Framework\Translations', "translate"),
-			array(__CLASS__, "onTranslate")
+			array($this, "onTranslate")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Reflection_Property_Value', "display"),
-			array(__CLASS__, "afterReflectionPropertyValueDisplay")
+			array($this, "afterReflectionPropertyValueDisplay")
 		);
 	}
 

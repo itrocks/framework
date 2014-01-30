@@ -6,7 +6,12 @@ namespace SAF\Framework;
  */
 class Session
 {
-	use Current { current as private pCurrent; }
+
+	//-------------------------------------------------------------------------------------- $plugins
+	/**
+	 * @var array
+	 */
+	public $plugins;
 
 	//--------------------------------------------------------------------------------------- current
 	/**
@@ -15,7 +20,11 @@ class Session
 	 */
 	public static function current(Session $set_current = null)
 	{
-		return self::pCurrent($set_current);
+		if ($set_current) {
+			$_SESSION['Session'] = $set_current;
+			return $set_current;
+		}
+		return $_SESSION['Session'];
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -121,15 +130,6 @@ class Session
 		if (isset($object)) {
 			$_SESSION[isset($class_name) ? $class_name : get_class($object)] = $object;
 		}
-	}
-
-	//----------------------------------------------------------------------------------------- start
-	/**
-	 * @return Session
-	 */
-	public static function start()
-	{
-		return is_null(self::current()) ? self::current(new Session()) : self::current();
 	}
 
 }

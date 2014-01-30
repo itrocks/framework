@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * Locale plugin concentrates locale translation / formatting features into simple static calls
  */
-abstract class Loc implements Plugin
+class Loc implements Plugin
 {
 
 	//-------------------------------------------------------------------------------------- $context
@@ -20,7 +20,7 @@ abstract class Loc implements Plugin
 	 * @param $result array[]
 	 * @return array[]
 	 */
-	public static function afterHtmlTemplateFuncsToEditPropertyExtra($result)
+	public function afterHtmlTemplateFuncsToEditPropertyExtra($result)
 	{
 		/** @var $property      Reflection_Property */
 		/** @var $property_path string */
@@ -34,7 +34,7 @@ abstract class Loc implements Plugin
 	/**
 	 * @param $result Reflection_Property_Value[]
 	 */
-	public static function afterListSearchValues(&$result)
+	public function afterListSearchValues(&$result)
 	{
 		if (isset($result)) {
 			foreach ($result as $property) {
@@ -50,7 +50,7 @@ abstract class Loc implements Plugin
 	 * @param $property Reflection_Property
 	 * @param $value    boolean|integer|float|string|array
 	 */
-	public static function beforeObjectBuilderArrayBuildBasicValue(
+	public function beforeObjectBuilderArrayBuildBasicValue(
 		Reflection_Property $property, &$value
 	) {
 		if (isset($value)) {
@@ -84,7 +84,7 @@ abstract class Loc implements Plugin
 	/**
 	 * @param $value string class name taken from the import array
 	 */
-	public static function classNameDisplayReverse(&$value)
+	public function classNameDisplayReverse(&$value)
 	{
 		if (isset($value)) {
 			$value = explode("\\", $value);
@@ -101,7 +101,7 @@ abstract class Loc implements Plugin
 	 *
 	 * @param $result string
 	 */
-	public static function classNameReturnedValueToContext($result)
+	public function classNameReturnedValueToContext($result)
 	{
 		if (isset($result)) {
 			self::setContext($result);
@@ -136,7 +136,7 @@ abstract class Loc implements Plugin
 	 * @param $result string
 	 * @return string
 	 */
-	public static function dateTimeReturnedValueToLocale($result)
+	public function dateTimeReturnedValueToLocale($result)
 	{
 		return self::dateToLocale($result);
 	}
@@ -158,7 +158,7 @@ abstract class Loc implements Plugin
 	 * @param $result string
 	 * @return string
 	 */
-	public static function floatReturnedValueToLocale($result)
+	public function floatReturnedValueToLocale($result)
 	{
 		return self::floatToLocale($result);
 	}
@@ -191,7 +191,7 @@ abstract class Loc implements Plugin
 	 * @param $result string
 	 * @return string
 	 */
-	public static function integerReturnedValueToLocale($result)
+	public function integerReturnedValueToLocale($result)
 	{
 		return self::integerToLocale($result);
 	}
@@ -257,47 +257,51 @@ abstract class Loc implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 * @param $register Plugin_Register
+	 */
+	public function register(Plugin_Register $register)
 	{
+		$dealer = $register->dealer;
 		// format from locale user input to ISO and standard formats
-		Aop::addBeforeMethodCall(
+		$dealer->beforeMethodCall(
 			array('SAF\Framework\Object_Builder_Array', "buildBasicValue"),
-			array(__CLASS__, "beforeObjectBuilderArrayBuildBasicValue")
+			array($this, "beforeObjectBuilderArrayBuildBasicValue")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Default_List_Controller', "getSearchValues"),
-			array(__CLASS__, "afterListSearchValues")
+			array($this, "afterListSearchValues")
 		);
 		// format to locale
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Html_Template_Functions', "toEditPropertyExtra"),
-			array(__CLASS__, "afterHtmlTemplateFuncsToEditPropertyExtra")
+			array($this, "afterHtmlTemplateFuncsToEditPropertyExtra")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Reflection_Property_View', "formatDateTime"),
-			array(__CLASS__, "dateTimeReturnedValueToLocale")
+			array($this, "dateTimeReturnedValueToLocale")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Reflection_Property_View', "formatFloat"),
-			array(__CLASS__, "floatReturnedValueToLocale")
+			array($this, "floatReturnedValueToLocale")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Reflection_Property_View', "formatInteger"),
-			array(__CLASS__, "integerReturnedValueToLocale")
+			array($this, "integerReturnedValueToLocale")
 		);
 		// translations
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\List_Settings', "getDefaultTitle"),
-			array(__CLASS__, "translateReturnedValue")
+			array($this, "translateReturnedValue")
 		);
 		// translation/reverse of export/import procedures
-		Aop::addBeforeMethodCall(
+		$dealer->beforeMethodCall(
 			array('SAF\Framework\Import_Array', "getClassNameFromValue"),
-			array(__CLASS__, "classNameDisplayReverse")
+			array($this, "classNameDisplayReverse")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Import_Array', "getClassNameFromArray"),
-			array(__CLASS__, "classNameReturnedValueToContext")
+			array($this, "classNameReturnedValueToContext")
 		);
 	}
 
@@ -349,7 +353,7 @@ abstract class Loc implements Plugin
 	 * @param $result string
 	 * @return string
 	 */
-	public static function translateReturnedValue($result)
+	public function translateReturnedValue($result)
 	{
 		return self::tr($result);
 	}

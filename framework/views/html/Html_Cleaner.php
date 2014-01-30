@@ -19,11 +19,11 @@ class Html_Cleaner implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
+		$dealer = $register->dealer;
 		$dealer->afterMethodCall(
 			array('SAF\Framework\Html_Template', "parse"), array($this, "clean")
 		);

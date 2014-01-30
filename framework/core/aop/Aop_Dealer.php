@@ -6,20 +6,24 @@ namespace SAF\Framework;
  *
  * Execute Aop links or store them until class is loaded
  */
-class Aop_Dealer implements Plugin
+class Aop_Dealer implements Activable_Plugin
 {
-
-	//-------------------------------------------------------------------------------------- $classes
-	/**
-	 * @var string[]
-	 */
-	public $classes = array();
 
 	//---------------------------------------------------------------------------------------- $links
 	/**
 	 * @var array
 	 */
-	public $links = array();
+	private $links = array();
+
+	//-------------------------------------------------------------------------------------- activate
+	public function activate()
+	{
+		foreach (array_keys($this->links) as $class_name) {
+			if (class_exists($class_name, false) || trait_exists($class_name, false)) {
+				$this->includedClass($class_name, true);
+			}
+		}
+	}
 
 	//--------------------------------------------------------------------------------- includedClass
 	/**
@@ -29,7 +33,6 @@ class Aop_Dealer implements Plugin
 	public function includedClass($class_name, $result = true)
 	{
 		if ($result) {
-			$this->classes[$class_name] = true;
 			if (isset($this->links[$class_name])) {
 				foreach ($this->links[$class_name] as $link) {
 					list($method, $joinpoint, $advice) = $link;
@@ -46,7 +49,7 @@ class Aop_Dealer implements Plugin
 	 */
 	public function afterMethodCall($joinpoint, $advice)
 	{
-		if (isset($this->classes[$joinpoint[0]])) {
+		if (class_exists($joinpoint[0], false) || trait_exists($joinpoint[0], false)) {
 			Aop::addAfterMethodCall($joinpoint, $advice);
 		}
 		$this->links[$joinpoint[0]][] = array("addAfterMethodCall", $joinpoint, $advice);
@@ -59,7 +62,7 @@ class Aop_Dealer implements Plugin
 	 */
 	public function aroundMethodCall($joinpoint, $advice)
 	{
-		if (isset($this->classes[$joinpoint[0]])) {
+		if (class_exists($joinpoint[0], false) || trait_exists($joinpoint[0], false)) {
 			Aop::addAroundMethodCall($joinpoint, $advice);
 		}
 		$this->links[$joinpoint[0]][] = array("addAroundMethodCall", $joinpoint, $advice);
@@ -72,7 +75,7 @@ class Aop_Dealer implements Plugin
 	 */
 	public function beforeMethodCall($joinpoint, $advice)
 	{
-		if (isset($this->classes[$joinpoint[0]])) {
+		if (class_exists($joinpoint[0], false) || trait_exists($joinpoint[0], false)) {
 			Aop::addBeforeMethodCall($joinpoint, $advice);
 		}
 		$this->links[$joinpoint[0]][] = array("addBeforeMethodCall", $joinpoint, $advice);
@@ -80,21 +83,12 @@ class Aop_Dealer implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
-		foreach (get_declared_classes() as $class_name) {
-			$this->classes[$class_name] = true;
-		}
-		foreach (get_declared_interfaces() as $interface_name) {
-			$this->classes[$interface_name] = true;
-		}
-		foreach (get_declared_traits() as $trait_name) {
-			$this->classes[$trait_name] = true;
-		}
-		Aop::addAfterMethodCall(
+		$dealer = $register->dealer;
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Autoloader', "includeClass"), array($this, "includedClass")
 		);
 	}

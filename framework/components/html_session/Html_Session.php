@@ -4,14 +4,8 @@ namespace SAF\Framework;
 /**
  * Pass session id thru HTML code using this plugin
  */
-class Html_Session implements Configurable, Plugin
+class Html_Session implements Activable_Plugin
 {
-
-	//----------------------------------------------------------------------------------- $registered
-	/**
-	 * @var boolean
-	 */
-	private static $registered = false;
 
 	//----------------------------------------------------------------------------------- $use_cookie
 	/**
@@ -19,25 +13,12 @@ class Html_Session implements Configurable, Plugin
 	 */
 	public static $use_cookie = false;
 
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * The HTML Session contructor can set parameters
-	 *
-	 * @param null $parameters
-	 */
-	public function __construct($parameters = null)
+	//-------------------------------------------------------------------------------------- activate
+	public function activate()
 	{
-		if (is_string($parameters)) {
-			$parameters = array($parameters);
-		}
-		if (is_array($parameters)) {
-			if (
-				isset($parameters["use_cookie"]) && $parameters["use_cookie"]
-				|| in_array("use_cookie", $parameters)
-			) {
-				self::$use_cookie = true;
-			}
-		}
+		ini_set("session.use_cookies", self::$use_cookie);
+		ini_set("session.use_only_cookies", false);
+		ini_set("session.use_trans_sid", !self::$use_cookie);
 	}
 
 	//------------------------------------------------------------------------------------ useCookies
@@ -58,19 +39,12 @@ class Html_Session implements Configurable, Plugin
 	/**
 	 * Always add session id at end of html documents parsing
 	 *
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
-		// PHP configuration method
-		if (!self::$registered) {
-			self::$registered = true;
-			ini_set("arg_separator.output", "&amp;");
-			ini_set("session.use_cookies", self::$use_cookie);
-			ini_set("session.use_only_cookies", false);
-			ini_set("session.use_trans_sid", !self::$use_cookie);
-		}
+		$configuration = $register->getConfiguration();
+		self::$use_cookie = isset($configuration["use_cookie"]) && $configuration["use_cookie"];
 	}
 
 }

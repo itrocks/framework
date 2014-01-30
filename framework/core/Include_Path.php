@@ -98,7 +98,11 @@ class Include_Path
 		$directories = array();
 		if ($application != "framework") {
 			$extends = trim(mParse(file_get_contents($app_dir . "/Application.php"), " extends ", "\n"));
-			$directories = $this->getSourceDirectories($extends);
+			$extends = substr($extends, 0, strrpos($extends, "\\"));
+			$extends = substr($extends, strrpos($extends, "\\") + 1);
+			if ($extends) {
+				$directories = $this->getSourceDirectories(strtolower($extends));
+			}
 		}
 		/*
 		// todo multiple applications extends management

@@ -13,6 +13,28 @@ class Main_Controller
 	 */
 	private function __construct() {}
 
+	//------------------------------------------------------------------------------- activatePlugins
+	/**
+	 * Activate all plugins (called only at session beginning)
+	 *
+	 * @param $plugins array
+	 */
+	private function activatePlugins($plugins)
+	{
+		foreach ($plugins as $level => $sub_plugins) {
+			if ($level != "core") {
+				foreach ($sub_plugins as $class_name => $plugin) {
+					if (
+						(class_exists($class_name, false) || trait_exists($class_name, false))
+						&& ($plugin instanceof Activable_Plugin)
+					) {
+						$plugin->activate();
+					}
+				}
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------- createApplication
 	/**
 	 * Create the current application object
@@ -21,10 +43,12 @@ class Main_Controller
 	 */
 	private function createApplication(Configuration $configuration)
 	{
+		$class_name = $configuration->getApplicationClassName();
+		$name = strtolower($configuration->getApplicationName());
 		/** @noinspection PhpIncludeInspection */
-		include_once strtolower($configuration->getApplicationName()) . "/Application.php";
+		include_once strtolower($name) . "/Application.php";
 		/** @var $application Application */
-		$application = Builder::create($configuration->getApplicationClassName());
+		$application = Builder::create($class_name, $name);
 		Application::current($application);
 	}
 
@@ -46,25 +70,53 @@ class Main_Controller
 	//-------------------------------------------------------------------------------------- includes
 	private function includes()
 	{
-		// Include_Path
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/OS.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/Include_Path.php";
-
-		// Autoloader
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Plugin.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/Autoloader.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/Namespaces.php";
-
-		// Functions includes
+		// Low level includes
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/toolbox/Array.php";
 		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/Current.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/Current_With_Default.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/Namespaces.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/toolbox/OS.php";
+		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/toolbox/String.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Plugin.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Activable_Plugin.php";
+
+		// Include_Path
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/Include_Path.php";
+
+		// Session
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/Session.php";
+	}
+
+	//---------------------------------------------------------------------------------- includeStart
+	private function includesStart()
+	{
+		// Configuration
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Configuration.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Configurations.php";
+
+		// Plugins
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Plugin_Register.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/mappers/Builder.php";
+
+		// Core plugins
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/aop/Aop_Dealer.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/Autoloader.php";
 	}
 
 	//----------------------------------------------------------------------------- loadConfiguration
@@ -75,40 +127,43 @@ class Main_Controller
 	 */
 	private function loadConfiguration()
 	{
-		$configuration = Session::current()->get('SAF\Framework\Configuration');
-		if (!$configuration) {
-			$script_name = $_SERVER["SCRIPT_NAME"];
-			$configuration = (new Configurations())->load(
-				substr($script_name, strrpos($script_name, '/') + 1)
-			);
-			$this->loadPlugins($configuration);
-		}
+		$script_name = $_SERVER["SCRIPT_NAME"];
+		$configuration = (new Configurations())->load(
+			substr($script_name, strrpos($script_name, '/') + 1)
+		);
 		return $configuration;
 	}
 
-	//------------------------------------------------------------------------------- loadCorePlugins
+	//------------------------------------------------------------------------------- registerPlugins
 	/**
-	 * Load core plugins
+	 * Register plugins into session (called only at session beginning)
 	 *
-	 * @param $configuration Configuration
+	 * @param $plugins array
 	 */
-	private function loadPlugins(Configuration $configuration)
+	private function registerPlugins(&$plugins)
 	{
-		foreach (
-			array("core", "highest", "higher", "high", "normal", "low", "lower", "lowest") as $level
-		) {
-			foreach ($configuration->$level as $class_name => $plugin_configuration) {
+		$plugin_register = new Plugin_Register();
+		foreach ($plugins as $level => $sub_plugins) {
+			foreach ($sub_plugins as $class_name => $plugin_configuration) {
 				if (is_numeric($class_name)) {
+					unset($plugins[$level][$class_name]);
 					$class_name = $plugin_configuration;
 					$plugin_configuration = array();
 				}
 				/** @var $plugin Plugin */
 				$plugin = Builder::create($class_name);
+				$plugins[$level][$class_name] = $plugin;
 				if (!isset($aop_dealer) && ($class_name == 'SAF\Framework\Aop_Dealer')) {
-					/** @var $aop_dealer Aop_Dealer */
-					$aop_dealer = $plugin;
+					$plugin_register->dealer = $plugin;
 				}
-				$plugin->register($aop_dealer, $plugin_configuration);
+				else {
+					$plugin_register->setConfiguration($plugin_configuration);
+				}
+				$plugin->register($plugin_register);
+				if (($level == "core") && ($plugin instanceof Activable_Plugin)) {
+					/** @var $plugin Activable_Plugin */
+					$plugin->activate();
+				}
 			}
 		}
 	}
@@ -126,8 +181,6 @@ class Main_Controller
 	public function run($uri, $get, $post, $files)
 	{
 		$this->sessionStart($get, $post);
-		$configuration = $this->loadConfiguration();
-		$this->createApplication($configuration);
 		return $this->runController($uri, $get, $post, $files);
 	}
 
@@ -177,35 +230,52 @@ class Main_Controller
 	{
 		if (empty($_SESSION)) {
 			session_start();
+			$_SESSION = array();
 		}
+		$new_session = empty($_SESSION);
 		$this->includes();
-		$this->setFrameworkIncludePath($_SESSION);
-		$this->startAutoloader();
-		Session::start();
+		$this->setIncludePath($_SESSION);
+		if ($new_session) {
+			$this->includesStart();
+
+			$configuration = $this->loadConfiguration();
+			unset($_SESSION["include_path"]);
+			$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
+			$plugins = $configuration->getPlugins();
+			$this->registerPlugins($plugins);
+
+			$session = Session::current(new Session());
+			$session->plugins = $plugins;
+
+			/** @noinspection PhpUndefinedVariableInspection Will always be set when $new_session true */
+			$this->createApplication($configuration);
+
+		}
+		else {
+			$plugins = Session::current()->plugins;
+		}
+
+		// non-core plugins activation must be done after application has been created
+		$this->activatePlugins($plugins);
 		unset($get[session_name()]);
 		unset($post[session_name()]);
 	}
 
 	//----------------------------------------------------------------------- setFrameworkIncludePath
 	/**
-	 * @param $session array
+	 * @param $session          array
+	 * @param $application_name string
 	 */
-	private function setFrameworkIncludePath(&$session)
+	private function setIncludePath(&$session, $application_name = "framework")
 	{
 		if (isset($session["include_path"])) {
 			set_include_path($session["include_path"]);
 		}
 		else {
-			$include_path = (new Include_Path("framework"))->getIncludePath();
+			$include_path = (new Include_Path($application_name))->getIncludePath();
 			$session["include_path"] = $include_path;
 			set_include_path($include_path);
 		}
-	}
-
-	//------------------------------------------------------------------------------- startAutoloader
-	private function startAutoloader()
-	{
-		(new Autoloader())->register(null, null);
 	}
 
 }

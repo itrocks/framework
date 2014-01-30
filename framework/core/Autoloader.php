@@ -4,8 +4,14 @@ namespace SAF\Framework;
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
  */
-class Autoloader implements Plugin
+class Autoloader implements Activable_Plugin
 {
+
+	//-------------------------------------------------------------------------------------- activate
+	public function activate()
+	{
+		spl_autoload_register(array($this, "autoload"));
+	}
 
 	//-------------------------------------------------------------------------------------- autoLoad
 	/**
@@ -29,16 +35,14 @@ class Autoloader implements Plugin
 		if (!isset($file_path)) {
 			$file_path = stream_resolve_include_path(Namespaces::shortClassName($class_name) . ".php");
 		}
-		if (Namespaces::checkFilePath($class_name, $file_path)) {
-			if ($file_path) {
-				/** @noinspection PhpIncludeInspection */
-				include_once $file_path;
-			}
-			return $file_path;
+		if (!Namespaces::checkFilePath($class_name, $file_path)) {
+			$file_path = Namespaces::resolveFilePath($class_name);
 		}
-		else {
-			return null;
+		if ($file_path) {
+			/** @noinspection PhpIncludeInspection */
+			include_once $file_path;
 		}
+		return $file_path;
 	}
 
 	//------------------------------------------------------------------------------ rectifyClassName
@@ -73,12 +77,10 @@ class Autoloader implements Plugin
 	/**
 	 * Registers autoloader
 	 *
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
-		spl_autoload_register(array($this, "autoload"));
 	}
 
 }

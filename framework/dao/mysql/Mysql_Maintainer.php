@@ -267,11 +267,11 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Registers the Mysql maintainer plugin
 	 *
-	 * @param $dealer     Aop_Dealer
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public function register($dealer, $parameters)
+	public function register(Plugin_Register $register)
 	{
+		$dealer = $register->dealer;
 		$dealer->afterMethodCall(
 			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onMysqliQuery")
 		);
