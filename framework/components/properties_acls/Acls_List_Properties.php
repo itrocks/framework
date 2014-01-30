@@ -23,7 +23,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 	 * @param $joinpoint Around_Method_Joinpoint
 	 * @return string[] property names list
 	 */
-	public static function listControllerGetProperties(
+	public function listControllerGetProperties(
 		$class_name, Around_Method_Joinpoint $joinpoint
 	) {
 		$acls_list_properties = new Acls_List_Properties($class_name);
@@ -42,7 +42,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 	 * @param $joinpoint  Around_Method_Joinpoint
 	 * @return mixed
 	 */
-	public static function propertyAddController(
+	public function propertyAddController(
 		Controller_Parameters $parameters, $form, $files, Around_Method_Joinpoint $joinpoint
 	) {
 		if ($parameters->getRawParameter(1) == "list") {
@@ -67,7 +67,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 	 * @param $joinpoint  Around_Method_Joinpoint
 	 * @return mixed
 	 */
-	public static function propertyRemoveController(
+	public function propertyRemoveController(
 		Controller_Parameters $parameters, $form, $files, Around_Method_Joinpoint $joinpoint
 	) {
 		if ($parameters->getRawParameter(1) == "list") {
@@ -80,19 +80,24 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 *
+	 * @param $register Plugin_Register
+	 */
+	public function register(Plugin_Register $register)
 	{
-		Aop::addAroundMethodCall(
+		$dealer = $register->dealer;
+		$dealer->aroundMethodCall(
 			array('SAF\Framework\Default_List_Controller', "getPropertiesList"),
-			array(__CLASS__, "listControllerGetProperties")
+			array($this, "listControllerGetProperties")
 		);
-		Aop::addAroundMethodCall(
+		$dealer->aroundMethodCall(
 			array('SAF\Framework\Property_Add_Controller', "run"),
-			array(__CLASS__, "propertyAddController")
+			array($this, "propertyAddController")
 		);
-		Aop::addAroundMethodCall(
+		$dealer->aroundMethodCall(
 			array('SAF\Framework\Property_Remove_Controller', "run"),
-			array(__CLASS__, "propertyRemoveController")
+			array($this, "propertyRemoveController")
 		);
 	}
 

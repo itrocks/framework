@@ -6,9 +6,8 @@ namespace SAF\Framework;
  *
  * TODO this has not been tested nor used yet, please finish and test this !
  */
-class Sql_Link_Restrictor implements Configurable, Plugin
+class Sql_Link_Restrictor implements Plugin
 {
-	use Current { current as private pCurrent; }
 
 	//--------------------------------------------------------------------------------------- CURRENT
 	/**
@@ -107,28 +106,18 @@ class Sql_Link_Restrictor implements Configurable, Plugin
 	/**
 	 * @param $where string where clause, including " WHERE " or empty if no filter on read
 	 */
-	public static function beforeSqlSelectBuilderFinalize(&$where)
+	public function beforeSqlSelectBuilderFinalize(&$where)
 	{
-		$where = self::current()->applyCurrentRestrictions($where);
+		$where = $this->applyCurrentRestrictions($where);
 	}
 
 	//------------------------------------------------------------- beforeSqlSelectBuilderBuildTables
 	/**
 	 * @param $object Sql_Select_Builder
 	 */
-	public static function beforeSqlSelectBuilderBuildTables(Sql_Select_Builder $object)
+	public function beforeSqlSelectBuilderBuildTables(Sql_Select_Builder $object)
 	{
-		self::current()->restrict($object);
-	}
-
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * @param $set_current Sql_Link_Restrictor
-	 * @return Sql_Link_Restrictor
-	 */
-	public static function current($set_current = null)
-	{
-		return self::pCurrent($set_current);
+		$this->restrict($object);
 	}
 
 	//------------------------------------------------------------------------------- getRestrictions
@@ -158,18 +147,21 @@ class Sql_Link_Restrictor implements Configurable, Plugin
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers SQL link restrictor plugin
+	 *
+	 * @param $register Plugin_Register
 	 */
-	public static function register()
+	public function register(Plugin_Register $register)
 	{
+		$dealer = $register->dealer;
 		/* @todo this method does not exist anymore into Sql_Select_Builder
 		Aop::addBeforeMethodCall(
 			array('SAF\Framework\Sql_Select_Builder', "buildTables"),
 			array(__CLASS__, "beforeSqlSelectBuilderBuildTables")
 		);
 		 */
-		Aop::addBeforeMethodCall(
+		$dealer->beforeMethodCall(
 			array('SAF\Framework\Sql_Select_Builder', "finalize"),
-			array(__CLASS__, "beforeSqlSelectBuilderFinalize")
+			array($this, "beforeSqlSelectBuilderFinalize")
 		);
 	}
 

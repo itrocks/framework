@@ -23,17 +23,6 @@ class Aop_Dynamics implements Plugin
 	 */
 	private $links = array();
 
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Constructor with default links
-	 *
-	 * @param $links array[]
-	 */
-	public function __construct($links = array())
-	{
-		$this->links = $links;
-	}
-
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Add dynamic links to current list
@@ -94,25 +83,27 @@ class Aop_Dynamics implements Plugin
 	 * @param $class_name string
 	 * @param $result     string
 	 */
-	public static function linkClassAop($class_name, $result)
+	public function linkClassAop($class_name, $result)
 	{
 		if ($result) {
-			$current = Aop_Dynamics::current();
-			if (isset($current)) {
-				$current->linkClass($class_name);
-			}
+			$this->linkClass($class_name);
 		}
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * Register Aop_Dynamics : for each new autoloaded class, jointpoints will be dynamically added using linkClass()
+	 * Register Aop_Dynamics : for each new autoloaded class, jointpoints will be dynamically added
+	 * using linkClass()
+	 *
+	 * @param $register Plugin_Register
 	 */
-	public static function register()
+	public function register(Plugin_Register $register)
 	{
-		Aop::addAfterMethodCall(
+		$this->links = $register->getConfiguration();
+		$dealer = $register->dealer;
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Autoloader', "includeClass"),
-			array(__CLASS__, "linkClassAop")
+			array($this, "linkClassAop")
 		);
 	}
 

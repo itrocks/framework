@@ -6,10 +6,10 @@ namespace SAF\Framework;
  *
  * @todo having both executeQuery() and query() is perhaps not a good idea
  */
-abstract class Sql_Link extends Identifier_Map_Data_Link implements Configurable, Transactional_Data_Link
+abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactional_Data_Link
 {
 
-	//--------------------------------------------------------------------------------------- $tables
+//----------------------------------------------------------------------------------------- $tables
 	/**
 	 * Links each class name to it's storage table name
 	 *

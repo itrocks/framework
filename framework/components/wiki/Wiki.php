@@ -13,7 +13,7 @@ class Wiki implements Plugin
 	 *
 	 * @var integer
 	 */
-	private static $dont_parse_wiki = 0;
+	private $dont_parse_wiki = 0;
 
 	//-------------------------------------------------------------------------------- $geshi_replace
 	/**
@@ -107,29 +107,33 @@ class Wiki implements Plugin
 	 * @param $joinpoint Around_Method_Joinpoint
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	public static function noParseZone($var_name, $as_string, Around_Method_Joinpoint $joinpoint)
+	public function noParseZone($var_name, $as_string, Around_Method_Joinpoint $joinpoint)
 	{
 		$is_include = substr($var_name, 0, 1) == "/";
 		if (!$is_include) {
-			self::$dont_parse_wiki ++;
+			$this->dont_parse_wiki ++;
 		}
 		$result = $joinpoint->process($var_name, $as_string);
 		if (!$is_include) {
-			self::$dont_parse_wiki --;
+			$this->dont_parse_wiki --;
 		}
 		return $result;
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 * @param $register Plugin_Register
+	 */
+	public function register(Plugin_Register $register)
 	{
-		Aop::addAroundMethodCall(
+		$dealer = $register->dealer;
+		$dealer->aroundMethodCall(
 			array('SAF\Framework\Html_Edit_Template', "parseValue"),
-			array(__CLASS__, "noParseZone")
+			array($this, "noParseZone")
 		);
-		Aop::addAfterMethodCall(
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Reflection_Property_View', "formatString"),
-			array(__CLASS__, "stringWiki")
+			array($this, "stringWiki")
 		);
 	}
 
@@ -140,9 +144,9 @@ class Wiki implements Plugin
 	 * @param $object Reflection_Property_View
 	 * @param $result string
 	 */
-	public static function stringWiki(Reflection_Property_View $object, &$result)
+	public function stringWiki(Reflection_Property_View $object, &$result)
 	{
-		if (!static::$dont_parse_wiki) {
+		if (!$this->dont_parse_wiki) {
 			$property = $object->property;
 			if ($property->getAnnotation("textile")->value) {
 				$wiki = new Wiki();

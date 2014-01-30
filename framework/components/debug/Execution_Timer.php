@@ -60,12 +60,15 @@ class Execution_Timer implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Reset execution timer counter and register to timer end and result display
+	 *
+	 * @param $register Plugin_Register
 	 */
-	public static function register()
+	public function register(Plugin_Register $register)
 	{
-		Aop::addAfterMethodCall(
+		$dealer = $register->dealer;
+		$dealer->afterMethodCall(
 			array('SAF\Framework\Main_Controller', "runController"),
-			array(new Execution_Timer(), "afterMainControllerRunController")
+			array($this, "afterMainControllerRunController")
 		);
 	}
 

@@ -84,21 +84,6 @@ class Mysql_Logger implements Plugin
 		echo " </div>\n";
 	}
 
-	//----------------------------------------------------------------------------------- getInstance
-	/**
-	 * Get the Mysql_Logger instance
-	 *
-	 * @return Mysql_Logger
-	 */
-	public static function getInstance()
-	{
-		static $instance = null;
-		if (!isset($instance)) {
-			$instance = new Mysql_Logger();
-		}
-		return $instance;
-	}
-
 	//--------------------------------------------------------------------------------------- onQuery
 	/**
 	 * Called each time before a mysql_query() call is done : log the query
@@ -138,17 +123,18 @@ class Mysql_Logger implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $parameters array
+	 * @param $register Plugin_Register
 	 */
-	public static function register($parameters = null)
+	public function register(Plugin_Register $register)
 	{
-		$mysql_logger = self::getInstance();
+		$dealer = $register->dealer;
+		$parameters = $register->getConfiguration();
 		if (isset($parameters)) {
 			if (isset($parameters["continue"])) {
-				$mysql_logger->continue = $parameters["continue"];
+				$this->continue = $parameters["continue"];
 			}
 			if (isset($parameters["display_log"])) {
-				$mysql_logger->display_log = $parameters["display_log"];
+				$this->display_log = $parameters["display_log"];
 			}
 			foreach ($parameters as $key => $value) if (is_numeric($key)) {
 				if (strpos("/" . $_SERVER["REQUEST_URI"] . "/", "/" . $value . "/")) {
@@ -156,20 +142,20 @@ class Mysql_Logger implements Plugin
 				}
 			}
 		}
-		Aop::addBeforeMethodCall(
-			array('SAF\Framework\Contextual_Mysqli', "query"), array($mysql_logger, "onQuery")
+		$dealer->beforeMethodCall(
+			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onQuery")
 		);
-		Aop::addAfterMethodCall(
-			array('SAF\Framework\Contextual_Mysqli', "query"), array($mysql_logger, "onError")
+		$dealer->afterMethodCall(
+			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onError")
 		);
-		if (!$mysql_logger->continue) {
-			Aop::addBeforeMethodCall(
+		if (!$this->continue) {
+			$dealer->beforeMethodCall(
 				array('SAF\Framework\Main_Controller', "runController"),
-				array($mysql_logger, "onMainControllerRun")
+				array($this, "onMainControllerRun")
 			);
-			Aop::addAfterMethodCall(
+			$dealer->afterMethodCall(
 				array('SAF\Framework\Main_Controller', "runController"),
-				array($mysql_logger, "afterMainControllerRun")
+				array($this, "afterMainControllerRun")
 			);
 		}
 	}

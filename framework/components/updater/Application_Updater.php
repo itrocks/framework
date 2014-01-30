@@ -70,12 +70,14 @@ abstract class Application_Updater implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers the application updater plugin
-	 *
 	 * Called by the plugins registerer when the plugin is set
+	 *
+	 * @param $register Plugin_Register
 	 */
-	public static function register()
+	public function register(Plugin_Register $register)
 	{
-		Aop::addBeforeMethodCall(
+		$dealer = $register->dealer;
+		$dealer->beforeMethodCall(
 			array('SAF\Framework\Main_Controller', "runController"), array(__CLASS__, "autoUpdate")
 		);
 	}

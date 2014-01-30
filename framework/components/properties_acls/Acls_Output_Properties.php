@@ -13,9 +13,8 @@ class Acls_Output_Properties extends Acls_Properties implements Plugin
 	 * @param $joinpoint  Around_Method_Joinpoint
 	 * @return string[] property names list
 	 */
-	public static function outputControllerGetProperties(
-		$class_name, Around_Method_Joinpoint $joinpoint
-	) {
+	public function outputControllerGetProperties($class_name, Around_Method_Joinpoint $joinpoint)
+	{
 		$acls_output_properties = new Acls_Output_Properties($class_name);
 		$properties = $acls_output_properties->getPropertiesNames("output");
 		return (isset($properties))
@@ -36,7 +35,7 @@ class Acls_Output_Properties extends Acls_Properties implements Plugin
 	 * @param $joinpoint  Around_Method_Joinpoint
 	 * @return mixed
 	 */
-	public static function propertyRemoveController(
+	public function propertyRemoveController(
 		Controller_Parameters $parameters, $form, $files, Around_Method_Joinpoint $joinpoint
 	) {
 		if ($parameters->getRawParameter(1) == "edit") {
@@ -52,15 +51,20 @@ class Acls_Output_Properties extends Acls_Properties implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 *
+	 * @param $register Plugin_Register
+	 */
+	public function register(Plugin_Register $register)
 	{
-		Aop::addAroundMethodCall(
+		$dealer = $register->dealer;
+		$dealer->aroundMethodCall(
 			array('SAF\Framework\Default_Output_Controller', "getPropertiesList"),
-			array(__CLASS__, "outputControllerGetProperties")
+			array($this, "outputControllerGetProperties")
 		);
-		Aop::addAroundMethodCall(
+		$dealer->aroundMethodCall(
 			array('SAF\Framework\Property_Remove_Controller', "run"),
-			array(__CLASS__, "propertyRemoveController")
+			array($this, "propertyRemoveController")
 		);
 	}
 

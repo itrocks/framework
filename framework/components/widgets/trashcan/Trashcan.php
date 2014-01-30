@@ -30,7 +30,10 @@ class Trashcan implements Plugin
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	/**
+	 * @param $register Plugin_Register
+	 */
+	public function register(Plugin_Register $register)
 	{
 	}
 

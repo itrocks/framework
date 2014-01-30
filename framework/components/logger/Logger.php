@@ -54,15 +54,17 @@ class Logger implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Plugin registration : start before main controller call, stop after it's done.
+	 *
+	 * @param $register Plugin_Register
 	 */
-	public static function register()
+	public function register(Plugin_Register $register)
 	{
-		$logger = new Logger();
-		Aop::addBeforeMethodCall(
-			array('SAF\Framework\Main_Controller', "runController"), array($logger, "start")
+		$dealer = $register->dealer;
+		$dealer->beforeMethodCall(
+			array('SAF\Framework\Main_Controller', "runController"), array($this, "start")
 		);
-		Aop::addAfterMethodCall(
-			array('SAF\Framework\Main_Controller', "runController"), array($logger, "stop")
+		$dealer->afterMethodCall(
+			array('SAF\Framework\Main_Controller', "runController"), array($this, "stop")
 		);
 	}
 

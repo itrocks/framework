@@ -27,15 +27,16 @@ abstract class Autoload_Cache implements Plugin, Updatable
 
 	//-------------------------------------------------------------------------------------- autoload
 	/**
+	 * @param $object     Autoloader
 	 * @param $class_name string
 	 */
-	public static function autoload($class_name)
+	public function autoload($object, $class_name)
 	{
 		if ((strpos($class_name, "/") !== false) && isset(self::$full_class_names[$class_name])) {
 			$class_name = self::$full_class_names[$class_name];
 		}
 		if (isset(self::$paths[$class_name])) {
-			Autoloader::includeClass($class_name, getcwd() . "/" . self::$paths[$class_name]);
+			$object->includeClass($class_name, getcwd() . "/" . self::$paths[$class_name]);
 		}
 	}
 
@@ -54,20 +55,23 @@ abstract class Autoload_Cache implements Plugin, Updatable
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers the Autoload_Cache plugin
+	 *
+	 * @param $register Plugin_Register
 	 */
-	public static function register()
+	public function register(Plugin_Register $register)
 	{
-		Application_Updater::addUpdatable(get_called_class());
-		self::$cache_path = Application::current()->getSourceDirectory() . "/cache";
+		Application_Updater::addUpdatable($this);
+		self::$cache_path = Application::current()->path->getSourceDirectory() . "/cache";
 		/** @noinspection PhpIncludeInspection */
 		@include self::$cache_path . "/autoload.php";
 		if (!self::$paths || Application_Updater::mustUpdate()) {
 			self::update();
 		}
-		Aop::addAroundMethodCall(
-			array('SAF\Framework\Autoloader', "autoload"), array(__CLASS__, "autoload")
+		$dealer = $register->dealer;
+		$dealer->aroundMethodCall(
+			array('SAF\Framework\Autoloader', "autoload"), array($this, "autoload")
 		);
-		Aop::addAroundMethodCall(
+		$dealer->aroundMethodCall(
 			array('SAF\Framework\Namespaces', "fullClassName"), array(__CLASS__, "fullClassName")
 		);
 	}

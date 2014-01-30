@@ -257,6 +257,9 @@ class Dao implements Activable_Plugin
 			}
 			unset($configuration["list"]);
 		}
+		$class_name = $configuration["class"];
+		unset($configuration["class"]);
+		Dao::current(new $class_name($configuration));
 	}
 
 	//---------------------------------------------------------------------------------------- remove
