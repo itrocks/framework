@@ -23,7 +23,7 @@ class Default_Import_Controller implements Default_Feature_Controller
 		}
 		$get = $parameters->toGet();
 		$feature = "import" . ucfirst($sub_feature);
-		return Main_Controller::getInstance()->runController(
+		return (new Main_Controller())->runController(
 			"/" . $class_name . "/" . $feature, $get, $form, $files
 		);
 	}

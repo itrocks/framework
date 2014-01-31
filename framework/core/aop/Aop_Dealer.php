@@ -19,16 +19,18 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 
 	//--------------------------------------------------------------------------- $serialized_objects
 	/**
-	 * @var string[]
+	 * @var object[]|string[]
 	 */
 	private $serialized_objects = array();
 
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
+		// each time a new class will be created, then will include class
 		Aop::addAfterMethodCall(
 			array('SAF\Framework\Autoloader', "includeClass"), array($this, "includedClass")
 		);
+		// call Aop links for existing classes and traits
 		foreach (array_keys($this->links) as $class_name) {
 			if (class_exists($class_name, false) || trait_exists($class_name, false)) {
 				$this->includedClass($class_name, true);
@@ -86,13 +88,26 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 			if (isset($this->links[$class_name])) {
 				foreach ($this->links[$class_name] as $key => $link) {
 					list($method, $joinpoint, $advice) = $link;
-					if (is_array($advice) && is_string($advice[0]) && ($advice[0][1] == ":")) {
-						$advice[0] = unserialize($this->serialized_objects[$advice[0]]);
-						$this->links[$class_name][$key][2][0] = $advice[0];
+					// unserialize advice object
+					if (is_array($advice) && is_string($reference = $advice[0]) && ($reference[1] == ":")) {
+						$object = $this->serialized_objects[$reference];
+						if (is_string($object)) {
+							$object = ($object[1] == ":")
+								? unserialize($object)
+								: Session::current()->getPlugin($object);
+						}
+						$advice[0] = $object;
+						$this->links[$class_name][$key][2][0] = $object;
+						$this->serialized_objects[$reference] = $object;
 					}
+					// call Aop link
 					Aop::$method($joinpoint, $advice);
 				}
 			}
+		}
+		// get instance and activate plugin
+		if (is_a($class_name, 'SAF\Framework\Plugin', true)) {
+			Session::current()->getPlugin($class_name, false);
 		}
 	}
 
@@ -107,20 +122,71 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 	//------------------------------------------------------------------------------------- serialize
 	/**
 	 * @return string
+	 * @todo it's too long, cut this in several functions
 	 */
 	public function serialize()
 	{
+		// get already serialized objects references
+		$new_references     = array();
+		$reference_counter  = 0;
 		$serialized_objects = array();
+		$serialized_plugins = array();
+		foreach ($this->serialized_objects as $reference => $object) {
+			// serialize a plugin : only keep its class name (session will serialize it)
+			if ($reference[2] == "p") {
+				$serialized = is_object($object) ? get_class($object) : $object;
+				$reference = $new_references[$reference] = "r:p" . $reference_counter++;
+				$serialized_plugins[$serialized] = $reference;
+			}
+			// serialize an object and get its reference
+			elseif (is_object($object)) {
+				$serialized = serialize($object);
+				$reference  = serialize($object);
+			}
+			// an already serialized object : change its reference
+			else {
+				$serialized = $object;
+				$reference  = $new_references[$reference] = "r:i" . $reference_counter++;
+			}
+			// store the serialized object
+			$serialized_objects[$reference] = $serialized;
+		}
+		// serialize objects and store their reference
 		foreach ($this->links as $class_name => $sub_links) {
 			foreach ($sub_links as $key => $link) {
-				if (is_array($link[2]) && is_object($link[2][0])) {
-					$serialized = serialize($link[2][0]);
-					if ($serialized[0] != "r") {
-						$reference = serialize($link[2][0]);
-						$serialized_objects[$reference] = $serialized;
-						$serialized = $reference;
+				// if advice is a callable array($object|"class","method")
+				if (is_array($link[2])) {
+					$object = $link[2][0];
+					// callable object : serialize and store reference
+					if (is_object($object)) {
+						// plugins are serialized at session level, we store only a reference here
+						if ($object instanceof Plugin) {
+							$plugin_class = get_class($object);
+							if (isset($serialized_plugins[$plugin_class])) {
+								$serialized = $serialized_plugins[$plugin_class];
+							}
+							else {
+								$reference = "r:p" . $reference_counter++;
+								$serialized_objects[$reference] = $plugin_class;
+								$serialized_plugins[$plugin_class] = $reference;
+								$serialized = $reference;
+							}
+						}
+						// serialize a non-plugin object
+						else {
+							$serialized = serialize($object);
+							if ($serialized[0] != "r") {
+								$reference = serialize($object);
+								$serialized_objects[$reference] = $serialized;
+								$serialized = $reference;
+							}
+						}
+						$this->links[$class_name][$key][2][0] = $serialized;
 					}
-					$this->links[$class_name][$key][2][0] = $serialized;
+					// callable serialized object : update the reference
+					elseif ($object[1] == ":") {
+						$this->links[$class_name][$key][2][0] = $new_references[$object];
+					}
 				}
 			}
 		}

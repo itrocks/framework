@@ -543,9 +543,7 @@ class Html_Template
 		}
 		else {
 			// includes controller result
-			return Main_Controller::getInstance()->runController(
-				$include_uri, array("is_included" => true)
-			);
+			return (new Main_Controller())->runController($include_uri, array("is_included" => true));
 		}
 	}
 

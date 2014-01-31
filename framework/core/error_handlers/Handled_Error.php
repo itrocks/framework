@@ -180,8 +180,7 @@ class Handled_Error
 	 */
 	public function getVariables()
 	{
-		// TODO all :)
-		return array();
+		return Debug::globalDump(false);
 	}
 
 	//--------------------------------------------------------------- isStandardPhpErrorHandlerCalled

@@ -57,10 +57,10 @@ class Application
 	public static function current(Application $set_current = null)
 	{
 		if ($set_current) {
-			Session::current()->set($set_current, 'Application');
+			Session::current()->set($set_current, 'SAF\Framework\Application');
 			return $set_current;
 		}
-		return Session::current()->get('Application');
+		return Session::current()->get('SAF\Framework\Application');
 	}
 
 	//--------------------------------------------------------------------------------- getNamespaces

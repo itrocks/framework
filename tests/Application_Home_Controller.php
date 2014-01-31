@@ -20,7 +20,7 @@ class Application_Home_Controller implements Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		return Main_Controller::getInstance()->runController("/Tests/run");
+		return (new Main_Controller())->runController("/Tests/run");
 	}
 
 }

@@ -21,6 +21,26 @@ class Session implements Serializable
 	 */
 	public $plugins;
 
+	//------------------------------------------------------------------------------- activatePlugins
+	/**
+	 * @param $level string
+	 */
+	public function activatePlugins($level = null)
+	{
+		if (isset($level)) {
+			foreach (array_keys($this->plugins[$level]) as $class_name) {
+				$this->getOnePlugin($class_name, $level);
+			}
+		}
+		else {
+			foreach ($this->plugins as $level => $plugins) {
+				foreach (array_keys($plugins) as $class_name) {
+					$this->getOnePlugin($class_name, $level);
+				}
+			}
+		}
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Session
@@ -29,10 +49,10 @@ class Session implements Serializable
 	public static function current(Session $set_current = null)
 	{
 		if ($set_current) {
-			$_SESSION['Session'] = $set_current;
+			$_SESSION["session"] = $set_current;
 			return $set_current;
 		}
-		return $_SESSION['Session'];
+		return $_SESSION["session"];
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -98,24 +118,76 @@ class Session implements Serializable
 	 */
 	public function getApplicationName()
 	{
-		$current = $this->current['Application'];
+		$current = $this->current['SAF\Framework\Application'];
 		// TODO parse current[1] between '"' and replace array with string if R work well
 		$class_name = is_array($current) ? $current[0] : get_class($current);
 		$application_name = substr($class_name, 0, strrpos($class_name, "\\"));
 		return strtolower(substr($application_name, strrpos($application_name, "\\") + 1));
 	}
 
-	//------------------------------------------------------------------------------------------- sid
+	//---------------------------------------------------------------------------------- getOnePlugin
 	/**
-	 * Returns current SID
-	 *
-	 * @example "PHPSESSID=6kldcf5gbuk0u34cmihlo9gl22"
-	 * @param $prefix string You can prefix your SID with "?" or "&" to append it to an URI or URL
-	 * @return string
+	 * @param $class_name string
+	 * @param $level      string
+	 * @return Plugin
 	 */
-	public static function sid($prefix = "")
+	private function getOnePlugin($class_name, $level)
 	{
-		return session_id() ? ($prefix . session_name() . "=" . session_id()) : "";
+		/** @var $plugin Plugin|boolean|string */
+		$plugin = $this->plugins[$level][$class_name];
+		// unserialize plugin
+		if (!is_object($plugin)) {
+			$serialized = $plugin;
+			// serialized as true : the plugin can be created without configuration
+			if ($serialized === true) {
+				$plugin = Builder::create($class_name);
+			}
+			// serializable plugin
+			elseif (is_a($class_name, 'Serializable', true)) {
+				$plugin = unserialize($serialized);
+			}
+			// standard plugin serialization is "configuration only"
+			else {
+				$plugin_configuration = unserialize($serialized);
+				$plugin = Builder::create($class_name, array($plugin_configuration));
+				/** @noinspection PhpUndefinedFieldInspection */
+				$plugin->plugin_configuration = $plugin_configuration;
+			}
+			// activate plugin
+			if ($plugin instanceof Activable_Plugin) {
+				/** @var $plugin Activable_Plugin */
+				$plugin->activate();
+			}
+			$this->plugins[$level][$class_name] = $plugin;
+		}
+		return $plugin;
+	}
+
+	//------------------------------------------------------------------------------------- getPlugin
+	/**
+	 * @param $class_name string if null, get all plugins
+	 * @param $level      string if null, search plugin into all levels. if false, don't throw error
+	 * @return Plugin
+	 */
+	public function getPlugin($class_name, $level = null)
+	{
+		if (isset($this->plugins)) {
+			if (is_string($level)) {
+				return $this->getOnePlugin($class_name, $level);
+			}
+			else {
+				foreach ($this->plugins as $plugins_level => $plugins) {
+					if (isset($plugins[$class_name])) {
+						$plugin = $this->getOnePlugin($class_name, $plugins_level);
+						return $plugin;
+					}
+				}
+				if ($level !== false) {
+					trigger_error("Plugin $class_name not found", E_USER_ERROR);
+				}
+			}
+		}
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------------- remove
@@ -192,6 +264,19 @@ class Session implements Serializable
 		if (isset($object)) {
 			$this->current[isset($class_name) ? $class_name : get_class($object)] = $object;
 		}
+	}
+
+	//------------------------------------------------------------------------------------------- sid
+	/**
+	 * Returns current SID
+	 *
+	 * @example "PHPSESSID=6kldcf5gbuk0u34cmihlo9gl22"
+	 * @param $prefix string You can prefix your SID with "?" or "&" to append it to an URI or URL
+	 * @return string
+	 */
+	public static function sid($prefix = "")
+	{
+		return session_id() ? ($prefix . session_name() . "=" . session_id()) : "";
 	}
 
 	//----------------------------------------------------------------------------------- unserialize

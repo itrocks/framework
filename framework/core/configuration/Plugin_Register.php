@@ -25,6 +25,13 @@ class Plugin_Register
 	 */
 	private $get;
 
+	//---------------------------------------------------------------------------------------- $level
+	/**
+	 * @values core, highest, higher, high, normal, low, lower, lowest
+	 * @var string
+	 */
+	public $level;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array|string

@@ -7,10 +7,13 @@ $config["framework"] = array(
 		'SAF\Framework\Autoloader',
 		'SAF\Framework\Aop_Dealer',
 		'SAF\Framework\Builder',
+		/*
 		'SAF\Framework\Error_Handlers' => array(
+			array(E_ALL,               'SAF\Framework\Fatal_Error_Handler'),
 			array(E_ALL & !E_NOTICE,   'SAF\Framework\Main_Error_Handler'),
 			array(E_RECOVERABLE_ERROR, 'SAF\Framework\To_Exception_Error_Handler'),
 		)
+		*/
 	),
 	// other priorities plugins are loaded when needed, and initialised at session beginning
 	// into their priority order

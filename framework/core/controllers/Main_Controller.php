@@ -9,12 +9,6 @@ use Serializable;
 class Main_Controller
 {
 
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * You can't instantiate the Main_Controller with a constructor as this is a singleton
-	 */
-	private function __construct() {}
-
 	//------------------------------------------------------------------------------- activatePlugins
 	/**
 	 * Activate all plugins (called at each script beginning, for already loaded classes only)
@@ -53,19 +47,23 @@ class Main_Controller
 		Application::current($application);
 	}
 
-	//----------------------------------------------------------------------------------- getInstance
+	//--------------------------------------------------------------------------------- createSession
 	/**
-	 * Get the Main_Controller instance
-	 *
-	 * @return Main_Controller
+	 * @return array
 	 */
-	public static function getInstance()
+	private function createSession()
 	{
-		static $instance = null;
-		if (!isset($instance)) {
-			$instance = new Main_Controller();
-		}
-		return $instance;
+		$this->includesStart();
+		$session = Session::current(new Session());
+		$configuration = $this->loadConfiguration();
+
+		unset($_SESSION["include_path"]);
+		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
+
+		$plugins = $configuration->getPlugins();
+		$this->registerPlugins($plugins, $configuration);
+		$session->plugins = $plugins;
+		return $plugins;
 	}
 
 	//-------------------------------------------------------------------------------------- includes
@@ -143,48 +141,77 @@ class Main_Controller
 		return $configuration;
 	}
 
+	//-------------------------------------------------------------------------------- registerPlugin
+	/**
+	 * @param $class_name      string
+	 * @param $plugin_register Plugin_Register
+	 * @return Plugin
+	 */
+	private function registerPlugin($class_name, Plugin_Register $plugin_register)
+	{
+		$plugin_configuration = $plugin_register->getConfiguration();
+		/** @var $plugin Plugin */
+		if (is_a($class_name, 'SAF\Framework\Configurable', true)) {
+			$plugin = Builder::create($class_name, array($plugin_configuration));
+			if (!($plugin instanceof Serializable)) {
+				/** @noinspection PhpUndefinedFieldInspection hidden property for serialization */
+				$plugin->plugin_configuration = $plugin_configuration;
+			}
+		}
+		else {
+			$plugin = Builder::create($class_name);
+		}
+		if ($plugin instanceof Aop_Dealer) {
+			$plugin_register->dealer = $plugin;
+		}
+		$plugin->register($plugin_register);
+		if (($plugin_register->level == "core") && ($plugin instanceof Activable_Plugin)) {
+			/** @var $plugin Activable_Plugin */
+			$plugin->activate();
+		}
+		return $plugin;
+	}
+
 	//------------------------------------------------------------------------------- registerPlugins
 	/**
 	 * Register plugins into session (called only at session beginning)
 	 *
 	 * @param $plugins array
+	 * @param $configuration Configuration
 	 */
-	private function registerPlugins(&$plugins)
+	private function registerPlugins(&$plugins, $configuration)
 	{
 		$plugin_register = new Plugin_Register();
 		foreach ($plugins as $level => $sub_plugins) {
 			$plugin_objects = array();
+			$plugin_register->level = $level;
 			foreach ($sub_plugins as $class_name => $plugin_configuration) {
 				if (is_numeric($class_name)) {
 					$class_name = $plugin_configuration;
 					$plugin_configuration = array();
 				}
-				/** @var $plugin Plugin */
-				if (is_a($class_name, 'SAF\Framework\Configurable', true)) {
-					$plugin = Builder::create($class_name, array($plugin_configuration));
-					if (!($plugin instanceof Serializable)) {
-						/** @noinspection PhpUndefinedFieldInspection hidden property for serialization */
-						$plugin->plugin_configuration = $plugin_configuration;
-					}
-				}
-				else {
-					$plugin = Builder::create($class_name);
+				$plugin_register->setConfiguration($plugin_configuration);
+				$plugin = $this->registerPlugin($class_name, $plugin_register);
+				if ($plugin instanceof Autoloader) {
+					/** @noinspection PhpUndefinedVariableInspection Will always be set when $new_session true */
+					$this->createApplication($configuration);
 				}
 				$plugin_objects[$class_name] = $plugin;
-				if (!isset($aop_dealer) && ($class_name == 'SAF\Framework\Aop_Dealer')) {
-					$plugin_register->dealer = $plugin;
-				}
-				else {
-					$plugin_register->setConfiguration($plugin_configuration);
-				}
-				$plugin->register($plugin_register);
-				if (($level == "core") && ($plugin instanceof Activable_Plugin)) {
-					/** @var $plugin Activable_Plugin */
-					$plugin->activate();
-				}
 			}
 			$plugins[$level] = $plugin_objects;
 		}
+	}
+
+	//--------------------------------------------------------------------------------- resumeSession
+	/**
+	 * @return array
+	 */
+	private function resumeSession()
+	{
+		$this->includesResume();
+		$session = Session::current();
+		$session->activatePlugins("core");
+		return $session->plugins;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -251,58 +278,12 @@ class Main_Controller
 		if (empty($_SESSION)) {
 			session_start();
 //echo "<pre>" . print_r($_SESSION, true) . "</pre>";
-//$_SESSION = array();
+if (isset($_GET["X"])) $_SESSION = array();
 		}
 		$new_session = empty($_SESSION);
 		$this->setIncludePath($_SESSION);
-		if ($new_session) {
-			$this->includesStart();
-
-			$configuration = $this->loadConfiguration();
-			unset($_SESSION["include_path"]);
-			$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
-			$plugins = $configuration->getPlugins();
-			$this->registerPlugins($plugins);
-
-			$session = Session::current(new Session());
-			$session->plugins = $plugins;
-
-			/** @noinspection PhpUndefinedVariableInspection Will always be set when $new_session true */
-			$this->createApplication($configuration);
-
-		}
-		else {
-			$this->includesResume();
-			$session = Session::current();
-
-			$core_plugins =& $session->plugins["core"];
-			foreach ($core_plugins as $class_name => $serialized) {
-				/** @var $plugin Plugin */
-				if ($serialized === true) {
-					$plugin = Builder::create($class_name);
-				}
-				elseif (is_a($class_name, 'Serializable', true)) {
-					$plugin = unserialize($serialized);
-				}
-				else {
-					$plugin_configuration = unserialize($serialized);
-					/** @noinspection PhpUndefinedFieldInspection */
-					$plugin = Builder::create($class_name, array($plugin_configuration));
-					$plugin->plugin_configuration = $plugin_configuration;
-				}
-				if ($plugin instanceof Activable_Plugin) {
-					/** @var $plugin Activable_Plugin */
-					$plugin->activate();
-				}
-				$core_plugins[$class_name] = $plugin;
-			}
-
-			$plugins = $session->plugins;
-		}
-
-		// non-core plugins activation must be done after application has been created
+		$plugins = $new_session ? $this->createSession() : $this->resumeSession();
 		$this->activatePlugins($plugins, !$new_session);
-
 		unset($get[session_name()]);
 		unset($post[session_name()]);
 	}

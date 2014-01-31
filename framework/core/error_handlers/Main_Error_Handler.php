@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * The main error handler displays the error
+ * The main error handler displays the error and resume
  */
 class Main_Error_Handler implements Error_Handler
 {
@@ -15,9 +15,11 @@ class Main_Error_Handler implements Error_Handler
 	 */
 	public function handle(Handled_Error $error)
 	{
-		echo "<div class=\"Main_Error_Handler_handle\">" . $error->getErrorNumber() . " "
-			. $error->getErrorMessage() . "<pre>" . print_r($error->getVariables(), true) . "</pre>"
-			. "</div>\n";
+		echo "<div class=\"fatal error handler\">"
+		. "<span class=\"number\">" . $error->getErrorNumber() . "</span>"
+		. "<p>" . $error->getErrorMessage() . "</p>"
+		. "<pre>" . print_r($error->getVariables(), true) . "</pre>"
+		. "</div>\n";
 	}
 
 }

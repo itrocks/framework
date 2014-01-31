@@ -20,7 +20,7 @@ set_time_limit(20);
 // run
 $_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
 require_once "framework/core/controllers/Main_Controller.php";
-echo Main_Controller::getInstance()->run($_PATH_INFO, $_GET, $_POST, $_FILES);
+echo (new Main_Controller())->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
 // Display result on client browser now, as session serialization could take a moment
 ob_flush(); flush();
