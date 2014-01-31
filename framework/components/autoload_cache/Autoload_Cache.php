@@ -4,26 +4,40 @@ namespace SAF\Framework;
 /**
  * The autoload cache plugin  is here to make class autoload faster, but need update at each code update
  */
-abstract class Autoload_Cache implements Plugin, Updatable
+class Autoload_Cache implements Activable_Plugin, Updatable
 {
 
 	//----------------------------------------------------------------------------------- $cache_file
 	/**
 	 * @var string
 	 */
-	public static $cache_path;
+	public $cache_path;
 
 	//----------------------------------------------------------------------------- $full_class_names
 	/**
 	 * @var string[]
 	 */
-	public static $full_class_names = array();
+	public $full_class_names = array();
 
 	//---------------------------------------------------------------------------------------- $paths
 	/**
 	 * @var string[]
 	 */
-	public static $paths = array();
+	public $paths = array();
+
+	//-------------------------------------------------------------------------------------- activate
+	public function activate()
+	{
+		/** @var $application_updater Application_Updater */
+		$application_updater = Session::current()->getPlugin('SAF\Framework\Application_Updater');
+		$application_updater->addUpdatable($this);
+		$this->cache_path = Application::current()->path->getSourceDirectory() . "/cache";
+		/** @noinspection PhpIncludeInspection */
+		@include $this->cache_path . "/autoload.php";
+		if (!$this->paths || !$this->full_class_names || $application_updater->mustUpdate()) {
+			$this->update();
+		}
+	}
 
 	//-------------------------------------------------------------------------------------- autoload
 	/**
@@ -32,11 +46,11 @@ abstract class Autoload_Cache implements Plugin, Updatable
 	 */
 	public function autoload($object, $class_name)
 	{
-		if ((strpos($class_name, "/") !== false) && isset(self::$full_class_names[$class_name])) {
-			$class_name = self::$full_class_names[$class_name];
+		if ((strpos($class_name, "/") !== false) && isset($this->full_class_names[$class_name])) {
+			$class_name = $this->full_class_names[$class_name];
 		}
-		if (isset(self::$paths[$class_name])) {
-			$object->includeClass($class_name, getcwd() . "/" . self::$paths[$class_name]);
+		if (isset($this->paths[$class_name])) {
+			$object->includeClass($class_name, getcwd() . "/" . $this->paths[$class_name]);
 		}
 	}
 
@@ -45,10 +59,10 @@ abstract class Autoload_Cache implements Plugin, Updatable
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function fullClassName($class_name)
+	public function fullClassName($class_name)
 	{
-		return isset(self::$full_class_names[$class_name])
-			? self::$full_class_names[$class_name]
+		return isset($this->full_class_names[$class_name])
+			? $this->full_class_names[$class_name]
 			: $class_name;
 	}
 
@@ -60,19 +74,12 @@ abstract class Autoload_Cache implements Plugin, Updatable
 	 */
 	public function register(Plugin_Register $register)
 	{
-		Application_Updater::addUpdatable($this);
-		self::$cache_path = Application::current()->path->getSourceDirectory() . "/cache";
-		/** @noinspection PhpIncludeInspection */
-		@include self::$cache_path . "/autoload.php";
-		if (!self::$paths || Application_Updater::mustUpdate()) {
-			self::update();
-		}
 		$dealer = $register->dealer;
 		$dealer->aroundMethodCall(
 			array('SAF\Framework\Autoloader', "autoload"), array($this, "autoload")
 		);
 		$dealer->aroundMethodCall(
-			array('SAF\Framework\Namespaces', "fullClassName"), array(__CLASS__, "fullClassName")
+			array('SAF\Framework\Namespaces', "fullClassName"), array($this, "fullClassName")
 		);
 	}
 
@@ -80,11 +87,11 @@ abstract class Autoload_Cache implements Plugin, Updatable
 	/**
 	 * Scans all PHP files into the project (excluding vendor) and store their paths to the cache
 	 */
-	public static function update()
+	public function update()
 	{
 		$directories = Application::current()->getSourceFiles();
-		self::$full_class_names = array();
-		self::$paths = array();
+		$this->full_class_names = array();
+		$this->paths = array();
 		foreach ($directories as $file_path) {
 			if (substr($file_path, -4) == ".php") {
 				$buffer = file_get_contents($file_path);
@@ -107,26 +114,26 @@ abstract class Autoload_Cache implements Plugin, Updatable
 					}
 					$namespace = trim(mParse($buffer, "namespace ", ";"));
 					$full_class = $namespace . "\\" . $short_class;
-					if (($type == "class") && !isset(self::$full_class_names[$short_class])) {
-						self::$full_class_names[$short_class] = $full_class;
+					if (($type == "class") && !isset($this->full_class_names[$short_class])) {
+						$this->full_class_names[$short_class] = $full_class;
 					}
-					if (!isset(self::$paths[$full_class])) {
-						self::$paths[$full_class] = $file_path;
+					if (!isset($this->paths[$full_class])) {
+						$this->paths[$full_class] = $file_path;
 					}
 				}
 			}
 		}
-		if (!is_dir(self::$cache_path)) {
-			mkdir(self::$cache_path);
+		if (!is_dir($this->cache_path)) {
+			mkdir($this->cache_path);
 		}
 		file_put_contents(
-			self::$cache_path . "/autoload.php",
+			$this->cache_path . "/autoload.php",
 			"<?php\n\n"
-			. 'SAF\Framework\Autoload_Cache::$full_class_names = '
-			. var_export(self::$full_class_names, true) . ";\n"
+			. '$this->full_class_names = '
+			. var_export($this->full_class_names, true) . ";\n"
 			. "\n"
-			. 'SAF\Framework\Autoload_Cache::$paths = '
-			. var_export(self::$paths, true) . ";\n"
+			. '$this->paths = '
+			. var_export($this->paths, true) . ";\n"
 		);
 	}
 

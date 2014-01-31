@@ -127,8 +127,8 @@ class Session implements Serializable
 
 	//---------------------------------------------------------------------------------- getOnePlugin
 	/**
-	 * @param $class_name string
-	 * @param $level      string
+	 * @param $class_name   string
+	 * @param $level        string
 	 * @return Plugin
 	 */
 	private function getOnePlugin($class_name, $level)
@@ -145,6 +145,10 @@ class Session implements Serializable
 			// serializable plugin
 			elseif (is_a($class_name, 'Serializable', true)) {
 				$plugin = unserialize($serialized);
+			}
+			// the plugin has not been registered yet : called by Aop_Dealer, no problemo
+			elseif (is_array($serialized)) {
+				$plugin = null;
 			}
 			// standard plugin serialization is "configuration only"
 			else {
@@ -249,6 +253,7 @@ class Session implements Serializable
 				}
 			}
 		}
+echo "<pre>serialized = " . print_r($data, true) . "</pre>";
 		return serialize($data);
 	}
 

@@ -60,10 +60,9 @@ class Main_Controller
 		unset($_SESSION["include_path"]);
 		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
 
-		$plugins = $configuration->getPlugins();
-		$this->registerPlugins($plugins, $configuration);
-		$session->plugins = $plugins;
-		return $plugins;
+		$session->plugins = $configuration->getPlugins();
+		$this->registerPlugins($session->plugins, $configuration);
+		return $session->plugins;
 	}
 
 	//-------------------------------------------------------------------------------------- includes
@@ -183,7 +182,6 @@ class Main_Controller
 	{
 		$plugin_register = new Plugin_Register();
 		foreach ($plugins as $level => $sub_plugins) {
-			$plugin_objects = array();
 			$plugin_register->level = $level;
 			foreach ($sub_plugins as $class_name => $plugin_configuration) {
 				if (is_numeric($class_name)) {
@@ -196,9 +194,8 @@ class Main_Controller
 					/** @noinspection PhpUndefinedVariableInspection Will always be set when $new_session true */
 					$this->createApplication($configuration);
 				}
-				$plugin_objects[$class_name] = $plugin;
+				$plugins[$level][$class_name] = $plugin;
 			}
-			$plugins[$level] = $plugin_objects;
 		}
 	}
 

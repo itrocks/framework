@@ -368,6 +368,10 @@ abstract class Aop
 			$code
 		);
 
+		// TODO runkit patch as it does not work well when php used as mod
+		if (function_exists($joinpoint . "_" . $count)) {
+			runkit_function_remove($joinpoint . "_" . $count);
+		}
 		if (!runkit_function_rename($joinpoint, $joinpoint . "_" . $count)) {
 			trigger_error("Could not rename $joinpoint to {$joinpoint}_$count", E_USER_ERROR);
 		}

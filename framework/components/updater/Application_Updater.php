@@ -6,7 +6,7 @@ namespace SAF\Framework;
  *
  * All updatable plugins should use the mustUpdate() method to know if they need to launch their update process.
  */
-abstract class Application_Updater implements Plugin
+class Application_Updater implements Plugin
 {
 
 	//----------------------------------------------------------------------------------- $updatables
@@ -15,7 +15,7 @@ abstract class Application_Updater implements Plugin
 	 *
 	 * @var mixed[]
 	 */
-	private static $updatables = array();
+	private $updatables = array();
 
 	//---------------------------------------------------------------------------------- addUpdatable
 	/**
@@ -25,9 +25,9 @@ abstract class Application_Updater implements Plugin
 	 *
 	 * @param $object Updatable|string object or class name
 	 */
-	public static function addUpdatable($object)
+	public function addUpdatable($object)
 	{
-		self::$updatables[] = $object;
+		$this->updatables[] = $object;
 	}
 
 	//------------------------------------------------------------------------------------ autoUpdate
@@ -37,11 +37,11 @@ abstract class Application_Updater implements Plugin
 	 * Update if update flag file found
 	 * Does nothing if not
 	 */
-	public static function autoUpdate()
+	public function autoUpdate()
 	{
-		if (self::mustUpdate()) {
-			self::update();
-			self::done();
+		if ($this->mustUpdate()) {
+			$this->update();
+			$this->done();
 		}
 	}
 
@@ -51,7 +51,7 @@ abstract class Application_Updater implements Plugin
 	 *
 	 * After this call, next call to mustUpdate() will return false, until next update is needed
 	 */
-	public static function done()
+	public function done()
 	{
 		@unlink("update");
 	}
@@ -62,7 +62,7 @@ abstract class Application_Updater implements Plugin
 	 *
 	 * @return boolean
 	 */
-	public static function mustUpdate()
+	public function mustUpdate()
 	{
 		return file_exists("update");
 	}
@@ -78,7 +78,7 @@ abstract class Application_Updater implements Plugin
 	{
 		$dealer = $register->dealer;
 		$dealer->beforeMethodCall(
-			array('SAF\Framework\Main_Controller', "runController"), array(__CLASS__, "autoUpdate")
+			array('SAF\Framework\Main_Controller', "runController"), array($this, "autoUpdate")
 		);
 	}
 
@@ -88,9 +88,9 @@ abstract class Application_Updater implements Plugin
 	 *
 	 * You should prefer call autoUpdate() to update the application only if needed
 	 */
-	public static function update()
+	public function update()
 	{
-		foreach (self::$updatables as $updatable) {
+		foreach ($this->updatables as $updatable) {
 			call_user_func(array($updatable, "update"));
 		}
 	}

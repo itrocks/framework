@@ -74,6 +74,19 @@ class Configurations
 		}
 		$this->configurations = array();
 		foreach ($configurations as $config_name => $config_options) {
+			foreach ($config_options as $level => $plugins) {
+				if (is_array($plugins)) {
+					$plugins_configurations = array();
+					foreach ($plugins as $class_name => $plugin_configuration) {
+						if (is_numeric($class_name)) {
+							$class_name = $plugin_configuration;
+							$plugin_configuration = array();
+						}
+						$plugins_configurations[$class_name] = $plugin_configuration;
+					}
+					$config_options[$level] = $plugins_configurations;
+				}
+			}
 			$this->configurations[$config_name] = new Configuration($config_options);
 		}
 		return end($this->configurations);

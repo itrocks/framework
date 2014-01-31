@@ -230,9 +230,7 @@ class Aop_Test extends Unit_Test
 //############################################################################################ AOPT
 namespace AOPT {
 
-use SAF\Framework\After_Function_Joinpoint;
 use SAF\Framework\Around_Function_Joinpoint;
-use SAF\Framework\Before_Function_Joinpoint;
 
 //========================================================================================= Advices
 	/**
@@ -300,10 +298,9 @@ class Advices
 	 * @param $str            string
 	 * @param $character_mask string
 	 * @param $result         string
-	 * @param $joinpoint      After_Function_Joinpoint
 	 * @return string
 	 */
-	public static function afterChop($str, $character_mask, $result, After_Function_Joinpoint $joinpoint)
+	public static function afterChop($str, $character_mask, $result)
 	{
 		echo "$str|$character_mask|$result";
 		return $result . ".AFT.";
@@ -328,9 +325,8 @@ class Advices
 	/**
 	 * @param $str            string
 	 * @param $character_mask string
-	 * @param $joinpoint      Before_Function_Joinpoint
 	 */
-	public static function beforeChop(&$str, $character_mask, Before_Function_Joinpoint $joinpoint)
+	public static function beforeChop(&$str, $character_mask)
 	{
 		echo "$str|$character_mask";
 		$str = " [" . $str . "] ";

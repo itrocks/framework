@@ -48,8 +48,9 @@ class Reflection_Parameter extends ReflectionParameter
 		else {
 			$default = null;
 		}
-		if (!isset($default)) $default = "null";
-		elseif (!is_numeric($default)) $default = '"' . str_replace('"', "\\\"", $default) . '"';
+		$default = is_string($default)
+			? ('"' . str_replace('"', "\\\"", $default) . '"')
+			: var_export($default, true);
 		return ($this->isPassedByReference() ? '&' : '') . '$' . $this->name
 			. ($optional ? (" = " . $default) : "");
 	}
