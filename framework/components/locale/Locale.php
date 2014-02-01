@@ -42,6 +42,10 @@ class Locale implements Configurable, Plugin
 	 */
 	public function __construct($configuration)
 	{
+		$current = self::current();
+		if (!isset($current)) {
+			self::current($this);
+		}
 		$this->setDate($configuration["date"]);
 		$this->setLanguage($configuration["language"]);
 		$this->setNumber($configuration["number"]);

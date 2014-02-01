@@ -71,7 +71,7 @@ class Translation_String_Composer implements Plugin
 			return $translation;
 		}
 		else {
-			return $joinpoint->process();
+			return $joinpoint->process($text, $context);
 		}
 	}
 

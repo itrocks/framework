@@ -112,7 +112,10 @@ class Autoload_Cache implements Activable_Plugin, Updatable
 					if ($i = strpos($short_class, " ")) {
 						$short_class = substr($short_class, 0, $i);
 					}
-					$namespace = trim(mParse($buffer, "namespace ", ";"));
+					$namespace = trim(mParse($buffer, "\n" . "namespace ", "\n"));
+					if (substr($namespace, -1) == ";") {
+						$namespace = trim(substr($namespace, 0, -1));
+					}
 					$full_class = $namespace . "\\" . $short_class;
 					if (($type == "class") && !isset($this->full_class_names[$short_class])) {
 						$this->full_class_names[$short_class] = $full_class;

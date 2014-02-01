@@ -39,6 +39,9 @@ class Around_Method_Joinpoint extends Method_Joinpoint
 	 */
 	public function process($args = null)
 	{
+		if (Aop::DEBUG) {
+			echo "process(" . print_r(func_get_args(), true) . "<br>";
+		}
 		return call_user_func_array(array($this->pointcut[0], $this->process_method), func_get_args());
 	}
 

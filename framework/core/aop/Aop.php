@@ -334,11 +334,6 @@ abstract class Aop
 			) {
 				$advice_arguments = str_replace('&$__result', '&$result', $advice_arguments);
 			}
-			if (
-				isset($advice_parameters["object"]) && !isset($arguments[$remove ? "__object" : "object"])
-			) {
-				$advice_arguments = str_replace('&$__object', '&$this', $advice_arguments);
-			}
 			if (isset($advice_parameters["joinpoint"])) {
 				$advice_arguments = str_replace('&$__joinpoint', $joinpoint_code, $advice_arguments);
 				$joinpoint_advice_parameter = true;
@@ -468,7 +463,7 @@ abstract class Aop
 			if (
 				isset($advice_parameters["object"]) && !isset($arguments[$remove ? "__object" : "object"])
 			) {
-				$advice_arguments = str_replace('&$__object', '&$this', $advice_arguments);
+				$advice_arguments = str_replace('&$__object', '$this', $advice_arguments);
 			}
 			if (isset($advice_parameters["joinpoint"])) {
 				$advice_arguments = str_replace('&$__joinpoint', $joinpoint_code, $advice_arguments);

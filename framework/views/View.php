@@ -4,9 +4,20 @@ namespace SAF\Framework;
 /**
  * The View class offers static methods to call views from the application main view engine
  */
-class View implements Plugin
+class View implements Configurable, Plugin
 {
 	use Current { current as private pCurrent; }
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $configuration array
+	 */
+	public function __construct($configuration)
+	{
+		$class_name = $configuration["class"];
+		unset($configuration["class"]);
+		View::current(new $class_name($configuration));
+	}
 
 	//--------------------------------------------------------------------------------------- current
 	/**
@@ -95,12 +106,15 @@ class View implements Plugin
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
+echo "View::run($class_name, $feature_name)<br>";
 		$features = isset($parameters["feature"])
 			? array($parameters["feature"], $feature_name)
 			: $feature_name;
 		foreach (self::getPossibleViews($class_name, $features) as $call) {
 			list($view, $view_method_name) = $call;
+echo "possibleView : $view::$view_method_name<br>";
 			if (@method_exists($view, $view_method_name)) {
+echo "View::run($view, $view_method_name)<br>";
 				$view_object = new $view();
 				return $view_object->$view_method_name(
 					$parameters, $form, $files, $class_name, $feature_name

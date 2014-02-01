@@ -274,8 +274,7 @@ class Main_Controller
 		$this->includes();
 		if (empty($_SESSION)) {
 			session_start();
-//echo "<pre>" . print_r($_SESSION, true) . "</pre>";
-if (isset($_GET["X"])) $_SESSION = array();
+			if (isset($_GET["X"])) $_SESSION = array();
 		}
 		$new_session = empty($_SESSION);
 		$this->setIncludePath($_SESSION);

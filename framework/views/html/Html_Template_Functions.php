@@ -26,7 +26,7 @@ abstract class Html_Template_Functions
 		/** @noinspection PhpUnusedParameterInspection */ Html_Template $template
 	) {
 		return new Displayable(
-			Configuration::current()->getApplicationName(), Displayable::TYPE_CLASS
+			Session::current()->getApplicationName(), Displayable::TYPE_CLASS
 		);
 	}
 
