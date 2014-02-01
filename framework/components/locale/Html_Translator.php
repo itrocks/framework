@@ -89,7 +89,7 @@ class Html_Translator implements Plugin
 	 */
 	public function translatePage(Html_Template $object, $result)
 	{
-		return $this->translateContent($result, get_class($object->getRootObject()));
+		return $this->translateContent($result, get_class($object));
 	}
 
 	//--------------------------------------------------------------------------------- translatePage
@@ -101,7 +101,7 @@ class Html_Translator implements Plugin
 	 */
 	public function translateString(Html_Template $object, &$property_name)
 	{
-		$this->translateContent($property_name, get_class($object->getRootObject()));
+		$this->translateContent($property_name, get_class($object));
 	}
 
 }

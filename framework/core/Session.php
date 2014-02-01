@@ -253,7 +253,6 @@ class Session implements Serializable
 				}
 			}
 		}
-echo "<pre>serialized = " . print_r($data, true) . "</pre>";
 		return serialize($data);
 	}
 
