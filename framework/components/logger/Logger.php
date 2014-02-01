@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * A very simple logger plugin that logs start and stop dates, pids and duration of main calls
  */
-class Logger implements Plugin
+class Logger implements Activable_Plugin
 {
 
 	//------------------------------------------------------------------------------------- $antiloop
@@ -18,6 +18,17 @@ class Logger implements Plugin
 	 * @var Log_Entry
 	 */
 	private $log_entry;
+
+	//-------------------------------------------------------------------------------------- activate
+	public function activate()
+	{
+		Aop::addBeforeMethodCall(
+			array('SAF\Framework\Main_Controller', "runController"), array($this, "start")
+		);
+		Aop::addAfterMethodCall(
+			array('SAF\Framework\Main_Controller', "runController"), array($this, "stop")
+		);
+	}
 
 	//----------------------------------------------------------------------------------------- start
 	/**
@@ -58,13 +69,6 @@ class Logger implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->beforeMethodCall(
-			array('SAF\Framework\Main_Controller', "runController"), array($this, "start")
-		);
-		$dealer->afterMethodCall(
-			array('SAF\Framework\Main_Controller', "runController"), array($this, "stop")
-		);
 	}
 
 }
