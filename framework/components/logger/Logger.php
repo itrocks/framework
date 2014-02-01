@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * A very simple logger plugin that logs start and stop dates, pids and duration of main calls
  */
@@ -25,12 +23,13 @@ class Logger implements Plugin
 	/**
 	 * Start logging : write pids and start-time
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $uri   string
+	 * @param $get   array
+	 * @param $post  array
+	 * @param $files array
 	 */
-	public function start(AopJoinpoint $joinpoint)
+	public function start($uri, $get, $post, $files)
 	{
-		// the controller may not receive $get, $post or $files arguments
-		@list($uri, $get, $post, $files) = $joinpoint->getArguments();
 		if (!$this->antiloop) {
 			$this->log_entry = new Log_Entry($uri, $get, $post, $files);
 			Dao::write($this->log_entry);

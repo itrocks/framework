@@ -231,9 +231,9 @@ class Main_Controller
 	/**
 	 * Parse URI and run matching controller
 	 *
-	 * @param $uri string
-	 * @param $get array
-	 * @param $post array
+	 * @param $uri   string
+	 * @param $get   array
+	 * @param $post  array
 	 * @param $files array
 	 * @return mixed
 	 */

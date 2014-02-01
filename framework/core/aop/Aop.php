@@ -306,7 +306,6 @@ abstract class Aop
 			$parameters_string = 'array(';
 			foreach ($arguments_names as $key => $name) {
 				if ($remove) {
-					$key = substr($key, 2);
 					$name = substr($name, 2);
 				}
 				if ($key) $parameters_string .= ', ';
@@ -432,7 +431,6 @@ abstract class Aop
 			$parameters_string = 'array(';
 			foreach ($arguments_names as $key => $name) {
 				if ($remove) {
-					$key = substr($key, 2);
 					$name = substr($name, 2);
 				}
 				if ($key) $parameters_string .= ', ';
