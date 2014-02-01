@@ -1,123 +1,120 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * Aop calls getters
  */
 class Aop_Getter extends Aop implements Plugin
 {
 
+	//--------------------------------------------------------------------------------------- $ignore
+	/**
+	 * @var boolean
+	 */
+	public static $ignore = false;
+
 	//---------------------------------------------------------------------------------------- getAll
 	/**
-	 * Register this using "@getter Aop::getAll" for a property that points on all existing elements of a collection
+	 * Register this using "@getter Aop::getAll" for a property that points on all existing elements
+	 * of a collection
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $value     object[]
+	 * @param $joinpoint Property_Read_Joinpoint
 	 * @return object[]
 	 */
-	public function getAll(AopJoinpoint $joinpoint)
+	public function getAll(&$value, Property_Read_Joinpoint $joinpoint)
 	{
-		$object   = $joinpoint->getObject();
-		$property = $joinpoint->getPropertyName();
-		if (!isset($object->$property)) {
-			$class = $joinpoint->getClassName();
-			$type_name = (new Reflection_Property($class, $property))->getType()
-				->getElementTypeAsString($class);
-			$object->$property = Getter::getAll(null, $type_name);
+		if (!self::$ignore && !isset($value)) {
+			$type_name = (new Reflection_Property($joinpoint->class_name, $joinpoint->property_name))
+				->getType()->getElementTypeAsString();
+			$value = Getter::getAll(null, $type_name);
 		}
-		return $object->$property;
+		return $value;
 	}
 
 	//--------------------------------------------------------------------------------- getCollection
 	/**
 	 * Register this for any object collection property using "@link Collection" annotation
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $value     Component[]
+	 * @param $joinpoint Property_Read_Joinpoint
 	 * @return Component[]
 	 */
-	public function getCollection(AopJoinpoint $joinpoint)
+	public function getCollection(&$value, Property_Read_Joinpoint $joinpoint)
 	{
-		$object   = $joinpoint->getObject();
-		$property = $joinpoint->getPropertyName();
-		if (!isset($object->$property)) {
-			$class = $joinpoint->getClassName();
-			$type_name = (new Reflection_Property($class, $property))->getType()
-				->getElementTypeAsString();
-			$object->$property = Getter::getCollection(null, $type_name, $object, $property);
+		if (!self::$ignore && !isset($value)) {
+			$type_name = (new Reflection_Property($joinpoint->class_name, $joinpoint->property_name))
+				->getType()->getElementTypeAsString();
+			$value = Getter::getCollection(
+				null, $type_name, $joinpoint->object, $joinpoint->property_name
+			);
 		}
-		return $object->$property;
+		return $value;
 	}
 
 	//----------------------------------------------------------------------------------- getDateTime
 	/**
 	 * Register this for any Date_Time property using "@link DateTime" annotation
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $value Date_Time|string
 	 * @return Date_Time
 	 */
-	public function getDateTime(AopJoinpoint $joinpoint)
+	public function getDateTime(&$value)
 	{
-		$object   = $joinpoint->getObject();
-		$property = $joinpoint->getPropertyName();
-		$value = $object->$property;
-		if (is_string($value)) {
-			$object->$property = Date_Time::fromISO($value);
+		if (!self::$ignore && is_string($value)) {
+			$value = Date_Time::fromISO($value);
 		}
-		return $object->$property;
+		return $value;
 	}
 
 	//--------------------------------------------------------------------------------------- getFile
 	/**
 	 * Register this for any object property using "@link File" annotation
 	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $value     object
+	 * @param $joinpoint Property_Read_Joinpoint
+	 * @return object
 	 */
-	public function getFile(AopJoinpoint $joinpoint)
+	public function getFile(&$value, Property_Read_Joinpoint $joinpoint)
 	{
-		return $this->getObject($joinpoint);
+		return $this->getObject($value, $joinpoint);
 	}
 
 	//---------------------------------------------------------------------------------------- getMap
 	/**
 	 * Register this for any object map property using "@link Map" annotation
 	 *
-	 * @param AopJoinpoint $joinpoint
+	 * @param $value     object[]
+	 * @param $joinpoint Property_Read_Joinpoint
 	 * @return object[]
 	 */
-	public function getMap(AopJoinpoint $joinpoint)
+	public function getMap(&$value, Property_Read_Joinpoint $joinpoint)
 	{
-		$object   = $joinpoint->getObject();
-		$property = $joinpoint->getPropertyName();
-		if (!isset($object->$property)) {
-			$class = $joinpoint->getClassName();
-			$property = new Reflection_Property($class, $property);
-			$object->$property = Getter::getMap(null, $object, $property);
+		if (!self::$ignore && !isset($value)) {
+			$property = (new Reflection_Property($joinpoint->class_name, $joinpoint->property_name))
+				->getType()->getElementTypeAsString();
+			$value = Getter::getMap(null, $joinpoint->object, $property);
 		}
-		return $object->$property;
+		return $value;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
 	/**
-	 * Register this for any object property using "@link Object" annotation
-	 *
-	 * @param $joinpoint AopJoinpoint
+	 * @param $value     object
+	 * @param $joinpoint Property_Read_Joinpoint
+	 * @return object
 	 */
-	public function getObject(AopJoinpoint $joinpoint)
+	public function getObject(&$value, Property_Read_Joinpoint $joinpoint)
 	{
-		$object   = $joinpoint->getObject();
-		$property = $joinpoint->getPropertyName();
-		if (!isset($object->$property)) {
-			$class = $joinpoint->getClassName();
-			$property = new Reflection_Property($class, $property);
+		if (!self::$ignore && !isset($value)) {
+			$property = new Reflection_Property($joinpoint->class_name, $joinpoint->property_name);
 			$type = $property->getType()->asString();
-			$value = Getter::getObject(null, $type, $object, $property->name);
+			$value = Getter::getObject(null, $type, $joinpoint->object, $property);
 			if (!is_object($value)) {
 				$value = Null_Object::create($type);
 			}
-			$property->setValue($object, $value);
 		}
-		return $object->$property;
+		return $value;
 	}
 
 	//-------------------------------------------------------------------------------------- register

@@ -3,7 +3,9 @@
 /**
  * This patch get rid of trailing "active" ghost functions from previous script execution
  */
-if (function_exists('_runkit_function_rename')) runkit_function_remove('_runkit_function_rename');
+if (function_exists('_runkit_function_rename')) {
+	runkit_function_remove('_runkit_function_rename');
+}
 runkit_function_rename('runkit_function_rename', '_runkit_function_rename');
 runkit_function_add(
 	'runkit_function_rename', '$function_name, $new_name',

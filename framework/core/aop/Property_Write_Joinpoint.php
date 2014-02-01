@@ -4,44 +4,31 @@ namespace SAF\Framework;
 /**
  * The joinpoint on property write
  */
-class Property_Write_Joinpoint
+class Property_Write_Joinpoint extends Property_Joinpoint
 {
 
-	//--------------------------------------------------------------------------------------- $advice
+	//----------------------------------------------------------------------------------- $last_value
 	/**
-	 * @var string[]|object[]|string
+	 * @var mixed
 	 */
-	public $advice;
-
-	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
-	public $class_name;
-
-	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @var object
-	 */
-	public $object;
-
-	//-------------------------------------------------------------------------------- $property_name
-	/**
-	 * @var string
-	 */
-	public $property_name;
+	public $last_value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name    string
-	 * @param $object        object
-	 * @param $property_name string
+	 * @param $pointcut      string[]|object[]
+	 * @param $value         mixed
+	 * @param $last_value    mixed
+	 * @param $advice        callable
 	 */
-	public function __construct($class_name, $object, $property_name)
+	public function __construct($class_name, $pointcut, &$value, $last_value, $advice)
 	{
 		$this->class_name    = $class_name;
-		$this->object        = $object;
-		$this->property_name = $property_name;
+		$this->last_value    = $last_value;
+		$this->object        = is_object($pointcut[0]) ? $pointcut[0] : null;
+		$this->pointcut      = $pointcut;
+		$this->property_name = $pointcut[1];
+		$this->value         = &$value;
+		$this->advice        = $advice;
 	}
-
 }

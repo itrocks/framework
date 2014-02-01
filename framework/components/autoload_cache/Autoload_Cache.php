@@ -31,7 +31,7 @@ class Autoload_Cache implements Activable_Plugin, Updatable
 		/** @var $application_updater Application_Updater */
 		$application_updater = Session::current()->getPlugin('SAF\Framework\Application_Updater');
 		$application_updater->addUpdatable($this);
-		$this->cache_path = Application::current()->path->getSourceDirectory() . "/cache";
+		$this->cache_path = Application::current()->include_path->getSourceDirectory() . "/cache";
 		/** @noinspection PhpIncludeInspection */
 		@include $this->cache_path . "/autoload.php";
 		if (!$this->paths || !$this->full_class_names || $application_updater->mustUpdate()) {

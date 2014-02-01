@@ -92,9 +92,9 @@ abstract class Getter
 	 * Generic getter for mapped objects
 	 *
 	 * @param $map             Component[] actual value of the property (will be returned if not null)
+	 * @param $parent          object the parent object
 	 * @param $parent_property string|Reflection_Property the source property (or name) for map
 	 *                         reading
-	 * @param $parent object   the parent object
 	 * @return object[]
 	 */
 	public static function getMap($map, $parent, $parent_property)

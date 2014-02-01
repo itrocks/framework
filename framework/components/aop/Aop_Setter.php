@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use AopJoinpoint;
-
 /**
  * Aop call setters
  */
@@ -68,24 +66,22 @@ class Aop_Setter extends Aop implements Plugin
 		}
 	}
 
-	//------------------------------------------------------------------------------------- setParent
+	//------------------------------------------------------------------------------------- setObject
 	/**
 	 * When setting an object, set its object identifier too
 	 *
-	 * @todo unused : please test it
-	 * @param $joinpoint AopJoinpoint
+	 * @param $value     object
+	 * @param $joinpoint Property_Write_Joinpoint
 	 */
-	public function setObject(AopJoinpoint $joinpoint)
+	public function setObject($value, Property_Write_Joinpoint $joinpoint)
 	{
-		$object = $joinpoint->getObject();
-		$id_property = "id_" . $joinpoint->getPropertyName();
-		$value = $joinpoint->getAssignedValue();
+		$id_property = "id_" . $joinpoint->property_name;
 		$identifier = Dao::getObjectIdentifier($value);
 		if (is_object($value) && !empty($identifier)) {
-			$object->$id_property = $identifier;
+			$joinpoint->object->$id_property = $identifier;
 		}
 		else {
-			unset($object->$id_property);
+			unset($joinpoint->object->$id_property);
 		}
 	}
 

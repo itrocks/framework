@@ -17,13 +17,13 @@ class Application
 	 */
 	public $applications = array();
 
-	//----------------------------------------------------------------------------------------- $path
+	//--------------------------------------------------------------------------------- $include_path
 	/**
 	 * Paths functions relative to the application
 	 *
 	 * @var Include_Path
 	 */
-	public $path;
+	public $include_path;
 
 	//----------------------------------------------------------------------------------- $namespaces
 	/**
@@ -46,7 +46,7 @@ class Application
 	public function __construct($name)
 	{
 		$this->name = $name;
-		$this->path = new Include_Path($name);
+		$this->include_path = new Include_Path($name);
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -121,7 +121,7 @@ class Application
 	public function getSourceFiles($include_vendor = false)
 	{
 		$files = array();
-		foreach ((new Include_Path())->getSourceDirectories() as $directory) {
+		foreach ($this->include_path->getSourceDirectories() as $directory) {
 			$directory_slash = $directory . "/";
 			if (
 				(strpos($directory_slash, "/webshop/templates/") === false)

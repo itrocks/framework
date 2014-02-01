@@ -54,9 +54,12 @@ abstract class Aop
 	/**
 	 * Launch advice $call_back after the execution of the joinpoint function $function
 	 *
-	 * @param $when     string when to do the capture : "after", "after_returning", "after_throwing", "around", "before"
-	 * @param $function string can be "functionName()" or "Class_Name->methodName()" or "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\.
-	 * @param $call_back string|array|mixed function name, array(class name or object, method) or function as a closure
+	 * @param $when string when to do the capture :
+	 *        "after", "after_returning", "after_throwing", "around", "before"
+	 * @param $function string can be "functionName()" or "Class_Name->methodName()" or
+	 *        "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\
+	 * @param $call_back string|array|mixed function name, array(class name or object, method) or
+	 *        function as a closure
 	 */
 	public static function add($when, $function, $call_back)
 	{
@@ -324,7 +327,9 @@ abstract class Aop
 		// pointcut values. If they are $result or $object, the AOP values will be send only if
 		// the pointcut has no parameters with the same name.
 		$advice_method = is_array($advice)
-			? new Reflection_Method(is_object($advice[0]) ? get_class($advice[0]) : $advice[0], $advice[1])
+			? new Reflection_Method(
+				is_object($advice[0]) ? get_class($advice[0]) : $advice[0], $advice[1]
+			)
 			: new Reflection_Function($advice);
 		$advice_parameters = $advice_method->getParameters();
 		if ($advice_parameters) {
@@ -557,62 +562,71 @@ abstract class Aop
 				}
 				// set magic methods for AOP
 				$replaced = self::rename($class_name, '__get');
-				runkit_method_add($class_name, '__get', '$property', '
-					if ($property[0] == "_") {
-						return ' . ($replaced ? '$this->__get_aop($property)' : 'null') . ';
+				runkit_method_add($class_name, '__get', '$property_name', '
+					if ($property_name[0] == "_") {
+						return ' . ($replaced ? '$this->__get_aop($property_name)' : 'null') . ';
 					}
-					$_property = "_" . $property;
-					$value = isset($this->$_property) ? $this->$_property : null;
-					if (isset(' . $aop_properties . '[$property]["read"])) {
+					$_property_name = "_" . $property_name;
+					$value = isset($this->$_property_name) ? $this->$_property_name : null;
+					if (isset(' . $aop_properties . '[$property_name]["read"])) {
+						if (!isset($this->$_property_name)) $this->$_property_name = null;
+						$value =& $this->$_property_name;
 						$joinpoint = new SAF\Framework\Property_Read_Joinpoint(
-							"' . $joinpoint[0] . '", $this, $property
+							"' . $class_name . '", array($this, $property_name), $value, null
 						);
-						foreach (' . $aop_properties . '[$property]["read"] as $advice) {
+						foreach (' . $aop_properties . '[$property_name]["read"] as $advice) {
 							if (is_array($advice) && isset($advice["dynamic"])) {
 								$advice[0] = $this;
 								unset($advice["dynamic"]);
 							}
 							$joinpoint->advice = $advice;
-							$value = call_user_func_array($advice, array($value, $joinpoint));
+							$value = call_user_func_array($advice, array(&$value, $joinpoint));
 						}
 					}
 					return $value;
 				');
 				$replaced = self::rename($class_name, '__isset');
-				runkit_method_add($class_name, '__isset', '$property', '
-					if ($property[0] == "_") {
-						return ' . ($replaced ? '$this->__isset_aop($property)' : 'false') . ';
+				runkit_method_add($class_name, '__isset', '$property_name', '
+					if ($property_name[0] == "_") {
+						return ' . ($replaced ? '$this->__isset_aop($property_name)' : 'false') . ';
 					}
-					$_property = "_" . $property;
-					return isset($this->$_property);
+					$_property_name = "_" . $property_name;
+					return isset($this->$_property_name);
 				');
 				$replaced = self::rename($class_name, '__set');
-				runkit_method_add($class_name, '__set', '$property, $value', '
-					if ($property[0] == "_") {
-						' . ($replaced ? '$this->__set_aop($property, $value)' : '$this->$property = $value') . ';
+				runkit_method_add($class_name, '__set', '$property_name, $value', '
+					if ($property_name[0] == "_") {
+						' . (
+							$replaced ? '$this->__set_aop($property_name, $value)'
+							: '$this->$property_name = $value'
+						) . ';
 						return;
 					}
-					$_property = "_" . $property;
-					if (isset(' . $aop_properties . '[$property]["write"])) {
-						$joinpoint = new SAF\Framework\Property_Write_Joinpoint("' . $joinpoint[0] . '", $this, $property);
-						foreach (' . $aop_properties . '[$property]["write"] as $advice) {
+					$_property_name = "_" . $property_name;
+					if (isset(' . $aop_properties . '[$property_name]["write"])) {
+						$last_value = isset($this->$_property_name) ? $this->$_property_name : null;
+						$joinpoint = new SAF\Framework\Property_Write_Joinpoint(
+							"' . $class_name . '", array($this, $property_name), $value, $last_value, null
+						);
+						foreach (' . $aop_properties . '[$property_name]["write"] as $advice) {
 							if (is_array($advice) && isset($advice["dynamic"])) {
 								$advice[0] = $this;
 								unset($advice["dynamic"]);
 							}
 							$joinpoint->advice = $advice;
-							$value = call_user_func_array($advice, array($value, $joinpoint));
+							$result = call_user_func_array($advice, array(&$value, $joinpoint));
+							if (isset($result)) $value = $result;
 						}
 					}
-					$this->$_property = $value;
+					$this->$_property_name = $value;
 				');
 				$replaced = self::rename($class_name, '__unset');
-				runkit_method_add($class_name, '__unset', '$property', '
-					if ($property[0] != "_") {
-						$property = "_" . $property;
-						unset($this->$property);
+				runkit_method_add($class_name, '__unset', '$property_name', '
+					if ($property_name[0] != "_") {
+						$property_name = "_" . $property_name;
+						unset($this->$property_name);
 					}
-					' . ($replaced ? 'else $this->__unset_aop($property);' : '') . '
+					' . ($replaced ? 'else $this->__unset_aop($property_name);' : '') . '
 				');
 				// currently existing constructor renamed as __construct_aop (if exists)
 				if (
