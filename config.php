@@ -2,7 +2,11 @@
 
 //--------------------------------------------------------------------------------------- framework
 $config["framework"] = array(
-	// core plugins are loaded first, at the beginning of each script
+	// top core plugins are loaded first, before the session is opened
+	// this array must stay empty : top core plugins must be set into the index.php script
+	"top_core" => array(
+	),
+	// core plugins are loaded first, at the beginning of each script, when the session is opened
 	"core" => array(
 		'SAF\Framework\Autoloader',
 		'SAF\Framework\Aop_Dealer',

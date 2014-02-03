@@ -67,7 +67,7 @@ abstract class Debug
 	public static function log($text)
 	{
 		$f = fopen("debug.log", "ab");
-		fputs($f, date("Y-m-d H:i:s") . " " . $text . "\n");
+		fputs($f, date("Y-m-d H:i:s") . " #" . getmypid() . " " . $text . "\n");
 		fclose($f);
 	}
 

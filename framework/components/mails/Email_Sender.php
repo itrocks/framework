@@ -50,7 +50,7 @@ abstract class Email_Sender
 		}
 		$params["host"] = $email->account->smtp_accounts[0]->host;
 		/** @var $mail Mail_smtp */
-		$mail = (new Mail)->factory("smtp", $params);
+		$mail = (new Mail())->factory("smtp", $params);
 		$send_result = $mail->send(
 			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $email->content
 		);

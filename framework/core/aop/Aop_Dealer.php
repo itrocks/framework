@@ -11,6 +11,12 @@ use Serializable;
 class Aop_Dealer implements Activable_Plugin, Serializable
 {
 
+	//------------------------------------------------------------------------------------------ $has
+	/**
+	 * @var array
+	 */
+	private $has;
+
 	//---------------------------------------------------------------------------------------- $links
 	/**
 	 * @var array
@@ -22,6 +28,15 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 	 * @var object[]|string[]
 	 */
 	private $serialized_objects = array();
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Constructor : initializes $has array
+	 */
+	public function __construct()
+	{
+		$this->has = array(Aop::READ => array(), Aop::WRITE => array());
+	}
 
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
@@ -77,38 +92,117 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 		$this->links[$joinpoint[0]][] = array("addBeforeMethodCall", $joinpoint, $advice);
 	}
 
+	//-------------------------------------------------------------------------------------- hasLinks
+	/**
+	 * @param $class_name string
+	 * @param $type       string Aop::READ or Aop::WRITE
+	 * @return boolean
+	 */
+	public function hasLinks($class_name, $type = null)
+	{
+		if (isset($type)) {
+			return isset($this->has[$type][$class_name]);
+		}
+		else {
+			return isset($this->links[$class_name]);
+		}
+	}
+
 	//--------------------------------------------------------------------------------- includedClass
 	/**
 	 * @param $class_name string
 	 * @param $result     boolean for Aop use. don't fill it for manual calls
+	 * @param $root_class string force root class and properties only (for internal use only)
 	 */
-	public function includedClass($class_name, $result = true)
+	public function includedClass($class_name, $result = true, $root_class = null)
 	{
 		if ($result) {
+if (class_exists('SAF\Framework\Debug')) Debug::log("includedClass($class_name) START");
+			$properties_only = isset($root_class);
 			if (isset($this->links[$class_name])) {
+				$is_trait = trait_exists($class_name, false);
 				foreach ($this->links[$class_name] as $key => $link) {
 					list($method, $joinpoint, $advice) = $link;
-					// unserialize advice object
-					if (is_array($advice) && is_string($reference = $advice[0]) && ($reference[1] == ":")) {
-						$object = $this->serialized_objects[$reference];
-						if (is_string($object)) {
-							$object = ($object[1] == ":")
-								? unserialize($object)
-								: Session::current()->getPlugin($object);
+					$property = (substr($method, 0, 13) == "addOnProperty");
+					if ($property || !$properties_only) {
+						// prepare for property joinpoint : execute all traits links to the root class
+						if ($property && !$is_trait && !isset($done_property)) {
+							$done_property = true;
+							if (!isset($root_class)) {
+								$parents = class_parents($class_name);
+								$root_class = $parents ? end($parents) : $class_name;
+							}
+							// for each parent trait, apply AOP properties links of the trait to the root class
+							$check_traits = array($class_name);
+							$traits = array();
+							while ($check_traits) {
+								$will_check = array();
+								foreach ($check_traits as $check_name) {
+									$parent_traits = class_uses($check_name);
+									$will_check    = array_merge($will_check, $parent_traits);
+									$traits        = array_merge($traits, $parent_traits);
+								}
+								$check_traits = $will_check;
+							}
+							foreach ($traits as $trait_name) {
+								$this->includedClass($trait_name, $result, $root_class);
+							}
 						}
-						$advice[0] = $object;
-						$this->links[$class_name][$key][2][0] = $object;
-						$this->serialized_objects[$reference] = $object;
+						if (!$property || !$is_trait) {
+							// unserialize advice object
+							if (
+								is_array($advice) && is_string($reference = $advice[0]) && ($reference[1] == ":")
+							) {
+								$object = $this->serialized_objects[$reference];
+								if (is_string($object)) {
+									$object = ($object[1] == ":")
+										? unserialize($object)
+										: Session::current()->plugins->getPlugin($object);
+								}
+								$advice[0] = $object;
+								$this->links[$class_name][$key][2][0] = $object;
+								$this->serialized_objects[$reference] = $object;
+							}
+							// Aop on properties : change joinpoint to root
+							if ($property && !$is_trait) {
+								$joinpoint[0] = $root_class;
+							}
+							// make Aop link
+							Aop::$method($joinpoint, $advice);
+						}
 					}
-					// call Aop link
-					Aop::$method($joinpoint, $advice);
 				}
 			}
+if (class_exists('SAF\Framework\Debug')) Debug::log("includedClass($class_name) DONE");
+			// get instance and activate plugin
+			if (is_a($class_name, 'SAF\Framework\Plugin', true)) {
+				Session::current()->plugins->getPlugin($class_name);
+			}
 		}
-		// get instance and activate plugin
-		if (is_a($class_name, 'SAF\Framework\Plugin', true)) {
-			Session::current()->getPlugin($class_name, false);
-		}
+	}
+
+	//-------------------------------------------------------------------------------- onPropertyRead
+	/**
+	 * @param $joinpoint string[]
+	 * @param $advice    callable
+	 */
+	public function onPropertyRead($joinpoint, $advice)
+	{
+		$this->has[Aop::READ][$joinpoint[0]] = true;
+		$this->links[$joinpoint[0]][] = array("addOnPropertyRead", $joinpoint, $advice);
+		// todo default option for immediate link creation
+	}
+
+	//------------------------------------------------------------------------------- onPropertyWrite
+	/**
+	 * @param $joinpoint string[]
+	 * @param $advice    callable
+	 */
+	public function onPropertyWrite($joinpoint, $advice)
+	{
+		$this->has[Aop::WRITE][$joinpoint[0]] = true;
+		$this->links[$joinpoint[0]][] = array("addOnPropertyWrite", $joinpoint, $advice);
+		// todo default option for immediate link creation
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -190,7 +284,7 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 				}
 			}
 		}
-		return serialize(array($this->links, $serialized_objects));
+		return serialize(array($this->links, $serialized_objects, $this->has));
 	}
 
 	//----------------------------------------------------------------------------------- unserialize
@@ -199,7 +293,7 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 	 */
 	public function unserialize($serialized)
 	{
-		list($this->links, $this->serialized_objects) = unserialize($serialized);
+		list($this->links, $this->serialized_objects, $this->has) = unserialize($serialized);
 	}
 
 }

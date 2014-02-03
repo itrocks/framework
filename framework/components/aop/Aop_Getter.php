@@ -25,8 +25,7 @@ class Aop_Getter extends Aop implements Plugin
 	public function getAll(&$value, Property_Read_Joinpoint $joinpoint)
 	{
 		if (!self::$ignore && !isset($value)) {
-			$type_name = (new Reflection_Property($joinpoint->class_name, $joinpoint->property_name))
-				->getType()->getElementTypeAsString();
+			$type_name = $joinpoint->getProperty()->getType()->getElementTypeAsString();
 			$value = Getter::getAll(null, $type_name);
 		}
 		return $value;
@@ -43,8 +42,7 @@ class Aop_Getter extends Aop implements Plugin
 	public function getCollection(&$value, Property_Read_Joinpoint $joinpoint)
 	{
 		if (!self::$ignore && !isset($value)) {
-			$type_name = (new Reflection_Property($joinpoint->class_name, $joinpoint->property_name))
-				->getType()->getElementTypeAsString();
+			$type_name = $joinpoint->getProperty()->getType()->getElementTypeAsString();
 			$value = Getter::getCollection(
 				null, $type_name, $joinpoint->object, $joinpoint->property_name
 			);
@@ -91,8 +89,7 @@ class Aop_Getter extends Aop implements Plugin
 	public function getMap(&$value, Property_Read_Joinpoint $joinpoint)
 	{
 		if (!self::$ignore && !isset($value)) {
-			$property = (new Reflection_Property($joinpoint->class_name, $joinpoint->property_name))
-				->getType()->getElementTypeAsString();
+			$property = $joinpoint->getProperty()->getType()->getElementTypeAsString();
 			$value = Getter::getMap(null, $joinpoint->object, $property);
 		}
 		return $value;
@@ -107,7 +104,7 @@ class Aop_Getter extends Aop implements Plugin
 	public function getObject(&$value, Property_Read_Joinpoint $joinpoint)
 	{
 		if (!self::$ignore && !isset($value)) {
-			$property = new Reflection_Property($joinpoint->class_name, $joinpoint->property_name);
+			$property = $joinpoint->getProperty();
 			$type = $property->getType()->asString();
 			$value = Getter::getObject(null, $type, $joinpoint->object, $property);
 			if (!is_object($value)) {

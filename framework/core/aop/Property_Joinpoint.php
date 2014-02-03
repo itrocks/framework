@@ -49,4 +49,16 @@ class Property_Joinpoint extends Joinpoint
 		$this->advice        = $advice;
 	}
 
+	//----------------------------------------------------------------------------------- getProperty
+	/**
+	 * @return Reflection_Property
+	 */
+	public function getProperty()
+	{
+		return new Reflection_Property(
+			is_object($this->pointcut[0]) ? get_class($this->pointcut[0]) : $this->pointcut[0],
+			$this->pointcut[1]
+		);
+	}
+
 }

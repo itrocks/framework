@@ -282,6 +282,7 @@ abstract class Aop
 	 */
 	private static function addFunctionCall($joinpoint, $advice, $code, $joinpoint_code)
 	{
+if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint() -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() START");
 		$count = count(self::$joinpoints);
 		$advice_string = self::callbackString($advice, $count);
 
@@ -385,6 +386,7 @@ abstract class Aop
 
 		self::$advices[$count] = $advice;
 		self::$joinpoints[$count] = $joinpoint;
+if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint() -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() DONE");
 		return $count;
 	}
 
@@ -400,6 +402,7 @@ abstract class Aop
 	 */
 	private static function addMethodCall($joinpoint, $advice, $code, $joinpoint_code)
 	{
+if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]::$joinpoint[1]() -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() START");
 		$counts = array();
 		$trait = new Reflection_Class($joinpoint[0]);
 		if ($trait->isTrait()) {
@@ -528,6 +531,7 @@ abstract class Aop
 
 		self::$advices[$count] = $advice;
 		self::$joinpoints[$count] = $joinpoint;
+if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]::$joinpoint[1]() -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() DONE");
 		return $counts ? ($counts + array($count)) : $count;
 	}
 
@@ -541,6 +545,7 @@ abstract class Aop
 	 */
 	private static function addOnProperty($joinpoint, $advice, $side)
 	{
+if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1] -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() START");
 		list($class_name, $property_name) = $joinpoint;
 		if (!isset(Aop::$properties[$class_name])) {
 			$aop_properties = __CLASS__ . "::\$properties['$class_name']";
@@ -664,6 +669,7 @@ abstract class Aop
 			$advice["dynamic"] = true;
 		}
 		array_unshift(self::$properties[$class_name][$property_name][$side], $advice);
+if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1] -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() DONE");
 	}
 
 	//----------------------------------------------------------------------------- addOnPropertyRead
@@ -711,64 +717,68 @@ abstract class Aop
 	/**
 	 * @param $class_name string
 	 * @param $annotation string ie "getter", "setter"
-	 * @param $function   string ie "read", "write"
+	 * @param $type       string ie "read", "write"
 	 */
-	public function registerProperties($class_name, $annotation, $function)
+	public function registerProperties($class_name, $annotation, $type)
 	{
-		if (
-			($is_class = @class_exists($class_name, false))
-			|| @trait_exists($class_name, false)
-			|| @interface_exists($class_name, false)
-		) {
-			$class = new Reflection_Class($class_name);
-			// properties overridden in traits must be overridden into final class
-			$overridden_properties = array();
-			if ($is_class) {
-				foreach ($class->getListAnnotations("override") as $override) {
-					/** @var $override Class_Override_Annotation */
-					foreach ($override->values() as $overridden_annotation => $override_value) {
-						if (in_array($overridden_annotation, array("getter", "link", "setter"))) {
-							$overridden_properties[$override->property_name] = true;
+		/** @var $dealer Aop_Dealer */
+		$dealer = Session::current()->plugins->getPlugin('SAF\Framework\Aop_Dealer');
+		if (!$dealer->hasLinks($class_name, $type)) {
+			if (
+				($is_class = @class_exists($class_name, false))
+				|| @trait_exists($class_name, false)
+				|| @interface_exists($class_name, false)
+			) {
+				$class = new Reflection_Class($class_name);
+				// properties overridden in traits must be overridden into final class
+				$overridden_properties = array();
+				if ($is_class) {
+					foreach ($class->getListAnnotations("override") as $override) {
+						/** @var $override Class_Override_Annotation */
+						foreach ($override->values() as $overridden_annotation => $override_value) {
+							if (in_array($overridden_annotation, array("getter", "link", "setter"))) {
+								$overridden_properties[$override->property_name] = true;
+							}
 						}
 					}
 				}
-			}
-			// define getter / setter for each property
-			foreach ($class->getProperties() as $property) {
-				if (($property->class == $class_name) || isset($overridden_properties[$property->name])) {
-					$call = $property->getAnnotation($annotation)->value;
-					if ($call) {
-						if (strpos($call, "::")) {
-							if (substr($call, 0, 5) === "Aop::") {
-								$call_class  = $this;
-								$call_method = substr($call, 5);
+				// define getter / setter for each property
+				foreach ($class->getProperties() as $property) {
+					if (($property->class == $class_name) || isset($overridden_properties[$property->name])) {
+						$call = $property->getAnnotation($annotation)->value;
+						if ($call) {
+							if (strpos($call, "::")) {
+								if (substr($call, 0, 5) === "Aop::") {
+									$call_class  = $this;
+									$call_method = substr($call, 5);
+								}
+								else {
+									list($call_class, $call_method) = explode("::", $call);
+								}
 							}
 							else {
-								list($call_class, $call_method) = explode("::", $call);
+								$call_class  = $class_name;
+								$call_method = $call;
 							}
-						}
-						else {
-							$call_class  = $class_name;
-							$call_method = $call;
-						}
-						switch ($function) {
-							case Aop::READ:
-								Aop::addOnPropertyRead(
-									array($class_name, $property->name), array($call_class, $call_method)
-								);
-								break;
-							case Aop::WRITE:
-								Aop::addOnPropertyWrite(
-									array($class_name, $property->name), array($call_class, $call_method)
-								);
-								break;
+							switch ($type) {
+								case Aop::READ:
+									$dealer->onPropertyRead(
+										array($class_name, $property->name), array($call_class, $call_method)
+									);
+									break;
+								case Aop::WRITE:
+									$dealer->onPropertyWrite(
+										array($class_name, $property->name), array($call_class, $call_method)
+									);
+									break;
+							}
 						}
 					}
 				}
 			}
-		}
-		else {
-			//echo "- DEAD CODE : Register properties for non existing class $class_name : $annotation<br>";
+			else {
+				//echo "- DEAD CODE : Register properties for non existing class $class_name : $annotation<br>";
+			}
 		}
 	}
 

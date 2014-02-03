@@ -14,13 +14,23 @@ ini_set("xdebug.max_nesting_level", 255);
 ini_set("xdebug.var_display_max_children", 1000000);
 ini_set("xdebug.var_display_max_data", 1000000);
 ini_set("xdebug.var_display_max_depth", 1000000);
-set_time_limit(20);
+set_time_limit(5);
 //&XDEBUG_PROFILE=1
 
 // run
-$_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
+require_once "framework/core/configuration/Plugin.php";
+require_once "framework/core/configuration/Activable_Plugin.php";
+require_once "framework/core/configuration/Configurable.php";
+require_once "framework/components/html_session/Html_Session.php";
 require_once "framework/core/controllers/Main_Controller.php";
-echo (new Main_Controller())->run($_PATH_INFO, $_GET, $_POST, $_FILES);
+
+$_PATH_INFO = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/";
+
+echo (new Main_Controller())
+	->addTopCorePlugins(array(
+		new Html_Session(array("use_cookie" => true))
+	))
+	->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
 // Display result on client browser now, as session serialization could take a moment
 ob_flush(); flush();

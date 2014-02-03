@@ -1,33 +1,36 @@
 <?php
 namespace SAF\Framework;
 
-use Serializable;
-
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
  */
 class Main_Controller
 {
 
-	//------------------------------------------------------------------------------- activatePlugins
+	//----------------------------------------------------------------------------- $top_core_plugins
 	/**
-	 * Activate all plugins (called at each script beginning, for already loaded classes only)
-	 *
-	 * @param $plugins array
-	 * @param $core    boolean activate core plugins too
-	 *        please set this to true only if not already been activated by registerPlugins
+	 * @var Plugin[]
 	 */
-	private function activatePlugins($plugins, $core)
+	private $top_core_plugins = array();
+
+	//--------------------------------------------------------------------------------- topCorePlugin
+	/**
+	 * Top core plugins are defined into bootstrap script (index.php) and are registered before
+	 * any session opening
+	 *
+	 * @param $plugins Plugin[]
+	 * @return Main_Controller
+	 */
+	public function addTopCorePlugins($plugins)
 	{
-		foreach ($plugins as $level => $sub_plugins) {
-			if ($core || ($level != "core")) {
-				foreach ($sub_plugins as $class_name => $plugin) {
-					if (class_exists($class_name, false) && ($plugin instanceof Activable_Plugin)) {
-						$plugin->activate();
-					}
-				}
+		$this->includes();
+		foreach ($plugins as $plugin) {
+			$this->top_core_plugins[get_class($plugin)] = $plugin;
+			if ($plugin instanceof Activable_Plugin) {
+				$plugin->activate();
 			}
 		}
+		return $this;
 	}
 
 	//----------------------------------------------------------------------------- createApplication
@@ -48,21 +51,17 @@ class Main_Controller
 	}
 
 	//--------------------------------------------------------------------------------- createSession
-	/**
-	 * @return array
-	 */
 	private function createSession()
 	{
 		$this->includesStart();
 		$session = Session::current(new Session());
+		$session->plugins = new Plugins_Manager();
+		$session->plugins->setTopCorePlugins($this->top_core_plugins);
 		$configuration = $this->loadConfiguration();
 
 		unset($_SESSION["include_path"]);
 		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
-
-		$session->plugins = $configuration->getPlugins();
 		$this->registerPlugins($session->plugins, $configuration);
-		return $session->plugins;
 	}
 
 	//-------------------------------------------------------------------------------------- includes
@@ -83,23 +82,25 @@ class Main_Controller
 		include_once "framework/core/toolbox/Runkit_Patch.php";
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/toolbox/String.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Plugin.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Activable_Plugin.php";
 
 		// Include_Path
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/Include_Path.php";
 
+		// Plugins manager
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Plugin.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Activable_Plugin.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Configurable.php";
+		/** @noinspection PhpIncludeInspection */
+		include_once "framework/core/configuration/Plugins_Manager.php";
+
 		// Session
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/Session.php";
-	}
 
-	//-------------------------------------------------------------------------------- includesResume
-	private function includesResume()
-	{
 		// Core plugins
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/Autoloader.php";
@@ -118,11 +119,9 @@ class Main_Controller
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/configuration/Configurations.php";
 
-		// Plugins
+		// Plugins manager
 		/** @noinspection PhpIncludeInspection */
 		include_once "framework/core/configuration/Plugin_Register.php";
-
-		$this->includesResume();
 	}
 
 	//----------------------------------------------------------------------------- loadConfiguration
@@ -140,75 +139,32 @@ class Main_Controller
 		return $configuration;
 	}
 
-	//-------------------------------------------------------------------------------- registerPlugin
-	/**
-	 * @param $class_name      string
-	 * @param $plugin_register Plugin_Register
-	 * @return Plugin
-	 */
-	private function registerPlugin($class_name, Plugin_Register $plugin_register)
-	{
-		$plugin_configuration = $plugin_register->getConfiguration();
-		/** @var $plugin Plugin */
-		if (is_a($class_name, 'SAF\Framework\Configurable', true)) {
-			$plugin = Builder::create($class_name, array($plugin_configuration));
-			if (!($plugin instanceof Serializable)) {
-				/** @noinspection PhpUndefinedFieldInspection hidden property for serialization */
-				$plugin->plugin_configuration = $plugin_configuration;
-			}
-		}
-		else {
-			$plugin = Builder::create($class_name);
-		}
-		if ($plugin instanceof Aop_Dealer) {
-			$plugin_register->dealer = $plugin;
-		}
-		$plugin->register($plugin_register);
-		if (($plugin_register->level == "core") && ($plugin instanceof Activable_Plugin)) {
-			/** @var $plugin Activable_Plugin */
-			$plugin->activate();
-		}
-		return $plugin;
-	}
-
 	//------------------------------------------------------------------------------- registerPlugins
 	/**
 	 * Register plugins into session (called only at session beginning)
 	 *
-	 * @param $plugins array
+	 * @param $plugins       Plugins_Manager
 	 * @param $configuration Configuration
 	 */
-	private function registerPlugins(&$plugins, $configuration)
+	private function registerPlugins(Plugins_Manager $plugins, Configuration $configuration)
 	{
-		$plugin_register = new Plugin_Register();
-		foreach ($plugins as $level => $sub_plugins) {
-			$plugin_register->level = $level;
+		foreach ($configuration->getPlugins() as $level => $sub_plugins) {
 			foreach ($sub_plugins as $class_name => $plugin_configuration) {
-				if (is_numeric($class_name)) {
-					$class_name = $plugin_configuration;
-					$plugin_configuration = array();
-				}
-				$plugin_register->setConfiguration($plugin_configuration);
-				$plugin = $this->registerPlugin($class_name, $plugin_register);
+				$plugin = $plugins->register($class_name, $level, $plugin_configuration);
 				if ($plugin instanceof Autoloader) {
 					/** @noinspection PhpUndefinedVariableInspection Will always be set when $new_session true */
 					$this->createApplication($configuration);
 				}
-				$plugins[$level][$class_name] = $plugin;
 			}
 		}
 	}
 
 	//--------------------------------------------------------------------------------- resumeSession
-	/**
-	 * @return array
-	 */
 	private function resumeSession()
 	{
-		$this->includesResume();
 		$session = Session::current();
-		$session->activatePlugins("core");
-		return $session->plugins;
+		$session->plugins->setTopCorePlugins($this->top_core_plugins);
+		$session->plugins->activatePlugins("core");
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -274,12 +230,16 @@ class Main_Controller
 		$this->includes();
 		if (empty($_SESSION)) {
 			session_start();
+			//echo "<pre>" . print_r($_SESSION, true) . "</pre>";
 			if (isset($_GET["X"])) $_SESSION = array();
 		}
-		$new_session = empty($_SESSION);
 		$this->setIncludePath($_SESSION);
-		$plugins = $new_session ? $this->createSession() : $this->resumeSession();
-		$this->activatePlugins($plugins, !$new_session);
+		if (isset($_SESSION["session"]) && isset($_SESSION["session"]->plugins)) {
+			$this->resumeSession();
+		}
+		else {
+			$this->createSession();
+		}
 		unset($get[session_name()]);
 		unset($post[session_name()]);
 	}
