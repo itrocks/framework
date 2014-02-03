@@ -2,7 +2,8 @@
 namespace SAF\Framework;
 
 /**
- * The autoload cache plugin  is here to make class autoload faster, but need update at each code update
+ * The autoload cache plugin  is here to make class autoload faster, but need update at each code
+ * update
  */
 class Autoload_Cache implements Activable_Plugin, Updatable
 {

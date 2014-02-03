@@ -1,10 +1,17 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\Framework\Aop;
+
+use SAF\Framework\Aop_Dealer;
+use SAF\Framework\Class_Override_Annotation;
+use SAF\Framework\Reflection_Class;
+use SAF\Framework\Reflection_Function;
+use SAF\Framework\Reflection_Method;
+use SAF\Framework\Session;
 
 /**
  * The Aop class is an interface to the Aop calls manager
  */
-abstract class Aop
+class Runkit_Linker implements ILinker
 {
 
 	//----------------------------------------------------------------------------------------- DEBUG
@@ -50,46 +57,6 @@ abstract class Aop
 	 */
 	private static $joinpoints = array();
 
-	//------------------------------------------------------------------------------------------- add
-	/**
-	 * Launch advice $call_back after the execution of the joinpoint function $function
-	 *
-	 * @param $when string when to do the capture :
-	 *        "after", "after_returning", "after_throwing", "around", "before"
-	 * @param $function string can be "functionName()" or "Class_Name->methodName()" or
-	 *        "Class_Name->property_name". May contain joker * characters or be prefixed by NameSpace\
-	 * @param $call_back string|array|mixed function name, array(class name or object, method) or
-	 *        function as a closure
-	 */
-	public static function add($when, $function, $call_back)
-	{
-		echo "@deprecated call : Aop::add($when, $function)<br>";
-		if (strpos($function, " ")) {
-			list($what, $function) = explode(" ", $function, 1);
-			$joinpoint = explode("->", $function, 1);
-			switch ($what) {
-				case "read":  self::addOnPropertyRead($joinpoint, $call_back);  break;
-				case "write": self::addOnPropertyWrite($joinpoint, $call_back); break;
-			}
-		}
-		elseif (strpos($function, "->")) {
-			$joinpoint = explode("->", substr($function, 0, -2));
-			switch ($when) {
-				case Aop::AFTER:  self::addAfterMethodCall($joinpoint, $call_back);  break;
-				case Aop::AROUND: self::addAroundMethodCall($joinpoint, $call_back); break;
-				case Aop::BEFORE: self::addBeforeMethodCall($joinpoint, $call_back); break;
-			}
-		}
-		else {
-			$function = substr($function, 0, -2);
-			switch ($when) {
-				case Aop::AFTER:  self::addAfterFunctionCall($function, $call_back);  break;
-				case Aop::AROUND: self::addAroundFunctionCall($function, $call_back); break;
-				case Aop::BEFORE: self::addBeforeFunctionCall($function, $call_back); break;
-			}
-		}
-	}
-
 	//-------------------------------------------------------------------------- addAfterFunctionCall
 	/**
 	 * Launch an advice after the execution of a given function
@@ -102,9 +69,9 @@ abstract class Aop
 	 * @param $joinpoint string the joinpoint defined like a call-back : "functionName"
 	 * @param $advice    callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @return integer
+	 * @return IHandler
 	 */
-	public static function addAfterFunctionCall($joinpoint, $advice)
+	public function addAfterFunctionCall($joinpoint, $advice)
 	{
 		if (self::DEBUG) echo "after ";
 		$code = '
@@ -133,9 +100,9 @@ abstract class Aop
 	 *        array("class_name", "methodName")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @return integer|integer[]
+	 * @return IHandler
 	 */
-	public static function addAfterMethodCall($joinpoint, $advice)
+	public function addAfterMethodCall($joinpoint, $advice)
 	{
 		if (self::DEBUG) echo "after ";
 		$code = '
@@ -162,9 +129,9 @@ abstract class Aop
 	 * @param $joinpoint string the joinpoint defined like a call-back : "functionName"
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @return integer
+	 * @return Runkit_Handler
 	 */
-	public static function addAroundFunctionCall($joinpoint, $advice)
+	public function addAroundFunctionCall($joinpoint, $advice)
 	{
 		if (self::DEBUG) echo "around ";
 		$code = '
@@ -191,9 +158,9 @@ abstract class Aop
 	 *        array("class_name", "methodName")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @return integer|integer[]
+	 * @return IHandler
 	 */
-	public static function addAroundMethodCall($joinpoint, $advice)
+	public function addAroundMethodCall($joinpoint, $advice)
 	{
 		if (self::DEBUG) echo "around ";
 		$code = '
@@ -221,9 +188,9 @@ abstract class Aop
 	 *        array("class_name", "methodName")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @return integer
+	 * @return IHandler
 	 */
-	public static function addBeforeFunctionCall($joinpoint, $advice)
+	public function addBeforeFunctionCall($joinpoint, $advice)
 	{
 		if (self::DEBUG) echo "before ";
 		$code = '
@@ -252,9 +219,9 @@ abstract class Aop
 	 *        array("class_name", "methodName")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @return integer|integer[]
+	 * @return IHandler
 	 */
-	public static function addBeforeMethodCall($joinpoint, $advice)
+	public function addBeforeMethodCall($joinpoint, $advice)
 	{
 		if (self::DEBUG) echo "before ";
 		$code = '
@@ -278,11 +245,10 @@ abstract class Aop
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @param $code           string
 	 * @param $joinpoint_code string
-	 * @return integer
+	 * @return IHandler
 	 */
-	private static function addFunctionCall($joinpoint, $advice, $code, $joinpoint_code)
+	private function addFunctionCall($joinpoint, $advice, $code, $joinpoint_code)
 	{
-if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint() -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() START");
 		$count = count(self::$joinpoints);
 		$advice_string = self::callbackString($advice, $count);
 
@@ -386,7 +352,6 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint() -> " . (is_obj
 
 		self::$advices[$count] = $advice;
 		self::$joinpoints[$count] = $joinpoint;
-if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint() -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() DONE");
 		return $count;
 	}
 
@@ -398,11 +363,10 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint() -> " . (is_obj
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @param $code           string
 	 * @param $joinpoint_code string
-	 * @return integer|integer[]
+	 * @return Runkit_Handler
 	 */
-	private static function addMethodCall($joinpoint, $advice, $code, $joinpoint_code)
+	private function addMethodCall($joinpoint, $advice, $code, $joinpoint_code)
 	{
-if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]::$joinpoint[1]() -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() START");
 		$counts = array();
 		$trait = new Reflection_Class($joinpoint[0]);
 		if ($trait->isTrait()) {
@@ -531,8 +495,7 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]::$joinpoint[1
 
 		self::$advices[$count] = $advice;
 		self::$joinpoints[$count] = $joinpoint;
-if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]::$joinpoint[1]() -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() DONE");
-		return $counts ? ($counts + array($count)) : $count;
+		return new Runkit_Handler($counts ? ($counts + array($count)) : $count);
 	}
 
 	//--------------------------------------------------------------------------------- addOnProperty
@@ -541,13 +504,13 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]::$joinpoint[1
 	 *        array("class_name", "property_name")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @param $side      string Aop::READ or Aop::WRITE
+	 * @param $side      string self::READ or self::WRITE
+	 * @return IHandler
 	 */
-	private static function addOnProperty($joinpoint, $advice, $side)
+	private function addOnProperty($joinpoint, $advice, $side)
 	{
-if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1] -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() START");
 		list($class_name, $property_name) = $joinpoint;
-		if (!isset(Aop::$properties[$class_name])) {
+		if (!isset(self::$properties[$class_name])) {
 			$aop_properties = __CLASS__ . "::\$properties['$class_name']";
 			if (!(
 				method_exists($class_name, '__aop')
@@ -600,9 +563,9 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 				runkit_method_add($class_name, '__set', '$property_name, $value', '
 					if ($property_name[0] == "_") {
 						' . (
-							$replaced ? '$this->__set_aop($property_name, $value)'
-							: '$this->$property_name = $value'
-						) . ';
+					$replaced ? '$this->__set_aop($property_name, $value)'
+						: '$this->$property_name = $value'
+					) . ';
 						return;
 					}
 					$_property_name = "_" . $property_name;
@@ -669,7 +632,7 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 			$advice["dynamic"] = true;
 		}
 		array_unshift(self::$properties[$class_name][$property_name][$side], $advice);
-if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1] -> " . (is_object($advice[0]) ? get_class($advice[0]) : $advice[0]) . "::$advice[1]() DONE");
+		return new Runkit_Handler(count(self::$properties[$class_name][$property_name][$side]) - 1);
 	}
 
 	//----------------------------------------------------------------------------- addOnPropertyRead
@@ -678,10 +641,11 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 	 *        array("class_name", "property_name")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
+	 * @return IHandler
 	 */
-	public static function addOnPropertyRead($joinpoint, $advice)
+	public function addOnPropertyRead($joinpoint, $advice)
 	{
-		self::addOnProperty($joinpoint, $advice, Aop::READ);
+		return $this->addOnProperty($joinpoint, $advice, self::READ);
 	}
 
 	//---------------------------------------------------------------------------- addOnPropertyWrite
@@ -690,10 +654,11 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 	 *        array("class_name", "property_name")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
+	 * @return IHandler
 	 */
-	public static function addOnPropertyWrite($joinpoint, $advice)
+	public function addOnPropertyWrite($joinpoint, $advice)
 	{
-		self::addOnProperty($joinpoint, $advice, Aop::WRITE);
+		return $this->addOnProperty($joinpoint, $advice, self::WRITE);
 	}
 
 	//-------------------------------------------------------------------------------- callbackString
@@ -702,12 +667,12 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 	 * @param $count    integer
 	 * @return string
 	 */
-	private static function callbackString($callback, $count)
+	private function callbackString($callback, $count)
 	{
 		return is_string($callback)
 			? ("'" . $callback . "'")
 			: (
-				(is_object($callback[0]))
+			(is_object($callback[0]))
 				? "array(" . __CLASS__ . "::\$advices[$count][0], '$callback[1]')"
 				: "array('$callback[0]', '$callback[1]')"
 			);
@@ -727,7 +692,7 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 			if (
 				($is_class = @class_exists($class_name, false))
 				|| @trait_exists($class_name, false)
-				|| @interface_exists($class_name, false)
+					|| @interface_exists($class_name, false)
 			) {
 				$class = new Reflection_Class($class_name);
 				// properties overridden in traits must be overridden into final class
@@ -748,7 +713,7 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 						$call = $property->getAnnotation($annotation)->value;
 						if ($call) {
 							if (strpos($call, "::")) {
-								if (substr($call, 0, 5) === "Aop::") {
+								if (substr($call, 0, 5) === "self::") {
 									$call_class  = $this;
 									$call_method = substr($call, 5);
 								}
@@ -761,12 +726,12 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 								$call_method = $call;
 							}
 							switch ($type) {
-								case Aop::READ:
+								case self::READ:
 									$dealer->onPropertyRead(
 										array($class_name, $property->name), array($call_class, $call_method)
 									);
 									break;
-								case Aop::WRITE:
+								case self::WRITE:
 									$dealer->onPropertyWrite(
 										array($class_name, $property->name), array($call_class, $call_method)
 									);
@@ -786,11 +751,12 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 	/**
 	 * Remove an AOP link, knowing its handler returned when calling the add* methods
 	 *
-	 * @param $handler integer|integer[]
+	 * @param $handler IHandler
 	 * @todo Works only with the last added advice on a joinpoint : do not remove a "middle" advice !
 	 */
-	public static function remove($handler)
+	public function remove(IHandler $handler)
 	{
+		/** @var $handler Handler */
 		if (isset($handler)) {
 			if (is_array($handler)) {
 				foreach ($handler as $count) {
@@ -798,16 +764,18 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 				}
 			}
 			else {
-				$joinpoint = self::$joinpoints[$handler];
+				$joinpoint = self::$joinpoints[$handler->index];
 				if (is_array($joinpoint)) {
 					runkit_method_remove($joinpoint[0], $joinpoint[1]);
-					runkit_method_rename($joinpoint[0], "_" . $joinpoint[1] . "_" . $handler, $joinpoint[1]);
+					runkit_method_rename(
+						$joinpoint[0], "_" . $joinpoint[1] . "_" . $handler->index, $joinpoint[1]
+					);
 				}
 				else {
 					runkit_function_remove($joinpoint);
-					runkit_function_rename($joinpoint . "_" . $handler, $joinpoint);
+					runkit_function_rename($joinpoint . "_" . $handler->index, $joinpoint);
 				}
-				self::$joinpoints[$handler] = null;
+				self::$joinpoints[$handler->index] = null;
 			}
 		}
 	}
@@ -818,7 +786,7 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("$joinpoint[0]->$joinpoint[1
 	 * @param $method_name string
 	 * @return boolean
 	 */
-	private static function rename($class_name, $method_name)
+	private function rename($class_name, $method_name)
 	{
 		if (
 			method_exists($class_name, $method_name)

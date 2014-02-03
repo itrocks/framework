@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
  */
-class Autoloader implements Activable_Plugin
+class Autoloader implements IAutoloader, Activable_Plugin
 {
 
 	//-------------------------------------------------------------------------------------- activate
