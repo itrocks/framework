@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Aop;
+namespace SAF\AOP;
 
 /**
  * The Aop handler
@@ -28,11 +28,11 @@ class Handler implements IHandler
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $joinpoint string[]
-	 * @param $index     integer
 	 * @param $type      string
+	 * @param $joinpoint string[]|string
+	 * @param $index     integer
 	 */
-	public function __construct($joinpoint, $index, $type)
+	public function __construct($type, $joinpoint, $index)
 	{
 		$this->index     = $index;
 		$this->joinpoint = $joinpoint;

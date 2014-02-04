@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins\Plugin;
 /**
  * The trashcan widget enables dropping objects for deletion
  */
@@ -27,14 +28,6 @@ class Trashcan implements Plugin
 	public function store($object)
 	{
 		echo "<pre>store into trashcan " . print_r($object, true) . "</pre>";
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Plugin_Register
-	 */
-	public function register(Plugin_Register $register)
-	{
 	}
 
 }

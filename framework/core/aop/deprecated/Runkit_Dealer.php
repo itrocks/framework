@@ -1,6 +1,7 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\AOP;
 
+use SAf\Framework\Plugins\Activable;
 use Serializable;
 
 /**
@@ -8,7 +9,7 @@ use Serializable;
  *
  * Execute Aop links or store them until class is loaded
  */
-class Aop_Dealer implements Activable_Plugin, Serializable
+class Runkit_Dealer implements Plugins\Activable, Serializable
 {
 
 	//------------------------------------------------------------------------------------------ $has
@@ -35,14 +36,14 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 	 */
 	public function __construct()
 	{
-		$this->has = array(Aop::READ => array(), Aop::WRITE => array());
+		$this->has = array(Linker::READ => array(), Linker::WRITE => array());
 	}
 
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
 		// each time a new class will be created, then will include class
-		Aop::addAfterMethodCall(
+		Linker::addAfterMethodCall(
 			array('SAF\Framework\Autoloader', "includeClass"), array($this, "includedClass")
 		);
 		// call Aop links for existing classes and traits
@@ -61,7 +62,7 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 	public function afterMethodCall($joinpoint, $advice)
 	{
 		if (class_exists($joinpoint[0], false) || trait_exists($joinpoint[0], false)) {
-			Aop::addAfterMethodCall($joinpoint, $advice);
+			Linker::addAfterMethodCall($joinpoint, $advice);
 		}
 		$this->links[$joinpoint[0]][] = array("addAfterMethodCall", $joinpoint, $advice);
 	}
@@ -74,7 +75,7 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 	public function aroundMethodCall($joinpoint, $advice)
 	{
 		if (class_exists($joinpoint[0], false) || trait_exists($joinpoint[0], false)) {
-			Aop::addAroundMethodCall($joinpoint, $advice);
+			Linker::addAroundMethodCall($joinpoint, $advice);
 		}
 		$this->links[$joinpoint[0]][] = array("addAroundMethodCall", $joinpoint, $advice);
 	}
@@ -87,7 +88,7 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 	public function beforeMethodCall($joinpoint, $advice)
 	{
 		if (class_exists($joinpoint[0], false) || trait_exists($joinpoint[0], false)) {
-			Aop::addBeforeMethodCall($joinpoint, $advice);
+			Linker::addBeforeMethodCall($joinpoint, $advice);
 		}
 		$this->links[$joinpoint[0]][] = array("addBeforeMethodCall", $joinpoint, $advice);
 	}
@@ -95,7 +96,7 @@ class Aop_Dealer implements Activable_Plugin, Serializable
 	//-------------------------------------------------------------------------------------- hasLinks
 	/**
 	 * @param $class_name string
-	 * @param $type       string Aop::READ or Aop::WRITE
+	 * @param $type       string Linker::READ or Linker::WRITE
 	 * @return boolean
 	 */
 	public function hasLinks($class_name, $type = null)
@@ -168,7 +169,7 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("includedClass($class_name) 
 								$joinpoint[0] = $root_class;
 							}
 							// make Aop link
-							Aop::$method($joinpoint, $advice);
+							Linker::$method($joinpoint, $advice);
 						}
 					}
 				}
@@ -188,7 +189,7 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("includedClass($class_name) 
 	 */
 	public function onPropertyRead($joinpoint, $advice)
 	{
-		$this->has[Aop::READ][$joinpoint[0]] = true;
+		$this->has[Linker::READ][$joinpoint[0]] = true;
 		$this->links[$joinpoint[0]][] = array("addOnPropertyRead", $joinpoint, $advice);
 		// todo default option for immediate link creation
 	}
@@ -200,7 +201,7 @@ if (class_exists('SAF\Framework\Debug')) Debug::log("includedClass($class_name) 
 	 */
 	public function onPropertyWrite($joinpoint, $advice)
 	{
-		$this->has[Aop::WRITE][$joinpoint[0]] = true;
+		$this->has[Linker::WRITE][$joinpoint[0]] = true;
 		$this->links[$joinpoint[0]][] = array("addOnPropertyWrite", $joinpoint, $advice);
 		// todo default option for immediate link creation
 	}

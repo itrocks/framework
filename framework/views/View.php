@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * The View class offers static methods to call views from the application main view engine
  */
-class View implements Configurable, Plugin
+class View implements Plugins\Configurable
 {
 	use Current { current as private pCurrent; }
 
@@ -85,14 +87,6 @@ class View implements Configurable, Plugin
 	public static function link($object, $feature = null, $parameters = null, $arguments = null)
 	{
 		return self::current()->link($object, $feature, $parameters, $arguments);
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Plugin_Register
-	 */
-	public function register(Plugin_Register $register)
-	{
 	}
 
 	//------------------------------------------------------------------------------------------- run

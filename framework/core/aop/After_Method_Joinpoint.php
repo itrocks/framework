@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\AOP;
 
 /**
  * After method joinpoint

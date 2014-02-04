@@ -3,12 +3,13 @@ namespace SAF\Framework;
 
 use mysqli;
 use mysqli_result;
+use SAF\Plugins;
 
 /**
  * This is an intelligent database maintainer that automatically updates a table structure if there
  * is an error when executing a query.
  */
-class Mysql_Maintainer implements Plugin
+class Mysql_Maintainer implements Plugins\Registerable
 {
 
 	//----------------------------------------------------------------------------------- createTable
@@ -267,12 +268,12 @@ class Mysql_Maintainer implements Plugin
 	/**
 	 * Registers the Mysql maintainer plugin
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->afterMethodCall(
+		$aop = $register->aop;
+		$aop->afterMethod(
 			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onMysqliQuery")
 		);
 	}

@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * A standard menu for your application
  */
-class Menu implements Configurable, Plugin
+class Menu implements Plugins\Configurable
 {
 
 	//--------------------------------------------------------------------------------------- $blocks
@@ -82,16 +84,6 @@ class Menu implements Configurable, Plugin
 				$this->blocks[] = $block;
 			}
 		}
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * Build a menu using a configuration recursive array
-	 *
-	 * @parameter $register Plugin_Register
-	 */
-	public function register(Plugin_Register $register)
-	{
 	}
 
 }

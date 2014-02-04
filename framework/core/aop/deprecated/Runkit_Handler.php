@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Aop;
+namespace SAF\AOP;
 
 /**
  * Runkit Aop Handler

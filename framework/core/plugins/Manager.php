@@ -1,12 +1,13 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\Plugins;
 
+use SAF\Framework\Builder;
 use Serializable;
 
 /**
  * Plugins manager
  */
-class Plugins_Manager implements Serializable
+class Manager implements IManager, Serializable
 {
 
 	//------------------------------------------------------------------------------------ $activated
@@ -37,11 +38,11 @@ class Plugins_Manager implements Serializable
 	 * core plugins, when a plugin class is included
 	 *
 	 * @param $class_name string
-	 * @return Activable_Plugin
+	 * @return Activable
 	 */
 	public function activate($class_name)
 	{
-		return $this->getPlugin($class_name);
+		return $this->get($class_name);
 	}
 
 	//------------------------------------------------------------------------------- activatePlugins
@@ -56,32 +57,13 @@ class Plugins_Manager implements Serializable
 					class_exists($class_name, false) || trait_exists($class_name, false)
 					|| ($tree_level === $level)
 				) {
-					$this->getPlugin($class_name, $level);
+					$this->get($class_name, $level);
 				}
 			}
 		}
 	}
 
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * Registers a plugin : at session creation, or when a plugin is added
-	 *
-	 * @param $class_name    string
-	 * @param $level         string
-	 * @param $configuration array|boolean
-	 * @return Plugin
-	 */
-	public function register($class_name, $level, $configuration = true)
-	{
-		if (empty($configuration)) {
-			$configuration = true;
-		}
-		$this->plugins_tree[$level][$class_name] = $configuration;
-		$this->plugins[$class_name] = $configuration;
-		return $this->getPlugin($class_name, $level, true);
-	}
-
-	//------------------------------------------------------------------------------------- getPlugin
+	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Gets a plugin object
 	 *
@@ -90,7 +72,7 @@ class Plugins_Manager implements Serializable
 	 * @param $register   boolean
 	 * @return Plugin
 	 */
-	public function getPlugin($class_name, $level = null, $register = false)
+	public function get($class_name, $level = null, $register = false)
 	{
 		/** @var $plugin Plugin|boolean|string */
 		$plugin = isset($this->plugins[$class_name])
@@ -144,26 +126,48 @@ class Plugins_Manager implements Serializable
 			$protect = null;
 			// register plugin
 			if ($register) {
-				$dealer = isset($this->plugins['SAF\Framework\Aop_Dealer'])
-					? $this->plugins['SAF\Framework\Aop_Dealer']
+				$weaver = isset($this->plugins['SAF\AOP\Weaver'])
+					? $this->plugins['SAF\AOP\Weaver']
 					: null;
-				$plugin->register(new Plugin_Register(
-					isset($plugin->plugin_configuration) ? $plugin->plugin_configuration : null, $dealer)
-				);
+				if ($plugin instanceof Registerable) {
+					/** @var $plugin Registerable */
+					$plugin->register(new Register(
+							isset($plugin->plugin_configuration) ? $plugin->plugin_configuration : null, $weaver)
+					);
+				}
 			}
 			// activate plugin
-			if (($plugin instanceof Activable_Plugin)) {
+			if (($plugin instanceof Activable)) {
 				if (isset($this->activated[$class_name])) {
 					trigger_error("Plugin $class_name just registered and already activated !", E_USER_ERROR);
 				}
 				else {
-					/** @var $plugin Activable_Plugin */
+					/** @var $plugin Activable */
 					$plugin->activate();
 					$this->activated[$class_name] = $plugin;
 				}
 			}
 		}
 		return $plugin;
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * Registers a plugin : at session creation, or when a plugin is added
+	 *
+	 * @param $class_name    string
+	 * @param $level         string
+	 * @param $configuration array|boolean
+	 * @return Plugin
+	 */
+	public function register($class_name, $level, $configuration = true)
+	{
+		if (empty($configuration)) {
+			$configuration = true;
+		}
+		$this->plugins_tree[$level][$class_name] = $configuration;
+		$this->plugins[$class_name] = $configuration;
+		return $this->get($class_name, $level, true);
 	}
 
 	//------------------------------------------------------------------------------------- serialize
@@ -196,13 +200,19 @@ class Plugins_Manager implements Serializable
 		return serialize($data);
 	}
 
-	//----------------------------------------------------------------------------- setTopCorePlugins
+	//------------------------------------------------------------------------------------ addPlugins
 	/**
+	 * Add already registered and activated plugins object to a given level
+	 *
+	 * @param $level   string
 	 * @param $plugins Plugin[]
 	 */
-	public function setTopCorePlugins($plugins)
+	public function addPlugins($level, $plugins)
 	{
-		$this->plugins_tree["top_core"] = $plugins;
+		if (!isset($this->plugins_tree[$level])) {
+			$this->plugins_tree[$level] = array();
+		}
+		$this->plugins_tree[$level] = array_merge($this->plugins_tree[$level], $plugins);
 		$this->plugins = array_merge($plugins, $this->plugins);
 		foreach (array_keys($plugins) as $class_name) {
 			$this->activated[$class_name] = true;

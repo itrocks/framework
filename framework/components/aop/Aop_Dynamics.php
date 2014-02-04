@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * Aop_Dynamics stores aop links to enable at each script start
  */
-class Aop_Dynamics implements Configurable, Plugin
+class Aop_Dynamics implements Plugins\Configurable, Plugins\Registerable
 {
 	use Current { current as private pCurrent; }
 
@@ -104,12 +106,12 @@ class Aop_Dynamics implements Configurable, Plugin
 	 * Register Aop_Dynamics : for each new autoloaded class, jointpoints will be dynamically added
 	 * using linkClass()
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->afterMethodCall(
+		$aop = $register->aop;
+		$aop->afterMethod(
 			array('SAF\Framework\Autoloader', "includeClass"),
 			array($this, "linkClassAop")
 		);

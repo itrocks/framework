@@ -1,6 +1,10 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\AOP;
+use SAF\Plugins;
+use SAF\Plugins\Plugin;
+
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
  */
@@ -18,19 +22,29 @@ class Main_Controller
 	 * Top core plugins are defined into bootstrap script (index.php) and are registered before
 	 * any session opening
 	 *
-	 * @param $plugins Plugin[]
+	 * @param $plugins array
 	 * @return Main_Controller
 	 */
 	public function addTopCorePlugins($plugins)
 	{
-		$this->includes();
 		foreach ($plugins as $plugin) {
 			$this->top_core_plugins[get_class($plugin)] = $plugin;
-			if ($plugin instanceof Activable_Plugin) {
+			if ($plugin instanceof Plugins\Activable) {
 				$plugin->activate();
 			}
 		}
 		return $this;
+	}
+
+	//---------------------------------------------------------------------------------- aspectWeaver
+	/**
+	 * @param $plugins Plugins\Manager
+	 */
+	private function aspectWeaver(Plugins\Manager $plugins)
+	{
+		/** @var $weaver AOP\Weaver */
+		$weaver = Session::current()->plugins->get(AOP\Weaver::class);
+		$weaver->compile();
 	}
 
 	//----------------------------------------------------------------------------- createApplication
@@ -44,7 +58,7 @@ class Main_Controller
 		$class_name = $configuration->getApplicationClassName();
 		$name = strtolower($configuration->getApplicationName());
 		/** @noinspection PhpIncludeInspection */
-		include_once strtolower($name) . "/Application.php";
+		include_once strtolower($name) . '/Application.php';
 		/** @var $application Application */
 		$application = Builder::create($class_name, $name);
 		Application::current($application);
@@ -55,73 +69,72 @@ class Main_Controller
 	{
 		$this->includesStart();
 		$session = Session::current(new Session());
-		$session->plugins = new Plugins_Manager();
-		$session->plugins->setTopCorePlugins($this->top_core_plugins);
+		$session->plugins = new Plugins\Manager();
+		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
 		$configuration = $this->loadConfiguration();
 
-		unset($_SESSION["include_path"]);
+		unset($_SESSION['include_path']);
 		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
 		$this->registerPlugins($session->plugins, $configuration);
+		$this->aspectWeaver($session->plugins);
 	}
 
 	//-------------------------------------------------------------------------------------- includes
 	private function includes()
 	{
 		// Low level includes
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/Array.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/Current.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/Current_With_Default.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/Namespaces.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/OS.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/Runkit_Patch.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/toolbox/String.php";
+		include_once __DIR__ . '/../toolbox/Array.php';
+		include_once __DIR__ . '/../toolbox/Current.php';
+		include_once __DIR__ . '/../toolbox/Current_With_Default.php';
+		include_once __DIR__ . '/../toolbox/Namespaces.php';
+		include_once __DIR__ . '/../toolbox/OS.php';
+		include_once __DIR__ . '/../toolbox/Runkit_Patch.php';
+		include_once __DIR__ . '/../toolbox/String.php';
 
 		// Include_Path
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/Include_Path.php";
+		include_once __DIR__ . '/../Include_Path.php';
 
 		// Plugins manager
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Plugin.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Activable_Plugin.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Configurable.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Plugins_Manager.php";
+		include_once __DIR__ . '/../plugins/Plugin.php';
+		include_once __DIR__ . '/../plugins/Configurable.php';
+		include_once __DIR__ . '/../plugins/Activable.php';
+		include_once __DIR__ . '/../plugins/Registerable.php';
+		include_once __DIR__ . '/../plugins/IManager.php';
+		include_once __DIR__ . '/../plugins/Manager.php';
 
 		// Session
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/Session.php";
+		include_once __DIR__ . '/../Session.php';
 
 		// Core plugins
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/Autoloader.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/aop/Aop_Dealer.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/mappers/Builder.php";
+		include_once __DIR__ . '/../Autoloader.php';
+		include_once __DIR__ . '/../builder/Builder.php';
 	}
 
 	//---------------------------------------------------------------------------------- includeStart
 	private function includesStart()
 	{
 		// Configuration
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Configuration.php";
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Configurations.php";
+		include_once __DIR__ . "/../configuration/Configuration.php";
+		include_once __DIR__ . '/../configuration/Configurations.php';
 
 		// Plugins manager
-		/** @noinspection PhpIncludeInspection */
-		include_once "framework/core/configuration/Plugin_Register.php";
+		include_once __DIR__ . '/../plugins/Register.php';
+	}
+
+	//------------------------------------------------------------------------------------------ init
+	/**
+	 * Called by the bootstrap only : initialisation of the first main controller
+	 *
+	 * @param $includes string[]
+	 * @return $this
+	 */
+	public function init($includes = array())
+	{
+		$this->includes();
+		foreach ($includes as $include) {
+			include_once $include;
+		}
+		return $this;
 	}
 
 	//----------------------------------------------------------------------------- loadConfiguration
@@ -132,7 +145,7 @@ class Main_Controller
 	 */
 	private function loadConfiguration()
 	{
-		$script_name = $_SERVER["SCRIPT_NAME"];
+		$script_name = $_SERVER['SCRIPT_NAME'];
 		$configuration = (new Configurations())->load(
 			substr($script_name, strrpos($script_name, '/') + 1)
 		);
@@ -143,16 +156,15 @@ class Main_Controller
 	/**
 	 * Register plugins into session (called only at session beginning)
 	 *
-	 * @param $plugins       Plugins_Manager
+	 * @param $plugins       Plugins\Manager
 	 * @param $configuration Configuration
 	 */
-	private function registerPlugins(Plugins_Manager $plugins, Configuration $configuration)
+	private function registerPlugins(Plugins\Manager $plugins, Configuration $configuration)
 	{
 		foreach ($configuration->getPlugins() as $level => $sub_plugins) {
 			foreach ($sub_plugins as $class_name => $plugin_configuration) {
 				$plugin = $plugins->register($class_name, $level, $plugin_configuration);
 				if ($plugin instanceof Autoloader) {
-					/** @noinspection PhpUndefinedVariableInspection Will always be set when $new_session true */
 					$this->createApplication($configuration);
 				}
 			}
@@ -163,8 +175,8 @@ class Main_Controller
 	private function resumeSession()
 	{
 		$session = Session::current();
-		$session->plugins->setTopCorePlugins($this->top_core_plugins);
-		$session->plugins->activatePlugins("core");
+		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
+		$session->plugins->activatePlugins('core');
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -195,7 +207,7 @@ class Main_Controller
 	 */
 	public function runController($uri, $get = array(), $post = array(), $files = array())
 	{
-		$uri = new Controller_Uri($uri, $get, "edit", "list");
+		$uri = new Controller_Uri($uri, $get, 'edit', 'list');
 		foreach ($uri->getPossibleControllerCalls() as $call) {
 			list($controller, $method_name) = $call;
 			if (@method_exists($controller, $method_name)) {
@@ -227,14 +239,12 @@ class Main_Controller
 	 */
 	private function sessionStart(&$get, &$post)
 	{
-		$this->includes();
 		if (empty($_SESSION)) {
 			session_start();
-			//echo "<pre>" . print_r($_SESSION, true) . "</pre>";
-			if (isset($_GET["X"])) $_SESSION = array();
+			if (isset($_GET['X'])) $_SESSION = array();
 		}
 		$this->setIncludePath($_SESSION);
-		if (isset($_SESSION["session"]) && isset($_SESSION["session"]->plugins)) {
+		if (isset($_SESSION['session']) && isset($_SESSION['session']->plugins)) {
 			$this->resumeSession();
 		}
 		else {
@@ -249,14 +259,14 @@ class Main_Controller
 	 * @param $session          array
 	 * @param $application_name string
 	 */
-	private function setIncludePath(&$session, $application_name = "framework")
+	private function setIncludePath(&$session, $application_name = 'framework')
 	{
-		if (isset($session["include_path"])) {
-			set_include_path($session["include_path"]);
+		if (isset($session['include_path'])) {
+			set_include_path($session['include_path']);
 		}
 		else {
 			$include_path = (new Include_Path($application_name))->getIncludePath();
-			$session["include_path"] = $include_path;
+			$session['include_path'] = $include_path;
 			set_include_path($include_path);
 		}
 	}

@@ -3,6 +3,8 @@ namespace SAF\Framework;
 
 /**
  * The class builder builds dynamically a virtual class composed of an existing class and additional traits
+ *
+ * @todo remove dependencies
  */
 class Class_Builder
 {

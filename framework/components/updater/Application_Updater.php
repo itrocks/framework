@@ -76,8 +76,8 @@ class Application_Updater implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->beforeMethodCall(
+		$aop = $register->aop;
+		$aop->beforeMethod(
 			array('SAF\Framework\Main_Controller', "runController"), array($this, "autoUpdate")
 		);
 	}

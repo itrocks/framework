@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * A configurable (with a php array) error handlers collection
  */
-class Error_Handlers implements Configurable, Activable_Plugin
+class Error_Handlers implements Plugins\Activable, Plugins\Configurable
 {
 	use Current { current as private pCurrent; }
 
@@ -153,14 +155,6 @@ class Error_Handlers implements Configurable, Activable_Plugin
 	public static function on()
 	{
 		Error_Handlers::getInstance()->setAsErrorHandler();
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Plugin_Register
-	 */
-	public function register(Plugin_Register $register)
-	{
 	}
 
 	//----------------------------------------------------------------------------- setAsErrorHandler

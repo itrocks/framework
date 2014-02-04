@@ -69,7 +69,7 @@ class Set
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function elementClassNameOf($class_name)
+	/* public */ private static function elementClassNameOf_($class_name)
 	{
 		if (class_instanceof($class_name, __CLASS__)) {
 			$class_name = (new $class_name)->element_class_name;
@@ -148,6 +148,22 @@ class Set
 	public function object()
 	{
 		return $this->elements ? reset($this->elements) : $this->elementClass();
+	}
+
+	//########################################################################################### AOP
+
+	/**
+	 * Gets element class name of a given set class name (namespace needed)
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function elementClassNameOf($class_name)
+	{
+		$result_ = self::elementClassNameOf_($class_name);
+		/** @var $object_ \SAF\Framework\Builder */
+		$object_ = Session::current()->plugins->get('SAF\Framework\Builder');
+		return $object_->onMethodWithReturnedValue($result_);
 	}
 
 }

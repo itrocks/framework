@@ -9,7 +9,7 @@ $config["framework"] = array(
 	// core plugins are loaded first, at the beginning of each script, when the session is opened
 	"core" => array(
 		'SAF\Framework\Autoloader',
-		'SAF\Framework\Aop_Dealer',
+		'SAF\AOP\Weaver',
 		'SAF\Framework\Builder',
 		/*
 		'SAF\Framework\Error_Handlers' => array(
@@ -22,8 +22,6 @@ $config["framework"] = array(
 	// other priorities plugins are loaded when needed, and initialised at session beginning
 	// into their priority order
 	"highest" => array(
-		'SAF\Framework\Aop_Getter',
-		'SAF\Framework\Aop_Setter',
 		'SAF\Framework\Dao' => array(
 			"class"    => 'SAF\Framework\Mysql_Link',
 			"host"     => "localhost",

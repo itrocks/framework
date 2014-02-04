@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * Locale plugin concentrates locale translation / formatting features into simple static calls
  */
-class Loc implements Plugin
+class Loc implements Plugins\Registerable
 {
 
 	//-------------------------------------------------------------------------------------- $context
@@ -258,48 +260,48 @@ class Loc implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
-		$dealer = $register->dealer;
+		$aop = $register->aop;
 		// format from locale user input to ISO and standard formats
-		$dealer->beforeMethodCall(
+		$aop->beforeMethod(
 			array('SAF\Framework\Object_Builder_Array', "buildBasicValue"),
 			array($this, "beforeObjectBuilderArrayBuildBasicValue")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Default_List_Controller', "getSearchValues"),
 			array($this, "afterListSearchValues")
 		);
 		// format to locale
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Html_Template_Functions', "toEditPropertyExtra"),
 			array($this, "afterHtmlTemplateFuncsToEditPropertyExtra")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Reflection_Property_View', "formatDateTime"),
 			array($this, "dateTimeReturnedValueToLocale")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Reflection_Property_View', "formatFloat"),
 			array($this, "floatReturnedValueToLocale")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Reflection_Property_View', "formatInteger"),
 			array($this, "integerReturnedValueToLocale")
 		);
 		// translations
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\List_Settings', "getDefaultTitle"),
 			array($this, "translateReturnedValue")
 		);
 		// translation/reverse of export/import procedures
-		$dealer->beforeMethodCall(
+		$aop->beforeMethod(
 			array('SAF\Framework\Import_Array', "getClassNameFromValue"),
 			array($this, "classNameDisplayReverse")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Import_Array', "getClassNameFromArray"),
 			array($this, "classNameReturnedValueToContext")
 		);

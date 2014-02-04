@@ -1,15 +1,15 @@
 <?php
-namespace SAF\Framework\Aop;
+namespace SAF\AOP;
 
 /**
- * Aop linker interface
+ * Aop weaver interface
  */
-interface ILinker
+interface IWeaver
 {
 
-	//-------------------------------------------------------------------------- addAfterFunctionCall
+	//--------------------------------------------------------------------------------- afterFunction
 	/**
-	 * Launch an advice after the execution of a given function
+	 * Weave an aspect after the execution of a given function
 	 *
 	 * Advices arguments are the pointcut object, then the arguments passed to the joinpoint function,
 	 * and finally the value returned by the joinpoint method call.
@@ -21,11 +21,11 @@ interface ILinker
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return IHandler
 	 */
-	public function addAfterFunctionCall($joinpoint, $advice);
+	public function afterFunction($joinpoint, $advice);
 
-	//---------------------------------------------------------------------------- addAfterMethodCall
+	//----------------------------------------------------------------------------------- afterMethod
 	/**
-	 * Launch an advice after the execution of a given method
+	 * Weave an aspect after the execution of a given method
 	 *
 	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint method,
 	 * and finally the value returned by the joinpoint method call.
@@ -38,11 +38,11 @@ interface ILinker
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return IHandler
 	 */
-	public function addAfterMethodCall($joinpoint, $advice);
+	public function afterMethod($joinpoint, $advice);
 
-	//------------------------------------------------------------------------- addAroundFunctionCall
+	//-------------------------------------------------------------------------------- aroundFunction
 	/**
-	 * Launch an advice instead of the execution of a given function
+	 * Weave an aspect instead of the execution of a given function
 	 *
 	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint method,
 	 * and finally the value returned by the joinpoint method call.
@@ -53,11 +53,11 @@ interface ILinker
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return IHandler
 	 */
-	public function addAroundFunctionCall($joinpoint, $advice);
+	public function aroundFunction($joinpoint, $advice);
 
-	//--------------------------------------------------------------------------- addAroundMethodCall
+	//---------------------------------------------------------------------------------- aroundMethod
 	/**
-	 * Launch an advice instead of the execution of a given method
+	 * Weave an aspect instead of the execution of a given method
 	 *
 	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint function,
 	 * and finally the value returned by the joinpoint method call.
@@ -69,11 +69,11 @@ interface ILinker
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return IHandler
 	 */
-	public function addAroundMethodCall($joinpoint, $advice);
+	public function aroundMethod($joinpoint, $advice);
 
-	//------------------------------------------------------------------------- addBeforeFunctionCall
+	//-------------------------------------------------------------------------------- beforeFunction
 	/**
-	 * Launch an advice before the execution of a given function
+	 * Weave an aspect before the execution of a given function
 	 *
 	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint function.
 	 * The advice can return a value : if this value is set, the execution of the joinpoint will be
@@ -85,11 +85,11 @@ interface ILinker
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return IHandler
 	 */
-	public function addBeforeFunctionCall($joinpoint, $advice);
+	public function beforeFunction($joinpoint, $advice);
 
-	//--------------------------------------------------------------------------- addBeforeMethodCall
+	//---------------------------------------------------------------------------------- beforeMethod
 	/**
-	 * Launch an advice before the execution of a given method
+	 * Weave an aspect before the execution of a given method
 	 *
 	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint method
 	 * The advice can return a value : if this value is set, the execution of the joinpoint will be
@@ -101,9 +101,9 @@ interface ILinker
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return IHandler
 	 */
-	public function addBeforeMethodCall($joinpoint, $advice);
+	public function beforeMethod($joinpoint, $advice);
 
-	//----------------------------------------------------------------------------- addOnPropertyRead
+	//---------------------------------------------------------------------------------- readProperty
 	/**
 	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *        array("class_name", "property_name")
@@ -111,24 +111,24 @@ interface ILinker
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
 	 * @return IHandler
 	 */
-	public function addOnPropertyRead($joinpoint, $advice);
-
-	//---------------------------------------------------------------------------- addOnPropertyWrite
-	/**
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
-	 *        array("class_name", "property_name")
-	 * @param $advice callable the call-back call of the advice :
-	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
-	 * @return IHandler
-	 */
-	public function addOnPropertyWrite($joinpoint, $advice);
+	public function readProperty($joinpoint, $advice);
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
-	 * Remove an AOP link
+	 * Unweave an aspect
 	 *
 	 * @param IHandler $handler
 	 */
 	public function remove(IHandler $handler);
+
+	//--------------------------------------------------------------------------------- writeProperty
+	/**
+	 * @param $joinpoint string[] the joinpoint defined like a call-back :
+	 *        array("class_name", "property_name")
+	 * @param $advice callable the call-back call of the advice :
+	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
+	 * @return IHandler
+	 */
+	public function writeProperty($joinpoint, $advice);
 
 }

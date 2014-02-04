@@ -1,0 +1,30 @@
+h2. Pré-requis :
+
+* mêmes repères de déboguage (lignes)
+* pouvoir faire de l'AOP sur les propriétés (uniquement celles concernées)
+* performances :
+** s'il n'y a pas de point de coupe, aucun code spécifique ne doit être exécuté
+** pas de tissage dynamique : mettre en cache le tissage une fois compilé, contrôle de cache minimal
+
+=>
+
+h2. Construction :
+
+Pour les propriétés :
+* renomme les méthodes qui existeraient en leur rajoutant un "_aop" au bout
+* rajoutés en fin de classe pour faire la chaîne d'appels d'advices
+** __construct replacement (traits -> class)
+** __get replacement (traits -> class)
+** __set replacement (traits -> class)
+** __isset replacement (traits -> class)
+** __unset replacement (traits -> class)
+
+Pour les méthodes :
+* remplacement de methode() par methode_aop() (si existe)
+* methode() rajouté en fin de classe pour faire la chaîne d'appels d'advices et appeler l'original
+
+Notes :
+L'AOP peut être conditionné aux droits de l'utilisateur. Pour chaque appel de routine AOP il faut
+donc vérifier que le lien est actif :
+* déclaration globale des liens dans un linker centralisé
+* check du lien au moment de l'exécution

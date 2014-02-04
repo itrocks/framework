@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\AOP;
+use SAF\Plugins;
+
 /**
  * Compose translations with dynamic elements with separated translations
  *
@@ -12,7 +15,7 @@ namespace SAF\Framework;
  * "¦Sales orders¦ list" will be dynamically translated : first "Sales orders", then "$1 list"
  * "¦Sales¦ ¦orders¦ list" will translate "Sales" then "orders" then "$1 $2 list"
  */
-class Translation_String_Composer implements Plugin
+class Translation_String_Composer implements Plugins\Registerable
 {
 
 	//---------------------------------------------------- afterReflectionPropertyValueForHtmlDisplay
@@ -34,7 +37,7 @@ class Translation_String_Composer implements Plugin
 	 * @param $object    Translations
 	 * @param $text      string
 	 * @param $context   string
-	 * @param $joinpoint Around_Method_Joinpoint
+	 * @param $joinpoint AOP\Around_Method_Joinpoint
 	 * @return string
 	 */
 	public function onTranslate(Translations $object, $text, $context, $joinpoint)
@@ -77,16 +80,16 @@ class Translation_String_Composer implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->aroundMethodCall(
+		$aop = $register->aop;
+		$aop->aroundMethod(
 			array('SAF\Framework\Translations', "translate"),
 			array($this, "onTranslate")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Reflection_Property_Value', "display"),
 			array($this, "afterReflectionPropertyValueDisplay")
 		);

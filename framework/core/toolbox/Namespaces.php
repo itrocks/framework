@@ -59,7 +59,7 @@ abstract class Namespaces
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function fullClassName($class_name)
+	/* public */ private static function fullClassName_($class_name)
 	{
 		$full_class_name = $class_name;
 		if (strpos($class_name, "\\") === false) {
@@ -166,6 +166,22 @@ abstract class Namespaces
 			$class_name = substr($class_name, $i + 1);
 		}
 		return $class_name;
+	}
+
+	//########################################################################################### AOP
+
+	/**
+	 * Get full class name (with namespace) for a given class name (with or without namespace)
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function fullClassName($class_name)
+	{
+		$result_ = self::fullClassName_($class_name);
+		/** @var $object_ Builder */
+		$object_ = Session::current()->plugins->get('SAF\Framework\Builder');
+		return $object_->afterNamespacesFullClassName($class_name, $result_);
 	}
 
 }

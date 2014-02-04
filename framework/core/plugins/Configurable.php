@@ -1,14 +1,15 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\Plugins;
 
 /**
- * A configurable class
+ * The constructor of a configurable plugin must accept the configuration array as unique parameter
  */
-interface Configurable
+interface Configurable extends Plugin
 {
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 *
 	 * @param $configuration array
 	 */
 	public function __construct($configuration);

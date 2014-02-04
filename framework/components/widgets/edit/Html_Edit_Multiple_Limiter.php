@@ -112,20 +112,20 @@ class Html_Edit_Multiple_Limiter implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->beforeMethodCall(
+		$aop = $register->aop;
+		$aop->beforeMethod(
 			array('SAF\Framework\Html_Edit_Template', "parseMethod"),
 			array($this, "beforeHtmlEditTemplateParseMethod")
 		);
-		$dealer->beforeMethodCall(
+		$aop->beforeMethod(
 			array('SAF\Framework\Mysql_Link', "search"),
 			array($this, "beforeMysqlLinkSearch")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Html_Builder_Collection', "build"),
 			array($this, "afterHtmlBuilderMultipleBuild")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Html_Builder_Map', "build"),
 			array($this, "afterHtmlBuilderMultipleBuild")
 		);

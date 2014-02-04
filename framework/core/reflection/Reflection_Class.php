@@ -9,6 +9,8 @@ use ReflectionException;
  * - properties access methods to write data into private properties
  * - access to the full list of properties and parent properties
  * - annotations management
+ *
+ * @todo store it into an independent SAF\Reflection package
  */
 class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 {

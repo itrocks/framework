@@ -2,11 +2,12 @@
 namespace SAF\Framework;
 
 use mysqli;
+use SAF\Plugins;
 
 /**
  * A logger for mysql queries
  */
-class Mysql_Logger implements Configurable, Plugin
+class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 {
 
 	//------------------------------------------------------------------------------------- $continue
@@ -139,23 +140,23 @@ class Mysql_Logger implements Configurable, Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->beforeMethodCall(
+		$aop = $register->aop;
+		$aop->beforeMethod(
 			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onQuery")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onError")
 		);
 		if (!$this->continue) {
-			$dealer->beforeMethodCall(
+			$aop->beforeMethod(
 				array('SAF\Framework\Main_Controller', "runController"),
 				array($this, "onMainControllerRun")
 			);
-			$dealer->afterMethodCall(
+			$aop->afterMethod(
 				array('SAF\Framework\Main_Controller', "runController"),
 				array($this, "afterMainControllerRun")
 			);

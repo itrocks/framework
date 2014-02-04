@@ -57,12 +57,12 @@ class Acls_Output_Properties extends Acls_Properties implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->aroundMethodCall(
+		$aop = $register->aop;
+		$aop->aroundMethod(
 			array('SAF\Framework\Default_Output_Controller', "getPropertiesList"),
 			array($this, "outputControllerGetProperties")
 		);
-		$dealer->aroundMethodCall(
+		$aop->aroundMethod(
 			array('SAF\Framework\Property_Remove_Controller', "run"),
 			array($this, "propertyRemoveController")
 		);

@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * Built-in SAF HTML view engine
  */
-class Html_View_Engine implements Configurable, View_Engine
+class Html_View_Engine implements Plugins\Configurable, View_Engine
 {
 
 	//------------------------------------------------------------------------------------------ $css

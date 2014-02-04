@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * Pass session id thru HTML code using this plugin
  */
-class Html_Session implements Configurable, Activable_Plugin
+class Html_Session implements Plugins\Activable, Plugins\Configurable
 {
 
 	//----------------------------------------------------------------------------------- $use_cookie
@@ -42,16 +44,6 @@ class Html_Session implements Configurable, Activable_Plugin
 			ini_set("session.use_cookies", $cookies);
 		}
 		return ini_get("session.use_cookies");
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * Always add session id at end of html documents parsing
-	 *
-	 * @param $register Plugin_Register
-	 */
-	public function register(Plugin_Register $register)
-	{
 	}
 
 }

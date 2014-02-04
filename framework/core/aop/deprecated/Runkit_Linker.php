@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Aop;
+namespace SAF\AOP;
 
-use SAF\Framework\Aop_Dealer;
+use SAF\AOP_Dealer;
 use SAF\Framework\Class_Override_Annotation;
 use SAF\Framework\Reflection_Class;
 use SAF\Framework\Reflection_Function;
@@ -687,8 +687,8 @@ class Runkit_Linker implements ILinker
 	public function registerProperties($class_name, $annotation, $type)
 	{
 		/** @var $dealer Aop_Dealer */
-		$dealer = Session::current()->plugins->getPlugin('SAF\Framework\Aop_Dealer');
-		if (!$dealer->hasLinks($class_name, $type)) {
+		$dealer = Session::current()->plugins->getPlugin('SAF\AOP_Dealer');
+		if (!$aop->hasLinks($class_name, $type)) {
 			if (
 				($is_class = @class_exists($class_name, false))
 				|| @trait_exists($class_name, false)
@@ -727,12 +727,12 @@ class Runkit_Linker implements ILinker
 							}
 							switch ($type) {
 								case self::READ:
-									$dealer->onPropertyRead(
+									$aop->propertyRead(
 										array($class_name, $property->name), array($call_class, $call_method)
 									);
 									break;
 								case self::WRITE:
-									$dealer->onPropertyWrite(
+									$aop->propertyWrite(
 										array($class_name, $property->name), array($call_class, $call_method)
 									);
 									break;

@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
  */
-class Autoloader implements IAutoloader, Activable_Plugin
+class Autoloader implements Plugins\Activable
 {
 
 	//-------------------------------------------------------------------------------------- activate
@@ -71,16 +73,6 @@ class Autoloader implements IAutoloader, Activable_Plugin
 			fclose($file);
 		}
 		return $class_name;
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * Registers autoloader
-	 *
-	 * @param $register Plugin_Register
-	 */
-	public function register(Plugin_Register $register)
-	{
 	}
 
 }

@@ -86,16 +86,16 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->aroundMethodCall(
+		$aop = $register->aop;
+		$aop->aroundMethod(
 			array('SAF\Framework\Default_List_Controller', "getPropertiesList"),
 			array($this, "listControllerGetProperties")
 		);
-		$dealer->aroundMethodCall(
+		$aop->aroundMethod(
 			array('SAF\Framework\Property_Add_Controller', "run"),
 			array($this, "propertyAddController")
 		);
-		$dealer->aroundMethodCall(
+		$aop->aroundMethod(
 			array('SAF\Framework\Property_Remove_Controller', "run"),
 			array($this, "propertyRemoveController")
 		);

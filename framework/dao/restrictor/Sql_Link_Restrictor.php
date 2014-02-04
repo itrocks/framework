@@ -152,14 +152,14 @@ class Sql_Link_Restrictor implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
+		$aop = $register->aop;
 		/* @todo this method does not exist anymore into Sql_Select_Builder
 		Aop::addBeforeMethodCall(
 			array('SAF\Framework\Sql_Select_Builder', "buildTables"),
 			array(__CLASS__, "beforeSqlSelectBuilderBuildTables")
 		);
 		 */
-		$dealer->beforeMethodCall(
+		$aop->beforeMethod(
 			array('SAF\Framework\Sql_Select_Builder', "finalize"),
 			array($this, "beforeSqlSelectBuilderFinalize")
 		);

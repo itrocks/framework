@@ -1,28 +1,30 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * Html translator plugin : translates "|non-translated text|" from html pages to "translated text"
  */
-class Html_Translator implements Plugin
+class Html_Translator implements Plugins\Registerable
 {
 
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers translation of [terms] in HTML templates
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->afterMethodCall(
+		$aop = $register->aop;
+		$aop->afterMethod(
 			array('SAF\Framework\Html_Template', "parse"), array($this, "translatePage")
 		);
-		$dealer->beforeMethodCall(
+		$aop->beforeMethod(
 			array('SAF\Framework\Html_Template', "parseString"), array($this, "translateString")
 		);
-		$dealer->beforeMethodCall(
+		$aop->beforeMethod(
 			array('SAF\Framework\Html_Option', "setContent"), array($this, "translateOptionContent")
 		);
 	}

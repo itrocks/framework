@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * This plugin cleans HTML code to avoid multiple blank lines, etc.
  */
-class Html_Cleaner implements Plugin
+class Html_Cleaner implements Plugins\Registerable
 {
 
 	//----------------------------------------------------------------------------------------- clean
@@ -19,12 +21,12 @@ class Html_Cleaner implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->afterMethodCall(
+		$aop = $register->aop;
+		$aop->afterMethod(
 			array('SAF\Framework\Html_Template', "parse"), array($this, "clean")
 		);
 	}

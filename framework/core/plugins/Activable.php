@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\Plugins;
 
 /**
  * Activable plugins are registered on session start, and activated each time the class is loaded
  */
-interface Activable_Plugin extends Plugin
+interface Activable extends Plugin
 {
 
 	//-------------------------------------------------------------------------------------- activate

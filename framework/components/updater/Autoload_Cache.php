@@ -1,11 +1,13 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * The autoload cache plugin  is here to make class autoload faster, but need update at each code
  * update
  */
-class Autoload_Cache implements Activable_Plugin, Updatable
+class Autoload_Cache implements Plugins\Activable, Updatable
 {
 
 	//----------------------------------------------------------------------------------- $cache_file
@@ -30,7 +32,7 @@ class Autoload_Cache implements Activable_Plugin, Updatable
 	public function activate()
 	{
 		/** @var $application_updater Application_Updater */
-		$application_updater = Session::current()->plugins->getPlugin(
+		$application_updater = Session::current()->plugins->get(
 			'SAF\Framework\Application_Updater'
 		);
 		$application_updater->addUpdatable($this);
@@ -73,15 +75,15 @@ class Autoload_Cache implements Activable_Plugin, Updatable
 	/**
 	 * Registers the Autoload_Cache plugin
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->aroundMethodCall(
+		$aop = $register->aop;
+		$aop->aroundMethod(
 			array('SAF\Framework\Autoloader', "autoload"), array($this, "autoload")
 		);
-		$dealer->aroundMethodCall(
+		$aop->aroundMethod(
 			array('SAF\Framework\Namespaces', "fullClassName"), array($this, "fullClassName")
 		);
 	}

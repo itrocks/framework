@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
 use Serializable;
 
 /**
@@ -17,7 +18,7 @@ class Session implements Serializable
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
-	 * @var Plugins_Manager
+	 * @var Plugins\Manager
 	 */
 	public $plugins;
 
@@ -29,10 +30,10 @@ class Session implements Serializable
 	public static function current(Session $set_current = null)
 	{
 		if ($set_current) {
-			$_SESSION["session"] = $set_current;
+			$_SESSION['session'] = $set_current;
 			return $set_current;
 		}
-		return $_SESSION["session"];
+		return $_SESSION['session'];
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -139,12 +140,12 @@ class Session implements Serializable
 	 */
 	public function serialize()
 	{
-		$data = array("current" => array(), "plugins" => $this->plugins);
+		$data = array('current' => array(), 'plugins' => $this->plugins);
 		foreach ($this->current as $class_name => $object) {
 			if (is_object($object)) {
 				$object = array($class_name, serialize($object));
 			}
-			$data["current"][$class_name] = $object;
+			$data['current'][$class_name] = $object;
 		}
 		return serialize($data);
 	}
@@ -173,7 +174,7 @@ class Session implements Serializable
 	 */
 	public static function sid($prefix = "")
 	{
-		return session_id() ? ($prefix . session_name() . "=" . session_id()) : "";
+		return session_id() ? ($prefix . session_name() . '=' . session_id()) : '';
 	}
 
 	//----------------------------------------------------------------------------------- unserialize
@@ -183,8 +184,8 @@ class Session implements Serializable
 	public function unserialize($serialized)
 	{
 		$data = unserialize($serialized);
-		$this->current = $data["current"];
-		$this->plugins = $data["plugins"];
+		$this->current = $data['current'];
+		$this->plugins = $data['plugins'];
 	}
 
 }

@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * A Locale object has all locale features, useful for specific locale conversions
  */
-class Locale implements Configurable, Plugin
+class Locale implements Plugins\Configurable
 {
 	use Current { current as private pCurrent; }
 
@@ -91,14 +93,6 @@ class Locale implements Configurable, Plugin
 			$value = $property->value();
 		}
 		return $this->toLocale($value, $property->getType());
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Plugin_Register
-	 */
-	public function register(Plugin_Register $register)
-	{
 	}
 
 	//--------------------------------------------------------------------------------------- setDate

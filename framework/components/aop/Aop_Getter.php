@@ -120,12 +120,12 @@ class Aop_Getter extends Aop implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->afterMethodCall(
+		$aop = $register->aop;
+		$aop->afterMethod(
 			array('SAF\Framework\Autoloader', "includeClass"),
 			array($this, "registerIncludedGettersAop")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Class_Builder', "buildClassSource"),
 			array($this, "registerBuiltGettersAop")
 		);
@@ -148,7 +148,7 @@ class Aop_Getter extends Aop implements Plugin
 	 *
 	 * Call this each time a class is declared (ie at end of Autoloader->autoload()) to automatically register AOP special getters for object properties.
 	 * This uses the property @getter annotation to know what getter to use.
-	 * Specific Aop::getMethod() getters are allowed shortcuts for SAF\Framework\Aop_Getter::getMethod().
+	 * Specific Aop::getMethod() getters are allowed shortcuts for SAF\AOP_Getter::getMethod().
 	 *
 	 * @param $class_name string
 	 */

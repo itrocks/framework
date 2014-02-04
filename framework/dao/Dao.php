@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
  */
-class Dao implements Configurable, Plugin
+class Dao implements Plugins\Configurable
 {
 	use Current { current as private pCurrent; }
 
@@ -251,16 +253,6 @@ class Dao implements Configurable, Plugin
 	public static function readAll($class_name, $options = null)
 	{
 		return self::current()->readAll($class_name, $options);
-	}
-
-	//------------------------------------------------------------------------------------- configure
-	/**
-	 * Configure DAO with specific DAO link elements
-	 *
-	 * @param $register Plugin_Register
-	 */
-	public function register(Plugin_Register $register)
-	{
 	}
 
 	//---------------------------------------------------------------------------------------- remove

@@ -126,12 +126,12 @@ class Wiki implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->aroundMethodCall(
+		$aop = $register->aop;
+		$aop->aroundMethod(
 			array('SAF\Framework\Html_Edit_Template', "parseValue"),
 			array($this, "noParseZone")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\Reflection_Property_View', "formatString"),
 			array($this, "stringWiki")
 		);

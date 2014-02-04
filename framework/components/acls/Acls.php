@@ -33,12 +33,12 @@ class Acls implements Plugin
 	 */
 	public function register(Plugin_Register $register)
 	{
-		$dealer = $register->dealer;
-		$dealer->afterMethodCall(
+		$aop = $register->aop;
+		$aop->afterMethod(
 			array('SAF\Framework\User_Authentication', "authenticate"),
 			array('SAF\Framework\Acls_Loader', "onUserAuthenticate")
 		);
-		$dealer->afterMethodCall(
+		$aop->afterMethod(
 			array('SAF\Framework\User_Authentication', "disconnect"),
 			array('SAF\Framework\Acls_Loader', "onUserDisconnect")
 		);

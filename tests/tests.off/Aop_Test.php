@@ -7,7 +7,7 @@ use AOPT\Child_Business;
 use AOPT\Trait_Business;
 use AOPT\Trait_Business_Class;
 use AOPT\Trait_Child_Business_Class;
-use SAF\Framework\Aop;
+use SAF\AOP;
 use SAF\Framework\Unit_Tests\Unit_Test;
 
 /**
