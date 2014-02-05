@@ -12,7 +12,7 @@ use SAF\Plugins;
 class Compiler implements ICompiler
 {
 
-	const DEBUG = true;
+	const DEBUG = false;
 
 	//--------------------------------------------------------------------------------------- cleanup
 	/**
@@ -24,7 +24,7 @@ class Compiler implements ICompiler
 		$buffer = trim(str_replace("\r", '', $buffer));
 		// remove since the line containing "//#### AOP" until the end of the file
 		$expr = '`\n\s*//#+\s+AOP.*}([\s*\n]*\})[\s*\n]*`s';
-		$buffer = preg_replace($expr, '$1', $buffer);
+		$buffer = preg_replace($expr, '$1', $buffer) . "\n";
 		// replace "/* public */ private [static] function name_(" by "public [static] function name("
 		$expr = '`(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)((private|protected|public)\s*)?'
 			. '(static\s*)?function(\s+\w*)\_\s*\(`';
@@ -95,19 +95,19 @@ class Compiler implements ICompiler
 		include_once $file_name;
 		$buffer = file_get_contents($file_name);
 		$this->cleanup($buffer);
-		$buffer = substr($buffer, 0, -1) . "\t//" . str_repeat('#', 91) . " AOP\n";
 
 		if (self::DEBUG) echo "<h2>compile class $class_name</h2>";
-
+		$buffer = substr($buffer, 0, -2) . "\t//" . str_repeat('#', 91) . " AOP\n";
+		foreach ($properties as $property_name => $advices) {
+			$this->compileProperty($class_name, $property_name, $advices, $buffer);
+		}
 		foreach ($methods as $method_name => $advices) {
 			$this->compileMethod($class_name, $method_name, $advices, $buffer);
 		}
-
-		$buffer .= "\n}";
+		$buffer .= "\n}\n";
 
 		file_put_contents($file_name, $buffer);
 
-		if (self::DEBUG) echo "<pre>properties = " . print_r($properties, true) . "</pre>";
 		if (self::DEBUG) echo "<pre>" . htmlentities($buffer) . "</pre>";
 	}
 
@@ -120,17 +120,14 @@ class Compiler implements ICompiler
 	 */
 	public function compileMethod($class_name, $method_name, $advices, &$buffer)
 	{
-		if (self::DEBUG) echo "<h3>$class_name::$method_name</h3>";
+		if (self::DEBUG) echo "<h3>Method $class_name::$method_name</h3>";
 
 		$append = "";
 
 		$in_parent = false;
-		$source_method = new Reflection_Method(
-			$class_name,
-			method_exists($class_name, $method_name . '_') ? ($method_name . '_') : $method_name
-		);
+		$source_method = new Reflection_Method($class_name, $method_name);
 		$preg_expr = '`(\n\s*)((private|protected|public)\s*)?((static\s*)?function\s+)'
-			. '(' . $method_name . ')(\s*\()`';
+			. '(' . $method_name . ')(\s*\([^\{]*\)[\n*\s*]*\{)`';
 		// 0 : "\n\tpublic static function methodName ("
 		// 1 : "\n\t"
 		// 2 : "public "
@@ -138,7 +135,7 @@ class Compiler implements ICompiler
 		// 4 : "static function "
 		// 5 : "static "
 		// 6 : "methodName"
-		// 7 : " ("
+		// 7 : " ($param, &$param2 = CONSTANT) {"
 		preg_match($preg_expr, $buffer, $match);
 		if (!$match) {
 			if (!method_exists($class_name, $method_name)) {
@@ -146,6 +143,7 @@ class Compiler implements ICompiler
 			}
 			else {
 				$in_parent = true;
+				if (self::DEBUG) echo "- LOAD " . $source_method->getFileName() . "<br>";
 				$source_method_buffer = file_get_contents($source_method->getFileName());
 				preg_match($preg_expr, $source_method_buffer, $match);
 				if (!$match) {
@@ -168,9 +166,8 @@ class Compiler implements ICompiler
 		$doc_comment = $source_method->getDocComment();
 		// $parameters_names = '$parameter1, $parameter2'
 		$parameters_names = $parameters ? ('$' . join(', $', array_keys($parameters))) : '';
-		$parameters_string = join(', ', $parameters);
 		// $prototype = 'public [static] function methodName($parameter1, $parameter2 = "default")'
-		$prototype = $match[0] . $parameters_string . ')' . $indent . '{' . $i2;
+		$prototype = $match[0] . $i2;
 		/** $is_static = '[static]' */
 		$is_static = trim($match[5]);
 		/** @var $count integer around method counter */
@@ -193,9 +190,11 @@ class Compiler implements ICompiler
 		$advices_count = count($advices);
 		$advice_number = 0;
 
-		$call_code = $i2 . '$result_ = '
+		if (self::DEBUG && $in_parent) echo "in_parent = true for $class_name::$method_name<br>";
+
+		$call_code = $i2 . ($joinpoint_has_return ? '$result_ = ' : '')
 			. ($is_static ? 'self::' : ($in_parent ? 'parent::' : '$this->'))
-			. $method_name . (!$in_parent ? ('_' . $count) : '')
+			. $method_name . ($in_parent ? '' : ('_' . $count))
 			. '(' . $parameters_names . ');';
 
 		foreach (array_reverse($advices) as $advice) {
@@ -262,23 +261,23 @@ class Compiler implements ICompiler
 					$joinpoint_parameters_string = 'array(';
 					foreach (array_keys($parameters) as $key => $name) {
 						if ($key) $joinpoint_parameters_string .= ', ';
-						$joinpoint_parameters_string .= $key . ' => &$' . $name . ', "' . $name . '" => &$__' . $name;
+						$joinpoint_parameters_string .= $key . ' => &$' . $name . ', "' . $name . '" => &$' . $name;
 					}
 					$joinpoint_parameters_string .= ')';
 					switch ($type) {
 						case 'after':
-							$joinpoint_code = $i2 . '$joinpoint_ = new SAF\Framework\After_Method_Joinpoint('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\After_Method_Joinpoint('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', $result_, ' . $advice_string
 								. $i2 . ');';
 							break;
 						case 'around':
 							$process_callback = $method_name . '_' . $count;
-							$joinpoint_code = $i2 . '$joinpoint_ = new SAF\Framework\Around_Method_Joinpoint('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\Around_Method_Joinpoint('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', ' . $advice_string . ', ' . "'$process_callback'"
 								. $i2 . ');';
 							break;
 						case 'before':
-							$joinpoint_code = $i2 . '$joinpoint_ = new SAF\Framework\Before_Method_Joinpoint('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\Before_Method_Joinpoint('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', ' . $advice_string
 								. $i2 . ');';
 							break;
@@ -298,7 +297,7 @@ class Compiler implements ICompiler
 				}
 				// object method call
 				else {
-					$advice_code = $i2 . '/** @var $object_ ' . $advice_class_name . ' */'
+					$advice_code = $i2 . '/** @var $object_ ' . "\\" . $advice_class_name . ' */'
 						. $i2 . '$object_ = Session::current()->plugins->get(' . "'$advice_class_name'" . ');'
 						. $joinpoint_code
 						. $i2 . ($advice_has_return ? '$result_ = ' : '')
@@ -326,11 +325,13 @@ class Compiler implements ICompiler
 					$my_prototype = ($advice_number == $advices_count)
 						? $prototype
 						: str_replace($method_name, $method_name . '_' . $count , $prototype);
-					$append .= $my_prototype
+					$append .= $indent . $doc_comment . $my_prototype
 						. $this->codeAssembly($before_code, $advice_code, $after_code)
 						. ($joinpoint_has_return ? ("\n" . $i2 . 'return $result_;') : '')
 						. $indent . "}\n";
-					$count ++;
+					if ($advice_number < $advices_count) {
+						$count ++;
+					}
 					$before_code = array();
 					$after_code = array();
 					break;
@@ -355,6 +356,18 @@ class Compiler implements ICompiler
 		$buffer = preg_replace(
 			$preg_expr, $indent . '/* $2*/ private $4' . $method_name . '_' . $count . '$7', $buffer
 		) . $append;
+	}
+
+	//------------------------------------------------------------------------------- compileProperty
+	/**
+	 * @param $class_name    string
+	 * @param $property_name string
+	 * @param $advices       array
+	 * @param $buffer        string
+	 */
+	public function compileProperty($class_name, $property_name, $advices, &$buffer)
+	{
+		if (self::DEBUG) echo "<h3>Property $class_name::$property_name</h3>";
 	}
 
 	//--------------------------------------------------------------------------- willCompileFunction
