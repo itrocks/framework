@@ -1,10 +1,13 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\AOP\Around_Method_Joinpoint;
+use SAF\Plugins;
+
 /**
  * The wiki plugin enable wiki parsing of multiline properties values
  */
-class Wiki implements Plugin
+class Wiki implements Plugins\Registerable
 {
 
 	//------------------------------------------------------------------------------ $dont_parse_wiki
@@ -122,9 +125,9 @@ class Wiki implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(

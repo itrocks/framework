@@ -90,7 +90,7 @@ class Compiler implements ICompiler
 					if ($match) {
 						$class_name = $match[1] . "\\" . $class_name;
 					}
-					if (!$this->compiled_classes[$class_name]) {
+					if (!isset($this->compiled_classes[$class_name])) {
 						$this->compileClass($class_name, array(), array(), $file_name);
 					}
 					echo "- compile class $class_name<br>";
@@ -104,10 +104,10 @@ class Compiler implements ICompiler
 
 	//---------------------------------------------------------------------------------- compileClass
 	/**
-	 * @param $class_name string
-	 * @param $methods    array
-	 * @param $properties array
-	 * @param $file_name  string
+	 * @param $class_name string the name of the class or trait to be compiled
+	 * @param $methods    array  advices for each method
+	 * @param $properties array  advices for each property
+	 * @param $file_name  string file name (optional)
 	 */
 	private function compileClass($class_name, $methods, $properties, $file_name = null)
 	{

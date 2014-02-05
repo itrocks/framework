@@ -1,12 +1,14 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * The application updater plugin detects if the application needs to be updated, and launch updates
  *
  * All updatable plugins should use the mustUpdate() method to know if they need to launch their update process.
  */
-class Application_Updater implements Plugin
+class Application_Updater implements Plugins\Registerable
 {
 
 	//----------------------------------------------------------------------------------- $updatables
@@ -72,9 +74,9 @@ class Application_Updater implements Plugin
 	 * Registers the application updater plugin
 	 * Called by the plugins registerer when the plugin is set
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod(

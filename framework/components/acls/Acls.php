@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * Main acls plugin
  */
-class Acls implements Plugin
+class Acls implements Plugins\Registerable
 {
 
 	//--------------------------------------------------------------------------------------- current
@@ -29,9 +31,9 @@ class Acls implements Plugin
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
 		$aop->afterMethod(

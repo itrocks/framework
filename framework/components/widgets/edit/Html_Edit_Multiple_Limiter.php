@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * This plugin limits the count of elements a Collection or a Map can display on an edit form
  */
-class Html_Edit_Multiple_Limiter implements Plugin
+class Html_Edit_Multiple_Limiter implements Plugins\Registerable
 {
 
 	//---------------------------------------------------------------------------------------- $count
@@ -108,9 +110,9 @@ class Html_Edit_Multiple_Limiter implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod(

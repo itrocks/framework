@@ -1,10 +1,13 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\AOP\Around_Method_Joinpoint;
+use SAF\Plugins;
+
 /**
  * This plugin enables storage of properties displayed into lists as acls
  */
-class Acls_List_Properties extends Acls_Properties implements Plugin
+class Acls_List_Properties extends Acls_Properties implements Plugins\Registerable
 {
 
 	//-------------------------------------------------------------------------- getDefaultProperties
@@ -82,9 +85,9 @@ class Acls_List_Properties extends Acls_Properties implements Plugin
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(

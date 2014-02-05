@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * An execution timer plugin, to enable the execution duration info on document's foot
  */
-class Execution_Timer implements Plugin
+class Execution_Timer implements Plugins\Registerable
 {
 
 	//----------------------------------------------------------------------------------- $start_time
@@ -61,9 +63,9 @@ class Execution_Timer implements Plugin
 	/**
 	 * Reset execution timer counter and register to timer end and result display
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
 		$aop->afterMethod(

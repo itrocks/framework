@@ -1,12 +1,14 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins;
+
 /**
  * This configuration plugin enables to restrict read data
  *
  * TODO this has not been tested nor used yet, please finish and test this !
  */
-class Sql_Link_Restrictor implements Plugin
+class Sql_Link_Restrictor implements Plugins\Registerable
 {
 
 	//--------------------------------------------------------------------------------------- CURRENT
@@ -148,9 +150,9 @@ class Sql_Link_Restrictor implements Plugin
 	/**
 	 * Registers SQL link restrictor plugin
 	 *
-	 * @param $register Plugin_Register
+	 * @param $register Plugins\Register
 	 */
-	public function register(Plugin_Register $register)
+	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
 		/* @todo this method does not exist anymore into Sql_Select_Builder
