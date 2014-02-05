@@ -1,6 +1,8 @@
 <?php
 namespace SAF\AOP;
 
+use ReflectionMethod;
+
 /**
  * Around method joinpoint
  */
@@ -39,10 +41,24 @@ class Around_Method_Joinpoint extends Method_Joinpoint
 	 */
 	public function process($args = null)
 	{
-		if (Aop::DEBUG) {
-			echo "process(" . print_r(func_get_args(), true) . "<br>";
+		$method = (new ReflectionMethod($this->class_name, $this->process_method));
+		// the method must be accessible to invoke it
+		if (!$method->isPublic()) {
+			$not_accessible = true;
+			$method->setAccessible(true);
 		}
-		return call_user_func_array(array($this->pointcut[0], $this->process_method), func_get_args());
+		// if this is a static method : invoked object is null
+		$object = $this->pointcut[0];
+		if (!is_object($object)) {
+			$object = null;
+		}
+		// invoke
+		$result = $method->invokeArgs($object, func_get_args());
+		// the method must be not accessible again
+		if (isset($not_accessible)) {
+			$method->setAccessible(false);
+		}
+		return $result;
 	}
 
 }

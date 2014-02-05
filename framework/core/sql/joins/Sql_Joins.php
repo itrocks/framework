@@ -305,7 +305,7 @@ class Sql_Joins
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
 	 */
-	private function addSimpleJoin_(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
+	/* private */ private function addSimpleJoin_(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
 	{
 		$foreign_class_name = null;
 		$master_property = $this->getProperty($master_path, $master_property_name);

@@ -85,52 +85,51 @@ class File
 	/**
 	 * Gets $content, or load it from temporary file name if not set
 	 *
-	 * @return string
+	 * @param string
 	 */
-	public function getContent()
+	public function getContent(&$content)
 	{
-		if (isset($this->temporary_file_name) && !isset($this->content)) {
-			$this->content = file_get_contents($this->temporary_file_name);
+		if (isset($this->temporary_file_name) && !isset($content)) {
+			$content = file_get_contents($this->temporary_file_name);
 			$this->calcHash();
 		}
-		return $this->content;
 	}
 
 	//--------------------------------------------------------------------------------------- getHash
 	/**
 	 * Gets $hash, or calculate it from content if not set
 	 *
-	 * @return string
+	 * @param string
 	 */
-	public function getHash()
+	public function getHash(&$hash)
 	{
-		if (!isset($this->hash)) {
+		if (!isset($hash)) {
 			$this->calcHash();
 		}
-		return $this->hash;
 	}
 
 	//---------------------------------------------------------------------------getTemporaryFileName
 	/**
 	 * Gets temporary file name, or write content into a temporary file name and get this name if not
 	 * set or file does not exist
+	 *
+	 * @param $temporary_file_name string
 	 */
-	public function getTemporaryFileName()
+	public function getTemporaryFileName(&$temporary_file_name)
 	{
 		if (
 			isset($this->content)
-			&& (empty($this->temporary_file_name) || !file_exists($this->temporary_file_name))
+			&& (empty($temporary_file_name) || !file_exists($temporary_file_name))
 		) {
-			if (empty($this->temporary_file_name)) {
-				$this->temporary_file_name = Application::current()->getTemporaryFilesPath() . "/"
+			if (empty($temporary_file_name)) {
+				$temporary_file_name = Application::current()->getTemporaryFilesPath() . "/"
 					. uniqid() . "_" . $this->name;
 			}
-			if (strpos($this->temporary_file_name, "/") !== false) {
-				Files::mkdir(lLastParse($this->temporary_file_name, "/"));
+			if (strpos($temporary_file_name, "/") !== false) {
+				Files::mkdir(lLastParse($temporary_file_name, "/"));
 			}
-			file_put_contents($this->temporary_file_name, $this->content);
+			file_put_contents($temporary_file_name, $this->content);
 		}
-		return $this->temporary_file_name;
 	}
 
 	//--------------------------------------------------------------------------------------- getType
@@ -143,12 +142,8 @@ class File
 	}
 
 	//------------------------------------------------------------------------------------ setContent
-	/**
-	 * @param $content string
-	 */
-	public function setContent($content)
+	public function setContent()
 	{
-		$this->content = $content;
 		$this->calcHash();
 	}
 

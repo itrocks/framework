@@ -11,7 +11,8 @@ class Weaver implements ICompiled, IWeaver
 	/**
 	 * All joinpoints are stored here
 	 *
-	 * @var array
+	 * @var array array[$function][$index] = array($type, callback $advice)
+	 * @var array array[$class][$method][$index] = array($type, callback $advice)
 	 */
 	private $joinpoints = array();
 
@@ -31,8 +32,8 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function afterFunction($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint]["after"][] = $advice;
-		return new Handler("after", $joinpoint, count($this->joinpoints[$joinpoint]["after"]) - 1);
+		$this->joinpoints[$joinpoint][] = array("after", $advice);
+		return new Handler("after", $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
 
 	//----------------------------------------------------------------------------------- afterMethod
@@ -52,9 +53,9 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function afterMethod($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]]["after"][] = $advice;
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = array("after", $advice);
 		return new Handler(
-			"after", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]["after"]) - 1
+			"after", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 
@@ -73,8 +74,8 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function aroundFunction($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint]["around"][] = $advice;
-		return new Handler("around", $joinpoint, count($this->joinpoints[$joinpoint]["around"]) - 1);
+		$this->joinpoints[$joinpoint][] = array("around", $advice);
+		return new Handler("around", $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
 
 	//---------------------------------------------------------------------------------- aroundMethod
@@ -93,9 +94,9 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function aroundMethod($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]]["around"][] = $advice;
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = array("around", $advice);
 		return new Handler(
-			"around", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]["around"]) - 1
+			"around", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 
@@ -115,8 +116,8 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function beforeFunction($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint]["before"][] = $advice;
-		return new Handler("before", $joinpoint, count($this->joinpoints[$joinpoint]["before"]) - 1);
+		$this->joinpoints[$joinpoint][] = array("before", $advice);
+		return new Handler("before", $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
 
 	//---------------------------------------------------------------------------------- beforeMethod
@@ -135,9 +136,9 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function beforeMethod($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]]["before"][] = $advice;
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = array("before", $advice);
 		return new Handler(
-			"before", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]["before"]) - 1
+			"before", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 
@@ -174,9 +175,9 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function readProperty($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]]["read"][] = $advice;
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = array("read", $advice);
 		return new Handler(
-			"read", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]["read"]) - 1
+			"read", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 
@@ -189,12 +190,11 @@ class Weaver implements ICompiled, IWeaver
 	public function remove(IHandler $handler)
 	{
 		/** @var $handler Handler */
-		$type = $handler->type;
 		if (is_string($handler->joinpoint)) {
-			$this->joinpoints[$handler->joinpoint][$type][$handler->index] = null;
+			$this->joinpoints[$handler->joinpoint][$handler->index] = null;
 		}
 		else {
-			$this->joinpoints[$handler->joinpoint[0]][$handler->joinpoint[1]][$type][$handler->index]
+			$this->joinpoints[$handler->joinpoint[0]][$handler->joinpoint[1]][$handler->index]
 				= null;
 		}
 	}
@@ -209,9 +209,9 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function writeProperty($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]]["write"][] = $advice;
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = array("write", $advice);
 		return new Handler(
-			"write", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]["write"]) - 1
+			"write", $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 
