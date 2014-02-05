@@ -60,6 +60,8 @@ abstract class Reflection_Class_Properties_Access
 		}
 		else {
 			$parent_class = $class->getParentClass();
+			// todo recursion is not needed : getProperties() gets all properties !
+			// todo replace references to class_names with $property->class for correct handling
 			$parent_properties = $parent_class
 				? static::access($parent_class)
 				: array();

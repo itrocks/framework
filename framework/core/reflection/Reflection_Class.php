@@ -79,10 +79,12 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * If a property overrides a parent property, parent AND child properties will be listed (only if $by_name keeps false).
 	 * If $by_name is set to true, result array will be indiced by names. With this option parent properties will be replace by overriden child properties.
 	 *
+	 * @deprecated
 	 * @param $filter      integer|string
 	 * @param $by_name     boolean
 	 * @param $final_class string
 	 * @return Reflection_Property[]
+	 * @todo remove this : getProperties() gets all properties (tested with PHP 5.5.3)
 	 */
 	public function getAllProperties(
 		$filter = Reflection_Property::ALL, $by_name = true, $final_class = null
