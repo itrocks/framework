@@ -31,15 +31,15 @@ class Compiler implements ICompiler
 		// remove all "\r"
 		$buffer = trim(str_replace("\r", '', $buffer));
 		// remove since the line containing "//#### AOP" until the end of the file
-		$expr = '`\n\s*//#+\s+AOP.*}([\s*\n]*\})[\s*\n]*`s';
+		$expr = '|\n\s*//#+\s+AOP.*|s';
 		preg_match($expr, $buffer, $match1);
-		$buffer = preg_replace($expr, '$1', $buffer) . "\n";
+		$buffer = preg_replace($expr, '$1', $buffer) . "\n\n}\n";
 		// replace "/* public */ private [static] function name_(" by "public [static] function name("
 		$expr = '`(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)((private|protected|public)\s*)?'
 			. '(static\s*)?function(\s+\w*)\_\s*\(`';
 		preg_match($expr, $buffer, $match2);
 		$buffer = preg_replace($expr, '$1$2$3$6function$7(', $buffer);
-		return $match2 || $match2;
+		return $match1 || $match2;
 	}
 
 	//--------------------------------------------------------------------------------------- compile
@@ -57,7 +57,7 @@ class Compiler implements ICompiler
 			if (ctype_lower($joinpoint)) {
 				$this->willCompileFunction($joinpoint, $pointcuts);
 			}
-			else {
+			elseif (!isset($this->compiled_classes[$joinpoint])) {
 				$class_name = $joinpoint;
 				$methods    = array();
 				$properties = array();
@@ -83,7 +83,6 @@ class Compiler implements ICompiler
 	 */
 	public function compileAll(IWeaver $weaver)
 	{
-		$this->compile($weaver);
 		foreach (Application::current()->include_path->getSourceFiles() as $file_name) {
 			if (substr($file_name, -4) == '.php') {
 				$buffer = str_replace("\r", '', file_get_contents($file_name));
@@ -106,6 +105,7 @@ class Compiler implements ICompiler
 				}
 			}
 		}
+		$this->compile($weaver);
 	}
 
 	//---------------------------------------------------------------------------------- compileClass
