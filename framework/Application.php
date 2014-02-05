@@ -106,40 +106,6 @@ class Application
 		}
 	}
 
-	//-------------------------------------------------------------------------------- getSourceFiles
-	/**
-	 * Returns the full files list for the application, including parent's applications directory
-	 *
-	 * File names are sorted from higher-level application to basis SAF "framework" directory
-	 * Inside an application, files are sorted randomly (according to how the php Directory->read() call works)
-	 *
-	 * Paths are relative to the SAF index.php base script position
-	 *
-	 * @param $include_vendor boolean
-	 * @return string[]
-	 */
-	public function getSourceFiles($include_vendor = false)
-	{
-		$files = array();
-		foreach ($this->include_path->getSourceDirectories() as $directory) {
-			$directory_slash = $directory . "/";
-			if (
-				(strpos($directory_slash, "/webshop/templates/") === false)
-				&& ($include_vendor || strpos($directory_slash, "/vendor/") === false)
-			) {
-				$dir = dir($directory);
-				while ($entry = $dir->read()) if ($entry[0] != ".") {
-					$file_path = $directory . "/" . $entry;
-					if (is_file($file_path)) {
-						$files[] = $file_path;
-					}
-				}
-				$dir->close();
-			}
-		}
-		return $files;
-	}
-
 	//------------------------------------------------------------------------- getTemporaryFilesPath
 	/**
 	 * @return string

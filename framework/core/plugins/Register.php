@@ -41,7 +41,7 @@ class Register
 	 * @param $configuration array|string
 	 * @param $aop           IWeaver
 	 */
-	public function __construct_($configuration = null, IWeaver $aop = null)
+	/* public */ private function __construct_($configuration = null, IWeaver $aop = null)
 	{
 		if (isset($aop))           $this->aop           = $aop;
 		if (isset($configuration)) $this->configuration = $configuration;
@@ -49,7 +49,7 @@ class Register
 
 	//------------------------------------------------------------------------------ getConfiguration
 	/**
-	 * @return array
+	 * @return array|string
 	 */
 	private function getConfiguration()
 	{
@@ -90,6 +90,7 @@ class Register
 	{
 		$this->_configuration = $this->configuration;
 		unset($this->configuration);
+		// overridden / parent call here
 		$this->__construct_($configuration, $aop);
 	}
 
@@ -99,13 +100,26 @@ class Register
 	 */
 	public function __get($property_name)
 	{
-		switch ($property_name) {
-			case 'configuration':
-				$value = $this->getConfiguration();
-				return $value;
+		if ($property_name[0] == '_') {
+			// overridden / parent call here, without '_'
+			user_error(
+				'Undefined property: Plugin_Register::$' . substr($property_name, 1), E_USER_NOTICE
+			);
+			return null;
 		}
-		user_error('Undefined property: Plugin_Register::$' . $property_name, E_USER_NOTICE);
-		return null;
+		$_property_name = '_' . $property_name;
+		$this->$property_name = $this->$_property_name;
+		if ($property_name == 'configuration') {
+			$value = $this->getConfiguration();
+		}
+		else {
+			// overridden / parent call here
+			user_error('Undefined property: Plugin_Register::$' . $property_name, E_USER_NOTICE);
+			$value = null;
+		}
+		$this->$_property_name = $this->$property_name;
+		unset($this->$property_name);
+		return $value;
 	}
 
 	/**
@@ -114,11 +128,12 @@ class Register
 	 */
 	public function __isset($property_name)
 	{
-		switch ($property_name) {
-			case 'configuration':
-				return isset($this->_configuration);
+		if ($property_name[0] == '_') {
+			// overridden / parent call here, without '_'
+			return isset($this->$property_name);
 		}
-		return isset($this->$property_name);
+		$_property_name = '_' . $property_name;
+		return isset($this->$_property_name);
 	}
 
 	/**
@@ -127,13 +142,16 @@ class Register
 	 */
 	public function __set($property_name, $value)
 	{
-		switch ($property_name) {
-			case 'configuration':
-				$this->setConfiguration($value);
-				return;
+		if ($property_name[0] == '_') {
+			// overridden / parent call here, without '_'
+			$this->$property_name = $value;
 		}
-		$this->$property_name = $value;
-		return;
+		elseif ($property_name == 'configuration') {
+			$this->setConfiguration($value);
+		}
+		else {
+			$this->$property_name = $value;
+		}
 	}
 
 	/**
@@ -141,13 +159,13 @@ class Register
 	 */
 	public function __unset($property_name)
 	{
-		switch ($property_name) {
-			case 'configuration':
-				unset($this->_configuration);
-				return;
+		if ($property_name[0] == '_') {
+			// overridden / parent call here, without '_'
+			unset($property_name);
+			return;
 		}
+		$property_name = '_' . $property_name;
 		unset($this->$property_name);
-		return;
 	}
 
 }

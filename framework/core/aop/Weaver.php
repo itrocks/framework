@@ -148,12 +148,10 @@ class Weaver implements ICompiled, IWeaver
 	 */
 	public function compile(ICompiler $compiler = null)
 	{
-		if ($compiler) {
-			$compiler->compile($this);
+		if (!isset($compiler)) {
+			$compiler = new Compiler();
 		}
-		else {
-			(new Compiler())->compile($this);
-		}
+		$compiler->compileAll($this);
 	}
 
 	//--------------------------------------------------------------------------------- getJoinpoints

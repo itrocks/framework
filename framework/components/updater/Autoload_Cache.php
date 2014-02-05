@@ -94,7 +94,7 @@ class Autoload_Cache implements Plugins\Activable, Updatable
 	 */
 	public function update()
 	{
-		$directories = Application::current()->getSourceFiles();
+		$directories = Application::current()->include_path->getSourceFiles();
 		$this->full_class_names = array();
 		$this->paths = array();
 		foreach ($directories as $file_path) {
