@@ -33,7 +33,7 @@ abstract class Getter
 	 * @param $parent_property string|Reflection_Property Parent property (or property name). Recommended but can be ommited if foreign class is a Component
 	 * @return object[]
 	 */
-	/* public */ private static function getCollection_(
+	public static function getCollection(
 		$collection, $element_class, $parent, $parent_property = null
 	) {
 		if (!isset($collection)) {
@@ -130,7 +130,7 @@ abstract class Getter
 	 * @param $property   string|Reflection_Property the parent property
 	 * @return object will be $object if aleady an object, or the read object, or null if not found
 	 */
-	/* public */ private static function getObject_(
+	public static function getObject(
 		$object, $class_name, $parent = null, $property = null
 	) {
 		if (!is_object($object)) {
@@ -154,43 +154,6 @@ abstract class Getter
 			}
 		}
 		return $object;
-	}
-
-	//########################################################################################### AOP
-
-	/**
-	 * Generic getter for a collection of objects
-	 *
-	 * @param $collection      Component[] Actual value of the property (will be returned if not null)
-	 * @param $element_class   string Class for each collection's object
-	 * @param $parent          object Parent object
-	 * @param $parent_property string|Reflection_Property Parent property (or property name). Recommended but can be ommited if foreign class is a Component
-	 * @return object[]
-	 */
-	public static function getCollection(
-		$collection, $element_class, $parent, $parent_property = null
-	) {
-		/** @var $object_ Builder */
-		$object_ = Session::current()->plugins->get('SAF\Framework\Builder');
-		$object_->onMethodWithElementClass($element_class);
-		return self::getCollection_($collection, $element_class, $parent, $parent_property);
-	}
-
-	/**
-	 * Generic getter for an object
-	 *
-	 * @param $object     mixed actual value of the object, or identifier to an object
-	 * @param $class_name string the object class name
-	 * @param $parent     object the parent object
-	 * @param $property   string|Reflection_Property the parent property
-	 * @return object will be $object if aleady an object, or the read object, or null if not found
-	 */
-	public static function getObject($object, $class_name, $parent = null, $property = null)
-	{
-		/** @var $object_ Builder */
-		$object_ = Session::current()->plugins->get('SAF\Framework\Builder');
-		$object_->onMethodWithClassName($class_name);
-		return self::getObject_($object, $class_name, $parent, $property);
 	}
 
 }

@@ -305,7 +305,7 @@ class Sql_Joins
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
 	 */
-	/* private */ private function addSimpleJoin_(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
+	private function addSimpleJoin(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
 	{
 		$foreign_class_name = null;
 		$master_property = $this->getProperty($master_path, $master_property_name);
@@ -488,23 +488,6 @@ class Sql_Joins
 	public static function newInstance($starting_class_name, $paths = array())
 	{
 		return new Sql_Joins($starting_class_name, $paths);
-	}
-
-	//########################################################################################### AOP
-
-	/**
-	 * @param $join                 Sql_Join
-	 * @param $master_path          string
-	 * @param $master_property_name string
-	 * @param $foreign_path         string
-	 * @return string the foreign class name
-	 */
-	private function addSimpleJoin(Sql_Join $join, $master_path, $master_property_name, $foreign_path)
-	{
-		$result_ = $this->addSimpleJoin_($join, $master_path, $master_property_name, $foreign_path);
-		/** @var $object_ \SAF\Framework\Builder */
-		$object_ = Session::current()->plugins->get('SAF\Framework\Builder');
-		return $object_->onMethodWithReturnedValue($result_);
 	}
 
 }
