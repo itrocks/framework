@@ -7,10 +7,15 @@ namespace SAF\AOP;
 interface ICompiler
 {
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param IWeaver $weaver
+	 */
+	public function __construct(IWeaver $weaver);
+
 	//--------------------------------------------------------------------------------------- compile
 	/**
-	 * @param $weaver IWeaver
 	 */
-	public function compile(IWeaver $weaver);
+	public function compile();
 
 }

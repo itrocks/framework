@@ -19,7 +19,22 @@ class Compiler implements ICompiler
 	/**
 	 * @var boolean[] key is class name, value is always true
 	 */
-	public $compiled_classes = array();
+	private $compiled_classes = array();
+
+	//--------------------------------------------------------------------------------------- $weaver
+	/**
+	 * @var Weaver
+	 */
+	private $weaver;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $weaver IWeaver
+	 */
+	public function __construct(IWeaver $weaver)
+	{
+		$this->weaver = $weaver;
+	}
 
 	//--------------------------------------------------------------------------------------- cleanup
 	/**
@@ -33,10 +48,10 @@ class Compiler implements ICompiler
 		// remove since the line containing "//#### AOP" until the end of the file
 		$expr = '|\n\s*//#+\s+AOP.*|s';
 		preg_match($expr, $buffer, $match1);
-		$buffer = preg_replace($expr, '$1', $buffer) . "\n\n}\n";
+		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? "\n\n}\n" : "\n");
 		// replace "/* public */ private [static] function name_(" by "public [static] function name("
 		$expr = '`(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)((private|protected|public)\s*)?'
-			. '(static\s*)?function(\s+\w*)\_\s*\(`';
+			. '(static\s*)?function(\s+\w*)\_[0-9]*\s*\(`';
 		preg_match($expr, $buffer, $match2);
 		$buffer = preg_replace($expr, '$1$2$3$6function$7(', $buffer);
 		return $match1 || $match2;
@@ -44,34 +59,21 @@ class Compiler implements ICompiler
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
-	 * @param $weaver IWeaver
+	 * Compile aspects for all weaved pointcuts
 	 */
-	public function compile(IWeaver $weaver)
+	public function compile()
 	{
 		$start_time = microtime(true);
-		if (!($weaver instanceof Weaver)) {
+		if (!($this->weaver instanceof Weaver)) {
 			trigger_error('Compiler can only compile aspect weaver of class Weaver', E_USER_ERROR);
 			return;
 		}
-		foreach ($weaver->getJoinpoints() as $joinpoint => $pointcuts) {
+		foreach ($this->weaver->getJoinpoints() as $joinpoint => $pointcuts) {
 			if (ctype_lower($joinpoint)) {
 				$this->willCompileFunction($joinpoint, $pointcuts);
 			}
 			elseif (!isset($this->compiled_classes[$joinpoint])) {
-				$class_name = $joinpoint;
-				$methods    = array();
-				$properties = array();
-				foreach ($pointcuts as $joinpoint2 => $pointcuts2) {
-					foreach ($pointcuts2 as $pointcut) {
-						if (($pointcut[0] == 'read') || ($pointcut[0] == 'write')) {
-							$properties[$joinpoint2] = $pointcuts2;
-						}
-						else {
-							$methods[$joinpoint2] = $pointcuts2;
-						}
-					}
-				}
-				$this->compileClass($class_name, $methods, $properties);
+				$this->compileClass($joinpoint);
 			}
 		}
 		if (self::DEBUG) echo "duration = " . (microtime(true) - $start_time) . "<br>";
@@ -96,7 +98,7 @@ class Compiler implements ICompiler
 						$class_name = $match[1] . "\\" . $class_name;
 					}
 					if (!isset($this->compiled_classes[$class_name])) {
-						$this->compileClass($class_name, array(), array(), $file_name);
+						$this->compileClass($class_name, $file_name);
 					}
 					echo "- compile class $class_name<br>";
 				}
@@ -111,11 +113,9 @@ class Compiler implements ICompiler
 	//---------------------------------------------------------------------------------- compileClass
 	/**
 	 * @param $class_name string the name of the class or trait to be compiled
-	 * @param $methods    array  advices for each method
-	 * @param $properties array  advices for each property
 	 * @param $file_name  string file name (optional)
 	 */
-	private function compileClass($class_name, $methods, $properties, $file_name = null)
+	private function compileClass($class_name, $file_name = null)
 	{
 		if (isset($file_name)) {
 			/** @noinspection PhpIncludeInspection */
@@ -135,11 +135,15 @@ class Compiler implements ICompiler
 		if (self::DEBUG) echo "<h2>compile class $class_name</h2>";
 		$buffer = substr($buffer, 0, -2) . "\t//" . str_repeat('#', 91) . " AOP\n";
 
+		$properties = array();
 		if (!$class->isInterface() && !$class->isTrait()) {
-			$this->scanForLinks($properties, $class);
+			$this->scanForLinks($properties,   $class);
 			$this->scanForGetters($properties, $class);
 			$this->scanForSetters($properties, $class);
 		}
+
+		list($methods, $properties2) = $this->getPointcuts($class_name);
+		$properties = arrayMergeRecursive($properties, $properties2);
 
 		if ($properties) {
 			$properties_compiler = new Properties_Compiler($class_name, $buffer);
@@ -162,6 +166,7 @@ class Compiler implements ICompiler
 
 		}
 
+		/** @noinspection PhpUndefinedVariableInspection Inspector bug */
 		if ($cleanup || $methods || $properties) {
 			if (isset($_GET['D'])) echo "<pre>" . htmlentities($buffer) . "</pre>";
 			if (isset($_GET['R'])) echo "READ-ONLY $class_name<br>"; else
@@ -170,6 +175,28 @@ class Compiler implements ICompiler
 		}
 
 		$this->compiled_classes[$class_name] = true;
+	}
+
+	//---------------------------------------------------------------------------------- getPointcuts
+	/**
+	 * @param $class_name string
+	 * @return array[] two elements : array($methods, $properties)
+	 */
+	private function getPointcuts($class_name)
+	{
+		$methods    = array();
+		$properties = array();
+		foreach ($this->weaver->getJoinpoints($class_name) as $joinpoint2 => $pointcuts2) {
+			foreach ($pointcuts2 as $pointcut) {
+				if (($pointcut[0] == 'read') || ($pointcut[0] == 'write')) {
+					$properties[$joinpoint2] = $pointcuts2;
+				}
+				else {
+					$methods[$joinpoint2] = $pointcuts2;
+				}
+			}
+		}
+		return array($methods, $properties);
 	}
 
 	//----------------------------------------------------------------------------- isPropertyInClass

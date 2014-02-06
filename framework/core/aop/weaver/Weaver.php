@@ -149,18 +149,21 @@ class Weaver implements ICompiled, IWeaver
 	public function compile(ICompiler $compiler = null)
 	{
 		if (!isset($compiler)) {
-			$compiler = new Compiler();
+			$compiler = new Compiler($this);
 		}
 		$compiler->compileAll($this);
 	}
 
 	//--------------------------------------------------------------------------------- getJoinpoints
 	/**
+	 * @param $joinpoint_name string joinpoint class or function name
 	 * @return array
 	 */
-	public function getJoinpoints()
+	public function getJoinpoints($joinpoint_name = null)
 	{
-		return $this->joinpoints;
+		return isset($joinpoint_name)
+			? (isset($this->joinpoints[$joinpoint_name]) ? $this->joinpoints[$joinpoint_name] : array())
+			: $this->joinpoints;
 	}
 
 	//---------------------------------------------------------------------------------- readProperty
