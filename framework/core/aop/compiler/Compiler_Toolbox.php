@@ -13,21 +13,18 @@ trait Compiler_Toolbox
 
 	//---------------------------------------------------------------------------------- decodeAdvice
 	/**
-	 * @param $advice string
+	 * @param $advice               string
+	 * @param $joinpoint_class_name string
 	 * @return array
 	 */
-	private function decodeAdvice($advice)
+	private function decodeAdvice($advice, $joinpoint_class_name)
 	{
 		if (is_array($advice)) {
 			$advice_function_name = null;
 			list($advice_object, $advice_method_name) = $advice;
-			$advice_method = new Reflection_Method(
-				is_object($advice_object) ? get_class($advice_object) : $advice_object,
-				$advice_method_name
-			);
 			if (is_object($advice_object)) {
-				$is_advice_static = false;
 				$advice_class_name = get_class($advice_object);
+				$is_advice_static = false;
 				if ($advice_object instanceof Plugin) {
 					$advice_string = 'array($object_, ' . "'" . $advice_method_name . "'" . ')';
 				}
@@ -40,18 +37,27 @@ trait Compiler_Toolbox
 				}
 			}
 			else {
-				$advice_class_name = $advice_object;
-				$advice_string = "array('" . $advice_class_name . "', '" . $advice_method_name . "')";
-				$is_advice_static = true;
+				$advice_class_name = (in_array($advice_object, array('self', '$this')))
+					? $joinpoint_class_name
+					: $advice_class_name = $advice_object;
+				if ($advice_object == '$this') {
+					$advice_string = 'array($this, \'' . $advice_method_name . '\')';
+					$is_advice_static = false;
+				}
+				else {
+					$advice_string = "array('" . $advice_class_name . "', '" . $advice_method_name . "')";
+					$is_advice_static = true;
+				}
 			}
+			$advice_method = new Reflection_Method($advice_class_name, $advice_method_name);
 		}
 		else {
 			$advice_class_name = null;
 			$advice_method_name = null;
 			$advice_function_name = $advice;
-			$advice_method = new Reflection_Function($advice_function_name);
 			$advice_string = "'" . $advice_function_name . "'";
 			$is_advice_static = false;
+			$advice_method = new Reflection_Function($advice_function_name);
 		}
 
 		$advice_has_return = strpos($advice_method->getDocComment(), '@return');
@@ -91,28 +97,30 @@ trait Compiler_Toolbox
 		if (is_array($advice)) {
 			// static method call
 			if ($is_advice_static) {
-				$advice_code = $joinpoint_code
+				return $joinpoint_code
 					. $i2 . ($advice_has_return ? ($result . ' = ') : '')
-					. $advice_class_name . '::' . $advice_method_name
+					. (($advice[0] == 'self') ? 'self' : $advice_class_name) . '::' . $advice_method_name
 					. '(' . $advice_parameters_string . ');';
-				return $advice_code;
 			}
 			// object method call
+			elseif ($advice[0] == '$this') {
+				return $joinpoint_code
+					. $i2 . ($advice_has_return ? ($result . ' = ') : '')
+					. '$this->' . $advice_method_name . '(' . $advice_parameters_string . ');';
+			}
 			else {
-				$advice_code = $i2 . '/** @var $object_ ' . "\\" . $advice_class_name . ' */'
+				return $i2 . '/** @var $object_ ' . "\\" . $advice_class_name . ' */'
 					. $i2 . '$object_ = Session::current()->plugins->get(' . "'$advice_class_name'" . ');'
 					. $joinpoint_code
 					. $i2 . ($advice_has_return ? ($result . ' = ') : '')
 					. '$object_->' . $advice_method_name . '(' . $advice_parameters_string . ');';
-				return $advice_code;
 			}
 		}
 		// function call
 		else {
-			$advice_code = $joinpoint_code
+			return $joinpoint_code
 				. $i2 . ($advice_has_return ? $result . ' = ' : '')
 				. $advice_function_name . '(' . $advice_parameters_string . ');';
-			return $advice_code;
 		}
 	}
 

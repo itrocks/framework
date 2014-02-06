@@ -102,7 +102,6 @@ class Php_Source
 		$property = '\n\s*(?:private|protected|public)\s+\$' . $name . '\s*;';
 		$method = '\n\s*(?:(?:private|protected|public)\s+)?(?:static\s+)?function\s+' . $name . '\s*\(';
 		$expr = '%(?>(\n\s*/\*\*.+?\n\s*\*/))(?:' . $property. '|' . $method . ')%s';
-		echo htmlentities($expr) . "<br>";
 		preg_match($expr, $this->buffer, $match);
 		if (!$match) {
 			foreach ($this->allReflectionTraits() as $trait_name) {
@@ -135,6 +134,7 @@ class Php_Source
 	 * 7 : " ($param, &$param2 = CONSTANT) {"
 	 * 'preg': $full_preg_expression
 	 * 'parent': true (set only if prototype was taken from a parent class)
+	 * 'prototype': the prototype string
 	 *
 	 * @example "methodName" => "\n\tpublic static function methodName (...) {"
 	 *
@@ -166,6 +166,7 @@ class Php_Source
 		}
 		if ($detailed && $match) {
 			$match['preg'] = $expr;
+			$match['prototype'] = $match[0];
 		}
 		return $match ? ($detailed ? $match : $match[0]) : null;
 	}

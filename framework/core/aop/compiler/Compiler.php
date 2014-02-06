@@ -79,10 +79,10 @@ class Compiler implements ICompiler
 					if (!isset($this->compiled_classes[$class_name])) {
 						$this->compileClass($class_name, $file_name);
 					}
-					echo "- compile class $class_name<br>";
+					if (self::DEBUG) echo "- compile class $class_name<br>";
 				}
 				else {
-					echo "<b>- nothing into $file_name</b><br>";
+					if (self::DEBUG) echo "<b>- nothing into $file_name</b><br>";
 				}
 			}
 		}
@@ -107,7 +107,7 @@ class Compiler implements ICompiler
 		}
 		$buffer = file_get_contents($file_name);
 		$cleanup = (new Php_Source($class_name, $buffer))->cleanupAop();
-		echo "cleanup of $class_name = $cleanup<br>";
+		if (self::DEBUG) echo "cleanup of $class_name = $cleanup<br>";
 
 		if (isset($_GET['C'])) echo "CLEANUP-ONLY $class_name<br>"; else {
 
@@ -201,7 +201,7 @@ class Compiler implements ICompiler
 				}
 			}
 		}
-		echo "&gt; Traits for $class->name are " . print_r($traits, true) . "<br>";
+		if (self::DEBUG) echo "&gt; Traits for $class->name are " . print_r($traits, true) . "<br>";
 		return in_array($property->class, $traits);
 	}
 
@@ -218,7 +218,7 @@ class Compiler implements ICompiler
 				preg_match('/@getter\s+([^\s\n]*)\n/', $doc_comment, $match);
 				$getter = ($match) ? $match[1] : Names::propertyToMethod($property->name, 'get');
 				// todo Aop getters, Class_Name::methodName getters
-				$properties[$property->name][] = array("read", array('self', $getter));
+				$properties[$property->name][] = array("read", array('$this', $getter));
 			}
 		}
 	}
@@ -256,7 +256,6 @@ class Compiler implements ICompiler
 					);
 					$advice = null;
 				}
-				// todo Aop getters, Class_Name::methodName getters
 				$properties[$property->name][] = array("read", $advice);
 			}
 		}
@@ -275,7 +274,7 @@ class Compiler implements ICompiler
 				preg_match('/@setter\s+([^\s\n]*)\n/', $doc_comment, $match);
 				$getter = ($match) ? $match[1] : Names::propertyToMethod($property->name, 'set');
 				// todo Aop getters, Class_Name::methodName getters
-				$properties[$property->name][] = array("write", array('self', $getter));
+				$properties[$property->name][] = array("write", array('$this', $getter));
 			}
 		}
 	}

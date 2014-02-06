@@ -10,7 +10,7 @@ class Properties_Compiler
 {
 	use Compiler_Toolbox;
 
-	const DEBUG = true;
+	const DEBUG = false;
 
 	//----------------------------------------------------------------------- $constructor_parameters
 	/**
@@ -81,7 +81,7 @@ class Properties_Compiler
 		list(
 			$advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters, $advice_string, $advice_has_return, $is_advice_static
-		) = $this->decodeAdvice($advice);
+		) = $this->decodeAdvice($advice, $class_name);
 
 		// $advice_parameters_string, $joinpoint_code
 		$joinpoint_code = '';
@@ -143,13 +143,11 @@ class Properties_Compiler
 			$advice_parameters_string = '';
 		}
 
-		$advice_code = $this->generateAdviceCode(
+		return $code . $this->generateAdviceCode(
 			$advice, $advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters_string, $advice_has_return, $is_advice_static, $joinpoint_code,
 			"\n\t\t\t", '$value'
 		);
-
-		return $advice_code;
 	}
 
 	//---------------------------------------------------------------------------------- compileStart
@@ -173,8 +171,9 @@ class Properties_Compiler
 		$class_name = $this->source->class_name;
 
 		$this->construct[$property_name] = '
-		$this->_' . $property_name . ' = $this->' . $property_name . ';
+		$value_ = isset($this->' . $property_name . ') ? $this->' . $property_name . ' : null;
 		unset($this->' . $property_name . ');
+		$this->_' . $property_name . ' = $value_;
 ';
 
 		$else = $this->get ? 'else' : '';
@@ -207,20 +206,32 @@ class Properties_Compiler
 	 */
 	private function get__construct()
 	{
-		$prototype = $this->source->getPrototype('__construct');
-		if (!$prototype) {
-			$prototype = '
-	public function __construct()
-	{';
-		}
-		else {
+		$prototype = $this->source->getPrototype('__construct', true);
+		if ($prototype) {
+			if (isset($prototype['parent'])) {
+				$call = '
+		parent::__construct(';
+			}
+			else {
+				$this->overrideMethod('__construct', $prototype['preg']);
+				$call = '
+		$this->__construct_99(';
+			}
+			$prototype = $prototype['prototype'];
 			$this->constructor_parameters = join(
 				', ', $this->source->getPrototypeParametersNames($prototype)
 			);
 			$prototype = $this->source->getDocComment('__construct') . $prototype;
+			$call .= $this->constructor_parameters . ');';
 		}
-		return $prototype . join('', $this->construct) . '
-		return $this->__construct_(' . $this->constructor_parameters . ');
+		else {
+			$call = '';
+			$prototype = '
+	public function __construct()
+	{';
+		}
+
+		return $prototype . join('', $this->construct) . $call . '
 	}
 ';
 	}
@@ -237,7 +248,8 @@ class Properties_Compiler
 			$code = 'parent::__get($property_name)';
 		}
 		elseif ($prototype) {
-			$code = '$this->__get_($property_name)';
+			$this->overrideMethod('__get', $prototype['preg']);
+			$code = '$this->__get_99($property_name)';
 		}
 		else {
 			$code = 'trigger_error(
@@ -247,6 +259,7 @@ class Properties_Compiler
 		return '
 	/**
 	 * @param $property_name string
+	 * @return mixed
 	 */
 	public function __get($property_name)
 	{
@@ -281,7 +294,8 @@ class Properties_Compiler
 			$code = 'parent::__isset($property_name)';
 		}
 		elseif ($prototype) {
-			$code = '$this->__isset_($property_name)';
+			$this->overrideMethod('__isset', $prototype['preg']);
+			$code = '$this->__isset_99($property_name)';
 		}
 		else {
 			$code = 'isset($this->$property_name)';
@@ -289,6 +303,7 @@ class Properties_Compiler
 		return '
 	/**
 	 * @param $property_name string
+	 * @return boolean
 	 */
 	public function __isset($property_name)
 	{
@@ -312,7 +327,8 @@ class Properties_Compiler
 			$code = 'parent::__set($property_name, $value)';
 		}
 		elseif ($prototype) {
-			$code = '$this->__set_($property_name, $value)';
+			$this->overrideMethod('__set', $prototype['preg']);
+			$code = '$this->__set_99($property_name, $value)';
 		}
 		else {
 			$code = '$this->$property_name = $value';
@@ -326,6 +342,7 @@ class Properties_Compiler
 	{
 		if ($property_name[0] == \'_\') {
 			' . $code . ';
+			return;
 		}
 		' . join('', $this->set) . '
 
@@ -350,7 +367,8 @@ class Properties_Compiler
 			$code = 'parent::__unset($property_name)';
 		}
 		elseif ($prototype) {
-			$code = '$this->__unset_($property_name)';
+			$this->overrideMethod('__unset', $prototype['preg']);
+			$code = '$this->__unset_99($property_name)';
 		}
 		else {
 			$code = 'unset($this->$property_name)';
@@ -385,6 +403,19 @@ class Properties_Compiler
 		$methods['__set']       = $this->get__set();
 		$methods['__unset']     = $this->get__unset();
 		return $methods;
+	}
+
+	//-------------------------------------------------------------------------------- overrideMethod
+	/**
+	 * @param $method_name string
+	 * @param $preg_expr   string
+	 */
+	public function overrideMethod($method_name, $preg_expr)
+	{
+		$buffer =& $this->source->buffer;
+		$buffer = preg_replace(
+			$preg_expr, "\n\t" . '/* $2*/ private $4' . $method_name . '_99' . '$7', $buffer
+		);
 	}
 
 }
