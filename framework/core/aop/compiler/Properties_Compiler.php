@@ -117,7 +117,7 @@ class Properties_Compiler
 				|| isset($advice_parameters['element_type_name'])
 			) {
 				$code .= '
-			$property = new SAF\Framework\Reflection_Property(\''. $class_name . '\', \'' . $property_name . '\');';
+			$property = new \SAF\Framework\Reflection_Property(\''. $class_name . '\', \'' . $property_name . '\');';
 			}
 			if (
 				isset($advice_parameters['type']) || isset($advice_parameters['type_name'])

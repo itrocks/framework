@@ -99,7 +99,8 @@ trait Compiler_Toolbox
 			if ($is_advice_static) {
 				return $joinpoint_code
 					. $i2 . ($advice_has_return ? ($result . ' = ') : '')
-					. (($advice[0] == 'self') ? 'self' : $advice_class_name) . '::' . $advice_method_name
+					. (($advice[0] == 'self') ? 'self' : ('\\' . $advice_class_name))
+					. '::' . $advice_method_name
 					. '(' . $advice_parameters_string . ');';
 			}
 			// object method call
@@ -109,8 +110,10 @@ trait Compiler_Toolbox
 					. '$this->' . $advice_method_name . '(' . $advice_parameters_string . ');';
 			}
 			else {
-				return $i2 . '/** @var $object_ ' . "\\" . $advice_class_name . ' */'
-					. $i2 . '$object_ = Session::current()->plugins->get(' . "'$advice_class_name'" . ');'
+				return $i2 . '/** @var $object_ \\' . $advice_class_name . ' */'
+					. $i2 . '$object_ = \\SAF\\Framework\\Session::current()->plugins->get('
+						. "'$advice_class_name'"
+					. ');'
 					. $joinpoint_code
 					. $i2 . ($advice_has_return ? ($result . ' = ') : '')
 					. '$object_->' . $advice_method_name . '(' . $advice_parameters_string . ');';
