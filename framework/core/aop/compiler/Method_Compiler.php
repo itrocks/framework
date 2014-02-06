@@ -1,29 +1,23 @@
 <?php
 namespace SAF\AOP;
 
-use SAF\Framework\Reflection_Function;
 use SAF\Framework\Reflection_Method;
-use SAF\Plugins;
+use SAF\Framework\Reflection_Parameter;
 
 /**
  * Aspect weaver method compiler
  */
 class Method_Compiler
 {
+	use Compiler_Toolbox;
 
 	const DEBUG = false;
 
-	//--------------------------------------------------------------------------------------- $buffer
+	//--------------------------------------------------------------------------------------- $source
 	/**
-	 * @var string
+	 * @var Php_Source
 	 */
-	private $buffer;
-
-	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
-	private $class_name;
+	private $source;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -32,8 +26,7 @@ class Method_Compiler
 	 */
 	public function __construct($class_name, &$buffer)
 	{
-		$this->buffer =& $buffer;
-		$this->class_name = $class_name;
+		$this->source = new Php_Source($class_name, $buffer);
 	}
 
 	//---------------------------------------------------------------------------------- codeAssembly
@@ -60,8 +53,8 @@ class Method_Compiler
 	 */
 	public function compile($method_name, $advices)
 	{
-		$class_name = $this->class_name;
-		$buffer =& $this->buffer;
+		$class_name = $this->source->class_name;
+		$buffer =& $this->source->buffer;
 
 		if (self::DEBUG) echo "<h3>Method $class_name::$method_name</h3>";
 
@@ -69,36 +62,16 @@ class Method_Compiler
 
 		$in_parent = false;
 		$source_method = new Reflection_Method($class_name, $method_name);
-		$preg_expr = '`(\n\s*)((private|protected|public)\s*)?((static\s*)?function\s+)'
-			. '(' . $method_name . ')(\s*\([^\{]*\)[\n*\s*]*\{)`';
-		// 0 : "\n\tpublic static function methodName ("
-		// 1 : "\n\t"
-		// 2 : "public "
-		// 3 : "public"
-		// 4 : "static function "
-		// 5 : "static "
-		// 6 : "methodName"
-		// 7 : " ($param, &$param2 = CONSTANT) {"
-		preg_match($preg_expr, $buffer, $match);
+
+		$match = $this->source->getPrototype($method_name, true);
 		if (!$match) {
-			if (!method_exists($class_name, $method_name)) {
-				user_error("$class_name::$method_name not found", E_USER_ERROR);
-			}
-			else {
-				$in_parent = true;
-				if (self::DEBUG) echo "- LOAD " . $source_method->getFileName() . "<br>";
-				$source_method_buffer = file_get_contents($source_method->getFileName());
-				preg_match($preg_expr, $source_method_buffer, $match);
-				if (!$match) {
-					if (self::DEBUG) echo "<pre>" . htmlentities($buffer) . "</pre>";
-					user_error(
-						"$class_name::$method_name not found into " . $source_method->class, E_USER_ERROR
-					);
-				}
-			}
+			if (self::DEBUG) echo "<pre>" . htmlentities($buffer) . "</pre>";
+			trigger_error(
+				"$class_name::$method_name not found into " . $source_method->class, E_USER_ERROR
+			);
 		}
-		if (self::DEBUG) echo "<pre>" . htmlentities($preg_expr) . "</pre>";
 		if (self::DEBUG) echo "<pre>" . print_r($match, true) . "</pre>";
+		$preg_expr = $match['preg'];
 		// $indent = prototype level indentation spaces
 		$indent = $match[1];
 		$i2 = $indent . "\t";
@@ -146,47 +119,19 @@ class Method_Compiler
 
 			if (self::DEBUG) echo "<h4>$type => " . print_r($advice[1], true) . "</h4>";
 
-			// $advice_object, $advice_method_name, $advice_method, $is_advice_static
-			// $advice_string = "array($object_, 'methodName')" | "'functionName'"
-			if (is_array($advice)) {
-				$advice_function_name = null;
-				list($advice_object, $advice_method_name) = $advice[1];
-				$advice_method = new Reflection_Method(
-					is_object($advice_object) ? get_class($advice_object) : $advice_object,
-					$advice_method_name
-				);
-				if (is_object($advice_object)) {
-					$is_advice_static = false;
-					$advice_class_name = get_class($advice_object);
-					if ($advice_object instanceof Plugins\Plugin) {
-						$advice_string = 'array($object_, ' . "'" . $advice_method_name . "'" . ')';
-					}
-					else {
-						trigger_error(
-							'Compiler does not how to compile non-plugin objects (' . $advice_class_name . ')',
-							E_USER_ERROR
-						);
-						$advice_string = null;
-					}
-				}
-				else {
-					$advice_class_name = $advice_object;
-					$advice_string = "array('" . $advice_class_name . "', '" . $advice_method_name . "')";
-					$is_advice_static = true;
-				}
-			}
-			else {
-				$advice_class_name = null;
-				$advice_method_name = null;
-				$advice_function_name = $advice[1];
-				$advice_method = new Reflection_Function($advice_function_name);
-				$advice_string = "'" . $advice_function_name . "'";
-				$is_advice_static = false;
-			}
+			/** @var $advice_class_name string */
+			/** @var $advice_method_name string */
+			/** @var $advice_function_name string */
+			/** @var $advice_parameters Reflection_Parameter[] */
+			/** @var $advice_string string "array($object_, 'methodName')" | "'functionName'" */
+			/** @var $advice_has_return boolean */
+			/** @var $is_advice_static boolean */
+			list(
+				$advice_class_name, $advice_method_name, $advice_function_name,
+				$advice_parameters, $advice_string, $advice_has_return, $is_advice_static
+			) = $this->decodeAdvice($advice[1]);
 
-			// $advice_has_return, $advice_parameters, $advice_parameters_names, $joinpoint_code
-			$advice_has_return = strpos($advice_method->getDocComment(), '@return');
-			$advice_parameters = $advice_method->getParameters();
+			// $advice_parameters_string, $joinpoint_code
 			$joinpoint_code = '';
 			if ($advice_parameters) {
 				$advice_parameters_string = '$' . join(', $', array_keys($advice_parameters));
@@ -200,7 +145,6 @@ class Method_Compiler
 					$advice_parameters_string = str_replace(
 						'$joinpoint', '$joinpoint_', $advice_parameters_string
 					);
-					//$joinpoint_parameters_string = 'array(' . str_replace('$', '&$', $parameters_names) . ')';
 					$joinpoint_parameters_string = 'array(';
 					foreach (array_keys($parameters) as $key => $name) {
 						if ($key) $joinpoint_parameters_string .= ', ';
@@ -231,27 +175,11 @@ class Method_Compiler
 				$advice_parameters_string = '';
 			}
 
-			// $advice_code
-			if (is_array($advice)) {
-				// static method call
-				if ($is_advice_static) {
-					$advice_code = $joinpoint_code . $i2 . $advice_class_name . '::' . $advice_method_name
-						. '(' . $advice_parameters_string . ');';
-				}
-				// object method call
-				else {
-					$advice_code = $i2 . '/** @var $object_ ' . "\\" . $advice_class_name . ' */'
-						. $i2 . '$object_ = Session::current()->plugins->get(' . "'$advice_class_name'" . ');'
-						. $joinpoint_code
-						. $i2 . ($advice_has_return ? '$result_ = ' : '')
-						. '$object_->' . $advice_method_name . '(' . $advice_parameters_string . ');';
-				}
-			}
-			// function call
-			else {
-				$advice_code = $joinpoint_code . '
-					' . $advice_function_name . '(' . $advice_parameters_string . ');';
-			}
+			$advice_code = $this->generateAdviceCode(
+				$advice, $advice_class_name, $advice_method_name, $advice_function_name,
+				$advice_parameters_string, $advice_has_return, $is_advice_static, $joinpoint_code, $i2,
+				'$result_'
+			);
 
 			switch ($type) {
 				case 'after':

@@ -36,27 +36,6 @@ class Compiler implements ICompiler
 		$this->weaver = $weaver;
 	}
 
-	//--------------------------------------------------------------------------------------- cleanup
-	/**
-	 * @param $buffer string
-	 * @return boolean
-	 */
-	private function cleanup(&$buffer)
-	{
-		// remove all "\r"
-		$buffer = trim(str_replace("\r", '', $buffer));
-		// remove since the line containing "//#### AOP" until the end of the file
-		$expr = '|\n\s*//#+\s+AOP.*|s';
-		preg_match($expr, $buffer, $match1);
-		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? "\n\n}\n" : "\n");
-		// replace "/* public */ private [static] function name_(" by "public [static] function name("
-		$expr = '`(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)((private|protected|public)\s*)?'
-			. '(static\s*)?function(\s+\w*)\_[0-9]*\s*\(`';
-		preg_match($expr, $buffer, $match2);
-		$buffer = preg_replace($expr, '$1$2$3$6function$7(', $buffer);
-		return $match1 || $match2;
-	}
-
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * Compile aspects for all weaved pointcuts
@@ -127,7 +106,7 @@ class Compiler implements ICompiler
 			$file_name = $class->getFileName();
 		}
 		$buffer = file_get_contents($file_name);
-		$cleanup = $this->cleanup($buffer);
+		$cleanup = (new Php_Source($class_name, $buffer))->cleanupAop();
 		echo "cleanup of $class_name = $cleanup<br>";
 
 		if (isset($_GET['C'])) echo "CLEANUP-ONLY $class_name<br>"; else {
