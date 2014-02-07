@@ -109,47 +109,50 @@ class Compiler implements ICompiler
 		$cleanup = (new Php_Source($class_name, $buffer))->cleanupAop();
 		if (self::DEBUG) echo "cleanup of $class_name = $cleanup<br>";
 
-		if (isset($_GET['C'])) echo "CLEANUP-ONLY $class_name<br>"; else {
-
-		if (self::DEBUG) echo "<h2>compile class $class_name</h2>";
-		$buffer = substr($buffer, 0, -2) . "\t//" . str_repeat('#', 91) . " AOP\n";
-
-		$properties = array();
-		if (!$class->isInterface() && !$class->isTrait()) {
-			$this->scanForLinks($properties,   $class);
-			$this->scanForGetters($properties, $class);
-			$this->scanForSetters($properties, $class);
-		}
-
-		list($methods, $properties2) = $this->getPointcuts($class_name);
-		$properties = arrayMergeRecursive($properties, $properties2);
-
-		if ($properties) {
-			$properties_compiler = new Properties_Compiler($class_name, $buffer);
-			foreach ($properties as $property_name => $advices) {
-				$properties_compiler->compileProperty($property_name, $advices);
-			}
-			$methods_code = $properties_compiler->getCompiledMethods();
+		if (isset($_GET['C'])) {
+			echo "CLEANUP-ONLY $class_name<br>";
+			$methods = $properties = array();
 		}
 		else {
-			$methods_code = array();
+
+			if (self::DEBUG) echo "<h2>compile class $class_name</h2>";
+			$buffer = substr($buffer, 0, -2) . "\t//" . str_repeat('#', 91) . " AOP\n";
+
+			$properties = array();
+			if (!$class->isInterface() && !$class->isTrait()) {
+				$this->scanForLinks($properties,   $class);
+				$this->scanForGetters($properties, $class);
+				$this->scanForSetters($properties, $class);
+			}
+
+			list($methods, $properties2) = $this->getPointcuts($class_name);
+			$properties = arrayMergeRecursive($properties, $properties2);
+
+			if ($properties) {
+				$properties_compiler = new Properties_Compiler($class_name, $buffer);
+				foreach ($properties as $property_name => $advices) {
+					$properties_compiler->compileProperty($property_name, $advices);
+				}
+				$methods_code = $properties_compiler->getCompiledMethods();
+			}
+			else {
+				$methods_code = array();
+			}
+
+			$method_compiler = new Method_Compiler($class_name, $buffer);
+			foreach ($methods as $method_name => $advices) {
+				$methods_code[$method_name] = $method_compiler->compile($method_name, $advices);
+			}
+
+			ksort($methods_code);
+			$buffer .= join('', $methods_code) . "\n}\n";
+
 		}
 
-		$method_compiler = new Method_Compiler($class_name, $buffer);
-		foreach ($methods as $method_name => $advices) {
-			$methods_code[$method_name] = $method_compiler->compile($method_name, $advices);
-		}
-
-		ksort($methods_code);
-		$buffer .= join('', $methods_code) . "\n}\n";
-
-		}
-
-		/** @noinspection PhpUndefinedVariableInspection Inspector bug */
 		if ($cleanup || $methods || $properties) {
 			if (isset($_GET['D'])) echo "<pre>" . htmlentities($buffer) . "</pre>";
-			if (isset($_GET['R'])) echo "READ-ONLY $class_name<br>"; else
-			file_put_contents($file_name, $buffer);
+			if (isset($_GET['R'])) echo "READ-ONLY $class_name<br>";
+			else file_put_contents($file_name, $buffer);
 			if (self::DEBUG) echo "<pre>" . htmlentities($buffer) . "</pre>";
 		}
 

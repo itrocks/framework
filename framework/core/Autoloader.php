@@ -23,7 +23,11 @@ class Autoloader implements Plugins\Activable
 	 */
 	public function autoload($class_name)
 	{
-		$this->includeClass($class_name);
+		if ($this->includeClass($class_name)) {
+			if (is_a($class_name, 'SAF\Plugins\Plugin', true)) {
+				Session::current()->plugins->get($class_name);
+			}
+		}
 	}
 
 	//---------------------------------------------------------------------------------- includeClass

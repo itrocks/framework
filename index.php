@@ -22,6 +22,7 @@ set_time_limit(5);
 // run
 include_once 'framework/core/controllers/Main_Controller.php';
 $_PATH_INFO = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
+
 echo (new Main_Controller())
 	->init(array(
 		'framework/components/html_session/Html_Session.php'
@@ -40,4 +41,4 @@ ob_flush(); flush();
 // within the correct application environment
 session_write_close();
 
-echo ((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000) . '<br>';
+echo ((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000) . ' ms<br>';
