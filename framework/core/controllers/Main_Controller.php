@@ -37,10 +37,7 @@ class Main_Controller
 	}
 
 	//---------------------------------------------------------------------------------- aspectWeaver
-	/**
-	 * @param $plugins Plugins\Manager
-	 */
-	private function aspectWeaver(Plugins\Manager $plugins)
+	private function aspectWeaver()
 	{
 		/** @var $weaver AOP\Weaver */
 		$weaver = Session::current()->plugins->get(AOP\Weaver::class);
@@ -76,7 +73,7 @@ class Main_Controller
 		unset($_SESSION['include_path']);
 		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
 		$this->registerPlugins($session->plugins, $configuration);
-		$this->aspectWeaver($session->plugins);
+		$this->aspectWeaver();
 	}
 
 	//-------------------------------------------------------------------------------------- includes

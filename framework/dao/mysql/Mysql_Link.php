@@ -21,7 +21,7 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Construct a new Mysql_Link using a parameters array, and connect to mysql database
 	 *
-	 * The $parameters array keys are : "host", "user", "password", "database".
+	 * The $parameters array keys are : 'host', 'user', 'password', 'database'.
 	 *
 	 * @param $parameters array
 	 */
@@ -34,13 +34,13 @@ class Mysql_Link extends Sql_Link
 	//----------------------------------------------------------------------------------------- begin
 	public function begin()
 	{
-		$this->query("START TRANSACTION");
+		$this->query('START TRANSACTION');
 	}
 
 	//---------------------------------------------------------------------------------------- commit
 	public function commit()
 	{
-		$this->query("COMMIT");
+		$this->query('COMMIT');
 	}
 
 	//--------------------------------------------------------------------------------------- connect
@@ -49,14 +49,14 @@ class Mysql_Link extends Sql_Link
 	 */
 	private function connect($parameters)
 	{
-		if (!isset($parameters["database"]) && isset($parameters["databases"])) {
-			$parameters["database"] = str_replace('*', '', $parameters["databases"]);
+		if (!isset($parameters['database']) && isset($parameters['databases'])) {
+			$parameters['database'] = str_replace('*', '', $parameters['databases']);
 		}
 		$this->connection = new Contextual_Mysqli(
-			$parameters["host"], $parameters["user"],
-			$parameters["password"], $parameters["database"]
+			$parameters['host'], $parameters['user'],
+			$parameters['password'], $parameters['database']
 		);
-		$this->query("SET NAMES UTF8");
+		$this->query('SET NAMES UTF8');
 	}
 
 	//----------------------------------------------------------------------------------------- count
@@ -100,13 +100,13 @@ class Mysql_Link extends Sql_Link
 		$id = $this->getObjectIdentifier($object);
 		if ($id) {
 			$class = new Reflection_Class($class_name);
-			$link = $class->getAnnotation("link")->value;
+			$link = $class->getAnnotation('link')->value;
 			$exclude_properties = $link
 				? array_keys((new Reflection_Class($link))->getAllProperties())
 				: array();
 			foreach ($class->accessProperties() as $property) {
 				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-					if ($property->getAnnotation("link")->value == "Collection") {
+					if ($property->getAnnotation('link')->value == 'Collection') {
 						if ($property->getType()->isMultiple()) {
 							$this->deleteCollection($object, $property, $property->getValue($object));
 						}
@@ -272,15 +272,15 @@ class Mysql_Link extends Sql_Link
 		if (isset($options)) {
 			foreach ($options as $option) {
 				if ($option instanceof Dao_Count_Option) {
-					$option->count = $this->getRowsCount($result_set, "SELECT");
+					$option->count = $this->getRowsCount($result_set, 'SELECT');
 					return $option->count;
 				}
 			}
 			return null;
 		}
 		else {
-			if ($clause == "SELECT") {
-				$result = $this->executeQuery("SELECT FOUND_ROWS()");
+			if ($clause == 'SELECT') {
+				$result = $this->executeQuery('SELECT FOUND_ROWS()');
 				$row = $result->fetch_row();
 				$result->free();
 				return $row[0];
@@ -309,7 +309,7 @@ class Mysql_Link extends Sql_Link
 				unset($properties[$key]);
 			}
 			elseif ($type->isClass()) {
-				$properties["id_" . $property->name] = new Mysql_Column("id_" . $property->name);
+				$properties['id_' . $property->name] = new Mysql_Column('id_' . $property->name);
 			}
 		}
 		return $properties;
@@ -326,7 +326,7 @@ class Mysql_Link extends Sql_Link
 	{
 		if ($query) {
 			$result = $this->executeQuery($query);
-			return (substr($query, 0, 6) == "SELECT") ? $result : $this->connection->insert_id;
+			return (substr($query, 0, 6) == 'SELECT') ? $result : $this->connection->insert_id;
 		}
 		else {
 			return null;
@@ -344,13 +344,13 @@ class Mysql_Link extends Sql_Link
 	public function read($identifier, $class_name)
 	{
 		if (!$identifier) return null;
-		if ((new Reflection_Class($class_name))->getAnnotation("link")->value) {
-			$query = (new Sql_Select_Builder($class_name, null, array("id" => $identifier), $this))
+		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
+			$query = (new Sql_Select_Builder($class_name, null, array('id' => $identifier), $this))
 				->buildQuery();
 		}
 		else {
 			// it's for optimisation purpose only
-			$query = "SELECT * FROM `" . $this->storeNameOf($class_name) . "` WHERE id = " . $identifier;
+			$query = 'SELECT * FROM `' . $this->storeNameOf($class_name) . '` WHERE id = ' . $identifier;
 		}
 		$this->setContext($class_name);
 		$result_set = $this->executeQuery($query);
@@ -377,9 +377,9 @@ class Mysql_Link extends Sql_Link
 		$query = (new Sql_Select_Builder($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->executeQuery($query);
 		if (isset($options)) {
-			$this->getRowsCount($result_set, "SELECT", $options);
+			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
-		$keys = explode(".", $this->getKeyPropertyName($options));
+		$keys = explode('.', $this->getKeyPropertyName($options));
 		$object_key = array_pop($keys);
 		while ($object = $this->fetch($result_set, $class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
@@ -399,7 +399,7 @@ class Mysql_Link extends Sql_Link
 	 */
 	public function rollback()
 	{
-		$this->query("ROLLBACK");
+		$this->query('ROLLBACK');
 	}
 
 	//---------------------------------------------------------------------------------------- search
@@ -421,8 +421,8 @@ class Mysql_Link extends Sql_Link
 			$class_name = get_class($what);
 		}
 		if (
-			(is_a($class_name, 'SAF\Framework\Before_Search', true))
-			? call_user_func(array($class_name, "beforeSearch"), $what) : true
+			(is_a($class_name, Before_Search::class, true))
+			? call_user_func(array($class_name, 'beforeSearch'), $what) : true
 		) {
 			$search_result = array();
 			$builder = new Sql_Select_Builder($class_name, null, $what, $this, $options);
@@ -430,9 +430,9 @@ class Mysql_Link extends Sql_Link
 			$this->setContext($builder->getJoins()->getClassNames());
 			$result_set = $this->executeQuery($query);
 			if (isset($options)) {
-				$this->getRowsCount($result_set, "SELECT", $options);
+				$this->getRowsCount($result_set, 'SELECT', $options);
 			}
-			$keys = explode(".", $this->getKeyPropertyName($options));
+			$keys = explode('.', $this->getKeyPropertyName($options));
 			$object_key = array_pop($keys);
 			while ($object = $this->fetch($result_set, $class_name)) {
 				$this->setObjectIdentifier($object, $object->id);
@@ -487,9 +487,9 @@ class Mysql_Link extends Sql_Link
 			$write_collections = array();
 			$write_maps = array();
 			$write = array();
-			$aop_getter_ignore = Aop_Getter::$ignore;
-			Aop_Getter::$ignore = true;
-			$link = $class->getAnnotation("link")->value;
+			$aop_getter_ignore = Getter::$ignore;
+			Getter::$ignore = true;
+			$link = $class->getAnnotation('link')->value;
 			$exclude_properties = $link
 				? array_keys((new Reflection_Class($link))->getAllProperties())
 				: array();
@@ -502,9 +502,9 @@ class Mysql_Link extends Sql_Link
 				if (!isset($only) || in_array($property->name, $only)) {
 					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
 						$value = isset($object->$property) ? $property->getValue($object) : null;
-						$property_is_null = $property->getAnnotation("null")->value;
+						$property_is_null = $property->getAnnotation('null')->value;
 						if (is_null($value) && !$property_is_null) {
-							$value = "";
+							$value = '';
 						}
 						if (in_array($property->name, $table_columns_names)) {
 							// write basic
@@ -513,7 +513,7 @@ class Mysql_Link extends Sql_Link
 							}
 							// write object id if set or object if no id is set (new object)
 							else {
-								$column_name = "id_" . $property->name;
+								$column_name = 'id_' . $property->name;
 								if (is_object($value)) {
 									$object->$column_name = $this->getObjectIdentifier($value);
 									if (empty($object->$column_name)) {
@@ -528,11 +528,11 @@ class Mysql_Link extends Sql_Link
 							}
 						}
 						// write collection
-						elseif (is_array($value) && ($property->getAnnotation("link")->value == "Collection")) {
+						elseif (is_array($value) && ($property->getAnnotation('link')->value == 'Collection')) {
 							$write_collections[] = array($property, $value);
 						}
 						// write map
-						elseif (is_array($value) && ($property->getAnnotation("link")->value == "Map")) {
+						elseif (is_array($value) && ($property->getAnnotation('link')->value == 'Map')) {
 							foreach ($value as $key => $val) {
 								if (!is_object($val)) {
 									$val = Dao::read($val, $property->getType()->getElementTypeAsString());
@@ -550,7 +550,7 @@ class Mysql_Link extends Sql_Link
 				}
 			}
 			$class->accessPropertiesDone();
-			Aop_Getter::$ignore = $aop_getter_ignore;
+			Getter::$ignore = $aop_getter_ignore;
 			$id = $this->getObjectIdentifier($object);
 			$this->setContext($class->name);
 			if (empty($id)) {
@@ -594,15 +594,15 @@ class Mysql_Link extends Sql_Link
 		$class_name = get_class($object);
 		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
-		$aop_getter_ignore = Aop_Getter::$ignore;
-		Aop_Getter::$ignore = false;
+		$aop_getter_ignore = Getter::$ignore;
+		Getter::$ignore = false;
 		$old_collection = $property->getValue($old_object);
-		Aop_Getter::$ignore = $aop_getter_ignore;
+		Getter::$ignore = $aop_getter_ignore;
 		// collection properties : write each of them
 		$id_set = array();
 		if ($collection) {
 			foreach ($collection as $element) {
-				$element->setComposite($object, $property->getAnnotation("foreign")->value);
+				$element->setComposite($object, $property->getAnnotation('foreign')->value);
 				$id = $this->getObjectIdentifier($element);
 				if (!empty($id)) {
 					$id_set[$id] = true;
@@ -631,10 +631,10 @@ class Mysql_Link extends Sql_Link
 		$class_name = get_class($object);
 		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
-		$aop_getter_ignore = Aop_Getter::$ignore;
-		Aop_Getter::$ignore = false;
+		$aop_getter_ignore = Getter::$ignore;
+		Getter::$ignore = false;
 		$old_map = $property->getValue($old_object);
-		Aop_Getter::$ignore = $aop_getter_ignore;
+		Getter::$ignore = $aop_getter_ignore;
 		// map properties : write each of them
 		$insert_builder = new Sql_Map_Insert_Builder($property);
 		$id_set = array();

@@ -197,7 +197,7 @@ class Properties_Compiler
 		$this->get[$property_name] = $code['get'];
 		$this->set[$property_name] = $code['set'];
 
-		if (self::DEBUG) echo "<h3>Property $class_name::$property_name</h3>";
+		if (self::DEBUG) echo '<h3>Property ' . $class_name::$property_name . '</h3>';
 	}
 
 	//-------------------------------------------------------------------------------- get__cosntruct
@@ -227,6 +227,9 @@ class Properties_Compiler
 		else {
 			$call = '';
 			$prototype = '
+	/**
+	 * Weaved constructor
+	 */
 	public function __construct()
 	{';
 		}

@@ -7,20 +7,24 @@ namespace SAF\Framework;
 abstract class Getter
 {
 
+	//--------------------------------------------------------------------------------------- $ignore
+	/**
+	 * @var boolean
+	 */
+	public static $ignore = false;
+
 	//---------------------------------------------------------------------------------------- getAll
 	/**
 	 * Generic getter for getting all objects of a given class
 	 *
 	 * @param $value             object[]
 	 * @param $element_type_name string
-	 * @return object[]
 	 */
 	public static function getAll(&$value, $element_type_name)
 	{
-		if (!isset($value)) {
+		if (!(self::$ignore || isset($value))) {
 			$value = Dao::readAll($element_type_name, Dao::sort());
 		}
-		return $value;
 	}
 
 	//--------------------------------------------------------------------------------- getCollection
@@ -31,11 +35,10 @@ abstract class Getter
 	 * @param $element_type_name string Class for each collection's object
 	 * @param $object            object Parent object
 	 * @param $property          string|Reflection_Property Parent property (or property name). Recommended but can be ommited if foreign class is a Component
-	 * @return object[]
 	 */
 	public static function getCollection(&$value, $element_type_name, $object, $property = null)
 	{
-		if (!isset($value)) {
+		if (!(self::$ignore || isset($value))) {
 			if (Dao::getObjectIdentifier($object)) {
 				$search_element = Search_Object::create($element_type_name);
 				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
@@ -81,7 +84,19 @@ abstract class Getter
 				$value = array();
 			}
 		}
-		return $value;
+	}
+
+	//----------------------------------------------------------------------------------- getDateTime
+	/**
+	 * Register this for any Date_Time property using "@link DateTime" annotation
+	 *
+	 * @param $value Date_Time|string
+	 */
+	public function getDateTime(&$value)
+	{
+		if (is_string($value)) {
+			$value = Date_Time::fromISO($value);
+		}
 	}
 
 	//---------------------------------------------------------------------------------------- getMap
@@ -91,11 +106,10 @@ abstract class Getter
 	 * @param $value    Component[] actual value of the property (will be returned if not null)
 	 * @param $object   object the parent object
 	 * @param $property string|Reflection_Property the source property (or name) for map reading
-	 * @return object[]
 	 */
 	public static function getMap(&$value, $object, $property)
 	{
-		if (!isset($value)) {
+		if (!(self::$ignore || isset($value))) {
 			if (Dao::getObjectIdentifier($object)) {
 				if (!($property instanceof Reflection_Property)) {
 					$property = new Reflection_Property(get_class($object), $property);
@@ -111,22 +125,20 @@ abstract class Getter
 				$value = array();
 			}
 		}
-		return $value;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Generic getter for an object
 	 *
-	 * @param $value     mixed actual value of the object, or identifier to an object
+	 * @param $value     mixed actual value of the object, or identifier to an object, or null
 	 * @param $type_name string the object class name
 	 * @param $object    object the parent object
 	 * @param $property  string|Reflection_Property the parent property
-	 * @return object will be $object if aleady an object, or the read object, or null if not found
 	 */
 	public static function getObject(&$value, $type_name, $object = null, $property = null)
 	{
-		if (!is_object($value)) {
+		if (!(self::$ignore || is_object($value))) {
 			if ($property instanceof Reflection_Property) {
 				$property_name = $property->name;
 			}
@@ -146,7 +158,6 @@ abstract class Getter
 					: Dao::read($value, $type_name);
 			}
 		}
-		return $value;
 	}
 
 }

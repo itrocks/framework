@@ -4,6 +4,7 @@ namespace SAF\AOP;
 use ReflectionClass;
 use ReflectionProperty;
 use SAF\Framework\Application;
+use SAF\Framework\Getter;
 use SAF\Framework\Names;
 use SAF\Plugins;
 
@@ -55,7 +56,7 @@ class Compiler implements ICompiler
 				$this->compileClass($joinpoint);
 			}
 		}
-		if (self::DEBUG) echo "duration = " . (microtime(true) - $start_time) . "<br>";
+		if (self::DEBUG) echo 'duration = ' . (microtime(true) - $start_time) . '<br>';
 	}
 
 	//------------------------------------------------------------------------------------ compileAll
@@ -74,15 +75,15 @@ class Compiler implements ICompiler
 					$class_name = $match[3];
 					preg_match('`\n\s*namespace\s*([^;\s\{]*)`', $buffer, $match);
 					if ($match) {
-						$class_name = $match[1] . "\\" . $class_name;
+						$class_name = $match[1] . '\\' . $class_name;
 					}
 					if (!isset($this->compiled_classes[$class_name])) {
 						$this->compileClass($class_name, $file_name);
 					}
-					if (self::DEBUG) echo "- compile class $class_name<br>";
+					if (self::DEBUG) echo '- compile class ' . $class_name . '<br>';
 				}
 				else {
-					if (self::DEBUG) echo "<b>- nothing into $file_name</b><br>";
+					if (self::DEBUG) echo '<b>- nothing into ' . $file_name . '</b><br>';
 				}
 			}
 		}
@@ -107,15 +108,15 @@ class Compiler implements ICompiler
 		}
 		$buffer = file_get_contents($file_name);
 		$cleanup = (new Php_Source($class_name, $buffer))->cleanupAop();
-		if (self::DEBUG) echo "cleanup of $class_name = $cleanup<br>";
+		if (self::DEBUG) echo 'cleanup of $class_name = ' . $cleanup . '<br>';
 
 		if (isset($_GET['C'])) {
-			echo "CLEANUP-ONLY $class_name<br>";
+			echo 'CLEANUP-ONLY ' . $class_name . '<br>';
 			$methods = $properties = array();
 		}
 		else {
 
-			if (self::DEBUG) echo "<h2>compile class $class_name</h2>";
+			if (self::DEBUG) echo '<h2>compile class ' . $class_name. '</h2>';
 			$buffer = substr($buffer, 0, -2) . "\t//" . str_repeat('#', 91) . " AOP\n";
 
 			$properties = array();
@@ -150,10 +151,10 @@ class Compiler implements ICompiler
 		}
 
 		if ($cleanup || $methods || $properties) {
-			if (isset($_GET['D'])) echo "<pre>" . htmlentities($buffer) . "</pre>";
-			if (isset($_GET['R'])) echo "READ-ONLY $class_name<br>";
+			if (isset($_GET['D'])) echo '<pre>' . htmlentities($buffer) . '</pre>';
+			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class_name . '<br>';
 			else file_put_contents($file_name, $buffer);
-			if (self::DEBUG) echo "<pre>" . htmlentities($buffer) . "</pre>";
+			if (self::DEBUG) echo '<pre>' . htmlentities($buffer) . '</pre>';
 		}
 
 		$this->compiled_classes[$class_name] = true;
@@ -204,7 +205,7 @@ class Compiler implements ICompiler
 				}
 			}
 		}
-		if (self::DEBUG) echo "&gt; Traits for $class->name are " . print_r($traits, true) . "<br>";
+		if (self::DEBUG) echo '&gt; Traits for ' . $class->name . ' are ' . print_r($traits, true) . '<br>';
 		return in_array($property->class, $traits);
 	}
 
@@ -221,7 +222,7 @@ class Compiler implements ICompiler
 				preg_match('/@getter\s+([^\s\n]*)\n/', $doc_comment, $match);
 				$getter = ($match) ? $match[1] : Names::propertyToMethod($property->name, 'get');
 				// todo Aop getters, Class_Name::methodName getters
-				$properties[$property->name][] = array("read", array('$this', $getter));
+				$properties[$property->name][] = array('read', array('$this', $getter));
 			}
 		}
 	}
@@ -236,19 +237,24 @@ class Compiler implements ICompiler
 		foreach ($class->getProperties() as $property) {
 			$doc_comment = $property->getDocComment();
 			if (strpos($doc_comment, '* @link') && $this->isPropertyInClass($property, $class)) {
-				preg_match('/\*\s+@link\s+(All|Collection|Map|Object)\s*\n/', $doc_comment, $match);
+				$expr = '%\*\s+@link\s+(All|Collection|DateTime|Map|Object)\s*\n%';
+				preg_match($expr, $doc_comment, $match);
+				/** @var $advice callable */
 				if ($match) {
 					if ($match[1] == 'All') {
-						$advice = array('SAF\Framework\Getter', 'getAll');
+						$advice = array(Getter::class, 'getAll');
 					}
 					elseif ($match[1] == 'Collection') {
-						$advice = array('SAF\Framework\Getter', 'getCollection');
+						$advice = array(Getter::class, 'getCollection');
+					}
+					elseif ($match[1] == 'DateTime') {
+						$advice = array(Getter::class, 'getDateTime');
 					}
 					elseif ($match[1] == 'Map') {
-						$advice = array('SAF\Framework\Getter', 'getMap');
+						$advice = array(Getter::class, 'getMap');
 					}
 					else {
-						$advice = array('SAF\Framework\Getter', 'getObject');
+						$advice = array(Getter::class, 'getObject');
 					}
 				}
 				else {
@@ -259,7 +265,7 @@ class Compiler implements ICompiler
 					);
 					$advice = null;
 				}
-				$properties[$property->name][] = array("read", $advice);
+				$properties[$property->name][] = array('read', $advice);
 			}
 		}
 	}
@@ -277,7 +283,7 @@ class Compiler implements ICompiler
 				preg_match('/@setter\s+([^\s\n]*)\n/', $doc_comment, $match);
 				$getter = ($match) ? $match[1] : Names::propertyToMethod($property->name, 'set');
 				// todo Aop getters, Class_Name::methodName getters
-				$properties[$property->name][] = array("write", array('$this', $getter));
+				$properties[$property->name][] = array('write', array('$this', $getter));
 			}
 		}
 	}

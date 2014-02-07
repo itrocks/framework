@@ -31,7 +31,7 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	/**
 	 * The errors log
 	 *
-	 * Errors are full text looking like "errno: Error message [SQL Query]".
+	 * Errors are full text looking like 'errno: Error message [SQL Query]'.
 	 *
 	 * @var string[]
 	 */
@@ -57,20 +57,20 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Mysql_Logger is a singleton, you only can get it's instance with getInstance()
+	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct($configuration = null)
 	{
 		if (isset($configuration)) {
-			if (isset($configuration["continue"])) {
-				$this->continue = $configuration["continue"];
+			if (isset($configuration['continue'])) {
+				$this->continue = $configuration['continue'];
 			}
-			if (isset($configuration["display_log"])) {
-				$this->display_log = $configuration["display_log"];
+			if (isset($configuration['display_log'])) {
+				$this->display_log = $configuration['display_log'];
 			}
 			// TODO this is dead code. What is it used for ?
 			foreach ($configuration as $key => $value) if (is_numeric($key)) {
-				if (strpos("/" . $_SERVER["REQUEST_URI"] . "/", "/" . $value . "/")) {
+				if (strpos('/' . $_SERVER['REQUEST_URI'] . '/', '/' . $value . '/')) {
 					return;
 				}
 			}
@@ -95,10 +95,10 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	 */
 	public function dumpLog()
 	{
-		echo "<h3>Mysql log</h3>";
-		echo "<div class=\"Mysql logger query\">\n";
-		echo "<pre>" . print_r($this->queries_log, true) . "</pre>\n";
-		echo " </div>\n";
+		echo '<h3>Mysql log</h3>';
+		echo '<div class="Mysql logger query">' . "\n";
+		echo '<pre>' . print_r($this->queries_log, true) . '</pre>' . "\n";
+		echo ' </div>' . "\n";
 	}
 
 	//--------------------------------------------------------------------------------------- onQuery
@@ -110,7 +110,7 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	public function onQuery($query)
 	{
 		if ($this->continue && $this->display_log) {
-			echo "<div class=\"Mysql logger query\">" . $query . "</div>\n";
+			echo '<div class="Mysql logger query">' . $query . '</div>' . "\n";
 		}
 		$this->queries_log[] = $query;
 	}
@@ -126,8 +126,8 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	{
 		$mysqli = $object;
 		if ($mysqli->errno) {
-			$error = $mysqli->errno . ": " . $mysqli->error . "[" . $query . "]";
-			echo "<div class=\"Mysql logger error\">" . $error . "</div>\n";
+			$error = $mysqli->errno . ': ' . $mysqli->error . '[' . $query . ']';
+			echo '<div class="Mysql logger error">' . $error . '</div>' . "\n";
 			$this->errors_log[] = $error;
 		}
 	}
@@ -146,19 +146,19 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod(
-			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onQuery")
+			array(Contextual_Mysqli::class, 'query'), array($this, 'onQuery')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onError")
+			array(Contextual_Mysqli::class, 'query'), array($this, 'onError')
 		);
 		if (!$this->continue) {
 			$aop->beforeMethod(
-				array('SAF\Framework\Main_Controller', "runController"),
-				array($this, "onMainControllerRun")
+				array(Main_Controller::class, 'runController'),
+				array($this, 'onMainControllerRun')
 			);
 			$aop->afterMethod(
-				array('SAF\Framework\Main_Controller', "runController"),
-				array($this, "afterMainControllerRun")
+				array(Main_Controller::class, 'runController'),
+				array($this, 'afterMainControllerRun')
 			);
 		}
 	}
