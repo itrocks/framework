@@ -43,9 +43,9 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 	 * @param $result     string
 	 * @return string
 	 */
-	public static function afterNamespacesFullClassName($class_name, $result)
+	public static function afterNamespacesFullClassName($short_class_name, $result)
 	{
-		return (Namespaces::isShortClassName($class_name))
+		return (Namespaces::isShortClassName($short_class_name))
 			? Builder::current()->replacementClassName($result)
 			: $result;
 	}
@@ -213,27 +213,27 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod(
-			array('SAF\Framework\Getter', 'getCollection'),
+			array(Getter::class, 'getCollection'),
 			array($this, 'onMethodWithElementClass')
 		);
 		$aop->beforeMethod(
-			array('SAF\Framework\Getter', 'getObject'),
+			array(Getter::class, 'getObject'),
 			array($this, 'onMethodWithClassName')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Namespaces', 'fullClassName'),
+			array(Namespaces::class, 'fullClassName'),
 			array($this, 'afterNamespacesFullClassName')
 		);
 		$aop->beforeMethod(
-			array('SAF\Framework\Search_Object', 'create'),
+			array(Search_Object::class, 'create'),
 			array($this, 'onMethodWithClassName')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Set', 'elementClassNameOf'),
+			array(Set::class, 'elementClassNameOf'),
 			array($this, 'onMethodWithReturnedValue')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Sql_Joins', 'addSimpleJoin'),
+			array(Sql_Joins::class, 'addSimpleJoin'),
 			array($this, 'onMethodWithReturnedValue')
 		);
 		// TODO this is really slow : hardcode it and optimize it in C

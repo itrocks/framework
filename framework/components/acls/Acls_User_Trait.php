@@ -23,7 +23,7 @@ trait Acls_User_Trait
 	{
 		$group = isset($this->group) ? $this->group : null;
 		if (!isset($group)) {
-			$group = Getter::getObject($group, 'SAF\Framework\Acls_Group', $this, "group");
+			Getter::getObject($group, Acls_Group::class, $this, "group");
 			if (empty($group)) {
 				/** @var $group Acls_Group */
 				$group = new Acls_Group();

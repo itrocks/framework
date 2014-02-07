@@ -2,10 +2,13 @@
 namespace SAF\Framework;
 
 use mysqli;
+use mysqli_result;
 
 /**
  * Contextual mysqli class : this enables storage of context name for mysqli queries calls
  */
+
+/** @noinspection PhpDocSignatureInspection Inspector bug on query that returns a value ! */
 class Contextual_Mysqli extends mysqli
 {
 
@@ -50,6 +53,8 @@ class Contextual_Mysqli extends mysqli
 	 * @see mysqli::query
 	 * @todo Big patch as this is needed for AOP, but AOP-runkit does not work with php internal
 	 * methods. Should be removed when a workaround is found
+	 *
+	 * @return mysqli_result|boolean false on failure, true or mysqli_result on success
 	 */
 	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
 	{

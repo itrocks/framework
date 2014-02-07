@@ -229,7 +229,9 @@ class Controller_Uri
 				$this->parameters->addValue($uri_element);
 			}
 		}
-		$this->controller_name = Namespaces::fullClassName($controller_name);
+		$this->controller_name = $controller_name
+			? Namespaces::fullClassName($controller_name, false)
+			: '';
 	}
 
 	//------------------------------------------------------------------------------------ uriToArray

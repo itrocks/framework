@@ -49,9 +49,9 @@ class Sql_Link_Table
 	function foreignColumn()
 	{
 		if (!isset($this->foreign_column)) {
-			$this->foreign_column = "id_" . Names::setToClass(
-				$this->property->getAnnotation("foreignlink")->value, false
-			);
+			$this->foreign_column = "id_" . Names::classToProperty(Names::setToClass(
+				Names::propertyToClass($this->property->getAnnotation("foreignlink")->value), false
+			));
 		}
 		return $this->foreign_column;
 	}
@@ -63,9 +63,9 @@ class Sql_Link_Table
 	function masterColumn()
 	{
 		if (!isset($this->master_column)) {
-			$this->master_column = "id_" . Names::setToClass(
-				$this->property->getAnnotation("foreign")->value, false
-			);
+			$this->master_column = "id_" . Names::classToProperty(Names::setToClass(
+				Names::propertyToClass($this->property->getAnnotation("foreign")->value), false
+			));
 		}
 		return $this->master_column;
 	}

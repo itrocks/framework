@@ -21,17 +21,17 @@ abstract class Annotation_Parser
 	) {
 		$annotation_class = static::getAnnotationClassName(
 			($reflection_object instanceof Reflection_Class)
-			? "Class_" . Names::propertyToClass($annotation_name)
+			? 'Class_' . Names::propertyToClass($annotation_name)
 			: $annotation_name
 		);
 		if (!isset($multiple)) {
-			$multiple = is_a($annotation_class, 'SAF\Framework\Multiple_Annotation', true);
+			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 		}
 		$doc_comment = $reflection_object->getDocComment(true);
 		$annotations = array();
 		$annotation = null;
 		$i = 0;
-		while (($i = strpos($doc_comment, "* @" . $annotation_name, $i)) !== false) {
+		while (($i = strpos($doc_comment, '* @' . $annotation_name, $i)) !== false) {
 			$i += 2;
 			$annotation = self::parseAnnotationValue(
 				$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
@@ -63,18 +63,18 @@ abstract class Annotation_Parser
 		$doc_comment = $reflection_object->getDocComment(true);
 		$annotations = array();
 		$i = 0;
-		while (($i = strpos($doc_comment, "* @", $i)) !== false) {
+		while (($i = strpos($doc_comment, '* @', $i)) !== false) {
 			$i += 2;
 			$j = strlen($doc_comment);
 			if (($k = strpos($doc_comment, "\n", $i)) < $j) $j = $k;
-			if (($k = strpos($doc_comment, " ", $i)) < $j)  $j = $k;
+			if (($k = strpos($doc_comment, ' ', $i)) < $j)  $j = $k;
 			$annotation_name = substr($doc_comment, $i + 1, $j - $i - 1);
 			$annotation_class = static::getAnnotationClassName(
 				($reflection_object instanceof Reflection_Class)
-					? "Class_" . Names::propertyToClass($annotation_name)
+					? 'Class_' . Names::propertyToClass($annotation_name)
 					: $annotation_name
 			);
-			$multiple = is_a($annotation_class, 'SAF\Framework\Multiple_Annotation', true);
+			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 			$annotation = self::parseAnnotationValue(
 				$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
 			);
@@ -105,10 +105,10 @@ abstract class Annotation_Parser
 		}
 		else {
 			$annotation_class = Namespaces::fullClassName(
-				Names::propertyToClass($annotation_name) . "_Annotation"
+				Names::propertyToClass($annotation_name) . '_Annotation'
 			);
 			if (!class_exists($annotation_class)) {
-				$annotation_class = 'SAF\Framework\Annotation';
+				$annotation_class = Annotation::class;
 			}
 			$annotations_classes[$annotation_name] = $annotation_class;
 		}
@@ -130,7 +130,7 @@ abstract class Annotation_Parser
 		$i += strlen($annotation_name) + 1;
 		$next_char = $doc_comment[$i];
 		switch ($next_char) {
-			case " ": case "\t":
+			case ' ': case "\t":
 				$i ++;
 				$j = strpos($doc_comment, "\n", $i);
 				$value = trim(substr($doc_comment, $i, $j - $i));

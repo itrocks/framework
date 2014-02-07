@@ -7,6 +7,12 @@ namespace SAF\Framework;
 abstract class Namespaces
 {
 
+	//--------------------------------------------------------------------------------------- $router
+	/**
+	 * @var Router
+	 */
+	public static $router;
+
 	//--------------------------------------------------------------------------------- checkFilePath
 	/**
 	 * Check class file path for namespace
@@ -57,29 +63,30 @@ abstract class Namespaces
 	/**
 	 * Get full class name (with namespace) for a given class name (with or without namespace)
 	 *
-	 * @param $class_name string
+	 * @param $short_class_name string
+	 * @param $error            boolean
 	 * @return string
 	 */
-	public static function fullClassName($class_name)
+	public static function fullClassName($short_class_name, $error = true)
 	{
-		$full_class_name = $class_name;
-		if (strpos($class_name, '\\') === false) {
-			static $cache = array();
-			if (isset($cache[$class_name])) {
-				$full_class_name = $cache[$class_name];
-			}
-			else {
-				foreach (Application::current()->getNamespaces() as $namespace) {
-					$full_class_name = $namespace . '\\' . $class_name;
-					if (@class_exists($full_class_name) || @interface_exists($full_class_name)) {
-						$cache[$class_name] = $full_class_name;
-						break;
-					}
+		if (!$short_class_name) {
+			trigger_error('Missing class name', E_USER_ERROR);
+		}
+		if (strpos($short_class_name, '\\') === false) {
+			$full_class_name = isset(self::$router)
+				? self::$router->getFullClassName($short_class_name)
+				: '';
+			if (!$full_class_name) {
+				if ($error) {
+					trigger_error('Full class name not found for ' . $short_class_name, E_USER_ERROR);
 				}
-				if (!isset($cache[$class_name])) {
-					$full_class_name = $class_name;
+				else {
+					$full_class_name = $short_class_name;
 				}
 			}
+		}
+		else {
+			$full_class_name = $short_class_name;
 		}
 		return $full_class_name;
 	}

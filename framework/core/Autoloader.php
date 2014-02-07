@@ -6,7 +6,7 @@ use SAF\Plugins;
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
  */
-class Autoloader implements Plugins\Activable
+class Autoloader implements Plugins\Activable, IAutoloader
 {
 
 	//-------------------------------------------------------------------------------------- activate
@@ -24,7 +24,7 @@ class Autoloader implements Plugins\Activable
 	public function autoload($class_name)
 	{
 		if ($this->includeClass($class_name)) {
-			if (is_a($class_name, 'SAF\Plugins\Plugin', true)) {
+			if (is_a($class_name, Plugins\Plugin::class, true)) {
 				Session::current()->plugins->get($class_name);
 			}
 		}
@@ -41,7 +41,7 @@ class Autoloader implements Plugins\Activable
 		if (!isset($file_path)) {
 			$file_path = stream_resolve_include_path(Namespaces::shortClassName($class_name) . ".php");
 		}
-		if (!Namespaces::checkFilePath($class_name, $file_path)) {
+		if ($file_path && !Namespaces::checkFilePath($class_name, $file_path)) {
 			$file_path = Namespaces::resolveFilePath($class_name);
 		}
 		if ($file_path) {

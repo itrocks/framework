@@ -52,7 +52,9 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	 */
 	private function defaultMap(Reflection_Property $reflection_property)
 	{
-		return array(Names::setToClass($reflection_property->name, false));
+		return array(Names::ClassToProperty(Names::setToClass(
+				Names::propertyToClass($reflection_property->name), false
+		)));
 	}
 
 	//--------------------------------------------------------------------------------- defaultObject

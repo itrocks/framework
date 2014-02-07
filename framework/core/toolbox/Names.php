@@ -9,7 +9,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------ classToDirectory
 	/**
-	 * Changes 'A\Namespace\Class_Name' into "class_name"
+	 * Changes 'A\Namespace\Class_Name' into 'class_name'
 	 *
 	 * @param $class_name string
 	 * @return string
@@ -21,19 +21,19 @@ abstract class Names
 
 	//-------------------------------------------------------------------------------- classToDisplay
 	/**
-	 * Changes 'A\Namespace\Class_Name' into "class name"
+	 * Changes 'A\Namespace\Class_Name' into 'class name'
 	 *
 	 * @param $class_name string
 	 * @return string
 	 */
 	public static function classToDisplay($class_name)
 	{
-		return strtolower(str_replace("_", " ", Namespaces::shortClassName($class_name)));
+		return strtolower(str_replace('_', ' ', Namespaces::shortClassName($class_name)));
 	}
 
 	//--------------------------------------------------------------------------------- classToMethod
 	/**
-	 * Changes 'A\Namespace\Class_Name' into "className"
+	 * Changes 'A\Namespace\Class_Name' into 'className'
 	 *
 	 * @param $class_name string
 	 * @param $prefix string
@@ -41,13 +41,13 @@ abstract class Names
 	 */
 	public static function classToMethod($class_name, $prefix = null)
 	{
-		$method_name = str_replace("_", "", Namespaces::shortClassName($class_name));
+		$method_name = str_replace('_', '', Namespaces::shortClassName($class_name));
 		return $prefix ? $prefix . $method_name : lcfirst($method_name);
 	}
 
 	//------------------------------------------------------------------------------- classToProperty
 	/**
-	 * Changes 'A\Namespace\Class_Name' into "class_name"
+	 * Changes 'A\Namespace\Class_Name' into 'class_name'
 	 *
 	 * @param $class_name string
 	 * @return string
@@ -66,12 +66,12 @@ abstract class Names
 	 */
 	public static function classToSet($class_name)
 	{
-		return (new Reflection_Class($class_name))->getAnnotation("set")->value;
+		return (new Reflection_Class($class_name))->getAnnotation('set')->value;
 	}
 
 	//-------------------------------------------------------------------------------- displayToClass
 	/**
-	 * Changes "a text" do a valid normalized directory name (without spaces nor special characters)
+	 * Changes 'a text' do a valid normalized directory name (without spaces nor special characters)
 	 *
 	 * @param $display string
 	 * @return string
@@ -83,81 +83,81 @@ abstract class Names
 
 	//---------------------------------------------------------------------------- displayToDirectory
 	/**
-	 * Changes "a text" do a valid normalized directory name (without spaces nor special characters)
+	 * Changes 'a text' do a valid normalized directory name (without spaces nor special characters)
 	 *
 	 * @param $display string
 	 * @return string
 	 */
 	public static function displayToDirectory($display)
 	{
-		return strtolower(str_replace(" ", "_", $display));
+		return strtolower(str_replace(' ', '_', $display));
 	}
 
 	//----------------------------------------------------------------------------- displayToProperty
 	/**
-	 * Changes "a text" into "a_text"
+	 * Changes 'a text' into 'a_text'
 	 *
 	 * @param $display string
 	 * @return string
 	 */
 	public static function displayToProperty($display)
 	{
-		return strtolower(str_replace(" ", "_", $display));
+		return strtolower(str_replace(' ', '_', $display));
 	}
 
 	//--------------------------------------------------------------------------------- fileToDisplay
 	/**
-	 * Changes a "full/path/file_name.ext" into "file name"
+	 * Changes a 'full/path/file_name.ext' into 'file name'
 	 *
 	 * @param $file_name
 	 * @return string
 	 */
 	public static function fileToDisplay($file_name)
 	{
-		if (($i = strpos($file_name, "/")) !== false) {
+		if (($i = strpos($file_name, '/')) !== false) {
 			$file_name = substr($file_name, $i + 1);
 		}
-		if (($i = strpos($file_name, ".")) !== false) {
+		if (($i = strpos($file_name, '.')) !== false) {
 			$file_name = substr($file_name, 0, $i);
 		}
-		return str_replace("_", " ", $file_name);
+		return str_replace('_', ' ', $file_name);
 	}
 
 	//--------------------------------------------------------------------------------- methodToClass
 	/**
-	 * Changes "aMethodName" into "A_Method_Name"
+	 * Changes 'aMethodName' into 'A_Method_Name'
 	 *
 	 * @param $method_name string
 	 * @return string
 	 */
 	public static function methodToClass($method_name)
 	{
-		return ucfirst(preg_replace('/([a-z])([A-Z])/', '$1_$2', $method_name));
+		return ucfirst(preg_replace('%([a-z])([A-Z])%', '$1_$2', $method_name));
 	}
 
 	//------------------------------------------------------------------------------- methodToDisplay
 	/**
-	 * Changes "aMethodName" into "a method name"
+	 * Changes 'aMethodName' into 'a method name'
 	 *
 	 * @param $method_name string
 	 * @return string
 	 */
 	public static function methodToDisplay($method_name)
 	{
-		return strtolower(preg_replace('/([a-z])([A-Z])/', '$1 $2', $method_name));
+		return strtolower(preg_replace('%([a-z])([A-Z])%', '$1 $2', $method_name));
 	}
 
 	//------------------------------------------------------------------------------ methodToProperty
 	/**
-	 * Changes "aMethodName" into "a_method_name"
+	 * Changes 'aMethodName' into 'a_method_name'
 	 *
 	 * @param $method_name string
 	 * @return string
 	 */
 	public static function methodToProperty($method_name)
 	{
-		$property_name = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $method_name));
-		if ((substr($property_name, 0, 4) == "get_") || (substr($property_name, 0, 4) == "set_")) {
+		$property_name = strtolower(preg_replace('%([a-z])([A-Z])%', '$1_$2', $method_name));
+		if ((substr($property_name, 0, 4) == 'get_') || (substr($property_name, 0, 4) == 'set_')) {
 			$property_name = substr($property_name, 4);
 		}
 		return $property_name;
@@ -165,23 +165,23 @@ abstract class Names
 
 	//--------------------------------------------------------------------------- propertyPathToField
 	/**
-	 * Changes "a.name.and.sub_name" into "a[name][and][sub_name]"
+	 * Changes 'a.name.and.sub_name' into 'a[name][and][sub_name]'
 	 *
 	 * @param $property_name string
 	 * @return string
 	 */
 	public static function propertyPathToField($property_name)
 	{
-		if ($i = strpos($property_name, ".")) {
+		if ($i = strpos($property_name, '.')) {
 			$property_name = substr($property_name, 0, $i)
-				. "[" . str_replace(".", "][", substr($property_name, $i + 1)) . "]";
+				. '[' . str_replace('.', '][', substr($property_name, $i + 1)) . ']';
 		}
 		return $property_name;
 	}
 
 	//------------------------------------------------------------------------------- propertyToClass
 	/**
-	 * Changes "a_property_name" into "A_Property_Name"
+	 * Changes 'a_property_name' into 'A_Property_Name'
 	 *
 	 * @param $property_name string
 	 * @return string
@@ -193,7 +193,7 @@ abstract class Names
 
 	//----------------------------------------------------------------------------- propertyToDisplay
 	/**
-	 * Changes "a_property_name" into "a property name"
+	 * Changes 'a_property_name' into 'a property name'
 	 *
 	 * @param $property_name string
 	 * @return string
@@ -205,7 +205,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------ propertyToMethod
 	/**
-	 * Changes "a_property_name" into "aPropertyName"
+	 * Changes 'a_property_name' into 'aPropertyName'
 	 *
 	 * @param $property_name string
 	 * @param $prefix string
@@ -213,8 +213,8 @@ abstract class Names
 	 */
 	public static function propertyToMethod($property_name, $prefix = null)
 	{
-		$method = "";
-		$name = explode("_", $property_name);
+		$method = '';
+		$name = explode('_', $property_name);
 		foreach ($name as $value) {
 			$method .= ucfirst($value);
 		}
@@ -233,20 +233,20 @@ abstract class Names
 	public static function setToClass($class_name, $check_class = true)
 	{
 		$set_class_name = $class_name;
-		$right = "";
+		$right = '';
 		do {
-			if (substr($class_name, -2) !== "ss") {
-				if     (substr($class_name, -3) === "ies")  $class_name = substr($class_name, 0, -3) . "y";
-				elseif (substr($class_name, -3) === "ses")  $class_name = substr($class_name, 0, -2);
-				elseif (substr($class_name, -4) === "ches") $class_name = substr($class_name, 0, -2);
-				elseif (substr($class_name, -1) === "s")    $class_name = substr($class_name, 0, -1);
-				elseif (substr($class_name, -2) === "en")   $class_name = substr($class_name, 0, -2) . "an";
+			if (substr($class_name, -2) !== 'ss') {
+				if     (substr($class_name, -3) === 'ies')  $class_name = substr($class_name, 0, -3) . 'y';
+				elseif (substr($class_name, -3) === 'ses')  $class_name = substr($class_name, 0, -2);
+				elseif (substr($class_name, -4) === 'ches') $class_name = substr($class_name, 0, -2);
+				elseif (substr($class_name, -1) === 's')    $class_name = substr($class_name, 0, -1);
+				elseif (substr($class_name, -2) === 'en')   $class_name = substr($class_name, 0, -2) . 'an';
 			}
-			$exists = class_exists(Namespaces::fullClassName($class_name . $right));
+			$exists = class_exists(Namespaces::fullClassName($class_name . $right, $check_class));
 			if (!$exists) {
-				$i = strrpos($class_name, "_");
+				$i = strrpos($class_name, '_');
 				if (($i === false) && $check_class) {
-					trigger_error("No class found for set " . $set_class_name, E_USER_ERROR);
+					trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
 				}
 				else {
 					$right = substr($class_name, $i) . $right;

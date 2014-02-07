@@ -123,9 +123,11 @@ $("document").ready(function()
 
 	};
 
+	/*
 	tuto.init()
 		.followMouse()
 		.goRightOf("#login").leftHand();
+	*/
 
 	/*
 	tuto.init()

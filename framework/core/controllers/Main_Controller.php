@@ -103,7 +103,8 @@ class Main_Controller
 		include_once __DIR__ . '/../Session.php';
 
 		// Core plugins
-		include_once __DIR__ . '/../Autoloader.php';
+		include_once __DIR__ . '/../IAutoloader.php';
+		include_once __DIR__ . '/../Router.php';
 		include_once __DIR__ . '/../builder/Builder.php';
 	}
 
@@ -161,7 +162,7 @@ class Main_Controller
 		foreach ($configuration->getPlugins() as $level => $sub_plugins) {
 			foreach ($sub_plugins as $class_name => $plugin_configuration) {
 				$plugin = $plugins->register($class_name, $level, $plugin_configuration);
-				if ($plugin instanceof Autoloader) {
+				if ($plugin instanceof IAutoloader) {
 					$this->createApplication($configuration);
 				}
 			}
