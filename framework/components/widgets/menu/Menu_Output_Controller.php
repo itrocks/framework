@@ -18,9 +18,9 @@ class Menu_Output_Controller implements Feature_Controller
 	{
 		$parameters = $parameters->getObjects();
 		if (!(reset($parameters)) instanceof Menu) {
-			array_unshift($parameters, Session::current()->plugins->getPlugin('SAF\Framework\Menu'));
+			array_unshift($parameters, Session::current()->plugins->get(Menu::class));
 		}
-		return View::run($parameters, $form, $files, "Menu", "output");
+		return View::run($parameters, $form, $files, 'Menu', 'output');
 	}
 
 }

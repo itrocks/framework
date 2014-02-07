@@ -32,7 +32,7 @@ interface IWeaver
 	 * If set, the value returned by the advice will be the pointcut returned value.
 	 * If not set, the result value passed as argument (that can be modified) will be returned
 	 *
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
+	 * @param $joinpoint callable the joinpoint defined like a call-back :
 	 *        array("class_name", "methodName")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
@@ -63,7 +63,7 @@ interface IWeaver
 	 * and finally the value returned by the joinpoint method call.
 	 * The value returned by the advice will be the pointcut returned value.
 	 *
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
+	 * @param $joinpoint callable the joinpoint defined like a call-back :
 	 *        array("class_name", "methodName")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
@@ -95,7 +95,7 @@ interface IWeaver
 	 * The advice can return a value : if this value is set, the execution of the joinpoint will be
 	 * cancelled and the returned value replaced by this one.
 	 *
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
+	 * @param $joinpoint callable the joinpoint defined like a call-back :
 	 *        array("class_name", "methodName")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
@@ -105,7 +105,7 @@ interface IWeaver
 
 	//---------------------------------------------------------------------------------- readProperty
 	/**
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
+	 * @param $joinpoint callable the joinpoint defined like a call-back :
 	 *        array("class_name", "property_name")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"
@@ -123,7 +123,7 @@ interface IWeaver
 
 	//--------------------------------------------------------------------------------- writeProperty
 	/**
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
+	 * @param $joinpoint callable the joinpoint defined like a call-back :
 	 *        array("class_name", "property_name")
 	 * @param $advice callable the call-back call of the advice :
 	 *        array("class_name", "methodName"), array($object, "methodName"), "functionName"

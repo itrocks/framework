@@ -48,24 +48,24 @@ class Wiki implements Plugins\Registerable
 		$lf = "\n";
 		$count = count($this->geshi_replace);
 		$i = 0;
-		while (($i < strlen($string)) && (($i = strpos($string, "@", $i)) !== false)) {
+		while (($i < strlen($string)) && (($i = strpos($string, '@', $i)) !== false)) {
 			$i ++;
 			$j = strpos($string, $lf, $i);
-			if (($j !== false) && ($j < strpos($string, " ", $i))) {
+			if (($j !== false) && ($j < strpos($string, ' ', $i))) {
 				$language = substr($string, $i, $j - $i);
-				if (trim($language) && !strpos($language, "@")) {
-					$cr = strpos($language, "\r") ? "\r" : "";
-					$k = strpos($string . $cr . $lf, "$lf@$cr$lf", $j);
+				if (trim($language) && !strpos($language, '@')) {
+					$cr = strpos($language, '\r') ? '\r' : '';
+					$k = strpos($string . $cr . $lf, '$lf@$cr$lf', $j);
 					if ($k !== false) {
 						$k++;
 						$content = substr($string, $j + 1, $k - $j - 2 - strlen($cr));
 						$content = str_replace(
-							array("&lt;", "&gt;", "&#123;", "&#125;"),
-							array("<",    ">",    "{",      "}"),
+							array('&lt;', '&gt;', '&#123;', '&#125;'),
+							array('<',    '>',    '{',      '}'),
 							$content
 						);
 						$geshi = GeSHi::parse($content, $cr ? substr($language, 0, -1) : $language);
-						$replacement = "`#" . (++$count) . "`";
+						$replacement = '`#' . (++$count) . '`';
 						$this->geshi_replace[$replacement] = $geshi;
 						$k += strlen($cr) + 2;
 						$string = substr($string, 0, $i - 1) . $replacement . $cr . $lf . substr($string, $k);
@@ -93,8 +93,8 @@ class Wiki implements Plugins\Registerable
 			$string = str_replace(
 				$replacement,
 				str_replace(
-					array("{",      "}"),
-					array("&#123;", "&#125;"),
+					array('{',      '}'),
+					array('&#123;', '&#125;'),
 					$geshi
 				),
 				$string
@@ -106,17 +106,16 @@ class Wiki implements Plugins\Registerable
 	//----------------------------------------------------------------------------------- noParseZone
 	/**
 	 * @param $var_name  string can be an unique var or path.of.vars
-	 * @param $as_string boolean if true, returned value will always be a string
 	 * @param $joinpoint Around_Method_Joinpoint
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	public function noParseZone($var_name, $as_string, Around_Method_Joinpoint $joinpoint)
+	public function noParseZone($var_name, Around_Method_Joinpoint $joinpoint)
 	{
-		$is_include = substr($var_name, 0, 1) == "/";
+		$is_include = substr($var_name, 0, 1) == '/';
 		if (!$is_include) {
 			$this->dont_parse_wiki ++;
 		}
-		$result = $joinpoint->process($var_name, $as_string);
+		$result = $joinpoint->process();
 		if (!$is_include) {
 			$this->dont_parse_wiki --;
 		}
@@ -131,12 +130,12 @@ class Wiki implements Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			array('SAF\Framework\Html_Edit_Template', "parseValue"),
-			array($this, "noParseZone")
+			array(Html_Edit_Template::class, 'parseValue'),
+			array($this, 'noParseZone')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Reflection_Property_View', "formatString"),
-			array($this, "stringWiki")
+			array(Reflection_Property_View::class, 'formatString'),
+			array($this, 'stringWiki')
 		);
 	}
 
@@ -151,7 +150,7 @@ class Wiki implements Plugins\Registerable
 	{
 		if (!$this->dont_parse_wiki) {
 			$property = $object->property;
-			if ($property->getAnnotation("textile")->value) {
+			if ($property->getAnnotation('textile')->value) {
 				$wiki = new Wiki();
 				$result = $wiki->geshi($result, false);
 				$result = $wiki->textile($result);

@@ -6,7 +6,7 @@ use SAF\Plugins;
 /**
  * A very simple logger plugin that logs start and stop dates, pids and duration of main calls
  */
-class Logger implements Plugins\Activable
+class Logger implements Plugins\Registerable
 {
 
 	//------------------------------------------------------------------------------------- $antiloop
@@ -21,14 +21,18 @@ class Logger implements Plugins\Activable
 	 */
 	private $log_entry;
 
-	//-------------------------------------------------------------------------------------- activate
-	public function activate()
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * @param $register Plugins\Register
+	 */
+	public function register(Plugins\Register $register)
 	{
-		Aop::addBeforeMethodCall(
-			array('SAF\Framework\Main_Controller', "runController"), array($this, "start")
+		$aop = $register->aop;
+		$aop->beforeMethod(
+			array(Main_Controller::class, "runController"), array($this, "start")
 		);
-		Aop::addAfterMethodCall(
-			array('SAF\Framework\Main_Controller', "runController"), array($this, "stop")
+		$aop->afterMethod(
+			array(Main_Controller::class, "runController"), array($this, "stop")
 		);
 	}
 

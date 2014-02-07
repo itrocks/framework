@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\AOP;
+use SAF\AOP\Around_Method_Joinpoint;
 use SAF\Plugins;
 
 /**
@@ -11,9 +11,9 @@ use SAF\Plugins;
  * Enables translations to sort words in another order than original language
  *
  * @example
- * "A text" is a simple translation string, directly translated without particular work
- * "¦Sales orders¦ list" will be dynamically translated : first "Sales orders", then "$1 list"
- * "¦Sales¦ ¦orders¦ list" will translate "Sales" then "orders" then "$1 $2 list"
+ * 'A text' is a simple translation string, directly translated without particular work
+ * '¦Sales orders¦ list' will be dynamically translated : first 'Sales orders', then '$1 list'
+ * '¦Sales¦ ¦orders¦ list' will translate 'Sales' then 'orders' then '$1 $2 list'
  */
 class Translation_String_Composer implements Plugins\Registerable
 {
@@ -27,8 +27,8 @@ class Translation_String_Composer implements Plugins\Registerable
 	 */
 	public function afterReflectionPropertyValueDisplay(&$result)
 	{
-		if (strpos($result, ".") !== false) {
-			$result = "¦" . str_replace(".", "¦.¦", $result) . "¦";
+		if (strpos($result, '.') !== false) {
+			$result = '¦' . str_replace('.', '¦.¦', $result) . '¦';
 		}
 	}
 
@@ -37,35 +37,36 @@ class Translation_String_Composer implements Plugins\Registerable
 	 * @param $object    Translations
 	 * @param $text      string
 	 * @param $context   string
-	 * @param $joinpoint AOP\Around_Method_Joinpoint
+	 * @param $joinpoint Around_Method_Joinpoint
 	 * @return string
 	 */
-	public function onTranslate(Translations $object, $text, $context, $joinpoint)
-	{
-		$context = isset($context) ? $context : "";
-		if (strpos($text, "¦") !== false) {
+	public function onTranslate(
+		Translations $object, $text, $context, Around_Method_Joinpoint $joinpoint
+	) {
+		$context = isset($context) ? $context : '';
+		if (strpos($text, '¦') !== false) {
 			$translations = $object;
 			$elements = array();
-			$nelement = 0;
+			$number = 0;
 			$i = 0;
-			while (($i = strpos($text, "¦", $i)) !== false) {
+			while (($i = strpos($text, '¦', $i)) !== false) {
 				$i += 2;
-				$j = strpos($text, "¦", $i);
+				$j = strpos($text, '¦', $i);
 				if ($j >= $i) {
-					$nelement ++;
-					$elements["$" . $nelement] = $translations->translate(substr($text, $i, $j - $i), $context);
-					$text = substr($text, 0, $i - 2) . "$" . $nelement . substr($text, $j + 2);
-					$i += strlen($nelement) - 1;
+					$number ++;
+					$elements['$' . $number] = $translations->translate(substr($text, $i, $j - $i), $context);
+					$text = substr($text, 0, $i - 2) . '$' . $number . substr($text, $j + 2);
+					$i += strlen($number) - 1;
 				}
 			}
 			$i = 0;
-			while (($i = strpos($text, "!", $i)) !== false) {
+			while (($i = strpos($text, '!', $i)) !== false) {
 				$i++;
-				$j = strpos($text, "!", $i);
+				$j = strpos($text, '!', $i);
 				if (($j > $i) && (strpos(" \t\n\r", $text[$i]) === false)) {
-					$nelement ++;
-					$elements["$" . $nelement] = substr($text, $i, $j - $i);
-					$text = substr($text, 0, $i - 1) . "$" . $nelement . substr($text, $j + 1);
+					$number ++;
+					$elements['$' . $number] = substr($text, $i, $j - $i);
+					$text = substr($text, 0, $i - 1) . '$' . $number . substr($text, $j + 1);
 				}
 			}
 			$translation = str_replace(
@@ -86,12 +87,12 @@ class Translation_String_Composer implements Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			array('SAF\Framework\Translations', "translate"),
-			array($this, "onTranslate")
+			array(Translations::class, 'translate'),
+			array($this, 'onTranslate')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Reflection_Property_Value', "display"),
-			array($this, "afterReflectionPropertyValueDisplay")
+			array(Reflection_Property_Value::class, 'display'),
+			array($this, 'afterReflectionPropertyValueDisplay')
 		);
 	}
 

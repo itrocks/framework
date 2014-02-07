@@ -146,11 +146,13 @@ class Method_Compiler
 						'$joinpoint', '$joinpoint_', $advice_parameters_string
 					);
 					$joinpoint_parameters_string = 'array(';
+					$joinpoint_string_parameters = '';
 					foreach (array_keys($parameters) as $key => $name) {
 						if ($key) $joinpoint_parameters_string .= ', ';
-						$joinpoint_parameters_string .= $key . ' => &$' . $name . ', "' . $name . '" => &$' . $name;
+						$joinpoint_parameters_string .= $key . ' => &$' . $name;
+						$joinpoint_string_parameters .= ', \'' . $name . '\' => &$' . $name;
 					}
-					$joinpoint_parameters_string .= ')';
+					$joinpoint_parameters_string .= $joinpoint_string_parameters . ')';
 					switch ($type) {
 						case 'after':
 							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\After_Method_Joinpoint('

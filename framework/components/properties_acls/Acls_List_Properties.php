@@ -17,7 +17,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugins\Registerab
 	public function getDefaultProperties()
 	{
 		return (new Reflection_Class($this->context_class_name))
-			->getListAnnotation("representative")->values();
+			->getListAnnotation('representative')->values();
 	}
 
 	//------------------------------------------------------------------- listControllerGetProperties
@@ -30,15 +30,15 @@ class Acls_List_Properties extends Acls_Properties implements Plugins\Registerab
 		$class_name, Around_Method_Joinpoint $joinpoint
 	) {
 		$acls_list_properties = new Acls_List_Properties($class_name);
-		$properties = $acls_list_properties->getPropertiesNames("list");
-		return (isset($properties)) ? $properties : $joinpoint->process($class_name);
+		$properties = $acls_list_properties->getPropertiesNames('list');
+		return (isset($properties)) ? $properties : $joinpoint->process();
 	}
 
 	//------------------------------------------------------------------------- propertyAddController
 	/**
 	 * @param $parameters Controller_Parameters removal parameters
 	 * - key 0 : context class name (ie a business class)
-	 * - key 1 : context feature name (ie "output", "list")
+	 * - key 1 : context feature name (ie 'output', 'list')
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
 	 * @param $form       array not used
 	 * @param $files      array not used
@@ -48,12 +48,12 @@ class Acls_List_Properties extends Acls_Properties implements Plugins\Registerab
 	public function propertyAddController(
 		Controller_Parameters $parameters, $form, $files, Around_Method_Joinpoint $joinpoint
 	) {
-		if ($parameters->getRawParameter(1) == "list") {
+		if ($parameters->getRawParameter(1) == 'list') {
 			$parameters->unshiftUnnamed(__CLASS__);
 			return (new Acls_Property_Add_Controller)->run($parameters, $form, $files);
 		}
 		else {
-			return $joinpoint->process($parameters, $form, $files);
+			return $joinpoint->process();
 		}
 	}
 
@@ -63,7 +63,7 @@ class Acls_List_Properties extends Acls_Properties implements Plugins\Registerab
 	 *
 	 * @param $parameters Controller_Parameters removal parameters
 	 * - key 0 : context class name (ie a business class)
-	 * - key 1 : context feature name (ie "output", "list")
+	 * - key 1 : context feature name (ie 'output', 'list')
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
 	 * @param $form       array not used
 	 * @param $files      array not used
@@ -73,12 +73,12 @@ class Acls_List_Properties extends Acls_Properties implements Plugins\Registerab
 	public function propertyRemoveController(
 		Controller_Parameters $parameters, $form, $files, Around_Method_Joinpoint $joinpoint
 	) {
-		if ($parameters->getRawParameter(1) == "list") {
+		if ($parameters->getRawParameter(1) == 'list') {
 			$parameters->unshiftUnnamed(__CLASS__);
 			return (new Acls_Property_Remove_Controller)->run($parameters, $form, $files);
 		}
 		else {
-			return $joinpoint->process($parameters, $form, $files);
+			return $joinpoint->process();
 		}
 	}
 
@@ -91,16 +91,16 @@ class Acls_List_Properties extends Acls_Properties implements Plugins\Registerab
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			array('SAF\Framework\Default_List_Controller', "getPropertiesList"),
-			array($this, "listControllerGetProperties")
+			array(Default_List_Controller::class, 'getPropertiesList'),
+			array($this, 'listControllerGetProperties')
 		);
 		$aop->aroundMethod(
-			array('SAF\Framework\Property_Add_Controller', "run"),
-			array($this, "propertyAddController")
+			array(Property_Add_Controller::class, 'run'),
+			array($this, 'propertyAddController')
 		);
 		$aop->aroundMethod(
-			array('SAF\Framework\Property_Remove_Controller', "run"),
-			array($this, "propertyRemoveController")
+			array(Property_Remove_Controller::class, 'run'),
+			array($this, 'propertyRemoveController')
 		);
 	}
 

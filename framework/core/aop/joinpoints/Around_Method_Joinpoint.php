@@ -53,7 +53,16 @@ class Around_Method_Joinpoint extends Method_Joinpoint
 			$object = null;
 		}
 		// invoke
-		$result = $method->invokeArgs($object, func_get_args());
+		if (func_num_args()) {
+			$result = $method->invokeArgs($object, func_get_args());
+		}
+		elseif ($this->parameters) {
+			$parameters = array_slice($this->parameters, 0, count($this->parameters) / 2);
+			$result = $method->invokeArgs($object, $parameters);
+		}
+		else {
+			$result = $method->invoke($object);
+		}
 		// the method must be not accessible again
 		if (isset($not_accessible)) {
 			$method->setAccessible(false);

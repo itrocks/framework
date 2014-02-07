@@ -19,10 +19,10 @@ class Acls_Output_Properties extends Acls_Properties implements Plugins\Register
 	public function outputControllerGetProperties($class_name, Around_Method_Joinpoint $joinpoint)
 	{
 		$acls_output_properties = new Acls_Output_Properties($class_name);
-		$properties = $acls_output_properties->getPropertiesNames("output");
+		$properties = $acls_output_properties->getPropertiesNames('output');
 		return (isset($properties))
 			? $properties
-			: $joinpoint->process($class_name);
+			: $joinpoint->process();
 	}
 
 	//---------------------------------------------------------------------- propertyRemoveController
@@ -31,7 +31,7 @@ class Acls_Output_Properties extends Acls_Properties implements Plugins\Register
 	 *
 	 * @param $parameters Controller_Parameters removal parameters
 	 * - key 0 : context class name (ie a business class)
-	 * - key 1 : context feature name (ie "output", "list")
+	 * - key 1 : context feature name (ie 'output', 'list')
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
 	 * @param $form       array not used
 	 * @param $files      array not used
@@ -41,15 +41,15 @@ class Acls_Output_Properties extends Acls_Properties implements Plugins\Register
 	public function propertyRemoveController(
 		Controller_Parameters $parameters, $form, $files, Around_Method_Joinpoint $joinpoint
 	) {
-		if ($parameters->getRawParameter(1) == "edit") {
-			$parameters->set(1, "output");
+		if ($parameters->getRawParameter(1) == 'edit') {
+			$parameters->set(1, 'output');
 		}
-		if ($parameters->getRawParameter(1) == "output") {
+		if ($parameters->getRawParameter(1) == 'output') {
 			$parameters->unshiftUnnamed(__CLASS__);
 			return (new Acls_Property_Remove_Controller)->run($parameters, $form, $files);
 		}
 		else {
-			return $joinpoint->process($parameters, $form, $files);
+			return $joinpoint->process();
 		}
 	}
 
@@ -62,12 +62,12 @@ class Acls_Output_Properties extends Acls_Properties implements Plugins\Register
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			array('SAF\Framework\Default_Output_Controller', "getPropertiesList"),
-			array($this, "outputControllerGetProperties")
+			array(Default_Output_Controller::class, 'getPropertiesList'),
+			array($this, 'outputControllerGetProperties')
 		);
 		$aop->aroundMethod(
-			array('SAF\Framework\Property_Remove_Controller', "run"),
-			array($this, "propertyRemoveController")
+			array(Property_Remove_Controller::class, 'run'),
+			array($this, 'propertyRemoveController')
 		);
 	}
 
