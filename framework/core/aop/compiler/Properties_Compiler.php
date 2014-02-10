@@ -12,11 +12,13 @@ class Properties_Compiler
 
 	const DEBUG = false;
 
-	//----------------------------------------------------------------------- $constructor_parameters
+	//------------------------------------------------------------------------------------------ $aop
 	/**
-	 * @var string
+	 * __aop() inner code (one element per property)
+	 *
+	 * @var string[]
 	 */
-	private $constructor_parameters;
+	private $aop;
 
 	//------------------------------------------------------------------------------------ $construct
 	/**
@@ -25,6 +27,12 @@ class Properties_Compiler
 	 * @var string[]
 	 */
 	private $construct;
+
+	//----------------------------------------------------------------------- $constructor_parameters
+	/**
+	 * @var string
+	 */
+	private $constructor_parameters;
 
 	//------------------------------------------------------------------------------------------ $get
 	/**
@@ -160,6 +168,7 @@ class Properties_Compiler
 	 */
 	private function compileStart()
 	{
+		$this->aop       = array();
 		$this->construct = array();
 		$this->get       = array();
 		$this->set       = array();
@@ -174,13 +183,12 @@ class Properties_Compiler
 	{
 		$class_name = $this->source->class_name;
 
-		// __construct
+		// __aop
 
-		$this->construct[$property_name] = '
+		$this->aop[$property_name] = '
 		$this->_[\'' . $property_name . '\'] = isset($this->' . $property_name . ')
 			? $this->' . $property_name . ' : null;
-		unset($this->' . $property_name . ');
-';
+		unset($this->' . $property_name . ');';
 
 		// __get, __set
 
@@ -208,7 +216,27 @@ class Properties_Compiler
 		if (self::DEBUG) echo '<h3>Property ' . $class_name::$property_name . '</h3>';
 	}
 
-	//-------------------------------------------------------------------------------- get__cosntruct
+	//-------------------------------------------------------------------------------------- get__aop
+	/**
+	 * @return string
+	 */
+	private function get__aop()
+	{
+		$prototype = $this->source->getPrototype('__aop', true);
+		return '
+	protected function __aop()
+	{
+		$this->_ = array();
+		' . join('', $this->aop) . '
+
+		if (method_exists(get_parent_class(), \'__aop\')) {
+			parent::__aop();
+		}
+	}
+';
+	}
+
+	//-------------------------------------------------------------------------------- get__construct
 	/**
 	 * @return string
 	 */
@@ -243,7 +271,9 @@ class Properties_Compiler
 		}
 
 		return $prototype . '
-		$this->_ = array();
+		if (!isset($this->_)) {
+			$this->__aop();
+		}
 		' . join('', $this->construct) . $call . '
 	}
 ';
@@ -281,16 +311,15 @@ class Properties_Compiler
 			return null;
 		}
 		$value = $this->_[$property_name];
-		unset($this->_[$property_name]);
-		$this->$property_name =& $value;
 		' . join('', $this->get) . '
 
+		elseif (method_exists(get_parent_class(), \'__get\')) {
+			$value = parent::__get($property_name);
+		}
 		else {
 			trigger_error(\'Undefined property: ' . $class_name . '::$\' . $property_name, E_USER_NOTICE);
 		}
-		$this->_[$property_name] = $value;
-		unset($this->$property_name);
-		return $this->_[$property_name];
+		return $value;
 	}
 ';
 	}
@@ -359,6 +388,9 @@ class Properties_Compiler
 		}
 		' . join('', $this->set) . '
 
+		elseif (method_exists(get_parent_class(), \'__set\')) {
+			parent::__set($property_name, $value);
+		}
 		else {
 			$this->$property_name = $value;
 			return;
@@ -408,6 +440,7 @@ class Properties_Compiler
 	 */
 	public function getCompiledMethods()
 	{
+		$methods['__aop']       = $this->get__aop();
 		$methods['__construct'] = $this->get__construct();
 		$methods['__get']       = $this->get__get();
 		$methods['__isset']     = $this->get__isset();

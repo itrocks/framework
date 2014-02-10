@@ -60,10 +60,10 @@ class Method_Compiler
 
 		$append = "";
 
-		$in_parent = false;
 		$source_method = new Reflection_Method($class_name, $method_name);
 
 		$match = $this->source->getPrototype($method_name, true);
+		$in_parent = isset($match['parent']);
 		if (!$match) {
 			if (self::DEBUG) echo "<pre>" . htmlentities($buffer) . "</pre>";
 			trigger_error(
