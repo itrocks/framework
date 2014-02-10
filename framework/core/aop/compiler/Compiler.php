@@ -254,12 +254,14 @@ class Compiler implements ICompiler
 		foreach ($class->getProperties() as $property) {
 			if ($this->isInClass($property, $class)) {
 				$doc_comment = $property->getDocComment();
-				preg_match('%\n\s+\*\s+@getter\s+(?:(\w+)::)?(\w+)%', $doc_comment, $match);
-				$advice = array(
-					empty($match[1]) ? '$this' : $match[1],
-					isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'get')
-				);
-				$properties[$property->name][] = array('read', $advice);
+				preg_match('%\n\s+\*\s+@getter(?:\s+(?:(\w+)::)?(\w+)?)?%', $doc_comment, $match);
+				if ($match) {
+					$advice = array(
+						empty($match[1]) ? '$this' : $match[1],
+						isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'get')
+					);
+					$properties[$property->name][] = array('read', $advice);
+				}
 			}
 		}
 	}
@@ -305,12 +307,14 @@ class Compiler implements ICompiler
 		foreach ($class->getProperties() as $property) {
 			if ($property->class == $class->name) {
 				$doc_comment = $property->getDocComment();
-				preg_match('%\n\s+\*\s+@setter\s+(?:(\w+)::)?(\w+)%', $doc_comment, $match);
-				$advice = array(
-					empty($match[1]) ? '$this' : $match[1],
-					isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'set')
-				);
-				$properties[$property->name][] = array('write', $advice);
+				preg_match('%\n\s+\*\s+@setter(?:\s+(?:(\w+)::)?(\w+)?)?%', $doc_comment, $match);
+				if ($match) {
+					$advice = array(
+						empty($match[1]) ? '$this' : $match[1],
+						isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'set')
+					);
+					$properties[$property->name][] = array('write', $advice);
+				}
 			}
 		}
 	}
