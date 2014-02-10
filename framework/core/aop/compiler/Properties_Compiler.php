@@ -114,14 +114,14 @@ class Properties_Compiler
 			if (
 				isset($advice_parameters['property']) || isset($advice_parameters['type'])
 				|| isset($advice_parameters['element_type']) || isset($advice_parameters['type_name'])
-				|| isset($advice_parameters['element_type_name'])
+				|| isset($advice_parameters['element_type_name']) || isset($advice_parameters['class_name'])
 			) {
 				$code .= '
 			$property = new \SAF\Framework\Reflection_Property(\''. $class_name . '\', \'' . $property_name . '\');';
 			}
 			if (
 				isset($advice_parameters['type']) || isset($advice_parameters['type_name'])
-				|| isset($advice_parameters['element_type_name'])
+				|| isset($advice_parameters['element_type_name']) || isset($advice_parameters['class_name'])
 			) {
 				$code .= '
 			$type = $property->getType();';
@@ -137,6 +137,10 @@ class Properties_Compiler
 			if (isset($advice_parameters['element_type_name'])) {
 				$code .= '
 			$element_type_name = $type->getElementTypeAsString();';
+			}
+			if (isset($advice_parameters['class_name'])) {
+				$code .= '
+			$class_name = $type->getElementTypeAsString();';
 			}
 		}
 		else {
@@ -170,11 +174,15 @@ class Properties_Compiler
 	{
 		$class_name = $this->source->class_name;
 
+		// __construct
+
 		$this->construct[$property_name] = '
-		$value_ = isset($this->' . $property_name . ') ? $this->' . $property_name . ' : null;
+		$this->_[\'' . $property_name . '\'] = isset($this->' . $property_name . ')
+			? $this->' . $property_name . ' : null;
 		unset($this->' . $property_name . ');
-		$this->_' . $property_name . ' = $value_;
 ';
+
+		// __get, __set
 
 		$else = $this->get ? 'else' : '';
 		$code['get'] = '
@@ -234,7 +242,9 @@ class Properties_Compiler
 	{';
 		}
 
-		return $prototype . join('', $this->construct) . $call . '
+		return $prototype . '
+		$this->_ = array();
+		' . join('', $this->construct) . $call . '
 	}
 ';
 	}
@@ -266,22 +276,21 @@ class Properties_Compiler
 	 */
 	public function __get($property_name)
 	{
-		if ($property_name[0] == \'_\') {
+		if (!(isset($this->_) && array_key_exists($property_name, $this->_))) {
 			' . $code . ';
 			return null;
 		}
-		$_property_name = \'_\' . $property_name;
-		$this->$property_name = $this->$_property_name;
-		$value =& $this->$property_name;
+		$value = $this->_[$property_name];
+		unset($this->_[$property_name]);
+		$this->$property_name =& $value;
 		' . join('', $this->get) . '
 
 		else {
 			trigger_error(\'Undefined property: ' . $class_name . '::$\' . $property_name, E_USER_NOTICE);
-			$value = null;
 		}
-		$this->$_property_name = $value;
+		$this->_[$property_name] = $value;
 		unset($this->$property_name);
-		return $value;
+		return $this->_[$property_name];
 	}
 ';
 	}
@@ -310,11 +319,10 @@ class Properties_Compiler
 	 */
 	public function __isset($property_name)
 	{
-		if ($property_name[0] == \'_\') {
+		if (!(isset($this->_) && array_key_exists($property_name, $this->_))) {
 			return ' . $code . ';
 		}
-		$_property_name = \'_\' . $property_name;
-		return isset($this->$_property_name);
+		return isset($this->_[$property_name]);
 	}
 ';
 	}
@@ -343,7 +351,9 @@ class Properties_Compiler
 	 */
 	public function __set($property_name, $value)
 	{
-		if ($property_name[0] == \'_\') {
+		if (
+			($property_name == \'_\') || !(isset($this->_) && array_key_exists($property_name, $this->_))
+		) {
 			' . $code . ';
 			return;
 		}
@@ -353,8 +363,7 @@ class Properties_Compiler
 			$this->$property_name = $value;
 			return;
 		}
-		$_property_name = \'_\' . $property_name;
-		$this->$_property_name = $value;
+		$this->_[$property_name] = $value;
 	}
 ';
 	}
@@ -382,12 +391,11 @@ class Properties_Compiler
 	 */
 	public function __unset($property_name)
 	{
-		if ($property_name[0] == \'_\') {
+		if (!(isset($this->_) && array_key_exists($property_name, $this->_))) {
 			' . $code . ';
 			return;
 		}
-		$_property_name = \'_\' . $property_name;
-		unset($this->$_property_name);
+		$this->_[$property_name] = null;
 	}
 ';
 	}

@@ -186,15 +186,6 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 		$class_name = $this->replacementClassName($class_name);
 	}
 
-	//---------------------------------------------------------------------- onMethodWithElementClass
-	/**
-	 * @param $element_class string
-	 */
-	public function onMethodWithElementClass(&$element_class)
-	{
-		$element_class = $this->replacementClassName($element_class);
-	}
-
 	//----------------------------------------------------------------------- onMethodWithReturnValue
 	/**
 	 * @param $result string
@@ -214,7 +205,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 		$aop = $register->aop;
 		$aop->beforeMethod(
 			array(Getter::class, 'getCollection'),
-			array($this, 'onMethodWithElementClass')
+			array($this, 'onMethodWithClassName')
 		);
 		$aop->beforeMethod(
 			array(Getter::class, 'getObject'),

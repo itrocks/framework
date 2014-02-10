@@ -161,6 +161,7 @@ $this->class_paths = array (
   'SAF\\Framework\\Var_Annotation' => 'framework/core/reflection/annotations/properties/Var_Annotation.php',
   'SAF\\Framework\\View' => 'framework/views/View.php',
   'SAF\\Framework\\View_Engine' => 'framework/views/View_Engine.php',
+  'SAF\\Framework\\Xdebug' => 'framework/components/debug/Xdebug.php',
   'SAF\\Tests\\Application' => 'tests/Application.php',
   'SAF\\Tests\\Application_Home_Controller' => 'tests/Application_Home_Controller.php',
   'SAF\\Tests\\Best_Line' => 'tests/business_objects/Best_Line.php',

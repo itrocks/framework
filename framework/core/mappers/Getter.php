@@ -31,16 +31,16 @@ abstract class Getter
 	/**
 	 * Generic getter for a collection of objects
 	 *
-	 * @param $value             Component[] Actual value of the property (will be returned if not null)
-	 * @param $element_type_name string Class for each collection's object
-	 * @param $object            object Parent object
-	 * @param $property          string|Reflection_Property Parent property (or property name). Recommended but can be ommited if foreign class is a Component
+	 * @param $value      Component[] Actual value of the property (will be returned if not null)
+	 * @param $class_name string Class for each collection's object
+	 * @param $object     object Parent object
+	 * @param $property   string|Reflection_Property Parent property (or property name). Recommended but can be ommited if foreign class is a Component
 	 */
-	public static function getCollection(&$value, $element_type_name, $object, $property = null)
+	public static function getCollection(&$value, $class_name, $object, $property = null)
 	{
 		if (!(self::$ignore || isset($value))) {
 			if (Dao::getObjectIdentifier($object)) {
-				$search_element = Search_Object::create($element_type_name);
+				$search_element = Search_Object::create($class_name);
 				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
 				if (isset($property)) {
 					if (!$property instanceof Reflection_Property) {
@@ -131,12 +131,12 @@ abstract class Getter
 	/**
 	 * Generic getter for an object
 	 *
-	 * @param $value     mixed actual value of the object, or identifier to an object, or null
-	 * @param $type_name string the object class name
-	 * @param $object    object the parent object
-	 * @param $property  string|Reflection_Property the parent property
+	 * @param $value       mixed actual value of the object, or identifier to an object, or null
+	 * @param $class_name string the object class name
+	 * @param $object     object the parent object
+	 * @param $property   string|Reflection_Property the parent property
 	 */
-	public static function getObject(&$value, $type_name, $object = null, $property = null)
+	public static function getObject(&$value, $class_name, $object = null, $property = null)
 	{
 		if (!(self::$ignore || is_object($value))) {
 			if ($property instanceof Reflection_Property) {
@@ -154,8 +154,8 @@ abstract class Getter
 			}
 			if (isset($value)) {
 				$value = (isset($property) && ($dao = $property->getAnnotation("dao")->value))
-					? Dao::get($dao)->read($value, $type_name)
-					: Dao::read($value, $type_name);
+					? Dao::get($dao)->read($value, $class_name)
+					: Dao::read($value, $class_name);
 			}
 		}
 	}
