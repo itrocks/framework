@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Plugins;
 
+use SAF\AOP;
 use SAF\Framework\Builder;
 use Serializable;
 
@@ -87,7 +88,7 @@ class Manager implements IManager, Serializable
 			}
 			$protect = $class_name;
 			if (!isset($plugin)) {
-				trigger_error("Get plugin $class_name : it does not exist", E_USER_ERROR);
+				trigger_error('Get plugin ' . $class_name . ' : it does not exist', E_USER_ERROR);
 			}
 			$serialized = $plugin;
 			// configuration
@@ -98,7 +99,7 @@ class Manager implements IManager, Serializable
 			}
 			// serialized object or configuration
 			elseif (is_string($serialized)) {
-				if ((is_a($class_name, 'Serializable', true))) {
+				if ((is_a($class_name, Serializable::class, true))) {
 					$plugin = unserialize($serialized);
 				}
 				else {
@@ -129,8 +130,8 @@ class Manager implements IManager, Serializable
 		}
 		// register plugin
 		if ($register && ($plugin instanceof Registerable)) {
-			$weaver = isset($this->plugins['SAF\AOP\Weaver'])
-				? $this->plugins['SAF\AOP\Weaver']
+			$weaver = isset($this->plugins[AOP\Weaver::class])
+				? $this->plugins[AOP\Weaver::class]
 				: null;
 			/** @var $plugin Registerable */
 			$plugin->register(new Register(
@@ -141,7 +142,9 @@ class Manager implements IManager, Serializable
 		// activate plugin
 		if ($activate && ($plugin instanceof Activable)) {
 			if (isset($this->activated[$class_name])) {
-				trigger_error("Plugin $class_name just registered and already activated !", E_USER_ERROR);
+				trigger_error(
+					'Plugin ' . $class_name . ' just registered and already activated', E_USER_ERROR
+				);
 			}
 			else {
 				/** @var $plugin Activable */
@@ -182,7 +185,7 @@ class Manager implements IManager, Serializable
 	{
 		$data = array();
 		foreach ($this->plugins_tree as $level => $plugins) {
-			if ($level != "top_core") {
+			if ($level != 'top_core') {
 				foreach ($plugins as $class_name => $object) {
 					if (is_object($object)) {
 						if ($object instanceof Serializable) {

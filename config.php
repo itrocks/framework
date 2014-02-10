@@ -14,6 +14,7 @@ $config['framework'] = array(
 		Router::class,
 		AOP\Weaver::class,
 		Builder::class,
+		Xdebug::class
 		/*
 		Error_Handlers::class => array(
 			array(E_ALL,               Fatal_Error_Handler::class),

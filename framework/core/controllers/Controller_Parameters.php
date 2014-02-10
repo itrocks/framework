@@ -100,8 +100,10 @@ class Controller_Parameters
 			$object = $this->objects[$parameter_name];
 		}
 		elseif (is_numeric($this->getRawParameter($parameter_name))) {
-			$class_name = Namespaces::fullClassName($parameter_name, false);
-			if (class_exists($class_name)) {
+			if (ctype_upper($parameter_name[0])) {
+				$class_name = Namespaces::fullClassName($parameter_name, false);
+			}
+			if (isset($class_name) && class_exists($class_name)) {
 				// object parameter
 				$object = $this->getRawParameter($parameter_name) + 0;
 				Getter::getObject($object, $class_name);

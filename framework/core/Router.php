@@ -17,6 +17,12 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 	 */
 	public $changes = false;
 
+	//----------------------------------------------------------------------------------- $class_name
+	/**
+	 * @var string when set : the class name used for possible html templates indexing
+	 */
+	private $class_name;
+
 	//---------------------------------------------------------------------------------- $class_paths
 	/**
 	 * @var string[] key is full class name, value is file path
@@ -261,7 +267,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	/**
 	 * @param $object    Controller_Uri
 	 * @param $joinpoint Around_Method_Joinpoint
-	 * @return callable
+	 * @return callable[]
 	 */
 	public function getPossibleControllerCalls(
 		Controller_Uri $object, Around_Method_Joinpoint $joinpoint
@@ -269,9 +275,47 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		if (isset($this->controller_calls[$object->controller_name][$object->feature_name])) {
 			return array($this->controller_calls[$object->controller_name][$object->feature_name]);
 		}
-		else {
-			return $joinpoint->process();
+		return $joinpoint->process();
+	}
+
+	//---------------------------------------------------------------------- getPossibleHtmlTemplates
+	/**
+	 * @param $class_name    string
+	 * @param $feature_names string|string[]
+	 * @param $joinpoint     Around_Method_Joinpoint
+	 * @return string[]
+	 */
+	public function getPossibleHtmlTemplates(
+		$class_name, $feature_names, Around_Method_Joinpoint $joinpoint
+	) {
+		if (is_array($feature_names)) {
+			$feature_names = join('.', $feature_names);
 		}
+		if (isset($this->html_templates[$class_name][$feature_names])) {
+			unset($this->class_name);
+			return array($this->html_templates[$class_name][$feature_names]);
+		}
+		$this->class_name = $class_name;
+		return $joinpoint->process();
+	}
+
+	//-------------------------------------------------------------------------- getPossibleViewCalls
+	/**
+	 * @param $class_name    string
+	 * @param $feature_names string|string[]
+	 * @param $joinpoint     Around_Method_Joinpoint
+	 * @return callable[]
+	 */
+	public function getPossibleViewCalls(
+		$class_name, $feature_names, Around_Method_Joinpoint $joinpoint
+	) {
+		if (is_array($feature_names)) {
+			$feature_names = join('.', $feature_names);
+		}
+		if (isset($this->view_calls[$class_name][$feature_names])) {
+			return array($this->view_calls[$class_name][$feature_names]);
+		}
+		return $joinpoint->process();
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -289,6 +333,22 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			array(Main_Controller::class, 'executeController'),
 			array($this, 'setPossibleControllerCall')
 		);
+		$aop->aroundMethod(
+			array(View::class, 'getPossibleViews'),
+			array($this, 'getPossibleViewCalls')
+		);
+		$aop->beforeMethod(
+			array(View::class, 'executeView'),
+			array($this, 'setPossibleViewCall')
+		);
+		$aop->aroundMethod(
+			array(Html_View_Engine::class, 'getPossibleTemplates'),
+			array($this, 'getPossibleHtmlTemplates')
+		);
+		$aop->beforeMethod(
+			array(Html_Default_View::class, 'executeTemplate'),
+			array($this, 'setPossibleHtmlTemplate')
+		);
 	}
 
 	//--------------------------------------------------------------------- setPossibleControllerCall
@@ -299,10 +359,64 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	 */
 	public function setPossibleControllerCall(Controller_Uri $uri, $controller, $method_name)
 	{
-		$this->controller_calls[$uri->controller_name][$uri->feature_name] = array(
-			$controller, $method_name
-		);
-		$this->changes = true;
+		if (isset($this->controller_calls[$uri->controller_name][$uri->feature_name])) {
+			list($check_controller, $check_method_name)
+				= $this->controller_calls[$uri->controller_name][$uri->feature_name];
+			$changes = (($check_controller != $controller) || ($check_method_name != $method_name));
+		}
+		else {
+			$changes = true;
+		}
+		if ($changes) {
+			$this->controller_calls[$uri->controller_name][$uri->feature_name] = array(
+				$controller, $method_name
+			);
+			$this->changes = true;
+		}
+	}
+
+	//----------------------------------------------------------------------- setPossibleHtmlTemplate
+	/**
+	 * @param $template_file string
+	 * @param $parameters    array
+	 * @param $feature_name  string
+	 */
+	public function setPossibleHtmlTemplate($template_file, $parameters, $feature_name)
+	{
+		if (isset($this->class_name)) {
+			$features = isset($parameters['feature'])
+				? ($parameters['feature'] . '.' . $feature_name)
+				: $feature_name;
+			$this->html_templates[$this->class_name][$features] = $template_file;
+			$this->changes = true;
+		}
+	}
+
+	//--------------------------------------------------------------------------- setPossibleViewCall
+	/**
+	 * @param $class_name       string
+	 * @param $feature_name     string
+	 * @param $parameters       array
+	 * @param $view             string
+	 * @param $view_method_name string
+	 */
+	public function setPossibleViewCall(
+		$class_name, $feature_name, $parameters, $view, $view_method_name
+	) {
+		$features = isset($parameters['feature'])
+			? ($parameters['feature'] . '.' . $feature_name)
+			: $feature_name;
+		if (isset($this->view_calls[$class_name][$features])) {
+			list($check_view, $check_view_method_name) = $this->view_calls[$class_name][$features];
+			$changes = (($check_view != $view) || ($check_view_method_name != $view_method_name));
+		}
+		else {
+			$changes = true;
+		}
+		if ($changes) {
+			$this->view_calls[$class_name][$features] = array($view, $view_method_name);
+			$this->changes = true;
+		}
 	}
 
 }

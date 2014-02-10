@@ -39,8 +39,8 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 
 	//------------------------------------------------------------------ afterNamespacesFullClassName
 	/**
-	 * @param $class_name string
-	 * @param $result     string
+	 * @param $short_class_name string
+	 * @param $result           string
 	 * @return string
 	 */
 	public static function afterNamespacesFullClassName($short_class_name, $result)
@@ -263,7 +263,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 	/**
 	 * Sets a new replacement
 	 *
-	 * Returns the ole replacement class name as you can set it back at will
+	 * Returns the hole replacement class name as you can set it back at will
 	 *
 	 * @param $class_name             string
 	 * @param $replacement_class_name string|null
@@ -279,6 +279,17 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 			$this->replacements[$class_name] = $replacement_class_name;
 		}
 		return $result;
+	}
+
+	//------------------------------------------------------------------------------- sourceClassName
+	/**
+	 * Gets source class name for a replacement class name
+	 *
+	 * @param $class_name
+	 */
+	public function sourceClassName($class_name)
+	{
+		return array_search($class_name, $this->replacements) ?: $class_name;
 	}
 
 }

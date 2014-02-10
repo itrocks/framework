@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Plugins\Plugin;
+
 /**
  * All classes that have a global current value should use this trait to manage the current() method
  *
@@ -47,6 +49,16 @@ trait Current
 	{
 		if ($set_current) {
 			static::$current = $set_current;
+			if (!is_a(get_called_class(), Plugin::class, true)) {
+				Session::current()->set(
+					$set_current, Builder::current()->sourceClassName(get_called_class())
+				);
+			}
+		}
+		elseif (!(isset(static::$current) || is_a(get_called_class(), Plugin::class, true))) {
+			static::$current = Session::current()->get(
+				Builder::current()->sourceClassName(get_called_class())
+			);
 		}
 		return static::$current;
 	}

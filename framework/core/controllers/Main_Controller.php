@@ -157,6 +157,7 @@ class Main_Controller
 	{
 		$this->includes();
 		foreach ($includes as $include) {
+			/** @noinspection PhpIncludeInspection */
 			include_once $include;
 		}
 		return $this;

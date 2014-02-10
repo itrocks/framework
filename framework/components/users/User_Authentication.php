@@ -36,7 +36,6 @@ abstract class User_Authentication
 	public static function authenticate(User $user)
 	{
 		User::current($user);
-		Session::current()->set($user);
 	}
 
 	//---------------------------------------------------------------------------- controlNameNotUsed

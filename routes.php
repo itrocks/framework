@@ -22,6 +22,7 @@ $this->full_class_names = array (
 );
 
 $this->class_paths = array (
+  'SAF\\AOP\\Around_Method_Joinpoint' => 'framework/core/aop/joinpoints/Around_Method_Joinpoint.php',
   'SAF\\AOP\\Compiler' => 'framework/core/aop/compiler/Compiler.php',
   'SAF\\AOP\\Compiler_Toolbox' => 'framework/core/aop/compiler/Compiler_Toolbox.php',
   'SAF\\AOP\\Function_Joinpoint' => 'framework/core/aop/joinpoints/Function_Joinpoint.php',
@@ -176,4 +177,29 @@ $this->class_paths = array (
   'SAF\\Tests\\Salesman' => 'tests/business_objects/Salesman.php',
   'SAF\\Tests\\Search_Array_Builder_Test' => 'tests/tests/Search_Array_Builder_Test.php',
   'SAF\\Tests\\Shop' => 'tests/business_objects/Shop.php',
+);
+
+$this->controller_calls = array (
+  'SAF\\Tests\\Application' => 
+  array (
+    'home' => 
+    array (
+      0 => 'SAF\\Tests\\Application_Home_Controller',
+      1 => 'run',
+    ),
+  ),
+  'SAF\\Framework\\Unit_Tests\\Tests' => 
+  array (
+    'run' => 
+    array (
+      0 => 'SAF\\Framework\\Unit_Tests\\Tests_Run_Controller',
+      1 => 'run',
+    ),
+  ),
+);
+
+$this->html_templates = array (
+);
+
+$this->view_calls = array (
 );
