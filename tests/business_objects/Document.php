@@ -6,6 +6,7 @@ namespace SAF\Tests;
  */
 abstract class Document
 {
+	use Has_Counter;
 
 	//----------------------------------------------------------------------------------------- $date
 	/**
@@ -34,6 +35,15 @@ abstract class Document
 	{
 		$this->date = $date;
 		$this->number = $number;
+	}
+
+	//------------------------------------------------------------------------------------ setCounter
+	/**
+	 * @param $counter integer
+	 */
+	public function setCounter($counter)
+	{
+		$this->number = $counter;
 	}
 
 }

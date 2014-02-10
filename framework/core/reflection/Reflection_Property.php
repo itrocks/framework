@@ -60,9 +60,6 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function __construct($class_name, $property_name)
 	{
-		if (!(is_string($class_name) && is_string($property_name))) {
-			trigger_error(__CLASS__ . " constructor needs strings", E_USER_ERROR);
-		}
 		$this->path = $property_name;
 		$i = 0;
 		while (($j = strpos($property_name, ".", $i)) !== false) {

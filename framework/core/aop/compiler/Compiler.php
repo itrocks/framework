@@ -2,6 +2,7 @@
 namespace SAF\AOP;
 
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionProperty;
 use SAF\Framework\Application;
 use SAF\Framework\Getter;
@@ -119,14 +120,19 @@ class Compiler implements ICompiler
 			if (self::DEBUG) echo '<h2>compile class ' . $class_name. '</h2>';
 			$buffer = substr($buffer, 0, -2) . "\t//" . str_repeat('#', 91) . " AOP\n";
 
+			$methods    = array();
 			$properties = array();
-			if (!$class->isInterface() && !$class->isTrait()) {
-				$this->scanForLinks($properties,   $class);
-				$this->scanForGetters($properties, $class);
-				$this->scanForSetters($properties, $class);
+			if (!$class->isInterface()) {
+				if (!$class->isTrait()) {
+					$this->scanForLinks($properties,   $class);
+					$this->scanForGetters($properties, $class);
+					$this->scanForSetters($properties, $class);
+				}
+				$this->scanForMethods($methods, $class);
 			}
 
-			list($methods, $properties2) = $this->getPointcuts($class_name);
+			list($methods2, $properties2) = $this->getPointcuts($class_name);
+			$methods    = arrayMergeRecursive($methods, $methods2);
 			$properties = arrayMergeRecursive($properties, $properties2);
 
 			if ($properties) {
@@ -187,11 +193,11 @@ class Compiler implements ICompiler
 	 * Returns true if the property is declared into the class, or into traits used by the class
 	 * or by a trait used by the class
 	 *
-	 * @param $property ReflectionProperty
+	 * @param $property ReflectionMethod|ReflectionProperty
 	 * @param $class    ReflectionClass
 	 * @return boolean
 	 */
-	private function isPropertyInClass(ReflectionProperty $property, ReflectionClass $class)
+	private function isInClass($property, ReflectionClass $class)
 	{
 		if ($property->class == $class->name) return true;
 		$traits = array($class->name);
@@ -209,6 +215,35 @@ class Compiler implements ICompiler
 		return in_array($property->class, $traits);
 	}
 
+	//-------------------------------------------------------------------------------- scanForMethods
+	/**
+	 * @param $methods array
+	 * @param $class   ReflectionClass
+	 */
+	private function scanForMethods(&$methods, ReflectionClass $class)
+	{
+		foreach ($class->getMethods() as $method) {
+			if (!$method->isAbstract() && ($method->class == $class->name)) {
+				$doc_comment = $method->getDocComment();
+				$expr = '%\n\s+\*\s+@(after|around|before|)\s+(?:(\w+)::)?(\w+)(\($this\))?%';
+				preg_match_all($expr, $doc_comment, $match);
+				if ($match) {
+					foreach (array_keys($match[0]) as $key) {
+						$type        = $match[0][$key];
+						$class_name  = $match[1][$key] ?: '$this';
+						$method_name = $match[2][$key];
+						$has_this    = $match[3][$key];
+						$aspect = array($type, array($method->class, $method->name));
+						if ($has_this) {
+							$aspect[] = $has_this;
+						}
+						$methods[$class_name][$method_name] = $aspect;
+					}
+				}
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------------- scanForGetters
 	/**
 	 * @param $properties array
@@ -217,12 +252,14 @@ class Compiler implements ICompiler
 	private function scanForGetters(&$properties, ReflectionClass $class)
 	{
 		foreach ($class->getProperties() as $property) {
-			$doc_comment = $property->getDocComment();
-			if (strpos($doc_comment, '@getter') && $this->isPropertyInClass($property, $class)) {
-				preg_match('/@getter\s+([^\s\n]*)\n/', $doc_comment, $match);
-				$getter = ($match) ? $match[1] : Names::propertyToMethod($property->name, 'get');
-				// todo Aop getters, Class_Name::methodName getters
-				$properties[$property->name][] = array('read', array('$this', $getter));
+			if ($this->isInClass($property, $class)) {
+				$doc_comment = $property->getDocComment();
+				preg_match('%\n\s+\*\s+@getter\s+(?:(\w+)::)?(\w+)%', $doc_comment, $match);
+				$advice = array(
+					empty($match[1]) ? '$this' : $match[1],
+					isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'get')
+				);
+				$properties[$property->name][] = array('read', $advice);
 			}
 		}
 	}
@@ -235,37 +272,25 @@ class Compiler implements ICompiler
 	private function scanForLinks(&$properties, ReflectionClass $class)
 	{
 		foreach ($class->getProperties() as $property) {
-			$doc_comment = $property->getDocComment();
-			if (strpos($doc_comment, '* @link') && $this->isPropertyInClass($property, $class)) {
-				$expr = '%\*\s+@link\s+(All|Collection|DateTime|Map|Object)\s*\n%';
-				preg_match($expr, $doc_comment, $match);
-				/** @var $advice callable */
-				if ($match) {
-					if ($match[1] == 'All') {
-						$advice = array(Getter::class, 'getAll');
-					}
-					elseif ($match[1] == 'Collection') {
-						$advice = array(Getter::class, 'getCollection');
-					}
-					elseif ($match[1] == 'DateTime') {
-						$advice = array(Getter::class, 'getDateTime');
-					}
-					elseif ($match[1] == 'Map') {
-						$advice = array(Getter::class, 'getMap');
+			if (($property->class == $class->name)) {
+				$doc_comment = $property->getDocComment();
+				if (strpos($doc_comment, '* @link')) {
+					$expr = '%\n\s+\*\s+@link\s+(All|Collection|DateTime|Map|Object)%';
+					preg_match($expr, $doc_comment, $match);
+					if ($match) {
+						/** @var $advice callable */
+						$advice = array(Getter::class, 'get' . $match[1]);
 					}
 					else {
-						$advice = array(Getter::class, 'getObject');
+						trigger_error(
+							'@link of ' . $property->class . '::' . $property->name
+							. ' must be All, Collection, DateTime, Map or Object',
+							E_USER_ERROR
+						);
+						$advice = null;
 					}
+					$properties[$property->name][] = array('read', $advice);
 				}
-				else {
-					trigger_error(
-						'Link must be Collection, Map or Object for '
-							. $property->class . '::' . $property->name,
-						E_USER_ERROR
-					);
-					$advice = null;
-				}
-				$properties[$property->name][] = array('read', $advice);
 			}
 		}
 	}
@@ -278,12 +303,14 @@ class Compiler implements ICompiler
 	private function scanForSetters(&$properties, ReflectionClass $class)
 	{
 		foreach ($class->getProperties() as $property) {
-			$doc_comment = $property->getDocComment();
-			if (strpos($doc_comment, '@setter') && $this->isPropertyInClass($property, $class)) {
-				preg_match('/@setter\s+([^\s\n]*)\n/', $doc_comment, $match);
-				$getter = ($match) ? $match[1] : Names::propertyToMethod($property->name, 'set');
-				// todo Aop getters, Class_Name::methodName getters
-				$properties[$property->name][] = array('write', array('$this', $getter));
+			if ($property->class == $class->name) {
+				$doc_comment = $property->getDocComment();
+				preg_match('%\n\s+\*\s+@setter\s+(?:(\w+)::)?(\w+)%', $doc_comment, $match);
+				$advice = array(
+					empty($match[1]) ? '$this' : $match[1],
+					isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'set')
+				);
+				$properties[$property->name][] = array('write', $advice);
 			}
 		}
 	}

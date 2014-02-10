@@ -480,4 +480,64 @@ namespace {
 		return false;
 	}
 
+//------------------------------------------------------------------------------------------- isA
+	/**
+	 * Returns true if an object / class /interface / trait is a class / interface / trait
+	 *
+	 * All parent classes, interfaces and traits are scanned recursively
+	 *
+	 * @param $object     string|object
+	 * @param $class_name string|object
+	 * @return boolean
+	 */
+	function isA($object, $class_name)
+	{
+		if (is_object($object))     $object     = get_class($object);
+		if (is_object($class_name)) $class_name = get_class($class_name);
+		if (is_a($object, $class_name, true)) return true;
+		$classes = class_parents($object) + class_uses($object);
+		while ($classes) {
+			$next_classes = array();
+			foreach ($classes as $class) {
+				if (is_a($class, $class_name, true)) return true;
+				$next_classes += class_uses($class);
+			}
+			$classes = $next_classes;
+		}
+		return false;
+	}
+
+	define('_ALL',       65535);
+	define('_CLASS',     1);
+	define('_INTERFACE', 2);
+	define('_TRAIT',     4);
+
+	//--------------------------------------------------------------------------------------- parents
+	/**
+	 * Returns all parents (classes, interfaces and traits) of the class or object
+	 *
+	 * Result order is : classes first, then interfaces and traits from the child to the parent
+	 *
+	 * @param $object string|object
+	 * @param $filter integer _ALL, _CLASS | _INTERFACE | _TRAIT
+	 * @return string[]
+	 */
+	function parents($object, $filter = _ALL)
+	{
+		if (is_object($object)) $object = get_class($object);
+		$parents = class_parents($object);
+		$classes = array($object) + $parents;
+		$result = ($filter & _CLASS) ? $parents : array();
+		do {
+			$next_classes = array();
+			foreach ($classes as $class) {
+				if ($filter & _INTERFACE) $next_classes += class_implements($class);
+				if ($filter & _TRAIT)     $next_classes += class_uses($class);
+			}
+			$classes = $next_classes;
+			$result += $classes;
+		} while($classes);
+		return $result;
+	}
+
 }

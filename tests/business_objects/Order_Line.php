@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Tests;
+
 use SAF\Framework\Component;
 
 /**

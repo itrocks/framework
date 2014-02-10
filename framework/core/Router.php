@@ -65,6 +65,8 @@ class Router implements Plugins\Configurable, IAutoloader
 	public function __destruct()
 	{
 		if ($this->changes) {
+			ksort($this->full_class_names);
+			ksort($this->class_paths);
 			file_put_contents(
 				$this->routes_file,
 				'<?php

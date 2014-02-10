@@ -24,18 +24,6 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	private $doc_comment;
 
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class_name string
-	 */
-	public function __construct($class_name)
-	{
-		if (!is_string($class_name)) {
-			trigger_error(__CLASS__ . " constructor needs a string", E_USER_ERROR);
-		}
-		parent::__construct($class_name);
-	}
-
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string The name of the class
