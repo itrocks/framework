@@ -76,6 +76,33 @@ class Main_Controller
 		$this->aspectWeaver();
 	}
 
+	//----------------------------------------------------------------------------- executeController
+	/**
+	 * @param $controller  string
+	 * @param $method_name string
+	 * @param $uri         Controller_Uri
+	 * @param $post        array
+	 * @param $files       array
+	 * @return string
+	 */
+	private function executeController($controller, $method_name, $uri, $post, $files)
+	{
+		$controller = new $controller();
+		$class_name = ($controller instanceof List_Controller)
+			? Namespaces::fullClassName(Set::elementClassNameOf($uri->controller_name))
+			: $uri->controller_name;
+		if ($controller instanceof Class_Controller) {
+			return call_user_func_array(array($controller, $method_name), array(
+				$uri->parameters, $post, $files, $uri->feature_name, $class_name
+			));
+		}
+		else {
+			return call_user_func_array(array($controller, $method_name), array(
+				$uri->parameters, $post, $files, $class_name, $uri->feature_name
+			));
+		}
+	}
+
 	//-------------------------------------------------------------------------------------- includes
 	private function includes()
 	{
@@ -159,9 +186,30 @@ class Main_Controller
 	 */
 	private function registerPlugins(Plugins\Manager $plugins, Configuration $configuration)
 	{
+		$must_register = array();
 		foreach ($configuration->getPlugins() as $level => $sub_plugins) {
 			foreach ($sub_plugins as $class_name => $plugin_configuration) {
-				$plugin = $plugins->register($class_name, $level, $plugin_configuration);
+				// registers and activates only when weaver is set
+				$plugin = $plugins->register($class_name, $level, $plugin_configuration, isset($weaver));
+				// weaver is set : registers and actives all previous plugins
+				if ($plugin instanceof AOP\IWeaver) {
+					$weaver = $plugin;
+					foreach ($must_register as $register) {
+						$plugins->register(
+							$register['class_name'], $register['level'], $register['plugin_configuration']
+						);
+					}
+					unset($must_register);
+				}
+				// weaver is not set : keep plugin definition for further registering and activation
+				if (!isset($weaver)) {
+					$must_register[] = array(
+						'plugin'               => $plugin,
+						'class_name'           => $class_name,
+						'level'                => $level,
+						'plugin_configuration' => $plugin_configuration
+					);
+				}
 				if ($plugin instanceof IAutoloader) {
 					$this->createApplication($configuration);
 				}
@@ -172,9 +220,9 @@ class Main_Controller
 	//--------------------------------------------------------------------------------- resumeSession
 	private function resumeSession()
 	{
-		$session = Session::current();
-		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
-		$session->plugins->activatePlugins('core');
+		$plugins = Session::current()->plugins;
+		$plugins->addPlugins('top_core', $this->top_core_plugins);
+		$plugins->activatePlugins('core');
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -209,20 +257,7 @@ class Main_Controller
 		foreach ($uri->getPossibleControllerCalls() as $call) {
 			list($controller, $method_name) = $call;
 			if (@method_exists($controller, $method_name)) {
-				$controller = new $controller();
-				$class_name = ($controller instanceof List_Controller)
-					? Namespaces::fullClassName(Set::elementClassNameOf($uri->controller_name))
-					: $uri->controller_name;
-				if ($controller instanceof Class_Controller) {
-					return call_user_func_array(array($controller, $method_name), array(
-						$uri->parameters, $post, $files, $uri->feature_name, $class_name
-					));
-				}
-				else {
-					return call_user_func_array(array($controller, $method_name), array(
-						$uri->parameters, $post, $files, $class_name, $uri->feature_name
-					));
-				}
+				return $this->executeController($controller, $method_name, $uri, $post, $files);
 			}
 		}
 		return null;

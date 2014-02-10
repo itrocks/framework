@@ -31,6 +31,26 @@ class View implements Plugins\Configurable
 		return self::pCurrent($set_current);
 	}
 
+	//----------------------------------------------------------------------------------- executeView
+	/**
+	 * @param $view             string
+	 * @param $view_method_name string
+	 * @param $parameters       array
+	 * @param $form             array
+	 * @param $files            array
+	 * @param $class_name       string
+	 * @param $feature_name     string
+	 * @return mixed
+	 */
+	private static function executeView(
+		$view, $view_method_name, $parameters, $form, $files, $class_name, $feature_name
+	) {
+		$view_object = Builder::create($view);
+		return $view_object->$view_method_name(
+			$parameters, $form, $files, $class_name, $feature_name
+		);
+	}
+
 	//------------------------------------------------------------------------------ getPossibleViews
 	/**
 	 * @param $class_name    string
@@ -106,9 +126,8 @@ class View implements Plugins\Configurable
 		foreach (self::getPossibleViews($class_name, $features) as $call) {
 			list($view, $view_method_name) = $call;
 			if (@method_exists($view, $view_method_name)) {
-				$view_object = new $view();
-				return $view_object->$view_method_name(
-					$parameters, $form, $files, $class_name, $feature_name
+				return self::executeView(
+					$view, $view_method_name, $parameters, $form, $files, $class_name, $feature_name
 				);
 			}
 		}

@@ -86,7 +86,8 @@ class Php_Source
 		preg_match($expr, $buffer, $match1);
 		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? "\n\n}\n" : "\n");
 		// replace "/* public */ private [static] function name_(" by "public [static] function name("
-		$expr = '%(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)((private|protected|public)\s*)?'
+		$expr = '%(?:\n\s*/\*\*\s+@noinspection\s+PhpUnusedPrivateMethodInspection(?:\s+\w*)+\*/)?'
+			. '(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)((private|protected|public)\s*)?'
 			. '(static\s*)?function(\s+\w*)\_[0-9]*\s*\(%';
 		preg_match($expr, $buffer, $match2);
 		$buffer = preg_replace($expr, '$1$2$3$6function$7(', $buffer);

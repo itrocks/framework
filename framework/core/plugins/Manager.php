@@ -70,9 +70,10 @@ class Manager implements IManager, Serializable
 	 * @param $class_name string
 	 * @param $level      string
 	 * @param $register   boolean
+	 * @param $activate   boolean
 	 * @return Plugin
 	 */
-	public function get($class_name, $level = null, $register = false)
+	public function get($class_name, $level = null, $register = false, $activate = false)
 	{
 		/** @var $plugin Plugin|boolean|string */
 		$plugin = isset($this->plugins[$class_name])
@@ -124,28 +125,28 @@ class Manager implements IManager, Serializable
 				}
 			}
 			$protect = null;
-			// register plugin
-			if ($register) {
-				$weaver = isset($this->plugins['SAF\AOP\Weaver'])
-					? $this->plugins['SAF\AOP\Weaver']
-					: null;
-				if ($plugin instanceof Registerable) {
-					/** @var $plugin Registerable */
-					$plugin->register(new Register(
-							isset($plugin->plugin_configuration) ? $plugin->plugin_configuration : null, $weaver)
-					);
-				}
+			$activate = true;
+		}
+		// register plugin
+		if ($register && ($plugin instanceof Registerable)) {
+			$weaver = isset($this->plugins['SAF\AOP\Weaver'])
+				? $this->plugins['SAF\AOP\Weaver']
+				: null;
+			/** @var $plugin Registerable */
+			$plugin->register(new Register(
+					isset($plugin->plugin_configuration) ? $plugin->plugin_configuration : null, $weaver)
+			);
+			$activate = true;
+		}
+		// activate plugin
+		if ($activate && ($plugin instanceof Activable)) {
+			if (isset($this->activated[$class_name])) {
+				trigger_error("Plugin $class_name just registered and already activated !", E_USER_ERROR);
 			}
-			// activate plugin
-			if (($plugin instanceof Activable)) {
-				if (isset($this->activated[$class_name])) {
-					trigger_error("Plugin $class_name just registered and already activated !", E_USER_ERROR);
-				}
-				else {
-					/** @var $plugin Activable */
-					$plugin->activate();
-					$this->activated[$class_name] = $plugin;
-				}
+			else {
+				/** @var $plugin Activable */
+				$plugin->activate();
+				$this->activated[$class_name] = $plugin;
 			}
 		}
 		return $plugin;
@@ -158,16 +159,19 @@ class Manager implements IManager, Serializable
 	 * @param $class_name    string
 	 * @param $level         string
 	 * @param $configuration array|boolean
+	 * @param $register      boolean
 	 * @return Plugin
 	 */
-	public function register($class_name, $level, $configuration = true)
+	public function register($class_name, $level, $configuration = true, $register = true)
 	{
-		if (empty($configuration)) {
-			$configuration = true;
+		if (!isset($this->plugins[$class_name])) {
+			if (empty($configuration)) {
+				$configuration = true;
+			}
+			$this->plugins_tree[$level][$class_name] = $configuration;
+			$this->plugins[$class_name] = $configuration;
 		}
-		$this->plugins_tree[$level][$class_name] = $configuration;
-		$this->plugins[$class_name] = $configuration;
-		return $this->get($class_name, $level, true);
+		return $this->get($class_name, $level, $register, $register);
 	}
 
 	//------------------------------------------------------------------------------------- serialize

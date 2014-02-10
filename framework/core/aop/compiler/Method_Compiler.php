@@ -224,10 +224,16 @@ class Method_Compiler
 				. $this->codeAssembly($before_code, $call_code, $after_code)
 				. ($joinpoint_has_return ? ("\n" . $i2 . 'return $result_;') : '')
 				. $indent . "}\n";
+			$around_comment = '';
+		}
+		else {
+			$around_comment = $indent
+				. '/** @noinspection PhpUnusedPrivateMethodInspection May be called by an advice */';
 		}
 
 		$buffer = preg_replace(
-			$preg_expr, $indent . '/* $2*/ private $4' . $method_name . '_' . $count . '$7', $buffer
+			$preg_expr, $around_comment
+				. $indent . '/* $2*/ private $4' . $method_name . '_' . $count . '$7', $buffer
 		);
 
 		return $append;
