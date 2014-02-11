@@ -26,6 +26,12 @@ class Property_Joinpoint extends Joinpoint
 	 */
 	public $property_name;
 
+	//--------------------------------------------------------------------------------------- $stored
+	/**
+	 * @var mixed
+	 */
+	public $stored;
+
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var mixed
@@ -37,16 +43,18 @@ class Property_Joinpoint extends Joinpoint
 	 * @param $class_name    string
 	 * @param $pointcut      string[]|object[]
 	 * @param $value         mixed
+	 * @param $stored        mixed
 	 * @param $advice        callable
 	 */
-	public function __construct($class_name, $pointcut, &$value, $advice)
+	public function __construct($class_name, $pointcut, &$value, &$stored, $advice)
 	{
+		$this->advice        = $advice;
 		$this->class_name    = $class_name;
 		$this->object        = is_object($pointcut[0]) ? $pointcut[0] : null;
 		$this->pointcut      = $pointcut;
 		$this->property_name = $pointcut[1];
+		$this->stored        = &$stored;
 		$this->value         = &$value;
-		$this->advice        = $advice;
 	}
 
 	//----------------------------------------------------------------------------------- getProperty

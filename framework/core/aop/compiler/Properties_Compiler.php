@@ -78,6 +78,7 @@ class Properties_Compiler
 	{
 		$class_name = $this->source->class_name;
 		$code = '';
+		$after = '';
 
 		/** @var $advice_class_name string */
 		/** @var $advice_method_name string */
@@ -103,18 +104,24 @@ class Properties_Compiler
 			if (isset($advice_parameters['result'])) {
 				$advice_parameters_string = str_replace('$result', '$value', $advice_parameters_string);
 			}
+			if (isset($advice_parameters['stored']) || isset($advice_parameters['joinpoint'])) {
+				$code .= '
+			$stored =& $this->' . $property_name . ';';
+			}
 			if (isset($advice_parameters['object']) && !isset($parameters['object'])) {
 				$advice_parameters_string = str_replace('$object', '$this', $advice_parameters_string);
 			}
 			if (isset($advice_parameters['joinpoint'])) {
-				$joinpoint_parameters_string = 'array()';
+				$pointcut_string = 'array($this, \'' . $property_name . '\')';
 				switch ($type) {
 					case 'read':
 						$joinpoint_code = '$joinpoint = new \SAF\AOP\Read_Property_Joinpoint('
+							. "\n\t\t" . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
 							. ');';
 						break;
 					case 'write':
 						$joinpoint_code = '$joinpoint = new \SAF\AOP\Write_Property_Joinpoint('
+							. "\n\t\t" . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
 							. ');';
 						break;
 				}
@@ -195,8 +202,9 @@ class Properties_Compiler
 		$else = $this->get ? 'else' : '';
 		$code['get'] = '
 		' . $else . 'if ($property_name == \'' . $property_name . '\') {';
+		$else = $this->set ? 'else' : '';
 		$code['set'] = '
-		elseif ($property_name == \'' . $property_name . '\') {';
+		'. $else . 'if ($property_name == \'' . $property_name . '\') {';
 
 		foreach ($advices as $advice) {
 			list($type, $callback) = $advice;
@@ -224,13 +232,16 @@ class Properties_Compiler
 	{
 		$prototype = $this->source->getPrototype('__aop', true);
 		return '
-	protected function __aop()
+	/**
+	 * properties weaving, called by the constructor
+	 */
+	protected function __aop($reset = true)
 	{
-		$this->_ = array();
+		if ($reset) $this->_ = array();
 		' . join('', $this->aop) . '
 
 		if (method_exists(get_parent_class(), \'__aop\')) {
-			parent::__aop();
+			parent::__aop(false);
 		}
 	}
 ';
@@ -311,13 +322,23 @@ class Properties_Compiler
 			return null;
 		}
 		$value = $this->_[$property_name];
+		unset($this->_[$property_name]);
+		$this->$property_name = $value;
 		' . join('', $this->get) . '
 
 		elseif (method_exists(get_parent_class(), \'__get\')) {
+			$transfer = $this->$property_name;
+			unset($this->$property_name);
+			$this->_[$property_name] = $transfer;
 			$value = parent::__get($property_name);
 		}
 		else {
 			trigger_error(\'Undefined property: ' . $class_name . '::$\' . $property_name, E_USER_NOTICE);
+		}
+		if (!array_key_exists($property_name, $this->_)) {
+			$transfer = $this->$property_name;
+			unset($this->$property_name);
+			$this->_[$property_name] = $transfer;
 		}
 		return $value;
 	}
@@ -386,15 +407,23 @@ class Properties_Compiler
 			' . $code . ';
 			return;
 		}
+		$transfer = $this->_[$property_name];
+		unset($this->_[$property_name]);
+		$this->$property_name = $transfer;
 		' . join('', $this->set) . '
 
 		elseif (method_exists(get_parent_class(), \'__set\')) {
+			$transfer = $this->$property_name;
+			unset($this->$property_name);
+			$this->_[$property_name] = $transfer;
 			parent::__set($property_name, $value);
+			return;
 		}
 		else {
 			$this->$property_name = $value;
 			return;
 		}
+		unset($this->$property_name);
 		$this->_[$property_name] = $value;
 	}
 ';

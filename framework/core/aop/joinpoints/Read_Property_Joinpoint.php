@@ -4,7 +4,7 @@ namespace SAF\AOP;
 /**
  * The joinpoint on property read
  */
-class Property_Read_Joinpoint extends Property_Joinpoint
+class Read_Property_Joinpoint extends Property_Joinpoint
 {
 
 }
