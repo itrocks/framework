@@ -1,7 +1,6 @@
 <?php
 namespace SAF\AOP;
 
-use SAF\Framework\Reflection_Method;
 use SAF\Framework\Reflection_Parameter;
 
 /**
@@ -73,7 +72,7 @@ class Method_Compiler
 		$indent = $source_method->indent;
 		$i2 = $indent . "\t";
 		$i3 = $i2 . "\t";
-		// $parameters = array('parameter_name' => Reflection_Parameter)
+		// $parameters = array('parameter_name' => 'parameter_name')
 		$parameters = $source_method->getParametersNames();
 		// $doc_comment = source method doc comment
 		$doc_comment = $source_method->documentation;
@@ -228,7 +227,6 @@ class Method_Compiler
 				. '/** @noinspection PhpUnusedPrivateMethodInspection May be called by an advice */';
 		}
 
-		if ($is_static) $is_static .= ' ';
 		$buffer = preg_replace(
 			$preg_expr,
 			$indent . '$2' . $around_comment
