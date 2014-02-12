@@ -15,7 +15,30 @@ class Reflection_Parameter extends ReflectionParameter
 	 * @var array
 	 */
 	private static $internal_defaults = array(
-		"chop" => array("character_mask" => " \\t\\n\\r\\0\\x0B")
+		'chop' => array('character_mask' => " \\t\\n\\r\\0\\x0B"),
+		'ReflectionClass' => array(
+			'export'                 => array('return' => false),
+			'getMethods'             => array('filter' => 0),
+			'getProperties'          => array('filter' => 0),
+			'getStaticPropertyValue' => array('default' => null),
+			'newInstanceArgs'        => array('args' => array())
+		),
+		'ReflectionFunction' => array(
+			'export' => array('return' => false),
+			'invoke' => array('args' => array())
+		),
+		'ReflectionParameter' => array(
+			'export' => array('return' => false)
+		),
+		'ReflectionMethod' => array(
+			'__construct' => array('name' => null),
+			'export'      => array('return' => false)
+		),
+		'ReflectionProperty' => array(
+			'export'   => array('return' => false),
+			'getValue' => array('object' => null),
+			'setValue' => array('value' => null)
+		)
 	);
 
 	//------------------------------------------------------------------------------------ __toString
@@ -35,11 +58,20 @@ class Reflection_Parameter extends ReflectionParameter
 			if ($this->isDefaultValueAvailable()) {
 				$default = $this->getDefaultValue();
 			}
-			elseif ($this->getDeclaringFunction()) {
-				$default = self::$internal_defaults[$this->getDeclaringFunction()->name][$this->name];
-			}
 			elseif ($this->getDeclaringClass()) {
-				$default = self::$internal_defaults[$this->getDeclaringClass()->name][$this->name];
+				$default = isset(
+					self::$internal_defaults
+					[$this->getDeclaringClass()->name][$this->getDeclaringFunction()->name][$this->name]
+				) ?
+					self::$internal_defaults
+					[$this->getDeclaringClass()->name][$this->getDeclaringFunction()->name][$this->name]
+				: null;
+			}
+			elseif ($this->getDeclaringFunction()) {
+				$default = isset(
+					self::$internal_defaults[$this->getDeclaringFunction()->name][$this->name]
+				) ? self::$internal_defaults[$this->getDeclaringFunction()->name][$this->name]
+				: null;
 			}
 			else {
 				$default = null;
@@ -49,10 +81,10 @@ class Reflection_Parameter extends ReflectionParameter
 			$default = null;
 		}
 		$default = is_string($default)
-			? ('"' . str_replace('"', "\\\"", $default) . '"')
+			? ('"' . str_replace('"', '\\"', $default) . '"')
 			: var_export($default, true);
 		return ($this->isPassedByReference() ? '&' : '') . '$' . $this->name
-			. ($optional ? (" = " . $default) : "");
+			. ($optional ? (' = ' . $default) : '');
 	}
 
 }
