@@ -20,7 +20,7 @@ require dirname(__FILE__) . "/../../vendor/PHPExcel/Classes/PHPExcel.php";
  * cd framework/vendor
  * git pull https://github.com/PHPOffice/PHPExcel.git
  */
-class Spreadsheet_File // extends PHPExcel
+class Spreadsheet_File
 {
 
 	//-------------------------------------------------------------------------------- createFromFile

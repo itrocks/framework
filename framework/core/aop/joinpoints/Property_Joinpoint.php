@@ -1,7 +1,8 @@
 <?php
 namespace SAF\AOP;
 
-//------------------------------------------------------------------------------ Property_Joinpoint
+use SAF\Framework\Reflection_Property;
+
 /**
  * Property joinpoint
  */

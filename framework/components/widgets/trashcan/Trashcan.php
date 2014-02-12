@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\Plugins\Plugin;
+
 /**
  * The trashcan widget enables dropping objects for deletion
  */
