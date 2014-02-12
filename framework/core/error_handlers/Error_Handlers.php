@@ -26,11 +26,13 @@ class Error_Handlers implements Plugins\Activable, Plugins\Configurable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct($configuration = null)
 	{
-		foreach ($configuration as $handle) {
-			list($err_no, $error_handler_class) = $handle;
-			$this->addHandler($err_no, new $error_handler_class());
+		if (isset($configuration)) {
+			foreach ($configuration as $handle) {
+				list($err_no, $error_handler_class) = $handle;
+				$this->addHandler($err_no, new $error_handler_class());
+			}
 		}
 	}
 
