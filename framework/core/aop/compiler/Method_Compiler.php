@@ -13,20 +13,19 @@ class Method_Compiler
 
 	const DEBUG = false;
 
-	//--------------------------------------------------------------------------------------- $source
+	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * @var Php_Source
+	 * @var Php_Class
 	 */
-	private $source;
+	private $class;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
-	 * @param $buffer     string
+	 * @param $class Php_Class
 	 */
-	public function __construct($class_name, &$buffer)
+	public function __construct($class)
 	{
-		$this->source = new Php_Source($class_name, $buffer);
+		$this->class = $class;
 	}
 
 	//---------------------------------------------------------------------------------- codeAssembly
@@ -53,39 +52,37 @@ class Method_Compiler
 	 */
 	public function compile($method_name, $advices)
 	{
-		$class_name = $this->source->class_name;
-		$buffer =& $this->source->buffer;
-
-		if (self::DEBUG) echo "<h3>Method $class_name::$method_name</h3>";
-
-		$append = "";
-
-		$source_method = new Reflection_Method($class_name, $method_name);
-
-		$match = $this->source->getPrototype($method_name, true);
-		$in_parent = isset($match['parent']);
-		if (!$match) {
-			if (self::DEBUG) echo "<pre>" . htmlentities($buffer) . "</pre>";
-			trigger_error(
-				"$class_name::$method_name not found into " . $source_method->class, E_USER_ERROR
-			);
+		$source_method = $this->class->getMethods(array('inherited', 'traits'))[$method_name];
+		if (!$source_method) {
+			trigger_error($this->class->name . '::' . $method_name . ' not found', E_USER_ERROR);
 		}
-		if (self::DEBUG) echo "<pre>" . print_r($match, true) . "</pre>";
-		$preg_expr = $match['preg'];
+		// don't compile abstract method where they are declared : will be compiled where they are
+		// implemented
+		if ($source_method->isAbstract()) return '';
+
+		$class_name = $this->class->name;
+		$buffer =& $this->class->source;
+		$result = '';
+
+		if (self::DEBUG) echo '<h3>Method ' . $class_name . '::' . $method_name . '</h3>';
+
+		$in_parent = !$this->class->implementsMethod($source_method->name);
+		// preg expression to search and replace things into method prototype
+		$preg_expr = Php_Method::regex($method_name);
 		// $indent = prototype level indentation spaces
-		$indent = $match[1];
+		$indent = $source_method->indent;
 		$i2 = $indent . "\t";
 		$i3 = $i2 . "\t";
 		// $parameters = array('parameter_name' => Reflection_Parameter)
-		$parameters = $source_method->getParameters();
+		$parameters = $source_method->getParametersNames();
 		// $doc_comment = source method doc comment
-		$doc_comment = $source_method->getDocComment();
+		$doc_comment = $source_method->documentation;
 		// $parameters_names = '$parameter1, $parameter2'
-		$parameters_names = $parameters ? ('$' . join(', $', array_keys($parameters))) : '';
+		$parameters_names = $parameters ? ('$' . join(', $', $parameters)) : '';
 		// $prototype = 'public [static] function methodName($parameter1, $parameter2 = "default")'
-		$prototype = $match[0] . $i2;
+		$prototype = $source_method->prototype;
 		/** $is_static = '[static]' */
-		$is_static = trim($match[5]);
+		$is_static = $source_method->static;
 		/** @var $count integer around method counter */
 		$count = null;
 
@@ -147,7 +144,7 @@ class Method_Compiler
 					);
 					$joinpoint_parameters_string = 'array(';
 					$joinpoint_string_parameters = '';
-					foreach (array_keys($parameters) as $key => $name) {
+					foreach (array_values($parameters) as $key => $name) {
 						if ($key) $joinpoint_parameters_string .= ', ';
 						$joinpoint_parameters_string .= $key . ' => &$' . $name;
 						$joinpoint_string_parameters .= ', \'' . $name . '\' => &$' . $name;
@@ -198,10 +195,10 @@ class Method_Compiler
 					$my_prototype = ($advice_number == $advices_count)
 						? $prototype
 						: str_replace($method_name, $method_name . '_' . $count , $prototype);
-					$append .= $indent . $doc_comment . $my_prototype
+					$result .= $indent . $my_prototype
 						. $this->codeAssembly($before_code, $advice_code, $after_code)
 						. ($joinpoint_has_return ? ("\n" . $i2 . 'return $result_;') : '')
-						. $indent . "}\n";
+						. $indent . "}";
 					if ($advice_number < $advices_count) {
 						$count ++;
 					}
@@ -220,10 +217,10 @@ class Method_Compiler
 			}
 		}
 		if ($before_code || $after_code) {
-			$append .= $indent . $doc_comment . $prototype
+			$result .= $indent . $prototype
 				. $this->codeAssembly($before_code, $call_code, $after_code)
 				. ($joinpoint_has_return ? ("\n" . $i2 . 'return $result_;') : '')
-				. $indent . "}\n";
+				. $indent . "}";
 			$around_comment = '';
 		}
 		else {
@@ -231,12 +228,15 @@ class Method_Compiler
 				. '/** @noinspection PhpUnusedPrivateMethodInspection May be called by an advice */';
 		}
 
+		if ($is_static) $is_static .= ' ';
 		$buffer = preg_replace(
-			$preg_expr, $around_comment
-				. $indent . '/* $2*/ private $4' . $method_name . '_' . $count . '$7', $buffer
+			$preg_expr,
+			$indent . '$2' . $around_comment
+			. $indent . '/* $4 */ private $5 function $6_' . $count . '$7$8',
+			$buffer
 		);
 
-		return $append;
+		return $result;
 	}
 
 }

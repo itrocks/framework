@@ -1,9 +1,6 @@
 <?php
 namespace SAF\AOP;
 
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionProperty;
 use SAF\Framework\Application;
 use SAF\Framework\Getter;
 use SAF\Framework\Names;
@@ -15,7 +12,7 @@ use SAF\Plugins;
 class Compiler implements ICompiler
 {
 
-	const DEBUG = false;
+	const DEBUG = true;
 
 	//----------------------------------------------------------------------------- $compiled_classes
 	/**
@@ -40,130 +37,96 @@ class Compiler implements ICompiler
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
-	 * Compile aspects for all weaved pointcuts
+* @param $class_name string
 	 */
-	public function compile()
+	public function compile($class_name = null)
 	{
-		$start_time = microtime(true);
-		if (!($this->weaver instanceof Weaver)) {
-			trigger_error('Compiler can only compile aspect weaver of class Weaver', E_USER_ERROR);
-			return;
-		}
-		foreach ($this->weaver->getJoinpoints() as $joinpoint => $pointcuts) {
-			if (ctype_lower($joinpoint)) {
-				$this->willCompileFunction($joinpoint, $pointcuts);
+		if ($class_name) {
+			$class = Php_Class::fromClassName($class_name);
+			if ($class) {
+				$this->compileClass($class);
 			}
-			elseif (!isset($this->compiled_classes[$joinpoint])) {
-				$this->compileClass($joinpoint);
+			else {
+				trigger_error('Class not found ' . $class_name, E_USER_ERROR);
 			}
 		}
-		if (self::DEBUG) echo 'duration = ' . (microtime(true) - $start_time) . '<br>';
-	}
-
-	//------------------------------------------------------------------------------------ compileAll
-	/**
-	 * @param $weaver IWeaver
-	 */
-	public function compileAll(IWeaver $weaver)
-	{
-		foreach (Application::current()->include_path->getSourceFiles() as $file_name) {
-			if (substr($file_name, -4) == '.php') {
-				$buffer = str_replace("\r", '', file_get_contents($file_name));
-				preg_match(
-					'`\n\s*(abstract\s+)?(class|trait)\s+([^\s]*)`', $buffer, $match
-				);
-				if ($match) {
-					$class_name = $match[3];
-					preg_match('`\n\s*namespace\s*([^;\s\{]*)`', $buffer, $match);
-					if ($match) {
-						$class_name = $match[1] . '\\' . $class_name;
+		else {
+			foreach (Application::current()->include_path->getSourceFiles() as $file_name) {
+				if (substr($file_name, -4) == '.php') {
+					$class = Php_Class::fromFile($file_name);
+					if ($class) {
+						if (!isset($this->compiled_classes[$class->name])) {
+							$this->compileClass($class);
+						}
 					}
-					if (!isset($this->compiled_classes[$class_name])) {
-						$this->compileClass($class_name, $file_name);
-					}
-					if (self::DEBUG) echo '- compile class ' . $class_name . '<br>';
-				}
-				else {
-					if (self::DEBUG) echo '<b>- nothing into ' . $file_name . '</b><br>';
+					elseif (self::DEBUG) echo '<h2 style="color:red;">Nothing into ' . $file_name . '</h2>';
 				}
 			}
 		}
-		$this->compile($weaver);
 	}
 
 	//---------------------------------------------------------------------------------- compileClass
 	/**
-	 * @param $class_name string the name of the class or trait to be compiled
-	 * @param $file_name  string file name (optional)
+	 * @param $class Php_Class
 	 */
-	private function compileClass($class_name, $file_name = null)
+	private function compileClass(Php_Class $class)
 	{
-		if (isset($file_name)) {
-			/** @noinspection PhpIncludeInspection */
-			include_once $file_name;
-			$class = new ReflectionClass($class_name);
-		}
-		else {
-			$class = new ReflectionClass($class_name);
-			$file_name = $class->getFileName();
-		}
-		$buffer = file_get_contents($file_name);
-		$cleanup = (new Php_Source($class_name, $buffer))->cleanupAop();
-		if (self::DEBUG) echo 'cleanup of $class_name = ' . $cleanup . '<br>';
+		$this->compiled_classes[$class->name] = true;
+		if (self::DEBUG) echo '<h2>' . $class->name . '</h2>';
 
 		if (isset($_GET['C'])) {
-			echo 'CLEANUP-ONLY ' . $class_name . '<br>';
-			$methods = $properties = array();
-		}
-		else {
-
-			if (self::DEBUG) echo '<h2>compile class ' . $class_name. '</h2>';
-			$buffer = substr($buffer, 0, -2) . "\t//" . str_repeat('#', 91) . " AOP\n";
-
-			$methods    = array();
-			$properties = array();
-			if (!$class->isInterface()) {
-				if (!$class->isTrait()) {
-					$this->scanForLinks($properties,   $class);
-					$this->scanForGetters($properties, $class);
-					$this->scanForSetters($properties, $class);
-				}
-				$this->scanForMethods($methods, $class);
-			}
-
-			list($methods2, $properties2) = $this->getPointcuts($class_name);
-			$methods    = arrayMergeRecursive($methods, $methods2);
-			$properties = arrayMergeRecursive($properties, $properties2);
-
-			if ($properties) {
-				$properties_compiler = new Properties_Compiler($class_name, $buffer);
-				foreach ($properties as $property_name => $advices) {
-					$properties_compiler->compileProperty($property_name, $advices);
-				}
-				$methods_code = $properties_compiler->getCompiledMethods();
-			}
-			else {
-				$methods_code = array();
-			}
-
-			$method_compiler = new Method_Compiler($class_name, $buffer);
-			foreach ($methods as $method_name => $advices) {
-				$methods_code[$method_name] = $method_compiler->compile($method_name, $advices);
-			}
-
-			ksort($methods_code);
-			$buffer .= join('', $methods_code) . "\n}\n";
-
+			echo 'CLEANUP ' . $class->name . '<br>';
+			file_put_contents($class->file_name, $class->source);
+			return;
 		}
 
-		if ($cleanup || $methods || $properties) {
-			if (isset($_GET['D'])) echo '<pre>' . htmlentities($buffer) . '</pre>';
-			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class_name . '<br>';
-			else file_put_contents($file_name, $buffer);
+		$methods    = array();
+		$properties = array();
+		if ($class->type !== 'interface') {
+			if ($class->type !== 'trait') {
+				$this->scanForLinks($properties,   $class);
+				$this->scanForGetters($properties, $class);
+				$this->scanForSetters($properties, $class);
+			}
+			$this->scanForAbstract($methods, $class);
+			/*
+			// this scan must be done for all classes before compiling : it creates links in other classes
+			$this->scanForMethods($methods, $class);
+			*/
+		}
+
+		list($methods2, $properties2) = $this->getPointcuts($class->name);
+		$methods    = arrayMergeRecursive($methods,    $methods2);
+		$properties = arrayMergeRecursive($properties, $properties2);
+		$methods_code = array();
+
+		/*
+		if ($properties) {
+			$properties_compiler = new Properties_Compiler($class);
+			foreach ($properties as $property_name => $advices) {
+				$properties_compiler->compileProperty($property_name, $advices);
+			}
+			$methods_code = $properties_compiler->getCompiledMethods();
+		}
+		*/
+
+		if ($methods) echo '<pre>' . print_r($methods, true) . '</pre>';
+
+		$method_compiler = new Method_Compiler($class);
+		foreach ($methods as $method_name => $advices) {
+			$methods_code[$method_name] = $method_compiler->compile($method_name, $advices);
+		}
+
+		ksort($methods_code);
+		$buffer =
+			substr($class->source, 0, -2) . "\t//" . str_repeat('#', 91) . ' AOP'
+			. join('', $methods_code)
+			. "\n}\n";
+		if (!$class->clean || $methods_code) {
+			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class->name . '<br>';
+			else file_put_contents($class->file_name, $buffer);
 			if (self::DEBUG) echo '<pre>' . htmlentities($buffer) . '</pre>';
 		}
-
-		$this->compiled_classes[$class_name] = true;
 	}
 
 	//---------------------------------------------------------------------------------- getPointcuts
@@ -193,13 +156,13 @@ class Compiler implements ICompiler
 	 * Returns true if the property is declared into the class, or into traits used by the class
 	 * or by a trait used by the class
 	 *
-	 * @param $property ReflectionMethod|ReflectionProperty
-	 * @param $class    ReflectionClass
+	 * @param $property Php_Method|Php_Property
+	 * @param $class    Php_Class
 	 * @return boolean
 	 */
-	private function isInClass($property, ReflectionClass $class)
+	private function isInClass($property, Php_Class $class)
 	{
-		if ($property->class == $class->name) return true;
+		if ($property->class->name == $class->name) return true;
 		$traits = array($class->name);
 		$get_traits = $traits;
 		while ($get_traits) {
@@ -207,33 +170,55 @@ class Compiler implements ICompiler
 			foreach ($get_traits as $trait_name) {
 				if ($uses = class_uses($trait_name)) {
 					$get_traits = array_merge($get_traits, $uses);
-					$traits = array_merge($traits, $uses);
+					$traits     = array_merge($traits,     $uses);
 				}
 			}
 		}
-		if (self::DEBUG) echo '&gt; Traits for ' . $class->name . ' are ' . print_r($traits, true) . '<br>';
-		return in_array($property->class, $traits);
+		return in_array($property->class->name, $traits);
+	}
+
+	//------------------------------------------------------------------------------- scanForAbstract
+	/**
+	 * @param $methods array
+	 * @param $class   Php_Class
+	 */
+	private function scanForAbstract(&$methods, Php_Class $class)
+	{
+		/**
+		 * TODO Scan weaver for all parent AOP aspects on abstract methods
+		 * - for each methods implemented in the class or its traits
+		 * - for each parent abstract method of these methods
+		 * - for all the parent chain between the method and its parent
+		 * - if any advice : add it for the current class
+		 *
+		 * Aspects on abstract methods will not be weaved until it's done.
+		 */
 	}
 
 	//-------------------------------------------------------------------------------- scanForMethods
 	/**
 	 * @param $methods array
-	 * @param $class   ReflectionClass
+	 * @param $class   Php_Class
 	 */
-	private function scanForMethods(&$methods, ReflectionClass $class)
+	private function scanForMethods(&$methods, Php_Class $class)
 	{
-		foreach ($class->getMethods() as $method) {
-			if (!$method->isAbstract() && ($method->class == $class->name)) {
-				$doc_comment = $method->getDocComment();
-				$expr = '%\n\s+\*\s+@(after|around|before|)\s+(?:(\w+)::)?(\w+)(\($this\))?%';
-				preg_match_all($expr, $doc_comment, $match);
+		foreach ($class->getMethods(array('inherited', 'traits')) as $method) {
+			if (!$method->isAbstract() && ($method->class->name == $class->name)) {
+				$expr = '%'
+					. '\n\s+\*\s+'                // each line beginning by '* '
+					. '@(after|around|before)\s+' // 1 : aspect type
+					. '(?:([\\\\\w]+)::)?'        // 2 : optional class name
+					. '(\w+)\s*'                  // 3 : method or function name
+					. '(?:\((\$this)\))?'         // 4 : optional '$this'
+					. '%';
+				preg_match_all($expr, $method->documentation, $match);
 				if ($match) {
 					foreach (array_keys($match[0]) as $key) {
-						$type        = $match[0][$key];
-						$class_name  = $match[1][$key] ?: '$this';
-						$method_name = $match[2][$key];
-						$has_this    = $match[3][$key];
-						$aspect = array($type, array($method->class, $method->name));
+						$type        = $match[1][$key];
+						$class_name  = $match[2][$key] ?: '$this';
+						$method_name = $match[3][$key];
+						$has_this    = $match[4][$key];
+						$aspect = array($type, array($method->class->name, $method->name));
 						if ($has_this) {
 							$aspect[] = $has_this;
 						}
@@ -247,14 +232,19 @@ class Compiler implements ICompiler
 	//-------------------------------------------------------------------------------- scanForGetters
 	/**
 	 * @param $properties array
-	 * @param $class      ReflectionClass
+	 * @param $class      Php_Class
 	 */
-	private function scanForGetters(&$properties, ReflectionClass $class)
+	private function scanForGetters(&$properties, Php_Class $class)
 	{
-		foreach ($class->getProperties() as $property) {
+		foreach ($class->getProperties(array('inherited', 'traits')) as $property) {
 			if ($this->isInClass($property, $class)) {
-				$doc_comment = $property->getDocComment();
-				preg_match('%\n\s+\*\s+@getter(?:\s+(?:(\w+)::)?(\w+)?)?%', $doc_comment, $match);
+				$expr = '%'
+					. '\n\s+\*\s+'               // each line beginnig by '* '
+					. '@getter'                  // getter annotation
+					. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
+					. '(\w+)?)?'                 // 2 : method or function name
+					. '%';
+				preg_match($expr, $property->documentation, $match);
 				if ($match) {
 					$advice = array(
 						empty($match[1]) ? '$this' : $match[1],
@@ -269,23 +259,26 @@ class Compiler implements ICompiler
 	//---------------------------------------------------------------------------------- scanForLinks
 	/**
 	 * @param $properties array
-	 * @param $class      ReflectionClass
+	 * @param $class      Php_Class
 	 */
-	private function scanForLinks(&$properties, ReflectionClass $class)
+	private function scanForLinks(&$properties, Php_Class $class)
 	{
-		foreach ($class->getProperties() as $property) {
-			if (($property->class == $class->name)) {
-				$doc_comment = $property->getDocComment();
-				if (strpos($doc_comment, '* @link')) {
-					$expr = '%\n\s+\*\s+@link\s+(All|Collection|DateTime|Map|Object)%';
-					preg_match($expr, $doc_comment, $match);
+		foreach ($class->getProperties(array('inherited', 'traits')) as $property) {
+			if (($property->class->name == $class->name)) {
+				if (strpos($property->documentation, '* @link')) {
+					$expr = '%'
+						. '\n\s+\*\s+'                           // each line beginning by '* '
+						. '@link\s+'                             // link annotation
+						. '(All|Collection|DateTime|Map|Object)' // 1 : link keyword
+						. '%';
+					preg_match($expr, $property->documentation, $match);
 					if ($match) {
 						/** @var $advice callable */
 						$advice = array(Getter::class, 'get' . $match[1]);
 					}
 					else {
 						trigger_error(
-							'@link of ' . $property->class . '::' . $property->name
+							'@link of ' . $property->class->name . '::' . $property->name
 							. ' must be All, Collection, DateTime, Map or Object',
 							E_USER_ERROR
 						);
@@ -300,14 +293,19 @@ class Compiler implements ICompiler
 	//-------------------------------------------------------------------------------- scanForSetters
 	/**
 	 * @param $properties array
-	 * @param $class      ReflectionClass
+	 * @param $class      Php_Class
 	 */
-	private function scanForSetters(&$properties, ReflectionClass $class)
+	private function scanForSetters(&$properties, Php_Class $class)
 	{
-		foreach ($class->getProperties() as $property) {
-			if ($property->class == $class->name) {
-				$doc_comment = $property->getDocComment();
-				preg_match('%\n\s+\*\s+@setter(?:\s+(?:(\w+)::)?(\w+)?)?%', $doc_comment, $match);
+		foreach ($class->getProperties(array('inherited', 'traits')) as $property) {
+			if ($this->isInClass($property, $class)) {
+				$expr = '%'
+					. '\n\s+\*\s+'               // each line beginnig by '* '
+					. '@setter'                  // setter annotation
+					. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
+					. '(\w+)?)?'                 // 2 : method or function name
+					. '%';
+				preg_match($expr, $property->documentation, $match);
 				if ($match) {
 					$advice = array(
 						empty($match[1]) ? '$this' : $match[1],
@@ -317,12 +315,6 @@ class Compiler implements ICompiler
 				}
 			}
 		}
-	}
-
-	//--------------------------------------------------------------------------- willCompileFunction
-	private function willCompileFunction()
-	{
-		trigger_error('Compiler does not know how to compile function joinpoints', E_USER_ERROR);
 	}
 
 }

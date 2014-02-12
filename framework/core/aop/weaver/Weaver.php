@@ -151,7 +151,7 @@ class Weaver implements ICompiled, IWeaver
 		if (!isset($compiler)) {
 			$compiler = new Compiler($this);
 		}
-		$compiler->compileAll($this);
+		$compiler->compile();
 	}
 
 	//--------------------------------------------------------------------------------- getJoinpoints

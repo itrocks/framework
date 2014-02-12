@@ -28,22 +28,41 @@ class Php_Source
 	//----------------------------------------------------------------------------------- $implements
 	private $implements;
 
+	//-------------------------------------------------------------------------------------- $methods
+	private $methods;
+
 	//------------------------------------------------------------------------------------ $namespace
 	private $namespace;
 
+	//----------------------------------------------------------------------------------- $properties
+	private $properties;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
+	 * @param $class_name string class name or file name
 	 * @param $buffer     string
 	 */
 	public function __construct($class_name, &$buffer = null)
 	{
-		$this->class_name = $class_name;
-		if (isset($buffer)) {
-			$this->buffer =& $buffer;
+		if ((strpos($class_name, '/') !== false) && file_exists($class_name)) {
+			if (isset($buffer)) {
+				$this->buffer =& $buffer;
+			}
+			else {
+				$this->buffer = str_replace("\r", "", file_get_contents($class_name));
+			}
+			$this->class_name = $this->getClassName();
 		}
 		else {
-			$this->buffer = file_get_contents((new ReflectionClass($class_name))->getFileName());
+			$this->class_name = $class_name;
+			if (isset($buffer)) {
+				$this->buffer =& $buffer;
+			}
+			else {
+				$this->buffer = str_replace("\r", "", file_get_contents(
+					(new ReflectionClass($class_name))->getFileName()
+				));
+			}
 		}
 	}
 
@@ -94,9 +113,24 @@ class Php_Source
 		return $match1 || $match2;
 	}
 
+	//---------------------------------------------------------------------------------- getClassName
+	/**
+	 * Gets class name from source
+	 *
+	 * @return string
+	 */
+	public function getClassName()
+	{
+		preg_match('`\n\s*(?:abstract\s+)?(?:class|interface|trait)\s+(\w*)`', $this->buffer, $match);
+		return $match ? $match[1] : null;
+	}
+
 	//---------------------------------------------------------------------------------- getDocComment
 	/**
 	 * Gets doc comment of an element (property or function name)
+	 *
+	 * @param $name string
+	 * @return string
 	 */
 	public function getDocComment($name)
 	{
@@ -125,19 +159,16 @@ class Php_Source
 	 * Gets the prototype of an existing method from the class
 	 *
 	 * Detailed match contains match as described bellow
-	 * 0 : "\n\tpublic static function methodName (...) {"
-	 * 1 : "\n\t"
-	 * 2 : "public "
-	 * 3 : "public"
-	 * 4 : "static function "
-	 * 5 : "static "
-	 * 6 : "methodName"
-	 * 7 : " ($param, &$param2 = CONSTANT) {"
+	 * 0 : "[DOC]\n\tabstract public static function methodName (...) {"
+	 * 1 : "[DOC]"
+	 * 2 : "\n\t"
+	 * 3 : "abstract"
+	 * 4 : "public"
+	 * 5 : "static"
+	 * 6 : "($param, &$param2 = CONSTANT)"
 	 * 'preg': $full_preg_expression
 	 * 'parent': true (set only if prototype was taken from a parent class)
 	 * 'prototype': the prototype string
-	 *
-	 * @example "methodName" => "\n\tpublic static function methodName (...) {"
 	 *
 	 * @param $method_name string
 	 * @param $detailed    boolean if true, all matching elements and the preg are returned
@@ -145,8 +176,17 @@ class Php_Source
 	 */
 	public function getPrototype($method_name, $detailed = false)
 	{
-		$expr = '`(\n\s*)((private|protected|public)\s*)?((static\s*)?function\s+)'
-			. '(' . $method_name . ')(\s*\([^\{]*\)[\n*\s*]*\{)`';
+		$expr = '%'
+			. '(\n\s*)'
+			. '(?:(/\*\*.*\*/)\n\s*)?'
+			. '(?:(abstract)\s+)?'
+			. '(?:(private|protected|public)\s+)?'
+			. '(?:(static)\s+)?'
+			. 'function\s+'
+			. '(?:' . $method_name . ')'
+			. '\s*\((.*)\)'
+			. '\s*[\{\;]'
+			. '%sU';
 		preg_match($expr, $this->buffer, $match);
 		if (!$match) {
 			foreach ($this->allReflectionTraits() as $trait_name) {
@@ -168,6 +208,12 @@ class Php_Source
 		if ($detailed && $match) {
 			$match['preg'] = $expr;
 			$match['prototype'] = $match[0];
+			if (isset($match[1])) $match['doc'] = $match[1];
+			$match['indent'] = $match[2];
+			if (isset($match[3])) $match['abstract'] = true;
+			if (isset($match[4])) $match['visibility'] = $match[3];
+			if (isset($match[5])) $match['static'] = true;
+			$match['parameters'] = $match[6];
 		}
 		return $match ? ($detailed ? $match : $match[0]) : null;
 	}
@@ -217,6 +263,23 @@ class Php_Source
 		return $this->implements;
 	}
 
+	//------------------------------------------------------------------------------------ getMethods
+	/**
+	 * @return Php_Method[]
+	 */
+	public function getMethods()
+	{
+		if (!isset($this->methods)) {
+			$this->methods = array();
+			preg_match_all(Php_Method::regex(), $this->buffer, $match);
+			foreach (array_keys($match[0]) as $n) {
+				$method = Php_Method::fromMatch($this->class_name, $match, $n);
+				$this->methods[$method->name] = $method;
+			}
+		}
+		return $this->methods;
+	}
+
 	//---------------------------------------------------------------------------------- getNameSpace
 	/**
 	 * @return string
@@ -241,6 +304,25 @@ class Php_Source
 		$expr = '%\$\w*%s';
 		preg_match_all($expr, $prototype, $match);
 		return $match[0];
+	}
+
+	//------------------------------------------------------------------------------------ isAbstract
+	/**
+	 * Returns true if the class or trait is abstract, or if this is an interface
+	 *
+	 * @param $name a method name
+	 * @return boolean
+	 */
+	public function isAbstract($name = null)
+	{
+		if (isset($name)) {
+			$prototype = $this->getPrototype($name, true);
+			return isset($prototype['abstract']);
+		}
+		else {
+			preg_match('`\n\s*(?:(abstract)\s+)?(class|interface|trait)\s+\w*`', $this->buffer, $match);
+			return $match && ($match[1] || ($match[2] == 'interface'));
+		}
 	}
 
 }
