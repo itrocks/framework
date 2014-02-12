@@ -107,12 +107,13 @@ class Main_Controller
 	private function includes()
 	{
 		// Low level includes
-		include_once __DIR__ . '/../toolbox/Array.php';
+		include_once __DIR__ . '/../toolbox/functions/array_functions.php';
+		include_once __DIR__ . '/../toolbox/functions/string_functions.php';
+		include_once __DIR__ . '/../toolbox/functions/type_functions.php';
 		include_once __DIR__ . '/../toolbox/Current.php';
 		include_once __DIR__ . '/../toolbox/Current_With_Default.php';
 		include_once __DIR__ . '/../toolbox/Namespaces.php';
 		include_once __DIR__ . '/../toolbox/OS.php';
-		include_once __DIR__ . '/../toolbox/Runkit_Patch.php';
 		include_once __DIR__ . '/../toolbox/String.php';
 
 		// Include_Path
