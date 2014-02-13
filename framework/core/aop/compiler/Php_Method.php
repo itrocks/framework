@@ -166,7 +166,7 @@ class Php_Method
 	public function getParametersNames()
 	{
 		if (!isset($this->parameters_names)) {
-			$expr = '%\,\s*[\&]\$(\w+)%';
+			$expr = '%\,\(?\s*\&?\$(\w+)%';
 			preg_match_all($expr, ',' . $this->parameters_string, $match);
 			$this->parameters_names = array_combine($match[1], $match[1]);
 		}
@@ -237,7 +237,7 @@ class Php_Method
 	{
 		if (!isset($this->returns)) {
 			$expr = '%'
-				. '\n\s*\*\s+@return\s+([\\\w]+)'
+				. '\n\s*\*\s+\@return\s+([\\\\\w]+)'
 				. '%';
 			preg_match($expr, $this->documentation, $match);
 			$this->returns = $match ? $match[1] : false;

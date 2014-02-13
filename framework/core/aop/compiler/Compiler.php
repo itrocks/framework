@@ -87,10 +87,10 @@ class Compiler implements ICompiler
 			if ($class->type != 'trait') {
 				$this->scanForImplements($properties, $class);
 			}
-			$this->scanForLinks     ($properties, $class);
-			$this->scanForGetters   ($properties, $class);
-			$this->scanForSetters   ($properties, $class);
-			$this->scanForAbstract  ($methods,    $class);
+			$this->scanForLinks   ($properties, $class);
+			$this->scanForGetters ($properties, $class);
+			$this->scanForSetters ($properties, $class);
+			$this->scanForAbstract($methods,    $class);
 			// TODO should be done for all classes before compiling : it creates links in other classes
 			//$this->scanForMethods($methods, $class);
 		}

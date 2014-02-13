@@ -12,6 +12,12 @@ class Properties_Compiler
 
 	const DEBUG = false;
 
+	//-------------------------------------------------------------------------------------- $actions
+	/**
+	 * @var string[] key is the original method name, value is the 'rename' or 'trait' action
+	 */
+	private $actions;
+
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var Php_Class
@@ -34,6 +40,7 @@ class Properties_Compiler
 	 */
 	public function compile($advices)
 	{
+		$this->actions = array();
 		$methods = array();
 		if (!$this->class->isAbstract()) {
 			$methods['__construct'] = $this->compileConstruct($advices);
@@ -49,6 +56,7 @@ class Properties_Compiler
 			$methods[$property_name . '_read'] = $this->compileRead($property_name, $property_advices);
 			$methods[$property_name . '_write'] = $this->compileWrite($property_name, $property_advices);
 		}
+		$this->executeActions();
 		return $methods;
 	}
 
@@ -396,6 +404,27 @@ class Properties_Compiler
 		return '';
 	}
 
+	//-------------------------------------------------------------------------------- executeActions
+	private function executeActions()
+	{
+		foreach ($this->actions as $method_name => $action) {
+			if ($action == 'rename') {
+				$regexp = Php_Method::regex($method_name);
+				$this->class->source = preg_replace(
+					$regexp,
+					"\n\t" . '$2' . "\n\t" . '/* $4 */ private $5 function $6_0$7$8',
+					$this->class->source
+				);
+			}
+			else {
+				trigger_error(
+					'Don\'t know how to ' . $action . ' ' . $this->class->name . '::' . $method_name,
+					E_USER_ERROR
+				);
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------------------- initCode
 	/**
 	 * @param $init string[]
@@ -497,9 +526,21 @@ class Properties_Compiler
 		if (isset($method)) {
 			$over['method']    = $method;
 			$over['prototype'] = $method->prototype;
+			if (in_array($method_name, array('__get', '__isset', '__set', '__unset'))) {
+				$parameters = $method->getParametersNames();
+				if (reset($parameters) !== 'property_name') {
+					$over['prototype'] .= '
+		$property_name = $' . reset($parameters) . ';';
+				}
+				if ((count($parameters) == 2) && (end($parameters) !== 'value')) {
+					$over['prototype'] .= '
+		$value = $' . end($parameters) . ';';
+				}
+			}
 			if ($over['call']) {
+				$suffix = ($over['call'] === 'parent::') ? '' : '_0';
 				$over['call'] = ($method->returns() ? 'return ' : '')
-					. $over['call'] . $method_name . '_0(' . $method->getParametersCall() . ');'
+					. $over['call'] . $method_name . $suffix . '(' . $method->getParametersCall() . ');'
 					. ($method->returns() ? '' : ' return;');
 			}
 		}
@@ -531,6 +572,9 @@ class Properties_Compiler
 	/** AOP */
 	public function ' . $method_name . '(' . $parameters . ')
 	{';
+		}
+		if ($over['action']) {
+			$this->actions[$method_name] = $over['action'];
 		}
 		return $over;
 	}
