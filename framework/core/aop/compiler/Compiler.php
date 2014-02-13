@@ -12,7 +12,7 @@ use SAF\Plugins;
 class Compiler implements ICompiler
 {
 
-	const DEBUG = true;
+	const DEBUG = false;
 
 	//----------------------------------------------------------------------------- $compiled_classes
 	/**
@@ -55,6 +55,7 @@ class Compiler implements ICompiler
 				if (substr($file_name, -4) == '.php') {
 					$class = Php_Class::fromFile($file_name);
 					if ($class) {
+						if (self::DEBUG) echo '<h2>Compile ' . $file_name . ' : ' . $class->type . ' ' . $class->name . '</h2>';
 						if (!isset($this->compiled_classes[$class->name])) {
 							$this->compileClass($class);
 						}
@@ -83,16 +84,15 @@ class Compiler implements ICompiler
 		$methods    = array();
 		$properties = array();
 		if ($class->type !== 'interface') {
-			if ($class->type !== 'trait') {
-				$this->scanForLinks($properties,   $class);
-				$this->scanForGetters($properties, $class);
-				$this->scanForSetters($properties, $class);
+			if ($class->type != 'trait') {
+				$this->scanForImplements($properties, $class);
 			}
-			$this->scanForAbstract($methods, $class);
-			/*
-			// this scan must be done for all classes before compiling : it creates links in other classes
-			$this->scanForMethods($methods, $class);
-			*/
+			$this->scanForLinks     ($properties, $class);
+			$this->scanForGetters   ($properties, $class);
+			$this->scanForSetters   ($properties, $class);
+			$this->scanForAbstract  ($methods,    $class);
+			// TODO should be done for all classes before compiling : it creates links in other classes
+			//$this->scanForMethods($methods, $class);
 		}
 
 		list($methods2, $properties2) = $this->getPointcuts($class->name);
@@ -100,17 +100,14 @@ class Compiler implements ICompiler
 		$properties = arrayMergeRecursive($properties, $properties2);
 		$methods_code = array();
 
-		/*
+		if (self::DEBUG && $properties) echo '<pre>properties = ' . print_r($properties, true) . '</pre>';
+
 		if ($properties) {
 			$properties_compiler = new Properties_Compiler($class);
-			foreach ($properties as $property_name => $advices) {
-				$properties_compiler->compileProperty($property_name, $advices);
-			}
-			$methods_code = $properties_compiler->getCompiledMethods();
+			$methods_code = $properties_compiler->compile($properties);
 		}
-		*/
 
-		if ($methods) echo '<pre>' . print_r($methods, true) . '</pre>';
+		if (self::DEBUG && $methods) echo '<pre>methods = ' . print_r($methods, true) . '</pre>';
 
 		$method_compiler = new Method_Compiler($class);
 		foreach ($methods as $method_name => $advices) {
@@ -118,8 +115,11 @@ class Compiler implements ICompiler
 		}
 
 		ksort($methods_code);
+
+		if (self::DEBUG && $methods_code) echo '<pre>' . print_r($methods_code, true) . '</pre>';
+
 		$buffer =
-			substr($class->source, 0, -2) . "\t//" . str_repeat('#', 91) . ' AOP'
+			substr($class->source, 0, -2) . "\t//" . str_repeat('#', 91) . ' AOP' . "\n"
 			. join('', $methods_code)
 			. "\n}\n";
 		if (!$class->clean || $methods_code) {
@@ -151,32 +151,6 @@ class Compiler implements ICompiler
 		return array($methods, $properties);
 	}
 
-	//----------------------------------------------------------------------------- isPropertyInClass
-	/**
-	 * Returns true if the property is declared into the class, or into traits used by the class
-	 * or by a trait used by the class
-	 *
-	 * @param $property Php_Method|Php_Property
-	 * @param $class    Php_Class
-	 * @return boolean
-	 */
-	private function isInClass($property, Php_Class $class)
-	{
-		if ($property->class->name == $class->name) return true;
-		$traits = array($class->name);
-		$get_traits = $traits;
-		while ($get_traits) {
-			$get_traits = array();
-			foreach ($get_traits as $trait_name) {
-				if ($uses = class_uses($trait_name)) {
-					$get_traits = array_merge($get_traits, $uses);
-					$traits     = array_merge($traits,     $uses);
-				}
-			}
-		}
-		return in_array($property->class->name, $traits);
-	}
-
 	//------------------------------------------------------------------------------- scanForAbstract
 	/**
 	 * @param $methods array
@@ -195,6 +169,84 @@ class Compiler implements ICompiler
 		 */
 	}
 
+	//-------------------------------------------------------------------------------- scanForGetters
+	/**
+	 * @param $properties array
+	 * @param $class      Php_Class
+	 */
+	private function scanForGetters(&$properties, Php_Class $class)
+	{
+		foreach ($class->getProperties() as $property) {
+			$expr = '%'
+				. '\n\s+\*\s+'               // each line beginnig by '* '
+				. '@getter'                  // getter annotation
+				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
+				. '(\w+)?)?'                 // 2 : method or function name
+				. '%';
+			preg_match($expr, $property->documentation, $match);
+			if ($match) {
+				$advice = array(
+					empty($match[1]) ? '$this' : $match[1],
+					isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'get')
+				);
+				$properties[$property->name][] = array('read', $advice);
+			}
+		}
+	}
+
+	//----------------------------------------------------------------------------------- scanForInit
+	/**
+	 * @param $properties array
+	 * @param $class      Php_Class
+	 */
+	private function scanForImplements(&$properties, Php_Class $class)
+	{
+		foreach ($class->getProperties(array('traits')) as $property) {
+			$expr = '%'
+				. '\n\s+\*\s+'               // each line beginnig by '* '
+				. '@(getter|link|setter)'    // 1 : AOP annotation
+				. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
+				. '(\w+)?)?'                 // 3 : method or function name
+				. '%';
+			preg_match($expr, $property->documentation, $match);
+			if ($match) {
+				$type = ($match[1] == 'setter') ? 'write' : 'read';
+				$properties[$property->name]['implements'][$type] = true;
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------------- scanForLinks
+	/**
+	 * @param $properties array
+	 * @param $class      Php_Class
+	 */
+	private function scanForLinks(&$properties, Php_Class $class)
+	{
+		foreach ($class->getProperties() as $property) {
+			if (strpos($property->documentation, '* @link')) {
+				$expr = '%'
+					. '\n\s+\*\s+'                           // each line beginning by '* '
+					. '@link\s+'                             // link annotation
+					. '(All|Collection|DateTime|Map|Object)' // 1 : link keyword
+					. '%';
+				preg_match($expr, $property->documentation, $match);
+				if ($match) {
+					$advice = array(Getter::class, 'get' . $match[1]);
+				}
+				else {
+					trigger_error(
+						'@link of ' . $property->class->name . '::' . $property->name
+						. ' must be All, Collection, DateTime, Map or Object',
+						E_USER_ERROR
+					);
+					$advice = null;
+				}
+				$properties[$property->name][] = array('read', $advice);
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------------- scanForMethods
 	/**
 	 * @param $methods array
@@ -202,7 +254,7 @@ class Compiler implements ICompiler
 	 */
 	private function scanForMethods(&$methods, Php_Class $class)
 	{
-		foreach ($class->getMethods(array('inherited', 'traits')) as $method) {
+		foreach ($class->getMethods() as $method) {
 			if (!$method->isAbstract() && ($method->class->name == $class->name)) {
 				$expr = '%'
 					. '\n\s+\*\s+'                // each line beginning by '* '
@@ -229,67 +281,6 @@ class Compiler implements ICompiler
 		}
 	}
 
-	//-------------------------------------------------------------------------------- scanForGetters
-	/**
-	 * @param $properties array
-	 * @param $class      Php_Class
-	 */
-	private function scanForGetters(&$properties, Php_Class $class)
-	{
-		foreach ($class->getProperties(array('inherited', 'traits')) as $property) {
-			if ($this->isInClass($property, $class)) {
-				$expr = '%'
-					. '\n\s+\*\s+'               // each line beginnig by '* '
-					. '@getter'                  // getter annotation
-					. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
-					. '(\w+)?)?'                 // 2 : method or function name
-					. '%';
-				preg_match($expr, $property->documentation, $match);
-				if ($match) {
-					$advice = array(
-						empty($match[1]) ? '$this' : $match[1],
-						isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'get')
-					);
-					$properties[$property->name][] = array('read', $advice);
-				}
-			}
-		}
-	}
-
-	//---------------------------------------------------------------------------------- scanForLinks
-	/**
-	 * @param $properties array
-	 * @param $class      Php_Class
-	 */
-	private function scanForLinks(&$properties, Php_Class $class)
-	{
-		foreach ($class->getProperties(array('inherited', 'traits')) as $property) {
-			if (($property->class->name == $class->name)) {
-				if (strpos($property->documentation, '* @link')) {
-					$expr = '%'
-						. '\n\s+\*\s+'                           // each line beginning by '* '
-						. '@link\s+'                             // link annotation
-						. '(All|Collection|DateTime|Map|Object)' // 1 : link keyword
-						. '%';
-					preg_match($expr, $property->documentation, $match);
-					if ($match) {
-						/** @var $advice callable */
-						$advice = array(Getter::class, 'get' . $match[1]);
-					}
-					else {
-						trigger_error(
-							'@link of ' . $property->class->name . '::' . $property->name
-							. ' must be All, Collection, DateTime, Map or Object',
-							E_USER_ERROR
-						);
-						$advice = null;
-					}
-					$properties[$property->name][] = array('read', $advice);
-				}
-			}
-		}
-	}
-
 	//-------------------------------------------------------------------------------- scanForSetters
 	/**
 	 * @param $properties array
@@ -297,22 +288,20 @@ class Compiler implements ICompiler
 	 */
 	private function scanForSetters(&$properties, Php_Class $class)
 	{
-		foreach ($class->getProperties(array('inherited', 'traits')) as $property) {
-			if ($this->isInClass($property, $class)) {
-				$expr = '%'
-					. '\n\s+\*\s+'               // each line beginnig by '* '
-					. '@setter'                  // setter annotation
-					. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
-					. '(\w+)?)?'                 // 2 : method or function name
-					. '%';
-				preg_match($expr, $property->documentation, $match);
-				if ($match) {
-					$advice = array(
-						empty($match[1]) ? '$this' : $match[1],
-						isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'set')
-					);
-					$properties[$property->name][] = array('write', $advice);
-				}
+		foreach ($class->getProperties() as $property) {
+			$expr = '%'
+				. '\n\s+\*\s+'               // each line beginnig by '* '
+				. '@setter'                  // setter annotation
+				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
+				. '(\w+)?)?'                 // 2 : method or function name
+				. '%';
+			preg_match($expr, $property->documentation, $match);
+			if ($match) {
+				$advice = array(
+					empty($match[1]) ? '$this' : $match[1],
+					isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'set')
+				);
+				$properties[$property->name][] = array('write', $advice);
 			}
 		}
 	}

@@ -40,6 +40,12 @@ class Php_Method
 	 */
 	public $name;
 
+	//------------------------------------------------------------------------------ $parameters_call
+	/**
+	 * @var string
+	 */
+	private $parameters_call;
+
 	//----------------------------------------------------------------------------- $parameters_names
 	/**
 	 * @var string[]
@@ -64,6 +70,9 @@ class Php_Method
 	 * @var string full method prototype (not changed if you alter another value)
 	 */
 	public $prototype;
+
+	//-------------------------------------------------------------------------------------- $returns
+	private $returns;
 
 	//--------------------------------------------------------------------------------------- $static
 	/**
@@ -135,6 +144,35 @@ class Php_Method
 		return $method;
 	}
 
+	//----------------------------------------------------------------------------- getParametersCall
+	/**
+	 * @return string
+	 */
+	public function getParametersCall()
+	{
+		if (!isset($this->parameters_call)) {
+			$parameters_names = $this->getParametersNames();
+			$this->parameters_call = $parameters_names
+				? ('$' . join(', $', $this->getParametersNames()))
+				: '';
+		}
+		return $this->parameters_call;
+	}
+
+	//---------------------------------------------------------------------------- getParametersNames
+	/**
+	 * @return string[]
+	 */
+	public function getParametersNames()
+	{
+		if (!isset($this->parameters_names)) {
+			$expr = '%\,\s*[\&]\$(\w+)%';
+			preg_match_all($expr, ',' . $this->parameters_string, $match);
+			$this->parameters_names = array_combine($match[1], $match[1]);
+		}
+		return $this->parameters_names;
+	}
+
 	//------------------------------------------------------------------------------------- getParent
 	/**
 	 * @return Php_Method
@@ -158,20 +196,6 @@ class Php_Method
 			}
 		}
 		return $this->parent ?: null;
-	}
-
-	//---------------------------------------------------------------------------- getParametersNames
-	/**
-	 * @return string[]
-	 */
-	public function getParametersNames()
-	{
-		if (!isset($this->parameters_names)) {
-			$expr = '%\$(\w+)%';
-			preg_match_all($expr, $this->parameters_string, $match);
-			$this->parameters_names = array_combine($match[1], $match[1]);
-		}
-		return $this->parameters_names;
 	}
 
 	//------------------------------------------------------------------------------------ isAbstract
@@ -203,6 +227,22 @@ class Php_Method
 		. '(\((?:.*?\n?)*?\)\s*)'                   // 7 : parameters string
 		. '([\{\;]\s*?\n)'                          // 8 : end of function prototype
 		. '%';
+	}
+
+	//--------------------------------------------------------------------------------------- returns
+	/**
+	 * @return string
+	 */
+	public function returns()
+	{
+		if (!isset($this->returns)) {
+			$expr = '%'
+				. '\n\s*\*\s+@return\s+([\\\w]+)'
+				. '%';
+			preg_match($expr, $this->documentation, $match);
+			$this->returns = $match ? $match[1] : false;
+		}
+		return $this->returns ?: null;
 	}
 
 }

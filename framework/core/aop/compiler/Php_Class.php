@@ -453,12 +453,13 @@ class Php_Class
 	 * Returns true if this class or any of its direct traits implements the method.
 	 * Direct traits are all the traits of the class, not the traits of the parent classes.
 	 *
-	 * @param $method_name string
+	 * @param $method_name    string
+	 * @param $include_traits boolean if false, look in class only
 	 * @return boolean
 	 */
-	public function implementsMethod($method_name)
+	public function implementsMethod($method_name, $include_traits = true)
 	{
-		$methods = $this->getMethods(array('traits'));
+		$methods = $this->getMethods($include_traits ? array('traits') : array());
 		return isset($methods[$method_name]) && !$methods[$method_name]->isAbstract();
 	}
 
@@ -467,12 +468,13 @@ class Php_Class
 	 * Returns true if this class or any of its direct traits declares/implements the property.
 	 * Direct traits are all the traits of the class, not the traits of the parent classes.
 	 *
-	 * @param $property_name string
+	 * @param $property_name  string
+	 * @param $include_traits boolean if false, look in class only
 	 * @return boolean
 	 */
-	public function implementsProperty($property_name)
+	public function implementsProperty($property_name, $include_traits = true)
 	{
-		$properties = $this->getProperties(array('traits'));
+		$properties = $this->getProperties($include_traits ? array('traits') : array());
 		return isset($properties[$property_name]);
 	}
 

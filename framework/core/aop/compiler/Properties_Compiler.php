@@ -12,59 +12,44 @@ class Properties_Compiler
 
 	const DEBUG = false;
 
-	//------------------------------------------------------------------------------------------ $aop
+	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * __aop() inner code (one element per property)
-	 *
-	 * @var string[]
+	 * @var Php_Class
 	 */
-	private $aop;
-
-	//------------------------------------------------------------------------------------ $construct
-	/**
-	 * __construct() inner code (one element per property)
-	 *
-	 * @var string[]
-	 */
-	private $construct;
-
-	//----------------------------------------------------------------------- $constructor_parameters
-	/**
-	 * @var string
-	 */
-	private $constructor_parameters;
-
-	//------------------------------------------------------------------------------------------ $get
-	/**
-	 * __get() inner code (one element per property)
-	 *
-	 * @var string[]
-	 */
-	private $get;
-
-	//------------------------------------------------------------------------------------------ $set
-	/**
-	 * __set() inner code (one element per property)
-	 *
-	 * @var string[]
-	 */
-	private $set;
-
-	//--------------------------------------------------------------------------------------- $source
-	/**
-	 * @var Php_Source
-	 */
-	private $source;
+	private $class;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
-	 * @param $buffer     string
+	 * @param $class Php_Class
 	 */
-	public function __construct($class_name, &$buffer)
+	public function __construct($class)
 	{
-		$this->source = new Php_Source($class_name, $buffer);
-		$this->compileStart();
+		$this->class = $class;
+	}
+
+	//--------------------------------------------------------------------------------------- compile
+	/**
+	 * @param $advices array
+	 * @return string[]
+	 */
+	public function compile($advices)
+	{
+		$methods = array();
+		if (!$this->class->isAbstract()) {
+			$methods['__construct'] = $this->compileConstruct($advices);
+			if ($methods['__construct']) {
+				$methods['__aop']   = $this->compileAop($advices);
+				$methods['__get']   = $this->compileGet($advices);
+				$methods['__isset'] = $this->compileIsset();
+				$methods['__set']   = $this->compileSet($advices);
+				$methods['__unset'] = $this->compileUnset();
+			}
+		}
+		foreach ($advices as $property_name => $property_advices) {
+			$methods[$property_name . '_read'] = $this->compileRead($property_name, $property_advices);
+			$methods[$property_name . '_write'] = $this->compileWrite($property_name, $property_advices);
+		}
+		return $methods;
 	}
 
 	//--------------------------------------------------------------------------------- compileAdvice
@@ -72,13 +57,12 @@ class Properties_Compiler
 	 * @param $property_name string
 	 * @param $type          string
 	 * @param $advice        string[]|object[]|string
+	 * @param $init          string[]
 	 * @return string
 	 */
-	private function compileAdvice($property_name, $type, $advice)
+	private function compileAdvice($property_name, $type, $advice, &$init)
 	{
-		$class_name = $this->source->class_name;
-		$code = '';
-		$after = '';
+		$class_name = $this->class->name;
 
 		/** @var $advice_class_name string */
 		/** @var $advice_method_name string */
@@ -90,7 +74,7 @@ class Properties_Compiler
 		list(
 			$advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters, $advice_string, $advice_has_return, $is_advice_static
-		) = $this->decodeAdvice($advice, $class_name);
+			) = $this->decodeAdvice($advice, $class_name);
 
 		// $advice_parameters_string, $joinpoint_code
 		$joinpoint_code = '';
@@ -104,391 +88,451 @@ class Properties_Compiler
 			if (isset($advice_parameters['result'])) {
 				$advice_parameters_string = str_replace('$result', '$value', $advice_parameters_string);
 			}
-			if (isset($advice_parameters['stored']) || isset($advice_parameters['joinpoint'])) {
-				$code .= '
-			$stored =& $this->' . $property_name . ';';
-			}
 			if (isset($advice_parameters['object']) && !isset($parameters['object'])) {
 				$advice_parameters_string = str_replace('$object', '$this', $advice_parameters_string);
 			}
+			if (isset($advice_parameters['stored']) || isset($advice_parameters['joinpoint'])) {
+				$init['1.stored'] = '$stored =& $this->' . $property_name . ';';
+			}
 			if (isset($advice_parameters['joinpoint'])) {
 				$pointcut_string = 'array($this, \'' . $property_name . '\')';
-				switch ($type) {
-					case 'read':
-						$joinpoint_code = '$joinpoint = new \SAF\AOP\Read_Property_Joinpoint('
-							. "\n\t\t" . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
-							. ');';
-						break;
-					case 'write':
-						$joinpoint_code = '$joinpoint = new \SAF\AOP\Write_Property_Joinpoint('
-							. "\n\t\t" . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
-							. ');';
-						break;
-				}
+				$init['2.joinpoint'] = '$joinpoint = new \SAF\AOP\\' . ucfirst($type) . '_Property_Joinpoint('
+					. "\n\t\t" . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
+					. ');';
 			}
 			if (
 				isset($advice_parameters['property']) || isset($advice_parameters['type'])
 				|| isset($advice_parameters['element_type']) || isset($advice_parameters['type_name'])
 				|| isset($advice_parameters['element_type_name']) || isset($advice_parameters['class_name'])
 			) {
-				$code .= '
-			$property = new \SAF\Framework\Reflection_Property(\''. $class_name . '\', \'' . $property_name . '\');';
+				$init['3.property'] = '$property = new \SAF\Framework\Reflection_Property(__CLASS__, \''
+					. $property_name . '\');';
 			}
 			if (
 				isset($advice_parameters['type']) || isset($advice_parameters['type_name'])
 				|| isset($advice_parameters['element_type_name']) || isset($advice_parameters['class_name'])
 			) {
-				$code .= '
-			$type = $property->getType();';
+				$init['4.type'] = '$type = $property->getType();';
 			}
 			if (isset($advice_parameters['element_type'])) {
-				$code .= '
-			$element_type = $property->getElementType();';
+				$init['5.element_type'] = '$element_type = $property->getElementType();';
 			}
 			if (isset($advice_parameters['type_name'])) {
-				$code .= '
-			$type_name = $type->asString();';
+				$init['6.type_name'] = '$type_name = $type->asString();';
 			}
 			if (isset($advice_parameters['element_type_name'])) {
-				$code .= '
-			$element_type_name = $type->getElementTypeAsString();';
+				$init['7.element_type_name'] = '$element_type_name = $type->getElementTypeAsString();';
 			}
 			if (isset($advice_parameters['class_name'])) {
-				$code .= '
-			$class_name = $type->getElementTypeAsString();';
+				$init['7.class_name'] = '$class_name = $type->getElementTypeAsString();';
 			}
 		}
 		else {
 			$advice_parameters_string = '';
 		}
 
-		return $code . $this->generateAdviceCode(
+		return $this->generateAdviceCode(
 			$advice, $advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters_string, $advice_has_return, $is_advice_static, $joinpoint_code,
-			"\n\t\t\t", '$value'
+			"\n\t\t", '$value'
 		);
 	}
 
-	//---------------------------------------------------------------------------------- compileStart
+	//------------------------------------------------------------------------------------ compileAop
 	/**
-	 * Start the compilation process : prepare methods
-	 */
-	private function compileStart()
-	{
-		$this->aop       = array();
-		$this->construct = array();
-		$this->get       = array();
-		$this->set       = array();
-	}
-
-	//----------------------------------------------------------------------------- compileProperties
-	/**
-	 * @param $property_name string
-	 * @param $advices       array each element is an array($type, $callable)
-	 */
-	public function compileProperty($property_name, $advices)
-	{
-		$class_name = $this->source->class_name;
-
-		// __aop
-
-		$this->aop[$property_name] = '
-		$this->_[\'' . $property_name . '\'] = isset($this->' . $property_name . ')
-			? $this->' . $property_name . ' : null;
-		unset($this->' . $property_name . ');';
-
-		// __get, __set
-
-		$else = $this->get ? 'else' : '';
-		$code['get'] = '
-		' . $else . 'if ($property_name == \'' . $property_name . '\') {';
-		$else = $this->set ? 'else' : '';
-		$code['set'] = '
-		'. $else . 'if ($property_name == \'' . $property_name . '\') {';
-
-		foreach ($advices as $advice) {
-			list($type, $callback) = $advice;
-			$code[($type == 'read') ? 'get' : 'set'] .= $this->compileAdvice(
-				$property_name, $type, $callback
-			);
-		}
-
-		$code['get'] .= '
-		}';
-		$code['set'] .= '
-		}';
-
-		$this->get[$property_name] = $code['get'];
-		$this->set[$property_name] = $code['set'];
-
-		if (self::DEBUG) echo '<h3>Property ' . $class_name::$property_name . '</h3>';
-	}
-
-	//-------------------------------------------------------------------------------------- get__aop
-	/**
+	 * @param $advices array
 	 * @return string
 	 */
-	private function get__aop()
+	private function compileAop($advices)
 	{
-		$prototype = $this->source->getPrototype('__aop', true);
-		return '
-	/**
-	 * properties weaving, called by the constructor
-	 */
-	protected function __aop($reset = true)
+		$parent_code = '';
+		$begin_code = '
+	/** AOP */
+	protected function __aop($init = true)
 	{
-		if ($reset) $this->_ = array();
-		' . join('', $this->aop) . '
-
-		if (method_exists(get_parent_class(), \'__aop\')) {
-			parent::__aop(false);
+		if ($init) $this->_ = array();
+';
+		$code = '';
+		foreach ($advices as $property_name => $property_advices) {
+			$code .= '
+		$this->' . $property_name . '_ = $this->' . $property_name . ';
+		unset($this->' . $property_name . ');
+		$this->_[\'' . $property_name . '\'] = true;
+';
 		}
+		// todo this check only getters, links and setters. This should check AOP links too.
+		if (($parent = $this->class->getParent()) && ($parent->type == 'class')) {
+			foreach ($parent->getProperties(array('traits', 'inherited')) as $property) {
+				$expr = '%'
+					. '\n\s+\*\s+'               // each line beginning by '* '
+					. '@(getter|link|setter)'    // 1 : AOP annotation
+					. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
+					. '(\w+)?)?'                 // 3 : method or function name
+					. '%';
+				preg_match($expr, $property->documentation, $match);
+				if ($match) {
+					$parent_code = '
+		parent::__aop(false);';
+					break;
+				}
+			}
+		}
+		return $begin_code . $code . $parent_code . '
 	}
 ';
 	}
 
-	//-------------------------------------------------------------------------------- get__construct
+	//------------------------------------------------------------------------------ compileConstruct
 	/**
+	 * Compile __construct if there is at least one property declared in this class / traits
+	 *
+	 * @param $advices array
 	 * @return string
 	 */
-	private function get__construct()
+	private function compileConstruct($advices)
 	{
-		$prototype = $this->source->getPrototype('__construct', true);
-		if ($prototype) {
-			if (isset($prototype['parent'])) {
-				$call = '
-		parent::__construct(';
+		// only if at least one property is declared here
+		foreach ($advices as $property_advices) {
+			if (isset($property_advices[0])) {
+				$over = $this->overrideMethod('__construct');
+				return
+	$over['prototype'] . '
+		if (!isset($this->_)) $this->__aop();
+		' . $over['call'] . '
+	}
+';
 			}
-			else {
-				$this->overrideMethod('__construct', $prototype['preg']);
-				$call = '
-		$this->__construct_99(';
-			}
-			$prototype = $prototype['prototype'];
-			$this->constructor_parameters = join(
-				', ', $this->source->getPrototypeParametersNames($prototype)
-			);
-			$prototype = $this->source->getDocComment('__construct') . $prototype;
-			$call .= $this->constructor_parameters . ');';
 		}
-		else {
-			$call = '';
-			$prototype = '
-	/**
-	 * Weaved constructor
-	 */
-	public function __construct()
-	{';
-		}
+		return '';
+	}
 
-		return $prototype . '
-		if (!isset($this->_)) {
-			$this->__aop();
+	//------------------------------------------------------------------------------------ compileGet
+	/**
+	 * @param $advices array
+	 * @return string
+	 */
+	private function compileGet($advices)
+	{
+		$over = $this->overrideMethod('__get');
+		$code =
+	$over['prototype'] . '
+		if (!isset($this->_[$property_name])) {
+			' . $over['call'] . '
+		}';
+		if ($over['cases']) {
+			$switch = true;
+			$code .= '
+		switch ($property_name) {';
 		}
-		' . join('', $this->construct) . $call . '
+		foreach ($advices as $property_name => $property_advices) {
+			if (isset($property_advices['implements']['read'])) {
+				if (!isset($switch)) {
+					$switch = true;
+					$code .= '
+		switch ($property_name) {';
+				}
+				$code .= '
+			case \'' . $property_name . '\': return $this->' . $property_name . '_read();';
+			}
+		}
+		if (isset($switch)) {
+			$code .= $over['cases'] . '
+		}';
+		}
+		return $code . '
+		$property_name .= \'_\';
+		return $this->$property_name;
 	}
 ';
 	}
 
-	//-------------------------------------------------------------------------------------- get__get
+	//---------------------------------------------------------------------------------- compileIsset
 	/**
 	 * @return string
 	 */
-	private function get__get()
+	private function compileIsset()
 	{
-		$class_name = $this->source->class_name;
-		$prototype = $this->source->getPrototype('__get', true);
-		if (isset($prototype['parent'])) {
-			$code = 'parent::__get($property_name)';
+		$over = $this->overrideMethod('__isset');
+		return
+	$over['prototype'] . '
+		if (!isset($this->_[$property_name])) {
+			' . $over['call'] . '
 		}
-		elseif ($prototype) {
-			$this->overrideMethod('__get', $prototype['preg']);
-			$code = '$this->__get_99($property_name)';
-		}
-		else {
-			$code = 'trigger_error(
-				\'Undefined property: Plugin_Register::$\' . substr($property_name, 1), E_USER_NOTICE
-			)';
-		}
-		return '
+		$property_name .= \'_\';
+		return isset($this->$property_name);
+	}
+';
+	}
+
+	//----------------------------------------------------------------------------------- compileRead
 	/**
 	 * @param $property_name string
-	 * @return mixed
+	 * @param $advices       array
+	 * @return string
 	 */
-	public function __get($property_name)
+	private function compileRead($property_name, $advices)
 	{
-		if (!(isset($this->_) && array_key_exists($property_name, $this->_))) {
-			' . $code . ';
-			return null;
+		unset($advices['implements']);
+		$code = '';
+		$init = array();
+		foreach ($advices as $aspect) {
+			list($type, $advice) = $aspect;
+			if ($type == 'read') {
+				if (!isset($prototype)) {
+					$prototype = '
+	/** AOP */
+	private function ' . $property_name . '_read()
+	{
+		unset($this->_[\'' . $property_name . '\']);
+		$value = $this->' . $property_name . ' = $this->' . $property_name . '_;
+';
+				}
+				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
+			}
 		}
-		$value = $this->_[$property_name];
-		unset($this->_[$property_name]);
-		$this->$property_name = $value;
-		' . join('', $this->get) . '
+		if (isset($prototype)) {
+			// todo missing call of setters if value has been changed
+			return $prototype . $this->initCode($init) . $code . '
 
-		elseif (method_exists(get_parent_class(), \'__get\')) {
-			$transfer = $this->$property_name;
-			unset($this->$property_name);
-			$this->_[$property_name] = $transfer;
-			$value = parent::__get($property_name);
-		}
-		else {
-			trigger_error(\'Undefined property: ' . $class_name . '::$\' . $property_name, E_USER_NOTICE);
-		}
-		if (!array_key_exists($property_name, $this->_)) {
-			$transfer = $this->$property_name;
-			unset($this->$property_name);
-			$this->_[$property_name] = $transfer;
-		}
+		$this->' . $property_name . '_ = $this->' . $property_name . ';
+		unset($this->' . $property_name . ');
+		$this->_[\'' . $property_name . '\'] = true;
 		return $value;
 	}
 ';
+		}
+		return '';
 	}
 
-	//------------------------------------------------------------------------------------ get__isset
+	//------------------------------------------------------------------------------------ compileSet
 	/**
+	 * @param $advices array
 	 * @return string
 	 */
-	private function get__isset()
+	private function compileSet($advices)
 	{
-		$prototype = $this->source->getPrototype('__isset', true);
-		if (isset($prototype['parent'])) {
-			$code = 'parent::__isset($property_name)';
+		$over = $this->overrideMethod('__set');
+		$code =
+	$over['prototype'] . '
+		if (!isset($this->_[$property_name])) {
+			' . $over['call'] . '
+		}';
+		foreach ($advices as $property_name => $property_advices) {
+			if (isset($property_advices['implements']['write'])) {
+				if (!isset($switch)) {
+					$switch = true;
+					$code .= '
+		switch ($property_name) {';
+				}
+				$code .= '
+			case \'' . $property_name . '\': $this->' . $property_name . '_write($value); return;';
+			}
 		}
-		elseif ($prototype) {
-			$this->overrideMethod('__isset', $prototype['preg']);
-			$code = '$this->__isset_99($property_name)';
+		if (isset($switch)) {
+			$code .= '
+		}';
 		}
-		else {
-			$code = 'isset($this->$property_name)';
-		}
-		return '
-	/**
-	 * @param $property_name string
-	 * @return boolean
-	 */
-	public function __isset($property_name)
-	{
-		if (!(isset($this->_) && array_key_exists($property_name, $this->_))) {
-			return ' . $code . ';
-		}
-		return isset($this->_[$property_name]);
+		return $code . '
+		$property_name .= \'_\';
+		$this->$property_name = $value;
 	}
 ';
 	}
 
-	//-------------------------------------------------------------------------------------- get__set
+	//---------------------------------------------------------------------------------- compileUnset
 	/**
 	 * @return string
 	 */
-	private function get__set()
+	private function compileUnset()
 	{
-		$prototype = $this->source->getPrototype('__set', true);
-		if (isset($prototype['parent'])) {
-			$code = 'parent::__set($property_name, $value)';
+		$over = $this->overrideMethod('__unset');
+		return
+	$over['prototype'] . '
+		if (!isset($this->_[$property_name])) {
+			' . $over['call'] . '
 		}
-		elseif ($prototype) {
-			$this->overrideMethod('__set', $prototype['preg']);
-			$code = '$this->__set_99($property_name, $value)';
-		}
-		else {
-			$code = '$this->$property_name = $value';
-		}
-		return '
-	/**
-	 * @param $property_name string
-	 * @param $value         mixed
-	 */
-	public function __set($property_name, $value)
-	{
-		if (
-			($property_name == \'_\') || !(isset($this->_) && array_key_exists($property_name, $this->_))
-		) {
-			' . $code . ';
-			return;
-		}
-		$transfer = $this->_[$property_name];
-		unset($this->_[$property_name]);
-		$this->$property_name = $transfer;
-		' . join('', $this->set) . '
-
-		elseif (method_exists(get_parent_class(), \'__set\')) {
-			$transfer = $this->$property_name;
-			unset($this->$property_name);
-			$this->_[$property_name] = $transfer;
-			parent::__set($property_name, $value);
-			return;
-		}
-		else {
-			$this->$property_name = $value;
-			return;
-		}
+		$property_name .= \'_\';
 		unset($this->$property_name);
-		$this->_[$property_name] = $value;
 	}
 ';
 	}
 
-	//------------------------------------------------------------------------------------ get__unset
-	/**
-	 * @return string
-	 */
-	private function get__unset()
-	{
-		$prototype = $this->source->getPrototype('__unset', true);
-		if (isset($prototype['parent'])) {
-			$code = 'parent::__unset($property_name)';
-		}
-		elseif ($prototype) {
-			$this->overrideMethod('__unset', $prototype['preg']);
-			$code = '$this->__unset_99($property_name)';
-		}
-		else {
-			$code = 'unset($this->$property_name)';
-		}
-		return '
+	//---------------------------------------------------------------------------------- compileWrite
 	/**
 	 * @param $property_name string
+	 * @param $advices       array
+	 * @return string
 	 */
-	public function __unset($property_name)
+	private function compileWrite($property_name, $advices)
 	{
-		if (!(isset($this->_) && array_key_exists($property_name, $this->_))) {
-			' . $code . ';
-			return;
+		unset($advices['implements']);
+		$code = '';
+		$init = array();
+		foreach ($advices as $aspect) {
+			list($type, $advice) = $aspect;
+			if ($type == 'write') {
+				if (!isset($prototype)) {
+					$prototype = '
+	/** AOP */
+	private function ' . $property_name . '_write()
+	{
+		$value = $this->' . $property_name . ';
+		unset($this->_[\'' . $property_name . '\']);
+		$this->' . $property_name . ' =& $value;
+';
+				}
+				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
+			}
 		}
-		$this->_[$property_name] = null;
+		if (isset($prototype)) {
+			return $prototype . $this->initCode($init) . $code . '
+
+		$this->' . $property_name . '_ = $this->' . $property_name . ';
+		unset($this->' . $property_name . ');
+		$this->_[\'' . $property_name . '\'] = true;
 	}
 ';
+		}
+		return '';
 	}
 
-	//---------------------------------------------------------------------------- getCompiledMethods
+	//-------------------------------------------------------------------------------------- initCode
 	/**
-	 * Assembly and return of the compiled methods list
-	 *
-	 * @return string[] key is the name of the method, value is its code
+	 * @param $init string[]
+	 * @return string
 	 */
-	public function getCompiledMethods()
+	private function initCode($init)
 	{
-		$methods['__aop']       = $this->get__aop();
-		$methods['__construct'] = $this->get__construct();
-		$methods['__get']       = $this->get__get();
-		$methods['__isset']     = $this->get__isset();
-		$methods['__set']       = $this->get__set();
-		$methods['__unset']     = $this->get__unset();
-		return $methods;
+		if (isset($init['7.element_type_name']) && isset($init['7.class_name'])) {
+			$init['7.class_name_element_type_name'] = '$class_name = ' . $init['7.element_type_name'];
+			unset($init['7.class_name']);
+			unset($init['7.element_type_name']);
+		}
+		ksort($init);
+		return $init ? ("\n\t\t" . join("\n\t\t", $init) . "\n") : '';
 	}
 
 	//-------------------------------------------------------------------------------- overrideMethod
 	/**
+	 * Override a public method
+	 *
 	 * @param $method_name string
-	 * @param $preg_expr   string
+	 * @return array action (rename, trait), call, Php_Method method, prototype
 	 */
-	public function overrideMethod($method_name, $preg_expr)
+	private function overrideMethod($method_name)
 	{
-		$buffer =& $this->source->buffer;
-		$buffer = preg_replace(
-			$preg_expr, "\n\t" . '/* $2*/ private $4' . $method_name . '_99' . '$7', $buffer
-		);
+		$over = array('cases' => '');
+		$parameters = '';
+		// the method exists into the class
+		$methods = $this->class->getMethods();
+		if (isset($methods[$method_name])) {
+			$method = $methods[$method_name];
+			$over['action'] = 'rename';
+			$over['call']   = '$this->';
+		}
+		else {
+			// the method exists into a trait of the class
+			$methods = $this->class->getMethods(array('traits'));
+			if (isset($methods[$method_name])) {
+				$method = $methods[$method_name];
+				$over['action'] = 'trait';
+				$over['call']   = '$this->';
+			}
+			else {
+				// the method exists into a parent class / trait and is not abstract
+				$methods = $this->class->getMethods(array('inherited'));
+				if (isset($methods[$method_name]) && !$methods[$method_name]->isAbstract()) {
+					$method = $methods[$method_name];
+					$over['action'] = false;
+					$over['call']   = 'parent::';
+				}
+				else {
+					// the method does not exist and the parent has no AOP properties
+					$over['action'] = false;
+					$over['call']   = false;
+					// todo this check only getters, links and setters. This should check AOP links too.
+					// the parent class has not this method but it has AOP properties)
+					if (
+						(substr($method_name, 0, 2) == '__')
+						&& ($parent = $this->class->getParent())
+						&& ($parent->type == 'class')
+					) {
+						foreach ($parent->getProperties(array('traits', 'inherited')) as $property) {
+							$expr = '%'
+								. '\n\s+\*\s+'               // each line beginnig by '* '
+								. '@(getter|link|setter)'    // 1 : AOP annotation
+								. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
+								. '(\w+)?)?'                 // 3 : method or function name
+								. '%';
+							preg_match($expr, $property->documentation, $match);
+							if ($match) {
+								$over['cases'] .= "\n\t\t\t" . 'case \'' . $property->name . '\':';
+							}
+						}
+						if ($over['cases']) {
+							$parameters = '$property_name';
+							switch ($method_name) {
+								case '__get':
+									$over['cases'] .= ' return parent::__get($property_name);';
+									break;
+								case '__isset':
+									$over['cases'] .= ' return parent::__isset($property_name);';
+									break;
+								case '__set':
+									$over['cases'] .= ' parent::__set($property_name, $value); return;';
+									$parameters .= ', $value';
+									break;
+								case '__unset':
+									$over['cases'] .= ' parent::__unset($property_name); return;';
+									break;
+								default:
+									$parameters = '';
+							}
+						}
+					}
+				}
+			}
+		}
+		// the method exists : prepare call and prototype
+		if (isset($method)) {
+			$over['method']    = $method;
+			$over['prototype'] = $method->prototype;
+			if ($over['call']) {
+				$over['call'] = ($method->returns() ? 'return ' : '')
+					. $over['call'] . $method_name . '_0(' . $method->getParametersCall() . ');'
+					. ($method->returns() ? '' : ' return;');
+			}
+		}
+		// the method does not exist : call default code and create default prototype
+		else {
+			$over['action'] = false;
+			$over['method'] = false;
+			if (!$over['call']) {
+				$parameters = '$property_name';
+				switch ($method_name) {
+					case '__get':
+						$over['call'] = 'return $this->$property_name;';
+						break;
+					case '__isset':
+						$over['call'] = 'return isset($this->$property_name);';
+						break;
+					case '__set':
+						$over['call'] = '$this->$property_name = $value; return;';
+						$parameters .= ', $value';
+						break;
+					case '__unset':
+						$over['call'] = 'unset($this->$property_name); return;';
+						break;
+					default:
+						$parameters = '';
+				}
+			}
+			$over['prototype'] = '
+	/** AOP */
+	public function ' . $method_name . '(' . $parameters . ')
+	{';
+		}
+		return $over;
 	}
 
 }

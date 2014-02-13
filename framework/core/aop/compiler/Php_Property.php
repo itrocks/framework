@@ -71,18 +71,18 @@ class Php_Property
 		if (isset($n)) {
 			$property->indent            = $match[1][$n];
 			$property->documentation     = empty($match[2][$n]) ? null : $match[2][$n];
-			$property->visibility        = empty($match[3][$n]) ? null : $match[3][$n];
+			$property->visibility        = ($match[3][$n] == 'var') ? 'public' : $match[3][$n];
 			$property->static            = empty($match[4][$n]) ? null : $match[4][$n];
 			$property->name              = $match[5][$n];
-			$property->default           = $match[6][$n];
+			$property->default           = empty($match[6][$n]) ? null : $match[6][$n];
 		}
 		else {
 			$property->indent            = $match[1];
 			$property->documentation     = empty($match[2]) ? null : $match[2];
-			$property->visibility        = empty($match[3]) ? null : $match[3];
+			$property->visibility        = ($match[3] == 'var') ? 'public' : $match[3];
 			$property->static            = empty($match[4]) ? null : $match[4];
 			$property->name              = $match[5];
-			$property->default           = $match[6];
+			$property->default           = empty($match[6]) ? null : $match[6];
 		}
 		return $property;
 	}
@@ -141,11 +141,11 @@ class Php_Property
 		. '(\n\s*?)'                                // 1 : indent
 		. '(?:(/\*\*\n(?:\s*\*.*\n)*\s*\*/)\n\s*)?' // 2 : documentation
 		. '(?:\/\*.*\*/\n\s*)?'                     // ignored one-line documentation
-		. '(?:(private|protected|public)\s+)?'      // 3 : visibility
+		. '(private|protected|public|var)\s+'       // 3 : visibility
 		. '(?:(static)\s+)?'                        // 4 : static
 		. '\$(' . $name . ')\s*'                    // 5 : name
-		. '(?:\=\s*((?:.*?\n?)*?)\s*)?'             // 6 : default
-		. ';\s*\n'
+		// . '(?:\=\s*((?:.*?\n?)*?)\s*)?'             // 6 : default : crashes with Macros;;$macros
+		// . ';\s*\n'
 		. '%';
 	}
 
