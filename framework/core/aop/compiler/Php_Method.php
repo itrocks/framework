@@ -166,7 +166,14 @@ class Php_Method
 	public function getParametersNames()
 	{
 		if (!isset($this->parameters_names)) {
-			$expr = '%\,\(?\s*\&?\$(\w+)%';
+			$expr = '%'
+				. '\,'                  // separated by a comma
+				. '\(?\s*'              // the first property begins with a parenthesis
+				. '(?:\/\*.*?\*\/\s*)?' // may be preceded by comments
+				. '(?:[\\\\\w]+\s+)?'   // may be preceded by the class
+				. '\&?'                 // called by reference
+				. '\$(\w+)'             // the $parameter_name
+				. '%';
 			preg_match_all($expr, ',' . $this->parameters_string, $match);
 			$this->parameters_names = array_combine($match[1], $match[1]);
 		}
