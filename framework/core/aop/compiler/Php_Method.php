@@ -71,7 +71,16 @@ class Php_Method
 	 */
 	public $prototype;
 
+	//------------------------------------------------------------------------------------ $reference
+	/**
+	 * @var string
+	 */
+	public $reference;
+
 	//-------------------------------------------------------------------------------------- $returns
+	/**
+	 * @var string
+	 */
 	private $returns;
 
 	//--------------------------------------------------------------------------------------- $static
@@ -104,8 +113,9 @@ class Php_Method
 			$method->abstract          = empty($match[3][$n]) ? null : $match[3][$n];
 			$method->visibility        = empty($match[4][$n]) ? null : $match[4][$n];
 			$method->static            = empty($match[5][$n]) ? null : $match[5][$n];
-			$method->name              = $match[6][$n];
-			$method->parameters_string = $match[7][$n];
+			$method->reference         = empty($match[6][$n]) ? null : $match[6][$n];
+			$method->name              = $match[7][$n];
+			$method->parameters_string = $match[8][$n];
 		}
 		else {
 			$method->prototype         = $match[0];
@@ -114,8 +124,9 @@ class Php_Method
 			$method->abstract          = empty($match[3]) ? null : $match[3];
 			$method->visibility        = empty($match[4]) ? null : $match[4];
 			$method->static            = empty($match[5]) ? null : $match[5];
-			$method->name              = $match[6];
-			$method->parameters_string = $match[7];
+			$method->reference         = empty($match[6]) ? null : $match[6];
+			$method->name              = $match[7];
+			$method->parameters_string = $match[8];
 		}
 		return $method;
 	}
@@ -230,9 +241,10 @@ class Php_Method
 		. '(?:(private|protected|public)\s+)?'      // 4 : visibility
 		. '(?:(static)\s+)?'                        // 5 : static
 		. 'function\s+'                             // function keyword
-		. '(' . $name . ')\s*'                      // 6 : name
-		. '(\((?:.*?\n?)*?\)\s*)'                   // 7 : parameters string
-		. '([\{\;]\s*?\n)'                          // 8 : end of function prototype
+		. '(\&)?\s*'                                // 6 : reference flag
+		. '(' . $name . ')\s*'                      // 7 : name
+		. '(\((?:.*?\n?)*?\)\s*)'                   // 8 : parameters string
+		. '([\{\;]\s*?\n)'                          // 9 : end of function prototype
 		. '%';
 	}
 

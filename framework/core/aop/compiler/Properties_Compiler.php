@@ -289,7 +289,7 @@ class Properties_Compiler
 				if (!isset($prototype)) {
 					$prototype = '
 	/** AOP */
-	private function ' . $property_name . '_read()
+	private function & ' . $property_name . '_read()
 	{
 		unset($this->_[\'' . $property_name . '\']);
 		$value = $this->' . $property_name . ' = $this->' . $property_name . '_;
@@ -302,7 +302,7 @@ class Properties_Compiler
 			// todo missing call of setters if value has been changed
 			return $prototype . $this->initCode($init) . $code . '
 
-		$this->' . $property_name . '_ = $this->' . $property_name . ';
+		$this->' . $property_name . '_ =& $this->' . $property_name . ';
 		unset($this->' . $property_name . ');
 		$this->_[\'' . $property_name . '\'] = true;
 		return $value;
@@ -413,7 +413,7 @@ class Properties_Compiler
 				$regexp = Php_Method::regex($method_name);
 				$this->class->source = preg_replace(
 					$regexp,
-					"\n\t" . '$2' . "\n\t" . '/* $4 */ private $5 function $6_0$7$8',
+					"\n\t" . '$2' . "\n\t" . '/* $4 */ private $5 function $6$7_0$8$9',
 					$this->class->source
 				);
 			}
@@ -577,6 +577,7 @@ class Properties_Compiler
 		if ($over['action']) {
 			$this->actions[$method_name] = $over['action'];
 		}
+		$over['prototype'] = preg_replace('%(function\s+)(__get\s*\()%', '$1& $2', $over['prototype']);
 		return $over;
 	}
 

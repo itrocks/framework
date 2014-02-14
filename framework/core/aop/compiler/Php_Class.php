@@ -154,11 +154,12 @@ class Php_Class
 			. '(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)' // 1 2 3
 			. '(?:(?:private|protected|public)\s+)?'
 			. '(static\s+)?' // 4
-			. 'function(\s+\w+)\_[0-9]*\s*' // 5
+			. 'function\s*(\s?\&\s?)?\s*(\w+)\_[0-9]*\s*' // 5 6
 			. '\('
 			. '%';
+
 		preg_match($expr, $buffer, $match2);
-		$buffer = preg_replace($expr, '$1$2$3$4function$5(', $buffer);
+		$buffer = preg_replace($expr, '$1$2$3$4function $5$6(', $buffer);
 		return $match1 || $match2;
 	}
 

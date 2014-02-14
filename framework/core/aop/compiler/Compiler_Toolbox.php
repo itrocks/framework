@@ -1,6 +1,8 @@
 <?php
 namespace SAF\AOP;
 
+use ReflectionFunction;
+use ReflectionMethod;
 use SAF\Framework\Reflection_Function;
 use SAF\Framework\Reflection_Method;
 use SAF\Plugins\Plugin;
@@ -95,10 +97,12 @@ trait Compiler_Toolbox
 	) {
 		// $advice_code
 		if (is_array($advice)) {
+			$method = new ReflectionMethod($advice_class_name, $advice_method_name);
+			$ref = $method->returnsReference() ? '&' : '';
 			// static method call
 			if ($is_advice_static) {
 				return $joinpoint_code
-					. $i2 . ($advice_has_return ? ($result . ' = ') : '')
+					. $i2 . ($advice_has_return ? ($result . ' =' . $ref . ' ') : '')
 					. (($advice[0] == 'self') ? 'self' : ('\\' . $advice_class_name))
 					. '::' . $advice_method_name
 					. '(' . $advice_parameters_string . ');';
@@ -106,7 +110,7 @@ trait Compiler_Toolbox
 			// object method call
 			elseif ($advice[0] == '$this') {
 				return $joinpoint_code
-					. $i2 . ($advice_has_return ? ($result . ' = ') : '')
+					. $i2 . ($advice_has_return ? ($result . ' =' . $ref . ' ') : '')
 					. '$this->' . $advice_method_name . '(' . $advice_parameters_string . ');';
 			}
 			else {
@@ -115,14 +119,15 @@ trait Compiler_Toolbox
 						. "'$advice_class_name'"
 					. ');'
 					. $joinpoint_code
-					. $i2 . ($advice_has_return ? ($result . ' = ') : '')
+					. $i2 . ($advice_has_return ? ($result . ' =' . $ref . ' ') : '')
 					. '$object_->' . $advice_method_name . '(' . $advice_parameters_string . ');';
 			}
 		}
 		// function call
 		else {
+			$ref = (new ReflectionFunction($advice_function_name))->returnsReference() ? '&' : '';
 			return $joinpoint_code
-				. $i2 . ($advice_has_return ? $result . ' = ' : '')
+				. $i2 . ($advice_has_return ? $result . ' =' . $ref . ' ' : '')
 				. $advice_function_name . '(' . $advice_parameters_string . ');';
 		}
 	}

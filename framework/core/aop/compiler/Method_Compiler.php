@@ -104,7 +104,8 @@ class Method_Compiler
 
 		if (self::DEBUG && $in_parent) echo "in_parent = true for $class_name::$method_name<br>";
 
-		$call_code = $i2 . ($joinpoint_has_return ? '$result_ = ' : '')
+		$ref = $source_method->reference;
+		$call_code = $i2 . ($joinpoint_has_return ? ('$result_ =' . $ref . ' ') : '')
 			. ($is_static ? 'self::' : ($in_parent ? 'parent::' : '$this->'))
 			. $method_name . ($in_parent ? '' : ('_' . $count))
 			. '(' . $parameters_names . ');';
@@ -181,10 +182,12 @@ class Method_Compiler
 
 			switch ($type) {
 				case 'after':
+					/*
 					if ($advice_has_return) {
-						$advice_code = str_replace('$result_ = ', '$result2_ = ', $advice_code);
-						$advice_code .= $i2 . 'if (isset($result2_)) $result_ = $result2_;';
+						$advice_code = str_replace('$result_ =', '$result2_ =', $advice_code);
+						$advice_code .= $i2 . 'if (isset($result2_)) $result_ =& $result2_;';
 					}
+					*/
 					if ($joinpoint_code) {
 						$advice_code .= $i2 . 'if ($joinpoint_->stop) return $result_;';
 					}
@@ -230,7 +233,7 @@ class Method_Compiler
 		$buffer = preg_replace(
 			$preg_expr,
 			$indent . '$2' . $around_comment
-			. $indent . '/* $4 */ private $5 function $6_' . $count . '$7$8',
+			. $indent . '/* $4 */ private $5 function $6 $7_' . $count . '$8$9',
 			$buffer
 		);
 
