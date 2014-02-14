@@ -927,13 +927,13 @@ class Html_Template
 
 	//----------------------------------------------------------------------------------- parseString
 	/**
-	 * @param $object        string
+	 * @param $string        string
 	 * @param $property_name string
 	 * @return mixed
 	 */
-	protected function parseString($object, $property_name)
+	protected function parseString($string, $property_name)
 	{
-		$string = new String($object);
+		$string = new String($string);
 		return method_exists($string, $property_name)
 			? $this->parseStringMethod($string, $property_name)
 			: $this->parseStringProperty($string, $property_name);
