@@ -35,7 +35,6 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
-		(new Compiler($this->replacements))->compile();
 		self::current($this);
 	}
 
@@ -205,6 +204,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
+		$register->configuration = (new Compiler())->compile($register->configuration);
 		$aop->beforeMethod(
 			array(Getter::class, 'getCollection'),
 			array($this, 'onMethodWithClassName')

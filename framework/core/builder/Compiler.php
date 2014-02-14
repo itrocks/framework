@@ -12,25 +12,14 @@ use SAF\Framework\Files;
 class Compiler
 {
 
-	//--------------------------------------------------------------------------------- $replacements
-	/**
-	 * @var string[]
-	 */
-	private $replacements;
-
-	//----------------------------------------------------------------------------------- __construct
+	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $replacements string[]
+	 * @return string[]
 	 */
-	public function __construct(&$replacements)
+	public function compile($replacements)
 	{
-		$this->replacements =& $replacements;
-	}
-
-	//--------------------------------------------------------------------------------------- compile
-	public function compile()
-	{
-		foreach ($this->replacements as $class_name => $replacement) {
+		foreach ($replacements as $class_name => $replacement) {
 			if (is_array($replacement)) {
 				$built_name = null;
 				foreach (Class_Builder::build($class_name, $replacement, true) as $built_name => $source) {
@@ -43,9 +32,10 @@ class Compiler
 
 					file_put_contents($path . '/' . $file_name, $source);
 				}
-				$this->replacements[$class_name] = $built_name;
+				$replacements = $built_name;
 			}
 		}
+		return $replacements;
 	}
 
 }
