@@ -125,7 +125,7 @@ class Compiler implements ICompiler
 		if (!$class->clean || $methods_code) {
 			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class->name . '<br>';
 			else file_put_contents($class->file_name, $buffer);
-			if (self::DEBUG || $_GET['D']) echo '<pre>' . htmlentities($buffer) . '</pre>';
+			if (self::DEBUG || isset($_GET['D'])) echo '<pre>' . htmlentities($buffer) . '</pre>';
 		}
 	}
 

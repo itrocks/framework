@@ -386,7 +386,8 @@ class Properties_Compiler
 	{
 		$value = $this->' . $property_name . ';
 		unset($this->_[\'' . $property_name . '\']);
-		$this->' . $property_name . ' =& $value;
+		$this->' . $property_name . ' = $value;
+		$value =& $this->' . $property_name . ';
 ';
 				}
 				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
