@@ -224,7 +224,10 @@ class Compiler implements ICompiler
 	private function scanForLinks(&$properties, Php_Class $class)
 	{
 		foreach ($class->getProperties() as $property) {
-			if (strpos($property->documentation, '* @link')) {
+			if (
+				strpos($property->documentation, '* @link')
+				&& !strpos($property->documentation, '* @getter')
+			) {
 				$expr = '%'
 					. '\n\s+\*\s+'                           // each line beginning by '* '
 					. '@link\s+'                             // link annotation
