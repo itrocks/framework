@@ -224,7 +224,7 @@ class Properties_Compiler
 		$over = $this->overrideMethod('__get');
 		$code =
 	$over['prototype'] . '
-		if (!isset($this->_[$property_name])) {
+		if (($property_name[0] === \'_\') || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}';
 		if ($over['cases']) {
@@ -263,7 +263,7 @@ class Properties_Compiler
 		$over = $this->overrideMethod('__isset');
 		return
 	$over['prototype'] . '
-		if (!isset($this->_[$property_name])) {
+		if (($property_name[0] === \'_\') || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}
 		$property_name .= \'_\';
@@ -322,7 +322,7 @@ class Properties_Compiler
 		$over = $this->overrideMethod('__set');
 		$code =
 	$over['prototype'] . '
-		if (!isset($this->_[$property_name])) {
+		if (($property_name[0] === \'_\') || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}';
 		foreach ($advices as $property_name => $property_advices) {
@@ -356,7 +356,7 @@ class Properties_Compiler
 		$over = $this->overrideMethod('__unset');
 		return
 	$over['prototype'] . '
-		if (!isset($this->_[$property_name])) {
+		if (($property_name[0] === \'_\') || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}
 		$property_name .= \'_\';
