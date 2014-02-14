@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use ReflectionClass;
+use SAF\Framework\Builder\Compiler;
 use SAF\Plugins;
 
 /**
@@ -34,6 +35,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
+		(new Compiler($this->replacements))->compile();
 		self::current($this);
 	}
 

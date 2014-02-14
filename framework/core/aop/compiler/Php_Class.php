@@ -215,22 +215,24 @@ class Php_Class
 			$class->indent        = $match[2][$n];
 			$class->documentation = $match[3][$n];
 			$class->prototype     = $match[4][$n];
-			$class->abstract      = empty($match[5][$n]) ? null : $match[5][$n];
-			$class->type          = $match[6][$n];
-			$class->name          = ($class->namespace ? $class->namespace . '\\' : '') . $match[7][$n];
-			$class->parent        = empty($match[8][$n]) ? null : $match[8][$n];
-			$class->interfaces    = empty($match[9][$n]) ? array() : self::parseImplements($match[8][$n]);
+			$class->final         = $match[5][$n];
+			$class->abstract      = empty($match[6][$n]) ? null : $match[6][$n];
+			$class->type          = $match[7][$n];
+			$class->name          = ($class->namespace ? $class->namespace . '\\' : '') . $match[8][$n];
+			$class->parent        = empty($match[9][$n]) ? null : $match[9][$n];
+			$class->interfaces    = empty($match[10][$n]) ? [] : self::parseImplements($match[10][$n]);
 		}
 		else {
 			$class->namespace     = $match[1];
 			$class->indent        = $match[2];
 			$class->documentation = $match[3];
 			$class->prototype     = $match[4];
-			$class->abstract      = empty($match[5]) ? null : $match[5];
-			$class->type          = $match[6];
-			$class->name          = ($class->namespace ? $class->namespace . '\\' : '') . $match[7];
-			$class->parent        = empty($match[8]) ? null : $match[8];
-			$class->interfaces    = empty($match[9]) ? array() : self::parseImplements($match[9]);
+			$class->final         = $match[5];
+			$class->abstract      = empty($match[6]) ? null : $match[6];
+			$class->type          = $match[7];
+			$class->name          = ($class->namespace ? $class->namespace . '\\' : '') . $match[8];
+			$class->parent        = empty($match[9]) ? null : $match[9];
+			$class->interfaces    = empty($match[10]) ? [] : self::parseImplements($match[10]);
 		}
 		class_exists($class->name);
 		return $class;
@@ -246,31 +248,31 @@ class Php_Class
 		$class = new Php_Class();
 		$class->abstract = $reflection->isAbstract() ? 'abstract' : null;
 		$class->documentation = $reflection->getDocComment();
-		$class->imports = array();
-		$class->inherited_methods = array();
-		$class->inherited_properties = array();
-		$class->interfaces = array();
+		$class->imports = [];
+		$class->inherited_methods = [];
+		$class->inherited_properties = [];
+		$class->interfaces = [];
 		foreach ($reflection->getInterfaces() as $interface) {
 			$class->interfaces[$interface->name] = Php_Class::fromReflection($interface);
 		}
 		$class->internal = true;
-		$class->methods = array();
+		$class->methods = [];
 		foreach ($reflection->getMethods() as $method) {
 			$class->methods[$method->name] = Php_Method::fromReflection($class, $method);
 		}
 		$class->name = $reflection->name;
 		$class->namespace = lLastParse($reflection->name, '\\', 1, false);
 		$class->parent = false;
-		$class->properties = array();
+		$class->properties = [];
 		foreach ($reflection->getProperties() as $property) {
 			$class->properties[$property->name] = Php_Property::fromReflection($class, $property);
 		}
-		$class->traits = array();
+		$class->traits = [];
 		foreach ($reflection->getTraits() as $trait) {
 			$class->traits[$trait->name] = Php_Class::fromReflection($trait);
 		}
-		$class->traits_methods = array();
-		$class->traits_properties = array();
+		$class->traits_methods = [];
+		$class->traits_properties = [];
 		$class->type = $reflection->isInterface() ? 'interface' : (
 			$reflection->isTrait() ? 'trait' : 'class'
 		);
@@ -314,7 +316,7 @@ class Php_Class
 				. '%';
 			$source = substr($this->source, 0, strpos($this->source, $this->prototype));
 			preg_match_all($expr, $source, $match);
-			$this->imports = $match ? $match[1] : array();
+			$this->imports = $match ? $match[1] : [];
 		}
 		return $this->imports;
 	}
@@ -324,10 +326,10 @@ class Php_Class
 	 * @param $flags string[] 'inherited', 'traits'
 	 * @return Php_Method[]
 	 */
-	public function getMethods($flags = array())
+	public function getMethods($flags = [])
 	{
 		if (!isset($this->methods)) {
-			$this->methods = array();
+			$this->methods = [];
 			preg_match_all(Php_Method::regex(), $this->source, $match);
 			foreach (array_keys($match[0]) as $n) {
 				$method = Php_Method::fromMatch($this, $match, $n);
@@ -340,7 +342,7 @@ class Php_Class
 
 		if (isset($flags['traits'])) {
 			if (!isset($this->traits_methods)) {
-				$this->traits_methods = array();
+				$this->traits_methods = [];
 				foreach ($this->getTraits() as $trait) {
 					$this->traits_methods = array_merge(
 						$trait->getMethods(array('traits')), $this->traits_methods
@@ -352,7 +354,7 @@ class Php_Class
 
 		if (isset($flags['inherited'])) {
 			if (!isset($this->inherited_methods)) {
-				$this->inherited_methods = array();
+				$this->inherited_methods = [];
 				foreach ($this->getInterfaces() as $interface) {
 					$this->inherited_methods = array_merge(
 						$interface->getMethods(array('inherited', 'traits')), $this->inherited_methods
@@ -387,10 +389,10 @@ class Php_Class
 	 * @param $flags string[] 'inherited', 'traits'
 	 * @return Php_Property[]
 	 */
-	public function getProperties($flags = array())
+	public function getProperties($flags = [])
 	{
 		if (!isset($this->properties)) {
-			$this->properties = array();
+			$this->properties = [];
 			$regex = Php_Property::regex();
 			preg_match_all($regex, $this->source, $match);
 			foreach (array_keys($match[0]) as $n) {
@@ -404,7 +406,7 @@ class Php_Class
 
 		if (isset($flags['traits'])) {
 			if (!isset($this->traits_properties)) {
-				$this->traits_properties = array();
+				$this->traits_properties = [];
 				foreach ($this->getTraits() as $trait) {
 					$this->traits_properties = array_merge(
 						$trait->getProperties(array('traits')), $this->traits_properties
@@ -418,7 +420,7 @@ class Php_Class
 			if (!isset($this->inherited_properties)) {
 				$this->inherited_properties = ($parent = $this->getParent())
 					? $parent->getProperties(array('inherited', 'traits'))
-					: array();
+					: [];
 			}
 			$properties = array_merge($this->inherited_properties, $properties);
 		}
@@ -433,7 +435,7 @@ class Php_Class
 	public function getTraits()
 	{
 		if (!isset($this->traits)) {
-			$this->traits = array();
+			$this->traits = [];
 			$expr = '%'
 				. '\n\s*use\s*'
 				. '(?:([\\\\\w]+)(?:\s*\,\s*)?)+'
@@ -459,7 +461,7 @@ class Php_Class
 	 */
 	public function implementsMethod($method_name, $include_traits = true)
 	{
-		$methods = $this->getMethods($include_traits ? array('traits') : array());
+		$methods = $this->getMethods($include_traits ? array('traits') : []);
 		return isset($methods[$method_name]) && !$methods[$method_name]->isAbstract();
 	}
 
@@ -474,7 +476,7 @@ class Php_Class
 	 */
 	public function implementsProperty($property_name, $include_traits = true)
 	{
-		$properties = $this->getProperties($include_traits ? array('traits') : array());
+		$properties = $this->getProperties($include_traits ? array('traits') : []);
 		return isset($properties[$property_name]);
 	}
 
@@ -499,15 +501,16 @@ class Php_Class
 		return '%'
 		. 'namespace\s+([\\\\\w]+)\s*?[\{\;]'       // 1 : namespace
 		. '(?:.*\n)*?'                              // next lines
-		. '(\n\s*?)'                                // 1 : indent
-		. '(?:(/\*\*\n(?:\s*\*.*\n)*\s*\*/)\n\s*)?' // 2 : documentation
+		. '(\n\s*?)'                                // 2 : indent
+		. '(?:(/\*\*\n(?:\s*\*.*\n)*\s*\*/)\n\s*)?' // 3 : documentation
 		. '(?:\/\*.*\*/\n\s*)?'                     // ignored one-line documentation
-		. '('                                       // 3 : prototype
-		. '(?:(abstract)\s+)?'                      // 4 : abstract
-		. '(class|interface|trait)\s+'              // 5 : type = class, interface or trait
-		. '(\w+)\s*'                                // 6 : name
-		. '(?:extends\s+([\\\\\w]+)\s*)?'           // 7 : extends
-		. '(?:implements\s+((?:.*?\n)*?)\s*)?'      // 8 : implements
+		. '('                                       // 4 : prototype
+		. '(?:(final)\s+)?'                         // 5 : final
+		. '(?:(abstract)\s+)?'                      // 6 : abstract
+		. '(class|interface|trait)\s+'              // 7 : type = class, interface or trait
+		. '(\w+)\s*'                                // 8 : name
+		. '(?:extends\s+([\\\\\w]+)\s*)?'           // 9 : extends
+		. '(?:implements\s+((?:.*?\n)*?)\s*)?'      // 10 : implements
 		. '\{'                                      // start class code
 		. ')'
 		. '%';

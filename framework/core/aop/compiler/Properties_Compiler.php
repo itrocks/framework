@@ -201,7 +201,7 @@ class Properties_Compiler
 	{
 		// only if at least one property is declared here
 		foreach ($advices as $property_advices) {
-			if (isset($property_advices[0])) {
+			if (isset($property_advices['implements'])) {
 				$over = $this->overrideMethod('__construct');
 				return
 	$over['prototype'] . '

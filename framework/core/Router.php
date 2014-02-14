@@ -126,6 +126,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 				$this->class_paths[$in_class_name] = $file_name;
 				if ($in_class_name == $class_name) {
 					$result = $file_name;
+					break;
 				}
 			}
 		}
@@ -202,7 +203,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		$expr = '%\n\s*(?:namespace\s+)([\w\\\\]+)%s';
 		preg_match($expr, $buffer, $match);
 		$in_namespace = $match ? $match[1] : '';
-		$expr = '%\n\s*(?:abstract\s+)?(?:class|interface|trait)\s+(\w+)%s';
+		$expr = '%\n\s*(?:final\s+)?(?:abstract\s+)?(?:class|interface|trait)\s+(\w+)%s';
 		preg_match($expr, $buffer, $match);
 		$class_name = $match
 			? ($in_namespace ? ($in_namespace . '\\' . $match[1]) : $match[1])
