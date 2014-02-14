@@ -105,7 +105,7 @@ abstract class Annotation_Parser
 		}
 		else {
 			$annotation_class = Namespaces::fullClassName(
-				Names::propertyToClass($annotation_name) . '_Annotation'
+				Names::propertyToClass($annotation_name) . '_Annotation', false
 			);
 			if (!class_exists($annotation_class)) {
 				$annotation_class = Annotation::class;
