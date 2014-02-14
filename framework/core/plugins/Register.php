@@ -51,6 +51,7 @@ class Register
 	/**
 	 * @return array|string
 	 */
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getConfiguration()
 	{
 		if (!$this->get) {
@@ -74,6 +75,7 @@ class Register
 	/**
 	 * @param $configuration array|string
 	 */
+	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
 	private function setConfiguration($configuration)
 	{
 		$this->configuration = $configuration;
