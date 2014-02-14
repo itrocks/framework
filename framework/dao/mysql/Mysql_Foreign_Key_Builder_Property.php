@@ -4,43 +4,8 @@ namespace SAF\Framework;
 /**
  * This builds a mysql foreign key associated to a class property
  */
-abstract class Mysql_Foreign_Key_Builder_Property
+trait Mysql_Foreign_Key_Builder_Property
 {
-
-	//------------------------------------------------------------------------------------- $property
-	/**
-	 * Builds a Mysql_Column object using a class property
-	 *
-	 * @param $table_name string
-	 * @param $property   Reflection_Property
-	 * @return Mysql_Foreign_Key
-	 */
-	public static function build($table_name, Reflection_Property $property)
-	{
-		$foreign_key = new Mysql_Foreign_Key();
-		$class = new Reflection_Class(get_class($foreign_key));
-		$class->accessProperties();
-		$class->getProperty("Constraint")->setValue(
-			$foreign_key, self::propertyConstraintToMysql($table_name, $property)
-		);
-		$class->getProperty("Fields")->setValue(
-			$foreign_key, self::propertyFieldsToMysql($property)
-		);
-		$class->getProperty("On_delete")->setValue(
-			$foreign_key, self::propertyOnDeleteToMysql($property)
-		);
-		$class->getProperty("On_update")->setValue(
-			$foreign_key, self::propertyOnUpdateToMysql($property)
-		);
-		$class->getProperty("Reference_fields")->setValue(
-			$foreign_key, self::propertyReferenceFieldsToMysql($property)
-		);
-		$class->getProperty("Reference_table")->setValue(
-			$foreign_key, self::propertyReferenceTableToMysql($property)
-		);
-		$class->accessPropertiesDone();
-		return $foreign_key;
-	}
 
 	//--------------------------------------------------------------------- propertyConstraintToMysql
 	/**

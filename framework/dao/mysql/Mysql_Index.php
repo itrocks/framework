@@ -13,6 +13,23 @@ class Mysql_Index implements Dao_Index
 	 */
 	public $keys;
 
+	//------------------------------------------------------------------------------------- buildLink
+	/**
+	 * Builds a Mysql_Index for a column name that is a link to another class
+	 *
+	 * @param $column_name string the column name used to create the index (with or without "id_")
+	 * @return Mysql_Index
+	 */
+	public static function buildLink($column_name)
+	{
+		if (substr($column_name, 0, 3) !== 'id_') {
+			$column_name = 'id_' . $column_name;
+		}
+		$index = new Mysql_Index();
+		$index->keys[] = new Mysql_Key($column_name);
+		return $index;
+	}
+
 	//--------------------------------------------------------------------------------------- getKeys
 	/**
 	 * @return Mysql_Key[]

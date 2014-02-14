@@ -4,32 +4,8 @@ namespace SAF\Framework;
 /**
  * This builds a mysql column associated to a class property
  */
-abstract class Mysql_Column_Builder_Property
+trait Mysql_Column_Builder_Property
 {
-
-	//----------------------------------------------------------------------------------------- build
-	/**
-	 * Builds a Mysql_Column object using a class property
-	 *
-	 * @param $property Reflection_Property
-	 * @return Mysql_Column
-	 */
-	public static function build(Reflection_Property $property)
-	{
-		$column = new Mysql_Column();
-		$class = new Reflection_Class(get_class($column));
-		$class->accessProperties();
-		$class->getProperty("Field")->setValue($column, self::propertyNameToMysql($property));
-		$class->getProperty("Type")->setValue($column, self::propertyTypeToMysql($property));
-		$class->getProperty("Null")->setValue($column, self::propertyNullToMysql($property));
-		$class->getProperty("Key")->setValue($column, self::propertyKeyToMysql($property));
-		$class->getProperty("Default")->setValue(
-			$column, self::propertyDefaultToMysql($property, $column)
-		);
-		$class->getProperty("Extra")->setValue($column, "");
-		$class->accessPropertiesDone();
-		return $column;
-	}
 
 	//------------------------------------------------------------------------- propertyTypeToDefault
 	/**

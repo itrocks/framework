@@ -6,6 +6,7 @@ namespace SAF\Framework;
  */
 class Mysql_Column implements Dao_Column
 {
+	use Mysql_Column_Builder_Property;
 
 	//---------------------------------------------------------------------------------------- $Field
 	/**
@@ -79,6 +80,55 @@ class Mysql_Column implements Dao_Column
 		if (isset($name)) $this->Field = $name;
 		if (isset($type)) $this->Type  = $type;
 		$this->cleanupDefault();
+	}
+
+	//--------------------------------------------------------------------------------- buildProperty
+	/**
+	 * Builds a Mysql_Column object using a class property
+	 *
+	 * @param $property Reflection_Property
+	 * @return Mysql_Column
+	 */
+	public static function buildProperty(Reflection_Property $property)
+	{
+		$column = new Mysql_Column();
+		$column->Field   = self::propertyNameToMysql($property, $column);
+		$column->Type    = self::propertyTypeToMysql($property, $column);
+		$column->Null    = self::propertyNullToMysql($property, $column);
+		$column->Key     = self::propertyKeyToMysql($property, $column);
+		$column->Default = self::propertyDefaultToMysql($property, $column);
+		$column->Extra = '';
+		return $column;
+	}
+
+	//--------------------------------------------------------------------------------------- buildId
+	/**
+	 * Builds a Mysql_Column object for a standard "id" column
+	 *
+	 * @return Mysql_Column
+	 */
+	public static function buildId()
+	{
+		$column = new Mysql_Column('id', 'bigint(18) unsigned');
+		$column->Null    = 'NO';
+		$column->Default = null;
+		$column->Extra   = 'auto_increment';
+		return $column;
+	}
+
+	//------------------------------------------------------------------------------------- buildLink
+	/**
+	 * Builds a Mysql_Column object for a standard "id_*" link column
+	 *
+	 * @param $column_name string
+	 * @return Mysql_Column
+	 */
+	public static function buildLink($column_name)
+	{
+		$column = new Mysql_Column($column_name, 'bigint(18) unsigned');
+		$column->Null    = 'NO';
+		$column->Default = 0;
+		return $column;
 	}
 
 	//------------------------------------------------------------------------------------- canBeNull

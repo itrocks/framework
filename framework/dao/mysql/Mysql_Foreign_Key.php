@@ -6,6 +6,7 @@ namespace SAF\Framework;
  */
 class Mysql_Foreign_Key implements Dao_Foreign_Key
 {
+	use Mysql_Foreign_Key_Builder_Property;
 
 	/**
 	 * @var string
@@ -38,6 +39,26 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 * @var string
 	 */
 	private $Reference_table;
+
+	//--------------------------------------------------------------------------------- buildProperty
+	/**
+	 * Builds a Mysql_Column object using a class property
+	 *
+	 * @param $table_name string
+	 * @param $property   Reflection_Property
+	 * @return Mysql_Foreign_Key
+	 */
+	public static function buildProperty($table_name, Reflection_Property $property)
+	{
+		$foreign_key = new Mysql_Foreign_Key();
+		$foreign_key->Constraint       = self::propertyConstraintToMysql($table_name, $property);
+		$foreign_key->Fields           = self::propertyFieldsToMysql($property);
+		$foreign_key->On_delete        = self::propertyOnDeleteToMysql($property);
+		$foreign_key->On_update        = self::propertyOnUpdateToMysql($property);
+		$foreign_key->Reference_fields = self::propertyReferenceFieldsToMysql($property);
+		$foreign_key->Reference_table  = self::propertyReferenceTableToMysql($property);
+		return $foreign_key;
+	}
 
 	//--------------------------------------------------------------------------------- getConstraint
 	/**

@@ -86,6 +86,17 @@ class Mysql_Key implements Dao_Key
 	 */
 	//private $Table;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $name string
+	 */
+	public function __construct($name = null)
+	{
+		if (isset($name)) {
+			$this->Column_name = $this->Key_name = $name;
+		}
+	}
+
 	//----------------------------------------------------------------------------------------- equiv
 	/**
 	 * @todo to be tested

@@ -49,8 +49,8 @@ class Mysql_Table_Builder_Class
 	{
 		$table_name = Dao::current()->storeNameOf($class->name);
 		$table = new Mysql_Table($table_name);
-		if (!in_array("id", $this->excluded_properties)) {
-			$table->addColumn(Mysql_Column_Builder::buildId());
+		if (!in_array('id', $this->excluded_properties)) {
+			$table->addColumn(Mysql_Column::buildId());
 		}
 		if ($more_field) {
 			$table->addColumn($more_field);
@@ -59,10 +59,10 @@ class Mysql_Table_Builder_Class
 			if (!in_array($property->name, $this->excluded_properties)) {
 				$type = $property->getType();
 				if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
-					$table->addColumn(Mysql_Column_Builder_Property::build($property));
-					if ($property->getAnnotation("link")->value == "Object") {
-						$table->addForeignKey(Mysql_Foreign_Key_Builder_Property::build($table_name, $property));
-						$table->addIndex(Mysql_Index_Builder::buildLink($property->name));
+					$table->addColumn(Mysql_Column::buildProperty($property));
+					if ($property->getAnnotation('link')->value == 'Object') {
+						$table->addForeignKey(Mysql_Foreign_Key::buildProperty($table_name, $property));
+						$table->addIndex(Mysql_Index::buildLink($property->name));
 					}
 				}
 			}
@@ -85,7 +85,7 @@ class Mysql_Table_Builder_Class
 	private function buildInternal($class_name, $more_field)
 	{
 		$class = new Reflection_Class($class_name);
-		$link = $class->getAnnotation("link")->value;
+		$link = $class->getAnnotation('link')->value;
 		$tables = $link ? $this->buildLinkTable($link, $class_name) : array();
 		$tables[] = $this->buildClassTable($class, $more_field);
 		return $tables;

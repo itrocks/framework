@@ -42,11 +42,11 @@ class Mysql_Maintainer implements Plugins\Registerable
 		foreach ($column_names as $column_name) {
 			$table->addColumn(
 				($column_name === "id")
-				? Mysql_Column_Builder::buildId()
-				: Mysql_Column_Builder::buildLink($column_name)
+				? Mysql_Column::buildId()
+				: Mysql_Column::buildLink($column_name)
 			);
 			if (substr($column_name, 0, 3) === "id_") {
-				$index = Mysql_Index_Builder::buildLink($column_name);
+				$index = Mysql_Index::buildLink($column_name);
 				$table->addIndex($index);
 			}
 		}
