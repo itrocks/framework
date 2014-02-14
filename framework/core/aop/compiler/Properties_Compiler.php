@@ -42,7 +42,7 @@ class Properties_Compiler
 	{
 		$this->actions = array();
 		$methods = array();
-		if (!$this->class->isAbstract()) {
+		if ($this->class->type !== 'trait') {
 			$methods['__construct'] = $this->compileConstruct($advices);
 			if ($methods['__construct']) {
 				$methods['__aop']   = $this->compileAop($advices);
