@@ -46,6 +46,7 @@ class Print_Model_Page
 	/**
 	 * @return string
 	 */
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getNumber()
 	{
 		$number = $this->number;
