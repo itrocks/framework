@@ -208,9 +208,9 @@ class Compiler implements ICompiler
 				. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
 				. '(\w+)?)?'                 // 3 : method or function name
 				. '%';
-			preg_match($expr, $property->documentation, $match);
-			if ($match) {
-				$type = ($match[1] == 'setter') ? 'write' : 'read';
+			preg_match_all($expr, $property->documentation, $match);
+			foreach ($match[1] as $type) {
+				$type = ($type == 'setter') ? 'write' : 'read';
 				$properties[$property->name]['implements'][$type] = true;
 			}
 		}

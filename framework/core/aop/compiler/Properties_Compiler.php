@@ -158,15 +158,14 @@ class Properties_Compiler
 	/** AOP */
 	protected function __aop($init = true)
 	{
-		if ($init) $this->_ = array();
-';
+		if ($init) $this->_ = array();';
 		$code = '';
 		foreach ($advices as $property_name => $property_advices) {
 			$code .= '
+
 		$this->' . $property_name . '_ = $this->' . $property_name . ';
 		unset($this->' . $property_name . ');
-		$this->_[\'' . $property_name . '\'] = true;
-';
+		$this->_[\'' . $property_name . '\'] = true;';
 		}
 		// todo this check only getters, links and setters. This should check AOP links too.
 		if (($parent = $this->class->getParent()) && ($parent->type == 'class')) {
@@ -180,6 +179,7 @@ class Properties_Compiler
 				preg_match($expr, $property->documentation, $match);
 				if ($match) {
 					$parent_code = '
+
 		parent::__aop(false);';
 					break;
 				}
@@ -202,7 +202,7 @@ class Properties_Compiler
 		// only if at least one property is declared here
 		foreach ($advices as $property_advices) {
 			if (isset($property_advices['implements'])) {
-				$over = $this->overrideMethod('__construct');
+				$over = $this->overrideMethod('__construct', false);
 				return
 	$over['prototype'] . '
 		if (!isset($this->_)) $this->__aop();
@@ -283,6 +283,13 @@ class Properties_Compiler
 		unset($advices['implements']);
 		$code = '';
 		$init = array();
+		$last = '';
+		foreach ($advices as $aspect) {
+			if ($aspect[0] === 'write') {
+				$last = '$last = ';
+				break;
+			}
+		}
 		foreach ($advices as $aspect) {
 			list($type, $advice) = $aspect;
 			if ($type == 'read') {
@@ -292,17 +299,23 @@ class Properties_Compiler
 	private function & ' . $property_name . '_read()
 	{
 		unset($this->_[\'' . $property_name . '\']);
-		$value = $this->' . $property_name . ' = $this->' . $property_name . '_;
+		' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
 ';
 				}
 				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
+				if ($last) {
+					$code .= '
+		if ($this->' . $property_name . ' !== $last) {
+			$this->' . $property_name . '_write($this->' . $property_name . ');
+			$last = $this->' . $property_name . ';
+		}';
+				}
 			}
 		}
 		if (isset($prototype)) {
 			// todo missing call of setters if value has been changed
 			return $prototype . $this->initCode($init) . $code . '
 
-		$this->' . $property_name . '_ =& $this->' . $property_name . ';
 		unset($this->' . $property_name . ');
 		$this->_[\'' . $property_name . '\'] = true;
 		return $value;
@@ -325,6 +338,11 @@ class Properties_Compiler
 		if (!isset($this->_) || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}';
+		if ($over['cases']) {
+			$switch = true;
+			$code .= '
+		switch ($property_name) {';
+		}
 		foreach ($advices as $property_name => $property_advices) {
 			if (isset($property_advices['implements']['write'])) {
 				if (!isset($switch)) {
@@ -337,7 +355,7 @@ class Properties_Compiler
 			}
 		}
 		if (isset($switch)) {
-			$code .= '
+			$code .= $over['cases'] . '
 		}';
 		}
 		return $code . '
@@ -382,12 +400,13 @@ class Properties_Compiler
 				if (!isset($prototype)) {
 					$prototype = '
 	/** AOP */
-	private function ' . $property_name . '_write()
+	private function ' . $property_name . '_write($value)
 	{
-		$value = $this->' . $property_name . ';
-		unset($this->_[\'' . $property_name . '\']);
-		$this->' . $property_name . ' = $value;
-		$value =& $this->' . $property_name . ';
+		if (isset($this_[\'' . $property_name . '\'])) {
+			unset($this->_[\'' . $property_name . '\']);
+			$this->' . $property_name . ' = $this->' . $property_name . '_;
+			$writer = true;
+		}
 ';
 				}
 				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
@@ -396,9 +415,11 @@ class Properties_Compiler
 		if (isset($prototype)) {
 			return $prototype . $this->initCode($init) . $code . '
 
-		$this->' . $property_name . '_ = $this->' . $property_name . ';
-		unset($this->' . $property_name . ');
-		$this->_[\'' . $property_name . '\'] = true;
+		if (isset($writer)) {
+			$this->' . $property_name . '_ = $this->' . $property_name . ';
+			unset($this->' . $property_name . ');
+			$this->_[\'' . $property_name . '\'] = true;
+		}
 	}
 ';
 		}
@@ -446,10 +467,11 @@ class Properties_Compiler
 	/**
 	 * Override a public method
 	 *
-	 * @param $method_name string
+	 * @param $method_name  string
+	 * @param $needs_return boolean if false, call will not need return statement
 	 * @return array action (rename, trait), call, Php_Method method, prototype
 	 */
-	private function overrideMethod($method_name)
+	private function overrideMethod($method_name, $needs_return = true)
 	{
 		$over = array('cases' => '');
 		$parameters = '';
@@ -526,7 +548,7 @@ class Properties_Compiler
 		// the method exists : prepare call and prototype
 		if (isset($method)) {
 			$over['method']    = $method;
-			$over['prototype'] = $method->prototype;
+			$over['prototype'] = rtrim($method->prototype);
 			if (in_array($method_name, array('__get', '__isset', '__set', '__unset'))) {
 				$parameters = $method->getParametersNames();
 				if (reset($parameters) !== 'property_name') {
@@ -542,7 +564,7 @@ class Properties_Compiler
 				$suffix = ($over['call'] === 'parent::') ? '' : '_0';
 				$over['call'] = ($method->returns() ? 'return ' : '')
 					. $over['call'] . $method_name . $suffix . '(' . $method->getParametersCall() . ');'
-					. ($method->returns() ? '' : ' return;');
+					. (($method->returns() || !$needs_return) ? '' : ' return;');
 			}
 		}
 		// the method does not exist : call default code and create default prototype
