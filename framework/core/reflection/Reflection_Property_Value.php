@@ -38,7 +38,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * Constructs a reflection property with value
 	 *
 	 * @example
-	 * $pv = new Reflection_Property_Value("Class_Name", "property_name", $object);
+	 * $pv = new Reflection_Property_Value('Class_Name', 'property_name', $object);
 	 *
 	 * @param $class_name    string
 	 * @param $property_name string
@@ -54,7 +54,7 @@ class Reflection_Property_Value extends Reflection_Property
 			$this->object = $object;
 		}
 		else {
-echo "DEAD CODE ? object is set for $class_name::$property_name<br>";
+echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . '<br>';
 		}
 	}
 
@@ -69,7 +69,7 @@ echo "DEAD CODE ? object is set for $class_name::$property_name<br>";
 	{
 		$property = new Reflection_Property($this->class, $this->name);
 		$value = isset($property->$key) ? $property->$key : null;
-echo "Reflection_Property_Value::__get($key) = $value MAY CRASH !<br>";
+echo 'Reflection_Property_Value::__get(' . $key . ') = ' . $value . ' MAY CRASH !<br>';
 		return $value;
 	}
 
@@ -82,7 +82,7 @@ echo "Reflection_Property_Value::__get($key) = $value MAY CRASH !<br>";
 	 */
 	public function __set($key, $value)
 	{
-echo "Reflection_Property_Value::__set($key) = $value MAY CRASH !<br>";
+echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH !<br>';
 		$property = (new Reflection_Property($this->class, $this->name));
 		$property->$key = $value;
 	}
@@ -96,18 +96,6 @@ echo "Reflection_Property_Value::__set($key) = $value MAY CRASH !<br>";
 		return $this->display
 			? $this->display
 			: Names::propertyToDisplay($this->path ? $this->path : $this->name);
-	}
-
-	//----------------------------------------------------------------------------------------- field
-	/**
-	 * Returns path formatted as field : uses [] instead of .
-	 *
-	 * @example if $this->path is "a.field.path", will return "a[field][path]"
-	 * @return string
-	 */
-	public function field()
-	{
-		return Names::propertyPathToField($this->path ? $this->path : $this->name);
 	}
 
 	//---------------------------------------------------------------------------------------- format

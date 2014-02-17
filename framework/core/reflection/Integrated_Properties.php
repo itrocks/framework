@@ -40,11 +40,11 @@ abstract class Integrated_Properties
 	 *
 	 * Only properties with an @integrated annotation will be used for extend
 	 *
-	 * @param $properties_list Reflection_Property[] new indicies will be "property.sub_property"
+	 * @param $properties_list Reflection_Property[] new indicies will be 'property.sub_property'
 	 * @param $property        Reflection_Property
 	 * @param $object          object
 	 * @param $property_name   string
-	 * @return Reflection_Property[] added properties list (empty if none applies) indices are "property.sub_property"
+	 * @return Reflection_Property[] added properties list (empty if none applies) indices are 'property.sub_property'
 	 */
 	public static function expandUsingProperty(
 		&$properties_list, $property, $object = null, $property_name = null
@@ -57,55 +57,55 @@ abstract class Integrated_Properties
 
 	//------------------------------------------------------------------- expandUsingPropertyInternal
 	/**
-	 * @param $properties_list Reflection_Property[] new indicies will be "property.sub_property"
+	 * @param $properties_list Reflection_Property[] new indicies will be 'property.sub_property'
 	 * @param $property        Reflection_Property
 	 * @param $object          object
 	 * @param $property_name   string
 	 * @param $display_prefix  string
 	 * @param $blocks          string[]
-	 * @return Reflection_Property[] added properties list (empty if none applies) indices are "property.sub_property"
+	 * @return Reflection_Property[] added properties list (empty if none applies) indices are
+	 *         'property.sub_property'
+	 * @todo probably things to clean up (was patched for 'all properties as values' without controls)
 	 */
 	private static function expandUsingPropertyInternal(
-		&$properties_list, $property, $object, $property_name, $display_prefix = "", $blocks = array()
+		&$properties_list, $property, $object, $property_name, $display_prefix = '', $blocks = array()
 	) {
 		$expanded = array();
 		/** @var $integrated Integrated_Annotation */
-		$integrated = $property->getAnnotation("integrated");
+		$integrated = $property->getAnnotation('integrated');
 		if ($integrated->value && !$property->isStatic()) {
-			if ($integrated->has("block")) {
+			if ($integrated->has('block')) {
 				$blocks[$property->path ?: $property->name] = $property->path ?: $property->name;
 			}
-			$integrated_simple = $integrated->has("simple");
+			$integrated_simple = $integrated->has('simple');
 			$expand_properties = $property->getType()->asReflectionClass()->getAllProperties();
+			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
-				$value = isset($object) ? $property->getValue($object) : null;
-				$display = ($display_prefix . ($display_prefix ? "." : "")
-					. $property->name . "." . $sub_property_name);
+				$display = ($display_prefix . ($display_prefix ? '.' : '')
+					. $property->name . '.' . $sub_property_name);
 				$sub_prefix = $integrated_simple ? $display_prefix : $display;
 				if ($more_expanded = self::expandUsingPropertyInternal(
-					$properties_list, $sub_property, $value, $property_name . "." . $sub_property_name,
+					$properties_list, $sub_property, $value, $property_name . '.' . $sub_property_name,
 					$sub_prefix, $blocks
 				)) {
 					$expanded = array_merge($expanded, $more_expanded);
 				}
 				else {
-					if (isset($value)) {
-						$sub_property = new Reflection_Property_Value(
-							$sub_property->class, $sub_property->name, $value
-						);
-						$sub_property->display = $integrated_simple
-							? (
-								($integrated->has("alias") && $sub_property->getAnnotation("alias")->value)
-								? $sub_property->getAnnotation("alias")->value : $sub_property_name
-							)
-							: $display;
-					}
+					$sub_property = new Reflection_Property_Value(
+						$sub_property->class, $sub_property->name, $value
+					);
+					$sub_property->display = $integrated_simple
+						? (
+							($integrated->has('alias') && $sub_property->getAnnotation('alias')->value)
+							? $sub_property->getAnnotation('alias')->value : $sub_property_name
+						)
+						: $display;
 					foreach ($blocks as $block) {
-						$sub_property->getListAnnotation("block")->add($block);
+						$sub_property->getListAnnotation('block')->add($block);
 					}
-					$sub_property->path = $property_name . "." . $sub_property_name;
-					$properties_list[$property_name . "." . $sub_property_name] = $sub_property;
-					$expanded[$property_name . "." . $sub_property_name] = $sub_property;
+					$sub_property->path = $property_name . '.' . $sub_property_name;
+					$properties_list[$property_name . '.' . $sub_property_name] = $sub_property;
+					$expanded[$property_name . '.' . $sub_property_name] = $sub_property;
 				}
 			}
 		}

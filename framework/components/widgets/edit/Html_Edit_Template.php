@@ -36,9 +36,9 @@ class Html_Edit_Template extends Html_Template
 	 */
 	private function nextFormCounter()
 	{
-		$counter = isset($_SESSION["Html_Edit_Template"]["form_counter"])
-			? $_SESSION["Html_Edit_Template"]["form_counter"] + 1 : 0;
-		$_SESSION["Html_Edit_Template"]["form_counter"] = $counter;
+		$counter = isset($_SESSION['Html_Edit_Template']['form_counter'])
+			? $_SESSION['Html_Edit_Template']['form_counter'] + 1 : 0;
+		$_SESSION['Html_Edit_Template']['form_counter'] = $counter;
 		return $counter;
 	}
 
@@ -51,22 +51,16 @@ class Html_Edit_Template extends Html_Template
 	 */
 	protected function parseContainer($content)
 	{
-		$i = strpos($content, "<!--BEGIN-->");
+		$i = strpos($content, '<!--BEGIN-->');
 		if ($i !== false) {
 			$i += 12;
-			$j = strrpos($content, "<!--END-->", $i);
+			$j = strrpos($content, '<!--END-->', $i);
 			$short_class = Namespaces::shortClassName(get_class(reset($this->objects)));
-			$short_form_id = strtolower($short_class) . "_edit";
-			$this->form_id = $short_form_id . "_" . $this->nextFormCounter();
-			$action = "/" . $short_class . "/write";
+			$short_form_id = strtolower($short_class) . '_edit';
+			$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
+			$action = '/' . $short_class . '/write';
 			$content = substr($content, 0, $i)
 				. $this->replaceSectionByForm(substr($content, $i, $j), $action)
-				/*
-				. '<form method="POST"'
-				. ' id=' . $short_form_id . ' name="' . $this->form_id . '" action="' . $action . '">'
-				. substr($content, $i, $j - $i)
-				. '</form>'
-				*/
 				. substr($content, $j);
 		}
 		return parent::parseContainer($content);
@@ -83,24 +77,28 @@ class Html_Edit_Template extends Html_Template
 	protected function parseValue($var_name, $as_string = true)
 	{
 		$property = reset($this->objects);
-		if (($property instanceof Reflection_Property) && ($var_name == "value")) {
+		if (($property instanceof Reflection_Property) && ($var_name == 'value')) {
 			$value = parent::parseValue($var_name, false);
 			if (
-				($property instanceof Reflection_Property_Value)
-				&& ($preprop = lLastParse($property->field(), "[", 1, false))
+				($preprop = lLastParse($property->pathAsField(), '[', 1, false))
 				&& (
-					!isset($this->cache["parsed_id"])
-					|| !isset($this->cache["parsed_id"][$this->getFormId()])
-					|| !isset($this->cache["parsed_id"][$this->getFormId()][$preprop])
+					!isset($this->cache['parsed_id'])
+					|| !isset($this->cache['parsed_id'][$this->getFormId()])
+					|| !isset($this->cache['parsed_id'][$this->getFormId()][$preprop])
 				)
 			) {
-				$this->cache["parsed_id"][$this->getFormId()][$preprop] = true;
-				$parent_object = $property->getObject();
-				$id = isset($parent_object) ? Dao::getObjectIdentifier($parent_object) : null;
-				$id_value = (new Html_Builder_Type_Edit("id", null, $id, $preprop))->build();
+				$this->cache['parsed_id'][$this->getFormId()][$preprop] = true;
+				if ($property instanceof Reflection_Property_Value) {
+					$parent_object = $property->getObject();
+					$id = isset($parent_object) ? Dao::getObjectIdentifier($parent_object) : null;
+					$id_value = (new Html_Builder_Type_Edit('id', null, $id, $preprop))->build();
+				}
+				else {
+					$id_value = '';
+				}
 			}
 			else {
-				$id_value = "";
+				$id_value = '';
 			}
 			$value = $id_value
 				. (new Html_Builder_Property_Edit($property, $value))->setTemplate($this)->build();
@@ -119,8 +117,8 @@ class Html_Edit_Template extends Html_Template
 	 */
 	protected function replaceSectionByForm($content, $action)
 	{
-		$i = strpos($content, "<section");
-		$j = strpos($content, ">", $i) + 1;
+		$i = strpos($content, '<section');
+		$j = strpos($content, '>', $i) + 1;
 		$attributes = ' action="' . $action . '"'
 			. ' name="' . $this->form_id . '"'
 			. substr($content, $i + 8, $j - $i - 9)
@@ -128,10 +126,10 @@ class Html_Edit_Template extends Html_Template
 			. ' enctype="multipart/form-data"'
 			. ' target="#messages"';
 		$i = $j;
-		$j = strrpos($content, "</section>", $i);
-		return "<form" . $attributes . ">"
+		$j = strrpos($content, '</section>', $i);
+		return '<form' . $attributes . '>'
 			. substr($content, $i, $j - $i)
-			. "</form>";
+			. '</form>';
 	}
 
 }

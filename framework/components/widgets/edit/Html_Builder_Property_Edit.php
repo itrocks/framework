@@ -22,14 +22,13 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	public function __construct(Reflection_Property $property = null, $value = null, $preprop = null)
 	{
 		if (isset($property)) {
-			$name = ($property instanceof Reflection_Property_Value)
-				? $property->field() : $property->name;
-			if (strpos($name, "[")) {
-				$preprop2 = lLastParse($name, "[");
+			$name = $property->pathAsField();
+			if (strpos($name, '[')) {
+				$preprop2 = lLastParse($name, '[');
 				$preprop = $preprop
-					? ($preprop . "[" . lParse($preprop2, "[") . "[" . rParse($preprop2, "["))
+					? ($preprop . '[' . lParse($preprop2, '[') . '[' . rParse($preprop2, '['))
 					: $preprop2;
-				$name = lParse(rLastParse($name, "["), "]");
+				$name = lParse(rLastParse($name, '['), ']');
 			}
 			parent::__construct($name, $property->getType(), $value, $preprop);
 			$this->property = $property;
@@ -45,10 +44,10 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 */
 	public function build()
 	{
-		$link = $this->property->getAnnotation("link")->value;
+		$link = $this->property->getAnnotation('link')->value;
 		switch ($link) {
-			case "Collection": return $this->buildCollection();
-			case "Map":        return $this->buildMap();
+			case 'Collection': return $this->buildCollection();
+			case 'Map':        return $this->buildMap();
 			default:           return parent::build();
 		}
 	}
@@ -94,28 +93,28 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	protected function buildObject($conditions = null, $filters = null)
 	{
 		if (!isset($conditions)) {
-			$conditions_values = $this->property->getListAnnotation("conditions")->values();
+			$conditions_values = $this->property->getListAnnotation('conditions')->values();
 			if ($conditions_values) {
 				foreach ($conditions_values as $condition) {
-					if (strpos($condition, "=")) {
-						list($name, $condition) = explode("=", $condition);
+					if (strpos($condition, '=')) {
+						list($name, $condition) = explode('=', $condition);
 					}
 					else {
 						$name = $condition;
 					}
 					$conditions[$name] = isset($conditions[$name])
-						? ($conditions[$name] . "," . $condition)
+						? ($conditions[$name] . ',' . $condition)
 						: $condition;
 				}
 			}
 		}
 		if (!isset($filters)) {
-			$filters_values = $this->property->getListAnnotation("filters")->values();
+			$filters_values = $this->property->getListAnnotation('filters')->values();
 			if ($filters_values) {
 				$properties = $this->property->getDeclaringClass()->getAllProperties();
 				foreach ($filters_values as $filter) {
 					if ($properties[$filter]->getType()->isClass()) {
-						$filter = "id_" . $filter;
+						$filter = 'id_' . $filter;
 					}
 					$filters[$filter] = $filter;
 				}
@@ -133,16 +132,16 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	protected function buildString($multiline = false, $values = null)
 	{
 		$values_captions = array();
-		$values = $this->property->getListAnnotation("values")->values();
+		$values = $this->property->getListAnnotation('values')->values();
 		foreach ($values as $value) {
 			$values_captions[$value] = Names::propertyToDisplay($value);
 		}
 		$element = parent::buildString(
-			$this->property->getAnnotation("multiline")->value,
+			$this->property->getAnnotation('multiline')->value,
 			$values_captions
 		);
-		if ($this->property->getAnnotation("mandatory")->value) {
-			$element->setAttribute("required", true);
+		if ($this->property->getAnnotation('mandatory')->value) {
+			$element->setAttribute('required', true);
 		}
 		return $element;
 	}

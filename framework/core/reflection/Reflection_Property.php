@@ -62,7 +62,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	{
 		$this->path = $property_name;
 		$i = 0;
-		while (($j = strpos($property_name, ".", $i)) !== false) {
+		while (($j = strpos($property_name, '.', $i)) !== false) {
 			$property = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
 			$class_name = Builder::className($property->getType()->getElementTypeAsString());
 			$i = $j + 1;
@@ -80,6 +80,18 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	public function __toString()
 	{
 		return $this->name;
+	}
+
+	//----------------------------------------------------------------------------------- pathAsField
+	/**
+	 * Returns path formatted as field : uses [] instead of .
+	 *
+	 * @example if $this->path is 'a.field.path', will return 'a[field][path]'
+	 * @return string
+	 */
+	public function pathAsField()
+	{
+		return Names::propertyPathToField($this->path ? $this->path : $this->name);
 	}
 
 	//------------------------------------------------------------------------ getAnnotationCachePath
@@ -146,7 +158,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			$this->doc_comment =
 				$this->getOverrideDocComment()
 				. parent::getDocComment()
-				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : "");
+				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : '');
 		}
 		return $this->doc_comment;
 	}
@@ -168,17 +180,17 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	private function getOverrideDocComment()
 	{
-		$comment = "";
+		$comment = '';
 		/** @var $annotation Class_Override_Annotation */
 		foreach (
-			(new Reflection_Class($this->final_class))->getListAnnotations("override") as $annotation
+			(new Reflection_Class($this->final_class))->getListAnnotations('override') as $annotation
 		) {
 			if ($annotation->property_name === $this->name) {
-				$comment .= "/**\n";
+				$comment .= '/**' . "\n";
 				foreach ($annotation->values() as $key => $value) {
-					$comment .= "\t * @" . $key . " " . $value . "\n";
+					$comment .= "\t" . ' * @' . $key . ' ' . $value . "\n";
 				}
-				$comment .= "\t */";
+				$comment .= "\t" . ' */';
 			}
 		}
 		return $comment;
@@ -207,7 +219,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function getParentProperty()
 	{
-		if (!empty($this->path) && ($i = strrpos($this->path, "."))) {
+		if (!empty($this->path) && ($i = strrpos($this->path, '.'))) {
 			return new Reflection_Property($this->class, substr($this->path, 0, $i));
 		}
 		return null;
@@ -220,7 +232,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function getType()
 	{
-		$type_string = $this->getAnnotation("var")->value;
+		$type_string = $this->getAnnotation('var')->value;
 		if (ctype_upper($type_string[0])) {
 			$type_string = Namespaces::defaultFullClassName(
 				$type_string, $this->getDeclaringTrait()->name
@@ -240,7 +252,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		}
 		if ($type->isNull()) {
 			throw new Exception(
-				$this->class . '::$' . $this->name . " type not set using @var annotation",
+				$this->class . '::$' . $this->name . ' type not set using @var annotation',
 				E_USER_ERROR
 			);
 		}
@@ -251,7 +263,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	/**
 	 * Returns true if property is empty or equals to the default value
 	 *
-	 * Date_Time properties are null if "0000-00-00" or empty date
+	 * Date_Time properties are null if '0000-00-00' or empty date
 	 *
 	 * @param $value mixed
 	 * @return boolean
@@ -260,7 +272,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	{
 		return empty($value)
 			|| ($value === $this->getDefaultValue())
-			|| (($value === "0000-00-00") && $this->getType()->isDateTime())
+			|| (($value === '0000-00-00') && $this->getType()->isDateTime())
 			|| (($value instanceof Date_Time) && $value->isEmpty());
 	}
 
