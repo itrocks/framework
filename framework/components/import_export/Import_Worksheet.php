@@ -17,7 +17,7 @@ class Import_Worksheet
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
-	 * @var string
+	 * @var File
 	 */
 	public $file;
 
@@ -69,7 +69,8 @@ class Import_Worksheet
 	/**
 	 * @return Import_Preview
 	 */
-	public function getPreview()
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
+	private function getPreview()
 	{
 		if (!isset($this->preview)) {
 			$this->preview = new Import_Preview($this->file->getCsvContent());

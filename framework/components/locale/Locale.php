@@ -99,7 +99,8 @@ class Locale implements Plugins\Configurable
 	/**
 	 * @param $date Date_Locale | string if string, must be a date format (ie "d/m/Y")
 	 */
-	public function setDate($date)
+	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
+	private function setDate($date)
 	{
 		$this->date = ($date instanceof Date_Locale) ? $date : new Date_Locale($date);
 	}
@@ -108,7 +109,8 @@ class Locale implements Plugins\Configurable
 	/**
 	 * @param $language string
 	 */
-	public function setLanguage($language)
+	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
+	private function setLanguage($language)
 	{
 		$this->language = $language;
 		$this->translations = new Translations($this->language);
@@ -120,7 +122,8 @@ class Locale implements Plugins\Configurable
 	 *
 	 * @param Number_Locale | mixed[]
 	 */
-	public function setNumber($number)
+	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
+	private function setNumber($number)
 	{
 		$this->number = ($number instanceof Number_Locale)
 			? $number

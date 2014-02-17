@@ -99,7 +99,8 @@ class Acls_Group
 	/**
 	 * @return Acls_Link[]
 	 */
-	public function getLinks()
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
+	private function getLinks()
 	{
 		$links = isset($this->content) ? $this->content : null;
 		if (!isset($links)) {
@@ -117,7 +118,8 @@ class Acls_Group
 	/**
 	 * @return Acls_Right[]
 	 */
-	public function getRights()
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
+	private function getRights()
 	{
 		$rights = isset($this->rights) ? $this->rights : null;
 		if (!isset($rights)) {

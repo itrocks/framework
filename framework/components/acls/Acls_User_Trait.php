@@ -19,7 +19,8 @@ trait Acls_User_Trait
 	/**
 	 * @return Acls_Group
 	 */
-	public function getGroup()
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
+	private function getGroup()
 	{
 		$group = isset($this->group) ? $this->group : null;
 		if (!isset($group)) {

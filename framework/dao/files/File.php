@@ -87,6 +87,7 @@ class File
 	 *
 	 * @return string
 	 */
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getContent()
 	{
 		if (isset($this->temporary_file_name) && !isset($this->content)) {
@@ -101,6 +102,7 @@ class File
 	 *
 	 * @return string
 	 */
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getHash()
 	{
 		if (!isset($this->hash)) {
@@ -116,6 +118,7 @@ class File
 	 *
 	 * @return string
 	 */
+	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getTemporaryFileName()
 	{
 		if (
@@ -144,8 +147,10 @@ class File
 	}
 
 	//------------------------------------------------------------------------------------ setContent
-	private function setContent()
+	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
+	private function setContent($content)
 	{
+		$this->content = $content;
 		$this->calcHash();
 	}
 
