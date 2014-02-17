@@ -33,11 +33,23 @@ class Php_Class
 	 */
 	public $documentation;
 
+	//------------------------------------------------------------------------------- $documentations
+	/**
+	 * @var string
+	 */
+	private $documentations;
+
 	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * @var string
 	 */
 	public $file_name;
+
+	//---------------------------------------------------------------------------------------- $final
+	/**
+	 * @var string 'final' or null
+	 */
+	public $final;
 
 	//-------------------------------------------------------------------------------------- $imports
 	/**
@@ -280,13 +292,35 @@ class Php_Class
 		return $class;
 	}
 
-	//------------------------------------------------------------------------------------ isAbstract
+	//----------------------------------------------------------------------------- getDocumentations
 	/**
-	 * @return boolean
+	 * Gets cumulated documentations of parents and the class itself
+	 *
+	 * @param $filter array 'parents', 'interfaces' and 'traits'
+	 * @return string
 	 */
-	public function isAbstract()
+	public function getDocumentations($filter = array('parents', 'interfaces', 'traits'))
 	{
-		return $this->abstract || ($this->type == 'interface') || ($this->type == 'trait');
+		if (!isset($this->documentations)) {
+			$this->documentations = $this->documentation;
+			if (($this->type !== 'interface') && in_array('traits', $filter)) {
+				foreach ($this->getTraits() as $trait) {
+					$this->documentations .= $trait->getDocumentations($filter);
+				}
+			}
+			if (($this->type === 'class') && in_array('parents', $filter)) {
+				$parent = $this->getParent();
+				if ($parent) {
+					$this->documentations .= $parent->getDocumentations($filter);
+				}
+			}
+			if (($this->type !== 'trait') && in_array('interfaces', $filter)) {
+				foreach ($this->getInterfaces() as $interface) {
+					$this->documentations .= $interface->getDocumentations($filter);
+				}
+			}
+		}
+		return $this->documentations;
 	}
 
 	//--------------------------------------------------------------------------------- getInterfaces
@@ -479,6 +513,15 @@ class Php_Class
 	{
 		$properties = $this->getProperties($include_traits ? array('traits') : []);
 		return isset($properties[$property_name]);
+	}
+
+	//------------------------------------------------------------------------------------ isAbstract
+	/**
+	 * @return boolean
+	 */
+	public function isAbstract()
+	{
+		return $this->abstract || ($this->type == 'interface') || ($this->type == 'trait');
 	}
 
 	//------------------------------------------------------------------------------- parseImplements

@@ -97,9 +97,7 @@ class Button
 				$this->color = Color::of($option);
 			}
 			elseif ($option instanceof Button) {
-echo "<pre>" . print_r($this->sub_buttons, true) . "</pre>";
 				$this->sub_buttons[] = $option;
-echo "<pre>" . print_r($this->sub_buttons, true) . "</pre>";
 			}
 			elseif ($key === "sub_buttons") {
 				$this->sub_buttons = is_array($this->sub_buttons)

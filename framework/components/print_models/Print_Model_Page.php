@@ -46,7 +46,7 @@ class Print_Model_Page
 	/**
 	 * @return string
 	 */
-	public function getNumber()
+	private function getNumber()
 	{
 		$number = $this->number;
 		switch ($number) {
@@ -61,7 +61,8 @@ class Print_Model_Page
 	/**
 	 * @param string
 	 */
-	public function setNumber($number)
+	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
+	private function setNumber($number)
 	{
 		switch ($number) {
 			case "first": $number = 1;  break;
