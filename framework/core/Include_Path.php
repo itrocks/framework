@@ -25,7 +25,7 @@ class Include_Path
 	/**
 	 * @param $application string
 	 */
-	public function __construct($application = "framework")
+	public function __construct($application = 'framework')
 	{
 		$this->application = $application;
 	}
@@ -41,9 +41,9 @@ class Include_Path
 	{
 		$directories = array($path);
 		$dir = dir($path);
-		while ($entry = $dir->read()) if ($entry[0] != ".") {
-			if (is_dir($path . "/" . $entry) && ($entry != "vendor")) {
-				$directories = array_merge($directories, $this->getDirectories($path . "/" . $entry));
+		while ($entry = $dir->read()) if ($entry[0] != '.') {
+			if (is_dir($path . '/' . $entry) && ($entry != 'vendor')) {
+				$directories = array_merge($directories, $this->getDirectories($path . '/' . $entry));
 			}
 		}
 		return $directories;
@@ -56,7 +56,7 @@ class Include_Path
 	public function getIncludePath()
 	{
 		if (!isset($this->include_path)) {
-			$include_path = join(OS::$include_separator, $this->getSourceDirectories());
+			$include_path = join(OS::$include_separator, $this->getSourceDirectories(true));
 			$this->include_path = self::getOriginIncludePath() . OS::$include_separator . $include_path;
 			return $this->include_path;
 		}
@@ -81,27 +81,29 @@ class Include_Path
 	/**
 	 * Returns the full directory list for the application, including parent's applications directory
 	 *
-	 * Directory names are sorted from higher-level application to basis SAF "framework" directory
-	 * Inside an application, directories are sorted randomly (according to how the php Directory->read() call works)
+	 * Directory names are sorted from higher-level application to basis SAF 'framework' directory
+	 * Inside an application, directories are sorted randomly (according to how the php
+	 * Directory->read() call works)
 	 *
 	 * Paths are relative to the SAF index.php base script position
 	 *
-	 * @param $application string
+	 * @param $include_subdirectories boolean
+	 * @param $application            string
 	 * @return string[]
 	 */
-	public function getSourceDirectories($application = null)
+	public function getSourceDirectories($include_subdirectories = false, $application = null)
 	{
 		if (!isset($application)) {
 			$application = $this->application;
 		}
 		$app_dir = $this->getSourceDirectory($application);
 		$directories = array();
-		if ($application != "framework") {
-			$extends = trim(mParse(file_get_contents($app_dir . "/Application.php"), " extends ", "\n"));
-			$extends = substr($extends, 0, strrpos($extends, "\\"));
-			$extends = substr($extends, strrpos($extends, "\\") + 1);
+		if ($application != 'framework') {
+			$extends = trim(mParse(file_get_contents($app_dir . '/Application.php'), ' extends ', "\n"));
+			$extends = substr($extends, 0, strrpos($extends, '\\'));
+			$extends = substr($extends, strrpos($extends, '\\') + 1);
 			if ($extends) {
-				$directories = $this->getSourceDirectories(strtolower($extends));
+				$directories = $this->getSourceDirectories($include_subdirectories, strtolower($extends));
 			}
 		}
 		/*
@@ -110,7 +112,9 @@ class Include_Path
 			$directories += $this->getSourceDirectories($application);
 		}
 		*/
-		return array_merge($this->getDirectories($app_dir), $directories);
+		return $include_subdirectories
+			? array_merge($this->getDirectories($app_dir), $directories)
+			: array_merge(array($application), $directories);
 	}
 
 	//---------------------------------------------------------------------------- getSourceDirectory
@@ -120,17 +124,14 @@ class Include_Path
 	 */
 	public function getSourceDirectory($application = null)
 	{
-		if (!isset($application)) {
-			$application = $this->application;
-		}
-		return $application;
+		return isset($application) ? $application : $this->application;
 	}
 
 	//-------------------------------------------------------------------------------- getSourceFiles
 	/**
 	 * Returns the full files list for the application, including parent's applications directory
 	 *
-	 * File names are sorted from higher-level application to basis SAF "framework" directory
+	 * File names are sorted from higher-level application to basis SAF 'framework' directory
 	 * Inside an application, files are sorted randomly (according to how the php Directory->read() call works)
 	 *
 	 * Paths are relative to the SAF index.php base script position
@@ -141,15 +142,15 @@ class Include_Path
 	public function getSourceFiles($include_vendor = false)
 	{
 		$files = array();
-		foreach ($this->getSourceDirectories() as $directory) {
-			$directory_slash = $directory . "/";
+		foreach ($this->getSourceDirectories(true) as $directory) {
+			$directory_slash = $directory . '/';
 			if (
-				(strpos($directory_slash, "/webshop/templates/") === false)
-				&& ($include_vendor || strpos($directory_slash, "/vendor/") === false)
+				(strpos($directory_slash, '/webshop/templates/') === false)
+				&& ($include_vendor || strpos($directory_slash, '/vendor/') === false)
 			) {
 				$dir = dir($directory);
-				while ($entry = $dir->read()) if ($entry[0] != ".") {
-					$file_path = $directory . "/" . $entry;
+				while ($entry = $dir->read()) if ($entry[0] != '.') {
+					$file_path = $directory . '/' . $entry;
 					if (is_file($file_path)) {
 						$files[] = $file_path;
 					}
