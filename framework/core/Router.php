@@ -292,7 +292,10 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		if (is_array($feature_names)) {
 			$feature_names = join('.', $feature_names);
 		}
-		if (isset($this->html_templates[$class_name][$feature_names])) {
+		if (
+			isset($this->html_templates[$class_name][$feature_names])
+			&& file_exists($this->html_templates[$class_name][$feature_names])
+		) {
 			unset($this->class_name);
 			return array($this->html_templates[$class_name][$feature_names]);
 		}
