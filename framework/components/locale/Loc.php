@@ -73,7 +73,6 @@ class Loc implements Plugins\Registerable
 							}
 						}
 					}
-					$class->accessPropertiesDone();
 				}
 			}
 			else {

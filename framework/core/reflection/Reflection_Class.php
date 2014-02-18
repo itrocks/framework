@@ -46,20 +46,13 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function accessProperties()
 	{
-		return Reflection_Class_Properties_Access::access($this);
-	}
-
-	//-------------------------------------------------------------------------- accessPropertiesDone
-	/**
-	 * All private class and parents properties go back to private
-	 *
-	 * This must be called after the properties used with access() are no longer needed as accessible.
-	 * If more than one access() has been called for the class, the release will be done only on the
-	 * last done() access.
-	 */
-	public function accessPropertiesDone()
-	{
-		Reflection_Class_Properties_Access::done($this);
+		$properties = $this->getAllProperties();
+		foreach ($properties as $property) {
+			if (!$property->isPublic()) {
+				$property->setAccessible(true);
+			}
+		}
+		return $properties;
 	}
 
 	//------------------------------------------------------------------------------ getAllProperties
@@ -67,16 +60,14 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * Get all properties from a class and its parents
 	 *
 	 * If a property overrides a parent property, parent AND child properties will be listed (only if
-	 * $by_name keeps false).
+	 * $by_name is false).
 	 * If $by_name is set to true, result array keys will be names.
 	 * With this option parent properties will be replace by overridden child properties.
 	 *
-	 * @deprecated
 	 * @param $filter      integer|string
 	 * @param $by_name     boolean
 	 * @param $final_class string
 	 * @return Reflection_Property[]
-	 * @todo remove this : getProperties() gets all properties (tested with PHP 5.5.3)
 	 */
 	public function getAllProperties(
 		$filter = Reflection_Property::ALL, $by_name = true, $final_class = null

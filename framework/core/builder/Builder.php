@@ -148,7 +148,6 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 				}
 			}
 		}
-		$class->accessPropertiesDone();
 		return $result;
 	}
 

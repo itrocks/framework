@@ -349,9 +349,8 @@ abstract class Html_Template_Functions
 		$object = reset($template->objects);
 		$properties_filter = $template->getParameter("properties_filter");
 		$class = new Reflection_Class(get_class($object));
-		$properties = $class->accessProperties();
 		$result_properties = array();
-		foreach ($properties as $property_name => $property) {
+		foreach ($class->accessProperties() as $property_name => $property) {
 			if (!$property->isStatic()) {
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
 					$result_properties[$property_name] = new Reflection_Property_Value(
@@ -360,7 +359,6 @@ abstract class Html_Template_Functions
 				}
 			}
 		}
-		$class->accessPropertiesDone();
 		return $result_properties;
 	}
 

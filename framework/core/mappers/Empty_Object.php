@@ -33,7 +33,6 @@ abstract class Empty_Object
 				}
 			}
 		}
-		$class->accessPropertiesDone();
 		return $is_empty;
 	}
 
@@ -50,8 +49,7 @@ abstract class Empty_Object
 	public static function create($class_name)
 	{
 		$object = Builder::create($class_name);
-		$class = new Reflection_Class($class_name);
-		foreach ($class->accessProperties() as $property) {
+		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				switch ($property->getType()->asString()) {
 					case "integer":
@@ -64,7 +62,6 @@ abstract class Empty_Object
 				$property->setValue($object, $value);
 			}
 		}
-		$class->accessPropertiesDone();
 		return $object;
 	}
 

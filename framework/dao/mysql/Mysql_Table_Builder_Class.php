@@ -67,7 +67,6 @@ class Mysql_Table_Builder_Class
 				}
 			}
 		}
-		$class->accessPropertiesDone();
 		return $table;
 	}
 

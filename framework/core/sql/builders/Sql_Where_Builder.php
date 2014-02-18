@@ -169,7 +169,6 @@ class Sql_Where_Builder
 				$array[$sub_path] = $object->$property_name;
 			}
 		}
-		$class->accessPropertiesDone();
 		$sql = $this->buildArray($path, $array, "AND");
 		if (!$sql) {
 			$sql = "FALSE";

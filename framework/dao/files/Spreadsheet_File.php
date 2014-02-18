@@ -44,8 +44,6 @@ class Spreadsheet_File
 				);
 			}
 		}
-		$source_class->accessPropertiesDone();
-		$destination_class->accessPropertiesDone();
 		return $destination_object;
 	}
 

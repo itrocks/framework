@@ -33,7 +33,6 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 				unset($properties[$property_name]);
 			}
 		}
-		$class->accessPropertiesDone();
 		return parent::buildProperties($properties, $group_annotations);
 	}
 

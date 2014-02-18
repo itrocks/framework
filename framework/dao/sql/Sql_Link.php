@@ -186,8 +186,8 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 			}
 		}
 		$first = true;
-		/** @var $properties Reflection_Class[] */
-		$properties = array();
+		/** @var $reflection_classes Reflection_Class[] */
+		$reflection_classes = array();
 		while ($result = $this->fetchRow($result_set)) {
 			for ($i = 0; $i < $column_count; $i++) {
 				$j = $itoj[$i];
@@ -198,10 +198,10 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 					if (!isset($row[$columns[$j]])) {
 						// TODO try to get the object from an object map (avoid several instances of the same)
 						$row[$columns[$j]] = Builder::create($classes[$j]);
-						if ($first && !isset($properties[$classes[$j]])) {
+						if ($first && !isset($reflection_classes[$classes[$j]])) {
 							$class = new Reflection_Class($classes[$j]);
 							$class->accessProperties();
-							$properties[$classes[$j]] = $class;
+							$reflection_classes[$classes[$j]] = $class;
 						}
 					}
 					$property_name = $column_names[$i];
@@ -216,9 +216,6 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 			$id = array_pop($row);
 			$list->add(new Default_List_Row($object_class, $id, $row));
 			$first = false;
-		}
-		foreach ($properties as $class) {
-			$class->accessPropertiesDone();
 		}
 		return $list;
 	}

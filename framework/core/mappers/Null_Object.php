@@ -17,14 +17,12 @@ abstract class Null_Object
 	public static function isNull($object)
 	{
 		$is_null = true;
-		$class = new Reflection_Class(get_class($object));
-		foreach ($class->accessProperties() as $property) {
+		foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
 			if ((!$property->isStatic()) && ($property->getValue($object) !== null)) {
 				$is_null = false;
 				break;
 			}
 		}
-		$class->accessPropertiesDone();
 		return $is_null;
 	}
 
@@ -38,13 +36,11 @@ abstract class Null_Object
 	public static function create($class_name)
 	{
 		$object = Builder::create($class_name);
-		$class = new Reflection_Class($class_name);
-		foreach ($class->accessProperties() as $property) {
+		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				$property->setValue($object, null);
 			}
 		}
-		$class->accessPropertiesDone();
 		return $object;
 	}
 

@@ -358,15 +358,13 @@ class Object_Builder_Array
 			);
 		}
 		elseif ($objects) {
-			$class = new Reflection_Class(get_class($object));
 			$new_object = reset($objects);
-			foreach ($class->accessProperties() as $property) {
+			foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
 				$property_name = $property->name;
 				if (isset($object->$property_name) && !isset($read_properties[$property->name])) {
 					$property->setValue($new_object, $property->getValue($object));
 				}
 			}
-			$class->accessPropertiesDone();
 			$object = $new_object;
 		}
 		return $object;
@@ -405,7 +403,6 @@ class Object_Builder_Array
 	//------------------------------------------------------------------------------------------ stop
 	public function stop()
 	{
-		$this->class->accessPropertiesDone();
 		$this->started = false;
 	}
 

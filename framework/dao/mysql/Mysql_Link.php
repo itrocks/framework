@@ -116,7 +116,6 @@ class Mysql_Link extends Sql_Link
 					}
 				}
 			}
-			$class->accessPropertiesDone();
 			$this->setContext($class_name);
 			$this->query(Sql_Builder::buildDelete($class_name, $id));
 			$this->disconnect($object);
@@ -549,7 +548,6 @@ class Mysql_Link extends Sql_Link
 					}
 				}
 			}
-			$class->accessPropertiesDone();
 			Getter::$ignore = $aop_getter_ignore;
 			$id = $this->getObjectIdentifier($object);
 			$this->setContext($class->name);
