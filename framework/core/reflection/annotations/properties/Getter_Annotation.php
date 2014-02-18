@@ -20,9 +20,9 @@ class Getter_Annotation extends Annotation
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
-			$link = ($reflection_property->getAnnotation("link")->value);
+			$link = ($reflection_property->getAnnotation('link')->value);
 			if (!empty($link)) {
-				$this->value = "Aop::get" . $link;
+				$this->value = Getter::class . '::get' . $link;
 			}
 		}
 	}
