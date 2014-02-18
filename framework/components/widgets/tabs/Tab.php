@@ -23,7 +23,7 @@ class Tab
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * Content can be simple entry or most often rows of multiple entries of the same class
+	 * Content can be a single entry or most often rows of multiple entries of the same class
 	 *
 	 * @var mixed
 	 */

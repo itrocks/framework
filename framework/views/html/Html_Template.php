@@ -636,7 +636,7 @@ class Html_Template
 					if ($first) {
 						$first = false;
 					}
-					else {
+					elseif ($separator) {
 						$loop_insert .= $this->parseVars($separator);
 					}
 					$sub_content = $this->parseVars($loop_content);

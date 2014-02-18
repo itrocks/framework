@@ -108,6 +108,7 @@ class Main_Controller
 	{
 		// Low level includes
 		include_once __DIR__ . '/../toolbox/functions/array_functions.php';
+		include_once __DIR__ . '/../toolbox/functions/file_functions.php';
 		include_once __DIR__ . '/../toolbox/functions/string_functions.php';
 		include_once __DIR__ . '/../toolbox/functions/type_functions.php';
 		include_once __DIR__ . '/../toolbox/Current.php';

@@ -93,7 +93,7 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 		if ($this->changes) {
 			ksort($this->full_class_names);
 			ksort($this->class_paths);
-			file_put_contents(
+			script_put_contents(
 				$this->routes_file,
 				'<?php
 

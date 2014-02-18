@@ -134,7 +134,7 @@ class Autoload_Cache implements Plugins\Activable, Updatable
 		if (!is_dir($this->cache_path)) {
 			mkdir($this->cache_path);
 		}
-		file_put_contents(
+		script_put_contents(
 			$this->cache_path . "/autoload.php",
 			"<?php\n\n"
 			. '$this->full_class_names = '

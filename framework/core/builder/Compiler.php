@@ -29,7 +29,7 @@ class Compiler
 					$path = strtolower(join('/', $path));
 					Files::mkdir($path);
 
-					file_put_contents($path . '/' . $file_name, $source);
+					script_put_contents($path . '/' . $file_name, $source);
 				}
 				$replacements[$class_name] = $built_name;
 			}

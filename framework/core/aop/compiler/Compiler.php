@@ -77,7 +77,7 @@ class Compiler implements ICompiler
 
 		if (isset($_GET['C'])) {
 			echo 'CLEANUP ' . $class->name . '<br>';
-			file_put_contents($class->file_name, $class->source);
+			script_put_contents($class->file_name, $class->source);
 			return;
 		}
 
@@ -124,7 +124,7 @@ class Compiler implements ICompiler
 			. "\n}\n";
 		if (!$class->clean || $methods_code) {
 			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class->name . '<br>';
-			else file_put_contents($class->file_name, $buffer);
+			else script_put_contents($class->file_name, $buffer);
 			if (self::DEBUG || isset($_GET['D'])) echo '<pre>' . htmlentities($buffer) . '</pre>';
 		}
 	}
