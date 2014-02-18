@@ -22,13 +22,13 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 * @var string
 	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
 	 */
-	private $On_delete = "RESTRICT";
+	private $On_delete = 'RESTRICT';
 
 	/**
 	 * @var string
 	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
 	 */
-	private $On_update = "RESTRICT";
+	private $On_update = 'RESTRICT';
 
 	/**
 	 * @var string
@@ -39,6 +39,31 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 * @var string
 	 */
 	private $Reference_table;
+
+	//------------------------------------------------------------------------------------- buildLink
+	/**
+	 * Builds a Mysql_Foreign_Key for a column name that links to a given class name
+	 *
+	 * @param $table_name  string the table name
+	 * @param $column_name string the column name linking to the foreign key (with or without 'id_')
+	 * @param $class_name  string the foreign class name
+	 * @param $constraint  string CASCADE, NO ACTION, RESTRICT, SET NULL
+	 * @return Mysql_Foreign_Key
+	 */
+	public static function buildLink($table_name, $column_name, $class_name, $constraint = 'CASCADE')
+	{
+		if (substr($column_name, 0, 3) !== 'id_') {
+			$column_name = 'id_' . $column_name;
+		}
+		$foreign_key = new Mysql_Foreign_Key();
+		$foreign_key->Constraint = $table_name . '.' . $column_name;
+		$foreign_key->Fields = $column_name;
+		$foreign_key->On_delete = $constraint;
+		$foreign_key->On_update = $constraint;
+		$foreign_key->Reference_fields = 'id';
+		$foreign_key->Reference_table = Dao::storeNameOf($class_name);
+		return $foreign_key;
+	}
 
 	//--------------------------------------------------------------------------------- buildProperty
 	/**
@@ -75,7 +100,7 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 */
 	public function getFields()
 	{
-		return explode(",", $this->Fields);
+		return explode(',', $this->Fields);
 	}
 
 	//----------------------------------------------------------------------------------- getOnDelete
@@ -102,7 +127,7 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 */
 	public function getReferenceFields()
 	{
-		return explode(",", $this->Reference_fields);
+		return explode(',', $this->Reference_fields);
 	}
 
 	//----------------------------------------------------------------------------- getReferenceTable
@@ -120,12 +145,12 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 */
 	public function toSql()
 	{
-		return "CONSTRAINT `" . $this->getConstraint() . "`"
-			. " FOREIGN KEY (`" . join("`, `", $this->getFields()) . "`)"
-			. " REFERENCES `" . $this->getReferenceTable() . "`"
-			. " (`" . join("`, `", $this->getReferenceFields()) . "`)"
-			. " ON DELETE " . $this->getOnDelete()
-			. " ON UPDATE " . $this->getOnUpdate();
+		return 'CONSTRAINT `' . $this->getConstraint() . '`'
+			. ' FOREIGN KEY (`' . join('`, `', $this->getFields()) . '`)'
+			. ' REFERENCES `' . $this->getReferenceTable() . '`'
+			. ' (`' . join('`, `', $this->getReferenceFields()) . '`)'
+			. ' ON DELETE ' . $this->getOnDelete()
+			. ' ON UPDATE ' . $this->getOnUpdate();
 	}
 
 }
