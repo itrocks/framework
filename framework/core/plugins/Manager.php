@@ -64,6 +64,25 @@ class Manager implements IManager, Serializable
 		}
 	}
 
+	//------------------------------------------------------------------------------------ addPlugins
+	/**
+	 * Add already registered and activated plugins object to a given level
+	 *
+	 * @param $level   string
+	 * @param $plugins Plugin[]
+	 */
+	public function addPlugins($level, $plugins)
+	{
+		if (!isset($this->plugins_tree[$level])) {
+			$this->plugins_tree[$level] = array();
+		}
+		$this->plugins_tree[$level] = array_merge($this->plugins_tree[$level], $plugins);
+		$this->plugins = array_merge($plugins, $this->plugins);
+		foreach (array_keys($plugins) as $class_name) {
+			$this->activated[$class_name] = true;
+		}
+	}
+
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Gets a plugin object
@@ -155,6 +174,19 @@ class Manager implements IManager, Serializable
 		return $plugin;
 	}
 
+	//------------------------------------------------------------------------------ getConfiguration
+	/**
+	 * @param $class_name string the plugin class name
+	 * @return array the plugin configuration, if set
+	 */
+	public function getConfiguration($class_name)
+	{
+		$plugin = $this->get($class_name);
+		return isset($plugin->plugin_configuration)
+			? $plugin->plugin_configuration
+			: null;
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers a plugin : at session creation, or when a plugin is added
@@ -205,25 +237,6 @@ class Manager implements IManager, Serializable
 			}
 		}
 		return serialize($data);
-	}
-
-	//------------------------------------------------------------------------------------ addPlugins
-	/**
-	 * Add already registered and activated plugins object to a given level
-	 *
-	 * @param $level   string
-	 * @param $plugins Plugin[]
-	 */
-	public function addPlugins($level, $plugins)
-	{
-		if (!isset($this->plugins_tree[$level])) {
-			$this->plugins_tree[$level] = array();
-		}
-		$this->plugins_tree[$level] = array_merge($this->plugins_tree[$level], $plugins);
-		$this->plugins = array_merge($plugins, $this->plugins);
-		foreach (array_keys($plugins) as $class_name) {
-			$this->activated[$class_name] = true;
-		}
 	}
 
 	//----------------------------------------------------------------------------------- unserialize
