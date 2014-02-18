@@ -2,7 +2,6 @@
 namespace SAF\Framework;
 
 use ReflectionClass;
-use ReflectionException;
 
 /**
  * A rich extension of the PHP ReflectionClass class, adding :
@@ -35,11 +34,13 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 
 	//------------------------------------------------------------------------------ accessProperties
 	/**
-	 * Change all properties accessibility to true for a given class, and return all class and parents properties list
+	 * Change all properties accessibility to true for a given class, and return all class and parents
+	 * properties list
 	 *
 	 * Done for class properties and its parents.
 	 * Accessibility should be set back with a call to done() after use.
-	 * If class properties are set to accessible several times, they will become non-accessible after the same number of done() calls.
+	 * If class properties are set to accessible several times, they will become non-accessible after
+	 * the same number of done() calls.
 	 *
 	 * @return Reflection_Property[]
 	 */
@@ -53,7 +54,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * All private class and parents properties go back to private
 	 *
 	 * This must be called after the properties used with access() are no longer needed as accessible.
-	 * If more than one access() has been called for the class, the release will be done only on the last done() access.
+	 * If more than one access() has been called for the class, the release will be done only on the
+	 * last done() access.
 	 */
 	public function accessPropertiesDone()
 	{
@@ -64,8 +66,10 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Get all properties from a class and its parents
 	 *
-	 * If a property overrides a parent property, parent AND child properties will be listed (only if $by_name keeps false).
-	 * If $by_name is set to true, result array will be indiced by names. With this option parent properties will be replace by overriden child properties.
+	 * If a property overrides a parent property, parent AND child properties will be listed (only if
+	 * $by_name keeps false).
+	 * If $by_name is set to true, result array keys will be names.
+	 * With this option parent properties will be replace by overridden child properties.
 	 *
 	 * @deprecated
 	 * @param $filter      integer|string
@@ -124,7 +128,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 
 	//---------------------------------------------------------------------------- getAnnotedProperty
 	/**
-	 * Gets higher level property which annotation has given value (or is not empty, if value is not set)
+	 * Gets higher level property which annotation has given value (or is not empty, if value is not
+	 * set)
 	 *
 	 * @param $annotation_name  string
 	 * @param $annotation_value mixed
@@ -239,11 +244,13 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Gets an array of methods for the class
 	 *
-	 * Only methods visible for current class are retrieved, not the privates ones from parents or traits.
+	 * Only methods visible for current class are retrieved, not the privates ones from parents or
+	 * traits.
 	 *
 	 * @param $filter int|null|string any combination of Reflection_Method::IS_* constants
 	 * @param $by_name boolean if true, only the last override of each method name will be kept
-	 * @return Reflection_Method[] indice is the method name if $by_name is true, else this will be an integer
+	 * @return Reflection_Method[] indice is the method name if $by_name is true, else this will be an
+	 * integer
 	 */
 	public function getMethods($filter = Reflection_Method::ALL, $by_name = true)
 	{
@@ -273,12 +280,14 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Gets an array of properties for the class
 	 *
-	 * Properties visible for current class, not the privates ones from parents and traits are retrieved.
+	 * Properties visible for current class, not the privates ones from parents and traits are
+	 * retrieved.
 	 *
 	 * @param $filter      integer|string any combination of Reflection_Property::IS_* constants
 	 * @param $by_name     boolean if true, only the last override of each property will be kept
 	 * @param $final_class string
-	 * @return Reflection_Property[] indice is the property name if $by_name is true, else this will be an integer
+	 * @return Reflection_Property[] indice is the property name if $by_name is true, else this will
+	 * be an integer
 	 */
 	public function getProperties(
 		$filter = Reflection_Property::ALL, $by_name = true, $final_class = null
@@ -298,19 +307,15 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Retrieves reflected properties
 	 *
-	 * Only a property visible for current class can be retrieved, not the privates ones from parent classes or traits.
+	 * Only a property visible for current class can be retrieved, not the privates ones from parent
+	 * classes or traits.
 	 *
 	 * @param string
 	 * @return Reflection_Property
 	 */
 	public function getProperty($name)
 	{
-		try {
-			$property = parent::getProperty($name);
-		}
-		catch (ReflectionException $e) {
-			$property = null;
-		}
+		$property = property_exists($this->name, $name) ? parent::getProperty($name) : null;
 		return $property ? new Reflection_Property($property->class, $property->name) : $property;
 	}
 
