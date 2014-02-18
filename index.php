@@ -40,5 +40,3 @@ ob_flush(); flush();
 // calls. This is a php bug, calling session_write_close() here will serialize session variables
 // within the correct application environment
 session_write_close();
-
-echo ((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000) . ' ms<br>';
