@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\Builder;
 
-use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\Class_Builder;
 use SAF\Framework\Files;
@@ -32,7 +31,7 @@ class Compiler
 
 					file_put_contents($path . '/' . $file_name, $source);
 				}
-				$replacements = $built_name;
+				$replacements[$class_name] = $built_name;
 			}
 		}
 		return $replacements;

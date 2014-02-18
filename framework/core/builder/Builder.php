@@ -4,6 +4,7 @@ namespace SAF\Framework;
 use ReflectionClass;
 use SAF\Framework\Builder\Compiler;
 use SAF\Plugins;
+use Serializable;
 
 /**
  * The Builder plugin replaces 'new Class_Name' calls by 'Builder::create('Class_Name')' in order to
@@ -13,7 +14,7 @@ use SAF\Plugins;
  *
  * @todo remove dependencies
  */
-class Builder implements Plugins\Activable, Plugins\Registerable
+class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 {
 	use Current_With_Default { current as private dCurrent; }
 
@@ -204,7 +205,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$register->configuration = (new Compiler())->compile($register->configuration);
+		$this->replacements = (new Compiler())->compile($this->replacements);
 		$aop->beforeMethod(
 			array(Getter::class, 'getCollection'),
 			array($this, 'onMethodWithClassName')
@@ -252,6 +253,15 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 		return $result;
 	}
 
+	//------------------------------------------------------------------------------------- serialize
+	/**
+	 * @return string the string representation of the object or null
+	 */
+	public function serialize()
+	{
+		return serialize($this->replacements);
+	}
+
 	//-------------------------------------------------------------------------------- setReplacement
 	/**
 	 * Sets a new replacement
@@ -283,6 +293,15 @@ class Builder implements Plugins\Activable, Plugins\Registerable
 	public function sourceClassName($class_name)
 	{
 		return array_search($class_name, $this->replacements) ?: $class_name;
+	}
+
+	//----------------------------------------------------------------------------------- unserialize
+	/**
+	 * @param $serialized string
+	 */
+	public function unserialize($serialized)
+	{
+		$this->replacements = unserialize($serialized);
 	}
 
 }
