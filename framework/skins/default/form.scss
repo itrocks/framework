@@ -119,36 +119,40 @@ fieldset {
 				font-weight: bold;
 			}
 
-			>div>table>thead>tr>th {
-				padding: 1px 2px;
-			}
+			>div>table {
 
-			>div>table>tbody>tr {
-
-				&:hover {
-					background-color: $field_hover;
+				>thead>tr>th {
+					padding: 1px 2px;
 				}
 
-				>td {
-					padding: 1px 5px 0 0;
+				>tbody>tr {
 
-					>input, >textarea {
-						height: 18px;
-						width: 100%;
+					&:hover {
+						background-color: $field_hover;
 					}
 
-					>select {
-						height: 22px;
-						margin-right: -6px;
-					}
+					>td {
+						padding: 1px 5px 0 0;
+						white-space: nowrap;
 
-					&.minus {
-						background: url("img/remove_row.png") right no-repeat;
-						color: transparent;
-						cursor: pointer;
-						max-width: 16px;
-						min-width: 16px;
-						width: 16px;
+						>input, >textarea {
+							height: 18px;
+							width: 100%;
+						}
+
+						>select {
+							height: 22px;
+							margin-right: -6px;
+						}
+
+						&.minus {
+							background: url("img/remove_row.png") right no-repeat;
+							color: transparent;
+							cursor: pointer;
+							max-width: 16px;
+							min-width: 16px;
+							width: 16px;
+						}
 					}
 				}
 			}

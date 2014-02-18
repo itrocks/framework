@@ -87,7 +87,8 @@ fieldset {
       fieldset > div:not(.tabber).multiple > div > table > tbody > tr:hover {
         background-color: #defdaf; }
       fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td {
-        padding: 1px 5px 0 0; }
+        padding: 1px 5px 0 0;
+        white-space: nowrap; }
         fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td > input, fieldset > div:not(.tabber).multiple > div > table > tbody > tr > td > textarea {
           height: 18px;
           width: 100%; }
