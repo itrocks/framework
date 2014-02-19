@@ -17,7 +17,7 @@ function lLastParse($str, $sep, $cnt = 1, $complete_if_not = true)
 	}
 	$i = strrpos($str, $sep);
 	if ($i === false) {
-		return $complete_if_not ? $str : "";
+		return $complete_if_not ? $str : '';
 	}
 	else {
 		return substr($str, 0, $i);
@@ -41,7 +41,7 @@ function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
 		$i = strpos($str, $sep, $i + 1);
 	}
 	if ($i === false) {
-		return $complete_if_not ? $str : "";
+		return $complete_if_not ? $str : '';
 	}
 	else {
 		return substr($str, 0, $i);
@@ -50,7 +50,7 @@ function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
 
 //------------------------------------------------------------------------------------ maxRowLength
 /**
- * Renvoie la plus grande longueur de ligne d'un texte dont les lignes sont séparées par "\n"
+ * Renvoie la plus grande longueur de ligne d'un texte dont les lignes sont séparées par '\n'
  *
  * @param $str string
  * @return int
@@ -67,47 +67,14 @@ function maxRowLength($str)
 	return $length;
 }
 
-//---------------------------------------------------------------------------------------- mb_strtr
-/**
- * Translate characters or replace substrings
- * This works with multibytes characters (UTF-8 only)
- *
- * @param $str  string
- * @param $from string|string[]
- * @param $to   string|string[]
- * @return string
- */
-function mb_strtr($str, $from, $to)
-{
-	return str_replace(
-		is_array($from) ? $from : mb_str_split($from),
-		is_array($to)   ? $to   : mb_str_split($to),
-		$str
-	);
-}
-
-//------------------------------------------------------------------------------------ mb_str_split
-/**
- * Split a string to an array containing each one of it's characters
- * Characters can be multibytes (this is UTF-8 compliant)
- *
- * @param $str string
- * @return string[]
- */
-function mb_str_split($str)
-{
-	$result = preg_split('~~u', $str, null, PREG_SPLIT_NO_EMPTY);
-	return $result;
-}
-
 //------------------------------------------------------------------------------------------ mParse
 /**
  * Renvoie la partie de la chaîne située entre le délimiteur de début et le délimiteur de fin
  * Si le délimiteur est un tableau, les délimiteurs seront recherchés successivement.
  *
- * @example echo mParse("il a mangé, a bu, a digéré", array(",", "a "), ",")
- *          recherchera ce qui entre le "a " qui est après "," et le "," qui suit,
- *          et affichera "bu"
+ * @example echo mParse('il a mangé, a bu, a digéré', array(',', 'a '), ',')
+ *          recherchera ce qui entre le 'a ' qui est après ',' et le ',' qui suit,
+ *          et affichera 'bu'
  * @param $str string
  * @param $begin_sep mixed  array, string
  * @param $end_sep mixed    array, string
@@ -155,7 +122,7 @@ function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
 		$cnt--;
 	}
 	if ($i === false) {
-		return $complete_if_not ? $str : "";
+		return $complete_if_not ? $str : '';
 	}
 	else {
 		return substr($str, $i + strlen($sep));
@@ -164,7 +131,7 @@ function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
 
 //---------------------------------------------------------------------------------------- rowCount
 /**
- * Renvoie le nombre de lignes dans un texte dont les lignes sont séparées par "\n"
+ * Renvoie le nombre de lignes dans un texte dont les lignes sont séparées par '\n'
  *
  * @param $str string
  * @return string
@@ -191,7 +158,7 @@ function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
 		$i = strpos($str, $sep, $i + 1);
 	}
 	if ($i === false) {
-		return $complete_if_not ? $str : "";
+		return $complete_if_not ? $str : '';
 	}
 	else {
 		return substr($str, $i + strlen($sep));
@@ -207,7 +174,7 @@ function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
  */
 function strHasAccent($str)
 {
-	return (strpbrk($str, "àáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ") !== false);
+	return (strpbrk($str, 'àáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ') !== false);
 }
 
 //----------------------------------------------------------------------------------- strIsCapitals
@@ -222,7 +189,7 @@ function strIsCapitals($str)
 	for ($i = 0; $i < strlen($str); $i ++) {
 		if (
 			(($str[$i] < 'A') || ($str[$i] > 'Z'))
-			&& (strpos("ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ", $str[$i]) === false)
+			&& (strpos('ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ', $str[$i]) === false)
 		) {
 			return false;
 		}
@@ -240,43 +207,43 @@ function strIsCapitals($str)
  * 4/ not allowed characters are replaced by a joker character, or removed if no joker character is set
  *
  * @param $str      string
- * @param $extended boolean|string|string[] if true, default ".,/- " is used
+ * @param $extended boolean|string|string[] if true, default '.,/- ' is used
  * @param $joker    string if set, replace refused characters with this one
  * @return string
  */
 function strSimplify($str, $extended = false, $joker = null)
 {
 	$str_simplify = array(
-		"À" => "A", "Á" => "A", "Â" => "A", "Ã" => "A", "Ä" => "A", "Å" => "A",
-		"Ç" => "C",
-		"È" => "E", "É" => "E", "Ê" => "E", "Ë" => "E",
-		"Ì" => "I", "Í" => "I", "Î" => "I", "Ï" => "I",
-		"Ò" => "O", "Ó" => "O", "Ô" => "O", "Õ" => "O", "Ö" => "O",
-		"Ù" => "U", "Ú" => "U", "Û" => "U", "Ü" => "U",
-		"Ý" => "Y", "Ÿ" => "Y",
-		"à" => "a", "á" => "a", "â" => "a", "ã" => "a", "ä" => "a", "å" => "a",
-		"ç" => "c",
-		"è" => "e", "é" => "e", "ê" => "e", "ë" => "e",
-		"ì" => "i", "í" => "i", "î" => "i", "ï" => "i",
-		"ð" => "o", "ò" => "o", "ó" => "o", "ô" => "o", "õ" => "o", "ö" => "o",
-		"ù" => "u", "ú" => "u", "û" => "u", "ü" => "u",
-		"ý" => "y", "ÿ" => "y",
-		"&" => "and"
+		'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
+		'Ç' => 'C',
+		'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+		'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
+		'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O',
+		'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U',
+		'Ý' => 'Y', 'Ÿ' => 'Y',
+		'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a',
+		'ç' => 'c',
+		'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+		'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+		'ð' => 'o', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
+		'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
+		'ý' => 'y', 'ÿ' => 'y',
+		'&' => 'and'
 	);
-	$result = "";
+	$result = '';
 	if ($extended && !is_string($extended)) {
 		if (is_array($extended)) {
-			$extended = join("", $extended);
+			$extended = join('', $extended);
 		}
 		else {
-			$extended = ".,/- ";
+			$extended = '.,/- ';
 		}
 	}
 	$str = strtr($str, $str_simplify);
 	for ($i = 0; $i < strlen($str); $i ++) {
 		$c = $str{$i};
 		if (
-			(($c >= "a") && ($c <= "z")) || (($c >= "A") && ($c <= "Z")) || (($c >= "0") && ($c <= "9"))
+			(($c >= 'a') && ($c <= 'z')) || (($c >= 'A') && ($c <= 'Z')) || (($c >= '0') && ($c <= '9'))
 			|| ($extended && (strpos($extended, $c) !== false))
 		) {
 			$result .= $c;
@@ -298,34 +265,25 @@ function strSimplify($str, $extended = false, $joker = null)
  */
 function strUri($str, $joker = null)
 {
-	return strtolower(strSimplify(str_replace(" ", "_", $str), "/-_{}", $joker));
+	return strtolower(strSimplify(str_replace(' ', '_', $str), '/-_{}', $joker));
 }
 
 //---------------------------------------------------------------------------------------- ucfirsta
 /**
  * Uppercase the first character, even if this is an accented character
  *
- * @param $str              string
- * @param $accented_capital boolean if true, "à" will become "À", or will become "A" if false
+ * @param $str string
  * @return string
  */
-function ucfirsta($str, $accented_capital = false)
+function ucfirsta($str)
 {
-	//echo "ucfirsta of $str = ";
-	if (!empty($str)) {
-		if ($accented_capital) {
-			$str[0] = mb_strtr($str[0],
-				"abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïðòóôõöùúûüýÿ",
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ"
-			);
+	if ($str[0] == "\xC3") {
+		if (ord($str[1]) >= 160) {
+			$str[1] = chr(ord($str[1]) - 32);
 		}
-		else {
-			$str[0] = mb_strtr($str[0],
-				"abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ",
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZAAAAAACEEEEIIIIOOOOOOUUUUYYAAAAAACEEEEIIIIOOOOOOUUUUYY"
-			);
-		}
+		return $str;
 	}
-	//echo "$str<br>";
-	return $str;
+	else {
+		return ucfirst($str);
+	}
 }
