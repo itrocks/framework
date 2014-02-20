@@ -7,9 +7,9 @@ namespace SAF\Framework;
 class Dao_Logical_Function implements Dao_Where_Function
 {
 
-	const AND_OPERATOR = " AND ";
-	const OR_OPERATOR = " OR ";
-	const XOR_OPERATOR = " XOR ";
+	const AND_OPERATOR = ' AND ';
+	const OR_OPERATOR  = ' OR ';
+	const XOR_OPERATOR = ' XOR ';
 
 	//------------------------------------------------------------------------------------ $arguments
 	/**
@@ -47,7 +47,7 @@ class Dao_Logical_Function implements Dao_Where_Function
 	 */
 	public function toSql(Sql_Where_Builder $builder, $property_path)
 	{
-		$sql = "";
+		$sql = '';
 		foreach ($this->arguments as $other_property_path => $argument) {
 			if (empty($not_first)) $not_first = true; else $sql .= $this->operator;
 			if (is_numeric($other_property_path)) {

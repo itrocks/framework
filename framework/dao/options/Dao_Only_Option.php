@@ -26,11 +26,18 @@ class Dao_Only_Option implements Dao_Option
 	 * Will write the values of user's login and password into the database
 	 *
 	 * @param $properties string[]|string
+	 * @param $properties,... string[]|string
 	 */
 	public function __construct($properties = null)
 	{
-		if (isset($properties)) {
-			$this->properties = is_array($properties) ? $properties : array($properties);
+		$this->properties = array();
+		foreach (func_get_args() as $properties) {
+			if (is_array($properties)) {
+				$this->properties += $properties;
+			}
+			elseif (is_string($properties)) {
+				$this->properties[] = $properties;
+			}
 		}
 	}
 
@@ -48,7 +55,7 @@ class Dao_Only_Option implements Dao_Option
 
 	//------------------------------------------------------------------------------------------ have
 	/**
-	 * Returns true if any of the options has the property name
+	 * Returns true if any of the "only" options has the property name
 	 *
 	 * @param $options  Dao_Option[]
 	 * @param $property string

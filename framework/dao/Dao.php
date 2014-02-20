@@ -220,6 +220,7 @@ class Dao implements Plugins\Configurable
 	 * have to been written
 	 *
 	 * @param $properties string[]|string
+	 * @param $properties,... string[]|string
 	 * @return Dao_Only_Option
 	 */
 	public static function only($properties)

@@ -43,11 +43,11 @@ class Dao_Is_Greatest_Function implements Dao_Where_Function_Inner
 		$join = new Sql_Subquery_Join($sub_builder);
 		$joins->addJoin($join);
 		// where
-		$where = "";
+		$where = '';
 		foreach (array_merge($this->properties, array($property_path)) as $property) {
-			$where .= " AND "
-				. $join->foreign_alias . ".`" . rLastParse($property, ".", 1, true) . "`"
-				. " = " . $builder->buildColumn($property);
+			$where .= ' AND '
+				. $join->foreign_alias . '.`' . rLastParse($property, '.', 1, true) . '`'
+				. ' = ' . $builder->buildColumn($property);
 		}
 		$join->where = substr($where, 5);
 		return null;

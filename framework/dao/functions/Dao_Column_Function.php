@@ -30,11 +30,11 @@ abstract class Dao_Column_Function implements Dao_Function
 	protected function quickSql(
 		Sql_Columns_Builder $builder, $property_path, $sql_function, $args = array()
 	) {
-		$sql = $sql_function . "(" . $builder->buildColumn($property_path);
+		$sql = $sql_function . '(' . $builder->buildColumn($property_path);
 		foreach ($args as $arg) {
-			$sql .= ", " . Sql_Value::escape($arg);
+			$sql .= ', ' . Sql_Value::escape($arg);
 		}
-		return $sql . ") AS `" . $property_path . "`";
+		return $sql . ') AS `' . $property_path . '`';
 	}
 
 }

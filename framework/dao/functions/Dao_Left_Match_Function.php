@@ -34,7 +34,7 @@ class Dao_Left_Match_Function implements Dao_Where_Function
 	{
 		$column = $builder->buildColumn($property_path);
 		$value  = Sql_Value::escape($this->value);
-		return $column . " = LEFT(" . $value . ", LENGTH(" . $column . "))";
+		return $column . ' = LEFT(' . $value . ', LENGTH(' . $column . '))';
 	}
 
 }

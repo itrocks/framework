@@ -8,13 +8,14 @@ namespace SAF\Framework;
 class Dao_Comparison_Function implements Dao_Where_Function
 {
 
-	const EQUAL = "=";
-	const GREATER = ">";
-	const GREATER_OR_EQUAL = ">=";
-	const LESS = "<";
-	const LESS_OR_EQUAL = "<=";
-	const LIKE = "LIKE";
-	const NOT_EQUAL = "<>";
+	const EQUAL            = '=';
+	const GREATER          = '>';
+	const GREATER_OR_EQUAL = '>=';
+	const LESS             = '<';
+	const LESS_OR_EQUAL    = '<=';
+	const LIKE             = 'LIKE';
+	const NOT_EQUAL        = '<>';
+	const NOT_LIKE         = 'NOT LIKE';
 
 	//----------------------------------------------------------------------------------------- $sign
 	/**
@@ -50,7 +51,13 @@ class Dao_Comparison_Function implements Dao_Where_Function
 	public function toSql(Sql_Where_Builder $builder, $property_path)
 	{
 		$column = $builder->buildColumn($property_path);
-		return $column . " " . $this->sign . " " . Sql_Value::escape($this->than_value);
+		if (is_null($this->than_value)) {
+			switch ($this->sign) {
+				case self::EQUAL:     return $column . ' IS NULL';
+				case self::NOT_EQUAL: return $column . ' IS NOT NULL';
+			}
+		}
+		return $column . ' ' . $this->sign . ' ' . Sql_Value::escape($this->than_value);
 	}
 
 }
