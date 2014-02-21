@@ -848,9 +848,6 @@ class Html_Template
 		elseif (strpos($property_name, "?")) {
 			$object = $this->parseConditional($property_name);
 		}
-		elseif ($property_name[0] == "!") {
-			$object = $this->parseNot($property_name);
-		}
 		elseif (
 			($property_name[0] == "'" && substr($property_name, -1) == "'")
 			|| ($property_name[0] == '"' && substr($property_name, -1) == '"')
@@ -860,7 +857,11 @@ class Html_Template
 		elseif (isset($this->parse_class_name)) {
 			$object = method_exists($this->parse_class_name, $property_name)
 				? $this->parseStaticMethod($this->parse_class_name, $property_name)
-				: $this->parseStaticProperty($this->parse_class_name, $property_name);
+				: (
+					property_exists($this->parse_class_name, $property_name)
+					? $this->parseStaticProperty($this->parse_class_name, $property_name)
+					: isA($this->parse_class_name, $this->parseClassName($property_name))
+				);
 			$this->parse_class_name = null;
 		}
 		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
@@ -999,6 +1000,10 @@ class Html_Template
 		elseif ($var_name[0] === "/") {
 			return $this->parseInclude($var_name);
 		}
+		elseif ($var_name[0] == "!") {
+			$not = true;
+			$var_name = substr($var_name, 1);
+		}
 		if (strpos("-+", $var_name[0]) !== false) {
 			$descendants_names = $this->descendants_names;
 			$descendants = $this->descendants;
@@ -1027,10 +1032,14 @@ class Html_Template
 			}
 		}
 		else {
-			foreach (explode(".", $var_name) as $property_name) {
-				$object = $this->parseSingleValue($property_name);
-			}
+			$object = $this->parseSingleValue($var_name);
 		}
+		// if the parse value finishes with a class name : check if the last object is any of this class
+		if (isset($this->parse_class_name)) {
+			$object = isA(reset($this->objects), $this->parse_class_name);
+			unset($this->parse_class_name);
+		}
+		// parse object to string
 		if ($as_string && is_object($object)) {
 			if ($object instanceof File) {
 				$object = $this->parseFileToString(null, $object);
@@ -1039,7 +1048,11 @@ class Html_Template
 				$object = $this->parseObjectToString($object, $property_name);
 			}
 		}
-		$this->parse_class_name = null;
+		// parse not
+		if (isset($not)) {
+			$object = !$object;
+		}
+		// restore position arrays
 		if (isset($objects))           $this->objects = $objects;
 		if (isset($var_names)) 	       $this->var_names = $var_names;
 		if (isset($descendants))       $this->descendants = $descendants;
