@@ -84,9 +84,11 @@ class Compiler implements ICompiler
 		$methods    = array();
 		$properties = array();
 		if ($class->type !== 'interface') {
+			// implements : _read_property, _write_property
 			if ($class->type != 'trait') {
 				$this->scanForImplements($properties, $class);
 			}
+			// read/write : __aop, __construct, __get, __isset, __set, __unset
 			$this->scanForGetters ($properties, $class);
 			$this->scanForLinks   ($properties, $class);
 			$this->scanForSetters ($properties, $class);
@@ -187,7 +189,7 @@ class Compiler implements ICompiler
 			if ($match) {
 				$advice = array(
 					empty($match[1]) ? '$this' : $match[1],
-					isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'get')
+					empty($match[2]) ? Names::propertyToMethod($property->name, 'get') : $match[2]
 				);
 				$properties[$property->name][] = array('read', $advice);
 			}
@@ -195,8 +197,8 @@ class Compiler implements ICompiler
 		foreach ($this->scanForOverrides($class->documentation, array('getter')) as $match) {
 			$advice = array(
 				empty($match['class_name']) ? '$this' : $match['class_name'],
-				isset($match['method_name'])
-					? $match['method_name'] : Names::propertyToMethod($match['property_name'], 'get')
+				empty($match['method_name'])
+					? Names::propertyToMethod($match['property_name'], 'get') : $match['method_name']
 			);
 			$properties[$match['property_name']][] = array('read', $advice);
 		}
@@ -210,7 +212,8 @@ class Compiler implements ICompiler
 	private function scanForImplements(&$properties, Php_Class $class)
 	{
 		// properties from the class and its direct traits
-		foreach ($class->getProperties(array('traits')) as $property) {
+		$implemented_properties = $class->getProperties(array('traits'));
+		foreach ($implemented_properties as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+'            // each line beginning by '* '
 				. '@(getter|link|setter)' // 1 : AOP annotation
@@ -229,7 +232,22 @@ class Compiler implements ICompiler
 		$documentations = $class->getDocumentations(array('traits'));
 		foreach ($this->scanForOverrides($documentations) as $match) {
 			$properties[$match['property_name']]['implements'][$match['type']] = true;
-			$properties[$match['property_name']]['override'] = true;
+			// todo : properties that are overridden in the code should have override = true, perhaps
+			// this works for @override class annotations
+			if (!isset($implemented_properties[$match['property_name']])) {
+				$property = $class->getProperties(array('inherited'))[$match['property_name']];
+				if (
+					!strpos($property->documentation, '@getter')
+					&& !strpos($property->documentation, '@link')
+					&& !strpos($property->documentation, '@setter')
+				) {
+					$expr = '%@override\s+' . $match['property_name'] . '\s+.*(@getter|@link|@setter)%';
+					preg_match($expr, $property->class->getDocumentations(), $match2);
+					if ($match2) {
+						$properties[$match['property_name']]['override'] = true;
+					}
+				}
+			}
 		}
 	}
 
@@ -326,15 +344,15 @@ class Compiler implements ICompiler
 		$overrides = array();
 		if (strpos($documentation, '@override')) {
 			$expr = '%'
-				. '\n\s+\*\s+'         // each line beginning by '* '
-				. '@override\s+'       // override annotation
-				. '(\w+)\s+'           // 1 : property name
-				. '(?:'                // begin annotations loop
-				. '(?:@.*?\s+)?'       // overridden annotations
-				. '@annotation\s+'     // overridden annotation
-				. '(?:([\\\\\w]+)::)?' // 2 : class name (optional)
-				. '(\w+)'              // 3 : method or function name (mandatory)
-				. ')+'                 // end annotations loop
+				. '\n\s+\*\s+'               // each line beginning by '* '
+				. '@override\s+'             // override annotation
+				. '(\w+)\s+'                 // 1 : property name
+				. '(?:'                      // begin annotations loop
+				. '(?:@.*?\s+)?'             // others overridden annotations
+				. '@annotation'           // overridden annotation
+				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
+				. '(\w+)?)?'                 // 2 : method or function name
+				. ')+'                       // end annotations loop
 				. '%';
 			foreach ($annotations as $annotation) {
 				preg_match_all(str_replace('@annotation', '@' . $annotation, $expr), $documentation, $match);
@@ -373,7 +391,7 @@ class Compiler implements ICompiler
 			if ($match) {
 				$advice = array(
 					empty($match[1]) ? '$this' : $match[1],
-					isset($match[2]) ? $match[2] : Names::propertyToMethod($property->name, 'set')
+					empty($match[2]) ? Names::propertyToMethod($property->name, 'set') : $match[2]
 				);
 				$properties[$property->name][] = array('write', $advice);
 			}
@@ -381,8 +399,8 @@ class Compiler implements ICompiler
 		foreach ($this->scanForOverrides($class->documentation, array('setter')) as $match) {
 			$advice = array(
 				empty($match['class_name']) ? '$this' : $match['class_name'],
-				isset($match['method_name'])
-					? $match['method_name'] : Names::propertyToMethod($match['property_name'], 'set')
+				empty($match['method_name'])
+					? Names::propertyToMethod($match['property_name'], 'set') : $match['method_name']
 			);
 			$properties[$match['property_name']][] = array('write', $advice);
 		}

@@ -4,8 +4,7 @@ namespace SAF\Framework;
 /**
  * Set of settings
  *
- * @override elements @link Collection
- * @override elements @type Setting[]
+ * @override elements @link Collection @type Setting[]
  */
 class Settings extends Set
 {
