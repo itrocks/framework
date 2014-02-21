@@ -104,6 +104,7 @@ class Class_Builder
 			$short_class = Namespaces::shortClassName($class_name);
 			$built_class = $namespace . '\\' . $short_class;
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . "\n\n"
+				. '/** Built ' . $short_class . ' class */' . "\n"
 				. $final . 'class ' . $short_class . ' extends ' . $extends
 				. ($interfaces_names ? ("\n\t" . 'implements ' . $interfaces_names) : '')
 				. "\n" . '{' . "\n"

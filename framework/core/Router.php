@@ -246,11 +246,12 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	{
 		if (isset($this->class_paths[$class_name])) {
 			$class_path = $this->class_paths[$class_name];
-			/** @noinspection PhpIncludeInspection */
-			if (!@include_once($class_path)) {
+			if (!file_exists($class_path)) {
 				$class_path = $this->addClassPath($class_name);
 			}
-			elseif (
+			/** @noinspection PhpIncludeInspection */
+			include_once($class_path);
+			if (
 				!class_exists($class_name, false)
 				&& !interface_exists($class_name, false)
 				&& !trait_exists($class_name, false)

@@ -123,6 +123,7 @@ $this->class_paths = array (
   'SAF\\Framework\\Dao_Foreign_Key' => 'framework/dao/sql/Dao_Foreign_Key.php',
   'SAF\\Framework\\Dao_Func' => 'framework/dao/Dao_Func.php',
   'SAF\\Framework\\Dao_Function' => 'framework/dao/functions/Dao_Function.php',
+  'SAF\\Framework\\Dao_Group_By_Function' => 'framework/dao/functions/Dao_Group_By_Function.php',
   'SAF\\Framework\\Dao_Group_By_Option' => 'framework/dao/options/Dao_Group_By_Option.php',
   'SAF\\Framework\\Dao_Index' => 'framework/dao/sql/Dao_Index.php',
   'SAF\\Framework\\Dao_Is_Greatest_Function' => 'framework/dao/functions/Dao_Is_Greatest_Function.php',
