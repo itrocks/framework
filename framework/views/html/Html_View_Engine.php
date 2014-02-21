@@ -49,7 +49,7 @@ class Html_View_Engine implements Plugins\Configurable, View_Engine
 			$feature_names = array($feature_names);
 		}
 		$templates = array();
-		$class_name = Namespaces::fullClassName($class_name);
+		$class_name = Namespaces::fullClassName($class_name, false);
 		while ($class_name) {
 			foreach ($feature_names as $feature_name) {
 				$templates[] = Namespaces::shortClassName($class_name) . "_" . $feature_name;
