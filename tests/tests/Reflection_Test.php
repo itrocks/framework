@@ -48,7 +48,6 @@ class Reflection_Test extends Unit_Test
 				array("date" => date("Y-m-d"), "number" => "CDE001", "client" => null, "lines" => null)
 			);
 		}
-		$class->accessPropertiesDone();
 	}
 
 	//------------------------------------------------------------------- testAccessPropertiesDone
@@ -57,7 +56,7 @@ class Reflection_Test extends Unit_Test
 		$test_order = new Order(date("Y-m-d"), "CDE001");
 		$class = new Reflection_Class('SAF\Tests\Order');
 		$properties = $class->accessProperties();
-		$class->accessPropertiesDone();
+		$properties = $class->getAllProperties();
 		$check = array();
 		foreach ($properties as $property) {
 			try {
