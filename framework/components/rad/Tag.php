@@ -1,16 +1,11 @@
 <?php
 namespace SAF\Framework\RAD;
 
-use SAF\Framework\Component;
-
 /**
- * A data class is used to store data, ie linked to a database
- *
- * It includes management rules for it's data
+ * A tag is a keyword the facilitate searches
  */
-class Data_Class
+class Tag
 {
-	use Component;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**

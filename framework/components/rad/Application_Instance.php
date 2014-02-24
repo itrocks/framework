@@ -18,15 +18,8 @@ class Application_Instance
 
 	//-------------------------------------------------------------------------------------- $modules
 	/**
-	 * The application modules that are active
+	 * All the application plugins
 	 *
-	 * @link Map
-	 * @var Module[]
-	 */
-	public $modules;
-
-	//-------------------------------------------------------------------------------------- $plugins
-	/**
 	 * @link Map
 	 * @var Plugin[]
 	 */
