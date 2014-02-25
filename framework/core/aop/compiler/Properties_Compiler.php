@@ -47,9 +47,9 @@ class Properties_Compiler
 			if ($methods['__construct']) {
 				$methods['__aop']   = $this->compileAop($advices);
 				$methods['__get']   = $this->compileGet($advices);
-				$methods['__isset'] = $this->compileIsset();
+				$methods['__isset'] = $this->compileIsset($advices);
 				$methods['__set']   = $this->compileSet($advices);
-				$methods['__unset'] = $this->compileUnset();
+				$methods['__unset'] = $this->compileUnset($advices);
 			}
 		}
 		foreach ($advices as $property_name => $property_advices) {
@@ -172,8 +172,12 @@ class Properties_Compiler
 		foreach ($advices as $property_name => $property_advices) {
 			if (!isset($advices[$property_name]['override'])) {
 				$code .= '
-
-		$this->' . $property_name . '_ = $this->' . $property_name . ';
+		';
+				if (!isset($advices[$property_name]['replaced'])) {
+					$code .= '
+		$this->' . $property_name . '_ = $this->' . $property_name . ';';
+				}
+				$code .= '
 		unset($this->' . $property_name . ');
 		$this->_[\'' . $property_name . '\'] = true;';
 			}
@@ -243,7 +247,22 @@ class Properties_Compiler
 		switch ($property_name) {';
 		}
 		foreach ($advices as $property_name => $property_advices) {
-			if (isset($property_advices['implements']['read'])) {
+			if (isset($property_advices['replaced'])) {
+				if (!isset($switch)) {
+					$switch = true;
+					$code .= '
+		switch ($property_name) {';
+				}
+				$code .= '
+			case \'' . $property_name . '\': $value =& $this->' . $property_advices['replaced'] . '; return $value;';
+				if (isset($over['cases'][$property_name])) {
+					unset($over['cases'][$property_name]);
+					if (count($over['cases']) == 1) {
+						$over['cases'] = array();
+					}
+				}
+			}
+			elseif (isset($property_advices['implements']['read'])) {
 				if (!isset($switch)) {
 					$switch = true;
 					$code .= '
@@ -254,7 +273,7 @@ class Properties_Compiler
 			}
 		}
 		if (isset($switch)) {
-			$code .= $over['cases'] . '
+			$code .= join('', $over['cases']) . '
 		}';
 		}
 		return $code . '
@@ -266,16 +285,34 @@ class Properties_Compiler
 
 	//---------------------------------------------------------------------------------- compileIsset
 	/**
+	 * @param $advices array
 	 * @return string
 	 */
-	private function compileIsset()
+	private function compileIsset($advices)
 	{
 		$over = $this->overrideMethod('__isset');
-		return
+		$code =
 	$over['prototype'] . '
 		if (!isset($this->_) || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
+		}';
+		foreach ($advices as $property_name => $property_advices) {
+			if (isset($property_advices['replaced'])) {
+				if (!isset($switch)) {
+					$switch = true;
+					$code .= '
+		switch ($property_name) {';
+				}
+				$code .= '
+			case \'' . $property_name . '\': return isset($this->' . $property_advices['replaced'] . ');';
+			}
 		}
+		if (isset($switch)) {
+			unset($switch);
+			$code .= '
+		}';
+		}
+		return $code . '
 		$property_name .= \'_\';
 		return isset($this->$property_name);
 	}
@@ -290,18 +327,16 @@ class Properties_Compiler
 	 */
 	private function compileRead($property_name, $advices)
 	{
-		unset($advices['implements']);
-		unset($advices['override']);
 		$code = '';
 		$init = array();
 		$last = '';
-		foreach ($advices as $aspect) {
+		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
 			if ($aspect[0] === 'write') {
 				$last = '$last = ';
 				break;
 			}
 		}
-		foreach ($advices as $aspect) {
+		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
 			list($type, $advice) = $aspect;
 			if ($type == 'read') {
 				if (!isset($prototype)) {
@@ -355,7 +390,22 @@ class Properties_Compiler
 		switch ($property_name) {';
 		}
 		foreach ($advices as $property_name => $property_advices) {
-			if (isset($property_advices['implements']['write'])) {
+			if (isset($property_advices['replaced'])) {
+				if (!isset($switch)) {
+					$switch = true;
+					$code .= '
+		switch ($property_name) {';
+				}
+				$code .= '
+			case \'' . $property_name . '\': $this->' . $property_advices['replaced'] . ' = $value; return;';
+				if (isset($over['cases'][$property_name])) {
+					unset($over['cases'][$property_name]);
+					if (count($over['cases']) == 1) {
+						$over['cases'] = array();
+					}
+				}
+			}
+			elseif (isset($property_advices['implements']['write'])) {
 				if (!isset($switch)) {
 					$switch = true;
 					$code .= '
@@ -366,7 +416,7 @@ class Properties_Compiler
 			}
 		}
 		if (isset($switch)) {
-			$code .= $over['cases'] . '
+			$code .= join('', $over['cases']) . '
 		}';
 		}
 		return $code . '
@@ -378,16 +428,34 @@ class Properties_Compiler
 
 	//---------------------------------------------------------------------------------- compileUnset
 	/**
+	 * @param $advices array
 	 * @return string
 	 */
-	private function compileUnset()
+	private function compileUnset($advices)
 	{
 		$over = $this->overrideMethod('__unset');
-		return
+		$code =
 	$over['prototype'] . '
 		if (!isset($this->_) || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
+		}';
+		foreach ($advices as $property_name => $property_advices) {
+			if (isset($property_advices['replaced'])) {
+				if (!isset($switch)) {
+					$switch = true;
+					$code .= '
+		switch ($property_name) {';
+				}
+				$code .= '
+			case \'' . $property_name . '\': unset($this->' . $property_advices['replaced'] . '); return;';
+			}
 		}
+		if (isset($switch)) {
+			unset($switch);
+			$code .= '
+		}';
+		}
+		return $code . '
 		$property_name .= \'_\';
 		$this->$property_name = null;
 	}
@@ -402,11 +470,9 @@ class Properties_Compiler
 	 */
 	private function compileWrite($property_name, $advices)
 	{
-		unset($advices['implements']);
-		unset($advices['override']);
 		$code = '';
 		$init = array();
-		foreach ($advices as $aspect) {
+		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
 			list($type, $advice) = $aspect;
 			if ($type == 'write') {
 				if (!isset($prototype)) {
@@ -486,7 +552,7 @@ class Properties_Compiler
 	 */
 	private function overrideMethod($method_name, $needs_return = true, $advices = null)
 	{
-		$over = array('cases' => '');
+		$over = array('cases' => array());
 		$parameters = '';
 		// the method exists into the class
 		$methods = $this->class->getMethods();
@@ -589,7 +655,7 @@ class Properties_Compiler
 	 */
 	private function parentCases($method_name, &$parameters, $advices)
 	{
-		$cases = '';
+		$cases = array();
 		if (
 			in_array($method_name, array('__get', '__set'))
 			&& ($this->class->type == 'class')
@@ -607,7 +673,7 @@ class Properties_Compiler
 						. '%';
 					preg_match($expr, $property->documentation, $match);
 					if ($match) {
-						$cases .= "\n\t\t\t" . 'case \'' . $property->name . '\':';
+						$cases[$property->name] = "\n\t\t\t" . 'case \'' . $property->name . '\':';
 					}
 				}
 			}
@@ -615,17 +681,17 @@ class Properties_Compiler
 				$parameters = '$property_name';
 				switch ($method_name) {
 					case '__get':
-						$cases .= ' return parent::__get($property_name);';
+						$cases[] .= ' return parent::__get($property_name);';
 						break;
 					case '__isset':
-						$cases .= ' return parent::__isset($property_name);';
+						$cases[] .= ' return parent::__isset($property_name);';
 						break;
 					case '__set':
-						$cases .= ' parent::__set($property_name, $value); return;';
+						$cases[] .= ' parent::__set($property_name, $value); return;';
 						$parameters .= ', $value';
 						break;
 					case '__unset':
-						$cases .= ' parent::__unset($property_name); return;';
+						$cases[] .= ' parent::__unset($property_name); return;';
 						break;
 					default:
 						$parameters = '';

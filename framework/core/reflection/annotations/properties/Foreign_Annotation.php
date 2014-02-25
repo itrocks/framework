@@ -85,6 +85,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	{
 		$type = $reflection_property->getType();
 		$possibles = array();
+		$replace = array();
 		$foreign_class = new Reflection_Class(Builder::className($type->getElementTypeAsString()));
 		foreach ($foreign_class->getAllProperties() as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
@@ -100,7 +101,16 @@ class Foreign_Annotation extends Documented_Type_Annotation
 					|| $foreign_property->name != $reflection_property->name
 				)
 			) {
-				$possibles[] = $foreign_property->name;
+				$possibles[$foreign_property->name] = $foreign_property->name;
+				$replaced= $foreign_property->getAnnotation('replaces')->value;
+				if ($replaced) {
+					$replace[] = $replaced;
+				}
+			}
+		}
+		foreach ($replace as $replaced) {
+			if (isset($possibles[$replaced])) {
+				unset($possibles[$replaced]);
 			}
 		}
 		if (count($possibles) != 1) {
