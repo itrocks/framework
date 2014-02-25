@@ -24,13 +24,13 @@ include_once 'framework/core/controllers/Main_Controller.php';
 $_PATH_INFO = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
 
 echo (new Main_Controller())
-	->init(array(
+	->init([
 		'framework/components/html_session/Html_Session.php'
-	))
-	->addTopCorePlugins(array(
+	])
+	->addTopCorePlugins([
 		new Plugins\Manager(),
-		new Html_Session(array('use_cookie' => true))
-	))
+		new Html_Session([ 'use_cookie' => true ])
+	])
 	->run($_PATH_INFO, $_GET, $_POST, $_FILES);
 
 // Display result on client browser now, as session serialization could take a moment

@@ -152,6 +152,9 @@ class Php_Method
 		$method->visibility = $reflection->isPrivate() ? 'private' : (
 			$reflection->isProtected() ? 'protected' : 'public'
 		);
+		$method->prototype = "\t"
+			. $method->abstract . ' ' . $method->visibility . ' ' . $method->static
+			. ' function ' . $method->name . '(' . $method->parameters_string . ')' . "\n\t" . '{';
 		return $method;
 	}
 

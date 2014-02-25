@@ -44,7 +44,8 @@ $config['framework'] = array(
 		),
 		Mysql_Maintainer::class,
 		View::class => array(
-			'class' => Html_View_Engine::class
+			'class' => Html_View_Engine::class,
+			'css' => 'default'
 		)
 	),
 	'higher' => array(),
