@@ -122,7 +122,7 @@ class Properties_Compiler
 				|| isset($advice_parameters['element_type']) || isset($advice_parameters['type_name'])
 				|| isset($advice_parameters['element_type_name']) || isset($advice_parameters['class_name'])
 			) {
-				$init['3.property'] = '$property = new \SAF\Framework\Reflection_Property(__CLASS__, \''
+				$init['3.property'] = '$property = new \SAF\Framework\Reflection_Property(get_class($this), \''
 					. $property_name . '\');';
 			}
 			if (
