@@ -139,7 +139,7 @@ class Html_Builder_Type_Edit
 	protected function buildFileAnchor(File $file)
 	{
 		/** @var $session_files Session_Files */
-		$session_files = Session::current()->get('SAF\Framework\Session_Files');
+		$session_files = Session::current()->get('SAF\Framework\Session_Files', true);
 		$session_files->files[] = $file;
 		$image = ($file->getType()->is("image"))
 			? new Html_Image("/Session_File/output/" . $file->name . "?size=22")

@@ -928,6 +928,9 @@ class Html_Template
 
 	//----------------------------------------------------------------------------------- parseString
 	/**
+	 * If property name is the name of a String method, call this method
+	 * If not, will return true if string value equals $property_name
+	 *
 	 * @param $string        string
 	 * @param $property_name string
 	 * @return mixed
@@ -935,9 +938,13 @@ class Html_Template
 	protected function parseString($string, $property_name)
 	{
 		$string = new String($string);
-		return method_exists($string, $property_name)
-			? $this->parseStringMethod($string, $property_name)
-			: $this->parseStringProperty($string, $property_name);
+		if (method_exists($string, $property_name)) {
+			return $this->parseStringMethod($string, $property_name);
+		}
+		elseif (property_exists($string, $property_name)) {
+			return $this->parseStringProperty($string, $property_name);
+		}
+		return ($string->value === $property_name);
 	}
 
 	//----------------------------------------------------------------------------- parseStringMethod
@@ -1024,11 +1031,11 @@ class Html_Template
 		/** @var $object mixed */
 		if (strpos($var_name, ".") !== false) {
 			if (!isset($var_names)) $var_names = $this->var_names;
-			if (!isset($objects))   $objects = $this->objects;
+			if (!isset($objects))   $objects   = $this->objects;
 			foreach (explode(".", $var_name) as $property_name) {
 				$object = $this->parseSingleValue($property_name);
 				array_unshift($this->var_names, $property_name);
-				array_unshift($this->objects, $object);
+				array_unshift($this->objects,   $object);
 			}
 		}
 		else {

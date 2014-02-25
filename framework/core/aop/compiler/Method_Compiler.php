@@ -32,14 +32,15 @@ class Method_Compiler
 	 * @param $before_code string[]
 	 * @param $advice_code string
 	 * @param $after_code  string[]
+	 * @param $indent      string
 	 * @return string
 	 */
-	private function codeAssembly($before_code, $advice_code, $after_code)
+	private function codeAssembly($before_code, $advice_code, $after_code, $indent)
 	{
 		return trim(
-			($before_code ? "\n" : "") . join("\n", array_reverse($before_code))
-			. "\n" . $advice_code
-			. ($after_code ? "\n" : "") . join("\n", $after_code)
+			($before_code ? $indent : "") . join("\n", array_reverse($before_code))
+			. $indent . $advice_code
+			. ($after_code ? $indent : "") . join("\n", $after_code)
 		);
 	}
 
@@ -197,10 +198,10 @@ class Method_Compiler
 					$my_prototype = ($advice_number == $advices_count)
 						? $prototype
 						: str_replace($method_name, $method_name . '_' . $count , $prototype);
-					$result .= $indent . $my_prototype
-						. $this->codeAssembly($before_code, $advice_code, $after_code)
+					$result .= substr($indent, 1) . $my_prototype . substr($i2, 1)
+						. $this->codeAssembly($before_code, $advice_code, $after_code, $indent)
 						. ($joinpoint_has_return ? ("\n" . $i2 . 'return $result_;') : '')
-						. $indent . "}";
+						. $indent . "}\n";
 					if ($advice_number < $advices_count) {
 						$count ++;
 					}
@@ -219,10 +220,10 @@ class Method_Compiler
 			}
 		}
 		if ($before_code || $after_code) {
-			$result .= $indent . $prototype
-				. $this->codeAssembly($before_code, $call_code, $after_code)
+			$result .= substr($indent, 1) . $prototype . substr($i2, 1)
+				. $this->codeAssembly($before_code, $call_code, $after_code, $indent)
 				. ($joinpoint_has_return ? ("\n" . $i2 . 'return $result_;') : '')
-				. $indent . "}";
+				. $indent . "}\n";
 			$around_comment = '';
 		}
 		else {

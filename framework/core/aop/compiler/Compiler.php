@@ -92,6 +92,7 @@ class Compiler implements ICompiler
 			$this->scanForGetters ($properties, $class);
 			$this->scanForLinks   ($properties, $class);
 			$this->scanForSetters ($properties, $class);
+			$this->scanForReplaces($properties, $class);
 			$this->scanForAbstract($methods,    $class);
 			// TODO should be done for all classes before compiling : it creates links in other classes
 			//$this->scanForMethods($methods, $class);
@@ -227,13 +228,14 @@ class Compiler implements ICompiler
 				$type = ($type == 'setter') ? 'write' : 'read';
 				$properties[$property->name]['implements'][$type] = true;
 			}
+			if ($property->getParent()) {
+				$properties[$property->name]['override'] = true;
+			}
 		}
 		// properties overridden into the class and its direct traits
 		$documentations = $class->getDocumentations(array('traits'));
 		foreach ($this->scanForOverrides($documentations) as $match) {
 			$properties[$match['property_name']]['implements'][$match['type']] = true;
-			// todo : properties that are overridden in the code should have override = true, perhaps
-			// this works for @override class annotations
 			if (!isset($implemented_properties[$match['property_name']])) {
 				$property = $class->getProperties(array('inherited'))[$match['property_name']];
 				if (
@@ -260,9 +262,7 @@ class Compiler implements ICompiler
 	{
 		$disable = array();
 		foreach ($properties as $property_name => $advices) {
-			unset($advices['implements']);
-			unset($advices['override']);
-			foreach ($advices as $advice) {
+			foreach ($advices as $key => $advice) if (is_numeric($key)) {
 				if (is_array($advice) && (reset($advice) == 'read')) {
 					$disable[$property_name] = true;
 					break;
@@ -371,6 +371,26 @@ class Compiler implements ICompiler
 			}
 		}
 		return $overrides;
+	}
+
+	//------------------------------------------------------------------------------- scanForReplaces
+	/**
+	 * @param $properties array
+	 * @param $class      Php_Class
+	 */
+	private function scanForReplaces(&$properties, Php_Class $class)
+	{
+		foreach ($class->getProperties(array('traits')) as $property) {
+			$expr = '%'
+				. '\n\s+\*\s+' // each line beginning by '* '
+				. '@replaces\s+'  // alias annotation
+				. '(\w+)'      // 1 : property name
+				. '%';
+			preg_match($expr, $property->documentation, $match);
+			if ($match) {
+				$properties[$match[1]]['replaced'] = $property->name;
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------- scanForSetters

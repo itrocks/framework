@@ -188,6 +188,11 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			if ($annotation->property_name === $this->name) {
 				$comment .= '/**' . "\n";
 				foreach ($annotation->values() as $key => $value) {
+					if (in_array($key, array('var'))) {
+						$value = explode(' ', $value);
+						$value[0] = Namespaces::defaultFullClassName($value[0], $annotation->class->name);
+						$value = join(' ', $value);
+					}
 					$comment .= "\t" . ' * @' . $key . ' ' . $value . "\n";
 				}
 				$comment .= "\t" . ' */';

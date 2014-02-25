@@ -25,13 +25,13 @@ class Image
 	/**
 	 * @var integer
 	 */
-	private $width;
+	public $width;
 
 	//--------------------------------------------------------------------------------------- $height
 	/**
 	 * @var integer
 	 */
-	private $height;
+	public $height;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -50,6 +50,16 @@ class Image
 		$this->resource = isset($resource)
 			? $resource
 			: imagecreatetruecolor($this->width, $this->height);
+	}
+
+	//-------------------------------------------------------------------------------- createFromFile
+	/**
+	 * @param $filename string
+	 * @return Image
+	 */
+	public static function createFromFile($filename)
+	{
+		return self::createFromString(file_get_contents($filename));
 	}
 
 	//------------------------------------------------------------------------------ createFromString
@@ -83,32 +93,39 @@ class Image
 	 */
 	public function resize($width = null, $height = null, $keep_ratio = true)
 	{
-		$source_ratio = round($this->width / $this->height, 6);
+		$source_ratio = $this->width / $this->height;
 		if (is_null($width) && is_numeric($height)) {
-			$width = round($this->height / $this->width * $height);
+			$width = round($source_ratio * $height);
 		}
 		elseif (is_null($height) && is_numeric($width)) {
-			$height = round($source_ratio * $width);
+			$height = round(1 / $source_ratio * $width);
 		}
 		elseif (is_null($width) && is_null($height)) {
 			$width = $height = 140;
 		}
-		$destination_ratio = round($width / $height, 6);
+		$destination_ratio = $width / $height;
 		$dx = $dy = 0;
 		$dw = $width; $dh = $height;
 		if ($keep_ratio) {
 			// source is wider than destination : top and bottom margins
 			if ($destination_ratio < $source_ratio) {
-				$dh = $source_ratio * $width;
+				$dh = round(1 / $source_ratio * $width);
 				$dy = ceil(($height - $dh) / 2);
 			}
 			// destination is wider than source : left and right margins
 			elseif ($destination_ratio > $source_ratio) {
-				$dw = $this->height / $this->width * $height;
+				$dw = round($source_ratio * $height);
 				$dx = ceil(($width - $dw) / 2);
 			}
 		}
 		$destination = new Image($width, $height, null, $this->type);
+		if (in_array($this->type, [ IMAGETYPE_GIF, IMAGETYPE_PNG ])) {
+			imagealphablending($destination->resource, true);
+		}
+		else {
+			$white = imagecolorallocate($destination->resource, 255, 255, 255);
+			imagefilledrectangle($destination->resource, 0, 0, $width - 1, $height - 1, $white);
+		}
 		imagecopyresampled(
 			$destination->resource, $this->resource, $dx, $dy, 0, 0, $dw, $dh, $this->width, $this->height
 		);
