@@ -25,13 +25,13 @@ class Image
 	/**
 	 * @var integer
 	 */
-	private $width;
+	public $width;
 
 	//--------------------------------------------------------------------------------------- $height
 	/**
 	 * @var integer
 	 */
-	private $height;
+	public $height;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -50,6 +50,16 @@ class Image
 		$this->resource = isset($resource)
 			? $resource
 			: imagecreatetruecolor($this->width, $this->height);
+	}
+
+	//-------------------------------------------------------------------------------- createFromFile
+	/**
+	 * @param $filename string
+	 * @return Image
+	 */
+	public static function createFromFile($filename)
+	{
+		return self::createFromString(file_get_contents($filename));
 	}
 
 	//------------------------------------------------------------------------------ createFromString
