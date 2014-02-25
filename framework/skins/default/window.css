@@ -20,6 +20,9 @@
     padding: 0 8px;
     white-space: nowrap; }
 
+section.ui-draggable > .window > h2 {
+  cursor: move; }
+
 /* components */
 /* features colors and action left button part */
 /* modules */

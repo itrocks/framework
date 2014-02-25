@@ -23,4 +23,8 @@
   }
 }
 
+section.ui-draggable > .window > h2 {
+	cursor: move;
+}
+
 @import "colors.scss";
