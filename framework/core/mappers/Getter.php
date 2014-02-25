@@ -36,7 +36,8 @@ abstract class Getter
 	 * @param $stored     Component[] Actual value of the property (will be returned if not null)
 	 * @param $class_name string Class for each collection's object
 	 * @param $object     object Parent object
-	 * @param $property   string|Reflection_Property Parent property (or property name). Recommended but can be ommited if foreign class is a Component
+	 * @param $property   string|Reflection_Property Parent property (or property name). Recommended
+	 *        but can be omitted if foreign class is a Component
 	 * @return object[]
 	 */
 	public static function & getCollection(&$stored, $class_name, $object, $property = null)
@@ -44,13 +45,13 @@ abstract class Getter
 		if (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {
 				$search_element = Search_Object::create($class_name);
-				$is_component = class_uses_trait($search_element, 'SAF\Framework\Component');
+				$is_component = isA($search_element, Component::class);
 				if (isset($property)) {
 					if (!$property instanceof Reflection_Property) {
 						$property = new Reflection_Property(get_class($object), $property);
 					}
-					$property_name = $property->getAnnotation("foreign")->value;
-					$dao = ($dao = $property->getAnnotation("dao")->value)
+					$property_name = $property->getAnnotation('foreign')->value;
+					$dao = ($dao = $property->getAnnotation('dao')->value)
 						? Dao::get($dao) : Dao::current();
 				}
 				else {
@@ -77,8 +78,8 @@ abstract class Getter
 				}
 				else {
 					trigger_error(
-						"getCollection() must be called for a component foreign type"
-						. " or with a parent property name",
+						'getCollection() must be called for a component foreign type'
+						. ' or with a parent property name',
 						E_USER_ERROR
 					);
 				}
@@ -92,7 +93,7 @@ abstract class Getter
 
 	//----------------------------------------------------------------------------------- getDateTime
 	/**
-	 * Register this for any Date_Time property using "@link DateTime" annotation
+	 * Register this for any Date_Time property using '@link DateTime' annotation
 	 *
 	 * @param $stored Date_Time|string
 	 * @return Date_Time
@@ -121,9 +122,9 @@ abstract class Getter
 				if (!($property instanceof Reflection_Property)) {
 					$property = new Reflection_Property(get_class($object), $property);
 				}
-				$dao = ($dao = $property->getAnnotation("dao")->value) ? Dao::get($dao) : Dao::current();
+				$dao = ($dao = $property->getAnnotation('dao')->value) ? Dao::get($dao) : Dao::current();
 				$stored = $dao->search(
-					array(get_class($object) . "->" . $property->name => $object),
+					array(get_class($object) . '->' . $property->name => $object),
 					Builder::className($property->getType()->getElementTypeAsString()),
 					Dao::sort()
 				);
@@ -156,13 +157,13 @@ abstract class Getter
 				$property = new Reflection_Property(get_class($object), $property_name);
 			}
 			if (is_object($object) && isset($property_name)) {
-				$id_property_name = "id_" . $property_name;
+				$id_property_name = 'id_' . $property_name;
 				if (isset($object->$id_property_name)) {
 					$stored = $object->$id_property_name;
 				}
 			}
 			if (isset($stored)) {
-				$stored = (isset($property) && ($dao = $property->getAnnotation("dao")->value))
+				$stored = (isset($property) && ($dao = $property->getAnnotation('dao')->value))
 					? Dao::get($dao)->read($stored, $class_name)
 					: Dao::read($stored, $class_name);
 			}

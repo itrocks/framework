@@ -7,6 +7,12 @@ namespace SAF\Framework;
 class Class_Override_Annotation extends List_Annotation implements Multiple_Annotation
 {
 
+	//---------------------------------------------------------------------------------------- $class
+	/**
+	 * @var Reflection_Class
+	 */
+	public $class;
+
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * @var string
@@ -16,9 +22,11 @@ class Class_Override_Annotation extends List_Annotation implements Multiple_Anno
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value string
+	 * @param $class Reflection_Class
 	 */
-	public function __construct($value)
+	public function __construct($value, Reflection_Class $class)
 	{
+		$this->class = $class;
 		foreach (explode(' @', $value) as $override_annotation) {
 			if (!isset($this->property_name)) {
 				$this->property_name = $override_annotation;

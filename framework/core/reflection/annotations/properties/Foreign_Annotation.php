@@ -18,15 +18,15 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
-			$link = $reflection_property->getAnnotation("link")->value;
+			$link = $reflection_property->getAnnotation('link')->value;
 			$possibles = null;
-			if ($link == "Collection") {
+			if ($link == 'Collection') {
 				$possibles = $this->defaultCollection($reflection_property);
 			}
-			elseif ($link === "Map") {
+			elseif ($link === 'Map') {
 				$possibles = $this->defaultMap($reflection_property);
 			}
-			elseif ($link === "Object") {
+			elseif ($link === 'Object') {
 				$possibles = $this->defaultObject($reflection_property);
 			}
 			if (is_array($possibles) && count($possibles) == 1) {
@@ -37,9 +37,9 @@ class Foreign_Annotation extends Documented_Type_Annotation
 				$property = $reflection_property->name;
 				$type = $reflection_property->getType()->getElementTypeAsString();
 				trigger_error(
-					"Can't guess @foreign for $class::$property : "
-					. "please set @composite on one (and one only) $type property of type $class object, "
-					. "or force the $class::$property @foreign property name.",
+					'Can\'t guess @foreign for ' . $class . '::' . $property . ' : '
+					. 'please set @composite on one (and one only) ' . $type . ' property of type ' . $class
+					. ' object, or force the ' . $class . '::' . $property . ' @foreign property name.',
 					E_USER_ERROR
 				);
 			}
@@ -62,11 +62,11 @@ class Foreign_Annotation extends Documented_Type_Annotation
 			if (
 				$foreign_type->isClass()
 				&& !$foreign_type->isMultiple()
-				&& is_a($reflection_property->class, $foreign_type->asString(), true)
-				&& ($foreign_property->getAnnotation("link")->value == "Object")
+				&& is_a($reflection_property->final_class, $foreign_type->asString(), true)
+				&& ($foreign_property->getAnnotation('link')->value == 'Object')
 			) {
 				$possibles[] = $foreign_property->name;
-				if ($foreign_property->getAnnotation("composite")->value) {
+				if ($foreign_property->getAnnotation('composite')->value) {
 					$composites[] = $foreign_property->name;
 				}
 			}
@@ -92,10 +92,8 @@ class Foreign_Annotation extends Documented_Type_Annotation
 			if (
 				$foreign_type->isClass()
 				&& $foreign_type->isMultiple()
-				&& (new Type(Builder::className($foreign_type->getElementTypeAsString())))->isInstanceOf(
-					$reflection_property->class
-				)
-				&& $foreign_property->getAnnotation("link")->value == "Map"
+				&& is_a($reflection_property->final_class, $foreign_type->getElementTypeAsString(), true)
+				&& $foreign_property->getAnnotation('link')->value == 'Map'
 				&& (
 					$foreign_property->class != $reflection_property->class
 					|| $foreign_property->name != $reflection_property->name
@@ -115,7 +113,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 		}
 		if (count($possibles) != 1) {
 			$this->value = Names::classToProperty(Names::setToClass(
-				$reflection_property->getDeclaringClass()->getAnnotation("set")->value
+				$reflection_property->getDeclaringClass()->getAnnotation('set')->value
 			));
 		}
 		return $possibles;
@@ -137,7 +135,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 				$foreign_type->isClass()
 				&& $foreign_type->isMultiple()
 				&& $foreign_type->isInstanceOf($reflection_property->class)
-				&& $foreign_property->getAnnotation("link")->value == "Collection"
+				&& $foreign_property->getAnnotation('link')->value == 'Collection'
 			) {
 				$possibles[] = $foreign_property->name;
 			}
