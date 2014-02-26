@@ -43,8 +43,8 @@ class Setting
 		return (
 			isset($value)
 			&& is_string($value)
-			&& (substr($value, 0, 2) == "O:")
-			&& substr($value, -1) === "}"
+			&& (substr($value, 0, 2) == 'O:')
+			&& substr($value, -1) === '}'
 		) ? ($this->value = unserialize($value))
 			: $value;
 	}

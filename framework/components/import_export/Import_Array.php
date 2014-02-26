@@ -127,11 +127,10 @@ class Import_Array
 	 *
 	 * The cursor on $array is reset to the first row of the array
 	 *
-	 * @param $array      array $value = string[$row_number][$column_number]
-	 * @param $class_name string default class name (if not found on the first row of the array)
+	 * @param $array array $value = string[$row_number][$column_number]
 	 * @return string
 	 */
-	public static function getClassNameFromArray(&$array, $class_name = null)
+	public static function getClassNameFromArray(&$array)
 	{
 		$row = reset($array);
 		$array_class_name = reset($row);
@@ -142,7 +141,7 @@ class Import_Array
 				&& ((count($row) == 1) || !$row[1])
 			)
 			? $array_class_name
-			: $class_name
+			: null
 		);
 	}
 
@@ -295,7 +294,7 @@ class Import_Array
 	public function importArray(&$array)
 	{
 		Dao::begin();
-		$class_name = self::getClassNameFromArray($array, $this->class_name);
+		$class_name = self::getClassNameFromArray($array) ?: $this->class_name;
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
 		}

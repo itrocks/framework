@@ -60,7 +60,7 @@ abstract class Import_Settings_Builder
 	 */
 	public static function buildArray(&$array, $class_name = null)
 	{
-		$class_name = Import_Array::getClassNameFromArray($array, $class_name);
+		$class_name = Import_Array::getClassNameFromArray($array) ?: $class_name;
 		$settings = new Import_Settings($class_name);
 		/** @var $classes Import_Class[] */
 		$classes = array();

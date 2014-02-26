@@ -36,7 +36,7 @@ abstract class Custom_Settings
 	 */
 	public static function currentUserSetting($class_name)
 	{
-		$setting = new User_Setting($class_name . "." . static::customId());
+		$setting = new User_Setting($class_name . '.' . static::customId());
 		return Dao::searchOne($setting) ?: $setting;
 	}
 
@@ -54,7 +54,7 @@ abstract class Custom_Settings
 			$custom_settings = $setting->value;
 		}
 		else {
-			$custom_settings = Builder::create(get_called_class(), array($class_name));
+			$custom_settings = Builder::create(get_called_class(), [$class_name]);
 			$setting->value = $custom_settings;
 		}
 		$custom_settings->setting = $setting;
@@ -67,7 +67,7 @@ abstract class Custom_Settings
 	 */
 	protected static function customId()
 	{
-		return lParse(strtolower(Namespaces::shortClassName(get_called_class())), "_");
+		return lParse(strtolower(Namespaces::shortClassName(get_called_class())), '_');
 	}
 
 	//---------------------------------------------------------------------------------------- delete
@@ -77,8 +77,8 @@ abstract class Custom_Settings
 	public function delete()
 	{
 		if ($this->name) {
-			$code = $this->class_name . "." . static::customId();
-			$setting = new Setting($code . "." . $this->name);
+			$code = $this->class_name . '.' . static::customId();
+			$setting = new Setting($code . '.' . $this->name);
 			$setting = Dao::searchOne($setting);
 			if (isset($setting)) {
 				Dao::delete($setting);
@@ -90,17 +90,20 @@ abstract class Custom_Settings
 	/**
 	 * Gets custom settings list
 	 *
-	 * @return Custom_Settings[] key is the name of the setting, value is "" or "selected"
+	 * @return Custom_Settings[] key is the name of the setting, value is '' or 'selected'
 	 */
 	public function getCustomSettings()
 	{
-		$list = array();
-		$search["code"] = $this->class_name . "." . static::customId() . ".%";
+		$list = [];
+		$search['code'] = $this->class_name . '.' . static::customId() . '.%';
 		/** @var $setting Setting */
-		foreach (Dao::search($search, 'SAF\Framework\Setting') as $setting) {
+		foreach (Dao::search($search, Setting::class) as $setting) {
 			/** @var $settings Custom_Settings */
 			$settings = $setting->value;
-			$list[$settings->name] = (($settings->name == $this->name) ? "selected" : "");
+			if (!is_object($settings)) {
+				echo '<b>' . $setting->id . '</b>';
+			}
+			$list[$settings->name] = (($settings->name == $this->name) ? 'selected' : '');
 		}
 		ksort($list);
 		return $list;
@@ -118,11 +121,11 @@ abstract class Custom_Settings
 	 */
 	public static function load($class_name, $name)
 	{
-		$setting = new Setting($class_name . "." . static::customId() . "." . $name);
+		$setting = new Setting($class_name . '.' . static::customId() . '.' . $name);
 		$setting = Dao::searchOne($setting);
 		$custom_settings = isset($setting)
 			? $setting->value
-			: Builder::create(get_called_class(), array($class_name));
+			: Builder::create(get_called_class(), [$class_name]);
 		$custom_settings->setting = self::currentUserSetting($class_name);
 		$custom_settings->setting->value = $custom_settings;
 		return $custom_settings;
@@ -139,7 +142,7 @@ abstract class Custom_Settings
 	{
 		if (isset($save_name)) {
 			$this->name = $save_name;
-			$setting = new Setting($this->class_name . "." . static::customId() . "." . $save_name);
+			$setting = new Setting($this->class_name . '.' . static::customId() . '.' . $save_name);
 			$setting = Dao::searchOne($setting) ?: $setting;
 			$setting->value = $this;
 			Dao::write($setting);

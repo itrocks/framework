@@ -5,7 +5,7 @@ namespace SAF\Framework;
 use PHPExcel;
 use PHPExcel_IOFactory;
 
-require dirname(__FILE__) . "/../../vendor/PHPExcel/Classes/PHPExcel.php";
+require dirname(__FILE__) . '/../../vendor/PHPExcel/Classes/PHPExcel.php';
 */
 
 /**
@@ -60,12 +60,12 @@ class Spreadsheet_File
 	 */
 	public static function fileToArray($file_name, &$errors = array())
 	{
-		$csv_file = Application::current()->getTemporaryFilesPath() . "/" . uniqid() . ".csv";
-		exec("ssconvert \"$file_name\" \"$csv_file\" -S");
+		$csv_file = Application::current()->getTemporaryFilesPath() . '/' . uniqid() . '.csv';
+		exec('ssconvert "' . $file_name . '" "' . $csv_file . '" -S 2>&1 &');
 		$count = 0;
 		$result = array();
-		while (is_file($csv_file . "." . $count)) {
-			$result[$csv_file . "." . $count] = self::readCsvFile($csv_file . "." . $count, $errors);
+		while (is_file($csv_file . '.' . $count)) {
+			$result[$csv_file . '.' . $count] = self::readCsvFile($csv_file . '.' . $count, $errors);
 			$count ++;
 		}
 		return $result;
@@ -81,15 +81,15 @@ class Spreadsheet_File
 	{
 		$lines = array();
 		$row   = 0;
-		$f = fopen($csv_file, "r");
+		$f = fopen($csv_file, 'r');
 		if ($f) while ($buf = fgetcsv($f)) {
 			$row ++;
-			if (($column = array_search("#REF!", $buf)) !== false) {
+			if (($column = array_search('#REF!', $buf)) !== false) {
 				$column ++;
 				$errors[] = str_replace(
-					array("$1", "$2"),
+					array('$1', '$2'),
 					array($row, $column),
-					Loc::tr("unsolved reference at row $1 and column $2")
+					Loc::tr('unsolved reference at row $1 and column $2')
 				);
 			}
 			$lines[] = $buf;

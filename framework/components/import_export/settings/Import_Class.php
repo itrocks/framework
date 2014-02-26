@@ -38,7 +38,7 @@ class Import_Class implements Serializable
 	 * @var string
 	 * @values create_new_value, do_nothing, tell_it_and_stop_import
 	 */
-	public $object_not_found_behaviour = "do_nothing";
+	public $object_not_found_behaviour = 'do_nothing';
 
 	//-------------------------------------------------------------------------- $identify_properties
 	/**
@@ -121,7 +121,7 @@ class Import_Class implements Serializable
 		foreach ($this->identify_properties as $property) {
 			$properties[$property->name] = $property->name;
 		}
-		return join(",", $properties);
+		return join(',', $properties);
 	}
 
 	//-------------------------------------------------------------------------------- getIgnoreValue
@@ -134,7 +134,7 @@ class Import_Class implements Serializable
 		foreach ($this->ignore_properties as $property) {
 			$properties[$property->name] = $property->name;
 		}
-		return join(",", $properties);
+		return join(',', $properties);
 	}
 
 	//-------------------------------------------------------------------------- getPropertyPathValue
@@ -144,7 +144,7 @@ class Import_Class implements Serializable
 	public function getPropertyPathValue()
 	{
 		return $this->property_path
-			? (join(".", $this->property_path))
+			? (join('.', $this->property_path))
 			: Namespaces::shortClassName($this->class_name);
 	}
 
@@ -158,7 +158,7 @@ class Import_Class implements Serializable
 		foreach ($this->write_properties as $property) {
 			$properties[$property->name] = $property->name;
 		}
-		return join(",", $properties);
+		return join(',', $properties);
 	}
 
 	//-------------------------------------------------------------------------------- removeConstant
@@ -179,12 +179,14 @@ class Import_Class implements Serializable
 	public function serialize()
 	{
 		$serialize = get_object_vars($this);
-		if (isset($serialize["constants"]) && is_array($serialize["constants"])) {
+		if (isset($serialize['constants']) && is_array($serialize['constants'])) {
 			/** @var $value Reflection_Property_Value */
-			foreach ($serialize["constants"] as $key => $value) {
-				$serialize["constants"][$key] = array(
-					"class" => $value->class, "name" => $value->name, "value" => $value->value(),
-					"final_object" => true
+			foreach ($serialize['constants'] as $key => $value) {
+				$serialize['constants'][$key] = array(
+					'class'        => $value->class,
+					'name'         => $value->name,
+					'value'        => $value->value(),
+					'final_object' => true
 				);
 			}
 		}
@@ -198,13 +200,13 @@ class Import_Class implements Serializable
 	public function unserialize($serialized)
 	{
 		foreach (unserialize($serialized) as $key => $value) {
-			if ($key == "constants") {
+			if ($key == 'constants') {
 				foreach ($value as $constant_key => $constant_value) {
 					$this->constants[$constant_key] = new Reflection_Property_Value(
-						$constant_value["class"],
-						$constant_value["name"],
-						$constant_value["value"],
-						$constant_value["final_object"]
+						$constant_value['class'],
+						$constant_value['name'],
+						$constant_value['value'],
+						$constant_value['final_object']
 					);
 				}
 			}

@@ -17,13 +17,13 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 	protected function getGeneralButtons($class_name)
 	{
 		return array(
-			"save" => new Button(
-				"Save", View::link($class_name, "import", "preview"),
-				"custom_save", array(Color::of("blue"), "#main", ".submit")
+			'save' => new Button(
+				'Save', View::link($class_name, 'import', 'preview'),
+				'custom_save', array(Color::of('blue'), '#main', '.submit')
 			),
-			"delete" => new Button(
-				"Delete", View::link($class_name, "import", "preview", array("delete_name" => true)),
-				"custom_delete", array(Color::of("red"), "#main", ".submit")
+			'delete' => new Button(
+				'Delete', View::link($class_name, 'import', 'preview', array('delete_name' => true)),
+				'custom_delete', array(Color::of('red'), '#main', '.submit')
 			)
 		);
 	}
@@ -41,7 +41,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 		// convert form files to worksheets and session files
 		if ($files) {
 			/** @var $import Import */
-			$import = $parameters->getMainObject('SAF\Framework\Import');
+			$import = $parameters->getMainObject(Import::class);
 			$import->class_name = $class_name;
 			$form = (new File_Builder_Post_Files())->appendToForm($form, $files);
 			foreach ($form as $file) {
@@ -73,7 +73,8 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 		}
 		// convert from form and session files to worksheets
 		else {
-			$files = Session::current()->get('SAF\Framework\Session_Files')->files;
+			/** @var $files File[] */
+			$files = Session::current()->get(Session_Files::class)->files;
 			$parameters->unshift($import = Import_Builder_Form::build($form, $files));
 			$import->class_name = $class_name;
 		}
@@ -81,25 +82,27 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 		$parameters = $parameters->getObjects();
 		$general_buttons = $this->getGeneralButtons($class_name);
 		if (
-			isset($parameters["constant_remove"])
-			&& (strtoupper($parameters["constant_remove"][0]) === $parameters["constant_remove"][0])
+			isset($parameters['constant_remove'])
+			&& (strtoupper($parameters['constant_remove'][0]) === $parameters['constant_remove'][0])
 		) {
-			$parameters["constant_remove"] = rParse($parameters["constant_remove"], ".");
+			$parameters['constant_remove'] = rParse($parameters['constant_remove'], '.');
 		}
 		foreach ($import->worksheets as $worksheet) {
 			// apply controller parameters
 			if (
-				isset($parameters["constant_add"])
-				&& isset($worksheet->settings->classes[$parameters["constant_add"]])
+				isset($parameters['constant_add'])
+				&& isset($worksheet->settings->classes[$parameters['constant_add']])
 			) {
-				$worksheet->settings->classes[$parameters["constant_add"]]->addConstant();
+				$worksheet->settings->classes[$parameters['constant_add']]->addConstant();
 			}
 			if (
-				isset($parameters["constant_remove"])
-				&& isset($worksheet->settings->classes[lLastParse($parameters["constant_remove"], ".", 1, false)])
+				isset($parameters['constant_remove'])
+				&& isset(
+					$worksheet->settings->classes[lLastParse($parameters['constant_remove'], '.', 1, false)]
+				)
 			) {
-				$worksheet->settings->classes[lLastParse($parameters["constant_remove"], ".", 1, false)]
-					->removeConstant(rLastParse($parameters["constant_remove"], ".", 1, true));
+				$worksheet->settings->classes[lLastParse($parameters['constant_remove'], '.', 1, false)]
+					->removeConstant(rLastParse($parameters['constant_remove'], '.', 1, true));
 			}
 			Custom_Settings_Controller::applyParametersToCustomSettings(
 				$worksheet->settings, array_merge($form, $parameters)
@@ -107,7 +110,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 		}
 		// recover empty Import_Settings (after loading empty one)
 		/** @var $files File[] */
-		$files = Session::current()->get('SAF\Framework\Session_Files')->files;
+		$files = Session::current()->get(Session_Files::class)->files;
 		foreach ($import->worksheets as $worksheet_number => $worksheet) {
 			if (empty($worksheet->settings->classes)) {
 				$file = $files[$worksheet_number];
@@ -122,21 +125,21 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 			$customized_import_settings = $worksheet->settings->getCustomSettings();
 			$worksheet_general_buttons = $general_buttons;
 			if (!isset($customized_import_settings[$worksheet->settings->name])) {
-				unset($worksheet_general_buttons["delete"]);
+				unset($worksheet_general_buttons['delete']);
 			}
-			$parameters["custom"][$worksheet_number] = new StdClass();
-			$parameters["custom"][$worksheet_number]->customized_lists = $customized_import_settings;
-			$parameters["custom"][$worksheet_number]->general_buttons = $worksheet_general_buttons;
-			$parameters["custom"][$worksheet_number]->settings = $worksheet->settings;
-			$parameters["custom"][$worksheet_number]->aliases_property = Import_Array::getPropertiesAlias(
+			$parameters['custom'][$worksheet_number] = new StdClass();
+			$parameters['custom'][$worksheet_number]->customized_lists = $customized_import_settings;
+			$parameters['custom'][$worksheet_number]->general_buttons = $worksheet_general_buttons;
+			$parameters['custom'][$worksheet_number]->settings = $worksheet->settings;
+			$parameters['custom'][$worksheet_number]->aliases_property = Import_Array::getPropertiesAlias(
 				$worksheet->settings->getClassName()
 			);
-			$parameters["custom"][$worksheet_number]->properties_alias = array_flip(
-				$parameters["custom"][$worksheet_number]->aliases_property
+			$parameters['custom'][$worksheet_number]->properties_alias = array_flip(
+				$parameters['custom'][$worksheet_number]->aliases_property
 			);
 		}
 		// view
-		return View::run($parameters, $form, $files, $class_name, "importPreview");
+		return View::run($parameters, $form, $files, $class_name, 'importPreview');
 	}
 
 }

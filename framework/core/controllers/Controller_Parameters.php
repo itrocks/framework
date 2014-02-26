@@ -71,6 +71,9 @@ class Controller_Parameters
 	 */
 	public function getMainObject($class_name = null)
 	{
+		if (is_object($class_name)) {
+			$class_name = get_class($class_name);
+		}
 		$object = reset($this->parameters);
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
 			$object = is_object($class_name) ? $class_name : (
