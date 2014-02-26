@@ -120,6 +120,9 @@ th {
 	background-color: #fafafa;
 	height: 100%;
 	white-space: nowrap;
+	>* {
+		white-space: normal;
+	}
 }
 
 /* TODO tidy */

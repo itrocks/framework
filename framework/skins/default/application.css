@@ -86,6 +86,8 @@ th {
   background-color: #fafafa;
   height: 100%;
   white-space: nowrap; }
+  #main > * {
+    white-space: normal; }
 
 /* TODO tidy */
 .delete.message,
