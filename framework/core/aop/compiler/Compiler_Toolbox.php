@@ -115,7 +115,7 @@ trait Compiler_Toolbox
 			}
 			else {
 				return $i2 . '/** @var $object_ \\' . $advice_class_name . ' */'
-					. $i2 . '$object_ = \\SAF\\Framework\\Session::current()->plugins->get('
+					. $i2 . '$object_ = \SAF\Framework\Session::current()->plugins->get('
 						. "'$advice_class_name'"
 					. ');'
 					. $joinpoint_code

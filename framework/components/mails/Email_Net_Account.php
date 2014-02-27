@@ -13,7 +13,13 @@ abstract class Email_Net_Account
 	 */
 	public $host;
 
-	//---------------------------------------------------------------------------------------- $login
+	//----------------------------------------------------------------------------------------- $port
+	/**
+	 * @var integer
+	 */
+	public $port = 25;
+
+	//----------------------------------------------------------------------------------------- $login
 	/**
 	 * @var string
 	 */
@@ -30,12 +36,14 @@ abstract class Email_Net_Account
 	 * @param $host     string
 	 * @param $login    string
 	 * @param $password string
+	 * @param $port     integer
 	 */
-	public function __construct($host = null, $login = null, $password = null)
+	public function __construct($host = null, $login = null, $password = null, $port = null)
 	{
 		if (isset($host))     $this->host     = $host;
 		if (isset($login))    $this->login    = $login;
 		if (isset($password)) $this->password = $password;
+		if (isset($port))     $this->port     = $port;
 	}
 
 	//------------------------------------------------------------------------------------ __toString

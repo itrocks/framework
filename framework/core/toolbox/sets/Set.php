@@ -75,7 +75,7 @@ class Set
 			$class_name = (new $class_name)->element_class_name;
 		}
 		elseif (!class_exists($class_name)) {
-			$class_name = Names::setToClass($class_name);
+			$class_name = Names::setToClass($class_name, false);
 		}
 		return $class_name;
 	}

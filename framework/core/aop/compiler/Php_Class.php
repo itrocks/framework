@@ -162,7 +162,7 @@ class Php_Class
 		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? "\n\n}\n" : "\n");
 		// replace "/* public */ private [static] function name_?(" by "public [static] function name("
 		$expr = '%'
-			. '(?:\n\s*/\*\*\s+@noinspection\s+PhpUnusedPrivateMethodInspection(?:\s+\w*)*\*/)?'
+			. '(?:\n\s*/\*\*?\s+@noinspection\s+PhpUnusedPrivateMethodInspection(?:\s+\w*)*\*/)?'
 			. '(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)' // 1 2 3
 			. '(?:(?:private|protected|public)\s+)?'
 			. '(static\s+)?' // 4

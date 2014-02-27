@@ -21,7 +21,7 @@ class Mysql_Link extends Sql_Link
 	/**
 	 * Construct a new Mysql_Link using a parameters array, and connect to mysql database
 	 *
-	 * The $parameters array keys are : 'host', 'user', 'password', 'database'.
+	 * The $parameters array keys are : 'host', 'login', 'password', 'database'.
 	 *
 	 * @param $parameters array
 	 */
@@ -53,7 +53,7 @@ class Mysql_Link extends Sql_Link
 			$parameters['database'] = str_replace('*', '', $parameters['databases']);
 		}
 		$this->connection = new Contextual_Mysqli(
-			$parameters['host'], $parameters['user'],
+			$parameters['host'], $parameters['login'],
 			$parameters['password'], $parameters['database']
 		);
 		$this->query('SET NAMES UTF8');

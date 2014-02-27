@@ -228,7 +228,7 @@ class Method_Compiler
 		}
 		else {
 			$around_comment = $indent
-				. '/** @noinspection PhpUnusedPrivateMethodInspection May be called by an advice */';
+				. '/* @noinspection PhpUnusedPrivateMethodInspection @aop */';
 		}
 
 		$buffer = preg_replace(

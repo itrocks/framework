@@ -29,7 +29,7 @@ $config['framework'] = array(
 		Dao::class => array(
 			'class'    => Mysql_Link::class,
 			'host'     => 'localhost',
-			'user'     => 'saf',
+			'login'    => 'saf',
 			'password' => 'saf'
 		),
 		Locale::class => array(
