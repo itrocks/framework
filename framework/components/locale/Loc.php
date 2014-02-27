@@ -57,7 +57,7 @@ class Loc implements Plugins\Registerable
 	) {
 		if (isset($value)) {
 			if (is_array($value) && !empty($value)) {
-				if ($property->getAnnotation("link")->value == "Collection") {
+				if ($property->getAnnotation('link')->value == 'Collection') {
 					$class = new Reflection_Class($property->getType()->getElementTypeAsString());
 					$properties = $class->accessProperties();
 					reset($value);
@@ -88,11 +88,11 @@ class Loc implements Plugins\Registerable
 	public function classNameDisplayReverse(&$value)
 	{
 		if (isset($value)) {
-			$value = explode("\\", $value);
+			$value = explode('\\', $value);
 			foreach ($value as $key => $class_part) {
 				$value[$key] = Names::displayToClass(self::rtr($class_part));
 			}
-			$value = join("\\", $value);
+			$value = join('\\', $value);
 		}
 	}
 
@@ -124,8 +124,8 @@ class Loc implements Plugins\Registerable
 	/**
 	 * Takes an ISO date and make it locale
 	 *
-	 * @param $date string ie "2001-12-25" "2001-12-25 12:20:00" "2001-12-25 12:20:16"
-	 * @return string "25/12/2011" "25/12/2001 12:20" "25/12/2001 12:20:16"
+	 * @param $date string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
+	 * @return string '25/12/2011' '25/12/2001 12:20' '25/12/2001 12:20:16'
 	 */
 	public static function dateToLocale($date)
 	{
@@ -146,8 +146,8 @@ class Loc implements Plugins\Registerable
 	/**
 	 * Takes a locale date and make it ISO
 	 *
-	 * @param $date string ie "25/12/2001" "25/12/2001 12:20" "25/12/2001 12:20:16"
-	 * @return string ie "2001-12-25" "2001-12-25 12:20:00" "2001-12-25 12:20:16"
+	 * @param $date string ie '25/12/2001' '25/12/2001 12:20' '25/12/2001 12:20:16'
+	 * @return string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 */
 	public static function dateToIso($date)
 	{
@@ -180,7 +180,7 @@ class Loc implements Plugins\Registerable
 	 * Takes a float number and make it locale
 	 *
 	 * @param $float float ie 1000 1000.28 1000.2148
-	 * @return string ie "1 000,00" "1 000,28" "1 000,2148"
+	 * @return string ie '1 000,00' '1 000,28' '1 000,2148'
 	 */
 	public static function floatToLocale($float)
 	{
@@ -213,7 +213,7 @@ class Loc implements Plugins\Registerable
 	 * Takes an integer and make it locale
 	 *
 	 * @param $integer integer ie 1000
-	 * @return string ie "1 000"
+	 * @return string ie '1 000'
 	 */
 	public static function integerToLocale($integer)
 	{
@@ -266,43 +266,43 @@ class Loc implements Plugins\Registerable
 		$aop = $register->aop;
 		// format from locale user input to ISO and standard formats
 		$aop->beforeMethod(
-			array('SAF\Framework\Object_Builder_Array', "buildBasicValue"),
-			array($this, "beforeObjectBuilderArrayBuildBasicValue")
+			array(Object_Builder_Array::class, 'buildBasicValue'),
+			array($this, 'beforeObjectBuilderArrayBuildBasicValue')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Default_List_Controller', "getSearchValues"),
-			array($this, "afterListSearchValues")
+			array(Default_List_Controller::class, 'getSearchValues'),
+			array($this, 'afterListSearchValues')
 		);
 		// format to locale
 		$aop->afterMethod(
-			array('SAF\Framework\Html_Template_Functions', "toEditPropertyExtra"),
-			array($this, "afterHtmlTemplateFuncsToEditPropertyExtra")
+			array(Html_Template_Functions::class, 'toEditPropertyExtra'),
+			array($this, 'afterHtmlTemplateFuncsToEditPropertyExtra')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Reflection_Property_View', "formatDateTime"),
-			array($this, "dateTimeReturnedValueToLocale")
+			array(Reflection_Property_View::class, 'formatDateTime'),
+			array($this, 'dateTimeReturnedValueToLocale')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Reflection_Property_View', "formatFloat"),
-			array($this, "floatReturnedValueToLocale")
+			array(Reflection_Property_View::class, 'formatFloat'),
+			array($this, 'floatReturnedValueToLocale')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Reflection_Property_View', "formatInteger"),
-			array($this, "integerReturnedValueToLocale")
+			array(Reflection_Property_View::class, 'formatInteger'),
+			array($this, 'integerReturnedValueToLocale')
 		);
 		// translations
 		$aop->afterMethod(
-			array('SAF\Framework\List_Settings', "getDefaultTitle"),
-			array($this, "translateReturnedValue")
+			array(List_Settings::class, 'getDefaultTitle'),
+			array($this, 'translateReturnedValue')
 		);
 		// translation/reverse of export/import procedures
 		$aop->beforeMethod(
-			array('SAF\Framework\Import_Array', "getClassNameFromValue"),
-			array($this, "classNameDisplayReverse")
+			array(Import_Array::class, 'getClassNameFromValue'),
+			array($this, 'classNameDisplayReverse')
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\Import_Array', "getClassNameFromArray"),
-			array($this, "classNameReturnedValueToContext")
+			array(Import_Array::class, 'getClassNameFromArray'),
+			array($this, 'classNameReturnedValueToContext')
 		);
 	}
 
@@ -315,7 +315,7 @@ class Loc implements Plugins\Registerable
 	 * @param $context_property_path string
 	 * @return string
 	 */
-	public static function rtr($translation, $context = "", $context_property_path = "")
+	public static function rtr($translation, $context = '', $context_property_path = '')
 	{
 		return Locale::current()->translations->reverse($translation, $context, $context_property_path);
 	}
@@ -342,7 +342,7 @@ class Loc implements Plugins\Registerable
 	 * @param $context string
 	 * @return string
 	 */
-	public static function tr($text, $context = "")
+	public static function tr($text, $context = '')
 	{
 		return Locale::current()->translations->translate($text, $context);
 	}

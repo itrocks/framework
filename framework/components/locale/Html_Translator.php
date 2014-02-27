@@ -4,7 +4,7 @@ namespace SAF\Framework;
 use SAF\Plugins;
 
 /**
- * Html translator plugin : translates "|non-translated text|" from html pages to "translated text"
+ * Html translator plugin : translates '|non-translated text|' from html pages to 'translated text'
  */
 class Html_Translator implements Plugins\Registerable
 {
@@ -19,13 +19,13 @@ class Html_Translator implements Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->afterMethod(
-			array('SAF\Framework\Html_Template', "parse"), array($this, "translatePage")
+			array(Html_Template::class, 'parse'), array($this, 'translatePage')
 		);
 		$aop->beforeMethod(
-			array('SAF\Framework\Html_Template', "parseString"), array($this, "translateString")
+			array(Html_Template::class, 'parseString'), array($this, 'translateString')
 		);
 		$aop->beforeMethod(
-			array('SAF\Framework\Html_Option', "setContent"), array($this, "translateOptionContent")
+			array(Html_Option::class, 'setContent'), array($this, 'translateOptionContent')
 		);
 	}
 
@@ -39,9 +39,9 @@ class Html_Translator implements Plugins\Registerable
 	public function translateContent(&$content, $context)
 	{
 		$i = 0;
-		while (($i = strpos($content, "|", $i)) !== false) {
+		while (($i = strpos($content, '|', $i)) !== false) {
 			$i++;
-			if (($i < strlen($content)) && (!in_array($content[$i], array(" ", "\n", "\r", "\t")))) {
+			if (($i < strlen($content)) && (!in_array($content[$i], array(' ', '\n', '\r', '\t')))) {
 				$this->translateElement($content, $i, $context);
 			}
 		}
@@ -58,7 +58,7 @@ class Html_Translator implements Plugins\Registerable
 	 */
 	public function translateElement(&$content, &$i, $context)
 	{
-		$j = strpos($content, "|", $i);
+		$j = strpos($content, '|', $i);
 		if ($j >= $i) {
 			$text = substr($content, $i, $j - $i);
 			$translation = Loc::tr($text, $context);
