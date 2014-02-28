@@ -17,9 +17,9 @@ class Property_Select_Controller implements Controller
 	public function getProperties(Reflection_Class $class, $composite_class_name = null)
 	{
 		$properties = array();
-		if (isset($composite_class_name) && class_uses_trait($class->name, 'SAF\Framework\Component')) {
+		if (isset($composite_class_name) && class_uses_trait($class->name, Component::class)) {
 			$composite_property = call_user_func(
-				array($class->name, "getCompositeProperties"),
+				array($class->name, 'getCompositeProperties'),
 				$composite_class_name
 			);
 			$composite_property = reset($composite_property);
@@ -27,7 +27,7 @@ class Property_Select_Controller implements Controller
 		else {
 			$composite_property = null;
 		}
-		if ($class->getAnnotation("link")->value) {
+		if ($class->getAnnotation('link')->value) {
 			$link_class = new Link_Class($class->name);
 			$composite_link_property = $link_class->getCompositeProperty();
 			foreach ($link_class->getAllProperties() as $property) {
@@ -83,20 +83,20 @@ class Property_Select_Controller implements Controller
 				$top_property->final_class
 			);
 			foreach ($properties as $property) {
-				$property->path = $property_path . "." . $property->name;
+				$property->path = $property_path . '.' . $property->name;
 			}
-			$parameters->set("container", "subtree");
+			$parameters->set('container', 'subtree');
 		}
 		$objects = $parameters->getObjects();
 		array_unshift($objects, $top_property);
-		$objects["properties"] = $properties;
-		$objects["class_name"] = $class_name;
+		$objects['properties'] = $properties;
+		$objects['class_name'] = $class_name;
 		/**
 		 * Objects for the view :
 		 * first        Property the property object (with selected property name, or not)
-		 * "properties" Reflection_Property[] all properties from the reference class
+		 * 'properties' Reflection_Property[] all properties from the reference class
 		 */
-		return View::run($objects, $form, $files, 'SAF\Framework\Property', "select");
+		return View::run($objects, $form, $files, Property::class, 'select');
 	}
 
 }

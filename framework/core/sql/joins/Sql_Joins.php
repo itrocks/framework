@@ -34,7 +34,7 @@ class Sql_Joins
 
 	//----------------------------------------------------------------------------------- $link_joins
 	/**
-	 * joins for properties coming from classes having the "link" annotation
+	 * joins for properties coming from classes having the 'link' annotation
 	 *
 	 * @var Sql_Join[] key is property full path
 	 */
@@ -69,8 +69,8 @@ class Sql_Joins
 	public function __construct($starting_class_name, $paths = array())
 	{
 		$this->alias_counter = 1;
-		$this->classes[""] = $starting_class_name;
-		$this->addProperties("", $starting_class_name);
+		$this->classes[''] = $starting_class_name;
+		$this->addProperties('', $starting_class_name);
 		foreach ($paths as $path) {
 			$this->add($path);
 		}
@@ -103,7 +103,7 @@ class Sql_Joins
 			}
 		}
 		$join = new Sql_Join();
-		$foreign_class_name = (strpos($master_property_name, "->"))
+		$foreign_class_name = (strpos($master_property_name, '->'))
 			? $this->addReverseJoin($join, $master_path, $master_property_name, $path)
 			: $this->addSimpleJoin($join, $master_path, $master_property_name, $path);
 		$this->joins[$path] = $join->mode
@@ -130,13 +130,13 @@ class Sql_Joins
 		if (!$depth) {
 			$join->type = Sql_Join::OBJECT;
 		}
-		$join->foreign_alias = "t" . $this->alias_counter++;
+		$join->foreign_alias = 't' . $this->alias_counter++;
 		if (!isset($join->foreign_table)) {
 			$join->foreign_class = $foreign_class_name;
 			$join->foreign_table = Dao::storeNameOf($foreign_class_name);
 		}
 		if (!isset($join->master_alias)) {
-			$join->master_alias = $master_path ? $this->getAlias($master_path) : "t0";
+			$join->master_alias = $master_path ? $this->getAlias($master_path) : 't0';
 		}
 		$this->classes[$foreign_path] = $foreign_class_name;
 		$this->addProperties($foreign_path, $foreign_class_name, $join->mode);
@@ -152,14 +152,14 @@ class Sql_Joins
 	public function addJoin(Sql_Join $join)
 	{
 		if (!isset($join->foreign_alias)) {
-			$join->foreign_alias = "t" . $this->alias_counter++;
+			$join->foreign_alias = 't' . $this->alias_counter++;
 		}
 		$this->joins[] = $join;
 	}
 
 	//-------------------------------------------------------------------------------- addLinkedClass
 	/**
-	 * Add a link class (using the "link" class annotation) to joins
+	 * Add a link class (using the 'link' class annotation) to joins
 	 *
 	 * @param $path               string
 	 * @param $linked_class_name  string
@@ -171,10 +171,10 @@ class Sql_Joins
 	{
 		$linked_class = new Reflection_Class($linked_class_name);
 		$join = new Sql_Join();
-		$join->master_alias   = "t" . ($this->alias_counter - 1);
-		$join->master_column  = "id_" . Names::classToProperty($linked_class_name);
-		$join->foreign_alias  = "t" . $this->alias_counter++;
-		$join->foreign_column = "id";
+		$join->master_alias   = 't' . ($this->alias_counter - 1);
+		$join->master_column  = 'id_' . Names::classToProperty($linked_class_name);
+		$join->foreign_alias  = 't' . $this->alias_counter++;
+		$join->foreign_column = 'id';
 		$join->foreign_class  = $linked_class_name;
 		$join->foreign_table  = Dao::storeNameOf($linked_class_name);
 		$join->mode           = ($join_mode == Sql_Join::LEFT) ? Sql_Join::LEFT : Sql_Join::INNER;
@@ -183,15 +183,15 @@ class Sql_Joins
 			// this ensures that the main path is set before the linked path
 			$this->joins[$path] = null;
 		}
-		$this->joins[($path ? ($path . "-") : "") . $join->foreign_table . "-@link"] = $join;
-		$more_linked_class_name = $linked_class->getAnnotation("link")->value;
+		$this->joins[($path ? ($path . '-') : '') . $join->foreign_table . '-@link'] = $join;
+		$more_linked_class_name = $linked_class->getAnnotation('link')->value;
 		$exclude_properties = $more_linked_class_name
 			? $this->addLinkedClass($path, $more_linked_class_name, $join_mode)
 			: array();
 		foreach ($linked_class->getAllProperties() as $property) if (!$property->isStatic()) {
 			if (!isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
-				$property_path = ($path ? $path . "." : "") . $property->name;
+				$property_path = ($path ? $path . '.' : '') . $property->name;
 				$this->classes[$property_path] = $property->getType()->getElementTypeAsString();
 				$this->link_joins[$property_path] = $join;
 				$exclude_properties[$property->name] = true;
@@ -217,12 +217,12 @@ class Sql_Joins
 		$linked_join = new Sql_Join();
 		$linked_join->foreign_column = $reverse ? $link_table->foreignColumn() : $link_table->masterColumn();
 		$linked_join->foreign_table = $link_table->table();
-		$linked_join->master_column = "id";
+		$linked_join->master_column = 'id';
 		$linked_join->mode = $join->mode;
-		$this->joins[$foreign_path . "-link"] = $this->addFinalize(
-			$linked_join, $master_path ? $master_path : "id", $foreign_class_name, $foreign_path, 1
+		$this->joins[$foreign_path . '-link'] = $this->addFinalize(
+			$linked_join, $master_path ? $master_path : 'id', $foreign_class_name, $foreign_path, 1
 		);
-		$join->foreign_column = "id";
+		$join->foreign_column = 'id';
 		$join->master_column = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
 		$join->master_alias = $linked_join->foreign_alias;
 		$this->linked_tables[$linked_join->foreign_table] = array(
@@ -249,7 +249,7 @@ class Sql_Joins
 	/**
 	 * Adds properties of the class name into $properties
 	 *
-	 * Please always call this instead of adding properties manually : it manages "link"
+	 * Please always call this instead of adding properties manually : it manages 'link'
 	 * class annotations.
 	 *
 	 * @param $path       string
@@ -260,7 +260,7 @@ class Sql_Joins
 	{
 		$class = new Reflection_Class($class_name);
 		$this->properties[$class_name] = $class->getAllProperties();
-		$linked_class_name = $class->getAnnotation("link")->value;
+		$linked_class_name = $class->getAnnotation('link')->value;
 		if ($linked_class_name) {
 			$this->addLinkedClass($path, $linked_class_name, $join_mode);
 		}
@@ -277,16 +277,16 @@ class Sql_Joins
 	private function addReverseJoin(
 		Sql_Join $join, $master_path, $master_property_name, $foreign_path
 	) {
-		list($foreign_class_name, $foreign_property_name) = explode("->", $master_property_name);
+		list($foreign_class_name, $foreign_property_name) = explode('->', $master_property_name);
 		$foreign_class_name = Namespaces::fullClassName($foreign_class_name);
-		if (strpos($foreign_property_name, "=")) {
-			list($foreign_property_name, $master_property_name) = explode("=", $foreign_property_name);
-			$join->master_column  = "id_" . $master_property_name;
+		if (strpos($foreign_property_name, '=')) {
+			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
+			$join->master_column  = 'id_' . $master_property_name;
 		}
 		else {
-			$join->master_column = "id";
+			$join->master_column = 'id';
 		}
-		$join->foreign_column = "id_" . $foreign_property_name;
+		$join->foreign_column = 'id_' . $foreign_property_name;
 		$join->mode = Sql_Join::LEFT;
 		$foreign_property = new Reflection_Property($foreign_class_name, $foreign_property_name);
 		if ($foreign_property->getType()->isMultiple()) {
@@ -311,25 +311,25 @@ class Sql_Joins
 		$master_property = $this->getProperty($master_path, $master_property_name);
 		if ($master_property) {
 			$foreign_type = $master_property->getType();
-			if ($foreign_type->isMultiple() && ($foreign_type->getElementTypeAsString() == "string")) {
+			if ($foreign_type->isMultiple() && ($foreign_type->getElementTypeAsString() == 'string')) {
 				// TODO : string[] can have multiple implementations, depending on database engine
 				// linked strings table, mysql set.. should find a way to make this common without
 				// knowing anything about the specific
 				$foreign_class_name = $foreign_type->asString();
 			}
 			elseif (!$foreign_type->isBasic()) {
-				$join->mode = $master_property->getAnnotation("mandatory")->value
+				$join->mode = $master_property->getAnnotation('mandatory')->value
 					? Sql_Join::INNER
 					: Sql_Join::LEFT;
 				if ($foreign_type->isMultiple()) {
 					$foreign_class_name = $foreign_type->getElementTypeAsString();
-					$foreign_property_name = $master_property->getAnnotation("foreign")->value;
+					$foreign_property_name = $master_property->getAnnotation('foreign')->value;
 					if (
 						property_exists($foreign_class_name, $foreign_property_name)
-						&& ($master_property->getAnnotation("link")->value != "Map")
+						&& ($master_property->getAnnotation('link')->value != 'Map')
 					) {
-						$join->foreign_column = "id_" . $foreign_property_name;
-						$join->master_column  = "id";
+						$join->foreign_column = 'id_' . $foreign_property_name;
+						$join->master_column  = 'id';
 					}
 					else {
 						$this->addLinkedJoin(
@@ -339,8 +339,8 @@ class Sql_Joins
 				}
 				else {
 					$foreign_class_name = $foreign_type->asString();
-					$join->master_column  = "id_" . $master_property_name;
-					$join->foreign_column = "id";
+					$join->master_column  = 'id_' . $master_property_name;
+					$join->foreign_column = 'id';
 				}
 			}
 		}
@@ -356,7 +356,7 @@ class Sql_Joins
 	 */
 	public function getAlias($path)
 	{
-		return isset($this->joins[$path]) ? $this->joins[$path]->foreign_alias : "t0";
+		return isset($this->joins[$path]) ? $this->joins[$path]->foreign_alias : 't0';
 	}
 
 	//------------------------------------------------------------------------------------ getClasses
@@ -410,7 +410,7 @@ class Sql_Joins
 
 	//-------------------------------------------------------------------------------- getLinkedJoins
 	/**
-	 * Gets the list of joins that come from a "link" class annotation
+	 * Gets the list of joins that come from a 'link' class annotation
 	 *
 	 * @return Sql_Join[]
 	 */
@@ -418,7 +418,7 @@ class Sql_Joins
 	{
 		$joins = array();
 		foreach ($this->joins as $key => $join) {
-			if (is_object($join) && (($key === "id") || (substr($key, -6) === "-@link"))) {
+			if (is_object($join) && (($key === 'id') || (substr($key, -6) === '-@link'))) {
 				$joins[$key] = $join;
 			}
 		}
@@ -472,7 +472,7 @@ class Sql_Joins
 	 */
 	public function getStartingClassName()
 	{
-		return $this->classes[""];
+		return $this->classes[''];
 	}
 
 	//----------------------------------------------------------------------------------- newInstance

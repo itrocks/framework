@@ -16,7 +16,7 @@ class Link_Class extends Reflection_Class
 	public function getCompositeProperty()
 	{
 		/** @var $composite Reflection_Property[] */
-		$composite = call_user_func(array($this->name, "getCompositeProperties"), $this->name);
+		$composite = call_user_func(array($this->name, 'getCompositeProperties'), $this->name);
 		return reset($composite);
 	}
 
@@ -35,7 +35,7 @@ class Link_Class extends Reflection_Class
 	 */
 	public function getLinkClassName()
 	{
-		return $this->getAnnotation("link")->value;
+		return $this->getAnnotation('link')->value;
 	}
 
 	//----------------------------------------------------------------------------- getLinkProperties

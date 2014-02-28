@@ -52,7 +52,7 @@ class Html_Builder_Collection
 	{
 		Collection::sort($this->collection);
 		$table = new Html_Table();
-		$table->addClass("collection");
+		$table->addClass('collection');
 		$table->head = $this->buildHead();
 		$table->body = $this->buildBody();
 		return $table;
@@ -85,7 +85,7 @@ class Html_Builder_Collection
 		);
 		$type = $property->getType();
 		if ($type->isMultiple()) {
-			$cell->addClass("multiple");
+			$cell->addClass('multiple');
 		}
 		$cell->addClass($type->asString());
 		return $cell;
@@ -133,7 +133,7 @@ class Html_Builder_Collection
 		$class = new Reflection_Class($this->class_name);
 		$properties = $class->getAllProperties();
 		// remove linked class properties
-		$linked_class = $class->getAnnotation("link")->value;
+		$linked_class = $class->getAnnotation('link')->value;
 		if ($linked_class) {
 			foreach (
 				array_keys((new Reflection_Class($linked_class))->getAllProperties())
@@ -143,7 +143,7 @@ class Html_Builder_Collection
 			}
 		}
 		// remove composite property
-		$property_name = $this->property->getAnnotation("foreign")->value;
+		$property_name = $this->property->getAnnotation('foreign')->value;
 		if (isset($properties[$property_name])) {
 			unset($properties[$property_name]);
 		}
