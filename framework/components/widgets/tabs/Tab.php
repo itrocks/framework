@@ -129,6 +129,7 @@ class Tab
 	//--------------------------------------------------------------------------------------- getList
 	/**
 	 * Return included tabs, but not those which identifier begins with "_"
+	 * nor those that are empty
 	 *
 	 * @return Tab[]
 	 */
@@ -136,7 +137,7 @@ class Tab
 	{
 		$list = array();
 		foreach ($this->includes as $key => $tab) {
-			if (substr($key, 0, 1) != "_") {
+			if ((substr($key, 0, 1) != "_") && ($tab->content || $tab->columns || $tab->includes)) {
 				$list[$key] = $tab;
 			}
 		}

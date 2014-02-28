@@ -351,7 +351,7 @@ abstract class Html_Template_Functions
 		$class = new Reflection_Class(get_class($object));
 		$result_properties = array();
 		foreach ($class->accessProperties() as $property_name => $property) {
-			if (!$property->isStatic()) {
+			if (!$property->isStatic() && !$property->getListAnnotation('user')->has('invisible')) {
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
 					$result_properties[$property_name] = new Reflection_Property_Value(
 						$property->class, $property->name, $object
@@ -372,8 +372,8 @@ abstract class Html_Template_Functions
 	public static function getPropertiesOutOfTabs(Html_Template $template)
 	{
 		$properties = array();
-		foreach (self::getProperties($template, $template->objects) as $property_name => $property) {
-			if (!$property->isStatic() && !$property->getAnnotation("group")->value) {
+		foreach (self::getProperties($template) as $property_name => $property) {
+			if (!$property->getAnnotation("group")->value) {
 				$properties[$property_name] = $property;
 			}
 		}
