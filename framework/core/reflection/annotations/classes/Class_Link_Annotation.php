@@ -27,7 +27,9 @@ class Class_Link_Annotation extends Annotation implements Class_Context_Annotati
 	 */
 	public function __construct($value, Reflection_Class $class)
 	{
-		$this->value = $value ? Namespaces::defaultFullClassName($value, $class->name) : $value;
+		$this->value = $value
+			? Builder::className(Namespaces::defaultFullClassName($value, $class->name))
+			: $value;
 	}
 
 }
