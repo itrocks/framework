@@ -23,14 +23,17 @@
 			$pages.first().addClass("active");
 			$pages.each(function() { $(this).children(":first").css("display", "none"); });
 
-			$tabs.children("a").click(function(event) {
+			$tabs.children("a").click(function(event)
+			{
 				event.preventDefault();
 				var $this = $(this);
 				$tabs.removeClass("active");
 				$pages.removeClass("active");
 				$this.closest(".ui-tabber-tab").addClass("active");
 				$pages.filter($this.attr("href")).addClass("active");
+				window.history.pushState({ reload: true }, document.title, $this.prop("href"));
 			});
+
 		});
 
 		if (window.location && window.location.hash) {
