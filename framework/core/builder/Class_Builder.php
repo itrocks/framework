@@ -54,7 +54,7 @@ class Class_Builder
 						$extends = Namespaces::defaultFullClassName($extends, $interface_trait);
 						if (trait_exists($extends)) {
 							foreach ($traits as $trait_level => $trait_names) {
-								if ($trait_names[$extends]) {
+								if (isset($trait_names[$extends])) {
 									$level = max($level, $trait_level + 1);
 								}
 							}

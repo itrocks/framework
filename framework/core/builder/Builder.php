@@ -75,6 +75,66 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 			: self::current()->newInstance($class_name);
 	}
 
+	//----------------------------------------------------------------------------------- createClone
+	/**
+	 * Create a clone of the object, using a built class if needed
+	 *
+	 * @param $object     object
+	 * @param $class_name string if set, the new object will use the matching built class
+	 *        this class name must inherit from the object's class
+	 * @param $properties_values array some properties values for the cloned object
+	 * @return object
+	 */
+	public static function createClone($object, $class_name = null, $properties_values = array())
+	{
+		$source_class_name = get_class($object);
+		if (!isset($class_name)) {
+			$class_name = self::className($object);
+		}
+		if ($class_name !== $source_class_name) {
+			// initialises cloned object
+			$clone = self::create($class_name);
+			// deactivate AOP
+			if (isset($clone->_)) {
+				$save_aop = $clone->_;
+				unset($clone->_);
+			}
+			// copy official properties values from the source object
+			$properties = (new Reflection_Class($source_class_name))->accessProperties();
+			foreach ($properties as $property) {
+				if (!isset($save_aop[$property->name])) {
+					$property->setValue($clone, $property->getValue($object));
+				}
+			}
+			// copy unofficial properties values from the source object (ie AOP properties aliases)
+			foreach (get_object_vars($object) as $property_name => $value) {
+				if (!isset($properties[$property_name])) {
+					$object->$property_name = $value;
+				}
+			}
+			// reactivate AOP
+			if (isset($save_aop)) {
+				$clone->_ = $save_aop;
+			}
+			// copy added properties values to the cloned object
+			if ($properties_values) {
+				$properties = (new Reflection_Class($class_name))->accessProperties();
+				foreach ($properties_values as $property_name => $value) {
+					$properties[$property_name]->setValue($clone, $value);
+				}
+			}
+			// disconnect the clone from datalink if the clone class is a @link of the source object
+			if (
+				(new Reflection_Class($class_name))->getAnnotation('link')->value
+				!= (new Reflection_Class($source_class_name))->getAnnotation('link')->value
+			) {
+				Dao::disconnect($clone);
+			}
+			return $clone;
+		}
+		return clone $object;
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Builder
