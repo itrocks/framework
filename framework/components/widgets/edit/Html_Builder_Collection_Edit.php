@@ -21,7 +21,7 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	{
 		$body = parent::buildBody();
 		$row = $this->buildRow(Builder::create($this->class_name));
-		$row->addClass("new");
+		$row->addClass('new');
 		$body->addRow($row);
 		return $body;
 	}
@@ -39,18 +39,18 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		}
 		$property = new Reflection_Property(get_class($object), $property_name);
 		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
-		$builder = (new Html_Builder_Property_Edit($property, $value, $this->property->name . "[]"));
+		$builder = (new Html_Builder_Property_Edit($property, $value, $this->property->name . '[]'));
 		$input = $builder->setTemplate($this->template)->build();
 		if ($property_name == reset($this->properties)) {
 			$property_builder = new Html_Builder_Property_Edit();
 			$property_builder->setTemplate($this->template);
 			$id_input = new Html_Input(
-				$this->property->name . "[id]["
-				. $property_builder->nextCounter($this->property->name . "[id][]")
-				. "]",
+				$this->property->name . '[id]['
+				. $property_builder->nextCounter($this->property->name . '[id][]')
+				. ']',
 				isset($object->id) ? $object->id : null
 			);
-			$id_input->setAttribute("type", "hidden");
+			$id_input->setAttribute('type', 'hidden');
 			$input = $id_input . $input;
 		}
 		return new Html_Table_Standard_Cell($input);
@@ -77,9 +77,9 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
-		$cell = new Html_Table_Standard_Cell("-");
-		$cell->setAttribute("title", "|remove line|");
-		$cell->addClass("minus");
+		$cell = new Html_Table_Standard_Cell('-');
+		$cell->setAttribute('title', '|remove line|');
+		$cell->addClass('minus');
 		$row->addCell($cell);
 		return $row;
 	}

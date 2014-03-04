@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use DateTime;
+
 /**
  * PHP types manager
  */
@@ -14,8 +16,8 @@ class Type
 	 * @var string[]
 	 */
 	private static $basic_types = array(
-		"boolean", "integer", "float", "string",
-		"array", "resource", "callable", "null", "NULL"
+		'boolean', 'integer', 'float', 'string',
+		'array', 'resource', 'callable', 'null', 'NULL'
 	);
 
 	//---------------------------------------------------------------------------------- $can_be_null
@@ -34,7 +36,7 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $numeric_types = array("integer", "float");
+	private static $numeric_types = array('integer', 'float');
 
 	//---------------------------------------------------------------------------------- $sized_types
 	/**
@@ -42,12 +44,12 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $sized_types = array("integer", "float", "string");
+	private static $sized_types = array('integer', 'float', 'string');
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * The type name itself :
-	 * - only one type, does not include "|null" or any secondary types
+	 * - only one type, does not include '|null' or any secondary types
 	 * - if this is a class name path, this will be full 'Namespace\Class' and never begin with '\'
 	 *
 	 * @var string
@@ -62,9 +64,9 @@ class Type
 	public function __construct($type_string = null, $can_be_null = null)
 	{
 		if (isset($type_string)) {
-			if (($i = strpos($type_string, "|")) !== false) {
+			if (($i = strpos($type_string, '|')) !== false) {
 				if (!isset($can_be_null)) {
-					$this->can_be_null = strpos($type_string, "|null");
+					$this->can_be_null = strpos($type_string, '|null');
 				}
 				$this->type = substr($type_string, 0, $i);
 			}
@@ -75,7 +77,7 @@ class Type
 		if (isset($can_be_null)) {
 			$this->can_be_null = $can_be_null;
 		}
-		if (substr($this->type, 0, 1) == "\\") {
+		if (substr($this->type, 0, 1) == '\\') {
 			$this->type = substr($this->type, 1);
 		}
 	}
@@ -142,10 +144,10 @@ class Type
 			return array();
 		}
 		else switch ($this->asString()) {
-			case "boolean": return false;
-			case "integer": return 0;
-			case "float":   return 0.0;
-			case "string":  return "";
+			case 'boolean': return false;
+			case 'integer': return 0;
+			case 'float':   return 0.0;
+			case 'string':  return '';
 		}
 		return null;
 	}
@@ -171,7 +173,7 @@ class Type
 	 */
 	public function getElementTypeAsString()
 	{
-		$i = strpos($this->type, "[");
+		$i = strpos($this->type, '[');
 		return ($i !== false)
 			? substr($this->type, 0, $i)
 			: $this->type;
@@ -194,7 +196,7 @@ class Type
 	 */
 	public function isArray()
 	{
-		return $this->type === "array";
+		return $this->type === 'array';
 	}
 
 	//--------------------------------------------------------------------------------------- isBasic
@@ -202,7 +204,8 @@ class Type
 	 * Tells if a type is a basic type or not
 	 *
 	 * Basic types are boolean, integer, float, string, array, resource, callable, null, NULL
-	 * DateTime and Date_Time are considered comme basic too ! Use isStrictlyBasic if you don't want them
+	 * DateTime and Date_Time are considered comme basic too ! Use isStrictlyBasic
+	 * if you don't want them
 	 * Not basic types are *,[] objects, class names
 	 *
 	 * @return boolean
@@ -220,7 +223,7 @@ class Type
 	 */
 	public function isBoolean()
 	{
-		return $this->type === "boolean";
+		return $this->type === 'boolean';
 	}
 
 	//--------------------------------------------------------------------------------------- isClass
@@ -240,7 +243,7 @@ class Type
 	 */
 	public function isDateTime()
 	{
-		return $this->isInstanceOf("DateTime");
+		return $this->isInstanceOf(DateTime::class);
 	}
 
 	//--------------------------------------------------------------------------------------- isFloat
@@ -249,7 +252,7 @@ class Type
 	 */
 	public function isFloat()
 	{
-		return $this->type === "float";
+		return $this->type === 'float';
 	}
 
 	//---------------------------------------------------------------------------------- isInstanceOf
@@ -263,7 +266,7 @@ class Type
 	 */
 	public function isInstanceOf($class_name)
 	{
-		return $this->isClass() && class_instanceof($this->getElementTypeAsString(), $class_name);
+		return $this->isClass() && is_a($this->getElementTypeAsString(), $class_name, true);
 	}
 
 	//------------------------------------------------------------------------------------- isInteger
@@ -272,7 +275,7 @@ class Type
 	 */
 	public function isInteger()
 	{
-		return $this->type === "integer";
+		return $this->type === 'integer';
 	}
 
 	//------------------------------------------------------------------------------------ isMultiple
@@ -280,14 +283,14 @@ class Type
 	 * Tells if a type is an array / multiple type or not
 	 *
 	 * If type is a generic array, then returns true.
-	 * If type is a typed array ("what"),[] then returns the array element type (ie "what").
+	 * If type is a typed array ('what'),[] then returns the array element type (ie 'what').
 	 * If type is no one of those, then returns false.
 	 *
-	 * @return boolean|string "multiple" if is multiple (useful for display), else false
+	 * @return boolean|string 'multiple' if is multiple (useful for display), else false
 	 */
 	public function isMultiple()
 	{
-		return ((substr($this->type, -1) === "]") || $this->isArray()) ? "multiple" : false;
+		return ((substr($this->type, -1) === ']') || $this->isArray()) ? 'multiple' : false;
 	}
 
 	//------------------------------------------------------------------------------ isMultipleString
@@ -296,7 +299,7 @@ class Type
 	 */
 	public function isMultipleString()
 	{
-		return $this->type === "string[]";
+		return $this->type === 'string[]';
 	}
 
 	//---------------------------------------------------------------------------------------- isNull
@@ -305,7 +308,7 @@ class Type
 	 */
 	public function isNull()
 	{
-		return $this->type === "NULL";
+		return $this->type === 'NULL';
 	}
 
 	//------------------------------------------------------------------------------------- isNumeric
@@ -339,7 +342,7 @@ class Type
 	 */
 	public function isString()
 	{
-		return $this->type === "string";
+		return $this->type === 'string';
 	}
 
 	//---------------------------------------------------------------------------------- isSubclassOf
@@ -365,7 +368,7 @@ class Type
 	 */
 	public function multiple($can_be_null = false)
 	{
-		return new Type($this->type . "[]", $can_be_null);
+		return new Type($this->type . '[]', $can_be_null);
 	}
 
 	//------------------------------------------------------------------------------------- usesTrait
@@ -379,7 +382,7 @@ class Type
 	 */
 	public function usesTrait($trait_name)
 	{
-		return $this->isClass() && class_uses_trait($this->getElementTypeAsString(), $trait_name);
+		return $this->isClass() && isA($this->getElementTypeAsString(), $trait_name);
 	}
 
 }

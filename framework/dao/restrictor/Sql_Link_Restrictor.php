@@ -136,7 +136,7 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 		}
 		else {
 			$restrictions = array();
-			foreach (class_tree($class_name) as $tree_class_name) {
+			foreach (classTree($class_name) as $tree_class_name) {
 				if (isset($this->restrictions[$tree_class_name])) {
 					$restrictions = array_merge($restrictions, $this->restrictions[$tree_class_name]);
 				}

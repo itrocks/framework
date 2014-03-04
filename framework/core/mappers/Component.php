@@ -31,7 +31,7 @@ trait Component
 		foreach (self::getCompositeProperties($class_name, $property_name) as $property) {
 			$composite = $property->getValue($this);
 			if (isset($composite)) {
-				if ((new Type(get_class($composite)))->usesTrait('SAF\Framework\Remover')) {
+				if (isA($composite, Remover::class)) {
 					/** @var $composite Remover */
 					$composite->remove($this);
 				}
@@ -76,11 +76,11 @@ trait Component
 			$class_name = get_class($class_name);
 		}
 		$self = get_called_class();
-		$path = $self . "." . $class_name . "." . $property_name;
+		$path = $self . '.' . $class_name . '.' . $property_name;
 		if (!isset(self::$composite_property_name[$path])) {
 			self::$composite_property_name[$path] = array();
 			$properties = empty($property_name)
-				? (new Reflection_Class($self))->getAnnotedProperties("composite")
+				? (new Reflection_Class($self))->getAnnotedProperties('composite')
 				: array(new Reflection_Property($self, $property_name));
 			foreach ($properties as $property) {
 				if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {

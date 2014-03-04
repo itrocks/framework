@@ -35,7 +35,7 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	 *
 	 * @var string[]
 	 */
-	public $errors_log = array();
+	public $errors_log = [];
 
 	//---------------------------------------------------------------------- $main_controller_counter
 	/**
@@ -53,7 +53,7 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	 *
 	 * @var string[]
 	 */
-	public $queries_log = array();
+	public $queries_log = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -145,20 +145,14 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$aop->beforeMethod(
-			array(Contextual_Mysqli::class, 'query'), array($this, 'onQuery')
-		);
-		$aop->afterMethod(
-			array(Contextual_Mysqli::class, 'query'), array($this, 'onError')
-		);
+		$aop->beforeMethod([Contextual_Mysqli::class, 'query'], [$this, 'onQuery']);
+		$aop->afterMethod([Contextual_Mysqli::class, 'query'], [$this, 'onError']);
 		if (!$this->continue) {
 			$aop->beforeMethod(
-				array(Main_Controller::class, 'runController'),
-				array($this, 'onMainControllerRun')
+				[Main_Controller::class, 'runController'], [$this, 'onMainControllerRun']
 			);
 			$aop->afterMethod(
-				array(Main_Controller::class, 'runController'),
-				array($this, 'afterMainControllerRun')
+				[Main_Controller::class, 'runController'], [$this, 'afterMainControllerRun']
 			);
 		}
 	}

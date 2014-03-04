@@ -8,15 +8,15 @@ class Sql_Join
 {
 
 	//------------------------------------------------------------------------------------- JOIN MODE
-	const INNER = "INNER"; // inner join
-	const LEFT  = "LEFT";  // left join
-	const OUTER = "OUTER"; // outer join
-	const RIGHT = "RIGHT"; // right join
+	const INNER = 'INNER'; // inner join
+	const LEFT  = 'LEFT';  // left join
+	const OUTER = 'OUTER'; // outer join
+	const RIGHT = 'RIGHT'; // right join
 
 	//------------------------------------------------------------------------------------- JOIN TYPE
-	const LINK   = "LINK";   // a property set here because of a "link" annotated class
-	const OBJECT = "OBJECT"; // an object property
-	const SIMPLE = "SIMPLE"; // a simple value property
+	const LINK   = 'LINK';   // a property set here because of a 'link' annotated class
+	const OBJECT = 'OBJECT'; // an object property
+	const SIMPLE = 'SIMPLE'; // a simple value property
 
 	//-------------------------------------------------------------------------------- $foreign_alias
 	/**
@@ -90,7 +90,7 @@ class Sql_Join
 	 */
 	public function __toString()
 	{
-		return $this->toSql() . " [" . $this->type . "]";
+		return $this->toSql() . ' [' . $this->type . ']';
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
@@ -129,9 +129,9 @@ class Sql_Join
 	 */
 	public function toSql()
 	{
-		return " " . $this->mode . " JOIN `" . $this->foreign_table . "` " . $this->foreign_alias
-		. " ON " . $this->foreign_alias . "." . $this->foreign_column
-		. " = " . $this->master_alias . "." . $this->master_column;
+		return ' ' . $this->mode . ' JOIN `' . $this->foreign_table . '` ' . $this->foreign_alias
+		. ' ON ' . $this->foreign_alias . '.' . $this->foreign_column
+		. ' = ' . $this->master_alias . '.' . $this->master_column;
 	}
 
 }

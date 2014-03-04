@@ -20,7 +20,7 @@ abstract class Remover_Tool
 		$count = 0;
 		foreach ((new Reflection_Class(get_class($composite)))->accessProperties() as $property) {
 			$type = $property->getType();
-			if ($type->isClass() && class_instanceof($object, $type->getElementTypeAsString())) {
+			if ($type->isClass() && isA($object, $type->getElementTypeAsString())) {
 				$property_name = $property->name;
 				if ($type->isMultiple()) {
 					$remover = $property->getAnnotation("remover");

@@ -1,23 +1,5 @@
 <?php
 
-//-------------------------------------------------------------------------------- class_instanceof
-/**
- * Returns true if an object / class (of one of its parents) uses (or is) a class
- *
- * All parent classes and interfaces are scanned recursively
- * This works if $class_name is an interface name or class name, but not if it is a trait name
- *
- * @param $object     object|string object or class name or interface name
- * @param $class_name object|string An object or object name or interface name
- * @return boolean
- */
-function class_instanceof($object, $class_name)
-{
-	if (is_object($object))     $object     = get_class($object);
-	if (is_object($class_name)) $class_name = get_class($class_name);
-	return ($object === $class_name) || is_subclass_of($object, $class_name);
-}
-
 //-------------------------------------------------------------------------------------- class_tree
 /**
  * Gets full class names tree, recursively
@@ -29,7 +11,7 @@ function class_instanceof($object, $class_name)
  * @param $self       boolean get the object / class name itself
  * @return string[] keys and values are classes / traits / interfaces names
  */
-function class_tree($object, $classes = true, $traits = true, $interfaces = true, $self = true)
+function classTree($object, $classes = true, $traits = true, $interfaces = true, $self = true)
 {
 	$class_name = is_object($object) ? get_class($object) : $object;
 	$tree = array();
@@ -48,46 +30,12 @@ function class_tree($object, $classes = true, $traits = true, $interfaces = true
 		$tree = array_merge($tree, array_combine($parents, $parents));
 	}
 	foreach ($tree as $parent) {
-		$tree = array_merge($tree, class_tree($parent, $classes, $traits, $interfaces, false));
+		$tree = array_merge($tree, classTree($parent, $classes, $traits, $interfaces, false));
 	}
 	if ($self) {
 		$tree[$class_name] = $class_name;
 	}
 	return $tree;
-}
-
-//-------------------------------------------------------------------------------- class_uses_trait
-/**
- * Returns true if an object / class (or one of its parents) uses (or is) a trait
- *
- * All parent classes and traits are scanned recursively
- * This works if $trait_name is a class name too, but not if it is an interface name
- *
- * @param $object     object|string object or class name
- * @param $trait_name object|string a trait name
- * @return boolean
- */
-function class_uses_trait($object, $trait_name)
-{
-	if (is_object($object))     $object     = get_class($object);
-	if (is_object($trait_name)) $trait_name = get_class($trait_name);
-	if ($object == $trait_name) {
-		return true;
-	}
-	$traits = class_uses($object);
-	if (in_array($trait_name, $traits)) {
-		return true;
-	}
-	$parent_class = get_parent_class($object);
-	if (!empty($parent_class) && class_uses_trait($parent_class, $trait_name)) {
-		return true;
-	}
-	foreach (class_uses($object) as $trait) {
-		if (class_uses_trait($trait, $trait_name)) {
-			return true;
-		}
-	}
-	return false;
 }
 
 //--------------------------------------------------------------------------------------------- isA

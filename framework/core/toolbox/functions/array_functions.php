@@ -11,7 +11,7 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
 {
 	$diff = array();
 	foreach ($array1 as $key => $value) {
-		if (!array_key_exists($key, $array2)) {
+		if (!(isset($array2[$key]) || array_key_exists($key, $array2))) {
 			$diff[$key] = $value;
 		}
 		elseif (is_array($value)) {

@@ -17,7 +17,7 @@ class Property_Select_Controller implements Controller
 	public function getProperties(Reflection_Class $class, $composite_class_name = null)
 	{
 		$properties = array();
-		if (isset($composite_class_name) && class_uses_trait($class->name, Component::class)) {
+		if (isset($composite_class_name) && isA($class->name, Component::class)) {
 			$composite_property = call_user_func(
 				array($class->name, 'getCompositeProperties'),
 				$composite_class_name
