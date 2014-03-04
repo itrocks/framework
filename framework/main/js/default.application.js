@@ -27,6 +27,13 @@ $("document").ready(function()
 			$(this).css("z-index", ++window.zindex_counter);
 		});
 
+		// apply readonly on checkboxes patch
+		this.in("input[type=checkbox][readonly]").click(function(event)
+		{
+			console.log("prevent");
+			event.preventDefault();
+		});
+
 	});
 
 	// focus first form element
