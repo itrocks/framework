@@ -175,7 +175,8 @@ class Properties_Compiler
 		';
 				if (!isset($advices[$property_name]['replaced'])) {
 					$code .= '
-		$this->' . $property_name . '_ = $this->' . $property_name . ';';
+		$this->' . $property_name . '_ = isset($this->' . $property_name . ')'
+						. ' ? $this->' . $property_name . ' : null;';
 				}
 				$code .= '
 		unset($this->' . $property_name . ');
