@@ -239,7 +239,7 @@ class Html_Template
 			}
 			while (
 				($object && !is_object($object))
-				|| (isset($instance_of) && !class_instanceof($object, $instance_of))
+				|| (isset($instance_of) && !is_a($object, $instance_of))
 			);
 		}
 		return $object;
@@ -801,6 +801,15 @@ class Html_Template
 	 */
 	protected function parseProperty($object, $property_name)
 	{
+		$class_name = get_class($object);
+		if (property_exists($class_name, $property_name)) {
+			$getter = (new Reflection_Property($class_name, $property_name))
+				->getAnnotation('user_getter')->value;
+			if ($getter) {
+				$callable = new Contextual_Callable($getter);
+				return $callable->call();
+			}
+		}
 		return $this->htmlEntities(@($object->$property_name));
 	}
 

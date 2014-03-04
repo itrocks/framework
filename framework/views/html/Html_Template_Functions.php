@@ -99,7 +99,7 @@ abstract class Html_Template_Functions
 	public static function getEdit(Html_Template $template, $name = null)
 	{
 		if (isset($name)) {
-			$name = str_replace(".", ">", $name);
+			$name = str_replace('.', '>', $name);
 		}
 		$object = reset($template->objects);
 		// find the first next object
@@ -139,21 +139,21 @@ abstract class Html_Template_Functions
 			if (isset($property)) {
 				if ($template->preprops) {
 					$preprop = isset($preprop)
-						? ($preprop . "[" . reset($template->preprops) . "]")
+						? ($preprop . '[' . reset($template->preprops) . ']')
 						: reset($template->preprops);
 					while ($next = next($template->preprops)) {
 						/*
-						if ($i = strrpos($next, ".")) {
+						if ($i = strrpos($next, '.')) {
 							$next = substr($next, $i + 1);
 						}
 						*/
-						if ((strpos($next, "\\") !== false) && class_exists($next)) {
+						if ((strpos($next, '\\') !== false) && class_exists($next)) {
 							$next = Names::classToDisplay($next);
 						}
 						else {
-							$next = str_replace(".", ">", $next);
+							$next = str_replace('.', '>', $next);
 						}
-						$preprop .= "[" . $next . "]";
+						$preprop .= '[' . $next . ']';
 					}
 				}
 				else {
@@ -166,7 +166,7 @@ abstract class Html_Template_Functions
 		}
 		// default html input widget
 		$input = new Html_Input();
-		$input->setAttribute("name", reset($template->objects));
+		$input->setAttribute('name', reset($template->objects));
 		return $input;
 	}
 
@@ -250,15 +250,15 @@ abstract class Html_Template_Functions
 
 	//--------------------------------------------------------------------------------- getEscapeName
 	/**
-	 * Escape strings that will be used as form names. in HTML "." will be replaced by ">" as PHP
-	 * does not like variables named "a.b.c"
+	 * Escape strings that will be used as form names. in HTML '.' will be replaced by '>' as PHP
+	 * does not like variables named 'a.b.c'
 	 *
 	 * @param $template Html_Template
 	 * @return string
 	 */
 	public static function getEscapeName(Html_Template $template)
 	{
-		return str_replace(".", ">", reset($template->objects));
+		return str_replace('.', '>', reset($template->objects));
 	}
 
 	//------------------------------------------------------------------------------------ getIsFirst
@@ -333,7 +333,7 @@ abstract class Html_Template_Functions
 	public static function getParse(Html_Template $template)
 	{
 		return $template->parseVars(
-			str_replace(array("&#123;", "&#125;"), array("{", "}"), reset($template->objects))
+			str_replace(array('&#123;', '&#125;'), array('{', '}'), reset($template->objects))
 		);
 	}
 
@@ -347,14 +347,14 @@ abstract class Html_Template_Functions
 	public static function getProperties(Html_Template $template)
 	{
 		$object = reset($template->objects);
-		$properties_filter = $template->getParameter("properties_filter");
+		$properties_filter = $template->getParameter('properties_filter');
 		$class = new Reflection_Class(get_class($object));
 		$result_properties = array();
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (!$property->isStatic() && !$property->getListAnnotation('user')->has('invisible')) {
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
 					$result_properties[$property_name] = new Reflection_Property_Value(
-						$property->class, $property->name, $object
+						$property->class, $property->name, $object, false, true
 					);
 				}
 			}
@@ -373,7 +373,7 @@ abstract class Html_Template_Functions
 	{
 		$properties = array();
 		foreach (self::getProperties($template) as $property_name => $property) {
-			if (!$property->getAnnotation("group")->value) {
+			if (!$property->getAnnotation('group')->value) {
 				$properties[$property_name] = $property;
 			}
 		}
@@ -448,8 +448,7 @@ abstract class Html_Template_Functions
 			is_array($collection = reset($template->objects))
 			&& $collection && is_object(reset($collection))
 		) {
-			Collection::sort($collection);
-			return $collection;
+			return (new Collection($collection))->sort();
 		}
 		else {
 			return reset($template->objects);
@@ -504,7 +503,7 @@ abstract class Html_Template_Functions
 				}
 				elseif ($array_of instanceof Reflection_Property) {
 					if (
-						!is_array($object) || !is_a(reset($object), 'SAF\Framework\Reflection_Property_Value')
+						!is_array($object) || !is_a(reset($object), Reflection_Property_Value::class)
 					) {
 						$array_of = null;
 					}
@@ -560,10 +559,10 @@ abstract class Html_Template_Functions
 	private static function getPropertyBlocks(Reflection_Property $property)
 	{
 		$blocks = array();
-		if ($property->getListAnnotation("integrated")->has("block")) {
+		if ($property->getListAnnotation('integrated')->has('block')) {
 			$blocks[$property->path] = $property->path;
 		}
-		foreach ($property->getListAnnotation("block")->values() as $block) {
+		foreach ($property->getListAnnotation('block')->values() as $block) {
 			$blocks[$block] = $block;
 		}
 		return $blocks;
@@ -585,11 +584,11 @@ abstract class Html_Template_Functions
 		}
 		elseif ($property instanceof Reflection_Property) {
 			$property_path = $property->name;
-			$value = "";
+			$value = '';
 		}
 		else {
 			$property_path = $property;
-			$value = "";
+			$value = '';
 			$property = new Reflection_Property($class_name, $property);
 		}
 		return array($property, $property_path, $value);
