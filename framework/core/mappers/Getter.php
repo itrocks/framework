@@ -123,8 +123,14 @@ abstract class Getter
 					$property = new Reflection_Property(get_class($object), $property);
 				}
 				$dao = ($dao = $property->getAnnotation('dao')->value) ? Dao::get($dao) : Dao::current();
+				$class_name = get_class($object);
+				$link_class_name = (new Link_Class($class_name))->getLinkClassName();
+				if ($link_class_name) {
+					$object = (new Link_Class($class_name))->getCompositeProperty()->getValue($object);
+					$class_name = $link_class_name;
+				}
 				$stored = $dao->search(
-					array(get_class($object) . '->' . $property->name => $object),
+					array($class_name . '->' . $property->name => $object),
 					Builder::className($property->getType()->getElementTypeAsString()),
 					Dao::sort()
 				);
