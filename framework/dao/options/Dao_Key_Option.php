@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 /**
- * Dao key option : what class property will be used for for objects sets
+ * Dao key option : what class property will be used for key for objects array
  */
 class Dao_Key_Option implements Dao_Option
 {

@@ -86,7 +86,7 @@ class Sql_Joins
 	 */
 	public function add($path, $depth = 0)
 	{
-		if (array_key_exists($path, $this->joins)) {
+		if (isset($this->joins[$path]) || array_key_exists($path, $this->joins)) {
 			return $this->joins[$path];
 		}
 		list($master_path, $master_property_name) = Sql_Builder::splitPropertyPath($path);
@@ -192,7 +192,10 @@ class Sql_Joins
 			if (!isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
 				$property_path = ($path ? $path . '.' : '') . $property->name;
-				$this->classes[$property_path] = $property->getType()->getElementTypeAsString();
+				$type = $property->getType();
+				if ($type->isClass()) {
+					$this->classes[$property_path] = $property->getType()->getElementTypeAsString();
+				}
 				$this->link_joins[$property_path] = $join;
 				$exclude_properties[$property->name] = true;
 			}

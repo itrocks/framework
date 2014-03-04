@@ -14,9 +14,10 @@ class Contextual_Mysqli extends mysqli
 
 	//-------------------------------------------------------------------------------------- $context
 	/**
-	 * Query execution context
+	 * Query execution context : the class name or list of class names which could be concerned
+	 * by the current executed query (if set)
 	 *
-	 * @var string
+	 * @var string|string[]
 	 */
 	public $context;
 
