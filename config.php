@@ -42,13 +42,14 @@ $config['framework'] = array(
 				'thousand_separator'    => ' ',
 			)
 		),
-		Mysql_Maintainer::class,
 		View::class => array(
 			'class' => Html_View_Engine::class,
 			'css' => 'default'
 		)
 	),
-	'higher' => array(),
+	'higher' => array(
+		Mysql_Maintainer::class
+	),
 	'high'   => array(),
 	'normal' => array(
 		Html_Cleaner::class,
