@@ -12,21 +12,21 @@ abstract class Data_Link
 	/**
 	 * Gets the class name associated to a store set name
 	 *
-	 * @example "my_addresses" will become 'A\Namespace\My\Address'
+	 * @example 'my_addresses' will become 'A\Namespace\My\Address'
 	 * @param $store_name string
 	 * @return string Full class name with namespace
 	 */
 	public function classNameOf($store_name)
 	{
 		$class_name = Namespaces::fullClassName(Names::setToClass(
-			str_replace(" ", "_", ucwords(str_replace("_", " ", $store_name))), false
+			str_replace(' ', '_', ucwords(str_replace('_', ' ', $store_name))), false
 		));
-		if (strpos($class_name, "\\") === false) {
-			$class_name = explode("_", $class_name);
+		if (strpos($class_name, '\\') === false) {
+			$class_name = explode('_', $class_name);
 			foreach ($class_name as $key => $class_name_part) {
 				$class_name[$key] = Names::setToClass($class_name_part, false);
 			}
-			$class_name = Namespaces::fullClassName(join("_", $class_name));
+			$class_name = Namespaces::fullClassName(join('_', $class_name));
 		}
 		return $class_name;
 	}
@@ -71,20 +71,20 @@ abstract class Data_Link
 	 */
 	public function escapeString($value)
 	{
-		return str_replace(array("'", "\""), array("\\'", "\\\""), $value);
+		return str_replace(array("'", '"'), array("\\'", '\\"'), $value);
 	}
 
 	//---------------------------------------------------------------------------- getKeyPropertyName
 	/**
 	 * Gets the key property name taken from any set Dao_Key_Option
-	 * Default will be "id"
+	 * Default will be 'id'
 	 *
 	 * @param $options Dao_Option[]
 	 * @return string
 	 */
 	protected function getKeyPropertyName($options)
 	{
-		$key = "id";
+		$key = 'id';
 		if (isset($options)) {
 			if (!is_array($options)) {
 				$options = array($options);
@@ -102,7 +102,9 @@ abstract class Data_Link
 	/**
 	 * Returns the list of properties of class $class that are stored into data link
 	 *
-	 * If data link stores properties not existing into $class, they are listed too, as if they where official properties of $class, but they storage object is a Dao_Column and not a Reflection_Property.
+	 * If data link stores properties not existing into $class, they are listed too, as if they where
+	 * official properties of $class, but they storage object is a Dao_Column and not
+	 * a Reflection_Property.
 	 *
 	 * @param $class string|Reflection_Class
 	 * @return Reflection_Property[]|Dao_Column[]
@@ -133,24 +135,33 @@ abstract class Data_Link
 	/**
 	 * Replace a destination object with the source object into the data source
 	 *
-	 * The source object overwrites the destination object into the data source, even if the source object was not originally read from the data source.
-	 * Warning: as destination object will stay independent from source object but also linked to the same data source identifier. You will still be able to write() either source or destination after call to replace().
+	 * The source object overwrites the destination object into the data source, even if the
+	 * source object was not originally read from the data source.
+	 * Warning: as destination object will stay independent from source object but also linked to the
+	 * same data source identifier. You will still be able to write() either source or destination
+	 * after call to replace().
 	 *
 	 * @param $destination object destination object
 	 * @param $source      object source object
+	 * @param $write       boolean true if the destination object must be immediately written
 	 * @return object the resulting $destination object
 	 */
-	abstract public function replace($destination, $source);
+	abstract public function replace($destination, $source, $write = true);
 
 	//---------------------------------------------------------------------------------------- search
 	/**
 	 * Search objects from data source
 	 *
-	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in order to initialize all properties as unset and build a correct search object.
-	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
-	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
+	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate()
+	 * in order to initialize all properties as unset and build a correct search object.
+	 * If some properties are an not-loaded objects, the search will be done on the object identifier,
+	 * without joins to the linked object.
+	 * If some properties are loaded objects : if the object comes from a read, the search will
+	 * be done on the object identifier, without join. If object is not linked to data-link,
+	 * the search is done with the linked object as others search criterion.
 	 *
-	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
+	 * @param $what       object|array source object for filter, or filter array (need class_name)
+	 *                    only set properties will be used for search
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
 	 * @param $options    Dao_Option|Dao_Option[] array some options for advanced search
 	 * @return object[] a collection of read objects
@@ -165,7 +176,8 @@ abstract class Data_Link
 	 * It is highly recommended to use this search with primary keys properties values searches.
 	 * If several result exist, only one will be taken, the first on the list (may be random).
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used for search
+	 * @param $what       object|array source object for filter, only set properties will be used for
+	 *        search
 	 * @param $class_name string must be set if is not a filter array
 	 * @return object|null the found object, or null if no object was found
 	 */
@@ -180,10 +192,14 @@ abstract class Data_Link
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
-	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 * @param $columns       string[] the list of the columns names : only those properties will be
+	 *        read. You can use 'column.sub_column' to get values from linked objects from the same
+	 *        data source.
+	 * @param $filter_object object|array source object for filter, set properties will be used for
+	 *        search. Can be an array associating properties names to corresponding search value too.
 	 * @param $options    Dao_Option|Dao_Option[] some options for advanced search
-	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
+	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
+	 *         the same order than columns.
 	 */
 	abstract public function select($class, $columns, $filter_object = null, $options = null);
 
@@ -201,7 +217,8 @@ abstract class Data_Link
 
 	//---------------------------------------------------------------------------------- valueChanged
 	/**
-	 * Returns true if the element's property value changed since previous value and if it is not empty
+	 * Returns true if the element's property value changed since previous value
+	 * and if it is not empty
 	 *
 	 * @param $element       object
 	 * @param $property_name string
@@ -210,7 +227,7 @@ abstract class Data_Link
 	 */
 	protected function valueChanged($element, $property_name, $default_value)
 	{
-		$id_property_name = "id_" . $property_name;
+		$id_property_name = 'id_' . $property_name;
 		if (!isset($element->$property_name) && empty($id_property_name)) {
 			return false;
 		}
@@ -218,7 +235,7 @@ abstract class Data_Link
 		if (is_object($element_value)) {
 			$class = new Reflection_Class(get_class($element_value));
 			$defaults = $class->getDefaultProperties();
-			foreach ($class->getListAnnotation("representative")->values() as $property_name) {
+			foreach ($class->getListAnnotation('representative')->values() as $property_name) {
 				if (
 					isset($defaults[$property_name])
 					&& $this->valueChanged($element_value, $property_name, $defaults[$property_name])
@@ -230,7 +247,7 @@ abstract class Data_Link
 		}
 		else {
 			return isset($element_value)
-				&& (strval($element_value) != "")
+				&& (strval($element_value) != '')
 				&& (strval($element_value) != strval($default_value));
 		}
 	}

@@ -86,13 +86,16 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	/**
 	 * @param $destination object destination object
 	 * @param $source      object source object
+	 * @param $write       boolean true if the destination object must be immediately written
 	 * @return object the resulting $destination object
 	 * @see Data_Link::replace()
 	 */
-	public function replace($destination, $source)
+	public function replace($destination, $source, $write = true)
 	{
 		$this->setObjectIdentifier($destination, $this->getObjectIdentifier($source));
-		$this->write($destination);
+		if ($write) {
+			$this->write($destination);
+		}
 		return $destination;
 	}
 

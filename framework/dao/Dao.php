@@ -278,12 +278,13 @@ class Dao implements Plugins\Configurable
 	 *
 	 * @param $destination object destination object
 	 * @param $source      object source object
+	 * @param $write       boolean true if the destination object must be immediately written
 	 * @return object the resulting $destination object
 	 * @see Data_Link::replace()
 	 */
-	public static function replace($destination, $source)
+	public static function replace($destination, $source, $write = true)
 	{
-		return self::current()->replace($destination, $source);
+		return self::current()->replace($destination, $source, $write);
 	}
 
 	//-------------------------------------------------------------------------------------- rollback
