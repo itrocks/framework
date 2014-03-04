@@ -50,7 +50,7 @@ class Html_Builder_Collection
 	 */
 	public function build()
 	{
-		Collection::sort($this->collection);
+		(new Collection($this->collection))->sort();
 		$table = new Html_Table();
 		$table->addClass('collection');
 		$table->head = $this->buildHead();
@@ -147,9 +147,9 @@ class Html_Builder_Collection
 		if (isset($properties[$property_name])) {
 			unset($properties[$property_name]);
 		}
-		// remove static properties
+		// remove static and user-invisible properties
 		foreach ($properties as $property_name => $property) {
-			if ($property->isStatic()) {
+			if ($property->isStatic() || ($property->getListAnnotation('user')->has('invisible'))) {
 				unset($properties[$property_name]);
 			}
 		}

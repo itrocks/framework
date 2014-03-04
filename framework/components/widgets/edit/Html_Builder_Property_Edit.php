@@ -32,6 +32,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 			}
 			parent::__construct($name, $property->getType(), $value, $preprop);
 			$this->property = $property;
+			$this->readonly = $property->getListAnnotation('user')->has('readonly');
 		}
 		else {
 			parent::__construct(null, null, $value, $preprop);

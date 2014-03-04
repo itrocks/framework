@@ -19,7 +19,8 @@ class Reflection_Property_Value extends Reflection_Property
 
 	//---------------------------------------------------------------------------------- $final_value
 	/**
-	 * If set to true, $object contains the final value instead of the object containing the valued property
+	 * If set to true, $object contains the final value instead of the object containing
+	 * the valued property
 	 *
 	 * @var boolean
 	 */
@@ -33,6 +34,14 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	private $object;
 
+	//----------------------------------------------------------------------------------------- $user
+	/**
+	 * Set this to true if the property is for an user use (ie for display into a template)
+	 *
+	 * @var boolean
+	 */
+	private $user;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructs a reflection property with value
@@ -42,11 +51,16 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @param $class_name    string
 	 * @param $property_name string
-	 * @param $object        object|mixed the object containing the value, or the value itself (in this case set $final_value tu true)
-	 * @param $final_value   boolean set to true if $object is a final value instead of the object containing the valued property
+	 * @param $object        object|mixed the object containing the value, or the value itself
+	 *        (in this case set $final_value tu true)
+	 * @param $final_value   boolean set to true if $object is a final value instead of the object
+	 *        containing the valued property
+	 * @param $user          boolean set to true if the property value will be used into an user
+	 *        display (ie an HTML template)
 	 */
-	public function __construct($class_name, $property_name, $object = null, $final_value = false)
-	{
+	public function __construct(
+		$class_name, $property_name, $object = null, $final_value = false, $user = false
+	) {
 		parent::__construct($class_name, $property_name);
 		$this->final_value = $final_value;
 		$this->path = $property_name;
@@ -56,11 +70,13 @@ class Reflection_Property_Value extends Reflection_Property
 		else {
 echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . '<br>';
 		}
+		$this->user = $user;
 	}
 
 	//----------------------------------------------------------------------------------------- __get
 	/**
-	 * Sets additional properties to matching Reflection_Property (common for all instances of this property)
+	 * Sets additional properties to matching Reflection_Property
+	 * (common for all instances of this property)
 	 *
 	 * @param $key string
 	 * @return mixed
@@ -75,7 +91,8 @@ echo 'Reflection_Property_Value::__get(' . $key . ') = ' . $value . ' MAY CRASH 
 
 	//----------------------------------------------------------------------------------------- __set
 	/**
-	 * Sets additional properties to matching Reflection_Property (common for all instances of this property)
+	 * Sets additional properties to matching Reflection_Property
+	 * (common for all instances of this property)
 	 *
 	 * @param $key   string
 	 * @param $value mixed
@@ -120,7 +137,7 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 
 	//----------------------------------------------------------------------------------------- value
 	/**
-	 * @param null $value object
+	 * @param $value object
 	 * @return mixed
 	 */
 	public function value($value = null)
@@ -131,6 +148,13 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 			}
 			else {
 				$this->setValue($this->object, $value);
+			}
+		}
+		if ($this->user && !$this->final_value) {
+			$user_getter = $this->getAnnotation('user_getter')->value;
+			if ($user_getter) {
+				$callable = new Contextual_Callable($user_getter, $this->object);
+				return $callable->call();
 			}
 		}
 		return $this->final_value ? $this->object : $this->getValue($this->object);

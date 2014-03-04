@@ -92,7 +92,7 @@ abstract class Integrated_Properties
 				}
 				else {
 					$sub_property = new Reflection_Property_Value(
-						$sub_property->class, $sub_property->name, $value
+						$sub_property->class, $sub_property->name, $value, false, true
 					);
 					$sub_property->display = $integrated_simple
 						? (
