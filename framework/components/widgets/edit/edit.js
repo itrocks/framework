@@ -88,7 +88,7 @@ $('document').ready(function()
 				filters = filters.split(',');
 				for (var key in filters) if (filters.hasOwnProperty(key)) {
 					var filter = filters[key].split('=');
-					var $filter_element = $($element.get(0).form).find('[name=' + filter[1] + ']');
+					var $filter_element = $($element.get(0).form).find('[name="' + filter[1] + '"]');
 					if ((filter[0].substr(0, 3) != 'id_') || $filter_element.val()) {
 						request['filters[' + filter[0] + ']'] = $filter_element.val();
 					}
@@ -239,7 +239,7 @@ $('document').ready(function()
 		this.in('input.combo~.edit').attr('tabindex', -1);
 		if (this.attr('id') && (this.attr('id').substr(0, 6) == 'window')) {
 			this.in('.actions>.close>a')
-				.attr('href', "javascript:$('#' + this.attr('id')).remove()")
+				.attr('href', 'javascript:$(\'#' + this.attr('id') + '\').remove()')
 				.attr('target', '');
 			var $button = this.in('.actions>.write>a');
 			if ($button.length) {
@@ -280,7 +280,7 @@ $('document').ready(function()
 					$condition = will_change[condition[0]];
 				}
 				else {
-					$condition = $($this.get(0).form).find('[name=' + condition[0] + ']');
+					$condition = $($this.get(0).form).find('[name="' + condition[0] + '"]');
 					will_change[condition[0]] = $condition;
 				}
 				var condition_name = $condition.attr('name');
