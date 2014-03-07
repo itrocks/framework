@@ -77,8 +77,10 @@ class Html_Edit_Template extends Html_Template
 	protected function parseValue($var_name, $as_string = true)
 	{
 		$property = reset($this->objects);
-		if (($property instanceof Reflection_Property) && ($var_name == 'value')) {
-			$value = parent::parseValue($var_name, false);
+		if (($property instanceof Reflection_Property_Value) && ($var_name == 'value')) {
+			$value = $property->getType()->isBoolean()
+				? $property->value()
+				: parent::parseValue($var_name, false);
 			if (
 				($preprop = lLastParse($property->pathAsField(), '[', 1, false))
 				&& (
