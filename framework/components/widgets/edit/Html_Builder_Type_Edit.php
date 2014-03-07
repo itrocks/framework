@@ -101,15 +101,17 @@ class Html_Builder_Type_Edit
 	protected function buildBoolean()
 	{
 		$input = new Html_Input($this->getFieldName());
-		$input->setAttribute('type', 'checkbox');
-		$input->setAttribute('value', 1);
+		$input->setAttribute('type', 'hidden');
+		$input->setAttribute('value', $this->value ? 1 : 0);
+		$checkbox = new Html_Input();
+		$checkbox->setAttribute('type', 'checkbox');
 		if ($this->value) {
-			$input->setAttribute('checked');
+			$checkbox->setAttribute('checked');
 		}
 		if ($this->readonly) {
-			$input->setAttribute('readonly');
+			$checkbox->setAttribute('readonly');
 		}
-		return $input;
+		return $input . $checkbox;
 	}
 
 	//--------------------------------------------------------------------------------- buildDateTime

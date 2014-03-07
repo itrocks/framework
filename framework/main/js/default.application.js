@@ -27,6 +27,13 @@ $("document").ready(function()
 			$(this).css("z-index", ++window.zindex_counter);
 		});
 
+		// checkboxes values are set on their hidden input
+		this.in("input[type=checkbox]").change(function()
+		{
+			var $this = $(this);
+			$this.prev().filter("input[type=hidden]").val($this.is(":checked") ? 1 : 0);
+		});
+
 		// apply readonly on checkboxes patch
 		this.in("input[type=checkbox][readonly]").click(function(event)
 		{
