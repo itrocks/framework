@@ -106,7 +106,7 @@ function mParse($str, $begin_sep, $end_sep, $cnt = 1)
 
 //-------------------------------------------------------------------------------------- rLastParse
 /**
- * Renvoie la partie de chaine à droite de la dernière occurence du séparateur
+ * Returns the part of the string right to the separator
  *
  * @param $str string
  * @param $sep string
