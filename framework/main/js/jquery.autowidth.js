@@ -109,8 +109,13 @@
 	};
 
 	//------------------------------------------------------------------------------------- autowidth
-	$.fn.autowidth = function()
+	$.fn.autowidth = function(options)
 	{
+
+		//------------------------------------------------------------------------------------ settings
+		var settings = $.extend({
+			maximum: 1024
+		}, options);
 
 		//----------------------------------------------------------------------------- autowidth keyup
 		this.keyup(function()
@@ -124,7 +129,7 @@
 				var $table = (tag_name == "td") ? $this.closest("table") : undefined;
 				if ($table == undefined) {
 					// single element
-					$this.width(Math.max(40, new_width) + 10);
+					$this.width(Math.min(Math.max(40, new_width) + 10, settings.maximum));
 				}
 				else {
 					// element into a collection / map

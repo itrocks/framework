@@ -27,6 +27,7 @@ copyCssPropertyTo = function(context, element)
 	for (var i = 0; i < tab.length; i++) {
 		element.css(tab[i], context.css(tab[i]));
 	}
+	element.css('width', context.css('width') ? context.css('width') : context.width() + 'px');
 };
 
 //-------------------------------------------------------------------------- dateFormatToDatepicker

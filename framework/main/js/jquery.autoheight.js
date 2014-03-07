@@ -1,13 +1,20 @@
 (function($)
 {
 
-	$.fn.autoheight = function()
+	$.fn.autoheight = function(options)
 	{
+
+		//------------------------------------------------------------------------------------ settings
+		var settings = $.extend({
+			maximum: 200
+		}, options);
+
+		//---------------------------------------------------------------------------- autoheight keyup
 		this.keyup(function()
 		{
 			var $this = $(this);
 			var previous_height = parseInt($this.attr("ui-text-height"));
-			var new_height = getInputTextHeight($this);
+			var new_height = Math.min(getInputTextHeight($this), settings.maximum);
 			$this.attr("ui-text-height", new_height);
 			if (new_height != previous_height) {
 				var $table = $this.closest("table.collection, table.map");
@@ -61,6 +68,9 @@
 				}
 			}
 		});
+
+		//----------------------------------------------------------------------------- autoheight init
+		$(this).keyup();
 
 		return this;
 	};
