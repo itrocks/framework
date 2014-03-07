@@ -279,6 +279,10 @@ class Loc implements Plugins\Registerable
 			array($this, 'afterHtmlTemplateFuncsToEditPropertyExtra')
 		);
 		$aop->afterMethod(
+			array(Reflection_Property_View::class, 'formatBoolean'),
+			array($this, 'translateReturnedValue')
+		);
+		$aop->afterMethod(
 			array(Reflection_Property_View::class, 'formatDateTime'),
 			array($this, 'dateTimeReturnedValueToLocale')
 		);

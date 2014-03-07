@@ -44,7 +44,7 @@ class Reflection_Property_View
 	/**
 	 * Returns the value with datetime format
 	 *
-	 * Default format is ISO "0000-00-00 00:00:00"
+	 * Default format is ISO '0000-00-00 00:00:00'
 	 *
 	 * @param $value string|DateTime|Date_Time
 	 * @return mixed
@@ -52,6 +52,23 @@ class Reflection_Property_View
 	protected function formatDateTime($value)
 	{
 		return strval($value);
+	}
+
+	//--------------------------------------------------------------------------------- formatBoolean
+	/**
+	 * Return "yes" or "no" depending on the value of the boolean
+	 * If the property has a @values annotation : the first value is for "no", the second for "yes"
+	 *
+	 * @param $value
+	 * @return string
+	 */
+	protected function formatBoolean($value)
+	{
+		$values = $this->property->getListAnnotation('values')->values();
+		if (count($values) == 2) {
+			return $value ? $values[0] : $values[1];
+		}
+		return $value ? "yes" : "no";
 	}
 
 	//--------------------------------------------------------------------------------- formatDefault
@@ -114,9 +131,10 @@ class Reflection_Property_View
 			return $this->formatDateTime($value);
 		} else {
 			switch ($type) {
-				case "float":   return $this->formatFloat($value);
-				case "integer": return $this->formatInteger($value);
-				case "string":  return $this->formatString($value);
+				case 'boolean': return $this->formatBoolean($value);
+				case 'float':   return $this->formatFloat($value);
+				case 'integer': return $this->formatInteger($value);
+				case 'string':  return $this->formatString($value);
 			}
 			return $this->formatDefault($value);
 		}
