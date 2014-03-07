@@ -1,75 +1,79 @@
-$("document").ready(function()
+$('document').ready(function()
 {
 
-	$("form").build(function()
+	$('form').build(function()
 	{
 		//noinspection JSUnresolvedVariable
 		var app = window.app;
 
 		//--------------------------------------------------------------------- .autoheight, .autowidth
-		this.in(".autoheight").autoheight();
-		this.in(".autowidth").autowidth();
+		this.in('.autoheight').autoheight();
+		this.in('.autowidth').autowidth();
 
 		//-------------------------------------------------------------------------------------- .minus
-		this.in(".minus").click(function()
+		this.in('.minus').click(function()
 		{
-			if ($(this).closest("tbody").children().length > 1) {
-				$(this).closest("tr").remove();
+			var $this = $(this);
+			if ($this.closest('tbody').children().length > 1) {
+				$this.closest('tr').remove();
+			}
+			else {
+				$this.closest('tr').replaceWith($this.closest('table').data('saf_add').clone());
 			}
 		});
 
 		//----------------------------------------------------------------- table.collection, table.map
-		this.in("table.collection, table.map").each(function()
+		this.in('table.collection, table.map').each(function()
 		{
 			var $this = $(this);
-			$this.data("saf_add", $this.children("tbody").children("tr.new").clone());
-			$this.data("saf_add_indice", $this.children("tbody").children("tr").length - 1);
-			if ($this.data("saf_add_indice")) {
-				$this.children("tbody").children("tr.new").remove();
+			$this.data('saf_add', $this.children('tbody').children('tr.new').clone());
+			$this.data('saf_add_indice', $this.children('tbody').children('tr').length - 1);
+			if ($this.data('saf_add_indice')) {
+				$this.children('tbody').children('tr.new').remove();
 			}
 		});
 
-		this.in("input, textarea").focus(function()
+		this.in('input, textarea').focus(function()
 		{
-			var $tr = $(this).closest("tr");
-			if ($tr.length && !$tr.next("tr").length) {
-				var $collection = $tr.closest("table.collection, table.map");
+			var $tr = $(this).closest('tr');
+			if ($tr.length && !$tr.next('tr').length) {
+				var $collection = $tr.closest('table.collection, table.map');
 				if ($collection.length) {
 					var $table = $($collection[0]);
-					var $new_row = $table.data("saf_add").clone();
-					var indice = $table.children("tbody").children("tr").length;
-					var old_indice = $table.data("saf_add_indice");
-					$new_row.html($new_row.html().repl("][" + old_indice + "]", "][" + indice + "]"));
-					$table.children("tbody").append($new_row);
+					var $new_row = $table.data('saf_add').clone();
+					var indice = $table.children('tbody').children('tr').length;
+					var old_indice = $table.data('saf_add_indice');
+					$new_row.html($new_row.html().repl('][' + old_indice + ']', '][' + indice + ']'));
+					$table.children('tbody').append($new_row);
 					$new_row.build();
 				}
 			}
 		});
 
 		//------------------------------------------------------------------- input.datetime datepicker
-		this.in("input.datetime").datepicker({
+		this.in('input.datetime').datepicker({
 			dateFormat:        dateFormatToDatepicker(app.date_format),
-			showOn:            "button",
+			showOn:            'button',
 			showOtherMonths:   true,
 			selectOtherMonths: true
 		});
 
-		this.in("input.datetime").blur(function()
+		this.in('input.datetime').blur(function()
 		{
-			$(this).datepicker("hide");
+			$(this).datepicker('hide');
 		});
 
-		this.in("input.datetime").keyup(function(event)
+		this.in('input.datetime').keyup(function(event)
 		{
 			if ((event.keyCode != 13) && (event.keyCode != 27)) {
-				$(this).datepicker("show");
+				$(this).datepicker('show');
 			}
 		});
 
 		//------------------------------------------------------------------------ input.combo comboUri
 		var comboUri = function($element)
 		{
-			return window.app.uri_base + "/" + $element.data("combo-class") + "/json"
+			return window.app.uri_base + '/' + $element.data('combo-class') + '/json'
 		};
 
 		//-------------------------------------------------------------------- input.combo comboRequest
@@ -78,15 +82,15 @@ $("document").ready(function()
 			if (request == undefined) {
 				request = [];
 			}
-			if (!window.app.use_cookies) request["PHPSESSID"] = window.app.PHPSESSID;
-			var filters = $element.data("combo-filters");
+			if (!window.app.use_cookies) request['PHPSESSID'] = window.app.PHPSESSID;
+			var filters = $element.data('combo-filters');
 			if (filters != undefined) {
-				filters = filters.split(",");
+				filters = filters.split(',');
 				for (var key in filters) if (filters.hasOwnProperty(key)) {
-					var filter = filters[key].split("=");
-					var $filter_element = $($element.get(0).form).find('[name="' + filter[1] + '"]');
-					if ((filter[0].substr(0, 3) != "id_") || $filter_element.val()) {
-						request["filters[" + filter[0] + "]"] = $filter_element.val();
+					var filter = filters[key].split('=');
+					var $filter_element = $($element.get(0).form).find('[name=' + filter[1] + ']');
+					if ((filter[0].substr(0, 3) != 'id_') || $filter_element.val()) {
+						request['filters[' + filter[0] + ']'] = $filter_element.val();
 					}
 				}
 			}
@@ -103,9 +107,9 @@ $("document").ready(function()
 		 */
 		var comboMatches = function($element)
 		{
-			if ($element.data("value")) {
+			if ($element.data('value')) {
 				var val = $element.val().toLowerCase();
-				var dat = $element.data("value").toLowerCase();
+				var dat = $element.data('value').toLowerCase();
 				return (!val.length) || (dat.substr(0, val.length) == val);
 			}
 			else {
@@ -122,30 +126,30 @@ $("document").ready(function()
 					$.param(comboRequest($element, { term: $element.val(), first: true })),
 					function(data) {
 						if (data.id) {
-							//console.log("> found " + data.id + ": " + data.value);
-							$element.data("value", data.value);
+							//console.log('> found ' + data.id + ': ' + data.value);
+							$element.data('value', data.value);
 							$element.prev().val(data.id);
 							$element.val(data.value);
 						}
 						else {
-							//console.log("> not found");
-							$element.prev().val("");
-							$element.val("");
-							$element.removeData("value");
+							//console.log('> not found');
+							$element.prev().val('');
+							$element.val('');
+							$element.removeData('value');
 						}
 					}
 				);
 			}
 			else {
-				//console.log("> empty value");
-				$element.prev().val("");
-				$element.val("");
-				$element.removeData("value");
+				//console.log('> empty value');
+				$element.prev().val('');
+				$element.val('');
+				$element.removeData('value');
 			}
 		};
 
 		//-------------------------------------------------------------------- input.combo autocomplete
-		this.in("input.combo").autocomplete(
+		this.in('input.combo').autocomplete(
 		{
 			autoFocus: true,
 			delay: 100,
@@ -170,11 +174,11 @@ $("document").ready(function()
 			select: function(event, ui)
 			{
 				var $this = $(this);
-				//console.log("selected " + ui.item.id + ": " + ui.item.value);
+				//console.log('selected ' + ui.item.id + ': ' + ui.item.value);
 				$this.prev().val(ui.item.id);
-				$this.data("value", ui.item.value);
+				$this.data('value', ui.item.value);
 				if (!comboMatches($this)) {
-					//console.log("> " + $this.val() + " does not match " + $this.data("value"));
+					//console.log('> ' + $this.val() + ' does not match ' + $this.data('value'));
 					comboForce($this);
 				}
 			}
@@ -184,7 +188,7 @@ $("document").ready(function()
 		.focus(function()
 		{
 			var $this = $(this);
-			$this.data("value", $this.val());
+			$this.data('value', $this.val());
 		})
 
 		//---------------------------------------------------------------------------- input.combo blur
@@ -192,21 +196,21 @@ $("document").ready(function()
 		{
 			var $this = $(this);
 			if (comboMatches($this)) {
-				//console.log($this.val() + " matches " + $this.data("value"));
-				$this.val($this.data("value"));
+				//console.log($this.val() + ' matches ' + $this.data('value'));
+				$this.val($this.data('value'));
 			}
 			else {
-				//console.log("blur : " + $this.val() + " does not match " + $this.data("value"));
+				//console.log('blur : ' + $this.val() + ' does not match ' + $this.data('value'));
 				comboForce($this);
 			}
-			$this.removeData("value");
+			$this.removeData('value');
 		})
 
 		//---------------------------------------------------------------------- input.combo ctrl+click
 		.click(function(event)
 		{
 			if (event.ctrlKey) {
-				$(this).siblings(".edit").click();
+				$(this).siblings('.edit').click();
 			}
 		})
 
@@ -214,95 +218,95 @@ $("document").ready(function()
 		.keyup(function(event)
 		{
 			if (event.keyCode == 27) {
-				$(this).removeData("value");
-				$(this).prev().val("");
-				$(this).val("");
+				$(this).removeData('value');
+				$(this).prev().val('');
+				$(this).val('');
 			}
 		});
 
 		//--------------------------------------------------------------------------- input.combo~.edit
-		this.in("input.combo~.edit").click(function()
+		this.in('input.combo~.edit').click(function()
 		{
 			var $this = $(this);
-			var $input = $this.siblings("input.combo");
-			if (!$this.data("link")) {
-				$this.data("link", $this.attr("href"));
+			var $input = $this.siblings('input.combo');
+			if (!$this.data('link')) {
+				$this.data('link', $this.attr('href'));
 			}
-			var href = $this.data("link");
+			var href = $this.data('link');
 			var id = $input.prev().val();
-			$this.attr("href", id ? href.repl("/new", "/" + $input.prev().val() + "/edit") : href);
+			$this.attr('href', id ? href.repl('/new', '/' + $input.prev().val() + '/edit') : href);
 		});
-		this.in("input.combo~.edit").attr("tabindex", -1);
-		if (this.attr("id") && (this.attr("id").substr(0, 6) == "window")) {
-			this.in(".actions>.close>a")
-				.attr("href", "javascript:$('#" + this.attr("id") + "').remove()")
-				.attr("target", "");
-			var $button = this.in(".actions>.write>a");
+		this.in('input.combo~.edit').attr('tabindex', -1);
+		if (this.attr('id') && (this.attr('id').substr(0, 6) == 'window')) {
+			this.in('.actions>.close>a')
+				.attr('href', "javascript:$('#' + this.attr('id')).remove()")
+				.attr('target', '');
+			var $button = this.in('.actions>.write>a');
 			if ($button.length) {
-				$button.attr("href",
-					$button.attr("href")
-					+ (($button.attr("href").indexOf("?") > -1) ? "&" : "?")
-					+ "close=" + this.attr("id")
+				$button.attr('href',
+					$button.attr('href')
+					+ (($button.attr('href').indexOf('?') > -1) ? '&' : '?')
+					+ 'close=' + this.attr('id')
 				);
 			}
 		}
-		this.in("input.combo").each(function()
+		this.in('input.combo').each(function()
 		{
 			$(this).parent()
-				.mouseenter(function() { $(this).children(".edit").show(); })
-				.mouseleave(function() { $(this).children(".edit").hide(); });
+				.mouseenter(function() { $(this).children('.edit').show(); })
+				.mouseleave(function() { $(this).children('.edit').hide(); });
 		});
 
 		//--------------------------------------------------------------------------- input.combo~.more
-		this.in("input.combo~.more").click(function(event)
+		this.in('input.combo~.more').click(function(event)
 		{
 			event.preventDefault();
-			var $combo = $($(this).siblings("input.combo"));
-			if (!$combo.autocomplete("widget").is(":visible")) {
+			var $combo = $($(this).siblings('input.combo'));
+			if (!$combo.autocomplete('widget').is(':visible')) {
 				$combo.focus();
-				$combo.autocomplete("search", "");
+				$combo.autocomplete('search', '');
 			}
 		});
 
 		//---------------------------------------------------------------------- input[data-conditions]
 		var will_change = {};
-		this.in("input[data-conditions]").each(function() {
+		this.in('input[data-conditions]').each(function() {
 			var $this = $(this);
-			var conditions = $this.data("conditions").replace(/\(.*\)/g);
-			$.each(conditions.split(";"), function(condition_key, condition) {
-				condition = condition.split("=");
+			var conditions = $this.data('conditions').replace(/\(.*\)/g);
+			$.each(conditions.split(';'), function(condition_key, condition) {
+				condition = condition.split('=');
 				var $condition;
 				if (will_change.hasOwnProperty(condition[0])) {
 					$condition = will_change[condition[0]];
 				}
 				else {
-					$condition = $($this.get(0).form).find('[name="' + condition[0] + '"]');
+					$condition = $($this.get(0).form).find('[name=' + condition[0] + ']');
 					will_change[condition[0]] = $condition;
 				}
-				var condition_name = $condition.attr("name");
-				if (!condition_name) condition_name = $condition.prev().attr("name");
-				if (typeof $this.data("conditions") == "string") $this.data("conditions", {});
-				if (!$this.data("conditions").hasOwnProperty(condition_name)) {
-					$this.data("conditions")[condition_name] = { element: $condition, values: {}};
+				var condition_name = $condition.attr('name');
+				if (!condition_name) condition_name = $condition.prev().attr('name');
+				if (typeof $this.data('conditions') == 'string') $this.data('conditions', {});
+				if (!$this.data('conditions').hasOwnProperty(condition_name)) {
+					$this.data('conditions')[condition_name] = { element: $condition, values: {}};
 				}
-				$.each(condition[1].split(","), function(value_key, value) {
-					$this.data("conditions")[condition_name].values[value] = value;
+				$.each(condition[1].split(','), function(value_key, value) {
+					$this.data('conditions')[condition_name].values[value] = value;
 				});
-				var this_name = $this.attr("name");
-				if (!this_name) this_name = $this.prev().attr("name");
-				if ($condition.data("condition-of") == undefined) $condition.data("condition-of", {});
-				$condition.data("condition-of")[this_name] = $this;
+				var this_name = $this.attr('name');
+				if (!this_name) this_name = $this.prev().attr('name');
+				if ($condition.data('condition-of') == undefined) $condition.data('condition-of', {});
+				$condition.data('condition-of')[this_name] = $this;
 			});
 		});
 		$.each(will_change, function(condition_name, $condition) {
-			if (!$condition.data("condition-change")) {
-				$condition.data("condition-change", true);
+			if (!$condition.data('condition-change')) {
+				$condition.data('condition-change', true);
 				$condition.change(function()
 				{
 					var $this = $(this);
-					$.each($this.data("condition-of"), function(element_name, $element) {
+					$.each($this.data('condition-of'), function(element_name, $element) {
 						var show = true;
-						$.each($element.data("conditions"), function(condition_name, condition) {
+						$.each($element.data('conditions'), function(condition_name, condition) {
 							var found = false;
 							$.each(condition.values, function(value) {
 								return !(found = (condition.element.val() == value));
@@ -310,10 +314,10 @@ $("document").ready(function()
 							return (show = found);
 						});
 						if (show) {
-							$element.parent().find("input,button").show();
+							$element.parent().find('input,button').show();
 						}
 						else {
-							$element.parent().find("input,button").hide();
+							$element.parent().find('input,button').hide();
 						}
 					});
 				});
@@ -322,7 +326,7 @@ $("document").ready(function()
 		});
 
 		//------------------------------------------------------------------------- .vertical.scrollbar
-		this.in(".vertical.scrollbar").verticalscrollbar();
+		this.in('.vertical.scrollbar').verticalscrollbar();
 
 	});
 
