@@ -9,6 +9,18 @@ use DateTime;
 class Type
 {
 
+	//------------------------------------------------------------------------ type strings constants
+	const _ARRAY    = 'array';
+	const _CALLABLE = 'callable';
+	const BOOLEAN  = 'boolean';
+	const FLOAT    = 'float';
+	const INTEGER  = 'integer';
+	const MULTIPLE = 'multiple';
+	const NULL     = 'NULL';
+	const RESOURCE = 'resource';
+	const STRING   = 'string';
+	const null     = 'null';
+
 	//---------------------------------------------------------------------------------- $basic_types
 	/**
 	 * These are the basic non-object php types
@@ -16,8 +28,8 @@ class Type
 	 * @var string[]
 	 */
 	private static $basic_types = array(
-		'boolean', 'integer', 'float', 'string',
-		'array', 'resource', 'callable', 'null', 'NULL'
+		self::BOOLEAN, self::INTEGER, self::FLOAT, self::STRING,
+		self::_ARRAY, self::RESOURCE, self::_CALLABLE, self::NULL, self::null
 	);
 
 	//---------------------------------------------------------------------------------- $can_be_null
@@ -36,7 +48,7 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $numeric_types = array('integer', 'float');
+	private static $numeric_types = array(self::INTEGER, self::FLOAT);
 
 	//---------------------------------------------------------------------------------- $sized_types
 	/**
@@ -44,7 +56,7 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $sized_types = array('integer', 'float', 'string');
+	private static $sized_types = array(self::INTEGER, self::FLOAT, self::STRING);
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -66,7 +78,7 @@ class Type
 		if (isset($type_string)) {
 			if (($i = strpos($type_string, '|')) !== false) {
 				if (!isset($can_be_null)) {
-					$this->can_be_null = strpos($type_string, '|null');
+					$this->can_be_null = strpos($type_string, '|' . self::null);
 				}
 				$this->type = substr($type_string, 0, $i);
 			}
@@ -144,10 +156,10 @@ class Type
 			return array();
 		}
 		else switch ($this->asString()) {
-			case 'boolean': return false;
-			case 'integer': return 0;
-			case 'float':   return 0.0;
-			case 'string':  return '';
+			case self::BOOLEAN: return false;
+			case self::INTEGER: return 0;
+			case self::FLOAT:   return 0.0;
+			case self::STRING:  return '';
 		}
 		return null;
 	}
@@ -196,7 +208,7 @@ class Type
 	 */
 	public function isArray()
 	{
-		return $this->type === 'array';
+		return $this->type === self::_ARRAY;
 	}
 
 	//--------------------------------------------------------------------------------------- isBasic
@@ -223,7 +235,7 @@ class Type
 	 */
 	public function isBoolean()
 	{
-		return $this->type === 'boolean';
+		return $this->type === self::BOOLEAN;
 	}
 
 	//--------------------------------------------------------------------------------------- isClass
@@ -252,7 +264,7 @@ class Type
 	 */
 	public function isFloat()
 	{
-		return $this->type === 'float';
+		return $this->type === self::FLOAT;
 	}
 
 	//---------------------------------------------------------------------------------- isInstanceOf
@@ -275,7 +287,7 @@ class Type
 	 */
 	public function isInteger()
 	{
-		return $this->type === 'integer';
+		return $this->type === self::INTEGER;
 	}
 
 	//------------------------------------------------------------------------------------ isMultiple
@@ -290,7 +302,7 @@ class Type
 	 */
 	public function isMultiple()
 	{
-		return ((substr($this->type, -1) === ']') || $this->isArray()) ? 'multiple' : false;
+		return ((substr($this->type, -1) === ']') || $this->isArray()) ? self::MULTIPLE : false;
 	}
 
 	//------------------------------------------------------------------------------ isMultipleString
@@ -299,7 +311,7 @@ class Type
 	 */
 	public function isMultipleString()
 	{
-		return $this->type === 'string[]';
+		return $this->type === (self::STRING . '[]');
 	}
 
 	//---------------------------------------------------------------------------------------- isNull
@@ -308,7 +320,7 @@ class Type
 	 */
 	public function isNull()
 	{
-		return $this->type === 'NULL';
+		return $this->type === self::NULL;
 	}
 
 	//------------------------------------------------------------------------------------- isNumeric
@@ -342,7 +354,7 @@ class Type
 	 */
 	public function isString()
 	{
-		return $this->type === 'string';
+		return $this->type === self::STRING;
 	}
 
 	//---------------------------------------------------------------------------------- isSubclassOf

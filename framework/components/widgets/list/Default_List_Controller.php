@@ -71,6 +71,7 @@ class Default_List_Controller extends List_Controller
 		$parameters = $parameters->getObjects();
 		$list_settings = List_Settings::current($class_name);
 		$this->applyParametersToListSettings($list_settings, $parameters, $form);
+		$search = $this->applySearchParameters($list_settings);
 		$customized_list_settings = $list_settings->getCustomSettings();
 		$count = new Dao_Count_Option();
 		$limit = new Dao_Limit_Option(
@@ -80,7 +81,7 @@ class Default_List_Controller extends List_Controller
 		$data = Dao::select(
 			$class_name,
 			$list_settings->properties_path,
-			$list_settings->search,
+			$search,
 			array($list_settings->sort, $limit, $count)
 		);
 		if (($data->length() < $limit->count) && ($limit->from > 1)) {
@@ -90,7 +91,7 @@ class Default_List_Controller extends List_Controller
 			$data = Dao::select(
 				$class_name,
 				$list_settings->properties_path,
-				$list_settings->search,
+				$search,
 				array($list_settings->sort, $limit, $count)
 			);
 		}
