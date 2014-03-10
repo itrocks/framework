@@ -28,7 +28,7 @@ class Class_Builder
 	 */
 	public static function build($class_name, $interfaces_traits = array(), $get_source = false)
 	{
-		$key = implode('.', $interfaces_traits);
+		$key = join('.', $interfaces_traits);
 		if (isset(self::$builds[$class_name][$key])) {
 			return self::$builds[$class_name][$key];
 		}
@@ -99,8 +99,8 @@ class Class_Builder
 			$namespace = array_slice(explode('\\', Namespaces::of($class_name)), 1);
 			$left = Namespaces::of(Application::current());
 			$namespace = $left . '\\Built' . '\\' . join('\\', $namespace) . $count . $sub_count;
-			$interfaces_names = ($end && $interfaces) ? implode(', ', $interfaces) : '';
-			$traits_names = $class_traits ? implode(';' . "\n\t" . 'use ', $class_traits) : '';
+			$interfaces_names = ($end && $interfaces) ? join(', ', $interfaces) : '';
+			$traits_names = $class_traits ? join(';' . "\n\t" . 'use ', $class_traits) : '';
 			$short_class = Namespaces::shortClassName($class_name);
 			$built_class = $namespace . '\\' . $short_class;
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . "\n\n"

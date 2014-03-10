@@ -86,7 +86,7 @@ class Translations extends Set
 			foreach (explode(".", $text) as $sentence) {
 				$translation[] = $this->translate($sentence, $context);
 			}
-			return implode(".", $translation);
+			return join(".", $translation);
 		}
 		elseif (!isset($this->cache[$text]) || !isset($this->cache[$text][$context])) {
 			if (substr($text, -1) === "@") {

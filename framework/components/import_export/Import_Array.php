@@ -329,7 +329,7 @@ class Import_Array
 	 */
 	private function importArrayClass(Import_Class $class, &$array)
 	{
-		$property_path = implode('.', $class->property_path);
+		$property_path = join('.', $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
 		$simulation = $this->simulation;
