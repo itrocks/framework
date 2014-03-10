@@ -18,6 +18,7 @@ $.getScript(path + "main/js/jquery.classvar.js");
 $.getScript(path + "main/js/jquery.modifiable.js");
 $.getScript(path + "main/js/jquery.mouse.js");
 $.getScript(path + "main/js/jquery.presstab.js");
+$.getScript(path + "main/js/jquery.sortcontent.js");
 $.getScript(path + "main/js/jquery.verticalscrollbar.js");
 $.getScript(path + "main/js/jquery-ui.tabber.js");
 
