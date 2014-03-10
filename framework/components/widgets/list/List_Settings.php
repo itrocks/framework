@@ -113,6 +113,42 @@ class List_Settings extends Custom_Settings
 		$this->properties_path = $properties_path;
 	}
 
+	//--------------------------------------------------------------------------------------- cleanup
+	/**
+	 * Cleanup outdated properties from the list setting
+	 *
+	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
+	 */
+	public function cleanup()
+	{
+		$changes_count = 0;
+		// properties path
+		foreach ($this->properties_path as $key => $property_path) {
+			if (!Reflection_Property::exists($this->class_name, $property_path)) {
+				unset($this->properties_path[$key]);
+				$changes_count ++;
+			}
+		}
+		if ($changes_count) {
+			$this->properties_path = array_values($this->properties_path);
+		}
+		// search
+		foreach (array_keys($this->search) as $property_path) {
+			if (!Reflection_Property::exists($this->class_name, $property_path)) {
+				unset($this->search[$property_path]);
+				$changes_count ++;
+			}
+		}
+		// sort
+		if ($this->sort) foreach ($this->sort->columns as $key => $property_path) {
+			if (!Reflection_Property::exists($this->class_name, $property_path)) {
+				unset($this->sort->columns[$key]);
+				$changes_count ++;
+			}
+		}
+		return $changes_count;
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * Get current session / user custom settings object

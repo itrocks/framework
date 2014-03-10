@@ -107,6 +107,7 @@ class Main_Controller
 	private function includes()
 	{
 		// Low level includes
+		include_once __DIR__ . '/../toolbox/constants.php';
 		include_once __DIR__ . '/../toolbox/functions/array_functions.php';
 		include_once __DIR__ . '/../toolbox/functions/file_functions.php';
 		include_once __DIR__ . '/../toolbox/functions/string_functions.php';

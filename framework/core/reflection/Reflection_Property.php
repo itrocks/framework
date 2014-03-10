@@ -82,16 +82,24 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		return $this->name;
 	}
 
-	//----------------------------------------------------------------------------------- pathAsField
+	//---------------------------------------------------------------------------------------- exists
 	/**
-	 * Returns path formatted as field : uses [] instead of .
-	 *
-	 * @example if $this->path is 'a.field.path', will return 'a[field][path]'
-	 * @return string
+	 * @param $class_name    string a class name
+	 * @param $property_name string a property name or a property path starting from the class
+	 * @return boolean true if the property exists
 	 */
-	public function pathAsField()
+	public static function exists($class_name, $property_name)
 	{
-		return Names::propertyPathToField($this->path ? $this->path : $this->name);
+		if (strpos($property_name, '.') !== false) {
+			foreach (array_slice(explode('.', $property_name), 0, -1) as $property_name) {
+				if (!property_exists($class_name, $property_name)) {
+					return false;
+				}
+				$property = new Reflection_Property($class_name, $property_name);
+				$class_name = $property->getType()->getElementTypeAsString();
+			}
+		}
+		return property_exists($class_name, $property_name);
 	}
 
 	//------------------------------------------------------------------------ getAnnotationCachePath
@@ -279,6 +287,18 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			|| ($value === $this->getDefaultValue())
 			|| (($value === '0000-00-00') && $this->getType()->isDateTime())
 			|| (($value instanceof Date_Time) && $value->isEmpty());
+	}
+
+	//----------------------------------------------------------------------------------- pathAsField
+	/**
+	 * Returns path formatted as field : uses [] instead of .
+	 *
+	 * @example if $this->path is 'a.field.path', will return 'a[field][path]'
+	 * @return string
+	 */
+	public function pathAsField()
+	{
+		return Names::propertyPathToField($this->path ? $this->path : $this->name);
 	}
 
 }

@@ -70,6 +70,7 @@ class Default_List_Controller extends List_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$list_settings = List_Settings::current($class_name);
+		$list_settings->cleanup();
 		$this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$search = $this->applySearchParameters($list_settings);
 		$customized_list_settings = $list_settings->getCustomSettings();

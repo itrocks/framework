@@ -29,6 +29,15 @@ abstract class Custom_Settings
 	 */
 	public $setting;
 
+	//--------------------------------------------------------------------------------------- cleanup
+	/**
+	 * This cleanup method is called after loading and getting the current value
+	 * in order to avoid crashes when some components of the setting disappeared in the meantime.
+	 *
+	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
+	 */
+	public abstract function cleanup();
+
 	//---------------------------------------------------------------------------- currentUserSetting
 	/**
 	 * @param $class_name string
@@ -121,6 +130,7 @@ abstract class Custom_Settings
 	 */
 	public static function load($class_name, $name)
 	{
+		/** @var $setting Setting */
 		$setting = new Setting($class_name . '.' . static::customId() . '.' . $name);
 		$setting = Dao::searchOne($setting);
 		$custom_settings = isset($setting)
