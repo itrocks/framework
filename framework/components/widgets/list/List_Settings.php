@@ -217,7 +217,7 @@ class List_Settings extends Custom_Settings
 	public function search($search)
 	{
 		foreach ($search as $property_path => $value) {
-			if (empty($value)) {
+			if (!strlen($value)) {
 				if (isset($this->search[$property_path])) {
 					unset($this->search[$property_path]);
 				}

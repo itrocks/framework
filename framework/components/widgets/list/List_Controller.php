@@ -16,7 +16,7 @@ abstract class List_Controller extends Output_Controller
 	 * @param $form          array
 	 * @return List_Settings set if parameters did change
 	 */
-	protected function applyParametersToListSettings(
+	public function applyParametersToListSettings(
 		List_Settings &$list_settings, $parameters, $form = null
 	) {
 		if (isset($form)) {
