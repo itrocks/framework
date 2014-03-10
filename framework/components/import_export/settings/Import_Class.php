@@ -111,6 +111,53 @@ class Import_Class implements Serializable
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- cleanup
+	/**
+	 * This cleanup method is called after loading and getting the current value
+	 * in order to avoid crashes when some components of the setting disappeared in the meantime.
+	 *
+	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
+	 */
+	public function cleanup()
+	{
+		$changes_count = 0;
+		foreach (array_keys($this->identify_properties) as $property_name) {
+			if (!property_exists($this->class_name, $property_name)) {
+				$this->unknown_properties[$property_name] = $this->identify_properties[$property_name];
+				unset($this->identify_properties[$property_name]);
+				$changes_count ++;
+			}
+		}
+		foreach (array_keys($this->ignore_properties) as $property_name) {
+			if (!property_exists($this->class_name, $property_name)) {
+				$this->unknown_properties[$property_name] = $this->ignore_properties[$property_name];
+				unset($this->ignore_properties[$property_name]);
+				$changes_count ++;
+			}
+		}
+		foreach (array_keys($this->write_properties) as $property_name) {
+			if (!property_exists($this->class_name, $property_name)) {
+				$this->unknown_properties[$property_name] = $this->write_properties[$property_name];
+				unset($this->write_properties[$property_name]);
+				$changes_count ++;
+			}
+		}
+		foreach ((new Reflection_Class($this->class_name))->getAllProperties() as $property) {
+			if (
+				!isset($this->identify_properties  [$property->name])
+				&& !isset($this->ignore_properties [$property->name])
+				&& !isset($this->unknown_properties[$property->name])
+				&& !isset($this->write_properties  [$property->name])
+			) {
+				$this->ignore_properties[$property->name] = new Import_Property(
+					$this->class_name, $property->name
+				);
+				$changes_count ++;
+			}
+		}
+		return $changes_count;
+	}
+
 	//------------------------------------------------------------------------------ getIdentifyValue
 	/**
 	 * @return string

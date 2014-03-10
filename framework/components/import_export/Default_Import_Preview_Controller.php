@@ -116,7 +116,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 				$file = $files[$worksheet_number];
 				$array = $file->getCsvContent();
 				$import->worksheets[$worksheet_number] = new Import_Worksheet(
-					$worksheet_number, Import_Settings_Builder::buildArray($array), $file
+					$worksheet_number, Import_Settings_Builder::buildArray($array, $class_name), $file
 				);
 			}
 		}

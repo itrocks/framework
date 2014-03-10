@@ -27,6 +27,32 @@ class Import_Settings extends Custom_Settings
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- cleanup
+	/**
+	 * This cleanup method is called after loading and getting the current value
+	 * in order to avoid crashes when some components of the setting disappeared in the meantime.
+	 *
+	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
+	 */
+	public function cleanup()
+	{
+		$changes_count = 0;
+		$class_name = $this->getClassName();
+		foreach ($this->classes as $key => $class) {
+			if (
+				$class->property_path
+				&& !Reflection_Property::exists($class_name, join('.', $class->property_path))
+			) {
+				unset($this->classes[$key]);
+				$changes_count ++;
+			}
+			else {
+				$changes_count += $class->cleanup();
+			}
+		}
+		return $changes_count;
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * Get current session / user custom settings object
