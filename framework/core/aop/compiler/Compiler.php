@@ -117,14 +117,19 @@ class Compiler implements ICompiler
 			$methods_code[$method_name] = $method_compiler->compile($method_name, $advices);
 		}
 
-		ksort($methods_code);
+		if ($methods_code) {
+			ksort($methods_code);
 
-		if (self::DEBUG && $methods_code) echo '<pre>' . print_r($methods_code, true) . '</pre>';
+			if (self::DEBUG && $methods_code) echo '<pre>' . print_r($methods_code, true) . '</pre>';
 
-		$buffer =
-			substr($class->source, 0, -2) . "\t//" . str_repeat('#', 91) . ' AOP' . "\n"
-			. join('', $methods_code)
-			. "\n}\n";
+			$buffer =
+				substr($class->source, 0, -2) . TAB . '//' . str_repeat('#', 91) . ' AOP' . LF
+				. join('', $methods_code)
+				. LF . '}' . LF;
+		}
+		else {
+			$buffer = $class->source;
+		}
 		if (!$class->clean || $methods_code) {
 			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class->name . '<br>';
 			else script_put_contents($class->file_name, $buffer);
