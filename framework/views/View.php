@@ -16,8 +16,8 @@ class View implements Plugins\Configurable
 	 */
 	public function __construct($configuration)
 	{
-		$class_name = $configuration["class"];
-		unset($configuration["class"]);
+		$class_name = $configuration['class'];
+		unset($configuration['class']);
 		View::current(new $class_name($configuration));
 	}
 
@@ -64,33 +64,35 @@ class View implements Plugins\Configurable
 		}
 		$class_name = Namespaces::shortClassName($class_name);
 		$view_engine_name = Namespaces::shortClassName(get_class(View::current()));
-		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, "_View_Engine"));
+		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, '_View_Engine'));
 		$feature_classes = array();
 		foreach ($feature_names as $feature_name) {
 			$feature_classes[$feature_name] = Names::methodToClass($feature_name);
 		}
-		$views = array();
+		$views1 = [];
+		$views2 = [];
+		$views3 = [];
+		$views4 = [];
 		$namespaces = Application::current()->getNamespaces();
 		foreach ($namespaces as $namespace) {
-			$class = $namespace . "\\" . $class_name;
+			$class = $namespace . '\\' . $class_name;
 			while ($class) {
-				$i = strrpos($class, "\\") + 1;
-				$view = $namespace . "\\" . $view_engine_name . "_" . substr($class, $i);
+				$i = strrpos($class, '\\') + 1;
+				$view = $namespace . '\\' . $view_engine_name;
 				foreach ($feature_classes as $feature_name => $feature_class) {
-					$views[] = array($view . "_" . $feature_class, "run");
-					$views[] = array($view, $feature_name);
+					$views2[] = array($view . '_' . $feature_class . '_View', 'run');
+					$views3[] = array($view . '_Default_View', $feature_name);
+				}
+				$views4[] = array($view . '_Default_View', 'run');
+				$view .= '_' . substr($class, $i);
+				foreach ($feature_classes as $feature_name => $feature_class) {
+					$views1[] = array($view . '_' . $feature_class . '_View', 'run');
+					$views1[] = array($view . '_View', $feature_name);
 				}
 				$class = get_parent_class($class);
 			}
 		}
-		foreach ($namespaces as $namespace) {
-			$view = $namespace . "\\" . $view_engine_name;
-			foreach ($feature_classes as $feature_name => $feature_class) {
-				$views[] = array($view . "_" . $feature_class, "run");
-				$views[] = array($view . "_Default_View", $feature_name);
-			}
-			$views[] = array($view . "_Default_View", "run");
-		}
+		$views = array_merge($views1, $views2, $views3, $views4);
 		return $views;
 	}
 
@@ -120,8 +122,8 @@ class View implements Plugins\Configurable
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		$features = isset($parameters["feature"])
-			? array($parameters["feature"], $feature_name)
+		$features = isset($parameters['feature'])
+			? array($parameters['feature'], $feature_name)
 			: $feature_name;
 		foreach (self::getPossibleViews($class_name, $features) as $call) {
 			list($view, $view_method_name) = $call;
@@ -131,7 +133,7 @@ class View implements Plugins\Configurable
 				);
 			}
 		}
-		return "";
+		return '';
 	}
 
 }
