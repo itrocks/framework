@@ -242,19 +242,20 @@ abstract class Names
 				elseif (substr($class_name, -1) === 's')    $class_name = substr($class_name, 0, -1);
 				elseif (substr($class_name, -2) === 'en')   $class_name = substr($class_name, 0, -2) . 'an';
 			}
-			$exists = class_exists(Namespaces::fullClassName($class_name . $right, $check_class));
-			if (!$exists) {
-				$i = strrpos($class_name, '_');
-				if (($i === false) && $check_class) {
-					trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
-				}
-				else {
-					$right = substr($class_name, $i) . $right;
-					$class_name = substr($class_name, 0, $i);
-				}
+			$full_class_name = Namespaces::fullClassName($class_name . $right, $check_class);
+			if (class_exists($full_class_name)) {
+				return $full_class_name;
+			}
+			$i = strrpos($class_name, '_');
+			if (($i === false) && $check_class) {
+				trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
+			}
+			else {
+				$right = substr($class_name, $i) . $right;
+				$class_name = substr($class_name, 0, $i);
 			}
 		}
-		while (!($exists || empty($class_name)));
+		while (!empty($class_name));
 		return $class_name . $right;
 	}
 

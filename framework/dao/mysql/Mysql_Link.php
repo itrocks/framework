@@ -384,7 +384,7 @@ class Mysql_Link extends Sql_Link
 			$this->setObjectIdentifier($object, $object->id);
 			$key_object = $object;
 			foreach ($keys as $key) $key_object = $key_object->$key;
-			$search_result[$key_object->$object_key] = $object;
+			$read_result[$key_object->$object_key] = $object;
 		}
 		$this->free($result_set);
 		return $read_result;
