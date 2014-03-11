@@ -7,6 +7,12 @@ namespace SAF\Framework;
 class Password
 {
 
+	//------------------------------------------------------------------------------------- UNCHANGED
+	/**
+	 * Use this constant when you want to test or set the password as "unchanged"
+	 */
+	const UNCHANGED = '~#~*~#~';
+
 	//------------------------------------------------------------------------- $encryption_algorithm
 	/**
 	 * @var string

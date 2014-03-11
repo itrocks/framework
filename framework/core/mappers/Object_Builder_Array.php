@@ -81,20 +81,20 @@ class Object_Builder_Array
 		}
 		$properties = $this->properties;
 		if (!isset($object)) {
-			$object = (isset($array["id"]) && $array["id"])
-				? Dao::read($array["id"], $this->class->name)
+			$object = (isset($array['id']) && $array['id'])
+				? Dao::read($array['id'], $this->class->name)
 				: $this->class->newInstance();
-			if (isset($array["id"])) {
-				unset($array["id"]);
+			if (isset($array['id'])) {
+				unset($array['id']);
 			}
 		}
 		$objects = array();
 		$read_properties = array();
 		foreach ($array as $property_name => $value) {
-			if ($pos = strpos($property_name, ".")) {
+			if ($pos = strpos($property_name, '.')) {
 				$property_path = substr($property_name, $pos + 1);
 				$property_name = substr($property_name, 0, $pos);
-				if ($asterisk = (substr($property_name, -1) === "*")) {
+				if ($asterisk = (substr($property_name, -1) === '*')) {
 					$property_name = substr($property_name, 0, -1);
 				}
 				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
@@ -103,17 +103,19 @@ class Object_Builder_Array
 				}
 			}
 			else {
-				if ($asterisk = (substr($property_name, -1) === "*")) {
+				if ($asterisk = (substr($property_name, -1) === '*')) {
 					$property_name = substr($property_name, 0, -1);
 				}
 				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
-				if (substr($property_name, 0, 3) === "id_") {
+				if (substr($property_name, 0, 3) === 'id_') {
 					if (!$this->buildIdProperty($object, $property_name, $value, $null_if_empty)) {
 						$is_null = false;
 					}
 				}
-				elseif (($property_name != "id") && !isset($property)) {
-					trigger_error("Unknown property $property_name into " . $this->class->name, E_USER_ERROR);
+				elseif (($property_name != 'id') && !isset($property)) {
+					trigger_error(
+						'Unknown property ' . $property_name . ' into ' . $this->class->name, E_USER_ERROR
+					);
 				}
 				elseif (!$this->buildProperty($object, $property, $value, $null_if_empty)) {
 					$is_null = false;
@@ -150,9 +152,9 @@ class Object_Builder_Array
 	private function buildBasicValue(Reflection_Property $property, $value)
 	{
 		switch ($property->getType()->asString()) {
-			case "boolean": $value = !(empty($value) || ($value === "false")); break;
-			case "integer": $value = intval($value);                           break;
-			case "float":   $value = floatval($value);                         break;
+			case Type::BOOLEAN: $value = !(empty($value) || ($value === 'false')); break;
+			case Type::INTEGER: $value = intval($value);                           break;
+			case Type::FLOAT:   $value = floatval($value);                         break;
 		}
 		return $value;
 	}
@@ -162,7 +164,7 @@ class Object_Builder_Array
 	 * Accepted arrays :
 	 * $array[$object_number][$property_name] = $value
 	 * $array[$property_name][$object_number] = $value
-	 * $array[0][$column_number] = "property_name" then $array[$object_number][$column_number] = $value
+	 * $array[0][$column_number] = 'property_name' then $array[$object_number][$column_number] = $value
 	 *
 	 * @param $class_name    string
 	 * @param $array         array
@@ -204,7 +206,7 @@ class Object_Builder_Array
 	 * id_foo must always be set before any forced foo[sub_property] values into the array
 	 *
 	 * @param $object        object
-	 * @param $property_name string must start with "id_"
+	 * @param $property_name string must start with 'id_'
 	 * @param $value         integer
 	 * @param $null_if_empty boolean
 	 * @return boolean
@@ -214,7 +216,7 @@ class Object_Builder_Array
 		$is_null = $null_if_empty;
 		$real_property_name = substr($property_name, 3);
 		if (empty($value)) {
-			$value = $this->properties[$real_property_name]->getAnnotation("null")->value ? null : 0;
+			$value = $this->properties[$real_property_name]->getAnnotation('null')->value ? null : 0;
 		}
 		$object->$property_name = $value;
 		$object->$real_property_name = null;
@@ -273,19 +275,22 @@ class Object_Builder_Array
 		$is_null = $null_if_empty;
 		$type = $property->getType();
 		if ($type->isBasic()) {
+			if (($value == Password::UNCHANGED) && $property->getAnnotation('password')->value) {
+				return true;
+			}
 			$value = $this->buildBasicValue($property, $value);
 		}
 		elseif (is_array($value)) {
-			$link = $property->getAnnotation("link")->value;
-			if ($link == "Object") {
+			$link = $property->getAnnotation('link')->value;
+			if ($link == 'Object') {
 				$class_name = $property->getType()->asString();
 				$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
 			}
-			elseif ($link == "Collection") {
+			elseif ($link == 'Collection') {
 				$class_name = $property->getType()->getElementTypeAsString();
 				$value = $this->buildCollection($class_name, $value, $null_if_empty);
 			}
-			elseif ($link == "Map") {
+			elseif ($link == 'Map') {
 				$class_name = $property->getType()->getElementTypeAsString();
 				$value = $this->buildMap($class_name, $value, $null_if_empty);
 			}
@@ -353,7 +358,7 @@ class Object_Builder_Array
 		$objects = Dao::search($read_properties, get_class($object));
 		if (count($objects) > 1) {
 			trigger_error(
-				"Unique object not found " . get_class($object) . " " . print_r($read_properties, true),
+				'Unique object not found ' . get_class($object) . ' ' . print_r($read_properties, true),
 				E_USER_ERROR
 			);
 		}

@@ -12,6 +12,7 @@ trait User_Has_Settings
 
 	//------------------------------------------------------------------------------------- $settings
 	/**
+	 * @user invisible
 	 * @link Collection
 	 * @override
 	 * @var User_Setting[]
