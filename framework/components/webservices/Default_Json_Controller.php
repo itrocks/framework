@@ -30,26 +30,28 @@ class Default_Json_Controller implements Default_Feature_Controller
 			return json_encode($first_parameter);
 		}
 		// search objects for autocomplete combo pull-down list
-		if (isset($parameters["term"])) {
+		if (isset($parameters['term'])) {
 			$element_class_name = Namespaces::fullClassName(Names::setToClass($class_name, false));
 			$search = null;
-			if (!empty($parameters["term"])) {
+			if (!empty($parameters['term'])) {
 				$search = (new Search_Array_Builder)->buildMultiple(
-					new Reflection_Class($element_class_name), $parameters["term"], "", "%"
+					new Reflection_Class($element_class_name), $parameters['term'], '', '%'
 				);
 			}
-			if (isset($parameters["filters"])) {
-				foreach ($parameters["filters"] as $filter_name => $filter_value) {
-					$search[$filter_name] = $filter_value;
+			if (isset($parameters['filters'])) {
+				foreach ($parameters['filters'] as $filter_name => $filter_value) {
+					$search[$filter_name] = ($filter_value[0] == '!')
+						? Dao_Func::notEqual(substr($filter_value, 1))
+						: $filter_value;
 				}
 				if (count($search) > 1) {
-					$search = array("AND" => $search);
+					$search = ['AND' => $search];
 				}
 			}
-			$objects = array();
+			$objects = [];
 			// first object only
-			if (isset($parameters["first"]) && $parameters["first"]) {
-				$objects = Dao::search($search, $element_class_name, array(Dao::sort(), Dao::limit(1)));
+			if (isset($parameters['first']) && $parameters['first']) {
+				$objects = Dao::search($search, $element_class_name, [Dao::sort(), Dao::limit(1)]);
 				$source_object = $objects ? reset($objects) : Builder::create($element_class_name);
 				return json_encode(new Autocomplete_Entry(
 					Dao::getObjectIdentifier($source_object), strval($source_object)
@@ -66,14 +68,14 @@ class Default_Json_Controller implements Default_Feature_Controller
 			}
 		}
 		// single object for autocomplete pull-down list value
-		elseif (isset($parameters["id"])) {
+		elseif (isset($parameters['id'])) {
 			$element_class_name = Namespaces::fullClassName(Names::setToClass($class_name));
-			$source_object = Dao::read($parameters["id"], $element_class_name);
+			$source_object = Dao::read($parameters['id'], $element_class_name);
 			return json_encode(new Autocomplete_Entry(
 				Dao::getObjectIdentifier($source_object), strval($source_object)
 			));
 		}
-		return "";
+		return '';
 	}
 
 }
