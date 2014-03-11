@@ -10,16 +10,17 @@ class Type
 {
 
 	//------------------------------------------------------------------------ type strings constants
-	const _ARRAY    = 'array';
-	const _CALLABLE = 'callable';
-	const BOOLEAN  = 'boolean';
-	const FLOAT    = 'float';
-	const INTEGER  = 'integer';
-	const MULTIPLE = 'multiple';
-	const NULL     = 'NULL';
-	const RESOURCE = 'resource';
-	const STRING   = 'string';
-	const null     = 'null';
+	const _ARRAY       = 'array';
+	const _CALLABLE    = 'callable';
+	const BOOLEAN      = 'boolean';
+	const FLOAT        = 'float';
+	const INTEGER      = 'integer';
+	const MULTIPLE     = 'multiple';
+	const NULL         = 'NULL';
+	const RESOURCE     = 'resource';
+	const STRING       = 'string';
+	const STRING_ARRAY = 'string[]';
+	const null         = 'null';
 
 	//---------------------------------------------------------------------------------- $basic_types
 	/**
