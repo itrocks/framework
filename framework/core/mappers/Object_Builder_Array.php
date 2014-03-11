@@ -275,21 +275,33 @@ class Object_Builder_Array
 		$is_null = $null_if_empty;
 		$type = $property->getType();
 		if ($type->isBasic()) {
-			if (($value == Password::UNCHANGED) && $property->getAnnotation('password')->value) {
-				return true;
+			// password
+			if ($encryption = $property->getAnnotation('password')->value) {
+				if ($value == Password::UNCHANGED) {
+					return true;
+				}
+				else {
+					$value = (new Password($value, $encryption))->encrypted();
+				}
 			}
-			$value = $this->buildBasicValue($property, $value);
+			// others basic values
+			else {
+				$value = $this->buildBasicValue($property, $value);
+			}
 		}
 		elseif (is_array($value)) {
 			$link = $property->getAnnotation('link')->value;
+			// object
 			if ($link == 'Object') {
 				$class_name = $property->getType()->asString();
 				$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
 			}
+			// collection
 			elseif ($link == 'Collection') {
 				$class_name = $property->getType()->getElementTypeAsString();
 				$value = $this->buildCollection($class_name, $value, $null_if_empty);
 			}
+			// map
 			elseif ($link == 'Map') {
 				$class_name = $property->getType()->getElementTypeAsString();
 				$value = $this->buildMap($class_name, $value, $null_if_empty);

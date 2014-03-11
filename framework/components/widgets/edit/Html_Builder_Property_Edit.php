@@ -146,7 +146,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 		}
 		if ($this->property->getAnnotation('password')->value) {
 			$element->setAttribute('type', 'password');
-			$element->setAttribute('value', Password::UNCHANGED);
+			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
 		}
 		return $element;
 	}
