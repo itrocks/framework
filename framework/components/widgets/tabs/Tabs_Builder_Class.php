@@ -17,7 +17,7 @@ abstract class Tabs_Builder_Class
 	public static function build(Reflection_Class $class)
 	{
 		/** @var $group_annotations Class_Group_Annotation[] */
-		$group_annotations = $class->getAnnotations("group");
+		$group_annotations = $class->getAnnotations('group');
 		$properties = $class->getAllProperties();
 		return self::buildProperties($properties, $group_annotations);
 	}
@@ -36,7 +36,7 @@ abstract class Tabs_Builder_Class
 		if (!empty($group_annotations)) {
 			foreach ($group_annotations as $group_annotation) {
 				$tab = $root_tab;
-				foreach (explode(".", $group_annotation->name) as $tab_name) {
+				foreach (explode('.', $group_annotation->name) as $tab_name) {
 					if (is_numeric($tab_name)) {
 						if (empty($tab->columns)) {
 							if (!empty($tab->content)) {

@@ -12,7 +12,7 @@ abstract class Search_Objects
 	 * Search the first result of several search objects list
 	 * Try each search object. When one is found, then return the first result object
 	 *
-	 * @param $objects object[]|array[]
+	 * @param $objects object[]|array[]|array
 	 * @param $class_name string
 	 * @return object
 	 */

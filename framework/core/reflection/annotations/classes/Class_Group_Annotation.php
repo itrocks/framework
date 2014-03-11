@@ -7,8 +7,8 @@ namespace SAF\Framework;
  *
  * @example @group first group property_1 property_2 property_3
  * and then @group second group property_4 property_5
- * will create two annotations : one with the name "first group" and each property name as values,
- * the second with the name "second group" and each of its property name as string values.
+ * will create two annotations : one with the name 'first group' and each property name as values,
+ * the second with the name 'second group' and each of its property name as string values.
  */
 class Class_Group_Annotation extends List_Annotation implements Multiple_Annotation
 {
@@ -27,11 +27,14 @@ class Class_Group_Annotation extends List_Annotation implements Multiple_Annotat
 	 */
 	public function __construct($value)
 	{
-		$i = strpos($value, ",");
+		$i = strpos($value, ',');
 		if ($i === false) {
 			$i = strlen($value);
 		}
-		$i = strrpos(substr($value, 0, $i), " ");
+		$i = strrpos(substr($value, 0, $i), ' ');
+		if ($i === false) {
+			$i = strlen($value);
+		}
 		$this->name = substr($value, 0, $i);
 		parent::__construct(substr($value, $i + 1));
 	}
