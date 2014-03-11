@@ -90,16 +90,22 @@ function arrayFormRevert($array)
 function arrayMergeRecursive($array1, $array2)
 {
 	foreach ($array2 as $index => $value2) {
-		$value1 = isset($array1[$index]) ? $array1[$index] : null;
-		if (is_numeric($index) && !is_array($value1) && !is_array($value2)) {
-			if (!in_array($value2, $array1)) {
-				$array1[] = $value2;
-			}
+		if (($index === ':') && ($value2 === 'clear')) {
+			$array1 = array();
+			unset($array2[$index]);
 		}
 		else {
-			$array1[$index] = is_array($value2)
-				? arrayMergeRecursive(is_array($value1) ? $value1 : array(), $value2)
-				: $value2;
+			$value1 = isset($array1[$index]) ? $array1[$index] : null;
+			if (is_numeric($index) && !is_array($value1) && !is_array($value2)) {
+				if (!in_array($value2, $array1)) {
+					$array1[] = $value2;
+				}
+			}
+			else {
+				$array1[$index] = is_array($value2)
+					? arrayMergeRecursive(is_array($value1) ? $value1 : array(), $value2)
+					: $value2;
+			}
 		}
 	}
 	return $array1;
