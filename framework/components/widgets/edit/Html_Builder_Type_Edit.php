@@ -72,11 +72,11 @@ class Html_Builder_Type_Edit
 		}
 		else {
 			switch ($type->asString()) {
-				case 'boolean':  return $this->buildBoolean();
-				case 'float':    return $this->buildFloat();
-				case 'integer':  return $this->buildInteger();
-				case 'string':   return $this->buildString();
-				case 'string[]': return $this->buildString();
+				case Type::BOOLEAN:      return $this->buildBoolean();
+				case Type::FLOAT:        return $this->buildFloat();
+				case Type::INTEGER:      return $this->buildInteger();
+				case Type::STRING:       return $this->buildString();
+				case Type::STRING_ARRAY: return $this->buildString();
 			}
 			if ($type->isClass()) {
 				$class_name = $type->asString();
@@ -224,7 +224,7 @@ class Html_Builder_Type_Edit
 	 *   element containing its value
 	 * @return string
 	 */
-	protected function buildObject($conditions = null, $filters = null)
+	public function buildObject($conditions = null, $filters = null)
 	{
 		$class_name = $this->type->asString();
 		// visible input

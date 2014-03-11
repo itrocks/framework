@@ -91,7 +91,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 *   containing its value
 	 * @return string
 	 */
-	protected function buildObject($conditions = null, $filters = null)
+	public function buildObject($conditions = null, $filters = null)
 	{
 		if (!isset($conditions)) {
 			$conditions_values = $this->property->getListAnnotation('conditions')->values();
