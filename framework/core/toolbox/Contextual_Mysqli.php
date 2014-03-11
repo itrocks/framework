@@ -21,6 +21,14 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public $context;
 
+	/**
+	 * Last error number : mysqli::$errno is reset to 0 immediately when you read it.
+	 * This one is kept until the next query.
+	 *
+	 * @var integer
+	 */
+	public $last_errno;
+
 	//---------------------------------------------------------------------------------------- exists
 	/**
 	 * Checks if a table or column exists
@@ -36,7 +44,7 @@ class Contextual_Mysqli extends mysqli
 			return $table->hasColumn($column_name);
 		}
 		else {
-			$res = $this->query("SHOW TABLES");
+			$res = $this->query('SHOW TABLES');
 			/** @var $table Mysql_Table */
 			while ($table = $res->fetch_row()) {
 				if ($table[0] == $table_name) {
@@ -49,6 +57,66 @@ class Contextual_Mysqli extends mysqli
 		}
 	}
 
+	//-------------------------------------------------------------------------------------- isDelete
+	/**
+	 * Returns true if the query is a DELETE
+	 *
+	 * @param $query string
+	 * @return boolean
+	 */
+	public function isDelete($query)
+	{
+		return (strtoupper(substr(trim($query), 0, 7)) === 'DELETE ');
+	}
+
+	//-------------------------------------------------------------------------------------- isInsert
+	/**
+	 * Returns true if the query is an INSERT
+	 *
+	 * @param $query string
+	 * @return boolean
+	 */
+	public function isInsert($query)
+	{
+		return (strtoupper(substr(trim($query), 0, 12)) === 'INSERT INTO ');
+	}
+
+	//-------------------------------------------------------------------------------------- isSelect
+	/**
+	 * Returns true if the query is a SELECT
+	 *
+	 * @param $query string
+	 * @return boolean
+	 */
+	public function isSelect($query)
+	{
+		return (strtoupper(substr(trim($query), 0, 7)) === 'SELECT ');
+	}
+
+	//------------------------------------------------------------------------------------ isTruncate
+	/**
+	 * Returns true if the query is a TRUNCATE
+	 *
+	 * @param $query string
+	 * @return boolean
+	 */
+	public function isTruncate($query)
+	{
+		return (strtoupper(substr(trim($query), 0, 9)) === 'TRUNCATE ');
+	}
+
+	//-------------------------------------------------------------------------------------- isUpdate
+	/**
+	 * Returns true if the query is an UPDATE
+	 *
+	 * @param $query string
+	 * @return boolean
+	 */
+	public function isUpdate($query)
+	{
+		return (strtoupper(substr(trim($query), 0, 7)) === 'UPDATE ');
+	}
+
 	//----------------------------------------------------------------------------------------- query
 	/**
 	 * @see mysqli::query
@@ -59,7 +127,9 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
 	{
-		return parent::query($query, $result_mode);
+		$result = parent::query($query, $result_mode);
+		$this->last_errno = $this->errno;
+		return $result;
 	}
 
 }

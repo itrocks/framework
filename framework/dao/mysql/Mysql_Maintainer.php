@@ -58,12 +58,12 @@ class Mysql_Maintainer implements Plugins\Registerable
 	/**
 	 * Create table (probably links table) without context
 	 *
-	 * @param $mysqli     mysqli
+	 * @param $mysqli     Contextual_Mysqli
 	 * @param $table_name string
 	 * @param $query      string
 	 * @return boolean
 	 */
-	private static function createTableWithoutContext(mysqli $mysqli, $table_name, $query)
+	private static function createTableWithoutContext(Contextual_Mysqli $mysqli, $table_name, $query)
 	{
 		// if a class name exists for the table name, use it as context and create table from class
 		$class_name = Dao::classNameOf($table_name);
@@ -84,31 +84,31 @@ class Mysql_Maintainer implements Plugins\Registerable
 			$column_names[$field_name] = $field_name;
 		}
 		if (!$column_names) {
-			if (substr($query, 0, 7) == "DELETE ") {
+			if ($mysqli->isDelete($query)) {
 				// @todo create table without context DELETE columns detection
 				trigger_error(
 					"TODO Mysql maintainer create table $table_name from a DELETE query without context",
 					E_USER_ERROR
 				);
 			}
-			elseif (substr($query, 0, 12) == "INSERT INTO ") {
+			elseif ($mysqli->isInsert($query)) {
 				$column_names = explode(",", str_replace(array("`", " "), "", mParse($query, "(", ")")));
 			}
-			elseif (substr($query, 0, 7) == "SELECT ") {
+			elseif ($mysqli->isSelect($query)) {
 				// @todo create table without context SELECT columns detection (needs complete sql analyst)
 				trigger_error(
 					"TODO Mysql maintainer create table $table_name from a SELECT query without context",
 					E_USER_ERROR
 				);
 			}
-			elseif (substr($query, 0, 9) == "TRUNCATE ") {
+			elseif ($mysqli->isTruncate($query)) {
 				trigger_error(
 					"Mysql maintainer can't create table $table_name from a TRUNCATE query without context",
 					E_USER_ERROR
 				);
 				return false;
 			}
-			elseif (substr($query, 0, 7) == "UPDATE ") {
+			elseif ($mysqli->isUpdate($query)) {
 				// @todo create table without context UPDATE columns detection
 				trigger_error(
 					"TODO Mysql maintainer create table $table_name from a UPDATE query without context",
@@ -161,7 +161,7 @@ class Mysql_Maintainer implements Plugins\Registerable
 	public static function onMysqliQuery(Contextual_Mysqli $object, $query, &$result)
 	{
 		$mysqli = $object;
-		if ($error_number = $mysqli->errno) {
+		if ($error_number = $mysqli->last_errno) {
 			if (!isset($mysqli->context)) {
 				$mysqli->context = self::guessContext($query);
 			}

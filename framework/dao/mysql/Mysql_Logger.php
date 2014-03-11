@@ -120,13 +120,13 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	 * Called each time after a mysql_query() call is done : log the error (if some)
 	 *
 	 * @param $query  string
-	 * @param $object mysqli
+	 * @param $object Contextual_Mysqli
 	 */
-	public function onError($query, mysqli $object)
+	public function onError($query, Contextual_Mysqli $object)
 	{
 		$mysqli = $object;
-		if ($mysqli->errno) {
-			$error = $mysqli->errno . ': ' . $mysqli->error . '[' . $query . ']';
+		if ($mysqli->last_errno) {
+			$error = $mysqli->last_errno . ': ' . $mysqli->error . '[' . $query . ']';
 			echo '<div class="Mysql logger error">' . $error . '</div>' . "\n";
 			$this->errors_log[] = $error;
 		}
