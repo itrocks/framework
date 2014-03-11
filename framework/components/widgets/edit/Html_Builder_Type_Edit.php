@@ -264,23 +264,21 @@ class Html_Builder_Type_Edit
 			);
 			$id_input->setAttribute('type', 'hidden');
 			$id_input->addClass('id');
-			// 'add' anchor
-			if (is_object($this->value)) {
-				$fill_combo = isset($this->template)
-					? array(
-						'fill_combo' => $this->template->getFormId() . '.' . $this->getFieldName('id_', false)
-					)
-					: '';
-				$edit = new Html_Anchor(
-					View::current()->link(get_class($this->value), 'new', null, $fill_combo), 'edit'
-				);
-				$edit->addClass('edit');
-				$edit->setAttribute('target', '#_blank');
-				$edit->setAttribute('title', '|Edit ¦' . Names::classToDisplay($class_name) . '¦|');
-			}
-			else {
-				$edit = '';
-			}
+			// 'add' / 'edit' anchor
+			$fill_combo = isset($this->template)
+				? array(
+					'fill_combo' => $this->template->getFormId() . '.' . $this->getFieldName('id_', false)
+				)
+				: '';
+			$edit = new Html_Anchor(
+				View::current()->link(
+					$this->value ? get_class($this->value) : $class_name, 'new', null, $fill_combo
+				),
+				'edit'
+			);
+			$edit->addClass('edit');
+			$edit->setAttribute('target', '#_blank');
+			$edit->setAttribute('title', '|Edit ¦' . Names::classToDisplay($class_name) . '¦|');
 			// 'more' button
 			$more = new Html_Button('more');
 			$more->addClass('more');
