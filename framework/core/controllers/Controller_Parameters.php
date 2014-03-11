@@ -74,7 +74,8 @@ class Controller_Parameters
 		if (is_object($class_name)) {
 			$class_name = get_class($class_name);
 		}
-		$object = reset($this->parameters);
+		reset($this->parameters);
+		$object = $this->getObject(key($this->parameters));
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
 			$object = is_object($class_name) ? $class_name : (
 				(isset($class_name) && class_exists($class_name))
