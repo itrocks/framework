@@ -18,7 +18,9 @@ $('document').ready(function()
 				$this.closest('tr').remove();
 			}
 			else {
-				$this.closest('tr').replaceWith($this.closest('table').data('saf_add').clone());
+				var $new_row = $this.closest('table').data('saf_add').clone();
+				$this.closest('tr').replaceWith($new_row);
+				$new_row.build();
 			}
 		});
 
