@@ -22,16 +22,16 @@ class Default_Json_Controller implements Default_Feature_Controller
 		$parameters = $parameters->getObjects();
 		// read all objects corresponding to class name
 		if (!$parameters) {
-			return json_encode(Dao::readAll(Names::setToClass($class_name), Dao::sort()));
+			return json_encode(Dao::readAll(Names::setToClass($class_name, false), Dao::sort()));
 		}
 		// read object
 		$first_parameter = reset($parameters);
 		if (is_object($first_parameter)) {
 			return json_encode($first_parameter);
 		}
-		// search objects for autocomplete compo pull-down list
+		// search objects for autocomplete combo pull-down list
 		if (isset($parameters["term"])) {
-			$element_class_name = Namespaces::fullClassName(Names::setToClass($class_name));
+			$element_class_name = Namespaces::fullClassName(Names::setToClass($class_name, false));
 			$search = null;
 			if (!empty($parameters["term"])) {
 				$search = (new Search_Array_Builder)->buildMultiple(
