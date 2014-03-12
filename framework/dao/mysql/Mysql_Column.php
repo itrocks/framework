@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use mysqli;
+
 /**
  * Mysql column
  */
@@ -20,14 +22,14 @@ class Mysql_Column implements Dao_Column
 	/**
 	 * Mysql data type
 	 *
-	 * Value can be "tinyint(l)", "smallint(l)", "mediumint(l)", "int(l)", "integer(l)", "bigint(l)",
-	 * "float(p)", "double", "real", "decimal(l,d)", "numeric(l,d)", "bit(l)",
-	 * "date", "time", "datetime", "timestamp", "year",
-	 * "char", "binary(l)", "varchar(l)", "varbinary(l)",
-	 * "tinyblob", "tinytext", "blob", "text", "mediumblob", "mediumtext", "longblob", "longtext",
-	 * "enum('v',...)", "set('v',...)"
-	 * where "p" = "precision", "l" = "length", "d" = "decimals", "v" = "value"
-	 * numeric types can be followed with " unsigned"
+ * Value can be 'tinyint(l)', 'smallint(l)', 'mediumint(l)', 'int(l)', 'integer(l)', 'bigint(l)',
+	 * 'float(p)', 'double', 'real', 'decimal(l,d)', 'numeric(l,d)', 'bit(l)',
+	 * 'date', 'time', 'datetime', 'timestamp', 'year',
+	 * 'char', 'binary(l)', 'varchar(l)', 'varbinary(l)',
+	 * 'tinyblob', 'tinytext', 'blob', 'text', 'mediumblob', 'mediumtext', 'longblob', 'longtext',
+	 * 'enum("v",...)', 'set("v",...)'
+	 * where 'p' = 'precision', 'l' = 'length', 'd' = 'decimals', 'v' = 'value'
+	 * numeric types can be followed with ' unsigned'
 	 *
 	 * @var string
 	 */
@@ -63,7 +65,7 @@ class Mysql_Column implements Dao_Column
 	//---------------------------------------------------------------------------------------- $Extra
 	/**
 	 * Extra options to the column
-	 * A list of options, the most common is "auto_increment" for primary auto-increment indexes.
+	 * A list of options, the most common is 'auto_increment' for primary auto-increment indexes.
 	 *
 	 * @var string
 	 * @values auto_increment
@@ -103,7 +105,7 @@ class Mysql_Column implements Dao_Column
 
 	//--------------------------------------------------------------------------------------- buildId
 	/**
-	 * Builds a Mysql_Column object for a standard "id" column
+	 * Builds a Mysql_Column object for a standard 'id' column
 	 *
 	 * @return Mysql_Column
 	 */
@@ -118,7 +120,7 @@ class Mysql_Column implements Dao_Column
 
 	//------------------------------------------------------------------------------------- buildLink
 	/**
-	 * Builds a Mysql_Column object for a standard "id_*" link column
+	 * Builds a Mysql_Column object for a standard 'id_*' link column
 	 *
 	 * @param $column_name string
 	 * @return Mysql_Column
@@ -131,20 +133,48 @@ class Mysql_Column implements Dao_Column
 		return $column;
 	}
 
+	//------------------------------------------------------------------------------------ buildTable
+	/**
+	 * Builds a Mysql_Column[] object array for a given table into a mysqli database
+	 *
+	 * @param $mysqli        mysqli
+	 * @param $table_name    string
+	 * @param $database_name string
+	 * @return Mysql_Column[]
+	 */
+	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
+	{
+		$database_name = isset($database_name) ? ('"' . $database_name . '"') : 'DATABASE()';
+		$columns = [];
+		$result = $mysqli->query(
+			'SELECT column_name `Field`,'
+			. ' IFNULL(CONCAT(column_type, " CHARACTER SET ", character_set_name, " COLLATE ", collation_name), column_type) `Type`,'
+			. ' is_nullable `Null`, column_key `Key`, column_default `Default`, extra `Extra`'
+			. ' FROM information_schema.columns'
+			. ' WHERE table_schema = ' . $database_name . ' AND table_name = "' . $table_name . '"'
+		);
+		/** @var $column Mysql_Column */
+		while ($column = $result->fetch_object(Mysql_Column::class)) {
+			$columns[] = $column;
+		}
+		$result->free();
+		return $columns;
+	}
+
 	//------------------------------------------------------------------------------------- canBeNull
 	/**
 	 * @return bool
 	 */
 	public function canBeNull()
 	{
-		return $this->Null === "YES";
+		return $this->Null === 'YES';
 	}
 
 	//-------------------------------------------------------------------------------- cleanupDefault
 	/**
 	 * Gives the default value the correct type
 	 *
-	 * @example replace "0" by 0 for a numeric value (ie mysqli->fetch_object gets Default as string)
+	 * @example replace '0' by 0 for a numeric value (ie mysqli->fetch_object gets Default as string)
 	 * @return Mysql_Column
 	 */
 	private function cleanupDefault()
@@ -197,7 +227,7 @@ class Mysql_Column implements Dao_Column
 	 */
 	public function getSqlPostfix()
 	{
-		return $this->Extra ? " " . $this->Extra : "";
+		return $this->Extra ? ' ' . $this->Extra : '';
 	}
 
 	//------------------------------------------------------------------------------------ getSqlType
@@ -215,19 +245,19 @@ class Mysql_Column implements Dao_Column
 	 */
 	public function getType()
 	{
-		$i = strpos($this->Type, "(");
+		$i = strpos($this->Type, '(');
 		$type = ($i === false) ? $this->Type : substr($this->Type, 0, $i);
 		switch ($type) {
-			case "decimal": case "float": case "double":
-				return new Type("float");
-			case "tinyint": case "smallint": case "mediumint": case "int": case "bigint":
-				return new Type("integer");
-			case "enum": case "set":
-				return (new Type("string"))->multiple();
-			case "date": case "datetime": case "timestamp": case "time": case "year":
-				return new Type('SAF\Framework\Date_Time');
+			case 'decimal': case 'float': case 'double':
+				return new Type(Type::FLOAT);
+			case 'tinyint': case 'smallint': case 'mediumint': case 'int': case 'bigint':
+				return new Type(Type::INTEGER);
+			case 'enum': case 'set':
+				return (new Type(Type::STRING))->multiple();
+			case 'date': case 'datetime': case 'timestamp': case 'time': case 'year':
+				return new Type(Date_Time::class);
 			default:
-				return new Type("string");
+				return new Type(Type::STRING);
 		}
 	}
 
@@ -249,16 +279,16 @@ class Mysql_Column implements Dao_Column
 		$column_name = $this->getName();
 		$type = $this->getSqlType();
 		$postfix = $this->getSqlPostfix();
-		$sql = "`" . $column_name . "` " . $type;
+		$sql = '`' . $column_name . '` ' . $type;
 		if (!$this->canBeNull()) {
-			$sql .= " NOT NULL";
+			$sql .= ' NOT NULL';
 		}
-		if ($postfix != " auto_increment") {
-			$sql .= " DEFAULT " . Sql_Value::escape($this->getDefaultValue());
+		if ($postfix != ' auto_increment') {
+			$sql .= ' DEFAULT ' . Sql_Value::escape($this->getDefaultValue());
 		}
 		$sql .= $postfix;
-		if ($postfix === " auto_increment") {
-			$sql .= " PRIMARY KEY";
+		if ($postfix === ' auto_increment') {
+			$sql .= ' PRIMARY KEY';
 		}
 		return $sql;
 	}

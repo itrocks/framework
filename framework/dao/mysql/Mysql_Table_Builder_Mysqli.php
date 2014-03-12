@@ -11,31 +11,40 @@ abstract class Mysql_Table_Builder_Mysqli
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * Builds a Mysql_Table taken from database, using a mysqli connection
+	 * Builds a Mysql_Table or Mysql_Table[] taken from database, using a mysqli connection
 	 *
-	 * @param $mysqli     mysqli
-	 * @param $table_name string
-	 * @return Mysql_Table
+	 * @param $mysqli        mysqli
+	 * @param $table_name    string
+	 * @param $database_name string
+	 * @return Mysql_Table|Mysql_Table[] will be a single table only if $table_name is a
+	 *         single table name without jokers characters
 	 */
-	public static function build(mysqli $mysqli, $table_name)
+	public static function build(mysqli $mysqli, $table_name = null, $database_name = null)
 	{
-		$result = $mysqli->query("SHOW TABLE STATUS LIKE '$table_name'");
-		/** @var $table Mysql_Table */
-		$table = $result->fetch_object('SAF\Framework\Mysql_Table');
-		$result->free();
+		$tables = [];
 		$result = $mysqli->query(
-			"SELECT column_name `Field`,"
-			. " IFNULL(CONCAT(column_type, ' CHARACTER SET ', character_set_name, ' COLLATE ', collation_name), column_type) `Type`,"
-			. " is_nullable `Null`, column_key `Key`, column_default `Default`, extra `Extra`"
-			. " FROM information_schema.columns"
-			. " WHERE table_schema = DATABASE() AND table_name = '$table_name'"
+			'SHOW TABLE STATUS'
+			. (isset($database_name) ? ' IN "' . $database_name . '"' : '')
+			. (isset($table_name) ? ' LIKE "' . $table_name . '"' : '')
 		);
-		/** @var $column Mysql_Column */
-		while ($column = $result->fetch_object('SAF\Framework\Mysql_Column')) {
-			$table->addColumn($column);
+		/** @var $table Mysql_Table */
+		while ($table = $result->fetch_object(Mysql_Table::class)) {
+			foreach (Mysql_Column::buildTable($mysqli, $table->getName(), $database_name) as $column) {
+				$table->addColumn($column);
+			}
+			foreach (
+				Mysql_Foreign_Key::buildTable($mysqli, $table->getName(), $database_name) as $foreign_key
+			) {
+				$table->addForeignKey($foreign_key);
+			}
+			$tables[] = $table;
 		}
 		$result->free();
-		return $table;
+
+		$unique = isset($table_name)
+			&& (strpos($table_name, '%') === false) && (strpos($table_name, '_') === false);
+
+		return $unique ? reset($tables) : $tables;
 	}
 
 }

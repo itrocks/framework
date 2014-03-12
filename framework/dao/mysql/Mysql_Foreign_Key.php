@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use mysqli;
+
 /**
  * Mysql foreign key
  */
@@ -67,7 +69,7 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 
 	//--------------------------------------------------------------------------------- buildProperty
 	/**
-	 * Builds a Mysql_Column object using a class property
+	 * Builds a Mysql_Foreign_Key object using a class property
 	 *
 	 * @param $table_name string
 	 * @param $property   Reflection_Property
@@ -83,6 +85,64 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 		$foreign_key->Reference_fields = self::propertyReferenceFieldsToMysql($property);
 		$foreign_key->Reference_table  = self::propertyReferenceTableToMysql($property);
 		return $foreign_key;
+	}
+
+	//------------------------------------------------------------------------------------ buildTable
+	/**
+	 * Builds a Mysql_Foreign_Key[] object array using database information for a given table
+	 *
+	 * @param $mysqli        mysqli
+	 * @param $table_name    string
+	 * @param $database_name string
+	 * @return Mysql_Foreign_Key[]
+	 */
+	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
+	{
+		$database_name = isset($database_name) ? ('"' . $database_name . '"') : 'DATABASE()';
+		$foreign_keys = [];
+		$result = $mysqli->query(
+			'SELECT constraint_name `Constraint`,'
+			. ' RIGHT(constraint_name, LENGTH(constraint_name) - LOCATE(".", constraint_name)) `Fields`,'
+			. ' update_rule `On_update`, delete_rule `On_delete`,'
+			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
+			. ' FROM information_schema.referential_constraints'
+			. ' WHERE constraint_schema = ' . $database_name . ' AND table_name = "' . $table_name . '"'
+		);
+		while ($foreign_key = $result->fetch_object(Mysql_Foreign_Key::class)) {
+			$foreign_keys[] = $foreign_key;
+		}
+		$result->free();
+		return $foreign_keys;
+	}
+
+	//------------------------------------------------------------------------------- buildReferences
+	/**
+	 * Builds a Mysql_Foreign_Key[] object array using database information for a given
+	 * referenced table
+	 *
+	 * @param $mysqli        mysqli
+	 * @param $table_name    string
+	 * @param $database_name string
+	 * @return Mysql_Foreign_Key[]
+	 */
+	public static function buildReferences(mysqli $mysqli, $table_name, $database_name = null)
+	{
+		$database_name = isset($database_name) ? ('"' . $database_name . '"') : 'DATABASE()';
+		$foreign_keys = [];
+		$result = $mysqli->query(
+			'SELECT constraint_name `Constraint`,'
+			. ' RIGHT(constraint_name, LENGTH(constraint_name) - LOCATE(".", constraint_name)) `Fields`,'
+			. ' update_rule `On_update`, delete_rule `On_delete`,'
+			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
+			. ' FROM information_schema.referential_constraints'
+			. ' WHERE constraint_schema = ' . $database_name
+			. ' AND referenced_table_name = "' . $table_name . '"'
+		);
+		while ($foreign_key = $result->fetch_object(Mysql_Foreign_Key::class)) {
+			$foreign_keys[] = $foreign_key;
+		}
+		$result->free();
+		return $foreign_keys;
 	}
 
 	//--------------------------------------------------------------------------------- getConstraint
