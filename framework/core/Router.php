@@ -27,13 +27,13 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 	/**
 	 * @var string[] key is full class name, value is file path
 	 */
-	public $class_paths = array();
+	public $class_paths = [];
 
 	//----------------------------------------------------------------------------- $controller_calls
 	/**
-	 * @var array keys are controller and method name, value is array($class_name, $method)
+	 * @var array keys are controller and method name, value is [$class_name, $method)
 	 */
-	public $controller_calls = array();
+	public $controller_calls = [];
 
 	//-------------------------------------------------------------------------------------- $exclude
 	/**
@@ -45,13 +45,13 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 	/**
 	 * @var string[] key is short class name, value is full class name
 	 */
-	public $full_class_names = array();
+	public $full_class_names = [];
 
 	//------------------------------------------------------------------------------- $html_templates
 	/**
 	 * @var array
 	 */
-	public $html_templates = array();
+	public $html_templates = [];
 
 	//---------------------------------------------------------------------------------- $routes_file
 	/**
@@ -63,7 +63,7 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 	/**
 	 * @var array
 	 */
-	public $view_calls = array();
+	public $view_calls = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -71,7 +71,7 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 	 *
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = array())
+	public function __construct($configuration = [])
 	{
 		if (isset($configuration['exclude'])) {
 			$this->exclude = '(' . join('|', $configuration['exclude']) . ')';
@@ -84,7 +84,7 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 		}
 
 		Namespaces::$router = $this;
-		spl_autoload_register(array($this, 'autoload'));
+		spl_autoload_register([$this, 'autoload']);
 	}
 
 	//------------------------------------------------------------------------------------ __destruct
@@ -179,7 +179,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	 */
 	private function filesFor($short_class_name)
 	{
-		$result = array();
+		$result = [];
 		$match = null;
 		foreach (explode(':', get_include_path()) as $path) {
 			if ($this->exclude) preg_match($this->exclude, $path, $match);
@@ -275,7 +275,10 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		Controller_Uri $object, Around_Method_Joinpoint $joinpoint
 	) {
 		if (isset($this->controller_calls[$object->controller_name][$object->feature_name])) {
-			return array($this->controller_calls[$object->controller_name][$object->feature_name]);
+			$controller = $this->controller_calls[$object->controller_name][$object->feature_name];
+			if (@method_exists($controller[0], $controller[1])) {
+				return [$controller];
+			}
 		}
 		return $joinpoint->process();
 	}
@@ -293,12 +296,12 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		if (is_array($feature_names)) {
 			$feature_names = join('.', $feature_names);
 		}
-		if (
-			isset($this->html_templates[$class_name][$feature_names])
-			&& file_exists($this->html_templates[$class_name][$feature_names])
-		) {
-			unset($this->class_name);
-			return array($this->html_templates[$class_name][$feature_names]);
+		if (isset($this->html_templates[$class_name][$feature_names])) {
+			$html_template = $this->html_templates[$class_name][$feature_names];
+			if (file_exists($html_template)) {
+				unset($this->class_name);
+				return [$html_template];
+			}
 		}
 		$this->class_name = $class_name;
 		return $joinpoint->process();
@@ -318,7 +321,10 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			$feature_names = join('.', $feature_names);
 		}
 		if (isset($this->view_calls[$class_name][$feature_names])) {
-			return array($this->view_calls[$class_name][$feature_names]);
+			$view = $this->view_calls[$class_name][$feature_names];
+			if (@method_exists($view[0], $view[1])) {
+				return [$view];
+			}
 		}
 		return $joinpoint->process();
 	}
@@ -331,28 +337,28 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			array(Controller_Uri::class, 'getPossibleControllerCalls'),
-			array($this, 'getPossibleControllerCalls')
+			[Controller_Uri::class, 'getPossibleControllerCalls'],
+			[$this, 'getPossibleControllerCalls']
 		);
 		$aop->beforeMethod(
-			array(Main_Controller::class, 'executeController'),
-			array($this, 'setPossibleControllerCall')
+			[Main_Controller::class, 'executeController'],
+			[$this, 'setPossibleControllerCall']
 		);
 		$aop->aroundMethod(
-			array(View::class, 'getPossibleViews'),
-			array($this, 'getPossibleViewCalls')
+			[View::class, 'getPossibleViews'],
+			[$this, 'getPossibleViewCalls']
 		);
 		$aop->beforeMethod(
-			array(View::class, 'executeView'),
-			array($this, 'setPossibleViewCall')
+			[View::class, 'executeView'],
+			[$this, 'setPossibleViewCall']
 		);
 		$aop->aroundMethod(
-			array(Html_View_Engine::class, 'getPossibleTemplates'),
-			array($this, 'getPossibleHtmlTemplates')
+			[Html_View_Engine::class, 'getPossibleTemplates'],
+			[$this, 'getPossibleHtmlTemplates']
 		);
 		$aop->beforeMethod(
-			array(Html_Default_View::class, 'executeTemplate'),
-			array($this, 'setPossibleHtmlTemplate')
+			[Html_Default_View::class, 'executeTemplate'],
+			[$this, 'setPossibleHtmlTemplate']
 		);
 	}
 
@@ -373,9 +379,9 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			$changes = true;
 		}
 		if ($changes) {
-			$this->controller_calls[$uri->controller_name][$uri->feature_name] = array(
+			$this->controller_calls[$uri->controller_name][$uri->feature_name] = [
 				$controller, $method_name
-			);
+			];
 			$this->changes = true;
 		}
 	}
@@ -419,7 +425,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			$changes = true;
 		}
 		if ($changes) {
-			$this->view_calls[$class_name][$features] = array($view, $view_method_name);
+			$this->view_calls[$class_name][$features] = [$view, $view_method_name];
 			$this->changes = true;
 		}
 	}
