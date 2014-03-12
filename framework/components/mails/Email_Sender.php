@@ -49,14 +49,16 @@ class Email_Sender implements Plugins\Configurable
 	 *
 	 * @param $configuration string[]|integer[]
 	 */
-	public function __construct($configuration)
+	public function __construct($configuration = [])
 	{
-		$this->default_smtp_account = new Email_Smtp_Account(
-			isset($configuration['host']) ?     $configuration['host']     : '',
-			isset($configuration['login']) ?    $configuration['login']    : '',
-			isset($configuration['password']) ? $configuration['password'] : '',
-			isset($configuration['port']) ?     $configuration['port']     : null
-		);
+		if ($configuration) {
+			$this->default_smtp_account = new Email_Smtp_Account(
+				isset($configuration['host']) ?     $configuration['host']     : '',
+				isset($configuration['login']) ?    $configuration['login']    : '',
+				isset($configuration['password']) ? $configuration['password'] : '',
+				isset($configuration['port']) ?     $configuration['port']     : null
+			);
+		}
 	}
 
 	//------------------------------------------------------------------------------------------ send
