@@ -32,7 +32,13 @@ class Html_Delete_And_Replace_View implements Html_View
 	 */
 	protected function getFilters($object)
 	{
-		return ['id' => '!' . Dao::getObjectIdentifier($object)];
+		$filters = ['id' => '!' . Dao::getObjectIdentifier($object)];
+		foreach ((new Reflection_Class(get_class($object)))->getAllProperties() as $property) {
+			if ($property->getAnnotation('replace_filter')->value) {
+				$filters[$property->name] = Dao::getObjectIdentifier($object, $property->name);
+			}
+		}
+		return $filters;
 	}
 
 	//------------------------------------------------------------------------------------------- run

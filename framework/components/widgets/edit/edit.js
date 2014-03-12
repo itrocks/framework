@@ -91,7 +91,7 @@ $('document').ready(function()
 				for (var key in filters) if (filters.hasOwnProperty(key)) {
 					var filter = filters[key].split('=');
 					var $filter_element = $($element.get(0).form).find('[name="' + filter[1] + '"]');
-					if ((filter[0].substr(0, 2) != 'id') || $filter_element.val()) {
+					if ($filter_element.length) {
 						request['filters[' + filter[0] + ']'] = $filter_element.val();
 					}
 					else {
