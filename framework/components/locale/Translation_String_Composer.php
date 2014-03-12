@@ -87,12 +87,12 @@ class Translation_String_Composer implements Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			array(Translations::class, 'translate'),
-			array($this, 'onTranslate')
+			[Translations::class, 'translate'],
+			[$this, 'onTranslate']
 		);
 		$aop->afterMethod(
-			array(Reflection_Property_Value::class, 'display'),
-			array($this, 'afterReflectionPropertyValueDisplay')
+			[Reflection_Property_Value::class, 'display'],
+			[$this, 'afterReflectionPropertyValueDisplay']
 		);
 	}
 

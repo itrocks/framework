@@ -68,7 +68,7 @@ class Reflection_Property_View
 		if (count($values) == 2) {
 			return $value ? $values[0] : $values[1];
 		}
-		return $value ? "yes" : "no";
+		return $value ? 'yes' : 'no';
 	}
 
 	//--------------------------------------------------------------------------------- formatDefault
@@ -131,10 +131,10 @@ class Reflection_Property_View
 			return $this->formatDateTime($value);
 		} else {
 			switch ($type) {
-				case 'boolean': return $this->formatBoolean($value);
-				case 'float':   return $this->formatFloat($value);
-				case 'integer': return $this->formatInteger($value);
-				case 'string':  return $this->formatString($value);
+				case Type::BOOLEAN: return $this->formatBoolean($value);
+				case Type::FLOAT:   return $this->formatFloat($value);
+				case Type::INTEGER: return $this->formatInteger($value);
+				case Type::STRING:  return $this->formatString($value);
 			}
 			return $this->formatDefault($value);
 		}

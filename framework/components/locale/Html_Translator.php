@@ -19,13 +19,13 @@ class Html_Translator implements Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->afterMethod(
-			array(Html_Template::class, 'parse'), array($this, 'translatePage')
+			[Html_Template::class, 'parse'], [$this, 'translatePage']
 		);
 		$aop->beforeMethod(
-			array(Html_Template::class, 'parseString'), array($this, 'translateString')
+			[Html_Template::class, 'parseString'], [$this, 'translateString']
 		);
 		$aop->beforeMethod(
-			array(Html_Option::class, 'setContent'), array($this, 'translateOptionContent')
+			[Html_Option::class, 'setContent'], [$this, 'translateOptionContent']
 		);
 	}
 
@@ -41,7 +41,7 @@ class Html_Translator implements Plugins\Registerable
 		$i = 0;
 		while (($i = strpos($content, '|', $i)) !== false) {
 			$i++;
-			if (($i < strlen($content)) && (!in_array($content[$i], array(' ', '\n', '\r', '\t')))) {
+			if (($i < strlen($content)) && (!in_array($content[$i], [' ', CR, LF, TAB]))) {
 				$this->translateElement($content, $i, $context);
 			}
 		}
