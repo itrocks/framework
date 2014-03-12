@@ -96,9 +96,9 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	public function dumpLog()
 	{
 		echo '<h3>Mysql log</h3>';
-		echo '<div class="Mysql logger query">' . "\n";
-		echo '<pre>' . print_r($this->queries_log, true) . '</pre>' . "\n";
-		echo ' </div>' . "\n";
+		echo '<div class="Mysql logger query">' . LF;
+		echo '<pre>' . print_r($this->queries_log, true) . '</pre>' . LF;
+		echo ' </div>' . LF;
 	}
 
 	//--------------------------------------------------------------------------------------- onQuery
@@ -110,7 +110,7 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 	public function onQuery($query)
 	{
 		if ($this->continue && $this->display_log) {
-			echo '<div class="Mysql logger query">' . $query . '</div>' . "\n";
+			echo '<div class="Mysql logger query">' . $query . '</div>' . LF;
 		}
 		$this->queries_log[] = $query;
 	}
@@ -127,7 +127,7 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 		$mysqli = $object;
 		if ($mysqli->last_errno) {
 			$error = $mysqli->last_errno . ': ' . $mysqli->error . '[' . $query . ']';
-			echo '<div class="Mysql logger error">' . $error . '</div>' . "\n";
+			echo '<div class="Mysql logger error">' . $error . '</div>' . LF;
 			$this->errors_log[] = $error;
 		}
 	}

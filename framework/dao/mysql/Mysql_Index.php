@@ -17,7 +17,7 @@ class Mysql_Index implements Dao_Index
 	/**
 	 * Builds a Mysql_Index for a column name that is a link to another class
 	 *
-	 * @param $column_name string the column name used to create the index (with or without "id_")
+	 * @param $column_name string the column name used to create the index (with or without 'id_')
 	 * @return Mysql_Index
 	 */
 	public static function buildLink($column_name)
@@ -63,14 +63,14 @@ class Mysql_Index implements Dao_Index
 	 */
 	public function toSql()
 	{
-		$column_names = array();
+		$column_names = [];
 		foreach ($this->keys as $key) {
 			$column_names[] = $key->toSql();
 		}
 		$type = $this->getSqlType();
-		return "KEY `" . $this->getName() . "` "
-			. ($type ? ($type . " ") : "")
-			. "(" . join(", ", $column_names) . ")";
+		return 'KEY `' . $this->getName() . '` '
+			. ($type ? ($type . ' ') : '')
+			. '(' . join(', ', $column_names) . ')';
 	}
 
 }

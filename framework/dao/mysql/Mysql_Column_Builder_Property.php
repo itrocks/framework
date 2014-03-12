@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use DateTime;
+
 /**
  * This builds a mysql column associated to a class property
  */
@@ -37,10 +39,10 @@ trait Mysql_Column_Builder_Property
 					$default = 0;
 				}
 				elseif ($property_type->isString()) {
-					$default = "";
+					$default = '';
 				}
 				elseif ($property_type->isDateTime()) {
-					$default = "0000-00-00 00:00:00";
+					$default = '0000-00-00 00:00:00';
 				}
 			}
 		}
@@ -57,7 +59,7 @@ trait Mysql_Column_Builder_Property
 		Reflection_Property $property
 	) {
 		// TODO automatic keys on object linked tables
-		return "";
+		return '';
 	}
 
 	//--------------------------------------------------------------------------- propertyNameToMysql
@@ -72,7 +74,7 @@ trait Mysql_Column_Builder_Property
 		$type = $property->getType();
 		return ($type->isBasic() || ($type->isMultiple() && $type->getElementType()->isString()))
 			? $property->name
-			: "id_" . $property->name;
+			: 'id_' . $property->name;
 	}
 
 	//--------------------------------------------------------------------------- propertyNullToMysql
@@ -84,7 +86,7 @@ trait Mysql_Column_Builder_Property
 	 */
 	private static function propertyNullToMysql(Reflection_Property $property)
 	{
-		return $property->getAnnotation("null")->value ? "YES" : "NO";
+		return $property->getAnnotation('null')->value ? 'YES' : 'NO';
 	}
 
 	//--------------------------------------------------------------------------- propertyTypeToMysql
@@ -100,11 +102,11 @@ trait Mysql_Column_Builder_Property
 		if ($property_type->isBasic()) {
 			if ($property_type->hasSize()) {
 				/** @var integer $max_length */
-				$max_length = $property->getAnnotation("max_length")->value;
-				$max_value  = $property->getAnnotation("max_value")->value;
-				$min_value  = $property->getAnnotation("min_value")->value;
-				$precision  = $property->getAnnotation("precision")->value;
-				$signed     = $property->getAnnotation("signed")->value;
+				$max_length = $property->getAnnotation('max_length')->value;
+				$max_value  = $property->getAnnotation('max_value')->value;
+				$min_value  = $property->getAnnotation('min_value')->value;
+				$precision  = $property->getAnnotation('precision')->value;
+				$signed     = $property->getAnnotation('signed')->value;
 				$signed_length = $max_length + ($signed ? 1 : 0);
 				if (!isset($max_length)) {
 					if ($property_type->isNumeric()) {
@@ -116,68 +118,68 @@ trait Mysql_Column_Builder_Property
 					}
 				}
 				if ($property_type->isInteger()) {
-					return ($max_length <= 3  && $min_value >= -128 && $max_value <= 127 && $signed) ? "tinyint($signed_length)" : (
-						($max_length <= 3 && $min_value >= 0 && $max_value <= 255 && !$signed) ? "tinyint($max_length) unsigned" : (
-						($max_length <= 5 && $min_value >= -32768 && $max_value <= 32767) ? "smallint($signed_length)" : (
-						($max_length <= 5 && $min_value >= 0 && $max_value <= 65535) ? "smallint($max_length) unsigned" : (
-						($max_length <= 7 && $min_value >= -8388608 && $max_value <= 8388607) ? "mediumint($signed_length)" : (
-						($max_length <= 8 && $min_value >= 0 && $max_value <= 16777215) ? "mediumint($max_length) unsigned" : (
-						($max_length <= 10 && $min_value >= -2147483648 && $max_value <= 2147483647) ? "int($signed_length)" : (
-						($max_length <= 10 && $min_value >= 0 && $max_value <= 4294967295) ? "int($max_length) unsigned" : (
-						($max_length <= 19 && $min_value >= -9223372036854775808 && $max_value <= 9223372036854775806) ? "bigint($signed_length)" : (
-						"bigint($max_length) unsigned"
+					return ($max_length <= 3  && $min_value >= -128 && $max_value <= 127 && $signed) ? 'tinyint(' . $signed_length . ')' : (
+						($max_length <= 3 && $min_value >= 0 && $max_value <= 255 && !$signed) ? 'tinyint(' . $max_length . ') unsigned' : (
+						($max_length <= 5 && $min_value >= -32768 && $max_value <= 32767) ? 'smallint(' . $signed_length . ')' : (
+						($max_length <= 5 && $min_value >= 0 && $max_value <= 65535) ? 'smallint(' . $max_length . ') unsigned' : (
+						($max_length <= 7 && $min_value >= -8388608 && $max_value <= 8388607) ? 'mediumint(' . $signed_length . ')' : (
+						($max_length <= 8 && $min_value >= 0 && $max_value <= 16777215) ? 'mediumint(' . $max_length . ') unsigned' : (
+						($max_length <= 10 && $min_value >= -2147483648 && $max_value <= 2147483647) ? 'int(' . $signed_length . ')' : (
+						($max_length <= 10 && $min_value >= 0 && $max_value <= 4294967295) ? 'int(' . $max_length . ') unsigned' : (
+						($max_length <= 19 && $min_value >= -9223372036854775808 && $max_value <= 9223372036854775806) ? 'bigint(' . $signed_length . ')' : (
+						'bigint(' . $max_length . ') unsigned'
 					)))))))));
 				}
 				elseif ($property_type->isFloat()) {
-					return ($precision ? "decimal($signed_length, $precision)" : "double");
+					return ($precision ? 'decimal(' . $signed_length . ', ' . $precision . ')' : 'double');
 				}
-				elseif ($property->getAnnotation("binary")->value) {
-					return ($max_length <= 65535) ? "blob" : (
-						($max_length <= 16777215) ? "mediumblob" :
-						"longblob"
+				elseif ($property->getAnnotation('binary')->value) {
+					return ($max_length <= 65535) ? 'blob' : (
+						($max_length <= 16777215) ? 'mediumblob' :
+						'longblob'
 					);
 				}
 				else {
-					return ($max_length <= 3) ? "char($max_length)" : (
-						($max_length <= 255) ? "varchar($max_length)" : (
-						($max_length <= 65535) ? "text" : (
-						($max_length <= 16777215) ? "mediumtext" :
-						"longtext"
-					))) . " CHARACTER SET utf8 COLLATE utf8_general_ci";
+					return ($max_length <= 3) ? 'char(' . $max_length . ')' : (
+						($max_length <= 255) ? 'varchar(' . $max_length . ')' : (
+						($max_length <= 65535) ? 'text' : (
+						($max_length <= 16777215) ? 'mediumtext' :
+						'longtext'
+					))) . ' CHARACTER SET utf8 COLLATE utf8_general_ci';
 				}
 			}
 			switch ($property_type->asString()) {
-				case "array":
+				case Type::_ARRAY:
 					return null;
-				case "boolean":
-					return "tinyint(1)";
-				case "callable":
+				case Type::BOOLEAN:
+					return 'tinyint(1)';
+				case Type::_CALLABLE:
 					return null;
-				case "null": case "NULL":
+				case Type::null: case Type::NULL:
 					return null;
-				case "resource":
+				case Type::RESOURCE:
 					return null;
-				case 'Date_Time': case 'SAF\Framework\Date_Time':
-					return "datetime";
+				case DateTime::class: case Date_Time::class:
+					return 'datetime';
 				default:
-					return "char(255)";
+					return 'char(255)';
 			}
 		}
-		elseif ($property_type->asString() === "string[]") {
+		elseif ($property_type->asString() === Type::STRING_ARRAY) {
 			/** @var $values string[] */
-			$values = array();
-			foreach ($property->getListAnnotation("values")->values() as $key => $value) {
+			$values = [];
+			foreach ($property->getListAnnotation('values')->values() as $key => $value) {
 				$values[$key] = str_replace("'", "''", $value);
 			}
 			return $values
 				? (
-					($property->getAnnotation("set")->value ? "set" : "enum")
+					($property->getAnnotation('set')->value ? 'set' : 'enum')
 					. "('" . join("','", $values) . "')"
 				)
-				: "char(255)";
+				: 'char(255)';
 		}
 		else {
-			return "bigint(18) unsigned";
+			return 'bigint(18) unsigned';
 		}
 	}
 

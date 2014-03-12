@@ -30,7 +30,7 @@ class Mysql_Table_Builder_Class
 	 */
 	public function build($class_name)
 	{
-		$this->excluded_properties = array();
+		$this->excluded_properties = [];
 		return $this->buildInternal($class_name, null);
 	}
 
@@ -85,7 +85,7 @@ class Mysql_Table_Builder_Class
 	{
 		$class = new Reflection_Class($class_name);
 		$link = $class->getAnnotation('link')->value;
-		$tables = $link ? $this->buildLinkTable($link, $class_name) : array();
+		$tables = $link ? $this->buildLinkTable($link, $class_name) : [];
 		$tables[] = $this->buildClassTable($class, $more_field);
 		return $tables;
 	}

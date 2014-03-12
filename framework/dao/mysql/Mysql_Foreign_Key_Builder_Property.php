@@ -15,8 +15,8 @@ trait Mysql_Foreign_Key_Builder_Property
 	 */
 	private static function propertyConstraintToMysql($table_name, Reflection_Property $property)
 	{
-		return $table_name . "."
-		. ($property->getAnnotation("link")->value ? ("id_" . $property->name) : $property->name);
+		return $table_name . '.'
+		. ($property->getAnnotation('link')->value ? ('id_' . $property->name) : $property->name);
 	}
 
 	//------------------------------------------------------------------------- propertyFieldsToMysql
@@ -26,7 +26,7 @@ trait Mysql_Foreign_Key_Builder_Property
 	 */
 	private static function propertyFieldsToMysql(Reflection_Property $property)
 	{
-		return "id_" . $property->name;
+		return 'id_' . $property->name;
 	}
 
 	//----------------------------------------------------------------- propertyReferenceTableToMysql
@@ -45,7 +45,7 @@ trait Mysql_Foreign_Key_Builder_Property
 	 */
 	private static function propertyReferenceFieldsToMysql()
 	{
-		return "id";
+		return 'id';
 	}
 
 	//----------------------------------------------------------------------- propertyOnDeleteToMysql
@@ -55,7 +55,7 @@ trait Mysql_Foreign_Key_Builder_Property
 	 */
 	private static function propertyOnDeleteToMysql(Reflection_Property $property)
 	{
-		return $property->getAnnotation("composite")->value ? "CASCADE" : "RESTRICT";
+		return $property->getAnnotation('composite')->value ? 'CASCADE' : 'RESTRICT';
 	}
 
 	//----------------------------------------------------------------------- propertyOnUpdateToMysql
@@ -64,7 +64,7 @@ trait Mysql_Foreign_Key_Builder_Property
 	 */
 	private static function propertyOnUpdateToMysql()
 	{
-		return "RESTRICT";
+		return 'RESTRICT';
 	}
 
 }

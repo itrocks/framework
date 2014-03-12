@@ -151,7 +151,7 @@ class Mysql_Key implements Dao_Key
 	 */
 	public function toSql()
 	{
-		return "`" . $this->Column_name . "`";
+		return '`' . $this->Column_name . '`';
 	}
 
 }

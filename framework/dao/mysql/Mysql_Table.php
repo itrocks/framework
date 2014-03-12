@@ -28,7 +28,7 @@ class Mysql_Table implements Dao_Table
 	//--------------------------------------------------------------------------------------- $Engine
 	/**
 	 * @var string
-	 * @values "ARCHIVE", "BDB", "CSV", "FEDERATED", "InnoDB", "MyISAM", "MEMORY", "MERGE", "NDBCluster"
+	 * @values 'ARCHIVE', 'BDB', 'CSV', 'FEDERATED', 'InnoDB', 'MyISAM', 'MEMORY', 'MERGE', 'NDBCluster'
 	 */
 	private $Engine;
 
@@ -46,7 +46,7 @@ class Mysql_Table implements Dao_Table
 	{
 		if (isset($name)) {
 			$this->Name = $name;
-			$this->Engine = "InnoDB";
+			$this->Engine = 'InnoDB';
 		}
 	}
 
@@ -102,7 +102,7 @@ class Mysql_Table implements Dao_Table
 	 */
 	public function getForeignKeys()
 	{
-		return is_array($this->foreign_keys) ? $this->foreign_keys : array();
+		return is_array($this->foreign_keys) ? $this->foreign_keys : [];
 	}
 
 	//------------------------------------------------------------------------------------ getIndexes
@@ -111,7 +111,7 @@ class Mysql_Table implements Dao_Table
 	 */
 	public function getIndexes()
 	{
-		return is_array($this->indexes) ? $this->indexes : array();
+		return is_array($this->indexes) ? $this->indexes : [];
 	}
 
 	//--------------------------------------------------------------------------------------- getName
@@ -129,7 +129,7 @@ class Mysql_Table implements Dao_Table
 	 */
 	public function getSqlPostfix()
 	{
-		return " ENGINE=" . $this->Engine;
+		return ' ENGINE=' . $this->Engine;
 	}
 
 	//------------------------------------------------------------------------------------- hasColumn

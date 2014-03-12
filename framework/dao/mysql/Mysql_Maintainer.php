@@ -41,11 +41,11 @@ class Mysql_Maintainer implements Plugins\Registerable
 		$table = new Mysql_Table($table_name);
 		foreach ($column_names as $column_name) {
 			$table->addColumn(
-				($column_name === "id")
+				($column_name === 'id')
 				? Mysql_Column::buildId()
 				: Mysql_Column::buildLink($column_name)
 			);
-			if (substr($column_name, 0, 3) === "id_") {
+			if (substr($column_name, 0, 3) === 'id_') {
 				$index = Mysql_Index::buildLink($column_name);
 				$table->addIndex($index);
 			}
@@ -73,14 +73,14 @@ class Mysql_Maintainer implements Plugins\Registerable
 		}
 		// if no class name, create it from columns names in the query
 		/** @noinspection PhpWrongStringConcatenationInspection */
-		$alias = "t" . (
-			(substr($query, strpos($query, "`" . $table_name . "` t") + strlen($table_name) + 4)) + 0
+		$alias = 't' . (
+			(substr($query, strpos($query, '`' . $table_name . '` t') + strlen($table_name) + 4)) + 0
 		);
 		$i = 0;
-		$column_names = array();
-		while (($i = strpos($query, $alias . ".", $i)) !== false) {
+		$column_names = [];
+		while (($i = strpos($query, $alias . '.', $i)) !== false) {
 			$i += strlen($alias) + 1;
-			$field_name = substr($query, $i, strpos($query, " ", $i) - $i);
+			$field_name = substr($query, $i, strpos($query, ' ', $i) - $i);
 			$column_names[$field_name] = $field_name;
 		}
 		if (!$column_names) {
@@ -92,7 +92,7 @@ class Mysql_Maintainer implements Plugins\Registerable
 				);
 			}
 			elseif ($mysqli->isInsert($query)) {
-				$column_names = explode(",", str_replace(array("`", " "), "", mParse($query, "(", ")")));
+				$column_names = explode(',', str_replace(['`', ' '], '', mParse($query, '(', ')')));
 			}
 			elseif ($mysqli->isSelect($query)) {
 				// @todo create table without context SELECT columns detection (needs complete sql analyst)
@@ -126,9 +126,9 @@ class Mysql_Maintainer implements Plugins\Registerable
 	 */
 	private static function guessContext($query)
 	{
-		$context = array();
+		$context = [];
 		// first clause between `...` is probably the name of the table
-		$table_name = mParse($query, "`", "`");
+		$table_name = mParse($query, '`', '`');
 		if ($table_name) {
 			$class_name = Dao::classNameOf($table_name);
 			if ($class_name) {
@@ -136,10 +136,10 @@ class Mysql_Maintainer implements Plugins\Registerable
 			}
 		}
 		// every JOIN `...` may be the name of a table
-		$joins = explode("JOIN `", $query);
+		$joins = explode('JOIN `', $query);
 		array_shift($joins);
 		foreach ($joins as $join) {
-			$table_name = lParse($join, "`");
+			$table_name = lParse($join, '`');
 			if ($table_name) {
 				$class_name = Dao::classNameOf($table_name);
 				if ($class_name) {
@@ -168,21 +168,21 @@ class Mysql_Maintainer implements Plugins\Registerable
 			if (isset($mysqli->context)) {
 				$error = $mysqli->error;
 				$retry = false;
-				$context = is_array($mysqli->context) ? $mysqli->context : array($mysqli->context);
+				$context = is_array($mysqli->context) ? $mysqli->context : [$mysqli->context];
 				if (
 					($error_number == Mysql_Errors::ER_CANT_CREATE_TABLE)
-					&& strpos($error, "(errno: 150)")
+					&& strpos($error, '(errno: 150)')
 				) {
 					$error_table_names = self::parseNamesFromQuery($query);
 					foreach ($error_table_names as $error_table_name) {
 						if (!$mysqli->exists($error_table_name)) {
-							self::createImplicitTable($mysqli, $error_table_name, array("id"));
+							self::createImplicitTable($mysqli, $error_table_name, ['id']);
 						}
 						$retry = true;
 					}
 				}
 				elseif ($error_number == Mysql_Errors::ER_NO_SUCH_TABLE) {
-					$error_table_names = array(self::parseNameFromError($error));
+					$error_table_names = [self::parseNameFromError($error)];
 					if (!reset($error_table_names)) {
 						$error_table_names = self::parseNamesFromQuery($query);
 					}
@@ -234,10 +234,10 @@ class Mysql_Maintainer implements Plugins\Registerable
 		$i = strpos($error, "'") + 1;
 		$j = strpos($error, "'", $i);
 		$name = substr($error, $i, $j - $i);
-		if (strpos($name, ".")) {
-			$name = substr($name, strrpos($name, ".") + 1);
+		if (strpos($name, '.')) {
+			$name = substr($name, strrpos($name, '.') + 1);
 		}
-		if (substr($name, 0, 1) == "`" && substr($name, -1) == "`") {
+		if (substr($name, 0, 1) == '`' && substr($name, -1) == '`') {
 			$name = substr($name, 1, -1);
 		}
 		return $name;
@@ -252,11 +252,11 @@ class Mysql_Maintainer implements Plugins\Registerable
 	 */
 	private static function parseNamesFromQuery($query)
 	{
-		$tables = array();
+		$tables = [];
 		$i = 0;
-		while (($i = strpos($query, "REFERENCES ", $i)) !== false) {
-			$i = strpos($query, "`", $i) + 1;
-			$j = strpos($query, "`", $i);
+		while (($i = strpos($query, 'REFERENCES ', $i)) !== false) {
+			$i = strpos($query, '`', $i) + 1;
+			$j = strpos($query, '`', $i);
 			$table_name = substr($query, $i, $j - $i);
 			$tables[substr($query, $i, $j - $i)] = $table_name;
 			$i = $j + 1;
@@ -273,9 +273,7 @@ class Mysql_Maintainer implements Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod(
-			array('SAF\Framework\Contextual_Mysqli', "query"), array($this, "onMysqliQuery")
-		);
+		$aop->afterMethod([Contextual_Mysqli::class, 'query'], [$this, 'onMysqliQuery']);
 	}
 
 	//----------------------------------------------------------------------------------- updateTable
