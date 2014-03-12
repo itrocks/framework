@@ -92,11 +92,12 @@ abstract class Html_Template_Functions
 	/**
 	 * Returns an HTML edit widget for current property or List_Data property
 	 *
-	 * @param $template Html_Template
-	 * @param $name     string
+	 * @param $template    Html_Template
+	 * @param $name        string
+	 * @param $ignore_user boolean ignore @user annotation, to disable invisible and read-only
 	 * @return string
 	 */
-	public static function getEdit(Html_Template $template, $name = null)
+	public static function getEdit(Html_Template $template, $name = null, $ignore_user = false)
 	{
 		if (isset($name)) {
 			$name = str_replace('.', '>', $name);
@@ -120,18 +121,27 @@ abstract class Html_Template_Functions
 			$property_edit = new Html_Builder_Property_Edit($property, $value);
 			$property_edit->name = $name ?: $property_path;
 			$property_edit->preprop = null;
+			if ($ignore_user) {
+				$property_edit->readonly = false;
+			}
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property_Value) {
 			$property_edit = new Html_Builder_Property_Edit($object, $object->value());
 			$property_edit->name = $name ?: $object->path;
 			$property_edit->preprop = null;
+			if ($ignore_user) {
+				$property_edit->readonly = false;
+			}
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property) {
 			$property_edit = new Html_Builder_Property_Edit($object);
 			$property_edit->name = $name ?: $object->path;
 			$property_edit->preprop = null;
+			if ($ignore_user) {
+				$property_edit->readonly = false;
+			}
 			return $property_edit->build();
 		}
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
@@ -159,9 +169,13 @@ abstract class Html_Template_Functions
 				else {
 					$preprop = null;
 				}
-				return (
-					new Html_Builder_Property_Edit($property, $property->getValue($object), $preprop)
-				)->build();
+				$property_edit = new Html_Builder_Property_Edit(
+					$property, $property->getValue($object), $preprop
+				);
+				if ($ignore_user) {
+					$property_edit->readonly = false;
+				}
+				return $property_edit->build();
 			}
 		}
 		// default html input widget
