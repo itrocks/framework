@@ -15,6 +15,15 @@ class Html_Builder_Type_Edit
 	 */
 	public $name;
 
+	//----------------------------------------------------------------------------------------- $null
+	/**
+	 * The control may have an empty value
+	 * ie checkboxes may not be limited to '0' / '1' value, and may be '' too
+	 *
+	 * @var boolean
+	 */
+	public $null = false;
+
 	//-------------------------------------------------------------------------------------- $preprop
 	/**
 	 * @var string
@@ -23,6 +32,8 @@ class Html_Builder_Type_Edit
 
 	//------------------------------------------------------------------------------------- $readonly
 	/**
+	 * the control will be read-only
+	 *
 	 * @var boolean
 	 */
 	public $readonly = false;
@@ -100,18 +111,34 @@ class Html_Builder_Type_Edit
 	 */
 	protected function buildBoolean()
 	{
-		$input = new Html_Input($this->getFieldName());
-		$input->setAttribute('type', 'hidden');
-		$input->setAttribute('value', $this->value ? 1 : 0);
-		$checkbox = new Html_Input();
-		$checkbox->setAttribute('type', 'checkbox');
-		if ($this->value) {
-			$checkbox->setAttribute('checked');
+		$value = strlen($this->value) ? ($this->value ? 1 : 0) : ($this->null ? null : 0);
+		if ($this->null) {
+			$input = new Html_Select(
+				$this->getFieldName(), ['' => '', '0' => 'no', '1' => 'yes'], $value
+			);
+			if ($this->readonly) {
+				$input->setAttribute('readonly');
+			}
+			return $input;
 		}
-		if ($this->readonly) {
-			$checkbox->setAttribute('readonly');
+		else {
+			$input = new Html_Input($this->getFieldName());
+			$input->setAttribute('type', 'hidden');
+			$input->setAttribute('value', $value);
+			$checkbox = new Html_Input();
+			$checkbox->setAttribute('type', 'checkbox');
+			$checkbox->setAttribute('value', $value);
+			if ($this->value) {
+				$checkbox->setAttribute('checked');
+			}
+			if ($this->readonly) {
+				$checkbox->setAttribute('readonly');
+			}
+			if ($this->null) {
+				$checkbox->setData('nullable', strlen($this->value) ? ($this->value ? 0 : 1) : 0);
+			}
+			return $input . $checkbox;
 		}
-		return $input . $checkbox;
 	}
 
 	//--------------------------------------------------------------------------------- buildDateTime

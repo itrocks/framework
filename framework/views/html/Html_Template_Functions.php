@@ -92,13 +92,15 @@ abstract class Html_Template_Functions
 	/**
 	 * Returns an HTML edit widget for current property or List_Data property
 	 *
-	 * @param $template    Html_Template
-	 * @param $name        string
-	 * @param $ignore_user boolean ignore @user annotation, to disable invisible and read-only
+	 * @param $template          Html_Template
+	 * @param $name               string
+	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
+	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
 	 * @return string
 	 */
-	public static function getEdit(Html_Template $template, $name = null, $ignore_user = false)
-	{
+	public static function getEdit(
+		Html_Template $template, $name = null, $ignore_user = false, $can_always_be_null = false
+	) {
 		if (isset($name)) {
 			$name = str_replace('.', '>', $name);
 		}
@@ -124,6 +126,9 @@ abstract class Html_Template_Functions
 			if ($ignore_user) {
 				$property_edit->readonly = false;
 			}
+			if ($can_always_be_null) {
+				$property_edit->null = true;
+			}
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property_Value) {
@@ -132,6 +137,9 @@ abstract class Html_Template_Functions
 			$property_edit->preprop = null;
 			if ($ignore_user) {
 				$property_edit->readonly = false;
+			}
+			if ($can_always_be_null) {
+				$property_edit->null = true;
 			}
 			return $property_edit->build();
 		}
@@ -174,6 +182,9 @@ abstract class Html_Template_Functions
 				);
 				if ($ignore_user) {
 					$property_edit->readonly = false;
+				}
+				if ($can_always_be_null) {
+					$property_edit->null = true;
 				}
 				return $property_edit->build();
 			}

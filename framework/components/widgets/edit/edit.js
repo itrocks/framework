@@ -24,6 +24,30 @@ $('document').ready(function()
 			}
 		});
 
+		//------------------------------------------------------------------------ input[type=checkbox]
+		this.in("input[type=checkbox]").change(function()
+		{
+			var $checkbox = $(this);
+			var $input = $checkbox.prev().filter('input[type=hidden]');
+			var old_check = $input.val();
+			var check = $checkbox.is(':checked') ? '1' : '0';
+			var nullable = String($checkbox.data('nullable'));
+			if (nullable.length) {
+				if (old_check == nullable) {
+					check = '';
+					$checkbox.attr('checked', false);
+				}
+			}
+			$input.val(check);
+			$checkbox.val(check);
+		});
+
+		//-------------------------------------------------------------- input[type=checkbox][readonly]
+		this.in("input[type=checkbox][readonly]").click(function(event)
+		{
+			event.preventDefault();
+		});
+
 		//----------------------------------------------------------------- table.collection, table.map
 		this.in('table.collection, table.map').each(function()
 		{

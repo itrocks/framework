@@ -1,7 +1,7 @@
 /* components */
 /* features colors and action left button part */
 /* modules */
-input:not([type=button]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized),
+input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized),
 select,
 textarea {
   background-color: white;
