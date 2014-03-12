@@ -21,7 +21,15 @@ class Default_Delete_And_Replace_Controller implements Default_Feature_Controlle
 		$objects = $parameters->getObjects();
 		if ($id_replace_with = $parameters->getRawParameter('id_replace_with')) {
 			$objects['replace_with'] = $replacement = Dao::read($id_replace_with, $class_name);
-			(new Delete_And_Replace())->deleteAndReplace($replaced, $replacement);
+			Dao::begin();
+			if ((new Delete_And_Replace())->deleteAndReplace($replaced, $replacement)) {
+				Dao::commit();
+				$objects['done'] = true;
+			}
+			else {
+				Dao::rollback();
+				$objects['error'] = true;
+			}
 		}
 		return View::run($objects, $form, $files, $class_name, 'deleteAndReplace');
 	}

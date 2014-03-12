@@ -77,6 +77,20 @@ class Files_Link extends Identifier_Map_Data_Link
 		// TODO: Implement readAll() method.
 	}
 
+	//----------------------------------------------------------------------------- replaceReferences
+	/**
+	 * Replace all references to $replaced by references to $replacement into the database.
+	 * Already loaded objects will not be changed.
+	 *
+	 * @param $replaced    object
+	 * @param $replacement object
+	 * @return boolean true if replacement has been done, false if something went wrong
+	 */
+	public function replaceReferences($replaced, $replacement)
+	{
+		// TODO: Implement replaceReferences() method.
+	}
+
 	//---------------------------------------------------------------------------------------- search
 	/**
 	 * Search objects from data source

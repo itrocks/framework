@@ -7,6 +7,10 @@ namespace SAF\Framework;
 interface Dao_Foreign_Key
 {
 
+	//----------------------------------------------------------------------------------------- const
+	const CASCADE  = 'CASCADE';
+	const RESTRICT = 'RESTRICT';
+
 	//--------------------------------------------------------------------------------- getConstraint
 	/**
 	 * @return string

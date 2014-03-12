@@ -78,7 +78,7 @@ class Mysql_Link extends Sql_Link
 			$result_set->free();
 		}
 		else {
-			$row = array(0 => 0);
+			$row = [0 => 0];
 		}
 		return $row[0];
 	}
@@ -103,7 +103,7 @@ class Mysql_Link extends Sql_Link
 			$link = $class->getAnnotation('link')->value;
 			$exclude_properties = $link
 				? array_keys((new Reflection_Class($link))->getAllProperties())
-				: array();
+				: [];
 			foreach ($class->accessProperties() as $property) {
 				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
 					if ($property->getAnnotation('link')->value == 'Collection') {
@@ -344,7 +344,7 @@ class Mysql_Link extends Sql_Link
 	{
 		if (!$identifier) return null;
 		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
-			$query = (new Sql_Select_Builder($class_name, null, array('id' => $identifier), $this))
+			$query = (new Sql_Select_Builder($class_name, null, ['id' => $identifier], $this))
 				->buildQuery();
 		}
 		else {
@@ -371,7 +371,7 @@ class Mysql_Link extends Sql_Link
 	 */
 	public function readAll($class_name, $options = null)
 	{
-		$read_result = array();
+		$read_result = [];
 		$this->setContext($class_name);
 		$query = (new Sql_Select_Builder($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->executeQuery($query);
@@ -388,6 +388,37 @@ class Mysql_Link extends Sql_Link
 		}
 		$this->free($result_set);
 		return $read_result;
+	}
+
+	//----------------------------------------------------------------------------- replaceReferences
+	/**
+	 * Replace all references to $replaced by references to $replacement into the database.
+	 * Already loaded objects will not be changed.
+	 *
+	 * @param $replaced    object
+	 * @param $replacement object
+	 * @return boolean true if replacement has been done, false if something went wrong
+	 */
+	public function replaceReferences($replaced, $replacement)
+	{
+		$table_name = $this->storeNameOf(get_class($replaced));
+		$replaced_id = $this->getObjectIdentifier($replaced);
+		$replacement_id = $this->getObjectIdentifier($replacement);
+		if ($replaced_id && $replacement_id && $table_name) {
+			foreach (Mysql_Foreign_Key::buildReferences($this->connection, $table_name) as $foreign_key) {
+				$foreign_table_name = lParse($foreign_key->getConstraint(), '.');
+				$foreign_field_name = $foreign_key->getFields()[0];
+				$query = 'UPDATE `' . $foreign_table_name . '`'
+					. ' SET `' . $foreign_field_name . '` = ' . $replacement_id
+					. ' WHERE `' . $foreign_field_name . '` = ' . $replaced_id;
+				$this->query($query);
+				if ($this->connection->last_errno) {
+					$error = true;
+				}
+			}
+			return isset($error) ? false : true;
+		}
+		return false;
 	}
 
 	//-------------------------------------------------------------------------------------- rollback
@@ -421,9 +452,9 @@ class Mysql_Link extends Sql_Link
 		}
 		if (
 			(is_a($class_name, Before_Search::class, true))
-			? call_user_func(array($class_name, 'beforeSearch'), $what) : true
+			? call_user_func([$class_name, 'beforeSearch'], $what) : true
 		) {
-			$search_result = array();
+			$search_result = [];
 			$builder = new Sql_Select_Builder($class_name, null, $what, $this, $options);
 			$query = $builder->buildQuery();
 			$this->setContext($builder->getJoins()->getClassNames());
@@ -442,7 +473,7 @@ class Mysql_Link extends Sql_Link
 			$this->free($result_set);
 		}
 		else {
-			$search_result = array();
+			$search_result = [];
 		}
 		return $search_result;
 	}
@@ -472,10 +503,10 @@ class Mysql_Link extends Sql_Link
 	 * @param $options Dao_Option[]|Dao_Option some options for advanced write
 	 * @return object the written object
 	 */
-	public function write($object, $options = array())
+	public function write($object, $options = [])
 	{
 		if ($options && !is_array($options)) {
-			$options = array($options);
+			$options = [$options];
 		}
 		if (($object instanceof Before_Write) ? $object->beforeWrite($options) : true) {
 			if (Null_Object::isNull($object)) {
@@ -483,18 +514,18 @@ class Mysql_Link extends Sql_Link
 			}
 			$class = new Reflection_Class(get_class($object));
 			$table_columns_names = array_keys($this->getStoredProperties($class));
-			$write_collections = array();
-			$write_maps = array();
-			$write = array();
+			$write_collections = [];
+			$write_maps = [];
+			$write = [];
 			$aop_getter_ignore = Getter::$ignore;
 			Getter::$ignore = true;
 			$link = $class->getAnnotation('link')->value;
 			$exclude_properties = $link
 				? array_keys((new Reflection_Class($link))->getAllProperties())
-				: array();
+				: [];
 			foreach ($options as $option) {
 				if ($option instanceof Dao_Only_Option) {
-					$only = array_merge(isset($only) ? $only : array(), $option->properties);
+					$only = array_merge(isset($only) ? $only : [], $option->properties);
 				}
 			}
 			foreach ($class->accessProperties() as $property) {
@@ -528,7 +559,7 @@ class Mysql_Link extends Sql_Link
 						}
 						// write collection
 						elseif (is_array($value) && ($property->getAnnotation('link')->value == 'Collection')) {
-							$write_collections[] = array($property, $value);
+							$write_collections[] = [$property, $value];
 						}
 						// write map
 						elseif (is_array($value) && ($property->getAnnotation('link')->value == 'Map')) {
@@ -543,7 +574,7 @@ class Mysql_Link extends Sql_Link
 									}
 								}
 							}
-							$write_maps[] = array($property, $value);
+							$write_maps[] = [$property, $value];
 						}
 					}
 				}
@@ -597,7 +628,7 @@ class Mysql_Link extends Sql_Link
 		$old_collection = $property->getValue($old_object);
 		Getter::$ignore = $aop_getter_ignore;
 		// collection properties : write each of them
-		$id_set = array();
+		$id_set = [];
 		if ($collection) {
 			foreach ($collection as $element) {
 				$element->setComposite($object, $property->getAnnotation('foreign')->value);
@@ -635,7 +666,7 @@ class Mysql_Link extends Sql_Link
 		Getter::$ignore = $aop_getter_ignore;
 		// map properties : write each of them
 		$insert_builder = new Sql_Map_Insert_Builder($property);
-		$id_set = array();
+		$id_set = [];
 		foreach ($map as $element) {
 			$id = $this->getObjectIdentifier($element);
 			if (!isset($old_map[$id])) {

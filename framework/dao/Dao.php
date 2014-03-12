@@ -287,6 +287,20 @@ class Dao implements Plugins\Configurable
 		return self::current()->replace($destination, $source, $write);
 	}
 
+	//----------------------------------------------------------------------------- replaceReferences
+	/**
+	 * Replace all references to $replaced by references to $replacement into the database.
+	 * Already loaded objects will not be changed.
+	 *
+	 * @param $replaced    object
+	 * @param $replacement object
+	 * @return boolean true if replacement has been done, false if something went wrong
+	 */
+	public static function replaceReferences($replaced, $replacement)
+	{
+		return self::current()->replaceReferences($replaced, $replacement);
+	}
+
 	//-------------------------------------------------------------------------------------- rollback
 	/**
 	 * Rollback a transaction with the current data link (non-transactional SQL engines will do nothing and return null)

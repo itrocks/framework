@@ -47,9 +47,15 @@ class Html_Delete_And_Replace_View implements Html_View
 	public function run($parameters, $form, $files, $class_name, $feature_name)
 	{
 		// the view when the replacement has been done
-		if (isset($parameters['replaced'])) {
+		if (isset($parameters['done'])) {
 			return (new Html_Default_View())->run(
 				$parameters, $form, $files, $class_name, $feature_name . '_done'
+			);
+		}
+		// the view when the replacement was executed but returned errors
+		elseif (isset($parameters['error'])) {
+			return (new Html_Default_View())->run(
+				$parameters, $form, $files, $class_name, $feature_name . '_error'
 			);
 		}
 		// the view that enables the user to select a replacement object

@@ -148,6 +148,17 @@ abstract class Data_Link
 	 */
 	abstract public function replace($destination, $source, $write = true);
 
+	//----------------------------------------------------------------------------- replaceReferences
+	/**
+	 * Replace all references to $replaced by references to $replacement into the database.
+	 * Already loaded objects will not be changed.
+	 *
+	 * @param $replaced    object
+	 * @param $replacement object
+	 * @return boolean true if replacement has been done, false if something went wrong
+	 */
+	abstract public function replaceReferences($replaced, $replacement);
+
 	//---------------------------------------------------------------------------------------- search
 	/**
 	 * Search objects from data source

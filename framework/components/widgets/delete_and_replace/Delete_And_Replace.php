@@ -46,10 +46,7 @@ class Delete_And_Replace
 	 */
 	public function replace($replaced, $replacement)
 	{
-		echo "do the replace";
-		echo "<pre>replace " . print_r($replaced, true) . "</pre>";
-		echo "<pre>with " . print_r($replacement, true) . "</pre>";
-		return false;
+		return Dao::replaceReferences($replaced, $replacement);
 	}
 
 }
