@@ -25,7 +25,7 @@ $('document').ready(function()
 		});
 
 		//------------------------------------------------------------------------ input[type=checkbox]
-		this.in("input[type=checkbox]").change(function()
+		this.in('input[type=checkbox]').change(function()
 		{
 			var $checkbox = $(this);
 			var $input = $checkbox.prev().filter('input[type=hidden]');
@@ -43,10 +43,13 @@ $('document').ready(function()
 		});
 
 		//-------------------------------------------------------------- input[type=checkbox][readonly]
-		this.in("input[type=checkbox][readonly]").click(function(event)
+		this.in('input[type=checkbox][readonly]').click(function(event)
 		{
 			event.preventDefault();
 		});
+
+		//-------------------------------------------------------------------------------------- select
+		this.in('select').sortcontent();
 
 		//----------------------------------------------------------------- table.collection, table.map
 		this.in('table.collection, table.map').each(function()

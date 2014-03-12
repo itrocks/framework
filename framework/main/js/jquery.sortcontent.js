@@ -9,6 +9,9 @@
 			if ($this.is('ul')) {
 				elements = $this.children('li').get();
 			}
+			else if ($this.is('select')) {
+				elements = $this.children('option').get();
+			}
 			else if ($this.is('table')) {
 				var $tbody = $this.children('tbody');
 				if ($tbody.length) {
