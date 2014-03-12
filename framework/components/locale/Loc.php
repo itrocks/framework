@@ -29,7 +29,7 @@ class Loc implements Plugins\Registerable
 		/** @var $value         mixed */
 		list($property, $property_path, $value) = $result;
 		$value = self::propertyToLocale($property, $value);
-		return array($property, $property_path, $value);
+		return [$property, $property_path, $value];
 	}
 
 	//------------------------------------------------------------------------- afterListSearchValues
@@ -266,47 +266,51 @@ class Loc implements Plugins\Registerable
 		$aop = $register->aop;
 		// format from locale user input to ISO and standard formats
 		$aop->beforeMethod(
-			array(Object_Builder_Array::class, 'buildBasicValue'),
-			array($this, 'beforeObjectBuilderArrayBuildBasicValue')
+			[Object_Builder_Array::class, 'buildBasicValue'],
+			[$this, 'beforeObjectBuilderArrayBuildBasicValue']
 		);
 		$aop->afterMethod(
-			array(Default_List_Controller::class, 'getSearchValues'),
-			array($this, 'afterListSearchValues')
+			[Default_List_Controller::class, 'getSearchValues'],
+			[$this, 'afterListSearchValues']
 		);
 		// format to locale
 		$aop->afterMethod(
-			array(Html_Template_Functions::class, 'toEditPropertyExtra'),
-			array($this, 'afterHtmlTemplateFuncsToEditPropertyExtra')
+			[Html_Template_Functions::class, 'toEditPropertyExtra'],
+			[$this, 'afterHtmlTemplateFuncsToEditPropertyExtra']
 		);
 		$aop->afterMethod(
-			array(Reflection_Property_View::class, 'formatBoolean'),
-			array($this, 'translateReturnedValue')
+			[Reflection_Property_View::class, 'formatBoolean'],
+			[$this, 'translateReturnedValue']
 		);
 		$aop->afterMethod(
-			array(Reflection_Property_View::class, 'formatDateTime'),
-			array($this, 'dateTimeReturnedValueToLocale')
+			[Reflection_Property_View::class, 'formatDateTime'],
+			[$this, 'dateTimeReturnedValueToLocale']
 		);
 		$aop->afterMethod(
-			array(Reflection_Property_View::class, 'formatFloat'),
-			array($this, 'floatReturnedValueToLocale')
+			[Reflection_Property_View::class, 'formatFloat'],
+			[$this, 'floatReturnedValueToLocale']
 		);
 		$aop->afterMethod(
-			array(Reflection_Property_View::class, 'formatInteger'),
-			array($this, 'integerReturnedValueToLocale')
+			[Reflection_Property_View::class, 'formatInteger'],
+			[$this, 'integerReturnedValueToLocale']
+		);
+		$aop->afterMethod(
+			[Reflection_Property_View::class, 'formatString'],
+			[$this, 'translateStringPropertyView']
 		);
 		// translations
 		$aop->afterMethod(
-			array(List_Settings::class, 'getDefaultTitle'),
-			array($this, 'translateReturnedValue')
+			[List_Settings::class, 'getDefaultTitle'],
+			[$this, 'translateReturnedValue']
 		);
 		// translation/reverse of export/import procedures
 		$aop->beforeMethod(
-			array(Import_Array::class, 'getClassNameFromValue'),
-			array($this, 'classNameDisplayReverse')
+			[Import_Array::class, 'getClassNameFromValue'],
+			[$this, 'classNameDisplayReverse']
 		);
 		$aop->afterMethod(
-			array(Import_Array::class, 'getClassNameFromArray'),
-			array($this, 'classNameReturnedValueToContext')
+			[Import_Array::class, 'getClassNameFromArray'],
+			[$this, 'classNameReturnedValueToContext']
 		);
 	}
 
@@ -361,6 +365,19 @@ class Loc implements Plugins\Registerable
 	public function translateReturnedValue($result)
 	{
 		return self::tr($result);
+	}
+
+	//------------------------------------------------------------------- translateStringPropertyView
+	/**
+	 * @param $object Reflection_Property_View
+	 * @param $value  string
+	 * @return string
+	 */
+	public function translateStringPropertyView(Reflection_Property_View $object, $value)
+	{
+		return ($object->property->getListAnnotation('values')->values())
+			? $this->tr($value, $object->property->final_class)
+			: $value;
 	}
 
 }
