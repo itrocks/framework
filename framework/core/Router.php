@@ -78,7 +78,9 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 			$this->exclude = '(' . join('|', $configuration['exclude']) . ')';
 		}
 
-		$this->routes_file = getcwd() . '/routes.php';
+		$this->routes_file = getcwd() . '/' . substr(
+			$_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1, -4
+		) . '/cache/routes.php';
 		if (file_exists($this->routes_file)) {
 			/** @noinspection PhpIncludeInspection */
 			include $this->routes_file;

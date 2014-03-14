@@ -10,8 +10,9 @@
  */
 function script_put_contents($filename, $data)
 {
-	file_put_contents($filename, $data);
-	if (function_exists('opcache_invalidate') && (substr($filename, -4) == '.php')) {
-		opcache_invalidate($filename, true);
+	if (file_put_contents($filename, $data)) {
+		if (function_exists('opcache_invalidate') && (substr($filename, -4) == '.php')) {
+			opcache_invalidate($filename, true);
+		}
 	}
 }
