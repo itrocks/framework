@@ -1,42 +1,48 @@
 <?php
-global $pwd;
-include_once "pwd.php";
-include "config.php";
+namespace SAF\Framework;
 
-//------------------------------------------------------------------------------------- my_business
-$config["tests"] = array(
-	"app"     => "Tests",
-	"extends" => "framework",
-	"highest" => array(
-		'SAF\Framework\Dao' => array(
-			"database" => "saf_tests",
-			"user"     => "saf_tests",
-			"password" => $pwd["saf_tests"],
-			"tables" => array(
-				'SAF\Framework\Tests\Test_Order'      => "orders",
-				'SAF\Framework\Tests\Test_Order_Line' => "orders_lines",
-				'SAF\Framework\Tests\Test_Salesman'   => "salesmen"
+use SAF\Tests;
+
+global $pwd;
+include_once 'pwd.php';
+include 'config.php';
+
+$config['tests'] = array(
+	'app'     => 'Tests',
+	'extends' => 'framework',
+
+	//--------------------------------------------------------------------------------------- highest
+	'highest' => array(
+		Dao::class => array(
+			'database' => 'saf_tests',
+			'login'    => 'saf_tests',
+			'password' => $pwd['saf_tests'],
+			'tables' => array(
+				Tests\Salesman::class   => 'salesmen'
 			)
 		)
 	),
-	"normal" => array(
-		'SAF\Framework\Menu' => array(
-			array("/Application/home", "Home", "#main"),
-			"Friends" => array(
-				"/Clients" => "Clients",
-				"/Salesmen"   => "Salesmen"
+
+	//---------------------------------------------------------------------------------------- normal
+	'normal' => array(
+		Menu::class => array(
+			array('/Application/home', 'Home', '#main'),
+			'Friends' => array(
+				'/Clients'  => 'Clients',
+				'/Salesmen' => 'Salesmen'
 			),
-			"Things" => array(
-				"/Items"      => "Items",
-				"/Categories" => "Categories"
+			'Things' => array(
+				'/Items'      => 'Items',
+				'/Categories' => 'Categories'
 			),
-			"Documents" => array(
-				"/Quotes" => "Quotes",
-				"/Orders" => "Orders"
+			'Documents' => array(
+				'/Quotes' => 'Quotes',
+				'/Orders' => 'Orders'
 			),
-			"Web" => array(
-				"/Shops" => "Shops"
+			'Web' => array(
+				'/Shops' => 'Shops'
 			)
 		)
 	)
+
 );
