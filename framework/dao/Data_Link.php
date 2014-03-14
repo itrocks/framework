@@ -20,7 +20,7 @@ abstract class Data_Link
 	{
 		$class_name = Namespaces::fullClassName(Names::setToClass(
 			str_replace(' ', '_', ucwords(str_replace('_', ' ', $store_name))), false
-		));
+		), false);
 		if (strpos($class_name, '\\') === false) {
 			$class_name = explode('_', $class_name);
 			foreach ($class_name as $key => $class_name_part) {
