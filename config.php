@@ -33,13 +33,13 @@ $config['framework'] = array(
 			'password' => 'saf'
 		),
 		Locale::class => array(
-			'date' => 'd/m/Y',
-			'language' => 'fr',
+			'date' => 'm/d/Y',
+			'language' => 'en',
 			'number' => array(
 				'decimal_minimal_count' => 2,
 				'decimal_maximal_count' => 4,
-				'decimal_separator'     => ',',
-				'thousand_separator'    => ' ',
+				'decimal_separator'     => '.',
+				'thousand_separator'    => ',',
 			)
 		),
 		View::class => array(
