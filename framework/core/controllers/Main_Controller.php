@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\AOP;
+use SAF\AOP\Include_Filter;
 use SAF\Plugins;
 use SAF\Plugins\Plugin;
 
@@ -55,7 +56,7 @@ class Main_Controller
 		$class_name = $configuration->getApplicationClassName();
 		$name = strtolower($configuration->getApplicationName());
 		/** @noinspection PhpIncludeInspection */
-		include_once strtolower($name) . '/Application.php';
+		include_once Include_Filter::file(strtolower($name) . '/Application.php');
 		/** @var $application Application */
 		$application = Builder::create($class_name, $name);
 		Application::current($application);
@@ -107,46 +108,46 @@ class Main_Controller
 	private function includes()
 	{
 		// Low level includes
-		include_once __DIR__ . '/../toolbox/constants.php';
-		include_once __DIR__ . '/../toolbox/functions/array_functions.php';
-		include_once __DIR__ . '/../toolbox/functions/file_functions.php';
-		include_once __DIR__ . '/../toolbox/functions/string_functions.php';
-		include_once __DIR__ . '/../toolbox/functions/type_functions.php';
-		include_once __DIR__ . '/../toolbox/Current.php';
-		include_once __DIR__ . '/../toolbox/Current_With_Default.php';
-		include_once __DIR__ . '/../toolbox/Namespaces.php';
-		include_once __DIR__ . '/../toolbox/OS.php';
-		include_once __DIR__ . '/../toolbox/String.php';
+		include_once Include_Filter::file('framework/core/toolbox/constants.php');
+		include_once Include_Filter::file('framework/core/toolbox/functions/array_functions.php');
+		include_once Include_Filter::file('framework/core/toolbox/functions/file_functions.php');
+		include_once Include_Filter::file('framework/core/toolbox/functions/string_functions.php');
+		include_once Include_Filter::file('framework/core/toolbox/functions/type_functions.php');
+		include_once Include_Filter::file('framework/core/toolbox/Current.php');
+		include_once Include_Filter::file('framework/core/toolbox/Current_With_Default.php');
+		include_once Include_Filter::file('framework/core/toolbox/Namespaces.php');
+		include_once Include_Filter::file('framework/core/toolbox/OS.php');
+		include_once Include_Filter::file('framework/core/toolbox/String.php');
 
 		// Include_Path
-		include_once __DIR__ . '/../Include_Path.php';
+		include_once Include_Filter::file('framework/core/Include_Path.php');
 
 		// Plugins manager
-		include_once __DIR__ . '/../plugins/Plugin.php';
-		include_once __DIR__ . '/../plugins/Configurable.php';
-		include_once __DIR__ . '/../plugins/Activable.php';
-		include_once __DIR__ . '/../plugins/Registerable.php';
-		include_once __DIR__ . '/../plugins/IManager.php';
-		include_once __DIR__ . '/../plugins/Manager.php';
+		include_once Include_Filter::file('framework/core/plugins/Plugin.php');
+		include_once Include_Filter::file('framework/core/plugins/Configurable.php');
+		include_once Include_Filter::file('framework/core/plugins/Activable.php');
+		include_once Include_Filter::file('framework/core/plugins/Registerable.php');
+		include_once Include_Filter::file('framework/core/plugins/IManager.php');
+		include_once Include_Filter::file('framework/core/plugins/Manager.php');
 
 		// Session
-		include_once __DIR__ . '/../Session.php';
+		include_once Include_Filter::file('framework/core/Session.php');
 
 		// Core plugins
-		include_once __DIR__ . '/../IAutoloader.php';
-		include_once __DIR__ . '/../Router.php';
-		include_once __DIR__ . '/../builder/Builder.php';
+		include_once Include_Filter::file('framework/core/IAutoloader.php');
+		include_once Include_Filter::file('framework/core/Router.php');
+		include_once Include_Filter::file('framework/core/builder/Builder.php');
 	}
 
 	//---------------------------------------------------------------------------------- includeStart
 	private function includesStart()
 	{
 		// Configuration
-		include_once __DIR__ . "/../configuration/Configuration.php";
-		include_once __DIR__ . '/../configuration/Configurations.php';
+		include_once Include_Filter::file('framework/core/configuration/Configuration.php');
+		include_once Include_Filter::file('framework/core/configuration/Configurations.php');
 
 		// Plugins manager
-		include_once __DIR__ . '/../plugins/Register.php';
+		include_once Include_Filter::file('framework/core/plugins/Register.php');
 	}
 
 	//------------------------------------------------------------------------------------------ init

@@ -63,6 +63,15 @@ class Application
 		return Session::current()->get('SAF\Framework\Application');
 	}
 
+	//----------------------------------------------------------------------------------- getCacheDir
+	/**
+	 * @return string
+	 */
+	public function getCacheDir()
+	{
+		return $this->name . '/cache';
+	}
+
 	//--------------------------------------------------------------------------------- getNamespaces
 	/**
 	 * Gets application and parents and used applications namespaces

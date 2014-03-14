@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\AOP\Around_Method_Joinpoint;
+use SAF\AOP\Include_Filter;
 use SAF\Plugins;
 use SAF\Plugins\Register;
 
@@ -164,7 +165,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		$file_path = $this->getClassPath($class_name);
 		if ($file_path) {
 			/** @noinspection PhpIncludeInspection */
-			include_once $file_path;
+			include_once Include_Filter::file($file_path);
 			if (is_a($class_name, Plugins\Plugin::class, true)) {
 				Session::current()->plugins->get($class_name);
 			}
@@ -250,7 +251,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 				$class_path = $this->addClassPath($class_name);
 			}
 			/** @noinspection PhpIncludeInspection */
-			include_once($class_path);
+			include_once Include_Filter::file($class_path);
 			if (
 				!class_exists($class_name, false)
 				&& !interface_exists($class_name, false)

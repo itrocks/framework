@@ -2,6 +2,7 @@
 namespace SAF\AOP;
 
 use SAF\Framework\Application;
+use SAF\Framework\Files;
 use SAF\Framework\Getter;
 use SAF\Framework\Names;
 use SAF\Plugins;
@@ -13,6 +14,12 @@ class Compiler implements ICompiler
 {
 
 	const DEBUG = false;
+
+	//------------------------------------------------------------------------------------ $cache_dir
+	/**
+	 * @var string
+	 */
+	private $cache_dir;
 
 	//----------------------------------------------------------------------------- $compiled_classes
 	/**
@@ -33,6 +40,12 @@ class Compiler implements ICompiler
 	public function __construct(IWeaver $weaver)
 	{
 		$this->weaver = $weaver;
+		// use cache dir only in DEV environment. when in PRODUCTION, files are directly compiled
+		// to improve performance
+		if (isset($_SERVER['ENV']) && ($_SERVER['ENV'] == 'DEV')) {
+			$this->cache_dir = Application::current()->getCacheDir() . '/aop';
+			Files::mkdir($this->cache_dir);
+		}
 	}
 
 	//--------------------------------------------------------------------------------------- compile
@@ -72,12 +85,25 @@ class Compiler implements ICompiler
 	 */
 	private function compileClass(Php_Class $class)
 	{
+		$compiled_file_name = isset($this->cache_dir)
+			? ($this->cache_dir . '/' . str_replace('/', '-', substr($class->file_name, 0, -4)))
+			: $class->file_name;
+
 		$this->compiled_classes[$class->name] = true;
 		if (self::DEBUG) echo '<h2>' . $class->name . '</h2>';
 
 		if (isset($_GET['C'])) {
 			echo 'CLEANUP ' . $class->name . '<br>';
-			script_put_contents($class->file_name, $class->source);
+			// in cache mode : delete compiled file
+			if (isset($this->cache_dir)) {
+				if (file_exists($compiled_file_name)) {
+					unlink($compiled_file_name);
+				}
+			}
+			// in production mode : write clean file
+			else {
+				script_put_contents($compiled_file_name, $class->source);
+			}
 			return;
 		}
 
@@ -130,10 +156,16 @@ class Compiler implements ICompiler
 		else {
 			$buffer = $class->source;
 		}
+
+		// save compiled file
 		if (!$class->clean || $methods_code) {
 			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class->name . '<br>';
-			else script_put_contents($class->file_name, $buffer);
+			else script_put_contents($compiled_file_name, $buffer);
 			if (self::DEBUG || isset($_GET['D'])) echo '<pre>' . htmlentities($buffer) . '</pre>';
+		}
+		// remove compiled file from cache
+		elseif (isset($this->cache_dir) && file_exists($compiled_file_name)) {
+			unlink($compiled_file_name);
 		}
 	}
 
