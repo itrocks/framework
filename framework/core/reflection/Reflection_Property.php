@@ -91,13 +91,15 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	public static function exists($class_name, $property_name)
 	{
 		if (strpos($property_name, '.') !== false) {
-			foreach (array_slice(explode('.', $property_name), 0, -1) as $property_name) {
+			$properties_name = explode('.', $property_name);
+			foreach (array_slice($properties_name, 0, -1) as $property_name) {
 				if (!property_exists($class_name, $property_name)) {
 					return false;
 				}
 				$property = new Reflection_Property($class_name, $property_name);
-				$class_name = $property->getType()->getElementTypeAsString();
+				$class_name = Builder::className($property->getType()->getElementTypeAsString());
 			}
+			$property_name = end($properties_name);
 		}
 		return property_exists($class_name, $property_name);
 	}
