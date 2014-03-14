@@ -13,7 +13,7 @@ class Search_Index implements Plugins\Configurable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct($configuration = [])
 	{
 	}
 
