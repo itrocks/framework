@@ -277,13 +277,30 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	public function getPossibleControllerCalls(
 		Controller_Uri $object, Around_Method_Joinpoint $joinpoint
 	) {
-		if (isset($this->controller_calls[$object->controller_name][$object->feature_name])) {
+		if (
+			isset($this->controller_calls[$object->controller_name][$object->feature_name])
+			&& !isset($_GET['F'])
+		) {
 			$controller = $this->controller_calls[$object->controller_name][$object->feature_name];
 			if (@method_exists($controller[0], $controller[1])) {
 				return [$controller];
 			}
 		}
-		return $joinpoint->process();
+		if (
+			isset($_GET['F'])
+			&& isset($this->controller_calls[$object->controller_name][$object->feature_name])
+		) {
+			echo 'Router controller call = '
+				. json_encode($this->controller_calls[$object->controller_name][$object->feature_name])
+				. BR;
+		}
+		$possible_controller_calls = $joinpoint->process();
+		if (isset($_GET['F'])) {
+			echo '<pre>'
+				. 'Possible controller calls = ' . print_r($possible_controller_calls, true)
+				. '</pre>';
+		}
+		return $possible_controller_calls;
 	}
 
 	//---------------------------------------------------------------------- getPossibleHtmlTemplates

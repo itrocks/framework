@@ -259,9 +259,12 @@ class Main_Controller
 	public function runController($uri, $get = array(), $post = array(), $files = array())
 	{
 		$uri = new Controller_Uri($uri, $get, 'edit', 'list');
-		foreach ($uri->getPossibleControllerCalls() as $call) {
+		foreach ($uri->getPossibleControllerCalls() as $key => $call) {
 			list($controller, $method_name) = $call;
 			if (@method_exists($controller, $method_name)) {
+				if (isset($_GET['F'])) {
+					echo 'Execute controller ' . $key . ' = ' . json_encode($call) . BR;
+				}
 				return $this->executeController($controller, $method_name, $uri, $post, $files);
 			}
 		}
