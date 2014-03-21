@@ -37,6 +37,23 @@ class Mysql_Link extends Sql_Link
 		$this->query('START TRANSACTION');
 	}
 
+	//------------------------------------------------------------------------------------- construct
+	/**
+	 * Alternative constructor that enables configuration insurance
+	 *
+	 * @param $host     string
+	 * @param $login    string
+	 * @param $password string
+	 * @param $database string
+	 * @return Mysql_Link
+	 */
+	public static function construct($host, $login, $password, $database)
+	{
+		return new Mysql_Link([
+			'host' => $host, 'login' => $login, 'password' => $password, 'database' => $database
+		]);
+	}
+
 	//---------------------------------------------------------------------------------------- commit
 	public function commit()
 	{
@@ -325,7 +342,7 @@ class Mysql_Link extends Sql_Link
 	{
 		if ($query) {
 			$result = $this->executeQuery($query);
-			return (substr($query, 0, 6) == 'SELECT') ? $result : $this->connection->insert_id;
+			return $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
 		}
 		else {
 			return null;

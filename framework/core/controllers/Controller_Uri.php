@@ -9,7 +9,7 @@ class Controller_Uri
 
 	//------------------------------------------------------------------------------ $controller_name
 	/**
-	 * The controller name : concat of the two first parameters names, separated by "_"
+	 * The controller name : concat of the two first parameters names, separated by '_'
 	 *
 	 * @var string
 	 */
@@ -17,7 +17,7 @@ class Controller_Uri
 
 	//--------------------------------------------------------------------------------- $feature_name
 	/**
-	 * The feature name (last text in the URI, ie "output" for URI = "/Order/3/output")
+	 * The feature name (last text in the URI, ie 'output' for URI = '/Order/3/output')
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ class Controller_Uri
 	/**
 	 * The list of parameters sent to the controller
 	 *
-	 * @example URI is "/Order/3/Line/2/output", there will be two parameters : "Order" with it's value 3, and "Line" with it's value 2
+	 * @example URI is '/Order/3/Line/2/output', there will be two parameters : 'Order' with it's value 3, and 'Line' with it's value 2
 	 * @var Controller_Parameters
 	 */
 	public $parameters;
@@ -36,13 +36,13 @@ class Controller_Uri
 	/**
 	 * Build a new Controller_Uri object knowing the URI as a text
 	 *
-	 * @param $uri                        string ie "/Order/3/Line/2/output", or "User/login"
+	 * @param $uri                        string ie '/Order/3/Line/2/output', or 'User/login'
 	 * @param $get                        array
-	 * @param $default_element_feature    string the default feature name, ie put "output" for "/Order/3"
+	 * @param $default_element_feature    string the default feature name, ie put 'output' for '/Order/3'
 	 * @param $default_collection_feature string
 	 */
 	public function __construct(
-		$uri, $get = array(), $default_element_feature = null, $default_collection_feature = null
+		$uri, $get = [], $default_element_feature = null, $default_collection_feature = null
 	) {
 		$uri = self::uriToArray($uri);
 		if (isset($default_element_feature) && is_numeric(end($uri))) {
@@ -65,7 +65,7 @@ class Controller_Uri
 	 */
 	public static function arrayToUri($array)
 	{
-		return "/" . join("/", $array);
+		return '/' . join('/', $array);
 	}
 
 	//----------------------------------------------------------------------------------- setDefaults
@@ -73,7 +73,7 @@ class Controller_Uri
 	{
 		if (!$this->controller_name && !$this->feature_name) {
 			$this->controller_name = get_class(Application::current());
-			$this->feature_name = "home";
+			$this->feature_name = 'home';
 		}
 	}
 
@@ -82,12 +82,12 @@ class Controller_Uri
 	 * Get the list of possible controller calls, in order of priority, based on uri
 	 * Each controller call is an array with as elements : class name, method name
 	 *
-	 * @example for the uri "/Order/12/Lines/subForm", the possible controller calls will be :
-	 * - "Order_Lines_Sub_Form_Controller", "run"
-	 * - "Order_Lines_Controller", "subForm"
-	 * - "Default_Sub_Form_Controller", "run"
-	 * - "Default_Controller", "subForm"
-	 * - "Default_Controller", "run"
+	 * @example for the uri '/Order/12/Lines/subForm', the possible controller calls will be :
+	 * - 'Order_Lines_Sub_Form_Controller', 'run'
+	 * - 'Order_Lines_Controller', 'subForm'
+	 * - 'Default_Sub_Form_Controller', 'run'
+	 * - 'Default_Controller', 'subForm'
+	 * - 'Default_Controller', 'run'
 	 * @return string[]
 	 */
 	public function getPossibleControllerCalls()
@@ -96,39 +96,27 @@ class Controller_Uri
 		$feature_name_for_class = Names::methodToClass($feature_name_for_method);
 		$controller = $this->controller_name;
 		$controller_root = Namespaces::shortClassName($this->controller_name);
-		$controllers = array();
+		$controllers = [];
 		$namespaces = Application::current()->getNamespaces();
 		while ($controller) {
-			$controllers[] = array(
-				$controller . "_" . $feature_name_for_class . "_Controller", "run"
-			);
-			$controllers[] = array(
-				$controller . "_Controller", "run" . ucfirst($feature_name_for_method)
-			);
+			$controllers[] = [$controller . '_' . $feature_name_for_class . '_Controller', 'run'];
+			$controllers[] = [$controller . '_Controller', 'run' . ucfirst($feature_name_for_method)];
+			$controllers[] = [$controller . '_Controller', 'run'];
 			$controller = get_parent_class($controller);
 		}
 		foreach ($namespaces as $namespace) {
-			$controller = $namespace . "\\" . $controller_root;
+			$controller = $namespace . '\\' . $controller_root;
 			while ($controller) {
-				$controllers[] = array(
-					$controller . "_" . $feature_name_for_class . "_Controller", "run"
-				);
-				$controllers[] = array(
-					$controller . "_Controller", "run" . ucfirst($feature_name_for_method)
-				);
+				$controllers[] = [$controller . '_' . $feature_name_for_class . '_Controller', 'run'];
+				$controllers[] = [$controller . '_Controller', 'run' . ucfirst($feature_name_for_method)];
+				$controllers[] = [$controller . '_Controller', 'run'];
 				$controller = get_parent_class($controller);
 			}
 		}
 		foreach ($namespaces as $namespace) {
-			$controllers[] = array(
-				$namespace . "\\Default_" . $feature_name_for_class . "_Controller", "run"
-			);
-			$controllers[] = array(
-				$namespace . "\\Default_Controller", "run" . ucfirst($feature_name_for_method)
-			);
-			$controllers[] = array(
-				$namespace . "\\Default_Controller", "run"
-			);
+			$controllers[] = [$namespace . '\\Default_' . $feature_name_for_class . '_Controller', 'run'];
+			$controllers[] = [$namespace . '\\Default_Controller', 'run' . ucfirst($feature_name_for_method)];
+			$controllers[] = [$namespace . '\\Default_Controller', 'run'];
 		}
 		return $controllers;
 	}
@@ -155,14 +143,14 @@ class Controller_Uri
 	/**
 	 * Parse URI text elements to transform them into parameters, feature name and controller name
 	 *
-	 * @example $uri = array("order", 148, "form") will result on controller "Order_Form" with parameter "Order" = 148
+	 * @example $uri = ['order', 148, 'form') will result on controller 'Order_Form' with parameter 'Order' = 148
 	 * @param $uri string[]
 	 */
 	private function parseUri($uri)
 	{
-		$this->feature_name = "";
+		$this->feature_name = '';
 		$this->parameters = new Controller_Parameters($this);
-		$last_controller_element = "";
+		$last_controller_element = '';
 		$has_numeric = false;
 		foreach ($uri as $i => $uri_element) {
 			if (is_numeric($uri_element)) {
@@ -174,16 +162,16 @@ class Controller_Uri
 		if ($has_numeric) {
 			$i = 0;
 			$length = count($uri);
-			$controller_elements = array();
+			$controller_elements = [];
 			while (($i < $length) && ($i < 2) && !is_numeric($uri[$i])) {
-				$last_controller_element = str_replace(" ", "_", ucwords(str_replace("_", " ", $uri[$i])));
+				$last_controller_element = str_replace(' ', '_', ucwords(str_replace('_', ' ', $uri[$i])));
 				$controller_elements[] = $last_controller_element;
 				$i++;
 			}
 			if (($i < $length) && is_numeric($uri[$i])) {
 				/** @noinspection PhpWrongStringConcatenationInspection */
 				$this->parameters->set($last_controller_element, $uri[$i] + 0);
-				$last_controller_element = "";
+				$last_controller_element = '';
 				$i++;
 				if (($i < $length) && !is_numeric($uri[$i])) {
 					$this->feature_name = lcfirst($uri[$i]);
@@ -195,14 +183,14 @@ class Controller_Uri
 				$last_controller_element = end($controller_elements);
 			}
 			if (($i >= $length) || !is_numeric($uri[$i])) {
-				$last_controller_element = "";
+				$last_controller_element = '';
 			}
-			$controller_name = join("_", $controller_elements);
+			$controller_name = join('_', $controller_elements);
 			while ($i < $length) {
 				if (is_numeric($uri[$i])) {
 					if ($last_controller_element) {
 						$this->parameters->set($last_controller_element, $uri[$i]);
-						$last_controller_element = "";
+						$last_controller_element = '';
 					}
 					else {
 						$this->parameters->addValue($uri[$i]);
@@ -222,7 +210,7 @@ class Controller_Uri
 		}
 		else {
 			$controller_name = str_replace(
-				" ", "_", ucwords(str_replace("_", " ", array_shift($uri)))
+				' ', '_', ucwords(str_replace('_', ' ', array_shift($uri)))
 			);
 			$this->feature_name = lcfirst(array_shift($uri));
 			foreach ($uri as $uri_element) {
@@ -238,15 +226,15 @@ class Controller_Uri
 	/**
 	 * Change a text URI into an array URI
 	 *
-	 * @example "/Order/148/form" will become array("Order", "148", "form")
+	 * @example '/Order/148/form' will become ['Order', '148', 'form')
 	 * @param $uri string
 	 * @return string[]
 	 */
 	public static function uriToArray($uri)
 	{
-		$uri = explode("/", str_replace(",", "/", $uri));
+		$uri = explode('/', str_replace(',', '/', $uri));
 		array_shift($uri);
-		if (end($uri) === "") array_pop($uri);
+		if (end($uri) === '') array_pop($uri);
 		return $uri;
 	}
 
