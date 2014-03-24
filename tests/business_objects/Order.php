@@ -42,8 +42,8 @@ class Order extends Document
 	 *
 	 * @link Map
 	 * @var Salesman[]
-	 * @(forgn) order Optional, default would have been automatically calculated to "test_order"
-	 * @(forgnlink) salesman Optional, default would have been automatically calculated to "test_salesman"
+	 * @(forgn) order Optional, default would have been automatically calculated to 'test_order'
+	 * @(forgnlink) salesman Optional, default would have been automatically calculated to 'test_salesman'
 	 */
 	private $salesmen;
 

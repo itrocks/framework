@@ -38,13 +38,13 @@ class Acls_Rights
 			}
 		}
 		$position = &$this->acls_tree;
-		$step = "";
-		foreach (explode(".", $key) as $step) {
+		$step = '';
+		foreach (explode(DOT, $key) as $step) {
 			if (isset($position) && !is_array($position)) {
-				$position = array("=" => $position);
+				$position = ['=' => $position];
 			}
 			if (!isset($position[$step])) {
-				$position[$step] = array();
+				$position[$step] = [];
 			}
 			$last_position = &$position;
 			$position = &$position[$step];
@@ -66,14 +66,14 @@ class Acls_Rights
 	/**
 	 * Gets a right value from acls rights
 	 *
-	 * @param $key string right key : a "key.subkey.another" path
+	 * @param $key string right key : a 'key.subkey.another' path
 	 * @return string|array right value, may be an array if key is not a final node
 	 */
 	public function get($key)
 	{
 		$position = $this->acls_tree;
 		if ($key) {
-			foreach (explode(".", $key) as $step) {
+			foreach (explode(DOT, $key) as $step) {
 				if (!isset($position[$step])) {
 					return null;
 				}
@@ -81,7 +81,7 @@ class Acls_Rights
 			}
 		}
 		if (is_array($position)) {
-			$position = treeToArray($position, "=");
+			$position = treeToArray($position, '=');
 		}
 		return $position;
 	}
@@ -90,15 +90,15 @@ class Acls_Rights
 	/**
 	 * Remove a right value from acls rights
 	 *
-	 * @param Acls_Right|string right key : a "key.subkey.another" path
+	 * @param Acls_Right|string right key : a 'key.subkey.another' path
 	 */
 	public function remove($right)
 	{
 		$key = is_string($right) ? $right : $right->key;
 		$position =& $this->acls_tree;
 		$last_position = null;
-		$step = "";
-		foreach (explode(".", $key) as $step) {
+		$step = '';
+		foreach (explode(DOT, $key) as $step) {
 			if (!isset($position[$step])) {
 				return;
 			}

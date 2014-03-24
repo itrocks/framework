@@ -28,7 +28,7 @@ class Set
 	 * @param $element_class_name string   the class name
 	 * @param $elements           object[] the set can be initialized with this set of elements
 	 */
-	public function __construct($element_class_name = null, $elements = array())
+	public function __construct($element_class_name = null, $elements = [])
 	{
 		$this->element_class_name = empty($element_class_name)
 			? Names::setToClass(get_class($this))
@@ -110,7 +110,7 @@ class Set
 	 * @param $elements   object[]
 	 * @return Set
 	 */
-	public static function instantiate($class_name, $elements = array())
+	public static function instantiate($class_name, $elements = [])
 	{
 		if (class_exists($class_name)) {
 			return new $class_name($elements);

@@ -38,9 +38,9 @@ class Method_Compiler
 	private function codeAssembly($before_code, $advice_code, $after_code, $indent)
 	{
 		return trim(
-			($before_code ? $indent : "") . join("\n", array_reverse($before_code))
+			($before_code ? $indent : '') . join(LF, array_reverse($before_code))
 			. $indent . $advice_code
-			. ($after_code ? $indent : "") . join("\n", $after_code)
+			. ($after_code ? $indent : '') . join(LF, $after_code)
 		);
 	}
 
@@ -52,7 +52,7 @@ class Method_Compiler
 	 */
 	public function compile($method_name, $advices)
 	{
-		$source_method = $this->class->getMethods(array('inherited', 'traits'))[$method_name];
+		$source_method = $this->class->getMethods(['inherited', 'traits'])[$method_name];
 		if (!$source_method) {
 			trigger_error($this->class->name . '::' . $method_name . ' not found', E_USER_ERROR);
 		}
@@ -71,15 +71,15 @@ class Method_Compiler
 		$preg_expr = Php_Method::regex($method_name);
 		// $indent = prototype level indentation spaces
 		$indent = $source_method->indent;
-		$i2 = $indent . "\t";
-		$i3 = $i2 . "\t";
-		// $parameters = array('parameter_name' => 'parameter_name')
+		$i2 = $indent . TAB;
+		$i3 = $i2 . TAB;
+		// $parameters = ['parameter_name' => 'parameter_name')
 		$parameters = $source_method->getParametersNames();
 		// $doc_comment = source method doc comment
 		$doc_comment = $source_method->documentation;
 		// $parameters_names = '$parameter1, $parameter2'
 		$parameters_names = $parameters ? ('$' . join(', $', $parameters)) : '';
-		// $prototype = 'public [static] function methodName($parameter1, $parameter2 = "default")'
+		// $prototype = 'public [static] function methodName($parameter1, $parameter2 = 'default')'
 		$prototype = $source_method->prototype;
 		/** $is_static = '[static]' */
 		$is_static = $source_method->static;
@@ -91,22 +91,24 @@ class Method_Compiler
 
 		// $pointcut_string
 		if ($is_static) {
-			$pointcut_string = "array(get_called_class(), '$method_name')";
+			$pointcut_string = '[get_called_class(), ' . Q . $method_name . Q . ']';
 		}
 		else {
-			$pointcut_string = 'array($this, ' . "'$method_name'" . ')';
+			$pointcut_string = '[$this, ' . Q . $method_name . Q . ']';
 		}
 
 		// $code the generated code starts by the doc comments and prototype
-		$after_code  = array();
-		$before_code = array();
+		$after_code  = [];
+		$before_code = [];
 		$advices_count = count($advices);
 		$advice_number = 0;
 
-		if (self::DEBUG && $in_parent) echo "in_parent = true for $class_name::$method_name<br>";
+		if (self::DEBUG && $in_parent) {
+			echo 'in_parent = true for ' . $class_name . '::' . $method_name . BR;
+		}
 
 		$ref = $source_method->reference;
-		$call_code = $i2 . ($joinpoint_has_return ? ('$result_ =' . $ref . ' ') : '')
+		$call_code = $i2 . ($joinpoint_has_return ? ('$result_ =' . $ref . SP) : '')
 			. ($is_static ? 'self::' : ($in_parent ? 'parent::' : '$this->'))
 			. $method_name . ($in_parent ? '' : ('_' . $count))
 			. '(' . $parameters_names . ');';
@@ -115,13 +117,15 @@ class Method_Compiler
 			$advice_number++;
 			$type = $advice[0];
 
-			if (self::DEBUG) echo "<h4>$type => " . print_r($advice[1], true) . "</h4>";
+			if (self::DEBUG) {
+				echo '<h4>' . $type . ' => ' . print_r($advice[1], true) . '</h4>';
+			}
 
 			/** @var $advice_class_name string */
 			/** @var $advice_method_name string */
 			/** @var $advice_function_name string */
 			/** @var $advice_parameters Reflection_Parameter[] */
-			/** @var $advice_string string "array($object_, 'methodName')" | "'functionName'" */
+			/** @var $advice_string string [$object_, 'methodName') | 'functionName' */
 			/** @var $advice_has_return boolean */
 			/** @var $is_advice_static boolean */
 			list(
@@ -143,14 +147,14 @@ class Method_Compiler
 					$advice_parameters_string = str_replace(
 						'$joinpoint', '$joinpoint_', $advice_parameters_string
 					);
-					$joinpoint_parameters_string = 'array(';
+					$joinpoint_parameters_string = '[';
 					$joinpoint_string_parameters = '';
 					foreach (array_values($parameters) as $key => $name) {
 						if ($key) $joinpoint_parameters_string .= ', ';
 						$joinpoint_parameters_string .= $key . ' => &$' . $name;
-						$joinpoint_string_parameters .= ', \'' . $name . '\' => &$' . $name;
+						$joinpoint_string_parameters .= ', ' . Q . $name . Q . ' => &$' . $name;
 					}
-					$joinpoint_parameters_string .= $joinpoint_string_parameters . ')';
+					$joinpoint_parameters_string .= $joinpoint_string_parameters . ']';
 					switch ($type) {
 						case 'after':
 							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\After_Method_Joinpoint('
@@ -160,7 +164,8 @@ class Method_Compiler
 						case 'around':
 							$process_callback = $method_name . '_' . $count;
 							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\Around_Method_Joinpoint('
-								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', ' . $advice_string . ', ' . "'$process_callback'"
+								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string
+								. ', ' . $advice_string . ', ' . Q . $process_callback . Q
 								. $i2 . ');';
 							break;
 						case 'before':
@@ -200,13 +205,13 @@ class Method_Compiler
 						: str_replace($method_name, $method_name . '_' . $count , $prototype);
 					$result .= substr($indent, 1) . $my_prototype . substr($i2, 1)
 						. $this->codeAssembly($before_code, $advice_code, $after_code, $indent)
-						. ($joinpoint_has_return ? ("\n" . $i2 . 'return $result_;') : '')
-						. $indent . "}\n";
+						. ($joinpoint_has_return ? (LF . $i2 . 'return $result_;') : '')
+						. $indent . '}' . LF;
 					if ($advice_number < $advices_count) {
 						$count ++;
 					}
-					$before_code = array();
-					$after_code = array();
+					$before_code = [];
+					$after_code = [];
 					break;
 				case 'before':
 					if ($advice_has_return) {
@@ -222,8 +227,8 @@ class Method_Compiler
 		if ($before_code || $after_code) {
 			$result .= substr($indent, 1) . $prototype . substr($i2, 1)
 				. $this->codeAssembly($before_code, $call_code, $after_code, $indent)
-				. ($joinpoint_has_return ? ("\n" . $i2 . 'return $result_;') : '')
-				. $indent . "}\n";
+				. ($joinpoint_has_return ? (LF . $i2 . 'return $result_;') : '')
+				. $indent . '}' . LF;
 			$around_comment = '';
 		}
 		else {

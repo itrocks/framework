@@ -21,7 +21,7 @@ class Sql_Tables_Builder
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Construct the SQL "FROM" tables list section of a query
+	 * Construct the SQL 'FROM' tables list section of a query
 	 *
 	 * @param $class_name string
 	 * @param $joins      Sql_Joins
@@ -40,7 +40,7 @@ class Sql_Tables_Builder
 	 */
 	public function build()
 	{
-		$tables = "`" . Dao::current()->storeNameOf($this->class_name) . "` t0";
+		$tables = BQ . Dao::current()->storeNameOf($this->class_name) . BQ . SP . 't0';
 		foreach ($this->joins->getJoins() as $join) if ($join) {
 			$tables .= $join->toSql();
 		}

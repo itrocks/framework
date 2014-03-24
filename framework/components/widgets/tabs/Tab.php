@@ -35,7 +35,7 @@ class Tab
 	 *
 	 * @var mixed[]
 	 */
-	public $columns = array();
+	public $columns = [];
 
 	//------------------------------------------------------------------------------------- $includes
 	/**
@@ -44,7 +44,7 @@ class Tab
 	 * @link Collection
 	 * @var Tab[]
 	 */
-	public $includes = array();
+	public $includes = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -128,16 +128,16 @@ class Tab
 
 	//--------------------------------------------------------------------------------------- getList
 	/**
-	 * Return included tabs, but not those which identifier begins with "_"
+	 * Return included tabs, but not those which identifier begins with '_'
 	 * nor those that are empty
 	 *
 	 * @return Tab[]
 	 */
 	public function included()
 	{
-		$list = array();
+		$list = [];
 		foreach ($this->includes as $key => $tab) {
-			if ((substr($key, 0, 1) != "_") && ($tab->content || $tab->columns || $tab->includes)) {
+			if ((substr($key, 0, 1) != '_') && ($tab->content || $tab->columns || $tab->includes)) {
 				$list[$key] = $tab;
 			}
 		}

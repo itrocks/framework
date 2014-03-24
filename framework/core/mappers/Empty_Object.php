@@ -52,11 +52,11 @@ abstract class Empty_Object
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				switch ($property->getType()->asString()) {
-					case "integer":
-					case "float":   $value = 0;       break;
-					case "string":  $value = "";      break;
-					case "boolean": $value = false;   break;
-					case "array":   $value = array(); break;
+					case Type::INTEGER:
+					case Type::FLOAT:   $value = 0;       break;
+					case Type::STRING:  $value = '';      break;
+					case Type::BOOLEAN: $value = false;   break;
+					case Type::_ARRAY:  $value = []; break;
 					default:        $value = null;
 				}
 				$property->setValue($object, $value);

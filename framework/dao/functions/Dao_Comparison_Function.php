@@ -57,7 +57,7 @@ class Dao_Comparison_Function implements Dao_Where_Function
 				case self::NOT_EQUAL: return $column . ' IS NOT NULL';
 			}
 		}
-		return $column . ' ' . $this->sign . ' ' . Sql_Value::escape($this->than_value);
+		return $column . SP . $this->sign . SP . Sql_Value::escape($this->than_value);
 	}
 
 }

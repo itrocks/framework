@@ -28,7 +28,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 	/**
 	 * @param $replacements string[] key is parent class name associated to replacement class
 	 */
-	public function __construct($replacements = array())
+	public function __construct($replacements = [])
 	{
 		$this->replacements = $replacements;
 	}
@@ -71,7 +71,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 	public static function create($class_name, $args = null)
 	{
 		return isset($args)
-			? self::current()->newInstanceArgs($class_name, is_array($args) ? $args : array($args))
+			? self::current()->newInstanceArgs($class_name, is_array($args) ? $args : [$args])
 			: self::current()->newInstance($class_name);
 	}
 
@@ -85,7 +85,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 	 * @param $properties_values array some properties values for the cloned object
 	 * @return object
 	 */
-	public static function createClone($object, $class_name = null, $properties_values = array())
+	public static function createClone($object, $class_name = null, $properties_values = [])
 	{
 		$source_class_name = get_class($object);
 		if (!isset($class_name)) {

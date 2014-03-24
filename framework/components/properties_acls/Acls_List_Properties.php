@@ -91,16 +91,16 @@ class Acls_List_Properties extends Acls_Properties implements Plugins\Registerab
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			array(Default_List_Controller::class, 'getPropertiesList'),
-			array($this, 'listControllerGetProperties')
+			[Default_List_Controller::class, 'getPropertiesList'],
+			[$this, 'listControllerGetProperties']
 		);
 		$aop->aroundMethod(
-			array(Property_Add_Controller::class, 'run'),
-			array($this, 'propertyAddController')
+			[Property_Add_Controller::class, 'run'],
+			[$this, 'propertyAddController']
 		);
 		$aop->aroundMethod(
-			array(Property_Remove_Controller::class, 'run'),
-			array($this, 'propertyRemoveController')
+			[Property_Remove_Controller::class, 'run'],
+			[$this, 'propertyRemoveController']
 		);
 	}
 

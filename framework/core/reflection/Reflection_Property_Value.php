@@ -68,7 +68,7 @@ class Reflection_Property_Value extends Reflection_Property
 			$this->object = $object;
 		}
 		else {
-echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . '<br>';
+echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . BR;
 		}
 		$this->user = $user;
 	}

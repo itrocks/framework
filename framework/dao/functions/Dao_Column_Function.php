@@ -28,13 +28,13 @@ abstract class Dao_Column_Function implements Dao_Function
 	 * @return string
 	 */
 	protected function quickSql(
-		Sql_Columns_Builder $builder, $property_path, $sql_function, $args = array()
+		Sql_Columns_Builder $builder, $property_path, $sql_function, $args = []
 	) {
 		$sql = $sql_function . '(' . $builder->buildColumn($property_path);
 		foreach ($args as $arg) {
 			$sql .= ', ' . Sql_Value::escape($arg);
 		}
-		return $sql . ') AS `' . $property_path . '`';
+		return $sql . ') AS ' . BQ . $property_path . BQ;
 	}
 
 }

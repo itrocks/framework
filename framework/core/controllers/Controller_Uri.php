@@ -65,7 +65,7 @@ class Controller_Uri
 	 */
 	public static function arrayToUri($array)
 	{
-		return '/' . join('/', $array);
+		return SL . join(SL, $array);
 	}
 
 	//----------------------------------------------------------------------------------- setDefaults
@@ -105,7 +105,7 @@ class Controller_Uri
 			$controller = get_parent_class($controller);
 		}
 		foreach ($namespaces as $namespace) {
-			$controller = $namespace . '\\' . $controller_root;
+			$controller = $namespace . BS . $controller_root;
 			while ($controller) {
 				$controllers[] = [$controller . '_' . $feature_name_for_class . '_Controller', 'run'];
 				$controllers[] = [$controller . '_Controller', 'run' . ucfirst($feature_name_for_method)];
@@ -114,9 +114,9 @@ class Controller_Uri
 			}
 		}
 		foreach ($namespaces as $namespace) {
-			$controllers[] = [$namespace . '\\Default_' . $feature_name_for_class . '_Controller', 'run'];
-			$controllers[] = [$namespace . '\\Default_Controller', 'run' . ucfirst($feature_name_for_method)];
-			$controllers[] = [$namespace . '\\Default_Controller', 'run'];
+			$controllers[] = [$namespace . BS . 'Default_' . $feature_name_for_class . '_Controller', 'run'];
+			$controllers[] = [$namespace . BS . 'Default_Controller', 'run' . ucfirst($feature_name_for_method)];
+			$controllers[] = [$namespace . BS . 'Default_Controller', 'run'];
 		}
 		return $controllers;
 	}
@@ -164,7 +164,7 @@ class Controller_Uri
 			$length = count($uri);
 			$controller_elements = [];
 			while (($i < $length) && ($i < 2) && !is_numeric($uri[$i])) {
-				$last_controller_element = str_replace(' ', '_', ucwords(str_replace('_', ' ', $uri[$i])));
+				$last_controller_element = str_replace(SP, '_', ucwords(str_replace('_', SP, $uri[$i])));
 				$controller_elements[] = $last_controller_element;
 				$i++;
 			}
@@ -210,7 +210,7 @@ class Controller_Uri
 		}
 		else {
 			$controller_name = str_replace(
-				' ', '_', ucwords(str_replace('_', ' ', array_shift($uri)))
+				SP, '_', ucwords(str_replace('_', SP, array_shift($uri)))
 			);
 			$this->feature_name = lcfirst(array_shift($uri));
 			foreach ($uri as $uri_element) {
@@ -232,7 +232,7 @@ class Controller_Uri
 	 */
 	public static function uriToArray($uri)
 	{
-		$uri = explode('/', str_replace(',', '/', $uri));
+		$uri = explode(SL, str_replace(',', SL, $uri));
 		array_shift($uri);
 		if (end($uri) === '') array_pop($uri);
 		return $uri;

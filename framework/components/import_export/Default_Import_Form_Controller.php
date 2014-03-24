@@ -19,7 +19,7 @@ class Default_Import_Form_Controller implements Default_Feature_Controller
 	{
 		$parameters = $parameters->getObjects();
 		array_unshift($parameters, new Import($class_name));
-		return View::run($parameters, $form, $files, $class_name, "importForm");
+		return View::run($parameters, $form, $files, $class_name, 'importForm');
 	}
 
 }

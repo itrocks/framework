@@ -23,7 +23,7 @@ trait Has_Counter
 	{
 		if (isA($this, Has_Counter::class)) {
 			/** @var $counter Counter*/
-			$counter = Dao::searchOne(array('class_name' => get_class($this)), Counter::class);
+			$counter = Dao::searchOne(['class_name' => get_class($this)], Counter::class);
 			if (!isset($counter)) {
 				$counter = Builder::create(Counter::class, get_class($this));
 			}

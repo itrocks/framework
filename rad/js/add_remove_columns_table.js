@@ -4,7 +4,7 @@ function addColumn(tblId)
 	for (var h=0; h<tblHeadObj.rows.length; h++) {
 		var newTH = document.createElement('th');
 		tblHeadObj.rows[h].appendChild(newTH);
-		newTH.innerHTML = "" + tblHeadObj.rows[h].cells.length;
+		newTH.innerHTML = '' + tblHeadObj.rows[h].cells.length;
 	}
 
 	var tblBodyObj = document.getElementById(tblId).tBodies[0];

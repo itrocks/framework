@@ -28,23 +28,23 @@ class Sql_Create_Table_Builder
 	 */
 	public function build()
 	{
-		$columns = array();
+		$columns = [];
 		foreach ($this->table->getColumns() as $column) {
 			$columns[] = $column->toSql();
 		}
-		$indexes = array();
+		$indexes = [];
 		foreach ($this->table->getIndexes() as $index) {
 			$indexes[] = $index->toSql();
 		}
-		$foreign_keys = array();
+		$foreign_keys = [];
 		foreach ($this->table->getForeignKeys() as $foreign_key) {
 			$foreign_keys[] = $foreign_key->toSql();
 		}
-		return "CREATE TABLE `" . $this->table->getName() . "` ("
-			. join(", ", $columns)
-			. ($indexes ? ", " : "") . join(", ", $indexes)
-			. ($foreign_keys ? ", " : "") . join(", ", $foreign_keys)
-			. ") DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+		return 'CREATE TABLE ' . BQ . $this->table->getName() . BQ . ' ('
+			. join(', ', $columns)
+			. ($indexes ? ', ' : '') . join(', ', $indexes)
+			. ($foreign_keys ? ', ' : '') . join(', ', $foreign_keys)
+			. ') DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 	}
 
 }

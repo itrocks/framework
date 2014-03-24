@@ -19,12 +19,12 @@ class Default_Import_Controller implements Default_Feature_Controller
 	{
 		$sub_feature = $parameters->shiftUnnamed();
 		if (!$sub_feature) {
-			$sub_feature = "form";
+			$sub_feature = 'form';
 		}
 		$get = $parameters->toGet();
-		$feature = "import" . ucfirst($sub_feature);
+		$feature = 'import' . ucfirst($sub_feature);
 		return (new Main_Controller())->runController(
-			"/" . $class_name . "/" . $feature, $get, $form, $files
+			SL . $class_name . SL . $feature, $get, $form, $files
 		);
 	}
 

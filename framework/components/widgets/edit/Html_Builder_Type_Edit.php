@@ -262,7 +262,7 @@ class Html_Builder_Type_Edit
 		);
 		if (!$this->readonly) {
 			if ($filters) {
-				$html_filters = array();
+				$html_filters = [];
 				$old_name = $this->name;
 				foreach ($filters as $filter_name => $filter_value) {
 					$this->name = $filter_value;
@@ -273,7 +273,7 @@ class Html_Builder_Type_Edit
 				$input->setAttribute('data-combo-filters', join(',', $html_filters));
 			}
 			if ($conditions) {
-				$html_conditions = array();
+				$html_conditions = [];
 				$old_name = $this->name;
 				foreach ($conditions as $condition_name => $condition_value) {
 					$this->name = $condition_name;
@@ -293,9 +293,7 @@ class Html_Builder_Type_Edit
 			$id_input->addClass('id');
 			// 'add' / 'edit' anchor
 			$fill_combo = isset($this->template)
-				? array(
-					'fill_combo' => $this->template->getFormId() . '.' . $this->getFieldName('id_', false)
-				)
+				? ['fill_combo' => $this->template->getFormId() . DOT . $this->getFieldName('id_', false)]
 				: '';
 			$edit = new Html_Anchor(
 				View::current()->link(
@@ -330,7 +328,7 @@ class Html_Builder_Type_Edit
 		}
 		elseif (isset($values) && $values) {
 			if (!isset($values[''])) {
-				$values = array('' => '') + $values;
+				$values = ['' => ''] + $values;
 			}
 			$input = new Html_Select($this->getFieldName(), $values, $this->value);
 		}
@@ -383,9 +381,9 @@ class Html_Builder_Type_Edit
 	{
 		$form = $this->template->getFormId();
 		$counter = isset($this->template->cache['counter'])
-			? $this->template->cache['counter'] : array();
+			? $this->template->cache['counter'] : [];
 		if (!isset($counter[$form])) {
-			$counter[$form] = array();
+			$counter[$form] = [];
 		}
 		$count = isset($counter[$form][$field_name]) ? $counter[$form][$field_name] + $increment : 0;
 		$counter[$form][$field_name] = $count;

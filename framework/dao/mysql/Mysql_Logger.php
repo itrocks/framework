@@ -70,7 +70,7 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 			}
 			// TODO this is dead code. What is it used for ?
 			foreach ($configuration as $key => $value) if (is_numeric($key)) {
-				if (strpos('/' . $_SERVER['REQUEST_URI'] . '/', '/' . $value . '/')) {
+				if (strpos(SL . $_SERVER['REQUEST_URI'] . SL, SL . $value . SL)) {
 					return;
 				}
 			}

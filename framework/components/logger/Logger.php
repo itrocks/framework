@@ -28,12 +28,8 @@ class Logger implements Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$aop->beforeMethod(
-			array(Main_Controller::class, "runController"), array($this, "start")
-		);
-		$aop->afterMethod(
-			array(Main_Controller::class, "runController"), array($this, "stop")
-		);
+		$aop->beforeMethod([Main_Controller::class, 'runController'], [$this, 'start']);
+		$aop->afterMethod( [Main_Controller::class, 'runController'], [$this, 'stop']);
 	}
 
 	//----------------------------------------------------------------------------------------- start

@@ -16,10 +16,10 @@ class Property_Select_Controller implements Controller
 	 */
 	public function getProperties(Reflection_Class $class, $composite_class_name = null)
 	{
-		$properties = array();
+		$properties = [];
 		if (isset($composite_class_name) && isA($class->name, Component::class)) {
 			$composite_property = call_user_func(
-				array($class->name, 'getCompositeProperties'),
+				[$class->name, 'getCompositeProperties'],
 				$composite_class_name
 			);
 			$composite_property = reset($composite_property);
@@ -83,7 +83,7 @@ class Property_Select_Controller implements Controller
 				$top_property->final_class
 			);
 			foreach ($properties as $property) {
-				$property->path = $property_path . '.' . $property->name;
+				$property->path = $property_path . DOT . $property->name;
 			}
 			$parameters->set('container', 'subtree');
 		}

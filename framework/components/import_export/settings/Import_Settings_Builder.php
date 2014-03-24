@@ -11,7 +11,7 @@ abstract class Import_Settings_Builder
 
 	//---------------------------------------------------------------------------------- autoIdentify
 	/**
-	 * If no property contains the charater "*" in import file, automatically detects which property
+	 * If no property contains the charater '*' in import file, automatically detects which property
 	 * names are used to identify records using the @representative classes annotation
 	 *
 	 * @param $class_name      string
@@ -21,15 +21,15 @@ abstract class Import_Settings_Builder
 	private static function autoIdentify($class_name, $properties_path)
 	{
 		foreach ($properties_path as $property_path) {
-			if (strpos($property_path, "*") !== false) {
-				return array();
+			if (strpos($property_path, '*') !== false) {
+				return [];
 			}
 		}
-		$auto_identify = array();
+		$auto_identify = [];
 		foreach ($properties_path as $property_path) {
 			$class = new Reflection_Class($class_name);
-			$representative = $class->getListAnnotation("representative")->values();
-			foreach (explode(".", $property_path) as $pos => $property_name) {
+			$representative = $class->getListAnnotation('representative')->values();
+			foreach (explode(DOT, $property_path) as $pos => $property_name) {
 				if (in_array($property_name, $representative)) {
 					$auto_identify[$property_path][$pos] = true;
 				}
@@ -38,7 +38,7 @@ abstract class Import_Settings_Builder
 					$type = $property->getType();
 					if ($type->isClass()) {
 						$class = new Reflection_Class($type->getElementTypeAsString());
-						$representative = $class->getListAnnotation("representative")->values();
+						$representative = $class->getListAnnotation('representative')->values();
 					}
 				}
 			}
@@ -63,25 +63,25 @@ abstract class Import_Settings_Builder
 		$class_name = Import_Array::getClassNameFromArray($array) ?: $class_name;
 		$settings = new Import_Settings($class_name);
 		/** @var $classes Import_Class[] */
-		$classes = array();
+		$classes = [];
 		$properties_path = Import_Array::getPropertiesFromArray($array, $class_name);
 		$auto_identify = self::autoIdentify($class_name, $properties_path);
 		foreach ($properties_path as $property_path) {
 			$sub_class = $class_name;
 			$last_identify = false;
-			$class_path = "";
-			$property_path_for_class = array();
-			foreach (explode(".", $property_path) as $pos => $property_name) {
-				$identify = (substr($property_name, -1) !== "*");
+			$class_path = '';
+			$property_path_for_class = [];
+			foreach (explode(DOT, $property_path) as $pos => $property_name) {
+				$identify = (substr($property_name, -1) !== '*');
 				if (!$identify) {
 					$property_name = substr($property_name, 0, -1);
 				}
-				$class_key = join(".", $property_path_for_class);
+				$class_key = join(DOT, $property_path_for_class);
 				if (!isset($classes[$class_key])) {
 					$classes[$class_key] = new Import_Class(
 						$sub_class,
 						$property_path_for_class,
-						$last_identify ? "tell_it_and_stop_import" : "create_new_value"
+						$last_identify ? 'tell_it_and_stop_import' : 'create_new_value'
 					);
 				}
 				$class = $classes[$class_key];
@@ -100,7 +100,7 @@ abstract class Import_Settings_Builder
 						$class->write_properties[$property_name] = $import_property;
 					}
 					$sub_class = $property->getType()->getElementTypeAsString();
-					$class_path .= $sub_class . ".";
+					$class_path .= $sub_class . DOT;
 				}
 				catch (ReflectionException $exception) {
 					$class->ignore_properties[$property_name] = $import_property;
@@ -126,20 +126,20 @@ abstract class Import_Settings_Builder
 	{
 		$main_class_name = null;
 		$settings = new Import_Settings();
-		if (isset($worksheet["name"])) {
-			$settings->name = $worksheet["name"];
+		if (isset($worksheet['name'])) {
+			$settings->name = $worksheet['name'];
 		}
-		if (isset($worksheet["classes"])) {
-			foreach ($worksheet["classes"] as $property_path => $class) {
+		if (isset($worksheet['classes'])) {
+			foreach ($worksheet['classes'] as $property_path => $class) {
 				if ($property_path[0] === strtoupper($property_path[0])) {
 					// the first element is always the main class name
 					$class_name = $main_class_name = Namespaces::fullClassName($property_path);
 					$settings->class_name = $class_name;
-					$property_path = "";
+					$property_path = '';
 				}
 				else {
 					// property paths for next elements
-					$property_path = str_replace(">", ".", $property_path);
+					$property_path = str_replace('>', DOT, $property_path);
 					$property = new Reflection_Property($main_class_name, $property_path);
 					$class_name = $property->getType()->getElementTypeAsString();
 				}
@@ -160,26 +160,26 @@ abstract class Import_Settings_Builder
 	 */
 	private static function buildFormClass($class_name, $property_path, $class)
 	{
-		$property_path = $property_path ? explode(".", $property_path) : array();
+		$property_path = $property_path ? explode(DOT, $property_path) : [];
 		$import_class = new Import_Class(
-			$class_name, $property_path, $class["object_not_found_behaviour"]
+			$class_name, $property_path, $class['object_not_found_behaviour']
 		);
-		if (isset($class["constants"]) && is_array($class["constants"])) {
-			foreach ($class["constants"] as $constant) {
-				$import_class->constants[$constant["name"]] = new Reflection_Property_Value(
-					$import_class->class_name, $constant["name"], $constant["value"], true
+		if (isset($class['constants']) && is_array($class['constants'])) {
+			foreach ($class['constants'] as $constant) {
+				$import_class->constants[$constant['name']] = new Reflection_Property_Value(
+					$import_class->class_name, $constant['name'], $constant['value'], true
 				);
 			}
 		}
-		if ($class["identify"]) {
-			foreach (explode(",", $class["identify"]) as $property_name) {
+		if ($class['identify']) {
+			foreach (explode(',', $class['identify']) as $property_name) {
 				$import_class->identify_properties[$property_name] = new Import_Property(
 					$class_name, $property_name
 				);
 			}
 		}
-		if ($class["write"]) {
-			foreach (explode(",", $class["write"]) as $property_name) {
+		if ($class['write']) {
+			foreach (explode(',', $class['write']) as $property_name) {
 				$import_property = new Import_Property($class_name, $property_name);
 				$import_class->write_properties[$property_name] = $import_property;
 				try {
@@ -190,8 +190,8 @@ abstract class Import_Settings_Builder
 				}
 			}
 		}
-		if ($class["ignore"]) {
-			foreach (explode(",", $class["ignore"]) as $property_name) {
+		if ($class['ignore']) {
+			foreach (explode(',', $class['ignore']) as $property_name) {
 				$import_class->ignore_properties[$property_name] = new Import_Property(
 					$class_name, $property_name
 				);

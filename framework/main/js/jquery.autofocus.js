@@ -7,8 +7,8 @@
 	$.fn.autofocus = function()
 	{
 		$(this)
-			.find("input[autocomplete], input[name], select[name]")
-			.filter(":visible:not([readonly])")
+			.find('input[autocomplete], input[name], select[name]')
+			.filter(':visible:not([readonly])')
 			.first()
 			.focus();
 

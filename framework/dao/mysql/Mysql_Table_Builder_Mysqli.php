@@ -24,8 +24,8 @@ abstract class Mysql_Table_Builder_Mysqli
 		$tables = [];
 		$result = $mysqli->query(
 			'SHOW TABLE STATUS'
-			. (isset($database_name) ? ' IN "' . $database_name . '"' : '')
-			. (isset($table_name) ? ' LIKE "' . $table_name . '"' : '')
+			. (isset($database_name) ? (' IN ' . DQ . $database_name . DQ) : '')
+			. (isset($table_name) ? (' LIKE ' . DQ . $table_name . DQ) : '')
 		);
 		/** @var $table Mysql_Table */
 		while ($table = $result->fetch_object(Mysql_Table::class)) {

@@ -38,13 +38,13 @@ class String
 	 * @todo see if there is any conceptual difference with strSimplify. If not, replace it !
 	 * @return String the clean word.
 	 * @example
-	 * cleanWord("Albert, ") => return "Albert"
-	 * cleanWord(" list : ") => return "list"
+	 * cleanWord('Albert, ') => return 'Albert'
+	 * cleanWord(' list : ') => return 'list'
 	 */
 	function cleanWord()
 	{
 		return new String(
-			preg_replace("#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#", "", $this->value)
+			preg_replace('#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#', '', $this->value)
 		);
 	}
 
@@ -56,7 +56,7 @@ class String
 	 */
 	public function first()
 	{
-		foreach (array(":", ".", "-", ",") as $char) {
+		foreach ([':', '.', '-', ','] as $char) {
 			if (strpos($this->value, $char) !== false) {
 				return new String(substr($this->value, 0, strpos($this->value, $char)));
 			}
@@ -81,7 +81,7 @@ class String
 	 */
 	function isWord()
 	{
-		return preg_match("#[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]#", $this->value);
+		return preg_match('#[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]#', $this->value);
 	}
 
 	//------------------------------------------------------------------------------------------ last
@@ -93,7 +93,7 @@ class String
 	 */
 	public function last($count = 1)
 	{
-		foreach (array(":", ".", "-", ",") as $char) {
+		foreach ([':', '.', '-', ','] as $char) {
 			if (strrpos($this->value, $char) !== false) {
 				return new String(rLastParse($this->value, $char, $count, true));
 			}

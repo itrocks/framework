@@ -17,7 +17,7 @@ class Html_Template
 
 	//------------------------------------------------------------------------------------------ $css
 	/**
-	 * Css files relative directory (ie "default")
+	 * Css files relative directory (ie 'default')
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Html_Template
 	 *
 	 * @var mixed[]
 	 */
-	protected $descendants = array();
+	protected $descendants = [];
 
 	//---------------------------------------------------------------------------- $descendants_names
 	/**
@@ -37,7 +37,7 @@ class Html_Template
 	 *
 	 * @var mixed[]
 	 */
-	protected $descendants_names = array();
+	protected $descendants_names = [];
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
@@ -53,7 +53,7 @@ class Html_Template
 	 *
 	 * @var string
 	 */
-	public $main_template = "Default_main.html";
+	public $main_template = 'Default_main.html';
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
@@ -61,7 +61,7 @@ class Html_Template
 	 *
 	 * @var mixed[]
 	 */
-	public $objects = array();
+	public $objects = [];
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
@@ -92,7 +92,7 @@ class Html_Template
 	 *
 	 * @var string[]
 	 */
-	public $preprops = array();
+	public $preprops = [];
 
 	//------------------------------------------------------------------------------------ $var_names
 	/**
@@ -101,7 +101,7 @@ class Html_Template
 	 *
 	 * @var string[]
 	 */
-	public $var_names = array();
+	public $var_names = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -114,11 +114,11 @@ class Html_Template
 	public function __construct($object = null, $template_file = null, $feature_name = null)
 	{
 		if (isset($object)) {
-			array_unshift($this->var_names, "root");
+			array_unshift($this->var_names, 'root');
 			array_unshift($this->objects, $object);
 		}
 		if (isset($template_file)) {
-			$this->path    = substr($template_file, 0, strrpos($template_file, "/"));
+			$this->path    = substr($template_file, 0, strrpos($template_file, SL));
 			$this->content = file_get_contents($template_file);
 		}
 		if (isset($feature_name)) {
@@ -131,24 +131,24 @@ class Html_Template
 	 * Calls a function and returns result
 	 *
 	 * @param $object_call object|string object or class name
-	 * @param $func_call   string "functionName(param1value,param2value,...)" or "functionName"
+	 * @param $func_call   string 'functionName(param1value,param2value,...)' or 'functionName'
 	 * @return mixed
 	 */
 	public function callFunc($object_call, $func_call)
 	{
-		if ($i = strpos($func_call, "(")) {
+		if ($i = strpos($func_call, '(')) {
 			$func_name = substr($func_call, 0, $i);
 			$i++;
-			$j = strpos($func_call, ")", $i);
+			$j = strpos($func_call, ')', $i);
 			$params = $this->parseFuncParams(substr($func_call, $i, $j - $i));
 		}
 		else {
 			$func_name = $func_call;
-			$params = array();
+			$params = [];
 		}
-		if (is_a($object_call, 'SAF\Framework\Html_Template_Functions', true)) {
+		if (is_a($object_call, Html_Template_Functions::class, true)) {
 			if (method_exists($object_call, $func_name)) {
-				$params = array_merge(array($this), $params);
+				$params = array_merge([$this], $params);
 			}
 			else {
 				$func_name = substr($func_name, 3);
@@ -156,7 +156,7 @@ class Html_Template
 				return call_user_func_array($func_name, $params);
 			}
 		}
-		return call_user_func_array(array($object_call, $func_name), $params);
+		return call_user_func_array([$object_call, $func_name], $params);
 	}
 
 	//--------------------------------------------------------------------------- getContainerContent
@@ -167,8 +167,8 @@ class Html_Template
 	protected function getContainerContent($file_name)
 	{
 		return isset($this->main_template)
-			? file_get_contents($file_name, !strpos($this->main_template, "/"))
-			: "{@content}";
+			? file_get_contents($file_name, !strpos($this->main_template, SL))
+			: '{@content}';
 	}
 
 	//------------------------------------------------------------------------------------ getCssPath
@@ -178,11 +178,11 @@ class Html_Template
 	 */
 	public static function getCssPath($css)
 	{
-		static $css_path = array();
+		static $css_path = [];
 		$path = isset($css_path[$css]) ? $css_path[$css] : null;
 		if (!isset($path)) {
-			$path = str_replace("\\", "/", stream_resolve_include_path($css . "/application.css"));
-			if ($i = strrpos($path, "/")) {
+			$path = str_replace(BS, SL, stream_resolve_include_path($css . '/application.css'));
+			if ($i = strrpos($path, SL)) {
 				$path = substr($path, 0, $i);
 			}
 			$path = substr($path, strlen(Paths::$file_root));
@@ -286,8 +286,8 @@ class Html_Template
 		return (is_array($value) || is_object($value) || is_resource($value) || !isset($value))
 			? $value
 			: str_replace(
-				array("{",      "}",      "<!--",    "-->"),
-				array("&#123;", "&#125;", "&lt;!--", "--&gt;"),
+				['{',      '}',      '<!--',    '-->'],
+				['&#123;', '&#125;', '&lt;!--', '--&gt;'],
 				$value
 			);
 	}
@@ -348,10 +348,10 @@ class Html_Template
 	 */
 	protected function parseConditional($property_name)
 	{
-		$i = strpos($property_name, "?");
+		$i = strpos($property_name, '?');
 		if ($i !== false) {
 			$condition_path = substr($property_name, 0, $i);
-			$j = strrpos($property_name, ":");
+			$j = strrpos($property_name, ':');
 			if ($this->parseValue($condition_path, true)) {
 				if ($j === false) {
 					$j = strlen($property_name);
@@ -378,7 +378,7 @@ class Html_Template
 		return $this->htmlEntities(
 			(is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
 				isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
-				isset($GLOBALS["_" . $const_name]) ? $GLOBALS["_" . $const_name] : (
+				isset($GLOBALS['_' . $const_name]) ? $GLOBALS['_' . $const_name] : (
 					$this->parseConstSpec($object, $const_name)
 				)
 			))
@@ -396,7 +396,7 @@ class Html_Template
 		$object, $const_name
 	) {
 		switch ($const_name) {
-			case "PHPSESSID": return session_id();
+			case 'PHPSESSID': return session_id();
 		}
 		return null;
 	}
@@ -422,27 +422,27 @@ class Html_Template
 	 */
 	protected function parseContainer($content)
 	{
-		if (isset($this->parameters["container"])) {
-			$container_begin = "BEGIN:" . $this->parameters["container"];
-			$container_end = "END:" . $this->parameters["container"];
+		if (isset($this->parameters['container'])) {
+			$container_begin = 'BEGIN:' . $this->parameters['container'];
+			$container_end = 'END:' . $this->parameters['container'];
 		}
 		else {
-			$container_begin = "BEGIN";
-			$container_end = "END";
+			$container_begin = 'BEGIN';
+			$container_end = 'END';
 		}
-		$i = strpos($content, "<!--" . $container_begin . "-->");
+		$i = strpos($content, '<!--' . $container_begin . '-->');
 		if ($i !== false) {
 			$i += strlen($container_begin) + 7;
-			$j = strrpos($content, "<!--" . $container_end . "-->", $i);
-			if (isset($this->parameters["as_widget"]) && $this->parameters["as_widget"]) {
+			$j = strrpos($content, '<!--' . $container_end . '-->', $i);
+			if (isset($this->parameters['as_widget']) && $this->parameters['as_widget']) {
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
 				$file_name = $this->main_template;
 				$container = $this->getContainerContent($file_name);
-				$root_object = (is_object($this->getObject())) ? "<!--@rootObject-->" : "";
+				$root_object = (is_object($this->getObject())) ? '<!--@rootObject-->' : '';
 				$content = str_replace(
-					"{@content}",
+					'{@content}',
 					$root_object . substr($content, $i, $j - $i) . $root_object,
 					$container
 				);
@@ -472,7 +472,7 @@ class Html_Template
 	protected function parseFullPage($content)
 	{
 		$content = $this->parseVars($content);
-		if (!isset($this->parameters["is_included"]) || !$this->parameters["is_included"]) {
+		if (!isset($this->parameters['is_included']) || !$this->parameters['is_included']) {
 			$content = $this->replaceLinks($content);
 			$content = $this->replaceUris($content);
 		}
@@ -488,18 +488,18 @@ class Html_Template
 	 */
 	protected function parseFunc($func_name)
 	{
-		$func_name = ($p = strpos($func_name, "("))
-			? (Names::propertyToMethod(substr($func_name, 0, $p), "get") . substr($func_name, $p))
-			: Names::propertyToMethod($func_name, "get");
+		$func_name = ($p = strpos($func_name, '('))
+			? (Names::propertyToMethod(substr($func_name, 0, $p), 'get') . substr($func_name, $p))
+			: Names::propertyToMethod($func_name, 'get');
 		return $this->htmlEntities(
-			$this->callFunc('SAF\Framework\Html_Template_Functions', $func_name));
+			$this->callFunc(Html_Template_Functions::class, $func_name));
 	}
 
 	//------------------------------------------------------------------------------- parseFuncParams
 	/**
-	 * Parse a list of function parameters, separated by ","
+	 * Parse a list of function parameters, separated by ','
 	 *
-	 * Accept quoted "constants" and 'constants'
+	 * Accept quoted 'constants' and 'constants'
 	 * All other parameters values will be parsed as values
 	 *
 	 * @param $params_string string
@@ -507,11 +507,11 @@ class Html_Template
 	 */
 	protected function parseFuncParams($params_string)
 	{
-		$params = explode(",", $params_string);
+		$params = explode(',', $params_string);
 		foreach ($params as $key => $param) {
 			if (
-					((substr($param, 0, 1) == '"') && (substr($param, -1) == '"'))
-					|| ((substr($param, 0, 1) == "'") && (substr($param, -1) == "'"))
+					((substr($param, 0, 1) == Q) && (substr($param, -1) == Q))
+					|| ((substr($param, 0, 1) == DQ) && (substr($param, -1) == DQ))
 			) {
 				$params[$key] = substr($param, 1, -1);
 			}
@@ -531,19 +531,19 @@ class Html_Template
 	 */
 	protected function parseInclude($include_uri)
 	{
-		if ((substr($include_uri, -5) === ".html") || (substr($include_uri, -4) === ".php")) {
+		if ((substr($include_uri, -5) === '.html') || (substr($include_uri, -4) === '.php')) {
 			// includes html template
 			$included = file_get_contents($this->parseIncludeResolve($include_uri));
-			if (($i = strpos($included, "<!--BEGIN-->")) !== false) {
+			if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
 				$i += 12;
-				$j = strpos($included, "<!--END-->");
+				$j = strpos($included, '<!--END-->');
 				$included = substr($included, $i, $j - $i);
 			}
 			return $this->parseVars($included);
 		}
 		else {
 			// includes controller result
-			return (new Main_Controller())->runController($include_uri, array("is_included" => true));
+			return (new Main_Controller())->runController($include_uri, ['is_included' => true]);
 		}
 	}
 
@@ -554,7 +554,7 @@ class Html_Template
 	 */
 	protected function parseIncludeResolve($include_uri)
 	{
-		if (($i = strrpos($include_uri, "/")) !== false) {
+		if (($i = strrpos($include_uri, SL)) !== false) {
 			$include_uri = substr($include_uri, $i + 1);
 		}
 		return stream_resolve_include_path($include_uri);
@@ -573,23 +573,23 @@ class Html_Template
 		$var_name = $search_var_name = substr($content, $i, $j - $i);
 		$length = strlen($var_name);
 		$i += $length + 3;
-		while (($k = strpos($var_name, "{")) !== false) {
-			$l = strpos($var_name, "}");
+		while (($k = strpos($var_name, '{')) !== false) {
+			$l = strpos($var_name, '}');
 			$this->parseVar($var_name, $k + 1, $l);
 		}
-		$force_equality = ($var_name[0] === "=");
-		$force_condition = (substr($var_name, -1) === "?");
-		if (strpos($var_name, ":")) {
-			list($var_name, $expr) = explode(":", $var_name);
-			$search_var_name = lParse($search_var_name, ":");
-			if (($sep = strpos($expr, "-")) !== false) {
+		$force_equality = ($var_name[0] === '=');
+		$force_condition = (substr($var_name, -1) === '?');
+		if (strpos($var_name, ':')) {
+			list($var_name, $expr) = explode(':', $var_name);
+			$search_var_name = lParse($search_var_name, ':');
+			if (($sep = strpos($expr, '-')) !== false) {
 				$from = substr($expr, 0, $sep);
 				$to = substr($expr, $sep + 1);
 			}
 			else {
 				$from = $to = $expr;
 			}
-			$to = (($to == "") ? null : $to);
+			$to = (($to == '') ? null : $to);
 		}
 		else {
 			$expr = null;
@@ -597,7 +597,7 @@ class Html_Template
 			$to = null;
 		}
 		$length2 = strlen($search_var_name);
-		$j = strpos($content, "<!--" . $search_var_name . "-->", $j + 3);
+		$j = strpos($content, '<!--' . $search_var_name . '-->', $j + 3);
 		if ($force_condition) {
 			$var_name = substr($var_name, 0, -1);
 		}
@@ -609,7 +609,7 @@ class Html_Template
 		$separator = $this->parseSeparator($loop_content);
 		$elements = $this->parseValue($var_name, false);
 		if (!$force_condition) {
-			array_unshift($this->var_names, is_object($elements) ? get_class($elements) : "");
+			array_unshift($this->var_names, is_object($elements) ? get_class($elements) : '');
 			array_unshift($this->objects, $elements);
 		}
 		if ($from && !is_numeric($from)) {
@@ -623,7 +623,7 @@ class Html_Template
 		}
 		elseif ((is_array($elements) && !$force_condition) || isset($expr)) {
 			$first = true;
-			$loop_insert = "";
+			$loop_insert = '';
 			$counter = 0;
 			$this->preprop($var_name);
 			if (is_array($elements)) foreach ($elements as $key => $element) {
@@ -649,7 +649,7 @@ class Html_Template
 			$this->preprop();
 			if (isset($to) && ($counter < $to)) {
 				array_unshift($this->var_names, null);
-				array_unshift($this->objects, "");
+				array_unshift($this->objects, '');
 				while ($counter < $to) {
 					$counter++;
 					if ($counter >= $from) {
@@ -668,7 +668,7 @@ class Html_Template
 			}
 		}
 		elseif (is_array($elements)) {
-			$loop_insert = empty($elements) ? "" : $this->parseVars($loop_content);
+			$loop_insert = empty($elements) ? '' : $this->parseVars($loop_content);
 		}
 		elseif (is_object($elements)) {
 			$loop_insert = $this->parseVars($loop_content);
@@ -677,7 +677,7 @@ class Html_Template
 			$loop_insert = $this->parseVars($loop_content);
 		}
 		else {
-			$loop_insert = "";
+			$loop_insert = '';
 		}
 		if (!$force_condition) {
 			array_shift($this->objects);
@@ -705,14 +705,14 @@ class Html_Template
 	protected function parseLoops($content)
 	{
 		$icontent = 0;
-		while (($icontent = strpos($content, "<!--", $icontent)) !== false) {
+		while (($icontent = strpos($content, '<!--', $icontent)) !== false) {
 			$i = $icontent + 4;
 			if ($this->parseThis($content, $i)) {
-				$j = strpos($content, "-->", $i);
+				$j = strpos($content, '-->', $i);
 				$this->parseLoop($content, $i, $j);
 			}
 			else {
-				$icontent = strpos($content, "-->", $i) + 3;
+				$icontent = strpos($content, '-->', $i) + 3;
 			}
 		}
 		return $content;
@@ -764,7 +764,7 @@ class Html_Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$object, $property_name
 	) {
-		return method_exists($object, "__toString") ? $this->htmlEntities($object) : "";
+		return method_exists($object, '__toString') ? $this->htmlEntities($object) : '';
 	}
 
 	//-------------------------------------------------------------------------------- parseParameter
@@ -778,7 +778,7 @@ class Html_Template
 		$object, $parameter_name
 	) {
 		return $this->htmlEntities(
-			isset($this->parameters[$parameter_name]) ? $this->parameters[$parameter_name] : ""
+			isset($this->parameters[$parameter_name]) ? $this->parameters[$parameter_name] : ''
 		);
 	}
 
@@ -822,22 +822,22 @@ class Html_Template
 	 */
 	protected function parseSeparator(&$content)
 	{
-		if (($i = strrpos($content, "<!--separator-->")) !== false) {
+		if (($i = strrpos($content, '<!--separator-->')) !== false) {
 			$separator = substr($content, $i + 16);
 			// this separator is not for me if there is any <!--block--> to parse into it's source code.
 			$j = 0;
-			while (strpos($separator, "<!--", $j) !== false) {
+			while (strpos($separator, '<!--', $j) !== false) {
 				$j += 4;
 				if ($this->parseThis($separator, $j)) {
-					return "";
+					return '';
 				}
-				$j = strpos($separator, "-->", $j) + 3;
+				$j = strpos($separator, '-->', $j) + 3;
 			}
 			// nothing to parse inside of it ? This separator is for me.
 			$content = substr($content, 0, $i);
 			return $separator;
 		}
-		return "";
+		return '';
 	}
 
 	//------------------------------------------------------------------------------ parseSingleValue
@@ -851,15 +851,15 @@ class Html_Template
 		if (!strlen($property_name)) {
 			$object = $this->parseParent();
 		}
-		elseif ($property_name === "#") {
+		elseif ($property_name === '#') {
 			return reset($this->var_names);
 		}
-		elseif (strpos($property_name, "?")) {
+		elseif (strpos($property_name, '?')) {
 			$object = $this->parseConditional($property_name);
 		}
 		elseif (
-			($property_name[0] == "'" && substr($property_name, -1) == "'")
-			|| ($property_name[0] == '"' && substr($property_name, -1) == '"')
+			($property_name[0] == Q && substr($property_name, -1) == Q)
+			|| ($property_name[0] == DQ && substr($property_name, -1) == DQ)
 		) {
 			$object = $this->parseConstant($property_name);
 		}
@@ -883,10 +883,10 @@ class Html_Template
 				$object = $this->parseConst($object, $property_name);
 			}
 		}
-		elseif ($property_name[0] === "@") {
+		elseif ($property_name[0] === AT) {
 			$object = $this->parseFunc(substr($property_name, 1));
 		}
-		elseif ($i = strpos($property_name, "(")) {
+		elseif ($i = strpos($property_name, '(')) {
 			$object = $this->callFunc(reset($this->objects), $property_name);
 		}
 		elseif (is_array($object)) {
@@ -907,7 +907,7 @@ class Html_Template
 		else {
 			$object = $this->parseProperty($object, $property_name);
 		}
-		if (($source_object instanceof Reflection_Property) && ($property_name == "value")) {
+		if (($source_object instanceof Reflection_Property) && ($property_name == 'value')) {
 			$object = (new Reflection_Property_View($source_object))->formatValue($object);
 		}
 		return $object;
@@ -989,12 +989,12 @@ class Html_Template
 	protected function parseThis($content, $i)
 	{
 		$c = $content[$i];
-		return (($c >= "a") && ($c <= "z"))
+		return (($c >= 'a') && ($c <= 'z'))
 			|| (
-				($c >= "A") && ($c <= "Z")
-				&& (substr($content, $i, 6) != "BEGIN:") && (substr($content, $i, 4) != "END:")
+				($c >= 'A') && ($c <= 'Z')
+				&& (substr($content, $i, 6) != 'BEGIN:') && (substr($content, $i, 4) != 'END:')
 			)
-			|| (strpos("#@/.-+?!|=\"", $c) !== false);
+			|| (strpos('#@/.-+?!|="', $c) !== false);
 	}
 
 	//------------------------------------------------------------------------------------ parseValue
@@ -1007,30 +1007,30 @@ class Html_Template
 	 */
 	protected function parseValue($var_name, $as_string = true)
 	{
-		if ($var_name === ".") {
+		if ($var_name === DOT) {
 			return reset($this->objects);
 		}
-		elseif ($var_name == "") {
-			return "";
+		elseif ($var_name == '') {
+			return '';
 		}
-		elseif ($var_name[0] === "/") {
+		elseif ($var_name[0] === SL) {
 			return $this->parseInclude($var_name);
 		}
-		elseif ($var_name[0] == "!") {
+		elseif ($var_name[0] == '!') {
 			$not = true;
 			$var_name = substr($var_name, 1);
 		}
-		if (strpos("-+", $var_name[0]) !== false) {
+		if (strpos('-+', $var_name[0]) !== false) {
 			$descendants_names = $this->descendants_names;
 			$descendants = $this->descendants;
 			$var_names = $this->var_names;
 			$objects = $this->objects;
-			while ($var_name[0] === "-") {
+			while ($var_name[0] === '-') {
 				array_unshift($this->descendants_names, array_shift($this->var_names));
 				array_unshift($this->descendants, array_shift($this->objects));
 				$var_name = substr($var_name, 1);
 			}
-			while ($var_name[0] === "+") {
+			while ($var_name[0] === '+') {
 				array_unshift($this->var_names, array_shift($this->descendants_names));
 				array_unshift($this->objects, array_shift($this->descendants));
 				$var_name = substr($var_name, 1);
@@ -1038,10 +1038,10 @@ class Html_Template
 		}
 		$property_name = null;
 		/** @var $object mixed */
-		if (strpos($var_name, ".") !== false) {
+		if (strpos($var_name, DOT) !== false) {
 			if (!isset($var_names)) $var_names = $this->var_names;
 			if (!isset($objects))   $objects   = $this->objects;
-			foreach (explode(".", $var_name) as $property_name) {
+			foreach (explode(DOT, $var_name) as $property_name) {
 				$object = $this->parseSingleValue($property_name);
 				array_unshift($this->var_names, $property_name);
 				array_unshift($this->objects,   $object);
@@ -1086,20 +1086,20 @@ class Html_Template
 	protected function parseVar(&$content, $i, $j)
 	{
 		$var_name = substr($content, $i, $j - $i);
-		while (($k = strpos($var_name, "{")) !== false) {
+		while (($k = strpos($var_name, '{')) !== false) {
 			$this->parseVar($content, $k + $i + 1, $j);
-			$j = strpos($content, "}", $i);
+			$j = strpos($content, '}', $i);
 			$var_name = substr($content, $i, $j - $i);
 		}
 		$auto_remove = $this->parseVarWillAutoremove($var_name);
 		$value = $this->parseValue($var_name);
 		$object = reset($this->objects);
 		if (is_array($value) && ($object instanceof Reflection_Property)) {
-			$link = $object->getAnnotation("link")->value;
-			if ($link === "Collection") {
+			$link = $object->getAnnotation('link')->value;
+			if ($link === 'Collection') {
 				$value = $this->parseCollection($object, $value);
 			}
-			elseif ($link === "Map") {
+			elseif ($link === 'Map') {
 				$value = $this->parseMap($object, $value);
 			}
 		}
@@ -1121,14 +1121,14 @@ class Html_Template
 	protected function parseVarRemove($content, &$i, &$j)
 	{
 		if (
-			(($content[$i - 1] === "'") && ($content[$j + 1] === "'"))
-			|| (($content[$i - 1] === '"') && ($content[$j + 1] === '"'))
+			(($content[$i - 1] === Q) && ($content[$j + 1] === Q))
+			|| (($content[$i - 1] === DQ) && ($content[$j + 1] === DQ))
 		) {
 			$i--;
 			$j++;
 		}
-		while (($content[$i] != " ") && ($content[$i] != ",") && ($content[$i] != "/")) {
-			if (($content[$i] == '"') || ($content[$i] == "'")) {
+		while (($content[$i] != SP) && ($content[$i] != ',') && ($content[$i] != SL)) {
+			if (($content[$i] == Q) || ($content[$i] == DQ)) {
 				while ($content[$j] != $content[$i]) {
 					$j++;
 				}
@@ -1159,10 +1159,10 @@ class Html_Template
 	{
 		$content = $this->parseLoops($content);
 		$i = 0;
-		while (($i = strpos($content, "{", $i)) !== false) {
+		while (($i = strpos($content, '{', $i)) !== false) {
 			$i++;
 			if ($this->parseThis($content, $i)) {
-				$j = strpos($content, "}", $i);
+				$j = strpos($content, '}', $i);
 				$i = $this->parseVar($content, $i, $j);
 			}
 		}
@@ -1176,7 +1176,7 @@ class Html_Template
 	 */
 	protected function parseVarWillAutoremove(&$var_name)
 	{
-		if ($var_name[0] === "?") {
+		if ($var_name[0] === '?') {
 			$var_name = substr($var_name, 1);
 			$auto_remove = true;
 		}
@@ -1194,7 +1194,7 @@ class Html_Template
 	{
 		if (isset($preprop)) {
 			array_push($this->preprops, is_string($preprop)
-				? (($i = strrpos($preprop, ".")) ? substr($preprop, $i + 1) : $preprop)
+				? (($i = strrpos($preprop, DOT)) ? substr($preprop, $i + 1) : $preprop)
 				: $preprop
 			);
 		}
@@ -1211,9 +1211,9 @@ class Html_Template
 	 */
 	protected function removeSample(&$content)
 	{
-		$i = strrpos($content, "<!--sample-->");
+		$i = strrpos($content, '<!--sample-->');
 		if ($i !== false) {
-			if (strpos($content, "<!--", $i + 1) === false) {
+			if (strpos($content, '<!--', $i + 1) === false) {
 				$content = substr($content, 0, $i);
 			}
 		}
@@ -1228,11 +1228,13 @@ class Html_Template
 	 */
 	protected function replaceLink($link)
 	{
-		if (strpos($link, "://")) {
+		if (strpos($link, '://')) {
 			return $link;
 		}
-		$full_path = str_replace("/./", "/", $this->getUriRoot() . $this->getScriptName() . $link);
-		if (substr($full_path, 0, 2) == "./") {
+		$full_path = str_replace(
+			SL . DOT . SL, SL, $this->getUriRoot() . $this->getScriptName() . $link
+		);
+		if (substr($full_path, 0, 2) == (DOT . SL)) {
 			$full_path = substr($full_path, 2);
 		}
 		return $full_path;
@@ -1247,15 +1249,15 @@ class Html_Template
 	 */
 	protected function replaceLinks($content)
 	{
-		$links = array("action=", "href=", "location=");
-		$quotes = array("'", '"');
+		$links = ['action=', 'href=', 'location='];
+		$quotes = [Q, DQ];
 		foreach ($links as $link) {
 			foreach ($quotes as $quote) {
 				$i = 0;
 				while (($i = strpos($content, $link . $quote, $i)) !== false) {
 					$i += strlen($link) + 1;
 					$j = strpos($content, $quote, $i);
-					if (substr($content, $i, 1) === "/") {
+					if (substr($content, $i, 1) === SL) {
 						$replacement_link = $this->replaceLink(substr($content, $i, $j - $i));
 						$content = substr($content, 0, $i) . $replacement_link . substr($content, $j);
 						$i += strlen($replacement_link);
@@ -1275,16 +1277,16 @@ class Html_Template
 	 */
 	protected function replaceUri($uri)
 	{
-		if (strpos($uri, "://")) {
+		if (strpos($uri, '://')) {
 			return $uri;
 		}
-		$position = strrpos($uri, "/vendor/");
+		$position = strrpos($uri, '/vendor/');
 		$file_name = ($position !== false)
 			? substr($uri, $position + 1)
-			: substr($uri, strrpos($uri, "/") + 1);
+			: substr($uri, strrpos($uri, SL) + 1);
 		$file_path = null;
-		if (substr($file_name, -4) == ".css") {
-			$file_path = static::getCssPath($this->css) . "/" . $file_name;
+		if (substr($file_name, -4) == '.css') {
+			$file_path = static::getCssPath($this->css) . SL . $file_name;
 			if (!file_exists(Paths::$file_root . $file_path)) {
 				$file_path = null;
 			}
@@ -1309,12 +1311,12 @@ class Html_Template
 	 */
 	protected function replaceUris($content)
 	{
-		$links = array('@import "', 'src="');
+		$links = ['@import "', 'src="'];
 		foreach ($links as $link) {
 			$i = 0;
 			while (($i = strpos($content, $link, $i)) !== false) {
 				$i += strlen($link);
-				$j = strpos($content, '"', $i);
+				$j = strpos($content, DQ, $i);
 				$replaced_uri = $this->replaceUri(substr($content, $i, $j - $i));
 				$content = substr($content, 0, $i) . $replaced_uri . substr($content, $j);
 				$i += strlen($replaced_uri);
@@ -1346,8 +1348,8 @@ class Html_Template
 	 */
 	public function setParameters($parameters)
 	{
-		if (isset($parameters["is_included"]) && $parameters["is_included"]) {
-			$parameters["as_widget"] = true;
+		if (isset($parameters['is_included']) && $parameters['is_included']) {
+			$parameters['as_widget'] = true;
 		}
 		$this->parameters = $parameters;
 	}

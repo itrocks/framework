@@ -67,8 +67,8 @@ class Sql_Where_Builder
 	 */
 	public function build()
 	{
-		$sql = is_null($this->where_array) ? "" : $this->buildPath("id", $this->where_array, "AND");
-		return $sql ? " WHERE " . $sql : $sql;
+		$sql = is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND');
+		return $sql ? ' WHERE ' . $sql : $sql;
 	}
 
 	//------------------------------------------------------------------------------------ buildArray
@@ -77,33 +77,33 @@ class Sql_Where_Builder
 	 *
 	 * @param $path        string Base property path for values (if keys are numeric or structure keywords)
 	 * @param $array       array An array of where conditions
-	 * @param $clause      string For multiple where clauses, tell if they are linked with "OR" or "AND"
+	 * @param $clause      string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @return string
 	 */
 	private function buildArray($path, $array, $clause)
 	{
-		$sql = "";
+		$sql = '';
 		$first = true;
 		foreach ($array as $key => $value) {
-			if ($first) $first = false; else $sql .= " $clause ";
+			if ($first) $first = false; else $sql .= SP . $clause . SP;
 			$subclause = strtoupper($key);
 			switch ($subclause) {
-				case "NOT": $sql .= "NOT (" . $this->buildPath($path, $value, "AND") . ")";  break;
-				case "AND": $sql .= $this->buildPath($path, $value, $subclause);             break;
-				case "OR":  $sql .= "(" . $this->buildPath($path, $value, $subclause) . ")"; break;
+				case 'NOT': $sql .= 'NOT (' . $this->buildPath($path, $value, 'AND') . ')';  break;
+				case 'AND': $sql .= $this->buildPath($path, $value, $subclause);             break;
+				case 'OR':  $sql .= '(' . $this->buildPath($path, $value, $subclause) . ')'; break;
 				default:
 					if (is_numeric($key)) {
 						$build = $this->buildPath($path, $value, $clause);
 					}
 					else {
-						$prefix = "";
-						$master_path = (($i = strrpos($path, ".")) !== false) ? substr($path, 0, $i) : "";
+						$prefix = '';
+						$master_path = (($i = strrpos($path, DOT)) !== false) ? substr($path, 0, $i) : '';
 						$property_name = ($i !== false) ? substr($path, $i + 1) : $path;
 						$properties = $this->joins->getProperties($master_path);
 						if (isset($properties[$property_name])) {
-							$link = $properties[$property_name]->getAnnotation("link")->value;
+							$link = $properties[$property_name]->getAnnotation('link')->value;
 							if ($link) {
-								$prefix = ($master_path ? ($master_path . ".") : "") . $property_name . ".";
+								$prefix = ($master_path ? ($master_path . DOT) : '') . $property_name . DOT;
 							}
 						}
 						$build = $this->buildPath($prefix . $key, $value, $clause);
@@ -112,7 +112,7 @@ class Sql_Where_Builder
 						$sql .= $build;
 					}
 					elseif (!empty($sql)) {
-						$sql = substr($sql, 0, -strlen(" $clause "));
+						$sql = substr($sql, 0, -strlen(SP . $clause . SP));
 					}
 			}
 		}
@@ -125,22 +125,22 @@ class Sql_Where_Builder
 	 * @param $prefix string
 	 * @return string
 	 */
-	public function buildColumn($path, $prefix = "")
+	public function buildColumn($path, $prefix = '')
 	{
 		$join = $this->joins->add($path);
 		if (isset($join)) {
 			if ($join->type === Sql_Join::LINK) {
-				$column = $join->foreign_alias . ".`" . rLastParse($path, ".", 1, true) . "`";
+				$column = $join->foreign_alias . DOT . BQ . rLastParse($path, DOT, 1, true) . BQ;
 			}
 			else {
-				$column = $join->foreign_alias . ".`" . $join->foreign_column . "`";
+				$column = $join->foreign_alias . DOT . BQ . $join->foreign_column . BQ;
 			}
 		}
 		else {
 			list($master_path, $foreign_column) = Sql_Builder::splitPropertyPath($path);
-			$column = ((!$master_path) || ($master_path === "id"))
-				? ("t0.`" . $prefix . $foreign_column . "`")
-				: ($this->joins->getAlias($master_path) . ".`" . $prefix . $foreign_column . "`");
+			$column = ((!$master_path) || ($master_path === 'id'))
+				? ('t0' . DOT . BQ . $prefix . $foreign_column . BQ)
+				: ($this->joins->getAlias($master_path) . DOT . BQ . $prefix . $foreign_column . BQ);
 		}
 		return $column;
 	}
@@ -157,11 +157,11 @@ class Sql_Where_Builder
 	{
 		if ($id = $this->sql_link->getObjectIdentifier($object)) {
 			// object is linked to stored data : search with object identifier
-			return $this->buildValue($path, $id, ($path == "id") ? "" : "id_");
+			return $this->buildValue($path, $id, ($path == 'id') ? '' : 'id_');
 		}
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
-		$array = array();
+		$array = [];
 		$class = new Reflection_Class(get_class($object));
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (isset($object->$property_name)) {
@@ -169,9 +169,9 @@ class Sql_Where_Builder
 				$array[$sub_path] = $object->$property_name;
 			}
 		}
-		$sql = $this->buildArray($path, $array, "AND");
+		$sql = $this->buildArray($path, $array, 'AND');
 		if (!$sql) {
-			$sql = "FALSE";
+			$sql = 'FALSE';
 		}
 		return $sql;
 	}
@@ -182,7 +182,7 @@ class Sql_Where_Builder
 	 *
 	 * @param $path        string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
 	 * @param $value       mixed May be a value, or a structured array of multiple where clauses
-	 * @param $clause      string For multiple where clauses, tell if they are linked with "OR" or "AND"
+	 * @param $clause      string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @return string
 	 */
 	private function buildPath($path, $value, $clause)
@@ -191,9 +191,9 @@ class Sql_Where_Builder
 			return $value->toSql($this, $path);
 		}
 		switch (gettype($value)) {
-			case "NULL":   return "";
-			case "array":  return $this->buildArray ($path, $value, $clause);
-			case "object": return $this->buildObject($path, $value);
+			case 'NULL':   return '';
+			case 'array':  return $this->buildArray ($path, $value, $clause);
+			case 'object': return $this->buildObject($path, $value);
 			default:       return $this->buildValue ($path, $value);
 		}
 	}
@@ -207,11 +207,11 @@ class Sql_Where_Builder
 	 * @param $prefix string Prefix for column name
 	 * @return string
 	 */
-	private function buildValue($path, $value, $prefix = "")
+	private function buildValue($path, $value, $prefix = '')
 	{
 		$column = $this->buildColumn($path, $prefix);
 		$is_like = Sql_Value::isLike($value);
-		return $column . " " . ($is_like ? "LIKE" : "=") . " " . Sql_Value::escape($value, $is_like);
+		return $column . SP . ($is_like ? 'LIKE' : '=') . SP . Sql_Value::escape($value, $is_like);
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins

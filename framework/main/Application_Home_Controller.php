@@ -17,7 +17,7 @@ class Application_Home_Controller implements Feature_Controller
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		return View::run(
-			$parameters->getObjects(), $form, $files, Namespaces::fullClassName("Application"), "home"
+			$parameters->getObjects(), $form, $files, Namespaces::fullClassName('Application'), 'home'
 		);
 	}
 

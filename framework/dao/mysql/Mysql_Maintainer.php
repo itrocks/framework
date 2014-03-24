@@ -74,13 +74,13 @@ class Mysql_Maintainer implements Plugins\Registerable
 		// if no class name, create it from columns names in the query
 		/** @noinspection PhpWrongStringConcatenationInspection */
 		$alias = 't' . (
-			(substr($query, strpos($query, '`' . $table_name . '` t') + strlen($table_name) + 4)) + 0
+			(substr($query, strpos($query, BQ . $table_name . BQ . SP . 't') + strlen($table_name) + 4)) + 0
 		);
 		$i = 0;
 		$column_names = [];
-		while (($i = strpos($query, $alias . '.', $i)) !== false) {
+		while (($i = strpos($query, $alias . DOT, $i)) !== false) {
 			$i += strlen($alias) + 1;
-			$field_name = substr($query, $i, strpos($query, ' ', $i) - $i);
+			$field_name = substr($query, $i, strpos($query, SP, $i) - $i);
 			$column_names[$field_name] = $field_name;
 		}
 		if (!$column_names) {
@@ -92,7 +92,7 @@ class Mysql_Maintainer implements Plugins\Registerable
 				);
 			}
 			elseif ($mysqli->isInsert($query)) {
-				$column_names = explode(',', str_replace(['`', ' '], '', mParse($query, '(', ')')));
+				$column_names = explode(',', str_replace([BQ, SP], '', mParse($query, '(', ')')));
 			}
 			elseif ($mysqli->isSelect($query)) {
 				// @todo create table without context SELECT columns detection (needs complete sql analyst)
@@ -128,7 +128,7 @@ class Mysql_Maintainer implements Plugins\Registerable
 	{
 		$context = [];
 		// first clause between `...` is probably the name of the table
-		$table_name = mParse($query, '`', '`');
+		$table_name = mParse($query, BQ, BQ);
 		if ($table_name) {
 			$class_name = Dao::classNameOf($table_name);
 			if ($class_name) {
@@ -136,10 +136,10 @@ class Mysql_Maintainer implements Plugins\Registerable
 			}
 		}
 		// every JOIN `...` may be the name of a table
-		$joins = explode('JOIN `', $query);
+		$joins = explode('JOIN ' . BQ, $query);
 		array_shift($joins);
 		foreach ($joins as $join) {
-			$table_name = lParse($join, '`');
+			$table_name = lParse($join, BQ);
 			if ($table_name) {
 				$class_name = Dao::classNameOf($table_name);
 				if ($class_name) {
@@ -231,13 +231,13 @@ class Mysql_Maintainer implements Plugins\Registerable
 	 */
 	private static function parseNameFromError($error)
 	{
-		$i = strpos($error, "'") + 1;
-		$j = strpos($error, "'", $i);
+		$i = strpos($error, Q) + 1;
+		$j = strpos($error, Q, $i);
 		$name = substr($error, $i, $j - $i);
-		if (strpos($name, '.')) {
-			$name = substr($name, strrpos($name, '.') + 1);
+		if (strpos($name, DOT)) {
+			$name = substr($name, strrpos($name, DOT) + 1);
 		}
-		if (substr($name, 0, 1) == '`' && substr($name, -1) == '`') {
+		if ((substr($name, 0, 1) == BQ) && (substr($name, -1) == BQ)) {
 			$name = substr($name, 1, -1);
 		}
 		return $name;
@@ -255,8 +255,8 @@ class Mysql_Maintainer implements Plugins\Registerable
 		$tables = [];
 		$i = 0;
 		while (($i = strpos($query, 'REFERENCES ', $i)) !== false) {
-			$i = strpos($query, '`', $i) + 1;
-			$j = strpos($query, '`', $i);
+			$i = strpos($query, BQ, $i) + 1;
+			$j = strpos($query, BQ, $i);
 			$table_name = substr($query, $i, $j - $i);
 			$tables[substr($query, $i, $j - $i)] = $table_name;
 			$i = $j + 1;

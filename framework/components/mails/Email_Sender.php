@@ -30,19 +30,19 @@ class Email_Sender implements Plugins\Configurable
 	/**
 	 * @var string[] ISO datetime, indice is the SMTP account as a string
 	 */
-	private static $last_error_date = array();
+	private static $last_error_date = [];
 
 	//------------------------------------------------------------------------------------ $last_host
 	/**
 	 * @var Email_Smtp_Account[], indice is the Email account as a string
 	 */
-	private static $last_host = array();
+	private static $last_host = [];
 
 	//------------------------------------------------------------------------------- $last_send_date
 	/**
 	 * @var string[] ISO datetime, indice is the SMTP account as a string
 	 */
-	private static $last_send_date = array();
+	private static $last_send_date = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

@@ -20,9 +20,9 @@ class Dao_Only_Option implements Dao_Option
 	/**
 	 * Constructs a DAO only option
 	 *
-	 * @example Dao::write($user, Dao::only("password"));
+	 * @example Dao::write($user, Dao::only('password'));
 	 * Will only write the value of password into the database
-	 * @example Dao::write($user, Dao::only(array("login", "password")));
+	 * @example Dao::write($user, Dao::only(['login', 'password')));
 	 * Will write the values of user's login and password into the database
 	 *
 	 * @param $properties string[]|string
@@ -30,7 +30,7 @@ class Dao_Only_Option implements Dao_Option
 	 */
 	public function __construct($properties = null)
 	{
-		$this->properties = array();
+		$this->properties = [];
 		foreach (func_get_args() as $properties) {
 			if (is_array($properties)) {
 				$this->properties += $properties;
@@ -55,7 +55,7 @@ class Dao_Only_Option implements Dao_Option
 
 	//------------------------------------------------------------------------------------------ have
 	/**
-	 * Returns true if any of the "only" options has the property name
+	 * Returns true if any of the 'only' options has the property name
 	 *
 	 * @param $options  Dao_Option[]
 	 * @param $property string

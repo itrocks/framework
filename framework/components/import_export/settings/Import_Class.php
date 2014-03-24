@@ -19,7 +19,7 @@ class Import_Class implements Serializable
 	/**
 	 * @var Reflection_Property_Value[] key is the name of the property
 	 */
-	public $constants = array();
+	public $constants = [];
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
@@ -44,25 +44,25 @@ class Import_Class implements Serializable
 	/**
 	 * @var Import_Property[] key is the name of the property
 	 */
-	public $identify_properties = array();
+	public $identify_properties = [];
 
 	//---------------------------------------------------------------------------- $ignore_properties
 	/**
 	 * @var Import_Property[] key is the name of the property
 	 */
-	public $ignore_properties = array();
+	public $ignore_properties = [];
 
 	//--------------------------------------------------------------------------- $unknown_properties
 	/**
 	 * @var Import_Property[] key is the name of the property
 	 */
-	public $unknown_properties = array();
+	public $unknown_properties = [];
 
 	//----------------------------------------------------------------------------- $write_properties
 	/**
 	 * @var Import_Property[] key is the name of the property
 	 */
-	public $write_properties = array();
+	public $write_properties = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -164,7 +164,7 @@ class Import_Class implements Serializable
 	 */
 	public function getIdentifyValue()
 	{
-		$properties = array();
+		$properties = [];
 		foreach ($this->identify_properties as $property) {
 			$properties[$property->name] = $property->name;
 		}
@@ -177,7 +177,7 @@ class Import_Class implements Serializable
 	 */
 	public function getIgnoreValue()
 	{
-		$properties = array();
+		$properties = [];
 		foreach ($this->ignore_properties as $property) {
 			$properties[$property->name] = $property->name;
 		}
@@ -191,7 +191,7 @@ class Import_Class implements Serializable
 	public function getPropertyPathValue()
 	{
 		return $this->property_path
-			? (join('.', $this->property_path))
+			? (join(DOT, $this->property_path))
 			: Namespaces::shortClassName($this->class_name);
 	}
 
@@ -201,7 +201,7 @@ class Import_Class implements Serializable
 	 */
 	public function getWriteValue()
 	{
-		$properties = array();
+		$properties = [];
 		foreach ($this->write_properties as $property) {
 			$properties[$property->name] = $property->name;
 		}
@@ -229,12 +229,12 @@ class Import_Class implements Serializable
 		if (isset($serialize['constants']) && is_array($serialize['constants'])) {
 			/** @var $value Reflection_Property_Value */
 			foreach ($serialize['constants'] as $key => $value) {
-				$serialize['constants'][$key] = array(
+				$serialize['constants'][$key] = [
 					'class'        => $value->class,
 					'name'         => $value->name,
 					'value'        => $value->value(),
 					'final_object' => true
-				);
+				];
 			}
 		}
 		return serialize($serialize);

@@ -91,7 +91,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	protected function getAnnotationCachePath()
 	{
-		return array($this->name, "@");
+		return [$this->name, AT];
 	}
 
 	//-------------------------------------------------------------------------- getAnnotedProperties
@@ -104,7 +104,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function getAnnotedProperties($annotation_name, $annotation_value = null)
 	{
-		$properties = array();
+		$properties = [];
 		foreach ($this->getAllProperties() as $property) {
 			$annotation = $property->getAnnotation($annotation_name);
 			if (
@@ -151,7 +151,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function getDeclaredClassesUsingTrait()
 	{
-		$classes = array();
+		$classes = [];
 		foreach (get_declared_classes() as $class_name) {
 			if (in_array($this->name, class_uses($class_name))) {
 				$classes[$class_name] = new Reflection_Class($class_name);
@@ -209,7 +209,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function getInterfaces($by_name = true)
 	{
-		$interfaces = array();
+		$interfaces = [];
 		foreach (parent::getInterfaces() as $key => $interface) {
 			$interfaces[$by_name ? $interface->name : $key] = new Reflection_Class($interface->name);
 		}
@@ -245,7 +245,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function getMethods($filter = Reflection_Method::ALL, $by_name = true)
 	{
-		$methods = array();
+		$methods = [];
 		$meths = parent::getMethods($filter);
 		foreach ($meths as $key => $method) {
 			$methods[$by_name ? $method->name : $key] = new Reflection_Method(
@@ -286,7 +286,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		if (!isset($final_class)) {
 			$final_class = $this->name;
 		}
-		$properties = array();
+		$properties = [];
 		foreach (parent::getProperties($filter) as $key => $property) {
 			$properties[$by_name ? $property->name : $key]
 				= new Reflection_Property($final_class, $property->name);
@@ -319,7 +319,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function getTraits($by_name = true)
 	{
-		$traits = array();
+		$traits = [];
 		foreach (parent::getTraits() as $key => $trait) {
 			$traits[$by_name ? $trait->name : $key] = new Reflection_Class($trait->name);
 		}

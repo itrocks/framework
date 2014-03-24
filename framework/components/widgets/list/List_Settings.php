@@ -29,7 +29,7 @@ class List_Settings extends Custom_Settings
 	 *
 	 * @var string[] key is the property path
 	 */
-	public $properties_title = array();
+	public $properties_title = [];
 
 	//--------------------------------------------------------------------------------------- $search
 	/**
@@ -37,7 +37,7 @@ class List_Settings extends Custom_Settings
 	 *
 	 * @var string[] key is the property path, value is the value or search expression
 	 */
-	public $search = array();
+	public $search = [];
 
 	//----------------------------------------------------------------------------------------- $sort
 	/**
@@ -79,35 +79,35 @@ class List_Settings extends Custom_Settings
 		}
 		if (!isset($this->properties_path) && isset($this->class_name)) {
 			$this->properties_path = (new Reflection_Class($this->class_name))
-				->getListAnnotation("representative")->values();
+				->getListAnnotation('representative')->values();
 		}
 	}
 
 	//----------------------------------------------------------------------------------- addProperty
 	/**
 	 * @param $property_path       string
-	 * @param $where               string "after", "before" or null
+	 * @param $where               string 'after', 'before' or null
 	 * @param $where_property_path string reference property path for $where
 	 */
-	public function addProperty($property_path, $where = "after", $where_property_path = null)
+	public function addProperty($property_path, $where = 'after', $where_property_path = null)
 	{
-		$properties_path = array();
+		$properties_path = [];
 		$count = 0;
-		if (($where == "after") && empty($where_property_path)) {
+		if (($where == 'after') && empty($where_property_path)) {
 			$properties_path[$count++] = $property_path;
 		}
 		foreach ($this->properties_path as $key) {
-			if (($where == "before") && ($key == $where_property_path)) {
+			if (($where == 'before') && ($key == $where_property_path)) {
 				$properties_path[$count++] = $property_path;
 			}
 			if ($key !== $property_path) {
 				$properties_path[$count++] = $key;
 			}
-			if (($where == "after") && ($key == $where_property_path)) {
+			if (($where == 'after') && ($key == $where_property_path)) {
 				$properties_path[$count++] = $property_path;
 			}
 		}
-		if (($where == "before") && empty($where_property_path)) {
+		if (($where == 'before') && empty($where_property_path)) {
 			$properties_path[$count] = $property_path;
 		}
 		$this->properties_path = $properties_path;
@@ -168,7 +168,7 @@ class List_Settings extends Custom_Settings
 	private function getDefaultTitle()
 	{
 		return ucfirst(Names::classToDisplay(
-			(new Reflection_Class($this->class_name))->getAnnotation("set")
+			(new Reflection_Class($this->class_name))->getAnnotation('set')
 		));
 	}
 

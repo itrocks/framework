@@ -67,7 +67,7 @@ class Import_Array
 	private static function addConstantsToArray($this_constants, &$array)
 	{
 		if ($this_constants) {
-			$constants = array();
+			$constants = [];
 			$column_first = $column_number = count(current($array));
 			// $this_constants['property*.path'] = 'value'
 			// $constants[$column_number] = 'value'
@@ -101,7 +101,7 @@ class Import_Array
 	 */
 	private function createArrayReference($class_name, $search)
 	{
-		$array = (isset($search)) ? array(Builder::fromArray($class_name, $search)) : null;
+		$array = (isset($search)) ? [Builder::fromArray($class_name, $search)] : null;
 		$class = new Link_Class($class_name);
 		$link_class = $class->getAnnotation('link')->value;
 		if ($link_class) {
@@ -166,7 +166,7 @@ class Import_Array
 	 */
 	public static function getConstantsFromArray(&$array)
 	{
-		$constants = array();
+		$constants = [];
 		$row = self::getClassNameFromArray($array) ? next($array) : current($array);
 		while ($row && (count($row) > 1) && ($row[1] == '=')) {
 			$constants[$row[0]] = isset($row[2]) ? $row[2] : '';
@@ -186,7 +186,7 @@ class Import_Array
 	public static function getPropertiesAlias($class_name)
 	{
 		$list_settings = List_Settings::current($class_name);
-		$properties_alias = array();
+		$properties_alias = [];
 		foreach ($list_settings->properties_title as $property_path => $property_title) {
 			$properties_alias[Names::displayToProperty($property_title)] = $property_path;
 		}
@@ -211,7 +211,7 @@ class Import_Array
 		$use_reverse_translation = Locale::current() ? true : false;
 		$properties_alias = isset($class_name) ? self::getPropertiesAlias($class_name) : null;
 		self::addConstantsToArray(self::getConstantsFromArray($array), $array);
-		$properties = array();
+		$properties = [];
 		foreach (current($array) as $column_number => $property_path) {
 			if ($property_path) {
 				$properties[$column_number] = self::propertyPathOf(
@@ -226,17 +226,17 @@ class Import_Array
 	/**
 	 * @param $class_name      string Main class name
 	 * @param $properties_path string[] $property_path = string[integer $column_number]
-	 * @return array array($property_link = string[string $property_path], $property_column = string[string $property_path])
+	 * @return array [$property_link = string[string $property_path], $property_column = string[string $property_path]]
 	 */
 	private static function getPropertiesLinkAndColumn($class_name, $properties_path)
 	{
-		$properties_link = array('' => 'Object');
-		$properties_column = array();
+		$properties_link = ['' => 'Object'];
+		$properties_column = [];
 		foreach ($properties_path as $col_number => $property_path) {
 			$property_path = str_replace('*', '', $property_path);
 			$path = '';
-			foreach (explode('.', $property_path) as $property_name) {
-				$path .= ($path ? '.' : '') . $property_name;
+			foreach (explode(DOT, $property_path) as $property_name) {
+				$path .= ($path ? DOT : '') . $property_name;
 				try {
 					$property = new Reflection_Property($class_name, $path);
 					$properties_link[$path] = $property->getAnnotation('link')->value;
@@ -245,21 +245,21 @@ class Import_Array
 					$properties_link[$path] = '';
 				}
 			}
-			$i = strrpos($property_path, '.');
+			$i = strrpos($property_path, DOT);
 			$property_name = substr($property_path, ($i === false) ? 0 : ($i + 1));
 			$property_path = substr($property_path, 0, $i);
 			$properties_column[$property_path][$property_name] = $col_number;
 		}
 		foreach (array_keys($properties_column) as $property_path) if ($property_path) {
 			$path = '';
-			foreach (explode('.', $property_path) as $property_name) {
+			foreach (explode(DOT, $property_path) as $property_name) {
 				if (!isset($properties_column[$path][$property_name])) {
-					$properties_column[$path][$property_name] = $path . ($path ? '.' : '') . $property_name;
+					$properties_column[$path][$property_name] = $path . ($path ? DOT : '') . $property_name;
 				}
-				$path .= ($path ? '.' : '') . $property_name;
+				$path .= ($path ? DOT : '') . $property_name;
 			}
 		}
-		return array($properties_link, $properties_column);
+		return [$properties_link, $properties_column];
 	}
 
 	//------------------------------------------------------------------------------- getSearchObject
@@ -272,7 +272,7 @@ class Import_Array
 	private function getSearchObject($row, $identify_properties, $class_properties_column)
 	{
 		$empty_object = true;
-		$search = array();
+		$search = [];
 		foreach (array_keys($identify_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
 			$search[$property_name] = $value;
@@ -329,13 +329,13 @@ class Import_Array
 	 */
 	private function importArrayClass(Import_Class $class, &$array)
 	{
-		$property_path = join('.', $class->property_path);
+		$property_path = join(DOT, $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
 		$simulation = $this->simulation;
 		while (($row = next($array)) && (!$this->simulation || $simulation)) {
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
-			$object = (in_array($this->properties_link[$property_path], array('Collection', 'Map')))
+			$object = (in_array($this->properties_link[$property_path], ['Collection', 'Map']))
 				? $this->createArrayReference($class->class_name, $search)
 				: $this->importSearchObject($search, $row, $class, $class_properties_column, $property_path);
 			$array[key($array)][$property_path] = $object;
@@ -369,7 +369,7 @@ class Import_Array
 			}
 			elseif ($class->object_not_found_behaviour === 'tell_it_and_stop_import') {
 				trigger_error(
-					'Not found ' . $class->class_name . ' ' . print_r($search, true), E_USER_ERROR
+					'Not found ' . $class->class_name . SP . print_r($search, true), E_USER_ERROR
 				);
 				$object = null;
 			}
@@ -378,8 +378,8 @@ class Import_Array
 			}
 		}
 		else {
-			echo '<pre class=\'error\'>SEARCH = ' . print_r($search, true) . '</pre>';
-			echo '<pre class=\'error\'>FOUND = ' . print_r($found, true) . '</pre>';
+			echo '<pre class="error">SEARCH = ' . print_r($search, true) . '</pre>';
+			echo '<pre class="error">FOUND = ' . print_r($found, true) . '</pre>';
 			trigger_error(
 				'Multiple ' . Namespaces::shortClassName($class->class_name) . ' found', E_USER_ERROR
 			);
@@ -404,8 +404,8 @@ class Import_Array
 		}
 		elseif ($use_reverse_translation) {
 			$property_class_name = $class_name;
-			$property_names = array();
-			foreach (explode('.', $property_path) as $property_name) {
+			$property_names = [];
+			foreach (explode(DOT, $property_path) as $property_name) {
 				if ($asterisk = (substr($property_name, -1) == '*')) {
 					$property_name = substr($property_name, 0, -1);
 				}
@@ -431,7 +431,7 @@ class Import_Array
 				}
 				$property_class_name = $property->getType()->getElementTypeAsString();
 			}
-			$property_path = join('.', $property_names);
+			$property_path = join(DOT, $property_names);
 		}
 		return $property_path;
 	}
@@ -454,7 +454,7 @@ class Import_Array
 	 */
 	protected function simulateSearch(Import_Class $class, $search, $class_name)
 	{
-		echo '- search ' . $class_name . ' = ' . print_r($search, true) . '<br>';
+		echo '- search ' . $class_name . ' = ' . print_r($search, true) . BR;
 	}
 
 	//-------------------------------------------------------------------------------- simulateUpdate
@@ -464,7 +464,7 @@ class Import_Array
 	 */
 	protected function simulateUpdate(Import_Class $class, $object)
 	{
-		echo '- update ' . print_r($object, true) . '<br>';
+		echo '- update ' . print_r($object, true) . BR;
 	}
 
 	//--------------------------------------------------------------------------------- sortedClasses
@@ -478,7 +478,7 @@ class Import_Array
 		uksort($this->settings->classes, function($class_path_1, $class_path_2)
 		{
 			return ($class_path_1 == '')
-				|| (substr_count($class_path_1, '.') < substr_count($class_path_2, '.'));
+				|| (substr_count($class_path_1, DOT) < substr_count($class_path_2, DOT));
 		});
 		return $this->settings->classes;
 	}

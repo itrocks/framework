@@ -12,7 +12,7 @@ class Html_Table_Head extends Html_Table_Section
 	 */
 	public function __construct()
 	{
-		parent::__construct("thead");
+		parent::__construct('thead');
 	}
 
 }

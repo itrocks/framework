@@ -17,7 +17,7 @@ class Html_Select extends Dom_Element
 	/**
 	 * @var string[]
 	 */
-	private $values = array();
+	private $values = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -28,9 +28,9 @@ class Html_Select extends Dom_Element
 	 */
 	public function __construct($name = null, $values = null, $selected = null, $id = null)
 	{
-		parent::__construct("select", true);
-		if (isset($id))       $this->setAttribute("id",   $id);
-		if (isset($name))     $this->setAttribute("name", $name);
+		parent::__construct('select', true);
+		if (isset($id))       $this->setAttribute('id',   $id);
+		if (isset($name))     $this->setAttribute('name', $name);
 		if (isset($values))   $this->values = $values;
 		if (isset($selected)) $this->selected($selected);
 	}
@@ -60,17 +60,17 @@ class Html_Select extends Dom_Element
 		if (!isset($content)) {
 			$values = $this->values;
 			asort($values);
-			if (isset($values[""])) {
-				$value = $values[""];
-				unset($values[""]);
-				$values = array("" => $value) + $values;
+			if (isset($values[''])) {
+				$value = $values[''];
+				unset($values['']);
+				$values = ['' => $value] + $values;
 			}
-			$content = "";
+			$content = '';
 			$selected = $this->selected();
 			foreach ($values as $value => $caption) {
 				$html_option = new Html_Option($value, $caption);
 				if ($value === $selected) {
-					$html_option->setAttribute("selected");
+					$html_option->setAttribute('selected');
 				}
 				$content .= strval($html_option);
 			}

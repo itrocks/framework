@@ -17,8 +17,8 @@ class Session_File_Image_Controller implements Feature_Controller
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$objects = $parameters->getObjects();
-		$objects["link"] = "/Session_File/output/" . reset($objects);
-		return View::run($objects, $form, $files, 'SAF\Framework\Session_File', "image");
+		$objects['link'] = '/Session_File/output/' . reset($objects);
+		return View::run($objects, $form, $files, Session_File::class, 'image');
 	}
 
 }

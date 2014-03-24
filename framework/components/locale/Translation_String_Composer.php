@@ -27,8 +27,8 @@ class Translation_String_Composer implements Plugins\Registerable
 	 */
 	public function afterReflectionPropertyValueDisplay(&$result)
 	{
-		if (strpos($result, '.') !== false) {
-			$result = '¦' . str_replace('.', '¦.¦', $result) . '¦';
+		if (strpos($result, DOT) !== false) {
+			$result = '¦' . str_replace(DOT, '¦.¦', $result) . '¦';
 		}
 	}
 
@@ -46,7 +46,7 @@ class Translation_String_Composer implements Plugins\Registerable
 		$context = isset($context) ? $context : '';
 		if (strpos($text, '¦') !== false) {
 			$translations = $object;
-			$elements = array();
+			$elements = [];
 			$number = 0;
 			$i = 0;
 			while (($i = strpos($text, '¦', $i)) !== false) {
@@ -63,7 +63,7 @@ class Translation_String_Composer implements Plugins\Registerable
 			while (($i = strpos($text, '!', $i)) !== false) {
 				$i++;
 				$j = strpos($text, '!', $i);
-				if (($j > $i) && (strpos(" \t\n\r", $text[$i]) === false)) {
+				if (($j > $i) && (strpos(SP . TAB . CR . LF, $text[$i]) === false)) {
 					$number ++;
 					$elements['$' . $number] = substr($text, $i, $j - $i);
 					$text = substr($text, 0, $i - 1) . '$' . $number . substr($text, $j + 1);

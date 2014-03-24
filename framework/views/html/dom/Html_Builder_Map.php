@@ -36,7 +36,7 @@ class Html_Builder_Map
 		$this->map = $map;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
 		$class = new Reflection_Class($this->class_name);
-		$this->properties = $class->getListAnnotation("representative")->values();
+		$this->properties = $class->getListAnnotation('representative')->values();
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -47,7 +47,7 @@ class Html_Builder_Map
 	{
 		(new Map($this->map))->sort();
 		$table = new Html_Table();
-		$table->addClass("map");
+		$table->addClass('map');
 		$table->body = $this->buildBody();
 		return $table;
 	}

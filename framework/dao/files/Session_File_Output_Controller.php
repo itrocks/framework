@@ -19,7 +19,7 @@ class Session_File_Output_Controller implements Feature_Controller
 		/** @var $session_files Session_Files */
 		$raw_parameters = $parameters->getRawParameters();
 		$file_key = reset($raw_parameters);
-		$session_files = Session::current()->get('SAF\Framework\Session_Files');
+		$session_files = Session::current()->get(Session_Files::class);
 		// numeric (session files index) file key
 		if (isset($session_files->files[$file_key])) {
 			$file = $session_files->files[$file_key];
@@ -34,10 +34,10 @@ class Session_File_Output_Controller implements Feature_Controller
 		}
 		// output
 		if (isset($file)) {
-			header("Content-Type: " . $file->getType());
-			if (isset($raw_parameters["size"])) {
+			header('Content-Type: ' . $file->getType());
+			if (isset($raw_parameters['size'])) {
 				$image = Image::createFromString($file->content);
-				$image->resize($raw_parameters["size"], $raw_parameters["size"])->display();
+				$image->resize($raw_parameters['size'], $raw_parameters['size'])->display();
 			}
 			else {
 				echo $file->content;

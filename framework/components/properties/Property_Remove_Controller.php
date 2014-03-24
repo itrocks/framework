@@ -25,7 +25,7 @@ class Property_Remove_Controller extends Default_Remove_Controller
 	 *
 	 * @param $parameters Controller_Parameters removal parameters
 	 * - key 0 : context class name (ie a business class)
-	 * - key 1 : context feature name (ie "output", "list")
+	 * - key 1 : context feature name (ie 'output', 'list')
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
 	 * @param $form       array not used
 	 * @param $files      array not used
@@ -34,17 +34,17 @@ class Property_Remove_Controller extends Default_Remove_Controller
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
 		$parameters = $parameters->getObjects();
-		$parameters["class_name"]    = array_shift($parameters);
-		$parameters["feature_name"]  = array_shift($parameters);
-		$parameters["property_path"] = array_shift($parameters);
+		$parameters['class_name']    = array_shift($parameters);
+		$parameters['feature_name']  = array_shift($parameters);
+		$parameters['property_path'] = array_shift($parameters);
 		array_unshift($parameters, new Property());
-		if ($parameters["feature_name"] == "list") {
-			$this->removePropertyFromList($parameters["class_name"], $parameters["property_path"]);
+		if ($parameters['feature_name'] == 'list') {
+			$this->removePropertyFromList($parameters['class_name'], $parameters['property_path']);
 		}
-		if ($parameters["feature_name"] == "form") {
+		if ($parameters['feature_name'] == 'form') {
 			// ...
 		}
-		return View::run($parameters, $form, $files, 'SAF\Framework\Property', "removed");
+		return View::run($parameters, $form, $files, Property::class, 'removed');
 	}
 
 }

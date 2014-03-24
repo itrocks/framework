@@ -15,7 +15,7 @@ class Manager implements IManager, Serializable
 	/**
 	 * @var boolean[] key is the plugin class name, value is always true when set here
 	 */
-	private $activated = array();
+	private $activated = [];
 
 	//--------------------------------------------------------------------------------- $plugins_tree
 	/**
@@ -23,7 +23,7 @@ class Manager implements IManager, Serializable
 	 *
 	 * @var array
 	 */
-	private $plugins_tree = array();
+	private $plugins_tree = [];
 
 	//------------------------------------------------------------------------------------------- $plugins
 	/**
@@ -31,7 +31,7 @@ class Manager implements IManager, Serializable
 	 *
 	 * @var array
 	 */
-	private $plugins = array();
+	private $plugins = [];
 
 	//-------------------------------------------------------------------------------------- activate
 	/**
@@ -74,7 +74,7 @@ class Manager implements IManager, Serializable
 	public function addPlugins($level, $plugins)
 	{
 		if (!isset($this->plugins_tree[$level])) {
-			$this->plugins_tree[$level] = array();
+			$this->plugins_tree[$level] = [];
 		}
 		$this->plugins_tree[$level] = array_merge($this->plugins_tree[$level], $plugins);
 		$this->plugins = array_merge($plugins, $this->plugins);
@@ -112,7 +112,7 @@ class Manager implements IManager, Serializable
 			$serialized = $plugin;
 			// configuration
 			if (is_array($serialized)) {
-				$plugin = Builder::create($class_name, array($serialized));
+				$plugin = Builder::create($class_name, [$serialized]);
 				/** @noinspection PhpUndefinedFieldInspection */
 				$plugin->plugin_configuration = $serialized;
 			}
@@ -123,7 +123,7 @@ class Manager implements IManager, Serializable
 				}
 				else {
 					$configuration = unserialize($serialized);
-					$plugin = Builder::create($class_name, array($configuration));
+					$plugin = Builder::create($class_name, [$configuration]);
 					/** @noinspection PhpUndefinedFieldInspection */
 					$plugin->plugin_configuration = $configuration;
 				}
@@ -215,7 +215,7 @@ class Manager implements IManager, Serializable
 	 */
 	public function serialize()
 	{
-		$data = array();
+		$data = [];
 		foreach ($this->plugins_tree as $level => $plugins) {
 			if ($level != 'top_core') {
 				foreach ($plugins as $class_name => $object) {
@@ -246,7 +246,7 @@ class Manager implements IManager, Serializable
 	public function unserialize($serialized)
 	{
 		$this->plugins_tree = unserialize($serialized);
-		$this->plugins = array();
+		$this->plugins = [];
 		foreach ($this->plugins_tree as $plugins) {
 			$this->plugins = array_merge($this->plugins, $plugins);
 		}

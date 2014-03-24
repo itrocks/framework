@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+/**
+ * HTML builder property select
+ */
 class Html_Builder_Property_Select
 {
 
@@ -33,7 +36,7 @@ class Html_Builder_Property_Select
 	 */
 	public function build()
 	{
-		$properties_name = array();
+		$properties_name = [];
 		foreach ($this->property->getFinalClass()->getAllProperties() as $property) {
 			if (!$property->isStatic()) {
 				$properties_name[$property->name] = $property->name;

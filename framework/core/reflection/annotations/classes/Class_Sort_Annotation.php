@@ -27,7 +27,7 @@ class Class_Sort_Annotation extends List_Annotation
 			$representative = (new Class_Representative_Annotation($value, $class))->value;
 			foreach ($class->getAllProperties() as $property) {
 				if (in_array($property->name, $representative)) {
-					if (!$property->isStatic() && !$property->getAnnotation("link")->value) {
+					if (!$property->isStatic() && !$property->getAnnotation('link')->value) {
 						$this->value[] = $property->name;
 					}
 				}

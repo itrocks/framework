@@ -33,8 +33,8 @@ class Sql_Map_Delete_Builder
 		list($table, $field1, $field2, $id1, $id2) = Sql_Map_Builder::sqlElementsOf(
 			$object, $this->property, $foreign_object
 		);
-		return "DELETE FROM `" . $table . "`"
-			. " WHERE `" . $field1 . "` = " . $id1 . " AND `" . $field2 . "` = " . $id2;
+		return 'DELETE FROM ' . BQ . $table . BQ
+			. ' WHERE ' . BQ . $field1 . BQ . ' = ' . $id1 . ' AND ' . BQ . $field2 . BQ . ' = ' . $id2;
 	}
 
 }

@@ -15,26 +15,27 @@ class Default_Output_Controller extends Output_Controller
 	 */
 	protected function getGeneralButtons($object, $parameters)
 	{
-		return array(
-			new Button("Close", View::link(Names::classToSet(get_class($object))), "close",
-				array(Color::of("close"), "#main")
+		return [
+			new Button('Close', View::link(Names::classToSet(get_class($object))), 'close',
+				[Color::of('close'), '#main']
 			),
-			new Button("Edit", View::link($object, "edit"), "edit",
-				array(Color::of("green"), "#main")
+			new Button('Edit', View::link($object, 'edit'), 'edit',
+				[Color::of('green'), '#main']
 			),
-			new Button("Print", View::link($object, "print"), "print",
-				array(Color::of("blue"), "#main", "sub_buttons" => array(
+			new Button('Print', View::link($object, 'print'), 'print',
+				[Color::of('blue'), '#main', 'sub_buttons' => [
 					new Button(
-						"Models",
+						'Models',
 						View::link(
-							'SAF\Framework\Print_Models', "list", Namespaces::shortClassName(get_class($object))
+							Names::classToSet(Print_Model::class), 'list',
+							Namespaces::shortClassName(get_class($object))
 						),
-						"models",
-						"#main"
+						'models',
+						'#main'
 					)
-				))
+				]]
 			)
-		);
+		];
 	}
 
 }

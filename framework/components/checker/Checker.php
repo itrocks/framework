@@ -29,9 +29,9 @@ abstract class Checker
 	 */
 	private static function checkProperty(Reflection_Property $property, $value)
 	{
-		$report_lines = array();
+		$report_lines = [];
 		if (is_null($value)) {
-			if (!$property->getAnnotation("null")) {
+			if (!$property->getAnnotation('null')) {
 				self::checkValue(
 					$report_lines, false, $property, new Null_Annotation(false, $property), $value
 				);
@@ -40,29 +40,29 @@ abstract class Checker
 		else {
 			foreach ($property->getAnnotations() as $annotation_name => $annotation) {
 				switch ($annotation_name) {
-					case "min_length":
+					case 'min_length':
 						self::checkValue(
 							$report_lines, strlen($value) >= $annotation->value, $property, $annotation, $value
 						);
 						break;
-					case "max_length":
+					case 'max_length':
 						self::checkValue(
 							$report_lines, strlen($value) <= $annotation->value, $property, $annotation, $value
 						);
 						break;
-					case "min_value":
+					case 'min_value':
 						self::checkValue(
 							$report_lines, $value >= $annotation->value, $property, $annotation, $value
 						);
 						break;
-					case "max_value":
+					case 'max_value':
 						self::checkValue(
 							$report_lines, $value <= $annotation->value, $property, $annotation, $value
 						);
 						break;
-					//case "precision":
-					//case "signed":
-					case "var":
+					//case 'precision':
+					//case 'signed':
+					case 'var':
 						self::checkVar($report_lines, $property, $annotation, $value);
 						break;
 				}
@@ -82,19 +82,19 @@ abstract class Checker
 		&$report_lines, Reflection_Property $property, Annotation $annotation, $value
 	) {
 		switch ($annotation->value) {
-			case "array":
+			case 'array':
 				self::checkValue($report_lines, is_array($value), $property, $annotation, $value);
 				break;
-			case "boolean":
+			case 'boolean':
 				self::checkValue($report_lines, is_bool($value), $property, $annotation, $value);
 				break;
-			case "float":
+			case 'float':
 				self::checkValue($report_lines, is_float($value), $property, $annotation, $value);
 				break;
-			case "integer":
+			case 'integer':
 				self::checkValue($report_lines, is_integer($value), $property, $annotation, $value);
 				break;
-			case "string":
+			case 'string':
 				self::checkValue($report_lines, is_string($value), $property, $annotation, $value);
 				break;
 			default:

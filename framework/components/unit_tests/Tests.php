@@ -15,7 +15,7 @@ class Tests
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
-		$this->runDir(Application::current()->include_path->getSourceDirectory() . "/tests");
+		$this->runDir(Application::current()->include_path->getSourceDirectory() . '/tests');
 	}
 
 	//-------------------------------------------------------------------------------------- runClass
@@ -35,24 +35,24 @@ class Tests
 		else {
 			// automatically call each test* public method
 			if (empty($method_name)) {
-				$call_methods = array();
+				$call_methods = [];
 				$methods = (new Reflection_Class($class_name))->getMethods(
 					Reflection_Method::IS_PUBLIC
 				);
 				foreach ($methods as $method) {
-					if (substr($method->name, 0, 4) === "test") {
+					if (substr($method->name, 0, 4) === 'test') {
 						$call_methods[] = $method->name;
 					}
 				}
 			}
 			else {
-				$call_methods = array($method_name);
+				$call_methods = [$method_name];
 			}
 			if ($call_methods) {
 				$unit_test->begin();
 				foreach ($call_methods as $method) {
 					$unit_test->start_time = microtime(true);
-					call_user_func(array($unit_test, $method));
+					call_user_func([$unit_test, $method]);
 				}
 				$unit_test->end();
 			}
@@ -66,8 +66,8 @@ class Tests
 	private function runDir($directory_name)
 	{
 		$dir = dir($directory_name);
-		while ($entry = $dir->read()) if ($entry[0] != ".") {
-			$full_entry = $directory_name . "/" . $entry;
+		while ($entry = $dir->read()) if ($entry[0] != DOT) {
+			$full_entry = $directory_name . SL . $entry;
 			if (is_file($full_entry)) {
 				$this->runFile($full_entry);
 			}
@@ -85,11 +85,11 @@ class Tests
 	public function runFile($file_name)
 	{
 		include_once $file_name;
-		$slash = strrpos($file_name, "/");
-		$dot = strrpos($file_name, ".");
+		$slash = strrpos($file_name, SL);
+		$dot = strrpos($file_name, DOT);
 		$namespace = Namespaces::of(get_class(Application::current()));
-		$class_name = $namespace . "\\Tests\\" . substr($file_name, $slash + 1, $dot - $slash - 1);
-		if (is_subclass_of($class_name, 'SAF\Framework\Unit_Tests\Unit_Test')) {
+		$class_name = $namespace . BS . 'Tests' . BS . substr($file_name, $slash + 1, $dot - $slash - 1);
+		if (is_subclass_of($class_name, Unit_Test::class)) {
 			$this->runClass($class_name);
 		}
 	}

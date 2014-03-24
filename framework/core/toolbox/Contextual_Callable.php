@@ -72,7 +72,7 @@ class Contextual_Callable
 				$class_name = $this->context;
 			}
 		}
-		return array($class_name, $method_name);
+		return [$class_name, $method_name];
 	}
 
 }

@@ -28,7 +28,7 @@ abstract class Names
 	 */
 	public static function classToDisplay($class_name)
 	{
-		return strtolower(str_replace('_', ' ', Namespaces::shortClassName($class_name)));
+		return strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
 	}
 
 	//--------------------------------------------------------------------------------- classToMethod
@@ -78,7 +78,7 @@ abstract class Names
 	 */
 	public static function displayToClass($display)
 	{
-		return str_replace(' ', '_', ucwords(str_replace('_', ' ', $display)));
+		return str_replace(SP, '_', ucwords(str_replace('_', SP, $display)));
 	}
 
 	//---------------------------------------------------------------------------- displayToDirectory
@@ -90,7 +90,7 @@ abstract class Names
 	 */
 	public static function displayToDirectory($display)
 	{
-		return strtolower(str_replace(' ', '_', $display));
+		return strtolower(str_replace(SP, '_', $display));
 	}
 
 	//----------------------------------------------------------------------------- displayToProperty
@@ -102,7 +102,7 @@ abstract class Names
 	 */
 	public static function displayToProperty($display)
 	{
-		return strtolower(str_replace(' ', '_', $display));
+		return strtolower(str_replace(SP, '_', $display));
 	}
 
 	//--------------------------------------------------------------------------------- fileToDisplay
@@ -114,13 +114,13 @@ abstract class Names
 	 */
 	public static function fileToDisplay($file_name)
 	{
-		if (($i = strpos($file_name, '/')) !== false) {
+		if (($i = strpos($file_name, SL)) !== false) {
 			$file_name = substr($file_name, $i + 1);
 		}
-		if (($i = strpos($file_name, '.')) !== false) {
+		if (($i = strpos($file_name, DOT)) !== false) {
 			$file_name = substr($file_name, 0, $i);
 		}
-		return str_replace('_', ' ', $file_name);
+		return str_replace('_', SP, $file_name);
 	}
 
 	//--------------------------------------------------------------------------------- methodToClass
@@ -172,9 +172,9 @@ abstract class Names
 	 */
 	public static function propertyPathToField($property_name)
 	{
-		if ($i = strpos($property_name, '.')) {
+		if ($i = strpos($property_name, DOT)) {
 			$property_name = substr($property_name, 0, $i)
-				. '[' . str_replace('.', '][', substr($property_name, $i + 1)) . ']';
+				. '[' . str_replace(DOT, '][', substr($property_name, $i + 1)) . ']';
 		}
 		return $property_name;
 	}
@@ -188,7 +188,7 @@ abstract class Names
 	 */
 	public static function propertyToClass($property_name)
 	{
-		return str_replace(' ', '_', ucwords(str_replace('_', ' ', $property_name)));
+		return str_replace(SP, '_', ucwords(str_replace('_', SP, $property_name)));
 	}
 
 	//----------------------------------------------------------------------------- propertyToDisplay
@@ -200,7 +200,7 @@ abstract class Names
 	 */
 	public static function propertyToDisplay($property_name)
 	{
-		return str_replace('_', ' ', $property_name);
+		return str_replace('_', SP, $property_name);
 	}
 
 	//------------------------------------------------------------------------------ propertyToMethod

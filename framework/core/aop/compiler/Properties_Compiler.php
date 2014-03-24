@@ -40,8 +40,8 @@ class Properties_Compiler
 	 */
 	public function compile($advices)
 	{
-		$this->actions = array();
-		$methods = array();
+		$this->actions = [];
+		$methods = [];
 		if ($this->class->type !== 'trait') {
 			$methods['__construct'] = $this->compileConstruct($advices);
 			if ($methods['__construct']) {
@@ -80,7 +80,7 @@ class Properties_Compiler
 		/** @var $advice_method_name string */
 		/** @var $advice_function_name string */
 		/** @var $advice_parameters Reflection_Parameter[] */
-		/** @var $advice_string string "array($object_, 'methodName')" | "'functionName'" */
+		/** @var $advice_string string [$object_, 'methodName') | 'functionName' */
 		/** @var $advice_has_return boolean */
 		/** @var $is_advice_static boolean */
 		list(
@@ -99,7 +99,7 @@ class Properties_Compiler
 			}
 			if (isset($advice_parameters['property_name'])) {
 				$advice_parameters_string = str_replace(
-					'$property_name', '\'' . $property_name . '\'', $advice_parameters_string
+					'$property_name', Q . $property_name . Q, $advice_parameters_string
 				);
 			}
 			if (isset($advice_parameters['result'])) {
@@ -112,9 +112,9 @@ class Properties_Compiler
 				$init['1.stored'] = '$stored =& $this->' . $property_name . ';';
 			}
 			if (isset($advice_parameters['joinpoint'])) {
-				$pointcut_string = 'array($this, \'' . $property_name . '\')';
-				$init['2.joinpoint'] = '$joinpoint = new \SAF\AOP\\' . ucfirst($type) . '_Property_Joinpoint('
-					. "\n\t\t" . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
+				$pointcut_string = '[$this, ' . Q . $property_name . Q . ']';
+				$init['2.joinpoint'] = '$joinpoint = new \SAF\AOP' . BS . ucfirst($type) . '_Property_Joinpoint('
+					. LF . TAB . TAB . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
 					. ');';
 			}
 			if (
@@ -122,8 +122,8 @@ class Properties_Compiler
 				|| isset($advice_parameters['element_type']) || isset($advice_parameters['type_name'])
 				|| isset($advice_parameters['element_type_name']) || isset($advice_parameters['class_name'])
 			) {
-				$init['3.property'] = '$property = new \SAF\Framework\Reflection_Property(get_class($this), \''
-					. $property_name . '\');';
+				$init['3.property'] = '$property = new \SAF\Framework\Reflection_Property(get_class($this), '
+					. Q . $property_name . Q . ');';
 			}
 			if (
 				isset($advice_parameters['type']) || isset($advice_parameters['type_name'])
@@ -151,7 +151,7 @@ class Properties_Compiler
 		return $this->generateAdviceCode(
 			$advice, $advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters_string, $advice_has_return, $is_advice_static, $joinpoint_code,
-			"\n\t\t", '$value'
+			LF . TAB . TAB, '$value'
 		);
 	}
 
@@ -167,7 +167,7 @@ class Properties_Compiler
 	/** AOP */
 	protected function __aop($init = true)
 	{
-		if ($init) $this->_ = array();';
+		if ($init) $this->_ = [];';
 		$code = '';
 		foreach ($advices as $property_name => $property_advices) {
 			if (!isset($advices[$property_name]['override'])) {
@@ -180,12 +180,12 @@ class Properties_Compiler
 				}
 				$code .= '
 		unset($this->' . $property_name . ');
-		$this->_[\'' . $property_name . '\'] = true;';
+		$this->_[' . Q . $property_name . Q . '] = true;';
 			}
 		}
 		// todo this check only getters, links and setters. This should check AOP links too.
 		if (($parent = $this->class->getParent()) && ($parent->type == 'class')) {
-			foreach ($parent->getProperties(array('traits', 'inherited')) as $property) {
+			foreach ($parent->getProperties(['traits', 'inherited']) as $property) {
 				$expr = '%'
 					. '\n\s+\*\s+'               // each line beginning by '* '
 					. '@(getter|link|setter)'    // 1 : AOP annotation
@@ -221,7 +221,7 @@ class Properties_Compiler
 				$over = $this->overrideMethod('__construct', false);
 				return
 	$over['prototype'] . '
-		if (!isset($this->_)) $this->__aop();' . ($over['call'] ? ("\n\t\t" . $over['call']) : '') . '
+		if (!isset($this->_)) $this->__aop();' . ($over['call'] ? (LF . TAB . TAB . $over['call']) : '') . '
 	}
 ';
 			}
@@ -255,11 +255,11 @@ class Properties_Compiler
 		switch ($property_name) {';
 				}
 				$code .= '
-			case \'' . $property_name . '\': $value =& $this->' . $property_advices['replaced'] . '; return $value;';
+			case ' . Q . $property_name . Q . ': $value =& $this->' . $property_advices['replaced'] . '; return $value;';
 				if (isset($over['cases'][$property_name])) {
 					unset($over['cases'][$property_name]);
 					if (count($over['cases']) == 1) {
-						$over['cases'] = array();
+						$over['cases'] = [];
 					}
 				}
 			}
@@ -270,7 +270,7 @@ class Properties_Compiler
 		switch ($property_name) {';
 				}
 				$code .= '
-			case \'' . $property_name . '\': return $this->_' . $property_name . '_read();';
+			case ' . Q . $property_name . Q . ': return $this->_' . $property_name . '_read();';
 			}
 		}
 		if (isset($switch)) {
@@ -305,7 +305,7 @@ class Properties_Compiler
 		switch ($property_name) {';
 				}
 				$code .= '
-			case \'' . $property_name . '\': return isset($this->' . $property_advices['replaced'] . ');';
+			case ' . Q . $property_name . Q . ': return isset($this->' . $property_advices['replaced'] . ');';
 			}
 		}
 		if (isset($switch)) {
@@ -329,7 +329,7 @@ class Properties_Compiler
 	private function compileRead($property_name, $advices)
 	{
 		$code = '';
-		$init = array();
+		$init = [];
 		$last = '';
 		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
 			if ($aspect[0] === 'write') {
@@ -345,7 +345,7 @@ class Properties_Compiler
 	/** AOP */
 	private function & _' . $property_name . '_read()
 	{
-		unset($this->_[\'' . $property_name . '\']);
+		unset($this->_[' . Q . $property_name . Q . ']);
 		' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
 ';
 				}
@@ -364,7 +364,7 @@ class Properties_Compiler
 			return $prototype . $this->initCode($init) . $code . '
 
 		unset($this->' . $property_name . ');
-		$this->_[\'' . $property_name . '\'] = true;
+		$this->_[' . Q . $property_name . Q . '] = true;
 		return $value;
 	}
 ';
@@ -398,11 +398,11 @@ class Properties_Compiler
 		switch ($property_name) {';
 				}
 				$code .= '
-			case \'' . $property_name . '\': $this->' . $property_advices['replaced'] . ' = $value; return;';
+			case ' . Q . $property_name . Q . ': $this->' . $property_advices['replaced'] . ' = $value; return;';
 				if (isset($over['cases'][$property_name])) {
 					unset($over['cases'][$property_name]);
 					if (count($over['cases']) == 1) {
-						$over['cases'] = array();
+						$over['cases'] = [];
 					}
 				}
 			}
@@ -413,7 +413,7 @@ class Properties_Compiler
 		switch ($property_name) {';
 				}
 				$code .= '
-			case \'' . $property_name . '\': $this->_' . $property_name . '_write($value); return;';
+			case ' . Q . $property_name . Q . ': $this->_' . $property_name . '_write($value); return;';
 			}
 		}
 		if (isset($switch)) {
@@ -448,7 +448,7 @@ class Properties_Compiler
 		switch ($property_name) {';
 				}
 				$code .= '
-			case \'' . $property_name . '\': unset($this->' . $property_advices['replaced'] . '); return;';
+			case ' . Q . $property_name . Q . ': unset($this->' . $property_advices['replaced'] . '); return;';
 			}
 		}
 		if (isset($switch)) {
@@ -472,7 +472,7 @@ class Properties_Compiler
 	private function compileWrite($property_name, $advices)
 	{
 		$code = '';
-		$init = array();
+		$init = [];
 		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
 			list($type, $advice) = $aspect;
 			if ($type == 'write') {
@@ -481,8 +481,8 @@ class Properties_Compiler
 	/** AOP */
 	private function _' . $property_name . '_write($value)
 	{
-		if (isset($this_[\'' . $property_name . '\'])) {
-			unset($this->_[\'' . $property_name . '\']);
+		if (isset($this_[' . Q . $property_name . Q . '])) {
+			unset($this->_[' . Q . $property_name . Q . ']);
 			$this->' . $property_name . ' = $this->' . $property_name . '_;
 			$writer = true;
 		}
@@ -497,7 +497,7 @@ class Properties_Compiler
 		if (isset($writer)) {
 			$this->' . $property_name . '_ = $this->' . $property_name . ';
 			unset($this->' . $property_name . ');
-			$this->_[\'' . $property_name . '\'] = true;
+			$this->_[' . Q . $property_name . Q . '] = true;
 		}
 	}
 ';
@@ -513,13 +513,13 @@ class Properties_Compiler
 				$regexp = Php_Method::regex($method_name);
 				$this->class->source = preg_replace(
 					$regexp,
-					"\n\t" . '$2' . "\n\t" . '/* $4 */ private $5 function $6$7_0$8$9',
+					LF . TAB . '$2' . LF . TAB . '/* $4 */ private $5 function $6$7_0$8$9',
 					$this->class->source
 				);
 			}
 			else {
 				trigger_error(
-					'Don\'t know how to ' . $action . ' ' . $this->class->name . '::' . $method_name,
+					'Don\'t know how to ' . $action . SP . $this->class->name . '::' . $method_name,
 					E_USER_ERROR
 				);
 			}
@@ -539,7 +539,7 @@ class Properties_Compiler
 			unset($init['7.element_type_name']);
 		}
 		ksort($init);
-		return $init ? ("\n\t\t" . join("\n\t\t", $init) . "\n") : '';
+		return $init ? (LF . TAB . TAB . join(LF . TAB . TAB, $init) . LF) : '';
 	}
 
 	//-------------------------------------------------------------------------------- overrideMethod
@@ -553,7 +553,7 @@ class Properties_Compiler
 	 */
 	private function overrideMethod($method_name, $needs_return = true, $advices = null)
 	{
-		$over = array('cases' => array());
+		$over = ['cases' => []];
 		$parameters = '';
 		// the method exists into the class
 		$methods = $this->class->getMethods();
@@ -564,7 +564,7 @@ class Properties_Compiler
 		}
 		else {
 			// the method exists into a trait of the class
-			$methods = $this->class->getMethods(array('traits'));
+			$methods = $this->class->getMethods(['traits']);
 			if (isset($methods[$method_name])) {
 				$method = $methods[$method_name];
 				$over['action'] = 'trait';
@@ -572,7 +572,7 @@ class Properties_Compiler
 			}
 			else {
 				// the method exists into a parent class / trait and is not abstract
-				$methods = $this->class->getMethods(array('inherited'));
+				$methods = $this->class->getMethods(['inherited']);
 				if (isset($methods[$method_name]) && !$methods[$method_name]->isAbstract()) {
 					$method = $methods[$method_name];
 					$over['action'] = false;
@@ -590,7 +590,7 @@ class Properties_Compiler
 		if (isset($method)) {
 			$over['method']    = $method;
 			$over['prototype'] = rtrim($method->prototype);
-			if (in_array($method_name, array('__get', '__isset', '__set', '__unset'))) {
+			if (in_array($method_name, ['__get', '__isset', '__set', '__unset'])) {
 				$parameters = $method->getParametersNames();
 				if (reset($parameters) !== 'property_name') {
 					$over['prototype'] .= '
@@ -656,15 +656,15 @@ class Properties_Compiler
 	 */
 	private function parentCases($method_name, &$parameters, $advices)
 	{
-		$cases = array();
+		$cases = [];
 		if (
-			in_array($method_name, array('__get', '__set'))
+			in_array($method_name, ['__get', '__set'])
 			&& ($this->class->type == 'class')
 			&& ($parent = $this->class->getParent())
 		) {
 			$annotation = ($method_name == '__get') ? '(getter|link)' : 'setter';
 			$type = ($method_name == '__get') ? 'read' : 'write';
-			foreach ($parent->getProperties(array('traits', 'inherited')) as $property) {
+			foreach ($parent->getProperties(['traits', 'inherited']) as $property) {
 				if (!isset($advices[$property->name]['implements'][$type])) {
 					$expr = '%'
 						. '\n\s+\*\s+'               // each line beginnig by '* '
@@ -674,7 +674,7 @@ class Properties_Compiler
 						. '%';
 					preg_match($expr, $property->documentation, $match);
 					if ($match) {
-						$cases[$property->name] = "\n\t\t\t" . 'case \'' . $property->name . '\':';
+						$cases[$property->name] = LF . TAB . TAB . TAB . 'case ' . Q . $property->name . Q . ':';
 					}
 				}
 			}

@@ -64,7 +64,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 			$this->template = new Html_Edit_Template();
 		}
 		if (!$this->value) {
-			$this->value = array();
+			$this->value = [];
 		}
 		$collection = new Html_Builder_Collection_Edit($this->property, $this->value);
 		$collection->setTemplate($this->template);
@@ -78,7 +78,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	private function buildMap()
 	{
 		if (!$this->value) {
-			$this->value = array();
+			$this->value = [];
 		}
 		$map = new Html_Builder_Map_Edit($this->property, $this->value);
 		return $map->build();
@@ -133,7 +133,7 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 	 */
 	protected function buildString($multiline = false, $values = null)
 	{
-		$values_captions = array();
+		$values_captions = [];
 		$values = $this->property->getListAnnotation('values')->values();
 		foreach ($values as $value) {
 			$values_captions[$value] = Names::propertyToDisplay($value);

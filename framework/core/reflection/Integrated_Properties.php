@@ -21,9 +21,9 @@ abstract class Integrated_Properties
 	public static function expandUsingProperties(
 		&$properties_list, $using_properties, $object = null
 	) {
-		$expanded = array();
+		$expanded = [];
 		if (!is_array($using_properties)) {
-			$using_properties = array($using_properties);
+			$using_properties = [$using_properties];
 		}
 		/** @var $using_properties Reflection_Property[] */
 		foreach ($using_properties as $property_name => $property) {
@@ -68,9 +68,9 @@ abstract class Integrated_Properties
 	 * @todo probably things to clean up (was patched for 'all properties as values' without controls)
 	 */
 	private static function expandUsingPropertyInternal(
-		&$properties_list, $property, $object, $property_name, $display_prefix = '', $blocks = array()
+		&$properties_list, $property, $object, $property_name, $display_prefix = '', $blocks = []
 	) {
-		$expanded = array();
+		$expanded = [];
 		/** @var $integrated Integrated_Annotation */
 		$integrated = $property->getAnnotation('integrated');
 		if ($integrated->value && !$property->isStatic()) {
@@ -82,11 +82,11 @@ abstract class Integrated_Properties
 			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
 				if (!$sub_property->getListAnnotation('user')->has('invisible')) {
-					$display = ($display_prefix . ($display_prefix ? '.' : '')
-						. $property->name . '.' . $sub_property_name);
+					$display = ($display_prefix . ($display_prefix ? DOT : '')
+						. $property->name . DOT . $sub_property_name);
 					$sub_prefix = $integrated_simple ? $display_prefix : $display;
 					if ($more_expanded = self::expandUsingPropertyInternal(
-						$properties_list, $sub_property, $value, $property_name . '.' . $sub_property_name,
+						$properties_list, $sub_property, $value, $property_name . DOT . $sub_property_name,
 						$sub_prefix, $blocks
 					)) {
 						$expanded = array_merge($expanded, $more_expanded);
@@ -104,9 +104,9 @@ abstract class Integrated_Properties
 						foreach ($blocks as $block) {
 							$sub_property->getListAnnotation('block')->add($block);
 						}
-						$sub_property->path = $property_name . '.' . $sub_property_name;
-						$properties_list[$property_name . '.' . $sub_property_name] = $sub_property;
-						$expanded[$property_name . '.' . $sub_property_name] = $sub_property;
+						$sub_property->path = $property_name . DOT . $sub_property_name;
+						$properties_list[$property_name . DOT . $sub_property_name] = $sub_property;
+						$expanded[$property_name . DOT . $sub_property_name] = $sub_property;
 					}
 				}
 			}

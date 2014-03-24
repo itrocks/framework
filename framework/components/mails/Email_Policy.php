@@ -19,7 +19,7 @@ class Email_Policy
 	/**
 	 * Used for send policy
 	 *
-	 * Value is true do always delay, false to always send, "auto" to try send and delay if any error
+	 * Value is true do always delay, false to always send, 'auto' to try send and delay if any error
 	 *
 	 * @var boolean|string
 	 */

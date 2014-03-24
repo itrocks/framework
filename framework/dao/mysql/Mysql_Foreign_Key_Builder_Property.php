@@ -15,7 +15,7 @@ trait Mysql_Foreign_Key_Builder_Property
 	 */
 	private static function propertyConstraintToMysql($table_name, Reflection_Property $property)
 	{
-		return $table_name . '.'
+		return $table_name . DOT
 		. ($property->getAnnotation('link')->value ? ('id_' . $property->name) : $property->name);
 	}
 

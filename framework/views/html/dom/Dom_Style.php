@@ -36,7 +36,7 @@ class Dom_Style
 	 */
 	public function __toString()
 	{
-		return $this->key . ": " . $this->value;
+		return $this->key . ': ' . $this->value;
 	}
 
 }

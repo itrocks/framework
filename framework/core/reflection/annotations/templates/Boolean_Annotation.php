@@ -23,14 +23,14 @@ abstract class Boolean_Annotation extends Annotation
 	/**
 	 * Register value as boolean
 	 *
-	 * If a boolean annotation has no value or is not "false" or zero, annotation's value will be true.
+	 * If a boolean annotation has no value or is not 'false' or zero, annotation's value will be true
 	 *
 	 * @param $value string
 	 */
 	public function __construct($value)
 	{
 		$this->value = (
-			($value !== null) && ($value !== 0) && ($value !== false) && ($value !== "false")
+			($value !== null) && ($value !== 0) && ($value !== false) && ($value !== 'false')
 		);
 	}
 

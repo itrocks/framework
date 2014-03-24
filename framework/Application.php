@@ -15,7 +15,7 @@ class Application
 	 *
 	 * @var Application[]
 	 */
-	public $applications = array();
+	public $applications = [];
 
 	//--------------------------------------------------------------------------------- $include_path
 	/**
@@ -57,10 +57,10 @@ class Application
 	public static function current(Application $set_current = null)
 	{
 		if ($set_current) {
-			Session::current()->set($set_current, 'SAF\Framework\Application');
+			Session::current()->set($set_current, Application::class);
 			return $set_current;
 		}
-		return Session::current()->get('SAF\Framework\Application');
+		return Session::current()->get(Application::class);
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir
@@ -84,22 +84,22 @@ class Application
 			return $this->namespaces;
 		}
 		else {
-			$applications_classes = array_merge(array(get_class($this)), array_keys($this->applications));
-			$already_namespaces = array();
+			$applications_classes = array_merge([get_class($this)], array_keys($this->applications));
+			$already_namespaces = [];
 			foreach ($applications_classes as $application_class) {
 				while (
-					!empty($application_class) && ($application_class != 'SAF\Framework\Application')
+					!empty($application_class) && ($application_class != Application::class)
 					&& !isset($already_namespaces[$application_class])
 				) {
 					$namespace = Namespaces::of($application_class);
 					$namespaces[] = $namespace;
 					$path = str_replace(
-						"_", "", Names::classToProperty(substr($namespace, strpos($namespace, "/") + 1))
+						'_', '', Names::classToProperty(substr($namespace, strpos($namespace, SL) + 1))
 					);
 					$dir = dir($path);
 					while ($entry = $dir->read()) {
-						if (($entry[0] != '.') && is_dir($path . "/" . $entry)) {
-							$namespaces[] = $namespace . "\\" . Names::propertyToClass($entry);
+						if (($entry[0] != DOT) && is_dir($path . SL . $entry)) {
+							$namespaces[] = $namespace . BS . Names::propertyToClass($entry);
 						}
 					}
 					$dir->close();
@@ -109,7 +109,7 @@ class Application
 			}
 			$namespaces[] = 'SAF\Framework';
 			$namespaces[] = 'SAF\Framework\Unit_Tests';
-			$namespaces[] = "";
+			$namespaces[] = '';
 			$this->namespaces = $namespaces;
 			return $namespaces;
 		}
@@ -121,11 +121,11 @@ class Application
 	 */
 	public function getTemporaryFilesPath()
 	{
-		if (!is_dir("tmp")) {
-			mkdir("tmp");
-			file_put_contents("tmp/.htaccess", "Deny From All");
+		if (!is_dir('tmp')) {
+			mkdir('tmp');
+			file_put_contents('tmp/.htaccess', 'Deny From All');
 		}
-		return "tmp";
+		return 'tmp';
 	}
 
 }

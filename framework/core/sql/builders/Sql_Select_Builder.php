@@ -74,7 +74,7 @@ class Sql_Select_Builder
 		$this->columns_builder = new Sql_Columns_Builder($class_name, $properties, $joins);
 		$this->tables_builder  = new Sql_Tables_Builder($class_name, $joins);
 		$this->where_builder   = new Sql_Where_Builder($class_name, $where_array, $sql_link, $joins);
-		$this->options = isset($options) ? (is_array($options) ? $options : array($options)) : array();
+		$this->options = isset($options) ? (is_array($options) ? $options : [$options]) : [];
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -94,7 +94,7 @@ class Sql_Select_Builder
 	 */
 	private function buildOptions()
 	{
-		$options = array();
+		$options = [];
 		foreach ($this->options as $option) {
 			if ($option instanceof Dao_Group_By_Option) {
 				$group_by = (new Sql_Columns_Builder(
@@ -102,27 +102,27 @@ class Sql_Select_Builder
 					$option->properties,
 					$this->joins
 				))->build();
-				$options[10] = " GROUP BY " . $group_by;
+				$options[10] = ' GROUP BY ' . $group_by;
 			}
 			elseif ($option instanceof Dao_Sort_Option) {
 				$order_by = (new Sql_Columns_Builder(
 					$this->class_name,
 					$option->getColumns($this->class_name),
 					$this->joins,
-					array("DESC" => $option->reverse)
+					['DESC' => $option->reverse]
 				))->build();
 				if ($order_by) {
-					$options[20] = " ORDER BY " . $order_by;
+					$options[20] = ' ORDER BY ' . $order_by;
 				}
 			}
 			elseif ($option instanceof Dao_Limit_Option) {
 				// todo this works only with Mysql so beware, this should be into Mysql_Link or something
-				$options[30] = " LIMIT "
-					. (isset($option->from) ? ($option->from - 1) . ", " : "")
+				$options[30] = ' LIMIT '
+					. (isset($option->from) ? ($option->from - 1) . ', ' : '')
 					. $option->count;
 			}
 			elseif ($option instanceof Dao_Count_Option) {
-				$this->additional_where_clause = " SQL_CALC_FOUND_ROWS";
+				$this->additional_where_clause = ' SQL_CALC_FOUND_ROWS';
 			}
 		}
 		ksort($options);
@@ -140,7 +140,7 @@ class Sql_Select_Builder
 		// Call of buildOptions() and buildWhere() before buildColumns(), as all joins must be done to
 		// correctly deal with all properties.
 		// Call of buildColumns() and buildWhere() before buildTables(), to get joins ready.
-		$this->additional_where_clause = "";
+		$this->additional_where_clause = '';
 		$where   = $this->where_builder->build();
 		$options = $this->buildOptions();
 		$columns = $this->columns_builder->build();
@@ -152,20 +152,20 @@ class Sql_Select_Builder
 	/**
 	 * Finalize SQL query
 	 *
-	 * @param $columns string columns list, separated by ", "
-	 * @param $tables  string tables list, including joins, without "FROM"
-	 * @param $where   string where clause, including " WHERE " or empty if no filter on read
+	 * @param $columns string columns list, separated by ', '
+	 * @param $tables  string tables list, including joins, without 'FROM'
+	 * @param $where   string where clause, including ' WHERE ' or empty if no filter on read
 	 * @param $options string[]
 	 * @return string
 	 */
 	private function finalize($columns, $where, $tables, $options)
 	{
-		return "SELECT"
-			. $this->additional_where_clause . " "
-			. $columns . " "
-			. "FROM " . $tables
+		return 'SELECT'
+			. $this->additional_where_clause . SP
+			. $columns . SP
+			. 'FROM' . SP . $tables
 			. $where
-			. join("", $options);
+			. join('', $options);
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins

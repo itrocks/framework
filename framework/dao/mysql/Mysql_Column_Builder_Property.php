@@ -169,7 +169,7 @@ trait Mysql_Column_Builder_Property
 			/** @var $values string[] */
 			$values = [];
 			foreach ($property->getListAnnotation('values')->values() as $key => $value) {
-				$values[$key] = str_replace("'", "''", $value);
+				$values[$key] = str_replace(Q, Q . Q, $value);
 			}
 			return $values
 				? (

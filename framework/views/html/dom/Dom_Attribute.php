@@ -37,14 +37,14 @@ class Dom_Attribute
 	 */
 	public static function escapeValue($value)
 	{
-		if (strpos($value, '"') === false) {
-			return '"' . $value . '"';
+		if (strpos($value, DQ) === false) {
+			return DQ . $value . DQ;
 		}
-		elseif (strpos($value, "'") === false) {
-			return "'" . $value . "'";
+		elseif (strpos($value, Q) === false) {
+			return Q . $value . Q;
 		}
 		else {
-			return '"' . htmlspecialchars($value) . '"';
+			return DQ . htmlspecialchars($value) . DQ;
 		}
 	}
 
@@ -58,10 +58,10 @@ class Dom_Attribute
 			return $this->name;
 		}
 		elseif ($this->value === false) {
-			return "";
+			return '';
 		}
 		else {
-			return $this->name . (isset($this->value) ? ("=" . self::escapeValue($this->value)) : "");
+			return $this->name . (isset($this->value) ? ('=' . self::escapeValue($this->value)) : '');
 		}
 	}
 

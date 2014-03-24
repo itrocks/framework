@@ -19,7 +19,7 @@ class Execution_Timer implements Plugins\Registerable
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Constructor : initializes start time to "now"
+	 * Constructor : initializes start time to 'now'
 	 */
 	public function __construct()
 	{
@@ -29,11 +29,11 @@ class Execution_Timer implements Plugins\Registerable
 	//-------------------------------------------------------------- afterMainControllerRunController
 	public function afterMainControllerRunController()
 	{
-		$duration = number_format($this->end(), 3, ",", " ");
-		echo "<script type=\"text/javascript\">"
-			. " document.getElementById(\"main\").innerHTML"
-			. " += '<div class=\"Timer logger duration\">$duration</div>';"
-			. " </script>";
+		$duration = number_format($this->end(), 3, ',', SP);
+		echo '<script type="text/javascript">'
+			. ' document.getElementById("main").innerHTML'
+			. ' += \'<div class="Timer logger duration">' . $duration . '</div>\';'
+			. ' </script>';
 	}
 
 	//----------------------------------------------------------------------------------------- begin
@@ -54,7 +54,7 @@ class Execution_Timer implements Plugins\Registerable
 	public function end()
 	{
 		if (!isset($this->start_time)) {
-			$this->start_time = $_SERVER["REQUEST_TIME_FLOAT"];
+			$this->start_time = $_SERVER['REQUEST_TIME_FLOAT'];
 		}
 		return (microtime(true) - $this->start_time);
 	}
@@ -69,8 +69,8 @@ class Execution_Timer implements Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->afterMethod(
-			array('SAF\Framework\Main_Controller', "runController"),
-			array($this, "afterMainControllerRunController")
+			[Main_Controller::class, 'runController'],
+			[$this, 'afterMainControllerRunController']
 		);
 	}
 

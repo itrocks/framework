@@ -26,7 +26,7 @@ class User_Disconnect_Controller implements Feature_Controller
 		User_Authentication::disconnect($current_user);
 		array_unshift($parameters, $current_user);
 		session_destroy();
-		return View::run($parameters, $form, $files, get_class($current_user), "disconnect");
+		return View::run($parameters, $form, $files, get_class($current_user), 'disconnect');
 	}
 
 }

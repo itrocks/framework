@@ -19,9 +19,9 @@ abstract class Data_Link
 	public function classNameOf($store_name)
 	{
 		$class_name = Namespaces::fullClassName(Names::setToClass(
-			str_replace(' ', '_', ucwords(str_replace('_', ' ', $store_name))), false
+			str_replace(SP, '_', ucwords(str_replace('_', SP, $store_name))), false
 		), false);
-		if (strpos($class_name, '\\') === false) {
+		if (strpos($class_name, BS) === false) {
 			$class_name = explode('_', $class_name);
 			foreach ($class_name as $key => $class_name_part) {
 				$class_name[$key] = Names::setToClass($class_name_part, false);
@@ -71,7 +71,7 @@ abstract class Data_Link
 	 */
 	public function escapeString($value)
 	{
-		return str_replace(array("'", '"'), array("\\'", '\\"'), $value);
+		return str_replace([Q, DQ], [BS . Q, BS . DQ], $value);
 	}
 
 	//---------------------------------------------------------------------------- getKeyPropertyName
@@ -87,7 +87,7 @@ abstract class Data_Link
 		$key = 'id';
 		if (isset($options)) {
 			if (!is_array($options)) {
-				$options = array($options);
+				$options = [$options];
 			}
 			foreach ($options as $option) {
 				if ($option instanceof Dao_Key_Option) {
@@ -275,6 +275,6 @@ abstract class Data_Link
 	 * @param $options Dao_Option[]|Dao_Option some options for advanced write
 	 * @return object the written object
 	 */
-	abstract public function write($object, $options = array());
+	abstract public function write($object, $options = []);
 
 }

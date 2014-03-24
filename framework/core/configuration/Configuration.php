@@ -35,16 +35,16 @@ class Configuration
 	/**
 	 * Build configuration using configurations options
 	 *
-	 * Default configuration is set to the configuration if the "default" option is set to true.
+	 * Default configuration is set to the configuration if the 'default' option is set to true.
 	 *
 	 * @param $configuration array recursive configuration array from the config.php file
 	 */
 	public function __construct($configuration)
 	{
-		$this->application_name = $configuration["app"];
-		$this->author = $configuration["author"];
-		unset($configuration["app"]);
-		unset($configuration["author"]);
+		$this->application_name = $configuration['app'];
+		$this->author = $configuration['author'];
+		unset($configuration['app']);
+		unset($configuration['author']);
 		$this->plugins = $configuration;
 	}
 
@@ -55,8 +55,8 @@ class Configuration
 	public function getApplicationClassName()
 	{
 		if (!isset($this->application_class_name)) {
-			$this->application_class_name = (isset($this->author) ? $this->author : "SAF") . "\\"
-				. $this->application_name . "\\Application";
+			$this->application_class_name = (isset($this->author) ? $this->author : 'SAF') . BS
+				. $this->application_name . '\Application';
 		}
 		return $this->application_class_name;
 	}

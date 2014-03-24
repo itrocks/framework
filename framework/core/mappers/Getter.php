@@ -85,7 +85,7 @@ abstract class Getter
 				}
 			}
 			if (!isset($stored)) {
-				$stored = array();
+				$stored = [];
 			}
 		}
 		return $stored;
@@ -130,13 +130,13 @@ abstract class Getter
 					$class_name = $link_class_name;
 				}
 				$stored = $dao->search(
-					array($class_name . '->' . $property->name => $object),
+					[$class_name . '->' . $property->name => $object],
 					$property->getType()->getElementTypeAsString(),
 					Dao::sort()
 				);
 			}
 			else {
-				$stored = array();
+				$stored = [];
 			}
 		}
 		return $stored;

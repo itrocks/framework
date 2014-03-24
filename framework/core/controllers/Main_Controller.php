@@ -16,7 +16,7 @@ class Main_Controller
 	/**
 	 * @var Plugin[]
 	 */
-	private $top_core_plugins = array();
+	private $top_core_plugins = [];
 
 	//--------------------------------------------------------------------------------- topCorePlugin
 	/**
@@ -93,14 +93,14 @@ class Main_Controller
 			? Namespaces::fullClassName(Set::elementClassNameOf($uri->controller_name))
 			: $uri->controller_name;
 		if ($controller instanceof Class_Controller) {
-			return call_user_func_array(array($controller, $method_name), array(
-				$uri->parameters, $post, $files, $uri->feature_name, $class_name
-			));
+			return call_user_func_array([$controller, $method_name],
+				[$uri->parameters, $post, $files, $uri->feature_name, $class_name]
+			);
 		}
 		else {
-			return call_user_func_array(array($controller, $method_name), array(
-				$uri->parameters, $post, $files, $class_name, $uri->feature_name
-			));
+			return call_user_func_array([$controller, $method_name],
+				[$uri->parameters, $post, $files, $class_name, $uri->feature_name]
+			);
 		}
 	}
 
@@ -157,7 +157,7 @@ class Main_Controller
 	 * @param $includes string[]
 	 * @return $this
 	 */
-	public function init($includes = array())
+	public function init($includes = [])
 	{
 		$this->includes();
 		foreach ($includes as $include) {
@@ -177,7 +177,7 @@ class Main_Controller
 	{
 		$script_name = $_SERVER['SCRIPT_NAME'];
 		$configuration = (new Configurations())->load(
-			substr($script_name, strrpos($script_name, '/') + 1)
+			substr($script_name, strrpos($script_name, SL) + 1)
 		);
 		return $configuration;
 	}
@@ -191,7 +191,7 @@ class Main_Controller
 	 */
 	private function registerPlugins(Plugins\Manager $plugins, Configuration $configuration)
 	{
-		$must_register = array();
+		$must_register = [];
 		foreach ($configuration->getPlugins() as $level => $sub_plugins) {
 			foreach ($sub_plugins as $class_name => $plugin_configuration) {
 				// registers and activates only when weaver is set
@@ -208,12 +208,12 @@ class Main_Controller
 				}
 				// weaver is not set : keep plugin definition for further registering and activation
 				if (!isset($weaver)) {
-					$must_register[] = array(
+					$must_register[] = [
 						'plugin'               => $plugin,
 						'class_name'           => $class_name,
 						'level'                => $level,
 						'plugin_configuration' => $plugin_configuration
-					);
+					];
 				}
 				if ($plugin instanceof IAutoloader) {
 					$this->createApplication($configuration);
@@ -256,7 +256,7 @@ class Main_Controller
 	 * @param $files array
 	 * @return mixed
 	 */
-	public function runController($uri, $get = array(), $post = array(), $files = array())
+	public function runController($uri, $get = [], $post = [], $files = [])
 	{
 		$uri = new Controller_Uri($uri, $get, 'edit', 'list');
 		foreach ($uri->getPossibleControllerCalls() as $key => $call) {
@@ -282,7 +282,7 @@ class Main_Controller
 	{
 		if (empty($_SESSION)) {
 			session_start();
-			if (isset($_GET['X'])) $_SESSION = array();
+			if (isset($_GET['X'])) $_SESSION = [];
 		}
 		$this->setIncludePath($_SESSION);
 		if (isset($_SESSION['session']) && isset($_SESSION['session']->plugins)) {

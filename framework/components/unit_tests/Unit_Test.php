@@ -27,7 +27,7 @@ class Unit_Test
 	/**
 	 * Assumes a checked value is the same than an assumed value
 	 *
-	 * @param $test   string the name of the test (ie "Method_Name[.test_name]")
+	 * @param $test   string the name of the test (ie 'Method_Name[.test_name]')
 	 * @param $check  mixed the checked value
 	 * @param $assume mixed the assumed value
 	 * @return boolean true if the checked value corresponds to the assumed value
@@ -48,37 +48,37 @@ class Unit_Test
 		}
 		if ($ok) {
 			$duration = round((microtime(true) - $this->start_time) * 1000);
-			$result = "<span style='color:green;font-weight:bold'>OK</span> (<i>" . $duration . "ms</i>)";
+			$result = '<span style="color:green;font-weight:bold">OK</span> (<i>' . $duration . 'ms</i>)';
 		}
 		else {
-			$result = "<span style='color:red;font-weight:bold'>BAD</span>"
-			. "<pre style='color:red;font-weight:bold;'>[" . print_r($check, true) . "]</pre>"
-			. "<pre style='color:blue;font-weight:bold;'>[" . print_r($assume, true) . "]</pre>"
-			. ($diff1 ? ("<pre style='color:orange;font-weight:bold;'>[" . print_r($diff1, true) . "]</pre>") : "")
-			. ($diff2 ? ("<pre style='color:orange;font-weight:bold;'>[" . print_r($diff2, true) . "]</pre>") : "");
+			$result = '<span style="color:red;font-weight:bold">BAD</span>'
+			. '<pre style="color:red;font-weight:bold;">[' . print_r($check, true) . ']</pre>'
+			. '<pre style="color:blue;font-weight:bold;">[' . print_r($assume, true) . ']</pre>'
+			. ($diff1 ? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff1, true) . ']</pre>') : '')
+			. ($diff2 ? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff2, true) . ']</pre>') : '');
 		}
-		echo "<li>" . str_replace(get_class($this) . "::", "", $test) . " : " . $result;
-		return ($result === "OK");
+		echo '<li>' . str_replace(get_class($this) . '::', '', $test) . ' : ' . $result;
+		return ($result === 'OK');
 	}
 
 	//--------------------------------------------------------------------------------- assumeCapture
 	/**
 	 * Ends default output capture and assume result
 	 *
-	 * @param $test   string the name of the test (ie "Method_Name[.test_name]")
+	 * @param $test   string the name of the test (ie 'Method_Name[.test_name]')
 	 * @param $assume string the assumed default output capture result
 	 * @return boolean if the checked default output capture string corresponds to the assumed string
 	 */
 	protected function assumeCapture($test, $assume)
 	{
-		return $this->assume($test . ".output", $this->captureEnd(), $assume);
+		return $this->assume($test . '.output', $this->captureEnd(), $assume);
 	}
 
 	//----------------------------------------------------------------------------------------- begin
 	public function begin()
 	{
-		echo "<h3>" . get_class($this) . "</h3>";
-		echo "<ul>";
+		echo '<h3>' . get_class($this) . '</h3>';
+		echo '<ul>';
 	}
 
 	//------------------------------------------------------------------------------------ captureEnd
@@ -99,7 +99,7 @@ class Unit_Test
 	public function captureStart()
 	{
 		$test = $this;
-		$this->capture = "";
+		$this->capture = '';
 		ob_start(function($buffer) use ($test)
 		{
 			$test->capture .= $buffer;
@@ -109,7 +109,7 @@ class Unit_Test
 	//------------------------------------------------------------------------------------------- end
 	public function end()
 	{
-		echo "</ul>";
+		echo '</ul>';
 	}
 
 	//--------------------------------------------------------------------------------------- toArray

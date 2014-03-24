@@ -27,7 +27,7 @@ class File_Type
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $type string    The main type string, or "type/subtype" if $subtype is null
+	 * @param $type string    The main type string, or 'type/subtype' if $subtype is null
 	 * @param $subtype string If set, the subtype string ($type must be the main type alone)
 	 */
 	public function __construct($type, $subtype = null)
@@ -37,7 +37,7 @@ class File_Type
 			$this->subtype = $subtype;
 		}
 		else {
-			list($this->type, $this->subtype) = explode("/", $type);
+			list($this->type, $this->subtype) = explode(SL, $type);
 		}
 	}
 
@@ -47,7 +47,7 @@ class File_Type
 	 */
 	public function __toString()
 	{
-		return $this->type . "/" . $this->subtype;
+		return $this->type . SL . $this->subtype;
 	}
 
 	//---------------------------------------------------------------------------------------- equals
@@ -84,23 +84,23 @@ class File_Type
 	{
 		if (!isset(self::$extensions_types)) {
 			// source : http://www.iana.org/assignments/media-types/media-types.xhtml
-			self::$extensions_types = array(
-				"bz2"  => "application/x-bz2",
-				"csv"  => "text/csv",
-				"gif"  => "image/gif",
-				"gz"   => "multipart/x-gzip",
-				"gzip" => "multipart/x-gzip",
-				"jpe"  => "image/jpeg",
-				"jpeg" => "image/jpeg",
-				"jpg"  => "image/jpeg",
-				"ods"  => "application/vnd.oasis.opendocument.spreadsheet",
-				"png"  => "image/png",
-				"tif"  => "image/tiff",
-				"tiff" => "image/tiff",
-				"xls"  => "application/vnd.ms-excel",
-				"xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-				"zip"  => "multipart/x-zip"
-			);
+			self::$extensions_types = [
+				'bz2'  => 'application/x-bz2',
+				'csv'  => 'text/csv',
+				'gif'  => 'image/gif',
+				'gz'   => 'multipart/x-gzip',
+				'gzip' => 'multipart/x-gzip',
+				'jpe'  => 'image/jpeg',
+				'jpeg' => 'image/jpeg',
+				'jpg'  => 'image/jpeg',
+				'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
+				'png'  => 'image/png',
+				'tif'  => 'image/tiff',
+				'tiff' => 'image/tiff',
+				'xls'  => 'application/vnd.ms-excel',
+				'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				'zip'  => 'multipart/x-zip'
+			];
 		}
 	}
 
@@ -109,8 +109,8 @@ class File_Type
 	 * Returns true if the argument file type is an equivalent of this file type
 	 *
 	 * @param $type string|File_Type if string, can be either a file extension an extension type
-	 *              ("type" alone, complete "type/subtype", or "subtype" alone)
-	 *              Special types "x" for compressed and "vnd" for vendor types are accepted too
+	 *              ('type' alone, complete 'type/subtype', or 'subtype' alone)
+	 *              Special types 'x' for compressed and 'vnd' for vendor types are accepted too
 	 * @return boolean
 	 */
 	public function is($type)
@@ -118,7 +118,7 @@ class File_Type
 		if ($type instanceof File_Type) {
 			return $this->equals($type);
 		}
-		elseif (strpos("/", $type)) {
+		elseif (strpos(SL, $type)) {
 			return ($type === strval($this));
 		}
 		else {
@@ -128,8 +128,8 @@ class File_Type
 			}
 			else {
 				return ($this->type === $type) || ($this->subtype === $type)
-					|| (($type === "x") && (strpos($this->subtype, "x-") === 0))
-					|| (($type === "vnd") && (strpos($this->subtype, "vnd.") === 0));
+					|| (($type === 'x') && (strpos($this->subtype, 'x-') === 0))
+					|| (($type === 'vnd') && (strpos($this->subtype, 'vnd.') === 0));
 			}
 		}
 	}

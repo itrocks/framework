@@ -58,7 +58,7 @@ function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
 function maxRowLength($str)
 {
 	$length = 0;
-	$rows = explode("\n", $str);
+	$rows = explode(LF, $str);
 	foreach ($rows as $row) {
 		if (strlen($row) > $length) {
 			$length = strlen($row);
@@ -72,7 +72,7 @@ function maxRowLength($str)
  * Renvoie la partie de la chaîne située entre le délimiteur de début et le délimiteur de fin
  * Si le délimiteur est un tableau, les délimiteurs seront recherchés successivement.
  *
- * @example echo mParse('il a mangé, a bu, a digéré', array(',', 'a '), ',')
+ * @example echo mParse('il a mangé, a bu, a digéré', [',', 'a '), ',')
  *          recherchera ce qui entre le 'a ' qui est après ',' et le ',' qui suit,
  *          et affichera 'bu'
  * @param $str string
@@ -138,7 +138,7 @@ function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
  */
 function rowCount($str)
 {
-	return substr_count($str, "\n") + 1;
+	return substr_count($str, LF) + 1;
 }
 
 //------------------------------------------------------------------------------------------ rParse
@@ -213,7 +213,7 @@ function strIsCapitals($str)
  */
 function strSimplify($str, $extended = false, $joker = null)
 {
-	$str_simplify = array(
+	$str_simplify = [
 		'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
 		'Ç' => 'C',
 		'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
@@ -229,7 +229,7 @@ function strSimplify($str, $extended = false, $joker = null)
 		'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
 		'ý' => 'y', 'ÿ' => 'y',
 		'&' => 'and'
-	);
+	];
 	$result = '';
 	if ($extended && !is_string($extended)) {
 		if (is_array($extended)) {
@@ -265,7 +265,7 @@ function strSimplify($str, $extended = false, $joker = null)
  */
 function strUri($str, $joker = null)
 {
-	return strtolower(strSimplify(str_replace(' ', '_', $str), '/-_{}.', $joker));
+	return strtolower(strSimplify(str_replace(SP, '_', $str), '/-_{}.', $joker));
 }
 
 //---------------------------------------------------------------------------------------- ucfirsta

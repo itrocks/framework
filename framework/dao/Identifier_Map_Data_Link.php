@@ -42,7 +42,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	{
 		if (is_object($object)) {
 			if (isset($property_name)) {
-				$id_property_name = "id_" . $property_name;
+				$id_property_name = 'id_' . $property_name;
 				if (isset($object->$id_property_name)) {
 					return $object->$id_property_name;
 				}
@@ -70,7 +70,7 @@ abstract class Identifier_Map_Data_Link extends Data_Link
 	{
 		if (is_object($object)) {
 			$id = $this->getObjectIdentifier($object);
-			$object = isset($id) ? array("id" => $id) : get_object_vars($object);
+			$object = isset($id) ? ['id' => $id] : get_object_vars($object);
 		}
 		elseif (is_array($object)) {
 			foreach ($object as $path => $value) {

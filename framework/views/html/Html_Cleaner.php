@@ -15,8 +15,8 @@ class Html_Cleaner implements Plugins\Registerable
 	 */
 	public function clean(&$result)
 	{
-		$result = str_replace("\r", "", $result);
-		$result = preg_replace("/(\n)([\\s|\\t]+)(\n)/", "\n", $result);
+		$result = str_replace(CR, '', $result);
+		$result = preg_replace('/(\n)([\\s|\\t]+)(\n)/', LF, $result);
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -26,9 +26,7 @@ class Html_Cleaner implements Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod(
-			array('SAF\Framework\Html_Template', "parse"), array($this, "clean")
-		);
+		$aop->afterMethod([Html_Template::class, 'parse'], [$this, 'clean']);
 	}
 
 }

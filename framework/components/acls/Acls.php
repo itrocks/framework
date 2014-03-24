@@ -37,12 +37,11 @@ class Acls implements Plugins\Registerable
 	{
 		$aop = $register->aop;
 		$aop->afterMethod(
-			array('SAF\Framework\User_Authentication', "authenticate"),
-			array('SAF\Framework\Acls_Loader', "onUserAuthenticate")
+			[User_Authentication::class, 'authenticate'], [Acls_Loader::class, 'onUserAuthenticate']
 		);
 		$aop->afterMethod(
-			array('SAF\Framework\User_Authentication', "disconnect"),
-			array('SAF\Framework\Acls_Loader', "onUserDisconnect")
+			[User_Authentication::class, 'disconnect'],
+			[Acls_Loader::class, 'onUserDisconnect']
 		);
 	}
 

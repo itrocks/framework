@@ -20,7 +20,7 @@ class Dao_Group_By_Option implements Dao_Option
 	public function __construct($properties = null)
 	{
 		if (isset($properties)) {
-			$this->properties = is_array($properties) ? $properties : array($properties);
+			$this->properties = is_array($properties) ? $properties : [$properties];
 		}
 	}
 

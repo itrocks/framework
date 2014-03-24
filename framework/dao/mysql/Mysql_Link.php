@@ -366,7 +366,8 @@ class Mysql_Link extends Sql_Link
 		}
 		else {
 			// it's for optimisation purpose only
-			$query = 'SELECT * FROM `' . $this->storeNameOf($class_name) . '` WHERE id = ' . $identifier;
+			$query = 'SELECT * FROM ' . BQ . $this->storeNameOf($class_name) . BQ
+				. ' WHERE id = ' . $identifier;
 		}
 		$this->setContext($class_name);
 		$result_set = $this->executeQuery($query);
@@ -395,7 +396,7 @@ class Mysql_Link extends Sql_Link
 		if (isset($options)) {
 			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
-		$keys = explode('.', $this->getKeyPropertyName($options));
+		$keys = explode(DOT, $this->getKeyPropertyName($options));
 		$object_key = array_pop($keys);
 		while ($object = $this->fetch($result_set, $class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
@@ -423,11 +424,11 @@ class Mysql_Link extends Sql_Link
 		$replacement_id = $this->getObjectIdentifier($replacement);
 		if ($replaced_id && $replacement_id && $table_name) {
 			foreach (Mysql_Foreign_Key::buildReferences($this->connection, $table_name) as $foreign_key) {
-				$foreign_table_name = lParse($foreign_key->getConstraint(), '.');
+				$foreign_table_name = lParse($foreign_key->getConstraint(), DOT);
 				$foreign_field_name = $foreign_key->getFields()[0];
-				$query = 'UPDATE `' . $foreign_table_name . '`'
-					. ' SET `' . $foreign_field_name . '` = ' . $replacement_id
-					. ' WHERE `' . $foreign_field_name . '` = ' . $replaced_id;
+				$query = 'UPDATE ' . BQ . $foreign_table_name . BQ
+					. ' SET ' . BQ . $foreign_field_name . BQ . ' = ' . $replacement_id
+					. ' WHERE ' . BQ . $foreign_field_name . BQ . ' = ' . $replaced_id;
 				$this->query($query);
 				if ($this->connection->last_errno) {
 					$error = true;
@@ -479,7 +480,7 @@ class Mysql_Link extends Sql_Link
 			if (isset($options)) {
 				$this->getRowsCount($result_set, 'SELECT', $options);
 			}
-			$keys = explode('.', $this->getKeyPropertyName($options));
+			$keys = explode(DOT, $this->getKeyPropertyName($options));
 			$object_key = array_pop($keys);
 			while ($object = $this->fetch($result_set, $class_name)) {
 				$this->setObjectIdentifier($object, $object->id);

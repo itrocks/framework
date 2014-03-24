@@ -73,7 +73,7 @@ class Input
 	 */
 	public static function newCollection($inputs_arrays)
 	{
-		$inputs = array();
+		$inputs = [];
 		foreach ($inputs_arrays as $array) {
 			switch (count($array)) {
 				case 5: $inputs[] = new Input($array[0], $array[1], $array[2], $array[3], $array[4]); break;

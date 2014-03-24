@@ -68,8 +68,8 @@ class Mysql_Index implements Dao_Index
 			$column_names[] = $key->toSql();
 		}
 		$type = $this->getSqlType();
-		return 'KEY `' . $this->getName() . '` '
-			. ($type ? ($type . ' ') : '')
+		return 'KEY ' . BQ . $this->getName() . BQ . SP
+			. ($type ? ($type . SP) : '')
 			. '(' . join(', ', $column_names) . ')';
 	}
 

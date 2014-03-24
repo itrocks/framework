@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-require_once __DIR__ . "/../../vendor/textile/classTextile.php";
+require_once __DIR__ . '/../../vendor/textile/classTextile.php';
 
 /**
  * Textile review B-Appli style, in order to be more ergonomic
@@ -31,7 +31,7 @@ class Textile extends \Textile
 	{
 		parent::__construct($doctype);
 
-		$this->span_tags = array(
+		$this->span_tags = [
 			'*'  => 'strong',
 			'**' => 'b',
 			'??' => 'cite',
@@ -42,7 +42,7 @@ class Textile extends \Textile
 			'_'  => 'ins',
 			'~'  => 'sub',
 			'^'  => 'sup',
-		);
+		];
 	}
 
 	//----------------------------------------------------------------------------------------- parse
@@ -57,7 +57,7 @@ class Textile extends \Textile
 
 	//------------------------------------------------------------------------------------ parseSpans
 	/**
-	 * Replaces <one+two: by <span class="one two">
+	 * Replaces <one+two: by <span class='one two'>
 	 * Replaces :> by </span>
 	 *
 	 * This makes available all customizations of text formatting, linked to css stylesheets.
@@ -68,25 +68,25 @@ class Textile extends \Textile
 	private function parseSpans($text)
 	{
 		$length = strlen($text);
-		// replaces <one+two: by <span class="one two">
+		// replaces <one+two: by <span class='one two'>
 		$i = 0;
-		while (($i = strpos($text, "<", $i)) !== false) {
+		while (($i = strpos($text, '<', $i)) !== false) {
 			$j = ++$i;
 			while (
 				($j < $length)
-				&& (strpos("abcdefghijklmnopqrstuvwxyz0123456789_+", $text[$j]) !== false)
+				&& (strpos('abcdefghijklmnopqrstuvwxyz0123456789_+', $text[$j]) !== false)
 			) {
 				$j ++;
 			}
-			if (($j < $length) && ($text[$j] === ":")) {
+			if (($j < $length) && ($text[$j] === ':')) {
 				$text = substr($text, 0, $i)
-					. "span class=\"" . str_replace("+", " ", substr($text, $i, $j - $i)) . "\">"
+					. 'span class="' . str_replace('+', SP, substr($text, $i, $j - $i)) . '">'
 					. substr($text, $j + 1);
 				$length += 13;
 			}
 		}
 		// replaces :> by </span>
-		return str_replace(":>", "</span>", $text);
+		return str_replace(':>', '</span>', $text);
 	}
 
 	//----------------------------------------------------------------------------------------- spans
@@ -100,7 +100,7 @@ class Textile extends \Textile
 	protected function spans($text)
 	{
 		$span_tags = array_keys($this->span_tags);
-		$pnct = ".,\"'?!;:‹›«»„“”‚‘’";
+		$pnct = '.,"\'?!;:‹›«»„“”‚‘’';
 		$this->span_depth++;
 
 		if ($this->span_depth <= $this->max_span_depth) {
@@ -117,7 +117,7 @@ class Textile extends \Textile
           $f
           ($|[\[\]}<]|(?=[$pnct]{1,2}[^0-9]|\s|\)))  # tail
           `x" . $this->regex_snippets['mod'],
-					array(&$this, "fSpan"),
+					[&$this, 'fSpan'],
 					$text
 				);
 			}

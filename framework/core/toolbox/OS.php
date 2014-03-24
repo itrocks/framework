@@ -9,7 +9,7 @@ abstract class OS
 
 	//---------------------------------------------------------------------------- $include_separator
 	/**
-	 * The include separator is ":" under unix/linux and ";" under windows systems
+	 * The include separator is ':' under unix/linux and ';' under windows systems
 	 *
 	 * @var string
 	 */
@@ -17,4 +17,4 @@ abstract class OS
 
 }
 
-OS::$include_separator = (PHP_OS === "WINNT") ? ";" : ":";
+OS::$include_separator = (PHP_OS === 'WINNT') ? ';' : ':';

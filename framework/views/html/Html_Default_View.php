@@ -27,7 +27,7 @@ class Html_Default_View implements IView
 		}
 		/** @var $template Html_Template */
 		$template = Builder::create(
-			$template_class, array(reset($parameters), $template_file, $feature_name)
+			$template_class, [reset($parameters), $template_file, $feature_name]
 		);
 		$template->setParameters($parameters);
 		$current = View::current();
@@ -50,10 +50,10 @@ class Html_Default_View implements IView
 	{
 		$templates_files = Html_View_Engine::getPossibleTemplates(
 			Namespaces::shortClassName($class_name),
-			isset($parameters['feature']) ? array($parameters['feature'], $feature_name) : $feature_name
+			isset($parameters['feature']) ? [$parameters['feature'], $feature_name] : $feature_name
 		);
 		foreach ($templates_files as $template_file) {
-			if (!strpos($template_file, '.')) {
+			if (!strpos($template_file, DOT)) {
 				$template_file = stream_resolve_include_path($template_file . '.html')
 					?: stream_resolve_include_path($template_file . '.php');
 			}

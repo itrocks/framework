@@ -12,15 +12,15 @@ abstract class User_Authentication
 	 * List all of properties to write in user object for the register
 	 *
 	 * @param $array string[] The form content
-	 * @return User A list of properties as "property" => "value"
+	 * @return User A list of properties as 'property' => 'value'
 	 */
 	public static function arrayToUser($array)
 	{
-		$user = Search_Object::create('SAF\Framework\User');
-		$user->login = $array["login"];
+		$user = Search_Object::create(User::class);
+		$user->login = $array['login'];
 		$user->password = (new Password(
-			$array["password"],
-			(new Reflection_Property(get_class($user), "password"))->getAnnotation("password")->value
+			$array['password'],
+			(new Reflection_Property(get_class($user), 'password'))->getAnnotation('password')->value
 		))->encrypted();
 		return $user;
 	}
@@ -46,7 +46,7 @@ abstract class User_Authentication
 	 */
 	public static function controlNameNotUsed($login)
 	{
-		$search = Search_Object::create('SAF\Framework\User');
+		$search = Search_Object::create(User::class);
 		$search->login = $login;
 		return !Dao::search($search);
 	}
@@ -59,18 +59,18 @@ abstract class User_Authentication
 	 */
 	public static function controlRegisterFormParameters($form)
 	{
-		$errors_messages = array();
-		if (!(($form["login"] != "") && (str_replace(" ", "", $form["login"]) != "" ))) {
-			$errors_messages[] = array(
-				"name"    => "Incorrect login",
-				"message" => "The login is incorrect, a login must be not void."
-			);
+		$errors_messages = [];
+		if (!(($form['login'] != '') && (str_replace(SP, '', $form['login']) != ''))) {
+			$errors_messages[] = [
+				'name'    => 'Incorrect login',
+				'message' => 'The login is incorrect, a login must be not void.'
+			];
 		}
-		if (!(($form["password"] != "") && (str_replace(" ", "", $form["password"]) != ""))) {
-			$errors_messages[] = array(
-				"name"    => "Incorrect password",
-				"message" => "The password is incorrect, must be not void."
-			);
+		if (!(($form['password'] != '') && (str_replace(SP, '', $form['password']) != ''))) {
+			$errors_messages[] = [
+				'name'    => 'Incorrect password',
+				'message' => 'The password is incorrect, must be not void.'
+			];
 		}
 		return $errors_messages;
 	}
@@ -97,10 +97,10 @@ abstract class User_Authentication
 	 */
 	public static function getLoginInputs()
 	{
-		return Input::newCollection(array(
-			array("login", "login", "text"),
-			array("password",  "password",  "password")
-		));
+		return Input::newCollection([
+			['login', 'login', 'text'],
+			['password',  'password',  'password']
+		]);
 	}
 
 	//----------------------------------------------------------------------------- getRegisterInputs
@@ -111,10 +111,10 @@ abstract class User_Authentication
 	 */
 	public static function getRegisterInputs()
 	{
-		return Input::newCollection(array(
-			array("login", "Login", "text"),
-			array("password",  "Password",  "password")
-		));
+		return Input::newCollection([
+			['login', 'Login', 'text'],
+			['password',  'Password',  'password']
+		]);
 	}
 
 	//----------------------------------------------------------------------------------------- login
@@ -130,11 +130,11 @@ abstract class User_Authentication
 	 */
 	public static function login($login, $password)
 	{
-		$search = Search_Object::create('SAF\Framework\User');
+		$search = Search_Object::create(User::class);
 		$search->login = $login;
 		$password = (new Password(
 			$password,
-			(new Reflection_Property(get_class($search), "password"))->getAnnotation("password")
+			(new Reflection_Property(get_class($search), 'password'))->getAnnotation('password')
 				->value
 		))->encrypted();
 		foreach (Dao::search($search) as $user) {

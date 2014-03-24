@@ -1,4 +1,4 @@
-$("document").ready(function()
+$('document').ready(function()
 {
 
 	tuto = {
@@ -30,8 +30,8 @@ $("document").ready(function()
 					: Math.sqrt(16 * 16 / (dx * dx * 16 + dy * dy * 16));
 				var x = r * dx + 4;
 				var y = r * dy + 4;
-				me.$left_eye.children("span").css({ left: x + "px", top: y + "px" });
-				me.$right_eye.children("span").css({ left: x + "px", top: y + "px" });
+				me.$left_eye.children('span').css({ left: x + 'px', top: y + 'px' });
+				me.$right_eye.children('span').css({ left: x + 'px', top: y + 'px' });
 			};
 			return this;
 		},
@@ -81,7 +81,7 @@ $("document").ready(function()
 				.append(this.$left_hand).append(this.$right_hand)
 				.append(this.$mouth);
 			this.noHand();
-			$("body").append(this.$container);
+			$('body').append(this.$container);
 
 			var tuto = this;
 			setInterval(function() { tuto.animate(); }, 100);
@@ -90,14 +90,14 @@ $("document").ready(function()
 
 		leftHand: function()
 		{
-			this.$container.children(".hand.right").hide();
-			this.$container.children(".hand.left").show();
+			this.$container.children('.hand.right').hide();
+			this.$container.children('.hand.left').show();
 			return this;
 		},
 
 		noHand: function()
 		{
-			this.$container.children(".hand").hide();
+			this.$container.children('.hand').hide();
 			return this;
 		},
 
@@ -111,14 +111,14 @@ $("document").ready(function()
 
 		rightHand: function()
 		{
-			this.$container.children(".hand.left").hide();
-			this.$container.children(".hand.right").show();
+			this.$container.children('.hand.left').hide();
+			this.$container.children('.hand.right').show();
 			return this;
 		},
 
 		setPosition: function(x, y)
 		{
-			this.$container.css({ left: x + "px", top: y + "px" });
+			this.$container.css({ left: x + 'px', top: y + 'px' });
 		}
 
 	};
@@ -126,24 +126,24 @@ $("document").ready(function()
 	/*
 	tuto.init()
 		.followMouse()
-		.goRightOf("#login").leftHand();
+		.goRightOf('#login').leftHand();
 	*/
 
 	/*
 	tuto.init()
 		.step({
-			action: tuto.goRightOf("#login"),
-			done:   "Veuillez taper votre identifiant utilisateur",
-			wait:   function() { return ($("#login").val().length > 3); }
+			action: tuto.goRightOf('#login'),
+			done:   'Veuillez taper votre identifiant utilisateur',
+			wait:   function() { return ($('#login').val().length > 3); }
 		})
 		.step({
-			action: tuto.goRightOf("#password"),
-			done:   "Veuillez ensuite taper votre mot de passe",
-			wait:   function() { return ($("#password").val().length > 3); }
+			action: tuto.goRightOf('#password'),
+			done:   'Veuillez ensuite taper votre mot de passe',
+			wait:   function() { return ($('#password').val().length > 3); }
 		})
 		.step({
-			action: tuto.goRightOf("form.user.login.window input[type=submit]"),
-			done:   "Enfin, cliquez sur le bouton Connexion pour continuer",
+			action: tuto.goRightOf('form.user.login.window input[type=submit]'),
+			done:   'Enfin, cliquez sur le bouton Connexion pour continuer',
 			wait:   function() { return () }
 		});
 	*/

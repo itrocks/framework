@@ -28,7 +28,7 @@ class Code
 	 */
 	public function __toString()
 	{
-		return trim($this->code . " " . $this->name);
+		return trim($this->code . SP . $this->name);
 	}
 
 }

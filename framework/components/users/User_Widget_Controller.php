@@ -22,12 +22,12 @@ class User_Widget_Controller implements Feature_Controller
 		$parameters = $parameters->getObjects();
 		if ($user = User::current()) {
 			array_unshift($parameters, $user);
-			return View::run($parameters, $form, $files, get_class($user), "display");
+			return View::run($parameters, $form, $files, get_class($user), 'display');
 		}
 		else {
 			$user = new User();
 			array_unshift($parameters, $user);
-			return View::run($parameters, $form, $files, get_class($user), "login");
+			return View::run($parameters, $form, $files, get_class($user), 'login');
 		}
 	}
 

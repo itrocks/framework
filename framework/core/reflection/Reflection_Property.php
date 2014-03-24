@@ -62,7 +62,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	{
 		$this->path = $property_name;
 		$i = 0;
-		while (($j = strpos($property_name, '.', $i)) !== false) {
+		while (($j = strpos($property_name, DOT, $i)) !== false) {
 			$property = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
 			$class_name = $property->getType()->getElementTypeAsString();
 			$i = $j + 1;
@@ -90,8 +90,8 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public static function exists($class_name, $property_name)
 	{
-		if (strpos($property_name, '.') !== false) {
-			$properties_name = explode('.', $property_name);
+		if (strpos($property_name, DOT) !== false) {
+			$properties_name = explode(DOT, $property_name);
 			foreach (array_slice($properties_name, 0, -1) as $property_name) {
 				if (!property_exists($class_name, $property_name)) {
 					return false;
@@ -110,7 +110,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	protected function getAnnotationCachePath()
 	{
-		return array($this->class, $this->name);
+		return [$this->class, $this->name];
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass
@@ -196,16 +196,16 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			(new Reflection_Class($this->final_class))->getListAnnotations('override') as $annotation
 		) {
 			if ($annotation->property_name === $this->name) {
-				$comment .= '/**' . "\n";
+				$comment .= '/**' . LF;
 				foreach ($annotation->values() as $key => $value) {
-					if (in_array($key, array('var'))) {
-						$value = explode(' ', $value);
+					if (in_array($key, ['var'])) {
+						$value = explode(SP, $value);
 						$value[0] = Namespaces::defaultFullClassName($value[0], $annotation->class->name);
-						$value = join(' ', $value);
+						$value = join(SP, $value);
 					}
-					$comment .= "\t" . ' * @' . $key . ' ' . $value . "\n";
+					$comment .= TAB . SP . '*' . SP . '@' . $key . SP . $value . LF;
 				}
-				$comment .= "\t" . ' */';
+				$comment .= TAB . SP . '*/';
 			}
 		}
 		return $comment;
@@ -234,7 +234,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function getParentProperty()
 	{
-		if (!empty($this->path) && ($i = strrpos($this->path, '.'))) {
+		if (!empty($this->path) && ($i = strrpos($this->path, DOT))) {
 			return new Reflection_Property($this->class, substr($this->path, 0, $i));
 		}
 		return null;

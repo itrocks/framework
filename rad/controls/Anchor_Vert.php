@@ -7,8 +7,8 @@ namespace SAF\RAD;
 class Anchor_Vert extends Anchor
 {
 
-	const BOTTOM = "bottom";
+	const BOTTOM = 'bottom';
 
-	const TOP = "top";
+	const TOP = 'top';
 
 }

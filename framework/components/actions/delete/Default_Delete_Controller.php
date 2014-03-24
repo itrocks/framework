@@ -26,7 +26,7 @@ class Default_Delete_Controller implements Default_Feature_Controller
 		}
 		Dao::commit();
 		return (new Default_Controller)->run(
-			$parameters, $form, $files, $class_name, "deleted"
+			$parameters, $form, $files, $class_name, 'deleted'
 		);
 	}
 

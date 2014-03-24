@@ -24,16 +24,16 @@ class Dao implements Plugins\Configurable
 	 */
 	public function __construct($configuration)
 	{
-		if (isset($configuration["list"])) {
-			foreach ($configuration["list"] as $dao_identifier => $dao_configuration) {
-				$class_name = $dao_configuration["class"];
-				unset($dao_configuration["class"]);
+		if (isset($configuration['list'])) {
+			foreach ($configuration['list'] as $dao_identifier => $dao_configuration) {
+				$class_name = $dao_configuration['class'];
+				unset($dao_configuration['class']);
 				self::set($dao_identifier, new $class_name($dao_configuration));
 			}
-			unset($configuration["list"]);
+			unset($configuration['list']);
 		}
-		$class_name = $configuration["class"];
-		unset($configuration["class"]);
+		$class_name = $configuration['class'];
+		unset($configuration['class']);
 		Dao::current(new $class_name($configuration));
 	}
 
@@ -361,7 +361,7 @@ class Dao implements Plugins\Configurable
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use 'column.sub_column' to get values from linked objects from the same data source.
 	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
 	 * @param $options       Dao_Option|Dao_Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
@@ -390,11 +390,11 @@ class Dao implements Plugins\Configurable
 	 * @example
 	 * $users = Dao::readAll(
 	 *   'SAF\Framework\User',
-	 *   Dao::sort(array("first_name", "last_name", "city.country.name"))
+	 *   Dao::sort(['first_name', 'last_name', 'city.country.name'])
 	 * );
 	 *
 	 * @param $columns string|string[] A single or several column names.
-	 * If null, the value of annotations "sort" or "representative" will be taken as defaults.
+	 * If null, the value of annotations 'sort' or 'representative' will be taken as defaults.
 	 * @return Dao_Sort_Option
 	 */
 	public static function sort($columns = null)
@@ -427,7 +427,7 @@ class Dao implements Plugins\Configurable
 	 * @return object the written object
 	 * @see Data_Link::write()
 	 */
-	public static function write($object, $options = array())
+	public static function write($object, $options = [])
 	{
 		return self::current()->write($object, $options);
 	}

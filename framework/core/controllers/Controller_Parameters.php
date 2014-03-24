@@ -11,13 +11,13 @@ class Controller_Parameters
 	/**
 	 * @var object[] indices are parameters names (ie object class short name)
 	 */
-	private $objects = array();
+	private $objects = [];
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
 	 * @var integer[] indices are parameters names (ie object class short name)
 	 */
-	private $parameters = array();
+	private $parameters = [];
 
 	//------------------------------------------------------------------------------------------ $uri
 	/**
@@ -82,7 +82,7 @@ class Controller_Parameters
 				? Builder::create($class_name)
 				: Set::instantiate($class_name)
 			);
-			$this->parameters = array_merge(array(get_class($object) => $object), $this->parameters);
+			$this->parameters = array_merge([get_class($object) => $object], $this->parameters);
 		}
 		return $object;
 	}
@@ -135,7 +135,7 @@ class Controller_Parameters
 	 */
 	public function getObjects()
 	{
-		$parameters = array();
+		$parameters = [];
 		foreach (array_keys($this->parameters) as $parameter_name) {
 			$parameters[$parameter_name] = $this->getObject($parameter_name);
 		}
@@ -223,7 +223,7 @@ class Controller_Parameters
 		foreach ($this->parameters as $key => $value) {
 			if (!is_numeric($key) && !is_object($value)) {
 				unset($this->parameters[$key]);
-				return array($key, $value);
+				return [$key, $value];
 			}
 		}
 		return null;
@@ -276,7 +276,7 @@ class Controller_Parameters
 
 	//----------------------------------------------------------------------------------------- toGet
 	/**
-	 * Changes named parameters (which name is not numeric and value not object) into a "get-like"
+	 * Changes named parameters (which name is not numeric and value not object) into a 'get-like'
 	 * argument
 	 *
 	 * @param boolean $shift if true, get elements will be removed from parameters
@@ -284,7 +284,7 @@ class Controller_Parameters
 	 */
 	public function toGet($shift = false)
 	{
-		$get = array();
+		$get = [];
 		foreach ($this->parameters as $key => $value) {
 			if (!is_numeric($key) && !is_object($value)) {
 				$get[$key] = $value;
@@ -306,7 +306,7 @@ class Controller_Parameters
 	{
 		if (is_object($parameter_value)) {
 			$this->parameters = arrayMergeRecursive(
-				array(get_class($parameter_value) => $parameter_value), $this->parameters
+				[get_class($parameter_value) => $parameter_value], $this->parameters
 			);
 		}
 		else {

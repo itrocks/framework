@@ -21,15 +21,15 @@ class Html_Session implements Plugins\Activable, Plugins\Configurable
 	 */
 	public function __construct($configuration)
 	{
-		self::$use_cookie = isset($configuration["use_cookie"]) && $configuration["use_cookie"];
+		self::$use_cookie = isset($configuration['use_cookie']) && $configuration['use_cookie'];
 	}
 
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
-		ini_set("session.use_cookies", self::$use_cookie);
-		ini_set("session.use_only_cookies", false);
-		ini_set("session.use_trans_sid", !self::$use_cookie);
+		ini_set('session.use_cookies', self::$use_cookie);
+		ini_set('session.use_only_cookies', false);
+		ini_set('session.use_trans_sid', !self::$use_cookie);
 	}
 
 	//------------------------------------------------------------------------------------ useCookies
@@ -41,9 +41,9 @@ class Html_Session implements Plugins\Activable, Plugins\Configurable
 	{
 		if (isset($cookies)) {
 			self::$use_cookie = true;
-			ini_set("session.use_cookies", $cookies);
+			ini_set('session.use_cookies', $cookies);
 		}
-		return ini_get("session.use_cookies");
+		return ini_get('session.use_cookies');
 	}
 
 }

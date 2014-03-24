@@ -48,9 +48,9 @@ class Locale implements Plugins\Configurable
 		if (!isset($current)) {
 			self::current($this);
 		}
-		$this->setDate($configuration["date"]);
-		$this->setLanguage($configuration["language"]);
-		$this->setNumber($configuration["number"]);
+		$this->setDate($configuration['date']);
+		$this->setLanguage($configuration['language']);
+		$this->setNumber($configuration['number']);
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -97,7 +97,7 @@ class Locale implements Plugins\Configurable
 
 	//--------------------------------------------------------------------------------------- setDate
 	/**
-	 * @param $date Date_Locale | string if string, must be a date format (ie "d/m/Y")
+	 * @param $date Date_Locale | string if string, must be a date format (ie 'd/m/Y')
 	 */
 	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
 	private function setDate($date)

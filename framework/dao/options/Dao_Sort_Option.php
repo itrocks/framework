@@ -35,24 +35,24 @@ class Dao_Sort_Option implements Dao_Option
 	 * data link when readAll() and search()
 	 *
 	 * @example
-	 * $option = new Dao_Sort_Option(array("first_name", "last_name", "city.country.name"));
+	 * $option = new Dao_Sort_Option(['first_name', 'last_name', 'city.country.name'));
 	 * // Please prefer using this equivalent for standard calls, ie in this standard use example :
 	 * $users = Dao::readAll(
 	 *   'SAF\Framework\User',
-	 *   Dao::sort(array("first_name", "last_name", "city.country.name")));
+	 *   Dao::sort(['first_name', 'last_name', 'city.country.name')));
 	 * );
 	 *
 	 * @param $columns string|string[] a single or several column names, or a class name to apply
-	 * each column name can be followed by " reverse" into the string for reverse order sort
-	 * If null, the value of annotations "sort" or "representative" of the class will be taken.
+	 * each column name can be followed by ' reverse' into the string for reverse order sort
+	 * If null, the value of annotations 'sort' or 'representative' of the class will be taken.
 	 */
 	public function __construct($columns = null)
 	{
-		if (is_string($columns) && (($columns[0] >= "A") && ($columns[0] <= "Z"))) {
+		if (is_string($columns) && (($columns[0] >= 'A') && ($columns[0] <= 'Z'))) {
 			$this->applyClassName($columns);
 		}
 		elseif (isset($columns)) {
-			$this->columns = is_array($columns) ? $columns : array($columns);
+			$this->columns = is_array($columns) ? $columns : [$columns];
 			$this->calculateReverse();
 		}
 	}
@@ -89,9 +89,9 @@ class Dao_Sort_Option implements Dao_Option
 		) {
 			$class_name = Builder::className($class_name);
 			$this->class_name = $class_name;
-			$columns = (new Reflection_Class($class_name))->getAnnotation("sort")->value;
+			$columns = (new Reflection_Class($class_name))->getAnnotation('sort')->value;
 			if (!$columns) {
-				$columns = (new Reflection_Class($class_name))->getAnnotation("representative")->value;
+				$columns = (new Reflection_Class($class_name))->getAnnotation('representative')->value;
 			}
 			$this->columns = $columns;
 			$this->calculateReverse();
@@ -102,10 +102,10 @@ class Dao_Sort_Option implements Dao_Option
 	private function calculateReverse()
 	{
 		if (isset($this->columns) && !isset($this->reverse)) {
-			$this->reverse = array();
+			$this->reverse = [];
 			foreach ($this->columns as $key => $column_name) {
-				if (strpos(" " . $column_name . " ", " reverse ") !== false) {
-					$column_name = trim(str_replace(" reverse ", "", " " . $column_name . " "));
+				if (strpos(SP . $column_name . SP, SP . 'reverse' . SP) !== false) {
+					$column_name = trim(str_replace(SP . 'reverse' . SP, '', SP . $column_name . SP));
 					$this->reverse[$column_name] = $column_name;
 					$this->columns[$key] = $column_name;
 				}

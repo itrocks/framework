@@ -11,7 +11,7 @@ abstract class Html_Table_Section extends Dom_Element
 	/**
 	 * @var Html_Table_Row[]
 	 */
-	public $rows = array();
+	public $rows = [];
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -19,7 +19,7 @@ abstract class Html_Table_Section extends Dom_Element
 	 */
 	public function __toString()
 	{
-		$this->setContent("\n" . join("\n", $this->rows) . "\n");
+		$this->setContent(LF . join(LF, $this->rows) . LF);
 		return parent::__toString();
 	}
 

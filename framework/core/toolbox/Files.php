@@ -19,8 +19,8 @@ abstract class Files
 	 */
 	public static function appendSlash($string)
 	{
-		if ((!empty($string)) && ($string[strlen($string) - 1] != "/")) {
-			$string .= "/";
+		if ((!empty($string)) && ($string[strlen($string) - 1] != SL)) {
+			$string .= SL;
 		}
 		return $string;
 	}
@@ -34,7 +34,7 @@ abstract class Files
 	 * @param $ignore      string[] List of files/directories to ignore
 	 * @return boolean true if copy succeeds, else false
 	 */
-	public static function copy($source, $destination, $ignore = array())
+	public static function copy($source, $destination, $ignore = [])
 	{
 		if (is_dir($source)) {
 			$result = true;
@@ -42,7 +42,7 @@ abstract class Files
 			$destination = self::appendSlash($destination);
 			foreach (scandir($source) as $entry) {
 				if (!in_array($entry, $ignore)) {
-					if (is_dir($source . $entry) && ($entry != ".") && ($entry != "..")) {
+					if (is_dir($source . $entry) && ($entry != DOT) && ($entry != DD)) {
 						mkdir($destination . $entry);
 						$result = self::copy($source . $entry, $destination . $entry, $ignore) && $result;
 					}
@@ -75,7 +75,7 @@ abstract class Files
 			$result = true;
 			$list_files = scandir($path);
 			foreach ($list_files as $entry) {
-				if (is_dir($path . $entry) && ($entry != ".") && ($entry != "..")) {
+				if (is_dir($path . $entry) && ($entry != DOT) && ($entry != DD)) {
 					$result = self::delete($path . $entry) && $result;
 				}
 				elseif (is_file($path . $entry)) {
@@ -115,12 +115,12 @@ abstract class Files
 	public static function rmdir($directory)
 	{
 		if (!empty($directory) && is_dir($directory)) {
-			foreach (array_diff(scandir($directory), array(".", "..")) as $entry) {
-				if (is_dir($directory . "/" . $entry)) {
-					self::rmdir($directory . "/" . $entry);
+			foreach (array_diff(scandir($directory), [DOT, DD]) as $entry) {
+				if (is_dir($directory . SL . $entry)) {
+					self::rmdir($directory . SL . $entry);
 				}
 				else {
-					unlink($directory . "/" . $entry);
+					unlink($directory . SL . $entry);
 				}
 			}
 			rmdir($directory);
@@ -136,11 +136,11 @@ abstract class Files
 	 */
 	public static function scanDirForFiles($directory)
 	{
-		$files = array();
-		foreach (array_diff(scandir($directory), array(".", "..")) as $entry) {
-			if (is_dir($directory . "/" . $entry)) {
-				foreach (self::scanDirForFiles($directory . "/" . $entry) as $file_name) {
-					$files[] = $entry . "/" . $file_name;
+		$files = [];
+		foreach (array_diff(scandir($directory), [DOT, DD]) as $entry) {
+			if (is_dir($directory . SL . $entry)) {
+				foreach (self::scanDirForFiles($directory . SL . $entry) as $file_name) {
+					$files[] = $entry . SL . $file_name;
 				}
 			}
 			else {

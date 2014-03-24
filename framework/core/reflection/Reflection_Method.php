@@ -27,7 +27,7 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	public function __construct($class_name, $method_name)
 	{
 		if (!(is_string($class_name) && is_string($method_name))) {
-			trigger_error(__CLASS__ . " constructor needs strings", E_USER_ERROR);
+			trigger_error(__CLASS__ . ' constructor needs strings', E_USER_ERROR);
 		}
 		parent::__construct($class_name, $method_name);
 	}
@@ -38,7 +38,7 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	 */
 	protected function getAnnotationCachePath()
 	{
-		return array($this->class, $this->name . "()");
+		return [$this->class, $this->name . '()'];
 	}
 
 	//---------------------------------------------------------------------------------- getParameter
@@ -58,10 +58,10 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	 */
 	public function getParameters($by_name = true)
 	{
-		$parameters = array();
+		$parameters = [];
 		foreach (parent::getParameters() as $key => $parameter) {
 			$parameters[$by_name ? $parameter->name : $key] = new Reflection_Parameter(
-				array($this->class, $this->name), $parameter->name
+				[$this->class, $this->name], $parameter->name
 			);
 		}
 		return $parameters;

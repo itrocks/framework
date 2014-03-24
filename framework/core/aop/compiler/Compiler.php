@@ -25,7 +25,7 @@ class Compiler implements ICompiler
 	/**
 	 * @var boolean[] key is class name, value is always true
 	 */
-	private $compiled_classes = array();
+	private $compiled_classes = [];
 
 	//--------------------------------------------------------------------------------------- $weaver
 	/**
@@ -68,7 +68,7 @@ class Compiler implements ICompiler
 				if (substr($file_name, -4) == '.php') {
 					$class = Php_Class::fromFile($file_name);
 					if ($class) {
-						if (self::DEBUG) echo '<h2>Compile ' . $file_name . ' : ' . $class->type . ' ' . $class->name . '</h2>';
+						if (self::DEBUG) echo '<h2>Compile ' . $file_name . ' : ' . $class->type . SP . $class->name . '</h2>';
 						if (!isset($this->compiled_classes[$class->name])) {
 							$this->compileClass($class);
 						}
@@ -86,14 +86,14 @@ class Compiler implements ICompiler
 	private function compileClass(Php_Class $class)
 	{
 		$compiled_file_name = isset($this->cache_dir)
-			? ($this->cache_dir . '/' . str_replace('/', '-', substr($class->file_name, 0, -4)))
+			? ($this->cache_dir . SL . str_replace(SL, '-', substr($class->file_name, 0, -4)))
 			: $class->file_name;
 
 		$this->compiled_classes[$class->name] = true;
 		if (self::DEBUG) echo '<h2>' . $class->name . '</h2>';
 
 		if (isset($_GET['C'])) {
-			echo 'CLEANUP ' . $class->name . '<br>';
+			echo 'CLEANUP ' . $class->name . BR;
 			// in cache mode : delete compiled file
 			if (isset($this->cache_dir)) {
 				if (file_exists($compiled_file_name)) {
@@ -107,8 +107,8 @@ class Compiler implements ICompiler
 			return;
 		}
 
-		$methods    = array();
-		$properties = array();
+		$methods    = [];
+		$properties = [];
 		if ($class->type !== 'interface') {
 			// implements : _read_property, _write_property
 			if ($class->type != 'trait') {
@@ -127,7 +127,7 @@ class Compiler implements ICompiler
 		list($methods2, $properties2) = $this->getPointcuts($class->name);
 		$methods    = arrayMergeRecursive($methods,    $methods2);
 		$properties = arrayMergeRecursive($properties, $properties2);
-		$methods_code = array();
+		$methods_code = [];
 
 		if (self::DEBUG && $properties) echo '<pre>properties = ' . print_r($properties, true) . '</pre>';
 
@@ -159,7 +159,7 @@ class Compiler implements ICompiler
 
 		// save compiled file
 		if (!$class->clean || $methods_code) {
-			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class->name . '<br>';
+			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class->name . BR;
 			else script_put_contents($compiled_file_name, $buffer);
 			if (self::DEBUG || isset($_GET['D'])) echo '<pre>' . htmlentities($buffer) . '</pre>';
 		}
@@ -172,12 +172,12 @@ class Compiler implements ICompiler
 	//---------------------------------------------------------------------------------- getPointcuts
 	/**
 	 * @param $class_name string
-	 * @return array[] two elements : array($methods, $properties)
+	 * @return array[] two elements : [$methods, $properties)
 	 */
 	private function getPointcuts($class_name)
 	{
-		$methods    = array();
-		$properties = array();
+		$methods    = [];
+		$properties = [];
 		foreach ($this->weaver->getJoinpoints($class_name) as $joinpoint2 => $pointcuts2) {
 			foreach ($pointcuts2 as $pointcut) {
 				if (($pointcut[0] == 'read') || ($pointcut[0] == 'write')) {
@@ -188,7 +188,7 @@ class Compiler implements ICompiler
 				}
 			}
 		}
-		return array($methods, $properties);
+		return [$methods, $properties];
 	}
 
 	//------------------------------------------------------------------------------- scanForAbstract
@@ -225,20 +225,20 @@ class Compiler implements ICompiler
 				. '%';
 			preg_match($expr, $property->documentation, $match);
 			if ($match) {
-				$advice = array(
+				$advice = [
 					empty($match[1]) ? '$this' : $match[1],
 					empty($match[2]) ? Names::propertyToMethod($property->name, 'get') : $match[2]
-				);
-				$properties[$property->name][] = array('read', $advice);
+				];
+				$properties[$property->name][] = ['read', $advice];
 			}
 		}
-		foreach ($this->scanForOverrides($class->documentation, array('getter')) as $match) {
-			$advice = array(
+		foreach ($this->scanForOverrides($class->documentation, ['getter']) as $match) {
+			$advice = [
 				empty($match['class_name']) ? '$this' : $match['class_name'],
 				empty($match['method_name'])
 					? Names::propertyToMethod($match['property_name'], 'get') : $match['method_name']
-			);
-			$properties[$match['property_name']][] = array('read', $advice);
+			];
+			$properties[$match['property_name']][] = ['read', $advice];
 		}
 	}
 
@@ -250,7 +250,7 @@ class Compiler implements ICompiler
 	private function scanForImplements(&$properties, Php_Class $class)
 	{
 		// properties from the class and its direct traits
-		$implemented_properties = $class->getProperties(array('traits'));
+		$implemented_properties = $class->getProperties(['traits']);
 		foreach ($implemented_properties as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+'            // each line beginning by '* '
@@ -270,11 +270,11 @@ class Compiler implements ICompiler
 			}
 		}
 		// properties overridden into the class and its direct traits
-		$documentations = $class->getDocumentations(array('traits'));
+		$documentations = $class->getDocumentations(['traits']);
 		foreach ($this->scanForOverrides($documentations) as $match) {
 			$properties[$match['property_name']]['implements'][$match['type']] = true;
 			if (!isset($implemented_properties[$match['property_name']])) {
-				$property = $class->getProperties(array('inherited'))[$match['property_name']];
+				$property = $class->getProperties(['inherited'])[$match['property_name']];
 				if (
 					!strpos($property->documentation, '@getter')
 					&& !strpos($property->documentation, '@link')
@@ -297,7 +297,7 @@ class Compiler implements ICompiler
 	 */
 	private function scanForLinks(&$properties, Php_Class $class)
 	{
-		$disable = array();
+		$disable = [];
 		foreach ($properties as $property_name => $advices) {
 			foreach ($advices as $key => $advice) if (is_numeric($key)) {
 				if (is_array($advice) && (reset($advice) == 'read')) {
@@ -315,7 +315,7 @@ class Compiler implements ICompiler
 					. '%';
 				preg_match($expr, $property->documentation, $match);
 				if ($match) {
-					$advice = array(Getter::class, 'get' . $match[1]);
+					$advice = [Getter::class, 'get' . $match[1]];
 				}
 				else {
 					trigger_error(
@@ -325,12 +325,12 @@ class Compiler implements ICompiler
 					);
 					$advice = null;
 				}
-				$properties[$property->name][] = array('read', $advice);
+				$properties[$property->name][] = ['read', $advice];
 			}
 		}
-		foreach ($this->scanForOverrides($class->documentation, array('link'), $disable) as $match) {
-			$advice = array(Getter::class, 'get' . $match['method_name']);
-			$properties[$match['property_name']][] = array('read', $advice);
+		foreach ($this->scanForOverrides($class->documentation, ['link'], $disable) as $match) {
+			$advice = [Getter::class, 'get' . $match['method_name']];
+			$properties[$match['property_name']][] = ['read', $advice];
 		}
 	}
 
@@ -357,7 +357,7 @@ class Compiler implements ICompiler
 						$class_name  = $match[2][$key] ?: '$this';
 						$method_name = $match[3][$key];
 						$has_this    = $match[4][$key];
-						$aspect = array($type, array($method->class->name, $method->name));
+						$aspect = [$type, [$method->class->name, $method->name]];
 						if ($has_this) {
 							$aspect[] = $has_this;
 						}
@@ -376,9 +376,9 @@ class Compiler implements ICompiler
 	 * @return array
 	 */
 	private function scanForOverrides(
-		$documentation, $annotations = array('getter', 'link', 'setter'), $disable = array()
+		$documentation, $annotations = ['getter', 'link', 'setter'], $disable = []
 	) {
-		$overrides = array();
+		$overrides = [];
 		if (strpos($documentation, '@override')) {
 			$expr = '%'
 				. '\n\s+\*\s+'               // each line beginning by '* '
@@ -398,12 +398,12 @@ class Compiler implements ICompiler
 						$disable[$match[1][0]] = true;
 					}
 					$type = ($annotation == 'setter') ? 'write' : 'read';
-					$overrides[] = array(
+					$overrides[] = [
 						'type'          => $type,
 						'property_name' => $match[1][0],
 						'class_name'    => $match[2][0],
 						'method_name'   => $match[3][0]
-					);
+					];
 				}
 			}
 		}
@@ -417,7 +417,7 @@ class Compiler implements ICompiler
 	 */
 	private function scanForReplaces(&$properties, Php_Class $class)
 	{
-		foreach ($class->getProperties(array('traits')) as $property) {
+		foreach ($class->getProperties(['traits']) as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+' // each line beginning by '* '
 				. '@replaces\s+'  // alias annotation
@@ -446,20 +446,20 @@ class Compiler implements ICompiler
 				. '%';
 			preg_match($expr, $property->documentation, $match);
 			if ($match) {
-				$advice = array(
+				$advice = [
 					empty($match[1]) ? '$this' : $match[1],
 					empty($match[2]) ? Names::propertyToMethod($property->name, 'set') : $match[2]
-				);
-				$properties[$property->name][] = array('write', $advice);
+				];
+				$properties[$property->name][] = ['write', $advice];
 			}
 		}
-		foreach ($this->scanForOverrides($class->documentation, array('setter')) as $match) {
-			$advice = array(
+		foreach ($this->scanForOverrides($class->documentation, ['setter']) as $match) {
+			$advice = [
 				empty($match['class_name']) ? '$this' : $match['class_name'],
 				empty($match['method_name'])
 					? Names::propertyToMethod($match['property_name'], 'set') : $match['method_name']
-			);
-			$properties[$match['property_name']][] = array('write', $advice);
+			];
+			$properties[$match['property_name']][] = ['write', $advice];
 		}
 	}
 

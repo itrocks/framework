@@ -52,7 +52,7 @@ abstract class Email_Net_Account
 	 */
 	public function __toString()
 	{
-		return $this->host . ":" . $this->login;
+		return $this->host . ':' . $this->login;
 	}
 
 }

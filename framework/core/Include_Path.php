@@ -39,11 +39,11 @@ class Include_Path
 	 */
 	private function getDirectories($path)
 	{
-		$directories = array($path);
+		$directories = [$path];
 		$dir = dir($path);
-		while ($entry = $dir->read()) if ($entry[0] != '.') {
-			if (is_dir($path . '/' . $entry) && ($entry != 'vendor')) {
-				$directories = array_merge($directories, $this->getDirectories($path . '/' . $entry));
+		while ($entry = $dir->read()) if ($entry[0] != DOT) {
+			if (is_dir($path . SL . $entry) && ($entry != 'vendor')) {
+				$directories = array_merge($directories, $this->getDirectories($path . SL . $entry));
 			}
 		}
 		return $directories;
@@ -97,11 +97,11 @@ class Include_Path
 			$application = $this->application;
 		}
 		$app_dir = $this->getSourceDirectory($application);
-		$directories = array();
+		$directories = [];
 		if ($application != 'framework') {
-			$extends = trim(mParse(file_get_contents($app_dir . '/Application.php'), ' extends ', "\n"));
-			$extends = substr($extends, 0, strrpos($extends, '\\'));
-			$extends = substr($extends, strrpos($extends, '\\') + 1);
+			$extends = trim(mParse(file_get_contents($app_dir . '/Application.php'), ' extends ', LF));
+			$extends = substr($extends, 0, strrpos($extends, BS));
+			$extends = substr($extends, strrpos($extends, BS) + 1);
 			if ($extends) {
 				$directories = $this->getSourceDirectories($include_subdirectories, strtolower($extends));
 			}
@@ -114,7 +114,7 @@ class Include_Path
 		*/
 		return $include_subdirectories
 			? array_merge($this->getDirectories($app_dir), $directories)
-			: array_merge(array($application), $directories);
+			: array_merge([$application], $directories);
 	}
 
 	//---------------------------------------------------------------------------- getSourceDirectory
@@ -141,16 +141,16 @@ class Include_Path
 	 */
 	public function getSourceFiles($include_vendor = false)
 	{
-		$files = array();
+		$files = [];
 		foreach ($this->getSourceDirectories(true) as $directory) {
-			$directory_slash = $directory . '/';
+			$directory_slash = $directory . SL;
 			if (
 				(strpos($directory_slash, '/webshop/templates/') === false)
 				&& ($include_vendor || strpos($directory_slash, '/vendor/') === false)
 			) {
 				$dir = dir($directory);
-				while ($entry = $dir->read()) if ($entry[0] != '.') {
-					$file_path = $directory . '/' . $entry;
+				while ($entry = $dir->read()) if ($entry[0] != DOT) {
+					$file_path = $directory . SL . $entry;
 					if (is_file($file_path)) {
 						$files[] = $file_path;
 					}

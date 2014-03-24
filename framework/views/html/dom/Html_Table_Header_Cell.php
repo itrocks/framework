@@ -13,7 +13,7 @@ class Html_Table_Header_Cell extends Html_Table_Cell
 	 */
 	public function __construct($content = null)
 	{
-		parent::__construct("th", $content);
+		parent::__construct('th', $content);
 	}
 
 }

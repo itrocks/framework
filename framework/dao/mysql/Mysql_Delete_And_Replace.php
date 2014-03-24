@@ -45,7 +45,7 @@ class Mysql_Delete_And_Replace implements Plugins\Registerable
 		) {
 			$id = $this->extractId($query);
 			if ($id) {
-				$controller_uri = '/' . $object->context . '/' . $id . '/deleteAndReplace';
+				$controller_uri = SL . $object->context . SL . $id . SL . 'deleteAndReplace';
 				echo (new Main_Controller())->runController($controller_uri, ['as_widget' => true]);
 			}
 		}

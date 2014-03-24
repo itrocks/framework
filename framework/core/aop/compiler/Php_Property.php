@@ -116,9 +116,9 @@ class Php_Property
 			if ($class_parent) {
 				$properties = $class_parent->getProperties();
 				if (!isset($properties[$this->name])) {
-					$properties = $class_parent->getProperties(array('traits'));
+					$properties = $class_parent->getProperties(['traits']);
 					if (!isset($properties[$this->name])) {
-						$properties = $class_parent->getProperties(array('inherited'));
+						$properties = $class_parent->getProperties(['inherited']);
 					}
 				}
 				if (isset($properties[$this->name])) {

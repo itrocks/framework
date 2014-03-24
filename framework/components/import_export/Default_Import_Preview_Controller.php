@@ -16,16 +16,16 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 	 */
 	protected function getGeneralButtons($class_name)
 	{
-		return array(
+		return [
 			'save' => new Button(
 				'Save', View::link($class_name, 'import', 'preview'),
-				'custom_save', array(Color::of('blue'), '#main', '.submit')
+				'custom_save', [Color::of('blue'), '#main', '.submit']
 			),
 			'delete' => new Button(
-				'Delete', View::link($class_name, 'import', 'preview', array('delete_name' => true)),
-				'custom_delete', array(Color::of('red'), '#main', '.submit')
+				'Delete', View::link($class_name, 'import', 'preview', ['delete_name' => true]),
+				'custom_delete', [Color::of('red'), '#main', '.submit']
 			)
-		);
+		];
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -85,7 +85,7 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 			isset($parameters['constant_remove'])
 			&& (strtoupper($parameters['constant_remove'][0]) === $parameters['constant_remove'][0])
 		) {
-			$parameters['constant_remove'] = rParse($parameters['constant_remove'], '.');
+			$parameters['constant_remove'] = rParse($parameters['constant_remove'], DOT);
 		}
 		foreach ($import->worksheets as $worksheet) {
 			// apply controller parameters
@@ -98,11 +98,11 @@ class Default_Import_Preview_Controller implements Default_Feature_Controller
 			if (
 				isset($parameters['constant_remove'])
 				&& isset(
-					$worksheet->settings->classes[lLastParse($parameters['constant_remove'], '.', 1, false)]
+					$worksheet->settings->classes[lLastParse($parameters['constant_remove'], DOT, 1, false)]
 				)
 			) {
-				$worksheet->settings->classes[lLastParse($parameters['constant_remove'], '.', 1, false)]
-					->removeConstant(rLastParse($parameters['constant_remove'], '.', 1, true));
+				$worksheet->settings->classes[lLastParse($parameters['constant_remove'], DOT, 1, false)]
+					->removeConstant(rLastParse($parameters['constant_remove'], DOT, 1, true));
 			}
 			Custom_Settings_Controller::applyParametersToCustomSettings(
 				$worksheet->settings, array_merge($form, $parameters)

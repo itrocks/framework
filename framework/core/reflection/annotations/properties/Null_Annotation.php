@@ -18,8 +18,8 @@ class Null_Annotation extends Boolean_Annotation implements Property_Context_Ann
 		// default value for @null is true when the property links to a non mandatory object
 		if (
 			!$this->value
-			&& !$property->getAnnotation("mandatory")->value
-			&& ($property->getAnnotation("link")->value == "Object")
+			&& !$property->getAnnotation('mandatory')->value
+			&& ($property->getAnnotation('link')->value == 'Object')
 		) {
 			$this->value = true;
 		}

@@ -29,10 +29,7 @@ class Xdebug implements Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$aop->beforeMethod(
-			array(Main_Controller::class, 'runController'),
-			array(__CLASS__, 'cleanup')
-		);
+		$aop->beforeMethod([Main_Controller::class, 'runController'], [__CLASS__, 'cleanup']);
 	}
 
 }

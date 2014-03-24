@@ -15,7 +15,7 @@ class Settings extends Set
 	 */
 	public function __construct($elements = null)
 	{
-		$settings = array();
+		$settings = [];
 		if (isset($elements)) {
 			foreach ($elements as $setting) {
 				$settings[$setting->code] = $setting;

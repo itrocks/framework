@@ -40,7 +40,7 @@ class Client
 	 */
 	public function __toString()
 	{
-		return strval($this->number) . " " . strval($this->name);
+		return strval($this->number) . SP . strval($this->name);
 	}
 
 }

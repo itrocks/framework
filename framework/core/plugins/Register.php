@@ -56,9 +56,7 @@ class Register
 	{
 		if (!$this->get) {
 			if (!is_array($this->configuration)) {
-				$this->configuration = isset($this->configuration)
-					? array($this->configuration => true)
-					: array();
+				$this->configuration = isset($this->configuration) ? [$this->configuration => true] : [];
 			}
 			foreach ($this->configuration as $key => $value) {
 				if (is_numeric($key) && is_string($value)) {

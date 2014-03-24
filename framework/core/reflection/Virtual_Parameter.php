@@ -42,7 +42,7 @@ class Virtual_Parameter
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $function          string|string[] function name or array("Class_Name", "methodName")
+	 * @param $function          string|string[] function name or ["Class_Name", "methodName")
 	 * @param $parameter_name    string parameter name
 	 * @param $optional          boolean is the parameter optional
 	 * @param $default           mixed default value for the optional parameter
@@ -67,8 +67,8 @@ class Virtual_Parameter
 		$default = $this->default;
 		return ($this->reference ? '&' : '') . '$' . $this->name
 		. ($this->optional
-			? (" = " . (is_numeric($default) ? $default : ('"' . addslashes($default). '"')))
-			: ""
+			? (' = ' . (is_numeric($default) ? $default : (DQ . addslashes($default). DQ)))
+			: ''
 		);
 	}
 

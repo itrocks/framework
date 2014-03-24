@@ -17,28 +17,28 @@ class Class_Builder
 	 *
 	 * @var string[]
 	 */
-	private static $builds = array();
+	private static $builds = [];
 
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * @param $class_name        string The base class name
 	 * @param $interfaces_traits string[] The interfaces and traits names list
-	 * @param $get_source        boolean if true, get built array($name, $source) instead of $name
+	 * @param $get_source        boolean if true, get built [$name, $source) instead of $name
 	 * @return string|string[] the full name of the built class
 	 */
-	public static function build($class_name, $interfaces_traits = array(), $get_source = false)
+	public static function build($class_name, $interfaces_traits = [], $get_source = false)
 	{
-		$key = join('.', $interfaces_traits);
+		$key = join(DOT, $interfaces_traits);
 		if (isset(self::$builds[$class_name][$key])) {
 			return self::$builds[$class_name][$key];
 		}
 		else {
-			$interfaces = array();
-			$traits = array();
+			$interfaces = [];
+			$traits = [];
 			foreach ($interfaces_traits as $interface_trait) {
 				$interface_trait = Namespaces::defaultFullClassName($interface_trait, $class_name);
-				if ($interface_trait[0] != '\\') {
-					$interface_trait = '\\' . $interface_trait;
+				if ($interface_trait[0] != BS) {
+					$interface_trait = BS . $interface_trait;
 				}
 				if (interface_exists($interface_trait)) {
 					$interfaces[$interface_trait] = $interface_trait;
@@ -80,39 +80,39 @@ class Class_Builder
 	 * @param $class_name  string
 	 * @param $interfaces  string[]
 	 * @param $traits      string[]
-	 * @param $get_source        boolean if true, get built array($name, $source) instead of $name
+	 * @param $get_source        boolean if true, get built [$name, $source) instead of $name
 	 * @return string|string[] generated class name
 	 */
 	private static function buildClass($class_name, $interfaces, $traits, $get_source)
 	{
-		if (!$traits) $traits = array(0 => array());
+		if (!$traits) $traits = [0 => []];
 		end($traits);
 		$end_level = key($traits);
 		$namespace = $short_class = $built_class = null;
 		foreach ($traits as $level => $class_traits) {
 			// must be set before $shot_class and $namespace (extends last class)
-			$extends = '\\' . (isset($short_class) ? ($namespace . '\\' . $short_class) : $class_name);
+			$extends = BS . (isset($short_class) ? ($namespace . BS . $short_class) : $class_name);
 			$end = ($level == $end_level);
 			$final = $end ? 'final ' : '';
 			$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
-			$sub_count = $end ? '' : ('\\Sub' . ($end - $level));
-			$namespace = array_slice(explode('\\', Namespaces::of($class_name)), 1);
+			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
+			$namespace = array_slice(explode(BS, Namespaces::of($class_name)), 1);
 			$left = Namespaces::of(Application::current());
-			$namespace = $left . '\\Built' . '\\' . join('\\', $namespace) . $count . $sub_count;
+			$namespace = $left . BS . 'Built' . BS . join(BS, $namespace) . $count . $sub_count;
 			$interfaces_names = ($end && $interfaces) ? join(', ', $interfaces) : '';
-			$traits_names = $class_traits ? join(';' . "\n\t" . 'use ', $class_traits) : '';
+			$traits_names = $class_traits ? join(';' . LF . TAB . 'use ', $class_traits) : '';
 			$short_class = Namespaces::shortClassName($class_name);
-			$built_class = $namespace . '\\' . $short_class;
-			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . "\n\n"
-				. '/** Built ' . $short_class . ' class */' . "\n"
+			$built_class = $namespace . BS . $short_class;
+			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
+				. '/** Built ' . $short_class . ' class */' . LF
 				. $final . 'class ' . $short_class . ' extends ' . $extends
-				. ($interfaces_names ? ("\n\t" . 'implements ' . $interfaces_names) : '')
-				. "\n" . '{' . "\n"
-				. ($traits_names ? ("\t" . 'use ' . $traits_names . ';' . "\n") : '')
-				. "\n" . '}' . "\n"
-				. ($get_source ? '' : ("\n" . '}' . "\n"));
+				. ($interfaces_names ? (LF . TAB . 'implements ' . $interfaces_names) : '')
+				. LF . '{' . LF
+				. ($traits_names ? (TAB . 'use ' . $traits_names . ';' . LF) : '')
+				. LF . '}' . LF
+				. ($get_source ? '' : (LF . '}' . LF));
 			if ($get_source === true) {
-				$get_source = array($built_class => $source);
+				$get_source = [$built_class => $source];
 			}
 			elseif ($get_source) {
 				$get_source[$built_class] = $source;

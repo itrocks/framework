@@ -18,15 +18,15 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
-			$link = $reflection_property->getAnnotation("link")->value;
+			$link = $reflection_property->getAnnotation('link')->value;
 			$possibles = null;
-			if ($link == "Collection") {
+			if ($link == 'Collection') {
 				$possibles = $this->defaultCollection($reflection_property);
 			}
-			elseif ($link == "Map") {
+			elseif ($link == 'Map') {
 				$possibles = $this->defaultMap($reflection_property);
 			}
-			elseif ($link == "Object") {
+			elseif ($link == 'Object') {
 				$possibles = $this->defaultObject($reflection_property);
 			}
 			if (is_array($possibles) && count($possibles) == 1) {
@@ -42,7 +42,7 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	 */
 	private function defaultCollection(Reflection_Property $reflection_property)
 	{
-		return array($reflection_property->name);
+		return [$reflection_property->name];
 	}
 
 	//------------------------------------------------------------------------------------ defaultMap
@@ -52,9 +52,9 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	 */
 	private function defaultMap(Reflection_Property $reflection_property)
 	{
-		return array(Names::ClassToProperty(Names::setToClass(
+		return [Names::ClassToProperty(Names::setToClass(
 				Names::propertyToClass($reflection_property->name), false
-		)));
+		))];
 	}
 
 	//--------------------------------------------------------------------------------- defaultObject
@@ -64,7 +64,7 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	 */
 	private function defaultObject(Reflection_Property $reflection_property)
 	{
-		return array($reflection_property->name);
+		return [$reflection_property->name];
 	}
 
 }

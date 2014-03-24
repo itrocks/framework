@@ -21,18 +21,18 @@ class File_Builder_Post_Files
 		if (is_array($files)) {
 			foreach ($files as $top => $element) {
 				// element keys are standard post files keys : name, type, tmp_name, error, size
-				if (is_array($element["name"])) {
+				if (is_array($element['name'])) {
 					if (!isset($form[$top])) {
-						$form[$top] = array();
+						$form[$top] = [];
 					}
 					$form[$top] = $this->appendToFormRecurse(
-						$form[$top], $element["name"], $element["tmp_name"]
+						$form[$top], $element['name'], $element['tmp_name']
 					);
 				}
-				elseif (!(empty($element["name"]) || empty($element["tmp_name"]))) {
+				elseif (!(empty($element['name']) || empty($element['tmp_name']))) {
 					$file = new File();
-					$file->name = $element["name"];
-					$file->temporary_file_name = $element["tmp_name"];
+					$file->name = $element['name'];
+					$file->temporary_file_name = $element['tmp_name'];
 					$form[$top] = $file;
 				}
 			}
@@ -52,7 +52,7 @@ class File_Builder_Post_Files
 		foreach ($name_element as $key => $name_sub_element) {
 			if (is_array($name_sub_element)) {
 				if (!isset($form[$key])) {
-					$form[$key] = array();
+					$form[$key] = [];
 				}
 				$form[$key] = $this->appendToFormRecurse(
 					$form[$key], $name_sub_element, $tmp_name_element[$key]

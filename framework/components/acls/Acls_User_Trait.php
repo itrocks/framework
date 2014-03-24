@@ -24,12 +24,12 @@ trait Acls_User_Trait
 	{
 		$group = isset($this->group) ? $this->group : null;
 		if (!isset($group)) {
-			Getter::getObject($group, Acls_Group::class, $this, "group");
+			Getter::getObject($group, Acls_Group::class, $this, 'group');
 			if (empty($group)) {
 				/** @var $group Acls_Group */
 				$group = new Acls_Group();
-				$group->name = ($this instanceof User) ? $this->login : "";
-				$group->type = "user";
+				$group->name = ($this instanceof User) ? $this->login : '';
+				$group->type = 'user';
 				$this->group = $group;
 				Dao::write($this);
 			}

@@ -14,12 +14,12 @@
 		// highlight zones
 		this.each(function() {
 			var $this = $(this);
-			$this.css("border", "2px solid lightgreen");
+			$this.css('border', '2px solid lightgreen');
 		});
 
 		// horizontal or vertical ? (default is horizontal, if zero or one contained elements only)
 		var vertical = false;
-		var elements = (element_selector[0] == ">")
+		var elements = (element_selector[0] == '>')
 			? this.children(element_selector.substr(1))
 			: this.find(element_selector);
 		if (elements.length > 1) {
@@ -29,7 +29,7 @@
 		}
 
 		// awful patch : display fields elements as blocks as table-row will not get red borders (but why ?)
-		elements.filter("fieldset>div").css("display", "block");
+		elements.filter('fieldset>div').css('display', 'block');
 
 		//--------------------------------------------------------------------------------------- click
 		/**
@@ -37,8 +37,7 @@
 		 */
 		elements.click(function(event)
 		{
-			var $this = $(this);
-			console.log("good job guy");
+			console.log('good job guy');
 			event.preventDefault();
 			event.stopImmediatePropagation();
 		});
@@ -53,51 +52,51 @@
 		{
 			var $this = $(this);
 			// hover
-			if (!$this.data("current")) {
-				var $body = $("body");
-				var $currently_hover = $body.data("currently-hover");
+			if (!$this.data('current')) {
+				var $body = $('body');
+				var $currently_hover = $body.data('currently-hover');
 				if ($currently_hover != undefined) {
-					$currently_hover.data("force-out", true);
+					$currently_hover.data('force-out', true);
 					$currently_hover.mouseout();
 				}
 				// hint box
-				if ($this.data("hint-element") == undefined) {
-					var $hint_element = $("<div>");
+				if ($this.data('hint-element') == undefined) {
+					var $hint_element = $('<div>');
 					$hint_element.css({
-						"background-color": "white",
-						border:   "1px solid black",
-						display: "inline-block",
-						left: event.pageX + 30 + "px",
-						padding:  "2px",
-						position: "absolute",
-						top: event.pageY + 30 + "px"
+						'background-color': 'white',
+						border:   '1px solid black',
+						display: 'inline-block',
+						left: event.pageX + 30 + 'px',
+						padding:  '2px',
+						position: 'absolute',
+						top: event.pageY + 30 + 'px'
 					})
 						.text(hint)
-						.appendTo("body");
-					$this.data("hint-element", $hint_element);
+						.appendTo('body');
+					$this.data('hint-element', $hint_element);
 				}
 				// save css border
-				if ($this.data("old-css") == undefined) {
-					$this.data("old-css", {
-						border: $this.css("border"),
-						"border-bottom": $this.css("border-bottom"),
-						"border-left":   $this.css("border-left"),
-						"border-right":  $this.css("border-right"),
-						"border-top":    $this.css("border-top")
+				if ($this.data('old-css') == undefined) {
+					$this.data('old-css', {
+						border: $this.css('border'),
+						'border-bottom': $this.css('border-bottom'),
+						'border-left':   $this.css('border-left'),
+						'border-right':  $this.css('border-right'),
+						'border-top':    $this.css('border-top')
 					});
 				}
 				// save currently inside
-				$body.data("currently-hover", $this);
-				$this.data("current", true);
+				$body.data('currently-hover', $this);
+				$this.data('current', true);
 			}
 			// hint box follows the mouse
-			if ($this.data("hint-element") != undefined) {
-				$this.data("hint-element").css({
-					left: event.pageX + 10 + "px", top: event.pageY + 10 + "px"
+			if ($this.data('hint-element') != undefined) {
+				$this.data('hint-element').css({
+					left: event.pageX + 10 + 'px', top: event.pageY + 10 + 'px'
 				});
 			}
 			// restore old css
-			var old_css = $this.data("old-css");
+			var old_css = $this.data('old-css');
 			if (old_css != undefined) {
 				$this.css(old_css);
 				// show red lines
@@ -105,20 +104,20 @@
 					var top = (event.pageY - $this.offset().top)
 						< ($this.offset().top + $this.height() - event.pageY);
 					if (top) {
-						$this.css("border-top", "2px solid red");
+						$this.css('border-top', '2px solid red');
 					}
 					else {
-						$this.css("border-bottom", "2px solid red");
+						$this.css('border-bottom', '2px solid red');
 					}
 				}
 				else {
 					var left = (event.pageX - $this.offset().left)
 						< ($this.offset().left + $this.width() - event.pageX);
 					if (left) {
-						$this.css("border-left", "2px solid red");
+						$this.css('border-left', '2px solid red');
 					}
 					else {
-						$this.css("border-right", "2px solid red");
+						$this.css('border-right', '2px solid red');
 					}
 				}
 				event.stopImmediatePropagation();
@@ -138,27 +137,27 @@
 				|| event.pageX > ($this.offset().left + $this.width())
 				|| event.pageY < $this.offset().top
 				|| event.pageY > ($this.offset().top + $this.height())
-				|| $this.data("force-out")
+				|| $this.data('force-out')
 			) {
-				if ($this.data("force-out")) {
-					$this.removeData("force-out");
+				if ($this.data('force-out')) {
+					$this.removeData('force-out');
 				}
 				// restore old css
-				var old_css = $this.data("old-css");
+				var old_css = $this.data('old-css');
 				if (old_css != undefined) {
 					$this.css(old_css);
-					$this.removeData("old-css");
+					$this.removeData('old-css');
 				}
 				// remove hint box
-				var $hint_element = $this.data("hint-element");
+				var $hint_element = $this.data('hint-element');
 				if ($hint_element != undefined) {
 					$hint_element.remove();
-					$this.removeData("hint-element");
+					$this.removeData('hint-element');
 				}
 				// remove current
-				if ($this.data("current")) {
-					$this.removeData("current");
-					$("body").removeData("currently-hover");
+				if ($this.data('current')) {
+					$this.removeData('current');
+					$('body').removeData('currently-hover');
 				}
 			}
 		});

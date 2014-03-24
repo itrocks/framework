@@ -31,7 +31,7 @@ class Class_Group_Annotation extends List_Annotation implements Multiple_Annotat
 		if ($i === false) {
 			$i = strlen($value);
 		}
-		$i = strrpos(substr($value, 0, $i), ' ');
+		$i = strrpos(substr($value, 0, $i), SP);
 		if ($i === false) {
 			$i = strlen($value);
 		}

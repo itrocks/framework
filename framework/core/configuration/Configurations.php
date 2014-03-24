@@ -48,39 +48,39 @@ class Configurations
 	 * @param $file_name string
 	 * @return Configuration
 	 */
-	public function load($file_name = "config.php")
+	public function load($file_name = 'config.php')
 	{
-		$config = array();
+		$config = [];
 		/** @noinspection PhpIncludeInspection */
 		include $file_name;
-		$configurations = array();
+		$configurations = [];
 		foreach ($config as $config_name => $config_options) {
-			if (isset($config_options["extends"])) {
-				$extends_array = is_array($config_options["extends"])
-					? $config_options["extends"]
-					: array($config_options["extends"]);
-				unset($config_options["extends"]);
+			if (isset($config_options['extends'])) {
+				$extends_array = is_array($config_options['extends'])
+					? $config_options['extends']
+					: [$config_options['extends']];
+				unset($config_options['extends']);
 				foreach ($extends_array as $extends) {
 					$config_options = arrayMergeRecursive($configurations[$extends], $config_options);
 				}
 			}
-			if (!isset($config_options["app"])) {
-				$config_options["app"] = $config_name;
+			if (!isset($config_options['app'])) {
+				$config_options['app'] = $config_name;
 			}
-			if (!isset($config_options["author"])) {
-				$config_options["author"] = "SAF";
+			if (!isset($config_options['author'])) {
+				$config_options['author'] = 'SAF';
 			}
 			$configurations[$config_name] = $config_options;
 		}
-		$this->configurations = array();
+		$this->configurations = [];
 		foreach ($configurations as $config_name => $config_options) {
 			foreach ($config_options as $level => $plugins) {
 				if (is_array($plugins)) {
-					$plugins_configurations = array();
+					$plugins_configurations = [];
 					foreach ($plugins as $class_name => $plugin_configuration) {
 						if (is_numeric($class_name)) {
 							$class_name = $plugin_configuration;
-							$plugin_configuration = array();
+							$plugin_configuration = [];
 						}
 						$plugins_configurations[$class_name] = $plugin_configuration;
 					}

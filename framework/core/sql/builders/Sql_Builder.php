@@ -11,7 +11,7 @@ abstract class Sql_Builder
 	/**
 	 * Builds column name from a property
 	 *
-	 * If property data type is an object, the property name will be prefixed with "id_".
+	 * If property data type is an object, the property name will be prefixed with 'id_'.
 	 * Array properties will return null as no column should be associated to them.
 	 *
 	 * @param $property Reflection_Property
@@ -22,7 +22,7 @@ abstract class Sql_Builder
 		$type = $property->getType();
 		return $type->isBasic()
 			? $property->name
-			: ($type->isMultiple() ? null : ("id_" . $property->name));
+			: ($type->isMultiple() ? null : ('id_' . $property->name));
 	}
 
 	//----------------------------------------------------------------------------------- buildDelete
@@ -35,8 +35,8 @@ abstract class Sql_Builder
 	 */
 	public static function buildDelete($class, $id)
 	{
-		return "DELETE FROM `" . Dao::current()->storeNameOf($class) . "`"
-			. " WHERE id = " . $id;
+		return 'DELETE FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ
+			. ' WHERE id = ' . $id;
 	}
 
 	//---------------------------------------------------------------------------------- buildColumns
@@ -49,12 +49,12 @@ abstract class Sql_Builder
 	 */
 	public static function buildColumns($column_names)
 	{
-		$sql_columns = "";
+		$sql_columns = '';
 		$i = count($column_names);
 		foreach ($column_names as $column_name) {
-			$sql_columns .= "`" . str_replace(".", "`.`", $column_name) . "`";
+			$sql_columns .= BQ . str_replace(DOT, BQ . DOT . BQ, $column_name) . BQ;
 			if (--$i > 0) {
-				$sql_columns .= ", ";
+				$sql_columns .= ', ';
 			}
 		}
 		return $sql_columns;
@@ -75,9 +75,9 @@ abstract class Sql_Builder
 			return null;
 		}
 		else {
-			$insert = "INSERT INTO `" . Dao::current()->storeNameOf($class) . "`"
-				. " (" . $build_columns . ") VALUES ("
-				. static::buildValues($write) . ")";
+			$insert = 'INSERT INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ
+				. ' (' . $build_columns . ') VALUES ('
+				. static::buildValues($write) . ')';
 			return $insert;
 		}
 	}
@@ -93,14 +93,14 @@ abstract class Sql_Builder
 	 */
 	public static function buildUpdate($class, $write, $id)
 	{
-		$sql_update = "UPDATE `" . Dao::current()->storeNameOf($class) . "` SET ";
+		$sql_update = 'UPDATE ' . BQ . Dao::current()->storeNameOf($class) . BQ . ' SET ';
 		$do = false;
 		foreach ($write as $key => $value) {
 			$value = Sql_Value::escape($value);
-			if ($do) $sql_update .= ", "; else $do = true;
-			$sql_update .= "`" . $key . "` = " . $value;
+			if ($do) $sql_update .= ', '; else $do = true;
+			$sql_update .= BQ . $key . BQ . ' = ' . $value;
 		}
-		$sql_update .= " WHERE id = " . $id;
+		$sql_update .= ' WHERE id = ' . $id;
 		return $sql_update;
 	}
 
@@ -111,28 +111,28 @@ abstract class Sql_Builder
 	 */
 	public static function buildValues($values)
 	{
-		return join(", ", array_map(array("SAF\\Framework\\Sql_Value", "escape"), $values));
+		return join(', ', array_map([Sql_Value::class, 'escape'], $values));
 	}
 
 	//----------------------------------------------------------------------------- splitPropertyPath
 	/**
 	 * Split a property path into two parts : the master path and the foreign property name
 	 *
-	 * In fact it simply splits "property.another.final" into "property.another" and "final".
-	 * If path is ony a single property name like "this", master will be empty and foreign = property.
+	 * In fact it simply splits 'property.another.final' into 'property.another' and 'final'.
+	 * If path is ony a single property name like 'this', master will be empty and foreign = property.
 	 * You can change the foreign property name into a column name using buildColumnName().
 	 *
-	 * @example list($master_path, $foreign_property) = Sql_Builder::splitPropertyPath("a.full.path");
-	 * $master_path will be "a.full" and $foreign_property "path"
+	 * @example list($master_path, $foreign_property) = Sql_Builder::splitPropertyPath('a.full.path');
+	 * $master_path will be 'a.full' and $foreign_property 'path'
 	 * @param $path string
 	 * @return array First element is the master property path, second element is the foreign property name
 	 */
 	public static function splitPropertyPath($path)
 	{
-		$i = strrpos($path, ".");
+		$i = strrpos($path, DOT);
 		return ($i === false)
-			? array("", $path)
-			: array(substr($path, 0, $i), substr($path, $i + 1));
+			? ['', $path]
+			: [substr($path, 0, $i), substr($path, $i + 1)];
 	}
 
 }

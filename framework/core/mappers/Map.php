@@ -19,7 +19,7 @@ class Map
 	 *
 	 * @param $objects object[]
 	 */
-	public function __construct(&$objects = array())
+	public function __construct(&$objects = [])
 	{
 		$this->objects =& $objects;
 	}
@@ -105,7 +105,7 @@ class Map
 					}
 					foreach ($sort->columns as $sort_column) {
 						$reverse = isset($sort->reverse[$sort_column]);
-						while (($i = strpos($sort_column, ".")) !== false) {
+						while (($i = strpos($sort_column, DOT)) !== false) {
 							$column = substr($sort_column, 0, $i);
 							$object1 = $object1->$column;
 							$object2 = $object2->$column;

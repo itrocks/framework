@@ -33,8 +33,8 @@ class Sql_Map_Insert_Builder
 		list($table, $field1, $field2, $id1, $id2) = Sql_Map_Builder::sqlElementsOf(
 			$object, $this->property, $foreign_object
 		);
-		return "INSERT INTO `" . $table . "` (`" . $field1 . "`, `" . $field2 . "`)"
-			. " VALUES (" . $id1 . ", " . $id2 . ")";
+		return 'INSERT INTO ' . BQ . $table . BQ . ' (' . BQ . $field1 . BQ . ', ' . BQ . $field2 . BQ . ')'
+			. ' VALUES (' . $id1 . ', ' . $id2 . ')';
 	}
 
 }

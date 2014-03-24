@@ -13,7 +13,7 @@ abstract class Dom_Element
 	 *
 	 * @var Dom_Attribute[] key is the attribute name
 	 */
-	private $attributes = array();
+	private $attributes = [];
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
@@ -37,7 +37,7 @@ abstract class Dom_Element
 	/**
 	 * @var string[]
 	 */
-	private $styles = array();
+	private $styles = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -57,12 +57,12 @@ abstract class Dom_Element
 	 */
 	public function addClass($class_name)
 	{
-		$class = $this->getAttribute("class");
+		$class = $this->getAttribute('class');
 		if (!isset($class)) {
-			return $this->setAttribute("class", $class_name);
+			return $this->setAttribute('class', $class_name);
 		}
-		elseif (strpos(" " . $class->value . " ", $class_name) === false) {
-			$class->value .= " " . $class_name;
+		elseif (strpos(SP . $class->value . SP, $class_name) === false) {
+			$class->value .= SP . $class_name;
 		}
 		return $class;
 	}
@@ -112,8 +112,8 @@ abstract class Dom_Element
 	 */
 	public function removeData($name)
 	{
-		if (isset($this->attributes["data-" . $name])) {
-			unset($this->attributes["data-" . $name]);
+		if (isset($this->attributes['data-' . $name])) {
+			unset($this->attributes['data-' . $name]);
 		}
 	}
 
@@ -125,9 +125,9 @@ abstract class Dom_Element
 	 */
 	public function setAttribute($name, $value = null)
 	{
-		if ($name == "name") {
-			// this is because PHP does not like "." into names of GET/POST vars
-			$value = str_replace(".", ">", $value);
+		if ($name == 'name') {
+			// this is because PHP does not like '.' into names of GET/POST vars
+			$value = str_replace(DOT, '>', $value);
 		}
 		return $this->setAttributeNode(new Dom_Attribute($name, $value));
 	}
@@ -159,7 +159,7 @@ abstract class Dom_Element
 	 */
 	public function setData($name, $value = null)
 	{
-		return $this->setAttributeNode(new Dom_Attribute("data-" . $name, $value));
+		return $this->setAttributeNode(new Dom_Attribute('data-' . $name, $value));
 	}
 
 	//-------------------------------------------------------------------------------------- setStyle
@@ -179,11 +179,11 @@ abstract class Dom_Element
 	public function __toString()
 	{
 		if ($this->styles) {
-			$this->setAttribute("style", join("; ", $this->styles));
+			$this->setAttribute('style', join(';' . SP, $this->styles));
 		}
 		$content = $this->getContent();
-		return "<" . $this->name . ($this->attributes ? (" " . join(" ", $this->attributes)) : "") . ">"
-			. (($this->end_tag || isset($content)) ? ($content . "</" . $this->name . ">") : "");
+		return '<' . $this->name . ($this->attributes ? (SP . join(SP, $this->attributes)) : '') . '>'
+			. (($this->end_tag || isset($content)) ? ($content . '</' . $this->name . '>') : '');
 	}
 
 }

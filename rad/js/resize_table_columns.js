@@ -29,25 +29,25 @@ function getStyle(x, styleProp) {
 function getWidth(x) {
 	if (x.currentStyle)
 		// in IE
-		var y = x.clientWidth - parseInt(x.currentStyle["paddingLeft"]) - parseInt(x.currentStyle["paddingRight"]);
+		var y = x.clientWidth - parseInt(x.currentStyle['paddingLeft']) - parseInt(x.currentStyle['paddingRight']);
 		// for IE5: var y = x.offsetWidth;
 	else if (window.getComputedStyle)
 		// in Gecko
-		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue("width");
+		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue('width');
 	return y || 0;
 }
 
 function setCookie (name, value, expires, path, domain, secure) {
-	document.cookie = name + "=" + escape(value) +
-		((expires) ? "; expires=" + expires : "") +
-		((path) ? "; path=" + path : "") +
-		((domain) ? "; domain=" + domain : "") +
-		((secure) ? "; secure" : "");
+	document.cookie = name + '=' + escape(value) +
+		((expires) ? '; expires=' + expires : '') +
+		((path) ? '; path=' + path : '') +
+		((domain) ? '; domain=' + domain : '') +
+		((secure) ? '; secure' : '');
 }
 
 function getCookie(name) {
-	var cookie = " " + document.cookie;
-	var search = " " + name + "=";
+	var cookie = ' ' + document.cookie;
+	var search = ' ' + name + '=';
 	var setStr = null;
 	var offset = 0;
 	var end = 0;
@@ -55,7 +55,7 @@ function getCookie(name) {
 		offset = cookie.indexOf(search);
 		if (offset != -1) {
 			offset += search.length;
-			end = cookie.indexOf(";", offset)
+			end = cookie.indexOf(';', offset)
 			if (end == -1) {
 				end = cookie.length;
 			}
@@ -167,8 +167,8 @@ function ColumnResize(table) {
 		for (i = 0; i<dragColumns.length; i++)
 			colWidth[i] = parseInt( getWidth(dragColumns[i]) );
 		for (i = 0; i<dragColumns.length; i++) {
-			dragColumns[i].width = ""; // for sure
-			dragColumns[i].style.width = colWidth[i] + "px";
+			dragColumns[i].width = ''; // for sure
+			dragColumns[i].style.width = colWidth[i] + 'px';
 		}
 
 		saveOnmouseup       = document.onmouseup;
@@ -187,13 +187,13 @@ function ColumnResize(table) {
 	// prepare table header to be draggable
 	// it runs during class creation
 	for (var i=0; i<dragColumns.length; i++) {
-		dragColumns[i].innerHTML = "<div style='position:relative;height:100%;width:100%'>"
-			+ "<div style='"
-			+ "position:absolute;height:100%;width:5px;margin-right:-5px;"
-			+ "left:100%;top:0px;cursor:w-resize;z-index:10;'>"
-			+ "</div>"
+		dragColumns[i].innerHTML = '<div style="position:relative;height:100%;width:100%">'
+			+ '<div style="'
+			+ 'position:absolute;height:100%;width:5px;margin-right:-5px;'
+			+ 'left:100%;top:0px;cursor:w-resize;z-index:10;">'
+			+ '</div>'
 			+ dragColumns[i].innerHTML
-			+ "</div>";
+			+ '</div>';
 		// BUGBUG: calculate real border width instead of 5px!!!
 		dragColumns[i].firstChild.firstChild.onmousedown = this.startColumnDrag;
 	}
@@ -217,9 +217,9 @@ function ResizableColumns() {
 // init tables
 /*
 if (document.addEventListener)
-	document.addEventListener("onload", ResizableColumns, false);
+	document.addEventListener('onload', ResizableColumns, false);
 else if (window.attachEvent)
-	window.attachEvent("onload", ResizableColumns);
+	window.attachEvent('onload', ResizableColumns);
 */
 try {
 	window.addEventListener('load', ResizableColumns, false);

@@ -13,8 +13,8 @@ class Html_Image extends Dom_Element
 	 */
 	public function __construct($source = null)
 	{
-		parent::__construct("img");
-		if (isset($source)) $this->setAttribute("src", $source);
+		parent::__construct('img');
+		if (isset($source)) $this->setAttribute('src', $source);
 	}
 
 }

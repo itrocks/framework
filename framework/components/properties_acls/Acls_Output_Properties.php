@@ -62,12 +62,12 @@ class Acls_Output_Properties extends Acls_Properties implements Plugins\Register
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			array(Default_Output_Controller::class, 'getPropertiesList'),
-			array($this, 'outputControllerGetProperties')
+			[Default_Output_Controller::class, 'getPropertiesList'],
+			[$this, 'outputControllerGetProperties']
 		);
 		$aop->aroundMethod(
-			array(Property_Remove_Controller::class, 'run'),
-			array($this, 'propertyRemoveController')
+			[Property_Remove_Controller::class, 'run'],
+			[$this, 'propertyRemoveController']
 		);
 	}
 

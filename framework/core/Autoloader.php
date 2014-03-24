@@ -12,7 +12,7 @@ class Autoloader implements Plugins\Activable, IAutoloader
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
-		spl_autoload_register(array($this, "autoload"));
+		spl_autoload_register([$this, 'autoload']);
 	}
 
 	//-------------------------------------------------------------------------------------- autoLoad
@@ -39,7 +39,7 @@ class Autoloader implements Plugins\Activable, IAutoloader
 	public function includeClass($class_name, $file_path = null)
 	{
 		if (!isset($file_path)) {
-			$file_path = stream_resolve_include_path(Namespaces::shortClassName($class_name) . ".php");
+			$file_path = stream_resolve_include_path(Namespaces::shortClassName($class_name) . '.php');
 		}
 		if ($file_path && !Namespaces::checkFilePath($class_name, $file_path)) {
 			$file_path = Namespaces::resolveFilePath($class_name);
@@ -65,12 +65,12 @@ class Autoloader implements Plugins\Activable, IAutoloader
 			&& !@interface_exists($class_name, false)
 			&& is_file($file_path)
 		) {
-			$file = fopen($file_path, "r");
+			$file = fopen($file_path, 'r');
 			do {
 				$buffer = fgets($file);
-				if (substr($buffer, 0, 10) === "namespace ") {
-					$class_name = trim(substr($buffer, 10, strpos($buffer, ";") - 10))
-						. "\\" . Namespaces::shortClassName($class_name);
+				if (substr($buffer, 0, 10) === 'namespace ') {
+					$class_name = trim(substr($buffer, 10, strpos($buffer, ';') - 10))
+						. BS . Namespaces::shortClassName($class_name);
 					break;
 				}
 			} while (!feof($file));

@@ -32,8 +32,8 @@ class Class_Override_Annotation extends List_Annotation implements Multiple_Anno
 				$this->property_name = $override_annotation;
 			}
 			else {
-				if (substr_count($override_annotation, ' ')) {
-					list($annotation_name, $annotation_value) = explode(' ', $override_annotation, 2);
+				if (substr_count($override_annotation, SP)) {
+					list($annotation_name, $annotation_value) = explode(SP, $override_annotation, 2);
 				}
 				else {
 					$annotation_name = $override_annotation;

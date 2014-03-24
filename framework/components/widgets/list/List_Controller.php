@@ -114,7 +114,7 @@ abstract class List_Controller extends Output_Controller
 	 */
 	protected function descapeForm($form)
 	{
-		$result = array();
+		$result = [];
 		foreach ($form as $property_name => $value) {
 			$property_name = self::descapePropertyName($property_name);
 			$result[$property_name] = $value;
@@ -129,7 +129,7 @@ abstract class List_Controller extends Output_Controller
 	 */
 	protected function descapePropertyName($property_name)
 	{
-		$property_name = str_replace(array('.id_', '>id_', '>'), '.', $property_name);
+		$property_name = str_replace(['.id_', '>id_', '>'], DOT, $property_name);
 		if (substr($property_name, 0, 3) == 'id_') {
 			$property_name = substr($property_name, 3);
 		}
@@ -158,7 +158,7 @@ abstract class List_Controller extends Output_Controller
 			$first = true;
 			foreach ($list_settings->search as $property_path => $value) {
 				if ($first) $first = false; else $summary .= ',';
-				$summary .= ' ' . $t . $property_path . $t . ' = "' . $value . '"';
+				$summary .= SP . $t . $property_path . $t . ' = ' . DQ . $value . DQ;
 			}
 			return $summary;
 		}
@@ -199,7 +199,7 @@ abstract class List_Controller extends Output_Controller
 		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
 		$class_name
 	) {
-		return array();
+		return [];
 	}
 
 	//----------------------------------------------------------------------------- getReverseClasses
@@ -209,7 +209,7 @@ abstract class List_Controller extends Output_Controller
 	 */
 	protected function getReverseClasses(List_Settings $list_settings)
 	{
-		$reverse_classes = array();
+		$reverse_classes = [];
 		foreach ($list_settings->sort->reverse as $property_path) {
 			$reverse_classes[$property_path] = 'reverse';
 			$key = array_search($property_path, $list_settings->properties_path);
@@ -227,7 +227,7 @@ abstract class List_Controller extends Output_Controller
 	 */
 	protected function getSortClasses(List_Settings $list_settings)
 	{
-		$sort_classes = array();
+		$sort_classes = [];
 		$sort_count = 0;
 		foreach ($list_settings->sort->getColumns() as $property_path) {
 			$sort_classes[$property_path] = ++$sort_count;
@@ -246,7 +246,7 @@ abstract class List_Controller extends Output_Controller
 	 */
 	protected function getSortLinks(List_Settings $list_settings)
 	{
-		$sort_links = array();
+		$sort_links = [];
 		foreach ($list_settings->properties_path as $property_path) {
 			$sort_links[$property_path] = 'sort';
 			$key = array_search($property_path, $list_settings->properties_path);
@@ -272,7 +272,7 @@ abstract class List_Controller extends Output_Controller
 	 */
 	protected function getShortTitles(List_Settings $list_settings)
 	{
-		$short_titles = array();
+		$short_titles = [];
 		foreach ($this->getTitles($list_settings) as $property_path => $title) {
 			$short_titles[$property_path] = (new String($title))->twoLast();
 			$key = array_search($property_path, $list_settings->properties_path);
@@ -291,7 +291,7 @@ abstract class List_Controller extends Output_Controller
 	protected function getTitles(List_Settings $list_settings)
 	{
 		$locale = Locale::current();
-		$titles = array();
+		$titles = [];
 		foreach ($list_settings->properties_path as $property_path) {
 			$titles[$property_path] = isset($list_settings->properties_title[$property_path])
 				? $list_settings->properties_title[$property_path]

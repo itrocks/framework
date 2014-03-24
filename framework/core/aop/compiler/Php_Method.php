@@ -152,9 +152,9 @@ class Php_Method
 		$method->visibility = $reflection->isPrivate() ? 'private' : (
 			$reflection->isProtected() ? 'protected' : 'public'
 		);
-		$method->prototype = "\t"
-			. $method->abstract . ' ' . $method->visibility . ' ' . $method->static
-			. ' function ' . $method->name . '(' . $method->parameters_string . ')' . "\n\t" . '{';
+		$method->prototype = TAB
+			. $method->abstract . SP . $method->visibility . SP . $method->static
+			. ' function' . SP . $method->name . '(' . $method->parameters_string . ')' . LF . TAB . '{';
 		return $method;
 	}
 
@@ -206,9 +206,9 @@ class Php_Method
 			if ($class_parent) {
 				$methods = $class_parent->getMethods();
 				if (!isset($methods[$this->name])) {
-					$methods = $class_parent->getMethods(array('traits'));
+					$methods = $class_parent->getMethods(['traits']);
 					if (!isset($methods[$this->name])) {
-						$methods = $class_parent->getMethods(array('inherited'));
+						$methods = $class_parent->getMethods(['inherited']);
 					}
 				}
 				if (isset($methods[$this->name])) {

@@ -14,9 +14,9 @@ abstract class File_Type_Builder
 	 */
 	public static function build($file_name)
 	{
-		$file_extension = rLastParse($file_name, ".");
+		$file_extension = rLastParse($file_name, DOT);
 		$type = File_Type::fileExtensionToTypeString($file_extension);
-		return isset($type) ? new File_Type($type) : new File_Type("empty/empty");
+		return isset($type) ? new File_Type($type) : new File_Type('empty/empty');
 	}
 
 }

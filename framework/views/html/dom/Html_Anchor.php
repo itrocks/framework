@@ -14,8 +14,8 @@ class Html_Anchor extends Dom_Element
 	 */
 	public function __construct($link = null, $content = null)
 	{
-		parent::__construct("a");
-		if (isset($link))    $this->setAttribute("href", $link);
+		parent::__construct('a');
+		if (isset($link))    $this->setAttribute('href', $link);
 		if (isset($content)) $this->setContent($content);
 	}
 

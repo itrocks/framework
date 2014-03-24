@@ -25,7 +25,7 @@ class Session_Files implements Serializable
 	 */
 	public function serialize()
 	{
-		$serialized = array();
+		$serialized = [];
 		foreach ($this->files as $file) {
 			$serialized[$file->name] = $file->temporary_file_name;
 		}
@@ -39,7 +39,7 @@ class Session_Files implements Serializable
 	 */
 	public function unserialize($serialized)
 	{
-		$this->files = array();
+		$this->files = [];
 		foreach (unserialize($serialized) as $file_name => $temporary_file_name) {
 			$file = new File();
 			$file->name = $file_name;

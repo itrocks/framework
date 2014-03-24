@@ -28,7 +28,7 @@ abstract class Annotation_Parser
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 		}
 		$doc_comment = $reflection_object->getDocComment(true);
-		$annotations = array();
+		$annotations = [];
 		$annotation = null;
 		$i = 0;
 		while (($i = strpos($doc_comment, '* @' . $annotation_name, $i)) !== false) {
@@ -61,13 +61,13 @@ abstract class Annotation_Parser
 	public static function allAnnotations(Has_Doc_Comment $reflection_object)
 	{
 		$doc_comment = $reflection_object->getDocComment(true);
-		$annotations = array();
+		$annotations = [];
 		$i = 0;
 		while (($i = strpos($doc_comment, '* @', $i)) !== false) {
 			$i += 2;
 			$j = strlen($doc_comment);
-			if (($k = strpos($doc_comment, "\n", $i)) < $j) $j = $k;
-			if (($k = strpos($doc_comment, ' ', $i)) < $j)  $j = $k;
+			if (($k = strpos($doc_comment, LF, $i)) < $j) $j = $k;
+			if (($k = strpos($doc_comment, SP, $i)) < $j)  $j = $k;
 			$annotation_name = substr($doc_comment, $i + 1, $j - $i - 1);
 			$annotation_class = static::getAnnotationClassName(
 				($reflection_object instanceof Reflection_Class)
@@ -99,7 +99,7 @@ abstract class Annotation_Parser
 	 */
 	private static function getAnnotationClassName($annotation_name)
 	{
-		static $annotations_classes = array();
+		static $annotations_classes = [];
 		if (isset($annotations_classes[$annotation_name])) {
 			$annotation_class = $annotations_classes[$annotation_name];
 		}
@@ -130,12 +130,12 @@ abstract class Annotation_Parser
 		$i += strlen($annotation_name) + 1;
 		$next_char = $doc_comment[$i];
 		switch ($next_char) {
-			case ' ': case "\t":
+			case SP: case TAB:
 				$i ++;
-				$j = strpos($doc_comment, "\n", $i);
+				$j = strpos($doc_comment, LF, $i);
 				$value = trim(substr($doc_comment, $i, $j - $i));
 				break;
-			case "\r": case "\n":
+			case CR: case LF:
 				$value = true;
 				break;
 			default:

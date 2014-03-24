@@ -13,22 +13,22 @@ class Date_Time extends DateTime
 
 	//----------------------------------------------------------------------- duration unit constants
 	/** Duration unit : hour */
-	const HOUR = "hour";
+	const HOUR = 'hour';
 
 	/** Duration unit : minute */
-	const MINUTE = "minute";
+	const MINUTE = 'minute';
 
 	/** Duration unit : second */
-	const SECOND = "second";
+	const SECOND = 'second';
 
 	/** Duration unit : day */
-	const DAY = "day";
+	const DAY = 'day';
 
 	/** Duration unit : month */
-	const MONTH = "month";
+	const MONTH = 'month';
 
 	/** Duration unit : year */
-	const YEAR = "year";
+	const YEAR = 'year';
 
 	//------------------------------------------------------------------------------------- $max_date
 	/**
@@ -36,7 +36,7 @@ class Date_Time extends DateTime
 	 *
 	 * @var string
 	 */
-	private static $max_date = "2999-12-31 23:59:59";
+	private static $max_date = '2999-12-31 23:59:59';
 
 	//------------------------------------------------------------------------------------- $min_date
 	/**
@@ -44,7 +44,7 @@ class Date_Time extends DateTime
 	 *
 	 * @var string
 	 */
-	private static $min_date = "0001-01-01 00:00:00";
+	private static $min_date = '0001-01-01 00:00:00';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -68,8 +68,8 @@ class Date_Time extends DateTime
 			? parent::createFromFormat($format, $time, $timezone)
 			: parent::createFromFormat($format, $time);
 		return $timezone
-			? new Date_Time($dateTime->format("Y-m-d H:i:s"), $timezone)
-			: new Date_Time($dateTime->format("Y-m-d H:i:s"));
+			? new Date_Time($dateTime->format('Y-m-d H:i:s'), $timezone)
+			: new Date_Time($dateTime->format('Y-m-d H:i:s'));
 	}
 
 	//--------------------------------------------------------------------------------------- fromISO
@@ -79,8 +79,8 @@ class Date_Time extends DateTime
 	 */
 	public static function fromISO($date)
 	{
-		return (!empty($date) && (substr($date, 0, 4) !== "0000"))
-			? new Date_Time($date . substr("2000-01-01 00:00:00", strlen($date)))
+		return (!empty($date) && (substr($date, 0, 4) !== '0000'))
+			? new Date_Time($date . substr('2000-01-01 00:00:00', strlen($date)))
 			: new Date_Time(self::$min_date);
 	}
 
@@ -106,12 +106,12 @@ class Date_Time extends DateTime
 				$invert = false;
 			}
 			switch ($unit) {
-				case Date_Time::HOUR:   $interval = "PT" . $quantity . "H"; break;
-				case Date_Time::MINUTE: $interval = "PT" . $quantity . "H"; break;
-				case Date_Time::SECOND: $interval = "PT" . $quantity . "H"; break;
-				case Date_Time::DAY:    $interval = "P"  . $quantity . "H"; break;
-				case Date_Time::MONTH:  $interval = "P"  . $quantity . "H"; break;
-				case Date_Time::YEAR:   $interval = "P"  . $quantity . "H"; break;
+				case Date_Time::HOUR:   $interval = 'PT' . $quantity . 'H'; break;
+				case Date_Time::MINUTE: $interval = 'PT' . $quantity . 'H'; break;
+				case Date_Time::SECOND: $interval = 'PT' . $quantity . 'H'; break;
+				case Date_Time::DAY:    $interval = 'P'  . $quantity . 'H'; break;
+				case Date_Time::MONTH:  $interval = 'P'  . $quantity . 'H'; break;
+				case Date_Time::YEAR:   $interval = 'P'  . $quantity . 'H'; break;
 			}
 			if (isset($interval)) {
 				$interval = new DateInterval($interval);
@@ -231,9 +231,9 @@ class Date_Time extends DateTime
 	 */
 	public function toISO($empty_min_max = true)
 	{
-		$format = $this->format("Y-m-d H:i:s");
+		$format = $this->format('Y-m-d H:i:s');
 		return ($empty_min_max && (($format === self::$min_date) || ($format === self::$max_date)))
-			? "" : $this->format("Y-m-d H:i:s");
+			? '' : $this->format('Y-m-d H:i:s');
 	}
 
 }

@@ -2,27 +2,28 @@
 //------------------------------------------------------------------------------- copyCssPropertyTo
 copyCssPropertyTo = function(context, element)
 {
-	var tab = ["font-size",
-		"font",
-		"font-family",
-		"font-size",
-		"font-weight",
-		"letter-spacing",
-		"line-height",
-		"border",
-		"border-bottom-width",
-		"border-left-width",
-		"border-top-width",
-		"border-right-width",
-		"border-color",
-		"margin",
-		"margin-bottom",
-		"margin-left",
-		"margin-right",
-		"margin-top",
-		"text-rendering",
-		"word-spacing",
-		"word-wrap"
+	var tab = [
+		'font-size',
+		'font',
+		'font-family',
+		'font-size',
+		'font-weight',
+		'letter-spacing',
+		'line-height',
+		'border',
+		'border-bottom-width',
+		'border-left-width',
+		'border-top-width',
+		'border-right-width',
+		'border-color',
+		'margin',
+		'margin-bottom',
+		'margin-left',
+		'margin-right',
+		'margin-top',
+		'text-rendering',
+		'word-spacing',
+		'word-wrap'
 	];
 	for (var i = 0; i < tab.length; i++) {
 		element.css(tab[i], context.css(tab[i]));
@@ -33,7 +34,7 @@ copyCssPropertyTo = function(context, element)
 //-------------------------------------------------------------------------- dateFormatToDatepicker
 dateFormatToDatepicker = function(text)
 {
-	return text.replace("d", "dd").replace("m", "mm").replace("Y", "yy");
+	return text.replace('d', 'dd').replace('m', 'mm').replace('Y', 'yy');
 };
 
 //------------------------------------------------------------------------------ getInputTextHeight
@@ -56,12 +57,12 @@ getTextHeight = function(context, extraHeight)
 	// If the last element is empty, need put a character to prevent the browser ignores the character
 	var $last_index = $content.length -1;
 	if (!$content[$last_index]) {
-		$content[$last_index] = "_";
+		$content[$last_index] = '_';
 	}
-	$('<div id="height">').append($content.join("<br>")).appendTo(context.parent());
+	$('<div id="height">').append($content.join('<br>')).appendTo(context.parent());
 	var $height = $('#height');
 	copyCssPropertyTo(context, $height);
-	$height.css("position", "absolute");
+	$height.css('position', 'absolute');
 	var $width = getInputTextWidth(context);
 	$height.width($width);
 	var height = $height.height() + extraHeight;
@@ -78,19 +79,19 @@ getTextWidth = function(context, extraWidth)
 		return width;
 	}
 	else {
-		var $content = context.val().replace(" ", "_").split("\n");
-		$('<span id="width">').append($content.join("<br>")).appendTo('body');
+		var $content = context.val().replace(' ', '_').split("\n");
+		$('<span id="width">').append($content.join('<br>')).appendTo('body');
 		var $width = $('#width');
 		copyCssPropertyTo(context, $width);
-		$width.css("position", "absolute");
+		$width.css('position', 'absolute');
 		var $pos = context.position();
-		$width.css("top", $pos.top);
-		$width.css("left", $pos.left);
+		$width.css('top', $pos.top);
+		$width.css('left', $pos.left);
 		width = $width.width() + extraWidth;
 		var $parent = context.parent();
-		var $margins = parseInt($parent.css("margin-right"))
-			+ parseInt($parent.css("padding-right"))
-			+ parseInt(context.css("margin-right"));
+		var $margins = parseInt($parent.css('margin-right'))
+			+ parseInt($parent.css('padding-right'))
+			+ parseInt(context.css('margin-right'));
 		var ending_right_parent = ($(window).width() - ($parent.offset().left + $parent.outerWidth()));
 		ending_right_parent += $margins;
 		var ending_right = ($(window).width() - ($width.offset().left + $width.outerWidth()) - extraWidth);
@@ -114,7 +115,7 @@ redirect = function(uri, target)
 {
 	//noinspection JSUnresolvedVariable
 	var app = window.app;
-	var more = ((target != undefined) && (target != "") && (target[0] == '#')) ? "?as_widget=1" : "";
+	var more = ((target != undefined) && (target != '') && (target[0] == '#')) ? '?as_widget=1' : '';
 	uri = app.uri_base + uri;
 	if (!more) {
 		window.location = app.addSID(uri);

@@ -9,7 +9,7 @@
  */
 function arrayDiffRecursive($array1, $array2, $show_type = false)
 {
-	$diff = array();
+	$diff = [];
 	foreach ($array1 as $key => $value) {
 		if (!(isset($array2[$key]) || array_key_exists($key, $array2))) {
 			$diff[$key] = $value;
@@ -29,9 +29,9 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
 			$diff[$key] = $value;
 		}
 		elseif ($array2[$key] !== $value) {
-			$diff[$key] = "$value";
+			$diff[$key] = strval($value);
 			if ($show_type && (gettype($value) !== gettype($array2[$key]))) {
-				$diff[$key] .= "(" . gettype($value) . ")";
+				$diff[$key] .= '(' . gettype($value) . ')';
 			}
 		}
 	}
@@ -43,18 +43,18 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
  * Reverts an array comming from a dynmamic form result
  *
  * @example
- * Source array is array($field_name => array($n => $value))
- * Destination array is array($n => array($field_name => $value))
+ * Source array is [$field_name => [$n => $value))
+ * Destination array is [$n => [$field_name => $value))
  * other example that works
- * Source array is array($field_name => array($sub_field_name => array($n => $value))
- * Destination array is array($n => array($field_name => array($sub_field_name => $value))
+ * Source array is [$field_name => [$sub_field_name => [$n => $value))
+ * Destination array is [$n => [$field_name => [$sub_field_name => $value))
  * @param $array array
  * @return array
  */
 function arrayFormRevert($array)
 {
 	if (is_array($array)) {
-		$result = array();
+		$result = [];
 		foreach ($array as $field_name => $sub_array) {
 			if (is_array($sub_array)) {
 				foreach ($sub_array as $n => $value) {
@@ -91,7 +91,7 @@ function arrayMergeRecursive($array1, $array2)
 {
 	foreach ($array2 as $index => $value2) {
 		if (($index === ':') && ($value2 === 'clear')) {
-			$array1 = array();
+			$array1 = [];
 			unset($array2[$index]);
 		}
 		else {
@@ -103,7 +103,7 @@ function arrayMergeRecursive($array1, $array2)
 			}
 			else {
 				$array1[$index] = is_array($value2)
-					? arrayMergeRecursive(is_array($value1) ? $value1 : array(), $value2)
+					? arrayMergeRecursive(is_array($value1) ? $value1 : [], $value2)
 					: $value2;
 			}
 		}
@@ -120,7 +120,7 @@ function arrayMergeRecursive($array1, $array2)
  */
 function arrayNamedValues($array)
 {
-	$result = array();
+	$result = [];
 	foreach ($array as $key => $value) {
 		if (!is_numeric($key)) {
 			$result[$key] = $value;
@@ -138,7 +138,7 @@ function arrayNamedValues($array)
  */
 function arrayUnnamedValues($array)
 {
-	$result = array();
+	$result = [];
 	foreach ($array as $key => $value) {
 		if (is_numeric($key)) {
 			$result[$key] = $value;
@@ -151,19 +151,20 @@ function arrayUnnamedValues($array)
 /**
  * Linearize a tree to an array
  *
- * Keys are cumulated to a single "key.sub_key.final_key" key name
+ * Keys are cumulated to a single 'key.sub_key.final_key' key name
  *
  * @param $array      mixed[]
- * @param $ignore_key string if set, this key is ignored and set as the "main" value of a node
+ * @param $ignore_key string if set, this key is ignored and set as the 'main' value of a node
  * @return mixed[]
  */
 function treeToArray($array, $ignore_key = null)
 {
-	$result = array();
+	$result = [];
 	foreach ($array as $key => $val) {
 		if (is_array($val)) {
 			foreach (treeToArray($val, $ignore_key) as $sub_key => $sub_val) {
-				$result[$key . (("$sub_key" === "$ignore_key") ? "" : ("." . $sub_key))] = $sub_val;
+				$result[$key . ((strval($sub_key) === strval($ignore_key)) ? '' : (DOT . $sub_key))]
+					= $sub_val;
 			}
 		}
 		else {
@@ -179,12 +180,12 @@ function treeToArray($array, $ignore_key = null)
  * @param $delimiter string The boundary string.
  * @param $array array The input array.
  * @return array Return a larger array explode by delimiter.
- * @example explodeStringInArrayToSimpleArray(" ", array("Dot", "a cat", "the cat run"))
- * return : array("Dot", "a", "cat", "the", "cat", "run")
+ * @example explodeStringInArrayToSimpleArray(' ', ['Dot', 'a cat', 'the cat run'))
+ * return : ['Dot', 'a', 'cat', 'the', 'cat', 'run')
  */
 function explodeStringInArrayToSimpleArray($delimiter, $array)
 {
-	$tab = array();
+	$tab = [];
 	foreach ($array as $element) {
 		$explode = explode($delimiter, $element);
 		if (!empty($explode)) {
@@ -204,12 +205,12 @@ function explodeStringInArrayToSimpleArray($delimiter, $array)
  * Explodes strings in array or in array of array, and return an array of array of string.
  *
  * @example
- * explodeStringInArrayToDoubleArray(" ", array("Dot", "a cat", "the cat run"))
- * return : array(array("Dot"), array("a", "cat"), array("the", "cat", "run"))
+ * explodeStringInArrayToDoubleArray(' ', ['Dot', 'a cat', 'the cat run'))
+ * return : [['Dot'), ['a', 'cat'), ['the', 'cat', 'run'))
  *
  * @example
- * explodeStringInArrayToDoubleArray(" ", array(array("Dot a"), array("the cat run"))
- * return : array(array("Dot", "a"), array("the", "cat", "run"))
+ * explodeStringInArrayToDoubleArray(' ', [['Dot a'), ['the cat run'))
+ * return : [['Dot', 'a'), ['the', 'cat', 'run'))
  *
  * @param $delimiter string The boundary string.
  * @param $array     array The input array, can be an array of string or an array of array of string.
@@ -217,7 +218,7 @@ function explodeStringInArrayToSimpleArray($delimiter, $array)
  */
 function explodeStringInArrayToDoubleArray($delimiter, $array)
 {
-	$tab = array();
+	$tab = [];
 	foreach ($array as $element) {
 		if (is_array($element)) {
 			$tab[] = explodeStringInArrayToDoubleArray($delimiter, $element);
@@ -228,7 +229,7 @@ function explodeStringInArrayToDoubleArray($delimiter, $array)
 				$tab[] = $explode;
 			}
 			else {
-				$tab[] = array($element);
+				$tab[] = [$element];
 			}
 		}
 	}

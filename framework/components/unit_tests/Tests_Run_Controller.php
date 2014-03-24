@@ -31,7 +31,7 @@ class Tests_Run_Controller implements Feature_Controller
 		else {
 			(new Tests)->runClass(Namespaces::fullClassName($class_name), $method_name);
 		}
-		return "<h3>ALL DONE</h3>";
+		return '<h3>ALL DONE</h3>';
 	}
 
 }

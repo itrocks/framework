@@ -34,9 +34,6 @@ class Php_Source
 	//------------------------------------------------------------------------------------ $namespace
 	private $namespace;
 
-	//----------------------------------------------------------------------------------- $properties
-	private $properties;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string class name or file name
@@ -44,12 +41,12 @@ class Php_Source
 	 */
 	public function __construct($class_name, &$buffer = null)
 	{
-		if ((strpos($class_name, '/') !== false) && file_exists($class_name)) {
+		if ((strpos($class_name, SL) !== false) && file_exists($class_name)) {
 			if (isset($buffer)) {
 				$this->buffer =& $buffer;
 			}
 			else {
-				$this->buffer = str_replace("\r", "", file_get_contents($class_name));
+				$this->buffer = str_replace(CR, '', file_get_contents($class_name));
 			}
 			$this->class_name = $this->getClassName();
 		}
@@ -59,7 +56,7 @@ class Php_Source
 				$this->buffer =& $buffer;
 			}
 			else {
-				$this->buffer = str_replace("\r", "", file_get_contents(
+				$this->buffer = str_replace(CR, '', file_get_contents(
 					(new ReflectionClass($class_name))->getFileName()
 				));
 			}
@@ -76,10 +73,10 @@ class Php_Source
 	 */
 	public function allReflectionTraits()
 	{
-		$traits = array($this->class_name);
+		$traits = [$this->class_name];
 		$get_traits = $traits;
 		while ($get_traits) {
-			$get_traits = array();
+			$get_traits = [];
 			foreach ($get_traits as $trait_name) {
 				if ($uses = class_uses($trait_name)) {
 					$get_traits = array_merge($get_traits, $uses);
@@ -98,13 +95,13 @@ class Php_Source
 	public function cleanupAop()
 	{
 		$buffer =& $this->buffer;
-		// remove all "\r"
-		$buffer = trim(str_replace("\r", '', $buffer));
-		// remove since the line containing "//#### AOP" until the end of the file
+		// remove all '\r'
+		$buffer = trim(str_replace(CR, '', $buffer));
+		// remove since the line containing '//#### AOP' until the end of the file
 		$expr = '%\n\s*//#+\s+AOP.*%s';
 		preg_match($expr, $buffer, $match1);
-		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? "\n\n}\n" : "\n");
-		// replace "/* public */ private [static] function name_(" by "public [static] function name("
+		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? LF . LF . '}' . LF : LF);
+		// replace '/* public */ private [static] function name_(' by 'public [static] function name('
 		$expr = '%(?:\n\s*/\*\*\s+@noinspection\s+PhpUnusedPrivateMethodInspection(?:\s+\w*)+\*/)?'
 			. '(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)((private|protected|public)\s*)?'
 			. '(static\s*)?function(\s+\w*)\_[0-9]*\s*\(%';
@@ -159,13 +156,13 @@ class Php_Source
 	 * Gets the prototype of an existing method from the class
 	 *
 	 * Detailed match contains match as described bellow
-	 * 0 : "[DOC]\n\tabstract public static function methodName (...) {"
-	 * 1 : "[DOC]"
-	 * 2 : "\n\t"
-	 * 3 : "abstract"
-	 * 4 : "public"
-	 * 5 : "static"
-	 * 6 : "($param, &$param2 = CONSTANT)"
+	 * 0 : '[DOC]\n\tabstract public static function methodName (...) {'
+	 * 1 : '[DOC]'
+	 * 2 : '\n\t'
+	 * 3 : 'abstract'
+	 * 4 : 'public'
+	 * 5 : 'static'
+	 * 6 : '($param, &$param2 = CONSTANT)'
 	 * 'preg': $full_preg_expression
 	 * 'parent': true (set only if prototype was taken from a parent class)
 	 * 'prototype': the prototype string
@@ -270,7 +267,7 @@ class Php_Source
 	public function getMethods()
 	{
 		if (!isset($this->methods)) {
-			$this->methods = array();
+			$this->methods = [];
 			preg_match_all(Php_Method::regex(), $this->buffer, $match);
 			foreach (array_keys($match[0]) as $n) {
 				$method = Php_Method::fromMatch($this->class_name, $match, $n);
@@ -310,7 +307,7 @@ class Php_Source
 	/**
 	 * Returns true if the class or trait is abstract, or if this is an interface
 	 *
-	 * @param $name a method name
+	 * @param $name string method name
 	 * @return boolean
 	 */
 	public function isAbstract($name = null)

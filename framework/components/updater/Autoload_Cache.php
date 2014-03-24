@@ -20,25 +20,23 @@ class Autoload_Cache implements Plugins\Activable, Updatable
 	/**
 	 * @var string[]
 	 */
-	public $full_class_names = array();
+	public $full_class_names = [];
 
 	//---------------------------------------------------------------------------------------- $paths
 	/**
 	 * @var string[]
 	 */
-	public $paths = array();
+	public $paths = [];
 
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
 		/** @var $application_updater Application_Updater */
-		$application_updater = Session::current()->plugins->get(
-			'SAF\Framework\Application_Updater'
-		);
+		$application_updater = Session::current()->plugins->get(Application_Updater::class);
 		$application_updater->addUpdatable($this);
-		$this->cache_path = Application::current()->include_path->getSourceDirectory() . "/cache";
+		$this->cache_path = Application::current()->include_path->getSourceDirectory() . '/cache';
 		/** @noinspection PhpIncludeInspection */
-		@include $this->cache_path . "/autoload.php";
+		@include $this->cache_path . '/autoload.php';
 		if (!$this->paths || !$this->full_class_names || $application_updater->mustUpdate()) {
 			$this->update();
 		}
@@ -51,11 +49,11 @@ class Autoload_Cache implements Plugins\Activable, Updatable
 	 */
 	public function autoload($object, $class_name)
 	{
-		if ((strpos($class_name, "/") !== false) && isset($this->full_class_names[$class_name])) {
+		if ((strpos($class_name, SL) !== false) && isset($this->full_class_names[$class_name])) {
 			$class_name = $this->full_class_names[$class_name];
 		}
 		if (isset($this->paths[$class_name])) {
-			$object->includeClass($class_name, getcwd() . "/" . $this->paths[$class_name]);
+			$object->includeClass($class_name, getcwd() . SL . $this->paths[$class_name]);
 		}
 	}
 
@@ -80,12 +78,8 @@ class Autoload_Cache implements Plugins\Activable, Updatable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$aop->aroundMethod(
-			array('SAF\Framework\Autoloader', "autoload"), array($this, "autoload")
-		);
-		$aop->aroundMethod(
-			array('SAF\Framework\Namespaces', "fullClassName"), array($this, "fullClassName")
-		);
+		$aop->aroundMethod([Autoloader::class, 'autoload'],      [$this, 'autoload']);
+		$aop->aroundMethod([Namespaces::class, 'fullClassName'], [$this, 'fullClassName']);
 	}
 
 	//---------------------------------------------------------------------------------------- update
@@ -95,34 +89,34 @@ class Autoload_Cache implements Plugins\Activable, Updatable
 	public function update()
 	{
 		$directories = Application::current()->include_path->getSourceFiles();
-		$this->full_class_names = array();
-		$this->paths = array();
+		$this->full_class_names = [];
+		$this->paths = [];
 		foreach ($directories as $file_path) {
-			if (substr($file_path, -4) == ".php") {
+			if (substr($file_path, -4) == '.php') {
 				$buffer = file_get_contents($file_path);
-				$short_class = trim(mParse($buffer, "\n" . "class ", "\n"))
-					?: trim(mParse($buffer, "\n" . "final class ", "\n"))
-					?: trim(mParse($buffer, "\n" . "abstract class ", "\n"))
-					?: trim(mParse($buffer, "\n" . "final abstract class ", "\n"));
-				if ($short_class) $type = "class";
+				$short_class = trim(mParse($buffer, LF . 'class' . SP, LF))
+					?: trim(mParse($buffer, LF . 'final class' . SP, LF))
+					?: trim(mParse($buffer, LF . 'abstract class' . SP, LF))
+					?: trim(mParse($buffer, LF . 'final abstract class' . SP, LF));
+				if ($short_class) $type = 'class';
 				else {
-					$short_class = trim(mParse($buffer, "\n" . "interface ", "\n"));
-					if ($short_class) $type = "interface";
+					$short_class = trim(mParse($buffer, LF . 'interface' . SP, LF));
+					if ($short_class) $type = 'interface';
 					else {
-						$short_class = trim(mParse($buffer, "\n" . "trait ", "\n"));
-						if ($short_class) $type = "trait";
+						$short_class = trim(mParse($buffer, LF . 'trait' . SP, LF));
+						if ($short_class) $type = 'trait';
 					}
 				}
 				if ($short_class && isset($type)) {
-					if ($i = strpos($short_class, " ")) {
+					if ($i = strpos($short_class, SP)) {
 						$short_class = substr($short_class, 0, $i);
 					}
-					$namespace = trim(mParse($buffer, "\n" . "namespace ", "\n"));
-					if (substr($namespace, -1) == ";") {
+					$namespace = trim(mParse($buffer, LF . 'namespace' . SP, LF));
+					if (substr($namespace, -1) == ';') {
 						$namespace = trim(substr($namespace, 0, -1));
 					}
-					$full_class = $namespace . "\\" . $short_class;
-					if (($type == "class") && !isset($this->full_class_names[$short_class])) {
+					$full_class = $namespace . BS . $short_class;
+					if (($type == 'class') && !isset($this->full_class_names[$short_class])) {
 						$this->full_class_names[$short_class] = $full_class;
 					}
 					if (!isset($this->paths[$full_class])) {
@@ -135,13 +129,13 @@ class Autoload_Cache implements Plugins\Activable, Updatable
 			mkdir($this->cache_path);
 		}
 		script_put_contents(
-			$this->cache_path . "/autoload.php",
-			"<?php\n\n"
+			$this->cache_path . SL . 'autoload.php',
+			'<?php' . LF . LF
 			. '$this->full_class_names = '
-			. var_export($this->full_class_names, true) . ";\n"
-			. "\n"
+			. var_export($this->full_class_names, true) . ';' . LF
+			. LF
 			. '$this->paths = '
-			. var_export($this->paths, true) . ";\n"
+			. var_export($this->paths, true) . ';' . LF
 		);
 	}
 

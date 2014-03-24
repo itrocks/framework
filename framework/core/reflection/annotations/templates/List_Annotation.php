@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * A list annotation can store multiple values, separated by commas
  *
- * @example annotation value 1, value 2,"value 3", 'value 4'
+ * @example annotation value 1, value 2,'value 3', 'value 4'
  */
 abstract class List_Annotation extends Annotation
 {
@@ -22,31 +22,31 @@ abstract class List_Annotation extends Annotation
 	 * List string value is a values list, each one separated by a comma.
 	 * Spaces before and after commas are ignored.
 	 *
-	 * @example "@values First value, Second one, etc"
+	 * @example '@values First value, Second one, etc'
 	 * @param $value string
 	 */
 	public function __construct($value)
 	{
-		$values = array();
+		$values = [];
 		$value = trim($value);
 		$length = strlen($value);
-		$in_quote = ($length && (($value[0] === "'") || ($value[0] === '"')))
+		$in_quote = ($length && (($value[0] === Q) || ($value[0] === DQ)))
 			? $value[0] : false;
 		$start = ($in_quote ? 1 : 0);
 		$stop = null;
 		$i = $start;
 		while ($i < $length) {
-			if (($value[$i] === "\\") && ($i < ($length - 1))) {
+			if (($value[$i] === BS) && ($i < ($length - 1))) {
 				$i++;
 			}
 			if ($value[$i] === $in_quote) {
 				$j = $i + 1;
-				while (($j < $length) && ($value[$j] === " ")) $j ++;
+				while (($j < $length) && ($value[$j] === SP)) $j ++;
 				$stop = $i;
 				$in_quote = false;
 				$i = $j;
 			}
-			if (($i == $length) || ($value[$i] === ",") && !$in_quote) {
+			if (($i == $length) || ($value[$i] === ',') && !$in_quote) {
 				if (!isset($stop)) {
 					$stop = $i;
 				}
@@ -56,8 +56,8 @@ abstract class List_Annotation extends Annotation
 					$start = $i;
 					break;
 				}
-				while (($i < $length) && ($value[$i] === " ")) $i ++;
-				$in_quote = (($i < $length) && (($value[$i] === "'") || ($value[$i] === '"')))
+				while (($i < $length) && ($value[$i] === SP)) $i ++;
+				$in_quote = (($i < $length) && (($value[$i] === Q) || ($value[$i] === DQ)))
 					? $value[$i] : false;
 				$start = ($in_quote ? ($i + 1) : $i);
 				$stop = null;

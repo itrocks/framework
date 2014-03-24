@@ -58,14 +58,14 @@ class Spreadsheet_File
 	 * @param $errors    string[]
 	 * @return array three dimensions (worksheet, row, column) array of read data
 	 */
-	public static function fileToArray($file_name, &$errors = array())
+	public static function fileToArray($file_name, &$errors = [])
 	{
-		$csv_file = Application::current()->getTemporaryFilesPath() . '/' . uniqid() . '.csv';
-		exec('ssconvert "' . $file_name . '" "' . $csv_file . '" -S 2>&1 &');
+		$csv_file = Application::current()->getTemporaryFilesPath() . SL . uniqid() . '.csv';
+		exec('ssconvert ' . DQ . $file_name . DQ . SP . DQ . $csv_file . DQ . ' -S 2>&1 &');
 		$count = 0;
-		$result = array();
-		while (is_file($csv_file . '.' . $count)) {
-			$result[$csv_file . '.' . $count] = self::readCsvFile($csv_file . '.' . $count, $errors);
+		$result = [];
+		while (is_file($csv_file . DOT . $count)) {
+			$result[$csv_file . DOT . $count] = self::readCsvFile($csv_file . DOT . $count, $errors);
 			$count ++;
 		}
 		return $result;
@@ -77,9 +77,9 @@ class Spreadsheet_File
 	 * @param $errors   string[]
 	 * @return array
 	 */
-	public static function readCsvFile($csv_file, &$errors = array())
+	public static function readCsvFile($csv_file, &$errors = [])
 	{
-		$lines = array();
+		$lines = [];
 		$row   = 0;
 		$f = fopen($csv_file, 'r');
 		if ($f) while ($buf = fgetcsv($f)) {
@@ -87,8 +87,8 @@ class Spreadsheet_File
 			if (($column = array_search('#REF!', $buf)) !== false) {
 				$column ++;
 				$errors[] = str_replace(
-					array('$1', '$2'),
-					array($row, $column),
+					['$1', '$2'],
+					[$row, $column],
 					Loc::tr('unsolved reference at row $1 and column $2')
 				);
 			}

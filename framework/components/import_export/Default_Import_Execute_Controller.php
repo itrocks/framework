@@ -21,7 +21,7 @@ class Default_Import_Execute_Controller implements Default_Feature_Controller
 	{
 		set_time_limit(900);
 		$import = Import_Builder_Form::build(
-			$form, Session::current()->get('SAF\Framework\Session_Files')->files
+			$form, Session::current()->get(Session_Files::class)->files
 		);
 		$import->class_name = $class_name;
 		$parameters->getMainObject($import);
@@ -31,7 +31,7 @@ class Default_Import_Execute_Controller implements Default_Feature_Controller
 			$import_array = new Import_Array($worksheet->settings, $import->class_name);
 			$import_array->importArray($array);
 		}
-		return View::run($parameters, $form, $files, $class_name, "importDone");
+		return View::run($parameters, $form, $files, $class_name, 'importDone');
 	}
 
 }

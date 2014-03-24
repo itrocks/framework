@@ -35,7 +35,7 @@ class Dao_Is_Greatest_Function implements Dao_Where_Function_Inner
 		$joins = $builder->getJoins();
 		// sub-query
 		$class_name = $joins->getStartingClassName();
-		$properties = $this->properties + array($property_path => Dao_Func::max());
+		$properties = $this->properties + [$property_path => Dao_Func::max()];
 		$sub_builder = new Sql_Select_Builder(
 			$class_name, $properties, null, $builder->getSqlLink(), Dao::groupBy($this->properties)
 		);
@@ -44,9 +44,9 @@ class Dao_Is_Greatest_Function implements Dao_Where_Function_Inner
 		$joins->addJoin($join);
 		// where
 		$where = '';
-		foreach (array_merge($this->properties, array($property_path)) as $property) {
+		foreach (array_merge($this->properties, [$property_path]) as $property) {
 			$where .= ' AND '
-				. $join->foreign_alias . '.`' . rLastParse($property, '.', 1, true) . '`'
+				. $join->foreign_alias . DOT . BQ . rLastParse($property, DOT, 1, true) . BQ
 				. ' = ' . $builder->buildColumn($property);
 		}
 		$join->where = substr($where, 5);

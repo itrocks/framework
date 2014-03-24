@@ -20,8 +20,8 @@ class Html_Edit_Multiple_Output_Controller implements Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		echo "check this out man";
-		echo "<pre>" . print_r($parameters->getObjects(), true) . "</pre>";
+		echo 'check this out man';
+		echo '<pre>' . print_r($parameters->getObjects(), true) . '</pre>';
 	}
 
 }

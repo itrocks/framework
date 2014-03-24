@@ -88,11 +88,11 @@ class Loc implements Plugins\Registerable
 	public function classNameDisplayReverse(&$value)
 	{
 		if (isset($value)) {
-			$value = explode('\\', $value);
+			$value = explode(BS, $value);
 			foreach ($value as $key => $class_part) {
 				$value[$key] = Names::displayToClass(self::rtr($class_part));
 			}
-			$value = join('\\', $value);
+			$value = join(BS, $value);
 		}
 	}
 

@@ -14,24 +14,24 @@ class Search_Array_Builder_Test extends Unit_Test
 	public function testBuild()
 	{
 		$this->assume(
-			__METHOD__ . ".simple",
-			(new Search_Array_Builder())->build("property", "test"),
-			array("property" => "test")
+			__METHOD__ . '.simple',
+			(new Search_Array_Builder())->build('property', 'test'),
+			['property' => 'test']
 		);
 		$this->assume(
-			__METHOD__ . ".and",
-			(new Search_Array_Builder())->build("property", "test what"),
-			array("property" => array("AND" => array("test", "what")))
+			__METHOD__ . '.and',
+			(new Search_Array_Builder())->build('property', 'test what'),
+			['property' => ['AND' => ['test', 'what']]]
 		);
 		$this->assume(
-			__METHOD__ . ".or",
-			(new Search_Array_Builder())->build("property", "test,what"),
-			array("property" => array("test", "what"))
+			__METHOD__ . '.or',
+			(new Search_Array_Builder())->build('property', 'test,what'),
+			['property' => ['test', 'what']]
 		);
 		$this->assume(
-			__METHOD__ . ".mix",
-			(new Search_Array_Builder())->build("property", "test,what else"),
-			array("property" => array("test", "AND" => array("what", "else")))
+			__METHOD__ . '.mix',
+			(new Search_Array_Builder())->build('property', 'test,what else'),
+			['property' => ['test', 'AND' => ['what', 'else']]]
 		);
 	}
 
@@ -39,39 +39,39 @@ class Search_Array_Builder_Test extends Unit_Test
 	public function testBuildMultiple()
 	{
 		$this->assume(
-			__METHOD__ . ".simple",
-			(new Search_Array_Builder())->buildMultiple(array("pro1", "pro2"), "test"),
-			array("OR" => array("pro1" => "test", "pro2" => "test"))
+			__METHOD__ . '.simple',
+			(new Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test'),
+			['OR' => ['pro1' => 'test', 'pro2' => 'test']]
 		);
 		$this->assume(
-			__METHOD__ . ".and",
-			(new Search_Array_Builder())->buildMultiple(array("pro1", "pro2"), "test what"),
-			array(
-				"AND" => array(
-					array("OR" => array("pro1" => "test", "pro2" => "test")),
-					array("OR" => array("pro1" => "what", "pro2" => "what"))
-				)
-			)
+			__METHOD__ . '.and',
+			(new Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test what'),
+			[
+				'AND' => [
+					['OR' => ['pro1' => 'test', 'pro2' => 'test']],
+					['OR' => ['pro1' => 'what', 'pro2' => 'what']]
+				]
+			]
 		);
 		$this->assume(
-			__METHOD__ . ".or",
-			(new Search_Array_Builder())->buildMultiple(array("pro1", "pro2"), "test,what"),
-			array(
-				"OR" => array(
-					"pro1" => array("test", "what"),
-					"pro2" => array("test", "what")
-				)
-			)
+			__METHOD__ . '.or',
+			(new Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test,what'),
+			[
+				'OR' => [
+					'pro1' => ['test', 'what'],
+					'pro2' => ['test', 'what']
+				]
+			]
 		);
 		$this->assume(
-			__METHOD__ . ".mix",
-			(new Search_Array_Builder())->buildMultiple(array("pro1", "pro2"), "test,what else"),
-			array(
-				"OR" => array(
-					"pro1" => array("test", "AND" => array("what", "else")),
-					"pro2" => array("test", "AND" => array("what", "else"))
-				)
-			)
+			__METHOD__ . '.mix',
+			(new Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test,what else'),
+			[
+				'OR' => [
+					'pro1' => ['test', 'AND' => ['what', 'else']],
+					'pro2' => ['test', 'AND' => ['what', 'else']]
+				]
+			]
 		);
 	}
 

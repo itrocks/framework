@@ -16,13 +16,13 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 	 * Current callback restrict objects to their Class_Name::current() value
 	 * (if no current value, restriction is full and nothing could be read)
 	 */
-	const CURRENT = "current";
+	const CURRENT = 'current';
 
 	//------------------------------------------------------------------------- $current_restrictions
 	/**
 	 * Stores current restrictions queries : set by restrict() and used by applyCurrentRestrictions()
 	 *
-	 * Each where starts with " WHERE "
+	 * Each where starts with ' WHERE '
 	 *
 	 * @var string[]
 	 */
@@ -36,7 +36,7 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 	 *
 	 * @var array
 	 */
-	private $restrictions = array();
+	private $restrictions = [];
 
 	//--------------------------------------------------------------------------------- $restrictions
 	/**
@@ -46,7 +46,7 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 	 *
 	 * @var array associate classes and callbacks
 	 */
-	private $final_restrictions = array();
+	private $final_restrictions = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -66,16 +66,16 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 
 	//---------------------------------------------------------------------- applyCurrentRestrictions
 	/**
-	 * Applies current restrictions set by last call to restrict() to a SQL "WHERE" clause
+	 * Applies current restrictions set by last call to restrict() to a SQL 'WHERE' clause
 	 *
-	 * @param $where string empty or begins where " WHERE "
-	 * @return string full SQL "WHERE" clause, including $where and added restrictions
+	 * @param $where string empty or begins where ' WHERE '
+	 * @return string full SQL 'WHERE' clause, including $where and added restrictions
 	 */
 	private function applyCurrentRestrictions($where)
 	{
-		$sql = join(") AND (", $this->current_restrictions);
+		$sql = join(') AND (', $this->current_restrictions);
 		return $sql
-			? (" WHERE " . ($where ? "(" . substr($where, 7) . ") AND " : "") . "(" . $sql . ")")
+			? (' WHERE ' . ($where ? '(' . substr($where, 7) . ') AND ' : '') . '(' . $sql . ')')
 			: $where;
 	}
 
@@ -90,9 +90,9 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 	private function applyRestriction(Sql_Select_Builder $builder, $class_name, $restriction)
 	{
 		if ($restriction == self::CURRENT) {
-			$restriction = array($class_name, "current");
+			$restriction = [$class_name, 'current'];
 		}
-		$where_array = call_user_func_array($restriction, array($class_name, $builder->getJoins()));
+		$where_array = call_user_func_array($restriction, [$class_name, $builder->getJoins()]);
 		if ($where_array) {
 			$where_builder = new Sql_Where_Builder(
 				$builder->getJoins()->getStartingClassName(),
@@ -106,7 +106,7 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 
 	//---------------------------------------------------------------- beforeSqlSelectBuilderFinalize
 	/**
-	 * @param $where string where clause, including " WHERE " or empty if no filter on read
+	 * @param $where string where clause, including ' WHERE ' or empty if no filter on read
 	 */
 	public function beforeSqlSelectBuilderFinalize(&$where)
 	{
@@ -135,7 +135,7 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 			$restrictions = $this->final_restrictions[$class_name];
 		}
 		else {
-			$restrictions = array();
+			$restrictions = [];
 			foreach (classTree($class_name) as $tree_class_name) {
 				if (isset($this->restrictions[$tree_class_name])) {
 					$restrictions = array_merge($restrictions, $this->restrictions[$tree_class_name]);
@@ -157,13 +157,13 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 		$aop = $register->aop;
 		/* @todo this method does not exist anymore into Sql_Select_Builder
 		$aop->beforeMethod(
-			array('SAF\Framework\Sql_Select_Builder', "buildTables"),
-			array(__CLASS__, "beforeSqlSelectBuilderBuildTables")
+			['SAF\Framework\Sql_Select_Builder', 'buildTables'),
+			[__CLASS__, 'beforeSqlSelectBuilderBuildTables')
 		);
 		*/
 		$aop->beforeMethod(
-			array('SAF\Framework\Sql_Select_Builder', "finalize"),
-			array($this, "beforeSqlSelectBuilderFinalize")
+			[Sql_Select_Builder::class, 'finalize'],
+			[$this, 'beforeSqlSelectBuilderFinalize']
 		);
 	}
 
@@ -177,7 +177,7 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 	 */
 	private function restrict(Sql_Select_Builder $builder)
 	{
-		$this->current_restrictions = array();
+		$this->current_restrictions = [];
 		if ($this->restrictions) {
 			foreach ($builder->getJoins()->getJoins() as $join) {
 				if (isset($join->foreign_class)) {

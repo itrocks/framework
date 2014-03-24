@@ -30,7 +30,7 @@ abstract class Acls_Properties
 	 *
 	 * @param $context_feature_name  string
 	 * @param $property_name         string
-	 * @param $where                 string "before" or "after"
+	 * @param $where                 string 'before' or 'after'
 	 * @param $where_property_name   string
 	 */
 	public function add($context_feature_name, $property_name, $where, $where_property_name = null)
@@ -47,21 +47,21 @@ abstract class Acls_Properties
 			unset($properties[$key]);
 		}
 		// insert property_name into properties and recalc position for each of them
-		$result = array();
+		$result = [];
 		$count = 1;
-		if (($where == "after") && empty($where_property_name)) {
+		if (($where == 'after') && empty($where_property_name)) {
 			$result[$count++] = $property_name;
 		}
 		foreach ($properties as $key) {
-			if (($where == "before") && ($key == $where_property_name)) {
+			if (($where == 'before') && ($key == $where_property_name)) {
 				$result[$count++] = $property_name;
 			}
 			$result[$count++] = $key;
-			if (($where == "after") && ($key == $where_property_name)) {
+			if (($where == 'after') && ($key == $where_property_name)) {
 				$result[$count++] = $property_name;
 			}
 		}
-		if (($where == "before") && empty($where_property_name)) {
+		if (($where == 'before') && empty($where_property_name)) {
 			$result[$count] = $property_name;
 		}
 		// save properties list into user's group and loaded access rights
@@ -79,7 +79,7 @@ abstract class Acls_Properties
 	 */
 	public function getAclPrefix($context_feature_name)
 	{
-		return $this->context_class_name . "." . $context_feature_name . ".properties.";
+		return $this->context_class_name . DOT . $context_feature_name . '.properties.';
 	}
 
 	//-------------------------------------------------------------------------- getDefaultProperties
@@ -100,7 +100,7 @@ abstract class Acls_Properties
 	 */
 	public function getPropertiesNames($context_feature_name)
 	{
-		$list = Acls::get($this->context_class_name . "." . $context_feature_name . ".properties");
+		$list = Acls::get($this->context_class_name . DOT . $context_feature_name . '.properties');
 		if (isset($list)) {
 			$list = treeToArray($list);
 			asort($list);

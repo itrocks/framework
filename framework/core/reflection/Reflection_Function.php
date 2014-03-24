@@ -28,7 +28,7 @@ class Reflection_Function extends ReflectionFunction
 	 */
 	public function getParameters($by_name = true)
 	{
-		$parameters = array();
+		$parameters = [];
 		foreach (parent::getParameters() as $key => $parameter) {
 			$parameters[$by_name ? $parameter->name : $key] = new Reflection_Parameter(
 				$this->name, $parameter->name

@@ -19,19 +19,19 @@
 		//noinspection ReservedWordAsName
 		this.in = function(selector, nop)
 		{
-			// accepts ".aclass, .another" : take each of them
-			var i = selector.indexOf(",");
+			// accepts '.aclass, .another' : take each of them
+			var i = selector.indexOf(',');
 			if (i > -1) {
-				var selectors = selector.split(",");
+				var selectors = selector.split(',');
 				var result = $();
 				var obj = this;
 				$.each(selectors, function(index, value) { result = result.add(obj.in(value.trim())); });
 				return result;
 			}
-			// accepts ".myclass .subelems" selectors : .myclass for this working
+			// accepts '.myclass .subelems' selectors : .myclass for this working
 			if (nop == undefined) {
 				nop = true;
-				i = selector.indexOf(" ");
+				i = selector.indexOf(' ');
 				if (i > -1) {
 					return this.in(selector.substr(0, i), nop).find(selector.substr(i + 1));
 				}

@@ -23,9 +23,9 @@ abstract class Remover_Tool
 			if ($type->isClass() && isA($object, $type->getElementTypeAsString())) {
 				$property_name = $property->name;
 				if ($type->isMultiple()) {
-					$remover = $property->getAnnotation("remover");
+					$remover = $property->getAnnotation('remover');
 					if ($remover->value) {
-						$count += call_user_func(array($composite, $remover->value), $object);
+						$count += call_user_func([$composite, $remover->value], $object);
 					}
 					else {
 						foreach ($composite->$property_name as $key => $value) {

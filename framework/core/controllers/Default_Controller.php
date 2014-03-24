@@ -11,7 +11,7 @@ class Default_Controller implements Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * Default run method for default "view-typed" controller
+	 * Default run method for default 'view-typed' controller
 	 *
 	 * Loads data from objects given as parameters, then run the view associated to the first parameter class.
 	 * This is called when no other controller was found for the first parameter object.

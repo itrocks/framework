@@ -25,7 +25,7 @@ class Wiki implements Plugins\Registerable
 	 *
 	 * @var string[] indice is the replacement code `#1`, value is the geshi parsed code
 	 */
-	private $geshi_replace = array();
+	private $geshi_replace = [];
 
 	//----------------------------------------------------------------------------------------- geshi
 	/**
@@ -45,27 +45,27 @@ class Wiki implements Plugins\Registerable
 	 */
 	public function geshi($string, $solve = true)
 	{
-		$lf = "\n";
+		$lf = LF;
 		$count = count($this->geshi_replace);
 		$i = 0;
-		while (($i < strlen($string)) && (($i = strpos($string, '@', $i)) !== false)) {
+		while (($i < strlen($string)) && (($i = strpos($string, AT, $i)) !== false)) {
 			$i ++;
 			$j = strpos($string, $lf, $i);
-			if (($j !== false) && ($j < strpos($string, ' ', $i))) {
+			if (($j !== false) && ($j < strpos($string, SP, $i))) {
 				$language = substr($string, $i, $j - $i);
-				if (trim($language) && !strpos($language, '@')) {
-					$cr = strpos($language, '\r') ? '\r' : '';
-					$k = strpos($string . $cr . $lf, '$lf@$cr$lf', $j);
+				if (trim($language) && !strpos($language, AT)) {
+					$cr = strpos($language, CR) ? CR : '';
+					$k = strpos($string . $cr . $lf, $lf . AT . $cr . $lf, $j);
 					if ($k !== false) {
 						$k++;
 						$content = substr($string, $j + 1, $k - $j - 2 - strlen($cr));
 						$content = str_replace(
-							array('&lt;', '&gt;', '&#123;', '&#125;'),
-							array('<',    '>',    '{',      '}'),
+							['&lt;', '&gt;', '&#123;', '&#125;'],
+							['<',    '>',    '{',      '}'],
 							$content
 						);
 						$geshi = GeSHi::parse($content, $cr ? substr($language, 0, -1) : $language);
-						$replacement = '`#' . (++$count) . '`';
+						$replacement = BQ . '#' . (++$count) . BQ;
 						$this->geshi_replace[$replacement] = $geshi;
 						$k += strlen($cr) + 2;
 						$string = substr($string, 0, $i - 1) . $replacement . $cr . $lf . substr($string, $k);
@@ -93,8 +93,8 @@ class Wiki implements Plugins\Registerable
 			$string = str_replace(
 				$replacement,
 				str_replace(
-					array('{',      '}'),
-					array('&#123;', '&#125;'),
+					['{',      '}'],
+					['&#123;', '&#125;'],
 					$geshi
 				),
 				$string
@@ -111,7 +111,7 @@ class Wiki implements Plugins\Registerable
 	 */
 	public function noParseZone($var_name, Around_Method_Joinpoint $joinpoint)
 	{
-		$is_include = substr($var_name, 0, 1) == '/';
+		$is_include = (substr($var_name, 0, 1) == SL);
 		if (!$is_include) {
 			$this->dont_parse_wiki ++;
 		}
@@ -129,14 +129,8 @@ class Wiki implements Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$aop->aroundMethod(
-			array(Html_Edit_Template::class, 'parseValue'),
-			array($this, 'noParseZone')
-		);
-		$aop->afterMethod(
-			array(Reflection_Property_View::class, 'formatString'),
-			array($this, 'stringWiki')
-		);
+		$aop->aroundMethod([Html_Edit_Template::class, 'parseValue'],         [$this, 'noParseZone']);
+		$aop->afterMethod( [Reflection_Property_View::class, 'formatString'], [$this, 'stringWiki']);
 	}
 
 	//------------------------------------------------------------------------------------ stringWiki

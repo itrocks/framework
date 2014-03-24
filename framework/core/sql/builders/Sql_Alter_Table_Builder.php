@@ -13,7 +13,7 @@ class Sql_Alter_Table_Builder
 	 *
 	 * @var Dao_Column[]
 	 */
-	private $add_columns = array();
+	private $add_columns = [];
 
 	//-------------------------------------------------------------------------------- $alter_columns
 	/**
@@ -21,7 +21,7 @@ class Sql_Alter_Table_Builder
 	 *
 	 * @var Dao_Column[] key is the old name of the column
 	 */
-	private $alter_columns = array();
+	private $alter_columns = [];
 
 	//---------------------------------------------------------------------------------------- $table
 	/**
@@ -69,15 +69,15 @@ class Sql_Alter_Table_Builder
 	 */
 	public function build()
 	{
-		$sqls = array();
+		$sqls = [];
 		foreach ($this->add_columns as $add) {
-			$sqls[] = "ADD COLUMN " . $add->toSql();
+			$sqls[] = 'ADD COLUMN ' . $add->toSql();
 		}
 		foreach ($this->alter_columns as $column_name => $alter) {
-			$sqls[] = " CHANGE COLUMN `" . $column_name . "` " . $alter->toSql();
+			$sqls[] = ' CHANGE COLUMN ' . BQ . $column_name . BQ . SP . $alter->toSql();
 		}
-		return "ALTER TABLE `" . $this->table->getName() . "` "
-			. join(", ", $sqls);
+		return 'ALTER TABLE ' . BQ . $this->table->getName() . BQ . SP
+			. join(', ', $sqls);
 	}
 
 	//--------------------------------------------------------------------------------------- isReady

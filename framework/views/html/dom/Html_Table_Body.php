@@ -12,7 +12,7 @@ class Html_Table_Body extends Html_Table_Section
 	 */
 	public function __construct()
 	{
-		parent::__construct("tbody");
+		parent::__construct('tbody');
 	}
 
 }

@@ -10,7 +10,7 @@ class User_Authenticate_Controller implements Feature_Controller
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @param $parameters Controller_Parameters
-	 * @param $form       string[] an authentication form result with keys "login" and "password"
+	 * @param $form       string[] an authentication form result with keys 'login' and 'password'
 	 * @param $files      array
 	 * @return mixed
 	 */
@@ -20,16 +20,16 @@ class User_Authenticate_Controller implements Feature_Controller
 		if ($current) {
 			User_Authentication::disconnect(User::current());
 		}
-		$user = User_Authentication::login($form["login"], $form["password"]);
+		$user = User_Authentication::login($form['login'], $form['password']);
 		if (isset($user)) {
 			User_Authentication::authenticate($user);
 			return (new Default_Controller)->run(
-				$parameters, $form, $files, get_class($user), "authenticate"
+				$parameters, $form, $files, get_class($user), 'authenticate'
 			);
 		}
 		else {
 			return (new Default_Controller)->run(
-				$parameters, $form, $files, "User", "authenticateError"
+				$parameters, $form, $files, 'User', 'authenticateError'
 			);
 		}
 	}

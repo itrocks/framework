@@ -4,7 +4,7 @@ namespace SAF\Framework;
 /**
  * The SQL count queries builder
  *
- * These are "SELECT COUNT(*) FROM table WHERE expr"
+ * These are 'SELECT COUNT(*) FROM table WHERE expr'
  */
 class Sql_Count_Builder
 {
@@ -60,13 +60,13 @@ class Sql_Count_Builder
 	/**
 	 * Finalize SQL query
 	 *
-	 * @param $tables  string tables list, including joins, without "FROM"
-	 * @param $where   string where clause, including " WHERE " or empty if no filter on read
+	 * @param $tables  string tables list, including joins, without 'FROM'
+	 * @param $where   string where clause, including ' WHERE ' or empty if no filter on read
 	 * @return string
 	 */
 	private function finalize($where, $tables)
 	{
-		return "SELECT COUNT(*) FROM " . $tables . $where;
+		return 'SELECT COUNT(*) FROM ' . $tables . $where;
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins

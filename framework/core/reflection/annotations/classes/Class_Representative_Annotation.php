@@ -2,12 +2,12 @@
 namespace SAF\Framework;
 
 /**
- * The "representative" annotation stores the list of properties which values are representative
+ * The 'representative' annotation stores the list of properties which values are representative
  * of the object.
  *
  * The __toString() method of the class should return the representative properties values.
  *
- * @example a property called "name" could be a representative property for a unique named object
+ * @example a property called 'name' could be a representative property for a unique named object
  */
 class Class_Representative_Annotation extends List_Annotation
 {
@@ -26,8 +26,8 @@ class Class_Representative_Annotation extends List_Annotation
 		parent::__construct($value, $class);
 		if (!$this->value) {
 			foreach ($class->getAllProperties() as $property) {
-				$link = $property->getAnnotation("link")->value;
-				if (!$property->isStatic() && ($link !== "Collection") && ($link !== "Map")) {
+				$link = $property->getAnnotation('link')->value;
+				if (!$property->isStatic() && ($link !== 'Collection') && ($link !== 'Map')) {
 					$this->value[] = $property->name;
 				}
 			}

@@ -11,7 +11,7 @@ class Sort_Options
 	/**
 	 * @var Dao_Sort_Option[] key is class name
 	 */
-	private $sort_options = array();
+	private $sort_options = [];
 
 	//------------------------------------------------------------------------------------------- add
 	/**

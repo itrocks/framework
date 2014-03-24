@@ -32,7 +32,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	public function __construct($parameters = null)
 	{
 		if (isset($parameters)) {
-			$this->tables = isset($parameters["tables"]) ? $parameters["tables"] : array();
+			$this->tables = isset($parameters['tables']) ? $parameters['tables'] : [];
 		}
 	}
 
@@ -141,7 +141,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 	{
 		$filter_object = $this->objectToProperties($filter_object);
 		$list = new Default_List_Data($object_class, $columns);
-		$columns[] = "id";
+		$columns[] = 'id';
 		$sql_select_builder = new Sql_Select_Builder(
 			$object_class, $columns, $filter_object, $this, $options
 		);
@@ -154,20 +154,20 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 		$result_set = $this->executeQuery($query);
 		$column_count = $this->getColumnsCount($result_set);
 		if (isset($options)) {
-			$this->getRowsCount($result_set, "SELECT", $options);
+			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
-		$classes = array();
-		$classes_index = array();
-		$itoj = array();
-		$column_names = array();
+		$classes = [];
+		$classes_index = [];
+		$itoj = [];
+		$column_names = [];
 		$j = 0;
 		for ($i = 0; $i < $column_count; $i++) {
 			$column_names[$i] = $this->getColumnName($result_set, $i);
-			if (strpos($column_names[$i], ":") == false) {
+			if (strpos($column_names[$i], ':') == false) {
 				$itoj[$i] = $j++;
 			}
 			else {
-				$split = explode(":", $column_names[$i]);
+				$split = explode(':', $column_names[$i]);
 				$column_names[$i] = $split[1];
 				$main_property = $split[0];
 				$hisj = isset($classes_index[$main_property]) ? $classes_index[$main_property] : null;
@@ -181,13 +181,13 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 					$itoj[$i] = $hisj;
 				}
 			}
-			if (substr($column_names[$i], 0, 3) === "id_") {
+			if (substr($column_names[$i], 0, 3) === 'id_') {
 				$column_names[$i] = substr($column_names[$i], 3);
 			}
 		}
 		$first = true;
 		/** @var $reflection_classes Reflection_Class[] */
-		$reflection_classes = array();
+		$reflection_classes = [];
 		while ($result = $this->fetchRow($result_set)) {
 			for ($i = 0; $i < $column_count; $i++) {
 				$j = $itoj[$i];
@@ -205,7 +205,7 @@ abstract class Sql_Link extends Identifier_Map_Data_Link implements Transactiona
 						}
 					}
 					$property_name = $column_names[$i];
-					if ($property_name === "id") {
+					if ($property_name === 'id') {
 						$this->setObjectIdentifier($row[$columns[$j]], $result[$i]);
 					}
 					else {

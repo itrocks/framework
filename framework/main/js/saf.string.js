@@ -10,7 +10,7 @@ String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 	}
 	var i = str.lastIndexOf(sep);
 	if (i == -1) {
-		return complete_if_not ? str : "";
+		return complete_if_not ? str : '';
 	} else {
 		return str.substr(0, i);
 	}
@@ -26,7 +26,7 @@ String.prototype.lParse = function (sep, cnt, complete_if_not)
 		i = this.indexOf(sep, i + 1);
 	}
 	if (i == -1) {
-		return complete_if_not ? this : "";
+		return complete_if_not ? this : '';
 	}
 	else {
 		return this.substr(0, i);
@@ -44,7 +44,7 @@ String.prototype.rLastParse = function (sep, cnt, complete_if_not)
 	}
 	var i = str.lastIndexOf(sep);
 	if (i == -1) {
-		return complete_if_not ? str : "";
+		return complete_if_not ? str : '';
 	} else {
 		return str.substr(i + sep.length);
 	}
@@ -60,7 +60,7 @@ String.prototype.rParse = function (sep, cnt, complete_if_not)
 		i = this.indexOf(sep, i + 1);
 	}
 	if (i == -1) {
-		return complete_if_not ? this : "";
+		return complete_if_not ? this : '';
 	}
 	else {
 		return this.substr(i + sep.length);
@@ -70,7 +70,7 @@ String.prototype.rParse = function (sep, cnt, complete_if_not)
 //-------------------------------------------------------------------------------------------- repl
 String.prototype.repl = function(from, to)
 {
-	var replaced = "";
+	var replaced = '';
 	var start = 0;
 	var length = from.length;
 	var i = this.indexOf(from, start);

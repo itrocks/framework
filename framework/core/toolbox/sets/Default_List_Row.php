@@ -55,8 +55,8 @@ class Default_List_Row implements List_Row
 	 */
 	public function formatValues()
 	{
-		$values = array();
-		static $cache = array();
+		$values = [];
+		static $cache = [];
 		foreach ($this->values as $property_path => $value) {
 			$property_view = isset($cache[$this->class_name][$property_path])
 				? $cache[$this->class_name][$property_path]

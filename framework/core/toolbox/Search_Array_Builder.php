@@ -8,10 +8,10 @@ class Search_Array_Builder
 {
 
 	//------------------------------------------------------------------------------------------ $and
-	public $and = " ";
+	public $and = SP;
 
 	//------------------------------------------------------------------------------------------- $or
-	public $or = ",";
+	public $or = ',';
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -21,14 +21,14 @@ class Search_Array_Builder
 	 * @param $append string
 	 * @return array
 	 */
-	public function build($property_name, $search_phrase, $prepend = "", $append = "")
+	public function build($property_name, $search_phrase, $prepend = '', $append = '')
 	{
 		$search_phrase = trim($search_phrase);
 		// search phrase contains OR
 		if (strpos($search_phrase, $this->or) !== false) {
-			$result = array();
+			$result = [];
 			foreach (explode($this->or, $search_phrase) as $search) {
-				$sub_result = $this->build("", $search, $prepend, $append);
+				$sub_result = $this->build('', $search, $prepend, $append);
 				if ((!is_array($sub_result)) || (count($sub_result) > 1)) {
 					$result[$property_name][] = $sub_result;
 				}
@@ -43,16 +43,16 @@ class Search_Array_Builder
 		}
 		// search phrase contains AND
 		elseif (strpos($search_phrase, $this->and) !== false) {
-			$result = array();
+			$result = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$result[$property_name]["AND"][] = $this->build("", $search, $prepend, $append);
+				$result[$property_name]['AND'][] = $this->build('', $search, $prepend, $append);
 			}
 			return $property_name ? $result : reset($result);
 		}
 		// simple search phrase
 		else {
 			return $property_name
-				? array($property_name => $prepend . $search_phrase . $append)
+				? [$property_name => $prepend . $search_phrase . $append]
 				: ($prepend . $search_phrase . $append);
 		}
 	}
@@ -66,29 +66,29 @@ class Search_Array_Builder
 	 * @return array
 	 */
 	public function buildMultiple(
-		$property_names_or_class, $search_phrase, $prepend = "", $append = ""
+		$property_names_or_class, $search_phrase, $prepend = '', $append = ''
 	) {
 		$property_names = ($property_names_or_class instanceof Reflection_Class)
 			? $this->classRepresentativeProperties($property_names_or_class)
 			: $property_names_or_class;
-		$result = array();
+		$result = [];
 		// search phrase contains OR
 		if (strpos($search_phrase, $this->or) !== false) {
 			foreach ($property_names as $property_name) {
-				$result["OR"][$property_name] = $this->build("", $search_phrase, $prepend, $append);
+				$result['OR'][$property_name] = $this->build('', $search_phrase, $prepend, $append);
 			}
 		}
 		// search phrase contains AND
 		elseif (strpos($search_phrase, $this->and) !== false) {
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$result["AND"][] = $this->buildMultiple($property_names, $search, $prepend, $append);
-				$prepend = "%";
+				$result['AND'][] = $this->buildMultiple($property_names, $search, $prepend, $append);
+				$prepend = '%';
 			}
 		}
 		// simple search phrase
 		else {
 			foreach ($property_names as $property_name) {
-				$result["OR"][$property_name] = $prepend . $search_phrase . $append;
+				$result['OR'][$property_name] = $prepend . $search_phrase . $append;
 			}
 		}
 		return $result;
@@ -100,18 +100,18 @@ class Search_Array_Builder
 	 * @param $already string[] For recursion limits : already got classes
 	 * @return string[]
 	 */
-	private function classRepresentativeProperties($class, $already = array())
+	private function classRepresentativeProperties($class, $already = [])
 	{
 		/** @var $property_names List_Annotation */
-		$property_names = $class->getListAnnotation("representative")->values();
+		$property_names = $class->getListAnnotation('representative')->values();
 		foreach ($property_names as $key => $property_name) {
 			$property_class = $class;
-			$i = strpos($property_name, ".");
+			$i = strpos($property_name, DOT);
 			while ($i !== false) {
 				$property = $property_class->getProperty(substr($property_name, 0, $i));
 				$property_class = new Reflection_Class($property->getType()->asString());
 				$property_name = substr($property_name, $i + 1);
-				$i = strpos($property_name, ".");
+				$i = strpos($property_name, DOT);
 			}
 			$property = $property_class->getProperty($property_name);
 			$type = $property->getType();
@@ -125,7 +125,7 @@ class Search_Array_Builder
 					foreach (
 						$this->classRepresentativeProperties($sub_class, $sub_already) as $sub_property_name
 					) {
-						$property_names[] = $property_name . "." . $sub_property_name;
+						$property_names[] = $property_name . DOT . $sub_property_name;
 					}
 				}
 			}

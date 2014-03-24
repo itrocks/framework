@@ -11,7 +11,7 @@ class Check_Report
 	/**
 	 * @var Check_Report_Line[]
 	 */
-	public $lines = array();
+	public $lines = [];
 
 	//------------------------------------------------------------------------------------------- add
 	/**

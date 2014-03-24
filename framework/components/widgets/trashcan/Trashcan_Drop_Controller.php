@@ -21,8 +21,8 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	{
 		$object = array_shift($parameters);
 		array_shift($parameters); // $feature
-		$controller_uri = "/" . get_class($object) . "/" . Dao::getObjectIdentifier($object)
-			. "/delete";
+		$controller_uri = SL . get_class($object) . SL . Dao::getObjectIdentifier($object)
+			. SL . 'delete';
 		return (new Main_Controller())->runController($controller_uri, $parameters);
 	}
 
@@ -64,7 +64,7 @@ class Trashcan_Drop_Controller implements Feature_Controller
 	private function removeElement($class_name, $context_class_name, $context_feature, $parameters)
 	{
 		return (new Main_Controller())->runController(
-			"/" . $class_name . "/remove/" . $context_class_name . "/" . $context_feature, $parameters
+			SL . $class_name . SL . 'remove' . SL . $context_class_name . SL . $context_feature, $parameters
 		);
 	}
 

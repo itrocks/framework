@@ -114,7 +114,7 @@ class Files_Link extends Identifier_Map_Data_Link
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use "column.sub_column" to get values from linked objects from the same data source.
+	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use 'column.sub_column' to get values from linked objects from the same data source.
 	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
 	 * @param $options       Dao_Option|Dao_Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
@@ -136,7 +136,7 @@ class Files_Link extends Identifier_Map_Data_Link
 	 * @param $options Dao_Option[]|Dao_Option some options for advanced write
 	 * @return object the written object
 	 */
-	public function write($object, $options = array())
+	public function write($object, $options = [])
 	{
 		// TODO: Implement write() method.
 	}

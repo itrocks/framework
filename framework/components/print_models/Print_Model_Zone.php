@@ -40,7 +40,7 @@ class Print_Model_Zone
 	 */
 	public function __toString()
 	{
-		return strval($this->page) . " " . strval($this->name);
+		return strval($this->page) . SP . strval($this->name);
 	}
 
 }

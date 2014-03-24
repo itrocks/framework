@@ -24,7 +24,7 @@ class Html_Table extends Dom_Element
 	 */
 	public function __construct()
 	{
-		parent::__construct("table");
+		parent::__construct('table');
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -33,11 +33,11 @@ class Html_Table extends Dom_Element
 	 */
 	public function __toString()
 	{
-		$content = "";
-		if (isset($this->head)) $content .= "\n" . $this->head;
-		if (isset($this->body)) $content .= "\n" . $this->body;
-		$this->setContent($content . "\n");
-		return "\n" . parent::__toString() . "\n";
+		$content = '';
+		if (isset($this->head)) $content .= LF . $this->head;
+		if (isset($this->body)) $content .= LF . $this->body;
+		$this->setContent($content . LF);
+		return LF . parent::__toString() . LF;
 	}
 
 }

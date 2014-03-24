@@ -45,7 +45,7 @@ abstract class Custom_Settings
 	 */
 	public static function currentUserSetting($class_name)
 	{
-		$setting = new User_Setting($class_name . '.' . static::customId());
+		$setting = new User_Setting($class_name . DOT . static::customId());
 		return Dao::searchOne($setting) ?: $setting;
 	}
 
@@ -86,8 +86,8 @@ abstract class Custom_Settings
 	public function delete()
 	{
 		if ($this->name) {
-			$code = $this->class_name . '.' . static::customId();
-			$setting = new Setting($code . '.' . $this->name);
+			$code = $this->class_name . DOT . static::customId();
+			$setting = new Setting($code . DOT . $this->name);
 			$setting = Dao::searchOne($setting);
 			if (isset($setting)) {
 				Dao::delete($setting);
@@ -104,7 +104,7 @@ abstract class Custom_Settings
 	public function getCustomSettings()
 	{
 		$list = [];
-		$search['code'] = $this->class_name . '.' . static::customId() . '.%';
+		$search['code'] = $this->class_name . DOT . static::customId() . '.%';
 		/** @var $setting Setting */
 		foreach (Dao::search($search, Setting::class) as $setting) {
 			/** @var $settings Custom_Settings */
@@ -131,7 +131,7 @@ abstract class Custom_Settings
 	public static function load($class_name, $name)
 	{
 		/** @var $setting Setting */
-		$setting = new Setting($class_name . '.' . static::customId() . '.' . $name);
+		$setting = new Setting($class_name . DOT . static::customId() . DOT . $name);
 		$setting = Dao::searchOne($setting);
 		$custom_settings = isset($setting)
 			? $setting->value
@@ -152,7 +152,7 @@ abstract class Custom_Settings
 	{
 		if (isset($save_name)) {
 			$this->name = $save_name;
-			$setting = new Setting($this->class_name . '.' . static::customId() . '.' . $save_name);
+			$setting = new Setting($this->class_name . DOT . static::customId() . DOT . $save_name);
 			$setting = Dao::searchOne($setting) ?: $setting;
 			$setting->value = $this;
 			Dao::write($setting);

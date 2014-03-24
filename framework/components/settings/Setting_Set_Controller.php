@@ -18,9 +18,9 @@ class Setting_Set_Controller implements Feature_Controller
 	 */
 	public function run(Controller_Parameters $parameters, $form, $files)
 	{
-		Session::current()->get('SAF\Framework\Settings', true)->add(
-			$parameters->getRawParameter("code"),
-			$parameters->getRawParameter("value")
+		Session::current()->get(Settings::class, true)->add(
+			$parameters->getRawParameter('code'),
+			$parameters->getRawParameter('value')
 		);
 	}
 

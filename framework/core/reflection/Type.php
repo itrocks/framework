@@ -28,10 +28,10 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $basic_types = array(
+	private static $basic_types = [
 		self::BOOLEAN, self::INTEGER, self::FLOAT, self::STRING,
 		self::_ARRAY, self::RESOURCE, self::_CALLABLE, self::NULL, self::null
-	);
+	];
 
 	//---------------------------------------------------------------------------------- $can_be_null
 	/**
@@ -49,7 +49,7 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $numeric_types = array(self::INTEGER, self::FLOAT);
+	private static $numeric_types = [self::INTEGER, self::FLOAT];
 
 	//---------------------------------------------------------------------------------- $sized_types
 	/**
@@ -57,7 +57,7 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $sized_types = array(self::INTEGER, self::FLOAT, self::STRING);
+	private static $sized_types = [self::INTEGER, self::FLOAT, self::STRING];
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -90,7 +90,7 @@ class Type
 		if (isset($can_be_null)) {
 			$this->can_be_null = $can_be_null;
 		}
-		if (substr($this->type, 0, 1) == '\\') {
+		if (substr($this->type, 0, 1) == BS) {
 			$this->type = substr($this->type, 1);
 		}
 	}
@@ -154,7 +154,7 @@ class Type
 			return null;
 		}
 		if ($this->isMultiple()) {
-			return array();
+			return [];
 		}
 		else switch ($this->asString()) {
 			case self::BOOLEAN: return false;

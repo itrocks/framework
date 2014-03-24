@@ -113,7 +113,7 @@ class Log_Entry
 	private function serialize($str)
 	{
 		$str = json_encode($str);
-		return ($str === "[]") ? "" : $str;
+		return ($str === '[]') ? '' : $str;
 	}
 
 	public function stop()

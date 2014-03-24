@@ -11,27 +11,27 @@ class Displayable extends String
 
 	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
-	 * @var string "class"
+	 * @var string 'class'
 	 */
-	const TYPE_CLASS = "class";
+	const TYPE_CLASS = 'class';
 
 	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
-	 * @var string "method"
+	 * @var string 'method'
 	 */
-	const TYPE_METHOD = "method";
+	const TYPE_METHOD = 'method';
 
 	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
-	 * @var string "property"
+	 * @var string 'property'
 	 */
-	const TYPE_PROPERTY = "property";
+	const TYPE_PROPERTY = 'property';
 
 	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
-	 * @var string "string"
+	 * @var string 'string'
 	 */
-	const TYPE_STRING = "string";
+	const TYPE_STRING = 'string';
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -98,7 +98,7 @@ class Displayable extends String
 	 */
 	public function under()
 	{
-		return str_replace(" ", "_", $this->display());
+		return str_replace(SP, '_', $this->display());
 	}
 
 	//----------------------------------------------------------------------------------------- upper

@@ -78,8 +78,8 @@ class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
 			$this->exclude = '(' . join('|', $configuration['exclude']) . ')';
 		}
 
-		$this->routes_file = getcwd() . '/' . substr(
-			$_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1, -4
+		$this->routes_file = getcwd() . SL . substr(
+			$_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1, -4
 		) . '/cache/routes.php';
 		if (file_exists($this->routes_file)) {
 			/** @noinspection PhpIncludeInspection */
@@ -187,8 +187,8 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		foreach (explode(':', get_include_path()) as $path) {
 			if ($this->exclude) preg_match($this->exclude, $path, $match);
 			if (!$match) {
-				if (file_exists($path . '/' . $short_class_name . '.php')) {
-					$result[] = $path . '/' . $short_class_name . '.php';
+				if (file_exists($path . SL . $short_class_name . '.php')) {
+					$result[] = $path . SL . $short_class_name . '.php';
 				}
 			}
 		}
@@ -209,7 +209,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		$expr = '%\n\s*(?:final\s+)?(?:abstract\s+)?(?:class|interface|trait)\s+(\w+)%s';
 		preg_match($expr, $buffer, $match);
 		$class_name = $match
-			? ($in_namespace ? ($in_namespace . '\\' . $match[1]) : $match[1])
+			? ($in_namespace ? ($in_namespace . BS . $match[1]) : $match[1])
 			: null;
 		return $class_name;
 	}
@@ -223,7 +223,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	 */
 	public function getFullClassName($short_class_name)
 	{
-		if (strpos($short_class_name, '\\')) {
+		if (strpos($short_class_name, BS)) {
 			trigger_error('Full class name given', E_USER_ERROR);
 		}
 		if (isset($this->full_class_names[$short_class_name])) {
@@ -314,7 +314,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		$class_name, $feature_names, Around_Method_Joinpoint $joinpoint
 	) {
 		if (is_array($feature_names)) {
-			$feature_names = join('.', $feature_names);
+			$feature_names = join(DOT, $feature_names);
 		}
 		if (isset($this->html_templates[$class_name][$feature_names])) {
 			$html_template = $this->html_templates[$class_name][$feature_names];
@@ -338,7 +338,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		$class_name, $feature_names, Around_Method_Joinpoint $joinpoint
 	) {
 		if (is_array($feature_names)) {
-			$feature_names = join('.', $feature_names);
+			$feature_names = join(DOT, $feature_names);
 		}
 		if (isset($this->view_calls[$class_name][$feature_names])) {
 			$view = $this->view_calls[$class_name][$feature_names];
@@ -416,7 +416,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	{
 		if (isset($this->class_name)) {
 			$features = isset($parameters['feature'])
-				? ($parameters['feature'] . '.' . $feature_name)
+				? ($parameters['feature'] . DOT . $feature_name)
 				: $feature_name;
 			$this->html_templates[$this->class_name][$features] = $template_file;
 			$this->changes = true;
@@ -435,7 +435,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		$class_name, $feature_name, $parameters, $view, $view_method_name
 	) {
 		$features = isset($parameters['feature'])
-			? ($parameters['feature'] . '.' . $feature_name)
+			? ($parameters['feature'] . DOT . $feature_name)
 			: $feature_name;
 		if (isset($this->view_calls[$class_name][$features])) {
 			list($check_view, $check_view_method_name) = $this->view_calls[$class_name][$features];

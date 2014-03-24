@@ -30,7 +30,7 @@ abstract class Sql_Map_Builder
 		$id1 = Dao::getObjectIdentifier($object);
 		$id2 = Dao::getObjectIdentifier($foreign_object);
 		// return elements
-		return array($table, $field1, $field2, $id1, $id2);
+		return [$table, $field1, $field2, $id1, $id2];
 	}
 
 }

@@ -25,7 +25,7 @@ class Email_Recipient
 	 */
 	public function __toString()
 	{
-		return str_replace(array("<", ">"), "", $this->name) . " <" . $this->email . ">";
+		return str_replace(['<', '>'], '', $this->name) . ' <' . $this->email . '>';
 	}
 
 }

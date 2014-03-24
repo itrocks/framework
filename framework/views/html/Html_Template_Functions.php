@@ -13,7 +13,7 @@ abstract class Html_Template_Functions
 	 *
 	 * @var string[] key equals value
 	 */
-	private static $inside_blocks = array();
+	private static $inside_blocks = [];
 
 	//-------------------------------------------------------------------------------- getApplication
 	/**
@@ -102,7 +102,7 @@ abstract class Html_Template_Functions
 		Html_Template $template, $name = null, $ignore_user = false, $can_always_be_null = false
 	) {
 		if (isset($name)) {
-			$name = str_replace('.', '>', $name);
+			$name = str_replace(DOT, '>', $name);
 		}
 		$object = reset($template->objects);
 		// find the first next object
@@ -161,15 +161,15 @@ abstract class Html_Template_Functions
 						: reset($template->preprops);
 					while ($next = next($template->preprops)) {
 						/*
-						if ($i = strrpos($next, '.')) {
+						if ($i = strrpos($next, DOT)) {
 							$next = substr($next, $i + 1);
 						}
 						*/
-						if ((strpos($next, '\\') !== false) && class_exists($next)) {
+						if ((strpos($next, BS) !== false) && class_exists($next)) {
 							$next = Names::classToDisplay($next);
 						}
 						else {
-							$next = str_replace('.', '>', $next);
+							$next = str_replace(DOT, '>', $next);
 						}
 						$preprop .= '[' . $next . ']';
 					}
@@ -208,7 +208,7 @@ abstract class Html_Template_Functions
 		$expanded = Integrated_Properties::expandUsingProperty(
 			$expanded, $property, $template->getParentObject($property->class)
 		);
-		return $expanded ? $expanded : array($property);
+		return $expanded ? $expanded : [$property];
 	}
 
 	//------------------------------------------------------------------------------------ getFeature
@@ -275,7 +275,7 @@ abstract class Html_Template_Functions
 
 	//--------------------------------------------------------------------------------- getEscapeName
 	/**
-	 * Escape strings that will be used as form names. in HTML '.' will be replaced by '>' as PHP
+	 * Escape strings that will be used as form names. in HTML DOT will be replaced by '>' as PHP
 	 * does not like variables named 'a.b.c'
 	 *
 	 * @param $template Html_Template
@@ -283,7 +283,7 @@ abstract class Html_Template_Functions
 	 */
 	public static function getEscapeName(Html_Template $template)
 	{
-		return str_replace('.', '>', reset($template->objects));
+		return str_replace(DOT, '>', reset($template->objects));
 	}
 
 	//------------------------------------------------------------------------------------ getIsFirst
@@ -358,7 +358,7 @@ abstract class Html_Template_Functions
 	public static function getParse(Html_Template $template)
 	{
 		return $template->parseVars(
-			str_replace(array('&#123;', '&#125;'), array('{', '}'), reset($template->objects))
+			str_replace(['&#123;', '&#125;'], ['{', '}'], reset($template->objects))
 		);
 	}
 
@@ -374,7 +374,7 @@ abstract class Html_Template_Functions
 		$object = reset($template->objects);
 		$properties_filter = $template->getParameter('properties_filter');
 		$class = new Reflection_Class(get_class($object));
-		$result_properties = array();
+		$result_properties = [];
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (!$property->isStatic() && !$property->getListAnnotation('user')->has('invisible')) {
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
@@ -396,7 +396,7 @@ abstract class Html_Template_Functions
 	 */
 	public static function getPropertiesOutOfTabs(Html_Template $template)
 	{
-		$properties = array();
+		$properties = [];
 		foreach (self::getProperties($template) as $property_name => $property) {
 			if (!$property->getAnnotation('group')->value) {
 				$properties[$property_name] = $property;
@@ -490,11 +490,11 @@ abstract class Html_Template_Functions
 	 */
 	public static function getStartingBlocks(Html_Template $template)
 	{
-		$blocks = array();
+		$blocks = [];
 		foreach ($template->objects as $property) if ($property instanceof Reflection_Property) {
 			$blocks = array_merge($blocks, self::getPropertyBlocks($property));
 		}
-		$starting_blocks = array();
+		$starting_blocks = [];
 		foreach ($blocks as $block) {
 			if (!isset(self::$inside_blocks[$block])) {
 				$starting_blocks[$block] = $block;
@@ -541,7 +541,7 @@ abstract class Html_Template_Functions
 							}
 							elseif ($next_property) {
 								array_unshift($starting_objects, $property);
-								$blocks = array();
+								$blocks = [];
 								foreach ($starting_objects as $prop) if ($prop instanceof Reflection_Property) {
 									$blocks = array_merge($blocks, self::getPropertyBlocks($prop));
 								}
@@ -552,7 +552,7 @@ abstract class Html_Template_Functions
 				}
 				unset($starting_objects[$object_key]);
 			}
-			$stopping_blocks = array();
+			$stopping_blocks = [];
 			foreach (self::$inside_blocks as $block) {
 				if (!isset($blocks[$block])) {
 					$stopping_blocks[$block] = $block;
@@ -560,7 +560,7 @@ abstract class Html_Template_Functions
 			}
 			return $stopping_blocks;
 		}
-		return array();
+		return [];
 	}
 
 	//---------------------------------------------------------------------------------------- getTop
@@ -583,7 +583,7 @@ abstract class Html_Template_Functions
 	 */
 	private static function getPropertyBlocks(Reflection_Property $property)
 	{
-		$blocks = array();
+		$blocks = [];
 		if ($property->getListAnnotation('integrated')->has('block')) {
 			$blocks[$property->path] = $property->path;
 		}
@@ -616,7 +616,7 @@ abstract class Html_Template_Functions
 			$value = '';
 			$property = new Reflection_Property($class_name, $property);
 		}
-		return array($property, $property_path, $value);
+		return [$property, $property_path, $value];
 	}
 
 }

@@ -13,9 +13,10 @@ use SAF\Plugins\Register;
 class User_Access_Control implements Plugins\Configurable, Plugins\Registerable
 {
 
-	public $exceptions = [
-		'/', '/User/authenticate', '/User/login', '/Menu/output'
-	];
+	/**
+	 * @var string[]
+	 */
+	public $exceptions = ['/', '/User/authenticate', '/User/login', '/Menu/output'];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

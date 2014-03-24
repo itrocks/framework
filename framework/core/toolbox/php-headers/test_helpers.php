@@ -20,7 +20,7 @@ function rename_function($function_name, $new_name) {}
  *
  * @example set_exit_overload(function() { return false; });
  *          disable exit; calls
- * @example set_exit_overload(function($msg) { echo "[DIE $msg]"; return true; });
+ * @example set_exit_overload(function($msg) { echo '[DIE $msg]'; return true; });
  *          format message displayed on dying
  * @param $callback string|array
  * Callback parameter : the die message, optional

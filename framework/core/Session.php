@@ -83,7 +83,7 @@ class Session implements Serializable
 	 */
 	public function getAny($class_name)
 	{
-		$get = array();
+		$get = [];
 		foreach ($this->getAll() as $key => $value) {
 			if (isset(class_parents($key)[$class_name])) {
 				$get[$key] = $value;
@@ -99,11 +99,11 @@ class Session implements Serializable
 	 */
 	public function getApplicationName()
 	{
-		$current = $this->current['SAF\Framework\Application'];
+		$current = $this->current[Application::class];
 		// TODO parse current[1] between '"' and replace array with string if R work well
 		$class_name = is_array($current) ? $current[0] : get_class($current);
-		$application_name = substr($class_name, 0, strrpos($class_name, "\\"));
-		return strtolower(substr($application_name, strrpos($application_name, "\\") + 1));
+		$application_name = substr($class_name, 0, strrpos($class_name, BS));
+		return strtolower(substr($application_name, strrpos($application_name, BS) + 1));
 	}
 
 	//---------------------------------------------------------------------------------------- remove
@@ -140,10 +140,10 @@ class Session implements Serializable
 	 */
 	public function serialize()
 	{
-		$data = array('current' => array(), 'plugins' => $this->plugins);
+		$data = ['current' => [], 'plugins' => $this->plugins];
 		foreach ($this->current as $class_name => $object) {
 			if (is_object($object)) {
-				$object = array($class_name, serialize($object));
+				$object = [$class_name, serialize($object)];
 			}
 			$data['current'][$class_name] = $object;
 		}
@@ -168,11 +168,11 @@ class Session implements Serializable
 	/**
 	 * Returns current SID
 	 *
-	 * @example "PHPSESSID=6kldcf5gbuk0u34cmihlo9gl22"
-	 * @param $prefix string You can prefix your SID with "?" or "&" to append it to an URI or URL
+	 * @example 'PHPSESSID=6kldcf5gbuk0u34cmihlo9gl22'
+	 * @param $prefix string You can prefix your SID with '?' or '&' to append it to an URI or URL
 	 * @return string
 	 */
-	public static function sid($prefix = "")
+	public static function sid($prefix = '')
 	{
 		return session_id() ? ($prefix . session_name() . '=' . session_id()) : '';
 	}

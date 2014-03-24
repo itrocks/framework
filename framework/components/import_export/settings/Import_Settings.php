@@ -23,7 +23,7 @@ class Import_Settings extends Custom_Settings
 			$this->class_name = $class_name;
 		}
 		if (!isset($this->classes)) {
-			$this->classes = array();
+			$this->classes = [];
 		}
 	}
 
@@ -41,7 +41,7 @@ class Import_Settings extends Custom_Settings
 		foreach ($this->classes as $key => $class) {
 			if (
 				$class->property_path
-				&& !Reflection_Property::exists($class_name, join('.', $class->property_path))
+				&& !Reflection_Property::exists($class_name, join(DOT, $class->property_path))
 			) {
 				unset($this->classes[$key]);
 				$changes_count ++;
@@ -118,7 +118,7 @@ class Import_Settings extends Custom_Settings
 			$property_path = Import_Array::propertyPathOf(
 				$class_name, $property_path, $use_reverse_translation, $properties_alias
 			);
-			$property_name = (($i = strrpos($property_path, ".")) === false)
+			$property_name = (($i = strrpos($property_path, DOT)) === false)
 				? $property_path : substr($property_path, $i + 1);
 			$master_path = substr($property_path, 0, $i);
 			if (isset($this->classes[$master_path])) {

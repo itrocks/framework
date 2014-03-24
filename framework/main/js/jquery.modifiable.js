@@ -50,19 +50,19 @@ window.modifiable_waiting  = false;
 			event.preventDefault();
 			event.stopImmediatePropagation();
 			var $this = $(this);
-			var $input = $("<input>").val($this.html());
-			$input.data("old", $input.val());
+			var $input = $('<input>').val($this.html());
+			$input.data('old', $input.val());
 			var done = function() {
 				var done = settings.done;
-				if (typeof(done) == "string") {
+				if (typeof(done) == 'string') {
 					for(var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
 						var value = settings.aliases[alias];
-						if (typeof(value) == "function") {
+						if (typeof(value) == 'function') {
 							value = value($this);
 						}
-						done = done.replace("{" + alias + "}", encodeURI(value));
+						done = done.replace('{' + alias + '}', encodeURI(value));
 					}
-					done = done.replace("{value}", encodeURI($input.val()));
+					done = done.replace('{value}', encodeURI($input.val()));
 					$.ajax({
 						url: done,
 						target: settings.target,
@@ -83,7 +83,7 @@ window.modifiable_waiting  = false;
 				}
 				if (event.keyCode == 27) {
 					var $this = $(this);
-					$this.val($this.data("old"));
+					$this.val($this.data('old'));
 					done();
 				}
 			});

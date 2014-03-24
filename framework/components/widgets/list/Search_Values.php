@@ -8,7 +8,7 @@ class Search_Values
 {
 
 	/**
-	 * @var array[] Key is the class name, value is an array "property_name" => "value"
+	 * @var array[] Key is the class name, value is an array 'property_name' => 'value'
 	 */
 	private $search_values;
 
@@ -29,7 +29,7 @@ class Search_Values
 			) ? $this->search_values[$class_name][$property_name] : null;
 		}
 		else {
-			return isset($this->search_values[$class_name]) ? $this->search_values[$class_name] : array();
+			return isset($this->search_values[$class_name]) ? $this->search_values[$class_name] : [];
 		}
 	}
 

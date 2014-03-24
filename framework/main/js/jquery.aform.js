@@ -5,7 +5,7 @@
 	 * Allow your pages to contain implicit form submit calls, into a elements
 	 *
 	 * - Works with <a href="...?#formid"> / <a href="...?...&#formid"> links
-	 * - Initialise this feature with a single $("body").aform(); call
+	 * - Initialise this feature with a single $('body').aform(); call
 	 *
 	 * @example
 	 * <a href="execute_page?#my_form">Submit my form</a>
@@ -21,13 +21,13 @@
 		this.find('a[href*="?#"],a[href*="&#"],a[href*="?&"]').click(function(event)
 		{
 			var $this = $(this);
-			var href = $this.attr("href");
-			if (href.indexOf("#") >= 0) {
+			var href = $this.attr('href');
+			if (href.indexOf('#') >= 0) {
 				event.preventDefault();
-				var index = href.indexOf("#");
+				var index = href.indexOf('#');
 				var form_id = href.substr(index);
 				var $form = $(form_id);
-				$form.attr("action", href.substr(0, index).replace("?&", "?"));
+				$form.attr('action', href.substr(0, index).replace('?&', '?'));
 				$form.submit();
 			}
 		});

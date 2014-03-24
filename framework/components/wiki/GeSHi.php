@@ -1,9 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-/** @noinspection PhpIncludeInspection */
-if (!@include_once("framework/vendor/geshi/geshi.php")) {
-	@include_once("/usr/share/php-geshi/geshi.php");
+if (!@include_once(__DIR__ . '../../vendor/geshi/geshi.php')) {
+	@include_once('/usr/share/php-geshi/geshi.php');
 }
 
 /**
@@ -34,18 +33,18 @@ class GeSHi
 		if (class_exists('\GeSHi')) {
 			// geshi extension is installed : use it
 			if (!isset(self::$geshis[$language])) {
-				self::$geshis[$language] = new \GeSHi("", $language);
+				self::$geshis[$language] = new \GeSHi('', $language);
 			}
 			self::$geshis[$language]->set_source($source);
 			return self::$geshis[$language]->parse_code();
 		}
 		else {
 			// php highlighter is always here
-			return "<pre>" . (
-				($language == "php")
+			return '<pre>' . (
+				($language == 'php')
 					? highlight_string($source, true)
 					: String::of($source)->htmlEntities()
-				) . "</pre>";
+				) . '</pre>';
 		}
 	}
 

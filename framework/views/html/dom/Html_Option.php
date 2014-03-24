@@ -14,16 +14,16 @@ class Html_Option extends Dom_Element
 	 */
 	public function __construct($value = null, $caption = null)
 	{
-		parent::__construct("option", true);
+		parent::__construct('option', true);
 		if (isset($value)) {
 			if (!isset($caption)) {
 				$this->setContent(Names::propertyToDisplay($value));
 			}
-			$this->setAttribute("value", $value);
+			$this->setAttribute('value', $value);
 		}
 		if (isset($caption)) {
 			if (!isset($value)) {
-				$this->setAttribute("value", $value);
+				$this->setAttribute('value', $value);
 			}
 			$this->setContent($caption);
 		}
@@ -37,14 +37,14 @@ class Html_Option extends Dom_Element
 	{
 		$content = $this->getContent();
 		if (!strlen($content)) {
-			$this->setContent(" ");
+			$this->setContent(SP);
 			$string = parent::__toString();
 			$this->setContent($content);
 		}
-		elseif ($content == ($value = $this->getAttribute("value"))) {
-			$this->removeAttribute("value");
+		elseif ($content == ($value = $this->getAttribute('value'))) {
+			$this->removeAttribute('value');
 			$string = parent::__toString();
-			$this->setAttribute("value", $value);
+			$this->setAttribute('value', $value);
 		}
 		else {
 			$string = parent::__toString();

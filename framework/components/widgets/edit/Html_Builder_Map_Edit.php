@@ -15,7 +15,7 @@ class Html_Builder_Map_Edit extends Html_Builder_Map
 	{
 		$body = parent::buildBody();
 		$row = $this->buildRow(Builder::create($this->class_name));
-		$row->addClass("new");
+		$row->addClass('new');
 		$body->addRow($row);
 		return $body;
 	}
@@ -30,7 +30,7 @@ class Html_Builder_Map_Edit extends Html_Builder_Map
 		$property = $this->property;
 		$value = $object;
 		$input = (new Html_Builder_Type_Edit(
-			"", $property->getType()->getElementType(), $value, $property->name
+			'', $property->getType()->getElementType(), $value, $property->name
 		))->build();
 		return new Html_Table_Standard_Cell($input);
 	}
@@ -43,7 +43,7 @@ class Html_Builder_Map_Edit extends Html_Builder_Map
 	{
 		$head = parent::buildHead();
 		foreach ($head->rows as $row) {
-			$row->addCell(new Html_Table_Standard_Cell(""));
+			$row->addCell(new Html_Table_Standard_Cell(''));
 		}
 		return $head;
 	}
@@ -56,9 +56,9 @@ class Html_Builder_Map_Edit extends Html_Builder_Map
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
-		$cell = new Html_Table_Standard_Cell("-");
-		$cell->setAttribute("title", "|remove line|");
-		$cell->addClass("minus");
+		$cell = new Html_Table_Standard_Cell('-');
+		$cell->setAttribute('title', '|remove line|');
+		$cell->addClass('minus');
 		$row->addCell($cell);
 		return $row;
 	}

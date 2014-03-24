@@ -14,7 +14,7 @@ class Error_Handlers implements Plugins\Activable, Plugins\Configurable
 	/**
 	 * @var array Error_Handler[][][]
 	 */
-	private $error_handlers = array();
+	private $error_handlers = [];
 
 	//------------------------------------------------------------------------------------- $instance
 	/**
@@ -165,7 +165,7 @@ class Error_Handlers implements Plugins\Activable, Plugins\Configurable
 	 */
 	public function setAsErrorHandler()
 	{
-		set_error_handler(array($this, "handle"), $this->getHandledErrorTypesAsInt());
+		set_error_handler([$this, 'handle'], $this->getHandledErrorTypesAsInt());
 	}
 
 }

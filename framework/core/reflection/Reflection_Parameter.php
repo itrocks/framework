@@ -14,41 +14,41 @@ class Reflection_Parameter extends ReflectionParameter
 	 * @todo it may be hard, but should copy all internal functions default values here
 	 * @var array
 	 */
-	private static $internal_defaults = array(
-		'chop' => array('character_mask' => " \\t\\n\\r\\0\\x0B"),
-		'ReflectionClass' => array(
-			'export'                 => array('return' => false),
-			'getMethods'             => array('filter' => 0),
-			'getProperties'          => array('filter' => 0),
-			'getStaticPropertyValue' => array('default' => null),
-			'newInstanceArgs'        => array('args' => array())
-		),
-		'ReflectionFunction' => array(
-			'export' => array('return' => false),
-			'invoke' => array('args' => array())
-		),
-		'ReflectionParameter' => array(
-			'export' => array('return' => false)
-		),
-		'ReflectionMethod' => array(
-			'__construct' => array('name' => null),
-			'export'      => array('return' => false)
-		),
-		'ReflectionProperty' => array(
-			'export'   => array('return' => false),
-			'getValue' => array('object' => null),
-			'setValue' => array('value' => null)
-		)
-	);
+	private static $internal_defaults = [
+		'chop' => ['character_mask' => " \\t\\n\\r\\0\\x0B"],
+		'ReflectionClass' => [
+			'export'                 => ['return' => false],
+			'getMethods'             => ['filter' => 0],
+			'getProperties'          => ['filter' => 0],
+			'getStaticPropertyValue' => ['default' => null],
+			'newInstanceArgs'        => ['args' => []]
+		],
+		'ReflectionFunction' => [
+			'export' => ['return' => false],
+			'invoke' => ['args' => []]
+		],
+		'ReflectionParameter' => [
+			'export' => ['return' => false]
+		],
+		'ReflectionMethod' => [
+			'__construct' => ['name' => null],
+			'export'      => ['return' => false]
+		],
+		'ReflectionProperty' => [
+			'export'   => ['return' => false],
+			'getValue' => ['object' => null],
+			'setValue' => ['value' => null]
+		]
+	];
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * Return the parameter as a PHP source string
 	 *
-	 * @example "$parameter_name"
-	 * @example "&$parameter_name"
-	 * @example "$parameter_name = 'default'"
-	 * @example "$parameter_name = 10"
+	 * @example $parameter_name
+	 * @example &$parameter_name
+	 * @example $parameter_name = 'default'
+	 * @example $parameter_name = 10
 	 * @return string
 	 */
 	public function __toString()
@@ -81,7 +81,7 @@ class Reflection_Parameter extends ReflectionParameter
 			$default = null;
 		}
 		$default = is_string($default)
-			? ('"' . str_replace('"', '\\"', $default) . '"')
+			? (DQ . str_replace(DQ, BS . DQ, $default) . DQ)
 			: var_export($default, true);
 		return ($this->isPassedByReference() ? '&' : '') . '$' . $this->name
 			. ($optional ? (' = ' . $default) : '');

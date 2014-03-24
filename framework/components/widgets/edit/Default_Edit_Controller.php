@@ -15,16 +15,16 @@ class Default_Edit_Controller extends Default_Output_Controller
 	 */
 	protected function getGeneralButtons($object, $parameters)
 	{
-		$fill_combo = isset($parameters["fill_combo"])
-			? array("fill_combo" => $parameters["fill_combo"]) : array();
-		return array(
-			new Button("Close", View::link($object, "list"), "close",
-				array(Color::of("close"), "#main")
+		$fill_combo = isset($parameters['fill_combo'])
+			? ['fill_combo' => $parameters['fill_combo']] : [];
+		return [
+			new Button('Close', View::link($object, 'list'), 'close',
+				[Color::of('close'), '#main']
 			),
-			new Button("Write", View::link($object, "write", null, $fill_combo), "write",
-				array(Color::of("green"), "#messages", ".submit")
+			new Button('Write', View::link($object, 'write', null, $fill_combo), 'write',
+				[Color::of('green'), '#messages', '.submit']
 			)
-		);
+		];
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
@@ -37,9 +37,9 @@ class Default_Edit_Controller extends Default_Output_Controller
 	protected function getViewParameters(Controller_Parameters $parameters, $form, $class_name)
 	{
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
-		$parameters["editing"] = true;
-		$parameters["feature"] = "edit";
-		$parameters["template_mode"] = "edit";
+		$parameters['editing'] = true;
+		$parameters['feature'] = 'edit';
+		$parameters['template_mode'] = 'edit';
 		return $parameters;
 	}
 

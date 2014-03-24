@@ -43,8 +43,8 @@ class Order_Line
 	/**
 	 * Order
 	 *
-	 * The "composite" annotation is not mandatory if it's guaranteed there will be only one property
-	 * of type "Order" into the class and it's children.
+	 * The 'composite' annotation is not mandatory if it's guaranteed there will be only one property
+	 * of type 'Order' into the class and it's children.
 	 *
 	 * @composite
 	 * @mandatory
@@ -68,7 +68,7 @@ class Order_Line
 	 */
 	public function __toString()
 	{
-		return strval($this->number) . " : " . $this->item;
+		return strval($this->number) . ' : ' . $this->item;
 	}
 
 }

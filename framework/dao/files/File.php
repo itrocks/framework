@@ -47,7 +47,7 @@ class File
 	{
 		if (isset($temporary_file_name)) {
 			if (!isset($this->name)) {
-				$this->name = rLastParse($temporary_file_name, "/", 1, true);
+				$this->name = rLastParse($temporary_file_name, SL, 1, true);
 			}
 			$this->temporary_file_name = $temporary_file_name;
 		}
@@ -76,7 +76,7 @@ class File
 	 * @param $errors string[]
 	 * @return array Two dimensional array (keys are row, column)
 	 */
-	public function getCsvContent(&$errors = array())
+	public function getCsvContent(&$errors = [])
 	{
 		return Spreadsheet_File::readCsvFile($this->temporary_file_name, $errors);
 	}
@@ -126,11 +126,11 @@ class File
 			&& (empty($this->temporary_file_name) || !file_exists($this->temporary_file_name))
 		) {
 			if (empty($this->temporary_file_name)) {
-				$this->temporary_file_name = Application::current()->getTemporaryFilesPath() . "/"
-					. uniqid() . "_" . $this->name;
+				$this->temporary_file_name = Application::current()->getTemporaryFilesPath() . SL
+					. uniqid() . '_' . $this->name;
 			}
-			if (strpos($this->temporary_file_name, "/") !== false) {
-				Files::mkdir(lLastParse($this->temporary_file_name, "/"));
+			if (strpos($this->temporary_file_name, SL) !== false) {
+				Files::mkdir(lLastParse($this->temporary_file_name, SL));
 			}
 			file_put_contents($this->temporary_file_name, $this->content);
 		}

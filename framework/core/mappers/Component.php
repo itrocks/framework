@@ -76,12 +76,12 @@ trait Component
 			$class_name = get_class($class_name);
 		}
 		$self = get_called_class();
-		$path = $self . '.' . $class_name . '.' . $property_name;
+		$path = $self . DOT . $class_name . DOT . $property_name;
 		if (!isset(self::$composite_property_name[$path])) {
-			self::$composite_property_name[$path] = array();
+			self::$composite_property_name[$path] = [];
 			$properties = empty($property_name)
 				? (new Reflection_Class($self))->getAnnotedProperties('composite')
-				: array(new Reflection_Property($self, $property_name));
+				: [new Reflection_Property($self, $property_name)];
 			foreach ($properties as $property) {
 				if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
 					self::$composite_property_name[$path][$property->name] = $property;

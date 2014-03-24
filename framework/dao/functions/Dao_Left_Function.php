@@ -32,7 +32,7 @@ class Dao_Left_Function extends Dao_Column_Function
 	 */
 	public function toSql(Sql_Columns_Builder $builder, $property_path)
 	{
-		return $this->quickSql($builder, $property_path, 'LEFT', array($this->length));
+		return $this->quickSql($builder, $property_path, 'LEFT', [$this->length]);
 	}
 
 }

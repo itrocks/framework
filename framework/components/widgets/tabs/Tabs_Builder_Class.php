@@ -36,29 +36,29 @@ abstract class Tabs_Builder_Class
 		if (!empty($group_annotations)) {
 			foreach ($group_annotations as $group_annotation) {
 				$tab = $root_tab;
-				foreach (explode('.', $group_annotation->name) as $tab_name) {
+				foreach (explode(DOT, $group_annotation->name) as $tab_name) {
 					if (is_numeric($tab_name)) {
 						if (empty($tab->columns)) {
 							if (!empty($tab->content)) {
 								$tab->columns[0] = new Tab(0, $tab->content);
-								$tab->content = array();
+								$tab->content = [];
 							}
 						}
 						if (!isset($tab->columns[$tab_name])) {
-							$tab->columns[$tab_name] = new Tab($tab_name, array());
+							$tab->columns[$tab_name] = new Tab($tab_name, []);
 						}
 						$tab = $tab->columns[$tab_name];
 					}
 					else {
 						if (!isset($tab->includes[$tab_name])) {
-							$tab->includes[$tab_name] = new Tab($tab_name, array());
+							$tab->includes[$tab_name] = new Tab($tab_name, []);
 						}
 						$tab = $tab->includes[$tab_name];
 					}
 				}
 				if (!empty($tab->columns)) {
 					if (!isset($tab->columns[0])) {
-						$tab->columns[0] = new Tab(0, array());
+						$tab->columns[0] = new Tab(0, []);
 						ksort($tab->columns);
 					}
 					$tab = $tab->columns[0];
@@ -79,7 +79,7 @@ abstract class Tabs_Builder_Class
 	 */
 	private static function getProperties($properties, $property_names)
 	{
-		$result = array();
+		$result = [];
 		foreach ($property_names as $property_name) {
 			if (isset($properties[$property_name])) {
 				$result[$property_name] = $properties[$property_name];

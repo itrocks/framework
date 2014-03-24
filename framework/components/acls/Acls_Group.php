@@ -88,7 +88,7 @@ class Acls_Group
 	 */
 	public function getContentGroups()
 	{
-		$groups = array();
+		$groups = [];
 		foreach ($this->getLinks() as $link) {
 			$groups[$link->content->name] = $link->content;
 		}
@@ -104,7 +104,7 @@ class Acls_Group
 	{
 		$links = isset($this->content) ? $this->content : null;
 		if (!isset($links)) {
-			$links = array();
+			$links = [];
 			Getter::getCollection($collection, Acls_Link::class, $this);
 			foreach ($collection as $link) {
 				$links[$link->content->name] = $link;
@@ -123,7 +123,7 @@ class Acls_Group
 	{
 		$rights = isset($this->rights) ? $this->rights : null;
 		if (!isset($rights)) {
-			$rights = array();
+			$rights = [];
 			Getter::getCollection($collection, Acls_Right::class, $this);
 			foreach ($collection as $right) {
 				$rights[$right->key] = $right;

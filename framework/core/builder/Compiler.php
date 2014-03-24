@@ -24,14 +24,14 @@ class Compiler
 			if (is_array($replacement)) {
 				$built_name = null;
 				foreach (Class_Builder::build($class_name, $replacement, true) as $built_name => $source) {
-					$source = '<?php' . "\n" . $source;
+					$source = '<?php' . LF . $source;
 
-					$path = array_slice(explode('\\', $built_name), 2);
+					$path = array_slice(explode(BS, $built_name), 2);
 					$file_name = array_pop($path) . '.php';
-					$path = $cache_dir . '/' . strtolower(join('/', $path));
+					$path = $cache_dir . SL . strtolower(join(SL, $path));
 					Files::mkdir($path);
 
-					script_put_contents($path . '/' . $file_name, $source);
+					script_put_contents($path . SL . $file_name, $source);
 				}
 				$replacements[$class_name] = $built_name;
 			}

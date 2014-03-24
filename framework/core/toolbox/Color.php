@@ -7,7 +7,7 @@ namespace SAF\Framework;
 class Color
 {
 
-	public $value = "white";
+	public $value = 'white';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

@@ -22,7 +22,7 @@ class Sql_Joins
 	 *
 	 * @var string[] key is property full path
 	 */
-	private $classes = array();
+	private $classes = [];
 
 	//---------------------------------------------------------------------------------------- $joins
 	/**
@@ -30,7 +30,7 @@ class Sql_Joins
 	 *
 	 * @var Sql_Join[] key is property full path
 	 */
-	private $joins = array();
+	private $joins = [];
 
 	//----------------------------------------------------------------------------------- $link_joins
 	/**
@@ -38,7 +38,7 @@ class Sql_Joins
 	 *
 	 * @var Sql_Join[] key is property full path
 	 */
-	private $link_joins = array();
+	private $link_joins = [];
 
 	//-------------------------------------------------------------------------------- $linked_tables
 	/**
@@ -49,7 +49,7 @@ class Sql_Joins
 	 *
 	 * @var string[]
 	 */
-	private $linked_tables = array();
+	private $linked_tables = [];
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -57,7 +57,7 @@ class Sql_Joins
 	 *
 	 * @var array key is class name, value is Reflection_Property[], sub-key is property name[]
 	 */
-	private $properties = array();
+	private $properties = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -66,7 +66,7 @@ class Sql_Joins
 	 * @param $starting_class_name string the class name for the root of property paths
 	 * @param $paths array a property paths list to add at construction
 	 */
-	public function __construct($starting_class_name, $paths = array())
+	public function __construct($starting_class_name, $paths = [])
 	{
 		$this->alias_counter = 1;
 		$this->classes[''] = $starting_class_name;
@@ -187,11 +187,11 @@ class Sql_Joins
 		$more_linked_class_name = $linked_class->getAnnotation('link')->value;
 		$exclude_properties = $more_linked_class_name
 			? $this->addLinkedClass($path, $more_linked_class_name, $join_mode)
-			: array();
+			: [];
 		foreach ($linked_class->getAllProperties() as $property) if (!$property->isStatic()) {
 			if (!isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
-				$property_path = ($path ? $path . '.' : '') . $property->name;
+				$property_path = ($path ? $path . DOT : '') . $property->name;
 				$type = $property->getType();
 				if ($type->isClass()) {
 					$this->classes[$property_path] = $property->getType()->getElementTypeAsString();
@@ -228,9 +228,9 @@ class Sql_Joins
 		$join->foreign_column = 'id';
 		$join->master_column = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
 		$join->master_alias = $linked_join->foreign_alias;
-		$this->linked_tables[$linked_join->foreign_table] = array(
+		$this->linked_tables[$linked_join->foreign_table] = [
 			$join->master_column, $linked_join->foreign_column
-		);
+		];
 	}
 
 	//----------------------------------------------------------------------------------- addMultiple
@@ -419,7 +419,7 @@ class Sql_Joins
 	 */
 	public function getLinkedJoins()
 	{
-		$joins = array();
+		$joins = [];
 		foreach ($this->joins as $key => $join) {
 			if (is_object($join) && (($key === 'id') || (substr($key, -6) === '-@link'))) {
 				$joins[$key] = $join;
@@ -450,7 +450,7 @@ class Sql_Joins
 	public function getProperties($master_path)
 	{
 		$class_name = isset($this->classes[$master_path]) ? $this->classes[$master_path] : null;
-		return isset($this->properties[$class_name]) ? $this->properties[$class_name] : array();
+		return isset($this->properties[$class_name]) ? $this->properties[$class_name] : [];
 	}
 
 	//----------------------------------------------------------------------------------- getProperty
@@ -488,7 +488,7 @@ class Sql_Joins
 	 * @param $paths array a property paths list to add at construction
 	 * @return Sql_Joins
 	 */
-	public static function newInstance($starting_class_name, $paths = array())
+	public static function newInstance($starting_class_name, $paths = [])
 	{
 		return new Sql_Joins($starting_class_name, $paths);
 	}

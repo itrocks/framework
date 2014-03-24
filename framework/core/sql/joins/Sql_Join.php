@@ -129,9 +129,9 @@ class Sql_Join
 	 */
 	public function toSql()
 	{
-		return ' ' . $this->mode . ' JOIN `' . $this->foreign_table . '` ' . $this->foreign_alias
-		. ' ON ' . $this->foreign_alias . '.' . $this->foreign_column
-		. ' = ' . $this->master_alias . '.' . $this->master_column;
+		return SP . $this->mode . ' JOIN ' . BQ . $this->foreign_table . BQ . SP . $this->foreign_alias
+		. ' ON ' . $this->foreign_alias . DOT . $this->foreign_column
+		. ' = ' . $this->master_alias . DOT . $this->master_column;
 	}
 
 }

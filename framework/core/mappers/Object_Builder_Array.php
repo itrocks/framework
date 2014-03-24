@@ -88,10 +88,10 @@ class Object_Builder_Array
 				unset($array['id']);
 			}
 		}
-		$objects = array();
-		$read_properties = array();
+		$objects = [];
+		$read_properties = [];
 		foreach ($array as $property_name => $value) {
-			if ($pos = strpos($property_name, '.')) {
+			if ($pos = strpos($property_name, DOT)) {
 				$property_path = substr($property_name, $pos + 1);
 				$property_name = substr($property_name, 0, $pos);
 				if ($asterisk = (substr($property_name, -1) === '*')) {
@@ -173,7 +173,7 @@ class Object_Builder_Array
 	 */
 	public function buildCollection($class_name, $array, $null_if_empty = false)
 	{
-		$collection = array();
+		$collection = [];
 		if ($array) {
 			$builder = new Object_Builder_Array($class_name);
 			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
@@ -236,7 +236,7 @@ class Object_Builder_Array
 	private function buildMap(
 		/** @noinspection PhpUnusedParameterInspection */ $class_name, $array, $null_if_empty = false
 	) {
-		$map = array();
+		$map = [];
 		if ($array) {
 			foreach ($array as $key => $element) {
 				if (!empty($element)) {
@@ -370,7 +370,7 @@ class Object_Builder_Array
 		$objects = Dao::search($read_properties, get_class($object));
 		if (count($objects) > 1) {
 			trigger_error(
-				'Unique object not found ' . get_class($object) . ' ' . print_r($read_properties, true),
+				'Unique object not found' . SP . get_class($object) . SP . print_r($read_properties, true),
 				E_USER_ERROR
 			);
 		}
@@ -412,7 +412,7 @@ class Object_Builder_Array
 		elseif ($this->started) {
 			$this->stop();
 		}
-		$this->built_objects = array();
+		$this->built_objects = [];
 		$this->properties = $this->class->accessProperties();
 		$this->started = true;
 	}

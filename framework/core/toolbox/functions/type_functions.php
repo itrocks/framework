@@ -14,11 +14,11 @@
 function classTree($object, $classes = true, $traits = true, $interfaces = true, $self = true)
 {
 	$class_name = is_object($object) ? get_class($object) : $object;
-	$tree = array();
+	$tree = [];
 	if ($classes) {
 		$parent = get_parent_class($class_name);
 		if (isset($parent)) {
-			$tree = array_merge($tree, array($parent => $parent));
+			$tree = array_merge($tree, [$parent => $parent]);
 		}
 	}
 	if ($traits) {
@@ -55,7 +55,7 @@ function isA($object, $class_name)
 	if (is_a($object, $class_name, true)) return true;
 	$classes = class_parents($object) + class_uses($object);
 	while ($classes) {
-		$next_classes = array();
+		$next_classes = [];
 		foreach ($classes as $class) {
 			if (is_a($class, $class_name, true)) return true;
 			$next_classes += class_uses($class);
@@ -84,10 +84,10 @@ function parents($object, $filter = _ALL)
 {
 	if (is_object($object)) $object = get_class($object);
 	$parents = class_parents($object);
-	$classes = array($object) + $parents;
-	$result = ($filter & _CLASS) ? $parents : array();
+	$classes = [$object] + $parents;
+	$result = ($filter & _CLASS) ? $parents : [];
 	do {
-		$next_classes = array();
+		$next_classes = [];
 		foreach ($classes as $class) {
 			if ($filter & _INTERFACE) $next_classes += class_implements($class);
 			if ($filter & _TRAIT)     $next_classes += class_uses($class);

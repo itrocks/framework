@@ -18,7 +18,7 @@ class Button
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * More classes for the button
-	 * This is css style, ie "pressed" or "ifedit press"
+	 * This is css style, ie 'pressed' or 'ifedit press'
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Button
 	/**
 	 * Target for the link
 	 * Name of a targetted window / iframe
-	 * If starts with "#", target is the identifier of a DOM element in the page (for ajax call)
+	 * If starts with '#', target is the identifier of a DOM element in the page (for ajax call)
 	 *
 	 * @var string
 	 */
@@ -72,7 +72,7 @@ class Button
 	 *
 	 * @var string
 	 */
-	public $title = "";
+	public $title = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -81,41 +81,41 @@ class Button
 	 * @param $feature string Feature name
 	 * @param $options array|string Single or multiple options
 	 */
-	public function __construct($caption = null, $link = null, $feature = null, $options = array())
+	public function __construct($caption = null, $link = null, $feature = null, $options = [])
 	{
 		if ($caption != null) $this->caption = $caption;
 		if ($link    != null) $this->link    = $link;
 		if ($feature != null) $this->feature = $feature;
 		if (!is_array($options)) {
-			$options = array($options);
+			$options = [$options];
 		}
 		foreach ($options as $key => $option) {
 			if ($option instanceof Color) {
 				$this->color = $option;
 			}
-			elseif ($key === "color") {
+			elseif ($key === 'color') {
 				$this->color = Color::of($option);
 			}
 			elseif ($option instanceof Button) {
 				$this->sub_buttons[] = $option;
 			}
-			elseif ($key === "sub_buttons") {
+			elseif ($key === 'sub_buttons') {
 				$this->sub_buttons = is_array($this->sub_buttons)
 					? array_merge($this->sub_buttons, $option)
 					: $option;
 			}
-			elseif (($key === "class") || (is_numeric($key) && (substr($option, 0, 1) == "."))) {
-				$this->class .= (isset($this->class) ? " " : "") . substr($option, 1);
+			elseif (($key === 'class') || (is_numeric($key) && (substr($option, 0, 1) == DOT))) {
+				$this->class .= (isset($this->class) ? SP : '') . substr($option, 1);
 			}
-			elseif (($key === "target") || (is_numeric($key) && substr($option, 0, 1) == "#")) {
+			elseif (($key === 'target') || (is_numeric($key) && substr($option, 0, 1) == '#')) {
 				$this->target = $option;
 			}
-			elseif ($key === "title") {
+			elseif ($key === 'title') {
 				$this->title = $option;
 			}
 		}
 		if (!isset($this->color)) {
-			$this->color = Color::of("blue");
+			$this->color = Color::of('blue');
 		}
 	}
 

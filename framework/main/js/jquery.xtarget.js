@@ -5,7 +5,7 @@
 	 * Allow your pages to contain implicit ajax calls, using the power of selector targets
 	 *
 	 * - Works with <a> and <form> links
-	 * - Initialise this feature with a single $("body").xtarget(); call
+	 * - Initialise this feature with a single $('body').xtarget(); call
 	 *
 	 * @example
 	 * <div id="position"></div>
@@ -20,11 +20,11 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			url_append:      "",
-			keep:            "popup",
-			submit:          "submit",
+			url_append:      '',
+			keep:            'popup',
+			submit:          'submit',
 			error:           undefined,
-			popup_element:   "div",
+			popup_element:   'div',
 			success:         undefined,
 			draggable_blank: undefined,
 			history: {
@@ -44,14 +44,14 @@
 			complete: function(xhr)
 			{
 				clearTimeout(xhr.time_out);
-				$("body").css({cursor: "auto"});
+				$('body').css({cursor: 'auto'});
 			},
 
 			//-------------------------------------------------------------------------------- ajax.error
 			error: function(xhr, status, error)
 			{
-				if (settings["error"] != undefined) {
-					settings["error"](xhr, status, error);
+				if (settings['error'] != undefined) {
+					settings['error'](xhr, status, error);
 				}
 			},
 
@@ -63,20 +63,20 @@
 			pushHistory: function(xhr, $target)
 			{
 				if (
-					(settings["history"]["condition"])
-					&& $target.find(settings["history"]["condition"]).length
+					settings['history']['condition']
+					&& $target.find(settings['history']['condition']).length
 					&& (
-					settings["history"]["on_post"]
-						|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != "post")
+					settings['history']['on_post']
+						|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != 'post')
 						|| (xhr.ajax.data == undefined) || !xhr.ajax.data.length
 					)
 				) {
 					var title;
 					if (
-						(settings["history"]["title"] != undefined)
-						&& settings["history"]["title"]
+						(settings['history']['title'] != undefined)
+						&& settings['history']['title']
 					) {
-						title = $target.find(settings["history"]["title"]).first().text();
+						title = $target.find(settings['history']['title']).first().text();
 						if (!title.length) {
 							title = xhr.from.href;
 						}
@@ -98,26 +98,26 @@
 			popup: function($where, id)
 			{
 				var $from = $where;
-				if (id == "_blank") {
-					id = "window" + ++window.zindex_counter;
-					$where = $($("body").children(":last-child"));
+				if (id == '_blank') {
+					id = 'window' + ++window.zindex_counter;
+					$where = $($('body').children(':last-child'));
 				}
-				var $target = $("<" + settings.popup_element + ">").attr("id", id);
-				if (settings["keep"] && $where.hasClass(settings["keep"])) {
-					$target.addClass(settings["keep"]);
+				var $target = $('<' + settings.popup_element + '>').attr('id', id);
+				if (settings['keep'] && $where.hasClass(settings['keep'])) {
+					$target.addClass(settings['keep']);
 				}
 				$target.insertAfter($where);
 				if ($where != $from) {
-					$target.css("position", "absolute");
-					$target.css("left", document.mouse.x);
-					$target.css("top",  document.mouse.y);
-					$target.css("z-index", window.zindex_counter);
-					if (settings["draggable_blank"] != undefined) {
-						if (settings["draggable_blank"] === true) {
+					$target.css('position', 'absolute');
+					$target.css('left', document.mouse.x);
+					$target.css('top',  document.mouse.y);
+					$target.css('z-index', window.zindex_counter);
+					if (settings['draggable_blank'] != undefined) {
+						if (settings['draggable_blank'] === true) {
 							$target.draggable();
 						}
 						else {
-							$target.draggable({ handle: settings["draggable_blank"] });
+							$target.draggable({ handle: settings['draggable_blank'] });
 						}
 					}
 				}
@@ -138,7 +138,7 @@
 				// write result into destination element, and build jquery active contents
 				$target.html(data);
 				// change browser's URL and title, push URL into history
-				if (settings["history"]) {
+				if (settings['history']) {
 					this.pushHistory(xhr, $target);
 				}
 				// If build plugin is active : build loaded DOM
@@ -148,12 +148,12 @@
 				}
 				// on success callbacks
 				var target = $target.get()[0];
-				if (settings["success"] != undefined) {
-					target.success = settings["success"];
+				if (settings['success'] != undefined) {
+					target.success = settings['success'];
 					target.success(data, status, xhr);
 					target.success = undefined;
 				}
-				var on_success = $from.data("on-success");
+				var on_success = $from.data('on-success');
 				if (on_success != undefined) {
 					target.success = on_success;
 					target.success(data, status, xhr);
@@ -168,30 +168,30 @@
 		 * Append the url_append setting to the url
 		 *
 		 * @param url    string the url
-		 * @param search string the "?var=value&var2=value2" part of the url, if set
+		 * @param search string the '?var=value&var2=value2' part of the url, if set
 		 * @return string
 		 */
 		var urlAppend = function (url, search)
 		{
 			if (settings.url_append) {
-				url += (search ? "&" : "?") + settings.url_append;
+				url += (search ? '&' : '?') + settings.url_append;
 			}
 			return url;
 		};
 
-		//------------------------------------------------------------------- $('a[target^="#"]').click
+		//------------------------------------------------------------------- $('a[target^='#']').click
 		/**
-		 * <a> with target "#*" are ajax calls
+		 * <a> with target '#*' are ajax calls
 		 *
-		 * If the a element is inside a form and the a class "submit" is set, the link submits the form with the a href attribute as action
+		 * If the a element is inside a form and the a class 'submit' is set, the link submits the form with the a href attribute as action
 		 */
 		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
 			var $this = $(this);
 			var xhr = undefined;
 			var jax;
-			if ($this.hasClass(settings["submit"])) {
-				var $parent_form = $this.closest("form");
+			if ($this.hasClass(settings['submit'])) {
+				var $parent_form = $this.closest('form');
 				if ($parent_form.length) {
 					/* this does not seem to work : default form submit is not blocking !
 					if (!$parent_form[0].checkValidity()) {
@@ -202,15 +202,15 @@
 					if ($parent_form.ajaxSubmit != undefined) {
 						$parent_form.ajaxSubmit(jax = $.extend(ajax, {
 							url:  urlAppend(this.href, this.search),
-							type: $parent_form.attr("type")
+							type: $parent_form.attr('type')
 						}));
-						xhr = $parent_form.data("jqxhr");
+						xhr = $parent_form.data('jqxhr');
 					}
 					else {
 						xhr = $.ajax(jax = $.extend(ajax, {
 							url:  urlAppend(this.href, this.search),
 							data: $parent_form.serialize(),
-							type: $parent_form.attr("method")
+							type: $parent_form.attr('method')
 						}));
 					}
 				}
@@ -224,13 +224,13 @@
 			xhr.from     = this;
 			xhr.mouse_x  = (document.mouse == undefined) ? event.pageX : document.mouse.x;
 			xhr.mouse_y  = (document.mouse == undefined) ? event.pageY : document.mouse.y;
-			xhr.time_out = setTimeout(function(){ $("body").css({cursor: "wait"}); }, 500);
+			xhr.time_out = setTimeout(function(){ $('body').css({cursor: 'wait'}); }, 500);
 			event.preventDefault();
 		});
 
-		//---------------------------------------------------------------- $('form[target^="#"]').click
+		//---------------------------------------------------------------- $('form[target^='#']').click
 		/**
-		 * <form> with target "#*" are ajax calls
+		 * <form> with target '#*' are ajax calls
 		 */
 		this.find('form[target^="#"]').add(this.filter('form[target^="#"]')).submit(function(event)
 		{
@@ -241,15 +241,15 @@
 			if ($this.ajaxSubmit != undefined) {
 				$this.ajaxSubmit(jax = $.extend(ajax, {
 					url:  urlAppend(this.action, this.search),
-					type: $this.attr("type")
+					type: $this.attr('type')
 				}));
-				xhr = $this.data("jqxhr");
+				xhr = $this.data('jqxhr');
 			}
 			else {
 				xhr = $.ajax(jax = $.extend(ajax, {
 					url:  urlAppend(this.action, this.search),
 					data: $this.serialize(),
-					type: $this.attr("method")
+					type: $this.attr('method')
 				}));
 			}
 			xhr.ajax = jax;
@@ -257,8 +257,8 @@
 		});
 
 		//--------------------------------------------------------------------------- window onpopstate
-		if (settings["history"]["condition"]) {
-			$(window).bind("popstate", function(event)
+		if (settings['history']['condition']) {
+			$(window).bind('popstate', function(event)
 			{
 				if (
 					(event.originalEvent.state != undefined)

@@ -58,7 +58,7 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 			$column_name = 'id_' . $column_name;
 		}
 		$foreign_key = new Mysql_Foreign_Key();
-		$foreign_key->Constraint = $table_name . '.' . $column_name;
+		$foreign_key->Constraint = $table_name . DOT . $column_name;
 		$foreign_key->Fields = $column_name;
 		$foreign_key->On_delete = $constraint;
 		$foreign_key->On_update = $constraint;
@@ -98,7 +98,7 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 */
 	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
 	{
-		$database_name = isset($database_name) ? ('"' . $database_name . '"') : 'DATABASE()';
+		$database_name = isset($database_name) ? (DQ . $database_name . DQ) : 'DATABASE()';
 		$foreign_keys = [];
 		$result = $mysqli->query(
 			'SELECT constraint_name `Constraint`,'
@@ -106,7 +106,7 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 			. ' update_rule `On_update`, delete_rule `On_delete`,'
 			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
 			. ' FROM information_schema.referential_constraints'
-			. ' WHERE constraint_schema = ' . $database_name . ' AND table_name = "' . $table_name . '"'
+			. ' WHERE constraint_schema = ' . $database_name . ' AND table_name = ' . DQ . $table_name . DQ
 		);
 		while ($foreign_key = $result->fetch_object(Mysql_Foreign_Key::class)) {
 			$foreign_keys[] = $foreign_key;
@@ -127,7 +127,7 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 */
 	public static function buildReferences(mysqli $mysqli, $table_name, $database_name = null)
 	{
-		$database_name = isset($database_name) ? ('"' . $database_name . '"') : 'DATABASE()';
+		$database_name = isset($database_name) ? (DQ . $database_name . DQ) : 'DATABASE()';
 		$foreign_keys = [];
 		$result = $mysqli->query(
 			'SELECT constraint_name `Constraint`,'
@@ -136,7 +136,7 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
 			. ' FROM information_schema.referential_constraints'
 			. ' WHERE constraint_schema = ' . $database_name
-			. ' AND referenced_table_name = "' . $table_name . '"'
+			. ' AND referenced_table_name = ' . DQ . $table_name . DQ
 		);
 		while ($foreign_key = $result->fetch_object(Mysql_Foreign_Key::class)) {
 			$foreign_keys[] = $foreign_key;
@@ -205,10 +205,10 @@ class Mysql_Foreign_Key implements Dao_Foreign_Key
 	 */
 	public function toSql()
 	{
-		return 'CONSTRAINT `' . $this->getConstraint() . '`'
-			. ' FOREIGN KEY (`' . join('`, `', $this->getFields()) . '`)'
-			. ' REFERENCES `' . $this->getReferenceTable() . '`'
-			. ' (`' . join('`, `', $this->getReferenceFields()) . '`)'
+		return 'CONSTRAINT ' . BQ . $this->getConstraint() . BQ
+			. ' FOREIGN KEY (' . BQ . join('`, `', $this->getFields()) . BQ . ')'
+			. ' REFERENCES ' . BQ . $this->getReferenceTable() . BQ
+			. ' (' . BQ . join(BQ . ', ' . BQ, $this->getReferenceFields()) . BQ . ')'
 			. ' ON DELETE ' . $this->getOnDelete()
 			. ' ON UPDATE ' . $this->getOnUpdate();
 	}

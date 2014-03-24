@@ -28,8 +28,8 @@ abstract class Custom_Settings_Controller
 		elseif (isset($parameters['load_name'])) {
 			// keep it last, as load name could be sent on every calls
 			$custom_settings = call_user_func_array(
-				array(get_class($custom_settings), 'load'),
-				array($custom_settings->class_name, $parameters['load_name'])
+				[get_class($custom_settings), 'load'],
+				[$custom_settings->class_name, $parameters['load_name']]
 			);
 			$custom_settings->cleanup();
 			$did_change = true;

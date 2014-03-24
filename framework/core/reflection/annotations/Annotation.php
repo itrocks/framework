@@ -46,7 +46,7 @@ class Annotation
 	public function getAnnotationName()
 	{
 		return Names::classToDisplay(
-			lLastParse(Namespaces::shortClassName(get_class($this)), "_Annotation")
+			lLastParse(Namespaces::shortClassName(get_class($this)), '_Annotation')
 		);
 	}
 

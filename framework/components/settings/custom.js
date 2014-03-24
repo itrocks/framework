@@ -1,30 +1,30 @@
-$("document").ready(function()
+$('document').ready(function()
 {
 
-	$(".window").build(function()
+	$('.window').build(function()
 	{
 
 		//-------------------------------------------------------------- select.customized option click
-		this.in("select.customized").change(function()
+		this.in('select.customized').change(function()
 		{
 			var $this = $(this);
-			$this.attr("name", "load_name");
-			$this.closest("form").submit();
+			$this.attr('name', 'load_name');
+			$this.closest('form').submit();
 		});
 
 		//------------------------------------------------------------------- .save_list.button a click
 		// click on save button opens the save form between calling save
-		this.in("a.custom_save, .custom_save>a").click(function(event)
+		this.in('a.custom_save, .custom_save>a').click(function(event)
 		{
 			var $this = $(this);
-			var $list = $this.closest("form");
-			var $input = $list.find("input.customized");
-			if (!$input.filter(":visible").length) {
+			var $list = $this.closest('form');
+			var $input = $list.find('input.customized');
+			if (!$input.filter(':visible').length) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				$input.parent().find("select.customized").hide();
+				$input.parent().find('select.customized').hide();
 				$input
-					.attr("name", "save_name")
+					.attr('name', 'save_name')
 					.fadeIn(200)
 					.keyup()
 					.focus();
@@ -32,24 +32,24 @@ $("document").ready(function()
 				{
 					var $this = $(this);
 					$this.fadeOut(200);
-					$this.removeAttr("name");
-					setTimeout(function() { $this.parent().find("select.customized").show(); }, 220);
+					$this.removeAttr('name');
+					setTimeout(function() { $this.parent().find('select.customized').show(); }, 220);
 				};
 			}
 			else if (!$input.val()) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				alert("Veuillez saisir un nom puis valider, ou tapez echap pour annuler");
+				alert('Veuillez saisir un nom puis valider, ou tapez echap pour annuler');
 			}
 		});
-		var $input = this.in("input.customized");
+		var $input = this.in('input.customized');
 		$input.autowidth();
 		// press #13 key : save, press #27 key : cancel
 		$input.keydown(function(event)
 		{
 			var $this = $(this);
 			if (event.keyCode == 13) {
-				$this.closest("form").find("a.custom_save, .custom_save>a").click();
+				$this.closest('form').find('a.custom_save, .custom_save>a').click();
 				event.preventDefault();
 			}
 			if (event.keyCode == 27) {

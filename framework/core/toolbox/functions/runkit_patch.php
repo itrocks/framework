@@ -28,7 +28,7 @@ runkit_function_rename('runkit_method_add', '_runkit_method_add');
 runkit_function_add(
 	'runkit_method_add', '$class_name, $method_name, $args, $code, $flags = RUNKIT_ACC_PUBLIC',
 	'
-		$parent_classes = array();
+		$parent_classes = [];
 		$parent_count = 0;
 		while (method_exists($class_name, $method_name)) {
 			$parent_class = (new ReflectionMethod($class_name, $method_name))->class;
@@ -48,7 +48,7 @@ runkit_function_rename('runkit_method_rename', '_runkit_method_rename');
 runkit_function_add(
 	'runkit_method_rename', '$class_name, $method_name, $new_name',
 	'
-		$parent_classes = array();
+		$parent_classes = [];
 		$parent_count = 0;
 		while (method_exists($class_name, $new_name)) {
 			$parent_class = (new ReflectionMethod($class_name, $new_name))->class;

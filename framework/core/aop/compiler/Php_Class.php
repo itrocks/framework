@@ -154,13 +154,13 @@ class Php_Class
 	 */
 	private static function cleanup(&$buffer)
 	{
-		// remove all "\r"
-		$buffer = trim(str_replace("\r", '', $buffer));
-		// remove since the line containing "//#### AOP" until the end of the file
+		// remove all '\r'
+		$buffer = trim(str_replace(CR, '', $buffer));
+		// remove since the line containing '//#### AOP' until the end of the file
 		$expr = '%\n\s*//\#+\s+AOP.*%s';
 		preg_match($expr, $buffer, $match1);
-		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? "\n\n}\n" : "\n");
-		// replace "/* public */ private [static] function name_?(" by "public [static] function name("
+		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? LF . LF . '}' . LF : LF);
+		// replace '/* public */ private [static] function name_?(' by 'public [static] function name('
 		$expr = '%'
 			. '(?:\n\s*/\*\*?\s+@noinspection\s+PhpUnusedPrivateMethodInspection.*?\*/)?'
 			. '(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)' // 1 2 3
@@ -208,7 +208,7 @@ class Php_Class
 			$class->source    = $source;
 			return $class;
 		}
-		if (ctype_upper(rLastParse($file_name, '/')[0])) {
+		if (ctype_upper(rLastParse($file_name, SL)[0])) {
 			trigger_error('No class in file ' . $file_name, E_USER_NOTICE);
 		}
 		return null;
@@ -231,7 +231,7 @@ class Php_Class
 			$class->final         = $match[5][$n];
 			$class->abstract      = empty($match[6][$n]) ? null : $match[6][$n];
 			$class->type          = $match[7][$n];
-			$class->name          = ($class->namespace ? $class->namespace . '\\' : '') . $match[8][$n];
+			$class->name          = ($class->namespace ? $class->namespace . BS : '') . $match[8][$n];
 			$class->parent        = empty($match[9][$n]) ? null : $match[9][$n];
 			$class->interfaces    = empty($match[10][$n]) ? [] : self::parseImplements($match[10][$n]);
 		}
@@ -243,7 +243,7 @@ class Php_Class
 			$class->final         = $match[5];
 			$class->abstract      = empty($match[6]) ? null : $match[6];
 			$class->type          = $match[7];
-			$class->name          = ($class->namespace ? $class->namespace . '\\' : '') . $match[8];
+			$class->name          = ($class->namespace ? $class->namespace . BS : '') . $match[8];
 			$class->parent        = empty($match[9]) ? null : $match[9];
 			$class->interfaces    = empty($match[10]) ? [] : self::parseImplements($match[10]);
 		}
@@ -274,7 +274,7 @@ class Php_Class
 			$class->methods[$method->name] = Php_Method::fromReflection($class, $method);
 		}
 		$class->name = $reflection->name;
-		$class->namespace = lLastParse($reflection->name, '\\', 1, false);
+		$class->namespace = lLastParse($reflection->name, BS, 1, false);
 		$class->parent = false;
 		$class->properties = [];
 		foreach ($reflection->getProperties() as $property) {
@@ -299,7 +299,7 @@ class Php_Class
 	 * @param $filter array 'parents', 'interfaces' and 'traits'
 	 * @return string
 	 */
-	public function getDocumentations($filter = array('parents', 'interfaces', 'traits'))
+	public function getDocumentations($filter = ['parents', 'interfaces', 'traits'])
 	{
 		if (!isset($this->documentations)) {
 			$this->documentations = $this->documentation;
@@ -380,7 +380,7 @@ class Php_Class
 				$this->traits_methods = [];
 				foreach ($this->getTraits() as $trait) {
 					$this->traits_methods = array_merge(
-						$trait->getMethods(array('traits')), $this->traits_methods
+						$trait->getMethods(['traits']), $this->traits_methods
 					);
 				}
 			}
@@ -392,12 +392,12 @@ class Php_Class
 				$this->inherited_methods = [];
 				foreach ($this->getInterfaces() as $interface) {
 					$this->inherited_methods = array_merge(
-						$interface->getMethods(array('inherited', 'traits')), $this->inherited_methods
+						$interface->getMethods(['inherited', 'traits']), $this->inherited_methods
 					);
 				}
 				if ($parent = $this->getParent()) {
 					$this->inherited_methods = array_merge(
-						$parent->getMethods(array('inherited', 'traits')), $this->inherited_methods
+						$parent->getMethods(['inherited', 'traits']), $this->inherited_methods
 					);
 				}
 			}
@@ -444,7 +444,7 @@ class Php_Class
 				$this->traits_properties = [];
 				foreach ($this->getTraits() as $trait) {
 					$this->traits_properties = array_merge(
-						$trait->getProperties(array('traits')), $this->traits_properties
+						$trait->getProperties(['traits']), $this->traits_properties
 					);
 				}
 			}
@@ -454,7 +454,7 @@ class Php_Class
 		if (isset($flags['inherited'])) {
 			if (!isset($this->inherited_properties)) {
 				$this->inherited_properties = ($parent = $this->getParent())
-					? $parent->getProperties(array('inherited', 'traits'))
+					? $parent->getProperties(['inherited', 'traits'])
 					: [];
 			}
 			$properties = array_merge($this->inherited_properties, $properties);
@@ -496,7 +496,7 @@ class Php_Class
 	 */
 	public function implementsMethod($method_name, $include_traits = true)
 	{
-		$methods = $this->getMethods($include_traits ? array('traits') : []);
+		$methods = $this->getMethods($include_traits ? ['traits'] : []);
 		return isset($methods[$method_name]) && !$methods[$method_name]->isAbstract();
 	}
 
@@ -511,7 +511,7 @@ class Php_Class
 	 */
 	public function implementsProperty($property_name, $include_traits = true)
 	{
-		$properties = $this->getProperties($include_traits ? array('traits') : []);
+		$properties = $this->getProperties($include_traits ? ['traits'] : []);
 		return isset($properties[$property_name]);
 	}
 
@@ -569,15 +569,15 @@ class Php_Class
 	 */
 	private function searchFullClassName($class_name)
 	{
-		$check = '\\' . lLastParse($class_name, '\\');
+		$check = BS . lLastParse($class_name, BS);
 		$count = strlen($check);
 		foreach ($this->getImports() as $import) {
-			if (substr("\\" . $import, -$count) === $check) {
-				return substr($import, 0, -$count) . '\\' . $class_name;
+			if (substr(BS . $import, -$count) === $check) {
+				return substr($import, 0, -$count) . BS . $class_name;
 			}
 		}
-		if (substr($class_name, 0, 1) == '\\') return substr($class_name, 1);
-		if (!strpos($class_name, '\\'))        return $this->namespace . $check;
+		if (substr($class_name, 0, 1) == BS) return substr($class_name, 1);
+		if (!strpos($class_name, BS))        return $this->namespace . $check;
 		return $class_name;
 	}
 

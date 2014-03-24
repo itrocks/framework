@@ -19,7 +19,7 @@ class Print_Model_Page
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
-	 * The page number : 1 is the first page, -1 is the last page, 0 is "all others pages"
+	 * The page number : 1 is the first page, -1 is the last page, 0 is 'all others pages'
 	 *
 	 * @signed
 	 * @getter getNumber
@@ -51,9 +51,9 @@ class Print_Model_Page
 	{
 		$number = $this->number;
 		switch ($number) {
-			case 1:  return "first";
-			case 0:  return "all";
-			case -1: return "last";
+			case 1:  return 'first';
+			case 0:  return 'all';
+			case -1: return 'last';
 		}
 		return $number;
 	}
@@ -66,9 +66,9 @@ class Print_Model_Page
 	private function setNumber($number)
 	{
 		switch ($number) {
-			case "first": $number = 1;  break;
-			case "all":   $number = 0;  break;
-			case "last":  $number = -1; break;
+			case 'first': $number = 1;  break;
+			case 'all':   $number = 0;  break;
+			case 'last':  $number = -1; break;
 		}
 		$this->number = $number;
 	}
@@ -79,7 +79,7 @@ class Print_Model_Page
 	 */
 	public function __toString()
 	{
-		return strval($this->model) . " " . strval($this->number);
+		return strval($this->model) . SP . strval($this->number);
 	}
 
 }

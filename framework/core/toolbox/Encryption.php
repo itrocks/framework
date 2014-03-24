@@ -1,14 +1,16 @@
 <?php
 namespace SAF\Framework;
 
-
+/**
+ * Encryption class
+ */
 abstract class Encryption
 {
 
 	//----------------------------------------------------------------------------------------- const
-	const CRYPT = "crypt";
-	const MD5   = "md5";
-	const SHA1  = "sha1";
+	const CRYPT = 'crypt';
+	const MD5   = 'md5';
+	const SHA1  = 'sha1';
 
 	//--------------------------------------------------------------------------------------- encrypt
 	/**

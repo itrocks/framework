@@ -144,14 +144,14 @@ class Mysql_Column implements Dao_Column
 	 */
 	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
 	{
-		$database_name = isset($database_name) ? ('"' . $database_name . '"') : 'DATABASE()';
+		$database_name = isset($database_name) ? (DQ . $database_name . DQ) : 'DATABASE()';
 		$columns = [];
 		$result = $mysqli->query(
 			'SELECT column_name `Field`,'
 			. ' IFNULL(CONCAT(column_type, " CHARACTER SET ", character_set_name, " COLLATE ", collation_name), column_type) `Type`,'
 			. ' is_nullable `Null`, column_key `Key`, column_default `Default`, extra `Extra`'
 			. ' FROM information_schema.columns'
-			. ' WHERE table_schema = ' . $database_name . ' AND table_name = "' . $table_name . '"'
+			. ' WHERE table_schema = ' . $database_name . ' AND table_name = ' . DQ . $table_name . DQ
 		);
 		/** @var $column Mysql_Column */
 		while ($column = $result->fetch_object(Mysql_Column::class)) {
@@ -227,7 +227,7 @@ class Mysql_Column implements Dao_Column
 	 */
 	public function getSqlPostfix()
 	{
-		return $this->Extra ? ' ' . $this->Extra : '';
+		return $this->Extra ? (SP . $this->Extra) : '';
 	}
 
 	//------------------------------------------------------------------------------------ getSqlType
@@ -279,7 +279,7 @@ class Mysql_Column implements Dao_Column
 		$column_name = $this->getName();
 		$type = $this->getSqlType();
 		$postfix = $this->getSqlPostfix();
-		$sql = '`' . $column_name . '` ' . $type;
+		$sql = BQ . $column_name . BQ . SP . $type;
 		if (!$this->canBeNull()) {
 			$sql .= ' NOT NULL';
 		}

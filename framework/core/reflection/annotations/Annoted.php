@@ -14,13 +14,13 @@ trait Annoted
 	/**
 	 * Global annotations cache
 	 *
-	 * Annotation["Class_Name"]["@"]["annotation"]
-	 * Annotation["Class_Name"]["property"]["annotation"]
-	 * Annotation["Class_Name"]["methodName()"]["annotation"]
+	 * Annotation['Class_Name']['@']['annotation']
+	 * Annotation['Class_Name']['property']['annotation']
+	 * Annotation['Class_Name']['methodName()']['annotation']
 	 *
 	 * @var array
 	 */
-	private static $annotations_cache = array();
+	private static $annotations_cache = [];
 
 	//--------------------------------------------------------------------------------- getAnnotation
 	/**
@@ -92,7 +92,9 @@ trait Annoted
 	{
 		$annotation = $this->getCachedAnnotation($annotation_name, false);
 		if (!($annotation instanceof List_Annotation)) {
-			trigger_error("Bad annotation type getListAnnotation('$annotation_name')", E_USER_ERROR);
+			trigger_error(
+				'Bad annotation type getListAnnotation(' . $annotation_name . ')', E_USER_ERROR
+			);
 		}
 		return $annotation;
 	}
@@ -108,7 +110,9 @@ trait Annoted
 	{
 		$annotations = $this->getCachedAnnotation($annotation_name, true);
 		if ($annotations && !(reset($annotations) instanceof List_Annotation)) {
-			trigger_error("Bad annotation type getListAnnotations('$annotation_name')", E_USER_ERROR);
+			trigger_error(
+				'Bad annotation type getListAnnotations(' . $annotation_name . ')', E_USER_ERROR
+			);
 		}
 		return $annotations;
 	}

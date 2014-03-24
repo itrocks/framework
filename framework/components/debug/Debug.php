@@ -1,5 +1,6 @@
 <?php
 namespace SAF\Framework;
+namespace SAF\Framework;
 
 use ReflectionClass;
 
@@ -15,7 +16,7 @@ abstract class Debug
 	 */
 	public static function display($text)
 	{
-		echo date("Y-m-d H:i:s") . " " . $text . "<br>\n";
+		echo date('Y-m-d H:i:s') . SP . $text . BR . LF;
 	}
 
 	//------------------------------------------------------------------------------------ globalDump
@@ -29,10 +30,10 @@ abstract class Debug
 	 * - all static variables declared into functions
 	 * - all opened resources (ie files or mysql links)
 	 *
-	 * @param $display boolean|string true or "pre" if you want to displaying it
+	 * @param $display boolean|string true or 'pre' if you want to displaying it
 	 * @return array returns the result array
 	 */
-	public static function globalDump($display = "pre")
+	public static function globalDump($display = 'pre')
 	{
 		$dump['$GLOBALS'] = $GLOBALS;
 		$dump['$_SERVER'] = $_SERVER;
@@ -54,8 +55,8 @@ abstract class Debug
 			}
 		}
 		if ($display) {
-			$pre = ($display === "pre");
-			echo ($pre ? "<pre>" : "") . print_r($dump, true) . ($pre ? "</pre>" : "");
+			$pre = ($display === 'pre');
+			echo ($pre ? '<pre>' : '') . print_r($dump, true) . ($pre ? '</pre>' : '');
 		}
 		return $dump;
 	}
@@ -66,27 +67,27 @@ abstract class Debug
 	 */
 	public static function log($text)
 	{
-		$f = fopen("debug.log", "ab");
-		fputs($f, date("Y-m-d H:i:s") . " #" . getmypid() . " " . $text . "\n");
+		$f = fopen('debug.log', 'ab');
+		fputs($f, date('Y-m-d H:i:s') . ' #' . getmypid() . SP . $text . LF);
 		fclose($f);
 	}
 
 	//---------------------------------------------------------------------------------- logCallStack
 	public static function logCallStack()
 	{
-		self::log("CALL STACK :");
-		$f = fopen("debug.log", "ab");
+		self::log('CALL STACK :');
+		$f = fopen('debug.log', 'ab');
 		foreach (debug_backtrace() as $key => $trace) {
-			if (!isset($trace["file"])) {
+			if (!isset($trace['file'])) {
 				fputs($f,
-					">" . sprintf("%-3s", ($key + 1)) . " "
-					. str_replace("\n", " ", print_r($trace, true)) . "\n"
+					'>' . sprintf('%-3s', ($key + 1)) . SP
+					. str_replace(LF, SP, print_r($trace, true)) . LF
 				);
 			}
 			else {
 				fputs($f,
-					">" . sprintf("%-3s", ($key + 1)) . " "
-					. $trace["file"] . ":" . $trace["line"] . " : " . $trace["function"] . "()\n"
+					'>' . sprintf('%-3s', ($key + 1)) . SP
+					. $trace['file'] . ':' . $trace['line'] . ' : ' . $trace['function'] . '()' . LF
 				);
 			}
 		}
@@ -104,9 +105,9 @@ abstract class Debug
 	 * @param $path string the value path
 	 * @return array returns an associative array of path and sizes (old, new)
 	 */
-	public static function whatGrew($old = null, $new = null, $path = "")
+	public static function whatGrew($old = null, $new = null, $path = '')
 	{
-		$result = array();
+		$result = [];
 		if (!isset($old) && !isset($new)) {
 			static $old_dump;
 			$new_dump = self::globalDump(true);
@@ -120,9 +121,9 @@ abstract class Debug
 				$old_size = strlen(serialize($value));
 				$new_size = strlen(serialize($new[$key]));
 				if ($old_size < $new_size) {
-					$sub_path = $path ? ($path . "." . $key) : $key;
+					$sub_path = $path ? ($path . DOT . $key) : $key;
 					$result = array_merge(
-						array($sub_path => "from $old_size to $new_size"),
+						[$sub_path => 'from ' . $old_size . ' to ' . $new_size],
 						self::whatGrew($value, $new[$key], $sub_path)
 					);
 				}

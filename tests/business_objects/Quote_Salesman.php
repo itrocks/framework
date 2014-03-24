@@ -6,7 +6,7 @@ use SAF\Framework\Component;
 /**
  * A salesman with specific data for it's link to a quote
  *
- * The "link" annotation allow to consider this class as a link class
+ * The 'link' annotation allow to consider this class as a link class
  *
  * @link Salesman
  * @set Quotes_Salesmen

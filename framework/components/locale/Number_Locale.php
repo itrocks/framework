@@ -23,13 +23,13 @@ class Number_Locale
 	/**
 	 * @var string
 	 */
-	public $decimal_separator = ".";
+	public $decimal_separator = '.';
 
 	//--------------------------------------------------------------------------- $thousand_separator
 	/**
 	 * @var string
 	 */
-	public $thousand_separator = "";
+	public $thousand_separator = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -54,8 +54,8 @@ class Number_Locale
 		return (!isset($float) || !strlen($float))
 			? null
 			: str_replace(
-				array($this->thousand_separator, $this->decimal_separator),
-				array("", "."),
+				[$this->thousand_separator, $this->decimal_separator],
+				['', '.'],
 				$float
 			) + 0;
 	}
@@ -73,7 +73,7 @@ class Number_Locale
 			);
 			if ($pos = strrpos($float, $this->decimal_separator)) {
 				$decimals = strlen($float) - $pos - 1;
-				while (($float[$pos + $decimals] == "0") && ($decimals > $this->decimal_minimal_count)) {
+				while (($float[$pos + $decimals] == '0') && ($decimals > $this->decimal_minimal_count)) {
 					$decimals--;
 				}
 				$float = substr($float, 0, $pos + $decimals + 1);
@@ -91,7 +91,7 @@ class Number_Locale
 	{
 		return (!isset($integer) || !strlen($integer))
 			? null
-			: str_replace($this->thousand_separator, "", $integer) + 0;
+			: str_replace($this->thousand_separator, '', $integer) + 0;
 	}
 
 	//------------------------------------------------------------------------------- integerToLocale

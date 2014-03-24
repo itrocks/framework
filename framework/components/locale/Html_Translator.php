@@ -41,7 +41,7 @@ class Html_Translator implements Plugins\Registerable
 		$i = 0;
 		while (($i = strpos($content, '|', $i)) !== false) {
 			$i++;
-			if (($i < strlen($content)) && (!in_array($content[$i], [' ', CR, LF, TAB]))) {
+			if (($i < strlen($content)) && (!in_array($content[$i], [SP, CR, LF, TAB]))) {
 				$this->translateElement($content, $i, $context);
 			}
 		}

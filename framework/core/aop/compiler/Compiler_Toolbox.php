@@ -28,7 +28,7 @@ trait Compiler_Toolbox
 				$advice_class_name = get_class($advice_object);
 				$is_advice_static = false;
 				if ($advice_object instanceof Plugin) {
-					$advice_string = 'array($object_, ' . "'" . $advice_method_name . "'" . ')';
+					$advice_string = '[$object_, ' . Q . $advice_method_name . Q . ']';
 				}
 				else {
 					trigger_error(
@@ -39,15 +39,15 @@ trait Compiler_Toolbox
 				}
 			}
 			else {
-				$advice_class_name = (in_array($advice_object, array('self', '$this')))
+				$advice_class_name = (in_array($advice_object, ['self', '$this']))
 					? $joinpoint_class_name
 					: $advice_class_name = $advice_object;
 				if ($advice_object == '$this') {
-					$advice_string = 'array($this, \'' . $advice_method_name . '\')';
+					$advice_string = '[$this, ' . Q . $advice_method_name . Q . ']';
 					$is_advice_static = false;
 				}
 				else {
-					$advice_string = "array('" . $advice_class_name . "', '" . $advice_method_name . "')";
+					$advice_string = '[' . Q . $advice_class_name . Q . ',' . SP . Q . $advice_method_name . Q . ']';
 					$is_advice_static = true;
 				}
 			}
@@ -57,7 +57,7 @@ trait Compiler_Toolbox
 			$advice_class_name = null;
 			$advice_method_name = null;
 			$advice_function_name = $advice;
-			$advice_string = "'" . $advice_function_name . "'";
+			$advice_string = Q . $advice_function_name . Q;
 			$is_advice_static = false;
 			$advice_method = new Reflection_Function($advice_function_name);
 		}
@@ -65,7 +65,7 @@ trait Compiler_Toolbox
 		$advice_has_return = strpos($advice_method->getDocComment(), '@return');
 		$advice_parameters = $advice_method->getParameters();
 
-		return array(
+		return [
 			$advice_class_name,
 			$advice_method_name,
 			$advice_function_name,
@@ -73,7 +73,7 @@ trait Compiler_Toolbox
 			$advice_string,
 			$advice_has_return,
 			$is_advice_static
-		);
+		];
 	}
 
 	//---------------------------------------------------------------------------- generateAdviceCode
@@ -102,24 +102,24 @@ trait Compiler_Toolbox
 			// static method call
 			if ($is_advice_static) {
 				return $joinpoint_code
-					. $i2 . ($advice_has_return ? ($result . ' =' . $ref . ' ') : '')
-					. (($advice[0] == 'self') ? 'self' : ('\\' . $advice_class_name))
+					. $i2 . ($advice_has_return ? ($result . SP . '=' . $ref . SP) : '')
+					. (($advice[0] == 'self') ? 'self' : (BS . $advice_class_name))
 					. '::' . $advice_method_name
 					. '(' . $advice_parameters_string . ');';
 			}
 			// object method call
 			elseif ($advice[0] == '$this') {
 				return $joinpoint_code
-					. $i2 . ($advice_has_return ? ($result . ' =' . $ref . ' ') : '')
+					. $i2 . ($advice_has_return ? ($result . SP . '=' . $ref . SP) : '')
 					. '$this->' . $advice_method_name . '(' . $advice_parameters_string . ');';
 			}
 			else {
-				return $i2 . '/** @var $object_ \\' . $advice_class_name . ' */'
+				return $i2 . '/** @var $object_ ' . BS . $advice_class_name . ' */'
 					. $i2 . '$object_ = \SAF\Framework\Session::current()->plugins->get('
 						. "'$advice_class_name'"
 					. ');'
 					. $joinpoint_code
-					. $i2 . ($advice_has_return ? ($result . ' =' . $ref . ' ') : '')
+					. $i2 . ($advice_has_return ? ($result . SP . '=' . $ref . SP) : '')
 					. '$object_->' . $advice_method_name . '(' . $advice_parameters_string . ');';
 			}
 		}
@@ -127,7 +127,7 @@ trait Compiler_Toolbox
 		else {
 			$ref = (new ReflectionFunction($advice_function_name))->returnsReference() ? '&' : '';
 			return $joinpoint_code
-				. $i2 . ($advice_has_return ? $result . ' =' . $ref . ' ' : '')
+				. $i2 . ($advice_has_return ? $result . SP . '=' . $ref . SP : '')
 				. $advice_function_name . '(' . $advice_parameters_string . ');';
 		}
 	}

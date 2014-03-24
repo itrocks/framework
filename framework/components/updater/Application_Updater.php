@@ -17,7 +17,7 @@ class Application_Updater implements Plugins\Registerable
 	 *
 	 * @var mixed[]
 	 */
-	private $updatables = array();
+	private $updatables = [];
 
 	//---------------------------------------------------------------------------------- addUpdatable
 	/**
@@ -55,7 +55,7 @@ class Application_Updater implements Plugins\Registerable
 	 */
 	public function done()
 	{
-		@unlink("update");
+		@unlink('update');
 	}
 
 	//------------------------------------------------------------------------------------ mustUpdate
@@ -66,7 +66,7 @@ class Application_Updater implements Plugins\Registerable
 	 */
 	public function mustUpdate()
 	{
-		return file_exists("update");
+		return file_exists('update');
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -79,9 +79,7 @@ class Application_Updater implements Plugins\Registerable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$aop->beforeMethod(
-			array('SAF\Framework\Main_Controller', "runController"), array($this, "autoUpdate")
-		);
+		$aop->beforeMethod([Main_Controller::class, 'runController'], [$this, 'autoUpdate']);
 	}
 
 	//---------------------------------------------------------------------------------------- update
@@ -93,7 +91,7 @@ class Application_Updater implements Plugins\Registerable
 	public function update()
 	{
 		foreach ($this->updatables as $updatable) {
-			call_user_func(array($updatable, "update"));
+			call_user_func([$updatable, 'update']);
 		}
 	}
 

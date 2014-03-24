@@ -7,7 +7,7 @@ namespace SAF\Framework;
 abstract class Locks
 {
 
-	private static $locks = array();
+	private static $locks = [];
 
 	//---------------------------------------------------------------------------------------- delock
 	/**

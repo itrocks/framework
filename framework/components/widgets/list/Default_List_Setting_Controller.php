@@ -22,7 +22,7 @@ class Default_List_Setting_Controller implements Default_Feature_Controller
 		$list_controller = new Default_List_Controller();
 		$list_settings = List_Settings::current($element_class_name);
 		$list_controller->applyParametersToListSettings($list_settings, $parameters, $form);
-		return View::run($parameters, $form, $files, $class_name, "listSetting");
+		return View::run($parameters, $form, $files, $class_name, 'listSetting');
 	}
 
 }

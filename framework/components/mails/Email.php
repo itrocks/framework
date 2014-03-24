@@ -101,7 +101,7 @@ class Email
 	 */
 	public function getHeadersAsStrings()
 	{
-		return array();
+		return [];
 	}
 
 	//------------------------------------------------------------------------ getRecipientsAsStrings
@@ -110,9 +110,9 @@ class Email
 	 */
 	public function getRecipientsAsStrings()
 	{
-		$recipients = array();
+		$recipients = [];
 		/** @var $recipients_objects Email_Recipient[] */
-		foreach (array($this->to, $this->copy_to, $this->blind_copy_to) as $recipients_objects) {
+		foreach ([$this->to, $this->copy_to, $this->blind_copy_to] as $recipients_objects) {
 			foreach ($recipients_objects as $recipient) {
 				$recipients[$recipient->email] = $recipient->email;
 			}

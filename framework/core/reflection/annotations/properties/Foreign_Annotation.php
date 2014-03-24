@@ -54,8 +54,8 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	private function defaultCollection(Reflection_Property $reflection_property)
 	{
 		$type = $reflection_property->getType();
-		$composites = array();
-		$possibles = array();
+		$composites = [];
+		$possibles = [];
 		$foreign_class = new Reflection_Class(Builder::className($type->getElementTypeAsString()));
 		foreach ($foreign_class->getAllProperties() as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
@@ -84,8 +84,8 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	private function defaultMap(Reflection_Property $reflection_property)
 	{
 		$type = $reflection_property->getType();
-		$possibles = array();
-		$replace = array();
+		$possibles = [];
+		$replace = [];
 		$foreign_class = new Reflection_Class(Builder::className($type->getElementTypeAsString()));
 		foreach ($foreign_class->getAllProperties() as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
@@ -127,7 +127,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	private function defaultObject(Reflection_Property $reflection_property)
 	{
 		$type = $reflection_property->getType();
-		$possibles = array();
+		$possibles = [];
 		$foreign_class = new Reflection_Class(Builder::className($type->asString()));
 		foreach ($foreign_class->getAllProperties() as $foreign_property) {
 			$foreign_type = $foreign_property->getType();

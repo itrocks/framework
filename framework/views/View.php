@@ -60,12 +60,12 @@ class View implements Plugins\Configurable
 	public static function getPossibleViews($class_name, $feature_names)
 	{
 		if (!is_array($feature_names)) {
-			$feature_names = array($feature_names);
+			$feature_names = [$feature_names];
 		}
 		$class_name = Namespaces::shortClassName($class_name);
 		$view_engine_name = Namespaces::shortClassName(get_class(View::current()));
 		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, '_View_Engine'));
-		$feature_classes = array();
+		$feature_classes = [];
 		foreach ($feature_names as $feature_name) {
 			$feature_classes[$feature_name] = Names::methodToClass($feature_name);
 		}
@@ -75,19 +75,19 @@ class View implements Plugins\Configurable
 		$views4 = [];
 		$namespaces = Application::current()->getNamespaces();
 		foreach ($namespaces as $namespace) {
-			$class = $namespace . '\\' . $class_name;
+			$class = $namespace . BS . $class_name;
 			while ($class) {
-				$i = strrpos($class, '\\') + 1;
-				$view = $namespace . '\\' . $view_engine_name;
+				$i = strrpos($class, BS) + 1;
+				$view = $namespace . BS . $view_engine_name;
 				foreach ($feature_classes as $feature_name => $feature_class) {
-					$views2[] = array($view . '_' . $feature_class . '_View', 'run');
-					$views3[] = array($view . '_Default_View', $feature_name);
+					$views2[] = [$view . '_' . $feature_class . '_View', 'run'];
+					$views3[] = [$view . '_Default_View', $feature_name];
 				}
-				$views4[] = array($view . '_Default_View', 'run');
+				$views4[] = [$view . '_Default_View', 'run'];
 				$view .= '_' . substr($class, $i);
 				foreach ($feature_classes as $feature_name => $feature_class) {
-					$views1[] = array($view . '_' . $feature_class . '_View', 'run');
-					$views1[] = array($view . '_View', $feature_name);
+					$views1[] = [$view . '_' . $feature_class . '_View', 'run'];
+					$views1[] = [$view . '_View', $feature_name];
 				}
 				$class = get_parent_class($class);
 			}
@@ -123,7 +123,7 @@ class View implements Plugins\Configurable
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
 		$features = isset($parameters['feature'])
-			? array($parameters['feature'], $feature_name)
+			? [$parameters['feature'], $feature_name]
 			: $feature_name;
 		foreach (self::getPossibleViews($class_name, $features) as $call) {
 			list($view, $view_method_name) = $call;

@@ -13,7 +13,7 @@ class Html_View_Engine implements Plugins\Configurable, View_Engine
 	/**
 	 * @var string
 	 */
-	private $css = "default";
+	private $css = 'default';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -46,18 +46,18 @@ class Html_View_Engine implements Plugins\Configurable, View_Engine
 	public static function getPossibleTemplates($class_name, $feature_names)
 	{
 		if (!is_array($feature_names)) {
-			$feature_names = array($feature_names);
+			$feature_names = [$feature_names];
 		}
-		$templates = array();
+		$templates = [];
 		$class_name = Namespaces::fullClassName($class_name, false);
 		while ($class_name) {
 			foreach ($feature_names as $feature_name) {
-				$templates[] = Namespaces::shortClassName($class_name) . "_" . $feature_name;
+				$templates[] = Namespaces::shortClassName($class_name) . '_' . $feature_name;
 			}
 			$class_name = get_parent_class($class_name);
 		}
 		foreach ($feature_names as $feature_name) {
-			$templates[] = "Default_$feature_name";
+			$templates[] = 'Default_' . $feature_name;
 		}
 		foreach ($feature_names as $feature_name) {
 			$templates[] = $feature_name;
@@ -78,42 +78,42 @@ class Html_View_Engine implements Plugins\Configurable, View_Engine
 	public function link($object, $feature = null, $parameters = null, $arguments = null)
 	{
 		$link = (is_object($object) && Dao::getObjectIdentifier($object))
-			? (Namespaces::shortClassName(get_class($object)) . "/" . Dao::getObjectIdentifier($object))
+			? (Namespaces::shortClassName(get_class($object)) . SL . Dao::getObjectIdentifier($object))
 			: Namespaces::shortClassName(is_object($object) ? get_class($object) : $object);
 		if (isset($feature)) {
-			$link .= "/" . $feature;
+			$link .= SL . $feature;
 		}
 		if (isset($parameters)) {
 			if (!is_array($parameters)) {
-				$parameters = array($parameters);
+				$parameters = [$parameters];
 			}
 			foreach ($parameters as $key => $value) {
 				if (!is_numeric($key)) {
-					$link .= "/" . $key;
+					$link .= SL . $key;
 				}
 				if (is_object($value)) {
-					$link .= "/" . Namespaces::shortClassName(get_class($value))
-						. "/" . Dao::getObjectIdentifier($value);
+					$link .= SL . Namespaces::shortClassName(get_class($value))
+						. SL . Dao::getObjectIdentifier($value);
 				}
 				else {
-					$link .= "/" . $value;
+					$link .= SL . $value;
 				}
 			}
 		}
 		if (!empty($arguments)) {
 			if (!is_array($arguments)) {
-				$link .= "?" . urlencode($arguments);
+				$link .= '?' . urlencode($arguments);
 			}
 			else {
-				$link .= "?";
+				$link .= '?';
 				$first = true;
 				foreach ($arguments as $key => $value) {
-					if ($first) $first = false; else $link .= "&amp;";
-					$link .= $key . "=" . urlencode($value);
+					if ($first) $first = false; else $link .= '&amp;';
+					$link .= $key . '=' . urlencode($value);
 				}
 			}
 		}
-		return "/" . $link;
+		return SL . $link;
 	}
 
 }

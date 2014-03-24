@@ -24,8 +24,8 @@ abstract class Namespaces
 	 */
 	public static function checkFilePath($class_name, $file_path)
 	{
-		$file_space = explode('/', substr($file_path, strlen(getcwd()) + 1));
-		$name_space = explode('\\', strtolower($class_name));
+		$file_space = explode(SL, substr($file_path, strlen(getcwd()) + 1));
+		$name_space = explode(BS, strtolower($class_name));
 		// remove main part of the namespace, and the class name too
 		array_pop($name_space);
 		array_shift($name_space);
@@ -51,8 +51,8 @@ abstract class Namespaces
 	 */
 	public static function defaultFullClassName($class_name, $model_class_name)
 	{
-		if (strpos($class_name, '\\') === false) {
-			if (($i = strrpos($model_class_name, '\\')) !== false) {
+		if (strpos($class_name, BS) === false) {
+			if (($i = strrpos($model_class_name, BS)) !== false) {
 				$class_name = substr($model_class_name, 0, $i + 1) . $class_name;
 			}
 		}
@@ -72,7 +72,7 @@ abstract class Namespaces
 		if (!$short_class_name) {
 			trigger_error('Missing class name', E_USER_ERROR);
 		}
-		if (strpos($short_class_name, '\\') === false) {
+		if (strpos($short_class_name, BS) === false) {
 			$full_class_name = isset(self::$router)
 				? self::$router->getFullClassName($short_class_name)
 				: '';
@@ -100,7 +100,7 @@ abstract class Namespaces
 	 */
 	public static function isFullClassName($class_name)
 	{
-		return strpos($class_name, '\\') !== false;
+		return strpos($class_name, BS) !== false;
 	}
 
 	//------------------------------------------------------------------------------ isShortClassName
@@ -112,7 +112,7 @@ abstract class Namespaces
 	 */
 	public static function isShortClassName($class_name)
 	{
-		return strpos($class_name, '\\') === false;
+		return strpos($class_name, BS) === false;
 	}
 
 	//-------------------------------------------------------------------------------------------- of
@@ -127,7 +127,7 @@ abstract class Namespaces
 		if (is_object($class_name)) {
 			$class_name = get_class($class_name);
 		}
-		if ($i = strrpos($class_name, '\\')) {
+		if ($i = strrpos($class_name, BS)) {
 			return substr($class_name, 0, $i);
 		}
 		else {
@@ -145,17 +145,17 @@ abstract class Namespaces
 	 */
 	public static function resolveFilePath($class_name)
 	{
-		$namespace = substr($class_name, strpos($class_name, '\\') + 1);
-		$short_class_name = substr($class_name, strrpos($class_name, '\\') + 1);
-		$namespace = substr($namespace, 0, strrpos($namespace, '\\'));
+		$namespace = substr($class_name, strpos($class_name, BS) + 1);
+		$short_class_name = substr($class_name, strrpos($class_name, BS) + 1);
+		$namespace = substr($namespace, 0, strrpos($namespace, BS));
 		$include_path = get_include_path();
 		$sl1 = '(?:[^:]*/)*';
 		$sl2 = '(?:/[^:]*)*';
-		$preg = '%(' . $sl1 . strtolower(str_replace('\\', '/' . $sl1, $namespace)) . $sl2 . ')%';
+		$preg = '%(' . $sl1 . strtolower(str_replace(BS, SL . $sl1, $namespace)) . $sl2 . ')%';
 		preg_match_all($preg, $include_path, $match);
 		foreach ($match[1] as $file_path) {
-			if (file_exists($file_path . '/' . $short_class_name . '.php')) {
-				return $file_path . '/' . $short_class_name . '.php';
+			if (file_exists($file_path . SL . $short_class_name . '.php')) {
+				return $file_path . SL . $short_class_name . '.php';
 			}
 		}
 		return null;
@@ -171,7 +171,7 @@ abstract class Namespaces
 	 */
 	public static function shortClassName($class_name)
 	{
-		$i = strrpos($class_name, '\\');
+		$i = strrpos($class_name, BS);
 		if ($i !== false) {
 			$class_name = substr($class_name, $i + 1);
 		}
