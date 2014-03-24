@@ -81,31 +81,33 @@ abstract class Integrated_Properties
 			$expand_properties = $property->getType()->asReflectionClass()->getAllProperties();
 			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
-				$display = ($display_prefix . ($display_prefix ? '.' : '')
-					. $property->name . '.' . $sub_property_name);
-				$sub_prefix = $integrated_simple ? $display_prefix : $display;
-				if ($more_expanded = self::expandUsingPropertyInternal(
-					$properties_list, $sub_property, $value, $property_name . '.' . $sub_property_name,
-					$sub_prefix, $blocks
-				)) {
-					$expanded = array_merge($expanded, $more_expanded);
-				}
-				else {
-					$sub_property = new Reflection_Property_Value(
-						$sub_property->class, $sub_property->name, $value, false, true
-					);
-					$sub_property->display = $integrated_simple
-						? (
-							($integrated->has('alias') && $sub_property->getAnnotation('alias')->value)
-							? $sub_property->getAnnotation('alias')->value : $sub_property_name
-						)
-						: $display;
-					foreach ($blocks as $block) {
-						$sub_property->getListAnnotation('block')->add($block);
+				if (!$sub_property->getListAnnotation('user')->has('invisible')) {
+					$display = ($display_prefix . ($display_prefix ? '.' : '')
+						. $property->name . '.' . $sub_property_name);
+					$sub_prefix = $integrated_simple ? $display_prefix : $display;
+					if ($more_expanded = self::expandUsingPropertyInternal(
+						$properties_list, $sub_property, $value, $property_name . '.' . $sub_property_name,
+						$sub_prefix, $blocks
+					)) {
+						$expanded = array_merge($expanded, $more_expanded);
 					}
-					$sub_property->path = $property_name . '.' . $sub_property_name;
-					$properties_list[$property_name . '.' . $sub_property_name] = $sub_property;
-					$expanded[$property_name . '.' . $sub_property_name] = $sub_property;
+					else {
+						$sub_property = new Reflection_Property_Value(
+							$sub_property->class, $sub_property->name, $value, false, true
+						);
+						$sub_property->display = $integrated_simple
+							? (
+								($integrated->has('alias') && $sub_property->getAnnotation('alias')->value)
+								? $sub_property->getAnnotation('alias')->value : $sub_property_name
+							)
+							: $display;
+						foreach ($blocks as $block) {
+							$sub_property->getListAnnotation('block')->add($block);
+						}
+						$sub_property->path = $property_name . '.' . $sub_property_name;
+						$properties_list[$property_name . '.' . $sub_property_name] = $sub_property;
+						$expanded[$property_name . '.' . $sub_property_name] = $sub_property;
+					}
 				}
 			}
 		}
