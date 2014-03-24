@@ -429,7 +429,7 @@ class Import_Array
 				if (!isset($property)) {
 					break;
 				}
-				$property_class_name = Builder::className($property->getType()->getElementTypeAsString());
+				$property_class_name = $property->getType()->getElementTypeAsString();
 			}
 			$property_path = join('.', $property_names);
 		}

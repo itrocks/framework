@@ -131,7 +131,7 @@ abstract class Getter
 				}
 				$stored = $dao->search(
 					array($class_name . '->' . $property->name => $object),
-					Builder::className($property->getType()->getElementTypeAsString()),
+					$property->getType()->getElementTypeAsString(),
 					Dao::sort()
 				);
 			}

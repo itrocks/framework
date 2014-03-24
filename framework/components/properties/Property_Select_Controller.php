@@ -79,7 +79,7 @@ class Property_Select_Controller implements Controller
 		else {
 			$top_property = new Reflection_Property($class_name, $property_path);
 			$properties = $this->getProperties(
-				new Reflection_Class(Builder::className($top_property->getType()->getElementTypeAsString())),
+				new Reflection_Class($top_property->getType()->getElementTypeAsString()),
 				$top_property->final_class
 			);
 			foreach ($properties as $property) {

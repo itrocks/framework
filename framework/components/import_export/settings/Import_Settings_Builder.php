@@ -99,7 +99,7 @@ abstract class Import_Settings_Builder
 					else {
 						$class->write_properties[$property_name] = $import_property;
 					}
-					$sub_class = Builder::className($property->getType()->getElementTypeAsString());
+					$sub_class = $property->getType()->getElementTypeAsString();
 					$class_path .= $sub_class . ".";
 				}
 				catch (ReflectionException $exception) {
@@ -141,7 +141,7 @@ abstract class Import_Settings_Builder
 					// property paths for next elements
 					$property_path = str_replace(">", ".", $property_path);
 					$property = new Reflection_Property($main_class_name, $property_path);
-					$class_name = Builder::className($property->getType()->getElementTypeAsString());
+					$class_name = $property->getType()->getElementTypeAsString();
 				}
 				$settings->classes[$property_path] = self::buildFormClass(
 					$class_name, $property_path, $class

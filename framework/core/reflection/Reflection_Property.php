@@ -64,7 +64,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 		$i = 0;
 		while (($j = strpos($property_name, '.', $i)) !== false) {
 			$property = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
-			$class_name = Builder::className($property->getType()->getElementTypeAsString());
+			$class_name = $property->getType()->getElementTypeAsString();
 			$i = $j + 1;
 		}
 		if ($i) {
@@ -97,7 +97,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 					return false;
 				}
 				$property = new Reflection_Property($class_name, $property_name);
-				$class_name = Builder::className($property->getType()->getElementTypeAsString());
+				$class_name = $property->getType()->getElementTypeAsString();
 			}
 			$property_name = end($properties_name);
 		}

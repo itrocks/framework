@@ -247,12 +247,12 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 		$class_name = $this->replacementClassName($class_name);
 	}
 
-	//----------------------------------------------------------------------- onMethodWithReturnValue
+	//------------------------------------------------------------------------- onMethodReturnedValue
 	/**
 	 * @param $result string
 	 * @return string
 	 */
-	public function onMethodWithReturnedValue($result)
+	public function onMethodReturnedValue($result)
 	{
 		return $this->replacementClassName($result);
 	}
@@ -265,32 +265,13 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 	{
 		$aop = $register->aop;
 		$this->replacements = (new Compiler())->compile($this->replacements);
-		$aop->beforeMethod(
-			array(Getter::class, 'getCollection'),
-			array($this, 'onMethodWithClassName')
-		);
-		$aop->beforeMethod(
-			array(Getter::class, 'getObject'),
-			array($this, 'onMethodWithClassName')
-		);
-		$aop->afterMethod(
-			array(Namespaces::class, 'fullClassName'),
-			array($this, 'afterNamespacesFullClassName')
-		);
-		$aop->beforeMethod(
-			array(Search_Object::class, 'create'),
-			array($this, 'onMethodWithClassName')
-		);
-		$aop->afterMethod(
-			array(Set::class, 'elementClassNameOf'),
-			array($this, 'onMethodWithReturnedValue')
-		);
-		$aop->afterMethod(
-			array(Sql_Joins::class, 'addSimpleJoin'),
-			array($this, 'onMethodWithReturnedValue')
-		);
-		// TODO this is really slow : hardcode it and optimize it in C
-		//set_new_overload(function($class_name) { return Builder::className($class_name); });
+		$aop->beforeMethod([Getter::class, 'getCollection'],        [$this, 'onMethodWithClassName']);
+		$aop->beforeMethod([Getter::class, 'getObject'],            [$this, 'onMethodWithClassName']);
+		$aop->afterMethod( [Namespaces::class, 'fullClassName'],    [$this, 'afterNamespacesFullClassName']);
+		$aop->beforeMethod([Search_Object::class, 'create'],        [$this, 'onMethodWithClassName']);
+		$aop->afterMethod( [Set::class, 'elementClassNameOf'],      [$this, 'onMethodReturnedValue']);
+		$aop->afterMethod( [Sql_Joins::class, 'addSimpleJoin'],     [$this, 'onMethodReturnedValue']);
+		$aop->afterMethod( [Type::class, 'getElementTypeAsString'], [$this, 'onMethodReturnedValue']);
 	}
 
 	//-------------------------------------------------------------------------- replacementClassName
