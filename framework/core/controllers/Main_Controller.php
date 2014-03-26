@@ -37,12 +37,21 @@ class Main_Controller
 		return $this;
 	}
 
-	//---------------------------------------------------------------------------------- aspectWeaver
-	private function aspectWeaver()
+	//----------------------------------------------------------------------------- applicationUpdate
+	/**
+	 * Update application
+	 */
+	private function applicationUpdate()
 	{
-		/** @var $weaver AOP\Weaver */
-		$weaver = Session::current()->plugins->get(AOP\Weaver::class);
-		$weaver->compile();
+		$application_updater = new Application_Updater();
+		if ($application_updater->mustUpdate()) {
+			$this->initSession(Session::current());
+			/** @var $weaver AOP\Weaver */
+			$weaver = Session::current()->plugins->get(AOP\Weaver::class);
+			$weaver->compile();
+			$application_updater->update();
+			$application_updater->done();
+		}
 	}
 
 	//----------------------------------------------------------------------------- createApplication
@@ -66,15 +75,7 @@ class Main_Controller
 	private function createSession()
 	{
 		$this->includesStart();
-		$session = Session::current(new Session());
-		$session->plugins = new Plugins\Manager();
-		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
-		$configuration = $this->loadConfiguration();
-
-		unset($_SESSION['include_path']);
-		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
-		$this->registerPlugins($session->plugins, $configuration);
-		$this->aspectWeaver();
+		$this->initSession(Session::current(new Session()));
 	}
 
 	//----------------------------------------------------------------------------- executeController
@@ -167,6 +168,23 @@ class Main_Controller
 		return $this;
 	}
 
+	//----------------------------------------------------------------------------------- initSession
+	/**
+	 * Initialise a new session, or refresh existing session for update
+	 *
+	 * @param Session $session
+	 */
+	private function initSession(Session $session)
+	{
+		$session->plugins = new Plugins\Manager();
+		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
+		$configuration = $this->loadConfiguration();
+
+		unset($_SESSION['include_path']);
+		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
+		$this->registerPlugins($session->plugins, $configuration);
+	}
+
 	//----------------------------------------------------------------------------- loadConfiguration
 	/**
 	 * Load configuration
@@ -243,6 +261,7 @@ class Main_Controller
 	public function run($uri, $get, $post, $files)
 	{
 		$this->sessionStart($get, $post);
+		$this->applicationUpdate();
 		return $this->runController($uri, $get, $post, $files);
 	}
 

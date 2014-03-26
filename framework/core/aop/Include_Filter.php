@@ -10,6 +10,7 @@ use php_user_filter;
 class Include_Filter extends php_user_filter
 {
 
+	//-------------------------------------------------------------------------------------------- ID
 	const ID = 'aop.include';
 
 	//------------------------------------------------------------------------------------ $cache_dir
@@ -27,16 +28,21 @@ class Include_Filter extends php_user_filter
 	 */
 	private static $file_name;
 
-	//-------------------------------------------------------------------------------------- register
+	//------------------------------------------------------------------------------------------ file
 	/**
-	 * @return boolean true if well registered
+	 * @param $file_name string relative path to the file to be included
+	 * @return string
 	 */
-	public static function register()
+	public static function file($file_name)
 	{
-		self::$cache_dir = substr(
-			$_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1, -4
-		) . '/cache/aop';
-		return stream_filter_register(self::ID, __CLASS__);
+		if (isset($_SERVER['ENV']) && ($_SERVER['ENV'] == 'DEV')) {
+			$cache_file_name = self::$cache_dir . '/' . str_replace('/', '-', substr($file_name, 0, -4));
+			if (file_exists($cache_file_name)) {
+				self::$file_name = $cache_file_name;
+				return 'php://filter/read=' . self::ID . '/resource=' . $file_name;
+			}
+		}
+		return $file_name;
 	}
 
 	//---------------------------------------------------------------------------------------- filter
@@ -62,21 +68,16 @@ class Include_Filter extends php_user_filter
 		return PSFS_PASS_ON;
 	}
 
-	//------------------------------------------------------------------------------------------ file
+	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $file_name string relative path to the file to be included
-	 * @return string
+	 * @return boolean true if well registered
 	 */
-	public static function file($file_name)
+	public static function register()
 	{
-		if (isset($_SERVER['ENV']) && ($_SERVER['ENV'] == 'DEV')) {
-			$cache_file_name = self::$cache_dir . '/' . str_replace('/', '-', substr($file_name, 0, -4));
-			if (file_exists($cache_file_name)) {
-				self::$file_name = $cache_file_name;
-				return 'php://filter/read=' . self::ID . '/resource=' . $file_name;
-			}
-		}
-		return $file_name;
+		self::$cache_dir = substr(
+			$_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1, -4
+		) . '/cache/aop';
+		return stream_filter_register(self::ID, __CLASS__);
 	}
 
 }

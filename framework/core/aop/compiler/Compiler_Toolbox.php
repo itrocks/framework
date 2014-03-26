@@ -2,7 +2,6 @@
 namespace SAF\AOP;
 
 use ReflectionFunction;
-use ReflectionMethod;
 use SAF\Framework\Reflection_Function;
 use SAF\Framework\Reflection_Method;
 use SAF\Plugins\Plugin;
@@ -97,7 +96,7 @@ trait Compiler_Toolbox
 	) {
 		// $advice_code
 		if (is_array($advice)) {
-			$method = new ReflectionMethod($advice_class_name, $advice_method_name);
+			$method = new Reflection_Method($advice_class_name, $advice_method_name);
 			$ref = $method->returnsReference() ? '&' : '';
 			// static method call
 			if ($is_advice_static) {

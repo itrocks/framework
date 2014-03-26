@@ -1,14 +1,13 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\Plugins;
-
 /**
  * The application updater plugin detects if the application needs to be updated, and launch updates
  *
- * All updatable plugins should use the mustUpdate() method to know if they need to launch their update process.
+ * All updatable plugins should use the mustUpdate() method to know if they need to launch their
+ * update process.
  */
-class Application_Updater implements Plugins\Registerable
+class Application_Updater
 {
 
 	//----------------------------------------------------------------------------------- $updatables
@@ -38,13 +37,17 @@ class Application_Updater implements Plugins\Registerable
 	 *
 	 * Update if update flag file found
 	 * Does nothing if not
+	 *
+	 * @return boolean true if updates were made
 	 */
 	public function autoUpdate()
 	{
 		if ($this->mustUpdate()) {
 			$this->update();
 			$this->done();
+			return true;
 		}
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------------ done
@@ -67,19 +70,6 @@ class Application_Updater implements Plugins\Registerable
 	public function mustUpdate()
 	{
 		return file_exists('update');
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * Registers the application updater plugin
-	 * Called by the plugins registerer when the plugin is set
-	 *
-	 * @param $register Plugins\Register
-	 */
-	public function register(Plugins\Register $register)
-	{
-		$aop = $register->aop;
-		$aop->beforeMethod([Main_Controller::class, 'runController'], [$this, 'autoUpdate']);
 	}
 
 	//---------------------------------------------------------------------------------------- update

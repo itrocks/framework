@@ -169,6 +169,15 @@ class Compiler implements ICompiler
 		}
 	}
 
+	//----------------------------------------------------------------------------------- compileFile
+	/**
+	 * @param $file_name string
+	 */
+	public function compileFile($file_name)
+	{
+		$this->compileClass(Php_Class::fromFile($file_name));
+	}
+
 	//---------------------------------------------------------------------------------- getPointcuts
 	/**
 	 * @param $class_name string
