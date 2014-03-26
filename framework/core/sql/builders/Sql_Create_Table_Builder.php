@@ -40,7 +40,7 @@ class Sql_Create_Table_Builder
 		foreach ($this->table->getForeignKeys() as $foreign_key) {
 			$foreign_keys[] = $foreign_key->toSql();
 		}
-		return 'CREATE TABLE ' . BQ . $this->table->getName() . BQ . ' ('
+		return 'CREATE TABLE IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('
 			. join(', ', $columns)
 			. ($indexes ? ', ' : '') . join(', ', $indexes)
 			. ($foreign_keys ? ', ' : '') . join(', ', $foreign_keys)
