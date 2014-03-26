@@ -38,7 +38,7 @@ trait Mysql_Column_Builder_Property
 				if ($property_type->isNumeric()) {
 					$default = 0;
 				}
-				elseif ($property_type->isString()) {
+				elseif ($property_type->isString() || $property_type->isMultipleString()) {
 					$default = '';
 				}
 				elseif ($property_type->isDateTime()) {
