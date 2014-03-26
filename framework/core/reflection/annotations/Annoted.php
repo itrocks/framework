@@ -12,6 +12,14 @@ trait Annoted
 
 	//---------------------------------------------------------------------------------- $annotations
 	/**
+	 * Local annotations cache
+	 *
+	 * @var array
+	 */
+	private $annotations = [];
+
+	//---------------------------------------------------------------------------- $annotations_cache
+	/**
 	 * Global annotations cache
 	 *
 	 * Annotation['Class_Name']['@']['annotation']
@@ -69,6 +77,9 @@ trait Annoted
 	 */
 	private function getCachedAnnotation($annotation_name, $multiple)
 	{
+		if (isset($this->annotations[$annotation_name])) {
+			return $this->annotations[$annotation_name];
+		}
 		$path = $this->getAnnotationCachePath();
 		if (
 			!isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple])
@@ -119,7 +130,11 @@ trait Annoted
 
 	//--------------------------------------------------------------------------------- setAnnotation
 	/**
-	 * Sets an annotation value for the reflected property (use it when no annotation found)
+	 * Sets an annotation value for the reflected object (use it when no annotation found)
+	 *
+	 * The annotation value will be set for all equivalent reflection objects.
+	 * If you want to change the annotation for a local reflection object only, please consider
+	 * using setAnnotationLocal($annotation_name) and modifying the local annotation instead.
 	 *
 	 * @param $annotation_name string
 	 * @param $annotation      Annotation
@@ -130,9 +145,31 @@ trait Annoted
 		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][false] = $annotation;
 	}
 
+	//---------------------------------------------------------------------------- setAnnotationLocal
+	/**
+	 * Sets an annotation to local and return the local annotation object.
+	 * This enable to get a copy of the notation visible into this reflection object only,
+	 * that you can change without affecting others equivalent reflection objects.
+	 *
+	 * If the annotation was already set to local, this local annotation is returned without reset.
+	 *
+	 * @param $annotation_name
+	 * @return Annotation
+	 */
+	public function setAnnotationLocal($annotation_name)
+	{
+		return isset($this->annotations[$annotation_name])
+			? $this->annotations[$annotation_name]
+			: ($this->annotations[$annotation_name] = clone $this->getAnnotation($annotation_name));
+	}
+
 	//-------------------------------------------------------------------------------- setAnnotations
 	/**
-	 * Sets a multiple annotations value for the reflected property (use it when no annotation found)
+	 * Sets a multiple annotations value for the reflected object (use it when no annotation found)
+	 *
+	 * The annotation values will be set for all equivalent reflection objects.
+	 * If you want to change the annotations for a local reflection object only, please consider
+	 * using setAnnotationLocal($annotation_name) and modifying the local annotations instead.
 	 *
 	 * @param $annotation_name string
 	 * @param $annotations     Annotation[]

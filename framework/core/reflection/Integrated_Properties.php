@@ -57,7 +57,7 @@ abstract class Integrated_Properties
 
 	//------------------------------------------------------------------- expandUsingPropertyInternal
 	/**
-	 * @param $properties_list Reflection_Property[] new indicies will be 'property.sub_property'
+	 * @param $properties_list Reflection_Property[] new indices will be 'property.sub_property'
 	 * @param $property        Reflection_Property
 	 * @param $object          object
 	 * @param $property_name   string
@@ -72,13 +72,14 @@ abstract class Integrated_Properties
 	) {
 		$expanded = [];
 		/** @var $integrated Integrated_Annotation */
-		$integrated = $property->getAnnotation('integrated');
+		$integrated = $property->getListAnnotation('integrated');
 		if ($integrated->value && !$property->isStatic()) {
 			if ($integrated->has('block')) {
 				$blocks[$property->path ?: $property->name] = $property->path ?: $property->name;
 			}
 			$integrated_simple = $integrated->has('simple');
-			$expand_properties = $property->getType()->asReflectionClass()->getAllProperties();
+			$sub_properties_class = $property->getType()->asReflectionClass();
+			$expand_properties = $sub_properties_class->getAllProperties();
 			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
 				if (!$sub_property->getListAnnotation('user')->has('invisible')) {
@@ -95,14 +96,18 @@ abstract class Integrated_Properties
 						$sub_property = new Reflection_Property_Value(
 							$sub_property->class, $sub_property->name, $value, false, true
 						);
+						$sub_property->final_class = $sub_properties_class->name;
 						$sub_property->display = $integrated_simple
 							? (
 								($integrated->has('alias') && $sub_property->getAnnotation('alias')->value)
-								? $sub_property->getAnnotation('alias')->value : $sub_property_name
+								? $sub_property->getAnnotation('alias')->value
+								: $sub_property_name
 							)
 							: $display;
+						/** @var $block_annotation List_Annotation */
+						$block_annotation = $sub_property->setAnnotationLocal('block');
 						foreach ($blocks as $block) {
-							$sub_property->getListAnnotation('block')->add($block);
+							$block_annotation->add($block);
 						}
 						$sub_property->path = $property_name . DOT . $sub_property_name;
 						$properties_list[$property_name . DOT . $sub_property_name] = $sub_property;
