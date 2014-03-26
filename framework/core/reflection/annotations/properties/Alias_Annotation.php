@@ -7,7 +7,8 @@ namespace SAF\Framework;
  * ie when an object is integrated to it's container object, for an output view
  *
  * @example
- * If the city object of an address is integrated 'simple', the name of the city should be aliased to 'city'
+ * If the city object of an address is integrated 'simple', the name of the city should be aliased
+ * to 'city'
  */
 class Alias_Annotation extends Annotation
 {

@@ -81,7 +81,8 @@ fieldset {
       fieldset > div:not(.tabber).multiple > label {
         background-color: #e9ede7;
         height: 14px;
-        font-weight: bold; }
+        font-weight: bold;
+        white-space: nowrap; }
       fieldset > div:not(.tabber).multiple > div > table > thead > tr > th {
         padding: 1px 2px; }
       fieldset > div:not(.tabber).multiple > div > table > tbody > tr:hover {
