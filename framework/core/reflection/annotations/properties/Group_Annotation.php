@@ -22,7 +22,7 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 		parent::__construct($value);
 		if (empty($this->value)) {
 			/** @var $group Class_Group_Annotation */
-			foreach ($property->getDeclaringClass()->getAnnotations('group') as $group) {
+			foreach ($property->getFinalClass()->getAnnotations('group') as $group) {
 				if ($group->has($property->name)) {
 					$this->value = $property->name;
 					break;

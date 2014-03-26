@@ -100,12 +100,11 @@ class Import_Class implements Serializable
 	 */
 	public function addConstant()
 	{
-		$properties = (new Reflection_Class($this->class_name))->getAllProperties();
-		foreach ($properties as $property) {
+		foreach ((new Reflection_Class($this->class_name))->getAllProperties() as $property) {
 			if (!$property->isStatic() && !isset($this->constants[$property->name])) {
-				$this->constants[$property->name] = new Reflection_Property_Value(
-					$property->class, $property->name
-				);
+				$property = new Reflection_Property_Value($property->class, $property->name);
+				$property->final_class = $this->class_name;
+				$this->constants[$property->name] = $property;
 				break;
 			}
 		}

@@ -19,19 +19,6 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	 */
 	const ALL = 1799;
 
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class_name  string
-	 * @param $method_name string
-	 */
-	public function __construct($class_name, $method_name)
-	{
-		if (!(is_string($class_name) && is_string($method_name))) {
-			trigger_error(__CLASS__ . ' constructor needs strings', E_USER_ERROR);
-		}
-		parent::__construct($class_name, $method_name);
-	}
-
 	//------------------------------------------------------------------------ getAnnotationCachePath
 	/**
 	 * @return string[]

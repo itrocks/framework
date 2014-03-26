@@ -66,21 +66,17 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 *
 	 * @param $filter      integer|string
 	 * @param $by_name     boolean
-	 * @param $final_class string
 	 * @return Reflection_Property[]
 	 */
-	public function getAllProperties(
-		$filter = Reflection_Property::ALL, $by_name = true, $final_class = null
-	) {
+	public function getAllProperties($filter = Reflection_Property::ALL, $by_name = true)
+	{
 		$parent = $this->getParentClass();
-		if ($parent) {
+		$properties = $this->getProperties($filter, $by_name);
+		while ($parent) {
 			$properties = array_merge(
-				$parent->getAllProperties($filter, $by_name, $final_class),
-				$this->getProperties($filter, $by_name, $final_class)
+				$parent->getProperties($filter, $by_name, $this->name), $properties
 			);
-		}
-		else {
-			$properties = $this->getProperties($filter, $by_name, $final_class);
+			$parent = $parent->getParentClass();
 		}
 		return $properties;
 	}
@@ -288,8 +284,9 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 		}
 		$properties = [];
 		foreach (parent::getProperties($filter) as $key => $property) {
-			$properties[$by_name ? $property->name : $key]
-				= new Reflection_Property($final_class, $property->name);
+			$property = new Reflection_Property($property->class, $property->name);
+			$property->final_class = $final_class;
+			$properties[$by_name ? $property->name : $key] = $property;
 		}
 		return $properties;
 	}

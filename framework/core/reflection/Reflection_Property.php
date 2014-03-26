@@ -110,7 +110,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	protected function getAnnotationCachePath()
 	{
-		return [$this->class, $this->name];
+		return [$this->final_class, $this->name];
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass

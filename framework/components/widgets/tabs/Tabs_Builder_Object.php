@@ -27,9 +27,11 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 		$properties = $class->accessProperties();
 		foreach ($properties as $property_name => $property) {
 			if (!isset($filter_properties) || in_array($property_name, $filter_properties)) {
-				$properties[$property_name] = new Reflection_Property_Value(
+				$property = new Reflection_Property_Value(
 					$property->class, $property->name, $object, false, true
 				);
+				$property->final_class = $class->name;
+				$properties[$property_name] = $property;
 			}
 			else {
 				unset($properties[$property_name]);
