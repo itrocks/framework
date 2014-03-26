@@ -41,8 +41,7 @@ abstract class Mysql_Table_Builder_Mysqli
 		}
 		$result->free();
 
-		$unique = isset($table_name)
-			&& (strpos($table_name, '%') === false) && (strpos($table_name, '_') === false);
+		$unique = isset($table_name) && (strpos($table_name, '%') === false);
 
 		return $unique ? reset($tables) : $tables;
 	}
