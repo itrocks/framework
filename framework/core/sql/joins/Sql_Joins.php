@@ -161,18 +161,19 @@ class Sql_Joins
 	/**
 	 * Add a link class (using the 'link' class annotation) to joins
 	 *
-	 * @param $path               string
-	 * @param $linked_class_name  string
+	 * @param $path               string     the property path
+	 * @param $class              Link_Class the link class itself (which contains the @link)
+	 * @param $linked_class_name  string     the linked class name (the value of @link)
 	 * @param $join_mode          string
 	 * @return Reflection_Property[] the properties that come from the linked class,
 	 * for further exclusion
 	 */
-	private function addLinkedClass($path, $linked_class_name, $join_mode)
+	private function addLinkedClass($path, $class, $linked_class_name, $join_mode)
 	{
 		$linked_class = new Reflection_Class($linked_class_name);
 		$join = new Sql_Join();
 		$join->master_alias   = 't' . ($this->alias_counter - 1);
-		$join->master_column  = 'id_' . Names::classToProperty($linked_class_name);
+		$join->master_column  = 'id_' . $class->getCompositeProperty()->name;
 		$join->foreign_alias  = 't' . $this->alias_counter++;
 		$join->foreign_column = 'id';
 		$join->foreign_class  = $linked_class_name;
@@ -186,7 +187,7 @@ class Sql_Joins
 		$this->joins[($path ? ($path . '-') : '') . $join->foreign_table . '-@link'] = $join;
 		$more_linked_class_name = $linked_class->getAnnotation('link')->value;
 		$exclude_properties = $more_linked_class_name
-			? $this->addLinkedClass($path, $more_linked_class_name, $join_mode)
+			? $this->addLinkedClass($path, $class, $more_linked_class_name, $join_mode)
 			: [];
 		foreach ($linked_class->getAllProperties() as $property) if (!$property->isStatic()) {
 			if (!isset($exclude_properties[$property->name])) {
@@ -261,11 +262,11 @@ class Sql_Joins
 	 */
 	private function addProperties($path, $class_name, $join_mode = null)
 	{
-		$class = new Reflection_Class($class_name);
+		$class = new Link_Class($class_name);
 		$this->properties[$class_name] = $class->getAllProperties();
 		$linked_class_name = $class->getAnnotation('link')->value;
 		if ($linked_class_name) {
-			$this->addLinkedClass($path, $linked_class_name, $join_mode);
+			$this->addLinkedClass($path, $class, $linked_class_name, $join_mode);
 		}
 	}
 
