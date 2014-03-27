@@ -12,6 +12,7 @@ class User_Setting extends Setting
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
+	 * @composite
 	 * @link Object
 	 * @var User
 	 */

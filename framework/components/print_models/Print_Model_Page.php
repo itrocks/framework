@@ -12,6 +12,7 @@ class Print_Model_Page
 
 	//---------------------------------------------------------------------------------------- $model
 	/**
+	 * @composite
 	 * @link Object
 	 * @var Print_Model
 	 */

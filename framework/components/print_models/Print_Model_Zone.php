@@ -12,6 +12,7 @@ class Print_Model_Zone
 	/**
 	 * The link to the page which contains the zone
 	 *
+	 * @composite
 	 * @link Object
 	 * @var Print_Model_Page
 	 */
