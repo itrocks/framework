@@ -223,7 +223,8 @@ abstract class List_Controller extends Output_Controller
 	//-------------------------------------------------------------------------------- getSortClasses
 	/**
 	 * @param $list_settings List_Settings
-	 * @return string[] key is column number and property path, value is position of the sort property (0..n)
+	 * @return string[] key is column number and property path, value is position of the sort property
+	 *         (0..n)
 	 */
 	protected function getSortClasses(List_Settings $list_settings)
 	{
