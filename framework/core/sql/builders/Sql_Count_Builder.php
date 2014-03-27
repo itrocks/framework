@@ -51,7 +51,7 @@ class Sql_Count_Builder
 	public function buildQuery()
 	{
 		// call buildWhere() before buildTables(), to get joins ready
-		$where   = $this->where_builder->build();
+		$where   = $this->where_builder->build(true);
 		$tables  = $this->tables_builder->build();
 		return $this->finalize($where, $tables);
 	}
@@ -61,11 +61,21 @@ class Sql_Count_Builder
 	 * Finalize SQL query
 	 *
 	 * @param $tables  string tables list, including joins, without 'FROM'
-	 * @param $where   string where clause, including ' WHERE ' or empty if no filter on read
+	 * @param $where   string|string[] where clause, including ' WHERE ' or empty if no filter on read
 	 * @return string
 	 */
 	private function finalize($where, $tables)
 	{
+		if (is_array($where)) {
+			$sql = '';
+			foreach ($where as $sub_where) {
+				if (!empty($sql)) {
+					$sql .= LF . 'UNION ';
+				}
+				$sql .= $this->finalize($sub_where, $tables);
+			}
+			return 'SELECT COUNT(*) FROM (' . LF . $sql . ') t0 GROUP BY t0.id';
+		}
 		return 'SELECT COUNT(*) FROM ' . $tables . $where;
 	}
 

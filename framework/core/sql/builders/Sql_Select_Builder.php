@@ -154,7 +154,7 @@ class Sql_Select_Builder
 	 *
 	 * @param $columns string columns list, separated by ', '
 	 * @param $tables  string tables list, including joins, without 'FROM'
-	 * @param $where   string where clause, including ' WHERE ' or empty if no filter on read
+	 * @param $where   string|string[] where clause, including ' WHERE ' or empty if no filter on read
 	 * @param $options string[]
 	 * @return string
 	 */
@@ -164,7 +164,10 @@ class Sql_Select_Builder
 			$sql = '';
 			$options_inside = [];
 			foreach ($options as $option) {
-				if (substr($option, 0, 10) !== ' ORDER BY ') {
+				if (
+					(substr($option, 0, 10) !== ' ORDER BY ')
+					&& (substr($option, 0, 7) !== ' LIMIT ')
+				) {
 					$options_inside[] = $option;
 				}
 			}

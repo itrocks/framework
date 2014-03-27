@@ -16,6 +16,10 @@ input.datetime {
 .ui-datepicker-trigger {
   display: none; }
 
+.ui-autocomplete {
+  max-height: 230px;
+  overflow-y: scroll; }
+
 /* float / integer input / display */
 .float,
 .integer {

@@ -59,7 +59,11 @@ class Default_Json_Controller implements Default_Feature_Controller
 			}
 			// all results from search
 			else {
-				foreach (Dao::search($search, $element_class_name, Dao::sort()) as $source_object) {
+				$search_options = [Dao::sort()];
+				if (isset($parameters['limit'])) {
+					$search_options[] = Dao::limit($parameters['limit']);
+				}
+				foreach (Dao::search($search, $element_class_name, $search_options) as $source_object) {
 					$objects[] = new Autocomplete_Entry(
 						Dao::getObjectIdentifier($source_object), strval($source_object)
 					);

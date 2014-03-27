@@ -111,6 +111,9 @@ $('document').ready(function()
 			if (request == undefined) {
 				request = [];
 			}
+			if (!request['first']) {
+				request['limit'] = 100;
+			}
 			if (!window.app.use_cookies) request['PHPSESSID'] = window.app.PHPSESSID;
 			var filters = $element.data('combo-filters');
 			if (filters != undefined) {
