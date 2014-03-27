@@ -37,6 +37,33 @@ class Dao_Logical_Function implements Dao_Where_Function
 		if (isset($arguments)) $this->arguments = $arguments;
 	}
 
+	//----------------------------------------------------------------------------------------- isAnd
+	/**
+	 * @return boolean
+	 */
+	public function isAnd()
+	{
+		return $this->operator === self::AND_OPERATOR;
+	}
+
+	//------------------------------------------------------------------------------------------ isOr
+	/**
+	 * @return boolean
+	 */
+	public function isOr()
+	{
+		return $this->operator === self::OR_OPERATOR;
+	}
+
+	//----------------------------------------------------------------------------------------- isXor
+	/**
+	 * @return boolean
+	 */
+	public function isXor()
+	{
+		return $this->operator === self::XOR_OPERATOR;
+	}
+
 	//----------------------------------------------------------------------------------------- toSql
 	/**
 	 * Returns the Dao function as SQL
@@ -49,13 +76,24 @@ class Dao_Logical_Function implements Dao_Where_Function
 	{
 		$sql = '';
 		foreach ($this->arguments as $other_property_path => $argument) {
-			if (empty($not_first)) $not_first = true; else $sql .= $this->operator;
-			if (is_numeric($other_property_path)) {
-				$other_property_path = $property_path;
+			if (empty($not_first)) {
+				$not_first = true;
 			}
-			$sql .= ($argument instanceof Dao_Where_Function)
-				? $argument->toSql($builder, $other_property_path)
-				: Sql_Value::escape($argument);
+			else {
+				$sql .= $this->operator;
+			}
+			if (is_numeric($other_property_path)) {
+				$sql .= ($argument instanceof Dao_Where_Function)
+					? $argument->toSql($builder, $property_path)
+					: Sql_Value::escape($argument);
+			}
+			else {
+				$sql .= ($argument instanceof Dao_Where_Function)
+					? $argument->toSql($builder, $other_property_path)
+					: (new Dao_Comparison_Function(Dao_Comparison_Function::AUTO, $argument))->toSql(
+						$builder, $other_property_path
+					);
+			}
 		}
 		return $sql;
 	}

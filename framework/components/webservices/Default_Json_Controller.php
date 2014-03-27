@@ -38,14 +38,14 @@ class Default_Json_Controller implements Default_Feature_Controller
 					new Reflection_Class($element_class_name), $parameters['term'], '', '%'
 				);
 			}
-			if (isset($parameters['filters'])) {
+			if (isset($parameters['filters']) && $parameters['filters']) {
+				if (!$search->isAnd()) {
+					$search = Dao_Func::andOp([$search]);
+				}
 				foreach ($parameters['filters'] as $filter_name => $filter_value) {
-					$search[$filter_name] = ($filter_value[0] == '!')
+					$search->arguments[$filter_name] = ($filter_value[0] == '!')
 						? Dao_Func::notEqual(substr($filter_value, 1))
 						: $filter_value;
-				}
-				if (count($search) > 1) {
-					$search = ['AND' => $search];
 				}
 			}
 			$objects = [];

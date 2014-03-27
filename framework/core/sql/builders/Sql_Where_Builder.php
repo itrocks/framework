@@ -25,7 +25,7 @@ class Sql_Where_Builder
 	/**
 	 * Where array expression, indices are columns names
 	 *
-	 * @var array
+	 * @var array|Dao_Where_Function
 	 */
 	private $where_array;
 
@@ -38,7 +38,7 @@ class Sql_Where_Builder
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
 	 *
 	 * @param $class_name  string base object class name
-	 * @param $where_array array where array expression, indices are columns names
+	 * @param $where_array array|Dao_Where_Function where array expression, indices are columns names
 	 * @param $sql_link    Sql_Link
 	 * @param $joins       Sql_Joins
 	 */
@@ -63,10 +63,25 @@ class Sql_Where_Builder
 	/**
 	 * Build SQL WHERE section, add add joins for search criterion
 	 *
-	 * @return string
+	 * @param $union_optimization boolean If true, accepts an array as a result
+	 *        for a OR logical function
+	 * @return string|string[] if array, this is several WHERE clauses for an
+	 *         optimized-union-instead-of-or.
 	 */
-	public function build()
+	public function build($union_optimization = false)
 	{
+		$where_array = $this->where_array;
+		if (
+			$union_optimization
+			&& ($where_array instanceof Dao_Logical_Function)
+			&& $where_array->isOr()
+		) {
+			$sql = [];
+			foreach ($where_array->arguments as $property_path => $argument) {
+				$sql[] = ' WHERE ' . $this->buildPath($property_path, $argument, 'AND');
+			}
+			return $sql;
+		}
 		$sql = is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND');
 		return $sql ? ' WHERE ' . $sql : $sql;
 	}
@@ -86,11 +101,11 @@ class Sql_Where_Builder
 		$first = true;
 		foreach ($array as $key => $value) {
 			if ($first) $first = false; else $sql .= SP . $clause . SP;
-			$subclause = strtoupper($key);
-			switch ($subclause) {
+			$sub_clause = strtoupper($key);
+			switch ($sub_clause) {
 				case 'NOT': $sql .= 'NOT (' . $this->buildPath($path, $value, 'AND') . ')';  break;
-				case 'AND': $sql .= $this->buildPath($path, $value, $subclause);             break;
-				case 'OR':  $sql .= '(' . $this->buildPath($path, $value, $subclause) . ')'; break;
+				case 'AND': $sql .= $this->buildPath($path, $value, $sub_clause);             break;
+				case 'OR':  $sql .= '(' . $this->buildPath($path, $value, $sub_clause) . ')'; break;
 				default:
 					if (is_numeric($key)) {
 						$build = $this->buildPath($path, $value, $clause);

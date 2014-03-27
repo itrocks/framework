@@ -43,10 +43,11 @@ class Search_Array_Builder
 		}
 		// search phrase contains AND
 		elseif (strpos($search_phrase, $this->and) !== false) {
-			$result = [];
+			$and = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$result[$property_name]['AND'][] = $this->build('', $search, $prepend, $append);
+				$and[] = $this->build('', $search, $prepend, $append);
 			}
+			$result[$property_name]= Dao_Func::andOp($and);
 			return $property_name ? $result : reset($result);
 		}
 		// simple search phrase
@@ -63,7 +64,7 @@ class Search_Array_Builder
 	 * @param $search_phrase string
 	 * @param $prepend string
 	 * @param $append string
-	 * @return array
+	 * @return Dao_Logical_Function
 	 */
 	public function buildMultiple(
 		$property_names_or_class, $search_phrase, $prepend = '', $append = ''
@@ -71,25 +72,30 @@ class Search_Array_Builder
 		$property_names = ($property_names_or_class instanceof Reflection_Class)
 			? $this->classRepresentativeProperties($property_names_or_class)
 			: $property_names_or_class;
-		$result = [];
 		// search phrase contains OR
 		if (strpos($search_phrase, $this->or) !== false) {
+			$or = [];
 			foreach ($property_names as $property_name) {
-				$result['OR'][$property_name] = $this->build('', $search_phrase, $prepend, $append);
+				$or[$property_name] = $this->build('', $search_phrase, $prepend, $append);
 			}
+			$result = Dao_Func::orOp($or);
 		}
 		// search phrase contains AND
 		elseif (strpos($search_phrase, $this->and) !== false) {
+			$and = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$result['AND'][] = $this->buildMultiple($property_names, $search, $prepend, $append);
+				$and[] = $this->buildMultiple($property_names, $search, $prepend, $append);
 				$prepend = '%';
 			}
+			$result = Dao_Func::andOp($and);
 		}
 		// simple search phrase
 		else {
+			$or = [];
 			foreach ($property_names as $property_name) {
-				$result['OR'][$property_name] = $prepend . $search_phrase . $append;
+				$or[$property_name] = $prepend . $search_phrase . $append;
 			}
+			$result = Dao_Func::orOp($or);
 		}
 		return $result;
 	}

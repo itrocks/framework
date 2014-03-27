@@ -8,6 +8,7 @@ namespace SAF\Framework;
 class Dao_Comparison_Function implements Dao_Where_Function
 {
 
+	const AUTO             = null;
 	const EQUAL            = '=';
 	const GREATER          = '>';
 	const GREATER_OR_EQUAL = '>=';
@@ -21,7 +22,7 @@ class Dao_Comparison_Function implements Dao_Where_Function
 	/**
 	 * @var string
 	 */
-	public $sign = Dao_Comparison_Function::EQUAL;
+	public $sign;
 
 	//----------------------------------------------------------------------------------- $than_value
 	/**
@@ -38,6 +39,12 @@ class Dao_Comparison_Function implements Dao_Where_Function
 	{
 		if (isset($sign))       $this->sign = $sign;
 		if (isset($than_value)) $this->than_value = $than_value;
+		if (isset($this->than_value) && !isset($this->sign)) {
+			$this->sign =
+				((strpos($this->than_value, '_') !== false) || (strpos($this->than_value, '%') !== false))
+				? self::LIKE
+				: self::EQUAL;
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

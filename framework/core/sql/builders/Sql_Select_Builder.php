@@ -141,7 +141,7 @@ class Sql_Select_Builder
 		// correctly deal with all properties.
 		// Call of buildColumns() and buildWhere() before buildTables(), to get joins ready.
 		$this->additional_where_clause = '';
-		$where   = $this->where_builder->build();
+		$where   = $this->where_builder->build(true);
 		$options = $this->buildOptions();
 		$columns = $this->columns_builder->build();
 		$tables  = $this->tables_builder->build();
@@ -160,6 +160,22 @@ class Sql_Select_Builder
 	 */
 	private function finalize($columns, $where, $tables, $options)
 	{
+		if (is_array($where)) {
+			$sql = '';
+			$options_inside = [];
+			foreach ($options as $option) {
+				if (substr($option, 0, 10) !== ' ORDER BY ') {
+					$options_inside[] = $option;
+				}
+			}
+			foreach ($where as $sub_where) {
+				if (!empty($sql)) {
+					$sql .= LF . 'UNION ';
+				}
+				$sql .= $this->finalize($columns, $sub_where, $tables, $options_inside);
+			}
+			return 'SELECT * FROM (' . LF . $sql . ') t0 GROUP BY t0.id' . join('', $options);
+		}
 		return 'SELECT'
 			. $this->additional_where_clause . SP
 			. $columns . SP
