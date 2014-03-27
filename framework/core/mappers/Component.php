@@ -82,9 +82,18 @@ trait Component
 			$properties = empty($property_name)
 				? (new Reflection_Class($self))->getAnnotedProperties('composite')
 				: [new Reflection_Property($self, $property_name)];
+			// take the right composite property
 			foreach ($properties as $property) {
 				if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
 					self::$composite_property_name[$path][$property->name] = $property;
+				}
+			}
+			if (!self::$composite_property_name[$path]) {
+				// automatic composite property : filter all properties by class name as type
+				foreach ((new Reflection_Class($self))->getAllProperties() as $property) {
+					if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
+						self::$composite_property_name[$path][$property->name] = $property;
+					}
 				}
 			}
 		}
