@@ -333,7 +333,9 @@ class Sql_Joins
 						property_exists($foreign_class_name, $foreign_property_name)
 						&& ($master_property->getAnnotation('link')->value != 'Map')
 					) {
-						$foreign_property = new Reflection_Class($foreign_class_name, $foreign_property_name);
+						$foreign_property = new Reflection_Property(
+							$foreign_class_name, $foreign_property_name
+						);
 						$join->foreign_column = 'id_' . $foreign_property->getAnnotation('storage')->value;
 						$join->master_column  = 'id';
 					}
