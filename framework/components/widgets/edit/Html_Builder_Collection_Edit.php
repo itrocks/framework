@@ -28,22 +28,21 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 
 	//------------------------------------------------------------------------------------- buildCell
 	/**
-	 * @param $object        object
-	 * @param $property_name string
+	 * @param $object   object
+	 * @param $property Reflection_Property
 	 * @return Html_Table_Standard_Cell
 	 */
-	protected function buildCell($object, $property_name)
+	protected function buildCell($object, Reflection_Property $property)
 	{
 		if (!isset($this->template)) {
 			$this->template = new Html_Edit_Template();
 		}
-		$property = new Reflection_Property(get_class($object), $property_name);
 		$value = $property->getType()->isBoolean()
 			? $property->getValue($object)
 			: (new Reflection_Property_View($property))->getFormattedValue($object);
 		$builder = (new Html_Builder_Property_Edit($property, $value, $this->property->name . '[]'));
 		$input = $builder->setTemplate($this->template)->build();
-		if ($property_name == reset($this->properties)) {
+		if ($property->name == reset($this->properties)->name) {
 			$property_builder = new Html_Builder_Property_Edit();
 			$property_builder->setTemplate($this->template);
 			$id_input = new Html_Input(

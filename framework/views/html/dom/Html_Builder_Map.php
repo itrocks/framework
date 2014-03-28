@@ -19,6 +19,12 @@ class Html_Builder_Map
 	 */
 	protected $map;
 
+	//----------------------------------------------------------------------------------- $properties
+	/**
+	 * @var Reflection_Property[]
+	 */
+	protected $properties;
+
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property
@@ -36,7 +42,9 @@ class Html_Builder_Map
 		$this->map = $map;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
 		$class = new Reflection_Class($this->class_name);
-		$this->properties = $class->getListAnnotation('representative')->values();
+		/** @var $representative Class_Representative_Annotation */
+		$representative = $class->getListAnnotation('representative');
+		$this->properties = $representative->getProperties();
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -83,10 +91,11 @@ class Html_Builder_Map
 	{
 		$head = new Html_Table_Head();
 		$row = new Html_Table_Row();
-		foreach ($this->properties as $property_name) {
-			$cell = new Html_Table_Header_Cell(
-				Loc::tr(Names::propertyToDisplay($property_name), $this->class_name)
-			);
+		foreach ($this->properties as $property) {
+			$cell = new Html_Table_Header_Cell(Loc::tr(
+				Names::propertyToDisplay($property->getAnnotation('alias')->value),
+				$this->class_name
+			));
 			$row->addCell($cell);
 		}
 		$head->addRow($row);

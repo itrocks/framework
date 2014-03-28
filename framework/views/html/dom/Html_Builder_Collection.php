@@ -21,7 +21,7 @@ class Html_Builder_Collection
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * @var string[]
+	 * @var Reflection_Property[]
 	 */
 	protected $properties;
 
@@ -73,13 +73,12 @@ class Html_Builder_Collection
 
 	//------------------------------------------------------------------------------------- buildCell
 	/**
-	 * @param $object        object
-	 * @param $property_name string
+	 * @param $object   object
+	 * @param $property Reflection_Property
 	 * @return Html_Table_Standard_Cell
 	 */
-	protected function buildCell($object, $property_name)
+	protected function buildCell($object, Reflection_Property $property)
 	{
-		$property = new Reflection_Property(get_class($object), $property_name);
 		$cell = new Html_Table_Standard_Cell(
 			(new Reflection_Property_View($property))->getFormattedValue($object)
 		);
@@ -99,10 +98,11 @@ class Html_Builder_Collection
 	{
 		$head = new Html_Table_Head();
 		$row = new Html_Table_Row();
-		foreach ($this->properties as $property_name) {
-			$cell = new Html_Table_Header_Cell(
-				Loc::tr(Names::propertyToDisplay($property_name), $this->class_name)
-			);
+		foreach ($this->properties as $property) {
+			$cell = new Html_Table_Header_Cell(Loc::tr(
+				Names::propertyToDisplay($property->getAnnotation('alias')->value),
+				$this->class_name
+			));
 			$row->addCell($cell);
 		}
 		$head->addRow($row);
@@ -117,8 +117,8 @@ class Html_Builder_Collection
 	protected function buildRow($object)
 	{
 		$row = new Html_Table_Row();
-		foreach ($this->properties as $property_name) {
-			$row->addCell($this->buildCell($object, $property_name));
+		foreach ($this->properties as $property) {
+			$row->addCell($this->buildCell($object, $property));
 		}
 		return $row;
 	}
@@ -153,8 +153,8 @@ class Html_Builder_Collection
 				unset($properties[$property_name]);
 			}
 		}
-		// returns properties names only
-		return array_keys($properties);
+		// returns properties
+		return $properties;
 	}
 
 }

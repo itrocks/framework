@@ -12,6 +12,18 @@ namespace SAF\Framework;
 class Class_Representative_Annotation extends List_Annotation
 {
 
+	//----------------------------------------------------------------------------------- $class_name
+	/**
+	 * @var string
+	 */
+	private $class_name;
+
+	//----------------------------------------------------------------------------------- $properties
+	/**
+	 * @var Reflection_Property[]
+	 */
+	private $properties;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Builds representative annotation content
@@ -24,14 +36,34 @@ class Class_Representative_Annotation extends List_Annotation
 	public function __construct($value, Reflection_Class $class)
 	{
 		parent::__construct($value, $class);
+		$this->class_name = $class->name;
 		if (!$this->value) {
+			$this->properties = [];
 			foreach ($class->getAllProperties() as $property) {
 				$link = $property->getAnnotation('link')->value;
 				if (!$property->isStatic() && ($link !== 'Collection') && ($link !== 'Map')) {
+					$this->properties[$property->name] = $property;
 					$this->value[] = $property->name;
 				}
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------------------- getProperties
+	/**
+	 * @return Reflection_Property[]
+	 */
+	public function getProperties()
+	{
+		if (!isset($this->properties)) {
+			$this->properties = [];
+			foreach ($this->values() as $property_path) {
+				$this->properties[$property_path] = new Reflection_Property(
+					$this->class_name, $property_path
+				);
+			}
+		}
+		return $this->properties;
 	}
 
 }

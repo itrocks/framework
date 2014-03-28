@@ -99,7 +99,7 @@ abstract class Integrated_Properties
 						$sub_property->final_class = $sub_properties_class->name;
 						$sub_property->display = $integrated_simple
 							? (
-								($integrated->has('alias') && $sub_property->getAnnotation('alias')->value)
+								$integrated->has('alias')
 								? $sub_property->getAnnotation('alias')->value
 								: $sub_property_name
 							)
