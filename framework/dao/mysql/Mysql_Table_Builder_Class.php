@@ -62,7 +62,7 @@ class Mysql_Table_Builder_Class
 					$table->addColumn(Mysql_Column::buildProperty($property));
 					if ($property->getAnnotation('link')->value == 'Object') {
 						$table->addForeignKey(Mysql_Foreign_Key::buildProperty($table_name, $property));
-						$table->addIndex(Mysql_Index::buildLink($property->name));
+						$table->addIndex(Mysql_Index::buildLink($property->getAnnotation('storage')->value));
 					}
 				}
 			}

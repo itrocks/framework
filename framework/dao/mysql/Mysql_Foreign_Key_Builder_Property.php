@@ -16,7 +16,11 @@ trait Mysql_Foreign_Key_Builder_Property
 	private static function propertyConstraintToMysql($table_name, Reflection_Property $property)
 	{
 		return $table_name . DOT
-		. ($property->getAnnotation('link')->value ? ('id_' . $property->name) : $property->name);
+		. (
+			$property->getAnnotation('link')->value
+			? ('id_' . $property->getAnnotation('storage')->value)
+			: $property->getAnnotation('storage')->value
+		);
 	}
 
 	//------------------------------------------------------------------------- propertyFieldsToMysql
@@ -26,7 +30,7 @@ trait Mysql_Foreign_Key_Builder_Property
 	 */
 	private static function propertyFieldsToMysql(Reflection_Property $property)
 	{
-		return 'id_' . $property->name;
+		return 'id_' . $property->getAnnotation('storage')->value;
 	}
 
 	//----------------------------------------------------------------- propertyReferenceTableToMysql

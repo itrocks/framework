@@ -109,14 +109,68 @@ class Sql_Columns_Builder
 				}
 				$sql_columns .=  $this->append($path);
 			}
-		} elseif ($this->joins->getJoins()) {
+		}
+		elseif ($this->joins->getJoins()) {
+			$class_name = Builder::className($this->joins->getStartingClassName());
+			/** @var $properties Reflection_Property[] */
+			$properties = [];
+			$column_names = [];
+			foreach ((new Reflection_Class($class_name))->getAllProperties() as $property) {
+				$storage = $property->getAnnotation('storage')->value;
+				$type = $property->getType();
+				if (!$property->isStatic() && !($type->isClass() && $type->isMultiple())) {
+					$column_names[$property->name] = $storage;
+					$properties[$property->name] = $property;
+					if ($storage !== $property->name) {
+						$has_storage = true;
+					}
+				}
+			}
 			$sql_columns = '';
 			foreach ($this->joins->getLinkedJoins() as $join) {
-				$sql_columns .= $join->foreign_alias . '.*, ';
+				if (isset($has_storage)) {
+					foreach ((new Reflection_Class($join->foreign_class))->getAllProperties() as $property) {
+						if (
+							!$property->isStatic()
+							&& isset($column_names[$property->name])
+							&& !isset($already[$property->name])
+						) {
+							$column_name = $column_names[$property->name];
+							$id = $property->getType()->isClass() ? 'id_' : '';
+							$already[$property->name] = true;
+							$sql_columns .= $join->foreign_alias . '.' . BQ . $id . $column_name . BQ;
+							if ($column_name !== $property->name) {
+								$sql_columns .= ' AS ' . BQ . $id . $property->name . BQ;
+							}
+							$sql_columns .= ', ';
+						}
+					}
+				}
+				else {
+					$sql_columns .= $join->foreign_alias . '.*, ';
+				}
 			}
 			// the main table comes last, as fields with the same name must have the main value (ie 'id')
-			$sql_columns .= 't0.*';
-		} else {
+			if (isset($has_storage)) {
+				$sql_columns .= 't0.id, ';
+				foreach ($column_names as $property_name => $column_name) {
+					if (!isset($already[$property_name])) {
+						$already[$property_name] = true;
+						$id = $properties[$property_name]->getType()->isClass() ? 'id_' : '';
+						$sql_columns .= 't0.' . BQ . $id . $column_name . BQ;
+						if ($column_name !== $property_name) {
+							$sql_columns .= ' AS ' . BQ . $id . $property_name . BQ;
+						}
+						$sql_columns .= ', ';
+					}
+				}
+				$sql_columns = substr($sql_columns, 0, -2);
+			}
+			else {
+				$sql_columns .= 't0.*';
+			}
+		}
+		else {
 			$sql_columns = '*';
 		}
 		return $sql_columns;

@@ -55,7 +55,7 @@ class Sql_Joins
 	/**
 	 * link class names to their properties
 	 *
-	 * @var array key is class name, value is Reflection_Property[], sub-key is property name[]
+	 * @var array The 2 keys are class and property name, value is Reflection_Property
 	 */
 	private $properties = [];
 
@@ -132,8 +132,8 @@ class Sql_Joins
 		}
 		$join->foreign_alias = 't' . $this->alias_counter++;
 		if (!isset($join->foreign_table)) {
-			$join->foreign_class = $foreign_class_name;
-			$join->foreign_table = Dao::storeNameOf($foreign_class_name);
+			$join->foreign_class = Builder::className($foreign_class_name);
+			$join->foreign_table = Dao::storeNameOf($join->foreign_class);
 		}
 		if (!isset($join->master_alias)) {
 			$join->master_alias = $master_path ? $this->getAlias($master_path) : 't0';
@@ -173,11 +173,11 @@ class Sql_Joins
 		$linked_class = new Reflection_Class($linked_class_name);
 		$join = new Sql_Join();
 		$join->master_alias   = 't' . ($this->alias_counter - 1);
-		$join->master_column  = 'id_' . $class->getCompositeProperty()->name;
+		$join->master_column  = 'id_' . $class->getCompositeProperty()->getAnnotation('storage')->value;
 		$join->foreign_alias  = 't' . $this->alias_counter++;
 		$join->foreign_column = 'id';
-		$join->foreign_class  = $linked_class_name;
-		$join->foreign_table  = Dao::storeNameOf($linked_class_name);
+		$join->foreign_class  = Builder::className($linked_class_name);
+		$join->foreign_table  = Dao::storeNameOf($join->foreign_class);
 		$join->mode           = ($join_mode == Sql_Join::LEFT) ? Sql_Join::LEFT : Sql_Join::INNER;
 		$join->type           = Sql_Join::LINK;
 		if (!isset($this->joins[$path])) {
@@ -277,6 +277,7 @@ class Sql_Joins
 	 * @param $master_property_name string
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
+	 * @todo use @storage to get correct master and foreign columns name
 	 */
 	private function addReverseJoin(
 		Sql_Join $join, $master_path, $master_property_name, $foreign_path
@@ -332,7 +333,8 @@ class Sql_Joins
 						property_exists($foreign_class_name, $foreign_property_name)
 						&& ($master_property->getAnnotation('link')->value != 'Map')
 					) {
-						$join->foreign_column = 'id_' . $foreign_property_name;
+						$foreign_property = new Reflection_Class($foreign_class_name, $foreign_property_name);
+						$join->foreign_column = 'id_' . $foreign_property->getAnnotation('storage')->value;
 						$join->master_column  = 'id';
 					}
 					else {
@@ -343,7 +345,7 @@ class Sql_Joins
 				}
 				else {
 					$foreign_class_name = $foreign_type->asString();
-					$join->master_column  = 'id_' . $master_property_name;
+					$join->master_column  = 'id_' . $master_property->getAnnotation('storage')->value;
 					$join->foreign_column = 'id';
 				}
 			}
@@ -387,6 +389,16 @@ class Sql_Joins
 	public function getClassNames()
 	{
 		return array_values($this->classes);
+	}
+
+	//---------------------------------------------------------------------------- getClassProperties
+	/**
+	 * @param $class_name
+	 * @return Reflection_Property[]
+	 */
+	public function getClassProperties($class_name)
+	{
+		return $this->properties[$class_name];
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins

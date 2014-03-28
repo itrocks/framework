@@ -73,8 +73,8 @@ trait Mysql_Column_Builder_Property
 	{
 		$type = $property->getType();
 		return ($type->isBasic() || ($type->isMultiple() && $type->getElementType()->isString()))
-			? $property->name
-			: 'id_' . $property->name;
+			? $property->getAnnotation('storage')->value
+			: ('id_' . $property->getAnnotation('storage')->value);
 	}
 
 	//--------------------------------------------------------------------------- propertyNullToMysql

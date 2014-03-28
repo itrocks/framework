@@ -21,8 +21,8 @@ abstract class Sql_Builder
 	{
 		$type = $property->getType();
 		return $type->isBasic()
-			? $property->name
-			: ($type->isMultiple() ? null : ('id_' . $property->name));
+			? $property->getAnnotation('storage')->value
+			: ($type->isMultiple() ? null : ('id_' . $property->getAnnotation('storage')->value));
 	}
 
 	//----------------------------------------------------------------------------------- buildDelete
@@ -130,9 +130,7 @@ abstract class Sql_Builder
 	public static function splitPropertyPath($path)
 	{
 		$i = strrpos($path, DOT);
-		return ($i === false)
-			? ['', $path]
-			: [substr($path, 0, $i), substr($path, $i + 1)];
+		return ($i === false) ? ['', $path] : [substr($path, 0, $i), substr($path, $i + 1)];
 	}
 
 }

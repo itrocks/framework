@@ -116,9 +116,11 @@ class Sql_Where_Builder
 						$property_name = ($i !== false) ? substr($path, $i + 1) : $path;
 						$properties = $this->joins->getProperties($master_path);
 						if (isset($properties[$property_name])) {
-							$link = $properties[$property_name]->getAnnotation('link')->value;
+							$property = $properties[$property_name];
+							$link = $property->getAnnotation('link')->value;
 							if ($link) {
-								$prefix = ($master_path ? ($master_path . DOT) : '') . $property_name . DOT;
+								$prefix = ($master_path ? ($master_path . DOT) : '')
+									. $property->getAnnotation('storage')->value . DOT;
 							}
 						}
 						$build = $this->buildPath($prefix . $key, $value, $clause);

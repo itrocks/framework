@@ -314,7 +314,7 @@ class Mysql_Link extends Sql_Link
 	 * and not a Reflection_Property.
 	 *
 	 * @param $class Reflection_Class
-	 * @return Reflection_Property[]|Mysql_Column[]
+	 * @return Reflection_Property[]|Mysql_Column[] key is the name of the property
 	 */
 	public function getStoredProperties($class)
 	{
@@ -325,7 +325,9 @@ class Mysql_Link extends Sql_Link
 				unset($properties[$key]);
 			}
 			elseif ($type->isClass()) {
-				$properties['id_' . $property->name] = new Mysql_Column('id_' . $property->name);
+				$properties[$property->name] = new Mysql_Column(
+					'id_' . $property->getAnnotation('storage')->value
+				);
 			}
 		}
 		return $properties;
@@ -557,7 +559,7 @@ class Mysql_Link extends Sql_Link
 						if (in_array($property->name, $table_columns_names)) {
 							// write basic
 							if ($property->getType()->getElementType()->isBasic()) {
-								$write[$property->name] = $value;
+								$write[$property->getAnnotation('storage')->value] = $value;
 							}
 							// write object id if set or object if no id is set (new object)
 							else {
@@ -569,9 +571,10 @@ class Mysql_Link extends Sql_Link
 									}
 								}
 								if (property_exists($object, $column_name)) {
-									$write[$column_name] = ($property_is_null && !isset($object->$column_name))
-										? null
-										: intval($object->$column_name);
+									$write['id_' . $property->getAnnotation('storage')->value]
+										= ($property_is_null && !isset($object->$column_name))
+											? null
+											: intval($object->$column_name);
 								}
 							}
 						}
