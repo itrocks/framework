@@ -149,7 +149,10 @@ class Html_Builder_Collection
 		}
 		// remove static and user-invisible properties
 		foreach ($properties as $property_name => $property) {
-			if ($property->isStatic() || ($property->getListAnnotation('user')->has('invisible'))) {
+			if (
+				$property->isStatic()
+				|| ($property->getListAnnotation('user')->has(User_Annotation::INVISIBLE))
+			) {
 				unset($properties[$property_name]);
 			}
 		}

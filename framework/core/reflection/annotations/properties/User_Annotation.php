@@ -7,6 +7,12 @@ namespace SAF\Framework;
 class User_Annotation extends List_Annotation
 {
 
+	//------------------------------------------------------------------------------------- INVISIBLE
+	const INVISIBLE = 'invisible';
+
+	//-------------------------------------------------------------------------------------- READONLY
+	const READONLY = 'readonly';
+
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * Annotation value

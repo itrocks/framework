@@ -376,7 +376,10 @@ abstract class Html_Template_Functions
 		$class = new Reflection_Class(get_class($object));
 		$result_properties = [];
 		foreach ($class->accessProperties() as $property_name => $property) {
-			if (!$property->isStatic() && !$property->getListAnnotation('user')->has('invisible')) {
+			if (
+				!$property->isStatic()
+				&& !$property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)
+			) {
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
 					$property = new Reflection_Property_Value(
 						$property->class, $property->name, $object, false, true

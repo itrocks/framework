@@ -35,6 +35,7 @@ class Property_Select_Controller implements Controller
 					(!$composite_property || ($property->name !== $composite_property->name))
 					&& (!$composite_link_property || ($property->name !== $composite_link_property->name))
 					&& !$property->isStatic()
+					&& !$property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)
 				) {
 					$properties[] = $property;
 				}
@@ -45,6 +46,7 @@ class Property_Select_Controller implements Controller
 				if (
 					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& !$property->isStatic()
+					&& !$property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)
 				) {
 					$properties[] = $property;
 				}
