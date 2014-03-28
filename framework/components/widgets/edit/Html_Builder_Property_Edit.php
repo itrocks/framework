@@ -127,8 +127,10 @@ class Html_Builder_Property_Edit extends Html_Builder_Type_Edit
 
 	//----------------------------------------------------------------------------------- buildString
 	/**
-	 * @param $multiline boolean keep this value empty, it is not used as the @multiline annotation is automatically used
-	 * @param $values    string[] keep this value empty, it is not used as the @values annotation is automatically used
+	 * @param $multiline boolean keep this value empty, it is not used because the @multiline
+	 *        annotation is automatically used
+	 * @param $values    string[] keep this value empty, it is not used because the @values annotation
+	 *        is automatically used
 	 * @return Dom_Element
 	 */
 	protected function buildString($multiline = false, $values = null)

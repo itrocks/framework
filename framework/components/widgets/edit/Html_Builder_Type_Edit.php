@@ -328,7 +328,7 @@ class Html_Builder_Type_Edit
 		}
 		elseif (isset($values) && $values) {
 			if (!isset($values[''])) {
-				$values = ['' => ''] + $values;
+				$values = array_merge(['' => ''], $values);
 			}
 			$input = new Html_Select($this->getFieldName(), $values, $this->value);
 		}

@@ -10,4 +10,25 @@ namespace SAF\Framework;
 class Values_Annotation extends List_Annotation
 {
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $value               string
+	 * @param $reflection_property Reflection_Property
+	 */
+	public function __construct($value, Reflection_Property $reflection_property)
+	{
+		parent::__construct($value);
+		if (isset($value)) {
+			$type = $reflection_property->getType();
+			switch ($type->getElementTypeAsString()) {
+				case Type::FLOAT:   $function = 'floatval'; break;
+				case Type::INTEGER: $function = 'intval';   break;
+				default:            $function = 'strval';
+			}
+			foreach ($this->values() as $key => $value) {
+				$this->value[$key] = $function($value);
+			}
+		}
+	}
+
 }
