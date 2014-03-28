@@ -37,9 +37,6 @@ class Class_Builder
 			$traits = [];
 			foreach ($interfaces_traits as $interface_trait) {
 				$interface_trait = Namespaces::defaultFullClassName($interface_trait, $class_name);
-				if ($interface_trait[0] != BS) {
-					$interface_trait = BS . $interface_trait;
-				}
 				if (interface_exists($interface_trait)) {
 					$interfaces[$interface_trait] = $interface_trait;
 				}
@@ -99,8 +96,8 @@ class Class_Builder
 			$namespace = array_slice(explode(BS, Namespaces::of($class_name)), 1);
 			$left = Namespaces::of(Application::current());
 			$namespace = $left . BS . 'Built' . BS . join(BS, $namespace) . $count . $sub_count;
-			$interfaces_names = ($end && $interfaces) ? join(', ', $interfaces) : '';
-			$traits_names = $class_traits ? join(';' . LF . TAB . 'use ', $class_traits) : '';
+			$interfaces_names = ($end && $interfaces) ? (BS . join(', ' . BS, $interfaces)) : '';
+			$traits_names = $class_traits ? join(';' . LF . TAB . 'use ' . BS, $class_traits) : '';
 			$short_class = Namespaces::shortClassName($class_name);
 			$built_class = $namespace . BS . $short_class;
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
@@ -108,7 +105,7 @@ class Class_Builder
 				. $final . 'class ' . $short_class . ' extends ' . $extends
 				. ($interfaces_names ? (LF . TAB . 'implements ' . $interfaces_names) : '')
 				. LF . '{' . LF
-				. ($traits_names ? (TAB . 'use ' . $traits_names . ';' . LF) : '')
+				. ($traits_names ? (TAB . 'use ' . BS . $traits_names . ';' . LF) : '')
 				. LF . '}' . LF
 				. ($get_source ? '' : (LF . '}' . LF));
 			if ($get_source === true) {

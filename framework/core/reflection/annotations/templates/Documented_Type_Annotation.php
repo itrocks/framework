@@ -29,6 +29,9 @@ abstract class Documented_Type_Annotation extends Annotation
 		$values = explode(SP, $value);
 		parent::__construct($values[0]);
 		$this->documentation = trim(substr($value, strlen($values[0])));
+		if (!empty($this->value) && ($this->value[0] === BS)) {
+			$this->value = substr($this->value, 1);
+		}
 	}
 
 }
