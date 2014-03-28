@@ -145,7 +145,7 @@ $('document').ready(function()
 			if ($element.data('value')) {
 				var val = $element.val().toLowerCase();
 				var dat = $element.data('value').toLowerCase();
-				return (!val.length) || (dat.substr(0, val.length) == val);
+				return (!val.length) || (dat.indexOf(val) != -1);
 			}
 			else {
 				return false;
