@@ -24,9 +24,6 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 			$types = $reflection_object->getDeclaringClass()->getDefaultProperties();
 			$this->value = gettype($types[$reflection_object->name]);
 		}
-		if ($this->value[0] === BS) {
-			$this->value = substr($this->value, 1);
-		}
 	}
 
 }
