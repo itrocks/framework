@@ -11,7 +11,8 @@ String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 	var i = str.lastIndexOf(sep);
 	if (i == -1) {
 		return complete_if_not ? str : '';
-	} else {
+	}
+	else {
 		return str.substr(0, i);
 	}
 };
@@ -45,7 +46,8 @@ String.prototype.rLastParse = function (sep, cnt, complete_if_not)
 	var i = str.lastIndexOf(sep);
 	if (i == -1) {
 		return complete_if_not ? str : '';
-	} else {
+	}
+	else {
 		return str.substr(i + sep.length);
 	}
 };

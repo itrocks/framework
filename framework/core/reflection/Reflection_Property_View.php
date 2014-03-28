@@ -129,7 +129,8 @@ class Reflection_Property_View
 		$type = $this->property->getType();
 		if ($type->isDateTime()) {
 			return $this->formatDateTime($value);
-		} else {
+		}
+		else {
 			switch ($type) {
 				case Type::BOOLEAN: return $this->formatBoolean($value);
 				case Type::FLOAT:   return $this->formatFloat($value);
