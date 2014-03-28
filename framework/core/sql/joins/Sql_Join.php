@@ -113,7 +113,7 @@ class Sql_Join
 	) {
 		$sql_join = new Sql_Join();
 		$sql_join->foreign_alias  = $foreign_alias;
-		$sql_join->foreign_class  = $foreign_class;
+		$sql_join->foreign_class  = isset($foreign_class) ? Builder::className($foreign_class) : null;
 		$sql_join->foreign_column = $foreign_column;
 		$sql_join->foreign_table  = $foreign_table;
 		$sql_join->master_alias   = $master_alias;
