@@ -37,7 +37,11 @@ class Html_Builder_Collection_Edit extends Html_Builder_Collection
 		if (!isset($this->template)) {
 			$this->template = new Html_Edit_Template();
 		}
-		$value = $property->getType()->isBoolean()
+		$type = $property->getType();
+		$value = (
+			$type->isBoolean()
+			|| ($type->isString() && $property->getListAnnotation('values')->values())
+		)
 			? $property->getValue($object)
 			: (new Reflection_Property_View($property))->getFormattedValue($object);
 		$builder = (new Html_Builder_Property_Edit($property, $value, $this->property->name . '[]'));
