@@ -43,7 +43,8 @@ class Main_Controller
 	 */
 	private function applicationUpdate()
 	{
-		$application_updater = new Application_Updater();
+		/** @var $application_updater Application_Updater */
+		$application_updater = Session::current()->plugins->get(Application_Updater::class);
 		if ($application_updater->mustUpdate()) {
 			$this->initSession(Session::current());
 			/** @var $weaver AOP\Weaver */

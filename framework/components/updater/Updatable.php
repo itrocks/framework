@@ -7,4 +7,10 @@ namespace SAF\Framework;
 interface Updatable
 {
 
+	//---------------------------------------------------------------------------------------- update
+	/**
+	 * @param $last_time integer
+	 */
+	public function update($last_time);
+
 }

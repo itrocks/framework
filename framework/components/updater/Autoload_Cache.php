@@ -5,7 +5,10 @@ use SAF\Plugins;
 
 /**
  * The autoload cache plugin  is here to make class autoload faster, but need update at each code
- * update
+ * update.
+ * It has been replaced by AOP and compilers
+ *
+ * @deprecated
  */
 class Autoload_Cache implements Plugins\Activable, Updatable
 {
@@ -86,12 +89,12 @@ class Autoload_Cache implements Plugins\Activable, Updatable
 	/**
 	 * Scans all PHP files into the project (excluding vendor) and store their paths to the cache
 	 */
-	public function update()
+	public function update($last_time = 0)
 	{
-		$directories = Application::current()->include_path->getSourceFiles();
+		$files = Application::current()->include_path->getSourceFiles();
 		$this->full_class_names = [];
 		$this->paths = [];
-		foreach ($directories as $file_path) {
+		foreach ($files as $file_path) {
 			if (substr($file_path, -4) == '.php') {
 				$buffer = file_get_contents($file_path);
 				$short_class = trim(mParse($buffer, LF . 'class' . SP, LF))

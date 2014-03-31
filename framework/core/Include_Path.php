@@ -42,10 +42,11 @@ class Include_Path
 		$directories = [$path];
 		$dir = dir($path);
 		while ($entry = $dir->read()) if ($entry[0] != DOT) {
-			if (is_dir($path . SL . $entry) && ($entry != 'vendor')) {
+			if (is_dir($path . SL . $entry) && ($entry != 'vendor') && ($entry != 'cache')) {
 				$directories = array_merge($directories, $this->getDirectories($path . SL . $entry));
 			}
 		}
+		$dir->close();
 		return $directories;
 	}
 
@@ -136,18 +137,14 @@ class Include_Path
 	 *
 	 * Paths are relative to the SAF index.php base script position
 	 *
-	 * @param $include_vendor boolean
 	 * @return string[]
 	 */
-	public function getSourceFiles($include_vendor = false)
+	public function getSourceFiles()
 	{
 		$files = [];
 		foreach ($this->getSourceDirectories(true) as $directory) {
 			$directory_slash = $directory . SL;
-			if (
-				(strpos($directory_slash, '/webshop/templates/') === false)
-				&& ($include_vendor || strpos($directory_slash, '/vendor/') === false)
-			) {
+			if (strpos($directory_slash, '/webshop/templates/') === false) {
 				$dir = dir($directory);
 				while ($entry = $dir->read()) if ($entry[0] != DOT) {
 					$file_path = $directory . SL . $entry;

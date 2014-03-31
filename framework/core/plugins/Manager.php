@@ -162,7 +162,7 @@ class Manager implements IManager, Serializable
 		if ($activate && ($plugin instanceof Activable)) {
 			if (isset($this->activated[$class_name])) {
 				trigger_error(
-					'Plugin ' . $class_name . ' just registered and already activated', E_USER_ERROR
+					'Plugin ' . $class_name . ' just registered and already activated', E_USER_WARNING
 				);
 			}
 			else {

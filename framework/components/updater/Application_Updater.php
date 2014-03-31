@@ -1,20 +1,26 @@
 <?php
 namespace SAF\Framework;
 
+use Serializable;
+
 /**
  * The application updater plugin detects if the application needs to be updated, and launch updates
- *
- * All updatable plugins should use the mustUpdate() method to know if they need to launch their
- * update process.
+ * for all objects (independant or plugins) that process updates
  */
-class Application_Updater
+class Application_Updater implements Serializable
 {
+
+	//----------------------------------------------------------------------------------- $start_time
+	/**
+	 * @var integer
+	 */
+	private $update_time;
 
 	//----------------------------------------------------------------------------------- $updatables
 	/**
-	 * An array of updatable classes and objects
+	 * An array of updatable objects or class names
 	 *
-	 * @var mixed[]
+	 * @var Updatable[]|string[]
 	 */
 	private $updatables = [];
 
@@ -22,7 +28,8 @@ class Application_Updater
 	/**
 	 * Adds an updatable object or class to the elements that need to be updated at each update
 	 *
-	 * This can be called before the application updater plugin is registered, all updatable objects will be kept
+	 * This can be called before the application updater plugin is registered, all updatable objects
+	 * will be kept
 	 *
 	 * @param $object Updatable|string object or class name
 	 */
@@ -58,7 +65,24 @@ class Application_Updater
 	 */
 	public function done()
 	{
+		//$this->setLastUpdateTime($this->update_time);
+		unset($this->update_time);
 		@unlink('update');
+	}
+
+	//----------------------------------------------------------------------------- getLastUpdateTime
+	/**
+	 * @return integer last compile time
+	 */
+	public function getLastUpdateTime()
+	{
+		$file_name = Application::current()->getCacheDir() . '/last_update';
+		if (!file_exists($file_name)) {
+			return mktime(0, 0, 0, 0, 0, 0);
+		}
+		else {
+			return filemtime($file_name);
+		}
 	}
 
 	//------------------------------------------------------------------------------------ mustUpdate
@@ -72,6 +96,29 @@ class Application_Updater
 		return file_exists('update');
 	}
 
+	//------------------------------------------------------------------------------------- serialize
+	/**
+	 * @return string the string representation of the object : only class names are kept
+	 */
+	public function serialize()
+	{
+		$updatables = [];
+		foreach ($this->updatables as $updatable) {
+			$updatables[] = is_object($updatable) ? get_class($updatable) : $updatable;
+		}
+		return serialize($updatables);
+	}
+
+	//----------------------------------------------------------------------------- setLastUpdateTime
+	/**
+	 * @param $update_time integer
+	 */
+	public function setLastUpdateTime($update_time)
+	{
+		$updated = Application::current()->getCacheDir() . '/last_update';
+		touch($updated, $update_time);
+	}
+
 	//---------------------------------------------------------------------------------------- update
 	/**
 	 * Updates all registered updatable objects
@@ -80,9 +127,26 @@ class Application_Updater
 	 */
 	public function update()
 	{
-		foreach ($this->updatables as $updatable) {
-			call_user_func([$updatable, 'update']);
+		$last_update_time = $this->getLastUpdateTime();
+		if (!isset($this->update_time)) {
+			$this->update_time = time();
 		}
+		foreach ($this->updatables as $key => $updatable) {
+			if (is_string($updatable)) {
+				$updatable = Session::current()->get($updatable) ?: Builder::create($updatable);
+				$this->updatables[$key] = $updatable;
+			}
+			$updatable->update($last_update_time);
+		}
+	}
+
+	//----------------------------------------------------------------------------------- unserialize
+	/**
+	 * @param $serialized string the string representation of the object
+	 */
+	public function unserialize($serialized)
+	{
+		$this->updatables = unserialize($serialized);
 	}
 
 }

@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use mysqli;
 use SAF\Plugins;
 
 /**
@@ -64,15 +63,17 @@ class Mysql_Logger implements Plugins\Configurable, Plugins\Registerable
 		if (isset($configuration)) {
 			if (isset($configuration['continue'])) {
 				$this->continue = $configuration['continue'];
+				if (isset($configuration['exclude'])) {
+					foreach ($configuration['exclude'] as $exclude) {
+						if (strpos(SL . $_SERVER['REQUEST_URI'] . SL, SL . $exclude . SL)) {
+							$this->continue = false;
+							break;
+						}
+					}
+				}
 			}
 			if (isset($configuration['display_log'])) {
 				$this->display_log = $configuration['display_log'];
-			}
-			// TODO this is dead code. What is it used for ?
-			foreach ($configuration as $key => $value) if (is_numeric($key)) {
-				if (strpos(SL . $_SERVER['REQUEST_URI'] . SL, SL . $value . SL)) {
-					return;
-				}
 			}
 		}
 	}
