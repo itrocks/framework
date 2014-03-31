@@ -229,17 +229,11 @@ class Method_Compiler
 				. $this->codeAssembly($before_code, $call_code, $after_code, $indent)
 				. ($joinpoint_has_return ? (LF . $i2 . 'return $result_;') : '')
 				. $indent . '}' . LF;
-			$around_comment = '';
-		}
-		else {
-			$around_comment = $indent
-				. '/* @noinspection PhpUnusedPrivateMethodInspection @aop */';
 		}
 
 		$buffer = preg_replace(
 			$preg_expr,
-			$indent . '$2' . $around_comment
-			. $indent . '/* $4 */ private $5 function $6 $7_' . $count . '$8$9',
+			$indent . '$2' . $indent . '/* $4 */ private $5 function $6 $7_' . $count . '$8$9',
 			$buffer
 		);
 
