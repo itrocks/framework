@@ -1,6 +1,8 @@
 <?php
 namespace SAF\AOP;
 
+use SAF\Framework\Php_Class;
+use SAF\Framework\Php_Method;
 use SAF\Framework\Reflection_Parameter;
 
 /**

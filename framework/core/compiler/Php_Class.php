@@ -1,5 +1,5 @@
 <?php
-namespace SAF\AOP;
+namespace SAF\Framework;
 
 use ReflectionClass;
 

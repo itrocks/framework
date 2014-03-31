@@ -5,6 +5,7 @@ use SAF\Framework\Application;
 use SAF\Framework\Files;
 use SAF\Framework\Getter;
 use SAF\Framework\Names;
+use SAF\Framework\Php_Class;
 use SAF\Plugins;
 
 /**
