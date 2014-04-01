@@ -6,6 +6,7 @@ $.getScript(path + 'main/js/jquery.xtarget.js');
 
 $.getScript(path + 'vendor/jquery.form/jquery.form.js');
 $.getScript(path + 'vendor/jquery.colresizable/colResizable-1.3.min.js');
+$.getScript(path + 'vendor/jquery.elastic/jquery.elastic.source.js');
 
 $.getScript(path + 'vendor/jscolor/jscolor.js');
 

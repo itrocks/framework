@@ -7,7 +7,7 @@ $('document').ready(function()
 		var app = window.app;
 
 		//--------------------------------------------------------------------- .autoheight, .autowidth
-		this.in('.autoheight').autoheight();
+		this.in('.autoheight').elastic();
 		this.in('.autowidth').autowidth();
 
 		//-------------------------------------------------------------------------------------- .minus
