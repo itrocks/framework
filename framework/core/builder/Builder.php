@@ -215,6 +215,17 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 		);
 	}
 
+	//------------------------------------------------------------------------------- getCompositions
+	/**
+	 * Gets all original replacements compositions
+	 *
+	 * @return array[]|string[]
+	 */
+	public function getCompositions()
+	{
+		return array_merge($this->replacements, $this->compositions);
+	}
+
 	//----------------------------------------------------------------------------------- isObjectSet
 	/**
 	 * Returns true if any property of $object is set and different than its default value

@@ -124,8 +124,10 @@ class Application_Updater implements Serializable
 	 * Updates all registered updatable objects
 	 *
 	 * You should prefer call autoUpdate() to update the application only if needed
+	 *
+	 * @param $main_controller Main_Controller
 	 */
-	public function update()
+	public function update(Main_Controller $main_controller)
 	{
 		$last_update_time = $this->getLastUpdateTime();
 		if (!isset($this->update_time)) {
@@ -135,6 +137,9 @@ class Application_Updater implements Serializable
 			if (is_string($updatable)) {
 				$updatable = Session::current()->plugins->get($updatable);
 				$this->updatables[$key] = $updatable;
+			}
+			if ($updatable instanceof Needs_Main_Controller) {
+				$updatable->setMainController($main_controller);
 			}
 			$updatable->update($last_update_time);
 		}

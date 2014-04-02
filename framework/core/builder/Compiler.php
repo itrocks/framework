@@ -6,15 +6,21 @@ use SAF\Framework\Builder;
 use SAF\Framework\Class_Builder;
 use SAF\Framework\Files;
 use SAF\Framework\ICompiler;
-use SAF\Framework\Php_Compiler;
+use SAF\Framework\Main_Controller;
+use SAF\Framework\Needs_Main_Controller;
 use SAF\Framework\Php_Source;
-use SAF\Framework\Session;
 
 /**
  * Built classes compiler
  */
-class Compiler implements ICompiler
+class Compiler implements ICompiler, Needs_Main_Controller
 {
+
+	//------------------------------------------------------------------------------ $main_controller
+	/**
+	 * @var $main_Controller Main_Controller
+	 */
+	private $main_controller;
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
@@ -23,30 +29,22 @@ class Compiler implements ICompiler
 	 */
 	public function compile(Php_Source $source)
 	{
-		$compiled = false;
-		$cache_dir = Application::current()->getCacheDir();
-		$recurse = [];
+		$more_files_to_compile = [];
 		foreach ($source->getClasses() as $class) {
 			$replacement = Builder::current()->getComposition($class->name);
-			if ($replacement !== $class->name) {
+			if (is_array($replacement)) {
 				foreach (Class_Builder::build($class->name, $replacement, true) as $built_name => $source) {
 					$source = '<?php' . LF . $source;
 					$path = array_slice(explode(BS, $built_name), 2);
 					$file_name = array_pop($path) . '.php';
-					$path = $cache_dir . SL . strtolower(join(SL, $path));
+					$path = Application::current()->getCacheDir() . SL . strtolower(join(SL, $path));
+					$more_files_to_compile[] = (new Php_Source($path . SL . $file_name))->setSource($source);
 					Files::mkdir($path);
 					script_put_contents($path . SL . $file_name, $source);
-					$recurse[] = $path . SL . $file_name;
-					$compiled = true;
 				}
 			}
 		}
-		if ($recurse) {
-			/** @var $compiler Php_Compiler */
-			$compiler = Session::current()->plugins->get(Php_Compiler::class);
-			$compiler->compileFiles($recurse);
-		}
-		return $compiled;
+		return $more_files_to_compile ?: false;
 	}
 
 	//---------------------------------------------------------------------------- moreFilesToCompile
@@ -60,10 +58,35 @@ class Compiler implements ICompiler
 	{
 		foreach (array_keys($files) as $file_path) {
 			if (!strpos($file_path, SL)) {
-				$configuration =
+
+				// get builder classes before compilation
+				$old_compositions = Builder::current()->getCompositions();
+
+				// if any of the scripts files in root has been changed : reset session
+				$this->main_controller->resetSession();
+
+				foreach (Builder::current()->getCompositions() as $class_name => $replacement) {
+					if (
+						!isset($old_compositions[$class_name])
+						|| ($old_compositions[$class_name] !== $replacement)
+					) {
+						// TODO if not already file then add file
+					}
+				}
+
+				break;
 			}
 		}
 		return false;
+	}
+
+	//----------------------------------------------------------------------------- setMainController
+	/**
+	 * @param $main_controller Main_Controller
+	 */
+	public function setMainController(Main_Controller $main_controller)
+	{
+		$this->main_controller = $main_controller;
 	}
 
 }

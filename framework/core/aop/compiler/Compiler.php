@@ -1,10 +1,8 @@
 <?php
 namespace SAF\AOP;
 
-use SAF\Framework\Application;
 use SAF\Framework\Dao;
 use SAF\Framework\Dependency;
-use SAF\Framework\Files;
 use SAF\Framework\Getter;
 use SAF\Framework\ICompiler;
 use SAF\Framework\Names;
@@ -21,12 +19,6 @@ class Compiler implements ICompiler
 {
 
 	const DEBUG = false;
-
-	//------------------------------------------------------------------------------------ $cache_dir
-	/**
-	 * @var string
-	 */
-	private $cache_dir;
 
 	//----------------------------------------------------------------------------- $compiled_classes
 	/**
@@ -47,12 +39,6 @@ class Compiler implements ICompiler
 	public function __construct(IWeaver $weaver = null)
 	{
 		$this->weaver = $weaver ?: Session::current()->plugins->get(Weaver::class);
-		// use cache dir only in DEV environment. when in PRODUCTION, files are directly compiled
-		// to improve performance
-		if (isset($_SERVER['ENV']) && ($_SERVER['ENV'] == 'DEV')) {
-			$this->cache_dir = Application::current()->getCacheDir() . '/aop';
-			Files::mkdir($this->cache_dir);
-		}
 	}
 
 	//--------------------------------------------------------------------------------------- compile
@@ -71,31 +57,6 @@ class Compiler implements ICompiler
 			}
 		}
 		return false;
-		/*
-		if ($class_name) {
-			$class = Php_Class::fromClassName($class_name);
-			if ($class) {
-				$this->compileClass($class);
-			}
-			else {
-				trigger_error('Class not found ' . $class_name, E_USER_ERROR);
-			}
-		}
-		else {
-			foreach (Application::current()->include_path->getSourceFiles() as $file_name) {
-				if (substr($file_name, -4) == '.php') {
-					$class = Php_Class::fromFile($file_name);
-					if ($class) {
-						if (self::DEBUG) echo '<h2>Compile ' . $file_name . ' : ' . $class->type . SP . $class->name . '</h2>';
-						if (!isset($this->compiled_classes[$class->name])) {
-							$this->compileClass($class);
-						}
-					}
-					elseif (self::DEBUG) echo '<h2 style="color:red;">Nothing into ' . $file_name . '</h2>';
-				}
-			}
-		}
-		*/
 	}
 
 	//---------------------------------------------------------------------------------- compileClass
@@ -105,27 +66,8 @@ class Compiler implements ICompiler
 	 */
 	public function compileClass(Php_Class $class)
 	{
-		$compiled_file_name = isset($this->cache_dir)
-			? ($this->cache_dir . SL . str_replace(SL, '-', substr($class->file_name, 0, -4)))
-			: $class->file_name;
-
 		$this->compiled_classes[$class->name] = true;
 		if (self::DEBUG) echo '<h2>' . $class->name . '</h2>';
-
-		if (isset($_GET['C'])) {
-			echo 'CLEANUP ' . $class->name . BR;
-			// in cache mode : delete compiled file
-			if (isset($this->cache_dir)) {
-				if (file_exists($compiled_file_name)) {
-					unlink($compiled_file_name);
-				}
-			}
-			// in production mode : write clean file
-			else {
-				script_put_contents($compiled_file_name, $class->source);
-			}
-			return false;
-		}
 
 		$methods    = [];
 		$properties = [];
@@ -168,24 +110,10 @@ class Compiler implements ICompiler
 
 			if (self::DEBUG && $methods_code) echo '<pre>' . print_r($methods_code, true) . '</pre>';
 
-			$buffer =
+			$class->source =
 				substr($class->source, 0, -2) . TAB . '//' . str_repeat('#', 91) . ' AOP' . LF
 				. join('', $methods_code)
 				. LF . '}' . LF;
-		}
-		else {
-			$buffer = $class->source;
-		}
-
-		// save compiled file
-		if (!$class->clean || $methods_code) {
-			if (isset($_GET['R'])) echo 'READ-ONLY ' . $class->name . BR;
-			else script_put_contents($compiled_file_name, $buffer);
-			if (self::DEBUG || isset($_GET['D'])) echo '<pre>' . htmlentities($buffer) . '</pre>';
-		}
-		// remove compiled file from cache
-		elseif (isset($this->cache_dir) && file_exists($compiled_file_name)) {
-			unlink($compiled_file_name);
 		}
 
 		return boolval($methods_code);
@@ -399,6 +327,7 @@ class Compiler implements ICompiler
 	 * @param $methods array
 	 * @param $class   Php_Class
 	 */
+	/*
 	private function scanForMethods(&$methods, Php_Class $class)
 	{
 		foreach ($class->getMethods() as $method) {
@@ -427,6 +356,7 @@ class Compiler implements ICompiler
 			}
 		}
 	}
+	*/
 
 	//------------------------------------------------------------------------------ scanForOverrides
 	/**

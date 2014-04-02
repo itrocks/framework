@@ -9,7 +9,7 @@ use SAF\Plugins\Register;
 /**
  * Automatic routing class
  */
-class Router implements Plugins\Configurable, Plugins\Registerable, IAutoloader
+class Router implements ICompiler, Plugins\Configurable, Plugins\Registerable, IAutoloader
 {
 
 	//-------------------------------------------------------------------------------------- $changes
@@ -175,6 +175,21 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		return $file_path;
 	}
 
+	//--------------------------------------------------------------------------------------- compile
+	/**
+	 * Compile source file into its class path
+	 *
+	 * @param $source Php_Source
+	 * @return boolean false as this compilation does not modify the class source
+	 */
+	public function compile(Php_Source $source)
+	{
+		foreach ($source->getClasses() as $class) {
+			$this->setClassPath($class->name, $source->getFileName());
+		}
+		return false;
+	}
+
 	//-------------------------------------------------------------------------------------- filesFor
 	/**
 	 * @param $short_class_name string
@@ -252,16 +267,19 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			if (!file_exists($class_path)) {
 				$class_path = $this->addClassPath($class_name);
 			}
-			/** @noinspection PhpIncludeInspection */
-			include_once Include_Filter::file($class_path);
-			if (
-				!class_exists($class_name, false)
-				&& !interface_exists($class_name, false)
-				&& !trait_exists($class_name, false)
-			) {
-				$class_path = $this->addClassPath($class_name);
+			if ($class_path) {
+				/** @noinspection PhpIncludeInspection */
+				include_once Include_Filter::file($class_path);
+				if (
+					!class_exists($class_name, false)
+					&& !interface_exists($class_name, false)
+					&& !trait_exists($class_name, false)
+				) {
+					$class_path = $this->addClassPath($class_name);
+				}
+				return $class_path;
 			}
-			return $class_path;
+			return null;
 		}
 		else {
 			return $this->addClassPath($class_name);
@@ -349,6 +367,18 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		return $joinpoint->process();
 	}
 
+	//---------------------------------------------------------------------------- moreFilesToCompile
+	/**
+	 * Extends the list of files to compile
+	 *
+	 * @param $files Php_Source[] Key is the file path
+	 * @return boolean true if files were added
+	 */
+	public function moreFilesToCompile(&$files)
+	{
+		return false;
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * @param $register Register
@@ -380,6 +410,16 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			[Html_Default_View::class, 'executeTemplate'],
 			[$this, 'setPossibleHtmlTemplate']
 		);
+	}
+
+	//---------------------------------------------------------------------------------- setClassPath
+	/**
+	 * @param $class_name string
+	 * @param $file_path  string
+	 */
+	public function setClassPath($class_name, $file_path)
+	{
+		$this->class_paths[$class_name] = $file_path;
 	}
 
 	//--------------------------------------------------------------------- setPossibleControllerCall

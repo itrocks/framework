@@ -10,7 +10,8 @@ interface ICompiler
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source Php_Source
-	 * @return boolean true if compilation process did something
+	 * @return Php_Source[]|boolean true if compilation process did something
+	 *         may be a list of files if new files will need to be compiled due to this compilation
 	 */
 	public function compile(Php_Source $source);
 

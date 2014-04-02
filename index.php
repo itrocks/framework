@@ -20,6 +20,8 @@ ini_set('xdebug.var_display_max_depth', 1000000);
 set_time_limit(15);
 //&XDEBUG_PROFILE=1
 
+touch('update');
+
 // enable running from command line
 if (!isset($_SERVER['PATH_INFO'])) $_SERVER['PATH_INFO'] = '/';
 

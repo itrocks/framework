@@ -61,8 +61,9 @@ $config['framework'] = [
 		],
 		Mysql_Maintainer::class,
 		Php_Compiler::class => [
-			AOP\Compiler::class,
-			Builder\Compiler::class
+			Router::class,
+			Builder\Compiler::class,
+			AOP\Compiler::class
 		],
 		Translation_String_Composer::class,
 		View::class => [

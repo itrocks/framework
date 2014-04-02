@@ -71,9 +71,11 @@ class Php_Source
 	/**
 	 * @param $file_name string
 	 */
-	public function __construct($file_name)
+	public function __construct($file_name = null)
 	{
-		$this->file_name = $file_name;
+		if (isset($file_name)) {
+			$this->file_name = $file_name;
+		}
 	}
 
 	//--------------------------------------------------------------------------------- fullClassName
@@ -135,7 +137,9 @@ class Php_Source
 		if ($f_uses)         $this->uses         = [];
 
 		/** @var $class Dependency_Class */
-		$class = null;
+		$class = new Php_Class();
+		$class->name = '';
+		$class->line = 1;
 		// where did the last } come
 		$last_stop = null;
 		// the current namespace
@@ -207,9 +211,7 @@ class Php_Source
 			// class, interface or trait
 			elseif (in_array($token_id, [T_CLASS, T_INTERFACE, T_TRAIT])) {
 				$use_what = T_CLASS;
-				if (isset($class)) {
-					$class->stop = $last_stop;
-				}
+				$class->stop = $last_stop;
 				$class_name = $this->fullClassName($this->parseClassName($tokens), $namespace);
 				$class = new Dependency_Class();
 				$class->name = $class_name;
@@ -245,7 +247,7 @@ class Php_Source
 					$doc_comment = $token[1];
 					// 0 : everything until var name, 1 : type, 2 : Class_Name / $param, 3 : Class_Name
 					preg_match_all(
-						'%\*\s+@(param|return|var)\s+([\w\$\[\]\|]+)(?:\s+([\w\$\[\]\|]+))?%',
+						'%\*\s+@(param|return|var)\s+([\w\$\[\]\|\\\\]+)(?:\s+([\w\$\[\]\|\\\\]+))?%',
 						$doc_comment,
 						$matches,
 						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
@@ -281,8 +283,8 @@ class Php_Source
 					$token = prev($tokens);
 					next($tokens);
 					$keyword = next($tokens);
-					$keyword = ($keyword[1] === 'class') ? 'class' : 'static';
-					if (!in_array($token[1], ['self', 'static', '__CLASS__'])) {
+					$keyword = (is_array($keyword) && ($keyword[1] === 'class')) ? 'class' : 'static';
+					if (($token[1][0] !== '$') && !in_array($token[1], ['self', 'static', '__CLASS__'])) {
 						$class_name = $this->fullClassName($token[1], $namespace, $use);
 						$dependency = new Dependency();
 						$dependency->class_name      = $class->name;
@@ -600,11 +602,13 @@ class Php_Source
 	 * Every properties but the file name are reset to zero by this change.
 	 *
 	 * @param $source string
+	 * @return Php_Source
 	 */
 	public function setSource($source)
 	{
 		$this->reset(0);
 		$this->source = $source;
+		return $this;
 	}
 
 }

@@ -76,7 +76,7 @@ class Include_Filter extends php_user_filter
 	{
 		self::$cache_dir = substr(
 			$_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1, -4
-		) . '/cache/aop';
+		) . '/cache/compiled';
 		return stream_filter_register(self::ID, __CLASS__);
 	}
 

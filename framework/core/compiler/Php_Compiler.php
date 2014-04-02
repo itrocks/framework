@@ -7,19 +7,21 @@ use Serializable;
 /**
  * Php compiler : the php scripts compilers manager
  */
-class Php_Compiler implements Plugins\Configurable, Plugins\Registerable, Serializable, Updatable
+class Php_Compiler
+	implements Needs_Main_Controller, Plugins\Configurable, Plugins\Registerable, Serializable,
+		Updatable
 {
-
-	//------------------------------------------------------------------------------------ $cache_dir
-	/**
-	 * @var string
-	 */
-	public $cache_dir;
 
 	/**
 	 * @var ICompiler[]
 	 */
 	public $compilers = [];
+
+	//------------------------------------------------------------------------------ $main_controller
+	/**
+	 * @var Main_Controller
+	 */
+	public $main_controller;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -54,59 +56,69 @@ class Php_Compiler implements Plugins\Configurable, Plugins\Registerable, Serial
 
 	//---------------------------------------------------------------------------------- compileFiles
 	/**
-	 * @param $files string[]
+	 * @param $files Php_Source[]
 	 */
-	public function compileFiles($files)
+	private function compileFiles($files)
 	{
 		$cache_dir = Application::current()->getCacheDir() . '/compiled';
 		Files::mkdir($cache_dir);
 
-		// get source and update dependencies
-		foreach ($files as $file_path) {
-			$source = new Php_Source($file_path);
-			/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-			(new Dao_Set())->replace(
-				$source->getDependencies(true),
-				Dependency::class, ['file_name' => $source->getFileName()]
-			);
-			$files[$file_path] = $source;
-		}
+		while ($files) {
+			$more_files = [];
 
-		/** @var $files Php_Source[] Key is file path */
-		// ask each compiler for adding of compiled files, until they have nothing to add
-		do {
-			$added = false;
-			foreach ($this->compilers as $compiler) {
-				if ($compiler->moreFilesToCompile($files)) {
-					$added = true;
-				}
+			// get source and update dependencies
+			foreach ($files as $source) {
+				/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
+				(new Dao_Set())->replace(
+					$source->getDependencies(true),
+					Dependency::class, ['file_name' => $source->getFileName()]
+				);
 			}
-			if (count($this->compilers) == 1) {
+
+			/** @var $files Php_Source[] Key is file path */
+			// ask each compiler for adding of compiled files, until they have nothing to add
+			do {
 				$added = false;
-			}
-		} while ($added);
+				foreach ($this->compilers as $compiler) {
+					if ($compiler instanceof Needs_Main_Controller) {
+						$compiler->setMainController($this->main_controller);
+					}
+					if ($compiler->moreFilesToCompile($files)) {
+						$added = true;
+					}
+				}
+				if (count($this->compilers) == 1) {
+					$added = false;
+				}
+			} while ($added);
 
-		// compile files
-		foreach ($files as $key => $source) {
-			unset($files[$key]);
-			$compiled = false;
-			foreach ($this->compilers as $compiler) {
-				if ($compiler->compile($source)) {
-					$compiled = true;
+			// compile files
+			foreach ($files as $source) {
+				$compiled = false;
+				foreach ($this->compilers as $compiler) {
+					if ($new_files_to_compile = $compiler->compile($source)) {
+						if (is_array($new_files_to_compile)) {
+							$more_files = array_merge($more_files, $new_files_to_compile);
+						}
+						$compiled = true;
+					}
+				}
+				$file_name = $cache_dir . SL . str_replace(SL, '-', substr($source->getFileName(), 0, -4));
+				if ($compiled) {
+					echo '- Comp. save into ' . $file_name . '<br>';
+					script_put_contents($file_name, $source->getSource());
+				}
+				else {
+					if (is_file($file_name)) {
+						echo '- Comp. remove ' . $file_name . '<br>';
+						unlink($file_name);
+					}
 				}
 			}
-			$file_name = $cache_dir . SL . str_replace(SL, '-', substr($source->getFileName(), 0, -4));
-			if ($compiled) {
-				echo '- Comp. save into ' . $file_name . '<br>';
-				script_put_contents($file_name, $source->getSource());
-			}
-			else {
-				if (is_file($file_name)) {
-					echo '- Comp. remove ' . $file_name . '<br>';
-					unlink($file_name);
-				}
-			}
+
+			$files = $more_files;
 		}
+
 	}
 
 	//----------------------------------------------------------------------------- getFilesToCompile
@@ -114,7 +126,7 @@ class Php_Compiler implements Plugins\Configurable, Plugins\Registerable, Serial
 	 * Gets the list of php files that were modifier since $last_time
 	 *
 	 * @param $last_time integer scan only files modified since this time
-	 * @return string[] key is full file path, value is file name
+	 * @return Php_Source[] key is full file path, value is file name
 	 */
 	private function getFilesToCompile($last_time = 0)
 	{
@@ -125,7 +137,7 @@ class Php_Compiler implements Plugins\Configurable, Plugins\Registerable, Serial
 		$files = [];
 		foreach ($source_files as $file_path) {
 			if ((substr($file_path, -4) == '.php') && (filemtime($file_path) > $last_time)) {
-				$files[$file_path] = $file_path;
+				$files[$file_path] = new Php_Source($file_path);
 			}
 		}
 		return $files;
@@ -153,6 +165,15 @@ class Php_Compiler implements Plugins\Configurable, Plugins\Registerable, Serial
 			$compilers[] = is_object($compiler) ? get_class($compiler) : $compiler;
 		}
 		return serialize($compilers);
+	}
+
+	//----------------------------------------------------------------------------- setMainController
+	/**
+	 * @param $main_controller Main_Controller
+	 */
+	public function setMainController(Main_Controller $main_controller)
+	{
+		$this->main_controller = $main_controller;
 	}
 
 	//---------------------------------------------------------------------------------------- update
