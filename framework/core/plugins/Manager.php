@@ -86,6 +86,7 @@ class Manager implements IManager, Serializable
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Gets a plugin object
+	 * If no plugin of this class name exists, the class is instantiated and the plugin registered
 	 *
 	 * @param $class_name string
 	 * @param $level      string
@@ -185,6 +186,18 @@ class Manager implements IManager, Serializable
 		return isset($plugin->plugin_configuration)
 			? $plugin->plugin_configuration
 			: null;
+	}
+
+	//------------------------------------------------------------------------------------------- has
+	/**
+	 * Returns true if the manager has the given plugin
+	 *
+	 * @param $class_name string
+	 * @return boolean
+	 */
+	public function has($class_name)
+	{
+		return isset($this->plugins[$class_name]);
 	}
 
 	//-------------------------------------------------------------------------------------- register

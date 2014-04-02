@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\AOP\Weaver;
+use SAF\AOP;
 
 $config['framework'] = [
 
@@ -14,9 +14,9 @@ $config['framework'] = [
 	// they are activated first, at the beginning of each script
 	// here must be only plugins that are needed in 100% scripts, as a lot of them may consume time
 	'core' => [
-		Router::class,  // must be the first core plugins as others plugins need it
-		Weaver::class,  // must be declared before any plugin that uses AOP
-		Builder::class, // every classes before Builder will not be replaceable
+		Router::class,     // must be the first core plugins as others plugins need it
+		AOP\Weaver::class, // must be declared before any plugin that uses AOP
+		Builder::class,    // every classes before Builder will not be replaceable
 		Application_Updater::class, // check for update at each script call
 		Xdebug::class               // remove xdebug parameters at each script call
 		/*
@@ -60,7 +60,10 @@ $config['framework'] = [
 			]
 		],
 		Mysql_Maintainer::class,
-		Php_Compiler::class,
+		Php_Compiler::class => [
+			AOP\Compiler::class,
+			Builder\Compiler::class
+		],
 		Translation_String_Composer::class,
 		View::class => [
 			'class' => Html_View_Engine::class,

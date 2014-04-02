@@ -23,7 +23,7 @@ class Class_Builder
 	/**
 	 * @param $class_name        string The base class name
 	 * @param $interfaces_traits string[] The interfaces and traits names list
-	 * @param $get_source        boolean if true, get built [$name, $source) instead of $name
+	 * @param $get_source        boolean if true, get built [$name, $source] instead of $name
 	 * @return string|string[] the full name of the built class
 	 */
 	public static function build($class_name, $interfaces_traits = [], $get_source = false)

@@ -65,7 +65,7 @@ class Application_Updater implements Serializable
 	 */
 	public function done()
 	{
-		//$this->setLastUpdateTime($this->update_time);
+		$this->setLastUpdateTime($this->update_time);
 		unset($this->update_time);
 		@unlink('update');
 	}
@@ -133,7 +133,7 @@ class Application_Updater implements Serializable
 		}
 		foreach ($this->updatables as $key => $updatable) {
 			if (is_string($updatable)) {
-				$updatable = Session::current()->get($updatable) ?: Builder::create($updatable);
+				$updatable = Session::current()->plugins->get($updatable);
 				$this->updatables[$key] = $updatable;
 			}
 			$updatable->update($last_update_time);

@@ -2,10 +2,16 @@
 namespace SAF\AOP;
 
 use SAF\Framework\Application;
+use SAF\Framework\Dao;
+use SAF\Framework\Dependency;
 use SAF\Framework\Files;
 use SAF\Framework\Getter;
+use SAF\Framework\ICompiler;
 use SAF\Framework\Names;
 use SAF\Framework\Php_Class;
+use SAF\Framework\Php_Source;
+use SAF\Framework\Search_Object;
+use SAF\Framework\Session;
 use SAF\Plugins;
 
 /**
@@ -36,11 +42,11 @@ class Compiler implements ICompiler
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $weaver IWeaver
+	 * @param $weaver IWeaver If not set, the current weaver plugin is used
 	 */
-	public function __construct(IWeaver $weaver)
+	public function __construct(IWeaver $weaver = null)
 	{
-		$this->weaver = $weaver;
+		$this->weaver = $weaver ?: Session::current()->plugins->get(Weaver::class);
 		// use cache dir only in DEV environment. when in PRODUCTION, files are directly compiled
 		// to improve performance
 		if (isset($_SERVER['ENV']) && ($_SERVER['ENV'] == 'DEV')) {
@@ -51,10 +57,21 @@ class Compiler implements ICompiler
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
-* @param $class_name string
+	 * @param $source Php_Source
+	 * @return boolean
 	 */
-	public function compile($class_name = null)
+	public function compile(Php_Source $source)
 	{
+		$classes = $source->getClasses();
+		if ($class = reset($classes)) {
+			$class = Php_Class::fromClassName($class->name);
+			if ($this->compileClass($class)) {
+				$source->setSource($class->source);
+				return true;
+			}
+		}
+		return false;
+		/*
 		if ($class_name) {
 			$class = Php_Class::fromClassName($class_name);
 			if ($class) {
@@ -78,13 +95,15 @@ class Compiler implements ICompiler
 				}
 			}
 		}
+		*/
 	}
 
 	//---------------------------------------------------------------------------------- compileClass
 	/**
 	 * @param $class Php_Class
+	 * @return boolean
 	 */
-	private function compileClass(Php_Class $class)
+	public function compileClass(Php_Class $class)
 	{
 		$compiled_file_name = isset($this->cache_dir)
 			? ($this->cache_dir . SL . str_replace(SL, '-', substr($class->file_name, 0, -4)))
@@ -105,7 +124,7 @@ class Compiler implements ICompiler
 			else {
 				script_put_contents($compiled_file_name, $class->source);
 			}
-			return;
+			return false;
 		}
 
 		$methods    = [];
@@ -168,15 +187,46 @@ class Compiler implements ICompiler
 		elseif (isset($this->cache_dir) && file_exists($compiled_file_name)) {
 			unlink($compiled_file_name);
 		}
+
+		return boolval($methods_code);
+	}
+
+	//---------------------------------------------------------------------------- moreFilesToCompile
+	/**
+	 * @param $files Php_Source[]
+	 * @return boolean
+	 */
+	public function moreFilesToCompile(&$files)
+	{
+		$added = false;
+		/** @var $search Dependency */
+		$search = Search_Object::create(Dependency::class);
+		$search->type = Dependency::T_USES;
+		foreach ($files as $source) {
+			foreach ($source->getClasses() as $class) {
+				if ($class->type == T_TRAIT) {
+					$search->dependency_name = $class->name;
+					/** @var $dependency Dependency */
+					foreach (Dao::search($search, Dependency::class) as $dependency) {
+						if (!isset($files[$dependency->file_name])) {
+							$files[$dependency->file_name] = new Php_Source($dependency->file_name);
+							$added = true;
+						}
+					}
+				}
+			}
+		}
+		return $added;
 	}
 
 	//----------------------------------------------------------------------------------- compileFile
 	/**
 	 * @param $file_name string
+	 * @return boolean
 	 */
 	public function compileFile($file_name)
 	{
-		$this->compileClass(Php_Class::fromFile($file_name));
+		return $this->compileClass(Php_Class::fromFile($file_name));
 	}
 
 	//---------------------------------------------------------------------------------- getPointcuts

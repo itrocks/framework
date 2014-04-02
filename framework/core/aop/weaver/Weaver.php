@@ -1,10 +1,12 @@
 <?php
 namespace SAF\AOP;
 
+use SAF\Framework\ICompiler;
+
 /**
  * The Aop class is an interface to the Aop calls manager
  */
-class Weaver implements ICompiled, IWeaver
+class Weaver implements IWeaver
 {
 
 	//----------------------------------------------------------------------------------- $joinpoints

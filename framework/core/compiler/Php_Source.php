@@ -1,325 +1,610 @@
 <?php
 namespace SAF\Framework;
 
-use ReflectionClass;
-use SAF\Framework\Namespaces;
-
 /**
- * PHP source buffer and toolbox
+ * A Php source file tokenizer
  */
 class Php_Source
 {
 
-	//--------------------------------------------------------------------------------------- $buffer
+	//----------------------------------------------------------------------------------------- const
+	const CLASSES      = 1;
+	const DEPENDENCIES = 2;
+	const INSTANTIATES = 3;
+	const NAMESPACES   = 4;
+	const USES         = 5;
+
+	//-------------------------------------------------------------------------------------- $classes
+	/**
+	 * @var Dependency_Class[]
+	 */
+	private $classes;
+
+	//--------------------------------------------------------------------------------- $dependencies
+	/**
+	 * @var Dependency[]
+	 */
+	private $dependencies;
+
+	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * @var string
 	 */
-	public $buffer;
+	private $file_name;
 
-	//----------------------------------------------------------------------------------- $class_name
+	//--------------------------------------------------------------------------------- $dependencies
+	/**
+	 * @var Dependency[]
+	 */
+	private $instantiates;
+
+	//---------------------------------------------------------------------------------------- $lines
+	/**
+	 * @var string[]
+	 */
+	private $lines;
+
+	/**
+	 * @var integer[] key is the namespace, value is the line number where it is declared
+	 */
+	private $namespaces;
+
+	//--------------------------------------------------------------------------------------- $source
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	private $source;
 
-	//-------------------------------------------------------------------------------------- $extends
-	private $extends;
+	//--------------------------------------------------------------------------------------- $tokens
+	/**
+	 * @var array
+	 */
+	private $tokens;
 
-	//----------------------------------------------------------------------------------- $implements
-	private $implements;
-
-	//-------------------------------------------------------------------------------------- $methods
-	private $methods;
-
-	//------------------------------------------------------------------------------------ $namespace
-	private $namespace;
+	//----------------------------------------------------------------------------------------- $uses
+	/**
+	 * @var integer[] key is the use (namespace or full class name), value is the line number
+	 */
+	private $uses;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string class name or file name
-	 * @param $buffer     string
+	 * @param $file_name string
 	 */
-	public function __construct($class_name, &$buffer = null)
+	public function __construct($file_name)
 	{
-		if ((strpos($class_name, SL) !== false) && file_exists($class_name)) {
-			if (isset($buffer)) {
-				$this->buffer =& $buffer;
+		$this->file_name = $file_name;
+	}
+
+	//--------------------------------------------------------------------------------- fullClassName
+	/**
+	 * Resolves the full class name for any class name in current source code context
+	 *
+	 * @param $class_name string the class name we want to get the full class name
+	 * @param $namespace  string the current namespace
+	 * @param $use        string[] the current use namespaces or class names
+	 * @return string
+	 */
+	private function fullClassName($class_name, $namespace, $use = [])
+	{
+		// class name beginning with '\' : this is the full class name
+		if ($class_name[0] === BS) {
+			return substr($class_name, 1);
+		}
+		// class name containing '\' : search for namespace
+		if ($length = strpos($class_name, BS)) {
+			$search = BS . substr($class_name, 0, $length++);
+			foreach ($use as $u) {
+				$bu = BS . $u;
+				if (substr($bu, -$length) === $search) {
+					return ((strlen($bu) > $length) ? (substr($bu, 1, -$length) . BS) : '') . $class_name;
+				}
+			}
+			return ($namespace ? ($namespace . BS) : '') . $class_name;
+		}
+		if ($use) {
+			// class name without '\' : search for full class name
+			$search = BS . $class_name;
+			$length = strlen($search);
+			foreach ($use as $u) {
+				$bu = BS . $u;
+				if(substr($bu, -$length) === $search) {
+					return $u;
+				}
+			}
+		}
+		return ($namespace ? ($namespace . BS) : '') . $class_name;
+	}
+
+	//------------------------------------------------------------------------------------------- get
+	/**
+	 * @param $filter integer[] what to you want to get
+	 */
+	private function get($filter)
+	{
+		$filter = array_flip($filter);
+		$f_classes      = isset($filter[self::CLASSES]);
+		$f_dependencies = isset($filter[self::DEPENDENCIES]);
+		$f_instantiates = isset($filter[self::INSTANTIATES]);
+		$f_namespaces   = isset($filter[self::NAMESPACES]);
+		$f_uses         = isset($filter[self::USES]);
+		if ($f_classes)      $this->classes      = [];
+		if ($f_dependencies) $this->dependencies = [];
+		if ($f_instantiates) $this->instantiates = [];
+		if ($f_namespaces)   $this->namespaces   = [];
+		if ($f_uses)         $this->uses         = [];
+
+		/** @var $class Dependency_Class */
+		$class = null;
+		// where did the last } come
+		$last_stop = null;
+		// the current namespace
+		$namespace = '';
+		// level for the T_USE clause : T_NAMESPACE, T_CLASS or T_FUNCTION (T_NULL if outside any level)
+		$use_what = null;
+		// what namespaces or class names does the current namespace use (key = val)
+		$use = [];
+
+		// scan tokens
+		$tokens = $this->getTokens();
+		for ($token = $tokens; $token; $token = next($tokens)) {
+			$token_id = $token[0];
+
+			// stop
+			if ($token_id === '}') {
+				while (!is_array($token)) {
+					$token = next($tokens);
+				}
+				$last_stop = $token[2];
+			}
+
+			// namespace
+			if ($token_id === T_NAMESPACE) {
+				$use_what = T_NAMESPACE;
+				$namespace = $this->parseClassName($tokens);
+				$use = [];
+				if ($f_namespaces) {
+					$this->namespaces[$namespace] = $token[2];
+				}
+			}
+
+			// use
+			elseif ($token_id === T_USE) {
+
+				// namespace use
+				if ($use_what == T_NAMESPACE) {
+					foreach ($this->parseClassNames($tokens) as $used => $line) {
+						$use[$used] = $used;
+						if ($f_uses) {
+							$this->uses[$used] = $line;
+						}
+					}
+				}
+
+				// class use (notice that this will never be called after T_DOUBLE_COLON)
+				elseif ($use_what === T_CLASS) {
+					if ($f_dependencies) {
+						foreach ($this->parseTraitNames($tokens) as $trait_name => $line) {
+							$trait_name = $this->fullClassName($trait_name, $namespace, $use);
+							$dependency = new Dependency();
+							$dependency->class_name      = $class->name;
+							$dependency->dependency_name = $trait_name;
+							$dependency->file_name       = $this->file_name;
+							$dependency->line            = $line;
+							$dependency->type            = Dependency::T_USES;
+							$this->dependencies[] = $dependency;
+						}
+					}
+				}
+
+				// function use
+				elseif ($use_what == T_FUNCTION) {
+					// ...
+				}
+
+			}
+
+			// class, interface or trait
+			elseif (in_array($token_id, [T_CLASS, T_INTERFACE, T_TRAIT])) {
+				$use_what = T_CLASS;
+				if (isset($class)) {
+					$class->stop = $last_stop;
+				}
+				$class_name = $this->fullClassName($this->parseClassName($tokens), $namespace);
+				$class = new Dependency_Class();
+				$class->name = $class_name;
+				$class->line = $token[2];
+				$class->type = $token_id;
+				if ($f_classes) {
+					$this->classes[$class_name] = $class;
+				}
+			}
+			elseif ($token_id === T_FUNCTION) {
+				$use_what = T_FUNCTION;
+			}
+
+			// extends, implements
+			elseif (in_array($token_id, [T_EXTENDS, T_IMPLEMENTS])) {
+				if ($f_dependencies) {
+					foreach ($this->parseClassNames($tokens) as $class_name => $line) {
+						$class_name = $this->fullClassName($class_name, $namespace, $use);
+						$dependency = new Dependency();
+						$dependency->class_name      = $class->name;
+						$dependency->dependency_name = $class_name;
+						$dependency->file_name       = $this->file_name;
+						$dependency->line            = $line;
+						$dependency->type            = $this->nameOf($token_id);
+						$this->dependencies[] = $dependency;
+					}
+				}
+			}
+
+			// doc comment
+			elseif ($token_id === T_DOC_COMMENT) {
+				if ($f_instantiates) {
+					$doc_comment = $token[1];
+					// 0 : everything until var name, 1 : type, 2 : Class_Name / $param, 3 : Class_Name
+					preg_match_all(
+						'%\*\s+@(param|return|var)\s+([\w\$\[\]\|]+)(?:\s+([\w\$\[\]\|]+))?%',
+						$doc_comment,
+						$matches,
+						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+					);
+
+					foreach ($matches as $match) {
+						list($class_name, $pos) = $match[2];
+						if ($class_name[0] === '$') {
+							list($class_name, $pos) = isset($match[3]) ? $match[3] : 'null';
+						}
+						foreach (explode('|', $class_name) as $class_name) {
+							if (ctype_upper($class_name[0])) {
+								$class_name = str_replace(['[', ']'], '', $class_name);
+								$line = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
+								$type = $match[1][0];
+								$class_name = $this->fullClassName($class_name, $namespace, $use);
+								$dependency = new Dependency();
+								$dependency->class_name      = $class->name;
+								$dependency->dependency_name = $class_name;
+								$dependency->file_name       = $this->file_name;
+								$dependency->line            = $line;
+								$dependency->type            = $type;
+								$this->instantiates[] = $dependency;
+							}
+						}
+					}
+				}
+			}
+
+			// ::class
+			elseif ($token_id === T_DOUBLE_COLON) {
+				if ($f_instantiates) {
+					$token = prev($tokens);
+					next($tokens);
+					$keyword = next($tokens);
+					$keyword = ($keyword[1] === 'class') ? 'class' : 'static';
+					if (!in_array($token[1], ['self', 'static', '__CLASS__'])) {
+						$class_name = $this->fullClassName($token[1], $namespace, $use);
+						$dependency = new Dependency();
+						$dependency->class_name      = $class->name;
+						$dependency->dependency_name = $class_name;
+						$dependency->file_name       = $this->file_name;
+						$dependency->line            = $token[2];
+						$dependency->type            = $keyword;
+						$this->instantiates[] = $dependency;
+					}
+				}
+				else {
+					next($tokens);
+				}
+			}
+
+			// new
+			elseif ($token_id === T_NEW) {
+				if ($f_instantiates) {
+					$class_name = $this->parseClassName($tokens);
+					// $class_name is empty when 'new $class_name' (dynamic class name) : then ignore
+					if ($class_name) {
+						$class_name = $this->fullClassName($class_name, $namespace, $use);
+						$dependency = new Dependency();
+						$dependency->class_name      = $class->name;
+						$dependency->dependency_name = $class_name;
+						$dependency->file_name       = $this->file_name;
+						$dependency->line            = $token[2];
+						$dependency->type            = Dependency::T_NEW;
+						$this->instantiates[] = $dependency;
+					}
+				}
+			}
+
+		}
+		if (isset($class)) {
+			$class->stop = $last_stop;
+		}
+	}
+
+	//---------------------------------------------------------------------------------------- getAll
+	/**
+	 * Fill in all php source cache
+	 *
+	 * @return array
+	 */
+	public function getAll()
+	{
+		$filters = [];
+		if (!isset($this->classes))      $filters[] = self::CLASSES;
+		if (!isset($this->dependencies)) $filters[] = self::DEPENDENCIES;
+		if (!isset($this->instantiates)) $filters[] = self::INSTANTIATES;
+		if (!isset($this->namespaces))   $filters[] = self::NAMESPACES;
+		if (!isset($this->uses))         $filters[] = self::USES;
+		$this->get($filters);
+		$result = get_object_vars($this);
+		unset($result['lines']);
+		unset($result['source']);
+		unset($result['tokens']);
+		return $result;
+	}
+
+	//-------------------------------------------------------------------------- getClassDependencies
+	/**
+	 * @param $class        Dependency_Class
+	 * @param $instantiates boolean if true, searches for '::class' and 'new' too
+	 * @return Dependency[]
+	 */
+	public function getClassDependencies(Dependency_Class $class, $instantiates = false)
+	{
+		$dependencies = [];
+		foreach ($this->getDependencies($instantiates) as $dependency) {
+			if (
+				($dependency->line >= $class->line)
+				&& ($dependency->line <= $class->stop)
+				&& ($class->name !== $dependency->dependency_name)
+			) {
+				$dependencies[] = $dependency;
+			}
+		}
+		return $dependencies;
+	}
+
+	//------------------------------------------------------------------------------------ getClasses
+	/**
+	 * Gets all declared classes full names
+	 *
+	 * @return Dependency_Class[]
+	 */
+	public function getClasses()
+	{
+		if (!isset($this->classes)) {
+			$filters = [self::CLASSES];
+			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
+			$this->get($filters);
+		}
+		return $this->classes;
+	}
+
+	//------------------------------------------------------------------------------- getDependencies
+	/**
+	 * Gets all dependencies full classes names
+	 * - Looks for them using namespace 'use', classes 'extends', 'implements' and 'use'
+	 *
+	 * @param $instantiates boolean if true, searches for '::class' and 'new' too
+	 * @return Dependency[]
+	 */
+	public function getDependencies($instantiates = false)
+	{
+		if (!isset($this->dependencies) || ($instantiates && !isset($this->instantiates))) {
+			$filters = [];
+			if ($instantiates && !isset($this->instantiates)) $filters[] = self::INSTANTIATES;
+			if (!isset($this->dependencies))                  $filters[] = self::DEPENDENCIES;
+			if (!isset($this->namespaces))                    $filters[] = self::NAMESPACES;
+			if (!isset($this->uses))                          $filters[] = self::USES;
+			$this->get($filters);
+		}
+		return $instantiates
+			? arrayMergeRecursive($this->dependencies, $this->instantiates)
+			: $this->dependencies;
+	}
+
+	//----------------------------------------------------------------------------------- getFileName
+	/**
+	 * @return string
+	 */
+	public function getFileName()
+	{
+		return $this->file_name;
+	}
+
+	//------------------------------------------------------------------------------- getInstantiates
+	/**
+	 * Gets all instantiates full classes names
+	 * - Looks for them using '::class' and 'new'
+	 *
+	 * @return array key is the full class name
+	 */
+	public function getInstantiates()
+	{
+		if (!isset($this->instantiates)) {
+			$filters = [self::INSTANTIATES];
+			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
+			if (!isset($this->uses))       $filters[] = self::USES;
+			$this->get($filters);
+		}
+		return $this->instantiates;
+	}
+
+	//-------------------------------------------------------------------------------------- getLines
+	/**
+	 * @return string[]
+	 */
+	public function getLines()
+	{
+		if (!isset($this->lines)) {
+			$this->lines = isset($this->source)
+				? explode(LF, $this->source)
+				: $this->lines = file($this->source);
+		}
+		return $this->lines;
+	}
+
+	//------------------------------------------------------------------------------------- getSource
+	/**
+	 * @return string
+	 */
+	public function getSource()
+	{
+		if (!isset($this->source)) {
+			$this->source = isset($this->lines)
+				? join(LF, $this->lines)
+				: file_get_contents($this->file_name);
+		}
+		return $this->source;
+	}
+
+	//------------------------------------------------------------------------------------- getTokens
+	/**
+	 * @return array
+	 */
+	public function getTokens()
+	{
+		if (!isset($this->tokens)) {
+			$this->tokens = token_get_all($this->getSource());
+		}
+		return $this->tokens;
+	}
+
+	//---------------------------------------------------------------------------------------- nameOf
+	/**
+	 * Returns the name that corresponds to a token id, lowercase and without the 'T_' prefix
+	 *
+	 * @param $token_id integer
+	 * @return string
+	 */
+	private function nameOf($token_id)
+	{
+		return strtolower(substr(token_name($token_id), 2));
+	}
+
+	//-------------------------------------------------------------------------------- parseClassName
+	/**
+	 * Parses a class name
+	 *
+	 * @param $tokens array the current selected token must be before the first T_STRING or T_WHITESPACE
+	 * @return string
+	 */
+	private function parseClassName(&$tokens)
+	{
+		$class_name = '';
+		do {
+			$token = next($tokens);
+		} while ($token[0] === T_WHITESPACE);
+		while (in_array($token[0], [T_NS_SEPARATOR, T_STRING])) {
+			$class_name .= $token[1];
+			$token = next($tokens);
+		}
+		return $class_name;
+	}
+
+	//------------------------------------------------------------------------------- parseClassNames
+	/**
+	 * Parses commas separated class names
+	 *
+	 * @param $tokens array the current selected token must be before the first T_STRING
+	 * @return string[]
+	 */
+	private function parseClassNames(&$tokens)
+	{
+		$classe_names = [];
+		$line = 0;
+		$used = '';
+		do {
+			$token = next($tokens);
+			if (in_array($token[0], [T_NS_SEPARATOR, T_STRING])) {
+				$line = $token[2];
+				$used .= $token[1];
+			}
+			elseif ($token === ',') {
+				$classe_names[$used] = $line;
+				$used = '';
+			}
+		} while (($token === ',') || in_array($token[0], [T_NS_SEPARATOR, T_STRING, T_WHITESPACE]));
+		if ($used) {
+			$classe_names[$used] = $line;
+		}
+		return $classe_names;
+	}
+
+	//------------------------------------------------------------------------------- parseTraitNames
+	/**
+	 * Parse commas separated trait names. Ignore { } traits details
+	 *
+	 * @param $tokens array the current selected token must be before the first T_STRING
+	 * @return integer[] key is the trait name, value is the line number it was declared
+	 */
+	private function parseTraitNames(&$tokens)
+	{
+		$trait_names = [];
+		$trait_name = '';
+		$depth = 0;
+		$line = 0;
+		do {
+			$token = next($tokens);
+			if ($token === ',') {
+				$trait_names[$trait_name] = $line;
+				$trait_name = '';
 			}
 			else {
-				$this->buffer = str_replace(CR, '', file_get_contents($class_name));
-			}
-			$this->class_name = $this->getClassName();
-		}
-		else {
-			$this->class_name = $class_name;
-			if (isset($buffer)) {
-				$this->buffer =& $buffer;
-			}
-			else {
-				$this->buffer = str_replace(CR, '', file_get_contents(
-					(new ReflectionClass($class_name))->getFileName()
-				));
-			}
-		}
-	}
-
-	//--------------------------------------------------------------------------- allReflectionTraits
-	/**
-	 * Gets all traits directly used by the current class
-	 * - Traits used by directly used traits are listed
-	 * - Traits used by parent classes are not listed
-	 *
-	 * @return string[]
-	 */
-	public function allReflectionTraits()
-	{
-		$traits = [$this->class_name];
-		$get_traits = $traits;
-		while ($get_traits) {
-			$get_traits = [];
-			foreach ($get_traits as $trait_name) {
-				if ($uses = class_uses($trait_name)) {
-					$get_traits = array_merge($get_traits, $uses);
-					$traits = array_merge($traits, $uses);
+				$token_id = $token[0];
+				if ($token_id == '{') {
+					$depth ++;
+				}
+				elseif ($token_id == '}') {
+					$depth --;
+				}
+				elseif (($token_id == T_STRING) && !$depth) {
+					$trait_name .= $token[1];
+					$line = $token[2];
 				}
 			}
+		} while ($token !== ';');
+		if ($trait_name) {
+			$trait_names[$trait_name] = $line;
 		}
-		array_shift($traits);
-		return $traits;
+		return $trait_names;
 	}
 
-	//------------------------------------------------------------------------------------ cleanupAop
+	//----------------------------------------------------------------------------------------- reset
 	/**
-	 * @return boolean
-	 */
-	public function cleanupAop()
-	{
-		$buffer =& $this->buffer;
-		// remove all '\r'
-		$buffer = trim(str_replace(CR, '', $buffer));
-		// remove since the line containing '//#### AOP' until the end of the file
-		$expr = '%\n\s*//#+\s+AOP.*%s';
-		preg_match($expr, $buffer, $match1);
-		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? LF . LF . '}' . LF : LF);
-		// replace '/* public */ private [static] function name_(' by 'public [static] function name('
-		$expr = '%(?:\n\s*/\*\*\s+@noinspection\s+PhpUnusedPrivateMethodInspection(?:\s+\w*)+\*/)?'
-			. '(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)((private|protected|public)\s*)?'
-			. '(static\s*)?function(\s+\w*)\_[0-9]*\s*\(%';
-		preg_match($expr, $buffer, $match2);
-		$buffer = preg_replace($expr, '$1$2$3$6function$7(', $buffer);
-		return $match1 || $match2;
-	}
-
-	//---------------------------------------------------------------------------------- getClassName
-	/**
-	 * Gets class name from source
+	 * Reset object properties in order to free memory
 	 *
-	 * @return string
-	 */
-	public function getClassName()
-	{
-		preg_match('`\n\s*(?:abstract\s+)?(?:class|interface|trait)\s+(\w*)`', $this->buffer, $match);
-		return $match ? $match[1] : null;
-	}
-
-	//---------------------------------------------------------------------------------- getDocComment
-	/**
-	 * Gets doc comment of an element (property or function name)
+	 * Classes, dependencies, instantiates, namespaces and uses are reset only if bigger than the
+	 * $bigger_than parameter or if it is 0.
 	 *
-	 * @param $name string
-	 * @return string
-	 */
-	public function getDocComment($name)
-	{
-		$property = '\n\s*(?:private|protected|public)\s+\$' . $name . '\s*;';
-		$method = '\n\s*(?:(?:private|protected|public)\s+)?(?:static\s+)?function\s+' . $name . '\s*\(';
-		$expr = '%(?>(\n\s*/\*\*.+?\n\s*\*/))(?:' . $property. '|' . $method . ')%s';
-		preg_match($expr, $this->buffer, $match);
-		if (!$match) {
-			foreach ($this->allReflectionTraits() as $trait_name) {
-				$trait_source = new Php_Source($trait_name);
-				$trait_source->cleanupAop();
-				$match = $trait_source->getDocComment($name);
-				if ($match) {
-					return $match;
-				}
-			}
-			$parent = $this->getParent();
-			if ($parent) $parent->cleanupAop();
-			return $parent ? $parent->getDocComment($name) : '';
-		}
-		return $match ? $match[1] : '';
-	}
-
-	//---------------------------------------------------------------------------------- getPrototype
-	/**
-	 * Gets the prototype of an existing method from the class
+	 * Lines, source and tokens are always reset by this call.
 	 *
-	 * Detailed match contains match as described bellow
-	 * 0 : '[DOC]\n\tabstract public static function methodName (...) {'
-	 * 1 : '[DOC]'
-	 * 2 : '\n\t'
-	 * 3 : 'abstract'
-	 * 4 : 'public'
-	 * 5 : 'static'
-	 * 6 : '($param, &$param2 = CONSTANT)'
-	 * 'preg': $full_preg_expression
-	 * 'parent': true (set only if prototype was taken from a parent class)
-	 * 'prototype': the prototype string
+	 * @param $bigger_than integer
+	 */
+	public function reset($bigger_than = 1)
+	{
+		if (!$bigger_than || (count($this->classes)      > $bigger_than)) $this->classes      = null;
+		if (!$bigger_than || (count($this->dependencies) > $bigger_than)) $this->dependencies = null;
+		if (!$bigger_than || (count($this->instantiates) > $bigger_than)) $this->instantiates = null;
+		if (!$bigger_than || (count($this->namespaces)   > $bigger_than)) $this->namespaces   = null;
+		if (!$bigger_than || (count($this->uses)         > $bigger_than)) $this->uses         = null;
+		$this->lines  = null;
+		$this->source = null;
+		$this->tokens = null;
+	}
+
+	//------------------------------------------------------------------------------------- setSource
+	/**
+	 * Sets the new source code
+	 * Every properties but the file name are reset to zero by this change.
 	 *
-	 * @param $method_name string
-	 * @param $detailed    boolean if true, all matching elements and the preg are returned
-	 * @return string the full prototype of the method, or null if not found
+	 * @param $source string
 	 */
-	public function getPrototype($method_name, $detailed = false)
+	public function setSource($source)
 	{
-		$expr = '%'
-			. '(\n\s*)'
-			. '(?:(/\*\*.*\*/)\n\s*)?'
-			. '(?:(abstract)\s+)?'
-			. '(?:(private|protected|public)\s+)?'
-			. '(?:(static)\s+)?'
-			. 'function\s+'
-			. '(?:' . $method_name . ')'
-			. '\s*\((.*)\)'
-			. '\s*[\{\;]'
-			. '%sU';
-		preg_match($expr, $this->buffer, $match);
-		if (!$match) {
-			foreach ($this->allReflectionTraits() as $trait_name) {
-				$trait_source = new Php_Source($trait_name);
-				$trait_source->cleanupAop();
-				$match = $trait_source->getPrototype($method_name, $detailed);
-				if ($match) {
-					return $match;
-				}
-			}
-			$parent = $this->getParent();
-			if ($parent) $parent->cleanupAop();
-			$match = $parent ? $parent->getPrototype($method_name, $detailed) : null;
-			if ($detailed && $match) {
-				$match['parent'] = true;
-			}
-			return $match;
-		}
-		if ($detailed && $match) {
-			$match['preg'] = $expr;
-			$match['prototype'] = $match[0];
-			if (isset($match[1])) $match['doc'] = $match[1];
-			$match['indent'] = $match[2];
-			if (isset($match[3])) $match['abstract'] = true;
-			if (isset($match[4])) $match['visibility'] = $match[3];
-			if (isset($match[5])) $match['static'] = true;
-			$match['parameters'] = $match[6];
-		}
-		return $match ? ($detailed ? $match : $match[0]) : null;
-	}
-
-	//------------------------------------------------------------------------------------- getParent
-	/**
-	 * @return Php_Source
-	 */
-	public function getParent()
-	{
-		$parent_class_name = get_parent_class($this->class_name);
-		return $parent_class_name
-			? new Php_Source($parent_class_name)
-			: null;
-	}
-
-	//------------------------------------------------------------------------------------ getExtends
-	/**
-	 * @return string
-	 * @todo Missing namespace adding
-	 */
-	public function getExtends()
-	{
-		if (!isset($this->extends)) {
-			$class_name = Namespaces::shortClassName($this->class_name);
-			$expr = '%\n\s*(?:class|interface|trait)\s+(?:' . $class_name . ')\s+(?:extends)\s+(\w+)%s';
-			preg_match($expr, $this->buffer, $match);
-			$this->extends = $match ? $match[1] : '';
-		}
-		return $this->extends;
-	}
-
-	//------------------------------------------------------------------------------------ getExtends
-	/**
-	 * @return string[]
-	 * @todo Missing namespace adding
-	 */
-	public function getImplements()
-	{
-		if (!isset($this->implements)) {
-			$class_name = Namespaces::shortClassName($this->class_name);
-			$expr = '%\n\s*(?:class|interface|trait)\s+(?:' . $class_name . ')\s+'
-				. '(?:(?:extends)\s+\w+\s+)?(?:implements)\s+(?:(\w+)(?:\s*,\s*)?)+';
-			preg_match_all($expr, $this->buffer, $match);
-			$this->implements = $match ? $match[1] : '';
-		}
-		return $this->implements;
-	}
-
-	//------------------------------------------------------------------------------------ getMethods
-	/**
-	 * @return Php_Method[]
-	 */
-	public function getMethods()
-	{
-		if (!isset($this->methods)) {
-			$this->methods = [];
-			preg_match_all(Php_Method::regex(), $this->buffer, $match);
-			foreach (array_keys($match[0]) as $n) {
-				$method = Php_Method::fromMatch($this->class_name, $match, $n);
-				$this->methods[$method->name] = $method;
-			}
-		}
-		return $this->methods;
-	}
-
-	//---------------------------------------------------------------------------------- getNameSpace
-	/**
-	 * @return string
-	 */
-	public function getNamespace()
-	{
-		if (!isset($this->namespace)) {
-			$expr = '%\n\s*(?:namespace)\s+(\w+)\s*[;\{\n]%s';
-			preg_match($expr, $this->buffer, $match);
-			$this->namespace = $match ? $match[1] : '';
-		}
-		return $this->namespace;
-	}
-
-	//------------------------------------------------------------------- getPrototypeParametersNames
-	/**
-	 * @param $prototype string
-	 * @return string[]
-	 */
-	public function getPrototypeParametersNames($prototype)
-	{
-		$expr = '%\$\w*%s';
-		preg_match_all($expr, $prototype, $match);
-		return $match[0];
-	}
-
-	//------------------------------------------------------------------------------------ isAbstract
-	/**
-	 * Returns true if the class or trait is abstract, or if this is an interface
-	 *
-	 * @param $name string method name
-	 * @return boolean
-	 */
-	public function isAbstract($name = null)
-	{
-		if (isset($name)) {
-			$prototype = $this->getPrototype($name, true);
-			return isset($prototype['abstract']);
-		}
-		else {
-			preg_match('`\n\s*(?:(abstract)\s+)?(class|interface|trait)\s+\w*`', $this->buffer, $match);
-			return $match && ($match[1] || ($match[2] == 'interface'));
-		}
+		$this->reset(0);
+		$this->source = $source;
 	}
 
 }

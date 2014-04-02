@@ -2,7 +2,6 @@
 namespace SAF\Framework;
 
 use ReflectionClass;
-use SAF\Framework\Builder\Compiler;
 use SAF\Plugins;
 use Serializable;
 
@@ -18,19 +17,40 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 {
 	use Current_With_Default { current as private dCurrent; }
 
+	//--------------------------------------------------------------------------------- $compositions
+	/**
+	 * Backup of the replacement compositions for built composed classes
+	 * Once a class replaced by a string[] of interfaces and traits is compiled, its replacement
+	 * structure is stored into compositions for hot recompiling on demand.
+	 *
+	 * @var array[]
+	 */
+	private $compositions = [];
+
 	//--------------------------------------------------------------------------------- $replacements
 	/**
-	 * @var string[] key is parent class name associated to replacement class
+	 * The key is an original class name to replace by a replacement class
+	 * If the value is a string, this is the replacement class name
+	 * If the value is a string[], this is the list of interfaces and traits to use to build a
+	 * replacement class.
+	 *
+	 * The first time it is used, the replacement class is built and the value is replaced by the
+	 * built class name.
+	 *
+	 * @var array[]|string[]
 	 */
-	private $replacements;
+	private $replacements = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $replacements string[] key is parent class name associated to replacement class
+	 * @param $replacements string[]|array[] key is parent class name associated to replacement class
+	 *        values can be a class name or a string[] of interfaces and traits to add to the class
 	 */
-	public function __construct($replacements = [])
+	public function __construct($replacements = null)
 	{
-		$this->replacements = $replacements;
+		if (isset($replacements)) {
+			$this->replacements = $replacements;
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- activate
@@ -181,6 +201,20 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 		return $object;
 	}
 
+	//-------------------------------------------------------------------------------- getComposition
+	/**
+	 * Gets original replacement composition of the class name
+	 *
+	 * @param $class_name string
+	 * @return string|string[]
+	 */
+	public function getComposition($class_name)
+	{
+		return isset($this->compositions[$class_name]) ? $this->compositions[$class_name] : (
+			isset($this->replacements[$class_name]) ? $this->replacements[$class_name] : $class_name
+		);
+	}
+
 	//----------------------------------------------------------------------------------- isObjectSet
 	/**
 	 * Returns true if any property of $object is set and different than its default value
@@ -264,7 +298,6 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 	public function register(Plugins\Register $register)
 	{
 		$aop = $register->aop;
-		$this->replacements = (new Compiler())->compile($this->replacements);
 		$aop->beforeMethod([Getter::class, 'getCollection'],        [$this, 'onMethodWithClassName']);
 		$aop->beforeMethod([Getter::class, 'getObject'],            [$this, 'onMethodWithClassName']);
 		$aop->afterMethod( [Namespaces::class, 'fullClassName'],    [$this, 'afterNamespacesFullClassName']);
@@ -287,6 +320,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 			? $this->replacements[$class_name]
 			: $class_name;
 		if (is_array($result)) {
+			$this->compositions[$class_name] = $result;
 			$result = Class_Builder::build($class_name, $result);
 			$this->replacements[$class_name] = $result;
 		}
@@ -299,7 +333,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 	 */
 	public function serialize()
 	{
-		return serialize($this->replacements);
+		return serialize([$this->compositions, $this->replacements]);
 	}
 
 	//-------------------------------------------------------------------------------- setReplacement
@@ -309,13 +343,15 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 	 * Returns the hole replacement class name as you can set it back at will
 	 *
 	 * @param $class_name             string
-	 * @param $replacement_class_name string|null
+	 * @param $replacement_class_name string|string[]null if null, the replacement class is removed.
+	 *        string value for a replacement class, string[] for a list of interfaces and traits.
 	 * @return string|null old replacement class name
 	 */
 	public function setReplacement($class_name, $replacement_class_name)
 	{
 		$result = isset($this->replacements[$class_name]) ? $this->replacements[$class_name] : null;
 		if (!isset($replacement_class_name)) {
+			unset($this->compositions[$class_name]);
 			unset($this->replacements[$class_name]);
 		}
 		else {
@@ -341,7 +377,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 	 */
 	public function unserialize($serialized)
 	{
-		$this->replacements = unserialize($serialized);
+		list($this->compositions, $this->replacements) = unserialize($serialized);
 	}
 
 }
