@@ -9,19 +9,19 @@ interface ICompiler
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
-	 * @param $source Php_Source
-	 * @return Php_Source[]|boolean true if compilation process did something
-	 *         may be a list of files if new files will need to be compiled due to this compilation
+	 * @param $source   Php_Source the PHP source file object
+	 * @param $compiler Php_Compiler the main compiler
+	 * @return boolean true if compilation process did something, else false
 	 */
-	public function compile(Php_Source $source);
+	public function compile(Php_Source $source, Php_Compiler $compiler = null);
 
-	//---------------------------------------------------------------------------- moreFilesToCompile
+	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
-	 * Extends the list of files to compile
+	 * Extends the list of sources to compile
 	 *
-	 * @param $files Php_Source[] Key is the file path
-	 * @return boolean true if files were added
+	 * @param &$sources Php_Source[]
+	 * @return boolean true if sources were added
 	 */
-	public function moreFilesToCompile(&$files);
+	public function moreSourcesToCompile(&$sources);
 
 }

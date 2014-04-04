@@ -3,13 +3,15 @@ namespace SAF\Framework;
 
 use SAF\AOP\Around_Method_Joinpoint;
 use SAF\AOP\Include_Filter;
+use SAF\PHP\Class_File_Name_Getter;
 use SAF\Plugins;
 use SAF\Plugins\Register;
 
 /**
  * Automatic routing class
  */
-class Router implements ICompiler, Plugins\Configurable, Plugins\Registerable, IAutoloader
+class Router implements
+	Class_File_Name_Getter, IAutoloader, ICompiler, Plugins\Configurable, Plugins\Registerable
 {
 
 	//-------------------------------------------------------------------------------------- $changes
@@ -164,7 +166,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	 */
 	public function autoload($class_name)
 	{
-		$file_path = $this->getClassPath($class_name);
+		$file_path = $this->getClassFileName($class_name);
 		if ($file_path) {
 			/** @noinspection PhpIncludeInspection */
 			include_once Include_Filter::file($file_path);
@@ -179,13 +181,14 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	/**
 	 * Compile source file into its class path
 	 *
-	 * @param $source Php_Source
+	 * @param $source   Php_Source
+	 * @param $compiler Php_Compiler
 	 * @return boolean false as this compilation does not modify the class source
 	 */
-	public function compile(Php_Source $source)
+	public function compile(Php_Source $source, Php_Compiler $compiler = null)
 	{
 		foreach ($source->getClasses() as $class) {
-			$this->setClassPath($class->name, $source->getFileName());
+			$this->setClassPath($class->name, $source->file_name);
 		}
 		return false;
 	}
@@ -253,14 +256,14 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		}
 	}
 
-	//---------------------------------------------------------------------------------- getClassPath
+	//------------------------------------------------------------------------------ getClassFileName
 	/**
 	 * Checks, searches, and gets the file path for a class name
 	 *
 	 * @param $class_name string
 	 * @return string
 	 */
-	public function getClassPath($class_name)
+	public function getClassFileName($class_name)
 	{
 		if (isset($this->class_paths[$class_name])) {
 			$class_path = $this->class_paths[$class_name];
@@ -367,14 +370,14 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		return $joinpoint->process();
 	}
 
-	//---------------------------------------------------------------------------- moreFilesToCompile
+	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
 	 * Extends the list of files to compile
 	 *
 	 * @param $files Php_Source[] Key is the file path
 	 * @return boolean true if files were added
 	 */
-	public function moreFilesToCompile(&$files)
+	public function moreSourcesToCompile(&$files)
 	{
 		return false;
 	}

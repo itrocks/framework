@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-use ReflectionClass;
+use SAF\PHP\Reflection_Class;
 
 /**
  * Object representation of a Php class read from source
@@ -180,15 +180,26 @@ class Php_Class
 	 * @param $class_name string
 	 * @return Php_Class
 	 */
+	/*
 	public static function fromClassName($class_name)
 	{
-		$reflection = new ReflectionClass($class_name);
+		$reflection = new Reflection_Class($class_name);
 		$filename = $reflection->getFileName();
 		$class = $filename ? self::fromFile($filename) : self::fromReflection($reflection);
 		if (!$class) {
 			$class = self::fromReflection($reflection);
 		}
 		return $class;
+	}
+	*/
+
+	//------------------------------------------------------------------------------------ fromSource
+	/**
+	 * @param $source Php_Source
+	 */
+	public static function fromSource(Php_Source $source)
+	{
+
 	}
 
 	//-------------------------------------------------------------------------------------- fromFile
@@ -251,13 +262,25 @@ class Php_Class
 		return $class;
 	}
 
-	//-------------------------------------------------------------------------------- fromReflection
+	//--------------------------------------------------------------------------------- fromPhpSource
 	/**
-	 * @param $reflection ReflectionClass
+	 * Build a Php_Class object using a Php_Source containing one class
+	 *
+	 * @param $source Php_Source
 	 * @return Php_Class
 	 */
-	public static function fromReflection(ReflectionClass $reflection)
+	public static function fromPhpSource(Php_Source $source)
 	{
+		$classes = $source->getClasses();
+		if (count($classes) != 1) {
+			trigger_error(
+				'PHP script source should contain one and only one class : ' . $source->file_name,
+				E_USER_ERROR
+			);
+		}
+		/** @var $source_class Dependency_Class */
+		$source_class = reset($classes);
+		$reflection = new Reflection_Class($source->getSource(), $source_class->name);
 		$class = new Php_Class();
 		$class->abstract = $reflection->isAbstract() ? 'abstract' : null;
 		$class->documentation = $reflection->getDocComment();
@@ -266,7 +289,9 @@ class Php_Class
 		$class->inherited_properties = [];
 		$class->interfaces = [];
 		foreach ($reflection->getInterfaces() as $interface) {
-			$class->interfaces[$interface->name] = Php_Class::fromReflection($interface);
+			$class->interfaces[$interface->name] = Php_Class::fromPhpSource(
+				$interface
+			);
 		}
 		$class->internal = true;
 		$class->methods = [];
@@ -287,7 +312,7 @@ class Php_Class
 		$class->traits_methods = [];
 		$class->traits_properties = [];
 		$class->type = $reflection->isInterface() ? 'interface' : (
-			$reflection->isTrait() ? 'trait' : 'class'
+		$reflection->isTrait() ? 'trait' : 'class'
 		);
 		return $class;
 	}

@@ -12,16 +12,53 @@ class Php_Compiler
 		Updatable
 {
 
+	//------------------------------------------------------------------------------------ $cache_dir
 	/**
+	 * Cache directory name
+	 *
+	 * @var string
+	 */
+	private $cache_dir;
+
+	//------------------------------------------------------------------------------------- $compiler
+	/**
+	 * Currently used compiler
+	 *
+	 * @var ICompiler
+	 */
+	private $compiler;
+
+	//------------------------------------------------------------------------------------- $compiler
+	/**
+	 * The list of compilers used successively on PHP sources
+	 *
 	 * @var ICompiler[]
 	 */
-	public $compilers = [];
+	private $compilers = [];
+
+	//-------------------------------------------------------------------------------------- $sources
+	/**
+	 * List of PHP sources being compiled.
+	 *
+	 * @var Php_Source[]
+	 */
+	private $sources;
 
 	//------------------------------------------------------------------------------ $main_controller
 	/**
+	 * The main controller that called the compilation process
+	 *
 	 * @var Main_Controller
 	 */
 	public $main_controller;
+
+	//--------------------------------------------------------------------------------- $more_sources
+	/**
+	 * List of PHP sources to be compiled on next wave
+	 *
+	 * @var Php_Source[]
+	 */
+	private $more_sources = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -45,37 +82,57 @@ class Php_Compiler
 		$this->compilers[] = $compiler;
 	}
 
+	//--------------------------------------------------------------------------------- addMoreSource
+	/**
+	 * Adds a PHP source to the sources to be compiled
+	 * This can be called before or during the compilation process, so these new files will be
+	 * compiled at the next compilation wave, when all current listed sources are compiled.
+	 *
+	 * @param $source Php_Source
+	 */
+	public function addSource(Php_Source $source)
+	{
+		/** @var Php_Source[] $new_sources_to_compile */
+		if (!isset($source->file_name)) {
+			$classes = $source->getClasses();
+			if ($classes) {
+				$class = reset($classes);
+				$source->file_name
+					= $this->cache_dir . SL . strtolower(str_replace(BS, '-', $class->name));
+			}
+			else {
+				trigger_error(
+					'You should only compile php scripts containing a class'
+					. ' (' . $source->file_name . ' compiled with ' . get_class($this->compiler) . ')',
+					E_USER_ERROR
+				);
+			}
+		}
+		$this->more_sources[$source->file_name] = $source;
+	}
+
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $last_time integer compile only files modified since this time
 	 */
 	public function compile($last_time = 0)
 	{
-		$this->compileFiles($this->getFilesToCompile($last_time));
-	}
+		$this->cache_dir = Application::current()->getCacheDir() . '/compiled';
+		Files::mkdir($this->cache_dir);
 
-	//---------------------------------------------------------------------------------- compileFiles
-	/**
-	 * @param $files Php_Source[]
-	 */
-	private function compileFiles($files)
-	{
-		$cache_dir = Application::current()->getCacheDir() . '/compiled';
-		Files::mkdir($cache_dir);
-
-		while ($files) {
-			$more_files = [];
+		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
+		while ($this->sources) {
 
 			// get source and update dependencies
-			foreach ($files as $source) {
+			foreach ($this->sources as $source) {
+				/** @var Php_Source $source inspector bug */
 				/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
 				(new Dao_Set())->replace(
 					$source->getDependencies(true),
-					Dependency::class, ['file_name' => $source->getFileName()]
+					Dependency::class, ['file_name' => $source->file_name]
 				);
 			}
 
-			/** @var $files Php_Source[] Key is file path */
 			// ask each compiler for adding of compiled files, until they have nothing to add
 			do {
 				$added = false;
@@ -83,7 +140,7 @@ class Php_Compiler
 					if ($compiler instanceof Needs_Main_Controller) {
 						$compiler->setMainController($this->main_controller);
 					}
-					if ($compiler->moreFilesToCompile($files)) {
+					if ($compiler->moreSourcesToCompile($this->sources)) {
 						$added = true;
 					}
 				}
@@ -92,19 +149,14 @@ class Php_Compiler
 				}
 			} while ($added);
 
-			// compile files
-			foreach ($files as $source) {
-				$compiled = false;
+			// compile sources
+			foreach ($this->sources as $source) {
 				foreach ($this->compilers as $compiler) {
-					if ($new_files_to_compile = $compiler->compile($source)) {
-						if (is_array($new_files_to_compile)) {
-							$more_files = array_merge($more_files, $new_files_to_compile);
-						}
-						$compiled = true;
-					}
+					$compiler->compile($source, $this);
 				}
-				$file_name = $cache_dir . SL . str_replace(SL, '-', substr($source->getFileName(), 0, -4));
-				if ($compiled) {
+				$file_name = $this->cache_dir . SL
+					. str_replace(SL, '-', substr($source->file_name, 0, -4));
+				if ($source->changed) {
 					echo '- Comp. save into ' . $file_name . '<br>';
 					script_put_contents($file_name, $source->getSource());
 				}
@@ -116,8 +168,10 @@ class Php_Compiler
 				}
 			}
 
-			$files = $more_files;
+			$this->sources = $this->more_sources;
+			$this->more_sources = [];
 		}
+		$this->sources = [];
 
 	}
 

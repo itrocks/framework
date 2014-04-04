@@ -7,6 +7,7 @@ use SAF\Framework\Getter;
 use SAF\Framework\ICompiler;
 use SAF\Framework\Names;
 use SAF\Framework\Php_Class;
+use SAF\Framework\Php_Compiler;
 use SAF\Framework\Php_Source;
 use SAF\Framework\Search_Object;
 use SAF\Framework\Session;
@@ -43,14 +44,15 @@ class Compiler implements ICompiler
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
-	 * @param $source Php_Source
+	 * @param $source   Php_Source
+	 * @param $compiler Php_Compiler
 	 * @return boolean
 	 */
-	public function compile(Php_Source $source)
+	public function compile(Php_Source $source, Php_Compiler $compiler = null)
 	{
 		$classes = $source->getClasses();
 		if ($class = reset($classes)) {
-			$class = Php_Class::fromClassName($class->name);
+			$class = Php_Class::fromPhpSource($source);
 			if ($this->compileClass($class)) {
 				$source->setSource($class->source);
 				return true;
@@ -119,25 +121,25 @@ class Compiler implements ICompiler
 		return boolval($methods_code);
 	}
 
-	//---------------------------------------------------------------------------- moreFilesToCompile
+	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
-	 * @param $files Php_Source[]
+	 * @param $sources Php_Source[]
 	 * @return boolean
 	 */
-	public function moreFilesToCompile(&$files)
+	public function moreSourcesToCompile(&$sources)
 	{
 		$added = false;
 		/** @var $search Dependency */
 		$search = Search_Object::create(Dependency::class);
 		$search->type = Dependency::T_USES;
-		foreach ($files as $source) {
+		foreach ($sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				if ($class->type == T_TRAIT) {
 					$search->dependency_name = $class->name;
 					/** @var $dependency Dependency */
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
-						if (!isset($files[$dependency->file_name])) {
-							$files[$dependency->file_name] = new Php_Source($dependency->file_name);
+						if (!isset($sources[$dependency->file_name])) {
+							$sources[$dependency->file_name] = new Php_Source($dependency->file_name);
 							$added = true;
 						}
 					}

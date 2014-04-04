@@ -1,12 +1,10 @@
 <?php
-namespace SAF\Framework;
-
-use SAF\PHP\Tokens_Parser;
+namespace SAF\PHP;
 
 /**
- * A Php source file tokenizer
+ * Reflection of PHP source code
  */
-class Php_Source
+class Reflection_Source
 {
 	use Tokens_Parser;
 
@@ -15,11 +13,11 @@ class Php_Source
 	const DEPENDENCIES = 2;
 	const INSTANTIATES = 3;
 	const NAMESPACES   = 4;
-	const _USE         = 5;
+	const USES         = 5;
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
-	 * @var Dependency_Class[]
+	 * @var Reflection_Class[] the key is the full name of each class
 	 */
 	private $classes;
 
@@ -31,7 +29,7 @@ class Php_Source
 	 *
 	 * @var boolean
 	 */
-	public $changed = false;
+	private $changed;
 
 	//--------------------------------------------------------------------------------- $dependencies
 	/**
@@ -44,6 +42,12 @@ class Php_Source
 	 * @var string
 	 */
 	public $file_name;
+
+	//----------------------------------------------------------------------------- $file_name_getter
+	/**
+	 * @var Class_File_Name_Getter
+	 */
+	private $file_name_getter;
 
 	//--------------------------------------------------------------------------------- $dependencies
 	/**
@@ -70,13 +74,26 @@ class Php_Source
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $file_name string
+	 * @param $file_name        string may be the name of a file
+	 *                          or the PHP source code if beginning with '<?php'
+	 * @param $file_name_getter Class_File_Name_Getter needed to get linked reflection objects
+	 *                          without loading classes. If not, it will work, but with class
+	 *                          loading.
 	 */
-	public function __construct($file_name = null)
-	{
+	public function __construct(
+		$file_name = null, Class_File_Name_Getter $file_name_getter = null
+	) {
 		if (isset($file_name)) {
-			$this->file_name = $file_name;
+			if (substr($file_name, 0, 5) === '<?php') {
+				$this->source = $file_name;
+				$this->changed = true;
+			}
+			else {
+				$this->file_name = $file_name;
+				$this->changed = false;
+			}
 		}
+		$this->file_name_getter = $file_name_getter;
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -90,15 +107,15 @@ class Php_Source
 		$f_dependencies = isset($filter[self::DEPENDENCIES]);
 		$f_instantiates = isset($filter[self::INSTANTIATES]);
 		$f_namespaces   = isset($filter[self::NAMESPACES]);
-		$f_use          = isset($filter[self::_USE]);
+		$f_uses         = isset($filter[self::USES]);
 		if ($f_classes)      $this->classes      = [];
 		if ($f_dependencies) $this->dependencies = [];
 		if ($f_instantiates) $this->instantiates = [];
 		if ($f_namespaces)   $this->namespaces   = [];
-		if ($f_use)          $this->use          = [];
+		if ($f_uses)         $this->use          = [];
 
-		/** @var $class Dependency_Class */
-		$class = new Php_Class();
+		/** @var $class Reflection_Class */
+		$class = new Reflection_Class($this);
 		$class->name = '';
 		$class->line = 1;
 		// where did the last } come
@@ -111,14 +128,16 @@ class Php_Source
 		$use = [];
 
 		// scan tokens
-		$tokens =& $this->getTokens();
-		for ($token = reset($tokens); $token; $token = next($tokens)) {
+		$this->getTokens();
+		$tokens_count = count($this->tokens);
+		for ($this->token_key = 0; $this->token_key < $tokens_count; $this->token_key ++) {
+			$token = $this->tokens[$this->token_key];
 			$token_id = $token[0];
 
 			// stop
 			if ($token_id === '}') {
 				while (!is_array($token)) {
-					$token = next($tokens);
+					$token = $this->tokens[++$this->token_key];
 				}
 				$last_stop = $token[2];
 			}
@@ -126,7 +145,7 @@ class Php_Source
 			// namespace
 			if ($token_id === T_NAMESPACE) {
 				$use_what = T_NAMESPACE;
-				$this->namespace = $this->scanClassName();
+				$this->namespace = $this->scanClassName($this->token_key);
 				$use = [];
 				if ($f_namespaces) {
 					$this->namespaces[$this->namespace] = $token[2];
@@ -138,9 +157,9 @@ class Php_Source
 
 				// namespace use
 				if ($use_what == T_NAMESPACE) {
-					foreach ($this->scanClassNames() as $used => $line) {
+					foreach ($this->scanClassNames($this->token_key) as $used => $line) {
 						$use[$used] = $used;
-						if ($f_use) {
+						if ($f_uses) {
 							$this->use[$used] = $line;
 						}
 					}
@@ -149,14 +168,14 @@ class Php_Source
 				// class use (notice that this will never be called after T_DOUBLE_COLON)
 				elseif ($use_what === T_CLASS) {
 					if ($f_dependencies) {
-						foreach ($this->parseTraitNames($tokens) as $trait_name => $line) {
+						foreach ($this->scanTraitNames($this->token_key) as $trait_name => $line) {
 							$trait_name = $this->fullClassName($trait_name);
 							$dependency = new Dependency();
 							$dependency->class_name      = $class->name;
 							$dependency->dependency_name = $trait_name;
 							$dependency->file_name       = $this->file_name;
 							$dependency->line            = $line;
-							$dependency->type            = Dependency::T_USES;
+							$dependency->type            = T_USE;
 							$this->dependencies[] = $dependency;
 						}
 					}
@@ -174,10 +193,8 @@ class Php_Source
 				$use_what = T_CLASS;
 				$class->stop = $last_stop;
 				$class_name = $this->fullClassName($this->scanClassName(), false);
-				$class = new Dependency_Class();
-				$class->name = $class_name;
+				$class = new Reflection_Class($this, $class_name);
 				$class->line = $token[2];
-				$class->type = $token_id;
 				if ($f_classes) {
 					$this->classes[$class_name] = $class;
 				}
@@ -241,9 +258,8 @@ class Php_Source
 			// ::class
 			elseif ($token_id === T_DOUBLE_COLON) {
 				if ($f_instantiates) {
-					$token = prev($tokens);
-					next($tokens);
-					$keyword = next($tokens);
+					$token = $this->tokens[$this->token_key - 1];
+					$keyword = $this->tokens[++$this->token_key];
 					$keyword = (is_array($keyword) && ($keyword[1] === 'class')) ? 'class' : 'static';
 					if (($token[1][0] !== '$') && !in_array($token[1], ['self', 'static', '__CLASS__'])) {
 						$class_name = $this->fullClassName($token[1]);
@@ -257,7 +273,7 @@ class Php_Source
 					}
 				}
 				else {
-					next($tokens);
+					$this->token_key++;
 				}
 			}
 
@@ -273,7 +289,7 @@ class Php_Source
 						$dependency->dependency_name = $class_name;
 						$dependency->file_name       = $this->file_name;
 						$dependency->line            = $token[2];
-						$dependency->type            = Dependency::T_NEW;
+						$dependency->type            = T_NEW;
 						$this->instantiates[] = $dependency;
 					}
 				}
@@ -298,7 +314,7 @@ class Php_Source
 		if (!isset($this->dependencies)) $filters[] = self::DEPENDENCIES;
 		if (!isset($this->instantiates)) $filters[] = self::INSTANTIATES;
 		if (!isset($this->namespaces))   $filters[] = self::NAMESPACES;
-		if (!isset($this->use))          $filters[] = self::_USE;
+		if (!isset($this->use))          $filters[] = self::USES;
 		$this->get($filters);
 		$result = get_object_vars($this);
 		unset($result['lines']);
@@ -309,11 +325,11 @@ class Php_Source
 
 	//-------------------------------------------------------------------------- getClassDependencies
 	/**
-	 * @param $class        Dependency_Class
+	 * @param $class        Reflection_Class
 	 * @param $instantiates boolean if true, searches for '::class' and 'new' too
 	 * @return Dependency[]
 	 */
-	public function getClassDependencies(Dependency_Class $class, $instantiates = false)
+	public function getClassDependencies(Reflection_Class $class, $instantiates = false)
 	{
 		$dependencies = [];
 		foreach ($this->getDependencies($instantiates) as $dependency) {
@@ -328,11 +344,23 @@ class Php_Source
 		return $dependencies;
 	}
 
+	//-------------------------------------------------------------------------------------- getClass
+	/**
+	 * Gets a class from the source
+	 *
+	 * @param $class_name string
+	 * @return Reflection_Class
+	 */
+	public function getClass($class_name)
+	{
+		return $this->getClasses()[$class_name];
+	}
+
 	//------------------------------------------------------------------------------------ getClasses
 	/**
 	 * Gets all declared classes full names
 	 *
-	 * @return Dependency_Class[]
+	 * @return Reflection_Class[]
 	 */
 	public function getClasses()
 	{
@@ -359,7 +387,7 @@ class Php_Source
 			if ($instantiates && !isset($this->instantiates)) $filters[] = self::INSTANTIATES;
 			if (!isset($this->dependencies))                  $filters[] = self::DEPENDENCIES;
 			if (!isset($this->namespaces))                    $filters[] = self::NAMESPACES;
-			if (!isset($this->use))                           $filters[] = self::_USE;
+			if (!isset($this->use))                           $filters[] = self::USES;
 			$this->get($filters);
 		}
 		return $instantiates
@@ -379,7 +407,7 @@ class Php_Source
 		if (!isset($this->instantiates)) {
 			$filters = [self::INSTANTIATES];
 			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
-			if (!isset($this->use))        $filters[] = self::_USE;
+			if (!isset($this->use))        $filters[] = self::USES;
 			$this->get($filters);
 		}
 		return $this->instantiates;
@@ -397,6 +425,20 @@ class Php_Source
 				: file($this->source);
 		}
 		return $this->lines;
+	}
+
+	//------------------------------------------------------------------------------- getOutsideClass
+	/**
+	 * Uses the file name getter to get a Php_Class class object (and linked source) for a class name
+	 * Use this to get a class from outside current source
+	 */
+	public function getOutsideClass($class_name)
+	{
+		$source = new Reflection_Source(
+			$this->file_name_getter->getClassFilename($class_name),
+			$this->file_name_getter
+		);
+		return $source->getClass($class_name);
 	}
 
 	//------------------------------------------------------------------------------------- getSource
@@ -425,6 +467,15 @@ class Php_Source
 		return $this->tokens;
 	}
 
+	//------------------------------------------------------------------------------------ hasChanged
+	/**
+	 * @return boolean
+	 */
+	public function hasChanged()
+	{
+		return $this->changed;
+	}
+
 	//---------------------------------------------------------------------------------------- nameOf
 	/**
 	 * Returns the name that corresponds to a token id, lowercase and without the 'T_' prefix
@@ -437,67 +488,33 @@ class Php_Source
 		return strtolower(substr(token_name($token_id), 2));
 	}
 
-	//------------------------------------------------------------------------------- parseTraitNames
-	/**
-	 * Parse commas separated trait names. Ignore { } traits details
-	 *
-	 * @param $tokens array the current selected token must be before the first T_STRING
-	 * @return integer[] key is the trait name, value is the line number it was declared
-	 */
-	private function parseTraitNames(&$tokens)
-	{
-		$trait_names = [];
-		$trait_name = '';
-		$depth = 0;
-		$line = 0;
-		do {
-			$token = next($tokens);
-			if ($token === ',') {
-				$trait_names[$trait_name] = $line;
-				$trait_name = '';
-			}
-			else {
-				$token_id = $token[0];
-				if ($token_id == '{') {
-					$depth ++;
-				}
-				elseif ($token_id == '}') {
-					$depth --;
-				}
-				elseif (($token_id == T_STRING) && !$depth) {
-					$trait_name .= $token[1];
-					$line = $token[2];
-				}
-			}
-		} while ($token !== ';');
-		if ($trait_name) {
-			$trait_names[$trait_name] = $line;
-		}
-		return $trait_names;
-	}
-
-	//----------------------------------------------------------------------------------------- reset
+	//------------------------------------------------------------------------------------------ free
 	/**
 	 * Reset object properties in order to free memory
 	 *
+	 * All features will work fine, you can call this to flush cash and free a maximum amount of
+	 * memory but cache will be freed and next calls may be slower.
+	 *
+	 * Internals :
 	 * Classes, dependencies, instantiates, namespaces and use are reset only if bigger than the
 	 * $bigger_than parameter or if it is 0.
-	 *
 	 * Lines and tokens are always reset by this call.
-	 * Source is reset only if source is linked to a file name
+	 * Source is reset only if source is linked to a file name.
 	 *
 	 * @param $bigger_than integer
 	 */
-	public function reset($bigger_than = 1)
+	public function free($bigger_than = 1)
 	{
 		if (!$bigger_than || (count($this->classes)      > $bigger_than)) $this->classes      = null;
 		if (!$bigger_than || (count($this->dependencies) > $bigger_than)) $this->dependencies = null;
 		if (!$bigger_than || (count($this->instantiates) > $bigger_than)) $this->instantiates = null;
 		if (!$bigger_than || (count($this->namespaces)   > $bigger_than)) $this->namespaces   = null;
 		if (!$bigger_than || (count($this->use)          > $bigger_than)) $this->use          = null;
+
 		if (isset($this->file_name)) {
 			$this->source = null;
 		}
+
 		$this->lines  = null;
 		$this->tokens = null;
 	}
@@ -505,14 +522,15 @@ class Php_Source
 	//------------------------------------------------------------------------------------- setSource
 	/**
 	 * Sets the new source code
-	 * Every properties but the file name are reset to zero by this change.
+	 *
+	 * Internals : Every properties but the file name are reset to zero by this change.
 	 *
 	 * @param $source string
-	 * @return Php_Source
+	 * @return Reflection_Source
 	 */
 	public function setSource($source)
 	{
-		$this->reset(0);
+		$this->free(0);
 		$this->source = $source;
 		$this->changed = true;
 		return $this;
