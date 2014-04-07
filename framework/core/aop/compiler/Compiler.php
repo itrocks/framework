@@ -2,15 +2,15 @@
 namespace SAF\AOP;
 
 use SAF\Framework\Dao;
-use SAF\Framework\Dependency;
 use SAF\Framework\Getter;
 use SAF\Framework\ICompiler;
 use SAF\Framework\Names;
-use SAF\Framework\Php_Class;
 use SAF\Framework\Php_Compiler;
-use SAF\Framework\Php_Source;
 use SAF\Framework\Search_Object;
 use SAF\Framework\Session;
+use SAF\PHP\Dependency;
+use SAF\PHP\Reflection_Class;
+use SAF\PHP\Reflection_Source;
 use SAF\Plugins;
 
 /**
@@ -44,15 +44,15 @@ class Compiler implements ICompiler
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
-	 * @param $source   Php_Source
+	 * @param $source   Reflection_Source
 	 * @param $compiler Php_Compiler
 	 * @return boolean
 	 */
-	public function compile(Php_Source $source, Php_Compiler $compiler = null)
+	public function compile(Reflection_Source $source, Php_Compiler $compiler = null)
 	{
 		$classes = $source->getClasses();
 		if ($class = reset($classes)) {
-			$class = Php_Class::fromPhpSource($source);
+			$class = reset($source->getClasses());
 			if ($this->compileClass($class)) {
 				$source->setSource($class->source);
 				return true;
@@ -63,10 +63,10 @@ class Compiler implements ICompiler
 
 	//---------------------------------------------------------------------------------- compileClass
 	/**
-	 * @param $class Php_Class
+	 * @param $class Reflection_Class
 	 * @return boolean
 	 */
-	public function compileClass(Php_Class $class)
+	public function compileClass(Reflection_Class $class)
 	{
 		$this->compiled_classes[$class->name] = true;
 		if (self::DEBUG) echo '<h2>' . $class->name . '</h2>';
@@ -112,8 +112,8 @@ class Compiler implements ICompiler
 
 			if (self::DEBUG && $methods_code) echo '<pre>' . print_r($methods_code, true) . '</pre>';
 
-			$class->source =
-				substr($class->source, 0, -2) . TAB . '//' . str_repeat('#', 91) . ' AOP' . LF
+			$class->source
+				= substr($class->source, 0, -2) . TAB . '//' . str_repeat('#', 91) . ' AOP' . LF
 				. join('', $methods_code)
 				. LF . '}' . LF;
 		}
@@ -123,7 +123,7 @@ class Compiler implements ICompiler
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
-	 * @param $sources Php_Source[]
+	 * @param $sources Reflection_Source[]
 	 * @return boolean
 	 */
 	public function moreSourcesToCompile(&$sources)
@@ -131,7 +131,7 @@ class Compiler implements ICompiler
 		$added = false;
 		/** @var $search Dependency */
 		$search = Search_Object::create(Dependency::class);
-		$search->type = Dependency::T_USES;
+		$search->type = T_USE;
 		foreach ($sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				if ($class->type == T_TRAIT) {
@@ -139,7 +139,7 @@ class Compiler implements ICompiler
 					/** @var $dependency Dependency */
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
 						if (!isset($sources[$dependency->file_name])) {
-							$sources[$dependency->file_name] = new Php_Source($dependency->file_name);
+							$sources[$dependency->file_name] = new Reflection_Source($dependency->file_name);
 							$added = true;
 						}
 					}
@@ -156,7 +156,7 @@ class Compiler implements ICompiler
 	 */
 	public function compileFile($file_name)
 	{
-		return $this->compileClass(Php_Class::fromFile($file_name));
+		return $this->compileClass(Reflection_Class::fromFile($file_name));
 	}
 
 	//---------------------------------------------------------------------------------- getPointcuts
@@ -184,9 +184,9 @@ class Compiler implements ICompiler
 	//------------------------------------------------------------------------------- scanForAbstract
 	/**
 	 * @param $methods array
-	 * @param $class   Php_Class
+	 * @param $class   Reflection_Class
 	 */
-	private function scanForAbstract(&$methods, Php_Class $class)
+	private function scanForAbstract(&$methods, Reflection_Class $class)
 	{
 		/**
 		 * TODO Scan weaver for all parent AOP aspects on abstract methods
@@ -202,9 +202,9 @@ class Compiler implements ICompiler
 	//-------------------------------------------------------------------------------- scanForGetters
 	/**
 	 * @param $properties array
-	 * @param $class      Php_Class
+	 * @param $class      Reflection_Class
 	 */
-	private function scanForGetters(&$properties, Php_Class $class)
+	private function scanForGetters(&$properties, Reflection_Class $class)
 	{
 		foreach ($class->getProperties() as $property) {
 			$expr = '%'
@@ -235,9 +235,9 @@ class Compiler implements ICompiler
 	//----------------------------------------------------------------------------------- scanForInit
 	/**
 	 * @param $properties array
-	 * @param $class      Php_Class
+	 * @param $class      Reflection_Class
 	 */
-	private function scanForImplements(&$properties, Php_Class $class)
+	private function scanForImplements(&$properties, Reflection_Class $class)
 	{
 		// properties from the class and its direct traits
 		$implemented_properties = $class->getProperties(['traits']);
@@ -283,9 +283,9 @@ class Compiler implements ICompiler
 	//---------------------------------------------------------------------------------- scanForLinks
 	/**
 	 * @param $properties array
-	 * @param $class      Php_Class
+	 * @param $class      Reflection_Class
 	 */
-	private function scanForLinks(&$properties, Php_Class $class)
+	private function scanForLinks(&$properties, Reflection_Class $class)
 	{
 		$disable = [];
 		foreach ($properties as $property_name => $advices) {
@@ -327,10 +327,10 @@ class Compiler implements ICompiler
 	//-------------------------------------------------------------------------------- scanForMethods
 	/**
 	 * @param $methods array
-	 * @param $class   Php_Class
+	 * @param $class   Reflection_Class
 	 */
 	/*
-	private function scanForMethods(&$methods, Php_Class $class)
+	private function scanForMethods(&$methods, Reflection_Class $class)
 	{
 		foreach ($class->getMethods() as $method) {
 			if (!$method->isAbstract() && ($method->class->name == $class->name)) {
@@ -405,9 +405,9 @@ class Compiler implements ICompiler
 	//------------------------------------------------------------------------------- scanForReplaces
 	/**
 	 * @param $properties array
-	 * @param $class      Php_Class
+	 * @param $class      Reflection_Class
 	 */
-	private function scanForReplaces(&$properties, Php_Class $class)
+	private function scanForReplaces(&$properties, Reflection_Class $class)
 	{
 		foreach ($class->getProperties(['traits']) as $property) {
 			$expr = '%'
@@ -425,9 +425,9 @@ class Compiler implements ICompiler
 	//-------------------------------------------------------------------------------- scanForSetters
 	/**
 	 * @param $properties array
-	 * @param $class      Php_Class
+	 * @param $class      Reflection_Class
 	 */
-	private function scanForSetters(&$properties, Php_Class $class)
+	private function scanForSetters(&$properties, Reflection_Class $class)
 	{
 		foreach ($class->getProperties() as $property) {
 			$expr = '%'

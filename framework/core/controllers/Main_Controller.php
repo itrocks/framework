@@ -138,6 +138,7 @@ class Main_Controller
 
 		// Core plugins
 		include_once Include_Filter::file('framework/core/compiler/ICompiler.php');
+		include_once Include_Filter::file('framework/core/php/Class_File_Name_Getter.php');
 		include_once Include_Filter::file('framework/core/IAutoloader.php');
 		include_once Include_Filter::file('framework/core/Router.php');
 		include_once Include_Filter::file('framework/core/builder/Builder.php');

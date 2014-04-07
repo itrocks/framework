@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\PHP\Dependency;
+use SAF\PHP\Reflection_Source;
 use SAF\Plugins;
 use Serializable;
 
@@ -40,7 +42,7 @@ class Php_Compiler
 	/**
 	 * List of PHP sources being compiled.
 	 *
-	 * @var Php_Source[]
+	 * @var \SAF\PHP\Reflection_Source[]
 	 */
 	private $sources;
 
@@ -56,7 +58,7 @@ class Php_Compiler
 	/**
 	 * List of PHP sources to be compiled on next wave
 	 *
-	 * @var Php_Source[]
+	 * @var \SAF\PHP\Reflection_Source[]
 	 */
 	private $more_sources = [];
 
@@ -88,11 +90,11 @@ class Php_Compiler
 	 * This can be called before or during the compilation process, so these new files will be
 	 * compiled at the next compilation wave, when all current listed sources are compiled.
 	 *
-	 * @param $source Php_Source
+	 * @param $source Reflection_Source
 	 */
-	public function addSource(Php_Source $source)
+	public function addSource(Reflection_Source $source)
 	{
-		/** @var Php_Source[] $new_sources_to_compile */
+		/** @var Reflection_Source[] $new_sources_to_compile */
 		if (!isset($source->file_name)) {
 			$classes = $source->getClasses();
 			if ($classes) {
@@ -125,7 +127,7 @@ class Php_Compiler
 
 			// get source and update dependencies
 			foreach ($this->sources as $source) {
-				/** @var Php_Source $source inspector bug */
+				/** @var Reflection_Source $source inspector bug */
 				/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
 				(new Dao_Set())->replace(
 					$source->getDependencies(true),
@@ -156,7 +158,7 @@ class Php_Compiler
 				}
 				$file_name = $this->cache_dir . SL
 					. str_replace(SL, '-', substr($source->file_name, 0, -4));
-				if ($source->changed) {
+				if ($source->hasChanged()) {
 					echo '- Comp. save into ' . $file_name . '<br>';
 					script_put_contents($file_name, $source->getSource());
 				}
@@ -180,7 +182,7 @@ class Php_Compiler
 	 * Gets the list of php files that were modifier since $last_time
 	 *
 	 * @param $last_time integer scan only files modified since this time
-	 * @return Php_Source[] key is full file path, value is file name
+	 * @return Reflection_Source[] key is full file path, value is file name
 	 */
 	private function getFilesToCompile($last_time = 0)
 	{
@@ -191,7 +193,7 @@ class Php_Compiler
 		$files = [];
 		foreach ($source_files as $file_path) {
 			if ((substr($file_path, -4) == '.php') && (filemtime($file_path) > $last_time)) {
-				$files[$file_path] = new Php_Source($file_path);
+				$files[$file_path] = new Reflection_Source($file_path);
 			}
 		}
 		return $files;

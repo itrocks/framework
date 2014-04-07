@@ -7,7 +7,7 @@ use SAF\Framework\ICompiler;
 use SAF\Framework\Main_Controller;
 use SAF\Framework\Needs_Main_Controller;
 use SAF\Framework\Php_Compiler;
-use SAF\Framework\Php_Source;
+use SAF\PHP\Reflection_Source;
 
 /**
  * Built classes compiler
@@ -23,18 +23,18 @@ class Compiler implements ICompiler, Needs_Main_Controller
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
-	 * @param $source   Php_Source
+	 * @param $source   Reflection_Source
 	 * @param $compiler Php_Compiler
 	 * @return boolean
 	 */
-	public function compile(Php_Source $source, Php_Compiler $compiler = null)
+	public function compile(Reflection_Source $source, Php_Compiler $compiler = null)
 	{
 		$compiled = false;
 		foreach ($source->getClasses() as $class) {
 			$replacement = Builder::current()->getComposition($class->name);
 			if (is_array($replacement)) {
 				foreach (Class_Builder::build($class->name, $replacement, true) as $source) {
-					$compiler->addSource((new Php_Source())->setSource('<?php' . LF . $source));
+					$compiler->addSource((new Reflection_Source())->setSource('<?php' . LF . $source));
 					$compiled = true;
 				}
 			}
@@ -46,7 +46,7 @@ class Compiler implements ICompiler, Needs_Main_Controller
 	/**
 	 * Extends the list of files to compile
 	 *
-	 * @param $files Php_Source[] Key is the file path
+	 * @param $files Reflection_Source[] Key is the file path
 	 * @return boolean true if files were added
 	 */
 	public function moreSourcesToCompile(&$files)

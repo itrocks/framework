@@ -5,6 +5,8 @@ use SAF\PHP\Reflection_Class;
 
 /**
  * Object representation of a Php class read from source
+ *
+ * @deprecated Replaced by SAF\PHP\Reflection_Class
  */
 class Php_Class
 {
@@ -280,7 +282,7 @@ class Php_Class
 		}
 		/** @var $source_class Dependency_Class */
 		$source_class = reset($classes);
-		$reflection = new Reflection_Class($source->getSource(), $source_class->name);
+		$reflection = new Reflection_Class($source, $source_class->name);
 		$class = new Php_Class();
 		$class->abstract = $reflection->isAbstract() ? 'abstract' : null;
 		$class->documentation = $reflection->getDocComment();

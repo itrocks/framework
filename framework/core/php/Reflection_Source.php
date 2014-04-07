@@ -114,10 +114,12 @@ class Reflection_Source
 		if ($f_namespaces)   $this->namespaces   = [];
 		if ($f_uses)         $this->use          = [];
 
-		/** @var $class Reflection_Class */
+		// a blank class to have a valid scan beginning, but has no any other use
 		$class = new Reflection_Class($this);
-		$class->name = '';
-		$class->line = 1;
+		// how deep is the current class
+		$class_depth = -1;
+		// how deep we are in {
+		$depth = 0;
 		// where did the last } come
 		$last_stop = null;
 		// the current namespace
@@ -133,13 +135,24 @@ class Reflection_Source
 		for ($this->token_key = 0; $this->token_key < $tokens_count; $this->token_key ++) {
 			$token = $this->tokens[$this->token_key];
 			$token_id = $token[0];
+			if (isset($class_end) && is_array($token)) {
+				$class->stop = $token[2] - 1;
+				unset($class_end);
+			}
 
 			// stop
+			if ($token_id === '{') {
+				$depth ++;
+				$token = $this->tokens[++$this->token_key];
+			}
 			if ($token_id === '}') {
+				$depth --;
+				if ($depth === $class_depth) {
+					$class_end = true;
+				}
 				while (!is_array($token)) {
 					$token = $this->tokens[++$this->token_key];
 				}
-				$last_stop = $token[2];
 			}
 
 			// namespace
@@ -191,10 +204,11 @@ class Reflection_Source
 			// class, interface or trait
 			elseif (in_array($token_id, [T_CLASS, T_INTERFACE, T_TRAIT])) {
 				$use_what = T_CLASS;
-				$class->stop = $last_stop;
 				$class_name = $this->fullClassName($this->scanClassName(), false);
 				$class = new Reflection_Class($this, $class_name);
 				$class->line = $token[2];
+				$class->type = $token_id;
+				$class_depth = $depth;
 				if ($f_classes) {
 					$this->classes[$class_name] = $class;
 				}
@@ -295,9 +309,6 @@ class Reflection_Source
 				}
 			}
 
-		}
-		if (isset($class)) {
-			$class->stop = $last_stop;
 		}
 	}
 
