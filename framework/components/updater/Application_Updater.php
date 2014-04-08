@@ -45,12 +45,13 @@ class Application_Updater implements Serializable
 	 * Update if update flag file found
 	 * Does nothing if not
 	 *
+	 * @param $controller Main_Controller
 	 * @return boolean true if updates were made
 	 */
-	public function autoUpdate()
+	public function autoUpdate(Main_Controller $controller)
 	{
 		if ($this->mustUpdate()) {
-			$this->update();
+			$this->update($controller);
 			$this->done();
 			return true;
 		}

@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\AOP;
+use SAF\PHP\Compiler;
 
 $config['framework'] = [
 
@@ -60,7 +61,7 @@ $config['framework'] = [
 			]
 		],
 		Mysql_Maintainer::class,
-		Php_Compiler::class => [
+		Compiler::class => [
 			Router::class,
 			Builder\Compiler::class,
 			AOP\Compiler::class

@@ -206,7 +206,7 @@ class Sql_Select_Builder_Test extends Unit_Test
 			$builder->buildQuery(),
 			'SELECT t2.`name`, t1.`percentage`, t0.`additional_text`'
 			. ' FROM `quotes_salesmen_additional` t0'
-			. ' INNER JOIN `quotes_salesmen` t1 ON t1.id = t0.id_quote_salesman'
+			. ' INNER JOIN `quotes_salesmen` t1 ON t1.id = t0.id_salesman'
 			. ' INNER JOIN `salesmen` t2 ON t2.id = t1.id_salesman'
 			. ' WHERE t2.`name` = "Robert" AND t1.`percentage` = 100'
 		);

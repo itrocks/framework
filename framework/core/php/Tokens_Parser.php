@@ -190,13 +190,16 @@ trait Tokens_Parser
 				}
 				elseif ($token_id == '}') {
 					$depth --;
+					if (!$depth) {
+						break;
+					}
 				}
-				elseif (($token_id == T_STRING) && !$depth) {
+				elseif (in_array($token_id, [T_NS_SEPARATOR, T_STRING]) && !$depth) {
 					$trait_name .= $token[1];
 					$line = $token[2];
 				}
 			}
-		} while ($token !== ';');
+		} while ($depth || ($token !== ';'));
 		if ($trait_name) {
 			$trait_names[$trait_name] = $line;
 		}

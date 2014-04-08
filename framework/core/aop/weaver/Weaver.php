@@ -1,8 +1,6 @@
 <?php
 namespace SAF\AOP;
 
-use SAF\Framework\ICompiler;
-
 /**
  * The Aop class is an interface to the Aop calls manager
  */
@@ -144,18 +142,6 @@ class Weaver implements IWeaver
 		);
 	}
 
-	//--------------------------------------------------------------------------------------- compile
-	/**
-	 * @param $compiler ICompiler
-	 */
-	public function compile(ICompiler $compiler = null)
-	{
-		if (!isset($compiler)) {
-			$compiler = new Compiler($this);
-		}
-		$compiler->compile();
-	}
-
 	//--------------------------------------------------------------------------------- getJoinpoints
 	/**
 	 * @param $joinpoint_name string joinpoint class or function name
@@ -166,6 +152,15 @@ class Weaver implements IWeaver
 		return isset($joinpoint_name)
 			? (isset($this->joinpoints[$joinpoint_name]) ? $this->joinpoints[$joinpoint_name] : [])
 			: $this->joinpoints;
+	}
+
+	//--------------------------------------------------------------------------------- hasJoinpoints
+	/**
+	 * @return boolean
+	 */
+	public function hasJoinpoints()
+	{
+		return $this->joinpoints ? true : false;
 	}
 
 	//---------------------------------------------------------------------------------- readProperty

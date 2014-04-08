@@ -1,7 +1,5 @@
 <?php
-namespace SAF\Framework;
-
-use SAF\PHP\Reflection_Source;
+namespace SAF\PHP;
 
 /**
  * All Php compiler files should use this interface
@@ -12,10 +10,10 @@ interface ICompiler
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source   Reflection_Source the PHP source file object
-	 * @param $compiler Php_Compiler the main compiler
+	 * @param $compiler Compiler the main compiler
 	 * @return boolean true if compilation process did something, else false
 	 */
-	public function compile(Reflection_Source $source, Php_Compiler $compiler = null);
+	public function compile(Reflection_Source $source, Compiler $compiler = null);
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**

@@ -4,6 +4,9 @@ namespace SAF\Framework;
 use SAF\AOP\Around_Method_Joinpoint;
 use SAF\AOP\Include_Filter;
 use SAF\PHP\Class_File_Name_Getter;
+use SAF\PHP\Compiler;
+use SAF\PHP\ICompiler;
+use SAF\PHP\Reflection_Source;
 use SAF\Plugins;
 use SAF\Plugins\Register;
 
@@ -166,11 +169,19 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	 */
 	public function autoload($class_name)
 	{
-		$file_path = $this->getClassFileName($class_name);
+		$file_path = $this->getClassFilename($class_name);
 		if ($file_path) {
 			/** @noinspection PhpIncludeInspection */
 			include_once Include_Filter::file($file_path);
-			if (is_a($class_name, Plugins\Plugin::class, true)) {
+			// if included file does not contain the good class : will need to scan for the right file
+			if (
+				!class_exists($class_name) && !interface_exists($class_name) && !trait_exists($class_name)
+			) {
+				unset($this->class_paths[$class_name]);
+				$file_path = $this->autoload($class_name);
+			}
+			// initializes plugin
+			elseif (Session::current()->plugins->has($class_name)) {
 				Session::current()->plugins->get($class_name);
 			}
 		}
@@ -181,11 +192,11 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	/**
 	 * Compile source file into its class path
 	 *
-	 * @param $source   Php_Source
-	 * @param $compiler Php_Compiler
+	 * @param $source   Reflection_Source
+	 * @param $compiler Compiler
 	 * @return boolean false as this compilation does not modify the class source
 	 */
-	public function compile(Php_Source $source, Php_Compiler $compiler = null)
+	public function compile(Reflection_Source $source, Compiler $compiler = null)
 	{
 		foreach ($source->getClasses() as $class) {
 			$this->setClassPath($class->name, $source->file_name);
@@ -256,14 +267,14 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 		}
 	}
 
-	//------------------------------------------------------------------------------ getClassFileName
+	//------------------------------------------------------------------------------ getClassFilename
 	/**
 	 * Checks, searches, and gets the file path for a class name
 	 *
 	 * @param $class_name string
 	 * @return string
 	 */
-	public function getClassFileName($class_name)
+	public function getClassFilename($class_name)
 	{
 		if (isset($this->class_paths[$class_name])) {
 			$class_path = $this->class_paths[$class_name];
@@ -272,6 +283,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			}
 			if ($class_path) {
 				/** @noinspection PhpIncludeInspection */
+				/*
 				include_once Include_Filter::file($class_path);
 				if (
 					!class_exists($class_name, false)
@@ -280,6 +292,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 				) {
 					$class_path = $this->addClassPath($class_name);
 				}
+				*/
 				return $class_path;
 			}
 			return null;
@@ -374,7 +387,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	/**
 	 * Extends the list of files to compile
 	 *
-	 * @param $files Php_Source[] Key is the file path
+	 * @param $files Reflection_Source[] Key is the file path
 	 * @return boolean true if files were added
 	 */
 	public function moreSourcesToCompile(&$files)
@@ -422,7 +435,13 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	 */
 	public function setClassPath($class_name, $file_path)
 	{
-		$this->class_paths[$class_name] = $file_path;
+		if (
+			!isset($this->class_paths[$class_name])
+			|| ($this->class_paths[$class_name] !== $file_path)
+		) {
+			$this->class_paths[$class_name] = $file_path;
+			$this->changes = true;
+		}
 	}
 
 	//--------------------------------------------------------------------- setPossibleControllerCall

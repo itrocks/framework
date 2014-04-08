@@ -1,6 +1,8 @@
 <?php
 namespace SAF\PHP;
 
+use ReflectionClass;
+
 /**
  * Reflection of PHP source code
  */
@@ -8,7 +10,7 @@ class Reflection_Source
 {
 	use Tokens_Parser;
 
-	//----------------------------------------------------------------------------------------- const
+	//--------------------------------------------------------------------------------- get() filters
 	const CLASSES      = 1;
 	const DEPENDENCIES = 2;
 	const INSTANTIATES = 3;
@@ -25,7 +27,7 @@ class Reflection_Source
 	/**
 	 * This is set to true when you call setSource(), in order to know that source has been changed
 	 * and that you will probably need to write your PHP source file result.
-	 * Used by Php_Compiler.
+	 * Used by Compiler.
 	 *
 	 * @var boolean
 	 */
@@ -55,6 +57,12 @@ class Reflection_Source
 	 */
 	private $instantiates;
 
+	//------------------------------------------------------------------------------------- $internal
+	/**
+	 * @var boolean
+	 */
+	private $internal;
+
 	//---------------------------------------------------------------------------------------- $lines
 	/**
 	 * @var string[]
@@ -77,11 +85,13 @@ class Reflection_Source
 	 * @param $file_name        string may be the name of a file
 	 *                          or the PHP source code if beginning with '<?php'
 	 * @param $file_name_getter Class_File_Name_Getter needed to get linked reflection objects
-	 *                          without loading classes. If not, it will work, but with class
-	 *                          loading.
+	 *                          without loading classes. If not set, it will work, but with class
+	 *                          loading, which is less interesting.
+	 * @param $class_name       string If file name can be null, $class_name will force initialisation
+	 *                          of classes as a Reflection_Class object for $class_name
 	 */
 	public function __construct(
-		$file_name = null, Class_File_Name_Getter $file_name_getter = null
+		$file_name = null, Class_File_Name_Getter $file_name_getter = null, $class_name = null
 	) {
 		if (isset($file_name)) {
 			if (substr($file_name, 0, 5) === '<?php') {
@@ -94,6 +104,9 @@ class Reflection_Source
 			}
 		}
 		$this->file_name_getter = $file_name_getter;
+		if ($this->internal = (!$file_name && $class_name)) {
+			$this->classes = [$class_name => new Reflection_Class($this, $class_name)];
+		}
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -114,16 +127,21 @@ class Reflection_Source
 		if ($f_namespaces)   $this->namespaces   = [];
 		if ($f_uses)         $this->use          = [];
 
+		// the current namespace
+		$this->namespace = '';
+
+		if ($this->internal) {
+			return;
+		}
+
 		// a blank class to have a valid scan beginning, but has no any other use
-		$class = new Reflection_Class($this);
+		$class = new Reflection_Class($this, '');
 		// how deep is the current class
 		$class_depth = -1;
 		// how deep we are in {
 		$depth = 0;
 		// where did the last } come
 		$last_stop = null;
-		// the current namespace
-		$this->namespace = '';
 		// level for the T_USE clause : T_NAMESPACE, T_CLASS or T_FUNCTION (T_NULL if outside any level)
 		$use_what = null;
 		// what namespaces or class names does the current namespace use (key = val)
@@ -188,7 +206,7 @@ class Reflection_Source
 							$dependency->dependency_name = $trait_name;
 							$dependency->file_name       = $this->file_name;
 							$dependency->line            = $line;
-							$dependency->type            = T_USE;
+							$dependency->type            = Dependency::T_USE;
 							$this->dependencies[] = $dependency;
 						}
 					}
@@ -273,16 +291,18 @@ class Reflection_Source
 			elseif ($token_id === T_DOUBLE_COLON) {
 				if ($f_instantiates) {
 					$token = $this->tokens[$this->token_key - 1];
-					$keyword = $this->tokens[++$this->token_key];
-					$keyword = (is_array($keyword) && ($keyword[1] === 'class')) ? 'class' : 'static';
 					if (($token[1][0] !== '$') && !in_array($token[1], ['self', 'static', '__CLASS__'])) {
+						$type  = $this->tokens[++$this->token_key];
+						$type  = (is_array($type) && ($type[1] === 'class'))
+							? Dependency::T_CLASS
+							: Dependency::T_STATIC;
 						$class_name = $this->fullClassName($token[1]);
 						$dependency = new Dependency();
 						$dependency->class_name      = $class->name;
 						$dependency->dependency_name = $class_name;
 						$dependency->file_name       = $this->file_name;
 						$dependency->line            = $token[2];
-						$dependency->type            = $keyword;
+						$dependency->type            = $type;
 						$this->instantiates[] = $dependency;
 					}
 				}
@@ -303,7 +323,7 @@ class Reflection_Source
 						$dependency->dependency_name = $class_name;
 						$dependency->file_name       = $this->file_name;
 						$dependency->line            = $token[2];
-						$dependency->type            = T_NEW;
+						$dependency->type            = Dependency::T_NEW;
 						$this->instantiates[] = $dependency;
 					}
 				}
@@ -369,7 +389,7 @@ class Reflection_Source
 
 	//------------------------------------------------------------------------------------ getClasses
 	/**
-	 * Gets all declared classes full names
+	 * Gets all declared classes
 	 *
 	 * @return Reflection_Class[]
 	 */
@@ -440,15 +460,24 @@ class Reflection_Source
 
 	//------------------------------------------------------------------------------- getOutsideClass
 	/**
-	 * Uses the file name getter to get a Php_Class class object (and linked source) for a class name
-	 * Use this to get a class from outside current source
+	 * Uses the file name getter to get a Reflection_Class class object (and linked source)
+	 * for a class name.
+	 * Use this to get a class from outside current source.
+	 *
+	 * @param $class_name string
+	 * @return Reflection_Class
 	 */
 	public function getOutsideClass($class_name)
 	{
-		$source = new Reflection_Source(
-			$this->file_name_getter->getClassFilename($class_name),
-			$this->file_name_getter
-		);
+		if (isset($this->file_name_getter)) {
+			$file_name = $this->file_name_getter->getClassFilename($class_name);
+			$source = is_string($file_name)
+				? new Reflection_Source($file_name, $this->file_name_getter)
+				: $file_name;
+		}
+		else {
+			$source = new Reflection_Source((new ReflectionClass($class_name))->getFileName());
+		}
 		return $source->getClass($class_name);
 	}
 
@@ -485,6 +514,15 @@ class Reflection_Source
 	public function hasChanged()
 	{
 		return $this->changed;
+	}
+
+	//------------------------------------------------------------------------------------ isInternal
+	/**
+	 * @return boolean
+	 */
+	public function isInternal()
+	{
+		return $this->internal;
 	}
 
 	//---------------------------------------------------------------------------------------- nameOf
@@ -535,15 +573,20 @@ class Reflection_Source
 	 * Sets the new source code
 	 *
 	 * Internals : Every properties but the file name are reset to zero by this change.
+	 * If you modify the source into a tokens loop, you should set $reset to false to avoid
+	 * strange things into your tokens structure.
 	 *
 	 * @param $source string
+	 * @param $reset  boolean
 	 * @return Reflection_Source
 	 */
-	public function setSource($source)
+	public function setSource($source, $reset = true)
 	{
-		$this->free(0);
-		$this->source = $source;
+		if ($reset) {
+			$this->free(0);
+		}
 		$this->changed = true;
+		$this->source = $source;
 		return $this;
 	}
 

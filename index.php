@@ -11,12 +11,12 @@ ini_set('default_charset', 'UTF-8');
 ini_set('max_input_vars', 1000000);
 ini_set('memory_limit', '1024M');
 ini_set('session.use_cookies', true);
-ini_set('xdebug.collect_params', 3);
+ini_set('xdebug.collect_params', 4);
 ini_set('xdebug.max_nesting_level', 255);
 //ini_set('xdebug.scream', true);
-ini_set('xdebug.var_display_max_children', 1000000);
-ini_set('xdebug.var_display_max_data', 1000000);
-ini_set('xdebug.var_display_max_depth', 1000000);
+ini_set('xdebug.var_display_max_children', 10);
+ini_set('xdebug.var_display_max_data', 50);
+ini_set('xdebug.var_display_max_depth', 3);
 set_time_limit(15);
 //&XDEBUG_PROFILE=1
 

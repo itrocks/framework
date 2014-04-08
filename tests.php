@@ -11,8 +11,8 @@ $config['tests'] = [
 	'app'     => 'Tests',
 	'extends' => 'framework',
 
-	//--------------------------------------------------------------------------------------- highest
-	'highest' => [
+	//---------------------------------------------------------------------------------------- normal
+	'normal' => [
 		Dao::class => [
 			'database' => 'saf_tests',
 			'login'    => 'saf_tests',
@@ -20,11 +20,7 @@ $config['tests'] = [
 			'tables' => [
 				Tests\Salesman::class   => 'salesmen'
 			]
-		]
-	],
-
-	//---------------------------------------------------------------------------------------- normal
-	'normal' => [
+		],
 		Menu::class => [
 			['/Application/home', 'Home', '#main'],
 			'Friends' => [

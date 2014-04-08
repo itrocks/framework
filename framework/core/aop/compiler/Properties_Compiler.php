@@ -1,9 +1,9 @@
 <?php
 namespace SAF\AOP;
 
-use SAF\Framework\Php_Class;
-use SAF\Framework\Php_Method;
 use SAF\Framework\Reflection_Parameter;
+use SAF\PHP\Reflection_Class;
+use SAF\PHP\Reflection_Method;
 
 /**
  * Aspect weaver properties compiler
@@ -22,15 +22,15 @@ class Properties_Compiler
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * @var Php_Class
+	 * @var Reflection_Class
 	 */
 	private $class;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class Php_Class
+	 * @param $class Reflection_Class
 	 */
-	public function __construct($class)
+	public function __construct(Reflection_Class $class)
 	{
 		$this->class = $class;
 	}
@@ -44,7 +44,7 @@ class Properties_Compiler
 	{
 		$this->actions = [];
 		$methods = [];
-		if ($this->class->type !== 'trait') {
+		if ($this->class->type !== T_TRAIT) {
 			$methods['__construct'] = $this->compileConstruct($advices);
 			if ($methods['__construct']) {
 				$methods['__aop']   = $this->compileAop($advices);
@@ -186,15 +186,15 @@ class Properties_Compiler
 			}
 		}
 		// todo this check only getters, links and setters. This should check AOP links too.
-		if (($parent = $this->class->getParent()) && ($parent->type == 'class')) {
-			foreach ($parent->getProperties(['traits', 'inherited']) as $property) {
+		if (($parent = $this->class->getParent()) && ($parent->type === T_CLASS)) {
+			foreach ($parent->getProperties([T_EXTENDS, T_USE]) as $property) {
 				$expr = '%'
 					. '\n\s+\*\s+'               // each line beginning by '* '
 					. '@(getter|link|setter)'    // 1 : AOP annotation
 					. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
 					. '(\w+)?)?'                 // 3 : method or function name
 					. '%';
-				preg_match($expr, $property->documentation, $match);
+				preg_match($expr, $property->getDocComment(), $match);
 				if ($match) {
 					$parent_code = '
 
@@ -512,11 +512,11 @@ class Properties_Compiler
 	{
 		foreach ($this->actions as $method_name => $action) {
 			if ($action == 'rename') {
-				$regexp = Php_Method::regex($method_name);
-				$this->class->source = preg_replace(
+				$regexp = Reflection_Method::regex($method_name);
+				$this->class->source->setSource(preg_replace(
 					$regexp,
 					LF . TAB . '$2' . LF . TAB . '/* $4 */ private $5 function $6$7_0$8$9',
-					$this->class->source
+					$this->class->source->getSource())
 				);
 			}
 			else {
@@ -551,7 +551,7 @@ class Properties_Compiler
 	 * @param $method_name  string
 	 * @param $needs_return boolean if false, call will not need return statement
 	 * @param $advices      array
-	 * @return array action (rename, trait), call, Php_Method method, prototype
+	 * @return array action (rename, trait), call, Reflection_Method method, prototype
 	 */
 	private function overrideMethod($method_name, $needs_return = true, $advices = null)
 	{
@@ -566,7 +566,7 @@ class Properties_Compiler
 		}
 		else {
 			// the method exists into a trait of the class
-			$methods = $this->class->getMethods(['traits']);
+			$methods = $this->class->getMethods([T_USE]);
 			if (isset($methods[$method_name])) {
 				$method = $methods[$method_name];
 				$over['action'] = 'trait';
@@ -574,7 +574,7 @@ class Properties_Compiler
 			}
 			else {
 				// the method exists into a parent class / trait and is not abstract
-				$methods = $this->class->getMethods(['inherited']);
+				$methods = $this->class->getMethods([T_EXTENDS, T_IMPLEMENTS]);
 				if (isset($methods[$method_name]) && !$methods[$method_name]->isAbstract()) {
 					$method = $methods[$method_name];
 					$over['action'] = false;
@@ -591,7 +591,7 @@ class Properties_Compiler
 		// the method exists : prepare call and prototype
 		if (isset($method)) {
 			$over['method']    = $method;
-			$over['prototype'] = rtrim($method->prototype);
+			$over['prototype'] = rtrim($method->getPrototypeString());
 			if (in_array($method_name, ['__get', '__isset', '__set', '__unset'])) {
 				$parameters = $method->getParametersNames();
 				if (reset($parameters) !== 'property_name') {
@@ -661,12 +661,12 @@ class Properties_Compiler
 		$cases = [];
 		if (
 			in_array($method_name, ['__get', '__set'])
-			&& ($this->class->type == 'class')
+			&& ($this->class->type === T_CLASS)
 			&& ($parent = $this->class->getParent())
 		) {
 			$annotation = ($method_name == '__get') ? '(getter|link)' : 'setter';
 			$type = ($method_name == '__get') ? 'read' : 'write';
-			foreach ($parent->getProperties(['traits', 'inherited']) as $property) {
+			foreach ($parent->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if (!isset($advices[$property->name]['implements'][$type])) {
 					$expr = '%'
 						. '\n\s+\*\s+'               // each line beginnig by '* '
@@ -674,7 +674,7 @@ class Properties_Compiler
 						. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
 						. '(\w+)?)?'                 // 3 : method or function name
 						. '%';
-					preg_match($expr, $property->documentation, $match);
+					preg_match($expr, $property->getDocComment(), $match);
 					if ($match) {
 						$cases[$property->name] = LF . TAB . TAB . TAB . 'case ' . Q . $property->name . Q . ':';
 					}
@@ -684,17 +684,17 @@ class Properties_Compiler
 				$parameters = '$property_name';
 				switch ($method_name) {
 					case '__get':
-						$cases[] .= ' return parent::__get($property_name);';
+						$cases[] = ' return parent::__get($property_name);';
 						break;
 					case '__isset':
-						$cases[] .= ' return parent::__isset($property_name);';
+						$cases[] = ' return parent::__isset($property_name);';
 						break;
 					case '__set':
-						$cases[] .= ' parent::__set($property_name, $value); return;';
+						$cases[] = ' parent::__set($property_name, $value); return;';
 						$parameters .= ', $value';
 						break;
 					case '__unset':
-						$cases[] .= ' parent::__unset($property_name); return;';
+						$cases[] = ' parent::__unset($property_name); return;';
 						break;
 					default:
 						$parameters = '';

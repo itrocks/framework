@@ -7,6 +7,13 @@ namespace SAF\AOP;
 class Handler implements IHandler
 {
 
+	//---------------------------------------------------------------------------------- $type values
+	const AFTER  = 'after';
+	const AROUND = 'around';
+	const BEFORE = 'before';
+	const READ   = 'read';
+	const WRITE  = 'write';
+
 	//---------------------------------------------------------------------------------------- $index
 	/**
 	 * @var integer

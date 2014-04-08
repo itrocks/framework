@@ -18,13 +18,17 @@ class Reflection_Test extends Unit_Test
 	public function testAccessProperties()
 	{
 		// does access properties return properties list ?
-		$class = new Reflection_Class('SAF\Tests\Order');
+		$class = new Reflection_Class(Order::class);
+		$date = new Reflection_Property(Document::class, 'date');
+		$date->final_class = Order::class;
+		$number = new Reflection_Property(Document::class, 'number');
+		$number->final_class = Order::class;
 		$test1 = $this->assume(
 			__METHOD__ . '.1',
 			$properties = $class->accessProperties(),
 			[
-				'date'            => new Reflection_Property(Document::class, 'date'),
-				'number'          => new Reflection_Property(Document::class, 'number'),
+				'date'            => $date,
+				'number'          => $number,
 				'client'          => new Reflection_Property(Order::class,    'client'),
 				'delivery_client' => new Reflection_Property(Order::class,    'delivery_client'),
 				'lines'           => new Reflection_Property(Order::class,    'lines'),
@@ -80,12 +84,16 @@ class Reflection_Test extends Unit_Test
 	//-------------------------------------------------------------------------- testGetAllProperties
 	public function testGetAllProperties()
 	{
+		$date = new Reflection_Property(Document::class, 'date');
+		$date->final_class = Order::class;
+		$number = new Reflection_Property(Document::class, 'number');
+		$number->final_class = Order::class;
 		$this->assume(
 			__METHOD__,
 			(new Reflection_Class(Order::class))->getAllProperties(),
 			[
-				'date'            => new Reflection_Property(Document::class, 'date'),
-				'number'          => new Reflection_Property(Document::class, 'number'),
+				'date'            => $date,
+				'number'          => $number,
 				'client'          => new Reflection_Property(Order::class,    'client'),
 				'delivery_client' => new Reflection_Property(Order::class,    'delivery_client'),
 				'lines'           => new Reflection_Property(Order::class,    'lines'),

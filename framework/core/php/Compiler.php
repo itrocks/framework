@@ -1,22 +1,40 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\PHP;
 
-use SAF\PHP\Dependency;
-use SAF\PHP\Reflection_Source;
+use SAF\Framework\Application;
+use SAF\Framework\Application_Updater;
+use SAF\Framework\Dao_Set;
+use SAF\Framework\Files;
+use SAF\Framework\Main_Controller;
+use SAF\Framework\Needs_Main_Controller;
+use SAF\Framework\Router;
+use SAF\Framework\Session;
+use SAF\Framework\Updatable;
 use SAF\Plugins;
 use Serializable;
 
 /**
  * Php compiler : the php scripts compilers manager
+ *
+ * This has heavy dependencies to the SAF Framework, and can't be used without it at the moment
  */
-class Php_Compiler
-	implements Needs_Main_Controller, Plugins\Configurable, Plugins\Registerable, Serializable,
-		Updatable
+class Compiler
+	implements Plugins\Configurable, Plugins\Registerable,
+		Class_File_Name_Getter, Needs_Main_Controller, Serializable, Updatable
 {
+
+	//---------------------------------------------------------------------------- MAX_OPENED_SOURCES
+	const MAX_OPENED_SOURCES = 1000;
+
+	//---------------------------------------------------------------------------------- SOURCES_FREE
+	const SOURCES_FREE = 10;
 
 	//------------------------------------------------------------------------------------ $cache_dir
 	/**
 	 * Cache directory name
+	 *
+	 * You should not use this property.
+	 * Please use getCacheDir() to be sure this is initialized.
 	 *
 	 * @var string
 	 */
@@ -42,9 +60,15 @@ class Php_Compiler
 	/**
 	 * List of PHP sources being compiled.
 	 *
-	 * @var \SAF\PHP\Reflection_Source[]
+	 * @var Reflection_Source[]
 	 */
 	private $sources;
+
+	//-------------------------------------------------------------------------------- $sources_cache
+	/**
+	 * @var Reflection_Source[]
+	 */
+	private $sources_cache = [];
 
 	//------------------------------------------------------------------------------ $main_controller
 	/**
@@ -58,7 +82,7 @@ class Php_Compiler
 	/**
 	 * List of PHP sources to be compiled on next wave
 	 *
-	 * @var \SAF\PHP\Reflection_Source[]
+	 * @var Reflection_Source[]
 	 */
 	private $more_sources = [];
 
@@ -99,8 +123,7 @@ class Php_Compiler
 			$classes = $source->getClasses();
 			if ($classes) {
 				$class = reset($classes);
-				$source->file_name
-					= $this->cache_dir . SL . strtolower(str_replace(BS, '-', $class->name));
+				$source->file_name = $this->getCacheDir() . SL . str_replace(BS, '-', $class->name);
 			}
 			else {
 				trigger_error(
@@ -110,7 +133,14 @@ class Php_Compiler
 				);
 			}
 		}
+		foreach (array_keys($source->getClasses()) as $class_name) {
+			$this->sources_cache[$class_name] = $source;
+		}
 		$this->more_sources[$source->file_name] = $source;
+
+		if (count($this->sources_cache) > 1000) {
+			$source->free(self::SOURCES_FREE);
+		}
 	}
 
 	//--------------------------------------------------------------------------------------- compile
@@ -119,8 +149,7 @@ class Php_Compiler
 	 */
 	public function compile($last_time = 0)
 	{
-		$this->cache_dir = Application::current()->getCacheDir() . '/compiled';
-		Files::mkdir($this->cache_dir);
+		$cache_dir = $this->getCacheDir();
 
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 		while ($this->sources) {
@@ -151,22 +180,33 @@ class Php_Compiler
 				}
 			} while ($added);
 
+			// fill in sources cache
+			$sources_count = count($this->sources);
+			foreach ($this->sources as $source) {
+				foreach (array_keys($source->getClasses()) as $class_name) {
+					$this->sources_cache[$class_name] = $source;
+				}
+				if ($sources_count > self::MAX_OPENED_SOURCES) {
+					$source->free(self::SOURCES_FREE);
+				}
+			}
+
 			// compile sources
 			foreach ($this->sources as $source) {
 				foreach ($this->compilers as $compiler) {
 					$compiler->compile($source, $this);
 				}
-				$file_name = $this->cache_dir . SL
-					. str_replace(SL, '-', substr($source->file_name, 0, -4));
+				$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
+					? $source->file_name
+					: $this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4));
 				if ($source->hasChanged()) {
-					echo '- Comp. save into ' . $file_name . '<br>';
 					script_put_contents($file_name, $source->getSource());
 				}
-				else {
-					if (is_file($file_name)) {
-						echo '- Comp. remove ' . $file_name . '<br>';
-						unlink($file_name);
-					}
+				elseif (is_file($file_name)) {
+					unlink($file_name);
+				}
+				if ($sources_count > self::MAX_OPENED_SOURCES) {
+					$source->free(self::SOURCES_FREE);
 				}
 			}
 
@@ -175,6 +215,47 @@ class Php_Compiler
 		}
 		$this->sources = [];
 
+	}
+
+	//----------------------------------------------------------------------------------- getCacheDir
+	/**
+	 * @return string
+	 */
+	public function getCacheDir()
+	{
+		if (!isset($this->cache_dir)) {
+			$this->cache_dir = Application::current()->getCacheDir() . '/compiled';
+			Files::mkdir($this->cache_dir);
+		}
+		return $this->cache_dir;
+	}
+
+	//------------------------------------------------------------------------------ getClassFileName
+	/**
+	 * Gets a Reflection_Source knowing its class _name.
+	 * Uses sources cache, or router's getClassFilename() and fill-in cache.
+	 *
+	 * @param $class_name string
+	 * @return Reflection_Source
+	 */
+	public function getClassFilename($class_name)
+	{
+		if (isset($this->sources_cache[$class_name])) {
+			return $this->sources_cache[$class_name];
+		}
+		else {
+			/** @var $router Router */
+			$router = Session::current()->plugins->get(Router::class);
+			$file_name = $router->getClassFilename($class_name);
+			$source = new Reflection_Source($file_name, $this, $class_name);
+			foreach (array_keys($source->getClasses()) as $class_name) {
+				$this->sources_cache[$class_name] = $source;
+				if (count($this->sources_cache) > self::MAX_OPENED_SOURCES) {
+					$source->free(self::SOURCES_FREE);
+				}
+			}
+			return $this->sources_cache[$class_name];
+		}
 	}
 
 	//----------------------------------------------------------------------------- getFilesToCompile
@@ -193,7 +274,7 @@ class Php_Compiler
 		$files = [];
 		foreach ($source_files as $file_path) {
 			if ((substr($file_path, -4) == '.php') && (filemtime($file_path) > $last_time)) {
-				$files[$file_path] = new Reflection_Source($file_path);
+				$files[$file_path] = new Reflection_Source($file_path, $this);
 			}
 		}
 		return $files;

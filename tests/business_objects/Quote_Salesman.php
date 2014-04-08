@@ -33,6 +33,6 @@ class Quote_Salesman extends Salesman
 	 * @link Object
 	 * @var Salesman
 	 */
-	private $salesman;
+	public $salesman;
 
 }

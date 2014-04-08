@@ -46,11 +46,6 @@ class Main_Controller
 		/** @var $application_updater Application_Updater */
 		$application_updater = Session::current()->plugins->get(Application_Updater::class);
 		if ($application_updater->mustUpdate()) {
-			/** @var $weaver AOP\Weaver */
-			/*
-			$weaver = Session::current()->plugins->get(AOP\Weaver::class);
-			$weaver->compile();
-			*/
 			$application_updater->update($this);
 			$application_updater->done();
 		}
@@ -137,7 +132,7 @@ class Main_Controller
 		include_once Include_Filter::file('framework/core/Session.php');
 
 		// Core plugins
-		include_once Include_Filter::file('framework/core/compiler/ICompiler.php');
+		include_once Include_Filter::file('framework/core/php/ICompiler.php');
 		include_once Include_Filter::file('framework/core/php/Class_File_Name_Getter.php');
 		include_once Include_Filter::file('framework/core/IAutoloader.php');
 		include_once Include_Filter::file('framework/core/Router.php');

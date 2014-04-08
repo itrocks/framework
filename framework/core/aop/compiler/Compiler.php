@@ -3,12 +3,14 @@ namespace SAF\AOP;
 
 use SAF\Framework\Dao;
 use SAF\Framework\Getter;
-use SAF\Framework\ICompiler;
+use SAF\Framework\Main_Controller;
 use SAF\Framework\Names;
-use SAF\Framework\Php_Compiler;
+use SAF\Framework\Needs_Main_Controller;
 use SAF\Framework\Search_Object;
 use SAF\Framework\Session;
+use SAF\PHP;
 use SAF\PHP\Dependency;
+use SAF\PHP\ICompiler;
 use SAF\PHP\Reflection_Class;
 use SAF\PHP\Reflection_Source;
 use SAF\Plugins;
@@ -16,7 +18,7 @@ use SAF\Plugins;
 /**
  * Standard aspect weaver compiler
  */
-class Compiler implements ICompiler
+class Compiler implements ICompiler, Needs_Main_Controller
 {
 
 	const DEBUG = false;
@@ -42,19 +44,45 @@ class Compiler implements ICompiler
 		$this->weaver = $weaver ?: Session::current()->plugins->get(Weaver::class);
 	}
 
+	//--------------------------------------------------------------------------------------- cleanup
+	/**
+	 * @param $buffer string
+	 * @return boolean true if cleanup was necessary, false if buffer was clean before cleanup
+	 */
+	private static function cleanup(&$buffer)
+	{
+		// remove all '\r'
+		$buffer = trim(str_replace(CR, '', $buffer));
+		// remove since the line containing '//#### AOP' until the end of the file
+		$expr = '%\n\s*//\#+\s+AOP.*%s';
+		preg_match($expr, $buffer, $match1);
+		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? LF . LF . '}' . LF : LF);
+		// replace '/* public */ private [static] function name_?(' by 'public [static] function name('
+		$expr = '%'
+			. '(?:\n\s*/\*\*?\s+@noinspection\s+PhpUnusedPrivateMethodInspection.*?\*/)?'
+			. '(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)' // 1 2 3
+			. '(?:(?:private|protected|public)\s+)?'
+			. '(static\s+)?' // 4
+			. 'function\s*(\s?\&\s?)?\s*(\w+)\_[0-9]*\s*' // 5 6
+			. '\('
+			. '%';
+
+		preg_match($expr, $buffer, $match2);
+		$buffer = preg_replace($expr, '$1$2$3$4function $5$6(', $buffer);
+		return $match1 || $match2;
+	}
+
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source   Reflection_Source
-	 * @param $compiler Php_Compiler
+	 * @param $compiler PHP\Compiler
 	 * @return boolean
 	 */
-	public function compile(Reflection_Source $source, Php_Compiler $compiler = null)
+	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
 	{
 		$classes = $source->getClasses();
 		if ($class = reset($classes)) {
-			$class = reset($source->getClasses());
 			if ($this->compileClass($class)) {
-				$source->setSource($class->source);
 				return true;
 			}
 		}
@@ -73,9 +101,9 @@ class Compiler implements ICompiler
 
 		$methods    = [];
 		$properties = [];
-		if ($class->type !== 'interface') {
+		if ($class->type !== T_INTERFACE) {
 			// implements : _read_property, _write_property
-			if ($class->type != 'trait') {
+			if ($class->type !== T_TRAIT) {
 				$this->scanForImplements($properties, $class);
 			}
 			// read/write : __aop, __construct, __get, __isset, __set, __unset
@@ -112,10 +140,12 @@ class Compiler implements ICompiler
 
 			if (self::DEBUG && $methods_code) echo '<pre>' . print_r($methods_code, true) . '</pre>';
 
-			$class->source
-				= substr($class->source, 0, -2) . TAB . '//' . str_repeat('#', 91) . ' AOP' . LF
+			$class->source->setSource(
+				substr(trim($class->source->getSource()), 0, -1)
+				. TAB . '//' . str_repeat('#', 91) . ' AOP' . LF
 				. join('', $methods_code)
-				. LF . '}' . LF;
+				. LF . '}' . LF
+			);
 		}
 
 		return boolval($methods_code);
@@ -131,10 +161,10 @@ class Compiler implements ICompiler
 		$added = false;
 		/** @var $search Dependency */
 		$search = Search_Object::create(Dependency::class);
-		$search->type = T_USE;
+		$search->type = Dependency::T_USE;
 		foreach ($sources as $source) {
 			foreach ($source->getClasses() as $class) {
-				if ($class->type == T_TRAIT) {
+				if ($class->type === T_TRAIT) {
 					$search->dependency_name = $class->name;
 					/** @var $dependency Dependency */
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
@@ -156,7 +186,7 @@ class Compiler implements ICompiler
 	 */
 	public function compileFile($file_name)
 	{
-		return $this->compileClass(Reflection_Class::fromFile($file_name));
+		return $this->compileClass((new Reflection_Source($file_name))->getClasses()[0]);
 	}
 
 	//---------------------------------------------------------------------------------- getPointcuts
@@ -213,7 +243,7 @@ class Compiler implements ICompiler
 				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
 				. '(\w+)?)?'                 // 2 : method or function name
 				. '%';
-			preg_match($expr, $property->documentation, $match);
+			preg_match($expr, $property->getDocComment(), $match);
 			if ($match) {
 				$advice = [
 					empty($match[1]) ? '$this' : $match[1],
@@ -222,7 +252,7 @@ class Compiler implements ICompiler
 				$properties[$property->name][] = ['read', $advice];
 			}
 		}
-		foreach ($this->scanForOverrides($class->documentation, ['getter']) as $match) {
+		foreach ($this->scanForOverrides($class->getDocComment(), ['getter']) as $match) {
 			$advice = [
 				empty($match['class_name']) ? '$this' : $match['class_name'],
 				empty($match['method_name'])
@@ -240,7 +270,7 @@ class Compiler implements ICompiler
 	private function scanForImplements(&$properties, Reflection_Class $class)
 	{
 		// properties from the class and its direct traits
-		$implemented_properties = $class->getProperties(['traits']);
+		$implemented_properties = $class->getProperties([T_USE]);
 		foreach ($implemented_properties as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+'            // each line beginning by '* '
@@ -250,7 +280,7 @@ class Compiler implements ICompiler
 				. '(\w+)'                 // 3 : method or function name
 				. ')?'                    // end of optional block
 				. '%';
-			preg_match_all($expr, $property->documentation, $match);
+			preg_match_all($expr, $property->getDocComment(), $match);
 			foreach ($match[1] as $type) {
 				$type = ($type == 'setter') ? 'write' : 'read';
 				$properties[$property->name]['implements'][$type] = true;
@@ -260,18 +290,18 @@ class Compiler implements ICompiler
 			}
 		}
 		// properties overridden into the class and its direct traits
-		$documentations = $class->getDocumentations(['traits']);
+		$documentations = $class->getDocComment([T_USE]);
 		foreach ($this->scanForOverrides($documentations) as $match) {
 			$properties[$match['property_name']]['implements'][$match['type']] = true;
 			if (!isset($implemented_properties[$match['property_name']])) {
-				$property = $class->getProperties(['inherited'])[$match['property_name']];
+				$property = $class->getProperties([T_EXTENDS])[$match['property_name']];
 				if (
-					!strpos($property->documentation, '@getter')
-					&& !strpos($property->documentation, '@link')
-					&& !strpos($property->documentation, '@setter')
+					!strpos($property->getDocComment(), '@getter')
+					&& !strpos($property->getDocComment(), '@link')
+					&& !strpos($property->getDocComment(), '@setter')
 				) {
 					$expr = '%@override\s+' . $match['property_name'] . '\s+.*(@getter|@link|@setter)%';
-					preg_match($expr, $property->class->getDocumentations(), $match2);
+					preg_match($expr, $property->class->getDocComment(), $match2);
 					if ($match2) {
 						$properties[$match['property_name']]['override'] = true;
 					}
@@ -297,13 +327,13 @@ class Compiler implements ICompiler
 			}
 		}
 		foreach ($class->getProperties() as $property) {
-			if (!isset($disable[$property->name]) && strpos($property->documentation, '* @link')) {
+			if (!isset($disable[$property->name]) && strpos($property->getDocComment(), '* @link')) {
 				$expr = '%'
 					. '\n\s+\*\s+'                           // each line beginning by '* '
 					. '@link\s+'                             // link annotation
 					. '(All|Collection|DateTime|Map|Object)' // 1 : link keyword
 					. '%';
-				preg_match($expr, $property->documentation, $match);
+				preg_match($expr, $property->getDocComment(), $match);
 				if ($match) {
 					$advice = [Getter::class, 'get' . $match[1]];
 				}
@@ -318,7 +348,7 @@ class Compiler implements ICompiler
 				$properties[$property->name][] = ['read', $advice];
 			}
 		}
-		foreach ($this->scanForOverrides($class->documentation, ['link'], $disable) as $match) {
+		foreach ($this->scanForOverrides($class->getDocComment(), ['link'], $disable) as $match) {
 			$advice = [Getter::class, 'get' . $match['method_name']];
 			$properties[$match['property_name']][] = ['read', $advice];
 		}
@@ -409,13 +439,13 @@ class Compiler implements ICompiler
 	 */
 	private function scanForReplaces(&$properties, Reflection_Class $class)
 	{
-		foreach ($class->getProperties(['traits']) as $property) {
+		foreach ($class->getProperties([T_USE]) as $property) {
 			$expr = '%'
-				. '\n\s+\*\s+' // each line beginning by '* '
-				. '@replaces\s+'  // alias annotation
-				. '(\w+)'      // 1 : property name
+				. '\n\s+\*\s+'   // each line beginning by '* '
+				. '@replaces\s+' // alias annotation
+				. '(\w+)'        // 1 : property name
 				. '%';
-			preg_match($expr, $property->documentation, $match);
+			preg_match($expr, $property->getDocComment(), $match);
 			if ($match) {
 				$properties[$match[1]]['replaced'] = $property->name;
 			}
@@ -436,7 +466,7 @@ class Compiler implements ICompiler
 				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
 				. '(\w+)?)?'                 // 2 : method or function name
 				. '%';
-			preg_match($expr, $property->documentation, $match);
+			preg_match($expr, $property->getDocComment(), $match);
 			if ($match) {
 				$advice = [
 					empty($match[1]) ? '$this' : $match[1],
@@ -445,13 +475,27 @@ class Compiler implements ICompiler
 				$properties[$property->name][] = ['write', $advice];
 			}
 		}
-		foreach ($this->scanForOverrides($class->documentation, ['setter']) as $match) {
+		foreach ($this->scanForOverrides($class->getDocComment(), ['setter']) as $match) {
 			$advice = [
 				empty($match['class_name']) ? '$this' : $match['class_name'],
 				empty($match['method_name'])
 					? Names::propertyToMethod($match['property_name'], 'set') : $match['method_name']
 			];
 			$properties[$match['property_name']][] = ['write', $advice];
+		}
+	}
+
+	//----------------------------------------------------------------------------- setMainController
+	/**
+	 * @param $main_controller Main_Controller
+	 */
+	public function setMainController(Main_Controller $main_controller)
+	{
+		// AOP compiler needs all plugins to be registered again, in order to build the complete
+		// weaver's advices tree
+		if (!$this->weaver->hasJoinpoints()) {
+			$main_controller->resetSession();
+			$this->weaver = Session::current()->plugins->get(Weaver::class);
 		}
 	}
 

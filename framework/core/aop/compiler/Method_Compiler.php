@@ -1,9 +1,9 @@
 <?php
 namespace SAF\AOP;
 
-use SAF\Framework\Php_Class;
-use SAF\Framework\Php_Method;
 use SAF\Framework\Reflection_Parameter;
+use SAF\PHP\Reflection_Class;
+use SAF\PHP\Reflection_Method;
 
 /**
  * Aspect weaver method compiler
@@ -16,15 +16,15 @@ class Method_Compiler
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * @var Php_Class
+	 * @var Reflection_Class
 	 */
 	private $class;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class Php_Class
+	 * @param $class Reflection_Class
 	 */
-	public function __construct($class)
+	public function __construct(Reflection_Class $class)
 	{
 		$this->class = $class;
 	}
@@ -54,7 +54,7 @@ class Method_Compiler
 	 */
 	public function compile($method_name, $advices)
 	{
-		$source_method = $this->class->getMethods(['inherited', 'traits'])[$method_name];
+		$source_method = $this->class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE])[$method_name];
 		if (!$source_method) {
 			trigger_error($this->class->name . '::' . $method_name . ' not found', E_USER_ERROR);
 		}
@@ -63,28 +63,28 @@ class Method_Compiler
 		if ($source_method->isAbstract()) return '';
 
 		$class_name = $this->class->name;
-		$buffer =& $this->class->source;
+		$buffer = $this->class->source->getSource();
 		$result = '';
 
 		if (self::DEBUG) echo '<h3>Method ' . $class_name . '::' . $method_name . '</h3>';
 
 		$in_parent = !$this->class->implementsMethod($source_method->name);
 		// preg expression to search and replace things into method prototype
-		$preg_expr = Php_Method::regex($method_name);
+		$preg_expr = Reflection_Method::regex($method_name);
 		// $indent = prototype level indentation spaces
-		$indent = $source_method->indent;
+		$indent = $source_method->getIndent();
 		$i2 = $indent . TAB;
 		$i3 = $i2 . TAB;
 		// $parameters = ['parameter_name' => 'parameter_name')
 		$parameters = $source_method->getParametersNames();
 		// $doc_comment = source method doc comment
-		$doc_comment = $source_method->documentation;
+		$doc_comment = $source_method->getDocComment();
 		// $parameters_names = '$parameter1, $parameter2'
 		$parameters_names = $parameters ? ('$' . join(', $', $parameters)) : '';
 		// $prototype = 'public [static] function methodName($parameter1, $parameter2 = 'default')'
-		$prototype = $source_method->prototype;
+		$prototype = $source_method->getPrototypeString();
 		/** $is_static = '[static]' */
-		$is_static = $source_method->static;
+		$is_static = $source_method->isStatic();
 		/** @var $count integer around method counter */
 		$count = null;
 
@@ -109,7 +109,7 @@ class Method_Compiler
 			echo 'in_parent = true for ' . $class_name . '::' . $method_name . BR;
 		}
 
-		$ref = $source_method->reference;
+		$ref = $source_method->returnsReference();
 		$call_code = $i2 . ($joinpoint_has_return ? ('$result_ =' . $ref . SP) : '')
 			. ($is_static ? 'self::' : ($in_parent ? 'parent::' : '$this->'))
 			. $method_name . ($in_parent ? '' : ('_' . $count))
@@ -233,11 +233,11 @@ class Method_Compiler
 				. $indent . '}' . LF;
 		}
 
-		$buffer = preg_replace(
+		$this->class->source->setSource(preg_replace(
 			$preg_expr,
 			$indent . '$2' . $indent . '/* $4 */ private $5 function $6 $7_' . $count . '$8$9',
 			$buffer
-		);
+		), false);
 
 		return $result;
 	}

@@ -68,7 +68,9 @@ class Class_Builder
 				}
 			}
 			$built_class = self::buildClass($class_name, $interfaces, $traits, $get_source);
-			self::$builds[$class_name][$key] = $built_class;
+			if (!$get_source) {
+				self::$builds[$class_name][$key] = $built_class;
+			}
 			return $built_class;
 		}
 	}

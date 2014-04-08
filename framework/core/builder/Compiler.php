@@ -3,10 +3,10 @@ namespace SAF\Framework\Builder;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Class_Builder;
-use SAF\Framework\ICompiler;
 use SAF\Framework\Main_Controller;
 use SAF\Framework\Needs_Main_Controller;
-use SAF\Framework\Php_Compiler;
+use SAF\PHP;
+use SAF\PHP\ICompiler;
 use SAF\PHP\Reflection_Source;
 
 /**
@@ -24,10 +24,10 @@ class Compiler implements ICompiler, Needs_Main_Controller
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source   Reflection_Source
-	 * @param $compiler Php_Compiler
+	 * @param $compiler PHP\Compiler
 	 * @return boolean
 	 */
-	public function compile(Reflection_Source $source, Php_Compiler $compiler = null)
+	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
 	{
 		$compiled = false;
 		foreach ($source->getClasses() as $class) {
