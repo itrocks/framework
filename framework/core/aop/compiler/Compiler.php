@@ -1,6 +1,7 @@
 <?php
 namespace SAF\AOP;
 
+use SAF\Framework\Application;
 use SAF\Framework\Dao;
 use SAF\Framework\Getter;
 use SAF\Framework\Main_Controller;
@@ -494,8 +495,7 @@ class Compiler implements ICompiler, Needs_Main_Controller
 		// AOP compiler needs all plugins to be registered again, in order to build the complete
 		// weaver's advices tree
 		if (!$this->weaver->hasJoinpoints()) {
-			$main_controller->resetSession();
-			$this->weaver = Session::current()->plugins->get(Weaver::class);
+			$this->weaver->loadJoinpoints(Application::current()->getCacheDir() . SL . 'weaver.php');
 		}
 	}
 

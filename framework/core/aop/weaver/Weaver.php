@@ -1,5 +1,6 @@
 <?php
 namespace SAF\AOP;
+use SAF\Framework\Session;
 
 /**
  * The Aop class is an interface to the Aop calls manager
@@ -32,8 +33,8 @@ class Weaver implements IWeaver
 	 */
 	public function afterFunction($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint][] = ['after', $advice];
-		return new Handler('after', $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
+		$this->joinpoints[$joinpoint][] = [Handler::AFTER, $advice];
+		return new Handler(Handler::AFTER, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
 
 	//----------------------------------------------------------------------------------- afterMethod
@@ -53,9 +54,9 @@ class Weaver implements IWeaver
 	 */
 	public function afterMethod($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = ['after', $advice];
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::AFTER, $advice];
 		return new Handler(
-			'after', $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
+			Handler::AFTER, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 
@@ -74,8 +75,8 @@ class Weaver implements IWeaver
 	 */
 	public function aroundFunction($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint][] = ['around', $advice];
-		return new Handler('around', $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
+		$this->joinpoints[$joinpoint][] = [Handler::AROUND, $advice];
+		return new Handler(Handler::AROUND, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
 
 	//---------------------------------------------------------------------------------- aroundMethod
@@ -94,9 +95,9 @@ class Weaver implements IWeaver
 	 */
 	public function aroundMethod($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = ['around', $advice];
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::AROUND, $advice];
 		return new Handler(
-			'around', $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
+			Handler::AROUND, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 
@@ -116,8 +117,8 @@ class Weaver implements IWeaver
 	 */
 	public function beforeFunction($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint][] = ['before', $advice];
-		return new Handler('before', $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
+		$this->joinpoints[$joinpoint][] = [Handler::BEFORE, $advice];
+		return new Handler(Handler::BEFORE, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
 
 	//---------------------------------------------------------------------------------- beforeMethod
@@ -136,10 +137,73 @@ class Weaver implements IWeaver
 	 */
 	public function beforeMethod($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = ['before', $advice];
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::BEFORE, $advice];
 		return new Handler(
-			'before', $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
+			Handler::BEFORE, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
+	}
+
+	//------------------------------------------------------------------------------------- dumpArray
+	/**
+	 * Change joinpoints array into a dumped php source [...].
+	 * Replaces all objects by current session plugins getters
+	 *
+	 * @param $array array
+	 * @return string
+	 */
+	private function dumpArray($array)
+	{
+		$lf1 = LF . TAB;
+		$lf2 = $lf1 . TAB;
+		$lf3 = $lf2 . TAB;
+		$dump = '[';
+		foreach ($array as $class => $j1) {
+			$dump .= $lf1 . Q . $class . Q . ' => [';
+			foreach ($j1 as $method => $j2) {
+				if (is_numeric($method)) {
+					$joinpoint = $j2;
+					$dump .= $lf2 . '[' . Q . $joinpoint[0] . Q . ', ';
+					if (is_array($advice = $joinpoint[1])) {
+						$dump .= '[';
+						if (is_object($advice[0])) {
+							$dump .= '$plugins->get(' . get_class($advice[0]) . '::class), ';
+						}
+						else {
+							$dump .= $advice[0] . '::class, ';
+						}
+						$dump .= Q . $advice[1] . Q . ']';
+					}
+					else {
+						$dump .= Q . $advice . Q;
+					}
+					$dump .= '],';
+				}
+				else {
+					$dump .= $lf2 . Q . $method . Q . ' => [';
+					foreach ($j2 as $joinpoint) {
+						$dump .= $lf3 . '[' . Q . $joinpoint[0] . Q . ', ';
+						if (is_array($advice = $joinpoint[1])) {
+							$dump .= '[';
+							if (is_object($advice[0])) {
+								$dump .= '$plugins->get(' . get_class($advice[0]) . '::class), ';
+							}
+							else {
+								$dump .= $advice[0] . '::class, ';
+							}
+							$dump .= Q . $advice[1] . Q . ']';
+						}
+						else {
+							$dump .= Q . $advice . Q;
+						}
+						$dump .= '],';
+					}
+					$dump .= $lf2 . '],';
+				}
+			}
+			$dump .= $lf1 . '],';
+		}
+		$dump .= LF . ']';
+		return $dump;
 	}
 
 	//--------------------------------------------------------------------------------- getJoinpoints
@@ -163,6 +227,16 @@ class Weaver implements IWeaver
 		return $this->joinpoints ? true : false;
 	}
 
+	//-------------------------------------------------------------------------------- loadJoinpoints
+	/**
+	 * @param $file_name string
+	 */
+	public function loadJoinpoints($file_name)
+	{
+		/** @noinspection PhpIncludeInspection */
+		$this->joinpoints = (include $file_name);
+	}
+
 	//---------------------------------------------------------------------------------- readProperty
 	/**
 	 * @param $joinpoint callable the joinpoint defined like a call-back :
@@ -173,9 +247,9 @@ class Weaver implements IWeaver
 	 */
 	public function readProperty($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = ['read', $advice];
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::READ, $advice];
 		return new Handler(
-			'read', $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
+			Handler::READ, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 
@@ -197,6 +271,20 @@ class Weaver implements IWeaver
 		}
 	}
 
+	//-------------------------------------------------------------------------------- saveJoinpoints
+	/**
+	 * @param $file_name string
+	 */
+	public function saveJoinpoints($file_name)
+	{
+		file_put_contents(
+			$file_name,
+			'<?php' . LF . LF
+			. '$plugins = ' . Session::class . '::current()->plugins;' . LF . LF
+			. 'return ' . $this->dumpArray($this->joinpoints) . ';' . LF
+		);
+	}
+
 	//---------------------------------------------------------------------------------- writeProperty
 	/**
 	 * @param $joinpoint callable the joinpoint defined like a call-back :
@@ -207,9 +295,9 @@ class Weaver implements IWeaver
 	 */
 	public function writeProperty($joinpoint, $advice)
 	{
-		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = ['write', $advice];
+		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::WRITE, $advice];
 		return new Handler(
-			'write', $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
+			Handler::WRITE, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
 		);
 	}
 

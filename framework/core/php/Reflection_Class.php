@@ -1,5 +1,6 @@
 <?php
 namespace SAF\PHP;
+use SAF\Framework\Set;
 
 /**
  * A reflection class parser that uses php tokens to parse php source code instead of loading
@@ -337,6 +338,21 @@ class Reflection_Class
 			$this->scanUntilClassBegins();
 		}
 		return is_string($this->parent) ? $this->parent : $this->parent->name;
+	}
+
+	//------------------------------------------------------------------------------- getSetClassName
+	/**
+	 * @return string
+	 */
+	public function getSetClassName()
+	{
+		$expr = '%'
+			. '\n\s+\*\s+'     // each line beginning by '* '
+			. '@set'           // set annotation
+			. '\s+([\\\\\w]+)' // 1 : class name
+			. '%';
+		preg_match($expr, $this->getDocComment(), $match);
+		return $match ? $this->fullClassName($match[1]) : Set::defaultSetClassNameOf($this->name);
 	}
 
 	//---------------------------------------------------------------------------------- getShortName

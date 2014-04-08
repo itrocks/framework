@@ -17,7 +17,7 @@ ini_set('xdebug.max_nesting_level', 255);
 ini_set('xdebug.var_display_max_children', 10);
 ini_set('xdebug.var_display_max_data', 50);
 ini_set('xdebug.var_display_max_depth', 3);
-set_time_limit(15);
+set_time_limit(30);
 //&XDEBUG_PROFILE=1
 
 touch('update');

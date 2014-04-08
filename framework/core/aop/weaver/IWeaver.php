@@ -103,6 +103,12 @@ interface IWeaver
 	 */
 	public function beforeMethod($joinpoint, $advice);
 
+	//-------------------------------------------------------------------------------- loadJoinpoints
+	/**
+	 * @param $file_name string
+	 */
+	public function loadJoinpoints($file_name);
+
 	//---------------------------------------------------------------------------------- readProperty
 	/**
 	 * @param $joinpoint callable the joinpoint defined like a call-back :
@@ -120,6 +126,12 @@ interface IWeaver
 	 * @param IHandler $handler
 	 */
 	public function remove(IHandler $handler);
+
+	//-------------------------------------------------------------------------------- saveJoinpoints
+	/**
+	 * @param $file_name string
+	 */
+	public function saveJoinpoints($file_name);
 
 	//--------------------------------------------------------------------------------- writeProperty
 	/**

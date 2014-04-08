@@ -560,7 +560,7 @@ class Reflection_Source
 		if (!$bigger_than || (count($this->namespaces)   > $bigger_than)) $this->namespaces   = null;
 		if (!$bigger_than || (count($this->use)          > $bigger_than)) $this->use          = null;
 
-		if (isset($this->file_name)) {
+		if (isset($this->file_name) && !$this->changed) {
 			$this->source = null;
 		}
 

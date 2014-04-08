@@ -41,6 +41,12 @@ class Router implements
 	 */
 	public $controller_calls = [];
 
+	//-------------------------------------------------------------------------- $element_class_names
+	/**
+	 * @var string[] key is set class name, value is matching element class name
+	 */
+	public $element_class_names = [];
+
 	//-------------------------------------------------------------------------------------- $exclude
 	/**
 	 * @var string
@@ -101,6 +107,10 @@ class Router implements
 		if ($this->changes) {
 			ksort($this->full_class_names);
 			ksort($this->class_paths);
+			ksort($this->controller_calls);
+			ksort($this->element_class_names);
+			ksort($this->html_templates);
+			ksort($this->view_calls);
 			script_put_contents(
 				$this->routes_file,
 				'<?php
@@ -110,6 +120,8 @@ $this->full_class_names = ' . var_export($this->full_class_names, true) . ';
 $this->class_paths = ' . var_export($this->class_paths, true) . ';
 
 $this->controller_calls = ' . var_export($this->controller_calls, true) . ';
+
+$this->element_class_names = ' . var_export($this->element_class_names, true) . ';
 
 $this->html_templates = ' . var_export($this->html_templates, true) . ';
 
@@ -199,7 +211,29 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	public function compile(Reflection_Source $source, Compiler $compiler = null)
 	{
 		foreach ($source->getClasses() as $class) {
-			$this->setClassPath($class->name, $source->file_name);
+			if (
+				!isset($this->class_paths[$class->name])
+				|| ($this->class_paths[$class->name] !== $source->file_name)
+			) {
+				$this->class_paths[$class->name] = $source->file_name;
+				$this->changes = true;
+			}
+			$set_class_name = $class->getSetClassName();
+			if (
+				!isset($this->element_class_names[$class->name])
+				|| ($this->element_class_names[$class->name] !== $set_class_name)
+			) {
+				$this->element_class_names[$class->name] = $set_class_name;
+				$this->changes = true;
+			}
+			$short_class_name = Namespaces::shortClassName($set_class_name);
+			if (
+				!isset($this->full_class_names[$short_class_name])
+				|| ($this->full_class_names[$short_class_name] !== $set_class_name)
+			) {
+				$this->full_class_names[$short_class_name] = $set_class_name;
+				$this->changes = true;
+			}
 		}
 		return false;
 	}
@@ -241,6 +275,18 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			? ($in_namespace ? ($in_namespace . BS . $match[1]) : $match[1])
 			: null;
 		return $class_name;
+	}
+
+	//------------------------------------------------------------------------- getElementClassNameOf
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	public function getElementClassNameOf($class_name)
+	{
+		return isset($this->element_class_names[$class_name])
+			? $this->element_class_names[$class_name]
+			: null;
 	}
 
 	//------------------------------------------------------------------------------ getFullClassName
@@ -410,6 +456,10 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			[Main_Controller::class, 'executeController'],
 			[$this, 'setPossibleControllerCall']
 		);
+		$aop->beforeMethod(
+			[Set::class, 'elementClassNameOf'],
+			[$this, 'getElementClassNameOf']
+		);
 		$aop->aroundMethod(
 			[View::class, 'getPossibleViews'],
 			[$this, 'getPossibleViewCalls']
@@ -426,22 +476,6 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			[Html_Default_View::class, 'executeTemplate'],
 			[$this, 'setPossibleHtmlTemplate']
 		);
-	}
-
-	//---------------------------------------------------------------------------------- setClassPath
-	/**
-	 * @param $class_name string
-	 * @param $file_path  string
-	 */
-	public function setClassPath($class_name, $file_path)
-	{
-		if (
-			!isset($this->class_paths[$class_name])
-			|| ($this->class_paths[$class_name] !== $file_path)
-		) {
-			$this->class_paths[$class_name] = $file_path;
-			$this->changes = true;
-		}
 	}
 
 	//--------------------------------------------------------------------- setPossibleControllerCall

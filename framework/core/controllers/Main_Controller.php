@@ -220,7 +220,24 @@ class Main_Controller
 				}
 			}
 		}
+		if (isset($weaver)) {
+			$weaver->saveJoinpoints(Application::current()->getCacheDir() . SL . 'weaver.php');
+		}
 	}
+
+	//--------------------------------------------------------------------------- reloadConfiguration
+	/**
+	 * Reload global configuration and register plugins again
+	 */
+	/*
+	public function reloadConfiguration()
+	{
+		$configuration = $this->loadConfiguration();
+		unset($_SESSION['include_path']);
+		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
+		$this->registerPlugins(Session::current()->plugins, $configuration);
+	}
+	*/
 
 	//---------------------------------------------------------------------------------- resetSession
 	/**
