@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>|{@class.ucfirst}|</title>
+    <script type="application/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+    <script type="application/javascript"> path = "../../../"; </script>
+    <script type="application/javascript" src="../../../main/js/all.js"></script>
+	<style type="text/css">
+		@import "../../../skins/default/all.css";
+	</style>
+</head>
+<body>
+<!--BEGIN-->
+
+<section class="{@class.short.lower} {feature.lower} window" id="/{@class.short}/{feature}">
+	<h2>|{@class.ucfirst}| |{display}|</h2>
+
+	{/general_buttons.html}
+
+	<fieldset>
+		<!--tabs._top-->
+		<fieldset class="top">
+			<!--content--><!--@expand-->
+			<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+			<div class="{name} {?getType.isMultiple}" id="{path}">
+				<label>|{display}|</label>
+				<div>{value}</div>
+			</div>
+			<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+			<!--@expand--><!--content-->
+		</fieldset>
+		<!--tabs._top-->
+
+		<!--tabs.included?-->
+		<div class="tabber">
+			<ul>
+				<!--tabs.included-->
+				<li class="{getClass}"><a href="#tab_{id}">|{title}|</a></li>
+				<!--tabs.included-->
+			</ul>
+			<!--tabs.included-->
+			<fieldset class="{getClass}" id="tab_{id}">
+				<legend>|{title}|</legend>
+				<!--included?-->
+				<div class="tabber">
+					<ul>
+						<!--included-->
+						<li class="{getClass}"><a href="#tab_{id}">|{title}|</a></li>
+						<!--included-->
+					</ul>
+					<!--included-->
+					<fieldset class="{?getClass}" id="tab_{id}">
+						<legend>|{title}|</legend>
+						<!--content--><!--@expand-->
+						<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+						<div class="{name} {?getType.isMultiple}" id="{path}">
+							<label>|{display}|</label>
+							<div>{value}</div>
+						</div>
+						<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+						<!--@expand--><!--content-->
+					</fieldset>
+					<!--included-->
+				</div>
+				<!--included?-->
+				<!--columns?-->
+				<div class="{getClass?} columns">
+					<!--columns-->
+					<fieldset class="column">
+						<!--content--><!--@expand-->
+						<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+						<div class="{name} {?getType.isMultiple}" id="{path}">
+							<label>|{display}|</label>
+							<div>{value}</div>
+						</div>
+						<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+						<!--@expand--><!--content-->
+					</fieldset>
+					<!--columns-->
+				</div>
+				<!--columns?-->
+				<!--content--><!--@expand-->
+				<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+				<div class="{name} {?getType.isMultiple}" id="{path}">
+					<label>|{display}|</label>
+					<div>{value}</div>
+				</div>
+				<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+				<!--@expand--><!--content-->
+			</fieldset>
+			<!--tabs.included-->
+		</div>
+		<!--tabs.included?-->
+
+		<!--@propertiesOutOfTabs?-->
+		<fieldset class="outoftabs">
+			<!--@propertiesOutOfTabs--><!--@expand-->
+			<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+			<div class="{name} {?getType.isMultiple}" id="{path}">
+				<label>|{display}|</label>
+				<div>{value}</div>
+			</div>
+			<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+			<!--@expand--><!--@propertiesOutOfTabs-->
+		</fieldset>
+		<!--@propertiesOutOfTabs?-->
+
+		<!--tabs._middle-->
+		<fieldset class="middle">
+			<!--content--><!--@expand-->
+			<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+			<div class="{name} {?getType.isMultiple}" id="{path}">
+				<label>|{display}|</label>
+				<div>{value}</div>
+			</div>
+			<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+			<!--@expand--><!--content-->
+		</fieldset>
+		<!--tabs._middle-->
+
+		<!--tabs._bottom-->
+		<fieldset class="bottom">
+			<!--content--><!--@expand-->
+			<!--@startingBlocks--><fieldset class="{.} block"><legend>|{.}|</legend><!--@startingBlocks-->
+			<div class="{name} {?getType.isMultiple}" id="{path}">
+				<label>|{display}|</label>
+				<div>{value}</div>
+			</div>
+			<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
+			<!--@expand--><!--content-->
+		</fieldset>
+		<!--tabs._bottom-->
+	</fieldset>
+
+</section>
+
+<!--END-->
+</body>
+</html>

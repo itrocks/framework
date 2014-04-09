@@ -1,0 +1,42 @@
+<?php
+namespace SAF\Framework\Sql\Builder;
+
+use SAF\Framework\Reflection\Reflection_Property;
+
+/**
+ * SQL delete queries builder for a mapped object
+ */
+class Map_Delete
+{
+
+	//------------------------------------------------------------------------------------- $property
+	/**
+	 * @var Reflection_Property
+	 */
+	private $property;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $property Reflection_Property
+	 */
+	public function __construct(Reflection_Property $property)
+	{
+		$this->property = $property;
+	}
+
+	//------------------------------------------------------------------------------------ buildQuery
+	/**
+	 * @param $object         object
+	 * @param $foreign_object object
+	 * @return string
+	 */
+	public function buildQuery($object, $foreign_object)
+	{
+		list($table, $field1, $field2, $id1, $id2) = Map::sqlElementsOf(
+			$object, $this->property, $foreign_object
+		);
+		return 'DELETE FROM ' . BQ . $table . BQ
+			. ' WHERE ' . BQ . $field1 . BQ . ' = ' . $id1 . ' AND ' . BQ . $field2 . BQ . ' = ' . $id2;
+	}
+
+}

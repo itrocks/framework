@@ -11,12 +11,12 @@ class User_Disconnect_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param Controller_Parameters $parameters
+	 * @param Parameters $parameters
 	 * @param array                 $form
 	 * @param array                 $files
 	 * @return mixed
 	 */
-	public function run(Controller_Parameters $parameters, $form, $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$parameters = $parameters->getObjects();
 		$current_user = User::current();

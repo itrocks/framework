@@ -2,7 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\AOP;
-use SAF\PHP\Compiler;
+use SAF\Framework\PHP\Compiler;
 
 $config['framework'] = [
 
@@ -42,7 +42,7 @@ $config['framework'] = [
 	//---------------------------------------------------------------------------------------- normal
 	'normal'  => [
 		Dao::class => [
-			'class'    => Mysql_Link::class,
+			'class'    => Mysql::class,
 			'host'     => 'localhost',
 			'login'    => 'saf',
 			'password' => 'saf'

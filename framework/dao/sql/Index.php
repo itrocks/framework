@@ -1,0 +1,30 @@
+<?php
+namespace SAF\Framework\Dao\Sql;
+
+/**
+ * A common interface for Dao index object representation
+ */
+interface Index
+{
+
+	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return string
+	 */
+	public function getName();
+
+	//--------------------------------------------------------------------------------------- getKeys
+	/**
+	 * @return Key[]
+	 */
+	public function getKeys();
+
+	//----------------------------------------------------------------------------------------- toSql
+	/**
+	 * Gets the SQL version of the column definition
+	 *
+	 * @returns String
+	 */
+	public function toSql();
+
+}

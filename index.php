@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\AOP\Include_Filter;
+use SAF\Framework\Controller\Main;
 use SAF\Plugins;
 
 // php settings
@@ -32,7 +33,7 @@ Include_Filter::register();
 include_once Include_Filter::file('framework/core/controllers/Main_Controller.php');
 
 // run
-echo (new Main_Controller())
+echo (new Main())
 	->init([
 		'framework/components/html_session/Html_Session.php'
 	])

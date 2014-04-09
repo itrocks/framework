@@ -9,13 +9,13 @@ class User_Register_Controller implements Feature_Controller
 
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
-	 * @param $parameters Controller_Parameters
+	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
 	protected function getViewParameters(
-		Controller_Parameters $parameters,
+		Parameters $parameters,
 		/** @noinspection PhpUnusedParameterInspection */ $form,
 		$class_name
 	) {
@@ -30,12 +30,12 @@ class User_Register_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param $parameters Controller_Parameters
+	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Controller_Parameters $parameters, $form, $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$class_name = User::class;
 		$current = User::current();

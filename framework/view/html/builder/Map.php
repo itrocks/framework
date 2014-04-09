@@ -1,0 +1,130 @@
+<?php
+namespace SAF\Framework\View\Html\Builder;
+
+use SAF\Framework\Loc;
+use SAF\Framework\Mapper;
+use SAF\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Tools\Names;
+use SAF\Framework\View\Html\Dom\Table;
+use SAF\Framework\View\Html\Dom\Table\Body;
+use SAF\Framework\View\Html\Dom\Table\Head;
+use SAF\Framework\View\Html\Dom\Table\Header_Cell;
+use SAF\Framework\View\Html\Dom\Table\Row;
+use SAF\Framework\View\Html\Dom\Table\Standard_Cell;
+
+/**
+ * Takes a map of objects and builds HTML code using their data
+ */
+class Map
+{
+
+	//----------------------------------------------------------------------------------- $class_name
+	/**
+	 * @var string
+	 */
+	protected $class_name;
+
+	//------------------------------------------------------------------------------------------ $map
+	/**
+	 * @var object[]
+	 */
+	protected $map;
+
+	//----------------------------------------------------------------------------------- $properties
+	/**
+	 * @var Reflection_Property[]
+	 */
+	protected $properties;
+
+	//------------------------------------------------------------------------------------- $property
+	/**
+	 * @var Reflection_Property
+	 */
+	protected $property;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $property Reflection_Property
+	 * @param $map      object[]
+	 */
+	public function __construct(Reflection_Property $property, $map)
+	{
+		$this->property = $property;
+		$this->map = $map;
+		$this->class_name = $this->property->getType()->getElementTypeAsString();
+		$class = new Reflection_Class($this->class_name);
+		/** @var $representative Representative_Annotation */
+		$representative = $class->getListAnnotation('representative');
+		$this->properties = $representative->getProperties();
+	}
+
+	//----------------------------------------------------------------------------------------- build
+	/**
+	 * @return Table
+	 */
+	public function build()
+	{
+		(new Mapper\Map($this->map))->sort();
+		$table = new Table();
+		$table->addClass('map');
+		$table->body = $this->buildBody();
+		return $table;
+	}
+
+	//------------------------------------------------------------------------------------- buildBody
+	/**
+	 * @return Body
+	 */
+	protected function buildBody()
+	{
+		$body = new Body();
+		foreach ($this->map as $object) {
+			$body->addRow($this->buildRow($object));
+		}
+		return $body;
+	}
+
+	//------------------------------------------------------------------------------------- buildCell
+	/**
+	 * @param $object object
+	 * @return Standard_Cell
+	 */
+	protected function buildCell($object)
+	{
+		return new Standard_Cell(strval($object));
+	}
+
+	//------------------------------------------------------------------------------------- buildHead
+	/**
+	 * @return Head
+	 */
+	protected function buildHead()
+	{
+		$head = new Head();
+		$row = new Row();
+		foreach ($this->properties as $property) {
+			$cell = new Header_Cell(Loc::tr(
+				Names::propertyToDisplay($property->getAnnotation('alias')->value),
+				$this->class_name
+			));
+			$row->addCell($cell);
+		}
+		$head->addRow($row);
+		return $head;
+	}
+
+	//-------------------------------------------------------------------------------------- buildRow
+	/**
+	 * @param $object object
+	 * @return Row
+	 */
+	protected function buildRow($object)
+	{
+		$row = new Row();
+		$row->addCell($this->buildCell($object));
+		return $row;
+	}
+
+}

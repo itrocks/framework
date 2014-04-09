@@ -1,6 +1,12 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Dao\Data_Link;
+use SAF\Framework\Dao\Data_Link\Identifier_Map;
+use SAF\Framework\Dao\Data_Link\Transactional;
+use SAF\Framework\Dao\Option;
+use SAF\Framework\Tools\Current;
+use SAF\Framework\Tools\List_Data;
 use SAF\Plugins;
 
 /**
@@ -42,12 +48,12 @@ class Dao implements Plugins\Configurable
 	 * Begin a transaction with the current data link (non-transactional SQL engines will do nothing and return null)
 	 *
 	 * @return boolean|null true if begin succeeds, false if error, null if not a transactional SQL engine
-	 * @see Transactional_Data_Link::begin()
+	 * @see Transactional::begin()
 	 */
 	public static function begin()
 	{
 		$current = self::current();
-		if ($current instanceof Transactional_Data_Link) {
+		if ($current instanceof Transactional) {
 			return $current->begin();
 		}
 		else {
@@ -72,12 +78,12 @@ class Dao implements Plugins\Configurable
 	 * Commit a transaction using the current data link (non-transactional SQL engines will do nothing and return null)
 	 *
 	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL engine
-	 * @see Transactional_Data_Link::commit()
+	 * @see Transactional::commit()
 	 */
 	public static function commit()
 	{
 		$current = self::current();
-		if ($current instanceof Transactional_Data_Link) {
+		if ($current instanceof Transactional) {
 			return $current->commit();
 		}
 		else {
@@ -164,7 +170,7 @@ class Dao implements Plugins\Configurable
 	public static function getObjectIdentifier($object, $property_name = null)
 	{
 		$data_link = self::current();
-		return ($data_link instanceof Identifier_Map_Data_Link)
+		return ($data_link instanceof Identifier_Map)
 			? $data_link->getObjectIdentifier($object, $property_name)
 			: null;
 	}
@@ -172,11 +178,11 @@ class Dao implements Plugins\Configurable
 	//--------------------------------------------------------------------------------------- groupBy
 	/**
 	 * @param $properties string[]|string
-	 * @return Dao_Group_By_Option
+	 * @return Option\Group_By
 	 */
 	public static function groupBy($properties)
 	{
-		return new Dao_Group_By_Option($properties);
+		return new Option\Group_By($properties);
 	}
 
 	//------------------------------------------------------------------------------------------- key
@@ -185,11 +191,11 @@ class Dao implements Plugins\Configurable
 	 * or Dao::search() results
 	 *
 	 * @param $property_name string
-	 * @return Dao_Key_Option;
+	 * @return Option\Key;
 	 */
 	public static function key($property_name)
 	{
-		return new Dao_Key_Option($property_name);
+		return new Option\Key($property_name);
 	}
 
 	//----------------------------------------------------------------------------------------- limit
@@ -205,11 +211,11 @@ class Dao implements Plugins\Configurable
 	 * @param $from  integer The offset of the first object to return
 	 * (or the maximum number of objects to return if $count is null)
 	 * @param $count integer The maximum number of objects to return
-	 * @return Dao_Limit_Option
+	 * @return Option\Limit
 	 */
 	public static function limit($from = null, $count = null)
 	{
-		return new Dao_Limit_Option($from, $count);
+		return new Option\Limit($from, $count);
 	}
 
 	//------------------------------------------------------------------------------------------ only
@@ -221,11 +227,11 @@ class Dao implements Plugins\Configurable
 	 *
 	 * @param $properties string[]|string
 	 * @param $properties,... string[]|string
-	 * @return Dao_Only_Option
+	 * @return Option\Only
 	 */
 	public static function only($properties)
 	{
-		return new Dao_Only_Option($properties);
+		return new Option\Only($properties);
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -247,11 +253,11 @@ class Dao implements Plugins\Configurable
 	 * Read all objects of a given class from current data link
 	 *
 	 * @param $class_name string class name of read objects
-	 * @param $options    Dao_Option|Dao_Option[] some options for advanced read
+	 * @param $options    Option[] some options for advanced read
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::readAll()
 	 */
-	public static function readAll($class_name, $options = null)
+	public static function readAll($class_name, $options = [])
 	{
 		return self::current()->readAll($class_name, $options);
 	}
@@ -306,12 +312,12 @@ class Dao implements Plugins\Configurable
 	 * Rollback a transaction with the current data link (non-transactional SQL engines will do nothing and return null)
 	 *
 	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL engine
-	 * @see Transactional_Data_Link::rollback()
+	 * @see Transactional::rollback()
 	 */
 	public static function rollback()
 	{
 		$current = self::current();
-		if ($current instanceof Transactional_Data_Link) {
+		if ($current instanceof Transactional) {
 			return $current->rollback();
 		}
 		else {
@@ -329,11 +335,11 @@ class Dao implements Plugins\Configurable
 	 *
 	 * @param $what       object|array source object for filter, only set properties will be used for search
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
-	 * @param $options    Dao_Option|Dao_Option[] some options for advanced search
+	 * @param $options    Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::search()
 	 */
-	public static function search($what, $class_name = null, $options = null)
+	public static function search($what, $class_name = null, $options = [])
 	{
 		return self::current()->search($what, $class_name, $options);
 	}
@@ -363,10 +369,10 @@ class Dao implements Plugins\Configurable
 	 * @param $class         string class for the read object
 	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use 'column.sub_column' to get values from linked objects from the same data source.
 	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options       Dao_Option|Dao_Option[] some options for advanced search
+	 * @param $options       Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
-	public static function select($class, $columns, $filter_object = null, $options = null)
+	public static function select($class, $columns, $filter_object = null, $options = [])
 	{
 		return self::current()->select($class, $columns, $filter_object, $options);
 	}
@@ -395,11 +401,11 @@ class Dao implements Plugins\Configurable
 	 *
 	 * @param $columns string|string[] A single or several column names.
 	 * If null, the value of annotations 'sort' or 'representative' will be taken as defaults.
-	 * @return Dao_Sort_Option
+	 * @return Option\Sort
 	 */
 	public static function sort($columns = null)
 	{
-		return new Dao_Sort_Option($columns);
+		return new Option\Sort($columns);
 	}
 
 	//----------------------------------------------------------------------------------- storeNameOf
@@ -423,7 +429,7 @@ class Dao implements Plugins\Configurable
 	 * record will be written into data source using this object's data.
 	 *
 	 * @param $object  object object to write into data source
-	 * @param $options Dao_Option[]|Dao_Option some options for advanced write
+	 * @param $options Option[] some options for advanced write
 	 * @return object the written object
 	 * @see Data_Link::write()
 	 */

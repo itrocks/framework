@@ -12,12 +12,12 @@ class User_Widget_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param $parameters Controller_Parameters
+	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Controller_Parameters $parameters, $form, $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$parameters = $parameters->getObjects();
 		if ($user = User::current()) {

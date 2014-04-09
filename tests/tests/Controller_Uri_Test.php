@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Tests\Tests;
 
-use SAF\Framework\Controller_Parameters;
+use SAF\Framework\Parameters;
 use SAF\Framework\Controller_Uri;
 use SAF\Framework\Names;
 use SAF\Framework\Tab;
@@ -32,7 +32,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => Tab::class,
 				'feature_name' => 'remove',
-				'parameters' => (new Controller_Parameters())->addValue(Names::classToSet(Order::class))
+				'parameters' => (new Parameters())->addValue(Names::classToSet(Order::class))
 					->addValue('list')->addValue('date')->addValue('number')->set('as_widget', 1)
 					->set('_', 2)->getRawParameters()
 			]
@@ -53,7 +53,7 @@ class Controller_Uri_Test extends Unit_Test
 				[
 						'controller_name' => Order::class,
 						'feature_name' => 'output',
-						'parameters' => (new Controller_Parameters())->set('Order', 1)->getRawParameters()
+						'parameters' => (new Parameters())->set('Order', 1)->getRawParameters()
 				]
 		);
 	}
@@ -72,7 +72,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => 'Orders',
 				'feature_name' => 'list',
-				'parameters' => (new Controller_Parameters())->getRawParameters()
+				'parameters' => (new Parameters())->getRawParameters()
 			]
 		);
 	}
@@ -91,7 +91,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => Order::class,
 				'feature_name' => 'output',
-				'parameters' => (new Controller_Parameters())->set('Order', 1)->getRawParameters()
+				'parameters' => (new Parameters())->set('Order', 1)->getRawParameters()
 			]
 		);
 	}
@@ -110,7 +110,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => 'Orders',
 				'feature_name' => 'listRemove',
-				'parameters' => (new Controller_Parameters())->addValue('date')->getRawParameters()
+				'parameters' => (new Parameters())->addValue('date')->getRawParameters()
 			]
 		);
 	}
@@ -129,7 +129,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => 'Orders',
 				'feature_name' => 'listRemove',
-				'parameters' => (new Controller_Parameters())->addValue('date')->addValue('number')
+				'parameters' => (new Parameters())->addValue('date')->addValue('number')
 					->getRawParameters()
 			]
 		);
@@ -151,7 +151,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => 'Orders',
 				'feature_name' => 'listRemove',
-				'parameters' => (new Controller_Parameters())->addValue('date')->addValue('number')
+				'parameters' => (new Parameters())->addValue('date')->addValue('number')
 					->set('as_widget', 1)->set('_', 2)->getRawParameters()
 			]
 		);
@@ -173,7 +173,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name' => 'drop',
-				'parameters' => (new Controller_Parameters())->set('Order', 1)->addValue('output')
+				'parameters' => (new Parameters())->set('Order', 1)->addValue('output')
 					->addValue('date')->addValue('number')->set('as_widget', 1)->set('_', 2)
 					->getRawParameters()
 			]
@@ -194,7 +194,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name' => 'drop',
-				'parameters' => (new Controller_Parameters())->addValue('Orders')->addValue('list')
+				'parameters' => (new Parameters())->addValue('Orders')->addValue('list')
 					->addValue('date')->addValue('number')->getRawParameters()
 			]
 		);
@@ -216,7 +216,7 @@ class Controller_Uri_Test extends Unit_Test
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name' => 'drop',
-				'parameters' => (new Controller_Parameters())->addValue('Orders')->addValue('list')
+				'parameters' => (new Parameters())->addValue('Orders')->addValue('list')
 					->addValue('date')->addValue('number')->set('as_widget', 1)->set('_', 2)
 					->getRawParameters()
 			]

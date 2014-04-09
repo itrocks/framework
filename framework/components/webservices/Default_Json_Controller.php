@@ -11,13 +11,13 @@ class Default_Json_Controller implements Default_Feature_Controller
 	/**
 	 * Run the default json controller
 	 *
-	 * @param $parameters Controller_Parameters
+	 * @param $parameters Parameters
 	 * @param $form array
 	 * @param $files array
 	 * @param $class_name string
 	 * @return string
 	 */
-	public function run(Controller_Parameters $parameters, $form, $files, $class_name)
+	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $parameters->getObjects();
 		// read all objects corresponding to class name

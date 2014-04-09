@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Namespaces;
+
 /**
  * The class for the global application object
  *
