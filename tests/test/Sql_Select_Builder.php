@@ -1,27 +1,27 @@
 <?php
 namespace SAF\Tests\Test;
 
-use SAF\Framework\Search_Object;
-use SAF\Framework\Sql_Select_Builder;
-use SAF\Framework\Unit_Tests\Unit_Test;
-use SAF\Tests\Client;
-use SAF\Tests\Item;
-use SAF\Tests\Order;
-use SAF\Tests\Order_Line;
-use SAF\Tests\Quote;
-use SAF\Tests\Quote_Salesman;
-use SAF\Tests\Quote_Salesman_Additional;
+use SAF\Framework\Mapper\Search_Object;
+use SAF\Framework\Sql\Builder\Select;
+use SAF\Framework\Test;
+use SAF\Tests\Objects\Client;
+use SAF\Tests\Objects\Item;
+use SAF\Tests\Objects\Order;
+use SAF\Tests\Objects\Order_Line;
+use SAF\Tests\Objects\Quote;
+use SAF\Tests\Objects\Quote_Salesman;
+use SAF\Tests\Objects\Quote_Salesman_Additional;
 
 /**
  * Sql select builder tests
  */
-class Sql_Select_Builder extends Unit_Test
+class Sql_Select_Builder extends Test
 {
 
 	//--------------------------------------------------------------------------- testArrayWhereQuery
 	public function testArrayWhereQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1, 'lines' => [['number' => 2]]]
@@ -37,7 +37,7 @@ class Sql_Select_Builder extends Unit_Test
 	//--------------------------------------------------------------------------- testArrayWhereQuery
 	public function testArrayWhereDeepQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1, 'lines' => [['number' => 2, 'item' => ['code' => 1]]]]
@@ -55,7 +55,7 @@ class Sql_Select_Builder extends Unit_Test
 	{
 		$item = new Item();
 		$item->code = 1;
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1, 'lines' => [['number' => 2, 'item' => $item]]]
@@ -71,7 +71,7 @@ class Sql_Select_Builder extends Unit_Test
 	//--------------------------------------------------------------------------- testArrayWhereQuery
 	public function testArrayWhereDeepQueryShort()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1, 'lines' => ['number' => 2, 'item' => ['code' => 1]]]
@@ -87,7 +87,7 @@ class Sql_Select_Builder extends Unit_Test
 	//-------------------------------------------------------------------------- testArrayWhereQuery2
 	public function testArrayWhereDeepQuery2()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1, 'lines' => [['number' => 2, 'item' => ['code' => 1, 'cross_selling' => [['code' => 3]]]]]]
@@ -103,7 +103,7 @@ class Sql_Select_Builder extends Unit_Test
 	//-------------------------------------------------------------------------- testArrayWhereQuery2
 	public function testArrayWhereDeepQuery2Short()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1, 'lines' => ['number' => 2, 'item' => ['code' => 1, 'cross_selling' => ['code' => 3]]]]
@@ -119,7 +119,7 @@ class Sql_Select_Builder extends Unit_Test
 	//----------------------------------------------------------------------- testCollectionJoinQuery
 	public function testCollectionJoinQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number', 'lines.number', 'lines.quantity']
 		);
@@ -134,7 +134,7 @@ class Sql_Select_Builder extends Unit_Test
 	//-------------------------------------------------------------------------- testComplexJoinQuery
 	public function testComplexJoinQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['number', 'client.number', 'client.client.number', 'client.name']
 		);
@@ -149,7 +149,7 @@ class Sql_Select_Builder extends Unit_Test
 	//------------------------------------------------------------------------ testComplexObjectQuery
 	public function testComplexObjectQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Client::class,
 			['number', 'name', 'Order_Line->client.order']
 		);
@@ -164,7 +164,7 @@ class Sql_Select_Builder extends Unit_Test
 	//--------------------------------------------------------------------------------- testJoinQuery
 	public function testJoinQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order_Line::class,
 			['order.date', 'order.number', 'number', 'quantity']
 		);
@@ -179,7 +179,7 @@ class Sql_Select_Builder extends Unit_Test
 	//-------------------------------------------------------------------------- testLinkedClassQuery
 	public function testLinkedClassQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Quote_Salesman::class,
 			['name', 'percentage'],
 			['name' => 'Robert', 'percentage' => 100]
@@ -196,7 +196,7 @@ class Sql_Select_Builder extends Unit_Test
 	//------------------------------------------------------------- testLinkedClassQueryWithTwoLevels
 	public function testLinkedClassQueryWithTwoLevels()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Quote_Salesman_Additional::class,
 			['name', 'percentage', 'additional_text'],
 			['name' => 'Robert', 'percentage' => 100]
@@ -215,7 +215,7 @@ class Sql_Select_Builder extends Unit_Test
 	//-------------------------------------------------------------------- testLinkedClassSelectQuery
 	public function testLinkedClassSelectQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Quote::class,
 			['number', 'salesmen.name', 'salesmen.percentage']
 		);
@@ -230,7 +230,7 @@ class Sql_Select_Builder extends Unit_Test
 	//--------------------------------------------------------------------------------- testLinkQuery
 	public function testLinkQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number', 'salesmen.name']
 		);
@@ -245,7 +245,7 @@ class Sql_Select_Builder extends Unit_Test
 	//------------------------------------------------------------------------- testObjectObjectQuery
 	public function testObjectQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order_Line::class,
 			['number', 'quantity', 'order']
 		);
@@ -260,7 +260,7 @@ class Sql_Select_Builder extends Unit_Test
 	//-------------------------------------------------------------------------- testReverseJoinQuery
 	public function testReverseJoinQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number', 'Order_Line->order.number', 'Order_Line->order.quantity']
 		);
@@ -275,7 +275,7 @@ class Sql_Select_Builder extends Unit_Test
 	//------------------------------------------------------------------------------- testSimpleQuery
 	public function testSimpleQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number']
 		);
@@ -292,7 +292,7 @@ class Sql_Select_Builder extends Unit_Test
 	{
 		$client = Search_Object::create(Client::class);
 		$client->number = 1;
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number', 'lines'],
 			['OR' => ['lines.client.number' => $client->number, 'number' => 2]]
@@ -308,7 +308,7 @@ class Sql_Select_Builder extends Unit_Test
 	//---------------------------------------------------------------------------- testWhereDeepQuery
 	public function testWhereDeepQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1, 'lines.number' => 2]
@@ -329,7 +329,7 @@ class Sql_Select_Builder extends Unit_Test
 		$client->number = 1;
 		$client->name = 'Roger%';
 		$properties = ['number', 'name', 'client'];
-		$builder = new Sql_Select_Builder(Client::class, $properties, $client);
+		$builder = new Select(Client::class, $properties, $client);
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
@@ -343,7 +343,7 @@ class Sql_Select_Builder extends Unit_Test
 	{
 		$client = Search_Object::create(Client::class);
 		$client->number = 1;
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number', 'lines'],
 			['lines.client' => $client, 'number' => 2]
@@ -359,7 +359,7 @@ class Sql_Select_Builder extends Unit_Test
 	//-------------------------------------------------------------------------------- testWhereQuery
 	public function testWhereQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1]
@@ -375,7 +375,7 @@ class Sql_Select_Builder extends Unit_Test
 	//--------------------------------------------------------------------- testWhereReverseJoinQuery
 	public function testWhereReverseJoinQuery()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			['date', 'number', 'Order_Line->order.number', 'Order_Line->order.quantity'],
 			['Order_Line->order.number' => '2']

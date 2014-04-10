@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Widget;
 
+use SAF\Framework\Dao;
+
 /**
  * Delete and replace
  */

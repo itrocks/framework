@@ -5,6 +5,8 @@ namespace SAF\Framework\RAD;
  * Application
  *
  * A set of modules, that can get modules from a parent application
+ *
+ * @todo Everything
  */
 class Application
 {
@@ -23,7 +25,7 @@ class Application
 
 	//-------------------------------------------------------------------------------------- $modules
 	/**
-	 * @var Module[]
+	 * @var //Module[]
 	 */
 	public $modules;
 

@@ -2,7 +2,7 @@
 namespace SAF\Framework\Setting\Module;
 
 use SAF\Framework\Mapper\Component;
-use SAF\Framework\Setting\Setting;
+use SAF\Framework\Setting;
 use SAF\Framework\User;
 
 /**

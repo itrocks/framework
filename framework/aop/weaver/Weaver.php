@@ -1,9 +1,9 @@
 <?php
-namespace SAF\AOP;
+namespace SAF\Framework\AOP;
 
-use SAF\AOP\Weaver\Handler;
-use SAF\AOP\Weaver\IHandler;
-use SAF\AOP\Weaver\IWeaver;
+use SAF\Framework\AOP\Weaver\Handler;
+use SAF\Framework\AOP\Weaver\IHandler;
+use SAF\Framework\AOP\Weaver\IWeaver;
 use SAF\Framework\Session;
 
 /**

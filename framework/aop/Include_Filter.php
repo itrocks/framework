@@ -1,5 +1,5 @@
 <?php
-namespace SAF\AOP;
+namespace SAF\Framework\AOP;
 
 use php_user_filter;
 

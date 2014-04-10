@@ -1,9 +1,9 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\AOP\Include_Filter;
+use SAF\Framework\AOP\Include_Filter;
 use SAF\Framework\Controller\Main;
-use SAF\Plugins;
+use SAF\Framework\Plugin\Manager;
 
 // php settings
 error_reporting(E_ALL);
@@ -27,19 +27,17 @@ touch('update');
 if (!isset($_SERVER['PATH_INFO'])) $_SERVER['PATH_INFO'] = '/';
 
 // enable AOP cache files : includes must all use this filter
-include_once 'framework/core/aop/Include_Filter.php';
+include_once 'framework/aop/Include_Filter.php';
 Include_Filter::register();
 /** @noinspection PhpIncludeInspection */
-include_once Include_Filter::file('framework/core/controllers/Main_Controller.php');
+include_once Include_Filter::file('framework/controller/Main.php');
 
 // run
 echo (new Main())
-	->init([
-		'framework/components/html_session/Html_Session.php'
-	])
+	->init(['framework/Html_Session.php'])
 	->addTopCorePlugins([
-		new Plugins\Manager(),
-		new Html_Session([ 'use_cookie' => true ])
+		new Manager(),
+		new Html_Session(['use_cookie' => true])
 	])
 	->run($_SERVER['PATH_INFO'], $_GET, $_POST, $_FILES);
 

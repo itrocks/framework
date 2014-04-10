@@ -2,16 +2,16 @@
 namespace SAF\Tests\Test;
 
 use ReflectionException;
-use SAF\Framework\Reflection_Class;
-use SAF\Framework\Reflection_Property;
-use SAF\Framework\Unit_Tests\Unit_Test;
-use SAF\Tests\Document;
-use SAF\Tests\Order;
+use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Test;
+use SAF\Tests\Objects\Document;
+use SAF\Tests\Objects\Order;
 
 /**
  * Reflection tests
  */
-class Reflection extends Unit_Test
+class Reflection extends Test
 {
 
 	//----------------------------------------------------------------------- testAccessProperties

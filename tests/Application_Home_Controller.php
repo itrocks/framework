@@ -1,9 +1,9 @@
 <?php
 namespace SAF\Tests;
 
-use SAF\Framework\Parameters;
-use SAF\Framework\Feature_Controller;
-use SAF\Framework\Main_Controller;
+use SAF\Framework\Controller\Feature_Controller;
+use SAF\Framework\Controller\Main;
+use SAF\Framework\Controller\Parameters;
 
 /**
  * The home page runs the tests
@@ -20,7 +20,7 @@ class Application_Home_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		return (new Main_Controller())->runController('/Tests/run');
+		return (new Main())->runController('/Tests/run');
 	}
 
 }

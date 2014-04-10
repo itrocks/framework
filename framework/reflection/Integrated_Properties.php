@@ -2,9 +2,9 @@
 namespace SAF\Framework\Reflection;
 
 use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Annotation\Integrated_Annotation;
+use SAF\Framework\Reflection\Annotation\Property\Integrated_Annotation;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Annotation\User_Annotation;
 
 /**
  * Integrated properties toolbox, used to expand properties list when @integrated annotation is used

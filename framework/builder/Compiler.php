@@ -2,9 +2,8 @@
 namespace SAF\Framework\Builder;
 
 use SAF\Framework\Builder;
-use SAF\Framework\Class_Builder;
-use SAF\Framework\Main_Controller;
-use SAF\Framework\Needs_Main_Controller;
+use SAF\Framework\Controller\Main;
+use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\PHP;
 use SAF\Framework\PHP\ICompiler;
 use SAF\Framework\PHP\Reflection_Source;
@@ -12,12 +11,12 @@ use SAF\Framework\PHP\Reflection_Source;
 /**
  * Built classes compiler
  */
-class Compiler implements ICompiler, Needs_Main_Controller
+class Compiler implements ICompiler, Needs_Main
 {
 
 	//------------------------------------------------------------------------------ $main_controller
 	/**
-	 * @var $main_Controller Main_Controller
+	 * @var $main_Controller Main
 	 */
 	private $main_controller;
 
@@ -74,9 +73,9 @@ class Compiler implements ICompiler, Needs_Main_Controller
 
 	//----------------------------------------------------------------------------- setMainController
 	/**
-	 * @param $main_controller Main_Controller
+	 * @param $main_controller Main
 	 */
-	public function setMainController(Main_Controller $main_controller)
+	public function setMainController(Main $main_controller)
 	{
 		$this->main_controller = $main_controller;
 	}

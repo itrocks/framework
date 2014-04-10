@@ -2,12 +2,13 @@
 namespace SAF\Framework\Debug;
 
 use SAF\Framework\Controller\Main;
-use SAF\Plugins;
+use SAF\Framework\Plugin\Register;
+use SAF\Framework\Plugin\Registerable;
 
 /**
  * The Xdebug plugin disable XDEBUG_SESSION_START and KEY get vars to avoid side effects
  */
-class Xdebug implements Plugins\Registerable
+class Xdebug implements Registerable
 {
 
 	//--------------------------------------------------------------------------------------- cleanup
@@ -25,9 +26,9 @@ class Xdebug implements Plugins\Registerable
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param Plugins\Register $register
+	 * @param Register $register
 	 */
-	public function register(Plugins\Register $register)
+	public function register(Register $register)
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod([Main::class, 'runController'], [__CLASS__, 'cleanup']);

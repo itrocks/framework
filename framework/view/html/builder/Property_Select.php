@@ -2,6 +2,7 @@
 namespace SAF\Framework\View\Html\Builder;
 
 use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\View\Html\Dom\Select;
 
 /**
  * HTML builder property select

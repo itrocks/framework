@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Plugin;
 
-use SAF\AOP\Weaver\IWeaver;
+use SAF\Framework\AOP\Weaver\IWeaver;
 
 /**
  * Plugin register structure

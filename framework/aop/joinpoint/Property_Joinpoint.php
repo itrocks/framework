@@ -1,7 +1,7 @@
 <?php
-namespace SAF\AOP\Joinpoint;
+namespace SAF\Framework\AOP\Joinpoint;
 
-use SAF\AOP\Joinpoint;
+use SAF\Framework\AOP\Joinpoint;
 use SAF\Framework\Reflection\Reflection_Property;
 
 /**

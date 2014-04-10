@@ -2,11 +2,17 @@
 namespace SAF\Framework\PHP;
 
 use SAF\Framework\Application;
-use SAF\Framework\Application_Updater;
+use SAF\Framework\Controller\Main;
+use SAF\Framework\Controller\Needs_Main;
+use SAF\Framework\Dao\Set;
+use SAF\Framework\Plugin\Configurable;
+use SAF\Framework\Plugin\Register;
+use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Router;
 use SAF\Framework\Session;
-use SAF\Framework\Updatable;
-use SAF\Plugins;
+use SAF\Framework\Tools\Files;
+use SAF\Framework\Updater\Application_Updater;
+use SAF\Framework\Updater\Updatable;
 use Serializable;
 
 /**
@@ -15,8 +21,7 @@ use Serializable;
  * This has heavy dependencies to the SAF Framework, and can't be used without it at the moment
  */
 class Compiler
-	implements Plugins\Configurable, Plugins\Registerable,
-		Class_File_Name_Getter, Needs_Main_Controller, Serializable, Updatable
+	implements Configurable, Registerable, Class_File_Name_Getter, Needs_Main, Serializable, Updatable
 {
 
 	//---------------------------------------------------------------------------- MAX_OPENED_SOURCES
@@ -70,7 +75,7 @@ class Compiler
 	/**
 	 * The main controller that called the compilation process
 	 *
-	 * @var Main_Controller
+	 * @var Main
 	 */
 	public $main_controller;
 
@@ -154,7 +159,7 @@ class Compiler
 			foreach ($this->sources as $source) {
 				/** @var Reflection_Source $source inspector bug */
 				/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-				(new Dao_Set())->replace(
+				(new Set())->replace(
 					$source->getDependencies(true),
 					Dependency::class, ['file_name' => $source->file_name]
 				);
@@ -164,7 +169,7 @@ class Compiler
 			do {
 				$added = false;
 				foreach ($this->compilers as $compiler) {
-					if ($compiler instanceof Needs_Main_Controller) {
+					if ($compiler instanceof Needs_Main) {
 						$compiler->setMainController($this->main_controller);
 					}
 					if ($compiler->moreSourcesToCompile($this->sources)) {
@@ -278,9 +283,9 @@ class Compiler
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugins\Register
+	 * @param $register Register
 	 */
-	public function register(Plugins\Register $register)
+	public function register(Register $register)
 	{
 		/** @var $application_updater Application_Updater */
 		$application_updater = Session::current()->plugins->get(Application_Updater::class);
@@ -302,9 +307,9 @@ class Compiler
 
 	//----------------------------------------------------------------------------- setMainController
 	/**
-	 * @param $main_controller Main_Controller
+	 * @param $main_controller Main
 	 */
-	public function setMainController(Main_Controller $main_controller)
+	public function setMainController(Main $main_controller)
 	{
 		$this->main_controller = $main_controller;
 	}

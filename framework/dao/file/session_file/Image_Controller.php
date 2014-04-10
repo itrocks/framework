@@ -1,9 +1,9 @@
 <?php
 namespace SAF\Framework\Dao\File\Session_File;
 
-use SAF\Framework\Parameters;
+use SAF\Framework\Controller\Feature_Controller;
+use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao\File\Session_File;
-use SAF\Framework\Feature_Controller;
 use SAF\Framework\View;
 
 /**

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Tests;
+namespace SAF\Tests\Objects;
 
 /**
- * A salesman class
+ * A shop class
  */
-class Salesman
+class Shop
 {
 
 	//----------------------------------------------------------------------------------------- $name
@@ -12,6 +12,13 @@ class Salesman
 	 * @var string
 	 */
 	public $name;
+
+	//----------------------------------------------------------------------------------- $categories
+	/**
+	 * @link Map
+	 * @var Category[]
+	 */
+	public $categories;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

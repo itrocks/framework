@@ -4,6 +4,7 @@ namespace SAF\Framework\Setting;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Setting\Module\User_Setting;
+use SAF\Framework\Setting;
 use SAF\Framework\Tools\Namespaces;
 
 /**

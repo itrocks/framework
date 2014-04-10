@@ -5,14 +5,14 @@ use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Data_Link\Identifier_Map;
 use SAF\Framework\Dao\Data_Link\Transactional;
 use SAF\Framework\Dao\Option;
+use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Current;
 use SAF\Framework\Tools\List_Data;
-use SAF\Plugins;
 
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
  */
-class Dao implements Plugins\Configurable
+class Dao implements Configurable
 {
 	use Current { current as private pCurrent; }
 

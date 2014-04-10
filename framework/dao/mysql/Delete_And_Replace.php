@@ -1,10 +1,10 @@
 <?php
 namespace SAF\Framework\Dao\Mysql;
 
-use SAF\Framework\Main_Controller;
+use SAF\Framework\Controller\Main;
+use SAF\Framework\Plugin\Register;
+use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Tools\Contextual_Mysqli;
-use SAF\Plugins;
-use SAF\Plugins\Register;
 
 /**
  * Mysql delete-and-replace feature
@@ -13,7 +13,7 @@ use SAF\Plugins\Register;
  * little HTML form explains the error and proposes to replace the record by another one,
  * selected into a combo-box.
  */
-class Delete_And_Replace implements Plugins\Registerable
+class Delete_And_Replace implements Registerable
 {
 
 	//------------------------------------------------------------------------------------- extractId
@@ -48,7 +48,7 @@ class Delete_And_Replace implements Plugins\Registerable
 			$id = $this->extractId($query);
 			if ($id) {
 				$controller_uri = SL . $object->context . SL . $id . SL . 'deleteAndReplace';
-				echo (new Main_Controller())->runController($controller_uri, ['as_widget' => true]);
+				echo (new Main())->runController($controller_uri, ['as_widget' => true]);
 			}
 		}
 	}

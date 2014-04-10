@@ -4,16 +4,16 @@ namespace SAF\Framework\Dao\Mysql;
 use mysqli;
 use mysqli_result;
 use SAF\Framework\Dao;
+use SAF\Framework\Plugin\Register;
+use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Sql\Builder\Alter_Table;
 use SAF\Framework\Sql\Builder\Create_Table;
 use SAF\Framework\Tools\Contextual_Mysqli;
-use SAF\Plugins;
-
 /**
  * This is an intelligent database maintainer that automatically updates a table structure if there
  * is an error when executing a query.
  */
-class Maintainer implements Plugins\Registerable
+class Maintainer implements Registerable
 {
 
 	//----------------------------------------------------------------------------------- createTable
@@ -54,7 +54,7 @@ class Maintainer implements Plugins\Registerable
 				$table->addIndex($index);
 			}
 		}
-		$mysqli->query((new Table($table))->build());
+		$mysqli->query((new Create_Table($table))->build());
 		return true;
 	}
 
@@ -272,9 +272,9 @@ class Maintainer implements Plugins\Registerable
 	/**
 	 * Registers the Mysql maintainer plugin
 	 *
-	 * @param $register Plugins\Register
+	 * @param $register Register
 	 */
-	public function register(Plugins\Register $register)
+	public function register(Register $register)
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([Contextual_Mysqli::class, 'query'], [$this, 'onMysqliQuery']);

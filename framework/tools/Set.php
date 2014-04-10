@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Reflection\Reflection_Class;
+
 /**
  * The default Set class for set of objects
  */

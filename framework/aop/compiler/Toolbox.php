@@ -1,10 +1,10 @@
 <?php
-namespace SAF\AOP\Compiler;
+namespace SAF\Framework\AOP\Compiler;
 
 use ReflectionFunction;
+use SAF\Framework\Plugin;
 use SAF\Framework\Reflection\Reflection_Function;
 use SAF\Framework\Reflection\Reflection_Method;
-use SAF\Plugins\Plugin;
 
 /**
  * Functions common to all element compilers classes

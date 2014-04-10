@@ -1,8 +1,17 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\AOP;
+use SAF\Framework\AOP;
+use SAF\Framework\AOP\Weaver;
+use SAF\Framework\Builder;
+use SAF\Framework\Dao\Mysql;
+use SAF\Framework\Debug\Xdebug;
+use SAF\Framework\Locale\Html_Translator;
+use SAF\Framework\Locale\Loc;
+use SAF\Framework\Locale\Translation_String_Composer;
 use SAF\Framework\PHP\Compiler;
+use SAF\Framework\Updater\Application_Updater;
+use SAF\Framework\View\Html\Cleaner;
 
 $config['framework'] = [
 
@@ -16,7 +25,7 @@ $config['framework'] = [
 	// here must be only plugins that are needed in 100% scripts, as a lot of them may consume time
 	'core' => [
 		Router::class,     // must be the first core plugins as others plugins need it
-		AOP\Weaver::class, // must be declared before any plugin that uses AOP
+		Weaver::class,     // must be declared before any plugin that uses AOP
 		Builder::class,    // every classes before Builder will not be replaceable
 		Application_Updater::class, // check for update at each script call
 		Xdebug::class               // remove xdebug parameters at each script call
@@ -42,12 +51,12 @@ $config['framework'] = [
 	//---------------------------------------------------------------------------------------- normal
 	'normal'  => [
 		Dao::class => [
-			'class'    => Mysql::class,
+			'class'    => Mysql\Link::class,
 			'host'     => 'localhost',
 			'login'    => 'saf',
 			'password' => 'saf'
 		],
-		Html_Cleaner::class,
+		Cleaner::class,
 		Html_Translator::class,
 		Loc::class,
 		Locale::class => [
@@ -60,7 +69,7 @@ $config['framework'] = [
 				'thousand_separator'    => ',',
 			]
 		],
-		Mysql_Maintainer::class,
+		Mysql\Maintainer::class,
 		Compiler::class => [
 			Router::class,
 			Builder\Compiler::class,
@@ -68,7 +77,7 @@ $config['framework'] = [
 		],
 		Translation_String_Composer::class,
 		View::class => [
-			'class' => Html_View_Engine::class,
+			'class' => View\Html\Engine::class,
 			'css' => 'default'
 		]
 	],

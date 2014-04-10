@@ -39,7 +39,7 @@ class Plugin
 	//----------------------------------------------------------------------------------------- $logo
 	/**
 	 * @link Object
-	 * @var \SAF\Framework\File
+	 * @var \SAF\Framework\Dao\File
 	 */
 	public $logo;
 

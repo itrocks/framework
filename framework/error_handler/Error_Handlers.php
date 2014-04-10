@@ -1,13 +1,14 @@
 <?php
 namespace SAF\Framework\Error_Handler;
 
+use SAF\Framework\Plugin\Activable;
+use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Current;
-use SAF\Plugins;
 
 /**
  * A configurable (with a php array) error handlers collection
  */
-class Error_Handlers implements Plugins\Activable, Plugins\Configurable
+class Error_Handlers implements Activable, Configurable
 {
 	use Current { current as private pCurrent; }
 

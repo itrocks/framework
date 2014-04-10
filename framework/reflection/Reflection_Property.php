@@ -4,7 +4,7 @@ namespace SAF\Framework\Reflection;
 use Exception;
 use ReflectionProperty;
 use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Annotation\Class_\Class_Override_Annotation;
+use SAF\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Field;
 use SAF\Framework\Tools\Names;
@@ -192,12 +192,12 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	/**
 	 * Gets the class @override property doc comment that overrides the original property doc comment
 	 *
-	 * @return Class_Override_Annotation[]
+	 * @return Override_Annotation[]
 	 */
 	private function getOverrideDocComment()
 	{
 		$comment = '';
-		/** @var $annotation Class_Override_Annotation */
+		/** @var $annotation Override_Annotation */
 		foreach (
 			(new Reflection_Class($this->final_class))->getListAnnotations('override') as $annotation
 		) {

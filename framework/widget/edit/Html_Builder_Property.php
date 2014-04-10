@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Edit;
 
-use SAF\Framework\Reflection\Annotation\User_Annotation;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Password;

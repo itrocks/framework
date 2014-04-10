@@ -2,12 +2,13 @@
 namespace SAF\Framework\Debug;
 
 use SAF\Framework\Controller\Main;
-use SAF\Plugins;
+use SAF\Framework\Plugin\Register;
+use SAF\Framework\Plugin\Registerable;
 
 /**
  * An execution timer plugin, to enable the execution duration info on document's foot
  */
-class Execution_Timer implements Plugins\Registerable
+class Execution_Timer implements Registerable
 {
 
 	//----------------------------------------------------------------------------------- $start_time
@@ -64,9 +65,9 @@ class Execution_Timer implements Plugins\Registerable
 	/**
 	 * Reset execution timer counter and register to timer end and result display
 	 *
-	 * @param $register Plugins\Register
+	 * @param $register Register
 	 */
-	public function register(Plugins\Register $register)
+	public function register(Register $register)
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([Main::class, 'runController'], [$this, 'afterMainControllerRunController']);

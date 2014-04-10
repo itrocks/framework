@@ -1,5 +1,5 @@
 <?php
-namespace SAF\AOP\Compiler;
+namespace SAF\Framework\AOP\Compiler;
 
 use SAF\Framework\Reflection\Reflection_Parameter;
 use SAF\Framework\PHP\Reflection_Class;
@@ -159,19 +159,19 @@ class Method
 					$joinpoint_parameters_string .= $joinpoint_string_parameters . ']';
 					switch ($type) {
 						case 'after':
-							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\After_Method('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\Framework\AOP\After_Method('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', $result_, ' . $advice_string
 								. $i2 . ');';
 							break;
 						case 'around':
 							$process_callback = $method_name . '_' . $count;
-							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\Around_Method('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\Framework\AOP\Around_Method('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string
 								. ', ' . $advice_string . ', ' . Q . $process_callback . Q
 								. $i2 . ');';
 							break;
 						case 'before':
-							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\AOP\Before_Method('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\Framework\AOP\Before_Method('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', ' . $advice_string
 								. $i2 . ');';
 							break;

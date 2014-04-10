@@ -42,7 +42,7 @@ class Is_Greatest implements Where_Inner
 		$class_name = $joins->getStartingClassName();
 		$properties = $this->properties + [$property_path => Func::max()];
 		$sub_builder = new Builder\Select(
-			$class_name, $properties, null, $builder->getSqlLink(), Dao::groupBy($this->properties)
+			$class_name, $properties, null, $builder->getSqlLink(), [Dao::groupBy($this->properties)]
 		);
 		// join
 		$join = new Subquery($sub_builder);

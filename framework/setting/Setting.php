@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace SAF\Framework;
 
 /**
  * An application setting

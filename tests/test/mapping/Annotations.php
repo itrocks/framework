@@ -1,12 +1,13 @@
 <?php
 namespace SAF\Tests\Test\Mapping;
-use SAF\Framework\Reflection_Property;
-use SAF\Framework\Unit_Tests\Unit_Test;
+
+use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Test;
 
 /**
  * Mapping annotations tests
  */
-class Annotations extends Unit_Test
+class Annotations extends Test
 {
 
 	//-------------------------------------------------------------------------------- testAnnotation

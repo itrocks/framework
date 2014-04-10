@@ -1,12 +1,12 @@
 <?php
 namespace SAF\Tests\Test\Mapping;
 
-use SAF\Framework\Unit_Tests\Unit_Test;
+use SAF\Framework\Test;
 
 /**
  * Objects mapping tests
  */
-class Objects extends Unit_Test
+class Objects extends Test
 {
 
 	//------------------------------------------------------------------------------------ testObject

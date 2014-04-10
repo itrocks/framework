@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Tests;
+namespace SAF\Tests\Objects;
 
 /**
  * An order class

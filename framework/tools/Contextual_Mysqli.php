@@ -3,6 +3,8 @@ namespace SAF\Framework\Tools;
 
 use mysqli;
 use mysqli_result;
+use SAF\Framework\Dao\Mysql\Table;
+use SAF\Framework\Dao\Mysql\Table_Builder_Mysqli;
 
 /**
  * Contextual mysqli class : this enables storage of context name for mysqli queries calls
@@ -40,12 +42,12 @@ class Contextual_Mysqli extends mysqli
 	public function exists($table_name, $column_name = null)
 	{
 		if (isset($column_name)) {
-			$table = Mysql_Table_Builder_Mysqli::build($this, $table_name);
+			$table = Table_Builder_Mysqli::build($this, $table_name);
 			return $table->hasColumn($column_name);
 		}
 		else {
 			$res = $this->query('SHOW TABLES');
-			/** @var $table Mysql_Table */
+			/** @var $table Table */
 			while ($table = $res->fetch_row()) {
 				if ($table[0] == $table_name) {
 					$res->free();

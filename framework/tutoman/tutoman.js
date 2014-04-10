@@ -1,7 +1,7 @@
 $('document').ready(function()
 {
 
-	tuto = {
+	var tuto = {
 
 		animations:  {},
 

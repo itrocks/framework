@@ -2,7 +2,7 @@
 namespace SAF\Framework\Controller;
 
 use SAF\Framework\Builder;
-use SAF\Framework\Getter;
+use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 

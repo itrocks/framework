@@ -9,7 +9,7 @@ require dirname(__FILE__) . '/../../vendor/PHPExcel/Classes/PHPExcel.php';
 */
 use PHPExcel_IOFactory;
 use SAF\Framework\Application;
-use SAF\Framework\Loc;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
 
 /**

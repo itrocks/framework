@@ -1,9 +1,9 @@
 <?php
 namespace SAF\Framework\View\Html\Builder;
 
-use SAF\Framework\Loc;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper;
-use SAF\Framework\Reflection\Annotation\User_Annotation;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_View;

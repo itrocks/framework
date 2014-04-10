@@ -1,7 +1,9 @@
 <?php
 namespace SAF\Framework\Tools;
 
-use SAF\Plugins\Plugin;
+use phpDocumentor\Plugin\Plugin;
+use SAF\Framework\Builder;
+use SAF\Framework\Session;
 
 /**
  * All classes that have a global current value should use this trait to manage the current() method

@@ -9,8 +9,8 @@ use SAF\Framework\Reflection\Reflection_Property;
  * Describes the data type of the property.
  *
  * Only values of that type should be stored into the property.
- * If no @var annotation is set, the default property is guessed knowing it's default value.
- * It is highly recommended to set the @var annotation for all business classes properties.
+ * If no @var ... annotation is set, the default property is guessed knowing it's default value.
+ * It is highly recommended to set the @var ... annotation for all business classes properties.
  */
 class Var_Annotation extends Documented_Type_Annotation implements Property_Context_Annotation
 {

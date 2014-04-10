@@ -3,10 +3,10 @@ namespace SAF\Framework\widget\output;
 
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Tabs_Builder_Object;
 use SAF\Framework\View;
-use SAF\Framework\Widget\Tab;
 use SAF\Framework\Widget\Button;
+use SAF\Framework\Widget\Tab;
+use SAF\Framework\Widget\Tab\Tabs_Builder_Object;
 
 /**
  * All output controllers should extend from this at it offers standard output elements methods and structure

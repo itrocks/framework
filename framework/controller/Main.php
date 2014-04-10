@@ -1,20 +1,22 @@
 <?php
 namespace SAF\Framework\Controller;
 
-use SAF\AOP\Include_Filter;
-use SAF\AOP\Weaver\IWeaver;
+use SAF\Framework\AOP\Include_Filter;
+use SAF\Framework\AOP\Weaver\IWeaver;
 use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\Configuration;
 use SAF\Framework\Configuration\Configurations;
 use SAF\Framework\IAutoloader;
 use SAF\Framework\Include_Path;
+use SAF\Framework\Plugin;
+use SAF\Framework\Plugin\Activable;
+use SAF\Framework\Plugin\Manager;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 use SAF\Framework\Updater\Application_Updater;
-use SAF\Plugins;
-use SAF\Plugins\Plugin;
+use SAF\Framework\Widget\List_\List_Controller;
 
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
@@ -40,7 +42,7 @@ class Main
 	{
 		foreach ($plugins as $plugin) {
 			$this->top_core_plugins[get_class($plugin)] = $plugin;
-			if ($plugin instanceof Plugins\Activable) {
+			if ($plugin instanceof Activable) {
 				$plugin->activate();
 			}
 		}
@@ -196,10 +198,10 @@ class Main
 	/**
 	 * Register plugins into session (called only at session beginning)
 	 *
-	 * @param $plugins       Plugins\Manager
+	 * @param $plugins       Manager
 	 * @param $configuration Configuration
 	 */
-	private function registerPlugins(Plugins\Manager $plugins, Configuration $configuration)
+	private function registerPlugins(Manager $plugins, Configuration $configuration)
 	{
 		$must_register = [];
 		foreach ($configuration->getPlugins() as $level => $sub_plugins) {
@@ -260,7 +262,7 @@ class Main
 		if (!isset($session)) {
 			$session = Session::current();
 		}
-		$session->plugins = new Plugins\Manager();
+		$session->plugins = new Manager();
 		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
 		$configuration = $this->loadConfiguration();
 

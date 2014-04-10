@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Locale;
 
-use SAF\AOP\Joinpoint\Around_Method;
+use SAF\Framework\AOP\Joinpoint\Around_Method;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Reflection\Reflection_Property_Value;

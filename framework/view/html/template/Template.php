@@ -1,8 +1,8 @@
 <?php
 namespace SAF\Framework\View\Html;
 
-use SAF\Framework\File;
-use SAF\Framework\Main_Controller;
+use SAF\Framework\Controller\Main;
+use SAF\Framework\Dao\File;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_View;
 use SAF\Framework\Tools\Contextual_Callable;
@@ -555,7 +555,7 @@ class Template
 		}
 		else {
 			// includes controller result
-			return (new Main_Controller())->runController($include_uri, ['is_included' => true]);
+			return (new Main())->runController($include_uri, ['is_included' => true]);
 		}
 	}
 

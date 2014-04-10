@@ -27,11 +27,10 @@
 		{
 			var $this = $(this);
 
-			var $blur;
 			var $focus;
 
 			//-------------------------------------------------------------------------------------- blur
-			$this.blur($blur = function()
+			$this.blur(function()
 			{
 				var $this = $(this);
 				if ($this.val() == '') {

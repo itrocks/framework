@@ -2,6 +2,7 @@
 namespace SAF\Framework\Setting;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Setting;
 use SAF\Framework\Tools\Set;
 
 /**

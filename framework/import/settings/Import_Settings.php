@@ -1,6 +1,12 @@
 <?php
 namespace SAF\Framework\Import\Settings;
 
+use SAF\Framework\Import\Import_Array;
+use SAF\Framework\Locale;
+use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Reflection_Property_Value;
+use SAF\Framework\Setting\Custom_Settings;
+
 /**
  * Import settings
  */

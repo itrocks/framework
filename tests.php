@@ -1,7 +1,8 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\Tests;
+use SAF\Framework\Widget\Menu;
+use SAF\Tests\Objects\Salesman;
 
 global $pwd;
 include_once 'pwd.php';
@@ -18,7 +19,7 @@ $config['tests'] = [
 			'login'    => 'saf_tests',
 			'password' => $pwd['saf_tests'],
 			'tables' => [
-				Tests\Salesman::class   => 'salesmen'
+				Salesman::class   => 'salesmen'
 			]
 		],
 		Menu::class => [

@@ -2,14 +2,14 @@
 namespace SAF\Framework\View\Html;
 
 use SAF\Framework\Dao;
+use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View;
-use SAF\Plugins;
 
 /**
  * Built-in SAF HTML view engine
  */
-class Engine implements Plugins\Configurable, View\Engine
+class Engine implements Configurable, View\Engine
 {
 
 	//------------------------------------------------------------------------------------------ $css

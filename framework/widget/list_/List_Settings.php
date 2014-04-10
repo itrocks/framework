@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\List_;
 
-use SAF\Framework\Custom_Settings;
+use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Dao\Option\Sort;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;

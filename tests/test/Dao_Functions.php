@@ -1,24 +1,24 @@
 <?php
 namespace SAF\Tests\Test;
 
-use SAF\Framework\Dao_Func;
-use SAF\Framework\Sql_Select_Builder;
-use SAF\Framework\Unit_Tests\Unit_Test;
-use SAF\Tests\Order;
+use SAF\Framework\Dao\Func;
+use SAF\Framework\Sql\Builder\Select;
+use SAF\Framework\Test;
+use SAF\Tests\Objects\Order;
 
 /**
  * Dao functions unit tests
  */
-class Dao_Functions extends Unit_Test
+class Dao_Functions extends Test
 {
 
 	//------------------------------------------------------------------------------------ testLeftOf
 	public function testIsGreatest()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			null,
-			['date' => Dao_Func::isGreatest(['number'])]
+			['date' => Func::isGreatest(['number'])]
 		);
 		$this->assume(
 			__METHOD__,
@@ -36,9 +36,9 @@ class Dao_Functions extends Unit_Test
 	//-------------------------------------------------------------------------------------- testLeft
 	public function testLeft()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
-			['number' => Dao_Func::left(4)]
+			['number' => Func::left(4)]
 		);
 		$this->assume(
 			__METHOD__,
@@ -50,10 +50,10 @@ class Dao_Functions extends Unit_Test
 	//------------------------------------------------------------------------------------ testLeftOf
 	public function testLeftMatch()
 	{
-		$builder = new Sql_Select_Builder(
+		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Dao_Func::leftMatch('N01181355010')]
+			['number' => Func::leftMatch('N01181355010')]
 		);
 		$this->assume(
 			__METHOD__,

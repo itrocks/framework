@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Router;
+
 /**
  * A functions library to deal with class names and namespaces
  */

@@ -2,6 +2,7 @@
 namespace SAF\Framework\Dao;
 
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Option\Key;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\List_Data;
@@ -86,7 +87,7 @@ abstract class Data_Link
 	 * Gets the key property name taken from any set Sql\Key_Option
 	 * Default will be 'id'
 	 *
-	 * @param $options Dao_Option[]
+	 * @param $options Option[]
 	 * @return string
 	 */
 	protected function getKeyPropertyName($options)
@@ -97,7 +98,7 @@ abstract class Data_Link
 				$options = [$options];
 			}
 			foreach ($options as $option) {
-				if ($option instanceof Sql\Key_Option) {
+				if ($option instanceof Key) {
 					$key = $option->property_name;
 				}
 			}
@@ -201,7 +202,7 @@ abstract class Data_Link
 	 */
 	public function searchOne($what, $class_name = null)
 	{
-		$result = $this->search($what, $class_name, Dao::limit(1));
+		$result = $this->search($what, $class_name, [Dao::limit(1)]);
 		return $result ? reset($result) : null;
 	}
 

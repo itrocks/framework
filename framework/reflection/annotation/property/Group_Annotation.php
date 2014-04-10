@@ -2,7 +2,7 @@
 namespace SAF\Framework\Reflection\Annotation\Property;
 
 use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Class_\Class_Group_Annotation;
+use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 
@@ -26,7 +26,7 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
-			/** @var $group Class_Group_Annotation */
+			/** @var $group Class_\Group_Annotation */
 			foreach ($property->getFinalClass()->getAnnotations('group') as $group) {
 				if ($group->has($property->name)) {
 					$this->value = $property->name;

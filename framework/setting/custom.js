@@ -60,12 +60,12 @@ $('document').ready(function()
 		$input.blur(function()
 		{
 			var input = this;
-			input.out = true;
-			setTimeout(function() { if (input.out) input.close(); }, 100);
+			input.is_inside = false;
+			setTimeout(function() { if (!input.is_inside) input.close(); }, 100);
 		});
 		$input.focus(function()
 		{
-			this.out = false;
+			this.is_inside = true;
 		});
 
 	});

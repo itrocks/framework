@@ -1,24 +1,24 @@
 <?php
 namespace SAF\Tests\Test;
 
-use SAF\Framework\Parameters;
-use SAF\Framework\Controller_Uri;
-use SAF\Framework\Names;
-use SAF\Framework\Tab;
+use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Uri;
+use SAF\Framework\Test;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Trashcan;
-use SAF\Framework\Unit_Tests\Unit_Test;
-use SAF\Tests\Order;
+use SAF\Framework\Widget\Tab;
+use SAF\Tests\Objects\Order;
 
 /**
  * Controller uri features tests
  */
-class Controller_Uri extends Unit_Test
+class Controller_Uri extends Test
 {
 
 	//------------------------------------------------------------------------- testDeleteControllers
 	public function testDeleteControllers()
 	{
-		$controller_uri = new Controller_Uri(
+		$controller_uri = new Uri(
 			'/Tab/remove/'. Names::classToSet(Order::class) . '/list/date/number',
 			['as_widget' => 1, '_' => 2]
 		);
@@ -42,7 +42,7 @@ class Controller_Uri extends Unit_Test
 	//---------------------------------------------------------------------------- testExclicitOutput
 	public function testExclicitOutput()
 	{
-		$controller_uri = new Controller_Uri('/Order/1/output', [], 'output', 'list');
+		$controller_uri = new Uri('/Order/1/output', [], 'output', 'list');
 		$this->assume(
 				__METHOD__,
 				[
@@ -61,7 +61,7 @@ class Controller_Uri extends Unit_Test
 	//------------------------------------------------------------------------------ testImplicitList
 	public function testImplicitList()
 	{
-		$controller_uri = new Controller_Uri('/Orders', [], 'output', 'list');
+		$controller_uri = new Uri('/Orders', [], 'output', 'list');
 		$this->assume(
 			__METHOD__,
 			[
@@ -80,7 +80,7 @@ class Controller_Uri extends Unit_Test
 	//---------------------------------------------------------------------------- testImplicitOutput
 	public function testImplicitOutput()
 	{
-		$controller_uri = new Controller_Uri('/Order/1', [], 'output', 'list');
+		$controller_uri = new Uri('/Order/1', [], 'output', 'list');
 		$this->assume(
 			__METHOD__,
 			[
@@ -99,7 +99,7 @@ class Controller_Uri extends Unit_Test
 	//----------------------------------------------------------------------- testListRemoveParameter
 	public function testListRemoveParameter()
 	{
-		$controller_uri = new Controller_Uri('/Orders/listRemove/date');
+		$controller_uri = new Uri('/Orders/listRemove/date');
 		$this->assume(
 			__METHOD__,
 			[
@@ -118,7 +118,7 @@ class Controller_Uri extends Unit_Test
 	//---------------------------------------------------------------------- testListRemoveParameters
 	public function testListRemoveParameters()
 	{
-		$controller_uri = new Controller_Uri('/Orders/listRemove/date/number');
+		$controller_uri = new Uri('/Orders/listRemove/date/number');
 		$this->assume(
 			__METHOD__,
 			[
@@ -138,7 +138,7 @@ class Controller_Uri extends Unit_Test
 	//------------------------------------------------------------------- testListRemoveWithArguments
 	public function testListRemoveWithArguments()
 	{
-		$controller_uri = new Controller_Uri(
+		$controller_uri = new Uri(
 			'/Orders/listRemove/date/number', ['as_widget' => 1, '_' => 2]
 		);
 		$this->assume(
@@ -160,7 +160,7 @@ class Controller_Uri extends Unit_Test
 	//------------------------------------------------------------------------ testTrashcanDropOutput
 	public function testTrashcanDropOutput()
 	{
-		$controller_uri = new Controller_Uri(
+		$controller_uri = new Uri(
 			'/Trashcan/drop/Order/1/output/date/number', ['as_widget' => 1, '_' => 2]
 		);
 		$this->assume(
@@ -183,7 +183,7 @@ class Controller_Uri extends Unit_Test
 	//-------------------------------------------------------------------- testTrashcanDropParameters
 	public function testTrashcanDropParameters()
 	{
-		$controller_uri = new Controller_Uri('/Trashcan/drop/Orders/list/date/number');
+		$controller_uri = new Uri('/Trashcan/drop/Orders/list/date/number');
 		$this->assume(
 			__METHOD__,
 			[
@@ -203,7 +203,7 @@ class Controller_Uri extends Unit_Test
 	//----------------------------------------------------------------- testTrashcanDropWithArguments
 	public function testTrashcanDropWithArguments()
 	{
-		$controller_uri = new Controller_Uri(
+		$controller_uri = new Uri(
 			'/Trashcan/drop/Orders/list/date/number', ['as_widget' => 1, '_' => 2]
 		);
 		$this->assume(

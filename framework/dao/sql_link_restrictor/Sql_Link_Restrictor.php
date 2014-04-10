@@ -1,16 +1,17 @@
 <?php
 namespace SAF\Framework\Dao;
 
+use SAF\Framework\Plugin\Register;
+use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Sql\Builder\Select;
 use SAF\Framework\Sql\Builder\Where;
-use SAF\Plugins;
 
 /**
  * This configuration plugin enables to restrict read data
  *
  * TODO this has not been tested nor used yet, please finish and test this !
  */
-class Sql_Link_Restrictor implements Plugins\Registerable
+class Sql_Link_Restrictor implements Registerable
 {
 
 	//--------------------------------------------------------------------------------------- CURRENT
@@ -152,9 +153,9 @@ class Sql_Link_Restrictor implements Plugins\Registerable
 	/**
 	 * Registers SQL link restrictor plugin
 	 *
-	 * @param $register Plugins\Register
+	 * @param $register Register
 	 */
-	public function register(Plugins\Register $register)
+	public function register(Register $register)
 	{
 		$aop = $register->aop;
 		/* @todo this method does not exist anymore into Sql_Select_Builder

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Tests;
+namespace SAF\Tests\Objects;
 
 /**
  * A quote class to test classes having the 'link' annotation

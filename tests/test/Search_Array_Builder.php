@@ -1,13 +1,14 @@
 <?php
 namespace SAF\Tests\Test;
 
-use SAF\Framework\Search_Array_Builder;
-use SAF\Framework\Unit_Tests\Unit_Test;
+use SAF\Framework\Test;
+
+use SAF\Framework\Tools;
 
 /**
  * Search array builder test
  */
-class Search_Array_Builder extends Unit_Test
+class Search_Array_Builder extends Test
 {
 
 	//------------------------------------------------------------------------------------- testBuild
@@ -15,22 +16,22 @@ class Search_Array_Builder extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__ . '.simple',
-			(new Search_Array_Builder())->build('property', 'test'),
+			(new Tools\Search_Array_Builder())->build('property', 'test'),
 			['property' => 'test']
 		);
 		$this->assume(
 			__METHOD__ . '.and',
-			(new Search_Array_Builder())->build('property', 'test what'),
+			(new Tools\Search_Array_Builder())->build('property', 'test what'),
 			['property' => ['AND' => ['test', 'what']]]
 		);
 		$this->assume(
 			__METHOD__ . '.or',
-			(new Search_Array_Builder())->build('property', 'test,what'),
+			(new Tools\Search_Array_Builder())->build('property', 'test,what'),
 			['property' => ['test', 'what']]
 		);
 		$this->assume(
 			__METHOD__ . '.mix',
-			(new Search_Array_Builder())->build('property', 'test,what else'),
+			(new Tools\Search_Array_Builder())->build('property', 'test,what else'),
 			['property' => ['test', 'AND' => ['what', 'else']]]
 		);
 	}
@@ -40,12 +41,12 @@ class Search_Array_Builder extends Unit_Test
 	{
 		$this->assume(
 			__METHOD__ . '.simple',
-			(new Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test'),
+			(new Tools\Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test'),
 			['OR' => ['pro1' => 'test', 'pro2' => 'test']]
 		);
 		$this->assume(
 			__METHOD__ . '.and',
-			(new Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test what'),
+			(new Tools\Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test what'),
 			[
 				'AND' => [
 					['OR' => ['pro1' => 'test', 'pro2' => 'test']],
@@ -55,7 +56,7 @@ class Search_Array_Builder extends Unit_Test
 		);
 		$this->assume(
 			__METHOD__ . '.or',
-			(new Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test,what'),
+			(new Tools\Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test,what'),
 			[
 				'OR' => [
 					'pro1' => ['test', 'what'],
@@ -65,7 +66,7 @@ class Search_Array_Builder extends Unit_Test
 		);
 		$this->assume(
 			__METHOD__ . '.mix',
-			(new Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test,what else'),
+			(new Tools\Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test,what else'),
 			[
 				'OR' => [
 					'pro1' => ['test', 'AND' => ['what', 'else']],

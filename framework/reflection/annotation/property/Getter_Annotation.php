@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Getter;
+use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 

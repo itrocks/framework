@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Reflection\Reflection_Class;
+
 /**
  * A library of feature to transform PHP elements names
  */

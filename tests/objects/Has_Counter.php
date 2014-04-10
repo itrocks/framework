@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Tests;
+namespace SAF\Tests\Objects;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;

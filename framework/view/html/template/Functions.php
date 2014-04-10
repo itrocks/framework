@@ -1,10 +1,9 @@
 <?php
 namespace SAF\Framework\View\Html\Template;
 
-use SAF\Framework\Collection;
-use SAF\Framework\Html_Builder_Property_Edit;
-use SAF\Framework\Loc;
-use SAF\Framework\Reflection\Annotation\User_Annotation;
+use SAF\Framework\Locale\Loc;
+use SAF\Framework\Mapper\Collection;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Integrated_Properties;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Method;
@@ -18,6 +17,7 @@ use SAF\Framework\Tools\Set;
 use SAF\Framework\View\Html\Builder\Property_Select;
 use SAF\Framework\View\Html\Dom\Input;
 use SAF\Framework\View\Html\Template;
+use SAF\Framework\Widget\Edit\Html_Builder_Property;
 
 /**
  * Html template functions : those which are called using {@functionName} into templates
@@ -138,7 +138,7 @@ abstract class Functions
 			list($property, $property_path, $value) = self::toEditPropertyExtra(
 				$class_name, $property_name
 			);
-			$property_edit = new Html_Builder_Property_Edit($property, $value);
+			$property_edit = new Html_Builder_Property($property, $value);
 			$property_edit->name = $name ?: $property_path;
 			$property_edit->preprop = null;
 			if ($ignore_user) {
@@ -150,7 +150,7 @@ abstract class Functions
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property_Value) {
-			$property_edit = new Html_Builder_Property_Edit($object, $object->value());
+			$property_edit = new Html_Builder_Property($object, $object->value());
 			$property_edit->name = $name ?: $object->path;
 			$property_edit->preprop = null;
 			if ($ignore_user) {
@@ -162,7 +162,7 @@ abstract class Functions
 			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property) {
-			$property_edit = new Html_Builder_Property_Edit($object);
+			$property_edit = new Html_Builder_Property($object);
 			$property_edit->name = $name ?: $object->path;
 			$property_edit->preprop = null;
 			if ($ignore_user) {
@@ -195,7 +195,7 @@ abstract class Functions
 				else {
 					$preprop = null;
 				}
-				$property_edit = new Html_Builder_Property_Edit(
+				$property_edit = new Html_Builder_Property(
 					$property, $property->getValue($object), $preprop
 				);
 				if ($ignore_user) {

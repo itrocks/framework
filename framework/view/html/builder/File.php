@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\View\Html\Builder;
 
-use SAF\Framework;
+use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Property;
 
 /**
@@ -12,7 +12,7 @@ class File
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
-	 * @var Framework\File
+	 * @var Dao\File
 	 */
 	protected $file;
 
@@ -25,9 +25,9 @@ class File
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $property Reflection_Property
-	 * @param $file     Framework\File
+	 * @param $file     Dao\File
 	 */
-	public function __construct($property, Framework\File $file)
+	public function __construct($property, Dao\File $file)
 	{
 		$this->file = $file;
 		$this->property = $property;

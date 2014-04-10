@@ -2,12 +2,12 @@
 namespace SAF\Framework\Widget\List_;
 
 use SAF\Framework\Builder;
-use SAF\Framework\Custom_Settings_Controller;
 use SAF\Framework\Dao;
-use SAF\Framework\Loc;
 use SAF\Framework\Locale;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
+use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\String;
 use SAF\Framework\Widget\Button;

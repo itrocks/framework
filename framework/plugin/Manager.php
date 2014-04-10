@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Plugin;
 
-use SAF\AOP;
+use SAF\Framework\AOP\Weaver;
 use SAF\Framework\Builder;
 use SAF\Framework\Plugin;
 use Serializable;
@@ -151,8 +151,8 @@ class Manager implements IManager, Serializable
 		}
 		// register plugin
 		if ($register && ($plugin instanceof Registerable)) {
-			$weaver = isset($this->plugins[AOP\Weaver::class])
-				? $this->plugins[AOP\Weaver::class]
+			$weaver = isset($this->plugins[Weaver::class])
+				? $this->plugins[Weaver::class]
 				: null;
 			/** @var $plugin Registerable */
 			$plugin->register(new Register(

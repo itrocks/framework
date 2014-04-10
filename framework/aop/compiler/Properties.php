@@ -1,5 +1,5 @@
 <?php
-namespace SAF\AOP\Compiler;
+namespace SAF\Framework\AOP\Compiler;
 
 use SAF\Framework\Reflection\Reflection_Parameter;
 use SAF\Framework\PHP\Reflection_Class;
@@ -115,7 +115,7 @@ class Properties
 			}
 			if (isset($advice_parameters['joinpoint'])) {
 				$pointcut_string = '[$this, ' . Q . $property_name . Q . ']';
-				$init['2.joinpoint'] = '$joinpoint = new \SAF\AOP' . BS . ucfirst($type) . '_Property('
+				$init['2.joinpoint'] = '$joinpoint = new \SAF\Framework\AOP' . BS . ucfirst($type) . '_Property('
 					. LF . TAB . TAB . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
 					. ');';
 			}

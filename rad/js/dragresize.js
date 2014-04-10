@@ -53,7 +53,7 @@ function cancelEvent(e, c) {
 		if (e.stopPropagation)
 			e.stopPropagation()
 	}
-};
+}
 function DragResize(myName, config) {
 	var props = {
 		myName : myName,
@@ -89,7 +89,7 @@ function DragResize(myName, config) {
 	};
 	for ( var p in props)
 		this[p] = (typeof config[p] == 'undefined') ? props[p] : config[p]
-};
+}
 DragResize.prototype.apply = function(node) {
 	var obj = this;
 	addEvent(node, 'mousedown', function(e) {
@@ -215,7 +215,7 @@ DragResize.prototype.mouseMove = function(e) {
 		cancelEvent(e)
 	}
 };
-DragResize.prototype.mouseUp = function(e) {
+DragResize.prototype.mouseUp = function() {
 	with (this) {
 		if (!document.getElementById || !enabled)
 			return;

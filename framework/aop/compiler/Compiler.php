@@ -1,13 +1,13 @@
 <?php
-namespace SAF\AOP;
+namespace SAF\Framework\AOP;
 
-use SAF\AOP\Weaver\IWeaver;
+use SAF\Framework\AOP\Weaver\IWeaver;
 use SAF\Framework\Application;
+use SAF\Framework\Controller\Main;
+use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
-use SAF\Framework\Getter;
-use SAF\Framework\Controller\Main_Controller;
-use SAF\Framework\Controller\Needs_Main_Controller;
-use SAF\Framework\Search_Object;
+use SAF\Framework\Mapper\Getter;
+use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\PHP;
@@ -15,12 +15,11 @@ use SAF\Framework\PHP\Dependency;
 use SAF\Framework\PHP\ICompiler;
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\PHP\Reflection_Source;
-use SAF\Plugins;
 
 /**
  * Standard aspect weaver compiler
  */
-class Compiler implements ICompiler, Needs_Main_Controller
+class Compiler implements ICompiler, Needs_Main
 {
 
 	const DEBUG = false;
@@ -489,9 +488,9 @@ class Compiler implements ICompiler, Needs_Main_Controller
 
 	//----------------------------------------------------------------------------- setMainController
 	/**
-	 * @param $main_controller Main_Controller
+	 * @param $main_controller Main
 	 */
-	public function setMainController(Main_Controller $main_controller)
+	public function setMainController(Main $main_controller)
 	{
 		// AOP compiler needs all plugins to be registered again, in order to build the complete
 		// weaver's advices tree

@@ -1,15 +1,15 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Current;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
-use SAF\Plugins;
 
 /**
  * The View class offers static methods to call views from the application main view engine
  */
-class View implements Plugins\Configurable
+class View implements Configurable
 {
 	use Current { current as private pCurrent; }
 

@@ -3,6 +3,11 @@ namespace SAF\Framework;
 
 use ReflectionClass;
 use SAF\Framework\Builder\Class_Builder;
+use SAF\Framework\Mapper\Getter;
+use SAF\Framework\Mapper\Search_Object;
+use SAF\Framework\Plugin\Activable;
+use SAF\Framework\Plugin\Register;
+use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
@@ -10,7 +15,6 @@ use SAF\Framework\Sql\Join\Joins;
 use SAF\Framework\Tools\Current_With_Default;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
-use SAF\Plugins;
 use Serializable;
 
 /**
@@ -21,7 +25,7 @@ use Serializable;
  *
  * @todo remove dependencies
  */
-class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
+class Builder implements Activable, Registerable, Serializable
 {
 	use Current_With_Default { current as private dCurrent; }
 
@@ -312,9 +316,9 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugins\Register
+	 * @param $register Register
 	 */
-	public function register(Plugins\Register $register)
+	public function register(Register $register)
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod([Getter::class, 'getCollection'],        [$this, 'onMethodWithClassName']);
@@ -322,7 +326,7 @@ class Builder implements Plugins\Activable, Plugins\Registerable, Serializable
 		$aop->afterMethod( [Namespaces::class, 'fullClassName'],    [$this, 'afterNamespacesFullClassName']);
 		$aop->beforeMethod([Search_Object::class, 'create'],        [$this, 'onMethodWithClassName']);
 		$aop->afterMethod( [Set::class, 'elementClassNameOf'],      [$this, 'onMethodReturnedValue']);
-		$aop->afterMethod( [Joins::class, 'addSimpleJoin'],     [$this, 'onMethodReturnedValue']);
+		$aop->afterMethod( [Joins::class, 'addSimpleJoin'],         [$this, 'onMethodReturnedValue']);
 		$aop->afterMethod( [Type::class, 'getElementTypeAsString'], [$this, 'onMethodReturnedValue']);
 	}
 

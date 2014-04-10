@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Reflection\Reflection_Class;
+
 /**
  * A default list data set class : this stores data (visible strings and linked object) for list views
  */

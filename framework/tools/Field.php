@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Reflection\Type;
+
 /**
  * A generic field interface : usefull to define fields, columns and properties
  */

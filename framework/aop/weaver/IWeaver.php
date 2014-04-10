@@ -1,5 +1,5 @@
 <?php
-namespace SAF\AOP\Weaver;
+namespace SAF\Framework\AOP\Weaver;
 
 /**
  * Aop weaver interface

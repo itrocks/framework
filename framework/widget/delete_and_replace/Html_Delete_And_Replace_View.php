@@ -3,11 +3,11 @@ namespace SAF\Framework\Widget;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
-use SAF\Framework\Html_Builder_Type_Edit;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\View\Html\Default_View;
 use SAF\Framework\View\Html\View;
+use SAF\Framework\Widget\Edit\Html_Builder_Type;
 
 /**
  * The default delete-and-replace view
@@ -25,7 +25,7 @@ class Html_Delete_And_Replace_View implements View
 	protected function getCombo($object)
 	{
 		$class_name = get_class($object);
-		$edit = new Html_Builder_Type_Edit(
+		$edit = new Html_Builder_Type(
 			'replace_with',
 			new Type($class_name),
 			Builder::create($class_name)

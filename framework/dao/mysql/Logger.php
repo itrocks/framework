@@ -1,14 +1,16 @@
 <?php
 namespace SAF\Framework\Dao\Mysql;
 
-use SAF\Framework\Controller\Main_Controller;
+use SAF\Framework\Controller\Main;
+use SAF\Framework\Plugin\Configurable;
+use SAF\Framework\Plugin\Register;
+use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Tools\Contextual_Mysqli;
-use SAF\Plugins;
 
 /**
  * A logger for mysql queries
  */
-class Logger implements Plugins\Configurable, Plugins\Registerable
+class Logger implements Configurable, Registerable
 {
 
 	//------------------------------------------------------------------------------------- $continue
@@ -143,19 +145,19 @@ class Logger implements Plugins\Configurable, Plugins\Registerable
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $register Plugins\Register
+	 * @param $register Register
 	 */
-	public function register(Plugins\Register $register)
+	public function register(Register $register)
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod([Contextual_Mysqli::class, 'query'], [$this, 'onQuery']);
 		$aop->afterMethod([Contextual_Mysqli::class, 'query'], [$this, 'onError']);
 		if (!$this->continue) {
 			$aop->beforeMethod(
-				[Main_Controller::class, 'runController'], [$this, 'onMainControllerRun']
+				[Main::class, 'runController'], [$this, 'onMainControllerRun']
 			);
 			$aop->afterMethod(
-				[Main_Controller::class, 'runController'], [$this, 'afterMainControllerRun']
+				[Main::class, 'runController'], [$this, 'afterMainControllerRun']
 			);
 		}
 	}

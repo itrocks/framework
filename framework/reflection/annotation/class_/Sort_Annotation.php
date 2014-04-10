@@ -27,7 +27,7 @@ class Sort_Annotation extends List_Annotation
 		parent::__construct($value);
 		// default sort : all representative values but links
 		if (!$this->value) {
-			$representative = (new Class_Representative_Annotation($value, $class))->value;
+			$representative = (new Representative_Annotation($value, $class))->value;
 			foreach ($class->getAllProperties() as $property) {
 				if (in_array($property->name, $representative)) {
 					if (!$property->isStatic() && !$property->getAnnotation('link')->value) {

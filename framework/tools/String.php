@@ -115,7 +115,7 @@ class String
 	 * Constructs a new String
 	 *
 	 * @param $string string
-	 * @return String
+	 * @return self
 	 */
 	public static function of($string)
 	{

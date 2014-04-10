@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Import\Settings;
 
+use SAF\Framework\Import\Import_Array;
+
 /**
  * Import preview data
  */

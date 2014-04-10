@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Tests;
+namespace SAF\Tests\Objects;
 
-use SAF\Framework\Component;
+use SAF\Framework\Mapper\Component;
 
 /**
  * An order line class

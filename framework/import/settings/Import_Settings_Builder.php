@@ -2,6 +2,11 @@
 namespace SAF\Framework\Import\Settings;
 
 use ReflectionException;
+use SAF\Framework\Import\Import_Array;
+use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Reflection_Property_Value;
+use SAF\Framework\Tools\Namespaces;
 
 /**
  * Import settings builder

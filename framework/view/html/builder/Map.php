@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\View\Html\Builder;
 
-use SAF\Framework\Loc;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper;
 use SAF\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
