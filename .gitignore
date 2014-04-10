@@ -4,10 +4,10 @@
 /.buildpath
 /.project
 /phpdoc
-/*/cache
-/*/vendor/excel_reader
-/*/vendor/geshi
-/*/vendor/pear
-/*/vendor/PHPExcel
+/*/*/cache
+/*/*/vendor/excel_reader
+/*/*/vendor/geshi
+/*/*/vendor/pear
+/*/*/vendor/PHPExcel
 /pwd.php
 /update
