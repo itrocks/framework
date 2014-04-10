@@ -26,17 +26,18 @@ touch('update');
 // enable running from command line
 if (!isset($_SERVER['PATH_INFO'])) $_SERVER['PATH_INFO'] = '/';
 
-// enable AOP cache files : includes must all use this filter
+// enable cache files for compiled scripts : includes must all use this filter
 include_once 'framework/aop/Include_Filter.php';
 Include_Filter::register();
-/** @noinspection PhpIncludeInspection */
-include_once Include_Filter::file('framework/controller/Main.php');
+// enable autoloader
+include_once Include_Filter::file('framework/Autoloader.php');
+(new Autoloader)->register();
 
 // run
-echo (new Main())
+echo (new Main)
 	->init(['framework/Html_Session.php'])
 	->addTopCorePlugins([
-		new Manager(),
+		new Manager,
 		new Html_Session(['use_cookie' => true])
 	])
 	->run($_SERVER['PATH_INFO'], $_GET, $_POST, $_FILES);

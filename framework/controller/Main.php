@@ -83,7 +83,6 @@ class Main
 	//--------------------------------------------------------------------------------- createSession
 	private function createSession()
 	{
-		$this->includesStart();
 		$this->resetSession(Session::current(new Session()));
 	}
 
@@ -117,49 +116,9 @@ class Main
 	//-------------------------------------------------------------------------------------- includes
 	private function includes()
 	{
-		// Low level includes
-		include_once Include_Filter::file('framework/core/toolbox/constants.php');
-		include_once Include_Filter::file('framework/core/toolbox/functions/array_functions.php');
-		include_once Include_Filter::file('framework/core/toolbox/functions/file_functions.php');
-		include_once Include_Filter::file('framework/core/toolbox/functions/string_functions.php');
-		include_once Include_Filter::file('framework/core/toolbox/functions/type_functions.php');
-		include_once Include_Filter::file('framework/core/toolbox/Current.php');
-		include_once Include_Filter::file('framework/core/toolbox/Current_With_Default.php');
-		include_once Include_Filter::file('framework/core/toolbox/Namespaces.php');
-		include_once Include_Filter::file('framework/core/toolbox/OS.php');
-		include_once Include_Filter::file('framework/core/toolbox/String.php');
-
-		// Include_Path
-		include_once Include_Filter::file('framework/core/Include_Path.php');
-
-		// Plugins manager
-		include_once Include_Filter::file('framework/core/plugins/Plugin.php');
-		include_once Include_Filter::file('framework/core/plugins/Configurable.php');
-		include_once Include_Filter::file('framework/core/plugins/Activable.php');
-		include_once Include_Filter::file('framework/core/plugins/Registerable.php');
-		include_once Include_Filter::file('framework/core/plugins/IManager.php');
-		include_once Include_Filter::file('framework/core/plugins/Manager.php');
-
-		// Session
-		include_once Include_Filter::file('framework/core/Session.php');
-
-		// Core plugins
-		include_once Include_Filter::file('framework/core/php/ICompiler.php');
-		include_once Include_Filter::file('framework/core/php/Class_File_Name_Getter.php');
-		include_once Include_Filter::file('framework/core/IAutoloader.php');
-		include_once Include_Filter::file('framework/core/Router.php');
-		include_once Include_Filter::file('framework/core/builder/Builder.php');
-	}
-
-	//---------------------------------------------------------------------------------- includeStart
-	private function includesStart()
-	{
-		// Configuration
-		include_once Include_Filter::file('framework/core/configuration/Configuration.php');
-		include_once Include_Filter::file('framework/core/configuration/Configurations.php');
-
-		// Plugins manager
-		include_once Include_Filter::file('framework/core/plugins/Register.php');
+		foreach (glob('framework/functions/*.php') as $file_name) {
+			include_once Include_Filter::file($file_name);
+		}
 	}
 
 	//------------------------------------------------------------------------------------------ init

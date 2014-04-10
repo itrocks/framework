@@ -106,7 +106,7 @@ class Router implements
 		}
 
 		Namespaces::$router = $this;
-		spl_autoload_register([$this, 'autoload']);
+		//spl_autoload_register([$this, 'autoload']);
 	}
 
 	//---------------------------------------------------------------------------------- addClassPath
