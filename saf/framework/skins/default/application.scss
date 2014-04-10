@@ -1,0 +1,199 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	background-color: white;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 12px;
+
+	>header {
+		background-color: lightgrey;
+		border-bottom: solid darkgrey 1px;
+		height: 52px;
+
+		>ul {
+			float: right;
+			margin: 0 4px;
+			z-index: 1000000000;
+
+			>li {
+				list-style: none;
+			}
+
+			>li>a {
+				display: inline-block;
+			}
+
+			>li.provider.bappli {
+				background: url("img/bappli_studio_36.png") 20px 5px no-repeat white;
+				border-color: #9ab3b7;
+				border-style: solid;
+				border-width: 0 1px 1px;
+				border-bottom-left-radius: 10px;
+				border-bottom-right-radius: 10px;
+				box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .2);
+
+				>a {
+					color: transparent;
+					height: 46px;
+					width: 200px;
+				}
+			}
+
+			>li.provider.saf {
+				background: url("img/fingers_40.png");
+				margin: 12px 16px 0 6px;
+
+				>a {
+					color: transparent;
+					height: 40px;
+					width: 44px;
+				}
+			}
+
+			>li:not(.provider) {
+				background: url("img/tab_background.png");
+				border-color: #d6dadc #9ab3b7 #9ab3b7;
+				border-radius: 0 0 10px 10px;
+				border-style: solid;
+				border-width: 1px;
+				display: none;
+				float: right;
+				margin: 5px 0 0 10px;
+				position: relative;
+				z-index: 999999999;
+
+				>a {
+					color: #222;
+					font-size: 16px;
+					font-weight: bold;
+					height: 25px;
+					line-height: 25px;
+					padding: 0 10px;
+					text-decoration: none;
+					white-space: nowrap;
+					&:hover {
+						color: #2d8f8d;
+					}
+				}
+			}
+
+			&:hover>li:not(.provider) {
+				display: inline-block;
+			}
+		}
+	}
+}
+
+div p {
+	&:not(:first-child) {
+		padding: 1em 0 0;
+	}
+	&:not(:last-child) {
+		padding: 0 0 1em;
+	}
+}
+
+em {
+	font-style: italic;
+}
+
+h2 {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+strong {
+	font-weight: bold;
+}
+
+table, tbody, thead, tr, td, th {
+	border-spacing: 0;
+	padding: 0 2px;
+}
+
+th {
+	text-align: center;
+}
+
+#main {
+	background-color: #fafafa;
+	height: 100%;
+	white-space: nowrap;
+	>* {
+		white-space: normal;
+	}
+}
+
+/* TODO tidy */
+
+.delete.message,
+.remove.message {
+	background: url("img/talk_down.png") bottom right no-repeat;
+	padding-bottom: 7px;
+
+	div, h2 {
+		background-color: white;
+		border-right: 1px solid black;
+		display: block;
+		padding: 0 3px 1px 3px;
+	}
+}
+
+.candrop {
+	box-shadow: 0 0 3px 3px red;
+}
+
+.dragging {
+	border: 1px solid lightgray;
+	border-radius: 2px;
+	box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+	cursor: move;
+	padding: 0 4px;
+}
+
+.visible {
+	display: inline-block;
+}
+
+#messages {
+	background-color: white;
+	border: 1px solid lightgray;
+	box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+	display: inline-block;
+	left: 4px;
+	padding: 3px;
+	position: absolute;
+	top: 4px;
+	z-index: 1000000000;
+	&:empty {
+		display: none;
+	}
+}
+
+.ui-draggable>h2 {
+	cursor: move;
+}
+
+.logger {
+
+	&.query {
+		background-color: lightcyan;
+		border: 1px solid lightblue;
+		color: darkblue;
+		margin: 4px;
+		padding: 4px;
+	}
+
+	&.error {
+		background-color: darkred;
+		border: 1px solid red;
+		color: white;
+		margin: 4px;
+		padding: 4px;
+		&:before {
+			content: "ERREUR : ";
+		}
+	}
+}

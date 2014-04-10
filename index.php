@@ -27,15 +27,15 @@ touch('update');
 if (!isset($_SERVER['PATH_INFO'])) $_SERVER['PATH_INFO'] = '/';
 
 // enable cache files for compiled scripts : includes must all use this filter
-include_once 'framework/aop/Include_Filter.php';
+include_once 'saf/framework/aop/Include_Filter.php';
 Include_Filter::register();
 // enable autoloader
-include_once Include_Filter::file('framework/Autoloader.php');
+include_once Include_Filter::file('saf/framework/Autoloader.php');
 (new Autoloader)->register();
 
 // run
 echo (new Main)
-	->init(['framework/Html_Session.php'])
+	->init()
 	->addTopCorePlugins([
 		new Manager,
 		new Html_Session(['use_cookie' => true])

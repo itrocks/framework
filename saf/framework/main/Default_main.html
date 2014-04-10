@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>
+		|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|
+	</title>
+
+	<script type="text/javascript" src="../vendor/jquery/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../vendor/jquery-ui/jquery-ui-1.9.2.custom.js"></script>
+
+	<!-- xtarget must be the first, as it is high-level for a and sub-modules may want to prevent propagation -->
+	<script type="text/javascript" src="js/jquery.xtarget.js"></script>
+
+	<script type="text/javascript" src="../vendor/jquery.form/jquery.form.js"></script>
+	<script type="text/javascript" src="../vendor/jquery.colresizable/colResizable-1.3.min.js"></script>
+	<script type="text/javascript" src="../vendor/jquery.elastic/jquery.elastic.source.js"></script>
+
+	<script type="text/javascript" src="../vendor/jscolor/jscolor.js"></script>
+
+	<script type="text/javascript" src="js/jquery.aform.js"></script>
+	<script type="text/javascript" src="js/jquery.autofocus.js"></script>
+	<script type="text/javascript" src="js/jquery.autoheight.js"></script>
+	<script type="text/javascript" src="js/jquery.autowidth.js"></script>
+	<script type="text/javascript" src="js/jquery.build.js"></script>
+	<script type="text/javascript" src="js/jquery.classvar.js"></script>
+	<script type="text/javascript" src="js/jquery.modifiable.js"></script>
+	<script type="text/javascript" src="js/jquery.mouse.js"></script>
+	<script type="text/javascript" src="js/jquery.presstab.js"></script>
+	<script type="text/javascript" src="js/jquery.sortcontent.js"></script>
+	<script type="text/javascript" src="js/jquery.verticalscrollbar.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.tabber.js"></script>
+
+	<script type="text/javascript" src="js/saf.app.js"></script>
+	<script type="text/javascript" src="js/saf.fullheight.js"></script>
+	<script type="text/javascript" src="js/saf.functions.js"></script>
+	<script type="text/javascript" src="js/saf.string.js"></script>
+
+	<script type="text/javascript" src="../components/import_export/import.js"></script>
+	<script type="text/javascript" src="../components/print_models/print_model.js"></script>
+	<script type="text/javascript" src="../components/properties/property_select.js"></script>
+	<script type="text/javascript" src="../components/settings/custom.js"></script>
+	<script type="text/javascript" src="../components/widgets/edit/edit.js"></script>
+	<script type="text/javascript" src="../components/widgets/list/list.js"></script>
+	<script type="text/javascript" src="../components/widgets/trashcan/trashcan.js"></script>
+
+	<script type="text/javascript" src="js/default.application.js"></script>
+
+	<script type="text/javascript">
+		window.app = new App(
+			"{PHPSESSID}", "{Paths.uri_root}", "{Paths.script_name}", "{Paths.project_uri}",
+			"{Loc.language}", "{Loc.date.format}", "{Html_Session.useCookies}"
+		);
+	</script>
+
+	<style type="text/css">
+		@import "../vendor/reset5/reset.css";
+
+		@import "../vendor/jquery-ui/smoothness/jquery-ui.css";
+		@import "../vendor/jquery-ui/smoothness/jquery.ui.theme.css";
+
+		@import "../../framework/components/print_models/pdf_template.css";
+		@import "../../framework/components/tutoman/tutoman.css";
+
+		@import "../skins/default/application.css";
+
+		@import "../skins/default/actions.css";
+		@import "../skins/default/custom.css";
+		@import "../skins/default/form.css";
+		@import "../skins/default/import.css";
+		@import "../skins/default/list.css";
+		@import "../skins/default/menu.css";
+		@import "../skins/default/modules.css";
+		@import "../skins/default/plugins.css";
+		@import "../skins/default/print_model.css";
+		@import "../skins/default/property.css";
+		@import "../skins/default/rad.css";
+		@import "../skins/default/tabber.css";
+		@import "../skins/default/trashcan.css";
+		@import "../skins/default/vertical_scrollbar.css";
+		@import "../skins/default/window.css";
+		@import "../skins/default/xdebug.css";
+
+		@import "../skins/default/support.css";
+		@import "../skins/default/user.css";
+	</style>
+
+</head>
+
+<body>
+
+<header>
+	<div id="messages"></div>
+	<ul>
+		<li class="provider saf"><a href="http://saf.re" target="_blank" title="saf.re">SAF</a></li>
+		<li class="rad add"><a href="/Rad/add" target="#rad_add">add</a></li>
+	</ul>
+</header>
+
+<nav class="menu output">
+	{/Menu/output}
+</nav>
+
+<section id="main">
+	{@content}
+</section>
+
+<section id="trashcan">
+	<div></div>
+	<a href="/Trashcan" target="#trashcan>div">bin</a>
+</section>
+
+</body>
+</html>
