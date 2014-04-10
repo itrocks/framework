@@ -19,51 +19,26 @@ function preventEvent(e) {
 }
 
 function getStyle(x, styleProp) {
+	var y;
 	if (x.currentStyle)
-		var y = x.currentStyle[styleProp];
+		y = x.currentStyle[styleProp];
 	else if (window.getComputedStyle)
-		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
+		y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
 	return y;
 }
 
 function getWidth(x) {
+	var y;
 	if (x.currentStyle)
 		// in IE
-		var y = x.clientWidth - parseInt(x.currentStyle['paddingLeft']) - parseInt(x.currentStyle['paddingRight']);
+		y = x.clientWidth - parseInt(x.currentStyle['paddingLeft']) - parseInt(x.currentStyle['paddingRight']);
 		// for IE5: var y = x.offsetWidth;
 	else if (window.getComputedStyle)
 		// in Gecko
-		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue('width');
+		y = document.defaultView.getComputedStyle(x,null).getPropertyValue('width');
 	return y || 0;
 }
 
-function setCookie (name, value, expires, path, domain, secure) {
-	document.cookie = name + '=' + escape(value) +
-		((expires) ? '; expires=' + expires : '') +
-		((path) ? '; path=' + path : '') +
-		((domain) ? '; domain=' + domain : '') +
-		((secure) ? '; secure' : '');
-}
-
-function getCookie(name) {
-	var cookie = ' ' + document.cookie;
-	var search = ' ' + name + '=';
-	var setStr = null;
-	var offset = 0;
-	var end = 0;
-	if (cookie.length > 0) {
-		offset = cookie.indexOf(search);
-		if (offset != -1) {
-			offset += search.length;
-			end = cookie.indexOf(';', offset)
-			if (end == -1) {
-				end = cookie.length;
-			}
-			setStr = unescape(cookie.substring(offset, end));
-		}
-	}
-	return(setStr);
-}
 // main class prototype
 function ColumnResize(table) {
 	if (table.tagName != 'TABLE') return;
@@ -142,6 +117,7 @@ function ColumnResize(table) {
 		}
 		var expire = new Date();
 		expire.setDate(expire.getDate() + 365); // year
+
 		document.cookie = self.id + '-width=' + colWidth +
 			'; expires=' + expire.toGMTString();
 
@@ -187,7 +163,7 @@ function ColumnResize(table) {
 	// prepare table header to be draggable
 	// it runs during class creation
 	for (var i=0; i<dragColumns.length; i++) {
-		dragColumns[i].innerHTML = '<div style="position:relative;height:100%;width:100%">'
+		dragColumns[i].innerHTML = '<div style="position:relative;height:100%;width:100%;">'
 			+ '<div style="'
 			+ 'position:absolute;height:100%;width:5px;margin-right:-5px;'
 			+ 'left:100%;top:0px;cursor:w-resize;z-index:10;">'

@@ -4,14 +4,13 @@
 	vertical-align: top;
 	border-radius: 4px;
 	margin: 5px;
-	margin-left: 0px;
+	margin-left: 0;
 	font-weight: normal;
 }
 
 #page0, #page1, #pagex {
 	padding: 10px;
 	margin: -10px;
-//float: right;
 	display: inline-block;
 	vertical-align: top;
 }
@@ -36,7 +35,7 @@
 	cursor: ew-resize;
 	width: 11px;
 	height: 100%;
-	left : 0px;
+	left : 0;
 }
 .x_ruler_line {
 	background-color: lightgray;
@@ -76,7 +75,7 @@
 
 .fields_selector {
 	border: 1px solid #B0B0B0;
-	padding: 0px 5px;
+	padding: 0 5px;
 	margin: 5px;
 	border-radius: 4px;
 	background-color: #FFF;
@@ -96,13 +95,13 @@
 
 .fields_props label {
 	display: inline-block;
-	margin: 0px 0px 0px 1px;
+	margin: 0 0 0 1px;
 	height: 30px;
 	line-height: 30px;
 }
 
 .fields_props label img {
-	margin: 0px 0px 0px 0px;
+	margin: 0 0 0 0;
 }
 
 .pdf_templates_fields {
@@ -146,8 +145,6 @@ cursor: pointer;
 }
 
 .table_zone_dragger {
-//position: absolute;
-//z-index: 10000;
 	width:300px;
 	height:200px;
 	/*border: none;*/
@@ -214,8 +211,6 @@ cursor: pointer;
 	padding: 0;
 	height: 100%;
 	width: 100%;
-
-//position: relative;
 }
 
 .zone {

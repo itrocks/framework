@@ -1,6 +1,11 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Dao\Func;
+use SAF\Framework\Dao\Func\Logical;
+use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
+use SAF\Framework\Reflection\Reflection_Class;
+
 /**
  * The search array builder builds search arrays from properties paths and search phrases
  */
@@ -47,7 +52,7 @@ class Search_Array_Builder
 			foreach (explode($this->and, $search_phrase) as $search) {
 				$and[] = $this->build('', $search, $prepend, $append);
 			}
-			$result[$property_name]= Dao_Func::andOp($and);
+			$result[$property_name]= Func::andOp($and);
 			return $property_name ? $result : reset($result);
 		}
 		// simple search phrase
@@ -64,7 +69,7 @@ class Search_Array_Builder
 	 * @param $search_phrase string
 	 * @param $prepend string
 	 * @param $append string
-	 * @return Dao_Logical_Function
+	 * @return Logical
 	 */
 	public function buildMultiple(
 		$property_names_or_class, $search_phrase, $prepend = '', $append = ''
@@ -78,7 +83,7 @@ class Search_Array_Builder
 			foreach ($property_names as $property_name) {
 				$or[$property_name] = $this->build('', $search_phrase, $prepend, $append);
 			}
-			$result = Dao_Func::orOp($or);
+			$result = Func::orOp($or);
 		}
 		// search phrase contains AND
 		elseif (strpos($search_phrase, $this->and) !== false) {
@@ -87,7 +92,7 @@ class Search_Array_Builder
 				$and[] = $this->buildMultiple($property_names, $search, $prepend, $append);
 				$prepend = '%';
 			}
-			$result = Dao_Func::andOp($and);
+			$result = Func::andOp($and);
 		}
 		// simple search phrase
 		else {
@@ -95,7 +100,7 @@ class Search_Array_Builder
 			foreach ($property_names as $property_name) {
 				$or[$property_name] = $prepend . $search_phrase . $append;
 			}
-			$result = Dao_Func::orOp($or);
+			$result = Func::orOp($or);
 		}
 		return $result;
 	}
