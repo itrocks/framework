@@ -49,7 +49,7 @@ class Application
 	public function __construct($name)
 	{
 		$this->name = $name;
-		$this->include_path = new Include_Path($name);
+		$this->include_path = new Include_Path($this);
 	}
 
 	//--------------------------------------------------------------------------------------- current

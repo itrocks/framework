@@ -11,7 +11,7 @@ class Include_Path
 
 	//---------------------------------------------------------------------------------- $application
 	/**
-	 * @var string
+	 * @var Application
 	 */
 	private $application;
 
@@ -25,9 +25,9 @@ class Include_Path
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $application string
+	 * @param $application Application
 	 */
-	public function __construct($application = 'framework')
+	public function __construct($application)
 	{
 		$this->application = $application;
 	}
@@ -91,22 +91,20 @@ class Include_Path
 	 * Paths are relative to the SAF index.php base script position
 	 *
 	 * @param $include_subdirectories boolean
-	 * @param $application            string
+	 * @param $application_class     string
 	 * @return string[]
 	 */
-	public function getSourceDirectories($include_subdirectories = false, $application = null)
+	public function getSourceDirectories($include_subdirectories = false, $application_class = null)
 	{
-		if (!isset($application)) {
-			$application = $this->application;
+		if (!isset($application_class)) {
+			$application_class = get_class($this->application);
 		}
-		$app_dir = $this->getSourceDirectory($application);
+		$app_dir = $this->getSourceDirectory($application_class);
 		$directories = [];
-		if ($application != 'framework') {
-			$extends = trim(mParse(file_get_contents($app_dir . '/Application.php'), ' extends ', LF));
-			$extends = substr($extends, 0, strrpos($extends, BS));
-			$extends = substr($extends, strrpos($extends, BS) + 1);
+		if ($application_class != Application::class) {
+			$extends = get_parent_class($application_class);
 			if ($extends) {
-				$directories = $this->getSourceDirectories($include_subdirectories, strtolower($extends));
+				$directories = $this->getSourceDirectories($include_subdirectories, $extends);
 			}
 		}
 		/*
@@ -117,7 +115,7 @@ class Include_Path
 		*/
 		return $include_subdirectories
 			? array_merge($this->getDirectories($app_dir), $directories)
-			: array_merge([$application], $directories);
+			: array_merge([$app_dir], $directories);
 	}
 
 	//---------------------------------------------------------------------------- getSourceDirectory
