@@ -49,18 +49,24 @@ trait Current
 	 */
 	public static function current($set_current = null)
 	{
+		$called_class = get_called_class();
 		if ($set_current) {
 			static::$current = $set_current;
-			if (!is_a(get_called_class(), Plugin::class, true)) {
+			if (!is_a($called_class, Plugin::class, true)) {
 				Session::current()->set(
 					$set_current, Builder::current()->sourceClassName(get_called_class())
 				);
 			}
 		}
-		elseif (!(isset(static::$current) || is_a(get_called_class(), Plugin::class, true))) {
-			static::$current = Session::current()->get(
-				Builder::current()->sourceClassName(get_called_class())
-			);
+		elseif (!(isset(static::$current) || is_a($called_class, Plugin::class, true))) {
+			if ($called_class === Builder::class) {
+				static::$current = new Builder();
+			}
+			else {
+				static::$current = Session::current()->plugins->get(
+					Builder::current()->sourceClassName($called_class)
+				);
+			}
 		}
 		return static::$current;
 	}

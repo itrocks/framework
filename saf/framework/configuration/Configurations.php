@@ -89,7 +89,7 @@ class Configurations
 					$config_options[$level] = $plugins_configurations;
 				}
 			}
-			$this->configurations[$config_name] = new Configuration($config_options);
+			$this->configurations[$config_name] = new Configuration($config_name, $config_options);
 		}
 		return end($this->configurations);
 	}

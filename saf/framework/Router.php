@@ -97,9 +97,10 @@ class Router implements
 			$this->exclude = '(' . join('|', $configuration['exclude']) . ')';
 		}
 
-		$this->routes_file = getcwd() . SL . substr(
-				$_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1, -4
-			) . '/cache/routes.php';
+		get_class(Application::current());
+
+		$script_name = substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1, -4);
+		$this->routes_file = getcwd() . SL . $script_name . SL . $script_name . '/cache/routes.php';
 		if (file_exists($this->routes_file)) {
 			/** @noinspection PhpIncludeInspection */
 			include $this->routes_file;
@@ -477,6 +478,7 @@ class Router implements
 	 */
 	public function serialize()
 	{
+		return '';
 		if ($this->changes) {
 			ksort($this->full_class_names);
 			ksort($this->class_paths);

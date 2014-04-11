@@ -13,10 +13,11 @@ use SAF\Framework\Plugin;
 use SAF\Framework\Plugin\Activable;
 use SAF\Framework\Plugin\Manager;
 use SAF\Framework\Session;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 use SAF\Framework\Updater\Application_Updater;
-use SAF\Framework\Widget\List_\List_Controller;
+use SAF\Framework\Widget\Data_List\List_Controller;
 
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
@@ -71,13 +72,11 @@ class Main
 	 */
 	private function createApplication(Configuration $configuration)
 	{
-		$class_name = $configuration->getApplicationClassName();
-		$name = strtolower($configuration->getApplicationName());
-		/** @noinspection PhpIncludeInspection */
-		include_once Include_Filter::file(strtolower($name) . '/Application.php');
-		/** @var $application Application */
-		$application = Builder::create($class_name, $name);
-		Application::current($application);
+		/** @noinspection PhpParamsInspection Built class will always be an application */
+		Application::current(Builder::create(
+			$configuration->getApplicationClassName(),
+			$configuration->getApplicationName()
+		));
 	}
 
 	//--------------------------------------------------------------------------------- createSession
@@ -116,7 +115,8 @@ class Main
 	//-------------------------------------------------------------------------------------- includes
 	private function includes()
 	{
-		foreach (glob(__DIR__ . '../functions/*.php') as $file_name) {
+		foreach (glob(__DIR__ . '/../functions/*.php') as $file_name) {
+			/** @noinspection PhpIncludeInspection */
 			include_once Include_Filter::file($file_name);
 		}
 	}
@@ -205,7 +205,7 @@ class Main
 	{
 		$configuration = $this->loadConfiguration();
 		unset($_SESSION['include_path']);
-		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
+		$this->setIncludePath($_SESSION);
 		$this->registerPlugins(Session::current()->plugins, $configuration);
 	}
 	*/
@@ -226,7 +226,7 @@ class Main
 		$configuration = $this->loadConfiguration();
 
 		unset($_SESSION['include_path']);
-		$this->setIncludePath($_SESSION, strtolower($configuration->getApplicationName()));
+		$this->setIncludePath($_SESSION, $configuration->getApplicationClassName());
 		$this->registerPlugins($session->plugins, $configuration);
 	}
 
@@ -268,6 +268,11 @@ class Main
 	public function runController($uri, $get = [], $post = [], $files = [])
 	{
 		$uri = new Uri($uri, $get, 'edit', 'list');
+		list($class_name, $method_name) = $this->getController(
+			$uri->controller_name, $uri->feature_name
+		);
+		return $this->executeController($class_name, $method_name, $uri, $post, $files);
+		/*
 		foreach ($uri->getPossibleControllerCalls() as $key => $call) {
 			list($controller, $method_name) = $call;
 			if (@method_exists($controller, $method_name)) {
@@ -278,6 +283,110 @@ class Main
 			}
 		}
 		return null;
+		*/
+	}
+
+	//--------------------------------------------------------------------------------- getController
+	/**
+	 * @param $controller_name string
+	 * @param $feature_name    string
+	 * @return array [$controller_class_name, $method_name]
+	 */
+	private function getController($controller_name, $feature_name)
+	{
+		$method = 'run';
+
+		// ie : $feature_class = 'featureName' transformed into 'Feature_Name'
+		$feature_class = Names::methodToClass($feature_name);
+
+		// $classes : the controller class name and its parents
+		// ['Vendor\Application\Module\Class_Name' => '\Module\Class_Name']
+		$classes = [];
+		$class_name = $controller_name;
+		do {
+			$classes[$class_name] = substr(
+				$class_name, strpos($class_name, BS, strpos($class_name, BS) + 1)
+			);
+			$class_name = get_parent_class($class_name);
+		} while ($class_name);
+
+		// Looking for specific controller for each application
+		$application_class = get_class(Application::current());
+		do {
+			$namespace = Namespaces::of($application_class);
+
+			// for the controller class and its parents
+			foreach ($classes as $short_class_name) {
+				$class_name = $namespace . $short_class_name;
+				$path = strtolower(str_replace(BS, SL, $class_name));
+				if (file_exists($path . SL . $feature_class . '_Controller.php')) {
+					$class = $class_name . BS . $feature_class . '_Controller';
+					break 2;
+				}
+				if (file_exists($path . SL . strtolower($feature_class) . SL . 'Controller.php')) {
+					$class = $class_name . BS . $feature_class . SL . 'Controller';
+					break 2;
+				}
+				if (file_exists(Names::classToPath($class_name) . '_' . $feature_class . '_Controller.php')) {
+					$class = $class_name . '_' . $feature_class . '_Controller';
+					break 2;
+				}
+				if (
+					file_exists($path . SL . 'Controller.php')
+					&& method_exists($class_name . BS . 'Controller', 'run' . ucfirst($feature_name))
+				) {
+					$class = $class_name . BS . 'Controller';
+					$method = 'run' . ucfirst($feature_name);
+					break 2;
+				}
+			}
+
+			// next application is the parent one
+			if (substr($controller_name, 0, strlen($namespace)) == $namespace) break;
+			$application_class = get_parent_class($application_class);
+		} while ($application_class);
+
+		// Looking for default controller for each application
+		if (empty($class)) {
+			$application_class = get_class(Application::current());
+			do {
+				// looking for default controller
+				$path = strtolower(str_replace(BS, SL, $namespace));
+				if (file_exists($path . SL . strtolower($feature_class) . SL . 'Controller.php')) {
+					$class = $namespace . BS . $feature_class . BS . 'Controller';
+					break;
+				}
+				if (file_exists($path . SL . 'widget' . SL . strtolower($feature_class) . SL . 'Controller.php')) {
+					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS . 'Controller';
+				}
+				if (file_exists($path . SL . 'widget' . SL . $feature_class . '_Controller.php')) {
+					$class = $namespace . BS . 'Widget' . BS . $feature_class . '_Controller';
+					break;
+				}
+
+				// next application is the parent one
+				$application_class = get_parent_class($application_class);
+			} while($application_class);
+
+			// Looking for default controller for each application
+			if (empty($class)) {
+				$application_class = get_class(Application::current());
+				do {
+					if (file_exists($file = $path . SL . 'controller/Default_Controller.php')) {
+						$class = $namespace . BS . 'Controller' . BS . 'Default_Controller';
+						break;
+					}
+					$application_class = get_parent_class($application_class);
+				} while ($application_class);
+			}
+
+		}
+
+		if (isset($class)) {
+			return [$class, $method];
+		}
+
+		return [$controller_name, $feature_name];
 	}
 
 	//---------------------------------------------------------------------------------- sessionStart
@@ -293,7 +402,7 @@ class Main
 			session_start();
 			if (isset($_GET['X'])) $_SESSION = [];
 		}
-		$this->setIncludePath($_SESSION);
+		$this->setIncludePath($_SESSION, Application::class);
 		if (isset($_SESSION['session']) && isset($_SESSION['session']->plugins)) {
 			$this->resumeSession();
 		}
@@ -306,16 +415,16 @@ class Main
 
 	//----------------------------------------------------------------------- setFrameworkIncludePath
 	/**
-	 * @param $session          array
-	 * @param $application_name string
+	 * @param $session           array
+	 * @param $application_class string
 	 */
-	private function setIncludePath(&$session, $application_name = 'framework')
+	private function setIncludePath(&$session, $application_class)
 	{
 		if (isset($session['include_path'])) {
 			set_include_path($session['include_path']);
 		}
 		else {
-			$include_path = (new Include_Path($application_name))->getIncludePath();
+			$include_path = (new Include_Path($application_class))->getIncludePath();
 			$session['include_path'] = $include_path;
 			set_include_path($include_path);
 		}

@@ -9,11 +9,11 @@ use SAF\Framework\Tools\OS;
 class Include_Path
 {
 
-	//---------------------------------------------------------------------------------- $application
+	//---------------------------------------------------------------------------- $application_class
 	/**
-	 * @var Application
+	 * @var string
 	 */
-	private $application;
+	private $application_class;
 
 	//-------------------------------------------------------------------------- $origin_include_path
 	/**
@@ -25,11 +25,11 @@ class Include_Path
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $application Application
+	 * @param $application_class string
 	 */
-	public function __construct($application)
+	public function __construct($application_class)
 	{
-		$this->application = $application;
+		$this->application_class = $application_class;
 	}
 
 	//-------------------------------------------------------------------------------- getDirectories
@@ -97,7 +97,7 @@ class Include_Path
 	public function getSourceDirectories($include_subdirectories = false, $application_class = null)
 	{
 		if (!isset($application_class)) {
-			$application_class = get_class($this->application);
+			$application_class = $this->application_class;
 		}
 		$app_dir = $this->getSourceDirectory($application_class);
 		$directories = [];
@@ -108,7 +108,7 @@ class Include_Path
 			}
 		}
 		/*
-		// todo multiple applications extends management
+		// todo LOWEST multiple applications extends management
 		foreach ($this->applications as $application) {
 			$directories += $this->getSourceDirectories($application);
 		}
@@ -120,12 +120,17 @@ class Include_Path
 
 	//---------------------------------------------------------------------------- getSourceDirectory
 	/**
-	 * @param $application string
+	 * @param $application_class string
 	 * @return string
 	 */
-	public function getSourceDirectory($application = null)
+	public function getSourceDirectory($application_class = null)
 	{
-		return isset($application) ? $application : $this->application;
+		if (!isset($application_class)) {
+			$application_class = $this->application_class;
+		}
+		return strtolower(
+			str_replace(BS, SL, substr($application_class, 0, strrpos($application_class, BS)))
+		);
 	}
 
 	//-------------------------------------------------------------------------------- getSourceFiles

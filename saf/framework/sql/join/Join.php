@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Sql;
 
-use SAF\Framework\Builder;
+use SAF\Framework;
 
 /**
  * This stores data for SQL joins and enable to output SQL expression for a table join
@@ -115,7 +115,9 @@ class Join
 	) {
 		$sql_join = new Join();
 		$sql_join->foreign_alias  = $foreign_alias;
-		$sql_join->foreign_class  = isset($foreign_class) ? Builder::className($foreign_class) : null;
+		$sql_join->foreign_class  = isset($foreign_class)
+			? Framework\Builder::className($foreign_class)
+			: null;
 		$sql_join->foreign_column = $foreign_column;
 		$sql_join->foreign_table  = $foreign_table;
 		$sql_join->master_alias   = $master_alias;

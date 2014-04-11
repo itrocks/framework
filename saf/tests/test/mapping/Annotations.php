@@ -21,7 +21,7 @@ class Annotations extends Test
 	private function testAnnotation(
 		$description, $class_name, $property_name, $annotation_name, $assumed_value
 	) {
-		$class_name = 'SAF\Tests' . BS . $class_name;
+		$class_name = 'SAF\Tests\Objects' . BS . $class_name;
 		$property = new Reflection_Property($class_name, $property_name);
 		$annotation = $property->getAnnotation($annotation_name);
 		$this->assume(

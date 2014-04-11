@@ -101,7 +101,15 @@ class Uri
 		$controller = $this->controller_name;
 		$controller_root = Namespaces::shortClassName($this->controller_name);
 		$controllers = [];
-		$namespaces = Application::current()->getNamespaces();
+		$application_class = get_class(Application::current());
+		do {
+			$namespace = Namespaces::of($application_class);
+
+			//
+
+			$application_class = get_parent_class($application_class);
+		} while ($application_class);
+		/*
 		while ($controller) {
 			$controllers[] = [$controller . '_' . $feature_name_for_class . '', 'run'];
 			$controllers[] = [$controller . '', 'run' . ucfirst($feature_name_for_method)];
@@ -122,6 +130,7 @@ class Uri
 			$controllers[] = [$namespace . BS . 'Default', 'run' . ucfirst($feature_name_for_method)];
 			$controllers[] = [$namespace . BS . 'Default', 'run'];
 		}
+		*/
 		return $controllers;
 	}
 

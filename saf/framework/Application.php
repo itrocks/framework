@@ -49,7 +49,7 @@ class Application
 	public function __construct($name)
 	{
 		$this->name = $name;
-		$this->include_path = new Include_Path($this);
+		$this->include_path = new Include_Path(get_class($this));
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -72,50 +72,29 @@ class Application
 	 */
 	public function getCacheDir()
 	{
-		return $this->name . '/cache';
+		return $this->include_path->getSourceDirectory() . '/cache';
 	}
 
 	//--------------------------------------------------------------------------------- getNamespaces
 	/**
-	 * Gets application and parents and used applications namespaces
+	 * Gets application and parents and used applications top namespaces
 	 *
 	 * @return string[]
 	 */
 	public function getNamespaces()
 	{
-		if (isset($this->namespaces)) {
-			return $this->namespaces;
-		}
-		else {
+		if (!isset($this->namespaces)) {
 			$applications_classes = array_merge([get_class($this)], array_keys($this->applications));
-			$already_namespaces = [];
+			$namespaces = [];
 			foreach ($applications_classes as $application_class) {
-				while (
-					!empty($application_class) && ($application_class != Application::class)
-					&& !isset($already_namespaces[$application_class])
-				) {
-					$namespace = Namespaces::of($application_class);
-					$namespaces[] = $namespace;
-					$path = str_replace(
-						'_', '', Names::classToProperty(substr($namespace, strpos($namespace, SL) + 1))
-					);
-					$dir = dir($path);
-					while ($entry = $dir->read()) {
-						if (($entry[0] != DOT) && is_dir($path . SL . $entry)) {
-							$namespaces[] = $namespace . BS . Names::propertyToClass($entry);
-						}
-					}
-					$dir->close();
-					$already_namespaces[$application_class] = true;
+				while ($application_class) {
+					$namespaces[] = Namespaces::of($application_class);
 					$application_class = get_parent_class($application_class);
 				}
 			}
-			$namespaces[] = 'SAF\Framework';
-			$namespaces[] = 'SAF\Framework\Unit_Tests';
-			$namespaces[] = '';
 			$this->namespaces = $namespaces;
-			return $namespaces;
 		}
+		return $this->namespaces;
 	}
 
 	//------------------------------------------------------------------------- getTemporaryFilesPath

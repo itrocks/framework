@@ -16,7 +16,7 @@ class Compiler implements ICompiler, Needs_Main
 
 	//------------------------------------------------------------------------------ $main_controller
 	/**
-	 * @var $main_Controller Main
+	 * @var $main_controller Main
 	 */
 	private $main_controller;
 

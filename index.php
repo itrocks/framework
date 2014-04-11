@@ -33,7 +33,7 @@ Include_Filter::register();
 include_once Include_Filter::file('saf/framework/Autoloader.php');
 (new Autoloader)->register();
 
-// run
+// run main controller
 echo (new Main)
 	->init()
 	->addTopCorePlugins([

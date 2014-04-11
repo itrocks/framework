@@ -47,6 +47,19 @@ abstract class Names
 		return $prefix ? $prefix . $method_name : lcfirst($method_name);
 	}
 
+	//----------------------------------------------------------------------------------- classToPath
+	/**
+	 * Changes 'A\Class\Name\Like\This' into 'a/class/name/like/This'
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function classToPath($class_name)
+	{
+		$i = strrpos($class_name, BS);
+		return str_replace(BS, SL, strtolower(substr($class_name, 0, $i)) . substr($class_name, $i));
+	}
+
 	//------------------------------------------------------------------------------- classToProperty
 	/**
 	 * Changes 'A\Namespace\Class_Name' into 'class_name'
@@ -165,6 +178,20 @@ abstract class Names
 		return $property_name;
 	}
 
+	//----------------------------------------------------------------------------------- pathToClass
+	/**
+	 * Changes 'a/class/name/like/This' into 'A\Class\Name\Like\This'
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function pathToClass($class_name)
+	{
+		return str_replace(SL, BS, ucfirst(preg_replace_callback(
+			'%[_/][a-z]%', function($matches) { return strtoupper($matches[0]); }, $class_name
+		)));
+	}
+
 	//--------------------------------------------------------------------------- propertyPathToField
 	/**
 	 * Changes 'a.name.and.sub_name' into 'a[name][and][sub_name]'
@@ -245,7 +272,7 @@ abstract class Names
 				elseif (substr($class_name, -2) === 'en')   $class_name = substr($class_name, 0, -2) . 'an';
 			}
 			$full_class_name = Namespaces::fullClassName($class_name . $right, $check_class);
-			if (class_exists($full_class_name)) {
+			if (@class_exists($full_class_name)) {
 				return $full_class_name;
 			}
 			$i = strrpos($class_name, '_');

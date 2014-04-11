@@ -1,6 +1,7 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\Tests;
 
+use SAF\Framework\Dao;
 use SAF\Framework\Widget\Menu;
 use SAF\Tests\Objects\Salesman;
 
@@ -9,7 +10,7 @@ include_once 'pwd.php';
 include 'config.php';
 
 $config['tests'] = [
-	'app'     => 'Tests',
+	'app'     => Application::class,
 	'extends' => 'framework',
 
 	//---------------------------------------------------------------------------------------- normal

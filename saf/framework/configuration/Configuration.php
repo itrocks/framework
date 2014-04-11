@@ -7,23 +7,27 @@ namespace SAF\Framework;
 class Configuration
 {
 
-	//----------------------------------------------------------------------------- $application_name
+	//---------------------------------------------------------------------------- $application_class
 	/**
+	 * Application class name
+	 *
 	 * @var string
 	 */
-	private $application_name;
-
-	//----------------------------------------------------------------------- $application_class_name
-	/**
-	 * @var string
-	 */
-	private $application_class_name;
+	private $application_class;
 
 	//--------------------------------------------------------------------------------------- $author
 	/**
 	 * @var string
 	 */
 	private $author;
+
+	//----------------------------------------------------------------------------------------- $name
+	/**
+	 * Configuration name
+	 *
+	 * @var string
+	 */
+	private $name;
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
@@ -37,11 +41,13 @@ class Configuration
 	 *
 	 * Default configuration is set to the configuration if the 'default' option is set to true.
 	 *
+	 * @param $name          string application name
 	 * @param $configuration array recursive configuration array from the config.php file
 	 */
-	public function __construct($configuration)
+	public function __construct($name, $configuration)
 	{
-		$this->application_name = $configuration['app'];
+		$this->name = $name;
+		$this->application_class = $configuration['app'];
 		$this->author = $configuration['author'];
 		unset($configuration['app']);
 		unset($configuration['author']);
@@ -50,26 +56,28 @@ class Configuration
 
 	//----------------------------------------------------------------------- getApplicationClassName
 	/**
+	 * @example 'SAF\Tests\Application'
 	 * @return string
 	 */
 	public function getApplicationClassName()
 	{
-		if (!isset($this->application_class_name)) {
-			$this->application_class_name = (isset($this->author) ? $this->author : 'SAF') . BS
-				. $this->application_name . '\Application';
+		if (!isset($this->application_class)) {
+			$this->application_class = (isset($this->author) ? $this->author : 'SAF') . BS
+				. $this->name . '\Application';
 		}
-		return $this->application_class_name;
+		return $this->application_class;
 	}
 
 	//---------------------------------------------------------------------------- getApplicationName
 	/**
 	 * Get the configuration's application name
 	 *
+	 * @example 'tests'
 	 * @return string
 	 */
 	public function getApplicationName()
 	{
-		return $this->application_name;
+		return $this->name;
 	}
 
 	//------------------------------------------------------------------------------------ getPlugins

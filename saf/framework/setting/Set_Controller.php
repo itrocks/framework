@@ -1,19 +1,20 @@
 <?php
-namespace SAF\Framework\Dao\File\Session_File;
+namespace SAF\Framework\Setting;
 
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao\File\Session_File;
-use SAF\Framework\View;
+use SAF\Framework\Session;
 
 /**
- * Session file image controller
+ * Setting set controller
  */
-class Image_Controller implements Feature_Controller
+class Set_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
 	/**
+	 * This will be called for this controller, always.
+	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array
@@ -21,9 +22,10 @@ class Image_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$objects = $parameters->getObjects();
-		$objects['link'] = '/Session_File/output/' . reset($objects);
-		return View::run($objects, $form, $files, Session_File::class, 'image');
+		Session::current()->get(Settings::class, true)->add(
+			$parameters->getRawParameter('code'),
+			$parameters->getRawParameter('value')
+		);
 	}
 
 }

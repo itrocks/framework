@@ -104,7 +104,9 @@ abstract class Parser
 		if ($reflection_class == 'Class') {
 			$reflection_class .= '_';
 		}
-		return __NAMESPACE__ . BQ . $reflection_class . BQ . Names::propertyToClass($annotation_name);
+		return __NAMESPACE__
+			. BS . $reflection_class
+			. BS . Names::propertyToClass($annotation_name) . '_Annotation';
 	}
 
 	//-------------------------------------------------------------------------- parseAnnotationValue

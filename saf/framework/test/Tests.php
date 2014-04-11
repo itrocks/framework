@@ -5,6 +5,7 @@ use SAF\Framework\Application;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Method;
 use SAF\Framework\Test;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 
 /**
@@ -16,7 +17,7 @@ class Tests
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
-		$this->runDir(Application::current()->include_path->getSourceDirectory() . '/tests');
+		$this->runDir(Application::current()->include_path->getSourceDirectory() . '/test');
 	}
 
 	//-------------------------------------------------------------------------------------- runClass
@@ -85,11 +86,7 @@ class Tests
 	 */
 	public function runFile($file_name)
 	{
-		include_once $file_name;
-		$slash = strrpos($file_name, SL);
-		$dot = strrpos($file_name, DOT);
-		$namespace = Namespaces::of(get_class(Application::current()));
-		$class_name = $namespace . BS . 'Tests' . BS . substr($file_name, $slash + 1, $dot - $slash - 1);
+		$class_name = Names::pathToClass(substr($file_name, 0, -4));
 		if (is_subclass_of($class_name, Test::class)) {
 			$this->runClass($class_name);
 		}

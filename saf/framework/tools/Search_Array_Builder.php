@@ -51,6 +51,7 @@ class Search_Array_Builder
 			$and = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
 				$and[] = $this->build('', $search, $prepend, $append);
+				$prepend = '%';
 			}
 			$result[$property_name]= Func::andOp($and);
 			return $property_name ? $result : reset($result);

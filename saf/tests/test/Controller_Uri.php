@@ -5,8 +5,8 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Uri;
 use SAF\Framework\Test;
 use SAF\Framework\Tools\Names;
-use SAF\Framework\Trashcan;
 use SAF\Framework\Widget\Tab;
+use SAF\Framework\Widget\Trashcan;
 use SAF\Tests\Objects\Order;
 
 /**

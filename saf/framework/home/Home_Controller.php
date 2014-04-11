@@ -1,15 +1,15 @@
 <?php
-namespace SAF\Framework\Dao\File\Session_File;
+namespace SAF\Framework\Home;
 
+use SAF\Framework\Application;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao\File\Session_File;
 use SAF\Framework\View;
 
 /**
- * Session file image controller
+ * Application home page view controller
  */
-class Image_Controller implements Feature_Controller
+class Home_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
@@ -21,9 +21,10 @@ class Image_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$objects = $parameters->getObjects();
-		$objects['link'] = '/Session_File/output/' . reset($objects);
-		return View::run($objects, $form, $files, Session_File::class, 'image');
+		$parameters->unshift(Application::current());
+		return View::run(
+			$parameters->getObjects(), $form, $files, get_class(Application::current()), 'home'
+		);
 	}
 
 }
