@@ -442,10 +442,6 @@ class Router implements
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->aroundMethod(
-			[Uri::class, 'getPossibleControllerCalls'],
-			[$this, 'getPossibleControllerCalls']
-		);
 		$aop->beforeMethod(
 			[Main::class, 'executeController'],
 			[$this, 'setPossibleControllerCall']

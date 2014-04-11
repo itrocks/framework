@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\Framework\Widget\Remove;
 
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;

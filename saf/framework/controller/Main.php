@@ -112,6 +112,17 @@ class Main
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- globals
+	private function globals()
+	{
+		foreach (['F', 'X'] as $var) {
+			if (isset($_GET[$var])) {
+				$GLOBALS[$var] = $_GET[$var];
+				unset($_GET[$var]);
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------------------- includes
 	private function includes()
 	{
@@ -130,6 +141,7 @@ class Main
 	 */
 	public function init($includes = [])
 	{
+		$this->globals();
 		$this->includes();
 		foreach ($includes as $include) {
 			/** @noinspection PhpIncludeInspection */

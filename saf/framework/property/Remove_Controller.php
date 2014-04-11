@@ -2,15 +2,15 @@
 namespace SAF\Framework\Property;
 
 use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Default_Remove_Controller;
 use SAF\Framework\Property;
 use SAF\Framework\View;
-use SAF\Framework\Widget\List_\List_Settings;
+use SAF\Framework\Widget\Data_List\List_Settings;
+use SAF\Framework\Widget\Remove;
 
 /**
  * The default property remove controller does nothing : we must remove a property from a context
  */
-class Remove_Controller extends Default_Remove_Controller
+class Remove_Controller extends Remove\Remove_Controller
 {
 
 	//------------------------------------------------------------------------ removePropertyFromList

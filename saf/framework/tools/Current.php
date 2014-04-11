@@ -63,9 +63,12 @@ trait Current
 				static::$current = new Builder();
 			}
 			else {
-				static::$current = Session::current()->plugins->get(
+				$plugin = Session::current()->plugins->get(
 					Builder::current()->sourceClassName($called_class)
 				);
+				if (!isset(static::$current)) {
+					static::$current = $plugin;
+				}
 			}
 		}
 		return static::$current;

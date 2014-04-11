@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 
 /**
@@ -72,7 +71,7 @@ class Application
 	 */
 	public function getCacheDir()
 	{
-		return $this->include_path->getSourceDirectory() . '/cache';
+		return 'cache';
 	}
 
 	//--------------------------------------------------------------------------------- getNamespaces

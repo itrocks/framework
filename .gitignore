@@ -3,11 +3,10 @@
 /.settings
 /.buildpath
 /.project
+
+/cache
 /phpdoc
-/*/*/cache
-/*/*/vendor/excel_reader
-/*/*/vendor/geshi
-/*/*/vendor/pear
-/*/*/vendor/PHPExcel
+/vendor
+
 /pwd.php
 /update

@@ -7,7 +7,7 @@ use SAF\Framework\Reflection\Reflection_Property;
 /**
  * Property joinpoint
  */
-class Property extends Joinpoint
+abstract class Property_Joinpoint extends Joinpoint
 {
 
 	//----------------------------------------------------------------------------------- $class_name

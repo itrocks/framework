@@ -2,8 +2,6 @@
 namespace SAF\Framework\Controller;
 
 use SAF\Framework\Application;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
 
 /**
  * The controller URI contains the controller name, feature, and additional parameters
@@ -81,59 +79,6 @@ class Uri
 		}
 	}
 
-	//-------------------------------------------------------------------- getPossibleControllerCalls
-	/**
-	 * Get the list of possible controller calls, in order of priority, based on uri
-	 * Each controller call is an array with as elements : class name, method name
-	 *
-	 * @example for the uri '/Order/12/Lines/subForm', the possible controller calls will be :
-	 * - 'Order_Lines_Sub_Form', 'run'
-	 * - 'Order_Lines', 'subForm'
-	 * - 'Default_Sub_Form', 'run'
-	 * - 'Default', 'subForm'
-	 * - 'Default', 'run'
-	 * @return string[]
-	 */
-	public function getPossibleControllerCalls()
-	{
-		$feature_name_for_method = $this->feature_name;
-		$feature_name_for_class = Names::methodToClass($feature_name_for_method);
-		$controller = $this->controller_name;
-		$controller_root = Namespaces::shortClassName($this->controller_name);
-		$controllers = [];
-		$application_class = get_class(Application::current());
-		do {
-			$namespace = Namespaces::of($application_class);
-
-			//
-
-			$application_class = get_parent_class($application_class);
-		} while ($application_class);
-		/*
-		while ($controller) {
-			$controllers[] = [$controller . '_' . $feature_name_for_class . '', 'run'];
-			$controllers[] = [$controller . '', 'run' . ucfirst($feature_name_for_method)];
-			$controllers[] = [$controller . '', 'run'];
-			$controller = get_parent_class($controller);
-		}
-		foreach ($namespaces as $namespace) {
-			$controller = $namespace . BS . $controller_root;
-			while ($controller) {
-				$controllers[] = [$controller . '_' . $feature_name_for_class . '', 'run'];
-				$controllers[] = [$controller . '', 'run' . ucfirst($feature_name_for_method)];
-				$controllers[] = [$controller . '', 'run'];
-				$controller = get_parent_class($controller);
-			}
-		}
-		foreach ($namespaces as $namespace) {
-			$controllers[] = [$namespace . BS . 'Default_' . $feature_name_for_class . '', 'run'];
-			$controllers[] = [$namespace . BS . 'Default', 'run' . ucfirst($feature_name_for_method)];
-			$controllers[] = [$namespace . BS . 'Default', 'run'];
-		}
-		*/
-		return $controllers;
-	}
-
 	//-------------------------------------------------------------------------------------- parseGet
 	/**
 	 * Parse get parameters array
@@ -163,76 +108,37 @@ class Uri
 	{
 		$this->feature_name = '';
 		$this->parameters = new Parameters($this);
-		$last_controller_element = '';
-		$has_numeric = false;
-		foreach ($uri as $i => $uri_element) {
-			if (is_numeric($uri_element)) {
-				$uri[$i] = $uri_element + 0;
-				$has_numeric = $i;
+		$key = 0;
+		foreach ($uri as $key => $controller_element) {
+			if (ctype_lower($controller_element[0]) || is_numeric($controller_element)) {
 				break;
 			}
 		}
-		if ($has_numeric) {
-			$i = 0;
-			$length = count($uri);
-			$controller_elements = [];
-			while (($i < $length) && ($i < 2) && !is_numeric($uri[$i])) {
-				$last_controller_element = str_replace(SP, '_', ucwords(str_replace('_', SP, $uri[$i])));
-				$controller_elements[] = $last_controller_element;
-				$i++;
+		$this->controller_name = join(BS, array_slice($uri, 0, $key));
+		$uri = array_splice($uri, $key);
+		$this->feature_name = array_shift($uri);
+		if (is_numeric($this->feature_name)) {
+			$this->parameters->set($this->controller_name, intval($this->feature_name));
+			$this->feature_name = array_shift($uri);
+		}
+		$controller_elements = [];
+		foreach ($uri as $uri_element) {
+			if (ctype_upper($uri_element[0])) {
+				$controller_elements[] = $uri_element;
 			}
-			if (($i < $length) && is_numeric($uri[$i])) {
-				/** @noinspection PhpWrongStringConcatenationInspection */
-				$this->parameters->set($last_controller_element, $uri[$i] + 0);
-				$last_controller_element = '';
-				$i++;
-				if (($i < $length) && !is_numeric($uri[$i])) {
-					$this->feature_name = lcfirst($uri[$i]);
-					$i++;
-				}
-			}
-			if (!$this->feature_name) {
-				$this->feature_name = lcfirst(array_pop($controller_elements));
-				$last_controller_element = end($controller_elements);
-			}
-			if (($i >= $length) || !is_numeric($uri[$i])) {
-				$last_controller_element = '';
-			}
-			$controller_name = join('_', $controller_elements);
-			while ($i < $length) {
-				if (is_numeric($uri[$i])) {
-					if ($last_controller_element) {
-						$this->parameters->set($last_controller_element, $uri[$i]);
-						$last_controller_element = '';
-					}
-					else {
-						$this->parameters->addValue($uri[$i]);
-					}
+			else {
+				if (is_numeric($uri_element)) {
+					$this->parameters->set(join(BS, $controller_elements), intval($uri_element));
 				}
 				else {
-					if ($last_controller_element) {
-						$this->parameters->addValue($last_controller_element);
+					if ($controller_elements) {
+						$this->parameters->addValue(join(BS, $controller_elements));
 					}
-					$last_controller_element = $uri[$i];
+					$this->parameters->addValue($uri_element);
 				}
-				$i++;
-			}
-			if ($last_controller_element) {
-				$this->parameters->addValue($last_controller_element);
+				$controller_elements = [];
 			}
 		}
-		else {
-			$controller_name = str_replace(
-				SP, '_', ucwords(str_replace('_', SP, array_shift($uri)))
-			);
-			$this->feature_name = lcfirst(array_shift($uri));
-			foreach ($uri as $uri_element) {
-				$this->parameters->addValue($uri_element);
-			}
-		}
-		$this->controller_name = $controller_name
-			? Namespaces::fullClassName($controller_name, false)
-			: '';
 	}
 
 	//------------------------------------------------------------------------------------ uriToArray

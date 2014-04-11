@@ -293,7 +293,10 @@ class Joins
 		Join $join, $master_path, $master_property_name, $foreign_path
 	) {
 		list($foreign_class_name, $foreign_property_name) = explode('->', $master_property_name);
-		$foreign_class_name = Namespaces::fullClassName($foreign_class_name);
+		$foreign_class_name = Namespaces::defaultFullClassName(
+			$foreign_class_name,
+			$this->classes[$master_path]
+		);
 		if (strpos($foreign_property_name, '=')) {
 			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
 			$join->master_column  = 'id_' . $master_property_name;

@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Tools\Wiki;
 
-require_once __DIR__ . '/../../vendor/textile/classTextile.php';
+require_once __DIR__ . '/../../../../vendor/textile/classTextile.php';
 
 /**
  * Textile review B-Appli style, in order to be more ergonomic

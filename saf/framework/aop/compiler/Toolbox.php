@@ -75,6 +75,25 @@ trait Toolbox
 		];
 	}
 
+	//--------------------------------------------------------------------------------- displayAdvice
+	/**
+	 * @param $advice array
+	 * @return string
+	 */
+	private function displayAdvice($advice)
+	{
+		$advice = $advice[1];
+		if (is_string($advice)) {
+			return $advice . '()';
+		}
+		if (is_object($advice[0])) {
+			return '$(' . get_class($advice[0]) . ')->' . $advice[1] . '()';
+		}
+		else {
+			return $advice[0] . '::' . $advice[1] . '()';
+		}
+	}
+
 	//---------------------------------------------------------------------------- generateAdviceCode
 	/**
 	 * @param $advice                   string[]|object[]|string

@@ -54,7 +54,15 @@ class Method
 	 */
 	public function compile($method_name, $advices)
 	{
-		$source_method = $this->class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE])[$method_name];
+		$methods = $this->class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE]);
+		if (!isset($methods[$method_name])) {
+			trigger_error(
+				'AOP Compiler : Method does not exist ' . $this->class->name . '::' . $method_name . '()'
+				. ' for advice ' . $this->displayAdvice(reset($advices)),
+				E_USER_ERROR
+			);
+		}
+		$source_method = $methods[$method_name];
 		if (!$source_method) {
 			trigger_error($this->class->name . '::' . $method_name . ' not found', E_USER_ERROR);
 		}
