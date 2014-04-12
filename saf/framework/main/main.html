@@ -7,17 +7,17 @@
 		|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|
 	</title>
 
-	<script type="text/javascript" src="../vendor/jquery/jquery-1.8.3.js"></script>
-	<script type="text/javascript" src="../vendor/jquery-ui/jquery-ui-1.9.2.custom.js"></script>
+	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../../../vendor/jquery-ui/jquery-ui-1.9.2.custom.js"></script>
 
 	<!-- xtarget must be the first, as it is high-level for a and sub-modules may want to prevent propagation -->
 	<script type="text/javascript" src="js/jquery.xtarget.js"></script>
 
-	<script type="text/javascript" src="../vendor/jquery.colresizable/colResizable-1.3.min.js"></script>
-	<script type="text/javascript" src="../vendor/jquery.elastic/jquery.elastic.source.js"></script>
-	<script type="text/javascript" src="../vendor/jquery.form/jquery.form.js"></script>
+	<script type="text/javascript" src="../../../vendor/jquery.colresizable/colResizable-1.3.min.js"></script>
+	<script type="text/javascript" src="../../../vendor/jquery.elastic/jquery.elastic.source.js"></script>
+	<script type="text/javascript" src="../../../vendor/jquery.form/jquery.form.js"></script>
 
-	<script type="text/javascript" src="../vendor/jscolor/jscolor.js"></script>
+	<script type="text/javascript" src="../../../vendor/jscolor/jscolor.js"></script>
 
 	<script type="text/javascript" src="js/jquery.aform.js"></script>
 	<script type="text/javascript" src="js/jquery.autofocus.js"></script>
@@ -42,7 +42,7 @@
 	<script type="text/javascript" src="../property/select.js"></script>
 	<script type="text/javascript" src="../rad/add.js"></script>
 	<script type="text/javascript" src="../setting/custom.js"></script>
-	<script type="text/javascript" src="../widget/data_list/data_list.js"></script>
+	<script type="text/javascript" src="../widget/data_list/dataList.js"></script>
 	<script type="text/javascript" src="../widget/edit/edit.js"></script>
 	<script type="text/javascript" src="../widget/trashcan/trashcan.js"></script>
 
@@ -56,10 +56,10 @@
 	</script>
 
 	<style type="text/css">
-		@import "../vendor/reset5/reset.css";
+		@import "../../../vendor/reset5/reset.css";
 
-		@import "../vendor/jquery-ui/smoothness/jquery-ui.css";
-		@import "../vendor/jquery-ui/smoothness/jquery.ui.theme.css";
+		@import "../../../vendor/jquery-ui/smoothness/jquery-ui.css";
+		@import "../../../vendor/jquery-ui/smoothness/jquery.ui.theme.css";
 
 		@import "../../framework/print_model/pdf_template.css";
 		@import "../../framework/tutoman/tutoman.css";
@@ -100,7 +100,7 @@
 </header>
 
 <nav class="menu output">
-	{/Menu/output}
+	{/SAF/Framework/Widget/Menu/output}
 </nav>
 
 <section id="main">
@@ -109,7 +109,7 @@
 
 <section id="trashcan">
 	<div></div>
-	<a href="/Trashcan" target="#trashcan>div">bin</a>
+	<a href="/SAF/Framework/Widget/Trashcan" target="#trashcan>div">bin</a>
 </section>
 
 </body>

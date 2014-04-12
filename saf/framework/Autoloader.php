@@ -25,21 +25,35 @@ class Autoloader
 			if (
 				is_file($file1 = strtolower($namespace . '/' . $file_name) . '/' . $file_name . '.php')
 			) {
-				return include_once(Include_Filter::file($file1));
+				/** @noinspection PhpIncludeInspection */
+				$result = include_once(Include_Filter::file($file1));
 			}
 			// 'A\Class' stored into 'a/Class.php'
 			elseif (is_file($file2 = strtolower($namespace) . '/' . $file_name . '.php')) {
-				return include_once(Include_Filter::file($file2));
+				/** @noinspection PhpIncludeInspection */
+				$result = include_once(Include_Filter::file($file2));
 			}
 			else {
-				trigger_error(
-					'Class not found ' . $class_name . ', should be into ' . $file1 . ' or ' . $file2,
-					E_USER_ERROR
-				);
+				if (error_reporting()) {
+					trigger_error(
+						'Class not found ' . $class_name . ', should be into ' . $file1 . ' or ' . $file2,
+						E_USER_ERROR
+					);
+				}
+				$result = false;
 			}
 		}
 		// 'A_Class' stored into 'A_Class.php'
-		return include_once(Include_Filter::file($class_name . '.php'));
+		else {
+			/** @noinspection PhpIncludeInspection */
+			$result = include_once(Include_Filter::file($class_name . '.php'));
+		}
+		// instantiate plugin
+		if ($result && class_exists($class_name, false) && is_a($class_name, Plugin::class, true)) {
+			if (Session::current()) {
+				Session::current()->plugins->get($class_name);
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- register

@@ -33,7 +33,7 @@ class Session implements Serializable
 			$_SESSION['session'] = $set_current;
 			return $set_current;
 		}
-		return $_SESSION['session'];
+		return isset($_SESSION['session']) ? $_SESSION['session'] : null;
 	}
 
 	//------------------------------------------------------------------------------------------- get

@@ -68,8 +68,10 @@ class Parameters
 	//--------------------------------------------------------------------------------- getMainObject
 	/**
 	 * Gets the main object from the parameters
-	 * If no main object is set (eq first parameter is not an object), create it using class name
-	 * Beware : the create object will then automatically be added on beggining of the parameters list
+	 *
+	 * If no main object is set (eq first parameter is not an object), create it using class name.
+	 * Beware : the created object will then automatically be added to the beginning
+	 * of the parameters list.
 	 *
 	 * @param $class_name string|object
 	 * @return object
@@ -77,13 +79,17 @@ class Parameters
 	public function getMainObject($class_name = null)
 	{
 		if (is_object($class_name)) {
+			$default_object = $class_name;
 			$class_name = get_class($class_name);
 		}
 		reset($this->parameters);
 		$object = $this->getObject(key($this->parameters));
+		if (!$object && !$class_name) {
+			$class_name = $this->uri->controller_name;
+		}
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
-			$object = is_object($class_name) ? $class_name : (
-				(isset($class_name) && class_exists($class_name))
+			$object = isset($default_object) ? $default_object : (
+				(isset($class_name) && @class_exists($class_name))
 				? Builder::create($class_name)
 				: Set::instantiate($class_name)
 			);
@@ -141,6 +147,9 @@ class Parameters
 	public function getObjects()
 	{
 		$parameters = [];
+		if (!$this->parameters) {
+			$this->getMainObject();
+		}
 		foreach (array_keys($this->parameters) as $parameter_name) {
 			$parameters[$parameter_name] = $this->getObject($parameter_name);
 		}

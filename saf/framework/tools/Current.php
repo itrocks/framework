@@ -1,8 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
-use phpDocumentor\Plugin\Plugin;
 use SAF\Framework\Builder;
+use SAF\Framework\Plugin;
 use SAF\Framework\Session;
 
 /**
@@ -58,7 +58,7 @@ trait Current
 				);
 			}
 		}
-		elseif (!(isset(static::$current) || is_a($called_class, Plugin::class, true))) {
+		elseif (!isset(static::$current) && is_a($called_class, Plugin::class, true)) {
 			if ($called_class === Builder::class) {
 				static::$current = new Builder();
 			}

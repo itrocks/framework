@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Edit;
 
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\View\Html\Dom\Button;
@@ -24,7 +25,7 @@ class Edit_Controller extends Default_Output_Controller
 		$fill_combo = isset($parameters['fill_combo'])
 			? ['fill_combo' => $parameters['fill_combo']] : [];
 		return [
-			new Button('Close', View::link($object, 'list'), 'close',
+			new Button('Close', View::link($object, Feature::F_LIST), 'close',
 				[Color::of('close'), '#main']
 			),
 			new Button('Write', View::link($object, 'write', null, $fill_combo), 'write',

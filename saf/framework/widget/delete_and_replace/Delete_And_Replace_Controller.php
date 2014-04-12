@@ -23,7 +23,7 @@ class Delete_And_Replace_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
-		$replaced = $parameters->getMainObject($class_name);
+		$replaced = $parameters->getMainObject();
 		$objects = $parameters->getObjects();
 		if ($id_replace_with = $parameters->getRawParameter('id_replace_with')) {
 			$objects['replace_with'] = $replacement = Dao::read($id_replace_with, $class_name);

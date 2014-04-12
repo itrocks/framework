@@ -1,11 +1,12 @@
 <?php
 namespace SAF\Framework\Property;
 
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Property;
 use SAF\Framework\View;
-use SAF\Framework\Widget\Data_List\List_Settings;
+use SAF\Framework\Widget\Data_List\Data_List_Settings;
 
 /**
  * The default property add controller does nothing : we must add a property from a context
@@ -20,7 +21,7 @@ class Add_Controller implements Feature_Controller
 	 */
 	public function addPropertyToList($class_name, $property_path)
 	{
-		$list_settings = List_Settings::current($class_name);
+		$list_settings = Data_List_Settings::current($class_name);
 		$list_settings->addProperty($property_path);
 		$list_settings->save();
 	}
@@ -44,7 +45,7 @@ class Add_Controller implements Feature_Controller
 		$parameters['feature_name']  = array_shift($parameters);
 		$parameters['property_path'] = array_shift($parameters);
 		array_unshift($parameters, new Property());
-		if ($parameters['feature_name'] == 'list') {
+		if ($parameters['feature_name'] == Feature::F_LIST) {
 			$this->addPropertyToList($parameters['class_name'], $parameters['property_path']);
 		}
 		if ($parameters['feature_name'] == 'form') {

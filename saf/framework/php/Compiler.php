@@ -20,8 +20,8 @@ use Serializable;
  *
  * This has heavy dependencies to the SAF Framework, and can't be used without it at the moment
  */
-class Compiler
-	implements Configurable, Registerable, Class_File_Name_Getter, Needs_Main, Serializable, Updatable
+class Compiler implements
+	Configurable, Registerable, Class_File_Name_Getter, Needs_Main, Serializable, Updatable
 {
 
 	//---------------------------------------------------------------------------- MAX_OPENED_SOURCES
@@ -159,7 +159,7 @@ class Compiler
 			foreach ($this->sources as $source) {
 				/** @var Reflection_Source $source inspector bug */
 				/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-				(new Set())->replace(
+				(new Set)->replace(
 					$source->getDependencies(true),
 					Dependency::class, ['file_name' => $source->file_name]
 				);

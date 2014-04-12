@@ -17,7 +17,7 @@ class Include_Filter extends php_user_filter
 	/**
 	 * @var string
 	 */
-	private static $cache_dir;
+	private static $cache_dir = 'cache/compiled';
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
@@ -74,9 +74,6 @@ class Include_Filter extends php_user_filter
 	 */
 	public static function register()
 	{
-		self::$cache_dir = substr(
-			$_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1, -4
-		) . '/cache/compiled';
 		return stream_filter_register(self::ID, __CLASS__);
 	}
 

@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\View\Html;
 
+use SAF\Framework\Controller\Getter;
 use SAF\Framework\Dao;
 use SAF\Framework\Plugin\Configurable;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View;
 
@@ -40,32 +42,20 @@ class Engine implements Configurable, View\Engine
 		return $this->css;
 	}
 
-	//-------------------------------------------------------------------------- getPossibleTemplates
+	//------------------------------------------------------------------------------- getTemplateFile
 	/**
 	 * @param $class_name    string
-	 * @param $feature_names string|string[]
-	 * @return string[]
+	 * @param $feature_names string[]
+	 * @return string
 	 */
-	public static function getPossibleTemplates($class_name, $feature_names)
+	public static function getTemplateFile($class_name, $feature_names)
 	{
-		if (!is_array($feature_names)) {
-			$feature_names = [$feature_names];
-		}
-		$templates = [];
-		$class_name = Namespaces::fullClassName($class_name, false);
-		while ($class_name) {
-			foreach ($feature_names as $feature_name) {
-				$templates[] = Namespaces::shortClassName($class_name) . '_' . $feature_name;
-			}
-			$class_name = get_parent_class($class_name);
-		}
 		foreach ($feature_names as $feature_name) {
-			$templates[] = 'Default_' . $feature_name;
+			$class = Getter::get($class_name, $feature_name, '', 'html', false)[0];
+			if (isset($class)) break;
 		}
-		foreach ($feature_names as $feature_name) {
-			$templates[] = $feature_name;
-		}
-		return $templates;
+		return Names::classToPath(isset($class) ? $class : $class_name . '_' . reset($feature_names))
+			. '.html';
 	}
 
 	//------------------------------------------------------------------------------------------ link

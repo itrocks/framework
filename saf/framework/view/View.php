@@ -1,9 +1,9 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Controller\Getter;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Current;
-use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 
 /**
@@ -34,6 +34,26 @@ class View implements Configurable
 		return self::pCurrent($set_current);
 	}
 
+	//--------------------------------------------------------------------------------------- getView
+	/**
+	 * @param $view_name     string
+	 * @param $feature_names string[]
+	 * @return string[] [$view_class_name, $view_method_name]
+	 */
+	private static function getView($view_name, $feature_names)
+	{
+		$view_engine_name = get_class(View::current());
+		$view_engine_name = Namespaces::shortClassName(Namespaces::of($view_engine_name));
+		foreach ([$view_engine_name . '_View', 'View'] as $suffix) {
+			foreach ($feature_names as $feature_name) {
+				list($class, $method) = Getter::get($view_name, $feature_name, $suffix, 'php');
+				if (isset($class)) break 2;
+			}
+		}
+		/** @noinspection PhpUndefinedVariableInspection if $class is set, then $method is set too */
+		return isset($class) ? [$class, $method] : [$view_name, reset($feature_names)];
+	}
+
 	//----------------------------------------------------------------------------------- executeView
 	/**
 	 * @param $view             string
@@ -52,51 +72,6 @@ class View implements Configurable
 		return $view_object->$view_method_name(
 			$parameters, $form, $files, $class_name, $feature_name
 		);
-	}
-
-	//------------------------------------------------------------------------------ getPossibleViews
-	/**
-	 * @param $class_name    string
-	 * @param $feature_names string|string[]
-	 * @return string[]
-	 */
-	public static function getPossibleViews($class_name, $feature_names)
-	{
-		if (!is_array($feature_names)) {
-			$feature_names = [$feature_names];
-		}
-		$class_name = Namespaces::shortClassName($class_name);
-		$view_engine_name = Namespaces::shortClassName(get_class(View::current()));
-		$view_engine_name = substr($view_engine_name, 0, strrpos($view_engine_name, '_View_Engine'));
-		$feature_classes = [];
-		foreach ($feature_names as $feature_name) {
-			$feature_classes[$feature_name] = Names::methodToClass($feature_name);
-		}
-		$views1 = [];
-		$views2 = [];
-		$views3 = [];
-		$views4 = [];
-		$namespaces = Application::current()->getNamespaces();
-		foreach ($namespaces as $namespace) {
-			$class = $namespace . BS . $class_name;
-			while ($class) {
-				$i = strrpos($class, BS) + 1;
-				$view = $namespace . BS . $view_engine_name;
-				foreach ($feature_classes as $feature_name => $feature_class) {
-					$views2[] = [$view . '_' . $feature_class . '_View', 'run'];
-					$views3[] = [$view . '_Default_View', $feature_name];
-				}
-				$views4[] = [$view . '_Default_View', 'run'];
-				$view .= '_' . substr($class, $i);
-				foreach ($feature_classes as $feature_name => $feature_class) {
-					$views1[] = [$view . '_' . $feature_class . '_View', 'run'];
-					$views1[] = [$view . '_View', $feature_name];
-				}
-				$class = get_parent_class($class);
-			}
-		}
-		$views = array_merge($views1, $views2, $views3, $views4);
-		return $views;
 	}
 
 	//------------------------------------------------------------------------------------------ link
@@ -125,18 +100,13 @@ class View implements Configurable
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		$features = isset($parameters['feature'])
+		$feature_names = isset($parameters['feature'])
 			? [$parameters['feature'], $feature_name]
-			: $feature_name;
-		foreach (self::getPossibleViews($class_name, $features) as $call) {
-			list($view, $view_method_name) = $call;
-			if (@method_exists($view, $view_method_name)) {
-				return self::executeView(
-					$view, $view_method_name, $parameters, $form, $files, $class_name, $feature_name
-				);
-			}
-		}
-		return '';
+			: [$feature_name];
+		list($view_name, $view_method_name) = self::getView($class_name, $feature_names);
+		return self::executeView(
+			$view_name, $view_method_name, $parameters, $form, $files, $class_name, $feature_name
+		);
 	}
 
 }

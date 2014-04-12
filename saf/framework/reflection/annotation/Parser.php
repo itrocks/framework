@@ -12,6 +12,12 @@ use SAF\Framework\Tools\Names;
 abstract class Parser
 {
 
+	//---------------------------------------------------------------------------------- $annotations
+	/**
+	 * @var string[]
+	 */
+	public static $default_annotations;
+
 	//---------------------------------------------------------------------------------------- byName
 	/**
 	 * Parse a given annotation from a reflection class / method / property / etc. doc comment
@@ -24,7 +30,14 @@ abstract class Parser
 	public static function byName(
 		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null
 	) {
+		include_once __DIR__ . '/default_annotations.php';
 		$annotation_class = static::getAnnotationClassName($reflection_object, $annotation_name);
+		if (
+			!@class_exists($annotation_class)
+			&& isset(self::$default_annotations[$annotation_class])
+		) {
+			$annotation_class = self::$default_annotations[$annotation_class];
+		}
 		if (!isset($multiple)) {
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 		}
@@ -103,6 +116,9 @@ abstract class Parser
 		$reflection_class = substr($reflection_class, $pos + 1);
 		if ($reflection_class == 'Class') {
 			$reflection_class .= '_';
+		}
+		elseif ($reflection_class == 'Value') {
+			$reflection_class = 'Property';
 		}
 		return __NAMESPACE__
 			. BS . $reflection_class

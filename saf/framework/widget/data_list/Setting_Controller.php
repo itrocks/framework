@@ -26,7 +26,7 @@ class Default_List_Setting_Controller implements Default_Feature_Controller
 		$element_class_name = Namespaces::fullClassName(Set::elementClassNameOf($class_name));
 		$parameters = $parameters->getObjects();
 		$list_controller = new Data_List_Controller();
-		$list_settings = List_Settings::current($element_class_name);
+		$list_settings = Data_List_Settings::current($element_class_name);
 		$list_controller->applyParametersToListSettings($list_settings, $parameters, $form);
 		return View::run($parameters, $form, $files, $class_name, 'listSetting');
 	}

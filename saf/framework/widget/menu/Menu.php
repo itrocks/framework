@@ -44,7 +44,7 @@ class Menu implements Configurable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct($configuration = [])
 	{
 		foreach ($configuration as $block_key => $items) {
 			if (is_numeric($block_key)) {

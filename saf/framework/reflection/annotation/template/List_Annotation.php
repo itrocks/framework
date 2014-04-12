@@ -8,7 +8,7 @@ use SAF\Framework\Reflection\Annotation;
  *
  * @example annotation value 1, value 2,'value 3', 'value 4'
  */
-abstract class List_Annotation extends Annotation
+class List_Annotation extends Annotation
 {
 
 	//---------------------------------------------------------------------------------------- $value

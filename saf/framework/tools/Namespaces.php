@@ -121,7 +121,7 @@ abstract class Namespaces
 	/**
 	 * Returns the namespace from a class name, or an empty string if the class is in the global scope
 	 *
-	 * @param $class_name
+	 * @param $class_name object|string
 	 * @return string
 	 */
 	public static function of($class_name)
@@ -178,6 +178,21 @@ abstract class Namespaces
 			$class_name = substr($class_name, $i + 1);
 		}
 		return $class_name;
+	}
+
+	//----------------------------------------------------------------------------------------- split
+	/**
+	 * Splits a 'Full\Class\Name' to get its 'Full\Class' namespace and its short class name 'Name'
+	 *
+	 * @param $class_name string
+	 * @return string[] [$namespace, $short_class_name]
+	 */
+	public static function split($class_name)
+	{
+		$i = strrpos($class_name, BS);
+		return ($i === false)
+			? ['', $class_name]
+			: [substr($class_name, 0, $i), substr($class_name, $i + 1)];
 	}
 
 }

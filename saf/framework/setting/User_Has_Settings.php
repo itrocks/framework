@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Setting\Module;
+namespace SAF\Framework\Setting;
 
 /**
  * For users that have settings

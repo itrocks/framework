@@ -253,7 +253,6 @@ abstract class Names
 	//------------------------------------------------------------------------------------ setToClass
 	/**
 	 * Changes 'A\Namespace\Class_Names' into 'A\Namespace\Class_Name'
-	 * or 'Class_Names' into 'Class_Name' (without namespace)
 	 *
 	 * @param $class_name  string
 	 * @param $check_class boolean false if you don't want to check for existing classes
@@ -262,6 +261,7 @@ abstract class Names
 	public static function setToClass($class_name, $check_class = true)
 	{
 		$set_class_name = $class_name;
+		$class_name = Namespaces::shortClassName($class_name);
 		$right = '';
 		do {
 			if (substr($class_name, -2) !== 'ss') {
@@ -271,11 +271,14 @@ abstract class Names
 				elseif (substr($class_name, -1) === 's')    $class_name = substr($class_name, 0, -1);
 				elseif (substr($class_name, -2) === 'en')   $class_name = substr($class_name, 0, -2) . 'an';
 			}
-			$full_class_name = Namespaces::fullClassName($class_name . $right, $check_class);
+			$full_class_name = Namespaces::defaultFullClassName($class_name . $right, $set_class_name);
 			if (@class_exists($full_class_name)) {
 				return $full_class_name;
 			}
 			$i = strrpos($class_name, '_');
+			if (strrpos($class_name, BS) > $i) {
+				$i = false;
+			}
 			if (($i === false) && $check_class) {
 				trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
 			}

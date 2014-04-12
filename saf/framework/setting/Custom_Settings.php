@@ -3,7 +3,6 @@ namespace SAF\Framework\Setting;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
-use SAF\Framework\Setting\Module\User_Setting;
 use SAF\Framework\Setting;
 use SAF\Framework\Tools\Namespaces;
 
@@ -82,12 +81,12 @@ abstract class Custom_Settings
 	 */
 	protected static function customId()
 	{
-		return lParse(strtolower(Namespaces::shortClassName(get_called_class())), '_');
+		return lParse(strtolower(Namespaces::shortClassName(get_called_class())), '_settings');
 	}
 
 	//---------------------------------------------------------------------------------------- delete
 	/**
-	 * Delete the List_Settings object from the Settings set
+	 * Delete the Data_List_Settings object from the Settings set
 	 */
 	public function delete()
 	{
@@ -123,9 +122,9 @@ abstract class Custom_Settings
 
 	//------------------------------------------------------------------------------------------ load
 	/**
-	 * Loads a List_Settings from the Settings set
+	 * Loads a Data_List_Settings from the Settings set
 	 *
-	 * If no List_Settings named $name is stored, a new one will be returned
+	 * If no Data_List_Settings named $name is stored, a new one will be returned
 	 *
 	 * @param $class_name string
 	 * @param $name       string
@@ -146,8 +145,8 @@ abstract class Custom_Settings
 
 	//------------------------------------------------------------------------------------------ save
 	/**
-	 * If $save_name is set : saves the List_Settings object into the Settings set
-	 * If $save_name is not set : saves the List_Settings object for current user and session
+	 * If $save_name is set : saves the Data_List_Settings object into the Settings set
+	 * If $save_name is not set : saves the Data_List_Settings object for current user and session
 	 *
 	 * @param $save_name string
 	 */

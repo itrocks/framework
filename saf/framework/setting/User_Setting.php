@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Setting\Module;
+namespace SAF\Framework\Setting;
 
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Setting;
@@ -18,7 +18,7 @@ class User_Setting extends Setting
 	/**
 	 * @composite
 	 * @link Object
-	 * @var User
+	 * @var \SAF\Framework\User
 	 */
 	public $user;
 

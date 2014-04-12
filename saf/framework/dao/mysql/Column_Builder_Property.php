@@ -121,6 +121,9 @@ trait Column_Builder_Property
 					}
 				}
 				if ($property_type->isInteger()) {
+					if (!isset($signed) && ($max_value) < 0 || $min_value < 0) {
+						$signed = true;
+					}
 					return ($max_length <= 3  && $min_value >= -128 && $max_value <= 127 && $signed) ? 'tinyint(' . $signed_length . ')' : (
 						($max_length <= 3 && $min_value >= 0 && $max_value <= 255 && !$signed) ? 'tinyint(' . $max_length . ') unsigned' : (
 						($max_length <= 5 && $min_value >= -32768 && $max_value <= 32767) ? 'smallint(' . $signed_length . ')' : (

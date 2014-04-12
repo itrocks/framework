@@ -54,20 +54,11 @@ class Default_View implements IView
 	 */
 	public function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		$templates_files = Engine::getPossibleTemplates(
-			Namespaces::shortClassName($class_name),
-			isset($parameters['feature']) ? [$parameters['feature'], $feature_name] : $feature_name
-		);
-		foreach ($templates_files as $template_file) {
-			if (!strpos($template_file, DOT)) {
-				$template_file = stream_resolve_include_path($template_file . '.html')
-					?: stream_resolve_include_path($template_file . '.php');
-			}
-			if ($template_file) {
-				return $this->executeTemplate($template_file, $parameters, $feature_name);
-			}
-		}
-		return null;
+		$feature_names = isset($parameters['feature'])
+			? [$parameters['feature'], $feature_name]
+			: [$feature_name];
+		$template_file = Engine::getTemplateFile($class_name, $feature_names);
+		return self::executeTemplate($template_file, $parameters, $feature_name);
 	}
 
 }

@@ -109,7 +109,7 @@ abstract class Checker
 				$type = new Type($annotation->value);
 				if ($type->isClass()) {
 					self::checkValue(
-						$report_lines, is_a($value, $type->asString()), $property, $annotation, $value
+						$report_lines, is_a($value, $type->asString(), true), $property, $annotation, $value
 					);
 				}
 		}

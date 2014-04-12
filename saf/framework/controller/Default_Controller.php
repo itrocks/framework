@@ -28,7 +28,6 @@ class Default_Controller implements Controller
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name, $feature_name)
 	{
-		$parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
 		return View::run($parameters, $form, $files, $class_name, $feature_name);
 	}

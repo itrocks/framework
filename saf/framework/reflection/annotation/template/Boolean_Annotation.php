@@ -9,7 +9,7 @@ use SAF\Framework\Reflection\Annotation;
  * When the annotation is set without value, the value is true.
  * To set the value explicitely to false, annotate @annotation false or @annotation 0.
  */
-abstract class Boolean_Annotation extends Annotation
+class Boolean_Annotation extends Annotation
 {
 
 	//---------------------------------------------------------------------------------------- $value

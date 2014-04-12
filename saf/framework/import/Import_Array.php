@@ -13,7 +13,7 @@ use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Widget\List_\List_Settings;
+use SAF\Framework\Widget\Data_List\Data_List_Settings;
 
 /**
  * Import data into the application from array
@@ -197,7 +197,7 @@ class Import_Array
 	 */
 	public static function getPropertiesAlias($class_name)
 	{
-		$list_settings = List_Settings::current($class_name);
+		$list_settings = Data_List_Settings::current($class_name);
 		$properties_alias = [];
 		foreach ($list_settings->properties_title as $property_path => $property_title) {
 			$properties_alias[Names::displayToProperty($property_title)] = $property_path;

@@ -17,7 +17,8 @@ class Uri_Tests extends Test
 	public function testDeleteControllers()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Widget/Tab/remove/'. Names::classToSet(Order::class) . '/list/date/number',
+			'/SAF/Framework/Widget/Tab/remove/'
+				. Names::classToSet(Order::class) . SL . Feature::F_LIST . '/date/number',
 			['as_widget' => 1, '_' => 2]
 		);
 		$this->assume(
@@ -31,7 +32,7 @@ class Uri_Tests extends Test
 				'controller_name' => Tab::class,
 				'feature_name' => 'remove',
 				'parameters' => (new Parameters())->addValue(Names::classToSet(Order::class))
-					->addValue('list')->addValue('date')->addValue('number')->set('as_widget', 1)
+					->addValue(Feature::F_LIST)->addValue('date')->addValue('number')->set('as_widget', 1)
 					->set('_', 2)->getRawParameters()
 			]
 		);
@@ -40,7 +41,7 @@ class Uri_Tests extends Test
 	//---------------------------------------------------------------------------- testExclicitOutput
 	public function testExclicitOutput()
 	{
-		$controller_uri = new Uri('/Order/1/output', [], 'output', 'list');
+		$controller_uri = new Uri('/Order/1/' . Feature::F_OUTPUT, []);
 		$this->assume(
 				__METHOD__,
 				[
@@ -50,7 +51,7 @@ class Uri_Tests extends Test
 				],
 				[
 						'controller_name' => 'Order',
-						'feature_name' => 'output',
+						'feature_name' => Feature::F_OUTPUT,
 						'parameters' => (new Parameters())->set('Order', 1)->getRawParameters()
 				]
 		);
@@ -59,7 +60,7 @@ class Uri_Tests extends Test
 	//------------------------------------------------------------------------------ testImplicitList
 	public function testImplicitList()
 	{
-		$controller_uri = new Uri('/Orders', [], 'output', 'list');
+		$controller_uri = new Uri('/Orders', []);
 		$this->assume(
 			__METHOD__,
 			[
@@ -69,7 +70,7 @@ class Uri_Tests extends Test
 			],
 			[
 				'controller_name' => 'Orders',
-				'feature_name' => 'list',
+				'feature_name' => Feature::F_LIST,
 				'parameters' => (new Parameters())->getRawParameters()
 			]
 		);
@@ -78,7 +79,7 @@ class Uri_Tests extends Test
 	//---------------------------------------------------------------------------- testImplicitOutput
 	public function testImplicitOutput()
 	{
-		$controller_uri = new Uri('/Order/1', [], 'output', 'list');
+		$controller_uri = new Uri('/Order/1', []);
 		$this->assume(
 			__METHOD__,
 			[
@@ -88,7 +89,7 @@ class Uri_Tests extends Test
 			],
 			[
 				'controller_name' => 'Order',
-				'feature_name' => 'output',
+				'feature_name' => Feature::F_OUTPUT,
 				'parameters' => (new Parameters())->set('Order', 1)->getRawParameters()
 			]
 		);
@@ -159,7 +160,8 @@ class Uri_Tests extends Test
 	public function testTrashcanDropOutput()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Widget/Trashcan/drop/Order/1/output/date/number', ['as_widget' => 1, '_' => 2]
+			'/SAF/Framework/Widget/Trashcan/drop/Order/1/' . Feature::F_OUTPUT . '/date/number',
+			['as_widget' => 1, '_' => 2]
 		);
 		$this->assume(
 			__METHOD__,
@@ -171,7 +173,7 @@ class Uri_Tests extends Test
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name' => 'drop',
-				'parameters' => (new Parameters())->set('Order', 1)->addValue('output')
+				'parameters' => (new Parameters())->set('Order', 1)->addValue(Feature::F_OUTPUT)
 					->addValue('date')->addValue('number')->set('as_widget', 1)->set('_', 2)
 					->getRawParameters()
 			]
@@ -181,7 +183,9 @@ class Uri_Tests extends Test
 	//-------------------------------------------------------------------- testTrashcanDropParameters
 	public function testTrashcanDropParameters()
 	{
-		$controller_uri = new Uri('/SAF/Framework/Widget/Trashcan/drop/Orders/list/date/number');
+		$controller_uri = new Uri(
+			'/SAF/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number'
+		);
 		$this->assume(
 			__METHOD__,
 			[
@@ -192,7 +196,7 @@ class Uri_Tests extends Test
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name' => 'drop',
-				'parameters' => (new Parameters())->addValue('Orders')->addValue('list')
+				'parameters' => (new Parameters())->addValue('Orders')->addValue(Feature::F_LIST)
 					->addValue('date')->addValue('number')->getRawParameters()
 			]
 		);
@@ -202,7 +206,8 @@ class Uri_Tests extends Test
 	public function testTrashcanDropWithArguments()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Widget/Trashcan/drop/Orders/list/date/number', ['as_widget' => 1, '_' => 2]
+			'/SAF/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number',
+			['as_widget' => 1, '_' => 2]
 		);
 		$this->assume(
 			__METHOD__,
@@ -214,7 +219,7 @@ class Uri_Tests extends Test
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name' => 'drop',
-				'parameters' => (new Parameters())->addValue('Orders')->addValue('list')
+				'parameters' => (new Parameters())->addValue('Orders')->addValue(Feature::F_LIST)
 					->addValue('date')->addValue('number')->set('as_widget', 1)->set('_', 2)
 					->getRawParameters()
 			]

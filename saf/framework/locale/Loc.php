@@ -12,8 +12,8 @@ use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Reflection\Reflection_Property_View;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View\Html\Template\Functions;
-use SAF\Framework\Widget\List_\Default_List_Controller;
-use SAF\Framework\Widget\List_\List_Settings;
+use SAF\Framework\Widget\Data_List\Data_List_Controller;
+use SAF\Framework\Widget\Data_List\Data_List_Settings;
 
 /**
  * Locale plugin concentrates locale translation / formatting features into simple static calls
@@ -282,7 +282,7 @@ class Loc implements Registerable
 			[$this, 'beforeObjectBuilderArrayBuildBasicValue']
 		);
 		$aop->afterMethod(
-			[Default_List_Controller::class, 'getSearchValues'],
+			[Data_List_Controller::class, 'getSearchValues'],
 			[$this, 'afterListSearchValues']
 		);
 		// format to locale
@@ -312,7 +312,7 @@ class Loc implements Registerable
 		);
 		// translations
 		$aop->afterMethod(
-			[List_Settings::class, 'getDefaultTitle'],
+			[Data_List_Settings::class, 'getDefaultTitle'],
 			[$this, 'translateReturnedValue']
 		);
 		// translation/reverse of export/import procedures

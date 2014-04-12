@@ -353,7 +353,7 @@ class Router implements
 	{
 		if (
 			isset($this->controller_calls[$object->controller_name][$object->feature_name])
-			&& !isset($_GET['F'])
+			&& !isset($GLOBALS['F'])
 		) {
 			$controller = $this->controller_calls[$object->controller_name][$object->feature_name];
 			if (@method_exists($controller[0], $controller[1])) {
@@ -361,7 +361,7 @@ class Router implements
 			}
 		}
 		if (
-			isset($_GET['F'])
+			isset($GLOBALS['F'])
 			&& isset($this->controller_calls[$object->controller_name][$object->feature_name])
 		) {
 			echo 'Router controller call = '
@@ -369,7 +369,7 @@ class Router implements
 				. BR;
 		}
 		$possible_controller_calls = $joinpoint->process();
-		if (isset($_GET['F'])) {
+		if (isset($GLOBALS['F'])) {
 			echo '<pre>'
 				. 'Possible controller calls = ' . print_r($possible_controller_calls, true)
 				. '</pre>';
@@ -441,6 +441,7 @@ class Router implements
 	 */
 	public function register(Register $register)
 	{
+		/*
 		$aop = $register->aop;
 		$aop->beforeMethod(
 			[Main::class, 'executeController'],
@@ -466,6 +467,11 @@ class Router implements
 			[Default_View::class, 'executeTemplate'],
 			[$this, 'setPossibleHtmlTemplate']
 		);
+		$aop->beforeMethod(
+			[Default_View::class, 'executeTemplate'],
+			[$this, 'setPossibleHtmlTemplate']
+		);
+		*/
 	}
 
 	//------------------------------------------------------------------------------------- serialize

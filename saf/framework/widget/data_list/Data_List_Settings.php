@@ -11,7 +11,7 @@ use SAF\Framework\Tools\Names;
 /**
  * List settings : all that can be customized into a list view
  */
-class List_Settings extends Custom_Settings
+class Data_List_Settings extends Custom_Settings
 {
 
 	//---------------------------------------------------------------------------------------- $title
@@ -161,7 +161,7 @@ class List_Settings extends Custom_Settings
 	 * Get current session / user custom settings object
 	 *
 	 * @param $class_name string
-	 * @return List_Settings
+	 * @return Data_List_Settings
 	 */
 	public static function current($class_name)
 	{
@@ -181,13 +181,13 @@ class List_Settings extends Custom_Settings
 
 	//------------------------------------------------------------------------------------------ load
 	/**
-	 * Loads a List_Settings from the Settings set
+	 * Loads a Data_List_Settings from the Settings set
 	 *
-	 * If no List_Settings named $name is stored, a new one will be returned
+	 * If no Data_List_Settings named $name is stored, a new one will be returned
 	 *
 	 * @param $class_name string
 	 * @param $name       string
-	 * @return List_Settings
+	 * @return Data_List_Settings
 	 */
 	public static function load($class_name, $name)
 	{

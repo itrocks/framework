@@ -65,7 +65,7 @@ class Template
 	 *
 	 * @var string
 	 */
-	public $main_template = 'Default_main.html';
+	public $main_template = 'saf/framework/main/main.html';
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
@@ -907,7 +907,10 @@ class Template
 		elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
 			$object = $this->parseString($object, $property_name);
 		}
-		elseif (method_exists($object, $property_name)) {
+		elseif (
+			(is_object($object) || ctype_upper($object[0]))
+			&& method_exists($object, $property_name)
+		) {
 			$object = $this->parseMethod($object, $property_name);
 		}
 		elseif (isset($object->$property_name)) {

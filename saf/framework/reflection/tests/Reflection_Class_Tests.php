@@ -11,7 +11,7 @@ use SAF\Framework\Tests\Test;
 /**
  * Reflection tests
  */
-class Tests extends Test
+class Reflection_Class_Tests extends Test
 {
 
 	//----------------------------------------------------------------------- testAccessProperties

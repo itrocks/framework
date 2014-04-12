@@ -1,10 +1,11 @@
 <?php
 namespace SAF\Framework\Property;
 
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Property;
 use SAF\Framework\View;
-use SAF\Framework\Widget\Data_List\List_Settings;
+use SAF\Framework\Widget\Data_List\Data_List_Settings;
 use SAF\Framework\Widget\Remove;
 
 /**
@@ -20,7 +21,7 @@ class Remove_Controller extends Remove\Remove_Controller
 	 */
 	public function removePropertyFromList($class_name, $property_path)
 	{
-		$list_settings = List_Settings::current($class_name);
+		$list_settings = Data_List_Settings::current($class_name);
 		$list_settings->removeProperty($property_path);
 		$list_settings->save();
 	}
@@ -44,7 +45,7 @@ class Remove_Controller extends Remove\Remove_Controller
 		$parameters['feature_name']  = array_shift($parameters);
 		$parameters['property_path'] = array_shift($parameters);
 		array_unshift($parameters, new Property());
-		if ($parameters['feature_name'] == 'list') {
+		if ($parameters['feature_name'] == Feature::F_LIST) {
 			$this->removePropertyFromList($parameters['class_name'], $parameters['property_path']);
 		}
 		if ($parameters['feature_name'] == 'form') {

@@ -52,7 +52,7 @@ class Sort implements Option
 	 */
 	public function __construct($columns = null)
 	{
-		if (is_string($columns) && (($columns[0] >= 'A') && ($columns[0] <= 'Z'))) {
+		if (is_string($columns) && ctype_upper($columns[0])) {
 			$this->applyClassName($columns);
 		}
 		elseif (isset($columns)) {
