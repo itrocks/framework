@@ -3,17 +3,17 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>|Print model|</title>
-	<script type="text/javascript" src="../../vendor/jquery/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
     <script type="text/javascript" src="print_model.js"></script>
 	<style type="text/css">
-		@import "../../skins/default/all.css";
+		@import "../skins/default/all.css";
         @import "pdf_template.css";
 	</style>
 </head>
 <body>
 
 <!--BEGIN-->
-<form action="{@class.short}/write" class="{@class.short.lower} {feature.lower} window" id="/{@class.short}<!--id-->/{id}<!--id-->/{feature}" method="post" name="{form_id}" target="#messages">
+<form action="{@class.path}/write" class="{@class.short.lower} {feature.lower} window" id="/{@class.path}<!--id-->/{id}<!--id-->/{feature}" method="post" name="{form_id}" target="#messages">
 	<h2>|{@class.display.ucfirst}| |{display}|</h2>
 
 	{/general_buttons.html}

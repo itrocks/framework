@@ -124,7 +124,7 @@ class Uri
 		}
 		elseif (!$this->feature_name) {
 			if (@class_exists($this->controller_name)) {
-				$this->feature_name = Feature::F_NEW;
+				$this->feature_name = Feature::F_ADD;
 			}
 			elseif (@class_exists(Names::setToClass($this->controller_name))) {
 				$this->feature_name = Feature::F_LIST;

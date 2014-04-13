@@ -106,6 +106,15 @@ class Template
 	 */
 	public $preprops = [];
 
+	//------------------------------------------------------------------------------------------ $use
+	/**
+	 * Full classes used.
+	 *
+	 * @example After '<!--use SAF\Framework\Class-->', you can use short class name '{Class}'
+	 * @var string[] key is the short class name, value is the full class name including namespace
+	 */
+	protected $use = [];
+
 	//------------------------------------------------------------------------------------ $var_names
 	/**
 	 * Var names
@@ -337,7 +346,15 @@ class Template
 	 */
 	protected function parseClassName($class_name)
 	{
-		return Namespaces::fullClassName($class_name);
+		if (!strpos($class_name, BS)) {
+			if (isset($this->use[$class_name])) {
+				return $this->use[$class_name];
+			}
+			else {
+				return Namespaces::defaultFullClassName($class_name, get_class($this->getRootObject()));
+			}
+		}
+		return $class_name;
 	}
 
 	//------------------------------------------------------------------------------- parseCollection
@@ -716,15 +733,19 @@ class Template
 	 */
 	protected function parseLoops($content)
 	{
-		$icontent = 0;
-		while (($icontent = strpos($content, '<!--', $icontent)) !== false) {
-			$i = $icontent + 4;
-			if ($this->parseThis($content, $i)) {
+		$i_content = 0;
+		while (($i_content = strpos($content, '<!--', $i_content)) !== false) {
+			$i = $i_content + 4;
+			if (substr($content, $i, 4) === 'use ') {
+				$j = strpos($content, '-->', $i);
+				$this->parseUse($content, $i, $j);
+			}
+			elseif ($this->parseThis($content, $i)) {
 				$j = strpos($content, '-->', $i);
 				$this->parseLoop($content, $i, $j);
 			}
 			else {
-				$icontent = strpos($content, '-->', $i) + 3;
+				$i_content = strpos($content, '-->', $i) + 3;
 			}
 		}
 		return $content;
@@ -1004,12 +1025,25 @@ class Template
 	protected function parseThis($content, $i)
 	{
 		$c = $content[$i];
-		return (($c >= 'a') && ($c <= 'z'))
+		return ctype_lower($c)
 			|| (
-				($c >= 'A') && ($c <= 'Z')
+				ctype_upper($c)
 				&& (substr($content, $i, 6) != 'BEGIN:') && (substr($content, $i, 4) != 'END:')
 			)
 			|| (strpos('#@/.-+?!|="', $c) !== false);
+	}
+
+	//-------------------------------------------------------------------------------------- parseUse
+	/**
+	 * @param $content string
+	 * @param $i       integer
+	 * @param $j       integer
+	 */
+	protected function parseUse(&$content, &$i, $j)
+	{
+		$class_name = substr($content, $i + 4, $j - $i - 4);
+		$this->use[Namespaces::shortClassName($class_name)] = $class_name;
+		$content = substr($content, 0, $i - 4) . substr($content, $j + 3);
 	}
 
 	//------------------------------------------------------------------------------------ parseValue

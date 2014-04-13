@@ -122,6 +122,17 @@ class String
 		return new String($string);
 	}
 
+	//------------------------------------------------------------------------------------------ path
+	/**
+	 * Changes a 'A\Class\Name' into 'A/Class/Name'
+	 *
+	 * @return String
+	 */
+	public function path()
+	{
+		return new String(str_replace(BS, SL, $this->value));
+	}
+
 	//----------------------------------------------------------------------------------------- short
 	/**
 	 * @return String

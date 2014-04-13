@@ -4,16 +4,16 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>|Import ¦{class_name.display}¦|</title>
     <script type="text/javascript"> path = "../../"; </script>
-	<script type="text/javascript" src="../../vendor/jquery/jquery-1.8.3.js"></script>
-    <script type="text/javascript" src="../../main/js/all.js"></script>
+	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="../main/js/all.js"></script>
     <style type="text/css">
-        @import "../../skins/default/all.css";
+        @import "../skins/default/all.css";
     </style>
 </head>
 <body>
 <!--BEGIN-->
 
-<form action="/{class_name.short}/import/preview" class="{class_name.short.lower} import preview window" id="/{class_name.short}/import/preview" method="post" target="#main">
+<form action="/{class_name.path}/import/preview" class="{class_name.short.lower} import preview window" id="/{class_name.path}/import/preview" method="post" target="#main">
 	<h2>|Import preview|</h2>
 
 	<!--worksheets-->
@@ -48,12 +48,12 @@
 				<div>
 					<label>{@propertySelect("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][name]")}</label>
 					<div>{@edit("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][value]")}</div>
-					<a class="constant remove submit" href="/Import/preview?constant_remove={--getPropertyPathValue}.{#}" target="#main">
+					<a class="constant remove submit" href="/SAF/Framework/Import/preview?constant_remove={--getPropertyPathValue}.{#}" target="#main">
 						|Remove constant|
 					</a>
 				</div>
 				<!--constants-->
-				<a class="constant add submit action" href="/Import/preview?constant_add={#}" target="#main">
+				<a class="constant add submit action" href="/SAF/Framework/Import/preview?constant_add={#}" target="#main">
 					|Add a constant|
 				</a>
 			</fieldset>
@@ -94,7 +94,7 @@
 
 	<p class="warning">
 		<span>Une fois vérifiés les réglages ci-dessus, vous pouvez</span>
-		<a class="import execute action submit" href="/{class_name.short}/import/execute" target="#import_execute">|Execute import|</a>
+		<a class="import execute action submit" href="/{class_name.path}/import/execute" target="#import_execute">|Execute import|</a>
 	</p>
 
 </form>

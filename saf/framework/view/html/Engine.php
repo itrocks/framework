@@ -70,9 +70,11 @@ class Engine implements Configurable, View\Engine
 	 */
 	public function link($object, $feature = null, $parameters = null, $arguments = null)
 	{
-		$link = (is_object($object) && Dao::getObjectIdentifier($object))
-			? (Namespaces::shortClassName(get_class($object)) . SL . Dao::getObjectIdentifier($object))
-			: Namespaces::shortClassName(is_object($object) ? get_class($object) : $object);
+		$link = str_replace(BS, SL,
+			(is_object($object) && Dao::getObjectIdentifier($object))
+			? (get_class($object) . SL . Dao::getObjectIdentifier($object))
+			: (is_object($object) ? get_class($object) : $object)
+		);
 		if (isset($feature)) {
 			$link .= SL . $feature;
 		}

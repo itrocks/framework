@@ -6,12 +6,12 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\View\Html\Dom\Button;
 use SAF\Framework\View;
-use SAF\Framework\Widget\Output\Default_Output_Controller;
+use SAF\Framework\widget\output\Output_Controller;
 
 /**
  * The default edit controller, when no edit controller is set for the class
  */
-class Edit_Controller extends Default_Output_Controller
+class Edit_Controller extends Output_Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons

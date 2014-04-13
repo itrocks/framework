@@ -48,10 +48,13 @@
 
 	<script type="text/javascript" src="js/default.application.js"></script>
 
+	<!--use SAF\Framework\Html_Session-->
+	<!--use SAF\Framework\Locale\Loc-->
+	<!--use SAF\Framework\Tools\Paths-->
 	<script type="text/javascript">
 		window.app = new App(
-			"{PHPSESSID}", "{Paths.uri_root}", "{Paths.script_name}", "{Paths.project_uri}",
-			"{Loc.language}", "{Loc.date.format}", "{Html_Session.useCookies}"
+			'{PHPSESSID}', '{Paths.uri_root}', '{Paths.script_name}', '{Paths.project_uri}',
+			'{Loc.language}', '{Loc.date.format}', '{Html_Session.useCookies}'
 		);
 	</script>
 
@@ -95,7 +98,7 @@
 	<div id="messages"></div>
 	<ul>
 		<li class="provider saf"><a href="http://saf.re" target="_blank" title="saf.re">SAF</a></li>
-		<li class="rad add"><a href="/Rad/add" target="#rad_add">add</a></li>
+		<li class="rad add"><a href="/SAF/Framework/Rad/add" target="#rad_add">add</a></li>
 	</ul>
 </header>
 
