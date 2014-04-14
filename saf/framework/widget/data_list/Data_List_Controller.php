@@ -351,20 +351,20 @@ class Data_List_Controller extends Output_Controller
 		return [
 			'add' => new Button(
 				'Add', View::link($class_name, Feature::F_ADD), 'add',
-				['#main', Color::of('green')]
+				['#main', new Color('green')]
 			),
 			'import' => new Button(
 				'Import', View::link($class_name, 'import'), 'import',
-				['#main', Color::of('green')]
+				['#main', new Color('green')]
 			),
 			'save' => new Button(
 				'Save', View::link($class_name, Feature::F_LIST), 'custom_save',
-				['#main', Color::of('green'), '.submit', 'title' => 'save this view as a custom list']
+				['#main', new Color('green'), '.submit', 'title' => 'save this view as a custom list']
 			),
 			'delete' => new Button(
 				'Delete', View::link($class_name, Feature::F_LIST, null, ['delete_name' => true]),
 				'custom_delete',
-				['#main', Color::of('red'), '.submit', 'title' => 'delete this custom list']
+				['#main', new Color('red'), '.submit', 'title' => 'delete this custom list']
 			)
 		];
 	}

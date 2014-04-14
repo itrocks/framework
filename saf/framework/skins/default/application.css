@@ -73,6 +73,11 @@ h2 {
   font-size: 1.5em;
   font-weight: bold; }
 
+hr {
+  border: 1px solid darkgray;
+  height: 0;
+  margin: .5em; }
+
 strong {
   font-weight: bold; }
 

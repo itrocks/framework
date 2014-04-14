@@ -2,8 +2,6 @@
 namespace SAF\Framework\View\Html;
 
 use SAF\Framework\Builder;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View\IView;
 use SAF\Framework\View;
 
@@ -22,11 +20,9 @@ class Default_View implements IView
 	 */
 	private function executeTemplate($template_file, $parameters, $feature_name)
 	{
-		if (isset($parameters['template_mode'])) {
-			$template_class = Namespaces::fullClassName(
-				'Html_' . Names::propertyToClass($parameters['template_mode']) . '_Template'
-			);
-			unset($parameters['template_mode']);
+		if (isset($parameters['template_namespace'])) {
+			$template_class = $parameters['template_namespace'] . BS . 'Html_Template';
+			unset($parameters['template_namespace']);
 		}
 		else {
 			$template_class = Template::class;
@@ -54,7 +50,7 @@ class Default_View implements IView
 	 */
 	public function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		$feature_names = isset($parameters['feature'])
+		$feature_names = (isset($parameters['feature']) && ($parameters['feature'] !== $feature_name))
 			? [$parameters['feature'], $feature_name]
 			: [$feature_name];
 		$template_file = Engine::getTemplateFile($class_name, $feature_names);

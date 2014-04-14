@@ -96,7 +96,7 @@ class Button
 				$this->color = $option;
 			}
 			elseif ($key === 'color') {
-				$this->color = Color::of($option);
+				$this->color = new Color($option);
 			}
 			elseif ($option instanceof Button) {
 				$this->sub_buttons[] = $option;
@@ -117,7 +117,7 @@ class Button
 			}
 		}
 		if (!isset($this->color)) {
-			$this->color = Color::of('blue');
+			$this->color = new Color('blue');
 		}
 	}
 

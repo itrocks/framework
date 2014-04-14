@@ -4,12 +4,12 @@
  * and for a full-ajax application, the slowdown risk will only be on the first page loading
  */
 
-@import "../../vendor/reset5/reset.css";
+@import "../../../../vendor/reset5/reset.css";
 
-@import "../../vendor/jquery-ui/smoothness/jquery-ui.css";
-@import "../../vendor/jquery-ui/smoothness/jquery.ui.theme.css";
+@import "../../../../vendor/jquery-ui/smoothness/jquery-ui.css";
+@import "../../../../vendor/jquery-ui/smoothness/jquery.ui.theme.css";
 
-@import "../../components/print_models/pdf_template.css";
+@import "../../print_model/pdf_template.css";
 
 @import "application.css";
 

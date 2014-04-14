@@ -213,20 +213,6 @@ class Main
 		}
 	}
 
-	//--------------------------------------------------------------------------- reloadConfiguration
-	/**
-	 * Reload global configuration and register plugins again
-	 */
-	/*
-	public function reloadConfiguration()
-	{
-		$configuration = $this->loadConfiguration();
-		unset($_SESSION['include_path']);
-		$this->setIncludePath($_SESSION);
-		$this->registerPlugins(Session::current()->plugins, $configuration);
-	}
-	*/
-
 	//---------------------------------------------------------------------------------- resetSession
 	/**
 	 * Initialise a new session, or refresh existing session for update

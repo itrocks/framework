@@ -7,6 +7,12 @@ namespace SAF\Framework\Tools;
 class Color
 {
 
+	//---------------------------------------------------------------------------------------- $value
+	/**
+	 * The color value
+	 *
+	 * @var string
+	 */
 	public $value = 'white';
 
 	//----------------------------------------------------------------------------------- __construct
@@ -27,16 +33,6 @@ class Color
 	public function __toString()
 	{
 		return $this->value;
-	}
-
-	//-------------------------------------------------------------------------------------------- of
-	/**
-	 * @param $value string
-	 * @return Color
-	 */
-	public static function of($value)
-	{
-		return new Color($value);
 	}
 
 }

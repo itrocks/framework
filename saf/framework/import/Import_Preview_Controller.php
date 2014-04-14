@@ -32,11 +32,11 @@ class Import_Preview_Controller implements Default_Feature_Controller
 		return [
 			'save' => new Button(
 				'Save', View::link($class_name, 'import', 'preview'),
-				'custom_save', [Color::of('blue'), '#main', '.submit']
+				'custom_save', [new Color('blue'), '#main', '.submit']
 			),
 			'delete' => new Button(
 				'Delete', View::link($class_name, 'import', 'preview', ['delete_name' => true]),
-				'custom_delete', [Color::of('red'), '#main', '.submit']
+				'custom_delete', [new Color('red'), '#main', '.submit']
 			)
 		];
 	}

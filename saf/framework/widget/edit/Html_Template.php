@@ -41,10 +41,7 @@ class Html_Template extends Template
 	 */
 	private function nextFormCounter()
 	{
-		$counter = isset($_SESSION['Html_Edit_Template']['form_counter'])
-			? $_SESSION['Html_Edit_Template']['form_counter'] + 1 : 0;
-		$_SESSION['Html_Edit_Template']['form_counter'] = $counter;
-		return $counter;
+		return uniqid();
 	}
 
 	//-------------------------------------------------------------------------------- parseContainer

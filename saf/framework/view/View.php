@@ -100,7 +100,7 @@ class View implements Configurable
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		$feature_names = isset($parameters['feature'])
+		$feature_names = (isset($parameters['feature']) && ($parameters['feature'] != $feature_name))
 			? [$parameters['feature'], $feature_name]
 			: [$feature_name];
 		list($view_name, $view_method_name) = self::getView($class_name, $feature_names);

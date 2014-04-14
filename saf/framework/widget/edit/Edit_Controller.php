@@ -4,8 +4,9 @@ namespace SAF\Framework\Widget\Edit;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Tools\Color;
-use SAF\Framework\View\Html\Dom\Button;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
+use SAF\Framework\Widget\Button;
 use SAF\Framework\widget\output\Output_Controller;
 
 /**
@@ -25,11 +26,11 @@ class Edit_Controller extends Output_Controller
 		$fill_combo = isset($parameters['fill_combo'])
 			? ['fill_combo' => $parameters['fill_combo']] : [];
 		return [
-			new Button('Close', View::link($object, Feature::F_LIST), 'close',
-				[Color::of('close'), '#main']
+			new Button('Close', View::link(Names::classToSet(get_class($object))), 'close',
+				[new Color('close'), '#main']
 			),
 			new Button('Write', View::link($object, 'write', null, $fill_combo), 'write',
-				[Color::of('green'), '#messages', '.submit']
+				[new Color('green'), '#messages', '.submit']
 			)
 		];
 	}
@@ -44,9 +45,9 @@ class Edit_Controller extends Output_Controller
 	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
-		$parameters['editing'] = true;
-		$parameters['feature'] = 'edit';
-		$parameters['template_mode'] = 'edit';
+		$parameters['editing']            = true;
+		$parameters['feature']            = Feature::F_EDIT;
+		$parameters['template_namespace'] = __NAMESPACE__;
 		return $parameters;
 	}
 

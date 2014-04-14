@@ -30,13 +30,13 @@ class Output_Controller implements Default_Feature_Controller
 	) {
 		return [
 			new Button('Close', View::link(Names::classToSet(get_class($object))), 'close',
-				[Color::of('close'), '#main']
+				[new Color('close'), '#main']
 			),
 			new Button('Edit', View::link($object, 'edit'), 'edit',
-				[Color::of('green'), '#main']
+				[new Color('green'), '#main']
 			),
 			new Button('Print', View::link($object, 'print'), 'print',
-				[Color::of('blue'), '#main', 'sub_buttons' => [
+				[new Color('blue'), '#main', 'sub_buttons' => [
 					new Button(
 						'Models',
 						View::link(
@@ -114,10 +114,7 @@ class Output_Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		if (!isset($parameters['feature'])) {
-			$parameters['feature'] = 'output';
-		}
-		return View::run($parameters, $form, $files, $class_name, 'output');
+		return View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);
 	}
 
 }
