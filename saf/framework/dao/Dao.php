@@ -104,6 +104,18 @@ class Dao implements Configurable
 		return self::current()->count($what, $class_name);
 	}
 
+	//--------------------------------------------------------------------------------- createStorage
+	/**
+	 * Create a storage space for $class_name objects
+	 *
+	 * @param $class_name string
+	 * @return boolean true if storage was created or updated, false if it was already up to date
+	 */
+	public static function createStorage($class_name)
+	{
+		return self::current()->createStorage($class_name);
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Data_Link

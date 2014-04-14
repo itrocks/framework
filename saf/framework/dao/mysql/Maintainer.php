@@ -26,8 +26,7 @@ class Maintainer implements Registerable
 	private static function createTable(mysqli $mysqli, $class_name)
 	{
 		foreach ((new Table_Builder_Class)->build($class_name) as $table) {
-			$query = (new Create_Table($table))->build();
-			$mysqli->query($query);
+			$mysqli->query((new Create_Table($table))->build());
 		}
 	}
 
@@ -288,24 +287,30 @@ class Maintainer implements Registerable
 	 * @param $class_name string
 	 * @return boolean true if an update query has been generated and executed
 	 */
-	private static function updateTable(mysqli $mysqli, $class_name)
+	public static function updateTable(mysqli $mysqli, $class_name)
 	{
 		$result = false;
 		foreach ((new Table_Builder_Class)->build($class_name) as $class_table) {;
 			$mysql_table = Table_Builder_Mysqli::build($mysqli, $class_table->getName());
-			$mysql_columns = $mysql_table->getColumns();
-			$builder = new Alter_Table($mysql_table);
-			foreach ($class_table->getColumns() as $column) {
-				if (!isset($mysql_columns[$column->getName()])) {
-					$builder->addColumn($column);
-				}
-				elseif (!$column->equiv($mysql_columns[$column->getName()])) {
-					$builder->alterColumn($column->getName(), $column);
-				}
-			}
-			if ($builder->isReady()) {
-				$mysqli->query($builder->build());
+			if (!$mysql_table) {
+				$mysqli->query((new Create_Table($class_table))->build());
 				$result = true;
+			}
+			else {
+				$mysql_columns = $mysql_table->getColumns();
+				$builder = new Alter_Table($mysql_table);
+				foreach ($class_table->getColumns() as $column) {
+					if (!isset($mysql_columns[$column->getName()])) {
+						$builder->addColumn($column);
+					}
+					elseif (!$column->equiv($mysql_columns[$column->getName()])) {
+						$builder->alterColumn($column->getName(), $column);
+					}
+				}
+				if ($builder->isReady()) {
+					$mysqli->query($builder->build());
+					$result = true;
+				}
 			}
 		}
 		return $result;

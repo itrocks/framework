@@ -4,6 +4,7 @@ namespace SAF\Framework\PHP;
 use SAF\Framework\Application;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Needs_Main;
+use SAF\Framework\Dao;
 use SAF\Framework\Dao\Set;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Plugin\Register;
@@ -151,6 +152,9 @@ class Compiler implements
 	public function compile($last_time = 0)
 	{
 		$cache_dir = $this->getCacheDir();
+
+		// create data set for dependencies
+		Dao::createStorage(Dependency::class);
 
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 		while ($this->sources) {

@@ -119,6 +119,18 @@ class Link extends Dao\Sql\Link
 		return $row[0];
 	}
 
+	//--------------------------------------------------------------------------------- createStorage
+	/**
+	 * Create a storage space for $class_name objects
+	 *
+	 * @param $class_name string
+	 * @return boolean true if storage was created or updated, false if it was already up to date
+	 */
+	public function createStorage($class_name)
+	{
+		return Maintainer::updateTable($this->connection, $class_name);
+	}
+
 	//---------------------------------------------------------------------------------------- delete
 	/**
 	 * Delete an object from current data link

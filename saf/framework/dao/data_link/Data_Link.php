@@ -49,6 +49,15 @@ abstract class Data_Link
 	 */
 	abstract public function count($what, $class_name = null);
 
+	//--------------------------------------------------------------------------------- createStorage
+	/**
+	 * Create a storage space for $class_name objects
+	 *
+	 * @param $class_name string
+	 * @return boolean true if storage was created or updated, false if it was already up to date
+	 */
+	abstract public function createStorage($class_name);
+
 	//---------------------------------------------------------------------------------------- delete
 	/**
 	 * Delete an object from data source
