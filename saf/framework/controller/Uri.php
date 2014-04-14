@@ -153,6 +153,9 @@ class Uri
 				$controller_elements = [];
 			}
 		}
+		if ($controller_elements) {
+			$this->parameters->addValue(join(BS, $controller_elements));
+		}
 
 	}
 

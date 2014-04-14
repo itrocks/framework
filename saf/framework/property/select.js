@@ -42,7 +42,9 @@ $('document').ready(function()
 				var $this = $(this);
 				return $('<div>')
 					.addClass('property')
-					.attr('id', $this.closest('.window').attr('id') + '/Property/' + $this.attr('id'))
+					.attr('data-class',    $this.closest('.window').attr('data-class'))
+					.attr('data-feature',  $this.closest('.window').attr('data.feature'))
+					.attr('data-property', $this.attr('data-property'))
 					.css('z-index', ++zindex_counter)
 					.html($this.text());
 			},

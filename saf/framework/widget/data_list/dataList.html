@@ -13,7 +13,7 @@
 <body>
 <!--BEGIN-->
 
-<form action="/{@class.path}/{@feature}" class="{@class.short.lower} list window" id="/{@class.path}/{@feature}" method="post" target="#main">
+<form action="/{@class.path}/{@feature}" class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" method="post" target="#main">
 	<h2>{title}</h2>
 
 	{/general_buttons.html}
@@ -26,14 +26,14 @@
 	<tr>
 		<th></th>
 		<th class="column_select">
-			<a class="popup" href="/SAF/Framework/Property/select/{@class.short}" target="#column_select">|select columns|</a>
+			<a class="popup" href="/SAF/Framework/Property/select/{@class.path}" target="#column_select">|select columns|</a>
 		</th>
 		<!--getProperties-->
-		<th id="{.}" class="sort{sorted.{#}} {?reversed.{#}} property">
+		<th data-property="{.}" class="sort{sorted.{#}} {?reversed.{#}} property">
 			<a href="/{--@class.path}/{@feature}?{sort_options.{#}}={.}" target="#main" title="|{.}|">{short_titles.{#}}</a>
 		</th>
 		<!--sample-->
-		<th id="column2" class="sort property">
+		<th data-property="column2" class="sort property">
 			<a href="/Class/feature?sort=column2" target="#main">column2</a>
 		</th>
 		<!--getProperties-->

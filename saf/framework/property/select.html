@@ -15,31 +15,31 @@
 	<!--BEGIN:subtree-->
 	<ul class="property_tree">
 	<!--properties-->
-		<li class="property" id="{path}" title="|{path}|">
+		<li class="property" data-property="{path}" title="|{path}|">
 			<!--!getType.isBasic?-->
-            <a href="/SAF/Framework/Property/select/{--class_name.short}/{path}" target="#tree-{path}">
-            <!--!getType.isBasic?-->
+			<a href="/SAF/Framework/Property/select/{--class_name.path}/{path}" target="#tree-{path}">
+			<!--!getType.isBasic?-->
 			|{@display}|
 			<!--!getType.isBasic?-->
-            </a>
-            <!--!getType.isBasic?-->
+			</a>
+			<!--!getType.isBasic?-->
 		</li>
-    <!--sample-->
-        <li class="property" id="property_1" title="property 1">property 1</li>
-        <li class="property" id="property_2" title="property 2">property 2</li>
-        <li class="property" id="property_3" title="property 3">property 3</li>
-        <li class="property" id="sub_object" title="sub object">
-            <a href="/SAF/Framework/Property/select/Class/sub_object" target="#tree-sub_object">sub_object</a>
-        </li>
-        <li class="expanded property" id="weight_unit" title="weight unit" target="#tree-weight_unit">
-            <a href="/Property/select/Class/weight_unit" target="#tree-weight_unit">weight unit</a>
-            <section id="tree-weight_unit">
-                <ul class="property tree">
-                    <li class="property" id="weight_unit.code" title="weight unit.code">code</li>
-                    <li class="property" id="weight_unit.name" title="weight unit.name">name</li>
-                </ul>
-            </section>
-        </li>
+	<!--sample-->
+		<li class="property" data-property="property_1" title="property 1">property 1</li>
+		<li class="property" data-property="property_2" title="property 2">property 2</li>
+		<li class="property" data-property="property_3" title="property 3">property 3</li>
+		<li class="property" data-property="sub_object" title="sub object">
+			<a href="/SAF/Framework/Property/select/Class/sub_object" target="#tree-sub_object">sub_object</a>
+		</li>
+		<li class="expanded property" data-property="weight_unit" title="weight unit" target="#tree-weight_unit">
+			<a href="/Property/select/Class/weight_unit" target="#tree-weight_unit">weight unit</a>
+			<section id="tree-weight_unit">
+				<ul class="property tree">
+					<li class="property" data-property="weight_unit.code" title="weight unit.code">code</li>
+					<li class="property" data-property="weight_unit.name" title="weight unit.name">name</li>
+				</ul>
+			</section>
+		</li>
 	<!--properties-->
 	</ul>
 	<!--END:subtree-->

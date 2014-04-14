@@ -81,7 +81,7 @@ class Select_Controller implements Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$class_name = Namespaces::fullClassName(Set::elementClassNameOf($parameters->shiftUnnamed()));
+		$class_name = Set::elementClassNameOf($parameters->shiftUnnamed());
 		$property_path = $parameters->shiftUnnamed();
 		if (empty($property_path)) {
 			$top_property = new Property();
