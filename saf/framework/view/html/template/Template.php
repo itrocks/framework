@@ -463,7 +463,7 @@ class Template
 		if ($i !== false) {
 			$i += strlen($container_begin) + 7;
 			$j = strrpos($content, '<!--' . $container_end . '-->', $i);
-			if (isset($this->parameters['as_widget']) && $this->parameters['as_widget']) {
+			if (isset($this->parameters['as_widget'])) {
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
@@ -501,7 +501,7 @@ class Template
 	protected function parseFullPage($content)
 	{
 		$content = $this->parseVars($content);
-		if (!isset($this->parameters['is_included']) || !$this->parameters['is_included']) {
+		if (!isset($this->parameters['is_included'])) {
 			$content = $this->replaceLinks($content);
 			$content = $this->replaceUris($content);
 		}
@@ -1387,9 +1387,9 @@ class Template
 	/**
 	 * Set template parameters
 	 * <ul>
-	 * <li>is_included (boolean) : true if template is included into a page
+	 * <li>is_included (boolean) : if set, template is included into a page
 	 *   main html head and foot will not be loaded
-	 * <li>as_widget (boolean) : true if template is to load as a widget
+	 * <li>as_widget (boolean) : if set, template is loaded as a widget
 	 *   main html head and foot will not be loaded
 	 * </ul>
 	 *
@@ -1397,7 +1397,7 @@ class Template
 	 */
 	public function setParameters($parameters)
 	{
-		if (isset($parameters['is_included']) && $parameters['is_included']) {
+		if (isset($parameters['is_included'])) {
 			$parameters['as_widget'] = true;
 		}
 		$this->parameters = $parameters;

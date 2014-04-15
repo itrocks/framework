@@ -44,8 +44,8 @@ class Access_Control implements Configurable, Registerable
 		if (!User::current() && !in_array($uri, $this->exceptions)) {
 			$uri = '/User/login';
 			$_get = [];
-			if (isset($get['as_widget']) && $get['as_widget'])     $_get['as_widget']   = true;
-			if (isset($get['is_included']) && $get['is_included']) $_get['is_included'] = true;
+			if (isset($get['as_widget']))   $_get['as_widget']   = true;
+			if (isset($get['is_included'])) $_get['is_included'] = true;
 			$get   = $_get;
 			$post  = [];
 			$files = [];

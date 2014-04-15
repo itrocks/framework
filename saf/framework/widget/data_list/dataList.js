@@ -69,7 +69,7 @@ $('document').ready(function()
 						var url = app.uri_base + '/' + class_name + '/dataListSetting'
 							+ '?add_property=' + property_name
 							+ '&after=' + ((after_property_name != undefined) ? after_property_name : '')
-							+ '&as_widget=1'
+							+ '&as_widget'
 							+ app.andSID();
 						complete($this, event, ui);
 
@@ -78,7 +78,7 @@ $('document').ready(function()
 							var $class_name = $window.data('class').replace('\\', '/');
 							var $feature_name = $window.data('feature');
 							var url = app.uri_base + '/' + $class_name + '/' + $feature_name
-								+ window.app.askSIDand() + 'as_widget=1';
+								+ window.app.askSIDand() + 'as_widget';
 							$.ajax({ url: url, success: function(data)
 							{
 								var $container = $window.parent();
@@ -113,7 +113,7 @@ $('document').ready(function()
 				return $this.closest('th').data('property');
 			};
 			var uri = window.app.uri_base + '/{className}/dataListSetting'
-				+ window.app.askSIDand() + 'as_widget=1';
+				+ window.app.askSIDand() + 'as_widget';
 			// list title (class name) double-click
 			$this.children('h2').modifiable({
 				done: uri + '&title={value}',

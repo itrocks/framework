@@ -6,7 +6,7 @@ $('document').ready(function()
 	{
 
 		this.xtarget({
-			url_append: 'as_widget=1',
+			url_append: 'as_widget',
 			success: function() { $(this).autofocus(); }
 		});
 		this.aform();

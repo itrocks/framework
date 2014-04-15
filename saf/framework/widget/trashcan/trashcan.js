@@ -49,7 +49,7 @@ $('document').ready(function()
 						$(event.target).data('on-success', function() {
 							var uri = '/' + data_class.replace('\\', '/') + '/' + $window.data('feature');
 							$.ajax({
-								url: app.uri_base + uri + '?as_widget=1' + app.andSID(),
+								url: app.uri_base + uri + '?as_widget' + app.andSID(),
 								success: function(data) {
 									var $parent = $window.parent();
 									$parent.html(data);
