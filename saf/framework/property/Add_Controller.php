@@ -6,7 +6,7 @@ use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Property;
 use SAF\Framework\View;
-use SAF\Framework\Widget\Data_List\Data_List_Settings;
+use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
  * The default property add controller does nothing : we must add a property from a context
@@ -51,7 +51,8 @@ class Add_Controller implements Feature_Controller
 		if ($parameters['feature_name'] == 'form') {
 			// ...
 		}
-		return View::run($parameters, $form, $files, Property::class, 'added');
+		$parameters['template'] = 'added';
+		return View::run($parameters, $form, $files, Property::class, 'add');
 	}
 
 }

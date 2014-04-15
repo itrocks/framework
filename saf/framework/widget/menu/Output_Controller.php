@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Menu;
 
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Session;
@@ -26,7 +27,7 @@ class Output_Controller implements Feature_Controller
 		if (!(reset($parameters)) instanceof Menu) {
 			array_unshift($parameters, Session::current()->plugins->get(Menu::class));
 		}
-		return View::run($parameters, $form, $files, Menu::class, 'output');
+		return View::run($parameters, $form, $files, Menu::class, Feature::F_OUTPUT);
 	}
 
 }

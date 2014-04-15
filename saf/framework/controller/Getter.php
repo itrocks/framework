@@ -102,6 +102,7 @@ if (isset($GLOBALS['D'])) echo '- try 6 ' . $path . SL . 'widget' . SL . strtolo
 					$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext
 				)) {
 					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS . $suffix;
+					break;
 				}
 if (isset($GLOBALS['D'])) echo '- try 7 ' . $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . '<br>';
 				if (file_exists(

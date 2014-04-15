@@ -1,10 +1,11 @@
 <?php
 namespace SAF\Framework\Widget\Remove;
 
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Property;
 use SAF\Framework\View;
+use stdClass;
 
 /**
  * The default remove controller will be called if no other remove controller is defined
@@ -26,17 +27,18 @@ class Remove_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$objects = $parameters->getObjects();
-		$objects['class_name']   = array_shift($objects);
-		$objects['feature_name'] = array_shift($objects);
-		array_unshift($objects, new Property());
+		$parameters = $parameters->getObjects();
+		$parameters['class_name']   = array_shift($objects);
+		$parameters['feature_name'] = array_shift($objects);
+		array_unshift($objects, new StdClass());
 		/**
 		 * $objects for the view :
 		 * - first : an empty class object (ie Property)
 		 * - key 'class_name' : the context class name (ie a business class)
 		 * - key 'feature_name' : the context feature name (ie Feature::F_OUTPUT, Feature::F_LIST)
 		 */
-		return View::run($objects, $form, $files, get_class(reset($objects)), 'remove_unavailable');
+		$parameters['template'] = 'remove_unavailable';
+		return View::run($objects, $form, $files, get_class(reset($objects)), Feature::F_REMOVE);
 	}
 
 }

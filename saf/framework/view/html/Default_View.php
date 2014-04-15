@@ -20,6 +20,9 @@ class Default_View implements IView
 	 */
 	private function executeTemplate($template_file, $parameters, $feature_name)
 	{
+		if (isset($parameters['template'])) {
+			unset($parameters['template']);
+		}
 		if (isset($parameters['template_namespace'])) {
 			$template_class = $parameters['template_namespace'] . BS . 'Html_Template';
 			unset($parameters['template_namespace']);
@@ -53,7 +56,9 @@ class Default_View implements IView
 		$feature_names = (isset($parameters['feature']) && ($parameters['feature'] !== $feature_name))
 			? [$parameters['feature'], $feature_name]
 			: [$feature_name];
-		$template_file = Engine::getTemplateFile($class_name, $feature_names);
+		$template_file = Engine::getTemplateFile(
+			$class_name, $feature_names, isset($parameters['template']) ? $parameters['template'] : null
+		);
 		return self::executeTemplate($template_file, $parameters, $feature_name);
 	}
 

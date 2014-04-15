@@ -37,7 +37,8 @@ class Import_Execute_Controller implements Default_Feature_Controller
 			$import_array = new Import_Array($worksheet->settings, $import->class_name);
 			$import_array->importArray($array);
 		}
-		return View::run($parameters, $form, $files, $class_name, 'importDone');
+		$parameters['template'] = 'importDone';
+		return View::run($parameters, $form, $files, $class_name, 'import');
 	}
 
 }

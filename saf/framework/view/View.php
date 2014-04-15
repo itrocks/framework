@@ -4,6 +4,7 @@ namespace SAF\Framework;
 use SAF\Framework\Controller\Getter;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Current;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 
 /**
@@ -36,20 +37,37 @@ class View implements Configurable
 
 	//--------------------------------------------------------------------------------------- getView
 	/**
-	 * @param $view_name     string
-	 * @param $feature_names string[]
+	 * @param $view_name     string   the view name is the associated data class name
+	 * @param $feature_names string[] feature and inherited feature which view will be searched
+	 * @param $template      string   if a specific template is set, the view named with it will be
+	 *                       searched into the view / feature namespace first
 	 * @return string[] [$view_class_name, $view_method_name]
 	 */
-	private static function getView($view_name, $feature_names)
+	private static function getView($view_name, $feature_names, $template = null)
 	{
 		$view_engine_name = get_class(View::current());
 		$view_engine_name = Namespaces::shortClassName(Namespaces::of($view_engine_name));
-		foreach ([$view_engine_name . '_View', 'View'] as $suffix) {
-			foreach ($feature_names as $feature_name) {
-				list($class, $method) = Getter::get($view_name, $feature_name, $suffix, 'php');
-				if (isset($class)) break 2;
+
+		if (isset($template)) {
+			foreach ([$view_engine_name . '_View', 'View'] as $suffix) {
+				foreach ($feature_names as $feature_name) {
+					list($class, $method) = Getter::get(
+						$view_name, $feature_name, Names::methodToClass($template) . '_' . $suffix, 'php'
+					);
+					if (isset($class)) break 2;
+				}
 			}
 		}
+
+		if (!isset($class)) {
+			foreach ([$view_engine_name . '_View', 'View'] as $suffix) {
+				foreach ($feature_names as $feature_name) {
+					list($class, $method) = Getter::get($view_name, $feature_name, $suffix, 'php');
+					if (isset($class)) break 2;
+				}
+			}
+		}
+
 		/** @noinspection PhpUndefinedVariableInspection if $class is set, then $method is set too */
 		return isset($class) ? [$class, $method] : [$view_name, reset($feature_names)];
 	}
@@ -103,7 +121,9 @@ class View implements Configurable
 		$feature_names = (isset($parameters['feature']) && ($parameters['feature'] != $feature_name))
 			? [$parameters['feature'], $feature_name]
 			: [$feature_name];
-		list($view_name, $view_method_name) = self::getView($class_name, $feature_names);
+		list($view_name, $view_method_name) = self::getView(
+			$class_name, $feature_names, isset($parameters['template']) ? $parameters['template'] : null
+		);
 		return self::executeView(
 			$view_name, $view_method_name, $parameters, $form, $files, $class_name, $feature_name
 		);

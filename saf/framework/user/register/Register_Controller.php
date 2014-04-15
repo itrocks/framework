@@ -59,11 +59,13 @@ class Register_Controller implements Feature_Controller
 				}
 			}
 			if ($user) {
-				return View::run($parameters, $form, $files, $class_name, 'registerConfirm');
+				$parameters['template'] = 'confirm';
+				return View::run($parameters, $form, $files, $class_name, 'register');
 			}
 			else {
 				$parameters['errors'] = $errors_messages;
-				return View::run($parameters, $form, $files, $class_name, 'registerError');
+				$parameters['template'] = 'error';
+				return View::run($parameters, $form, $files, $class_name, 'register');
 			}
 		}
 		else {

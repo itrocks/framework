@@ -56,7 +56,8 @@ class Write_Controller implements Default_Class_Controller
 			$elements = explode(DOT, $objects['fill_combo']);
 			$objects['fill_combo'] = $elements[0] . '.elements["' . $elements[1] . '"]';
 		}
-		return View::run($objects, $form, $files, $class_name, 'written');
+		$objects['template'] = 'written';
+		return View::run($objects, $form, $files, $class_name, 'write');
 	}
 
 }

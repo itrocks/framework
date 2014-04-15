@@ -152,7 +152,8 @@ class Import_Preview_Controller implements Default_Feature_Controller
 			);
 		}
 		// view
-		return View::run($parameters, $form, $files, $class_name, 'importPreview');
+		$parameters['template'] = 'importPreview';
+		return View::run($parameters, $form, $files, $class_name, 'import');
 	}
 
 }

@@ -44,16 +44,28 @@ class Engine implements Configurable, View\Engine
 
 	//------------------------------------------------------------------------------- getTemplateFile
 	/**
-	 * @param $class_name    string
-	 * @param $feature_names string[]
-	 * @return string
+	 * @param $class_name    string   the associated data class name
+	 * @param $feature_names string[] feature and inherited feature which view will be searched
+	 * @param $template      string   if a specific template is set, the view named with it will be
+	 *                       searched into the view / feature namespace first
+	 * @return string the resulting path of the found template file
 	 */
-	public static function getTemplateFile($class_name, $feature_names)
+	public static function getTemplateFile($class_name, $feature_names, $template = null)
 	{
-		foreach ($feature_names as $feature_name) {
-			$class = Getter::get($class_name, $feature_name, '', 'html', false)[0];
-			if (isset($class)) break;
+		if (isset($template)) {
+			foreach ($feature_names as $feature_name) {
+				$class = Getter::get($class_name, $feature_name, $template, 'html', false)[0];
+				if (isset($class)) break;
+			}
 		}
+
+		if (!isset($class)) {
+			foreach ($feature_names as $feature_name) {
+				$class = Getter::get($class_name, $feature_name, '', 'html', false)[0];
+				if (isset($class)) break;
+			}
+		}
+
 		return Names::classToPath(isset($class) ? $class : $class_name . '_' . reset($feature_names))
 			. '.html';
 	}

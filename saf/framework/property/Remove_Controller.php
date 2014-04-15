@@ -51,7 +51,8 @@ class Remove_Controller extends Remove\Remove_Controller
 		if ($parameters['feature_name'] == 'form') {
 			// ...
 		}
-		return View::run($parameters, $form, $files, Property::class, 'removed');
+		$parameters['template'] = 'removed';
+		return View::run($parameters, $form, $files, Property::class, 'remove');
 	}
 
 }
