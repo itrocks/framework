@@ -73,7 +73,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (!$this->value) {
 			$this->value = [];
 		}
-		$collection = new Html_Builder_Collection_Edit($this->property, $this->value);
+		$collection = new Html_Builder_Collection($this->property, $this->value);
 		$collection->setTemplate($this->template);
 		return $collection->build();
 	}
