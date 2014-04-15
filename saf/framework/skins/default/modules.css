@@ -38,14 +38,20 @@
 
 /* modules windows */
 .window.purchases_order > h2, .window.purchases_orders > h2, .window.purchases_reception > h2, .window.purchases_receptions > h2, .window.purchases_invoice > h2, .window.purchases_invoices > h2, .window.purchases_credit > h2, .window.purchases_credits > h2, .window.supplier > h2, .window.suppliers > h2 {
-  background-color: #5184d2; }
+  background-color: #5184d2;
+  color: white; }
 .window.sales_quote > h2, .window.sales_quotes > h2, .window.sales_order > h2, .window.sales_orders > h2, .window.sales_invoice > h2, .window.sales_invoices > h2, .window.sales_preparation > h2, .window.sales_preparations > h2, .window.sales_credit > h2, .window.sales_credits > h2, .window.client > h2, .window.clients > h2, .window.salesman > h2, .window.salesmen > h2 {
-  background-color: #93c437; }
+  background-color: #93c437;
+  color: white; }
 .window.category > h2, .window.categories > h2, .window.characteristic > h2, .window.characteristics > h2, .window.item > h2, .window.items > h2, .window.value > h2, .window.values > h2 {
-  background-color: #b2a5ec; }
-.window.webshop > h2, .window.webshops > h2, .window.account > h2, .window.accounts > h2, .window.cart > h2, .window.carts > h2 {
-  background-color: #93c437; }
-.window.user > h2, .window.users > h2, .window.company > h2, .window.companies > h2, .window.agency > h2, .window.agencies > h2, .window.setting > h2, .window.settings > h2 {
-  background-color: #222222; }
+  background-color: #b2a5ec;
+  color: white; }
+.window.webshop > h2, .window.webshop > select.customized, .window.webshops > h2, .window.webshops > select.customized, .window.account > h2, .window.account > select.customized, .window.accounts > h2, .window.accounts > select.customized, .window.cart > h2, .window.cart > select.customized, .window.carts > h2, .window.carts > select.customized {
+  background-color: #93c437;
+  color: white; }
+.window.user > h2, .window.user > select.customized, .window.users > h2, .window.users > select.customized, .window.company > h2, .window.company > select.customized, .window.companies > h2, .window.companies > select.customized, .window.agency > h2, .window.agency > select.customized, .window.agencies > h2, .window.agencies > select.customized, .window.setting > h2, .window.setting > select.customized, .window.settings > h2, .window.settings > select.customized {
+  background-color: #222222;
+  color: white; }
 .window.address > h2, .window.addresses > h2, .window.contact > h2, .window.contacts > h2, .window.civility > h2, .window.civilities > h2, .window.city > h2, .window.cities > h2, .window.mean_of_payment > h2, .window.mean_of_payments > h2, .window.term_of_payment > h2, .window.term_of_payments > h2, .window.vat_code > h2, .window.vat_codes > h2, .window.vat_value > h2, .window.vat_values > h2, .window.size_unit > h2, .window.size_units > h2, .window.weight_unit > h2, .window.weight_units > h2 {
-  background-color: #a0a0a0; }
+  background-color: #a0a0a0;
+  color: white; }

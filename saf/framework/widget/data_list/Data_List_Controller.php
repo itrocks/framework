@@ -28,6 +28,12 @@ use SAF\Framework\widget\output\Output_Controller;
 class Data_List_Controller extends Output_Controller
 {
 
+	//---------------------------------------------------------------------------------- $class_names
+	/**
+	 * @var string The set class name (can be virtual if only the element class name exists)
+	 */
+	private $class_names;
+
 	//----------------------------------------------------------------- applyParametersToListSettings
 	/**
 	 * Apply parameters to list settings
@@ -359,11 +365,11 @@ class Data_List_Controller extends Output_Controller
 				['#main', new Color('green')]
 			),
 			'save' => new Button(
-				'Save', View::link($class_name, Feature::F_LIST), 'custom_save',
+				'Save', View::link($this->class_names), 'custom_save',
 				['#main', new Color('green'), '.submit', 'title' => 'save this view as a custom list']
 			),
 			'delete' => new Button(
-				'Delete', View::link($class_name, Feature::F_LIST, null, ['delete_name' => true]),
+				'Delete', View::link($this->class_names, null, null, ['delete_name' => true]),
 				'custom_delete',
 				['#main', new Color('red'), '.submit', 'title' => 'delete this custom list']
 			)
@@ -379,6 +385,7 @@ class Data_List_Controller extends Output_Controller
 	 */
 	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
+		$this->class_names = $class_name;
 		$class_name = $parameters->getMainObject()->element_class_name;
 		$parameters = $parameters->getObjects();
 		$list_settings = Data_List_Settings::current($class_name);
