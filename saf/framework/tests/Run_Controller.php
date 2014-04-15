@@ -27,10 +27,10 @@ class Run_Controller implements Feature_Controller
 			(new Tests)->run();
 		}
 		elseif (empty($method_name)) {
-			(new Tests)->runClass(Namespaces::fullClassName($class_name));
+			(new Tests)->runClass($class_name);
 		}
 		else {
-			(new Tests)->runClass(Namespaces::fullClassName($class_name), $method_name);
+			(new Tests)->runClass($class_name, $method_name);
 		}
 		return '<h3>ALL DONE</h3>';
 	}

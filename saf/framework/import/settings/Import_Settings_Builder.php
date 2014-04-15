@@ -6,7 +6,6 @@ use SAF\Framework\Import\Import_Array;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Namespaces;
 
 /**
  * Import settings builder
@@ -136,9 +135,9 @@ abstract class Import_Settings_Builder
 		}
 		if (isset($worksheet['classes'])) {
 			foreach ($worksheet['classes'] as $property_path => $class) {
-				if ($property_path[0] === strtoupper($property_path[0])) {
+				if (ctype_upper($property_path[0])) {
 					// the first element is always the main class name
-					$class_name = $main_class_name = Namespaces::fullClassName($property_path);
+					$class_name = $main_class_name = $property_path;
 					$settings->class_name = $class_name;
 					$property_path = '';
 				}

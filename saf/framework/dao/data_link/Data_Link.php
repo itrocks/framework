@@ -20,6 +20,8 @@ abstract class Data_Link
 	/**
 	 * Gets the class name associated to a store set name
 	 *
+	 * TODO HIGH used by Maintainer only : remove this call and prefer storage-class association cache
+	 *
 	 * @example 'my_addresses' will become 'A\Namespace\My\Address'
 	 * @param $store_name string
 	 * @return string Full class name with namespace

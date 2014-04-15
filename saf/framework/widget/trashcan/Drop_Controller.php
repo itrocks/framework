@@ -1,11 +1,11 @@
 <?php
 namespace SAF\Framework\Widget\Trashcan;
 
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao;
-use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 
 /**
@@ -29,7 +29,7 @@ class Drop_Controller implements Feature_Controller
 		$object = array_shift($parameters);
 		array_shift($parameters); // $feature
 		$controller_uri = SL . get_class($object) . SL . Dao::getObjectIdentifier($object)
-			. SL . 'delete';
+			. SL . Feature::F_DELETE;
 		return (new Main())->runController($controller_uri, $parameters);
 	}
 
@@ -45,7 +45,7 @@ class Drop_Controller implements Feature_Controller
 			$context_class_name = get_class($first_parameter);
 		}
 		else {
-			$context_class_name = Namespaces::fullClassName(Set::elementClassNameOf($first_parameter));
+			$context_class_name = Set::elementClassNameOf($first_parameter);
 		}
 		$context_feature = array_shift($parameters);
 		$third_parameter = reset($parameters);
@@ -71,7 +71,8 @@ class Drop_Controller implements Feature_Controller
 	private function removeElement($class_name, $context_class_name, $context_feature, $parameters)
 	{
 		return (new Main())->runController(
-			SL . $class_name . SL . 'remove' . SL . $context_class_name . SL . $context_feature, $parameters
+			SL . $class_name . SL . Feature::F_REMOVE . SL . $context_class_name . SL . $context_feature,
+			$parameters
 		);
 	}
 

@@ -3,7 +3,6 @@ namespace SAF\Framework\Controller;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Mapper\Getter;
-use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 
 /**
@@ -116,9 +115,9 @@ class Parameters
 		}
 		elseif (is_numeric($this->getRawParameter($parameter_name))) {
 			if (ctype_upper($parameter_name[0])) {
-				$class_name = Namespaces::fullClassName($parameter_name, false);
+				$class_name = $parameter_name;
 			}
-			if (isset($class_name) && class_exists($class_name)) {
+			if (isset($class_name) && @class_exists($class_name)) {
 				// object parameter
 				$object = $this->getRawParameter($parameter_name) + 0;
 				Getter::getObject($object, $class_name);

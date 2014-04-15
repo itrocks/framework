@@ -65,6 +65,8 @@ abstract class Namespaces
 	/**
 	 * Get full class name (with namespace) for a given class name (with or without namespace)
 	 *
+	 * TODO HIGH will be removed when not used anymore (which would be the best for everyone)
+	 *
 	 * @param $short_class_name string
 	 * @param $error            boolean
 	 * @return string

@@ -7,7 +7,6 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Search_Array_Builder;
 
 /**
@@ -40,7 +39,7 @@ class Json_Controller implements Default_Feature_Controller
 		}
 		// search objects for autocomplete combo pull-down list
 		if (isset($parameters['term'])) {
-			$element_class_name = Namespaces::fullClassName(Names::setToClass($class_name, false));
+			$element_class_name = Names::setToClass($class_name, false);
 			$search = null;
 			if (!empty($parameters['term'])) {
 				$search = (new Search_Array_Builder)->buildMultiple(
@@ -82,7 +81,7 @@ class Json_Controller implements Default_Feature_Controller
 		}
 		// single object for autocomplete pull-down list value
 		elseif (isset($parameters['id'])) {
-			$element_class_name = Namespaces::fullClassName(Names::setToClass($class_name));
+			$element_class_name = Names::setToClass($class_name);
 			$source_object = Dao::read($parameters['id'], $element_class_name);
 			return json_encode(new Autocomplete_Entry(
 				Dao::getObjectIdentifier($source_object), strval($source_object)

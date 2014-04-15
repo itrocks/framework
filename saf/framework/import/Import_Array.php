@@ -13,7 +13,7 @@ use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Widget\Data_List\Data_List_Settings;
+use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
  * Import data into the application from array
@@ -149,7 +149,7 @@ class Import_Array
 		return self::getClassNameFromValue(
 			(
 				$array_class_name
-				&& ($array_class_name[0] === strtoupper($array_class_name[0]))
+				&& (ctype_upper($array_class_name[0]))
 				&& ((count($row) == 1) || !$row[1])
 			)
 			? $array_class_name
@@ -164,7 +164,7 @@ class Import_Array
 	 */
 	public static function getClassNameFromValue($value)
 	{
-		return isset($value) ? Builder::className(Namespaces::fullClassName($value)) : null;
+		return isset($value) ? Builder::className($value) : null;
 	}
 
 	//------------------------------------------------------------------------- getConstantsFromArray

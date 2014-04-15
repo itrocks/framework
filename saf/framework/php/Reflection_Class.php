@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 
 /**
@@ -353,7 +354,9 @@ class Reflection_Class
 			. '\s+([\\\\\w]+)' // 1 : class name
 			. '%';
 		preg_match($expr, $this->getDocComment(), $match);
-		return $match ? $this->fullClassName($match[1]) : Set::defaultSetClassNameOf($this->name);
+		return $match
+			? Namespaces::defaultFullClassName($match[1], $this->name)
+			: Set::defaultSetClassNameOf($this->name);
 	}
 
 	//---------------------------------------------------------------------------------- getShortName
