@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Widget\Data_List;
+namespace SAF\Framework\Widget\Data_List_Setting;
 
 use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Dao\Option\Sort;
@@ -9,7 +9,7 @@ use SAF\Framework\Setting;
 use SAF\Framework\Tools\Names;
 
 /**
- * List settings : all that can be customized into a list view
+ * Data list settings : all that can be customized into a list view
  */
 class Data_List_Settings extends Custom_Settings
 {

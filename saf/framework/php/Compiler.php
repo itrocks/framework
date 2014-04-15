@@ -26,7 +26,7 @@ class Compiler implements
 {
 
 	//---------------------------------------------------------------------------- MAX_OPENED_SOURCES
-	const MAX_OPENED_SOURCES = 1000;
+	const MAX_OPENED_SOURCES = 100;
 
 	//---------------------------------------------------------------------------------- SOURCES_FREE
 	const SOURCES_FREE = 10;

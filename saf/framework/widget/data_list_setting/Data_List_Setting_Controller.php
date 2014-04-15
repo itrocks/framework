@@ -1,16 +1,17 @@
 <?php
-namespace SAF\Framework\Widget\Data_List;
+namespace SAF\Framework\Widget\Data_List_Setting;
 
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 use SAF\Framework\View;
+use SAF\Framework\Widget\Data_List\Data_List_Controller;
 
 /**
- * Default listSetting feature controller
+ * Default data list setting feature controller
  */
-class Default_List_Setting_Controller implements Default_Feature_Controller
+class Data_List_Setting_Controller implements Default_Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
@@ -26,9 +27,9 @@ class Default_List_Setting_Controller implements Default_Feature_Controller
 		$element_class_name = Namespaces::fullClassName(Set::elementClassNameOf($class_name));
 		$parameters = $parameters->getObjects();
 		$list_controller = new Data_List_Controller();
-		$list_settings = Data_List_Settings::current($element_class_name);
-		$list_controller->applyParametersToListSettings($list_settings, $parameters, $form);
-		return View::run($parameters, $form, $files, $class_name, 'listSetting');
+		$data_list_settings = Data_List_Settings::current($element_class_name);
+		$list_controller->applyParametersToListSettings($data_list_settings, $parameters, $form);
+		return View::run($parameters, $form, $files, $class_name, 'dataListSetting');
 	}
 
 }

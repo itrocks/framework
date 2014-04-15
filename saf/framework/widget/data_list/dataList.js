@@ -66,7 +66,7 @@ $('document').ready(function()
 						var property_name = $draggable.attr('data-property');
 						var after_property_name = $th.attr('data-property');
 						var class_name = $window.attr('data-class').replace('\\', '/');
-						var url = app.uri_base + '/' + class_name + '/listSetting'
+						var url = app.uri_base + '/' + class_name + '/dataListSetting'
 							+ '?add_property=' + property_name
 							+ '&after=' + ((after_property_name != undefined) ? after_property_name : '')
 							+ '&as_widget=1'
@@ -112,7 +112,7 @@ $('document').ready(function()
 			{
 				return $this.closest('th').attr('data-property');
 			};
-			var uri = window.app.uri_base + '/{className}/listSetting'
+			var uri = window.app.uri_base + '/{className}/dataListSetting'
 				+ window.app.askSIDand() + 'as_widget=1';
 			// list title (class name) double-click
 			$this.children('h2').modifiable({
