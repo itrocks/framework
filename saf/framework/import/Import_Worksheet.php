@@ -21,7 +21,7 @@ class Import_Worksheet
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
-	 * @var File
+	 * @var \SAF\Framework\Dao\File
 	 */
 	public $file;
 
@@ -34,13 +34,13 @@ class Import_Worksheet
 	//-------------------------------------------------------------------------------------- $preview
 	/**
 	 * @getter getPreview
-	 * @var Import_Preview
+	 * @var \SAF\Framework\Import\Settings\Import_Preview
 	 */
 	public $preview;
 
 	//------------------------------------------------------------------------------------- $settings
 	/**
-	 * @var Import_Settings
+	 * @var \SAF\Framework\Import\Settings\Import_Settings
 	 */
 	public $settings;
 

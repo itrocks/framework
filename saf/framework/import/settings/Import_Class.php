@@ -4,7 +4,6 @@ namespace SAF\Framework\Import\Settings;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
 use Serializable;
 
 /**
@@ -21,7 +20,7 @@ class Import_Class implements Serializable
 
 	//------------------------------------------------------------------------------------ $constants
 	/**
-	 * @var Reflection_Property_Value[] key is the name of the property
+	 * @var \SAF\Framework\Reflection\Reflection_Property_Value[] key is the name of the property
 	 */
 	public $constants = [];
 
@@ -193,9 +192,7 @@ class Import_Class implements Serializable
 	 */
 	public function getPropertyPathValue()
 	{
-		return $this->property_path
-			? (join(DOT, $this->property_path))
-			: Namespaces::shortClassName($this->class_name);
+		return $this->property_path ? (join(DOT, $this->property_path)) : $this->class_name;
 	}
 
 	//--------------------------------------------------------------------------------- getWriteValue

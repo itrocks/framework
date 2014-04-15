@@ -65,7 +65,7 @@
 			</fieldset>
 			<fieldset class="none">
 				Si aucun <span>|{name}|</span> ne correspond,
-				{object_not_found_behaviour.@edit}
+				{object_not_found_behaviour.@edit("worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][object_not_found_behaviour]")}
 			</fieldset>
 			<fieldset class="write properties">
 				<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">

@@ -12,7 +12,7 @@ class Handled_Error
 	//--------------------------------------------------------------------- $call_next_error_handlers
 	/**
 	 * Will next error handlers be called ?
-	 * Default behavior is to call all error handlers.
+	 * Default behaviour is to call all error handlers.
 	 *
 	 * @var boolean
 	 */
@@ -53,7 +53,7 @@ class Handled_Error
 	//-------------------------------------------------------------- $standard_php_error_handler_call
 	/**
 	 * Will standard php error handler be called ?
-	 * Default behavior is NOT to call the php error handler (for handled error numbers of course)
+	 * Default behaviour is NOT to call the php error handler (for handled error numbers of course)
 	 *
 	 * @var boolean
 	 */
@@ -105,7 +105,7 @@ class Handled_Error
 	 * For this error, next error handlers will not be called
 	 *
 	 * An error handler will call this if it wants other error handlers not to be called after it.
-	 * Default behavior is to call all error handlers.
+	 * Default behaviour is to call all error handlers.
 	 *
 	 * @return Handled_Error
 	 */
@@ -119,7 +119,7 @@ class Handled_Error
 	/**
 	 * For this error, standard php error handler will be called (or not if false)
 	 *
-	 * Default behavior is to don't call php error handler for handled errors.
+	 * Default behaviour is to don't call php error handler for handled errors.
 	 *
 	 * @param $call boolean set this to false if you don't want php error handler to be called anymore
 	 * @return Handled_Error

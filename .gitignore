@@ -6,6 +6,7 @@
 
 /cache
 /phpdoc
+/tmp
 /vendor
 
 /pwd.php

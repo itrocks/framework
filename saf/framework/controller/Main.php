@@ -13,6 +13,7 @@ use SAF\Framework\Plugin;
 use SAF\Framework\Plugin\Activable;
 use SAF\Framework\Plugin\Manager;
 use SAF\Framework\Session;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Updater\Application_Updater;
 
 /**
@@ -107,13 +108,25 @@ class Main
 
 	//--------------------------------------------------------------------------------- getController
 	/**
-	 * @param $controller_name string
-	 * @param $feature_name    string
-	 * @return array [$controller_class_name, $method_name]
+	 * @param $controller_name string the name of the data class which controller we are looking for
+	 * @param $feature_name    string the feature which controller we are looking for
+	 * @param $sub_feature     string if set, the sub feature controller is searched into the feature
+	 *                         controller namespace
+	 * @return callable
 	 */
-	private function getController($controller_name, $feature_name)
+	private function getController($controller_name, $feature_name, $sub_feature = null)
 	{
-		list($class, $method) = Getter::get($controller_name, $feature_name, 'Controller', 'php');
+		if (isset($sub_feature)) {
+			list($class, $method) = Getter::get(
+				$controller_name, $feature_name, Names::methodToClass($sub_feature) . '_Controller', 'php'
+			);
+		}
+
+		if (!isset($class)) {
+			list($class, $method) = Getter::get($controller_name, $feature_name, 'Controller', 'php');
+		}
+
+		/** @noinspection PhpUndefinedVariableInspection if $class is set, then $method is set too */
 		return isset($class) ? [$class, $method] : [$controller_name, $feature_name];
 	}
 
@@ -262,17 +275,18 @@ class Main
 	/**
 	 * Parse URI and run matching controller
 	 *
-	 * @param $uri   string
-	 * @param $get   array
-	 * @param $post  array
-	 * @param $files array
-	 * @return mixed
+	 * @param $uri         string The URI which describes the called controller and its parameters
+	 * @param $get         array Arguments sent by the caller
+	 * @param $post        array Posted forms sent by the caller
+	 * @param $files       array Files sent by the caller
+	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
+	 * @return mixed View data returned by the view the controller called
 	 */
-	public function runController($uri, $get = [], $post = [], $files = [])
+	public function runController($uri, $get = [], $post = [], $files = [], $sub_feature = null)
 	{
 		$uri = new Uri($uri, $get);
 		list($class_name, $method_name) = $this->getController(
-			$uri->controller_name, $uri->feature_name
+			$uri->controller_name, $uri->feature_name, $sub_feature
 		);
 		return $this->executeController($class_name, $method_name, $uri, $post, $files);
 	}

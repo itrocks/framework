@@ -4,7 +4,7 @@ namespace SAF\Framework\Dao\Func;
 use SAF\Framework\Sql\Builder;
 
 /**
- * A Dao where function applies only to conditions : it changes the condition behavior
+ * A Dao where function applies only to conditions : it changes the condition behaviour
  */
 interface Where extends Dao_Function
 {

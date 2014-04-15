@@ -41,7 +41,7 @@ class View implements Configurable
 	 * @param $feature_names string[] feature and inherited feature which view will be searched
 	 * @param $template      string   if a specific template is set, the view named with it will be
 	 *                       searched into the view / feature namespace first
-	 * @return string[] [$view_class_name, $view_method_name]
+	 * @return callable
 	 */
 	private static function getView($view_name, $feature_names, $template = null)
 	{

@@ -43,7 +43,7 @@ class Import_Array
 
 	//------------------------------------------------------------------------------------- $settings
 	/**
-	 * @var Import_Settings
+	 * @var \SAF\Framework\Import\Settings\Import_Settings
 	 */
 	public $settings;
 

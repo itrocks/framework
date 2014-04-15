@@ -173,16 +173,11 @@ abstract class Functions
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
 			$property = new Reflection_Property(get_class($object), $property_name);
 			if (isset($property)) {
-				if ($template->preprops) {
+				if ($template->preprops && !$name) {
 					$preprop = isset($preprop)
 						? ($preprop . '[' . reset($template->preprops) . ']')
 						: reset($template->preprops);
 					while ($next = next($template->preprops)) {
-						/*
-						if ($i = strrpos($next, DOT)) {
-							$next = substr($next, $i + 1);
-						}
-						*/
 						if ((strpos($next, BS) !== false) && class_exists($next)) {
 							$next = Names::classToDisplay($next);
 						}
@@ -191,13 +186,14 @@ abstract class Functions
 						}
 						$preprop .= '[' . $next . ']';
 					}
+					$property_edit = new Html_Builder_Property(
+						$property, $property->getValue($object), $preprop
+					);
 				}
 				else {
-					$preprop = null;
+					$property_edit = new Html_Builder_Property($property, $property->getValue($object));
+					$property_edit->name = $name;
 				}
-				$property_edit = new Html_Builder_Property(
-					$property, $property->getValue($object), $preprop
-				);
 				if ($ignore_user) {
 					$property_edit->readonly = false;
 				}
