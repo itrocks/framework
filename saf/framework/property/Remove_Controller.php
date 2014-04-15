@@ -5,7 +5,7 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Property;
 use SAF\Framework\View;
-use SAF\Framework\Widget\Data_List\Data_List_Settings;
+use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 use SAF\Framework\Widget\Remove;
 
 /**

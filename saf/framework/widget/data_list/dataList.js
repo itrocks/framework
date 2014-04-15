@@ -63,9 +63,9 @@ $('document').ready(function()
 						var $window = $this.closest('.list.window');
 						var $th = $this.find('thead>tr:first>th:nth-child(' + insert_after + ')');
 						var $draggable = ui.draggable;
-						var property_name = $draggable.attr('data-property');
-						var after_property_name = $th.attr('data-property');
-						var class_name = $window.attr('data-class').replace('\\', '/');
+						var property_name = $draggable.data('property');
+						var after_property_name = $th.data('property');
+						var class_name = $window.data('class').replace('\\', '/');
 						var url = app.uri_base + '/' + class_name + '/dataListSetting'
 							+ '?add_property=' + property_name
 							+ '&after=' + ((after_property_name != undefined) ? after_property_name : '')
@@ -75,8 +75,8 @@ $('document').ready(function()
 
 						$.ajax({ url: url, success: function()
 						{
-							var $class_name = $window.attr('data-class').replace('\\', '/');
-							var $feature_name = $window.attr('data-feature');
+							var $class_name = $window.data('class').replace('\\', '/');
+							var $feature_name = $window.data('feature');
 							var url = app.uri_base + '/' + $class_name + '/' + $feature_name
 								+ window.app.askSIDand() + 'as_widget=1';
 							$.ajax({ url: url, success: function(data)
@@ -106,11 +106,11 @@ $('document').ready(function()
 			// modifiable list and columns titles
 			var className = function($this)
 			{
-				return $this.closest('.list.window').attr('data-class');
+				return $this.closest('.list.window').data('class');
 			};
 			var propertyPath = function($this)
 			{
-				return $this.closest('th').attr('data-property');
+				return $this.closest('th').data('property');
 			};
 			var uri = window.app.uri_base + '/{className}/dataListSetting'
 				+ window.app.askSIDand() + 'as_widget=1';

@@ -37,26 +37,19 @@ $('document').ready(function()
 
 			drop: function(event, ui)
 			{
-				//noinspection JSUnresolvedVariable
 				var app = window.app;
-				// start
-				var href =   event.target.href;
-				var id =     ui.helper.attr('id');
-				var search = event.target.search;
-				var hash =   event.target.hash;
+				var href = event.target.href;
 				// calculate destination href
-				if (id.substr(0, app.uri_base.length) == app.uri_base) {
-					id = id.substr(app.uri_base.length);
-				}
 				event.target.href = event.target.pathname + '/drop';
 				// after trash call is complete, the source window is reloaded to update displayed content
 				var $window = ui.draggable.closest('.window');
 				if ($window.length) {
-					var window_id = $window.attr('id');
-					if ((window_id != undefined) && (window_id.indexOf('/') != -1)) {
+					var data_class = $window.data('class');
+					if (data_class != undefined) {
 						$(event.target).data('on-success', function() {
+							var uri = '/' + data_class.replace('\\', '/') + '/' + $window.data('feature');
 							$.ajax({
-								url:     app.uri_base + window_id + '?as_widget=1' + app.andSID(),
+								url: app.uri_base + uri + '?as_widget=1' + app.andSID(),
 								success: function(data) {
 									var $parent = $window.parent();
 									$parent.html(data);
@@ -66,7 +59,12 @@ $('document').ready(function()
 						});
 					}
 				}
-				event.target.href += id + search + hash;
+				event.target.href += '/' + ui.helper.data('class').replace('\\', '/')
+					+ '/' + ui.helper.data('feature');
+				if (ui.helper.data('property')) {
+					event.target.href += '/SAF/Framework/Property/' + ui.helper.data('property');
+				}
+				event.target.href += event.target.search + event.target.hash;
 				event.target.click();
 				// end
 				event.target.href = href;
