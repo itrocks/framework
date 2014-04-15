@@ -14,7 +14,7 @@ use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\View\Html\Cleaner;
 
 global $pwd;
-include_once 'pwd.php';
+require_once 'pwd.php';
 
 $config['saf-framework'] = [
 	'app' => Application::class,
