@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\File;
+namespace SAF\Framework\Dao\File\Builder;
 
 use SAF\Framework\Dao\File;
 

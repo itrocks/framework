@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Write;
+namespace SAF\Framework\Widget\Write;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Class_Controller;
 use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao\File\Post_Files;
+use SAF\Framework\Dao\File\Builder\Post_Files;
 use SAF\Framework\Dao;
 use SAF\Framework\Mapper\Object_Builder_Array;
 use SAF\Framework\View;
