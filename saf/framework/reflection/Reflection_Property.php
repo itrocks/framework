@@ -253,13 +253,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function getType()
 	{
-		$type_string = $this->getAnnotation('var')->value;
-		if (ctype_upper($type_string[0])) {
-			$type_string = Namespaces::defaultFullClassName(
-				$type_string, $this->getDeclaringTrait()->name
-			);
-		}
-		$type = new Type($type_string);
+		$type = new Type($this->getAnnotation('var')->value);
 		// automatically add current class namespace
 		if ($type->isClass()) {
 			$element_class_name = $type->getElementTypeAsString();

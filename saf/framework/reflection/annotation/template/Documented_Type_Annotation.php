@@ -42,7 +42,8 @@ class Documented_Type_Annotation extends Annotation
 			}
 			if (ctype_upper($this->value[0]) && !strpos($this->value, BS)) {
 				$this->value = Namespaces::defaultFullClassName(
-					$this->value, ($class instanceof Reflection_Class) ? $class->name : $class->class
+					$this->value,
+					($class instanceof Reflection_Class) ? $class->name: $class->getDeclaringTrait()
 				);
 			}
 		}
