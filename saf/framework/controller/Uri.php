@@ -106,7 +106,7 @@ class Uri
 				break;
 			}
 		}
-		if (ctype_upper($controller_element[0])) {
+		if ($controller_element && ctype_upper($controller_element[0])) {
 			$key++;
 		}
 		$this->controller_name = join(BS, array_slice($uri, 0, $key));
@@ -122,7 +122,7 @@ class Uri
 				$this->feature_name = Feature::F_OUTPUT;
 			}
 		}
-		elseif (!$this->feature_name) {
+		elseif ($this->controller_name && !$this->feature_name) {
 			if (@class_exists($this->controller_name)) {
 				$this->feature_name = Feature::F_ADD;
 			}
