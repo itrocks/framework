@@ -4,7 +4,7 @@ namespace SAF\Framework\Setting;
 /**
  * For users that have settings
  *
- * @extends User
+ * @extends SAF\Framework\User
  * @implements Has_Settings
  */
 trait User_Has_Settings
