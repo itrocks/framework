@@ -2,8 +2,8 @@
 namespace SAF\Framework\View\Html;
 
 use SAF\Framework\Builder;
+use SAF\Framework;
 use SAF\Framework\View\IView;
-use SAF\Framework\View;
 
 /**
  * The Html default view selects the template associated to wished class and feature names
@@ -35,7 +35,7 @@ class Default_View implements IView
 			$template_class, [reset($parameters), $template_file, $feature_name]
 		);
 		$template->setParameters($parameters);
-		$current = View::current();
+		$current = Framework\View::current();
 		if (($current instanceof Engine) && ($css = $current->getCss())) {
 			$template->setCss($css);
 		}

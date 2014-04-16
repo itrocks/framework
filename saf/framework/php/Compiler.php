@@ -151,6 +151,7 @@ class Compiler implements
 	 */
 	public function compile($last_time = 0)
 	{
+		set_time_limit(180);
 		$cache_dir = $this->getCacheDir();
 
 		// create data set for dependencies

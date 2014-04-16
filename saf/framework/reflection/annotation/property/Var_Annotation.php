@@ -18,15 +18,15 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 *
-	 * @param $value string
-	 * @param $reflection_object Reflection_Property
+	 * @param $value               string
+	 * @param $reflection_property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $reflection_object)
+	public function __construct($value, Reflection_Property $reflection_property)
 	{
-		parent::__construct($value);
+		parent::__construct($value, $reflection_property);
 		if (!$this->value) {
-			$types = $reflection_object->getDeclaringClass()->getDefaultProperties();
-			$this->value = gettype($types[$reflection_object->name]);
+			$types       = $reflection_property->getDeclaringClass()->getDefaultProperties();
+			$this->value = gettype($types[$reflection_property->name]);
 		}
 	}
 

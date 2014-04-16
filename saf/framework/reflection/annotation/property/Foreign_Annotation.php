@@ -22,7 +22,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 	 */
 	public function __construct($value, Reflection_Property $reflection_property)
 	{
-		parent::__construct($value);
+		parent::__construct($value, $reflection_property);
 		if (empty($this->value)) {
 			$link = $reflection_property->getAnnotation('link')->value;
 			$possibles = null;
@@ -39,9 +39,9 @@ class Foreign_Annotation extends Documented_Type_Annotation
 				$this->value = reset($possibles);
 			}
 			elseif (count($possibles) > 1) {
-				$class = $reflection_property->class;
+				$class    = $reflection_property->class;
 				$property = $reflection_property->name;
-				$type = $reflection_property->getType()->getElementTypeAsString();
+				$type     = $reflection_property->getType()->getElementTypeAsString();
 				trigger_error(
 					'Can\'t guess @foreign for ' . $class . '::' . $property . ' : '
 					. 'please set @composite on one (and one only) ' . $type . ' property of type ' . $class

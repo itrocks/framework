@@ -16,7 +16,7 @@ use SAF\Framework\View\Html\Cleaner;
 global $pwd;
 require_once 'pwd.php';
 
-$config['saf-framework'] = [
+$config['SAF/Framework'] = [
 	'app' => Application::class,
 	'author' => 'Baptiste Pillot',
 

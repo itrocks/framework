@@ -6,12 +6,12 @@ use SAF\Framework\Dao;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\View;
+use SAF\Framework;
 
 /**
  * Built-in SAF HTML view engine
  */
-class Engine implements Configurable, View\Engine
+class Engine implements Configurable, Framework\View\Engine
 {
 
 	//------------------------------------------------------------------------------------------ $css
