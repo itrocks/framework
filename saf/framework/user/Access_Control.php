@@ -19,7 +19,12 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @var string[]
 	 */
-	public $exceptions = ['/', '/User/authenticate', '/User/login', '/Menu/output'];
+	public $exceptions = [
+		'/.*/.*/User/authenticate',
+		'/.*/.*/User/login',
+		'/.*/.*/Menu/output',
+		'/SAF/Framework/Tests/run'
+	];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -41,8 +46,8 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function checkUser(&$uri, &$get, &$post, &$files)
 	{
-		if (!User::current() && !in_array($uri, $this->exceptions)) {
-			$uri = '/User/login';
+		if (!User::current() && !$this->exception($uri)) {
+			$uri = '/SAF/Framework/User/login';
 			$_get = [];
 			if (isset($get['as_widget']))   $_get['as_widget']   = true;
 			if (isset($get['is_included'])) $_get['is_included'] = true;
@@ -50,6 +55,24 @@ class Access_Control implements Configurable, Registerable
 			$post  = [];
 			$files = [];
 		}
+	}
+
+	//------------------------------------------------------------------------------------- exception
+	/**
+	 * Returns true if there is a set exception, eg no access control for this URI
+	 *
+	 * @param $uri string
+	 * @return boolean
+	 */
+	private function exception($uri)
+	{
+		// could use preg_grep, but I don't want to ask delimiters into exceptions array
+		foreach ($this->exceptions as $exception) {
+			if (preg_match('%^' . $exception . '$%', $uri)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//-------------------------------------------------------------------------------------- register
