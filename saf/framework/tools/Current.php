@@ -50,6 +50,8 @@ trait Current
 	public static function current($set_current = null)
 	{
 		$called_class = get_called_class();
+
+		// set current
 		if ($set_current) {
 			static::$current = $set_current;
 			if (!is_a($called_class, Plugin::class, true)) {
@@ -58,19 +60,30 @@ trait Current
 				);
 			}
 		}
-		elseif (!isset(static::$current) && is_a($called_class, Plugin::class, true)) {
-			if ($called_class === Builder::class) {
-				static::$current = new Builder();
-			}
-			else {
-				$plugin = Session::current()->plugins->get(
-					Builder::current()->sourceClassName($called_class)
-				);
-				if (!isset(static::$current)) {
-					static::$current = $plugin;
+
+		elseif (!isset(static::$current)) {
+
+			// get current plugin from plugins manager
+			if (is_a($called_class, Plugin::class, true)) {
+				if ($called_class === Builder::class) {
+					static::$current = new Builder();
+				}
+				else {
+					$plugin = Session::current()->plugins->get(
+						Builder::current()->sourceClassName($called_class)
+					);
+					if (!isset(static::$current)) {
+						static::$current = $plugin;
+					}
 				}
 			}
+
+			// get current value from session
+			else {
+				static::$current = Session::current()->get($called_class);
+			}
 		}
+
 		return static::$current;
 	}
 
