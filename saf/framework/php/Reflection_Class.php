@@ -653,6 +653,7 @@ class Reflection_Class
 			$this->interfaces = [];
 			$this->parent     = null;
 
+			$this->getTokens();
 			$token = $this->tokens[$this->token_key];
 			while ($token !== '{') {
 				if (is_array($token) && in_array($token[0], [T_EXTENDS, T_IMPLEMENTS])) {
@@ -692,6 +693,8 @@ class Reflection_Class
 
 			$depth = 0;
 			$visibility_token = null;
+
+			$this->getTokens();
 			$token = $this->tokens[$this->token_key];
 			do {
 
