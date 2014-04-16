@@ -41,14 +41,19 @@ class Include_Path
 	 */
 	private function getDirectories($path)
 	{
-		$directories = [$path];
-		$dir = dir($path);
-		while ($entry = $dir->read()) if ($entry[0] != DOT) {
-			if (is_dir($path . SL . $entry) && ($entry != 'vendor') && ($entry != 'cache')) {
-				$directories = array_merge($directories, $this->getDirectories($path . SL . $entry));
-			}
+		if (is_file($path . '/exclude')) {
+			return $directories = [];
 		}
-		$dir->close();
+		else {
+			$directories = [$path];
+			$dir = dir($path);
+			while ($entry = $dir->read()) if ($entry[0] != DOT) {
+				if (is_dir($path . SL . $entry) && ($entry != 'vendor') && ($entry != 'cache')) {
+					$directories = array_merge($directories, $this->getDirectories($path . SL . $entry));
+				}
+			}
+			$dir->close();
+		}
 		return $directories;
 	}
 
@@ -149,16 +154,14 @@ class Include_Path
 		$files = [];
 		foreach ($this->getSourceDirectories(true) as $directory) {
 			$directory_slash = $directory . SL;
-			if (strpos($directory_slash, '/webshop/templates/') === false) {
-				$dir = dir($directory);
-				while ($entry = $dir->read()) if ($entry[0] != DOT) {
-					$file_path = $directory . SL . $entry;
-					if (is_file($file_path)) {
-						$files[] = $file_path;
-					}
+			$dir = dir($directory);
+			while ($entry = $dir->read()) if ($entry[0] != DOT) {
+				$file_path = $directory . SL . $entry;
+				if (is_file($file_path)) {
+					$files[] = $file_path;
 				}
-				$dir->close();
 			}
+			$dir->close();
 		}
 		return $files;
 	}

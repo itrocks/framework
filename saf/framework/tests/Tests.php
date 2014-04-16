@@ -16,7 +16,9 @@ class Tests
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
-		$this->runDir(Application::current()->include_path->getSourceDirectory());
+		foreach (Application::current()->include_path->getSourceDirectories() as $directory_name) {
+			$this->runDir($directory_name);
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- runClass
@@ -66,17 +68,19 @@ class Tests
 	 */
 	private function runDir($directory_name)
 	{
-		$dir = dir($directory_name);
-		while ($entry = $dir->read()) if ($entry[0] != DOT) {
-			$full_entry = $directory_name . SL . $entry;
-			if (is_dir($full_entry)) {
-				$this->runDir($full_entry);
+		if (!is_file($directory_name . '/exclude')) {
+			$dir = dir($directory_name);
+			while ($entry = $dir->read()) if ($entry[0] != DOT) {
+				$full_entry = $directory_name . SL . $entry;
+				if (is_dir($full_entry)) {
+					$this->runDir($full_entry);
+				}
+				elseif (ctype_upper($entry[0]) && (substr($entry, -4) === '.php')) {
+					$this->runFile($full_entry);
+				}
 			}
-			elseif (ctype_upper($entry[0]) && (substr($entry, -4) === '.php')) {
-				$this->runFile($full_entry);
-			}
+			$dir->close();
 		}
-		$dir->close();
 	}
 
 	//--------------------------------------------------------------------------------------- runFile
