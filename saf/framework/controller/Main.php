@@ -126,8 +126,12 @@ class Main
 			list($class, $method) = Getter::get($controller_name, $feature_name, 'Controller', 'php');
 		}
 
+		if (!isset($class)) {
+			list($class, $method) = [Default_Controller::class, 'run'];
+		}
+
 		/** @noinspection PhpUndefinedVariableInspection if $class is set, then $method is set too */
-		return isset($class) ? [$class, $method] : [$controller_name, $feature_name];
+		return [$class, $method];
 	}
 
 	//--------------------------------------------------------------------------------------- globals

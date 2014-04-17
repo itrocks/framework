@@ -66,8 +66,9 @@ class Engine implements Configurable, Framework\View\Engine
 			}
 		}
 
-		return Names::classToPath(isset($class) ? $class : $class_name . '_' . reset($feature_names))
-			. '.html';
+		return isset($class)
+			? (Names::classToPath($class) . '.html')
+			: stream_resolve_include_path('default.html');
 	}
 
 	//------------------------------------------------------------------------------------------ link

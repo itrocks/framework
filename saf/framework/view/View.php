@@ -68,8 +68,12 @@ class View implements Configurable
 			}
 		}
 
+		if (!isset($class)) {
+			list($class, $method) = [__CLASS__ . BS . $view_engine_name . BS . 'Default_View', 'run'];
+		}
+
 		/** @noinspection PhpUndefinedVariableInspection if $class is set, then $method is set too */
-		return isset($class) ? [$class, $method] : [$view_name, reset($feature_names)];
+		return [$class, $method];
 	}
 
 	//----------------------------------------------------------------------------------- executeView
