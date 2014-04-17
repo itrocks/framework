@@ -67,14 +67,17 @@ fieldset {
       background-color: #defdaf; }
     fieldset > div:not(.tabber):not(.multiple) > label {
       font-weight: bold;
-      padding-top: 6px;
-      vertical-align: top;
+      height: 24px;
+      vertical-align: middle;
       white-space: nowrap; }
       fieldset > div:not(.tabber):not(.multiple) > label:after {
         content: " :";
         margin-right: .5em; }
-    fieldset > div:not(.tabber):not(.multiple) > div > input, fieldset > div:not(.tabber):not(.multiple) > div > select, fieldset > div:not(.tabber):not(.multiple) > div > textarea {
-      margin: 2px 0; }
+    fieldset > div:not(.tabber):not(.multiple) > div {
+      height: 24px;
+      vertical-align: middle; }
+      fieldset > div:not(.tabber):not(.multiple) > div > input, fieldset > div:not(.tabber):not(.multiple) > div > select, fieldset > div:not(.tabber):not(.multiple) > div > textarea {
+        margin: 2px 0; }
     fieldset > div:not(.tabber).multiple {
       border: lightgrey 1px solid;
       caption-side: bottom;

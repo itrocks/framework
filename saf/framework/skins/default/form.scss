@@ -91,8 +91,8 @@ fieldset {
 
 			>label {
 				font-weight: bold;
-				padding-top: 6px;
-				vertical-align: top;
+				height: 24px;
+				vertical-align: middle;
 				white-space: nowrap;
 				&:after {
 					content: " :";
@@ -101,6 +101,9 @@ fieldset {
 			}
 
 			>div {
+				height: 24px;
+				vertical-align: middle;
+
 				>input, >select, >textarea {
 					margin: 2px 0;
 				}
