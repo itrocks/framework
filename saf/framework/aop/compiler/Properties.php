@@ -52,14 +52,17 @@ class Properties
 				$methods['__set']   = $this->compileSet($advices);
 				$methods['__unset'] = $this->compileUnset($advices);
 			}
+			else {
+				unset($methods['__construct']);
+			}
 		}
 		foreach ($advices as $property_name => $property_advices) {
-			$methods['_' . $property_name . '_read'] = $this->compileRead(
-				$property_name, $property_advices
-			);
-			$methods['_' . $property_name . '_write'] = $this->compileWrite(
-				$property_name, $property_advices
-			);
+			if ($read = $this->compileRead($property_name, $property_advices)) {
+				$methods['_' . $property_name . '_read'] = $read;
+			}
+			if ($write = $this->compileWrite($property_name, $property_advices)) {
+				$methods['_' . $property_name . '_write'] = $write;
+			}
 		}
 		$this->executeActions();
 		return $methods;

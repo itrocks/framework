@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework\PHP;
 
-use SAF\Framework\Tools\Names;
-
 /**
  * The same as PHP's ReflectionMethod, but working with PHP source, without loading the class
  */
@@ -249,7 +247,7 @@ class Reflection_Method
 	public function isAbstract()
 	{
 		if (!isset($this->is_abstract)) {
-			$this->is_abstract = ($this->class->type !== T_TRAIT) && $this->class->isAbstract();
+			$this->is_abstract = ($this->class->type === T_INTERFACE);
 			if (!$this->is_abstract) {
 				$this->scanBefore();
 			}

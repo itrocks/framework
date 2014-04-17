@@ -133,7 +133,9 @@ class Compiler implements ICompiler, Needs_Main
 
 		$method_compiler = new Compiler\Method($class);
 		foreach ($methods as $method_name => $advices) {
-			$methods_code[$method_name] = $method_compiler->compile($method_name, $advices);
+			if ($compiled_method = $method_compiler->compile($method_name, $advices)) {
+				$methods_code[$method_name] = $compiled_method;
+			}
 		}
 
 		if ($methods_code) {

@@ -67,7 +67,9 @@ class Method
 		}
 		// don't compile abstract method where they are declared : will be compiled where they are
 		// implemented
-		if ($source_method->isAbstract()) return '';
+		if ($source_method->isAbstract()) {
+			return '';
+		}
 
 		$class_name = $this->class->name;
 		$buffer = $this->class->source->getSource();
@@ -116,7 +118,7 @@ class Method
 			echo 'in_parent = true for ' . $class_name . '::' . $method_name . BR;
 		}
 
-		$ref = $source_method->returnsReference();
+		$ref = $source_method->returnsReference() ? '&' : '';
 		$call_code = $i2 . ($joinpoint_has_return ? ('$result_ =' . $ref . SP) : '')
 			. ($is_static ? 'self::' : ($in_parent ? 'parent::' : '$this->'))
 			. $method_name . ($in_parent ? '' : ('_' . $count))
