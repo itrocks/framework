@@ -56,11 +56,12 @@ trait Current
 			static::$current = $set_current;
 			if (!is_a($called_class, Plugin::class, true)) {
 				Session::current()->set(
-					$set_current, Builder::current()->sourceClassName(get_called_class())
+					$set_current, Builder::current()->sourceClassName($called_class)
 				);
 			}
 		}
 
+		// get current
 		elseif (!isset(static::$current)) {
 
 			// get current plugin from plugins manager
