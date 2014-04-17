@@ -2,9 +2,9 @@
 namespace SAF\Framework\AOP\Compiler;
 
 use ReflectionFunction;
+use SAF\Framework\PHP\Reflection_Method;
 use SAF\Framework\Plugin;
 use SAF\Framework\Reflection\Reflection_Function;
-use SAF\Framework\Reflection\Reflection_Method;
 
 /**
  * Functions common to all element compilers classes
@@ -50,7 +50,8 @@ trait Toolbox
 					$is_advice_static = true;
 				}
 			}
-			$advice_method = new Reflection_Method($advice_class_name, $advice_method_name);
+			$advice_method = Reflection_Method::of($advice_class_name, $advice_method_name);
+			$advice_parameters = $advice_method->getParametersNames();
 		}
 		else {
 			$advice_class_name = null;
@@ -59,10 +60,10 @@ trait Toolbox
 			$advice_string = Q . $advice_function_name . Q;
 			$is_advice_static = false;
 			$advice_method = new Reflection_Function($advice_function_name);
+			$advice_parameters = $advice_method->getParameters();
 		}
 
 		$advice_has_return = strpos($advice_method->getDocComment(), '@return');
-		$advice_parameters = $advice_method->getParameters();
 
 		return [
 			$advice_class_name,
@@ -115,7 +116,7 @@ trait Toolbox
 	) {
 		// $advice_code
 		if (is_array($advice)) {
-			$method = new Reflection_Method($advice_class_name, $advice_method_name);
+			$method = Reflection_Method::of($advice_class_name, $advice_method_name);
 			$ref = $method->returnsReference() ? '&' : '';
 			// static method call
 			if ($is_advice_static) {

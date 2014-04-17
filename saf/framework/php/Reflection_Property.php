@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Tools\Names;
+
 /**
  * The same as PHP's ReflectionProperty, but working with PHP source, without loading the class
  */
@@ -161,6 +163,19 @@ class Reflection_Property
 			$this->scanBefore();
 		}
 		return $this->is_static;
+	}
+
+	//-------------------------------------------------------------------------------------------- of
+	/**
+	 * @param $class_name    string
+	 * @param $property_name string
+	 * @param $flags         integer[] T_EXTENDS, T_USE
+	 * @return Reflection_Method
+	 */
+	public static function of($class_name, $property_name, $flags = [])
+	{
+		$properties = Reflection_Class::of($class_name)->getProperties($flags);
+		return isset($properties[$property_name]) ? $properties[$property_name] : null;
 	}
 
 	//----------------------------------------------------------------------------------------- regex

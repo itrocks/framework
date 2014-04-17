@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\AOP\Compiler;
 
-use SAF\Framework\Reflection\Reflection_Parameter;
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\PHP\Reflection_Method;
 
@@ -81,7 +80,7 @@ class Properties
 		/** @var $advice_class_name string */
 		/** @var $advice_method_name string */
 		/** @var $advice_function_name string */
-		/** @var $advice_parameters Reflection_Parameter[] */
+		/** @var $advice_parameters string[] */
 		/** @var $advice_string string [$object_, 'methodName') | 'functionName' */
 		/** @var $advice_has_return boolean */
 		/** @var $is_advice_static boolean */
@@ -584,10 +583,11 @@ class Properties
 					// the method does not exist and the parent has no AOP properties
 					$over['action'] = false;
 					$over['call']   = false;
-					$over['cases']  = $this->parentCases($method_name, $parameters, $advices);
 				}
 			}
 		}
+		// add parent AOP properties cases
+		$over['cases']  = $this->parentCases($method_name, $parameters, $advices);
 		// the method exists : prepare call and prototype
 		if (isset($method)) {
 			$over['method']    = $method;

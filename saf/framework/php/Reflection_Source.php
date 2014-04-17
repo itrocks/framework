@@ -2,6 +2,7 @@
 namespace SAF\Framework\PHP;
 
 use ReflectionClass;
+use SAF\Framework\Tools\Names;
 
 /**
  * Reflection of PHP source code
@@ -107,6 +108,37 @@ class Reflection_Source
 		if ($this->internal = (!$file_name && $class_name)) {
 			$this->classes = [$class_name => new Reflection_Class($this, $class_name)];
 		}
+	}
+
+	//------------------------------------------------------------------------------------------ free
+	/**
+	 * Reset object properties in order to free memory
+	 *
+	 * All features will work fine, you can call this to flush cash and free a maximum amount of
+	 * memory but cache will be freed and next calls may be slower.
+	 *
+	 * Internals :
+	 * Classes, dependencies, instantiates, namespaces and use are reset only if bigger than the
+	 * $bigger_than parameter or if it is 0.
+	 * Lines and tokens are always reset by this call.
+	 * Source is reset only if source is linked to a file name.
+	 *
+	 * @param $bigger_than integer
+	 */
+	public function free($bigger_than = 1)
+	{
+		if (!$bigger_than || (count($this->classes)      > $bigger_than)) $this->classes      = null;
+		if (!$bigger_than || (count($this->dependencies) > $bigger_than)) $this->dependencies = null;
+		if (!$bigger_than || (count($this->instantiates) > $bigger_than)) $this->instantiates = null;
+		if (!$bigger_than || (count($this->namespaces)   > $bigger_than)) $this->namespaces   = null;
+		if (!$bigger_than || (count($this->use)          > $bigger_than)) $this->use          = null;
+
+		if (isset($this->file_name) && !$this->changed) {
+			$this->source = null;
+		}
+
+		$this->lines  = null;
+		$this->tokens = null;
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -537,35 +569,18 @@ class Reflection_Source
 		return strtolower(substr(token_name($token_id), 2));
 	}
 
-	//------------------------------------------------------------------------------------------ free
+	//-------------------------------------------------------------------------------------------- of
 	/**
-	 * Reset object properties in order to free memory
-	 *
-	 * All features will work fine, you can call this to flush cash and free a maximum amount of
-	 * memory but cache will be freed and next calls may be slower.
-	 *
-	 * Internals :
-	 * Classes, dependencies, instantiates, namespaces and use are reset only if bigger than the
-	 * $bigger_than parameter or if it is 0.
-	 * Lines and tokens are always reset by this call.
-	 * Source is reset only if source is linked to a file name.
-	 *
-	 * @param $bigger_than integer
+	 * @param $class_name string
+	 * @return Reflection_Source
 	 */
-	public function free($bigger_than = 1)
+	public static function of($class_name)
 	{
-		if (!$bigger_than || (count($this->classes)      > $bigger_than)) $this->classes      = null;
-		if (!$bigger_than || (count($this->dependencies) > $bigger_than)) $this->dependencies = null;
-		if (!$bigger_than || (count($this->instantiates) > $bigger_than)) $this->instantiates = null;
-		if (!$bigger_than || (count($this->namespaces)   > $bigger_than)) $this->namespaces   = null;
-		if (!$bigger_than || (count($this->use)          > $bigger_than)) $this->use          = null;
-
-		if (isset($this->file_name) && !$this->changed) {
-			$this->source = null;
+		$file = Names::classToPath($class_name) . '.php';
+		if (!is_file($file)) {
+			$file = strtolower(substr($file, 0, -4)) . SL . rLastParse($file, SL);
 		}
-
-		$this->lines  = null;
-		$this->tokens = null;
+		return new Reflection_Source($file);
 	}
 
 	//------------------------------------------------------------------------------------- setSource

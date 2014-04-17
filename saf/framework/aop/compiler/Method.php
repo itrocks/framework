@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\AOP\Compiler;
 
-use SAF\Framework\Reflection\Reflection_Parameter;
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\PHP\Reflection_Method;
 
@@ -134,7 +133,7 @@ class Method
 			/** @var $advice_class_name string */
 			/** @var $advice_method_name string */
 			/** @var $advice_function_name string */
-			/** @var $advice_parameters Reflection_Parameter[] */
+			/** @var $advice_parameters string[] */
 			/** @var $advice_string string [$object_, 'methodName') | 'functionName' */
 			/** @var $advice_has_return boolean */
 			/** @var $is_advice_static boolean */
@@ -198,12 +197,6 @@ class Method
 
 			switch ($type) {
 				case 'after':
-					/*
-					if ($advice_has_return) {
-						$advice_code = str_replace('$result_ =', '$result2_ =', $advice_code);
-						$advice_code .= $i2 . 'if (isset($result2_)) $result_ =& $result2_;';
-					}
-					*/
 					if ($joinpoint_code) {
 						$advice_code .= $i2 . 'if ($joinpoint_->stop) return $result_;';
 					}

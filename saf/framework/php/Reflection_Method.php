@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Tools\Names;
+
 /**
  * The same as PHP's ReflectionMethod, but working with PHP source, without loading the class
  */
@@ -165,7 +167,7 @@ class Reflection_Method
 
 	//---------------------------------------------------------------------------- getParametersNames
 	/**
-	 * @return string[]
+	 * @return string[] key and value are both the parameter name
 	 */
 	public function getParametersNames()
 	{
@@ -341,6 +343,19 @@ class Reflection_Method
 	public function isUserDefined()
 	{
 		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------- of
+	/**
+	 * @param $class_name  string
+	 * @param $method_name string
+	 * @param $flags       integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @return Reflection_Method
+	 */
+	public static function of($class_name, $method_name, $flags = [])
+	{
+		$methods = Reflection_Class::of($class_name)->getMethods($flags);
+		return isset($methods[$method_name]) ? $methods[$method_name] : null;
 	}
 
 	//----------------------------------------------------------------------------------------- regex

@@ -603,6 +603,16 @@ class Reflection_Class
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------------------- of
+	/**
+	 * @param $class_name  string
+	 * @return Reflection_Class
+	 */
+	public static function of($class_name)
+	{
+		return Reflection_Source::of($class_name)->getClass($class_name);
+	}
+
 	//----------------------------------------------------------------------------------------- regex
 	/**
 	 * Gets the preg expression to find the class definition in a PHP source that contains one class
