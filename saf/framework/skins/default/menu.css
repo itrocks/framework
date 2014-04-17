@@ -11,14 +11,12 @@
     background: url("img/arrow_black_up.gif") center no-repeat;
     color: transparent;
     cursor: pointer;
-    display: inline-block;
     float: left;
     font-size: 1px;
     height: 24px;
     width: 24px; }
   .menu.output > h2 {
     border-bottom: 1px solid #c0c0c0;
-    display: inline-block;
     margin-bottom: 4px;
     text-align: center; }
     .menu.output > h2 > a {
