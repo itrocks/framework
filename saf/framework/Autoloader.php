@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\Framework\AOP\Include_Filter;
+use SAF\Framework\Tools\Names;
 
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
@@ -23,24 +24,33 @@ class Autoloader
 			$file_name = substr($class_name, $i + 1);
 			// 'A\Class' stored into 'a/class/Class.php'
 			if (
-				is_file($file1 = strtolower($namespace . '/' . $file_name) . '/' . $file_name . '.php')
+			file_exists($file1 = strtolower($namespace . '/' . $file_name) . '/' . $file_name . '.php')
 			) {
 				/** @noinspection PhpIncludeInspection */
 				$result = include_once(Include_Filter::file($file1));
 			}
 			// 'A\Class' stored into 'a/Class.php'
-			elseif (is_file($file2 = strtolower($namespace) . '/' . $file_name . '.php')) {
+			elseif (file_exists($file2 = strtolower($namespace) . '/' . $file_name . '.php')) {
 				/** @noinspection PhpIncludeInspection */
 				$result = include_once(Include_Filter::file($file2));
 			}
 			else {
-				if (error_reporting()) {
-					trigger_error(
-						'Class not found ' . $class_name . ', should be into ' . $file1 . ' or ' . $file2,
-						E_USER_ERROR
-					);
+				if (strpos($class_name, BS . 'Built' . BS)) {
+					$file = 'cache/compiled/' . str_replace(SL, '-', Names::classToPath($class_name));
+					if (file_exists($file)) {
+						/** @noinspection PhpIncludeInspection */
+						$result = include_once($file);
+					}
 				}
-				$result = false;
+				if (!isset($result)) {
+					if (error_reporting()) {
+						trigger_error(
+							'Class not found ' . $class_name . ', should be into ' . $file1 . ' or ' . $file2,
+							E_USER_ERROR
+						);
+					}
+					$result = false;
+				}
 			}
 		}
 		// 'A_Class' stored into 'A_Class.php'

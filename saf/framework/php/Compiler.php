@@ -12,6 +12,7 @@ use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Router;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Files;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\Updater\Updatable;
 use Serializable;
@@ -125,7 +126,8 @@ class Compiler implements
 			$classes = $source->getClasses();
 			if ($classes) {
 				$class = reset($classes);
-				$source->file_name = $this->getCacheDir() . SL . str_replace(BS, '-', $class->name);
+				$source->file_name = $this->getCacheDir()
+					. SL . str_replace(SL, '-', Names::classToPath($class->name));
 			}
 			else {
 				trigger_error(
@@ -203,11 +205,11 @@ class Compiler implements
 				}
 				$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
 					? $source->file_name
-					: $this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4));
+					: ($this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4)));
 				if ($source->hasChanged()) {
 					script_put_contents($file_name, $source->getSource());
 				}
-				elseif (is_file($file_name)) {
+				elseif (file_exists($file_name)) {
 					unlink($file_name);
 				}
 				if ($sources_count > self::MAX_OPENED_SOURCES) {

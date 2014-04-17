@@ -139,4 +139,20 @@ class Class_Builder
 		eval($source);
 	}
 
+	//-------------------------------------------------------------------------------- builtClassName
+	/**
+	 * Gets built name space for a class name
+	 *
+	 * @param $class_name string ie 'SAF\Framework\Module\Class_Name'
+	 * @return string ie 'My\Project\Built\SAF\Framework\Module\Class_Name'
+	 */
+	public static function builtClassName($class_name)
+	{
+		$namespace = array_slice(explode(BS, Namespaces::of($class_name)), 1);
+		$left = Namespaces::of(Application::current());
+		$namespace = $left . BS . 'Built' . BS . join(BS, $namespace);
+		$built_class = $namespace . BS . Namespaces::shortClassName($class_name);
+		return $built_class;
+	}
+
 }

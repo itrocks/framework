@@ -13,6 +13,7 @@ use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Sql\Join\Joins;
 use SAF\Framework\Tools\Current_With_Default;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 use Serializable;
@@ -344,7 +345,16 @@ class Builder implements Activable, Registerable, Serializable
 			: $class_name;
 		if (is_array($result)) {
 			$this->compositions[$class_name] = $result;
-			$result = Class_Builder::build($class_name, $result);
+			$built_class_name = Class_Builder::builtClassName($class_name);
+			if (file_exists(
+				Application::current()->getCacheDir() . '/compiled/'
+				. str_replace('/', '-', Names::classToPath($built_class_name))
+			)) {
+				$result = $built_class_name;
+			}
+			else {
+				$result = Class_Builder::build($class_name, $result);
+			}
 			$this->replacements[$class_name] = $result;
 		}
 		return $result;
