@@ -41,13 +41,19 @@ class Application
 	 */
 	public $name;
 
+	//--------------------------------------------------------------------------------------- $vendor
+	/**
+	 * @var string
+	 */
+	public $vendor;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $name string
 	 */
 	public function __construct($name)
 	{
-		$this->name = $name;
+		list($this->vendor, $this->name) = explode(SL, $name);
 		$this->include_path = new Include_Path(get_class($this));
 	}
 

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\View\Html;
 
+use SAF\Framework\Application;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -61,11 +62,11 @@ class Template
 
 	//-------------------------------------------------------------------------------- $main_template
 	/**
-	 * The main template template
+	 * The main template file path (ie 'saf/framework/main.html');
 	 *
 	 * @var string
 	 */
-	public $main_template = 'saf/framework/main/main.html';
+	private $main_template;
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
@@ -219,6 +220,24 @@ class Template
 	public function getFeature()
 	{
 		return $this->feature;
+	}
+
+	//--------------------------------------------------------------------------- getMainTemplateFile
+	/**
+	 * @return string main template file path
+	 */
+	public function getMainTemplateFile()
+	{
+		if (!isset($this->main_template)) {
+			$directories = Application::current()->include_path->getSourceDirectories();
+			while (current($directories) && !isset($this->main_template)) {
+				if (file_exists($main_template = current($directories) . '/main.html')) {
+					$this->main_template = $main_template;
+				}
+				next($directories);
+			}
+		}
+		return $this->main_template;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
@@ -467,7 +486,7 @@ class Template
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
-				$file_name = $this->main_template;
+				$file_name = $this->getMainTemplateFile();
 				$container = $this->getContainerContent($file_name);
 				$root_object = (is_object($this->getObject())) ? '<!--@rootObject-->' : '';
 				$content = str_replace(
