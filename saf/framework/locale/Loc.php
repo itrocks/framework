@@ -13,7 +13,7 @@ use SAF\Framework\Reflection\Reflection_Property_View;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View\Html\Template\Functions;
 use SAF\Framework\Widget\Data_List\Data_List_Controller;
-use SAF\Framework\Widget\Data_List\Data_List_Settings;
+use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
  * Locale plugin concentrates locale translation / formatting features into simple static calls
