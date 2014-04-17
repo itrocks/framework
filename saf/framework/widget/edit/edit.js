@@ -269,7 +269,7 @@ $('document').ready(function()
 			}
 			var href = $this.data('link');
 			var id = $input.prev().val();
-			$this.attr('href', id ? href.repl('/new', '/' + $input.prev().val() + '/edit') : href);
+			$this.attr('href', id ? href.repl('/add', '/' + $input.prev().val() + '/edit') : href);
 		});
 		this.in('input.combo~.edit').attr('tabindex', -1);
 		if (this.attr('id') && (this.attr('id').substr(0, 6) == 'window')) {

@@ -187,7 +187,7 @@
 		 */
 		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
-			if (event.which == 1) {
+			if (event.which != 2) {
 				var $this = $(this);
 				var xhr = undefined;
 				var jax;

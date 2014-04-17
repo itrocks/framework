@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Edit;
 
 use DateTime;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Dao\File\Session_File\Files;
 use SAF\Framework\Dao;
@@ -313,7 +314,7 @@ class Html_Builder_Type
 				: '';
 			$edit = new Anchor(
 				View::current()->link(
-					$this->value ? get_class($this->value) : $class_name, 'new', null, $fill_combo
+					$this->value ? get_class($this->value) : $class_name, Feature::F_ADD, null, $fill_combo
 				),
 				'edit'
 			);
