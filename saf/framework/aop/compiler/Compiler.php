@@ -162,6 +162,8 @@ class Compiler implements ICompiler, Needs_Main
 	public function moreSourcesToCompile(&$sources)
 	{
 		$added = false;
+
+		// search into dependencies
 		/** @var $search Dependency */
 		$search = Search_Object::create(Dependency::class);
 		$search->type = Dependency::T_USE;
@@ -179,6 +181,45 @@ class Compiler implements ICompiler, Needs_Main
 				}
 			}
 		}
+
+		// classes that are already into $sources
+		$already = [];
+		foreach ($sources as $source) {
+			foreach ($source->getClasses() as $class) {
+				$already[$class->name] = true;
+			}
+		}
+
+		// search into advices and add sources that have sources to compile as advice
+		foreach ($this->weaver->getJoinpoints() as $class_name => $joinpoint) {
+			if (!isset($already[$class_name])) {
+				foreach ($joinpoint as $advices) {
+					foreach ($advices as $advice) {
+						if (is_array($advice = $advice[1])) {
+							$advice_class = $advice[0];
+							if (is_object($advice_class)) {
+								$advice_class = get_class($advice_class);
+							}
+							if (isset($already[$advice_class])) {
+								$source = Reflection_Source::of($class_name);
+								if ($source->getClass($class_name)) {
+									$sources[$source->file_name] = $source;
+									$already[$class_name] = true;
+									$added[$class_name] = true;
+								}
+								else {
+									trigger_error(
+										'No class ' . $class_name . ' into file ' . $source->file_name,
+										E_USER_ERROR
+									);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
 		return $added;
 	}
 
