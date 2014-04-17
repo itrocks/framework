@@ -41,7 +41,7 @@ class Include_Path
 	 */
 	private function getDirectories($path)
 	{
-		if (is_file($path . '/exclude')) {
+		if (file_exists($path . '/exclude')) {
 			return $directories = [];
 		}
 		else {

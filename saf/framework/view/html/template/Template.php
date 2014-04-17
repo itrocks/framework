@@ -1344,7 +1344,7 @@ class Template
 			$file_path = substr(
 				stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 			);
-			if (!is_file(Paths::$file_root . $file_path)) {
+			if (!file_exists(Paths::$file_root . $file_path)) {
 				return $this->replaceLink(SL . $uri);
 			}
 		}

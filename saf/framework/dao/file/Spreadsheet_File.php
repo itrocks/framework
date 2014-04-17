@@ -68,7 +68,7 @@ class Spreadsheet_File
 		exec('ssconvert ' . DQ . $file_name . DQ . SP . DQ . $csv_file . DQ . ' -S 2>&1 &');
 		$count = 0;
 		$result = [];
-		while (is_file($csv_file . DOT . $count)) {
+		while (file_exists($csv_file . DOT . $count)) {
 			$result[$csv_file . DOT . $count] = self::readCsvFile($csv_file . DOT . $count, $errors);
 			$count ++;
 		}

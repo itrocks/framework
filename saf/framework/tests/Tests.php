@@ -68,7 +68,7 @@ class Tests
 	 */
 	private function runDir($directory_name)
 	{
-		if (!is_file($directory_name . '/exclude')) {
+		if (!file_exists($directory_name . '/exclude')) {
 			$dir = dir($directory_name);
 			while ($entry = $dir->read()) if ($entry[0] != DOT) {
 				$full_entry = $directory_name . SL . $entry;

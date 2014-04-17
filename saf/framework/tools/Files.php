@@ -46,17 +46,14 @@ abstract class Files
 						mkdir($destination . $entry);
 						$result = self::copy($source . $entry, $destination . $entry, $ignore) && $result;
 					}
-					elseif (is_file($source . $entry)) {
+					else {
 						$result = copy($source . $entry, $destination . $entry) && $result;
 					}
 				}
 			}
 		}
-		elseif (is_file($source)) {
-			$result = copy($source, $destination);
-		}
 		else {
-			$result = false;
+			$result = copy($source, $destination);
 		}
 		return $result;
 	}
@@ -78,17 +75,14 @@ abstract class Files
 				if (is_dir($path . $entry) && ($entry != DOT) && ($entry != DD)) {
 					$result = self::delete($path . $entry) && $result;
 				}
-				elseif (is_file($path . $entry)) {
+				else {
 					$result = unlink($path . $entry) && $result;
 				}
 			}
 			$result = rmdir($path);
 		}
-		elseif (is_file($path)) {
-			$result = unlink($path);
-		}
 		else {
-			$result = false;
+			$result = unlink($path);
 		}
 		return $result;
 	}

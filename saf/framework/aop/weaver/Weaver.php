@@ -238,7 +238,7 @@ class Weaver implements IWeaver
 	public function loadJoinpoints($file_name)
 	{
 		/** @noinspection PhpIncludeInspection */
-		$this->joinpoints = is_file($file_name) ? (include $file_name) : [];
+		$this->joinpoints = file_exists($file_name) ? (include $file_name) : [];
 	}
 
 	//---------------------------------------------------------------------------------- readProperty

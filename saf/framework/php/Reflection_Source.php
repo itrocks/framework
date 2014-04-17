@@ -577,7 +577,7 @@ class Reflection_Source
 	public static function of($class_name)
 	{
 		$file = Names::classToPath($class_name) . '.php';
-		if (!is_file($file)) {
+		if (!file_exists($file)) {
 			$file = strtolower(substr($file, 0, -4)) . SL . rLastParse($file, SL);
 		}
 		return new Reflection_Source($file);
