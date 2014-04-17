@@ -17,7 +17,7 @@ global $pwd;
 require_once 'pwd.php';
 
 $config['SAF/Framework'] = [
-	'app' => Application::class,
+	'app'    => Application::class,
 	'author' => 'Baptiste Pillot',
 
 	// top core plugins are loaded first, before the session is opened
