@@ -47,7 +47,7 @@ class Menu implements Configurable
 	public function __construct($configuration = [])
 	{
 		foreach ($configuration as $block_key => $items) {
-			if (is_numeric($block_key)) {
+			if ($block_key == 'title') {
 				foreach ($items as $item) {
 					if     (substr($item, 0, 1) == SL)  $this->title_link        = $item;
 					elseif (substr($item, 0, 1) == '#') $this->title_link_target = $item;
