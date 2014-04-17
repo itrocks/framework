@@ -64,13 +64,13 @@ class Entry
 
 	//---------------------------------------------------------------------------------------- $start
 	/**
-	 * @var Date_Time
+	 * @var \SAF\Framework\Tools\Date_Time
 	 */
 	public $start;
 
 	//----------------------------------------------------------------------------------------- $stop
 	/**
-	 * @var Date_Time
+	 * @var \SAF\Framework\Tools\Date_Time
 	 */
 	public $stop;
 
