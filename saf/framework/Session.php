@@ -22,6 +22,29 @@ class Session implements Serializable
 	 */
 	public $plugins;
 
+	//-------------------------------------------------------------------------------- cloneSessionId
+	/**
+	 * Returns a cloned session id
+	 *
+	 * This feature enables session data cloning, and is useful when you want to call scripts using
+	 * localhost keeping your actual session opened.
+	 *
+	 * What is done by cloneSid :
+	 * - a new session id is registered
+	 * - the new session file is immediately created with the data of the current session
+	 *
+	 * @return string the cloned session id
+	 */
+	public static function cloneSessionId()
+	{
+		$old_id = session_id();
+		session_regenerate_id();
+		$new_id = session_id();
+		file_put_contents(session_save_path() . SL . 'sess_' . $new_id, session_encode());
+		session_id($old_id);
+		return $new_id;
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Session
