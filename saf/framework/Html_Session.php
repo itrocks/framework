@@ -28,9 +28,9 @@ class Html_Session implements Activable, Configurable
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
-		ini_set('session.use_cookies', self::$use_cookie);
+		ini_set('session.use_cookies',      self::$use_cookie);
 		ini_set('session.use_only_cookies', false);
-		ini_set('session.use_trans_sid', !self::$use_cookie);
+		ini_set('session.use_trans_sid',    !self::$use_cookie);
 	}
 
 	//------------------------------------------------------------------------------------ useCookies

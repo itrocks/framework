@@ -71,7 +71,7 @@
 .window {
 
 	&.purchases_order, &.purchases_orders,
-	&.purchases_reception, &.purchases_receptions,
+	&.purchases_receipt, &.purchases_receipts,
 	&.purchases_invoice, &.purchases_invoices,
 	&.purchases_credit, &.purchases_credits,
 	&.supplier, &.suppliers {
@@ -81,13 +81,14 @@
 		}
 	}
 
+	&.client, &.clients,
 	&.sales_quote, &.sales_quotes,
 	&.sales_order, &.sales_orders,
 	&.sales_invoice, &.sales_invoices,
 	&.sales_preparation, &.sales_preparations,
 	&.sales_credit, &.sales_credits,
-	&.client, &.clients,
-	&.salesman, &.salesmen {
+	&.salesman, &.salesmen,
+	&.shipping_cost, &.shipping_costs {
 		>h2 {
 			background-color: $green;
 			color: white;
@@ -97,6 +98,7 @@
 	&.category, &.categories,
 	&.characteristic, &.characteristics,
 	&.item, &.items,
+	&.media, &.medias,
 	&.value, &.values {
 		>h2 {
 			background-color: $magenta;
@@ -104,19 +106,20 @@
 		}
 	}
 
-	&.webshop, &.webshops,
 	&.account, &.accounts,
-	&.cart, &.carts {
+	&.cart, &.carts,
+	&.webshop, &.webshops {
 		>h2, >select.customized {
 			background-color: $green;
 			color: white;
 		}
 	}
 
-	&.user, &.users,
-	&.company, &.companies,
 	&.agency, &.agencies,
-	&.setting, &.settings {
+	&.company, &.companies,
+	&.plugin, &.plugins,
+	&.setting, &.settings,
+	&.user, &.users {
 		>h2, >select.customized {
 			background-color: $black;
 			color: white;
@@ -124,14 +127,14 @@
 	}
 
 	&.address, &.addresses,
-	&.contact, &.contacts,
-	&.civility, &.civilities,
 	&.city, &.cities,
+	&.civility, &.civilities,
+	&.contact, &.contacts,
 	&.mean_of_payment, &.mean_of_payments,
+	&.size_unit, &.size_units,
 	&.term_of_payment, &.term_of_payments,
 	&.vat_code, &.vat_codes,
 	&.vat_value, &.vat_values,
-	&.size_unit, &.size_units,
 	&.weight_unit, &.weight_units {
 		>h2 {
 			background-color: $gray;
