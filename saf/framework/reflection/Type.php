@@ -121,7 +121,7 @@ class Type
 	 * - basic types
 	 * - object types with their namespace, but never beginning with a '\'
 	 *
-	 * @example 'string', 'SAF\Framework\Date_Time'
+	 * @example 'string', 'SAF\Framework\Tools\Date_Time'
 	 * @return string
 	 */
 	public function asString()
