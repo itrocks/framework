@@ -64,9 +64,12 @@ class Template
 	/**
 	 * The main template file path (ie 'saf/framework/main.html');
 	 *
-	 * @var string
+	 * If null or not set : will be automatically set to current application main template 'main.html'
+	 * If false : no main template will be used
+	 *
+	 * @var string|boolean
 	 */
-	private $main_template;
+	public $main_template;
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
@@ -188,8 +191,9 @@ class Template
 	 */
 	protected function getContainerContent($file_name)
 	{
-		return isset($this->main_template)
-			? file_get_contents($file_name, !strpos($this->main_template, SL))
+		$main_template = $this->getMainTemplateFile();
+		return $main_template
+			? file_get_contents($file_name, !strpos($main_template, SL))
 			: '{@content}';
 	}
 

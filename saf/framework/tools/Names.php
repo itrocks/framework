@@ -96,6 +96,16 @@ abstract class Names
 		return str_replace(SP, '_', ucwords(str_replace('_', SP, $display)));
 	}
 
+	//------------------------------------------------------------------------------------- callToUri
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function classToUri($class_name)
+	{
+		return str_replace(BS, SL, $class_name);
+	}
+
 	//---------------------------------------------------------------------------- displayToDirectory
 	/**
 	 * Changes 'a text' do a valid normalized directory name (without spaces nor special characters)

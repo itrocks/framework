@@ -21,9 +21,6 @@ ini_set('xdebug.var_display_max_depth', 3);
 set_time_limit(30);
 //&XDEBUG_PROFILE=1
 
-// TODO DEBUG remove this
-touch('update');
-
 // enable running from command line
 if (!isset($_SERVER['PATH_INFO'])) $_SERVER['PATH_INFO'] = '/';
 
