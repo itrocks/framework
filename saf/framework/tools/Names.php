@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Application;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Class;
 
@@ -96,13 +97,21 @@ abstract class Names
 	 */
 	public static function classToUri($class_name)
 	{
+		// get object id, if object
 		if (is_object($class_name)) {
 			$id = Dao::getObjectIdentifier($class_name);
 			$class_name = get_class($class_name);
 		}
+		// link classes : get linked class
 		while ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
 			$class_name = get_parent_class($class_name);
 		}
+		// built classes : get object class
+		$built_path = Namespaces::of(Application::current()) . BS . 'Built' . BS;
+		while (substr($class_name, 0, strlen($built_path)) == $built_path) {
+			$class_name = get_parent_class($class_name);
+		}
+		// replace \ by /
 		return str_replace(BS, SL, $class_name) . (isset($id) ? (SL . $id) : '');
 	}
 
