@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Dao;
+
 /**
  * Application paths functions help you to find out usefull paths of your application
  */
@@ -58,6 +60,27 @@ abstract class Paths
 	 * @var string
 	 */
 	public static $uri_base;
+
+	//---------------------------------------------------------------------------------------- getUri
+	/**
+	 * Get the root URL for the application
+	 *
+	 * This includes : currently used protocol, server name and uri base
+	 * If object or class name is set, path to this object or class name is added to the URL
+	 *
+	 * @example without class name : 'https://saf.re/saf'
+	 * @example with the class name of User : 'https://saf.re/saf/SAF/Framework/User'
+	 * @example with a User object of id = 1 : 'https://saf.re/saf/SAF/Framework/User/1'
+	 * @param $object object|string object or class name
+	 * @return string
+	 */
+	public static function getUrl($object = null)
+	{
+		return (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://'
+			. $_SERVER['SERVER_NAME']
+			. Paths::$uri_base
+			. (isset($object) ? (SL . Names::classToUri($object)) : '');
+	}
 
 	//-------------------------------------------------------------------------------------- register
 	public static function register()

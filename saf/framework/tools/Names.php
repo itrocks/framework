@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Class;
 
 /**
@@ -84,6 +85,27 @@ abstract class Names
 		return (new Reflection_Class($class_name))->getAnnotation('set')->value;
 	}
 
+	//------------------------------------------------------------------------------------ classToUri
+	/**
+	 * Gets the URI of a class name or object
+	 *
+	 * @example class name User : 'SAF/Framework/User'
+	 * @example User object of id = 1 : 'SAF/Framework/User/1'
+	 * @param $class_name object|string
+	 * @return string
+	 */
+	public static function classToUri($class_name)
+	{
+		if (is_object($class_name)) {
+			$id = Dao::getObjectIdentifier($class_name);
+			$class_name = get_class($class_name);
+		}
+		while ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
+			$class_name = get_parent_class($class_name);
+		}
+		return str_replace(BS, SL, $class_name) . (isset($id) ? (SL . $id) : '');
+	}
+
 	//-------------------------------------------------------------------------------- displayToClass
 	/**
 	 * Changes 'a text' do a valid normalized directory name (without spaces nor special characters)
@@ -94,16 +116,6 @@ abstract class Names
 	public static function displayToClass($display)
 	{
 		return str_replace(SP, '_', ucwords(str_replace('_', SP, $display)));
-	}
-
-	//------------------------------------------------------------------------------------- callToUri
-	/**
-	 * @param $class_name string
-	 * @return string
-	 */
-	public static function classToUri($class_name)
-	{
-		return str_replace(BS, SL, $class_name);
 	}
 
 	//---------------------------------------------------------------------------- displayToDirectory
