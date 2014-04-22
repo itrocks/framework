@@ -139,7 +139,7 @@ class Error_Handlers implements Activable, Configurable
 		foreach ($this->error_handlers as $err_no_filter => $handlers) {
 			if (($err_no_filter & $err_no) == $err_no) {
 				foreach ($handlers as $priority_handler) {
-					/** @var $handler Error_Handler */
+					/** @var $priority_handler Error_Handler[] */
 					foreach ($priority_handler as $handler) {
 						$handler->handle($handled_error);
 						if (!$handled_error->areNextErrorHandlersCalled()) {

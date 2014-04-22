@@ -197,10 +197,10 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	private function getOverrideDocComment()
 	{
 		$comment = '';
-		/** @var $annotation Override_Annotation */
 		foreach (
 			(new Reflection_Class($this->final_class))->getListAnnotations('override') as $annotation
 		) {
+			/** @var $annotation Override_Annotation */
 			if ($annotation->property_name === $this->name) {
 				$comment .= '/**' . LF;
 				foreach ($annotation->values() as $key => $value) {

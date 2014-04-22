@@ -125,8 +125,8 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function getAnnotedProperty($annotation_name, $annotation_value = null)
 	{
-		/** @var $property Reflection_Property */
 		foreach (array_reverse($this->getAllProperties()) as $property) {
+			/** @var $property Reflection_Property */
 			$annotation = $property->getAnnotation($annotation_name);
 			if (
 				(isset($annotation_value) && ($annotation->value == $annotation_value))

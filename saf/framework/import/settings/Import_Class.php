@@ -227,8 +227,8 @@ class Import_Class implements Serializable
 	{
 		$serialize = get_object_vars($this);
 		if (isset($serialize['constants']) && is_array($serialize['constants'])) {
-			/** @var $value Reflection_Property_Value */
 			foreach ($serialize['constants'] as $key => $value) {
+				/** @var $value Reflection_Property_Value */
 				$serialize['constants'][$key] = [
 					'class'        => $value->class,
 					'name'         => $value->name,

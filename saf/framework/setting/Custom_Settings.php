@@ -110,8 +110,8 @@ abstract class Custom_Settings
 	{
 		$list = [];
 		$search['code'] = $this->class_name . DOT . static::customId() . '.%';
-		/** @var $setting Setting */
 		foreach (Dao::search($search, Setting::class) as $setting) {
+			/** @var $setting Setting */
 			/** @var $settings Custom_Settings */
 			$settings = $setting->value;
 			$list[$settings->name] = (($settings->name == $this->name) ? 'selected' : '');

@@ -171,8 +171,8 @@ class Compiler implements ICompiler, Needs_Main
 			foreach ($source->getClasses() as $class) {
 				if ($class->type === T_TRAIT) {
 					$search->dependency_name = $class->name;
-					/** @var $dependency Dependency */
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
+						/** @var $dependency Dependency */
 						if (!isset($sources[$dependency->file_name])) {
 							$sources[$dependency->file_name] = new Reflection_Source($dependency->file_name);
 							$added = true;
