@@ -2,6 +2,8 @@
 namespace SAF\Framework\Reflection;
 
 use DateTime;
+use SAF\Framework\PHP;
+use SAF\Framework\Reflection\Interfaces;
 
 /**
  * PHP types manager
@@ -21,6 +23,14 @@ class Type
 	const STRING       = 'string';
 	const STRING_ARRAY = 'string[]';
 	const null         = 'null';
+
+	//------------------------------------------------------------------------------------- $absolute
+	/**
+	 * If true, the class name was given as an absolute (type string was beginning with a \)
+	 *
+	 * @var boolean
+	 */
+	private $absolute;
 
 	//---------------------------------------------------------------------------------- $basic_types
 	/**
@@ -90,7 +100,8 @@ class Type
 		if (isset($can_be_null)) {
 			$this->can_be_null = $can_be_null;
 		}
-		if (substr($this->type, 0, 1) == BS) {
+		if ($this->type[0] === BS) {
+			$this->absolute = true;
 			$this->type = substr($this->type, 1);
 		}
 	}
@@ -104,14 +115,71 @@ class Type
 		return $this->type;
 	}
 
+	//-------------------------------------------------------------------------------- applyNamespace
+	/**
+	 * Apply namespace and use entries to the type name (if class)
+	 *
+	 * Return the full element class name, used to modify the type (multiple stays multiple)
+	 *
+	 * @param $namespace string
+	 * @param $use       string[]
+	 * @return string
+	 */
+	public function applyNamespace($namespace, $use = [])
+	{
+		if (!$this->absolute && $this->isClass()) {
+			$class_name = $this->getElementTypeAsString();
+			// class name containing '\' : search for namespace
+			if ($length = strpos($class_name, BS)) {
+				$search = BS . substr($class_name, 0, $length++);
+				foreach ($use as $u) {
+					$bu = BS . $u;
+					if (substr($bu, -$length) === $search) {
+						$class_name = ((strlen($bu) > $length) ? (substr($bu, 1, -$length) . BS) : '')
+							. $class_name;
+					}
+				}
+				if (strpos($class_name, BS) === false) {
+					$class_name = ($namespace ? ($namespace . BS) : '') . $class_name;
+				}
+			}
+			// class name without '\' : search for full class name
+			else {
+				$search = BS . $class_name;
+				$length = strlen($search);
+				foreach ($use as $u) {
+					$bu = BS . $u;
+					if(substr($bu, -$length) === $search) {
+						$class_name = $u;
+					}
+				}
+				if (strpos($class_name, BS) === false) {
+					$class_name = ($namespace ? ($namespace . BS) : '') . $class_name;
+				}
+			}
+			$this->type = $class_name . ($this->isMultiple() ? '[]' : '');
+			$this->absolute = true;
+			return $class_name;
+		}
+		return $this->type;
+	}
+
 	//----------------------------------------------------------------------------- asReflectionClass
 	/**
 	 * Gets a single or multiple class type as its Reflection_Class
 	 *
-	 * @return Reflection_Class
+	 * @param $reflection_class_name string Any reflection class name that implements Reflection_Class
+	 * @return Interfaces\Reflection_Class
 	 */
-	public function asReflectionClass()
+	public function asReflectionClass($reflection_class_name = null)
 	{
+		if ($reflection_class_name) {
+			return is_a($reflection_class_name, PHP\Reflection_Class::class, true)
+				? PHP\Reflection_Class::of($this->getElementTypeAsString())
+				: (new Reflection_Class($reflection_class_name))->newInstance(
+					$this->getElementTypeAsString()
+				);
+		}
 		return new Reflection_Class($this->getElementTypeAsString());
 	}
 
@@ -303,7 +371,7 @@ class Type
 	 */
 	public function isMultiple()
 	{
-		return ((substr($this->type, -1) === ']') || $this->isArray()) ? self::MULTIPLE : false;
+		return ((substr($this->type, -2) === '[]') || $this->isArray()) ? self::MULTIPLE : false;
 	}
 
 	//------------------------------------------------------------------------------ isMultipleString

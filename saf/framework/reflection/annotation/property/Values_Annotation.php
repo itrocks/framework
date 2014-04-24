@@ -2,7 +2,8 @@
 namespace SAF\Framework\Reflection\Annotation\Property;
 
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 
 /**
@@ -11,7 +12,7 @@ use SAF\Framework\Reflection\Type;
  * The program should not be abble to give the property another value than one of the list.
  * This is useful for data controls on string[], float[] or integer[] properties.
  */
-class Values_Annotation extends List_Annotation
+class Values_Annotation extends List_Annotation implements Property_Context_Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct

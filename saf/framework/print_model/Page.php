@@ -1,7 +1,9 @@
 <?php
 namespace SAF\Framework\Print_Model;
 
+use SAF\Framework\Dao\File;
 use SAF\Framework\Mapper\Component;
+use SAF\Framework\Print_Model;
 
 /**
  * A print model page : a model linked to a unique page background and design
@@ -16,7 +18,7 @@ class Page
 	/**
 	 * @composite
 	 * @link Object
-	 * @var \SAF\Framework\Print_Model
+	 * @var Print_Model
 	 */
 	public $model;
 
@@ -34,7 +36,7 @@ class Page
 	//----------------------------------------------------------------------------------- $background
 	/**
 	 * @link Object
-	 * @var \SAF\Framework\Dao\File
+	 * @var File
 	 */
 	public $background;
 

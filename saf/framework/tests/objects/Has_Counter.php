@@ -17,12 +17,12 @@ trait Has_Counter
 
 	//------------------------------------------------------------------------------------- setNumber
 	/**
-	 * @before \SAF\Framework\Data_Link::write($this)
+	 * @before SAF\Framework\Dao\Data_Link::write($this)
 	 */
 	public function setNumber()
 	{
 		if (isA($this, Has_Counter::class)) {
-			/** @var $counter Counter*/
+			/** @var $counter Counter */
 			$counter = Dao::searchOne(['class_name' => get_class($this)], Counter::class);
 			if (!isset($counter)) {
 				$counter = Builder::create(Counter::class, get_class($this));

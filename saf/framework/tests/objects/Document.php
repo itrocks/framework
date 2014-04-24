@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tests\Objects;
 
+use SAF\Framework\Tools\Date_Time;
+
 /**
  * A document class
  */
@@ -13,7 +15,7 @@ abstract class Document
 	 * Document date
 	 *
 	 * @mandatory
-	 * @var \SAF\Framework\Tools\Date_Time
+	 * @var Date_Time
 	 */
 	private $date;
 
@@ -28,7 +30,7 @@ abstract class Document
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $date   string|\SAF\Framework\Tools\Date_Time
+	 * @param $date   string|Date_Time
 	 * @param $number string
 	 */
 	public function __construct($date = null, $number = null)

@@ -6,6 +6,7 @@ use SAF\Framework\Locale;
 use SAF\Framework\Mapper\Object_Builder_Array;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
@@ -69,7 +70,7 @@ class Loc implements Registerable
 	) {
 		if (isset($value)) {
 			if (is_array($value) && !empty($value)) {
-				if ($property->getAnnotation('link')->value == 'Collection') {
+				if ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION) {
 					$class = new Reflection_Class($property->getType()->getElementTypeAsString());
 					$properties = $class->accessProperties();
 					reset($value);

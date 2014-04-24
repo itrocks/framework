@@ -1,14 +1,16 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
+use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
  * Class override annotation
  */
-class Override_Annotation extends List_Annotation implements Multiple_Annotation
+class Override_Annotation extends List_Annotation
+	implements Class_Context_Annotation, Multiple_Annotation
 {
 
 	//---------------------------------------------------------------------------------------- $class

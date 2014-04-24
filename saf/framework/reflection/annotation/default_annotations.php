@@ -31,13 +31,13 @@ Parser::$default_annotations = [
 
 	// @block The block display
 	// The Block annotation for a property enables grouping properties into common blocks
-	// @todo LOW explain why a property could have multiple blocks
+	// TODO LOW explain why a property could have multiple blocks
 	__NAMESPACE__ . '\Property\Block_Annotation' => List_Annotation::class,
 
 	// @component
 	// The object referenced by the property is a component of the main object.
 	// It should not exist without it's container.
-	// @todo not sure this is used anymore
+	// TODO not sure this is used anymore
 	__NAMESPACE__ . '\Property\Component_Annotation' => Boolean_Annotation::class,
 
 	// @composite

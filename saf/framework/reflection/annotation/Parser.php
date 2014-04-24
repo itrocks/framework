@@ -1,16 +1,24 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation;
 
+use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
-use SAF\Framework\Reflection\Has_Doc_Comment;
+use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
+use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use SAF\Framework\Reflection\Interfaces\Reflection;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class_Component;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Namespaces;
 
 /**
  * The annotation parser process calculates the annotation value
  */
 abstract class Parser
 {
+
+	//---------------------------------------------------------------------------------- $annotations
+	const DOC_COMMENT_IN = '***IN ';
 
 	//---------------------------------------------------------------------------------- $annotations
 	/**
@@ -41,7 +49,7 @@ abstract class Parser
 		if (!isset($multiple)) {
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 		}
-		$doc_comment = $reflection_object->getDocComment(true);
+		$doc_comment = $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 		$annotations = [];
 		$annotation = null;
 		$i = 0;
@@ -74,7 +82,7 @@ abstract class Parser
 	 */
 	public static function allAnnotations(Has_Doc_Comment $reflection_object)
 	{
-		$doc_comment = $reflection_object->getDocComment(true);
+		$doc_comment = $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 		$annotations = [];
 		$i = 0;
 		while (($i = strpos($doc_comment, '* @', $i)) !== false) {
@@ -131,11 +139,11 @@ abstract class Parser
 	 * @param $annotation_name   string
 	 * @param $i                 integer
 	 * @param $annotation_class  string
-	 * @param $reflection_object Has_Doc_Comment
+	 * @param $reflection_object Has_Doc_Comment|Reflection
 	 * @return Annotation
 	 */
 	private static function parseAnnotationValue(
-		$doc_comment, $annotation_name, &$i, $annotation_class, Has_Doc_Comment $reflection_object
+		$doc_comment, $annotation_name, &$i, $annotation_class, Reflection $reflection_object
 	) {
 		$i += strlen($annotation_name) + 1;
 		$next_char = $doc_comment[$i];
@@ -151,7 +159,44 @@ abstract class Parser
 			default:
 				$value = null;
 		}
-		return isset($value) ? new $annotation_class($value, $reflection_object) : null;
+		/** @var $annotation Annotation */
+		$annotation = isset($value) ? new $annotation_class($value, $reflection_object) : null;
+
+		if (isset($annotation) && isA($annotation, Types_Annotation::class)) {
+			$do = false;
+			if (is_array($annotation->value)) {
+				foreach ($annotation->value as $value) {
+					if ($value && ctype_upper($value[0])) {
+						$do = true;
+						break;
+					}
+				}
+			}
+			else {
+				$do = $annotation->value && ctype_upper($annotation->value[0]);
+			}
+			if ($do) {
+				/** @var $annotation Types_Annotation */
+				$j = strrpos(substr($doc_comment, 0, $i), LF . self::DOC_COMMENT_IN);
+				if ($j === false) {
+					$class_name = ($reflection_object instanceof Reflection_Class_Component)
+						? $reflection_object->getDeclaringClassName()
+						: $reflection_object->getName();
+					$namespace = Namespaces::of($class_name);
+					$use = PHP\Reflection_Class::of($class_name)->getNamespaceUse();
+				}
+				else {
+					$j += strlen(self::DOC_COMMENT_IN) + 1;
+					$k = strpos($doc_comment, LF, $j);
+					$in_class = substr($doc_comment, $j, $k - $j);
+					$namespace = Namespaces::of($in_class);
+					$use = PHP\Reflection_Class::of($in_class)->getNamespaceUse();
+				}
+				$annotation->applyNamespace($namespace, $use);
+			}
+		}
+
+		return $annotation;
 	}
 
 }

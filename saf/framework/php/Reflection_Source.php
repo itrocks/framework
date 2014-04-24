@@ -2,6 +2,7 @@
 namespace SAF\Framework\PHP;
 
 use ReflectionClass;
+use SAF\Framework\Builder;
 use SAF\Framework\Tools\Names;
 
 /**
@@ -577,6 +578,9 @@ class Reflection_Source
 	public static function of($class_name)
 	{
 		$file = Names::classToPath($class_name) . '.php';
+		if (Builder::isBuilt($class_name)) {
+			$file = 'cache/compiled/' . str_replace(SL, '-', substr($file, 0, -4));
+		}
 		if (!file_exists($file)) {
 			$file = strtolower(substr($file, 0, -4)) . SL . rLastParse($file, SL);
 		}

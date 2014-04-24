@@ -2,19 +2,22 @@
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
 use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Namespaces;
+use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 use SAF\Framework\Tools\Set;
 
 /**
- * Use the @set annotation to define the name of the set class (virtual or real) associated to the business object class
+ * Use the @set annotation to define the name of the set class (virtual or real) associated to the
+ * business object class
  *
- * If the annotation is not specified by the programmer, a default value is calculated, adding an 's' to the name of the class
+ * If the annotation is not specified by the programmer, a default value is calculated, adding an
+ * 's' to the name of the class
  *
  * @example @set Class_Sets_Annotations
  */
 class Set_Annotation extends Annotation
 {
+	use Types_Annotation;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -25,11 +28,8 @@ class Set_Annotation extends Annotation
 	{
 		parent::__construct($value);
 		if (!$this->value) {
-			$class_name = $class->name;
+			$class_name = $class->getName();
 			$this->value = Set::defaultSetClassNameOf($class_name);
-		}
-		else {
-			$this->value = Namespaces::defaultFullClassName($this->value, $class->name);
 		}
 	}
 

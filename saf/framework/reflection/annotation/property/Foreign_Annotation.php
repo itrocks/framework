@@ -2,50 +2,56 @@
 namespace SAF\Framework\Reflection\Annotation\Property;
 
 use SAF\Framework\Builder;
+use SAF\Framework\PHP;
+use SAF\Framework\Reflection;
+use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Tools\Names;
 
 /**
  * The property name into the foreign class that contains current object
  *
- * This can return a virtual property name for link tables ! Check that the property exists before using it for a property access
+ * This can return a virtual property name for link tables ! Check that the property exists before
+ * using it for a property access
  */
-class Foreign_Annotation extends Documented_Type_Annotation
+class Foreign_Annotation extends Documented_Type_Annotation implements Property_Context_Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value               string
-	 * @param $reflection_property Reflection_Property
+	 * @param $value    string
+	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $reflection_property)
+	public function __construct($value, Reflection_Property $property)
 	{
-		parent::__construct($value, $reflection_property);
+		parent::__construct($value, $property);
 		if (empty($this->value)) {
-			$link = $reflection_property->getAnnotation('link')->value;
+			$link = $property->getAnnotation('link')->value;
 			$possibles = null;
-			if ($link == 'Collection') {
-				$possibles = $this->defaultCollection($reflection_property);
+			if ($link === Link_Annotation::COLLECTION) {
+				$possibles = $this->defaultCollection($property);
 			}
-			elseif ($link === 'Map') {
-				$possibles = $this->defaultMap($reflection_property);
+			elseif ($link === Link_Annotation::MAP) {
+				$possibles = $this->defaultMap($property);
 			}
-			elseif ($link === 'Object') {
-				$possibles = $this->defaultObject($reflection_property);
+			elseif ($link === Link_Annotation::OBJECT) {
+				$possibles = $this->defaultObject($property);
 			}
 			if (is_array($possibles) && count($possibles) == 1) {
 				$this->value = reset($possibles);
 			}
 			elseif (count($possibles) > 1) {
-				$class    = $reflection_property->class;
-				$property = $reflection_property->name;
-				$type     = $reflection_property->getType()->getElementTypeAsString();
+				$class_name    = $property->getDeclaringClassName();
+				$property_name = $property->getName();
+				$type_name     = $property->getType()->getElementTypeAsString();
 				trigger_error(
-					'Can\'t guess @foreign for ' . $class . '::' . $property . ' : '
-					. 'please set @composite on one (and one only) ' . $type . ' property of type ' . $class
-					. ' object, or force the ' . $class . '::' . $property . ' @foreign property name.',
+					'Can\'t guess @foreign for ' . $class_name . '::' . $property_name . ' : '
+					. 'please set @composite on one (and one only) ' . $type_name . ' property of type '
+					. $class_name . ' object, or force the ' . $class_name . '::' . $property_name
+					. ' @foreign property name.',
 					E_USER_ERROR
 				);
 			}
@@ -54,58 +60,56 @@ class Foreign_Annotation extends Documented_Type_Annotation
 
 	//----------------------------------------------------------------------------- defaultCollection
 	/**
-	 * @param $reflection_property Reflection_Property
+	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultCollection(Reflection_Property $reflection_property)
+	private function defaultCollection(Reflection_Property $property)
 	{
-		$type = $reflection_property->getType();
 		$composites = [];
 		$possibles = [];
-		$foreign_class = new Reflection_Class(Builder::className($type->getElementTypeAsString()));
-		foreach ($foreign_class->getAllProperties() as $foreign_property) {
+		$foreign_class = $this->getForeignClass($property);
+		foreach ($foreign_class->getProperties([T_EXTENDS, T_USE]) as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
 			if (
 				$foreign_type->isClass()
 				&& !$foreign_type->isMultiple()
-				&& is_a($reflection_property->final_class, $foreign_type->asString(), true)
-				&& ($foreign_property->getAnnotation('link')->value == 'Object')
+				&& is_a($property->getFinalClassName(), $foreign_type->asString(), true)
+				&& ($foreign_property->getAnnotation('link')->value == Link_Annotation::OBJECT)
 			) {
-				$possibles[] = $foreign_property->name;
+				$possibles[] = $foreign_property->getName();
 				if ($foreign_property->getAnnotation('composite')->value) {
-					$composites[] = $foreign_property->name;
+					$composites[] = $foreign_property->getName();
 				}
 			}
 		}
-		return (count($composites) == 1)
-			? $composites
-			: $possibles;
+		return (count($composites) == 1) ? $composites : $possibles;
 	}
 
 	//------------------------------------------------------------------------------------ defaultMap
 	/**
-	 * @param $reflection_property Reflection_Property
+	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultMap(Reflection_Property $reflection_property)
+	private function defaultMap(Reflection_Property $property)
 	{
-		$type = $reflection_property->getType();
 		$possibles = [];
 		$replace = [];
-		$foreign_class = new Reflection_Class(Builder::className($type->getElementTypeAsString()));
-		foreach ($foreign_class->getAllProperties() as $foreign_property) {
+		$foreign_class = $this->getForeignClass($property);
+		foreach ($foreign_class->getProperties([T_EXTENDS, T_USE]) as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
 			if (
 				$foreign_type->isClass()
 				&& $foreign_type->isMultiple()
-				&& is_a($reflection_property->final_class, $foreign_type->getElementTypeAsString(), true)
-				&& $foreign_property->getAnnotation('link')->value == 'Map'
+				&& is_a(
+					$property->getFinalClassName(), $foreign_type->getElementTypeAsString(), true
+				)
+				&& $foreign_property->getAnnotation('link')->value == Link_Annotation::MAP
 				&& (
-					$foreign_property->class != $reflection_property->class
-					|| $foreign_property->name != $reflection_property->name
+					($foreign_property->getDeclaringClassName() != $property->getDeclaringClassName())
+					|| ($foreign_property->getName() != $property->getName())
 				)
 			) {
-				$possibles[$foreign_property->name] = $foreign_property->name;
+				$possibles[$foreign_property->getName()] = $foreign_property->getName();
 				$replaced= $foreign_property->getAnnotation('replaces')->value;
 				if ($replaced) {
 					$replace[] = $replaced;
@@ -119,7 +123,7 @@ class Foreign_Annotation extends Documented_Type_Annotation
 		}
 		if (count($possibles) != 1) {
 			$this->value = Names::classToProperty(Names::setToClass(
-				$reflection_property->getDeclaringClass()->getAnnotation('set')->value
+					$property->getDeclaringClass()->getAnnotation('set')->value
 			));
 		}
 		return $possibles;
@@ -127,26 +131,46 @@ class Foreign_Annotation extends Documented_Type_Annotation
 
 	//--------------------------------------------------------------------------------- defaultObject
 	/**
-	 * @param Reflection_Property $reflection_property
+	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultObject(Reflection_Property $reflection_property)
+	private function defaultObject(Reflection_Property $property)
 	{
-		$type = $reflection_property->getType();
 		$possibles = [];
-		$foreign_class = new Reflection_Class(Builder::className($type->asString()));
-		foreach ($foreign_class->getAllProperties() as $foreign_property) {
+		$foreign_class = $this->getForeignClass($property);
+		foreach ($foreign_class->getProperties([T_EXTENDS, T_USE]) as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
 			if (
 				$foreign_type->isClass()
 				&& $foreign_type->isMultiple()
-				&& $foreign_type->isInstanceOf($reflection_property->class)
-				&& $foreign_property->getAnnotation('link')->value == 'Collection'
+				&& $foreign_type->isInstanceOf($property->getDeclaringClass())
+				&& $foreign_property->getAnnotation('link')->value == Link_Annotation::COLLECTION
 			) {
-				$possibles[] = $foreign_property->name;
+				$possibles[] = $foreign_property->getName();
 			}
 		}
 		return $possibles;
+	}
+
+	//------------------------------------------------------------------------------- getForeignClass
+	/**
+	 * @param $property Reflection_Property
+	 * @return Reflection_Class
+	 */
+	private function getForeignClass(Reflection_Property $property)
+	{
+		$type = $property->getType();
+		$foreign_class_name = Builder::className($type->getElementTypeAsString());
+		if ($property instanceof PHP\Reflection_Property) {
+			$foreign_class = PHP\Reflection_Class::of($foreign_class_name);
+		}
+		else {
+			$reflection_class = new Reflection\Reflection_Class(
+				get_class($property->getDeclaringClass())
+			);
+			$foreign_class = $reflection_class->newInstance($foreign_class_name);
+		}
+		return $foreign_class;
 	}
 
 }

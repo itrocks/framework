@@ -1,13 +1,16 @@
 <?php
 namespace SAF\Framework\PHP;
 
-use SAF\Framework\Tools\Names;
+use SAF\Framework\Reflection\Annotation\Annoted;
+use SAF\Framework\Reflection\Interfaces;
+use SAF\Framework\Reflection\Type;
 
 /**
  * The same as PHP's ReflectionProperty, but working with PHP source, without loading the class
  */
-class Reflection_Property
+class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Reflection_Property
 {
+	use Annoted;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
@@ -20,6 +23,12 @@ class Reflection_Property
 	 * @var string
 	 */
 	private $doc_comment;
+
+	//---------------------------------------------------------------------------------- $final_class
+	/**
+	 * @var Reflection_Class
+	 */
+	public $final_class;
 
 	//------------------------------------------------------------------------------------ $is_static
 	/**
@@ -64,11 +73,12 @@ class Reflection_Property
 	 */
 	public function __construct(Reflection_Class $class, $name, $line, $token_key, $visibility)
 	{
-		$this->class      = $class;
-		$this->line       = $line;
-		$this->name       = $name;
-		$this->token_key  = $token_key;
-		$this->visibility = $visibility;
+		$this->class       = $class;
+		$this->final_class = $class;
+		$this->line        = $line;
+		$this->name        = $name;
+		$this->token_key   = $token_key;
+		$this->visibility  = $visibility;
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass
@@ -80,16 +90,51 @@ class Reflection_Property
 		return $this->class;
 	}
 
-	//--------------------------------------------------------------------------------- getDocComment
+	//------------------------------------------------------------------------- getDeclaringClassName
 	/**
+	 * Gets the declaring class name for the reflected property
+	 *
 	 * @return string
 	 */
-	public function getDocComment()
+	public function getDeclaringClassName()
+	{
+		return $this->name;
+	}
+
+	//--------------------------------------------------------------------------------- getDocComment
+	/**
+	 * TODO use $flags ?
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @return string
+	 */
+	public function getDocComment($flags = [])
 	{
 		if (!isset($this->doc_comment)) {
 			$this->scanBefore();
 		}
 		return $this->doc_comment;
+	}
+
+	//--------------------------------------------------------------------------------- getFinalClass
+	/**
+	 * Gets the final class where the property came from with a call to getProperties()
+	 *
+	 * @return Reflection_Class
+	 */
+	public function getFinalClass()
+	{
+		return $this->final_class;
+	}
+
+	//----------------------------------------------------------------------------- getFinalClassName
+	/**
+	 * Gets final class name : the one where the property came from with a call to getProperties()
+	 *
+	 * @return string
+	 */
+	public function getFinalClassName()
+	{
+		return $this->final_class->name;
 	}
 
 	//--------------------------------------------------------------------------------------- getName
@@ -109,7 +154,7 @@ class Reflection_Property
 	{
 		if (!isset($this->parent)) {
 			$this->parent = false;
-			$parent = $this->class->getParent();
+			$parent = $this->class->getParentClass();
 			if ($parent) {
 				$properties = $parent->getProperties();
 				if (!isset($properties[$this->name])) {
@@ -124,6 +169,17 @@ class Reflection_Property
 			}
 		}
 		return $this->parent ?: null;
+	}
+
+	//--------------------------------------------------------------------------------------- getType
+	/**
+	 * Gets the type of the property, as defined by its var annotation
+	 *
+	 * @return Type
+	 */
+	public function getType()
+	{
+		return new Type($this->getAnnotation('var')->value);
 	}
 
 	//------------------------------------------------------------------------------------- isPrivate
@@ -155,6 +211,8 @@ class Reflection_Property
 
 	//-------------------------------------------------------------------------------------- isStatic
 	/**
+	 * Checks if property is static
+	 *
 	 * @return boolean
 	 */
 	public function isStatic()

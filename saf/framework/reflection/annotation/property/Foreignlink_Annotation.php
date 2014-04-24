@@ -2,7 +2,8 @@
 namespace SAF\Framework\Reflection\Annotation\Property;
 
 use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Tools\Names;
 
 /**
@@ -11,27 +12,28 @@ use SAF\Framework\Tools\Names;
  * this is a virtual property name
  */
 class Foreignlink_Annotation extends Documented_Type_Annotation
+	implements Property_Context_Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value               string
-	 * @param $reflection_property Reflection_Property
+	 * @param $value    string
+	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $reflection_property)
+	public function __construct($value, Reflection_Property $property)
 	{
-		parent::__construct($value, $reflection_property);
+		parent::__construct($value, $property);
 		if (empty($this->value)) {
-			$link = $reflection_property->getAnnotation('link')->value;
+			$link = $property->getAnnotation('link')->value;
 			$possibles = null;
-			if ($link == 'Collection') {
-				$possibles = $this->defaultCollection($reflection_property);
+			if ($link == Link_Annotation::COLLECTION) {
+				$possibles = $this->defaultCollection($property);
 			}
-			elseif ($link == 'Map') {
-				$possibles = $this->defaultMap($reflection_property);
+			elseif ($link == Link_Annotation::MAP) {
+				$possibles = $this->defaultMap($property);
 			}
-			elseif ($link == 'Object') {
-				$possibles = $this->defaultObject($reflection_property);
+			elseif ($link == Link_Annotation::OBJECT) {
+				$possibles = $this->defaultObject($property);
 			}
 			if (is_array($possibles) && count($possibles) == 1) {
 				$this->value = reset($possibles);
@@ -41,34 +43,34 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 
 	//----------------------------------------------------------------------------- defaultCollection
 	/**
-	 * @param $reflection_property Reflection_Property
+	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultCollection(Reflection_Property $reflection_property)
+	private function defaultCollection(Reflection_Property $property)
 	{
-		return [$reflection_property->name];
+		return [$property->getName()];
 	}
 
 	//------------------------------------------------------------------------------------ defaultMap
 	/**
-	 * @param $reflection_property Reflection_Property
+	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultMap(Reflection_Property $reflection_property)
+	private function defaultMap(Reflection_Property $property)
 	{
 		return [Names::ClassToProperty(Names::setToClass(
-				Names::propertyToClass($reflection_property->name), false
+				Names::propertyToClass($property->getName()), false
 		))];
 	}
 
 	//--------------------------------------------------------------------------------- defaultObject
 	/**
-	 * @param Reflection_Property $reflection_property
+	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultObject(Reflection_Property $reflection_property)
+	private function defaultObject(Reflection_Property $property)
 	{
-		return [$reflection_property->name];
+		return [$property->getName()];
 	}
 
 }

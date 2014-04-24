@@ -1,8 +1,9 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
+use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
  * The sort annotation for classes stores a list of column names for object collections sort
@@ -10,7 +11,7 @@ use SAF\Framework\Reflection\Reflection_Class;
  * This is used by Dao to get default sort orders when calling Dao::readAll() and Dao::search().
  * This work like Class_Representative_Annotation : default values are the complete properties list
  */
-class Sort_Annotation extends List_Annotation
+class Sort_Annotation extends List_Annotation implements Class_Context_Annotation
 {
 
 	//----------------------------------------------------------------------------------- __construct
@@ -28,10 +29,10 @@ class Sort_Annotation extends List_Annotation
 		// default sort : all representative values but links
 		if (!$this->value) {
 			$representative = (new Representative_Annotation($value, $class))->value;
-			foreach ($class->getAllProperties() as $property) {
-				if (in_array($property->name, $representative)) {
+			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
+				if (in_array($property->getName(), $representative)) {
 					if (!$property->isStatic() && !$property->getAnnotation('link')->value) {
-						$this->value[] = $property->name;
+						$this->value[] = $property->getName();
 					}
 				}
 			}

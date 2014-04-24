@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Reflection\Type;
+
 /**
  * These are helpers functions to parse tokens
  */
@@ -59,33 +61,7 @@ trait Tokens_Parser
 	 */
 	private function fullClassName($class_name, $use = true)
 	{
-		// class name beginning with '\' : this is the full class name
-		if ($class_name[0] === BS) {
-			return substr($class_name, 1);
-		}
-		// class name containing '\' : search for namespace
-		if ($length = strpos($class_name, BS)) {
-			$search = BS . substr($class_name, 0, $length++);
-			if ($use) foreach ($this->use as $u) {
-				$bu = BS . $u;
-				if (substr($bu, -$length) === $search) {
-					return ((strlen($bu) > $length) ? (substr($bu, 1, -$length) . BS) : '') . $class_name;
-				}
-			}
-			return ($this->namespace ? ($this->namespace . BS) : '') . $class_name;
-		}
-		if ($use) {
-			// class name without '\' : search for full class name
-			$search = BS . $class_name;
-			$length = strlen($search);
-			if ($use) foreach ($this->use as $u) {
-				$bu = BS . $u;
-				if(substr($bu, -$length) === $search) {
-					return $u;
-				}
-			}
-		}
-		return ($this->namespace ? ($this->namespace . BS) : '') . $class_name;
+		return (new Type($class_name))->applyNamespace($this->namespace, $use ? $this->use : []);
 	}
 
 	//------------------------------------------------------------------------------------- nextToken

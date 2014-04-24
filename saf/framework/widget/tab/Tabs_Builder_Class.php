@@ -23,7 +23,7 @@ abstract class Tabs_Builder_Class
 	{
 		/** @var $group_annotations Group_Annotation[] */
 		$group_annotations = $class->getAnnotations('group');
-		$properties = $class->getAllProperties();
+		$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		return self::buildProperties($properties, $group_annotations);
 	}
 

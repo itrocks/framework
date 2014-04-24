@@ -42,7 +42,7 @@ class Select_Controller implements Controller
 		if ($class->getAnnotation('link')->value) {
 			$link_class = new Link_Class($class->name);
 			$composite_link_property = $link_class->getCompositeProperty();
-			foreach ($link_class->getAllProperties() as $property) {
+			foreach ($link_class->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if (
 					(!$composite_property || ($property->name !== $composite_property->name))
 					&& (!$composite_link_property || ($property->name !== $composite_link_property->name))
@@ -54,7 +54,7 @@ class Select_Controller implements Controller
 			}
 		}
 		else {
-			foreach ($class->getAllProperties() as $property) {
+			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if (
 					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& !$property->isStatic()

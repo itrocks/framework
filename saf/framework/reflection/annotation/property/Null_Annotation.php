@@ -3,7 +3,7 @@ namespace SAF\Framework\Reflection\Annotation\Property;
 
 use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * This tells that the property can take the null value as a valid value (default is false)
@@ -23,7 +23,7 @@ class Null_Annotation extends Boolean_Annotation implements Property_Context_Ann
 		if (
 			!$this->value
 			&& !$property->getAnnotation('mandatory')->value
-			&& ($property->getAnnotation('link')->value == 'Object')
+			&& ($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
 		) {
 			$this->value = true;
 		}

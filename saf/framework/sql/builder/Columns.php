@@ -39,7 +39,7 @@ class Columns
 	/**
 	 * Properties paths list
 	 *
-	 * @var string[]
+	 * @var string[]|Func[]
 	 */
 	private $properties;
 
@@ -123,7 +123,9 @@ class Columns
 			/** @var $properties Reflection_Property[] */
 			$properties = [];
 			$column_names = [];
-			foreach ((new Reflection_Class($class_name))->getAllProperties() as $property) {
+			foreach (
+				(new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property
+			) {
 				$storage = $property->getAnnotation('storage')->value;
 				$type = $property->getType();
 				if (!$property->isStatic() && !($type->isClass() && $type->isMultiple())) {
@@ -137,7 +139,9 @@ class Columns
 			$sql_columns = '';
 			foreach ($this->joins->getLinkedJoins() as $join) {
 				if (isset($has_storage)) {
-					foreach ((new Reflection_Class($join->foreign_class))->getAllProperties() as $property) {
+					foreach (
+						(new Reflection_Class($join->foreign_class))->getProperties([T_EXTENDS, T_USE]) as $property
+					) {
 						if (
 							!$property->isStatic()
 							&& isset($column_names[$property->name])
@@ -200,8 +204,9 @@ class Columns
 		if (!isset($join)) {
 			$join = $this->joins->getJoin($master_path);
 		}
-		return ($join ? ($join->foreign_alias . '.`' . $column_name . '`') : ('t0.`' . $path . '`'))
-			. (($as && $column_name !== $path) ? ' AS `' . $path . '`' : false);
+		return
+			($join ? ($join->foreign_alias . '.' . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ))
+			. (($as && $column_name !== $path) ? (' AS ' . BQ . $path . BQ) : false);
 	}
 
 	//------------------------------------------------------------------------------- buildNextColumn
@@ -250,13 +255,13 @@ class Columns
 			$column_name = Sql\Builder::buildColumnName($property);
 			if ($column_name) {
 				if ($first_property) $first_property = false; else $sql_columns .= ', ';
-				$sql_columns .= $join->foreign_alias . '.`' . $column_name . '`'
-					. ($this->append ? '' : (' AS `' . $path . ':' . $property->name . '`'));
+				$sql_columns .= $join->foreign_alias . '.' . BQ . $column_name . BQ
+					. ($this->append ? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ));
 			}
 		}
 		if ($first_property) $first_property = false; else $sql_columns .= ', ';
 		$sql_columns .= $join->foreign_alias . '.id'
-			. ($this->append ? '' : (' AS `' . $path . ':id`'));
+			. ($this->append ? '' : (' AS ' . BQ . $path . ':id' . BQ));
 		return $sql_columns;
 	}
 

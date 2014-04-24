@@ -3,22 +3,17 @@ namespace SAF\Framework\Reflection;
 
 use ReflectionMethod;
 use SAF\Framework\Reflection\Annotation\Annoted;
+use SAF\Framework\Reflection\Interfaces;
+use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
  * A rich extension of the PHP ReflectionMethod class, adding :
  * - annotations management
  */
-class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
+class Reflection_Method extends ReflectionMethod
+	implements Has_Doc_Comment, Interfaces\Reflection_Method
 {
 	use Annoted;
-
-	//------------------------------------------------------------------------------------------- ALL
-	/**
-	 * Another constant for default Reflection_Class::getMethods() filter
-	 *
-	 * @var integer
-	 */
-	const ALL = 1799;
 
 	//------------------------------------------------------------------------ getAnnotationCachePath
 	/**
@@ -27,6 +22,28 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 	protected function getAnnotationCachePath()
 	{
 		return [$this->class, $this->name . '()'];
+	}
+
+	//------------------------------------------------------------------------- getDeclaringClassName
+	/**
+	 * Gets declaring class name
+	 *
+	 * @return string
+	 */
+	public function getDeclaringClassName()
+	{
+		return $this->class;
+	}
+
+	//--------------------------------------------------------------------------------- getDocComment
+	/**
+	 * TODO LOWEST parent methods read
+	 * @param $flags integer[]
+	 * @return string
+	 */
+	public function getDocComment($flags = [])
+	{
+		return parent::getDocComment();
 	}
 
 	//---------------------------------------------------------------------------------- getParameter
@@ -53,17 +70,6 @@ class Reflection_Method extends ReflectionMethod implements Has_Doc_Comment
 			);
 		}
 		return $parameters;
-	}
-
-	//--------------------------------------------------------------------------------- getDocComment
-	/**
-	 * @param $parent boolean
-	 * @return string
-	 */
-	public function getDocComment($parent = false)
-	{
-		// TODO parent methods read
-		return parent::getDocComment();
 	}
 
 }

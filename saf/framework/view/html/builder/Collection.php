@@ -145,12 +145,12 @@ class Collection
 	{
 		// gets all properties from collection element class
 		$class = new Reflection_Class($this->class_name);
-		$properties = $class->getAllProperties();
+		$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		// remove linked class properties
 		$linked_class = $class->getAnnotation('link')->value;
 		if ($linked_class) {
 			foreach (
-				array_keys((new Reflection_Class($linked_class))->getAllProperties())
+				array_keys((new Reflection_Class($linked_class))->getProperties([T_EXTENDS, T_USE]))
 				as $property_name
 			) {
 				unset($properties[$property_name]);

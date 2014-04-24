@@ -18,7 +18,7 @@ class User_Setting extends Setting
 	/**
 	 * @composite
 	 * @link Object
-	 * @var \SAF\Framework\User
+	 * @var User
 	 */
 	public $user;
 

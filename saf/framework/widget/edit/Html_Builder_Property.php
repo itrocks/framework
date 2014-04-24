@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Edit;
 
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Names;
@@ -55,8 +56,8 @@ class Html_Builder_Property extends Html_Builder_Type
 	{
 		$link = $this->property->getAnnotation('link')->value;
 		switch ($link) {
-			case 'Collection': return $this->buildCollection();
-			case 'Map':        return $this->buildMap();
+			case Link_Annotation::COLLECTION: return $this->buildCollection();
+			case Link_Annotation::MAP:        return $this->buildMap();
 			default:           return parent::build();
 		}
 	}
@@ -120,7 +121,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (!isset($filters)) {
 			$filters_values = $this->property->getListAnnotation('filters')->values();
 			if ($filters_values) {
-				$properties = $this->property->getDeclaringClass()->getAllProperties();
+				$properties = $this->property->getDeclaringClass()->getProperties([T_EXTENDS, T_USE]);
 				foreach ($filters_values as $filter) {
 					if ($properties[$filter]->getType()->isClass()) {
 						$filter = 'id_' . $filter;

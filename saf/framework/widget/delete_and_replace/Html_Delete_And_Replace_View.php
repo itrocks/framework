@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Widget;
+namespace SAF\Framework\Widget\Delete_And_Replace;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
@@ -41,7 +41,9 @@ class Html_Delete_And_Replace_View implements View
 	protected function getFilters($object)
 	{
 		$filters = ['id' => '!' . Dao::getObjectIdentifier($object)];
-		foreach ((new Reflection_Class(get_class($object)))->getAllProperties() as $property) {
+		foreach (
+			(new Reflection_Class(get_class($object)))->getProperties([T_EXTENDS, T_USE]) as $property
+		) {
 			if ($property->getAnnotation('replace_filter')->value) {
 				$filters[$property->name] = Dao::getObjectIdentifier($object, $property->name);
 			}

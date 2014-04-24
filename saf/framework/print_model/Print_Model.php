@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Print_Model\Page;
+
 /**
  * A print model gives the way to print an object of a given class
  *
@@ -18,7 +20,7 @@ class Print_Model
 	//---------------------------------------------------------------------------------------- $pages
 	/**
 	 * @link Collection
-	 * @var \SAF\Framework\Print_Model\Page[]
+	 * @var Page[]
 	 */
 	public $pages;
 

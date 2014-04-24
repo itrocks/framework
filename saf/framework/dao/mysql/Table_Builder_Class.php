@@ -2,6 +2,7 @@
 namespace SAF\Framework\Dao\Mysql;
 
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Namespaces;
 
@@ -64,7 +65,7 @@ class Table_Builder_Class
 				$type = $property->getType();
 				if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
 					$table->addColumn(Column::buildProperty($property));
-					if ($property->getAnnotation('link')->value == 'Object') {
+					if ($property->getAnnotation('link')->value == Link_Annotation::OBJECT) {
 						$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
 						$table->addIndex(Index::buildLink($property->getAnnotation('storage')->value));
 					}
@@ -105,7 +106,7 @@ class Table_Builder_Class
 		$link_class_name = Namespaces::defaultFullClassName($link, $class_name);
 		$tables = (new Table_Builder_Class)->build($link_class_name);
 		$this->excluded_properties = array_keys(
-			(new Reflection_Class($link_class_name))->getAllProperties()
+			(new Reflection_Class($link_class_name))->getProperties([T_EXTENDS, T_USE])
 		);
 		return $tables;
 	}

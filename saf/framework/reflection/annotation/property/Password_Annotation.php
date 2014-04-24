@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection\Annotation\Property;
 
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Tools\Encryption;
 
 /**
  * This tells the string property stores crypted password
@@ -19,12 +20,12 @@ class Password_Annotation extends Annotation
 	 * Annotation class will have to parse it ie for several parameters or specific syntax, or if they
 	 * want to store specific typed or calculated value
 	 *
-	 * @param $value string
+	 * @param $value string any value from SAF\Framework\Tools\Encryption constants
 	 */
 	public function __construct($value)
 	{
 		if (isset($value) && !$value) {
-			$value = 'sha1';
+			$value = Encryption::SHA1;
 		}
 		parent::__construct($value);
 	}

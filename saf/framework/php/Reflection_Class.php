@@ -1,6 +1,10 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Reflection\Annotation\Annoted;
+use SAF\Framework\Reflection\Annotation\Parser;
+use SAF\Framework\Reflection\Interfaces;
+use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 
@@ -8,8 +12,9 @@ use SAF\Framework\Tools\Set;
  * A reflection class parser that uses php tokens to parse php source code instead of loading
  * the class. Useful to use reflection on a class before modifying it and finally load it for real.
  */
-class Reflection_Class
+class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 {
+	use Annoted;
 	use Tokens_Parser;
 
 	//---------------------------------------------------------------------------------- $doc_comment
@@ -160,6 +165,49 @@ class Reflection_Class
 		return $this->$property_name;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string The name of the class
+	 */
+	public function __toString()
+	{
+		return $this->name;
+	}
+
+	//-------------------------------------------------------------------------------- getConstructor
+	/**
+	 * Gets the constructor of the reflected class
+	 *
+	 * @return Reflection_Method
+	 */
+	public function getConstructor()
+	{
+		$methods = $this->getMethods();
+		if (isset($methods['__construct'])) {
+			return $methods['__construct'];
+		}
+		else {
+			$short_class_name = Namespaces::shortClassName($this->name);
+			if (isset($methods[$short_class_name])) {
+				return $methods[$short_class_name];
+			}
+		}
+		return null;
+	}
+
+	//-------------------------------------------------------------------------- getDefaultProperties
+	/**
+	 * Gets default value of properties
+	 *
+	 * TODO not implemented yet
+	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @return array
+	 */
+	public function getDefaultProperties($flags = [])
+	{
+		return [];
+	}
+
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
 	 * Cumulates documentations of parents and the class itself
@@ -169,6 +217,9 @@ class Reflection_Class
 	 */
 	public function getDocComment($flags = [])
 	{
+		if ($flags === true) {
+			$flags = [T_EXTENDS, T_IMPLEMENTS, T_USE];
+		}
 		if (!isset($this->doc_comment)) {
 			$this->scanUntilClassName();
 		}
@@ -178,22 +229,36 @@ class Reflection_Class
 			$flip = array_flip($flags);
 			if (($this->type !== T_INTERFACE) && isset($flip[T_USE])) {
 				foreach ($this->getTraits() as $trait) {
+					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $trait->name . LF;
 					$doc_comment .= $trait->getDocComment($flags);
 				}
 			}
-			if (($this->type === T_CLASS) && isset($flip[T_EXTENDS])) {
-				if ($parent = $this->getParent()) {
+			if (($this->type !== T_TRAIT) && isset($flip[T_EXTENDS])) {
+				if ($parent = $this->getParentClass()) {
+					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $parent->name . LF;
 					$doc_comment .= $parent->getDocComment($flags);
 				}
 			}
 			if (($this->type !== T_TRAIT) && isset($flip[T_IMPLEMENTS])) {
 				foreach ($this->getInterfaces() as $interface) {
+					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $interface->name . LF;
 					$doc_comment .= $interface->getDocComment($flags);
 				}
 			}
 		}
 
 		return $doc_comment;
+	}
+
+	//----------------------------------------------------------------------------------- getFileName
+	/**
+	 * Gets the filename of the file in which the class has been defined
+	 *
+	 * @return string
+	 */
+	public function getFileName()
+	{
+		return $this->source->file_name;
 	}
 
 	//----------------------------------------------------------------------------- getInterfaceNames
@@ -234,7 +299,7 @@ class Reflection_Class
 	//------------------------------------------------------------------------------------ getMethods
 	/**
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
-	 * @return Reflection_Method[]
+	 * @return Reflection_Method[] key is the name of the method
 	 */
 	public function getMethods($flags = [])
 	{
@@ -249,9 +314,7 @@ class Reflection_Class
 				if (!isset($this->traits_methods)) {
 					$this->traits_methods = [];
 					foreach ($this->getTraits() as $trait) {
-						$this->traits_methods = array_merge(
-							$trait->getMethods([T_USE]), $this->traits_methods
-						);
+						$this->traits_methods = array_merge($trait->getMethods([T_USE]), $this->traits_methods);
 					}
 				}
 				$methods = array_merge($this->traits_methods, $methods);
@@ -259,7 +322,7 @@ class Reflection_Class
 			if (isset($flip[T_EXTENDS])) {
 				if (!isset($this->parent_methods)) {
 					$this->parent_methods = [];
-					if ($parent = $this->getParent()) {
+					if ($parent = $this->getParentClass()) {
 						$this->parent_methods = $parent->getMethods($flags);
 					}
 				}
@@ -295,6 +358,8 @@ class Reflection_Class
 
 	//------------------------------------------------------------------------------ getNamespaceName
 	/**
+	 * Gets namespace name
+	 *
 	 * @return string
 	 */
 	public function getNamespaceName()
@@ -305,7 +370,19 @@ class Reflection_Class
 		return $this->namespace;
 	}
 
-	//------------------------------------------------------------------------------------- getParent
+	//------------------------------------------------------------------------------- getNamespaceUse
+	/**
+	 * @return string[]
+	 */
+	public function getNamespaceUse()
+	{
+		if (!isset($this->use)) {
+			$this->scanUntilClassName();
+		}
+		return array_keys($this->use);
+	}
+
+	//-------------------------------------------------------------------------------- getParentClass
 	/**
 	 * Gets parent Reflection_Class object
 	 *
@@ -313,7 +390,7 @@ class Reflection_Class
 	 *
 	 * @return Reflection_Class
 	 */
-	public function getParent()
+	public function getParentClass()
 	{
 		if (!isset($this->parent)) {
 			$this->scanUntilClassBegins();
@@ -375,6 +452,8 @@ class Reflection_Class
 
 	//---------------------------------------------------------------------------------- getStartLine
 	/**
+	 * Gets starting line number
+	 *
 	 * @return integer
 	 */
 	public function getStartLine()
@@ -399,15 +478,22 @@ class Reflection_Class
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
-	 * @param $flags integer[] T_EXTENDS, T_USE
-	 * @return Reflection_Property[]
+	 * @param $flags       integer[] T_EXTENDS, T_USE
+	 * @param $final_class Reflection_Class force the final class to this name (mostly for internal use)
+	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = [])
+	public function getProperties($flags = [], $final_class = null)
 	{
 		if (!isset($this->properties)) {
 			$this->scanUntilClassEnds();
 		}
 		$properties = $this->properties;
+
+		if (isset($final_class)) {
+			foreach ($this->properties as $property) {
+				$property->final_class = $final_class;
+			}
+		}
 
 		if ($flags) {
 			$flip = array_flip($flags);
@@ -416,7 +502,7 @@ class Reflection_Class
 					$this->traits_properties = [];
 					foreach ($this->getTraits() as $trait) {
 						$this->traits_properties = array_merge(
-							$trait->getProperties([T_USE]), $this->traits_properties
+							$trait->getProperties([T_USE], $final_class), $this->traits_properties
 						);
 					}
 				}
@@ -424,8 +510,8 @@ class Reflection_Class
 			}
 			if (isset($flip[T_EXTENDS])) {
 				if (!isset($this->parent_properties)) {
-					$this->parent_properties = ($parent = $this->getParent())
-						? $parent->getProperties([T_EXTENDS, T_USE])
+					$this->parent_properties = ($parent = $this->getParentClass())
+						? $parent->getProperties([T_EXTENDS, T_USE], $final_class)
 						: [];
 				}
 				$properties = array_merge($this->parent_properties, $properties);
@@ -514,6 +600,8 @@ class Reflection_Class
 
 	//----------------------------------------------------------------------------------- inNamespace
 	/**
+	 * Checks if in namespace
+	 *
 	 * @return boolean
 	 */
 	public function inNamespace()
@@ -526,6 +614,8 @@ class Reflection_Class
 
 	//------------------------------------------------------------------------------------ isAbstract
 	/**
+	 * Checks if class is abstract
+	 *
 	 * @return boolean
 	 */
 	public function isAbstract()
@@ -545,26 +635,10 @@ class Reflection_Class
 		return $this->type === T_CLASS;
 	}
 
-	//----------------------------------------------------------------------------------- isInterface
-	/**
-	 * @return boolean
-	 */
-	public function isInterface()
-	{
-		return $this->type === T_INTERFACE;
-	}
-
-	//------------------------------------------------------------------------------------ isInternal
-	/**
-	 * @return boolean
-	 */
-	public function isInternal()
-	{
-		return false;
-	}
-
 	//--------------------------------------------------------------------------------------- isFinal
 	/**
+	 * Checks if class is final
+	 *
 	 * @return boolean
 	 */
 	public function isFinal()
@@ -577,12 +651,36 @@ class Reflection_Class
 
 	//------------------------------------------------------------------------------------ isInstance
 	/**
-	 * @param $object object
+	 * Checks class for instance
+	 *
+	 * @param $object object|string
 	 * @return boolean
 	 */
 	public function isInstance($object)
 	{
 		return is_a($object, $this->name, true);
+	}
+
+	//----------------------------------------------------------------------------------- isInterface
+	/**
+	 * Checks if the class is an interface
+	 *
+	 * @return boolean
+	 */
+	public function isInterface()
+	{
+		return $this->type === T_INTERFACE;
+	}
+
+	//------------------------------------------------------------------------------------ isInternal
+	/**
+	 * Checks if class is defined internally by an extension, or the core
+	 *
+	 * @return boolean
+	 */
+	public function isInternal()
+	{
+		return false;
 	}
 
 	//--------------------------------------------------------------------------------------- isTrait
@@ -596,6 +694,8 @@ class Reflection_Class
 
 	//--------------------------------------------------------------------------------- isUserDefined
 	/**
+	 * Checks if user defined
+	 *
 	 * @return boolean
 	 */
 	public function isUserDefined()
@@ -605,7 +705,7 @@ class Reflection_Class
 
 	//-------------------------------------------------------------------------------------------- of
 	/**
-	 * @param $class_name  string
+	 * @param $class_name string
 	 * @return Reflection_Class
 	 */
 	public static function of($class_name)
@@ -729,13 +829,14 @@ class Reflection_Class
 						if (($depth === 1) && isset($visibility_token)) {
 							$property_name = substr($token[1], 1);
 							$visibility = $this->tokens[$visibility_token][0];
-							$this->properties[$property_name] = new Reflection_Property(
+							$property = new Reflection_Property(
 								$this,
 								$property_name,
 								$this->tokens[$visibility_token][2],
 								$visibility_token,
 								($visibility === T_VAR) ? T_PUBLIC : $visibility
 							);
+							$this->properties[$property_name] = $property;
 						}
 						$visibility_token = null;
 						break;

@@ -2,7 +2,6 @@
 namespace SAF\Framework;
 
 use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Method;
 use SAF\Framework\Tests\Runnable;
 use SAF\Framework\Tests\Test;
 use SAF\Framework\Tools\Names;
@@ -39,11 +38,9 @@ class Tests
 			// automatically call each test* public method
 			if (empty($method_name)) {
 				$call_methods = [];
-				$methods = (new Reflection_Class($class_name))->getMethods(
-					Reflection_Method::IS_PUBLIC
-				);
+				$methods = (new Reflection_Class($class_name))->getMethods();
 				foreach ($methods as $method) {
-					if (substr($method->name, 0, 4) === 'test') {
+					if ($method->isPublic() && (substr($method->name, 0, 4) === 'test')) {
 						$call_methods[] = $method->name;
 					}
 				}

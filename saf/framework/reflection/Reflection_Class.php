@@ -3,26 +3,20 @@ namespace SAF\Framework\Reflection;
 
 use ReflectionClass;
 use SAF\Framework\Reflection\Annotation\Annoted;
+use SAF\Framework\Reflection\Annotation\Parser;
+use SAF\Framework\Reflection\Interfaces;
+use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
  * A rich extension of the PHP ReflectionClass class, adding :
  * - properties access methods to write data into private properties
  * - access to the full list of properties and parent properties
  * - annotations management
- *
- * @todo store it into an independent SAF\Reflection package
  */
-class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
+class Reflection_Class extends ReflectionClass
+	implements Has_Doc_Comment, Interfaces\Reflection_Class
 {
 	use Annoted;
-
-	//---------------------------------------------------------------------------------- $doc_comment
-	/**
-	 * Cached value for the doc comment (set by getDocComment() only when $use is true)
-	 *
-	 * @var string
-	 */
-	private $doc_comment;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -47,37 +41,11 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function accessProperties()
 	{
-		$properties = $this->getAllProperties();
+		$properties = $this->getProperties([T_EXTENDS, T_USE]);
 		foreach ($properties as $property) {
 			if (!$property->isPublic()) {
 				$property->setAccessible(true);
 			}
-		}
-		return $properties;
-	}
-
-	//------------------------------------------------------------------------------ getAllProperties
-	/**
-	 * Get all properties from a class and its parents
-	 *
-	 * If a property overrides a parent property, parent AND child properties will be listed (only if
-	 * $by_name is false).
-	 * If $by_name is set to true, result array keys will be names.
-	 * With this option parent properties will be replace by overridden child properties.
-	 *
-	 * @param $filter      integer|string
-	 * @param $by_name     boolean
-	 * @return Reflection_Property[]
-	 */
-	public function getAllProperties($filter = Reflection_Property::ALL, $by_name = true)
-	{
-		$parent = $this->getParentClass();
-		$properties = $this->getProperties($filter, $by_name);
-		while ($parent) {
-			$properties = array_merge(
-				$parent->getProperties($filter, $by_name, $this->name), $properties
-			);
-			$parent = $parent->getParentClass();
 		}
 		return $properties;
 	}
@@ -102,7 +70,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	public function getAnnotedProperties($annotation_name, $annotation_value = null)
 	{
 		$properties = [];
-		foreach ($this->getAllProperties() as $property) {
+		foreach ($this->getProperties([T_EXTENDS, T_USE]) as $property) {
 			$annotation = $property->getAnnotation($annotation_name);
 			if (
 				(isset($annotation_value) && ($annotation->value == $annotation_value))
@@ -125,7 +93,7 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 */
 	public function getAnnotedProperty($annotation_name, $annotation_value = null)
 	{
-		foreach (array_reverse($this->getAllProperties()) as $property) {
+		foreach (array_reverse($this->getProperties([T_EXTENDS, T_USE])) as $property) {
 			/** @var $property Reflection_Property */
 			$annotation = $property->getAnnotation($annotation_name);
 			if (
@@ -170,45 +138,74 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 			? new Reflection_Method($constructor->class, $constructor->name) : $constructor;
 	}
 
+	//-------------------------------------------------------------------------- getDefaultProperties
+	/**
+	 * Gets default value of properties
+	 *
+	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @return array
+	 */
+	public function getDefaultProperties($flags = [])
+	{
+		$defaults = parent::getDefaultProperties();
+		if ($flags) {
+			if (in_array(T_EXTENDS, $flags)) {
+				$parent = $this->getParentClass();
+				while ($parent) {
+					$defaults = array_merge($parent->getDefaultProperties(), $defaults);
+					$parent = $parent->getParentClass();
+				}
+			}
+		}
+		return $defaults;
+	}
+
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
 	 * Return doc comment of the class
 	 *
-	 * @param $get_parents boolean if true, get doc comment of parent classes too
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
-	public function getDocComment($get_parents = false)
+	public function getDocComment($flags = [])
 	{
-		if (!$get_parents) {
-			return parent::getDocComment();
+		$doc_comment = parent::getDocComment();
+		if ($flags) {
+			$flip = array_flip($flags);
+			$doc_comment = parent::getDocComment();
+			if (isset($flip[T_USE]) && !$this->isInterface()) {
+				foreach ($this->getTraits() as $trait) {
+					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $trait->name . LF;
+					$doc_comment .= $trait->getDocComment($flags);
+				}
+			}
+			if (isset($flip[T_EXTENDS]) && !$this->isTrait()) {
+				if ($parent_class = $this->getParentClass()) {
+					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $parent_class->name . LF;
+					$doc_comment .= $parent_class->getDocComment($flags);
+				}
+			}
+			if (isset($flip[T_IMPLEMENTS]) && !$this->isTrait()) {
+				foreach ($this->getInterfaces() as $interface) {
+					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $interface->name . LF;
+					$doc_comment .= $interface->getDocComment($flags);
+				}
+			}
 		}
-		if (!is_string($this->doc_comment)) {
-			$this->doc_comment = parent::getDocComment();
-			if ($parent_class = $this->getParentClass()) {
-				$this->doc_comment .= $parent_class->getDocComment(true);
-			}
-			foreach ($this->getTraits() as $trait) {
-				$this->doc_comment .= $trait->getDocComment(true);
-			}
-			foreach ($this->getInterfaces() as $interface) {
-				$this->doc_comment .= $interface->getDocComment(true);
-			}
-		}
-		return $this->doc_comment;
+		return $doc_comment;
 	}
 
 	//--------------------------------------------------------------------------------- getInterfaces
 	/**
 	 * Gets interfaces
 	 *
-	 * @param $by_name boolean
 	 * @return Reflection_Class[]
 	 */
-	public function getInterfaces($by_name = true)
+	public function getInterfaces()
 	{
 		$interfaces = [];
-		foreach (parent::getInterfaces() as $key => $interface) {
-			$interfaces[$by_name ? $interface->name : $key] = new Reflection_Class($interface->name);
+		foreach (parent::getInterfaces() as $interface) {
+			$interfaces[$interface->name] = new Reflection_Class($interface->name);
 		}
 		return $interfaces;
 	}
@@ -233,21 +230,48 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * Gets an array of methods for the class
 	 *
 	 * Only methods visible for current class are retrieved, not the privates ones from parents or
-	 * traits.
+	 * traits. If you set flags, this will override this limitation.
 	 *
-	 * @param $filter int|null|string any combination of Reflection_Method::IS_* constants
-	 * @param $by_name boolean if true, only the last override of each method name will be kept
-	 * @return Reflection_Method[] indice is the method name if $by_name is true, else this will be an
-	 * integer
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @return Reflection_Method[] key is the name of the method
 	 */
-	public function getMethods($filter = Reflection_Method::ALL, $by_name = true)
+	public function getMethods($flags = [])
 	{
 		$methods = [];
-		$meths = parent::getMethods($filter);
-		foreach ($meths as $key => $method) {
-			$methods[$by_name ? $method->name : $key] = new Reflection_Method(
-				$method->class, $method->name
-			);
+		foreach (parent::getMethods() as $method) {
+			$methods[$method->name] = new Reflection_Method($method->class, $method->name);
+		}
+		if ($flags) {
+			$flip = array_flip($flags);
+			if (isset($flip[T_USE])) {
+				if (!isset($this->traits_methods)) {
+					$this->traits_methods = [];
+					foreach ($this->getTraits() as $trait) {
+						$this->traits_methods = array_merge($trait->getMethods([T_USE]), $this->traits_methods);
+					}
+				}
+				$methods = array_merge($this->traits_methods, $methods);
+			}
+			if (isset($flip[T_EXTENDS])) {
+				if (!isset($this->parent_methods)) {
+					$this->parent_methods = [];
+					if ($parent = $this->getParentClass()) {
+						$this->parent_methods = $parent->getMethods($flags);
+					}
+				}
+				$methods = array_merge($this->parent_methods, $methods);
+			}
+			if (isset($flip[T_IMPLEMENTS])) {
+				if (!isset($this->interfaces_methods)) {
+					$this->interfaces_methods = [];
+					foreach ($this->getInterfaces() as $interface) {
+						$this->interfaces_methods = array_merge(
+							$interface->getMethods($flags), $this->interfaces_methods
+						);
+					}
+				}
+				$methods = array_merge($this->interfaces_methods, $methods);
+			}
 		}
 		return $methods;
 	}
@@ -271,23 +295,27 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	 * Properties visible for current class, not the privates ones from parents and traits are
 	 * retrieved.
 	 *
-	 * @param $filter      integer|string any combination of Reflection_Property::IS_* constants
-	 * @param $by_name     boolean if true, only the last override of each property will be kept
-	 * @param $final_class string
-	 * @return Reflection_Property[] indice is the property name if $by_name is true, else this will
-	 * be an integer
+	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @param $final_class string force the final class to this name (mostly for internal use)
+	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties(
-		$filter = Reflection_Property::ALL, $by_name = true, $final_class = null
-	) {
+	public function getProperties($flags = [], $final_class = null)
+	{
 		if (!isset($final_class)) {
 			$final_class = $this->name;
 		}
 		$properties = [];
-		foreach (parent::getProperties($filter) as $key => $property) {
+		foreach (parent::getProperties() as $property) {
 			$property = new Reflection_Property($property->class, $property->name);
 			$property->final_class = $final_class;
-			$properties[$by_name ? $property->name : $key] = $property;
+			$properties[$property->name] = $property;
+		}
+		if (in_array(T_EXTENDS, $flags)) {
+			$parent = $this->getParentClass();
+			while ($parent) {
+				$properties = array_merge($parent->getProperties([], $final_class), $properties);
+				$parent = $parent->getParentClass();
+			}
 		}
 		return $properties;
 	}
@@ -312,14 +340,13 @@ class Reflection_Class extends ReflectionClass implements Has_Doc_Comment
 	/**
 	 * Gets traits
 	 *
-	 * @param $by_name boolean
 	 * @return Reflection_Class[]
 	 */
-	public function getTraits($by_name = true)
+	public function getTraits()
 	{
 		$traits = [];
-		foreach (parent::getTraits() as $key => $trait) {
-			$traits[$by_name ? $trait->name : $key] = new Reflection_Class($trait->name);
+		foreach (parent::getTraits() as $trait) {
+			$traits[$trait->name] = new Reflection_Class($trait->name);
 		}
 		return $traits;
 	}

@@ -4,6 +4,7 @@ namespace SAF\Framework\View\Html;
 use SAF\Framework\Application;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Dao\File;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_View;
 use SAF\Framework\Tools\Contextual_Callable;
@@ -1168,10 +1169,10 @@ class Template
 		$object = reset($this->objects);
 		if (is_array($value) && ($object instanceof Reflection_Property)) {
 			$link = $object->getAnnotation('link')->value;
-			if ($link === 'Collection') {
+			if ($link === Link_Annotation::COLLECTION) {
 				$value = $this->parseCollection($object, $value);
 			}
-			elseif ($link === 'Map') {
+			elseif ($link === Link_Annotation::MAP) {
 				$value = $this->parseMap($object, $value);
 			}
 		}

@@ -3,13 +3,15 @@ namespace SAF\Framework\Reflection\Annotation;
 
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Has_Doc_Comment;
+use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
  * An annoted class contains annotations.
  *
  * Common annoted classes are Reflection_Class, Reflection_Property, Reflection_Method.
  * Classes that use this trait must implement Has_Doc_Comment !
+ *
+ * @implements Has_Doc_Comment
  */
 trait Annoted
 {
@@ -50,7 +52,10 @@ trait Annoted
 	/**
 	 * @return string[]
 	 */
-	protected abstract function getAnnotationCachePath();
+	protected function getAnnotationCachePath()
+	{
+		return null;
+	}
 
 	//-------------------------------------------------------------------------------- getAnnotations
 	/**
@@ -85,15 +90,21 @@ trait Annoted
 			return $this->annotations[$annotation_name];
 		}
 		$path = $this->getAnnotationCachePath();
-		if (
-			!isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple])
-			&& ($this instanceof Has_Doc_Comment)
-		) {
-			/** @var $this Annoted|Has_Doc_Comment */
-			self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple]
-				= Parser::byName($this, $annotation_name, $multiple);
+		if (isset($path)) {
+			if (
+				!isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple])
+				&& ($this instanceof Has_Doc_Comment)
+			) {
+				/** @var $this Annoted|Has_Doc_Comment */
+				self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple]
+					= Parser::byName($this, $annotation_name, $multiple);
+			}
+			return self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple];
 		}
-		return self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple];
+		else {
+			/** @var $this Annoted|Has_Doc_Comment */
+			return Parser::byName($this, $annotation_name, $multiple);
+		}
 	}
 
 	//----------------------------------------------------------------------------- getListAnnotation

@@ -1,9 +1,12 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
+use SAF\Framework\PHP;
+use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * The 'representative' annotation stores the list of properties which values are representative
@@ -13,14 +16,14 @@ use SAF\Framework\Reflection\Reflection_Property;
  *
  * @example a property called 'name' could be a representative property for a unique named object
  */
-class Representative_Annotation extends List_Annotation
+class Representative_Annotation extends List_Annotation implements Class_Context_Annotation
 {
 
-	//----------------------------------------------------------------------------------- $class_name
+	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * @var string
+	 * @var Reflection_Class
 	 */
-	private $class_name;
+	private $class;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -40,14 +43,18 @@ class Representative_Annotation extends List_Annotation
 	public function __construct($value, Reflection_Class $class)
 	{
 		parent::__construct($value, $class);
-		$this->class_name = $class->name;
+		$this->class = $class;
 		if (!$this->value) {
 			$this->properties = [];
-			foreach ($class->getAllProperties() as $property) {
+			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
 				$link = $property->getAnnotation('link')->value;
-				if (!$property->isStatic() && ($link !== 'Collection') && ($link !== 'Map')) {
-					$this->properties[$property->name] = $property;
-					$this->value[] = $property->name;
+				if (
+					!$property->isStatic()
+					&& ($link !== Link_Annotation::COLLECTION)
+					&& ($link !== Link_Annotation::MAP)
+				) {
+					$this->properties[$property->getName()] = $property;
+					$this->value[] = $property->getName();
 				}
 			}
 		}
@@ -61,10 +68,15 @@ class Representative_Annotation extends List_Annotation
 	{
 		if (!isset($this->properties)) {
 			$this->properties = [];
+			$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
 			foreach ($this->values() as $property_path) {
-				$this->properties[$property_path] = new Reflection_Property(
-					$this->class_name, $property_path
-				);
+				$each = explode('.', $property_path);
+				$property = $properties[array_shift($each)];
+				foreach ($each as $property_name) {
+					$property = $property->getType()->asReflectionClass(get_class($this->class))
+						->getProperties([T_EXTENDS, T_USE])[$property_name];
+				}
+				$this->properties[$property_path] = $property;
 			}
 		}
 		return $this->properties;

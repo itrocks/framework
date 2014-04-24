@@ -20,7 +20,7 @@ class Import_Class implements Serializable
 
 	//------------------------------------------------------------------------------------ $constants
 	/**
-	 * @var \SAF\Framework\Reflection\Reflection_Property_Value[] key is the name of the property
+	 * @var Reflection_Property_Value[] key is the name of the property
 	 */
 	public $constants = [];
 
@@ -103,7 +103,9 @@ class Import_Class implements Serializable
 	 */
 	public function addConstant()
 	{
-		foreach ((new Reflection_Class($this->class_name))->getAllProperties() as $property) {
+		foreach (
+			(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE]) as $property
+		) {
 			if (!$property->isStatic() && !isset($this->constants[$property->name])) {
 				$property = new Reflection_Property_Value($property->class, $property->name);
 				$property->final_class = $this->class_name;
@@ -144,7 +146,9 @@ class Import_Class implements Serializable
 				$changes_count ++;
 			}
 		}
-		foreach ((new Reflection_Class($this->class_name))->getAllProperties() as $property) {
+		foreach (
+			(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE]) as $property
+		) {
 			if (
 				!isset($this->identify_properties  [$property->name])
 				&& !isset($this->ignore_properties [$property->name])

@@ -40,7 +40,7 @@ class Property_Select
 	public function build()
 	{
 		$properties_name = [];
-		foreach ($this->property->getFinalClass()->getAllProperties() as $property) {
+		foreach ($this->property->getFinalClass()->getProperties([T_EXTENDS, T_USE]) as $property) {
 			if (!$property->isStatic()) {
 				$properties_name[$property->name] = $property->name;
 			}

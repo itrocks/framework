@@ -9,6 +9,7 @@ use SAF\Framework\Import\Settings\Import_Property;
 use SAF\Framework\Import\Settings\Import_Settings;
 use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Names;
@@ -43,7 +44,7 @@ class Import_Array
 
 	//------------------------------------------------------------------------------------- $settings
 	/**
-	 * @var \SAF\Framework\Import\Settings\Import_Settings
+	 * @var Import_Settings
 	 */
 	public $settings;
 
@@ -242,7 +243,7 @@ class Import_Array
 	 */
 	private static function getPropertiesLinkAndColumn($class_name, $properties_path)
 	{
-		$properties_link = ['' => 'Object'];
+		$properties_link = ['' => Link_Annotation::OBJECT];
 		$properties_column = [];
 		foreach ($properties_path as $col_number => $property_path) {
 			$property_path = str_replace('*', '', $property_path);
@@ -347,7 +348,10 @@ class Import_Array
 		$simulation = $this->simulation;
 		while (($row = next($array)) && (!$this->simulation || $simulation)) {
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
-			$object = (in_array($this->properties_link[$property_path], ['Collection', 'Map']))
+			$object = (in_array(
+				$this->properties_link[$property_path],
+				[Link_Annotation::COLLECTION, Link_Annotation::MAP]
+			))
 				? $this->createArrayReference($class->class_name, $search)
 				: $this->importSearchObject($search, $row, $class, $class_properties_column, $property_path);
 			$array[key($array)][$property_path] = $object;

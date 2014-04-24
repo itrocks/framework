@@ -1,6 +1,10 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Dao\File;
+use SAF\Framework\Import\Import_Export_Format;
+use SAF\Framework\Import\Import_Worksheet;
+
 /**
  * Standard import class for your objects data
  */
@@ -16,20 +20,20 @@ class Import
 	//--------------------------------------------------------------------------------------- $format
 	/**
 	 * @link Object
-	 * @var \SAF\Framework\Import\Import_Export_Format
+	 * @var Import_Export_Format
 	 */
 	public $format;
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
 	 * @link Object
-	 * @var \SAF\Framework\Dao\File
+	 * @var File
 	 */
 	public $file;
 
 	//----------------------------------------------------------------------------------- $worksheets
 	/**
-	 * @var \SAF\Framework\Import\Import_Worksheet[]
+	 * @var Import_Worksheet[]
 	 */
 	public $worksheets;
 

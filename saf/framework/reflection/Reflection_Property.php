@@ -5,25 +5,20 @@ use Exception;
 use ReflectionProperty;
 use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Class_\Override_Annotation;
+use SAF\Framework\Reflection\Annotation\Parser;
+use SAF\Framework\Reflection\Interfaces;
+use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Field;
 use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
 
 /**
  * A rich extension of the PHP ReflectionProperty class
  */
-class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_Comment
+class Reflection_Property extends ReflectionProperty
+	implements Field, Has_Doc_Comment, Interfaces\Reflection_Property
 {
 	use Annoted;
-
-	//------------------------------------------------------------------------------------------- ALL
-	/**
-	 * Another constant for default Reflection_Class::getProperties() filter
-	 *
-	 * @var integer
-	 */
-	const ALL = 1793;
 
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
@@ -127,7 +122,18 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 	 */
 	public function getDeclaringClass()
 	{
-		return new Reflection_Class(parent::getDeclaringClass()->name);
+		return new Reflection_Class($this->class);
+	}
+
+	//------------------------------------------------------------------------- getDeclaringClassName
+	/**
+	 * Gets the declaring class name for the reflected property
+	 *
+	 * @return string
+	 */
+	public function getDeclaringClassName()
+	{
+		return $this->class;
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringTrait
@@ -164,15 +170,19 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
-	 * @param $get_use boolean
+	 * TODO use $flags ?
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
-	public function getDocComment($get_use = true)
+	public function getDocComment($flags = [T_USE])
 	{
 		if (!isset($this->doc_comment)) {
 			$overridden_property = $this->getOverriddenProperty();
-			$this->doc_comment =
-				$this->getOverrideDocComment()
+			$declaring_trait_name = $this->getDeclaringTrait()->name;
+			$in = ($declaring_trait_name != $this->class)
+				? (LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF) : '';
+			$this->doc_comment = $in
+				. $this->getOverrideDocComment()
 				. parent::getDocComment()
 				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : '');
 		}
@@ -181,11 +191,24 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 
 	//--------------------------------------------------------------------------------- getFinalClass
 	/**
+	 * Gets the final class where the property came from with a call to getProperties()
+	 *
 	 * @return Reflection_Class
 	 */
 	public function getFinalClass()
 	{
 		return new Reflection_Class($this->final_class);
+	}
+
+	//----------------------------------------------------------------------------- getFinalClassName
+	/**
+	 * Gets final class name : the one where the property came from with a call to getProperties()
+	 *
+	 * @return string
+	 */
+	public function getFinalClassName()
+	{
+		return $this->final_class;
 	}
 
 	//------------------------------------------------------------------------- getOverrideDocComment
@@ -204,11 +227,7 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 			if ($annotation->property_name === $this->name) {
 				$comment .= '/**' . LF;
 				foreach ($annotation->values() as $key => $value) {
-					if (in_array($key, ['var'])) {
-						$value = explode(SP, $value);
-						$value[0] = Namespaces::defaultFullClassName($value[0], $annotation->class->name);
-						$value = join(SP, $value);
-					}
+					$comment .= Parser::DOC_COMMENT_IN . $this->final_class . LF;
 					$comment .= TAB . SP . '*' . SP . '@' . $key . SP . $value . LF;
 				}
 				$comment .= TAB . SP . '*/';
@@ -248,23 +267,14 @@ class Reflection_Property extends ReflectionProperty implements Field, Has_Doc_C
 
 	//--------------------------------------------------------------------------------------- getType
 	/**
+	 * Gets the type of the property, as defined by its var annotation
+	 *
 	 * @return Type
 	 * @throws Exception
 	 */
 	public function getType()
 	{
 		$type = new Type($this->getAnnotation('var')->value);
-		// automatically add current class namespace
-		if ($type->isClass()) {
-			$element_class_name = $type->getElementTypeAsString();
-			if (Namespaces::isShortClassName($element_class_name)) {
-				$declaring_trait = $this->getDeclaringTrait()->name;
-				$class_name = Namespaces::defaultFullClassName($element_class_name, $declaring_trait);
-				$type = $type->isMultiple()
-					? (new Type($class_name, $type->canBeNull()))->multiple()
-					: new Type($class_name, $type->canBeNull());
-			}
-		}
 		if ($type->isNull()) {
 			throw new Exception(
 				$this->class . '::$' . $this->name . ' type not set using @var annotation',

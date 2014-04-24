@@ -30,12 +30,12 @@ class Only implements Option
 	 * @param $properties string[]|string
 	 * @param $properties,... string[]|string
 	 */
-	public function __construct($properties = null)
+	public function __construct($properties)
 	{
 		$this->properties = [];
 		foreach (func_get_args() as $properties) {
 			if (is_array($properties)) {
-				$this->properties += $properties;
+				$this->properties = array_merge($this->properties, $properties);
 			}
 			elseif (is_string($properties)) {
 				$this->properties[] = $properties;

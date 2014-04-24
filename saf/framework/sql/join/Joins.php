@@ -3,6 +3,7 @@ namespace SAF\Framework\Sql\Join;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -199,7 +200,9 @@ class Joins
 		$exclude_properties = $more_linked_class_name
 			? $this->addLinkedClass($path, $class, $more_linked_class_name, $join_mode)
 			: [];
-		foreach ($linked_class->getAllProperties() as $property) if (!$property->isStatic()) {
+		foreach (
+			$linked_class->getProperties([T_EXTENDS, T_USE]) as $property) if (!$property->isStatic()
+		) {
 			if (!isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
 				$property_path = ($path ? $path . DOT : '') . $property->name;
@@ -273,7 +276,7 @@ class Joins
 	private function addProperties($path, $class_name, $join_mode = null)
 	{
 		$class = new Link_Class($class_name);
-		$this->properties[$class_name] = $class->getAllProperties();
+		$this->properties[$class_name] = $class->getProperties([T_EXTENDS, T_USE]);
 		$linked_class_name = $class->getAnnotation('link')->value;
 		if ($linked_class_name) {
 			$this->addLinkedClass($path, $class, $linked_class_name, $join_mode);
@@ -344,7 +347,7 @@ class Joins
 					$foreign_property_name = $master_property->getAnnotation('foreign')->value;
 					if (
 						property_exists($foreign_class_name, $foreign_property_name)
-						&& ($master_property->getAnnotation('link')->value != 'Map')
+						&& ($master_property->getAnnotation('link')->value != Link_Annotation::MAP)
 					) {
 						$foreign_property = new Reflection_Property(
 							$foreign_class_name, $foreign_property_name

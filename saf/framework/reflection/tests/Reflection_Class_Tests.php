@@ -61,7 +61,7 @@ class Reflection_Class_Tests extends Test
 		$test_order = new Order(date('Y-m-d'), 'CDE001');
 		$class = new Reflection_Class(Order::class);
 		$class->accessProperties();
-		$properties = $class->getAllProperties();
+		$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		$check = [];
 		foreach ($properties as $property) {
 			try {
@@ -90,7 +90,7 @@ class Reflection_Class_Tests extends Test
 		$number->final_class = Order::class;
 		$this->assume(
 			__METHOD__,
-			(new Reflection_Class(Order::class))->getAllProperties(),
+			(new Reflection_Class(Order::class))->getProperties([T_EXTENDS, T_USE]),
 			[
 				'date'            => $date,
 				'number'          => $number,

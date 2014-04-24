@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Template;
 
-use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * A property context annotation needs the property to be properly built

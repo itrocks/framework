@@ -11,19 +11,23 @@ use SAF\Framework\Reflection\Annotation;
 class Link_Annotation extends Annotation
 {
 
+	//--------------------------------------------------------------------------------- $value values
+	const ALL        = 'All';
+	const COLLECTION = 'Collection';
+	const DATETIME   = 'DateTime';
+	const MAP        = 'Map';
+	const OBJECT     = 'Object';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param string $value
 	 */
 	public function __construct($value)
 	{
-		if (
-			!empty($value)
-			&& !in_array($value, ['All', 'Collection', 'DateTime', 'Map', 'Object'])
-		) {
+		$possibles = [self::ALL, self::COLLECTION, self::DATETIME, self::MAP, self::OBJECT];
+		if (!empty($value) && !in_array($value, $possibles)) {
 			trigger_error(
-				'@link ' . $value . ' is a bad value : '
-				. 'only All, Collection, DateTime, Map and Object can be used',
+				'@link ' . $value . ' is a bad value : only ' . join(', ', $possibles) . ' can be used',
 				E_USER_ERROR
 			);
 			$value = '';
@@ -37,7 +41,7 @@ class Link_Annotation extends Annotation
 	 */
 	public function isAll()
 	{
-		return ($this->value === 'All');
+		return $this->value === self::ALL;
 	}
 
 	//---------------------------------------------------------------------------------- isCollection
@@ -46,7 +50,7 @@ class Link_Annotation extends Annotation
 	 */
 	public function isCollection()
 	{
-		return $this->value === 'Collection';
+		return $this->value === self::COLLECTION;
 	}
 
 	//------------------------------------------------------------------------------------ isDateTime
@@ -55,7 +59,7 @@ class Link_Annotation extends Annotation
 	 */
 	public function isDateTime()
 	{
-		return ($this->value === 'DateTime');
+		return $this->value === self::DATETIME;
 	}
 
 	//----------------------------------------------------------------------------------------- isMap
@@ -64,7 +68,7 @@ class Link_Annotation extends Annotation
 	 */
 	public function isMap()
 	{
-		return ($this->value === 'Map');
+		return $this->value === self::MAP;
 	}
 
 	//------------------------------------------------------------------------------------ isMultiple
@@ -73,7 +77,7 @@ class Link_Annotation extends Annotation
 	 */
 	public function isMultiple()
 	{
-		return (in_array($this->value, ['All', 'Collection', 'Map']));
+		return in_array($this->value, [self::ALL, self::COLLECTION, self::MAP]);
 	}
 
 	//-------------------------------------------------------------------------------------- isObject
@@ -82,7 +86,7 @@ class Link_Annotation extends Annotation
 	 */
 	public function isObject()
 	{
-		return ($this->value === 'Object');
+		return $this->value === self::OBJECT;
 	}
 
 }

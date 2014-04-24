@@ -188,7 +188,7 @@ class Properties
 			}
 		}
 		// todo this check only getters, links and setters. This should check AOP links too.
-		if (($parent = $this->class->getParent()) && ($parent->type === T_CLASS)) {
+		if (($parent = $this->class->getParentClass()) && ($parent->type === T_CLASS)) {
 			foreach ($parent->getProperties([T_EXTENDS, T_USE]) as $property) {
 				$expr = '%'
 					. '\n\s+\*\s+'               // each line beginning by '* '
@@ -665,7 +665,7 @@ class Properties
 		if (
 			in_array($method_name, ['__get', '__set'])
 			&& ($this->class->type === T_CLASS)
-			&& ($parent = $this->class->getParent())
+			&& ($parent = $this->class->getParentClass())
 		) {
 			$annotation = ($method_name == '__get') ? '(getter|link)' : 'setter';
 			$type = ($method_name == '__get') ? 'read' : 'write';

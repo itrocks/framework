@@ -3,6 +3,7 @@ namespace SAF\Framework\Mapper;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
@@ -299,17 +300,17 @@ class Object_Builder_Array
 		elseif (is_array($value)) {
 			$link = $property->getAnnotation('link')->value;
 			// object
-			if ($link == 'Object') {
+			if ($link == Link_Annotation::OBJECT) {
 				$class_name = $property->getType()->asString();
 				$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
 			}
 			// collection
-			elseif ($link == 'Collection') {
+			elseif ($link == Link_Annotation::COLLECTION) {
 				$class_name = $property->getType()->getElementTypeAsString();
 				$value = $this->buildCollection($class_name, $value, $null_if_empty);
 			}
 			// map
-			elseif ($link == 'Map') {
+			elseif ($link == Link_Annotation::MAP) {
 				$class_name = $property->getType()->getElementTypeAsString();
 				$value = $this->buildMap($class_name, $value, $null_if_empty);
 			}

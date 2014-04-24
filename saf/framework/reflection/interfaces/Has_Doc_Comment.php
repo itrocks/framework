@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace SAF\Framework\Reflection\Interfaces;
 
 /**
  * Interface for classes that have doc comments.
@@ -13,9 +13,9 @@ interface Has_Doc_Comment
 	/**
 	 * Gets doc comment
 	 *
-	 * @param $get_parents boolean
+	 * @param $flags integer[]|boolean T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
-	public function getDocComment($get_parents = false);
+	public function getDocComment($flags = []);
 
 }

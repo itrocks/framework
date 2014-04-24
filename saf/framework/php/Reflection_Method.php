@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
+
 /**
  * The same as PHP's ReflectionMethod, but working with PHP source, without loading the class
  */
-class Reflection_Method
+class Reflection_Method implements Has_Doc_Comment
 {
 
 	//---------------------------------------------------------------------------------------- $class
@@ -110,9 +112,11 @@ class Reflection_Method
 
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
+	 * TODO LOWEST parent methods read
+	 * @param $flags integer[]|boolean T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
-	public function getDocComment()
+	public function getDocComment($flags = [])
 	{
 		if (!isset($this->doc_comment)) {
 			$this->doc_comment = '';
@@ -192,7 +196,7 @@ class Reflection_Method
 	{
 		if (!isset($this->parent)) {
 			$this->parent = false;
-			$class_parent = $this->class->getParent();
+			$class_parent = $this->class->getParentClass();
 			if ($class_parent) {
 				$methods = $class_parent->getMethods();
 				if (!isset($methods[$this->name])) {

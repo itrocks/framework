@@ -84,7 +84,7 @@ abstract class Integrated_Properties
 			}
 			$integrated_simple = $integrated->has('simple');
 			$sub_properties_class = $property->getType()->asReflectionClass();
-			$expand_properties = $sub_properties_class->getAllProperties();
+			$expand_properties = $sub_properties_class->getProperties([T_EXTENDS, T_USE]);
 			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
 				if (!$sub_property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)) {

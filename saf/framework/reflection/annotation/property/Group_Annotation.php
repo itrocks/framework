@@ -4,7 +4,7 @@ namespace SAF\Framework\Reflection\Annotation\Property;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Tells in which group the property is stored
@@ -28,8 +28,8 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 		if (empty($this->value)) {
 			foreach ($property->getFinalClass()->getAnnotations('group') as $group) {
 				/** @var $group Class_\Group_Annotation */
-				if ($group->has($property->name)) {
-					$this->value = $property->name;
+				if ($group->has($property->getName())) {
+					$this->value = $property->getName();
 					break;
 				}
 			}
