@@ -184,7 +184,8 @@ class Joins
 		$linked_class = new Reflection_Class($linked_class_name);
 		$join = new Join();
 		$join->master_alias   = 't' . ($this->alias_counter - 1);
-		$join->master_column  = 'id_' . $class->getCompositeProperty()->getAnnotation('storage')->value;
+		$join->master_column  = 'id_'
+			. $class->getCompositeProperty($linked_class_name)->getAnnotation('storage')->value;
 		$join->foreign_alias  = 't' . $this->alias_counter++;
 		$join->foreign_column = 'id';
 		$join->foreign_class  = Builder::className($linked_class_name);

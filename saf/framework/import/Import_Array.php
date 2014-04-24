@@ -121,7 +121,7 @@ class Import_Array
 			$object = reset($array);
 			$link_search = Builder::create($link_class);
 			$composite_property_name = $class->getCompositeProperty()->name;
-			foreach (array_keys($class->getLinkProperties()) as $property_name) {
+			foreach (array_keys($class->getLinkedProperties()) as $property_name) {
 				if (isset($search[$property_name])) {
 					$link_search->$property_name = $search[$property_name];
 				}
