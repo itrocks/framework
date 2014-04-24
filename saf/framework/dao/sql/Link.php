@@ -9,11 +9,12 @@ use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Sql\Builder\Select;
 use SAF\Framework\Tools\Default_List_Data;
 use SAF\Framework\Tools\Default_List_Row;
+use SAF\Framework\Tools\List_Data;
 
 /**
  * This is the common class for all SQL data links classes
  *
- * @todo having both executeQuery() and query() is perhaps not a good idea
+ * TODO LOW having both executeQuery() and query() is perhaps not a good idea
  */
 abstract class Link extends Identifier_Map implements Transactional
 {
@@ -144,16 +145,29 @@ abstract class Link extends Identifier_Map implements Transactional
 
 	//---------------------------------------------------------------------------------------- select
 	/**
-	 * @todo factorize
+	 * Read selected columns only from data source, using optional filter
+	 *
+	 * @param $object_class  string class for the read object
+	 * @param $columns       string[] the list of the columns names : only those properties will be
+	 *        read. You can use 'column.sub_column' to get values from linked objects from the same
+	 *        data source.
+	 * @param $filter_object object|array source object for filter, set properties will be used for
+	 *        search. Can be an array associating properties names to corresponding search value too.
+	 * @param $options    Option[] some options for advanced search
+	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
+	 *         the same order than columns.
 	 */
+	// TODO LOW factorize this too big function
 	public function select($object_class, $columns, $filter_object = null, $options = [])
 	{
 		$filter_object = $this->objectToProperties($filter_object);
 		$list = new Default_List_Data($object_class, $columns);
 		$columns[] = 'id';
-		$sql_select_builder = new Select(
-			$object_class, $columns, $filter_object, $this, $options
-		);
+		$sql_select_builder = new Select($object_class, $columns, $filter_object, $this, $options);
+		$cols = [];
+		foreach ($columns as $may_be_column => $column) {
+			$cols[] = is_string($may_be_column) ? $may_be_column : $column;
+		}
 		$query = $sql_select_builder->buildQuery();
 		$path_classes = $sql_select_builder->getJoins()->getClasses();
 		$this->setContext(array_merge(
@@ -201,12 +215,12 @@ abstract class Link extends Identifier_Map implements Transactional
 			for ($i = 0; $i < $column_count; $i++) {
 				$j = $itoj[$i];
 				if (!isset($classes[$j])) {
-					$row[$columns[$j]] = $result[$i];
+					$row[$cols[$j]] = $result[$i];
 				}
 				else {
-					if (!isset($row[$columns[$j]])) {
-						// TODO try to get the object from an object map (avoid several instances of the same)
-						$row[$columns[$j]] = Builder::create($classes[$j]);
+					if (!isset($row[$cols[$j]])) {
+						// TODO LOW try to get the object from object map to avoid multiple instances
+						$row[$cols[$j]] = Builder::create($classes[$j]);
 						if ($first && !isset($reflection_classes[$classes[$j]])) {
 							$class = new Reflection_Class($classes[$j]);
 							$class->accessProperties();
@@ -215,10 +229,10 @@ abstract class Link extends Identifier_Map implements Transactional
 					}
 					$property_name = $column_names[$i];
 					if ($property_name === 'id') {
-						$this->setObjectIdentifier($row[$columns[$j]], $result[$i]);
+						$this->setObjectIdentifier($row[$cols[$j]], $result[$i]);
 					}
 					else {
-						$row[$columns[$j]]->$property_name = $result[$i];
+						$row[$cols[$j]]->$property_name = $result[$i];
 					}
 				}
 			}
