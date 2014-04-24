@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao;
 
+use SAF\Framework\Dao\Func\Call;
 use SAF\Framework\Dao\Func\Comparison;
 use SAF\Framework\Dao\Func\Group_By;
 use SAF\Framework\Dao\Func\Is_Greatest;
@@ -41,6 +42,15 @@ abstract class Func
 	public static function count()
 	{
 		return new Group_By(Group_By::COUNT);
+	}
+
+	//-------------------------------------------------------------------------------------- distinct
+	/**
+	 * @return Call
+	 */
+	public static function distinct()
+	{
+		return new Call(Call::DISTINCT);
 	}
 
 	//----------------------------------------------------------------------------------------- equal
@@ -197,6 +207,15 @@ abstract class Func
 	public static function sum()
 	{
 		return new Group_By(Group_By::SUM);
+	}
+
+	//------------------------------------------------------------------------------------------ trim
+	/**
+	 * @return Call
+	 */
+	public static function trim()
+	{
+		return new Call(Call::TRIM);
 	}
 
 	//----------------------------------------------------------------------------------------- xorOp

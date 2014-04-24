@@ -2,7 +2,6 @@
 namespace SAF\Framework\Dao\Func;
 
 use SAF\Framework\Sql\Builder;
-use SAF\Framework\Sql\Value;
 
 /**
  * Dao AND function
@@ -88,17 +87,15 @@ class Logical implements Where
 			if (is_numeric($other_property_path)) {
 				$sql .= ($argument instanceof Where)
 					? $argument->toSql($builder, $property_path)
-					: Value::escape($argument);
+					: (new Comparison(Comparison::AUTO, $argument))->toSql($builder, $property_path);
 			}
 			else {
 				$sql .= ($argument instanceof Where)
 					? $argument->toSql($builder, $other_property_path)
-					: (new Comparison(Comparison::AUTO, $argument))->toSql(
-						$builder, $other_property_path
-					);
+					: (new Comparison(Comparison::AUTO, $argument))->toSql($builder, $other_property_path);
 			}
 		}
-		return $sql;
+		return '(' . $sql . ')';
 	}
 
 }

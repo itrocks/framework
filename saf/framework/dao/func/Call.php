@@ -4,17 +4,14 @@ namespace SAF\Framework\Dao\Func;
 use SAF\Framework\Sql\Builder\Columns;
 
 /**
- * Group By function
+ * A simple function call
  */
-class Group_By extends Column
+class Call extends Column
 {
 
 	//------------------------------------------------------------------------------ $function values
-	const AVERAGE = 'AVG';
-	const COUNT   = 'COUNT';
-	const MAX     = 'MAX';
-	const MIN     = 'MIN';
-	const SUM     = 'SUM';
+	const DISTINCT = 'DISTINCT';
+	const TRIM     = 'TRIM';
 
 	//------------------------------------------------------------------------------------- $function
 	/**
@@ -24,7 +21,7 @@ class Group_By extends Column
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $function string
+	 * @param $function      string
 	 */
 	public function __construct($function = null)
 	{
@@ -36,7 +33,7 @@ class Group_By extends Column
 	 * Returns the Dao function as SQL
 	 *
 	 * @param $builder       Columns the sql query builder
-	 * @param $property_path string sql name of the column
+	 * @param $property_path string the property path
 	 * @return string
 	 */
 	public function toSql(Columns $builder, $property_path)
