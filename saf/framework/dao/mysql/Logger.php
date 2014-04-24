@@ -132,7 +132,9 @@ class Logger implements Configurable, Registerable
 		$mysqli = $object;
 		if ($mysqli->last_errno) {
 			$error = $mysqli->last_errno . ': ' . $mysqli->error . '[' . $query . ']';
-			echo '<div class="Mysql logger error">' . $error . '</div>' . LF;
+			if (error_reporting()) {
+				echo '<div class="Mysql logger error">' . $error . '</div>' . LF;
+			}
 			$this->errors_log[] = $error;
 		}
 	}

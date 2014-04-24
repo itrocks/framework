@@ -44,7 +44,7 @@ class Compiler implements ICompiler
 					$tables[$table_name] = true;
 				}
 				else {
-					$dao->query('DROP TABLE IF EXISTS ' . BQ . $table_name . BQ);
+					@$dao->query('DROP TABLE IF EXISTS ' . BQ . $table_name . BQ);
 				}
 			}
 
