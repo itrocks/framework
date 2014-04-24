@@ -70,7 +70,7 @@ trait Component
 	{
 		// flexible parameters : first parameter can be a property name alone
 		if (!isset($property_name) && is_string($class_name) && !empty($class_name)) {
-			if (($class_name[0] >= 'a') && ($class_name[0] <= 'z')) {
+			if (ctype_lower($class_name[0])) {
 				$property_name = $class_name;
 				$class_name = null;
 			}
