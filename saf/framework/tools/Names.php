@@ -107,7 +107,7 @@ abstract class Names
 			$class_name = get_parent_class($class_name);
 		}
 		// built classes : get object class
-		$built_path = Namespaces::of(Application::current()) . BS . 'Built' . BS;
+		$built_path = Application::current()->getNamespace() . BS . 'Built' . BS;
 		while (substr($class_name, 0, strlen($built_path)) == $built_path) {
 			$class_name = get_parent_class($class_name);
 		}

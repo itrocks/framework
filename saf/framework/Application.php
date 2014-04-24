@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\Framework\Tools\Namespaces;
+use SAF\Framework\Reflection\Reflection_Class;
 
 /**
  * The class for the global application object
@@ -80,6 +80,17 @@ class Application
 		return 'cache';
 	}
 
+	//---------------------------------------------------------------------------------- getNamespace
+	/**
+	 * Gets namespace of the application
+	 *
+	 * @return string
+	 */
+	public function getNamespace()
+	{
+		return (new Reflection_Class(get_class($this)))->getNamespaceName();
+	}
+
 	//--------------------------------------------------------------------------------- getNamespaces
 	/**
 	 * Gets application and parents and used applications top namespaces
@@ -93,7 +104,7 @@ class Application
 			$namespaces = [];
 			foreach ($applications_classes as $application_class) {
 				while ($application_class) {
-					$namespaces[] = Namespaces::of($application_class);
+					$namespaces[] = substr($application_class, 0, strrpos($application_class, BS));
 					$application_class = get_parent_class($application_class);
 				}
 			}

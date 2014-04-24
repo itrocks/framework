@@ -2,7 +2,7 @@
 namespace SAF\Framework\Builder;
 
 use SAF\Framework\Application;
-use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\Tools\Namespaces;
 
 /**
@@ -40,19 +40,16 @@ class Class_Builder
 			$interfaces = [];
 			$traits = [];
 			foreach ($interfaces_traits as $interface_trait) {
-				$interface_trait = Namespaces::defaultFullClassName($interface_trait, $class_name);
-				if (interface_exists($interface_trait)) {
+				$class = Reflection_Class::of($interface_trait);
+				if ($class->isInterface()) {
 					$interfaces[$interface_trait] = $interface_trait;
 				}
-				elseif (trait_exists($interface_trait)) {
-					$reflection = new Reflection_Class($interface_trait);
-					foreach ($reflection->getListAnnotation('implements')->values() as $implements) {
-						$implements = Namespaces::defaultFullClassName($implements, $interface_trait);
+				elseif ($class->isTrait()) {
+					foreach ($class->getListAnnotation('implements')->values() as $implements) {
 						$interfaces[$implements] = $implements;
 					}
 					$level = 0;
-					foreach ($reflection->getListAnnotation('extends')->values() as $extends) {
-						$extends = Namespaces::defaultFullClassName($extends, $interface_trait);
+					foreach ($class->getListAnnotation('extends')->values() as $extends) {
 						if (trait_exists($extends)) {
 							foreach ($traits as $trait_level => $trait_names) {
 								if (isset($trait_names[$extends])) {
@@ -66,7 +63,7 @@ class Class_Builder
 				else {
 					trigger_error(
 						'Unknown interface/trait ' . DQ . $interface_trait . DQ
-							. ' while building ' . $class_name,
+						. ' while building ' . $class_name,
 						E_USER_ERROR
 					);
 				}
@@ -101,7 +98,7 @@ class Class_Builder
 			$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
 			$namespace = array_slice(explode(BS, Namespaces::of($class_name)), 1);
-			$left = Namespaces::of(Application::current());
+			$left = Application::current()->getNamespace();
 			$namespace = $left . BS . 'Built' . BS . join(BS, $namespace) . $count . $sub_count;
 			$interfaces_names = ($end && $interfaces) ? (BS . join(', ' . BS, $interfaces)) : '';
 			$traits_names = $class_traits ? join(';' . LF . TAB . 'use ' . BS, $class_traits) : '';
@@ -144,12 +141,12 @@ class Class_Builder
 	 * Gets built name space for a class name
 	 *
 	 * @param $class_name string ie 'SAF\Framework\Module\Class_Name'
-	 * @return string ie 'My\Project\Built\SAF\Framework\Module\Class_Name'
+	 * @return string ie 'Vendor\Application\Built\SAF\Framework\Module\Class_Name'
 	 */
 	public static function builtClassName($class_name)
 	{
 		$namespace = array_slice(explode(BS, Namespaces::of($class_name)), 1);
-		$left = Namespaces::of(Application::current());
+		$left = Application::current()->getNamespace();
 		$namespace = $left . BS . 'Built' . BS . join(BS, $namespace);
 		$built_class = $namespace . BS . Namespaces::shortClassName($class_name);
 		return $built_class;

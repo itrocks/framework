@@ -24,7 +24,7 @@ class Autoloader
 			$file_name = substr($class_name, $i + 1);
 			// 'A\Class' stored into 'a/class/Class.php'
 			if (
-			file_exists($file1 = strtolower($namespace . '/' . $file_name) . '/' . $file_name . '.php')
+				file_exists($file1 = strtolower($namespace . '/' . $file_name) . '/' . $file_name . '.php')
 			) {
 				/** @noinspection PhpIncludeInspection */
 				$result = include_once(Include_Filter::file($file1));
@@ -35,7 +35,7 @@ class Autoloader
 				$result = include_once(Include_Filter::file($file2));
 			}
 			else {
-				if (strpos($class_name, BS . 'Built' . BS)) {
+				if (Builder::isBuilt($class_name)) {
 					$file = 'cache/compiled/' . str_replace(SL, '-', Names::classToPath($class_name));
 					if (file_exists($file)) {
 						/** @noinspection PhpIncludeInspection */

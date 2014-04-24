@@ -14,7 +14,6 @@ use SAF\Framework\Reflection\Type;
 use SAF\Framework\Sql\Join\Joins;
 use SAF\Framework\Tools\Current_With_Default;
 use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 use Serializable;
 
@@ -39,6 +38,14 @@ class Builder implements Activable, Registerable, Serializable
 	 * @var array[]
 	 */
 	private $compositions = [];
+
+	//-------------------------------------------------------------------------------------- $enabled
+	/**
+	 * Set this to false to force disabling of class names replacements features
+	 *
+	 * @var boolean
+	 */
+	public $enabled = true;
 
 	//--------------------------------------------------------------------------------- $replacements
 	/**
@@ -72,27 +79,15 @@ class Builder implements Activable, Registerable, Serializable
 		self::current($this);
 	}
 
-	//------------------------------------------------------------------ afterNamespacesFullClassName
-	/**
-	 * @param $short_class_name string
-	 * @param $result           string
-	 * @return string
-	 */
-	public static function afterNamespacesFullClassName($short_class_name, $result)
-	{
-		return (Namespaces::isShortClassName($short_class_name))
-			? Builder::current()->replacementClassName($result)
-			: $result;
-	}
-
 	//------------------------------------------------------------------------------------- className
 	/**
 	 * @param $class_name string
+	 * @param $build      boolean if replacement for a class name is an array, build replacement class
 	 * @return string
 	 */
-	public static function className($class_name)
+	public static function className($class_name, $build = true)
 	{
-		return self::current()->replacementClassName($class_name);
+		return self::current()->replacementClassName($class_name, $build);
 	}
 
 	//---------------------------------------------------------------------------------------- create
@@ -239,6 +234,21 @@ class Builder implements Activable, Registerable, Serializable
 		return array_merge($this->replacements, $this->compositions);
 	}
 
+	//--------------------------------------------------------------------------------------- isBuilt
+	/**
+	 * Returns true if class name is a built class name
+	 *
+	 * A built class has a namespace beginning with 'Vendor\Application\Built\'
+	 *
+	 * @param $class_name string
+	 * @return boolean
+	 */
+	public static function isBuilt($class_name)
+	{
+		$check = Application::current()->getNamespace() . BS . 'Built' . BS;
+		return substr($class_name, 0, strlen($check)) == $check;
+	}
+
 	//----------------------------------------------------------------------------------- isObjectSet
 	/**
 	 * Returns true if any property of $object is set and different than its default value
@@ -324,7 +334,6 @@ class Builder implements Activable, Registerable, Serializable
 		$aop = $register->aop;
 		$aop->beforeMethod([Getter::class, 'getCollection'],        [$this, 'onMethodWithClassName']);
 		$aop->beforeMethod([Getter::class, 'getObject'],            [$this, 'onMethodWithClassName']);
-		$aop->afterMethod( [Namespaces::class, 'fullClassName'],    [$this, 'afterNamespacesFullClassName']);
 		$aop->beforeMethod([Search_Object::class, 'create'],        [$this, 'onMethodWithClassName']);
 		$aop->afterMethod( [Set::class, 'elementClassNameOf'],      [$this, 'onMethodReturnedValue']);
 		$aop->afterMethod( [Joins::class, 'addSimpleJoin'],         [$this, 'onMethodReturnedValue']);
@@ -336,26 +345,38 @@ class Builder implements Activable, Registerable, Serializable
 	 * Gets replacement class name for a parent class name or a list of traits to implement
 	 *
 	 * @param $class_name string can be short or full class name
+	 * @param $build      boolean if replacement for a class name is an array, build replacement class
 	 * @return string
 	 */
-	private function replacementClassName($class_name)
+	private function replacementClassName($class_name, $build = true)
 	{
+		if (!$this->enabled) {
+			return $class_name;
+		}
 		$result = isset($this->replacements[$class_name])
 			? $this->replacements[$class_name]
 			: $class_name;
 		if (is_array($result)) {
-			$this->compositions[$class_name] = $result;
-			$built_class_name = Class_Builder::builtClassName($class_name);
-			if (file_exists(
-				Application::current()->getCacheDir() . '/compiled/'
-				. str_replace('/', '-', Names::classToPath($built_class_name))
-			)) {
-				$result = $built_class_name;
+			if ($build) {
+				$this->compositions[$class_name] = $result;
+				$built_class_name = Class_Builder::builtClassName($class_name);
+				if (file_exists(
+					Application::current()->getCacheDir() . '/compiled/'
+					. str_replace('/', '-', Names::classToPath($built_class_name))
+				)) {
+					$result = $built_class_name;
+				}
+				else {
+					$result = Class_Builder::build($class_name, $result);
+				}
+				$this->replacements[$class_name] = $result;
 			}
 			else {
-				$result = Class_Builder::build($class_name, $result);
+				$result = $class_name;
 			}
-			$this->replacements[$class_name] = $result;
+		}
+		elseif (!$build && self::isBuilt($result)) {
+			$result = $class_name;
 		}
 		return $result;
 	}
