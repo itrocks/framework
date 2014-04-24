@@ -46,12 +46,18 @@ abstract class Identifier_Map extends Data_Link
 	{
 		if (is_object($object)) {
 			if (isset($property_name)) {
-				$id_property_name = 'id_' . $property_name;
+				$id_property_name = ($property_name == 'id') ? 'id' : ('id_' . $property_name);
 				if (isset($object->$id_property_name)) {
 					return $object->$id_property_name;
 				}
 				else {
-					return self::getObjectIdentifier($object->$property_name);
+					return isset($object->$property_name)
+						? (
+							is_object(self::getObjectIdentifier($object->$property_name))
+							? self::getObjectIdentifier($object->$property_name)
+							: $object->$property_name
+						)
+						: null;
 				}
 			}
 			else {
