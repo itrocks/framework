@@ -54,12 +54,12 @@ abstract class Builder
 	public static function buildColumns($column_names)
 	{
 		$sql_columns = '';
-		$i = count($column_names);
+		$i = 0;
 		foreach ($column_names as $column_name) {
-			$sql_columns .= BQ . str_replace(DOT, BQ . DOT . BQ, $column_name) . BQ;
-			if (--$i > 0) {
+			if ($i++) {
 				$sql_columns .= ', ';
 			}
+			$sql_columns .= BQ . str_replace(DOT, BQ . DOT . BQ, $column_name) . BQ;
 		}
 		return $sql_columns;
 	}
@@ -74,16 +74,19 @@ abstract class Builder
 	 */
 	public static function buildInsert($class, $write)
 	{
-		$build_columns = static::buildColumns(array_keys($write));
-		if (!$build_columns) {
-			return null;
+		$sql_insert = 'INSERT INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ . ' SET ';
+		$i = 0;
+		foreach ($write as $key => $value) {
+			if ($i++) {
+				$sql_insert .= ', ';
+			}
+			if (($key != 'id') && (substr($key, 0, 3) != 'id_')) {
+				$key   = BQ . $key . BQ;
+				$value = Value::escape($value);
+			}
+			$sql_insert .= $key . ' = ' . $value;
 		}
-		else {
-			$insert = 'INSERT INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ
-				. ' (' . $build_columns . ') VALUES ('
-				. static::buildValues($write) . ')';
-			return $insert;
-		}
+		return $sql_insert;
 	}
 
 	//----------------------------------------------------------------------------------- buildUpdate
@@ -98,11 +101,16 @@ abstract class Builder
 	public static function buildUpdate($class, $write, $id)
 	{
 		$sql_update = 'UPDATE ' . BQ . Dao::current()->storeNameOf($class) . BQ . ' SET ';
-		$do = false;
+		$i = 0;
 		foreach ($write as $key => $value) {
-			$value = Value::escape($value);
-			if ($do) $sql_update .= ', '; else $do = true;
-			$sql_update .= BQ . $key . BQ . ' = ' . $value;
+			if ($i++) {
+				$sql_update .= ', ';
+			}
+			if (($key != 'id') && (substr($key, 0, 3) != 'id_')) {
+				$key   = BQ . $key . BQ;
+				$value = Value::escape($value);
+			}
+			$sql_update .= $key . ' = ' . $value;
 		}
 		$sql_update .= ' WHERE id = ' . $id;
 		return $sql_update;

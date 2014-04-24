@@ -35,8 +35,9 @@ class Map_Insert
 		list($table, $field1, $field2, $id1, $id2) = Map::sqlElementsOf(
 			$object, $this->property, $foreign_object
 		);
-		return 'INSERT INTO ' . BQ . $table . BQ . ' (' . BQ . $field1 . BQ . ', ' . BQ . $field2 . BQ . ')'
-			. ' VALUES (' . $id1 . ', ' . $id2 . ')';
+		return 'INSERT INTO ' . BQ . $table . BQ . ' SET '
+			. $field1 . ' = ' . $id1 . ', '
+			. $field2 . ' = ' . $id2;
 	}
 
 }
