@@ -3,6 +3,8 @@ namespace SAF\Framework\RAD;
 
 /**
  * A rule is the atomic part of settings
+ *
+ * @set RAD_Rules
  */
 class Rule
 {

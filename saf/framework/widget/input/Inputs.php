@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework_Widget\Input\Inputs;
+namespace SAF\Framework\Widget\Input;
 
 use SAF\Framework\Widget\Input;
 

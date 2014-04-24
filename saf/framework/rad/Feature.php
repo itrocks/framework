@@ -3,6 +3,8 @@ namespace SAF\Framework\RAD;
 
 /**
  * RAD Feature class
+ *
+ * @set RAD_Features
  */
 class Feature
 {
@@ -21,13 +23,14 @@ class Feature
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $id            string the feature identifier. eg must be the main class of the feature
+	 * @param $identifier    string the feature identifier. eg must be the main class of the feature
 	 * @param $title         string plugin title
 	 * @param $description   string plugin description
 	 * @param $configuration array the plugins configuration : key is the plugin class name
 	 */
-	public function __construct($id, $title = null, $description = null, $configuration = null)
-	{
+	public function __construct(
+		$identifier, $title = null, $description = null, $configuration = null
+	) {
 		if (isset($title))         $this->title       = $title;
 		if (isset($description))   $this->description = $description;
 		if (isset($configuration)) $this->configuration = $configuration;
@@ -35,22 +38,22 @@ class Feature
 
 	//--------------------------------------------------------------------------------------- depends
 	/**
-	 * @param $id string the ignored feature identifier
+	 * @param $identifier string the ignored feature identifier
 	 * @return Ignored_Feature
 	 */
-	public static function depends($id)
+	public static function depends($identifier)
 	{
-		return new Dependency($id);
+		return new Dependency($identifier);
 	}
 
 	//---------------------------------------------------------------------------------------- ignore
 	/**
-	 * @param $id string the ignored feature identifier
+	 * @param $identifier string the ignored feature identifier
 	 * @return Ignored_Feature
 	 */
-	public static function ignore($id)
+	public static function ignore($identifier)
 	{
-		return new Ignored_Feature($id);
+		return new Ignored_Feature($identifier);
 	}
 
 }

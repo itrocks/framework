@@ -1,11 +1,15 @@
 <?php
 namespace SAF\Framework\RAD;
 
+use SAF\Framework\Dao\File;
+
 /**
  * A plugin is a set of code which has limited dependencies to others plugins
  *
  * This class gather the ideas of highly application involved modules and limited dependencies
  * plugins.
+ *
+ * @set RAD_Plugins
  */
 class Plugin
 {
@@ -39,7 +43,7 @@ class Plugin
 	//----------------------------------------------------------------------------------------- $logo
 	/**
 	 * @link Object
-	 * @var \SAF\Framework\Dao\File
+	 * @var File
 	 */
 	public $logo;
 

@@ -6,7 +6,7 @@ use SAF\Framework\Remote_Connection;
 /**
  * A remote ssh connection
  */
-class Ssh_Connection implements Remote_Connection
+class Ssh implements Remote_Connection
 {
 
 	//----------------------------------------------------------------------------------------- $host

@@ -3,6 +3,8 @@ namespace SAF\Framework\RAD;
 
 /**
  * RAD Dependency class
+ *
+ * @set RAD_Dependencies
  */
 class Dependency
 {
@@ -11,15 +13,17 @@ class Dependency
 	/**
 	 * @var string
 	 */
-	private $id;
+	private $identifier;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $id string
+	 * @param $identifier string
 	 */
-	public function __construct($id = null)
+	public function __construct($identifier = null)
 	{
-		if (isset($id)) $this->id = $id;
+		if (isset($identifier)) {
+			$this->identifier = $identifier;
+		}
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -28,7 +32,7 @@ class Dependency
 	 */
 	public function __toString()
 	{
-		return $this->id;
+		return $this->identifier;
 	}
 
 }

@@ -6,7 +6,7 @@ use SAF\Framework\Remote_Connection;
 /**
  * Local file system connection
  */
-class Local_Connection implements Remote_Connection
+class Local implements Remote_Connection
 {
 
 	//----------------------------------------------------------------------------------------- $path

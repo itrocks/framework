@@ -5,6 +5,8 @@ use SAF\Framework\Mapper;
 
 /**
  * A plugin component is used to store data or process, ie linked to a database
+ *
+ * @set RAD_Components
  */
 class Component
 {

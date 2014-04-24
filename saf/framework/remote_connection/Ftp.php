@@ -6,7 +6,7 @@ use SAF\Framework\Remote_Connection;
 /**
  * Ftp connection
  */
-class Ftp_Connection implements Remote_Connection
+class Ftp implements Remote_Connection
 {
 
 	//----------------------------------------------------------------------------------------- $host

@@ -6,6 +6,7 @@ namespace SAF\Framework\RAD;
  *
  * A set of modules, that can get modules from a parent application
  *
+ * @set RAD_Applications
  * @todo Everything
  */
 class Application
