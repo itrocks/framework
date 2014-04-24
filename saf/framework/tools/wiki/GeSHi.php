@@ -3,7 +3,7 @@ namespace SAF\Framework\Tools\Wiki;
 
 use SAF\Framework\Tools\String;
 
-if (!@include_once(__DIR__ . '../../vendor/geshi/geshi.php')) {
+if (!@include_once(__DIR__ . '../../../../vendor/geshi/geshi.php')) {
 	@include_once('/usr/share/php-geshi/geshi.php');
 }
 
