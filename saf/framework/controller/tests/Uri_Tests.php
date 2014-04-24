@@ -1,6 +1,9 @@
 <?php
-namespace SAF\Framework\Controller;
+namespace SAF\Framework\Controller\Tests;
 
+use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Uri;
 use SAF\Framework\Tests\Objects\Order;
 use SAF\Framework\Tests\Test;
 use SAF\Framework\Tools\Names;
