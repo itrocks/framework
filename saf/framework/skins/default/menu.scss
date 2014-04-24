@@ -74,6 +74,10 @@
 	}
 }
 
-.menu.output.minimized >.minimize {
-	background: url("img/arrow_black_down.gif") center no-repeat;
+.menu.output.minimized {
+	float: none;
+	position: absolute;
+	>.minimize {
+		background: url("img/arrow_black_down.gif") center no-repeat;
+	}
 }

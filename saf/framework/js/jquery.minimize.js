@@ -15,14 +15,13 @@
 		//------------------------------------------------------------------------------------ maximize
 		var maximize = function()
 		{
+			$(this).removeClass(settings.minimized_class);
 			this.animate(
 				{ height: this.data('height'), padding: this.data('padding'), width: this.data('width') },
 				settings.duration,
 				function()
 				{
-					$(this)
-						.removeClass(settings.minimized_class)
-						.css({ height: '', overflow: '', padding: '', width: '' })
+					$(this).css({ height: '', overflow: '', padding: '', width: '' })
 						.children('.minimize').html('minimize');
 				}
 			);
@@ -31,9 +30,9 @@
 		//------------------------------------------------------------------------------------ minimize
 		var minimize = function()
 		{
-			this.data('height', this.height() + 'px');
-			this.data('padding',  this.css('padding'));
-			this.data('width',  this.width() + 'px');
+			this.data('height',  this.height() + 'px');
+			this.data('padding', this.css('padding'));
+			this.data('width',   this.width() + 'px');
 			this.css({ overflow: 'hidden' });
 			this.animate(
 				{ height: settings.min_height + 'px', padding: 0, width: settings.min_width + 'px' },
