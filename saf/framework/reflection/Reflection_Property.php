@@ -179,11 +179,11 @@ class Reflection_Property extends ReflectionProperty
 		if (!isset($this->doc_comment)) {
 			$overridden_property = $this->getOverriddenProperty();
 			$declaring_trait_name = $this->getDeclaringTrait()->name;
-			$in = ($declaring_trait_name != $this->class)
-				? (LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF) : '';
-			$this->doc_comment = $in
-				. $this->getOverrideDocComment()
+			$this->doc_comment =
+				$this->getOverrideDocComment()
+				. LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF
 				. parent::getDocComment()
+				. LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF
 				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : '');
 		}
 		return $this->doc_comment;
@@ -227,7 +227,7 @@ class Reflection_Property extends ReflectionProperty
 			if ($annotation->property_name === $this->name) {
 				$comment .= '/**' . LF;
 				foreach ($annotation->values() as $key => $value) {
-					$comment .= Parser::DOC_COMMENT_IN . $this->final_class . LF;
+					$comment .= TAB . SP . Parser::DOC_COMMENT_IN . $this->final_class . LF;
 					$comment .= TAB . SP . '*' . SP . '@' . $key . SP . $value . LF;
 				}
 				$comment .= TAB . SP . '*/';
