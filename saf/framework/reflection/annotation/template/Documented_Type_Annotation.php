@@ -25,13 +25,24 @@ class Documented_Type_Annotation extends Annotation
 	 * Annotation string value is a value type separated from a a documentation with a single space
 	 *
 	 * @example '@var Class_Name A documentation text can come after that'
+	 * @example '@var An_Array[]|Another[]|array Documentation will begin at "Another[]"'
 	 * @param $value string
 	 */
 	public function __construct($value)
 	{
-		$values = explode(SP, $value);
-		parent::__construct($values[0]);
-		$this->documentation = trim(substr($value, strlen($values[0])));
+		$i = strpos($value, SP);
+		$j = strpos($value, '|');
+		if (($i === false) || ($j !== false) && ($j < $i)) {
+			$i = $j;
+		}
+		if ($i === false) {
+			parent::__construct($value);
+			$this->documentation = '';
+		}
+		else {
+			parent::__construct(substr($value, 0, $i));
+			$this->documentation = trim(substr($value, $i + 1));
+		}
 	}
 
 }
