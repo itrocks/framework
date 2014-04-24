@@ -1,17 +1,22 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use Bappli\Bappli\Webshop\Webshop;
 use SAF\Framework\Application;
+use SAF\Framework\Builder;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Set;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection;
 use SAF\Framework\Router;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Files;
+use SAF\Framework\Tools\List_Row;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\Updater\Updatable;
@@ -55,13 +60,18 @@ class Compiler implements
 	/**
 	 * The list of compilers used successively on PHP sources
 	 *
-	 * @var ICompiler[]
+	 * Compilation process is : all compilers of wave 1 for each file, then all compilers of wave 2,
+	 * etc.
+	 *
+	 * @var array ICompiler[integer $wave_number][string $class_name]
 	 */
 	private $compilers = [];
 
 	//-------------------------------------------------------------------------------------- $sources
 	/**
 	 * List of PHP sources being compiled.
+	 *
+	 * This is set only when into compile() process. Outside of it, this property is null.
 	 *
 	 * @var Reflection_Source[]
 	 */
@@ -91,13 +101,18 @@ class Compiler implements
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $configuration string[]
+	 * @param $configuration array string[integer $wave_number][]
 	 */
 	public function __construct($configuration = null)
 	{
 		if (isset($configuration)) {
-			foreach ($configuration as $class_name) {
-				$this->compilers[$class_name] = Session::current()->plugins->get($class_name);
+			foreach ($configuration as $wave_number => $compilers) {
+				foreach ($compilers as $class_name) {
+					$this->compilers[$wave_number][$class_name]
+						= Session::current()->plugins->has($class_name)
+						? Session::current()->plugins->get($class_name)
+						: Builder::create($class_name);
+				}
 			}
 		}
 	}
@@ -153,74 +168,102 @@ class Compiler implements
 	 */
 	public function compile($last_time = 0)
 	{
+		clearstatcache();
 		$cache_dir = $this->getCacheDir();
 
-		// create data set for dependencies
+		// create data set for dependencies, check for dependencies for deleted files
 		Dao::createStorage(Dependency::class);
+		foreach (
+			Dao::select(Dependency::class, ['file_name' => Func::distinct()]) as $file_dependency
+		) {
+			/** @var $file_dependency List_Row */
+			$file_name = $file_dependency->getValue('file_name');
+			if (!is_file($file_name)) {
+				foreach (Dao::search(['file_name' => $file_name], Dependency::class) as $dependency) {
+					/** @var $dependency Dependency */
+					Dao::delete($dependency);
+					foreach (
+						Dao::search(['dependency_name' => $dependency->class_name], Dependency::class)
+						as $sub_dependency
+					) {
+						/** @var $sub_dependency Dependency */
+						Dao::delete($sub_dependency);
+					}
+				}
+			}
+		}
 
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
-		while ($this->sources) {
 
-			// get source and update dependencies
-			foreach ($this->sources as $source) {
-				/** @var Reflection_Source $source inspector bug */
-				/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-				(new Set)->replace(
-					$source->getDependencies(true),
-					Dependency::class, ['file_name' => $source->file_name]
-				);
-			}
+		foreach ($this->compilers as $compilers) {
+			/** @var $compilers ICompiler[] */
 
-			// ask each compiler for adding of compiled files, until they have nothing to add
-			do {
-				$added = false;
-				foreach ($this->compilers as $compiler) {
-					if ($compiler instanceof Needs_Main) {
-						$compiler->setMainController($this->main_controller);
-					}
-					if ($compiler->moreSourcesToCompile($this->sources)) {
-						$added = true;
-					}
+			$saved_sources = $this->sources;
+			while ($this->sources) {
+
+				// get source and update dependencies
+				foreach ($this->sources as $source) {
+					/** @var Reflection_Source $source inspector bug */
+					/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
+					(new Set)->replace(
+						$source->getDependencies(true),
+						Dependency::class,
+						['file_name' => $source->file_name]
+					);
 				}
-				if (count($this->compilers) == 1) {
+
+				// ask each compiler for adding of compiled files, until they have nothing to add
+				do {
 					$added = false;
-				}
-			} while ($added);
+					foreach ($compilers as $compiler) {
+						if ($compiler instanceof Needs_Main) {
+							$compiler->setMainController($this->main_controller);
+						}
+						if ($compiler->moreSourcesToCompile($this->sources)) {
+							$added = true;
+						}
+					}
+					if (count($compilers) == 1) {
+						$added = false;
+					}
+				} while ($added);
 
-			// fill in sources cache
-			$sources_count = count($this->sources);
-			foreach ($this->sources as $source) {
-				foreach (array_keys($source->getClasses()) as $class_name) {
-					$this->sources_cache[$class_name] = $source;
+				// fill in sources cache
+				$sources_count = count($this->sources);
+				foreach ($this->sources as $source) {
+					foreach (array_keys($source->getClasses()) as $class_name) {
+						$this->sources_cache[$class_name] = $source;
+					}
+					if ($sources_count > self::MAX_OPENED_SOURCES) {
+						$source->free(self::SOURCES_FREE);
+					}
 				}
-				if ($sources_count > self::MAX_OPENED_SOURCES) {
-					$source->free(self::SOURCES_FREE);
+
+				// compile sources
+				foreach ($this->sources as $source) {
+					foreach ($compilers as $compiler) {
+						$compiler->compile($source, $this);
+					}
+					$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
+						? $source->file_name
+						: ($this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4)));
+					if ($source->hasChanged()) {
+						script_put_contents($file_name, $source->getSource());
+					}
+					elseif (file_exists($file_name)) {
+						unlink($file_name);
+					}
+					if ($sources_count > self::MAX_OPENED_SOURCES) {
+						$source->free(self::SOURCES_FREE);
+					}
 				}
+
+				$this->sources = $this->more_sources;
+				$this->more_sources = [];
 			}
-
-			// compile sources
-			foreach ($this->sources as $source) {
-				foreach ($this->compilers as $compiler) {
-					$compiler->compile($source, $this);
-				}
-				$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
-					? $source->file_name
-					: ($this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4)));
-				if ($source->hasChanged()) {
-					script_put_contents($file_name, $source->getSource());
-				}
-				elseif (file_exists($file_name)) {
-					unlink($file_name);
-				}
-				if ($sources_count > self::MAX_OPENED_SOURCES) {
-					$source->free(self::SOURCES_FREE);
-				}
-			}
-
-			$this->sources = $this->more_sources;
-			$this->more_sources = [];
+			$this->sources = $saved_sources;
 		}
-		$this->sources = [];
+		$this->sources = null;
 
 	}
 
@@ -274,7 +317,6 @@ class Compiler implements
 	 */
 	private function getFilesToCompile($last_time = 0)
 	{
-		clearstatcache();
 		$source_files = Application::current()->include_path->getSourceFiles();
 		foreach (scandir('.') as $file_name) {
 			$source_files[] = $file_name;
@@ -306,8 +348,10 @@ class Compiler implements
 	public function serialize()
 	{
 		$compilers = [];
-		foreach ($this->compilers as $compiler) {
-			$compilers[] = is_object($compiler) ? get_class($compiler) : $compiler;
+		foreach ($this->compilers as $wave_number => $compilers) {
+			foreach ($compilers as $compiler) {
+				$compilers[$wave_number][] = is_object($compiler) ? get_class($compiler) : $compiler;
+			}
 		}
 		return serialize($compilers);
 	}
@@ -337,8 +381,12 @@ class Compiler implements
 	public function unserialize($serialized)
 	{
 		$this->compilers = [];
-		foreach (unserialize($serialized) as $class_name) {
-			$this->compilers[] = Session::current()->plugins->get($class_name);
+		foreach (unserialize($serialized) as $wave_number => $compilers) {
+			foreach ($compilers as $class_name) {
+				$this->compilers[$wave_number][] = Session::current()->plugins->has($class_name)
+					? Session::current()->plugins->get($class_name)
+					: Builder::create($class_name);
+			}
 		}
 	}
 

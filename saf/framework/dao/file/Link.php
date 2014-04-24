@@ -20,7 +20,7 @@ class Link extends Identifier_Map
 	/**
 	 * Count the number of elements that match filter
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used
+	 * @param $what       object|string|array source object, class name or properties for filter
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
 	 * @return integer
 	 */

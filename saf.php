@@ -57,9 +57,14 @@ $config['SAF/Framework'] = [
 	'normal'  => [
 		Cleaner::class,
 		Compiler::class => [
-			Router::class,
-			Builder\Compiler::class,
-			AOP\Compiler::class
+			1 => [
+				Router::class,
+				Builder\Compiler::class,
+				AOP\Compiler::class
+			],
+			2 => [
+				Mysql\Compiler::class
+			]
 		],
 		Dao::class => [
 			'class'    => Mysql\Link::class,

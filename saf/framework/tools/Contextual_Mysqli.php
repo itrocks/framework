@@ -59,6 +59,22 @@ class Contextual_Mysqli extends mysqli
 		}
 	}
 
+	//------------------------------------------------------------------------------------- getTables
+	/**
+	 * Gets all existing tables names from current database
+	 *
+	 * @return string[]
+	 */
+	public function getTables()
+	{
+		$tables = [];
+		$res = $this->query('SHOW TABLES');
+		while ($row = $res->fetch_row()) {
+			$tables[] = $row[0];
+		}
+		return $tables;
+	}
+
 	//-------------------------------------------------------------------------------------- isDelete
 	/**
 	 * Returns true if the query is a DELETE
