@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\PHP;
 
-use Bappli\Bappli\Webshop\Webshop;
 use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Main;

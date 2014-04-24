@@ -28,6 +28,7 @@ class Compiler implements ICompiler, Needs_Main
 	 */
 	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
 	{
+		Builder::current()->build = false;
 		$compiled = false;
 		foreach ($source->getClasses() as $class) {
 			$replacement = Builder::current()->getComposition($class->name);
@@ -38,6 +39,7 @@ class Compiler implements ICompiler, Needs_Main
 				}
 			}
 		}
+		Builder::current()->build = true;
 		return $compiled;
 	}
 
