@@ -13,6 +13,7 @@ use SAF\Framework\Mapper\Component;
 use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Mapper\Null_Object;
 use SAF\Framework\Mapper\Search_Object;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Sql;
@@ -99,12 +100,16 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Count the number of elements that match filter
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used
+	 * @param $what       object|string|array source object, class name or properties for filter
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
 	 * @return integer
 	 */
 	public function count($what, $class_name = null)
 	{
+		if (is_string($what)) {
+			$class_name = $what;
+			$what       = null;
+		}
 		$builder = new Count($class_name, $what, $this);
 		$query = $builder->buildQuery();
 		$this->setContext($builder->getJoins()->getClassNames());
@@ -122,6 +127,8 @@ class Link extends Dao\Sql\Link
 	//--------------------------------------------------------------------------------- createStorage
 	/**
 	 * Create a storage space for $class_name objects
+	 *
+	 * If the storage space already exists, it is updated without losing data
 	 *
 	 * @param $class_name string
 	 * @return boolean true if storage was created or updated, false if it was already up to date
@@ -150,11 +157,11 @@ class Link extends Dao\Sql\Link
 			$class = new Reflection_Class($class_name);
 			$link = $class->getAnnotation('link')->value;
 			$exclude_properties = $link
-				? array_keys((new Reflection_Class($link))->getAllProperties())
+				? array_keys((new Reflection_Class($link))->getProperties([T_EXTENDS, T_USE]))
 				: [];
 			foreach ($class->accessProperties() as $property) {
 				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-					if ($property->getAnnotation('link')->value == 'Collection') {
+					if ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION) {
 						if ($property->getType()->isMultiple()) {
 							$this->deleteCollection($object, $property, $property->getValue($object));
 						}
@@ -349,7 +356,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function getStoredProperties($class)
 	{
-		$properties = $class->getAllProperties();
+		$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		foreach ($properties as $key => $property) {
 			$type = $property->getType();
 			if ($property->isStatic() || ($type->isMultiple() && !$type->getElementType()->isBasic())) {
@@ -561,94 +568,116 @@ class Link extends Dao\Sql\Link
 				$this->disconnect($object);
 			}
 			$class = new Reflection_Class(get_class($object));
-			$table_columns_names = array_keys($this->getStoredProperties($class));
-			$write_collections = [];
-			$write_maps = [];
-			$write = [];
-			$aop_getter_ignore = Getter::$ignore;
-			Getter::$ignore = true;
-			$link = $class->getAnnotation('link')->value;
-			$exclude_properties = $link
-				? array_keys((new Reflection_Class($link))->getAllProperties())
-				: [];
-			foreach ($options as $option) {
-				if ($option instanceof Only) {
-					$only = array_merge(isset($only) ? $only : [], $option->properties);
+			$link  = $class->getAnnotation('link')->value;
+			$id_property = 'id';
+			do {
+				$table_columns_names = array_keys($this->getStoredProperties($class));
+				$write_collections = [];
+				$write_maps = [];
+				$write = [];
+				$aop_getter_ignore = Getter::$ignore;
+				Getter::$ignore = true;
+				$exclude_properties = $link
+					? array_keys((new Reflection_Class($link))->getProperties([T_EXTENDS, T_USE]))
+					: [];
+				foreach ($options as $option) {
+					if ($option instanceof Only) {
+						$only = array_merge(isset($only) ? $only : [], $option->properties);
+					}
 				}
-			}
-			foreach ($class->accessProperties() as $property) {
-				if (!isset($only) || in_array($property->name, $only)) {
-					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-						$value = isset($object->$property) ? $property->getValue($object) : null;
-						$property_is_null = $property->getAnnotation('null')->value;
-						if (is_null($value) && !$property_is_null) {
-							$value = '';
-						}
-						if (in_array($property->name, $table_columns_names)) {
-							// write basic
-							if ($property->getType()->getElementType()->isBasic()) {
-								$write[$property->getAnnotation('storage')->value] = $value;
+				foreach ($class->accessProperties() as $property) {
+					if (!isset($only) || in_array($property->name, $only)) {
+						if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
+							$value = isset($object->$property) ? $property->getValue($object) : null;
+							$property_is_null = $property->getAnnotation('null')->value;
+							if (is_null($value) && !$property_is_null) {
+								$value = '';
 							}
-							// write object id if set or object if no id is set (new object)
-							else {
-								$column_name = 'id_' . $property->name;
-								if (is_object($value)) {
-									$object->$column_name = $this->getObjectIdentifier($value);
-									if (empty($object->$column_name)) {
-										$object->$column_name = $this->getObjectIdentifier($this->write($value));
-									}
+							if (in_array($property->name, $table_columns_names)) {
+								// write basic
+								if ($property->getType()->getElementType()->isBasic()) {
+									$write[$property->getAnnotation('storage')->value] = $value;
 								}
-								if (property_exists($object, $column_name)) {
-									$write['id_' . $property->getAnnotation('storage')->value]
-										= ($property_is_null && !isset($object->$column_name))
-											? null
-											: intval($object->$column_name);
-								}
-							}
-						}
-						// write collection
-						elseif (is_array($value) && ($property->getAnnotation('link')->value == 'Collection')) {
-							$write_collections[] = [$property, $value];
-						}
-						// write map
-						elseif (is_array($value) && ($property->getAnnotation('link')->value == 'Map')) {
-							foreach ($value as $key => $val) {
-								if (!is_object($val)) {
-									$val = Dao::read($val, $property->getType()->getElementTypeAsString());
-									if (isset($val)) {
-										$value[$key] = $val;
+								// write object id if set or object if no id is set (new object)
+								else {
+									$column_name = 'id_' . $property->name;
+									if (is_object($value)) {
+										$object->$column_name = $this->getObjectIdentifier($value, 'id');
+										if (empty($object->$column_name)) {
+											$object->$column_name = $this->getObjectIdentifier(
+												$this->write($value), 'id'
+											);
+										}
 									}
-									else {
-										unset($value[$key]);
+									if (property_exists($object, $column_name)) {
+										$write['id_' . $property->getAnnotation('storage')->value]
+											= ($property_is_null && !isset($object->$column_name))
+												? null
+												: intval($object->$column_name);
 									}
 								}
 							}
-							$write_maps[] = [$property, $value];
+							// write collection
+							elseif (
+								is_array($value)
+								&& ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION)
+							) {
+								$write_collections[] = [$property, $value];
+							}
+							// write map
+							elseif (
+								is_array($value)
+								&& ($property->getAnnotation('link')->value == Link_Annotation::MAP)
+							) {
+								foreach ($value as $key => $val) {
+									if (!is_object($val)) {
+										$val = Dao::read($val, $property->getType()->getElementTypeAsString());
+										if (isset($val)) {
+											$value[$key] = $val;
+										}
+										else {
+											unset($value[$key]);
+										}
+									}
+								}
+								$write_maps[] = [$property, $value];
+							}
 						}
 					}
 				}
-			}
-			Getter::$ignore = $aop_getter_ignore;
-			$id = $this->getObjectIdentifier($object);
-			$this->setContext($class->name);
-			if (empty($id)) {
-				$this->disconnect($object);
-				$id = $this->query(Sql\Builder::buildInsert($class->name, $write));
-				if (!empty($id)) {
-					$this->setObjectIdentifier($object, $id);
+				unset($only);
+				if ($write) {
+					Getter::$ignore = $aop_getter_ignore;
+					$id = $this->getObjectIdentifier($object, $id_property);
+					$this->setContext($class->name);
+					if (empty($id)) {
+						$this->disconnect($object);
+						$id = $this->query(Sql\Builder::buildInsert($class->name, $write));
+						if (!empty($id)) {
+							$this->setObjectIdentifier($object, $id);
+						}
+					}
+					else {
+						$this->query(Sql\Builder::buildUpdate($class->name, $write, $id));
+					}
 				}
-			}
-			else {
-				$this->query(Sql\Builder::buildUpdate($class->name, $write, $id));
-			}
-			foreach ($write_collections as $write) {
-				list($property, $value) = $write;
-				$this->writeCollection($object, $property, $value);
-			}
-			foreach ($write_maps as $write) {
-				list($property, $value) = $write;
-				$this->writeMap($object, $property, $value);
-			}
+				foreach ($write_collections as $write) {
+					list($property, $value) = $write;
+					$this->writeCollection($object, $property, $value);
+				}
+				foreach ($write_maps as $write) {
+					list($property, $value) = $write;
+					$this->writeMap($object, $property, $value);
+				}
+				// linked class
+				if ($link) {
+					$class = new Reflection_Class($link);
+					$link  = $class->getAnnotation('link')->value;
+				}
+				else {
+					$class = null;
+				}
+			} while ($class);
 			if ($object instanceof After_Write) {
 				$object->afterWrite($options);
 			}
