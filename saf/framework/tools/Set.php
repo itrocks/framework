@@ -1,12 +1,13 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use Iterator;
 use SAF\Framework\Reflection\Reflection_Class;
 
 /**
  * The default Set class for set of objects
  */
-class Set
+class Set implements Iterator
 {
 
 	//------------------------------------------------------------------------------------- $elements
@@ -55,6 +56,17 @@ class Set
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * Return the value of the current element designed by the pointer of the set
+	 *
+	 * @return object
+	 */
+	public function current()
+	{
+		return current($this->elements);
+	}
+
 	//------------------------------------------------------------------------- defaultSetClassNameOf
 	/**
 	 * @param $class_name string
@@ -72,6 +84,8 @@ class Set
 
 	//---------------------------------------------------------------------------------- elementClass
 	/**
+	 * Get element class reflection object for the current element class name
+	 *
 	 * @return Reflection_Class
 	 */
 	public function elementClass()
@@ -81,7 +95,7 @@ class Set
 
 	//---------------------------------------------------------------------------- elementClassNameOf
 	/**
-	 * Gets element class name of a given set class name (namespace needed)
+	 * Get element class name of a given set class name (namespace needed)
 	 *
 	 * @param $class_name string
 	 * @return string
@@ -99,6 +113,8 @@ class Set
 
 	//----------------------------------------------------------------------------------------- first
 	/**
+	 * Set the pointer of the set to its first element and return this element (alias for rewind)
+	 *
 	 * @return object
 	 */
 	public function first()
@@ -108,6 +124,8 @@ class Set
 
 	//------------------------------------------------------------------------------------------- get
 	/**
+	 * Get the element associated to the key from the set
+	 *
 	 * @param $key string|integer
 	 * @return object
 	 */
@@ -138,8 +156,21 @@ class Set
 		}
 	}
 
+	//------------------------------------------------------------------------------------------- key
+	/**
+	 * Return the key of the current element designed by the pointer of the set
+	 *
+	 * @return object
+	 */
+	public function key()
+	{
+		return key($this->elements);
+	}
+
 	//------------------------------------------------------------------------------------------ last
 	/**
+	 * Set the pointer of the set into the last element and return this element
+	 *
 	 * @return object
 	 */
 	public function last()
@@ -149,6 +180,8 @@ class Set
 
 	//---------------------------------------------------------------------------------------- length
 	/**
+	 * Return the number of elements stored into the set
+	 *
 	 * @return integer
 	 */
 	public function length()
@@ -156,15 +189,48 @@ class Set
 		return count($this->elements);
 	}
 
+	//------------------------------------------------------------------------------------------ next
+	/**
+	 * Set the pointer of the set into the next element and return this element
+	 *
+	 * @return object
+	 */
+	public function next()
+	{
+		return next($this->elements);
+	}
+
 	//---------------------------------------------------------------------------------------- object
 	/**
-	 * Gets the first object, or a Reflection_Class of the object's class if no element
+	 * Get the first object, or a Reflection_Class of the object's class if no element
 	 *
 	 * @return object|Reflection_Class
 	 */
 	public function object()
 	{
 		return $this->elements ? reset($this->elements) : $this->elementClass();
+	}
+
+	//---------------------------------------------------------------------------------------- rewind
+	/**
+	 * Set the pointer of the set to its first element and return this element (alias for first)
+	 *
+	 * @return object
+	 */
+	public function rewind()
+	{
+		return reset($this->elements);
+	}
+
+	//--------------------------------------------------------------------------------------- boolean
+	/**
+	 * Return true if an element is currently selected
+	 *
+	 * @return boolean
+	 */
+	public function valid()
+	{
+		return !empty(current($this->elements));
 	}
 
 }

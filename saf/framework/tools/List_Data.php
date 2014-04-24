@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use Iterator;
+
 /**
  * List data is an interface for all list data storage classes
  */
-interface List_Data
+interface List_Data extends Iterator
 {
 
 	//------------------------------------------------------------------------------------------- add
