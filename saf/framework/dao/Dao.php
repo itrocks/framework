@@ -4,8 +4,10 @@ namespace SAF\Framework;
 use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Data_Link\Identifier_Map;
 use SAF\Framework\Dao\Data_Link\Transactional;
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Plugin\Configurable;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Current;
 use SAF\Framework\Tools\List_Data;
 
@@ -45,7 +47,8 @@ class Dao implements Configurable
 
 	//----------------------------------------------------------------------------------------- begin
 	/**
-	 * Begin a transaction with the current data link (non-transactional SQL engines will do nothing and return null)
+	 * Begin a transaction with the current data link (non-transactional SQL engines will do nothing
+	 * and return null)
 	 *
 	 * @return boolean|null true if begin succeeds, false if error, null if not a transactional SQL engine
 	 * @see Transactional::begin()
@@ -75,9 +78,11 @@ class Dao implements Configurable
 
 	//---------------------------------------------------------------------------------------- commit
 	/**
-	 * Commit a transaction using the current data link (non-transactional SQL engines will do nothing and return null)
+	 * Commit a transaction using the current data link (non-transactional SQL engines will do nothing
+	 * and return null)
 	 *
-	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL engine
+	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL
+	 *                      engine
 	 * @see Transactional::commit()
 	 */
 	public static function commit()
@@ -107,6 +112,8 @@ class Dao implements Configurable
 	//--------------------------------------------------------------------------------- createStorage
 	/**
 	 * Create a storage space for $class_name objects
+	 *
+	 * If the storage space already exists, it is updated without losing data
 	 *
 	 * @param $class_name string
 	 * @return boolean true if storage was created or updated, false if it was already up to date
@@ -243,7 +250,7 @@ class Dao implements Configurable
 	 */
 	public static function only($properties)
 	{
-		return new Option\Only($properties);
+		return (new Reflection_Class(Option\Only::class))->newInstanceArgs(func_get_args());
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -291,8 +298,11 @@ class Dao implements Configurable
 	/**
 	 * Replace a destination object with the source object into current data link
 	 *
-	 * The source object overwrites the destination object into the data source, even if the source object was not originally read from the data source.
-	 * Warning: as destination object will stay independent from source object but also linked to the same data source identifier. You will still be able to write() either source or destination after call to replace().
+	 * The source object overwrites the destination object into the data source, even if the source
+	 * object was not originally read from the data source.
+	 * Warning: as destination object will stay independent from source object but also linked to the
+	 * same data source identifier. You will still be able to write() either source or destination
+	 * after call to replace().
 	 *
 	 * @param $destination object destination object
 	 * @param $source      object source object
@@ -321,9 +331,11 @@ class Dao implements Configurable
 
 	//-------------------------------------------------------------------------------------- rollback
 	/**
-	 * Rollback a transaction with the current data link (non-transactional SQL engines will do nothing and return null)
+	 * Rollback a transaction with the current data link (non-transactional SQL engines will do
+	 * nothing and return null)
 	 *
-	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL engine
+	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL
+	 * engine
 	 * @see Transactional::rollback()
 	 */
 	public static function rollback()
@@ -341,11 +353,16 @@ class Dao implements Configurable
 	/**
 	 * Search objects from current data link
 	 *
-	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in order to initialize all properties as unset and build a correct search object.
-	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
-	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
+	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in
+	 * order to initialize all properties as unset and build a correct search object.
+	 * If some properties are an not-loaded objects, the search will be done on the object identifier,
+	 * without joins to the linked object.
+	 * If some properties are loaded objects : if the object comes from a read, the search will be
+	 * done on the object identifier, without join. If object is not linked to data-link, the search
+	 * is done with the linked object as others search criterion.
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used for search
+	 * @param $what       object|array source object for filter, only set properties will be used for
+	 *                    search
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
 	 * @param $options    Option[] some options for advanced search
 	 * @return object[] a collection of read objects
@@ -364,7 +381,8 @@ class Dao implements Configurable
 	 * It is highly recommended to use this search with primary keys properties values searches.
 	 * If several result exist, only one will be taken, the first on the list (may be random).
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used for search
+	 * @param $what       object|array source object for filter, only set properties will be used for
+	 *                    search
 	 * @param $class_name string must be set if is not a filter array
 	 * @return object | null the found object, or null if no object was found
 	 * @see Data_Link::searchOne()
@@ -379,10 +397,15 @@ class Dao implements Configurable
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use 'column.sub_column' to get values from linked objects from the same data source.
-	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 * @param $columns       string[]|Func[] the list of the columns names : only those properties
+	 *                       will be read. You can use 'column.sub_column' to get values from linked
+	 *                       objects from the same data source.
+	 * @param $filter_object object|array source object for filter, set properties will be used for
+	 *                       search. Can be an array associating properties names to matching
+	 *                       search value too.
 	 * @param $options       Option[] some options for advanced search
-	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
+	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the
+	 *                   same order than columns.
 	 */
 	public static function select($class, $columns, $filter_object = null, $options = [])
 	{
