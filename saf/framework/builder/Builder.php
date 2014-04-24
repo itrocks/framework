@@ -29,6 +29,15 @@ class Builder implements Activable, Registerable, Serializable
 {
 	use Current_With_Default { current as private dCurrent; }
 
+	//---------------------------------------------------------------------------------------- $build
+	/**
+	 * When true, class names replacement by built class names are accepted.
+	 * Can be set temporarily to false when you don't want built class names.
+	 *
+	 * @var $build boolean
+	 */
+	public $build = true;
+
 	//--------------------------------------------------------------------------------- $compositions
 	/**
 	 * Backup of the replacement compositions for built composed classes
@@ -82,12 +91,11 @@ class Builder implements Activable, Registerable, Serializable
 	//------------------------------------------------------------------------------------- className
 	/**
 	 * @param $class_name string
-	 * @param $build      boolean if replacement for a class name is an array, build replacement class
 	 * @return string
 	 */
-	public static function className($class_name, $build = true)
+	public static function className($class_name)
 	{
-		return self::current()->replacementClassName($class_name, $build);
+		return self::current()->replacementClassName($class_name);
 	}
 
 	//---------------------------------------------------------------------------------------- create
@@ -345,10 +353,9 @@ class Builder implements Activable, Registerable, Serializable
 	 * Gets replacement class name for a parent class name or a list of traits to implement
 	 *
 	 * @param $class_name string can be short or full class name
-	 * @param $build      boolean if replacement for a class name is an array, build replacement class
 	 * @return string
 	 */
-	private function replacementClassName($class_name, $build = true)
+	private function replacementClassName($class_name)
 	{
 		if (!$this->enabled) {
 			return $class_name;
@@ -357,7 +364,7 @@ class Builder implements Activable, Registerable, Serializable
 			? $this->replacements[$class_name]
 			: $class_name;
 		if (is_array($result)) {
-			if ($build) {
+			if ($this->build) {
 				$this->compositions[$class_name] = $result;
 				$built_class_name = Class_Builder::builtClassName($class_name);
 				if (file_exists(
@@ -375,7 +382,7 @@ class Builder implements Activable, Registerable, Serializable
 				$result = $class_name;
 			}
 		}
-		elseif (!$build && self::isBuilt($result)) {
+		elseif (!$this->build && self::isBuilt($result)) {
 			$result = $class_name;
 		}
 		return $result;

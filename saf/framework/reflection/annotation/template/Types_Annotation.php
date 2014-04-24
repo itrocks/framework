@@ -45,7 +45,7 @@ trait Types_Annotation
 					$multiple = '';
 				}
 				$values[$key] = Builder::className(
-					(new Type($class_name))->applyNamespace($namespace, $use), false
+					(new Type($class_name))->applyNamespace($namespace, $use)
 				) . $multiple;
 			}
 		}
