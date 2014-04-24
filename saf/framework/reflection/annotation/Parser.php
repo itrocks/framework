@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation;
 
+use SAF\Framework\Builder;
 use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
@@ -193,6 +194,14 @@ abstract class Parser
 					$use = PHP\Reflection_Class::of($in_class)->getNamespaceUse();
 				}
 				$annotation->applyNamespace($namespace, $use);
+			}
+			elseif (is_array($annotation->value)) {
+				foreach ($annotation->value as $key => $value) {
+					$annotation->value[$key] = Builder::className($value);
+				}
+			}
+			else {
+				$annotation->value = Builder::className($annotation->value);
 			}
 		}
 
