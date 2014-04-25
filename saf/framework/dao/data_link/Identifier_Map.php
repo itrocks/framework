@@ -2,7 +2,6 @@
 namespace SAF\Framework\Dao\Data_Link;
 
 use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 
 /**
@@ -61,15 +60,6 @@ abstract class Identifier_Map extends Data_Link
 				}
 			}
 			else {
-				$link_class = new Link_Class(get_class($object));
-				while ($link_class_name = $link_class->getAnnotation('link')->value) {
-					$link_property = $link_class->getCompositeProperty();
-					$link_class = new Link_Class($link_property->getType()->asString());
-				}
-				if (isset($link_property)) {
-					$id = 'id_' . $link_property->name;
-					return isset($object->$id) ? $object->$id : null;
-				}
 				return isset($object->id) ? $object->id : null;
 			}
 		}

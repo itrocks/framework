@@ -568,9 +568,9 @@ class Link extends Dao\Sql\Link
 				$this->disconnect($object);
 			}
 			$class = new Reflection_Class(get_class($object));
-			$link  = $class->getAnnotation('link')->value;
 			$id_property = 'id';
 			do {
+				$link = $class->getAnnotation('link')->value;
 				$table_columns_names = array_keys($this->getStoredProperties($class));
 				$write_collections = [];
 				$write_maps = [];
@@ -669,14 +669,8 @@ class Link extends Dao\Sql\Link
 					list($property, $value) = $write;
 					$this->writeMap($object, $property, $value);
 				}
-				// linked class
-				if ($link) {
-					$class = new Reflection_Class($link);
-					$link  = $class->getAnnotation('link')->value;
-				}
-				else {
-					$class = null;
-				}
+				// if link class : write linked object too
+				$class = $link ? new Reflection_Class($link) : null;
 			} while ($class);
 			if ($object instanceof After_Write) {
 				$object->afterWrite($options);
