@@ -177,7 +177,7 @@ class Compiler implements
 		) {
 			/** @var $file_dependency List_Row */
 			$file_name = $file_dependency->getValue('file_name');
-			if (!is_file($file_name)) {
+			if (!file_exists($file_name)) {
 				foreach (Dao::search(['file_name' => $file_name], Dependency::class) as $dependency) {
 					/** @var $dependency Dependency */
 					Dao::delete($dependency);
@@ -346,13 +346,13 @@ class Compiler implements
 	 */
 	public function serialize()
 	{
-		$compilers = [];
+		$serialized_compilers = [];
 		foreach ($this->compilers as $wave_number => $compilers) {
 			foreach ($compilers as $compiler) {
-				$compilers[$wave_number][] = is_object($compiler) ? get_class($compiler) : $compiler;
+				$serialized_compilers[$wave_number][] = is_object($compiler) ? get_class($compiler) : $compiler;
 			}
 		}
-		return serialize($compilers);
+		return serialize($serialized_compilers);
 	}
 
 	//----------------------------------------------------------------------------- setMainController
