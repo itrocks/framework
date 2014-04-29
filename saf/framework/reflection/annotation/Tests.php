@@ -41,13 +41,13 @@ class Tests extends Test
 	//----------------------------------------------------------------------------------- testForeign
 	public function testForeign()
 	{
-		$this->testAnnotation('object', Order_Line::class, 'client', 'foreign', ''); // 1A
-		$this->testAnnotation('object myself', Client::class, 'client', 'foreign', ''); // 1B
-		$this->testAnnotation('object concurrent foreign 1', Order::class, 'client', 'foreign', ''); // 1C
-		$this->testAnnotation('object concurrent foreign 2', Order::class, 'delivery_client', 'foreign', ''); // 1C
+		$this->testAnnotation('object', Order_Line::class, 'client', 'foreign', null); // 1A
+		$this->testAnnotation('object myself', Client::class, 'client', 'foreign', null); // 1B
+		$this->testAnnotation('object concurrent foreign 1', Order::class, 'client', 'foreign', null); // 1C
+		$this->testAnnotation('object concurrent foreign 2', Order::class, 'delivery_client', 'foreign', null); // 1C
 		$this->testAnnotation('object from component', Order_Line::class, 'order', 'foreign', 'lines'); // 1D
-		$this->testAnnotation('same master object', Item::class, 'main_category', 'foreign', ''); // 1E
-		$this->testAnnotation('myself concurrent object', Category::class, 'main_super_category', 'foreign', ''); // 1F
+		$this->testAnnotation('same master object', Item::class, 'main_category', 'foreign', null); // 1E
+		$this->testAnnotation('myself concurrent object', Category::class, 'main_super_category', 'foreign', null); // 1F
 
 		$this->testAnnotation('simple collection', Order::class, 'lines', 'foreign', 'order'); // 2A
 

@@ -41,10 +41,10 @@ class Uri_Tests extends Test
 		);
 	}
 
-	//---------------------------------------------------------------------------- testExclicitOutput
-	public function testExclicitOutput()
+	//---------------------------------------------------------------------------- testExplicitOutput
+	public function testExplicitOutput()
 	{
-		$controller_uri = new Uri('/Order/1/' . Feature::F_OUTPUT, []);
+		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Order/1/' . Feature::F_OUTPUT, []);
 		$this->assume(
 				__METHOD__,
 				[
@@ -53,9 +53,9 @@ class Uri_Tests extends Test
 						'parameters'      => $controller_uri->parameters->getRawParameters()
 				],
 				[
-						'controller_name' => 'Order',
+						'controller_name' => Order::class,
 						'feature_name' => Feature::F_OUTPUT,
-						'parameters' => (new Parameters())->set('Order', 1)->getRawParameters()
+						'parameters' => (new Parameters())->set(Order::class, 1)->getRawParameters()
 				]
 		);
 	}
@@ -63,7 +63,7 @@ class Uri_Tests extends Test
 	//------------------------------------------------------------------------------ testImplicitList
 	public function testImplicitList()
 	{
-		$controller_uri = new Uri('/Orders', []);
+		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Orders', []);
 		$this->assume(
 			__METHOD__,
 			[
@@ -72,7 +72,7 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'Orders',
+				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
 				'feature_name' => Feature::F_LIST,
 				'parameters' => (new Parameters())->getRawParameters()
 			]
@@ -82,7 +82,7 @@ class Uri_Tests extends Test
 	//---------------------------------------------------------------------------- testImplicitOutput
 	public function testImplicitOutput()
 	{
-		$controller_uri = new Uri('/Order/1', []);
+		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Order/1', []);
 		$this->assume(
 			__METHOD__,
 			[
@@ -91,9 +91,9 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'Order',
+				'controller_name' => Order::class,
 				'feature_name' => Feature::F_OUTPUT,
-				'parameters' => (new Parameters())->set('Order', 1)->getRawParameters()
+				'parameters' => (new Parameters())->set(Order::class, 1)->getRawParameters()
 			]
 		);
 	}
@@ -101,7 +101,7 @@ class Uri_Tests extends Test
 	//----------------------------------------------------------------------- testListRemoveParameter
 	public function testListRemoveParameter()
 	{
-		$controller_uri = new Uri('/Orders/listRemove/date');
+		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Orders/listRemove/date');
 		$this->assume(
 			__METHOD__,
 			[
@@ -110,7 +110,7 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'Orders',
+				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
 				'feature_name' => 'listRemove',
 				'parameters' => (new Parameters())->addValue('date')->getRawParameters()
 			]
@@ -120,7 +120,7 @@ class Uri_Tests extends Test
 	//---------------------------------------------------------------------- testListRemoveParameters
 	public function testListRemoveParameters()
 	{
-		$controller_uri = new Uri('/Orders/listRemove/date/number');
+		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Orders/listRemove/date/number');
 		$this->assume(
 			__METHOD__,
 			[
@@ -129,7 +129,7 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'Orders',
+				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
 				'feature_name' => 'listRemove',
 				'parameters' => (new Parameters())->addValue('date')->addValue('number')
 					->getRawParameters()
@@ -141,7 +141,7 @@ class Uri_Tests extends Test
 	public function testListRemoveWithArguments()
 	{
 		$controller_uri = new Uri(
-			'/Orders/listRemove/date/number', ['as_widget' => 1, '_' => 2]
+			'/SAF/Framework/Tests/Objects/Orders/listRemove/date/number', ['as_widget' => 1, '_' => 2]
 		);
 		$this->assume(
 			__METHOD__,
@@ -151,7 +151,7 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'Orders',
+				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
 				'feature_name' => 'listRemove',
 				'parameters' => (new Parameters())->addValue('date')->addValue('number')
 					->set('as_widget', 1)->set('_', 2)->getRawParameters()

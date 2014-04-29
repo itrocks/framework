@@ -310,7 +310,7 @@ abstract class Names
 			if (strrpos($class_name, BS) > $i) {
 				$i = false;
 			}
-			if (($i === false) && $check_class) {
+			if (($i === false) && $check_class && error_reporting()) {
 				trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
 			}
 			else {
