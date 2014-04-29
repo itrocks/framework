@@ -47,16 +47,18 @@
   width: 20px; }
 .import.preview.window fieldset.properties {
   border: 1px solid white; }
-  .import.preview.window fieldset.properties li {
-    border: 1px solid;
-    color: white;
-    cursor: pointer;
-    display: inline-block;
-    font-weight: bold;
-    margin: 0 2px;
-    padding: .25em; }
-    .import.preview.window fieldset.properties li:not(:last-child):after {
-      content: ", "; }
+  .import.preview.window fieldset.properties > ul {
+    display: inline-block; }
+    .import.preview.window fieldset.properties > ul > li {
+      border: 1px solid;
+      color: white;
+      cursor: pointer;
+      display: inline-block;
+      font-weight: bold;
+      margin: 0 2px;
+      padding: .25em; }
+      .import.preview.window fieldset.properties > ul > li:not(:last-child):after {
+        content: ", "; }
   .import.preview.window fieldset.properties.identify li {
     background-color: green;
     border-color: darkgreen; }
@@ -94,9 +96,6 @@
     color: white; }
 .import.preview.window fieldset div span {
   font-weight: bold; }
-.import.preview.window fieldset ul {
-  display: inline-block;
-  text-decoration: none; }
 .import.preview.window > .worksheet:not(:last-child) {
   border-bottom: 2px solid black;
   padding-bottom: 6px;

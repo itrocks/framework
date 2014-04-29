@@ -70,16 +70,20 @@
 		&.properties {
 			border: 1px solid white;
 
-			li {
-				border: 1px solid;
-				color: white;
-				cursor: pointer;
+			>ul {
 				display: inline-block;
-				font-weight: bold;
-				margin: 0 2px;
-				padding: .25em;
-				&:not(:last-child):after {
-					content: ", ";
+
+				>li {
+					border: 1px solid;
+					color: white;
+					cursor: pointer;
+					display: inline-block;
+					font-weight: bold;
+					margin: 0 2px;
+					padding: .25em;
+					&:not(:last-child):after {
+						content: ", ";
+					}
 				}
 			}
 
@@ -149,10 +153,6 @@
 			font-weight: bold;
 		}
 
-		ul {
-			display: inline-block;
-			text-decoration: none;
-		}
 	}
 
 	>.worksheet:not(:last-child) {
