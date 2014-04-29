@@ -201,7 +201,7 @@ class Reflection_Source
 				if ($depth === $class_depth) {
 					$class_end = true;
 				}
-				while (!is_array($token)) {
+				while ((($this->token_key + 1) < $tokens_count) && !is_array($token)) {
 					$token = $this->tokens[++$this->token_key];
 				}
 			}
