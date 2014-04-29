@@ -50,6 +50,7 @@ function classTree($object, $classes = true, $traits = true, $interfaces = true,
  */
 function isA($object, $class_name)
 {
+	if (!(is_string($object) || is_object($object))) return false;
 	if (is_object($object))     $object     = get_class($object);
 	if (is_object($class_name)) $class_name = get_class($class_name);
 	if (is_a($object, $class_name, true)) return true;
