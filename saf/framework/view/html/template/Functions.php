@@ -192,7 +192,7 @@ abstract class Functions
 				}
 				else {
 					$property_edit = new Html_Builder_Property($property, $property->getValue($object));
-					$property_edit->name = $name;
+					$property_edit->name = $name ?: $property_name;
 				}
 				if ($ignore_user) {
 					$property_edit->readonly = false;

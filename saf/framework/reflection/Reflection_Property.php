@@ -74,6 +74,7 @@ class Reflection_Property extends ReflectionProperty
 		$this->final_class = $class_name;
 		parent::__construct($class_name, $property_name);
 	}
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string The name of the property
