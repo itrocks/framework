@@ -245,6 +245,7 @@ class Data_List_Controller extends Output_Controller
 		$class_name
 	) {
 		return [
+			/*
 			new Button('Print', View::link($class_name, 'print'), 'print', [
 				'sub_buttons' => [
 					new Button(
@@ -259,6 +260,7 @@ class Data_List_Controller extends Output_Controller
 					)
 				]
 			])
+			*/
 		];
 	}
 

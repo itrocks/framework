@@ -35,6 +35,7 @@ class Output_Controller implements Default_Feature_Controller
 			new Button('Edit', View::link($object, 'edit'), 'edit',
 				[new Color('green'), '#main']
 			),
+			/*
 			new Button('Print', View::link($object, 'print'), 'print',
 				[new Color('blue'), '#main', 'sub_buttons' => [
 					new Button(
@@ -48,6 +49,7 @@ class Output_Controller implements Default_Feature_Controller
 					)
 				]]
 			)
+			*/
 		];
 	}
 
