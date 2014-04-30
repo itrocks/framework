@@ -12,7 +12,8 @@ use SAF\Framework\widget\output\Output_Controller;
 /**
  * The default edit controller, when no edit controller is set for the class
  */
-class Edit_Controller extends Output_Controller
+class
+Edit_Controller extends Output_Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
@@ -26,7 +27,7 @@ class Edit_Controller extends Output_Controller
 		$fill_combo = isset($parameters['fill_combo'])
 			? ['fill_combo' => $parameters['fill_combo']] : [];
 		return [
-			new Button('Close', View::link(Names::classToSet(get_class($object))), 'close',
+			new Button('Close', View::link($object), 'close',
 				[new Color('close'), '#main']
 			),
 			new Button('Write', View::link($object, 'write', null, $fill_combo), 'write',
