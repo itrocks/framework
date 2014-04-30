@@ -68,7 +68,8 @@ class Comparison implements Where
 				case self::NOT_EQUAL: return $column . ' IS NOT NULL';
 			}
 		}
-		return $column . SP . $this->sign . SP . Value::escape($this->than_value);
+		return $column . SP . $this->sign . SP
+			. Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
 	}
 
 }
