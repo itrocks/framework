@@ -244,6 +244,9 @@ class Main
 		$session->plugins = new Manager();
 		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
 		$configuration = $this->loadConfiguration();
+		if (!$configuration) {
+			die('Bad Request');
+		}
 
 		unset($_SESSION['include_path']);
 		$this->setIncludePath($_SESSION, $configuration->getApplicationClassName());
@@ -306,13 +309,19 @@ class Main
 	{
 		if (empty($_SESSION)) {
 			session_start();
-			if (isset($GLOBALS['X'])) $_SESSION = [];
+			if (isset($GLOBALS['X'])) {
+				$_SESSION = [];
+			}
 		}
 		$this->setIncludePath($_SESSION, Application::class);
 		if (isset($_SESSION['session']) && isset($_SESSION['session']->plugins)) {
 			$this->resumeSession();
 		}
 		else {
+			$this->createSession();
+		}
+		if (!Application::current()) {
+			$_SESSION = [];
 			$this->createSession();
 		}
 		unset($get[session_name()]);

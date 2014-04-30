@@ -164,11 +164,13 @@ class Session implements Serializable
 	public function serialize()
 	{
 		$data = ['current' => [], 'plugins' => $this->plugins];
-		foreach ($this->current as $class_name => $object) {
-			if (is_object($object)) {
-				$object = [$class_name, serialize($object)];
+		if (isset($this->current)) {
+			foreach ($this->current as $class_name => $object) {
+				if (is_object($object)) {
+					$object = [$class_name, serialize($object)];
+				}
+				$data['current'][$class_name] = $object;
 			}
-			$data['current'][$class_name] = $object;
 		}
 		return serialize($data);
 	}

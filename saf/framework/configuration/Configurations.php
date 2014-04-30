@@ -54,7 +54,7 @@ class Configurations
 	{
 		$config = [];
 		/** @noinspection PhpIncludeInspection */
-		include $file_name;
+		include_once $file_name;
 		$configurations = [];
 		foreach ($config as $config_name => $config_options) {
 			if (isset($config_options['extends'])) {
