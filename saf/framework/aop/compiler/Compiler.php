@@ -3,9 +3,11 @@ namespace SAF\Framework\AOP;
 
 use SAF\Framework\AOP\Weaver\IWeaver;
 use SAF\Framework\Application;
+use SAF\Framework\Builder;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Session;
@@ -157,11 +159,11 @@ class Compiler implements ICompiler, Needs_Main
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
 	 * @param $sources Reflection_Source[]
-	 * @return boolean
+	 * @return Reflection_Source[] added sources list
 	 */
 	public function moreSourcesToCompile(&$sources)
 	{
-		$added = false;
+		$added = [];
 
 		// search into dependencies
 		/** @var $search Dependency */
@@ -172,10 +174,32 @@ class Compiler implements ICompiler, Needs_Main
 				if ($class->type === T_TRAIT) {
 					$search->dependency_name = $class->name;
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
+						while ($dependency && Builder::isBuilt($dependency->class_name)) {
+							$search_built_parent = Search_Object::create(Dependency::class);
+							$search_built_parent->class_name = $dependency->class_name;
+							$search_built_parent->type       = Dependency::T_EXTENDS;
+							$dependency = Dao::searchOne($search_built_parent);
+							if (!$dependency) {
+								trigger_error(
+									'Not parent class for built class ' . $search_built_parent->class_name,
+									E_USER_ERROR
+								);
+							}
+							$search_built_parent->class_name = $dependency->dependency_name;
+							$search_built_parent->type       = Dependency::T_DECLARATION;
+							$dependency = Dao::searchOne($search_built_parent);
+							if (!$dependency) {
+								trigger_error(
+									'Not declaration dependency for class ' . $search_built_parent->class_name,
+									E_USER_ERROR
+								);
+							}
+						}
 						/** @var $dependency Dependency */
 						if (!isset($sources[$dependency->file_name])) {
-							$sources[$dependency->file_name] = new Reflection_Source($dependency->file_name);
-							$added = true;
+							$source = new Reflection_Source($dependency->file_name);
+							$sources[$dependency->file_name] = $source;
+							$added[$dependency->file_name]   = $source;
 						}
 					}
 				}
@@ -204,8 +228,8 @@ class Compiler implements ICompiler, Needs_Main
 								$source = Reflection_Source::of($class_name);
 								if ($source->getClass($class_name)) {
 									$sources[$source->file_name] = $source;
+									$added[$source->file_name] = $source;
 									$already[$class_name] = true;
-									$added[$class_name] = true;
 								}
 								else {
 									trigger_error(

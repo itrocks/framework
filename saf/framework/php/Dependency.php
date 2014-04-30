@@ -8,15 +8,16 @@ class Dependency
 {
 
 	//---------------------------------------------------------------------------------- $type values
-	const T_CLASS      = 'class';
-	const T_EXTENDS    = 'extends';
-	const T_IMPLEMENTS = 'implements';
-	const T_NEW        = 'new';
-	const T_PARAM      = 'param';
-	const T_RETURN     = 'return';
-	const T_STATIC     = 'static';
-	const T_USE        = 'use';
-	const T_VAR        = 'var';
+	const T_CLASS       = 'class';
+	const T_DECLARATION = 'declaration';
+	const T_EXTENDS     = 'extends';
+	const T_IMPLEMENTS  = 'implements';
+	const T_NEW         = 'new';
+	const T_PARAM       = 'param';
+	const T_RETURN      = 'return';
+	const T_STATIC      = 'static';
+	const T_USE         = 'use';
+	const T_VAR         = 'var';
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**

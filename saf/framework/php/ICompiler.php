@@ -20,7 +20,7 @@ interface ICompiler
 	 * Extends the list of sources to compile
 	 *
 	 * @param &$sources Reflection_Source[]
-	 * @return boolean true if sources were added
+	 * @return Reflection_Source[] added sources list
 	 */
 	public function moreSourcesToCompile(&$sources);
 

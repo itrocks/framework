@@ -48,7 +48,7 @@ class Compiler implements ICompiler, Needs_Main
 	 * Extends the list of files to compile
 	 *
 	 * @param $files Reflection_Source[] Key is the file path
-	 * @return boolean true if files were added
+	 * @return Reflection_Source[] added sources list
 	 */
 	public function moreSourcesToCompile(&$files)
 	{
@@ -70,7 +70,7 @@ class Compiler implements ICompiler, Needs_Main
 				break;
 			}
 		}
-		return false;
+		return [];
 	}
 
 	//----------------------------------------------------------------------------- setMainController

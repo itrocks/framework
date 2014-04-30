@@ -211,20 +211,31 @@ class Compiler implements
 					);
 				}
 
-				// ask each compiler for adding of compiled files, until they have nothing to add
 				do {
-					$added = false;
+					$added = [];
+
+					// ask each compiler for adding of compiled files, until they have nothing to add
 					foreach ($compilers as $compiler) {
 						if ($compiler instanceof Needs_Main) {
 							$compiler->setMainController($this->main_controller);
 						}
-						if ($compiler->moreSourcesToCompile($this->sources)) {
-							$added = true;
-						}
+						$added = array_merge($added, $compiler->moreSourcesToCompile($this->sources));
 					}
+
+					foreach ($added as $source) {
+						/** @var Reflection_Source $source inspector bug */
+						/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
+						(new Set)->replace(
+							$source->getDependencies(true),
+							Dependency::class,
+							['file_name' => $source->file_name]
+						);
+					}
+
 					if (count($compilers) == 1) {
-						$added = false;
+						$added = [];
 					}
+
 				} while ($added);
 
 				// fill in sources cache
@@ -241,12 +252,20 @@ class Compiler implements
 				// compile sources
 				foreach ($this->sources as $source) {
 					foreach ($compilers as $compiler) {
+						echo '- compile ' . $source->file_name . ' with ' . get_class($compiler) . '<br>';
 						$compiler->compile($source, $this);
 					}
 					$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
 						? $source->file_name
 						: ($this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4)));
 					if ($source->hasChanged()) {
+						/** @var Reflection_Source $source inspector bug */
+						/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
+						(new Set)->replace(
+							$source->getDependencies(true),
+							Dependency::class,
+							['file_name' => $source->file_name]
+						);
 						script_put_contents($file_name, $source->getSource());
 					}
 					elseif (file_exists($file_name)) {

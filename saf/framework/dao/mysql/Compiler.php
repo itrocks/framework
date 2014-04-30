@@ -70,11 +70,11 @@ class Compiler implements ICompiler
 	 *
 	 *
 	 * @param &$sources Reflection_Source[]
-	 * @return boolean true if sources were added
+	 * @return Reflection_Source[] added sources list
 	 */
 	public function moreSourcesToCompile(&$sources)
 	{
-		$added = false;
+		$added = [];
 		// Builder is disabled during the listing as we want to get the original linked class name when
 		// reading class annotation @link
 		Builder::current()->enabled = false;
@@ -90,7 +90,7 @@ class Compiler implements ICompiler
 					$source = Reflection_Class::of($linked_class)->source;
 					if (!isset($sources[$source->file_name])) {
 						$sources[$source->file_name] = $source;
-						$added = true;
+						$added[$source->file_name] = $source;
 					}
 					$class = $source->getClass($linked_class);
 				}
@@ -98,8 +98,9 @@ class Compiler implements ICompiler
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
 					/** @var $dependency Dependency */
 					if (!isset($sources[$dependency->file_name])) {
-						$sources[$dependency->file_name] = new Reflection_Source($dependency->file_name);
-						$added = true;
+						$source = new Reflection_Source($dependency->file_name);
+						$sources[$dependency->file_name] = $source;
+						$added[$dependency->file_name] = $source;
 					}
 				}
 			}

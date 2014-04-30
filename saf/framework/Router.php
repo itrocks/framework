@@ -424,11 +424,11 @@ class Router implements
 	 * Extends the list of files to compile
 	 *
 	 * @param $files Reflection_Source[] Key is the file path
-	 * @return boolean true if files were added
+	 * @return Reflection_Source[] added sources list
 	 */
 	public function moreSourcesToCompile(&$files)
 	{
-		return false;
+		return [];
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -477,6 +477,7 @@ class Router implements
 	public function serialize()
 	{
 		return '';
+		/*
 		if ($this->changes) {
 			ksort($this->full_class_names);
 			ksort($this->class_paths);
@@ -509,6 +510,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 			);
 		}
 		return '';
+		*/
 	}
 
 	//--------------------------------------------------------------------- setPossibleControllerCall

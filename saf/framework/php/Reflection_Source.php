@@ -263,7 +263,15 @@ class Reflection_Source
 				if ($f_classes) {
 					$this->classes[$class_name] = $class;
 				}
+				$dependency = new Dependency();
+				$dependency->class_name      = $class->name;
+				$dependency->dependency_name = $class->name;
+				$dependency->file_name       = $this->file_name;
+				$dependency->line            = $token[2];
+				$dependency->type            = Dependency::T_DECLARATION;
+				$this->dependencies[] = $dependency;
 			}
+
 			elseif ($token_id === T_FUNCTION) {
 				$use_what = T_FUNCTION;
 			}
