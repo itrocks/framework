@@ -110,6 +110,15 @@ class String
 		return new String(strtolower($this->value));
 	}
 
+	//------------------------------------------------------------------------------------------ nbsp
+	/**
+	 * @return String
+	 */
+	public function nbsp()
+	{
+		return empty($this->value) ? new String('&nbsp;') : $this;
+	}
+
 	//-------------------------------------------------------------------------------------------- of
 	/**
 	 * Constructs a new String

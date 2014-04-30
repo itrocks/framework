@@ -15,7 +15,8 @@
 	/* table */
 	>table {
 		clear: both;
-		font: 12px Arial, Sans-serif;
+		font-family: Arial, Sans-Serif;
+		font-size: 12px;
 		width: 100%;
 
 		/* columns */
@@ -45,7 +46,7 @@
 			>th {
 				background: url("img/list_head_left.png") left 3px no-repeat,
 				url("img/list_head_right.png") right 3px no-repeat,
-				url("img/list_head_background.png") #aaa repeat-x;
+				url("img/list_head_background.png") left 0 #aaa repeat-x;
 				vertical-align: bottom;
 				white-space: nowrap;
 
@@ -104,7 +105,7 @@
 
 		/* lines */
 		>tbody>tr {
-			height: 22px;
+			height: 21px;
 			&:nth-child(even) {
 				background-color: $table_even_line;
 			}
@@ -117,17 +118,28 @@
 
 			>td {
 				border-right: 1px dotted lightgray;
+				padding: 5px 3px 0;
+				vertical-align: top;
 				white-space: nowrap;
-				&:not(.vertical.scrollbar) {
-					padding: 0 2px;
+
+				&.vertical.scrollbar {
+					padding: 0;
+					>a {
+						margin: 0;
+					}
 				}
 
 				>a {
 					color: black;
 					display: block;
-					height: 22px;
-					padding: 3px 0 0 0;
+					height: 16px;
+					margin: -5px 0 0 0;
+					padding: 5px 0 0 0;
 					text-decoration: none;
+				}
+
+				>input[type=checkbox] {
+					margin: -2px 3px 0;
 				}
 			}
 		}

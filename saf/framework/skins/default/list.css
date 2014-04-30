@@ -12,7 +12,8 @@
       display: none; }
   .list.window > table {
     clear: both;
-    font: 12px Arial, Sans-serif;
+    font-family: Arial, Sans-Serif;
+    font-size: 12px;
     width: 100%;
     /* columns */
     /* head */
@@ -31,7 +32,7 @@
     .list.window > table > thead > tr {
       height: 17px; }
       .list.window > table > thead > tr > th {
-        background: url("img/list_head_left.png") left 3px no-repeat, url("img/list_head_right.png") right 3px no-repeat, url("img/list_head_background.png") #aaaaaa repeat-x;
+        background: url("img/list_head_left.png") left 3px no-repeat, url("img/list_head_right.png") right 3px no-repeat, url("img/list_head_background.png") left 0 #aaaaaa repeat-x;
         vertical-align: bottom;
         white-space: nowrap;
         /* column select */
@@ -67,7 +68,7 @@
         .list.window > table > thead > tr > td > input, .list.window > table > thead > tr > td > select, .list.window > table > thead > tr > td > textarea {
           width: 100%; }
     .list.window > table > tbody > tr {
-      height: 22px; }
+      height: 21px; }
       .list.window > table > tbody > tr:nth-child(even) {
         background-color: #ececed; }
       .list.window > table > tbody > tr:nth-child(odd) {
@@ -76,15 +77,22 @@
         background-color: #aedc5f; }
       .list.window > table > tbody > tr > td {
         border-right: 1px dotted lightgray;
+        padding: 5px 3px 0;
+        vertical-align: top;
         white-space: nowrap; }
-        .list.window > table > tbody > tr > td:not(.vertical.scrollbar) {
-          padding: 0 2px; }
+        .list.window > table > tbody > tr > td.vertical.scrollbar {
+          padding: 0; }
+          .list.window > table > tbody > tr > td.vertical.scrollbar > a {
+            margin: 0; }
         .list.window > table > tbody > tr > td > a {
           color: black;
           display: block;
-          height: 22px;
-          padding: 3px 0 0 0;
+          height: 16px;
+          margin: -5px 0 0 0;
+          padding: 5px 0 0 0;
           text-decoration: none; }
+        .list.window > table > tbody > tr > td > input[type=checkbox] {
+          margin: -2px 3px 0; }
 
 ul.actions > li.growth > a {
   color: transparent;
