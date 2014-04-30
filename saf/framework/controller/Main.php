@@ -14,6 +14,7 @@ use SAF\Framework\Plugin\Activable;
 use SAF\Framework\Plugin\Manager;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Paths;
 use SAF\Framework\Updater\Application_Updater;
 
 /**
@@ -308,6 +309,7 @@ class Main
 	private function sessionStart(&$get, &$post)
 	{
 		if (empty($_SESSION)) {
+			ini_set('session.cookie_path', SL . Paths::$script_name);
 			session_start();
 			if (isset($GLOBALS['X'])) {
 				$_SESSION = [];
