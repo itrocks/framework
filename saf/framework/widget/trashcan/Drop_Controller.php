@@ -6,6 +6,7 @@ use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Set;
 
 /**
@@ -20,16 +21,18 @@ class Drop_Controller implements Feature_Controller
 	 *
 	 * @param $parameters mixed[]
 	 * - first : the deleted object
-	 * - second : the feature name
-	 * - other parameters are kept and sent to the object delete controller
+	 * - other parameters are not sent to the delete controller (only as_widget is kept)
 	 * @return mixed
 	 */
 	private function deleteObject($parameters)
 	{
 		$object = array_shift($parameters);
-		array_shift($parameters); // $feature
-		$controller_uri = SL . get_class($object) . SL . Dao::getObjectIdentifier($object)
+		$controller_uri = SL . Names::classToPath(get_class($object))
+			. SL . Dao::getObjectIdentifier($object)
 			. SL . Feature::F_DELETE;
+		if (isset($parameters['as_widget'])) {
+			$controller_uri .= '?as_widget';
+		}
 		return (new Main())->runController($controller_uri, $parameters);
 	}
 

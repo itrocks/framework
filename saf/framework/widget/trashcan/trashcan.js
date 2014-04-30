@@ -15,13 +15,22 @@ $('document').ready(function()
 			helper: function()
 			{
 				var $this = $(this);
-				var id = ($this.is('a')) ? $this.attr('href') : $this.attr('id');
-				if ((id == undefined) || !id.length) id = $this.closest('[id]').attr('id');
+				var class_name = $this.data('class');
+				var id = $this.data('id');
+				if (class_name == undefined) {
+					class_name = $this.closest('[data-class]').data('class');
+				}
+				if (id == undefined) {
+					id = $this.closest('[data-id]').data('id');
+				}
 				var text = $this.find('h2').text();
-				if (!text.length) text = $this.text();
+				if (!text.length) {
+					text = $this.text();
+				}
 				return $('<div>')
 					.addClass('object')
-					.attr('id', id)
+					.attr('data-class', class_name)
+					.attr('data-id', id)
 					.html(text)
 					.css('z-index', ++zindex_counter);
 			}
@@ -59,10 +68,17 @@ $('document').ready(function()
 						});
 					}
 				}
-				event.target.href += '/' + ui.helper.data('class').replace('\\', '/')
-					+ '/' + ui.helper.data('feature');
+				event.target.href += '/' + ui.helper.data('class').replace('\\', '/');
 				if (ui.helper.data('property')) {
 					event.target.href += '/SAF/Framework/Property/' + ui.helper.data('property');
+				}
+				else {
+					if (ui.helper.data('id')) {
+						event.target.href += '/' + ui.helper.data('id');
+					}
+					if (ui.helper.data('feature')) {
+						event.target.href += '/' + ui.helper.data('feature');
+					}
 				}
 				event.target.href += event.target.search + event.target.hash;
 				event.target.click();
