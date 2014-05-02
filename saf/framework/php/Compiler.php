@@ -167,6 +167,7 @@ class Compiler implements
 	 */
 	public function compile($last_time = 0)
 	{
+		set_time_limit(900);
 		clearstatcache();
 		$cache_dir = $this->getCacheDir();
 
@@ -252,7 +253,6 @@ class Compiler implements
 				// compile sources
 				foreach ($this->sources as $source) {
 					foreach ($compilers as $compiler) {
-						echo '- compile ' . $source->file_name . ' with ' . get_class($compiler) . '<br>';
 						$compiler->compile($source, $this);
 					}
 					$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
