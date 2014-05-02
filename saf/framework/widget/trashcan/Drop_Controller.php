@@ -27,12 +27,9 @@ class Drop_Controller implements Feature_Controller
 	private function deleteObject($parameters)
 	{
 		$object = array_shift($parameters);
-		$controller_uri = SL . Names::classToPath(get_class($object))
+		$controller_uri = SL . Names::classToUri(get_class($object))
 			. SL . Dao::getObjectIdentifier($object)
 			. SL . Feature::F_DELETE;
-		if (isset($parameters['as_widget'])) {
-			$controller_uri .= '?as_widget';
-		}
 		return (new Main())->runController($controller_uri, $parameters);
 	}
 
