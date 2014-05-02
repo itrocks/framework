@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Property;
 
-use SAF\Framework\Controller;
+use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Property;
@@ -17,7 +17,7 @@ use SAF\Framework\View;
  * The property select controller is a class properties tree view controller.
  * It lists all properties from a class, display their names, and enable the user to drag them.
  */
-class Select_Controller implements Controller
+class Select_Controller implements Feature_Controller
 {
 
 	//--------------------------------------------------------------------------------- getProperties
@@ -26,7 +26,7 @@ class Select_Controller implements Controller
 	 * @param $composite_class_name    string
 	 * @return Reflection_Property_Value[]
 	 */
-	public function getProperties(Reflection_Class $class, $composite_class_name = null)
+	protected function getProperties(Reflection_Class $class, $composite_class_name = null)
 	{
 		$properties = [];
 		if (isset($composite_class_name) && isA($class->name, Component::class)) {

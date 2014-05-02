@@ -90,7 +90,7 @@ abstract class Functions
 	{
 		$object = reset($template->objects);
 		if ($object instanceof Reflection_Property) {
-			return Names::propertyToDisplay($object->name);
+			return Names::propertyToDisplay($object->path);
 		}
 		elseif ($object instanceof Reflection_Class) {
 			return Names::classToDisplay($object->name);

@@ -7,6 +7,53 @@ $('document').ready(function()
 		this.in('ul.property_tree').sortcontent();
 		this.in('.property_select').prepend($('<span>').addClass('joint'));
 
+		// search
+		this.in('.property_select>input[name=search]').each(function()
+		{
+			console.log('set last_search = -');
+			var last_search = '';
+			var search_step = 0;
+			$(this).keyup(function()
+			{
+				var $this = $(this);
+				var new_search = $this.val();
+				if ((last_search != new_search) && !search_step) {
+					console.log('- changed from ' + last_search + ' to ' + new_search);
+					search_step = 1;
+					last_search = new_search;
+					console.log('- SEARCH ' + new_search);
+					$.ajax(
+						window.app.uri_base + '/SAF/Framework/Property/search'
+							+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
+							+ '?search=' + encodeURI(new_search)
+							+ '&as_widget' + window.app.andSID(),
+						{
+							success: function(data) {
+								search_step = 2;
+								console.log('- find ' + new_search);
+								$this.parent().children('.property_tree').html(data);
+							}
+						}
+					);
+					var retry = function() {
+						if (search_step == 1) {
+							console.log('. will retry');
+							setTimeout(retry, 200);
+						}
+						else {
+							console.log('- done');
+							search_step = 0;
+							if ($this.val() != last_search) {
+								console.log('- search changed from ' + last_search + ' to ' + $this.val());
+								$this.keyup();
+							}
+						}
+					};
+					setTimeout(retry, 500);
+				}
+			});
+		});
+
 		// create tree
 		this.in('ul.property_tree>li a').click(function(event)
 		{
