@@ -86,11 +86,11 @@ abstract class Functions
 	 * @param $template Template
 	 * @return string
 	 */
-	public static function getDisplay(Template $template)
+	public static function getDisplay(Template $template, $display_full_path = false)
 	{
 		$object = reset($template->objects);
 		if ($object instanceof Reflection_Property) {
-			return Names::propertyToDisplay($object->path);
+			return Names::propertyToDisplay($display_full_path ? $object->path : $object->name);
 		}
 		elseif ($object instanceof Reflection_Class) {
 			return Names::classToDisplay($object->name);

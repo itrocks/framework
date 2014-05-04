@@ -99,12 +99,15 @@ class Select_Controller implements Feature_Controller
 			foreach ($properties as $property) {
 				$property->path = $property_path . DOT . $property->name;
 			}
-			$parameters->set('container', 'subtree');
+			if (!$parameters->getRawParameter('container')) {
+				$parameters->set('container', 'subtree');
+			}
 		}
 		$objects = $parameters->getObjects();
 		array_unshift($objects, $top_property);
 		$objects['properties'] = $properties;
 		$objects['class_name'] = $class_name;
+		$objects['display_full_path'] = false;
 		/**
 		 * Objects for the view :
 		 * first        Property the property object (with selected property name, or not)

@@ -2,6 +2,7 @@
 namespace SAF\Framework\Property;
 
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Property;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -18,7 +19,7 @@ class Search_Controller extends Select_Controller
 	/**
 	 * @var integer
 	 */
-	private $max_depth = 10;
+	private $max_depth = 5;
 
 	//------------------------------------------------------------------------------------------- run
 	/**
@@ -29,12 +30,14 @@ class Search_Controller extends Select_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$parameters->set('container', 'subtree');
+		$parameters->set('container', 'inside_tree');
 		$search = $parameters->getRawParameter('search');
 		if (empty($search)) {
 			return parent::run($parameters, $form, $files);
 		}
-		$search = str_replace(['*', '?', DOT], ['.*', '.?', BS . DOT], $search);
+		$search = strtolower(str_replace(
+			[DOT, '*', '?'], [BS . DOT, '.*', '.?'], strSimplify($search, '.*? ' . BS)
+		));
 
 		$class_name = Names::setToClass($parameters->shift());
 		$properties = $this->searchProperties($class_name, $search);
@@ -45,6 +48,7 @@ class Search_Controller extends Select_Controller
 		array_unshift($objects, $top_property);
 		$objects['class_name'] = $class_name;
 		$objects['properties'] = $properties;
+		$objects['display_full_path'] = true;
 
 		return View::run($objects, $form, $files, Property::class, 'select');
 	}
@@ -72,13 +76,21 @@ class Search_Controller extends Select_Controller
 				$first_properties[$property_path] = $property;
 			}
 			else {
-				preg_match('|^' . $search . '|', $property->name, $matches);
-				preg_match('|^' . $search . '|', $prefix . $property_path, $matches2);
+				preg_match(
+					'|^' . $search . '|', strtolower(strSimplify(Loc::tr($property->name))),
+					$matches
+				);
+				preg_match(
+					'|^' . $search . '|', strtolower(strSimplify(Loc::tr($prefix . $property_path), DOT)),
+					$matches2
+				);
 				if ($matches || $matches2) {
 					$properties[$property_path] = $property;
 				}
 				else {
-					preg_match('|' . $search . '|', $property_path, $matches);
+					preg_match(
+						'|' . $search . '|', strtolower(strSimplify(Loc::tr($property_path), DOT)), $matches
+					);
 					if ($matches) {
 						$more_properties[$property_path] = $property;
 					}

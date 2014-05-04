@@ -13,13 +13,15 @@
 <div class="property_select">
 	<input name="search">
 	<!--BEGIN:subtree-->
+	<!--use SAF\Framework\Tools\Names-->
 	<ul class="property_tree">
+	<!--BEGIN:inside_tree-->
 	<!--properties-->
 		<li class="property" data-property="{path}" title="|{path}|">
 			<!--!getType.isBasic?-->
 			<a href="/SAF/Framework/Property/select/{--class_name.path}/{path}" target="#tree-{path}">
 			<!--!getType.isBasic?-->
-			|{@display}|
+			|{@display(display_full_path)}|
 			<!--!getType.isBasic?-->
 			</a>
 			<!--!getType.isBasic?-->
@@ -41,6 +43,7 @@
 			</section>
 		</li>
 	<!--properties-->
+	<!--END:inside_tree-->
 	</ul>
 	<!--END:subtree-->
 </div>
