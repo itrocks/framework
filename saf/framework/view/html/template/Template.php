@@ -563,8 +563,8 @@ class Template
 		$params = explode(',', $params_string);
 		foreach ($params as $key => $param) {
 			if (
-					((substr($param, 0, 1) == Q) && (substr($param, -1) == Q))
-					|| ((substr($param, 0, 1) == DQ) && (substr($param, -1) == DQ))
+				((substr($param, 0, 1) == Q) && (substr($param, -1) == Q))
+				|| ((substr($param, 0, 1) == DQ) && (substr($param, -1) == DQ))
 			) {
 				$params[$key] = substr($param, 1, -1);
 			}
@@ -796,7 +796,16 @@ class Template
 	 */
 	protected function parseMethod($object, $property_name)
 	{
-		return $this->htmlEntities($object->$property_name());
+		if ($i = strpos($property_name, '(')) {
+			$method_name = substr($property_name, 0, $i);
+			$i++;
+			$j = strpos($property_name, ')', $i);
+			$params = $this->parseFuncParams(substr($property_name, $i, $j - $i));
+			return $this->htmlEntities(call_user_func_array([$object, $method_name], $params));
+		}
+		else {
+			return $this->htmlEntities($object->$property_name());
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- parseNot
@@ -944,7 +953,15 @@ class Template
 			$object = $this->parseFunc(substr($property_name, 1));
 		}
 		elseif ($i = strpos($property_name, '(')) {
-			$object = $this->callFunc(reset($this->objects), $property_name);
+			if (
+				(is_object($object) || ctype_upper($object[0]))
+				&& method_exists($object, substr($property_name, 0, $i))
+			) {
+				$object = $this->parseMethod($object, $property_name);
+			}
+			else {
+				$object = $this->callFunc(reset($this->objects), $property_name);
+			}
 		}
 		elseif (is_array($object)) {
 			$object = $this->parseArrayElement($object, $property_name);
