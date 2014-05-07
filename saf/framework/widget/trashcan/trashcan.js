@@ -55,7 +55,8 @@ $('document').ready(function()
 				if ($window.length) {
 					var data_class = $window.data('class');
 					if (data_class != undefined) {
-						$(event.target).data('on-success', function() {
+						$(event.target).data('on-success', function()
+						{
 							var uri = '/' + data_class.replace('\\', '/') + '/' + $window.data('feature');
 							$.ajax({
 								url: app.uri_base + uri + '?as_widget' + app.andSID(),
@@ -69,16 +70,14 @@ $('document').ready(function()
 					}
 				}
 				event.target.href += '/' + ui.helper.data('class').replace('\\', '/');
+				if (ui.helper.data('id')) {
+					event.target.href += '/' + ui.helper.data('id');
+				}
+				if (ui.helper.data('feature')) {
+					event.target.href += '/' + ui.helper.data('feature');
+				}
 				if (ui.helper.data('property')) {
 					event.target.href += '/SAF/Framework/Property/' + ui.helper.data('property');
-				}
-				else {
-					if (ui.helper.data('id')) {
-						event.target.href += '/' + ui.helper.data('id');
-					}
-					if (ui.helper.data('feature')) {
-						event.target.href += '/' + ui.helper.data('feature');
-					}
 				}
 				event.target.href += event.target.search + event.target.hash;
 				event.target.click();
