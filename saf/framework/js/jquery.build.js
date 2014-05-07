@@ -32,8 +32,12 @@
 			if (nop == undefined) {
 				nop = true;
 				i = selector.indexOf(' ');
+				var i2 = selector.indexOf('>');
+				if ((i2 > -1) && ((i == -1) || i2 < i)) {
+					i = i2;
+				}
 				if (i > -1) {
-					return this.in(selector.substr(0, i), nop).find(selector.substr(i + 1));
+					return this.in(selector.substr(0, i), nop).find(selector.substr(i));
 				}
 			}
 			// filtered object itself, added to find into it's children
