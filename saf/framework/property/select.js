@@ -27,12 +27,14 @@ $('document').ready(function()
 						{
 							success: function(data) {
 								search_step = 2;
-								$this.parent().children('.property_tree').html(data);
-								$this.parent().children('.property_tree').build();
+								var $property_tree = $this.parent().children('.property_tree');
+								$property_tree.html(data);
+								$property_tree.build();
 							}
 						}
 					);
-					var retry = function() {
+					var retry = function()
+					{
 						if (search_step == 1) {
 							setTimeout(retry, 200);
 						}
@@ -49,7 +51,7 @@ $('document').ready(function()
 		});
 
 		// create tree
-		this.in('ul.property_tree>li a').click(function(event)
+		this.in('ul.property_tree>li>a').click(function(event)
 		{
 			var $this = $(this);
 			var $li = $(this).closest('li');
