@@ -3,6 +3,7 @@ namespace SAF\Framework\Property;
 
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Locale\Loc;
+use SAF\Framework\Mapper\Component;
 use SAF\Framework\Property;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -55,62 +56,80 @@ class Search_Controller extends Select_Controller
 
 	//------------------------------------------------------------------------------ searchProperties
 	/**
-	 * @param $class_name     string
-	 * @param $search         string
-	 * @param $parent_classes string[]
-	 * @param $prefix         string
+	 * @param $class_name         string
+	 * @param $search             string
+	 * @param $exclude_properties string[]
+	 * @param $prefix             string
+	 * @param $depth              integer
 	 * @return Reflection_Property[]
 	 */
-	protected function searchProperties($class_name, $search, $parent_classes = [], $prefix = '')
-	{
-		$parent_classes[$class_name] = true;
+	protected function searchProperties(
+		$class_name, $search, $exclude_properties = [], $prefix = '', $depth = 0
+	) {
 		$class = new Reflection_Class($class_name);
 		$all_properties = $this->getProperties($class);
 		$first_properties = [];
 		$properties       = [];
 		$more_properties  = [];
 		foreach ($all_properties as $property) {
+			if (!isset($exclude_properties[$property->name])) {
 
-			$property_path = $prefix . $property->name;
-			if (($property->name == $search) || ($property_path == $search)) {
-				$first_properties[$property_path] = $property;
-			}
-			else {
-				preg_match(
-					'|^' . $search . '|', strtolower(strSimplify(Loc::tr($property->name))),
-					$matches
-				);
-				preg_match(
-					'|^' . $search . '|', strtolower(strSimplify(Loc::tr($prefix . $property_path), DOT)),
-					$matches2
-				);
-				if ($matches || $matches2) {
-					$properties[$property_path] = $property;
+				$property_path = $prefix . $property->name;
+				if (($property->name == $search) || ($property_path == $search)) {
+					$first_properties[$property_path] = $property;
+					$matches = true;
 				}
 				else {
 					preg_match(
-						'|' . $search . '|', strtolower(strSimplify(Loc::tr($property_path), DOT)), $matches
+						'|^' . $search . '|',
+						strtolower(strSimplify(Loc::tr($property->name), SP)),
+						$matches
 					);
-					if ($matches) {
-						$more_properties[$property_path] = $property;
+					preg_match(
+						'|^' . $search . '|',
+						strtolower(strSimplify(Loc::tr($prefix . $property_path), DOT . SP)),
+						$matches2
+					);
+					if ($matches || $matches2) {
+						$properties[$property_path] = $property;
+						$matches = true;
 					}
-				}
-			}
-
-			if (count($parent_classes) < $this->max_depth) {
-				$type = $property->getType();
-				if ($type->isClass() && !isset($parent_classes[$type->getElementTypeAsString()])) {
-					$sub_properties = $this->searchProperties(
-						$type->getElementTypeAsString(), $search, $parent_classes, $property->name . DOT
-					);
-					foreach ($sub_properties as $sub_property) {
-						$more_properties[] = new Reflection_Property(
-							$class_name, $property->name . DOT . $sub_property->path
+					else {
+						preg_match(
+							'|' . $search . '|',
+							strtolower(strSimplify(Loc::tr($property_path), DOT . SP)),
+							$matches
 						);
+						if ($matches) {
+							$more_properties[$property_path] = $property;
+						}
 					}
 				}
-			}
 
+				if (($depth < $this->max_depth) && !$matches) {
+					$type = $property->getType();
+					if ($type->isClass()) {
+						$property_class = $type->getElementTypeAsString();
+						$is_component = isA($property_class, Component::class);
+						$exclude_sub_properties = $is_component
+							? call_user_func([$property_class, 'getCompositeProperties'], $class_name)
+							: [];
+						$parent_classes[] = $class_name;
+						$sub_properties = $this->searchProperties(
+							$type->getElementTypeAsString(), $search,
+							$exclude_sub_properties, $property->name . DOT, $depth + 1
+						);
+						foreach ($sub_properties as $sub_property) {
+							if (!isset($exclude_properties[$sub_property->name])) {
+								$more_properties[] = new Reflection_Property(
+									$class_name, $property->name . DOT . $sub_property->path
+								);
+							}
+						}
+					}
+				}
+
+			}
 		}
 		$properties = array_merge($first_properties, $properties, $more_properties);
 		return $properties;
