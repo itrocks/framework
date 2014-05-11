@@ -4,7 +4,7 @@ The RAD Framework for small-to-big PHP Applications
 
 # Introducing Alpha version
 
-This a currently in-dev version of the framework.
+This is a currently-in-dev version of the framework.
 
 Since a lot of things for a basic use are done, there is a lot of work to do to get it stable and good, and the documentation is actually not done at all.
 
