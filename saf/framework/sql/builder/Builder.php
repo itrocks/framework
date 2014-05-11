@@ -82,9 +82,8 @@ abstract class Builder
 			}
 			if (($key != 'id') && (substr($key, 0, 3) != 'id_')) {
 				$key   = BQ . $key . BQ;
-				$value = Value::escape($value);
 			}
-			$sql_insert .= $key . ' = ' . $value;
+			$sql_insert .= $key . ' = ' . Value::escape($value);
 		}
 		return $sql_insert;
 	}
@@ -108,9 +107,8 @@ abstract class Builder
 			}
 			if (($key != 'id') && (substr($key, 0, 3) != 'id_')) {
 				$key   = BQ . $key . BQ;
-				$value = Value::escape($value);
 			}
-			$sql_update .= $key . ' = ' . $value;
+			$sql_update .= $key . ' = ' . Value::escape($value);
 		}
 		$sql_update .= ' WHERE id = ' . $id;
 		return $sql_update;
