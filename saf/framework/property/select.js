@@ -126,4 +126,19 @@ $('document').ready(function()
 
 	});
 
+	// hide popup select box when clicking outside of it
+	$(document).click(function(event)
+	{
+		var $column_select = $('#column_select.popup');
+		if ($column_select.length) {
+			var offset = $column_select.offset();
+			if (!(
+				(event.pageX > offset.left) && (event.pageX < (offset.left + $column_select.width()))
+				&& (event.pageY > offset.top) && (event.pageY < (offset.top + $column_select.height()))
+			)) {
+				$column_select.fadeOut(200);
+			}
+		}
+	});
+
 });
