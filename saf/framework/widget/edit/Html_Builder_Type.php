@@ -4,12 +4,14 @@ namespace SAF\Framework\Widget\Edit;
 use DateTime;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Dao\File;
+use SAF\Framework\Dao\File\Session_File;
 use SAF\Framework\Dao\File\Session_File\Files;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
+use SAF\Framework\Tools\Paths;
 use SAF\Framework\View\Html\Dom\Anchor;
 use SAF\Framework\View\Html\Dom\Button;
 use SAF\Framework\View\Html\Dom\Element;
@@ -205,10 +207,14 @@ class Html_Builder_Type
 		$session_files = Session::current()->get(Files::class, true);
 		$session_files->files[] = $file;
 		$image = ($file->getType()->is('image'))
-			? new Image('/Session_File/output/' . $file->name . '?size=22')
+			? new Image(
+				SL . Paths::$script_name
+				. SL . str_replace(BS, SL, Session_File::class) . SL . 'output' . SL . $file->name
+				. '?size=22'
+			)
 			: '';
 		$anchor = new Anchor(
-			'/Session_File/image/' . $file->name,
+			SL . str_replace(BS, SL, Session_File::class) . SL . 'image' . SL . $file->name,
 			$image . new Span($file->name)
 		);
 		if ($file->getType()->is('image')) {

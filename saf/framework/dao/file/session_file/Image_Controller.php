@@ -4,6 +4,7 @@ namespace SAF\Framework\Dao\File\Session_File;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao\File\Session_File;
+use SAF\Framework\Tools\Paths;
 use SAF\Framework\View;
 
 /**
@@ -22,7 +23,8 @@ class Image_Controller implements Feature_Controller
 	public function run(Parameters $parameters, $form, $files)
 	{
 		$objects = $parameters->getObjects();
-		$objects['link'] = '/Session_File/output/' . reset($objects);
+		$objects['link'] = SL . Paths::$script_name
+			. SL . str_replace(BS, SL, Session_File::class) . '/output/' . reset($objects);
 		return View::run($objects, $form, $files, Session_File::class, 'image');
 	}
 

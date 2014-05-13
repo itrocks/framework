@@ -8,7 +8,8 @@ use Serializable;
  * Temporary files collection, stored into session
  *
  * Files contents are emptied on serialize, so please always set the temporary file name
- * TODO could serialize / unserialize into File instead of here, with write of temporary file if does not exist
+ * TODO could serialize / unserialize into File instead of here, with write of temporary file if
+ * does not exist
  */
 class Files implements Serializable
 {

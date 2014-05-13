@@ -1367,7 +1367,7 @@ class Template
 	 */
 	protected function replaceUri($uri)
 	{
-		if (strpos($uri, '://')) {
+		if (strpos($uri, '://') || (strpos($uri, SL . Paths::$script_name . SL) === 0)) {
 			return $uri;
 		}
 		$position = strrpos($uri, '/vendor/');
@@ -1401,7 +1401,7 @@ class Template
 	 */
 	protected function replaceUris($content)
 	{
-		$links = ['@import "', 'src="'];
+		$links = ['@import ' . DQ, 'src=' . DQ];
 		foreach ($links as $link) {
 			$i = 0;
 			while (($i = strpos($content, $link, $i)) !== false) {
