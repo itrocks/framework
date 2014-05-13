@@ -16,13 +16,21 @@ use SAF\Framework\User;
 class Access_Control implements Configurable, Registerable
 {
 
+	//---------------------------------------------------------------------------------------- $blank
+	/**
+	 * @var string[]
+	 */
+	public $blank = [
+		'/.*/.*/Menu/output'
+	];
+
+	//----------------------------------------------------------------------------------- $exceptions
 	/**
 	 * @var string[]
 	 */
 	public $exceptions = [
 		'/.*/.*/User/authenticate',
 		'/.*/.*/User/login',
-		'/.*/.*/Menu/output',
 		'/SAF/Framework/Tests/run'
 	];
 
@@ -32,8 +40,11 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function __construct($configuration = null)
 	{
-		if (isset($configuration)) {
-			$this->exceptions = array_merge($this->exceptions, $configuration);
+		if (isset($configuration['blank'])) {
+			$this->blank= array_merge($this->blank, $configuration['blank']);
+		}
+		if (isset($configuration['exceptions'])) {
+			$this->exceptions = array_merge($this->exceptions, $configuration['exceptions']);
 		}
 	}
 
@@ -46,14 +57,19 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function checkUser(&$uri, &$get, &$post, &$files)
 	{
-		if (!User::current() && !$this->exception($uri)) {
-			$uri = '/SAF/Framework/User/login';
-			$_get = [];
-			if (isset($get['as_widget']))   $_get['as_widget']   = true;
-			if (isset($get['is_included'])) $_get['is_included'] = true;
-			$get   = $_get;
-			$post  = [];
-			$files = [];
+		if (!User::current()) {
+			if ($this->isBlank($uri)) {
+				$uri = '/SAF/Framework/Application/blank';
+			}
+			elseif (!$this->exception($uri)) {
+				$uri = '/SAF/Framework/User/login';
+				$_get = [];
+				if (isset($get['as_widget']))   $_get['as_widget']   = true;
+				if (isset($get['is_included'])) $_get['is_included'] = true;
+				$get   = $_get;
+				$post  = [];
+				$files = [];
+			}
 		}
 	}
 
@@ -69,6 +85,24 @@ class Access_Control implements Configurable, Registerable
 		// could use preg_grep, but I don't want to ask delimiters into exceptions array
 		foreach ($this->exceptions as $exception) {
 			if (preg_match('%^' . $exception . '$%', $uri)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//--------------------------------------------------------------------------------------- isBlank
+	/**
+	 * Returns true if this URI must show the application blank page if no user is connected
+	 *
+	 * @param $uri string
+	 * @return boolean
+	 */
+	private function isBlank($uri)
+	{
+		// could use preg_grep, but I don't want to ask delimiters into blank array
+		foreach ($this->blank as $blank) {
+			if (preg_match('%^' . $blank . '$%', $uri)) {
 				return true;
 			}
 		}
