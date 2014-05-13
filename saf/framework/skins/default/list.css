@@ -46,6 +46,9 @@
             display: block;
             font-size: 1px;
             height: 17px; }
+          .list.window > table > thead > tr > th.column_select > section.popup {
+            left: 0;
+            position: absolute; }
         .list.window > table > thead > tr > th > a {
           background: padding-box right 5px no-repeat;
           border-right: 4px solid transparent;
