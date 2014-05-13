@@ -1322,7 +1322,7 @@ class Template
 			return $link;
 		}
 		$full_path = str_replace(
-			SL . DOT . SL, SL, $this->getUriRoot() . $this->getScriptName() . $link
+			[SL . SL, SL . DOT . SL], SL, $this->getUriRoot() . $this->getScriptName() . $link
 		);
 		if (substr($full_path, 0, 2) == (DOT . SL)) {
 			$full_path = substr($full_path, 2);
@@ -1367,7 +1367,7 @@ class Template
 	 */
 	protected function replaceUri($uri)
 	{
-		if (strpos($uri, '://') || (strpos($uri, SL . Paths::$script_name . SL) === 0)) {
+		if (strpos($uri, '://')) {
 			return $uri;
 		}
 		$position = strrpos($uri, '/vendor/');
@@ -1385,7 +1385,7 @@ class Template
 			$file_path = substr(
 				stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 			);
-			if (!file_exists(Paths::$file_root . $file_path)) {
+			if (!$file_path || !file_exists(Paths::$file_root . $file_path)) {
 				return $this->replaceLink(SL . $uri);
 			}
 		}

@@ -11,7 +11,6 @@ use SAF\Framework\Reflection\Type;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Tools\Paths;
 use SAF\Framework\View\Html\Dom\Anchor;
 use SAF\Framework\View\Html\Dom\Button;
 use SAF\Framework\View\Html\Dom\Element;
@@ -208,8 +207,7 @@ class Html_Builder_Type
 		$session_files->files[] = $file;
 		$image = ($file->getType()->is('image'))
 			? new Image(
-				SL . Paths::$script_name
-				. SL . str_replace(BS, SL, Session_File::class) . SL . 'output' . SL . $file->name
+				SL . str_replace(BS, SL, Session_File::class) . SL . 'output' . SL . $file->name
 				. '?size=22'
 			)
 			: '';
