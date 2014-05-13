@@ -12,40 +12,45 @@ $('document').ready(function()
 		{
 			var last_search = '';
 			var search_step = 0;
-			$(this).keyup(function()
+			$(this).keyup(function(event)
 			{
 				var $this = $(this);
-				var new_search = $this.val();
-				if ((last_search != new_search) && !search_step) {
-					search_step = 1;
-					last_search = new_search;
-					$.ajax(
-						window.app.uri_base + '/SAF/Framework/Property/search'
-							+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
-							+ '?search=' + encodeURI(new_search)
-							+ '&as_widget' + window.app.andSID(),
+				if (event.keyCode == $.ui.keyCode.ESCAPE) {
+					$this.closest('#column_select.popup').fadeOut(200);
+				}
+				else {
+					var new_search = $this.val();
+					if ((last_search != new_search) && !search_step) {
+						search_step = 1;
+						last_search = new_search;
+						$.ajax(
+							window.app.uri_base + '/SAF/Framework/Property/search'
+								+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
+								+ '?search=' + encodeURI(new_search)
+								+ '&as_widget' + window.app.andSID(),
+							{
+								success: function(data) {
+									search_step = 2;
+									var $property_tree = $this.parent().children('.property_tree');
+									$property_tree.html(data);
+									$property_tree.build();
+								}
+							}
+						);
+						var retry = function()
 						{
-							success: function(data) {
-								search_step = 2;
-								var $property_tree = $this.parent().children('.property_tree');
-								$property_tree.html(data);
-								$property_tree.build();
+							if (search_step == 1) {
+								setTimeout(retry, 200);
 							}
-						}
-					);
-					var retry = function()
-					{
-						if (search_step == 1) {
-							setTimeout(retry, 200);
-						}
-						else {
-							search_step = 0;
-							if ($this.val() != last_search) {
-								$this.keyup();
+							else {
+								search_step = 0;
+								if ($this.val() != last_search) {
+									$this.keyup();
+								}
 							}
-						}
-					};
-					setTimeout(retry, 500);
+						};
+						setTimeout(retry, 500);
+					}
 				}
 			});
 		});

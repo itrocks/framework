@@ -44,15 +44,15 @@ $('document').ready(function()
 		});
 		var $input = this.in('input.customized');
 		$input.autowidth();
-		// press #13 key : save, press #27 key : cancel
+		// press ENTER : save, press ESCAPE : cancel
 		$input.keydown(function(event)
 		{
 			var $this = $(this);
-			if (event.keyCode == 13) {
+			if (event.keyCode == $.ui.keyCode.ENTER) {
 				$this.closest('form').find('a.custom_save, .custom_save>a').click();
 				event.preventDefault();
 			}
-			if (event.keyCode == 27) {
+			if (event.keyCode == $.ui.keyCode.ESCAPE) {
 				this.close();
 			}
 		});
