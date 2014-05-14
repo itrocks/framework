@@ -10,7 +10,6 @@ use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View\Html\Dom\Anchor;
 use SAF\Framework\View\Html\Dom\Button;
 use SAF\Framework\View\Html\Dom\Element;
@@ -279,7 +278,7 @@ class Html_Builder_Type
 		$input = new Input(null, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
 		$input->setAttribute(
-			'data-combo-class', Namespaces::shortClassName(Names::classToSet($class_name))
+			'data-combo-class', Names::classToSet($class_name)
 		);
 		if (!$this->readonly) {
 			if ($filters) {
