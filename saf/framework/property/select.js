@@ -141,7 +141,7 @@ $('document').ready(function()
 				(event.pageX > offset.left) && (event.pageX < (offset.left + $column_select.width()))
 				&& (event.pageY > offset.top) && (event.pageY < (offset.top + $column_select.height()))
 			)) {
-				$column_select.fadeOut(200);
+				$column_select.parent().fadeOut(200);
 			}
 		}
 	});
