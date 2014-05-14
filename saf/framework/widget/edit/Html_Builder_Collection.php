@@ -11,6 +11,7 @@ use SAF\Framework\View\Html\Dom\Table\Head;
 use SAF\Framework\View\Html\Dom\Table\Header_Cell;
 use SAF\Framework\View\Html\Dom\Table\Row;
 use SAF\Framework\View\Html\Dom\Table\Standard_Cell;
+use SAF\Framework\View\Html\Dom\Table;
 
 /**
  * Takes a collection of objects and build a HTML edit subform containing their data
@@ -23,6 +24,19 @@ class Html_Builder_Collection extends Collection
 	 * @var Html_Template
 	 */
 	private $template = null;
+
+	//----------------------------------------------------------------------------------------- build
+	/**
+	 * TODO remove this patch will crash AOP because AOP on parent method does not work
+	 * + AOP should create a build_() method that calls parent::build()
+	 * + AOP should complete parameters like Table to give full path as they may not be in use clause
+	 *
+	 * @return Table
+	 */
+	public function build()
+	{
+		return parent::build();
+	}
 
 	//------------------------------------------------------------------------------------- buildBody
 	/**
