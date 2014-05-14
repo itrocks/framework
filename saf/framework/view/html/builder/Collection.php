@@ -25,13 +25,13 @@ class Collection
 	/**
 	 * @var string
 	 */
-	protected $class_name;
+	public $class_name;
 
 	//----------------------------------------------------------------------------------- $collection
 	/**
 	 * @var object[]
 	 */
-	protected $collection;
+	public $collection;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -43,7 +43,7 @@ class Collection
 	/**
 	 * @var Reflection_Property
 	 */
-	protected $property;
+	public $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
