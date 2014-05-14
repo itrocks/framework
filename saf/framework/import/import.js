@@ -15,8 +15,8 @@ $('document').ready(function()
 				var $this = $(this);
 				$this.find('li').draggable({
 					containment: $this,
-					opacity:.7,
-					revert: function() { $(this).css({ left: 0, top: 0 }); }
+					opacity:     .7,
+					revert:      function() { $(this).css({ left: 0, top: 0 }); }
 				});
 				$this.find('fieldset.properties').droppable({
 					accept: $this.find('li'),

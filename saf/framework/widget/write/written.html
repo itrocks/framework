@@ -16,13 +16,13 @@
 	<script>
 	if (document.{fill_combo} != undefined) {
 		document.{fill_combo}.value = {id};
-		$(document.{fill_combo}.nextSibling).val("{.}").keyup().select();
+		$(document.{fill_combo}.nextSibling).val('{.}').keyup().select();
 	}
 	</script>
 	<!--fill_combo?-->
 
-	<!--close?--><script> $("#{close}").remove(); </script><!--close?-->
-	<!--!close?--><script> redirect("/{@class.path}/{id}", "#main"); </script><!--!close?-->
+	<!--close?--><script> $('#{close}').remove(); </script><!--close?-->
+	<!--!close?--><script> redirect('/{@class.path}/{id}', '#main'); </script><!--!close?-->
 
 <!--END-->
 </body>
