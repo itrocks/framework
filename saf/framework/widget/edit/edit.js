@@ -7,7 +7,7 @@ $('document').ready(function()
 		var app = window.app;
 
 		//--------------------------------------------------------------------- .autoheight, .autowidth
-		this.in('.autoheight').elastic();
+		this.in('.autoheight').autoheight();
 		this.in('.autowidth').autowidth();
 
 		//-------------------------------------------------------------------------------------- .minus
@@ -29,17 +29,19 @@ $('document').ready(function()
 		{
 			var $checkbox = $(this);
 			var $input = $checkbox.prev().filter('input[type=hidden]');
-			var old_check = $input.val();
-			var check = $checkbox.is(':checked') ? '1' : '0';
-			var nullable = String($checkbox.data('nullable'));
-			if (nullable.length) {
-				if (old_check == nullable) {
-					check = '';
-					$checkbox.attr('checked', false);
+			if ($input.length) {
+				var old_check = $input.val();
+				var check = $checkbox.is(':checked') ? '1' : '0';
+				var nullable = String($checkbox.data('nullable'));
+				if (nullable.length) {
+					if (old_check == nullable) {
+						check = '';
+						$checkbox.attr('checked', false);
+					}
 				}
+				$input.val(check);
+				$checkbox.val(check);
 			}
-			$input.val(check);
-			$checkbox.val(check);
 		});
 
 		//-------------------------------------------------------------- input[type=checkbox][readonly]
