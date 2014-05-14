@@ -70,7 +70,7 @@ class Maintainer implements Registerable
 	{
 		// if a class name exists for the table name, use it as context and create table from class
 		$class_name = Dao::classNameOf($table_name);
-		if (class_exists($class_name)) {
+		if (class_exists($class_name, false)) {
 			self::createTable($mysqli, $class_name);
 			return true;
 		}

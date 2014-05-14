@@ -36,7 +36,7 @@ abstract class Data_Link
 			foreach ($class_name as $key => $class_name_part) {
 				$class_name[$key] = Names::setToClass($class_name_part, false);
 			}
-			$class_name = Namespaces::fullClassName(join('_', $class_name));
+			$class_name = Namespaces::fullClassName(join('_', $class_name), false);
 		}
 		return $class_name;
 	}

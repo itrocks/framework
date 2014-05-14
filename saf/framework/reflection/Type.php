@@ -145,15 +145,18 @@ class Type
 			}
 			// class name without '\' : search for full class name
 			else {
+				$found = false;
 				$search = BS . $class_name;
 				$length = strlen($search);
 				foreach ($use as $u) {
 					$bu = BS . $u;
 					if(substr($bu, -$length) === $search) {
 						$class_name = $u;
+						$found = true;
+						break;
 					}
 				}
-				if (strpos($class_name, BS) === false) {
+				if (!$found && (strpos($class_name, BS) === false)) {
 					$class_name = ($namespace ? ($namespace . BS) : '') . $class_name;
 				}
 			}

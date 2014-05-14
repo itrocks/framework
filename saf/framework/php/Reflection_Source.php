@@ -517,7 +517,8 @@ class Reflection_Source
 				: $file_name;
 		}
 		else {
-			$source = new Reflection_Source((new ReflectionClass($class_name))->getFileName());
+			$filename =( new ReflectionClass($class_name))->getFileName();
+			$source = new Reflection_Source($filename, null, $filename ? null : $class_name);
 		}
 		return $source->getClass($class_name);
 	}
