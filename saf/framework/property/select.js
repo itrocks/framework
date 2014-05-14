@@ -134,7 +134,7 @@ $('document').ready(function()
 	// hide popup select box when clicking outside of it
 	$(document).click(function(event)
 	{
-		var $column_select = $('#column_select.popup');
+		var $column_select = $('#column_select.popup>.property_select');
 		if ($column_select.length) {
 			var offset = $column_select.offset();
 			if (!(
