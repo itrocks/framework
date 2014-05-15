@@ -101,7 +101,7 @@ class Search_Array_Builder
 			foreach ($property_names as $property_name) {
 				$or[$property_name] = $prepend . $search_phrase . $append;
 			}
-			$result = Func::orOp($or);
+			$result = (count($or) > 1) ? Func::orOp($or) : $or;
 		}
 		return $result;
 	}
