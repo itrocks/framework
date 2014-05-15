@@ -12,6 +12,7 @@ use SAF\Framework\Mapper\Null_Object;
 use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Sql;
@@ -569,7 +570,7 @@ class Link extends Dao\Sql\Link
 			if (Null_Object::isNull($object)) {
 				$this->disconnect($object);
 			}
-			$class = new Reflection_Class(get_class($object));
+			$class = new Link_Class(get_class($object));
 			$id_property = 'id';
 			do {
 				$link = $class->getAnnotation('link')->value;
@@ -672,7 +673,8 @@ class Link extends Dao\Sql\Link
 					$this->writeMap($object, $property, $value);
 				}
 				// if link class : write linked object too
-				$class = $link ? new Reflection_Class($link) : null;
+				$id_property = $link ? ('id_' . $class->getCompositeProperty()->name) : null;
+				$class = $link ? new Link_Class($link) : null;
 			} while ($class);
 
 			foreach (
