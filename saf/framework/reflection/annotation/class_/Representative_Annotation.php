@@ -47,12 +47,7 @@ class Representative_Annotation extends List_Annotation implements Class_Context
 		if (!$this->value) {
 			$this->properties = [];
 			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
-				$link = $property->getAnnotation('link')->value;
-				if (
-					!$property->isStatic()
-					&& ($link !== Link_Annotation::COLLECTION)
-					&& ($link !== Link_Annotation::MAP)
-				) {
+				if (!$property->isStatic() && !$property->getType()->isMultiple()) {
 					$this->properties[$property->getName()] = $property;
 					$this->value[] = $property->getName();
 				}
