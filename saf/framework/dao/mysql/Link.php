@@ -4,9 +4,6 @@ namespace SAF\Framework\Dao\Mysql;
 use mysqli_result;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
-use SAF\Framework\Dao\Event\After_Write;
-use SAF\Framework\Dao\Event\Before_Search;
-use SAF\Framework\Dao\Event\Before_Write;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Option\Only;
 use SAF\Framework\Mapper\Component;
@@ -14,6 +11,7 @@ use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Mapper\Null_Object;
 use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Sql;
@@ -508,31 +506,23 @@ class Link extends Dao\Sql\Link
 		if (!isset($class_name)) {
 			$class_name = get_class($what);
 		}
-		if (
-			(is_a($class_name, Before_Search::class, true))
-			? call_user_func([$class_name, 'beforeSearch'], $what) : true
-		) {
-			$search_result = [];
-			$builder = new Select($class_name, null, $what, $this, $options);
-			$query = $builder->buildQuery();
-			$this->setContext($builder->getJoins()->getClassNames());
-			$result_set = $this->executeQuery($query);
-			if ($options) {
-				$this->getRowsCount($result_set, 'SELECT', $options);
-			}
-			$keys = explode(DOT, $this->getKeyPropertyName($options));
-			$object_key = array_pop($keys);
-			while ($object = $this->fetch($result_set, $class_name)) {
-				$this->setObjectIdentifier($object, $object->id);
-				$key_object = $object;
-				foreach ($keys as $key) $key_object = $key_object->$key;
-				$search_result[$key_object->$object_key] = $object;
-			}
-			$this->free($result_set);
+		$search_result = [];
+		$builder = new Select($class_name, null, $what, $this, $options);
+		$query = $builder->buildQuery();
+		$this->setContext($builder->getJoins()->getClassNames());
+		$result_set = $this->executeQuery($query);
+		if ($options) {
+			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
-		else {
-			$search_result = [];
+		$keys = explode(DOT, $this->getKeyPropertyName($options));
+		$object_key = array_pop($keys);
+		while ($object = $this->fetch($result_set, $class_name)) {
+			$this->setObjectIdentifier($object, $object->id);
+			$key_object = $object;
+			foreach ($keys as $key) $key_object = $key_object->$key;
+			$search_result[$key_object->$object_key] = $object;
 		}
+		$this->free($result_set);
 		return $search_result;
 	}
 
@@ -556,14 +546,26 @@ class Link extends Dao\Sql\Link
 	 * record will be written into data source using this object's data.
 	 * If object is null (all properties null or unset), the object will be removed from data source
 	 *
-	 * @todo factorize this to become SOLID
+	 * TODO LOWEST factorize this to become SOLID
+	 *
 	 * @param $object  object object to write into data source
 	 * @param $options Option[] some options for advanced write
 	 * @return object the written object
 	 */
 	public function write($object, $options = [])
 	{
-		if (($object instanceof Before_Write) ? $object->beforeWrite($options) : true) {
+		$will_write = true;
+		foreach (
+			(new Reflection_Class(get_class($object)))->getAnnotations('before_write') as $before_write
+		) {
+			if (call_user_func([$object, $before_write->value], $options) === false) {
+				$will_write = false;
+				break;
+			}
+		}
+
+		if ($will_write) {
+
 			if (Null_Object::isNull($object)) {
 				$this->disconnect($object);
 			}
@@ -672,9 +674,15 @@ class Link extends Dao\Sql\Link
 				// if link class : write linked object too
 				$class = $link ? new Reflection_Class($link) : null;
 			} while ($class);
-			if ($object instanceof After_Write) {
-				$object->afterWrite($options);
+
+			foreach (
+				(new Reflection_Class(get_class($object)))->getAnnotations('after_write') as $after_write
+			) {
+				if (call_user_func([$object, $after_write->value], $options) === false) {
+					break;
+				}
 			}
+
 		}
 		return $object;
 	}

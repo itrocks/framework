@@ -12,6 +12,19 @@ use SAF\Framework\Reflection\Annotation;
  */
 Parser::$default_annotations = [
 
+	// @after_write afterWrite
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call after the object is written using a data link
+	// - These methods may accept a Dao\Option[] as first argument, if needed
+	__NAMESPACE__ . '\Class_\After_Write_Annotation' => Annotation::class,
+
+	// @before_write beforeWrite
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call after the object is written using a data link
+	// - These methods may accept a Dao\Option[] as first argument, if needed
+	// - These methods may return false to cancel the writing of the object
+	__NAMESPACE__ . '\Class_\Before_Write_Annotation' => Annotation::class,
+
 	// @deprecated [false]
 	// Identifies a deprecated class
 	__NAMESPACE__ . '\Class_\Deprecated_Annotation' => Boolean_Annotation::class,
@@ -106,6 +119,7 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Property\Replaces_Annotation' => Annotation::class,
 
 	// @setter [[Vendor\Module\Class_Name::]methodName]
+	// This is a Multiple_Annotation
 	// Tells a method name that is the setter for that property.
 	// The setter will be called each time the program changes the value of the property.
 	__NAMESPACE__ . '\Property\Setter_Annotation' => Annotation::class,
