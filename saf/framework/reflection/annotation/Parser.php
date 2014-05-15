@@ -68,7 +68,7 @@ abstract class Parser
 				}
 			}
 		}
-		$annotation = $multiple ? $annotations : (
+		$annotation = $multiple ? self::multipleRemove($annotations) : (
 			$annotation ? $annotation : new $annotation_class(null, $reflection_object)
 		);
 		return $annotation;
@@ -132,6 +132,30 @@ abstract class Parser
 		return __NAMESPACE__
 			. BS . $reflection_class
 			. BS . Names::propertyToClass($annotation_name) . '_Annotation';
+	}
+
+	//-------------------------------------------------------------------------------- multipleRemove
+	/**
+	 * Remove annotations from the collection having value if followed by annotations having !value
+	 *
+	 * @param $annotations Annotation[]
+	 * @return Annotation[]
+	 */
+	private static function multipleRemove($annotations)
+	{
+		$remove = [];
+		foreach ($annotations as $key => $annotation) {
+			if (is_string($annotation->value)) {
+				if (substr($annotation->value, 0, 1) === '!') {
+					$remove[$annotation->value] = true;
+					unset($annotations[$key]);
+				}
+				elseif (isset($remove[$annotation->value])) {
+					unset($annotations[$key]);
+				}
+			}
+		}
+		return $annotations;
 	}
 
 	//-------------------------------------------------------------------------- parseAnnotationValue
