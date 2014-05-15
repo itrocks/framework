@@ -217,6 +217,19 @@ class Dao implements Configurable
 		return new Option\Key($property_name);
 	}
 
+	//-------------------------------------------------------------------------------------------- is
+	/**
+	 * Returns true if object1 and object2 match the same stored object
+	 *
+	 * @param $object1 object
+	 * @param $object2 object
+	 * @return boolean
+	 */
+	public static function is($object1, $object2)
+	{
+		return self::current()->is($object1, $object2);
+	}
+
 	//----------------------------------------------------------------------------------------- limit
 	/**
 	 * Gets a DAO limit option, used to limit the number of read objects with Dao::readAll()

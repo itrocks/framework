@@ -68,6 +68,20 @@ abstract class Identifier_Map extends Data_Link
 		}
 	}
 
+	//-------------------------------------------------------------------------------------------- is
+	/**
+	 * Returns true if object1 and object2 match the same stored object
+	 *
+	 * @param $object1 object
+	 * @param $object2 object
+	 * @return boolean
+	 */
+	public function is($object1, $object2)
+	{
+		return $this->getObjectIdentifier($object1)
+			&& ($this->getObjectIdentifier($object1) === $this->getObjectIdentifier($object2));
+	}
+
 	//---------------------------------------------------------------------------- objectToProperties
 	/**
 	 * Changes an object into an array associating properties and their values

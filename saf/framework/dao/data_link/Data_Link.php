@@ -81,6 +81,16 @@ abstract class Data_Link
 	 */
 	abstract public function disconnect($object);
 
+	//-------------------------------------------------------------------------------------------- is
+	/**
+	 * Returns true if object1 and object2 match the same stored object
+	 *
+	 * @param $object1 object
+	 * @param $object2 object
+	 * @return boolean
+	 */
+	abstract public function is($object1, $object2);
+
 	//---------------------------------------------------------------------------------- escapeString
 	/**
 	 * Escape string into string or binary values
