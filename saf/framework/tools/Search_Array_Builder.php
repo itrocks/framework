@@ -70,7 +70,7 @@ class Search_Array_Builder
 	 * @param $search_phrase string
 	 * @param $prepend string
 	 * @param $append string
-	 * @return Logical
+	 * @return Logical|array
 	 */
 	public function buildMultiple(
 		$property_names_or_class, $search_phrase, $prepend = '', $append = ''
