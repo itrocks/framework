@@ -64,6 +64,7 @@ $('document').ready(function()
 			}
 		});
 
+		//------------------------------------------------------- table.collection input,textarea focus
 		this.in('input, textarea').focus(function()
 		{
 			var $tr = $(this).closest('tr');
@@ -74,7 +75,11 @@ $('document').ready(function()
 					var $new_row = $table.data('saf_add').clone();
 					var indice = $table.children('tbody').children('tr').length;
 					var old_indice = $table.data('saf_add_indice');
-					$new_row.html($new_row.html().repl('][' + old_indice + ']', '][' + indice + ']'));
+					$new_row.html(
+						$new_row.html()
+							.repl('][' + old_indice + ']', '][' + indice + ']')
+							.repl('%5D%5B' + old_indice + '%5D', '%5D%5B' + indice + '%5D')
+					);
 					$table.children('tbody').append($new_row);
 					$new_row.build();
 				}
@@ -262,6 +267,9 @@ $('document').ready(function()
 		});
 
 		//--------------------------------------------------------------------------- input.combo~.edit
+		/**
+		 * On clicking on [+] or when ctrl+click on a combo input : open add/edit popup form
+		 */
 		this.in('input.combo~.edit').click(function()
 		{
 			var $this = $(this);
