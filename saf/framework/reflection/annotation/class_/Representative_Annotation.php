@@ -4,7 +4,6 @@ namespace SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
