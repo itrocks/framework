@@ -50,7 +50,9 @@ trait Toolbox
 					$is_advice_static = true;
 				}
 			}
-			$advice_method = Reflection_Method::of($advice_class_name, $advice_method_name);
+			$advice_method = Reflection_Method::of(
+				$advice_class_name, $advice_method_name, [T_EXTENDS, T_USE]
+			);
 			$advice_parameters = $advice_method->getParametersNames();
 		}
 		else {
