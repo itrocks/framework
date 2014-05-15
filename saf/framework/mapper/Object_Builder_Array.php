@@ -236,19 +236,19 @@ class Object_Builder_Array
 
 	//--------------------------------------------------------------------------------- buildMapValue
 	/**
-	 * @param $class_name    string
-	 * @param $array         array
-	 * @param $null_if_empty boolean
+	 * @param $array      array
+	 * @param $class_name string if set and element is not an object, will read
 	 * @return integer[]
 	 */
-	private function buildMap(
-		/** @noinspection PhpUnusedParameterInspection */ $class_name, $array, $null_if_empty = false
-	) {
+	private function buildMap($array, $class_name = null)
+	{
 		$map = [];
 		if ($array) {
 			foreach ($array as $key => $element) {
 				if (!empty($element)) {
-					$map[$key] = intval($element);
+					$map[$key] = is_object($element)
+						? $element
+						: (isset($class_name) ? Dao::read($element, $class_name) : intval($element));
 				}
 			}
 		}
@@ -288,9 +288,7 @@ class Object_Builder_Array
 				if ($value == Password::UNCHANGED) {
 					return true;
 				}
-				else {
-					$value = (new Password($value, $encryption))->encrypted();
-				}
+				$value = (new Password($value, $encryption))->encrypted();
 			}
 			// others basic values
 			else {
@@ -309,10 +307,12 @@ class Object_Builder_Array
 				$class_name = $property->getType()->getElementTypeAsString();
 				$value = $this->buildCollection($class_name, $value, $null_if_empty);
 			}
-			// map
-			elseif ($link == Link_Annotation::MAP) {
-				$class_name = $property->getType()->getElementTypeAsString();
-				$value = $this->buildMap($class_name, $value, $null_if_empty);
+			// map or not-linked array
+			else {
+				$value = $this->buildMap(
+					$value,
+					($link == Link_Annotation::MAP) ? null : $property->getType()->getElementTypeAsString()
+				);
 			}
 		}
 		// the property value is set only for official properties, if not default and not empty

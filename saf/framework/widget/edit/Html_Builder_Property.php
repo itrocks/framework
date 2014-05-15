@@ -58,7 +58,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		switch ($link) {
 			case Link_Annotation::COLLECTION: return $this->buildCollection();
 			case Link_Annotation::MAP:        return $this->buildMap();
-			default:           return parent::build();
+			default: return is_array($this->value) ? $this->buildMap() : parent::build();
 		}
 	}
 

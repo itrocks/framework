@@ -1186,12 +1186,9 @@ class Template
 		$object = reset($this->objects);
 		if (is_array($value) && ($object instanceof Reflection_Property)) {
 			$link = $object->getAnnotation('link')->value;
-			if ($link === Link_Annotation::COLLECTION) {
-				$value = $this->parseCollection($object, $value);
-			}
-			elseif ($link === Link_Annotation::MAP) {
-				$value = $this->parseMap($object, $value);
-			}
+			$value = ($link === Link_Annotation::COLLECTION)
+				? $this->parseCollection($object, $value)
+				: $this->parseMap($object, $value);
 		}
 		$i--;
 		if ($auto_remove && !strlen($value)) {

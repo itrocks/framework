@@ -115,7 +115,7 @@ abstract class Getter
 	/**
 	 * Generic getter for mapped objects
 	 *
-	 * @param $stored   Component[] actual value of the property (will be returned if not null)
+	 * @param $stored   object[] actual value of the property (will be returned if not null)
 	 * @param $object   object the parent object
 	 * @param $property string|Reflection_Property the source property (or name) for map reading
 	 * @return Component[]
