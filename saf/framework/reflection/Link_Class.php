@@ -76,4 +76,24 @@ class Link_Class extends Reflection_Class
 		return $properties;
 	}
 
+	//----------------------------------------------------------------------------- linkedClassNameOf
+	/**
+	 * Gets the root linked class name of a class name or object
+	 * If it is not a linked class, its name will simply be returned
+	 *
+	 * Use this tool method if you need to be sure the class name you use is not a link class name
+	 *
+	 * TODO LOW Works with one level linked classes only
+	 *
+	 * @param $class_name string|object The link or linked class name
+	 * @return string The root linked class name
+	 */
+	public static function linkedClassNameOf($class_name)
+	{
+		if (is_object($class_name)) {
+			$class_name = get_class($class_name);
+		}
+		return (new Link_Class($class_name))->getLinkedClassName() ?: $class_name;
+	}
+
 }

@@ -52,8 +52,8 @@ abstract class Identifier_Map extends Data_Link
 				else {
 					return isset($object->$property_name)
 						? (
-							is_object(self::getObjectIdentifier($object->$property_name))
-							? self::getObjectIdentifier($object->$property_name)
+							is_object($object->$property_name)
+							? $this->getObjectIdentifier($object->$property_name)
 							: $object->$property_name
 						)
 						: null;
@@ -128,13 +128,20 @@ abstract class Identifier_Map extends Data_Link
 	 *
 	 * Use it after an object is read from data link to associate it's identifier to it.
 	 *
-	 * @param $object object
-	 * @param $id mixed
+	 * @param $object        object
+	 * @param $id            mixed
+	 * @param $property_name string
 	 * @return Identifier_Map
 	 */
-	protected function setObjectIdentifier($object, $id)
+	protected function setObjectIdentifier($object, $id, $property_name = null)
 	{
-		$object->id = $id;
+		if ($property_name) {
+			$id_property_name = 'id_' . $property_name;
+			$object->$id_property_name = $id;
+		}
+		else {
+			$object->id = $id;
+		}
 		return $this;
 	}
 

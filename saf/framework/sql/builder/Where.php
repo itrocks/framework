@@ -4,6 +4,7 @@ namespace SAF\Framework\Sql\Builder;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Sql\Link;
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Join\Joins;
@@ -181,7 +182,12 @@ class Where
 	 */
 	private function buildObject($path, $object)
 	{
-		if ($id = $this->sql_link->getObjectIdentifier($object)) {
+		$class = new Link_Class(get_class($object));
+		$id = $this->sql_link->getObjectIdentifier(
+			$object,
+			$class->getAnnotation('link')->value ? $class->getCompositeProperty()->name : null
+		);
+		if ($id) {
 			// object is linked to stored data : search with object identifier
 			return $this->buildValue($path, $id, ($path == 'id') ? '' : 'id_');
 		}

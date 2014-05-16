@@ -597,18 +597,25 @@ class Link extends Dao\Sql\Link
 								$value = '';
 							}
 							if (in_array($property->name, $table_columns_names)) {
+								$element_type = $property->getType()->getElementType();
 								// write basic
-								if ($property->getType()->getElementType()->isBasic()) {
+								if ($element_type->isBasic()) {
 									$write[$property->getAnnotation('storage')->value] = $value;
 								}
 								// write object id if set or object if no id is set (new object)
 								else {
 									$column_name = 'id_' . $property->name;
 									if (is_object($value)) {
-										$object->$column_name = $this->getObjectIdentifier($value, 'id');
+										$value_class = new Link_Class(get_class($value));
+										$id_value = (
+											$value_class->getLinkedClassName()
+											&& !$element_type->asReflectionClass()->getAnnotation('link')->value
+										) ? 'id_' . $value_class->getCompositeProperty()->name
+											: 'id';
+										$object->$column_name = $this->getObjectIdentifier($value, $id_value);
 										if (empty($object->$column_name)) {
 											$object->$column_name = $this->getObjectIdentifier(
-												$this->write($value), 'id'
+												$this->write($value), $id_value
 											);
 										}
 									}
@@ -649,8 +656,8 @@ class Link extends Dao\Sql\Link
 					}
 				}
 				unset($only);
+				Getter::$ignore = $aop_getter_ignore;
 				if ($write) {
-					Getter::$ignore = $aop_getter_ignore;
 					$id = $this->getObjectIdentifier($object, $id_property);
 					$this->setContext($class->name);
 					if (empty($id)) {
@@ -739,9 +746,16 @@ class Link extends Dao\Sql\Link
 	private function writeMap($object, Reflection_Property $property, $map)
 	{
 		// old map
-		$class_name = get_class($object);
-		$old_object = Search_Object::create($class_name);
-		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
+		$class = new Link_Class(get_class($object));
+		$composite_property_name = $class->getAnnotation('link')->value
+			? $class->getCompositeProperty()->name
+			: null;
+		$old_object = Search_Object::create(Link_Class::linkedClassNameOf($object));
+		$this->setObjectIdentifier(
+			$old_object,
+			$this->getObjectIdentifier($object, $composite_property_name),
+			$composite_property_name
+		);
 		$aop_getter_ignore = Getter::$ignore;
 		Getter::$ignore = false;
 		$old_map = $property->getValue($old_object);

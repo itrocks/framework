@@ -129,10 +129,10 @@ abstract class Getter
 				}
 				$dao = ($dao = $property->getAnnotation('dao')->value) ? Dao::get($dao) : Dao::current();
 				$class_name = get_class($object);
-				$link_class_name = (new Link_Class($class_name))->getLinkedClassName();
-				if ($link_class_name) {
+				$linked_class_name = (new Link_Class($class_name))->getLinkedClassName();
+				if ($linked_class_name) {
 					$object = (new Link_Class($class_name))->getCompositeProperty()->getValue($object);
-					$class_name = $link_class_name;
+					$class_name = $linked_class_name;
 				}
 				$stored = $dao->search(
 					[$class_name . '->' . $property->name => $object],
