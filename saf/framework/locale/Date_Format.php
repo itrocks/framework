@@ -4,9 +4,9 @@ namespace SAF\Framework\Locale;
 use DateTime;
 
 /**
- * Date locale features : changes date format to comply with user's locale configuration
+ * Date format locale features : changes date format to comply with user's locale configuration
  */
-class Date
+class Date_Format
 {
 
 	//--------------------------------------------------------------------------------------- $format

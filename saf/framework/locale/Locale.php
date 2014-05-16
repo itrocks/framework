@@ -1,11 +1,12 @@
 <?php
 namespace SAF\Framework;
 
-use SAF\Framework\Locale\Date;
-use SAF\Framework\Locale\Number;
+use SAF\Framework\Locale\Date_Format;
+use SAF\Framework\Locale\Number_Format;
 use SAF\Framework\Locale\Translations;
 use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Interfaces\Reflection_Method;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Current;
@@ -20,10 +21,10 @@ class Locale implements Configurable
 	//----------------------------------------------------------------------------------------- $date
 	/**
 	 * @link Object
-	 * @setter setDate
-	 * @var Date
+	 * @setter setDateFormat
+	 * @var Date_Format
 	 */
-	public $date;
+	public $date_format;
 
 	//------------------------------------------------------------------------------------- $language
 	/**
@@ -34,10 +35,10 @@ class Locale implements Configurable
 
 	//--------------------------------------------------------------------------------------- $number
 	/**
-	 * @setter setNumber
-	 * @var Number
+	 * @setter setNumberFormat
+	 * @var Number_Format
 	 */
-	public $number;
+	public $number_format;
 
 	//--------------------------------------------------------------------------------- $translations
 	/**
@@ -55,9 +56,9 @@ class Locale implements Configurable
 		if (!isset($current)) {
 			self::current($this);
 		}
-		$this->setDate($configuration['date']);
+		$this->setDateFormat($configuration['date']);
 		$this->setLanguage($configuration['language']);
-		$this->setNumber($configuration['number']);
+		$this->setNumberFormat($configuration['number']);
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -68,6 +69,19 @@ class Locale implements Configurable
 	public static function current(Locale $set_current = null)
 	{
 		return self::pCurrent($set_current);
+	}
+
+	//-------------------------------------------------------------------------------- methodToLocale
+	/**
+	 * Change an ISO value into a locale formatted value, knowing it's method
+	 *
+	 * @param $method Reflection_Method
+	 * @param $value  string
+	 * @return string
+	 */
+	public function methodToLocale(Reflection_Method $method, $value)
+	{
+		return $this->toLocale($value, new Type($method->returns()));
 	}
 
 	//--------------------------------------------------------------------------------- propertyToIso
@@ -102,39 +116,38 @@ class Locale implements Configurable
 		return $this->toLocale($value, $property->getType());
 	}
 
-	//--------------------------------------------------------------------------------------- setDate
+	//--------------------------------------------------------------------------------- setDateFormat
 	/**
-	 * @param $date Date | string if string, must be a date format (ie 'd/m/Y')
+	 * @param $date_format Date_Format|string if string, must be a date format (ie 'd/m/Y')
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
-	private function setDate($date)
+	private function setDateFormat($date_format)
 	{
-		$this->date = ($date instanceof Date) ? $date : new Date($date);
+		$this->date_format = ($date_format instanceof Date_Format)
+			? $date_format
+			: new Date_Format($date_format);
 	}
 
 	//----------------------------------------------------------------------------------- setLanguage
 	/**
 	 * @param $language string
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
 	private function setLanguage($language)
 	{
 		$this->language = $language;
 		$this->translations = new Translations($this->language);
 	}
 
-	//------------------------------------------------------------------------------------- setNumber
+	//------------------------------------------------------------------------------- setNumberFormat
 	/**
-	 * Set locale's number
+	 * Set locale's number format
 	 *
-	 * @param Number | mixed[]
+	 * @param Number_Format|mixed[]
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
-	private function setNumber($number)
+	private function setNumberFormat($number_format)
 	{
-		$this->number = ($number instanceof Number)
-			? $number
-			: new Number($number);
+		$this->number_format = ($number_format instanceof Number_Format)
+			? $number_format
+			: new Number_Format($number_format);
 	}
 
 	//----------------------------------------------------------------------------------------- toIso
@@ -149,13 +162,13 @@ class Locale implements Configurable
 	{
 		if (isset($type)) {
 			if ($type->isDateTime()) {
-				return $this->date->toIso($value);
+				return $this->date_format->toIso($value);
 			}
 			elseif ($type->isFloat()) {
-				return $this->number->floatToIso($value);
+				return $this->number_format->floatToIso($value);
 			}
 			elseif ($type->isInteger()) {
-				return $this->number->integerToIso($value);
+				return $this->number_format->integerToIso($value);
 			}
 		}
 		return $value;
@@ -173,13 +186,13 @@ class Locale implements Configurable
 	{
 		if (isset($type)) {
 			if ($type->isDateTime()) {
-				return $this->date->toLocale($value);
+				return $this->date_format->toLocale($value);
 			}
 			elseif ($type->isFloat()) {
-				return $this->number->floatToLocale($value);
+				return $this->number_format->floatToLocale($value);
 			}
 			elseif ($type->isInteger()) {
-				return $this->number->integerToLocale($value);
+				return $this->number_format->integerToLocale($value);
 			}
 		}
 		return $value;

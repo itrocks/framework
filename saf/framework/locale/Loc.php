@@ -7,8 +7,9 @@ use SAF\Framework\Mapper\Object_Builder_Array;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Method;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Reflection\Reflection_Property_View;
 use SAF\Framework\Tools\Names;
@@ -126,11 +127,11 @@ class Loc implements Registerable
 	/**
 	 * Returns current date
 	 *
-	 * @return Date
+	 * @return Date_Format
 	 */
 	public static function date()
 	{
-		return Locale::current()->date;
+		return Locale::current()->date_format;
 	}
 
 	//---------------------------------------------------------------------------------- dateToLocale
@@ -142,7 +143,7 @@ class Loc implements Registerable
 	 */
 	public static function dateToLocale($date)
 	{
-		return Locale::current()->date->toLocale($date);
+		return Locale::current()->date_format->toLocale($date);
 	}
 
 	//----------------------------------------------------------------- dateTimeReturnedValueToLocale
@@ -164,7 +165,7 @@ class Loc implements Registerable
 	 */
 	public static function dateToIso($date)
 	{
-		return Locale::current()->date->toIso($date);
+		return Locale::current()->date_format->toIso($date);
 	}
 
 	//-------------------------------------------------------------------- floatReturnedValueToLocale
@@ -185,7 +186,7 @@ class Loc implements Registerable
 	 */
 	public static function floatToIso($float, Reflection_Property $property = null)
 	{
-		return Locale::current()->number->floatToIso($float, $property);
+		return Locale::current()->number_format->floatToIso($float, $property);
 	}
 
 	//--------------------------------------------------------------------------------- floatToLocale
@@ -197,7 +198,7 @@ class Loc implements Registerable
 	 */
 	public static function floatToLocale($float)
 	{
-		return Locale::current()->number->floatToLocale($float);
+		return Locale::current()->number_format->floatToLocale($float);
 	}
 
 	//------------------------------------------------------------------ integerReturnedValueToLocale
@@ -218,7 +219,7 @@ class Loc implements Registerable
 	 */
 	public static function integerToIso($integer, Reflection_Property $property = null)
 	{
-		return Locale::current()->number->integerToIso($integer, $property);
+		return Locale::current()->number_format->integerToIso($integer, $property);
 	}
 
 	//------------------------------------------------------------------------------- integerToLocale
@@ -230,7 +231,7 @@ class Loc implements Registerable
 	 */
 	public static function integerToLocale($integer)
 	{
-		return Locale::current()->number->integerToLocale($integer);
+		return Locale::current()->number_format->integerToLocale($integer);
 	}
 
 	//-------------------------------------------------------------------------------------- language
@@ -242,6 +243,19 @@ class Loc implements Registerable
 	public static function language()
 	{
 		return Locale::current()->language;
+	}
+
+	//-------------------------------------------------------------------------------- methodToLocale
+	/**
+	 * Change an ISO value into a locale formatted value, knowing it's property
+	 *
+	 * @param $method Reflection_Method
+	 * @param $value  mixed
+	 * @return string
+	 */
+	public static function methodToLocale(Reflection_Method $method, $value)
+	{
+		return Locale::current()->methodToLocale($method, $value);
 	}
 
 	//--------------------------------------------------------------------------------- propertyToIso

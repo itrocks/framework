@@ -2,9 +2,9 @@
 namespace SAF\Framework\Locale;
 
 /**
- * Number locale features : changes number format to comply with user's locale configuration
+ * Number format locale features : changes number format to comply with user's locale configuration
  */
-class Number
+class Number_Format
 {
 
 	//------------------------------------------------------------------------ $decimal_minimal_count

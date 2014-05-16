@@ -279,8 +279,15 @@ abstract class Functions
 	{
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
-				$property= new Reflection_Property(get_class($object), reset($template->var_names));
-				return Loc::propertyToLocale($property, reset($template->objects));
+				$property_name = reset($template->var_names);
+				if (method_exists(get_class($object), $property_name)) {
+					$method = new Reflection_Method(get_class($object), $property_name);
+					return Loc::methodToLocale($method, reset($template->objects));
+				}
+				else {
+					$property = new Reflection_Property(get_class($object), $property_name);
+					return Loc::propertyToLocale($property, reset($template->objects));
+				}
 				break;
 			}
 		}
