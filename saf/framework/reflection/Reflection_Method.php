@@ -72,4 +72,13 @@ class Reflection_Method extends ReflectionMethod
 		return $parameters;
 	}
 
+	//--------------------------------------------------------------------------------------- returns
+	/**
+	 * @return string
+	 */
+	public function returns()
+	{
+		return $this->getAnnotation('return')->value;
+	}
+
 }

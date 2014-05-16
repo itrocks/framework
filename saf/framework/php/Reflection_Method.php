@@ -1,13 +1,17 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use SAF\Framework\Reflection\Interfaces;
 
 /**
  * The same as PHP's ReflectionMethod, but working with PHP source, without loading the class
  */
-class Reflection_Method implements Has_Doc_Comment
+class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 {
+	use Annoted;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
@@ -108,6 +112,17 @@ class Reflection_Method implements Has_Doc_Comment
 	public function getDeclaringClass()
 	{
 		return $this->class;
+	}
+
+	//------------------------------------------------------------------------- getDeclaringClassName
+	/**
+	 * Gets declaring class name
+	 *
+	 * @return string
+	 */
+	public function getDeclaringClassName()
+	{
+		return $this->class->name;
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment

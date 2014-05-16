@@ -23,4 +23,12 @@ interface Reflection_Class_Component extends Reflection
 	 */
 	public function getDeclaringClassName();
 
+	//--------------------------------------------------------------------------------- getDocComment
+	/**
+	 * Gets doc comment
+	 *
+	 * @return string
+	 */
+	public function getDocComment();
+
 }
