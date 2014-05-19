@@ -119,6 +119,11 @@ class Image
 			}
 		}
 		$destination = new Image($width, $height, null, $this->type);
+		if ($this->type == IMAGETYPE_PNG) {
+			imagecolortransparent(
+				$destination->resource, imagecolorallocatealpha($destination->resource, 0, 0, 0, 127)
+			);
+		}
 		if (in_array($this->type, [ IMAGETYPE_GIF, IMAGETYPE_PNG ])) {
 			imagealphablending($destination->resource, true);
 		}
@@ -144,10 +149,18 @@ class Image
 		if (!isset($type))    $type = $this->type;
 		if (!isset($quality)) $quality = 80;
 		switch ($type) {
-			case IMAGETYPE_BMP: image2wbmp($this->resource, $filename); break;
-			case IMAGETYPE_GIF: imagegif($this->resource, $filename); break;
-			case IMAGETYPE_PNG: imagepng($this->resource, $filename, $quality); break;
-			default: imagejpeg($this->resource, $filename, $quality); break;
+			case IMAGETYPE_BMP:
+				image2wbmp($this->resource, $filename);
+				break;
+			case IMAGETYPE_GIF:
+				imagegif($this->resource, $filename);
+				break;
+			case IMAGETYPE_PNG:
+				imagepng($this->resource, $filename, round((100 - $quality) / 10), PNG_ALL_FILTERS);
+				break;
+			default:
+				imagejpeg($this->resource, $filename, $quality);
+				break;
 		}
 		return $this;
 	}
