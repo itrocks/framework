@@ -194,6 +194,7 @@ class Compiler implements
 		}
 
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
+		$first_group = true;
 
 		foreach ($this->compilers as $compilers) {
 			/** @var $compilers ICompiler[] */
@@ -268,7 +269,7 @@ class Compiler implements
 						);
 						script_put_contents($file_name, $source->getSource());
 					}
-					elseif (file_exists($file_name)) {
+					elseif (file_exists($file_name) && $first_group) {
 						unlink($file_name);
 					}
 					if ($sources_count > self::MAX_OPENED_SOURCES) {
@@ -280,6 +281,7 @@ class Compiler implements
 				$this->more_sources = [];
 			}
 			$this->sources = $saved_sources;
+			$first_group = false;
 		}
 		$this->sources = null;
 
