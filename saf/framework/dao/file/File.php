@@ -9,6 +9,8 @@ use SAF\Framework\Tools\Files;
 
 /**
  * File is a simple business object that stores files
+ *
+ * @before_write getContent
  */
 class File
 {
@@ -93,8 +95,7 @@ class File
 	 *
 	 * @return string
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
-	private function getContent()
+	public function getContent()
 	{
 		if (isset($this->temporary_file_name) && !isset($this->content)) {
 			$this->content = file_get_contents($this->temporary_file_name);
