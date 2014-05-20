@@ -91,7 +91,8 @@ fieldset {
         font-weight: bold;
         white-space: nowrap; }
       fieldset > div:not(.tabber).multiple table.collection > thead > tr > th, fieldset > div:not(.tabber).multiple table.map > thead > tr > th {
-        padding: 1px 2px; }
+        padding: 1px 2px;
+        white-space: nowrap; }
       fieldset > div:not(.tabber).multiple table.collection > tbody > tr:hover, fieldset > div:not(.tabber).multiple table.map > tbody > tr:hover {
         background-color: #defdaf; }
       fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td {
