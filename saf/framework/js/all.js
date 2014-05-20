@@ -28,6 +28,7 @@ $.getScript(path + 'saf/framework/js/saf.fullheight.js');
 $.getScript(path + 'saf/framework/js/saf.functions.js');
 $.getScript(path + 'saf/framework/js/saf.string.js');
 
+$.getScript(path + 'saf/framework/debug/debug.js');
 $.getScript(path + 'saf/framework/import_export/import.js');
 $.getScript(path + 'saf/framework/print_models/print_model.js');
 $.getScript(path + 'saf/framework/property/select.js');
