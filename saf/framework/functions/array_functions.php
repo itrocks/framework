@@ -42,12 +42,15 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
 /**
  * Reverts an array comming from a dynmamic form result
  *
- * @example
- * Source array is [$field_name => [$n => $value))
- * Destination array is [$n => [$field_name => $value))
- * other example that works
- * Source array is [$field_name => [$sub_field_name => [$n => $value))
- * Destination array is [$n => [$field_name => [$sub_field_name => $value))
+ * @example #1
+ * Source array is [$field_name => [$n => $value]]
+ * Destination array is [$n => [$field_name => $value]]
+ * @example #2
+ * Source array is [$field_name => [$n => [$n2 => $value]]
+ * Destination array is [$n => [$field_name => [$n2 => $value]]
+ * @example #3
+ * Source array is [$field_name => [$sub_field_name => [$n => $value]]
+ * Destination array is [$n => [$field_name => [$sub_field_name => $value]]
  * @param $array array
  * @return array
  */
@@ -59,11 +62,19 @@ function arrayFormRevert($array)
 			if (is_array($sub_array)) {
 				foreach ($sub_array as $n => $value) {
 					if (!is_array($value)) {
+						// case #1
 						$result[$n][$field_name] = $value;
 					}
 					else {
 						foreach ($value as $n2 => $value2) {
-							$result[$n2][$field_name][$n] = $value2;
+							if (is_numeric($n2)) {
+								// case #2
+								$result[$n][$field_name][$n2] = $value2;
+							}
+							else {
+								// case #3
+								$result[$n2][$field_name][$n] = $value2;
+							}
 						}
 					}
 				}

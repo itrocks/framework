@@ -128,7 +128,7 @@ fieldset {
 				white-space: nowrap;
 			}
 
-			>div>table {
+			table.collection, table.map {
 
 				>thead>tr>th {
 					padding: 1px 2px;
@@ -155,12 +155,17 @@ fieldset {
 						}
 
 						&.minus {
-							background: url("img/remove_row.png") right no-repeat;
+							background: url("img/remove_row.png") right 3px no-repeat;
 							color: transparent;
 							cursor: pointer;
 							max-width: 16px;
 							min-width: 16px;
 							width: 16px;
+						}
+
+						&.multiple>ul {
+							margin-left: .5em;
+							padding-left: 1em;
 						}
 					}
 				}

@@ -383,8 +383,12 @@ class Html_Builder_Type
 			$count = $this->nextCounter($field_name, $counter_increment);
 			$field_name .= '[' . $count . ']';
 		}
-		else {
+		elseif (strlen($prefix . $field_name)) {
 			$field_name = $this->preprop . '[' . $prefix . $field_name . ']';
+		}
+		else {
+			$count = $this->nextCounter($this->preprop, $counter_increment);
+			$field_name = $this->preprop . '[' . $count . ']';
 		}
 		return $field_name;
 	}

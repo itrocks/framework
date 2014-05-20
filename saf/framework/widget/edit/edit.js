@@ -71,15 +71,47 @@ $('document').ready(function()
 			if ($tr.length && !$tr.next('tr').length) {
 				var $collection = $tr.closest('table.collection, table.map');
 				if ($collection.length) {
+					// calculate depth in order to increment the right indice
+					var depth = 0;
+					var $parent = $collection;
+					while (($parent = $parent.parent().closest('table.collection, table.map')).length) {
+						depth ++;
+					}
+					// calculate new row
 					var $table = $($collection[0]);
 					var $new_row = $table.data('saf_add').clone();
 					var indice = $table.children('tbody').children('tr').length;
 					var old_indice = $table.data('saf_add_indice');
+					// increment indices in new row html code
+					var depthReplace = function(text, open, close, depth)
+					{
+						var i;
+						var j = 0;
+						while ((i = text.indexOf('="', j) + 1) > 0) {
+							j = text.indexOf('"', i + 1);
+							while (
+								((i = text.indexOf(open, i) + 1) > 0)
+								&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
+								&& (i < j)
+							) {
+								if ((text[i] >= '0') && (text[i] <= '9')) {
+									depth --;
+								}
+							}
+							if ((i > 0) && (i < j) && !depth) {
+								var k = text.indexOf(close, i);
+								var html_indice = text.substring(i, k);
+								if (html_indice == old_indice) {
+									text = text.substr(0, i) + indice + text.substr(k);
+								}
+							}
+						}
+						return text;
+					};
 					$new_row.html(
-						$new_row.html()
-							.repl('][' + old_indice + ']', '][' + indice + ']')
-							.repl('%5D%5B' + old_indice + '%5D', '%5D%5B' + indice + '%5D')
+						depthReplace(depthReplace($new_row.html(), '%5B', '%5D', depth), '[', ']', depth)
 					);
+					// append and build new row
 					$table.children('tbody').append($new_row);
 					$new_row.build();
 				}

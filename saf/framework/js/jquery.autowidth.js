@@ -79,7 +79,7 @@
 		return $colgroup.length ? $colgroup : this;
 	};
 
-	//------------------------------------------------------------------------ autowidthTableColumn
+	//-------------------------------------------------------------------------- autowidthTableColumn
 	$.fn.autowidthTableColumn = function($td, td_position, input_position)
 	{
 		// the element was the widest element : grow or shorten
@@ -94,6 +94,7 @@
 		return this;
 	};
 
+	//--------------------------------------------------------------------- autowidthTableColumnWidth
 	/**
 	 *
 	 * @param width number
@@ -160,7 +161,9 @@
 			var $first_cells = $table.firstcolgroup().cells();
 			var $last_cells = $table.lastcolgroup().cells();
 			for (var cell_position = 0; cell_position < $first_cells.length; cell_position++) {
-				var $input = $($last_cells[cell_position]).children('input:not([type=checkbox]):visible:first');
+				var $input = $($last_cells[cell_position]).children(
+					'input:not([type=checkbox]):visible:first'
+				);
 				if ($input.length) {
 					$table.autowidthTableColumn(
 						$($first_cells[cell_position]), cell_position + 1, $input.prevAll().length + 1
