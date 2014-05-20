@@ -9,6 +9,8 @@ use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Sql\Builder\Alter_Table;
 use SAF\Framework\Sql\Builder\Create_Table;
 use SAF\Framework\Tools\Contextual_Mysqli;
+use SAF\Framework\Tools\Names;
+
 /**
  * This is an intelligent database maintainer that automatically updates a table structure if there
  * is an error when executing a query.
@@ -49,6 +51,19 @@ class Maintainer implements Registerable
 				: Column::buildLink($column_name)
 			);
 			if (substr($column_name, 0, 3) === 'id_') {
+				if (($mysqli instanceof Contextual_Mysqli) && is_array($mysqli->context)) {
+					foreach ($mysqli->context as $context_class) {
+						$id_context_property = 'id_' . Names::classToProperty(
+							Names::setToClass(Dao::storeNameOf($context_class), false)
+						);
+						if ($column_name == $id_context_property) {
+							$table->addForeignKey(
+								Foreign_Key::buildLink($table_name, $column_name, $context_class)
+							);
+							break;
+						}
+					}
+				}
 				$index = Index::buildLink($column_name);
 				$table->addIndex($index);
 			}
