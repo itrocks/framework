@@ -145,7 +145,8 @@ class Select
 		// correctly deal with all properties.
 		// Call of buildColumns() and buildWhere() before buildTables(), to get joins ready.
 		$this->additional_where_clause = '';
-		$where   = $this->where_builder->build(true);
+		// Notice : true was commented as it very often crashes mysql maintainer
+		$where   = $this->where_builder->build(/*true*/);
 		$options = $this->buildOptions();
 		$columns = $this->columns_builder->build();
 		$tables  = $this->tables_builder->build();
