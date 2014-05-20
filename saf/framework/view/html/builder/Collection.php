@@ -93,9 +93,8 @@ class Collection
 	 */
 	protected function buildCell($object, Reflection_Property $property)
 	{
-		$cell = new Standard_Cell(
-			(new Reflection_Property_View($property))->getFormattedValue($object)
-		);
+		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
+		$cell = new Standard_Cell($value);
 		$type = $property->getType();
 		if ($type->isMultiple()) {
 			$cell->addClass('multiple');

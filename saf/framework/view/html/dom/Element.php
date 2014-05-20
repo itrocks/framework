@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\View\Html\Dom;
 
+use SAF\Framework\View\Html\Dom\Lists\Unordered_List;
+
 /**
  * A DOM element class
  */
@@ -17,7 +19,7 @@ abstract class Element
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * @var string
+	 * @var string|string[]|mixed[] mixed[] means string[][]
 	 */
 	private $content;
 
@@ -92,7 +94,53 @@ abstract class Element
 	 */
 	public function getContent()
 	{
+		if (is_array($this->content)) {
+			if ($this->content) {
+				$element = reset($this->content);
+				if (is_array($element)) {
+					$content = $this->getContentAsTable();
+				}
+				else {
+					$content = $this->getContentAsList();
+				}
+			}
+			else {
+				$content = '';
+			}
+			return $content;
+		}
 		return $this->content;
+	}
+
+	//------------------------------------------------------------------------------ getContentAsList
+	/**
+	 * @return Unordered_List
+	 */
+	private function getContentAsList()
+	{
+		$list = new Unordered_List();
+		foreach ($this->content as $item) {
+			$list->addItem($item);
+		}
+		return $list;
+	}
+
+	//----------------------------------------------------------------------------- getContentAsTable
+	/**
+	 * @return Table
+	 */
+	private function getContentAsTable()
+	{
+		$table = new Table();
+		$table->body = new Table\Body();
+		foreach ($this->content as $content_row) {
+			$row = new Table\Row();
+			foreach ($content_row as $cell_content) {
+				$row->addCell(new Table\Standard_Cell($cell_content));
+			}
+			$table->body->addRow($row);
+		}
+		return $table;
 	}
 
 	//------------------------------------------------------------------------------- removeAttribute
