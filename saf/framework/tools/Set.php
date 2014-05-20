@@ -78,8 +78,9 @@ class Set implements Iterator
 			(substr($class_name, -1) === 'y') ? substr($class_name, 0, -1) . 'ies' : (
 			(substr($class_name, -2) === 'an') ? substr($class_name, 0, -2) . 'en' : (
 			(substr($class_name, -2) === 'ss') ? $class_name . 'es' : (
+			(substr($class_name, -1) === 's') ? $class_name : (
 				$class_name . 's'
-			)));
+			))));
 	}
 
 	//---------------------------------------------------------------------------------- elementClass
