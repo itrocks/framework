@@ -14,13 +14,17 @@ abstract class Null_Object
 	/**
 	 * Returns true if the object has no set properties (ie was created with Null_Object:create())
 	 *
-	 * @param $object object
+	 * @param $object     object
+	 * @param $class_name string you can set a class name of a parent class to get a partial isNull()
 	 * @return boolean
 	 */
-	public static function isNull($object)
+	public static function isNull($object, $class_name = null)
 	{
+		if (!isset($class_name)) {
+			$class_name = get_class($object);
+		}
 		$is_null = true;
-		foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
+		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if ((!$property->isStatic()) && ($property->getValue($object) !== null)) {
 				$is_null = false;
 				break;

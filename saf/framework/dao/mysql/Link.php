@@ -682,7 +682,7 @@ class Link extends Dao\Sql\Link
 				// if link class : write linked object too
 				$id_property = $link ? ('id_' . $class->getCompositeProperty()->name) : null;
 				$class = $link ? new Link_Class($link) : null;
-			} while ($class);
+			} while ($class && !Null_Object::isNull($object, $class->name));
 
 			foreach (
 				(new Reflection_Class(get_class($object)))->getAnnotations('after_write') as $after_write
