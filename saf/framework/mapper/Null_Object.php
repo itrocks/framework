@@ -24,12 +24,15 @@ abstract class Null_Object
 			$class_name = get_class($object);
 		}
 		$is_null = true;
+		$getter_ignore = Getter::$ignore;
+		Getter::$ignore = true;
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if ((!$property->isStatic()) && ($property->getValue($object) !== null)) {
 				$is_null = false;
 				break;
 			}
 		}
+		Getter::$ignore = $getter_ignore;
 		return $is_null;
 	}
 
