@@ -59,6 +59,7 @@ $('document').ready(function()
 			var $this = $(this);
 			$this.data('saf_add', $this.children('tbody').children('tr.new').clone());
 			$this.data('saf_add_indice', $this.children('tbody').children('tr').length - 1);
+			$this.data('saf_last_indice', Math.max(0, $this.data('saf_add_indice') - 1));
 			if ($this.data('saf_add_indice')) {
 				$this.children('tbody').children('tr.new').remove();
 			}
@@ -77,10 +78,11 @@ $('document').ready(function()
 					while (($parent = $parent.parent().closest('table.collection, table.map')).length) {
 						depth ++;
 					}
-					// calculate new row
+					// calculate new row and indices
 					var $table = $($collection[0]);
 					var $new_row = $table.data('saf_add').clone();
-					var indice = $table.children('tbody').children('tr').length;
+					$table.data('saf_last_indice', $table.data('saf_last_indice') + 1);
+					var indice = $table.data('saf_last_indice');
 					var old_indice = $table.data('saf_add_indice');
 					// increment indices in new row html code
 					var depthReplace = function(text, open, close, depth)
