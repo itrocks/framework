@@ -75,6 +75,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			$this->value = [];
 		}
 		$collection = new Html_Builder_Collection($this->property, $this->value);
+		$collection->preprop = $this->preprop;
 		$collection->setTemplate($this->template);
 		return $collection->build();
 	}

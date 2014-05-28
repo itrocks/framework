@@ -19,6 +19,12 @@ use SAF\Framework\View\Html\Dom\Table;
 class Html_Builder_Collection extends Collection
 {
 
+	//-------------------------------------------------------------------------------------- $preprop
+	/**
+	 * @var string
+	 */
+	public $preprop = null;
+
 	//------------------------------------------------------------------------------------- $template
 	/**
 	 * @var Html_Template
@@ -69,15 +75,16 @@ class Html_Builder_Collection extends Collection
 		)
 			? $property->getValue($object)
 			: (new Reflection_Property_View($property))->getFormattedValue($object);
-		$builder = (new Html_Builder_Property($property, $value, $this->property->name . '[]'));
+		$preprop = $this->preprop
+			? ($this->preprop . '[' . $this->property->name . ']')
+			: $this->property->name;
+		$builder = (new Html_Builder_Property($property, $value, $preprop . '[]'));
 		$input = $builder->setTemplate($this->template)->build();
 		if ($property->name == reset($this->properties)->name) {
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);
 			$id_input = new Input(
-				$this->property->name . '[id]['
-				. $property_builder->nextCounter($this->property->name . '[id][]')
-				. ']',
+				$preprop . '[id][' . $property_builder->nextCounter($preprop . '[id][]') . ']',
 				isset($object->id) ? $object->id : null
 			);
 			$id_input->setAttribute('type', 'hidden');
