@@ -21,7 +21,7 @@ class Sort implements Option
 	/**
 	 * Columns names for objects collection sorting
 	 *
-	 * @var string[]
+	 * @var string[]|Reverse[]
 	 */
 	public $columns;
 
@@ -46,8 +46,8 @@ class Sort implements Option
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name')));
 	 * );
 	 *
-	 * @param $columns string|string[] a single or several column names, or a class name to apply
-	 * each column name can be followed by ' reverse' into the string for reverse order sort
+	 * @param $columns string|string[]|Reverse[] a single or several column names, or a class name
+	 * to apply each column name can be followed by ' reverse' into the string for reverse order sort
 	 * If null, the value of annotations 'sort' or 'representative' of the class will be taken.
 	 */
 	public function __construct($columns = null)

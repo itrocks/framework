@@ -101,20 +101,23 @@ class Select
 		$options = [];
 		foreach ($this->options as $option) {
 			if ($option instanceof Option\Group_By) {
-				$group_by = (new Columns(
-					$this->class_name,
-					$option->properties,
-					$this->joins
-				))->build();
+				$columns = new Columns($this->class_name, $option->properties, $this->joins);
+				$columns->expand_objects = false;
+				$columns->resolve_aliases = false;
+				$group_by = $columns->build();
 				$options[10] = ' GROUP BY ' . $group_by;
 			}
 			elseif ($option instanceof Option\Sort) {
-				$order_by = (new Columns(
+				$columns = new Columns(
 					$this->class_name,
 					$option->getColumns($this->class_name),
 					$this->joins,
 					['DESC' => $option->reverse]
-				))->build();
+				);
+				$columns->replaceProperties($this->columns_builder);
+				$columns->expand_objects = false;
+				$columns->resolve_aliases = false;
+				$order_by = $columns->build();
 				if ($order_by) {
 					$options[20] = ' ORDER BY ' . $order_by;
 				}

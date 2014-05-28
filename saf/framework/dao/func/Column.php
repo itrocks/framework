@@ -37,7 +37,7 @@ abstract class Column implements Dao_Function
 		foreach ($args as $arg) {
 			$sql .= ', ' . Value::escape($arg);
 		}
-		return $sql . ') AS ' . BQ . $property_path . BQ;
+		return $sql . ')' . ($builder->resolve_aliases ? (' AS ' . BQ . $property_path . BQ) : '');
 	}
 
 }

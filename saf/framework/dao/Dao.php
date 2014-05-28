@@ -10,6 +10,7 @@ use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Current;
 use SAF\Framework\Tools\List_Data;
+use SAF\Framework\Tools\List_Row;
 
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
@@ -342,6 +343,24 @@ class Dao implements Configurable
 		return self::current()->replaceReferences($replaced, $replacement);
 	}
 
+	//--------------------------------------------------------------------------------------- reverse
+	/**
+	 * Gets a DAO reverse option, to use as a column name for call to Dao::sort() or new Sort()
+	 *
+	 * @example
+	 * $users = Dao::readAll(
+	 *   SAF\Framework\User::class,
+	 *   Dao::sort([Dao::reverse('birth_date'), 'first_name', 'last_name'])
+	 * );
+	 *
+	 * @param $column_name string A single column name which we will reverse order.
+	 * @return Option\Reverse
+	 */
+	public static function reverse($column_name)
+	{
+		return new Option\Reverse($column_name);
+	}
+
 	//-------------------------------------------------------------------------------------- rollback
 	/**
 	 * Rollback a transaction with the current data link (non-transactional SQL engines will do
@@ -417,8 +436,8 @@ class Dao implements Configurable
 	 *                       search. Can be an array associating properties names to matching
 	 *                       search value too.
 	 * @param $options       Option[] some options for advanced search
-	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the
-	 *                   same order than columns.
+	 * @return List_Data|List_Row[] a list of read records. Each record values (may be objects) are
+	 *         stored in the same order than columns.
 	 */
 	public static function select($class, $columns, $filter_object = null, $options = [])
 	{
@@ -443,7 +462,7 @@ class Dao implements Configurable
 	 *
 	 * @example
 	 * $users = Dao::readAll(
-	 *   'SAF\Framework\User',
+	 *   SAF\Framework\User::class,
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name'])
 	 * );
 	 *

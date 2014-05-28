@@ -27,6 +27,12 @@ class Columns
 	 */
 	private $append;
 
+	//------------------------------------------------------------------------------- $expand_objects
+	/**
+	 * @var boolean
+	 */
+	public $expand_objects = true;
+
 	//---------------------------------------------------------------------------------------- $joins
 	/**
 	 * Sql joins
@@ -42,6 +48,12 @@ class Columns
 	 * @var string[]|Func[]
 	 */
 	private $properties;
+
+	//------------------------------------------------------------------------------ $resolve_aliases
+	/**
+	 * @var boolean
+	 */
+	public $resolve_aliases = true;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -115,7 +127,7 @@ class Columns
 						? $this->buildObjectColumns($path, $join, $first_property)
 						: $this->buildNextColumn($path, $join, $first_property);
 				}
-				$sql_columns .=  $this->append($path);
+				$sql_columns .=  $this->append(is_numeric($key_path) ? $path : $key_path);
 			}
 		}
 		elseif ($this->joins->getJoins()) {
@@ -151,7 +163,7 @@ class Columns
 							$id = $property->getType()->isClass() ? 'id_' : '';
 							$already[$property->name] = true;
 							$sql_columns .= $join->foreign_alias . '.' . BQ . $id . $column_name . BQ;
-							if ($column_name !== $property->name) {
+							if (($column_name !== $property->name) && $this->resolve_aliases) {
 								$sql_columns .= ' AS ' . BQ . $id . $property->name . BQ;
 							}
 							$sql_columns .= ', ';
@@ -170,7 +182,7 @@ class Columns
 						$already[$property_name] = true;
 						$id = $properties[$property_name]->getType()->isClass() ? 'id_' : '';
 						$sql_columns .= 't0.' . BQ . $id . $column_name . BQ;
-						if ($column_name !== $property_name) {
+						if (($column_name !== $property_name) && $this->resolve_aliases) {
 							$sql_columns .= ' AS ' . BQ . $id . $property_name . BQ;
 						}
 						$sql_columns .= ', ';
@@ -206,7 +218,10 @@ class Columns
 		}
 		return
 			($join ? ($join->foreign_alias . '.' . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ))
-			. (($as && $column_name !== $path) ? (' AS ' . BQ . $path . BQ) : false);
+			. (
+				($as && ($column_name !== $path) && $this->resolve_aliases)
+				? (' AS ' . BQ . $path . BQ) : false
+			);
 	}
 
 	//------------------------------------------------------------------------------- buildNextColumn
@@ -251,17 +266,28 @@ class Columns
 	private function buildObjectColumns($path, Join $join, &$first_property)
 	{
 		$sql_columns = '';
-		foreach ($this->joins->getProperties($path) as $property) {
-			$column_name = Sql\Builder::buildColumnName($property);
-			if ($column_name) {
-				if ($first_property) $first_property = false; else $sql_columns .= ', ';
-				$sql_columns .= $join->foreign_alias . '.' . BQ . $column_name . BQ
-					. ($this->append ? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ));
+		if ($this->expand_objects) {
+			foreach ($this->joins->getProperties($path) as $property) {
+				$column_name = Sql\Builder::buildColumnName($property);
+				if ($column_name) {
+					if ($first_property) $first_property = false; else $sql_columns .= ', ';
+					$sql_columns .= $join->foreign_alias . '.' . BQ . $column_name . BQ . (
+						($this->append || !$this->resolve_aliases)
+						? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ)
+					);
+				}
 			}
+			if ($first_property) $first_property = false; else $sql_columns .= ', ';
+			$sql_columns .= $join->foreign_alias . '.id' . (
+				($this->append || !$this->resolve_aliases)
+					? '' : (' AS ' . BQ . $path . ':id' . BQ)
+				);
 		}
-		if ($first_property) $first_property = false; else $sql_columns .= ', ';
-		$sql_columns .= $join->foreign_alias . '.id'
-			. ($this->append ? '' : (' AS ' . BQ . $path . ':id' . BQ));
+		else {
+			if ($first_property) $first_property = false; else $sql_columns .= ', ';
+			$sql_columns .= $join->foreign_alias . '.id'
+				. ($this->resolve_aliases ? (' AS ' . BQ . $path . BQ) : '');
+		}
 		return $sql_columns;
 	}
 
@@ -272,6 +298,27 @@ class Columns
 	public function getJoins()
 	{
 		return $this->joins;
+	}
+
+	//----------------------------------------------------------------------------- replaceProperties
+	/**
+	 * If a property definition is a key of $columns' properties, then replace this definition by
+	 * the functional value
+	 *
+	 * @param $columns Columns
+	 */
+	public function replaceProperties(Columns $columns)
+	{
+		$properties = [];
+		foreach ($this->properties as $key => $property_name) {
+			if (isset($columns->properties[$property_name])) {
+				$properties[$property_name] = $columns->properties[$property_name];
+			}
+			else {
+				$properties[$key] = $property_name;
+			}
+		}
+		$this->properties = $properties;
 	}
 
 }
