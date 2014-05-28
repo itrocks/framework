@@ -397,14 +397,14 @@ class Loc implements Registerable
 	//------------------------------------------------------------------- translateStringPropertyView
 	/**
 	 * @param $object Reflection_Property_View
-	 * @param $value  string
+	 * @param $result string
 	 * @return string
 	 */
-	public function translateStringPropertyView(Reflection_Property_View $object, $value)
+	public function translateStringPropertyView(Reflection_Property_View $object, $result)
 	{
 		return ($object->property->getListAnnotation('values')->values())
-			? $this->tr($value, $object->property->final_class)
-			: $value;
+			? $this->tr($result, $object->property->final_class)
+			: $result;
 	}
 
 }

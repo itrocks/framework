@@ -3,6 +3,7 @@ namespace SAF\Framework\Reflection;
 
 use DateTime;
 use SAF\Framework\Tools\Date_Time;
+use SAF\Framework\Tools\Password;
 
 /**
  * This is a way to display a property value into a view
@@ -117,6 +118,9 @@ class Reflection_Property_View
 	 */
 	protected function formatString($value)
 	{
+		if ($this->property->getAnnotation('password')->value) {
+			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
+		}
 		return $value;
 	}
 
