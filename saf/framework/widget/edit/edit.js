@@ -92,7 +92,7 @@ $('document').ready(function()
 						while ((i = text.indexOf('="', j) + 1) > 0) {
 							j = text.indexOf('"', i + 1);
 							while (
-								((i = text.indexOf(open, i) + 1) > 0)
+								((i = text.indexOf(open, i) + open.length) > 0)
 								&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
 								&& (i < j)
 							) {
