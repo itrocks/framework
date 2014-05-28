@@ -212,6 +212,7 @@ abstract class Link extends Identifier_Map implements Transactional
 		/** @var $reflection_classes Reflection_Class[] */
 		$reflection_classes = [];
 		while ($result = $this->fetchRow($result_set)) {
+			$row = [];
 			for ($i = 0; $i < $column_count; $i++) {
 				$j = $itoj[$i];
 				if (!isset($classes[$j])) {
