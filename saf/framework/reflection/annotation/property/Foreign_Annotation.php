@@ -68,12 +68,13 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 		$composites = [];
 		$possibles = [];
 		$foreign_class = $this->getForeignClass($property);
+		$final_class_name = $property->getFinalClassName();
 		foreach ($foreign_class->getProperties([T_EXTENDS, T_USE]) as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
 			if (
 				$foreign_type->isClass()
 				&& !$foreign_type->isMultiple()
-				&& is_a($property->getFinalClassName(), $foreign_type->asString(), true)
+				&& is_a($final_class_name, $foreign_type->asString(), true)
 				&& ($foreign_property->getAnnotation('link')->value == Link_Annotation::OBJECT)
 			) {
 				$possibles[] = $foreign_property->getName();
