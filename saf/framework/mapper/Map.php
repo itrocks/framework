@@ -102,26 +102,26 @@ class Map
 					: new Sort(get_class($object));
 			}
 			uasort($this->objects, function($object1, $object2) use ($sort)
-				{
-					if (($object1 instanceof List_Row) && ($object2 instanceof List_Row)) {
-						$object1 = $object1->getObject();
-						$object2 = $object2->getObject();
+			{
+				if (($object1 instanceof List_Row) && ($object2 instanceof List_Row)) {
+					$object1 = $object1->getObject();
+					$object2 = $object2->getObject();
+				}
+				foreach ($sort->columns as $sort_column) {
+					$reverse = isset($sort->reverse[strval($sort_column)]);
+					while (($i = strpos($sort_column, DOT)) !== false) {
+						$column = substr($sort_column, 0, $i);
+						$object1 = isset($object1) ? $object1->$column : null;
+						$object2 = isset($object2) ? $object2->$column : null;
+						$sort_column = substr($sort_column, $i + 1);
 					}
-					foreach ($sort->columns as $sort_column) {
-						$reverse = isset($sort->reverse[$sort_column]);
-						while (($i = strpos($sort_column, DOT)) !== false) {
-							$column = substr($sort_column, 0, $i);
-							$object1 = $object1->$column;
-							$object2 = $object2->$column;
-							$sort_column = substr($sort_column, $i + 1);
-						}
-						$value1 = $object1->$sort_column;
-						$value2 = $object2->$sort_column;
-						$compare = $reverse ? -strnatcasecmp($value1, $value2) : strnatcasecmp($value1, $value2);
-						if ($compare) return $compare;
-					}
-					return 0;
-				});
+					$value1 = isset($object1) ? $object1->$sort_column : null;
+					$value2 = isset($object2) ? $object2->$sort_column : null;
+					$compare = $reverse ? -strnatcasecmp($value1, $value2) : strnatcasecmp($value1, $value2);
+					if ($compare) return $compare;
+				}
+				return 0;
+			});
 		}
 		return $this->objects;
 	}
