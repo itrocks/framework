@@ -33,14 +33,27 @@ abstract class Builder
 	/**
 	 * Build a SQL DELETE query
 	 *
-	 * @param $class     Reflection_Class|string
-	 * @param $id        integer
+	 * @param $class Reflection_Class|string
+	 * @param $id    integer|integer[]
 	 * @return string
 	 */
 	public static function buildDelete($class, $id)
 	{
-		return 'DELETE FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ
-			. ' WHERE id = ' . $id;
+		$sql_delete = 'DELETE FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ . ' WHERE';
+		if (is_numeric($id)) {
+			$sql_delete .= ' id = ' . $id;
+		}
+		elseif (is_array($id)) {
+			$first = true;
+			foreach ($id as $key => $value) {
+				$sql_delete .= $first ? ($first = false) : ' AND';
+				$sql_delete .= ' ' . $key . ' = ' . $value;
+			}
+		}
+		else {
+			user_error("id must be an integer of an array of integer values", E_USER_ERROR);
+		}
+		return $sql_delete;
 	}
 
 	//---------------------------------------------------------------------------------- buildColumns
@@ -94,7 +107,7 @@ abstract class Builder
 	 *
 	 * @param $class Reflection_Class | string
 	 * @param $write array the data to write for each column : key is the column name
-	 * @param $id integer
+	 * @param $id    integer|integer[]
 	 * @return string
 	 */
 	public static function buildUpdate($class, $write, $id)
@@ -110,7 +123,20 @@ abstract class Builder
 			}
 			$sql_update .= $key . ' = ' . Value::escape($value);
 		}
-		$sql_update .= ' WHERE id = ' . $id;
+		$sql_update .= ' WHERE';
+		if (is_numeric($id)) {
+			$sql_update .= ' id = ' . $id;
+		}
+		elseif (is_array($id)) {
+			$first = true;
+			foreach ($id as $key => $value) {
+				$sql_update .= $first ? ($first = false) : ' AND';
+				$sql_update .= ' ' . $key . ' = ' . $value;
+			}
+		}
+		else {
+			user_error("id must be an integer of an array of integer values", E_USER_ERROR);
+		}
 		return $sql_update;
 	}
 
