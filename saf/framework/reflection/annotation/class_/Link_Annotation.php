@@ -4,7 +4,9 @@ namespace SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Builder;
 use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
  * This tells that the class is a link class
@@ -18,8 +20,81 @@ use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
  * - data storage fields will be those from this class, and immediate parent classes if they are not 'User'
  * - an additional implicit data storage field will link to the class 'User'
  */
-class Link_Annotation extends Annotation
+class Link_Annotation extends Annotation implements Class_Context_Annotation
 {
 	use Types_Annotation;
+
+	//------------------------------------------------------------------------------ $link_properties
+	/**
+	 * Finally will be string[], once you called getLinkProperties()
+	 *
+	 * Before : contains data to help getting them :
+	 * - if a string : contains the properties names, separated by spaces
+	 * - if a Reflection_Class : this will be the class to be scanned for @composite properties
+	 *
+	 * This is for optimization purpose : no calculation will be done if you don't need this data
+	 *
+	 * @var string[]|string|Reflection_Class
+	 */
+	private $link_properties;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Annotation string value is a class name followed by the two property names that do the link
+	 *
+	 * @example '@var Class_Name property_1 property_2'
+	 * @param $value string
+	 * @param $class Reflection_Class The contextual Reflection_Class object
+	 */
+	public function __construct($value, Reflection_Class $class)
+	{
+		$this->link_properties = [];
+		if (trim($value)) {
+			$i = strpos($value, SP);
+			if ($i === false) {
+				parent::__construct($value);
+				$this->link_properties = $class;
+			}
+			else {
+				parent::__construct(substr($value, 0, $i));
+				$this->link_properties = substr($value, $i + 1);
+			}
+		}
+		else {
+			parent::__construct(null);
+		}
+	}
+
+	//----------------------------------------------------------------------------- getLinkProperties
+	/**
+	 * Get link properties names list
+	 *
+	 * @return string[]
+	 */
+	public function getLinkProperties()
+	{
+		if (!is_array($this->link_properties)) {
+			$temp = $this->link_properties;
+			$this->link_properties = [];
+			if ($temp instanceof Reflection_Class) {
+				// if properties names are not set : get explicit composite properties names
+				foreach ($temp->getProperties() as $property) {
+					$composite = $property->getAnnotation('composite');
+					if ($composite->value) {
+						$this->link_properties[$property->getName()] = $property->getName();
+					}
+				}
+			}
+			else {
+				// if properties names are told, this will be faster to get their names here
+				foreach (explode(SP, $temp) as $property_name) {
+					if ($property_name) {
+						$this->link_properties[$property_name] = $property_name;
+					}
+				}
+			}
+		}
+		return $this->link_properties;
+	}
 
 }
