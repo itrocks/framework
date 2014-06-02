@@ -3,6 +3,7 @@ namespace SAF\Framework\Sql\Builder;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao\Func;
+use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Sql;
@@ -152,13 +153,17 @@ class Columns
 			foreach ($this->joins->getLinkedJoins() as $join) {
 				if (isset($has_storage)) {
 					foreach (
-						(new Reflection_Class($join->foreign_class))->getProperties([T_EXTENDS, T_USE]) as $property
+						(new Reflection_Class($join->foreign_class))->getProperties([T_EXTENDS, T_USE])
+						as $property
 					) {
 						if (
 							!$property->isStatic()
 							&& isset($column_names[$property->name])
 							&& !isset($already[$property->name])
 						) {
+							if (!$sql_columns) {
+								$sql_columns .= $join->foreign_alias . '.id, ';
+							}
 							$column_name = $column_names[$property->name];
 							$id = $property->getType()->isClass() ? 'id_' : '';
 							$already[$property->name] = true;
@@ -176,7 +181,10 @@ class Columns
 			}
 			// the main table comes last, as fields with the same name must have the main value (ie 'id')
 			if (isset($has_storage)) {
-				$sql_columns .= 't0.id, ';
+				if (!(new Link_Class($this->joins->getStartingClassName()))->getAnnotation('link')->value) {
+					$sql_columns .= 't0.id, ';
+				}
+
 				foreach ($column_names as $property_name => $column_name) {
 					if (!isset($already[$property_name])) {
 						$already[$property_name] = true;
