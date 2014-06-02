@@ -1,11 +1,22 @@
 <?php
 namespace SAF\Framework\Reflection;
 
+use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
+
 /**
  * Link class
  */
 class Link_Class extends Reflection_Class
 {
+
+	//------------------------------------------------------------------------ getCompositeProperties
+	/**
+	 * @return Reflection_Property[]
+	 */
+	public function getCompositeProperties()
+	{
+		return call_user_func([$this->name, 'getCompositeProperties']);
+	}
 
 	//-------------------------------------------------------------------------- getCompositeProperty
 	/**
@@ -58,9 +69,42 @@ class Link_Class extends Reflection_Class
 		return $this->getLinkedClass()->getProperties([T_EXTENDS, T_USE]);
 	}
 
+	//----------------------------------------------------------------------------- getLinkProperties
+	/**
+	 * Returns the two or more properties of the class that make the link
+	 * ie : properties defined into the class @link annotation, if set,
+	 * otherwise @composite properties
+	 *
+	 * @return string[] key and value are the name of each link property
+	 */
+	public function getLinkProperties()
+	{
+		$properties = [];
+		foreach ($this->getLinkPropertiesNames() as $property_name) {
+			$properties[$property_name] = $this->getProperty($property_name);
+		}
+		return $properties;
+	}
+
+	//------------------------------------------------------------------------ getLinkPropertiesNames
+	/**
+	 * Returns the two or more properties names of the class that make the link
+	 * ie : properties defined into the class @link annotation, if set,
+	 * otherwise @composite properties names
+	 *
+	 * @return string[] key and value are the name of each link property
+	 */
+	public function getLinkPropertiesNames()
+	{
+		/** @var $link Link_Annotation */
+		$link = $this->getAnnotation('link');
+		return $link->getLinkProperties();
+	}
+
 	//---------------------------------------------------------------------------- getLocalProperties
 	/**
 	 * Returns only properties of the class, without those of the linked class
+	 * This includes properties that make the link
 	 *
 	 * @return Reflection_Property[]
 	 */
