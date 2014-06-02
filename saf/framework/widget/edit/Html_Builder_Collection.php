@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_View;
 use SAF\Framework\View\Html\Builder\Collection;
@@ -80,7 +81,10 @@ class Html_Builder_Collection extends Collection
 			: $this->property->name;
 		$builder = (new Html_Builder_Property($property, $value, $preprop . '[]'));
 		$input = $builder->setTemplate($this->template)->build();
-		if ($property->name == reset($this->properties)->name) {
+		if (
+			($property->name == reset($this->properties)->name)
+			&& !(new Reflection_Class($this->class_name))->getAnnotation('link')->value
+		) {
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);
 			$id_input = new Input(

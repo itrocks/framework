@@ -66,7 +66,11 @@ abstract class Getter
 				if ($is_component) {
 					/** @var $search_element Component */
 					$search_element->setComposite($object, $property_name);
-					$stored = $dao->search($search_element, null, [Dao::sort()]);
+					$link_properties_names = (new Link_Class($class_name))->getLinkPropertiesNames();
+					$options = $link_properties_names
+						? [Dao::sort(), Dao::key($link_properties_names)]
+						: [Dao::sort()];
+					$stored = $dao->search($search_element, null, $options);
 				}
 				// when element class is not a component and a property name was found
 				elseif (!empty($property_name)) {

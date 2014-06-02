@@ -3,6 +3,7 @@ namespace SAF\Framework\Mapper;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -76,22 +77,43 @@ class Object_Builder_Array
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * @param $array         array
-	 * @param $object        object
-	 * @param $null_if_empty boolean
+	 * @param $array                array
+	 * @param $object               object
+	 * @param $null_if_empty        boolean
+	 * @param $ignore_property_name string
 	 * @return object
 	 */
-	public function build($array, $object = null, $null_if_empty = false)
-	{
+	public function build(
+		$array, $object = null, $null_if_empty = false, $ignore_property_name = null
+	) {
 		$is_null = $null_if_empty;
 		if (!$this->started) {
 			$this->start(isset($object) ? get_class($object) : null);
 		}
 		$properties = $this->properties;
 		if (!isset($object)) {
-			$object = (isset($array['id']) && $array['id'])
-				? Dao::read($array['id'], $this->class->name)
-				: $this->class->newInstance();
+			if (isset($array['id']) && $array['id']) {
+				$object = Dao::read($array['id'], $this->class->name);
+			}
+			else {
+				/** @var $link Class_\Link_Annotation */
+				$link = $this->class->getAnnotation('link');
+				if ($link->value) {
+					$search = [];
+					foreach ($link->getLinkProperties() as $property_name) {
+						$id_property_name = 'id_' . $property_name;
+						if (isset($array[$id_property_name]) && $array[$id_property_name]) {
+							$search[$property_name] = $array[$id_property_name];
+						}
+					}
+					if (count($search) >= 2) {
+						$object = Dao::searchOne($search, $this->class->name);
+					}
+				}
+				if (!isset($object)) {
+					$object = $this->class->newInstance();
+				}
+			}
 			if (isset($array['id'])) {
 				unset($array['id']);
 			}
@@ -116,7 +138,13 @@ class Object_Builder_Array
 				}
 				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
 				if (substr($property_name, 0, 3) === 'id_') {
-					if (!$this->buildIdProperty($object, $property_name, $value, $null_if_empty)) {
+					if (
+						!$this->buildIdProperty($object, $property_name, $value, $null_if_empty)
+						&& (
+							($ignore_property_name === $property_name)
+							|| !isset($search[substr($property_name, 3)])
+						)
+					) {
 						$is_null = false;
 					}
 				}
@@ -177,13 +205,25 @@ class Object_Builder_Array
 	 * @param $class_name    string
 	 * @param $array         array
 	 * @param $null_if_empty boolean
+	 * @param $parent        object the parent object, if linked
 	 * @return object[]
 	 */
-	public function buildCollection($class_name, $array, $null_if_empty = false)
+	public function buildCollection($class_name, $array, $null_if_empty = false, $parent = null)
 	{
 		$collection = [];
 		if ($array) {
 			$builder = new Object_Builder_Array($class_name);
+			/** @var $link Class_\Link_Annotation */
+			$link = $builder->class->getAnnotation('link');
+			if ($link->value && isset($parent->id)) {
+				$composite_properties = call_user_func(
+					[$builder->class->name, 'getCompositeProperties'], $this->class->name
+				);
+				$id_property_name = 'id_' . reset($composite_properties);
+			}
+			else {
+				$id_property_name = null;
+			}
 			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
 			reset($array);
 			if (!is_numeric(key($array))) {
@@ -199,7 +239,10 @@ class Object_Builder_Array
 				if ($combine) {
 					$element = array_combine($first_row, $element);
 				}
-				$object = $builder->build($element, null, $null_if_empty);
+				if ($id_property_name && !isset($element[$id_property_name])) {
+					$element[$id_property_name] = $parent->id;
+				}
+				$object = $builder->build($element, null, $null_if_empty, $id_property_name);
 				if (isset($object)) {
 					$collection[$key] = $object;
 				}
@@ -305,7 +348,7 @@ class Object_Builder_Array
 			// collection
 			elseif ($link == Link_Annotation::COLLECTION) {
 				$class_name = $property->getType()->getElementTypeAsString();
-				$value = $this->buildCollection($class_name, $value, $null_if_empty);
+				$value = $this->buildCollection($class_name, $value, $null_if_empty, $object);
 			}
 			// map or not-linked array
 			else {

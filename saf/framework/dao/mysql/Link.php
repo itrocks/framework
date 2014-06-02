@@ -10,6 +10,7 @@ use SAF\Framework\Mapper\Component;
 use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Mapper\Null_Object;
 use SAF\Framework\Mapper\Search_Object;
+use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Link_Class;
@@ -154,9 +155,10 @@ class Link extends Dao\Sql\Link
 		$id = $this->getObjectIdentifier($object);
 		if ($id) {
 			$class = new Reflection_Class($class_name);
-			$link = $class->getAnnotation('link')->value;
-			$exclude_properties = $link
-				? array_keys((new Reflection_Class($link))->getProperties([T_EXTENDS, T_USE]))
+			/** @var $link Class_\Link_Annotation */
+			$link = $class->getAnnotation('link');
+			$exclude_properties = $link->value
+				? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 				: [];
 			foreach ($class->accessProperties() as $property) {
 				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
@@ -171,6 +173,12 @@ class Link extends Dao\Sql\Link
 				}
 			}
 			$this->setContext($class_name);
+			if ($link->value) {
+				$id = [];
+				foreach ($link->getLinkProperties() as $link_property) {
+					$id['id_' . $link_property] = $this->getObjectIdentifier($object, $link_property);
+				}
+			}
 			$this->query(Sql\Builder::buildDelete($class_name, $id));
 			$this->disconnect($object);
 			return true;
@@ -243,6 +251,71 @@ class Link extends Dao\Sql\Link
 		return $result_set->fetch_object(Builder::className($class_name));
 	}
 
+	//-------------------------------------------------------------------------------------- fetchAll
+	/**
+	 * @param $class_name    string
+	 * @param $options       Option[]
+	 * @param $result_set    mysqli_result
+	 * @return object[]
+	 */
+	protected function fetchAll($class_name, $options, $result_set)
+	{
+		$search_result = [];
+		$keys = $this->getKeyPropertyName($options);
+		if (($keys !== 'id') && isset($keys)) {
+			if (is_array($keys)) {
+				$object_key = [];
+				foreach ($keys as $key => $value) {
+					$keys[$key]       = explode(DOT, $value);
+					$object_key[$key] = array_pop($keys[$key]);
+				}
+			}
+			else {
+				$keys       = explode(DOT, $keys);
+				$object_key = array_pop($keys);
+			}
+		}
+		while ($object = $this->fetch($result_set, $class_name)) {
+			$this->setObjectIdentifier($object, $object->id);
+			// the most common key is the record id : do it quick
+			if ($keys === 'id') {
+				$search_result[$object->id] = $object;
+			}
+			// complex keys
+			elseif (isset($keys) && isset($object_key)) {
+				// result key must be a set of several id keys (used for linked classes collections)
+				// (Dao::key(['property_1', 'property_2']))
+				if (is_array($object_key)) {
+					$k_key = '';
+					foreach ($keys as $key => $k_keys) {
+						$k_object_key = $object_key[$key];
+						$key_object   = $object;
+						foreach ($k_keys as $key) $key_object = $key_object->$key;
+						$k_id_object_key = 'id_' . $k_object_key;
+						$k_key .= ($k_key ? '.' : '') . (
+							isset($key_object->$k_id_object_key)
+								? $key_object->$k_id_object_key
+								: $key_object->$k_object_key
+							);
+					}
+					$search_result[$k_key] = $object;
+				}
+				// result key must be a single id key (Dao::key('property_name'))
+				else {
+					$key_object = $object;
+					foreach ($keys as $key) $key_object = $key_object->$key;
+					$search_result[$key_object->$object_key] = $object;
+				}
+			}
+			// we don't want a significant result key that (Dao::key(null))
+			else {
+				$search_result[] = $object;
+			}
+		}
+		$this->free($result_set);
+		return $search_result;
+	}
+
 	//-------------------------------------------------------------------------------------- fetchRow
 	/**
 	 * Fetch a result from a result set to an array
@@ -307,6 +380,31 @@ class Link extends Dao\Sql\Link
 	public function getConnection()
 	{
 		return $this->connection;
+	}
+
+	//----------------------------------------------------------------------- getLinkObjectIdentifier
+	/**
+	 * Link classes objects identifiers are the identifiers of all their @composite properties values
+	 * also known as link properties values.
+	 *
+	 * @param $object object
+	 * @param $link   Class_\Link_Annotation send it for optimization, but this is not mandatory
+	 * @return string identifiers in a single string, separated with '.'
+	 */
+	public function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
+	{
+		if (!isset($link)) {
+			$link = (new Reflection_Class(get_class($object)))->getAnnotation('link');
+		}
+		$ids = [];
+		foreach ($link->getLinkProperties() as $link_property) {
+			$id = $this->getObjectIdentifier($object, $link_property);
+			if (!isset($id)) {
+				return null;
+			}
+			$ids[$link_property] = $id;
+		}
+		return join('.', $ids);
 	}
 
 	//---------------------------------------------------------------------------------- getRowsCount
@@ -400,14 +498,14 @@ class Link extends Dao\Sql\Link
 	{
 		if (!$identifier) return null;
 		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
-			$query = (new Select($class_name, null, ['id' => $identifier], $this))
-				->buildQuery();
+			trigger_error(
+				"You can't read a @link class with it's identifier : it has no identifier !",
+				E_USER_ERROR
+			);
 		}
-		else {
-			// it's for optimisation purpose only
-			$query = 'SELECT * FROM ' . BQ . $this->storeNameOf($class_name) . BQ
-				. ' WHERE id = ' . $identifier;
-		}
+		// it's for optimisation purpose only
+		$query = 'SELECT * FROM ' . BQ . $this->storeNameOf($class_name) . BQ
+			. ' WHERE id = ' . $identifier;
 		$this->setContext($class_name);
 		$result_set = $this->executeQuery($query);
 		$object = $this->fetch($result_set, $class_name);
@@ -428,23 +526,13 @@ class Link extends Dao\Sql\Link
 	 */
 	public function readAll($class_name, $options = [])
 	{
-		$read_result = [];
 		$this->setContext($class_name);
 		$query = (new Select($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->executeQuery($query);
 		if ($options) {
 			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
-		$keys = explode(DOT, $this->getKeyPropertyName($options));
-		$object_key = array_pop($keys);
-		while ($object = $this->fetch($result_set, $class_name)) {
-			$this->setObjectIdentifier($object, $object->id);
-			$key_object = $object;
-			foreach ($keys as $key) $key_object = $key_object->$key;
-			$read_result[$key_object->$object_key] = $object;
-		}
-		$this->free($result_set);
-		return $read_result;
+		return $this->fetchAll($class_name, $options, $result_set);
 	}
 
 	//----------------------------------------------------------------------------- replaceReferences
@@ -507,7 +595,6 @@ class Link extends Dao\Sql\Link
 		if (!isset($class_name)) {
 			$class_name = get_class($what);
 		}
-		$search_result = [];
 		$builder = new Select($class_name, null, $what, $this, $options);
 		$query = $builder->buildQuery();
 		$this->setContext($builder->getJoins()->getClassNames());
@@ -515,16 +602,7 @@ class Link extends Dao\Sql\Link
 		if ($options) {
 			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
-		$keys = explode(DOT, $this->getKeyPropertyName($options));
-		$object_key = array_pop($keys);
-		while ($object = $this->fetch($result_set, $class_name)) {
-			$this->setObjectIdentifier($object, $object->id);
-			$key_object = $object;
-			foreach ($keys as $key) $key_object = $key_object->$key;
-			$search_result[$key_object->$object_key] = $object;
-		}
-		$this->free($result_set);
-		return $search_result;
+		return $this->fetchAll($class_name, $options, $result_set);
 	}
 
 	//------------------------------------------------------------------------------------ setContext
@@ -573,15 +651,16 @@ class Link extends Dao\Sql\Link
 			$class = new Link_Class(get_class($object));
 			$id_property = 'id';
 			do {
-				$link = $class->getAnnotation('link')->value;
+				/** @var $link Class_\Link_Annotation */
+				$link = $class->getAnnotation('link');
 				$table_columns_names = array_keys($this->getStoredProperties($class));
 				$write_collections = [];
 				$write_maps = [];
 				$write = [];
 				$aop_getter_ignore = Getter::$ignore;
 				Getter::$ignore = true;
-				$exclude_properties = $link
-					? array_keys((new Reflection_Class($link))->getProperties([T_EXTENDS, T_USE]))
+				$exclude_properties = $link->value
+					? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 					: [];
 				foreach ($options as $option) {
 					if ($option instanceof Only) {
@@ -658,17 +737,40 @@ class Link extends Dao\Sql\Link
 				unset($only);
 				Getter::$ignore = $aop_getter_ignore;
 				if ($write) {
-					$id = $this->getObjectIdentifier($object, $id_property);
-					$this->setContext($class->name);
-					if (empty($id)) {
-						$this->disconnect($object);
-						$id = $this->query(Sql\Builder::buildInsert($class->name, $write));
-						if (!empty($id)) {
-							$this->setObjectIdentifier($object, $id);
+					// link class : id is the couple of composite properties values
+					if ($link->value) {
+						$search = [];
+						foreach ($link->getLinkProperties() as $property_name) {
+							$search[$property_name] = $write['id_' . $property_name];
+						}
+						if ($this->search($search, $class->name)) {
+							$id = [];
+							foreach ($search as $property_name => $value) {
+								$id_property_name = 'id_' . $property_name;
+								$id[$id_property_name] = $value;
+								unset($write[$id_property_name]);
+							}
+						}
+						else {
+							$id = null;
 						}
 					}
+					// standard class : get the property 'id' value
 					else {
-						$this->query(Sql\Builder::buildUpdate($class->name, $write, $id));
+						$id = $this->getObjectIdentifier($object, $id_property);
+					}
+					if ($write) {
+						$this->setContext($class->name);
+						if (empty($id)) {
+							$this->disconnect($object);
+							$id = $this->query(Sql\Builder::buildInsert($class->name, $write));
+							if (!empty($id)) {
+								$this->setObjectIdentifier($object, $id);
+							}
+						}
+						else {
+							$this->query(Sql\Builder::buildUpdate($class->name, $write, $id));
+						}
 					}
 				}
 				foreach ($write_collections as $write) {
@@ -680,8 +782,8 @@ class Link extends Dao\Sql\Link
 					$this->writeMap($object, $property, $value);
 				}
 				// if link class : write linked object too
-				$id_property = $link ? ('id_' . $class->getCompositeProperty()->name) : null;
-				$class = $link ? new Link_Class($link) : null;
+				$id_property = $link->value ? ('id_' . $class->getCompositeProperty()->name) : null;
+				$class       = $link->value ? new Link_Class($link->value) : null;
 			} while ($class && !Null_Object::isNull($object, $class->name));
 
 			foreach (
@@ -716,21 +818,27 @@ class Link extends Dao\Sql\Link
 		Getter::$ignore = false;
 		$old_collection = $property->getValue($old_object);
 		Getter::$ignore = $aop_getter_ignore;
+		/** @var $link Class_\Link_Annotation */
+		$link = $property->getType()->asReflectionClass()->getAnnotation('link');
 		// collection properties : write each of them
 		$id_set = [];
 		if ($collection) {
 			foreach ($collection as $element) {
 				$element->setComposite($object, $property->getAnnotation('foreign')->value);
-				$id = $this->getObjectIdentifier($element);
-				if (!empty($id)) {
+				$id = $link->value
+					? $this->getLinkObjectIdentifier($element, $link)
+					: $this->getObjectIdentifier($element);
+				if (!$link->value || !empty($id)) {
 					$id_set[$id] = true;
+					$this->write($element);
 				}
-				$this->write($element);
 			}
 		}
 		// remove old unused elements
 		foreach ($old_collection as $old_element) {
-			$id = $this->getObjectIdentifier($old_element);
+			$id = $link->value
+				? $this->getLinkObjectIdentifier($old_element, $link)
+				: $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
 				$this->delete($old_element);
 			}
