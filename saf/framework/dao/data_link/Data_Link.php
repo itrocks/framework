@@ -109,7 +109,7 @@ abstract class Data_Link
 	 * Default will be 'id'
 	 *
 	 * @param $options Option[]
-	 * @return string
+	 * @return string|string[]
 	 */
 	protected function getKeyPropertyName($options)
 	{

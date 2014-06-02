@@ -210,7 +210,7 @@ class Dao implements Configurable
 	 * An option to choose what property value will be used as keys for Dao::readAll()
 	 * or Dao::search() results
 	 *
-	 * @param $property_name string
+	 * @param $property_name string|string[]
 	 * @return Option\Key;
 	 */
 	public static function key($property_name)
