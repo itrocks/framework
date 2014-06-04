@@ -265,7 +265,7 @@ function strSimplify($str, $extended = false, $joker = null)
  */
 function strUri($str, $joker = null)
 {
-	return strtolower(strSimplify(str_replace(SP, '_', $str), '/-_{}.', $joker));
+	return strtolower(strSimplify(str_replace(SP, '-', $str), '/-_{}.', $joker));
 }
 
 //---------------------------------------------------------------------------------------- ucfirsta
