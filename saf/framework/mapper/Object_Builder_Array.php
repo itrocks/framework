@@ -77,6 +77,8 @@ class Object_Builder_Array
 
 	//----------------------------------------------------------------------------------------- build
 	/**
+	 * TODO LOW This method is too much big : please refactor it
+	 *
 	 * @param $array                array
 	 * @param $object               object
 	 * @param $null_if_empty        boolean
@@ -99,15 +101,27 @@ class Object_Builder_Array
 				/** @var $link Class_\Link_Annotation */
 				$link = $this->class->getAnnotation('link');
 				if ($link->value) {
+					$id_property_value = null;
+					$linked_class_name = null;
 					$search = [];
 					foreach ($link->getLinkProperties() as $property_name) {
 						$id_property_name = 'id_' . $property_name;
 						if (isset($array[$id_property_name]) && $array[$id_property_name]) {
 							$search[$property_name] = $array[$id_property_name];
 						}
+						$property_class_name = $this->class->getProperty($property_name)->getType()->asString();
+						if (is_a($property_class_name, $link->value, true)) {
+							$id_property_value = $array[$id_property_name];
+							$linked_class_name = $property_class_name;
+						}
 					}
 					if (count($search) >= 2) {
 						$object = Dao::searchOne($search, $this->class->name);
+						if (!$object && $id_property_value) {
+							$object = Builder::createClone(
+								Dao::read($id_property_value, $linked_class_name), $this->class->name
+							);
+						}
 					}
 				}
 				if (!isset($object)) {

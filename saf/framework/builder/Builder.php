@@ -159,13 +159,7 @@ class Builder implements Activable, Registerable, Serializable
 					$properties[$property_name]->setValue($clone, $value);
 				}
 			}
-			// disconnect the clone from datalink if the clone class is a @link of the source object
-			if (
-				(new Reflection_Class($class_name))->getAnnotation('link')->value
-				!= (new Reflection_Class($source_class_name))->getAnnotation('link')->value
-			) {
-				Dao::disconnect($clone);
-			}
+			Dao::replace($clone, $object, false);
 			return $clone;
 		}
 		return clone $object;
