@@ -61,7 +61,9 @@ trait Tokens_Parser
 	 */
 	private function fullClassName($class_name, $use = true)
 	{
-		return (new Type($class_name))->applyNamespace($this->namespace, $use ? $this->use : []);
+		return (new Type($class_name))->applyNamespace(
+			$this->namespace, $use ? array_keys($this->use) : []
+		);
 	}
 
 	//------------------------------------------------------------------------------------- nextToken
