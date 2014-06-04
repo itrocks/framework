@@ -232,6 +232,7 @@ class Compiler implements
 							Dependency::class,
 							['file_name' => $source->file_name]
 						);
+						$this->sources[$source->file_name] = $source;
 					}
 
 					if (count($compilers) == 1) {
@@ -279,6 +280,11 @@ class Compiler implements
 
 				$this->sources = $this->more_sources;
 				$this->more_sources = [];
+				foreach ($this->sources as $source) {
+					if (!isset($saved_sources[$source->file_name])) {
+						$saved_sources[$source->file_name] = $source;
+					}
+				}
 			}
 			$this->sources = $saved_sources;
 			$first_group = false;
@@ -316,7 +322,13 @@ class Compiler implements
 		else {
 			/** @var $router Router */
 			$router = Session::current()->plugins->get(Router::class);
-			$file_name = $router->getClassFilename($class_name);
+			if (Builder::isBuilt($class_name)) {
+				$file_name = $this->getCacheDir() . SL
+					. str_replace(SL, '-', Names::classToPath($class_name));
+			}
+			else {
+				$file_name = $router->getClassFilename($class_name);
+			}
 			$source = new Reflection_Source($file_name, $this, $class_name);
 			foreach (array_keys($source->getClasses()) as $class_name) {
 				$this->sources_cache[$class_name] = $source;
