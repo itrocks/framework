@@ -610,10 +610,10 @@ class Reflection_Source
 	 */
 	public function setSource($source, $reset = true)
 	{
+		$this->changed = true;
 		if ($reset) {
 			$this->free(0);
 		}
-		$this->changed = true;
 		$this->source = $source;
 		return $this;
 	}
