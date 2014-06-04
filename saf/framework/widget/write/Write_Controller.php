@@ -37,6 +37,8 @@ class Write_Controller implements Default_Class_Controller
 			$objects = array_merge([$class_name => $object], $objects);
 			$parameters->unshift($object);
 		}
+
+		Dao::begin();
 		$builder = new Post_Files();
 		$form = $builder->appendToForm($form, $files);
 		$builder = new Object_Builder_Array();
@@ -47,11 +49,12 @@ class Write_Controller implements Default_Class_Controller
 				$write_objects[] = $write_object;
 			}
 		}
-		Dao::begin();
+
 		foreach ($write_objects as $write_object) {
 			Dao::write($write_object);
 		}
 		Dao::commit();
+
 		if (isset($objects['fill_combo']) && strpos($objects['fill_combo'], '[')) {
 			$elements = explode(DOT, $objects['fill_combo']);
 			$objects['fill_combo'] = $elements[0] . '.elements["' . $elements[1] . '"]';
