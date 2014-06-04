@@ -94,7 +94,6 @@ class Class_Builder
 			// must be set before $shot_class and $namespace (extends last class)
 			$extends = BS . (isset($short_class) ? ($namespace . BS . $short_class) : $class_name);
 			$end = ($level == $end_level);
-			$final = $end ? 'final ' : '';
 			$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
 			$namespace = array_slice(explode(BS, Namespaces::of($class_name)), 1);
@@ -106,7 +105,7 @@ class Class_Builder
 			$built_class = $namespace . BS . $short_class;
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
 				. '/** Built ' . $short_class . ' class */' . LF
-				. $final . 'class ' . $short_class . ' extends ' . $extends
+				. 'class ' . $short_class . ' extends ' . $extends
 				. ($interfaces_names ? (LF . TAB . 'implements ' . $interfaces_names) : '')
 				. LF . '{' . LF
 				. ($traits_names ? (TAB . 'use ' . BS . $traits_names . ';' . LF) : '')

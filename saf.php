@@ -59,10 +59,13 @@ $config['SAF/Framework'] = [
 		Compiler::class => [
 			1 => [
 				Router::class,
-				Builder\Compiler::class,
-				AOP\Compiler::class
+				Builder\Compiler::class
 			],
 			2 => [
+				Builder\Linked_Classes_Compiler::class,
+				AOP\Compiler::class,
+			],
+			3 => [
 				Mysql\Compiler::class
 			]
 		],
