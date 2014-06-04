@@ -2,7 +2,7 @@
 namespace SAF\Framework\Controller;
 
 use SAF\Framework\Builder;
-use SAF\Framework\Mapper\Getter;
+use SAF\Framework\Mapper;
 use SAF\Framework\Tools\Set;
 
 /**
@@ -120,7 +120,7 @@ class Parameters
 			if (isset($class_name) && @class_exists($class_name)) {
 				// object parameter
 				$object = $this->getRawParameter($parameter_name) + 0;
-				Getter::getObject($object, $class_name);
+				Mapper\Getter::getObject($object, $class_name);
 				$this->objects[$parameter_name] = $object;
 			}
 			else {
