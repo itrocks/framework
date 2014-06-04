@@ -171,7 +171,7 @@ class Reflection_Property extends ReflectionProperty
 
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
-	 * TODO use $flags ?
+	 * TODO LOW use $flags ?
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
@@ -228,7 +228,7 @@ class Reflection_Property extends ReflectionProperty
 			if ($annotation->property_name === $this->name) {
 				$comment .= '/**' . LF;
 				foreach ($annotation->values() as $key => $value) {
-					$comment .= TAB . SP . Parser::DOC_COMMENT_IN . $this->final_class . LF;
+					$comment .= Parser::DOC_COMMENT_IN . $annotation->class_name . LF;
 					$comment .= TAB . SP . '*' . SP . '@' . $key . SP . $value . LF;
 				}
 				$comment .= TAB . SP . '*/';

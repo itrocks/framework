@@ -4,6 +4,7 @@ namespace SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Builder;
 use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Template\Annotation_In;
 use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -186,6 +187,21 @@ abstract class Parser
 		}
 		/** @var $annotation Annotation */
 		$annotation = isset($value) ? new $annotation_class($value, $reflection_object) : null;
+
+		if (isset($annotation) && isA($annotation, Annotation_In::class)) {
+			/** @var $annotation Annotation_In */
+			$j = strrpos(substr($doc_comment, 0, $i), LF . self::DOC_COMMENT_IN);
+			if ($j === false) {
+				$annotation->class_name = ($reflection_object instanceof Reflection_Class_Component)
+					? $reflection_object->getDeclaringClassName()
+					: $reflection_object->getName();
+			}
+			else {
+				$j += strlen(self::DOC_COMMENT_IN) + 1;
+				$k = strpos($doc_comment, LF, $j);
+				$annotation->class_name = substr($doc_comment, $j, $k - $j);
+			}
+		}
 
 		if (isset($annotation) && isA($annotation, Types_Annotation::class)) {
 			$do = false;
