@@ -125,12 +125,14 @@ class Image
 			);
 		}
 		if (in_array($this->type, [ IMAGETYPE_GIF, IMAGETYPE_PNG ])) {
-			imagealphablending($destination->resource, true);
+			imagealphablending($destination->resource, false);
+			imagesavealpha($destination->resource, true);
+			$background = imagecolorallocatealpha($destination->resource, 0, 0, 0, 127);
 		}
 		else {
-			$white = imagecolorallocate($destination->resource, 255, 255, 255);
-			imagefilledrectangle($destination->resource, 0, 0, $width - 1, $height - 1, $white);
+			$background = imagecolorallocate($destination->resource, 255, 255, 255);
 		}
+		imagefilledrectangle($destination->resource, 0, 0, $width - 1, $height - 1, $background);
 		imagecopyresampled(
 			$destination->resource, $this->resource, $dx, $dy, 0, 0, $dw, $dh, $this->width, $this->height
 		);
