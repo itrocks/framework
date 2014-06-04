@@ -7,6 +7,10 @@ namespace SAF\Framework\Dao\File;
 class Type
 {
 
+	//-------------------------------------------------------------------------------- is() constants
+	const APPLICATION = 'application';
+	const IMAGE       = 'image';
+
 	//----------------------------------------------------------------------------- $extensions_types
 	/**
 	 * @var string[] key is the file extension, value is the full text file type
@@ -85,8 +89,10 @@ class Type
 		if (!isset(self::$extensions_types)) {
 			// source : http://www.iana.org/assignments/media-types/media-types.xhtml
 			self::$extensions_types = [
+				'bmp'  => 'image/bmp',
 				'bz2'  => 'application/x-bz2',
 				'csv'  => 'text/csv',
+				'doc'  => 'application/msword',
 				'gif'  => 'image/gif',
 				'gz'   => 'multipart/x-gzip',
 				'gzip' => 'multipart/x-gzip',
