@@ -98,6 +98,9 @@ class Object_Builder_Array
 				$object = Dao::read($array['id'], $this->class->name);
 			}
 			else {
+				foreach ($this->class->getAnnotations('before_build_array') as $before) {
+					call_user_func_array([$this->class->name, $before->value], [&$array]);
+				}
 				/** @var $link Class_\Link_Annotation */
 				$link = $this->class->getAnnotation('link');
 				if ($link->value) {

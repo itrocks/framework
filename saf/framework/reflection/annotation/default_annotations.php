@@ -12,6 +12,12 @@ use SAF\Framework\Reflection\Annotation;
  */
 Parser::$default_annotations = [
 
+	// @before_build_array beforeBuildArray
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call before the object is built from an array representation
+	// - These methods may accept an array as first reference argument, if needed
+	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Annotation::class,
+
 	// @after_write afterWrite
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call after the object is written using a data link
@@ -20,7 +26,7 @@ Parser::$default_annotations = [
 
 	// @before_write beforeWrite
 	// This is a Multiple_Annotation
-	// Declare one or several methods to call after the object is written using a data link
+	// Declare one or several methods to call before the object is written using a data link
 	// - These methods may accept a Dao\Option[] as first argument, if needed
 	// - These methods may return false to cancel the writing of the object
 	__NAMESPACE__ . '\Class_\Before_Write_Annotation' => Annotation::class,
