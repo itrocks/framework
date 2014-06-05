@@ -33,7 +33,7 @@ class Linked_Classes_Compiler implements ICompiler
 				if ($parent_class_name) {
 					$replacement_class_name = Builder::className($parent_class_name);
 					if (is_array($replacement_class_name)) {
-						user_error("Replacement classes should all be compiled", E_USER_ERROR);
+						trigger_error("Replacement classes should all be compiled", E_USER_ERROR);
 						$compiler->addSource($source);
 					}
 					elseif (
