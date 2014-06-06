@@ -619,6 +619,23 @@ abstract class Functions
 		return $blocks;
 	}
 
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Returns the current value of the current element of the currently read array
+	 *
+	 * @param Template $template
+	 * @return string|integer
+	 */
+	public static function getValue(Template $template)
+	{
+		foreach ($template->objects as $key => $array) {
+			if (is_array($array) && $key) {
+				return $template->objects[$key - 1];
+			}
+		}
+		return null;
+	}
+
 	//--------------------------------------------------------------------------- toEditPropertyExtra
 	/**
 	 * Gets property extra data needed for edit widget
