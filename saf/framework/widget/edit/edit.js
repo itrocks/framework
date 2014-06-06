@@ -91,11 +91,12 @@ $('document').ready(function()
 						var j = 0;
 						while ((i = text.indexOf('="', j) + 1) > 0) {
 							j = text.indexOf('"', i + 1);
+							i = text.indexOf(open, i);
 							while (
-								((i = text.indexOf(open, i) + open.length) > 0)
+								(i = text.indexOf(open, i)) && (i > 0) && (i < j)
 								&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
-								&& (i < j)
 							) {
+								i += open.length;
 								if ((text[i] >= '0') && (text[i] <= '9')) {
 									depth --;
 								}
