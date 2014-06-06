@@ -91,17 +91,15 @@ $('document').ready(function()
 						var j = 0;
 						while ((i = text.indexOf('="', j) + 1) > 0) {
 							j = text.indexOf('"', i + 1);
-							i = text.indexOf(open, i);
 							while (
-								(i = text.indexOf(open, i)) && (i > 0) && (i < j)
+								(i = text.indexOf(open, i) + open.length) && (i > (open.length - 1)) && (i < j)
 								&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
 							) {
-								i += open.length;
 								if ((text[i] >= '0') && (text[i] <= '9')) {
 									depth --;
 								}
 							}
-							if ((i > 0) && (i < j) && !depth) {
+							if ((i > (open.length - 1)) && (i < j) && !depth) {
 								var k = text.indexOf(close, i);
 								var html_indice = text.substring(i, k);
 								if (html_indice == old_indice) {
