@@ -261,7 +261,7 @@ abstract class Functions
 	public static function getKey(Template $template)
 	{
 		foreach ($template->objects as $key => $array) {
-			if (is_array($array)) {
+			if (is_array($array) && $key) {
 				return $template->var_names[$key - 1];
 			}
 		}
