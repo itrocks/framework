@@ -6,58 +6,87 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			duration: 150,
+			button:          undefined, // ie ('.minimizable')
+			duration:        150,
+			html_maximized:  undefined, // ie 'minimize'
+			html_minimized:  undefined, // ie 'maximize'
+			minimize_class:  'minimize',
 			minimized_class: 'minimized',
-			min_height: 24,
-			min_width: 24
+			minimized_hide:  false,
+			min_height:      24,
+			min_width:       24
 		}, options);
 
-		//------------------------------------------------------------------------------------ maximize
-		var maximize = function()
+		this.each(function()
 		{
-			$(this).removeClass(settings.minimized_class);
-			this.animate(
-				{ height: this.data('height'), padding: this.data('padding'), width: this.data('width') },
-				settings.duration,
-				function()
-				{
-					$(this).css({ height: '', overflow: '', padding: '', width: '' })
-						.children('.minimize').html('minimize');
-				}
-			);
-		};
+			var $this = $(this);
 
-		//------------------------------------------------------------------------------------ minimize
-		var minimize = function()
-		{
-			this.data('height',  this.height() + 'px');
-			this.data('padding', this.css('padding'));
-			this.data('width',   this.width() + 'px');
-			this.css({ overflow: 'hidden' });
-			this.animate(
-				{ height: settings.min_height + 'px', padding: 0, width: settings.min_width + 'px' },
-				settings.duration,
-				function() {
-					$(this).addClass(settings.minimized_class).children('.minimize').html('maximize');
-				}
-			);
-		};
+			var $button = settings.button;
+			if ($button == undefined) {
+				var html = (settings.html_maximized == undefined) ? 'minimize' : settings.html_maximized;
+				$button = $('<div class="' + settings.minimize_class + '">' + html + '</div>');
+				$this.prepend($button);
+			}
 
-		//----------------------------------------------------------------------------- .minimize click
-		var $div = $('<div class="minimize">minimize</div>');
-		$div.click(function()
-		{
-			var $parent = $(this).parent();
-			if ($parent.hasClass(settings.minimized_class)) {
-				$parent.maximize = maximize;
-				$parent.maximize();
+			//------------------------------------------------------------------------------------ maximize
+			var maximize = function()
+			{
+				$this.removeClass(settings.minimized_class);
+				$this.animate(
+					{
+						height:  $this.data('height'),
+						padding: $this.data('padding'),
+						width:   $this.data('width')
+					},
+					settings.duration,
+					function()
+					{
+						$(this).css({ height: '', overflow: '', padding: '', width: '' });
+						if (settings.html_maximized != undefined) {
+							$button.html(settings.html_maximized);
+						}
+					}
+				);
+			};
+
+			//------------------------------------------------------------------------------------ minimize
+			var minimize = function()
+			{
+				this.data('height',  this.height() + 'px');
+				this.data('padding', this.css('padding'));
+				this.data('width',   this.width() + 'px');
+				this.css({ overflow: 'hidden' });
+				this.animate(
+					{ height: settings.min_height + 'px', padding: 0, width: settings.min_width + 'px' },
+					settings.duration,
+					function() {
+						$(this).addClass(settings.minimized_class);
+						if (settings.html_minimized != undefined) {
+							$button.html(settings.html_minimized);
+						}
+					}
+				);
+			};
+
+			//----------------------------------------------------------------------------- .minimize click
+			$button.click(function()
+			{
+				if ($this.hasClass(settings.minimized_class)) {
+					$this.maximize = maximize;
+					$this.maximize();
+				}
+				else {
+					$this.minimize = minimize;
+					$this.minimize();
+				}
+			});
+
+			if ($this.hasClass('minimized')) {
+				$this.minimize = minimize;
+				$this.minimize();
 			}
-			else {
-				$parent.minimize = minimize;
-				$parent.minimize();
-			}
+
 		});
-		this.prepend($div);
 
 		return this;
 	};
