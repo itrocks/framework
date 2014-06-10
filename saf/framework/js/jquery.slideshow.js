@@ -9,11 +9,11 @@
 		var settings = $.extend({}, options);
 
 		var elements = this;
-		var position = elements.length - 1;
+		var position = 0;
 		var hover = 0;
 
 		// hide all elements
-		for (var i = 0; i < position; i++) {
+		for (var i = 1; i < elements.length; i++) {
 			$(elements[i]).hide();
 		}
 
