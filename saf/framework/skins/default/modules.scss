@@ -107,6 +107,7 @@
 	}
 
 	&.account, &.accounts,
+	&.article, &.articles,
 	&.cart, &.carts,
 	&.webshop, &.webshops {
 		>h2, >select.customized {
@@ -130,6 +131,7 @@
 	&.city, &.cities,
 	&.civility, &.civilities,
 	&.contact, &.contacts,
+	&.country, &.countries,
 	&.mean_of_payment, &.mean_of_payments,
 	&.size_unit, &.size_units,
 	&.term_of_payment, &.term_of_payments,
