@@ -111,7 +111,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				)
 			) {
 				$possibles[$foreign_property->getName()] = $foreign_property->getName();
-				$replaced= $foreign_property->getAnnotation('replaces')->value;
+				$replaced = $foreign_property->getAnnotation('replaces')->value;
 				if ($replaced) {
 					$replace[] = $replaced;
 				}

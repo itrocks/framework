@@ -13,6 +13,7 @@ use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -667,7 +668,10 @@ class Link extends Dao\Sql\Link
 						$only = array_merge(isset($only) ? $only : [], $option->properties);
 					}
 				}
-				foreach ($class->accessProperties() as $property) {
+				/** @var $properties Reflection_Property[] */
+				$properties = $class->accessProperties();
+				$properties = Replaces_Annotations::removeReplacedProperties($properties);
+				foreach ($properties as $property) {
 					if (!isset($only) || in_array($property->name, $only)) {
 						if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
 							$value = isset($object->$property) ? $property->getValue($object) : null;

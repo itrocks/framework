@@ -83,7 +83,8 @@ abstract class Functions
 	/**
 	 * Return object's display
 	 *
-	 * @param $template Template
+	 * @param $template          Template
+	 * @param $display_full_path boolean If object is a property, returns 'the.full.property.path'
 	 * @return string
 	 */
 	public static function getDisplay(Template $template, $display_full_path = false)
@@ -395,12 +396,17 @@ abstract class Functions
 		$object = reset($template->objects);
 		$properties_filter = $template->getParameter('properties_filter');
 		$class = new Reflection_Class(get_class($object));
+		$ignore = [];
 		$result_properties = [];
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (
 				!$property->isStatic()
 				&& !$property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)
 			) {
+				$replaces = $property->getAnnotation('replaces')->value;
+				if (!empty($replaces)) {
+					$ignore[$replaces] = $replaces;
+				}
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
 					$property = new Reflection_Property_Value(
 						$property->class, $property->name, $object, false, true
@@ -408,6 +414,11 @@ abstract class Functions
 					$property->final_class = $class->name;
 					$result_properties[$property_name] = $property;
 				}
+			}
+		}
+		foreach ($ignore as $property_name) {
+			if (isset($result_properties[$property_name])) {
+				unset($result_properties[$property_name]);
 			}
 		}
 		return $result_properties;
