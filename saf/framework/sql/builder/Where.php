@@ -133,7 +133,10 @@ class Where
 									. $property->getAnnotation('storage')->value . DOT;
 							}
 						}
-						$build = $this->buildPath($prefix . $key, $value, $clause);
+						$build = $this->buildPath($prefix . $key, $value, 'OR');
+						if (is_array($value) && !empty($build)) {
+							$build = '(' . $build . ')';
+						}
 					}
 					if (!empty($build)) {
 						$sql .= $build;
