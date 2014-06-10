@@ -18,6 +18,15 @@ use SAF\Framework\Tools\Names;
 class Maintainer implements Registerable
 {
 
+	//-------------------------------------------------------------------------------------- $already
+	/**
+	 * All queries that have been already solved by the maintainer
+	 * Used to avoid trying to solve the same query twice (real errors)
+	 *
+	 * @var integer[] key is the query, value is the solved counter
+	 */
+	private $already = [];
+
 	//----------------------------------------------------------------------------------- createTable
 	/**
 	 * Create a table in database, using a data class structure
@@ -25,7 +34,7 @@ class Maintainer implements Registerable
 	 * @param $mysqli     mysqli
 	 * @param $class_name string
 	 */
-	private static function createTable(mysqli $mysqli, $class_name)
+	private function createTable(mysqli $mysqli, $class_name)
 	{
 		foreach ((new Table_Builder_Class)->build($class_name) as $table) {
 			$mysqli->query((new Create_Table($table))->build());
@@ -41,7 +50,7 @@ class Maintainer implements Registerable
 	 * @param $column_names string[]
 	 * @return boolean
 	 */
-	private static function createImplicitTable(mysqli $mysqli, $table_name, $column_names)
+	private function createImplicitTable(mysqli $mysqli, $table_name, $column_names)
 	{
 		$table = new Table($table_name);
 		foreach ($column_names as $column_name) {
@@ -81,12 +90,12 @@ class Maintainer implements Registerable
 	 * @param $query      string
 	 * @return boolean
 	 */
-	private static function createTableWithoutContext(Contextual_Mysqli $mysqli, $table_name, $query)
+	private function createTableWithoutContext(Contextual_Mysqli $mysqli, $table_name, $query)
 	{
 		// if a class name exists for the table name, use it as context and create table from class
 		$class_name = Dao::classNameOf($table_name);
 		if (class_exists($class_name, false)) {
-			self::createTable($mysqli, $class_name);
+			$this->createTable($mysqli, $class_name);
 			return true;
 		}
 		// if no class name, create it from columns names in the query
@@ -134,7 +143,7 @@ class Maintainer implements Registerable
 				);
 			}
 		}
-		return self::createImplicitTable($mysqli, $table_name, $column_names);
+		return $this->createImplicitTable($mysqli, $table_name, $column_names);
 	}
 
 	//---------------------------------------------------------------------------------- guessContext
@@ -142,7 +151,7 @@ class Maintainer implements Registerable
 	 * @param $query string
 	 * @return string[]|null
 	 */
-	private static function guessContext($query)
+	private function guessContext($query)
 	{
 		$context = [];
 		// first clause between `...` is probably the name of the table
@@ -176,12 +185,13 @@ class Maintainer implements Registerable
 	 * @param $query  string
 	 * @param $result mysqli_result|boolean
 	 */
-	public static function onMysqliQuery(Contextual_Mysqli $object, $query, &$result)
+	public function onMysqliQuery(Contextual_Mysqli $object, $query, &$result)
 	{
 		$mysqli = $object;
-		if ($error_number = $mysqli->last_errno) {
+		if (($error_number = $mysqli->last_errno) && !isset($this->already[$query])) {
+			$this->already[$query] = 1;
 			if (!isset($mysqli->context)) {
-				$mysqli->context = self::guessContext($query);
+				$mysqli->context = $this->guessContext($query);
 			}
 			if (isset($mysqli->context)) {
 				$error = $mysqli->error;
@@ -191,34 +201,34 @@ class Maintainer implements Registerable
 					($error_number == Errors::ER_CANT_CREATE_TABLE)
 					&& strpos($error, '(errno: 150)')
 				) {
-					$error_table_names = self::parseNamesFromQuery($query);
+					$error_table_names = $this->parseNamesFromQuery($query);
 					foreach ($error_table_names as $error_table_name) {
 						if (!$mysqli->exists($error_table_name)) {
-							self::createImplicitTable($mysqli, $error_table_name, ['id']);
+							$this->createImplicitTable($mysqli, $error_table_name, ['id']);
 						}
 						$retry = true;
 					}
 				}
 				elseif ($error_number == Errors::ER_NO_SUCH_TABLE) {
-					$error_table_names = [self::parseNameFromError($error)];
+					$error_table_names = [$this->parseNameFromError($error)];
 					if (!reset($error_table_names)) {
-						$error_table_names = self::parseNamesFromQuery($query);
+						$error_table_names = $this->parseNamesFromQuery($query);
 					}
 					foreach ($context as $key => $context_class) {
 						$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
 						if (in_array($context_table, $error_table_names)) {
 							if (!is_array($context_class)) {
-								self::createTable($mysqli, $context_class);
+								$this->createTable($mysqli, $context_class);
 							}
 							else {
-								self::createImplicitTable($mysqli, $context_table, $context_class);
+								$this->createImplicitTable($mysqli, $context_table, $context_class);
 							}
 							$retry = true;
 						}
 					}
 					if (!$retry) {
 						foreach ($error_table_names as $error_table_name) {
-							$retry = $retry || self::createTableWithoutContext(
+							$retry = $retry || $this->createTableWithoutContext(
 								$mysqli, $error_table_name, $query
 							);
 						}
@@ -247,7 +257,7 @@ class Maintainer implements Registerable
 	 * @param $error string
 	 * @return string
 	 */
-	private static function parseNameFromError($error)
+	private function parseNameFromError($error)
 	{
 		$i = strpos($error, Q) + 1;
 		$j = strpos($error, Q, $i);
@@ -268,7 +278,7 @@ class Maintainer implements Registerable
 	 * @param $query
 	 * @return string[]
 	 */
-	private static function parseNamesFromQuery($query)
+	private function parseNamesFromQuery($query)
 	{
 		$tables = [];
 		$i = 0;
