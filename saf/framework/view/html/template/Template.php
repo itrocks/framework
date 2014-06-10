@@ -1415,6 +1415,15 @@ class Template
 		return $content;
 	}
 
+	//------------------------------------------------------------------------------------ setContent
+	/**
+	 * @param $content string
+	 */
+	public function setContent($content)
+	{
+		$this->content = $content;
+	}
+
 	//---------------------------------------------------------------------------------------- setCss
 	/**
 	 * @param $css string
