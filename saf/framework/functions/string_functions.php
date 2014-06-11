@@ -2,7 +2,7 @@
 
 //-------------------------------------------------------------------------------------- lLastParse
 /**
- * Renvoie la partie de chaine à gauche de la dernière occurence du séparateur
+ * Returns the part of the string left to the first occurrence of the separator
  *
  * @param $str string
  * @param $sep string
@@ -106,7 +106,7 @@ function mParse($str, $begin_sep, $end_sep, $cnt = 1)
 
 //-------------------------------------------------------------------------------------- rLastParse
 /**
- * Returns the part of the string right to the separator
+ * Returns the part of the string right to the last occurrence of the separator
  *
  * @param $str string
  * @param $sep string
