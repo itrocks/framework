@@ -164,7 +164,7 @@ class Date_Time extends DateTime
 	 */
 	public function isEmpty()
 	{
-		return !$this->toISO();
+		return !(intval($this->toISO()) + 0);
 	}
 
 	//----------------------------------------------------------------------------------------- isMax
