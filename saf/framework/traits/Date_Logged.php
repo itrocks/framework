@@ -31,7 +31,9 @@ trait Date_Logged
 		if ($this->creation_datetime->isEmpty()) {
 			$this->creation_datetime = new Date_Time();
 		}
-		$this->modification_datetime = new Date_Time();
+		else {
+			$this->modification_datetime = new Date_Time();
+		}
 	}
 
 }
