@@ -177,7 +177,9 @@ class Link extends Dao\Sql\Link
 			if ($link->value) {
 				$id = [];
 				foreach ($link->getLinkProperties() as $link_property) {
-					$id['id_' . $link_property] = $this->getObjectIdentifier($object, $link_property);
+					$property_name = $link_property->getName();
+					$column_name = ($link_property->getType()->isClass() ? 'id_' : '') . $property_name;
+					$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
 				}
 			}
 			$this->query(Sql\Builder::buildDelete($class_name, $id));
@@ -399,11 +401,12 @@ class Link extends Dao\Sql\Link
 		}
 		$ids = [];
 		foreach ($link->getLinkProperties() as $link_property) {
-			$id = $this->getObjectIdentifier($object, $link_property);
+			$property_name = $link_property->getName();
+			$id = $this->getObjectIdentifier($object, $property_name);
 			if (!isset($id)) {
 				return null;
 			}
-			$ids[$link_property] = $id;
+			$ids[$property_name] = $id;
 		}
 		return join('.', $ids);
 	}
@@ -744,15 +747,21 @@ class Link extends Dao\Sql\Link
 					// link class : id is the couple of composite properties values
 					if ($link->value) {
 						$search = [];
-						foreach ($link->getLinkProperties() as $property_name) {
-							$search[$property_name] = $write['id_' . $property_name];
+						foreach ($link->getLinkProperties() as $property) {
+							$property_name = $property->getName();
+							$column_name = 'id_' . $properties[$property_name]->getAnnotation('storage')->value;
+							$search[$property_name]
+								= $write[isset($write[$column_name]) ? $column_name : $property_name];
 						}
 						if ($this->search($search, $class->name)) {
 							$id = [];
 							foreach ($search as $property_name => $value) {
-								$id_property_name = 'id_' . $property_name;
-								$id[$id_property_name] = $value;
-								unset($write[$id_property_name]);
+								$column_name = $properties[$property_name]->getAnnotation('storage')->value;
+								if (isset($write['id_' . $column_name])) {
+									$column_name = 'id_' . $column_name;
+								}
+								$id[$column_name] = $value;
+								unset($write[$column_name]);
 							}
 						}
 						else {

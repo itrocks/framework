@@ -7,6 +7,7 @@ use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * This tells that the class is a link class
@@ -24,6 +25,12 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 {
 	use Types_Annotation;
 
+	//---------------------------------------------------------------------------------------- $class
+	/**
+	 * @var Reflection_Class
+	 */
+	private $class;
+
 	//------------------------------------------------------------------------------ $link_properties
 	/**
 	 * Finally will be string[], once you called getLinkProperties()
@@ -34,7 +41,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 *
 	 * This is for optimization purpose : no calculation will be done if you don't need this data
 	 *
-	 * @var string[]|string|Reflection_Class
+	 * @var string[]|string
 	 */
 	private $link_properties;
 
@@ -48,12 +55,13 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 */
 	public function __construct($value, Reflection_Class $class)
 	{
+		$this->class = $class;
 		$this->link_properties = [];
 		if (trim($value)) {
 			$i = strpos($value, SP);
 			if ($i === false) {
 				parent::__construct($value);
-				$this->link_properties = $class;
+				$this->link_properties = null;
 			}
 			else {
 				parent::__construct(substr($value, 0, $i));
@@ -69,27 +77,27 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	/**
 	 * Get link properties names list
 	 *
-	 * @return string[]
+	 * @return Reflection_Property[]
 	 */
 	public function getLinkProperties()
 	{
 		if (!is_array($this->link_properties)) {
 			$temp = $this->link_properties;
 			$this->link_properties = [];
-			if ($temp instanceof Reflection_Class) {
-				// if properties names are not set : get explicit composite properties names
-				foreach ($temp->getProperties() as $property) {
-					$composite = $property->getAnnotation('composite');
-					if ($composite->value) {
-						$this->link_properties[$property->getName()] = $property->getName();
+			if (is_string($temp)) {
+				// if properties names are told, this will be faster to get their names here
+				$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
+				foreach (explode(SP, $temp) as $property_name) {
+					if ($property_name) {
+						$this->link_properties[$property_name] = $properties[$property_name];
 					}
 				}
 			}
 			else {
-				// if properties names are told, this will be faster to get their names here
-				foreach (explode(SP, $temp) as $property_name) {
-					if ($property_name) {
-						$this->link_properties[$property_name] = $property_name;
+				// if properties names are not set : get explicit composite properties names
+				foreach ($this->class->getProperties([T_EXTENDS, T_USE]) as $property) {
+					if ($property->getAnnotation('composite')->value) {
+						$this->link_properties[$property->getName()] = $property;
 					}
 				}
 			}

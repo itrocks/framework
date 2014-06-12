@@ -79,11 +79,9 @@ class Link_Class extends Reflection_Class
 	 */
 	public function getLinkProperties()
 	{
-		$properties = [];
-		foreach ($this->getLinkPropertiesNames() as $property_name) {
-			$properties[$property_name] = $this->getProperty($property_name);
-		}
-		return $properties;
+		/** @var $link Link_Annotation */
+		$link = $this->getAnnotation('link');
+		return $link->getLinkProperties();
 	}
 
 	//------------------------------------------------------------------------ getLinkPropertiesNames
@@ -98,7 +96,7 @@ class Link_Class extends Reflection_Class
 	{
 		/** @var $link Link_Annotation */
 		$link = $this->getAnnotation('link');
-		return $link->getLinkProperties();
+		return array_keys($link->getLinkProperties());
 	}
 
 	//---------------------------------------------------------------------------- getLocalProperties

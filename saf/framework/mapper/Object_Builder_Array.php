@@ -107,15 +107,17 @@ class Object_Builder_Array
 					$id_property_value = null;
 					$linked_class_name = null;
 					$search = [];
-					foreach ($link->getLinkProperties() as $property_name) {
-						$id_property_name = 'id_' . $property_name;
-						if (isset($array[$id_property_name]) && $array[$id_property_name]) {
-							$search[$property_name] = $array[$id_property_name];
-						}
-						$property_class_name = $this->class->getProperty($property_name)->getType()->asString();
-						if (is_a($property_class_name, $link->value, true)) {
-							$id_property_value = $array[$id_property_name];
-							$linked_class_name = $property_class_name;
+					foreach ($link->getLinkProperties() as $property) {
+						if ($property->getType()->isClass()) {
+							$id_property_name = 'id_' . $property->getName();
+							if (isset($array[$id_property_name]) && $array[$id_property_name]) {
+								$search[$property->getName()] = $array[$id_property_name];
+							}
+							$property_class_name = $property->getType()->asString();
+							if (is_a($property_class_name, $link->value, true)) {
+								$id_property_value = $array[$id_property_name];
+								$linked_class_name = $property_class_name;
+							}
 						}
 					}
 					if (count($search) >= 2) {
