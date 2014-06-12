@@ -37,7 +37,7 @@ abstract class Debug
 		$dump['$GLOBALS'] = $GLOBALS;
 		$dump['$_SERVER'] = $_SERVER;
 		foreach (array_merge(get_declared_classes(), get_declared_traits()) as $class) {
-			foreach ((new ReflectionClass($class))->getProperties() as $property) {
+			foreach ((new ReflectionClass($class))->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if ($property->isStatic()) {
 					if (!$property->isPublic()) {
 						$property->setAccessible(true);

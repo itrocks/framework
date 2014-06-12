@@ -524,6 +524,21 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $properties;
 	}
 
+	//----------------------------------------------------------------------------------- getProperty
+	/**
+	 * Retrieves reflected properties
+	 *
+	 * Only a property visible for current class can be retrieved, not the privates ones from parent
+	 * classes or traits.
+	 *
+	 * @param $name string The name of the property to get
+	 * @return Reflection_Property
+	 */
+	public function getProperty($name)
+	{
+		return $this->getProperties()[$name];
+	}
+
 	//------------------------------------------------------------------------------------- getTokens
 	/**
 	 * @return array

@@ -96,6 +96,18 @@ interface Reflection_Class extends Reflection
 	 */
 	public function getProperties($flags = [], $final_class = null);
 
+	//----------------------------------------------------------------------------------- getProperty
+	/**
+	 * Retrieves reflected properties
+	 *
+	 * Only a property visible for current class can be retrieved, not the privates ones from parent
+	 * classes or traits.
+	 *
+	 * @param $name string The name of the property to get
+	 * @return Reflection_Property
+	 */
+	public function getProperty($name);
+
 	//---------------------------------------------------------------------------------- getStartLine
 	/**
 	 * Gets starting line number

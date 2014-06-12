@@ -327,7 +327,7 @@ class Reflection_Class extends ReflectionClass
 	 * Only a property visible for current class can be retrieved, not the privates ones from parent
 	 * classes or traits.
 	 *
-	 * @param string
+	 * @param $name string The name of the property to get
 	 * @return Reflection_Property
 	 */
 	public function getProperty($name)
