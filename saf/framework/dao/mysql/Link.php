@@ -842,7 +842,9 @@ class Link extends Dao\Sql\Link
 					? $this->getLinkObjectIdentifier($element, $link)
 					: $this->getObjectIdentifier($element);
 				if (!$link->value || !empty($id)) {
-					$id_set[$id] = true;
+					if (!empty($id)) {
+						$id_set[$id] = true;
+					}
 					$this->write($element);
 				}
 			}
@@ -890,7 +892,9 @@ class Link extends Dao\Sql\Link
 				$query = $insert_builder->buildQuery($object, $element);
 				$this->executeQuery($query);
 			}
-			$id_set[$id] = true;
+			else {
+				$id_set[$id] = true;
+			}
 		}
 		// remove old unused elements
 		$delete_builder = new Map_Delete($property);

@@ -28,7 +28,7 @@ class Register_Controller implements Feature_Controller
 	) {
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
-		if (empty($object) || !is_object($object) || (get_class($object) !== $class_name)) {
+		if (empty($object) || !is_object($object) || !is_a($object, $class_name, true)) {
 			$object = Builder::create($class_name);
 			$parameters = array_merge([$class_name => $object], $parameters);
 		}

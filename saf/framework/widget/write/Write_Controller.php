@@ -32,7 +32,7 @@ class Write_Controller implements Default_Class_Controller
 	{
 		$objects = $parameters->getObjects();
 		$object = reset($objects);
-		if (!$object || !is_object($object) || (get_class($object) !== $class_name)) {
+		if (!$object || !is_object($object) || !is_a($object, $class_name, true)) {
 			$object = Builder::create($class_name);
 			$objects = array_merge([$class_name => $object], $objects);
 			$parameters->unshift($object);
