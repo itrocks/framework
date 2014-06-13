@@ -385,6 +385,32 @@ class Link extends Dao\Sql\Link
 		return $this->connection;
 	}
 
+	//----------------------------------------------------------------------- getLinkObjectIdentifier
+	/**
+	 * Link classes objects identifiers are the identifiers of all their @composite properties values
+	 * also known as link properties values.
+	 *
+	 * @param $object object
+	 * @param $link   Class_\Link_Annotation send it for optimization, but this is not mandatory
+	 * @return string identifiers in a single string, separated with '.'
+	 */
+	public function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
+	{
+		if (!isset($link)) {
+			$link = (new Reflection_Class(get_class($object)))->getAnnotation('link');
+		}
+		$ids = [];
+		foreach ($link->getLinkProperties() as $link_property) {
+			$property_name = $link_property->getName();
+			$id = $this->getObjectIdentifier($object, $property_name);
+			if (!isset($id)) {
+				return null;
+			}
+			$ids[$property_name] = $id;
+		}
+		return join('.', $ids);
+	}
+
 	//---------------------------------------------------------------------------------- getRowsCount
 	/**
 	 * Gets the count of rows read / changed by the last query
@@ -805,13 +831,17 @@ class Link extends Dao\Sql\Link
 		Getter::$ignore = false;
 		$old_collection = $property->getValue($old_object);
 		Getter::$ignore = $aop_getter_ignore;
+		/** @var $link Class_\Link_Annotation */
+		$link = $property->getType()->asReflectionClass()->getAnnotation('link');
 		// collection properties : write each of them
 		$id_set = [];
 		if ($collection) {
 			foreach ($collection as $element) {
 				$element->setComposite($object, $property->getAnnotation('foreign')->value);
-				$id = $this->getObjectIdentifier($element);
-				if (!empty($id)) {
+				$id = $link->value
+					? $this->getLinkObjectIdentifier($element, $link)
+					: $this->getObjectIdentifier($element);
+				if (!$link->value || !empty($id)) {
 					$id_set[$id] = true;
 					$this->write($element);
 				}
@@ -819,7 +849,9 @@ class Link extends Dao\Sql\Link
 		}
 		// remove old unused elements
 		foreach ($old_collection as $old_element) {
-			$id = $this->getObjectIdentifier($old_element);
+			$id = $link->value
+				? $this->getLinkObjectIdentifier($old_element, $link)
+				: $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
 				$this->delete($old_element);
 			}
