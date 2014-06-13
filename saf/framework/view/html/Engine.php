@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\View\Html;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Controller\Getter;
 use SAF\Framework\Dao;
 use SAF\Framework\Plugin\Configurable;
@@ -83,10 +84,22 @@ class Engine implements Configurable, Framework\View\Engine
 	 */
 	public function link($object, $feature = null, $parameters = null, $arguments = null)
 	{
+		// class name : not Built, not Set
+		$class_names = is_string($object) ? $object : get_class($object);
+		$class_name = Names::setToClass($class_names);
+		$set_class = $class_name != $class_names;
+		while (Builder::isBuilt($class_name)) {
+			$class_name = get_parent_class($class_name);
+		}
+		if ($set_class) {
+			$class_name = Names::classToSet($class_name);
+		}
+
+		// build uri
 		$link = str_replace(BS, SL,
 			(is_object($object) && Dao::getObjectIdentifier($object))
-			? (get_class($object) . SL . Dao::getObjectIdentifier($object))
-			: (is_object($object) ? get_class($object) : $object)
+			? ($class_name . SL . Dao::getObjectIdentifier($object))
+			: $class_name
 		);
 		if (isset($feature)) {
 			$link .= SL . $feature;
@@ -108,6 +121,8 @@ class Engine implements Configurable, Framework\View\Engine
 				}
 			}
 		}
+
+		// build arguments
 		if (!empty($arguments)) {
 			if (!is_array($arguments)) {
 				$link .= '?' . urlencode($arguments);
@@ -121,6 +136,7 @@ class Engine implements Configurable, Framework\View\Engine
 				}
 			}
 		}
+
 		return SL . $link;
 	}
 
