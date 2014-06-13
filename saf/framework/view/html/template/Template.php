@@ -973,7 +973,7 @@ class Template
 			$object = $this->parseString($object, $property_name);
 		}
 		elseif (
-			(is_object($object) || ctype_upper($object[0]))
+			(is_object($object) || (is_string($object) && !empty($object) && ctype_upper($object[0])))
 			&& method_exists($object, $property_name)
 		) {
 			$object = $this->parseMethod($object, $property_name);
