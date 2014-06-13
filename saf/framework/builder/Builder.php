@@ -308,15 +308,6 @@ class Builder implements Activable, Registerable, Serializable
 		return (new ReflectionClass($class_name))->newInstanceArgs($args);
 	}
 
-	//------------------------------------------------------------------------- onMethodWithClassName
-	/**
-	 * @param $class_name string
-	 */
-	public function onMethodWithClassName(&$class_name)
-	{
-		$class_name = $this->replacementClassName($class_name);
-	}
-
 	//------------------------------------------------------------------------- onMethodReturnedValue
 	/**
 	 * @param $result string
@@ -325,6 +316,15 @@ class Builder implements Activable, Registerable, Serializable
 	public function onMethodReturnedValue($result)
 	{
 		return $this->replacementClassName($result);
+	}
+
+	//------------------------------------------------------------------------- onMethodWithClassName
+	/**
+	 * @param $class_name string
+	 */
+	public function onMethodWithClassName(&$class_name)
+	{
+		$class_name = $this->replacementClassName($class_name);
 	}
 
 	//-------------------------------------------------------------------------------------- register

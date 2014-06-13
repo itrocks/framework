@@ -93,7 +93,7 @@ class Output_Controller implements Default_Feature_Controller
 	) {
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
-		if (empty($object) || !is_object($object) || (get_class($object) !== $class_name)) {
+		if (empty($object) || !is_object($object) || !is_a(get_class($object), $class_name, true)) {
 			$object = new $class_name();
 			$parameters = array_merge([$class_name => $object], $parameters);
 		}
