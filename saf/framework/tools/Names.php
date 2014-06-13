@@ -310,8 +310,20 @@ abstract class Names
 			if (strrpos($class_name, BS) > $i) {
 				$i = false;
 			}
-			if (($i === false) && $check_class && error_reporting()) {
-				trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
+			if ($i === false) {
+				if (
+					@class_exists($set_class_name)
+					&& ((new Reflection_Class($set_class_name))->getAnnotation('set')->value == $set_class_name)
+				) {
+					return $set_class_name;
+				}
+				elseif ($check_class && error_reporting()) {
+					trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
+				}
+				else {
+					$right = substr($class_name, $i) . $right;
+					$class_name = substr($class_name, 0, $i);
+				}
 			}
 			else {
 				$right = substr($class_name, $i) . $right;
@@ -319,7 +331,8 @@ abstract class Names
 			}
 		}
 		while (!empty($class_name));
-		return $class_name . $right;
+		$class_name .= $right;
+		return class_exists($class_name, false) ? $class_name : $set_class_name;
 	}
 
 }
