@@ -86,7 +86,7 @@ class Engine implements Configurable, Framework\View\Engine
 	{
 		// class name : not Built, not Set
 		$class_names = is_string($object) ? $object : get_class($object);
-		$class_name = Names::setToClass($class_names);
+		$class_name = Names::setToClass($class_names, false);
 		$set_class = $class_name != $class_names;
 		while (Builder::isBuilt($class_name)) {
 			$class_name = get_parent_class($class_name);
