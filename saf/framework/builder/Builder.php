@@ -145,7 +145,7 @@ class Builder implements Activable, Registerable, Serializable
 			// copy unofficial properties values from the source object (ie AOP properties aliases)
 			foreach (get_object_vars($object) as $property_name => $value) {
 				if (!isset($properties[$property_name])) {
-					$object->$property_name = $value;
+					$clone->$property_name = $value;
 				}
 			}
 			// reactivate AOP
