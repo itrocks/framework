@@ -167,7 +167,7 @@ class Columns
 							$column_name = $column_names[$property->name];
 							$id = $property->getType()->isClass() ? 'id_' : '';
 							$already[$property->name] = true;
-							$sql_columns .= $join->foreign_alias . '.' . BQ . $id . $column_name . BQ;
+							$sql_columns .= $join->foreign_alias . DOT . BQ . $id . $column_name . BQ;
 							if (($column_name !== $property->name) && $this->resolve_aliases) {
 								$sql_columns .= ' AS ' . BQ . $id . $property->name . BQ;
 							}
@@ -225,7 +225,7 @@ class Columns
 			$join = $this->joins->getJoin($master_path);
 		}
 		return
-			($join ? ($join->foreign_alias . '.' . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ))
+			($join ? ($join->foreign_alias . DOT . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ))
 			. (
 				($as && ($column_name !== $path) && $this->resolve_aliases)
 				? (' AS ' . BQ . $path . BQ) : false
@@ -279,7 +279,7 @@ class Columns
 				$column_name = Sql\Builder::buildColumnName($property);
 				if ($column_name) {
 					if ($first_property) $first_property = false; else $sql_columns .= ', ';
-					$sql_columns .= $join->foreign_alias . '.' . BQ . $column_name . BQ . (
+					$sql_columns .= $join->foreign_alias . DOT . BQ . $column_name . BQ . (
 						($this->append || !$this->resolve_aliases)
 						? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ)
 					);

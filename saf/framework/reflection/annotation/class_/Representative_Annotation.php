@@ -64,7 +64,7 @@ class Representative_Annotation extends List_Annotation implements Class_Context
 			$this->properties = [];
 			$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
 			foreach ($this->values() as $property_path) {
-				$each = explode('.', $property_path);
+				$each = explode(DOT, $property_path);
 				$property = $properties[array_shift($each)];
 				foreach ($each as $property_name) {
 					/** @noinspection PhpUndefinedMethodInspection Inspector bug */

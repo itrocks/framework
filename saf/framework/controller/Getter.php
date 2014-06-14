@@ -30,7 +30,7 @@ abstract class Getter
 		$feature_what = $class_form ? $feature_class : $feature_name;
 		$_suffix = $suffix ? ('_' . $suffix) : '';
 		$class_name = $base_class;
-		$ext = '.' . $extension;
+		$ext = DOT . $extension;
 		$method = 'run';
 
 		// $classes : the controller class name and its parents

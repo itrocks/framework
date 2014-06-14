@@ -23,7 +23,7 @@ class Number_Format
 	/**
 	 * @var string
 	 */
-	public $decimal_separator = '.';
+	public $decimal_separator = DOT;
 
 	//--------------------------------------------------------------------------- $thousand_separator
 	/**
@@ -55,7 +55,7 @@ class Number_Format
 			? null
 			: str_replace(
 				[$this->thousand_separator, $this->decimal_separator],
-				['', '.'],
+				['', DOT],
 				$float
 			) + 0;
 	}

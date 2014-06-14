@@ -350,7 +350,7 @@ class Compiler implements
 	private function getFilesToCompile($last_time = 0)
 	{
 		$source_files = Application::current()->include_path->getSourceFiles();
-		foreach (scandir('.') as $file_name) {
+		foreach (scandir(DOT) as $file_name) {
 			$source_files[] = $file_name;
 		}
 		$files = [];

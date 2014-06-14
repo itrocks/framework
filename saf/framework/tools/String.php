@@ -56,7 +56,7 @@ class String
 	 */
 	public function first()
 	{
-		foreach ([':', '.', '-', ','] as $char) {
+		foreach ([':', DOT, '-', ','] as $char) {
 			if (strpos($this->value, $char) !== false) {
 				return new String(substr($this->value, 0, strpos($this->value, $char)));
 			}
@@ -93,7 +93,7 @@ class String
 	 */
 	public function last($count = 1)
 	{
-		foreach ([':', '.', '-', ','] as $char) {
+		foreach ([':', DOT, '-', ','] as $char) {
 			if (strrpos($this->value, $char) !== false) {
 				return new String(rLastParse($this->value, $char, $count, true));
 			}

@@ -396,7 +396,7 @@ class Parser
 	 */
 	private function partsToHtml($parts)
 	{
-		$attributes = ['#' => 'id', '.' => 'class'];
+		$attributes = ['#' => 'id', DOT => 'class'];
 		$html = '<' . $this->partsTag($parts);
 		foreach ($parts as $what => $list) if (isset($attributes[$what])) {
 			$html .= SP . $attributes[$what] . '=' . DQ . join(SP, $list) . DQ;
@@ -561,7 +561,7 @@ class Parser
 	public function selectorPos($selector, $i = 0)
 	{
 		$found = true;
-		$attributes = ['#' => 'id', '.' => 'class', '[' => ''];
+		$attributes = ['#' => 'id', DOT => 'class', '[' => ''];
 		$parts = $this->selectorParts($selector);
 		$tag = $this->partsTag($parts);
 		while (($i = $this->tagPos($tag, $i)) !== false) {
