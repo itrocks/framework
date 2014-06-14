@@ -295,9 +295,9 @@ class Link extends Dao\Sql\Link
 						$key_object   = $object;
 						foreach ($k_keys as $key) $key_object = $key_object->$key;
 						$k_id_object_key = 'id_' . $k_object_key;
-						$k_key .= ($k_key ? '.' : '') . (
+						$k_key .= ($k_key ? ',' : '') . (
 							isset($key_object->$k_id_object_key)
-								? $key_object->$k_id_object_key
+								? ($k_object_key . '=' . $key_object->$k_id_object_key)
 								: $key_object->$k_object_key
 							);
 					}
@@ -394,21 +394,42 @@ class Link extends Dao\Sql\Link
 	 * @param $link   Class_\Link_Annotation send it for optimization, but this is not mandatory
 	 * @return string identifiers in a single string, separated with '.'
 	 */
-	public function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
+	private function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
 	{
 		if (!isset($link)) {
 			$link = (new Reflection_Class(get_class($object)))->getAnnotation('link');
 		}
-		$ids = [];
-		foreach ($link->getLinkProperties() as $link_property) {
-			$property_name = $link_property->getName();
-			$id = $this->getObjectIdentifier($object, $property_name);
-			if (!isset($id)) {
-				return null;
+		if ($link->value) {
+			$ids = '';
+			foreach ($link->getLinkProperties() as $link_property) {
+				$property_name = $link_property->getName();
+				$id = parent::getObjectIdentifier($object, $property_name);
+				if (!isset($id)) {
+					return null;
+				}
+				$ids .= ($ids ? ',' : '') . $property_name . '=' . $id;
 			}
-			$ids[$property_name] = $id;
+			return $ids;
 		}
-		return join('.', $ids);
+		return null;
+	}
+
+	//--------------------------------------------------------------------------- getObjectIdentifier
+	/**
+	 * Used to get an object's identifier
+	 *
+	 * A null value will be returned for an object that is not linked to data link.
+	 * If $object is already an identifier, the identifier is returned.
+	 *
+	 * @param $object        object an object to get data link identifier from
+	 * @param $property_name string a property name to get data link identifier from instead of object
+	 * @return mixed you can test if an object identifier is set with empty($of_this_result)
+	 */
+	public function getObjectIdentifier($object, $property_name = null)
+	{
+		return isset($property_name)
+			? parent::getObjectIdentifier($object, $property_name)
+			: ($this->getLinkObjectIdentifier($object) ?: parent::getObjectIdentifier($object));
 	}
 
 	//---------------------------------------------------------------------------------- getRowsCount
@@ -831,17 +852,17 @@ class Link extends Dao\Sql\Link
 		Getter::$ignore = false;
 		$old_collection = $property->getValue($old_object);
 		Getter::$ignore = $aop_getter_ignore;
-		/** @var $link Class_\Link_Annotation */
-		$link = $property->getType()->asReflectionClass()->getAnnotation('link');
+		/** @var $element_link Class_\Link_Annotation */
+		$element_link = $property->getType()->asReflectionClass()->getAnnotation('link');
 		// collection properties : write each of them
 		$id_set = [];
 		if ($collection) {
 			foreach ($collection as $element) {
 				$element->setComposite($object, $property->getAnnotation('foreign')->value);
-				$id = $link->value
-					? $this->getLinkObjectIdentifier($element, $link)
+				$id = $element_link->value
+					? $this->getLinkObjectIdentifier($element, $element_link)
 					: $this->getObjectIdentifier($element);
-				if (!$link->value || !empty($id)) {
+				if (!$element_link->value || !empty($id)) {
 					if (!empty($id)) {
 						$id_set[$id] = true;
 					}
@@ -851,8 +872,8 @@ class Link extends Dao\Sql\Link
 		}
 		// remove old unused elements
 		foreach ($old_collection as $old_element) {
-			$id = $link->value
-				? $this->getLinkObjectIdentifier($old_element, $link)
+			$id = $element_link->value
+				? $this->getLinkObjectIdentifier($old_element, $element_link)
 				: $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
 				$this->delete($old_element);
