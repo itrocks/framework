@@ -98,7 +98,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	 */
 	public function getDeclaringClassName()
 	{
-		return $this->name;
+		return $this->class->name;
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment

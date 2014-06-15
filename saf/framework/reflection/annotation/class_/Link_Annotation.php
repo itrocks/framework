@@ -8,6 +8,7 @@ use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use SAF\Framework\Reflection\Link_Class;
 
 /**
  * This tells that the class is a link class
@@ -71,6 +72,15 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 		else {
 			parent::__construct(null);
 		}
+	}
+
+	//---------------------------------------------------------------------------------- getLinkClass
+	/**
+	 * @return Link_Class
+	 */
+	public function getLinkClass()
+	{
+		return new Link_Class($this->class->getName());
 	}
 
 	//----------------------------------------------------------------------------- getLinkProperties
