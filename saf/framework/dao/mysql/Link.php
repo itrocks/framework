@@ -779,8 +779,15 @@ class Link extends Dao\Sql\Link
 						foreach ($link->getLinkProperties() as $property) {
 							$property_name = $property->getName();
 							$column_name = 'id_' . $properties[$property_name]->getAnnotation('storage')->value;
-							$search[$property_name]
-								= $write[isset($write[$column_name]) ? $column_name : $property_name];
+							if (isset($write[$column_name])) {
+								$search[$property_name] = $write[$column_name];
+							}
+							elseif (isset($write[$property_name])) {
+								$search[$property_name] = $write[$column_name];
+							}
+							else {
+								trigger_error("Can't search $property_name", E_USER_ERROR);
+							}
 						}
 						if ($this->search($search, $class->name)) {
 							$id = [];
