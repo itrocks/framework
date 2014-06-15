@@ -295,13 +295,7 @@ abstract class Names
 		$class_name = Namespaces::shortClassName($class_name);
 		$right = '';
 		do {
-			if (substr($class_name, -2) !== 'ss') {
-				if     (substr($class_name, -3) === 'ies')  $class_name = substr($class_name, 0, -3) . 'y';
-				elseif (substr($class_name, -3) === 'ses')  $class_name = substr($class_name, 0, -2);
-				elseif (substr($class_name, -4) === 'ches') $class_name = substr($class_name, 0, -2);
-				elseif (substr($class_name, -1) === 's')    $class_name = substr($class_name, 0, -1);
-				elseif (substr($class_name, -2) === 'en')   $class_name = substr($class_name, 0, -2) . 'an';
-			}
+			$class_name = self::setToSingle($class_name);
 			$full_class_name = Namespaces::defaultFullClassName($class_name . $right, $set_class_name);
 			if (@class_exists($full_class_name)) {
 				return $full_class_name;
@@ -333,6 +327,24 @@ abstract class Names
 		while (!empty($class_name));
 		$class_name .= $right;
 		return class_exists($class_name, false) ? $class_name : $set_class_name;
+	}
+
+	//----------------------------------------------------------------------------------- setToSingle
+	/**
+	 * @example 'values' -> 'value'
+	 * @param $set string
+	 * @return string
+	 */
+	public static function setToSingle($set)
+	{
+		if (substr($set, -2) !== 'ss') {
+			if     (substr($set, -3) === 'ies')  return substr($set, 0, -3) . 'y';
+			elseif (substr($set, -3) === 'ses')  return substr($set, 0, -2);
+			elseif (substr($set, -4) === 'ches') return substr($set, 0, -2);
+			elseif (substr($set, -1) === 's')    return substr($set, 0, -1);
+			elseif (substr($set, -2) === 'en')   return substr($set, 0, -2) . 'an';
+		}
+		return $set;
 	}
 
 }
