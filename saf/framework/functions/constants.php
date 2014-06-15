@@ -20,6 +20,8 @@ const LF = "\n";
 
 const Q = "'";
 
+const PRE = '<pre>';
+
 const SL = '/';
 
 const SP = ' ';
