@@ -288,8 +288,14 @@ class Object_Builder_Array
 		if (empty($value)) {
 			$value = $this->properties[$real_property_name]->getAnnotation('null')->value ? null : 0;
 		}
+		if (isset($object->$real_property_name) && (
+			empty($value)
+			|| !isset($object->$real_property_name->id)
+			|| ($value != $object->$real_property_name->id)
+		)) {
+			$object->$real_property_name = null;
+		}
 		$object->$property_name = $value;
-		$object->$real_property_name = null;
 		if ($value) {
 			$is_null = false;
 		}
