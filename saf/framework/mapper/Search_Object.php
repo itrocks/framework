@@ -30,7 +30,9 @@ abstract class Search_Object extends Null_Object
 			if (!$property->isStatic()) {
 				if ($property->isPublic()) {
 					$name = $property->name;
-					unset($object->$name);
+					if (!isset($object->$name) || ($object->$name !== $object)) {
+						unset($object->$name);
+					}
 				}
 				else {
 					$property->setValue($object, null);

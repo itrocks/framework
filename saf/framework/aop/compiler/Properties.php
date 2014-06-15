@@ -258,8 +258,14 @@ class Properties
 					$code .= '
 		switch ($property_name) {';
 				}
-				$code .= '
+				if ($property_advices['replaced'] == 'this') {
+					$code .= '
+			case ' . Q . $property_name . Q . ': $value =& $this; return $value;';
+				}
+				else {
+					$code .= '
 			case ' . Q . $property_name . Q . ': $value =& $this->' . $property_advices['replaced'] . '; return $value;';
+				}
 				if (isset($over['cases'][$property_name])) {
 					unset($over['cases'][$property_name]);
 					if (count($over['cases']) == 1) {
@@ -308,8 +314,14 @@ class Properties
 					$code .= '
 		switch ($property_name) {';
 				}
-				$code .= '
+				if ($property_advices['replaced'] == 'this') {
+					$code .= '
+			case ' . Q . $property_name . Q . ': return true;';
+				}
+				else {
+					$code .= '
 			case ' . Q . $property_name . Q . ': return isset($this->' . $property_advices['replaced'] . ');';
+				}
 			}
 		}
 		if (isset($switch)) {
@@ -401,8 +413,14 @@ class Properties
 					$code .= '
 		switch ($property_name) {';
 				}
-				$code .= '
+				if ($property_advices['replaced'] == 'this') {
+					$code .= '
+			case ' . Q . $property_name . Q . ': foreach (get_object_vars($this) as $k => $v) if ($k != \'' . $property_name . '\' && !isset($value->$k)) unset($this->$v); foreach (get_object_vars($value) as $k => $v) $this->$k = $v; return;';
+				}
+				else {
+					$code .= '
 			case ' . Q . $property_name . Q . ': $this->' . $property_advices['replaced'] . ' = $value; return;';
+				}
 				if (isset($over['cases'][$property_name])) {
 					unset($over['cases'][$property_name]);
 					if (count($over['cases']) == 1) {
@@ -454,8 +472,14 @@ class Properties
 					$code .= '
 		switch ($property_name) {';
 				}
-				$code .= '
+				if ($property_advices['replaced'] == 'this') {
+					$code .= '
+			case ' . Q . $property_name . Q . ': trigger_error("You can\'t unset the link property", E_USER_ERROR); return;';
+				}
+				else {
+					$code .= '
 			case ' . Q . $property_name . Q . ': unset($this->' . $property_advices['replaced'] . '); return;';
+				}
 			}
 		}
 		if (isset($switch)) {
