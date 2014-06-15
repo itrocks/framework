@@ -507,15 +507,6 @@ class Compiler implements ICompiler, Needs_Main
 	 */
 	private function scanForReplaces(&$properties, Reflection_Class $class)
 	{
-		$link = $class->getAnnotation('link');
-		if ($link->value) {
-			foreach ($class->getProperties([T_USE]) as $property) {
-				if (isset($link->value) && ($property->getType()->asString() == $link->value)) {
-					$properties[$property->name]['replaced'] = 'this';
-					break;
-				}
-			}
-		}
 		foreach ($class->getProperties([T_USE]) as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+'   // each line beginning by '* '
