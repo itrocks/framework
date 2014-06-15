@@ -405,7 +405,15 @@ class Link extends Dao\Sql\Link
 				$property_name = $link_property->getName();
 				$id = parent::getObjectIdentifier($object, $property_name);
 				if (!isset($id)) {
-					return null;
+					if ($link->getLinkClass()->getCompositeProperty()->name == $property_name) {
+						$id = isset($object->id) ? $object->id : null;
+						if (!isset($id)) {
+							return null;
+						}
+					}
+					else {
+						return null;
+					}
 				}
 				$ids .= ($ids ? ',' : '') . $property_name . '=' . $id;
 			}
