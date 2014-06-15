@@ -108,17 +108,24 @@ class Where
 	private function buildArray($path, $array, $clause)
 	{
 		$sql = '';
+		$sql_close = '';
+		$sub_clause = $clause;
 		$first = true;
 		foreach ($array as $key => $value) {
 			if ($first) $first = false; else $sql .= SP . $clause . SP;
-			$sub_clause = strtoupper($key);
-			switch ($sub_clause) {
+			$key_clause = strtoupper($key);
+			switch ($key_clause) {
 				case 'NOT': $sql .= 'NOT (' . $this->buildPath($path, $value, 'AND') . ')';  break;
-				case 'AND': $sql .= $this->buildPath($path, $value, $sub_clause);             break;
-				case 'OR':  $sql .= '(' . $this->buildPath($path, $value, $sub_clause) . ')'; break;
+				case 'AND': $sql .= $this->buildPath($path, $value, $key_clause);             break;
+				case 'OR':  $sql .= '(' . $this->buildPath($path, $value, $key_clause) . ')'; break;
 				default:
 					if (is_numeric($key)) {
-						$build = $this->buildPath($path, $value, $clause);
+						if ((count($array) > 1) && !$sql) {
+							$sql = '(';
+							$clause = 'OR';
+							$sql_close = ')';
+						}
+						$build = $this->buildPath($path, $value, $sub_clause);
 					}
 					else {
 						$prefix = '';
@@ -133,20 +140,17 @@ class Where
 									. $property->getAnnotation('storage')->value . DOT;
 							}
 						}
-						$build = $this->buildPath($prefix . $key, $value, 'OR');
-						if (is_array($value) && !empty($build)) {
-							$build = '(' . $build . ')';
-						}
+						$build = $this->buildPath($prefix . $key, $value, $sub_clause);
 					}
 					if (!empty($build)) {
 						$sql .= $build;
 					}
 					elseif (!empty($sql)) {
-						$sql = substr($sql, 0, -strlen(SP . $clause . SP));
+						$sql = substr($sql, 0, -strlen(SP . $sub_clause . SP));
 					}
 			}
 		}
-		return $sql;
+		return $sql . $sql_close;
 	}
 
 	//----------------------------------------------------------------------------------- buildColumn

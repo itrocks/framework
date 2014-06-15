@@ -17,6 +17,21 @@ use SAF\Framework\Tests\Test;
 class Select_Tests extends Test
 {
 
+	//----------------------------------------------------------------- testArrayImplicitOrWhereQuery
+	public function testArrayImplicitOrWhereQuery()
+	{
+		$builder = new Select(
+			Order::class,
+			['date', 'number'],
+			['number' => [1, 2]]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.`date`, t0.`number` FROM `orders` t0 WHERE (t0.`number` = 1 OR t0.`number` = 2)'
+		);
+	}
+
 	//--------------------------------------------------------------------------- testArrayWhereQuery
 	public function testArrayWhereQuery()
 	{
