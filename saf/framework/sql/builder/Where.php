@@ -162,7 +162,11 @@ class Where
 	public function buildColumn($path, $prefix = '')
 	{
 		$join = $this->joins->add($path);
-		if (isset($join)) {
+		$link_join = $this->joins->getIdLinkJoin($path);
+		if (isset($link_join)) {
+			$column = $link_join->foreign_alias . DOT . 'id';
+		}
+		elseif (isset($join)) {
 			if ($join->type === Join::LINK) {
 				$column = $join->foreign_alias . DOT . BQ . rLastParse($path, DOT, 1, true) . BQ;
 			}

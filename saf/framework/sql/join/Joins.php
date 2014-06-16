@@ -43,6 +43,14 @@ class Joins
 	 */
 	private $joins = [];
 
+	//-------------------------------------------------------------------------------- $id_link_joins
+	/**
+	 * link joins that work with id of the join master table
+	 *
+	 * @var Join[] key is property full path
+	 */
+	private $id_link_joins = [];
+
 	//----------------------------------------------------------------------------------- $link_joins
 	/**
 	 * joins for properties coming from classes having the 'link' annotation
@@ -197,6 +205,8 @@ class Joins
 			$this->joins[$path] = null;
 		}
 		$this->joins[($path ? ($path . '-') : '') . $join->foreign_table . '-@link'] = $join;
+		$this->id_link_joins[$path] = $join;
+		$this->link_joins[$path] = $join;
 		$more_linked_class_name = $linked_class->getAnnotation('link')->value;
 		$exclude_properties = $more_linked_class_name
 			? $this->addLinkedClass($path, $class, $more_linked_class_name, $join_mode)
@@ -418,6 +428,18 @@ class Joins
 	public function getClassProperties($class_name)
 	{
 		return $this->properties[$class_name];
+	}
+
+	//--------------------------------------------------------------------------------- getIdLinkJoin
+	/**
+	 * Returns id link join, if set for given path
+	 *
+	 * @param $path string
+	 * @return Join
+	 */
+	public function getIdLinkJoin($path)
+	{
+		return isset($this->id_link_joins[$path]) ? $this->id_link_joins[$path] : null;
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins

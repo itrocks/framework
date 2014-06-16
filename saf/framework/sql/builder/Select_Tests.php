@@ -335,8 +335,28 @@ class Select_Tests extends Test
 		);
 	}
 
-	//-------------------------------------------------------------------------- testWhereObjectQuery
-	public function testWhereObjectQuery()
+	//------------------------------------------------------------------ testWhereExistingObjectQuery
+	public function testWhereExistingObjectQuery()
+	{
+		/** @var $client Client */
+		$client = new Client();
+		/** @noinspection PhpUndefinedFieldInspection */
+		$client->id = 12;
+		$builder = new Select(
+			Order::class,
+			['date', 'number', 'lines'],
+			['lines.client' => $client, 'number' => 2]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`'
+			. ' FROM `orders` t0 INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id LEFT JOIN `clients` t2 ON t2.id = t1.id_client WHERE t2.`id` = 12 AND t0.`number` = 2'
+		);
+	}
+
+	//-------------------------------------------------------------------- testWhereSearchObjectQuery
+	public function testWhereSearchObjectQuery()
 	{
 		/** @var $client Client */
 		$client = Search_Object::create(Client::class);
@@ -352,8 +372,8 @@ class Select_Tests extends Test
 		);
 	}
 
-	//----------------------------------------------------------------------- testWhereSubObjectQuery
-	public function testWhereSubObjectQuery()
+	//----------------------------------------------------------------- testWhereSubSearchObjectQuery
+	public function testWhereSubSearchObjectQuery()
 	{
 		$client = Search_Object::create(Client::class);
 		$client->number = 1;
