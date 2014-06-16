@@ -72,9 +72,10 @@ class Logical implements Where
 	 *
 	 * @param $builder       Builder\Where the sql query builder
 	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path)
+	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
 		$sql = '';
 		foreach ($this->arguments as $other_property_path => $argument) {
@@ -86,13 +87,13 @@ class Logical implements Where
 			}
 			if (is_numeric($other_property_path)) {
 				$sql .= ($argument instanceof Where)
-					? $argument->toSql($builder, $property_path)
-					: (new Comparison(Comparison::AUTO, $argument))->toSql($builder, $property_path);
+					? $argument->toSql($builder, $property_path, $prefix)
+					: (new Comparison(Comparison::AUTO, $argument))->toSql($builder, $property_path, $prefix);
 			}
 			else {
 				$sql .= ($argument instanceof Where)
-					? $argument->toSql($builder, $other_property_path)
-					: (new Comparison(Comparison::AUTO, $argument))->toSql($builder, $other_property_path);
+					? $argument->toSql($builder, $other_property_path, $prefix)
+					: (new Comparison(Comparison::AUTO, $argument))->toSql($builder, $other_property_path, $prefix);
 			}
 		}
 		return '(' . $sql . ')';

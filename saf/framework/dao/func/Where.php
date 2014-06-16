@@ -15,8 +15,9 @@ interface Where extends Dao_Function
 	 *
 	 * @param $builder       Builder\Where the sql query builder
 	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path);
+	public function toSql(Builder\Where $builder, $property_path, $prefix = '');
 
 }
