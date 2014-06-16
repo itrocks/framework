@@ -111,6 +111,7 @@ class Link extends Dao\Sql\Link
 			$class_name = $what;
 			$what       = null;
 		}
+		$class_name = Builder::className($class_name);
 		$builder = new Count($class_name, $what, $this);
 		$query = $builder->buildQuery();
 		$this->setContext($builder->getJoins()->getClassNames());
@@ -136,6 +137,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function createStorage($class_name)
 	{
+		$class_name = Builder::className($class_name);
 		return Maintainer::updateTable($this->connection, $class_name);
 	}
 
@@ -530,6 +532,7 @@ class Link extends Dao\Sql\Link
 	public function read($identifier, $class_name)
 	{
 		if (!$identifier) return null;
+		$class_name = Builder::className($class_name);
 		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
 			trigger_error(
 				"You can't read a @link class with it's identifier : it has no identifier !",
@@ -559,6 +562,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function readAll($class_name, $options = [])
 	{
+		$class_name = Builder::className($class_name);
 		$this->setContext($class_name);
 		$query = (new Select($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->executeQuery($query);
@@ -628,6 +632,7 @@ class Link extends Dao\Sql\Link
 		if (!isset($class_name)) {
 			$class_name = get_class($what);
 		}
+		$class_name = Builder::className($class_name);
 		$builder = new Select($class_name, null, $what, $this, $options);
 		$query = $builder->buildQuery();
 		$this->setContext($builder->getJoins()->getClassNames());
@@ -734,12 +739,10 @@ class Link extends Dao\Sql\Link
 											);
 										}
 									}
-									if (property_exists($object, $column_name)) {
-										$write['id_' . $property->getAnnotation('storage')->value]
-											= ($property_is_null && !isset($object->$column_name))
-												? null
-												: intval($object->$column_name);
-									}
+									$write['id_' . $property->getAnnotation('storage')->value]
+										= ($property_is_null && !isset($object->$column_name))
+											? null
+											: intval($object->$column_name);
 								}
 							}
 							// write collection

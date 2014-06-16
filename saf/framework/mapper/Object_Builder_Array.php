@@ -160,7 +160,7 @@ class Object_Builder_Array
 					if (
 						!$this->buildIdProperty($object, $property_name, $value, $null_if_empty)
 						&& (
-							($ignore_property_name === $property_name)
+							($ignore_property_name !== $property_name)
 							|| !isset($search[substr($property_name, 3)])
 						)
 					) {
