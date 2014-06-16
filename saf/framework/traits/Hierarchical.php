@@ -60,12 +60,12 @@ trait Hierarchical
 				$sub->$super = $this;
 				Dao::write($sub, [Dao::only($super)]);
 			}
-			$written[Dao::getObjectIdentifier($sub)] = $sub;
+			$written[Dao::getObjectIdentifier($sub)] = true;
 		}
 		// empty $super_property from removed $sub_properties
 		$subs = Dao::search([$super => $this], Link_Class::linkedClassNameOf($this));
 		foreach ($subs as $sub) {
-			if (!$written[Dao::getObjectIdentifier($sub)]) {
+			if (!isset($written[Dao::getObjectIdentifier($sub)])) {
 				$sub->$super = null;
 				Dao::write($sub, [Dao::only($super)]);
 			}
