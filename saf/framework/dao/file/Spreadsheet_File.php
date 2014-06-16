@@ -64,12 +64,20 @@ class Spreadsheet_File
 	 */
 	public static function fileToArray($file_name, &$errors = [])
 	{
-		$csv_file = Application::current()->getTemporaryFilesPath() . SL . uniqid() . '.csv';
-		exec('ssconvert ' . DQ . $file_name . DQ . SP . DQ . $csv_file . DQ . ' -S 2>&1 &');
-		$count = 0;
+		if (substr($file_name, -4) == '.csv') {
+			$csv_file = $file_name;
+			$count = '';
+		}
+		else {
+			$csv_file = Application::current()->getTemporaryFilesPath() . SL . uniqid() . '.csv';
+			exec('ssconvert ' . DQ . $file_name . DQ . SP . DQ . $csv_file . DQ . ' -S 2>&1 &');
+			$count = 0;
+		}
 		$result = [];
-		while (file_exists($csv_file . DOT . $count)) {
-			$result[$csv_file . DOT . $count] = self::readCsvFile($csv_file . DOT . $count, $errors);
+		while (file_exists($csv_file . (strlen($count) ? (DOT . $count) : ''))) {
+			$result[$csv_file . DOT . $count] = self::readCsvFile(
+				$csv_file . (strlen($count) ? (DOT . $count) : ''), $errors
+			);
 			$count ++;
 		}
 		return $result;
