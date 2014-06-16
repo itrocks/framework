@@ -227,6 +227,7 @@ class Where
 	private function buildPath($path, $value, $clause)
 	{
 		if ($value instanceof Func\Where) {
+			$this->joins->add($path);
 			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
 			$property = $this->joins->getProperties($master_path)[$foreign_column];
 			$prefix = ($property->getAnnotation('link')->value) ? 'id_' : '';

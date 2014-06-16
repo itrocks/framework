@@ -31,11 +31,12 @@ class Left_Match implements Where
 	 *
 	 * @param $builder       Builder\Where the sql query builder
 	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path)
+	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
-		$column = $builder->buildColumn($property_path);
+		$column = $builder->buildColumn($property_path, $prefix);
 		$value  = Value::escape($this->value);
 		return $column . ' = LEFT(' . $value . ', LENGTH(' . $column . '))';
 	}

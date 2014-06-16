@@ -33,9 +33,10 @@ class Is_Greatest implements Where_Inner
 	 *
 	 * @param $builder       Builder\Where the sql query builder
 	 * @param $property_path string the property path
+	 * @param $prefix        string
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path)
+	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
 		$joins = $builder->getJoins();
 		// sub-query
@@ -52,7 +53,7 @@ class Is_Greatest implements Where_Inner
 		foreach (array_merge($this->properties, [$property_path]) as $property) {
 			$where .= ' AND '
 				. $join->foreign_alias . DOT . BQ . rLastParse($property, DOT, 1, true) . BQ
-				. ' = ' . $builder->buildColumn($property);
+				. ' = ' . $builder->buildColumn($property, $prefix);
 		}
 		$join->where = substr($where, 5);
 		return null;

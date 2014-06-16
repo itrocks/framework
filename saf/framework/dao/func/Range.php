@@ -39,12 +39,13 @@ class Range implements Where
 	 *
 	 * @param $builder       Builder\Where the sql query builder
 	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path)
+	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
 		return '('
-			. $builder->buildColumn($property_path) . ' BETWEEN '
+			. $builder->buildColumn($property_path, $prefix) . ' BETWEEN '
 			. Value::escape($this->from) . ' AND ' . Value::escape($this->to)
 		. ')';
 	}
