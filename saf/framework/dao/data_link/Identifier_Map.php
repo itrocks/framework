@@ -47,7 +47,7 @@ abstract class Identifier_Map extends Data_Link
 			if (isset($property_name)) {
 				$id_property_name = ($property_name == 'id') ? 'id' : ('id_' . $property_name);
 				if (isset($object->$id_property_name)) {
-					return $object->$id_property_name;
+					return intval($object->$id_property_name);
 				}
 				else {
 					return isset($object->$property_name)
@@ -60,11 +60,11 @@ abstract class Identifier_Map extends Data_Link
 				}
 			}
 			else {
-				return isset($object->id) ? $object->id : null;
+				return isset($object->id) ? intval($object->id) : null;
 			}
 		}
 		else {
-			return $object;
+			return intval($object);
 		}
 	}
 
