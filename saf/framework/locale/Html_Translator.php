@@ -43,9 +43,14 @@ class Html_Translator implements Registerable
 	{
 		$i = 0;
 		while (($i = strpos($content, '|', $i)) !== false) {
-			$i++;
-			if (($i < strlen($content)) && (!in_array($content[$i], [SP, CR, LF, TAB]))) {
-				$this->translateElement($content, $i, $context);
+			$i ++;
+			if ($i < strlen($content)) {
+				if ($content[$i] == '|') {
+					$i ++;
+				}
+				elseif (!in_array($content[$i], [SP, CR, LF, TAB])) {
+					$this->translateElement($content, $i, $context);
+				}
 			}
 		}
 		return $content;
@@ -59,7 +64,7 @@ class Html_Translator implements Registerable
 	 * @param $i       integer
 	 * @param $context string
 	 */
-	public function translateElement(&$content, &$i, $context)
+	private function translateElement(&$content, &$i, $context)
 	{
 		$j = strpos($content, '|', $i);
 		if ($j >= $i) {
