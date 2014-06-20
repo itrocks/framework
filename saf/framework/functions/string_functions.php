@@ -2,7 +2,7 @@
 
 //-------------------------------------------------------------------------------------- lLastParse
 /**
- * Returns the part of the string left to the first occurrence of the separator
+ * Returns the part of the string left to the last occurrence of the separator
  *
  * @param $str string
  * @param $sep string
@@ -26,7 +26,7 @@ function lLastParse($str, $sep, $cnt = 1, $complete_if_not = true)
 
 //------------------------------------------------------------------------------------------ lParse
 /**
- * Renvoie la partie de chaine à gauche de la première occurence du séparateur
+ * Returns the part of the string left to the first occurrence of the separator
  *
  * @param $str string
  * @param $sep string
@@ -50,7 +50,7 @@ function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
 
 //------------------------------------------------------------------------------------ maxRowLength
 /**
- * Renvoie la plus grande longueur de ligne d'un texte dont les lignes sont séparées par '\n'
+ * Returns the wider row characters count (lines are separated by LF = \n = #10)
  *
  * @param $str string
  * @return int
@@ -69,16 +69,18 @@ function maxRowLength($str)
 
 //------------------------------------------------------------------------------------------ mParse
 /**
- * Renvoie la partie de la chaîne située entre le délimiteur de début et le délimiteur de fin
- * Si le délimiteur est un tableau, les délimiteurs seront recherchés successivement.
+ * Returns the middle part of the string, between $begin_sep and $end_sep
  *
- * @example echo mParse('il a mangé, a bu, a digéré', [',', 'a '), ',')
- *          recherchera ce qui entre le 'a ' qui est après ',' et le ',' qui suit,
- *          et affichera 'bu'
- * @param $str string
- * @param $begin_sep mixed  array, string
- * @param $end_sep mixed    array, string
- * @param $cnt int
+ * If separators are arrays, it will search the first separator, then the next one, etc.
+ *
+ * @example echo mParse('He eats, drinks and then sleep', [', ', SP], ' then ')
+ *          Will result in 'and'
+ *          It looks what is after ', ' and then what is after the next space
+ *          The returned value stops before ' then '
+ * @param $str       string
+ * @param $begin_sep string|string[]
+ * @param $end_sep   string|string[]
+ * @param $cnt       integer
  * @return string
  */
 function mParse($str, $begin_sep, $end_sep, $cnt = 1)
@@ -131,7 +133,7 @@ function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
 
 //---------------------------------------------------------------------------------------- rowCount
 /**
- * Renvoie le nombre de lignes dans un texte dont les lignes sont séparées par '\n'
+ * Returns the lines count into a text where lines are separated by LF = \n = #10
  *
  * @param $str string
  * @return string
@@ -143,7 +145,7 @@ function rowCount($str)
 
 //------------------------------------------------------------------------------------------ rParse
 /**
- * Renvoie la partie de chaine à droite de la première occurence du séparateur
+ * Returns the part of the string right to the first occurrence of the separator
  *
  * @param $str             string
  * @param $sep             string
@@ -201,6 +203,7 @@ function strIsCapitals($str)
 /**
  * Returns a very simplified version of string :
  * no space, no accents, no special characters
+ *
  * 1/ accents are replaced with non-accentuated characters
  * 2/ string is lowercased
  * 3/ only a..z, 0..9, dot (.,) characters are allowed
