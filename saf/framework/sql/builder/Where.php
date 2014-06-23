@@ -233,8 +233,13 @@ class Where
 		if ($value instanceof Func\Where) {
 			$this->joins->add($path);
 			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
-			$property = $this->joins->getProperties($master_path)[$foreign_column];
-			$prefix = ($property->getAnnotation('link')->value) ? 'id_' : '';
+			if ($foreign_column == 'id') {
+				$prefix = '';
+			}
+			else {
+				$property = $this->joins->getProperties($master_path)[$foreign_column];
+				$prefix = ($property->getAnnotation('link')->value) ? 'id_' : '';
+			}
 			return $value->toSql($this, $path, $prefix);
 		}
 		switch (gettype($value)) {
