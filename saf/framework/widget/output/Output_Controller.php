@@ -7,7 +7,6 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Print_Model;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Tab;
@@ -91,12 +90,8 @@ class Output_Controller implements Default_Feature_Controller
 		/** @noinspection PhpUnusedParameterInspection */
 		Parameters $parameters, $form, $class_name
 	) {
+		$object = $parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
-		$object = reset($parameters);
-		if (empty($object) || !is_object($object) || !is_a(get_class($object), $class_name, true)) {
-			$object = new $class_name();
-			$parameters = array_merge([$class_name => $object], $parameters);
-		}
 		$parameters['general_buttons']   = $this->getGeneralButtons($object, $parameters);
 		$parameters['properties_filter'] = $this->getPropertiesList($class_name);
 		$parameters['tabs']              = $this->getTabs($object, $parameters['properties_filter']);
