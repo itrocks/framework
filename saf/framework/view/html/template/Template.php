@@ -626,6 +626,10 @@ class Template
 		$var_name = $search_var_name = substr($content, $i, $j - $i);
 		$length = strlen($var_name);
 		$i += $length + 3;
+		if (substr($var_name, -1) == '>') {
+			$end_last = true;
+			$var_name = substr($var_name, 0, -1);
+		}
 		while (($k = strpos($var_name, '{')) !== false) {
 			$l = strpos($var_name, '}');
 			$this->parseVar($var_name, $k + 1, $l);
@@ -650,7 +654,9 @@ class Template
 			$to = null;
 		}
 		$length2 = strlen($search_var_name);
-		$j = strpos($content, '<!--' . $search_var_name . '-->', $j + 3);
+		$j = isset($end_last)
+			? strrpos($content, '<!--' . $search_var_name . '-->', $j + 3)
+			: strpos($content, '<!--' . $search_var_name . '-->', $j + 3);
 		if ($force_condition) {
 			$var_name = substr($var_name, 0, -1);
 		}
@@ -1136,8 +1142,10 @@ class Template
 			if (!isset($objects))   $objects   = $this->objects;
 			foreach (explode(DOT, $var_name) as $property_name) {
 				$object = $this->parseSingleValue($property_name);
-				array_unshift($this->var_names, $property_name);
-				array_unshift($this->objects,   $object);
+				if (strlen($property_name)) {
+					array_unshift($this->var_names, $property_name);
+					array_unshift($this->objects,   $object);
+				}
 			}
 		}
 		else {
