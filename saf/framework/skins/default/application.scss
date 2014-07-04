@@ -13,8 +13,9 @@ body {
 		height: 52px;
 
 		>ul {
-			float: right;
 			margin: 0 4px;
+			position: fixed;
+			right: 0;
 			z-index: 1000000000;
 
 			>li {
@@ -119,7 +120,11 @@ table, tbody, thead, tr, td, th {
 	padding: 0 2px;
 }
 
-th {
+tbody>tr>th {
+	text-align: left;
+}
+
+thead>tr>th {
 	text-align: center;
 }
 
@@ -202,4 +207,8 @@ th {
 			content: "ERREUR : ";
 		}
 	}
+}
+
+table.worksheet>tbody>tr>td>input {
+	margin: 0 -5px -1px 0;
 }

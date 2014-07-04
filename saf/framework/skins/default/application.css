@@ -10,8 +10,9 @@ body {
     border-bottom: solid darkgrey 1px;
     height: 52px; }
     body > header > ul {
-      float: right;
       margin: 0 4px;
+      position: fixed;
+      right: 0;
       z-index: 1000000000; }
       body > header > ul > li {
         list-style: none; }
@@ -85,7 +86,10 @@ table, tbody, thead, tr, td, th {
   border-spacing: 0;
   padding: 0 2px; }
 
-th {
+tbody > tr > th {
+  text-align: left; }
+
+thead > tr > th {
   text-align: center; }
 
 #main {
@@ -151,3 +155,6 @@ th {
   padding: 4px; }
   .logger.error:before {
     content: "ERREUR : "; }
+
+table.worksheet > tbody > tr > td > input {
+  margin: 0 -5px -1px 0; }
