@@ -61,6 +61,14 @@ class Template
 	 */
 	protected $feature;
 
+	//--------------------------------------------------------------------------------- $group_values
+	/**
+	 * Stores the last value for each group var name
+	 *
+	 * @var string[] key is the group var name, value is the last value
+	 */
+	protected $group_values;
+
 	//-------------------------------------------------------------------------------- $main_template
 	/**
 	 * The main template file path (ie 'saf/framework/main.html');
@@ -317,6 +325,26 @@ class Template
 	protected function getScriptName()
 	{
 		return Paths::$script_name;
+	}
+
+	//----------------------------------------------------------------------------------------- group
+	/**
+	 * Hide repeated values of a given group
+	 *
+	 * @param $var_name string
+	 * @param $value    string
+	 * @return string
+	 */
+	protected function group($var_name, $value)
+	{
+		if (
+			!isset($this->group_values[$var_name])
+			|| ($this->group_values[$var_name] !== strval($value))
+		) {
+			$this->group_values[$var_name] = strval($value);
+			return $value;
+		}
+		return '';
 	}
 
 	//---------------------------------------------------------------------------------- htmlEntities
@@ -1119,6 +1147,10 @@ class Template
 			$not = true;
 			$var_name = substr($var_name, 1);
 		}
+		if (substr($var_name, -1) == '*') {
+			$group = true;
+			$var_name = substr($var_name, 0, -1);
+		}
 		if (strpos('-+', $var_name[0]) !== false) {
 			$descendants_names = $this->descendants_names;
 			$descendants = $this->descendants;
@@ -1174,7 +1206,8 @@ class Template
 		if (isset($var_names)) 	       $this->var_names = $var_names;
 		if (isset($descendants))       $this->descendants = $descendants;
 		if (isset($descendants_names)) $this->descendants_names = $descendants_names;
-		return $object;
+
+		return isset($group) ? $this->group($var_name, $object) : $object;
 	}
 
 	//-------------------------------------------------------------------------------------- parseVar
