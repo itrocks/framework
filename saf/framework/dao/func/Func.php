@@ -18,7 +18,7 @@ abstract class Func
 
 	//------------------------------------------------------------------------------------------- and
 	/**
-	 * @var $arguments Where[]|mixed[]
+	 * @var $arguments Where[]|mixed
 	 * @return Logical
 	 */
 	public static function andOp($arguments)
@@ -192,7 +192,7 @@ abstract class Func
 
 	//------------------------------------------------------------------------------------------ orOp
 	/**
-	 * @var $arguments Where[]|mixed[]
+	 * @var $arguments Where[]|mixed
 	 * @return Logical
 	 */
 	public static function orOp($arguments)
@@ -220,7 +220,7 @@ abstract class Func
 
 	//----------------------------------------------------------------------------------------- xorOp
 	/**
-	 * @var $arguments Where[]|mixed[]
+	 * @var $arguments Where[]|mixed
 	 * @return Logical
 	 */
 	public static function xorOp($arguments)
