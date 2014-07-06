@@ -290,10 +290,9 @@ class Template
 			do {
 				$object = next($this->objects);
 			}
-			while (
-				($object && !is_object($object))
-				|| (isset($instance_of) && !is_a($object, $instance_of))
-			);
+			while ($object && (
+				!is_object($object) || (isset($instance_of) && !is_a($object, $instance_of))
+			));
 		}
 		return $object;
 	}

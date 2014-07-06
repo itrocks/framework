@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Edit;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Namespaces;
@@ -104,8 +105,12 @@ class Html_Template extends Template
 			else {
 				$id_value = '';
 			}
-			$value = $id_value
-				. (new Html_Builder_Property($property, $value))->setTemplate($this)->build();
+			$builder = $property->getAnnotation('edit')->value;
+			$builder = $builder
+				? Builder::create($builder, [$property, $value])
+				: new Html_Builder_Property($property, $value);
+			/** @var $builder Html_Builder_Property */
+			$value = $id_value . $builder->setTemplate($this)->build();
 		}
 		else {
 			$value = parent::parseValue($var_name, $as_string);
