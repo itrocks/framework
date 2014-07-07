@@ -2,6 +2,7 @@
 namespace SAF\Framework\View\Html;
 
 use SAF\Framework\Application;
+use SAF\Framework\Builder;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
@@ -12,7 +13,8 @@ use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Paths;
 use SAF\Framework\Tools\String;
-use SAF\Framework\View\Html\Builder;
+use SAF\Framework\View\Html;
+use SAF\Framework\View\Html\Builder\Property;
 use SAF\Framework\View\Html\Template\Functions;
 
 /**
@@ -232,7 +234,7 @@ class Template
 	 */
 	public function getFeature()
 	{
-		return $this->feature;
+		return isset($this->parameters['feature']) ? $this->parameters['feature'] : $this->feature;
 	}
 
 	//--------------------------------------------------------------------------- getMainTemplateFile
@@ -418,7 +420,7 @@ class Template
 	 */
 	protected function parseCollection(Reflection_Property $property, $collection)
 	{
-		return (new Builder\Collection($property, $collection))->build();
+		return (new Html\Builder\Collection($property, $collection))->build();
 	}
 
 	//------------------------------------------------------------------------------ parseConditional
@@ -541,7 +543,7 @@ class Template
 	 */
 	protected function parseFileToString($property, File $file)
 	{
-		return (new Builder\File($property, $file))->build();
+		return (new Html\Builder\File($property, $file))->build();
 	}
 
 	//--------------------------------------------------------------------------------- parseFullPage
@@ -818,7 +820,7 @@ class Template
 	 */
 	protected function parseMap(Reflection_Property $property, $collection)
 	{
-		return (new Builder\Map($property, $collection))->build();
+		return (new Html\Builder\Map($property, $collection))->build();
 	}
 
 	//----------------------------------------------------------------------------------- parseMethod
@@ -1009,7 +1011,21 @@ class Template
 			(is_object($object) || (is_string($object) && !empty($object) && ctype_upper($object[0])))
 			&& method_exists($object, $property_name)
 		) {
-			$object = $this->parseMethod($object, $property_name);
+			if (
+				($property_name == 'value')
+				&& ($object instanceof Reflection_Property)
+				&& ($builder = $object->getAnnotation('widget')->value)
+				&& is_a($builder, Property::class, true)
+			) {
+				$builder = Builder::create(
+					$builder, [$object, $this->parseMethod($object, $property_name), $this]
+				);
+				/** @var $builder Property */
+				$object = $builder->buildHtml();
+			}
+			else {
+				$object = $this->parseMethod($object, $property_name);
+			}
 		}
 		elseif (isset($object->$property_name)) {
 			$object = $this->parseProperty($object, $property_name);

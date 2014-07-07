@@ -349,38 +349,48 @@ class Object_Builder_Array
 	private function buildProperty($object, Reflection_Property $property, $value, $null_if_empty)
 	{
 		$is_null = $null_if_empty;
-		$type = $property->getType();
-		if ($type->isBasic()) {
-			// password
-			if ($encryption = $property->getAnnotation('password')->value) {
-				if ($value == Password::UNCHANGED) {
-					return true;
-				}
-				$value = (new Password($value, $encryption))->encrypted();
-			}
-			// others basic values
-			else {
-				$value = $this->buildBasicValue($property, $value);
-			}
+		if (
+			($builder = $property->getAnnotation('widget')->value)
+			&& is_a($builder, Property_Builder::class, true)
+		) {
+			$builder = Builder::create($builder, [$property, $value]);
+			/** @var $builder Property_Builder*/
+			$value = $builder->buildValue($object, $null_if_empty);
 		}
-		elseif (is_array($value)) {
-			$link = $property->getAnnotation('link')->value;
-			// object
-			if ($link == Link_Annotation::OBJECT) {
-				$class_name = $property->getType()->asString();
-				$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
+		else {
+			$type = $property->getType();
+			if ($type->isBasic()) {
+				// password
+				if ($encryption = $property->getAnnotation('password')->value) {
+					if ($value == Password::UNCHANGED) {
+						return true;
+					}
+					$value = (new Password($value, $encryption))->encrypted();
+				}
+				// others basic values
+				else {
+					$value = $this->buildBasicValue($property, $value);
+				}
 			}
-			// collection
-			elseif ($link == Link_Annotation::COLLECTION) {
-				$class_name = $property->getType()->getElementTypeAsString();
-				$value = $this->buildCollection($class_name, $value, $null_if_empty, $object);
-			}
-			// map or not-linked array
-			else {
-				$value = $this->buildMap(
-					$value,
-					($link == Link_Annotation::MAP) ? null : $property->getType()->getElementTypeAsString()
-				);
+			elseif (is_array($value)) {
+				$link = $property->getAnnotation('link')->value;
+				// object
+				if ($link == Link_Annotation::OBJECT) {
+					$class_name = $property->getType()->asString();
+					$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
+				}
+				// collection
+				elseif ($link == Link_Annotation::COLLECTION) {
+					$class_name = $property->getType()->getElementTypeAsString();
+					$value = $this->buildCollection($class_name, $value, $null_if_empty, $object);
+				}
+				// map or not-linked array
+				else {
+					$value = $this->buildMap(
+						$value,
+						($link == Link_Annotation::MAP) ? null : $property->getType()->getElementTypeAsString()
+					);
+				}
 			}
 		}
 		// the property value is set only for official properties, if not default and not empty

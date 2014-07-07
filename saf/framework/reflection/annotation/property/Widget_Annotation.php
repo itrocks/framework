@@ -5,9 +5,9 @@ use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
 
 /**
- * Use another class than Widget\Edit\Html_Builder_Property to parse the property value
+ * Use a specific HTML builder class to build output / edit / object for write for the property
  */
-class Edit_Annotation extends Annotation
+class Widget_Annotation extends Annotation
 {
 	use Types_Annotation;
 
