@@ -106,6 +106,10 @@ Parser::$default_annotations = [
 	// This tells that the string property can store multiple lines of text (default is false)
 	__NAMESPACE__ . '\Property\Multiline_Annotation' => Boolean_Annotation::class,
 
+	// @output serialized
+	// The serialized value of the property value will be displayed and edited
+	__NAMESPACE__ . '\Property\Output_Annotation' => Annotation::class,
+
 	// @override [false]
 	// This tells that the property overrides a parent public/protected property having the same name
 	__NAMESPACE__ . '\Property\Override_Annotation' => Boolean_Annotation::class,
@@ -133,6 +137,10 @@ Parser::$default_annotations = [
 	// @signed
 	// Tells that the numeric value can be negative.
 	__NAMESPACE__ . '\Property\Signed_Annotation' => Boolean_Annotation::class,
+
+	// @store serialized
+	// The serialized value of the object is stored, instead of generating an objects table
+	__NAMESPACE__ . '\Property\Store_Annotation' => Annotation::class,
 
 	// @textile
 	// This tells that the property should be rendered using textile parsing

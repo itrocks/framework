@@ -75,7 +75,11 @@ trait Column_Builder_Property
 	private static function propertyNameToMysql(Reflection_Property $property)
 	{
 		$type = $property->getType();
-		return ($type->isBasic() || ($type->isMultiple() && $type->getElementType()->isString()))
+		return (
+			$type->isBasic()
+			|| ($type->isMultiple() && $type->getElementType()->isString())
+			|| ($property->getAnnotation('store')->value == 'string')
+		)
 			? $property->getAnnotation('storage')->value
 			: ('id_' . $property->getAnnotation('storage')->value);
 	}
@@ -102,7 +106,10 @@ trait Column_Builder_Property
 	private static function propertyTypeToMysql(Reflection_Property $property)
 	{
 		$property_type = $property->getType();
-		if ($property_type->isBasic()) {
+		if (
+			$property_type->isBasic()
+			|| ($property->getAnnotation('store')->value == 'string')
+		) {
 			if ($property_type->hasSize()) {
 				/** @var integer $max_length */
 				$max_length = $property->getAnnotation('max_length')->value;

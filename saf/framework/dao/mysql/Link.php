@@ -722,6 +722,9 @@ class Link extends Dao\Sql\Link
 								if ($element_type->isBasic()) {
 									$write[$property->getAnnotation('storage')->value] = $value;
 								}
+								elseif ($property->getAnnotation('store')->value == 'string') {
+									$write[$property->getAnnotation('storage')->value] = strval($value);
+								}
 								// write object id if set or object if no id is set (new object)
 								else {
 									$column_name = 'id_' . $property->name;

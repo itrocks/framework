@@ -9,6 +9,7 @@ use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Password;
+use SAF\Framework\Tools\Stringable;
 
 /**
  * Build an object and it's property values from data stored into a recursive array
@@ -391,6 +392,12 @@ class Object_Builder_Array
 						($link == Link_Annotation::MAP) ? null : $property->getType()->getElementTypeAsString()
 					);
 				}
+			}
+			elseif (isset($value) && ($property->getAnnotation('output')->value == 'string')) {
+				/** @var $object_value Stringable */
+				$object_value = Builder::create($property->getType()->asString());
+				$object_value->fromString($value);
+				$value = $object_value;
 			}
 		}
 		// the property value is set only for official properties, if not default and not empty

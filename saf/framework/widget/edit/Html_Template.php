@@ -106,6 +106,11 @@ class Html_Template extends Template
 			else {
 				$id_value = '';
 			}
+			if ($property->getAnnotation('output')->value == 'string') {
+				$property->setAnnotationLocal('var')->value = 'string';
+				$value = isset($value) ? strval($value) : null;
+				$id_value = '';
+			}
 			if (
 				($builder = $property->getAnnotation('widget')->value)
 				&& is_a($builder, Property::class, true)

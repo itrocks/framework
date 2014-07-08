@@ -1,10 +1,12 @@
 <?php
 namespace SAF\Framework\Mapper;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Date_Time;
+use SAF\Framework\Tools\Stringable;
 
 /**
  * Getter default methods are common getters for Dao linked objects
@@ -178,9 +180,17 @@ abstract class Getter
 				}
 			}
 			if (isset($stored)) {
-				$stored = (isset($property) && ($dao = $property->getAnnotation('dao')->value))
-					? Dao::get($dao)->read($stored, $class_name)
-					: Dao::read($stored, $class_name);
+				if (isset($property) && ($property->getAnnotation('store')->value == 'string')) {
+					/** @var $stored_object Stringable */
+					$stored_object = Builder::create($property->getType()->asString());
+					$stored_object->fromString($stored);
+					$stored = $stored_object;
+				}
+				else {
+					$stored = (isset($property) && ($dao = $property->getAnnotation('dao')->value))
+						? Dao::get($dao)->read($stored, $class_name)
+						: Dao::read($stored, $class_name);
+				}
 			}
 		}
 		return $stored;
