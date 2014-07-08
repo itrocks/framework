@@ -8,7 +8,7 @@ use SAF\Framework\Tools\Set;
 /**
  * Set of settings
  *
- * @override elements @link Collection @type Setting[]
+ * @override elements @link Collection @var Setting[]
  */
 class Settings extends Set
 {
