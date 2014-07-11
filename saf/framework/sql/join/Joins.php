@@ -353,6 +353,18 @@ class Joins
 				$join->mode = $master_property->getAnnotation('mandatory')->value
 					? Join::INNER
 					: Join::LEFT;
+				// force LEFT if any of the properties in the master property path is not mandatory
+				if (($join->mode == Join::INNER) && $master_path) {
+					$root_class = new Reflection_Class($this->classes['']);
+					$property_path = '';
+					foreach (explode(DOT, $master_path . DOT . $master_property_name) as $property_name) {
+						$property_path .= ($property_path ? DOT : '') . $property_name;
+						if (!$root_class->getProperty($property_path)->getAnnotation('mandatory')->value) {
+							$join->mode = Join::LEFT;
+							break;
+						}
+					}
+				}
 				if ($foreign_type->isMultiple()) {
 					$foreign_class_name = $foreign_type->getElementTypeAsString();
 					$foreign_property_name = $master_property->getAnnotation('foreign')->value;
