@@ -31,8 +31,8 @@ abstract class Map
 		$field1 = $sql_link->masterColumn();
 		$field2 = $sql_link->foreignColumn();
 		// build values
-		$id1 = Dao::getObjectIdentifier($object);
-		$id2 = Dao::getObjectIdentifier($foreign_object);
+		$id1 = Dao::getObjectIdentifier($object, 'id');
+		$id2 = Dao::getObjectIdentifier($foreign_object, 'id');
 		// return elements
 		return [$table, $field1, $field2, $id1, $id2];
 	}
