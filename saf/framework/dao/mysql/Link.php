@@ -917,9 +917,7 @@ class Link extends Dao\Sql\Link
 			: null;
 		$old_object = Search_Object::create(Link_Class::linkedClassNameOf($object));
 		$this->setObjectIdentifier(
-			$old_object,
-			$this->getObjectIdentifier($object, $composite_property_name),
-			$composite_property_name
+			$old_object, $this->getObjectIdentifier($object, $composite_property_name)
 		);
 		$aop_getter_ignore = Getter::$ignore;
 		Getter::$ignore = false;
