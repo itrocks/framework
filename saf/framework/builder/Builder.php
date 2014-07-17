@@ -152,17 +152,19 @@ class Builder implements Activable, Registerable, Serializable
 			if (isset($save_aop)) {
 				$clone->_ = $save_aop;
 			}
-			// copy added properties values to the cloned object
-			if ($properties_values) {
-				$properties = (new Reflection_Class($class_name))->accessProperties();
-				foreach ($properties_values as $property_name => $value) {
-					$properties[$property_name]->setValue($clone, $value);
-				}
-			}
 			Dao::replace($clone, $object, false);
-			return $clone;
 		}
-		return clone $object;
+		else {
+			$clone = clone $object;
+		}
+		// copy added properties values to the cloned object
+		if ($properties_values) {
+			$properties = (new Reflection_Class($class_name))->accessProperties();
+			foreach ($properties_values as $property_name => $value) {
+				$properties[$property_name]->setValue($clone, $value);
+			}
+		}
+		return $clone;
 	}
 
 	//--------------------------------------------------------------------------------------- current
