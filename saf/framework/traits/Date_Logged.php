@@ -28,7 +28,7 @@ trait Date_Logged
 	//------------------------------------------------------------------------- beforeWriteDateLogged
 	public function beforeWriteDateLogged()
 	{
-		if ($this->creation_datetime->isEmpty()) {
+		if (!isset($this->creation_datetime) || $this->creation_datetime->isEmpty()) {
 			$this->creation_datetime = new Date_Time();
 		}
 		else {
