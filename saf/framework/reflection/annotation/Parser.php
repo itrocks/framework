@@ -207,7 +207,7 @@ abstract class Parser
 			$do = false;
 			if (is_array($annotation->value)) {
 				foreach ($annotation->value as $value) {
-					if ($value && ctype_upper($value[0])) {
+					if ($value && (ctype_upper($value[0]) || ($value[0] == BS))) {
 						$do = true;
 						break;
 					}

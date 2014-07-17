@@ -48,6 +48,9 @@ trait Types_Annotation
 					(new Type($class_name))->applyNamespace($namespace, $use)
 				) . $multiple;
 			}
+			elseif ($class_name[0] === BS) {
+				$values[$key] = substr($class_name, 1);
+			}
 		}
 
 		$this->value = is_array($this->value) ? $values : reset($values);
