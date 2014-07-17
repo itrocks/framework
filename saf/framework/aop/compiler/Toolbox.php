@@ -118,7 +118,7 @@ trait Toolbox
 	) {
 		// $advice_code
 		if (is_array($advice)) {
-			$method = Reflection_Method::of($advice_class_name, $advice_method_name);
+			$method = Reflection_Method::of($advice_class_name, $advice_method_name, [T_EXTENDS, T_USE]);
 			$ref = $method->returnsReference() ? '&' : '';
 			// static method call
 			if ($is_advice_static) {

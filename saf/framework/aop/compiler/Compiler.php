@@ -362,7 +362,18 @@ class Compiler implements ICompiler, Needs_Main
 		foreach ($this->scanForOverrides($documentations) as $match) {
 			$properties[$match['property_name']]['implements'][$match['type']] = true;
 			if (!isset($implemented_properties[$match['property_name']])) {
-				$property = $class->getProperties([T_EXTENDS])[$match['property_name']];
+				$class_properties = $class->getProperties([T_EXTENDS]);
+				$extends = $class;
+				while (!isset($class_properties[$match['property_name']])) {
+					$extends = $extends->source->getOutsideClass(
+						$extends->getListAnnotation('extends')->values()[0]
+					);
+					$class_properties = $extends->getProperties([T_EXTENDS]);
+				}
+				$property = $class_properties[$match['property_name']];
+				if (isset($extends)) {
+					$property->final_class = $class->name;
+				}
 				if (
 					!strpos($property->getDocComment(), '@getter')
 					&& !strpos($property->getDocComment(), '@link')

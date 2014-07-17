@@ -371,8 +371,15 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 */
 	public static function of($class_name, $method_name, $flags = [])
 	{
-		$methods = Reflection_Class::of($class_name)->getMethods($flags);
-		return isset($methods[$method_name]) ? $methods[$method_name] : null;
+		$class = Reflection_Class::of($class_name);
+		$methods = $class->getMethods($flags);
+		if (!isset($methods[$method_name]) && in_array(T_EXTENDS, $flags)) {
+			do {
+				$class = $class->source->getOutsideClass($class->getListAnnotation('extends')->values()[0]);
+				$methods = $class->getMethods($flags);
+			} while (!isset($methods[$method_name]));
+		}
+		return $methods[$method_name];
 	}
 
 	//----------------------------------------------------------------------------------------- regex
