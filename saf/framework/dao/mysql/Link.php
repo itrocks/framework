@@ -180,7 +180,8 @@ class Link extends Dao\Sql\Link
 				$id = [];
 				foreach ($link->getLinkProperties() as $link_property) {
 					$property_name = $link_property->getName();
-					$column_name = ($link_property->getType()->isClass() ? 'id_' : '') . $property_name;
+					$column_name = ($link_property->getType()->isClass() ? 'id_' : '')
+						. $link_property->getAnnotation('storage')->value;
 					$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
 				}
 			}
@@ -508,12 +509,27 @@ class Link extends Dao\Sql\Link
 	 * Executes an SQL query and returns the inserted record identifier or the mysqli result object
 	 *
 	 * @param $query string
-	 * @return integer|mysqli_result
+	 * @param $class_name string if set, the result will be object[] with read data
+	 * @return integer|mysqli_result|object[]
 	 */
-	public function query($query)
+	public function query($query, $class_name = null)
 	{
 		if ($query) {
 			$result = $this->executeQuery($query);
+			if (isset($class_name)) {
+				$class_name = Builder::className($class_name);
+				$response = [];
+				while ($object = $result->fetch_object($class_name)) {
+					if (isset($object->id)) {
+						$response[$object->id] = $object;
+					}
+					else {
+						$response[] = $object;
+					}
+				}
+				$result->free();
+				return $response;
+			}
 			return $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
 		}
 		else {
@@ -784,7 +800,8 @@ class Link extends Dao\Sql\Link
 						$search = [];
 						foreach ($link->getLinkProperties() as $property) {
 							$property_name = $property->getName();
-							$column_name = 'id_' . $properties[$property_name]->getAnnotation('storage')->value;
+							$column_name = $property->getType()->isClass() ? 'id_' : '';
+							$column_name .= $properties[$property_name]->getAnnotation('storage')->value;
 							if (isset($write[$column_name])) {
 								$search[$property_name] = $write[$column_name];
 							}
@@ -873,12 +890,19 @@ class Link extends Dao\Sql\Link
 		Getter::$ignore = false;
 		$old_collection = $property->getValue($old_object);
 		Getter::$ignore = $aop_getter_ignore;
+
+		$element_class = $property->getType()->asReflectionClass();
 		/** @var $element_link Class_\Link_Annotation */
-		$element_link = $property->getType()->asReflectionClass()->getAnnotation('link');
+		$element_link = $element_class->getAnnotation('link');
 		// collection properties : write each of them
 		$id_set = [];
 		if ($collection) {
-			foreach ($collection as $element) {
+			foreach ($collection as $key => $element) {
+				if (!is_a($element, $element_class->getName())) {
+					$collection[$key] = $element = Builder::createClone($element, $element_class->getName(), [
+						$element_link->getLinkClass()->getCompositeProperty()->name => $element
+					]);
+				}
 				$element->setComposite($object, $property->getAnnotation('foreign')->value);
 				$id = $element_link->value
 					? $this->getLinkObjectIdentifier($element, $element_link)

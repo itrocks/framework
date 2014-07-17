@@ -39,6 +39,9 @@ abstract class Builder
 	 */
 	public static function buildDelete($class, $id)
 	{
+		if ($class instanceof Reflection_Class) {
+			$class = $class->name;
+		}
 		$sql_delete = 'DELETE FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ . ' WHERE';
 		if (is_numeric($id)) {
 			$sql_delete .= ' id = ' . $id;
@@ -47,7 +50,7 @@ abstract class Builder
 			$first = true;
 			foreach ($id as $key => $value) {
 				$sql_delete .= $first ? ($first = false) : ' AND';
-				$sql_delete .= ' ' . $key . ' = ' . $value;
+				$sql_delete .= ' ' . $key . ' = ' . Value::escape($value);
 			}
 		}
 		else {

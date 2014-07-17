@@ -135,10 +135,11 @@ abstract class Link extends Identifier_Map implements Transactional
 	/**
 	 * Executes an SQL query and returns the inserted record identifier (if applicable)
 	 *
-	 * @param $query string
-	 * @return integer
+	 * @param $query      string
+	 * @param $class_name string if set, the result will be object[] with read data
+	 * @return integer|object[]
 	 */
-	abstract public function query($query);
+	abstract public function query($query, $class_name = null);
 
 	//-------------------------------------------------------------------------------------- rollback
 	public function rollback() {}
