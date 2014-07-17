@@ -56,7 +56,7 @@ class Proxy
 	//------------------------------------------------------------------------------ $request_headers
 	/**
 	 * The headers of the HTTP request
-	 *
+	 * The key is the name of the header, the value is its value
 	 *
 	 * @var string[]
 	 */
@@ -73,6 +73,7 @@ class Proxy
 	//----------------------------------------------------------------------------- $response_headers
 	/**
 	 * The headers of the HTTP response
+	 * The key is a numeric, the value is 'Header-Name: value'
 	 *
 	 * @var string[]
 	 */
@@ -100,6 +101,28 @@ class Proxy
 		}
 	}
 
+	//----------------------------------------------------------------------------- getRequestCookies
+	/**
+	 * Get HTTP response cookies
+	 *
+	 * @param $deleted boolean if true, get deleted cookies too
+	 * @return Cookie[]
+	 */
+	public function getRequestCookies($deleted = true)
+	{
+		$cookies = [];
+		if (isset($this->request_headers['Cookie'])) {
+			foreach (explode('; ', $this->request_headers['Cookie']) as $text) {
+				$cookie = new Cookie();
+				list($cookie->name, $cookie->value) = explode('=', $text);
+				if ($deleted || !($cookie->value == 'deleted')) {
+					$cookies[] = $cookie;
+				}
+			}
+		}
+		return $cookies;
+	}
+
 	//----------------------------------------------------------------------------------- getResponse
 	/**
 	 * Get HTTP response
@@ -111,6 +134,33 @@ class Proxy
 		return ($this->getResponseHeader('Content-Encoding') === 'gzip')
 			? gzinflate(substr($this->response, 10, -8))
 			: $this->response;
+	}
+
+	//---------------------------------------------------------------------------- getResponseCookies
+	/**
+	 * Get HTTP response cookies
+	 *
+	 * @param $deleted boolean if true, get deleted cookies too
+	 * @return Cookie[]
+	 */
+	public function getResponseCookies($deleted = true)
+	{
+		$cookies = [];
+		foreach ($this->response_headers as $header) {
+			$pos = strpos($header, ': ');
+			if ($pos !== false) {
+				$name = substr($header, 0, $pos);
+				$value = substr($header, $pos + 2);
+				if ($name == 'Set-Cookie') {
+					$cookie = new Cookie();
+					$cookie->fromString($value);
+					if ($deleted || !($cookie->value == 'deleted')) {
+						$cookies[] = $cookie;
+					}
+				}
+			}
+		}
+		return $cookies;
 	}
 
 	//----------------------------------------------------------------------------- getResponseHeader
@@ -279,6 +329,25 @@ class Proxy
 		}
 	}
 
+	//----------------------------------------------------------------------------- setRequestCookies
+	/**
+	 * @param $cookies Cookie[]
+	 */
+	public function setRequestCookies($cookies = [])
+	{
+		$text = '';
+		foreach ($cookies as $cookie) {
+			if ($text) $text .= '; ';
+			$text .= $cookie->name . '=' . $cookie->value;
+		}
+		if ($text) {
+			$this->request_headers['Cookie'] = $text;
+		}
+		elseif (isset($this->request_headers['Cookie'])) {
+			unset($this->request_headers['Cookie']);
+		}
+	}
+
 	//----------------------------------------------------------------------------------- setResponse
 	/**
 	 * @param $response string
@@ -289,6 +358,28 @@ class Proxy
 			? gzencode($response)
 			: $response;
 		$this->setResponseHeader('Content-Length', strlen($this->response));
+	}
+
+	//---------------------------------------------------------------------------- setResponseCookies
+	/**
+	 * @param $cookies Cookie[]
+	 * @param $replace boolean
+	 */
+	public function setResponseCookies($cookies = [], $replace = true)
+	{
+		if ($replace) {
+			foreach ($this->response_headers as $key => $header) {
+				$pos = strpos($header, ': ');
+				if ($pos !== false) {
+					if (substr($header, 0, $pos) == 'Set-Cookie') {
+						unset($this->response_headers[$key]);
+					}
+				}
+			}
+		}
+		foreach ($cookies as $cookie) {
+			$this->response_headers[] = 'Set-Cookie: ' . $cookie;
+		}
 	}
 
 	//----------------------------------------------------------------------------- setResponseHeader

@@ -584,9 +584,17 @@ class Parser
 						}
 					}
 					elseif (
-						(($i2 = strpos($buffer, SP . $name . '=' . DQ))          === false)
-						|| (($j2 = strpos($buffer, DQ, $i2 + strlen($name) + 3)) === false)
-						|| (strpos(substr($buffer, $i2, $j2 - $i2), $part)       === false)
+						(
+							(($i2 = strpos($buffer, SP . $name . '=' . DQ))          === false)
+							|| (($j2 = strpos($buffer, DQ, $i2 + strlen($name) + 3)) === false)
+							|| (strpos(substr($buffer, $i2, $j2 - $i2), $part)       === false)
+						)
+						&&
+						(
+							(($i2 = strpos($buffer, SP . $name . '=' . Q))          === false)
+							|| (($j2 = strpos($buffer, Q, $i2 + strlen($name) + 3)) === false)
+							|| (strpos(substr($buffer, $i2, $j2 - $i2), $part)      === false)
+						)
 					) {
 						$found = false;
 						break 2;
