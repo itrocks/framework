@@ -38,6 +38,7 @@ class Compiler implements ICompiler
 			$dao->begin();
 			$tables = [];
 
+			/*
 			// drop empty tables
 			foreach ($dao->getConnection()->getTables() as $table_name) {
 				if ($dao->query('SELECT COUNT(*) FROM ' . BQ . $table_name . BQ)->fetch_row()[0]) {
@@ -47,6 +48,7 @@ class Compiler implements ICompiler
 					@$dao->query('DROP TABLE IF EXISTS ' . BQ . $table_name . BQ);
 				}
 			}
+			*/
 
 			// update tables structures
 			foreach ($source->getClasses() as $class) {
