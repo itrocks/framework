@@ -102,7 +102,7 @@ function arrayMergeRecursive($array1, $array2)
 {
 	foreach ($array2 as $index => $value2) {
 		if (($index === ':') && ($value2 === 'clear')) {
-			$array1 = [];
+			$array1 = null;
 			unset($array2[$index]);
 		}
 		else {
@@ -112,10 +112,17 @@ function arrayMergeRecursive($array1, $array2)
 					$array1[] = $value2;
 				}
 			}
+			elseif (is_array($value2)) {
+				$value2 = arrayMergeRecursive(is_array($value1) ? $value1 : [], $value2);
+				if (isset($value2)) {
+					$array1[$index] = $value2;
+				}
+				else {
+					unset($array1[$index]);
+				}
+			}
 			else {
-				$array1[$index] = is_array($value2)
-					? arrayMergeRecursive(is_array($value1) ? $value1 : [], $value2)
-					: $value2;
+				$array1[$index] = $value2;
 			}
 		}
 	}
