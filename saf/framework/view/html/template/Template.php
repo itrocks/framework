@@ -1187,11 +1187,24 @@ class Template
 		if (strpos($var_name, DOT) !== false) {
 			if (!isset($var_names)) $var_names = $this->var_names;
 			if (!isset($objects))   $objects   = $this->objects;
+			$parenthesis = '';
 			foreach (explode(DOT, $var_name) as $property_name) {
-				$object = $this->parseSingleValue($property_name);
-				if (strlen($property_name)) {
-					array_unshift($this->var_names, $property_name);
-					array_unshift($this->objects,   $object);
+				if ($parenthesis) {
+					$property_name = $parenthesis . DOT . $property_name;
+					$parenthesis = '';
+				}
+				if (
+					strpos($property_name, '(')
+					&& (substr_count($property_name, '(') > substr_count($property_name, ')'))
+				) {
+					$parenthesis = $property_name;
+				}
+				else {
+					$object = $this->parseSingleValue($property_name);
+					if (strlen($property_name)) {
+						array_unshift($this->var_names, $property_name);
+						array_unshift($this->objects,   $object);
+					}
 				}
 			}
 		}
