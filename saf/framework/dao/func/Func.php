@@ -93,6 +93,15 @@ abstract class Func
 		return new Is_Greatest($properties);
 	}
 
+	//---------------------------------------------------------------------------------------- isNull
+	/**
+	 * @return Comparison
+	 */
+	public static function isNull()
+	{
+		return new Comparison(Comparison::EQUAL, null);
+	}
+
 	//------------------------------------------------------------------------------------------ left
 	/**
 	 * @param $length integer
