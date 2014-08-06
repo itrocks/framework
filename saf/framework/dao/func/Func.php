@@ -4,6 +4,7 @@ namespace SAF\Framework\Dao;
 use SAF\Framework\Dao\Func\Call;
 use SAF\Framework\Dao\Func\Comparison;
 use SAF\Framework\Dao\Func\Group_By;
+use SAF\Framework\Dao\Func\In;
 use SAF\Framework\Dao\Func\Is_Greatest;
 use SAF\Framework\Dao\Func\Left;
 use SAF\Framework\Dao\Func\Left_Match;
@@ -81,6 +82,16 @@ abstract class Func
 	public static function greaterOrEqual($value)
 	{
 		return new Comparison(Comparison::GREATER_OR_EQUAL, $value);
+	}
+
+	//-------------------------------------------------------------------------------------------- in
+	/**
+	 * @param $values mixed[]
+	 * @return In
+	 */
+	public static function in($values)
+	{
+		return new In($values);
 	}
 
 	//------------------------------------------------------------------------------------ isGreatest
