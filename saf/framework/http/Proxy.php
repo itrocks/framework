@@ -141,26 +141,27 @@ class Proxy
 	 */
 	public function getResponse()
 	{
-		$response = ($this->getResponseHeader('Content-Encoding') === 'gzip')
-			? gzinflate(substr($this->response, 10, -8))
-			: $this->response;
+		$response = $this->response;
 		if ($this->getResponseHeader('Transfer-Encoding') == 'chunked') {
 			$new_response = '';
 			$length = strlen($response);
 			$position = 0;
 			do {
 				$size_position = $position;
-				$position = strpos($response, LF, $position);
+				$position = strpos($response, CR . LF, $position);
 				if ($position === false) {
 					$position = $length;
 				}
-				$size = hexdec(intval(substr($response, $size_position, $position - $size_position)));
-				$position ++;
+				$size = hexdec(substr($response, $size_position, $position - $size_position));
+				$position += 2;
 				$new_response .= substr($response, $position, $size);
-				$position += $size + 1;
+				$position += $size + 2;
 			} while ($size && ($position < $length));
 			$response = $new_response;
 		}
+		$response = ($this->getResponseHeader('Content-Encoding') === 'gzip')
+			? gzinflate(substr($response, 10, -8))
+			: $response;
 		return $response;
 	}
 
