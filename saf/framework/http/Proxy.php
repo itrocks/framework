@@ -10,6 +10,13 @@ namespace SAF\Framework\Http;
 class Proxy
 {
 
+	//---------------------------------------------------------------- __construct STANDARD parameter
+	/**
+	 * Use new Proxy(Proxy::STANDARD) to get a proxy ready with standard headers and parameters
+	 * @var null
+	 */
+	const STANDARD = null;
+
 	//------------------------------------------------------------------------------------ $automatic
 	/**
 	 * In automatic mode, set when calling the constructor :
@@ -51,7 +58,7 @@ class Proxy
 	 * @values GET, POST
 	 * @var string
 	 */
-	public $method = 'GET';
+	public $method = Http::GET;
 
 	//------------------------------------------------------------------------------ $request_headers
 	/**
@@ -89,14 +96,18 @@ class Proxy
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $automatic boolean
+	 * @param $automatic boolean|null
+	 * @param $method    string Http::GET, Http::POST
 	 */
-	public function __construct($automatic = true)
+	public function __construct($automatic = true, $method = Http::GET)
 	{
 		$this->automatic = $automatic;
-		if ($automatic) {
+		if ($automatic === self::STANDARD) {
+			$this->setStandardRequestHeaders($method);
+		}
+		elseif ($automatic) {
 			$this->data = $_POST;
-			$this->method = ($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
+			$this->method = ($_SERVER['REQUEST_METHOD'] === Http::POST) ? Http::POST : Http::GET;
 			$this->request_headers = apache_request_headers();
 		}
 	}
@@ -131,9 +142,27 @@ class Proxy
 	 */
 	public function getResponse()
 	{
-		return ($this->getResponseHeader('Content-Encoding') === 'gzip')
+		$response = ($this->getResponseHeader('Content-Encoding') === 'gzip')
 			? gzinflate(substr($this->response, 10, -8))
 			: $this->response;
+		if ($this->getResponseHeader('Transfer-Encoding') == 'chunked') {
+			$new_response = '';
+			$length = strlen($response);
+			$position = 0;
+			do {
+				$size_position = $position;
+				$position = strpos($response, LF, $position);
+				if ($position === false) {
+					$position = $length;
+				}
+				$size = hexdec(intval(substr($response, $size_position, $position - $size_position)));
+				$position ++;
+				$new_response .= substr($response, $position, $size);
+				$position += $size + 1;
+			} while ($size && ($position < $length));
+			$response = $new_response;
+		}
+		return $response;
 	}
 
 	//---------------------------------------------------------------------------- getResponseCookies
@@ -251,8 +280,12 @@ class Proxy
 		$f = fsockopen($host, 80, $errno, $error, 30);
 		if ($f) {
 			// parse and write request
-			$data = http_build_query($this->data);
-			if ($this->method === 'GET') {
+			$data = '';
+			foreach ($this->data as $key => $value) {
+				$data .= urlencode($key) . '=' . urlencode($value) . '&';
+			}
+			$data = substr($data, 0, -1);
+			if ($this->method === Http::GET) {
 				fputs($f, 'GET ' . $url['path'] . ($data ? $data : '') . ' HTTP/1.1' . CR . LF);
 			}
 			else {
@@ -266,11 +299,11 @@ class Proxy
 					fputs($f, 'Content-Length: ' . strlen($data) . CR . LF);
 				}
 				elseif (!in_array($header, ['Connection', 'Host'])) {
-					fputs($f, '$header: ' . $value . CR . LF);
+					fputs($f, $header . ': ' . $value . CR . LF);
 				}
 			}
 			fputs($f, 'Connection: close' . CR . LF . CR . LF);
-			if ($this->method === 'POST') {
+			if ($this->method === Http::POST) {
 				fputs($f, $data);
 			}
 			// read and parse response
@@ -289,19 +322,6 @@ class Proxy
 			$this->error = $error;
 			return false;
 		}
-	}
-
-	//-------------------------------------------------------------------------------- setUrlByPrefix
-	/**
-	 * Set URL : adds prefix to current uri
-	 *
-	 * @param $prefix      string
-	 * @param $default_uri string default uri if server's PATH_INFO is empty
-	 */
-	public function setUrlByPrefix($prefix, $default_uri = '')
-	{
-		$uri = isset($_SERVER['PATH_INFO']) ? substr($_SERVER['PATH_INFO'], 1) : '';
-		$this->url = $prefix . ($uri ? $uri : $default_uri);
 	}
 
 	//---------------------------------------------------------------------------------- sendResponse
@@ -346,6 +366,16 @@ class Proxy
 		elseif (isset($this->request_headers['Cookie'])) {
 			unset($this->request_headers['Cookie']);
 		}
+	}
+
+	//----------------------------------------------------------------------------- setRequestHeaders
+	/**
+	 * @param $headers string[]
+	 * @param $reset   boolean
+	 */
+	public function setRequestHeaders($headers = [], $reset = false)
+	{
+		$this->request_headers = $reset ? $headers : array_merge($this->request_headers, $headers);
 	}
 
 	//----------------------------------------------------------------------------------- setResponse
@@ -404,6 +434,43 @@ class Proxy
 			$found = true;
 		}
 		return $found;
+	}
+
+	//--------------------------------------------------------------------- setStandardRequestHeaders
+	/**
+	 * Set standard request headers
+	 *
+	 * @param string $method Http::GET or Http::POST
+	 */
+	public function setStandardRequestHeaders($method = Http::GET)
+	{
+		$this->method = $method;
+		$this->request_headers = [
+			'Host'            => $_SERVER['HTTP_HOST'],
+			'User-Agent'      => $_SERVER['HTTP_USER_AGENT'],
+			'Accept'          => 'text/html;q=0.9,*/*;q=0.8',
+			'Accept-Language' => 'fr-FR,q=0.8,en-US;q=0.6,en;q=0.4',
+			'Accept-Encoding' => 'gzip,deflate',
+			'Accept-Charset'  => 'utf-8;q=0.8,ISO-8859-1,utf-8;q=0.7,*;q=0.6'
+		];
+		if ($method == Http::POST) {
+			$this->request_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+			// content length will be automatically calculated when calling request()
+			$this->request_headers['Content-Length'] = 0;
+		}
+	}
+
+	//-------------------------------------------------------------------------------- setUrlByPrefix
+	/**
+	 * Set URL : adds prefix to current uri
+	 *
+	 * @param $prefix      string
+	 * @param $default_uri string default uri if server's PATH_INFO is empty
+	 */
+	public function setUrlByPrefix($prefix, $default_uri = '')
+	{
+		$uri = isset($_SERVER['PATH_INFO']) ? substr($_SERVER['PATH_INFO'], 1) : '';
+		$this->url = $prefix . ($uri ? $uri : $default_uri);
 	}
 
 }
