@@ -96,14 +96,13 @@ class Proxy
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $automatic boolean|null
-	 * @param $method    string Http::GET, Http::POST
+	 * @param $automatic boolean|string
 	 */
-	public function __construct($automatic = true, $method = Http::GET)
+	public function __construct($automatic = true)
 	{
-		$this->automatic = $automatic;
-		if ($automatic === self::STANDARD) {
-			$this->setStandardRequestHeaders($method);
+		$this->automatic = ($automatic === true);
+		if (is_string($automatic)) {
+			$this->setStandardRequestHeaders($automatic);
 		}
 		elseif ($automatic) {
 			$this->data = $_POST;
