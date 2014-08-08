@@ -295,6 +295,28 @@ abstract class Functions
 		return reset($object);
 	}
 
+	//---------------------------------------------------------------------------- getEndWithMultiple
+	/**
+	 * Multiple properties come last
+	 *
+	 * @param Template $template
+	 * @return string
+	 */
+	public static function getEndWithMultiple(Template $template)
+	{
+		/** @var  $properties Reflection_Property[] */
+		$properties = reset($template->objects);
+		if (is_array($properties)) {
+			foreach ($properties as $key => $property) {
+				if ($property->getType()->isMultiple()) {
+					unset($properties[$key]);
+					$properties[$key] = $property;
+				}
+			}
+		}
+		return $properties;
+	}
+
 	//--------------------------------------------------------------------------------- getEscapeName
 	/**
 	 * Escape strings that will be used as form names. in HTML DOT will be replaced by '>' as PHP
