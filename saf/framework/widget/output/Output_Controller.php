@@ -28,13 +28,13 @@ class Output_Controller implements Default_Feature_Controller
 		$object, /** @noinspection PhpUnusedParameterInspection */ $parameters
 	) {
 		return [
-			new Button('Close', View::link(Names::classToSet(get_class($object))), 'close',
+			'close' => new Button('Close', View::link(Names::classToSet(get_class($object))), 'close',
 				[new Color('close'), '#main']
 			),
-			new Button('Edit', View::link($object, 'edit'), 'edit',
+			'edit' => new Button('Edit', View::link($object, 'edit'), 'edit',
 				[new Color('green'), '#main']
-			),
-			/*
+			)
+			/*,
 			new Button('Print', View::link($object, 'print'), 'print',
 				[new Color('blue'), '#main', 'sub_buttons' => [
 					new Button(

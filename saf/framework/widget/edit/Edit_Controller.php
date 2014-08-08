@@ -24,16 +24,18 @@ Edit_Controller extends Output_Controller
 	 */
 	protected function getGeneralButtons($object, $parameters)
 	{
+		$buttons = parent::getGeneralButtons($object, $parameters);
+		unset($buttons['edit']);
 		$fill_combo = isset($parameters['fill_combo'])
 			? ['fill_combo' => $parameters['fill_combo']] : [];
-		return [
-			new Button('Close', View::link($object), 'close',
+		return array_merge($buttons, [
+			'close' => new Button('Close', View::link($object), 'close',
 				[new Color('close'), '#main']
 			),
-			new Button('Write', View::link($object, 'write', null, $fill_combo), 'write',
+			'write' => new Button('Write', View::link($object, 'write', null, $fill_combo), 'write',
 				[new Color('green'), '#messages', '.submit']
 			)
-		];
+		]);
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
