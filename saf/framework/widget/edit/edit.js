@@ -340,9 +340,9 @@ $('document').ready(function()
 		//--------------------------------------------------------------------------- input.combo~.more
 		this.in('input.combo~.more').click(function(event)
 		{
+			event.preventDefault();
 			// this text fix call to click() when typing VK_ENTER into the combo input
 			if (event.offsetX >= 0) {
-				event.preventDefault();
 				var $combo = $($(this).siblings('input.combo'));
 				if (!$combo.autocomplete('widget').is(':visible')) {
 					$combo.focus();
