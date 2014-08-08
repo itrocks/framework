@@ -1282,6 +1282,7 @@ class Template
 		if (
 			(($content[$i - 1] === Q) && ($content[$j + 1] === Q))
 			|| (($content[$i - 1] === DQ) && ($content[$j + 1] === DQ))
+			|| (($content[$i - 1] === '|') && ($content[$j + 1] === '|'))
 		) {
 			$i--;
 			$j++;
