@@ -66,14 +66,6 @@ input.combo {
 
 /* fieldset */
 
-form>fieldset {
-	display: table;
-}
-
-fieldset>fieldset {
-	display: table-row-group;
-}
-
 fieldset {
 
 	>div:not(.tabber) {
@@ -114,7 +106,7 @@ fieldset {
 		&.multiple {
 			border: lightgrey 1px solid;
 			caption-side: bottom;
-			display: table-caption;
+			display: block;
 
 			>* {
 				display: block;
@@ -202,7 +194,6 @@ fieldset {
 
 	/* block fieldset */
 	&.block {
-		display: table-row-group;
 		border: 1px solid #a3a3a3;
 		border-radius: 4px;
 		padding: 0 .25em;

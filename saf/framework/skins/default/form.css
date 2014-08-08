@@ -48,12 +48,6 @@ input.combo ~ button, input.combo ~ a {
     position: absolute; }
 
 /* fieldset */
-form > fieldset {
-  display: table; }
-
-fieldset > fieldset {
-  display: table-row-group; }
-
 fieldset {
   /* block fieldset */ }
   fieldset > div:not(.tabber) {
@@ -81,7 +75,7 @@ fieldset {
     fieldset > div:not(.tabber).multiple {
       border: lightgrey 1px solid;
       caption-side: bottom;
-      display: table-caption; }
+      display: block; }
       fieldset > div:not(.tabber).multiple > * {
         display: block;
         padding: 3px; }
@@ -128,7 +122,6 @@ fieldset {
           fieldset > div:not(.tabber).columns > .column:last-child fieldset {
             display: inline-block; }
   fieldset.block {
-    display: table-row-group;
     border: 1px solid #a3a3a3;
     border-radius: 4px;
     padding: 0 .25em; }
