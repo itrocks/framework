@@ -66,10 +66,11 @@ $('document').ready(function()
 		});
 
 		//------------------------------------------------------- table.collection input,textarea focus
-		this.in('input, textarea').focus(function()
+		var autoAddLine = function()
 		{
-			var $tr = $(this).closest('tr');
-			if ($tr.length && !$tr.next('tr').length) {
+			var $this = $(this);
+			var $tr = $this.closest('tr');
+			if ($this.val() && $tr.length && !$tr.next('tr').length) {
 				var $collection = $tr.closest('table.collection, table.map');
 				if ($collection.length) {
 					// calculate depth in order to increment the right indice
@@ -93,8 +94,8 @@ $('document').ready(function()
 							j = text.indexOf('"', i + 1);
 							while (
 								(i = text.indexOf(open, i) + open.length) && (i > (open.length - 1)) && (i < j)
-								&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
-							) {
+									&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
+								) {
 								if ((text[i] >= '0') && (text[i] <= '9')) {
 									depth --;
 								}
@@ -117,7 +118,8 @@ $('document').ready(function()
 					$new_row.build();
 				}
 			}
-		});
+		};
+		this.in('input, textarea').focus(autoAddLine).keyup(autoAddLine);
 
 		//------------------------------------------------------------------- input.datetime datepicker
 		this.in('input.datetime').datepicker({
