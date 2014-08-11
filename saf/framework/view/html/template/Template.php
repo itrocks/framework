@@ -1471,15 +1471,18 @@ class Template
 	 */
 	protected function replaceUris($content)
 	{
-		$links = ['@import ' . DQ, 'src=' . DQ];
-		foreach ($links as $link) {
-			$i = 0;
-			while (($i = strpos($content, $link, $i)) !== false) {
-				$i += strlen($link);
-				$j = strpos($content, DQ, $i);
-				$replaced_uri = $this->replaceUri(substr($content, $i, $j - $i));
-				$content = substr($content, 0, $i) . $replaced_uri . substr($content, $j);
-				$i += strlen($replaced_uri);
+		$links = ['@import ', 'src=', 'loadScript('];
+		foreach ($links as $l) {
+			foreach ([DQ, Q] as $c) {
+				$link = $l . $c;
+				$i = 0;
+				while (($i = strpos($content, $link, $i)) !== false) {
+					$i += strlen($link);
+					$j = strpos($content, $c, $i);
+					$replaced_uri = $this->replaceUri(substr($content, $i, $j - $i));
+					$content = substr($content, 0, $i) . $replaced_uri . substr($content, $j);
+					$i += strlen($replaced_uri);
+				}
 			}
 		}
 		return $content;
