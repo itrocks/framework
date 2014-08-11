@@ -17,10 +17,7 @@ use SAF\Framework\Reflection\Reflection_Class;
  *
  * Needs PHPOffice/PHPExcel vendor project to be installed into your framework/vendor/ folder,
  * following this install procedure (Debian/Ubuntu example) :
- * apt-get install gnumeric
- * apt-get install php_zip
- * apt-get install php_xml
- * apt-get install php_gd2
+ * apt-get install gnumeric php_zip php_xml php_gd2
  * cd framework/vendor
  * git pull https://github.com/PHPOffice/PHPExcel.git
  */
