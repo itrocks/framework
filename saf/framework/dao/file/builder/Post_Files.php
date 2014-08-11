@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\File\Builder;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao\File;
 
 /**
@@ -32,7 +33,8 @@ class Post_Files
 					);
 				}
 				elseif (!(empty($element['name']) || empty($element['tmp_name']))) {
-					$file = new File();
+					/** @var $file File */
+					$file = Builder::create(File::class);
 					$file->name = $element['name'];
 					$file->temporary_file_name = $element['tmp_name'];
 					$form[$top] = $file;
@@ -61,7 +63,8 @@ class Post_Files
 				);
 			}
 			else {
-				$file = new File();
+				/** @var $file File */
+				$file = Builder::create(File::class);
 				$file->name = $name_sub_element;
 				$file->temporary_file_name = $tmp_name_element[$key];
 				$form[$key] = $file;

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\File\Session_File;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao\File;
 use Serializable;
 
@@ -43,7 +44,8 @@ class Files implements Serializable
 	{
 		$this->files = [];
 		foreach (unserialize($serialized) as $file_name => $temporary_file_name) {
-			$file = new File();
+			/** @var $file File */
+			$file = Builder::create(File::class);
 			$file->name = $file_name;
 			$file->temporary_file_name = $temporary_file_name;
 			$this->files[] = $file;

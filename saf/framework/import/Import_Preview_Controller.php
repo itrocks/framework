@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Import;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao\File\Builder\Post_Files;
@@ -60,17 +61,18 @@ class Import_Preview_Controller implements Default_Feature_Controller
 			foreach ($form as $file) {
 				if ($file instanceof File) {
 					if (!isset($session_files)) {
-						$session_files = new Files();
+						/** @var $session_files Files */
+						$session_files = Builder::create(Files::class);
 					}
 					$excel = Spreadsheet_File::fileToArray($file->temporary_file_name, $errors);
 					$worksheet_number = 0;
 					foreach ($excel as $temporary_file_name => $worksheet) {
 						if (filesize($temporary_file_name) > 1) {
-							$import_worksheet = new Import_Worksheet(
+							$import_worksheet = Builder::create(Import_Worksheet::class, [
 								$worksheet_number ++,
 								Import_Settings_Builder::buildArray($worksheet, $class_name),
-								$csv_file = new File($temporary_file_name)
-							);
+								$csv_file = Builder::create(File::class, [$temporary_file_name])
+							]);
 							$import_worksheet->errors = $errors;
 							$session_files->files[] = $csv_file;
 							$import->worksheets[] = $import_worksheet;
