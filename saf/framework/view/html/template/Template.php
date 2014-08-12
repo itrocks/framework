@@ -255,6 +255,22 @@ class Template
 		return $this->main_template;
 	}
 
+	//-------------------------------------------------------------------------------------- getMetas
+	/**
+	 * @param $content string
+	 * @return string[]
+	 */
+	protected function getMetas($content)
+	{
+		$metas = [];
+		$j = 0;
+		while (($i = strpos($content, '<meta', $j)) !== false) {
+			$j = strpos($content, '>', $i) + 1;
+			$metas[] = substr($content, $i, $j - $i);
+		}
+		return $metas;
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Gets the template top object
@@ -308,6 +324,22 @@ class Template
 	public function getRootObject()
 	{
 		return end($this->objects);
+	}
+
+	//-------------------------------------------------------------------------------------- getTitle
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	protected function getTitle($content)
+	{
+		if (($i = strpos($content, '<title')) !== false) {
+			$j = strpos($content, '</title>', $i) + 8;
+			return substr($content, $i, $j - $i);
+		}
+		else {
+			return null;
+		}
 	}
 
 	//------------------------------------------------------------------------------------- getUriRoot
@@ -523,11 +555,15 @@ class Template
 				$file_name = $this->getMainTemplateFile();
 				$container = $this->getContainerContent($file_name);
 				$root_object = (is_object($this->getObject())) ? '<!--@rootObject-->' : '';
+				$metas = $this->getMetas($content);
+				$title = $this->getTitle($content);
 				$content = str_replace(
 					'{@content}',
 					$root_object . substr($content, $i, $j - $i) . $root_object,
 					$container
 				);
+				$this->replaceMetas($content, $metas);
+				$this->replaceTitle($content, $title);
 			}
 		}
 		return $content;
@@ -1426,6 +1462,63 @@ class Template
 			}
 		}
 		return $content;
+	}
+
+	//---------------------------------------------------------------------------------- replaceMetas
+	/**
+	 * @param $content string
+	 * @param $metas   string[]
+	 */
+	protected function replaceMetas(&$content, $metas)
+	{
+		if ($metas) {
+			if (($i = strpos($content, '<meta')) !== false) {
+				// remove already existing meta
+				foreach ($metas as $meta_key => $meta) {
+					$search = substr($meta, 0, strpos($meta, ' ', strpos($meta, '=')));
+					while (($j = strpos($content, $search)) !== false) {
+						$k = strpos($content, '>', $j) + 1;
+						while (in_array($content[$k], [SP, CR, LF, TAB])) $k ++;
+						$content = substr($content, 0, $j) . substr($content, $k);
+					}
+					if (strpos($meta, '=' . DQ . DQ)) {
+						unset($metas[$meta_key]);
+					}
+				}
+				// add metas
+				$content = substr($content, 0, $i) . join("\n\t", $metas) . "\n\t"
+					. substr($content, $i);
+			}
+			elseif (($i = strpos($content, '<head')) !== false) {
+				foreach ($metas as $meta_key => $meta) {
+					if (strpos($meta, '=' . DQ . DQ)) {
+						unset($metas[$meta_key]);
+					}
+				}
+				$i = strpos($content, '>', $i) + 1;
+				$content = substr($content, 0, $i) . "\n\t" . join("\n\t", $metas)
+					. substr($content, $i);
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------------- replaceTitle
+	/**
+	 * @param $content string
+	 * @param $title   string title, including '<title>' and '</title>' delimiters
+	 */
+	protected function replaceTitle(&$content, $title)
+	{
+		if ($title) {
+			if (($i = strpos($content, '<title')) !== false) {
+				$j = strpos($content, '</title>', $i) + 8;
+				$content = substr($content, 0, $i) . $title . substr($content, $j);
+			}
+			elseif (($i = strpos($content, '<head')) !== false) {
+				$i = strpos($content, '>', $i) + 1;
+				$content = substr($content, 0, $i) . "\n\t" . $title . substr($content, $i);
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------------ replaceUri
