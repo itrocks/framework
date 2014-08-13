@@ -85,7 +85,10 @@ class Logical implements Where
 			else {
 				$sql .= $this->operator;
 			}
-			if (is_numeric($other_property_path)) {
+			if (is_array($argument)) {
+				$sql .= (new Logical($this->operator, $argument))->toSql($builder, $property_path, $prefix);
+			}
+			elseif (is_numeric($other_property_path)) {
 				$sql .= ($argument instanceof Where)
 					? $argument->toSql($builder, $property_path, $prefix)
 					: (new Comparison(Comparison::AUTO, $argument))->toSql($builder, $property_path, $prefix);
