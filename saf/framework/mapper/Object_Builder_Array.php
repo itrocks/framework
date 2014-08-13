@@ -402,7 +402,9 @@ class Object_Builder_Array
 		}
 		// the property value is set only for official properties, if not default and not empty
 		$property_name = $property->name;
-		$object->$property_name = $value;
+		if (($value !== "") || !$property->getType()->isClass()) {
+			$object->$property_name = $value;
+		}
 		if (!$property->isValueEmptyOrDefault($value)) {
 			$is_null = false;
 		}
