@@ -147,6 +147,22 @@ function arrayNamedValues($array)
 	return $result;
 }
 
+//------------------------------------------------------------------------------- arraySumRecursive
+/**
+ * Returns the sum of all elements into a recursive (aka multidimensional) array
+ *
+ * @param $array array
+ * @return number
+ */
+function arraySumRecursive($array)
+{
+	$sum = 0;
+	foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($array)) as $value) {
+		$sum += $value;
+	}
+	return $sum;
+}
+
 //------------------------------------------------------------------------------ arrayUnnamedValues
 /**
  * Returns only values which key is numeric
