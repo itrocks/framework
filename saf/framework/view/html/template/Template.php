@@ -1219,8 +1219,11 @@ class Template
 			}
 		}
 		$property_name = null;
-		/** @var $object mixed */
-		if (strpos($var_name, DOT) !== false) {
+		if ($var_name === DOT) {
+			$object = reset($this->objects);
+		}
+		elseif (strpos($var_name, DOT) !== false) {
+			$object = null;
 			if (!isset($var_names)) $var_names = $this->var_names;
 			if (!isset($objects))   $objects   = $this->objects;
 			$parenthesis = '';
