@@ -210,6 +210,53 @@ abstract class Functions
 		return $input;
 	}
 
+	//-------------------------------------------------------------------------------------- getEmpty
+	/**
+	 * Returns true if the object is empty
+	 *
+	 * @param $template Template
+	 * @return boolean
+	 */
+	public static function getEmpty(Template $template)
+	{
+		return empty(reset($template->objects));
+	}
+
+	//---------------------------------------------------------------------------- getEndWithMultiple
+	/**
+	 * Multiple properties come last
+	 *
+	 * @param Template $template
+	 * @return string
+	 */
+	public static function getEndWithMultiple(Template $template)
+	{
+		/** @var  $properties Reflection_Property[] */
+		$properties = reset($template->objects);
+		if (is_array($properties)) {
+			foreach ($properties as $key => $property) {
+				if ($property->getType()->isMultiple()) {
+					unset($properties[$key]);
+					$properties[$key] = $property;
+				}
+			}
+		}
+		return $properties;
+	}
+
+	//--------------------------------------------------------------------------------- getEscapeName
+	/**
+	 * Escape strings that will be used as form names. in HTML DOT will be replaced by '>' as PHP
+	 * does not like variables named 'a.b.c'
+	 *
+	 * @param $template Template
+	 * @return string
+	 */
+	public static function getEscapeName(Template $template)
+	{
+		return str_replace(DOT, '>', reset($template->objects));
+	}
+
 	//------------------------------------------------------------------------------------- getExpand
 	/**
 	 * Returns an expanded list of properties. Source element must be a list of Reflection_Property
@@ -250,6 +297,46 @@ abstract class Functions
 	{
 		$object = reset($template->objects);
 		return !empty($object);
+	}
+
+	//------------------------------------------------------------------------------------ getIsFirst
+	/**
+	 * Returns true if the current array element is the first one
+	 *
+	 * @param $template Template
+	 * @return boolean
+	 */
+	public static function getIsFirst(Template $template)
+	{
+		$var_name = null;
+		foreach ($template->objects as $array) {
+			if (is_array($array)) {
+				reset($array);
+				return (key($array) == $var_name);
+			}
+			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
+		}
+		return null;
+	}
+
+	//------------------------------------------------------------------------------------- getIsLast
+	/**
+	 * Returns true if the current array element is the last one
+	 *
+	 * @param $template Template
+	 * @return boolean
+	 */
+	public static function getIsLast(Template $template)
+	{
+		$var_name = null;
+		foreach ($template->objects as $array) {
+			if (is_array($array)) {
+				end($array);
+				return (key($array) == $var_name);
+			}
+			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
+		}
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------------- getKey
@@ -295,79 +382,17 @@ abstract class Functions
 		return reset($object);
 	}
 
-	//---------------------------------------------------------------------------- getEndWithMultiple
+	//--------------------------------------------------------------------------------------- getNull
 	/**
-	 * Multiple properties come last
-	 *
-	 * @param Template $template
-	 * @return string
-	 */
-	public static function getEndWithMultiple(Template $template)
-	{
-		/** @var  $properties Reflection_Property[] */
-		$properties = reset($template->objects);
-		if (is_array($properties)) {
-			foreach ($properties as $key => $property) {
-				if ($property->getType()->isMultiple()) {
-					unset($properties[$key]);
-					$properties[$key] = $property;
-				}
-			}
-		}
-		return $properties;
-	}
-
-	//--------------------------------------------------------------------------------- getEscapeName
-	/**
-	 * Escape strings that will be used as form names. in HTML DOT will be replaced by '>' as PHP
-	 * does not like variables named 'a.b.c'
-	 *
-	 * @param $template Template
-	 * @return string
-	 */
-	public static function getEscapeName(Template $template)
-	{
-		return str_replace(DOT, '>', reset($template->objects));
-	}
-
-	//------------------------------------------------------------------------------------ getIsFirst
-	/**
-	 * Returns true if the current array element is the first one
+	 * Returns true if the object is null or empty string
 	 *
 	 * @param $template Template
 	 * @return boolean
 	 */
-	public static function getIsFirst(Template $template)
+	public static function getNull(Template $template)
 	{
-		$var_name = null;
-		foreach ($template->objects as $array) {
-			if (is_array($array)) {
-				reset($array);
-				return (key($array) == $var_name);
-			}
-			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
-		}
-		return null;
-	}
-
-	//------------------------------------------------------------------------------------- getIsLast
-	/**
-	 * Returns true if the current array element is the last one
-	 *
-	 * @param $template Template
-	 * @return boolean
-	 */
-	public static function getIsLast(Template $template)
-	{
-		$var_name = null;
-		foreach ($template->objects as $array) {
-			if (is_array($array)) {
-				end($array);
-				return (key($array) == $var_name);
-			}
-			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
-		}
-		return null;
+		$object = reset($template->objects);
+		return ($object === null) || ($object === '');
 	}
 
 	//------------------------------------------------------------------------------------- getObject
@@ -462,6 +487,23 @@ abstract class Functions
 			}
 		}
 		return $properties;
+	}
+
+	//----------------------------------------------------------------------------- getPropertyBlocks
+	/**
+	 * @param $property Reflection_Property
+	 * @return array[]
+	 */
+	private static function getPropertyBlocks(Reflection_Property $property)
+	{
+		$blocks = [];
+		if ($property->getListAnnotation('integrated')->has('block')) {
+			$blocks[$property->path] = $property->path;
+		}
+		foreach ($property->getListAnnotation('block')->values() as $block) {
+			$blocks[$block] = $block;
+		}
+		return $blocks;
 	}
 
 	//----------------------------------------------------------------------------- getPropertySelect
@@ -635,23 +677,6 @@ abstract class Functions
 		return $template->getObject();
 	}
 
-	//----------------------------------------------------------------------------- getPropertyBlocks
-	/**
-	 * @param $property Reflection_Property
-	 * @return array[]
-	 */
-	private static function getPropertyBlocks(Reflection_Property $property)
-	{
-		$blocks = [];
-		if ($property->getListAnnotation('integrated')->has('block')) {
-			$blocks[$property->path] = $property->path;
-		}
-		foreach ($property->getListAnnotation('block')->values() as $block) {
-			$blocks[$block] = $block;
-		}
-		return $blocks;
-	}
-
 	//-------------------------------------------------------------------------------------- getValue
 	/**
 	 * Returns the current value of the current element of the currently read array
@@ -667,6 +692,18 @@ abstract class Functions
 			}
 		}
 		return null;
+	}
+
+	//--------------------------------------------------------------------------------------- getZero
+	/**
+	 * Returns true if the object is null or empty string
+	 *
+	 * @param $template Template
+	 * @return boolean
+	 */
+	public static function getZero(Template $template)
+	{
+		return strval(reset($template->objects)) === '0';
 	}
 
 	//--------------------------------------------------------------------------- toEditPropertyExtra
