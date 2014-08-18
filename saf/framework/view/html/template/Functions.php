@@ -391,8 +391,19 @@ abstract class Functions
 	 */
 	public static function getNull(Template $template)
 	{
-		$object = reset($template->objects);
-		return ($object === null) || ($object === '');
+		return reset($template->objects) === null;
+	}
+
+	//------------------------------------------------------------------------------------ getNumeric
+	/**
+	 * Returns true if the object is numeric
+	 *
+	 * @param $template Template
+	 * @return boolean
+	 */
+	public static function getNumeric(Template $template)
+	{
+		return is_numeric(reset($template->objects));
 	}
 
 	//------------------------------------------------------------------------------------- getObject
