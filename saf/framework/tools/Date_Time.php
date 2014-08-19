@@ -46,6 +46,22 @@ class Date_Time extends DateTime
 	 */
 	private static $min_date = '0001-01-01 00:00:00';
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Constructor
+	 *
+	 * @param $time     string|integer|null current time in string or timestamp format
+	 *                  If null, current time on timezone will be used to initialize
+	 * @param $timezone DateTimeZone
+	 */
+	public function __construct($time = 'now', DateTimeZone $timezone = null)
+	{
+		if (is_int($time)) {
+			$time = date('Y-m-d H:i:s', $time);
+		}
+		parent::__construct($time, $timezone);
+	}
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string
