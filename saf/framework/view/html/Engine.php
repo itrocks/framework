@@ -113,7 +113,7 @@ class Engine implements Configurable, Framework\View\Engine
 					$link .= SL . $key;
 				}
 				if (is_object($value)) {
-					$link .= SL . Namespaces::shortClassName(get_class($value))
+					$link .= SL . Names::classToUri(get_class($value))
 						. SL . Dao::getObjectIdentifier($value);
 				}
 				else {
