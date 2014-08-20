@@ -176,8 +176,19 @@ class Where
 		}
 		else {
 			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
+			if (!$master_path && $foreign_column == 'id') {
+				$class = $this->joins->getStartingClassName();
+				$i = 0;
+				while ($class = (new Link_Class($class))->getLinkedClassName()) {
+					$i ++;
+				}
+				$tx = 't' . $i;
+			}
+			else {
+				$tx = 't0';
+			}
 			$column = ((!$master_path) || ($master_path === 'id'))
-				? ('t0' . DOT . BQ . $prefix . $foreign_column . BQ)
+				? ($tx . DOT . BQ . $prefix . $foreign_column . BQ)
 				: ($this->joins->getAlias($master_path) . DOT . BQ . $prefix . $foreign_column . BQ);
 		}
 		return $column;

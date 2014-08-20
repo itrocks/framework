@@ -225,7 +225,8 @@ class Link extends Dao\Sql\Link
 	public function escapeString($value)
 	{
 		if (is_object($value)) {
-			$value = serialize($value);
+			$id = $this->getObjectIdentifier($value, 'id');
+			$value = is_numeric($id) ? $id : serialize($value);
 		}
 		return $this->connection->escape_string($value);
 	}
