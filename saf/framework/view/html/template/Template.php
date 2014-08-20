@@ -237,6 +237,54 @@ class Template
 		return isset($this->parameters['feature']) ? $this->parameters['feature'] : $this->feature;
 	}
 
+	//---------------------------------------------------------------------------------- getHeadLinks
+	/**
+	 * @param $content string
+	 * @return string[]
+	 */
+	public function getHeadLinks($content)
+	{
+		$links = [];
+		$j = 0;
+		while (($i = strpos($content, '<link rel=', $j)) !== false) {
+			$j = strpos($content, '>', $i) + 1;
+			$links[] = substr($content, $i, $j - $i);
+		}
+		return $links;
+	}
+
+	//---------------------------------------------------------------------------------- getHeadMetas
+	/**
+	 * @param $content string
+	 * @return string[]
+	 */
+	protected function getHeadMetas($content)
+	{
+		$metas = [];
+		$j = 0;
+		while (($i = strpos($content, '<meta', $j)) !== false) {
+			$j = strpos($content, '>', $i) + 1;
+			$metas[] = substr($content, $i, $j - $i);
+		}
+		return $metas;
+	}
+
+	//---------------------------------------------------------------------------------- getHeadTitle
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	protected function getHeadTitle($content)
+	{
+		if (($i = strpos($content, '<title')) !== false) {
+			$j = strpos($content, '</title>', $i) + 8;
+			return substr($content, $i, $j - $i);
+		}
+		else {
+			return null;
+		}
+	}
+
 	//--------------------------------------------------------------------------- getMainTemplateFile
 	/**
 	 * @return string main template file path
@@ -253,22 +301,6 @@ class Template
 			}
 		}
 		return $this->main_template;
-	}
-
-	//-------------------------------------------------------------------------------------- getMetas
-	/**
-	 * @param $content string
-	 * @return string[]
-	 */
-	protected function getMetas($content)
-	{
-		$metas = [];
-		$j = 0;
-		while (($i = strpos($content, '<meta', $j)) !== false) {
-			$j = strpos($content, '>', $i) + 1;
-			$metas[] = substr($content, $i, $j - $i);
-		}
-		return $metas;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
@@ -324,22 +356,6 @@ class Template
 	public function getRootObject()
 	{
 		return end($this->objects);
-	}
-
-	//-------------------------------------------------------------------------------------- getTitle
-	/**
-	 * @param $content string
-	 * @return string
-	 */
-	protected function getTitle($content)
-	{
-		if (($i = strpos($content, '<title')) !== false) {
-			$j = strpos($content, '</title>', $i) + 8;
-			return substr($content, $i, $j - $i);
-		}
-		else {
-			return null;
-		}
 	}
 
 	//------------------------------------------------------------------------------------- getUriRoot
@@ -555,15 +571,17 @@ class Template
 				$file_name = $this->getMainTemplateFile();
 				$container = $this->getContainerContent($file_name);
 				$root_object = (is_object($this->getObject())) ? '<!--@rootObject-->' : '';
-				$metas = $this->getMetas($content);
-				$title = $this->getTitle($content);
+				$links = $this->getHeadLinks($content);
+				$metas = $this->getHeadMetas($content);
+				$title = $this->getHeadTitle($content);
 				$content = str_replace(
 					'{@content}',
 					$root_object . substr($content, $i, $j - $i) . $root_object,
 					$container
 				);
-				$this->replaceMetas($content, $metas);
-				$this->replaceTitle($content, $title);
+				$this->replaceHeadTitle($content, $title);
+				$this->replaceHeadMetas($content, $metas);
+				$this->replaceHeadLinks($content, $links);
 			}
 		}
 		return $content;
@@ -1418,6 +1436,91 @@ class Template
 		}
 	}
 
+	//--------------------------------------------------------------------------- replaceHeadElements
+	/**
+	 * Replace elements <element> without closure </element> with their value
+	 * The first attribute is used as element identifier
+	 *
+	 * @exemple if $elements = ['<link rel="canonical" href="http://www.mysite.fr">']
+	 *          'link rel="canonical"...' will be replaced by the new value into the '<head>'
+	 *          If did not exist, the element is added to the beginning of '<head>'
+	 * @param $content  string page content
+	 * @param $elements string[] ie
+	 */
+	protected function replaceHeadElements(&$content, $elements)
+	{
+		if (($i = strpos($content, '<element')) !== false) {
+			// remove already existing element
+			foreach ($elements as $element_key => $element) {
+				$search = substr($element, 0, strpos($element, ' ', strpos($element, '=')));
+				while (($j = strpos($content, $search)) !== false) {
+					$k = strpos($content, '>', $j) + 1;
+					while (in_array($content[$k], [SP, CR, LF, TAB])) $k ++;
+					$content = substr($content, 0, $j) . substr($content, $k);
+				}
+				if (strpos($element, '=' . DQ . DQ)) {
+					unset($elements[$element_key]);
+				}
+			}
+			// add elements
+			$content = substr($content, 0, $i) . join("\n\t", $elements) . "\n\t"
+				. substr($content, $i);
+		}
+		elseif (($i = strpos($content, '<head')) !== false) {
+			foreach ($elements as $element_key => $element) {
+				if (strpos($element, '=' . DQ . DQ)) {
+					unset($elements[$element_key]);
+				}
+			}
+			$i = strpos($content, '>', $i) + 1;
+			$content = substr($content, 0, $i) . "\n\t" . join("\n\t", $elements)
+				. substr($content, $i);
+		}
+	}
+
+	//------------------------------------------------------------------------------ replaceHeadLinks
+	/**
+	 * @param $content string
+	 * @param $links   string[]
+	 */
+	protected function replaceHeadLinks(&$content, $links)
+	{
+		if ($links) {
+			$this->replaceHeadElements($content, $links);
+		}
+	}
+
+	//------------------------------------------------------------------------------ replaceHeadMetas
+	/**
+	 * @param $content string
+	 * @param $metas   string[]
+	 */
+	protected function replaceHeadMetas(&$content, $metas)
+	{
+		if ($metas) {
+			$this->replaceHeadElements($content, $metas);
+		}
+	}
+
+	//------------------------------------------------------------------------------ replaceHeadTitle
+	/**
+	 * @param $content string
+	 * @param $title   string title, including '<title>' and '</title>' delimiters
+	 */
+	protected function replaceHeadTitle(&$content, $title)
+	{
+		if ($title) {
+			if (($i = strpos($content, '<title')) !== false) {
+				$j = strpos($content, '</title>', $i) + 8;
+				$content = substr($content, 0, $i) . $title . substr($content, $j);
+			}
+			elseif (($i = strpos($content, '<head')) !== false) {
+				$i = strpos($content, '>', $i) + 1;
+				$content = substr($content, 0, $i) . "\n\t" . $title . substr($content, $i);
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------- replaceLink
 	/**
 	 * Replace link with correct link path
@@ -1465,63 +1568,6 @@ class Template
 			}
 		}
 		return $content;
-	}
-
-	//---------------------------------------------------------------------------------- replaceMetas
-	/**
-	 * @param $content string
-	 * @param $metas   string[]
-	 */
-	protected function replaceMetas(&$content, $metas)
-	{
-		if ($metas) {
-			if (($i = strpos($content, '<meta')) !== false) {
-				// remove already existing meta
-				foreach ($metas as $meta_key => $meta) {
-					$search = substr($meta, 0, strpos($meta, ' ', strpos($meta, '=')));
-					while (($j = strpos($content, $search)) !== false) {
-						$k = strpos($content, '>', $j) + 1;
-						while (in_array($content[$k], [SP, CR, LF, TAB])) $k ++;
-						$content = substr($content, 0, $j) . substr($content, $k);
-					}
-					if (strpos($meta, '=' . DQ . DQ)) {
-						unset($metas[$meta_key]);
-					}
-				}
-				// add metas
-				$content = substr($content, 0, $i) . join("\n\t", $metas) . "\n\t"
-					. substr($content, $i);
-			}
-			elseif (($i = strpos($content, '<head')) !== false) {
-				foreach ($metas as $meta_key => $meta) {
-					if (strpos($meta, '=' . DQ . DQ)) {
-						unset($metas[$meta_key]);
-					}
-				}
-				$i = strpos($content, '>', $i) + 1;
-				$content = substr($content, 0, $i) . "\n\t" . join("\n\t", $metas)
-					. substr($content, $i);
-			}
-		}
-	}
-
-	//---------------------------------------------------------------------------------- replaceTitle
-	/**
-	 * @param $content string
-	 * @param $title   string title, including '<title>' and '</title>' delimiters
-	 */
-	protected function replaceTitle(&$content, $title)
-	{
-		if ($title) {
-			if (($i = strpos($content, '<title')) !== false) {
-				$j = strpos($content, '</title>', $i) + 8;
-				$content = substr($content, 0, $i) . $title . substr($content, $j);
-			}
-			elseif (($i = strpos($content, '<head')) !== false) {
-				$i = strpos($content, '>', $i) + 1;
-				$content = substr($content, 0, $i) . "\n\t" . $title . substr($content, $i);
-			}
-		}
 	}
 
 	//------------------------------------------------------------------------------------ replaceUri
