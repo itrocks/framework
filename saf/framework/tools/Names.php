@@ -99,7 +99,7 @@ abstract class Names
 	{
 		// get object id, if object
 		if (is_object($class_name)) {
-			$id = Dao::getObjectIdentifier($class_name);
+			$id = Dao::getObjectIdentifier($class_name, 'id');
 			$class_name = get_class($class_name);
 		}
 		// link classes : get linked class
