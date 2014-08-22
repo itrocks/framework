@@ -1,6 +1,6 @@
 SAF/Framework
 =============
-The RAD Framework for small-to-big PHP Applications
+The RAD Framework for small-to-big PHP Business Applications
 
 # Introducing Alpha version
 
