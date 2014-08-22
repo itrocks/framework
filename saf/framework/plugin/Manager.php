@@ -176,6 +176,20 @@ class Manager implements IManager, Serializable
 		return $plugin;
 	}
 
+	//---------------------------------------------------------------------------------------- getAll
+	/**
+	 * Get all plugins list
+	 * $tree == false : the key is the plugin class name, the value is a Plugin or string or string[]
+	 * $tree == true : first dimension key is priority level, then come the plugins list
+	 *
+	 * @param $tree boolean If true, return plugins list as a tree where first key is priority level
+	 * @return array plugins list
+	 */
+	public function getAll($tree = false)
+	{
+		return $tree ? $this->plugins_tree : $this->plugins;
+	}
+
 	//------------------------------------------------------------------------------ getConfiguration
 	/**
 	 * @param $class_name string the plugin class name

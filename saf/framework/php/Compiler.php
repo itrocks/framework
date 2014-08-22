@@ -241,6 +241,8 @@ class Compiler implements
 
 				} while ($added);
 
+				$saved_sources = array_merge($saved_sources, $this->sources);
+
 				// fill in sources cache
 				$sources_count = count($this->sources);
 				foreach ($this->sources as $source) {

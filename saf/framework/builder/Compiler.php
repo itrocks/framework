@@ -2,12 +2,15 @@
 namespace SAF\Framework\Builder;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Configuration;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
 use SAF\Framework\PHP;
+use SAF\Framework\PHP\Dependency;
 use SAF\Framework\PHP\ICompiler;
 use SAF\Framework\PHP\Reflection_Source;
+use SAF\Framework\Session;
 
 /**
  * Built classes compiler
@@ -47,6 +50,25 @@ class Compiler implements ICompiler, Needs_Main
 		return $compiled;
 	}
 
+	//-------------------------------------------------------------------------------- moreSourcesAdd
+	/**
+	 * @param $class_name string
+	 * @param $sources    Reflection_Source[]
+	 * @param $added      Reflection_Source[]
+	 */
+	private function moreSourcesAdd($class_name, &$sources, &$added)
+	{
+		/** @var $dependency Dependency */
+		$dependency = Dao::searchOne(
+			['class_name' => $class_name, 'dependency_name' => $class_name], Dependency::class
+		);
+		if (!isset($sources[$dependency->file_name])) {
+			$source = new Reflection_Source($dependency->file_name);
+			$sources[$dependency->file_name] = $source;
+			$added[$dependency->file_name] = $source;
+		}
+	}
+
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
 	 * @param $sources Reflection_Source[] Key is the file path
@@ -57,19 +79,48 @@ class Compiler implements ICompiler, Needs_Main
 		$added = [];
 		foreach ($sources as $file_path => $source) {
 			if (!strpos($file_path, SL)) {
-				// get builder classes before compilation
-				$old_compositions = Builder::current()->getCompositions();
-				foreach (Builder::current()->getCompositions() as $class_name => $replacement) {
-					if (
-						!isset($old_compositions[$class_name])
-						|| ($old_compositions[$class_name] !== $replacement)
-					) {
-						// TODO check if this work (not very sure... does it ?)
-						/*
-						if (!isset($sources[$dependency->file_name])) {
-							$added[$dependency->file_name] = new Reflection_Source($dependency->file_name);
-						}
-						*/
+				$reload = true;
+				break;
+			}
+		}
+		if (isset($reload)) {
+			$old_compositions = Builder::current()->getCompositions();
+			$old_levels = Session::current()->plugins->getAll(true);
+			if (isset(Main::$current)) {
+				Main::$current->resetSession();
+			}
+			$new_compositions = Builder::current()->getCompositions();
+			$new_levels = Session::current()->plugins->getAll(true);
+			// add classes where builder composition changed
+			foreach ($old_compositions as $class_name => $old_composition) {
+				if (
+					!isset($new_compositions[$class_name])
+					|| ($old_composition != $new_compositions[$class_name])
+					|| (is_array($old_composition) && (
+						array_diff($old_composition, $new_compositions[$class_name])
+						|| array_diff($new_compositions[$class_name], $old_composition)
+					))
+				) {
+					$this->moreSourcesAdd($class_name, $sources, $added);
+				}
+			}
+			foreach ($new_compositions as $class_name => $new_composition) {
+				if (!isset($old_compositions[$class_name])) {
+					$this->moreSourcesAdd($class_name, $sources, $added);
+				}
+			}
+			// add classes of globally added/removed plugins
+			foreach ($old_levels as $level => $old_plugins) {
+				foreach ($old_plugins as $class_name => $old_plugin) {
+					if (!isset($new_levels[$level][$class_name])) {
+						$this->moreSourcesAdd($class_name, $sources, $added);
+					}
+				}
+			}
+			foreach ($new_levels as $level => $new_plugins) {
+				foreach ($new_plugins as $class_name => $new_plugin) {
+					if (!isset($old_levels[$level][$class_name])) {
+						$this->moreSourcesAdd($class_name, $sources, $added);
 					}
 				}
 			}

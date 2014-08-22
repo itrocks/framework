@@ -23,11 +23,28 @@ use SAF\Framework\Updater\Application_Updater;
 class Main
 {
 
+	//-------------------------------------------------------------------------------------- $current
+	/**
+	 * @var Main
+	 */
+	public static $current;
+
 	//----------------------------------------------------------------------------- $top_core_plugins
 	/**
 	 * @var Plugin[]
 	 */
 	private $top_core_plugins = [];
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		if (!isset(self::$current)) {
+			self::$current = $this;
+		}
+	}
 
 	//--------------------------------------------------------------------------------- topCorePlugin
 	/**

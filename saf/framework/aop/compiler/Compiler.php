@@ -10,6 +10,7 @@ use SAF\Framework\Dao;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Mapper\Search_Object;
+use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\PHP;
@@ -165,7 +166,7 @@ class Compiler implements ICompiler, Needs_Main
 	{
 		$added = [];
 
-		// search into dependencies
+		// search into dependencies : used classes
 		/** @var $search Dependency */
 		$search = Search_Object::create(Dependency::class);
 		$search->type = Dependency::T_USE;
@@ -201,6 +202,24 @@ class Compiler implements ICompiler, Needs_Main
 							$sources[$dependency->file_name] = $source;
 							$added[$dependency->file_name]   = $source;
 						}
+					}
+				}
+			}
+		}
+
+		// search into dependencies : registered methods
+		foreach ($sources as $source) {
+			$search->file_name = $source->file_name;
+			$search->dependency_name = Registerable::class;
+			$search->type = Dependency::T_IMPLEMENTS;
+			if (Dao::searchOne($search, Dependency::class)) {
+				unset($search->dependency_name);
+				$search->type = Dependency::T_CLASS;
+				foreach (Dao::search($search, Dependency::class) as $dependency) {
+					$source = Reflection_Source::of($dependency->dependency_name);
+					if (!isset($sources[$source->file_name])) {
+						$sources[$source->file_name] = $source;
+						$added[$source->file_name] = $source;
 					}
 				}
 			}
