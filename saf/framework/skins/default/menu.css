@@ -7,6 +7,8 @@
   float: left;
   margin: -30px 4px 4px;
   padding-bottom: 10px; }
+  .menu.output li {
+    margin: 0; }
   .menu.output > .minimize {
     background: url("img/arrow_black_up.gif") center no-repeat;
     color: transparent;

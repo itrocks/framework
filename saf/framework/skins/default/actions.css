@@ -37,6 +37,7 @@ ul.actions {
   ul.actions > li {
     display: inline-block;
     float: left;
+    margin: 0;
     position: relative; }
     ul.actions > li > ul {
       background-color: white;

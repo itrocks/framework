@@ -70,14 +70,22 @@ div p:not(:last-child) {
 em {
   font-style: italic; }
 
+h1 {
+  font-size: 1.6em; }
+
 h2 {
-  font-size: 1.5em;
-  font-weight: bold; }
+  font-size: 1.4em; }
+
+h3 {
+  font-size: 1.2em; }
 
 hr {
   border: 1px solid darkgray;
   height: 0;
   margin: .5em; }
+
+li {
+  margin-left: 1.5em; }
 
 strong {
   font-weight: bold; }
