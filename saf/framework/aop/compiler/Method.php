@@ -173,7 +173,9 @@ class Method
 								. $i2 . ');';
 							break;
 						case 'around':
-							$process_callback = $method_name . '_' . $count;
+							$process_callback = ($methods[$method_name]->class->name == $this->class->name)
+								? ($method_name . '_' . $count)
+								: $method_name;
 							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\Framework\AOP\Joinpoint\Around_Method('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string
 								. ', ' . $advice_string . ', ' . Q . $process_callback . Q

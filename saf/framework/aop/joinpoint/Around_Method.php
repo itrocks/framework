@@ -41,7 +41,15 @@ class Around_Method extends Method_Joinpoint
 	 */
 	public function process($args = null)
 	{
-		$method = (new ReflectionMethod($this->class_name, $this->process_method));
+		if (
+			($this->class_name        == get_class($this->pointcut[0]))
+			&& ($this->process_method == $this->pointcut[1])
+		) {
+			$method = (new ReflectionMethod(get_parent_class($this->class_name), $this->process_method));
+		}
+		else {
+			$method = (new ReflectionMethod($this->class_name, $this->process_method));
+		}
 		// the method must be accessible to invoke it
 		if (!$method->isPublic()) {
 			$not_accessible = true;
