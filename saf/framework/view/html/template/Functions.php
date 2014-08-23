@@ -517,6 +517,22 @@ abstract class Functions
 		return $blocks;
 	}
 
+	//----------------------------------------------------------------------------------- getProperty
+	/**
+	 * @param $template Template
+	 * @param $name     string
+	 * @return string
+	 */
+	public static function getProperty(Template $template, $name = null)
+	{
+		foreach ($template->objects as $object) {
+			if (is_object($object)) {
+				return new Reflection_Property_Value(get_class($object), $name, $object, false, true);
+			}
+		}
+		return null;
+	}
+
 	//----------------------------------------------------------------------------- getPropertySelect
 	/**
 	 * @param $template Template
@@ -527,11 +543,8 @@ abstract class Functions
 	{
 		foreach ($template->objects as $property) {
 			if ($property instanceof Reflection_Property) {
-				break;
+				return (new Property_Select($property, $name))->build();
 			}
-		}
-		if (isset($property)) {
-			return (new Property_Select($property, $name))->build();
 		}
 		return null;
 	}

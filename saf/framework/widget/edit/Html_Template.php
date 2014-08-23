@@ -70,21 +70,20 @@ class Html_Template extends Template
 		return parent::parseContainer($content);
 	}
 
-	//------------------------------------------------------------------------------------ parseValue
+	//------------------------------------------------------------------------------ parseSingleValue
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
 	 * @param $var_name  string can be an unique var or path.of.vars
-	 * @param $as_string boolean if true, returned value will always be a string
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	protected function parseValue($var_name, $as_string = true)
+	protected function parseSingleValue($var_name)
 	{
 		$property = reset($this->objects);
 		if (($property instanceof Reflection_Property_Value) && ($var_name == 'value')) {
 			$value = $property->getType()->isBoolean()
 				? $property->value()
-				: parent::parseValue($var_name, false);
+				: parent::parseSingleValue($var_name, false);
 			if (
 				($preprop = lLastParse($property->pathAsField(), '[', 1, false))
 				&& (
@@ -126,7 +125,7 @@ class Html_Template extends Template
 			}
 		}
 		else {
-			$value = parent::parseValue($var_name, $as_string);
+			$value = parent::parseSingleValue($var_name);
 		}
 		return $value;
 	}
