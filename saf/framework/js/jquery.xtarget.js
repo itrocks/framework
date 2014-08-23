@@ -242,14 +242,14 @@
 			event.preventDefault();
 			if ($this.ajaxSubmit != undefined) {
 				$this.ajaxSubmit(jax = $.extend(ajax, {
-					url:  urlAppend(this.action, this.search),
+					url:  urlAppend(this.action, this.action.indexOf('?') > -1),
 					type: $this.attr('type')
 				}));
 				xhr = $this.data('jqxhr');
 			}
 			else {
 				xhr = $.ajax(jax = $.extend(ajax, {
-					url:  urlAppend(this.action, this.search),
+					url:  urlAppend(this.action, this.action.indexOf('?') > -1),
 					data: $this.serialize(),
 					type: $this.attr('method')
 				}));
