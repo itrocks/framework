@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools\Wiki;
 
+use SAF\Framework\Builder;
+
 require_once __DIR__ . '/../../../../vendor/textile/classTextile.php';
 
 /**
@@ -52,7 +54,9 @@ class Textile extends \Textile
 	 */
 	public static function parse($text)
 	{
-		return (new Textile)->textileThis($text);
+		/** @var $textile Textile */
+		$textile = Builder::create(Textile::class);
+		return $textile->textileThis($text);
 	}
 
 	//------------------------------------------------------------------------------------ parseSpans
