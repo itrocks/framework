@@ -72,6 +72,34 @@ class Reflection_Method extends ReflectionMethod
 		return $parameters;
 	}
 
+	//---------------------------------------------------------------------------- getParametersNames
+	/**
+	 * @return string[] key and value are both the parameter name
+	 */
+	public function getParametersNames()
+	{
+		$parameter_names = array_keys($this->getParameters());
+		return array_combine($parameter_names, $parameter_names);
+	}
+
+	//---------------------------------------------------------------------------- getPrototypeString
+	/**
+	 * The prototype of the function, beginning with first whitespaces before function and its doc
+	 * comments, ending with { or ; followed by LF.
+	 *
+	 * @return string
+	 */
+	public function getPrototypeString()
+	{
+		$parameters = $this->getParameters();
+		return ($this->isAbstract() ? 'abstract ' : '')
+			. ($this->isPublic() ? 'public ' : ($this->isProtected() ? 'protected ' : 'private '))
+			. ($this->isStatic() ? 'static ' : '')
+			. 'function ' . $this->name
+			. ($this->returnsReference() ? '& ' : '')
+			. '(' . join(', ', $parameters) . ')' . LF . '{';
+	}
+
 	//--------------------------------------------------------------------------------------- returns
 	/**
 	 * @return string

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Reflection;
 use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Parser;
 use SAF\Framework\Reflection\Interfaces;
@@ -398,7 +399,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (is_string($this->parent)) {
 			$parent = $this->source->getOutsideClass($this->parent);
 			if ($parent->source->isInternal()) {
-				$this->parent = false;
+				$this->parent = new Reflection\Reflection_Class($parent->name);
 			}
 			else {
 				$this->parent = $parent;
@@ -872,6 +873,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						}
 						break;
 
+					case T_CURLY_OPEN:
+					case T_DOLLAR_OPEN_CURLY_BRACES:
+					case T_STRING_VARNAME:
 					case '{':
 						$depth ++;
 						$visibility_token = null;

@@ -100,7 +100,7 @@ class Type
 		if (isset($can_be_null)) {
 			$this->can_be_null = $can_be_null;
 		}
-		if ($this->type[0] === BS) {
+		if (!empty($this->type) && ($this->type[0] === BS)) {
 			$this->absolute = true;
 			$this->type = substr($this->type, 1);
 		}

@@ -21,6 +21,21 @@ interface Reflection_Method extends Reflection_Class_Component
 	 */
 	public function getDeclaringClass();
 
+	//---------------------------------------------------------------------------- getParametersNames
+	/**
+	 * @return string[] key and value are both the parameter name
+	 */
+	public function getParametersNames();
+
+	//---------------------------------------------------------------------------- getPrototypeString
+	/**
+	 * The prototype of the function, beginning with first whitespaces before function and its doc
+	 * comments, ending with { or ; followed by LF.
+	 *
+	 * @return string
+	 */
+	public function getPrototypeString();
+
 	//------------------------------------------------------------------------------------ isAbstract
 	/**
 	 * @return boolean
