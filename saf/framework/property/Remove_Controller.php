@@ -52,7 +52,7 @@ class Remove_Controller extends Remove\Remove_Controller
 			// ...
 		}
 		$parameters['template'] = 'removed';
-		return View::run($parameters, $form, $files, Property::class, 'remove');
+		return View::run($parameters, $form, $files, Property::class, Feature::F_REMOVE);
 	}
 
 }

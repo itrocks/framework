@@ -4,7 +4,6 @@ namespace SAF\Framework\Widget\Edit;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Tools\Color;
-use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\widget\output\Output_Controller;
@@ -29,11 +28,11 @@ Edit_Controller extends Output_Controller
 		$fill_combo = isset($parameters['fill_combo'])
 			? ['fill_combo' => $parameters['fill_combo']] : [];
 		return array_merge($buttons, [
-			'close' => new Button('Close', View::link($object), 'close',
-				[new Color('close'), '#main']
+			'close' => new Button('Close', View::link($object),
+				Feature::F_CLOSE, [new Color('close'), '#main']
 			),
-			'write' => new Button('Write', View::link($object, 'write', null, $fill_combo), 'write',
-				[new Color('green'), '#messages', '.submit']
+			'write' => new Button('Write', View::link($object, Feature::F_WRITE, null, $fill_combo),
+				Feature::F_WRITE, [new Color('green'), '#messages', '.submit']
 			)
 		]);
 	}

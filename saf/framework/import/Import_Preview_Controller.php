@@ -3,6 +3,7 @@ namespace SAF\Framework\Import;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Feature_Controller;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao\File\Builder\Post_Files;
 use SAF\Framework\Dao\File;
@@ -32,11 +33,11 @@ class Import_Preview_Controller implements Default_Feature_Controller
 	{
 		return [
 			'save' => new Button(
-				'Save', View::link($class_name, 'import', 'preview'),
+				'Save', View::link($class_name, Feature::F_IMPORT, 'preview'),
 				'custom_save', [new Color('blue'), '#main', '.submit']
 			),
 			'delete' => new Button(
-				'Delete', View::link($class_name, 'import', 'preview', ['delete_name' => true]),
+				'Delete', View::link($class_name, Feature::F_IMPORT, 'preview', ['delete_name' => true]),
 				'custom_delete', [new Color('red'), '#main', '.submit']
 			)
 		];
@@ -155,7 +156,7 @@ class Import_Preview_Controller implements Default_Feature_Controller
 		}
 		// view
 		$parameters['template'] = 'importPreview';
-		return View::run($parameters, $form, $files, $class_name, 'import');
+		return View::run($parameters, $form, $files, $class_name, Feature::F_IMPORT);
 	}
 
 }

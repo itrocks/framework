@@ -2,6 +2,7 @@
 namespace SAF\Framework\Import;
 
 use SAF\Framework\Controller\Default_Feature_Controller;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao\File\Session_File\Files;
 use SAF\Framework\Session;
@@ -38,7 +39,7 @@ class Import_Execute_Controller implements Default_Feature_Controller
 			$import_array->importArray($array);
 		}
 		$parameters['template'] = 'importDone';
-		return View::run($parameters, $form, $files, $class_name, 'import');
+		return View::run($parameters, $form, $files, $class_name, Feature::F_IMPORT);
 	}
 
 }

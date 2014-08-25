@@ -2,8 +2,10 @@
 namespace SAF\Framework\Import;
 
 use SAF\Framework\Controller\Default_Feature_Controller;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\View;
 
 /**
  * Default import controller
@@ -27,7 +29,8 @@ class Import_Controller implements Default_Feature_Controller
 		}
 		$get = $parameters->toGet();
 		return (new Main())->runController(
-			SL . $class_name . SL . 'import', $get, $form, $files, 'import' . ucfirst($sub_feature)
+			View::link($class_name, Feature::F_IMPORT), $get, $form, $files,
+			'import' . ucfirst($sub_feature)
 		);
 	}
 

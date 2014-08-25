@@ -28,11 +28,11 @@ class Output_Controller implements Default_Feature_Controller
 		$object, /** @noinspection PhpUnusedParameterInspection */ $parameters
 	) {
 		return [
-			'close' => new Button('Close', View::link(Names::classToSet(get_class($object))), 'close',
-				[new Color('close'), '#main']
+			'close' => new Button('Close', View::link(Names::classToSet(get_class($object))),
+				Feature::F_CLOSE, [new Color('close'), '#main']
 			),
-			'edit' => new Button('Edit', View::link($object, 'edit'), 'edit',
-				[new Color('green'), '#main']
+			'edit' => new Button('Edit', View::link($object, Feature::F_EDIT),
+				Feature::F_EDIT, [new Color('green'), '#main']
 			)
 			/*,
 			new Button('Print', View::link($object, 'print'), 'print',

@@ -33,7 +33,7 @@ class Uri_Tests extends Test
 			],
 			[
 				'controller_name' => Tab::class,
-				'feature_name' => 'remove',
+				'feature_name' => Feature::F_REMOVE,
 				'parameters' => (new Parameters())->addValue(Names::classToSet(Order::class))
 					->addValue(Feature::F_LIST)->addValue('date')->addValue('number')->set('as_widget', 1)
 					->set('_', 2)->getRawParameters()

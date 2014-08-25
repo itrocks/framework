@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Add;
 
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
@@ -24,8 +25,8 @@ class Add_Controller extends Edit_Controller
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters);
 		return array_merge($buttons, [
-			'close' => new Button('Close', View::link(Names::classToSet(get_class($object))), 'close',
-				[new Color('close'), '#main']
+			'close' => new Button('Close', View::link(Names::classToSet(get_class($object))),
+				Feature::F_CLOSE, [new Color('close'), '#main']
 			),
 		]);
 	}

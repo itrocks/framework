@@ -205,13 +205,10 @@ class Html_Builder_Type
 		$session_files = Session::current()->get(Files::class, true);
 		$session_files->files[] = $file;
 		$image = ($file->getType()->is('image'))
-			? new Image(
-				SL . str_replace(BS, SL, Session_File::class) . SL . 'output' . SL . $file->name
-				. '?size=22'
-			)
+			? new Image(View::link(Session_File::class, 'output', [$file->name], ['size' => 22]))
 			: '';
 		$anchor = new Anchor(
-			SL . str_replace(BS, SL, Session_File::class) . SL . 'image' . SL . $file->name,
+			View::link(Session_File::class, 'image', [$file->name]),
 			$image . new Span($file->name)
 		);
 		if ($file->getType()->is('image')) {

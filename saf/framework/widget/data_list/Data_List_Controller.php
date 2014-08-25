@@ -358,11 +358,11 @@ class Data_List_Controller extends Output_Controller
 	{
 		return [
 			'add' => new Button(
-				'Add', View::link($class_name, Feature::F_ADD), 'add',
+				'Add', View::link($class_name, Feature::F_ADD), Feature::F_ADD,
 				['#main', new Color('green')]
 			),
 			'import' => new Button(
-				'Import', View::link($class_name, 'import'), 'import',
+				'Import', View::link($class_name, Feature::F_IMPORT), Feature::F_IMPORT,
 				['#main', new Color('green')]
 			),
 			'save' => new Button(
