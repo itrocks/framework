@@ -52,7 +52,7 @@ class Add_Controller implements Feature_Controller
 			// ...
 		}
 		$parameters['template'] = 'added';
-		return View::run($parameters, $form, $files, Property::class, 'add');
+		return View::run($parameters, $form, $files, Property::class, Feature::F_ADD);
 	}
 
 }
