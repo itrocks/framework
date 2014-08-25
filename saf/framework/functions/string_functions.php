@@ -167,6 +167,18 @@ function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
 	}
 }
 
+//-------------------------------------------------------------------------------------- strFromUri
+/**
+ * Returns a default text matching the given URI
+ *
+ * @param $uri
+ * @return string
+ */
+function strFromUri($uri)
+{
+	return str_replace('-', SP, $uri);
+}
+
 //------------------------------------------------------------------------------------ strHasAccent
 /**
  * Returns true if string has at least one accentued character
