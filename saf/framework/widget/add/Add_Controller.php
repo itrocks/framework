@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Add;
 
+use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
@@ -27,6 +28,25 @@ class Add_Controller extends Edit_Controller
 				[new Color('close'), '#main']
 			),
 		]);
+	}
+
+	//----------------------------------------------------------------------------- getViewParameters
+	/**
+	 * @param $parameters Parameters
+	 * @param $form       array
+	 * @param $class_name string
+	 * @return mixed[]
+	 */
+	protected function getViewParameters(Parameters $parameters, $form, $class_name)
+	{
+		$object = $parameters->getMainObject($class_name);
+		$objects = $parameters->getObjects();
+		if (count($objects) > 1) {
+			foreach (array_slice($objects, 1) as $property_name => $value) {
+				$object->$property_name = $value;
+			}
+		}
+		return parent::getViewParameters($parameters, $form, $class_name);
 	}
 
 }
