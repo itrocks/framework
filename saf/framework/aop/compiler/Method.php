@@ -82,7 +82,7 @@ class Method
 		$preg_expr = Reflection_Method::regex($method_name);
 		// $indent = prototype level indentation spaces
 		$indent = $source_method instanceof Reflection_method
-			? $source_method->getIndent() : (BR . TAB);
+			? $source_method->getIndent() : (LF . TAB);
 		$i2 = $indent . TAB;
 		$i3 = $i2 . TAB;
 		// $parameters = ['parameter_name' => 'parameter_name')
