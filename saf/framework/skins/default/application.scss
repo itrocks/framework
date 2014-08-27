@@ -89,10 +89,10 @@ body {
 
 div p {
 	&:not(:first-child) {
-		padding: 1em 0 0;
+		margin: 1em 0 0;
 	}
 	&:not(:last-child) {
-		padding: 0 0 1em;
+		margin: 0 0 1em;
 	}
 }
 
