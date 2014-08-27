@@ -6,7 +6,8 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			maximum: 200
+			maximum: 400,
+			overflow: 'scroll'
 		}, options);
 
 		//---------------------------------------------------------------------------- autoheight keyup
@@ -21,7 +22,7 @@
 				if (!$table.length) {
 					// single element
 					$this.height(new_height);
-					$this.css('overflow','hidden');
+					$this.css('overflow', settings.overflow);
 				}
 				else {
 					// element into a collection / map
