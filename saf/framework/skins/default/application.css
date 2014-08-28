@@ -85,7 +85,7 @@ hr {
   margin: .5em; }
 
 li {
-  margin-left: 1.5em; }
+  list-style-position: inside; }
 
 strong {
   font-weight: bold; }
