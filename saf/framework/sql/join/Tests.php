@@ -150,7 +150,7 @@ class Tests extends Test
 					Join::SIMPLE, Order_Line::class
 				),
 				'Order_Line->client.order' => Join::newInstance(
-					Join::INNER, 't1', 'id_order', 't2', 'orders', 'id',
+					Join::LEFT, 't1', 'id_order', 't2', 'orders', 'id',
 					Join::OBJECT, Order::class
 				)
 			]

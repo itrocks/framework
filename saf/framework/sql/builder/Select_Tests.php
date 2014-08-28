@@ -171,7 +171,7 @@ class Select_Tests extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.`number`, t0.`name`, t2.`date` AS `Order_Line->client.order:date`, t2.`number` AS `Order_Line->client.order:number`, t2.`id_client` AS `Order_Line->client.order:client`, t2.`id_delivery_client` AS `Order_Line->client.order:delivery_client`, t2.id AS `Order_Line->client.order:id`'
-			. ' FROM `clients` t0 LEFT JOIN `orders_lines` t1 ON t1.id_client = t0.id INNER JOIN `orders` t2 ON t2.id = t1.id_order'
+			. ' FROM `clients` t0 LEFT JOIN `orders_lines` t1 ON t1.id_client = t0.id LEFT JOIN `orders` t2 ON t2.id = t1.id_order'
 		);
 	}
 

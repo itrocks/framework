@@ -359,7 +359,8 @@ class Joins
 					$property_path = '';
 					foreach (explode(DOT, $master_path . DOT . $master_property_name) as $property_name) {
 						$property_path .= ($property_path ? DOT : '') . $property_name;
-						if (!$root_class->getProperty($property_path)->getAnnotation('mandatory')->value) {
+						$property = $root_class->getProperty($property_path);
+						if (!$property || !$property->getAnnotation('mandatory')->value) {
 							$join->mode = Join::LEFT;
 							break;
 						}
