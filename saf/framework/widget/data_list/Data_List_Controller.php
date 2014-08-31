@@ -337,12 +337,16 @@ class Data_List_Controller extends Output_Controller
 		$locale = Locale::current();
 		$titles = [];
 		foreach ($list_settings->properties_path as $property_path) {
-			$titles[$property_path] = isset($list_settings->properties_title[$property_path])
-				? $list_settings->properties_title[$property_path]
-				: (isset($locale) ? Loc::tr($property_path) : $property_path);
+			$titles[$property_path] = str_replace(
+				'_',
+				SP,
+				isset($list_settings->properties_title[$property_path])
+					? $list_settings->properties_title[$property_path]
+					: (isset($locale) ? Loc::tr($property_path) : $property_path)
+			);
 			$key = array_search($property_path, $list_settings->properties_path);
 			if ($key !== false) {
-				$titles[$key] = $titles[$property_path];
+				$titles[$key] = str_replace('_', SP, $titles[$property_path]);
 			}
 		}
 		return $titles;
