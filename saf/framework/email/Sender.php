@@ -20,6 +20,12 @@ if (!@include_once(__DIR__ . '../vendor/pear/Mail.php')) {
 class Sender implements Configurable
 {
 
+	//------------------------------------------------------------------------------------------ $bcc
+	/**
+	 * @var string[]
+	 */
+	public $bcc;
+
 	//------------------------------------------------------------------------- $default_smtp_account
 	/**
 	 * @var Smtp_Account
@@ -58,6 +64,7 @@ class Sender implements Configurable
 				isset($configuration['password']) ? $configuration['password'] : '',
 				isset($configuration['port']) ?     $configuration['port']     : null
 			);
+			if (isset($configuration['bcc'])) $this->bcc = $configuration['bcc'];
 		}
 	}
 
@@ -78,6 +85,13 @@ class Sender implements Configurable
 			$params['auth']     = true;
 			$params['username'] = $account->login;
 			$params['password'] = $account->password;
+		}
+		if (isset($this->bcc)) {
+			foreach ($this->bcc as $bcc) {
+				$recipient = new Recipient();
+				$recipient->email = $bcc;
+				array_push($email->blind_copy_to, $recipient);
+			}
 		}
 		/** @var $mail Mail_smtp */
 		$mail = (new Mail())->factory('smtp', $params);
