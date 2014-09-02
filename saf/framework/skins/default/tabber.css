@@ -12,7 +12,8 @@
       border-top-right-radius: 4px;
       color: #1c2e6c;
       cursor: pointer;
-      display: inline-block; }
+      display: inline-block;
+      margin: 0; }
       .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab:hover, .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab.active {
         background: url("img/tab_background.png") -10px;
         margin-bottom: -1px;

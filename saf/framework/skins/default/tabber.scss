@@ -15,6 +15,7 @@
 			color: #1c2e6c;
 			cursor: pointer;
 			display: inline-block;
+			margin: 0;
 			&:hover, &.active {
 				background: url("img/tab_background.png") -10px;
 				margin-bottom: -1px;
