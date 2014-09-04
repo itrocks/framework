@@ -285,6 +285,23 @@ abstract class Functions
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
 	}
 
+	//-------------------------------------------------------------------------------------- getFirst
+	/**
+	 * Returns the first current array element
+	 *
+	 * @param $template Template
+	 * @return mixed
+	 */
+	public static function getFirst(Template $template)
+	{
+		foreach ($template->objects as $array) {
+			if (is_array($array)) {
+				return reset($array);
+			}
+		}
+		return null;
+	}
+
 	//---------------------------------------------------------------------------------------- getHas
 	/**
 	 * Returns true if the element is not empty
