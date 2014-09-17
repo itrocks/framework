@@ -198,10 +198,10 @@ class Main
 	 */
 	private function loadConfiguration()
 	{
-		$script_name = $_SERVER['SCRIPT_NAME'];
-		$configuration = (new Configurations())->load(
-			substr($script_name, strrpos($script_name, SL) + 1)
-		);
+		$config = isset($_SERVER['CONFIG'])
+			? $_SERVER['CONFIG']
+			: substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1);
+		$configuration = (new Configurations())->load($config);
 		return $configuration;
 	}
 
