@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Json;
+namespace SAF\Framework\Webservice\Json;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Feature_Controller;

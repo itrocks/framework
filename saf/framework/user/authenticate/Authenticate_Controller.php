@@ -21,22 +21,22 @@ class Authenticate_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$current = User::current();
-		if ($current) {
-			Authentication::disconnect(User::current());
+		if (isset($form['login']) && isset($form['password'])) {
+			$current = User::current();
+			if ($current) {
+				Authentication::disconnect(User::current());
+			}
+			$user = Authentication::login($form['login'], $form['password']);
+			if (isset($user)) {
+				Authentication::authenticate($user);
+				return (new Default_Controller)->run(
+					$parameters, $form, $files, get_class($user), 'authenticate'
+				);
+			}
 		}
-		$user = Authentication::login($form['login'], $form['password']);
-		if (isset($user)) {
-			Authentication::authenticate($user);
-			return (new Default_Controller)->run(
-				$parameters, $form, $files, get_class($user), 'authenticate'
-			);
-		}
-		else {
-			return (new Default_Controller)->run(
-				$parameters, $form, $files, 'User', 'authenticateError'
-			);
-		}
+		return (new Default_Controller)->run(
+			$parameters, $form, $files, User::class, 'authenticateError'
+		);
 	}
 
 }
