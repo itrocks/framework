@@ -29,9 +29,10 @@ class Access_Control implements Configurable, Registerable
 	 * @var string[]
 	 */
 	public $exceptions = [
+		'/.*/.*/Tests/run',
 		'/.*/.*/User/authenticate',
 		'/.*/.*/User/login',
-		'/SAF/Framework/Tests/run'
+		'/.*/.*/Webservice/authenticate'
 	];
 
 	//----------------------------------------------------------------------------------- __construct

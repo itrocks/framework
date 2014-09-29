@@ -44,12 +44,11 @@ class Register_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$class_name = User::class;
 		$current = User::current();
 		if ($current) {
 			Authentication::disconnect(User::current());
 		}
-		$parameters = $this->getViewParameters($parameters, $form, $class_name);
+		$parameters = $this->getViewParameters($parameters, $form, User::class);
 		if (isset($form['login']) && isset($form['password'])) {
 			$user = null;
 			$errors_messages = Authentication::controlRegisterFormParameters($form);
@@ -60,17 +59,17 @@ class Register_Controller implements Feature_Controller
 			}
 			if ($user) {
 				$parameters['template'] = 'confirm';
-				return View::run($parameters, $form, $files, $class_name, 'register');
+				return View::run($parameters, $form, $files, User::class, 'register');
 			}
 			else {
 				$parameters['errors'] = $errors_messages;
 				$parameters['template'] = 'error';
-				return View::run($parameters, $form, $files, $class_name, 'register');
+				return View::run($parameters, $form, $files, User::class, 'register');
 			}
 		}
 		else {
 			$parameters['inputs'] = Authentication::getRegisterInputs();
-			return View::run($parameters, $form, $files, $class_name, 'register');
+			return View::run($parameters, $form, $files, User::class, 'register');
 		}
 	}
 

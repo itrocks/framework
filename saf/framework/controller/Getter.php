@@ -124,6 +124,22 @@ if (isset($GLOBALS['D'])) echo '- try B4 ' . $path . SL . 'widget' . SL . strtol
 						. $feature_what . $_suffix;
 					break;
 				}
+if (isset($GLOBALS['D']) && $suffix) echo '- try B5 ' . $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext . '<br>';
+				if ($suffix && file_exists(
+						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext
+					)) {
+					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $suffix;
+					break;
+				}
+if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . '<br>';
+				if (file_exists(
+					$path . SL . 'webservice' . SL . strtolower($feature_class) . SL
+					. $feature_what . $_suffix . $ext
+				)) {
+					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS
+					. $feature_what . $_suffix;
+					break;
+				}
 
 				// next application is the parent one
 				$application_class = get_parent_class($application_class);

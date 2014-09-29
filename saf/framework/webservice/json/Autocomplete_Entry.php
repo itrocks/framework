@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Json;
+namespace SAF\Framework\Webservice\Json;
 
 /**
  * An autocomplete entry class
