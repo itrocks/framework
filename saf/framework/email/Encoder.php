@@ -12,6 +12,7 @@ if (!@include_once(__DIR__ . '../../vendor/pear/Mail/mime.php')) {
  *
  * This offers a SAF interface to the PHP PEAR Mail_Mime package
  * To install it on a Debian Linux server : apt-get install php-mail-mime
+ * Or from pear : pear install Mail_Mime
  */
 abstract class Encoder
 {

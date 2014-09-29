@@ -10,6 +10,7 @@ if (!@include_once(__DIR__ . '../vendor/pear/Net/POP3.php')) {
  *
  * This offers a SAF interface to the PHP PEAR Net_POP3 package
  * To install it on a Debian Linux server : apt-get install php-pear & pear install Net_POP3
+ * Or from pear : pear install Net_POP3
  */
 class Receiver
 {

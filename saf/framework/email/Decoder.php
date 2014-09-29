@@ -10,6 +10,7 @@ if (!@include_once(__DIR__ . '../../vendor/pear/Mail/mimeDecode.php')) {
  *
  * This offers a SAF interface to the PHP PEAR Mail_mimeDecode package
  * To install it on a Debian Linux server : apt-get install php-mail-mimedecode
+ * Or from pear : pear install Mail_mimeDecode
  */
 class Decoder
 {
