@@ -315,7 +315,7 @@ class Maintainer implements Registerable
 	public static function updateTable(mysqli $mysqli, $class_name)
 	{
 		$result = false;
-		foreach ((new Table_Builder_Class)->build($class_name) as $class_table) {;
+		foreach ((new Table_Builder_Class)->build($class_name) as $class_table) {
 			$mysql_table = Table_Builder_Mysqli::build($mysqli, $class_table->getName());
 			if (!$mysql_table) {
 				$mysqli->query((new Create_Table($class_table))->build());
