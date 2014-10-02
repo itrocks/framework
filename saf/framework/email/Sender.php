@@ -7,7 +7,7 @@ use PEAR;
 use SAF\Framework\Email;
 use SAF\Framework\Plugin\Configurable;
 
-if (!@include_once(__DIR__ . '../vendor/pear/Mail.php')) {
+if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail.php')) {
 	@include_once '/usr/share/php/Mail.php';
 }
 
@@ -16,7 +16,7 @@ if (!@include_once(__DIR__ . '../vendor/pear/Mail.php')) {
  *
  * This offers a SAF interface to the PHP PEAR Mail package
  * To install it on a Debian Linux server : apt-get install php-mail
- * or pear install mail
+ * or pear install Mail Net_SMTP
  */
 class Sender implements Configurable
 {

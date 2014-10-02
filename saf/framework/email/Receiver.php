@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Email;
 
-if (!@include_once(__DIR__ . '../vendor/pear/Net/POP3.php')) {
+if (!@include_once(__DIR__ . '/../../../vendor/pear/Net/POP3.php')) {
 	@include_once '/usr/share/php/Net/POP3.php';
 }
 

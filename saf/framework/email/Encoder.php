@@ -3,7 +3,7 @@ namespace SAF\Framework\Email;
 
 use SAF\Framework\Email;
 
-if (!@include_once(__DIR__ . '../../vendor/pear/Mail/mime.php')) {
+if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail/mime.php')) {
 	@include_once '/usr/share/php/Mail/mime.php';
 }
 

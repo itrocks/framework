@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Email;
 
-if (!@include_once(__DIR__ . '../../vendor/pear/Mail/mimeDecode.php')) {
+if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail/mimeDecode.php')) {
 	@include_once '/usr/share/php/Mail/mimeDecode.php';
 }
 
