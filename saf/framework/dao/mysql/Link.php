@@ -557,7 +557,7 @@ class Link extends Dao\Sql\Link
 			);
 		}
 		// it's for optimisation purpose only
-		$query = 'SELECT * FROM ' . BQ . $this->storeNameOf($class_name) . BQ
+		$query = 'SELECT * FROM' . SP . BQ . $this->storeNameOf($class_name) . BQ
 			. ' WHERE id = ' . $identifier;
 		$this->setContext($class_name);
 		$result_set = $this->executeQuery($query);
