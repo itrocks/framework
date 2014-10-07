@@ -42,7 +42,7 @@ class Access_Control implements Configurable, Registerable
 	public function __construct($configuration = null)
 	{
 		if (isset($configuration['blank'])) {
-			$this->blank= array_merge($this->blank, $configuration['blank']);
+			$this->blank = array_merge($this->blank, $configuration['blank']);
 		}
 		if (isset($configuration['exceptions'])) {
 			$this->exceptions = array_merge($this->exceptions, $configuration['exceptions']);
