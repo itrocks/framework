@@ -125,7 +125,7 @@ class Builder implements Activable, Registerable, Serializable
 	{
 		$source_class_name = get_class($object);
 		if (!isset($class_name)) {
-			$class_name = self::className($object);
+			$class_name = self::className($source_class_name);
 		}
 		if ($class_name !== $source_class_name) {
 			// initialises cloned object
