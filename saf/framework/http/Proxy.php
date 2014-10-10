@@ -105,8 +105,10 @@ class Proxy
 			$this->setStandardRequestHeaders($automatic);
 		}
 		elseif ($automatic) {
-			$this->data = $_POST;
-			$this->method = ($_SERVER['REQUEST_METHOD'] === Http::POST) ? Http::POST : Http::GET;
+			$this->data = empty($_POST) ? [] : $_POST;
+			$this->method = isset($_SERVER['REQUEST_METHOD'])
+				? (($_SERVER['REQUEST_METHOD'] === Http::POST) ? Http::POST : Http::GET)
+				: (empty($_POST) ? Http::GET : Http::POST);
 			$this->request_headers = apache_request_headers();
 		}
 	}
@@ -218,8 +220,8 @@ class Proxy
 	{
 		echo '<pre>REQUEST_HEADERS = '  . print_r($this->request_headers, true)  . '</pre>';
 		echo '<pre>RESPONSE_HEADERS = ' . print_r($this->response_headers, true) . '</pre>';
-		echo '<pre>_POST = '   . print_r($_POST, true)   . '</pre>';
-		echo '<pre>_SERVER = ' . print_r($_SERVER, true) . '</pre>';
+		if (isset($_POST))   echo '<pre>_POST = '   . print_r($_POST, true)   . '</pre>';
+		if (isset($_SERVER)) echo '<pre>_SERVER = ' . print_r($_SERVER, true) . '</pre>';
 	}
 
 	//--------------------------------------------------------------------------------- debugRedirect
@@ -450,8 +452,8 @@ class Proxy
 	{
 		$this->method = $method;
 		$this->request_headers = [
-			'Host'            => $_SERVER['HTTP_HOST'],
-			'User-Agent'      => $_SERVER['HTTP_USER_AGENT'],
+			'Host'            => isset($_SERVER['HTTP_HOST'])       ? $_SERVER['HTTP_HOST'] : 'local',
+			'User-Agent'      => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'saf',
 			'Accept'          => 'text/html;q=0.9,*/*;q=0.8',
 			'Accept-Language' => 'fr-FR,q=0.8,en-US;q=0.6,en;q=0.4',
 			'Accept-Encoding' => 'gzip,deflate',
