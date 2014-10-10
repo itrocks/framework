@@ -42,7 +42,7 @@ echo (new Main)
 	->run($_SERVER['PATH_INFO'], $_GET, $_POST, $_FILES);
 
 // Display result on client browser now, as session serialization could take a moment
-ob_flush(); flush();
+flush();
 
 // When running php on cgi mode, getcwd() will return '/usr/lib/cgi-bin' on specific serialize()
 // calls. This is a php bug, calling session_write_close() here will serialize session variables
