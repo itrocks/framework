@@ -6,11 +6,13 @@
 		this.each(function() {
 			var $this = $(this);
 			var elements = false;
+			var selected = null;
 			if ($this.is('ul')) {
 				elements = $this.children('li').get();
 			}
 			else if ($this.is('select')) {
 				elements = $this.children('option').get();
+				selected = $this.children('option[value="' + $this.val() + '"]');
 			}
 			else if ($this.is('table')) {
 				var $tbody = $this.children('tbody');
@@ -26,6 +28,9 @@
 						: -1;
 				});
 				$this.empty().append(elements);
+				if (selected) {
+					$this.val(selected.attr('value'));
+				}
 			}
 
 		});
