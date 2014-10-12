@@ -67,10 +67,20 @@ class Select extends Element
 			}
 			$content = '';
 			$selected = $this->selected();
+			/** @var $selected_option Option */
+			$selected_option = null;
 			foreach ($values as $value => $caption) {
 				$html_option = new Option($value, $caption);
 				if ($value === $selected) {
 					$html_option->setAttribute('selected');
+					if ($selected_option) {
+						$selected_option->removeAttribute('selected');
+					}
+					break;
+				}
+				if (($html_option->getContent() == $selected) && !$selected_option) {
+					$html_option->setAttribute('selected');
+					$selected_option = $html_option;
 				}
 				$content .= strval($html_option);
 			}
