@@ -94,6 +94,8 @@ fieldset {
         white-space: nowrap; }
         fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td > input, fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td > input, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td > textarea {
           height: 18px;
+          margin-top: -2px;
+          vertical-align: top;
           width: 100%; }
         fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td > select, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td > select {
           height: 22px;
