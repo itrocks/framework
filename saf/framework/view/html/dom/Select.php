@@ -76,7 +76,6 @@ class Select extends Element
 					if ($selected_option) {
 						$selected_option->removeAttribute('selected');
 					}
-					break;
 				}
 				if (($html_option->getContent() == $selected) && !$selected_option) {
 					$html_option->setAttribute('selected');
