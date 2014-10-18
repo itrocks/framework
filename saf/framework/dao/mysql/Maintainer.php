@@ -31,13 +31,17 @@ class Maintainer implements Registerable
 	/**
 	 * Create a table in database, using a data class structure
 	 *
-	 * @param $mysqli     mysqli
+	 * @param $mysqli     Contextual_Mysqli
 	 * @param $class_name string
 	 */
-	private function createTable(mysqli $mysqli, $class_name)
+	private function createTable(Contextual_Mysqli $mysqli, $class_name)
 	{
-		foreach ((new Table_Builder_Class)->build($class_name) as $table) {
+		$builder = new Table_Builder_Class();
+		foreach ($builder->build($class_name) as $table) {
+			$last_context = $mysqli->context;
+			$mysqli->context = $builder->dependencies_context;
 			$mysqli->query((new Create_Table($table))->build());
+			$mysqli->context = $last_context;
 		}
 	}
 
@@ -177,6 +181,25 @@ class Maintainer implements Registerable
 		return $context ? $context : null;
 	}
 
+	//------------------------------------------------------------------------ onCantCreateTableError
+	/**
+	 * @param $mysqli Contextual_Mysqli
+	 * @param $query  string
+	 * @return boolean true if the query with an error can be retried after this error was dealt with
+	 */
+	private function onCantCreateTableError(Contextual_Mysqli $mysqli, $query)
+	{
+		$retry = false;
+		$error_table_names = $this->parseNamesFromQuery($query);
+		foreach ($error_table_names as $error_table_name) {
+			if (!$mysqli->exists($error_table_name)) {
+				$this->createImplicitTable($mysqli, $error_table_name, ['id']);
+			}
+			$retry = true;
+		}
+		return $retry;
+	}
+
 	//--------------------------------------------------------------------------------- onMysqliQuery
 	/**
 	 * This is called after each mysql query in order to update automatically database structure in case of errors
@@ -188,64 +211,71 @@ class Maintainer implements Registerable
 	public function onMysqliQuery(Contextual_Mysqli $object, $query, &$result)
 	{
 		$mysqli = $object;
-		if (($error_number = $mysqli->last_errno) && !isset($this->already[$query])) {
+		if ($mysqli->last_errno && !isset($this->already[$query])) {
 			$this->already[$query] = 1;
 			if (!isset($mysqli->context)) {
 				$mysqli->context = $this->guessContext($query);
 			}
 			if (isset($mysqli->context)) {
-				$error = $mysqli->error;
 				$retry = false;
 				$context = is_array($mysqli->context) ? $mysqli->context : [$mysqli->context];
 				if (
-					($error_number == Errors::ER_CANT_CREATE_TABLE)
-					&& strpos($error, '(errno: 150)')
+					($mysqli->last_errno == Errors::ER_CANT_CREATE_TABLE)
+					&& strpos($mysqli->last_error, '(errno: 150)')
 				) {
-					$error_table_names = $this->parseNamesFromQuery($query);
-					foreach ($error_table_names as $error_table_name) {
-						if (!$mysqli->exists($error_table_name)) {
-							$this->createImplicitTable($mysqli, $error_table_name, ['id']);
-						}
-						$retry = true;
-					}
+					$retry = $this->onCantCreateTableError($mysqli, $query);
 				}
-				elseif ($error_number == Errors::ER_NO_SUCH_TABLE) {
-					$error_table_names = [$this->parseNameFromError($error)];
-					if (!reset($error_table_names)) {
-						$error_table_names = $this->parseNamesFromQuery($query);
-					}
-					foreach ($context as $key => $context_class) {
-						$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
-						if (in_array($context_table, $error_table_names)) {
-							if (!is_array($context_class)) {
-								$this->createTable($mysqli, $context_class);
-							}
-							else {
-								$this->createImplicitTable($mysqli, $context_table, $context_class);
-							}
-							$retry = true;
-						}
-					}
-					if (!$retry) {
-						foreach ($error_table_names as $error_table_name) {
-							$retry = $retry || $this->createTableWithoutContext(
-								$mysqli, $error_table_name, $query
-							);
-						}
-					}
+				elseif ($mysqli->last_errno == Errors::ER_NO_SUCH_TABLE) {
+					$retry = $this->onNoSuchTableError($mysqli, $query, $context);
 				}
-				elseif ($error_number == Errors::ER_BAD_FIELD_ERROR) {
-					foreach ($context as $context_class) {
-						if (self::updateTable($mysqli, $context_class)) {
-							$retry = true;
-						}
-					}
+				elseif (
+					in_array($mysqli->last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])
+				) {
+					$retry = $this->updateContextTables($mysqli, $context);
 				}
 				if ($retry) {
 					$result = $mysqli->query($query);
 				}
 			}
 		}
+	}
+
+	//---------------------------------------------------------------------------- onNoSuchTableError
+	/**
+	 * @param $mysqli  Contextual_Mysqli
+	 * @param $query   string
+	 * @param $context string[]
+	 * @return boolean true if the query with an error can be retried after this error was dealt with
+	 */
+	private function onNoSuchTableError(Contextual_Mysqli $mysqli, $query, $context)
+	{
+		$retry = false;
+		$error_table_names = [$this->parseNameFromError($mysqli->last_error)];
+		if (!reset($error_table_names)) {
+			$error_table_names = $this->parseNamesFromQuery($query);
+		}
+		foreach ($context as $key => $context_class) {
+			$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
+			if (in_array($context_table, $error_table_names)) {
+				if (!is_array($context_class)) {
+					$this->createTable($mysqli, $context_class);
+				}
+				else {
+					$this->createImplicitTable($mysqli, $context_table, $context_class);
+				}
+				$retry = true;
+			}
+		}
+		if (!$retry) {
+			foreach ($error_table_names as $error_table_name) {
+				$retry = $retry
+					|| $this->createTableWithoutContext(
+						$mysqli, $error_table_name, $query
+					);
+			}
+			return $retry;
+		}
+		return $retry;
 	}
 
 	//---------------------------------------------------------------------------- parseNameFromError
@@ -302,6 +332,22 @@ class Maintainer implements Registerable
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([Contextual_Mysqli::class, 'query'], [$this, 'onMysqliQuery']);
+	}
+
+	//--------------------------------------------------------------------------- updateContextTables
+	/**
+	 * @param $mysqli  Contextual_Mysqli
+	 * @param $context string[]
+	 * @return boolean true if the query with an error can be retried after this error was dealt with
+	 */
+	private function updateContextTables($mysqli, $context)
+	{
+		foreach ($context as $context_class) {
+			if (self::updateTable($mysqli, $context_class)) {
+				$retry = true;
+			}
+		}
+		return isset($retry);
 	}
 
 	//----------------------------------------------------------------------------------- updateTable

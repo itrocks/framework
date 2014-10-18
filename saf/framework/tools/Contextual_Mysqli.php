@@ -23,6 +23,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public $context;
 
+	//----------------------------------------------------------------------------------- $last_errno
 	/**
 	 * Last error number : mysqli::$errno is reset to 0 immediately when you read it.
 	 * This one is kept until the next query.
@@ -30,6 +31,15 @@ class Contextual_Mysqli extends mysqli
 	 * @var integer
 	 */
 	public $last_errno;
+
+	//----------------------------------------------------------------------------------- $last_error
+	/**
+	 * Last error message : mysqli::$error is reset to empty immediately when you read it.
+	 * This one is kept until the next query.
+	 *
+	 * @var string
+	 */
+	public $last_error;
 
 	//---------------------------------------------------------------------------------------- exists
 	/**
@@ -137,16 +147,16 @@ class Contextual_Mysqli extends mysqli
 
 	//----------------------------------------------------------------------------------------- query
 	/**
-	 * @see mysqli::query
-	 * @todo Big patch as this is needed for AOP, but AOP-runkit does not work with php internal
-	 * methods. Should be removed when a workaround is found
-	 *
+	 * @param $query       string the SQL query
+	 * @param $result_mode integer one of MYSQLI_*_RESULT constants
 	 * @return mysqli_result|boolean false on failure, true or mysqli_result on success
+	 * @see mysqli::query
 	 */
 	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
 	{
 		$result = parent::query($query, $result_mode);
 		$this->last_errno = $this->errno;
+		$this->last_error = $this->error;
 		return $result;
 	}
 
