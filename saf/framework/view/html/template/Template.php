@@ -1029,11 +1029,14 @@ class Template
 			$this->parse_class_name = null;
 		}
 		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
-			if (is_array($object)) {
+			if (is_array($object) && (isset($object[$property_name]) || !class_exists($property_name))) {
 				$object = $this->parseArrayElement($object, $property_name);
 			}
 			elseif (
-				(strlen($property_name) > 1) && ($property_name[1] >= 'a') && ($property_name[1] <= 'z')
+				(strlen($property_name) > 1) && (
+					(($property_name[1] >= 'a') && ($property_name[1] <= 'z'))
+					|| (strpos($property_name, BS) !== false)
+				)
 			) {
 				$this->parse_class_name = $this->parseClassName($property_name);
 			}
