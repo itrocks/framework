@@ -12,6 +12,38 @@ body {
 		border-bottom: solid darkgrey 1px;
 		height: 52px;
 
+		>.connect {
+			background: url('img/disconnect-left.png') no-repeat left -2px;
+			display: inline-block;
+			float: left;
+			padding: 2px 0;
+
+			>a {
+				color: transparent;
+				display: inline-block;
+				font-size: 1px;
+				height: 24px;
+				padding-left: 28px;
+				width: 24px;
+
+				>.login {
+					color: #404040;
+					font-size: 14px;
+					font-style: italic;
+					font-weight: bold;
+				}
+			}
+
+			&:hover {
+				background-image: url('img/disconnect-left-animate.gif');
+
+				>a>.login {
+					color: #800000;
+					text-decoration: underline;
+				}
+			}
+		}
+
 		>ul {
 			margin: 0 4px;
 			position: fixed;

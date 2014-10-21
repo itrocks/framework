@@ -9,6 +9,28 @@ body {
     background-color: lightgrey;
     border-bottom: solid darkgrey 1px;
     height: 52px; }
+    body > header > .connect {
+      background: url("img/disconnect-left.png") no-repeat left -2px;
+      display: inline-block;
+      float: left;
+      padding: 2px 0; }
+      body > header > .connect > a {
+        color: transparent;
+        display: inline-block;
+        font-size: 1px;
+        height: 24px;
+        padding-left: 28px;
+        width: 24px; }
+        body > header > .connect > a > .login {
+          color: #404040;
+          font-size: 14px;
+          font-style: italic;
+          font-weight: bold; }
+      body > header > .connect:hover {
+        background-image: url("img/disconnect-left-animate.gif"); }
+        body > header > .connect:hover > a > .login {
+          color: #800000;
+          text-decoration: underline; }
     body > header > ul {
       margin: 0 4px;
       position: fixed;
