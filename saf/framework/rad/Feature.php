@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\RAD;
 
+use SAF\Framework\Mapper;
+
 /**
  * RAD Feature class
  *
@@ -8,9 +10,19 @@ namespace SAF\Framework\RAD;
  */
 class Feature
 {
+	use Mapper\Component;
+
+	//--------------------------------------------------------------------------------------- $plugin
+	/**
+	 * @composite
+	 * @link Object
+	 * @var Plugin
+	 */
+	public $plugin;
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
+	 * @mandatory
 	 * @var string
 	 */
 	public $title;
@@ -20,6 +32,13 @@ class Feature
 	 * @var string
 	 */
 	public $description;
+
+	//----------------------------------------------------------------------------------- $components
+	/**
+	 * @link Collection
+	 * @var Component[]
+	 */
+	public $components;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

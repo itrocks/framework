@@ -4,16 +4,16 @@ namespace SAF\Framework\RAD;
 /**
  * Application
  *
- * A set of modules, that can get modules from a parent application
+ * A set of plugins
  *
  * @set RAD_Applications
- * @todo Everything
  */
 class Application
 {
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
+	 * @mandatory
 	 * @var string
 	 */
 	public $name;
@@ -24,10 +24,11 @@ class Application
 	 */
 	public $parent;
 
-	//-------------------------------------------------------------------------------------- $modules
+	//-------------------------------------------------------------------------------------- $plugins
 	/**
-	 * @var //Module[]
+	 * @link Collection
+	 * @var Plugin[]
 	 */
-	public $modules;
+	public $plugins;
 
 }

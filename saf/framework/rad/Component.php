@@ -12,8 +12,17 @@ class Component
 {
 	use Mapper\Component;
 
+	//-------------------------------------------------------------------------------------- $feature
+	/**
+	 * @composite
+	 * @link Object
+	 * @var Feature
+	 */
+	public $feature;
+
 	//----------------------------------------------------------------------------------------- $name
 	/**
+	 * @mandatory
 	 * @var string
 	 */
 	public $name;

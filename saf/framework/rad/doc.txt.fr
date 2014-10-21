@@ -1,0 +1,45 @@
+
+###################################################################################################
+Définitions :
+
+- Application : une application
+	logiciel hérité d'un ou plusieurs autres logiciels, mettant à disposition un ensemble de plugins
+
+- Application_Instance : une instance d'application
+	logiciel configuré pour un usage / client : avec notamment sa liste de plugins actifs
+
+- Active_Plugin : un plugin activé pour une instance d'application
+
+- Component : un composant d'une fonctionnalité
+	un module atomique de données ou de processus
+
+- Dependency : une dépendance d'un plugin
+	lien vers un autre plugin, du même logiciel ou non
+
+- Feature : une fonctionnalité
+	nom, description d'un ensemble de données, de processus
+
+- Plugin : un ensemble de fonctionnalités, de dépendances et de règles de fonctionnement
+	on peut également rechercher un plugin dans la librairie des plugins à l'aide de tags
+
+- Rule : une option d'un plugin, activée ou non, qui agira sur son comportement
+  utilisé par activation / désactivation / saisie de valeur pour paramétrer l'usage d'un plugin
+  dans une instance d'application
+
+- Rule_Setting : le paramétrage d'une règle de gestion d'un plugin activé pour une instance
+	d'application
+
+- Tag : mot clé utilisé pour rechercher un plugin dans la librairie des plugins
+
+###################################################################################################
+Arborescence :
+
++ Application
+	+ Application_Instance
+		+ Active_Plugin
+	+ Plugin
+		+ Dependency
+		+ Feature
+			+ Component
+				+ Rule
+		+ Tag

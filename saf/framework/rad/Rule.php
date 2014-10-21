@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\RAD;
 
+use SAF\Framework\Mapper;
+
 /**
  * A rule is the atomic part of settings
  *
@@ -8,9 +10,11 @@ namespace SAF\Framework\RAD;
  */
 class Rule
 {
+	use Mapper\Component;
 
 	//------------------------------------------------------------------------------------ $component
 	/**
+	 * @composite
 	 * @link Object
 	 * @var Component
 	 */
@@ -18,8 +22,17 @@ class Rule
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
+	 * @mandatory
 	 * @var string
 	 */
 	public $name;
+
+	//----------------------------------------------------------------------------------------- $type
+	/**
+	 * @mandatory
+	 * @values boolean|string
+	 * @var string
+	 */
+	public $type;
 
 }

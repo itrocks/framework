@@ -2,6 +2,7 @@
 namespace SAF\Framework\RAD;
 
 use SAF\Framework\Dao\File;
+use SAF\Framework\Mapper;
 
 /**
  * A plugin is a set of code which has limited dependencies to others plugins
@@ -13,15 +14,19 @@ use SAF\Framework\Dao\File;
  */
 class Plugin
 {
+	use Mapper\Component;
 
-	//--------------------------------------------------------------------------------------- $active
+	//----------------------------------------------------------------------------------- Application
 	/**
-	 * @var boolean
+	 * @composite
+	 * @mandatory
+	 * @var Application
 	 */
-	public $active;
+	public $application;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
+	 * @mandatory
 	 * @var string
 	 */
 	public $name;
@@ -61,19 +66,20 @@ class Plugin
 	 */
 	public $dependencies;
 
+	//------------------------------------------------------------------------------------- $features
+	/**
+	 * @link Collection
+	 * @var Feature[]
+	 */
+	public $features;
+
 	//--------------------------------------------------------------------------------------- $parent
 	/**
+	 * @composite
 	 * @link Object
 	 * @var Plugin
 	 */
 	public $parent;
-
-	//----------------------------------------------------------------------------------- $components
-	/**
-	 * @link Collection
-	 * @var Component[]
-	 */
-	public $components;
 
 	//----------------------------------------------------------------------------------------- $tags
 	/**

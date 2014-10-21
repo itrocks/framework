@@ -11,6 +11,7 @@ class Dependency
 
 	//------------------------------------------------------------------------------------------- $id
 	/**
+	 * @mandatory
 	 * @var string
 	 */
 	private $identifier;
