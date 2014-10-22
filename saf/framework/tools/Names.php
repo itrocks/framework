@@ -297,7 +297,7 @@ abstract class Names
 		do {
 			$class_name = self::setToSingle($class_name);
 			$full_class_name = Namespaces::defaultFullClassName($class_name . $right, $set_class_name);
-			if (@class_exists($full_class_name)) {
+			if (@class_exists($full_class_name) || trait_exists($full_class_name, false)) {
 				return $full_class_name;
 			}
 			$i = strrpos($class_name, '_');
@@ -306,7 +306,7 @@ abstract class Names
 			}
 			if ($i === false) {
 				if (
-					@class_exists($set_class_name)
+					(@class_exists($set_class_name) || trait_exists($set_class_name, false))
 					&& ((new Reflection_Class($set_class_name))->getAnnotation('set')->value == $set_class_name)
 				) {
 					return $set_class_name;
@@ -325,7 +325,7 @@ abstract class Names
 			}
 		} while (!empty($class_name));
 		$class_name .= $right;
-		if (class_exists($class_name, false)) {
+		if (class_exists($class_name, false) || trait_exists($class_name, false)) {
 			return $class_name;
 		}
 		elseif (strrpos($set_class_name, '_') > strrpos($set_class_name, BS)) {
