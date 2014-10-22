@@ -323,10 +323,19 @@ abstract class Names
 				$right = substr($class_name, $i) . $right;
 				$class_name = substr($class_name, 0, $i);
 			}
-		}
-		while (!empty($class_name));
+		} while (!empty($class_name));
 		$class_name .= $right;
-		return class_exists($class_name, false) ? $class_name : $set_class_name;
+		if (class_exists($class_name, false)) {
+			return $class_name;
+		}
+		elseif (strrpos($set_class_name, '_') > strrpos($set_class_name, BS)) {
+			$namespace = Namespaces::of($set_class_name);
+			$class_name = substr($set_class_name, strpos($set_class_name, '_', strlen($namespace)) + 1);
+			return self::setToClass($namespace . BS . $class_name, $check_class);
+		}
+		else {
+			return $set_class_name;
+		}
 	}
 
 	//----------------------------------------------------------------------------------- setToSingle
