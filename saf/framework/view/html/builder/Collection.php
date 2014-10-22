@@ -112,11 +112,18 @@ class Collection
 		$head = new Head();
 		$row = new Row();
 		foreach ($this->properties as $property) {
-			$cell = new Header_Cell(Loc::tr(
-				Names::propertyToDisplay($property->getAnnotation('alias')->value),
-				$this->class_name
-			));
-			$row->addCell($cell);
+			if (
+				!$property->getType()->isMultiple()
+				|| ($property->getType()->getElementTypeAsString() != $property->getFinalClass()->name)
+			) {
+				$cell = new Header_Cell(
+					Loc::tr(
+						Names::propertyToDisplay($property->getAnnotation('alias')->value),
+						$this->class_name
+					)
+				);
+				$row->addCell($cell);
+			}
 		}
 		$head->addRow($row);
 		return $head;
@@ -131,7 +138,12 @@ class Collection
 	{
 		$row = new Row();
 		foreach ($this->properties as $property) {
-			$row->addCell($this->buildCell($object, $property));
+			if (
+				!$property->getType()->isMultiple()
+				|| ($property->getType()->getElementTypeAsString() != get_class($object))
+			) {
+				$row->addCell($this->buildCell($object, $property));
+			}
 		}
 		return $row;
 	}
