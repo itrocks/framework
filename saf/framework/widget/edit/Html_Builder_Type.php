@@ -304,7 +304,7 @@ class Html_Builder_Type
 			$input->addClass('combo');
 			// id input
 			$id_input = new Input(
-				$this->getFieldName('id_'), Dao::getObjectIdentifier($this->value)
+				$this->getFieldName('id_'), $this->value ? Dao::getObjectIdentifier($this->value) : ''
 			);
 			$id_input->setAttribute('type', 'hidden');
 			$id_input->addClass('id');
