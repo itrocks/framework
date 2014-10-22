@@ -56,6 +56,14 @@ abstract class Property
 	 */
 	public abstract function buildHtml();
 
+	//------------------------------------------------------------------------------------ buildValue
+	/**
+	 * @param $object        object
+	 * @param $null_if_empty boolean
+	 * @return mixed
+	 */
+	public abstract function buildValue($object, $null_if_empty);
+
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
 	 * @param $template Template

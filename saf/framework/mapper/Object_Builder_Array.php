@@ -10,6 +10,7 @@ use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Password;
 use SAF\Framework\Tools\Stringable;
+use SAF\Framework\View\Html\Builder\Property;
 
 /**
  * Build an object and it's property values from data stored into a recursive array
@@ -352,10 +353,10 @@ class Object_Builder_Array
 		$is_null = $null_if_empty;
 		if (
 			($builder = $property->getAnnotation('widget')->value)
-			&& is_a($builder, Property_Builder::class, true)
+			&& is_a($builder, Property::class, true)
 		) {
 			$builder = Builder::create($builder, [$property, $value]);
-			/** @var $builder Property_Builder*/
+			/** @var $builder Property */
 			$value = $builder->buildValue($object, $null_if_empty);
 		}
 		else {
