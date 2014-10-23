@@ -1,16 +1,15 @@
 <?php
-namespace SAF\Framework\RAD\Plugin;
+namespace SAF\Framework\RAD\Applications\Instance;
 
 use SAF\Framework\Mapper;
-use SAF\Framework\RAD\Rule_Setting;
-use SAF\Framework\RAD\Application_Instance;
-use SAF\Framework\RAD\Plugin;
+use SAF\Framework\RAD\Applications\Instance\Rule_Setting;
+use SAF\Framework\RAD\Plugins\Plugin;
 
 /**
  * Active plugin : a plugin that is used into an application instance context
  *
  * @link Plugin
- * @set RAD_Active_Plugins
+ * @representative plugin.name
  */
 class Active_Plugin extends Plugin
 {
@@ -20,7 +19,7 @@ class Active_Plugin extends Plugin
 	/**
 	 * @composite
 	 * @link Object
-	 * @var Application_Instance
+	 * @var Instance
 	 */
 	public $application_instance;
 
@@ -38,5 +37,14 @@ class Active_Plugin extends Plugin
 	 * @var Rule_Setting[]
 	 */
 	public $rules;
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->plugin->name);
+	}
 
 }

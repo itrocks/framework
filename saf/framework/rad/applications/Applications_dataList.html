@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>|Applications|</title>
+	<style type="text/css">
+		@import "../../skins/default/all.css";
+	</style>
+</head>
+<body>
+<!--BEGIN-->
+<!--use SAF\Framework\RAD\Applications\Instance\Instance-->
+
+<!--Instance.current-->
+<div class="applications list window" data-class="{@class}" data-feature="{@feature}">
+	<h2>{title}</h2>
+	<table>
+		<thead>
+			<tr class="applications">
+				<!--applications-->
+				<th>{name}</th>
+				<!--applications-->
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<!--applications-->
+				<td class="plugins">
+					<!--plugins-->
+					<div>
+						<h3>{name}</h3>
+						<div class="summary">{summary}</div>
+						<!--features?-->
+						<div class="features">
+							<!--features-->
+							<div>
+								<h4>{title}</h4>
+								<div class="description">{description}</div>
+							</div>
+							<!--features-->
+						</div>
+						<!--features?-->
+					</div>
+					<!--plugins-->
+				</td>
+				<!--applications-->
+			</tr>
+		</tbody>
+	</table>
+</div>
+<!--Instance.current-->
+
+<!--END-->
+</body>
+</html>

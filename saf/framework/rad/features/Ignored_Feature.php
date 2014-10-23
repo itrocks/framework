@@ -1,10 +1,8 @@
 <?php
-namespace SAF\Framework\RAD;
+namespace SAF\Framework\RAD\Features;
 
 /**
  * RAD Ignored feature class
- *
- * @set RULE_Ignored_Features
  */
 class Ignored_Feature
 {

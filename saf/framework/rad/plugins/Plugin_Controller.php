@@ -1,9 +1,8 @@
 <?php
-namespace SAF\Framework\RAD\Plugin;
+namespace SAF\Framework\RAD\Plugins;
 
 use SAF\Framework;
 use SAF\Framework\Controller\Parameters;
-use SAF\Framework\RAD\Plugin;
 use SAF\Framework\View;
 
 /**

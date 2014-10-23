@@ -1,12 +1,15 @@
 <?php
-namespace SAF\Framework\RAD;
+namespace SAF\Framework\RAD\Features;
 
 use SAF\Framework\Mapper;
+use SAF\Framework\RAD\Components\Component;
+use SAF\Framework\RAD\Dependency;
+use SAF\Framework\RAD\Plugins\Plugin;
 
 /**
  * RAD Feature class
  *
- * @set RAD_Features
+ * @representative title
  */
 class Feature
 {
@@ -42,17 +45,26 @@ class Feature
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $identifier    string the feature identifier. eg must be the main class of the feature
+	 * @param $identifier    string
 	 * @param $title         string plugin title
 	 * @param $description   string plugin description
 	 * @param $configuration array the plugins configuration : key is the plugin class name
 	 */
 	public function __construct(
-		$identifier, $title = null, $description = null, $configuration = null
+		$identifier = null, $title = null, $description = null, $configuration = null
 	) {
-		if (isset($title))         $this->title       = $title;
-		if (isset($description))   $this->description = $description;
+		if (isset($title))         $this->title         = $title;
+		if (isset($description))   $this->description   = $description;
 		if (isset($configuration)) $this->configuration = $configuration;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->title);
 	}
 
 	//--------------------------------------------------------------------------------------- depends

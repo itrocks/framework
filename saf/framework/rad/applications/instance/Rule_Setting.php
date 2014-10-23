@@ -1,14 +1,14 @@
 <?php
-namespace SAF\Framework\RAD;
+namespace SAF\Framework\RAD\Applications\Instance;
 
 use SAF\Framework\Mapper;
-use SAF\Framework\RAD\Plugin\Active_Plugin;
+use SAF\Framework\RAD\Components\Rule;
 
 /**
  * Rule setting
  *
  * @link Rule
- * @set RAD_Rules_Settings
+ * @set Rules_Settings
  */
 class Rule_Setting
 {
@@ -35,5 +35,14 @@ class Rule_Setting
 	 * @var mixed
 	 */
 	public $value;
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->rule->name . SP . '=' . SP . $this->value;
+	}
 
 }

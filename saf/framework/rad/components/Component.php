@@ -1,12 +1,13 @@
 <?php
-namespace SAF\Framework\RAD;
+namespace SAF\Framework\RAD\Components;
 
 use SAF\Framework\Mapper;
+use SAF\Framework\RAD\Features\Feature;
 
 /**
  * A plugin component is used to store data or process, ie linked to a database
  *
- * @set RAD_Components
+ * @representative name
  */
 class Component
 {
@@ -29,9 +30,18 @@ class Component
 
 	//---------------------------------------------------------------------------------------- $rules
 	/**
-	 * @ling Collection
+	 * @link Collection
 	 * @var Rule[]
 	 */
 	public $rules;
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->name);
+	}
 
 }

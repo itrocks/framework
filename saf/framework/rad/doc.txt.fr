@@ -43,3 +43,23 @@ Arborescence :
 			+ Component
 				+ Rule
 		+ Tag
+
+###################################################################################################
+Mode simplifié :
+
++ Fonctionnalité - tout en vrac
+	+ type : application, module, plugin, composant : document / processus, règle de gestion
+	+ nom
+	+ titre
+	+ résumé
+	+ description
+	+ fonctionnalité parente / fonctionnalités filles
+	+ dépendances
+
++ Paramétrage d'une fonctionnalité : si existe, alors active pour l'application
+  + valeur (s'il en est, principalement pour les règles de gestion)
+
+- On affiche et recherche dans la liste complète des fonctionnalités, avec un logo différent pour
+chaque type, et possibilité de filtrer.
+- Le paramétrage de la fonctionnalité peut différer d'un type à l'autre, mais de peu
+- Une seule fonctionnalité sans parente : l'application finale (instance)

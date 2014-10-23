@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\RAD\Plugin;
+namespace SAF\Framework\RAD\Plugins;
 
 use SAF\Framework;
 
