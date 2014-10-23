@@ -176,8 +176,16 @@ abstract class Parser
 		switch ($next_char) {
 			case SP: case TAB:
 				$i ++;
-				$j = strpos($doc_comment, LF, $i);
-				$value = trim(substr($doc_comment, $i, $j - $i));
+				$next_annotation = strpos($doc_comment, '* @', $i);
+				if ($next_annotation !== false) {
+					$value = trim(
+						preg_replace('%\n\s+\*%', '', substr($doc_comment, $i, $next_annotation - $i))
+					);
+				}
+				else {
+					$end_of_line = strpos($doc_comment, LF, $i);
+					$value = trim(substr($doc_comment, $i, $end_of_line - $i));
+				}
 				break;
 			case CR: case LF:
 				$value = true;

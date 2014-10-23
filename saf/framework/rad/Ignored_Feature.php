@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\RAD\Features;
+namespace SAF\Framework\RAD;
 
 /**
  * RAD Ignored feature class

@@ -1,27 +1,21 @@
 <?php
-namespace SAF\Framework\RAD\Features;
-
-use SAF\Framework\Mapper;
-use SAF\Framework\RAD\Components\Component;
-use SAF\Framework\RAD\Dependency;
-use SAF\Framework\RAD\Plugins\Plugin;
+namespace SAF\Framework\RAD;
 
 /**
  * RAD Feature class
  *
- * @representative title
+ * @representative title, type
  */
 class Feature
 {
-	use Mapper\Component;
 
-	//--------------------------------------------------------------------------------------- $plugin
+	//----------------------------------------------------------------------------------------- $type
 	/**
-	 * @composite
-	 * @link Object
-	 * @var Plugin
+	 * @values application, application instance, class, feature, form, framework, module, plugin,
+	 * print, process, root class, rule, trait, view
+	 * @var string
 	 */
-	public $plugin;
+	public $type;
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
@@ -30,30 +24,48 @@ class Feature
 	 */
 	public $title;
 
+	//-------------------------------------------------------------------------------------- $summary
+	/**
+	 * @multiline
+	 * @var string
+	 * @wiki
+	 */
+	public $summary;
+
 	//---------------------------------------------------------------------------------- $description
 	/**
+	 * @multiline
 	 * @var string
+	 * @wiki
 	 */
 	public $description;
 
-	//----------------------------------------------------------------------------------- $components
+	//--------------------------------------------------------------------------------------- $parent
+	/**
+	 * @link Object
+	 * @var Feature
+	 */
+	public $parent;
+
+	//------------------------------------------------------------------------------------- $children
 	/**
 	 * @link Collection
-	 * @var Component[]
+	 * @var Feature[]
 	 */
-	public $components;
+	public $children;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $identifier    string
-	 * @param $title         string plugin title
-	 * @param $description   string plugin description
+	 * @param $title         string Feature title
+	 * @param $summary       string Feature short summary
+	 * @param $description   string Feature complete description
 	 * @param $configuration array the plugins configuration : key is the plugin class name
 	 */
 	public function __construct(
-		$identifier = null, $title = null, $description = null, $configuration = null
+		$title = null, $summary = null, $description = null, $configuration = null
 	) {
 		if (isset($title))         $this->title         = $title;
+		if (isset($summary))       $this->summary       = $summary;
 		if (isset($description))   $this->description   = $description;
 		if (isset($configuration)) $this->configuration = $configuration;
 	}
@@ -64,13 +76,13 @@ class Feature
 	 */
 	public function __toString()
 	{
-		return strval($this->title);
+		return $this->title . SP . '(' . $this->type . ')';
 	}
 
 	//--------------------------------------------------------------------------------------- depends
 	/**
 	 * @param $identifier string the ignored feature identifier
-	 * @return Ignored_Feature
+	 * @return Dependency
 	 */
 	public static function depends($identifier)
 	{
