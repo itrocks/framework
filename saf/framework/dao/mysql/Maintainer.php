@@ -67,7 +67,7 @@ class Maintainer implements Registerable
 				if (($mysqli instanceof Contextual_Mysqli) && is_array($mysqli->context)) {
 					foreach ($mysqli->context as $context_class) {
 						$id_context_property = 'id_' . Names::classToProperty(
-							Names::setToClass(Dao::storeNameOf($context_class), false)
+							Names::setToSingle(Dao::storeNameOf($context_class), false)
 						);
 						if ($column_name == $id_context_property) {
 							$table->addForeignKey(
