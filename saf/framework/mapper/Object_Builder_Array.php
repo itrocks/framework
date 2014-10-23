@@ -174,7 +174,7 @@ class Object_Builder_Array
 						'Unknown property ' . $property_name . ' into ' . $this->class->name, E_USER_ERROR
 					);
 				}
-				elseif (!$this->buildProperty($object, $property, $value, $null_if_empty)) {
+				elseif (!($property && $this->buildProperty($object, $property, $value, $null_if_empty))) {
 					$is_null = false;
 				}
 				if ($asterisk) {
