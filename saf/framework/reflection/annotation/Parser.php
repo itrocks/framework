@@ -178,9 +178,15 @@ abstract class Parser
 				$i ++;
 				$next_annotation = strpos($doc_comment, '* @', $i);
 				if ($next_annotation !== false) {
-					$value = trim(
+					$next_in = strpos($doc_comment, self::DOC_COMMENT_IN, $i);
+					if (($next_in !== false) && ($next_in < $next_annotation)) {
+						$next_annotation = $next_in;
+					}
+				}
+				if ($next_annotation !== false) {
+					$value = trim(substr(
 						preg_replace('%\n\s+\*%', '', substr($doc_comment, $i, $next_annotation - $i))
-					);
+					, 0, -2));
 				}
 				else {
 					$end_of_line = strpos($doc_comment, LF, $i);
