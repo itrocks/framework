@@ -310,7 +310,7 @@ class Object_Builder_Array
 	 * @param $class_name string if set and element is not an object, will read
 	 * @return integer[]
 	 */
-	private function buildMap($array, $class_name = null)
+	public function buildMap($array, $class_name = null)
 	{
 		$map = [];
 		if ($array) {
@@ -357,9 +357,13 @@ class Object_Builder_Array
 		) {
 			$builder = Builder::create($builder, [$property, $value]);
 			/** @var $builder Property */
-			$value = $builder->buildValue($object, $null_if_empty);
+			$value2 = $builder->buildValue($object, $null_if_empty);
+			if ($value2 !== Property::DONT_BUILD_VALUE) {
+				$value = $value2;
+				$done = true;
+			}
 		}
-		else {
+		if (!isset($done)) {
 			$type = $property->getType();
 			if ($type->isBasic()) {
 				// password

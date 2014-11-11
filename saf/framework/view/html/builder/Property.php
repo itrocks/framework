@@ -10,6 +10,13 @@ use SAF\Framework\View\Html\Template;
 abstract class Property
 {
 
+	//------------------------------------------------------------------------------ DONT_BUILD_VALUE
+	/**
+	 * This unique and arbitrary constant is returned by buildValue() when is not defined into a
+	 * child class
+	 */
+	const DONT_BUILD_VALUE = 'çeàfdsnzOFfjapzjfsdgrT2è§édsvp-f';
+
 	//----------------------------------------------------------------------------------- $parameters
 	/**
 	 * Additional parameters for html template or as options.
@@ -62,7 +69,11 @@ abstract class Property
 	 * @param $null_if_empty boolean
 	 * @return mixed
 	 */
-	public abstract function buildValue($object, $null_if_empty);
+	public function buildValue(
+		/* @noinspection PhpUnusedParameterInspection */ $object, $null_if_empty
+	) {
+		return self::DONT_BUILD_VALUE;
+	}
 
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
