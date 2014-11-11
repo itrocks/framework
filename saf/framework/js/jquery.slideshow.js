@@ -6,7 +6,13 @@
 		if (this.length < 2) return this;
 
 		//------------------------------------------------------------------------------------ settings
-		var settings = $.extend({}, options);
+		var settings = $.extend({
+			frame_delay:             5000,
+			manual_transition_speed:  200,
+			next:                    undefined,
+			previous:                undefined,
+			transition_speed:        1000
+		}, options);
 
 		var elements = this;
 		var position = 0;
@@ -57,22 +63,22 @@
 		//----------------------------------------------------------------------- previous/next.click()
 		if (settings.previous != undefined) {
 			settings.previous.click(function() {
-				$(elements[position]).fadeOut(200);
+				$(elements[position]).fadeOut(settings.manual_transition_speed);
 				position --;
 				if (position < 0) {
 					position = elements.length - 1;
 				}
-				$(elements[position]).fadeIn(200);
+				$(elements[position]).fadeIn(settings.manual_transition_speed);
 			});
 		}
 		if (settings.next != undefined) {
 			settings.next.click(function() {
-				$(elements[position]).fadeOut(200);
+				$(elements[position]).fadeOut(settings.manual_transition_speed);
 				position ++;
 				if (position >= elements.length) {
 					position = 0;
 				}
-				$(elements[position]).fadeIn(200);
+				$(elements[position]).fadeIn(settings.manual_transition_speed);
 			});
 		}
 
@@ -80,14 +86,14 @@
 		setInterval(function()
 		{
 			if (!hover) {
-				$(elements[position]).fadeOut(1000);
+				$(elements[position]).fadeOut(settings.transition_speed);
 				position ++;
 				if (position >= elements.length) {
 					position = 0;
 				}
-				$(elements[position]).fadeIn(1000);
+				$(elements[position]).fadeIn(settings.transition_speed);
 			}
-		}, 5000);
+		}, settings.frame_delay);
 
 		return this;
 	};
