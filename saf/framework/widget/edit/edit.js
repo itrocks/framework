@@ -7,11 +7,11 @@ $('document').ready(function()
 		var app = window.app;
 
 		//--------------------------------------------------------------------- .autoheight, .autowidth
-		this.in('.autoheight').autoheight();
-		this.in('.autowidth').autowidth();
+		this.inside('.autoheight').autoheight();
+		this.inside('.autowidth').autowidth();
 
 		//-------------------------------------------------------------------------------------- .minus
-		this.in('.minus').click(function()
+		this.inside('.minus').click(function()
 		{
 			var $this = $(this);
 			if ($this.closest('tbody').children().length > 1) {
@@ -25,7 +25,7 @@ $('document').ready(function()
 		});
 
 		//------------------------------------------------------------------------ input[type=checkbox]
-		this.in('input[type=checkbox]').change(function()
+		this.inside('input[type=checkbox]').change(function()
 		{
 			var $checkbox = $(this);
 			var $input = $checkbox.prev().filter('input[type=hidden]');
@@ -45,16 +45,16 @@ $('document').ready(function()
 		});
 
 		//-------------------------------------------------------------- input[type=checkbox][readonly]
-		this.in('input[type=checkbox][readonly]').click(function(event)
+		this.inside('input[type=checkbox][readonly]').click(function(event)
 		{
 			event.preventDefault();
 		});
 
 		//-------------------------------------------------------------------------------------- select
-		this.in('select').sortcontent();
+		this.inside('select').sortcontent();
 
 		//----------------------------------------------------------------- table.collection, table.map
-		this.in('table.collection, table.map').each(function()
+		this.inside('table.collection, table.map').each(function()
 		{
 			var $this = $(this);
 			$this.data('saf_add', $this.children('tbody').children('tr.new').clone());
@@ -119,22 +119,22 @@ $('document').ready(function()
 				}
 			}
 		};
-		this.in('input, textarea').focus(autoAddLine).keyup(autoAddLine);
+		this.inside('input, textarea').focus(autoAddLine).keyup(autoAddLine);
 
 		//------------------------------------------------------------------- input.datetime datepicker
-		this.in('input.datetime').datepicker({
+		this.inside('input.datetime').datepicker({
 			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            'button',
 			showOtherMonths:   true,
 			selectOtherMonths: true
 		});
 
-		this.in('input.datetime').blur(function()
+		this.inside('input.datetime').blur(function()
 		{
 			$(this).datepicker('hide');
 		});
 
-		this.in('input.datetime').keyup(function(event)
+		this.inside('input.datetime').keyup(function(event)
 		{
 			if ((event.keyCode != 13) && (event.keyCode != 27)) {
 				$(this).datepicker('show');
@@ -226,7 +226,7 @@ $('document').ready(function()
 		};
 
 		//-------------------------------------------------------------------- input.combo autocomplete
-		this.in('input.combo').autocomplete(
+		this.inside('input.combo').autocomplete(
 		{
 			autoFocus: true,
 			delay: 100,
@@ -305,7 +305,7 @@ $('document').ready(function()
 		/**
 		 * On clicking on [+] or when ctrl+click on a combo input : open add/edit popup form
 		 */
-		this.in('input.combo~.edit').click(function()
+		this.inside('input.combo~.edit').click(function()
 		{
 			var $this = $(this);
 			var $input = $this.siblings('input.combo');
@@ -316,12 +316,12 @@ $('document').ready(function()
 			var id = $input.prev().val();
 			$this.attr('href', id ? href.repl('/add', '/' + $input.prev().val() + '/edit') : href);
 		});
-		this.in('input.combo~.edit').attr('tabindex', -1);
+		this.inside('input.combo~.edit').attr('tabindex', -1);
 		if (this.attr('id') && (this.attr('id').substr(0, 6) == 'window')) {
-			this.in('.actions>.close>a')
+			this.inside('.actions>.close>a')
 				.attr('href', 'javascript:$(\'#' + this.attr('id') + '\').remove()')
 				.attr('target', '');
-			var $button = this.in('.actions>.write>a');
+			var $button = this.inside('.actions>.write>a');
 			if ($button.length) {
 				$button.attr('href',
 					$button.attr('href')
@@ -330,7 +330,7 @@ $('document').ready(function()
 				);
 			}
 		}
-		this.in('input.combo').each(function()
+		this.inside('input.combo').each(function()
 		{
 			$(this).parent()
 				.mouseenter(function() { $(this).children('.edit').show(); })
@@ -338,7 +338,7 @@ $('document').ready(function()
 		});
 
 		//--------------------------------------------------------------------------- input.combo~.more
-		this.in('input.combo~.more').click(function(event)
+		this.inside('input.combo~.more').click(function(event)
 		{
 			event.preventDefault();
 			// this text fix call to click() when typing VK_ENTER into the combo input
@@ -353,7 +353,7 @@ $('document').ready(function()
 
 		//---------------------------------------------------------------------- input[data-conditions]
 		var will_change = {};
-		this.in('input[data-conditions]').each(function() {
+		this.inside('input[data-conditions]').each(function() {
 			var $this = $(this);
 			var conditions = $this.data('conditions').replace(/\(.*\)/g);
 			$.each(conditions.split(';'), function(condition_key, condition) {
@@ -409,7 +409,7 @@ $('document').ready(function()
 		});
 
 		//------------------------------------------------------------------------- .vertical.scrollbar
-		this.in('.vertical.scrollbar').verticalscrollbar();
+		this.inside('.vertical.scrollbar').verticalscrollbar();
 
 	});
 

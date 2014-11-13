@@ -15,9 +15,9 @@
 	 */
 	$.fn.build = function (callback, call_now)
 	{
-		// use this.in(selector) in callback to build the elements
+		// use this.inside(selector) in callback to build the elements
 		//noinspection ReservedWordAsName
-		this.in = function(selector, nop)
+		this.inside = function(selector, nop)
 		{
 			// accepts '.aclass, .another' : take each of them
 			var i = selector.indexOf(',');
@@ -25,7 +25,7 @@
 				var selectors = selector.split(',');
 				var result = $();
 				var obj = this;
-				$.each(selectors, function(index, value) { result = result.add(obj.in(value.trim())); });
+				$.each(selectors, function(index, value) { result = result.add(obj.inside(value.trim())); });
 				return result;
 			}
 			// accepts '.myclass .subelems' selectors : .myclass for this working
@@ -37,7 +37,7 @@
 					i = i2;
 				}
 				if (i > -1) {
-					return this.in(selector.substr(0, i), nop).find(selector.substr(i));
+					return this.inside(selector.substr(0, i), nop).find(selector.substr(i));
 				}
 			}
 			// filtered object itself, added to find into it's children
@@ -62,7 +62,7 @@
 			}
 			delete this.tmpBuildCaller;
 		}
-		delete this.in;
+		delete this.inside;
 
 		//noinspection JSValidateTypes
 		return this;

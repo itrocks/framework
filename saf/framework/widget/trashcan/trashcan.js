@@ -4,7 +4,7 @@ $('document').ready(function()
 	$('body').build(function()
 	{
 
-		this.in('.object').draggable({
+		this.inside('.object').draggable({
 
 			appendTo: 'body',
 			containment: 'body',
@@ -38,7 +38,7 @@ $('document').ready(function()
 		});
 
 		// trash is droppable
-		this.in('#trashcan a').droppable({
+		this.inside('#trashcan a').droppable({
 
 			accept:     '.column label, .object, .objects, .property',
 			hoverClass: 'candrop',
@@ -87,7 +87,7 @@ $('document').ready(function()
 		});
 
 		// trash message can be hidden
-		this.in('#trashcan .delete.message').click(function() { $(this).remove(); });
+		this.inside('#trashcan .delete.message').click(function() { $(this).remove(); });
 
 	});
 

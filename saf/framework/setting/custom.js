@@ -5,7 +5,7 @@ $('document').ready(function()
 	{
 
 		//-------------------------------------------------------------- select.customized option click
-		this.in('select.customized').change(function()
+		this.inside('select.customized').change(function()
 		{
 			var $this = $(this);
 			$this.attr('name', 'load_name');
@@ -14,7 +14,7 @@ $('document').ready(function()
 
 		//------------------------------------------------------------------- .save_list.button a click
 		// click on save button opens the save form between calling save
-		this.in('a.custom_save, .custom_save>a').click(function(event)
+		this.inside('a.custom_save, .custom_save>a').click(function(event)
 		{
 			var $this = $(this);
 			var $list = $this.closest('form');
@@ -42,7 +42,7 @@ $('document').ready(function()
 				alert('Veuillez saisir un nom puis valider, ou tapez echap pour annuler');
 			}
 		});
-		var $input = this.in('input.customized');
+		var $input = this.inside('input.customized');
 		$input.autowidth();
 		// press ENTER : save, press ESCAPE : cancel
 		$input.keydown(function(event)

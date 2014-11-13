@@ -4,11 +4,11 @@ $('document').ready(function()
 	$('body').build(function()
 	{
 		// sort and decoration
-		this.in('ul.property_tree').sortcontent();
-		this.in('.property_select').prepend($('<span>').addClass('joint'));
+		this.inside('ul.property_tree').sortcontent();
+		this.inside('.property_select').prepend($('<span>').addClass('joint'));
 
 		// search
-		this.in('.property_select>input[name=search]').each(function()
+		this.inside('.property_select>input[name=search]').each(function()
 		{
 			var last_search = '';
 			var search_step = 0;
@@ -56,7 +56,7 @@ $('document').ready(function()
 		});
 
 		// create tree
-		this.in('ul.property_tree>li>a').click(function(event)
+		this.inside('ul.property_tree>li>a').click(function(event)
 		{
 			var $this = $(this);
 			var $li = $(this).closest('li');
@@ -78,7 +78,7 @@ $('document').ready(function()
 		});
 
 		// draggable items
-		this.in('.property, fieldset>div[id]>label').draggable({
+		this.inside('.property, fieldset>div[id]>label').draggable({
 			appendTo:    'body',
 			containment: 'body',
 			cursorAt:    { left: 10, top: 10 },

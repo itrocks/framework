@@ -4,7 +4,7 @@ $('document').ready(function()
 	$('.import.preview.window').build(function()
 	{
 
-		this.in('.import.preview.window').each(function()
+		this.inside('.import.preview.window').each(function()
 		{
 			var $this = $(this);
 

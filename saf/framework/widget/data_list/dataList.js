@@ -5,7 +5,7 @@ $('document').ready(function()
 	$('.list.window').build(function()
 	{
 
-		this.in('.list.window').each(function()
+		this.inside('.list.window').each(function()
 		{
 			var $this = $(this);
 
