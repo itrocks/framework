@@ -141,10 +141,10 @@ class Html_Template extends Template
 		$i = strpos($content, '<section');
 		$j = strpos($content, '>', $i) + 1;
 		$attributes = ' action=' . DQ . $action . DQ
-			. ' name=' . DQ . $this->form_id . DQ
 			. substr($content, $i + 8, $j - $i - 9)
-			. ' method="post"'
 			. ' enctype="multipart/form-data"'
+			. ' method="post"'
+			. ' name=' . DQ . $this->form_id . DQ
 			. ' target="#messages"';
 		$i = $j;
 		$j = strrpos($content, '</section>', $i);
