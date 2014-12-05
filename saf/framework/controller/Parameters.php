@@ -109,6 +109,7 @@ class Parameters
 	 */
 	public function getObject($parameter_name)
 	{
+		$parameter_name = Builder::className($parameter_name);
 		if (isset($this->objects[$parameter_name])) {
 			// parameter is in cache
 			$object = $this->objects[$parameter_name];
