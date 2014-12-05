@@ -1029,7 +1029,7 @@ class Template
 			$this->parse_class_name = null;
 		}
 		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
-			if (is_array($object) && (isset($object[$property_name]) || !class_exists($property_name))) {
+			if (is_array($object) && (isset($object[$property_name]) || !@class_exists($property_name))) {
 				$object = $this->parseArrayElement($object, $property_name);
 			}
 			elseif (
