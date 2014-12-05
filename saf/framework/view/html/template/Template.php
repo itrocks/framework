@@ -961,7 +961,7 @@ class Template
 			$getter = (new Reflection_Property($class_name, $property_name))
 				->getAnnotation('user_getter')->value;
 			if ($getter) {
-				$callable = new Contextual_Callable($getter);
+				$callable = new Contextual_Callable($getter, $object);
 				return $callable->call();
 			}
 		}
