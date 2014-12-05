@@ -109,7 +109,6 @@ class Parameters
 	 */
 	public function getObject($parameter_name)
 	{
-		$parameter_name = Builder::className($parameter_name);
 		if (isset($this->objects[$parameter_name])) {
 			// parameter is in cache
 			$object = $this->objects[$parameter_name];
@@ -134,6 +133,12 @@ class Parameters
 			// text parameter
 			$object = $this->getRawParameter($parameter_name);
 			$this->objects[$parameter_name] = $object;
+		}
+		if (empty($object)) {
+			$built_parameter_name = Builder::className($parameter_name);
+			if ($built_parameter_name != $parameter_name) {
+				return $this->getObject(Builder::className($parameter_name));
+			}
 		}
 		return $object;
 	}
