@@ -49,27 +49,29 @@ class Engine implements Configurable, Framework\View\Engine
 	 * @param $feature_names string[] feature and inherited feature which view will be searched
 	 * @param $template      string   if a specific template is set, the view named with it will be
 	 *                       searched into the view / feature namespace first
+	 * @param $template_file_type string can search template files with another extension than 'html'
 	 * @return string the resulting path of the found template file
 	 */
-	public static function getTemplateFile($class_name, $feature_names, $template = null)
-	{
+	public static function getTemplateFile(
+		$class_name, $feature_names, $template = null, $template_file_type = 'html'
+	) {
 		if (isset($template)) {
 			foreach ($feature_names as $feature_name) {
-				$class = Getter::get($class_name, $feature_name, $template, 'html', false)[0];
+				$class = Getter::get($class_name, $feature_name, $template, $template_file_type, false)[0];
 				if (isset($class)) break;
 			}
 		}
 
 		if (!isset($class)) {
 			foreach ($feature_names as $feature_name) {
-				$class = Getter::get($class_name, $feature_name, '', 'html', false)[0];
+				$class = Getter::get($class_name, $feature_name, '', $template_file_type, false)[0];
 				if (isset($class)) break;
 			}
 		}
 
 		return isset($class)
-			? (Names::classToPath($class) . '.html')
-			: stream_resolve_include_path('default.html');
+			? (Names::classToPath($class) . DOT . $template_file_type)
+			: stream_resolve_include_path('default' . DOT . $template_file_type);
 	}
 
 	//------------------------------------------------------------------------------------------ link
