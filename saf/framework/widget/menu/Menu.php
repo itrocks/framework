@@ -12,6 +12,14 @@ use SAF\Framework\Widget\Menu\Item;
 class Menu implements Configurable
 {
 
+	//------------------------------------------------------- Menu configuration array keys constants
+	const ALL    = ':';
+	const CLEAR  = 'clear';
+	const LINK   = 'link';
+	const MODULE = 'module';
+	const TARGET = 'target';
+	const TITLE  = 'title';
+
 	//--------------------------------------------------------------------------------------- $blocks
 	/**
 	 * @var Block[]
@@ -47,7 +55,7 @@ class Menu implements Configurable
 	public function __construct($configuration = [])
 	{
 		foreach ($configuration as $block_key => $items) {
-			if ($block_key == 'title') {
+			if ($block_key == self::TITLE) {
 				foreach ($items as $item) {
 					if     (substr($item, 0, 1) == SL)  $this->title_link        = $item;
 					elseif (substr($item, 0, 1) == '#') $this->title_link_target = $item;
@@ -59,10 +67,10 @@ class Menu implements Configurable
 				if (substr($block_key, 0, 1) == SL) $block->title_link = $block_key;
 				else                                $block->title      = $block_key;
 				foreach ($items as $item_key => $item) {
-					if     ($item_key == 'module') $block->module            = $item;
-					elseif ($item_key == 'title')  $block->title             = $item;
-					elseif ($item_key == 'link')   $block->title_link        = $item;
-					elseif ($item_key == 'target') $block->title_link_target = $item;
+					if     ($item_key == self::MODULE) $block->module            = $item;
+					elseif ($item_key == self::TITLE)  $block->title             = $item;
+					elseif ($item_key == self::LINK)   $block->title_link        = $item;
+					elseif ($item_key == self::TARGET) $block->title_link_target = $item;
 					else {
 						$menu_item = new Item();
 						$menu_item->link = $item_key;

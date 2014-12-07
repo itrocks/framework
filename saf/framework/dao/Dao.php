@@ -19,6 +19,9 @@ class Dao implements Configurable
 {
 	use Current { current as private pCurrent; }
 
+	//-------------------------------------------------------- Dao configuration array keys constants
+	const LINKS_LIST = 'list';
+
 	//----------------------------------------------------------------------------------------- $list
 	/**
 	 * The list of available and referenced DAO
@@ -33,16 +36,16 @@ class Dao implements Configurable
 	 */
 	public function __construct($configuration)
 	{
-		if (isset($configuration['list'])) {
-			foreach ($configuration['list'] as $dao_identifier => $dao_configuration) {
-				$class_name = $dao_configuration['class'];
-				unset($dao_configuration['class']);
+		if (isset($configuration[self::LINKS_LIST])) {
+			foreach ($configuration[self::LINKS_LIST] as $dao_identifier => $dao_configuration) {
+				$class_name = $dao_configuration[Configuration::CLASS_NAME];
+				unset($dao_configuration[Configuration::CLASS_NAME]);
 				self::set($dao_identifier, new $class_name($dao_configuration));
 			}
-			unset($configuration['list']);
+			unset($configuration[self::LINKS_LIST]);
 		}
-		$class_name = $configuration['class'];
-		unset($configuration['class']);
+		$class_name = $configuration[Configuration::CLASS_NAME];
+		unset($configuration[Configuration::CLASS_NAME]);
 		Dao::current(new $class_name($configuration));
 	}
 

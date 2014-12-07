@@ -15,11 +15,15 @@ use SAF\Framework;
 class Engine implements Configurable, Framework\View\Engine
 {
 
+	//------------------------------------------- Html view engine configuration array keys constants
+	const CSS = 'css';
+	const CSS_DEFAULT = 'default';
+
 	//------------------------------------------------------------------------------------------ $css
 	/**
 	 * @var string
 	 */
-	private $css = 'default';
+	private $css = self::CSS_DEFAULT;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

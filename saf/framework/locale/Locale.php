@@ -18,6 +18,11 @@ class Locale implements Configurable
 {
 	use Current { current as private pCurrent; }
 
+	//----------------------------------------------------- Locale configuration array keys constants
+	const DATE     = 'date';
+	const LANGUAGE = 'language';
+	const NUMBER   = 'number';
+
 	//----------------------------------------------------------------------------------------- $date
 	/**
 	 * @link Object
@@ -56,9 +61,9 @@ class Locale implements Configurable
 		if (!isset($current)) {
 			self::current($this);
 		}
-		$this->setDateFormat($configuration['date']);
-		$this->setLanguage($configuration['language']);
-		$this->setNumberFormat($configuration['number']);
+		$this->setDateFormat($configuration[self::DATE]);
+		$this->setLanguage($configuration[self::LANGUAGE]);
+		$this->setNumberFormat($configuration[self::NUMBER]);
 	}
 
 	//--------------------------------------------------------------------------------------- current

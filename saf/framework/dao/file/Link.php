@@ -16,6 +16,9 @@ use SAF\Framework\Tools\List_Data;
 class Link extends Identifier_Map
 {
 
+	//-------------------------------------------------- File link configuration array keys constants
+	const PATH = 'path';
+
 	//----------------------------------------------------------------------------------------- count
 	/**
 	 * Count the number of elements that match filter

@@ -19,7 +19,14 @@ use SAF\Framework\Tools\List_Data;
 abstract class Link extends Identifier_Map implements Transactional
 {
 
-//----------------------------------------------------------------------------------------- $tables
+	//--------------------------------------------------- Sql link configuration array keys constants
+	const DATABASE = 'database';
+	const HOST     = 'host';
+	const LOGIN    = 'login';
+	const PASSWORD = 'password';
+	const TABLES   = 'tables';
+
+	//---------------------------------------------------------------------------------------- $tables
 	/**
 	 * Links each class name to it's storage table name
 	 *
@@ -42,7 +49,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	public function __construct($parameters = null)
 	{
 		if (isset($parameters)) {
-			$this->tables = isset($parameters['tables']) ? $parameters['tables'] : [];
+			$this->tables = isset($parameters[self::TABLES]) ? $parameters[self::TABLES] : [];
 		}
 	}
 

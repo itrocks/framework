@@ -4,6 +4,7 @@ namespace SAF\Framework\Plugin;
 use SAF\Framework\AOP\Weaver;
 use SAF\Framework\Builder;
 use SAF\Framework\Plugin;
+use SAF\Framework\Reflection\Reflection_Class;
 use Serializable;
 
 /**
@@ -98,9 +99,18 @@ class Manager implements IManager, Serializable
 	public function get($class_name, $level = null, $register = false, $activate = false)
 	{
 		/** @var $plugin Plugin|boolean|string */
-		$plugin = isset($this->plugins[$class_name])
-			? $this->plugins[$class_name]
-			: Builder::create($class_name);
+		if (isset($this->plugins[$class_name])) {
+			$plugin = $this->plugins[$class_name];
+		}
+		elseif (
+			!($constructor = (new Reflection_Class($class_name))->getConstructor())
+			|| !$constructor->getNumberOfParameters()
+		) {
+			$plugin = Builder::create($class_name);
+		}
+		else {
+			return null;
+		}
 		// unserialize plugin
 		if (!is_object($plugin)) {
 			static $protect = null;

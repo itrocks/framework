@@ -7,6 +7,12 @@ namespace SAF\Framework;
 class Configuration
 {
 
+	//------------------------------------------------------------ Configuration array keys constants
+	const APP = 'app';
+	const AUTHOR = 'author';
+	const CLASS_NAME = 'class';
+	const EXTENDS_APP = 'extends';
+
 	//---------------------------------------------------------------------------- $application_class
 	/**
 	 * Application class name
@@ -47,10 +53,10 @@ class Configuration
 	public function __construct($name, $configuration)
 	{
 		$this->name = $name;
-		$this->application_class = $configuration['app'];
-		$this->author = $configuration['author'];
-		unset($configuration['app']);
-		unset($configuration['author']);
+		$this->application_class = $configuration[self::APP];
+		$this->author = $configuration[self::AUTHOR];
+		unset($configuration[self::APP]);
+		unset($configuration[self::AUTHOR]);
 		$this->plugins = $configuration;
 	}
 

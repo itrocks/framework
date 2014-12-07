@@ -7,17 +7,22 @@ namespace SAF\Framework\Locale;
 class Number_Format
 {
 
-	//------------------------------------------------------------------------ $decimal_minimal_count
-	/**
-	 * @var integer
-	 */
-	public $decimal_minimal_count = 2;
+	const DECIMAL_MAXIMAL_COUNT = 'decimal_maximal_count';
+	const DECIMAL_MINIMAL_COUNT = 'decimal_minimal_count';
+	const DECIMAL_SEPARATOR     = 'decimal_separator';
+	const THOUSAND_SEPARATOR    = 'thousand_separator';
 
 	//------------------------------------------------------------------------ $decimal_maximal_count
 	/**
 	 * @var integer
 	 */
 	public $decimal_maximal_count = 4;
+
+	//------------------------------------------------------------------------ $decimal_minimal_count
+	/**
+	 * @var integer
+	 */
+	public $decimal_minimal_count = 2;
 
 	//---------------------------------------------------------------------------- $decimal_separator
 	/**

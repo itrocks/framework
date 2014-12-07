@@ -21,6 +21,13 @@ if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail.php')) {
 class Sender implements Configurable
 {
 
+	//----------------------------------------------- Email sender configuration array keys constants
+	const BCC      = 'bcc';
+	const HOST     = 'host';
+	const LOGIN    = 'login';
+	const PASSWORD = 'password';
+	const PORT     = 'port';
+
 	//------------------------------------------------------------------------------------------ $bcc
 	/**
 	 * @var string[]
@@ -60,12 +67,12 @@ class Sender implements Configurable
 	{
 		if ($configuration) {
 			$this->default_smtp_account = new Smtp_Account(
-				isset($configuration['host']) ?     $configuration['host']     : '',
-				isset($configuration['login']) ?    $configuration['login']    : '',
-				isset($configuration['password']) ? $configuration['password'] : '',
-				isset($configuration['port']) ?     $configuration['port']     : null
+				isset($configuration[self::HOST]) ?     $configuration[self::HOST]     : '',
+				isset($configuration[self::LOGIN]) ?    $configuration[self::LOGIN]    : '',
+				isset($configuration[self::PASSWORD]) ? $configuration[self::PASSWORD] : '',
+				isset($configuration[self::PORT]) ?     $configuration[self::PORT]     : null
 			);
-			if (isset($configuration['bcc'])) $this->bcc = $configuration['bcc'];
+			if (isset($configuration[self::BCC])) $this->bcc = $configuration[self::BCC];
 		}
 	}
 

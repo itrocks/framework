@@ -20,8 +20,8 @@ class View implements Configurable
 	 */
 	public function __construct($configuration)
 	{
-		$class_name = $configuration['class'];
-		unset($configuration['class']);
+		$class_name = $configuration[Configuration::CLASS_NAME];
+		unset($configuration[Configuration::CLASS_NAME]);
 		View::current(new $class_name($configuration));
 	}
 

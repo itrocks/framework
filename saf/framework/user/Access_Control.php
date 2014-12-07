@@ -16,6 +16,10 @@ use SAF\Framework\User;
 class Access_Control implements Configurable, Registerable
 {
 
+	//---------------------------------------- User access control configuration array keys constants
+	const BLANK      = 'blank';
+	const EXCEPTIONS = 'exceptions';
+
 	//---------------------------------------------------------------------------------------- $blank
 	/**
 	 * @var string[]
@@ -41,11 +45,11 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function __construct($configuration = null)
 	{
-		if (isset($configuration['blank'])) {
-			$this->blank = array_merge($this->blank, $configuration['blank']);
+		if (isset($configuration[self::BLANK])) {
+			$this->blank = array_merge($this->blank, $configuration[self::BLANK]);
 		}
-		if (isset($configuration['exceptions'])) {
-			$this->exceptions = array_merge($this->exceptions, $configuration['exceptions']);
+		if (isset($configuration[self::EXCEPTIONS])) {
+			$this->exceptions = array_merge($this->exceptions, $configuration[self::EXCEPTIONS]);
 		}
 	}
 

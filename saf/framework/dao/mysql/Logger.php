@@ -13,6 +13,11 @@ use SAF\Framework\Tools\Contextual_Mysqli;
 class Logger implements Configurable, Registerable
 {
 
+	//----------------------------------------------------- Logger configuration array keys constants
+	const CONTINUE_LOG = 'continue';
+	const DISPLAY_LOG  = 'display_log';
+	const EXCLUDE      = 'exclude';
+
 	//------------------------------------------------------------------------------------- $continue
 	/**
 	 * If true, log will be displayed each time a query is executed.
@@ -65,10 +70,10 @@ class Logger implements Configurable, Registerable
 	public function __construct($configuration = null)
 	{
 		if (isset($configuration)) {
-			if (isset($configuration['continue'])) {
-				$this->continue = $configuration['continue'];
-				if (isset($configuration['exclude'])) {
-					foreach ($configuration['exclude'] as $exclude) {
+			if (isset($configuration[self::CONTINUE_LOG])) {
+				$this->continue = $configuration[self::CONTINUE_LOG];
+				if (isset($configuration[self::EXCLUDE])) {
+					foreach ($configuration[self::EXCLUDE] as $exclude) {
 						if (strpos(SL . $_SERVER['REQUEST_URI'] . SL, SL . $exclude . SL)) {
 							$this->continue = false;
 							break;
@@ -76,8 +81,8 @@ class Logger implements Configurable, Registerable
 					}
 				}
 			}
-			if (isset($configuration['display_log'])) {
-				$this->display_log = $configuration['display_log'];
+			if (isset($configuration[self::DISPLAY_LOG])) {
+				$this->display_log = $configuration[self::DISPLAY_LOG];
 			}
 		}
 	}

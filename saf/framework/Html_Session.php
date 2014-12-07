@@ -10,6 +10,9 @@ use SAF\Framework\Plugin\Configurable;
 class Html_Session implements Activable, Configurable
 {
 
+	//----------------------------------------------- Html session configuration array keys constants
+	const USE_COOKIE = 'use_cookie';
+
 	//----------------------------------------------------------------------------------- $use_cookie
 	/**
 	 * @var boolean
@@ -22,7 +25,7 @@ class Html_Session implements Activable, Configurable
 	 */
 	public function __construct($configuration)
 	{
-		self::$use_cookie = isset($configuration['use_cookie']) && $configuration['use_cookie'];
+		self::$use_cookie = isset($configuration[self::USE_COOKIE]) && $configuration[self::USE_COOKIE];
 	}
 
 	//-------------------------------------------------------------------------------------- activate
