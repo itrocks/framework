@@ -87,6 +87,24 @@ abstract class Files
 		return $result;
 	}
 
+	//-------------------------------------------------------------------------------- downloadOutput
+	/**
+	 * Consider current output as a file download
+	 *
+	 * @param $name string the file name
+	 * @param $type string the mime type of the file (ie 'application/xml')
+	 * @param $size integer the file size, if known
+	 */
+	public static function downloadOutput($name, $type, $size = null)
+	{
+		header('Content-Disposition: attachment; filename=' . DQ . $name . DQ);
+		header('Content-Type: ' . $type);
+		if (isset($size)) {
+			header('Content-Length: ' . $size);
+		}
+		header('Content-Transfer-Encoding: binary');
+	}
+
 	//----------------------------------------------------------------------------------------- mkdir
 	/**
 	 * Creates a directory if it does not exist, recursively
