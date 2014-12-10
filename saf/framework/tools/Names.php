@@ -178,7 +178,7 @@ abstract class Names
 	 */
 	public static function methodToClass($method_name)
 	{
-		return ucfirst(preg_replace('%([a-z])([A-Z])%', '$1_$2', $method_name));
+		return ucfirst(preg_replace('%([a-z|0-9])([A-Z])%', '$1_$2', $method_name));
 	}
 
 	//------------------------------------------------------------------------------- methodToDisplay
