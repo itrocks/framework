@@ -151,6 +151,13 @@ class Set implements Iterator
 		if (@class_exists($class_name)) {
 			return new $class_name($elements);
 		}
+		elseif (
+			@trait_exists($class_name)
+			&& ($extends_class = (new Reflection_Class($class_name))->getAnnotation('extends')->value)
+		) {
+			$extends_class = reset($extends_class);
+			return new $extends_class($elements);
+		}
 		else {
 			$element_class_name = static::elementClassNameOf($class_name);
 			return new Set($element_class_name, $elements);
