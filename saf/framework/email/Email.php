@@ -75,6 +75,12 @@ class Email
 	 */
 	public $date;
 
+	//-------------------------------------------------------------------------------------- $headers
+	/**
+	 * @var string[]
+	 */
+	public $headers = [];
+
 	//------------------------------------------------------------------------------------ $send_date
 	/**
 	 * @var Date_Time
@@ -108,7 +114,31 @@ class Email
 	 */
 	public function getHeadersAsStrings()
 	{
-		return [];
+		if ($this->blind_copy_to) {
+			$this->headers['Bcc'] = join(',', $this->blind_copy_to);
+		}
+		if ($this->copy_to) {
+			$this->headers['Cc'] = join(',', $this->copy_to);
+		}
+		if ($this->from) {
+			$this->headers['From'] = strval($this->from);
+		}
+		if ($this->reply_to) {
+			$this->headers['Reply-To'] = strval($this->reply_to);
+		}
+		if ($this->return_path) {
+			$this->headers['Return-Path'] = strval($this->return_path);
+		}
+		if ($this->subject) {
+			$this->headers['Subject'] = $this->subject;
+		}
+		if ($this->to) {
+			$this->headers['To'] = join(',', $this->to);
+		}
+		if (!isset($this->headers['Content-Type'])) {
+			$this->headers['Content-Type'] = 'text/html; charset=UTF-8';
+		}
+		return $this->headers;
 	}
 
 	//------------------------------------------------------------------------ getRecipientsAsStrings
@@ -124,6 +154,7 @@ class Email
 				$recipients[$recipient->email] = $recipient->email;
 			}
 		}
+		return $recipients;
 	}
 
 }

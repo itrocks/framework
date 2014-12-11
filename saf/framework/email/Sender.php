@@ -4,6 +4,8 @@ namespace SAF\Framework\Email;
 use Mail;
 use Mail_smtp;
 use PEAR;
+use PEAR_Error;
+use SAF\Framework\Builder;
 use SAF\Framework\Email;
 use SAF\Framework\Plugin\Configurable;
 
@@ -87,8 +89,11 @@ class Sender implements Configurable
 		if (!isset($policy)) {
 			$policy = new Policy();
 		}
-		$account = $email->account->smtp_accounts[0];
+		$account = ($email->account && $email->account->smtp_accounts)
+			? $email->account->smtp_accounts[0]
+			: $this->default_smtp_account;
 		$params['host'] = $account->host;
+		$params['port'] = $account->port;
 		if ($account->login) {
 			$params['auth']     = true;
 			$params['username'] = $account->login;
@@ -101,12 +106,26 @@ class Sender implements Configurable
 				array_push($email->blind_copy_to, $recipient);
 			}
 		}
+
+		/** @var $encoder Encoder */
+		$encoder = Builder::create(Encoder::class, $email);
+		$content = $encoder->encode();
+
 		/** @var $mail Mail_smtp */
 		$mail = (new Mail())->factory('smtp', $params);
+
+		$error_reporting = error_reporting();
+		error_reporting(E_ALL & ~E_DEPRECATED);
 		$send_result = $mail->send(
-			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $email->content
+			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $content
 		);
-		return !(new PEAR)->isError($send_result);
+		error_reporting($error_reporting);
+
+		if ($send_result instanceof PEAR_Error) {
+			user_error($send_result->code . ' : ' . $send_result->message, E_USER_ERROR);
+			return false;
+		}
+		return true;
 	}
 
 }
