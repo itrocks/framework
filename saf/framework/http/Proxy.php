@@ -292,6 +292,9 @@ class Proxy
 			}
 			$data = substr($data, 0, -1);
 			if ($this->method === Http::GET) {
+				if ($data && !strpos($url['path'], '?')) {
+					$data = '?' . $data;
+				}
 				fputs($f, 'GET ' . $url['path'] . ($data ? $data : '') . ' HTTP/1.1' . CR . LF);
 			}
 			else {
@@ -302,7 +305,9 @@ class Proxy
 			fputs($f, 'Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7' . CR . LF);
 			foreach ($this->request_headers as $header => $value) {
 				if ($header == 'Content-Length') {
-					fputs($f, 'Content-Length: ' . strlen($data) . CR . LF);
+					if ($this->method === Http::POST) {
+						fputs($f, 'Content-Length: ' . strlen($data) . CR . LF);
+					}
 				}
 				elseif (!in_array($header, ['Connection', 'Host'])) {
 					fputs($f, $header . ': ' . $value . CR . LF);
