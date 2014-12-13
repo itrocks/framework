@@ -101,9 +101,7 @@ class Sender implements Configurable
 		}
 		if (isset($this->bcc)) {
 			foreach ($this->bcc as $bcc) {
-				$recipient = new Recipient();
-				$recipient->email = $bcc;
-				array_push($email->blind_copy_to, $recipient);
+				array_push($email->blind_copy_to, new Recipient($bcc));
 			}
 		}
 
@@ -115,7 +113,7 @@ class Sender implements Configurable
 		$mail = (new Mail())->factory('smtp', $params);
 
 		$error_reporting = error_reporting();
-		error_reporting(E_ALL & ~E_DEPRECATED);
+		error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
 		$send_result = $mail->send(
 			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $content
 		);
