@@ -18,7 +18,7 @@ if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail.php')) {
  *
  * This offers a SAF interface to the PHP PEAR Mail package
  * To install it on a Debian Linux server : apt-get install php-mail
- * or pear install Mail Net_SMTP
+ * AND : apt-get install php-pear & pear install Mail Net_SMTP
  */
 class Sender implements Configurable
 {
