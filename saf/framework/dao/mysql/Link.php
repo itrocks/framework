@@ -71,7 +71,10 @@ class Link extends Dao\Sql\Link
 	public static function construct($host, $login, $password, $database)
 	{
 		return new Link([
-			'host' => $host, 'login' => $login, 'password' => $password, 'database' => $database
+			self::DATABASE => $database,
+			self::HOST     => $host,
+			self::LOGIN    => $login,
+			self::PASSWORD => $password
 		]);
 	}
 
@@ -87,12 +90,12 @@ class Link extends Dao\Sql\Link
 	 */
 	private function connect($parameters)
 	{
-		if (!isset($parameters['database']) && isset($parameters['databases'])) {
-			$parameters['database'] = str_replace('*', '', $parameters['databases']);
+		if (!isset($parameters[self::DATABASE]) && isset($parameters['databases'])) {
+			$parameters[self::DATABASE] = str_replace('*', '', $parameters['databases']);
 		}
 		$this->connection = new Contextual_Mysqli(
-			$parameters['host'], $parameters['login'],
-			$parameters['password'], $parameters['database']
+			$parameters[self::HOST],     $parameters[self::LOGIN],
+			$parameters[self::PASSWORD], $parameters[self::DATABASE]
 		);
 		$this->query('SET NAMES UTF8');
 	}
