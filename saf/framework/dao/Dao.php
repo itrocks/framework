@@ -37,11 +37,7 @@ class Dao implements Configurable
 	public function __construct($configuration)
 	{
 		if (isset($configuration[self::LINKS_LIST])) {
-			foreach ($configuration[self::LINKS_LIST] as $dao_identifier => $dao_configuration) {
-				$class_name = $dao_configuration[Configuration::CLASS_NAME];
-				unset($dao_configuration[Configuration::CLASS_NAME]);
-				self::set($dao_identifier, new $class_name($dao_configuration));
-			}
+			self::$list = $configuration[self::LINKS_LIST];
 			unset($configuration[self::LINKS_LIST]);
 		}
 		$class_name = $configuration[Configuration::CLASS_NAME];
@@ -174,7 +170,13 @@ class Dao implements Configurable
 	 */
 	public static function get($dao_identifier)
 	{
-		return self::$list[$dao_identifier];
+		$dao = self::$list[$dao_identifier];
+		if (is_array($dao)) {
+			$class_name = $dao[Configuration::CLASS_NAME];
+			unset($dao[Configuration::CLASS_NAME]);
+			$dao = self::$list[$dao_identifier] = Builder::create($class_name, [$dao]);
+		}
+		return $dao;
 	}
 
 	//--------------------------------------------------------------------------- getObjectIdentifier
@@ -449,14 +451,14 @@ class Dao implements Configurable
 
 	//------------------------------------------------------------------------------------------- set
 	/**
-	 * Sets a data link into the data links list
+	 * Sets a data link or its configuration into the data links list
 	 *
-	 * @param $dao_identifier string
-	 * @param $data_link      Data_Link
+	 * @param $dao_identifier             string
+	 * @param $data_link_or_configuration Data_Link|string[]
 	 */
-	public static function set($dao_identifier, Data_Link $data_link)
+	public static function set($dao_identifier, $data_link_or_configuration)
 	{
-		self::$list[$dao_identifier] = $data_link;
+		self::$list[$dao_identifier] = $data_link_or_configuration;
 	}
 
 	//------------------------------------------------------------------------------------------ sort
