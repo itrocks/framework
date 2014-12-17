@@ -4,7 +4,7 @@ namespace SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Option;
 
 /**
- * A DAO only option
+ * A DAO only option, to restrict the action to the given list of property names
  */
 class Only implements Option
 {
