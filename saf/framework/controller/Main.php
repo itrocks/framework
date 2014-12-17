@@ -89,8 +89,7 @@ class Main
 	{
 		/** @noinspection PhpParamsInspection Built class will always be an application */
 		Application::current(Builder::create(
-			$configuration->getApplicationClassName(),
-			$configuration->getApplicationName()
+			$configuration->getApplicationClassName(), [$configuration->getApplicationName()]
 		));
 	}
 
