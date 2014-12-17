@@ -101,14 +101,14 @@ class Builder implements Activable, Registerable, Serializable
 	//---------------------------------------------------------------------------------------- create
 	/**
 	 * @param $class_name string
-	 * @param $args       mixed[]|mixed some arguments into an array, or a single non-array argument
+	 * @param $arguments  array some arguments into an array
 	 * @return object
 	 */
-	public static function create($class_name, $args = null)
+	public static function create($class_name, $arguments = [])
 	{
-		return isset($args)
-			? self::current()->newInstanceArgs($class_name, is_array($args) ? $args : [$args])
-			: self::current()->newInstance($class_name);
+		return empty($arguments)
+			? self::current()->newInstance($class_name)
+			: self::current()->newInstanceArgs($class_name, $arguments);
 	}
 
 	//----------------------------------------------------------------------------------- createClone
