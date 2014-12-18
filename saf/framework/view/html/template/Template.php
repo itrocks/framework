@@ -162,6 +162,54 @@ class Template
 		}
 	}
 
+	//--------------------------------------------------------------------------------- blackZonesInc
+	/**
+	 * Increment black zones offset starting from a $position by $increment
+	 *
+	 * @param $black_zones integer[]
+	 * @param $increment   integer
+	 * @param $position    integer
+	 */
+	protected function blackZonesInc(&$black_zones, $increment, $position = 0)
+	{
+		$new_black_zones = [];
+		foreach ($black_zones as $start => $stop) {
+			if ($start >= $position) {
+				$start += $increment;
+				$stop  += $increment;
+			}
+			$new_black_zones[$start] = $stop;
+		}
+		$black_zones = $new_black_zones;
+	}
+
+	//---------------------------------------------------------------------------------- blackZonesOf
+	/**
+	 * Search "black zones" into content
+	 *
+	 * @exemple
+	 * @param $content    string   the text to search black zones into
+	 * @param $delimiters string[] each key is the start delimiter, value is the end delimiter
+	 * @return integer[] key is the start index and value is the end index for each black zone
+	 */
+	protected function blackZonesOf($content, $delimiters)
+	{
+		$black_zones = [];
+		foreach ($delimiters as $start => $stop) {
+			$i = 0;
+			while (($i = strpos($content, $start, $i)) !== false) {
+				$j = strpos($content, $stop, $i + strlen($start));
+				if ($j === false) {
+					$j = strlen($content);
+				}
+				$black_zones[$i] = $j;
+				$i = $j;
+			}
+		}
+		ksort($black_zones);
+		return $black_zones;
+	}
+
 	//-------------------------------------------------------------------------------------- callFunc
 	/**
 	 * Calls a function and returns result
@@ -412,6 +460,24 @@ class Template
 				['&#123;', '&#125;', '&lt;!--', '--&gt;'],
 				$value
 			);
+	}
+
+	//-------------------------------------------------------------------------------- isInBlackZones
+	/**
+	 * Returns true if the $position is inside any of the $black_zones
+	 *
+	 * @param $black_zones integer[]
+	 * @param $position    integer
+	 * @return boolean
+	 */
+	protected function isInBlackZones($black_zones, $position)
+	{
+		foreach ($black_zones as $start => $stop) {
+			if (($start <= $position) && ($position <= $stop)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//----------------------------------------------------------------------------------------- parse
@@ -1554,18 +1620,24 @@ class Template
 	 */
 	protected function replaceLinks($content)
 	{
+		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textearea>']);
 		$links = ['action=', 'href=', 'location='];
-		$quotes = [Q, DQ];
 		foreach ($links as $link) {
-			foreach ($quotes as $quote) {
+			foreach ([Q, DQ] as $quote) {
 				$i = 0;
 				while (($i = strpos($content, $link . $quote, $i)) !== false) {
-					$i += strlen($link) + 1;
+					$i += strlen($link) + strlen($quote);
 					$j = strpos($content, $quote, $i);
-					if (substr($content, $i, 1) === SL) {
-						$replacement_link = $this->replaceLink(substr($content, $i, $j - $i));
-						$content = substr($content, 0, $i) . $replacement_link . substr($content, $j);
-						$i += strlen($replacement_link);
+					if ($this->isInBlackZones($black_zones, $i)) {
+						$i = $j + strlen($quote);
+					}
+					else {
+						if (substr($content, $i, 1) === SL) {
+							$replacement_uri = $this->replaceLink(substr($content, $i, $j - $i));
+							$content = substr($content, 0, $i) . $replacement_uri . substr($content, $j);
+							$this->blackZonesInc($black_zones, strlen($replacement_uri) - ($j - $i), $j);
+							$i += strlen($replacement_uri);
+						}
 					}
 				}
 			}
@@ -1616,17 +1688,24 @@ class Template
 	 */
 	protected function replaceUris($content)
 	{
+		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textearea>']);
 		$links = ['@import ', 'src=', 'loadScript('];
 		foreach ($links as $l) {
-			foreach ([DQ, Q] as $c) {
-				$link = $l . $c;
+			foreach ([DQ, Q] as $quote) {
+				$link = $l . $quote;
 				$i = 0;
 				while (($i = strpos($content, $link, $i)) !== false) {
 					$i += strlen($link);
-					$j = strpos($content, $c, $i);
-					$replaced_uri = $this->replaceUri(substr($content, $i, $j - $i));
-					$content = substr($content, 0, $i) . $replaced_uri . substr($content, $j);
-					$i += strlen($replaced_uri);
+					$j = strpos($content, $quote, $i);
+					if ($this->isInBlackZones($black_zones, $i)) {
+						$i = $j + strlen($quote);
+					}
+					else {
+						$replacement_uri = $this->replaceUri(substr($content, $i, $j - $i));
+						$content = substr($content, 0, $i) . $replacement_uri . substr($content, $j);
+						$this->blackZonesInc($black_zones, strlen($replacement_uri) - ($j - $i), $j);
+						$i += strlen($replacement_uri);
+					}
 				}
 			}
 		}
