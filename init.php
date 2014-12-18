@@ -19,6 +19,7 @@ $config_name = str_replace(BS, SL, $namespace);
 $helloworld_template = $project_dir . SL . 'Application_home.html';
 $alias_script = lLastParse(__DIR__, SL) . SL . strtolower($project_name) . '.php';
 $application_dir = rLastParse(__DIR__, SL);
+$local_file = __DIR__ . SL . 'loc.php';
 $password_file = __DIR__ . SL . 'pwd.php';
 $cache_dir = __DIR__ . SL . 'cache';
 $tmp_dir = __DIR__ . SL . 'tmp';
@@ -52,6 +53,17 @@ class Application extends Framework\Application
 EOT
 );
 
+echo '- Create local configuration file ' . $local_file . LF;
+// /pwd.php
+
+file_put_contents($local_file, <<<EOT
+<?php
+\$loc = [
+];
+
+EOT
+);
+
 echo '- Create password file ' . $password_file . LF;
 // /pwd.php
 
@@ -59,7 +71,7 @@ file_put_contents($password_file, <<<EOT
 <?php
 \$pwd = [
 	'{$username}' => '{$project_password}',
-	'saf_demo' => '',
+	'saf_demo' => ''
 ];
 
 EOT
@@ -73,20 +85,25 @@ file_put_contents($config_file, <<<EOT
 namespace {$namespace};
 
 use SAF\Framework;
+use SAF\Framework\Configuration;
+use SAF\Framework\Dao;
+use SAF\Framework\Dao\Mysql\Link;
+use SAF\Framework\Plugin\Priority;
 
-global \$pwd;
+global \$loc, \$pwd;
+require 'loc.php';
 require 'pwd.php';
 require 'saf.php';
 
 \$config['{$config_name}'] = [
-	'app'     => Application::class,
-	'extends' => 'SAF/Framework',
+	Configuration::APP         => Application::class,
+	Configuration::EXTENDS_APP => 'SAF/Framework',
 
-	'normal' => [
-		Framework\Dao::class => [
-			'database' => '{$database}',
-			'login'    => '{$username}',
-			'password' => \$pwd['{$username}']
+	Priority::NORMAL => [
+		Dao::class => [
+			Link::DATABASE => '{$database}',
+			Link::LOGIN    => '{$username}',
+			Link::PASSWORD => \$pwd['{$username}']
 		]
 	]
 ];
