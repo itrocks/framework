@@ -20,6 +20,7 @@ class Map
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * A collection of objects of the same class, linked to the same data link
+	 * Beware : $objects array is used as reference and will be altered by any changes made to the map
 	 *
 	 * @param $objects object[]
 	 */
