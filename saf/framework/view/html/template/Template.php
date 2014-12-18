@@ -1657,6 +1657,12 @@ class Template
 		if (strpos($uri, '://')) {
 			return $uri;
 		}
+		if (
+			in_array(rLastParse($uri, DOT), ['gif', 'jpg', 'png'])
+			&& file_exists(Paths::$file_root . SL . $uri)
+		) {
+			return $uri;
+		}
 		$position = strrpos($uri, '/vendor/');
 		$file_name = ($position !== false)
 			? substr($uri, $position + 1)
