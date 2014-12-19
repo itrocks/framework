@@ -121,10 +121,10 @@ body {
 
 div p {
 	&:not(:first-child) {
-		margin: 1em 0 0;
+		margin-top: 1em;
 	}
 	&:not(:last-child) {
-		margin: 0 0 1em;
+		margin-bottom: 1em;
 	}
 }
 
