@@ -55,18 +55,31 @@ class Call_Stack
 
 	//------------------------------------------------------------------------------------ getFeature
 	/**
-	 * Get current call feature from callstack
+	 * Get current call feature from call stack
 	 *
 	 * @return string|null
 	 */
 	public function getFeature()
 	{
+		/** @var $template Template */
+		if ($template = $this->getObject(Template::class)) {
+			return $template->getFeature();
+		}
+		return null;
+	}
+
+	//------------------------------------------------------------------------------------- getObject
+	/**
+	 * Get top object that is an instance of $class_name from the call stack
+	 *
+	 * @param $class_name string Can be a the name of a class, interface or trait
+	 * @return object|null
+	 */
+	public function getObject($class_name)
+	{
 		foreach ($this->stack as $stack) {
-			if (isset($stack['object']) && is_a($stack['object'], Template::class)) {
-				/** @var $template Template */
-				$template = $stack['object'];
-				$feature = $template->getFeature();
-				return $feature;
+			if (isset($stack['object']) && isA($stack['object'], $class_name)) {
+				return $stack['object'];
 			}
 		}
 		return null;
