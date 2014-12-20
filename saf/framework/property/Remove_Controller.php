@@ -5,6 +5,7 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Property;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 use SAF\Framework\Widget\Remove;
 
@@ -51,7 +52,7 @@ class Remove_Controller extends Remove\Remove_Controller
 		if ($parameters['feature_name'] == 'form') {
 			// ...
 		}
-		$parameters['template'] = 'removed';
+		$parameters[Template::TEMPLATE] = 'removed';
 		return View::run($parameters, $form, $files, Property::class, Feature::F_REMOVE);
 	}
 

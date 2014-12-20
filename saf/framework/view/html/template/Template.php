@@ -23,6 +23,11 @@ use SAF\Framework\View\Html\Template\Functions;
 class Template
 {
 
+	//----------------------------------------------------------------------------- options constants
+	const TEMPLATE           = 'template';
+	const TEMPLATE_CLASS     = 'template_class';
+	const TEMPLATE_NAMESPACE = 'template_namespace';
+
 	//-------------------------------------------------------------------------------------- $content
 	/**
 	 * Content of the template file, changed by calculated result HTML content during parse()
@@ -744,8 +749,12 @@ class Template
 			return $this->parseVars($included);
 		}
 		else {
+			$options = ['is_included' => true];
+			if (get_class($this) !== __CLASS__) {
+				$options[self::TEMPLATE_CLASS] = get_class($this);
+			}
 			// includes controller result
-			return (new Main())->runController($include_uri, ['is_included' => true]);
+			return (new Main())->runController($include_uri, $options);
 		}
 	}
 

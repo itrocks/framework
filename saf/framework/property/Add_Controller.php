@@ -6,6 +6,7 @@ use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Property;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
@@ -51,7 +52,7 @@ class Add_Controller implements Feature_Controller
 		if ($parameters['feature_name'] == 'form') {
 			// ...
 		}
-		$parameters['template'] = 'added';
+		$parameters[Template::TEMPLATE] = 'added';
 		return View::run($parameters, $form, $files, Property::class, Feature::F_ADD);
 	}
 

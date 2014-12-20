@@ -15,6 +15,7 @@ use SAF\Framework\Session;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 use SAF\Framework\Widget\Button;
 use StdClass;
 
@@ -155,7 +156,7 @@ class Import_Preview_Controller implements Default_Feature_Controller
 			);
 		}
 		// view
-		$parameters['template'] = 'importPreview';
+		$parameters[Template::TEMPLATE] = 'importPreview';
 		return View::run($parameters, $form, $files, $class_name, Feature::F_IMPORT);
 	}
 

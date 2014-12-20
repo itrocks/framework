@@ -7,6 +7,7 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\User;
 use SAF\Framework\User\Authenticate\Authentication;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 
 /**
  * The user register controller offers a registration form view
@@ -58,12 +59,12 @@ class Register_Controller implements Feature_Controller
 				}
 			}
 			if ($user) {
-				$parameters['template'] = 'confirm';
+				$parameters[Template::TEMPLATE] = 'confirm';
 				return View::run($parameters, $form, $files, User::class, 'register');
 			}
 			else {
 				$parameters['errors'] = $errors_messages;
-				$parameters['template'] = 'error';
+				$parameters[Template::TEMPLATE] = 'error';
 				return View::run($parameters, $form, $files, User::class, 'register');
 			}
 		}

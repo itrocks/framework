@@ -6,6 +6,7 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Import;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 
 /**
  * Default importForm feature controller
@@ -25,7 +26,7 @@ class Import_Form_Controller implements Default_Feature_Controller
 	{
 		$parameters = $parameters->getObjects();
 		array_unshift($parameters, new Import($class_name));
-		$parameters['template'] = 'importForm';
+		$parameters[Template::TEMPLATE] = 'importForm';
 		return View::run($parameters, $form, $files, $class_name, Feature::F_IMPORT);
 	}
 

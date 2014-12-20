@@ -8,6 +8,7 @@ use SAF\Framework\Dao\File\Builder\Post_Files;
 use SAF\Framework\Dao;
 use SAF\Framework\Mapper\Object_Builder_Array;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 
 /**
  * The default write controller will be called if no other write controller is defined
@@ -59,7 +60,7 @@ class Write_Controller implements Default_Class_Controller
 			$elements = explode(DOT, $objects['fill_combo']);
 			$objects['fill_combo'] = $elements[0] . '.elements["' . $elements[1] . '"]';
 		}
-		$objects['template'] = 'written';
+		$objects[Template::TEMPLATE] = 'written';
 		return View::run($objects, $form, $files, $class_name, 'write');
 	}
 

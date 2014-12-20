@@ -7,6 +7,7 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao\File\Session_File\Files;
 use SAF\Framework\Session;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 
 /**
  * Import execution controller
@@ -38,7 +39,7 @@ class Import_Execute_Controller implements Default_Feature_Controller
 			$import_array = new Import_Array($worksheet->settings, $import->class_name);
 			$import_array->importArray($array);
 		}
-		$parameters['template'] = 'importDone';
+		$parameters[Template::TEMPLATE] = 'importDone';
 		return View::run($parameters, $form, $files, $class_name, Feature::F_IMPORT);
 	}
 

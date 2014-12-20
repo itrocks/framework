@@ -6,6 +6,7 @@ use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Current;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
+use SAF\Framework\View\Html\Template;
 
 /**
  * The View class offers static methods to call views from the application main view engine
@@ -126,7 +127,9 @@ class View implements Configurable
 			? [$parameters['feature'], $feature_name]
 			: [$feature_name];
 		list($view_name, $view_method_name) = self::getView(
-			$class_name, $feature_names, isset($parameters['template']) ? $parameters['template'] : null
+			$class_name,
+			$feature_names,
+			isset($parameters[Template::TEMPLATE]) ? $parameters[Template::TEMPLATE] : null
 		);
 		return self::executeView(
 			$view_name, $view_method_name, $parameters, $form, $files, $class_name, $feature_name

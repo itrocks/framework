@@ -5,6 +5,7 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 use stdClass;
 
 /**
@@ -37,7 +38,7 @@ class Remove_Controller implements Feature_Controller
 		 * - key 'class_name' : the context class name (ie a business class)
 		 * - key 'feature_name' : the context feature name (ie Feature::F_OUTPUT, Feature::F_LIST)
 		 */
-		$parameters['template'] = 'remove_unavailable';
+		$parameters[Template::TEMPLATE] = 'remove_unavailable';
 		return View::run($objects, $form, $files, get_class(reset($objects)), Feature::F_REMOVE);
 	}
 
