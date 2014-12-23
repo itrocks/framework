@@ -59,7 +59,7 @@ trait Tokens_Parser
 	 * @param $use        boolean use the 'use' clause linked to the namespace
 	 * @return string
 	 */
-	private function fullClassName($class_name, $use = true)
+	public function fullClassName($class_name, $use = true)
 	{
 		return (new Type($class_name))->applyNamespace(
 			$this->namespace, $use ? array_keys($this->use) : []

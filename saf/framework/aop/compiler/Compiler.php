@@ -333,7 +333,7 @@ class Compiler implements ICompiler, Needs_Main
 			preg_match($expr, $property->getDocComment(), $match);
 			if ($match) {
 				$advice = [
-					empty($match[1]) ? '$this' : $match[1],
+					empty($match[1]) ? '$this' : $class->fullClassName($match[1]),
 					empty($match[2]) ? Names::propertyToMethod($property->name, 'get') : $match[2]
 				];
 				$properties[$property->name][] = ['read', $advice];
