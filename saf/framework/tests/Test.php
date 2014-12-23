@@ -75,6 +75,9 @@ class Test
 	}
 
 	//----------------------------------------------------------------------------------------- begin
+	/**
+	 * Begin of a unit test class
+	 */
 	public function begin()
 	{
 		echo '<h3>' . get_class($this) . '</h3>';
@@ -107,9 +110,23 @@ class Test
 	}
 
 	//------------------------------------------------------------------------------------------- end
+	/**
+	 * End of a unit test class
+	 */
 	public function end()
 	{
 		echo '</ul>';
+	}
+
+	//---------------------------------------------------------------------------------------- method
+	/**
+	 * Start test method log
+	 *
+	 * @param $method_name string
+	 */
+	public function method($method_name)
+	{
+		echo '<h4>' . $method_name . '</h4>';
 	}
 
 	//--------------------------------------------------------------------------------------- toArray

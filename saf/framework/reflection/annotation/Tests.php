@@ -41,6 +41,8 @@ class Tests extends Test
 	//----------------------------------------------------------------------------------- testForeign
 	public function testForeign()
 	{
+		$this->method('@foreign');
+
 		$this->testAnnotation('object', Order_Line::class, 'client', 'foreign', null); // 1A
 		$this->testAnnotation('object myself', Client::class, 'client', 'foreign', null); // 1B
 		$this->testAnnotation('object concurrent foreign 1', Order::class, 'client', 'foreign', null); // 1C
@@ -65,6 +67,8 @@ class Tests extends Test
 	//------------------------------------------------------------------------------- testForeignLink
 	public function testForeignlink()
 	{
+		$this->method('@foreignlink');
+
 		$this->testAnnotation('object', Order_Line::class, 'client', 'foreignlink', 'client'); // 1A
 		$this->testAnnotation('object myself', Client::class, 'client', 'foreignlink', 'client'); // 1B
 		$this->testAnnotation('object concurrent foreign 1', Order::class, 'client', 'foreignlink', 'client'); // 1C

@@ -26,6 +26,8 @@ class Tests extends Test
 	 */
 	public function testGetterAnnotation()
 	{
+		$this->method('@getter');
+
 		$property = new Reflection_Property(self::class, 'property');
 		// @getter methodName
 		$this->assume(
