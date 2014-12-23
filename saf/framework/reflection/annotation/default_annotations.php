@@ -118,6 +118,10 @@ Parser::$default_annotations = [
 	// Tells how many decimals are stored/displayed on a float number, ie 0.5513 in ok in this case
 	__NAMESPACE__ . '\Property\Precision_Annotation' => Annotation::class,
 
+	// @read_only [false]
+	// Set this annotation to set the property in read-only mode : it can't be set
+	__NAMESPACE__ . '\Property\Read_Only_Annotation' => Boolean_Annotation::class,
+
 	// @replace_filter [false]
 	// This tells that this property must be used as a filter when replacing the object references by
 	// another object
