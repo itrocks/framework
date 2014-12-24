@@ -1,14 +1,18 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Property;
 
+use SAF\Framework\Mapper\Component;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use SAF\Framework\Tools\Date_Time;
 
 /**
  * Link annotation defines which kind of link is defined for an object or array of objects property
  *
  * Value can be 'All', 'Collection', 'DateTime', 'Map', 'Object'
  */
-class Link_Annotation extends Annotation
+class Link_Annotation extends Annotation implements Property_Context_Annotation
 {
 
 	//--------------------------------------------------------------------------------- $value values
@@ -22,9 +26,16 @@ class Link_Annotation extends Annotation
 	/**
 	 * @param string $value
 	 */
-	public function __construct($value)
+	public function __construct($value, Reflection_Property $property)
 	{
 		$possibles = [self::ALL, self::COLLECTION, self::DATETIME, self::MAP, self::OBJECT];
+		if (
+			empty($value)
+			&& $property->getType()->isClass()
+			&& ($stored = $property->getFinalClass()->getAnnotation('stored')->value)
+		) {
+			$value = $this->guessValue($property);
+		}
 		if (!empty($value) && !in_array($value, $possibles)) {
 			trigger_error(
 				'@link ' . $value . ' is a bad value : only ' . join(', ', $possibles) . ' can be used',
@@ -33,6 +44,40 @@ class Link_Annotation extends Annotation
 			$value = '';
 		}
 		parent::__construct($value);
+	}
+
+	//------------------------------------------------------------------------------------ guessValue
+	/**
+	 * Guess value for @link using the type of the property (@var)
+	 * - property is a Date_Time (or a child class) : @link will be 'DateTime'
+	 * - property is a single object : @link will be 'Object'
+	 * - property is a collection object with '@var Object[] All' : @link will be 'All'
+	 * - property is a collection object with '@var Object[] Collection' : @link will be 'Collection'
+	 * - property is a collection object with '@var Object[] Map' : @link will be 'Map'
+	 * - property is a collection object without telling anything :
+	 *   - @link will be 'Collection' if the object is a Component
+	 *   - @link will be 'Map' if the object is not a Component
+	 *
+	 * @param $property Reflection_Property
+	 * @return string returned guessed value for @link
+	 */
+	private function guessValue(Reflection_Property $property)
+	{
+		if ($property->getType()->isMultiple()) {
+			/** @var $var_annotation Var_Annotation */
+			$value = lParse($property->getAnnotation('var'), SP);
+			if (empty($value)) {
+				$value = isA($property->getType()->getElementTypeAsString(), Component::class)
+					? self::COLLECTION
+					: self::MAP;
+			}
+		}
+		else {
+			$value = isA($property->getType()->asString(), Date_Time::class)
+				? self::DATETIME
+				: self::OBJECT;
+		}
+		return $value;
 	}
 
 	//----------------------------------------------------------------------------------------- isAll

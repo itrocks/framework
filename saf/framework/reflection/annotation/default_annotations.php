@@ -5,6 +5,7 @@ use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 
 //-------------------------------------------------------------------- Parser::$default_annotations
 /**
@@ -12,17 +13,17 @@ use SAF\Framework\Reflection\Annotation;
  */
 Parser::$default_annotations = [
 
-	// @before_build_array beforeBuildArray
-	// This is a Multiple_Annotation
-	// Declare one or several methods to call before the object is built from an array representation
-	// - These methods may accept an array as first reference argument, if needed
-	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Annotation::class,
-
 	// @after_write afterWrite
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call after the object is written using a data link
 	// - These methods may accept a Dao\Option[] as first argument, if needed
 	__NAMESPACE__ . '\Class_\After_Write_Annotation' => Annotation::class,
+
+	// @before_build_array beforeBuildArray
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call before the object is built from an array representation
+	// - These methods may accept an array as first reference argument, if needed
+	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Annotation::class,
 
 	// @before_write beforeWrite
 	// This is a Multiple_Annotation
@@ -34,6 +35,14 @@ Parser::$default_annotations = [
 	// @deprecated [false]
 	// Identifies a deprecated class
 	__NAMESPACE__ . '\Class_\Deprecated_Annotation' => Boolean_Annotation::class,
+
+	// @stored [false]
+	// Identifies a class that may be stored using data links
+	// When this annotation is set, this enables simplified / implicit use of @link
+	// ie "@link Object" and @link DateTime" will be implicit (you won't need it)
+	// ie "@link All", "@link Collection", "@link Map"
+	//   will be replaced by "@var Object[] All", "@var Object[] Collection" and "@var Object[] Map"
+	__NAMESPACE__ . '\Class_\Stored_Annotation' => Boolean_Annotation::class,
 
 	// @deprecated [false]
 	// Identifies a deprecated method
@@ -73,6 +82,11 @@ Parser::$default_annotations = [
 	// This annotation stores the name of the Dao that should always used for a linked object,
 	// map or collection property. Use it in conjunction with @link and @var annotations.
 	__NAMESPACE__ . '\Property\Dao_Annotation' => Annotation::class,
+
+	// @default [[\Class\Namespace\]Class_Name::]methodName
+	// Identifies a method that gets the default value for the property
+	// The Property will be sent as an argument to this callable
+	__NAMESPACE__ . '\Property\Default_Annotation' => Method_Annotation::class,
 
 	// @deprecated [false]
 	// Identifies a deprecated property
@@ -132,11 +146,11 @@ Parser::$default_annotations = [
 	// property and this property will point on the same reference and have a common value
 	__NAMESPACE__ . '\Property\Replaces_Annotation' => Annotation::class,
 
-	// @setter [[Vendor\Module\Class_Name::]methodName]
+	// @setter [[[\Vendor\Module\]Class_Name::]methodName]
 	// This is a Multiple_Annotation
 	// Tells a method name that is the setter for that property.
 	// The setter will be called each time the program changes the value of the property.
-	__NAMESPACE__ . '\Property\Setter_Annotation' => Annotation::class,
+	__NAMESPACE__ . '\Property\Setter_Annotation' => Method_Annotation::class,
 
 	// @signed
 	// Tells that the numeric value can be negative.

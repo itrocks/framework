@@ -1,7 +1,9 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Property;
 
+use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Reflection\Annotation\Annoted;
+use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tests\Test;
 
@@ -14,11 +16,40 @@ class Tests extends Test
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * A fictive local property, for unit tests use only
-	 * We don't care any of its annotations or values
+	 * Annotations set here are used only for the test that uses @link
 	 *
-	 * @var string
+	 * @default getDefaultPropertyValue
+	 * @link Collection
+	 * @var Tests[]
 	 */
 	private /* @noinspection PhpUnusedPrivateFieldInspection */ $property;
+
+	//----------------------------------------------------------------------- getDefaultPropertyValue
+	/**
+	 * Get the default property value, for test of @default annotation
+	 *
+	 * @param $property Interfaces\Reflection_Property
+	 * @return string
+	 */
+	/* @noinspection PhpMissingDocCommentInspection */
+	public static function getDefaultPropertyValue(Interfaces\Reflection_Property $property)
+	{
+		return 'default value for ' . $property->getName();
+	}
+
+	//------------------------------------------------------------------------- testDefaultAnnotation
+	public function testDefaultAnnotation()
+	{
+		$this->method('@default');
+		$property = new Reflection_Property(self::class, 'property');
+
+		// @default getDefaultPropertyValue
+		$this->assume(
+			'methodName',
+			$property->getDefaultValue(),
+			'default value for property'
+		);
+	}
 
 	//-------------------------------------------------------------------------- testGetterAnnotation
 	/**
@@ -27,13 +58,13 @@ class Tests extends Test
 	public function testGetterAnnotation()
 	{
 		$this->method('@getter');
-
 		$property = new Reflection_Property(self::class, 'property');
+
 		// @getter methodName
 		$this->assume(
 			'methodName',
 			(new Getter_Annotation('testGetterAnnotation', $property))->value,
-			'testGetterAnnotation'
+			__CLASS__ . '::testGetterAnnotation'
 		);
 		// @getter Local_Class_Name::methodName
 		$this->assume(
@@ -53,6 +84,12 @@ class Tests extends Test
 			'use Class_Name::methodName',
 			(new Getter_Annotation('Annoted::has', $property))->value,
 			Annoted::class . '::has'
+		);
+		// default value for getter when there is a @link annotation
+		$this->assume(
+			'default value when @link',
+			$property->getAnnotation('getter')->value,
+			Getter::class . '::getCollection'
 		);
 	}
 

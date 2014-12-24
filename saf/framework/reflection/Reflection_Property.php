@@ -166,6 +166,11 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getDefaultValue()
 	{
+		$default_method = $this->getAnnotation('default')->value;
+		if ($default_method) {
+			$default_callable = explode('::', $default_method);
+			return call_user_func($default_callable, $this);
+		}
 		return $this->getDeclaringClass()->getDefaultProperties()[$this->name];
 	}
 
@@ -216,7 +221,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Gets the class @override property doc comment that overrides the original property doc comment
 	 *
-	 * @return Override_Annotation[]
+	 * @return string
 	 */
 	private function getOverrideDocComment()
 	{
@@ -285,6 +290,26 @@ class Reflection_Property extends ReflectionProperty
 		return $type;
 	}
 
+	//---------------------------------------------------------------------------- isEquivalentObject
+	/**
+	 * Return true if the both objects match.
+	 * If one is an object and the other is an integer, compare $objectX->id with $objectY
+	 *
+	 * @param $object1 object|integer
+	 * @param $object2 object|integer
+	 * @return boolean
+	 */
+	private function isEquivalentObject($object1, $object2)
+	{
+		if (is_object($object1) && isset($object1->id)) {
+			$object1 = $object1->id;
+		}
+		if (is_object($object2) && isset($object2->id)) {
+			$object2 = $object2->id;
+		}
+		return ($object1 == $object2);
+	}
+
 	//------------------------------------------------------------------------- isValueEmptyOrDefault
 	/**
 	 * Returns true if property is empty or equals to the default value
@@ -297,7 +322,7 @@ class Reflection_Property extends ReflectionProperty
 	public function isValueEmptyOrDefault($value)
 	{
 		return empty($value)
-			|| ($value === $this->getDefaultValue())
+			|| $this->isEquivalentObject($value, $this->getDefaultValue())
 			|| (($value === '0000-00-00') && $this->getType()->isDateTime())
 			|| (($value instanceof Date_Time) && $value->isEmpty());
 	}

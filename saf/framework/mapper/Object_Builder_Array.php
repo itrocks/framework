@@ -287,8 +287,9 @@ class Object_Builder_Array
 	{
 		$is_null = $null_if_empty;
 		$real_property_name = substr($property_name, 3);
+		$property = $this->properties[$real_property_name];
 		if (empty($value)) {
-			$value = $this->properties[$real_property_name]->getAnnotation('null')->value ? null : 0;
+			$value = $property->getAnnotation('null')->value ? null : 0;
 		}
 		if (isset($object->$real_property_name) && (
 			empty($value)
@@ -298,7 +299,7 @@ class Object_Builder_Array
 			$object->$real_property_name = null;
 		}
 		$object->$property_name = $value;
-		if ($value) {
+		if (!$property->isValueEmptyOrDefault($value)) {
 			$is_null = false;
 		}
 		return $is_null;
