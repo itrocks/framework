@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Namespaces;
@@ -81,45 +82,45 @@ class Html_Template extends Template
 	{
 		$property = reset($this->objects);
 		if (($property instanceof Reflection_Property_Value) && ($var_name == 'value')) {
-			$value = $property->getType()->isBoolean()
-				? $property->value()
-				: parent::parseSingleValue($var_name, false);
-			if (
-				($preprop = lLastParse($property->pathAsField(), '[', 1, false))
-				&& (
-					!isset($this->cache['parsed_id'])
-					|| !isset($this->cache['parsed_id'][$this->getFormId()])
-					|| !isset($this->cache['parsed_id'][$this->getFormId()][$preprop])
-				)
-			) {
-				$this->cache['parsed_id'][$this->getFormId()][$preprop] = true;
-				if ($property instanceof Reflection_Property_Value) {
-					$parent_object = $property->getObject();
-					$id = isset($parent_object) ? Dao::getObjectIdentifier($parent_object) : null;
-					$id_value = (new Html_Builder_Type('id', null, $id, $preprop))->build();
-				}
-				else {
-					$id_value = '';
-				}
-			}
-			else {
-				$id_value = '';
-			}
-			if ($property->getAnnotation('output')->value == 'string') {
-				$property->setAnnotationLocal('var')->value = 'string';
-				$value = isset($value) ? strval($value) : null;
-				$id_value = '';
-			}
 			if (
 				($builder = $property->getAnnotation('widget')->value)
 				&& is_a($builder, Property::class, true)
 			) {
-				$builder = Builder::create($builder, [$property, $value, $this]);
+				$builder = Builder::create($builder, [$property, $property->value(), $this]);
 				/** @var $builder Property */
-				$builder->parameters['edit'] = ' edit';
+				$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
 				$value = $builder->buildHtml();
 			}
 			else {
+				$value = $property->getType()->isBoolean()
+					? $property->value()
+					: parent::parseSingleValue($var_name, false);
+				if (
+					($preprop = lLastParse($property->pathAsField(), '[', 1, false))
+					&& (
+						!isset($this->cache['parsed_id'])
+						|| !isset($this->cache['parsed_id'][$this->getFormId()])
+						|| !isset($this->cache['parsed_id'][$this->getFormId()][$preprop])
+					)
+				) {
+					$this->cache['parsed_id'][$this->getFormId()][$preprop] = true;
+					if ($property instanceof Reflection_Property_Value) {
+						$parent_object = $property->getObject();
+						$id       = isset($parent_object) ? Dao::getObjectIdentifier($parent_object) : null;
+						$id_value = (new Html_Builder_Type('id', null, $id, $preprop))->build();
+					}
+					else {
+						$id_value = '';
+					}
+				}
+				else {
+					$id_value = '';
+				}
+				if ($property->getAnnotation('output')->value == 'string') {
+					$property->setAnnotationLocal('var')->value = 'string';
+					$value    = isset($value) ? strval($value) : null;
+					$id_value = '';
+				}
 				$value = $id_value
 					. (new Html_Builder_Property($property, $value))->setTemplate($this)->build();
 			}
