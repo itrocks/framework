@@ -32,14 +32,14 @@
     .list.window > table > thead > tr {
       height: 17px; }
       .list.window > table > thead > tr > th {
-        background: url("img/list_head_left.png") left 3px no-repeat, url("img/list_head_right.png") right 3px no-repeat, url("img/list_head_background.png") left 0 #aaaaaa repeat-x;
+        background: url("img/list_head_left.png") left 3px no-repeat, url("img/list_head_right.png") right 3px no-repeat, url("img/list_head_background.png") left 0 #aaa repeat-x;
         vertical-align: bottom;
         white-space: nowrap;
         /* column select */
         /* head anchor */
         /* sorting */ }
         .list.window > table > thead > tr > th.column_select {
-          background: url("img/list_head_right.png") right 3px no-repeat, url("img/column_select.png") center 5px no-repeat, url("img/list_head_background.png") #aaaaaa repeat-x;
+          background: url("img/list_head_right.png") right 3px no-repeat, url("img/column_select.png") center 5px no-repeat, url("img/list_head_background.png") #aaa repeat-x;
           position: relative; }
           .list.window > table > thead > tr > th.column_select > a {
             color: transparent;

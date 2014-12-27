@@ -30,7 +30,7 @@
   background-color: #93c437;
   color: white; }
 .menu > ul li.administration > h3 {
-  background-color: #222222;
+  background-color: #222;
   color: white; }
 .menu > ul li.base_data > h3 {
   background-color: #a0a0a0;
@@ -50,7 +50,7 @@
   background-color: #93c437;
   color: white; }
 .window.agency > h2, .window.agency > select.customized, .window.agencies > h2, .window.agencies > select.customized, .window.company > h2, .window.company > select.customized, .window.companies > h2, .window.companies > select.customized, .window.plugin > h2, .window.plugin > select.customized, .window.plugins > h2, .window.plugins > select.customized, .window.setting > h2, .window.setting > select.customized, .window.settings > h2, .window.settings > select.customized, .window.user > h2, .window.user > select.customized, .window.users > h2, .window.users > select.customized {
-  background-color: #222222;
+  background-color: #222;
   color: white; }
 .window.address > h2, .window.addresses > h2, .window.city > h2, .window.cities > h2, .window.civility > h2, .window.civilities > h2, .window.contact > h2, .window.contacts > h2, .window.country > h2, .window.countries > h2, .window.mean_of_payment > h2, .window.mean_of_payments > h2, .window.size_unit > h2, .window.size_units > h2, .window.term_of_payment > h2, .window.term_of_payments > h2, .window.vat_code > h2, .window.vat_codes > h2, .window.vat_value > h2, .window.vat_values > h2, .window.weight_unit > h2, .window.weight_units > h2 {
   background-color: #a0a0a0;

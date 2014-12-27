@@ -20,7 +20,7 @@
         font-size: 1.1em;
         padding: 4px; }
       .plugins.list.window > .plugins > .plugin > img {
-        background: #fafafa url("img/plugin64.png") center no-repeat;
+        background: #FAFAFA url("img/plugin64.png") center no-repeat;
         border-right: 1px solid darkgrey;
         float: left;
         height: 64px;
