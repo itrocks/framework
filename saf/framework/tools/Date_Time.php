@@ -227,6 +227,17 @@ class Date_Time extends DateTime
 		return new Date_Time(self::$min_date);
 	}
 
+	//------------------------------------------------------------------------------------------- now
+	/**
+	 * Return current date-time
+	 *
+	 * @return Date_Time
+	 */
+	public static function now()
+	{
+		return new Date_Time();
+	}
+
 	//------------------------------------------------------------------------------------------- sub
 	/**
 	 * Increments a date for a given unit
