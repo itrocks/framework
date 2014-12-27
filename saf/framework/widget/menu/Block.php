@@ -43,4 +43,13 @@ class Block
 	 */
 	public $title_link_target;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->title);
+	}
+
 }
