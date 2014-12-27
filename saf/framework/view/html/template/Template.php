@@ -1094,13 +1094,21 @@ class Template
 			$object = $this->parseConstant($property_name);
 		}
 		elseif (isset($this->parse_class_name)) {
-			$object = method_exists($this->parse_class_name, $property_name)
-				? $this->parseStaticMethod($this->parse_class_name, $property_name)
-				: (
-					property_exists($this->parse_class_name, $property_name)
-					? $this->parseStaticProperty($this->parse_class_name, $property_name)
-					: isA($this->parse_class_name, $this->parseClassName($property_name))
-				);
+			if ($property_name === 'class') {
+				$object = $this->parse_class_name;
+			}
+			elseif (method_exists($this->parse_class_name, $property_name)) {
+				$object = $this->parseStaticMethod($this->parse_class_name, $property_name);
+			}
+			elseif (property_exists($this->parse_class_name, $property_name)) {
+				$object = $this->parseStaticProperty($this->parse_class_name, $property_name);
+			}
+			elseif (defined($this->parse_class_name . '::' . $property_name)) {
+				$object = constant($this->parse_class_name . '::' . $property_name);
+			}
+			else {
+				$object = isA($this->parse_class_name, $this->parseClassName($property_name));
+			}
 			$this->parse_class_name = null;
 		}
 		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
