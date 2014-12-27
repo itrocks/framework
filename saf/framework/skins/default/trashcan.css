@@ -11,3 +11,5 @@
     float: right;
     height: 32px;
     width: 32px; }
+  #trashcan h2 {
+    display: none; }
