@@ -154,6 +154,12 @@ class Template
 	 */
 	public function __construct($object = null, $template_file = null, $feature_name = null)
 	{
+		if (isset($feature_name)) {
+			$this->feature = $feature_name;
+			if (!isset($template_file)) {
+				$template_file = Engine::getTemplateFile(get_class($object), [$feature_name]);
+			}
+		}
 		if (isset($object)) {
 			array_unshift($this->var_names, 'root');
 			array_unshift($this->objects, $object);
@@ -161,9 +167,6 @@ class Template
 		if (isset($template_file)) {
 			$this->path    = substr($template_file, 0, strrpos($template_file, SL));
 			$this->content = file_get_contents($template_file);
-		}
-		if (isset($feature_name)) {
-			$this->feature = $feature_name;
 		}
 	}
 
