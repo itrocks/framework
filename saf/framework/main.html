@@ -1,3 +1,8 @@
+<!--use SAF\Framework\Html_Session-->
+<!--use SAF\Framework\Locale\Loc-->
+<!--use SAF\Framework\Session-->
+<!--use SAF\Framework\Tools\Paths-->
+<!--use SAF\Framework\Widget\Menu-->
 <!DOCTYPE html>
 <html>
 
@@ -50,9 +55,6 @@
 
 	<script type="text/javascript" src="js/default.application.js"></script>
 
-	<!--use SAF\Framework\Html_Session-->
-	<!--use SAF\Framework\Locale\Loc-->
-	<!--use SAF\Framework\Tools\Paths-->
 	<script type="text/javascript">
 		window.app = new App(
 			'{PHPSESSID}', '{Paths.uri_root}', '{Paths.script_name}', '{Paths.project_uri}',
@@ -104,9 +106,11 @@
 	</ul>
 </header>
 
+<!--Session.current.plugins.get(Menu.class)-->
 <nav class="menu output">
-	{/SAF/Framework/Widget/Menu/output}
+	{/SAF/Framework/Widget/Menu/output.html}
 </nav>
+<!--Session.current.plugins.get(Menu.class)-->
 
 <section id="main">
 	{@content}
