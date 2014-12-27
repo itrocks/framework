@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Property;
 
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper\Component;
@@ -31,7 +32,7 @@ class Search_Controller extends Select_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$parameters->set('container', 'inside_tree');
+		$parameters->set(Parameter::CONTAINER, 'inside_tree');
 		$search = $parameters->getRawParameter('search');
 		if (empty($search)) {
 			return parent::run($parameters, $form, $files);

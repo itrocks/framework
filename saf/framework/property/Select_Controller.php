@@ -2,6 +2,7 @@
 namespace SAF\Framework\Property;
 
 use SAF\Framework\Controller\Feature_Controller;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Property;
@@ -99,8 +100,8 @@ class Select_Controller implements Feature_Controller
 			foreach ($properties as $property) {
 				$property->path = $property_path . DOT . $property->name;
 			}
-			if (!$parameters->getRawParameter('container')) {
-				$parameters->set('container', 'subtree');
+			if (!$parameters->getRawParameter(Parameter::CONTAINER)) {
+				$parameters->set(Parameter::CONTAINER, 'subtree');
 			}
 		}
 		$objects = $parameters->getObjects();

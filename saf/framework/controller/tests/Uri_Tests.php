@@ -2,6 +2,7 @@
 namespace SAF\Framework\Controller\Tests;
 
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Uri;
 use SAF\Framework\Tests\Objects\Order;
@@ -22,7 +23,7 @@ class Uri_Tests extends Test
 		$controller_uri = new Uri(
 			'/SAF/Framework/Widget/Tab/remove/'
 				. Names::classToSet(Order::class) . SL . Feature::F_LIST . '/date/number',
-			['as_widget' => 1, '_' => 2]
+			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		$this->assume(
 			__METHOD__,
@@ -35,8 +36,8 @@ class Uri_Tests extends Test
 				'controller_name' => Tab::class,
 				'feature_name' => Feature::F_REMOVE,
 				'parameters' => (new Parameters())->addValue(Names::classToSet(Order::class))
-					->addValue(Feature::F_LIST)->addValue('date')->addValue('number')->set('as_widget', 1)
-					->set('_', 2)->getRawParameters()
+					->addValue(Feature::F_LIST)->addValue('date')->addValue('number')
+					->set(Parameter::AS_WIDGET, true)->set('_', 2)->getRawParameters()
 			]
 		);
 	}
@@ -141,7 +142,8 @@ class Uri_Tests extends Test
 	public function testListRemoveWithArguments()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Tests/Objects/Orders/listRemove/date/number', ['as_widget' => 1, '_' => 2]
+			'/SAF/Framework/Tests/Objects/Orders/listRemove/date/number',
+			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		$this->assume(
 			__METHOD__,
@@ -154,7 +156,7 @@ class Uri_Tests extends Test
 				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
 				'feature_name' => 'listRemove',
 				'parameters' => (new Parameters())->addValue('date')->addValue('number')
-					->set('as_widget', 1)->set('_', 2)->getRawParameters()
+					->set(Parameter::AS_WIDGET, true)->set('_', 2)->getRawParameters()
 			]
 		);
 	}
@@ -164,7 +166,7 @@ class Uri_Tests extends Test
 	{
 		$controller_uri = new Uri(
 			'/SAF/Framework/Widget/Trashcan/drop/Order/1/' . Feature::F_OUTPUT . '/date/number',
-			['as_widget' => 1, '_' => 2]
+			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		$this->assume(
 			__METHOD__,
@@ -177,7 +179,7 @@ class Uri_Tests extends Test
 				'controller_name' => Trashcan::class,
 				'feature_name' => 'drop',
 				'parameters' => (new Parameters())->set('Order', 1)->addValue(Feature::F_OUTPUT)
-					->addValue('date')->addValue('number')->set('as_widget', 1)->set('_', 2)
+					->addValue('date')->addValue('number')->set(Parameter::AS_WIDGET, true)->set('_', 2)
 					->getRawParameters()
 			]
 		);
@@ -210,7 +212,7 @@ class Uri_Tests extends Test
 	{
 		$controller_uri = new Uri(
 			'/SAF/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number',
-			['as_widget' => 1, '_' => 2]
+			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		$this->assume(
 			__METHOD__,
@@ -223,7 +225,7 @@ class Uri_Tests extends Test
 				'controller_name' => Trashcan::class,
 				'feature_name' => 'drop',
 				'parameters' => (new Parameters())->addValue('Orders')->addValue(Feature::F_LIST)
-					->addValue('date')->addValue('number')->set('as_widget', 1)->set('_', 2)
+					->addValue('date')->addValue('number')->set(Parameter::AS_WIDGET, true)->set('_', 2)
 					->getRawParameters()
 			]
 		);

@@ -2,6 +2,7 @@
 namespace SAF\Framework\Dao\Mysql;
 
 use SAF\Framework\Controller\Main;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Tools\Contextual_Mysqli;
@@ -48,7 +49,7 @@ class Delete_And_Replace implements Registerable
 			$id = $this->extractId($query);
 			if ($id) {
 				$controller_uri = SL . $object->context . SL . $id . SL . 'deleteAndReplace';
-				echo (new Main())->runController($controller_uri, ['as_widget' => true]);
+				echo (new Main())->runController($controller_uri, [Parameter::AS_WIDGET => true]);
 			}
 		}
 	}

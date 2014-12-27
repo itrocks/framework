@@ -2,6 +2,7 @@
 namespace SAF\Framework\User;
 
 use SAF\Framework\Controller\Main;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
@@ -69,8 +70,8 @@ class Access_Control implements Configurable, Registerable
 			elseif (!$this->exception($uri)) {
 				$uri = '/SAF/Framework/User/login';
 				$_get = [];
-				if (isset($get['as_widget']))   $_get['as_widget']   = true;
-				if (isset($get['is_included'])) $_get['is_included'] = true;
+				if (isset($get[Parameter::AS_WIDGET]))   $_get[Parameter::AS_WIDGET]   = true;
+				if (isset($get[Parameter::IS_INCLUDED])) $_get[Parameter::IS_INCLUDED] = true;
 				$get   = $_get;
 				$post  = [];
 				$files = [];

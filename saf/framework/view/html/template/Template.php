@@ -4,6 +4,7 @@ namespace SAF\Framework\View\Html;
 use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Main;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -626,9 +627,9 @@ class Template
 	 */
 	protected function parseContainer($content)
 	{
-		if (isset($this->parameters['container'])) {
-			$container_begin = 'BEGIN:' . $this->parameters['container'];
-			$container_end = 'END:' . $this->parameters['container'];
+		if (isset($this->parameters[Parameter::CONTAINER])) {
+			$container_begin = 'BEGIN:' . $this->parameters[Parameter::CONTAINER];
+			$container_end = 'END:' . $this->parameters[Parameter::CONTAINER];
 		}
 		else {
 			$container_begin = 'BEGIN';
@@ -638,7 +639,7 @@ class Template
 		if ($i !== false) {
 			$i += strlen($container_begin) + 7;
 			$j = strrpos($content, '<!--' . $container_end . '-->', $i);
-			if (isset($this->parameters['as_widget'])) {
+			if (isset($this->parameters[Parameter::AS_WIDGET])) {
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
@@ -682,7 +683,7 @@ class Template
 	protected function parseFullPage($content)
 	{
 		$content = $this->parseVars($content);
-		if (!isset($this->parameters['is_included'])) {
+		if (!isset($this->parameters[Parameter::IS_INCLUDED])) {
 			$content = $this->replaceLinks($content);
 			$content = $this->replaceUris($content);
 		}
@@ -752,7 +753,7 @@ class Template
 			return $this->parseVars($included);
 		}
 		else {
-			$options = ['is_included' => true];
+			$options = [Parameter::IS_INCLUDED => true];
 			if (get_class($this) !== __CLASS__) {
 				$options[self::TEMPLATE_CLASS] = get_class($this);
 			}
@@ -1770,8 +1771,8 @@ class Template
 	 */
 	public function setParameters($parameters)
 	{
-		if (isset($parameters['is_included'])) {
-			$parameters['as_widget'] = true;
+		if (isset($parameters[Parameter::IS_INCLUDED])) {
+			$parameters[Parameter::AS_WIDGET] = true;
 		}
 		$this->parameters = $parameters;
 	}
