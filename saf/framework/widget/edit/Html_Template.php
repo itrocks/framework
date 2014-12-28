@@ -15,6 +15,9 @@ use SAF\Framework\View\Html\Template;
 class Html_Template extends Template
 {
 
+	//----------------------------------------------------------------------------- options constants
+	const PROPAGATE = false;
+
 	//---------------------------------------------------------------------------------------- $cache
 	/**
 	 * Some caches ie to know if id where already defined, to increment some counters.

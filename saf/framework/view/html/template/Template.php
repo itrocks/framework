@@ -25,6 +25,7 @@ class Template
 {
 
 	//----------------------------------------------------------------------------- options constants
+	const PROPAGATE          = true;
 	const TEMPLATE           = 'template';
 	const TEMPLATE_CLASS     = 'template_class';
 	const TEMPLATE_NAMESPACE = 'template_namespace';
@@ -754,7 +755,7 @@ class Template
 		}
 		else {
 			$options = [Parameter::IS_INCLUDED => true];
-			if (get_class($this) !== __CLASS__) {
+			if (static::PROPAGATE && (get_class($this) !== __CLASS__)) {
 				$options[self::TEMPLATE_CLASS] = get_class($this);
 			}
 			// includes controller result
