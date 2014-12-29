@@ -17,20 +17,20 @@ Parser::$default_annotations = [
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call after the object is written using a data link
 	// - These methods may accept a Dao\Option[] as first argument, if needed
-	__NAMESPACE__ . '\Class_\After_Write_Annotation' => Annotation::class,
+	__NAMESPACE__ . '\Class_\After_Write_Annotation' => Method_Annotation::class,
 
 	// @before_build_array beforeBuildArray
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call before the object is built from an array representation
 	// - These methods may accept an array as first reference argument, if needed
-	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Annotation::class,
+	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Method_Annotation::class,
 
 	// @before_write beforeWrite
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call before the object is written using a data link
 	// - These methods may accept a Dao\Option[] as first argument, if needed
 	// - These methods may return false to cancel the writing of the object
-	__NAMESPACE__ . '\Class_\Before_Write_Annotation' => Annotation::class,
+	__NAMESPACE__ . '\Class_\Before_Write_Annotation' => Method_Annotation::class,
 
 	// @deprecated [false]
 	// Identifies a deprecated class
@@ -104,13 +104,13 @@ Parser::$default_annotations = [
 	// Tells what maximal count of characters can have the value of the property
 	__NAMESPACE__ . '\Property\Max_Length_Annotation' => Annotation::class,
 
-	// @min_length 10
-	// Tells what is the minimal count of characters for the value of the property
-	__NAMESPACE__ . '\Property\Min_Length_Annotation' => Annotation::class,
-
 	// @max_value 40
 	// Tells what is the maximal allowed value for the property
 	__NAMESPACE__ . '\Property\Max_Value_Annotation' => Annotation::class,
+
+	// @min_length 10
+	// Tells what is the minimal count of characters for the value of the property
+	__NAMESPACE__ . '\Property\Min_Length_Annotation' => Annotation::class,
 
 	// @min_value -5
 	// Tells what is the minimal allowed value for the property
@@ -165,6 +165,6 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Property\Textile_Annotation' => Boolean_Annotation::class,
 
 	// @user_getter [Vendor\Module\Class_Name::]methodName
-	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Annotation::class,
+	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Method_Annotation::class,
 
 ];
