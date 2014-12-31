@@ -4,6 +4,7 @@ namespace SAF\Framework\Reflection\Annotation\Property;
 use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -19,10 +20,11 @@ class Getter_Annotation extends Method_Annotation
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value   string
-	 * @param $property Reflection_Property
+	 * @param $property Reflection
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct($value, Reflection $property)
 	{
+		/** @var $property Reflection_Property */
 		parent::__construct($value, $property);
 		if (empty($this->value)) {
 			$link = ($property->getAnnotation('link')->value);

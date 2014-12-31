@@ -3,6 +3,7 @@ namespace SAF\Framework\Reflection\Annotation\Template;
 
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -15,19 +16,27 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
  *
  * Used by Property\Default_Annotation, Property\Getter_Annotation, Property\Setter_Annotation
  */
-class Method_Annotation extends Annotation implements Property_Context_Annotation
+class Method_Annotation extends Annotation implements Reflection_Context_Annotation
 {
+
+	//--------------------------------------------------------------------------------------- $static
+	/**
+	 * @var boolean
+	 */
+	public $static = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value   string
-	 * @param $property Reflection_Property
+	 * @param $value          string
+	 * @param $class_property Reflection
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct($value, Reflection $class_property)
 	{
 		if (!empty($value)) {
+			$class = ($class_property instanceof Reflection_Property)
+				? $class_property->getFinalClass()
+				: $class_property;
 			if ($pos = strpos($value, '::')) {
-				$class           = $property->getFinalClass();
 				$type_annotation = new Type_Annotation(substr($value, 0, $pos), $class);
 				$type_annotation->applyNamespace($class->getNamespaceName());
 				if (!@class_exists($type_annotation->value)) {
@@ -38,12 +47,30 @@ class Method_Annotation extends Annotation implements Property_Context_Annotatio
 					);
 				}
 				$value = $type_annotation->value . substr($value, $pos);
+				$this->static = true;
 			}
 			else {
-				$value = $property->getFinalClassName() . '::' . $value;
+				$value = $class->getName() . '::' . $value;
 			}
 		}
 		parent::__construct($value);
+	}
+
+	//------------------------------------------------------------------------------------------ call
+	/**
+	 * The $object argument will be the first argument before $arguments in case of a static call
+	 * If the value is a method for the current object, only $arguments will be sent
+	 *
+	 * @param $object    object the object will be the first
+	 * @param $arguments array
+	 * @return mixed the value returned by the called method
+	 */
+	public function call($object, $arguments = [])
+	{
+		if ($this->static) {
+			return call_user_func_array($this->value, array_merge([$object], $arguments));
+		}
+		return call_user_func_array([$object, rParse($this->value, '::')], $arguments);
 	}
 
 }

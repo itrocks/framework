@@ -14,6 +14,7 @@ use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -695,7 +696,8 @@ class Link extends Dao\Sql\Link
 		foreach (
 			(new Reflection_Class(get_class($object)))->getAnnotations('before_write') as $before_write
 		) {
-			if (call_user_func([$object, $before_write->value], $options) === false) {
+			/** @var $before_write Method_Annotation */
+			if ($before_write->call($object, [$options]) === false) {
 				$will_write = false;
 				break;
 			}
@@ -865,7 +867,8 @@ class Link extends Dao\Sql\Link
 			foreach (
 				(new Reflection_Class(get_class($object)))->getAnnotations('after_write') as $after_write
 			) {
-				if (call_user_func([$object, $after_write->value], $options) === false) {
+				/** @var $after_write Method_Annotation */
+				if ($after_write->call($object, [$options]) === false) {
 					break;
 				}
 			}
