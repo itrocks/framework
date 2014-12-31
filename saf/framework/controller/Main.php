@@ -29,6 +29,19 @@ class Main
 	 */
 	public static $current;
 
+	//---------------------------------------------------------------------------------- $redirection
+	/**
+	 * If set, replace original controller result with this new controller call.
+	 * All processes of the original and replacement controller are executed.
+	 * Only the replacement controller resulting view will be returned.
+	 *
+	 * This is set by redirect()
+	 * This is used and reset at run's end
+	 *
+	 * @var string
+	 */
+	private $redirection;
+
 	//----------------------------------------------------------------------------- $top_core_plugins
 	/**
 	 * @var Plugin[]
@@ -204,6 +217,15 @@ class Main
 		return $configuration;
 	}
 
+	//-------------------------------------------------------------------------------------- redirect
+	/**
+	 * @param $uri string
+	 */
+	public function redirect($uri)
+	{
+		$this->redirection = $uri;
+	}
+
 	//------------------------------------------------------------------------------- registerPlugins
 	/**
 	 * Register plugins into session (called only at session beginning)
@@ -292,7 +314,13 @@ class Main
 	{
 		$this->sessionStart($get, $post);
 		$this->applicationUpdate();
-		return $this->runController($uri, $get, $post, $files);
+		$result = $this->runController($uri, $get, $post, $files);
+		if (isset($this->redirection)) {
+			$uri = $this->redirection;
+			unset($this->redirection);
+			$result = $this->run($uri, $get, $post, $files);
+		}
+		return $result;
 	}
 
 	//--------------------------------------------------------------------------------- runController
