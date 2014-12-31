@@ -8,10 +8,11 @@ use SAF\Framework\Tests\Test;
 /**
  * Class annotations unit tests
  *
- * @before_write localBeforeWrite
- * @before_write Tests::distantBeforeWrite
  * @after_write localAfterWrite
  * @after_write Tests::distantAfterWrite
+ * @before_write localBeforeWrite
+ * @before_write Tests::distantBeforeWrite
+ * @set Unit_Tests
  */
 class Tests extends Test
 {
@@ -84,6 +85,7 @@ class Tests extends Test
 		$tests = new Tests();
 		$tests->data = 'test';
 		Dao::write($tests, [Dao::only(['data'])]);
+		Dao::delete($tests);
 		$this->assume(
 			__METHOD__,
 			$tests->data,
