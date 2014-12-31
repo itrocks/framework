@@ -241,8 +241,7 @@ class Properties
 	private function compileGet($advices)
 	{
 		$over = $this->overrideMethod('__get', true, $advices);
-		$code =
-	$over['prototype'] . '
+		$code = $over['prototype'] . '
 		if (!isset($this->_) || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}';

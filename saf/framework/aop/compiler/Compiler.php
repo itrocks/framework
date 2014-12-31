@@ -285,13 +285,18 @@ class Compiler implements ICompiler, Needs_Main
 	{
 		$methods    = [];
 		$properties = [];
-		foreach ($this->weaver->getJoinpoints($class_name) as $joinpoint2 => $pointcuts2) {
+		foreach ($this->weaver->getJoinpoints($class_name) as $method_or_property => $pointcuts2) {
 			foreach ($pointcuts2 as $pointcut) {
-				if (($pointcut[0] == 'read') || ($pointcut[0] == 'write')) {
-					$properties[$joinpoint2] = $pointcuts2;
+				if ($pointcut[0] == 'read') {
+					$properties[$method_or_property]['implements']['read'] = true;
+					$properties[$method_or_property][] = $pointcut;
+				}
+				elseif ($pointcut[0] == 'write') {
+					$properties[$method_or_property]['implements']['write'] = true;
+					$properties[$method_or_property][] = $pointcut;
 				}
 				else {
-					$methods[$joinpoint2] = $pointcuts2;
+					$methods[$method_or_property][] = $pointcut;
 				}
 			}
 		}
