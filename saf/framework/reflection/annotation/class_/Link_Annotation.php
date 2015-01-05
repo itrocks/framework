@@ -56,17 +56,22 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 */
 	public function __construct($value, Reflection_Class $class)
 	{
-		$this->class = $class;
-		$this->link_properties = [];
-		if (trim($value)) {
-			$i = strpos($value, SP);
-			if ($i === false) {
-				parent::__construct($value);
-				$this->link_properties = null;
+		if ($value && (substr($value, 0, 4) !== 'http')) {
+			$this->class           = $class;
+			$this->link_properties = [];
+			if (trim($value)) {
+				$i = strpos($value, SP);
+				if ($i === false) {
+					parent::__construct($value);
+					$this->link_properties = null;
+				}
+				else {
+					parent::__construct(substr($value, 0, $i));
+					$this->link_properties = substr($value, $i + 1);
+				}
 			}
 			else {
-				parent::__construct(substr($value, 0, $i));
-				$this->link_properties = substr($value, $i + 1);
+				parent::__construct(null);
 			}
 		}
 		else {
