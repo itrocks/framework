@@ -23,7 +23,7 @@ Parser::$default_annotations = [
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call before the object is built from an array representation
 	// - These methods may accept an array as first reference argument, if needed
-	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Method_Annotation::class,
+	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Annotation::class,
 
 	// @before_write beforeWrite
 	// This is a Multiple_Annotation
@@ -165,6 +165,6 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Property\Textile_Annotation' => Boolean_Annotation::class,
 
 	// @user_getter [Vendor\Module\Class_Name::]methodName
-	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Method_Annotation::class,
+	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Annotation::class,
 
 ];
