@@ -149,19 +149,20 @@ echo '- create cache directory ' . $cache_dir . LF;
 // /cache/
 
 if (!is_dir($cache_dir)) mkdir($cache_dir, 0755, true);
-exec('chown -R www-data.www-data ' . $cache_dir);
+exec('chmod ugo+rwx ' . $cache_dir);
 
 echo '- create temporary directory ' . $tmp_dir . LF;
 // /tmp/
 
 if (!is_dir($tmp_dir)) mkdir($tmp_dir, 0755, true);
-exec('chown -R www-data.www-data ' . $tmp_dir);
+exec('chmod ugo+rwx ' . $tmp_dir);
 
 echo '- create update file ' . $update_file . LF;
 // /update
 
 touch($update_file);
-exec('chown www-data.www-data ' . $update_file);
+exec('chmod ugo+rwx ' . $update_file);
+exec('chmod ugo+rwx .');
 
 echo '- download dependencies into ' . $vendor_dir . LF;
 // /vendor/*
@@ -191,7 +192,7 @@ copy('http://saf.re/prod/projects/wiki/vendor/jquery.colresizable/colResizable-1
 if (!is_dir($vendor_dir . SL . 'jquery.elastic')) mkdir($vendor_dir . SL . 'jquery.elastic', 0755, true);
 copy('http://saf.re/prod/projects/wiki/vendor/jquery.elastic/jquery.elastic.source.js', $vendor_dir . SL . 'jquery.elastic/jquery.elastic.source.js');
 
-exec('chown -R www-data.www-data ' . $vendor_dir);
+exec('chmod ugo+rwx ' . $vendor_dir);
 chdir(__DIR__);
 
 echo '- create mysql database and user ' . $database . LF;
