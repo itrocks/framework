@@ -6,8 +6,8 @@ if ($argc < 3) {
 	die('Arguments attendus : nickname helloworld' . LF);
 }
 
-$nickname = $argv[1];
-$project_name = $argv[2];
+$nickname = str_replace('.', '_', $argv[1]);
+$project_name = str_replace('.', '_', $argv[2]);
 $database = strtolower($nickname . '_' . $project_name);
 $username = substr($database, 0, 16);
 $project_password = uniqid();
