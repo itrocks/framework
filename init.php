@@ -173,6 +173,7 @@ exec('pear install Net_POP3');
 if (!is_dir($vendor_dir)) mkdir($vendor_dir, 0755, true);
 chdir($vendor_dir);
 
+if (!is_dir($vendor_dir . SL . 'html2text')) exec('git clone https://github.com/soundasleep/html2text html2text');
 if (!is_dir($vendor_dir . SL . 'jquery.form')) exec('git clone https://github.com/malsup/form jquery.form');
 if (!is_dir($vendor_dir . SL . 'jscolor')) exec('git clone https://github.com/odvarko/jscolor.git jscolor');
 if (!is_dir($vendor_dir . SL . 'textile')) exec('git clone https://github.com/textile/php-textile.git textile -b2.5');
