@@ -212,6 +212,9 @@ class Template
 				if ($j === false) {
 					$j = strlen($content);
 				}
+				else {
+					$j += strlen($stop);
+				}
 				$black_zones[$i] = $j;
 				$i = $j;
 			}
@@ -739,19 +742,25 @@ class Template
 	 * Parses included view controller call result (must be an html view) or includes html template
 	 *
 	 * @param $include_uri string
-	 * @return string included template, parsed
+	 * @return string|null included template, parsed, or null if included file was not found
 	 */
 	protected function parseInclude($include_uri)
 	{
 		if ((substr($include_uri, -5) === '.html') || (substr($include_uri, -4) === '.php')) {
 			// includes html template
-			$included = file_get_contents($this->parseIncludeResolve($include_uri));
-			if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
-				$i += 12;
-				$j = strpos($included, '<!--END-->');
-				$included = substr($included, $i, $j - $i);
+			$file_name = $this->parseIncludeResolve($include_uri);
+			if ($file_name) {
+				$included = file_get_contents($file_name);
+				if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
+					$i += 12;
+					$j = strpos($included, '<!--END-->');
+					$included = substr($included, $i, $j - $i);
+				}
+				return $this->parseVars($included);
 			}
-			return $this->parseVars($included);
+			else {
+				return null;
+			}
 		}
 		else {
 			$options = [Parameter::IS_INCLUDED => true];
@@ -1480,7 +1489,7 @@ class Template
 	//------------------------------------------------------------------------ parseVarWillAutoremove
 	/**
 	 * @param $var_name string
-	 * @return bool
+	 * @return boolean
 	 */
 	protected function parseVarWillAutoremove(&$var_name)
 	{
@@ -1642,7 +1651,7 @@ class Template
 	 */
 	protected function replaceLinks($content)
 	{
-		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textearea>']);
+		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textarea>']);
 		$links = ['action=', 'href=', 'location='];
 		foreach ($links as $link) {
 			foreach ([Q, DQ] as $quote) {
@@ -1716,7 +1725,7 @@ class Template
 	 */
 	protected function replaceUris($content)
 	{
-		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textearea>']);
+		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textarea>']);
 		$links = ['@import ', 'src=', 'loadScript('];
 		foreach ($links as $l) {
 			foreach ([DQ, Q] as $quote) {
