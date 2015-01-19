@@ -22,10 +22,19 @@ class Map
 	 * A collection of objects of the same class, linked to the same data link
 	 * Beware : $objects array is used as reference and will be altered by any changes made to the map
 	 *
-	 * @param $objects object[]
+	 * @param $objects   object[]
+	 * @param $key_is_id boolean Set this to true if your objects array use objects id as key
+	 *                           This will enable an optimization to get this working faster
 	 */
-	public function __construct(&$objects = [])
+	public function __construct(&$objects = [], $key_is_id = false)
 	{
+		if (!$key_is_id) {
+			$this->objects = $objects;
+			$objects       = [];
+			foreach ($this->objects as $object) {
+				$objects[Dao::getObjectIdentifier($object)] = $object;
+			}
+		}
 		$this->objects =& $objects;
 	}
 
