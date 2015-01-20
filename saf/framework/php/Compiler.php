@@ -256,28 +256,7 @@ class Compiler implements
 
 				// compile sources
 				foreach ($this->sources as $source) {
-					foreach ($compilers as $compiler) {
-						$compiler->compile($source, $this);
-					}
-					$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
-						? $source->file_name
-						: ($this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4)));
-					if ($source->hasChanged()) {
-						/** @var Reflection_Source $source inspector bug */
-						/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-						(new Set)->replace(
-							$source->getDependencies(true),
-							Dependency::class,
-							['file_name' => $source->file_name]
-						);
-						script_put_contents($file_name, $source->getSource());
-					}
-					elseif (file_exists($file_name) && $first_group) {
-						unlink($file_name);
-					}
-					if ($sources_count > self::MAX_OPENED_SOURCES) {
-						$source->free(self::SOURCES_FREE);
-					}
+					$this->compileSource($source, $compilers, $cache_dir, $first_group, $sources_count);
 				}
 
 				$this->sources = $this->more_sources;
@@ -293,6 +272,44 @@ class Compiler implements
 		}
 		$this->sources = null;
 
+	}
+
+	//--------------------------------------------------------------------------------- compileSource
+	/**
+	 * Compile one source file using compilers
+	 *
+	 * @param $source        Reflection_Source
+	 * @param $compilers     ICompiler[]
+	 * @param $cache_dir     string
+	 * @param $first_group   boolean
+	 * @param $sources_count integer
+	 * @return mixed
+	 */
+	private function compileSource(
+		Reflection_Source $source, $compilers, $cache_dir, $first_group, $sources_count
+	) {
+		foreach ($compilers as $compiler) {
+			$compiler->compile($source, $this);
+		}
+		$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
+			? $source->file_name
+			: ($this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4)));
+		if ($source->hasChanged()) {
+			/** @var Reflection_Source $source inspector bug */
+			/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
+			(new Set)->replace(
+				$source->getDependencies(true),
+				Dependency::class,
+				['file_name' => $source->file_name]
+			);
+			script_put_contents($file_name, $source->getSource());
+		}
+		elseif (file_exists($file_name) && $first_group) {
+			unlink($file_name);
+		}
+		if ($sources_count > self::MAX_OPENED_SOURCES) {
+			$source->free(self::SOURCES_FREE);
+		}
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir

@@ -22,7 +22,7 @@ class Logger implements Registerable
 	/**
 	 * @var Entry
 	 */
-	private $log_entry;
+	public $log_entry;
 
 	//-------------------------------------------------------------------------------------- register
 	/**
@@ -50,7 +50,7 @@ class Logger implements Registerable
 			$this->log_entry = new Entry($uri, $get, $post, $files);
 			Dao::write($this->log_entry);
 		}
-		$this->antiloop ++;
+		$this->antiloop++;
 	}
 
 	//------------------------------------------------------------------------------------------ stop
