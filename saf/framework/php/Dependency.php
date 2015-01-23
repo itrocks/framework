@@ -19,6 +19,11 @@ class Dependency
 	const T_USE         = 'use';
 	const T_VAR         = 'var';
 
+	//--------------------------------------------------------------------------- $declaration values
+	const T_CLASS_DECLARATION     = 'class';
+	const T_INTERFACE_DECLARATION = 'interface';
+	const T_TRAIT_DECLARATION     = 'trait';
+
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * Name of the class that has a dependency
@@ -26,6 +31,13 @@ class Dependency
 	 * @var string
 	 */
 	public $class_name;
+
+	//---------------------------------------------------------------------------------- $declaration
+	/**
+	 * @values class, interface, trait
+	 * @var string
+	 */
+	public $declaration;
 
 	//------------------------------------------------------------------------------ $dependency_name
 	/**
@@ -64,7 +76,7 @@ class Dependency
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (doc comment)
 	 *
-	 * @values 'class', 'extends', 'implements', 'new', 'param', 'return', 'static', 'use', 'var'
+	 * @values class, extends, implements, new, param, return, static, use, var
 	 * @var string
 	 */
 	public $type;

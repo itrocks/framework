@@ -82,6 +82,16 @@ class Reflection_Source
 	 */
 	private $source;
 
+	//----------------------------------------------------------- $token_id_to_dependency_declaration
+	/**
+	 * @var string[] key is the declaration token id, value is the Dependency::$declaration value
+	 */
+	private static $token_id_to_dependency_declaration = [
+		T_CLASS     => Dependency::T_CLASS_DECLARATION,
+		T_INTERFACE => Dependency::T_INTERFACE_DECLARATION,
+		T_TRAIT     => Dependency::T_TRAIT_DECLARATION
+	];
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $file_name        string may be the name of a file
@@ -265,6 +275,7 @@ class Reflection_Source
 				}
 				$dependency = new Dependency();
 				$dependency->class_name      = $class->name;
+				$dependency->declaration     = self::$token_id_to_dependency_declaration[$token_id];
 				$dependency->dependency_name = $class->name;
 				$dependency->file_name       = $this->file_name;
 				$dependency->line            = $token[2];
