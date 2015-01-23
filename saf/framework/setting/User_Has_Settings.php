@@ -4,6 +4,7 @@ namespace SAF\Framework\Setting;
 /**
  * For users that have settings
  *
+ * @business
  * @extends SAF\Framework\User
  * @implements Has_Settings
  */

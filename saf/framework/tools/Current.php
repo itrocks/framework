@@ -8,8 +8,9 @@ use SAF\Framework\Session;
 /**
  * All classes that have a global current value should use this trait to manage the current() method
  *
- * The current() method should be overridden to improve IDE's auto-completion capability, like this
+ * @business
  * @example
+ * The current() method should be overridden to improve IDE's auto-completion capability, like this
  * class A_Class
  * {
  *   use Current { current as private pCurrent; }
@@ -20,7 +21,7 @@ use SAF\Framework\Session;
  *   }
  * }
  * @example
- * Then overriden classes should override current too :
+ * Then override classes should override current too :
  * class Another_Class extends A_Class
  * {
  *   // doc-comment here with param $set_current Another_Class and return Another_Class annotations
@@ -29,7 +30,7 @@ use SAF\Framework\Session;
  *     return parent::current($set_current);
  *   }
  * }
- * @See User::current() for an example of use
+ * @see User::current() for an example of use
  */
 trait Current
 {

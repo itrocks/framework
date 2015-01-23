@@ -7,6 +7,7 @@ use SAF\Framework\Tools\Date_Time;
  * A trait for creation and modification date logged objects
  *
  * @before_write beforeWriteDateLogged
+ * @business
  */
 trait Date_Logged
 {

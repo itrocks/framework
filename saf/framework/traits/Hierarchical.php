@@ -16,6 +16,8 @@ use SAF\Framework\Reflection\Link_Class;
  *
  * TODO LOW add a single annotation on properties that will result in auto-calling of getSub
  * and writeSub without having to implement the getter and after_write into the business class.
+ *
+ * @business
  */
 trait Hierarchical
 {

@@ -25,6 +25,10 @@ Parser::$default_annotations = [
 	// - These methods may accept an array as first reference argument, if needed
 	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Annotation::class,
 
+	// @business
+	// This defines a class or a trait used to describe business objects
+	__NAMESPACE__ . '\Class_\Business_Annotation' => Boolean_Annotation::class,
+
 	// @before_write beforeWrite
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call before the object is written using a data link

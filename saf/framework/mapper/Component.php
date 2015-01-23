@@ -6,6 +6,8 @@ use SAF\Framework\Reflection\Reflection_Property;
 
 /**
  * A component is a class for objects that should not exist without their container object
+ *
+ * @business
  */
 trait Component
 {

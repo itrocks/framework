@@ -7,6 +7,7 @@ use SAF\Framework\User\Account;
 /**
  * A user business object for all your uses in user authentication
  *
+ * @business
  * @representative login
  */
 class User
