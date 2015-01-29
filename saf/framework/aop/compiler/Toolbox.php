@@ -140,7 +140,7 @@ trait Toolbox
 						. "'$advice_class_name'"
 					. ');'
 					. $joinpoint_code
-					. $i2 . ($advice_has_return ? ($result . SP . '=' . $ref . SP) : '')
+					. $i2 . ($advice_has_return ? ('if ($object_) ' . $result . SP . '=' . $ref . SP) : '')
 					. '$object_->' . $advice_method_name . '(' . $advice_parameters_string . ');';
 			}
 		}

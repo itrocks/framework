@@ -84,7 +84,7 @@ class Properties
 		/** @var $advice_method_name string */
 		/** @var $advice_function_name string */
 		/** @var $advice_parameters string[] */
-		/** @var $advice_string string [$object_, 'methodName') | 'functionName' */
+		/** @var $advice_string string [$object_, 'methodName'] | 'functionName' */
 		/** @var $advice_has_return boolean */
 		/** @var $is_advice_static boolean */
 		list(
