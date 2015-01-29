@@ -5,7 +5,7 @@ use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 
 /**
- * All annotations classes must heritate from this or any annotation template
+ * All annotations classes must inherit from this or any annotation template
  */
 class Annotation
 {

@@ -3,6 +3,7 @@ namespace SAF\Framework\Tools;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Plugin;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Session;
 
 /**
@@ -52,8 +53,8 @@ trait Current
 	{
 		$called_class = get_called_class();
 
-		// set current
-		if ($set_current) {
+		// set current (ignore Reflection_Property : to enable use of @default Class::current)
+		if ($set_current && !is_a($set_current, Reflection_Property::class)) {
 			static::$current = $set_current;
 			if (!is_a($called_class, Plugin::class, true)) {
 				Session::current()->set(
