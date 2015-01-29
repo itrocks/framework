@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Php\Reflection_Class;
 use SAF\Framework\Tools\OS;
 
 /**
@@ -107,17 +108,22 @@ class Include_Path
 		$app_dir = $this->getSourceDirectory($application_class);
 		$directories = [];
 		if ($application_class != Application::class) {
+			// get source directories from main application extends
 			$extends = get_parent_class($application_class);
 			if ($extends) {
 				$directories = $this->getSourceDirectories($include_subdirectories, $extends);
 			}
+			// get source directories for secondary applications extends
+			$class = Reflection_class::of($application_class);
+			$extends_list = $class->getListAnnotation('extends')->values();
+			foreach ($extends_list as $extends) {
+				$directories = array_merge(
+					$this->getSourceDirectories($include_subdirectories, $extends),
+					$directories
+				);
+			}
 		}
-		/*
-		// todo LOWEST multiple applications extends management
-		foreach ($this->applications as $application) {
-			$directories += $this->getSourceDirectories($application);
-		}
-		*/
+		// get source directories from the application itself
 		return $include_subdirectories
 			? array_merge($this->getDirectories($app_dir), $directories)
 			: array_merge([$app_dir], $directories);
@@ -153,7 +159,6 @@ class Include_Path
 	{
 		$files = [];
 		foreach ($this->getSourceDirectories(true) as $directory) {
-			$directory_slash = $directory . SL;
 			$dir = dir($directory);
 			while ($entry = $dir->read()) if ($entry[0] != DOT) {
 				$file_path = $directory . SL . $entry;

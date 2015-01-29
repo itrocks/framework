@@ -249,8 +249,11 @@ class Builder implements Activable, Registerable, Serializable
 	 */
 	public static function isBuilt($class_name)
 	{
-		$check = Application::current()->getNamespace() . BS . 'Built' . BS;
-		return substr($class_name, 0, strlen($check)) == $check;
+		if ($application = Application::current()) {
+			$check = $application->getNamespace() . BS . 'Built' . BS;
+			return substr($class_name, 0, strlen($check)) == $check;
+		}
+		return false;
 	}
 
 	//----------------------------------------------------------------------------------- isObjectSet
