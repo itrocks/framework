@@ -49,7 +49,7 @@ class Application
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name string
+	 * @param $name string Must look like 'Author/Application' : slash is required
 	 */
 	public function __construct($name)
 	{

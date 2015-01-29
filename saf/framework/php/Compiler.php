@@ -100,6 +100,9 @@ class Compiler implements
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * This constructor zaps the cache directory if 'Z' argument is sent
+	 * This will result into a complete application cache rebuild
+	 *
 	 * @param $configuration array string[integer $wave_number][]
 	 */
 	public function __construct($configuration = null)
@@ -113,6 +116,10 @@ class Compiler implements
 						: Builder::create($class_name);
 				}
 			}
+		}
+		if (isset($_GET['Z'])) {
+			$cache_dir = $this->getCacheDir();
+			system('rm -rf ' . $cache_dir . '/*');
 		}
 	}
 

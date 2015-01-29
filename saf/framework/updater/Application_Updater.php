@@ -14,11 +14,9 @@ use Serializable;
 class Application_Updater implements Serializable
 {
 
-	//----------------------------------------------------------------------------------- $start_time
-	/**
-	 * @var integer
-	 */
-	private $update_time;
+	//----------------------------------------------------------------- Application updater constants
+	const LAST_UPDATE_FILE = 'last_update';
+	const UPDATE_FILE      = 'update';
 
 	//----------------------------------------------------------------------------------- $updatables
 	/**
@@ -27,6 +25,25 @@ class Application_Updater implements Serializable
 	 * @var Updatable[]|string[]
 	 */
 	private $updatables = [];
+
+	//---------------------------------------------------------------------------------- $update_time
+	/**
+	 * @var integer
+	 */
+	private $update_time;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Application updater constructor zaps the cache directory if '?Z' argument is sent
+	 * This will result into a complete application cache rebuild
+	 */
+	public function __construct()
+	{
+		if (isset($_GET['Z'])) {
+			@unlink($this->getLastUpdateFileName());
+			touch(self::UPDATE_FILE);
+		}
+	}
 
 	//---------------------------------------------------------------------------------- addUpdatable
 	/**
@@ -72,7 +89,16 @@ class Application_Updater implements Serializable
 	{
 		$this->setLastUpdateTime($this->update_time);
 		unset($this->update_time);
-		@unlink('update');
+		@unlink(self::UPDATE_FILE);
+	}
+
+	//------------------------------------------------------------------------- getLastUpdateFileName
+	/**
+	 * @return string
+	 */
+	public function getLastUpdateFileName()
+	{
+		return Application::current()->getCacheDir() . SL . self::LAST_UPDATE_FILE;
 	}
 
 	//----------------------------------------------------------------------------- getLastUpdateTime
@@ -81,7 +107,7 @@ class Application_Updater implements Serializable
 	 */
 	public function getLastUpdateTime()
 	{
-		$file_name = Application::current()->getCacheDir() . '/last_update';
+		$file_name = $this->getLastUpdateFileName();
 		if (!file_exists($file_name)) {
 			return mktime(0, 0, 0, 0, 0, 0);
 		}
@@ -98,7 +124,7 @@ class Application_Updater implements Serializable
 	 */
 	public function mustUpdate()
 	{
-		return file_exists('update');
+		return file_exists(self::UPDATE_FILE);
 	}
 
 	//------------------------------------------------------------------------------------- serialize
@@ -120,7 +146,7 @@ class Application_Updater implements Serializable
 	 */
 	public function setLastUpdateTime($update_time)
 	{
-		$updated = Application::current()->getCacheDir() . '/last_update';
+		$updated = $this->getLastUpdateFileName();
 		touch($updated, $update_time);
 	}
 
