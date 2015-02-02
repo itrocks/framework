@@ -162,6 +162,35 @@ class Data_List_Controller extends Output_Controller
 		return $property_name;
 	}
 
+	//----------------------------------------------------------------------------- getGeneralButtons
+	/**
+	 * @param $class_name string object or class name
+	 * @param $parameters string[] parameters
+	 * @return Button[]
+	 */
+	protected function getGeneralButtons($class_name, $parameters)
+	{
+		return [
+			'add' => new Button(
+				'Add', View::link($class_name, Feature::F_ADD), Feature::F_ADD,
+				['#main', new Color('green')]
+			),
+			'import' => new Button(
+				'Import', View::link($class_name, Feature::F_IMPORT), Feature::F_IMPORT,
+				['#main', new Color('green')]
+			),
+			'save' => new Button(
+				'Save', View::link($this->class_names), 'custom_save',
+				['#main', new Color('green'), '.submit', 'title' => 'save this view as a custom list']
+			),
+			'delete' => new Button(
+				'Delete', View::link($this->class_names, null, null, ['delete_name' => true]),
+				'custom_delete',
+				['#main', new Color('red'), '.submit', 'title' => 'delete this custom list']
+			)
+		];
+	}
+
 	//----------------------------------------------------------------------------- getReverseClasses
 	/**
 	 * @param $list_settings Data_List_Settings
@@ -350,35 +379,6 @@ class Data_List_Controller extends Output_Controller
 			}
 		}
 		return $titles;
-	}
-
-	//----------------------------------------------------------------------------- getGeneralButtons
-	/**
-	 * @param $class_name string object or class name
-	 * @param $parameters string[] parameters
-	 * @return Button[]
-	 */
-	protected function getGeneralButtons($class_name, $parameters)
-	{
-		return [
-			'add' => new Button(
-				'Add', View::link($class_name, Feature::F_ADD), Feature::F_ADD,
-				['#main', new Color('green')]
-			),
-			'import' => new Button(
-				'Import', View::link($class_name, Feature::F_IMPORT), Feature::F_IMPORT,
-				['#main', new Color('green')]
-			),
-			'save' => new Button(
-				'Save', View::link($this->class_names), 'custom_save',
-				['#main', new Color('green'), '.submit', 'title' => 'save this view as a custom list']
-			),
-			'delete' => new Button(
-				'Delete', View::link($this->class_names, null, null, ['delete_name' => true]),
-				'custom_delete',
-				['#main', new Color('red'), '.submit', 'title' => 'delete this custom list']
-			)
-		];
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
