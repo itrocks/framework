@@ -634,9 +634,10 @@ class Properties
 			}
 			if ($over['call']) {
 				$suffix = ($over['call'] === 'parent::') ? '' : '_0';
-				$over['call'] = ($method->returns() ? 'return ' : '')
+				$method_returns = $method->returns() || in_array($method->name, ['__get', '__isset']);
+				$over['call'] = ($method_returns ? 'return ' : '')
 					. $over['call'] . $method_name . $suffix . '(' . $method->getParametersCall() . ');'
-					. (($method->returns() || !$needs_return) ? '' : ' return;');
+					. (($method_returns || !$needs_return) ? '' : ' return;');
 			}
 		}
 		// the method does not exist : call default code and create default prototype
