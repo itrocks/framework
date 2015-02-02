@@ -145,6 +145,14 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 				$application_class = get_parent_class($application_class);
 			} while($application_class);
 
+			// Looking for direct feature call, without using any controller
+			if (empty($class)) {
+				if (@method_exists($base_class, $feature_name)) {
+					$class = $base_class;
+					$method = $feature_name;
+				}
+			}
+
 			// Looking for default controller for each application
 			if (empty($class) && $suffix) {
 				$application_class = get_class(Application::current());
@@ -159,7 +167,7 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 					$sub = $suffix;
 				}
 				do {
-if (isset($GLOBALS['D'])) echo '- try C1 ' . $path . SL . strtolower($sub) . '/Default_' . $suffix . $ext . '<br>';
+if (isset($GLOBALS['D'])) echo '- try C2 ' . $path . SL . strtolower($sub) . '/Default_' . $suffix . $ext . '<br>';
 					if (file_exists($path . SL . strtolower($sub) . '/Default_' . $suffix . $ext)) {
 						$class = $namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix;
 						break;
