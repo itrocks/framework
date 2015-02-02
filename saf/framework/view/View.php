@@ -15,6 +15,9 @@ class View implements Configurable
 {
 	use Current { current as private pCurrent; }
 
+	//----------------------------------------------------------------- Constants common to all views
+	const TARGET = 'target';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array

@@ -2,12 +2,18 @@
 namespace SAF\Framework\Widget;
 
 use SAF\Framework\Tools\Color;
+use SAF\Framework\View;
 
 /**
  * An HMI button
  */
 class Button
 {
+
+	//------------------------------------------------------------------- Button option key constants
+	const COLOR       = 'color';
+	const SUB_BUTTONS = 'sub_buttons';
+	const TITLE       = 'title';
 
 	//-------------------------------------------------------------------------------------- $caption
 	/**
@@ -95,29 +101,29 @@ class Button
 			if ($option instanceof Color) {
 				$this->color = $option;
 			}
-			elseif ($key === 'color') {
+			elseif ($key === self::COLOR) {
 				$this->color = new Color($option);
 			}
 			elseif ($option instanceof Button) {
 				$this->sub_buttons[] = $option;
 			}
-			elseif ($key === 'sub_buttons') {
+			elseif ($key === self::SUB_BUTTONS) {
 				$this->sub_buttons = is_array($this->sub_buttons)
 					? array_merge($this->sub_buttons, $option)
 					: $option;
 			}
-			elseif (($key === 'class') || (is_numeric($key) && (substr($option, 0, 1) == DOT))) {
+			elseif (($key === self::CLASS) || (is_numeric($key) && (substr($option, 0, 1) == DOT))) {
 				$this->class .= (isset($this->class) ? SP : '') . substr($option, 1);
 			}
-			elseif (($key === 'target') || (is_numeric($key) && substr($option, 0, 1) == '#')) {
+			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
 				$this->target = $option;
 			}
-			elseif ($key === 'title') {
+			elseif ($key === self::TITLE) {
 				$this->title = $option;
 			}
 		}
 		if (!isset($this->color)) {
-			$this->color = new Color('blue');
+			$this->color = new Color(Color::BLUE);
 		}
 	}
 

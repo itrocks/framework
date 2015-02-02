@@ -7,6 +7,10 @@ namespace SAF\Framework\Tools;
 class Color
 {
 
+	//------------------------------------------------------------------------- Color value constants
+	const BLUE  = 'blue';
+	const GREEN = 'green';
+
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * The color value
