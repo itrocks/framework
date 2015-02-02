@@ -8,6 +8,7 @@
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
 			frame_delay:             5000,
+			hover_stop:              true,
 			manual_transition_speed:  200,
 			next:                    undefined,
 			previous:                undefined,
@@ -85,7 +86,7 @@
 		//----------------------------------------------------------------------------------- slideShow
 		setInterval(function()
 		{
-			if (!hover) {
+			if (!hover || !settings.hover_stop) {
 				$(elements[position]).fadeOut(settings.transition_speed);
 				position ++;
 				if (position >= elements.length) {
