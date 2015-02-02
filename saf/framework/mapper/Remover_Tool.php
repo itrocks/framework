@@ -9,7 +9,7 @@ use SAF\Framework\Reflection\Reflection_Class;
 abstract class Remover_Tool
 {
 
-	//--------------------------------------------------------------------- removeObjectFromComopsite
+	//--------------------------------------------------------------------- removeObjectFromComposite
 	/**
 	 * Default remover removes an object from all collections properties of the object
 	 *

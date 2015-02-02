@@ -149,7 +149,7 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Delete an object from current data link
 	 *
-	 * If object was originally read from data source, corresponding data will be overwritten.
+	 * If object was originally read from data source, matching data will be overwritten.
 	 * If object was not originally read from data source, nothing is done and returns false.
 	 *
 	 * @param $object object object to delete from data source
@@ -158,9 +158,9 @@ class Link extends Dao\Sql\Link
 	 */
 	public function delete($object)
 	{
-		$class_name = get_class($object);
 		$id = $this->getObjectIdentifier($object);
 		if ($id) {
+			$class_name = get_class($object);
 			$class = new Reflection_Class($class_name);
 			/** @var $link Class_\Link_Annotation */
 			$link = $class->getAnnotation('link');
@@ -173,6 +173,7 @@ class Link extends Dao\Sql\Link
 						if ($property->getType()->isMultiple()) {
 							$this->deleteCollection($object, $property, $property->getValue($object));
 						}
+						// TODO dead code ? @link Collection is only for @var object[], not for @var object
 						else {
 							$this->delete($property->getValue($object));
 						}
