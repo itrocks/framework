@@ -31,8 +31,8 @@ class Map
 		if (!$key_is_id) {
 			$this->objects = $objects;
 			$objects       = [];
-			foreach ($this->objects as $object) {
-				$objects[Dao::getObjectIdentifier($object)] = $object;
+			foreach ($this->objects as $key => $object) {
+				$objects[Dao::getObjectIdentifier($object) ?: $key] = $object;
 			}
 		}
 		$this->objects =& $objects;
