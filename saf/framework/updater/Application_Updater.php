@@ -18,6 +18,14 @@ class Application_Updater implements Serializable
 	const LAST_UPDATE_FILE = 'last_update';
 	const UPDATE_FILE      = 'update';
 
+	//------------------------------------------------------------------------------------ $lock_file
+	/**
+	 * Lock file handle
+	 *
+	 * @var resource
+	 */
+	private $lock_file;
+
 	//----------------------------------------------------------------------------------- $updatables
 	/**
 	 * An array of updatable objects or class names
@@ -89,6 +97,8 @@ class Application_Updater implements Serializable
 	{
 		$this->setLastUpdateTime($this->update_time);
 		unset($this->update_time);
+		flock($this->lock_file, LOCK_UN);
+		fclose($this->lock_file);
 		@unlink(self::UPDATE_FILE);
 	}
 
@@ -124,7 +134,18 @@ class Application_Updater implements Serializable
 	 */
 	public function mustUpdate()
 	{
-		return file_exists(self::UPDATE_FILE);
+		if (file_exists(self::UPDATE_FILE)) {
+			$this->lock_file = fopen(self::UPDATE_FILE, 'r');
+			while (file_exists(self::UPDATE_FILE) && !flock($this->lock_file, LOCK_EX)) {
+				usleep(100000);
+				clearstatcache(true, self::UPDATE_FILE);
+			}
+			if (file_exists(self::UPDATE_FILE)) {
+				return true;
+			}
+			fclose($this->lock_file);
+		}
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------- serialize
