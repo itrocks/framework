@@ -124,11 +124,11 @@ class Object_Builder_Array
 					}
 					if (count($search) >= 2) {
 						$object = Dao::searchOne($search, $this->class->name);
-						if (!$object && $id_property_value) {
-							$object = Builder::createClone(
-								Dao::read($id_property_value, $linked_class_name), $this->class->name
-							);
-						}
+					}
+					if (!$object && $id_property_value) {
+						$object = Builder::createClone(
+							Dao::read($id_property_value, $linked_class_name), $this->class->name
+						);
 					}
 				}
 				if (!isset($object)) {
