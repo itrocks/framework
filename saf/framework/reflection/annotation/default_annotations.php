@@ -40,6 +40,11 @@ Parser::$default_annotations = [
 	// Identifies a deprecated class
 	__NAMESPACE__ . '\Class_\Deprecated_Annotation' => Boolean_Annotation::class,
 
+	// @duplicate duplicateMethod
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call after the object has been duplicated
+	__NAMESPACE__ . '\Class_\Duplicate_Annotation' => Method_Annotation::class,
+
 	// @stored [false]
 	// Identifies a class that may be stored using data links
 	// When this annotation is set, this enables simplified / implicit use of @link

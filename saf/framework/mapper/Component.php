@@ -40,7 +40,9 @@ trait Component
 					/** @var $composite Remover */
 					$composite->remove($this);
 				}
-				else Remover_Tool::removeObjectFromComposite($composite, $this);
+				else {
+					Remover_Tool::removeObjectFromComposite($composite, $this);
+				}
 			}
 		}
 	}
@@ -55,9 +57,7 @@ trait Component
 	 */
 	public function getComposite($class_name = null, $property_name = null)
 	{
-		$properties = self::getCompositeProperties($class_name, $property_name);
-		$property_name = reset($properties)->name;
-		return $this->$property_name;
+		return self::getCompositeProperty($class_name, $property_name)->getValue($this);
 	}
 
 	//------------------------------------------------------------------------ getCompositeProperties
@@ -105,6 +105,20 @@ trait Component
 			}
 		}
 		return self::$composite_property_name[$path];
+	}
+
+	//-------------------------------------------------------------------------- getCompositeProperty
+	/**
+	 * Gets composite property
+	 *
+	 * @param $class_name    string|object The composite class name or object
+	 * @param $property_name string The composite property name
+	 * @return Reflection_Property
+	 */
+	public function getCompositeProperty($class_name = null, $property_name = null)
+	{
+		$properties = self::getCompositeProperties($class_name, $property_name);
+		return reset($properties);
 	}
 
 	//---------------------------------------------------------------------------------- setComposite

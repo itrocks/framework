@@ -9,6 +9,7 @@ use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
+use SAF\Framework\Widget\Duplicate\Duplicate;
 use SAF\Framework\Widget\Tab;
 use SAF\Framework\Widget\Tab\Tabs_Builder_Object;
 
@@ -27,29 +28,42 @@ class Output_Controller implements Default_Feature_Controller
 	protected function getGeneralButtons(
 		$object, /** @noinspection PhpUnusedParameterInspection */ $parameters
 	) {
-		return [
-			'close' => new Button('Close', View::link(Names::classToSet(get_class($object))),
-				Feature::F_CLOSE, [new Color('close'), '#main']
-			),
-			'edit' => new Button('Edit', View::link($object, Feature::F_EDIT),
-				Feature::F_EDIT, [new Color('green'), '#main']
-			)
-			/*,
-			new Button('Print', View::link($object, 'print'), 'print',
-				[new Color('blue'), '#main', 'sub_buttons' => [
-					new Button(
-						'Models',
-						View::link(
-							Names::classToSet(Print_Model::class), Feature::F_LIST,
-							Namespaces::shortClassName(get_class($object))
-						),
-						'models',
-						'#main'
-					)
-				]]
-			)
-			*/
-		];
+		$buttons['close'] = new Button(
+			'Close',
+			View::link(Names::classToSet(get_class($object))),
+			Feature::F_CLOSE,
+			[new Color('close'), '#main']
+		);
+		$buttons['edit'] = new Button(
+			'Edit',
+			View::link($object, Feature::F_EDIT),
+			Feature::F_EDIT,
+			[new Color(Color::GREEN), '#main']
+		);
+		if ($object instanceof Duplicate) {
+			$buttons['edit']->sub_buttons['duplicate'] = new Button(
+				'Duplicate',
+				View::link($object, Feature::F_DUPLICATE),
+				Feature::F_DUPLICATE,
+				['#main']
+			);
+		}
+		/*,
+		new Button('Print', View::link($object, 'print'), 'print',
+			[new Color('blue'), '#main', 'sub_buttons' => [
+				new Button(
+					'Models',
+					View::link(
+						Names::classToSet(Print_Model::class), Feature::F_LIST,
+						Namespaces::shortClassName(get_class($object))
+					),
+					'models',
+					'#main'
+				)
+			]]
+		)
+		*/
+		return $buttons;
 	}
 
 	//----------------------------------------------------------------------------- getPropertiesList
