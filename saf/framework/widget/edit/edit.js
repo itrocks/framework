@@ -18,9 +18,11 @@ $('document').ready(function()
 				$this.closest('tr').remove();
 			}
 			else {
-				var $new_row = $this.closest('table').data('saf_add').clone();
+				var $table = $this.closest('table');
+				var $new_row = $table.data('saf_add').clone();
 				$this.closest('tr').replaceWith($new_row);
 				$new_row.build();
+				$table.data('saf_last_indice', $table.data('saf_last_indice') + 1);
 			}
 		});
 
@@ -58,7 +60,9 @@ $('document').ready(function()
 		{
 			var $this = $(this);
 			$this.data('saf_add', $this.children('tbody').children('tr.new').clone());
+			// saf_add_indice : the value of the indice to be replaced into the model for new rows
 			$this.data('saf_add_indice', $this.children('tbody').children('tr').length - 1);
+			// saf_last_indice : the last used indice (lines count - 1)
 			$this.data('saf_last_indice', Math.max(0, $this.data('saf_add_indice') - 1));
 			if ($this.data('saf_add_indice')) {
 				$this.children('tbody').children('tr.new').remove();
@@ -121,7 +125,7 @@ $('document').ready(function()
 		};
 		this.inside('input, textarea').focus(autoAddLine).keyup(autoAddLine);
 
-		//------------------------------------------------------------------- input.datetime datepicker
+		//------------------------------------------------------------------- input.datetime datePicker
 		this.inside('input.datetime').datepicker({
 			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            'button',
