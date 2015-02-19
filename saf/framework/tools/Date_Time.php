@@ -123,11 +123,11 @@ class Date_Time extends DateTime
 			}
 			switch ($unit) {
 				case Date_Time::HOUR:   $interval = 'PT' . $quantity . 'H'; break;
-				case Date_Time::MINUTE: $interval = 'PT' . $quantity . 'H'; break;
-				case Date_Time::SECOND: $interval = 'PT' . $quantity . 'H'; break;
-				case Date_Time::DAY:    $interval = 'P'  . $quantity . 'H'; break;
-				case Date_Time::MONTH:  $interval = 'P'  . $quantity . 'H'; break;
-				case Date_Time::YEAR:   $interval = 'P'  . $quantity . 'H'; break;
+				case Date_Time::MINUTE: $interval = 'PT' . $quantity . 'M'; break;
+				case Date_Time::SECOND: $interval = 'PT' . $quantity . 'S'; break;
+				case Date_Time::DAY:    $interval = 'P'  . $quantity . 'D'; break;
+				case Date_Time::MONTH:  $interval = 'P'  . $quantity . 'M'; break;
+				case Date_Time::YEAR:   $interval = 'P'  . $quantity . 'Y'; break;
 			}
 			if (isset($interval)) {
 				$interval = new DateInterval($interval);
@@ -248,7 +248,9 @@ class Date_Time extends DateTime
 	 */
 	public function sub($quantity, $unit = Date_Time::DAY)
 	{
-		return $this->add(-$quantity, $unit);
+		return ($quantity instanceof DateInterval)
+			? parent::sub($quantity)
+			: $this->add(-$quantity, $unit);
 	}
 
 	//----------------------------------------------------------------------------------------- toISO
