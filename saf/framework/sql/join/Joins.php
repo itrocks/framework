@@ -83,7 +83,7 @@ class Joins
 	 * Construct Joins object and prepare joins for a list of property paths
 	 *
 	 * @param $starting_class_name string the class name for the root of property paths
-	 * @param $paths array a property paths list to add at construction
+	 * @param $paths               array a property paths list to add at construction
 	 */
 	public function __construct($starting_class_name, $paths = [])
 	{
@@ -99,7 +99,7 @@ class Joins
 	/**
 	 * Adds a property path to the joins list
 	 *
-	 * @param $path string  full path to desired property, starting from starting class
+	 * @param $path  string full path to desired property, starting from starting class
 	 * @param $depth integer for internal use : please do not use this
 	 * @return Join the added join, or null if $path does not generate any join
 	 */
@@ -136,11 +136,11 @@ class Joins
 
 	//----------------------------------------------------------------------------------- addFinalize
 	/**
-	 * @param $join Join
-	 * @param $master_path string
+	 * @param $join               Join
+	 * @param $master_path        string
 	 * @param $foreign_class_name string
-	 * @param $foreign_path string
-	 * @param $depth integer
+	 * @param $foreign_path       string
+	 * @param $depth              integer
 	 * @return Join
 	 */
 	private function addFinalize(
@@ -524,7 +524,7 @@ class Joins
 	/**
 	 * Gets a Reflection_Property object for a given property path
 	 *
-	 * @param $master_path string
+	 * @param $master_path   string
 	 * @param $property_name string
 	 * @return Reflection_Property
 	 */
@@ -552,7 +552,7 @@ class Joins
 	 * Construct Joins object and prepare joins for a list of property paths.
 	 *
 	 * @param $starting_class_name string the class name for the root of property paths
-	 * @param $paths array a property paths list to add at construction
+	 * @param $paths               array a property paths list to add at construction
 	 * @return Joins
 	 */
 	public static function newInstance($starting_class_name, $paths = [])
