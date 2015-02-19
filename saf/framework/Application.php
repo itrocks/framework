@@ -80,6 +80,18 @@ class Application
 		return 'cache';
 	}
 
+	//-------------------------------------------------------------------------------- getClassesTree
+	/**
+	 * Get application class name, and all its parent applications class names
+	 * Include extended parents using T_EXTENDS clause or @extends annotation
+	 *
+	 * @return string[]
+	 */
+	public function getClassesTree()
+	{
+		return array_merge([get_class($this)], static::getParentClasses(true));
+	}
+
 	//---------------------------------------------------------------------------------- getNamespace
 	/**
 	 * Gets namespace of the application
@@ -113,7 +125,30 @@ class Application
 		return $this->namespaces;
 	}
 
-	//------------------------------------------------------------------------- getTemporaryFilesPath
+	//------------------------------------------------------------------------------------ getParents
+	/**
+	 * Gets application parent classes names
+	 * Include extended parents using T_EXTENDS clause or @extends annotation
+	 *
+	 * @param $recursive boolean get all parents if true
+	 * @return string[] applications class names
+	 */
+	public static function getParentClasses($recursive = false)
+	{
+		$class_name = get_called_class();
+		$parents = array_merge(
+			[get_parent_class($class_name)],
+			(new Reflection_Class($class_name))->getListAnnotation('extends')->values()
+		);
+		if ($recursive) {
+			foreach ($parents as $parent_class) if ($parent_class) {
+				$parents = array_merge($parents, call_user_func([$parent_class, 'getParentClasses'], true));
+			}
+		}
+		return $parents;
+	}
+
+	//------------------------------------------------------------------------- getTemporaryFilePath
 	/**
 	 * @return string
 	 */
