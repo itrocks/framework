@@ -4,6 +4,7 @@ namespace SAF\Framework\Sql\Builder;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Sql\Link;
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Sql\Builder;
@@ -249,7 +250,10 @@ class Where
 			}
 			else {
 				$property = $this->joins->getProperties($master_path)[$foreign_column];
-				$prefix = ($property->getAnnotation('link')->value) ? 'id_' : '';
+				$id_links = [Link_Annotation::OBJECT, Link_Annotation::COLLECTION, Link_Annotation::MAP];
+				$prefix = $property
+					? (in_array($property->getAnnotation('link')->value, $id_links) ? 'id_' : '')
+					: '';
 			}
 			return $value->toSql($this, $path, $prefix);
 		}
