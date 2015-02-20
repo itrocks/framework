@@ -2,6 +2,7 @@
 namespace SAF\Framework\Sql\Builder;
 
 use SAF\Framework\Dao\Func;
+use SAF\Framework\Dao\Func\Logical;
 use SAF\Framework\Dao\Sql\Link;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
@@ -115,6 +116,10 @@ class Where
 		foreach ($array as $key => $value) {
 			if ($first) $first = false; else $sql .= SP . $clause . SP;
 			$key_clause = strtoupper($key);
+			if (is_numeric($key) && ($value instanceof Logical)) {
+				// if logical, simply build path as if key clause was 'AND' (the simpliest)
+				$key_clause = 'AND';
+			}
 			switch ($key_clause) {
 				case 'NOT': $sql .= 'NOT (' . $this->buildPath($path, $value, 'AND') . ')';  break;
 				case 'AND': $sql .= $this->buildPath($path, $value, $key_clause);             break;
