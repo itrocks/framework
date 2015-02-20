@@ -249,7 +249,8 @@ class Where
 				$prefix = '';
 			}
 			else {
-				$property = $this->joins->getProperties($master_path)[$foreign_column];
+				$properties = $this->joins->getProperties($master_path);
+				$property = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
 				$id_links = [Link_Annotation::OBJECT, Link_Annotation::COLLECTION, Link_Annotation::MAP];
 				$prefix = $property
 					? (in_array($property->getAnnotation('link')->value, $id_links) ? 'id_' : '')
