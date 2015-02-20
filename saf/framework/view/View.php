@@ -94,7 +94,7 @@ class View implements Configurable
 	private static function executeView(
 		$view, $view_method_name, $parameters, $form, $files, $class_name, $feature_name
 	) {
-		$view_object = Builder::create($view);
+		$view_object = isA(reset($parameters), $view) ? reset($parameters) : Builder::create($view);
 		return $view_object->$view_method_name(
 			$parameters, $form, $files, $class_name, $feature_name
 		);
