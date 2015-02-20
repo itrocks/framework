@@ -13,22 +13,13 @@ class Date_Time extends DateTime
 
 	//----------------------------------------------------------------------- duration unit constants
 	/** Duration unit : hour */
-	const HOUR = 'hour';
-
-	/** Duration unit : minute */
+	const DAY    = 'day';
+	const HOUR   = 'hour';
 	const MINUTE = 'minute';
-
-	/** Duration unit : second */
+	const MONTH  = 'month';
 	const SECOND = 'second';
-
-	/** Duration unit : day */
-	const DAY = 'day';
-
-	/** Duration unit : month */
-	const MONTH = 'month';
-
-	/** Duration unit : year */
-	const YEAR = 'year';
+	const WEEK   = 'week';
+	const YEAR   = 'year';
 
 	//------------------------------------------------------------------------------------- $max_date
 	/**
@@ -126,6 +117,7 @@ class Date_Time extends DateTime
 				case Date_Time::MINUTE: $interval = 'PT' . $quantity . 'M'; break;
 				case Date_Time::SECOND: $interval = 'PT' . $quantity . 'S'; break;
 				case Date_Time::DAY:    $interval = 'P'  . $quantity . 'D'; break;
+				case Date_Time::WEEK:   $interval = 'P'  . ($quantity * 7) . 'D'; break;
 				case Date_Time::MONTH:  $interval = 'P'  . $quantity . 'M'; break;
 				case Date_Time::YEAR:   $interval = 'P'  . $quantity . 'Y'; break;
 			}
@@ -146,13 +138,34 @@ class Date_Time extends DateTime
 	 * - as the littlest possible date if $null_is_late is false : isAfter() will return true
 	 * - as the highest possible date if $null_is_late is true : isAfter() will return false
 	 *
-	 * @param $date_time    Date_Time|null
+	 * @param $date_time    Date_Time|string|null
 	 * @param $null_is_late boolean
 	 * @return boolean
 	 */
-	public function isAfter(Date_Time $date_time, $null_is_late = false)
+	public function isAfter($date_time, $null_is_late = false)
 	{
-		return isset($date_time) ? ($this->toISO() > $date_time->toISO()) : !$null_is_late;
+		return isset($date_time)
+			? ($this->toISO() > (is_string($date_time) ? $date_time : $date_time->toISO()))
+			: !$null_is_late;
+	}
+
+	//-------------------------------------------------------------------------------- isAfterOrEqual
+	/**
+	 * Returns true if date time is after or equal another date time
+	 *
+	 * If the other date time is null, then it is considered :
+	 * - as the littlest possible date if $null_is_late is false : isAfter() will return true
+	 * - as the highest possible date if $null_is_late is true : isAfter() will return false
+	 *
+	 * @param $date_time    Date_Time|string|null
+	 * @param $null_is_late boolean
+	 * @return boolean
+	 */
+	public function isAfterOrEqual($date_time, $null_is_late = false)
+	{
+		return isset($date_time)
+			? ($this->toISO() >= (is_string($date_time) ? $date_time : $date_time->toISO()))
+			: !$null_is_late;
 	}
 
 	//-------------------------------------------------------------------------------------- isBefore
@@ -163,13 +176,34 @@ class Date_Time extends DateTime
 	 * - as the littlest possible date if $null_is_late is false : isAfter() will return false
 	 * - as the highest possible date if $null_is_late is true : isAfter() will return true
 	 *
-	 * @param $date_time    Date_Time|null
+	 * @param $date_time    Date_Time|string|null
 	 * @param $null_is_late boolean
 	 * @return boolean
 	 */
-	public function isBefore(Date_Time $date_time, $null_is_late = false)
+	public function isBefore($date_time, $null_is_late = false)
 	{
-		return isset($date_time) ? ($this->toISO() < $date_time->toISO()) : $null_is_late;
+		return isset($date_time)
+			? ($this->toISO() < (is_string($date_time) ? $date_time : $date_time->toISO()))
+			: $null_is_late;
+	}
+
+	//------------------------------------------------------------------------------- isBeforeOrEqual
+	/**
+	 * Returns true if date time is before or equal another date time
+	 *
+	 * If the other date time is null, then it is considered :
+	 * - as the littlest possible date if $null_is_late is false : isAfter() will return false
+	 * - as the highest possible date if $null_is_late is true : isAfter() will return true
+	 *
+	 * @param $date_time    Date_Time|string|null
+	 * @param $null_is_late boolean
+	 * @return boolean
+	 */
+	public function isBeforeOrEqual($date_time, $null_is_late = false)
+	{
+		return isset($date_time)
+			? ($this->toISO() <= (is_string($date_time) ? $date_time : $date_time->toISO()))
+			: $null_is_late;
 	}
 
 	//--------------------------------------------------------------------------------------- isEmpty
