@@ -74,7 +74,10 @@ class Table_Builder_Class
 				$type = $property->getType();
 				if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
 					$table->addColumn(Column::buildProperty($property));
-					if ($property->getAnnotation('link')->value == Link_Annotation::OBJECT) {
+					if (
+						($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
+						&& ($property->getAnnotation('store')->value != 'string')
+					) {
 						$class_name = $property->getType()->asString();
 						$this->dependencies_context[$class_name] = $class_name;
 						$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
