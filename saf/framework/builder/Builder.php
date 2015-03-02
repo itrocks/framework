@@ -384,7 +384,7 @@ class Builder implements Activable, Registerable, Serializable
 		elseif (!$this->build && self::isBuilt($result)) {
 			$result = $class_name;
 		}
-		return $result;
+		return ($class_name != $result) ? $this->replacementClassName($result) : $result;
 	}
 
 	//------------------------------------------------------------------------------------- serialize
