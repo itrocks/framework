@@ -280,7 +280,11 @@ function strSimplify($str, $extended = false, $joker = null)
  */
 function strUri($str, $joker = null)
 {
-	return strtolower(strSimplify(str_replace([Q, SP], '-', $str), '/-_{}.', $joker));
+	$uri = strtolower(strSimplify(str_replace([Q, SP], '-', $str), '/-_{}.', $joker));
+	while (strpos($uri, '--')) {
+		$uri = str_replace('--', '-', $uri);
+	}
+	return $uri;
 }
 
 //---------------------------------------------------------------------------------------- ucfirsta
