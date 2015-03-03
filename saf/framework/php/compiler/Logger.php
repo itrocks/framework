@@ -4,6 +4,7 @@ namespace SAF\Framework\PHP\Compiler;
 use SAF\Framework;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Func;
 use SAF\Framework\PHP\Compiler;
 use SAF\Framework\PHP\Reflection_Source;
 use SAF\Framework\Plugin\Register;
@@ -47,7 +48,7 @@ class Logger implements Registerable
 	public function onLoggerStop(Framework\Logger $object)
 	{
 		if ($this->log_flag) {
-			foreach (Dao::search(['log' => null], Compiler_Log::class) as $logger) {
+			foreach (Dao::search(['log' => Func::isNull()], Compiler_Log::class) as $logger) {
 				/** @var $logger Compiler_Log */
 				$logger->log = $object->log_entry;
 				Dao::write($logger, [Dao::only(['log'])]);
