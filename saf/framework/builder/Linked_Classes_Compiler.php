@@ -32,14 +32,19 @@ class Linked_Classes_Compiler implements ICompiler
 				$parent_class_name = $class->getParentName();
 				if ($parent_class_name) {
 					$replacement_class_name = Builder::className($parent_class_name);
-					$class_exists = class_exists($replacement_class_name, false);
-					if (
-						($class_exists && is_a($replacement_class_name, $parent_class_name))
-						|| (
-							!$class_exists
-							&& Reflection_Source::of($replacement_class_name)->getClass($replacement_class_name)->isA($class->name))
-					) {
-						$replacement_class_name = $parent_class_name;
+					if ($replacement_class_name != $parent_class_name) {
+						$class_exists = class_exists($replacement_class_name, false);
+						if (
+							($class_exists && is_a($replacement_class_name, $parent_class_name))
+							|| (
+								!$class_exists
+								&& Reflection_Source::of($replacement_class_name)->getClass(
+									$replacement_class_name
+								)->isA($class->name)
+							)
+						) {
+							$replacement_class_name = $parent_class_name;
+						}
 					}
 					if (is_array($replacement_class_name)) {
 						trigger_error("Replacement classes should all be compiled", E_USER_ERROR);
