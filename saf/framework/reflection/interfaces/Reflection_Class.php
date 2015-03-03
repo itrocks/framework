@@ -140,6 +140,16 @@ interface Reflection_Class extends Reflection
 	 */
 	public function inNamespace();
 
+	//------------------------------------------------------------------------------------------- isA
+	/**
+	 * Returns true if the class has $name into its parents, interfaces or traits
+	 *
+	 * @param $name string
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @return boolean
+	 */
+	public function isA($name, $flags = []);
+
 	//------------------------------------------------------------------------------------ isAbstract
 	/**
 	 * Checks if class is abstract

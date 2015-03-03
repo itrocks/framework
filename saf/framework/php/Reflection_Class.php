@@ -631,6 +631,24 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $this->namespace ? true : false;
 	}
 
+	//------------------------------------------------------------------------------------------- isA
+	/**
+	 * Returns true if the class has $name into its parents, interfaces or traits
+	 *
+	 * @param $name string
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @return boolean
+	 * @todo works only with parents : add interfaces and traits
+	 */
+	public function isA($name, $flags = [])
+	{
+		if ($name == $this->name) {
+			return true;
+		}
+		$parent_name = $this->getParentName();
+		return (($parent_name == $name) || ($parent_name && $this->getParentClass()->isA($name)));
+	}
+
 	//------------------------------------------------------------------------------------ isAbstract
 	/**
 	 * Checks if class is abstract

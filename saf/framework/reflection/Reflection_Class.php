@@ -351,4 +351,29 @@ class Reflection_Class extends ReflectionClass
 		return $traits;
 	}
 
+	//------------------------------------------------------------------------------------------- isA
+	/**
+	 * Returns true if the class has $name into its parents, interfaces or traits
+	 *
+	 * @param $name  string
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @return boolean
+	 */
+	public function isA($name, $flags = [])
+	{
+		if ($flags) {
+			$flip = array_flip($flags);
+			if (isset($flip[T_USE]) && trait_exists($name)) {
+				return isA($this->name, $name);
+			}
+			elseif (
+				(isset($flip[T_EXTENDS]) && class_exists($name))
+				|| (isset($flip[T_IMPLEMENTS]) && interface_exists($name))
+			) {
+				return is_a($this->name, $name, true);
+			}
+		}
+		return false;
+	}
+
 }
