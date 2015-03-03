@@ -94,7 +94,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isDelete($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 7)) === 'DELETE ');
+		return (strtoupper(substr(trim($query), 0, 7)) === ('DELETE' . SP));
 	}
 
 	//-------------------------------------------------------------------------------------- isInsert
@@ -106,7 +106,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isInsert($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 12)) === 'INSERT INTO ');
+		return (strtoupper(substr(trim($query), 0, 12)) === ('INSERT INTO' . SP));
 	}
 
 	//-------------------------------------------------------------------------------------- isSelect
@@ -118,7 +118,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isSelect($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 7)) === 'SELECT ');
+		return (strtoupper(substr(trim($query), 0, 7)) === ('SELECT' . SP));
 	}
 
 	//------------------------------------------------------------------------------------ isTruncate
@@ -130,7 +130,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isTruncate($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 9)) === 'TRUNCATE ');
+		return (strtoupper(substr(trim($query), 0, 9)) === ('TRUNCATE' . SP));
 	}
 
 	//-------------------------------------------------------------------------------------- isUpdate
@@ -142,7 +142,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isUpdate($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 7)) === 'UPDATE ');
+		return (strtoupper(substr(trim($query), 0, 7)) === ('UPDATE' . SP));
 	}
 
 	//----------------------------------------------------------------------------------------- query
@@ -157,6 +157,10 @@ class Contextual_Mysqli extends mysqli
 		$result = parent::query($query, $result_mode);
 		$this->last_errno = $this->errno;
 		$this->last_error = $this->error;
+		if (($result === false) && !$this->last_errno && $this->isSelect($query)) {
+			$this->last_errno = 999;
+			$this->last_error = 'Unknown error';
+		}
 		return $result;
 	}
 
