@@ -194,6 +194,18 @@ class Parameters
 		return arrayUnnamedValues($this->parameters);
 	}
 
+	//------------------------------------------------------------------------------------------- has
+	/**
+	 * Returns true if the parameter named $key exist
+	 *
+	 * @param $key string
+	 * @return boolean
+	 */
+	public function has($key)
+	{
+		return isset($this->parameters[$key]);
+	}
+
 	//---------------------------------------------------------------------------------------- remove
 	/**
 	 * Removes a parameter
