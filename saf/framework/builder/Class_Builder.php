@@ -2,6 +2,8 @@
 namespace SAF\Framework\Builder;
 
 use SAF\Framework\Application;
+use SAF\Framework\Dao;
+use SAF\Framework\PHP\Dependency;
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\Tools\Namespaces;
 
@@ -50,7 +52,10 @@ class Class_Builder
 					}
 					$level = 0;
 					foreach ($class->getListAnnotation('extends')->values() as $extends) {
-						if (trait_exists($extends)) {
+						if (Dao::search(
+							['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
+							Dependency::class
+						)) {
 							foreach ($traits as $trait_level => $trait_names) {
 								if (isset($trait_names[$extends])) {
 									$level = max($level, $trait_level + 1);
