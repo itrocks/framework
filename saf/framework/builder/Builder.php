@@ -356,35 +356,39 @@ class Builder implements Activable, Registerable, Serializable
 	 */
 	private function replacementClassName($class_name)
 	{
-		if (!$this->enabled) {
-			return $class_name;
-		}
-		$result = isset($this->replacements[$class_name])
-			? $this->replacements[$class_name]
-			: $class_name;
-		if (is_array($result)) {
-			if ($this->build) {
-				$this->compositions[$class_name] = $result;
-				$built_class_name = Class_Builder::builtClassName($class_name);
-				if (file_exists(
-					Application::current()->getCacheDir() . '/compiled/'
-					. str_replace('/', '-', Names::classToPath($built_class_name))
-				)) {
-					$result = $built_class_name;
+		if ($this->enabled) {
+			$result = isset($this->replacements[$class_name])
+				? $this->replacements[$class_name]
+				: $class_name;
+			if (is_array($result)) {
+				if ($this->build) {
+					$this->compositions[$class_name] = $result;
+					$built_class_name = Class_Builder::builtClassName($class_name);
+					if (file_exists(
+						Application::current()->getCacheDir() . '/compiled/'
+						. str_replace('/', '-', Names::classToPath($built_class_name))
+					)) {
+						$result = $built_class_name;
+					}
+					else {
+						$result = Class_Builder::build($class_name, $result);
+					}
+					$this->replacements[$class_name] = $result;
 				}
 				else {
-					$result = Class_Builder::build($class_name, $result);
+					$result = $class_name;
 				}
-				$this->replacements[$class_name] = $result;
 			}
-			else {
+			elseif (!$this->build && self::isBuilt($result)) {
 				$result = $class_name;
 			}
 		}
-		elseif (!$this->build && self::isBuilt($result)) {
+		else {
 			$result = $class_name;
 		}
-		return ($class_name != $result) ? $this->replacementClassName($result) : $result;
+		return (($class_name != $result) && !self::isBuilt($result))
+			? $this->replacementClassName($result)
+			: $result;
 	}
 
 	//------------------------------------------------------------------------------------- serialize
