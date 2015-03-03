@@ -93,9 +93,9 @@ class Sort implements Option
 		) {
 			$class_name = Builder::className($class_name);
 			$this->class_name = $class_name;
-			$columns = (new Reflection_Class($class_name))->getAnnotation('sort')->value;
+			$columns = (new Reflection_Class($class_name))->getListAnnotation('sort')->values();
 			if (!$columns) {
-				$columns = (new Reflection_Class($class_name))->getAnnotation('representative')->value;
+				$columns = (new Reflection_Class($class_name))->getListAnnotation('representative')->values();
 			}
 			$this->columns = $columns;
 			$this->calculateReverse();
