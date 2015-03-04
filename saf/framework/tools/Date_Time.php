@@ -225,7 +225,7 @@ class Date_Time extends DateTime
 	 */
 	public function isMax()
 	{
-		return ($this->toISO(false) === self::$max_date);
+		return ($this->toISO(false) >= self::$max_date);
 	}
 
 	//----------------------------------------------------------------------------------------- isMin
@@ -236,7 +236,7 @@ class Date_Time extends DateTime
 	 */
 	public function isMin()
 	{
-		return ($this->toISO(false) === self::$min_date);
+		return ($this->toISO(false) <= self::$min_date);
 	}
 
 	//------------------------------------------------------------------------------------------- max
