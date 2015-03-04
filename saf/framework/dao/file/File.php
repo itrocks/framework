@@ -2,9 +2,11 @@
 namespace SAF\Framework\Dao;
 
 use SAF\Framework\Application;
+use SAF\Framework\Builder;
 use SAF\Framework\Dao\File\Spreadsheet_File;
 use SAF\Framework\Dao\File\Type;
 use SAF\Framework\Dao\File\Type_Builder;
+use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Files;
 
 /**
@@ -17,6 +19,7 @@ class File
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
+	 * @mandatory
 	 * @var string
 	 */
 	public $name;
@@ -47,7 +50,15 @@ class File
 	 */
 	public $temporary_file_name;
 
-	//-------------------------------------------------------------------------- $temporary_file_name
+	//----------------------------------------------------------------------------------- $updated_on
+	/**
+	 * @link DateTime
+	 * @mandatory
+	 * @var Date_Time
+	 */
+	public $updated_on;
+
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $temporary_file_name string
 	 */
@@ -58,6 +69,9 @@ class File
 				$this->name = rLastParse($temporary_file_name, SL, 1, true);
 			}
 			$this->temporary_file_name = $temporary_file_name;
+		}
+		if (!isset($this->updated_on)) {
+			$this->updated_on = Builder::create(Date_Time::class);
 		}
 	}
 
@@ -154,11 +168,15 @@ class File
 	}
 
 	//------------------------------------------------------------------------------------ setContent
-	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
+	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
+	/**
+	 * @param $content string
+	 */
 	private function setContent($content)
 	{
 		$this->content = $content;
 		$this->calcHash();
+		$this->updated_on = new Date_Time();
 	}
 
 }

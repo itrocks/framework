@@ -16,3 +16,21 @@ function script_put_contents($filename, $data)
 		}
 	}
 }
+
+//---------------------------------------------------------------------------------- unlinkIfExists
+/**
+ * Unlink a file like unlink() but throws no error if the file did not exist
+ *
+ * @param $filename string
+ * @return boolean|null the unlink() call result (boolean), or null if the file did not exist
+ */
+function unlinkIfExists($filename)
+{
+	clearstatcache(true, $filename);
+	if (file_exists($filename)) {
+		return unlink($filename);
+	}
+	else {
+		return null;
+	}
+}
