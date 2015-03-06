@@ -218,7 +218,7 @@ function strIsCapitals($str)
  *
  * 1/ accents are replaced with non-accentuated characters
  * 2/ string is lowercased
- * 3/ only a..z, 0..9, dot (.,) characters are allowed
+ * 3/ only a..z, A..Z, 0..9, dot (.,) characters are allowed
  * 4/ not allowed characters are replaced by a joker character, or removed if no joker character is set
  *
  * @param $str      string
