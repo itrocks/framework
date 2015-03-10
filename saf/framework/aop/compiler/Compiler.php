@@ -305,31 +305,32 @@ class Compiler implements ICompiler, Needs_Main
 
 	//------------------------------------------------------------------------------- scanForAbstract
 	/**
-	 * TODO Scan weaver for all parent AOP aspects on abstract methods
-	 * - TODO for each methods implemented in the class or its traits
-	 * - DONE for each parent abstract method of these methods
-	 * - TODO for all the parent chain between the method and its parent
-	 * - DONE if any advice : add it for the current class
+	 * Scan weaver for all parent AOP aspects on abstract methods
+	 * - for each methods implemented in the class or its traits
+	 * - for each parent abstract method of these methods
+	 * - for all the parent chain between the method and its parent
+	 * - if any advice : add it for the current class
 	 *
-	 * Aspects on abstract methods will not be weaved until it's done.
-	 *
-	 * @param $methods array [$method][$index] = [$type, callback $advice]
-	 * @param $class   Reflection_Class
+	 * @param $methods     array [$method][$index] = [$type, callback $advice]
+	 * @param $class       Reflection_Class
+	 * @param $only_method string Internal use only : the method name we are up-scanning
 	 */
-	private function scanForAbstract(&$methods, Reflection_Class $class)
+	private function scanForAbstract(&$methods, Reflection_Class $class, $only_method = null)
 	{
 		if ($class->getParentName()) {
-			foreach ($class->getMethods([T_USE]) as $method) {
-				$parent_method = $method->getParent();
-				if ($parent_method) {
-					if ($parent_method->isAbstract()) {
-						$joinpoints = $this->weaver->getJoinpoint(
-							[$parent_method->getDeclaringClassName(), $method->getName()]
-						);
+			$parent_class = $class->getParentClass();
+			$parent_methods = $parent_class->getMethods([T_EXTENDS, T_IMPLEMENTS]);
+			foreach ($class->getMethods($only_method ? [T_EXTENDS, T_IMPLEMENTS] : [T_USE]) as $method) {
+				if (!$only_method || ($only_method === $method->name)) {
+					if (
+						isset($parent_methods[$method->name])
+						&& $parent_methods[$method->name]->isAbstract()
+					) {
+						$this->scanForAbstract($methods, $parent_class, $method->name);
+						$joinpoints = $this->weaver->getJoinpoint([$parent_class->name, $method->name]);
 						foreach ($joinpoints as $pointcut) {
-							$methods[$method->getName()][] = $pointcut;
+							$methods[$method->name][] = $pointcut;
 						}
-						$this->scanForAbstract($methods, $parent_method->getDeclaringClass());
 					}
 				}
 			}
