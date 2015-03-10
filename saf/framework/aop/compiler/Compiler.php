@@ -305,20 +305,35 @@ class Compiler implements ICompiler, Needs_Main
 
 	//------------------------------------------------------------------------------- scanForAbstract
 	/**
-	 * @param $methods array
+	 * TODO Scan weaver for all parent AOP aspects on abstract methods
+	 * - TODO for each methods implemented in the class or its traits
+	 * - DONE for each parent abstract method of these methods
+	 * - TODO for all the parent chain between the method and its parent
+	 * - DONE if any advice : add it for the current class
+	 *
+	 * Aspects on abstract methods will not be weaved until it's done.
+	 *
+	 * @param $methods array [$method][$index] = [$type, callback $advice]
 	 * @param $class   Reflection_Class
 	 */
 	private function scanForAbstract(&$methods, Reflection_Class $class)
 	{
-		/**
-		 * TODO Scan weaver for all parent AOP aspects on abstract methods
-		 * - for each methods implemented in the class or its traits
-		 * - for each parent abstract method of these methods
-		 * - for all the parent chain between the method and its parent
-		 * - if any advice : add it for the current class
-		 *
-		 * Aspects on abstract methods will not be weaved until it's done.
-		 */
+		if ($class->getParentName()) {
+			foreach ($class->getMethods([T_USE]) as $method) {
+				$parent_method = $method->getParent();
+				if ($parent_method) {
+					if ($parent_method->isAbstract()) {
+						$joinpoints = $this->weaver->getJoinpoint(
+							[$parent_method->getDeclaringClassName(), $method->getName()]
+						);
+						foreach ($joinpoints as $pointcut) {
+							$methods[$method->getName()][] = $pointcut;
+						}
+						$this->scanForAbstract($methods, $parent_method->getDeclaringClass());
+					}
+				}
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------- scanForGetters
@@ -330,7 +345,7 @@ class Compiler implements ICompiler, Needs_Main
 	{
 		foreach ($class->getProperties() as $property) {
 			$expr = '%'
-				. '\n\s+\*\s+'               // each line beginnig by '* '
+				. '\n\s+\*\s+'               // each line beginning by '* '
 				. '@getter'                  // getter annotation
 				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
 				. '(\w+)?)?'                 // 2 : method or function name

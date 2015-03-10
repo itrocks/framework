@@ -17,7 +17,7 @@ class Weaver implements IWeaver
 	 * All joinpoints are stored here
 	 *
 	 * @var array array[$function][$index] = [$type, callback $advice)
-	 * @var array array[$class][$method][$index] = [$type, callback $advice)
+	 * @var array array[$class][$method][$index] = [$type, callback $advice]
 	 */
 	private $joinpoints = [];
 
@@ -210,10 +210,27 @@ class Weaver implements IWeaver
 		return $dump;
 	}
 
+	//---------------------------------------------------------------------------------- getJoinpoint
+	/**
+	 * Gets existing joinpoints for a class method or property
+	 *
+	 * @param $joinpoint callable A class method or property name
+	 * @return array [$index] = [$type, callback $advice]
+	 */
+	public function getJoinpoint($joinpoint)
+	{
+		if (isset($this->joinpoints[$joinpoint[0]][$joinpoint[1]])) {
+			return $this->joinpoints[$joinpoint[0]][$joinpoint[1]];
+		}
+		return [];
+	}
+
 	//--------------------------------------------------------------------------------- getJoinpoints
 	/**
+	 * Gets existing joinpoints for a class name
+	 *
 	 * @param $joinpoint_name string joinpoint class or function name
-	 * @return array
+	 * @return array [$method][$index] = [$type, callback $advice]
 	 */
 	public function getJoinpoints($joinpoint_name = null)
 	{
