@@ -5,6 +5,8 @@ use SAF\Framework\Checker\Report\Line;
 
 /**
  * A check report stores business objects checking results into Check_Report_Lines objects
+ *
+ * @deprecated see Object_Validator
  */
 class Report
 {
