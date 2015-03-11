@@ -2,6 +2,8 @@
 namespace SAF\Framework\Plugin;
 
 use SAF\Framework\AOP\Weaver\IWeaver;
+use SAF\Framework\Reflection\Annotation\Parser;
+use SAF\Framework\Tools\Names;
 
 /**
  * Plugin register structure
@@ -48,10 +50,10 @@ class Register
 	}
 
 	//------------------------------------------------------------------------------ getConfiguration
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return array|string
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getConfiguration()
 	{
 		if (!$this->get) {
@@ -69,11 +71,53 @@ class Register
 		return $this->configuration;
 	}
 
+	//--------------------------------------------------------------------------------- setAnnotation
+	/**
+	 * Defines an annotation class, linked to an annotation
+	 *
+	 * @param $context          string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
+	 * @param $annotation_name  string
+	 * @param $annotation_class string
+	 */
+	public function setAnnotation($context, $annotation_name, $annotation_class)
+	{
+		// instantiates Parser, in order to call its __destruct() method at the script end
+		if (!isset($GLOBALS['parser'])) {
+			$GLOBALS['parser'] = new Parser();
+		}
+		// add annotation
+		$namespace = 'SAF\Framework\Reflection\Annotation' . BS . $context;
+		$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
+		Parser::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
+	}
+
+	//-------------------------------------------------------------------------------- setAnnotations
+	/**
+	 * Defines multiple annotations classes
+	 * A very little bit faster than multiple calls to setAnnotation()
+	 *
+	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_VARIABLE
+	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
+	 */
+	public function setAnnotations($context, $annotations_classes)
+	{
+		// instantiates Parser, in order to call its __destruct() method at the script end
+		if (!isset($GLOBALS['parser'])) {
+			$GLOBALS['parser'] = new Parser();
+		}
+		// add annotation
+		$namespace = 'SAF\Framework\Reflection\Annotation' . BS . $context;
+		foreach ($annotations_classes as $annotation_name => $annotation_class) {
+			$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
+			Parser::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
+		}
+	}
+
 	//------------------------------------------------------------------------------ setConfiguration
+	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
 	 * @param $configuration array|string
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
 	private function setConfiguration($configuration)
 	{
 		$this->configuration = $configuration;

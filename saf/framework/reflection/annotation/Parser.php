@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation;
 
+use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Annotation;
@@ -16,17 +17,53 @@ use SAF\Framework\Tools\Namespaces;
 /**
  * The annotation parser process calculates the annotation value
  */
-abstract class Parser
+class Parser
 {
 
-	//---------------------------------------------------------------------------------- $annotations
+	//-------------------------------------------------------------------------------- DOC_COMMENT_IN
 	const DOC_COMMENT_IN = '***IN ';
+
+	//---------------------------------------------------------------- annotations contexts constants
+	const T_CLASS    = 'Class_';
+	const T_METHOD   = 'Method';
+	const T_PROPERTY = 'Property';
+
+	//----------------------------------------------------------------------- $additional_annotations
+	/**
+	 * @var string[]
+	 */
+	public static $additional_annotations = [];
 
 	//---------------------------------------------------------------------------------- $annotations
 	/**
 	 * @var string[]
 	 */
 	public static $default_annotations;
+
+	//------------------------------------------------------------------------------------ __destruct
+	/**
+	 * Called only when a Parser has been instantiated, on plugins registration
+	 */
+	public function __destruct()
+	{
+		$cached_annotations_file
+			= Application::current()->getCacheDir() . SL . 'default_annotations.php';
+		if (self::$additional_annotations) {
+			$buffer = file_get_contents(__DIR__ . SL . 'default_annotations.php')
+				. LF
+				. 'Parser::$default_annotations = array_merge(' . LF
+				. TAB . 'Parser::$default_annotations,' . LF
+				. TAB . 'unserialize(' . Q . serialize(self::$additional_annotations) . Q . ')' . LF
+				. ');' . LF;
+			file_put_contents($cached_annotations_file, $buffer);
+		}
+		else {
+			clearstatcache();
+			if (file_exists($cached_annotations_file)) {
+				unlink($cached_annotations_file);
+			}
+		}
+	}
 
 	//---------------------------------------------------------------------------------------- byName
 	/**
@@ -40,14 +77,7 @@ abstract class Parser
 	public static function byName(
 		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null
 	) {
-		include_once __DIR__ . '/default_annotations.php';
 		$annotation_class = static::getAnnotationClassName($reflection_object, $annotation_name);
-		if (
-			!@class_exists($annotation_class)
-			&& isset(self::$default_annotations[$annotation_class])
-		) {
-			$annotation_class = self::$default_annotations[$annotation_class];
-		}
 		if (!isset($multiple)) {
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 		}
@@ -93,7 +123,7 @@ abstract class Parser
 			if (($k = strpos($doc_comment, LF, $i)) < $j) $j = $k;
 			if (($k = strpos($doc_comment, SP, $i)) < $j)  $j = $k;
 			$annotation_name = substr($doc_comment, $i + 1, $j - $i - 1);
-			$annotation_class = self::getAnnotationClassName($reflection_object, $annotation_name);
+			$annotation_class = static::getAnnotationClassName($reflection_object, $annotation_name);
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 			$annotation = self::parseAnnotationValue(
 				$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
@@ -130,9 +160,41 @@ abstract class Parser
 		elseif ($reflection_class == 'Value') {
 			$reflection_class = 'Property';
 		}
-		return __NAMESPACE__
+		$annotation_class = __NAMESPACE__
 			. BS . $reflection_class
 			. BS . Names::propertyToClass($annotation_name) . '_Annotation';
+		if (!@class_exists($annotation_class)) {
+			if (!isset(self::$default_annotations)) {
+				self::initDefaultAnnotations();
+			}
+			if (isset(self::$default_annotations[$annotation_class])) {
+				$annotation_class = self::$default_annotations[$annotation_class];
+			}
+		}
+		return $annotation_class;
+	}
+
+	//------------------------------------------------------------------------ initDefaultAnnotations
+	/**
+	 * Init self::$default_annotations with cached file content
+	 */
+	private static function initDefaultAnnotations()
+	{
+		if (!self::$default_annotations) {
+			if ($application = Application::current()) {
+				$default_annotations_file
+					= Application::current()->getCacheDir() . SL . 'default_annotations.php';
+				clearstatcache(true, $default_annotations_file);
+				if (!is_file($default_annotations_file)) {
+					copy(__DIR__ . SL . 'default_annotations.php', $default_annotations_file);
+				}
+			}
+			else {
+				$default_annotations_file = __DIR__ . SL . 'default_annotations.php';
+			}
+			/** @noinspection PhpIncludeInspection dynamic */
+			include_once $default_annotations_file;
+		}
 	}
 
 	//-------------------------------------------------------------------------------- multipleRemove
