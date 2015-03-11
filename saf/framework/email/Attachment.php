@@ -4,8 +4,6 @@ namespace SAF\Framework\Email;
 /**
  * Email attachments are attached or embedded (ie images) files, including multiple versions
  * (HTML / plain) of the mail
- *
- * @package SAF\Framework
  */
 class Attachment
 {

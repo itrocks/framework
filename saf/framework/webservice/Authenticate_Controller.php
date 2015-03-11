@@ -9,8 +9,6 @@ use SAF\Framework\User\Authenticate\Authentication;
 
 /**
  * A controller to login for API access of webservices
- *
- * @package SAF\Framework\Webservice
  */
 class Authenticate_Controller implements Default_Feature_Controller
 {

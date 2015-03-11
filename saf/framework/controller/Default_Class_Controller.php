@@ -5,8 +5,6 @@ use SAF\Framework\Controller;
 
 /**
  * A default class controller, called for a given feature
- *
- * @package SAF\Framework
  */
 interface Default_Class_Controller extends Controller
 {

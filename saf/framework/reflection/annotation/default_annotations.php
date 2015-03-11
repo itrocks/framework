@@ -71,6 +71,10 @@ Parser::$default_annotations = [
 	// TODO LOW explain why a property could have multiple blocks
 	__NAMESPACE__ . '\Property\Block_Annotation' => List_Annotation::class,
 
+	// @calculated
+	// The value of this property is calculated
+	__NAMESPACE__ . '\Property\Calculated_Annotation' => Boolean_Annotation::class,
+
 	// @component
 	// The object referenced by the property is a component of the main object.
 	// It should not exist without it's container.
