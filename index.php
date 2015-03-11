@@ -23,6 +23,7 @@ set_time_limit(30);
 
 // enable running from command line
 if (!isset($_SERVER['PATH_INFO'])) $_SERVER['PATH_INFO'] = '/';
+$_SERVER['CWD'] = getcwd();
 
 // enable cache files for compiled scripts : includes must all use this filter
 include_once 'saf/framework/aop/Include_Filter.php';
