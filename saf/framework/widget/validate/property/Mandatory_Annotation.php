@@ -21,7 +21,6 @@ class Mandatory_Annotation extends Boolean_Annotation implements Validator
 	 */
 	public function __construct($value, Interfaces\Reflection_Property $property)
 	{
-		/** @noinspection PhpUndefinedMethodInspection */
 		parent::__construct($value);
 		$this->property = $property;
 	}
@@ -33,10 +32,11 @@ class Mandatory_Annotation extends Boolean_Annotation implements Validator
 	public function reportMessage()
 	{
 		switch ($this->valid) {
-			case true:  return "the mandatory value is set";
-			case false: return "the mandatory value is missing";
-			default:    return "";
+			case Validate::INFORMATION: return 'mandatory and set';
+			case Validate::WARNING:     return 'should be filled in';
+			case Validate::ERROR:       return 'mandatory';
 		}
+		return '';
 	}
 
 	//-------------------------------------------------------------------------------------- validate
