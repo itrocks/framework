@@ -16,6 +16,7 @@ use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Paths;
 use SAF\Framework\Updater\Application_Updater;
+use SAF\Framework\View\View_Exception;
 
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
@@ -340,7 +341,12 @@ class Main
 		list($class_name, $method_name) = $this->getController(
 			$uri->controller_name, $uri->feature_name, $sub_feature
 		);
-		return $this->executeController($class_name, $method_name, $uri, $post, $files);
+		try {
+			return $this->executeController($class_name, $method_name, $uri, $post, $files);
+		}
+		catch (View_Exception $exception) {
+			return $exception->view_result;
+		}
 	}
 
 	//---------------------------------------------------------------------------------- sessionStart
