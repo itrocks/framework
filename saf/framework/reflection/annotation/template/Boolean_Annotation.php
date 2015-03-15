@@ -7,7 +7,7 @@ use SAF\Framework\Reflection\Annotation;
  * A boolean annotation can have true or false value
  * Default value of these annotations are always false.
  * When the annotation is set without value, the value is true.
- * To set the value explicitely to false, annotate @annotation false or @annotation 0.
+ * To set the value explicitly to false, annotate @annotation false or @annotation 0.
  */
 class Boolean_Annotation extends Annotation
 {

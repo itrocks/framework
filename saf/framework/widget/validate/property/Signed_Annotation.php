@@ -8,9 +8,9 @@ use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Widget\Validate\Validate;
 
 /**
- * The mandatory annotation validator
+ * The signed annotation validator
  */
-class Mandatory_Annotation extends Boolean_Annotation implements Property_Validator
+class Signed_Annotation extends Boolean_Annotation implements Property_Validator
 {
 	use Property_Validate_Annotation;
 
@@ -33,9 +33,9 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 	public function reportMessage()
 	{
 		switch ($this->valid) {
-			case Validate::INFORMATION: return 'mandatory and set';
-			case Validate::WARNING:     return 'should be filled in';
-			case Validate::ERROR:       return 'mandatory';
+			case Validate::INFORMATION: return 'number signature is conform';
+			case Validate::WARNING:     return 'number signature not expected';
+			case Validate::ERROR:       return 'number signature not allowed';
 		}
 		return '';
 	}
@@ -51,9 +51,9 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 	{
 		$this->object = $object;
 		if ($this->property instanceof Reflection_Property) {
-			if ($this->value) {
+			if (!$this->value) {
 				$value = $this->property->getValue($object);
-				$this->valid = !(is_null($value) || ($value === ''));
+				$this->valid = $value > 0;
 			}
 			else {
 				$this->valid = true;

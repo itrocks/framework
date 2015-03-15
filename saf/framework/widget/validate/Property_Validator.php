@@ -3,7 +3,7 @@ namespace SAF\Framework\Widget\Validate;
 
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Annotation\Template;
-use SAF\Framework\Widget\Validate\Property\Validate_Annotation;
+use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
 
 /**
  * The object validator links validation processes to objects properties values
@@ -21,7 +21,7 @@ class Property_Validator
 	/**
 	 * The report is made of validate annotations that have been validated or not
 	 *
-	 * @var Template\Property_Validator[]|Validate_Annotation[]
+	 * @var Template\Property_Validator[]|Property_Validate_Annotation[]
 	 */
 	public $report = [];
 
@@ -44,9 +44,9 @@ class Property_Validator
 	public function validate($object)
 	{
 		$validated = true;
-		foreach ($this->property->getAnnotations() as $annotation) {
+		foreach ($this->property->getAnnotations() as $annotation_name => $annotation) {
 			if ($annotation instanceof Template\Property_Validator) {
-				/** @var $annotation Template\Property_Validator|Validate_Annotation */
+				/** @var $annotation Template\Property_Validator|Property_Validate_Annotation */
 				$validated_annotation = $annotation->validate($object);
 				if ($annotation->valid === true)  $annotation->valid = Validate::INFORMATION;
 				if ($annotation->valid === false) $annotation->valid = Validate::ERROR;

@@ -2,7 +2,7 @@
 namespace SAF\Framework\Widget\Validate\Property;
 
 use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Validator;
+use SAF\Framework\Reflection\Annotation\Template\Property_Validator;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Widget\Validate\Validate;
@@ -10,9 +10,9 @@ use SAF\Framework\Widget\Validate\Validate;
 /**
  * The min length annotation validator
  */
-class Min_Length_Annotation extends Annotation implements Validator
+class Min_Length_Annotation extends Annotation implements Property_Validator
 {
-	use Validate_Annotation;
+	use Property_Validate_Annotation;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -21,6 +21,7 @@ class Min_Length_Annotation extends Annotation implements Validator
 	 */
 	public function __construct($value, Interfaces\Reflection_Property $property)
 	{
+		/** @noinspection PhpUndefinedMethodInspection @extends Annotation */
 		parent::__construct($value);
 		$this->property = $property;
 	}
@@ -54,7 +55,7 @@ class Min_Length_Annotation extends Annotation implements Validator
 	{
 		$this->object = $object;
 		$this->valid = ($this->property instanceof Reflection_Property)
-			? $this->valid = ($this->property->getValue($object) >= $this->value)
+			? (strlen($this->property->getValue($object)) >= $this->value)
 			: null;
 		return $this->valid;
 	}

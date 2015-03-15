@@ -1,12 +1,15 @@
 <?php
 namespace SAF\Framework\Widget\Validate\Property;
 
+use SAF\Framework\Reflection;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Common to all property annotations : the property context
+ *
+ * @extends \SAF\Framework\Reflection\Annotation
  */
-trait Validate_Annotation
+trait Property_Validate_Annotation
 {
 
 	//--------------------------------------------------------------------------------------- $object
@@ -39,5 +42,19 @@ trait Validate_Annotation
 	 *                     for false immediately after the internal call to Annotation::validate()
 	 */
 	public $valid;
+
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Gets the value of the property from the last validated object
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		$property = $this->property;
+		return (isset($this->object) && $property Instanceof Reflection\Reflection_Property)
+			? $property->getValue($this->object)
+			: null;
+	}
 
 }

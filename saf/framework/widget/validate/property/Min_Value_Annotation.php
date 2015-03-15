@@ -1,16 +1,16 @@
 <?php
 namespace SAF\Framework\Widget\Validate\Property;
 
-use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
+use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Property_Validator;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Widget\Validate\Validate;
 
 /**
- * The mandatory annotation validator
+ * The min value annotation validator
  */
-class Mandatory_Annotation extends Boolean_Annotation implements Property_Validator
+class Min_Value_Annotation extends Annotation implements Property_Validator
 {
 	use Property_Validate_Annotation;
 
@@ -28,14 +28,18 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
+	 * Gets the last validate() call resulting report message
+	 *
 	 * @return string
 	 */
 	public function reportMessage()
 	{
 		switch ($this->valid) {
-			case Validate::INFORMATION: return 'mandatory and set';
-			case Validate::WARNING:     return 'should be filled in';
-			case Validate::ERROR:       return 'mandatory';
+			case Validate::INFORMATION:
+				return 'value is greater than !' . $this->value . '!';
+			case Validate::WARNING:
+			case Validate::ERROR:
+				return 'minimal value is !' . $this->value . '!';
 		}
 		return '';
 	}
@@ -45,23 +49,14 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 	 * Validates the property value within this object context
 	 *
 	 * @param $object object
-	 * @return boolean
+	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
 	public function validate($object)
 	{
 		$this->object = $object;
-		if ($this->property instanceof Reflection_Property) {
-			if ($this->value) {
-				$value = $this->property->getValue($object);
-				$this->valid = !(is_null($value) || ($value === ''));
-			}
-			else {
-				$this->valid = true;
-			}
-		}
-		else {
-			$this->valid = null;
-		}
+		$this->valid = ($this->property instanceof Reflection_Property)
+			? ($this->property->getValue($object) >= $this->value)
+			: null;
 		return $this->valid;
 	}
 

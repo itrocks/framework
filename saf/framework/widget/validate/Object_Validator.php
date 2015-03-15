@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Widget\Validate;
 
+use SAF\Framework\Controller;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Option\Only;
@@ -10,8 +12,9 @@ use SAF\Framework\Reflection\Annotation\Parser;
 use SAF\Framework\Reflection\Annotation\Template;
 use SAF\Framework\Reflection\Annotation\Template\Validator;
 use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Widget\Validate\Property\Mandatory_Annotation;
-use SAF\Framework\Widget\Validate\Property\Validate_Annotation;
+use SAF\Framework\View;
+use SAF\Framework\View\View_Exception;
+use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
 
 /**
  * The object validator links validation processes to objects
@@ -24,7 +27,7 @@ class Object_Validator implements Registerable
 	 * The validation report contains a detailed list of validate annotations and values
 	 *
 	 * @read_only
-	 * @var Validator[]|Validate_Annotation[]
+	 * @var Validator[]|Property_Validate_Annotation[]
 	 */
 	public $report = [];
 
@@ -42,8 +45,9 @@ class Object_Validator implements Registerable
 	 * The validator hook is called before each Data_Link::write() call to validate the object
 	 * before writing it.
 	 *
-	 * @param $object  object
-	 * @param $options Option[]
+	 * @param  $object  object
+	 * @param  $options Option[]
+	 * @throws View_Exception
 	 */
 	public function beforeWrite($object, $options)
 	{
@@ -53,12 +57,14 @@ class Object_Validator implements Registerable
 				$only = $option->properties;
 			}
 		}
-		$this->validate($object, $only);
+		if (!$this->validate($object, $only)) {
+			throw new View_Exception($this->notValidated($object, $only));
+		}
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
 	/**
-	 * @return Validate_Annotation
+	 * @return Property_Validate_Annotation[]
 	 */
 	public function getErrors()
 	{
@@ -69,6 +75,24 @@ class Object_Validator implements Registerable
 			}
 		}
 		return $errors;
+	}
+
+	//---------------------------------------------------------------------------------- notValidated
+	/**
+	 * @param $object object
+	 * @param $only   string[] only property names
+	 * @return string
+	 */
+	private function notValidated($object, $only = [])
+	{
+		$parameters = [
+			$this,
+			'object'                     => $object,
+			'only'                       => $only,
+			Parameter::AS_WIDGET         => true,
+			View\Html\Template::TEMPLATE => 'not_validated'
+		];
+		return View::run($parameters, [], [], get_class($object), 'validate');
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -82,7 +106,13 @@ class Object_Validator implements Registerable
 		$aop = $register->aop;
 		$aop->beforeMethod([Data_Link::class, 'write'], [$this, 'beforeWrite']);
 		$register->setAnnotations(Parser::T_PROPERTY, [
-			'mandatory' => Mandatory_Annotation::class
+			'mandatory'  => Property\Mandatory_Annotation::class,
+			'max_length' => Property\Max_Length_Annotation::class,
+			'max_value'  => Property\Max_Value_Annotation::class,
+			'min_length' => Property\Min_Length_Annotation::class,
+			'min_value'  => Property\Min_Value_Annotation::class,
+			'precision'  => Property\Precision_Annotation::class,
+			'signed'     => Property\Signed_Annotation::class
 		]);
 	}
 
