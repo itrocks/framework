@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Write;
 
+use Exception;
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Class_Controller;
 use SAF\Framework\Controller\Parameters;
@@ -40,27 +41,37 @@ class Write_Controller implements Default_Class_Controller
 		}
 
 		Dao::begin();
-		$builder = new Post_Files();
-		$form = $builder->appendToForm($form, $files);
-		$builder = new Object_Builder_Array();
-		$builder->build($form, $object, true);
-		$write_objects = [];
-		foreach ($builder->getBuiltObjects() as $write_object) {
-			if (($write_object == $object) || Dao::getObjectIdentifier($write_object)) {
-				$write_objects[] = $write_object;
+		try {
+			$builder = new Post_Files();
+			$form    = $builder->appendToForm($form, $files);
+			$builder = new Object_Builder_Array();
+			$builder->build($form, $object, true);
+			$write_objects = [];
+			foreach ($builder->getBuiltObjects() as $write_object) {
+				if (($write_object == $object) || Dao::getObjectIdentifier($write_object)) {
+					$write_objects[] = $write_object;
+				}
 			}
-		}
 
-		foreach ($write_objects as $write_object) {
-			Dao::write($write_object);
+			$write_error = false;
+			foreach ($write_objects as $write_object) {
+				if (!Dao::write($write_object)) {
+					$write_error = true;
+					break;
+				}
+			}
+			$write_error ? Dao::rollback() : Dao::commit();
 		}
-		Dao::commit();
+		catch (Exception $exception) {
+			Dao::rollback();
+			throw $exception;
+		}
 
 		if (isset($objects['fill_combo']) && strpos($objects['fill_combo'], '[')) {
 			$elements = explode(DOT, $objects['fill_combo']);
 			$objects['fill_combo'] = $elements[0] . '.elements["' . $elements[1] . '"]';
 		}
-		$objects[Template::TEMPLATE] = 'written';
+		$objects[Template::TEMPLATE] = $write_error ? 'error' : 'written';
 		return View::run($objects, $form, $files, $class_name, 'write');
 	}
 
