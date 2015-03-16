@@ -163,12 +163,16 @@ class Parser
 		$annotation_class = __NAMESPACE__
 			. BS . $reflection_class
 			. BS . Names::propertyToClass($annotation_name) . '_Annotation';
+		/** @noinspection PhpUsageOfSilenceOperatorInspection */
 		if (!@class_exists($annotation_class)) {
 			if (!isset(self::$default_annotations)) {
 				self::initDefaultAnnotations();
 			}
 			if (isset(self::$default_annotations[$annotation_class])) {
 				$annotation_class = self::$default_annotations[$annotation_class];
+			}
+			else {
+				$annotation_class = Annotation::class;
 			}
 		}
 		return $annotation_class;
