@@ -51,6 +51,7 @@ class Import_Preview_Controller implements Default_Feature_Controller
 	 * @param $files      array
 	 * @param $class_name string
 	 * @return mixed
+	 * @todo factorize
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{

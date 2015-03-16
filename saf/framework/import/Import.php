@@ -35,7 +35,7 @@ class Import
 	/**
 	 * @var Import_Worksheet[]
 	 */
-	public $worksheets;
+	public $worksheets = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
