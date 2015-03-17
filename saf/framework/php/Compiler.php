@@ -7,6 +7,7 @@ use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Func;
+use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\Dao\Set;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Plugin\Register;
@@ -180,6 +181,12 @@ class Compiler implements
 
 		// create data set for dependencies, check for dependencies for deleted files
 		Dao::createStorage(Dependency::class);
+		if (isset($_GET['Z'])) {
+			$link = Dao::current();
+			if ($link instanceof Link) {
+				$link->query('TRUNCATE TABLE `dependencies`');
+			}
+		}
 		foreach (
 			Dao::select(Dependency::class, ['file_name' => Func::distinct()]) as $file_dependency
 		) {
