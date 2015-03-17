@@ -14,7 +14,7 @@ use SAF\Framework\Reflection\Annotation\Template\Validator;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\View;
 use SAF\Framework\View\View_Exception;
-use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
+use SAF\Framework\Widget\Validate\Property;
 
 /**
  * The object validator links validation processes to objects
@@ -27,7 +27,7 @@ class Object_Validator implements Registerable
 	 * The validation report contains a detailed list of validate annotations and values
 	 *
 	 * @read_only
-	 * @var Validator[]|Property_Validate_Annotation[]
+	 * @var Validator[]|Property\Property_Validate_Annotation[]
 	 */
 	public $report = [];
 
@@ -64,7 +64,7 @@ class Object_Validator implements Registerable
 
 	//------------------------------------------------------------------------------------- getErrors
 	/**
-	 * @return Property_Validate_Annotation[]
+	 * @return Property\Property_Validate_Annotation[]
 	 */
 	public function getErrors()
 	{
