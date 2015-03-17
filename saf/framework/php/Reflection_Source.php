@@ -344,11 +344,17 @@ class Reflection_Source
 				if ($f_instantiates) {
 					$token = $this->tokens[$this->token_key - 1];
 					if (($token[1][0] !== '$') && !in_array($token[1], ['self', 'static', '__CLASS__'])) {
+						$tk = $this->token_key - 1;
+						$class_name = '';
+						do {
+							$class_name = $this->tokens[$tk][1] . $class_name;
+							$tk --;
+						} while (in_array($this->tokens[$tk][0], [T_NS_SEPARATOR, T_STRING]));
 						$type  = $this->tokens[++$this->token_key];
 						$type  = (is_array($type) && ($type[1] === 'class'))
 							? Dependency::T_CLASS
 							: Dependency::T_STATIC;
-						$class_name = $this->fullClassName($token[1]);
+						$class_name = $this->fullClassName($class_name);
 						$dependency = new Dependency();
 						$dependency->class_name      = $class->name;
 						$dependency->dependency_name = $class_name;
