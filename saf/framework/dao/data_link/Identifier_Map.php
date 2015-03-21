@@ -79,7 +79,8 @@ abstract class Identifier_Map extends Data_Link
 	public function is($object1, $object2)
 	{
 		return $this->getObjectIdentifier($object1)
-			&& ($this->getObjectIdentifier($object1) === $this->getObjectIdentifier($object2));
+			&& ($this->getObjectIdentifier($object1) === $this->getObjectIdentifier($object2))
+			&& (is_a($object1, get_class($object2)) || is_a($object2, get_class($object1)));
 	}
 
 	//---------------------------------------------------------------------------- objectToProperties
