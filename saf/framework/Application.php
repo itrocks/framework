@@ -136,16 +136,18 @@ class Application
 	public static function getParentClasses($recursive = false)
 	{
 		$class_name = get_called_class();
-		$parents = array_merge(
-			[get_parent_class($class_name)],
-			(new Reflection_Class($class_name))->getListAnnotation('extends')->values()
-		);
+		$class = new Reflection_Class($class_name);
+		$parent_class_name   = get_parent_class($class_name);
+		$extends_class_names = $class->getListAnnotation('extends')->values();
+		$parents = $parent_class_name
+			? array_merge([$parent_class_name], $extends_class_names)
+			: $extends_class_names;
 		if ($recursive) {
 			foreach ($parents as $parent_class) if ($parent_class) {
 				$parents = array_merge($parents, call_user_func([$parent_class, 'getParentClasses'], true));
 			}
 		}
-		return $parents;
+		return array_unique($parents);
 	}
 
 	//------------------------------------------------------------------------- getTemporaryFilePath
