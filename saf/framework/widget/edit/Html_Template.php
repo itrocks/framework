@@ -2,11 +2,9 @@
 namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Builder;
-use SAF\Framework\Controller\Feature;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\View\Html\Builder\Property;
 use SAF\Framework\View\Html\Template;
 
 /**
@@ -85,16 +83,13 @@ class Html_Template extends Template
 	{
 		$property = reset($this->objects);
 		if (($property instanceof Reflection_Property_Value) && ($var_name == 'value')) {
-			if (
-				($builder = $property->getAnnotation('widget')->value)
-				&& is_a($builder, Property::class, true)
-			) {
-				$builder = Builder::create($builder, [$property, $property->value(), $this]);
-				/** @var $builder Property */
-				$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
-				$value = $builder->buildHtml();
+			if ($builder = $property->getAnnotation('widget')->value) {
+				$value = $this->parseWidget($property, $var_name, $builder);
 			}
 			else {
+				$value = null;
+			}
+			if (is_null($value)) {
 				$value = $property->getType()->isBoolean()
 					? $property->value()
 					: parent::parseSingleValue($var_name, false);

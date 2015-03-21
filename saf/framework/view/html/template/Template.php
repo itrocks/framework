@@ -3,6 +3,7 @@ namespace SAF\Framework\View\Html;
 
 use SAF\Framework\Application;
 use SAF\Framework\Builder;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Dao\File;
@@ -295,7 +296,9 @@ class Template
 	 */
 	public function getFeature()
 	{
-		return isset($this->parameters['feature']) ? $this->parameters['feature'] : $this->feature;
+		return isset($this->parameters[Feature::FEATURE])
+			? $this->parameters[Feature::FEATURE]
+			: $this->feature;
 	}
 
 	//---------------------------------------------------------------------------------- getHeadLinks
@@ -1169,13 +1172,8 @@ class Template
 				($property_name == 'value')
 				&& ($object instanceof Reflection_Property)
 				&& ($builder = $object->getAnnotation('widget')->value)
-				&& is_a($builder, Property::class, true)
 			) {
-				$builder = Builder::create(
-					$builder, [$object, $this->parseMethod($object, $property_name), $this]
-				);
-				/** @var $builder Property */
-				$object = $builder->buildHtml();
+				$this->parseWidget($object, $property_name, $builder);
 			}
 			else {
 				$object = $this->parseMethod($object, $property_name);
@@ -1501,6 +1499,47 @@ class Template
 			$auto_remove = false;
 		}
 		return $auto_remove;
+	}
+
+	//----------------------------------------------------------------------------------- parseWidget
+	/**
+	 * Parse a property value having a @widget annotation
+	 * Uses the widget class or the widget template
+	 *
+	 * @param $object        object will be of class Reflection_Property_Value most of times
+	 * @param $property_name string will be 'value' most of times
+	 * @param $builder_class string the widget Property class
+	 * @return string
+	 */
+	protected function parseWidget($object, $property_name, $builder_class)
+	{
+		static $recurse = [];
+		$recurse_string = get_class($object) . '::' . $property_name . '=' . $builder_class;
+		if (isset($recurse[$recurse_string])) {
+			return $this->parseMethod($object, $property_name);
+		}
+		$recurse[$recurse_string] = true;
+
+		// using the widget Property class
+		if (@class_exists($builder_class)) {
+			/** @var $builder Property */
+			$builder = Builder::create(
+				$builder_class, [$object, $this->parseMethod($object, $property_name), $this]
+			);
+			$result = $builder->buildHtml();
+		}
+		// using the widget feature template
+		else {
+			$result = $this->parseInclude(
+				SL . str_replace(BS, SL, $builder_class) . '_' . $this->feature . '.html'
+			);
+			if (is_null($result)) {
+				$result = $this->parseMethod($object, $property_name);
+			}
+		}
+
+		unset($recurse[$recurse_string]);
+		return $result;
 	}
 
 	//--------------------------------------------------------------------------------------- preprop
