@@ -105,7 +105,7 @@ class Select
 				$columns->expand_objects = false;
 				$columns->resolve_aliases = false;
 				$group_by = $columns->build();
-				$options[10] = ' GROUP BY ' . $group_by;
+				$options[10] = LF . 'GROUP BY ' . $group_by;
 			}
 			elseif ($option instanceof Option\Sort) {
 				$columns = new Columns(
@@ -119,12 +119,12 @@ class Select
 				$columns->resolve_aliases = false;
 				$order_by = $columns->build();
 				if ($order_by) {
-					$options[20] = ' ORDER BY ' . $order_by;
+					$options[20] = LF . 'ORDER BY ' . $order_by;
 				}
 			}
 			elseif ($option instanceof Option\Limit) {
 				// todo this works only with Mysql so beware, this should be into Mysql or something
-				$options[30] = ' LIMIT '
+				$options[30] = LF . 'LIMIT '
 					. (isset($option->from) ? ($option->from - 1) . ', ' : '')
 					. $option->count;
 			}
@@ -173,24 +173,23 @@ class Select
 			$options_inside = [];
 			foreach ($options as $option) {
 				if (
-					(substr($option, 0, 10) !== ' ORDER BY ')
-					&& (substr($option, 0, 7) !== ' LIMIT ')
+					(substr($option, 0, 10) !== (LF . 'ORDER BY '))
+					&& (substr($option, 0, 7) !== (LF . 'LIMIT '))
 				) {
 					$options_inside[] = $option;
 				}
 			}
 			foreach ($where as $sub_where) {
 				if (!empty($sql)) {
-					$sql .= LF . 'UNION ';
+					$sql .= LF . 'UNION' . LF;
 				}
 				$sql .= $this->finalize($columns, $sub_where, $tables, $options_inside);
 			}
-			return 'SELECT * FROM (' . LF . $sql . ') t0 GROUP BY t0.id' . join('', $options);
+			return 'SELECT *' . LF . 'FROM (' . LF . $sql . LF . ') t0'
+			. LF . 'GROUP BY t0.id' . join('', $options);
 		}
-		return 'SELECT'
-			. $this->additional_where_clause . SP
-			. $columns . SP
-			. 'FROM' . SP . $tables
+		return 'SELECT' . $this->additional_where_clause . SP . $columns
+			. LF . 'FROM' . SP . $tables
 			. $where
 			. join('', $options);
 	}

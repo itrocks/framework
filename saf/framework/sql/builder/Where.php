@@ -90,12 +90,12 @@ class Where
 		) {
 			$sql = [];
 			foreach ($where_array->arguments as $property_path => $argument) {
-				$sql[] = ' WHERE ' . $this->buildPath($property_path, $argument, 'AND');
+				$sql[] = LF . 'WHERE ' . $this->buildPath($property_path, $argument, 'AND');
 			}
 			return $sql;
 		}
 		$sql = is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND');
-		return $sql ? ' WHERE ' . $sql : $sql;
+		return $sql ? (LF . 'WHERE ' . $sql) : $sql;
 	}
 
 	//------------------------------------------------------------------------------------ buildArray

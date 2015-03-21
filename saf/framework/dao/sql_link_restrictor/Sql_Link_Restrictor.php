@@ -78,7 +78,7 @@ class Sql_Link_Restrictor implements Registerable
 	{
 		$sql = join(') AND (', $this->current_restrictions);
 		return $sql
-			? (' WHERE ' . ($where ? '(' . substr($where, 7) . ') AND ' : '') . '(' . $sql . ')')
+			? (LF . 'WHERE ' . ($where ? '(' . substr($where, 7) . ') AND ' : '') . '(' . $sql . ')')
 			: $where;
 	}
 

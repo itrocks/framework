@@ -40,7 +40,7 @@ class Subquery extends Join
 	 */
 	public function toSql()
 	{
-		return ' INNER JOIN (' . strval($this->query) . ') ' . $this->foreign_alias
+		return LF . 'INNER JOIN (' . strval($this->query) . ') ' . $this->foreign_alias
 			. ' ON ' . strval($this->where);
 	}
 

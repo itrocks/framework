@@ -109,8 +109,9 @@ class Foreign_Key implements Sql\Foreign_Key
 			. ' RIGHT(constraint_name, LENGTH(constraint_name) - LOCATE(".", constraint_name)) `Fields`,'
 			. ' update_rule `On_update`, delete_rule `On_delete`,'
 			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
-			. ' FROM information_schema.referential_constraints'
-			. ' WHERE constraint_schema = ' . $database_name . ' AND table_name = ' . DQ . $table_name . DQ
+			. LF . 'FROM information_schema.referential_constraints'
+			. LF . 'WHERE constraint_schema = ' . $database_name
+			. ' AND table_name = ' . DQ . $table_name . DQ
 		);
 		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
 			$foreign_keys[] = $foreign_key;
@@ -138,8 +139,8 @@ class Foreign_Key implements Sql\Foreign_Key
 			. ' RIGHT(constraint_name, LENGTH(constraint_name) - LOCATE(".", constraint_name)) `Fields`,'
 			. ' update_rule `On_update`, delete_rule `On_delete`,'
 			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
-			. ' FROM information_schema.referential_constraints'
-			. ' WHERE constraint_schema = ' . $database_name
+			. LF . 'FROM information_schema.referential_constraints'
+			. LF . 'WHERE constraint_schema = ' . $database_name
 			. ' AND referenced_table_name = ' . DQ . $table_name . DQ
 		);
 		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {

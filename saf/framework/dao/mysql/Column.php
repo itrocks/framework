@@ -156,8 +156,8 @@ class Column implements Sql\Column
 			'SELECT column_name `Field`,'
 			. ' IFNULL(CONCAT(column_type, " CHARACTER SET ", character_set_name, " COLLATE ", collation_name), column_type) `Type`,'
 			. ' is_nullable `Null`, column_key `Key`, column_default `Default`, extra `Extra`'
-			. ' FROM information_schema.columns'
-			. ' WHERE table_schema = ' . $database_name . ' AND table_name = ' . DQ . $table_name . DQ
+			. LF . 'FROM information_schema.columns'
+			. LF . 'WHERE table_schema = ' . $database_name . ' AND table_name = ' . DQ . $table_name . DQ
 		);
 		/** @var $column Column */
 		while ($column = $result->fetch_object(Column::class)) {

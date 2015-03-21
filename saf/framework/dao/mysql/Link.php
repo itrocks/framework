@@ -562,8 +562,9 @@ class Link extends Dao\Sql\Link
 			);
 		}
 		// it's for optimisation purpose only
-		$query = 'SELECT * FROM' . SP . BQ . $this->storeNameOf($class_name) . BQ
-			. ' WHERE id = ' . $identifier;
+		$query = 'SELECT *'
+			. LF . 'FROM' . SP . BQ . $this->storeNameOf($class_name) . BQ
+			. LF . 'WHERE id = ' . $identifier;
 		$this->setContext($class_name);
 		$result_set = $this->executeQuery($query);
 		$object = $this->fetch($result_set, $class_name);
@@ -613,8 +614,8 @@ class Link extends Dao\Sql\Link
 				$foreign_table_name = lParse($foreign_key->getConstraint(), DOT);
 				$foreign_field_name = $foreign_key->getFields()[0];
 				$query = 'UPDATE ' . BQ . $foreign_table_name . BQ
-					. ' SET ' . BQ . $foreign_field_name . BQ . ' = ' . $replacement_id
-					. ' WHERE ' . BQ . $foreign_field_name . BQ . ' = ' . $replaced_id;
+					. LF . 'SET ' . BQ . $foreign_field_name . BQ . ' = ' . $replacement_id
+					. LF . 'WHERE ' . BQ . $foreign_field_name . BQ . ' = ' . $replaced_id;
 				$this->query($query);
 				if ($this->connection->last_errno) {
 					$error = true;

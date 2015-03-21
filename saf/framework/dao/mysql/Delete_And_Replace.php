@@ -26,7 +26,7 @@ class Delete_And_Replace implements Registerable
 	 */
 	private function extractId($query)
 	{
-		$id = rLastParse($query, ' WHERE id = ');
+		$id = rLastParse($query, LF . 'WHERE id = ');
 		return is_numeric($id) ? intval($id) : null;
 	}
 

@@ -42,7 +42,7 @@ abstract class Builder
 		if ($class instanceof Reflection_Class) {
 			$class = $class->name;
 		}
-		$sql_delete = 'DELETE FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ . ' WHERE';
+		$sql_delete = 'DELETE FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'WHERE';
 		if (is_numeric($id)) {
 			$sql_delete .= ' id = ' . $id;
 		}
@@ -90,7 +90,7 @@ abstract class Builder
 	 */
 	public static function buildInsert($class, $write)
 	{
-		$sql_insert = 'INSERT INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ . ' SET ';
+		$sql_insert = 'INSERT INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET ';
 		$i = 0;
 		foreach ($write as $key => $value) {
 			if ($i++) {
@@ -115,7 +115,7 @@ abstract class Builder
 	 */
 	public static function buildUpdate($class, $write, $id)
 	{
-		$sql_update = 'UPDATE ' . BQ . Dao::current()->storeNameOf($class) . BQ . ' SET ';
+		$sql_update = 'UPDATE ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET ';
 		$i = 0;
 		foreach ($write as $key => $value) {
 			if ($i++) {
@@ -126,7 +126,7 @@ abstract class Builder
 			}
 			$sql_update .= $key . ' = ' . Value::escape($value);
 		}
-		$sql_update .= ' WHERE';
+		$sql_update .= LF . 'WHERE';
 		if (is_numeric($id)) {
 			$sql_update .= ' id = ' . $id;
 		}

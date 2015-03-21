@@ -36,7 +36,7 @@ class Map_Delete
 			$object, $this->property, $foreign_object
 		);
 		return 'DELETE FROM ' . BQ . $table . BQ
-			. ' WHERE ' . BQ . $field1 . BQ . ' = ' . $id1 . ' AND ' . BQ . $field2 . BQ . ' = ' . $id2;
+			. LF . 'WHERE ' . BQ . $field1 . BQ . ' = ' . $id1 . ' AND ' . BQ . $field2 . BQ . ' = ' . $id2;
 	}
 
 }

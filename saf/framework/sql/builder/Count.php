@@ -73,13 +73,13 @@ class Count
 			$sql = '';
 			foreach ($where as $sub_where) {
 				if (!empty($sql)) {
-					$sql .= LF . 'UNION ';
+					$sql .= LF . 'UNION' . LF;
 				}
 				$sql .= $this->finalize($sub_where, $tables);
 			}
-			return 'SELECT COUNT(*) FROM (' . LF . $sql . ') t0 GROUP BY t0.id';
+			return 'SELECT COUNT(*)' . LF . 'FROM (' . LF . $sql . LF . ') t0' . LF . 'GROUP BY t0.id';
 		}
-		return 'SELECT COUNT(*) FROM ' . $tables . $where;
+		return 'SELECT COUNT(*)' . LF . 'FROM ' . $tables . $where;
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins
