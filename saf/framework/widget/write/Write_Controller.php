@@ -4,6 +4,7 @@ namespace SAF\Framework\Widget\Write;
 use Exception;
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Class_Controller;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao\File\Builder\Post_Files;
 use SAF\Framework\Dao;
@@ -17,6 +18,35 @@ use SAF\Framework\View\Html\Template;
 class Write_Controller implements Default_Class_Controller
 {
 
+	//-------------------------------------------------------------------- write controller constants
+	const ERROR      = 'error';
+	const FILL_COMBO = 'fill_combo';
+	const REDIRECT   = 'redirect_after_write';
+	const WRITTEN    = 'written';
+
+	//----------------------------------------------------------------------------- getViewParameters
+	/**
+	 * @param $parameters  Parameters
+	 * @param $class_name  string
+	 * @param $write_error boolean
+	 * @return array
+	 */
+	protected function getViewParameters(Parameters $parameters, $class_name, $write_error)
+	{
+		$object = $parameters->getMainObject($class_name);
+		$parameters = $parameters->getObjects();
+
+		if (isset($parameters[self::FILL_COMBO]) && strpos($parameters[self::FILL_COMBO], '[')) {
+			$elements = explode(DOT, $parameters[self::FILL_COMBO]);
+			$parameters[self::FILL_COMBO] = $elements[0] . '.elements[' . DQ . $elements[1] . DQ . ']';
+		}
+
+		$parameters[Template::TEMPLATE] = $write_error ? self::ERROR : self::WRITTEN;
+
+		$parameters[self::REDIRECT] = View::link($object);
+		return $parameters;
+	}
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Default run method for default 'write-typed' controller
@@ -28,17 +58,12 @@ class Write_Controller implements Default_Class_Controller
 	 * @param $form       array
 	 * @param $files      array
 	 * @param $class_name string
-	 * @return mixed
+	 * @return string
+	 * @throws Exception
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
-		$objects = $parameters->getObjects();
-		$object = reset($objects);
-		if (!$object || !is_object($object) || !is_a($object, $class_name, true)) {
-			$object = Builder::create($class_name);
-			$objects = array_merge([$class_name => $object], $objects);
-			$parameters->unshift($object);
-		}
+		$object = $parameters->getMainObject($class_name);
 
 		Dao::begin();
 		try {
@@ -67,12 +92,8 @@ class Write_Controller implements Default_Class_Controller
 			throw $exception;
 		}
 
-		if (isset($objects['fill_combo']) && strpos($objects['fill_combo'], '[')) {
-			$elements = explode(DOT, $objects['fill_combo']);
-			$objects['fill_combo'] = $elements[0] . '.elements["' . $elements[1] . '"]';
-		}
-		$objects[Template::TEMPLATE] = $write_error ? 'error' : 'written';
-		return View::run($objects, $form, $files, $class_name, 'write');
+		$parameters = $this->getViewParameters($parameters, $class_name, $write_error);
+		return View::run($parameters, $form, $files, $class_name, Feature::F_WRITE);
 	}
 
 }
