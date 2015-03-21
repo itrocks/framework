@@ -21,6 +21,9 @@ class Date_Time extends DateTime
 	const WEEK   = 'week';
 	const YEAR   = 'year';
 
+	//------------------------------------------------------------------------- date format constants
+	const DAY_OF_WEEK = 'w';
+
 	//------------------------------------------------------------------------------------- $max_date
 	/**
 	 * The max date
@@ -35,7 +38,7 @@ class Date_Time extends DateTime
 	 *
 	 * @var string
 	 */
-	private static $min_date = '0001-01-01 00:00:00';
+	private static $min_date = '0000-00-00 00:00:00';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -294,9 +297,9 @@ class Date_Time extends DateTime
 	 */
 	public function toISO($empty_min_max = true)
 	{
-		$format = $this->format('Y-m-d H:i:s');
+		$format = max($this->format('Y-m-d H:i:s'), self::$min_date);
 		return ($empty_min_max && (($format === self::$min_date) || ($format === self::$max_date)))
-			? '' : $this->format('Y-m-d H:i:s');
+			? '' : $format;
 	}
 
 }
