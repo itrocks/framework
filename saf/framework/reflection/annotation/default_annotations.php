@@ -109,6 +109,10 @@ Parser::$default_annotations = [
 	// Declares other property names that are used to filter possible values of the property
 	__NAMESPACE__ . '\Property\Filters_Annotation' => List_Annotation::class,
 
+	// @length 5
+	// Tells what is the wished count of characters for the value of the property
+	__NAMESPACE__ . '\Property\Length_Annotation' => Annotation::class,
+
 	// @mandatory [false]
 	// Set this annotation to tell the data controllers that the property value is mandatory
 	__NAMESPACE__ . '\Property\Mandatory_Annotation' => Boolean_Annotation::class,

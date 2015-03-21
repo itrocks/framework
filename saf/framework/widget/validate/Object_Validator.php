@@ -106,6 +106,7 @@ class Object_Validator implements Registerable
 		$aop = $register->aop;
 		$aop->beforeMethod([Data_Link::class, 'write'], [$this, 'beforeWrite']);
 		$register->setAnnotations(Parser::T_PROPERTY, [
+			'length'     => Property\Length_Annotation::class,
 			'mandatory'  => Property\Mandatory_Annotation::class,
 			'max_length' => Property\Max_Length_Annotation::class,
 			'max_value'  => Property\Max_Value_Annotation::class,
