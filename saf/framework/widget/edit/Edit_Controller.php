@@ -11,8 +11,7 @@ use SAF\Framework\widget\output\Output_Controller;
 /**
  * The default edit controller, when no edit controller is set for the class
  */
-class
-Edit_Controller extends Output_Controller
+class Edit_Controller extends Output_Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
@@ -26,13 +25,20 @@ Edit_Controller extends Output_Controller
 		$buttons = parent::getGeneralButtons($object, $parameters);
 		unset($buttons['edit']);
 		$fill_combo = isset($parameters['fill_combo'])
-			? ['fill_combo' => $parameters['fill_combo']] : [];
+			? ['fill_combo' => $parameters['fill_combo']]
+			: [];
 		return array_merge($buttons, [
-			'close' => new Button('Close', View::link($object),
-				Feature::F_CLOSE, [new Color('close'), '#main']
+			Feature::F_CLOSE => new Button(
+				'Close',
+				View::link($object),
+				Feature::F_CLOSE,
+				[new Color('close'), '#main']
 			),
-			'write' => new Button('Write', View::link($object, Feature::F_WRITE, null, $fill_combo),
-				Feature::F_WRITE, [new Color('green'), '#messages', '.submit']
+			Feature::F_WRITE => new Button(
+				'Write',
+				View::link($object, Feature::F_WRITE, null, $fill_combo),
+				Feature::F_WRITE,
+				[new Color('green'), '#messages', '.submit']
 			)
 		]);
 	}
@@ -48,7 +54,7 @@ Edit_Controller extends Output_Controller
 	{
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
 		$parameters['editing']            = true;
-		$parameters['feature']            = Feature::F_EDIT;
+		$parameters[Feature::FEATURE]     = Feature::F_EDIT;
 		$parameters['template_namespace'] = __NAMESPACE__;
 		return $parameters;
 	}

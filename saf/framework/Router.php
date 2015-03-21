@@ -3,6 +3,7 @@ namespace SAF\Framework;
 
 use SAF\Framework\AOP\Include_Filter;
 use SAF\Framework\AOP\Joinpoint\Around_Method;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Uri;
 use SAF\Framework\PHP\Class_File_Name_Getter;
 use SAF\Framework\PHP\Compiler;
@@ -546,8 +547,8 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	public function setPossibleHtmlTemplate($template_file, $parameters, $feature_name)
 	{
 		if (isset($this->class_name)) {
-			$features = isset($parameters['feature'])
-				? ($parameters['feature'] . DOT . $feature_name)
+			$features = isset($parameters[Feature::FEATURE])
+				? ($parameters[Feature::FEATURE] . DOT . $feature_name)
 				: $feature_name;
 			$this->html_templates[$this->class_name][$features] = $template_file;
 			$this->changes = true;
@@ -565,8 +566,8 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	public function setPossibleViewCall(
 		$class_name, $feature_name, $parameters, $view, $view_method_name
 	) {
-		$features = isset($parameters['feature'])
-			? ($parameters['feature'] . DOT . $feature_name)
+		$features = isset($parameters[Feature::FEATURE])
+			? ($parameters[Feature::FEATURE] . DOT . $feature_name)
 			: $feature_name;
 		if (isset($this->view_calls[$class_name][$features])) {
 			list($check_view, $check_view_method_name) = $this->view_calls[$class_name][$features];

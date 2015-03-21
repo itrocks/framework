@@ -3,6 +3,7 @@ namespace SAF\Framework\View\Html;
 
 use SAF\Framework\Builder;
 use SAF\Framework;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\View\IView;
 
 /**
@@ -18,7 +19,7 @@ class Default_View implements IView
 	 * @param $feature_name string
 	 * @return string
 	 */
-	private function executeTemplate($template_file, $parameters, $feature_name)
+	protected function executeTemplate($template_file, $parameters, $feature_name)
 	{
 		if (isset($parameters[Template::TEMPLATE])) {
 			unset($parameters[Template::TEMPLATE]);
@@ -56,8 +57,9 @@ class Default_View implements IView
 	 */
 	public function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		$feature_names = (isset($parameters['feature']) && ($parameters['feature'] !== $feature_name))
-			? [$parameters['feature'], $feature_name]
+		$feature_names
+			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] !== $feature_name))
+			? [$parameters[Feature::FEATURE], $feature_name]
 			: [$feature_name];
 		$template_file = Engine::getTemplateFile(
 			$class_name,

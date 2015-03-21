@@ -33,11 +33,11 @@ class Import_Preview_Controller implements Default_Feature_Controller
 	protected function getGeneralButtons($class_name)
 	{
 		return [
-			'save' => new Button(
+			Feature::F_WRITE => new Button(
 				'Save', View::link($class_name, Feature::F_IMPORT, 'preview'),
 				'custom_save', [new Color('blue'), '#main', '.submit']
 			),
-			'delete' => new Button(
+			Feature::F_DELETE => new Button(
 				'Delete', View::link($class_name, Feature::F_IMPORT, 'preview', ['delete_name' => true]),
 				'custom_delete', [new Color('red'), '#main', '.submit']
 			)

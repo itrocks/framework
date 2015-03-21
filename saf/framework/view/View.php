@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Getter;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Current;
@@ -129,8 +130,9 @@ class View implements Configurable
 	 */
 	public static function run($parameters, $form, $files, $class_name, $feature_name)
 	{
-		$feature_names = (isset($parameters['feature']) && ($parameters['feature'] != $feature_name))
-			? [$parameters['feature'], $feature_name]
+		$feature_names
+			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] != $feature_name))
+			? [$parameters[Feature::FEATURE], $feature_name]
 			: [$feature_name];
 		list($view_name, $view_method_name) = self::getView(
 			$class_name,

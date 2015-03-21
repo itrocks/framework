@@ -25,7 +25,7 @@ class Add_Controller extends Edit_Controller
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters);
 		return array_merge($buttons, [
-			'close' => new Button('Close', View::link(Names::classToSet(get_class($object))),
+			Feature::F_CLOSE => new Button('Close', View::link(Names::classToSet(get_class($object))),
 				Feature::F_CLOSE, [new Color('close'), '#main']
 			),
 		]);

@@ -7,6 +7,10 @@ namespace SAF\Framework\Controller;
 abstract class Feature
 {
 
+	//---------------------------------------------------------------- the feature key value constant
+	const FEATURE     = 'feature';
+
+	//---------------------------------------------------------------------------- features constants
 	const F_ADD       = 'add';
 	const F_CLOSE     = 'close';
 	const F_DEFAULT   = 'default';

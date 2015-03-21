@@ -171,20 +171,27 @@ class Data_List_Controller extends Output_Controller
 	protected function getGeneralButtons($class_name, $parameters)
 	{
 		return [
-			'add' => new Button(
-				'Add', View::link($class_name, Feature::F_ADD), Feature::F_ADD,
+			Feature::F_ADD => new Button(
+				'Add',
+				View::link($class_name, Feature::F_ADD),
+				Feature::F_ADD,
 				['#main', new Color('green')]
 			),
-			'import' => new Button(
-				'Import', View::link($class_name, Feature::F_IMPORT), Feature::F_IMPORT,
+			Feature::F_IMPORT => new Button(
+				'Import',
+				View::link($class_name, Feature::F_IMPORT),
+				Feature::F_IMPORT,
 				['#main', new Color('green')]
 			),
-			'save' => new Button(
-				'Save', View::link($this->class_names), 'custom_save',
+			Feature::F_WRITE => new Button(
+				'Save',
+				View::link($this->class_names),
+				'custom_save',
 				['#main', new Color('green'), '.submit', 'title' => 'save this view as a custom list']
 			),
-			'delete' => new Button(
-				'Delete', View::link($this->class_names, null, null, ['delete_name' => true]),
+			Feature::F_DELETE => new Button(
+				'Delete',
+				View::link($this->class_names, null, null, ['delete_name' => true]),
 				'custom_delete',
 				['#main', new Color('red'), '.submit', 'title' => 'delete this custom list']
 			)
