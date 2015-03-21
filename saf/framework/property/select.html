@@ -10,43 +10,43 @@
 <body>
 <!--BEGIN-->
 
-<div class="property_select">
-	<input name="search">
-	<!--BEGIN:subtree-->
-	<!--use SAF\Framework\Tools\Names-->
-	<ul class="property_tree">
-	<!--BEGIN:inside_tree-->
-	<!--properties-->
-		<li class="property" data-property="{path}" title="|{path}|">
-			<!--!getType.isBasic?-->
-			<a href="/SAF/Framework/Property/select/{--class_name.path}/{path}" target="#tree-{path}">
-			<!--!getType.isBasic?-->
-			|{@display(display_full_path)}|
-			<!--!getType.isBasic?-->
-			</a>
-			<!--!getType.isBasic?-->
-		</li>
-	<!--sample-->
-		<li class="property" data-property="property_1" title="property 1">property 1</li>
-		<li class="property" data-property="property_2" title="property 2">property 2</li>
-		<li class="property" data-property="property_3" title="property 3">property 3</li>
-		<li class="property" data-property="sub_object" title="sub object">
-			<a href="/SAF/Framework/Property/select/Class/sub_object" target="#tree-sub_object">sub_object</a>
-		</li>
-		<li class="expanded property" data-property="weight_unit" title="weight unit">
-			<a href="/Property/select/Class/weight_unit" target="#tree-weight_unit">weight unit</a>
-			<section id="tree-weight_unit">
-				<ul class="property tree">
-					<li class="property" data-property="weight_unit.code" title="weight unit.code">code</li>
-					<li class="property" data-property="weight_unit.name" title="weight unit.name">name</li>
-				</ul>
-			</section>
-		</li>
-	<!--properties-->
-	<!--END:inside_tree-->
-	</ul>
-	<!--END:subtree-->
-</div>
+	<div class="property_select">
+		<input name="search">
+		<!--BEGIN:subtree-->
+		<!--use SAF\Framework\Tools\Names-->
+		<ul class="property_tree">
+		<!--BEGIN:inside_tree-->
+		<!--properties-->
+			<li class="property" data-property="{path}" title="|{path}|">
+				<!--!getType.isBasic?-->
+				<a href="/SAF/Framework/Property/select/{--class_name.path}/{path}" target="#tree-{path}">
+				<!--!getType.isBasic?-->
+				|{@display(display_full_path)}|
+				<!--!getType.isBasic?-->
+				</a>
+				<!--!getType.isBasic?-->
+			</li>
+		<!--sample-->
+			<li class="property" data-property="property_1" title="property 1">property 1</li>
+			<li class="property" data-property="property_2" title="property 2">property 2</li>
+			<li class="property" data-property="property_3" title="property 3">property 3</li>
+			<li class="property" data-property="sub_object" title="sub object">
+				<a href="/SAF/Framework/Property/select/Class/sub_object" target="#tree-sub_object">sub_object</a>
+			</li>
+			<li class="expanded property" data-property="weight_unit" title="weight unit">
+				<a href="/Property/select/Class/weight_unit" target="#tree-weight_unit">weight unit</a>
+				<section id="tree-weight_unit">
+					<ul class="property tree">
+						<li class="property" data-property="weight_unit.code" title="weight unit.code">code</li>
+						<li class="property" data-property="weight_unit.name" title="weight unit.name">name</li>
+					</ul>
+				</section>
+			</li>
+		<!--properties-->
+		<!--END:inside_tree-->
+		</ul>
+		<!--END:subtree-->
+	</div>
 
 <!--END-->
 </body>
