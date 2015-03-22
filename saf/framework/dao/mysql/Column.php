@@ -269,11 +269,20 @@ class Column implements Sql\Column
 
 	//---------------------------------------------------------------------------------------- hasKey
 	/**
-	 * @return bool
+	 * @return boolean
 	 */
 	public function hasKey()
 	{
 		return !empty($this->Key);
+	}
+
+	//------------------------------------------------------------------------------- setDefaultValue
+	/**
+	 * @param $default string
+	 */
+	public function setDefaultValue($default)
+	{
+		$this->Default = $default;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

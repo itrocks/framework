@@ -9,11 +9,34 @@ use SAF\Framework\Dao\Sql;
 class Index implements Sql\Index
 {
 
+	//------------------------------------------------------------------------ $type values constants
+	const KEY     = 'KEY';
+	const PRIMARY = 'PRIMARY';
+	const UNIQUE  = 'UNIQUE';
+
 	//----------------------------------------------------------------------------------------- $keys
 	/**
 	 * @var Key[]
 	 */
 	public $keys;
+
+	//----------------------------------------------------------------------------------------- $type
+	/**
+	 * @values KEY, UNIQUE
+	 * @var string
+	 */
+	public $type = self::KEY;
+
+	//---------------------------------------------------------------------------------------- addKey
+	/**
+	 * Add a key built from a given column name
+	 *
+	 * @param $column_name string
+	 */
+	public function addKey($column_name)
+	{
+		$this->keys[] = new Key($column_name);
+	}
 
 	//------------------------------------------------------------------------------------- buildLink
 	/**
@@ -28,7 +51,7 @@ class Index implements Sql\Index
 			$column_name = 'id_' . $column_name;
 		}
 		$index = new Index();
-		$index->keys[] = new Key($column_name);
+		$index->addKey($column_name);
 		return $index;
 	}
 
@@ -47,7 +70,11 @@ class Index implements Sql\Index
 	 */
 	public function getName()
 	{
-		return reset($this->keys)->getName();
+		$names = [];
+		foreach ($this->keys as $key) {
+			$names[] = $key->getName();
+		}
+		return join('.', $names);
 	}
 
 	//------------------------------------------------------------------------------------ getSqlType
@@ -57,6 +84,15 @@ class Index implements Sql\Index
 	public function getSqlType()
 	{
 		return reset($this->keys)->getSqlType();
+	}
+
+	//--------------------------------------------------------------------------------------- setType
+	/**
+	 * @param $type string self::KEY, self::PRIMARY, self::UNIQUE
+	 */
+	public function setType($type)
+	{
+		$this->type = $type;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -70,7 +106,7 @@ class Index implements Sql\Index
 			$column_names[] = $key->toSql();
 		}
 		$type = $this->getSqlType();
-		return 'KEY ' . BQ . $this->getName() . BQ . SP
+		return $this->type . SP . BQ . $this->getName() . BQ . SP
 			. ($type ? ($type . SP) : '')
 			. '(' . join(', ', $column_names) . ')';
 	}

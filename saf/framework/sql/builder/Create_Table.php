@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Sql\Builder;
 
+use SAF\Framework\Dao\Mysql\Index;
 use SAF\Framework\Dao\Sql\Table;
 
 /**
@@ -36,11 +37,15 @@ class Create_Table
 		}
 		$indexes = [];
 		foreach ($this->table->getIndexes() as $index) {
-			$indexes[] = $index->toSql();
+			$indexes[$index->getName()] = $index->toSql();
 		}
 		$foreign_keys = [];
 		foreach ($this->table->getForeignKeys() as $foreign_key) {
-			$foreign_keys[] = $foreign_key->toSql();
+			$foreign_key_constraint = join(DOT, $foreign_key->getFields());
+			$foreign_keys[$foreign_key_constraint] = $foreign_key->toSql();
+			if (!isset($indexes[$foreign_key_constraint])) {
+				$indexes[$foreign_key_constraint] = Index::buildLink($foreign_key_constraint)->toSql();
+			}
 		}
 		return 'CREATE TABLE IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('
 			. join(', ', $columns)

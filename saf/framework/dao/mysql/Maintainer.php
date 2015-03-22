@@ -6,10 +6,12 @@ use mysqli_result;
 use SAF\Framework\Dao;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Sql\Builder\Alter_Table;
 use SAF\Framework\Sql\Builder\Create_Table;
 use SAF\Framework\Tools\Contextual_Mysqli;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Namespaces;
 
 /**
  * This is an intelligent database maintainer that automatically updates a table structure if there
@@ -53,10 +55,16 @@ class Maintainer implements Registerable
 	 * @param $table_name   string
 	 * @param $column_names string[]
 	 * @return boolean
+	 * @todo mysqli context should contain sql builder (ie Select) in order to know if this was
+	 *       an implicit link table. If then : only one unique index should be built
 	 */
 	private function createImplicitTable(mysqli $mysqli, $table_name, $column_names)
 	{
+		$only_ids = true;
 		$table = new Table($table_name);
+		$ids_index = new Index();
+		$ids_index->setType(Index::UNIQUE);
+		$indexes = [];
 		foreach ($column_names as $column_name) {
 			$table->addColumn(
 				($column_name === 'id')
@@ -65,19 +73,45 @@ class Maintainer implements Registerable
 			);
 			if (substr($column_name, 0, 3) === 'id_') {
 				if (($mysqli instanceof Contextual_Mysqli) && is_array($mysqli->context)) {
+					$ids_index->addKey($column_name);
+					$index = Index::buildLink($column_name);
 					foreach ($mysqli->context as $context_class) {
 						$id_context_property = 'id_' . Names::classToProperty(
-							Names::setToSingle(Dao::storeNameOf($context_class), false)
+							Names::setToSingle(Dao::storeNameOf($context_class))
 						);
-						if ($column_name == $id_context_property) {
-							$table->addForeignKey(
-								Foreign_Key::buildLink($table_name, $column_name, $context_class)
-							);
+						$id_context_property_2 = 'id_' . Names::classToProperty(
+							Names::setToSingle(Namespaces::shortClassName($context_class))
+						);
+						if (in_array($column_name, [$id_context_property, $id_context_property_2])) {
+							$class = new Reflection_Class($context_class);
+							if ($class->isAbstract() || $class->isInterface()) {
+								$class_column_name = substr($column_name, 3) . '_class';
+								$column = new Column($class_column_name, 'varchar(255)');
+								$column->setDefaultValue('');
+								$table->addColumn($column);
+								$index->addKey($class_column_name);
+								$ids_index->addKey($class_column_name);
+							}
+							else {
+								$table->addForeignKey(
+									Foreign_Key::buildLink($table_name, $column_name, $context_class)
+								);
+							}
 							break;
 						}
 					}
+					$indexes[] = $index;
 				}
-				$index = Index::buildLink($column_name);
+			}
+			else {
+				$only_ids = false;
+			}
+		}
+		if ($only_ids) {
+			$table->addIndex($ids_index);
+		}
+		else {
+			foreach ($indexes as $index) {
 				$table->addIndex($index);
 			}
 		}
@@ -96,6 +130,7 @@ class Maintainer implements Registerable
 	 */
 	private function createTableWithoutContext(Contextual_Mysqli $mysqli, $table_name, $query)
 	{
+		$query = str_replace(LF, SP, $query);
 		// if a class name exists for the table name, use it as context and create table from class
 		$class_name = Dao::classNameOf($table_name);
 		if (class_exists($class_name, false)) {
