@@ -341,9 +341,10 @@ class Builder implements Activable, Registerable, Serializable
 		$aop = $register->aop;
 		$aop->beforeMethod([Getter::class, 'getCollection'],        [$this, 'onMethodWithClassName']);
 		$aop->beforeMethod([Getter::class, 'getObject'],            [$this, 'onMethodWithClassName']);
+		$aop->afterMethod( [Joins::class, 'addSimpleJoin'],         [$this, 'onMethodReturnedValue']);
+		$aop->afterMethod( [Joins::class, 'getStartingClassName'],  [$this, 'onMethodReturnedValue']);
 		$aop->beforeMethod([Search_Object::class, 'create'],        [$this, 'onMethodWithClassName']);
 		$aop->afterMethod( [Set::class, 'elementClassNameOf'],      [$this, 'onMethodReturnedValue']);
-		$aop->afterMethod( [Joins::class, 'addSimpleJoin'],         [$this, 'onMethodReturnedValue']);
 		$aop->afterMethod( [Type::class, 'getElementTypeAsString'], [$this, 'onMethodReturnedValue']);
 	}
 

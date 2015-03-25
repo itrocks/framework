@@ -112,6 +112,7 @@ class Columns
 	 * Build the columns list, based on properties paths
 	 *
 	 * @return string
+	 * @todo factorize
 	 */
 	public function build()
 	{
@@ -132,7 +133,7 @@ class Columns
 			}
 		}
 		elseif ($this->joins->getJoins()) {
-			$class_name = Builder::className($this->joins->getStartingClassName());
+			$class_name = $this->joins->getStartingClassName();
 			/** @var $properties Reflection_Property[] */
 			$properties = [];
 			$column_names = [];
