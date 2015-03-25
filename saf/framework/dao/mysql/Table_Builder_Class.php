@@ -69,19 +69,24 @@ class Table_Builder_Class
 		if ($more_field) {
 			$table->addColumn($more_field);
 		}
-		foreach ($class->accessProperties() as $property) {
-			if (!in_array($property->name, $this->excluded_properties)) {
-				$type = $property->getType();
-				if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
-					$table->addColumn(Column::buildProperty($property));
-					if (
-						($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
-						&& ($property->getAnnotation('store')->value != 'string')
-					) {
-						$class_name = $property->getType()->asString();
-						$this->dependencies_context[$class_name] = $class_name;
-						$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
-						$table->addIndex(Index::buildLink($property->getAnnotation('storage')->value));
+		if ($class->isAbstract()) {
+			$table->addColumn(new Column('class', 'varchar(255)'));
+		}
+		else {
+			foreach ($class->accessProperties() as $property) {
+				if (!in_array($property->name, $this->excluded_properties)) {
+					$type = $property->getType();
+					if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
+						$table->addColumn(Column::buildProperty($property));
+						if (
+							($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
+							&& ($property->getAnnotation('store')->value != 'string')
+						) {
+							$class_name                              = $property->getType()->asString();
+							$this->dependencies_context[$class_name] = $class_name;
+							$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
+							$table->addIndex(Index::buildLink($property->getAnnotation('storage')->value));
+						}
 					}
 				}
 			}
@@ -104,18 +109,18 @@ class Table_Builder_Class
 	{
 		$class = new Reflection_Class($class_name);
 		$link = $class->getAnnotation('link')->value;
-		$tables = $link ? $this->buildLinkTable($link, $class_name) : [];
+		$tables = $link ? $this->buildLinkTables($link, $class_name) : [];
 		$tables[] = $this->buildClassTable($class, $more_field);
 		return $tables;
 	}
 
-	//-------------------------------------------------------------------------------- buildLinkTable
+	//------------------------------------------------------------------------------- buildLinkTables
 	/**
 	 * @param $link
 	 * @param $class_name
 	 * @return Table[]
 	 */
-	private function buildLinkTable($link, $class_name)
+	private function buildLinkTables($link, $class_name)
 	{
 		$link_class_name = Namespaces::defaultFullClassName($link, $class_name);
 		$tables = (new Table_Builder_Class)->build($link_class_name);

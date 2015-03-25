@@ -140,11 +140,15 @@ abstract class Getter
 					$object = (new Link_Class($class_name))->getCompositeProperty()->getValue($object);
 					$class_name = $linked_class_name;
 				}
+				$element_type = $property->getType()->getElementType();
+				$is_abstract = $element_type->asReflectionClass()->isAbstract();
+				$sort = $is_abstract ? Dao::sort(['id']) : Dao::sort();
 				$stored = $dao->search(
-					[$class_name . '->' . $property->name => $object],
-					$property->getType()->getElementTypeAsString(),
-					[Dao::sort()]
+					[$class_name . '->' . $property->name => $object], $element_type->asString(), [$sort]
 				);
+				if ($is_abstract) {
+					$sort->sortObjects($stored);
+				}
 			}
 			else {
 				$stored = [];

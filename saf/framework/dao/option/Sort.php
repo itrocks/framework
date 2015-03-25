@@ -3,6 +3,7 @@ namespace SAF\Framework\Dao\Option;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao\Option;
+use SAF\Framework\Mapper\Comparator;
 use SAF\Framework\Reflection\Reflection_Class;
 
 /**
@@ -129,6 +130,21 @@ class Sort implements Option
 			$this->applyClassName($class_name);
 		}
 		return $this->columns;
+	}
+
+	//----------------------------------------------------------------------------------- sortObjects
+	/**
+	 * Sort a collection of objects using current sort columns configuration
+	 *
+	 * @param $objects object[]
+	 * @return object[]
+	 */
+	public function sortObjects(&$objects)
+	{
+		$comparator = new Comparator($this->class_name, $this->columns);
+		$comparator->use_compare_method = false;
+		$comparator->sort($objects);
+		return $objects;
 	}
 
 }

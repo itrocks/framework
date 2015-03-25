@@ -83,19 +83,9 @@ class Maintainer implements Registerable
 							Names::setToSingle(Namespaces::shortClassName($context_class))
 						);
 						if (in_array($column_name, [$id_context_property, $id_context_property_2])) {
-							$class = new Reflection_Class($context_class);
-							if ($class->isAbstract()) {
-								$class_column_name = substr($column_name, 3) . '_class';
-								$column = new Column($class_column_name, 'varchar(255)');
-								$table->addColumn($column);
-								$index->addKey($class_column_name);
-								$ids_index->addKey($class_column_name);
-							}
-							else {
-								$table->addForeignKey(
-									Foreign_Key::buildLink($table_name, $column_name, $context_class)
-								);
-							}
+							$table->addForeignKey(
+								Foreign_Key::buildLink($table_name, $column_name, $context_class)
+							);
 							break;
 						}
 					}

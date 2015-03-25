@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Mapper;
 
+use SAF\Framework\Dao\Option\Reverse;
 use SAF\Framework\Reflection\Reflection_Class;
 
 /**
@@ -17,14 +18,22 @@ class Comparator
 
 	//------------------------------------------------------------------------------ $properties_path
 	/**
-	 * @var string[]
+	 * @var string[]|Reverse[]
 	 */
 	private $properties_path;
+
+	//--------------------------------------------------------------------------- $use_compare_method
+	/**
+	 * If false, will not use the Comparable::compare() method
+	 *
+	 * @var boolean
+	 */
+	public $use_compare_method = true;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name      string
-	 * @param $properties_path string[]
+	 * @param $properties_path string[]|Reverse[]
 	 */
 	public function __construct($class_name, $properties_path = [])
 	{
@@ -51,7 +60,8 @@ class Comparator
 		if (is_object($object1) && is_object($object2)) {
 			// Comparable objects : use their compare method
 			if (
-				($object1 instanceof Comparable)
+				$this->use_compare_method
+				&& ($object1 instanceof Comparable)
 				&& (is_a($object1, get_class($object2)) || is_a($object2, get_class($object1)))
 			) {
 				return call_user_func_array([get_class($object1), 'compare'], [$object1, $object2]);
@@ -61,6 +71,9 @@ class Comparator
 				$path1 = new Object_Property_Path($object1);
 				$path2 = new Object_Property_Path($object2);
 				foreach ($this->properties_path as $property_path) {
+					if ($reverse = ($property_path instanceof Reverse)) {
+						$property_path = $property_path->column;
+					}
 					$value1 = $path1->getValue($property_path);
 					$value2 = $path2->getValue($property_path);
 					if (is_object($value1) || is_object($value2)) {
@@ -68,7 +81,9 @@ class Comparator
 						$result     = $comparator->compare($value1, $value2);
 					}
 					else {
-						$result = ($value1 < $value2) ? -1 : (($value1 > $value2) ? 1 : 0);
+						$result = ($value1 < $value2)
+							? ($reverse ? 1 : -1)
+							: (($value1 > $value2) ? ($reverse ? -1 : 1) : 0);
 					}
 					if ($result) {
 						return $result;

@@ -6,6 +6,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Option\Only;
+use SAF\Framework\Mapper\Abstract_Class;
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Mapper\Null_Object;
@@ -260,7 +261,11 @@ class Link extends Dao\Sql\Link
 	 */
 	protected function fetch($result_set, $class_name = null)
 	{
-		return $result_set->fetch_object(Builder::className($class_name));
+		$object = $result_set->fetch_object(Builder::className($class_name));
+		if ($object instanceof Abstract_Class) {
+			$object = $this->read($this->getObjectIdentifier($object), $object->class);
+		}
+		return $object;
 	}
 
 	//-------------------------------------------------------------------------------------- fetchAll
@@ -287,7 +292,10 @@ class Link extends Dao\Sql\Link
 				$object_key = array_pop($keys);
 			}
 		}
-		while ($object = $this->fetch($result_set, $class_name)) {
+		$fetch_class_name = ((new Reflection_Class($class_name))->isAbstract())
+			? Abstract_Class::class
+			: $class_name;
+		while ($object = $this->fetch($result_set, $fetch_class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
 			// the most common key is the record id : do it quick
 			if ($keys === 'id') {
