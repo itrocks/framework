@@ -78,6 +78,14 @@ class Joins
 	 */
 	private $properties = [];
 
+	//------------------------------------------------------------------------------- $starting_class
+	/**
+	 * The starting class reflection object
+	 *
+	 * @var Reflection_Class
+	 */
+	private $starting_class;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Construct Joins object and prepare joins for a list of property paths
@@ -532,6 +540,16 @@ class Joins
 	{
 		$properties = $this->getProperties($master_path);
 		return isset($properties[$property_name]) ? $properties[$property_name] : null;
+	}
+
+	//------------------------------------------------------------------------------ getStartingClass
+	public function getStartingClass()
+	{
+		if (!$this->starting_class) {
+			$class_name = $this->getStartingClassName();
+			$this->starting_class = new Reflection_Class($class_name);
+		}
+		return $this->starting_class;
 	}
 
 	//-------------------------------------------------------------------------- getStartingClassName
