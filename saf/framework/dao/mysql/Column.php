@@ -86,7 +86,12 @@ class Column implements Sql\Column
 	public function __construct($name = null, $type = null)
 	{
 		if (isset($name)) $this->Field = $name;
-		if (isset($type)) $this->Type  = $type;
+		if (isset($type)) {
+			$this->Type  = $type;
+			if (!isset($this->Default)) {
+				$this->Default = '';
+			}
+		}
 		$this->cleanupDefault();
 	}
 
@@ -188,6 +193,9 @@ class Column implements Sql\Column
 		if (isset($this->Default)) {
 			if ($this->getType()->isNumeric()) {
 				$this->Default += 0;
+			}
+			elseif ($this->getType()->isString()) {
+				$this->Default = strval($this->Default);
 			}
 		}
 		return $this;

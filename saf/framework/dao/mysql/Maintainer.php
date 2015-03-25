@@ -84,10 +84,9 @@ class Maintainer implements Registerable
 						);
 						if (in_array($column_name, [$id_context_property, $id_context_property_2])) {
 							$class = new Reflection_Class($context_class);
-							if ($class->isAbstract() || $class->isInterface()) {
+							if ($class->isAbstract()) {
 								$class_column_name = substr($column_name, 3) . '_class';
 								$column = new Column($class_column_name, 'varchar(255)');
-								$column->setDefaultValue('');
 								$table->addColumn($column);
 								$index->addKey($class_column_name);
 								$ids_index->addKey($class_column_name);
