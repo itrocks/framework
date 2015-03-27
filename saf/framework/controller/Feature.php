@@ -21,6 +21,7 @@ abstract class Feature
 	const F_LIST      = 'dataList';
 	const F_OUTPUT    = 'output';
 	const F_REMOVE    = 'remove';
+	const F_SELECT    = 'select';
 	const F_WRITE     = 'write';
 
 }
