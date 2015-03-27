@@ -14,6 +14,7 @@ use SAF\Framework\Tools\Default_List_Data;
 use SAF\Framework\Tools\Displayable;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Set;
+use SAF\Framework\View;
 use SAF\Framework\View\Html\Builder\Property_Select;
 use SAF\Framework\View\Html\Dom\Input;
 use SAF\Framework\View\Html\Template;
@@ -368,6 +369,24 @@ abstract class Functions
 		foreach ($template->objects as $key => $array) {
 			if (is_array($array) && $key) {
 				return $template->var_names[$key - 1];
+			}
+		}
+		return null;
+	}
+
+	//--------------------------------------------------------------------------------------- getLink
+	/**
+	 * Returns a link to the nearest object
+	 *
+	 * @param $template Template
+	 * @param $feature  string
+	 * @return string
+	 */
+	public static function getLink(Template $template, $feature = null)
+	{
+		foreach ($template->objects as $object) {
+			if (is_object($object)) {
+				return View::link($object, $feature);
 			}
 		}
 		return null;

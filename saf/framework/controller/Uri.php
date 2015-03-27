@@ -35,6 +35,14 @@ class Uri
 	 */
 	public $parameters;
 
+	//------------------------------------------------------------------------------------------ $uri
+	/**
+	 * The original uri given to __construct is kept here
+	 *
+	 * @var string
+	 */
+	public $uri;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Build a new Controller_Uri object knowing the URI as a text
@@ -44,10 +52,20 @@ class Uri
 	 */
 	public function __construct($uri, $get = [])
 	{
+		$this->uri = $uri;
 		$uri = self::uriToArray($uri);
 		$this->parseUri($uri);
 		$this->parseGet($get);
 		$this->setDefaults();
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * Gets the URI back as string
+	 */
+	public function __toString()
+	{
+		return $this->uri;
 	}
 
 	//------------------------------------------------------------------------------------ arrayToUri

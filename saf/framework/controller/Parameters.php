@@ -132,6 +132,9 @@ class Parameters
 		else {
 			// text parameter
 			$object = $this->getRawParameter($parameter_name);
+			if (is_string($object) && $object && ($object[0] === SL)) {
+				$object = new Uri($object);
+			}
 			$this->objects[$parameter_name] = $object;
 		}
 		if (empty($object)) {
@@ -147,7 +150,7 @@ class Parameters
 	/**
 	 * Gets parameters list as objects
 	 *
-	 * @return mixed[] indiced by parameter name
+	 * @return mixed[] key is the parameter name
 	 */
 	public function getObjects()
 	{
