@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Write;
 
 use Exception;
 use SAF\Framework\Builder;
+use SAF\Framework\Controller;
 use SAF\Framework\Controller\Default_Class_Controller;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
@@ -33,7 +34,7 @@ class Write_Controller implements Default_Class_Controller
 	 */
 	protected function getViewParameters(Parameters $parameters, $class_name, $write_error)
 	{
-		$object = $parameters->getMainObject($class_name);
+		$parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
 
 		if (isset($parameters[self::FILL_COMBO]) && strpos($parameters[self::FILL_COMBO], '[')) {
@@ -43,7 +44,6 @@ class Write_Controller implements Default_Class_Controller
 
 		$parameters[Template::TEMPLATE] = $write_error ? self::ERROR : self::WRITTEN;
 
-		$parameters[self::REDIRECT] = View::link($object);
 		return $parameters;
 	}
 

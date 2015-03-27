@@ -7,4 +7,7 @@ namespace SAF\Framework;
 interface Controller
 {
 
+	//--------------------------------------------------- THEN specific parameter for action chaining
+	const THEN = 'then';
+
 }

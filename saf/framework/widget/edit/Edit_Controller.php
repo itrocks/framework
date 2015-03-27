@@ -22,6 +22,7 @@ class Edit_Controller extends Output_Controller
 	 */
 	protected function getGeneralButtons($object, $parameters)
 	{
+		list($close_link, $follows) = $this->prepareThen($object, $parameters, View::link($object));
 		$buttons = parent::getGeneralButtons($object, $parameters);
 		unset($buttons['edit']);
 		$fill_combo = isset($parameters['fill_combo'])
@@ -30,13 +31,13 @@ class Edit_Controller extends Output_Controller
 		return array_merge($buttons, [
 			Feature::F_CLOSE => new Button(
 				'Close',
-				View::link($object),
+				$close_link,
 				Feature::F_CLOSE,
 				[new Color('close'), '#main']
 			),
 			Feature::F_WRITE => new Button(
 				'Write',
-				View::link($object, Feature::F_WRITE, null, $fill_combo),
+				View::link($object, Feature::F_WRITE, null, array_merge($fill_combo, $follows)),
 				Feature::F_WRITE,
 				[new Color('green'), '#messages', '.submit']
 			)

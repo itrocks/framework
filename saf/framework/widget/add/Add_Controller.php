@@ -24,9 +24,13 @@ class Add_Controller extends Edit_Controller
 	protected function getGeneralButtons($object, $parameters)
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters);
+
+		$close_link = View::link(Names::classToSet(get_class($object)));
+		list($close_link) = $this->prepareThen($object, $parameters, $close_link);
+
 		return array_merge($buttons, [
-			Feature::F_CLOSE => new Button('Close', View::link(Names::classToSet(get_class($object))),
-				Feature::F_CLOSE, [new Color('close'), '#main']
+			Feature::F_CLOSE => new Button(
+				'Close', $close_link, Feature::F_CLOSE, [new Color('close'), '#main']
 			),
 		]);
 	}

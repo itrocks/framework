@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\widget\output;
 
+use SAF\Framework\Controller;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
@@ -21,29 +22,29 @@ class Output_Controller implements Default_Feature_Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
-	 * @param $object object|string object or class name
+	 * @param $object     object|string object or class name
 	 * @param $parameters string[] parameters
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons(
-		$object, /** @noinspection PhpUnusedParameterInspection */ $parameters
-	) {
-		$buttons['close'] = new Button(
+	protected function getGeneralButtons($object, $parameters)
+	{
+		list($close_link, $follows) = $this->prepareThen($object, $parameters);
+		$buttons[Feature::F_CLOSE] = new Button(
 			'Close',
-			View::link(Names::classToSet(get_class($object))),
+			$close_link,
 			Feature::F_CLOSE,
 			[new Color('close'), '#main']
 		);
-		$buttons['edit'] = new Button(
+		$buttons[Feature::F_EDIT] = new Button(
 			'Edit',
-			View::link($object, Feature::F_EDIT),
+			View::link($object, Feature::F_EDIT, null, $follows),
 			Feature::F_EDIT,
 			[new Color(Color::GREEN), '#main']
 		);
 		if ($object instanceof Duplicate) {
-			$buttons['edit']->sub_buttons['duplicate'] = new Button(
+			$buttons[Feature::F_EDIT]->sub_buttons['duplicate'] = new Button(
 				'Duplicate',
-				View::link($object, Feature::F_DUPLICATE),
+				View::link($object, Feature::F_DUPLICATE, null, $follows),
 				Feature::F_DUPLICATE,
 				['#main']
 			);
@@ -110,6 +111,31 @@ class Output_Controller implements Default_Feature_Controller
 		$parameters['properties_filter'] = $this->getPropertiesList($class_name);
 		$parameters['tabs']              = $this->getTabs($object, $parameters['properties_filter']);
 		return $parameters;
+	}
+
+	//----------------------------------------------------------------------------------- prepareThen
+	/**
+	 * Prepare close link and follows links for buttons
+	 *
+	 * @example Call this from getGeneralButtons() :
+	 * list($close_link, $follows) = $this->prepareThen($object, $parameters);
+	 * Then use $close_link and $follows as needed
+	 * @param $object             object
+	 * @param $parameters         array
+	 * @param $default_close_link string
+	 * @return array first element is the close link, second element is an array of a link parameter
+	 */
+	protected function prepareThen($object, $parameters, $default_close_link = null)
+	{
+		if (isset($parameters[Controller::THEN])) {
+			$close_link = $parameters[Controller::THEN];
+			$follows = [Controller::THEN => $parameters[Controller::THEN]];
+		}
+		else {
+			$close_link = $default_close_link ?: View::link(Names::classToSet(get_class($object)));
+			$follows = [];
+		}
+		return [$close_link, $follows];
 	}
 
 	//------------------------------------------------------------------------------------------- run
