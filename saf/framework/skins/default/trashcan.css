@@ -13,3 +13,6 @@
     width: 32px; }
   #trashcan h2 {
     display: none; }
+
+.object > h3 {
+  cursor: pointer; }
