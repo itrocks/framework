@@ -106,7 +106,7 @@ getTextWidth = function(context, extraWidth)
 
 //---------------------------------------------------------------------------------------- redirect
 /**
- *
+ * Load an URI into target
  *
  * @param uri
  * @param target
@@ -123,7 +123,15 @@ redirect = function(uri, target)
 	else {
 		$.ajax({
 			url:     app.addSID(uri + more),
-			success: function(data) { $(target).html(data).build(); }
+			success: function(data) {
+				$(target).html(data).build();
+				var title = $(target).find('h2').first().text();
+				if (!title.length) {
+					title = uri;
+				}
+				document.title = title;
+				window.history.pushState({ reload: true }, title, uri);
+			}
 		});
 	}
 };
