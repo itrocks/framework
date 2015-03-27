@@ -72,10 +72,7 @@
 					)
 				) {
 					var title;
-					if (
-						(settings['history']['title'] != undefined)
-						&& settings['history']['title']
-					) {
+					if ((settings['history']['title'] != undefined) && settings['history']['title']) {
 						title = $target.find(settings['history']['title']).first().text();
 						if (!title.length) {
 							title = xhr.from.href;

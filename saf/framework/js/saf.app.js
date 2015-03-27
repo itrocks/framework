@@ -33,18 +33,21 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 
 	//----------------------------------------------------------------------------------- project_uri
 	/**
+	 * @example '/the/project/root/uri'
 	 * @var string
 	 */
 	this.project_uri = project_uri;
 
 	//----------------------------------------------------------------------------------- script_name
 	/**
+	 * @example 'saf'
 	 * @var string
 	 */
 	this.script_name = script_name;
 
 	//-------------------------------------------------------------------------------------- uri_base
 	/**
+	 * @example '/a/folder/saf'
 	 * @type string
 	 */
 	this.uri_base = uri_root + script_name;
@@ -57,6 +60,7 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 
 	//-------------------------------------------------------------------------------------- uri_root
 	/**
+	 * @example '/a/folder/'
 	 * @var string
 	 */
 	this.uri_root = uri_root;
