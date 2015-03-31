@@ -2,6 +2,7 @@
 namespace SAF\Framework\Controller;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Dao;
 use SAF\Framework\Mapper;
 use SAF\Framework\Tools\Set;
 
@@ -72,10 +73,11 @@ class Parameters
 	 * Beware : the created object will then automatically be added to the beginning
 	 * of the parameters list.
 	 *
-	 * @param $class_name string|object
+	 * @param $class_name           string|object
+	 * @param $search_by_properties string[]
 	 * @return object
 	 */
-	public function getMainObject($class_name = null)
+	public function getMainObject($class_name = null, $search_by_properties = [])
 	{
 		if (is_object($class_name)) {
 			$default_object = $class_name;
@@ -83,8 +85,13 @@ class Parameters
 		}
 		reset($this->parameters);
 		$object = $this->getObject(key($this->parameters));
-		if ((!$object || !is_object($object)) && !$class_name) {
-			$class_name = $this->uri->controller_name;
+		if (!$object || !is_object($object)) {
+			if ($search_by_properties) {
+				$object = $this->searchMainObject($class_name, $search_by_properties);
+			}
+			if ((!$object || !is_object($object)) && !$class_name) {
+				$class_name = $this->uri->controller_name;
+			}
 		}
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
 			$object = isset($default_object) ? $default_object : (
@@ -222,6 +229,25 @@ class Parameters
 		}
 	}
 
+	//------------------------------------------------------------------------------ searchMainObject
+	/**
+	 * @param $class_name     string
+	 * @param $property_names string[]
+	 * @return object
+	 */
+	public function searchMainObject($class_name, $property_names)
+	{
+		$search = [];
+		foreach ($property_names as $property_name) {
+			$search[$property_name] = $this->getRawParameter($property_name);
+		}
+		$object = Dao::searchOne($search, $class_name);
+		if ($object) {
+			$this->unshift($object);
+		}
+		return $object;
+	}
+
 	//------------------------------------------------------------------------------------------- set
 	/**
 	 * Sets URI parameter raw value
@@ -340,6 +366,10 @@ class Parameters
 	public function unshift($parameter_value)
 	{
 		if (is_object($parameter_value)) {
+			$class_name = get_class($parameter_value);
+			if (isset($this->parameters[$class_name])) {
+				unset($this->parameters[$class_name]);
+			}
 			$this->parameters = arrayMergeRecursive(
 				[get_class($parameter_value) => $parameter_value], $this->parameters
 			);
