@@ -10,6 +10,7 @@ use SAF\Framework\Reflection\Reflection_Method;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Session;
+use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Default_List_Data;
 use SAF\Framework\Tools\Displayable;
 use SAF\Framework\Tools\Names;
@@ -403,14 +404,19 @@ abstract class Functions
 	{
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
-				$property_name = reset($template->var_names);
-				if (method_exists(get_class($object), $property_name)) {
-					$method = new Reflection_Method(get_class($object), $property_name);
-					return Loc::methodToLocale($method, reset($template->objects));
+				if ($object instanceof Date_Time) {
+					return Loc::dateToLocale($object);
 				}
 				else {
-					$property = new Reflection_Property(get_class($object), $property_name);
-					return Loc::propertyToLocale($property, reset($template->objects));
+					$property_name = reset($template->var_names);
+					if (method_exists(get_class($object), $property_name)) {
+						$method = new Reflection_Method(get_class($object), $property_name);
+						return Loc::methodToLocale($method, reset($template->objects));
+					}
+					else {
+						$property = new Reflection_Property(get_class($object), $property_name);
+						return Loc::propertyToLocale($property, reset($template->objects));
+					}
 				}
 				break;
 			}
