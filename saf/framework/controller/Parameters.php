@@ -83,7 +83,7 @@ class Parameters
 		}
 		reset($this->parameters);
 		$object = $this->getObject(key($this->parameters));
-		if ((!$object && !$class_name) || !is_object($object)) {
+		if ((!$object || !is_object($object)) && !$class_name) {
 			$class_name = $this->uri->controller_name;
 		}
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {

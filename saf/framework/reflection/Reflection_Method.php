@@ -46,6 +46,24 @@ class Reflection_Method extends ReflectionMethod
 		return parent::getDocComment();
 	}
 
+	//------------------------------------------------------------------------ getMandatoryParameters
+	/**
+	 * Get only parameters that are mandatory (ie have no default value)
+	 *
+	 * @param $by_name boolean
+	 * @return Reflection_Parameter[]
+	 */
+	public function getMandatoryParameters($by_name = true)
+	{
+		$parameters = [];
+		foreach ($this->getParameters($by_name) as $key => $parameter) {
+			if (!$parameter->isOptional()) {
+				$parameters[$key] = $parameter;
+			}
+		}
+		return $parameters;
+	}
+
 	//---------------------------------------------------------------------------------- getParameter
 	/**
 	 * @param $parameter_name string
