@@ -1,18 +1,15 @@
 <?php
 namespace SAF\Framework\Email;
 
+use SAF\Framework\Traits\Has_Name;
+
 /**
  * Email attachments are attached or embedded (ie images) files, including multiple versions
  * (HTML / plain) of the mail
  */
 class Attachment
 {
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
+	use Has_Name;
 
 	//-------------------------------------------------------------------------------------- $content
 	/**

@@ -4,6 +4,7 @@ namespace SAF\Framework\Import\Settings;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Traits\Has_Name;
 use Serializable;
 
 /**
@@ -11,6 +12,7 @@ use Serializable;
  */
 class Import_Class implements Serializable
 {
+	use Has_Name;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
@@ -29,12 +31,6 @@ class Import_Class implements Serializable
 	 * @var string[] key is the name of the property
 	 */
 	public $property_path;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
 
 	//------------------------------------------------------------------- $object_not_found_behaviour
 	/**

@@ -5,12 +5,14 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Setting;
 use SAF\Framework\Tools\Namespaces;
+use SAF\Framework\Traits\Has_Name;
 
 /**
  * Custom settings objects can be loaded and saved from user configuration
  */
 abstract class Custom_Settings
 {
+	use Has_Name;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
@@ -19,14 +21,6 @@ abstract class Custom_Settings
 	 * @var string
 	 */
 	public $class_name;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * A readable for the list settings
-	 *
-	 * @var string
-	 */
-	public $name;
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**

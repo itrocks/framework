@@ -2,6 +2,7 @@
 namespace SAF\Framework\Print_Model;
 
 use SAF\Framework\Mapper\Component;
+use SAF\Framework\Traits\Has_Name;
 
 /**
  * A print model zone is a zone into the page that contains links to the data to be printed
@@ -9,6 +10,7 @@ use SAF\Framework\Mapper\Component;
 class Zone
 {
 	use Component;
+	use Has_Name;
 
 	//----------------------------------------------------------------------------------------- $page
 	/**
@@ -19,14 +21,6 @@ class Zone
 	 * @var Page
 	 */
 	public $page;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * The name of the zone
-	 *
-	 * @var string
-	 */
-	public $name;
 
 	//--------------------------------------------------------------------------------------- $zoning
 	/**

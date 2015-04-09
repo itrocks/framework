@@ -1,23 +1,20 @@
 <?php
 namespace SAF\Framework\Import\Settings;
 
+use SAF\Framework\Traits\Has_Name;
+
 /**
  * Import property
  */
 class Import_Property
 {
+	use Has_Name;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var string
 	 */
 	public $class;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

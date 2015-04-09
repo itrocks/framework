@@ -1,25 +1,13 @@
 <?php
 namespace SAF\Framework\Import;
 
+use SAF\Framework\Traits\Has_Name;
+
 /**
  * Import-export format
  */
 class Import_Export_Format
 {
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return strval($this->name);
-	}
+	use Has_Name;
 
 }

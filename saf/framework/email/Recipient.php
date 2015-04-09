@@ -1,23 +1,20 @@
 <?php
 namespace SAF\Framework\Email;
 
+use SAF\Framework\Traits\Has_Name;
+
 /**
  * An email recipient (or sender, this object can be used for both)
  */
 class Recipient
 {
+	use Has_Name;
 
 	//---------------------------------------------------------------------------------------- $email
 	/**
 	 * @var string
 	 */
 	public $email;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct($email = null, $name = null)

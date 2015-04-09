@@ -5,6 +5,7 @@ namespace SAF\Framework\Traits;
  * For all classes having a name as representative value
  *
  * @representative name
+ * @sort name
  */
 trait Has_Name
 {

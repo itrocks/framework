@@ -8,6 +8,7 @@ use SAF\Framework\Dao\File\Type;
 use SAF\Framework\Dao\File\Type_Builder;
 use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Files;
+use SAF\Framework\Traits\Has_Name;
 
 /**
  * File is a simple business object that stores files
@@ -16,13 +17,7 @@ use SAF\Framework\Tools\Files;
  */
 class File
 {
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @mandatory
-	 * @var string
-	 */
-	public $name;
+	use Has_Name;
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
@@ -73,15 +68,6 @@ class File
 		if (!isset($this->updated_on)) {
 			$this->updated_on = Builder::create(Date_Time::class);
 		}
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return strval($this->name);
 	}
 
 	//-------------------------------------------------------------------------------------- calcHash

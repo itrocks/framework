@@ -1,23 +1,20 @@
 <?php
 namespace SAF\Framework\Email;
 
+use SAF\Framework\Traits\Has_Name;
+
 /**
  * An email account : configuration of multi-protocols access to a given email box
  */
 class Account
 {
+	use Has_Name;
 
 	//---------------------------------------------------------------------------------------- $email
 	/**
 	 * @var string
 	 */
 	public $email;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
 
 	//--------------------------------------------------------------------------------- $pop_accounts
 	/**

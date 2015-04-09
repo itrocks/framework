@@ -4,12 +4,14 @@ namespace SAF\Framework\Import;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Import\Settings\Import_Preview;
 use SAF\Framework\Import\Settings\Import_Settings;
+use SAF\Framework\Traits\Has_Name;
 
 /**
  * Import worksheet
  */
 class Import_Worksheet
 {
+	use Has_Name;
 
 	//--------------------------------------------------------------------------------------- $errors
 	/**
@@ -24,12 +26,6 @@ class Import_Worksheet
 	 * @var File
 	 */
 	public $file;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
 
 	//-------------------------------------------------------------------------------------- $preview
 	/**
@@ -58,15 +54,6 @@ class Import_Worksheet
 		if (isset($name))     $this->name     = $name;
 		if (isset($preview))  $this->preview  = $preview;
 		if (isset($settings)) $this->settings = $settings;
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return strval($this->name);
 	}
 
 	//------------------------------------------------------------------------------------ getPreview

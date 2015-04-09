@@ -2,18 +2,14 @@
 namespace SAF\Framework\Http;
 
 use SAF\Framework\Tools\Stringable;
+use SAF\Framework\Traits\Has_Name;
 
 /**
  * HTTP header cookie object
  */
 class Cookie implements Stringable
 {
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
+	use Has_Name;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**

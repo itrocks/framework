@@ -2,27 +2,22 @@
 namespace SAF\Framework\Objects;
 
 use SAF\Framework\Dao;
+use SAF\Framework\Traits\Has_Name;
 
 /**
  * Standard basic codes, with a code and a full name
  *
  * @representative code, name
- * @sort name
  */
 class Code
 {
+	use Has_Name;
 
 	//----------------------------------------------------------------------------------------- $code
 	/**
 	 * @var string
 	 */
 	public $code;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

@@ -5,24 +5,20 @@ use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Field;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Traits\Has_Name;
 
 /**
  * A property is a field into a programmed class
  */
 class Property implements Field
 {
+	use Has_Name;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var Reflection_Class
 	 */
 	public $class;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
