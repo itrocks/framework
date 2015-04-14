@@ -331,6 +331,8 @@ class Proxy
 		else {
 			$this->errno = $errno;
 			$this->error = $error;
+			$this->response_headers = [];
+			$this->response = '';
 			return false;
 		}
 	}
