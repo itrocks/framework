@@ -8,7 +8,7 @@ use DateTimeZone;
 /**
  * This class extends php's DateTime class : you should use this to be SAF compatible
  */
-class Date_Time extends DateTime
+class Date_Time extends DateTime implements Can_Be_Empty
 {
 
 	//----------------------------------------------------------------------- duration unit constants
@@ -217,7 +217,7 @@ class Date_Time extends DateTime
 	 */
 	public function isEmpty()
 	{
-		return !(intval($this->toISO()) + 0);
+		return $this->isMin() || $this->isMax();
 	}
 
 	//----------------------------------------------------------------------------------------- isMax
