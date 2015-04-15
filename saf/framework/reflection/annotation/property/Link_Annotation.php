@@ -24,7 +24,8 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param string $value
+	 * @param $value    string
+	 * @param $property Reflection_Property
 	 */
 	public function __construct($value, Reflection_Property $property)
 	{
