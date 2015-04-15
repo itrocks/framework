@@ -2,6 +2,7 @@
 namespace SAF\Framework\Locale;
 
 use DateTime;
+use SAF\Framework\Tools\Date_Time;
 
 /**
  * Date format locale features : changes date format to comply with user's locale configuration
@@ -71,14 +72,16 @@ class Date_Format
 	 */
 	public function toLocale($date)
 	{
-		if (empty($date) || ($date == '0000-00-00') || ($date == '0000-00-00 00:00:00')) {
+		// in case of $date being an object, ie Date_Time
+		$date = strval($date);
+		if (empty($date) || ($date <= Date_Time::min())) {
 			return '';
 		}
 		if (strlen($date) == 10) {
 			return DateTime::createFromFormat('Y-m-d', $date)->format($this->format);
 		}
 		else {
-			list($date, $time) = explode(SP, $date);
+			list($date, $time) = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
 			if ((strlen($time) == 8) && (substr($time, -3) == ':00')) {
 				substr($time, 0, 5);
 			}
