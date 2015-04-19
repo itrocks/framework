@@ -65,7 +65,7 @@ trait Toolbox
 			$advice_parameters = $advice_method->getParameters();
 		}
 
-		$advice_has_return = strpos($advice_method->getDocComment(), '@return');
+		$advice_has_return = (strpos($advice_method->getDocComment(), '@return') !== false);
 
 		return [
 			$advice_class_name,
