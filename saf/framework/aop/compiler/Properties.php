@@ -90,7 +90,7 @@ class Properties
 		list(
 			$advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters, $advice_string, $advice_has_return, $is_advice_static
-			) = $this->decodeAdvice($advice, $class_name);
+		) = $this->decodeAdvice($advice, $class_name);
 
 		// $advice_parameters_string, $joinpoint_code
 		$joinpoint_code = '';
@@ -518,7 +518,11 @@ class Properties
 		}
 ';
 				}
-				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
+				$advice_code = $this->compileAdvice($property_name, 'write', $advice, $init);
+				if (strpos($advice_code, ' = ') !== false) {
+					$advice_code .= LF . TAB . TAB . '$this->' . $property_name . ' = $value;';
+				}
+				$code .= $advice_code;
 			}
 		}
 		if (isset($prototype)) {
