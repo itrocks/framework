@@ -13,6 +13,12 @@ class Properties
 
 	const DEBUG = false;
 
+	//------------------------------------------------------------------------------- SETTER_RESERVED
+	private static $SETTER_RESERVED = [
+		'class_name', 'element_type', 'element_type_name', 'joinpoint', 'object',
+		'property', 'property_name', 'result', 'stored', 'type', 'type_name'
+	];
+
 	//-------------------------------------------------------------------------------------- $actions
 	/**
 	 * @var string[] key is the original method name, value is the 'rename' or 'trait' action
@@ -96,7 +102,10 @@ class Properties
 		$joinpoint_code = '';
 		if ($advice_parameters) {
 			$advice_parameters_string = '$' . join(', $', array_keys($advice_parameters));
-			if (isset($advice_parameters[$property_name])) {
+			if (
+				isset($advice_parameters[$property_name])
+				&& !in_array($property_name, self::$SETTER_RESERVED)
+			) {
 				$advice_parameters_string = str_replace(
 					'$' . $property_name, '$value', $advice_parameters_string
 				);
