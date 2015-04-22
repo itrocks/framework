@@ -23,11 +23,11 @@ class Tests extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT t0.*'
-			. ' FROM `orders` t0 INNER JOIN ('
-			. 'SELECT t0.`number`, MAX(t0.`date`) AS `date`'
-			. ' FROM `orders` t0'
-			. ' GROUP BY t0.`number`'
+			'SELECT t0.*' . LF
+			. 'FROM `orders` t0' . LF . 'INNER JOIN ('
+			. 'SELECT t0.`number`, MAX(t0.`date`) AS `date`' . LF
+			. 'FROM `orders` t0' . LF
+			. 'GROUP BY t0.`number`'
 			. ') t1'
 			. ' ON t1.`number` = t0.`number` AND t1.`date` = t0.`date`'
 		);
@@ -43,7 +43,7 @@ class Tests extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT LEFT(t0.`number`, 4) AS `number` FROM `orders` t0'
+			'SELECT LEFT(t0.`number`, 4) AS `number`' . LF . 'FROM `orders` t0'
 		);
 	}
 
@@ -58,7 +58,9 @@ class Tests extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT t0.* FROM `orders` t0 WHERE t0.`number` = LEFT("N01181355010", LENGTH(t0.`number`))'
+			'SELECT t0.*' . LF
+			. 'FROM `orders` t0' . LF
+			. 'WHERE t0.`number` = LEFT("N01181355010", LENGTH(t0.`number`))'
 		);
 	}
 
