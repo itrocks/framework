@@ -13,6 +13,34 @@ use SAF\Framework\Tests\Test;
 class Tests extends Test
 {
 
+	//-------------------------------------------------------------------------------- $getter_simple
+	/**
+	 * @getter getSimple
+	 * @var string
+	 */
+	private $getter_simple;
+
+	//-------------------------------------------------------------------------------- $getter_static
+	/**
+	 * @getter getStatic
+	 * @var string
+	 */
+	private $getter_static;
+
+	//-------------------------------------------------------------------------------- $setter_simple
+	/**
+	 * @setter setSimple
+	 * @var string
+	 */
+	private $setter_simple;
+
+	//-------------------------------------------------------------------------------- $setter_static
+	/**
+	 * @setter static::setStatic
+	 * @var string
+	 */
+	private $setter_static;
+
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * A fictive local property, for unit tests use only
@@ -25,16 +53,54 @@ class Tests extends Test
 	private /* @noinspection PhpUnusedPrivateFieldInspection */ $property;
 
 	//----------------------------------------------------------------------- getDefaultPropertyValue
+	/* @noinspection PhpMissingDocCommentInspection */
 	/**
 	 * Get the default property value, for test of @default annotation
 	 *
 	 * @param $property Interfaces\Reflection_Property
 	 * @return string
 	 */
-	/* @noinspection PhpMissingDocCommentInspection */
 	public static function getDefaultPropertyValue(Interfaces\Reflection_Property $property)
 	{
 		return 'default value for ' . $property->getName();
+	}
+
+	//------------------------------------------------------------------------------------- getSimple
+	/**
+	 * @return string
+	 */
+	public function getSimple()
+	{
+		return $this->getter_simple . ' with getter simple';
+	}
+
+	//------------------------------------------------------------------------------------- getStatic
+	/**
+	 * @param $value string
+	 * @return string
+	 */
+	public static function getStatic($value)
+	{
+		return $value . ' with getter static';
+	}
+
+	//------------------------------------------------------------------------------------- setSimple
+	/**
+	 * @param $setter_simple string
+	 */
+	public function setSimple($setter_simple)
+	{
+		$this->setter_simple = $setter_simple . ' with setter simple';
+	}
+
+	//------------------------------------------------------------------------------------- setStatic
+	/**
+	 * @param $value string
+	 * @return string
+	 */
+	public static function setStatic($value)
+	{
+		return $value . ' with setter static';
 	}
 
 	//------------------------------------------------------------------------- testDefaultAnnotation
@@ -51,13 +117,34 @@ class Tests extends Test
 		);
 	}
 
-	//-------------------------------------------------------------------------- testGetterAnnotation
+	//--------------------------------------------------------------------- testGetterAnnotationCases
 	/**
-	 * Test property @getter
+	 * Test property @getter : cases of uses
 	 */
-	public function testGetterAnnotation()
+	public function testGetterAnnotationCases()
 	{
-		$this->method('@getter');
+		$this->method('@getter : cases of uses');
+		$this->getter_simple = 'a value for simple';
+		$this->assume(
+			'simple, property name',
+			$this->getter_simple,
+			'a value for simple with getter simple'
+		);
+		$this->getter_static = 'a value for static';
+		$this->assume(
+			'static, $value',
+			$this->getter_static,
+			'a value for static with getter static'
+		);
+	}
+
+	//----------------------------------------------------------------------- testGetterAnnotationSet
+	/**
+	 * Test property @getter : setting annotation value
+	 */
+	public function testGetterAnnotationSet()
+	{
+		$this->method('@getter : setting annotation value');
 		$property = new Reflection_Property(self::class, 'property');
 
 		// @getter methodName
@@ -90,6 +177,27 @@ class Tests extends Test
 			'default value when @link',
 			$property->getAnnotation('getter')->value,
 			Getter::class . '::getCollection'
+		);
+	}
+
+	//--------------------------------------------------------------------- testSetterAnnotationCases
+	/**
+	 * Test property @setter : cases of uses
+	 */
+	public function testSetterAnnotationCases()
+	{
+		$this->method('@setter : cases of uses');
+		$this->setter_simple = 'a value for simple';
+		$this->assume(
+			'simple, property name, without return',
+			$this->setter_simple,
+			'a value for simple with setter simple'
+		);
+		$this->setter_static = 'a value for static';
+		$this->assume(
+			'static, $value, return value',
+			$this->setter_static,
+			'a value for static with setter static'
 		);
 	}
 
