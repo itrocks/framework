@@ -34,6 +34,7 @@ class Test
 	 */
 	protected function assume($test, $check, $assume)
 	{
+		$duration = round((microtime(true) - $this->start_time) * 1000000);
 		$check  = $this->toArray($check);
 		$assume = $this->toArray($assume);
 		if (is_array($check) && is_array($assume)) {
@@ -47,8 +48,13 @@ class Test
 			$ok = ($check === $assume);
 		}
 		if ($ok) {
-			$duration = round((microtime(true) - $this->start_time) * 1000);
-			$result = '<span style="color:green;font-weight:bold">OK</span> (<i>' . $duration . 'ms</i>)';
+			if ($duration > 9999) {
+				$duration = round($duration / 1000) . 'ms';
+			}
+			else {
+				$duration .= 'μs';
+			}
+			$result = '<span style="color:green;font-weight:bold">OK</span> (<i>' . $duration . '</i>)';
 		}
 		else {
 			$result = '<span style="color:red;font-weight:bold">BAD</span>'
