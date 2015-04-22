@@ -104,6 +104,9 @@ class Type
 			$this->absolute = true;
 			$this->type = substr($this->type, 1);
 		}
+		elseif (in_array($this->type, ['self', 'static'])) {
+			$this->absolute = true;
+		}
 	}
 
 	//------------------------------------------------------------------------------------ __toString

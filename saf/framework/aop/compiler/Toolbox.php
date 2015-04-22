@@ -38,7 +38,7 @@ trait Toolbox
 				}
 			}
 			else {
-				$advice_class_name = (in_array($advice_object, ['self', '$this']))
+				$advice_class_name = (in_array($advice_object, ['self', 'static', '$this']))
 					? $joinpoint_class_name
 					: $advice_class_name = $advice_object;
 				if ($advice_object == '$this') {
@@ -124,7 +124,7 @@ trait Toolbox
 			if ($is_advice_static) {
 				return $joinpoint_code
 					. $i2 . ($advice_has_return ? ($result . SP . '=' . $ref . SP) : '')
-					. (($advice[0] == 'self') ? 'self' : (BS . $advice_class_name))
+					. (in_array($advice[0], ['self', 'static']) ? $advice[0] : (BS . $advice_class_name))
 					. '::' . $advice_method_name
 					. '(' . $advice_parameters_string . ');';
 			}
