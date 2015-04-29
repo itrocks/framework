@@ -94,7 +94,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isDelete($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 7)) === ('DELETE' . SP));
+		return (strtoupper(substr(trim($query), 0, 6)) === 'DELETE');
 	}
 
 	//-------------------------------------------------------------------------------------- isInsert
@@ -106,7 +106,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isInsert($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 12)) === ('INSERT INTO' . SP));
+		return (strtoupper(substr(trim($query), 0, 11)) === 'INSERT INTO');
 	}
 
 	//-------------------------------------------------------------------------------------- isSelect
@@ -118,7 +118,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isSelect($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 7)) === ('SELECT' . SP));
+		return (strtoupper(substr(trim($query), 0, 6)) === 'SELECT');
 	}
 
 	//------------------------------------------------------------------------------------ isTruncate
@@ -130,7 +130,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isTruncate($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 9)) === ('TRUNCATE' . SP));
+		return (strtoupper(substr(trim($query), 0, 8)) === 'TRUNCATE');
 	}
 
 	//-------------------------------------------------------------------------------------- isUpdate
@@ -142,7 +142,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function isUpdate($query)
 	{
-		return (strtoupper(substr(trim($query), 0, 7)) === ('UPDATE' . SP));
+		return (strtoupper(substr(trim($query), 0, 6)) === 'UPDATE');
 	}
 
 	//----------------------------------------------------------------------------------------- query
