@@ -713,7 +713,7 @@ class Properties
 				if (!isset($advices[$property->name]['implements'][$type])) {
 					$expr = '%'
 						. '\n\s+\*\s+'               // each line beginnig by '* '
-						. '@' . $annotation          // 1 : AOP annotation
+						. AT . $annotation          // 1 : AOP annotation
 						. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
 						. '(\w+)?)?'                 // 3 : method or function name
 						. '%';

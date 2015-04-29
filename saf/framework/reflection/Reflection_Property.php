@@ -234,7 +234,7 @@ class Reflection_Property extends ReflectionProperty
 				$comment .= '/**' . LF;
 				foreach ($annotation->values() as $key => $value) {
 					$comment .= Parser::DOC_COMMENT_IN . $annotation->class_name . LF;
-					$comment .= TAB . SP . '*' . SP . '@' . $key . SP . $value . LF;
+					$comment .= TAB . SP . '*' . SP . AT . $key . SP . $value . LF;
 				}
 				$comment .= TAB . SP . '*/';
 			}

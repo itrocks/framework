@@ -28,7 +28,7 @@ trait Annoted
 	/**
 	 * Global annotations cache
 	 *
-	 * Annotation['Class_Name']['@']['annotation']
+	 * Annotation['Class_Name'][AT]['annotation']
 	 * Annotation['Class_Name']['property']['annotation']
 	 * Annotation['Class_Name']['methodName()']['annotation']
 	 *

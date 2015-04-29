@@ -533,7 +533,7 @@ class Compiler implements ICompiler, Needs_Main
 				. ')+'                       // end annotations loop
 				. '%';
 			foreach ($annotations as $annotation) {
-				preg_match_all(str_replace('@annotation', '@' . $annotation, $expr), $documentation, $match);
+				preg_match_all(str_replace('@annotation', AT . $annotation, $expr), $documentation, $match);
 				if ($match[1] && (($annotation != 'link') || !isset($disable[$match[1][0]]))) {
 					if ($annotation == 'getter') {
 						$disable[$match[1][0]] = true;

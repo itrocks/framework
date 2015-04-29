@@ -94,7 +94,7 @@ class Translations extends Set
 			return join(DOT, $translation);
 		}
 		elseif (!isset($this->cache[$text]) || !isset($this->cache[$text][$context])) {
-			if (substr($text, -1) === '@') {
+			if (substr($text, -1) === AT) {
 				$str_uri = true;
 				$text = substr($text, 0, -1);
 			}
@@ -117,7 +117,7 @@ class Translations extends Set
 			}
 			$translation = $translation ? $translation->translation : $text;
 			if ($str_uri) {
-				$text .= '@';
+				$text .= AT;
 				$translation = strUri($translation);
 			}
 			$this->cache[$text][$context] = $translation;
