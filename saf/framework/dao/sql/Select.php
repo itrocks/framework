@@ -15,16 +15,16 @@ use SAF\Framework\Tools\List_Data;
  * Manages Select() Dao Link calls : how to call and parse the query
  *
  * This is an internal class used by Link, but can be used separately to parse query() result sets
- * into result objects array or Data_List
+ * into result an array of rows or Data_List
  *
- * @example Minimal example : use current Data_Link, returns an array of objects
+ * @example Minimal example : use current Data_Link, returns an array of rows
  * $select = new Select($class_name, $columns);
  * return $select->fetchResultRows(Dao::query($select->prepareQuery()));
  *
  * @example Compact example that matches the minimal example
  * return Select::executeClassColumns($class_name, $columns);
  *
- * @example Compact example starting from a query and returning an array of objects
+ * @example Compact example starting from a query and returning an array of rows
  * return Select::executeQuery($query);
  *
  * @example Full-featured SELECT query with options and filter objects (see Link::select())
@@ -38,8 +38,8 @@ use SAF\Framework\Tools\List_Data;
  * }
  * return $select->fetchResultRows($result_set, $list);
  *
- * @example Full-featured SELECT query that returns an object[]
- * // needs $data_link, $class_name, $columns, $filter_object, $options ; returns an object[]
+ * @example Full-featured SELECT query that returns an array[]
+ * // needs $data_link, $class_name, $columns, $filter_object, $options ; returns an array[]
  * $select = new Select($class_name, $columns, $data_link);
  * $query = $select->prepareQuery($filter_object, $options);
  * $result_set = $data_link->query($query);
@@ -156,7 +156,7 @@ class Select
 	//--------------------------------------------------------------------------------------- doFetch
 	/**
 	 * @param $list List_Data
-	 * @return object[]|List_Data
+	 * @return List_Data|array[]
 	 */
 	private function doFetch(List_Data $list = null)
 	{
@@ -179,7 +179,7 @@ class Select
 	 * @param $class_name string
 	 * @param $columns    string[]
 	 * @param $link       Link
-	 * @return object[]
+	 * @return array[]
 	 */
 	public static function executeClassColumns($class_name, $columns, Link $link = null)
 	{
@@ -195,7 +195,7 @@ class Select
 	 * @param $class_name string
 	 * @param $query      string
 	 * @param $link       Link
-	 * @return object[]
+	 * @return array[]
 	 */
 	public static function executeClassQuery($class_name, $query, Link $link = null)
 	{
@@ -207,7 +207,7 @@ class Select
 	/**
 	 * @param $result_set   mixed A Link::query() result set
 	 * @param $list         List_Data
-	 * @return object[]|List_Data
+	 * @return List_Data|array[]
 	 */
 	public function fetchResultRows($result_set, List_Data $list = null)
 	{
@@ -327,8 +327,9 @@ class Select
 	//---------------------------------------------------------------------------------- prepareQuery
 	/**
 	 * @param $filter_object object|array source object for filter, set properties will be used for
-	 *        search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options    Option[] some options for advanced search
+	 *                       search. Can be an array associating properties names to corresponding
+	 *                       search value too.
+	 * @param $options       Option[] some options for advanced search
 	 * @return string
 	 */
 	public function prepareQuery($filter_object = null, $options = [])
@@ -387,7 +388,7 @@ class Select
 	 * Store the row into the list
 	 *
 	 * @param $row  array
-	 * @param $list object[]|List_Data
+	 * @param $list List_Data|array[]
 	 */
 	private function store($row, &$list)
 	{
