@@ -2,7 +2,6 @@
 namespace SAF\Framework\Dao\Data_Link;
 
 use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Reflection\Reflection_Property_Value;
 
 /**
  * Source of data link classes that use a map between internal identifiers and business objects
@@ -83,29 +82,6 @@ abstract class Identifier_Map extends Data_Link
 			&& (is_a($object1, get_class($object2)) || is_a($object2, get_class($object1)));
 	}
 
-	//---------------------------------------------------------------------------- objectToProperties
-	/**
-	 * Changes an object into an array associating properties and their values
-	 *
-	 * @param $object array|object|null if already an array, nothing will be done
-	 * @return mixed[] indices ar properties paths
-	 */
-	protected function objectToProperties($object)
-	{
-		if (is_object($object)) {
-			$id = $this->getObjectIdentifier($object);
-			$object = isset($id) ? ['id' => $id] : get_object_vars($object);
-		}
-		elseif (is_array($object)) {
-			foreach ($object as $path => $value) {
-				if ($value instanceof Reflection_Property_Value) {
-					$object[$path] = $value->value();
-				}
-			}
-		}
-		return $object;
-	}
-
 	//--------------------------------------------------------------------------------------- replace
 	/**
 	 * @param $destination object destination object
@@ -134,7 +110,7 @@ abstract class Identifier_Map extends Data_Link
 	 * @param $property_name string
 	 * @return Identifier_Map
 	 */
-	protected function setObjectIdentifier($object, $id, $property_name = null)
+	public function setObjectIdentifier($object, $id, $property_name = null)
 	{
 		// classic class object id
 		if ($property_name) {

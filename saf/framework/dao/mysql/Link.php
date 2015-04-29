@@ -120,13 +120,13 @@ class Link extends Dao\Sql\Link
 		$builder = new Count($class_name, $what, $this);
 		$query = $builder->buildQuery();
 		$this->setContext($builder->getJoins()->getClassNames());
-		$result_set = $this->executeQuery($query);
+		$result_set = $this->connection->query($query);
 		if ($result_set) {
 			$row = $result_set->fetch_row();
 			$result_set->free();
 		}
 		else {
-			$row = [0 => 0];
+			$row = [0];
 		}
 		return $row[0];
 	}
@@ -237,29 +237,15 @@ class Link extends Dao\Sql\Link
 		return $this->connection->escape_string($value);
 	}
 
-	//---------------------------------------------------------------------------------- executeQuery
-	/**
-	 * Execute an SQL query
-	 *
-	 * Sql_Link inherited classes must implement SQL query calls only into this method.
-	 *
-	 * @param $query string
-	 * @return mysqli_result the sql query result set
-	 */
-	protected function executeQuery($query)
-	{
-		return $this->connection->query($query);
-	}
-
 	//----------------------------------------------------------------------------------------- fetch
 	/**
 	 * Fetch a result from a result set to an object
 	 *
-	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 * @param $class_name string The class name to store the result data into
 	 * @return object
 	 */
-	protected function fetch($result_set, $class_name = null)
+	public function fetch($result_set, $class_name = null)
 	{
 		$object = $result_set->fetch_object(Builder::className($class_name));
 		if ($object instanceof Abstract_Class) {
@@ -340,10 +326,10 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Fetch a result from a result set to an array
 	 *
-	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 * @return object
 	 */
-	protected function fetchRow($result_set)
+	public function fetchRow($result_set)
 	{
 		$object = $result_set->fetch_row();
 		return $object;
@@ -355,9 +341,9 @@ class Link extends Dao\Sql\Link
 	 *
 	 * Sql_Link inherited classes must implement freeing result sets only into this method.
 	 *
-	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 */
-	protected function free($result_set)
+	public function free($result_set)
 	{
 		$result_set->free();
 	}
@@ -368,11 +354,11 @@ class Link extends Dao\Sql\Link
 	 *
 	 * Sql_Link inherited classes must implement getting column name only into this method.
 	 *
-	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 * @param $index integer|string The index of the column we want to get the SQL name from
 	 * @return string
 	 */
-	protected function getColumnName($result_set, $index)
+	public function getColumnName($result_set, $index)
 	{
 		return $result_set->fetch_field_direct($index)->name;
 	}
@@ -383,10 +369,10 @@ class Link extends Dao\Sql\Link
 	 *
 	 * Sql_Link inherited classes must implement getting columns count only into this method.
 	 *
-	 * @param $result_set mysqli_result The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 * @return integer
 	 */
-	protected function getColumnsCount($result_set)
+	public function getColumnsCount($result_set)
 	{
 		return $result_set->field_count;
 	}
@@ -463,12 +449,12 @@ class Link extends Dao\Sql\Link
 	 *
 	 * Sql_Link inherited classes must implement getting rows count only into this method
 	 *
-	 * @param $result_set mixed The result set : in most cases, will come from executeQuery()
+	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 * @param $clause     string The SQL query was starting with this clause
 	 * @param $options    Option[] If set, will set the result into Dao_Count_Option::$count
 	 * @return integer will return null if $options is set but contains no Dao_Count_Option
 	 */
-	protected function getRowsCount($result_set, $clause, $options = [])
+	public function getRowsCount($result_set, $clause, $options = [])
 	{
 		if ($options) {
 			foreach ($options as $option) {
@@ -481,7 +467,7 @@ class Link extends Dao\Sql\Link
 		}
 		else {
 			if ($clause == 'SELECT') {
-				$result = $this->executeQuery('SELECT FOUND_ROWS()');
+				$result = $this->connection->query('SELECT FOUND_ROWS()');
 				$row = $result->fetch_row();
 				$result->free();
 				return $row[0];
@@ -522,6 +508,11 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Executes an SQL query and returns the inserted record identifier or the mysqli result object
 	 *
+	 * - if $class_name is set and $query is a 'SELECT', returned value will be an object[]
+	 * - if $query is a 'SELECT' without $class_name, then returned value will be a mysqli_result
+	 * - if $query is an 'INSERT' returned value will be the last insert id
+	 * - other cases : returned value make no sense : do not use it ! (may be null or last insert id)
+	 *
 	 * @param $query string
 	 * @param $class_name string if set, the result will be object[] with read data
 	 * @return integer|mysqli_result|object[]
@@ -529,7 +520,7 @@ class Link extends Dao\Sql\Link
 	public function query($query, $class_name = null)
 	{
 		if ($query) {
-			$result = $this->executeQuery($query);
+			$result = $this->connection->query($query);
 			if (isset($class_name)) {
 				$class_name = Builder::className($class_name);
 				$response = [];
@@ -574,7 +565,7 @@ class Link extends Dao\Sql\Link
 			. LF . 'FROM' . SP . BQ . $this->storeNameOf($class_name) . BQ
 			. LF . 'WHERE id = ' . $identifier;
 		$this->setContext($class_name);
-		$result_set = $this->executeQuery($query);
+		$result_set = $this->connection->query($query);
 		$object = $this->fetch($result_set, $class_name);
 		$this->free($result_set);
 		if ($object) {
@@ -596,7 +587,7 @@ class Link extends Dao\Sql\Link
 		$class_name = Builder::className($class_name);
 		$this->setContext($class_name);
 		$query = (new Select($class_name, null, null, null, $options))->buildQuery();
-		$result_set = $this->executeQuery($query);
+		$result_set = $this->connection->query($query);
 		if ($options) {
 			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
@@ -667,7 +658,7 @@ class Link extends Dao\Sql\Link
 		$builder = new Select($class_name, null, $what, $this, $options);
 		$query = $builder->buildQuery();
 		$this->setContext($builder->getJoins()->getClassNames());
-		$result_set = $this->executeQuery($query);
+		$result_set = $this->connection->query($query);
 		if ($options) {
 			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
@@ -971,7 +962,7 @@ class Link extends Dao\Sql\Link
 			$id = $this->getObjectIdentifier($element);
 			if (!isset($old_map[$id])) {
 				$query = $insert_builder->buildQuery($object, $element);
-				$this->executeQuery($query);
+				$this->connection->query($query);
 			}
 			else {
 				$id_set[$id] = true;
@@ -983,7 +974,7 @@ class Link extends Dao\Sql\Link
 			$id = $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
 				$query = $delete_builder->buildQuery($object, $old_element);
-				$this->executeQuery($query);
+				$this->connection->query($query);
 			}
 		}
 	}
