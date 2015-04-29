@@ -254,8 +254,10 @@ class Select
 	private function prepareColumns($columns)
 	{
 		$cols = [];
-		foreach ($columns as $may_be_column => $column) {
-			$cols[] = is_string($may_be_column) ? $may_be_column : $column;
+		if ($columns) {
+			foreach ($columns as $may_be_column => $column) {
+				$cols[] = is_string($may_be_column) ? $may_be_column : $column;
+			}
 		}
 		return $cols;
 	}
