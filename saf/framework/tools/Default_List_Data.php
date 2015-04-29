@@ -96,4 +96,18 @@ class Default_List_Data extends Set implements List_Data
 		return $this->getRow($row_index)->getValue($property);
 	}
 
+	//---------------------------------------------------------------------------------------- newRow
+	/**
+	 * Creates a new row
+	 *
+	 * @param $class_name string The class name of the main business object stored into the row
+	 * @param $object     object The main business object stored into the row
+	 * @param $row        array|object The data stored into the row
+	 * @return List_Row
+	 */
+	public function newRow($class_name, $object, $row)
+	{
+		return new Default_List_Row($class_name, $object, $row);
+	}
+
 }

@@ -77,4 +77,15 @@ interface List_Data extends Iterator
 	 */
 	public function length();
 
+	//---------------------------------------------------------------------------------------- newRow
+	/**
+	 * Creates a new row
+	 *
+	 * @param $class_name string The class name of the main business object stored into the row
+	 * @param $object     object The main business object stored into the row
+	 * @param $row        array|object The data stored into the row
+	 * @return List_Row
+	 */
+	public function newRow($class_name, $object, $row);
+
 }
