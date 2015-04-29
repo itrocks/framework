@@ -394,18 +394,6 @@ class Select
 		return $row;
 	}
 
-	//----------------------------------------------------------------------------------- rowToObject
-	/**
-	 * Change a row into an object
-	 *
-	 * @param $row array The source row
-	 * @return object The generated object (sub-objects when 'property.path' key is used)
-	 */
-	private function rowToObject($row)
-	{
-		return $this->object_builder->build($row);
-	}
-
 	//----------------------------------------------------------------------------------------- store
 	/**
 	 * Store the row into the list
@@ -421,7 +409,7 @@ class Select
 			$list->add($list->newRow($this->class_name, $id, $row));
 		}
 		else {
-			$list[] = isset($this->class_name) ? $this->rowToObject($row) : $row;
+			$list[] = isset($this->class_name) ? $this->object_builder->build($row) : $row;
 		}
 	}
 
