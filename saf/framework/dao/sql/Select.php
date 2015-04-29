@@ -6,6 +6,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Sql;
 use SAF\Framework\Tools\List_Data;
@@ -115,7 +116,7 @@ class Select
 	 *
 	 * @var string[]
 	 */
-	private $path_classes = [];
+	private $path_classes;
 
 	//--------------------------------------------------------------------------- $reflection_classes
 	/**
@@ -278,16 +279,16 @@ class Select
 		$classes_index = [];
 		$j = 0;
 		for ($i = 0; $i < $this->column_count; $i++) {
-			$this->column_names[$i] = $this->link->getColumnName($this->result_set, $i);
-			if (!isset($this->columns[$i])) {
-				$this->columns[$i] = $this->column_names[$i];
-			}
-			if (strpos($this->column_names[$i], ':') == false) {
+			$this->column_names[$i] = $column_name = $this->link->getColumnName($this->result_set, $i);
+			if (strpos($column_name, ':') == false) {
 				$this->i_to_j[$i] = $j++;
 			}
 			else {
-				$split = explode(':', $this->column_names[$i]);
-				$this->column_names[$i] = $split[1];
+				$split = explode(':', $column_name, 2);
+				if (!isset($this->path_classes[$split[0]])) {
+					$this->preparePathClass($split[0]);
+				}
+				$this->column_names[$i] = $column_name = $split[1];
 				$main_property = $split[0];
 				$his_j = isset($classes_index[$main_property]) ? $classes_index[$main_property] : null;
 				if (!isset($his_j)) {
@@ -300,10 +301,27 @@ class Select
 					$this->i_to_j[$i] = $his_j;
 				}
 			}
-			if (substr($this->column_names[$i], 0, 3) === 'id_') {
-				$this->column_names[$i] = substr($this->column_names[$i], 3);
+			if (substr($column_name, 0, 3) === 'id_') {
+				$this->column_names[$i] = $column_name = substr($column_name, 3);
+			}
+			if (!isset($this->columns[$i])) {
+				$this->columns[$i] = $column_name;
 			}
 		}
+	}
+
+	//------------------------------------------------------------------------------ preparePathClass
+	/**
+	 * Prepares path_classes if it is null
+	 * Must be called after prepareColumns()
+	 *
+	 * @param $property_name string
+	 */
+	private function preparePathClass($property_name)
+	{
+		$property = new Reflection_Property($this->class_name, $property_name);
+		$class_name = $property->getType()->getElementTypeAsString();
+		$this->path_classes[$property_name] = $class_name;
 	}
 
 	//---------------------------------------------------------------------------------- prepareQuery
