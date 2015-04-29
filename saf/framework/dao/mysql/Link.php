@@ -225,7 +225,7 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Escape string into string or binary values
 	 *
-	 * @param $value string
+	 * @param $value string|object
 	 * @return string
 	 */
 	public function escapeString($value)
