@@ -5,6 +5,7 @@ namespace SAF\Framework\Dao\Sql;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Option;
+use SAF\Framework\Mapper\Object_Builder_Array;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
@@ -38,8 +39,8 @@ use SAF\Framework\Tools\List_Data;
  * }
  * return $select->fetchResultRows($result_set, $list);
  *
- * @example Full-featured SELECT query that returns an array[]
- * // needs $data_link, $class_name, $columns, $filter_object, $options ; returns an array[]
+ * @example Full-featured SELECT query that returns an object[]
+ * // needs $data_link, $class_name, $columns, $filter_object, $options ; returns an object[]
  * $select = new Select($class_name, $columns, $data_link);
  * $query = $select->prepareQuery($filter_object, $options);
  * $result_set = $data_link->query($query);
@@ -109,6 +110,14 @@ class Select
 	 */
 	private $link;
 
+	//------------------------------------------------------------------------------- $object_builder
+	/**
+	 * Set at start of doFetch() if $class_name is set and $list is not a Data_List
+	 *
+	 * @var Object_Builder_Array
+	 */
+	private $object_builder;
+
 	//--------------------------------------------------------------------------------- $path_classes
 	/**
 	 * Key is the property path, value is the associated class name when property type is a class
@@ -156,11 +165,12 @@ class Select
 	//--------------------------------------------------------------------------------------- doFetch
 	/**
 	 * @param $list List_Data
-	 * @return List_Data|array[]
+	 * @return List_Data|array[]|object[]
 	 */
 	private function doFetch(List_Data $list = null)
 	{
-		if (!$list) {
+		if ($this->class_name && !$list) {
+			$this->object_builder = new Object_Builder_Array($this->class_name);
 			$list = [];
 		}
 		$first = true;
@@ -179,7 +189,7 @@ class Select
 	 * @param $class_name string
 	 * @param $columns    string[]
 	 * @param $link       Link
-	 * @return array[]
+	 * @return object[]
 	 */
 	public static function executeClassColumns($class_name, $columns, Link $link = null)
 	{
@@ -192,12 +202,13 @@ class Select
 	 * A simple static execute() feature to use with an already built query
 	 * Useful for imports from external SQL data sources
 	 *
-	 * @param $class_name string
 	 * @param $query      string
-	 * @param $link       Link
-	 * @return array[]
+	 * @param $class_name string If not set, the returned value is an array[], else each row will be
+	 *                           changed into an object (with sub-objects too)
+	 * @param $link       Link   Default is Dao::current()
+	 * @return array[]|object[]
 	 */
-	public static function executeClassQuery($class_name, $query, Link $link = null)
+	public static function executeQuery($query, $class_name = null, Link $link = null)
 	{
 		$select = new Select($class_name, null, $link);
 		return $select->fetchResultRows($select->link->query($query));
@@ -207,7 +218,7 @@ class Select
 	/**
 	 * @param $result_set   mixed A Link::query() result set
 	 * @param $list         List_Data
-	 * @return List_Data|array[]
+	 * @return List_Data|array[]|object[]
 	 */
 	public function fetchResultRows($result_set, List_Data $list = null)
 	{
@@ -383,12 +394,24 @@ class Select
 		return $row;
 	}
 
+	//----------------------------------------------------------------------------------- rowToObject
+	/**
+	 * Change a row into an object
+	 *
+	 * @param $row array The source row
+	 * @return object The generated object (sub-objects when 'property.path' key is used)
+	 */
+	private function rowToObject($row)
+	{
+		return $this->object_builder->build($row);
+	}
+
 	//----------------------------------------------------------------------------------------- store
 	/**
 	 * Store the row into the list
 	 *
 	 * @param $row  array
-	 * @param $list List_Data|array[]
+	 * @param $list List_Data|array[]|object[]
 	 */
 	private function store($row, &$list)
 	{
@@ -398,10 +421,7 @@ class Select
 			$list->add($list->newRow($this->class_name, $id, $row));
 		}
 		else {
-			if (!isset($row['class'])) {
-				$row['class'] = $this->class_name;
-			}
-			$list[] = $row;
+			$list[] = isset($this->class_name) ? $this->rowToObject($row) : $row;
 		}
 	}
 
