@@ -102,6 +102,15 @@ class Select
 	 */
 	private $i_to_j;
 
+	//------------------------------------------------------------------------------------------ $key
+	/**
+	 * Key property names
+	 * Set by executeQuery()
+	 *
+	 * @var string[]
+	 */
+	private $key = ['id'];
+
 	//----------------------------------------------------------------------------------------- $link
 	/**
 	 * Set by __construct()
@@ -204,13 +213,17 @@ class Select
 	 *
 	 * @param $query      string
 	 * @param $class_name string If not set, the returned value is an array[], else each row will be
-	 *                           changed into an object (with sub-objects too)
-	 * @param $link       Link   Default is Dao::current()
+	 *                    changed into an object (with sub-objects too)
+	 * @param $link       Link Default is Dao::current()
+	 * @param $key        string[] Key property names
 	 * @return array[]|object[]
 	 */
-	public static function executeQuery($query, $class_name = null, Link $link = null)
+	public static function executeQuery($query, $class_name = null, Link $link = null, $key = null)
 	{
 		$select = new Select($class_name, null, $link);
+		if (isset($key)) {
+			$select->key = $key;
+		}
 		return $select->fetchResultRows($select->link->query($query));
 	}
 
@@ -403,13 +416,37 @@ class Select
 	 */
 	private function store($row, &$list)
 	{
-		// store into $list
 		if ($list instanceof List_Data) {
 			$id = array_pop($row);
 			$list->add($list->newRow($this->class_name, $id, $row));
 		}
 		else {
-			$list[] = isset($this->class_name) ? $this->object_builder->build($row) : $row;
+			// calculate index
+			$index = [];
+			foreach ($this->key as $key) {
+				$index[] = $row[$key];
+			}
+			$index = join(DOT, $index);
+			// store
+			if (isset($this->class_name)) {
+				if ($index !== '') {
+					if (isset($list[$index])) {
+						$list[$index] = $this->object_builder->build($row, $list[$index]);
+					}
+					else {
+						$list[$index] = $this->object_builder->build($row);
+					}
+				}
+				else {
+					$list[] = $this->object_builder->build($row);
+				}
+			}
+			elseif ($index !== '') {
+				$list[$index] = $row;
+			}
+			else {
+				$list[] = $row;
+			}
 		}
 	}
 
