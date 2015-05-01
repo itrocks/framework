@@ -21,7 +21,7 @@ class Parser
 {
 
 	//-------------------------------------------------------------------------------- DOC_COMMENT_IN
-	const DOC_COMMENT_IN = '***IN ';
+	const DOC_COMMENT_IN = "\t *IN ";
 
 	//---------------------------------------------------------------- annotations contexts constants
 	const T_CLASS    = 'Class_';
