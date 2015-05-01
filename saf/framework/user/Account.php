@@ -1,15 +1,19 @@
 <?php
 namespace SAF\Framework\User;
 
+use SAF\Framework\Traits\Has_Email;
+
 /**
  * An account can connect to an application (or to anything that needs authentication)
  *
  * It has a login, a password, and an email for password recovery automation.
  *
  * @business
+ * @override email @mandatory
  */
 trait Account
 {
+	use Has_Email;
 
 	//---------------------------------------------------------------------------------------- $login
 	/**
@@ -25,13 +29,6 @@ trait Account
 	 * @var string
 	 */
 	public $password;
-
-	//---------------------------------------------------------------------------------------- $email
-	/**
-	 * @mandatory
-	 * @var string
-	 */
-	public $email;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
