@@ -16,7 +16,7 @@ use SAF\Framework\Tools\List_Data;
  * Manages Select() Dao Link calls : how to call and parse the query
  *
  * This is an internal class used by Link, but can be used separately to parse query() result sets
- * into result an array of rows or Data_List
+ * into result an array of rows or List_Data
  *
  * @example Minimal example : use current Data_Link, returns an array of rows
  * $select = new Select($class_name, $columns);
@@ -51,6 +51,15 @@ use SAF\Framework\Tools\List_Data;
  */
 class Select
 {
+
+	//------------------------------------------------------------------------------------- $callback
+	/**
+	 * If set, the callback will be called instead of storing into an array or List_Data
+	 * Set by fetchResultRows
+	 *
+	 * @var callable
+	 */
+	private $callback;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
@@ -121,7 +130,7 @@ class Select
 
 	//------------------------------------------------------------------------------- $object_builder
 	/**
-	 * Set at start of doFetch() if $class_name is set and $list is not a Data_List
+	 * Set at start of doFetch() if $class_name is set and $data_store is not a List_Data
 	 *
 	 * @var Object_Builder_Array
 	 */
@@ -161,7 +170,7 @@ class Select
 	 * @param $columns    string[] If not set, the columns names will be taken from the query result
 	 * @param $link       Link If not set, the default link will be Dao::current()
 	 */
-	public function __construct($class_name, $columns = null, Link $link = null)
+	public function __construct($class_name = null, $columns = null, Link $link = null)
 	{
 		$this->link       = $link ?: Dao::current();
 		$this->class_name = $class_name;
@@ -171,74 +180,91 @@ class Select
 		}
 	}
 
+	//------------------------------------------------------------------------------------ doCallback
+	/**
+	 * @param $data_store array[]|object[]
+	 */
+	private function doCallback(&$data_store)
+	{
+		if (isset($this->callback)) {
+			foreach ($data_store as $object) {
+				call_user_func($this->callback, $object);
+			}
+			$data_store = [];
+		}
+	}
+
 	//--------------------------------------------------------------------------------------- doFetch
 	/**
-	 * @param $list List_Data
-	 * @return List_Data|array[]|object[]
+	 * @param $data_store List_Data|array[]|object[]
+	 * @return List_Data|array[]|object[]|null
 	 */
-	private function doFetch(List_Data $list = null)
+	private function doFetch($data_store)
 	{
-		if ($this->class_name && !$list) {
+		if ($this->class_name && !($data_store instanceof List_Data)) {
 			$this->object_builder = new Object_Builder_Array($this->class_name);
-			$list = [];
+			$data_store = [];
 		}
 		$first = true;
 		while ($result = $this->link->fetchRow($this->result_set)) {
 			$row = $this->resultToRow($result, $first);
-			$this->store($row, $list);
+			$this->store($row, $data_store);
 			$first = false;
 		}
-		return $list;
+		$this->doCallback($data_store);
+		return $this->callback ? null : $data_store;
 	}
 
 	//--------------------------------------------------------------------------- executeClassColumns
 	/**
-	 * A simple static execute() feature to use it quick with minimal options
+	 * A simple execute() feature to use it quick with minimal options
 	 *
-	 * @param $class_name string
-	 * @param $columns    string[]
-	 * @param $link       Link
-	 * @return object[]
+	 * @param $data_store List_Data|array[]|object[]|callable
+	 * @param $key        string[] Key property names
+	 * @return List_Data|array[]|object[]|callable
 	 */
-	public static function executeClassColumns($class_name, $columns, Link $link = null)
+	public function executeClassColumns($data_store = null, $key = null)
 	{
-		$select = new Select($class_name, $columns, $link);
-		return $select->fetchResultRows($select->link->query($select->prepareQuery()));
+		return $this->executeQuery($this->prepareQuery(), $data_store, $key);
 	}
 
 	//----------------------------------------------------------------------------- executeClassQuery
 	/**
-	 * A simple static execute() feature to use with an already built query
+	 * A simple execute() feature to use with an already built query
 	 * Useful for imports from external SQL data sources
 	 *
 	 * @param $query      string
-	 * @param $class_name string If not set, the returned value is an array[], else each row will be
-	 *                    changed into an object (with sub-objects too)
-	 * @param $link       Link Default is Dao::current()
+	 * @param $data_store List_Data|array[]|object[]|callable
 	 * @param $key        string[] Key property names
-	 * @return array[]|object[]
+	 * @return List_Data|array[]|object[]|callable
 	 */
-	public static function executeQuery($query, $class_name = null, Link $link = null, $key = null)
+	public function executeQuery($query, $data_store = null, $key = null)
 	{
-		$select = new Select($class_name, null, $link);
 		if (isset($key)) {
-			$select->key = $key;
+			$this->key = $key;
 		}
-		return $select->fetchResultRows($select->link->query($query));
+		return $this->fetchResultRows($this->link->query($query), $data_store);
 	}
 
 	//------------------------------------------------------------------------------- fetchResultRows
 	/**
-	 * @param $result_set   mixed A Link::query() result set
-	 * @param $list         List_Data
-	 * @return List_Data|array[]|object[]
+	 * @param $result_set mixed A Link::query() result set
+	 * @param $data_store List_Data|array[]|object[]|callable
+	 * @return List_Data|array[]|object[]|null
 	 */
-	public function fetchResultRows($result_set, List_Data $list = null)
+	public function fetchResultRows($result_set, $data_store = null)
 	{
+		if (is_callable($data_store)) {
+			$this->callback = $data_store;
+			$data_store = null;
+		}
+		else {
+			$this->callback = null;
+		}
 		$this->result_set = $result_set;
 		$this->columns = $this->prepareColumns($this->columns);
-		$this->prepareFetch();
-		return $this->doFetch($list);
+		$this->prepareFetch($data_store);
+		return $this->doFetch($data_store);
 	}
 
 	//---------------------------------------------------------------------------- objectToProperties
@@ -293,8 +319,10 @@ class Select
 	 * - $classes
 	 * - $column_count
 	 * - $column_names
+	 *
+	 * @param $data_store List_Data|array[]|object[]|null
 	 */
-	private function prepareFetch()
+	private function prepareFetch($data_store)
 	{
 		$this->classes = [];
 		$this->column_count = $this->link->getColumnsCount($this->result_set);
@@ -325,7 +353,7 @@ class Select
 					$this->i_to_j[$i] = $his_j;
 				}
 			}
-			if (substr($column_name, 0, 3) === 'id_') {
+			if (($data_store instanceof List_Data) && (substr($column_name, 0, 3) === 'id_')) {
 				$this->column_names[$i] = $column_name = substr($column_name, 3);
 			}
 			if (!isset($this->columns[$i])) {
@@ -409,43 +437,49 @@ class Select
 
 	//----------------------------------------------------------------------------------------- store
 	/**
-	 * Store the row into the list
+	 * Store the row into the data store
 	 *
 	 * @param $row  array
-	 * @param $list List_Data|array[]|object[]
+	 * @param $data_store List_Data|array[]|object[]
 	 */
-	private function store($row, &$list)
+	private function store($row, &$data_store)
 	{
-		if ($list instanceof List_Data) {
+		if ($data_store instanceof List_Data) {
 			$id = array_pop($row);
-			$list->add($list->newRow($this->class_name, $id, $row));
+			$data_store->add($data_store->newRow($this->class_name, $id, $row));
 		}
 		else {
 			// calculate index
 			$index = [];
 			foreach ($this->key as $key) {
-				$index[] = $row[$key];
+				if (isset($row[$key])) {
+					$index[] = $row[$key];
+				}
 			}
 			$index = join(DOT, $index);
 			// store
 			if (isset($this->class_name)) {
 				if ($index !== '') {
-					if (isset($list[$index])) {
-						$list[$index] = $this->object_builder->build($row, $list[$index]);
+					if (isset($data_store[$index])) {
+						$data_store[$index] = $this->object_builder->build($row, $data_store[$index]);
 					}
 					else {
-						$list[$index] = $this->object_builder->build($row);
+						$this->doCallback($data_store);
+						$data_store[$index] = $this->object_builder->build($row);
 					}
 				}
 				else {
-					$list[] = $this->object_builder->build($row);
+					$this->doCallback($data_store);
+					$data_store[] = $this->object_builder->build($row);
 				}
 			}
 			elseif ($index !== '') {
-				$list[$index] = $row;
+				$this->doCallback($data_store);
+				$data_store[$index] = $row;
 			}
 			else {
-				$list[] = $row;
+				$this->doCallback($data_store);
+				$data_store[] = $row;
 			}
 		}
 	}
