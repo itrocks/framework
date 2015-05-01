@@ -44,7 +44,7 @@ abstract class Value
 			$string_value = substr($string_value, 2);
 		}
 		elseif ($value instanceof Date_Time) {
-			$string_value = DQ . $value->toISO() . DQ;
+			$string_value = DQ . ($value->toISO() ?: '0000-00-00 00:00:00') . DQ;
 		}
 		else {
 			$string_value = DQ . Dao::current()->escapeString($value) . DQ;

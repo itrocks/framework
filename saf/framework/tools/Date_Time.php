@@ -298,7 +298,7 @@ class Date_Time extends DateTime implements Can_Be_Empty
 	public function toISO($empty_min_max = true)
 	{
 		$format = max($this->format('Y-m-d H:i:s'), self::$min_date);
-		return ($empty_min_max && (($format === self::$min_date) || ($format === self::$max_date)))
+		return ($empty_min_max && (($format <= self::$min_date) || ($format >= self::$max_date)))
 			? '' : $format;
 	}
 
