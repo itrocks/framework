@@ -117,7 +117,8 @@ class Object_Builder_Array
 							}
 							$property_class_name = $property->getType()->asString();
 							if (is_a($property_class_name, $link->value, true)) {
-								$id_property_value = $array[$id_property_name];
+								$id_property_value = isset($array[$id_property_name])
+									? $array[$id_property_name] : null;
 								$linked_class_name = $property_class_name;
 							}
 						}
@@ -125,7 +126,7 @@ class Object_Builder_Array
 					if (count($search) >= 2) {
 						$object = Dao::searchOne($search, $this->class->name);
 					}
-					if (!$object && $id_property_value) {
+					if ($id_property_value && !$object) {
 						$object = Builder::createClone(
 							Dao::read($id_property_value, $linked_class_name), $this->class->name
 						);
