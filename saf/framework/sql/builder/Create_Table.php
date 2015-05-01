@@ -48,10 +48,10 @@ class Create_Table
 			}
 		}
 		return 'CREATE TABLE IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('
-			. join(', ', $columns)
-			. ($indexes ? ', ' : '') . join(', ', $indexes)
-			. ($foreign_keys ? ', ' : '') . join(', ', $foreign_keys)
-			. ') DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
+			. ($columns ? (LF . TAB) : '') . join(',' . LF . TAB, $columns)
+			. ($indexes ? (',' . LF . TAB) : '') . join(',' . LF . TAB, $indexes)
+			. ($foreign_keys ? (',' . LF . TAB) : '') . join(',' . LF . TAB, $foreign_keys)
+			. LF . ') DEFAULT CHARSET = utf8 COLLATE = utf8_general_ci';
 	}
 
 }

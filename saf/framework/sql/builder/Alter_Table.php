@@ -77,10 +77,10 @@ class Alter_Table
 			$sqls[] = 'ADD COLUMN ' . $add->toSql();
 		}
 		foreach ($this->alter_columns as $column_name => $alter) {
-			$sqls[] = ' CHANGE COLUMN ' . BQ . $column_name . BQ . SP . $alter->toSql();
+			$sqls[] = 'CHANGE COLUMN ' . BQ . $column_name . BQ . SP . $alter->toSql();
 		}
-		return 'ALTER TABLE ' . BQ . $this->table->getName() . BQ . SP
-			. join(', ', $sqls);
+		return 'ALTER TABLE ' . BQ . $this->table->getName() . BQ . LF . TAB
+			. join(',' . LF . TAB, $sqls);
 	}
 
 	//--------------------------------------------------------------------------------------- isReady
