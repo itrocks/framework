@@ -33,10 +33,10 @@ class Setting
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return string|object
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getValue()
 	{
 		$value = $this->value;

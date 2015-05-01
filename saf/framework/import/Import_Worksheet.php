@@ -57,10 +57,10 @@ class Import_Worksheet
 	}
 
 	//------------------------------------------------------------------------------------ getPreview
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return Import_Preview
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getPreview()
 	{
 		if (!isset($this->preview)) {

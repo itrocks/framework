@@ -104,12 +104,12 @@ class File
 	}
 
 	//--------------------------------------------------------------------------------------- getHash
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Gets $hash, or calculate it from content if not set
 	 *
 	 * @return string
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getHash()
 	{
 		if (!isset($this->hash)) {
@@ -119,13 +119,13 @@ class File
 	}
 
 	//---------------------------------------------------------------------------getTemporaryFileName
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Gets temporary file name, or write content into a temporary file name and get this name if not
 	 * set or file does not exist
 	 *
 	 * @return string
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getTemporaryFileName()
 	{
 		if (

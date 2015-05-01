@@ -48,10 +48,10 @@ class Page
 	public $zones;
 
 	//------------------------------------------------------------------------------------- getNumber
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return string
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @getter */
 	private function getNumber()
 	{
 		$number = $this->number;
@@ -64,10 +64,10 @@ class Page
 	}
 
 	//------------------------------------------------------------------------------------- setNumber
+	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
 	 * @param string
 	 */
-	/* @noinspection PhpUnusedPrivateMethodInspection @setter */
 	private function setNumber($number)
 	{
 		switch ($number) {
