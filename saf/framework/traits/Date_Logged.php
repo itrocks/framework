@@ -12,29 +12,27 @@ use SAF\Framework\Tools\Date_Time;
 trait Date_Logged
 {
 
-	//---------------------------------------------------------------------------- $creation_datetime
+	//------------------------------------------------------------------------------------- $creation
 	/**
 	 * @link DateTime
 	 * @var Date_Time
 	 */
-	public $creation_datetime;
+	public $creation;
 
-	//------------------------------------------------------------------------ $modification_datetime
+	//---------------------------------------------------------------------------------- $last_update
 	/**
 	 * @link DateTime
 	 * @var Date_Time
 	 */
-	public $modification_datetime;
+	public $last_update;
 
 	//------------------------------------------------------------------------- beforeWriteDateLogged
 	public function beforeWriteDateLogged()
 	{
-		if (!isset($this->creation_datetime) || $this->creation_datetime->isEmpty()) {
-			$this->creation_datetime = new Date_Time();
+		if (!isset($this->creation) || $this->creation->isEmpty()) {
+			$this->creation = new Date_Time();
 		}
-		else {
-			$this->modification_datetime = new Date_Time();
-		}
+		$this->last_update = new Date_Time();
 	}
 
 }
