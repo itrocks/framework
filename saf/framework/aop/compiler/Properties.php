@@ -521,7 +521,7 @@ class Properties
 	/** AOP */
 	private function _' . $property_name . '_write($value)
 	{
-		if (isset($this_[' . Q . $property_name . Q . '])) {
+		if (isset($this->_[' . Q . $property_name . Q . '])) {
 			unset($this->_[' . Q . $property_name . Q . ']);
 			$this->' . $property_name . ' = $this->' . $property_name . '_;
 			$writer = true;
