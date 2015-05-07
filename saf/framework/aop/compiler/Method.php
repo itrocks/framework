@@ -13,12 +13,6 @@ class Method
 
 	const DEBUG = false;
 
-	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var Reflection_Class
-	 */
-	private $class;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class Reflection_Class

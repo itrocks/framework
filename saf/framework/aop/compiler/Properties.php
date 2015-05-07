@@ -26,12 +26,6 @@ class Properties
 	 */
 	private $actions;
 
-	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var Reflection_Class
-	 */
-	private $class;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class Reflection_Class
@@ -550,6 +544,11 @@ class Properties
 	}
 
 	//-------------------------------------------------------------------------------- executeActions
+	/**
+	 * Execute $this->actions on methods
+	 * - rename will change the name of the method
+	 * - trait will ?
+	 */
 	private function executeActions()
 	{
 		foreach ($this->actions as $method_name => $action) {
@@ -559,6 +558,13 @@ class Properties
 					$regexp,
 					LF . TAB . '$2' . LF . TAB . '/* $4 */ private $5 function $6$7_0$8$9',
 					$this->class->source->getSource())
+				);
+			}
+			elseif ($action == 'trait') {
+				// TODO don't know what has to be done for this case
+				trigger_error(
+					'Don\'t know how to ' . $action . SP . $this->class->name . '::' . $method_name,
+					E_USER_NOTICE
 				);
 			}
 			else {

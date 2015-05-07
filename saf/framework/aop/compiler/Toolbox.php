@@ -2,6 +2,7 @@
 namespace SAF\Framework\AOP\Compiler;
 
 use ReflectionFunction;
+use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\PHP\Reflection_Method;
 use SAF\Framework\Plugin;
 use SAF\Framework\Reflection\Reflection_Function;
@@ -11,6 +12,12 @@ use SAF\Framework\Reflection\Reflection_Function;
  */
 trait Toolbox
 {
+
+	//---------------------------------------------------------------------------------------- $class
+	/**
+	 * @var Reflection_Class
+	 */
+	private $class;
 
 	//---------------------------------------------------------------------------------- decodeAdvice
 	/**
@@ -46,13 +53,16 @@ trait Toolbox
 					$is_advice_static = false;
 				}
 				else {
-					$advice_string = '[' . Q . $advice_class_name . Q . ',' . SP . Q . $advice_method_name . Q . ']';
+					$advice_string = '['
+						. Q . $advice_class_name . Q . ',' . SP . Q . $advice_method_name . Q
+						. ']';
 					$is_advice_static = true;
 				}
 			}
-			$advice_method = Reflection_Method::of(
-				$advice_class_name, $advice_method_name, [T_EXTENDS, T_USE]
-			);
+			$methods_flags = [Reflection_Class::T_DOC_EXTENDS, T_EXTENDS, T_USE];
+			$advice_method = ($advice_object == '$this')
+				? $this->class->getMethods($methods_flags)[$advice_method_name]
+				: Reflection_Method::of($advice_class_name, $advice_method_name, $methods_flags);
 			$advice_parameters = $advice_method->getParametersNames();
 		}
 		else {
@@ -118,7 +128,10 @@ trait Toolbox
 	) {
 		// $advice_code
 		if (is_array($advice)) {
-			$method = Reflection_Method::of($advice_class_name, $advice_method_name, [T_EXTENDS, T_USE]);
+			$methods_flags = [Reflection_Class::T_DOC_EXTENDS, T_EXTENDS, T_USE];
+			$method = ($advice[0] == '$this')
+				? $this->class->getMethods($methods_flags)[$advice_method_name]
+				: Reflection_Method::of($advice_class_name, $advice_method_name, $methods_flags);
 			$ref = $method->returnsReference() ? '&' : '';
 			// static method call
 			if ($is_advice_static) {
