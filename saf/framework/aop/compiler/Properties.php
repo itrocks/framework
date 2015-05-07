@@ -9,6 +9,7 @@ use SAF\Framework\PHP\Reflection_Method;
  */
 class Properties
 {
+	use Scanners;
 	use Toolbox;
 
 	const DEBUG = false;
@@ -709,16 +710,22 @@ class Properties
 		) {
 			$annotation = ($method_name == '__get') ? '(getter|link)' : 'setter';
 			$type = ($method_name == '__get') ? 'read' : 'write';
-			foreach ($parent->getProperties([T_EXTENDS, T_USE]) as $property) {
+			$overrides = [];
+			foreach ($this->scanForOverrides(
+				$parent->getDocComment([T_EXTENDS, T_USE]), [substr($method_name, 2) . 'ter']
+			) as $override) {
+				$overrides[$override['property_name']] = true;
+			}
+			foreach ($parent->getProperties([T_EXTENDS, T_USE], $parent) as $property) {
 				if (!isset($advices[$property->name]['implements'][$type])) {
 					$expr = '%'
 						. '\n\s+\*\s+'               // each line beginnig by '* '
-						. AT . $annotation          // 1 : AOP annotation
+						. AT . $annotation           // 1 : AOP annotation
 						. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
 						. '(\w+)?)?'                 // 3 : method or function name
 						. '%';
 					preg_match($expr, $property->getDocComment(), $match);
-					if ($match) {
+					if ($match || isset($overrides[$property->name])) {
 						$cases[$property->name] = LF . TAB . TAB . TAB . 'case ' . Q . $property->name . Q . ':';
 					}
 				}
