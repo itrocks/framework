@@ -138,6 +138,12 @@ class Reflection_Source
 	 */
 	public function free($bigger_than = 1)
 	{
+		if (isset($this->classes)) {
+			foreach ($this->classes as $class) {
+				$class->free();
+			}
+		}
+
 		if (!$bigger_than || (count($this->classes)      > $bigger_than)) $this->classes      = null;
 		if (!$bigger_than || (count($this->dependencies) > $bigger_than)) $this->dependencies = null;
 		if (!$bigger_than || (count($this->instantiates) > $bigger_than)) $this->instantiates = null;

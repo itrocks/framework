@@ -18,6 +18,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	use Annoted;
 	use Tokens_Parser;
 
+	//--------------------------------------------------------------------------------- T_DOC_EXTENDS
+	const T_DOC_EXTENDS = 'T_DOC_EXTENDS';
+
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * @var string
@@ -175,6 +178,22 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $this->name;
 	}
 
+	//------------------------------------------------------------------------------------------ free
+	/**
+	 * Reset some data that will be re-calculated freeing them
+	 *
+	 * This can be called to be sure that if parent data changed, current data will change too
+	 */
+	public function free()
+	{
+		// parent may have been changed into a built class, more traits may have been added to them
+		$this->parent_methods    = null;
+		$this->parent_properties = null;
+		// more traits may have been added
+		$this->traits_methods    = null;
+		$this->traits_properties = null;
+	}
+
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
 	 * Gets the constructor of the reflected class
@@ -251,6 +270,28 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $doc_comment;
 	}
 
+	//--------------------------------------------------------------------------------- getDocExtends
+	/**
+	 * Gets the classes that are into @extends instead of use to allow diamond multiple inheritance
+	 *
+	 * @return Reflection_Class[]
+	 */
+	public function getDocExtends()
+	{
+		$extends = [];
+		$expr = '%'
+			. '\n\s+\*\s+'     // each line beginning by '* '
+			. '@extends'       // extends annotation
+			. '\s+([\\\\\w]+)' // 1 : class name
+			. '%';
+		if (preg_match_all($expr, $this->getDocComment(), $matches)) {
+			foreach ($matches[1] as $match) {
+				$extends[] = Reflection_Class::of($this->fullClassName($match));
+			}
+		}
+		return $extends;
+	}
+
 	//----------------------------------------------------------------------------------- getFileName
 	/**
 	 * Gets the filename of the file in which the class has been defined
@@ -299,7 +340,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//------------------------------------------------------------------------------------ getMethods
 	/**
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE, self::T_DOCEXTENDS
 	 * @return Reflection_Method[] key is the name of the method
 	 */
 	public function getMethods($flags = [])
@@ -324,7 +365,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				if (!isset($this->parent_methods)) {
 					$this->parent_methods = [];
 					if ($parent = $this->getParentClass()) {
-						$this->parent_methods = $parent->getMethods($flags);
+						$this->parent_methods = $parent->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 					}
 				}
 				$methods = array_merge($this->parent_methods, $methods);
@@ -334,11 +375,16 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 					$this->interfaces_methods = [];
 					foreach ($this->getInterfaces() as $interface) {
 						$this->interfaces_methods = array_merge(
-							$interface->getMethods($flags), $this->interfaces_methods
+							$interface->getMethods([T_EXTENDS, T_IMPLEMENTS]), $this->interfaces_methods
 						);
 					}
 				}
 				$methods = array_merge($this->interfaces_methods, $methods);
+			}
+			if (isset($flip[self::T_DOC_EXTENDS])) {
+				foreach ($this->getDocExtends() as $extends) {
+					$methods = array_merge($extends->getMethods([self::T_DOC_EXTENDS, T_USE]), $methods);
+				}
 			}
 		}
 
