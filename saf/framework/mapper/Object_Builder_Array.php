@@ -108,18 +108,29 @@ class Object_Builder_Array
 				if ($link->value) {
 					$id_property_value = null;
 					$linked_class_name = null;
+					$link_properties = $link->getLinkProperties();
 					$search = [];
-					foreach ($link->getLinkProperties() as $property) {
+					foreach ($link_properties as $property) {
 						if ($property->getType()->isClass()) {
-							$id_property_name = 'id_' . $property->getName();
+							$property_name = $property->getName();
+							$id_property_name = 'id_' . $property_name;
 							if (isset($array[$id_property_name]) && $array[$id_property_name]) {
-								$search[$property->getName()] = $array[$id_property_name];
+								$search[$property_name] = $array[$id_property_name];
 							}
 							$property_class_name = $property->getType()->asString();
 							if (is_a($property_class_name, $link->value, true)) {
 								$id_property_value = isset($array[$id_property_name])
 									? $array[$id_property_name] : null;
 								$linked_class_name = $property_class_name;
+								if (!isset($array[$id_property_name]) && !isset($array[$property_name])) {
+									$linked_array = $array;
+									foreach (array_keys($link_properties) as $link_property_name) {
+										unset($linked_array[$link_property_name]);
+									}
+									$array[$property_name] = (new Object_Builder_Array($property_class_name))->build(
+										$linked_array
+									);
+								}
 							}
 						}
 					}
@@ -172,7 +183,7 @@ class Object_Builder_Array
 				}
 				elseif (($property_name != 'id') && !isset($property)) {
 					trigger_error(
-						'Unknown property ' . $property_name . ' into ' . $this->class->name, E_USER_ERROR
+						'Unknown property ' . $this->class->name . '::$' . $property_name, E_USER_ERROR
 					);
 				}
 				elseif (!($property && $this->buildProperty($object, $property, $value, $null_if_empty))) {
@@ -409,7 +420,7 @@ class Object_Builder_Array
 		}
 		// the property value is set only for official properties, if not default and not empty
 		$property_name = $property->name;
-		if (($value !== "") || !$property->getType()->isClass()) {
+		if (($value !== '') || !$property->getType()->isClass()) {
 			$object->$property_name = $value;
 		}
 		if (!$property->isValueEmptyOrDefault($value)) {
