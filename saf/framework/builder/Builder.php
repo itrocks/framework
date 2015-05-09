@@ -8,6 +8,7 @@ use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Plugin\Activable;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
@@ -151,6 +152,12 @@ class Builder implements Activable, Registerable, Serializable
 			// reactivate AOP
 			if (isset($save_aop)) {
 				$clone->_ = $save_aop;
+			}
+			$destination_class = new Link_Class($class_name);
+			if ($linked_class_name = $destination_class->getLinkedClassName()) {
+				if ($linked_class_name == $source_class_name) {
+					$destination_class->getLinkProperty()->setValue($clone, $object);
+				}
 			}
 			Dao::replace($clone, $object, false);
 		}

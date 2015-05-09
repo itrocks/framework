@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection;
 
+use SAF\Framework\Property;
 use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
 
 /**
@@ -82,6 +83,27 @@ class Link_Class extends Reflection_Class
 		/** @var $link Link_Annotation */
 		$link = $this->getAnnotation('link');
 		return $link->getLinkProperties();
+	}
+
+	//------------------------------------------------------------------------------- getLinkProperty
+	/**
+	 * Returns the property of the class that make the link with the object of the parent class
+	 *
+	 * @param $class_name string
+	 * @return Reflection_Property
+	 */
+	public function getLinkProperty($class_name = null)
+	{
+		if (!$class_name) {
+			$class_name = $this->getAnnotation('link')->value;
+		}
+		foreach ($this->getLinkProperties() as $property_name) {
+			$property = $this->getProperty($property_name);
+			if (is_a($property->getType()->asString(), $class_name, true)) {
+				return $property;
+			}
+		}
+		return null;
 	}
 
 	//------------------------------------------------------------------------ getLinkPropertiesNames
