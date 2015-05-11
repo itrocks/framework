@@ -915,12 +915,10 @@ class Link extends Dao\Sql\Link
 				$id = $element_link->value
 					? $this->getLinkObjectIdentifier($element, $element_link)
 					: $this->getObjectIdentifier($element);
-				if (!$element_link->value || !empty($id)) {
-					if (!empty($id)) {
-						$id_set[$id] = true;
-					}
-					$this->write($element);
+				if (!empty($id)) {
+					$id_set[$id] = true;
 				}
+				$this->write($element);
 			}
 		}
 		// remove old unused elements
