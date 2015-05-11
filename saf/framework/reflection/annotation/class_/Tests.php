@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Tests\Test;
 
@@ -26,20 +27,24 @@ class Tests extends Test
 	//----------------------------------------------------------------------------- distantAfterWrite
 	/**
 	 * @param $tests   Tests
+	 * @param $link    Data_Link
 	 * @param $options Option[]
 	 */
-	public static function distantAfterWrite(Tests $tests, $options)
-	{
+	public static function distantAfterWrite(
+		Tests $tests, /* @noinspection PhpUnusedParameterInspection */ $link, $options
+	) {
 		$tests->dynamic('disafter', $options);
 	}
 
 	//---------------------------------------------------------------------------- distantBeforeWrite
 	/**
 	 * @param $tests   Tests
+	 * @param $link    Data_Link
 	 * @param $options Option[]
 	 */
-	public static function distantBeforeWrite(Tests $tests, $options)
-	{
+	public static function distantBeforeWrite(
+		Tests $tests, /* @noinspection PhpUnusedParameterInspection */ $link, $options
+	) {
 		$tests->dynamic('disbefore', $options);
 	}
 
@@ -63,18 +68,21 @@ class Tests extends Test
 
 	//------------------------------------------------------------------------------- localAfterWrite
 	/**
+	 * @param $link    Data_Link
 	 * @param $options Option[]
 	 */
-	public function localAfterWrite($options)
+	public function localAfterWrite(/* @noinspection PhpUnusedParameterInspection */ $link, $options)
 	{
 		$this->dynamic('locafter', $options);
 	}
 
 	//------------------------------------------------------------------------------ localBeforeWrite
 	/**
+	 * @param $link    Data_Link
 	 * @param $options Option[]
 	 */
-	public function localBeforeWrite($options)
+	public function localBeforeWrite(
+		/* @noinspection PhpUnusedParameterInspection */ $link, $options)
 	{
 		$this->dynamic('locbefore', $options);
 	}

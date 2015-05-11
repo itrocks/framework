@@ -27,6 +27,9 @@ trait Date_Logged
 	public $last_update;
 
 	//------------------------------------------------------------------------- beforeWriteDateLogged
+	/**
+	 * Calculate $creation and $last_update dates at beginning of each Dao::write() call
+	 */
 	public function beforeWriteDateLogged()
 	{
 		if (!isset($this->creation) || $this->creation->isEmpty()) {

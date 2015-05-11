@@ -698,7 +698,7 @@ class Link extends Dao\Sql\Link
 			(new Reflection_Class(get_class($object)))->getAnnotations('before_write') as $before_write
 		) {
 			/** @var $before_write Method_Annotation */
-			if ($before_write->call($object, [$options]) === false) {
+			if ($before_write->call($object, [$this, $options]) === false) {
 				$will_write = false;
 				break;
 			}
@@ -869,7 +869,7 @@ class Link extends Dao\Sql\Link
 				(new Reflection_Class(get_class($object)))->getAnnotations('after_write') as $after_write
 			) {
 				/** @var $after_write Method_Annotation */
-				if ($after_write->call($object, [$options]) === false) {
+				if ($after_write->call($object, [$this, $options]) === false) {
 					break;
 				}
 			}
