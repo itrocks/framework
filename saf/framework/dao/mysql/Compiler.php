@@ -35,8 +35,8 @@ class Compiler implements ICompiler
 	{
 		$dao = Dao::current();
 		if ($dao instanceof Link) {
-			$dao->begin();
-			$tables = [];
+			//$dao->begin();
+			//$tables = [];
 
 			/*
 			// drop empty tables
@@ -50,14 +50,16 @@ class Compiler implements ICompiler
 			}
 			*/
 
+			/*
 			// update tables structures
 			foreach ($source->getClasses() as $class) {
 				if (isset($tables[$dao->storeNameOf($class->name)])) {
 					$dao->createStorage($class->name);
 				}
 			}
+			*/
 
-			$dao->commit();
+			//$dao->commit();
 		}
 		return false;
 	}
@@ -69,7 +71,6 @@ class Compiler implements ICompiler
 	 * When you modify a file, all these classes may have their matching mysql structure changed :
 	 * - the class itself
 	 * - all classes that extend the class or use the trait
-	 *
 	 *
 	 * @param &$sources Reflection_Source[]
 	 * @return Reflection_Source[] added sources list
