@@ -103,8 +103,7 @@ class Object_Validator implements Registerable
 	 */
 	public function register(Register $register)
 	{
-		$aop = $register->aop;
-		$aop->beforeMethod([Data_Link::class, 'write'], [$this, 'beforeWrite']);
+		$register->aop->beforeMethod([Data_Link::class, 'write'], [$this, 'beforeWrite']);
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'length'     => Property\Length_Annotation::class,
 			'mandatory'  => Property\Mandatory_Annotation::class,
@@ -152,7 +151,9 @@ class Object_Validator implements Registerable
 					return $this->valid = null;
 				}
 				else {
-					$this->report[] = $annotation;
+					if (!$validated_annotation) {
+						$this->report[] = $annotation;
+					}
 					$this->valid = $this->valid && $validated_annotation;
 				}
 			}

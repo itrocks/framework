@@ -54,7 +54,9 @@ class Property_Validator
 					return null;
 				}
 				else {
-					$this->report[] = $annotation;
+					if (!$validated_annotation) {
+						$this->report[] = $annotation;
+					}
 					$validated = $validated && $validated_annotation;
 				}
 			}
