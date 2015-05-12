@@ -183,15 +183,19 @@ class Select
 	//------------------------------------------------------------------------------------ doCallback
 	/**
 	 * @param $data_store array[]|object[]
+	 * @return boolean if the call returns false for any stored object, this will stop & return false
 	 */
 	private function doCallback(&$data_store)
 	{
 		if (isset($this->callback)) {
 			foreach ($data_store as $object) {
-				call_user_func($this->callback, $object);
+				if (call_user_func($this->callback, $object) === false) {
+					return false;
+				}
 			}
 			$data_store = [];
 		}
+		return true;
 	}
 
 	//--------------------------------------------------------------------------------------- doFetch
@@ -208,10 +212,15 @@ class Select
 		$first = true;
 		while ($result = $this->link->fetchRow($this->result_set)) {
 			$row = $this->resultToRow($result, $first);
-			$this->store($row, $data_store);
+			if (!$this->store($row, $data_store)) {
+				$stop = true;
+				break;
+			}
 			$first = false;
 		}
-		$this->doCallback($data_store);
+		if (!isset($stop)) {
+			$this->doCallback($data_store);
+		}
 		return $this->callback ? null : $data_store;
 	}
 
@@ -441,9 +450,11 @@ class Select
 	 *
 	 * @param $row  array
 	 * @param $data_store List_Data|array[]|object[]
+	 * @return boolean false if the callback returned false to stop the read process
 	 */
 	private function store($row, &$data_store)
 	{
+		$result = true;
 		if ($data_store instanceof List_Data) {
 			$id = array_pop($row);
 			$data_store->add($data_store->newRow($this->class_name, $id, $row));
@@ -464,24 +475,25 @@ class Select
 						$data_store[$index] = $this->object_builder->build($row, $data_store[$index]);
 					}
 					else {
-						$this->doCallback($data_store);
+						$result = $this->doCallback($data_store);
 						$data_store[$index] = $this->object_builder->build($row);
 					}
 				}
 				else {
-					$this->doCallback($data_store);
+					$result = $this->doCallback($data_store);
 					$data_store[] = $this->object_builder->build($row);
 				}
 			}
 			elseif ($index !== '') {
-				$this->doCallback($data_store);
+				$result = $this->doCallback($data_store);
 				$data_store[$index] = $row;
 			}
 			else {
-				$this->doCallback($data_store);
+				$result = $this->doCallback($data_store);
 				$data_store[] = $row;
 			}
 		}
+		return $result;
 	}
 
 }
