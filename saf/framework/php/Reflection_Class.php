@@ -93,6 +93,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	private $properties;
 
+	//------------------------------------------------------------------------------------- $requires
+	/**
+	 * @var integer[] key is a string PHP file path, value is the line number where it is declared
+	 */
+	public $requires;
+
 	//--------------------------------------------------------------------------------------- $source
 	/**
 	 * The PHP source reflection object containing the class
@@ -445,6 +451,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (is_string($this->parent)) {
 			$parent = $this->source->getOutsideClass($this->parent);
 			if ($parent->source->isInternal()) {
+				if (!class_exists($parent->name, false)) {
+					foreach ($this->requires as $require) {
+						/** @noinspection PhpIncludeInspection is dynamic */
+						include_once $require;
+					}
+				}
 				$this->parent = new Reflection\Reflection_Class($parent->name);
 			}
 			else {
@@ -845,6 +857,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 			$this->interfaces = [];
 			$this->parent     = null;
+			$this->requires   = [];
 
 			$this->getTokens();
 			$token = $this->tokens[$this->token_key];

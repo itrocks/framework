@@ -143,6 +143,27 @@ trait Tokens_Parser
 		return $class_names;
 	}
 
+	//--------------------------------------------------------------------------- scanRequireFilePath
+	/**
+	 * Scans ('File path'), "File path" and variants to get the 'file path' value
+	 * Can be a PHP expression like '__DIR__ . "File path"' : the resulting string will be kept as this
+	 *
+	 * @return string
+	 */
+	private function scanRequireFilePath()
+	{
+		$file_path = '';
+		$this->token_key++;
+		do {
+			$token = $this->tokens[$this->token_key++];
+			if ($token !== ';') {
+				$file_path .= is_array($token) ? $token[1] : $token;
+			}
+		}
+		while ($token !== ';');
+		return $file_path;
+	}
+
 	//-------------------------------------------------------------------------------- scanTraitNames
 	/**
 	 * Scans commas separated trait names. Ignore { } traits details

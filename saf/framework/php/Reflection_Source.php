@@ -17,7 +17,8 @@ class Reflection_Source
 	const DEPENDENCIES = 2;
 	const INSTANTIATES = 3;
 	const NAMESPACES   = 4;
-	const USES         = 5;
+	const REQUIRES     = 5;
+	const USES         = 6;
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
@@ -71,10 +72,17 @@ class Reflection_Source
 	 */
 	private $lines;
 
+	//----------------------------------------------------------------------------------- $namespaces
 	/**
 	 * @var integer[] key is the namespace, value is the line number where it is declared
 	 */
 	private $namespaces;
+
+	//------------------------------------------------------------------------------------- $requires
+	/**
+	 * @var integer[] key is a string PHP file path, value is the line number where it is declared
+	 */
+	private $requires;
 
 	//--------------------------------------------------------------------------------------- $source
 	/**
@@ -148,6 +156,7 @@ class Reflection_Source
 		if (!$bigger_than || (count($this->dependencies) > $bigger_than)) $this->dependencies = null;
 		if (!$bigger_than || (count($this->instantiates) > $bigger_than)) $this->instantiates = null;
 		if (!$bigger_than || (count($this->namespaces)   > $bigger_than)) $this->namespaces   = null;
+		if (!$bigger_than || (count($this->requires)     > $bigger_than)) $this->requires     = null;
 		if (!$bigger_than || (count($this->use)          > $bigger_than)) $this->use          = null;
 
 		if (isset($this->file_name) && !$this->changed) {
@@ -169,11 +178,13 @@ class Reflection_Source
 		$f_dependencies = isset($filter[self::DEPENDENCIES]);
 		$f_instantiates = isset($filter[self::INSTANTIATES]);
 		$f_namespaces   = isset($filter[self::NAMESPACES]);
+		$f_requires     = isset($filter[self::REQUIRES]);
 		$f_uses         = isset($filter[self::USES]);
 		if ($f_classes)      $this->classes      = [];
 		if ($f_dependencies) $this->dependencies = [];
 		if ($f_instantiates) $this->instantiates = [];
 		if ($f_namespaces)   $this->namespaces   = [];
+		if ($f_requires)     $this->requires     = [];
 		if ($f_uses)         $this->use          = [];
 
 		// the current namespace
@@ -229,6 +240,33 @@ class Reflection_Source
 				$use = [];
 				if ($f_namespaces) {
 					$this->namespaces[$this->namespace] = $token[2];
+				}
+			}
+
+			// require_once
+			if (in_array($token_id, [T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE])) {
+				$eval = '$require_name = '
+					. str_replace(
+						['__DIR__', '__FILE__'],
+						[Q . lLastParse($this->file_name, SL) . Q, Q . $this->file_name . Q],
+						$this->scanRequireFilePath()
+					)
+					. ';';
+				if (strpos($eval, '$')) {
+					$require_name = $eval;
+				}
+				else {
+					/** @var $require_name string */
+					eval($eval);
+				}
+				while (strpos($require_name, '../')) {
+					$require_name = preg_replace('%\\w+/../%', '', $require_name);
+				}
+				if ($class->name) {
+					$class->requires[$require_name] = $token[2];
+				}
+				else {
+					$this->requires[$require_name] = $token[2];
 				}
 			}
 
@@ -409,6 +447,7 @@ class Reflection_Source
 		if (!isset($this->dependencies)) $filters[] = self::DEPENDENCIES;
 		if (!isset($this->instantiates)) $filters[] = self::INSTANTIATES;
 		if (!isset($this->namespaces))   $filters[] = self::NAMESPACES;
+		if (!isset($this->requires))     $filters[] = self::REQUIRES;
 		if (!isset($this->use))          $filters[] = self::USES;
 		$this->get($filters);
 		$result = get_object_vars($this);
@@ -462,6 +501,7 @@ class Reflection_Source
 		if (!isset($this->classes)) {
 			$filters = [self::CLASSES];
 			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
+			if (!isset($this->requires))   $filters[] = self::REQUIRES;
 			$this->get($filters);
 		}
 		return $this->classes;
@@ -482,6 +522,7 @@ class Reflection_Source
 			if ($instantiates && !isset($this->instantiates)) $filters[] = self::INSTANTIATES;
 			if (!isset($this->dependencies))                  $filters[] = self::DEPENDENCIES;
 			if (!isset($this->namespaces))                    $filters[] = self::NAMESPACES;
+			if (!isset($this->requires))                      $filters[] = self::REQUIRES;
 			if (!isset($this->use))                           $filters[] = self::USES;
 			$this->get($filters);
 		}
@@ -502,6 +543,7 @@ class Reflection_Source
 		if (!isset($this->instantiates)) {
 			$filters = [self::INSTANTIATES];
 			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
+			if (!isset($this->requires))   $filters[] = self::REQUIRES;
 			if (!isset($this->use))        $filters[] = self::USES;
 			$this->get($filters);
 		}
