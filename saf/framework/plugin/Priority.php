@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework\Plugin;
 
+/**
+ * Plugin priorities constants
+ */
 abstract class Priority
 {
 
@@ -13,5 +16,6 @@ abstract class Priority
 	const HIGH     = 'high';
 	const HIGHER   = 'higher';
 	const HIGHEST  = 'highest';
+	const REMOVE   = 'remove';
 
 }

@@ -2,6 +2,7 @@
 namespace SAF\Framework\Configuration;
 
 use SAF\Framework\Configuration;
+use SAF\Framework\Plugin\Priority;
 
 /**
  * The available applications configurations management class
@@ -76,15 +77,19 @@ class Configurations
 		}
 		$this->configurations = [];
 		foreach ($configurations as $config_name => $config_options) {
+			$removed = array_flip($config_options[Priority::REMOVE]);
+			unset($config_options[Priority::REMOVE]);
 			foreach ($config_options as $level => $plugins) {
 				if (is_array($plugins)) {
 					$plugins_configurations = [];
 					foreach ($plugins as $class_name => $plugin_configuration) {
-						if (is_numeric($class_name)) {
-							$class_name = $plugin_configuration;
-							$plugin_configuration = [];
+						if (!isset($removed[$class_name])) {
+							if (is_numeric($class_name)) {
+								$class_name           = $plugin_configuration;
+								$plugin_configuration = [];
+							}
+							$plugins_configurations[$class_name] = $plugin_configuration;
 						}
-						$plugins_configurations[$class_name] = $plugin_configuration;
 					}
 					$config_options[$level] = $plugins_configurations;
 				}

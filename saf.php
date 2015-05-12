@@ -104,6 +104,7 @@ $config['SAF/Framework'] = [
 	//---------------------------------------------------------------------------------------- higher
 	Priority::HIGH    => [],
 	Priority::HIGHER  => [],
-	Priority::HIGHEST => []
+	Priority::HIGHEST => [],
+	Priority::REMOVE  => []
 
 ];
