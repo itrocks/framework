@@ -452,7 +452,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$parent = $this->source->getOutsideClass($this->parent);
 			if ($parent->source->isInternal()) {
 				if (!class_exists($parent->name, false)) {
-					foreach ($this->requires as $require) {
+					foreach (array_keys($this->source->requires) as $require) {
 						/** @noinspection PhpIncludeInspection is dynamic */
 						include_once $require;
 					}

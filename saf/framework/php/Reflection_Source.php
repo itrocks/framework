@@ -82,7 +82,7 @@ class Reflection_Source
 	/**
 	 * @var integer[] key is a string PHP file path, value is the line number where it is declared
 	 */
-	private $requires;
+	public $requires;
 
 	//--------------------------------------------------------------------------------------- $source
 	/**
@@ -245,22 +245,20 @@ class Reflection_Source
 
 			// require_once
 			if (in_array($token_id, [T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE])) {
-				$eval = '$require_name = '
-					. str_replace(
-						['__DIR__', '__FILE__'],
-						[Q . lLastParse($this->file_name, SL) . Q, Q . $this->file_name . Q],
-						$this->scanRequireFilePath()
-					)
-					. ';';
-				if (strpos($eval, '$')) {
+				$eval = str_replace(
+					['__DIR__', '__FILE__'],
+					[Q . lLastParse($this->file_name, SL) . Q, Q . $this->file_name . Q],
+					$this->scanRequireFilePath()
+				) . ';';
+				if (strpos($eval, '$') !== false) {
 					$require_name = $eval;
 				}
 				else {
 					/** @var $require_name string */
-					eval($eval);
-				}
-				while (strpos($require_name, '../')) {
-					$require_name = preg_replace('%\\w+/../%', '', $require_name);
+					eval('$require_name = ' . $eval);
+					while (strpos($require_name, '/../')) {
+						$require_name = preg_replace('%\\w+/../%', '', $require_name);
+					}
 				}
 				if ($class->name) {
 					$class->requires[$require_name] = $token[2];
