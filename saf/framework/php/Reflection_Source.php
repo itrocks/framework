@@ -249,13 +249,13 @@ class Reflection_Source
 					['__DIR__', '__FILE__'],
 					[Q . lLastParse($this->file_name, SL) . Q, Q . $this->file_name . Q],
 					$this->scanRequireFilePath()
-				) . ';';
+				);
 				if (strpos($eval, '$') !== false) {
 					$require_name = $eval;
 				}
 				else {
 					/** @var $require_name string */
-					eval('$require_name = ' . $eval);
+					eval('$require_name = ' . $eval . ';');
 					while (strpos($require_name, '/../')) {
 						$require_name = preg_replace('%\\w+/../%', '', $require_name);
 					}
