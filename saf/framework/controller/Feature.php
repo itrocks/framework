@@ -17,9 +17,11 @@ abstract class Feature
 	const F_DELETE    = 'delete';
 	const F_DUPLICATE = 'duplicate';
 	const F_EDIT      = 'edit';
+	const F_EXPORT    = 'export';
 	const F_IMPORT    = 'import';
 	const F_LIST      = 'dataList';
 	const F_OUTPUT    = 'output';
+	const F_PRINT     = 'print';
 	const F_REMOVE    = 'remove';
 	const F_SELECT    = 'select';
 	const F_WRITE     = 'write';

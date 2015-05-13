@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\widget\output;
+namespace SAF\Framework\Widget\Output;
 
 use SAF\Framework\Controller;
 use SAF\Framework\Controller\Default_Feature_Controller;
@@ -51,7 +51,7 @@ class Output_Controller implements Default_Feature_Controller
 		}
 		/*,
 		new Button('Print', View::link($object, 'print'), 'print',
-			[new Color('blue'), '#main', 'sub_buttons' => [
+			[new Color(Color::BLUE), '#main', 'sub_buttons' => [
 				new Button(
 					'Models',
 					View::link(

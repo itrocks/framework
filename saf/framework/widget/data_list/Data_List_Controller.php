@@ -19,7 +19,7 @@ use SAF\Framework\Tools\String;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
-use SAF\Framework\widget\output\Output_Controller;
+use SAF\Framework\Widget\Output\Output_Controller;
 
 /**
  * The default list controller is called if no list controller has beed defined for a business object class
@@ -175,25 +175,25 @@ class Data_List_Controller extends Output_Controller
 				'Add',
 				View::link($class_name, Feature::F_ADD),
 				Feature::F_ADD,
-				['#main', new Color('green')]
+				['#main', new Color(Color::GREEN)]
 			),
 			Feature::F_IMPORT => new Button(
 				'Import',
 				View::link($class_name, Feature::F_IMPORT),
 				Feature::F_IMPORT,
-				['#main', new Color('green')]
+				['#main', new Color(Color::GREEN)]
 			),
 			Feature::F_WRITE => new Button(
 				'Save',
 				View::link($this->class_names),
 				'custom_save',
-				['#main', new Color('green'), '.submit', 'title' => 'save this view as a custom list']
+				['#main', new Color(Color::GREEN), '.submit', 'title' => 'save this view as a custom list']
 			),
 			Feature::F_DELETE => new Button(
 				'Delete',
 				View::link($this->class_names, null, null, ['delete_name' => true]),
 				'custom_delete',
-				['#main', new Color('red'), '.submit', 'title' => 'delete this custom list']
+				['#main', new Color(Color::RED), '.submit', 'title' => 'delete this custom list']
 			)
 		];
 	}

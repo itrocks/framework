@@ -6,7 +6,7 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
-use SAF\Framework\widget\output\Output_Controller;
+use SAF\Framework\Widget\Output\Output_Controller;
 
 /**
  * The default edit controller, when no edit controller is set for the class
@@ -39,7 +39,7 @@ class Edit_Controller extends Output_Controller
 				'Write',
 				View::link($object, Feature::F_WRITE, null, array_merge($fill_combo, $follows)),
 				Feature::F_WRITE,
-				[new Color('green'), '#messages', '.submit']
+				[new Color(Color::GREEN), '#messages', '.submit']
 			)
 		]);
 	}

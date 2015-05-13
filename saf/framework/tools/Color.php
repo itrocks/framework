@@ -10,10 +10,12 @@ class Color implements Stringable
 {
 
 	//------------------------------------------------------------------------- Color value constants
-	const BLACK = 'black';
-	const BLUE  = 'blue';
-	const GREEN = 'green';
-	const WHITE = 'white';
+	const BLACK   = 'black';
+	const BLUE    = 'blue';
+	const GREEN   = 'green';
+	const MAGENTA = 'magenta';
+	const RED     = 'red';
+	const WHITE   = 'white';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
