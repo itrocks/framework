@@ -173,13 +173,19 @@ exec('pear install Net_POP3');
 if (!is_dir($vendor_dir)) mkdir($vendor_dir, 0755, true);
 chdir($vendor_dir);
 
+if (!is_dir($vendor_dir . SL . 'fpdi')) exec('git clone https://github.com/setasign/fpdi fpdi');
 if (!is_dir($vendor_dir . SL . 'html2text')) exec('git clone https://github.com/soundasleep/html2text html2text');
 if (!is_dir($vendor_dir . SL . 'jquery.form')) exec('git clone https://github.com/malsup/form jquery.form');
 if (!is_dir($vendor_dir . SL . 'jscolor')) exec('git clone https://github.com/odvarko/jscolor.git jscolor');
+if (!is_dir($vendor_dir . SL . 'tcpdf')) exec('git clone https://github.com/tecnickcom/TCPDF tcpdf');
 if (!is_dir($vendor_dir . SL . 'textile')) exec('git clone https://github.com/textile/php-textile.git textile -b2.5');
 
-if (!is_dir($vendor_dir . SL . 'reset5')) mkdir($vendor_dir . SL . 'reset5', 0755, true);
-copy('http://reset5.googlecode.com/hg/reset.css', $vendor_dir . SL . 'reset5/reset.css');
+if (!is_dir($vendor_dir . SL . 'fpdf')) mkdir($vendor_dir . SL . 'fpdf', 0755, true);
+copy('http://www.fpdf.org/fr/dl.php?v=17&f=tgz', $vendor_dir . SL . 'fpdf.tgz');
+system('tar -zxvf fpdf.tgz');
+system('mv fpdf17/* fpdf/');
+rmdir($vendor_dir . SL . 'fpdf17');
+unlink($vendor_dir . SL . 'fpdf.tgz');
 if (!is_dir($vendor_dir . SL . 'jquery')) mkdir($vendor_dir . SL . 'jquery', 0755, true);
 copy('http://code.jquery.com/jquery-1.8.3.js', $vendor_dir . SL . 'jquery/jquery-1.8.3.js');
 copy('http://code.jquery.com/jquery-1.8.3.min.js', $vendor_dir . SL . 'jquery/jquery-1.8.3.min.js');
@@ -192,6 +198,8 @@ if (!is_dir($vendor_dir . SL . 'jquery.colresizable')) mkdir($vendor_dir . SL . 
 copy('http://saf.re/prod/projects/wiki/vendor/jquery.colresizable/colResizable-1.3.min.js', $vendor_dir . SL . 'jquery.colresizable/colResizable-1.3.min.js');
 if (!is_dir($vendor_dir . SL . 'jquery.elastic')) mkdir($vendor_dir . SL . 'jquery.elastic', 0755, true);
 copy('http://saf.re/prod/projects/wiki/vendor/jquery.elastic/jquery.elastic.source.js', $vendor_dir . SL . 'jquery.elastic/jquery.elastic.source.js');
+if (!is_dir($vendor_dir . SL . 'reset5')) mkdir($vendor_dir . SL . 'reset5', 0755, true);
+copy('http://reset5.googlecode.com/hg/reset.css', $vendor_dir . SL . 'reset5/reset.css');
 
 exec('chmod ugo+rwx ' . $vendor_dir);
 chdir(__DIR__);
