@@ -8,6 +8,7 @@ use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Plugin\Activable;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -116,14 +117,16 @@ class Builder implements Activable, Registerable, Serializable
 	/**
 	 * Create a clone of the object, using a built class if needed
 	 *
-	 * @param $object     object
-	 * @param $class_name string if set, the new object will use the matching built class
-	 *        this class name must inherit from the object's class
+	 * @param $object            object
+	 * @param $class_name        string if set, the new object will use the matching built class
+	 *                           this class name must inherit from the object's class
 	 * @param $properties_values array some properties values for the cloned object
+	 * @param $same_identifier   boolean
 	 * @return object
 	 */
-	public static function createClone($object, $class_name = null, $properties_values = [])
-	{
+	public static function createClone(
+		$object, $class_name = null, $properties_values = [], $same_identifier = true
+	) {
 		$source_class_name = get_class($object);
 		if (!isset($class_name)) {
 			$class_name = self::className($source_class_name);
@@ -131,6 +134,7 @@ class Builder implements Activable, Registerable, Serializable
 		if ($class_name !== $source_class_name) {
 			// initialises cloned object
 			$clone = self::create($class_name);
+			$destination_class = new Link_Class($class_name);
 			// deactivate AOP
 			if (isset($clone->_)) {
 				$save_aop = $clone->_;
@@ -144,22 +148,51 @@ class Builder implements Activable, Registerable, Serializable
 				}
 			}
 			// copy unofficial properties values from the source object (ie AOP properties aliases)
+			// clone collection objects using the destination collection property type
+			$clone_collection = [];
 			foreach (get_object_vars($object) as $property_name => $value) {
-				if (!isset($properties[$property_name])) {
+				if (($property_name !== '_') && !isset($properties[$property_name])) {
 					$clone->$property_name = $value;
+					if (isset($properties[rtrim($property_name, '_')])) {
+						$property = $properties[rtrim($property_name, '_')];
+						if ($property->getAnnotation('link') == Link_Annotation::COLLECTION) {
+							$element_class_from = $property->getType()->getElementTypeAsString();
+							$property = $destination_class->getProperty($property->name);
+							$element_class_to = $property->getType()->getElementTypeAsString();
+							if ($element_class_to != $element_class_from) {
+								$clone_collection[substr($property_name, 0, -1)] = $element_class_to;
+							}
+						}
+					}
 				}
 			}
 			// reactivate AOP
 			if (isset($save_aop)) {
 				$clone->_ = $save_aop;
 			}
+			foreach ($clone_collection as $property_name => $element_class_to) {
+				$elements = [];
+				foreach ($object->$property_name as $key => $element) {
+					$elements[$key] = Builder::createClone(
+						$element, $element_class_to, [], $same_identifier
+					);
+				}
+				$clone->$property_name = $elements;
+			}
+			// linked class object to link class object : store source object to linked object
 			$destination_class = new Link_Class($class_name);
 			if ($linked_class_name = $destination_class->getLinkedClassName()) {
 				if ($linked_class_name == $source_class_name) {
 					$destination_class->getLinkProperty()->setValue($clone, $object);
 				}
 			}
-			Dao::replace($clone, $object, false);
+			// identify destination object = source object, or disconnect destination object
+			if ($same_identifier) {
+				Dao::replace($clone, $object, false);
+			}
+			else {
+				Dao::disconnect($clone);
+			}
 		}
 		else {
 			$clone = clone $object;
