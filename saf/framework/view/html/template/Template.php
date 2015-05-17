@@ -1095,8 +1095,11 @@ class Template
 		if (!strlen($property_name)) {
 			$object = $this->parseParent();
 		}
+		elseif (is_numeric($property_name) && is_string($object)) {
+			$object = substr($object, $property_name, 1);
+		}
 		elseif ($property_name === '#') {
-			return reset($this->var_names);
+			$object = reset($this->var_names);
 		}
 		elseif (strpos($property_name, '?')) {
 			$object = $this->parseConditional($property_name);
