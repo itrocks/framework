@@ -160,7 +160,7 @@ trait Tokens_Parser
 				$file_path .= is_array($token) ? $token[1] : $token;
 			}
 		}
-		while ($token !== ';');
+		while (($token !== ';') && ($token !== ')'));
 		return $file_path;
 	}
 

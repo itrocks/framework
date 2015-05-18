@@ -253,18 +253,37 @@ class Reflection_Source
 				if (strpos($eval, '$') !== false) {
 					$require_name = $eval;
 				}
-				else {
+				elseif ((strpos($eval, '::') === false) && (strpos($eval, '->') === false)) {
 					/** @var $require_name string */
 					eval('$require_name = ' . $eval . ';');
-					while (strpos($require_name, '/../')) {
+					if (!isset($require_name)) {
+						trigger_error(
+							'Bad $require_name ' . $eval . ' into ' . $this->file_name . ' line ' . $token[2],
+							E_USER_ERROR
+						);
+					}
+					$guard = 10;
+					while (strpos($require_name, '/../') && $guard--) {
 						$require_name = preg_replace('%\\w+/../%', '', $require_name);
 					}
-				}
-				if ($class->name) {
-					$class->requires[$require_name] = $token[2];
+					if (!$guard) {
+						trigger_error(
+							'Guard woke up on ' . $require_name
+							. ' into ' . $this->file_name . ' line ' . $token[2],
+							E_USER_NOTICE
+						);
+					}
 				}
 				else {
-					$this->requires[$require_name] = $token[2];
+					unset($require_name);
+				}
+				if (isset($require_name)) {
+					if ($class->name) {
+						$class->requires[$require_name] = $token[2];
+					}
+					else {
+						$this->requires[$require_name] = $token[2];
+					}
 				}
 			}
 
