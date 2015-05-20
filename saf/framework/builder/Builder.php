@@ -127,6 +127,7 @@ class Builder implements Activable, Registerable, Serializable
 	public static function createClone(
 		$object, $class_name = null, $properties_values = [], $same_identifier = true
 	) {
+		$class_name = self::className($class_name);
 		$source_class_name = get_class($object);
 		if (!isset($class_name)) {
 			$class_name = self::className($source_class_name);
