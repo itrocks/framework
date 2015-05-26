@@ -279,7 +279,7 @@ class Proxy
 		// connection
 		$url = parse_url($this->url);
 		$host = $url['host'];
-		$f = fsockopen(
+		$f = @fsockopen(
 			(($url['scheme'] == 'https') ? 'ssl://' : '') . $host,
 			($url['scheme'] == 'https') ? 443 : 80,
 			$errno, $error, 30
