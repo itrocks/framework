@@ -15,7 +15,7 @@ class Counter
 
 	//--------------------------------------------------------------------------------------- $format
 	/**
-	 * @example 'F{YEAR}{SAF\Framework\Users\User.current.login.0.upper}%04s'
+	 * @example 'F{YEAR}{SAF\Framework\User.current.login.0.upper}%04s'
 	 * @var string
 	 */
 	public $format = '{YEAR}%04s';
