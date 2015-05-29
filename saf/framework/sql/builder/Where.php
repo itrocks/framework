@@ -12,6 +12,7 @@ use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Join\Joins;
 use SAF\Framework\Sql\Join;
 use SAF\Framework\Sql\Value;
+use SAF\Framework\Tools\Date_Time;
 
 /**
  * The SQL where section of SQL queries builder
@@ -262,6 +263,10 @@ class Where
 					: '';
 			}
 			return $value->toSql($this, $path, $prefix);
+		}
+		elseif ($value instanceof Date_Time) {
+			// TODO a class annotation (@business? @string?) could help choose
+			$value = $value->toISO(false);
 		}
 		switch (gettype($value)) {
 			case 'NULL':   return '';
