@@ -5,6 +5,7 @@ use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use SAF\Framework\Tools\Names;
 
 /**
  * This annotation template contains a callable method :
@@ -27,10 +28,11 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value          string
-	 * @param $class_property Reflection
+	 * @param $value           string
+	 * @param $class_property  Reflection
+	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $class_property)
+	public function __construct($value, Reflection $class_property, $annotation_name)
 	{
 		if (!empty($value)) {
 			$class = ($class_property instanceof Reflection_Property)
@@ -50,6 +52,9 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				$this->static = true;
 			}
 			else {
+				if ($value === true) {
+					$value = Names::propertyToMethod($annotation_name);
+				}
 				$value = $class->getName() . '::' . $value;
 			}
 		}

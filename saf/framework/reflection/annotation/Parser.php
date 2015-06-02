@@ -100,7 +100,7 @@ class Parser
 			}
 		}
 		$annotation = $multiple ? self::multipleRemove($annotations) : (
-			$annotation ? $annotation : new $annotation_class(null, $reflection_object)
+			$annotation ? $annotation : new $annotation_class(null, $reflection_object, $annotation_name)
 		);
 		return $annotation;
 	}
@@ -267,7 +267,9 @@ class Parser
 				$value = null;
 		}
 		/** @var $annotation Annotation */
-		$annotation = isset($value) ? new $annotation_class($value, $reflection_object) : null;
+		$annotation = isset($value)
+			? new $annotation_class($value, $reflection_object, $annotation_name)
+		: null;
 
 		if (isset($annotation) && isA($annotation, Annotation_In::class)) {
 			/** @var $annotation Annotation_In */

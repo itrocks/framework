@@ -19,13 +19,14 @@ class Getter_Annotation extends Method_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value   string
-	 * @param $property Reflection
+	 * @param $value           string
+	 * @param $property        Reflection
+	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $property)
+	public function __construct($value, Reflection $property, $annotation_name)
 	{
 		/** @var $property Reflection_Property */
-		parent::__construct($value, $property);
+		parent::__construct($value, $property, 'getter');
 		if (empty($this->value)) {
 			$link = ($property->getAnnotation('link')->value);
 			if (!empty($link)) {
