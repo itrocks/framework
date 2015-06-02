@@ -13,6 +13,12 @@ use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
  */
 Parser::$default_annotations = [
 
+	// @after_transform afterTransform
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call after the object is being created from a transformation
+	// - These methods may accept the source object, if needed
+	__NAMESPACE__ . '\Class_\After_Transform_Annotation' => Method_Annotation::class,
+
 	// @after_write afterWrite
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call after the object is written using a data link
