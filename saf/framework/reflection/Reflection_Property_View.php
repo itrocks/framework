@@ -70,7 +70,9 @@ class Reflection_Property_View
 		if (count($values) == 2) {
 			return $value ? $values[0] : $values[1];
 		}
-		return $value ? 'yes' : 'no';
+		return (is_null($value) && $this->property->getAnnotation('null')->value)
+			? null
+			: ($value ? 'yes' : 'no');
 	}
 
 	//--------------------------------------------------------------------------------- formatDefault
@@ -94,7 +96,7 @@ class Reflection_Property_View
 	 */
 	protected function formatFloat($value)
 	{
-		return $value + 0;
+		return (is_null($value) && $this->property->getAnnotation('null')->value) ? null : ($value + 0);
 	}
 
 	//--------------------------------------------------------------------------------- formatInteger
@@ -106,7 +108,7 @@ class Reflection_Property_View
 	 */
 	protected function formatInteger($value)
 	{
-		return $value + 0;
+		return (is_null($value) && $this->property->getAnnotation('null')->value) ? null : ($value + 0);
 	}
 
 	//---------------------------------------------------------------------------------- formatString

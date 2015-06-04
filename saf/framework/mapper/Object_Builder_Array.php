@@ -220,10 +220,18 @@ class Object_Builder_Array
 	 */
 	private function buildBasicValue(Reflection_Property $property, $value)
 	{
-		switch ($property->getType()->asString()) {
-			case Type::BOOLEAN: $value = !(empty($value) || ($value === 'false')); break;
-			case Type::INTEGER: $value = intval($value);                           break;
-			case Type::FLOAT:   $value = floatval($value);                         break;
+		if (!is_null($value) || !$property->getAnnotation('null')->value) {
+			switch ($property->getType()->asString()) {
+				case Type::BOOLEAN:
+					$value = !(empty($value) || ($value === 'false'));
+					break;
+				case Type::INTEGER:
+					$value = intval($value);
+					break;
+				case Type::FLOAT:
+					$value = floatval($value);
+					break;
+			}
 		}
 		return $value;
 	}

@@ -102,7 +102,9 @@ class Locale implements Configurable
 		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
 			$value = $property->value();
 		}
-		return $this->toIso($value, $property->getType());
+		return (is_null($value) && $property->getAnnotation('null')->value)
+			? $value
+			: $this->toIso($value, $property->getType());
 	}
 
 	//------------------------------------------------------------------------------ propertyToLocale
@@ -118,7 +120,9 @@ class Locale implements Configurable
 		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
 			$value = $property->value();
 		}
-		return $this->toLocale($value, $property->getType());
+		return (is_null($value) && $property->getAnnotation('null')->value)
+			? $value
+			: $this->toLocale($value, $property->getType());
 	}
 
 	//--------------------------------------------------------------------------------- setDateFormat
