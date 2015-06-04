@@ -23,7 +23,7 @@ class Getter_Annotation extends Method_Annotation
 	 * @param $property        Reflection
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $property, $annotation_name)
+	public function __construct($value, Reflection $property, $annotation_name = 'getter')
 	{
 		/** @var $property Reflection_Property */
 		parent::__construct($value, $property, 'getter');
