@@ -372,6 +372,7 @@ class Compiler implements ICompiler, Needs_Main
 				$class_properties = $class->getProperties([T_EXTENDS]);
 				$extends = $class;
 				while (!isset($class_properties[$match['property_name']])) {
+					// TODO try the error to have a class with @representative and property names that do not exist. That will crash here but the error message is incomprehensible
 					$extends = $extends->source->getOutsideClass(
 						$extends->getListAnnotation('extends')->values()[0]
 					);
