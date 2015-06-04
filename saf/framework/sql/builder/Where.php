@@ -178,10 +178,9 @@ class Where
 				$column = $join->foreign_alias . DOT . BQ . rLastParse($path, DOT, 1, true) . BQ;
 			}
 			else {
-				$column = (
-					$this->joins->getStartingClass()->getProperty($path)->getAnnotation('link')->value
-					== Link_Annotation::COLLECTION
-				)
+				$property = $this->joins->getStartingClass()->getProperty($path);
+				$column =
+					($property && ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION))
 					? $join->master_column
 					: $join->foreign_column;
 				$column = $join->foreign_alias . DOT . BQ . $column . BQ;
