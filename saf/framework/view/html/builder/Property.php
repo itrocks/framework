@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\View\Html\Builder;
 
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\View\Html\Template;
 
@@ -24,7 +25,7 @@ abstract class Property
 	 *
 	 * @var array
 	 */
-	public $parameters = [];
+	public $parameters = [ Parameter::IS_INCLUDED => true ];
 
 	//------------------------------------------------------------------------------------- $property
 	/**
