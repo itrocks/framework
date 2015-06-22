@@ -256,8 +256,15 @@ $('document').ready(function()
 				var $this = $(this);
 				//console.log('selected ' + ui.item.id + ': ' + ui.item.value);
 				$this.prev().val(ui.item.id);
-				$this.val(ui.item.value);
+				if (!event.keyCode) {
+ 					// when mouse is clicked, then the value changes, sure !
+					$this.val(ui.item.value);
+				}
 				$this.data('value', ui.item.value);
+				if (!comboMatches($this)) {
+					//console.log('> ' + $this.val() + ' does not match ' + $this.data('value'));
+					comboForce($this);
+				}
 			}
 		})
 
