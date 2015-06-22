@@ -323,7 +323,8 @@ $('document').ready(function()
 		this.inside('input.combo~.edit').attr('tabindex', -1);
 		if (this.attr('id') && (this.attr('id').substr(0, 6) == 'window')) {
 			this.inside('.actions>.close>a')
-				.attr('href', 'javascript:$(\'#' + this.attr('id') + '\').remove()')
+				.attr('href', '#')
+				.attr('onclick', '$(\'#' + this.attr('id') + '\').remove()')
 				.attr('target', '');
 			var $button = this.inside('.actions>.write>a');
 			if ($button.length) {
