@@ -243,7 +243,6 @@ $('document').ready(function()
 
 			source: function(request, response)
 			{
-				//noinspection JSUnresolvedVariable
 				var $element = this.element;
 				$.getJSON(
 					comboUri($element),
@@ -257,11 +256,8 @@ $('document').ready(function()
 				var $this = $(this);
 				//console.log('selected ' + ui.item.id + ': ' + ui.item.value);
 				$this.prev().val(ui.item.id);
+				$this.val(ui.item.value);
 				$this.data('value', ui.item.value);
-				if (!comboMatches($this)) {
-					//console.log('> ' + $this.val() + ' does not match ' + $this.data('value'));
-					comboForce($this);
-				}
 			}
 		})
 
