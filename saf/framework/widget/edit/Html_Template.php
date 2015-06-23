@@ -7,6 +7,7 @@ use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View\Html\Builder\Property;
+use SAF\Framework\View\Html\Builder\Value_Widget;
 use SAF\Framework\View\Html\Template;
 
 /**
@@ -93,6 +94,9 @@ class Html_Template extends Template
 				/** @var $builder Property */
 				$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
 				$value = $builder->buildHtml();
+				if ($builder instanceof Value_Widget) {
+					$value = (new Html_Builder_Property($property, $value))->setTemplate($this)->build();
+				}
 			}
 			else {
 				$value = $property->getType()->isBoolean()

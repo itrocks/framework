@@ -1179,6 +1179,7 @@ class Template
 				);
 				/** @var $builder Property */
 				$object = $builder->buildHtml();
+				$do_not_format_value = true;
 			}
 			else {
 				$object = $this->parseMethod($object, $property_name);
@@ -1193,7 +1194,11 @@ class Template
 		else {
 			$object = $this->parseProperty($object, $property_name);
 		}
-		if (($source_object instanceof Reflection_Property) && ($property_name == 'value')) {
+		if (
+			!isset($do_not_format_value)
+			&& ($source_object instanceof Reflection_Property)
+			&& ($property_name == 'value')
+		) {
 			$object = (new Reflection_Property_View($source_object))->formatValue($object);
 		}
 		return $object;
