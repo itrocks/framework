@@ -25,6 +25,7 @@ abstract class Feature
 	const F_REMOVE    = 'remove';
 	const F_SELECT    = 'select';
 	const F_TRANSFORM = 'transform';
+	const F_VALIDATE  = 'validate';
 	const F_WRITE     = 'write';
 
 }
