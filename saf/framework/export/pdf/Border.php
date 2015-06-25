@@ -2,16 +2,13 @@
 namespace SAF\Framework\Export\PDF;
 
 /**
- * PDF text align constants
+ * PDF text border constants
  */
-abstract class Align
+abstract class Border
 {
 
 	const BOTTOM  = 'B';
-	const CENTER  = 'C';
-	const JUSTIFY = 'J';
 	const LEFT    = 'L';
-	const MIDDLE  = 'M';
 	const RIGHT   = 'R';
 	const TOP     = 'T';
 
