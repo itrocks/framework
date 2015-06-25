@@ -702,7 +702,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $object  object object to write into data source
 	 * @param $options Option[] some options for advanced write
-	 * @return object the written object
+	 * @return object the written object if written, or null if the object could not be written
 	 */
 	public function write($object, $options = [])
 	{
@@ -887,8 +887,9 @@ class Link extends Dao\Sql\Link
 				}
 			}
 
+			return $object;
 		}
-		return $object;
+		return null;
 	}
 
 	//------------------------------------------------------------------------------- writeCollection
