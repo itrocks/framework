@@ -19,4 +19,13 @@ abstract class Joinpoint
 	 */
 	public $pointcut;
 
+	//----------------------------------------------------------------------------------------- $stop
+	/**
+	 * The advice can set this to true to stop the calling process
+	 * This tops everything, including other advices and original process call
+	 *
+	 * @var boolean
+	 */
+	public $stop = false;
+
 }
