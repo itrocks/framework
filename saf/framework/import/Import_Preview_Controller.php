@@ -5,6 +5,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Target;
 use SAF\Framework\Dao\File\Builder\Post_Files;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Dao\File\Session_File\Files;
@@ -35,11 +36,11 @@ class Import_Preview_Controller implements Default_Feature_Controller
 		return [
 			Feature::F_WRITE => new Button(
 				'Save', View::link($class_name, Feature::F_IMPORT, 'preview'),
-				'custom_save', [new Color(Color::BLUE), '#main', '.submit']
+				'custom_save', [new Color(Color::BLUE), Target::MAIN, '.submit']
 			),
 			Feature::F_DELETE => new Button(
 				'Delete', View::link($class_name, Feature::F_IMPORT, 'preview', ['delete_name' => true]),
-				'custom_delete', [new Color(Color::RED), '#main', '.submit']
+				'custom_delete', [new Color(Color::RED), Target::MAIN, '.submit']
 			)
 		];
 	}

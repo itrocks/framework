@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Edit;
 
 use DateTime;
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Target;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Dao\File\Session_File;
 use SAF\Framework\Dao\File\Session_File\Files;
@@ -212,7 +213,7 @@ class Html_Builder_Type
 			$image . new Span($file->name)
 		);
 		if ($file->getType()->is('image')) {
-			$anchor->setAttribute('target', '#_blank');
+			$anchor->setAttribute('target', Target::BLANK);
 			//$anchor->addClass('popup');
 		}
 		return $anchor;
@@ -319,7 +320,7 @@ class Html_Builder_Type
 				'edit'
 			);
 			$edit->addClass('edit');
-			$edit->setAttribute('target', '#_blank');
+			$edit->setAttribute('target', Target::BLANK);
 			$edit->setAttribute('title', '|Edit ¦' . Names::classToDisplay($class_name) . '¦|');
 			// 'more' button
 			$more = new Button('more');

@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Target;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
@@ -33,13 +34,13 @@ class Edit_Controller extends Output_Controller
 				'Close',
 				$close_link,
 				Feature::F_CLOSE,
-				[new Color('close'), '#main']
+				[new Color(Feature::F_CLOSE), Target::MAIN]
 			),
 			Feature::F_WRITE => new Button(
 				'Write',
 				View::link($object, Feature::F_WRITE, null, array_merge($fill_combo, $follows)),
 				Feature::F_WRITE,
-				[new Color(Color::GREEN), '#messages', '.submit']
+				[new Color(Color::GREEN), Target::MESSAGES, '.submit']
 			)
 		]);
 	}

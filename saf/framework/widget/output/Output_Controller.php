@@ -5,6 +5,7 @@ use SAF\Framework\Controller;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Target;
 use SAF\Framework\Print_Model;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
@@ -33,25 +34,25 @@ class Output_Controller implements Default_Feature_Controller
 			'Close',
 			$close_link,
 			Feature::F_CLOSE,
-			[new Color('close'), '#main']
+			[new Color(Feature::F_CLOSE), Target::MAIN]
 		);
 		$buttons[Feature::F_EDIT] = new Button(
 			'Edit',
 			View::link($object, Feature::F_EDIT, null, $follows),
 			Feature::F_EDIT,
-			[new Color(Color::GREEN), '#main']
+			[new Color(Color::GREEN), Target::MAIN]
 		);
 		if ($object instanceof Duplicate) {
-			$buttons[Feature::F_EDIT]->sub_buttons['duplicate'] = new Button(
+			$buttons[Feature::F_EDIT]->sub_buttons[Feature::F_DUPLICATE] = new Button(
 				'Duplicate',
 				View::link($object, Feature::F_DUPLICATE, null, $follows),
 				Feature::F_DUPLICATE,
-				['#main']
+				[new Color(Color::MAGENTA), Target::MAIN]
 			);
 		}
 		/*,
 		new Button('Print', View::link($object, 'print'), 'print',
-			[new Color(Color::BLUE), '#main', 'sub_buttons' => [
+			[new Color(Color::BLUE), Target::MAIN, 'sub_buttons' => [
 				new Button(
 					'Models',
 					View::link(
@@ -59,7 +60,7 @@ class Output_Controller implements Default_Feature_Controller
 						Namespaces::shortClassName(get_class($object))
 					),
 					'models',
-					'#main'
+					Target::MAIN
 				)
 			]]
 		)

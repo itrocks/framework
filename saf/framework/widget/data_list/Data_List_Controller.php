@@ -4,6 +4,7 @@ namespace SAF\Framework\Widget\Data_List;
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Target;
 use SAF\Framework\Dao\Option\Count;
 use SAF\Framework\Dao\Option\Limit;
 use SAF\Framework\Dao;
@@ -175,25 +176,25 @@ class Data_List_Controller extends Output_Controller
 				'Add',
 				View::link($class_name, Feature::F_ADD),
 				Feature::F_ADD,
-				['#main', new Color(Color::GREEN)]
+				[Target::MAIN, new Color(Color::GREEN)]
 			),
 			Feature::F_IMPORT => new Button(
 				'Import',
 				View::link($class_name, Feature::F_IMPORT),
 				Feature::F_IMPORT,
-				['#main', new Color(Color::GREEN)]
+				[Target::MAIN, new Color(Color::GREEN)]
 			),
 			Feature::F_WRITE => new Button(
 				'Save',
 				View::link($this->class_names),
 				'custom_save',
-				['#main', new Color(Color::GREEN), '.submit', 'title' => 'save this view as a custom list']
+				[Target::MAIN, new Color(Color::GREEN), '.submit', 'title' => 'save this view as a custom list']
 			),
 			Feature::F_DELETE => new Button(
 				'Delete',
 				View::link($this->class_names, null, null, ['delete_name' => true]),
 				'custom_delete',
-				['#main', new Color(Color::RED), '.submit', 'title' => 'delete this custom list']
+				[Target::MAIN, new Color(Color::RED), '.submit', 'title' => 'delete this custom list']
 			)
 		];
 	}
@@ -291,7 +292,7 @@ class Data_List_Controller extends Output_Controller
 							Namespaces::shortClassName($class_name)
 						),
 						'models',
-						'#main'
+						Target::MAIN
 					)
 				]
 			])

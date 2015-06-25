@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Add;
 
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Target;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
@@ -30,7 +31,7 @@ class Add_Controller extends Edit_Controller
 
 		return array_merge($buttons, [
 			Feature::F_CLOSE => new Button(
-				'Close', $close_link, Feature::F_CLOSE, [new Color('close'), '#main']
+				'Close', $close_link, Feature::F_CLOSE, [new Color('close'), Target::MAIN]
 			),
 		]);
 	}
