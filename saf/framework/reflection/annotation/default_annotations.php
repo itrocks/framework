@@ -31,9 +31,11 @@ Parser::$default_annotations = [
 	// - These methods may accept an array as first reference argument, if needed
 	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Annotation::class,
 
-	// @business
-	// This defines a class or a trait used to describe business objects
-	__NAMESPACE__ . '\Class_\Business_Annotation' => Boolean_Annotation::class,
+	// @before_delete beforeDelete
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call before the object is deleted using a data link
+	// - These methods may return false to cancel the deletion of the object
+	__NAMESPACE__ . '\Class_\Before_Delete_Annotation' => Method_Annotation::class,
 
 	// @before_write beforeWrite
 	// This is a Multiple_Annotation
@@ -41,6 +43,10 @@ Parser::$default_annotations = [
 	// - These methods may accept a Dao\Option[] as first argument, if needed
 	// - These methods may return false to cancel the writing of the object
 	__NAMESPACE__ . '\Class_\Before_Write_Annotation' => Method_Annotation::class,
+
+	// @business
+	// This defines a class or a trait used to describe business objects
+	__NAMESPACE__ . '\Class_\Business_Annotation' => Boolean_Annotation::class,
 
 	// @deprecated [false]
 	// Identifies a deprecated class
@@ -58,6 +64,10 @@ Parser::$default_annotations = [
 	// ie "@link All", "@link Collection", "@link Map"
 	//   will be replaced by "@var Object[] All", "@var Object[] Collection" and "@var Object[] Map"
 	__NAMESPACE__ . '\Class_\Stored_Annotation' => Boolean_Annotation::class,
+
+	// @advice
+	// This tells everybody the method is an AOP advice
+	__NAMESPACE__ . '\Method\Advice_Annotation' => Boolean_Annotation::class,
 
 	// @deprecated [false]
 	// Identifies a deprecated method

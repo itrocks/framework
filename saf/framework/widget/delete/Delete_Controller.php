@@ -1,10 +1,11 @@
 <?php
 namespace SAF\Framework\Widget\Delete;
 
-use SAF\Framework\Controller\Default_Controller;
 use SAF\Framework\Controller\Default_Feature_Controller;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao;
+use SAF\Framework\View;
 
 /**
  * The default delete controller will be called if no other delete controller is defined
@@ -22,15 +23,21 @@ class Delete_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
-		$objects = $parameters->getObjects();
+		$parameters = $parameters->getObjects();
 		Dao::begin();
-		foreach ($objects as $object) {
+		$deleted = 0;
+		foreach ($parameters as $object) {
 			if (is_object($object)) {
-				Dao::delete($object);
+				if (!Dao::delete($object)) {
+					$deleted = 0;
+					break;
+				}
+				$deleted ++;
 			}
 		}
 		Dao::commit();
-		return (new Default_Controller)->run($parameters, $form, $files, $class_name, 'deleted');
+		$parameters['deleted'] = $deleted ? true : false;
+		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
 	}
 
 }

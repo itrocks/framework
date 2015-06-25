@@ -159,41 +159,54 @@ class Link extends Dao\Sql\Link
 	 */
 	public function delete($object)
 	{
-		$id = $this->getObjectIdentifier($object);
-		if ($id) {
-			$class_name = get_class($object);
-			$class = new Reflection_Class($class_name);
-			/** @var $link Class_\Link_Annotation */
-			$link = $class->getAnnotation('link');
-			$exclude_properties = $link->value
-				? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
-				: [];
-			foreach ($class->accessProperties() as $property) {
-				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-					if ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION) {
-						if ($property->getType()->isMultiple()) {
-							$this->deleteCollection($object, $property, $property->getValue($object));
-						}
-						// TODO dead code ? @link Collection is only for @var object[], not for @var object
-						else {
-							$this->delete($property->getValue($object));
+		$will_delete = true;
+		foreach (
+			(new Reflection_Class(get_class($object)))->getAnnotations('before_delete') as $before_delete
+		) {
+			/** @var $before_delete Method_Annotation */
+			if ($before_delete->call($object, [$this]) === false) {
+				$will_delete = false;
+				break;
+			}
+		}
+
+		if ($will_delete) {
+			$id = $this->getObjectIdentifier($object);
+			if ($id) {
+				$class_name = get_class($object);
+				$class = new Reflection_Class($class_name);
+				/** @var $link Class_\Link_Annotation */
+				$link = $class->getAnnotation('link');
+				$exclude_properties = $link->value
+					? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
+					: [];
+				foreach ($class->accessProperties() as $property) {
+					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
+						if ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION) {
+							if ($property->getType()->isMultiple()) {
+								$this->deleteCollection($object, $property, $property->getValue($object));
+							}
+							// TODO dead code ? @link Collection is only for @var object[], not for @var object
+							else {
+								$this->delete($property->getValue($object));
+							}
 						}
 					}
 				}
-			}
-			$this->setContext($class_name);
-			if ($link->value) {
-				$id = [];
-				foreach ($link->getLinkProperties() as $link_property) {
-					$property_name = $link_property->getName();
-					$column_name = ($link_property->getType()->isClass() ? 'id_' : '')
-						. $link_property->getAnnotation('storage')->value;
-					$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
+				$this->setContext($class_name);
+				if ($link->value) {
+					$id = [];
+					foreach ($link->getLinkProperties() as $link_property) {
+						$property_name = $link_property->getName();
+						$column_name = ($link_property->getType()->isClass() ? 'id_' : '')
+							. $link_property->getAnnotation('storage')->value;
+						$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
+					}
 				}
+				$this->query(Sql\Builder::buildDelete($class_name, $id));
+				$this->disconnect($object);
+				return true;
 			}
-			$this->query(Sql\Builder::buildDelete($class_name, $id));
-			$this->disconnect($object);
-			return true;
 		}
 		return false;
 	}
