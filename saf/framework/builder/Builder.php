@@ -471,6 +471,7 @@ class Builder implements Activable, Registerable, Serializable
 	 * Gets source class name for a replacement class name
 	 *
 	 * @param $class_name
+	 * @return string
 	 */
 	public function sourceClassName($class_name)
 	{
