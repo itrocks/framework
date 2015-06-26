@@ -146,7 +146,7 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 			} while(next($application_classes));
 
 			// Looking for direct feature call, without using any controller
-			if (empty($class)) {
+			if (empty($class) && (strpos($suffix, 'View') === false)) {
 				if (@method_exists($base_class, $feature_name)) {
 					$class = $base_class;
 					$method = $feature_name;
