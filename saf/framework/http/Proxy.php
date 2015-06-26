@@ -113,6 +113,34 @@ class Proxy
 		}
 	}
 
+	//------------------------------------------------------------------------------------ dataEncode
+	/**
+	 * Return form content as an url component like var=val&var2=val2&...
+	 * If prefix is given, this will return prefix[var]=val&prefix[var2]=val2&...
+	 *
+	 * @param $array  array data
+	 * @param $prefix string for internal use only (prefix on recursion)
+	 * @return string
+	 */
+	private function dataEncode($array, $prefix = null)
+	{
+		$url = "";
+		if (!is_array($array)) {
+			$url .= "&$prefix=$array";
+		} else {
+			foreach ($array as $key => $val) {
+				if (is_array($val)) {
+					$url .= "&" . $this->dataEncode($val, $prefix ? ($prefix . "[$key]") : $key);
+				} elseif ($prefix) {
+					$url .= "&" . $prefix . "[$key]=$val";
+				} else {
+					$url .= "&$key=$val";
+				}
+			}
+		}
+		return substr($url, 1);
+	}
+
 	//----------------------------------------------------------------------------- getRequestCookies
 	/**
 	 * Get HTTP response cookies
@@ -286,11 +314,7 @@ class Proxy
 		);
 		if ($f) {
 			// parse and write request
-			$data = '';
-			foreach ($this->data as $key => $value) {
-				$data .= urlencode($key) . '=' . urlencode($value) . '&';
-			}
-			$data = substr($data, 0, -1);
+			$data = $this->dataEncode($this->data);
 			if ($this->method === Http::GET) {
 				if ($data && !strpos($url['path'], '?')) {
 					$data = '?' . $data;
@@ -298,7 +322,11 @@ class Proxy
 				fputs($f, 'GET ' . $url['path'] . ($data ? $data : '') . ' HTTP/1.1' . CR . LF);
 			}
 			else {
-				fputs($f, 'POST ' . $url['path'] . ' HTTP/1.1' . CR . LF);
+				fputs(
+					$f,
+					'POST ' . $url['path'] . (empty($url['query']) ? '' : ('?' . $url['query']))
+					. ' HTTP/1.1' . CR . LF
+				);
 			}
 			fputs($f, 'Host: ' . $host . CR . LF);
 			//fputs($f, 'X-Forwarded-For: ' . $_SERVER['REMOTE_ADDR'] . CR . LF);
