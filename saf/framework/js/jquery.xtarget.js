@@ -27,11 +27,7 @@
 			popup_element:   'div',
 			success:         undefined,
 			draggable_blank: undefined,
-			history: {
-				condition: false,
-				on_post:   false,
-				title:     false
-			}
+			history: false // { condition, on_post, title }
 		}, options);
 
 		//---------------------------------------------------------------------------------------- ajax
@@ -256,7 +252,7 @@
 		});
 
 		//--------------------------------------------------------------------------- window onpopstate
-		if (settings['history']['condition']) {
+		if (settings['history'] && settings['history']['condition']) {
 			$(window).bind('popstate', function(event)
 			{
 				if (
