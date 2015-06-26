@@ -4,6 +4,7 @@ $('document').ready(function()
 
 	$('body').build(function()
 	{
+		if (!this.length) return;
 
 		this.xtarget({
 			url_append:      'as_widget',

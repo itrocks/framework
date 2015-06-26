@@ -3,6 +3,7 @@ $('document').ready(function()
 
 	$('.window').build(function()
 	{
+		if (!this.length) return;
 
 		//-------------------------------------------------------------- select.customized option click
 		this.inside('select.customized').change(function()

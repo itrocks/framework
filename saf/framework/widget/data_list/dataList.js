@@ -4,6 +4,7 @@ $('document').ready(function()
 
 	$('.list.window').build(function()
 	{
+		if (!this.length) return;
 
 		this.inside('.list.window').each(function()
 		{
@@ -133,7 +134,7 @@ $('document').ready(function()
 				$this.find('input[name=selection]').val(selection[$this.id].join());
 				var sel = selection[$this.id];
 				checkboxes.each(function() {
-					if ((sel == 'all') || (this.value in sel)) {
+					if ((sel == 'all') || (this.value in sel)) {
 						this.checked = true;
 					}
 				});

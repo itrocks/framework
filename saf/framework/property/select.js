@@ -3,6 +3,8 @@ $('document').ready(function()
 
 	$('body').build(function()
 	{
+		if (!this.length) return;
+
 		// sort and decoration
 		this.inside('ul.property_tree').sortcontent();
 		this.inside('.property_select').prepend($('<span>').addClass('joint'));

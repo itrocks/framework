@@ -3,6 +3,7 @@ $('document').ready(function()
 
 	$('.import.preview.window').build(function()
 	{
+		if (!this.length) return;
 
 		this.inside('.import.preview.window').each(function()
 		{

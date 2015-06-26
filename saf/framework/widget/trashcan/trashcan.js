@@ -3,6 +3,7 @@ $('document').ready(function()
 
 	$('body').build(function()
 	{
+		if (!this.length) return;
 
 		this.inside('.object').draggable({
 
