@@ -87,7 +87,7 @@ body {
 div p:not(:first-child) {
   margin-top: 1em; }
 div p:not(:last-child) {
-  margin-bottom: 0 1em; }
+  margin-bottom: 1em; }
 
 em {
   font-style: italic; }
@@ -124,7 +124,6 @@ thead > tr > th {
   text-align: center; }
 
 #main {
-  background-color: #fafafa;
   height: 100%;
   white-space: nowrap; }
   #main > * {
