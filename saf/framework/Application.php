@@ -27,6 +27,12 @@ class Application
 	 */
 	public $include_path;
 
+	//----------------------------------------------------------------------------------------- $name
+	/**
+	 * @var string
+	 */
+	public $name;
+
 	//----------------------------------------------------------------------------------- $namespaces
 	/**
 	 * Namespaces list cache : initialized at first use
@@ -34,12 +40,6 @@ class Application
 	 * @var string[]
 	 */
 	private $namespaces;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
 
 	//--------------------------------------------------------------------------------------- $vendor
 	/**
@@ -125,7 +125,7 @@ class Application
 		return $this->namespaces;
 	}
 
-	//------------------------------------------------------------------------------------ getParents
+	//------------------------------------------------------------------------------ getParentClasses
 	/**
 	 * Gets application parent classes names
 	 * Include extended parents using T_EXTENDS clause or @extends annotation
@@ -150,7 +150,7 @@ class Application
 		return array_unique($parents);
 	}
 
-	//------------------------------------------------------------------------- getTemporaryFilePath
+	//------------------------------------------------------------------------- getTemporaryFilesPath
 	/**
 	 * @return string
 	 */

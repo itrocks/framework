@@ -84,6 +84,11 @@ class Entry
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * The constructor initialises logged information for a call on script beginning.
+	 *
+	 * @param $uri       string
+	 * @param $arguments array
+	 * @param $form      array
+	 * @param $files     array
 	 */
 	public function __construct($uri, $arguments = null, $form = null, $files = null)
 	{

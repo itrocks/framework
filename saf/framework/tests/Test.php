@@ -109,8 +109,7 @@ class Test
 	{
 		$test = $this;
 		$this->capture = '';
-		ob_start(function($buffer) use ($test)
-		{
+		ob_start(function($buffer) use ($test) {
 			$test->capture .= $buffer;
 		});
 	}
