@@ -20,6 +20,7 @@ abstract class Feature
 	const F_EXPORT    = 'export';
 	const F_IMPORT    = 'import';
 	const F_LIST      = 'dataList';
+	const F_LOGIN     = 'login';
 	const F_OUTPUT    = 'output';
 	const F_PRINT     = 'print';
 	const F_REMOVE    = 'remove';
