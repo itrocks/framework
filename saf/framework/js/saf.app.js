@@ -65,47 +65,47 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 */
 	this.uri_root = uri_root;
 
-	//---------------------------------------------------------------------------------------- andSID
-	/**
-	 * Adds session id expression to a given URI
-	 *
-	 * @return string the URI with PHPSESSID request argument if session is not stored into a cookie
-	 */
-	this.addSID = function(uri)
-	{
-		return uri + ((uri.indexOf('?') >= -1) ? this.andSID() : this.askSID());
-	};
+};
 
-	//---------------------------------------------------------------------------------------- andSID
-	/**
-	 * Gets session id expression
-	 *
-	 * @return string '' if session id is stored into a cookie, else '&PHPSESSID=xxxx'
-	 */
-	this.andSID = function()
-	{
-		return this.use_cookies ? '' : ('&PHPSESSID=' + this.PHPSESSID);
-	};
+//---------------------------------------------------------------------------------------- andSID
+/**
+ * Adds session id expression to a given URI
+ *
+ * @return string the URI with PHPSESSID request argument if session is not stored into a cookie
+ */
+App.prototype.addSID = function(uri)
+{
+	return uri + ((uri.indexOf('?') >= -1) ? this.andSID() : this.askSID());
+};
 
-	//---------------------------------------------------------------------------------------- askSID
-	/**
-	 * Gets session id expression
-	 *
-	 * @return string '' if session id is stored into a cookie, else '?PHPSESSID=xxxx'
-	 */
-	this.askSID = function()
-	{
-		return this.use_cookies ? '' : ('?PHPSESSID=' + this.PHPSESSID);
-	};
+//---------------------------------------------------------------------------------------- andSID
+/**
+ * Gets session id expression
+ *
+ * @return string '' if session id is stored into a cookie, else '&PHPSESSID=xxxx'
+ */
+App.prototype.andSID = function()
+{
+	return this.use_cookies ? '' : ('&PHPSESSID=' + this.PHPSESSID);
+};
 
-	/**
-	 * Gets session id expression
-	 *
-	 * @return string '?' if session id is stored into a cookie, else '?PHPSESSID=xxxx&'
-	 */
-	this.askSIDand = function()
-	{
-		return this.use_cookies ? '?' : ('?PHPSESSID=' + this.PHPSESSID + '&');
-	};
+//---------------------------------------------------------------------------------------- askSID
+/**
+ * Gets session id expression
+ *
+ * @return string '' if session id is stored into a cookie, else '?PHPSESSID=xxxx'
+ */
+App.prototype.askSID = function()
+{
+	return this.use_cookies ? '' : ('?PHPSESSID=' + this.PHPSESSID);
+};
 
+/**
+ * Gets session id expression
+ *
+ * @return string '?' if session id is stored into a cookie, else '?PHPSESSID=xxxx&'
+ */
+App.prototype.askSIDand = function()
+{
+	return this.use_cookies ? '?' : ('?PHPSESSID=' + this.PHPSESSID + '&');
 };
