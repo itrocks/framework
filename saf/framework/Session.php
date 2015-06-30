@@ -72,9 +72,10 @@ class Session implements Serializable
 		if (isset($this->current[$class_name])) {
 			$current = $this->current[$class_name];
 			if (is_array($current)) {
-				//$class_name = $current[0]; // TODO Check if R: and r: work well
-				$current    = $current[1];
-				$this->current[$class_name] = $current = unserialize($current);
+				$current = $current[1];
+				$this->current[$class_name] = $current = is_numeric($current)
+					? Dao::read($current, $class_name)
+					: unserialize($current);
 			}
 			return $current;
 		}
@@ -115,7 +116,7 @@ class Session implements Serializable
 		return $get;
 	}
 
-	//-------------------------------------------------------------------------------- getApplication
+	//---------------------------------------------------------------------------- getApplicationName
 	/**
 	 * Gets the current application name without having to unserialize it if serialized
 	 * @return Application
@@ -167,7 +168,7 @@ class Session implements Serializable
 		if (isset($this->current)) {
 			foreach ($this->current as $class_name => $object) {
 				if (is_object($object)) {
-					$object = [$class_name, serialize($object)];
+					$object = [$class_name, Dao::getObjectIdentifier($object) ?: serialize($object)];
 				}
 				$data['current'][$class_name] = $object;
 			}
