@@ -20,14 +20,15 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			url_append:      '',
-			keep:            'popup',
-			submit:          'submit',
-			error:           undefined,
-			popup_element:   'div',
-			success:         undefined,
+			closeable_popup: 'closeable-popup',
 			draggable_blank: undefined,
-			history: false // { condition, on_post, title }
+			error:           undefined,
+			history:         false, // { condition, on_post, title }
+			keep:            'popup',
+			popup_element:   'div',
+			submit:          'submit',
+			success:         undefined,
+			url_append:      ''
 		}, options);
 
 		//---------------------------------------------------------------------------------------- ajax
@@ -46,8 +47,8 @@
 			//-------------------------------------------------------------------------------- ajax.error
 			error: function(xhr, status, error)
 			{
-				if (settings['error'] != undefined) {
-					settings['error'](xhr, status, error);
+				if (settings.error != undefined) {
+					settings.error(xhr, status, error);
 				}
 			},
 
@@ -59,17 +60,17 @@
 			pushHistory: function(xhr, $target)
 			{
 				if (
-					settings['history']['condition']
-					&& $target.find(settings['history']['condition']).length
+					(settings.history.condition != undefined)
+					&& $target.find(settings.history.condition).length
 					&& (
-					settings['history']['on_post']
+						(settings.history.on_post != undefined)
 						|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != 'post')
 						|| (xhr.ajax.data == undefined) || !xhr.ajax.data.length
 					)
 				) {
 					var title;
-					if ((settings['history']['title'] != undefined) && settings['history']['title']) {
-						title = $target.find(settings['history']['title']).first().text();
+					if ((settings.history.title != undefined) && settings.history.title) {
+						title = $target.find(settings.history.title).first().text();
 						if (!title.length) {
 							title = xhr.from.href;
 						}
@@ -95,9 +96,11 @@
 					id = 'window' + ++window.zindex_counter;
 					$where = $($('body').children(':last-child'));
 				}
-				var $target = $('<' + settings.popup_element + '>').attr('id', id);
-				if (settings['keep'] && $where.hasClass(settings['keep'])) {
-					$target.addClass(settings['keep']);
+				var $target = $('<' + settings.popup_element + '>')
+					.addClass(settings.closeable_popup)
+					.attr('id', id);
+				if (settings.keep && $where.hasClass(settings.keep)) {
+					$target.addClass(settings.keep);
 				}
 				$target.insertAfter($where);
 				if ($where != $from) {
@@ -105,12 +108,12 @@
 					$target.css('left', document.mouse.x);
 					$target.css('top',  document.mouse.y);
 					$target.css('z-index', window.zindex_counter);
-					if (settings['draggable_blank'] != undefined) {
-						if (settings['draggable_blank'] === true) {
+					if (settings.draggable_blank != undefined) {
+						if (settings.draggable_blank === true) {
 							$target.draggable();
 						}
 						else {
-							$target.draggable({ handle: settings['draggable_blank'] });
+							$target.draggable({ handle: settings.draggable_blank });
 						}
 					}
 				}
@@ -124,6 +127,10 @@
 				var $target = $(xhr.from.target);
 				var build_target = false;
 				// popup a new element
+				if ($target.is('.' + settings.closeable_popup)) {
+					$target.remove();
+					$target = $(xhr.from.target);
+				}
 				if (!$target.length) {
 					$target = this.popup($from, xhr.from.target.substr(1));
 					build_target = true;
@@ -131,7 +138,7 @@
 				// write result into destination element, and build jquery active contents
 				$target.html(data);
 				// change browser's URL and title, push URL into history
-				if (settings['history']) {
+				if (settings.history != undefined) {
 					this.pushHistory(xhr, $target);
 				}
 				// If build plugin is active : build loaded DOM
@@ -141,8 +148,8 @@
 				}
 				// on success callbacks
 				var target = $target.get()[0];
-				if (settings['success'] != undefined) {
-					target.success = settings['success'];
+				if (settings.success != undefined) {
+					target.success = settings.success;
 					target.success(data, status, xhr);
 					target.success = undefined;
 				}
@@ -184,7 +191,7 @@
 				var $this = $(this);
 				var xhr = undefined;
 				var jax;
-				if ($this.hasClass(settings['submit'])) {
+				if ($this.hasClass(settings.submit)) {
 					var $parent_form = $this.closest('form');
 					if ($parent_form.length) {
 						/* this does not seem to work : default form submit is not blocking !
@@ -252,7 +259,7 @@
 		});
 
 		//--------------------------------------------------------------------------- window onpopstate
-		if (settings['history'] && settings['history']['condition']) {
+		if ((settings.history != undefined) && (settings.history.condition != undefined)) {
 			$(window).bind('popstate', function(event)
 			{
 				if (
