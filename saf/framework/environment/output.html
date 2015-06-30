@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Environment selector</title>
+</head>
+<body>
+<!--BEGIN-->
+
+<!--!selected-->
+<ul id="environment">
+<!--!selected-->
+	<!--@properties-->
+	<!--!value?-->
+	<li class="empty {name}">
+		<a href="/{@rootClass.path}/select/{name}" target="#environments">|all {name}s|</a>
+	</li>
+	<!--!value?-->
+	<!--value?-->
+	<li class="{value.__toString.uri} {name}">
+		<a href="/{@rootClass.path}/select/{name}" target="#environments">{value}</a>
+	</li>
+	<!--value?-->
+	<!--@properties-->
+<!--!selected-->
+</ul>
+<!--!selected-->
+
+<!--END-->
+</body>
+</html>
