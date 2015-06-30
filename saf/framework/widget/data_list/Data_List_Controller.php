@@ -11,10 +11,12 @@ use SAF\Framework\Dao;
 use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Print_Model;
+use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
+use SAF\Framework\Tools\List_Data;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\String;
 use SAF\Framework\View;
@@ -124,14 +126,27 @@ class Data_List_Controller extends Output_Controller
 	//------------------------------------------------------------------------- applySearchParameters
 	/**
 	 * @param $list_settings Data_List_Settings
+	 * @return array search-compatible search array
 	 */
 	protected function applySearchParameters(Data_List_Settings $list_settings)
 	{
+		/** @var $search_parameters_parser Search_Parameters_Parser */
 		$search_parameters_parser = Builder::create(
 			Search_Parameters_Parser::class,
 			[$list_settings->class_name, $list_settings->search]
 		);
-		return $search_parameters_parser->parse();
+		$result = $search_parameters_parser->parse();
+
+		foreach (
+			(new Reflection_Class($list_settings->class_name))->getAnnotations('on_data_list') as $execute
+		) {
+			/** @var $execute Method_Annotation */
+			if ($execute->call($list_settings->class_name, [&$result]) === false) {
+				break;
+			}
+		}
+
+		return $result;
 	}
 
 	//----------------------------------------------------------------------------------- descapeForm
@@ -404,30 +419,9 @@ class Data_List_Controller extends Output_Controller
 		$list_settings = Data_List_Settings::current($class_name);
 		$list_settings->cleanup();
 		$this->applyParametersToListSettings($list_settings, $parameters, $form);
-		$search = $this->applySearchParameters($list_settings);
 		$customized_list_settings = $list_settings->getCustomSettings();
 		$count = new Count();
-		$limit = new Limit(
-			$list_settings->start_display_line_number,
-			$list_settings->maximum_displayed_lines_count
-		);
-		$data = Dao::select(
-			$class_name,
-			$list_settings->properties_path,
-			$search,
-			[$list_settings->sort, $limit, $count]
-		);
-		if (($data->length() < $limit->count) && ($limit->from > 1)) {
-			$limit->from = max(1, $count->count - $limit->count + 1);
-			$list_settings->start_display_line_number = $limit->from;
-			$list_settings->save();
-			$data = Dao::select(
-				$class_name,
-				$list_settings->properties_path,
-				$search,
-				[$list_settings->sort, $limit, $count]
-			);
-		}
+		$data = $this->readData($class_name, $list_settings, $count);
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
 		$less_twenty = $displayed_lines_count > 20;
 		$more_hundred = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
@@ -461,6 +455,31 @@ class Data_List_Controller extends Output_Controller
 			unset($parameters['general_buttons']['delete']);
 		}
 		return $parameters;
+	}
+
+	//-------------------------------------------------------------------------------------- readData
+	/**
+	 * @param $class_name    string
+	 * @param $list_settings Data_List_Settings
+	 * @param $count         Count
+	 * @return List_Data
+	 */
+	protected function readData($class_name, Data_List_Settings $list_settings, Count $count)
+	{
+		$search = $this->applySearchParameters($list_settings);
+		$limit = new Limit(
+			$list_settings->start_display_line_number,
+			$list_settings->maximum_displayed_lines_count
+		);
+		$options = [$list_settings->sort, $limit, $count];
+		$data = Dao::select($class_name, $list_settings->properties_path, $search, $options);
+		if (($data->length() < $limit->count) && ($limit->from > 1)) {
+			$limit->from = max(1, $count->count - $limit->count + 1);
+			$list_settings->start_display_line_number = $limit->from;
+			$list_settings->save();
+			$data = Dao::select($class_name, $list_settings->properties_path, $search, $options);
+		}
+		return $data;
 	}
 
 	//------------------------------------------------------------------------------------------- run

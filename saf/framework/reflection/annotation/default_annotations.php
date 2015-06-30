@@ -57,6 +57,11 @@ Parser::$default_annotations = [
 	// Declare one or several methods to call after the object has been duplicated
 	__NAMESPACE__ . '\Class_\Duplicate_Annotation' => Method_Annotation::class,
 
+	// @on_data_list onDataList
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call on data list Dao::select() call
+	__NAMESPACE__ . '\Class_\On_Data_List_Annotation' => Method_Annotation::class,
+
 	// @stored [false]
 	// Identifies a class that may be stored using data links
 	// When this annotation is set, this enables simplified / implicit use of @link

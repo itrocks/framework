@@ -20,7 +20,6 @@ use SAF\Framework\Tools\Namespaces;
 class Parser
 {
 
-	//-------------------------------------------------------------------------------- DOC_COMMENT_IN
 	const DOC_COMMENT_IN = "\t *IN ";
 
 	//---------------------------------------------------------------- annotations contexts constants
@@ -34,7 +33,7 @@ class Parser
 	 */
 	public static $additional_annotations = [];
 
-	//---------------------------------------------------------------------------------- $annotations
+	//-------------------------------------------------------------------------- $default_annotations
 	/**
 	 * @var string[]
 	 */
@@ -189,7 +188,10 @@ class Parser
 				$default_annotations_file
 					= Application::current()->getCacheDir() . SL . 'default_annotations.php';
 				clearstatcache(true, $default_annotations_file);
-				if (!is_file($default_annotations_file)) {
+				if (
+					filemtime($default_annotations_file) < filemtime(__DIR__ . SL . 'default_annotations.php')
+					|| !is_file($default_annotations_file)
+				) {
 					copy(__DIR__ . SL . 'default_annotations.php', $default_annotations_file);
 				}
 			}

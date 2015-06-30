@@ -66,13 +66,13 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * The $object argument will be the first argument before $arguments in case of a static call
 	 * If the value is a method for the current object, only $arguments will be sent
 	 *
-	 * @param $object    object the object will be the first
+	 * @param $object    object|string the object will be the first. If string, this is a class name
 	 * @param $arguments array
 	 * @return mixed the value returned by the called method
 	 */
 	public function call($object, $arguments = [])
 	{
-		if ($this->static) {
+		if ($this->static || is_string($object)) {
 			return call_user_func_array($this->value, array_merge([$object], $arguments));
 		}
 		return call_user_func_array([$object, rParse($this->value, '::')], $arguments);
