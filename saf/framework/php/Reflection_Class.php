@@ -18,7 +18,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	use Annoted;
 	use Tokens_Parser;
 
-	//--------------------------------------------------------------------------------- T_DOC_EXTENDS
 	const T_DOC_EXTENDS = 'T_DOC_EXTENDS';
 
 	//---------------------------------------------------------------------------------- $doc_comment
@@ -39,7 +38,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	private $interfaces_methods;
 
-	//------------------------------------------------------------------------------------- $abstract
+	//---------------------------------------------------------------------------------- $is_abstract
 	/**
 	 * @var boolean
 	 */
@@ -255,20 +254,23 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$flip = array_flip($flags);
 			if (($this->type !== T_INTERFACE) && isset($flip[T_USE])) {
 				foreach ($this->getTraits() as $trait) {
-					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $trait->name . LF;
-					$doc_comment .= $trait->getDocComment($flags);
+					if ($comment = $trait->getDocComment($flags)) {
+						$doc_comment .= LF . Parser::DOC_COMMENT_IN . $trait->name . LF . $comment;
+					}
 				}
 			}
 			if (($this->type !== T_TRAIT) && isset($flip[T_EXTENDS])) {
 				if ($parent = $this->getParentClass()) {
-					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $parent->name . LF;
-					$doc_comment .= $parent->getDocComment($flags);
+					if ($comment = $parent->getDocComment($flags)) {
+						$doc_comment .= LF . Parser::DOC_COMMENT_IN . $parent->name . LF . $comment;
+					}
 				}
 			}
 			if (($this->type !== T_TRAIT) && isset($flip[T_IMPLEMENTS])) {
 				foreach ($this->getInterfaces() as $interface) {
-					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $interface->name . LF;
-					$doc_comment .= $interface->getDocComment($flags);
+					if ($comment = $interface->getDocComment($flags)) {
+						$doc_comment .= LF . Parser::DOC_COMMENT_IN . $interface->name . LF . $comment;
+					}
 				}
 			}
 		}
@@ -598,7 +600,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $this->getProperties()[$name];
 	}
 
-	//------------------------------------------------------------------------------------- getTokens
 	/**
 	 * @return array
 	 */

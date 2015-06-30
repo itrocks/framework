@@ -244,23 +244,17 @@ class Parser
 		switch ($next_char) {
 			case SP: case TAB:
 				$i ++;
-				$next_annotation = strpos($doc_comment, '* @', $i);
-				if ($next_annotation !== false) {
-					$next_in = strpos($doc_comment, self::DOC_COMMENT_IN, $i);
-					if (($next_in !== false) && ($next_in < $next_annotation)) {
-						$next_in += strpos(self::DOC_COMMENT_IN, '*');
-						$next_annotation = $next_in;
-					}
+				$j = strlen($doc_comment);
+				$next_annotation = strpos($doc_comment, SP . '* @', $i);
+				$end_doc_comment = strpos($doc_comment, SP . '*/', $i);
+				$next_in         = strpos($doc_comment, LF . self::DOC_COMMENT_IN, $i);
+				if (($next_annotation !== false) && ($next_annotation < $j)) $j = $next_annotation;
+				if (($end_doc_comment !== false) && ($end_doc_comment < $j)) $j = $end_doc_comment;
+				if (($next_in         !== false) && ($next_in         < $j)) $j = $next_in;
+				if ($j === false) {
+					trigger_error('Missing doc_comment end', E_USER_ERROR);
 				}
-				if ($next_annotation !== false) {
-					$value = trim(substr(
-						preg_replace('%\n\s+\*/?%', '', substr($doc_comment, $i, $next_annotation - $i))
-					, 0, -2));
-				}
-				else {
-					$end_of_line = strpos($doc_comment, LF, $i);
-					$value = trim(substr($doc_comment, $i, $end_of_line - $i));
-				}
+				$value = trim(preg_replace('%\s*\n\s+\*\s*%', '', substr($doc_comment, $i, $j - $i)));
 				break;
 			case CR: case LF:
 				$value = true;

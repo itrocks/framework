@@ -37,7 +37,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public $final_class;
 
-	//---------------------------------------------------------------------------- $override_property
+	//-------------------------------------------------------------------------- $overridden_property
 	/**
 	 * Only if the property is declared into a parent class as well as into the child class.
 	 * If not, this will be false.

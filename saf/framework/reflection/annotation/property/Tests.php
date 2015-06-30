@@ -41,7 +41,15 @@ class Tests extends Test
 	 */
 	private $setter_static;
 
-	//------------------------------------------------------------------------------------- $property
+	//---------------------------------------------------------------------------------- $with_values
+	/**
+	 * @values a_value, another_value,
+	 *         third_value,
+	 *         fourth_value
+	 * @var string
+	 */
+	private $with_values;
+
 	/**
 	 * A fictive local property, for unit tests use only
 	 * Annotations set here are used only for the test that uses @link
@@ -52,14 +60,13 @@ class Tests extends Test
 	 */
 	private /* @noinspection PhpUnusedPrivateFieldInspection */ $property;
 
-	//----------------------------------------------------------------------- getDefaultPropertyValue
-	/* @noinspection PhpMissingDocCommentInspection */
 	/**
 	 * Get the default property value, for test of @default annotation
 	 *
 	 * @param $property Interfaces\Reflection_Property
 	 * @return string
 	 */
+	/* @noinspection PhpMissingDocCommentInspection */
 	public static function getDefaultPropertyValue(Interfaces\Reflection_Property $property)
 	{
 		return 'default value for ' . $property->getName();
@@ -104,6 +111,9 @@ class Tests extends Test
 	}
 
 	//------------------------------------------------------------------------- testDefaultAnnotation
+	/**
+	 * Test default annotation
+	 */
 	public function testDefaultAnnotation()
 	{
 		$this->method('@default');
@@ -198,6 +208,20 @@ class Tests extends Test
 			'static, $value, return value',
 			$this->setter_static,
 			'a value for static with setter static'
+		);
+	}
+
+	//-------------------------------------------------------------------------------- testWithValues
+	/**
+	 * Test annotation with multi-lines values
+	 */
+	public function testWithValues()
+	{
+		$this->with_values = 'a_value';
+		$this->assume(
+			__METHOD__,
+			(new Reflection_Property(get_class($this), 'with_values'))->getListAnnotation('values')->values(),
+			['a_value', 'another_value', 'third_value', 'fourth_value']
 		);
 	}
 
