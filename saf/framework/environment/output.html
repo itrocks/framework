@@ -26,6 +26,16 @@
 </ul>
 <!--!selected-->
 
+<!--selected-->
+<script>
+	var action = $('#main>form').attr('action');
+	if (action) {
+		console.log(action);
+		redirect(action, '#main');
+	}
+</script>
+<!--selected-->
+
 <!--END-->
 </body>
 </html>

@@ -116,7 +116,10 @@ redirect = function(uri, target)
 	//noinspection JSUnresolvedVariable
 	var app = window.app;
 	var more = ((target != undefined) && (target != '') && (target[0] == '#')) ? '?as_widget' : '';
-	uri = app.uri_base + uri;
+	if (uri.substr(0, app.uri_base.length) != app.uri_base) {
+		console.log('add ' + app_uri_base + ' before ' + uri);
+		uri = app.uri_base + uri;
+	}
 	if (!more) {
 		window.location = app.addSID(uri);
 	}
