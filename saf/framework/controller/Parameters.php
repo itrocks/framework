@@ -121,7 +121,7 @@ class Parameters
 			$object = $this->objects[$parameter_name];
 		}
 		elseif (is_numeric($this->getRawParameter($parameter_name))) {
-			if (ctype_upper($parameter_name[0])) {
+			if (isset($parameter_name[0]) && ctype_upper($parameter_name[0])) {
 				$class_name = $parameter_name;
 			}
 			if (isset($class_name) && @class_exists($class_name)) {
@@ -183,7 +183,7 @@ class Parameters
 		return isset($this->parameters[$parameter_name]) ? $this->parameters[$parameter_name] : null;
 	}
 
-	//--------------------------------------------------------------------------------- getParameters
+	//------------------------------------------------------------------------------ getRawParameters
 	/**
 	 * Gets URI parameters raw values, as they were on original URI
 	 *
