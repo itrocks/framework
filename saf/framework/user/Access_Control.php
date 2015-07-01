@@ -26,6 +26,7 @@ class Access_Control implements Configurable, Registerable
 	 * @var string[]
 	 */
 	public $blank = [
+		'/.*/.*/Environment/output',
 		'/.*/.*/Menu/output'
 	];
 
