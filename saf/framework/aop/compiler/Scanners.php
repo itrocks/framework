@@ -97,7 +97,7 @@ trait Scanners
 	 * @return array
 	 */
 	private function scanForOverrides(
-		$documentation, $annotations = ['getter', 'link', 'setter'], $disable = []
+		$documentation, $annotations = ['getter', 'link', 'replaces', 'setter'], $disable = []
 	) {
 		$overrides = [];
 		if (strpos($documentation, '@override')) {
@@ -129,6 +129,29 @@ trait Scanners
 			}
 		}
 		return $overrides;
+	}
+
+	//------------------------------------------------------------------------------- scanForReplaces
+	/**
+	 * @param $properties array
+	 * @param $class      Reflection_Class
+	 */
+	private function scanForReplaces(&$properties, Reflection_Class $class)
+	{
+		foreach ($class->getProperties([T_USE]) as $property) {
+			$expr = '%'
+				. '\n\s+\*\s+'   // each line beginning by '* '
+				. '@replaces\s+' // alias annotation
+				. '(\w+)'        // 1 : property name
+				. '%';
+			preg_match($expr, $property->getDocComment(), $match);
+			if ($match) {
+				$properties[$match[1]]['replaced'] = $property->name;
+			}
+		}
+		foreach ($this->scanForOverrides($class->getDocComment(), ['replaces']) as $match) {
+			$properties[$match['method_name']]['replaced'] = $match['property_name'];
+		}
 	}
 
 	//-------------------------------------------------------------------------------- scanForSetters

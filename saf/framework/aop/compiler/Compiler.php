@@ -245,6 +245,18 @@ class Compiler implements ICompiler, Needs_Main
 							}
 							if (isset($already[$advice_class])) {
 								$source = Reflection_Source::of($class_name);
+								/*
+								if ($source->file_name && !$source->isInternal() && !is_file($source->file_name)) {
+									$applicant_source = Reflection_Source::of($advice_class);
+									if (
+										!$source->searchFile($class_name, array_keys($applicant_source->getRequires()))
+									) {
+										trigger_error(
+											'Reflection_Source file not found for class ' . $class_name, E_USER_ERROR
+										);
+									}
+								}
+								*/
 								if ($source->getClass($class_name)) {
 									$sources[$source->file_name] = $source;
 									$added[$source->file_name] = $source;
@@ -337,7 +349,7 @@ class Compiler implements ICompiler, Needs_Main
 		}
 	}
 
-	//----------------------------------------------------------------------------------- scanForInit
+	//----------------------------------------------------------------------------- scanForImplements
 	/**
 	 * @param $properties array
 	 * @param $class      Reflection_Class
@@ -366,7 +378,7 @@ class Compiler implements ICompiler, Needs_Main
 		}
 		// properties overridden into the class and its direct traits
 		$documentations = $class->getDocComment([T_USE]);
-		foreach ($this->scanForOverrides($documentations) as $match) {
+		foreach ($this->scanForOverrides($documentations, ['getter', 'link', 'setter']) as $match) {
 			$properties[$match['property_name']]['implements'][$match['type']] = true;
 			if (!isset($implemented_properties[$match['property_name']])) {
 				$class_properties = $class->getProperties([T_EXTENDS]);
@@ -397,7 +409,6 @@ class Compiler implements ICompiler, Needs_Main
 		}
 	}
 
-	//-------------------------------------------------------------------------------- scanForMethods
 	/**
 	 * @param $methods array
 	 * @param $class   Reflection_Class
@@ -432,26 +443,6 @@ class Compiler implements ICompiler, Needs_Main
 		}
 	}
 	*/
-
-	//------------------------------------------------------------------------------- scanForReplaces
-	/**
-	 * @param $properties array
-	 * @param $class      Reflection_Class
-	 */
-	private function scanForReplaces(&$properties, Reflection_Class $class)
-	{
-		foreach ($class->getProperties([T_USE]) as $property) {
-			$expr = '%'
-				. '\n\s+\*\s+'   // each line beginning by '* '
-				. '@replaces\s+' // alias annotation
-				. '(\w+)'        // 1 : property name
-				. '%';
-			preg_match($expr, $property->getDocComment(), $match);
-			if ($match) {
-				$properties[$match[1]]['replaced'] = $property->name;
-			}
-		}
-	}
 
 	//----------------------------------------------------------------------------- setMainController
 	/**
