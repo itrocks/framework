@@ -146,7 +146,22 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 			} while(next($application_classes));
 
 			// Looking for direct feature call, without using any controller
-			if (empty($class) && (strpos($suffix, 'View') === false)) {
+			static $last_controller_class = '';
+			static $last_controller_method = '';
+			if (
+				empty($class)
+				&& (
+					(strpos($suffix, 'View') === false)
+					|| (
+						($last_controller_class  !== $base_class)
+						&& ($last_controller_method !== $feature_name)
+					)
+				)
+			) {
+				if (strpos($suffix, 'Controller') !== false) {
+					$last_controller_class  = $base_class;
+					$last_controller_method = $feature_name;
+				}
 				if (@method_exists($base_class, $feature_name)) {
 					$class = $base_class;
 					$method = $feature_name;
