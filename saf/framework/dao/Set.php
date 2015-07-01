@@ -61,7 +61,7 @@ class Set
 				$written[$old_identifiers[$key]] = true;
 			}
 			else {
-				$written[$dao->getObjectIdentifier(Dao::write($object))] = true;
+				$written[$dao->getObjectIdentifier($dao->write($object))] = true;
 			}
 		}
 		// delete old unused objects

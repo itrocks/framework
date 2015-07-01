@@ -216,8 +216,6 @@ class Compiler implements
 			$saved_sources = $this->sources;
 			while ($this->sources) {
 
-				Dao::begin();
-
 				// get source and update dependencies
 				foreach ($this->sources as $source) {
 					/** @var Reflection_Source $source inspector bug */
@@ -256,8 +254,6 @@ class Compiler implements
 					}
 
 				} while ($added);
-
-				Dao::commit();
 
 				$saved_sources = array_merge($saved_sources, $this->sources);
 
