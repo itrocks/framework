@@ -4,6 +4,7 @@ namespace SAF\Framework\View\Html\Template;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper\Collection;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Integrated_Properties;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Method;
@@ -496,17 +497,12 @@ abstract class Functions
 		$object = reset($template->objects);
 		$properties_filter = $template->getParameter('properties_filter');
 		$class = new Reflection_Class(get_class($object));
-		$ignore = [];
 		$result_properties = [];
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (
 				!$property->isStatic()
 				&& !$property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)
 			) {
-				$replaces = $property->getAnnotation('replaces')->value;
-				if (!empty($replaces)) {
-					$ignore[$replaces] = $replaces;
-				}
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
 					$property = new Reflection_Property_Value(
 						$property->class, $property->name, $object, false, true
@@ -516,12 +512,7 @@ abstract class Functions
 				}
 			}
 		}
-		foreach ($ignore as $property_name) {
-			if (isset($result_properties[$property_name])) {
-				unset($result_properties[$property_name]);
-			}
-		}
-		return $result_properties;
+		return Replaces_Annotations::removeReplacedProperties($result_properties);
 	}
 
 	//------------------------------------------------------------------------ getPropertiesOutOfTabs

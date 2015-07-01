@@ -4,7 +4,7 @@ namespace SAF\Framework\Reflection\Annotation\Property;
 use SAF\Framework\Builder;
 use SAF\Framework\PHP;
 use SAF\Framework\Reflection;
-use SAF\Framework\Reflection\Annotation\Annoted;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
@@ -94,7 +94,6 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	private function defaultMap(Reflection_Property $property)
 	{
 		$possibles = [];
-		$replace = [];
 		$foreign_class = $this->getForeignClass($property);
 		foreach ($foreign_class->getProperties([T_EXTENDS, T_USE]) as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
@@ -110,24 +109,16 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 					|| ($foreign_property->getName() != $property->getName())
 				)
 			) {
-				$possibles[$foreign_property->getName()] = $foreign_property->getName();
-				$replaced = $foreign_property->getAnnotation('replaces')->value;
-				if ($replaced) {
-					$replace[] = $replaced;
-				}
+				$possibles[$foreign_property->getName()] = $foreign_property;
 			}
 		}
-		foreach ($replace as $replaced) {
-			if (isset($possibles[$replaced])) {
-				unset($possibles[$replaced]);
-			}
-		}
+		$possibles = Replaces_Annotations::removeReplacedProperties($possibles);
 		if (count($possibles) != 1) {
 			$this->value = Names::classToProperty(Names::setToClass(
 					$property->getDeclaringClass()->getAnnotation('set')->value
 			));
 		}
-		return $possibles;
+		return array_keys($possibles);
 	}
 
 	//--------------------------------------------------------------------------------- defaultObject
