@@ -31,10 +31,8 @@ class Compiler implements
 	Configurable, Registerable, Class_File_Name_Getter, Needs_Main, Serializable, Updatable
 {
 
-	//---------------------------------------------------------------------------- MAX_OPENED_SOURCES
 	const MAX_OPENED_SOURCES = 100;
 
-	//---------------------------------------------------------------------------------- SOURCES_FREE
 	const SOURCES_FREE = 10;
 
 	//------------------------------------------------------------------------------------ $cache_dir
@@ -56,7 +54,7 @@ class Compiler implements
 	 */
 	private $compiler;
 
-	//------------------------------------------------------------------------------------- $compiler
+	//------------------------------------------------------------------------------------ $compilers
 	/**
 	 * The list of compilers used successively on PHP sources
 	 *
@@ -133,7 +131,7 @@ class Compiler implements
 		$this->compilers[] = $compiler;
 	}
 
-	//--------------------------------------------------------------------------------- addMoreSource
+	//------------------------------------------------------------------------------------- addSource
 	/**
 	 * Adds a PHP source to the sources to be compiled
 	 * This can be called before or during the compilation process, so these new files will be
@@ -181,6 +179,7 @@ class Compiler implements
 
 		// create data set for dependencies, check for dependencies for deleted files
 		Dao::createStorage(Dependency::class);
+		Dao::begin();
 		if (isset($_GET['Z'])) {
 			$link = Dao::current();
 			if ($link instanceof Link) {
@@ -206,6 +205,7 @@ class Compiler implements
 				}
 			}
 		}
+		Dao::commit();
 
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 		$first_group = true;
@@ -215,6 +215,8 @@ class Compiler implements
 
 			$saved_sources = $this->sources;
 			while ($this->sources) {
+
+				Dao::begin();
 
 				// get source and update dependencies
 				foreach ($this->sources as $source) {
@@ -254,6 +256,8 @@ class Compiler implements
 					}
 
 				} while ($added);
+
+				Dao::commit();
 
 				$saved_sources = array_merge($saved_sources, $this->sources);
 
@@ -339,7 +343,7 @@ class Compiler implements
 		return $this->cache_dir;
 	}
 
-	//------------------------------------------------------------------------------ getClassFileName
+	//------------------------------------------------------------------------------ getClassFilename
 	/**
 	 * Gets a Reflection_Source knowing its class _name.
 	 * Uses sources cache, or router's getClassFilename() and fill-in cache.

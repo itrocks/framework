@@ -31,6 +31,7 @@ class Logger implements Registerable
 	 */
 	public function onCompileSource(Reflection_Source $source)
 	{
+		Dao::begin();
 		foreach ($source->getClasses() as $class) {
 			/** @var $log Compiler_Log */
 			$log = Builder::create(Compiler_Log::class);
@@ -39,6 +40,7 @@ class Logger implements Registerable
 			Dao::write($log);
 			$this->log_flag = true;
 		}
+		Dao::commit();
 	}
 
 	//---------------------------------------------------------------------------------- onLoggerStop
@@ -48,12 +50,14 @@ class Logger implements Registerable
 	public function onLoggerStop(Framework\Logger $object)
 	{
 		if ($this->log_flag) {
+			Dao::begin();
 			foreach (Dao::search(['log' => Func::isNull()], Compiler_Log::class) as $logger) {
 				/** @var $logger Compiler_Log */
 				$logger->log = $object->log_entry;
 				Dao::write($logger, [Dao::only(['log'])]);
 			}
 			$this->log_flag = false;
+			Dao::commit();
 		}
 	}
 
@@ -68,4 +72,3 @@ class Logger implements Registerable
 	}
 
 }
-

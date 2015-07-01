@@ -21,7 +21,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	const PASSWORD = 'password';
 	const TABLES   = 'tables';
 
-	//---------------------------------------------------------------------------------------- $tables
+	//--------------------------------------------------------------------------------------- $tables
 	/**
 	 * Links each class name to it's storage table name
 	 *
@@ -49,10 +49,19 @@ abstract class Link extends Identifier_Map implements Transactional
 	}
 
 	//----------------------------------------------------------------------------------------- begin
+	/**
+	 * Begin transaction
+	 */
 	public function begin() {}
 
 	//---------------------------------------------------------------------------------------- commit
-	public function commit() {}
+	/**
+	 * End transaction with commit
+	 *
+	 * @param $flush boolean
+	 * @return boolean
+	 */
+	public function commit($flush = false) {}
 
 	//----------------------------------------------------------------------------------------- fetch
 	/**
@@ -98,7 +107,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public abstract function getColumnName($result_set, $index);
 
-	//-------------------------------------------------------------------------------- getColumnsCount
+	//------------------------------------------------------------------------------- getColumnsCount
 	/**
 	 * Gets the column count from result set
 	 *
@@ -133,6 +142,9 @@ abstract class Link extends Identifier_Map implements Transactional
 	abstract public function query($query, $class_name = null);
 
 	//-------------------------------------------------------------------------------------- rollback
+	/**
+	 * Rollback current transaction
+	 */
 	public function rollback() {}
 
 	//---------------------------------------------------------------------------------------- select

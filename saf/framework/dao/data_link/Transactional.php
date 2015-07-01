@@ -19,9 +19,10 @@ interface Transactional
 	/**
 	 * Commit a transaction (non-transactional SQL engines will do nothing and return null)
 	 *
+	 * @param $flush boolean
 	 * @return boolean | null true if commit succeeds, false if error, null if not a transactional SQL engine
 	 */
-	public function commit();
+	public function commit($flush = false);
 
 	//-------------------------------------------------------------------------------------- rollback
 	/**

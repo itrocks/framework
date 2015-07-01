@@ -40,6 +40,12 @@ class Link extends Dao\Sql\Link
 	 */
 	private $connection;
 
+	//--------------------------------------------------------------------------------- $commit_stack
+	/**
+	 * @var integer
+	 */
+	private $commit_stack = 0;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Construct a new Mysql using a parameters array, and connect to mysql database
@@ -55,9 +61,17 @@ class Link extends Dao\Sql\Link
 	}
 
 	//----------------------------------------------------------------------------------------- begin
+	/**
+	 * Begin transaction
+	 *
+	 * If a transaction has already been begun, it is counted as we will need the same commits count
+	 */
 	public function begin()
 	{
-		$this->query('START TRANSACTION');
+		if (!$this->commit_stack) {
+			$this->query('START TRANSACTION');
+		}
+		$this->commit_stack ++;
 	}
 
 	//------------------------------------------------------------------------------------- construct
@@ -81,9 +95,23 @@ class Link extends Dao\Sql\Link
 	}
 
 	//---------------------------------------------------------------------------------------- commit
-	public function commit()
+	/**
+	 * @param $flush boolean if true, then all the pending transactions will be unstacked
+	 * @return boolean
+	 */
+	public function commit($flush = false)
 	{
-		$this->query('COMMIT');
+		if ($flush) {
+			$this->commit_stack = 0;
+			$this->query('COMMIT');
+		}
+		elseif ($this->commit_stack > 0) {
+			$this->commit_stack --;
+			if (!$this->commit_stack) {
+				$this->query('COMMIT');
+			}
+		}
+		return true;
 	}
 
 	//--------------------------------------------------------------------------------------- connect
@@ -646,7 +674,9 @@ class Link extends Dao\Sql\Link
 	 */
 	public function rollback()
 	{
+		$this->commit_stack = 0;
 		$this->query('ROLLBACK');
+		return true;
 	}
 
 	//---------------------------------------------------------------------------------------- search

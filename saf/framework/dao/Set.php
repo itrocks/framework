@@ -45,6 +45,9 @@ class Set
 			$class_name = get_class($class_name);
 		}
 		// write new objects
+		if ($dao instanceof Sql\Link) {
+			$dao->begin();
+		}
 		$old_objects = $dao->search($search, $class_name);
 		$old_identifiers = [];
 		foreach ($old_objects as $old_object) {
@@ -66,6 +69,9 @@ class Set
 			if (!isset($written[$key])) {
 				$dao->delete($object);
 			}
+		}
+		if ($dao instanceof Sql\Link) {
+			$dao->commit();
 		}
 	}
 
