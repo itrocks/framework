@@ -37,6 +37,9 @@ class Weaver implements IWeaver
 	 */
 	public function afterFunction($joinpoint, $advice)
 	{
+		if (!is_string($joinpoint)) {
+			trigger_error('Joinpoint must be a function name', E_USER_ERROR);
+		}
 		$this->joinpoints[$joinpoint][] = [Handler::AFTER, $advice];
 		return new Handler(Handler::AFTER, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
@@ -58,6 +61,9 @@ class Weaver implements IWeaver
 	 */
 	public function afterMethod($joinpoint, $advice)
 	{
+		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
+			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
+		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::AFTER, $advice];
 		return new Handler(
 			Handler::AFTER, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
@@ -79,6 +85,9 @@ class Weaver implements IWeaver
 	 */
 	public function aroundFunction($joinpoint, $advice)
 	{
+		if (!is_string($joinpoint)) {
+			trigger_error('Joinpoint must be a function name', E_USER_ERROR);
+		}
 		$this->joinpoints[$joinpoint][] = [Handler::AROUND, $advice];
 		return new Handler(Handler::AROUND, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
@@ -99,6 +108,9 @@ class Weaver implements IWeaver
 	 */
 	public function aroundMethod($joinpoint, $advice)
 	{
+		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
+			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
+		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::AROUND, $advice];
 		return new Handler(
 			Handler::AROUND, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
@@ -121,6 +133,9 @@ class Weaver implements IWeaver
 	 */
 	public function beforeFunction($joinpoint, $advice)
 	{
+		if (!is_string($joinpoint)) {
+			trigger_error('Joinpoint must be a function name', E_USER_ERROR);
+		}
 		$this->joinpoints[$joinpoint][] = [Handler::BEFORE, $advice];
 		return new Handler(Handler::BEFORE, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
@@ -141,6 +156,9 @@ class Weaver implements IWeaver
 	 */
 	public function beforeMethod($joinpoint, $advice)
 	{
+		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
+			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
+		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::BEFORE, $advice];
 		return new Handler(
 			Handler::BEFORE, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
@@ -306,7 +324,7 @@ class Weaver implements IWeaver
 		);
 	}
 
-	//---------------------------------------------------------------------------------- writeProperty
+	//--------------------------------------------------------------------------------- writeProperty
 	/**
 	 * @param $joinpoint callable the joinpoint defined like a call-back :
 	 *                   ['class_name', 'property_name')
