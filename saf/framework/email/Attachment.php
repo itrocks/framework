@@ -1,22 +1,14 @@
 <?php
 namespace SAF\Framework\Email;
 
-use SAF\Framework\Traits\Has_Name;
+use SAF\Framework\Dao\File;
 
 /**
  * Email attachments are attached or embedded (ie images) files, including multiple versions
  * (HTML / plain) of the mail
  */
-class Attachment
+class Attachment extends File
 {
-	use Has_Name;
-
-	//-------------------------------------------------------------------------------------- $content
-	/**
-	 * @var string
-	 * @max_length 10000000
-	 */
-	public $content;
 
 	//------------------------------------------------------------------------------------- $embedded
 	/**
@@ -32,9 +24,10 @@ class Attachment
 	 */
 	public function __construct($name = null, $content = null, $embedded = null)
 	{
-		if (isset($name))     $this->name = $name;
-		if (isset($content))  $this->content = $content;
-		if (isset($embedded)) $this->embedded = $embedded;
+		parent::__construct(isset($content) ? null : $name);
+		if (isset($name) && isset($content)) $this->name     = $name;
+		if (isset($content))                 $this->content  = $content;
+		if (isset($embedded))                $this->embedded = $embedded;
 	}
 
 }

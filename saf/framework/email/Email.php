@@ -4,11 +4,13 @@ namespace SAF\Framework;
 use SAF\Framework\Email\Account;
 use SAF\Framework\Email\Attachment;
 use SAF\Framework\Email\Recipient;
+use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Tools\Date_Time;
 
 /**
  * A SAF electronic mail object to get full access to mails without depending on MIME or the else
  *
+ * @before_write
  * @representative date, from, to, subject
  */
 class Email
@@ -21,12 +23,61 @@ class Email
 	 */
 	public $account;
 
+	//---------------------------------------------------------------------------------- $attachments
+	/**
+	 * @link Map
+	 * @var Attachment[]
+	 */
+	public $attachments;
+
+	//-------------------------------------------------------------------------------- $blind_copy_to
+	/**
+	 * @link Map
+	 * @var Recipient[]
+	 */
+	public $blind_copy_to;
+
+	//-------------------------------------------------------------------------------------- $content
+	/**
+	 * @var string
+	 * @multiline
+	 * @max_length 10000000
+	 */
+	public $content;
+
+	//-------------------------------------------------------------------------------------- $copy_to
+	/**
+	 * @link Map
+	 * @var Recipient[]
+	 */
+	public $copy_to;
+
+	//----------------------------------------------------------------------------------------- $date
+	/**
+	 * @link DateTime
+	 * @var Date_Time
+	 */
+	public $date;
+
 	//----------------------------------------------------------------------------------------- $from
 	/**
 	 * @link Object
 	 * @var Recipient
 	 */
 	public $from;
+
+	//-------------------------------------------------------------------------------------- $headers
+	/**
+	 * @var string[]
+	 */
+	public $headers = [];
+
+	//--------------------------------------------------------------------------------- $receive_date
+	/**
+	 * @link DateTime
+	 * @var Date_Time
+	 */
+	public $receive_date;
 
 	//------------------------------------------------------------------------------------- $reply_to
 	/**
@@ -42,26 +93,18 @@ class Email
 	 */
 	public $return_path;
 
-	//------------------------------------------------------------------------------------------- $to
+	//------------------------------------------------------------------------------------ $send_date
 	/**
-	 * @link Map
-	 * @var Recipient[]
+	 * @link DateTime
+	 * @var Date_Time
 	 */
-	public $to;
+	public $send_date;
 
-	//-------------------------------------------------------------------------------------- $copy_to
+	//--------------------------------------------------------------------------------- $send_message
 	/**
-	 * @link Map
-	 * @var Recipient[]
+	 * @var string
 	 */
-	public $copy_to;
-
-	//-------------------------------------------------------------------------------- $blind_copy_to
-	/**
-	 * @link Map
-	 * @var Recipient[]
-	 */
-	public $blind_copy_to;
+	public $send_message;
 
 	//-------------------------------------------------------------------------------------- $subject
 	/**
@@ -69,44 +112,36 @@ class Email
 	 */
 	public $subject;
 
-	//----------------------------------------------------------------------------------------- $date
-	/**
-	 * @var Date_Time
-	 */
-	public $date;
-
-	//-------------------------------------------------------------------------------------- $headers
-	/**
-	 * @var string[]
-	 */
-	public $headers = [];
-
-	//------------------------------------------------------------------------------------ $send_date
-	/**
-	 * @var Date_Time
-	 */
-	public $send_date;
-
-	//--------------------------------------------------------------------------------- $receive_date
-	/**
-	 * @var Date_Time
-	 */
-	public $receive_date;
-
-	//-------------------------------------------------------------------------------------- $content
-	/**
-	 * @var string
-	 * @multiline
-	 * @max_length 10000000
-	 */
-	public $content;
-
-	//---------------------------------------------------------------------------------- $attachments
+	//------------------------------------------------------------------------------------------- $to
 	/**
 	 * @link Map
-	 * @var Attachment[]
+	 * @var Recipient[]
 	 */
-	public $attachments;
+	public $to;
+
+	//----------------------------------------------------------------------------------------- $uidl
+	/**
+	 * The unique identification number of the mail into the distant server once it has been
+	 * received / sent
+	 *
+	 * @var string
+	 */
+	public $uidl;
+
+	//----------------------------------------------------------------------------------- beforeWrite
+	/**
+	 * Called before write : optimize attachments and recipients.
+	 * - Reuse those which are already stored into the data storage.
+	 * - Do not enable to alter an already stored attachment or recipient.
+	 */
+	public function beforeWrite()
+	{
+		if (!isset($this->date)) {
+			$this->date = new Date_Time();
+		}
+		$this->uniqueAttachments();
+		$this->uniqueRecipents();
+	}
 
 	//--------------------------------------------------------------------------- getHeadersAsStrings
 	/**
@@ -155,6 +190,67 @@ class Email
 			}
 		}
 		return $recipients;
+	}
+
+	//----------------------------------------------------------------------------- uniqueAttachments
+	/**
+	 * Be sure that attachments are unique into data storage
+	 * - they can be common for several emails
+	 * - modification of attachments is not allowed
+	 */
+	private function uniqueAttachments()
+	{
+		/** @var $search Attachment */
+		$search = Search_Object::create(Attachment::class);
+		foreach ($this->attachments as $attachment) {
+			$search->hash = $attachment->hash;
+			if (
+				$search->hash
+				&& ($find = Dao::searchOne($search))
+				&& ($find->name == $attachment->name)
+				&& ($find->content === $attachment->content)
+			) {
+				Dao::replace($attachment, $find, false);
+			}
+			else {
+				Dao::disconnect($attachment);
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------- uniqueRecipents
+	/**
+	 * Be sure that recipients are unique into data storage
+	 * - they can be common to several emails
+	 * - modification of recipients is not allowed
+	 */
+	private function uniqueRecipents()
+	{
+		/** @var $search Recipient */
+		$search = Search_Object::create(Recipient::class);
+		$recipients = array_merge(
+			[$this->from, $this->reply_to, $this->return_path],
+			$this->to, $this->copy_to, $this->blind_copy_to
+		);
+		$already = [];
+		foreach ($recipients as $recipient) {
+			if (isset($recipient)) {
+				$search->email = $recipient->email;
+				$search->name  = $recipient->name;
+				if (isset($already[strval($search)])) {
+					Dao::replace($recipient, $already[strval($search)], false);
+				}
+				else {
+					$already[strval($search)] = $recipient;
+					if ($find = Dao::searchOne($recipient)) {
+						Dao::replace($recipient, $find, false);
+					}
+					else {
+						Dao::disconnect($recipient);
+					}
+				}
+			}
+		}
 	}
 
 }

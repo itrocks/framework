@@ -43,9 +43,7 @@ class Encoder
 	protected function addAttachments(Mail_mime $mail)
 	{
 		foreach ($this->email->attachments as $attachment) {
-			$file = new File();
-			$file->content = $attachment->content;
-			$mail->addAttachment($file->temporary_file_name);
+			$mail->addAttachment($attachment->temporary_file_name);
 		}
 	}
 

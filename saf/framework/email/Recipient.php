@@ -6,6 +6,9 @@ use SAF\Framework\Traits\Has_Name;
 
 /**
  * An email recipient (or sender, this object can be used for both)
+ *
+ * @representative name, email
+ * @sort name, email
  */
 class Recipient
 {
@@ -13,6 +16,10 @@ class Recipient
 	use Has_Name;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $email string
+	 * @param $name  string
+	 */
 	public function __construct($email = null, $name = null)
 	{
 		if (isset($email)) $this->email = $email;
