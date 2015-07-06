@@ -28,7 +28,7 @@ class Column implements Sql\Column
 	/**
 	 * Mysql data type
 	 *
- * Value can be 'tinyint(l)', 'smallint(l)', 'mediumint(l)', 'int(l)', 'integer(l)', 'bigint(l)',
+	 * Value can be 'tinyint(l)', 'smallint(l)', 'mediumint(l)', 'int(l)', 'integer(l)', 'bigint(l)',
 	 * 'float(p)', 'double', 'real', 'decimal(l,d)', 'numeric(l,d)', 'bit(l)',
 	 * 'date', 'time', 'datetime', 'timestamp', 'year',
 	 * 'char', 'binary(l)', 'varchar(l)', 'varbinary(l)',
@@ -306,7 +306,12 @@ class Column implements Sql\Column
 		if (!$this->canBeNull()) {
 			$sql .= ' NOT NULL';
 		}
-		if ($postfix != ' auto_increment') {
+		if (
+			($postfix != ' auto_increment')
+			&& !in_array($type, [
+				'tinyblob', 'tinytext', 'blob', 'text', 'mediumblob', 'mediumtext', 'longblob', 'longtext'
+			])
+		) {
 			$sql .= ' DEFAULT ' . Value::escape($this->getDefaultValue());
 		}
 		$sql .= $postfix;

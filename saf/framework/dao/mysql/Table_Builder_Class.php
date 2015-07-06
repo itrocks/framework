@@ -82,7 +82,7 @@ class Table_Builder_Class
 							($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
 							&& ($property->getAnnotation('store')->value != 'string')
 						) {
-							$class_name                              = $property->getType()->asString();
+							$class_name = $property->getType()->asString();
 							$this->dependencies_context[$class_name] = $class_name;
 							$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
 							$table->addIndex(Index::buildLink($property->getAnnotation('storage')->value));
