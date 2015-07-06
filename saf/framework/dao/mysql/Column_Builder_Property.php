@@ -12,7 +12,7 @@ use SAF\Framework\Tools\Date_Time;
 trait Column_Builder_Property
 {
 
-	//------------------------------------------------------------------------- propertyTypeToDefault
+	//------------------------------------------------------------------------ propertyDefaultToMysql
 	/**
 	 * Gets mysql default value for a property
 	 *
@@ -30,6 +30,9 @@ trait Column_Builder_Property
 			$property_type = $column->getType();
 			if ($property_type->isNumeric()) {
 				$default = $default + 0;
+			}
+			elseif (is_array($default)) {
+				$default = '';
 			}
 		}
 		else {
@@ -189,7 +192,7 @@ trait Column_Builder_Property
 					($property->getAnnotation('set')->value ? 'set' : 'enum')
 					. "('" . join("','", $values) . "')"
 				)
-				: 'char(255)';
+				: 'text';
 		}
 		else {
 			return 'bigint(18) unsigned';

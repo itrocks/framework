@@ -786,10 +786,14 @@ class Link extends Dao\Sql\Link
 								$element_type = $property->getType()->getElementType();
 								// write basic
 								if ($element_type->isBasic()) {
-									$write[$property->getAnnotation('storage')->value] = $value;
+									$write[$property->getAnnotation('storage')->value] = is_array($value)
+										? json_encode($value)
+										: $value;
 								}
 								elseif ($property->getAnnotation('store')->value == 'string') {
-									$write[$property->getAnnotation('storage')->value] = strval($value);
+									$write[$property->getAnnotation('storage')->value] = is_array($value)
+										? serialize($value)
+										: strval($value);
 								}
 								// write object id if set or object if no id is set (new object)
 								else {
@@ -1001,7 +1005,8 @@ class Link extends Dao\Sql\Link
 		$insert_builder = new Map_Insert($property);
 		$id_set = [];
 		foreach ($map as $element) {
-			$id = $this->getObjectIdentifier($element);
+			$id = $this->getObjectIdentifier($element)
+				?: $this->getObjectIdentifier($this->write($element));
 			if (!isset($old_map[$id])) {
 				$query = $insert_builder->buildQuery($object, $element);
 				$this->connection->query($query);
