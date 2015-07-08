@@ -29,13 +29,19 @@ $('document').ready(function()
 				}
 			});
 
-			//--------------------------------------------------- .search input, .search textarea keydown
+			//----------------------------------------------------- .search input|select|textarea keydown
 			// reload list when #13 pressed into a search input
-			$this.find('.search').find('input, textarea').keydown(function(event)
+			$this.find('.search').find('input, select, textarea').keydown(function(event)
 			{
 				if (event.keyCode == 13) {
 					$(this).closest('form').submit();
 				}
+			});
+
+			//---------------------------------------------------------------------- .search select click
+			$this.find('.search').find('select').click(function()
+			{
+				$(this).closest('form').submit();
 			});
 
 			//--------------------------------------------------------------------------- table droppable
