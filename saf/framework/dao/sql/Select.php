@@ -189,7 +189,7 @@ class Select
 	{
 		if (isset($this->callback)) {
 			foreach ($data_store as $object) {
-				if (call_user_func($this->callback, $object) === false) {
+				if (call_user_func_array($this->callback, [$object, $this->link]) === false) {
 					return false;
 				}
 			}
@@ -237,7 +237,7 @@ class Select
 		return $this->executeQuery($this->prepareQuery(), $data_store, $key);
 	}
 
-	//----------------------------------------------------------------------------- executeClassQuery
+	//---------------------------------------------------------------------------------- executeQuery
 	/**
 	 * A simple execute() feature to use with an already built query
 	 * Useful for imports from external SQL data sources
