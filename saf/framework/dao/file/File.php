@@ -8,6 +8,7 @@ use SAF\Framework\Dao\File\Type;
 use SAF\Framework\Dao\File\Type_Builder;
 use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Files;
+use SAF\Framework\Tools\Paths;
 use SAF\Framework\Traits\Has_Name;
 
 /**
@@ -103,8 +104,8 @@ class File
 		return $this->content;
 	}
 
-	//--------------------------------------------------------------------------------------- getHash
 	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
+	//--------------------------------------------------------------------------------------- getHash
 	/**
 	 * Gets $hash, or calculate it from content if not set
 	 *
@@ -118,8 +119,8 @@ class File
 		return $this->hash;
 	}
 
-	//---------------------------------------------------------------------------getTemporaryFileName
 	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
+	//-------------------------------------------------------------------------- getTemporaryFileName
 	/**
 	 * Gets temporary file name, or write content into a temporary file name and get this name if not
 	 * set or file does not exist
@@ -144,6 +145,17 @@ class File
 		return $this->temporary_file_name;
 	}
 
+	//--------------------------------------------------------------------------- getTemporaryFileUri
+	/**
+	 * Gets the temporary file URI, relative to the document root
+	 *
+	 * @return string
+	 */
+	public function getTemporaryFileUri()
+	{
+		return Paths::$project_uri . SL . $this->temporary_file_name;
+	}
+
 	//--------------------------------------------------------------------------------------- getType
 	/**
 	 * @return Type
@@ -153,8 +165,8 @@ class File
 		return Type_Builder::build($this->name);
 	}
 
-	//------------------------------------------------------------------------------------ setContent
 	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
+	//------------------------------------------------------------------------------------ setContent
 	/**
 	 * @param $content string
 	 */
