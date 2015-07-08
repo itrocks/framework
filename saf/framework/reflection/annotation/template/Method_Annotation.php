@@ -41,6 +41,15 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			if ($pos = strpos($value, '::')) {
 				$type_annotation = new Type_Annotation(substr($value, 0, $pos), $class);
 				$type_annotation->applyNamespace($class->getNamespaceName());
+				if ($class_property instanceof Reflection_Property) {
+					if (!@class_exists($type_annotation->value)) {
+						$type_annotation->value = substr($value, 0, $pos);
+						$type_annotation->applyNamespace(
+							$class->getNamespaceName(),
+							Reflection_Class::of($class_property->getDeclaringClassName())->getNamespaceUse()
+						);
+					}
+				}
 				if (!@class_exists($type_annotation->value)) {
 					$type_annotation->value = substr($value, 0, $pos);
 					$type_annotation->applyNamespace(

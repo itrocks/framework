@@ -4,6 +4,7 @@ namespace SAF\Framework\Widget\Add;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
@@ -46,6 +47,9 @@ class Add_Controller extends Edit_Controller
 	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
 		$object = $parameters->getMainObject($class_name);
+		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
+			$property->setValue($object, $property->getDefaultValue());
+		}
 		$objects = $parameters->getObjects();
 		if (count($objects) > 1) {
 			foreach (array_slice($objects, 1) as $property_name => $value) {
