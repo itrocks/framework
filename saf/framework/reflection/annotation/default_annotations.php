@@ -13,6 +13,12 @@ use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
  */
 Parser::$default_annotations = [
 
+	// @after_read afterRead
+	// This is a Multiple_Annotation
+	// Declare one or several methods to call after the object is read using a data link
+	// - These methods may accept the resulting object and Dao\Option[] as arguments, if needed
+	__NAMESPACE__ . '\Class_\After_Read_Annotation' => Method_Annotation::class,
+
 	// @after_transform afterTransform
 	// This is a Multiple_Annotation
 	// Declare one or several methods to call after the object is being created from a transformation

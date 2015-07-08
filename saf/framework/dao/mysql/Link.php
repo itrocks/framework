@@ -60,6 +60,44 @@ class Link extends Dao\Sql\Link
 		$this->connect($parameters);
 	}
 
+	//------------------------------------------------------------------------------------- afterRead
+	/**
+	 * @param $object object
+	 */
+	private function afterRead($object)
+	{
+		foreach (
+			(new Reflection_Class(get_class($object)))->getAnnotations('after_read') as $after_read
+		) {
+			/** @var $after_read Method_Annotation */
+			if ($after_read->call($object, [$this, []]) === false) {
+				break;
+			}
+		}
+	}
+
+	//----------------------------------------------------------------------------- afterReadMultiple
+	/**
+	 * @param $objects object[]
+	 * @param $options Option[]
+	 */
+	private function afterReadMultiple($objects, $options = [])
+	{
+		if ($objects) {
+			/** @var $after_reads Method_Annotation[] */
+			$after_reads = (new Reflection_Class(get_class(reset($objects))))->getAnnotations(
+				'after_read'
+			);
+			foreach ($objects as $object) {
+				foreach ($after_reads as $after_read) {
+					if ($after_read->call($object, [$this, $options]) === false) {
+						break;
+					}
+				}
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Begin transaction
@@ -564,17 +602,20 @@ class Link extends Dao\Sql\Link
 			$result = $this->connection->query($query);
 			if (isset($class_name)) {
 				$class_name = Builder::className($class_name);
-				$response = [];
+				$objects = [];
 				while ($object = $result->fetch_object($class_name)) {
 					if (isset($object->id)) {
-						$response[$object->id] = $object;
+						$objects[$object->id] = $object;
 					}
 					else {
-						$response[] = $object;
+						$objects[] = $object;
 					}
 				}
 				$result->free();
-				return $response;
+				if ($class_name) {
+					$this->afterReadMultiple($objects);
+				}
+				return $objects;
 			}
 			return $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
 		}
@@ -611,6 +652,7 @@ class Link extends Dao\Sql\Link
 		$this->free($result_set);
 		if ($object) {
 			$this->setObjectIdentifier($object, $identifier);
+			$this->afterRead($object);
 		}
 		return $object;
 	}
@@ -632,7 +674,9 @@ class Link extends Dao\Sql\Link
 		if ($options) {
 			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
-		return $this->fetchAll($class_name, $options, $result_set);
+		$objects = $this->fetchAll($class_name, $options, $result_set);
+		$this->afterReadMultiple($objects, $options);
+		return $objects;
 	}
 
 	//----------------------------------------------------------------------------- replaceReferences
@@ -705,7 +749,9 @@ class Link extends Dao\Sql\Link
 		if ($options) {
 			$this->getRowsCount($result_set, 'SELECT', $options);
 		}
-		return $this->fetchAll($class_name, $options, $result_set);
+		$objects = $this->fetchAll($class_name, $options, $result_set);
+		$this->afterReadMultiple($objects, $options);
+		return $objects;
 	}
 
 	//------------------------------------------------------------------------------------ setContext
