@@ -172,12 +172,7 @@ class Reflection_Property extends ReflectionProperty
 		foreach ($traits as $trait) {
 			$properties = $trait->getProperties();
 			if (isset($properties[$this->name])) {
-				return $trait;
-			}
-		}
-		foreach ($traits as $trait) {
-			if ($used_trait = $this->getDeclaringTraitInternal($trait)) {
-				return $used_trait;
+				return $this->getDeclaringTraitInternal($trait) ?: $trait;
 			}
 		}
 		return null;
