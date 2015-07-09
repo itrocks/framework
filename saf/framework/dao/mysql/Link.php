@@ -98,6 +98,36 @@ class Link extends Dao\Sql\Link
 		}
 	}
 
+	//----------------------------------------------------------------------------------- beforeWrite
+	/**
+	 * @param $object  object
+	 * @param $options Option[]
+	 * @return boolean
+	 */
+	public function beforeWrite($object, $options)
+	{
+		/** @var $before_writes Method_Annotation[] */
+		$before_writes = (new Reflection_Class(get_class($object)))->getAnnotations('before_write');
+		if ($before_writes) {
+			foreach ($options as $option) {
+				if ($option instanceof Only) {
+					$only = $option;
+					break;
+				}
+			}
+			foreach ($before_writes as $before_write) {
+				$response = $before_write->call($object, [$this, $options]);
+				if ($response === false) {
+					return false;
+				}
+				elseif (is_array($response) && isset($only)) {
+					$only->properties = array_merge($response, $only->properties);
+				}
+			}
+		}
+		return true;
+	}
+
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Begin transaction
@@ -255,6 +285,10 @@ class Link extends Dao\Sql\Link
 							// TODO dead code ? @link Collection is only for @var object[], not for @var object
 							else {
 								$this->delete($property->getValue($object));
+								trigger_error(
+									"Dead code into Mysql\\Link::delete() on {$property->name} is not so dead",
+									E_USER_NOTICE
+								);
 							}
 						}
 					}
@@ -782,24 +816,18 @@ class Link extends Dao\Sql\Link
 	 */
 	public function write($object, $options = [])
 	{
-		$will_write = true;
-		foreach (
-			(new Reflection_Class(get_class($object)))->getAnnotations('before_write') as $before_write
-		) {
-			/** @var $before_write Method_Annotation */
-			if ($before_write->call($object, [$this, $options]) === false) {
-				$will_write = false;
-				break;
-			}
-		}
-
-		if ($will_write) {
+		if ($this->beforeWrite($object, $options)) {
 
 			if (Null_Object::isNull($object)) {
 				$this->disconnect($object);
 			}
 			$class = new Link_Class(get_class($object));
 			$id_property = 'id';
+			foreach ($options as $option) {
+				if ($option instanceof Only) {
+					$only = isset($only) ? array_merge($only, $option->properties) : $option->properties;
+				}
+			}
 			do {
 				/** @var $link Class_\Link_Annotation */
 				$link = $class->getAnnotation('link');
@@ -812,11 +840,6 @@ class Link extends Dao\Sql\Link
 				$exclude_properties = $link->value
 					? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 					: [];
-				foreach ($options as $option) {
-					if ($option instanceof Only) {
-						$only = array_merge(isset($only) ? $only : [], $option->properties);
-					}
-				}
 				/** @var $properties Reflection_Property[] */
 				$properties = $class->accessProperties();
 				$properties = Replaces_Annotations::removeReplacedProperties($properties);
@@ -892,7 +915,6 @@ class Link extends Dao\Sql\Link
 						}
 					}
 				}
-				unset($only);
 				Getter::$ignore = $aop_getter_ignore;
 				if ($write) {
 					// link class : id is the couple of composite properties values
@@ -958,10 +980,9 @@ class Link extends Dao\Sql\Link
 				$class       = $link->value ? new Link_Class($link->value) : null;
 			} while ($class && !Null_Object::isNull($object, $class->name));
 
-			foreach (
-				(new Reflection_Class(get_class($object)))->getAnnotations('after_write') as $after_write
-			) {
-				/** @var $after_write Method_Annotation */
+			/** @var $after_writes Method_Annotation[] */
+			$after_writes = (new Reflection_Class(get_class($object)))->getAnnotations('after_write');
+			foreach ($after_writes as $after_write) {
 				if ($after_write->call($object, [$this, $options]) === false) {
 					break;
 				}

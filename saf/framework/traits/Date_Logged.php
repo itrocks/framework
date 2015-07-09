@@ -31,13 +31,18 @@ trait Date_Logged
 	//------------------------------------------------------------------------- beforeWriteDateLogged
 	/**
 	 * Calculate $creation and $last_update dates at beginning of each Dao::write() call
+	 *
+	 * @return string[] properties added to Only
 	 */
 	public function beforeWriteDateLogged()
 	{
 		if (!isset($this->creation) || $this->creation->isEmpty()) {
 			$this->creation = new Date_Time();
+			$only[] = 'creation';
 		}
 		$this->last_update = new Date_Time();
+		$only[] = 'last_update';
+		return $only;
 	}
 
 }
