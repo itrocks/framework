@@ -113,18 +113,24 @@ trait Scanners
 				. ')+'                       // end annotations loop
 				. '%';
 			foreach ($annotations as $annotation) {
-				preg_match_all(str_replace('@annotation', AT . $annotation, $expr), $documentation, $match);
-				if ($match[1] && (($annotation != 'link') || !isset($disable[$match[1][0]]))) {
-					if ($annotation == 'getter') {
-						$disable[$match[1][0]] = true;
+				preg_match_all(
+					str_replace('@annotation', AT . $annotation, $expr), $documentation, $matches
+				);
+				if ($matches[1]) {
+					foreach ($matches[1] as $i => $match) {
+						if (($annotation != 'link') || !isset($disable[$match])) {
+							if ($annotation == 'getter') {
+								$disable[$match] = true;
+							}
+							$type = ($annotation == 'setter') ? 'write' : 'read';
+							$overrides[] = [
+								'type'          => $type,
+								'property_name' => $matches[1][$i],
+								'class_name'    => $matches[2][$i],
+								'method_name'   => $matches[3][$i]
+							];
+						}
 					}
-					$type = ($annotation == 'setter') ? 'write' : 'read';
-					$overrides[] = [
-						'type'          => $type,
-						'property_name' => $match[1][0],
-						'class_name'    => $match[2][0],
-						'method_name'   => $match[3][0]
-					];
 				}
 			}
 		}
