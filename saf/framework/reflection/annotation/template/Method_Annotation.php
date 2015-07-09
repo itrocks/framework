@@ -40,21 +40,26 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				: $class_property;
 			if ($pos = strpos($value, '::')) {
 				$type_annotation = new Type_Annotation(substr($value, 0, $pos), $class);
-				$type_annotation->applyNamespace($class->getNamespaceName());
-				if ($class_property instanceof Reflection_Property) {
-					if (!@class_exists($type_annotation->value)) {
-						$type_annotation->value = substr($value, 0, $pos);
-						$type_annotation->applyNamespace(
-							$class->getNamespaceName(),
-							Reflection_Class::of($class_property->getDeclaringClassName())->getNamespaceUse()
-						);
-					}
+				// if the property is declared into the final class : try using the class namespace name
+				if (
+					!($class_property instanceof Reflection_Property)
+					|| ($class_property->getDeclaringTraitName() === $class_property->getFinalClassName())
+				) {
+					$type_annotation->applyNamespace($class->getNamespaceName());
 				}
 				if (!@class_exists($type_annotation->value)) {
-					$type_annotation->value = substr($value, 0, $pos);
-					$type_annotation->applyNamespace(
-						$class->getNamespaceName(),
-						Reflection_Class::of($class->getName())->getNamespaceUse()
+					$this->searchIntoDeclaringTrait($class_property, $type_annotation, $value, $pos);
+				}
+				if (!@class_exists($type_annotation->value)) {
+					$this->searchIntoFinalClass($class_property, $type_annotation, $value, $pos);
+				}
+				if (!@class_exists($type_annotation->value)) {
+					trigger_error(
+						sprintf(
+							'Not found full class name for Method_Annotation %1 value %2 class %3 property %4',
+							$annotation_name, $value, $class->getName(), $class_property->getName()
+						),
+						E_USER_ERROR
 					);
 				}
 				$value = $type_annotation->value . substr($value, $pos);
@@ -85,6 +90,56 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			return call_user_func_array($this->value, array_merge([$object], $arguments));
 		}
 		return call_user_func_array([$object, rParse($this->value, '::')], $arguments);
+	}
+
+	//---------------------------------------------------------------------- searchIntoDeclaringTrait
+	/**
+	 * Search using the property declaring trait namespace and uses
+	 *
+	 * @param $class_property  Reflection
+	 * @param $type_annotation Type_Annotation
+	 * @param $value           string
+	 * @param $pos             integer
+	 * @return Reflection_Class
+	 */
+	private function searchIntoDeclaringTrait(
+		Reflection $class_property, Type_Annotation $type_annotation, $value, $pos
+	) {
+		if ($class_property instanceof Reflection_Property) {
+			$php_class = Reflection_Class::of($class_property->getDeclaringTraitName());
+			$type_annotation->value = substr($value, 0, $pos);
+			$type_annotation->applyNamespace(
+				$php_class->getNamespaceName(), $php_class->getNamespaceUse()
+			);
+		}
+	}
+
+	//-------------------------------------------------------------------------- searchIntoFinalClass
+	/**
+	 * TODO property you'd better do this into the last @override field @$annotation_name class
+	 *
+	 * @param $class_property  Reflection
+	 * @param $type_annotation Type_Annotation
+	 * @param $value           string
+	 * @param $pos             integer
+	 */
+	private function searchIntoFinalClass(
+		Reflection $class_property, Type_Annotation $type_annotation, $value, $pos
+	) {
+		$class = ($class_property instanceof Reflection_Property)
+			? $class_property->getFinalClass()
+			: $class_property;
+		trigger_error(
+			sprintf(
+				'Looking namespace use for Method_Annotation into final class %1 for property %2'
+					. ' is not reliable',
+				$class->getName(), $class_property->getName()
+			),
+			E_USER_WARNING
+		);
+		$php_class = Reflection_Class::of($class->getName());
+		$type_annotation->value = substr($value, 0, $pos);
+		$type_annotation->applyNamespace($class->getNamespaceName(), $php_class->getNamespaceUse());
 	}
 
 }
