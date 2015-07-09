@@ -266,7 +266,7 @@ class Date_Time extends DateTime implements Can_Be_Empty
 
 	//------------------------------------------------------------------------------------------- now
 	/**
-	 * Return current date-time
+	 * Returns current date-time
 	 *
 	 * @return Date_Time
 	 */
@@ -288,6 +288,17 @@ class Date_Time extends DateTime implements Can_Be_Empty
 		return ($quantity instanceof DateInterval)
 			? parent::sub($quantity)
 			: $this->add(-$quantity, $unit);
+	}
+
+	//----------------------------------------------------------------------------------------- today
+	/**
+	 * Returns current date, with an empty time (00:00:00)
+	 *
+	 * @return Date_Time
+	 */
+	public static function today()
+	{
+		return new Date_Time(date('Y-m-d 00:00:00'));
 	}
 
 	//----------------------------------------------------------------------------------------- toISO
