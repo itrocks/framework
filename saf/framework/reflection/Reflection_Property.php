@@ -20,6 +20,14 @@ class Reflection_Property extends ReflectionProperty
 {
 	use Annoted;
 
+	//------------------------------------------------------------------------------ $declaring_trait
+	/**
+	 * Cache for getDeclaringTrait() : please do never use it directly
+	 *
+	 * @var Reflection_Class
+	 */
+	private $declaring_trait;
+
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * Cached value for the doc comment (set by getDocComment() only when $use is true)
@@ -139,21 +147,52 @@ class Reflection_Property extends ReflectionProperty
 
 	//----------------------------------------------------------------------------- getDeclaringTrait
 	/**
-	 * Gets the real declaring trait (or class if declared in class) of a property
+	 * Gets the declaring trait for the reflected property
+	 * If the property has been declared into a class, this returns this class
 	 *
 	 * @return Reflection_Class
 	 */
 	public function getDeclaringTrait()
 	{
-		foreach ($this->getDeclaringClass()->getTraits() as $trait) {
+		if (!isset($this->declaring_trait)) {
+			$this->declaring_trait = $this->getDeclaringTraitInternal($this->getDeclaringClass())
+				?: $this->getDeclaringClass();
+		}
+		return $this->declaring_trait;
+	}
+
+	//--------------------------------------------------------------------- getDeclaringTraitInternal
+	/**
+	 * @param $class Reflection_Class
+	 * @return Reflection_Class
+	 */
+	private function getDeclaringTraitInternal(Reflection_Class $class)
+	{
+		$traits = $class->getTraits();
+		foreach ($traits as $trait) {
 			$properties = $trait->getProperties();
 			if (isset($properties[$this->name])) {
-				$property = $properties[$this->name];
-				$declaring_trait = $property->getDeclaringTrait();
-				return isset($declaring_trait) ? $declaring_trait : $property->getDeclaringClass();
+				return $trait;
 			}
 		}
-		return $this->getDeclaringClass();
+		foreach ($traits as $trait) {
+			if ($used_trait = $this->getDeclaringTraitInternal($trait)) {
+				return $used_trait;
+			}
+		}
+		return null;
+	}
+
+	//------------------------------------------------------------------------- getDeclaringTraitName
+	/**
+	 * Gets the declaring trait name for the reflected property
+	 * If the property has been declared into a class, this returns this class name
+	 *
+	 * @return string
+	 */
+	public function getDeclaringTraitName()
+	{
+		return $this->getDeclaringTrait()->getName();
 	}
 
 	//------------------------------------------------------------------------------- getDefaultValue

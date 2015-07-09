@@ -9,7 +9,8 @@ interface Reflection_Class_Component extends Reflection
 
 	//----------------------------------------------------------------------------- getDeclaringClass
 	/**
-	 * Gets declaring class
+	 * Gets the declaring class for the reflected property.
+	 * If the property has been declared into a trait, returns the class that uses this trait.
 	 *
 	 * @return Reflection_Class
 	 */
@@ -17,7 +18,8 @@ interface Reflection_Class_Component extends Reflection
 
 	//------------------------------------------------------------------------- getDeclaringClassName
 	/**
-	 * Gets declaring class name
+	 * Gets the declaring class name for the reflected property.
+	 * If the property has been declared into a trait, returns the name of the class using the trait.
 	 *
 	 * @return string
 	 */

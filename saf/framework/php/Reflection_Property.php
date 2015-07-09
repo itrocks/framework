@@ -18,6 +18,14 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	 */
 	public $class;
 
+	//------------------------------------------------------------------------------ $declaring_trait
+	/**
+	 * Cache for getDeclaringTrait() : please do never use it directly
+	 *
+	 * @var Reflection_Class
+	 */
+	private $declaring_trait;
+
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * @var string
@@ -83,6 +91,9 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 
 	//----------------------------------------------------------------------------- getDeclaringClass
 	/**
+	 * Gets the declaring class for the reflected property.
+	 * If the property has been declared into a trait, returns the class that uses this trait.
+	 *
 	 * @return Reflection_Class
 	 */
 	public function getDeclaringClass()
@@ -92,13 +103,66 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 
 	//------------------------------------------------------------------------- getDeclaringClassName
 	/**
-	 * Gets the declaring class name for the reflected property
+	 * Gets the declaring class name for the reflected property.
+	 * If the property has been declared into a trait, returns the name of the class using the trait.
 	 *
 	 * @return string
 	 */
 	public function getDeclaringClassName()
 	{
 		return $this->class->name;
+	}
+
+	//----------------------------------------------------------------------------- getDeclaringTrait
+	/**
+	 * Gets the declaring trait for the reflected property
+	 * If the property has been declared into a class, this returns this class
+	 *
+	 * @return Reflection_Class
+	 */
+	public function getDeclaringTrait()
+	{
+		if (!isset($this->declaring_trait)) {
+			$properties = $this->getDeclaringClass()->getProperties();
+			$this->declaring_trait = isset($properties[$this->name])
+				? $this->getDeclaringClass()
+				: $this->getDeclaringTraitInternal($this->getDeclaringClass());
+		}
+		return $this->declaring_trait;
+	}
+
+	//--------------------------------------------------------------------- getDeclaringTraitInternal
+	/**
+	 * @param $class Reflection_Class
+	 * @return Reflection_Class
+	 */
+	private function getDeclaringTraitInternal(Reflection_Class $class)
+	{
+		$traits = $class->getTraits();
+		foreach ($traits as $trait) {
+			$properties = $trait->getProperties();
+			if (isset($properties[$this->name])) {
+				return $trait;
+			}
+		}
+		foreach ($traits as $trait) {
+			if ($used_trait = $this->getDeclaringTraitInternal($trait)) {
+				return $used_trait;
+			}
+		}
+		return null;
+	}
+
+	//------------------------------------------------------------------------- getDeclaringTraitName
+	/**
+	 * Gets the declaring trait name for the reflected property
+	 * If the property has been declared into a class, this returns this class name
+	 *
+	 * @return string
+	 */
+	public function getDeclaringTraitName()
+	{
+		return $this->getDeclaringTrait()->getName();
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment
@@ -268,6 +332,9 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	}
 
 	//------------------------------------------------------------------------------------ scanBefore
+	/**
+	 * TODO doc
+	 */
 	private function scanBefore()
 	{
 		$this->doc_comment = '';
