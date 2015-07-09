@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Objects;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\View\Html\Template;
@@ -33,7 +34,6 @@ class Counter
 	 */
 	public $last_update;
 
-	//----------------------------------------------------------------------------------- $last_value
 	/**
    * @var integer
    */
@@ -65,7 +65,7 @@ class Counter
 	{
 		Dao::begin();
 		if (empty($identifier)) {
-			$identifier = get_class($object);
+			$identifier = Builder::current()->sourceClassName(get_class($object));
 		}
 		$counter = Dao::searchOne(['identifier' => $identifier], get_called_class())
 			?: new Counter($identifier);
