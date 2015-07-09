@@ -295,7 +295,7 @@ class Reflection_Class extends ReflectionClass
 	 * Properties visible for current class, not the privates ones from parents and traits are
 	 * retrieved.
 	 *
-	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @param $flags integer[] T_EXTENDS, T_USE. T_USE has no effect : traits properties will always
 	 * @param $final_class string force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
 	 */
