@@ -912,7 +912,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 					case T_USE:
 						if ($depth === 1) {
-							foreach ($this->scanTraitNames($this->token_key) as $trait_name => $line) {
+							foreach ($this->scanTraitNames() as $trait_name => $line) {
 								$trait_name = $this->fullClassName($trait_name);
 								$this->traits[$trait_name] = $trait_name;
 							}

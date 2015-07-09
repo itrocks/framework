@@ -42,15 +42,6 @@ trait Tokens_Parser
 	 */
 	private $use;
 
-	//---------------------------------------------------------------------------------- currentToken
-	/**
-	 * @return array|string
-	 */
-	private function currentToken()
-	{
-		return $this->tokens[$this->token_key];
-	}
-
 	//--------------------------------------------------------------------------------- fullClassName
 	/**
 	 * Resolves the full class name for any class name in current source code context
@@ -64,24 +55,6 @@ trait Tokens_Parser
 		return (new Type($class_name))->applyNamespace(
 			$this->namespace, $use ? array_keys($this->use) : []
 		);
-	}
-
-	//------------------------------------------------------------------------------------- nextToken
-	/**
-	 * @return array|string
-	 */
-	private function nextToken()
-	{
-		return $this->tokens[++$this->token_key];
-	}
-
-	//--------------------------------------------------------------------------------- previousToken
-	/**
-	 * @return array|string
-	 */
-	private function previousToken()
-	{
-		return $this->tokens[--$this->token_key];
 	}
 
 	//--------------------------------------------------------------------------------- scanClassName
