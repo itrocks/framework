@@ -1009,12 +1009,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						switch ($token[0]) {
 
 							case T_NAMESPACE:
-								$this->namespace = $this->scanClassName($this->token_key);
+								$this->namespace = $this->scanClassName();
 								$this->use = [];
 								break;
 
 							case T_USE:
-								foreach ($this->scanClassNames($this->token_key) as $used => $line) {
+								foreach ($this->scanClassNames() as $used => $line) {
 									$this->use[$used] = $used;
 								}
 								break;
@@ -1051,7 +1051,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 					$this->is_abstract = true;
 				}
 
-				$class_name = $this->fullClassName($this->scanClassName($this->token_key), false);
+				$class_name = $this->fullClassName($this->scanClassName(), false);
 
 			} while (!isset($this->name) || ($class_name !== $this->name));
 			$this->name = $class_name;
