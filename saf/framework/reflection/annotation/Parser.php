@@ -124,15 +124,17 @@ class Parser
 			$annotation_name = substr($doc_comment, $i + 1, $j - $i - 1);
 			$annotation_class = static::getAnnotationClassName($reflection_object, $annotation_name);
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
-			$annotation = self::parseAnnotationValue(
-				$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
-			);
-			if (isset($annotation)) {
-				if ($multiple) {
-					$annotations[$annotation_name][] = $annotation;
-				}
-				else {
-					$annotations[$annotation_name] = $annotation;
+			if ($multiple || !isset($annotations[$annotation_name])) {
+				$annotation = self::parseAnnotationValue(
+					$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
+				);
+				if (isset($annotation)) {
+					if ($multiple) {
+						$annotations[$annotation_name][] = $annotation;
+					}
+					else {
+						$annotations[$annotation_name] = $annotation;
+					}
 				}
 			}
 		}
