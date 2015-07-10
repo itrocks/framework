@@ -8,9 +8,11 @@ use PEAR_Error;
 use SAF\Framework\Builder;
 use SAF\Framework\Email;
 use SAF\Framework\Plugin\Configurable;
+use SAF\Framework\Tools\Date_Time;
 
+/** @noinspection PhpUsageOfSilenceOperatorInspection */
 if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail.php')) {
-	@include_once '/usr/share/php/Mail.php';
+	include_once '/usr/share/php/Mail.php';
 }
 
 /**
@@ -83,7 +85,7 @@ class Sender implements Configurable
 	 * or the default SMTP account configuration.
 	 *
 	 * @param $email  Email
-	 * @return boolean|string true if sent, false if error
+	 * @return boolean|string true if sent, error message if string
 	 */
 	public function send(Email $email)
 	{
@@ -107,9 +109,11 @@ class Sender implements Configurable
 
 		// user error when errors
 		if ($send_result instanceof PEAR_Error) {
-			user_error($send_result->code . ' : ' . $send_result->message, E_USER_ERROR);
-			return false;
+			return $email->send_message = strval($send_result);
 		}
+		$email->send_date = new Date_Time();
+		/** @noinspection PhpUndefinedFieldInspection */
+		$email->uidl = $mail->queued_as;
 		return true;
 	}
 
