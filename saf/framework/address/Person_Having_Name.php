@@ -19,7 +19,10 @@ trait Person_Having_Name
 	public function setDefaultName()
 	{
 		/** @var $this self|Has_Name */
-		$this->name = trim($this->first_name . SP . $this->last_name);
+		$name = trim($this->first_name . SP . $this->last_name);
+		if (strlen($name)) {
+			$this->name = trim($this->first_name . SP . $this->last_name);
+		}
 	}
 
 }
