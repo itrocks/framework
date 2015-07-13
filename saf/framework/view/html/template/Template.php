@@ -71,6 +71,12 @@ class Template
 	 */
 	protected $feature;
 
+	//------------------------------------------------------------------------------------ $functions
+	/**
+	 * @var Functions
+	 */
+	private $functions;
+
 	//--------------------------------------------------------------------------------- $group_values
 	/**
 	 * Stores the last value for each group var name
@@ -163,6 +169,7 @@ class Template
 	 */
 	public function __construct($object = null, $template_file = null, $feature_name = null)
 	{
+		$this->functions = $this->newFunctions();
 		if (isset($feature_name)) {
 			$this->feature = $feature_name;
 			if (!isset($template_file)) {
@@ -500,6 +507,15 @@ class Template
 		return false;
 	}
 
+	//---------------------------------------------------------------------------------- newFunctions
+	/**
+	 * @return Functions
+	 */
+	protected function newFunctions()
+	{
+		return Builder::create(Functions::class);
+	}
+
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * Parse the template replacing templating codes by object's properties and functions results
@@ -713,8 +729,7 @@ class Template
 		$func_name = ($p = strpos($func_name, '('))
 			? (Names::propertyToMethod(substr($func_name, 0, $p), 'get') . substr($func_name, $p))
 			: Names::propertyToMethod($func_name, 'get');
-		return $this->htmlEntities(
-			$this->callFunc(Functions::class, $func_name));
+		return $this->htmlEntities($this->callFunc($this->functions, $func_name));
 	}
 
 	//------------------------------------------------------------------------------- parseFuncParams

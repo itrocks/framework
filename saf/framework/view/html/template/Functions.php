@@ -26,7 +26,7 @@ use SAF\Framework\Widget\Edit\Html_Builder_Property;
 /**
  * Html template functions : those which are called using {@functionName} into templates
  */
-abstract class Functions
+class Functions
 {
 
 	//-------------------------------------------------------------------------------- $inside_blocks
@@ -35,7 +35,7 @@ abstract class Functions
 	 *
 	 * @var string[] key equals value
 	 */
-	private static $inside_blocks = [];
+	private $inside_blocks = [];
 
 	//-------------------------------------------------------------------------------- getApplication
 	/**
@@ -44,7 +44,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return string
 	 */
-	public static function getApplication(
+	public function getApplication(
 		/** @noinspection PhpUnusedParameterInspection */ Template $template
 	) {
 		return new Displayable(
@@ -59,7 +59,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return string
 	 */
-	public static function getClass(Template $template)
+	public function getClass(Template $template)
 	{
 		$object = reset($template->objects);
 		return is_object($object)
@@ -78,7 +78,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return integer
 	 */
-	public static function getCount(Template $template)
+	public function getCount(Template $template)
 	{
 		return count(reset($template->objects));
 	}
@@ -91,7 +91,7 @@ abstract class Functions
 	 * @param $display_full_path boolean If object is a property, returns 'the.full.property.path'
 	 * @return string
 	 */
-	public static function getDisplay(Template $template, $display_full_path = false)
+	public function getDisplay(Template $template, $display_full_path = false)
 	{
 		$object = reset($template->objects);
 		if ($object instanceof Reflection_Property) {
@@ -121,7 +121,7 @@ abstract class Functions
 	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
 	 * @return string
 	 */
-	public static function getEdit(
+	public function getEdit(
 		Template $template, $name = null, $ignore_user = false, $can_always_be_null = false
 	) {
 		if (isset($name)) {
@@ -140,7 +140,7 @@ abstract class Functions
 		if ($object instanceof Default_List_Data) {
 			$class_name = $object->element_class_name;
 			$property_name = prev($template->var_names);
-			list($property, $property_path, $value) = self::toEditPropertyExtra(
+			list($property, $property_path, $value) = $this->toEditPropertyExtra(
 				$class_name, $property_name
 			);
 			$property_edit = new Html_Builder_Property($property, $value);
@@ -221,7 +221,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return boolean
 	 */
-	public static function getEmpty(Template $template)
+	public function getEmpty(Template $template)
 	{
 		return empty(reset($template->objects));
 	}
@@ -233,7 +233,7 @@ abstract class Functions
 	 * @param Template $template
 	 * @return string
 	 */
-	public static function getEndWithMultiple(Template $template)
+	public function getEndWithMultiple(Template $template)
 	{
 		/** @var  $properties Reflection_Property[] */
 		$properties = reset($template->objects);
@@ -256,7 +256,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return string
 	 */
-	public static function getEscapeName(Template $template)
+	public function getEscapeName(Template $template)
 	{
 		return str_replace(DOT, '>', reset($template->objects));
 	}
@@ -268,7 +268,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return Reflection_Property
 	 */
-	public static function getExpand(Template $template)
+	public function getExpand(Template $template)
 	{
 		$property = reset($template->objects);
 		$expanded = Integrated_Properties::expandUsingProperty(
@@ -293,7 +293,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return Displayable
 	 */
-	public static function getFeature(Template $template)
+	public function getFeature(Template $template)
 	{
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
 	}
@@ -305,7 +305,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return mixed
 	 */
-	public static function getFirst(Template $template)
+	public function getFirst(Template $template)
 	{
 		foreach ($template->objects as $array) {
 			if (is_array($array)) {
@@ -323,7 +323,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return boolean
 	 */
-	public static function getHas(Template $template)
+	public function getHas(Template $template)
 	{
 		$object = reset($template->objects);
 		return !empty($object);
@@ -336,7 +336,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return boolean
 	 */
-	public static function getIsFirst(Template $template)
+	public function getIsFirst(Template $template)
 	{
 		$var_name = null;
 		foreach ($template->objects as $array) {
@@ -356,7 +356,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return boolean
 	 */
-	public static function getIsLast(Template $template)
+	public function getIsLast(Template $template)
 	{
 		$var_name = null;
 		foreach ($template->objects as $array) {
@@ -376,7 +376,7 @@ abstract class Functions
 	 * @param Template $template
 	 * @return string|integer
 	 */
-	public static function getKey(Template $template)
+	public function getKey(Template $template)
 	{
 		foreach ($template->objects as $key => $array) {
 			if (is_array($array) && $key) {
@@ -394,7 +394,7 @@ abstract class Functions
 	 * @param $feature  string
 	 * @return string
 	 */
-	public static function getLink(Template $template, $feature = null)
+	public function getLink(Template $template, $feature = null)
 	{
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
@@ -411,7 +411,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return object
 	 */
-	public static function getLoc(Template $template)
+	public function getLoc(Template $template)
 	{
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
@@ -442,7 +442,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return boolean
 	 */
-	public static function getNull(Template $template)
+	public function getNull(Template $template)
 	{
 		return reset($template->objects) === null;
 	}
@@ -454,7 +454,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return boolean
 	 */
-	public static function getNumeric(Template $template)
+	public function getNumeric(Template $template)
 	{
 		return is_numeric(reset($template->objects));
 	}
@@ -468,7 +468,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return object
 	 */
-	public static function getObject(Template $template)
+	public function getObject(Template $template)
 	{
 		$object = null;
 		reset($template->var_names);
@@ -488,7 +488,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return string
 	 */
-	public static function getParse(Template $template)
+	public function getParse(Template $template)
 	{
 		return $template->parseVars(
 			str_replace(['&#123;', '&#125;'], ['{', '}'], reset($template->objects))
@@ -502,7 +502,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return Reflection_Property_Value[]
 	 */
-	public static function getProperties(Template $template)
+	public function getProperties(Template $template)
 	{
 		$object = reset($template->objects);
 		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
@@ -532,10 +532,10 @@ abstract class Functions
 	 * @param $template Template
 	 * @return Reflection_Property_Value[]
 	 */
-	public static function getPropertiesOutOfTabs(Template $template)
+	public function getPropertiesOutOfTabs(Template $template)
 	{
 		$properties = [];
-		foreach (self::getProperties($template) as $property_name => $property) {
+		foreach ($this->getProperties($template) as $property_name => $property) {
 			if (!$property->getAnnotation('group')->value) {
 				$properties[$property_name] = $property;
 			}
@@ -548,7 +548,7 @@ abstract class Functions
 	 * @param $property Reflection_Property
 	 * @return array[]
 	 */
-	private static function getPropertyBlocks(Reflection_Property $property)
+	private function getPropertyBlocks(Reflection_Property $property)
 	{
 		$blocks = [];
 		if ($property->getListAnnotation('integrated')->has('block')) {
@@ -566,7 +566,7 @@ abstract class Functions
 	 * @param $name     string
 	 * @return string
 	 */
-	public static function getProperty(Template $template, $name = null)
+	public function getProperty(Template $template, $name = null)
 	{
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
@@ -582,7 +582,7 @@ abstract class Functions
 	 * @param $name     string
 	 * @return string
 	 */
-	public static function getPropertySelect(Template $template, $name = null)
+	public function getPropertySelect(Template $template, $name = null)
 	{
 		foreach ($template->objects as $property) {
 			if ($property instanceof Reflection_Property) {
@@ -599,7 +599,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return object
 	 */
-	public static function getRootClass(Template $template)
+	public function getRootClass(Template $template)
 	{
 		$object = null;
 		foreach (array_reverse($template->objects) as $object) {
@@ -617,7 +617,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return object
 	 */
-	public static function getRootObject(Template $template)
+	public function getRootObject(Template $template)
 	{
 		$object = null;
 		foreach (array_reverse($template->objects) as $object) {
@@ -635,7 +635,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return object[] the sorted objects collection
 	 */
-	public static function getSort(Template $template)
+	public function getSort(Template $template)
 	{
 		if (
 			is_array($collection = reset($template->objects))
@@ -656,22 +656,22 @@ abstract class Functions
 	 * @param $template Template
 	 * @return string[]
 	 */
-	public static function getStartingBlocks(Template $template)
+	public function getStartingBlocks(Template $template)
 	{
 		$blocks = [];
 		foreach ($template->objects as $property) if ($property instanceof Reflection_Property) {
-			$blocks = array_merge($blocks, self::getPropertyBlocks($property));
+			$blocks = array_merge($blocks, $this->getPropertyBlocks($property));
 		}
 		$starting_blocks = [];
 		foreach ($blocks as $block) {
-			if (!isset(self::$inside_blocks[$block])) {
+			if (!isset($this->inside_blocks[$block])) {
 				$starting_blocks[$block] = $block;
-				self::$inside_blocks[$block] = $block;
+				$this->inside_blocks[$block] = $block;
 			}
 		}
-		foreach (self::$inside_blocks as $block) {
+		foreach ($this->inside_blocks as $block) {
 			if (!isset($blocks[$block])) {
-				unset(self::$inside_blocks[$block]);
+				unset($this->inside_blocks[$block]);
 			}
 		}
 		return $starting_blocks;
@@ -685,9 +685,9 @@ abstract class Functions
 	 * @param $template Template
 	 * @return string[]
 	 */
-	public static function getStoppingBlocks(Template $template)
+	public function getStoppingBlocks(Template $template)
 	{
-		if (self::$inside_blocks) {
+		if ($this->inside_blocks) {
 			$array_of = null;
 			$starting_objects = $template->objects;
 			foreach ($template->objects as $object_key => $object) {
@@ -711,7 +711,7 @@ abstract class Functions
 								array_unshift($starting_objects, $property);
 								$blocks = [];
 								foreach ($starting_objects as $prop) if ($prop instanceof Reflection_Property) {
-									$blocks = array_merge($blocks, self::getPropertyBlocks($prop));
+									$blocks = array_merge($blocks, $this->getPropertyBlocks($prop));
 								}
 								break 2;
 							}
@@ -721,7 +721,7 @@ abstract class Functions
 				unset($starting_objects[$object_key]);
 			}
 			$stopping_blocks = [];
-			foreach (self::$inside_blocks as $block) {
+			foreach ($this->inside_blocks as $block) {
 				if (!isset($blocks[$block])) {
 					$stopping_blocks[$block] = $block;
 				}
@@ -739,7 +739,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return object
 	 */
-	public static function getTop(Template $template)
+	public function getTop(Template $template)
 	{
 		return $template->getObject();
 	}
@@ -751,7 +751,7 @@ abstract class Functions
 	 * @param Template $template
 	 * @return string|integer
 	 */
-	public static function getValue(Template $template)
+	public function getValue(Template $template)
 	{
 		foreach ($template->objects as $key => $array) {
 			if (is_array($array) && $key) {
@@ -768,7 +768,7 @@ abstract class Functions
 	 * @param $template Template
 	 * @return boolean
 	 */
-	public static function getZero(Template $template)
+	public function getZero(Template $template)
 	{
 		return strval(reset($template->objects)) === '0';
 	}
@@ -781,7 +781,7 @@ abstract class Functions
 	 * @param $property   Reflection_Property_Value|Reflection_Property|string
 	 * @return mixed[] Reflection_Property $property, string $property path, mixed $value
 	 */
-	private static function toEditPropertyExtra($class_name, $property)
+	private function toEditPropertyExtra($class_name, $property)
 	{
 		if ($property instanceof Reflection_Property_Value) {
 			$property_path = $property->path;
