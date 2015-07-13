@@ -27,8 +27,8 @@ class Html_Translator implements Registerable
 		$aop->beforeMethod(
 			[Template::class, 'parseString'], [$this, 'translateString']
 		);
-		$aop->beforeMethod(
-			[Option::class, 'setContent'], [$this, 'translateOptionContent']
+		$aop->afterMethod(
+			[Option::class, 'getContent'], [$this, 'translateOptionContent']
 		);
 	}
 
@@ -79,12 +79,12 @@ class Html_Translator implements Registerable
 	/**
 	 * Translate content of html options in Html_Option objects
 	 *
-	 * @param $content string
+	 * @param $result string
 	 */
-	public function translateOptionContent(&$content)
+	public function translateOptionContent(&$result)
 	{
-		if (trim($content)) {
-			$content = Loc::tr($content);
+		if (trim($result)) {
+			$result = Loc::tr($result);
 		}
 	}
 

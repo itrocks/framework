@@ -1197,9 +1197,10 @@ class Template
 	//------------------------------------------------------------------------------ parseSingleValue
 	/**
 	 * @param $property_name string
+	 * @param $format_value  boolean
 	 * @return mixed
 	 */
-	protected function parseSingleValue($property_name)
+	protected function parseSingleValue($property_name, $format_value = true)
 	{
 		$source_object = $object = reset($this->objects);
 		if (!strlen($property_name)) {
@@ -1289,7 +1290,7 @@ class Template
 				);
 				/** @var $builder Property */
 				$object = $builder->buildHtml();
-				$do_not_format_value = true;
+				$format_value = false;
 			}
 			else {
 				$object = $this->parseMethod($object, $property_name);
@@ -1305,7 +1306,7 @@ class Template
 			$object = $this->parseProperty($object, $property_name);
 		}
 		if (
-			!isset($do_not_format_value)
+			$format_value
 			&& ($source_object instanceof Reflection_Property)
 			&& ($property_name == 'value')
 		) {

@@ -56,12 +56,12 @@ class Option extends Element
 
 	//------------------------------------------------------------------------------------ setContent
 	/**
-	 * @param $content string
-	 * @todo This is a patch to make Html_Option::setContent work. Remove this when it will work
+	 * @return string
+	 * @todo This is a patch to make Html_Option::getContent work. Remove this when it will work
 	 */
-	public function setContent($content)
+	public function getContent()
 	{
-		parent::setContent($content);
+		return parent::getContent();
 	}
 
 }

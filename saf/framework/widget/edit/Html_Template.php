@@ -136,13 +136,14 @@ class Html_Template extends Template
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
-	 * @param $var_name  string can be an unique var or path.of.vars
+	 * @param $property_name string can be an unique var or path.of.vars
+	 * @param $format_value  boolean
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	protected function parseSingleValue($var_name)
+	protected function parseSingleValue($property_name, $format_value = true)
 	{
-		$property = reset($this->objects);
-		if (($property instanceof Reflection_Property_Value) && ($var_name == 'value')) {
+		$property = $source_object = reset($this->objects);
+		if (($property instanceof Reflection_Property_Value) && ($property_name == 'value')) {
 			if (
 				($builder = $property->getAnnotation('widget')->value)
 				&& is_a($builder, Property::class, true)
@@ -158,7 +159,7 @@ class Html_Template extends Template
 			else {
 				$value = $property->getType()->isBoolean()
 					? $property->value()
-					: parent::parseSingleValue($var_name);
+					: parent::parseSingleValue($property_name, false);
 				if (
 					($preprop = lLastParse($property->pathAsField(), '[', 1, false))
 					&& (
@@ -191,7 +192,7 @@ class Html_Template extends Template
 			}
 		}
 		else {
-			$value = parent::parseSingleValue($var_name);
+			$value = parent::parseSingleValue($property_name);
 		}
 		return $value;
 	}
