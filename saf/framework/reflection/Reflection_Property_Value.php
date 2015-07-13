@@ -138,6 +138,15 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 		return $this->object;
 	}
 
+	//-------------------------------------------------------------------------------------- isHidden
+	/**
+	 * @return string|boolean 'hidden' if user annotation has 'hidden', else false
+	 */
+	public function isHidden()
+	{
+		return $this->getListAnnotation('user')->has('hidden') ? 'hidden' : false;
+	}
+
 	//----------------------------------------------------------------------------------------- value
 	/**
 	 * @param $value object

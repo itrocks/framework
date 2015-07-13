@@ -68,7 +68,11 @@ input.combo {
 
 fieldset {
 
-	>div:not(.tabber) {
+	>div.hidden {
+		display: none;
+	}
+
+	>div:not(.hidden):not(.tabber) {
 		display: table-row;
 
 		>label, >div {

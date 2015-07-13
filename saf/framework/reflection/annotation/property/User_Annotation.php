@@ -9,19 +9,18 @@ use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
 class User_Annotation extends List_Annotation
 {
 
-	//------------------------------------------------------------------------------------- INVISIBLE
+	const HIDDEN    = 'hidden';
 	const INVISIBLE = 'invisible';
-
-	//-------------------------------------------------------------------------------------- READONLY
-	const READONLY = 'readonly';
+	const READONLY  = 'readonly';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * Annotation value
+	 * - hidden : the property will be generated into lists or output forms, but with a 'hidden' class
 	 * - invisible : the property will not be displayed into lists or output forms
 	 * - readonly : the property will be displayed but will not be accessible for modification
 	 *
-	 * @values invisible, readonly
+	 * @values hidden, invisible, readonly
 	 * @var string[]
 	 */
 	public $value;

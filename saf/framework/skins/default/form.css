@@ -50,78 +50,80 @@ input.combo ~ button, input.combo ~ a {
 /* fieldset */
 fieldset {
   /* block fieldset */ }
-  fieldset > div:not(.tabber) {
+  fieldset > div.hidden {
+    display: none; }
+  fieldset > div:not(.hidden):not(.tabber) {
     display: table-row;
     /* standard field */
     /* multiple field */
     /* columns */ }
-    fieldset > div:not(.tabber) > label, fieldset > div:not(.tabber) > div {
+    fieldset > div:not(.hidden):not(.tabber) > label, fieldset > div:not(.hidden):not(.tabber) > div {
       display: table-cell; }
-    fieldset > div:not(.tabber):not(.multiple):hover {
+    fieldset > div:not(.hidden):not(.tabber):not(.multiple):hover {
       background-color: #defdaf; }
-    fieldset > div:not(.tabber):not(.multiple) > label {
+    fieldset > div:not(.hidden):not(.tabber):not(.multiple) > label {
       font-weight: bold;
       height: 24px;
       vertical-align: middle;
       white-space: nowrap; }
-      fieldset > div:not(.tabber):not(.multiple) > label:after {
+      fieldset > div:not(.hidden):not(.tabber):not(.multiple) > label:after {
         content: " :";
         margin-right: .5em; }
-    fieldset > div:not(.tabber):not(.multiple) > div {
+    fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div {
       height: 24px;
       vertical-align: middle; }
-      fieldset > div:not(.tabber):not(.multiple) > div > input, fieldset > div:not(.tabber):not(.multiple) > div > select, fieldset > div:not(.tabber):not(.multiple) > div > textarea {
+      fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > input, fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > select, fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > textarea {
         margin: 2px 0; }
-    fieldset > div:not(.tabber).multiple {
+    fieldset > div:not(.hidden):not(.tabber).multiple {
       border: lightgrey 1px solid;
       caption-side: bottom;
       display: block; }
-      fieldset > div:not(.tabber).multiple > * {
+      fieldset > div:not(.hidden):not(.tabber).multiple > * {
         display: block;
         padding: 3px; }
-      fieldset > div:not(.tabber).multiple > label {
+      fieldset > div:not(.hidden):not(.tabber).multiple > label {
         background-color: #e9ede7;
         height: 14px;
         font-weight: bold;
         white-space: nowrap; }
-      fieldset > div:not(.tabber).multiple table.collection > thead > tr > th, fieldset > div:not(.tabber).multiple table.map > thead > tr > th {
+      fieldset > div:not(.hidden):not(.tabber).multiple table.collection > thead > tr > th, fieldset > div:not(.hidden):not(.tabber).multiple table.map > thead > tr > th {
         padding: 1px 2px;
         white-space: nowrap; }
-      fieldset > div:not(.tabber).multiple table.collection > tbody > tr:hover, fieldset > div:not(.tabber).multiple table.map > tbody > tr:hover {
+      fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr:hover, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr:hover {
         background-color: #defdaf; }
-      fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td {
+      fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td {
         padding: 1px 5px 0 0;
         white-space: nowrap; }
-        fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td > input, fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td > input, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td > textarea {
+        fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > input, fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > input, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > textarea {
           height: 18px;
           margin-top: -2px;
           vertical-align: top;
           width: 100%; }
-        fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td > select, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td > select {
+        fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > select, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > select {
           height: 22px;
           margin-right: -6px; }
-        fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td.minus, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td.minus {
+        fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td.minus, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td.minus {
           background: url("img/remove_row.png") right 3px no-repeat;
           color: transparent;
           cursor: pointer;
           max-width: 16px;
           min-width: 16px;
           width: 16px; }
-        fieldset > div:not(.tabber).multiple table.collection > tbody > tr > td.multiple > ul, fieldset > div:not(.tabber).multiple table.map > tbody > tr > td.multiple > ul {
+        fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td.multiple > ul, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td.multiple > ul {
           margin-left: .5em;
           padding-left: 1em; }
-    fieldset > div:not(.tabber).columns {
+    fieldset > div:not(.hidden):not(.tabber).columns {
       display: block;
       width: 100%; }
-      fieldset > div:not(.tabber).columns > .column {
+      fieldset > div:not(.hidden):not(.tabber).columns > .column {
         vertical-align: top; }
-        fieldset > div:not(.tabber).columns > .column:not(:first-child) {
+        fieldset > div:not(.hidden):not(.tabber).columns > .column:not(:first-child) {
           margin-left: 4px; }
-        fieldset > div:not(.tabber).columns > .column:not(:last-child) {
+        fieldset > div:not(.hidden):not(.tabber).columns > .column:not(:last-child) {
           float: left; }
-        fieldset > div:not(.tabber).columns > .column:last-child {
+        fieldset > div:not(.hidden):not(.tabber).columns > .column:last-child {
           float: right; }
-          fieldset > div:not(.tabber).columns > .column:last-child fieldset {
+          fieldset > div:not(.hidden):not(.tabber).columns > .column:last-child fieldset {
             display: inline-block; }
   fieldset.block {
     border: 1px solid #a3a3a3;
