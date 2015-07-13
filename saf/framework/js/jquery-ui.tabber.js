@@ -2,7 +2,7 @@
 
 	//-------------------------------------------------------------------------------------- tabber
 	/**
-	 * Very simple table system
+	 * Very simple tabs system
 	 *
 	 * Accepts nested tabs
 	 * Use URI target to directly open withed tab
