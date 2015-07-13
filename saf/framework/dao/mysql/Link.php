@@ -516,7 +516,7 @@ class Link extends Dao\Sql\Link
 			$link = (new Reflection_Class(get_class($object)))->getAnnotation('link');
 		}
 		if ($link->value) {
-			$ids = '';
+			$ids = [];
 			foreach ($link->getLinkProperties() as $link_property) {
 				$property_name = $link_property->getName();
 				$id = parent::getObjectIdentifier($object, $property_name);
@@ -531,9 +531,10 @@ class Link extends Dao\Sql\Link
 						return null;
 					}
 				}
-				$ids .= ($ids ? ',' : '') . $property_name . '=' . $id;
+				$ids[] = $property_name . '=' . $id;
 			}
-			return $ids;
+			sort($ids);
+			return join(',', $ids);
 		}
 		return null;
 	}
@@ -670,20 +671,24 @@ class Link extends Dao\Sql\Link
 	{
 		if (!$identifier) return null;
 		$class_name = Builder::className($class_name);
-		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
-			trigger_error(
-				"You can't read a @link class with it's identifier : it has no identifier !",
-				E_USER_ERROR
-			);
-		}
-		// it's for optimisation purpose only
-		$query = 'SELECT *'
-			. LF . 'FROM' . SP . BQ . $this->storeNameOf($class_name) . BQ
-			. LF . 'WHERE id = ' . $identifier;
 		$this->setContext($class_name);
-		$result_set = $this->connection->query($query);
-		$object = $this->fetch($result_set, $class_name);
-		$this->free($result_set);
+		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
+			$what = [];
+			foreach (explode(',', $identifier) as $identify) {
+				list($column, $value) = explode('=', $identify);
+				$what[$column] = $value;
+			}
+			$object = $this->searchOne($what, $class_name);
+		}
+		else {
+			// it's for optimisation purpose only
+			$query = 'SELECT *'
+				. LF . 'FROM' . SP . BQ . $this->storeNameOf($class_name) . BQ
+				. LF . 'WHERE id = ' . $identifier;
+			$result_set = $this->connection->query($query);
+			$object = $this->fetch($result_set, $class_name);
+			$this->free($result_set);
+		}
 		if ($object) {
 			$this->setObjectIdentifier($object, $identifier);
 			$this->afterRead($object);

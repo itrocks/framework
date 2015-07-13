@@ -92,7 +92,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	/**
 	 * Get link properties names list
 	 *
-	 * @return Reflection_Property[]
+	 * @return Reflection_Property[] The key contains the name of the property
 	 */
 	public function getLinkProperties()
 	{

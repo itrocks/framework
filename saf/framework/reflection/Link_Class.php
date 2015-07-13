@@ -76,7 +76,7 @@ class Link_Class extends Reflection_Class
 	 * ie : properties defined into the class @link annotation, if set,
 	 * otherwise @composite properties
 	 *
-	 * @return string[] key and value are the name of each link property
+	 * @return Reflection_Property[] The key contains the name of the property
 	 */
 	public function getLinkProperties()
 	{

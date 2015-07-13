@@ -122,8 +122,13 @@ abstract class Identifier_Map extends Data_Link
 			if (strpos($id, ',')) {
 				foreach (explode(',', $id) as $property) {
 					list($property_name, $id) = explode('=', $property);
-					$id_property_name = 'id_' . $property_name;
-					$object->$id_property_name = $id;
+					if (is_numeric($id)) {
+						$id_property_name = 'id_' . $property_name;
+						$object->$id_property_name = $id;
+					}
+					else {
+						$object->$property_name = $id;
+					}
 				}
 			}
 			// classic class id
