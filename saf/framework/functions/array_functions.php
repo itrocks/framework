@@ -51,10 +51,14 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
  * @example #3
  * Source array is [$field_name => [$sub_field_name => [$n => $value]]
  * Destination array is [$n => [$field_name => [$sub_field_name => $value]]
- * @param $array array
+ * @example #3 with $case_3 = false
+ * Source array is [$field_name => [$n => [$sub_field_name => $value]]
+ * Destination array is [$n => [$field_name => [$sub_field_name => $value]]
+ * @param $array  array
+ * @param $case_3 boolean
  * @return array
  */
-function arrayFormRevert($array)
+function arrayFormRevert($array, $case_3 = true)
 {
 	if (is_array($array)) {
 		$result = [];
@@ -67,7 +71,7 @@ function arrayFormRevert($array)
 					}
 					else {
 						foreach ($value as $n2 => $value2) {
-							if (is_numeric($n2)) {
+							if (is_numeric($n2) || !$case_3) {
 								// case #2
 								$result[$n][$field_name][$n2] = $value2;
 							}
