@@ -11,6 +11,7 @@ use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\View;
 use SAF\Framework\View\Html\Dom\Anchor;
 use SAF\Framework\View\Html\Dom\Button;
 use SAF\Framework\View\Html\Dom\Element;
@@ -18,7 +19,6 @@ use SAF\Framework\View\Html\Dom\Image;
 use SAF\Framework\View\Html\Dom\Input;
 use SAF\Framework\View\Html\Dom\Select;
 use SAF\Framework\View\Html\Dom\Span;
-use SAF\Framework\View;
 use SAF\Framework\View\Html\Dom\Textarea;
 
 /**
@@ -369,48 +369,49 @@ class Html_Builder_Type
 	 */
 	public function getFieldName($prefix = '', $counter_increment = true)
 	{
-		$field_name = $this->name;
-		if (empty($field_name) && $this->preprop) {
+		if (empty($this->name) && $this->preprop) {
 			$prefix = '';
 		}
 		if (!isset($this->preprop)) {
-			$field_name = $prefix . $field_name;
+			$field_name = $prefix . $this->name;
 		}
 		elseif (substr($this->preprop, -2) == '[]') {
-			$field_name = substr($this->preprop, 0, -2) . '[' . $prefix . $field_name . ']';
-			$count = $this->nextCounter($field_name, $counter_increment);
+			$field_name = substr($this->preprop, 0, -2) . '[' . $prefix . $this->name . ']';
+			$count = $this->template->nextCounter($field_name, $counter_increment);
 			$field_name .= '[' . $count . ']';
 		}
-		elseif (strlen($prefix . $field_name)) {
-			$field_name = $this->preprop . '[' . $prefix . $field_name . ']';
+		elseif (strlen($prefix . $this->name)) {
+			$field_name = (strpos($this->preprop, '[]') !== false)
+				? $this->getRepetitiveFieldName($prefix, $counter_increment)
+				: $this->preprop . '[' . $prefix . $this->name . ']';
 		}
 		else {
-			$count = $this->nextCounter($this->preprop, $counter_increment);
+			$count = $this->template->nextCounter($this->preprop, $counter_increment);
 			$field_name = $this->preprop . '[' . $count . ']';
 		}
 		return $field_name;
 	}
 
-	//----------------------------------------------------------------------------------- nextCounter
+	//------------------------------------------------------------------------ getRepetitiveFieldName
 	/**
-	 * Returns next counter for field name into current form context
-	 *
-	 * @param $field_name string
-	 * @param $increment  boolean
-	 * @return integer
+	 * @param $prefix            string
+	 * @param $counter_increment boolean
+	 * @return string
 	 */
-	public function nextCounter($field_name, $increment = true)
+	private function getRepetitiveFieldName($prefix, $counter_increment)
 	{
-		$form = $this->template->getFormId();
-		$counter = isset($this->template->cache['counter'])
-			? $this->template->cache['counter'] : [];
-		if (!isset($counter[$form])) {
-			$counter[$form] = [];
-		}
-		$count = isset($counter[$form][$field_name]) ? $counter[$form][$field_name] + $increment : 0;
-		$counter[$form][$field_name] = $count;
-		$this->template->cache['counter'] = $counter;
-		return $count;
+		$i = strpos($this->preprop, '[]');
+		$counter_name = substr($this->preprop, 0, $i);
+		$field_name_i = $i + 3;
+		$field_name_j = strpos($this->preprop, ']', $field_name_i);
+		$super_field_name = substr($this->preprop, $field_name_i, $field_name_j - $field_name_i);
+		$counter_name .= '[' . $super_field_name . ']' . '[' . $prefix . $this->name . ']';
+		$count = $this->template->nextCounter($counter_name, $counter_increment);
+		return substr($this->preprop, 0, $i)
+			. '[' . $super_field_name . ']'
+			. '[' . $count . ']'
+			. substr($this->preprop, $field_name_j + 1)
+			. '[' . $prefix . $this->name . ']';
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\View\Html\Template;
 
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper\Collection;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
@@ -273,7 +274,16 @@ abstract class Functions
 		$expanded = Integrated_Properties::expandUsingProperty(
 			$expanded, $property, $template->getParentObject($property->class)
 		);
-		return $expanded ? $expanded : [$property];
+		$result = $expanded ? $expanded : [$property];
+		if ($expand_property_path = $template->getParameter(Parameter::EXPAND_PROPERTY_PATH)) {
+			foreach ($result as $property) {
+				$property->path = $expand_property_path . DOT . $property->path;
+				if (($property instanceof Reflection_Property_Value) && !$property->display) {
+					$property->display = rLastParse($property->path, DOT . DOT, 1, true);
+				}
+			}
+		}
+		return $result;
 	}
 
 	//------------------------------------------------------------------------------------ getFeature
@@ -495,7 +505,7 @@ abstract class Functions
 	public static function getProperties(Template $template)
 	{
 		$object = reset($template->objects);
-		$properties_filter = $template->getParameter('properties_filter');
+		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
 		$class = new Reflection_Class(get_class($object));
 		$result_properties = [];
 		foreach ($class->accessProperties() as $property_name => $property) {

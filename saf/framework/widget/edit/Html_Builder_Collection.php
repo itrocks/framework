@@ -88,7 +88,7 @@ class Html_Builder_Collection extends Collection
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);
 			$id_input = new Input(
-				$preprop . '[id][' . $property_builder->nextCounter($preprop . '[id][]') . ']',
+				$preprop . '[id][' . $property_builder->template->nextCounter($preprop . '[id][]') . ']',
 				isset($object->id) ? $object->id : null
 			);
 			$id_input->setAttribute('type', 'hidden');

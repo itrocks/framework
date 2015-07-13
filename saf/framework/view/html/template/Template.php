@@ -17,6 +17,7 @@ use SAF\Framework\Tools\String;
 use SAF\Framework\View\Html;
 use SAF\Framework\View\Html\Builder\Property;
 use SAF\Framework\View\Html\Template\Functions;
+use SAF\Framework\View\Html\Template\Loop;
 
 /**
  * built-in SAF HTML template engine
@@ -77,6 +78,12 @@ class Template
 	 * @var string[] key is the group var name, value is the last value
 	 */
 	protected $group_values;
+
+	//------------------------------------------------------------------------------------- $included
+	/**
+	 * @var string[] key is the /include/file/path.html, value is its prepared content
+	 */
+	protected $included = [];
 
 	//-------------------------------------------------------------------------------- $main_template
 	/**
@@ -419,15 +426,6 @@ class Template
 		return end($this->objects);
 	}
 
-	//------------------------------------------------------------------------------------ getUriRoot
-	/**
-	 * @return string
-	 */
-	protected function getUriRoot()
-	{
-		return Paths::$uri_root;
-	}
-
 	//--------------------------------------------------------------------------------- getScriptName
 	/**
 	 * @return string
@@ -435,6 +433,15 @@ class Template
 	protected function getScriptName()
 	{
 		return Paths::$script_name;
+	}
+
+	//------------------------------------------------------------------------------------ getUriRoot
+	/**
+	 * @return string
+	 */
+	protected function getUriRoot()
+	{
+		return Paths::$uri_root;
 	}
 
 	//----------------------------------------------------------------------------------------- group
@@ -594,6 +601,18 @@ class Template
 		);
 	}
 
+	//--------------------------------------------------------------------------------- parseConstant
+	/**
+	 * Parse a string constant delimiter by quotes at start and end
+	 *
+	 * @param $const_string string
+	 * @return string
+	 */
+	protected function parseConstant($const_string)
+	{
+		return substr($const_string, 1, -1);
+	}
+
 	//-------------------------------------------------------------------------------- parseConstSpec
 	/**
 	 * @param $object     object
@@ -608,18 +627,6 @@ class Template
 			case 'PHPSESSID': return session_id();
 		}
 		return null;
-	}
-
-	//--------------------------------------------------------------------------------- parseConstant
-	/**
-	 * Parse a string constant delimiter by quotes at start and end
-	 *
-	 * @param $const_string string
-	 * @return string
-	 */
-	protected function parseConstant($const_string)
-	{
-		return substr($const_string, 1, -1);
 	}
 
 	//-------------------------------------------------------------------------------- parseContainer
@@ -748,15 +755,22 @@ class Template
 	{
 		if ((substr($include_uri, -5) === '.html') || (substr($include_uri, -4) === '.php')) {
 			// includes html template
-			$file_name = $this->parseIncludeResolve($include_uri);
-			if ($file_name) {
-				$included = file_get_contents($file_name);
-				if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
-					$i += 12;
-					$j = strpos($included, '<!--END-->');
-					$included = substr($included, $i, $j - $i);
+			if (!isset($this->included[$include_uri])) {
+				$file_name = $this->parseIncludeResolve($include_uri);
+				if ($file_name) {
+					$included = file_get_contents($file_name);
+					if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
+						$i += 12;
+						$j = strpos($included, '<!--END-->');
+						$this->included[$include_uri] = substr($included, $i, $j - $i);
+					}
+					else {
+						$this->included[$include_uri] = $included;
+					}
 				}
-				return $this->parseVars($included);
+			}
+			if (isset($this->included[$include_uri])) {
+				return $this->parseVars($this->included[$include_uri]);
 			}
 			else {
 				return null;
@@ -787,7 +801,6 @@ class Template
 
 	//------------------------------------------------------------------------------------- parseLoop
 	/**
-	 * @todo factorize
 	 * @param $content string
 	 * @param $i       integer
 	 * @param $j       integer
@@ -795,122 +808,43 @@ class Template
 	 */
 	protected function parseLoop(&$content, $i, $j)
 	{
-		$var_name = $search_var_name = substr($content, $i, $j - $i);
-		$length = strlen($var_name);
+		$loop = new Loop();
+		$loop->var_name = substr($content, $i, $j - $i);
+		$length = strlen($loop->var_name);
 		$i += $length + 3;
-		if (substr($var_name, -1) == '>') {
-			$end_last = true;
-			$var_name = substr($var_name, 0, -1);
-		}
-		while (($k = strpos($var_name, '{')) !== false) {
-			$l = strpos($var_name, '}');
-			$this->parseVar($var_name, $k + 1, $l);
-		}
-		$force_equality = ($var_name[0] === '=');
-		$force_condition = (substr($var_name, -1) === '?');
-		if (strpos($var_name, ':')) {
-			list($var_name, $expr) = explode(':', $var_name);
-			$search_var_name = lParse($search_var_name, ':');
-			if (($sep = strpos($expr, '-')) !== false) {
-				$from = substr($expr, 0, $sep);
-				$to = substr($expr, $sep + 1);
-			}
-			else {
-				$from = $to = $expr;
-			}
-			$to = (($to == '') ? null : $to);
-		}
-		else {
-			$expr = null;
-			$from = 0;
-			$to = null;
-		}
-		$length2 = strlen($search_var_name);
-		$j = isset($end_last)
-			? strrpos($content, '<!--' . $search_var_name . '-->', $j + 3)
-			: strpos($content, '<!--' . $search_var_name . '-->', $j + 3);
-		if ($force_condition) {
-			$var_name = substr($var_name, 0, -1);
-		}
-		elseif ($force_equality) {
-			$var_name = substr($var_name, 1);
-		}
-		$loop_content = substr($content, $i, $j - $i);
-		$this->removeSample($loop_content);
-		$separator = $this->parseSeparator($loop_content);
-		$elements = $this->parseValue($var_name, false);
-		if (!$force_condition) {
+		$length2 = $this->parseLoopVarName($loop, $content, $j);
+		$loop->content = substr($content, $i, $j - $i);
+		$this->parseLoopContentSections($loop);
+		$elements = $this->parseValue($loop->var_name, false);
+		if (!$loop->force_condition) {
 			array_unshift($this->var_names, is_object($elements) ? get_class($elements) : '');
 			array_unshift($this->objects, $elements);
 		}
-		if ($from && !is_numeric($from)) {
-			$from = $this->parseValue($from);
+		if ($loop->from && !is_numeric($loop->from)) {
+			$loop->from = $this->parseValue($loop->from);
 		}
-		if ($to && !is_numeric($to)) {
-			$to = $this->parseValue($to);
+		if ($loop->to && !is_numeric($loop->to)) {
+			$loop->to = $this->parseValue($loop->to);
 		}
-		if ($force_equality) {
+		if ($loop->force_equality) {
 			$loop_insert = $elements;
 		}
-		elseif ((is_array($elements) && !$force_condition) || isset($expr)) {
-			$first = true;
-			$loop_insert = '';
-			$counter = 0;
-			$this->preprop($var_name);
-			if (is_array($elements)) foreach ($elements as $key => $element) {
-				$this->preprop($element);
-				$counter++;
-				if (isset($to) && ($counter > $to)) break;
-				if ($counter >= $from) {
-					array_unshift($this->var_names, $key);
-					array_unshift($this->objects, $element);
-					if ($first) {
-						$first = false;
-					}
-					elseif ($separator) {
-						$loop_insert .= $this->parseVars($separator);
-					}
-					$sub_content = $this->parseVars($loop_content);
-					$loop_insert .= $sub_content;
-					array_shift($this->objects);
-					array_shift($this->var_names);
-				}
-				$this->preprop();
-			}
-			$this->preprop();
-			if (isset($to) && ($counter < $to)) {
-				array_unshift($this->var_names, null);
-				array_unshift($this->objects, '');
-				while ($counter < $to) {
-					$counter++;
-					if ($counter >= $from) {
-						if ($first) {
-							$first = true;
-						}
-						else {
-							$loop_insert .= $this->parseVars($separator);
-						}
-						$sub_content = $this->parseVars($loop_content);
-						$loop_insert .= $sub_content;
-					}
-				}
-				array_shift($this->objects);
-				array_shift($this->var_names);
-			}
+		elseif ((is_array($elements) && !$loop->force_condition) || isset($loop->has_expr)) {
+			$loop_insert = $this->parseLoopArray($loop, $elements);
 		}
 		elseif (is_array($elements)) {
-			$loop_insert = empty($elements) ? '' : $this->parseVars($loop_content);
+			$loop_insert = empty($elements) ? '' : $this->parseVars($loop->content);
 		}
 		elseif (is_object($elements)) {
-			$loop_insert = $this->parseVars($loop_content);
+			$loop_insert = $this->parseVars($loop->content);
 		}
 		elseif (!empty($elements)) {
-			$loop_insert = $this->parseVars($loop_content);
+			$loop_insert = $this->parseVars($loop->content);
 		}
 		else {
 			$loop_insert = '';
 		}
-		if (!$force_condition) {
+		if (!$loop->force_condition) {
 			array_shift($this->objects);
 			array_shift($this->var_names);
 		}
@@ -919,6 +853,111 @@ class Template
 		$content = substr($content, 0, $i) . $loop_insert . substr($content, $j);
 		$i += strlen($loop_insert);
 		return $i;
+	}
+
+	//-------------------------------------------------------------------------------- parseLoopArray
+	/**
+	 * @param $loop     Loop
+	 * @param $elements array
+	 * @return string
+	 */
+	protected function parseLoopArray(Loop $loop, $elements)
+	{
+		$loop_insert = '';
+		$this->preprop($loop->var_name);
+		if (is_array($elements)) foreach ($elements as $loop->key => $loop->element) {
+			$parsed_element = $this->parseLoopElement($loop);
+			if (is_null($parsed_element)) break;
+			$loop_insert .= $parsed_element;
+		}
+		$this->preprop();
+		if (isset($loop->to) && ($loop->counter < $loop->to)) {
+			$loop_insert .= $this->parseLoopEmptyElements($loop);
+		}
+		return $loop_insert;
+	}
+
+	//---------------------------------------------------------------------- parseLoopContentSections
+	/**
+	 * @param $loop Loop
+	 */
+	protected function parseLoopContentSections(Loop $loop)
+	{
+		$this->removeSample($loop);
+		$this->parseLoopId($loop);
+		$loop->separator = $this->parseSeparator($loop);
+	}
+
+	//------------------------------------------------------------------------------ parseLoopElement
+	/**
+	 * @param $loop Loop
+	 * @return string|null
+	 */
+	protected function parseLoopElement(Loop $loop)
+	{
+		$this->preprop($loop->element);
+		$loop->counter++;
+		$loop_insert = '';
+		if (isset($loop->to) && ($loop->counter > $loop->to)) {
+			$loop_insert = null;
+		}
+		elseif ($loop->counter >= $loop->from) {
+			array_unshift($this->var_names, $loop->key);
+			array_unshift($this->objects, $loop->element);
+			if ($loop->first) {
+				$loop->first = false;
+			}
+			elseif ($loop->separator) {
+				$loop_insert = $this->parseVars($loop->separator);
+			}
+			$loop_insert .= $this->parseVars($loop->content);
+			array_shift($this->objects);
+			array_shift($this->var_names);
+		}
+		$this->preprop();
+		return $loop_insert;
+	}
+
+	//------------------------------------------------------------------------ parseLoopEmptyElements
+	/**
+	 * @param $loop Loop
+	 * @return string
+	 */
+	protected function parseLoopEmptyElements(Loop $loop)
+	{
+		$loop_insert = '';
+		array_unshift($this->var_names, null);
+		array_unshift($this->objects, '');
+		while ($loop->counter < $loop->to) {
+			$loop->counter++;
+			if ($loop->counter >= $loop->from) {
+				if ($loop->first) {
+					$loop->first = false;
+				}
+				else {
+					$loop_insert .= $this->parseVars($loop->separator);
+				}
+				$sub_content = $this->parseVars($loop->content);
+				$loop_insert .= $sub_content;
+			}
+		}
+		array_shift($this->objects);
+		array_shift($this->var_names);
+		return $loop_insert;
+	}
+
+	//----------------------------------------------------------------------------------- parseLoopId
+	/**
+	 * Removes <!--id--> code from a loop content
+	 *
+	 * @param $loop Loop
+	 */
+	protected function parseLoopId(Loop $loop)
+	{
+		if (($i = strrpos($loop->content, '<!--id-->')) !== false) {
+			$loop->content = substr($loop->content, 0, $i) . substr($loop->content, $i + 9);
+			$loop->has_id = true;
+		}
 	}
 
 	//------------------------------------------------------------------------------------ parseLoops
@@ -951,6 +990,62 @@ class Template
 			}
 		}
 		return $content;
+	}
+
+	//------------------------------------------------------------------------------- parseLoopParams
+	/**
+	 * @param $loop    Loop
+	 * @param $content string
+	 * @param $j       integer
+	 * @return integer the length of the end tag var name
+	 */
+	protected function parseLoopVarName(Loop $loop, &$content, &$j)
+	{
+		$search_var_name = $loop->var_name;
+		if (substr($loop->var_name, -1) == '>') {
+			$end_last = true;
+			$loop->var_name = substr($loop->var_name, 0, -1);
+		}
+
+		while (($k = strpos($loop->var_name, '{')) !== false) {
+			$l = strpos($loop->var_name, '}');
+			$this->parseVar($loop->var_name, $k + 1, $l);
+		}
+
+		$loop->force_equality = ($loop->var_name[0] === '=');
+		if ($loop->force_equality) {
+			$loop->var_name = substr($loop->var_name, 1);
+		}
+
+		$loop->force_condition = (substr($loop->var_name, -1) === '?');
+		if ($loop->force_condition) {
+			$loop->var_name = substr($loop->var_name, 0, -1);
+		}
+
+		if (strpos($loop->var_name, ':')) {
+			list($loop->var_name, $loop->has_expr) = explode(':', $loop->var_name);
+			$search_var_name = lParse($search_var_name, ':');
+			if (($sep = strpos($loop->has_expr, '-')) !== false) {
+				$loop->from = substr($loop->has_expr, 0, $sep);
+				$loop->to   = substr($loop->has_expr, $sep + 1);
+			}
+			else {
+				$loop->from = $loop->to = $loop->has_expr;
+			}
+			$loop->to = (($loop->to == '') ? null : $loop->to);
+		}
+		else {
+			$expr       = null;
+			$loop->from = 0;
+			$loop->to   = null;
+		}
+
+		$length2 = strlen($search_var_name);
+		$j = isset($end_last)
+			? strrpos($content, '<!--' . $search_var_name . '-->', $j + 3)
+			: strpos($content, '<!--' . $search_var_name . '-->', $j + 3);
+
+		return $length2;
 	}
 
 	//-------------------------------------------------------------------------------------- parseMap
@@ -1061,13 +1156,13 @@ class Template
 	/**
 	 * Removes <!--separator-->(...) code from a loop content, and returns the separator content.
 	 *
-	 * @param $content string
+	 * @param $loop Loop
 	 * @return string the separator content
 	 */
-	protected function parseSeparator(&$content)
+	protected function parseSeparator(Loop $loop)
 	{
-		if (($i = strrpos($content, '<!--separator-->')) !== false) {
-			$separator = substr($content, $i + 16);
+		if (($i = strrpos($loop->content, '<!--separator-->')) !== false) {
+			$separator = substr($loop->content, $i + 16);
 			// this separator is not for me if there is any <!--block--> to parse into it's source code.
 			$j = 0;
 			while (strpos($separator, '<!--', $j) !== false) {
@@ -1078,7 +1173,7 @@ class Template
 				$j = strpos($separator, '-->', $j) + 3;
 			}
 			// nothing to parse inside of it ? This separator is for me.
-			$content = substr($content, 0, $i);
+			$loop->content = substr($loop->content, 0, $i);
 			return $separator;
 		}
 		return '';
@@ -1532,14 +1627,14 @@ class Template
 	/**
 	 * Remove <!--sample-->(...) code from loop content
 	 *
-	 * @param $content string
+	 * @param $loop Loop
 	 */
-	protected function removeSample(&$content)
+	protected function removeSample(Loop $loop)
 	{
-		$i = strrpos($content, '<!--sample-->');
+		$i = strrpos($loop->content, '<!--sample-->');
 		if ($i !== false) {
-			if (strpos($content, '<!--', $i + 1) === false) {
-				$content = substr($content, 0, $i);
+			if (strpos($loop->content, '<!--', $i + 1) === false) {
+				$loop->content = substr($loop->content, 0, $i);
 			}
 		}
 	}

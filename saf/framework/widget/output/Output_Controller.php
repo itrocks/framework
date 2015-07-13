@@ -4,6 +4,7 @@ namespace SAF\Framework\Widget\Output;
 use SAF\Framework\Controller;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Print_Model;
@@ -108,9 +109,9 @@ class Output_Controller implements Default_Feature_Controller
 	) {
 		$object = $parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
-		$parameters['general_buttons']   = $this->getGeneralButtons($object, $parameters);
-		$parameters['properties_filter'] = $this->getPropertiesList($class_name);
-		$parameters['tabs']              = $this->getTabs($object, $parameters['properties_filter']);
+		$parameters['general_buttons'] = $this->getGeneralButtons($object, $parameters);
+		$parameters[Parameter::PROPERTIES_FILTER] = $this->getPropertiesList($class_name);
+		$parameters['tabs'] = $this->getTabs($object, $parameters[Parameter::PROPERTIES_FILTER]);
 		return $parameters;
 	}
 

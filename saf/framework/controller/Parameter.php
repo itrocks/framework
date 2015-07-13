@@ -12,8 +12,10 @@ class Parameter
 {
 
 	//-------------------------------------------------------------- Some general parameter constants
-	const AS_WIDGET   = 'as_widget';
-	const CONTAINER   = 'container';
-	const IS_INCLUDED = 'is_included';
+	const AS_WIDGET            = 'as_widget';
+	const CONTAINER            = 'container';
+	const EXPAND_PROPERTY_PATH = 'expand_property_path';
+	const IS_INCLUDED          = 'is_included';
+	const PROPERTIES_FILTER    = 'properties_filter';
 
 }
