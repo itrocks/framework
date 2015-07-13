@@ -674,7 +674,7 @@ class Link extends Dao\Sql\Link
 		$this->setContext($class_name);
 		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
 			$what = [];
-			foreach (explode(',', $identifier) as $identify) {
+			foreach (explode(Link_Class::ID_SEPARATOR, $identifier) as $identify) {
 				list($column, $value) = explode('=', $identify);
 				$what[$column] = $value;
 			}
