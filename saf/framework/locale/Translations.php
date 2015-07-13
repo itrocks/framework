@@ -4,14 +4,13 @@ namespace SAF\Framework\Locale;
 use SAF\Framework\Dao;
 use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Set;
 
 /**
  * Translations give the programmer translations features, and store them into cache
  *
  * TODO : translations maintainer : only one text per context, and only one translation per context
  */
-class Translations extends Set
+class Translations
 {
 
 	//---------------------------------------------------------------------------------------- $cache
@@ -65,12 +64,15 @@ class Translations extends Set
 			$texts = Dao::search($search);
 			foreach ($texts as $text) if ($text->translation === $translation) break;
 		}
+		if (!isset($text) && strpos($translation, ', ')) {
+			$text_parts = [];
+			foreach (explode(', ', $translation) as $translation_part) {
+				$text_parts[] = $this->reverse($translation_part, $context, $context_property_path);
+			}
+			$text = new Translation(join(', ', $text_parts), $this->language, $context, $translation);
+		}
 		$text = isset($text) ? $text->text : $translation;
-		return empty($text) ? $text : (
-			strIsCapitals($translation[0])
-			? ucfirsta($text)
-			: $text
-		);
+		return empty($text) ? $text : (strIsCapitals($translation[0]) ? ucfirsta($text) : $text);
 	}
 
 	//------------------------------------------------------------------------------------- translate
@@ -110,8 +112,18 @@ class Translations extends Set
 				$translations = Dao::search($search);
 				foreach ($translations as $translation) if ($translation->text === $text) break;
 			}
+			if (!isset($translation) && strpos($text, ', ')) {
+				$translation_parts = [];
+				foreach (explode(', ', $text) as $text_part) {
+					$translation_parts[] = $this->translate($text_part, $context);
+				}
+				$translation = new Translation(
+					$text, $this->language, $context, join(', ', $translation_parts)
+				);
+			}
 			if (!isset($translation)) {
 				$translation = $search;
+				$translation->text = str_replace('_', SP, strtolower($translation->text));
 				$translation->translation = '';
 				Dao::write($translation);
 			}
@@ -123,11 +135,9 @@ class Translations extends Set
 			$this->cache[$text][$context] = $translation;
 		}
 		$translation = $this->cache[$text][$context];
-		return empty($translation) ? $text : (
-			strIsCapitals($text[0])
-			? ucfirsta($translation)
-			: $translation
-		);
+		return empty($translation)
+			? $text
+			: (strIsCapitals($text[0]) ? ucfirsta($translation) : $translation);
 	}
 
 }
