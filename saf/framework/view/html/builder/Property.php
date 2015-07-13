@@ -11,7 +11,6 @@ use SAF\Framework\View\Html\Template;
 abstract class Property
 {
 
-	//------------------------------------------------------------------------------ DONT_BUILD_VALUE
 	/**
 	 * This unique and arbitrary constant is returned by buildValue() when is not defined into a
 	 * child class
@@ -31,19 +30,19 @@ abstract class Property
 	/**
 	 * @var Reflection_Property
 	 */
-	protected $property;
+	public $property;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
 	 * @var Template
 	 */
-	protected $template;
+	public $template;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var mixed
 	 */
-	protected $value;
+	public $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
