@@ -411,7 +411,7 @@ class Link extends Dao\Sql\Link
 						$key_object   = $object;
 						foreach ($k_keys as $key) $key_object = $key_object->$key;
 						$k_id_object_key = 'id_' . $k_object_key;
-						$k_key .= ($k_key ? ',' : '') . (
+						$k_key .= ($k_key ? Link_Class::ID_SEPARATOR : '') . (
 							isset($key_object->$k_id_object_key)
 								? ($k_object_key . '=' . $key_object->$k_id_object_key)
 								: $key_object->$k_object_key
@@ -534,7 +534,7 @@ class Link extends Dao\Sql\Link
 				$ids[] = $property_name . '=' . $id;
 			}
 			sort($ids);
-			return join(',', $ids);
+			return join(Link_Class::ID_SEPARATOR, $ids);
 		}
 		return null;
 	}

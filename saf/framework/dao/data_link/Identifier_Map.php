@@ -2,6 +2,7 @@
 namespace SAF\Framework\Dao\Data_Link;
 
 use SAF\Framework\Dao\Data_Link;
+use SAF\Framework\Reflection\Link_Class;
 
 /**
  * Source of data link classes that use a map between internal identifiers and business objects
@@ -119,8 +120,8 @@ abstract class Identifier_Map extends Data_Link
 		}
 		else {
 			// link class identifiers
-			if (strpos($id, ',')) {
-				foreach (explode(',', $id) as $property) {
+			if (strpos($id, Link_Class::ID_SEPARATOR)) {
+				foreach (explode(Link_Class::ID_SEPARATOR, $id) as $property) {
 					list($property_name, $id) = explode('=', $property);
 					if (is_numeric($id)) {
 						$id_property_name = 'id_' . $property_name;

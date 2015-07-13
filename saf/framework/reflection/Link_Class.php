@@ -10,6 +10,11 @@ use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
 class Link_Class extends Reflection_Class
 {
 
+	/**
+	 * The separator for identifiers
+	 */
+	const ID_SEPARATOR = ';';
+
 	//------------------------------------------------------------------------ getCompositeProperties
 	/**
 	 * @return Reflection_Property[]
