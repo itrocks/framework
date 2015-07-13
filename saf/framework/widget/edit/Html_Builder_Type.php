@@ -344,7 +344,7 @@ class Html_Builder_Type
 			$input->addClass('autowidth');
 			$input->addClass('autoheight');
 		}
-		elseif (isset($values) && $values) {
+		elseif ($values) {
 			if (!isset($values[''])) {
 				$values = array_merge(['' => ''], $values);
 			}

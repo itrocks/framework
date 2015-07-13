@@ -154,6 +154,9 @@ class Html_Builder_Property extends Html_Builder_Type
 		foreach ($values as $value) {
 			$values_captions[$value] = Names::propertyToDisplay($value);
 		}
+		if ($values_captions && !in_array($this->value, $values_captions)) {
+			$values_captions[$this->value] = $this->value;
+		}
 		$element = parent::buildString(
 			$this->property->getAnnotation('multiline')->value,
 			$values_captions
