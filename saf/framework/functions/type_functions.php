@@ -1,5 +1,7 @@
 <?php
 
+use SAF\Framework\Builder;
+
 //-------------------------------------------------------------------------------------- class_tree
 /**
  * Gets full class names tree, recursively
@@ -50,10 +52,21 @@ function classTree($object, $classes = true, $traits = true, $interfaces = true,
  */
 function isA($object, $class_name)
 {
-	if (!(is_string($object) || is_object($object))) return false;
-	if (is_object($object))     $object     = get_class($object);
-	if (is_object($class_name)) $class_name = get_class($class_name);
-	if (is_a($object, $class_name, true)) return true;
+	if (is_string($object)) {
+		$object = Builder::className($object);
+	}
+	elseif (is_object($object)) {
+		$object = get_class($object);
+	}
+	else {
+		return false;
+	}
+	if (is_object($class_name)) {
+		$class_name = get_class($class_name);
+	}
+	if (is_a($object, $class_name, true)) {
+		return true;
+	}
 	$classes = class_parents($object) + class_uses($object);
 	while ($classes) {
 		$next_classes = [];
