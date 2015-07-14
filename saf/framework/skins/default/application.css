@@ -152,6 +152,10 @@ thead > tr > th {
   cursor: move;
   padding: 0 4px; }
 
+.empty {
+  color: #777;
+  font-style: italic; }
+
 .visible {
   display: inline-block; }
 
