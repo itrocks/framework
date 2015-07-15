@@ -16,7 +16,6 @@
 	$.fn.build = function (callback, call_now)
 	{
 		// use this.inside(selector) in callback to build the elements
-		//noinspection ReservedWordAsName
 		this.inside = function(selector, nop)
 		{
 			// accepts '.aclass, .another' : take each of them
@@ -64,7 +63,6 @@
 		}
 		delete this.inside;
 
-		//noinspection JSValidateTypes
 		return this;
 	};
 
