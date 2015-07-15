@@ -87,3 +87,9 @@ String.prototype.repl = function(from, to)
 	replaced += this.substring(start);
 	return replaced;
 };
+
+//----------------------------------------------------------------------------------------- ucfirst
+String.prototype.ucfirst = function()
+{
+	return this.charAt(0).toUpperCase() + this.slice(1);
+};
