@@ -23,6 +23,11 @@
 		background: $green_action;
 	}
 
+	>.delete>a, >.remove>a {
+		padding-left: 12px;
+		background: $red_action;
+	}
+
 	>.export>a, >.print>a {
 		padding-left: 12px;
 		background: $blue_action;

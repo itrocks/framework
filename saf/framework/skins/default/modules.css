@@ -12,6 +12,9 @@
 .actions > .add > a, .actions > .edit > a, .actions > .import > a, .actions > .save > a, .actions > .validate > a, .actions > .write > a {
   padding-left: 12px;
   background: url("img/buttons/17/left_green.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
+.actions > .delete > a, .actions > .remove > a {
+  padding-left: 12px;
+  background: url("img/buttons/17/left_red.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
 .actions > .export > a, .actions > .print > a {
   padding-left: 12px;
   background: url("img/buttons/17/left_blue.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
