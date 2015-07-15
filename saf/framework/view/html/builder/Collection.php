@@ -4,6 +4,7 @@ namespace SAF\Framework\View\Html\Builder;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_View;
@@ -157,6 +158,9 @@ class Collection
 		// gets all properties from collection element class
 		$class = new Reflection_Class($this->class_name);
 		$properties = $class->getProperties([T_EXTENDS, T_USE]);
+		// remove replaced properties
+		/** @var $properties Reflection_Property[] */
+		$properties = Replaces_Annotations::removeReplacedProperties($properties);
 		// remove linked class properties
 		$linked_class = $class->getAnnotation('link')->value;
 		if ($linked_class) {

@@ -51,7 +51,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 					'Can\'t guess @foreign for ' . $class_name . '::' . $property_name . ' : '
 					. 'please set @composite on one (and one only) ' . $type_name . ' property of type '
 					. $class_name . ' object, or force the ' . $class_name . '::' . $property_name
-					. ' @foreign property name.',
+					. ' @foreign property name. Possibles properties are ' . join(', ', $possibles),
 					E_USER_ERROR
 				);
 			}
@@ -61,7 +61,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	//----------------------------------------------------------------------------- defaultCollection
 	/**
 	 * @param $property Reflection_Property
-	 * @return string[]
+	 * @return string[] Possibles properties names
 	 */
 	private function defaultCollection(Reflection_Property $property)
 	{
@@ -77,19 +77,21 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				&& is_a($final_class_name, $foreign_type->asString(), true)
 				&& ($foreign_property->getAnnotation('link')->value == Link_Annotation::OBJECT)
 			) {
-				$possibles[] = $foreign_property->getName();
+				$possibles[$foreign_property->getName()] = $foreign_property;
 				if ($foreign_property->getAnnotation('composite')->value) {
-					$composites[] = $foreign_property->getName();
+					$composites[$foreign_property->getName()] = $foreign_property;
 				}
 			}
 		}
-		return (count($composites) == 1) ? $composites : $possibles;
+		return array_keys(Replaces_Annotations::removeReplacedProperties(
+				(count($composites) == 1) ? $composites : $possibles
+		));
 	}
 
 	//------------------------------------------------------------------------------------ defaultMap
 	/**
 	 * @param $property Reflection_Property
-	 * @return string[]
+	 * @return string[] Possibles properties names
 	 */
 	private function defaultMap(Reflection_Property $property)
 	{
@@ -124,7 +126,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	//--------------------------------------------------------------------------------- defaultObject
 	/**
 	 * @param $property Reflection_Property
-	 * @return string[]
+	 * @return string[] Possibles properties names
 	 */
 	private function defaultObject(Reflection_Property $property)
 	{
@@ -138,10 +140,10 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				&& $foreign_type->isInstanceOf($property->getDeclaringClass())
 				&& $foreign_property->getAnnotation('link')->value == Link_Annotation::COLLECTION
 			) {
-				$possibles[] = $foreign_property->getName();
+				$possibles[$foreign_property->getName()] = $foreign_property;
 			}
 		}
-		return $possibles;
+		return array_keys(Replaces_Annotations::removeReplacedProperties($possibles));
 	}
 
 	//------------------------------------------------------------------------------- getForeignClass
