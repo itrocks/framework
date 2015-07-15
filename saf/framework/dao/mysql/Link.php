@@ -836,6 +836,14 @@ class Link extends Dao\Sql\Link
 			do {
 				/** @var $link Class_\Link_Annotation */
 				$link = $class->getAnnotation('link');
+				if ($link->value) {
+					$link_property = $link->getLinkClass()->getLinkProperty();
+					$link_object = $link_property->getValue($object);
+					if (!$link_object) {
+						$id_link_property = 'id_' . $link_property->name;
+						$object->$id_link_property = $this->write($link_object, $options);
+					}
+				}
 				$table_columns_names = array_keys($this->getStoredProperties($class));
 				$write_collections = [];
 				$write_maps = [];
