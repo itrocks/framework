@@ -181,8 +181,7 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Property\Read_Only_Annotation' => Boolean_Annotation::class,
 
 	// @replace_filter [false]
-	// This tells that this property must be used as a filter when replacing the object references by
-	// another object
+	// The property must be used as a filter when replacing the object referenced by another object
 	__NAMESPACE__ . '\Property\Replace_Filter_Annotation' => Boolean_Annotation::class,
 
 	// @replaces property_name
@@ -207,6 +206,11 @@ Parser::$default_annotations = [
 	// @textile
 	// This tells that the property should be rendered using textile parsing
 	__NAMESPACE__ . '\Property\Textile_Annotation' => Boolean_Annotation::class,
+
+	// @user_change [[\Vendor\Module\]Class_Name::]featureName]
+	// associates a feature controller to call each time a property value is changed by the final user
+	// to an input form
+	__NAMESPACE__ . '\Property\User_Change_Annotation' => Method_Annotation::class,
 
 	// @user_getter [Vendor\Module\Class_Name::]methodName
 	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Annotation::class,

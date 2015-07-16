@@ -95,8 +95,8 @@ $('document').ready(function()
 					{
 						var i;
 						var j = 0;
-						while ((i = text.indexOf('="', j) + 1) > 0) {
-							j = text.indexOf('"', i + 1);
+						while ((i = text.indexOf('=' + DQ, j) + 1) > 0) {
+							j = text.indexOf(DQ, i + 1);
 							while (
 								(i = text.indexOf(open, i) + open.length) && (i > (open.length - 1)) && (i < j)
 									&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
@@ -149,7 +149,7 @@ $('document').ready(function()
 		//------------------------------------------------------------------------ input.combo comboUri
 		var comboUri = function($element)
 		{
-			return window.app.uri_base + '/' + $element.data('combo-class') + '/json'
+			return window.app.uri_base + SL + $element.data('combo-class') + SL + 'json'
 		};
 
 		//-------------------------------------------------------------------- input.combo comboRequest
@@ -167,7 +167,7 @@ $('document').ready(function()
 				filters = filters.split(',');
 				for (var key in filters) if (filters.hasOwnProperty(key)) {
 					var filter = filters[key].split('=');
-					var $filter_element = $($element.get(0).form).find('[name="' + filter[1] + '"]');
+					var $filter_element = $($element.get(0).form).find('[name=' + DQ + filter[1] + DQ + ']');
 					if ($filter_element.length) {
 						request['filters[' + filter[0] + ']'] = $filter_element.val();
 					}
@@ -255,6 +255,7 @@ $('document').ready(function()
 			select: function(event, ui)
 			{
 				var $this = $(this);
+				var previous_id = $this.prev().val();
 				//console.log('selected ' + ui.item.id + ': ' + ui.item.value);
 				$this.prev().val(ui.item.id);
 				if (!event.keyCode) {
@@ -265,6 +266,9 @@ $('document').ready(function()
 				if (!comboMatches($this)) {
 					//console.log('> ' + $this.val() + ' does not match ' + $this.data('value'));
 					comboForce($this);
+				}
+				if (previous_id != $this.prev().val()) {
+					$this.prev().change();
 				}
 			}
 		})
@@ -322,8 +326,9 @@ $('document').ready(function()
 			}
 			var href = $this.data('link');
 			var id = $input.prev().val();
-			$this.attr('href', id ? href.repl('/add', '/' + $input.prev().val() + '/edit') : href);
+			$this.attr('href', id ? href.repl('/add', SL + $input.prev().val() + SL + 'edit') : href);
 		});
+
 		this.inside('input.combo~.edit').attr('tabindex', -1);
 		if (this.attr('id') && (this.attr('id').substr(0, 6) == 'window')) {
 			this.inside('.actions>.close>a')
@@ -339,6 +344,7 @@ $('document').ready(function()
 				);
 			}
 		}
+
 		this.inside('input.combo').each(function()
 		{
 			$(this).parent()
@@ -359,7 +365,8 @@ $('document').ready(function()
 
 		//---------------------------------------------------------------------- input[data-conditions]
 		var will_change = {};
-		this.inside('input[data-conditions]').each(function() {
+		this.inside('input[data-conditions]').each(function()
+		{
 			var $this = $(this);
 			var conditions = $this.data('conditions').replace(/\(.*\)/g);
 			$.each(conditions.split(';'), function(condition_key, condition) {
@@ -369,7 +376,7 @@ $('document').ready(function()
 					$condition = will_change[condition[0]];
 				}
 				else {
-					$condition = $($this.get(0).form).find('[name="' + condition[0] + '"]');
+					$condition = $($this.get(0).form).find('[name=' + DQ + condition[0] + DQ + ']');
 					will_change[condition[0]] = $condition;
 				}
 				var condition_name = $condition.attr('name');
@@ -387,7 +394,9 @@ $('document').ready(function()
 				$condition.data('condition-of')[this_name] = $this;
 			});
 		});
-		$.each(will_change, function(condition_name, $condition) {
+
+		$.each(will_change, function(condition_name, $condition)
+		{
 			if (!$condition.data('condition-change')) {
 				$condition.data('condition-change', true);
 				$condition.change(function()
@@ -412,6 +421,38 @@ $('document').ready(function()
 				});
 			}
 			$condition.change();
+		});
+
+		//--------------------------------------------------------------- input[data-on-change] .change
+		this.inside('input[data-on-change]').change(function()
+		{
+			var $this = $(this);
+			var $form = $this.closest('form');
+			var uri = $this.data('on-change');
+			$.each(uri.split(','), function(key, uri) {
+				uri = window.app.uri_base + SL + uri + SL + $this.prop('name') + '?as_widget';
+
+				$.post(uri, $form.formSerialize(), function(data)
+				{
+					if (data) {
+						if (data.substr(0, 1) == '{') {
+							$.each(JSON.parse(data), function(name, value) {
+								var $input = $form.find('input[name=' + DQ + name + DQ + ']');
+								if (value.substr(0, 1) == ':') {
+									if (!$input.val()) $input.val(value.substr(1));
+								}
+								else {
+									$input.val(value);
+								}
+							});
+						}
+						else {
+							$('#messages').html(data);
+						}
+					}
+				});
+
+			});
 		});
 
 		//------------------------------------------------------------------------- .vertical.scrollbar

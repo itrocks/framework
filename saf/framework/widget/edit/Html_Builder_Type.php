@@ -42,6 +42,12 @@ class Html_Builder_Type
 	 */
 	public $null = false;
 
+	//------------------------------------------------------------------------------------ $on_change
+	/**
+	 * @var string[]
+	 */
+	public $on_change = [];
+
 	//-------------------------------------------------------------------------------------- $preprop
 	/**
 	 * @var string
@@ -101,26 +107,29 @@ class Html_Builder_Type
 		}
 		else {
 			switch ($type->asString()) {
-				case Type::BOOLEAN:      return $this->buildBoolean();
-				case Type::FLOAT:        return $this->buildFloat();
-				case Type::INTEGER:      return $this->buildInteger();
-				case Type::STRING:       return $this->buildString();
-				case Type::STRING_ARRAY: return $this->buildString();
+				case Type::BOOLEAN:      $result = $this->buildBoolean(); break;
+				case Type::FLOAT:        $result = $this->buildFloat();   break;
+				case Type::INTEGER:      $result = $this->buildInteger(); break;
+				case Type::STRING:       $result = $this->buildString();  break;
+				case Type::STRING_ARRAY: $result = $this->buildString();  break;
 			}
-			if ($type->isClass()) {
+			if (!isset($result) && $type->isClass()) {
 				$class_name = $type->asString();
 				if (is_a($class_name, DateTime::class, true)) {
-					return $this->buildDateTime();
+					$result = $this->buildDateTime();
 				}
 				elseif (is_a($class_name, File::class, true)) {
-					return $this->buildFile();
+					$result = $this->buildFile();
 				}
 				else {
-					return $this->buildObject();
+					$result = $this->buildObject();
 				}
 			}
+			if ($result instanceof Element) {
+				$this->setOnChangeAttribute($result);
+			}
 		}
-		return $this->value;
+		return isset($result) ? $result : $this->value;
 	}
 
 	//---------------------------------------------------------------------------------- buildBoolean
@@ -275,9 +284,7 @@ class Html_Builder_Type
 		// visible input
 		$input = new Input(null, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
-		$input->setAttribute(
-			'data-combo-class', Names::classToSet($class_name)
-		);
+		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
 		if (!$this->readonly) {
 			if ($filters) {
 				$html_filters = [];
@@ -326,6 +333,7 @@ class Html_Builder_Type
 			$more = new Button('more');
 			$more->addClass('more');
 			$more->setAttribute('tabindex', -1);
+			$this->setOnChangeAttribute($id_input);
 			return $id_input . $input . $more . $edit;
 		}
 		return $input;
@@ -412,6 +420,18 @@ class Html_Builder_Type
 			. '[' . $count . ']'
 			. substr($this->preprop, $field_name_j + 1)
 			. '[' . $prefix . $this->name . ']';
+	}
+
+	//-------------------------------------------------------------------------- setOnChangeAttribute
+	/**
+	 * @param $element Element
+	 */
+	private function setOnChangeAttribute(Element $element)
+	{
+		if ($this->on_change) {
+			$on_change = join(',', $this->on_change);
+			$element->setData('on-change', $on_change);
+		}
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate

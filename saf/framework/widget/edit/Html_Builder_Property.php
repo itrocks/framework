@@ -58,7 +58,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		switch ($link) {
 			case Link_Annotation::COLLECTION: return $this->buildCollection();
 			case Link_Annotation::MAP:        return $this->buildMap();
-			default: return is_array($this->value) ? $this->buildMap() : parent::build();
+			default: return is_array($this->value) ? $this->buildMap() : $this->buildSingle();
 		}
 	}
 
@@ -137,6 +137,23 @@ class Html_Builder_Property extends Html_Builder_Type
 			}
 		}
 		return parent::buildObject($conditions, $filters);
+	}
+
+	//----------------------------------------------------------------------------------- buildSingle
+	/**
+	 * @return string
+	 */
+	protected function buildSingle()
+	{
+		if (
+			!$this->property->getType()->isMultiple()
+			&& ($user_changes = $this->property->getAnnotations('user_change'))
+		) {
+			foreach ($user_changes as $user_change) {
+				$this->on_change[] = $user_change_value = str_replace([BS, '::'], SL, $user_change->value);
+			}
+		}
+		return parent::build();
 	}
 
 	//----------------------------------------------------------------------------------- buildString
