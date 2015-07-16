@@ -1,6 +1,7 @@
 // problem : path is relative to the caller, and can change !
 // use the global path to set it before calling all.js (sorry, i've no better idea for the moment)
 
+$.getScript(path + 'saf/framework/js/saf.constants.js');
 $.getScript(path + 'vendor/jquery-ui/jquery-ui-1.9.2.custom.js');
 $.getScript(path + 'saf/framework/js/jquery.xtarget.js');
 
