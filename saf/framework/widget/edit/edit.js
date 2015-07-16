@@ -439,7 +439,10 @@ $('document').ready(function()
 							$.each(JSON.parse(data), function(name, value) {
 								var $input = $form.find('input[name=' + DQ + name + DQ + ']');
 								if (value.substr(0, 1) == ':') {
-									if (!$input.val()) $input.val(value.substr(1));
+									if ($input.val() == false) {
+										// false ie '0', ' or 0
+										$input.val(value.substr(1));
+									}
 								}
 								else {
 									$input.val(value);
