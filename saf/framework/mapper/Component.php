@@ -115,7 +115,7 @@ trait Component
 	 * @param $property_name string The composite property name
 	 * @return Reflection_Property
 	 */
-	public function getCompositeProperty($class_name = null, $property_name = null)
+	public static function getCompositeProperty($class_name = null, $property_name = null)
 	{
 		$properties = self::getCompositeProperties($class_name, $property_name);
 		return reset($properties);

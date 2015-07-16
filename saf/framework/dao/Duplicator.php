@@ -103,8 +103,8 @@ class Duplicator
 	private function removeCompositeFromComponents($elements, $composite_class_name)
 	{
 		if (isA($element = reset($elements), Component::class)) {
-			/** @var $element Component */
-			if ($composite_property = $element->getCompositeProperty($composite_class_name)) {
+			$getCompositeProperty = [get_class($element), 'getCompositeProperty'];
+			if ($composite_property = call_user_func($getCompositeProperty, $composite_class_name)) {
 				foreach ($elements as $element) {
 					$property_name = $composite_property->name;
 					$id_property_name = 'id_' . $property_name;
