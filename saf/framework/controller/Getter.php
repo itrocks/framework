@@ -2,6 +2,7 @@
 namespace SAF\Framework\Controller;
 
 use SAF\Framework\Application;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 
@@ -41,6 +42,15 @@ abstract class Getter
 			$classes[$class_name] = substr(
 				$class_name, strpos($class_name, BS, strpos($class_name, BS) + 1) + 1
 			);
+			if (@class_exists($class_name)) {
+				foreach (
+					(new Reflection_Class($class_name))->getListAnnotation('extends')->values() as $extends
+				) {
+					$classes[$extends] = substr(
+						$extends, strpos($extends, BS, strpos($extends, BS) + 1) + 1
+					);
+				}
+			}
 			$class_name = @get_parent_class($class_name);
 		} while ($class_name);
 
