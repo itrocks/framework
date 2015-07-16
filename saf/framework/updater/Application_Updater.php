@@ -121,7 +121,7 @@ class Application_Updater implements Serializable
 	{
 		$file_name = $this->getLastUpdateFileName();
 		if (!file_exists($file_name)) {
-			return mktime(0, 0, 0, 0, 0, 0);
+			return 0;
 		}
 		else {
 			return filemtime($file_name);
