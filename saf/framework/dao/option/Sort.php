@@ -109,7 +109,12 @@ class Sort implements Option
 		if (isset($this->columns) && !isset($this->reverse)) {
 			$this->reverse = [];
 			foreach ($this->columns as $key => $column_name) {
-				if (strpos(SP . $column_name . SP, SP . 'reverse' . SP) !== false) {
+				if ($column_name[0] === '-') {
+					$column_name = substr($column_name, 1);
+					$this->reverse[$column_name] = $column_name;
+					$this->columns[$key] = $column_name;
+				}
+				elseif (strpos(SP . $column_name . SP, SP . 'reverse' . SP) !== false) {
 					$column_name = trim(str_replace(SP . 'reverse' . SP, '', SP . $column_name . SP));
 					$this->reverse[$column_name] = $column_name;
 					$this->columns[$key] = $column_name;
