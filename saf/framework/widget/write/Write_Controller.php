@@ -70,7 +70,7 @@ class Write_Controller implements Default_Class_Controller
 			$builder = new Post_Files();
 			$form    = $builder->appendToForm($form, $files);
 			$builder = new Object_Builder_Array();
-			$builder->build($form, $object, true);
+			$builder->build($form, $object);
 			$write_objects = [];
 			foreach ($builder->getBuiltObjects() as $write_object) {
 				if (($write_object == $object) || Dao::getObjectIdentifier($write_object)) {
