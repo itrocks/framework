@@ -167,6 +167,33 @@ function arraySumRecursive($array)
 	return $sum;
 }
 
+//------------------------------------------------------------------------------------- arrayToTree
+/**
+ * Change an array with 'key.sub_key.final_key' keys into a tree with[key][sub_key][final_key]
+ *
+ * @param $array   mixed[]
+ * @param $recurse boolean
+ * @return mixed[]
+ */
+function arrayToTree($array, $recurse = true)
+{
+	$result = [];
+	$sub_arrays = [];
+	foreach ($array as $key => $value) {
+		if (strpos($key, DOT) !== false) {
+			list($super_key, $sub_key) = explode(DOT, $key, 2);
+			$sub_arrays[$super_key][$sub_key] = $value;
+		}
+		else {
+			$result[$key] = $value;
+		}
+	}
+	foreach ($sub_arrays as $key => $sub_array) {
+		$result[$key] = $recurse ? arrayToTree($sub_array) : $sub_array;
+	}
+	return $result;
+}
+
 //------------------------------------------------------------------------------ arrayUnnamedValues
 /**
  * Returns only values which key is numeric
