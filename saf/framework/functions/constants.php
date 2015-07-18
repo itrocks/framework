@@ -1,5 +1,7 @@
 <?php
 
+const AS_ARRAY = 'AS_ARRAY';
+
 const AT = '@';
 
 const BQ = '`';

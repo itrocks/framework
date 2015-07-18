@@ -3,6 +3,7 @@ namespace SAF\Framework\Dao;
 
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Option\Key;
+use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\List_Data;
@@ -15,6 +16,44 @@ use SAF\Framework\Tools\Namespaces;
  */
 abstract class Data_Link
 {
+
+	//------------------------------------------------------------------------------------- afterRead
+	/**
+	 * @param $object object
+	 */
+	public function afterRead($object)
+	{
+		foreach (
+			(new Reflection_Class(get_class($object)))->getAnnotations('after_read') as $after_read
+		) {
+			/** @var $after_read Method_Annotation */
+			if ($after_read->call($object, [$this, []]) === false) {
+				break;
+			}
+		}
+	}
+
+	//----------------------------------------------------------------------------- afterReadMultiple
+	/**
+	 * @param $objects object[]
+	 * @param $options Option[]
+	 */
+	public function afterReadMultiple($objects, $options = [])
+	{
+		if ($objects) {
+			/** @var $after_reads Method_Annotation[] */
+			$after_reads = (new Reflection_Class(get_class(reset($objects))))->getAnnotations(
+				'after_read'
+			);
+			foreach ($objects as $object) {
+				foreach ($after_reads as $after_read) {
+					if ($after_read->call($object, [$this, $options]) === false) {
+						break;
+					}
+				}
+			}
+		}
+	}
 
 	//----------------------------------------------------------------------------------- classNameOf
 	/**

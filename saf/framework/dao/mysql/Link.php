@@ -60,44 +60,6 @@ class Link extends Dao\Sql\Link
 		$this->connect($parameters);
 	}
 
-	//------------------------------------------------------------------------------------- afterRead
-	/**
-	 * @param $object object
-	 */
-	private function afterRead($object)
-	{
-		foreach (
-			(new Reflection_Class(get_class($object)))->getAnnotations('after_read') as $after_read
-		) {
-			/** @var $after_read Method_Annotation */
-			if ($after_read->call($object, [$this, []]) === false) {
-				break;
-			}
-		}
-	}
-
-	//----------------------------------------------------------------------------- afterReadMultiple
-	/**
-	 * @param $objects object[]
-	 * @param $options Option[]
-	 */
-	private function afterReadMultiple($objects, $options = [])
-	{
-		if ($objects) {
-			/** @var $after_reads Method_Annotation[] */
-			$after_reads = (new Reflection_Class(get_class(reset($objects))))->getAnnotations(
-				'after_read'
-			);
-			foreach ($objects as $object) {
-				foreach ($after_reads as $after_read) {
-					if ($after_read->call($object, [$this, $options]) === false) {
-						break;
-					}
-				}
-			}
-		}
-	}
-
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
 	 * @param $object  object
@@ -636,27 +598,41 @@ class Link extends Dao\Sql\Link
 		if ($query) {
 			$result = $this->connection->query($query);
 			if (isset($class_name)) {
-				$class_name = Builder::className($class_name);
-				$objects = [];
-				while ($object = $result->fetch_object($class_name)) {
-					if (isset($object->id)) {
-						$objects[$object->id] = $object;
+				if ($class_name === AS_ARRAY) {
+					$objects = [];
+					while ($element = $result->fetch_assoc()) {
+						if (isset($element['id'])) {
+							$objects[$element['id']] = $element;
+						}
+						else {
+							$objects[] = $element;
+						}
 					}
-					else {
-						$objects[] = $object;
-					}
+					$result->free();
 				}
-				$result->free();
-				if ($class_name) {
+				else {
+					$class_name = Builder::className($class_name);
+					$objects = [];
+					while ($object = $result->fetch_object($class_name)) {
+						if (isset($object->id)) {
+							$objects[$object->id] = $object;
+						}
+						else {
+							$objects[] = $object;
+						}
+					}
+					$result->free();
 					$this->afterReadMultiple($objects);
 				}
-				return $objects;
 			}
-			return $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
+			else {
+				$objects = $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
+			}
 		}
 		else {
-			return null;
+			$objects = null;
 		}
+		return $objects;
 	}
 
 	//------------------------------------------------------------------------------------------ read
