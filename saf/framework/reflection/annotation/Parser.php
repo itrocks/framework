@@ -190,10 +190,10 @@ class Parser
 				$default_annotations_file
 					= Application::current()->getCacheDir() . SL . 'default_annotations.php';
 				clearstatcache(true, $default_annotations_file);
-				if (
-					filemtime($default_annotations_file) < filemtime(__DIR__ . SL . 'default_annotations.php')
-					|| !is_file($default_annotations_file)
-				) {
+				$file_time = file_exists($default_annotations_file)
+					? filemtime($default_annotations_file)
+					: 0;
+				if (!$file_time || ($file_time < filemtime(__DIR__ . SL . 'default_annotations.php'))) {
 					copy(__DIR__ . SL . 'default_annotations.php', $default_annotations_file);
 				}
 			}
