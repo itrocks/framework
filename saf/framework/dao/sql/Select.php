@@ -206,7 +206,7 @@ class Select
 	private function doFetch($data_store)
 	{
 		if ($this->class_name && !($data_store instanceof List_Data)) {
-			$this->object_builder = new Object_Builder_Array($this->class_name);
+			$this->object_builder = new Object_Builder_Array($this->class_name, false);
 			$data_store = [];
 		}
 		$first = true;

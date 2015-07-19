@@ -24,6 +24,14 @@ class Object_Builder_Array
 	 */
 	private $builders;
 
+	//-------------------------------------------------------------------------------- $built_objects
+	/**
+	 * The objects that where built : get it with getBuiltObjects()
+	 *
+	 * @var array
+	 */
+	private $built_objects;
+
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var Reflection_Class
@@ -38,6 +46,17 @@ class Object_Builder_Array
 	 */
 	private $defaults;
 
+	//---------------------------------------------------------------------------------- $use_widgets
+	/**
+	 * True (default) if apply build specifics for arrays that come from an input form :
+	 * - apply arrayFormRevert to split key positions
+	 * - apply widgets
+	 * Setting this to false disable these specific processes.
+	 *
+	 * @var boolean
+	 */
+	private $from_form;
+
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * Properties list, set by start()
@@ -48,22 +67,22 @@ class Object_Builder_Array
 
 	//-------------------------------------------------------------------------------------- $started
 	/**
+	 * True when start() is called. Back to false by stop(). This avoids resetting data when recurse
+	 *
 	 * @var boolean
 	 */
 	private $started = false;
 
-	//-------------------------------------------------------------------------------- $built_objects
-	/**
-	 * @var array
-	 */
-	private $built_objects;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string
+	 * @param $from_form  boolean Set this to false to disable interpretation of arrays coming from
+	 *                    forms : arrayFormRevert, widgets. You should always set this to false if
+	 *                    your array does not come from an input form.
 	 */
-	public function __construct($class_name = null)
+	public function __construct($class_name = null, $from_form = true)
 	{
+		$this->from_form = $from_form;
 		if (isset($class_name)) {
 			$this->setClass($class_name);
 		}
@@ -79,8 +98,6 @@ class Object_Builder_Array
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * TODO LOW This method is too much big : please refactor it
-	 *
 	 * @param $array                array
 	 * @param $object               object
 	 * @param $null_if_empty        boolean
@@ -90,124 +107,23 @@ class Object_Builder_Array
 	public function build(
 		$array, $object = null, $null_if_empty = false, $ignore_property_name = null
 	) {
-		$is_null = $null_if_empty;
 		if (!$this->started) {
 			$this->start(isset($object) ? get_class($object) : null);
 		}
-		$properties = $this->properties;
-		if (!isset($object)) {
-			if (isset($array['id']) && $array['id']) {
-				$object = Dao::read($array['id'], $this->class->name);
-			}
-			else {
-				foreach ($this->class->getAnnotations('before_build_array') as $before) {
-					call_user_func_array([$this->class->name, $before->value], [&$array]);
-				}
-				/** @var $link Class_\Link_Annotation */
-				$link = $this->class->getAnnotation('link');
-				if ($link->value) {
-					$id_property_value = null;
-					$linked_class_name = null;
-					$link_properties = $link->getLinkProperties();
-					$search = [];
-					foreach ($link_properties as $property) {
-						if ($property->getType()->isClass()) {
-							$property_name = $property->getName();
-							$id_property_name = 'id_' . $property_name;
-							if (isset($array[$id_property_name]) && $array[$id_property_name]) {
-								$search[$property_name] = $array[$id_property_name];
-							}
-							$property_class_name = $property->getType()->asString();
-							if (is_a($property_class_name, $link->value, true)) {
-								$id_property_value = isset($array[$id_property_name])
-									? $array[$id_property_name] : null;
-								$linked_class_name = $property_class_name;
-								if (!isset($array[$id_property_name]) && !isset($array[$property_name])) {
-									$linked_array = $array;
-									foreach (array_keys($link_properties) as $link_property_name) {
-										unset($linked_array[$link_property_name]);
-									}
-									$array[$property_name] = (new Object_Builder_Array($property_class_name))->build(
-										$linked_array
-									);
-								}
-							}
-						}
-					}
-					if (count($search) >= 2) {
-						$object = Dao::searchOne($search, $this->class->name);
-					}
-					if ($id_property_value && !$object) {
-						$object = Builder::createClone(
-							Dao::read($id_property_value, $linked_class_name), $this->class->name
-						);
-					}
-				}
-				if (!isset($object)) {
-					$object = $this->class->newInstance();
-				}
-			}
-			if (isset($array['id'])) {
-				unset($array['id']);
-			}
-		}
-		$objects = [];
-		$read_properties = [];
-		foreach ($array as $property_name => $value) {
-			if ($pos = strpos($property_name, DOT)) {
-				$property_path = substr($property_name, $pos + 1);
-				$property_name = substr($property_name, 0, $pos);
-				if ($asterisk = (substr($property_name, -1) === '*')) {
-					$property_name = substr($property_name, 0, -1);
-				}
-				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
-				if (isset($property)) {
-					$objects[$property->name][$property_path] = $value;
-				}
-			}
-			else {
-				if ($asterisk = (substr($property_name, -1) === '*')) {
-					$property_name = substr($property_name, 0, -1);
-				}
-				$property = isset($properties[$property_name]) ? $properties[$property_name] : null;
-				if (substr($property_name, 0, 3) === 'id_') {
-					if (
-						!$this->buildIdProperty($object, $property_name, $value, $null_if_empty)
-						&& (
-							($ignore_property_name !== $property_name)
-							|| !isset($search[substr($property_name, 3)])
-						)
-					) {
-						$is_null = false;
-					}
-				}
-				elseif (($property_name != 'id') && !isset($property)) {
-					trigger_error(
-						'Unknown property ' . $this->class->name . '::$' . $property_name, E_USER_ERROR
-					);
-				}
-				elseif (!($property && $this->buildProperty($object, $property, $value, $null_if_empty))) {
-					$is_null = false;
-				}
-				if ($asterisk) {
-					$read_properties[$property_name] = $value;
-				}
-			}
-		}
-		foreach ($objects as $property_name => $value) {
-			$property = $properties[$property_name];
-			if (!$this->buildSubObject($object, $property, $value, $null_if_empty)) {
-				$is_null = false;
-			}
-		}
-		if ($is_null) {
+		$search = $this->initObject($array, $object);
+		$build = new Object_Builder_Array_Tool(
+			$array, $object, $null_if_empty, $ignore_property_name, $search
+		);
+		$this->buildProperties($build);
+		$this->buildSubObjects($build);
+		if ($build->is_null) {
 			return null;
 		}
 		else {
-			if ($read_properties) {
-				$object = $this->readObject($object, $read_properties);
+			if ($build->read_properties) {
+				$object = $this->readObject($object, $build->read_properties);
 			}
-			$this->built_objects[] = $object;
+			$this->built_objects[] = $build->object;
 			return $object;
 		}
 	}
@@ -267,7 +183,7 @@ class Object_Builder_Array
 			}
 			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
 			reset($array);
-			if (!is_numeric(key($array))) {
+			if ($this->from_form && !is_numeric(key($array))) {
 				$array = arrayFormRevert($array);
 			}
 			// check if the first row contains column names
@@ -290,6 +206,24 @@ class Object_Builder_Array
 			}
 		}
 		return $collection;
+	}
+
+	//--------------------------------------------------------------------------- buildDottedProperty
+	/**
+	 * @param $build         Object_Builder_Array_Tool
+	 * @param $property_name string The name of the property
+	 * @param $value         mixed The value of the property
+	 * @param $pos           integer The position of the DOT into the $property_name
+	 */
+	private function buildDottedProperty(Object_Builder_Array_Tool $build, $property_name, $value, $pos)
+	{
+		$property_path = substr($property_name, $pos + 1);
+		$property_name = substr($property_name, 0, $pos);
+		$this->extractAsterisk($property_name);
+		$property = isset($this->properties[$property_name]) ? $this->properties[$property_name] : null;
+		if (isset($property)) {
+			$build->objects[$property->name][$property_path] = $value;
+		}
 	}
 
 	//------------------------------------------------------------------------------- buildIdProperty
@@ -328,18 +262,23 @@ class Object_Builder_Array
 	//--------------------------------------------------------------------------------- buildMapValue
 	/**
 	 * @param $array      array
-	 * @param $class_name string if set and element is not an object, will read
+	 * @param $class_name string the class name to build each element
+	 * @param $link       string|null
 	 * @return integer[]
 	 */
-	public function buildMap($array, $class_name = null)
+	public function buildMap($array, $class_name, $link = Link_Annotation::MAP)
 	{
 		$map = [];
 		if ($array) {
 			foreach ($array as $key => $element) {
 				if (!empty($element)) {
-					$map[$key] = is_object($element)
-						? $element
-						: (isset($class_name) ? Dao::read($element, $class_name) : intval($element));
+					$map[$key] = is_array($element)
+						? (new Object_Builder_Array($class_name))->build($element)
+						: (
+							is_object($element)
+							? $element
+							: ($link ? Dao::read($element, $class_name) : intval($element))
+						);
 				}
 			}
 		}
@@ -361,6 +300,22 @@ class Object_Builder_Array
 		return $object;
 	}
 
+	//------------------------------------------------------------------------------- buildProperties
+	/**
+	 * @param $build Object_Builder_Array_Tool
+	 */
+	private function buildProperties(Object_Builder_Array_Tool $build)
+	{
+		foreach ($build->array as $property_name => $value) {
+			if ($pos = strpos($property_name, DOT)) {
+				$this->buildDottedProperty($build, $property_name, $value, $pos);
+			}
+			else {
+				$this->buildSimpleProperty($build, $property_name, $value);
+			}
+		}
+	}
+
 	//--------------------------------------------------------------------------------- buildProperty
 	/**
 	 * @param $object        object
@@ -372,8 +327,10 @@ class Object_Builder_Array
 	private function buildProperty($object, Reflection_Property $property, $value, $null_if_empty)
 	{
 		$is_null = $null_if_empty;
+		// use widget
 		if (
-			($builder = $property->getAnnotation('widget')->value)
+			$this->from_form
+			&& ($builder = $property->getAnnotation('widget')->value)
 			&& is_a($builder, Property::class, true)
 		) {
 			$builder = Builder::create($builder, [$property, $value]);
@@ -413,12 +370,10 @@ class Object_Builder_Array
 				}
 				// map or not-linked array
 				else {
-					$value = $this->buildMap(
-						$value,
-						($link == Link_Annotation::MAP) ? null : $property->getType()->getElementTypeAsString()
-					);
+					$value = $this->buildMap($value, $property->getType()->getElementTypeAsString(), $link);
 				}
 			}
+			// @output string
 			elseif (isset($value) && ($property->getAnnotation('output')->value == 'string')) {
 				/** @var $object_value Stringable */
 				$object_value = Builder::create($property->getType()->asString());
@@ -435,6 +390,44 @@ class Object_Builder_Array
 			$is_null = false;
 		}
 		return $is_null;
+	}
+
+	//--------------------------------------------------------------------------- buildSimpleProperty
+	/**
+	 * Builds a simple-name property (no DOT)
+	 *
+	 * @param $build         Object_Builder_Array_Tool
+	 * @param $property_name string
+	 * @param $value         mixed
+	 */
+	private function buildSimpleProperty(Object_Builder_Array_Tool $build, $property_name, $value)
+	{
+		$asterisk = $this->extractAsterisk($property_name);
+		$property = isset($this->properties[$property_name]) ? $this->properties[$property_name] : null;
+		if (substr($property_name, 0, 3) === 'id_') {
+			if (
+				!$this->buildIdProperty($build->object, $property_name, $value, $build->null_if_empty)
+				&& (
+					($build->ignore_property_name !== $property_name)
+					|| !isset($build->search[substr($property_name, 3)])
+				)
+			) {
+				$build->is_null = false;
+			}
+		}
+		elseif (($property_name != 'id') && !isset($property)) {
+			trigger_error(
+				'Unknown property ' . $this->class->name . '::$' . $property_name, E_USER_ERROR
+			);
+		}
+		elseif (!(
+			$property && $this->buildProperty($build->object, $property, $value, $build->null_if_empty)
+		)) {
+			$build->is_null = false;
+		}
+		if ($asterisk) {
+			$build->read_properties[$property_name] = $value;
+		}
 	}
 
 	//-------------------------------------------------------------------------------- buildSubObject
@@ -468,6 +461,33 @@ class Object_Builder_Array
 		return $is_null;
 	}
 
+	//------------------------------------------------------------------------------- buildSubObjects
+	/**
+	 * @param $build Object_Builder_Array_Tool
+	 */
+	private function buildSubObjects(Object_Builder_Array_Tool $build)
+	{
+		foreach ($build->objects as $property_name => $value) {
+			$property = $this->properties[$property_name];
+			if (!$this->buildSubObject($build->object, $property, $value, $build->null_if_empty)) {
+				$build->is_null = false;
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------- extractAsterisk
+	/**
+	 * @param $property_name string may end with a '*' : if so, this last character will be removed
+	 * @return boolean true if there is an '*', false if not
+	 */
+	private function extractAsterisk(&$property_name)
+	{
+		if ($asterisk = (substr($property_name, -1) === '*')) {
+			$property_name = substr($property_name, 0, -1);
+		}
+		return $asterisk;
+	}
+
 	//------------------------------------------------------------------------------- getBuiltObjects
 	/**
 	 * Call this after calls to build() to get all objects list set by the built
@@ -477,6 +497,93 @@ class Object_Builder_Array
 	public function getBuiltObjects()
 	{
 		return $this->built_objects;
+	}
+
+	//-------------------------------------------------------------------------------- initLinkObject
+	/**
+	 * @param $array
+	 * @param $object
+	 * @return array
+	 */
+	private function initLinkObject(&$array, &$object)
+	{
+		/** @var $link Class_\Link_Annotation */
+		$link = $this->class->getAnnotation('link');
+		if ($link->value) {
+			$id_property_value = null;
+			$linked_class_name = null;
+			$link_properties = $link->getLinkProperties();
+			$search = [];
+			foreach ($link_properties as $property) {
+				if ($property->getType()->isClass()) {
+					$property_name = $property->getName();
+					$id_property_name = 'id_' . $property_name;
+					if (isset($array[$id_property_name]) && $array[$id_property_name]) {
+						$search[$property_name] = $array[$id_property_name];
+					}
+					$property_class_name = $property->getType()->asString();
+					if (is_a($property_class_name, $link->value, true)) {
+						$id_property_value = isset($array[$id_property_name])
+							? $array[$id_property_name] : null;
+						$linked_class_name = $property_class_name;
+						if (!isset($array[$id_property_name]) && !isset($array[$property_name])) {
+							$linked_array = $array;
+							foreach (array_keys($link_properties) as $link_property_name) {
+								unset($linked_array[$link_property_name]);
+							}
+							$array[$property_name] = (new Object_Builder_Array($property_class_name))->build(
+								$linked_array
+							);
+						}
+					}
+				}
+			}
+			if (count($search) >= 2) {
+				$object = Dao::searchOne($search, $this->class->name);
+			}
+			if ($id_property_value && !$object) {
+				$object = Builder::createClone(
+					Dao::read($id_property_value, $linked_class_name), $this->class->name
+				);
+			}
+			return $search;
+		}
+		return null;
+	}
+
+	//------------------------------------------------------------------------------------ initObject
+	/**
+	 * Initializes the object if not already set
+	 * - if a data link identifier is set, read the object from the data link and remove it from
+	 *   $array
+	 * - if the object is a link class and the link class identifier properties values are set,
+	 *   read the object from the data link
+	 *
+	 * @param $array  array  the source array
+	 * @param $object object the object to complete (if set) or to build (if null)
+	 *                This object is always set at the end of execution of initObject()
+	 * @return array if read from a link object, this is the search properties that identify it
+	 */
+	private function initObject(&$array, &$object)
+	{
+		if (!isset($object)) {
+			if (isset($array['id']) && $array['id']) {
+				$object = Dao::read($array['id'], $this->class->name);
+			}
+			else {
+				foreach ($this->class->getAnnotations('before_build_array') as $before) {
+					call_user_func_array([$this->class->name, $before->value], [&$array]);
+				}
+				$link_search = $this->initLinkObject($array, $object);
+				if (!isset($object)) {
+					$object = $this->class->newInstance();
+				}
+			}
+			if (isset($array['id'])) {
+				unset($array['id']);
+			}
+		}
+		return isset($link_search) ? $link_search : null;
 	}
 
 	//------------------------------------------------------------------------------------ readObject
