@@ -169,7 +169,7 @@ class Object_Builder_Array
 	{
 		$collection = [];
 		if ($array) {
-			$builder = new Object_Builder_Array($class_name);
+			$builder = new Object_Builder_Array($class_name, $this->from_form);
 			/** @var $link Class_\Link_Annotation */
 			$link = $builder->class->getAnnotation('link');
 			if ($link->value && isset($parent->id)) {
@@ -273,7 +273,7 @@ class Object_Builder_Array
 			foreach ($array as $key => $element) {
 				if (!empty($element)) {
 					$map[$key] = is_array($element)
-						? (new Object_Builder_Array($class_name))->build($element)
+						? (new Object_Builder_Array($class_name, $this->from_form))->build($element)
 						: (
 							is_object($element)
 							? $element
@@ -294,7 +294,7 @@ class Object_Builder_Array
 	 */
 	private function buildObjectValue($class_name, $array, $null_if_empty = false)
 	{
-		$builder = new Object_Builder_Array($class_name);
+		$builder = new Object_Builder_Array($class_name, $this->from_form);
 		$object = $builder->build($array, null, $null_if_empty);
 		$this->built_objects = array_merge($this->built_objects, $builder->built_objects);
 		return $object;
@@ -444,7 +444,9 @@ class Object_Builder_Array
 		$property_name = $property->name;
 		$type = $property->getType();
 		if (!isset($this->builders[$property_name])) {
-			$this->builders[$property_name] = new Object_Builder_Array($type->getElementTypeAsString());
+			$this->builders[$property_name] = new Object_Builder_Array(
+				$type->getElementTypeAsString(), $this->from_form
+			);
 		}
 		$builder = $this->builders[$property_name];
 		$value = $builder->build($value, null, $null_if_empty);
@@ -531,9 +533,8 @@ class Object_Builder_Array
 							foreach (array_keys($link_properties) as $link_property_name) {
 								unset($linked_array[$link_property_name]);
 							}
-							$array[$property_name] = (new Object_Builder_Array($property_class_name))->build(
-								$linked_array
-							);
+							$builder = new Object_Builder_Array($property_class_name, $this->from_form);
+							$array[$property_name] = $builder->build($linked_array);
 						}
 					}
 				}
