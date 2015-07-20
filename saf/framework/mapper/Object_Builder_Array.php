@@ -57,6 +57,12 @@ class Object_Builder_Array
 	 */
 	private $from_form;
 
+	//-------------------------------------------------------------------- $null_if_empty_sub_objects
+	/**
+	 * @var boolean set sub-objects null if empty, even if main object accepts null if empty
+	 */
+	public $null_if_empty_sub_objects = false;
+
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * Properties list, set by start()
@@ -199,7 +205,9 @@ class Object_Builder_Array
 				if ($id_property_name && !isset($element[$id_property_name])) {
 					$element[$id_property_name] = $parent->id;
 				}
-				$object = $builder->build($element, null, $null_if_empty, $id_property_name);
+				$object = $builder->build(
+					$element, null, $this->null_if_empty_sub_objects || $null_if_empty, $id_property_name
+				);
 				if (isset($object)) {
 					$collection[$key] = $object;
 				}
@@ -262,7 +270,7 @@ class Object_Builder_Array
 	//--------------------------------------------------------------------------------- buildMapValue
 	/**
 	 * @param $array      array
-	 * @param $class_name string the class name to build each element
+	 * @param $class_name string the name of the class to build each element
 	 * @param $link       string|null
 	 * @return integer[]
 	 */
@@ -272,13 +280,16 @@ class Object_Builder_Array
 		if ($array) {
 			foreach ($array as $key => $element) {
 				if (!empty($element)) {
-					$map[$key] = is_array($element)
-						? (new Object_Builder_Array($class_name, $this->from_form))->build($element)
-						: (
-							is_object($element)
-							? $element
-							: ($link ? Dao::read($element, $class_name) : intval($element))
+					if (is_array($element)) {
+						$map[$key] = (new Object_Builder_Array($class_name, $this->from_form))->build(
+							$element, null, true
 						);
+					}
+					else {
+						$map[$key] = is_object($element)
+							? $element
+							: ($link ? Dao::read($element, $class_name) : intval($element));
+					}
 				}
 			}
 		}
@@ -295,7 +306,7 @@ class Object_Builder_Array
 	private function buildObjectValue($class_name, $array, $null_if_empty = false)
 	{
 		$builder = new Object_Builder_Array($class_name, $this->from_form);
-		$object = $builder->build($array, null, $null_if_empty);
+		$object = $builder->build($array, null, $this->null_if_empty_sub_objects || $null_if_empty);
 		$this->built_objects = array_merge($this->built_objects, $builder->built_objects);
 		return $object;
 	}
@@ -449,16 +460,59 @@ class Object_Builder_Array
 			);
 		}
 		$builder = $this->builders[$property_name];
-		$value = $builder->build($value, null, $null_if_empty);
-		if (isset($value)) {
-			if ($type->isMultiple()) {
-				$object->$property_name;
-				array_push($object->$property_name, $value);
-			}
-			else {
+		if ($type->isMultiple()) {
+			$is_null = $this->buildSubObjectMultiple(
+				$object, $property_name, $value, $null_if_empty, $builder
+			);
+		}
+		else {
+			$value = $builder->build($value, null, $null_if_empty);
+			if (isset($value)) {
 				$object->$property_name = $value;
+				$is_null = false;
 			}
-			$is_null = false;
+		}
+		return $is_null;
+	}
+
+	//------------------------------------------------------------------------ buildSubObjectMultiple
+	/**
+	 * @param $builder       Object_Builder_Array
+	 * @param $null_if_empty boolean
+	 * @param $object        object
+	 * @param $property_name string
+	 * @param $value         mixed
+	 * @return boolean
+	 */
+	private function buildSubObjectMultiple(
+		$object, $property_name, $value, $null_if_empty, Object_Builder_Array $builder
+	) {
+		$is_null = $null_if_empty;
+		if (is_array($value)) {
+			// keys are numeric : multiple values case
+			foreach ($value as $key => $element) {
+				if (is_numeric($number = lParse($key, DOT, 1, false))) {
+					$values[$number][rParse($key, DOT)] = $element;
+				}
+				else {
+					unset($values);
+					break;
+				}
+			}
+			// single value case
+			if (!isset($values)) {
+				$values = [$value];
+			}
+			// build values
+			foreach ($values as $element) {
+				$element = $builder->build($element, null, $null_if_empty);
+				if (isset($element)) {
+					// call property getter if exist (do not remove this !)
+					$object->$property_name;
+					array_push($object->$property_name, $element);
+					$is_null = false;
+				}
+			}
 		}
 		return $is_null;
 	}
