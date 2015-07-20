@@ -62,7 +62,7 @@ class Foreign_Key implements Sql\Foreign_Key
 			$column_name = 'id_' . $column_name;
 		}
 		$foreign_key = new Foreign_Key();
-		$foreign_key->Constraint = $table_name . DOT . $column_name;
+		$foreign_key->Constraint = substr($table_name . DOT . $column_name, 0, 64);
 		$foreign_key->Fields = $column_name;
 		$foreign_key->On_delete = $constraint;
 		$foreign_key->On_update = $constraint;
@@ -85,8 +85,8 @@ class Foreign_Key implements Sql\Foreign_Key
 		$foreign_key->Constraint       = self::propertyConstraintToMysql($table_name, $property);
 		$foreign_key->Fields           = self::propertyFieldsToMysql($property);
 		$foreign_key->On_delete        = self::propertyOnDeleteToMysql($property);
-		$foreign_key->On_update        = self::propertyOnUpdateToMysql($property);
-		$foreign_key->Reference_fields = self::propertyReferenceFieldsToMysql($property);
+		$foreign_key->On_update        = self::propertyOnUpdateToMysql();
+		$foreign_key->Reference_fields = self::propertyReferenceFieldsToMysql();
 		$foreign_key->Reference_table  = self::propertyReferenceTableToMysql($property);
 		return $foreign_key;
 	}
