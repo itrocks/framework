@@ -34,12 +34,13 @@ class Reflection_Property_View
 	/**
 	 * Format the property value, taken from the input object, depending on it's type
 	 *
-	 * @param $object object
+	 * @param $object      object|mixed
+	 * @param $final_value boolean
 	 * @return string
 	 */
-	public function getFormattedValue($object)
+	public function getFormattedValue($object, $final_value = false)
 	{
-		return $this->formatValue($this->property->getValue($object));
+		return $this->formatValue($final_value ? $object : $this->property->getValue($object));
 	}
 
 	//-------------------------------------------------------------------------------- formatDateTime

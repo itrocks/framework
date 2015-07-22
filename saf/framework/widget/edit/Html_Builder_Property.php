@@ -4,6 +4,7 @@ namespace SAF\Framework\Widget\Edit;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Password;
 use SAF\Framework\View\Html\Dom\Element;
@@ -78,6 +79,30 @@ class Html_Builder_Property extends Html_Builder_Type
 		$collection->preprop = $this->preprop;
 		$collection->setTemplate($this->template);
 		return $collection->build();
+	}
+
+	//------------------------------------------------------------------------------------ buildFloat
+	/**
+	 * @param $format boolean
+	 * @return Element
+	 */
+	protected function buildFloat($format = true)
+	{
+		if ($format) {
+			$property = $this->property;
+			if (!($property instanceof Reflection_Property_Value)) {
+				$property = new Reflection_Property_Value(
+					$property->class, $property->name, $this->value, true
+				);
+			}
+			$value = $this->value;
+			$this->value = $property->format();
+		}
+		$result = parent::buildFloat(false);
+		if (isset($value)) {
+			$this->value = $value;
+		}
+		return $result;
 	}
 
 	//-------------------------------------------------------------------------------------- buildMap

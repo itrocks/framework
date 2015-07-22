@@ -8,6 +8,7 @@ use SAF\Framework\Dao\File;
 use SAF\Framework\Dao\File\Session_File;
 use SAF\Framework\Dao\File\Session_File\Files;
 use SAF\Framework\Dao;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
@@ -170,11 +171,15 @@ class Html_Builder_Type
 
 	//--------------------------------------------------------------------------------- buildDateTime
 	/**
+	 * @param $format boolean
 	 * @return Element
 	 */
-	protected function buildDateTime()
+	protected function buildDateTime($format = true)
 	{
-		$input = new Input($this->getFieldName(), $this->value);
+		$input = new Input(
+			$this->getFieldName(),
+			$format ? Loc::dateToLocale($this->value) : $this->value
+		);
 		$input->setAttribute('autocomplete', 'off');
 		if ($this->readonly) {
 			$input->setAttribute('readonly');
@@ -230,11 +235,15 @@ class Html_Builder_Type
 
 	//------------------------------------------------------------------------------------ buildFloat
 	/**
+	 * @param $format boolean
 	 * @return Element
 	 */
-	protected function buildFloat()
+	protected function buildFloat($format = true)
 	{
-		$input = new Input($this->getFieldName(), $this->value);
+		$input = new Input(
+			$this->getFieldName(),
+			$format ? Loc::floatToLocale($this->value) : $this->value
+		);
 		if ($this->readonly) {
 			$input->setAttribute('readonly');
 		}
@@ -257,11 +266,15 @@ class Html_Builder_Type
 
 	//---------------------------------------------------------------------------------- buildInteger
 	/**
+	 * @param $format boolean
 	 * @return Element
 	 */
-	protected function buildInteger()
+	protected function buildInteger($format = true)
 	{
-		$input = new Input($this->getFieldName(), $this->value);
+		$input = new Input(
+			$this->getFieldName(),
+			$format ? Loc::integerToLocale($this->value) : $this->value
+		);
 		if ($this->readonly) {
 			$input->setAttribute('readonly');
 		}

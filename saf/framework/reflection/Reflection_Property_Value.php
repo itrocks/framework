@@ -124,7 +124,9 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 	 */
 	public function format()
 	{
-		return (new Reflection_Property_View($this))->getFormattedValue($this->object);
+		return (new Reflection_Property_View($this))->getFormattedValue(
+			$this->object, $this->final_value
+		);
 	}
 
 	//------------------------------------------------------------------------------------- getObject

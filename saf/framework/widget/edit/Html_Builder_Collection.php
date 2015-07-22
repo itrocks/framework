@@ -69,13 +69,7 @@ class Html_Builder_Collection extends Collection
 		if (!isset($this->template)) {
 			$this->template = new Html_Template();
 		}
-		$type = $property->getType();
-		$value = (
-			$type->isBoolean()
-			|| ($type->isString() && $property->getListAnnotation('values')->values())
-		)
-			? $property->getValue($object)
-			: (new Reflection_Property_View($property))->getFormattedValue($object);
+		$value = $property->getValue($object);
 		$preprop = $this->preprop
 			? ($this->preprop . '[' . $this->property->name . ']')
 			: $this->property->name;
