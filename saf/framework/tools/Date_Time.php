@@ -22,7 +22,9 @@ class Date_Time extends DateTime implements Can_Be_Empty
 	const YEAR   = 'year';
 
 	//------------------------------------------------------------------------- date format constants
-	const DAY_OF_WEEK = 'w';
+	const DAY_OF_MONTH  = 'd';
+	const DAY_OF_WEEK   = 'w';
+	const DAYS_IN_MONTH = 't';
 
 	//------------------------------------------------------------------------------------- $max_date
 	/**
@@ -50,7 +52,10 @@ class Date_Time extends DateTime implements Can_Be_Empty
 	 */
 	public function __construct($time = 'now', DateTimeZone $timezone = null)
 	{
-		if (is_int($time)) {
+		if ($time instanceof DateTime) {
+			$time = $time->format('Y-m-d H:i:s');
+		}
+		if (is_integer($time)) {
 			$time = date('Y-m-d H:i:s', $time);
 		}
 		parent::__construct($time, $timezone);
@@ -107,7 +112,7 @@ class Date_Time extends DateTime implements Can_Be_Empty
 		if ($quantity instanceof DateInterval) {
 			return parent::add($quantity);
 		}
-		elseif (is_integer($quantity)) {
+		elseif (is_numeric($quantity)) {
 			if ($quantity < 0) {
 				$quantity = -$quantity;
 				$invert = true;
@@ -127,10 +132,20 @@ class Date_Time extends DateTime implements Can_Be_Empty
 			if (isset($interval)) {
 				$interval = new DateInterval($interval);
 				$interval->invert = $invert;
-				return parent::add($interval);
+				return new Date_Time(parent::add($interval));
 			}
 		}
 		return $this;
+	}
+
+	//---------------------------------------------------------------------------------------- format
+	/**
+	 * @param $format string
+	 * @return string|integer
+	 */
+	public function format($format)
+	{
+		return parent::format($format);
 	}
 
 	//--------------------------------------------------------------------------------------- isAfter
@@ -286,7 +301,7 @@ class Date_Time extends DateTime implements Can_Be_Empty
 	public function sub($quantity, $unit = Date_Time::DAY)
 	{
 		return ($quantity instanceof DateInterval)
-			? parent::sub($quantity)
+			? new Date_Time(parent::sub($quantity))
 			: $this->add(-$quantity, $unit);
 	}
 
