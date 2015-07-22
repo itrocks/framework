@@ -6,6 +6,7 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Dao\Option\Count;
+use SAF\Framework\Dao\Option\Group_By;
 use SAF\Framework\Dao\Option\Limit;
 use SAF\Framework\Dao;
 use SAF\Framework\Locale;
@@ -457,6 +458,21 @@ class Data_List_Controller extends Output_Controller
 		return $parameters;
 	}
 
+	//-------------------------------$this$this->$this->----------------------------------------------- $properties_path
+	/**
+	 * @param $properties_path string[]
+	 * @return Group_By|null
+	 */
+	private function groupBy($properties_path)
+	{
+		foreach ($properties_path as $property_path) {
+			if (strpos($property_path, DOT)) {
+				return Dao::groupBy(array_merge(['id'], $properties_path));
+			}
+		}
+		return null;
+	}
+
 	//-------------------------------------------------------------------------------------- readData
 	/**
 	 * @param $class_name    string
@@ -472,6 +488,9 @@ class Data_List_Controller extends Output_Controller
 			$list_settings->maximum_displayed_lines_count
 		);
 		$options = [$list_settings->sort, $limit, $count];
+		if ($group_by = $this->groupBy($list_settings->properties_path)) {
+			$options[] = $group_by;
+		}
 		$data = Dao::select($class_name, $list_settings->properties_path, $search, $options);
 		if (($data->length() < $limit->count) && ($limit->from > 1)) {
 			$limit->from = max(1, $count->count - $limit->count + 1);
