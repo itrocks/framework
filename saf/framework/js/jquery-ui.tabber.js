@@ -18,13 +18,13 @@
 			$tabber = $add_tab.closest('.ui-tabber');
 			$add_tab.children('a').click($tabber.data('click_handler'));
 			$tabber.data('tabs',  $tabber.children('ul:first').children('li'));
-			$tabber.data('pages', $tabber.children(':not(ul)'));
+			$tabber.data('pages', $tabber.children(':not(ul:first)'));
 
 		}
 		else if (action == 'refresh') {
 
 			$tabber.data('tabs',  $tabber.children('ul:first').children('li'));
-			$tabber.data('pages', $tabber.children(':not(ul)'));
+			$tabber.data('pages', $tabber.children(':not(ul:first)'));
 
 		}
 		else if (action == undefined) {
@@ -32,7 +32,7 @@
 			this.each(function() {
 				var $tabber = $(this);
 				var $tabs = $tabber.children('ul:first').addClass('ui-tabber-tabs').children('li');
-				var $pages = $tabber.children(':not(ul)');
+				var $pages = $tabber.children(':not(ul:first)');
 
 				$tabber.addClass('ui-tabber');
 				$tabs.addClass('ui-tabber-tab');
