@@ -13,7 +13,7 @@ class Json
 	/**
 	 * @param $encoded_string string
 	 * @param $class_name     string
-	 * @return object
+	 * @return array|object
 	 */
 	public function decodeObject($encoded_string, $class_name = null)
 	{
@@ -24,7 +24,7 @@ class Json
 
 	//---------------------------------------------------------------------------------------- encode
 	/**
-	 * @param $object object
+	 * @param $object array|object
 	 * @return string
 	 */
 	public function encodeObject($object)
