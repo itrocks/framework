@@ -95,8 +95,8 @@ class Html_Builder_Property extends Html_Builder_Type
 					$property->class, $property->name, $this->value, true
 				);
 			}
-			$value = $this->value;
-			$this->value = $property->format();
+			$value = strlen($this->value) ? $this->value : null;
+			$this->value = (!$this->null || strlen($this->value)) ? $property->format() : null;
 		}
 		$result = parent::buildFloat(false);
 		if (isset($value)) {
