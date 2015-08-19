@@ -9,7 +9,7 @@ use SAF\Framework\Builder;
 class Json
 {
 
-	//---------------------------------------------------------------------------------------- decode
+	//---------------------------------------------------------------------------------- decodeObject
 	/**
 	 * @param $encoded_string string
 	 * @param $class_name     string
@@ -22,7 +22,7 @@ class Json
 			: json_decode($encoded_string);
 	}
 
-	//---------------------------------------------------------------------------------------- encode
+	//---------------------------------------------------------------------------------- encodeObject
 	/**
 	 * @param $object array|object
 	 * @return string
