@@ -80,7 +80,7 @@ abstract class Custom_Settings
 
 	//---------------------------------------------------------------------------------------- delete
 	/**
-	 * Delete the Data_List_Settings object from the Settings set
+	 * Delete the Custom_Settings object from the Settings set
 	 */
 	public function delete()
 	{
@@ -108,7 +108,7 @@ abstract class Custom_Settings
 			/** @var $setting Setting */
 			/** @var $settings Custom_Settings */
 			$settings = $setting->value;
-			$list[$settings->name] = (($settings->name == $this->name) ? 'selected' : '');
+			$list[$settings->name] = new Selected_Setting($setting, $settings->name == $this->name);
 		}
 		ksort($list);
 		return $list;
@@ -116,9 +116,9 @@ abstract class Custom_Settings
 
 	//------------------------------------------------------------------------------------------ load
 	/**
-	 * Loads a Data_List_Settings from the Settings set
+	 * Loads a Custom_Settings from the Settings set
 	 *
-	 * If no Data_List_Settings named $name is stored, a new one will be returned
+	 * If no Custom_Settings named $name is stored, a new one will be returned
 	 *
 	 * @param $class_name string
 	 * @param $name       string
@@ -139,8 +139,8 @@ abstract class Custom_Settings
 
 	//------------------------------------------------------------------------------------------ save
 	/**
-	 * If $save_name is set : saves the Data_List_Settings object into the Settings set
-	 * If $save_name is not set : saves the Data_List_Settings object for current user and session
+	 * If $save_name is set : saves the Custom_Settings object into the Settings set
+	 * If $save_name is not set : saves the Custom_Settings object for current user and session
 	 *
 	 * @param $save_name string
 	 */

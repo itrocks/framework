@@ -5,25 +5,70 @@ $('document').ready(function()
 	{
 		if (!this.length) return;
 
-		//-------------------------------------------------------------- select.customized option click
-		this.inside('select.customized').change(function()
+		var $input = this.inside('input.custom.name');
+
+		$input.autowidth();
+
+		//------------------------------------------------------------------------------- h2 span click
+		this.inside('h2>span').click(function()
 		{
-			var $this = $(this);
-			$this.attr('name', 'load_name');
-			$this.closest('form').submit();
+			var $ul_custom_selection = $('ul.custom.selection');
+			if ($ul_custom_selection.is(':visible')) {
+				$('body').click();
+			}
+			else {
+				$ul_custom_selection.fadeIn(200);
+				setTimeout(
+					function () {
+						var click_event = function () {
+							$('body').off('click', click_event);
+							$('ul.custom.selection').fadeOut(200);
+						};
+						$('body').on('click', click_event);
+					}, 220
+				);
+			}
 		});
 
-		//------------------------------------------------------------------- .save_list.button a click
+		//---------------------------------------------------------------------- input.custom.name blur
+		// Loose focus more than 1 second (without coming back) : cancel
+		$input.blur(function()
+		{
+			var input = this;
+			input.is_inside = false;
+			setTimeout(function() { if (!input.is_inside) input.close(); }, 100);
+		});
+
+		//--------------------------------------------------------------------- input.custom.name focus
+		$input.focus(function()
+		{
+			this.is_inside = true;
+		});
+
+		//------------------------------------------------------------------- input.custom.name keydown
+		// Press ENTER : save, press ESCAPE : cancel
+		$input.keydown(function(event)
+		{
+			var $this = $(this);
+			if (event.keyCode == $.ui.keyCode.ENTER) {
+				$this.closest('h2').find('a.custom_save, .custom_save>a').click();
+				event.preventDefault();
+			}
+			if (event.keyCode == $.ui.keyCode.ESCAPE) {
+				this.close();
+			}
+		});
+
+		//------------------------------------------------------------------- [a].custom_save[>a] click
 		// click on save button opens the save form between calling save
 		this.inside('a.custom_save, .custom_save>a').click(function(event)
 		{
-			var $this = $(this);
-			var $list = $this.closest('form');
-			var $input = $list.find('input.customized');
+			var $this  = $(this);
+			var $h2    = $this.closest('h2');
+			var $input = $h2.children('input.custom.name');
 			if (!$input.filter(':visible').length) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				$input.parent().find('select.customized').hide();
 				$input
 					.attr('name', 'save_name')
 					.fadeIn(200)
@@ -34,7 +79,6 @@ $('document').ready(function()
 					var $this = $(this);
 					$this.fadeOut(200);
 					$this.removeAttr('name');
-					setTimeout(function() { $this.parent().find('select.customized').show(); }, 220);
 				};
 			}
 			else if (!$input.val()) {
@@ -42,31 +86,6 @@ $('document').ready(function()
 				event.stopImmediatePropagation();
 				alert('Veuillez saisir un nom puis valider, ou tapez echap pour annuler');
 			}
-		});
-		var $input = this.inside('input.customized');
-		$input.autowidth();
-		// press ENTER : save, press ESCAPE : cancel
-		$input.keydown(function(event)
-		{
-			var $this = $(this);
-			if (event.keyCode == $.ui.keyCode.ENTER) {
-				$this.closest('form').find('a.custom_save, .custom_save>a').click();
-				event.preventDefault();
-			}
-			if (event.keyCode == $.ui.keyCode.ESCAPE) {
-				this.close();
-			}
-		});
-		// loose focus more than 1 second (without coming back) : cancel
-		$input.blur(function()
-		{
-			var input = this;
-			input.is_inside = false;
-			setTimeout(function() { if (!input.is_inside) input.close(); }, 100);
-		});
-		$input.focus(function()
-		{
-			this.is_inside = true;
 		});
 
 	});

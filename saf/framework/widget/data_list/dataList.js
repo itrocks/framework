@@ -121,12 +121,14 @@ $('document').ready(function()
 			};
 			var uri = window.app.uri_base + '/{className}/dataListSetting'
 				+ window.app.askSIDand() + 'as_widget';
+
 			// list title (class name) double-click
-			$this.children('h2').modifiable({
+			$this.find('h2>span').modifiable({
 				done: uri + '&title={value}',
 				aliases: { 'className': className },
 				target: '#messages'
 			});
+
 			// list column header (property path) double-click
 			$this.find('table>thead>tr>th.property>a').modifiable({
 				done: uri + '&property_path={propertyPath}&property_title={value}',

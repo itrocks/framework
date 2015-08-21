@@ -15,6 +15,7 @@ use SAF\Framework\Print_Model;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
+use SAF\Framework\Setting\Buttons;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\List_Data;
@@ -106,6 +107,7 @@ class Data_List_Controller extends Output_Controller
 			$list_settings->sort($parameters['sort']);
 		}
 		elseif (isset($parameters['title'])) {
+			$list_settings->name  = $parameters['title'];
 			$list_settings->title = $parameters['title'];
 		}
 		else {
@@ -120,6 +122,9 @@ class Data_List_Controller extends Output_Controller
 		}
 		if ($did_change) {
 			$list_settings->save();
+		}
+		if (!$list_settings->name) {
+			$list_settings->name = $list_settings->title;
 		}
 		return $did_change ? $list_settings : null;
 	}
@@ -199,18 +204,6 @@ class Data_List_Controller extends Output_Controller
 				View::link($class_name, Feature::F_IMPORT),
 				Feature::F_IMPORT,
 				[Target::MAIN, new Color(Color::GREEN)]
-			),
-			Feature::F_WRITE => new Button(
-				'Save',
-				View::link($this->class_names),
-				'custom_save',
-				[Target::MAIN, new Color(Color::GREEN), '.submit', 'title' => 'save this view as a custom list']
-			),
-			Feature::F_DELETE => new Button(
-				'Delete',
-				View::link($this->class_names, null, null, ['delete_name' => true]),
-				'custom_delete',
-				[Target::MAIN, new Color(Color::RED), '.submit', 'title' => 'delete this custom list']
 			)
 		];
 	}
@@ -432,6 +425,8 @@ class Data_List_Controller extends Output_Controller
 			$parameters,
 			[
 				'customized_lists'      => $customized_list_settings,
+				'default_title'         => ucfirst(Names::classToDisplay($this->class_names)),
+				'display_start'         => $list_settings->start_display_line_number,
 				'displayed_lines_count' => $displayed_lines_count,
 				'less_twenty'           => $less_twenty,
 				'more_hundred'          => $more_hundred,
@@ -444,12 +439,12 @@ class Data_List_Controller extends Output_Controller
 				'short_titles'          => $this->getShortTitles($list_settings),
 				'sort_options'          => $this->getSortLinks($list_settings),
 				'sorted'                => $this->getSortClasses($list_settings),
-				'display_start'         => $list_settings->start_display_line_number,
 				'title'                 => $list_settings->title(),
 				'titles'                => $this->getTitles($list_settings)
 			]
 		);
 		// buttons
+		$parameters['custom_buttons']    = (new Buttons())->getButtons($class_name, 'custom list');
 		$parameters['general_buttons']   = $this->getGeneralButtons($class_name, $parameters);
 		$parameters['selection_buttons'] = $this->getSelectionButtons($class_name);
 		if (!isset($customized_list_settings[$list_settings->name])) {

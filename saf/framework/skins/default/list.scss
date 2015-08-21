@@ -3,47 +3,55 @@
 .list.window {
 
 	/* search summary */
+
 	.search_summary {
 		color: #333;
 		font-weight: bold;
 		text-align: left;
+
 		&:empty {
 			display: none;
 		}
 	}
 
 	/* table */
-	>table {
+
+	> table {
 		clear: both;
-		font-family: Arial, Sans-Serif;
+		font-family: arial, helvetica, sans-serif;
 		font-size: 12px;
 		width: 100%;
 
 		/* columns */
-		>colgroup>col {
+
+		> colgroup > col {
+
 			&:not(:last-child) {
 				min-width: 16px;
 			}
+
 			&:first-child, &:nth-child(2) {
 				max-width: 16px;
 				width: 16px;
 			}
+
 			&.insert_after {
-				border-right: 3px solid $table_line_hover;
+				border-right: 3px solid $hover;
 			}
 		}
 
 		/* head */
-		>tbody, >thead {
+
+		> tbody, > thead {
 			border-bottom: 1px solid lightgray;
 			border-left: 1px solid lightgray;
 			border-right: 1px solid lightgray;
 		}
 
-		>thead>tr {
+		> thead > tr {
 			height: 17px;
 
-			>th {
+			> th {
 				background: url("img/list_head_left.png") left 3px no-repeat,
 				url("img/list_head_right.png") right 3px no-repeat,
 				url("img/list_head_background.png") left 0 #aaa repeat-x;
@@ -51,26 +59,28 @@
 				white-space: nowrap;
 
 				/* column select */
+
 				&.column_select {
 					background: url("img/list_head_right.png") right 3px no-repeat,
 					url("img/column_select.png") center 5px no-repeat,
 					url("img/list_head_background.png") #aaa repeat-x;
 					position: relative;
 
-					>a {
+					> a {
 						color: transparent;
 						display: block;
 						font-size: 1px;
 						height: 17px;
 					}
-					>section.popup {
+
+					> section.popup {
 						left: 0;
 						position: absolute;
 					}
 				}
 
 				/* head anchor */
-				>a {
+				> a {
 					background: padding-box right 5px no-repeat;
 					border-right: 4px solid transparent;
 					color: black;
@@ -79,48 +89,55 @@
 					line-height: 17px;
 				}
 
-				&.property>a {
+				&.property > a {
 					padding: 0 14px 0 4px;
 				}
 
 				/* sorting */
-				&.sort1:not(.reverse)>a {
+
+				&.sort1:not(.reverse) > a {
 					background-image: url("img/arrow_black_up.gif");
 				}
-				&.sort1.reverse>a {
+
+				&.sort1.reverse > a {
 					background-image: url("img/arrow_black_down.gif");
 				}
-				&.sort2:not(.reverse)>a {
+
+				&.sort2:not(.reverse) > a {
 					background-image: url("img/arrow_gray_up.gif");
 				}
-				&.sort2.reverse>a {
+
+				&.sort2.reverse > a {
 					background-image: url("img/arrow_gray_down.gif");
 				}
 			}
 
-			>td {
+			> td {
 				padding: 0 7px 0 0;
 
-				>input, >select, >textarea {
+				> input, > select, > textarea {
 					width: 100%;
 				}
 			}
 		}
 
 		/* lines */
-		>tbody>tr {
+		> tbody > tr {
 			height: 21px;
+
 			&:nth-child(even) {
 				background-color: $table_even_line;
 			}
+
 			&:nth-child(odd) {
 				background-color: $table_odd_line;
 			}
+
 			&:hover {
-				background-color: $table_line_hover;
+				background-color: $hover;
 			}
 
-			>td {
+			> td {
 				border-right: 1px dotted lightgray;
 				padding: 5px 3px 0;
 				vertical-align: top;
@@ -128,12 +145,12 @@
 
 				&.vertical.scrollbar {
 					padding: 0;
-					>a {
+					> a {
 						margin: 0;
 					}
 				}
 
-				>a {
+				> a {
 					color: black;
 					display: block;
 					height: 16px;
@@ -142,7 +159,7 @@
 					text-decoration: none;
 				}
 
-				>input[type=checkbox] {
+				> input[type=checkbox] {
 					margin: -2px 3px 0;
 				}
 			}
@@ -153,9 +170,9 @@
 
 ul.actions {
 
-	>li.growth {
+	> li.growth {
 
-		>a {
+		> a {
 			color: transparent;
 			font-size: 1px;
 			line-height: 17px;
@@ -168,6 +185,7 @@ ul.actions {
 			background:
 				url("img/bullet_arrow_" + $arrow + ".png") 3px 1px no-repeat,
 				url("img/buttons/17/background.gif");
+
 			&:hover {
 				background:
 					url("img/lighter50.png"),
@@ -176,27 +194,27 @@ ul.actions {
 			}
 		}
 
-		&.less.twenty>a {
+		&.less.twenty > a {
 			@include background("top");
 		}
 
-		&.more.hundred>a {
+		&.more.hundred > a {
 			@include background("down");
 		}
 
-		&.more.thousand>a {
+		&.more.thousand > a {
 			@include background("bottom");
 		}
 
 	}
 
-	>li.rows_count {
+	> li.rows_count {
 		color: #333;
 		float: right;
 		text-align: right;
 	}
 
-	>li.select_count:not(.selected) {
+	> li.select_count:not(.selected) {
 		display: none;
 	}
 }

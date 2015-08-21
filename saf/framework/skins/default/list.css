@@ -12,7 +12,7 @@
       display: none; }
   .list.window > table {
     clear: both;
-    font-family: Arial, Sans-Serif;
+    font-family: arial, helvetica, sans-serif;
     font-size: 12px;
     width: 100%;
     /* columns */

@@ -40,7 +40,7 @@
 				background: url("img/tree/string-last.png") 8px -2px no-repeat;
 			}
 			&:hover {
-				background-color: $table_line_hover;
+				background-color: $hover;
 			}
 
 			>a {
@@ -61,7 +61,7 @@
 			span {
 				display: block;
 				&:hover {
-					background-color: $table_line_hover;
+					background-color: $hover;
 				}
 			}
 

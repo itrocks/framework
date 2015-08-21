@@ -1,64 +1,99 @@
-.customized {
-	border-style: none;
-	cursor: pointer;
-	float: right;
-	height: 20px;
-	margin-top: -6px;
-	margin-bottom: -20px;
+@import 'colors.scss';
+
+.list.window > h2 {
 	position: relative;
-	top: -50px;
-}
 
-input.customized {
-	background: white;
-	display: none;
-	padding: 1px 2px;
-	z-index: 1;
-}
+	> .custom {
+		display: none;
+	}
 
-select.customized {
-	background: transparent;
-}
+	> input {
+		background: white;
+		border-style: none;
+		display: none;
+		height: 20px;
+		margin-left: .5em;
+		padding: 1px 2px;
+		position: absolute;
+		z-index: 1;
+	}
 
-ul.actions>li {
+	> span {
+		cursor: pointer;
+	}
 
-	&.custom_delete,
-	&.custom_save {
-		box-shadow: none;
-		float: right;
-		&:hover {
-			background: none;
-		}
+	> ul.custom.actions {
+		margin: 0;
+		padding-left: .5em;
 
-		a {
-			border-style: none;
+		> li {
 			box-shadow: none;
-			color: transparent;
-			font-size: 1px;
-			height: 17px;
-			padding: 0;
-			position: relative;
-			width: 17px;
-			&:hover:before {
-				left: 0;
-				opacity: .5;
-				position: absolute;
-				top: 0;
+			line-height: 19px;
+
+			> a {
+				border-style: none;
+				box-shadow: none;
+				color: transparent;
+				font-size: 1px;
+				height: 16px;
+				padding: 1px;
+				vertical-align: top;
+				width: 16px;
+
+				&:hover:before {
+					opacity: .66;
+				}
+			}
+
+			&.custom_save > a {
+				background: url('img/floppy.png') center no-repeat;
+
+				&:hover {
+					background: none;
+				}
+
+				&:hover:before {
+					content: url('img/floppy.png');
+				}
 			}
 		}
 	}
 
-	&.custom_delete a {
-		background: url("img/delete.png") no-repeat;
-		&:hover:before {
-			content: url("img/delete.png");
-		}
+	&:hover > ul.custom.actions {
+		display: inline-block;
 	}
 
-	&.custom_save a {
-		background: url("img/floppy.png") no-repeat;
-		&:hover:before {
-			content: url("img/floppy.png");
+	ul.custom.selection {
+		border: 1px solid $border_color;
+		border-radius: 3px;
+		background: white;
+		padding-bottom: .3em;
+		position: absolute;
+		z-index: 1;
+
+		> li {
+			list-style: none;
+			margin: 0;
+
+			&:first-child > a {
+				font-weight: bold;
+			}
+
+			&.selected {
+				background: $selected;
+			}
+
+			&:hover {
+				background: $hover;
+			}
+
+			> a {
+				color: $black;
+				display: block;
+				font-weight: normal;
+				padding: 0 .5em;
+				text-decoration: none;
+			}
 		}
 	}
 }

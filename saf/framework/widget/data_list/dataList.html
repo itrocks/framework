@@ -14,10 +14,12 @@
 <!--BEGIN-->
 
 <form action="/{@class.path}/{@feature}" class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" method="post" target="#main">
-	<h2>{title}</h2>
+	<h2>
+		<span>{title}</span>
+		{/custom.html}
+	</h2>
 
 	{/general_buttons.html}
-	{/custom.html}
 
 	<table>
 	<caption class="search_summary">{search_summary}</caption>
@@ -41,7 +43,7 @@
 	<tr class="search">
 		<td colspan="2"></td>
 		<!--search-->
-		<td>{@edit("search[{#.@escapeName}]","true","true")}</td>
+		<td>{@edit('search[{#.@escapeName}]','true','true')}</td>
 		<!--sample-->
 		<td><input name="search[column2]"></td>
 		<!--search-->

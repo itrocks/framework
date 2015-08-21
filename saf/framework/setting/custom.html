@@ -10,13 +10,29 @@
 <body>
 <!--BEGIN-->
 
-<input class="customized" value="{?settings.name}">
-<!--customized_lists?-->
-<select class="customized">
-	<option value=""> </option>
-	<!--customized_lists--><option {?.}>{#}</option><!--customized_lists-->
-</select>
-<!--customized_lists?-->
+	<label class="custom name" for="custom_name">|Custom name|</label>
+	<input class="custom name" id="custom_name" value="{?settings.name}">
+
+	<ul class="custom selection">
+		<li value="">
+			<a href="/{@class.path}/{@feature}?load_name=" target="#main">|{default_title}|</a>
+		</li>
+		<!--customized_lists-->
+		<li class="object {?selectedClass}" data-class="{setting.@class}" data-id="{id}">
+			<a href="/{--@class.path}/{@feature}?load_name={#}" target="#main">{#}</a>
+		</li>
+		<!--customized_lists-->
+	</ul>
+
+	<!--custom_buttons?-->
+	<ul class="custom actions">
+		<!--custom_buttons-->
+		<li class="{feature.lower}">
+			<a class="{?class}" href="{link}" target="{?target}" title="|{?title}|">|{caption}|</a>
+		</li>
+		<!--custom_buttons-->
+	</ul>
+	<!--custom_buttons?-->
 
 <!--END-->
 </body>

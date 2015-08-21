@@ -1,9 +1,10 @@
 .import.preview.window {
 
-	&.media>ul {
+	&.media > ul {
 		display: block;
 		overflow: hidden;
-		>li {
+
+		> li {
 			border: 1px solid #333;
 			border-radius: 3px;
 			box-shadow: 2px 2px rgba(0, 0, 0, .1);
@@ -11,14 +12,16 @@
 			list-style: none;
 			margin: 4px;
 			text-align: center;
-			>img {
+
+			> img {
 				background: url("img/loading.gif") center no-repeat;
 				display: block;
 				height: 140px;
 				margin: 2px 2px 0;
 				width: 140px;
 			}
-			>input {
+
+			> input {
 				border: none !important;
 				width: 140px;
 			}
@@ -27,13 +30,15 @@
 
 	div.errors {
 		border: 2px solid red;
-		>h3 {
+
+		> h3 {
 			background-color: red;
 			color: white;
 			font-size: 1.4em;
 			padding: 2px;
 		}
-		>ul>li {
+
+		> ul > li {
 			margin-left: 1.4em;
 		}
 	}
@@ -42,7 +47,7 @@
 
 		&.constants {
 
-			>div>label {
+			> div > label {
 				padding: 0;
 				&:after {
 					content : " = ";
@@ -70,10 +75,10 @@
 		&.properties {
 			border: 1px solid white;
 
-			>ul {
+			> ul {
 				display: inline-block;
 
-				>li {
+				> li {
 					border: 1px solid;
 					color: white;
 					cursor: pointer;
@@ -88,10 +93,12 @@
 			}
 
 			&.identify {
+
 				li {
 					background-color: green;
 					border-color: darkgreen;
 				}
+
 				ul:empty:after {
 					content: "(crée systématiquement un nouvel enregistrement)";
 					font-style: italic;
@@ -99,11 +106,13 @@
 			}
 
 			&.ignore {
+
 				li {
 					background-color: #eee;
 					border-color: #ccc;
 					color: #333;
 				}
+
 				ul:empty:after {
 					content: "(aucune valeur n'est ignorée)";
 					font-style: italic;
@@ -111,10 +120,12 @@
 			}
 
 			&.write {
+
 				li {
 					background-color: blue;
 					border-color: darkblue;
 				}
+
 				ul:empty:after {
 					content: "(aucune valeur à écrire)";
 					font-style: italic;
@@ -123,13 +134,13 @@
 
 		}
 
-		>h3 {
+		> h3 {
 			font-size: 1.4em;
 			font-weight: normal;
 			text-decoration: underline;
 			margin-bottom: .25em;
 
-			>span.property:not(:last-child):after {
+			> span.property:not(:last-child):after {
 				content: ".";
 			}
 		}
@@ -155,12 +166,12 @@
 
 	}
 
-	>.worksheet:not(:last-child) {
+	> .worksheet:not(:last-child) {
 		border-bottom: 2px solid black;
 		padding-bottom: 6px;
 		margin-bottom: 1em;
 
-		>.class:not(:nth-child(2)) {
+		> .class:not(:nth-child(2)) {
 			border-top: 1px solid darkgray;
 			padding-top: 4px;
 			margin-top: 4px;
@@ -168,7 +179,7 @@
 
 	}
 
-	>.check {
+	> .check {
 		padding: 0 1.5em;
 	}
 

@@ -271,6 +271,21 @@ class Data_List_Settings extends Custom_Settings
 		}
 	}
 
+	//------------------------------------------------------------------------------------------ save
+	/**
+	 * If $save_name is set : saves the Data_List_Settings object into the Settings set
+	 * If $save_name is not set : saves the Data_List_Settings object for current user and session
+	 *
+	 * @param $save_name string
+	 */
+	public function save($save_name = null)
+	{
+		if ($save_name) {
+			$this->title($save_name);
+		}
+		parent::save($save_name);
+	}
+
 	//----------------------------------------------------------------------------------------- title
 	/**
 	 * @param $title string
