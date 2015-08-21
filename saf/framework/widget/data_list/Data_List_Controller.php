@@ -107,7 +107,6 @@ class Data_List_Controller extends Output_Controller
 			$list_settings->sort($parameters['sort']);
 		}
 		elseif (isset($parameters['title'])) {
-			$list_settings->name  = $parameters['title'];
 			$list_settings->title = $parameters['title'];
 		}
 		else {
@@ -120,11 +119,14 @@ class Data_List_Controller extends Output_Controller
 		if (Custom_Settings_Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
 			$did_change = true;
 		}
-		if ($did_change) {
-			$list_settings->save();
-		}
 		if (!$list_settings->name) {
 			$list_settings->name = $list_settings->title;
+		}
+		if (!$list_settings->title) {
+			$list_settings->title = $list_settings->name;
+		}
+		if ($did_change) {
+			$list_settings->save();
 		}
 		return $did_change ? $list_settings : null;
 	}
