@@ -68,7 +68,7 @@ class Search_Parameters_Parser
 	public function hasRange(Reflection_Property $property)
 	{
 		$type_string = $property->getType()->asString();
-		return in_array($type_string, [Date_Time::class, Type::INTEGER, Type::STRING]);
+		return in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING]);
 	}
 
 	//----------------------------------------------------------------------------------------- parse
