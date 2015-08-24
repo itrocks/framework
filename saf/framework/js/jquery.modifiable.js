@@ -10,8 +10,10 @@ window.modifiable_waiting  = false;
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
+			ajax:    undefined,
 			aliases: {},
-			done:    undefined,
+			start:   undefined,
+			stop:    undefined,
 			target:  undefined
 		}, options);
 
@@ -52,19 +54,21 @@ window.modifiable_waiting  = false;
 			var $this = $(this);
 			var $input = $('<input>').val($this.html());
 			$input.data('old', $input.val());
-			var done = function() {
-				var done = settings.done;
-				if (typeof(done) == 'string') {
+
+			var done = function()
+			{
+				var ajax = settings.ajax;
+				if (typeof(ajax) == 'string') {
 					for(var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
 						var value = settings.aliases[alias];
 						if (typeof(value) == 'function') {
 							value = value($this);
 						}
-						done = done.replace('{' + alias + '}', encodeURI(value));
+						ajax = ajax.replace('{' + alias + '}', encodeURI(value));
 					}
-					done = done.replace('{value}', encodeURI($input.val()));
+					ajax = ajax.replace('{value}', encodeURI($input.val()));
 					$.ajax({
-						url: done,
+						url: ajax,
 						target: settings.target,
 						success: function(data, status, xhr)
 						{
@@ -73,8 +77,15 @@ window.modifiable_waiting  = false;
 						}
 					}).target = settings.target;
 				}
+				if (settings.stop) {
+					var input = $input.get(0);
+					input.stop = settings.stop;
+					input.stop();
+					input.stop = undefined;
+				}
 				$input.parent().html($input.val());
 			};
+
 			$this.html($input);
 			$input.autowidth();
 			$input.keydown(function(event) {
@@ -89,6 +100,12 @@ window.modifiable_waiting  = false;
 			});
 			$input.blur(function() { done(); });
 			$input.focus();
+			if (settings.start) {
+				var input = $input.get(0);
+				input.start = settings.start;
+				input.start();
+				input.start = undefined;
+			}
 		});
 
 		return this;

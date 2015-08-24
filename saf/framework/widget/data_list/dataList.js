@@ -124,14 +124,20 @@ $('document').ready(function()
 
 			// list title (class name) double-click
 			$this.find('h2>span').modifiable({
-				done: uri + '&title={value}',
+				ajax: uri + '&title={value}',
 				aliases: { 'className': className },
+				start: function() {
+					$(this).closest('h2').children('.custom.actions').css('display', 'none');
+				},
+				stop: function() {
+					$(this).closest('h2').children('.custom.actions').css('display', '');
+				},
 				target: '#messages'
 			});
 
 			// list column header (property path) double-click
 			$this.find('table>thead>tr>th.property>a').modifiable({
-				done: uri + '&property_path={propertyPath}&property_title={value}',
+				ajax: uri + '&property_path={propertyPath}&property_title={value}',
 				aliases: { 'className': className, 'propertyPath': propertyPath },
 				target: '#messages'
 			});
