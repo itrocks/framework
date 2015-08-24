@@ -164,4 +164,18 @@ class Contextual_Mysqli extends mysqli
 		return $result;
 	}
 
+	//------------------------------------------------------------------------------ selectedDatabase
+	/**
+	 * Gets selected database name
+	 *
+	 * @return string
+	 */
+	public function selectedDatabase()
+	{
+		$result = $this->query('SELECT DATABASE()');
+		$database = $result->fetch_row()[0];
+		$result->free();
+		return $database;
+	}
+
 }
