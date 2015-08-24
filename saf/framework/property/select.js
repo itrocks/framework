@@ -129,7 +129,7 @@ $('document').ready(function()
 					});
 					$this.closest('#column_select.popup').fadeOut(200);
 				}
-			},
+			}
 
 		});
 
