@@ -101,7 +101,8 @@ $('document').ready(function()
 
 			drag: function(event, ui)
 			{
-				var $droppable = $(this).data('over-droppable');
+				var $this = $(this);
+				var $droppable = $this.data('over-droppable');
 				if ($droppable != undefined) {
 					var draggable_left = ui.offset.left;
 					var count = 0;
@@ -126,7 +127,13 @@ $('document').ready(function()
 							}
 						}
 					});
+					$this.closest('.closeable-popup').fadeOut(200);
 				}
+			},
+
+			stop: function()
+			{
+				$(this).closest('.closeable-popup').fadeIn(200);
 			}
 
 		});
