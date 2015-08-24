@@ -127,14 +127,9 @@ $('document').ready(function()
 							}
 						}
 					});
-					$this.closest('.closeable-popup').fadeOut(200);
+					$this.closest('#column_select.popup').fadeOut(200);
 				}
 			},
-
-			stop: function()
-			{
-				$(this).closest('.closeable-popup').fadeIn(200);
-			}
 
 		});
 
