@@ -263,10 +263,12 @@ class Compiler implements ICompiler, Needs_Main
 									$already[$class_name] = true;
 								}
 								else {
+									/*
 									trigger_error(
 										'No class ' . $class_name . ' into file ' . $source->file_name,
 										E_USER_ERROR
 									);
+									*/
 								}
 							}
 						}

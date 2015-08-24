@@ -54,7 +54,7 @@ class Reflection_Source
 	 */
 	private $file_name_getter;
 
-	//--------------------------------------------------------------------------------- $dependencies
+	//--------------------------------------------------------------------------------- $instantiates
 	/**
 	 * @var Dependency[]
 	 */
@@ -236,7 +236,7 @@ class Reflection_Source
 			// namespace
 			if ($token_id === T_NAMESPACE) {
 				$use_what = T_NAMESPACE;
-				$this->namespace = $this->scanClassName($this->token_key);
+				$this->namespace = $this->scanClassName();
 				$use = [];
 				if ($f_namespaces) {
 					$this->namespaces[$this->namespace] = $token[2];
@@ -292,7 +292,7 @@ class Reflection_Source
 
 				// namespace use
 				if ($use_what == T_NAMESPACE) {
-					foreach ($this->scanClassNames($this->token_key) as $used => $line) {
+					foreach ($this->scanClassNames() as $used => $line) {
 						$use[$used] = $used;
 						if ($f_uses) {
 							$this->use[$used] = $line;
@@ -303,7 +303,7 @@ class Reflection_Source
 				// class use (notice that this will never be called after T_DOUBLE_COLON)
 				elseif ($use_what === T_CLASS) {
 					if ($f_dependencies) {
-						foreach ($this->scanTraitNames($this->token_key) as $trait_name => $line) {
+						foreach ($this->scanTraitNames() as $trait_name => $line) {
 							$trait_name = $this->fullClassName($trait_name);
 							$dependency = new Dependency();
 							$dependency->class_name      = $class->name;
@@ -504,7 +504,15 @@ class Reflection_Source
 	 */
 	public function getClass($class_name)
 	{
-		return $this->getClasses()[$class_name];
+		$classes = $this->getClasses();
+		if (!isset($classes[$class_name])) {
+			/*
+			trigger_error(
+				'No class ' . $class_name . ' into source file ' . $this->file_name, E_USER_ERROR
+			);
+			*/
+		}
+		return $classes[$class_name];
 	}
 
 	//------------------------------------------------------------------------------------ getClasses
@@ -605,6 +613,18 @@ class Reflection_Source
 		return $source->getClass($class_name);
 	}
 
+	//----------------------------------------------------------------------------------- getRequires
+	/**
+	 * @return integer[] the key is the required file path, the value is the line number
+	 */
+	public function getRequires()
+	{
+		if (!isset($this->requires)) {
+			$this->getAll();
+		}
+		return $this->requires;
+	}
+
 	//------------------------------------------------------------------------------------- getSource
 	/**
 	 * @return string
@@ -619,7 +639,6 @@ class Reflection_Source
 		return $this->source;
 	}
 
-	//------------------------------------------------------------------------------------- getTokens
 	/**
 	 * @return array
 	 */
@@ -676,6 +695,45 @@ class Reflection_Source
 			$file = strtolower(substr($file, 0, -4)) . SL . rLastParse($file, SL);
 		}
 		return new Reflection_Source($file);
+	}
+
+	//------------------------------------------------------------------------------------ searchFile
+	/**
+	 * Search the reflection source file into required files
+	 *
+	 * @param $class_name string   The searched class name
+	 * @param $files      string[] The possible files that may contain the class definition
+	 * @return boolean true if the file has been found, else false
+	 */
+	public function searchFile($class_name, $files)
+	{
+		static $already = [];
+
+		foreach ($files as $key => $file_name) {
+			if ($already[$file_name]) {
+				unset($files[$key]);
+			}
+			else {
+				$buffer = file_get_contents($file_name);
+				if (strpos($buffer, 'class ' . $class_name)) {
+					$this->file_name = $file_name;
+					$already = [];
+					return true;
+				}
+				$already[$file_name] = true;
+			}
+		}
+
+		foreach ($files as $file_name) {
+			$source = new Reflection_Source($file_name);
+			if ($this->searchFile($class_name, array_keys($source->getRequires()))) {
+				$already = [];
+				return true;
+			}
+		}
+
+		$already = [];
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------- setSource
