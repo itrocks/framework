@@ -48,6 +48,15 @@ class String
 		);
 	}
 
+	//--------------------------------------------------------------------------------------- display
+	/**
+	 * @return string
+	 */
+	public function display()
+	{
+		return str_replace('_', SP, $this->value);
+	}
+
 	//----------------------------------------------------------------------------------------- first
 	/**
 	 * First element of a separated string
