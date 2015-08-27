@@ -161,7 +161,7 @@ class Data_List_Settings extends Custom_Settings
 	 * Get current session / user custom settings object
 	 *
 	 * @param $class_name string
-	 * @return Data_List_Settings
+	 * @return self
 	 */
 	public static function current($class_name)
 	{
@@ -281,7 +281,7 @@ class Data_List_Settings extends Custom_Settings
 		if (isset($title)) {
 			$this->title = $title;
 		}
-		return (empty($this->title))
+		return empty($this->title)
 			? $this->getDefaultTitle()
 			: $this->title;
 	}

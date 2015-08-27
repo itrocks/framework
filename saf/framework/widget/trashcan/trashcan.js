@@ -58,7 +58,7 @@ $('document').ready(function()
 					event.target.href = app.uri_base + ui.helper.data('throw')
 				}
 				else {
-					event.target.href = event.target.pathname + '/drop';
+					event.target.href = event.target.pathname + SL + 'drop';
 				}
 				// after trash call is complete, the source window is reloaded to update displayed content
 				var $window = ui.draggable.closest('.window');
@@ -67,7 +67,7 @@ $('document').ready(function()
 					if (data_class != undefined) {
 						$(event.target).data(
 							'on-success', function () {
-								var uri = '/' + data_class.replace('\\', '/') + '/' + $window.data('feature');
+								var uri = SL + data_class.replace(BS, SL) + SL + $window.data('feature');
 								$.ajax(
 									{
 										url:     app.uri_base + uri + '?as_widget' + app.andSID(),
@@ -82,12 +82,12 @@ $('document').ready(function()
 						);
 					}
 				}
-				event.target.href += '/' + ui.helper.data('class').replace('\\', '/');
+				event.target.href += SL + ui.helper.data('class').replace(BS, SL);
 				if (ui.helper.data('id')) {
-					event.target.href += '/' + ui.helper.data('id');
+					event.target.href += SL + ui.helper.data('id');
 				}
 				if (ui.helper.data('feature')) {
-					event.target.href += '/' + ui.helper.data('feature');
+					event.target.href += SL + ui.helper.data('feature');
 				}
 				if (ui.helper.data('property')) {
 					event.target.href += '/SAF/Framework/Property/' + ui.helper.data('property');
