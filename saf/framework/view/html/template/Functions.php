@@ -506,6 +506,7 @@ class Functions
 	{
 		$object = reset($template->objects);
 		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
+		$properties_title  = $template->getParameter(Parameter::PROPERTIES_TITLE);
 		$class = new Reflection_Class(get_class($object));
 		$result_properties = [];
 		foreach ($class->accessProperties() as $property_name => $property) {
@@ -517,11 +518,21 @@ class Functions
 					$property = new Reflection_Property_Value(
 						$property->class, $property->name, $object, false, true
 					);
+					if (isset($properties_title) && isset($properties_title[$property_name])) {
+						$property->display = $properties_title[$property_name];
+					}
 					$property->final_class = $class->name;
 					$result_properties[$property_name] = $property;
 				}
 			}
 		}
+
+		// properties filter is also used to sort properties
+		if ($properties_filter) {
+			$properties_set = new Set(Reflection_Property_Value::class, $result_properties);
+			$result_properties = $properties_set->filterAndSort($properties_filter);
+		}
+
 		return Replaces_Annotations::removeReplacedProperties($result_properties);
 	}
 
