@@ -82,3 +82,19 @@
 	font-weight: bold;
 	padding: 4px;
 }
+
+.insert-bottom {
+	border-bottom: 3px solid $hover;
+}
+
+.insert-left {
+	border-left: 3px solid $hover;
+}
+
+.insert-right {
+	border-right: 3px solid $hover;
+}
+
+.insert-top {
+	border-top: 3px solid $hover;
+}

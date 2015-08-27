@@ -62,3 +62,15 @@
   color: black;
   font-weight: bold;
   padding: 4px; }
+
+.insert-bottom {
+  border-bottom: 3px solid #aedc5f; }
+
+.insert-left {
+  border-left: 3px solid #aedc5f; }
+
+.insert-right {
+  border-right: 3px solid #aedc5f; }
+
+.insert-top {
+  border-top: 3px solid #aedc5f; }

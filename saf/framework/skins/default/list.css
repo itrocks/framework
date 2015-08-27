@@ -23,8 +23,6 @@
     .list.window > table > colgroup > col:first-child, .list.window > table > colgroup > col:nth-child(2) {
       max-width: 16px;
       width: 16px; }
-    .list.window > table > colgroup > col.insert_after {
-      border-right: 3px solid #aedc5f; }
     .list.window > table > tbody, .list.window > table > thead {
       border-bottom: 1px solid lightgray;
       border-left: 1px solid lightgray;
