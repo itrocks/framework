@@ -88,12 +88,15 @@ $('document').ready(function()
 			helper: function()
 			{
 				var $this = $(this);
+				var property_name = $this.data('property')
+					? $this.data('property')
+					: $this.closest('[id]').attr('id');
 				$this.closest('#column_select.popup').fadeOut(200);
 				return $('<div>')
 					.addClass('property')
-					.attr('data-class',    $this.closest('.window').data('class'))
-					.attr('data-feature',  $this.closest('.window').data('feature'))
-					.attr('data-property', $this.data('property'))
+					.data('class',    $this.closest('.window').data('class'))
+					.data('feature',  $this.closest('.window').data('feature'))
+					.data('property', property_name)
 					.css('white-space', 'nowrap')
 					.css('z-index', ++zindex_counter)
 					.html($this.text());

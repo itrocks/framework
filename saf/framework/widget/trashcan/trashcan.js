@@ -67,17 +67,22 @@ $('document').ready(function()
 					if (data_class != undefined) {
 						$(event.target).data(
 							'on-success', function () {
-								var uri = SL + data_class.replace(BS, SL) + SL + $window.data('feature');
-								$.ajax(
-									{
+								if (
+									(($window.data('feature') != 'output') && ($window.data('feature') != 'edit'))
+								) {
+									var uri = SL + data_class.replace(BS, SL) + SL + $window.data('feature');
+									$.ajax({
 										url:     app.uri_base + uri + '?as_widget' + app.andSID(),
 										success: function (data) {
 											var $parent = $window.parent();
 											$parent.html(data);
 											$parent.children().build();
 										}
-									}
-								);
+									});
+								}
+								else {
+									ui.draggable.closest('div[class][id]').remove();
+								}
 							}
 						);
 					}

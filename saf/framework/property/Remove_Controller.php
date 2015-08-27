@@ -7,6 +7,7 @@ use SAF\Framework\Property;
 use SAF\Framework\View;
 use SAF\Framework\View\Html\Template;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use SAF\Framework\Widget\Output_Setting\Output_Settings;
 use SAF\Framework\Widget\Remove;
 
 /**
@@ -25,6 +26,18 @@ class Remove_Controller extends Remove\Remove_Controller
 		$list_settings = Data_List_Settings::current($class_name);
 		$list_settings->removeProperty($property_path);
 		$list_settings->save();
+	}
+
+	//---------------------------------------------------------------------- removePropertyFromOutput
+	/**
+	 * @param $class_name    string
+	 * @param $property_path string
+	 */
+	public function removePropertyFromOutput($class_name, $property_path)
+	{
+		$output_settings = Output_Settings::current($class_name);
+		$output_settings->removeProperty($property_path);
+		$output_settings->save();
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -46,11 +59,14 @@ class Remove_Controller extends Remove\Remove_Controller
 		$parameters['feature_name']  = array_shift($parameters);
 		$parameters['property_path'] = array_shift($parameters);
 		array_unshift($parameters, new Property());
-		if ($parameters['feature_name'] == Feature::F_LIST) {
-			$this->removePropertyFromList($parameters['class_name'], $parameters['property_path']);
-		}
-		if ($parameters['feature_name'] == 'form') {
-			// ...
+		switch ($parameters['feature_name']) {
+			case Feature::F_LIST:
+				$this->removePropertyFromList($parameters['class_name'], $parameters['property_path']);
+				break;
+			case Feature::F_EDIT:
+			case Feature::F_OUTPUT:
+				$this->removePropertyFromOutput($parameters['class_name'], $parameters['property_path']);
+				break;
 		}
 		$parameters[Template::TEMPLATE] = 'removed';
 		return View::run($parameters, $form, $files, Property::class, Feature::F_REMOVE);
