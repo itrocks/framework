@@ -36,6 +36,7 @@ $.getScript(path + 'saf/framework/property/select.js');
 $.getScript(path + 'saf/framework/settings/custom.js');
 $.getScript(path + 'saf/framework/widget/edit/edit.js');
 $.getScript(path + 'saf/framework/widget/data_list/dataList.js');
+$.getScript(path + 'saf/framework/widget/output/output.js');
 $.getScript(path + 'saf/framework/widget/trashcan/trashcan.js');
 
 $.getScript(path + 'saf/framework/js/default.application.js');

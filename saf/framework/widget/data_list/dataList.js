@@ -44,18 +44,48 @@ $('document').ready(function()
 				$(this).closest('form').submit();
 			});
 
-			//--------------------------------------------------------------------------- table droppable
-			// when a property is dropped between two columns
-			var complete = function($this, event, ui)
+			//-------------------------------------------------------------------------------------- drag
+			// when a property is dragged over the droppable object
+			var drag = function(event, ui)
 			{
-				var insert_after = $this.data('insert-after');
-				if (insert_after != undefined) {
-					$this.find('colgroup>col:nth-child(' + insert_after + ')').removeClass('insert_after');
-					$this.removeData('insert-after');
-				}
+				var $droppable     = $(this);
+				var draggable_left = ui.offset.left + (ui.helper.width() / 2);
+				var count          = 0;
+				var found          = 0;
+				$droppable.find('thead>tr:first>th:not(:first)').each(function() {
+					count ++;
+					var $this = $(this);
+					var $prev = $this.prev('th');
+					var left = $prev.offset().left + $prev.width();
+					var right = $this.offset().left + $this.width();
+					if ((draggable_left > left) && (draggable_left <= right)) {
+						found = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
+						var old = $droppable.data('insert-after');
+						if (found != old) {
+							if (old != undefined) {
+								$droppable.find('colgroup>col:nth-child(' + old + ')').removeClass('insert-right');
+							}
+							if (found > 1) {
+								$droppable.find('colgroup>col:nth-child(' + found + ')').addClass('insert-right');
+								$droppable.data('insert-after', found);
+							}
+						}
+						return false;
+					}
+				});
+			};
+
+			//--------------------------------------------------------------------------------------- out
+			// when a property is not longer between two columns
+			var out = function($this, event, ui)
+			{
+				$this.find('.insert-right').removeClass('insert-right');
+				$this.removeData('insert-after');
+				$this.removeData('drag-callback');
 				ui.draggable.removeData('over-droppable');
 			};
 
+			//--------------------------------------------------------------------------- table droppable
 			$this.children('table').droppable({
 				accept:    '.property',
 				tolerance: 'touch',
@@ -65,27 +95,25 @@ $('document').ready(function()
 					var $this = $(this);
 					var insert_after = $this.data('insert-after');
 					if (insert_after != undefined) {
-						//noinspection JSUnresolvedVariable
 						var app = window.app;
 						var $window = $this.closest('.list.window');
 						var $th = $this.find('thead>tr:first>th:nth-child(' + insert_after + ')');
 						var $draggable = ui.draggable;
 						var property_name = $draggable.data('property');
 						var after_property_name = $th.data('property');
-						var class_name = $window.data('class').replace('\\', '/');
-						var url = app.uri_base + '/' + class_name + '/dataListSetting'
+						var class_name = $window.data('class').repl(BS, SL);
+						var uri = app.uri_base + SL + class_name + SL + 'dataListSetting'
 							+ '?add_property=' + property_name
 							+ '&after=' + ((after_property_name != undefined) ? after_property_name : '')
 							+ '&as_widget'
 							+ app.andSID();
-						complete($this, event, ui);
 
-						$.ajax({ url: url, success: function()
+						$.ajax({ url: uri, success: function()
 						{
-							var $class_name = $window.data('class').replace('\\', '/');
-							var $feature_name = $window.data('feature');
-							var url = app.uri_base + '/' + $class_name + '/' + $feature_name
-								+ window.app.askSIDand() + 'as_widget';
+							var class_name = $window.data('class').repl(BS, SL);
+							var feature_name = $window.data('feature');
+							var url = app.uri_base + SL + class_name + SL + feature_name
+								+ '?as_widget' + window.app.andSID();
 							$.ajax({ url: url, success: function(data)
 							{
 								var $container = $window.parent();
@@ -95,16 +123,19 @@ $('document').ready(function()
 						}});
 
 					}
-				},
-
-				over: function(event, ui)
-				{
-					ui.draggable.data('over-droppable', $(this));
+					out($this, event, ui);
 				},
 
 				out: function(event, ui)
 				{
-					complete($(this), event, ui);
+					out($(this), event, ui);
+				},
+
+				over: function(event, ui)
+				{
+					var $this = $(this);
+					$this.data('drag-callback', drag);
+					ui.draggable.data('over-droppable', $this);
 				}
 
 			});
@@ -124,7 +155,7 @@ $('document').ready(function()
 
 			// list title (class name) double-click
 			$this.find('h2>span').modifiable({
-				ajax: uri + '&title={value}',
+				ajax:    uri + '&title={value}',
 				aliases: { 'className': className },
 				start: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', 'none');
@@ -137,9 +168,9 @@ $('document').ready(function()
 
 			// list column header (property path) double-click
 			$this.find('table>thead>tr>th.property>a').modifiable({
-				ajax: uri + '&property_path={propertyPath}&property_title={value}',
+				ajax:    uri + '&property_path={propertyPath}&property_title={value}',
 				aliases: { 'className': className, 'propertyPath': propertyPath },
-				target: '#messages'
+				target:  '#messages'
 			});
 
 			//--------------------------------------------------------------- input[type=checkbox] change
