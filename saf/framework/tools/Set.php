@@ -230,7 +230,28 @@ class Set implements Iterator
 		return reset($this->elements);
 	}
 
-	//--------------------------------------------------------------------------------------- boolean
+	//--------------------------------------------------------------------------------- filterAndSort
+	/**
+	 * @param $filter_elements string[] each filter element is the key into the elements list
+	 * @param $change          boolean if true, the Set elements are update, if false, the filtered
+	 *        and sorted elements list is returned without changing the set
+	 * @return object[] filtered and sorted array of elements
+	 */
+	public function filterAndSort($filter_elements, $change = true)
+	{
+		$sorted_elements = [];
+		foreach ($filter_elements as $element_key) {
+			if (isset($this->elements[$element_key])) {
+				$sorted_elements[$element_key] = $this->elements[$element_key];
+			}
+		}
+		if ($change) {
+			$this->elements = $sorted_elements;
+		}
+		return $sorted_elements;
+	}
+
+	//----------------------------------------------------------------------------------------- valid
 	/**
 	 * Return true if an element is currently selected
 	 *
