@@ -446,7 +446,11 @@ class Data_List_Controller extends Output_Controller
 			]
 		);
 		// buttons
-		$parameters['custom_buttons']    = (new Buttons())->getButtons($class_name, 'custom list');
+		/** @var $buttons Buttons */
+		$buttons = Builder::create(Buttons::class);
+		$parameters['custom_buttons'] = $buttons->getButtons(
+			'custom list', Names::classToSet($class_name)
+		);
 		$parameters['general_buttons']   = $this->getGeneralButtons($class_name, $parameters);
 		$parameters['selection_buttons'] = $this->getSelectionButtons($class_name);
 		if (!isset($customized_list_settings[$list_settings->name])) {
@@ -455,7 +459,7 @@ class Data_List_Controller extends Output_Controller
 		return $parameters;
 	}
 
-	//-------------------------------$this$this->$this->----------------------------------------------- $properties_path
+	//--------------------------------------------------------------------------------------- groupBy
 	/**
 	 * @param $properties_path string[]
 	 * @return Group_By|null

@@ -8,6 +8,7 @@ use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Print_Model;
+use SAF\Framework\Setting\Buttons;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
@@ -171,11 +172,21 @@ class Output_Controller implements Default_Feature_Controller
 		$output_settings = Output_Settings::current($class_name);
 		$output_settings->cleanup();
 		$this->applyParametersToOutputSettings($output_settings, $parameters, $form);
-		$parameters['general_buttons']            = $this->getGeneralButtons($object, $parameters);
+		$parameters['customized_lists']           = $output_settings->getCustomSettings();
+		$parameters['default_title']              = ucfirst(Names::classToDisplay($class_name));
 		$parameters[Parameter::PROPERTIES_FILTER] = $output_settings->properties_path;
 		$parameters[Parameter::PROPERTIES_TITLE]  = $output_settings->properties_title;
+		$parameters['settings']                   = $output_settings;
 		$parameters['tabs']                       = $this->getTab($object, $output_settings);
 		$parameters['title']                      = $output_settings->title();
+		// buttons
+		$feature = isset($parameters[Feature::FEATURE])
+			? $parameters[Feature::FEATURE]
+			: Feature::F_OUTPUT;
+		$parameters['custom_buttons'] = (new Buttons())->getButtons(
+			'custom ' . $feature, $object, $feature /* , Target::MESSAGES TODO back but do not display output */
+		);
+		$parameters['general_buttons'] = $this->getGeneralButtons($object, $parameters);
 		return $parameters;
 	}
 

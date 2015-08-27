@@ -1,11 +1,11 @@
 /* components */
 /* features colors and action left button part */
 /* modules */
-.list.window > h2 {
+.window > h2 {
   position: relative; }
-  .list.window > h2 > .custom {
+  .window > h2 > .custom {
     display: none; }
-  .list.window > h2 > input {
+  .window > h2 > input {
     background: white;
     border-style: none;
     display: none;
@@ -14,15 +14,15 @@
     padding: 1px 2px;
     position: absolute;
     z-index: 1; }
-  .list.window > h2 > span {
+  .window > h2 > span {
     cursor: pointer; }
-  .list.window > h2 > ul.custom.actions {
+  .window > h2 > ul.custom.actions {
     margin: 0;
     padding-left: .5em; }
-    .list.window > h2 > ul.custom.actions > li {
+    .window > h2 > ul.custom.actions > li {
       box-shadow: none;
       line-height: 19px; }
-      .list.window > h2 > ul.custom.actions > li > a {
+      .window > h2 > ul.custom.actions > li > a {
         border-style: none;
         box-shadow: none;
         color: transparent;
@@ -31,33 +31,33 @@
         padding: 1px;
         vertical-align: top;
         width: 16px; }
-        .list.window > h2 > ul.custom.actions > li > a:hover:before {
+        .window > h2 > ul.custom.actions > li > a:hover:before {
           opacity: .66; }
-      .list.window > h2 > ul.custom.actions > li.custom_save > a {
+      .window > h2 > ul.custom.actions > li.custom_save > a {
         background: url("img/floppy.png") center no-repeat; }
-        .list.window > h2 > ul.custom.actions > li.custom_save > a:hover {
+        .window > h2 > ul.custom.actions > li.custom_save > a:hover {
           background: none; }
-        .list.window > h2 > ul.custom.actions > li.custom_save > a:hover:before {
+        .window > h2 > ul.custom.actions > li.custom_save > a:hover:before {
           content: url("img/floppy.png"); }
-  .list.window > h2:hover > ul.custom.actions {
+  .window > h2:hover > ul.custom.actions {
     display: inline-block; }
-  .list.window > h2 ul.custom.selection {
+  .window > h2 ul.custom.selection {
     border: 1px solid #333;
     border-radius: 3px;
     background: white;
     padding-bottom: .3em;
     position: absolute;
     z-index: 1; }
-    .list.window > h2 ul.custom.selection > li {
+    .window > h2 ul.custom.selection > li {
       list-style: none;
       margin: 0; }
-      .list.window > h2 ul.custom.selection > li:first-child > a {
+      .window > h2 ul.custom.selection > li:first-child > a {
         font-weight: bold; }
-      .list.window > h2 ul.custom.selection > li.selected {
+      .window > h2 ul.custom.selection > li.selected {
         background: #cef37f; }
-      .list.window > h2 ul.custom.selection > li:hover {
+      .window > h2 ul.custom.selection > li:hover {
         background: #aedc5f; }
-      .list.window > h2 ul.custom.selection > li > a {
+      .window > h2 ul.custom.selection > li > a {
         color: #222;
         display: block;
         font-weight: normal;

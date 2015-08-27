@@ -54,9 +54,9 @@ class Edit_Controller extends Output_Controller
 	 */
 	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
+		$parameters->set('editing',        true);
+		$parameters->set(Feature::FEATURE, Feature::F_EDIT);
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
-		$parameters['editing']            = true;
-		$parameters[Feature::FEATURE]     = Feature::F_EDIT;
 		$parameters['template_namespace'] = __NAMESPACE__;
 		return $parameters;
 	}
