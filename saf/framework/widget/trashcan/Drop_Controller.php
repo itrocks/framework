@@ -85,7 +85,7 @@ class Drop_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		$trash = $parameters->GetUnnamedParameters();
+		$trash = $parameters->getUnnamedParameters();
 		$objects = $parameters->getObjects();
 		return (count($trash) <= 1)
 			? $this->deleteObject($objects)
