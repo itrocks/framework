@@ -4,6 +4,7 @@ namespace SAF\Framework\Widget\Tab;
 use SAF\Framework\Reflection\Annotation\Class_\Group_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Tools\Set;
 use SAF\Framework\Widget\Tab;
 
 /**
@@ -16,14 +17,19 @@ abstract class Tabs_Builder_Class
 	/**
 	 * Build tabs containing class properties
 	 *
-	 * @param $class Reflection_Class
+	 * @param $class             Reflection_Class
+	 * @param $filter_properties string[]
 	 * @return Tab[] Tabs will contain Reflection_Property[] as content
 	 */
-	public static function build(Reflection_Class $class)
+	public static function build(Reflection_Class $class, $filter_properties = null)
 	{
 		/** @var $group_annotations Group_Annotation[] */
 		$group_annotations = $class->getAnnotations('group');
 		$properties = $class->getProperties([T_EXTENDS, T_USE]);
+		if ($filter_properties) {
+			$properties_set = new Set(Reflection_Property::class, $properties);
+			$properties = $properties_set->filterAndSort($filter_properties);
+		}
 		return self::buildProperties($properties, $group_annotations);
 	}
 

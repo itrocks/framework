@@ -4,6 +4,7 @@ namespace SAF\Framework\Widget\Tab;
 use SAF\Framework\Reflection\Annotation\Class_\Group_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
+use SAF\Framework\Tools\Set;
 use SAF\Framework\Widget\Tab;
 
 /**
@@ -41,6 +42,10 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 			else {
 				unset($properties[$property_name]);
 			}
+		}
+		if ($filter_properties) {
+			$properties_set = new Set(Reflection_Property_Value::class, $properties);
+			$properties = $properties_set->filterAndSort($filter_properties);
 		}
 		return parent::buildProperties($properties, $group_annotations);
 	}

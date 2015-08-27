@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Widget;
 
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Names;
 
 /**
@@ -128,7 +130,7 @@ class Tab
 		return Names::displayToProperty($this->title);
 	}
 
-	//--------------------------------------------------------------------------------------- getList
+	//-------------------------------------------------------------------------------------- included
 	/**
 	 * Return included tabs, but not those which identifier begins with '_'
 	 * nor those that are empty
@@ -153,6 +155,36 @@ class Tab
 	public function getName()
 	{
 		return Names::displayToProperty($this->title);
+	}
+
+	//---------------------------------------------------------------------------- propertiesToValues
+	/**
+	 * Change properties or property names stored into tab into values from the object
+	 *
+	 * @param $object           object
+	 * @param $properties_title string[] key is the property path, value is the property display
+	 * @return Tab
+	 */
+	public function propertiesToValues($object, $properties_title)
+	{
+		$class_name = get_class($object);
+		foreach ($this->columns as $key => $column) {
+			if ($column instanceof Reflection_Property && !($column instanceof Reflection_Property_Value)) {
+				$column = $column->getName();
+			}
+			if (is_string($column)) {
+				$property = new Reflection_Property_Value($class_name, $column, $object, false, true);
+				if (isset($properties_title[$property->name])) {
+					$property->display = $properties_title[$property->name];
+				}
+				$property->final_class = $class_name;
+				$this->columns[$key] = $property;
+			}
+		}
+		foreach ($this->includes as $included) {
+			$included->propertiesToValues($object, $properties_title);
+		}
+		return $this;
 	}
 
 }
