@@ -92,8 +92,13 @@
 			popup: function($where, id)
 			{
 				var $from = $where;
+				var left  = $where.offset().left + 3;
+				var top   = $where.offset().top + $where.height() + 2;
 				if (id == '_blank') {
 					id = 'window' + ++window.zindex_counter;
+
+				}
+				if (id.substr(0, 1)) {
 					$where = $($('body').children(':last-child'));
 				}
 				var $target = $('<' + settings.popup_element + '>')
@@ -105,8 +110,8 @@
 				$target.insertAfter($where);
 				if ($where != $from) {
 					$target.css('position', 'absolute');
-					$target.css('left', document.mouse.x);
-					$target.css('top',  document.mouse.y);
+					$target.css('left', left);
+					$target.css('top',  top);
 					$target.css('z-index', window.zindex_counter);
 					if (settings.draggable_blank != undefined) {
 						if (settings.draggable_blank === true) {
