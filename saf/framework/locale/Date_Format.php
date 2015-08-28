@@ -67,14 +67,16 @@ class Date_Format
 	/**
 	 * Takes an ISO date and make it locale
 	 *
-	 * @param $date string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
+	 * @param $date string|Date_Time ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 * @return string '25/12/2011' '25/12/2001 12:20' '25/12/2001 12:20:16'
 	 */
 	public function toLocale($date)
 	{
-		// in case of $date being an object, ie Date_Time
-		$date = strval($date);
-		if (empty($date) || ($date <= Date_Time::min())) {
+		// in case of $date being an object, ie Date_Time, get an ISO date only
+		if ($date instanceof DateTime) {
+			$date = $date->format('Y-m-d H:i:s');
+		}
+		if (empty($date) || (new Date_Time($date))->isMin()) {
 			return '';
 		}
 		if (strlen($date) == 10) {
