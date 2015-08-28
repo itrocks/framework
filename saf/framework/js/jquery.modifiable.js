@@ -52,7 +52,7 @@ window.modifiable_waiting  = false;
 			event.preventDefault();
 			event.stopImmediatePropagation();
 			var $this = $(this);
-			var $input = $('<input>').val($this.html());
+			var $input = $('<input>').val($this.html().trim());
 			if ($this.data('old') == undefined) {
 				$this.data('old', $input.val());
 
