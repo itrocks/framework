@@ -22,7 +22,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	 */
 	protected $property;
 
-	//----------------------------------------------------------------------------------------- build
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $property Reflection_Property
 	 * @param $value    mixed

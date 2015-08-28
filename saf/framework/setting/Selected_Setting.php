@@ -56,5 +56,5 @@ class Selected_Setting
 	{
 		return $this->selected ? 'selected' : '';
 	}
-}
 
+}

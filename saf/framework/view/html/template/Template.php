@@ -1007,7 +1007,7 @@ class Template
 		return $content;
 	}
 
-	//------------------------------------------------------------------------------- parseLoopParams
+	//------------------------------------------------------------------------------ parseLoopVarName
 	/**
 	 * @param $loop    Loop
 	 * @param $content string
