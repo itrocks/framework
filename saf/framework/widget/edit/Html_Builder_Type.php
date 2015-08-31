@@ -81,7 +81,7 @@ class Html_Builder_Type
 	 */
 	protected $value;
 
-	//----------------------------------------------------------------------------------------- build
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $name    string
 	 * @param $type    Type
@@ -184,7 +184,9 @@ class Html_Builder_Type
 		if ($this->readonly) {
 			$input->setAttribute('readonly');
 		}
-		$input->addClass('datetime');
+		else {
+			$input->addClass('datetime');
+		}
 		return $input;
 	}
 
@@ -298,7 +300,10 @@ class Html_Builder_Type
 		$input = new Input(null, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
 		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
-		if (!$this->readonly) {
+		if ($this->readonly) {
+			$input->setAttribute('readonly');
+		}
+		else {
 			if ($filters) {
 				$html_filters = [];
 				$old_name = $this->name;

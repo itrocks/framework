@@ -8,6 +8,8 @@ use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Print_Model;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Setting\Buttons;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
@@ -24,6 +26,26 @@ use SAF\Framework\Widget\Tab\Tabs_Builder_Object;
  */
 class Output_Controller implements Default_Feature_Controller
 {
+
+	//--------------------------------------------------------------------------- applyOutputSettings
+	/**
+	 * @param $output_settings Output_Settings
+	 */
+	private function applyOutputSettings(Output_Settings $output_settings)
+	{
+		$class = new Reflection_Class($output_settings->class_name);
+		if ($output_settings->properties_read_only) {
+			$user_annotation = new User_Annotation(User_Annotation::READONLY);
+			foreach ($output_settings->properties_read_only as $property_path => $read_only) {
+				$property = $class->getProperty($property_path);
+				if (!$property->getAnnotation(User_Annotation::ANNOTATION)->value) {
+					$class->getProperty($property_path)->setAnnotation(
+						User_Annotation::ANNOTATION, $user_annotation
+					);
+				}
+			}
+		}
+	}
 
 	//--------------------------------------------------------------- applyParametersToOutputSettings
 	/**
@@ -52,8 +74,15 @@ class Output_Controller implements Default_Feature_Controller
 			);
 		}
 		elseif (isset($parameters['property_path'])) {
+			if (isset($parameters['property_read_only'])) {
+				$output_settings->propertyReadOnly(
+					$parameters['property_path'], $parameters['property_read_only']
+				);
+			}
 			if (isset($parameters['property_title'])) {
-				$output_settings->propertyTitle($parameters['property_path'], $parameters['property_title']);
+				$output_settings->propertyTitle(
+					$parameters['property_path'], $parameters['property_title']
+				);
 			}
 		}
 		elseif (isset($parameters['remove_property'])) {
@@ -172,6 +201,7 @@ class Output_Controller implements Default_Feature_Controller
 		$output_settings = Output_Settings::current($class_name);
 		$output_settings->cleanup();
 		$this->applyParametersToOutputSettings($output_settings, $parameters, $form);
+		$this->applyOutputSettings($output_settings);
 		$parameters['customized_lists']           = $output_settings->getCustomSettings();
 		$parameters['default_title']              = ucfirst(Names::classToDisplay($class_name));
 		$parameters[Parameter::PROPERTIES_FILTER] = $output_settings->properties_path;

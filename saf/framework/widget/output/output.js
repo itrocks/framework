@@ -105,7 +105,7 @@ $('document').ready(function()
 
 			});
 
-			//----------------------------------------------------------- div[class][id]>label modifiable
+			//--------------------------------------- .windows h2>span, div[class][id]>label>a modifiable
 			var className = function($this)
 			{
 				return $this.closest('.window').data('class');
@@ -131,7 +131,7 @@ $('document').ready(function()
 			});
 
 			// property label
-			$this.find('div[class][id]>label').modifiable({
+			$this.find('div[class][id]>label>a').modifiable({
 				ajax:    uri + '&property_path={propertyPath}&property_title={value}',
 				aliases: { 'className': className, 'propertyPath': propertyPath },
 				target:  '#messages'

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Output_Setting;
 
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Setting;
@@ -30,6 +31,14 @@ class Output_Settings extends Custom_Settings
 	 * @var string[] key is the sort index (0..n)
 	 */
 	public $properties_path = null;
+
+	//------------------------------------------------------------------------- $properties_read_only
+	/**
+	 * Read only properties
+	 *
+	 * @var array
+	 */
+	public $properties_read_only = [];
 
 	//----------------------------------------------------------------------------- $properties_title
 	/**
@@ -137,7 +146,7 @@ class Output_Settings extends Custom_Settings
 	 */
 	private function getDefaultTitle()
 	{
-		return ucfirst(Names::classToDisplay($this->class_name));
+		return Loc::tr(ucfirst(Names::classToDisplay($this->class_name)));
 	}
 
 	//---------------------------------------------------------------------------- initPropertiesPath
@@ -158,6 +167,25 @@ class Output_Settings extends Custom_Settings
 			$this->tab->includes = Tabs_Builder_Class::build(
 				new Reflection_Class($this->class_name), $this->properties_path
 			);
+		}
+	}
+
+	//------------------------------------------------------------------------------ propertyReadOnly
+	/**
+	 * Sets the property to read-only
+	 *
+	 * @param $property_path string
+	 * @param $read_only     boolean if empty or null, the read-only property is removed
+	 */
+	public function propertyReadOnly($property_path, $read_only)
+	{
+		if (empty($read_only)) {
+			if (isset($this->properties_read_only[$property_path])) {
+				unset($this->properties_read_only[$property_path]);
+			}
+		}
+		else {
+			$this->properties_read_only[$property_path] = true;
 		}
 	}
 

@@ -97,3 +97,9 @@
 		}
 	}
 }
+
+.window label > a {
+	color: inherit;
+	font-weight: inherit;
+	text-decoration: none;
+}

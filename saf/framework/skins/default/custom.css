@@ -63,3 +63,8 @@
         font-weight: normal;
         padding: 0 .5em;
         text-decoration: none; }
+
+.window label > a {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none; }

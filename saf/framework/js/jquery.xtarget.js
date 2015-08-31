@@ -28,7 +28,8 @@
 			popup_element:   'div',
 			submit:          'submit',
 			success:         undefined,
-			url_append:      ''
+			url_append:      '',
+			xtarget_from:    'xtarget.from'
 		}, options);
 
 		//---------------------------------------------------------------------------------------- ajax
@@ -96,7 +97,6 @@
 				var top   = $where.offset().top + $where.height() + 2;
 				if (id == '_blank') {
 					id = 'window' + ++window.zindex_counter;
-
 				}
 				if (id.substr(0, 1)) {
 					$where = $($('body').children(':last-child'));
@@ -107,6 +107,7 @@
 				if (settings.keep && $where.hasClass(settings.keep)) {
 					$target.addClass(settings.keep);
 				}
+				$target.data(settings.xtarget_from, $from);
 				$target.insertAfter($where);
 				if ($where != $from) {
 					$target.css('position', 'absolute');

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Property edit</title>
+	<script type="application/javascript"> path = "../../../../"; </script>
+	<script type="application/javascript" src="../../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<script type="application/javascript" src="../../js/all.js"></script>
+	<style type="text/css">
+		@import "../../skins/default/all.css";
+	</style>
+</head>
+<body>
+<!--BEGIN-->
+
+	<form class="property edit window" enctype="multipart/form-data" method="post" target="#messages">
+		<input name="property_path" type="hidden" value="{path}">
+		<h2>|{path.display}|</h2>
+		<fieldset>
+			<div class="display">
+				<label for="property.display">|display|</label>
+				<div>
+					<input autocomplete="off" class="autowidth" id="property.display" name="property_title" data-origin="{display}" type="text" value="{display}">
+				</div>
+			</div>
+			<div class="read_only">
+				<label for="property.read_only">|read only|</label>
+				<div>
+					<input data-origin="{read_only}" name="property_read_only" type="hidden" value="{read_only}">
+					<input {?htmlReadOnly} id="property.read_only" type="checkbox" value="1">
+				</div>
+			</div>
+		</fieldset>
+	</form>
+
+<!--END-->
+</body>
+</html>
