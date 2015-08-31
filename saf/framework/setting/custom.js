@@ -1,12 +1,10 @@
 $('document').ready(function()
 {
-
 	$('.window').build(function()
 	{
 		if (!this.length) return;
 
 		var $input = this.inside('input.custom.name');
-
 		$input.autowidth();
 
 		//------------------------------------------------------------------------------- h2 span click
@@ -17,21 +15,18 @@ $('document').ready(function()
 				$('body').click();
 			}
 			else {
-				$ul_custom_selection.fadeIn(200);
-				setTimeout(
-					function () {
-						var click_event = function () {
-							$('body').off('click', click_event);
-							$('ul.custom.selection').fadeOut(200);
-						};
-						$('body').on('click', click_event);
-					}, 220
-				);
+				$ul_custom_selection.fadeIn(200, function () {
+					var click_event = function () {
+						$('body').off('click', click_event);
+						$('ul.custom.selection').fadeOut(200);
+					};
+					$('body').on('click', click_event);
+				});
 			}
 		});
 
 		//---------------------------------------------------------------------- input.custom.name blur
-		// Loose focus more than 1 second (without coming back) : cancel
+		// Loose focus more than 100 ms (without coming back) : cancel
 		$input.blur(function()
 		{
 			var input = this;
@@ -51,7 +46,13 @@ $('document').ready(function()
 		{
 			var $this = $(this);
 			if (event.keyCode == $.ui.keyCode.ENTER) {
-				$this.closest('h2').find('a.custom_save, .custom_save>a').click();
+				var $a = $this.closest('h2').find('a.custom_save, .custom_save>a');
+				if (!$this.closest('form').length) {
+					var app = window.app;
+					$a.removeClass('submit');
+					$a.attr('href', app.askAnd($a.attr('href'), $this.attr('name') + '=' + $this.val()));
+				}
+				$a.click();
 				event.preventDefault();
 			}
 			if (event.keyCode == $.ui.keyCode.ESCAPE) {
@@ -89,5 +90,4 @@ $('document').ready(function()
 		});
 
 	});
-
 });

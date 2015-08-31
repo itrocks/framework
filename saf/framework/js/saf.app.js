@@ -67,7 +67,7 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 
 };
 
-//---------------------------------------------------------------------------------------- andSID
+//------------------------------------------------------------------------------------------ andSID
 /**
  * Adds session id expression to a given URI
  *
@@ -75,10 +75,10 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
  */
 App.prototype.addSID = function(uri)
 {
-	return uri + ((uri.indexOf('?') >= -1) ? this.andSID() : this.askSID());
+	return uri + ((uri.indexOf('?') > -1) ? this.andSID() : this.askSID());
 };
 
-//---------------------------------------------------------------------------------------- andSID
+//------------------------------------------------------------------------------------------ andSID
 /**
  * Gets session id expression
  *
@@ -89,7 +89,20 @@ App.prototype.andSID = function()
 	return this.use_cookies ? '' : ('&PHPSESSID=' + this.PHPSESSID);
 };
 
-//---------------------------------------------------------------------------------------- askSID
+//------------------------------------------------------------------------------------------ askAnd
+/**
+ * Gets href parameter expression, with '?' or '&'
+ *
+ * @param uri    base uri, with ot without existing params, eg '/an/uri' or '/an/uri?with=params'
+ * @param params more params, eg 'key1=value1&key2=value2'
+ * @return string uri with the new params appended
+ */
+App.prototype.askAnd = function(uri, params)
+{
+	return params ? (uri + ((uri.indexOf('?') > -1) ? '&' : '?') + params) : uri;
+};
+
+//------------------------------------------------------------------------------------------ askSID
 /**
  * Gets session id expression
  *
