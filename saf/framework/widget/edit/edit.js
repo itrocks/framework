@@ -1,6 +1,5 @@
 $('document').ready(function()
 {
-
 	$('form').build(function()
 	{
 		if (!this.length) return;
@@ -464,5 +463,4 @@ $('document').ready(function()
 		this.inside('.vertical.scrollbar').verticalscrollbar();
 
 	});
-
 });
