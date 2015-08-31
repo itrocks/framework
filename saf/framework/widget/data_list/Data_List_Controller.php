@@ -489,6 +489,7 @@ class Data_List_Controller extends Output_Controller
 			$list_settings->maximum_displayed_lines_count
 		);
 		$options = [$list_settings->sort, $limit, $count];
+		// TODO : an automation to make the group by only when it is useful
 		if ($group_by = $this->groupBy($list_settings->properties_path)) {
 			$options[] = $group_by;
 		}
