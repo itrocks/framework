@@ -9,9 +9,10 @@ use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
 class User_Annotation extends List_Annotation
 {
 
-	const HIDDEN    = 'hidden';
-	const INVISIBLE = 'invisible';
-	const READONLY  = 'readonly';
+	const ANNOTATION = 'user';
+	const HIDDEN     = 'hidden';
+	const INVISIBLE  = 'invisible';
+	const READONLY   = 'readonly';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**

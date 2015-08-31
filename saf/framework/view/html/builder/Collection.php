@@ -180,7 +180,9 @@ class Collection
 		foreach ($properties as $property_name => $property) {
 			if (
 				$property->isStatic()
-				|| ($property->getListAnnotation('user')->has(User_Annotation::INVISIBLE))
+				|| $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
+					User_Annotation::INVISIBLE
+				)
 			) {
 				unset($properties[$property_name]);
 			}

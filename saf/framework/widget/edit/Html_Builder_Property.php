@@ -42,7 +42,9 @@ class Html_Builder_Property extends Html_Builder_Type
 			parent::__construct($name, $property->getType(), $value, $preprop);
 			$this->null = $property->getAnnotation('null')->value;
 			$this->property = $property;
-			$this->readonly = $property->getListAnnotation('user')->has(User_Annotation::READONLY);
+			$this->readonly = $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
+				User_Annotation::READONLY
+			);
 		}
 		else {
 			parent::__construct(null, null, $value, $preprop);

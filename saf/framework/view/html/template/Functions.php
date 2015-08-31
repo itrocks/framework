@@ -512,7 +512,9 @@ class Functions
 		foreach ($class->accessProperties() as $property_name => $property) {
 			if (
 				!$property->isStatic()
-				&& !$property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)
+				&& !$property->getListAnnotation(User_Annotation::ANNOTATION)->has(
+					User_Annotation::INVISIBLE
+				)
 			) {
 				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
 					$property = new Reflection_Property_Value(

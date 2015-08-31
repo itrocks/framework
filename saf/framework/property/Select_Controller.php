@@ -48,7 +48,9 @@ class Select_Controller implements Feature_Controller
 					(!$composite_property || ($property->name !== $composite_property->name))
 					&& (!$composite_link_property || ($property->name !== $composite_link_property->name))
 					&& !$property->isStatic()
-					&& !$property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)
+					&& !$property->getListAnnotation(User_Annotation::ANNOTATION)->has(
+						User_Annotation::INVISIBLE
+					)
 				) {
 					$properties[] = $property;
 				}
@@ -59,7 +61,9 @@ class Select_Controller implements Feature_Controller
 				if (
 					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& !$property->isStatic()
-					&& !$property->getListAnnotation('user')->has(User_Annotation::INVISIBLE)
+					&& !$property->getListAnnotation(User_Annotation::ANNOTATION)->has(
+						User_Annotation::INVISIBLE
+					)
 				) {
 					$properties[] = $property;
 				}

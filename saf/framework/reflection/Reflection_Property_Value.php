@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection;
 
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Tools\Contextual_Callable;
 use SAF\Framework\Tools\Names;
 
@@ -146,7 +147,9 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 	 */
 	public function isHidden()
 	{
-		return $this->getListAnnotation('user')->has('hidden') ? 'hidden' : false;
+		return $this->getListAnnotation(User_Annotation::ANNOTATION)->has(User_Annotation::HIDDEN)
+			? 'hidden'
+			: false;
 	}
 
 	//----------------------------------------------------------------------------------------- value
