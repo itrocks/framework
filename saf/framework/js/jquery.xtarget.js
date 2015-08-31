@@ -98,7 +98,7 @@
 				if (id == '_blank') {
 					id = 'window' + ++window.zindex_counter;
 				}
-				if (id.substr(0, 1)) {
+				if (id.substr(0, 1) == '_') {
 					$where = $($('body').children(':last-child'));
 				}
 				var $target = $('<' + settings.popup_element + '>')
