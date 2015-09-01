@@ -104,8 +104,8 @@ class File
 		return $this->content;
 	}
 
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	//--------------------------------------------------------------------------------------- getHash
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Gets $hash, or calculate it from content if not set
 	 *
@@ -119,8 +119,8 @@ class File
 		return $this->hash;
 	}
 
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	//-------------------------------------------------------------------------- getTemporaryFileName
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Gets temporary file name, or write content into a temporary file name and get this name if not
 	 * set or file does not exist
@@ -165,8 +165,8 @@ class File
 		return Type_Builder::build($this->name);
 	}
 
-	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	//------------------------------------------------------------------------------------ setContent
+	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
 	 * @param $content string
 	 */
