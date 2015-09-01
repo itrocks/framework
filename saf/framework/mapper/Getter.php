@@ -184,7 +184,9 @@ abstract class Getter
 				}
 			}
 			if (isset($stored)) {
-				if (isset($property) && ($property->getAnnotation('store')->value == 'string')) {
+				if (
+					isset($property) && in_array($property->getAnnotation('store')->value, ['hex', 'string'])
+				) {
 					/** @var $stored_object Stringable */
 					$stored_object = Builder::create($property->getType()->asString());
 					$stored_object->fromString($stored);

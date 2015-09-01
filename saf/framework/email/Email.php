@@ -39,9 +39,10 @@ class Email
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * @var string
-	 * @multiline
 	 * @max_length 10000000
+	 * @multiline
+	 * @store hex
+	 * @var string
 	 */
 	public $content;
 
@@ -118,6 +119,15 @@ class Email
 	 * @var Recipient[]
 	 */
 	public $to;
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->subject;
+	}
 
 	//----------------------------------------------------------------------------------------- $uidl
 	/**

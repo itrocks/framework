@@ -842,14 +842,20 @@ class Link extends Dao\Sql\Link
 							}
 							if (in_array($property->name, $table_columns_names)) {
 								$element_type = $property->getType()->getElementType();
+								$storage_name = $property->getAnnotation('storage')->value;
 								// write basic
 								if ($element_type->isBasic()) {
-									$write[$property->getAnnotation('storage')->value] = is_array($value)
-										? json_encode($value)
-										: $value;
+									if (
+										$element_type->isString() && ($property->getAnnotation('store')->value == 'hex')
+									) {
+										$write[$storage_name] = 'X' . Q . bin2hex($value) . Q;
+									}
+									else {
+										$write[$storage_name] = is_array($value) ? json_encode($value) : $value;
+									}
 								}
-								elseif ($property->getAnnotation('store')->value == 'string') {
-									$write[$property->getAnnotation('storage')->value] = is_array($value)
+								elseif (in_array($property->getAnnotation('store')->value, ['hex', 'string'])) {
+									$write[$storage_name] = is_array($value)
 										? serialize($value)
 										: strval($value);
 								}
@@ -870,7 +876,7 @@ class Link extends Dao\Sql\Link
 											);
 										}
 									}
-									$write['id_' . $property->getAnnotation('storage')->value]
+									$write['id_' . $storage_name]
 										= ($property_is_null && !isset($object->$column_name))
 											? null
 											: intval($object->$column_name);

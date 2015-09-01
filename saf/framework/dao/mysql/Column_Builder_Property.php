@@ -81,7 +81,7 @@ trait Column_Builder_Property
 		return (
 			$type->isBasic()
 			|| ($type->isMultiple() && $type->getElementType()->isString())
-			|| ($property->getAnnotation('store')->value == 'string')
+			|| in_array($property->getAnnotation('store')->value, ['hex', 'string'])
 		)
 			? $property->getAnnotation('storage')->value
 			: ('id_' . $property->getAnnotation('storage')->value);
@@ -111,7 +111,7 @@ trait Column_Builder_Property
 		$property_type = $property->getType();
 		if (
 			$property_type->isBasic()
-			|| ($property->getAnnotation('store')->value == 'string')
+			|| in_array($property->getAnnotation('store')->value, ['hex', 'string'])
 		) {
 			if ($property_type->hasSize()) {
 				/** @var integer $max_length */

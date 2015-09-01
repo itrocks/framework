@@ -47,7 +47,12 @@ abstract class Value
 			$string_value = DQ . ($value->toISO() ?: '0000-00-00 00:00:00') . DQ;
 		}
 		else {
-			$string_value = DQ . Dao::current()->escapeString($value) . DQ;
+			if ((substr($value, 0, 2) === ('X' . Q)) && (substr($value, -1) === Q)) {
+				$string_value = $value;
+			}
+			else {
+				$string_value = DQ . Dao::current()->escapeString($value) . DQ;
+			}
 		}
 		return $double_backquote ? str_replace(BS, BS . BS, $string_value) : $string_value;
 	}
