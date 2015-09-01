@@ -351,7 +351,12 @@ class Proxy
 				$result .= fgets($f, 128);
 			}
 			fclose($f);
-			list($headers, $response) = explode(CR . LF . CR . LF, $result, 2);
+			if (strpos($result, CR . LF . CR . LF) !== false) {
+				list($headers, $response) = explode(CR . LF . CR . LF, $result, 2);
+			}
+			else {
+				$headers = $response = '';
+			}
 			$this->response_headers   = explode(CR . LF, $headers);
 			$this->response = $response;
 			return true;
