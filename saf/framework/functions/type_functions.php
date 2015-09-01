@@ -79,6 +79,21 @@ function isA($object, $class_name)
 	return false;
 }
 
+//--------------------------------------------------------------------------------- isStrictNumeric
+/**
+ * Returns true iv $value is a strict numeric.
+ * Sale as php's is_numeric, but :
+ * - must not begin with '+', '0' or '.'
+ * - exponential part is not allowed, thus 123.45e6 is not a valid numeric value
+ *
+ * @param $value string
+ * @return boolean
+ */
+function isStrictNumeric($value)
+{
+	return is_numeric($value) && !strpos('0+.', $value[0]) && (stripos($value, 'E') === false);
+}
+
 define('_ALL',       65535);
 define('_CLASS',     1);
 define('_INTERFACE', 2);
