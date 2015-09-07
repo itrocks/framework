@@ -7,13 +7,14 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
-use SAF\Framework\Print_Model;
+use SAF\Framework\Printer\Model;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Setting\Buttons;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Duplicate\Duplicate;
@@ -135,21 +136,23 @@ class Output_Controller implements Default_Feature_Controller
 				[new Color(Color::MAGENTA), Target::MAIN]
 			);
 		}
-		/*,
-		new Button('Print', View::link($object, 'print'), 'print',
-			[new Color(Color::BLUE), Target::MAIN, 'sub_buttons' => [
+		$buttons[Feature::F_PRINT] = new Button(
+			'Print',
+			View::link($object, Feature::F_PRINT),
+			Feature::F_PRINT,
+			[new Color(Color::BLUE), Target::MAIN, Button::SUB_BUTTONS => [
 				new Button(
 					'Models',
 					View::link(
-						Names::classToSet(Print_Model::class), Feature::F_LIST,
+						Names::classToSet(Model::class),
+						Feature::F_LIST,
 						Namespaces::shortClassName(get_class($object))
 					),
-					'models',
+					Feature::F_LIST,
 					Target::MAIN
 				)
 			]]
-		)
-		*/
+		);
 		return $buttons;
 	}
 

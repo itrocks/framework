@@ -1,14 +1,14 @@
 <?php
-namespace SAF\Framework;
+namespace SAF\Framework\Printer;
 
-use SAF\Framework\Print_Model\Page;
+use SAF\Framework\Printer\Model\Page;
 
 /**
  * A print model gives the way to print an object of a given class
  *
  * @representative class
  */
-class Print_Model
+class Model
 {
 
 	//---------------------------------------------------------------------------------------- $class

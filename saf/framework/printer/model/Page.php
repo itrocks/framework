@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Print_Model;
+namespace SAF\Framework\Printer\Model;
 
 use SAF\Framework\Dao\File;
 use SAF\Framework\Mapper\Component;
-use SAF\Framework\Print_Model;
+use SAF\Framework\Printer\Model;
 
 /**
  * A print model page : a model linked to a unique page background and design
@@ -18,11 +18,11 @@ class Page
 	/**
 	 * @composite
 	 * @link Object
-	 * @var Print_Model
+	 * @var Model
 	 */
 	public $model;
 
-	//----------------------------------------------------------------------------------------- $name
+	//--------------------------------------------------------------------------------------- $number
 	/**
 	 * The page number : 1 is the first page, -1 is the last page, 0 is 'all others pages'
 	 *
@@ -40,7 +40,7 @@ class Page
 	 */
 	public $background;
 
-	//--------------------------------------------------------------------------------------- $zoning
+	//---------------------------------------------------------------------------------------- $zones
 	/**
 	 * @link Collection
 	 * @var Zone[]

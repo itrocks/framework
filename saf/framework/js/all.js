@@ -31,7 +31,7 @@ $.getScript(path + 'saf/framework/js/saf.string.js');
 
 $.getScript(path + 'saf/framework/debug/debug.js');
 $.getScript(path + 'saf/framework/import_export/import.js');
-$.getScript(path + 'saf/framework/print_models/print_model.js');
+$.getScript(path + 'saf/framework/printer/model/model.js');
 $.getScript(path + 'saf/framework/property/select.js');
 $.getScript(path + 'saf/framework/settings/custom.js');
 $.getScript(path + 'saf/framework/widget/edit/edit.js');

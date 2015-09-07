@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Print_Model;
+namespace SAF\Framework\Printer\Model;
 
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Traits\Has_Name;

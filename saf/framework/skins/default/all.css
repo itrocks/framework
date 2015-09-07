@@ -9,7 +9,7 @@
 @import "../../../../vendor/jquery-ui/smoothness/jquery-ui.css";
 @import "../../../../vendor/jquery-ui/smoothness/jquery.ui.theme.css";
 
-@import "../../print_model/pdf_template.css";
+@import "../../printer/model/pdf_template.css";
 
 @import "application.css";
 
@@ -22,7 +22,7 @@
 @import "menu.css";
 @import "modules.css";
 @import "plugins.css";
-@import "print_model.css";
+@import "printer_model.css";
 @import "property.css";
 @import "rad.css";
 @import "tabber.css";

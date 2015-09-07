@@ -11,7 +11,7 @@ use SAF\Framework\Dao\Option\Limit;
 use SAF\Framework\Dao;
 use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
-use SAF\Framework\Print_Model;
+use SAF\Framework\Printer\Model;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
@@ -20,6 +20,7 @@ use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\List_Data;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\String;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
@@ -292,22 +293,23 @@ class Data_List_Controller extends Output_Controller
 		$class_name
 	) {
 		return [
-			/*
-			new Button('Print', View::link($class_name, 'print'), 'print', [
-				'sub_buttons' => [
+			new Button(
+				'Print',
+				View::link($class_name, Feature::F_PRINT),
+				Feature::F_PRINT, [
+				Button::SUB_BUTTONS => [
 					new Button(
 						'Models',
 						View::link(
-							Names::classToSet(Print_Model::class),
+							Names::classToSet(Model::class),
 							Feature::F_LIST,
 							Namespaces::shortClassName($class_name)
 						),
-						'models',
+						Feature::F_LIST,
 						Target::MAIN
 					)
 				]
 			])
-			*/
 		];
 	}
 
