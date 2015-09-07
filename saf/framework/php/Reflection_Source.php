@@ -639,6 +639,7 @@ class Reflection_Source
 		return $this->source;
 	}
 
+	//------------------------------------------------------------------------------------- getTokens
 	/**
 	 * @return array
 	 */
