@@ -475,7 +475,8 @@ class Builder implements Activable, Registerable, Serializable
 	 */
 	public function sourceClassName($class_name)
 	{
-		return array_search($class_name, $this->replacements) ?: $class_name;
+		$found = array_search($class_name, $this->replacements);
+		return $found ? $this->sourceClassName($found) : $class_name;
 	}
 
 	//----------------------------------------------------------------------------------- unserialize
