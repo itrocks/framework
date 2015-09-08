@@ -25,7 +25,8 @@ class Edit_Controller extends Output_Controller
 	{
 		list($close_link, $follows) = $this->prepareThen($object, $parameters, View::link($object));
 		$buttons = parent::getGeneralButtons($object, $parameters);
-		unset($buttons['edit']);
+		unset($buttons[Feature::F_EDIT]);
+		unset($buttons[Feature::F_PRINT]);
 		$fill_combo = isset($parameters['fill_combo'])
 			? ['fill_combo' => $parameters['fill_combo']]
 			: [];
