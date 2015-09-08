@@ -95,11 +95,11 @@
 				var $from = $where;
 				var left  = $where.offset().left + 3;
 				var top   = $where.offset().top + $where.height() + 2;
-				if (id == '_blank') {
-					id = 'window' + ++window.zindex_counter;
-				}
 				if (id.substr(0, 1) == '_') {
 					$where = $($('body').children(':last-child'));
+				}
+				if (id == '_blank') {
+					id = 'window' + ++window.zindex_counter;
 				}
 				var $target = $('<' + settings.popup_element + '>')
 					.addClass(settings.closeable_popup)
