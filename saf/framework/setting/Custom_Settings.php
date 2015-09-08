@@ -44,6 +44,7 @@ abstract class Custom_Settings
 	 */
 	public static function currentUserSetting($class_name)
 	{
+		$class_name = Builder::current()->sourceClassName($class_name);
 		$setting = new User_Setting($class_name . DOT . static::customId());
 		return Dao::searchOne($setting) ?: $setting;
 	}
@@ -57,6 +58,7 @@ abstract class Custom_Settings
 	 */
 	public static function current($class_name)
 	{
+		$class_name = Builder::current()->sourceClassName($class_name);
 		$setting = self::currentUserSetting($class_name);
 		if (isset($setting->value)) {
 			$custom_settings = $setting->value;
