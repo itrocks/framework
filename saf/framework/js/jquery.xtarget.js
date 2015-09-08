@@ -155,15 +155,11 @@
 				// on success callbacks
 				var target = $target.get()[0];
 				if (settings.success != undefined) {
-					target.success = settings.success;
-					target.success(data, status, xhr);
-					target.success = undefined;
+					settings.success.call(target, data, status, xhr);
 				}
 				var on_success = $from.data('on-success');
 				if (on_success != undefined) {
-					target.success = on_success;
-					target.success(data, status, xhr);
-					target.success = undefined;
+					on_success.call(target, data, status, xhr);
 				}
 			}
 

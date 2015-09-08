@@ -79,9 +79,7 @@ window.modifiable_waiting  = false;
 					}
 					if (settings.stop) {
 						var input = $input.get(0);
-						input.stop = settings.stop;
-						input.stop();
-						input.stop = undefined;
+						settings.stop.call(input);
 					}
 					$input.parent().html($input.val());
 					$this.removeData('old');
@@ -103,9 +101,7 @@ window.modifiable_waiting  = false;
 				$input.focus();
 				if (settings.start) {
 					var input = $input.get(0);
-					input.start = settings.start;
-					input.start();
-					input.start = undefined;
+					settings.start.call(input);
 				}
 			}
 		});

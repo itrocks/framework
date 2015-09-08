@@ -109,9 +109,7 @@ $('document').ready(function()
 				if ($droppable != undefined) {
 					var callback = $droppable.data('drag-callback');
 					var droppable = $droppable.get(0);
-					droppable.callback = callback;
-					droppable.callback(event, ui);
-					droppable.callback = undefined;
+					callback.call(droppable, event, ui);
 				}
 			},
 
