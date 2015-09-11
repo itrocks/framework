@@ -16,6 +16,16 @@ use SAF\Framework\Widget\Tab\Tabs_Builder_Class;
 class Output_Settings extends Custom_Settings
 {
 
+	//----------------------------------------------------------------------------------- $conditions
+	/**
+	 * A text php expression where $this is the referent object.
+	 * The returned boolean value will tell if the form must be available or not for the object.
+	 *
+	 * @max_length 60000
+	 * @var string
+	 */
+	public $conditions;
+
 	//---------------------------------------------------------------------------------------- $title
 	/**
 	 * The title that will be displayed on the top of the output window

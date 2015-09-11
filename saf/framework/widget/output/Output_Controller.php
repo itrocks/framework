@@ -63,7 +63,7 @@ class Output_Controller implements Default_Feature_Controller
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
 		}
-		$did_change = true;
+		$did_change = false;
 		if (isset($parameters['add_property'])) {
 			$output_settings->addProperty(
 				$parameters['add_property'],
@@ -73,8 +73,16 @@ class Output_Controller implements Default_Feature_Controller
 					? $parameters['before']
 					: (isset($parameters['after']) ? $parameters['after'] : '')
 			);
+			$did_change = true;
 		}
-		elseif (isset($parameters['property_path'])) {
+		if (
+			isset($parameters['conditions'])
+			&& ($output_settings->conditions != $parameters['conditions'])
+		) {
+			$output_settings->conditions = $parameters['conditions'];
+			$did_change = true;
+		}
+		if (isset($parameters['property_path'])) {
 			if (isset($parameters['property_read_only'])) {
 				$output_settings->propertyReadOnly(
 					$parameters['property_path'], $parameters['property_read_only']
@@ -85,21 +93,24 @@ class Output_Controller implements Default_Feature_Controller
 					$parameters['property_path'], $parameters['property_title']
 				);
 			}
-		}
-		elseif (isset($parameters['remove_property'])) {
-			$output_settings->removeProperty($parameters['remove_property']);
-		}
-		elseif (isset($parameters['title'])) {
-			$output_settings->title = $parameters['title'];
-		}
-		else {
-			$did_change = false;
-		}
-		if (Custom_Settings_Controller::applyParametersToCustomSettings($output_settings, $parameters)) {
 			$did_change = true;
 		}
-		if (!$output_settings->name) {
+		if (isset($parameters['remove_property'])) {
+			$output_settings->removeProperty($parameters['remove_property']);
+			$did_change = true;
+		}
+		if (isset($parameters['title']) && ($parameters['title'] != $output_settings->title)) {
+			$output_settings->title = $parameters['title'];
+			$did_change = true;
+		}
+		if (
+			Custom_Settings_Controller::applyParametersToCustomSettings($output_settings, $parameters)
+		) {
+			$did_change = true;
+		}
+		if (!$output_settings->name && strlen($output_settings->title)) {
 			$output_settings->name = $output_settings->title;
+			$did_change = true;
 		}
 		if ($did_change) {
 			$output_settings->save();
