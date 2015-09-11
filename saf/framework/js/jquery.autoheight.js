@@ -21,7 +21,7 @@
 				var $table = $this.closest('table.collection, table.map');
 				if (!$table.length) {
 					// single element
-					$this.height(new_height);
+					$this.height(new_height + 12);
 					$this.css('overflow', settings.overflow);
 				}
 				else {
