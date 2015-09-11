@@ -105,8 +105,8 @@ $('document').ready(function()
 
 			});
 
-			//--------------------------------------- .windows h2>span, div[class][id]>label>a modifiable
-			// output title is modifiable
+			//------------------------------------------------------------------------------- modifiables
+			// prepare modifiables
 
 			var className = function($this)
 			{
@@ -120,11 +120,17 @@ $('document').ready(function()
 
 			var callback_uri = window.app.uri_base + '/{className}/outputSetting'
 				+ '?as_widget' + window.app.andSID();
+
 			var output_edit_uri = window.app.uri_base
 				+ '/SAF/Framework/Widget/Output_Setting/Output_Settings/edit/{className}?as_widget'
 				+ window.app.andSID();
 
-			// output title (class name) double-click
+			var output_property_uri = window.app.uri_base
+				+ '/SAF/Framework/Widget/Output_Setting/Property/edit/{className}/{propertyPath}?as_widget'
+				+ window.app.andSID();
+
+			//--------------------------------------- .windows h2>span, div[class][id]>label>a modifiable
+			// output title is modifiable (dbl-click)
 			$this.parent().find('h2>span').modifiable({
 				ajax:      callback_uri + '&title={value}',
 				ajax_form: 'form',
@@ -141,10 +147,12 @@ $('document').ready(function()
 
 			//--------------------------------------------------------- div[class][id]>label>a modifiable
 			// property label is modifiable
-			$this.find('div[class][id]>label>a').modifiable({
-				ajax:    callback_uri + '&property_path={propertyPath}&property_title={value}',
-				aliases: { 'className': className, 'propertyPath': propertyPath },
-				target:  '#messages'
+			$this.find('div[class][id]>label').modifiable({
+				ajax:       callback_uri + '&property_path={propertyPath}&property_title={value}',
+				ajax_form: 'form',
+				aliases:   { 'className': className, 'propertyPath': propertyPath },
+				popup:     output_property_uri,
+				target:    '#messages'
 			});
 
 		});
