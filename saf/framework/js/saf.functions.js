@@ -59,8 +59,8 @@ getTextHeight = function(context, extraHeight)
 	if (!$content[$last_index]) {
 		$content[$last_index] = '_';
 	}
-	$('<div id="height">').append($content.join('<br>')).appendTo(context.parent());
-	var $height = $('#height');
+	var $height = $('<div>');
+	$height.append($content.join('<br>')).appendTo(context.parent());
 	copyCssPropertyTo(context, $height);
 	$height.css('position', 'absolute');
 	var $width = getInputTextWidth(context);
@@ -80,8 +80,8 @@ getTextWidth = function(context, extraWidth)
 	}
 	else {
 		var $content = context.val().replace(' ', '_').split("\n");
-		$('<span id="width">').append($content.join('<br>')).appendTo('body');
-		var $width = $('#width');
+		var $width = $('<span>');
+		$width.append($content.join('<br>')).appendTo('body');
 		copyCssPropertyTo(context, $width);
 		$width.css('position', 'absolute');
 		var $pos = context.position();
