@@ -10,11 +10,13 @@ window.modifiable_waiting  = false;
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			ajax:    undefined,
-			aliases: {},
-			start:   undefined,
-			stop:    undefined,
-			target:  undefined
+			ajax:      undefined,
+			ajax_form: undefined,
+			aliases:   {},
+			popup:     undefined,
+			start:     undefined,
+			stop:      undefined,
+			target:    undefined
 		}, options);
 
 		//------------------------------------------------------------------------------------- click()
@@ -52,10 +54,16 @@ window.modifiable_waiting  = false;
 			event.preventDefault();
 			event.stopImmediatePropagation();
 			var $this = $(this);
+
+			//------------------------------------------------------------------------------------ $input
 			var $input = $('<input>').val($this.html().trim());
 			if ($this.data('old') == undefined) {
+				var $popup;
 				$this.data('old', $input.val());
+				$this.html($input);
+				$input.autowidth();
 
+				//----------------------------------------------------------------------------- $input done
 				var done = function () {
 					var ajax = settings.ajax;
 					if (typeof(ajax) == 'string') {
@@ -67,7 +75,7 @@ window.modifiable_waiting  = false;
 							ajax = ajax.replace('{' + alias + '}', encodeURI(value));
 						}
 						ajax = ajax.replace('{value}', encodeURI($input.val()));
-						$.ajax({
+						ajax = {
 							url:    ajax,
 							target: settings.target,
 							success: function (data, status, xhr)
@@ -75,18 +83,38 @@ window.modifiable_waiting  = false;
 								var destination = xhr.target;
 								$(destination).html(data);
 							}
-						}).target = settings.target;
+						};
+						ajax.target = settings.target;
+
+						// ajax call : post form, use form plugin, or simple post
+						if (settings.ajax_form != undefined) {
+							var $ajax_form = $popup.find(settings.ajax_form);
+							if ($ajax_form.ajaxSubmit != undefined) {
+								$ajax_form.ajaxSubmit($.extend(
+									ajax, { type: $ajax_form.attr('method') }
+								));
+							}
+							else {
+								$.ajax($.extend(
+									ajax, { data: $ajax_form.serialize(), type: $ajax_form.attr('method') }
+								));
+							}
+						}
+						else {
+							$.ajax(ajax);
+						}
+
 					}
 					if (settings.stop) {
 						var input = $input.get(0);
 						settings.stop.call(input);
 					}
+					$popup.fadeOut(100, function() { $(this).remove(); });
 					$input.parent().html($input.val());
 					$this.removeData('old');
 				};
 
-				$this.html($input);
-				$input.autowidth();
+				//------------------------------------------------------------------ $input keydown=ESC/RET
 				$input.keydown(function (event) {
 					if (event.keyCode == 13) {
 						done();
@@ -97,12 +125,58 @@ window.modifiable_waiting  = false;
 						done();
 					}
 				});
-				$input.blur(function () { done(); });
+
+				//------------------------------------------------------------- $input, popup elements blur
+				var blur = function ()
+				{
+					setTimeout(function() {
+						if (($popup == undefined) || (!$input.is(':focus') && !$popup.find(':focus').length)) {
+							done();
+						}
+					}, 100);
+				};
+
+				//---------------------------------------------------------------------------------- $popup
+				if (settings.popup != undefined) {
+					var popup = settings.popup;
+					for (var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
+						var value = settings.aliases[alias];
+						if (typeof(value) == 'function') {
+							value = value($this);
+						}
+						popup = popup.replace('{' + alias + '}', encodeURI(value));
+					}
+					var left = $input.offset().left;
+					var top = $input.offset().top + $input.height();
+					$popup = $('<div>').addClass('popup').css({
+						left:      left,
+						position:  'absolute',
+						top:       top,
+						'z-index': ++window.zindex_counter
+					});
+					$.ajax({
+						url: popup,
+						success: function(data) {
+							$popup.html(data).build();
+							$popup.appendTo('body');
+							$popup.find('input, select, textarea').blur(blur);
+							// press tab from title goes to output properties form instead of data form
+							var tab_index = 1;
+							$input.attr('tabindex', tab_index);
+							$popup.find('input, select, textarea').each(function() {
+								$(this).attr('tabindex', ++tab_index);
+							});
+						}
+					});
+				}
+
 				$input.focus();
+				$input.blur(blur);
 				if (settings.start) {
 					var input = $input.get(0);
 					settings.start.call(input);
 				}
+
 			}
 		});
 
