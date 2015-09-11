@@ -23,7 +23,7 @@
 			closeable_popup: 'closeable-popup',
 			draggable_blank: undefined,
 			error:           undefined,
-			history:         false, // { condition, on_post, title }
+			history:         false, // { condition, popup, post, title }
 			keep:            'popup',
 			popup_element:   'div',
 			submit:          'submit',
@@ -60,27 +60,29 @@
 			 */
 			pushHistory: function(xhr, $target)
 			{
-				if (
-					(settings.history.condition != undefined)
-					&& $target.find(settings.history.condition).length
-					&& (
-						(settings.history.on_post != undefined)
-						|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != 'post')
-						|| (xhr.ajax.data == undefined) || !xhr.ajax.data.length
-					)
-				) {
-					var title;
-					if ((settings.history.title != undefined) && settings.history.title) {
-						title = $target.find(settings.history.title).first().text();
-						if (!title.length) {
+				if ((settings.history.popup != undefined) || !$target.hasClass('popup')) {
+					if (
+						(settings.history.condition != undefined)
+						&& $target.find(settings.history.condition).length
+						&& (
+							(settings.history.post != undefined)
+							|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != 'post')
+							|| (xhr.ajax.data == undefined) || !xhr.ajax.data.length
+						)
+					) {
+						var title;
+						if ((settings.history.title != undefined) && settings.history.title) {
+							title = $target.find(settings.history.title).first().text();
+							if (!title.length) {
+								title = xhr.from.href;
+							}
+						}
+						else {
 							title = xhr.from.href;
 						}
+						document.title = title;
+						window.history.pushState({ reload: true }, title, xhr.from.href);
 					}
-					else {
-						title = xhr.from.href;
-					}
-					document.title = title;
-					window.history.pushState({ reload: true }, title, xhr.from.href);
 				}
 			},
 
@@ -110,6 +112,7 @@
 				$target.data(settings.xtarget_from, $from);
 				$target.insertAfter($where);
 				if ($where != $from) {
+					$target.addClass('popup');
 					$target.css('position', 'absolute');
 					$target.css('left', left);
 					$target.css('top',  top);
