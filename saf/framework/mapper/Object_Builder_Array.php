@@ -46,7 +46,7 @@ class Object_Builder_Array
 	 */
 	private $defaults;
 
-	//---------------------------------------------------------------------------------- $use_widgets
+	//------------------------------------------------------------------------------------ $from_form
 	/**
 	 * True (default) if apply build specifics for arrays that come from an input form :
 	 * - apply arrayFormRevert to split key positions
@@ -56,6 +56,15 @@ class Object_Builder_Array
 	 * @var boolean
 	 */
 	private $from_form;
+
+	//-------------------------------------------------------------------- $ignore_unknown_properties
+	/**
+	 * If false, build() will generate an error if the array contains data for properties that do not
+	 * exist in object's class. With true, you do not generate this error.
+	 *
+	 * @var boolean
+	 */
+	public $ignore_unknown_properties = false;
 
 	//-------------------------------------------------------------------- $null_if_empty_sub_objects
 	/**
@@ -158,7 +167,7 @@ class Object_Builder_Array
 		return $value;
 	}
 
-	//-------------------------------------------------------------------------- buildCollectionValue
+	//------------------------------------------------------------------------------- buildCollection
 	/**
 	 * Accepted arrays :
 	 * $array[$object_number][$property_name] = $value
@@ -267,7 +276,7 @@ class Object_Builder_Array
 		return $is_null;
 	}
 
-	//--------------------------------------------------------------------------------- buildMapValue
+	//-------------------------------------------------------------------------------------- buildMap
 	/**
 	 * @param $array      array
 	 * @param $class_name string the name of the class to build each element
@@ -427,9 +436,11 @@ class Object_Builder_Array
 			}
 		}
 		elseif (($property_name != 'id') && !isset($property)) {
-			trigger_error(
-				'Unknown property ' . $this->class->name . '::$' . $property_name, E_USER_ERROR
-			);
+			if (!$this->ignore_unknown_properties) {
+				trigger_error(
+					'Unknown property ' . $this->class->name . '::$' . $property_name, E_USER_ERROR
+				);
+			}
 		}
 		elseif (!(
 			$property && $this->buildProperty($build->object, $property, $value, $build->null_if_empty)
