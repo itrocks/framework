@@ -7,6 +7,7 @@ use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Setting;
 use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Tab;
 use SAF\Framework\Widget\Tab\Tabs_Builder_Class;
 
@@ -15,6 +16,12 @@ use SAF\Framework\Widget\Tab\Tabs_Builder_Class;
  */
 class Output_Settings extends Custom_Settings
 {
+
+	//-------------------------------------------------------------------------------------- $actions
+	/**
+	 * @var Button[]
+	 */
+	public $actions;
 
 	//----------------------------------------------------------------------------------- $conditions
 	/**
@@ -77,6 +84,35 @@ class Output_Settings extends Custom_Settings
 		if (isset($setting)) {
 			$this->setting = $setting;
 		}
+	}
+
+	//------------------------------------------------------------------------------------- addAction
+	/**
+	 * Insert a button before / after another button in the actions bar
+	 *
+	 * @param $button       Button
+	 * @param $where        string 'after' or 'before'
+	 * @param $where_action string
+	 */
+	public function addAction(Button $button, $where = 'after', $where_action = null)
+	{
+		$actions   = [];
+		$done      = false;
+		$insert_in = -1;
+		foreach ($this->actions as $action) {
+			if ($action->feature === $where_action) {
+				$insert_in = ($where === 'after') ? 2 : 1;
+			}
+			if (!--$insert_in) {
+				$actions[] = $button;
+				$done = true;
+			}
+			$actions[] = $action;
+		}
+		if (!$done) {
+			$actions[] = $button;
+		}
+		$this->actions = $actions;
 	}
 
 	//----------------------------------------------------------------------------------- addProperty

@@ -64,6 +64,19 @@ class Output_Controller implements Default_Feature_Controller
 			$parameters = array_merge($parameters, $form);
 		}
 		$did_change = false;
+		if (isset($parameters['add_action'])) {
+			if (!$output_settings->actions) {
+				$output_settings->actions = $this->getGeneralButtons(
+					$output_settings->class_name, $parameters
+				);
+			}
+			$output_settings->addAction(
+				$parameters['add_action'],
+				isset($parameters['before']) ? 'before' : 'after',
+				isset($parameters['before']) ? $parameters['before'] : $parameters['after']
+			);
+			$did_change = true;
+		}
 		if (isset($parameters['add_property'])) {
 			$output_settings->addProperty(
 				$parameters['add_property'],
@@ -157,7 +170,7 @@ class Output_Controller implements Default_Feature_Controller
 					View::link(
 						Names::classToSet(Model::class),
 						Feature::F_LIST,
-						Namespaces::shortClassName(get_class($object))
+						Namespaces::shortClassName(is_object($object) ? get_class($object) : $object)
 					),
 					Feature::F_LIST,
 					Target::MAIN
@@ -216,6 +229,9 @@ class Output_Controller implements Default_Feature_Controller
 		$output_settings->cleanup();
 		$this->applyParametersToOutputSettings($output_settings, $parameters, $form);
 		$this->applyOutputSettings($output_settings);
+		if (!$output_settings->properties_path) {
+			$output_settings->properties_path = $this->getPropertiesList($class_name);
+		}
 		$parameters['customized_lists']           = $output_settings->getCustomSettings();
 		$parameters['default_title']              = ucfirst(Names::classToDisplay($class_name));
 		$parameters[Parameter::PROPERTIES_FILTER] = $output_settings->properties_path;
@@ -230,7 +246,19 @@ class Output_Controller implements Default_Feature_Controller
 		$parameters['custom_buttons'] = (new Buttons())->getButtons(
 			'custom ' . $feature, $object, $feature /* , Target::MESSAGES TODO back but do not display output */
 		);
-		$parameters['general_buttons'] = $this->getGeneralButtons($object, $parameters);
+		if ($output_settings->actions) {
+			// default buttons on settings are false : get the default buttons from getGeneralButtons
+			// whet they are set into output settings
+			foreach ($this->getGeneralButtons($object, $parameters) as $button_key => $button) {
+				if (isset($output_settings->actions[$button_key])) {
+					$output_settings->actions[$button_key] = $button;
+				}
+			}
+			$parameters['general_buttons'] = $output_settings->actions;
+		}
+		else {
+			$parameters['general_buttons'] = $this->getGeneralButtons($object, $parameters);
+		}
 		return $parameters;
 	}
 
@@ -241,7 +269,7 @@ class Output_Controller implements Default_Feature_Controller
 	 * @example Call this from getGeneralButtons() :
 	 * list($close_link, $follows) = $this->prepareThen($object, $parameters);
 	 * Then use $close_link and $follows as needed
-	 * @param $object             object
+	 * @param $object             object|string object or class name
 	 * @param $parameters         array
 	 * @param $default_close_link string
 	 * @return array first element is the close link, second element is an array of a link parameter
@@ -253,7 +281,8 @@ class Output_Controller implements Default_Feature_Controller
 			$follows    = [Controller::THEN => $parameters[Controller::THEN]];
 		}
 		else {
-			$close_link = $default_close_link ?: View::link(Names::classToSet(get_class($object)));
+			$close_link = $default_close_link
+				?: View::link(Names::classToSet(is_object($object) ? get_class($object) : $object));
 			$follows    = [];
 		}
 		return [$close_link, $follows];

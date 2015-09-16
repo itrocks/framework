@@ -12,8 +12,8 @@ class Button
 
 	//------------------------------------------------------------------- Button option key constants
 	const COLOR       = 'color';
+	const HINT        = 'hint';
 	const SUB_BUTTONS = 'sub_buttons';
-	const TITLE       = 'title';
 
 	//-------------------------------------------------------------------------------------- $caption
 	/**
@@ -26,7 +26,7 @@ class Button
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * More classes for the button
-	 * This is css style, ie 'pressed' or 'ifedit press'
+	 * This is css style, eg 'pressed' or 'if-edit-press'
 	 *
 	 * @var string
 	 */
@@ -48,6 +48,14 @@ class Button
 	 */
 	public $feature;
 
+	//----------------------------------------------------------------------------------------- $hint
+	/**
+	 * A hint for the link
+	 *
+	 * @var string
+	 */
+	public $hint;
+
 	//----------------------------------------------------------------------------------------- $link
 	/**
 	 * Button link
@@ -56,6 +64,7 @@ class Button
 	 */
 	public $link;
 
+	//---------------------------------------------------------------------------------- $sub_buttons
 	/**
 	 * A button can be linked to a collection of sub-buttons
 	 *
@@ -67,20 +76,12 @@ class Button
 	//--------------------------------------------------------------------------------------- $target
 	/**
 	 * Target for the link
-	 * Name of a targetted window / iframe
+	 * Name of a targeted window / iframe
 	 * If starts with '#', target is the identifier of a DOM element in the page (for ajax call)
 	 *
 	 * @var string
 	 */
-	public $target;
-
-	//---------------------------------------------------------------------------------------- $title
-	/**
-	 * A title for the link
-	 *
-	 * @var string
-	 */
-	public $title = '';
+	public $target = '#main';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -115,16 +116,25 @@ class Button
 			elseif (($key === self::CLASS) || (is_numeric($key) && (substr($option, 0, 1) == DOT))) {
 				$this->class .= (isset($this->class) ? SP : '') . substr($option, 1);
 			}
+			elseif ($key === self::HINT) {
+				$this->hint = $option;
+			}
 			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
 				$this->target = $option;
-			}
-			elseif ($key === self::TITLE) {
-				$this->title = $option;
 			}
 		}
 		if (!isset($this->color)) {
 			$this->color = new Color(Color::BLUE);
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->caption);
 	}
 
 }

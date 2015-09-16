@@ -29,7 +29,7 @@ class Buttons
 				'Save',
 				$link,
 				'custom_save',
-				[$target, '.submit', 'title' => "Save this view as a $caption"]
+				[$target, '.submit', 'hint' => "Save this view as a $caption"]
 			),
 		];
 	}

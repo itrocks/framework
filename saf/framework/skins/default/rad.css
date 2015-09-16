@@ -7,3 +7,18 @@ body > header > ul > li.rad.add > a {
     font-size: 16px; }
   body > header > ul > li.rad.add > a:hover:before {
     color: #2D8F8D; }
+
+.rad.highlight {
+  border: 1px solid green; }
+
+.rad.insert-bottom {
+  border-bottom: 2px solid red; }
+
+.rad.insert-left {
+  border-left: 2px solid red; }
+
+.rad.insert-right {
+  border-right: 2px solid red; }
+
+.rad.insert-top {
+  border-top: 2px solid red; }
