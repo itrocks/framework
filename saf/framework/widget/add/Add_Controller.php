@@ -47,7 +47,7 @@ class Add_Controller extends Edit_Controller
 	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
 		$object = $parameters->getMainObject($class_name);
-		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
+		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			$property->setValue($object, $property->getDefaultValue());
 		}
 		$objects = $parameters->getObjects();
