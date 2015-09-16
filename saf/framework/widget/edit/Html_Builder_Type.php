@@ -370,18 +370,19 @@ class Html_Builder_Type
 			$input->addClass('autowidth');
 			$input->addClass('autoheight');
 		}
-		elseif ($values) {
+		elseif ($values && !$this->readonly) {
 			if (!isset($values[''])) {
 				$values = array_merge(['' => ''], $values);
 			}
 			$input = new Select($this->getFieldName(), $values, $this->value);
 		}
 		else {
-			$input = new Input($this->getFieldName(), $this->value);
+			$input = new Input($this->getFieldName(), $values ? Loc::tr($this->value) : $this->value);
 			$input->setAttribute('autocomplete', 'off');
 			$input->addClass('autowidth');
 		}
 		if ($this->readonly) {
+			$input->removeAttribute('name');
 			$input->setAttribute('readonly');
 		}
 		return $input;
