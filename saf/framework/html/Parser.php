@@ -95,6 +95,15 @@ class Parser
 	 */
 	public $site_path;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $html_buffer string
+	 */
+	public function __construct($html_buffer = '')
+	{
+		$this->buffer = $html_buffer;
+	}
+
 	//--------------------------------------------------------------------------------- addAttributes
 	/**
 	 * Adds attributes to all elements matching $selector into the buffer
@@ -363,16 +372,19 @@ class Parser
 		$tag = $this->partsTag($this->selectorParts($selector));
 		// remove merged html before / after element
 		if (
-			($i = strpos($merged_html, '<' . $tag . '>')) !== false
-			&& ($j = strrpos($merged_html, '</' . $tag . '>')) !== false
+			(
+				(($i = strpos($merged_html, '<' . $tag . '>')) !== false)
+				|| (($i = strpos($merged_html, '<' . $tag . SP)) !== false)
+			)
+			&& ($j = strrpos($merged_html, '</' . $tag . '>', $i)) !== false
 		) {
-			$i += strlen($tag) + 2;
+			$i = strpos($merged_html, '>', $i) + 1;
 			$merged_html = substr($merged_html, $i, $j - $i);
 		}
 		// append merged html at the end of buffer selected elements contents
 		$i = 0;
 		while (($i = $this->selectorPos($selector, $i)) !== false) {
-			$i = $this->closingTag($tag, $i);
+			$i = $this->closingTag($tag, $i, 'before');
 			$this->buffer = substr($this->buffer, 0, $i) . $merged_html . substr($this->buffer, $i);
 		}
 	}
@@ -445,6 +457,7 @@ class Parser
 		return $last_i;
 	}
 
+	//--------------------------------------------------------------------------------------- replace
 	/**
 	 * Replace an element by a new content
 	 *
