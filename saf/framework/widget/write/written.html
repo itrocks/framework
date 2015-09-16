@@ -15,7 +15,7 @@
 	<!--fill_combo?-->
 	<script>
 	if (document.{fill_combo} != undefined) {
-		document.{fill_combo}.value = {id};
+		document.{fill_combo}.value = '{id}';
 		$(document.{fill_combo}.nextSibling).val('{.}').keyup().select();
 	}
 	</script>
@@ -23,7 +23,19 @@
 
 	<!--close?--><script> $('#{close}').remove(); </script><!--close?-->
 	<!--then?--><script> redirect('{then}', '#main'); </script><!--then?-->
-	<!--!close?--><!--!then?--><script> redirect('{@link}', '#main'); </script><!--!then?--><!--!close?-->
+	<!--!close?--><!--!then?-->
+	<script>
+		(function() {
+			var $window = $('#main .window');
+			if (
+				($window.data('class') == '{@class.escape}')
+				&& (($window.data('id') == '{id}') || ('{new_object}' && !$window.data('id')))
+			) {
+				redirect('{@link}', '#main');
+			}
+		})();
+	</script>
+	<!--!then?--><!--!close?-->
 
 <!--END-->
 </body>

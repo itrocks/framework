@@ -10,6 +10,18 @@ $('document').ready(function()
 		this.inside('.autoheight').autoheight();
 		this.inside('.autowidth').autowidth();
 
+		//--------------------------------------------------------------------------------- close popup
+		if (this.is('.popup') || this.closest('.popup').length) {
+			var $popup = this.is('.popup') ? this : this.closest('.popup');
+			$popup.find('.general.actions .close a').click(function() {
+				$(this).removeAttr('href').removeAttr('target');
+			});
+			$popup.find('.general.actions a').click(function() {
+				var $this = $(this);
+				setTimeout(function() { $this.closest('.popup').remove(); }, 1);
+			});
+		}
+
 		//-------------------------------------------------------------------------------------- .minus
 		this.inside('.minus').click(function()
 		{
@@ -329,20 +341,6 @@ $('document').ready(function()
 		});
 
 		this.inside('input.combo~.edit').attr('tabindex', -1);
-		if (this.attr('id') && (this.attr('id').substr(0, 6) == 'window')) {
-			this.inside('.actions>.close>a')
-				.attr('href', '#')
-				.attr('onclick', '$(\'#' + this.attr('id') + '\').remove()')
-				.attr('target', '');
-			var $button = this.inside('.actions>.write>a');
-			if ($button.length) {
-				$button.attr('href',
-					$button.attr('href')
-					+ (($button.attr('href').indexOf('?') > -1) ? '&' : '?')
-					+ 'close=' + this.attr('id')
-				);
-			}
-		}
 
 		this.inside('input.combo').each(function()
 		{

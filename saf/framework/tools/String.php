@@ -57,6 +57,15 @@ class String
 		return str_replace('_', SP, $this->value);
 	}
 
+	//---------------------------------------------------------------------------------------- escape
+	/**
+	 * @return String
+	 */
+	public function escape()
+	{
+		return new String(str_replace(BS, BS . BS, $this->value));
+	}
+
 	//----------------------------------------------------------------------------------------- first
 	/**
 	 * First element of a separated string

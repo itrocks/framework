@@ -64,6 +64,7 @@ class Write_Controller implements Default_Class_Controller
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$object = $parameters->getMainObject($class_name);
+		$new_object = !Dao::getObjectIdentifier($object);
 
 		Dao::begin();
 		try {
@@ -94,6 +95,7 @@ class Write_Controller implements Default_Class_Controller
 		}
 
 		$parameters = $this->getViewParameters($parameters, $class_name, $write_error);
+		$parameters['new_object'] = $new_object;
 		return View::run($parameters, $form, $files, $class_name, Feature::F_WRITE);
 	}
 
