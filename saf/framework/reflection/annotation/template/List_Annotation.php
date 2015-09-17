@@ -75,7 +75,7 @@ class List_Annotation extends Annotation
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Adds a value to the annotation list of values
-
+	 *
 	 * @param $value string
 	 */
 	public function add($value)
@@ -95,6 +95,24 @@ class List_Annotation extends Annotation
 	public function has($value)
 	{
 		return in_array($value, $this->value);
+	}
+
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * Remove a value and return true if the value was here and removed, false if the value
+	 * already was not here
+	 *
+	 * @param $value string
+	 * @return boolean
+	 */
+	public function remove($value)
+	{
+		$key = in_array($value, $this->value);
+		if ($key !== false) {
+			unset($this->value[$key]);
+			return true;
+		}
+		return false;
 	}
 
 	//---------------------------------------------------------------------------------------- values
