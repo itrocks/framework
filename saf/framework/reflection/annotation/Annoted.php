@@ -36,6 +36,17 @@ trait Annoted
 	 */
 	private static $annotations_cache = [];
 
+	//--------------------------------------------------------------------------------- addAnnotation
+	/**
+	 * @param $annotation_name string
+	 * @param $annotation      Annotation
+	 */
+	public function addAnnotation($annotation_name, Annotation $annotation)
+	{
+		$path = $this->getAnnotationCachePath();
+		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true][] = $annotation;
+	}
+
 	//--------------------------------------------------------------------------------- getAnnotation
 	/**
 	 * Gets an single annotation of the reflected property
@@ -141,6 +152,38 @@ trait Annoted
 			);
 		}
 		return $annotations;
+	}
+
+	//------------------------------------------------------------------------------ removeAnnotation
+	/**
+	 * @param $annotation_name string
+	 * @param $annotation      Annotation|null if null : annotation / all annotations from list
+	 */
+	public function removeAnnotation($annotation_name, Annotation $annotation = null)
+	{
+		$path = $this->getAnnotationCachePath();
+		if ($annotation) {
+			if (isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true])) {
+				foreach (
+					self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true]
+					as $key => $old_annotation
+				) {
+					/** @var $old_annotation Annotation */
+					if (
+						(get_class($annotation) === get_class($old_annotation))
+						&& ($old_annotation->value === $annotation->value)
+					) {
+						unset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true][$key]);
+					}
+				}
+			}
+		}
+		else {
+			if (isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name])) {
+				unset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name]);
+			}
+		}
+		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true][] = $annotation;
 	}
 
 	//--------------------------------------------------------------------------------- setAnnotation
