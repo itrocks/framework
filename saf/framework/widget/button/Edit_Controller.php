@@ -71,7 +71,7 @@ class Edit_Controller extends Edit\Edit_Controller
 		/** @var $button Button */
 		$button = $parameters->getMainObject($class_name);
 		if (!$button->class && !$button->feature) {
-			$button->class   = $parameters->getRawParameter(0);
+			$button->class   = 'submit';
 			$button->feature = $parameters->getRawParameter(1);
 			if ($button->feature == Feature::F_EDIT) {
 				$button->feature = Feature::F_WRITE;

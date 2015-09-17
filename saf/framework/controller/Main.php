@@ -60,7 +60,7 @@ class Main
 		}
 	}
 
-	//--------------------------------------------------------------------------------- topCorePlugin
+	//----------------------------------------------------------------------------- addTopCorePlugins
 	/**
 	 * Top core plugins are defined into bootstrap script (index.php) and are registered before
 	 * any session opening
@@ -380,7 +380,7 @@ class Main
 		unset($post[session_name()]);
 	}
 
-	//----------------------------------------------------------------------- setFrameworkIncludePath
+	//-------------------------------------------------------------------------------- setIncludePath
 	/**
 	 * @param $session           array
 	 * @param $application_class string

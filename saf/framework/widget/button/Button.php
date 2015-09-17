@@ -178,7 +178,7 @@ class Button
 			if ($this->code->source) {
 				$parameters[] = $this->code;
 			}
-			$this->link = View::link($this->object ?: $this->class, $this->feature, $parameters);
+			$this->link = View::link($this->object, $this->feature, $parameters);
 		}
 		return $this->link;
 	}

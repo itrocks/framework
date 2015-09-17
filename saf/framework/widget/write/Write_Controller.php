@@ -80,13 +80,7 @@ class Write_Controller implements Default_Class_Controller
 				}
 			}
 
-			$write_error = false;
-			foreach ($write_objects as $write_object) {
-				if (!Dao::write($write_object)) {
-					$write_error = true;
-					break;
-				}
-			}
+			$write_error = $this->write($write_objects);
 			$write_error ? Dao::rollback() : Dao::commit();
 		}
 		catch (Exception $exception) {
@@ -97,6 +91,23 @@ class Write_Controller implements Default_Class_Controller
 		$parameters = $this->getViewParameters($parameters, $class_name, $write_error);
 		$parameters['new_object'] = $new_object;
 		return View::run($parameters, $form, $files, $class_name, Feature::F_WRITE);
+	}
+
+	//----------------------------------------------------------------------------------------- write
+	/**
+	 * @param $write_objects object[]
+	 * @return boolean
+	 */
+	protected function write($write_objects)
+	{
+		$write_error = false;
+		foreach ($write_objects as $write_object) {
+			if (!Dao::write($write_object)) {
+				$write_error = true;
+				break;
+			}
+		}
+		return $write_error;
 	}
 
 }
