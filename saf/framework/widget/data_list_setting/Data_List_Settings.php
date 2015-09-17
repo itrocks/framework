@@ -156,18 +156,6 @@ class Data_List_Settings extends Custom_Settings
 		return $changes_count;
 	}
 
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * Get current session / user custom settings object
-	 *
-	 * @param $class_name string
-	 * @return self
-	 */
-	public static function current($class_name)
-	{
-		return parent::current($class_name);
-	}
-
 	//------------------------------------------------------------------------------- getDefaultTitle
 	/**
 	 * @return string
@@ -177,21 +165,6 @@ class Data_List_Settings extends Custom_Settings
 		return ucfirst(Names::classToDisplay(
 			(new Reflection_Class($this->class_name))->getAnnotation('set')
 		));
-	}
-
-	//------------------------------------------------------------------------------------------ load
-	/**
-	 * Loads a Data_List_Settings from the Settings set
-	 *
-	 * If no Data_List_Settings named $name is stored, a new one will be returned
-	 *
-	 * @param $class_name string
-	 * @param $name       string
-	 * @return Data_List_Settings
-	 */
-	public static function load($class_name, $name)
-	{
-		return parent::load($class_name, $name);
 	}
 
 	//-------------------------------------------------------------------------------- removeProperty

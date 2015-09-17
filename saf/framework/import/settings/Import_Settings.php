@@ -71,7 +71,7 @@ class Import_Settings extends Custom_Settings
 		return parent::current($class_name);
 	}
 
-	//------------------------------------------------------------------------------------ __toString
+	//---------------------------------------------------------------------------------- getClassName
 	/**
 	 * @return string
 	 */
@@ -94,21 +94,6 @@ class Import_Settings extends Custom_Settings
 	public function getSummary()
 	{
 
-	}
-
-	//------------------------------------------------------------------------------------------ load
-	/**
-	 * Loads Import_Settings from the Settings set
-	 *
-	 * If no Import_Settings named $name is stored, a new one will be returned
-	 *
-	 * @param $class_name string
-	 * @param $name       string
-	 * @return Import_Settings
-	 */
-	public static function load($class_name, $name)
-	{
-		return parent::load($class_name, $name);
 	}
 
 	//---------------------------------------------------------------------------------- setConstants

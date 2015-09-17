@@ -31,11 +31,12 @@ class Remove_Controller extends Remove\Remove_Controller
 	//---------------------------------------------------------------------- removePropertyFromOutput
 	/**
 	 * @param $class_name    string
+	 * @param $feature_name  string
 	 * @param $property_path string
 	 */
-	public function removePropertyFromOutput($class_name, $property_path)
+	public function removePropertyFromOutput($class_name, $feature_name, $property_path)
 	{
-		$output_settings = Output_Settings::current($class_name);
+		$output_settings = Output_Settings::current($class_name, $feature_name);
 		$output_settings->removeProperty($property_path);
 		$output_settings->save();
 	}
@@ -65,7 +66,9 @@ class Remove_Controller extends Remove\Remove_Controller
 				break;
 			case Feature::F_EDIT:
 			case Feature::F_OUTPUT:
-				$this->removePropertyFromOutput($parameters['class_name'], $parameters['property_path']);
+				$this->removePropertyFromOutput(
+					$parameters['class_name'], $parameters['feature_name'], $parameters['property_path']
+				);
 				break;
 		}
 		$parameters[Template::TEMPLATE] = 'removed';

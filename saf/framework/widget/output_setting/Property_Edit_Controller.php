@@ -1,10 +1,10 @@
 <?php
 namespace SAF\Framework\Widget\Output_Setting;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\View;
 
 /**
@@ -13,21 +13,20 @@ use SAF\Framework\View;
 class Property_Edit_Controller implements Feature_Controller
 {
 
-	//----------------------------------------------------------------- applyCustomSettingsToProperty
+	//------------------------------------------------------------------------ customSettingsProperty
 	/**
-	 * @param $property   Property The property
-	 * @param $class_name string The name of the class
+	 * @param $class_name    string The name of the class
+	 * @param $feature       string The feature
+	 * @param $property_path string The property
+	 * @return Property
 	 */
-	private function applyCustomSettingsToProperty(Property $property, $class_name)
+	private function customSettingsProperty($class_name, $feature, $property_path)
 	{
-		$output_settings = Output_Settings::current($class_name);
+		$output_settings = Output_Settings::current($class_name, $feature);
 		$output_settings->cleanup();
-		if (isset($output_settings->properties_read_only[$property->path])) {
-			$property->read_only = $output_settings->properties_read_only[$property->path];
-		}
-		if (isset($output_settings->properties_title[$property->path])) {
-			$property->display = $output_settings->properties_title[$property->path];
-		}
+		return isset($output_settings->properties[$property_path])
+			? $output_settings->properties[$property_path]
+			: Builder::create(Property::class, [$class_name, $property_path]);
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -42,9 +41,8 @@ class Property_Edit_Controller implements Feature_Controller
 	public function run(Parameters $parameters, $form, $files)
 	{
 		if ($parameters->getMainObject(Property::class)->isEmpty()) {
-			list($class_name, $property_name) = $parameters->getRawParameters();
-			$property = new Property(new Reflection_Property_Value($class_name, $property_name));
-			$this->applyCustomSettingsToProperty($property, $class_name);
+			list($class_name, $feature, $property_path) = $parameters->getRawParameters();
+			$property = $this->customSettingsProperty($class_name, $feature, $property_path);
 			$parameters->unshift($property);
 		}
 		$parameters = $parameters->getObjects();

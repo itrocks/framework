@@ -35,15 +35,13 @@ class Output_Controller implements Default_Feature_Controller
 	private function applyOutputSettings(Output_Settings $output_settings)
 	{
 		$class = new Reflection_Class($output_settings->class_name);
-		if ($output_settings->properties_read_only) {
-			$user_annotation = new User_Annotation(User_Annotation::READONLY);
-			foreach ($output_settings->properties_read_only as $property_path => $read_only) {
-				$property = $class->getProperty($property_path);
-				if (!$property->getAnnotation(User_Annotation::ANNOTATION)->value) {
-					$class->getProperty($property_path)->setAnnotation(
-						User_Annotation::ANNOTATION, $user_annotation
-					);
-				}
+		if ($output_settings->properties) {
+			$not_read_only = new User_Annotation('');
+			$read_only     = new User_Annotation(User_Annotation::READONLY);
+			foreach ($output_settings->properties as $property_path => $property) {
+				$class->getProperty($property_path)->setAnnotation(
+					User_Annotation::ANNOTATION, $property->read_only ? $read_only : $not_read_only
+				);
 			}
 		}
 	}
@@ -203,11 +201,14 @@ class Output_Controller implements Default_Feature_Controller
 	protected function getTab($object, $output_settings)
 	{
 		if (isset($output_settings->tab)) {
-			$tab = $output_settings->tab->propertiesToValues($object, $output_settings->properties_title);
+			$properties_display = $output_settings->propertiesParameter('display');
+			$tab = $output_settings->tab->propertiesToValues($object, $properties_display);
 		}
 		else {
 			$tab = new Tab('main');
-			$tab->includes = Tabs_Builder_Object::buildObject($object, $output_settings->properties_path);
+			$tab->includes = Tabs_Builder_Object::buildObject(
+				$object, array_keys($output_settings->properties)
+			);
 		}
 		return $tab;
 	}
@@ -225,24 +226,22 @@ class Output_Controller implements Default_Feature_Controller
 	) {
 		$object = $parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
-		$output_settings = Output_Settings::current($class_name);
+		$feature = isset($parameters[Feature::FEATURE])
+			? $parameters[Feature::FEATURE]
+			: Feature::F_OUTPUT;
+		$output_settings = Output_Settings::current($class_name, $feature);
 		$output_settings->cleanup();
 		$this->applyParametersToOutputSettings($output_settings, $parameters, $form);
 		$this->applyOutputSettings($output_settings);
-		if (!$output_settings->properties_path) {
-			$output_settings->properties_path = $this->getPropertiesList($class_name);
-		}
-		$parameters['customized_lists']           = $output_settings->getCustomSettings();
+		$output_settings->initProperties($this->getPropertiesList($class_name));
+		$parameters['customized_lists']           = $output_settings->getCustomSettings($feature);
 		$parameters['default_title']              = ucfirst(Names::classToDisplay($class_name));
-		$parameters[Parameter::PROPERTIES_FILTER] = $output_settings->properties_path;
-		$parameters[Parameter::PROPERTIES_TITLE]  = $output_settings->properties_title;
+		$parameters[Parameter::PROPERTIES_FILTER] = array_keys($output_settings->properties);
+		$parameters[Parameter::PROPERTIES_TITLE]  = $output_settings->propertiesParameter('display');
 		$parameters['settings']                   = $output_settings;
 		$parameters['tabs']                       = $this->getTab($object, $output_settings);
 		$parameters['title']                      = $output_settings->title();
 		// buttons
-		$feature = isset($parameters[Feature::FEATURE])
-			? $parameters[Feature::FEATURE]
-			: Feature::F_OUTPUT;
 		$parameters['custom_buttons'] = (new Buttons())->getButtons(
 			'custom ' . $feature, $object, $feature /* , Target::MESSAGES TODO back but do not display output */
 		);

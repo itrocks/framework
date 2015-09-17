@@ -32,6 +32,24 @@ class Setting
 		if (isset($value)) $this->value = $value;
 	}
 
+	//-------------------------------------------------------------------------------------- getClass
+	/**
+	 * @return string
+	 */
+	public function getClass()
+	{
+		return explode(DOT, $this->code)[0];
+	}
+
+	//------------------------------------------------------------------------------------ getFeature
+	/**
+	 * @return string
+	 */
+	public function getFeature()
+	{
+		return explode(DOT, $this->code)[1];
+	}
+
 	//-------------------------------------------------------------------------------------- getValue
 	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**

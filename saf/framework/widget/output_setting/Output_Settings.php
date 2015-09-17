@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Output_Setting;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -41,29 +42,11 @@ class Output_Settings extends Custom_Settings
 	 */
 	public $title;
 
-	//------------------------------------------------------------------------------ $properties_path
+	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * Properties path
-	 *
-	 * @var string[] key is the sort index (0..n)
+	 * @var Property[] key is the sort index (0..n)
 	 */
-	public $properties_path = null;
-
-	//------------------------------------------------------------------------- $properties_read_only
-	/**
-	 * Read only properties
-	 *
-	 * @var array
-	 */
-	public $properties_read_only = [];
-
-	//----------------------------------------------------------------------------- $properties_title
-	/**
-	 * Properties title
-	 *
-	 * @var string[] key is the property path
-	 */
-	public $properties_title = [];
+	public $properties = [];
 
 	//------------------------------------------------------------------------------------------ $tab
 	/**
@@ -117,36 +100,38 @@ class Output_Settings extends Custom_Settings
 
 	//----------------------------------------------------------------------------------- addProperty
 	/**
-	 * @param $property_path       string
+	 * @param $add_property_path   string
 	 * @param $tab_name            string
 	 * @param $where               string 'after', 'before' or null
 	 * @param $where_property_path string reference property path for $where
 	 */
 	public function addProperty(
-	 	$property_path, $tab_name, $where = 'after', $where_property_path = null
+	 	$add_property_path, $tab_name, $where = 'after', $where_property_path = null
 	) {
-		$this->initPropertiesPath();
-		$properties_path = [];
-		$count = 0;
+		$this->initProperties();
+		$add_property = isset($this->properties[$add_property_path])
+			? $this->properties[$add_property_path]
+			: Builder::create(Property::class, [$this->class_name, $add_property_path]);
+		$properties = [];
 		if (($where == 'after') && empty($where_property_path)) {
-			$properties_path[$count++] = $property_path;
+			$properties[$add_property_path] = $add_property;
 		}
-		foreach ($this->properties_path as $key) {
-			if (($where == 'before') && ($key == $where_property_path)) {
-				$properties_path[$count++] = $property_path;
+		foreach ($this->properties as $property_path => $property) {
+			if (($where == 'before') && ($property_path == $where_property_path)) {
+				$properties[$add_property_path] = $add_property;
 			}
-			if ($key !== $property_path) {
-				$properties_path[$count++] = $key;
+			if ($property_path !== $add_property_path) {
+				$properties[$property_path] = $property;
 			}
-			if (($where == 'after') && ($key == $where_property_path)) {
-				$properties_path[$count++] = $property_path;
+			if (($where == 'after') && ($property_path == $where_property_path)) {
+				$properties[$add_property_path] = $add_property;
 			}
 		}
 		if (($where == 'before') && empty($where_property_path)) {
-			$properties_path[$count] = $property_path;
+			$properties[$add_property_path] = $add_property;
 		}
 
-		$this->properties_path = $properties_path;
+		$this->properties = $properties;
 	}
 
 	//--------------------------------------------------------------------------------------- cleanup
@@ -159,31 +144,13 @@ class Output_Settings extends Custom_Settings
 	public function cleanup()
 	{
 		$changes_count = 0;
-		// properties path
-		if (isset($this->properties_path)) {
-			foreach ($this->properties_path as $key => $property_path) {
-				if (!Reflection_Property::exists($this->class_name, $property_path)) {
-					unset($this->properties_path[$key]);
-					$changes_count++;
-				}
-			}
-			if ($changes_count) {
-				$this->properties_path = array_values($this->properties_path);
+		foreach (array_keys($this->properties) as $property_path) {
+			if (!Reflection_Property::exists($this->class_name, $property_path)) {
+				unset($this->properties[$property_path]);
+				$changes_count ++;
 			}
 		}
 		return $changes_count;
-	}
-
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * Get current session / user custom settings object
-	 *
-	 * @param $class_name string
-	 * @return self
-	 */
-	public static function current($class_name)
-	{
-		return parent::current($class_name);
 	}
 
 	//------------------------------------------------------------------------------- getDefaultTitle
@@ -195,14 +162,32 @@ class Output_Settings extends Custom_Settings
 		return Loc::tr(ucfirst(Names::classToDisplay($this->class_name)));
 	}
 
-	//---------------------------------------------------------------------------- initPropertiesPath
-	private function initPropertiesPath()
+	//-------------------------------------------------------------------------------- initProperties
+	/**
+	 * @param $filter_properties string[] property path
+	 * @return Property[]
+	 */
+	public function initProperties($filter_properties = null)
 	{
-		if (!$this->properties_path) {
-			$this->properties_path = array_keys(
-				(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE])
-			);
+		if (!$this->properties) {
+			if ($filter_properties) {
+				foreach ($filter_properties as $property_path) {
+					$this->properties[] = Builder::create(
+						Property::class, [$this->class_name, $property_path]
+					);
+				}
+			}
+			else {
+				foreach (array_keys(
+					(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE])
+				) as $property_name) {
+					$this->properties[$property_name] = Builder::create(
+						Property::class, [$this->class_name, $property_name]
+					);
+				}
+			}
 		}
+		return $this->properties;
 	}
 
 	//--------------------------------------------------------------------------------------- initTab
@@ -211,7 +196,7 @@ class Output_Settings extends Custom_Settings
 		if (!isset($this->tab) && isset($this->class_name)) {
 			$this->tab = new Tab('main');
 			$this->tab->includes = Tabs_Builder_Class::build(
-				new Reflection_Class($this->class_name), $this->properties_path
+				new Reflection_Class($this->class_name), array_keys($this->properties)
 			);
 		}
 	}
@@ -221,17 +206,13 @@ class Output_Settings extends Custom_Settings
 	 * Sets the property to read-only
 	 *
 	 * @param $property_path string
-	 * @param $read_only     boolean if empty or null, the read-only property is removed
+	 * @param $read_only     boolean
 	 */
-	public function propertyReadOnly($property_path, $read_only)
+	public function propertyReadOnly($property_path, $read_only = false)
 	{
-		if (empty($read_only)) {
-			if (isset($this->properties_read_only[$property_path])) {
-				unset($this->properties_read_only[$property_path]);
-			}
-		}
-		else {
-			$this->properties_read_only[$property_path] = true;
+		$this->initProperties();
+		if (isset($this->properties[$property_path])) {
+			$this->properties[$property_path]->read_only = $read_only;
 		}
 	}
 
@@ -244,14 +225,27 @@ class Output_Settings extends Custom_Settings
 	 */
 	public function propertyTitle($property_path, $title = null)
 	{
-		if (empty($title)) {
-			if (isset($this->properties_title[$property_path])) {
-				unset($this->properties_title[$property_path]);
-			}
+		$this->initProperties();
+		if (isset($this->properties[$property_path])) {
+			$this->properties[$property_path]->display = $title;
 		}
-		else {
-			$this->properties_title[$property_path] = $title;
+	}
+
+	//--------------------------------------------------------------------------- propertiesParameter
+	/**
+	 * Returns a list of a given parameter taken from properties
+	 *
+	 * @example $properties_display = $output_settings->propertiesParameter('display');
+	 * @param $parameter string
+	 * @return array key is the property path, value is the parameter value
+	 */
+	public function propertiesParameter($parameter)
+	{
+		$result = [];
+		foreach ($this->properties as $property_path => $property) {
+			$result[$property_path] = $property->$parameter;
 		}
+		return $result;
 	}
 
 	//-------------------------------------------------------------------------------- removeProperty
@@ -260,10 +254,9 @@ class Output_Settings extends Custom_Settings
 	 */
 	public function removeProperty($property_path)
 	{
-		$this->initPropertiesPath();
-		if (($key = array_search($property_path, $this->properties_path, true)) !== false) {
-			unset($this->properties_path[$key]);
-			$this->properties_path = array_values($this->properties_path);
+		$this->initProperties();
+		if (isset($this->properties[$property_path])) {
+			unset($this->properties[$property_path]);
 		}
 	}
 
@@ -277,9 +270,7 @@ class Output_Settings extends Custom_Settings
 		if (isset($title)) {
 			$this->title = $title;
 		}
-		return empty($this->title)
-			? $this->getDefaultTitle()
-			: $this->title;
+		return empty($this->title) ? $this->getDefaultTitle() : $this->title;
 	}
 
 }

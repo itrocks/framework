@@ -30,17 +30,16 @@ class Property
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property  Reflection_Property_Value|null
-	 * @param $read_only boolean
+	 * @param $class_name    string
+	 * @param $property_path string
 	 */
-	public function __construct(Reflection_Property_Value $property = null, $read_only = null)
+	public function __construct($class_name = null, $property_path = null)
 	{
-		if (isset($property)) {
-			$this->display = Loc::tr($property->display());
-			$this->path    = $property->path;
-		}
-		if (isset($read_only)) {
-			$this->read_only = $read_only;
+		if (isset($class_name) && isset($property_path)) {
+			$property        = new Reflection_Property_Value($class_name, $property_path);
+			$this->display   = Loc::tr($property->display());
+			$this->path      = $property->path;
+			$this->read_only = $property->getAnnotation('read_only')->value;
 		}
 	}
 

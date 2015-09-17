@@ -70,6 +70,7 @@ $('document').ready(function()
 								+ '?add_property=' + div_property
 								+ '&' + side + '=' + insert_property
 								+ '&tab=' + tab
+								+ '&feature=' + $window.data('feature')
 								+ '&as_widget'
 								+ app.andSID();
 
@@ -113,20 +114,25 @@ $('document').ready(function()
 				return $this.closest('.window').data('class').repl(BS, SL);
 			};
 
+			var featureName = function($this)
+			{
+				return $this.closest('.window').data('feature');
+			};
+
 			var propertyPath = function($this)
 			{
 				return $this.closest('div[class][id]').attr('id');
 			};
 
 			var callback_uri = window.app.uri_base + '/{className}/outputSetting'
-				+ '?as_widget' + window.app.andSID();
+				+ '?as_widget&feature={featureName}' + window.app.andSID();
 
 			var output_edit_uri = window.app.uri_base
-				+ '/SAF/Framework/Widget/Output_Setting/Output_Settings/edit/{className}?as_widget'
+				+ '/SAF/Framework/Widget/Output_Setting/Output_Settings/edit/{className}/{featureName}?as_widget'
 				+ window.app.andSID();
 
 			var output_property_uri = window.app.uri_base
-				+ '/SAF/Framework/Widget/Output_Setting/Property/edit/{className}/{propertyPath}?as_widget'
+				+ '/SAF/Framework/Widget/Output_Setting/Property/edit/{className}/{featureName}/{propertyPath}?as_widget'
 				+ window.app.andSID();
 
 			//--------------------------------------- .windows h2>span, div[class][id]>label>a modifiable
@@ -134,7 +140,10 @@ $('document').ready(function()
 			$this.parent().find('h2>span').modifiable({
 				ajax:      callback_uri + '&title={value}',
 				ajax_form: 'form',
-				aliases:   { 'className': className },
+				aliases:   {
+					className:   className,
+					featureName: featureName
+				},
 				popup:     output_edit_uri,
 				start: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', 'none');
@@ -150,7 +159,11 @@ $('document').ready(function()
 			$this.find('div[class][id]>label').modifiable({
 				ajax:       callback_uri + '&property_path={propertyPath}&property_title={value}',
 				ajax_form: 'form',
-				aliases:   { 'className': className, 'propertyPath': propertyPath },
+				aliases:   {
+					className:    className,
+					featureName:  featureName,
+					propertyPath: propertyPath
+				},
 				popup:     output_property_uri,
 				target:    '#messages'
 			});

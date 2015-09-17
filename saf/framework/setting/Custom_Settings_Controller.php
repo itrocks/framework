@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Setting;
 
+use SAF\Framework\Controller\Feature;
+
 /**
  * Custom settings controller
  */
@@ -25,11 +27,12 @@ abstract class Custom_Settings_Controller
 			$custom_settings->save($parameters['save_name']);
 			$did_change = true;
 		}
+		// keep it last, as load name could be sent on every calls
 		elseif (isset($parameters['load_name'])) {
-			// keep it last, as load name could be sent on every calls
+			$feature = isset($parameters[Feature::FEATURE]) ? $parameters[Feature::FEATURE] : null;
 			$custom_settings = call_user_func_array(
 				[get_class($custom_settings), 'load'],
-				[$custom_settings->class_name, $parameters['load_name']]
+				[$custom_settings->class_name, $feature, $parameters['load_name']]
 			);
 			$custom_settings->cleanup();
 			$did_change = true;
