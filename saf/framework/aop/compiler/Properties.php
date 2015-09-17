@@ -14,7 +14,7 @@ class Properties
 
 	const DEBUG = false;
 
-	//------------------------------------------------------------------------------- SETTER_RESERVED
+	//------------------------------------------------------------------------------ $SETTER_RESERVED
 	private static $SETTER_RESERVED = [
 		'class_name', 'element_type', 'element_type_name', 'joinpoint', 'object',
 		'property', 'property_name', 'result', 'stored', 'type', 'type_name'
@@ -47,11 +47,12 @@ class Properties
 		if ($this->class->type !== T_TRAIT) {
 			$methods['__construct'] = $this->compileConstruct($advices);
 			if ($methods['__construct']) {
-				$methods['__aop']   = $this->compileAop($advices);
-				$methods['__get']   = $this->compileGet($advices);
-				$methods['__isset'] = $this->compileIsset($advices);
-				$methods['__set']   = $this->compileSet($advices);
-				$methods['__unset'] = $this->compileUnset($advices);
+				$methods['__aop']    = $this->compileAop($advices);
+				$methods['__get']    = $this->compileGet($advices);
+				$methods['__isset']  = $this->compileIsset($advices);
+				$methods['__set']    = $this->compileSet($advices);
+				$methods['__unset']  = $this->compileUnset($advices);
+				$methods['__wakeup'] = $this->compileWakeup();
 			}
 			else {
 				unset($methods['__construct']);
@@ -493,6 +494,24 @@ class Properties
 		return $code . '
 		$property_name .= \'_\';
 		$this->$property_name = null;
+	}
+';
+	}
+
+	//--------------------------------------------------------------------------------- compileWakeup
+	/**
+	 * When we unserialize a method, default properties are created even if they were not in the
+	 * serialized class (with a null value) : unset the properties overridden using AOP
+	 *
+	 * @return string
+	 */
+	private function compileWakeup()
+	{
+		$over = $this->overrideMethod('__wakeup', false);
+		return $over['prototype'] . '
+		foreach (array_keys($this->_) as $aop_property) {
+			unset($this->$aop_property);
+		}
 	}
 ';
 	}
