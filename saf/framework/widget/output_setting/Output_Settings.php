@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Output_Setting;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Dao;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -95,6 +96,9 @@ class Output_Settings extends Custom_Settings
 		if (!$done) {
 			$actions[] = $button;
 		}
+		if ($button->code->source) {
+			Dao::write($button->code);
+		}
 		$this->actions = $actions;
 	}
 
@@ -172,7 +176,7 @@ class Output_Settings extends Custom_Settings
 		if (!$this->properties) {
 			if ($filter_properties) {
 				foreach ($filter_properties as $property_path) {
-					$this->properties[] = Builder::create(
+					$this->properties[$property_path] = Builder::create(
 						Property::class, [$this->class_name, $property_path]
 					);
 				}

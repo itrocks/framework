@@ -3,7 +3,6 @@ namespace SAF\Framework\Setting;
 
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Target;
-use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 

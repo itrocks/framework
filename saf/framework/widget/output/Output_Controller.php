@@ -36,12 +36,13 @@ class Output_Controller implements Default_Feature_Controller
 	{
 		$class = new Reflection_Class($output_settings->class_name);
 		if ($output_settings->properties) {
-			$not_read_only = new User_Annotation('');
-			$read_only     = new User_Annotation(User_Annotation::READONLY);
 			foreach ($output_settings->properties as $property_path => $property) {
-				$class->getProperty($property_path)->setAnnotation(
-					User_Annotation::ANNOTATION, $property->read_only ? $read_only : $not_read_only
+				$user_annotation = $class->getProperty($property_path)->getListAnnotation(
+					User_Annotation::ANNOTATION
 				);
+				$property->read_only
+					? $user_annotation->add(User_Annotation::READONLY)
+					: $user_annotation->remove(User_Annotation::READONLY);
 			}
 		}
 	}
@@ -245,18 +246,22 @@ class Output_Controller implements Default_Feature_Controller
 		$parameters['custom_buttons'] = (new Buttons())->getButtons(
 			'custom ' . $feature, $object, $feature /* , Target::MESSAGES TODO back but do not display output */
 		);
+		$general_buttons = $this->getGeneralButtons($object, $parameters);
 		if ($output_settings->actions) {
 			// default buttons on settings are false : get the default buttons from getGeneralButtons
 			// whet they are set into output settings
-			foreach ($this->getGeneralButtons($object, $parameters) as $button_key => $button) {
-				if (isset($output_settings->actions[$button_key])) {
-					$output_settings->actions[$button_key] = $button;
+			foreach ($output_settings->actions as $button_key => $button) {
+				if (isset($general_buttons[$button_key])) {
+					$output_settings->actions[$button_key] = $general_buttons[$button_key];
+				}
+				else {
+					$output_settings->actions[$button_key]->setObjectContext($object);
 				}
 			}
 			$parameters['general_buttons'] = $output_settings->actions;
 		}
 		else {
-			$parameters['general_buttons'] = $this->getGeneralButtons($object, $parameters);
+			$parameters['general_buttons'] = $general_buttons;
 		}
 		return $parameters;
 	}

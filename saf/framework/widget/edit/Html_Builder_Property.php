@@ -40,7 +40,7 @@ class Html_Builder_Property extends Html_Builder_Type
 				$name = lParse(rLastParse($name, '['), ']');
 			}
 			parent::__construct($name, $property->getType(), $value, $preprop);
-			$this->null = $property->getAnnotation('null')->value;
+			$this->null     = $property->getAnnotation('null')->value;
 			$this->property = $property;
 			$this->readonly = $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
 				User_Annotation::READONLY

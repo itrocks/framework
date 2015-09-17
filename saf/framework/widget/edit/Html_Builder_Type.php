@@ -156,14 +156,14 @@ class Html_Builder_Type
 			$checkbox = new Input();
 			$checkbox->setAttribute('type', 'checkbox');
 			$checkbox->setAttribute('value', $value);
-			if ($this->value) {
-				$checkbox->setAttribute('checked');
+			if ($this->null) {
+				$checkbox->setData('nullable', strlen($this->value) ? ($this->value ? 0 : 1) : 0);
 			}
 			if ($this->readonly) {
 				$checkbox->setAttribute('readonly');
 			}
-			if ($this->null) {
-				$checkbox->setData('nullable', strlen($this->value) ? ($this->value ? 0 : 1) : 0);
+			if ($this->value) {
+				$checkbox->setAttribute('checked');
 			}
 			return $input . $checkbox;
 		}

@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\Widget\Output_Setting;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Getter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Output\Output_Controller;
@@ -24,8 +26,13 @@ class Output_Setting_Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $parameters->getObjects();
-		$output_controller = new Output_Controller();
-		$output_settings = Output_Settings::current($class_name, $parameters[Feature::FEATURE]);
+		$feature = isset($parameters[Feature::FEATURE])
+			? $parameters[Feature::FEATURE]
+			: Feature::F_OUTPUT;
+		$controller_class = Getter::get($class_name, $feature, 'Controller', 'php')[0];
+		/** @var $output_controller Output_Controller */
+		$output_controller = Builder::create($controller_class);
+		$output_settings = Output_Settings::current($class_name, $feature);
 		$output_controller->applyParametersToOutputSettings($output_settings, $parameters, $form);
 		return View::run($parameters, $form, $files, $class_name, 'outputSetting');
 	}

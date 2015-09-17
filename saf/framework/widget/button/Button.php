@@ -1,8 +1,13 @@
 <?php
 namespace SAF\Framework\Widget;
 
+use SAF\Framework\Builder;
+use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Uri;
+use SAF\Framework\Dao;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\View;
+use SAF\Framework\Widget\Button\Code;
 
 /**
  * An HMI button
@@ -28,14 +33,26 @@ class Button
 	 * More classes for the button
 	 * This is css style, eg 'pressed' or 'if-edit-press'
 	 *
+	 * @user hidden
 	 * @var string
 	 */
 	public $class;
+
+	//----------------------------------------------------------------------------------------- $code
+	/**
+	 * Some natural / PHP code to apply to the object before the action is executed
+	 *
+	 * @integrated block
+	 * @link Object
+	 * @var Code
+	 */
+	public $code;
 
 	//---------------------------------------------------------------------------------------- $color
 	/**
 	 * The color of the button
 	 *
+	 * @user invisible
 	 * @var Color
 	 */
 	public $color;
@@ -44,6 +61,7 @@ class Button
 	/**
 	 * Button feature
 	 *
+	 * @user hidden
 	 * @var string
 	 */
 	public $feature;
@@ -60,15 +78,25 @@ class Button
 	/**
 	 * Button link
 	 *
+	 * @getter
+	 * @user invisible
 	 * @var string
 	 */
 	public $link;
+
+	//--------------------------------------------------------------------------------------- $object
+	/**
+	 * @user invisible
+	 * @var object
+	 */
+	public $object;
 
 	//---------------------------------------------------------------------------------- $sub_buttons
 	/**
 	 * A button can be linked to a collection of sub-buttons
 	 *
 	 * @link Collection
+	 * @user invisible
 	 * @var Button[]
 	 */
 	public $sub_buttons;
@@ -79,6 +107,7 @@ class Button
 	 * Name of a targeted window / iframe
 	 * If starts with '#', target is the identifier of a DOM element in the page (for ajax call)
 	 *
+	 * @user hidden
 	 * @var string
 	 */
 	public $target = '#main';
@@ -135,6 +164,48 @@ class Button
 	public function __toString()
 	{
 		return strval($this->caption);
+	}
+
+	//--------------------------------------------------------------------------------------- getLink
+	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
+	/**
+	 * @return string
+	 */
+	private function getLink()
+	{
+		if (!isset($this->link)) {
+			$parameters = [];
+			if ($this->code->source) {
+				$parameters[] = $this->code;
+			}
+			$this->link = View::link($this->object ?: $this->class, $this->feature, $parameters);
+		}
+		return $this->link;
+	}
+
+	//------------------------------------------------------------------------------ setObjectContext
+	/**
+	 * @param $object object
+	 */
+	public function setObjectContext($object)
+	{
+		$this->object = $object;
+		// insert object identifier between the class path and the feature, if missing and if
+		// object class matches the button link
+		if ($identifier = Dao::getObjectIdentifier($object)) {
+			$uri = new Uri($this->link);
+			if (
+				isA($object, $uri->controller_name)
+				&& !$uri->parameters->getRawParameter($uri->controller_name)
+			) {
+				$uri->parameters->getMainObject($object);
+				$uri->parameters->shift();
+				if ($uri->feature_name == Feature::F_ADD) {
+					$uri->feature_name = null;
+				}
+				$this->link = View::link($object, $uri->feature_name, $uri->parameters->getRawParameters());
+			}
+		}
 	}
 
 }

@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Button;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Uri;
@@ -26,7 +27,7 @@ class Write_Controller implements Feature_Controller
 	{
 		/** @var $parameters Parameters */
 		$parameters = Builder::create(Parameters::class, [
-			new Uri($form['custom_class_name'] . SL . $form['custom_feature'])
+			new Uri(str_replace(BS, SL, $form['custom_class_name']) . SL . $form['custom_feature'])
 		]);
 		$parameters->set('add_action', $button);
 		if (isset($form['custom_after_button'])) {
@@ -35,6 +36,7 @@ class Write_Controller implements Feature_Controller
 		elseif (isset($form['custom_before_button'])) {
 			$parameters->set('before', $form['custom_before_button']);
 		}
+		$parameters->set(Feature::FEATURE, $form['custom_feature']);
 		/** @var $output_setting_controller Output_Setting_Controller */
 		$output_setting_controller = Builder::create(Output_Setting_Controller::class);
 		$output_setting_controller->run($parameters, [], [], $form['custom_class_name']);

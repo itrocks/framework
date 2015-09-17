@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Button;
 
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Target;
 use SAF\Framework\Html\Parser;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
@@ -21,7 +22,7 @@ class Edit_Controller extends Edit\Edit_Controller
 	 */
 	protected function getPropertiesList($class_name)
 	{
-		return ['caption', 'class', 'feature', 'target', 'hint'];
+		return ['caption', 'class', 'feature', 'target', 'hint', 'code'];
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
@@ -69,8 +70,14 @@ class Edit_Controller extends Edit\Edit_Controller
 	{
 		/** @var $button Button */
 		$button = $parameters->getMainObject($class_name);
-		$button->class   = $parameters->getRawParameter(0);
-		$button->feature = $parameters->getRawParameter(1);
+		if (!$button->class && !$button->feature) {
+			$button->class   = $parameters->getRawParameter(0);
+			$button->feature = $parameters->getRawParameter(1);
+			if ($button->feature == Feature::F_EDIT) {
+				$button->feature = Feature::F_WRITE;
+				$button->target  = Target::MESSAGES;
+			}
+		}
 
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		$edit = View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);
