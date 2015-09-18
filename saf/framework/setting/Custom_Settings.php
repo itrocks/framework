@@ -110,7 +110,7 @@ abstract class Custom_Settings
 	 * Gets custom settings list
 	 *
 	 * @param $feature string
-	 * @return Custom_Settings[] key is the name of the setting, value is '' or 'selected'
+	 * @return Selected_Setting[] key is the name of the setting, value is '' or 'selected'
 	 */
 	public function getCustomSettings($feature = null)
 	{
@@ -174,6 +174,20 @@ abstract class Custom_Settings
 		elseif ($this) {
 			Dao::write($this->setting);
 		}
+	}
+
+	//-------------------------------------------------------------- selectedSettingsToCustomSettings
+	/**
+	 * @param $selected_settings Selected_Setting[]
+	 * @return Custom_Settings[]
+	 */
+	public function selectedSettingsToCustomSettings($selected_settings)
+	{
+		$custom_settings = [];
+		foreach ($selected_settings as $selected_setting) {
+			$custom_settings[] = $selected_setting->setting->value;
+		}
+		return $custom_settings;
 	}
 
 }

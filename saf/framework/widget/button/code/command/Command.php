@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework\Widget\Button\Code;
 
-use SAF\Framework\Controller\Uri;
-
 /**
  * A command to execute
  */
@@ -11,8 +9,9 @@ interface Command
 
 	//--------------------------------------------------------------------------------------- execute
 	/**
-	 * @param $uri Uri
+	 * @param $object object
+	 * @return mixed
 	 */
-	public function execute(Uri $uri);
+	public function execute($object);
 
 }

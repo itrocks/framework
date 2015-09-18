@@ -52,9 +52,10 @@ class Executor implements Registerable
 	public function executeWrite()
 	{
 		if (isset($this->uri) && ($this->uri->feature_name === Feature::F_WRITE)) {
+			/** @var $code Code */
 			$code = $this->uri->parameters->getObject(Code::class);
 			if ($code) {
-				$code->execute($this->uri);
+				$code->execute($this->uri->parameters->getMainObject());
 			}
 			unset($this->uri);
 		}

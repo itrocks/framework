@@ -17,6 +17,7 @@ use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
+use SAF\Framework\Widget\Button\Code;
 use SAF\Framework\Widget\Duplicate\Duplicate;
 use SAF\Framework\Widget\Output_Setting\Output_Settings;
 use SAF\Framework\Widget\Tab;
@@ -30,6 +31,8 @@ class Output_Controller implements Default_Feature_Controller
 
 	//--------------------------------------------------------------------------- applyOutputSettings
 	/**
+	 * Apply output settings rules to output settings properties
+	 *
 	 * @param $output_settings Output_Settings
 	 */
 	private function applyOutputSettings(Output_Settings $output_settings)
@@ -230,12 +233,35 @@ class Output_Controller implements Default_Feature_Controller
 		$feature = isset($parameters[Feature::FEATURE])
 			? $parameters[Feature::FEATURE]
 			: Feature::F_OUTPUT;
+
+		// apply parameters / form to current output settings
 		$output_settings = Output_Settings::current($class_name, $feature);
 		$output_settings->cleanup();
 		$this->applyParametersToOutputSettings($output_settings, $parameters, $form);
+		// load customized output settings list
+		$customized_list = $output_settings->getCustomSettings($feature);
+		// apply conditions to automatically load output settings
+		/** @var $output_settings_list Output_Settings[]*/
+		$output_settings_list = $output_settings->selectedSettingsToCustomSettings($customized_list);
+		/** @var $new_settings Output_Settings */
+		$new_settings = Output_Settings::conditionalOutputSettings($output_settings_list, $object);
+		if ($new_settings && ($output_settings->name != $new_settings->name)) {
+			$output_settings = $new_settings;
+			$customized_list = $output_settings->getCustomSettings($feature);
+			$output_settings->cleanup();
+		}
+		// go to default setting (without conditions) if current output settings condition do not apply
+		elseif (!((new Code($output_settings->conditions))->execute($object, true))) {
+			$output_settings = Output_Settings::unconditionalOutputSettings(
+				$output_settings_list, $class_name, $feature
+			);
+			$customized_list = $output_settings->getCustomSettings($feature);
+			$output_settings->cleanup();
+		}
+
 		$this->applyOutputSettings($output_settings);
 		$output_settings->initProperties($this->getPropertiesList($class_name));
-		$parameters['customized_lists']           = $output_settings->getCustomSettings($feature);
+		$parameters['customized_lists']           = $customized_list;
 		$parameters['default_title']              = ucfirst(Names::classToDisplay($class_name));
 		$parameters[Parameter::PROPERTIES_FILTER] = array_keys($output_settings->properties);
 		$parameters[Parameter::PROPERTIES_TITLE]  = $output_settings->propertiesParameter('display');

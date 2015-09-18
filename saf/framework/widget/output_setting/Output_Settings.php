@@ -10,6 +10,7 @@ use SAF\Framework\Setting;
 use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Widget\Button;
+use SAF\Framework\Widget\Button\Code;
 use SAF\Framework\Widget\Tab;
 use SAF\Framework\Widget\Tab\Tabs_Builder_Class;
 
@@ -157,6 +158,26 @@ class Output_Settings extends Custom_Settings
 		return $changes_count;
 	}
 
+	//--------------------------------------------------------------------- conditionalOutputSettings
+	/**
+	 * @param $output_settings_list Output_Settings[]
+	 * @param $object               object
+	 * @return Output_Settings|null
+	 */
+	public static function conditionalOutputSettings($output_settings_list, $object)
+	{
+		foreach ($output_settings_list as $output_settings) {
+			if ($output_settings->conditions) {
+				$code = new Code();
+				$code->source = $output_settings->conditions;
+				if ($code->execute($object, true)) {
+					return $output_settings;
+				}
+			}
+		}
+		return null;
+	}
+
 	//------------------------------------------------------------------------------- getDefaultTitle
 	/**
 	 * @return string
@@ -275,6 +296,23 @@ class Output_Settings extends Custom_Settings
 			$this->title = $title;
 		}
 		return empty($this->title) ? $this->getDefaultTitle() : $this->title;
+	}
+
+	//------------------------------------------------------------------- unconditionalOutputSettings
+	/**
+	 * @param $output_settings_list Output_Settings[]
+	 * @param $class_name           string
+	 * @param $feature              string
+	 * @return Output_Settings|null
+	 */
+	public static function unconditionalOutputSettings($output_settings_list, $class_name, $feature)
+	{
+		foreach ($output_settings_list as $output_settings) {
+			if (!$output_settings->conditions) {
+				return $output_settings;
+			}
+		}
+		return Output_Settings::load($class_name, $feature, '');
 	}
 
 }

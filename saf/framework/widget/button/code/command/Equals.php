@@ -7,12 +7,12 @@ use SAF\Framework\Tools\Names;
 use SAF\Framework\Widget\Button\Code\Command;
 
 /**
- * Assign command
+ * Equals command
  *
- * @example status = 'waiting for repair'
- * @example status = new_status
+ * @example status == 'waiting for repair'
+ * @example status == old_status
  */
-class Assign implements Command
+class Equals implements Command
 {
 
 	//-------------------------------------------------------------------------------- $property_name
@@ -70,9 +70,8 @@ class Assign implements Command
 			if ($values) {
 				$value = Names::displayToProperty(Loc::rtr($value));
 			}
-			// set value
-			$property_value->setValue($object, $value);
-			return $value;
+			// compare values
+			return $value == $property_value->getValue($object);
 		}
 		return false;
 	}
