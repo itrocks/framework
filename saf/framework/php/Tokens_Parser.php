@@ -17,6 +17,14 @@ trait Tokens_Parser
 	 */
 	private $namespace;
 
+	//---------------------------------------------------------------------------------- $token_debug
+	/**
+	 * Token key for debugging
+	 *
+	 * @var integer
+	 */
+	private $token_debug;
+
 	//------------------------------------------------------------------------------------ $token_key
 	/**
 	 * The current key into tokens, used by parser to know what it did parse or not
@@ -42,6 +50,32 @@ trait Tokens_Parser
 	 */
 	private $use;
 
+	//-------------------------------------------------------------------------------------- eofError
+	/**
+	 * @param $method string
+	 */
+	private function eofError($method)
+	{
+		// display current object to know more about the execution context (ie which file ?)
+		echo '<PRE>';
+		foreach (get_object_vars($this) as $key => $value) {
+			if (!is_array($value) && !is_object($value)) {
+				echo $key . ' = ' . htmlentities($value) . LF;
+			}
+		}
+		echo '</PRE>';
+		// calculate context
+		$where = '';
+		$context = array_slice($this->tokens, $this->token_debug);
+		array_walk_recursive($context, function(&$value) use(&$where) {
+			if (is_string($value)) {
+				$where .= $value;
+			}
+		});
+		// trigger error
+		trigger_error('EOF during ' . $method . '() after [' . lParse($where, LF) . ']', E_USER_ERROR);
+	}
+
 	//--------------------------------------------------------------------------------- fullClassName
 	/**
 	 * Resolves the full class name for any class name in current source code context
@@ -66,10 +100,14 @@ trait Tokens_Parser
 	 */
 	private function scanClassName()
 	{
+		$this->token_debug = $this->token_key;
 		$class_name = '';
 		do {
 			$token = $this->tokens[++$this->token_key];
-		} while ($token[0] === T_WHITESPACE);
+		} while (($token[0] === T_WHITESPACE) && isset($this->tokens[$this->token_key + 1]));
+		if ($token[0] === T_WHITESPACE) {
+			$this->eofError('scanClassName');
+		}
 		while (in_array($token[0], [T_NS_SEPARATOR, T_STRING])) {
 			$class_name .= $token[1];
 			$token = $this->tokens[++$this->token_key];
@@ -86,6 +124,7 @@ trait Tokens_Parser
 	 */
 	private function scanClassNames()
 	{
+		$this->token_debug = $this->token_key;
 		$class_names = [];
 		$line = 0;
 		$used = '';
@@ -109,7 +148,10 @@ trait Tokens_Parser
 			else {
 				$continue = false;
 			}
-		} while ($continue);
+		} while ($continue && isset($this->tokens[$this->token_key + 1]));
+		if ($continue) {
+			$this->eofError('scanClassNames');
+		}
 		if ($used) {
 			$class_names[$used] = $line;
 		}
@@ -125,6 +167,7 @@ trait Tokens_Parser
 	 */
 	private function scanRequireFilePath()
 	{
+		$this->token_debug = $this->token_key;
 		$file_path = '';
 		$this->token_key++;
 		do {
@@ -133,7 +176,10 @@ trait Tokens_Parser
 				$file_path .= is_array($token) ? $token[1] : $token;
 			}
 		}
-		while (($token !== ';') && ($token !== ')'));
+		while (($token !== ';') && ($token !== ')') && isset($this->tokens[$this->token_key]));
+		if (($token !== ';') && ($token !== ')')) {
+			$this->eofError('scanRequireFilePath');
+		}
 		return $file_path;
 	}
 
@@ -145,6 +191,7 @@ trait Tokens_Parser
 	 */
 	private function scanTraitNames()
 	{
+		$this->token_debug = $this->token_key;
 		$trait_names = [];
 		$trait_name = '';
 		$depth = 0;
@@ -171,7 +218,13 @@ trait Tokens_Parser
 					$line = $token[2];
 				}
 			}
-		} while ($depth || ($token !== ';'));
+		} while (
+			($depth || (($token !== ';') && ($token !== '{')))
+			&& isset($this->tokens[$this->token_key + 1])
+		);
+		if (!isset($this->tokens[$this->token_key + 1])) {
+			$this->eofError('scanTraitNames');
+		}
 		if ($trait_name) {
 			$trait_names[$trait_name] = $line;
 		}
