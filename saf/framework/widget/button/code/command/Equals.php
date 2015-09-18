@@ -47,7 +47,10 @@ class Equals implements Command
 	{
 		if ($object) {
 			// right operand is a string constant
-			if ((substr($this->value, 0 ,1) === Q) && (substr($this->value, -1) === Q)) {
+			if (
+				((substr($this->value, 0 ,1) === Q) && (substr($this->value, -1) === Q))
+				|| ((substr($this->value, 0 ,1) === DQ) && (substr($this->value, -1) === DQ))
+			) {
 				$value = substr($this->value, 1, -1);
 			}
 			// right operand is a numeric constant
