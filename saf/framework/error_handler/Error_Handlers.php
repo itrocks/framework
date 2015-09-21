@@ -131,25 +131,30 @@ class Error_Handlers implements Activable, Configurable
 	 * @param $filename string
 	 * @param $line_num int
 	 * @param $vars array
-	 * @return bool
+	 * @return boolean
 	 */
 	public function handle($err_no, $err_msg, $filename, $line_num, $vars)
 	{
-		$handled_error = new Handled_Error($err_no, $err_msg, $filename, $line_num, $vars);
-		foreach ($this->error_handlers as $err_no_filter => $handlers) {
-			if (($err_no_filter & $err_no) == $err_no) {
-				foreach ($handlers as $priority_handler) {
-					/** @var $priority_handler Error_Handler[] */
-					foreach ($priority_handler as $handler) {
-						$handler->handle($handled_error);
-						if (!$handled_error->areNextErrorHandlersCalled()) {
-							break 2;
+		if (error_reporting()) {
+			$handled_error = new Handled_Error($err_no, $err_msg, $filename, $line_num, $vars);
+			foreach ($this->error_handlers as $err_no_filter => $handlers) {
+				if (($err_no_filter & $err_no) == $err_no) {
+					foreach ($handlers as $priority_handler) {
+						/** @var $priority_handler Error_Handler[] */
+						foreach ($priority_handler as $handler) {
+							$handler->handle($handled_error);
+							if (!$handled_error->areNextErrorHandlersCalled()) {
+								break 2;
+							}
 						}
 					}
 				}
 			}
+			return !$handled_error->isStandardPhpErrorHandlerCalled();
 		}
-		return !$handled_error->isStandardPhpErrorHandlerCalled();
+		else {
+			return false;
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------- on
