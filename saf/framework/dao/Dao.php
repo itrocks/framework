@@ -492,6 +492,18 @@ class Dao implements Configurable
 		return self::current()->storeNameOf($class_name);
 	}
 
+	//-------------------------------------------------------------------------------------- truncate
+	/**
+	 * Truncates the data-set storing $class_name objects
+	 * All data is deleted
+	 *
+	 * @param $class_name string
+	 */
+	public static function truncate($class_name)
+	{
+		self::current()->truncate($class_name);
+	}
+
 	//----------------------------------------------------------------------------------------- write
 	/**
 	 * Write an object using current data link

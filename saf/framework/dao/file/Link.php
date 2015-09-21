@@ -146,6 +146,18 @@ class Link extends Identifier_Map
 		// TODO: Implement select() method.
 	}
 
+	//-------------------------------------------------------------------------------------- truncate
+	/**
+	 * Truncates the data-set storing $class_name objects
+	 * All data is deleted
+	 *
+	 * @param $class_name string
+	 */
+	public function truncate($class_name)
+	{
+		// TODO: Implement truncate() method
+	}
+
 	//----------------------------------------------------------------------------------------- write
 	/**
 	 * Write an object into data source

@@ -198,4 +198,18 @@ abstract class Link extends Identifier_Map implements Transactional
 		return $store_name;
 	}
 
+	//-------------------------------------------------------------------------------------- truncate
+	/**
+	 * Truncates the data-set storing $class_name objects
+	 * All data is deleted
+	 *
+	 * @param $class_name string
+	 */
+	public function truncate($class_name)
+	{
+		$this->setContext($class_name);
+		$table_name = $this->storeNameOf($class_name);
+		$this->query('TRUNCATE TABLE ' . BQ . $table_name . BQ);
+	}
+
 }

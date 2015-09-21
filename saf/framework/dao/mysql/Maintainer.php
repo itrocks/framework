@@ -6,7 +6,6 @@ use mysqli_result;
 use SAF\Framework\Dao;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Sql\Builder\Alter_Table;
 use SAF\Framework\Sql\Builder\Create_Table;
 use SAF\Framework\Tools\Contextual_Mysqli;
@@ -47,7 +46,7 @@ class Maintainer implements Registerable
 		}
 	}
 
-	//---------------------------------------------------------------------------- createImplicitType
+	//--------------------------------------------------------------------------- createImplicitTable
 	/**
 	 * Create a table in database, which has no associated class, using fields names
 	 *

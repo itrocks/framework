@@ -294,6 +294,15 @@ abstract class Data_Link
 		return strtolower(Namespaces::shortClassName(Names::classToSet($class_name)));
 	}
 
+	//-------------------------------------------------------------------------------------- truncate
+	/**
+	 * Truncates the data-set storing $class_name objects
+	 * All data is deleted
+	 *
+	 * @param $class_name string
+	 */
+	abstract public function truncate($class_name);
+
 	//---------------------------------------------------------------------------------- valueChanged
 	/**
 	 * Returns true if the element's property value changed since previous value
