@@ -105,6 +105,7 @@ class Sender implements Configurable
 		$send_result = $mail->send(
 			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $content
 		);
+		$mail->disconnect();
 		error_reporting($error_reporting);
 
 		// user error when errors
