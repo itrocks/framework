@@ -143,8 +143,8 @@ class Sender implements Configurable
 		// dev / preprod parameters to override 'To' and/or 'Bcc' mime headers
 		if (isset($this->to)) {
 			$email->blind_copy_to = [];
-			$email->copy_to = [];
-			$email->to = [];
+			$email->copy_to       = [];
+			$email->to            = [];
 			foreach ($this->to as $to) {
 				array_push($email->to, new Recipient($to));
 			}

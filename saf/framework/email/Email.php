@@ -35,7 +35,7 @@ class Email
 	 * @link Map
 	 * @var Recipient[]
 	 */
-	public $blind_copy_to;
+	public $blind_copy_to = [];
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
@@ -51,7 +51,7 @@ class Email
 	 * @link Map
 	 * @var Recipient[]
 	 */
-	public $copy_to;
+	public $copy_to = [];
 
 	//----------------------------------------------------------------------------------------- $date
 	/**
@@ -118,7 +118,7 @@ class Email
 	 * @link Map
 	 * @var Recipient[]
 	 */
-	public $to;
+	public $to = [];
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
