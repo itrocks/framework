@@ -56,7 +56,8 @@ class Min_Value_Annotation extends Annotation implements Property_Validator
 		$this->object = $object;
 		if ($this->property instanceof Reflection_Property) {
 			$value = $this->property->getValue($object);
-			$this->valid = (is_null($value) && $this->property->getAnnotation('null')->value)
+			$this->valid = $this->mandatoryAnnotation()->isEmpty($object)
+				|| (is_null($value) && $this->property->getAnnotation('null')->value)
 				|| ($value >= $this->value);
 		}
 		else {

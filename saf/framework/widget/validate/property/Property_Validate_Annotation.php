@@ -43,6 +43,15 @@ trait Property_Validate_Annotation
 	 */
 	public $valid;
 
+	//--------------------------------------------------------------------------- mandatoryAnnotation
+	/**
+	 * @return Mandatory_Annotation
+	 */
+	protected function mandatoryAnnotation()
+	{
+		return $this->property->getAnnotation('mandatory');
+	}
+
 	//-------------------------------------------------------------------------------------- getValue
 	/**
 	 * Gets the value of the property from the last validated object

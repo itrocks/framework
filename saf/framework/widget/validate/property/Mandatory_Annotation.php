@@ -27,6 +27,29 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 		$this->property = $property;
 	}
 
+
+	//--------------------------------------------------------------------------------------- isEmpty
+	/**
+	 * Returns true if the object property is empty
+	 *
+	 * @param $object object
+	 * @return boolean
+	 */
+	public function isEmpty($object)
+	{
+		if ($this->property instanceof Reflection_Property) {
+			$value = $this->property->getValue($object);
+			return (
+				is_null($value)
+				|| ($value === '')
+				|| (($value instanceof Can_Be_Empty) && $value->isEmpty())
+			);
+		}
+		else {
+			return false;
+		}
+	}
+
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
 	 * @return string
@@ -52,17 +75,7 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 	{
 		$this->object = $object;
 		if ($this->property instanceof Reflection_Property) {
-			if ($this->value) {
-				$value = $this->property->getValue($object);
-				$this->valid = !(
-					is_null($value)
-					|| ($value === '')
-					|| (($value instanceof Can_Be_Empty) && $value->isEmpty())
-				);
-			}
-			else {
-				$this->valid = true;
-			}
+			$this->valid = $this->value ? !$this->isEmpty($object) : true;
 		}
 		else {
 			$this->valid = null;
