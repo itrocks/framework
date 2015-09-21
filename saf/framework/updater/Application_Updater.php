@@ -48,8 +48,11 @@ class Application_Updater implements Serializable
 	public function __construct()
 	{
 		if (isset($_GET['Z'])) {
-			/** @noinspection PhpUsageOfSilenceOperatorInspection */
-			@unlink($this->getLastUpdateFileName());
+			$file_name = $this->getLastUpdateFileName();
+			clearstatcache(true, $file_name);
+			if (file_exists($file_name)) {
+				unlink($file_name);
+			}
 			touch(self::UPDATE_FILE);
 		}
 	}
@@ -100,8 +103,10 @@ class Application_Updater implements Serializable
 		unset($this->update_time);
 		flock($this->lock_file, LOCK_UN);
 		fclose($this->lock_file);
-		/** @noinspection PhpUsageOfSilenceOperatorInspection */
-		@unlink(self::UPDATE_FILE);
+		clearstatcache(true, self::UPDATE_FILE);
+		if (file_exists(self::UPDATE_FILE)) {
+			unlink(self::UPDATE_FILE);
+		}
 	}
 
 	//------------------------------------------------------------------------- getLastUpdateFileName

@@ -30,7 +30,7 @@ class Error_Handlers implements Activable, Configurable
 	 */
 	public function __construct($configuration = null)
 	{
-		if (isset($configuration)) {
+		if (is_array($configuration)) {
 			foreach ($configuration as $handle) {
 				list($err_no, $error_handler_class) = $handle;
 				$this->addHandler($err_no, new $error_handler_class());
@@ -54,7 +54,7 @@ class Error_Handlers implements Activable, Configurable
 		return self::pCurrent($set_current);
 	}
 
-	//-------------------------------------------------------------------------------------- register
+	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Register an error handler for error types
 	 *
@@ -152,7 +152,7 @@ class Error_Handlers implements Activable, Configurable
 		return !$handled_error->isStandardPhpErrorHandlerCalled();
 	}
 
-	//-------------------------------------------------------------------------------------- activate
+	//-------------------------------------------------------------------------------------------- on
 	/**
 	 * Activate error handler instance as the main error handler
 	 */
