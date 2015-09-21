@@ -108,7 +108,7 @@ class Parser
 	/**
 	 * Parses all annotations of a reflection object
 	 *
-	 * @param $reflection_object Has_Doc_Comment
+	 * @param $reflection_object Has_Doc_Comment|Annoted
 	 * @return Annotation[]|array
 	 */
 	public static function allAnnotations(Has_Doc_Comment $reflection_object)
@@ -125,9 +125,16 @@ class Parser
 			$annotation_class = static::getAnnotationClassName($reflection_object, $annotation_name);
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 			if ($multiple || !isset($annotations[$annotation_name])) {
-				$annotation = self::parseAnnotationValue(
-					$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
-				);
+				if ($reflection_object->isAnnotationCached($annotation_name, $multiple)) {
+					$annotations[$annotation_name] = $multiple
+						? $reflection_object->getAnnotations($annotation_name)
+						: $reflection_object->getAnnotation($annotation_name);
+				}
+				else {
+					$annotation = self::parseAnnotationValue(
+						$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
+					);
+				}
 				if (isset($annotation)) {
 					if ($multiple) {
 						$annotations[$annotation_name][] = $annotation;

@@ -154,6 +154,21 @@ trait Annoted
 		return $annotations;
 	}
 
+	//---------------------------------------------------------------------------- isAnnotationCached
+	/**
+	 * Return true if the annotation is set in cache
+	 *
+	 * @param $annotation_name string
+	 * @param $multiple boolean
+	 * @return boolean
+	 */
+	public function isAnnotationCached($annotation_name, $multiple)
+	{
+		$path = $this->getAnnotationCachePath();
+		return isset($path)
+			&& isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple]);
+	}
+
 	//------------------------------------------------------------------------------ removeAnnotation
 	/**
 	 * @param $annotation_name string
