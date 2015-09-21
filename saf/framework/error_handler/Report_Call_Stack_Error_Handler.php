@@ -18,7 +18,6 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	{
 		$code = new Error_Code($error->getErrorNumber());
 		$stack = new Call_Stack();
-		$stack->shift(2);
 		$message = '<div class="' . $code->caption() . ' handler">'
 			. '<span class="number">' . $code->caption() . '</span>'
 			. '<span class="message">' . $error->getErrorMessage() . '</span>'
