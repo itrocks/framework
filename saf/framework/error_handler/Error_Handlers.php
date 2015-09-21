@@ -135,7 +135,7 @@ class Error_Handlers implements Activable, Configurable
 	 */
 	public function handle($err_no, $err_msg, $filename, $line_num, $vars)
 	{
-		if (error_reporting()) {
+		if ((error_reporting() & $err_no) == $err_no) {
 			$handled_error = new Handled_Error($err_no, $err_msg, $filename, $line_num, $vars);
 			foreach ($this->error_handlers as $err_no_filter => $handlers) {
 				if (($err_no_filter & $err_no) == $err_no) {
