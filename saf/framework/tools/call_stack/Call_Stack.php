@@ -2,6 +2,7 @@
 namespace SAF\Framework\Tools;
 
 use Exception;
+use SAF\Framework\Tools\Call_Stack\Line;
 use SAF\Framework\View\Html\Template;
 
 /**
@@ -83,6 +84,30 @@ class Call_Stack
 			}
 		}
 		return null;
+	}
+
+	//----------------------------------------------------------------------------------------- lines
+	/**
+	 * @return Line[]
+	 */
+	public function lines()
+	{
+		$lines = [];
+		foreach ($this->stack as $line) {
+			$lines[] = Line::fromDebugBackTraceArray($line);
+		}
+		return $lines;
+	}
+
+	//----------------------------------------------------------------------------------------- shift
+	/**
+	 * @param $count integer
+	 */
+	public function shift($count = 1)
+	{
+		while ($count-- > 0) {
+			array_shift($this->stack);
+		}
 	}
 
 }

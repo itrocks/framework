@@ -2,6 +2,7 @@
 namespace SAF\Framework\Error_Handler;
 
 use SAF\Framework\Debug;
+use SAF\Framework\Tools\Call_Stack;
 
 /**
  * An error that error handlers can handle
@@ -100,21 +101,6 @@ class Handled_Error
 		return $this->call_next_error_handlers;
 	}
 
-	//--------------------------------------------------------------------- dontCallNextErrorHandlers
-	/**
-	 * For this error, next error handlers will not be called
-	 *
-	 * An error handler will call this if it wants other error handlers not to be called after it.
-	 * Default behaviour is to call all error handlers.
-	 *
-	 * @return Handled_Error
-	 */
-	public function dontCallNextErrorHandlers()
-	{
-		$this->call_next_error_handlers = false;
-		return $this;
-	}
-
 	//------------------------------------------------------------------- callStandardPhpErrorHandler
 	/**
 	 * For this error, standard php error handler will be called (or not if false)
@@ -127,6 +113,21 @@ class Handled_Error
 	public function callStandardPhpErrorHandler($call = true)
 	{
 		$this->standard_php_error_handler_call = $call;
+		return $this;
+	}
+
+	//--------------------------------------------------------------------- dontCallNextErrorHandlers
+	/**
+	 * For this error, next error handlers will not be called
+	 *
+	 * An error handler will call this if it wants other error handlers not to be called after it.
+	 * Default behaviour is to call all error handlers.
+	 *
+	 * @return Handled_Error
+	 */
+	public function dontCallNextErrorHandlers()
+	{
+		$this->call_next_error_handlers = false;
 		return $this;
 	}
 
