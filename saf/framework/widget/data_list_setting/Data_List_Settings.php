@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Data_List_Setting;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Dao\Option\Sort;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -128,10 +129,11 @@ class Data_List_Settings extends Custom_Settings
 	 */
 	public function cleanup()
 	{
+		$class_name = Builder::className($this->class_name);
 		$changes_count = 0;
 		// properties path
 		foreach ($this->properties_path as $key => $property_path) {
-			if (!Reflection_Property::exists($this->class_name, $property_path)) {
+			if (!Reflection_Property::exists($class_name, $property_path)) {
 				unset($this->properties_path[$key]);
 				$changes_count ++;
 			}
@@ -141,14 +143,14 @@ class Data_List_Settings extends Custom_Settings
 		}
 		// search
 		foreach (array_keys($this->search) as $property_path) {
-			if (!Reflection_Property::exists($this->class_name, $property_path)) {
+			if (!Reflection_Property::exists($class_name, $property_path)) {
 				unset($this->search[$property_path]);
 				$changes_count ++;
 			}
 		}
 		// sort
 		if ($this->sort) foreach ($this->sort->columns as $key => $property_path) {
-			if (!Reflection_Property::exists($this->class_name, $property_path)) {
+			if (!Reflection_Property::exists($class_name, $property_path)) {
 				unset($this->sort->columns[$key]);
 				$changes_count ++;
 			}
