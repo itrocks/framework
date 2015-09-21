@@ -54,12 +54,13 @@ class Length_Annotation extends Annotation implements Property_Validator
 	public function validate($object)
 	{
 		$this->object = $object;
-		$this->valid = $this->mandatoryAnnotation()->isEmpty($object)
-			|| (
-				($this->property instanceof Reflection_Property)
-					? (strlen($this->property->getValue($object)) == $this->value)
-					: null
-			);
+		if ($this->property instanceof Reflection_Property) {
+			$this->valid = $this->mandatoryAnnotation()->isEmpty($object)
+				|| (strlen($this->property->getValue($object)) == $this->value);
+		}
+		else {
+			$this->valid = null;
+		}
 		return $this->valid;
 	}
 
