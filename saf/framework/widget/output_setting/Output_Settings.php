@@ -203,11 +203,13 @@ class Output_Settings extends Custom_Settings
 				}
 			}
 			else {
-				foreach (array_keys(
-					(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE])
-				) as $property_name) {
+				$class_name = Builder::className($this->class_name);
+				foreach (
+					array_keys((new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]))
+					as $property_name
+				) {
 					$this->properties[$property_name] = Builder::create(
-						Property::class, [$this->class_name, $property_name]
+						Property::class, [$class_name, $property_name]
 					);
 				}
 			}

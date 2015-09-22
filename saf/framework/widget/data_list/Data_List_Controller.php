@@ -139,18 +139,16 @@ class Data_List_Controller extends Output_Controller
 	 */
 	protected function applySearchParameters(Data_List_Settings $list_settings)
 	{
+		$class_name = Builder::className($list_settings->class_name);
 		/** @var $search_parameters_parser Search_Parameters_Parser */
 		$search_parameters_parser = Builder::create(
-			Search_Parameters_Parser::class,
-			[$list_settings->class_name, $list_settings->search]
+			Search_Parameters_Parser::class, [$class_name, $list_settings->search]
 		);
 		$result = $search_parameters_parser->parse();
 
-		foreach (
-			(new Reflection_Class($list_settings->class_name))->getAnnotations('on_data_list') as $execute
-		) {
+		foreach ((new Reflection_Class($class_name))->getAnnotations('on_data_list') as $execute) {
 			/** @var $execute Method_Annotation */
-			if ($execute->call($list_settings->class_name, [&$result]) === false) {
+			if ($execute->call($class_name, [&$result]) === false) {
 				break;
 			}
 		}
@@ -265,12 +263,11 @@ class Data_List_Controller extends Output_Controller
 	 */
 	public function getSearchValues(Data_List_Settings $list_settings)
 	{
+		$class_name = Builder::className($list_settings->class_name);
 		$search = array_combine($list_settings->properties_path, $list_settings->properties_path);
 		foreach ($list_settings->search as $property_path => $search_value) {
 			if (isset($search[$property_path])) {
-				$property = new Reflection_Property_Value(
-					$list_settings->class_name, $property_path, $search_value, true
-				);
+				$property = new Reflection_Property_Value($class_name, $property_path, $search_value, true);
 				if ($property->getType()->isClass()) {
 					$property->value(Dao::read($search_value, $property->getType()->asString()));
 				}
