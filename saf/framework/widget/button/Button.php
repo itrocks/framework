@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Target;
 use SAF\Framework\Controller\Uri;
 use SAF\Framework\Dao;
 use SAF\Framework\Tools\Color;
@@ -149,7 +150,7 @@ class Button
 				$this->hint = $option;
 			}
 			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
-				$this->target = $option;
+				$this->target = ($option === Target::NONE) ? null : $option;
 			}
 		}
 		if (!isset($this->color)) {

@@ -12,7 +12,6 @@ use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Setting\Buttons;
 use SAF\Framework\Setting\Custom_Settings_Controller;
-use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View;
@@ -143,30 +142,21 @@ class Output_Controller implements Default_Feature_Controller
 	{
 		list($close_link, $follows) = $this->prepareThen($object, $parameters);
 		$buttons[Feature::F_CLOSE] = new Button(
-			'Close',
-			$close_link,
-			Feature::F_CLOSE,
-			[new Color(Feature::F_CLOSE), Target::MAIN]
+			'Close', $close_link, Feature::F_CLOSE
 		);
 		$buttons[Feature::F_EDIT] = new Button(
-			'Edit',
-			View::link($object, Feature::F_EDIT, null, $follows),
-			Feature::F_EDIT,
-			[new Color(Color::GREEN), Target::MAIN]
+			'Edit', View::link($object, Feature::F_EDIT, null, $follows), Feature::F_EDIT
 		);
 		if ($object instanceof Duplicate) {
 			$buttons[Feature::F_EDIT]->sub_buttons[Feature::F_DUPLICATE] = new Button(
-				'Duplicate',
-				View::link($object, Feature::F_DUPLICATE, null, $follows),
-				Feature::F_DUPLICATE,
-				[new Color(Color::MAGENTA), Target::MAIN]
+				'Duplicate', View::link($object, Feature::F_DUPLICATE, null, $follows), Feature::F_DUPLICATE
 			);
 		}
 		$buttons[Feature::F_PRINT] = new Button(
 			'Print',
 			View::link($object, Feature::F_PRINT),
 			Feature::F_PRINT,
-			[new Color(Color::BLUE), Target::MAIN, Button::SUB_BUTTONS => [
+			[Target::NONE, Button::SUB_BUTTONS => [
 				new Button(
 					'Models',
 					View::link(

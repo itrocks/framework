@@ -11,5 +11,6 @@ abstract class Target
 	const BLANK    = '#_blank';
 	const MAIN     = '#main';
 	const MESSAGES = '#messages';
+	const NONE     = '#';
 
 }
