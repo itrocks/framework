@@ -43,8 +43,9 @@ class Button
 	/**
 	 * Some natural / PHP code to apply to the object before the action is executed
 	 *
-	 * @integrated block
 	 * @link Object
+	 * @multiline
+	 * @output string
 	 * @var Code
 	 */
 	public $code;

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Button;
 
+use SAF\Framework\Tools\Stringable;
 use SAF\Framework\Widget\Button\Code\Command;
 use SAF\Framework\Widget\Button\Code\Command\Parser;
 
@@ -9,7 +10,7 @@ use SAF\Framework\Widget\Button\Code\Command\Parser;
  *
  * @business
  */
-class Code
+class Code implements Stringable
 {
 
 	//-------------------------------------------------------------------------------------- $feature
@@ -21,6 +22,7 @@ class Code
 
 	//--------------------------------------------------------------------------------------- $source
 	/**
+	 * @alias source_code
 	 * @max_length 60000
 	 * @multiline
 	 * @var string
@@ -52,6 +54,15 @@ class Code
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->source);
+	}
+
 	//--------------------------------------------------------------------------------------- execute
 	/**
 	 * @param $object    object
@@ -69,6 +80,15 @@ class Code
 			}
 		}
 		return $result;
+	}
+
+	//------------------------------------------------------------------------------------ fromString
+	/**
+	 * @param $source string
+	 */
+	public function fromString($source)
+	{
+		$this->source = $source;
 	}
 
 }
