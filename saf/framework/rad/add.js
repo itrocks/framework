@@ -64,7 +64,7 @@
 				var $popup = $(data).addClass('rad popup');
 				$popup.css('position', 'absolute');
 				$popup.offset({ left: $this.offset().left, top: $this.offset().top + $this.height() + 5 });
-				$popup.appendTo('body')
+				$popup.appendTo('body');
 				$popup.build();
 			}});
 			// prevent click inside <a>
