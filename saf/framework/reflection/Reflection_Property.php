@@ -368,13 +368,22 @@ class Reflection_Property extends ReflectionProperty
 			$property = new Reflection_Property($this->root_class, array_shift($path));
 			foreach ($path as $property_name) {
 				$object = $property->getValue($object);
+				while (is_array($object)) {
+					$object = reset($object);
+				}
 				$property = new Reflection_Property(
 					$property->getType()->getElementTypeAsString(), $property_name
 				);
 			}
+			while (is_array($object)) {
+				$object = reset($object);
+			}
 			return isset($object) ? $property->getValue($object) : $property->getValue();
 		}
 		else {
+			while (is_array($object)) {
+				$object = reset($object);
+			}
 			return isset($object) ? parent::getValue($object) : parent::getValue();
 		}
 	}
