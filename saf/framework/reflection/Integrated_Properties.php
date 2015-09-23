@@ -116,7 +116,8 @@ abstract class Integrated_Properties
 						foreach ($blocks as $block) {
 							$block_annotation->add($block);
 						}
-						$sub_property->path = $property_name . DOT . $sub_property_name;
+						// this results in a bug. todo validate and remove
+						//$sub_property->path = $property_name . DOT . $sub_property_name;
 						$properties_list[$property_name . DOT . $sub_property_name] = $sub_property;
 						$expanded[$property_name . DOT . $sub_property_name] = $sub_property;
 					}
