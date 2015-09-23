@@ -10,7 +10,7 @@ use SAF\Framework\View;
 use SAF\Framework\Widget\Output\Output_Controller;
 
 /**
- * Default data list setting feature controller
+ * Default output setting feature controller
  */
 class Output_Setting_Controller implements Default_Feature_Controller
 {
@@ -34,6 +34,7 @@ class Output_Setting_Controller implements Default_Feature_Controller
 		$output_controller = Builder::create($controller_class);
 		$output_settings = Output_Settings::current($class_name, $feature);
 		$output_controller->applyParametersToOutputSettings($output_settings, $parameters, $form);
+		$parameters = array_merge([$class_name => Builder::create($class_name)], $parameters);
 		return View::run($parameters, $form, $files, $class_name, 'outputSetting');
 	}
 
