@@ -84,7 +84,7 @@ abstract class Builder
 	/**
 	 * Build a SQL INSERT query
 	 *
-	 * @param $class Reflection_Class | string
+	 * @param $class Reflection_Class|string
 	 * @param $write string[] the data to write for each column : key is the column name
 	 * @return string
 	 */
@@ -108,7 +108,7 @@ abstract class Builder
 	/**
 	 * Build a SQL UPDATE query
 	 *
-	 * @param $class Reflection_Class | string
+	 * @param $class Reflection_Class|string
 	 * @param $write array the data to write for each column : key is the column name
 	 * @param $id    integer|integer[]
 	 * @return string
