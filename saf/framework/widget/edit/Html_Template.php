@@ -5,6 +5,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View\Html\Builder\Property;
@@ -185,6 +186,11 @@ class Html_Template extends Template
 				if ($property->getAnnotation('output')->value == 'string') {
 					$property->setAnnotationLocal('var')->value = 'string';
 					$value    = isset($value) ? strval($value) : null;
+					$id_value = '';
+				}
+				if (
+					$property->getListAnnotation(User_Annotation::ANNOTATION)->has(User_Annotation::READONLY)
+				) {
 					$id_value = '';
 				}
 				$value = $id_value

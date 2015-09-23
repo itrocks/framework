@@ -145,6 +145,7 @@ class Html_Builder_Type
 				$this->getFieldName(), ['' => '', '0' => 'no', '1' => 'yes'], $value
 			);
 			if ($this->readonly) {
+				$input->removeAttribute('name');
 				$input->setAttribute('readonly');
 			}
 			return $input;
@@ -160,6 +161,7 @@ class Html_Builder_Type
 				$checkbox->setData('nullable', strlen($this->value) ? ($this->value ? 0 : 1) : 0);
 			}
 			if ($this->readonly) {
+				$input->removeAttribute('name');
 				$checkbox->setAttribute('readonly');
 			}
 			if ($this->value) {
@@ -182,6 +184,7 @@ class Html_Builder_Type
 		);
 		$input->setAttribute('autocomplete', 'off');
 		if ($this->readonly) {
+			$input->removeAttribute('name');
 			$input->setAttribute('readonly');
 		}
 		else {
@@ -200,6 +203,7 @@ class Html_Builder_Type
 		$file->setAttribute('type', 'file');
 		$file->addClass('file');
 		if ($this->readonly) {
+			$file->removeAttribute('name');
 			$file->setAttribute('readonly');
 		}
 		if ($this->value instanceof File) {
@@ -247,6 +251,7 @@ class Html_Builder_Type
 			$format ? Loc::floatToLocale($this->value) : $this->value
 		);
 		if ($this->readonly) {
+			$input->removeAttribute('name');
 			$input->setAttribute('readonly');
 		}
 		$input->addClass('float');
@@ -263,6 +268,9 @@ class Html_Builder_Type
 		$input = new Input($this->getFieldName(), $this->value);
 		$input->setAttribute('type', 'hidden');
 		$input->addClass('id');
+		if ($this->readonly) {
+			$input->removeAttribute('name');
+		}
 		return $input;
 	}
 
@@ -278,6 +286,7 @@ class Html_Builder_Type
 			$format ? Loc::integerToLocale($this->value) : $this->value
 		);
 		if ($this->readonly) {
+			$input->removeAttribute('name');
 			$input->setAttribute('readonly');
 		}
 		$input->addClass('integer');
@@ -301,6 +310,7 @@ class Html_Builder_Type
 		$input->setAttribute('autocomplete', 'off');
 		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
 		if ($this->readonly) {
+			$input->removeAttribute('name');
 			$input->setAttribute('readonly');
 		}
 		else {
