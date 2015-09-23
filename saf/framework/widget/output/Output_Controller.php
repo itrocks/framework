@@ -229,22 +229,24 @@ class Output_Controller implements Default_Feature_Controller
 		// load customized output settings list
 		$customized_list = $output_settings->getCustomSettings($feature);
 		// apply conditions to automatically load output settings
-		/** @var $output_settings_list Output_Settings[]*/
-		$output_settings_list = $output_settings->selectedSettingsToCustomSettings($customized_list);
-		/** @var $new_settings Output_Settings */
-		$new_settings = Output_Settings::conditionalOutputSettings($output_settings_list, $object);
-		if ($new_settings && ($output_settings->name != $new_settings->name)) {
-			$output_settings = $new_settings;
-			$customized_list = $output_settings->getCustomSettings($feature);
-			$output_settings->cleanup();
-		}
-		// go to default setting (without conditions) if current output settings condition do not apply
-		elseif (!((new Code($output_settings->conditions))->execute($object, true))) {
-			$output_settings = Output_Settings::unconditionalOutputSettings(
-				$output_settings_list, $class_name, $feature
-			);
-			$customized_list = $output_settings->getCustomSettings($feature);
-			$output_settings->cleanup();
+		if (!isset($parameters['force'])) {
+			/** @var $output_settings_list Output_Settings[] */
+			$output_settings_list = $output_settings->selectedSettingsToCustomSettings($customized_list);
+			/** @var $new_settings Output_Settings */
+			$new_settings = Output_Settings::conditionalOutputSettings($output_settings_list, $object);
+			if ($new_settings && ($output_settings->name != $new_settings->name)) {
+				$output_settings = $new_settings;
+				$customized_list = $output_settings->getCustomSettings($feature);
+				$output_settings->cleanup();
+			}
+			// go to default setting (without conditions) if current output settings condition do not apply
+			elseif (!((new Code($output_settings->conditions))->execute($object, true))) {
+				$output_settings = Output_Settings::unconditionalOutputSettings(
+					$output_settings_list, $class_name, $feature
+				);
+				$customized_list = $output_settings->getCustomSettings($feature);
+				$output_settings->cleanup();
+			}
 		}
 
 		$this->applyOutputSettings($output_settings);
