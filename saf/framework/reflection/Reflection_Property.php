@@ -20,6 +20,8 @@ class Reflection_Property extends ReflectionProperty
 {
 	use Annoted;
 
+	const EMPTY_VALUE = '~~EMPTY~VALUE~~';
+
 	//------------------------------------------------------------------------------ $declaring_trait
 	/**
 	 * Cache for getDeclaringTrait() : please do never use it directly
@@ -62,6 +64,14 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public $path;
 
+	//----------------------------------------------------------------------------------- $root_class
+	/**
+	 * this is the root class for the path if there is one
+	 *
+	 * @var string
+	 */
+	public $root_class;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name    string
@@ -69,7 +79,8 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function __construct($class_name, $property_name)
 	{
-		$this->path = $property_name;
+		$this->path       = $property_name;
+		$this->root_class = $class_name;
 		$i = 0;
 		while (($j = strpos($property_name, DOT, $i)) !== false) {
 			$property = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
@@ -251,6 +262,25 @@ class Reflection_Property extends ReflectionProperty
 		return $this->final_class;
 	}
 
+	//------------------------------------------------------------------------------ getFinalProperty
+	/**
+	 * @return Reflection_Property
+	 */
+	public function getFinalProperty()
+	{
+		if (strpos($this->path, DOT)) {
+			$path = explode(DOT, $this->path);
+			$property = new Reflection_Property($this->class, array_shift($path));
+			foreach ($path as $property_name) {
+				$property = new Reflection_Property(
+					$property->getType()->getElementTypeAsString(), $property_name
+				);
+			}
+			return $property;
+		}
+		return $this;
+	}
+
 	//------------------------------------------------------------------------- getOverrideDocComment
 	/**
 	 * Gets the class @override property doc comment that overrides the original property doc comment
@@ -324,6 +354,31 @@ class Reflection_Property extends ReflectionProperty
 		return $type;
 	}
 
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Gets value
+	 *
+	 * @param object $object
+	 * @return mixed
+	 */
+	public function getValue($object = null)
+	{
+		if (strpos($this->path, DOT)) {
+			$path = explode(DOT, $this->path);
+			$property = new Reflection_Property($this->root_class, array_shift($path));
+			foreach ($path as $property_name) {
+				$object = $property->getValue($object);
+				$property = new Reflection_Property(
+					$property->getType()->getElementTypeAsString(), $property_name
+				);
+			}
+			return isset($object) ? $property->getValue($object) : $property->getValue();
+		}
+		else {
+			return isset($object) ? parent::getValue($object) : parent::getValue();
+		}
+	}
+
 	//---------------------------------------------------------------------------- isEquivalentObject
 	/**
 	 * Return true if the both objects match.
@@ -371,6 +426,39 @@ class Reflection_Property extends ReflectionProperty
 	public function pathAsField()
 	{
 		return Names::propertyPathToField($this->path ? $this->path : $this->name);
+	}
+
+	//-------------------------------------------------------------------------------------- setValue
+	/**
+	 * Sets value
+	 *
+	 * @param $object object|mixed object or static property value
+	 * @param $value  mixed
+	 */
+	public function setValue($object, $value = self::EMPTY_VALUE)
+	{
+		if (strpos($this->path, DOT)) {
+			$path = explode(DOT, $this->path);
+			$property = new Reflection_Property($this->root_class, array_shift($path));
+			foreach ($path as $property_name) {
+				$object = $property->getValue($object);
+				$property = new Reflection_Property(
+					$property->getType()->getElementTypeAsString(), $property_name
+				);
+			}
+			if ($value === self::EMPTY_VALUE) {
+				$property->setValue($object);
+			}
+			else {
+				$property->setValue($object, $value);
+			}
+		}
+		elseif ($value === self::EMPTY_VALUE) {
+			parent::setValue($object);
+		}
+		else {
+			parent::setValue($object, $value);
+		}
 	}
 
 }

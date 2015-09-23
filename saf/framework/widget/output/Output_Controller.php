@@ -9,7 +9,7 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Printer\Model;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Setting\Buttons;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Names;
@@ -36,12 +36,10 @@ class Output_Controller implements Default_Feature_Controller
 	 */
 	private function applyOutputSettings(Output_Settings $output_settings)
 	{
-		$class = new Reflection_Class($output_settings->class_name);
 		if ($output_settings->properties) {
 			foreach ($output_settings->properties as $property_path => $property) {
-				$user_annotation = $class->getProperty($property_path)->getListAnnotation(
-					User_Annotation::ANNOTATION
-				);
+				$reflection_property = new Reflection_Property($output_settings->class_name, $property_path);
+				$user_annotation = $reflection_property->getListAnnotation(User_Annotation::ANNOTATION);
 				$property->read_only
 					? $user_annotation->add(User_Annotation::READONLY)
 					: $user_annotation->remove(User_Annotation::READONLY);

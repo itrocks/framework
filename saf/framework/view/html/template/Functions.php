@@ -509,30 +509,32 @@ class Functions
 		$properties_title  = $template->getParameter(Parameter::PROPERTIES_TITLE);
 		$class = new Reflection_Class(get_class($object));
 		$result_properties = [];
-		foreach ($class->accessProperties() as $property_name => $property) {
+
+		if ($properties_filter) {
+			$properties = [];
+			foreach ($properties_filter as $property_path) {
+				$properties[$property_path] = new Reflection_Property($class->name, $property_path);
+			}
+		}
+		else {
+			$properties = $class->accessProperties();
+		}
+
+		foreach ($properties as $property_path => $property) {
 			if (
 				!$property->isStatic()
 				&& !$property->getListAnnotation(User_Annotation::ANNOTATION)->has(
 					User_Annotation::INVISIBLE
 				)
 			) {
-				if (!isset($properties_filter) || in_array($property_name, $properties_filter)) {
-					$property = new Reflection_Property_Value(
-						$property->class, $property->name, $object, false, true
-					);
-					if (isset($properties_title) && isset($properties_title[$property_name])) {
-						$property->display = $properties_title[$property_name];
-					}
-					$property->final_class = $class->name;
-					$result_properties[$property_name] = $property;
+				$property = new Reflection_Property_Value(
+					$class->name, $property->path, $object, false, true
+				);
+				if (isset($properties_title) && isset($properties_title[$property_path])) {
+					$property->display = $properties_title[$property_path];
 				}
+				$result_properties[$property_path] = $property;
 			}
-		}
-
-		// properties filter is also used to sort properties
-		if ($properties_filter) {
-			$properties_set = new Set(Reflection_Property_Value::class, $result_properties);
-			$result_properties = $properties_set->filterAndSort($properties_filter);
 		}
 
 		return Replaces_Annotations::removeReplacedProperties($result_properties);
