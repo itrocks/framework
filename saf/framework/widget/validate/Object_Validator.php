@@ -124,7 +124,8 @@ class Object_Validator implements Registerable
 	 */
 	public function validate($object, $only_properties = [])
 	{
-		$this->valid = true;
+		$this->report = [];
+		$this->valid  = true;
 		$only_properties = array_flip($only_properties);
 		$class = new Reflection_Class($object);
 
