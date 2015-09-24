@@ -378,13 +378,13 @@ class Reflection_Property extends ReflectionProperty
 			while (is_array($object)) {
 				$object = reset($object);
 			}
-			return isset($object) ? $property->getValue($object) : $property->getValue();
+			return $object ? $property->getValue($object) : null;
 		}
 		else {
 			while (is_array($object)) {
 				$object = reset($object);
 			}
-			return isset($object) ? parent::getValue($object) : parent::getValue();
+			return $object ? parent::getValue($object) : null;
 		}
 	}
 
