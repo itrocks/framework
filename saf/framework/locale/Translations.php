@@ -29,9 +29,11 @@ class Translations
 	/**
 	 * @param $language string
 	 */
-	public function __construct($language)
+	public function __construct($language = null)
 	{
-		$this->language = $language;
+		if (isset($language)) {
+			$this->language = $language;
+		}
 	}
 
 	//--------------------------------------------------------------------------------------- reverse
