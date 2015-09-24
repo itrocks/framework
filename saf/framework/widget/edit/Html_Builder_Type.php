@@ -312,6 +312,7 @@ class Html_Builder_Type
 		if ($this->readonly) {
 			$input->removeAttribute('name');
 			$input->setAttribute('readonly');
+			$input->addClass('autowidth');
 		}
 		else {
 			if ($filters) {
@@ -336,7 +337,6 @@ class Html_Builder_Type
 				$this->name = $old_name;
 				$input->setAttribute('data-conditions', join(';', $html_conditions));
 			}
-			$input->addClass('autowidth');
 			$input->addClass('combo');
 			// id input
 			$id_input = new Input(
