@@ -8,6 +8,13 @@ textarea {
   border: 1px solid #a3a3a3;
   border-radius: 2px;
   padding: 1px 2px; }
+  input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized)[readonly],
+  select[readonly],
+  textarea[readonly] {
+    background: none;
+    border: none;
+    overflow: visible !important;
+    resize: none; }
 
 /* datetime input */
 input.datetime {
@@ -55,8 +62,8 @@ fieldset {
   fieldset > div:not(.hidden):not(.tabber) {
     display: table-row;
     /* standard field */
-    /* multiple field */
-    /* columns */ }
+    /* columns */
+    /* multiple field */ }
     fieldset > div:not(.hidden):not(.tabber) > label, fieldset > div:not(.hidden):not(.tabber) > div {
       display: table-cell; }
     fieldset > div:not(.hidden):not(.tabber):not(.multiple):hover {
@@ -74,6 +81,19 @@ fieldset {
       vertical-align: middle; }
       fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > input, fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > select, fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > textarea {
         margin: 2px 0; }
+    fieldset > div:not(.hidden):not(.tabber).columns {
+      display: block;
+      width: 100%; }
+      fieldset > div:not(.hidden):not(.tabber).columns > .column {
+        vertical-align: top; }
+        fieldset > div:not(.hidden):not(.tabber).columns > .column:not(:first-child) {
+          margin-left: 4px; }
+        fieldset > div:not(.hidden):not(.tabber).columns > .column:not(:last-child) {
+          float: left; }
+        fieldset > div:not(.hidden):not(.tabber).columns > .column:last-child {
+          float: right; }
+          fieldset > div:not(.hidden):not(.tabber).columns > .column:last-child fieldset {
+            display: inline-block; }
     fieldset > div:not(.hidden):not(.tabber).multiple {
       border: lightgrey 1px solid;
       caption-side: bottom;
@@ -112,19 +132,6 @@ fieldset {
         fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td.multiple > ul, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td.multiple > ul {
           margin-left: .5em;
           padding-left: 1em; }
-    fieldset > div:not(.hidden):not(.tabber).columns {
-      display: block;
-      width: 100%; }
-      fieldset > div:not(.hidden):not(.tabber).columns > .column {
-        vertical-align: top; }
-        fieldset > div:not(.hidden):not(.tabber).columns > .column:not(:first-child) {
-          margin-left: 4px; }
-        fieldset > div:not(.hidden):not(.tabber).columns > .column:not(:last-child) {
-          float: left; }
-        fieldset > div:not(.hidden):not(.tabber).columns > .column:last-child {
-          float: right; }
-          fieldset > div:not(.hidden):not(.tabber).columns > .column:last-child fieldset {
-            display: inline-block; }
   fieldset.block {
     border: 1px solid #a3a3a3;
     border-radius: 4px;

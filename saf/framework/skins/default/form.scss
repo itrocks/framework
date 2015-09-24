@@ -7,6 +7,13 @@ textarea {
 	border: 1px solid #a3a3a3;
 	border-radius: 2px;
 	padding: 1px 2px;
+
+	&[readonly] {
+		background: none;
+		border: none;
+		overflow: visible !important;
+		resize: none;
+	}
 }
 
 /* datetime input */
@@ -106,6 +113,32 @@ fieldset {
 			}
 		}
 
+		/* columns */
+		&.columns {
+			display: block;
+			width: 100%;
+
+			>.column {
+				vertical-align: top;
+
+				&:not(:first-child) {
+					margin-left: 4px;
+				}
+
+				&:not(:last-child) {
+					float: left;
+				}
+
+				&:last-child {
+					float: right;
+
+					fieldset {
+						display: inline-block;
+					}
+				}
+			}
+		}
+
 		/* multiple field */
 		&.multiple {
 			border: lightgrey 1px solid;
@@ -171,31 +204,6 @@ fieldset {
 			}
 		}
 
-		/* columns */
-		&.columns {
-			display: block;
-			width: 100%;
-
-			>.column {
-				vertical-align: top;
-
-				&:not(:first-child) {
-					margin-left: 4px;
-				}
-
-				&:not(:last-child) {
-					float: left;
-				}
-
-				&:last-child {
-					float: right;
-
-					fieldset {
-						display: inline-block;
-					}
-				}
-			}
-		}
 	}
 
 	/* block fieldset */
@@ -212,6 +220,7 @@ fieldset {
 			white-space: nowrap;
 		}
 	}
+
 }
 
 /* main tabber */
