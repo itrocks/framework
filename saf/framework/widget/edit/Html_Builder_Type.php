@@ -309,10 +309,10 @@ class Html_Builder_Type
 		$input = new Input(null, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
 		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
+		$input->addClass('autowidth');
 		if ($this->readonly) {
 			$input->removeAttribute('name');
 			$input->setAttribute('readonly');
-			$input->addClass('autowidth');
 		}
 		else {
 			if ($filters) {

@@ -80,33 +80,51 @@
 	};
 
 	//-------------------------------------------------------------------------- autowidthTableColumn
-	$.fn.autowidthTableColumn = function($td, td_position, input_position)
+	$.fn.autowidthTableColumn = function($td, td_position, input_position, settings)
 	{
 		// the element was the widest element : grow or shorten
 		var $this = $(this);
-		var width = Math.max(
-			$this.find('tr>th:nth-child(' + td_position + ')')
-				.gettextwidth(),
-			$this.find('tr>td:nth-child(' + td_position + ')>input:nth-child(' + input_position + ')')
-				.gettextwidth()
+		var $input = $this.find(
+			'tr>td:nth-child(' + td_position + ')>input:nth-child(' + input_position + '), '
+			+ 'tr>td:nth-child(' + td_position + ')>textarea:nth-child(' + input_position + ')'
 		);
-		$td.autowidthTableColumnWidth(width);
+		var width = Math.max(
+			$this.find('tr>th:nth-child(' + td_position + ')').gettextwidth(),
+			$input.gettextwidth() + calcMargin.call($input, settings.margin_right)
+		);
+		$td.autowidthTableColumnWidth(width, settings);
 		return this;
 	};
 
 	//--------------------------------------------------------------------- autowidthTableColumnWidth
 	/**
-	 *
 	 * @param width number
+	 * @param settings object
 	 */
-	$.fn.autowidthTableColumnWidth = function(width)
+	$.fn.autowidthTableColumnWidth = function(width, settings)
 	{
 		var $td = $(this);
 		$td.data('max-width', width);
 		width = Math.max(
-			40, width + parseInt($td.css('padding-left')) + parseInt($td.css('padding-right'))
+			settings.minimum, width + parseInt($td.css('padding-left')) + parseInt($td.css('padding-right'))
 		) + 10;
 		$td.width(width).css({'max-width': width + 'px', 'min-width': width + 'px'});
+	};
+
+	//------------------------------------------------------------------------------------ calcMargin
+	/**
+	 * @param margins object
+	 * @returns number
+	 */
+	var calcMargin = function(margins)
+	{
+		var margin = 0;
+		for (var selector in margins) if (margins.hasOwnProperty(selector)) {
+			if (this.is(selector)) {
+				margin += margins[selector];
+			}
+		}
+		return margin;
 	};
 
 	//------------------------------------------------------------------------------------- autowidth
@@ -115,29 +133,38 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			maximum: 1024
+			maximum: 1024,
+			minimum: 40,
+			margin_right: {
+				'*':        0,
+				'textarea': 20,
+				':focus':   20,
+				'.combo':   13,
+				'.combo:focus': -10
+			}
 		}, options);
 
-		//----------------------------------------------------------------------------- autowidth keyup
-		this.keyup(function()
+		//----------------------------------------------------------------------------------- calculate
+		var calculate = function()
 		{
 			var $this = $(this);
 			var previous_width = parseInt($this.data('text-width'));
-			var new_width = $this.gettextwidth(false);
+			var margin_right = calcMargin.call($this, settings.margin_right);
+			var new_width = $this.gettextwidth(false) + margin_right;
 			if (new_width != previous_width) {
 				$this.data('text-width', new_width);
 				var tag_name = $this.parent().prop('tagName').toLowerCase();
 				var $table = (tag_name == 'td') ? $this.closest('table') : undefined;
 				if ($table == undefined) {
 					// single element
-					$this.width(Math.min(Math.max(40, new_width) + 10, settings.maximum));
+					$this.width(Math.min(Math.max(settings.minimum, new_width), settings.maximum));
 				}
 				else {
 					// element into a collection / map
 					// is element not named and next to a named element ? next_input = true
 					var name = $this.attr('name');
 					if (name == undefined) {
-						name = $this.prev('input').attr('name');
+						name = $this.prev('input, textarea').attr('name');
 					}
 					// calculate th's previous max width
 					var position = $this.parent().prevAll('td').length;
@@ -145,28 +172,33 @@
 					var previous_max_width = $td.data('max-width');
 					if (new_width > previous_max_width) {
 						// the element became wider than the widest element
-						$td.autowidthTableColumnWidth(new_width);
+						$td.autowidthTableColumnWidth(new_width, settings);
 					}
 					else if (previous_width == previous_max_width) {
-						$table.autowidthTableColumn($td, position + 1, $this.prevAll().length + 1);
+						$table.autowidthTableColumn($td, position + 1, $this.prevAll().length + 1, settings);
 					}
 				}
 			}
-		});
+		};
+
+		//----------------------------------------------------------------------------- autowidth keyup
+		this.blur(calculate);
+		this.focus(calculate);
+		this.keyup(calculate);
 
 		//------------------------------------------------------------------------------ autowidth init
-		this.not('td>input').each(function() { $(this).keyup(); });
+		this.not('td>input').each(function() { calculate.call($(this)); });
 		this.filter('td>input').closest('table').each(function() {
 			var $table = $(this);
 			var $first_cells = $table.firstcolgroup().cells();
 			var $last_cells = $table.lastcolgroup().cells();
 			for (var cell_position = 0; cell_position < $first_cells.length; cell_position++) {
 				var $input = $($last_cells[cell_position]).children(
-					'input:not([type=checkbox]):visible:first'
+					'input:not([type=checkbox]):visible:first, textarea:visible:first'
 				);
 				if ($input.length) {
 					$table.autowidthTableColumn(
-						$($first_cells[cell_position]), cell_position + 1, $input.prevAll().length + 1
+						$($first_cells[cell_position]), cell_position + 1, $input.prevAll().length + 1, settings
 					);
 				}
 			}
