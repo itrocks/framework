@@ -229,6 +229,7 @@ class Output_Controller implements Default_Feature_Controller
 		// load customized output settings list
 		$customized_list = $output_settings->getCustomSettings($feature);
 		// apply conditions to automatically load output settings
+		//$parameters['force'] = true; // TODO uncomment this when you create your conditional forms
 		if (!isset($parameters['force'])) {
 			/** @var $output_settings_list Output_Settings[] */
 			$output_settings_list = $output_settings->selectedSettingsToCustomSettings($customized_list);
