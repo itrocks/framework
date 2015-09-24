@@ -5,6 +5,7 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Tools\Color;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Output\Output_Controller;
@@ -23,7 +24,11 @@ class Edit_Controller extends Output_Controller
 	 */
 	protected function getGeneralButtons($object, $parameters)
 	{
-		list($close_link, $follows) = $this->prepareThen($object, $parameters, View::link($object));
+		list($close_link, $follows) = $this->prepareThen(
+			$object,
+			$parameters,
+			View::link(Names::classToSet(is_object($object) ? get_class($object) : $object))
+		);
 		$buttons = parent::getGeneralButtons($object, $parameters);
 		unset($buttons[Feature::F_EDIT]);
 		unset($buttons[Feature::F_PRINT]);
