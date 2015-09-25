@@ -137,7 +137,7 @@ class Uri
 			$this->parameters->set($this->controller_name, intval($this->feature_name));
 			$this->feature_name = array_shift($uri);
 			if (!$this->feature_name) {
-				$this->feature_name = Feature::F_EDIT;
+				$this->feature_name = Feature::F_OUTPUT;
 			}
 		}
 		elseif ($this->controller_name && !$this->feature_name) {
