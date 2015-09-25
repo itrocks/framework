@@ -54,6 +54,9 @@ Parser::$default_annotations = [
 	// This defines a class or a trait used to describe business objects
 	__NAMESPACE__ . '\Class_\Business_Annotation' => Boolean_Annotation::class,
 
+	// @default_feature output
+	__NAMESPACE__ . '\Class_\Default_Feature_Annotation' => Annotation::class,
+
 	// @deprecated [false]
 	// Identifies a deprecated class
 	__NAMESPACE__ . '\Class_\Deprecated_Annotation' => Boolean_Annotation::class,

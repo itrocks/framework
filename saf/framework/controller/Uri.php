@@ -2,6 +2,7 @@
 namespace SAF\Framework\Controller;
 
 use SAF\Framework\Application;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Names;
 
 /**
@@ -137,7 +138,9 @@ class Uri
 			$this->parameters->set($this->controller_name, intval($this->feature_name));
 			$this->feature_name = array_shift($uri);
 			if (!$this->feature_name) {
-				$this->feature_name = Feature::F_OUTPUT;
+				$reflection_class = new Reflection_Class($this->controller_name);
+				$default_feature = $reflection_class->getAnnotation('default_feature')->value;
+				$this->feature_name = $default_feature ?: Feature::F_OUTPUT;
 			}
 		}
 		elseif ($this->controller_name && !$this->feature_name) {
