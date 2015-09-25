@@ -82,7 +82,6 @@ $('document').ready(function()
 								$div.insertAfter($insert_bottom);
 							}
 
-							console.log(uri);
 							$.ajax({ url: uri, success: function(data) {
 								$('#messages').html(data);
 							}});
