@@ -315,6 +315,7 @@ class Joins
 		Join $join, $master_path, $master_property_name, $foreign_path
 	) {
 		list($foreign_class_name, $foreign_property_name) = explode('->', $master_property_name);
+		$foreign_class_name = Builder::className($foreign_class_name);
 		$foreign_class_name = Namespaces::defaultFullClassName(
 			$foreign_class_name,
 			$this->classes[$master_path]
@@ -463,7 +464,7 @@ class Joins
 		return isset($this->id_link_joins[$path]) ? $this->id_link_joins[$path] : null;
 	}
 
-	//-------------------------------------------------------------------------------------- getJoins
+	//--------------------------------------------------------------------------------------- getJoin
 	/**
 	 * Gets Join object for a given property path
 	 *
