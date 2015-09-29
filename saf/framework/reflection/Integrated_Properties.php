@@ -83,6 +83,7 @@ abstract class Integrated_Properties
 				$blocks[$property->path ?: $property->name] = $property->path ?: $property->name;
 			}
 			$integrated_simple = $integrated->has('simple');
+			/** @var $sub_properties_class Reflection_Class */
 			$sub_properties_class = $property->getType()->asReflectionClass();
 			$expand_properties = $sub_properties_class->getProperties([T_EXTENDS, T_USE]);
 			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
@@ -116,8 +117,8 @@ abstract class Integrated_Properties
 						foreach ($blocks as $block) {
 							$block_annotation->add($block);
 						}
-						// this results in a bug. todo validate and remove
-						//$sub_property->path = $property_name . DOT . $sub_property_name;
+						$sub_property->path = $property_name . DOT . $sub_property_name;
+						$sub_property->root_class = null;
 						$properties_list[$property_name . DOT . $sub_property_name] = $sub_property;
 						$expanded[$property_name . DOT . $sub_property_name] = $sub_property;
 					}
