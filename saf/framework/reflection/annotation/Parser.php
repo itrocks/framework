@@ -76,7 +76,7 @@ class Parser
 	public static function byName(
 		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null
 	) {
-		$annotation_class = static::getAnnotationClassName($reflection_object, $annotation_name);
+		$annotation_class = static::getAnnotationClassName(get_class($reflection_object), $annotation_name);
 		if (!isset($multiple)) {
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 		}
@@ -122,7 +122,7 @@ class Parser
 			if (($k = strpos($doc_comment, LF, $i)) < $j) $j = $k;
 			if (($k = strpos($doc_comment, SP, $i)) < $j)  $j = $k;
 			$annotation_name = substr($doc_comment, $i + 1, $j - $i - 1);
-			$annotation_class = static::getAnnotationClassName($reflection_object, $annotation_name);
+			$annotation_class = static::getAnnotationClassName(get_class($reflection_object), $annotation_name);
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 			if ($multiple || !isset($annotations[$annotation_name])) {
 				if ($reflection_object->isAnnotationCached($annotation_name, $multiple)) {
@@ -145,6 +145,10 @@ class Parser
 				}
 			}
 		}
+		foreach ($reflection_object->getCachedAnnotations() as $annotation_name => $cached_annotation) {
+			$annotation = $cached_annotation[0];
+			$annotations[$annotation_name] = $annotation;
+		}
 		return $annotations;
 	}
 
@@ -152,14 +156,13 @@ class Parser
 	/**
 	 * Gets annotation class name (including namespace) for a given annotation name
 	 *
-	 * @param $reflection_object Has_Doc_Comment
+	 * @param $class_name      string eg Reflection_Class, Reflection_Method, Reflection_Property
 	 * @param $annotation_name string
 	 * @return string
 	 */
-	private static function getAnnotationClassName(
-		Has_Doc_Comment $reflection_object, $annotation_name
-	) {
-		$reflection_class = get_class($reflection_object);
+	public static function getAnnotationClassName($class_name, $annotation_name)
+	{
+		$reflection_class = $class_name;
 		$pos = strrpos($reflection_class, '_');
 		$reflection_class = substr($reflection_class, $pos + 1);
 		if ($reflection_class == 'Class') {

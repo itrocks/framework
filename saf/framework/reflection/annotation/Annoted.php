@@ -118,6 +118,24 @@ trait Annoted
 		}
 	}
 
+	//-------------------------------------------------------------------------- getCachedAnnotations
+	/**
+	 * @return array [$annotation_name => [$annotation, $multiple, $annotation_name]]
+	 */
+	public function getCachedAnnotations()
+	{
+		$cached_annotations = [];
+		$path = $this->getAnnotationCachePath();
+		if (isset(self::$annotations_cache[$path[0]][$path[1]])) {
+			foreach (self::$annotations_cache[$path[0]][$path[1]] as $annotation_name => $annotations) {
+				foreach ($annotations as $multiple => $annotation) {
+					$cached_annotations[$annotation_name] = [$annotation, $multiple, $annotation_name];
+				}
+			}
+		}
+		return $cached_annotations;
+	}
+
 	//----------------------------------------------------------------------------- getListAnnotation
 	/**
 	 * Gets an List_Annotation for the reflected property
