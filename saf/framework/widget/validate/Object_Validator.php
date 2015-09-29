@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Validate;
 
 use SAF\Framework\Controller;
+use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Option;
@@ -22,6 +23,9 @@ use SAF\Framework\Widget\Validate\Property;
 class Object_Validator implements Registerable
 {
 
+	//--------------------------------------------------------------------------------- $validator_on
+	private $validator_on = false;
+
 	//--------------------------------------------------------------------------------------- $report
 	/**
 	 * The validation report contains a detailed list of validate annotations and values
@@ -40,6 +44,18 @@ class Object_Validator implements Registerable
 	 */
 	public $valid;
 
+	//------------------------------------------------------------------------ afterMainControllerRun
+	public function afterMainControllerRun()
+	{
+		$this->validator_on = false;
+	}
+
+	//----------------------------------------------------------------------- beforeMainControllerRun
+	public function beforeMainControllerRun()
+	{
+		$this->validator_on = true;
+	}
+
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
 	 * The validator hook is called before each Data_Link::write() call to validate the object
@@ -51,14 +67,16 @@ class Object_Validator implements Registerable
 	 */
 	public function beforeWrite($object, $options)
 	{
-		$only = [];
-		foreach ($options as $option) {
-			if ($option instanceof Only) {
-				$only = $option->properties;
+		if ($this->validator_on) {
+			$only = [];
+			foreach ($options as $option) {
+				if ($option instanceof Only) {
+					$only = $option->properties;
+				}
 			}
-		}
-		if (!$this->validate($object, $only)) {
-			throw new View_Exception($this->notValidated($object, $only));
+			if (!$this->validate($object, $only)) {
+				throw new View_Exception($this->notValidated($object, $only));
+			}
 		}
 	}
 
@@ -103,6 +121,8 @@ class Object_Validator implements Registerable
 	 */
 	public function register(Register $register)
 	{
+		$register->aop->afterMethod([Main::class, 'runController'], [$this, 'afterMainControllerRun']);
+		$register->aop->beforeMethod([Main::class, 'runController'], [$this, 'beforeMainControllerRun']);
 		$register->aop->beforeMethod([Data_Link::class, 'write'], [$this, 'beforeWrite']);
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'length'     => Property\Length_Annotation::class,
