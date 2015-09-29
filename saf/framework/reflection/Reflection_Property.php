@@ -66,7 +66,9 @@ class Reflection_Property extends ReflectionProperty
 
 	//----------------------------------------------------------------------------------- $root_class
 	/**
-	 * this is the root class for the path if there is one
+	 * This is the root class for the path if there is one
+	 * This can be null if $this->path does not start from root class and must be ignored into
+	 * getValue() and setValue()
 	 *
 	 * @var string
 	 */
@@ -363,7 +365,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getValue($object = null)
 	{
-		if (strpos($this->path, DOT)) {
+		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$path = explode(DOT, $this->path);
 			$property = new Reflection_Property($this->root_class, array_shift($path));
 			foreach ($path as $property_name) {
@@ -446,7 +448,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function setValue($object, $value = self::EMPTY_VALUE)
 	{
-		if (strpos($this->path, DOT)) {
+		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$path = explode(DOT, $this->path);
 			$property = new Reflection_Property($this->root_class, array_shift($path));
 			foreach ($path as $property_name) {

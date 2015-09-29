@@ -278,6 +278,7 @@ class Functions
 		if ($expand_property_path = $template->getParameter(Parameter::EXPAND_PROPERTY_PATH)) {
 			foreach ($result as $property) {
 				$property->path = $expand_property_path . DOT . $property->path;
+				$property->root_class = null;
 				if (($property instanceof Reflection_Property_Value) && !$property->display) {
 					$property->display = rLastParse($property->path, DOT . DOT, 1, true);
 				}
