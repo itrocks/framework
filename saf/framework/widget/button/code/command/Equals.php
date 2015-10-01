@@ -7,10 +7,10 @@ use SAF\Framework\Tools\Names;
 use SAF\Framework\Widget\Button\Code\Command;
 
 /**
- * Equals command
+ * Equals command : returns true if the two constant or property-name operands have the same value
  *
- * @example status == 'waiting for repair'
- * @example status == old_status
+ * @example status = "waiting for repair"
+ * @example status = old status
  */
 class Equals implements Command
 {

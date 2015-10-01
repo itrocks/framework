@@ -7,7 +7,8 @@ use SAF\Framework\Tools\Names;
 use SAF\Framework\Widget\Button\Code\Command;
 
 /**
- * Assign command
+ * Assign command : assigns the property-name or constant value on right to the property-name on
+ * left
  *
  * @example status = 'waiting for repair'
  * @example status = new_status
