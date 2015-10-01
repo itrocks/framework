@@ -9,7 +9,6 @@ use SAF\Framework\Sql\Builder\Columns;
 class Group_By extends Column
 {
 
-	//------------------------------------------------------------------------------ $function values
 	const AVERAGE = 'AVG';
 	const COUNT   = 'COUNT';
 	const MAX     = 'MAX';
