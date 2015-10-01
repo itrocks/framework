@@ -24,7 +24,7 @@ class Object_Validator implements Registerable
 {
 
 	//--------------------------------------------------------------------------------- $validator_on
-	private $validator_on = false;
+	public $validator_on = false;
 
 	//--------------------------------------------------------------------------------------- $report
 	/**
