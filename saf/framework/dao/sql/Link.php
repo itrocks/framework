@@ -163,7 +163,14 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public function select($object_class, $columns, $filter_object = null, $options = [])
 	{
-		$list = new Default_List_Data($object_class, $columns);
+		foreach ($options as $option) {
+			if ($option instanceof Option\Array_Result) {
+				$list = [];
+			}
+		}
+		if (!isset($list)) {
+			$list = new Default_List_Data($object_class, $columns);
+		}
 		$select = new Select($object_class, $columns, $this);
 		$query = $select->prepareQuery($filter_object, $options);
 		$result_set = $this->query($query);
