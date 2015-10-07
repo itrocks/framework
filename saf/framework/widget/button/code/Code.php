@@ -85,10 +85,12 @@ class Code implements Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $source string
+	 * @return self
 	 */
 	public function fromString($source)
 	{
 		$this->source = $source;
+		return $this;
 	}
 
 }

@@ -48,10 +48,12 @@ class Color implements Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $color string
+	 * @return self
 	 */
 	public function fromString($color)
 	{
 		$this->value = $color;
+		return $this;
 	}
 
 	//--------------------------------------------------------------------------------- getBrightness
