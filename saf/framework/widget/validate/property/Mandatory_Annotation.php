@@ -27,7 +27,6 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 		$this->property = $property;
 	}
 
-
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
 	 * Returns true if the object property is empty
@@ -42,6 +41,7 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 			return (
 				is_null($value)
 				|| ($value === '')
+				|| (is_array($value) && empty($value))
 				|| (($value instanceof Can_Be_Empty) && $value->isEmpty())
 			);
 		}
