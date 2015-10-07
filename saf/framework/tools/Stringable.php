@@ -10,6 +10,7 @@ interface Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
+	 * @return self
 	 */
 	public function fromString($string);
 
