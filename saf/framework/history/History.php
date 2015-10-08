@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Tools\Date_Time;
+
 /**
  * Every _History class should extend this
  *
@@ -9,6 +11,14 @@ namespace SAF\Framework;
  */
 abstract class History
 {
+
+	//----------------------------------------------------------------------------------------- $date
+	/**
+	 * @default Date_Time::now
+	 * @link DateTime
+	 * @var Date_Time
+	 */
+	public $date;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -38,6 +48,14 @@ abstract class History
 	 */
 	public $property_name;
 
+	//----------------------------------------------------------------------------------------- $user
+	/**
+	 * @default User::current
+	 * @link Object
+	 * @var User
+	 */
+	public $user;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $object        object
@@ -58,6 +76,8 @@ abstract class History
 				? Dao::getObjectIdentifier($new_value)
 				: strval($new_value);
 		}
+		$this->date = Date_Time::now();
+		$this->user = User::current();
 	}
 
 }

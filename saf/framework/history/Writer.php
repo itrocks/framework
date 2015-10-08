@@ -54,9 +54,15 @@ abstract class Writer
 	{
 		if (($link instanceof Identifier_Map) && ($identifier = $link->getObjectIdentifier($object))) {
 			/** @noinspection PhpUndefinedFieldInspection */
-			self::$before_write[get_class($object)][$identifier] = $link->read(
+			self::$before_write[get_class($object)][$identifier] = $before = $link->read(
 				$identifier, get_class($object)
 			);
+			// call getter for collections and maps in order to get the full value before write
+			foreach ((new Reflection_Class(get_class($before)))->accessProperties() as $property) {
+				if ($property->gettype()->isMultiple()) {
+					$property->getValue($before);
+				}
+			}
 		}
 	}
 
@@ -75,10 +81,10 @@ abstract class Writer
 			$old_value = $property->getValue($before);
 			$new_value = $property->getValue($after);
 			if (is_array($old_value)) {
-				$old_value = '[' . join(',', $old_value) . ']';
+				$old_value = join(', ', $old_value);
 			}
 			if (is_array($new_value)) {
-				$new_value = '[' . join(',', $new_value) . ']';
+				$new_value = join(', ', $new_value);
 			}
 			if (
 				(
@@ -96,7 +102,9 @@ abstract class Writer
 				)
 				|| (strval($old_value) != strval($new_value))
 			) {
-				$history[] = $history_class->newInstance($after, $property->name, $old_value, $new_value);
+				$history[] = Builder::create(
+					$history_class->name, [$after, $property->name, $old_value, $new_value]
+				);
 			}
 		}
 		return $history;
