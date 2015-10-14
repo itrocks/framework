@@ -48,7 +48,10 @@ class Search_Parameters_Parser
 	 */
 	protected function applyEmpty(&$search_value, Type $type)
 	{
-		if (in_array(Loc::rtr($search_value), ['empty', 'none', '!', '='])) {
+		if (
+			is_string($search_value)
+			&& in_array(Loc::rtr($search_value), ['empty', 'none', 'null', '!', '='])
+		) {
 			$value = in_array($type->asString(), [Type::BOOLEAN, Type::FLOAT, Type::INTEGER]) ? 0 : '';
 			$search_value = Func::orOp([$value, Func::isNull()]);
 		}
@@ -60,7 +63,9 @@ class Search_Parameters_Parser
 	 */
 	protected function applyJokers(&$search_value)
 	{
-		$search_value = str_replace(['*', '?'], ['%', '_'], $search_value);
+		if (is_string($search_value)) {
+			$search_value = str_replace(['*', '?'], ['%', '_'], $search_value);
+		}
 	}
 
 	//------------------------------------------------------------------------------------ applyRange
@@ -69,7 +74,7 @@ class Search_Parameters_Parser
 	 */
 	protected function applyRange(&$search_value)
 	{
-		if (strpos($search_value, '-') !== false) {
+		if (is_string($search_value) && (strpos($search_value, '-') !== false)) {
 			$range = explode('-', $search_value, 2);
 			$search_value = new Range($range[0], $range[1]);
 		}
