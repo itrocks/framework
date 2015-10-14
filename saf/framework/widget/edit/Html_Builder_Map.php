@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\View\Html\Builder\Map;
 use SAF\Framework\View\Html\Dom\Table\Body;
@@ -21,6 +22,14 @@ class Html_Builder_Map extends Map
 	 * @var string
 	 */
 	public $preprop;
+
+	//------------------------------------------------------------------------------------ $read_only
+	/**
+	 * Property read only cache. Do not use this property : use readOnly() instead.
+	 *
+	 * @var boolean
+	 */
+	private $read_only;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
@@ -47,9 +56,11 @@ class Html_Builder_Map extends Map
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
-		$row = $this->buildRow(Builder::create($this->class_name));
-		$row->addClass('new');
-		$body->addRow($row);
+		if (!$this->readOnly()) {
+			$row = $this->buildRow(Builder::create($this->class_name));
+			$row->addClass('new');
+			$body->addRow($row);
+		}
 		return $body;
 	}
 
@@ -63,9 +74,9 @@ class Html_Builder_Map extends Map
 		$property = $this->property;
 		$value = $object;
 		$preprop = $this->preprop ?: $property->name;
-		$input = (new Html_Builder_Type('', $property->getType()->getElementType(), $value, $preprop))
-			->setTemplate($this->template)
-			->build();
+		$builder = new Html_Builder_Type('', $property->getType()->getElementType(), $value, $preprop);
+		$builder->readonly = $this->readOnly();
+		$input = $builder->setTemplate($this->template)->build();
 		return new Standard_Cell($input);
 	}
 
@@ -90,11 +101,27 @@ class Html_Builder_Map extends Map
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
-		$cell = new Standard_Cell('-');
-		$cell->setAttribute('title', '|remove line|');
-		$cell->addClass('minus');
-		$row->addCell($cell);
+		if (!$this->readOnly()) {
+			$cell = new Standard_Cell('-');
+			$cell->setAttribute('title', '|remove line|');
+			$cell->addClass('minus');
+			$row->addCell($cell);
+		}
 		return $row;
+	}
+
+	//-------------------------------------------------------------------------------------- readOnly
+	/**
+	 * @return boolean
+	 */
+	protected function readOnly()
+	{
+		if (!isset($this->read_only)) {
+			/** @var $user_annotation User_Annotation */
+			$user_annotation = $this->property->getAnnotation(User_Annotation::ANNOTATION);
+			$this->read_only = $user_annotation->has(User_Annotation::READONLY);
+		}
+		return $this->read_only;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate
