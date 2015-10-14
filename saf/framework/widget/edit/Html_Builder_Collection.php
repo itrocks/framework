@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\View\Html\Builder\Collection;
@@ -111,11 +112,33 @@ class Html_Builder_Collection extends Collection
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
-		$cell = new Standard_Cell('-');
-		$cell->setAttribute('title', '|remove line|');
-		$cell->addClass('minus');
-		$row->addCell($cell);
+		/** @var $user_annotation User_Annotation */
+		$user_annotation = $this->property->getAnnotation(User_Annotation::ANNOTATION);
+		if (!$user_annotation->has(User_Annotation::READONLY)) {
+			$cell = new Standard_Cell('-');
+			$cell->setAttribute('title', '|remove line|');
+			$cell->addClass('minus');
+			$row->addCell($cell);
+		}
 		return $row;
+	}
+
+	//--------------------------------------------------------------------------------- getProperties
+	/**
+	 * @return Reflection_Property[]
+	 */
+	public function getProperties()
+	{
+		$properties = parent::getProperties();
+		/** @var $user_annotation User_Annotation */
+		$user_annotation = $this->property->getAnnotation(User_Annotation::ANNOTATION);
+		if ($user_annotation->has(User_Annotation::READONLY)) {
+			foreach ($properties as $property) {
+				$user_annotation = $property->getAnnotation(User_Annotation::ANNOTATION);
+				$user_annotation->add(User_Annotation::READONLY);
+			}
+		}
+		return $properties;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate

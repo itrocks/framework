@@ -152,7 +152,7 @@ class Collection
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
-	 * @return string[]
+	 * @return Reflection_Property[]
 	 */
 	protected function getProperties()
 	{
