@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\Widget\Data_List;
 
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Range;
 use SAF\Framework\Dao\Option;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
@@ -37,6 +39,19 @@ class Search_Parameters_Parser
 	{
 		$this->class  = new Reflection_Class($class_name);
 		$this->search = $search;
+	}
+
+	//------------------------------------------------------------------------------------ applyEmpty
+	/**
+	 * @param $search_value string|Func
+	 * @param $type         Type
+	 */
+	protected function applyEmpty(&$search_value, Type $type)
+	{
+		if (in_array(Loc::rtr($search_value), ['empty', 'none', '!', '='])) {
+			$value = in_array($type->asString(), [Type::BOOLEAN, Type::FLOAT, Type::INTEGER]) ? 0 : '';
+			$search_value = Func::orOp([$value, Func::isNull()]);
+		}
 	}
 
 	//----------------------------------------------------------------------------------- applyJokers
@@ -84,6 +99,7 @@ class Search_Parameters_Parser
 			if ($this->hasRange($property)) {
 				$this->applyRange($search_value);
 			}
+			$this->applyEmpty($search_value, $property->getType());
 		}
 		return $search;
 	}
