@@ -29,7 +29,6 @@ $config['SAF/Framework'] = [
 	// this array must stay empty : top core plugins must be set into the index.php script
 	Priority::TOP_CORE => [],
 
-	//------------------------------------------------------------------------------------------ core
 	// core plugins are registered first on session creation
 	// they are activated first, at the beginning of each script
 	// here must be only plugins that are needed in 100% scripts, as a lot of them may consume time
@@ -53,12 +52,10 @@ $config['SAF/Framework'] = [
 	// ie if two plugins have the same pointcut, the highest priority advice will be executed,
 	// and the lowest priority advice will be executed only if the highest processes wants it.
 
-	//----------------------------------------------------------------------------------------- lower
 	Priority::LOWEST => [],
 	Priority::LOWER  => [],
 	Priority::LOW    => [],
 
-	//---------------------------------------------------------------------------------------- normal
 	Priority::NORMAL  => [
 		Cleaner::class,
 		Compiler::class => [
@@ -101,7 +98,6 @@ $config['SAF/Framework'] = [
 		]
 	],
 
-	//---------------------------------------------------------------------------------------- higher
 	Priority::HIGH    => [],
 	Priority::HIGHER  => [],
 	Priority::HIGHEST => [],
