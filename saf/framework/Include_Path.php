@@ -115,12 +115,14 @@ class Include_Path
 			}
 			// get source directories for secondary applications extends
 			$class = Reflection_class::of($application_class);
-			$extends_list = $class->getListAnnotation('extends')->values();
-			foreach ($extends_list as $extends) {
-				$directories = array_merge(
-					$this->getSourceDirectories($include_subdirectories, $extends),
-					$directories
-				);
+			$extends_annotations = $class->getListAnnotations('extends');
+			foreach ($extends_annotations as $extends_annotation) {
+				foreach ($extends_annotation->values() as $extends) {
+					$directories = array_merge(
+						$this->getSourceDirectories($include_subdirectories, $extends),
+						$directories
+					);
+				}
 			}
 		}
 		// get source directories from the application itself

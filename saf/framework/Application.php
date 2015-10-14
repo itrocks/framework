@@ -138,7 +138,11 @@ class Application
 		$class_name = get_called_class();
 		$class = new Reflection_Class($class_name);
 		$parent_class_name   = get_parent_class($class_name);
-		$extends_class_names = $class->getListAnnotation('extends')->values();
+		$extends_annotations = $class->getListAnnotations('extends');
+		$extends_class_names = [];
+		foreach ($extends_annotations as $extends_annotation) {
+			$extends_class_names = array_merge($extends_class_names, $extends_annotation->values());
+		}
 		$parents = $parent_class_name
 			? array_merge([$parent_class_name], $extends_class_names)
 			: $extends_class_names;
