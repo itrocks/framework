@@ -45,11 +45,17 @@ abstract class Getter
 			);
 			if (@class_exists($class_name)) {
 				$reflection_class = new Reflection_Class(Builder::className($class_name));
-				foreach ($reflection_class->getTraits() as $trait) {
-					$classes[$trait->name] = explode(BS, $trait->name, 3)[2];
-				}
-				foreach ($reflection_class->getListAnnotation('extends')->values() as $extends) {
-					$classes[$extends] = explode(BS, $extends, 3)[2];
+
+				// Gets all annotations
+				$extends_annotations = $reflection_class->getListAnnotations('extends');
+				foreach ($extends_annotations as $extends_annotation) {
+
+					// For each annotation, gets all path
+					$extends_class_names = $extends_annotation->value;
+
+					foreach($extends_class_names as $extends_class_name) {
+						$classes[$extends_class_name] = explode(BS, $extends_class_name, 3)[2];
+					}
 				}
 			}
 			$class_name = @get_parent_class($class_name);
