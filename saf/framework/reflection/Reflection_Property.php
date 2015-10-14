@@ -242,6 +242,22 @@ class Reflection_Property extends ReflectionProperty
 		return $this->doc_comment;
 	}
 
+	//--------------------------------------------------------------------------------- getEmptyValue
+	/**
+	 * @return mixed
+	 */
+	public function getEmptyValue()
+	{
+		switch ($this->getType()->asString()) {
+			case Type::_ARRAY:  return [];
+			case Type::BOOLEAN: return false;
+			case Type::FLOAT:   return .0;
+			case Type::INTEGER: return 0;
+			case Type::STRING:  return '';
+		}
+		return null;
+	}
+
 	//--------------------------------------------------------------------------------- getFinalClass
 	/**
 	 * Gets the final class where the property came from with a call to getProperties()
