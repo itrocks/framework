@@ -3,6 +3,7 @@ namespace SAF\Framework\View\Html\Builder;
 
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper;
+use SAF\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -155,36 +156,41 @@ class Collection
 	 */
 	protected function getProperties()
 	{
-		// gets all properties from collection element class
-		$class = new Reflection_Class($this->class_name);
-		$properties = $class->getProperties([T_EXTENDS, T_USE]);
-		// remove replaced properties
-		/** @var $properties Reflection_Property[] */
-		$properties = Replaces_Annotations::removeReplacedProperties($properties);
-		// remove linked class properties
-		$linked_class = $class->getAnnotation('link')->value;
-		if ($linked_class) {
-			foreach (
-				array_keys((new Reflection_Class($linked_class))->getProperties([T_EXTENDS, T_USE]))
-				as $property_name
-			) {
+		/** @var $representative Representative_Annotation */
+		$representative = $this->property->getListAnnotation('representative');
+		$properties = $representative->getProperties();
+		if (!$properties) {
+			// gets all properties from collection element class
+			$class = new Reflection_Class($this->class_name);
+			$properties = $class->getProperties([T_EXTENDS, T_USE]);
+			// remove replaced properties
+			/** @var $properties Reflection_Property[] */
+			$properties = Replaces_Annotations::removeReplacedProperties($properties);
+			// remove linked class properties
+			$linked_class = $class->getAnnotation('link')->value;
+			if ($linked_class) {
+				foreach (
+					array_keys((new Reflection_Class($linked_class))->getProperties([T_EXTENDS, T_USE]))
+					as $property_name
+				) {
+					unset($properties[$property_name]);
+				}
+			}
+			// remove composite property
+			$property_name = $this->property->getAnnotation('foreign')->value;
+			if (isset($properties[$property_name])) {
 				unset($properties[$property_name]);
 			}
-		}
-		// remove composite property
-		$property_name = $this->property->getAnnotation('foreign')->value;
-		if (isset($properties[$property_name])) {
-			unset($properties[$property_name]);
-		}
-		// remove static and user-invisible properties
-		foreach ($properties as $property_name => $property) {
-			if (
-				$property->isStatic()
-				|| $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
-					User_Annotation::INVISIBLE
-				)
-			) {
-				unset($properties[$property_name]);
+			// remove static and user-invisible properties
+			foreach ($properties as $property_name => $property) {
+				if (
+					$property->isStatic()
+					|| $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
+						User_Annotation::INVISIBLE
+					)
+				) {
+					unset($properties[$property_name]);
+				}
 			}
 		}
 		// returns properties
