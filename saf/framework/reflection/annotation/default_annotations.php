@@ -215,6 +215,11 @@ Parser::$default_annotations = [
 	// to an input form
 	__NAMESPACE__ . '\Property\User_Change_Annotation' => Method_Annotation::class,
 
+	// @user_default [[\Class\Namespace\]Class_Name::]methodName
+	// Identifies a method that gets the default value for the property into forms only
+	// The Property will be sent as an argument to this callable
+	__NAMESPACE__ . '\Property\User_Default_Annotation' => Method_Annotation::class,
+
 	// @user_getter [Vendor\Module\Class_Name::]methodName
 	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Annotation::class,
 

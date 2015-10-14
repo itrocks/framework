@@ -4,6 +4,7 @@ namespace SAF\Framework\Mapper;
 use SAF\Framework\Builder;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Type;
+use SAF\Framework\Tools\Can_Be_Empty;
 
 /**
  * An empty object is an object which all properties have an empty or default value
@@ -22,18 +23,23 @@ abstract class Empty_Object
 	public static function isEmpty($object)
 	{
 		$is_empty = true;
-		$class = new Reflection_Class(get_class($object));
-		$default = get_class_vars($class->name);
-		foreach ($class->accessProperties() as $property) {
-			if (!$property->isStatic()) {
-				$value = $property->getValue($object);
-				if (
-					!empty($value)
-					&& ((!is_object($value)) || !Empty_Object::isEmpty($value))
-					&& (is_object($value) || ($value !== $default[$property->name]))
-				) {
-					$is_empty = false;
-					break;
+		if ($object instanceof Can_Be_Empty) {
+			$is_empty = $object->isEmpty();
+		}
+		else {
+			$class = new Reflection_Class(get_class($object));
+			$default = get_class_vars($class->name);
+			foreach ($class->accessProperties() as $property) {
+				if (!$property->isStatic()) {
+					$value = $property->getValue($object);
+					if (
+						!empty($value)
+						&& ((!is_object($value)) || !Empty_Object::isEmpty($value))
+						&& (is_object($value) || ($value !== $default[$property->name]))
+					) {
+						$is_empty = false;
+						break;
+					}
 				}
 			}
 		}
