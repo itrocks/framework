@@ -159,9 +159,11 @@ class Builder implements Activable, Registerable, Serializable
 						if ($property->getAnnotation('link') == Link_Annotation::COLLECTION) {
 							$element_class_from = $property->getType()->getElementTypeAsString();
 							$property = $destination_class->getProperty($property->name);
-							$element_class_to = $property->getType()->getElementTypeAsString();
-							if ($element_class_to != $element_class_from) {
-								$clone_collection[substr($property_name, 0, -1)] = $element_class_to;
+							if ($property) {
+								$element_class_to = $property->getType()->getElementTypeAsString();
+								if ($element_class_to != $element_class_from) {
+									$clone_collection[substr($property_name, 0, -1)] = $element_class_to;
+								}
 							}
 						}
 					}
