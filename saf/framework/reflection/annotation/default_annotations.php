@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection\Annotation;
 
 use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
+use SAF\Framework\Reflection\Annotation\Template\Default_True_Boolean_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
 use SAF\Framework\Reflection\Annotation;
@@ -11,7 +12,7 @@ use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 /**
  * Known annotations that do not need a specific class
  */
-Parser::$default_annotations = [
+Parser::$default_annotations = array(
 
 	// @after_read afterRead
 	// This is a Multiple_Annotation
@@ -192,6 +193,11 @@ Parser::$default_annotations = [
 	// property and this property will point on the same reference and have a common value
 	__NAMESPACE__ . '\Property\Replaces_Annotation' => Annotation::class,
 
+	// @search_range false
+	// Search range using "from-to" with - as separator is accepted by default. Set this to false to
+	// disable ie for properties which values often contain the - character.
+	__NAMESPACE__ . '\Property\Search_Range_Annotation' => Default_True_Boolean_Annotation::class,
+
 	// @setter [[[\Vendor\Module\]Class_Name::]methodName]
 	// This is a Multiple_Annotation
 	// Tells a method name that is the setter for that property.
@@ -223,4 +229,4 @@ Parser::$default_annotations = [
 	// @user_getter [Vendor\Module\Class_Name::]methodName
 	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Annotation::class,
 
-];
+);

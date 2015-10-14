@@ -83,7 +83,8 @@ class Search_Parameters_Parser
 	public function hasRange(Reflection_Property $property)
 	{
 		$type_string = $property->getType()->asString();
-		return in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING]);
+		return ($property->getAnnotation('search_range')->value !== false)
+			&& in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING]);
 	}
 
 	//----------------------------------------------------------------------------------------- parse
@@ -95,11 +96,11 @@ class Search_Parameters_Parser
 		$search = $this->search;
 		foreach ($search as $property_path => &$search_value) {
 			$property = new Reflection_Property($this->class->name, $property_path);
+			$this->applyEmpty($search_value, $property->getType());
 			$this->applyJokers($search_value);
 			if ($this->hasRange($property)) {
 				$this->applyRange($search_value);
 			}
-			$this->applyEmpty($search_value, $property->getType());
 		}
 		return $search;
 	}
