@@ -26,6 +26,14 @@ class Html_Builder_Collection extends Collection
 	 */
 	public $preprop = null;
 
+	//------------------------------------------------------------------------------------ $read_only
+	/**
+	 * Property read only cache. Do not use this property : use readOnly() instead.
+	 *
+	 * @var boolean
+	 */
+	private $read_only;
+
 	//------------------------------------------------------------------------------------- $template
 	/**
 	 * @var Html_Template
@@ -52,9 +60,11 @@ class Html_Builder_Collection extends Collection
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
-		$row = $this->buildRow(Builder::create($this->class_name));
-		$row->addClass('new');
-		$body->addRow($row);
+		if (!$this->readOnly()) {
+			$row = $this->buildRow(Builder::create($this->class_name));
+			$row->addClass('new');
+			$body->addRow($row);
+		}
 		return $body;
 	}
 
@@ -112,9 +122,7 @@ class Html_Builder_Collection extends Collection
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
-		/** @var $user_annotation User_Annotation */
-		$user_annotation = $this->property->getAnnotation(User_Annotation::ANNOTATION);
-		if (!$user_annotation->has(User_Annotation::READONLY)) {
+		if (!$this->readOnly()) {
 			$cell = new Standard_Cell('-');
 			$cell->setAttribute('title', '|remove line|');
 			$cell->addClass('minus');
@@ -130,15 +138,28 @@ class Html_Builder_Collection extends Collection
 	public function getProperties()
 	{
 		$properties = parent::getProperties();
-		/** @var $user_annotation User_Annotation */
-		$user_annotation = $this->property->getAnnotation(User_Annotation::ANNOTATION);
-		if ($user_annotation->has(User_Annotation::READONLY)) {
+		if ($this->readOnly()) {
 			foreach ($properties as $property) {
+				/** @var $user_annotation User_Annotation */
 				$user_annotation = $property->getAnnotation(User_Annotation::ANNOTATION);
 				$user_annotation->add(User_Annotation::READONLY);
 			}
 		}
 		return $properties;
+	}
+
+	//-------------------------------------------------------------------------------------- readOnly
+	/**
+	 * @return boolean
+	 */
+	protected function readOnly()
+	{
+		if (!isset($this->read_only)) {
+			/** @var $user_annotation User_Annotation */
+			$user_annotation = $this->property->getAnnotation(User_Annotation::ANNOTATION);
+			$this->read_only = $user_annotation->has(User_Annotation::READONLY);
+		}
+		return $this->read_only;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate
