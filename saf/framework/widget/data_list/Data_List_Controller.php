@@ -518,4 +518,9 @@ class Data_List_Controller extends Output_Controller
 		return View::run($parameters, $form, $files, $class_name, Feature::F_LIST);
 	}
 
+	//--------------------------------------------------------------------------------- getClassNames
+	public function getClassNames() {
+		return $this->class_names;
+	}
+
 }
