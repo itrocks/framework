@@ -18,6 +18,7 @@
 			|{reportMessage}|
 			<!--value--> - |expected ¦{.}¦|<!--value-->
 			<script>
+				$('.bad').removeClass('bad');
 				$('input[name="id_{property.name}"]').next('input').addClass('bad');
 				$('input[name="{property.name}"]').addClass('bad');
 				$('input[name="{property.name}[0]"]').next('input').addClass('bad');
