@@ -58,7 +58,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				if (!@class_exists($type_annotation->value)) {
 					$this->searchIntoFinalClass($class_property, $type_annotation, $value, $pos);
 				}
-				if (!@class_exists($type_annotation->value)) {
+				if (!@class_exists($type_annotation->value) && !@trait_exists($type_annotation->value)) {
 					trigger_error(
 						sprintf(
 							'Not found full class name for Method_Annotation %1 value %2 class %3 property %4',
@@ -134,6 +134,8 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 		$class = ($class_property instanceof Reflection_Property)
 			? $class_property->getFinalClass()
 			: $class_property;
+		/*
+		// TODO commented, but should be activated to finalize this (launch unit tests)
 		trigger_error(
 			sprintf(
 				'Looking namespace use for Method_Annotation into final class %1 for property %2'
@@ -142,6 +144,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			),
 			E_USER_WARNING
 		);
+		*/
 		$php_class = Reflection_Class::of($class->getName());
 		$type_annotation->value = substr($value, 0, $pos);
 		$type_annotation->applyNamespace($class->getNamespaceName(), $php_class->getNamespaceUse());
