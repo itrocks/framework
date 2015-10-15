@@ -187,10 +187,12 @@ class Data_List_Controller extends Output_Controller
 
 	//--------------------------------------------------------------------------------- getClassNames
 	/**
-	 * Returns the class names.
+	 * Returns the class names
+	 *
 	 * @return string
 	 */
-	public function getClassNames() {
+	public function getClassNames()
+	{
 		return $this->class_names;
 	}
 
