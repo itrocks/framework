@@ -5,7 +5,6 @@ use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Property_Validator;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Can_Be_Empty;
 use SAF\Framework\Widget\Validate\Validate;
 
 /**
@@ -38,12 +37,7 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 	{
 		if ($this->property instanceof Reflection_Property) {
 			$value = $this->property->getValue($object);
-			return (
-				is_null($value)
-				|| ($value === '')
-				|| (is_array($value) && empty($value))
-				|| (($value instanceof Can_Be_Empty) && $value->isEmpty())
-			);
+			return $this->property->isValueEmpty($value);
 		}
 		else {
 			return false;

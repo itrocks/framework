@@ -3,12 +3,13 @@ namespace SAF\Framework\Reflection;
 
 use Exception;
 use ReflectionProperty;
+use SAF\Framework\Mapper\Empty_Object;
 use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use SAF\Framework\Reflection\Annotation\Parser;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
-use SAF\Framework\Tools\Date_Time;
+use SAF\Framework\Tools\Can_Be_Empty;
 use SAF\Framework\Tools\Field;
 use SAF\Framework\Tools\Names;
 
@@ -426,6 +427,21 @@ class Reflection_Property extends ReflectionProperty
 		return ($object1 == $object2);
 	}
 
+	//---------------------------------------------------------------------------------- isValueEmpty
+	/**
+	 * Returns true if property is empty
+	 *
+	 * @param $value mixed
+	 * @return boolean
+	 */
+	public function isValueEmpty($value)
+	{
+		return empty($value)
+			|| (is_object($value) && Empty_Object::isEmpty($value))
+			|| ((substr($value, 0, 10) === '0000-00-00') && $this->getType()->isDateTime())
+			|| (($value instanceof Can_Be_Empty) && $value->isEmpty());
+	}
+
 	//------------------------------------------------------------------------- isValueEmptyOrDefault
 	/**
 	 * Returns true if property is empty or equals to the default value
@@ -437,10 +453,8 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function isValueEmptyOrDefault($value)
 	{
-		return empty($value)
-			|| $this->isEquivalentObject($value, $this->getDefaultValue())
-			|| (($value === '0000-00-00') && $this->getType()->isDateTime())
-			|| (($value instanceof Date_Time) && $value->isEmpty());
+		return $this->isValueEmpty($value)
+			|| $this->isEquivalentObject($value, $this->getDefaultValue());
 	}
 
 	//----------------------------------------------------------------------------------- pathAsField
