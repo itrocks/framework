@@ -116,9 +116,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 		}
 		$possibles = Replaces_Annotations::removeReplacedProperties($possibles);
 		if (count($possibles) != 1) {
-			$this->value = Names::classToProperty(Names::setToClass(
-					$property->getDeclaringClass()->getAnnotation('set')->value
-			));
+			$this->value = Names::classToProperty($property->getDeclaringClassName());
 		}
 		return array_keys($possibles);
 	}

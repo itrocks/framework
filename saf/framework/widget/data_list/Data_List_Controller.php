@@ -185,6 +185,17 @@ class Data_List_Controller extends Output_Controller
 		return $property_name;
 	}
 
+	//--------------------------------------------------------------------------------- getClassNames
+	/**
+	 * Returns the class names
+	 *
+	 * @return string
+	 */
+	public function getClassNames()
+	{
+		return $this->class_names;
+	}
+
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $class_name string object or class name
@@ -517,5 +528,4 @@ class Data_List_Controller extends Output_Controller
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		return View::run($parameters, $form, $files, $class_name, Feature::F_LIST);
 	}
-
 }
