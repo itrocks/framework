@@ -107,16 +107,17 @@ $('document').ready(function()
 						var i;
 						var j = 0;
 						while ((i = text.indexOf('=' + DQ, j) + 1) > 0) {
+							var in_depth = depth;
 							j = text.indexOf(DQ, i + 1);
 							while (
 								(i = text.indexOf(open, i) + open.length) && (i > (open.length - 1)) && (i < j)
-									&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
+									&& ((in_depth > 0) || (text[i] < '0') || (text[i] > '9'))
 								) {
 								if ((text[i] >= '0') && (text[i] <= '9')) {
-									depth --;
+									in_depth --;
 								}
 							}
-							if ((i > (open.length - 1)) && (i < j) && !depth) {
+							if ((i > (open.length - 1)) && (i < j) && !in_depth) {
 								var k = text.indexOf(close, i);
 								var html_indice = text.substring(i, k);
 								if (html_indice == old_indice) {
