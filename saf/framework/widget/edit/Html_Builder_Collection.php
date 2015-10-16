@@ -80,9 +80,18 @@ class Html_Builder_Collection extends Collection
 			$this->template = new Html_Template();
 		}
 		$value = $property->getValue($object);
-		$preprop = $this->preprop
-			? ($this->preprop . '[' . $this->property->name . ']')
-			: $this->property->name;
+		if (strpos($this->preprop, '[]')) {
+			$property_builder = new Html_Builder_Property();
+			$property_builder->setTemplate($this->template);
+			$preprop_to_count = lParse($this->preprop, '[]');
+			$counter = $property_builder->template->nextCounter($preprop_to_count . '[id][]', false);
+			$preprop = $preprop_to_count . '[' . $this->property->name . '][' . $counter . ']';
+		}
+		else {
+			$preprop = $this->preprop
+				? ($this->preprop . '[' . $this->property->name . ']')
+				: $this->property->name;
+		}
 		$builder = (new Html_Builder_Property($property, $value, $preprop . '[]'));
 		$input = $builder->setTemplate($this->template)->build();
 		if (
