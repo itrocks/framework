@@ -438,7 +438,10 @@ class Reflection_Property extends ReflectionProperty
 	{
 		return empty($value)
 			|| (is_object($value) && Empty_Object::isEmpty($value))
-			|| ((substr($value, 0, 10) === '0000-00-00') && $this->getType()->isDateTime())
+			|| (
+				is_string($value) && (substr($value, 0, 10) === '0000-00-00')
+				&& $this->getType()->isDateTime()
+			)
 			|| (($value instanceof Can_Be_Empty) && $value->isEmpty());
 	}
 
