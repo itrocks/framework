@@ -3,7 +3,7 @@ namespace SAF\Framework\Widget\Button\Code\Command;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Annotation\Parser;
+use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Widget\Button\Code\Command;
@@ -49,7 +49,9 @@ class Property_Annotation implements Command
 	{
 		$property = new Reflection_Property(get_class($object), $this->property_name);
 		$annotate = $this->annotate;
-		$annotation_class = Parser::getAnnotationClassName(Reflection_Property::class, $annotate);
+		$annotation_class = Annotation\Parser::getAnnotationClassName(
+			Reflection_Property::class, $annotate
+		);
 		if ($annotation_class) {
 			/** @var $annotation Mandatory_Annotation */
 			$annotation = Builder::create($annotation_class, [true, $property]);
