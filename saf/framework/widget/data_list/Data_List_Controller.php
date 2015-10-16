@@ -528,4 +528,5 @@ class Data_List_Controller extends Output_Controller
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		return View::run($parameters, $form, $files, $class_name, Feature::F_LIST);
 	}
+
 }
