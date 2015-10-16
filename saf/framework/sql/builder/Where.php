@@ -36,7 +36,7 @@ class Where
 
 	//---------------------------------------------------------------------------------- $where_array
 	/**
-	 * Where array expression, indices are columns names
+	 * Where array expression, keys are columns names
 	 *
 	 * @var array|Func\Where
 	 */
@@ -51,7 +51,7 @@ class Where
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
 	 *
 	 * @param $class_name  string base object class name
-	 * @param $where_array array|Func\Where where array expression, indices are columns names
+	 * @param $where_array array|Func\Where where array expression, keys are columns names
 	 * @param $sql_link    Link
 	 * @param $joins       Joins
 	 */

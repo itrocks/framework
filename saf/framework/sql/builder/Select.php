@@ -65,7 +65,7 @@ class Select
 	 * @param $class_name  string        base object class name
 	 * @param $properties  string[]|null properties paths list
 	 * (default : all table columns will be read)
-	 * @param $where_array array|object  where array expression, indices are columns names,
+	 * @param $where_array array|object  where array expression, keys are columns names,
 	 * or filter object
 	 * @param $sql_link    Link
 	 * @param $options     Option[] DAO options can be used for complex queries building

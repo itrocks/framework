@@ -49,7 +49,8 @@ abstract class Integrated_Properties
 	 * @param $property        Reflection_Property
 	 * @param $object          object
 	 * @param $property_name   string
-	 * @return Reflection_Property[] added properties list (empty if none applies) indices are 'property.sub_property'
+	 * @return Reflection_Property[] added properties list (empty if none applies) keys are
+	 *         'property.sub_property'
 	 */
 	public static function expandUsingProperty(
 		&$properties_list, $property, $object = null, $property_name = null
@@ -62,13 +63,13 @@ abstract class Integrated_Properties
 
 	//------------------------------------------------------------------- expandUsingPropertyInternal
 	/**
-	 * @param $properties_list Reflection_Property[] new indices will be 'property.sub_property'
+	 * @param $properties_list Reflection_Property[] new keys will be 'property.sub_property'
 	 * @param $property        Reflection_Property
 	 * @param $object          object
 	 * @param $property_name   string
 	 * @param $display_prefix  string
 	 * @param $blocks          string[]
-	 * @return Reflection_Property[] added properties list (empty if none applies) indices are
+	 * @return Reflection_Property[] added properties list (empty if none applies) keys are
 	 *         'property.sub_property'
 	 * @todo probably things to clean up (was patched for 'all properties as values' without controls)
 	 */

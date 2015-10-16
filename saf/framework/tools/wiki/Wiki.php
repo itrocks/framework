@@ -28,7 +28,7 @@ class Wiki implements Registerable
 	 * geshi parsing replaces @language ... @ by `#1` `#2` etc.
 	 * after geshi parsing, these specific codes will be replaced with geshi replacement
 	 *
-	 * @var string[] indice is the replacement code `#1`, value is the geshi parsed code
+	 * @var string[] key is the replacement code `#1`, value is the geshi parsed code
 	 */
 	private $geshi_replace = [];
 

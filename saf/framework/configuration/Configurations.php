@@ -12,7 +12,7 @@ class Configurations
 
 	//------------------------------------------------------------------------------- $configurations
 	/**
-	 * Configuration objects array, indice is configuration name
+	 * Configuration objects array, key is configuration name
 	 *
 	 * @var Configuration[]
 	 */
