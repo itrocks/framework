@@ -118,7 +118,7 @@ class Search_Parameters_Parser
 			$search_value = Func::orOp($or);
 		}
 		else {
-			$this->applySingleValue($search_value, $property);
+			$this->applyAnd($search_value, $property);
 		}
 	}
 
