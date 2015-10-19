@@ -76,8 +76,12 @@ abstract class History
 				? Dao::getObjectIdentifier($new_value)
 				: strval($new_value);
 		}
-		$this->date = Date_Time::now();
-		$this->user = User::current();
+		if (is_null($this->date)) {
+			$this->date = Date_Time::now();
+		}
+		if (is_null($this->user)) {
+			$this->user = User::current();
+		}
 	}
 
 }
