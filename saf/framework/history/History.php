@@ -8,6 +8,8 @@ use SAF\Framework\Tools\Date_Time;
  *
  * You must @override object @var Class_Name into the final class
  * Or create another property with @replaces object
+ *
+ * @representative object, date, property_name, old_value, new_value
  */
 abstract class History
 {
