@@ -155,6 +155,9 @@ class Where
 					elseif (!empty($sql)) {
 						$sql = substr($sql, 0, -strlen(SP . $sub_clause . SP));
 					}
+					else {
+						$first = true;
+					}
 			}
 		}
 		return $sql . $sql_close;
@@ -274,7 +277,7 @@ class Where
 			$value = $value->toISO(false);
 		}
 		switch (gettype($value)) {
-			case 'NULL':   return '';
+			case 'NULL':   return $this->buildColumn($path) . ' IS NULL';
 			case 'array':  return $this->buildArray ($path, $value, $clause);
 			case 'object': return $this->buildObject($path, $value);
 			default:       return $this->buildValue ($path, $value);
