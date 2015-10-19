@@ -65,8 +65,16 @@ class Comparison implements Where
 		$column = $builder->buildColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
 			switch ($this->sign) {
-				case self::EQUAL:     return $column . ' IS NULL';
-				case self::NOT_EQUAL: return $column . ' IS NOT NULL';
+				case self::EQUAL:     case self::LIKE:     return $column . ' IS NULL';
+				case self::NOT_EQUAL: case self::NOT_LIKE: return $column . ' IS NOT NULL';
+			}
+		}
+		if ($this->than_value instanceof Where) {
+			if ($this->sign == self::NOT_EQUAL) {
+				return 'NOT (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
+			}
+			else {
+				return $this->than_value->toSql($builder, $property_path, $prefix);
 			}
 		}
 		return $column . SP . $this->sign . SP
