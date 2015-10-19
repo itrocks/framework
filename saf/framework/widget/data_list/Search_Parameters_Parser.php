@@ -41,6 +41,26 @@ class Search_Parameters_Parser
 		$this->search = $search;
 	}
 
+	//-------------------------------------------------------------------------------------- applyAnd
+	/**
+	 * @param $search_value string
+	 * @param $property     Reflection_Property
+	 */
+	protected function applyAnd(&$search_value, Reflection_Property $property)
+	{
+		if (is_string($search_value) && (strpos($search_value, '&') !== false)) {
+			$and = [];
+			foreach (explode('&', $search_value) as $search) {
+				$this->applySingleValue($search, $property);
+				$and[] = $search;
+			}
+			$search_value = Func::andOp($and);
+		}
+		else {
+			$this->applySingleValue($search, $property);
+		}
+	}
+
 	//------------------------------------------------------------------------------------ applyEmpty
 	/**
 	 * @param $search_value string|Func
@@ -68,6 +88,40 @@ class Search_Parameters_Parser
 		}
 	}
 
+	//-------------------------------------------------------------------------------------- applyNot
+	/**
+	 * @param $search_value string
+	 * @param $property     Reflection_Property
+	 */
+	protected function applyNot(&$search_value, Reflection_Property $property)
+	{
+		if (is_string($search_value) && (substr($search_value, 0, 1) === '!')) {
+			$search_value = substr($search_value, 1);
+			$this->applySingleValue($search_value, $property);
+			$search_value = Func::notEqual($search_value);
+		}
+	}
+
+	//--------------------------------------------------------------------------------------- applyOr
+	/**
+	 * @param $search_value string
+	 * @param $property     Reflection_Property
+	 */
+	protected function applyOr(&$search_value, Reflection_Property $property)
+	{
+		if (is_string($search_value) && (strpos($search_value, ',') !== false)) {
+			$or = [];
+			foreach (explode(',', $search_value) as $search) {
+				$this->applyAnd($search, $property);
+				$or[] = $search;
+			}
+			$search_value = Func::orOp($or);
+		}
+		else {
+			$this->applySingleValue($search_value, $property);
+		}
+	}
+
 	//------------------------------------------------------------------------------------ applyRange
 	/**
 	 * @param $search_value string|Option
@@ -77,6 +131,21 @@ class Search_Parameters_Parser
 		if (is_string($search_value) && (strpos($search_value, '-') !== false)) {
 			$range = explode('-', $search_value, 2);
 			$search_value = new Range($range[0], $range[1]);
+		}
+	}
+
+	//------------------------------------------------------------------------------ applySingleValue
+	/**
+	 * @param $search_value string
+	 * @param $property     Reflection_Property
+	 */
+	protected function applySingleValue(&$search_value, Reflection_Property $property)
+	{
+		$this->applyNot($search_value, $property);
+		$this->applyEmpty($search_value, $property->getType());
+		$this->applyJokers($search_value);
+		if ($this->hasRange($property)) {
+			$this->applyRange($search_value);
 		}
 	}
 
@@ -101,11 +170,7 @@ class Search_Parameters_Parser
 		$search = $this->search;
 		foreach ($search as $property_path => &$search_value) {
 			$property = new Reflection_Property($this->class->name, $property_path);
-			$this->applyEmpty($search_value, $property->getType());
-			$this->applyJokers($search_value);
-			if ($this->hasRange($property)) {
-				$this->applyRange($search_value);
-			}
+			$this->applyOr($search_value, $property);
 		}
 		return $search;
 	}
