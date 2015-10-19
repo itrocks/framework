@@ -57,7 +57,7 @@ class Search_Parameters_Parser
 			$search_value = Func::andOp($and);
 		}
 		else {
-			$this->applySingleValue($search, $property);
+			$this->applySingleValue($search_value, $property);
 		}
 	}
 
