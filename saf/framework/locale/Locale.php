@@ -23,7 +23,7 @@ class Locale implements Configurable
 	const LANGUAGE = 'language';
 	const NUMBER   = 'number';
 
-	//----------------------------------------------------------------------------------------- $date
+	//---------------------------------------------------------------------------------- $date_format
 	/**
 	 * @link Object
 	 * @setter setDateFormat
@@ -38,7 +38,7 @@ class Locale implements Configurable
 	 */
 	public $language;
 
-	//--------------------------------------------------------------------------------------- $number
+	//-------------------------------------------------------------------------------- $number_format
 	/**
 	 * @setter setNumberFormat
 	 * @var Number_Format
@@ -122,7 +122,11 @@ class Locale implements Configurable
 		}
 		return (is_null($value) && $property->getAnnotation('null')->value)
 			? $value
-			: $this->toLocale($value, $property->getType());
+			: (
+				$property->getListAnnotation('values')->value
+					? $this->translations->translate($value)
+					: $this->toLocale($value, $property->getType())
+			);
 	}
 
 	//--------------------------------------------------------------------------------- setDateFormat
