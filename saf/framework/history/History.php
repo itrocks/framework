@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Tools\Date_Time;
 
 /**
@@ -84,6 +85,15 @@ abstract class History
 		if (is_null($this->user)) {
 			$this->user = User::current();
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return empty($this->date) ? '' : Loc::dateToLocale($this->date);
 	}
 
 }
