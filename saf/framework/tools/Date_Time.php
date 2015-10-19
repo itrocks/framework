@@ -146,7 +146,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function diff($datetime2, $absolute = false)
 	{
-		return new Date_Interval(parent::diff($datetime2, $absolute)->format('P%yY%mM%dDT%hH%iM%sS'));
+		$parent_diff = parent::diff($datetime2, $absolute);
+		$interval = new Date_Interval($parent_diff->format('P%yY%mM%dDT%hH%iM%sS'));
+		$interval->invert = $parent_diff->invert;
+		return $interval;
 	}
 
 	//---------------------------------------------------------------------------------------- format
