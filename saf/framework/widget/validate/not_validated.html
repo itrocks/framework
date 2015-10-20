@@ -10,6 +10,9 @@
 <body>
 <!--BEGIN-->
 
+	<script>
+		$('.bad').removeClass('bad');
+	</script>
 	|¦{object.@class.display.ucfirst}¦ !{object}! is invalid| :
 	<ul>
 		<!--getErrors-->
@@ -18,7 +21,6 @@
 			|{reportMessage}|
 			<!--value--> - |expected ¦{.}¦|<!--value-->
 			<script>
-				$('.bad').removeClass('bad');
 				$('input[name="id_{property.name}"]').next('input').addClass('bad');
 				$('input[name="{property.name}"]').addClass('bad');
 				$('input[name="{property.name}[0]"]').next('input').addClass('bad');
