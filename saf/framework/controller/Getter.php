@@ -163,7 +163,8 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 				empty($class)
 				&& (
 					(strpos($suffix, 'View') === false)
-					|| (
+					&& ($extension !== 'html')
+					&& (
 						($last_controller_class  !== $base_class)
 						&& ($last_controller_method !== $feature_name)
 					)
