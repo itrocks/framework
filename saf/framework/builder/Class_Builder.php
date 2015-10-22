@@ -51,14 +51,17 @@ class Class_Builder
 						$interfaces[$implements] = $implements;
 					}
 					$level = 0;
-					foreach ($class->getListAnnotation('extends')->values() as $extends) {
-						if (Dao::search(
-							['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
-							Dependency::class
-						)) {
-							foreach ($traits as $trait_level => $trait_names) {
-								if (isset($trait_names[$extends])) {
-									$level = max($level, $trait_level + 1);
+					$extends_annotations = $class->getListAnnotations('extends');
+					foreach ($extends_annotations as $extends_annotation) {
+						foreach ($extends_annotation->values() as $extends) {
+							if (Dao::search(
+								['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
+								Dependency::class
+							)) {
+								foreach ($traits as $trait_level => $trait_names) {
+									if (isset($trait_names[$extends])) {
+										$level = max($level, $trait_level + 1);
+									}
 								}
 							}
 						}

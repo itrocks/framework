@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\Widget\Edit;
 
+use SAF\Framework\Mapper\Empty_Object;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
+use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Names;
@@ -31,6 +33,22 @@ class Html_Builder_Property extends Html_Builder_Type
 	public function __construct(Reflection_Property $property = null, $value = null, $preprop = null)
 	{
 		if (isset($property)) {
+			$this->null     = $property->getAnnotation('null')->value;
+			$this->property = $property;
+			$this->readonly = $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
+				User_Annotation::READONLY
+			);
+			if (
+				!$this->readonly
+				&& ($property instanceof Reflection_Property_Value)
+				&& ((is_object($value) && Empty_Object::isEmpty($value)) || is_null($value))
+			) {
+				/** @var $user_default_annotation Method_Annotation */
+				$user_default_annotation = $property->getAnnotation('user_default');
+				if ($user_default_annotation->value) {
+					$value = $user_default_annotation->call($property->getObject());
+				}
+			}
 			$name = $property->pathAsField();
 			if (strpos($name, '[')) {
 				$preprop2 = lLastParse($name, '[');
@@ -40,11 +58,6 @@ class Html_Builder_Property extends Html_Builder_Type
 				$name = lParse(rLastParse($name, '['), ']');
 			}
 			parent::__construct($name, $property->getType(), $value, $preprop);
-			$this->null     = $property->getAnnotation('null')->value;
-			$this->property = $property;
-			$this->readonly = $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
-				User_Annotation::READONLY
-			);
 		}
 		else {
 			parent::__construct(null, null, $value, $preprop);

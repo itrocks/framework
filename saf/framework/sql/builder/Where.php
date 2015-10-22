@@ -6,6 +6,7 @@ use SAF\Framework\Dao\Func\Logical;
 use SAF\Framework\Dao\Sql\Link;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Sql\Builder;
@@ -36,7 +37,7 @@ class Where
 
 	//---------------------------------------------------------------------------------- $where_array
 	/**
-	 * Where array expression, indices are columns names
+	 * Where array expression, keys are columns names
 	 *
 	 * @var array|Func\Where
 	 */
@@ -51,7 +52,7 @@ class Where
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
 	 *
 	 * @param $class_name  string base object class name
-	 * @param $where_array array|Func\Where where array expression, indices are columns names
+	 * @param $where_array array|Func\Where where array expression, keys are columns names
 	 * @param $sql_link    Link
 	 * @param $joins       Joins
 	 */
@@ -155,6 +156,9 @@ class Where
 					elseif (!empty($sql)) {
 						$sql = substr($sql, 0, -strlen(SP . $sub_clause . SP));
 					}
+					else {
+						$first = true;
+					}
 			}
 		}
 		return $sql . $sql_close;
@@ -229,7 +233,10 @@ class Where
 		$this->joins->add($path);
 		$array = [];
 		$class = new Reflection_Class(get_class($object));
-		foreach ($class->accessProperties() as $property_name => $property) {
+		foreach (
+			Replaces_Annotations::removeReplacedProperties($class->accessProperties())
+			as $property_name => $property
+		) {
 			if (isset($object->$property_name)) {
 				$sub_path = $property_name;
 				$array[$sub_path] = $object->$property_name;
@@ -274,7 +281,7 @@ class Where
 			$value = $value->toISO(false);
 		}
 		switch (gettype($value)) {
-			case 'NULL':   return '';
+			case 'NULL':   return $this->buildColumn($path) . ' IS NULL';
 			case 'array':  return $this->buildArray ($path, $value, $clause);
 			case 'object': return $this->buildObject($path, $value);
 			default:       return $this->buildValue ($path, $value);

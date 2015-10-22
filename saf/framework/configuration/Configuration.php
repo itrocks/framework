@@ -8,9 +8,9 @@ class Configuration
 {
 
 	//------------------------------------------------------------ Configuration array keys constants
-	const APP = 'app';
-	const AUTHOR = 'author';
-	const CLASS_NAME = 'class';
+	const APP         = 'app';
+	const AUTHOR      = 'author';
+	const CLASS_NAME  = 'class';
 	const EXTENDS_APP = 'extends';
 
 	//---------------------------------------------------------------------------- $application_class

@@ -98,29 +98,36 @@ class Include_Path
 	 *
 	 * @param $include_subdirectories boolean
 	 * @param $application_class     string
+	 * @param $already               string[] already scanned classes
 	 * @return string[]
 	 */
-	public function getSourceDirectories($include_subdirectories = false, $application_class = null)
-	{
+	public function getSourceDirectories(
+	 	$include_subdirectories = false, $application_class = null, &$already = []
+	) {
 		if (!isset($application_class)) {
 			$application_class = $this->application_class;
 		}
+		$already[$application_class] = true;
 		$app_dir = $this->getSourceDirectory($application_class);
 		$directories = [];
 		if ($application_class != Application::class) {
 			// get source directories from main application extends
 			$extends = get_parent_class($application_class);
-			if ($extends) {
-				$directories = $this->getSourceDirectories($include_subdirectories, $extends);
+			if ($extends && !isset($already[$extends])) {
+				$directories = $this->getSourceDirectories($include_subdirectories, $extends, $already);
 			}
 			// get source directories for secondary applications extends
 			$class = Reflection_class::of($application_class);
-			$extends_list = $class->getListAnnotation('extends')->values();
-			foreach ($extends_list as $extends) {
-				$directories = array_merge(
-					$this->getSourceDirectories($include_subdirectories, $extends),
-					$directories
-				);
+			$extends_annotations = $class->getListAnnotations('extends');
+			foreach ($extends_annotations as $extends_annotation) {
+				foreach ($extends_annotation->values() as $extends) {
+					if (!isset($already[$extends])) {
+						$directories = array_merge(
+							$this->getSourceDirectories($include_subdirectories, $extends, $already),
+							$directories
+						);
+					}
+				}
 			}
 		}
 		// get source directories from the application itself

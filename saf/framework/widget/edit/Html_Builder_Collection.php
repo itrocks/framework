@@ -2,6 +2,7 @@
 namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\View\Html\Builder\Collection;
@@ -24,6 +25,14 @@ class Html_Builder_Collection extends Collection
 	 * @var string
 	 */
 	public $preprop = null;
+
+	//------------------------------------------------------------------------------------ $read_only
+	/**
+	 * Property read only cache. Do not use this property : use readOnly() instead.
+	 *
+	 * @var boolean
+	 */
+	private $read_only;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
@@ -51,9 +60,11 @@ class Html_Builder_Collection extends Collection
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
-		$row = $this->buildRow(Builder::create($this->class_name));
-		$row->addClass('new');
-		$body->addRow($row);
+		if (!$this->readOnly()) {
+			$row = $this->buildRow(Builder::create($this->class_name));
+			$row->addClass('new');
+			$body->addRow($row);
+		}
 		return $body;
 	}
 
@@ -69,9 +80,18 @@ class Html_Builder_Collection extends Collection
 			$this->template = new Html_Template();
 		}
 		$value = $property->getValue($object);
-		$preprop = $this->preprop
-			? ($this->preprop . '[' . $this->property->name . ']')
-			: $this->property->name;
+		if (strpos($this->preprop, '[]')) {
+			$property_builder = new Html_Builder_Property();
+			$property_builder->setTemplate($this->template);
+			$preprop_to_count = lParse($this->preprop, '[]');
+			$counter = $property_builder->template->nextCounter($preprop_to_count . '[id][]', false);
+			$preprop = $preprop_to_count . '[' . $this->property->name . '][' . $counter . ']';
+		}
+		else {
+			$preprop = $this->preprop
+				? ($this->preprop . '[' . $this->property->name . ']')
+				: $this->property->name;
+		}
 		$builder = (new Html_Builder_Property($property, $value, $preprop . '[]'));
 		$input = $builder->setTemplate($this->template)->build();
 		if (
@@ -111,11 +131,44 @@ class Html_Builder_Collection extends Collection
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
-		$cell = new Standard_Cell('-');
-		$cell->setAttribute('title', '|remove line|');
-		$cell->addClass('minus');
-		$row->addCell($cell);
+		if (!$this->readOnly()) {
+			$cell = new Standard_Cell('-');
+			$cell->setAttribute('title', '|remove line|');
+			$cell->addClass('minus');
+			$row->addCell($cell);
+		}
 		return $row;
+	}
+
+	//--------------------------------------------------------------------------------- getProperties
+	/**
+	 * @return Reflection_Property[]
+	 */
+	public function getProperties()
+	{
+		$properties = parent::getProperties();
+		if ($this->readOnly()) {
+			foreach ($properties as $property) {
+				/** @var $user_annotation User_Annotation */
+				$user_annotation = $property->getAnnotation(User_Annotation::ANNOTATION);
+				$user_annotation->add(User_Annotation::READONLY);
+			}
+		}
+		return $properties;
+	}
+
+	//-------------------------------------------------------------------------------------- readOnly
+	/**
+	 * @return boolean
+	 */
+	protected function readOnly()
+	{
+		if (!isset($this->read_only)) {
+			/** @var $user_annotation User_Annotation */
+			$user_annotation = $this->property->getAnnotation(User_Annotation::ANNOTATION);
+			$this->read_only = $user_annotation->has(User_Annotation::READONLY);
+		}
+		return $this->read_only;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate

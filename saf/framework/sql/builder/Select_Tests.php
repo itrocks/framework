@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Sql\Builder;
 
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Tests\Objects\Client;
 use SAF\Framework\Tests\Objects\Item;
@@ -52,7 +53,7 @@ class Select_Tests extends Test
 		);
 	}
 
-	//--------------------------------------------------------------------------- testArrayWhereQuery
+	//----------------------------------------------------------------------- testArrayWhereDeepQuery
 	public function testArrayWhereDeepQuery()
 	{
 		$builder = new Select(
@@ -71,7 +72,7 @@ class Select_Tests extends Test
 		);
 	}
 
-	//--------------------------------------------------------------------- testArrayWhereQueryObject
+	//----------------------------------------------------------------- testArrayWhereDeepQueryObject
 	public function testArrayWhereDeepQueryObject()
 	{
 		$item = new Item();
@@ -92,7 +93,7 @@ class Select_Tests extends Test
 		);
 	}
 
-	//--------------------------------------------------------------------------- testArrayWhereQuery
+	//------------------------------------------------------------------ testArrayWhereDeepQueryShort
 	public function testArrayWhereDeepQueryShort()
 	{
 		$builder = new Select(
@@ -111,7 +112,7 @@ class Select_Tests extends Test
 		);
 	}
 
-	//-------------------------------------------------------------------------- testArrayWhereQuery2
+	//---------------------------------------------------------------------- testArrayWhereDeepQuery2
 	public function testArrayWhereDeepQuery2()
 	{
 		$builder = new Select(
@@ -132,7 +133,7 @@ class Select_Tests extends Test
 		);
 	}
 
-	//-------------------------------------------------------------------------- testArrayWhereQuery2
+	//----------------------------------------------------------------- testArrayWhereDeepQuery2Short
 	public function testArrayWhereDeepQuery2Short()
 	{
 		$builder = new Select(
@@ -150,6 +151,24 @@ class Select_Tests extends Test
 			. 'LEFT JOIN `items_items` t3 ON t3.id_item = t2.id' . LF
 			. 'LEFT JOIN `items` t4 ON t4.id = t3.id_cross_selling' . LF
 			. 'WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1 AND t4.`code` = 3'
+		);
+	}
+
+	//------------------------------------------------------------------------ testArrayWhereWithNull
+	public function testArrayWhereWithNull()
+	{
+		$builder = new Select(
+			Order_Line::class,
+			['number', 'quantity'],
+			['client' => null]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.`number`, t0.`quantity`' . LF
+			. 'FROM `orders_lines` t0' . LF
+			. 'LEFT JOIN `clients` t1 ON t1.id = t0.id_client' . LF
+			. 'WHERE t1.`id` IS NULL'
 		);
 	}
 
@@ -289,7 +308,7 @@ class Select_Tests extends Test
 		);
 	}
 
-	//------------------------------------------------------------------------- testObjectObjectQuery
+	//------------------------------------------------------------------------------- testObjectQuery
 	public function testObjectQuery()
 	{
 		$builder = new Select(
@@ -302,6 +321,27 @@ class Select_Tests extends Test
 			'SELECT t0.`number`, t0.`quantity`, t1.`date` AS `order:date`, t1.`number` AS `order:number`, t1.`id_client` AS `order:client`, t1.`id_delivery_client` AS `order:delivery_client`, t1.id AS `order:id`' . LF
 			. 'FROM `orders_lines` t0' . LF
 			. 'INNER JOIN `orders` t1 ON t1.id = t0.id_order'
+		);
+	}
+
+	//----------------------------------------------------------------------- testObjectWhereWithNull
+	public function testObjectWhereWithNull()
+	{
+		$search = Search_Object::create(Order_Line::class);
+		$search->client = Func::isNull();
+		$search->quantity = Func::greater(1);
+		$builder = new Select(
+			Order_Line::class,
+			['number', 'quantity'],
+			$search
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.`number`, t0.`quantity`' . LF
+			. 'FROM `orders_lines` t0' . LF
+			. 'LEFT JOIN `clients` t1 ON t1.id = t0.id_client' . LF
+			. 'WHERE t1.`id` IS NULL AND t0.`quantity` > 1'
 		);
 	}
 

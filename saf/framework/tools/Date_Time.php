@@ -8,7 +8,7 @@ use DateTimeZone;
 /**
  * This class extends php's DateTime class : you should use this to be SAF compatible
  */
-class Date_Time extends DateTime implements Can_Be_Empty
+class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 {
 
 	//----------------------------------------------------------------------- duration unit constants
@@ -138,6 +138,20 @@ class Date_Time extends DateTime implements Can_Be_Empty
 		return $this;
 	}
 
+	//------------------------------------------------------------------------------------------ diff
+	/**
+	 * @param $datetime2 Date_Time
+	 * @param $absolute  boolean
+	 * @return Date_Interval|false
+	 */
+	public function diff($datetime2, $absolute = false)
+	{
+		$parent_diff = parent::diff($datetime2, $absolute);
+		$interval = new Date_Interval($parent_diff->format('P%yY%mM%dDT%hH%iM%sS'));
+		$interval->invert = $parent_diff->invert;
+		return $interval;
+	}
+
 	//---------------------------------------------------------------------------------------- format
 	/**
 	 * @param $format string
@@ -146,6 +160,17 @@ class Date_Time extends DateTime implements Can_Be_Empty
 	public function format($format)
 	{
 		return parent::format($format);
+	}
+
+	//------------------------------------------------------------------------------------ fromString
+	/**
+	 * @param $string string
+	 * @return self
+	 */
+	public function fromString($string)
+	{
+		$this->fromISO($string);
+		return $this;
 	}
 
 	//--------------------------------------------------------------------------------------- isAfter

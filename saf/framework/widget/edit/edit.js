@@ -34,7 +34,7 @@ $('document').ready(function()
 				var $new_row = $table.data('saf_add').clone();
 				$this.closest('tr').replaceWith($new_row);
 				$new_row.build();
-				$table.data('saf_last_indice', $table.data('saf_last_indice') + 1);
+				$table.data('saf_last_index', $table.data('saf_last_index') + 1);
 			}
 		});
 
@@ -72,11 +72,11 @@ $('document').ready(function()
 		{
 			var $this = $(this);
 			$this.data('saf_add', $this.children('tbody').children('tr.new').clone());
-			// saf_add_indice : the value of the indice to be replaced into the model for new rows
-			$this.data('saf_add_indice', $this.children('tbody').children('tr').length - 1);
-			// saf_last_indice : the last used indice (lines count - 1)
-			$this.data('saf_last_indice', Math.max(0, $this.data('saf_add_indice') - 1));
-			if ($this.data('saf_add_indice')) {
+			// saf_add_index : the value of the index to be replaced into the model for new rows
+			$this.data('saf_add_index', $this.children('tbody').children('tr').length - 1);
+			// saf_last_index : the last used index (lines count - 1)
+			$this.data('saf_last_index', Math.max(0, $this.data('saf_add_index') - 1));
+			if ($this.data('saf_add_index')) {
 				$this.children('tbody').children('tr.new').remove();
 			}
 		});
@@ -89,38 +89,39 @@ $('document').ready(function()
 			if ($this.val() && $tr.length && !$tr.next('tr').length) {
 				var $collection = $tr.closest('table.collection, table.map');
 				if ($collection.length) {
-					// calculate depth in order to increment the right indice
+					// calculate depth in order to increment the right index
 					var depth = 0;
 					var $parent = $collection;
 					while (($parent = $parent.parent().closest('table.collection, table.map')).length) {
 						depth ++;
 					}
-					// calculate new row and indices
+					// calculate new row and indexes
 					var $table = $($collection[0]);
 					var $new_row = $table.data('saf_add').clone();
-					$table.data('saf_last_indice', $table.data('saf_last_indice') + 1);
-					var indice = $table.data('saf_last_indice');
-					var old_indice = $table.data('saf_add_indice');
-					// increment indices in new row html code
+					$table.data('saf_last_index', $table.data('saf_last_index') + 1);
+					var index = $table.data('saf_last_index');
+					var old_index = $table.data('saf_add_index');
+					// increment indexes in new row html code
 					var depthReplace = function(text, open, close, depth)
 					{
 						var i;
 						var j = 0;
 						while ((i = text.indexOf('=' + DQ, j) + 1) > 0) {
+							var in_depth = depth;
 							j = text.indexOf(DQ, i + 1);
 							while (
 								(i = text.indexOf(open, i) + open.length) && (i > (open.length - 1)) && (i < j)
-									&& ((depth > 0) || (text[i] < '0') || (text[i] > '9'))
+									&& ((in_depth > 0) || (text[i] < '0') || (text[i] > '9'))
 								) {
 								if ((text[i] >= '0') && (text[i] <= '9')) {
-									depth --;
+									in_depth --;
 								}
 							}
-							if ((i > (open.length - 1)) && (i < j) && !depth) {
+							if ((i > (open.length - 1)) && (i < j) && !in_depth) {
 								var k = text.indexOf(close, i);
-								var html_indice = text.substring(i, k);
-								if (html_indice == old_indice) {
-									text = text.substr(0, i) + indice + text.substr(k);
+								var html_index = text.substring(i, k);
+								if (html_index == old_index) {
+									text = text.substr(0, i) + index + text.substr(k);
 								}
 							}
 						}

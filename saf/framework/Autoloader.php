@@ -10,7 +10,7 @@ use SAF\Framework\Tools\Names;
 class Autoloader
 {
 
-	//-------------------------------------------------------------------------------------- autoLoad
+	//-------------------------------------------------------------------------------------- autoload
 	/**
 	 * Includes the php file that contains the given class (must contain namespace)
 	 *

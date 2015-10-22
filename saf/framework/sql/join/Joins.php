@@ -480,7 +480,7 @@ class Joins
 	/**
 	 * Gets all joins object
 	 *
-	 * @return Join[] indiced by properties paths
+	 * @return Join[] keys are properties paths
 	 */
 	public function getJoins()
 	{

@@ -14,13 +14,13 @@ class Parameters
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
-	 * @var object[] indices are parameters names (ie object class short name)
+	 * @var object[] keys are parameters names (ie object class short name)
 	 */
 	private $objects = [];
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
-	 * @var integer[] indices are parameters names (ie object class short name)
+	 * @var integer[] keys are parameters names (ie object class short name)
 	 */
 	private $parameters = [];
 
@@ -187,7 +187,7 @@ class Parameters
 	/**
 	 * Gets URI parameters raw values, as they were on original URI
 	 *
-	 * @return mixed[] indice is the parameter name
+	 * @return mixed[] key is the parameter name
 	 */
 	public function getRawParameters()
 	{

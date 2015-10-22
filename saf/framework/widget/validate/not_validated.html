@@ -10,6 +10,9 @@
 <body>
 <!--BEGIN-->
 
+	<script>
+		$('.bad').removeClass('bad');
+	</script>
 	|¦{object.@class.display.ucfirst}¦ !{object}! is invalid| :
 	<ul>
 		<!--getErrors-->
@@ -17,6 +20,12 @@
 			|{property.name}| {?getValue}&nbsp;:
 			|{reportMessage}|
 			<!--value--> - |expected ¦{.}¦|<!--value-->
+			<script>
+				$('input[name="id_{property.name}"]').next('input').addClass('bad');
+				$('input[name="{property.name}"]').addClass('bad');
+				$('input[name="{property.name}[0]"]').next('input').addClass('bad');
+				$('.bad').first().focus();
+			</script>
 		</li>
 		<!--getErrors-->
 	</ul>

@@ -1539,6 +1539,9 @@ class Template
 				: $this->parseMap($object, $value);
 		}
 		$i--;
+		if (is_array($value)) {
+			$value = $value ? ('[' . join(', ', $value) . ']') : '';
+		}
 		if ($auto_remove && !strlen($value)) {
 			$this->parseVarRemove($content, $i, $j);
 		}

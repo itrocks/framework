@@ -7,6 +7,7 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Property;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -43,21 +44,29 @@ class Select_Controller implements Feature_Controller
 		if ($class->getAnnotation('link')->value) {
 			$link_class = new Link_Class($class->name);
 			$composite_link_property = $link_class->getCompositeProperty();
-			foreach ($link_class->getProperties([T_EXTENDS, T_USE]) as $property) {
+			/** @var $source_properties Reflection_Property[] */
+			$source_properties = Replaces_Annotations::removeReplacedProperties(
+				$link_class->getProperties([T_EXTENDS, T_USE])
+			);
+			foreach ($source_properties as $property_name => $property) {
 				if (
-					(!$composite_property || ($property->name !== $composite_property->name))
+					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& (!$composite_link_property || ($property->name !== $composite_link_property->name))
 					&& !$property->isStatic()
 					&& !$property->getListAnnotation(User_Annotation::ANNOTATION)->has(
 						User_Annotation::INVISIBLE
 					)
 				) {
-					$properties[] = $property;
+					$properties[$property_name] = $property;
 				}
 			}
 		}
 		else {
-			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
+			/** @var $source_properties Reflection_Property[] */
+			$source_properties = Replaces_Annotations::removeReplacedProperties(
+				$class->getProperties([T_EXTENDS, T_USE])
+			);
+			foreach ($source_properties as $property_name => $property) {
 				if (
 					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& !$property->isStatic()
@@ -65,7 +74,7 @@ class Select_Controller implements Feature_Controller
 						User_Annotation::INVISIBLE
 					)
 				) {
-					$properties[] = $property;
+					$properties[$property_name] = $property;
 				}
 			}
 		}

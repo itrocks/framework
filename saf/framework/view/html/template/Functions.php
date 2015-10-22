@@ -83,6 +83,18 @@ class Functions
 		return count(reset($template->objects));
 	}
 
+	//--------------------------------------------------------------------------------------- getDate
+	/**
+	 * Return object as date
+	 *
+	 * @param $template Template
+	 * @return Date_Time
+	 */
+	public function getDate(Template $template)
+	{
+		return new Date_Time(reset($template->objects));
+	}
+
 	//------------------------------------------------------------------------------------ getDisplay
 	/**
 	 * Return object's display

@@ -64,11 +64,12 @@ class Import_Settings extends Custom_Settings
 	 * Get current session / user custom settings object
 	 *
 	 * @param $class_name string
+	 * @param $feature    string
 	 * @return Import_Settings
 	 */
-	public static function current($class_name)
+	public static function current($class_name, $feature = 'import')
 	{
-		return parent::current($class_name);
+		return parent::current($class_name, $feature);
 	}
 
 	//---------------------------------------------------------------------------------- getClassName

@@ -17,6 +17,10 @@ class Parser
 	 */
 	public static function parse($source, $condition = false)
 	{
+		if (strpos($source, ':')) {
+			list($property_name, $annotate) = explode(':', $source);
+			return new Property_Annotation(trim($property_name), trim($annotate));
+		}
 		if (strpos($source, '=')) {
 			list($property_name, $value) = explode('=', $source);
 			if ($condition) {

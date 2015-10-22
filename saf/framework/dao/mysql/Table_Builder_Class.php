@@ -3,7 +3,9 @@ namespace SAF\Framework\Dao\Mysql;
 
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Namespaces;
 
 /**
@@ -73,7 +75,9 @@ class Table_Builder_Class
 			$table->addColumn(new Column('class', 'varchar(255)'));
 		}
 		else {
-			foreach ($class->accessProperties() as $property) {
+			/** @var $properties Reflection_Property[] */
+			$properties = Replaces_Annotations::removeReplacedProperties($class->accessProperties());
+			foreach ($properties as $property) {
 				if (!in_array($property->name, $this->excluded_properties)) {
 					$type = $property->getType();
 					if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
