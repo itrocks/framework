@@ -436,7 +436,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function isValueEmpty($value)
 	{
-		return empty($value)
+		return (empty($value) && (is_object($value) || is_array($value) || (strval($value) !== '0')))
 			|| (is_object($value) && Empty_Object::isEmpty($value))
 			|| (
 				is_string($value) && (substr($value, 0, 10) === '0000-00-00')
