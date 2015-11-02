@@ -50,6 +50,7 @@ class Tests extends Test
 	 */
 	private $with_values;
 
+	//------------------------------------------------------------------------------------- $property
 	/**
 	 * A fictive local property, for unit tests use only
 	 * Annotations set here are used only for the test that uses @link
@@ -58,16 +59,16 @@ class Tests extends Test
 	 * @link Collection
 	 * @var Tests[]
 	 */
-	private /* @noinspection PhpUnusedPrivateFieldInspection */ $property;
+	private $property;
 
+	//----------------------------------------------------------------------- getDefaultPropertyValue
+	/** @noinspection PhpMissingDocCommentInspection */
 	/**
 	 * Get the default property value, for test of @default annotation
 	 *
 	 * @param $property Interfaces\Reflection_Property
 	 * @return string
 	 */
-	/* @noinspection PhpMissingDocCommentInspection */
-	//----------------------------------------------------------------------- getDefaultPropertyValue
 	public static function getDefaultPropertyValue(Interfaces\Reflection_Property $property)
 	{
 		return 'default value for ' . $property->getName();
@@ -90,6 +91,15 @@ class Tests extends Test
 	public static function getStatic($value)
 	{
 		return $value . ' with getter static';
+	}
+
+	//------------------------------------------------------------------------------------------ nope
+	/**
+	 * This makes PhpStorm inspector happy (a use of private $property is welcome)
+	 */
+	protected function nope()
+	{
+		$this->property;
 	}
 
 	//------------------------------------------------------------------------------------- setSimple
