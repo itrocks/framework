@@ -9,6 +9,7 @@ use ReflectionParameter;
 class Reflection_Parameter extends ReflectionParameter
 {
 
+	//---------------------------------------------------------------------------- $internal_defaults
 	/**
 	 * @todo it may be hard, but should copy all internal functions default values here
 	 * @var array
