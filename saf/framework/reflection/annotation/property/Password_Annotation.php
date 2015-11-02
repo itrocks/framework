@@ -13,7 +13,7 @@ use SAF\Framework\Tools\Encryption;
 class Password_Annotation extends Annotation
 {
 
-	//---------------------------------------------------------------------------------------- $value
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Default annotation constructor receive the full doc text content
 	 *

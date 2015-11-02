@@ -7,6 +7,7 @@ namespace SAF\RAD;
 class Layer extends Control
 {
 
+	//-------------------------------------------------------------------------------------- $content
 	/**
 	 * @var Control;[]
 	 */

@@ -87,4 +87,5 @@ class Ssh implements Remote_Connection
 	{
 		// TODO: Implement send() method.
 	}
+
 }

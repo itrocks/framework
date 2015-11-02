@@ -125,6 +125,7 @@ class Entry
 		return ($str === '[]') ? '' : $str;
 	}
 
+	//------------------------------------------------------------------------------------------ stop
 	public function stop()
 	{
 		$this->duration = microtime(true) - $this->duration;

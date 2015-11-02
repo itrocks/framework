@@ -12,7 +12,7 @@ use SAF\Framework\Tools\Namespaces;
 class Run_Controller implements Feature_Controller
 {
 
-	//------------------------------------------------------------------------------------------ test
+	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array

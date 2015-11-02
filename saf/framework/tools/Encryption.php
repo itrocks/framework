@@ -7,7 +7,6 @@ namespace SAF\Framework\Tools;
 abstract class Encryption
 {
 
-	//----------------------------------------------------------------------------------------- const
 	const BASE64 = 'base64';
 	const CRYPT  = 'crypt';
 	const MD5    = 'md5';

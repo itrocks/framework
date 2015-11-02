@@ -603,6 +603,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $this->getProperties()[$name];
 	}
 
+	//------------------------------------------------------------------------------------- getTokens
 	/**
 	 * @return array
 	 */

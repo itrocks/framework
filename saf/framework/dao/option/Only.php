@@ -9,7 +9,7 @@ use SAF\Framework\Dao\Option;
 class Only implements Option
 {
 
-	//---------------------------------------------------------------------------------------- $count
+	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * Properties path used to limit a Dao operation range
 	 *

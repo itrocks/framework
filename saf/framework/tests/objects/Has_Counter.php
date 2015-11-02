@@ -10,6 +10,7 @@ use SAF\Framework\Dao;
 trait Has_Counter
 {
 
+	//------------------------------------------------------------------------------------ setCounter
 	/**
 	 * @param $counter integer
 	 */

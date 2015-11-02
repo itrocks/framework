@@ -9,7 +9,7 @@ use SAF\Framework\View\Html\Dom\Element;
 abstract class Cell extends Element
 {
 
-	//------------------------------------------------------------------------------------ __contruct
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $name    string
 	 * @param $content string

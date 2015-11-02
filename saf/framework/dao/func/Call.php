@@ -9,7 +9,6 @@ use SAF\Framework\Sql\Builder\Columns;
 class Call extends Column
 {
 
-	//------------------------------------------------------------------------------ $function values
 	const DISTINCT = 'DISTINCT';
 	const TRIM     = 'TRIM';
 

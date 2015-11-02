@@ -64,7 +64,7 @@ class Tests extends Test
 		$this->testAnnotation('map component response', Item::class, 'lines', 'foreign', 'item'); // 3G
 	}
 
-	//------------------------------------------------------------------------------- testForeignLink
+	//------------------------------------------------------------------------------- testForeignlink
 	public function testForeignlink()
 	{
 		$this->method('@foreignlink');

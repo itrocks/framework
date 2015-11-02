@@ -432,7 +432,7 @@ class Type
 		return $this->type === self::STRING;
 	}
 
-	//---------------------------------------------------------------------------------- isSubclassOf
+	//---------------------------------------------------------------------------------- isSubClassOf
 	/**
 	 * Returns true if the class type is a subclass of a class or interface
 	 *

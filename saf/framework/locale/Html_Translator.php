@@ -102,7 +102,7 @@ class Html_Translator implements Registerable
 		return $this->translateContent($result, get_class($object));
 	}
 
-	//--------------------------------------------------------------------------------- translatePage
+	//------------------------------------------------------------------------------- translateString
 	/**
 	 * Translate string.
 	 *

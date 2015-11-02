@@ -14,7 +14,6 @@ use SAF\Framework\Sql\Builder\Where;
 class Sql_Link_Restrictor implements Registerable
 {
 
-	//--------------------------------------------------------------------------------------- CURRENT
 	/**
 	 * Current callback restrict objects to their Class_Name::current() value
 	 * (if no current value, restriction is full and nothing could be read)
@@ -41,7 +40,7 @@ class Sql_Link_Restrictor implements Registerable
 	 */
 	private $restrictions = [];
 
-	//--------------------------------------------------------------------------------- $restrictions
+	//--------------------------------------------------------------------------- $final_restrictions
 	/**
 	 * Associate classes names and multiple restriction callbacks
 	 *

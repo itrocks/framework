@@ -235,7 +235,7 @@ class Import_Array
 		return $properties;
 	}
 
-	//---------------------------------------------------------------------- getPropertyLinkAndColumn
+	//-------------------------------------------------------------------- getPropertiesLinkAndColumn
 	/**
 	 * @param $class_name      string Main class name
 	 * @param $properties_path string[] $property_path = string[integer $column_number]

@@ -67,6 +67,7 @@ class Tests extends Test
 	 * @return string
 	 */
 	/* @noinspection PhpMissingDocCommentInspection */
+	//----------------------------------------------------------------------- getDefaultPropertyValue
 	public static function getDefaultPropertyValue(Interfaces\Reflection_Property $property)
 	{
 		return 'default value for ' . $property->getName();

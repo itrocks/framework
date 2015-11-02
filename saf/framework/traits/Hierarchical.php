@@ -22,7 +22,7 @@ use SAF\Framework\Reflection\Link_Class;
 trait Hierarchical
 {
 
-	//--------------------------------------------------------------------------------- getSubObjects
+	//---------------------------------------------------------------------------------------- getSub
 	/**
 	 * To use this :
 	 * - Create your own getSubClassNames() method
@@ -42,7 +42,7 @@ trait Hierarchical
 		return $this->$sub;
 	}
 
-	//------------------------------------------------------------------------------- writeSubObjects
+	//-------------------------------------------------------------------------------------- writeSub
 	/**
 	 * To use this :
 	 * - Create your own writeSubClassNames() method

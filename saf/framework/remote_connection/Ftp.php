@@ -85,4 +85,5 @@ class Ftp implements Remote_Connection
 	{
 		// TODO: Implement send() method.
 	}
+
 }

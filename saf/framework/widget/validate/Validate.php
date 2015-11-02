@@ -7,7 +7,6 @@ namespace SAF\Framework\Widget\Validate;
 abstract class Validate
 {
 
-	//--------------------------------------------------------------------------------------- FEATURE
 	const FEATURE = 'validate';
 
 	//-------------------------------------------------------------------- validation level constants

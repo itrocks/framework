@@ -7,7 +7,6 @@ namespace SAF\Framework\Dao\Sql;
 interface Foreign_Key
 {
 
-	//----------------------------------------------------------------------------------------- const
 	const CASCADE  = 'CASCADE';
 	const RESTRICT = 'RESTRICT';
 

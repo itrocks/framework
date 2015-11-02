@@ -20,7 +20,7 @@ use SAF\Framework\Reflection\Reflection_Property_Value;
 class Translation_String_Composer implements Registerable
 {
 
-	//---------------------------------------------------- afterReflectionPropertyValueForHtmlDisplay
+	//----------------------------------------------------------- afterReflectionPropertyValueDisplay
 	/**
 	 * This patch changes HTML properties displays from a.property.display
 	 * to ¦a¦.¦property¦.¦display¦ to minimize needed translations.

@@ -14,33 +14,39 @@ class Foreign_Key implements Sql\Foreign_Key
 {
 	use Foreign_Key_Builder_Property;
 
+	//----------------------------------------------------------------------------------- $Constraint
 	/**
 	 * @var string
 	 */
 	private $Constraint;
 
+	//--------------------------------------------------------------------------------------- $Fields
 	/**
 	 * @var string
 	 */
 	private $Fields;
 
+	//------------------------------------------------------------------------------------ $On_delete
 	/**
 	 * @var string
 	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
 	 */
 	private $On_delete = 'RESTRICT';
 
+	//------------------------------------------------------------------------------------ $On_update
 	/**
 	 * @var string
 	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
 	 */
 	private $On_update = 'RESTRICT';
 
+	//----------------------------------------------------------------------------- $Reference_fields
 	/**
 	 * @var string
 	 */
 	private $Reference_fields;
 
+	//------------------------------------------------------------------------------ $Reference_table
 	/**
 	 * @var string
 	 */

@@ -9,7 +9,7 @@ use SAF\Framework\View\Html\Dom\Element;
 class List_Item extends Element
 {
 
-	//------------------------------------------------------------------------------------ __contruct
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $content string
 	 */

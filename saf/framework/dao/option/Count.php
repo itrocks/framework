@@ -10,6 +10,7 @@ use SAF\Framework\Dao\Option;
 class Count implements Option
 {
 
+	//---------------------------------------------------------------------------------------- $count
 	public $count;
 
 }

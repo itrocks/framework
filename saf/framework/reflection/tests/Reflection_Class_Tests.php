@@ -14,7 +14,7 @@ use SAF\Framework\Tests\Test;
 class Reflection_Class_Tests extends Test
 {
 
-	//----------------------------------------------------------------------- testAccessProperties
+	//-------------------------------------------------------------------------- testAccessProperties
 	public function testAccessProperties()
 	{
 		// does access properties return properties list ?
@@ -55,7 +55,7 @@ class Reflection_Class_Tests extends Test
 		}
 	}
 
-	//------------------------------------------------------------------- testAccessPropertiesDone
+	//---------------------------------------------------------------------- testAccessPropertiesDone
 	public function testAccessPropertiesDone()
 	{
 		$test_order = new Order(date('Y-m-d'), 'CDE001');

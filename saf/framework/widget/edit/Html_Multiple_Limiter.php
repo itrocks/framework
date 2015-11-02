@@ -98,7 +98,7 @@ class Html_Multiple_Limiter implements Registerable
 		}
 	}
 
-	//--------------------------------------------------------------------------- beforeMysqlLinkRead
+	//------------------------------------------------------------------------- beforeMysqlLinkSearch
 	/**
 	 * If plugin is activated, limits result count of Mysql::search()
 	 *

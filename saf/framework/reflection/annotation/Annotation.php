@@ -18,7 +18,7 @@ class Annotation
 	 */
 	public $value;
 
-	//---------------------------------------------------------------------------------------- $value
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Default annotation constructor receive the full doc text content
 	 *

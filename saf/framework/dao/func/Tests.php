@@ -12,7 +12,7 @@ use SAF\Framework\Tests\Test;
 class Tests extends Test
 {
 
-	//------------------------------------------------------------------------------------ testLeftOf
+	//-------------------------------------------------------------------------------- testIsGreatest
 	public function testIsGreatest()
 	{
 		$builder = new Select(
@@ -47,7 +47,7 @@ class Tests extends Test
 		);
 	}
 
-	//------------------------------------------------------------------------------------ testLeftOf
+	//--------------------------------------------------------------------------------- testLeftMatch
 	public function testLeftMatch()
 	{
 		$builder = new Select(

@@ -14,7 +14,6 @@ class Password
 	const T_NUMERIC   = 4;
 	const T_SPECIAL   = 8;
 
-	//------------------------------------------------------------------------------------- UNCHANGED
 	/**
 	 * Use this constant when you want to test or set the password as 'unchanged'
 	 */

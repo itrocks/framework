@@ -54,7 +54,7 @@ class Option extends Element
 		return $string;
 	}
 
-	//------------------------------------------------------------------------------------ setContent
+	//------------------------------------------------------------------------------------ getContent
 	/**
 	 * @return string
 	 * @todo This is a patch to make Html_Option::getContent work. Remove this when it will work

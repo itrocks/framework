@@ -86,4 +86,3 @@ class Loop
 	public $var_name;
 
 }
-

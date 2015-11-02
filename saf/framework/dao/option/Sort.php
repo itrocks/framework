@@ -103,7 +103,7 @@ class Sort implements Option
 		}
 	}
 
-	//----------------------------------------------------------------------------------- $class_name
+	//------------------------------------------------------------------------------ calculateReverse
 	/**
 	 * Calculate reverse on columns that are not already reverse
 	 */
@@ -126,7 +126,7 @@ class Sort implements Option
 		}
 	}
 
-	//----------------------------------------------------------------------------------- $class_name
+	//------------------------------------------------------------------------------------ getColumns
 	/**
 	 * @param $class_name string the contextual class name :
 	 * needed if the constructor was called without columns

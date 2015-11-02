@@ -7,6 +7,7 @@ namespace SAF\Framework\Widget\Data_List;
 class Search_Values
 {
 
+	//-------------------------------------------------------------------------------- $search_values
 	/**
 	 * @var array[] Key is the class name, value is an array 'property_name' => 'value'
 	 */

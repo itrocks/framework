@@ -9,25 +9,21 @@ namespace SAF\Framework\Tools;
 class Displayable extends String
 {
 
-	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
 	 * @var string 'class'
 	 */
 	const TYPE_CLASS = 'class';
 
-	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
 	 * @var string 'method'
 	 */
 	const TYPE_METHOD = 'method';
 
-	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
 	 * @var string 'property'
 	 */
 	const TYPE_PROPERTY = 'property';
 
-	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
 	 * @var string 'string'
 	 */

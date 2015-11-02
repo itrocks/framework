@@ -18,7 +18,7 @@ use SAF\Framework\Tools\Namespaces;
 class Autoload_Cache implements Activable, Updatable
 {
 
-	//----------------------------------------------------------------------------------- $cache_file
+	//----------------------------------------------------------------------------------- $cache_path
 	/**
 	 * @var string
 	 */

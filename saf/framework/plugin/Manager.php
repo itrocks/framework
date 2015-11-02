@@ -27,7 +27,7 @@ class Manager implements IManager, Serializable
 	 */
 	private $plugins_tree = [];
 
-	//------------------------------------------------------------------------------------------- $plugins
+	//-------------------------------------------------------------------------------------- $plugins
 	/**
 	 * The plugins list : key is the class name
 	 *

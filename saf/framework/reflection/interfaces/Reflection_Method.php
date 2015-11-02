@@ -7,7 +7,6 @@ namespace SAF\Framework\Reflection\Interfaces;
 interface Reflection_Method extends Reflection_Class_Component
 {
 
-	//------------------------------------------------------------------------------------------- ALL
 	/**
 	 * Another constant for default Reflection_Class::getMethods() filter
 	 *

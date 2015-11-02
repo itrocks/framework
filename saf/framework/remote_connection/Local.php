@@ -84,4 +84,5 @@ class Local implements Remote_Connection
 	{
 		// TODO: Implement send() method.
 	}
+
 }

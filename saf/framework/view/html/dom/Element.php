@@ -180,7 +180,7 @@ abstract class Element
 		return $this->setAttributeNode(new Attribute($name, $value));
 	}
 
-	//---------------------------------------------------------------------------------- setAttribute
+	//------------------------------------------------------------------------------ setAttributeNode
 	/**
 	 * @param $attr Attribute
 	 * @return Attribute
