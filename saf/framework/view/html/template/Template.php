@@ -1807,7 +1807,7 @@ class Template
 	 */
 	protected function replaceUri($uri)
 	{
-		if (strpos($uri, '://')) {
+		if (strpos($uri, '://') || (strpos($uri, 'data:') === 0)) {
 			return $uri;
 		}
 		if (
