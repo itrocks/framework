@@ -163,9 +163,9 @@ class Template
 	/**
 	 * Constructs a template object, initializing the source data object and the template access path
 	 *
-	 * @param $object object
+	 * @param $object        object
 	 * @param $template_file string full path to template file
-	 * @param $feature_name string feature name
+	 * @param $feature_name  string feature name
 	 */
 	public function __construct($object = null, $template_file = null, $feature_name = null)
 	{
