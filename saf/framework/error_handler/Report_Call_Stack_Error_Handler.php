@@ -3,6 +3,7 @@ namespace SAF\Framework\Error_Handler;
 
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Mysql\Link;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Tools\Call_Stack;
 use SAF\Framework\Tools\Call_Stack\Line;
 
@@ -11,6 +12,12 @@ use SAF\Framework\Tools\Call_Stack\Line;
  */
 class Report_Call_Stack_Error_Handler implements Error_Handler
 {
+
+	//---------------------------------------------------------------------------------------- $trace
+	/**
+	 * @var string
+	 */
+	public $trace = null;
 
 	//-------------------------------------------------------------------------------------- formData
 	/**
@@ -36,7 +43,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			. '<span class="message">' . $error->getErrorMessage() . '</span>'
 			. '<table class="call-stack">' . $this->stackLinesTableRows($stack->lines()) . '</table>'
 			. '</div>' . LF;
-		if (ini_get('display_errors')) {
+		if (ini_get('display_errors') && false) {
 			echo $message . LF;
 		}
 		if (ini_get('log_errors') && ($log_file = ini_get('error_log'))) {
@@ -45,8 +52,15 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			fputs($f, $date . ucfirst($code->caption()) . ':' . SP . $error->getErrorMessage() . LF);
 			fputs($f, $this->processIdentification());
 			fputs($f, $this->formData());
-			fputs($f, $this->stackLinesText($stack->lines()));
+			fputs($f, $this->trace ?: $this->stackLinesText($stack->lines()));
 			fclose($f);
+		}
+		if ($code->isFatal() || $this->trace) {
+			echo '<div class="error">'
+				. Loc::tr('An error occurred') . DOT
+				. SP . Loc::tr('The software maintainer has been informed and will fix it soon') . DOT
+				. SP . Loc::tr('Please check your data for bad input') . DOT
+				. '</div>';
 		}
 	}
 

@@ -1,12 +1,15 @@
 <?php
 namespace SAF\Framework\Controller;
 
+use Exception;
 use SAF\Framework\AOP\Include_Filter;
 use SAF\Framework\AOP\Weaver\IWeaver;
 use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\Configuration;
 use SAF\Framework\Configuration\Configurations;
+use SAF\Framework\Error_Handler\Handled_Error;
+use SAF\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use SAF\Framework\IAutoloader;
 use SAF\Framework\Include_Path;
 use SAF\Framework\Plugin;
@@ -313,13 +316,25 @@ class Main
 	 */
 	public function run($uri, $get, $post, $files)
 	{
-		$this->sessionStart($get, $post);
-		$this->applicationUpdate();
-		$result = $this->runController($uri, $get, $post, $files);
-		if (isset($this->redirection)) {
-			$uri = $this->redirection;
-			unset($this->redirection);
-			$result = $this->run($uri, $get, $post, $files);
+		$result = null;
+		try {
+			$this->sessionStart($get, $post);
+			$this->applicationUpdate();
+			$result = $this->runController($uri, $get, $post, $files);
+			if (isset($this->redirection)) {
+				$uri = $this->redirection;
+				unset($this->redirection);
+				$result = $this->run($uri, $get, $post, $files);
+			}
+		}
+		catch (Exception $exception) {
+			$handled_error = new Handled_Error(
+				$exception->getCode(), $exception->getMessage(), $exception->getFile(),
+				$exception->getLine(), []
+				);
+			$handler = new Report_Call_Stack_Error_Handler();
+			$handler->trace = 'Exception stack trace:' . LF . $exception->getTraceAsString();
+			$handler->handle($handled_error);
 		}
 		return $result;
 	}

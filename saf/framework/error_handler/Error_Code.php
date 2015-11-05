@@ -51,4 +51,16 @@ class Error_Code
 		return self::$CAPTIONS[$this->code];
 	}
 
+	//--------------------------------------------------------------------------------------- isFatal
+	/**
+	 * @return boolean
+	 */
+	public function isFatal()
+	{
+		return in_array(
+			$this->code,
+			[E_COMPILE_ERROR, E_CORE_ERROR, E_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_USER_ERROR]
+		);
+	}
+
 }
