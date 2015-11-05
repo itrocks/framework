@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Error_Handler;
 
+use SAF\Framework\Dao;
+use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\Tools\Call_Stack;
 use SAF\Framework\Tools\Call_Stack\Line;
 
@@ -9,6 +11,17 @@ use SAF\Framework\Tools\Call_Stack\Line;
  */
 class Report_Call_Stack_Error_Handler implements Error_Handler
 {
+
+	//-------------------------------------------------------------------------------------- formData
+	/**
+	 * @return string
+	 */
+	private function formData()
+	{
+		$result = '_GET = ' . print_r($_GET, true);
+		$result .= '_POST = ' . print_r($_POST, true);
+		return $result;
+	}
 
 	//---------------------------------------------------------------------------------------- handle
 	/**
@@ -30,9 +43,27 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$f = fopen($log_file, 'ab');
 			$date = '[' . date('Y-m-d H:i:s') . ']' . SP;
 			fputs($f, $date . ucfirst($code->caption()) . ':' . SP . $error->getErrorMessage() . LF);
+			fputs($f, $this->processIdentification());
+			fputs($f, $this->formData());
 			fputs($f, $this->stackLinesText($stack->lines()));
 			fclose($f);
 		}
+	}
+
+	//------------------------------------------------------------------------- processIdentification
+	/**
+	 * @return string
+	 */
+	private function processIdentification()
+	{
+		$result = 'PID = ' . posix_getpid();
+		$link = Dao::current();
+		if ($link instanceof Link) {
+			/** $link Link */
+			$result .= ' ; mysql-thread-id = ' . $link->getConnection()->thread_id;
+		}
+		$result .= ' ; ' . session_name() . ' = ' . session_id();
+		return $result . LF;
 	}
 
 	//--------------------------------------------------------------------------- stackLinesTableRows
