@@ -7,9 +7,10 @@ $('document').ready(function()
 		if (!this.length) return;
 
 		this.xtarget({
-			url_append:      'as_widget',
+			auto_empty:      {'#main': '#messages'},
 			draggable_blank: '.window>h2',
 			popup_element:   'section',
+			url_append:      'as_widget',
 			success:         function() { $(this).autofocus(); },
 			history: {
 				condition: '.window>h2',

@@ -157,19 +157,29 @@ thead > tr > th {
   color: #777;
   font-style: italic; }
 
+.error {
+  background-color: red;
+  border-radius: 3px;
+  color: white;
+  font-size: 1.5em;
+  margin: -3px;
+  padding: 3px; }
+
 .visible {
   display: inline-block; }
 
 #messages {
   background-color: white;
   border: 1px solid lightgray;
+  border-radius: 3px;
   box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
   display: inline-block;
   left: 4px;
+  max-width: 80%;
   padding: 3px;
-  position: absolute;
+  position: fixed !important;
   top: 4px;
-  z-index: 1000000000; }
+  z-index: 1000000000 !important; }
   #messages:empty {
     display: none; }
 

@@ -20,6 +20,7 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
+			auto_empty:      {}, // { 'target-selector': 'zone(s)-to-empty-selector' }
 			closeable_popup: 'closeable-popup',
 			draggable_blank: undefined,
 			error:           undefined,
@@ -146,6 +147,14 @@
 				}
 				// write result into destination element, and build jquery active contents
 				$target.html(data);
+				// auto empty
+				if (settings.auto_empty !== undefined) {
+					for (var key in settings.auto_empty) if (settings.auto_empty.hasOwnProperty(key)) {
+						if ($target.is(key)) {
+							$(settings.auto_empty[key]).empty();
+						}
+					}
+				}
 				// change browser's URL and title, push URL into history
 				if (settings.history != undefined) {
 					this.pushHistory(xhr, $target);
