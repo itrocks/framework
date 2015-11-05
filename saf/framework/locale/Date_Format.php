@@ -34,6 +34,24 @@ class Date_Format
 		}
 	}
 
+	//---------------------------------------------------------------------------------- advancedDate
+	/**
+	 * @param $date string
+	 * @return string
+	 */
+	private function advancedDate($date)
+	{
+		// 1 or 2 digits : day alone : add current month and year
+		if (in_array(strlen($date), [1, 2])) {
+			$iso_date = (new DateTime())->format(date('Y-m-' . sprintf('%02s', $date)));
+		}
+		// 3 and more digits : year alone : add january the 1st
+		elseif (is_numeric($date)) {
+			$iso_date = (new DateTime())->format(date(sprintf('%04s', $date) . '-01-01'));
+		}
+		return isset($iso_date) ? $date = (new DateTime($iso_date))->format($this->format) : $date;
+	}
+
 	//----------------------------------------------------------------------------------------- toIso
 	/**
 	 * Takes a locale date and make it ISO
@@ -46,6 +64,7 @@ class Date_Format
 		if (empty($date)) {
 			return '0000-00-00';
 		}
+		$date = $this->advancedDate($date);
 		if (strlen($date) == 10) {
 			$datetime = DateTime::createFromFormat($this->format, $date);
 			return $datetime ? $datetime->format('Y-m-d') : $date;
