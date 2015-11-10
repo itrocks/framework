@@ -18,6 +18,7 @@ use SAF\Framework\Plugin\Manager;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Paths;
+use SAF\Framework\Tools\Set;
 use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\View\View_Exception;
 
@@ -353,8 +354,13 @@ class Main
 	public function runController($uri, $get = [], $post = [], $files = [], $sub_feature = null)
 	{
 		$uri = new Uri($uri, $get);
+		$parameters = clone $uri->parameters;
+		$main_object = $parameters->getMainObject();
+		$controller_name = ($main_object instanceof Set)
+			? $main_object->element_class_name
+			: $uri->controller_name;
 		list($class_name, $method_name) = $this->getController(
-			$uri->controller_name, $uri->feature_name, $sub_feature
+			$controller_name, $uri->feature_name, $sub_feature
 		);
 		try {
 			return $this->executeController($class_name, $method_name, $uri, $post, $files);
