@@ -62,6 +62,9 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				. SP . Loc::tr('Please check your data for bad input') . DOT
 				. '</div>';
 		}
+		if (function_exists('xdebug_break')) {
+			trigger_error($error->getErrorMessage(), $error->getUserErrorNumber());
+		}
 	}
 
 	//------------------------------------------------------------------------- processIdentification

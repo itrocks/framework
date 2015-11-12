@@ -175,6 +175,34 @@ class Handled_Error
 		return $this->line_num;
 	}
 
+	//---------------------------------------------------------------------------- getUserErrorNumber
+	/**
+	 * Convert error number as a user error number that can be triggered
+	 *
+	 * @return integer
+	 */
+	public function getUserErrorNumber()
+	{
+		switch ($this->err_no) {
+			case E_DEPRECATED:
+				return E_USER_DEPRECATED;
+			case E_COMPILE_ERROR:
+			case E_CORE_ERROR:
+			case E_PARSE:
+			case E_RECOVERABLE_ERROR:
+			case E_STRICT:
+			case E_ERROR:
+				return E_USER_ERROR;
+			case E_NOTICE:
+				return E_USER_NOTICE;
+			case E_COMPILE_WARNING:
+			case E_CORE_WARNING:
+			case E_WARNING:
+				return E_USER_WARNING;
+		}
+		return null;
+	}
+
 	//---------------------------------------------------------------------------------- getVariables
 	/**
 	 * Gets the variables active when the error occured
