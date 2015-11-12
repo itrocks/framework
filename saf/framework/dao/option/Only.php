@@ -33,9 +33,20 @@ class Only implements Option
 	public function __construct($properties)
 	{
 		$this->properties = [];
+		$this->add(func_get_args());
+	}
+
+	//------------------------------------------------------------------------------------------- add
+	/**
+	 * @param $properties string[]|string
+	 */
+	public function add($properties)
+	{
 		foreach (func_get_args() as $properties) {
 			if (is_array($properties)) {
-				$this->properties = array_merge($this->properties, $properties);
+				foreach ($properties as $property) {
+					$this->add($property);
+				}
 			}
 			elseif (is_string($properties)) {
 				$this->properties[] = $properties;
