@@ -1,9 +1,11 @@
 <?php
 namespace SAF\Framework\Controller;
 
+use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Mapper;
+use SAF\Framework\Tools\Current;
 use SAF\Framework\Tools\Set;
 
 /**
@@ -91,6 +93,9 @@ class Parameters
 			}
 			if ((!$object || !is_object($object)) && !$class_name) {
 				$class_name = $this->uri->controller_name;
+				if (is_a($class_name, Application::class, true) || isA($class_name, Current::class)) {
+					$object = call_user_func([$class_name, 'current']);
+				}
 			}
 		}
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
