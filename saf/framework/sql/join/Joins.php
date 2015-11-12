@@ -358,7 +358,10 @@ class Joins
 				// knowing anything about the specific
 				$foreign_class_name = $foreign_type->asString();
 			}
-			elseif (!$foreign_type->isBasic()) {
+			elseif (
+				!$foreign_type->isBasic()
+				&& ($master_property->getAnnotation('store')->value !== 'string')
+			) {
 				$join->mode = $master_property->getAnnotation('mandatory')->value
 					? Join::INNER
 					: Join::LEFT;
@@ -543,7 +546,13 @@ class Joins
 		return isset($properties[$property_name]) ? $properties[$property_name] : null;
 	}
 
+
 	//------------------------------------------------------------------------------ getStartingClass
+	/**
+	 * Gets starting class as a Reflection_Class object
+	 *
+	 * @return Reflection_Class
+	 */
 	public function getStartingClass()
 	{
 		if (!$this->starting_class) {
