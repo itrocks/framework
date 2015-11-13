@@ -199,7 +199,7 @@ class Object_Builder_Array
 			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
 			reset($array);
 			if ($this->from_form && !is_numeric(key($array))) {
-				$array = arrayFormRevert($array);
+				$array = arrayFormRevert($array, false); // TODO may crash some things, please check it !
 			}
 			// check if the first row contains column names
 			$first_row = reset($array);
@@ -389,7 +389,7 @@ class Object_Builder_Array
 					$value = $this->buildCollection($class_name, $value, $null_if_empty, $object);
 				}
 				// map or not-linked array
-				else {
+				elseif ($link == Link_Annotation::MAP) {
 					$value = $this->buildMap($value, $property->getType()->getElementTypeAsString(), $link);
 				}
 			}

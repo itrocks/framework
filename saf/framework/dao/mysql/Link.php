@@ -851,7 +851,14 @@ class Link extends Dao\Sql\Link
 										$write[$storage_name] = 'X' . Q . bin2hex($value) . Q;
 									}
 									else {
-										$write[$storage_name] = is_array($value) ? json_encode($value) : $value;
+										$values = $property->getListAnnotation('values')->values();
+										$write[$storage_name] = is_array($value)
+											? (
+												($property->getType()->isMultipleString() && $values)
+													? join(',', $value)
+													: json_encode($value)
+											)
+											: $value;
 									}
 								}
 								elseif (in_array($property->getAnnotation('store')->value, ['hex', 'string'])) {
