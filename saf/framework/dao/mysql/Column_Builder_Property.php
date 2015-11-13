@@ -156,6 +156,13 @@ trait Column_Builder_Property
 					);
 				}
 				else {
+					$values = self::propertyValues($property);
+					if ($values) {
+						if (!isset($values[''])) {
+							$values[''] = '';
+						}
+						return 'enum(' . Q . join(Q . ',' . Q, $values) . Q . ')';
+					}
 					return ($max_length <= 3) ? 'char(' . $max_length . ')' : (
 						($max_length <= 255) ? 'varchar(' . $max_length . ')' : (
 						($max_length <= 65535) ? 'text' : (
@@ -182,20 +189,31 @@ trait Column_Builder_Property
 			}
 		}
 		elseif ($property_type->asString() === Type::STRING_ARRAY) {
-			/** @var $values string[] */
-			$values = [];
-			foreach ($property->getListAnnotation('values')->values() as $key => $value) {
-				$values[$key] = str_replace(Q, Q . Q, $value);
-			}
-			return $values
-				? (
-					($property->getAnnotation('set')->value ? 'set' : 'enum')
-					. "('" . join("','", $values) . "')"
-				)
-				: 'text';
+			$values = self::propertyValues($property);
+			return $values ? 'set(' . Q . join(Q . ',' . Q, $values) . Q . ')' : 'text';
 		}
 		else {
 			return 'bigint(18) unsigned';
+		}
+	}
+
+	//-------------------------------------------------------------------------------- propertyValues
+	/**
+	 * @param Reflection_Property $property
+	 * @return string[]
+	 */
+	private static function propertyValues(Reflection_Property $property)
+	{
+		/** @var $values string[] */
+		$values = $property->getListAnnotation('values')->values();
+		if ($values) {
+			foreach ($values as $key => $value) {
+				$values[$key] = str_replace(Q, Q . Q, $value);
+			}
+			return $values;
+		}
+		else {
+			return [];
 		}
 	}
 
