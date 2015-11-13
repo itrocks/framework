@@ -41,9 +41,11 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		$message = '<div class="' . $code->caption() . ' handler">'
 			. '<span class="number">' . $code->caption() . '</span>'
 			. '<span class="message">' . $error->getErrorMessage() . '</span>'
-			. '<table class="call-stack">' . $this->stackLinesTableRows($stack->lines()) . '</table>'
+			. '<table class="call-stack">'
+				. $this->stackLinesTableRows($this->trace ?: $stack->lines())
+			. '</table>'
 			. '</div>' . LF;
-		if (ini_get('display_errors') && false) {
+		if (ini_get('display_errors')) {
 			echo $message . LF;
 		}
 		if (ini_get('log_errors') && ($log_file = ini_get('error_log'))) {
@@ -61,9 +63,6 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				. SP . Loc::tr('The software maintainer has been informed and will fix it soon') . DOT
 				. SP . Loc::tr('Please check your data for bad input') . DOT
 				. '</div>';
-		}
-		if (function_exists('xdebug_break')) {
-			trigger_error($error->getErrorMessage(), $error->getUserErrorNumber());
 		}
 	}
 
@@ -85,23 +84,31 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 
 	//--------------------------------------------------------------------------- stackLinesTableRows
 	/**
-	 * @param $lines Line[]
+	 * @param $lines Line[]|string
 	 * @return string
 	 */
 	private function stackLinesTableRows($lines)
 	{
 		$lines_count = 0;
-		$result = [
-			'<tr><th>#</th><th>class</th><th>method</th><th>file</th><th>line</th>'
-		];
-		foreach ($lines as $line) {
-			$result[] = '<tr>'
-				. '<td>' . ++$lines_count . '</td>'
-				. '<td>' . $line->class . '</td>'
-				. '<td>' . $line->function . '</td>'
-				. '<td>' . $line->file . '</td>'
-				. '<td>' . $line->line . '</td>'
-				. '</tr>';
+		if (is_string($lines)) {
+			$result = [];
+			foreach (explode(LF, $lines) as $line) {
+				$result[] = '<tr><td>' . ++$lines_count . '</td><td>' . $line . '</td><tr>';
+			}
+		}
+		else {
+			$result = [
+				'<tr><th>#</th><th>class</th><th>method</th><th>file</th><th>line</th>'
+			];
+			foreach ($lines as $line) {
+				$result[] = '<tr>'
+					. '<td>' . ++$lines_count . '</td>'
+					. '<td>' . $line->class . '</td>'
+					. '<td>' . $line->function . '</td>'
+					. '<td>' . $line->file . '</td>'
+					. '<td>' . $line->line . '</td>'
+					. '</tr>';
+			}
 		}
 		return join(LF, $result);
 	}

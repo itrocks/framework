@@ -307,7 +307,7 @@ class Main
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * Run main controller for given uri, get, post and files vars comming from the web call
+	 * Run main controller for given uri, get, post and files vars coming from the web call
 	 *
 	 * @param $uri string
 	 * @param $get array

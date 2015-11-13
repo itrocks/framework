@@ -7,6 +7,9 @@ namespace SAF\Framework\Error_Handler;
 class Error_Code
 {
 
+	/** Unknown error code message */
+	const UNKNOWN = 'unknown';
+
 	//------------------------------------------------------------------------------------- $CAPTIONS
 	private static $CAPTIONS = [
 		E_ALL               => 'all',
@@ -24,7 +27,8 @@ class Error_Code
 		E_USER_ERROR        => 'user error',
 		E_USER_NOTICE       => 'user notice',
 		E_USER_WARNING      => 'user warning',
-		E_WARNING           => 'warning'
+		E_WARNING           => 'warning',
+		self::UNKNOWN       => 'unknown'
 	];
 
 	//----------------------------------------------------------------------------------------- $code
@@ -48,7 +52,7 @@ class Error_Code
 	 */
 	public function caption()
 	{
-		return self::$CAPTIONS[$this->code];
+		return isset(self::$CAPTIONS[$this->code]) ? self::$CAPTIONS[$this->code] : self::UNKNOWN;
 	}
 
 	//--------------------------------------------------------------------------------------- isFatal

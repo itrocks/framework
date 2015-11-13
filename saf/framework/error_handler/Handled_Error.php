@@ -200,7 +200,7 @@ class Handled_Error
 			case E_WARNING:
 				return E_USER_WARNING;
 		}
-		return null;
+		return E_USER_ERROR;
 	}
 
 	//---------------------------------------------------------------------------------- getVariables
