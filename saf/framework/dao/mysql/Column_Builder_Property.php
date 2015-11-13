@@ -157,7 +157,7 @@ trait Column_Builder_Property
 				}
 				else {
 					$values = self::propertyValues($property);
-					if ($values) {
+					if ($values && !in_array($property->getAnnotation('store')->value, ['hex', 'string'])) {
 						if (!isset($values[''])) {
 							$values[''] = '';
 						}
