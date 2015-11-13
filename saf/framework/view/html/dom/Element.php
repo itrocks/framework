@@ -52,6 +52,20 @@ abstract class Element
 		$this->end_tag = $end_tag;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		if ($this->styles) {
+			$this->setAttribute('style', join(';' . SP, $this->styles));
+		}
+		$content = $this->getContent();
+		return '<' . $this->name . ($this->attributes ? (SP . join(SP, $this->attributes)) : '') . '>'
+		. (($this->end_tag || isset($content)) ? ($content . '</' . $this->name . '>') : '');
+	}
+
 	//-------------------------------------------------------------------------------------- addClass
 	/**
 	 * @param $class_name string
@@ -218,20 +232,6 @@ abstract class Element
 	public function setStyle($key, $value)
 	{
 		$this->styles[$key] = new Style($key, $value);
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		if ($this->styles) {
-			$this->setAttribute('style', join(';' . SP, $this->styles));
-		}
-		$content = $this->getContent();
-		return '<' . $this->name . ($this->attributes ? (SP . join(SP, $this->attributes)) : '') . '>'
-			. (($this->end_tag || isset($content)) ? ($content . '</' . $this->name . '>') : '');
 	}
 
 }
