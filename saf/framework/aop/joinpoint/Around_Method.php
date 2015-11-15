@@ -25,10 +25,7 @@ class Around_Method extends Method_Joinpoint
 	 */
 	public function __construct($class_name, $pointcut, $parameters, $advice, $process_method)
 	{
-		$this->advice         = $advice;
-		$this->class_name     = $class_name;
-		$this->parameters     = $parameters;
-		$this->pointcut       = $pointcut;
+		parent::__construct($class_name, $pointcut, $parameters, $advice);
 		$this->process_method = $process_method;
 	}
 

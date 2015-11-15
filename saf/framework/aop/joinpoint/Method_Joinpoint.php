@@ -34,12 +34,10 @@ abstract class Method_Joinpoint extends Function_Joinpoint
 	 */
 	public function __construct($class_name, $pointcut, $parameters, $advice)
 	{
-		$this->advice      = $advice;
+		parent::__construct($pointcut, $parameters, $advice);
 		$this->class_name  = $class_name;
 		$this->method_name = $pointcut[1];
 		$this->object      = is_object($pointcut[0]) ? $pointcut[0] : null;
-		$this->parameters  = $parameters;
-		$this->pointcut    = $pointcut;
 	}
 
 }

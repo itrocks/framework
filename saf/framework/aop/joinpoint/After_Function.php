@@ -16,9 +16,7 @@ class After_Function extends Function_Joinpoint
 	 */
 	public function __construct($pointcut, $parameters, &$result, $advice)
 	{
-		$this->advice     = $advice;
-		$this->parameters = $parameters;
-		$this->pointcut   = $pointcut;
+		parent::__construct($pointcut, $parameters, $advice);
 		$this->result     = &$result;
 	}
 

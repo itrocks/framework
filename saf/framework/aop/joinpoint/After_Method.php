@@ -17,10 +17,7 @@ class After_Method extends Method_Joinpoint
 	 */
 	public function __construct($class_name, $pointcut, $parameters, &$result, $advice)
 	{
-		$this->advice     = $advice;
-		$this->class_name = $class_name;
-		$this->parameters = $parameters;
-		$this->pointcut   = $pointcut;
+		parent::__construct($class_name, $pointcut, $parameters, $advice);
 		$this->result     = &$result;
 	}
 
