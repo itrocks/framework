@@ -9,6 +9,7 @@ use SAF\Framework\Locale\Loc;
 class Set extends Element
 {
 
+	//------------------------------------------------------------------------------------ $base_name
 	/**
 	 * @var string
 	 */
@@ -59,7 +60,7 @@ class Set extends Element
 	//------------------------------------------------------------------------------------ getContent
 	/**
 	 * The getter for $content
-   * Work in progress
+	 * Work in progress
 	 *
 	 * @return string
 	 */
