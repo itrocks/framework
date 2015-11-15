@@ -871,9 +871,11 @@ class Link extends Dao\Sql\Link
 											: 'id';
 										$object->$column_name = $this->getObjectIdentifier($value, $id_value);
 										if (empty($object->$column_name)) {
+											Getter::$ignore = $aop_getter_ignore;
 											$object->$column_name = $this->getObjectIdentifier(
 												$this->write($value), $id_value
 											);
+											Getter::$ignore = true;
 										}
 									}
 									$write['id_' . $storage_name]
