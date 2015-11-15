@@ -30,19 +30,6 @@ class Reflection_Property_View
 		}
 	}
 
-	//----------------------------------------------------------------------------- getFormattedValue
-	/**
-	 * Format the property value, taken from the input object, depending on it's type
-	 *
-	 * @param $object      object|mixed
-	 * @param $final_value boolean
-	 * @return string
-	 */
-	public function getFormattedValue($object, $final_value = false)
-	{
-		return $this->formatValue($final_value ? $object : $this->property->getValue($object));
-	}
-
 	//-------------------------------------------------------------------------------- formatDateTime
 	/**
 	 * Returns the value with datetime format
@@ -127,6 +114,40 @@ class Reflection_Property_View
 		return $value;
 	}
 
+	//----------------------------------------------------------------------------- formatStringArray
+	/**
+	 * Return translated value with string or array format
+	 *
+	 * @param $value string|string[]
+	 * @return string
+	 */
+	public function formatStringArray($value)
+	{
+		if ($value && $this->property->getAnnotation('values')->value) {
+			if (!is_array($value)) {
+				$value = explode(',', $value);
+			}
+			foreach ($value as $key => $val) {
+				$value[$key] = $this->formatString($val);
+			}
+			$value = join(', ', $value);
+		}
+		return $value;
+	}
+
+	//----------------------------------------------------------------------------- getFormattedValue
+	/**
+	 * Format the property value, taken from the input object, depending on it's type
+	 *
+	 * @param $object      object|mixed
+	 * @param $final_value boolean
+	 * @return string
+	 */
+	public function getFormattedValue($object, $final_value = false)
+	{
+		return $this->formatValue($final_value ? $object : $this->property->getValue($object));
+	}
+
 	//----------------------------------------------------------------------------------- formatValue
 	/**
 	 * @param $value mixed
@@ -140,10 +161,11 @@ class Reflection_Property_View
 		}
 		else {
 			switch ($type) {
-				case Type::BOOLEAN: return $this->formatBoolean($value);
-				case Type::FLOAT:   return $this->formatFloat($value);
-				case Type::INTEGER: return $this->formatInteger($value);
-				case Type::STRING:  return $this->formatString($value);
+				case Type::BOOLEAN:       return $this->formatBoolean($value);
+				case Type::FLOAT:         return $this->formatFloat($value);
+				case Type::INTEGER:       return $this->formatInteger($value);
+				case Type::STRING:        return $this->formatString($value);
+				case Type::STRING_ARRAY:  return $this->formatStringArray($value);
 			}
 			return $this->formatDefault($value);
 		}

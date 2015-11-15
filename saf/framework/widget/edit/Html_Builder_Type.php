@@ -19,6 +19,7 @@ use SAF\Framework\View\Html\Dom\Element;
 use SAF\Framework\View\Html\Dom\Image;
 use SAF\Framework\View\Html\Dom\Input;
 use SAF\Framework\View\Html\Dom\Select;
+use SAF\Framework\View\Html\Dom\Set;
 use SAF\Framework\View\Html\Dom\Span;
 use SAF\Framework\View\Html\Dom\Textarea;
 
@@ -381,10 +382,15 @@ class Html_Builder_Type
 			$input->addClass('autoheight');
 		}
 		elseif ($values && !$this->readonly) {
-			if (!isset($values[''])) {
-				$values = array_merge(['' => ''], $values);
+			if ($this->type->isMultipleString()) {
+				$input = new Set($this->getFieldName(), $values, $this->value);
 			}
-			$input = new Select($this->getFieldName(), $values, $this->value);
+			else {
+				if (!isset($values[''])) {
+					$values = array_merge(['' => ''], $values);
+				}
+				$input = new Select($this->getFieldName(), $values, $this->value);
+			}
 		}
 		else {
 			$input = new Input($this->getFieldName(), $values ? Loc::tr($this->value) : $this->value);

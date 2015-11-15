@@ -40,7 +40,7 @@ function arrayDiffRecursive($array1, $array2, $show_type = false)
 
 //------------------------------------------------------------------------ function arrayFormRevert
 /**
- * Reverts an array comming from a dynmamic form result
+ * Reverts an array coming from a dynamic form result
  *
  * @example #1
  * Source array is [$field_name => [$n => $value]]
