@@ -199,7 +199,7 @@ class Object_Builder_Array
 			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
 			reset($array);
 			if ($this->from_form && !is_numeric(key($array))) {
-				$array = arrayFormRevert($array, false); // TODO may crash some things, please check it !
+				$array = arrayFormRevert($array, false);
 			}
 			// check if the first row contains column names
 			$first_row = reset($array);
