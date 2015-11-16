@@ -1,5 +1,7 @@
 <?php
 
+use SAF\Framework\Debug\Dead_Or_Alive;
+
 //------------------------------------------------------------------------------ arrayDiffRecursive
 /**
  * @param $array1    array
@@ -77,6 +79,7 @@ function arrayFormRevert($array, $case_3 = true)
 							}
 							else {
 								// case #3
+								Dead_Or_Alive::isAlive('arrayFormRevert.case3');
 								$result[$n2][$field_name][$n] = $value2;
 							}
 						}

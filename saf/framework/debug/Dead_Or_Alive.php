@@ -1,0 +1,100 @@
+<?php
+namespace SAF\Framework\Debug;
+
+use SAF\Framework\Dao;
+use SAF\Framework\Mapper\Search_Object;
+use SAF\Framework\Tools\Call_Stack;
+use SAF\Framework\Traits\Date_Logged;
+
+/**
+ * Tell if a feature is dead or alive
+ * This is a dead-code detector
+ *
+ * @set Dead_Or_Alive
+ */
+class Dead_Or_Alive
+{
+	use Date_Logged;
+
+	//-------------------------------------------------------------------------------------- $counter
+	/**
+	 * @var integer
+	 */
+	public $counter = 0;
+
+	//----------------------------------------------------------------------------------------- $file
+	/**
+	 * @var string
+	 */
+	public $file;
+
+	//----------------------------------------------------------------------------------- $identifier
+	/**
+	 * @var string
+	 */
+	public $identifier;
+
+	//----------------------------------------------------------------------------------------- $line
+	/**
+	 * @var integer
+	 */
+	public $line;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $identifier string
+	 */
+	public function __construct($identifier = null)
+	{
+		if (isset($identifier)) {
+			$this->identifier = $identifier;
+			$this->matchCallStack();
+		}
+	}
+
+	//--------------------------------------------------------------------------------------- isAlive
+	/**
+	 * Increment a Dead_Or_Alive object matching $identifier
+	 *
+	 * @param $identifier
+	 */
+	public static function isAlive($identifier)
+	{
+		/** @var $search self */
+		$search = Search_Object::create(__CLASS__);
+		$search->identifier = $identifier;
+		$search->matchCallStack(['file']);
+		Dao::begin();
+		$doa = Dao::searchOne($search);
+		if (!$doa) {
+			$doa = new Dead_Or_Alive($identifier);
+		}
+		$doa->matchCallStack();
+		$doa->counter ++;
+		Dao::write($doa);
+		Dao::commit();
+	}
+
+	//-------------------------------------------------------------------------------- matchCallStack
+	/**
+	 * @param $property_names string[]|null
+	 */
+	private function matchCallStack($property_names = null)
+	{
+		$call_stack = new Call_Stack();
+		$call_stack->shift();
+		$line = $call_stack->lines()[0];
+		if (!$property_names || in_array('file',  $property_names)) $this->file  = $line->file;
+		if (!$property_names || in_array('line',  $property_names)) $this->line  = $line->line;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->file . ':' . $this->line . ':' . $this->identifier;
+	}
+
+}
