@@ -277,6 +277,26 @@ class Output_Settings extends Custom_Settings
 		return $result;
 	}
 
+	//---------------------------------------------------------------------------------- removeAction
+	/**
+	 * Removes an action using this caption (as this is the only sure unique data)
+	 *
+	 * @param $caption string
+	 * @return boolean true if the action has been removed, false if it was not found
+	 */
+	public function removeAction($caption)
+	{
+		if ($this->actions) {
+			foreach ($this->actions as $key => $action) {
+				if ($action->caption == $caption) {
+					unset($this->actions[$key]);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	//-------------------------------------------------------------------------------- removeProperty
 	/**
 	 * @param $property_path string

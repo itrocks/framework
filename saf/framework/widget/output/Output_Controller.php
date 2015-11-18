@@ -107,6 +107,11 @@ class Output_Controller implements Default_Feature_Controller
 			}
 			$did_change = true;
 		}
+		if (isset($parameters['remove_action'])) {
+			if ($output_settings->removeAction($parameters['remove_action'])) {
+				$did_change = true;
+			}
+		}
 		if (isset($parameters['remove_property'])) {
 			$output_settings->removeProperty($parameters['remove_property']);
 			$did_change = true;
