@@ -182,8 +182,8 @@ class Compiler implements ICompiler, Needs_Main
 							$dependency = Dao::searchOne($search_built_parent);
 							if (!$dependency) {
 								trigger_error(
-									'Not parent class for built class ' . $search_built_parent->class_name,
-									E_USER_ERROR
+									'No parent class for built class ' . $search_built_parent->class_name,
+									E_USER_WARNING
 								);
 							}
 							$search_built_parent->class_name = $dependency->dependency_name;
