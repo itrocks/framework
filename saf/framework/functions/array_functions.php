@@ -163,11 +163,14 @@ function arrayNamedValues($array)
  */
 function arraySumRecursive($array)
 {
-	$sum = 0;
-	foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($array)) as $value) {
-		$sum += $value;
+	if (is_array($array)) {
+		$sum = 0;
+		foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($array)) as $value) {
+			$sum += $value;
+		}
+		return $sum;
 	}
-	return $sum;
+	return $array + 0;
 }
 
 //------------------------------------------------------------------------------------- arrayToTree
