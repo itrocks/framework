@@ -833,14 +833,15 @@ class Link extends Dao\Sql\Link
 				$properties = $class->accessProperties();
 				$properties = Replaces_Annotations::removeReplacedProperties($properties);
 				foreach ($properties as $property) {
-					if (!isset($only) || in_array($property->name, $only)) {
-						if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-							$value = isset($object->$property) ? $property->getValue($object) : null;
+					$property_name = $property->name;
+					if (!isset($only) || in_array($property_name, $only)) {
+						if (!$property->isStatic() && !in_array($property_name, $exclude_properties)) {
+							$value = isset($object->$property_name) ? $property->getValue($object) : null;
 							$property_is_null = $property->getAnnotation('null')->value;
 							if (is_null($value) && !$property_is_null) {
 								$value = '';
 							}
-							if (in_array($property->name, $table_columns_names)) {
+							if (in_array($property_name, $table_columns_names)) {
 								$element_type = $property->getType()->getElementType();
 								$storage_name = $property->getAnnotation('storage')->value;
 								// write basic
@@ -868,7 +869,7 @@ class Link extends Dao\Sql\Link
 								}
 								// write object id if set or object if no id is set (new object)
 								else {
-									$column_name = 'id_' . $property->name;
+									$column_name = 'id_' . $property_name;
 									if (is_object($value)) {
 										$value_class = new Link_Class(get_class($value));
 										$id_value = (
