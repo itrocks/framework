@@ -76,7 +76,7 @@ class Dependency
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (doc comment)
 	 *
-	 * @values class, extends, implements, new, param, return, static, use, var
+	 * @values class, declaration, extends, implements, new, param, return, static, use, var
 	 * @var string
 	 */
 	public $type;
