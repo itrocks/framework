@@ -34,12 +34,10 @@ class Include_Filter extends php_user_filter
 	 */
 	public static function file($file_name)
 	{
-		if (isset($_SERVER['ENV']) && ($_SERVER['ENV'] == 'DEV')) {
-			$cache_file_name = self::$cache_dir . '/' . str_replace('/', '-', substr($file_name, 0, -4));
-			if (file_exists($cache_file_name)) {
-				self::$file_name = $cache_file_name;
-				return 'php://filter/read=' . self::ID . '/resource=' . $file_name;
-			}
+		$cache_file_name = self::$cache_dir . '/' . str_replace('/', '-', substr($file_name, 0, -4));
+		if (file_exists($cache_file_name)) {
+			self::$file_name = $cache_file_name;
+			return 'php://filter/read=' . self::ID . '/resource=' . $file_name;
 		}
 		return $file_name;
 	}
