@@ -381,6 +381,10 @@ class Main
 	{
 		if (empty($_SESSION)) {
 			ini_set('session.cookie_path', SL . Paths::$script_name);
+			if (isset($get['memory_limit'])) {
+				ini_set('memory_limit', $get['memory_limit']);
+				unset($get['memory_limit']);
+			}
 			session_start();
 			if (isset($GLOBALS['X'])) {
 				$_SESSION = [];
