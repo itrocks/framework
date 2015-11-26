@@ -306,3 +306,40 @@ function explodeStringInArrayToDoubleArray($delimiter, $array)
 	}
 	return $tab;
 }
+
+/**
+ * @param $object      array|object
+ * @param $get_private boolean if
+ * @return array
+ */
+function objectToArray($object, $get_private = false)
+{
+	if (is_object($object)) {
+		if (isset($object->__objectToArray)) {
+			$object = '...';
+		}
+		else {
+			$protected_object = $object;
+			$object = $get_private ? ((array)$object) : get_object_vars($object);
+			$protected_object->__objectToArray = true;
+		}
+	}
+	if (is_array($object)) {
+		if (isset($object['__objectToArray'])) {
+			$object = '...';
+		}
+		else {
+			$object['__objectToArray'] = true;
+			foreach ($object as $key => $value) {
+				if (is_array($value) || is_object($value)) {
+					$object[$key] = objectToArray($value, $get_private);
+				}
+			}
+			unset($object['__objectToArray']);
+		}
+	}
+	if (isset($protected_object)) {
+		unset($protected_object->__objectToArray);
+	}
+	return $object;
+}
