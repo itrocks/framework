@@ -869,7 +869,7 @@ class Link extends Dao\Sql\Link
 								}
 								// write object id if set or object if no id is set (new object)
 								else {
-									$column_name = 'id_' . $property_name;
+									$id_column_name = 'id_' . $property_name;
 									if (is_object($value)) {
 										$value_class = new Link_Class(get_class($value));
 										$id_value = (
@@ -877,19 +877,19 @@ class Link extends Dao\Sql\Link
 											&& !$element_type->asReflectionClass()->getAnnotation('link')->value
 										) ? 'id_' . $value_class->getCompositeProperty()->name
 											: 'id';
-										$object->$column_name = $this->getObjectIdentifier($value, $id_value);
-										if (empty($object->$column_name)) {
+										$object->$id_column_name = $this->getObjectIdentifier($value, $id_value);
+										if (empty($object->$id_column_name)) {
 											Getter::$ignore = $aop_getter_ignore;
-											$object->$column_name = $this->getObjectIdentifier(
+											$object->$id_column_name = $this->getObjectIdentifier(
 												$this->write($value), $id_value
 											);
 											Getter::$ignore = true;
 										}
 									}
 									$write['id_' . $storage_name]
-										= ($property_is_null && !isset($object->$column_name))
+										= ($property_is_null && !isset($object->$id_column_name))
 											? null
-											: intval($object->$column_name);
+											: intval($object->$id_column_name);
 								}
 							}
 							// write collection

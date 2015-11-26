@@ -12,6 +12,8 @@ use SAF\Framework\Tools\Stringable;
 
 /**
  * History writer
+ *
+ * TODO HIGHEST This probably does not record any history if Dao Cache is on !
  */
 abstract class Writer
 {
