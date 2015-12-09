@@ -4,6 +4,7 @@ namespace SAF\Framework\Widget\Data_List;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Range;
 use SAF\Framework\Dao\Option;
+use SAF\Framework\Locale\Date_Format;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -73,6 +74,21 @@ class Search_Parameters_Parser
 	{
 		if (is_string($search_value) && $type->isDateTime() && (strpos($search_value, SL) !== false)) {
 			$search_value = Loc::dateToIso($search_value, $max);
+		}
+	}
+
+	//-------------------------------------------------------------------------------- applyDateRange
+	/**
+	 * Change ISO date to a date range if not complete
+	 * eg 2015-05-12 becomes a range from 2015-05-12 to 2015-05-12 23:59:59
+	 *
+	 * @param $search_value string
+	 * @param $type         Type
+	 */
+	protected function applyDateRange(&$search_value, Type $type)
+	{
+		if (is_string($search_value) && $type->isDateTime() && (strlen($search_value) < 19)) {
+			$search_value = new Range($search_value, (new Date_Format())->appendMax($search_value));
 		}
 	}
 
@@ -167,6 +183,7 @@ class Search_Parameters_Parser
 			$this->applyRange($search_value, $property->getType());
 		}
 		$this->applyDate($search_value, $property->getType());
+		$this->applyDateRange($search_value, $property->getType());
 	}
 
 	//-------------------------------------------------------------------------------------- hasRange

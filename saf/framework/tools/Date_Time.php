@@ -87,6 +87,17 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			: new Date_Time($dateTime->format('Y-m-d H:i:s'));
 	}
 
+	//----------------------------------------------------------------------------------- daysInMonth
+	/**
+	 * Returns the number of days in the given month
+	 *
+	 * @return integer
+	 */
+	public function daysInMonth()
+	{
+		return $this->format('d');
+	}
+
 	//--------------------------------------------------------------------------------------- fromISO
 	/**
 	 * @param $date string

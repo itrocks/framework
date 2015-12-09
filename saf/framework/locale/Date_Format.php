@@ -53,6 +53,34 @@ class Date_Format
 		return isset($iso_date) ? $date = (new DateTime($iso_date))->format($this->format) : $date;
 	}
 
+	//------------------------------------------------------------------------------------- appendMax
+	/**
+	 * Append max date / time to an incomplete ISO date
+	 * eg 2015-10-01 will become 2015-10-01 23:59:59
+	 *
+	 * @param $date string
+	 * @return string
+	 */
+	public function appendMax($date)
+	{
+		if (strlen($date) == 4) {
+			$date .= '-12-31 23:59:59';
+		}
+		elseif (strlen($date) == 7) {
+			$days_of_month = (new Date_Time($date . '-01'))->daysInMonth();
+			$date .= '-' . $days_of_month . SP . '23:59:59';
+		}
+		elseif (strlen($date) == 10) {
+			$date .= SP . '23:59:59';
+		}
+		elseif (strlen($date) >= 13) {
+			while (strlen($date) < 19) {
+				$date .= ':59';
+			}
+		}
+		return $date;
+	}
+
 	//----------------------------------------------------------------------------------------- toIso
 	/**
 	 * Takes a locale date and make it ISO
