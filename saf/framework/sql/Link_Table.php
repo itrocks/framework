@@ -46,7 +46,7 @@ class Link_Table
 		$this->property = $property;
 	}
 
-	//------------------------------------------------------------------------ applyStringDefinitions
+	//--------------------------------------------------------------------- applyTableNameDefinitions
 	/**
 	 * Replace string definitions by their values
 	 *
@@ -71,7 +71,7 @@ class Link_Table
 		return $table;
 	}
 
-	//---------------------------------------------------------------------------------- defStoreName
+	//------------------------------------------------------------------------------ defaultStoreName
 	/**
 	 * Construct table link name between two tables
 	 *

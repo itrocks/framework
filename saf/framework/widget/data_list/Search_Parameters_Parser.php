@@ -61,6 +61,21 @@ class Search_Parameters_Parser
 		}
 	}
 
+	//------------------------------------------------------------------------------------- applyDate
+	/**
+	 * Change date format
+	 *
+	 * @param $search_value string
+	 * @param $type         Type
+	 * @param $max          boolean
+	 */
+	protected function applyDate(&$search_value, Type $type, $max = false)
+	{
+		if (is_string($search_value) && $type->isDateTime() && (strpos($search_value, SL) !== false)) {
+			$search_value = Loc::dateToIso($search_value, $max);
+		}
+	}
+
 	//------------------------------------------------------------------------------------ applyEmpty
 	/**
 	 * @param $search_value string|Func
@@ -125,11 +140,15 @@ class Search_Parameters_Parser
 	//------------------------------------------------------------------------------------ applyRange
 	/**
 	 * @param $search_value string|Option
+	 * @param $type         Type
 	 */
-	protected function applyRange(&$search_value)
+	protected function applyRange(&$search_value, Type $type)
 	{
 		if (is_string($search_value) && (strpos($search_value, '-') !== false)) {
 			$range = explode('-', $search_value, 2);
+			foreach ($range as $max => &$value) {
+				$this->applyDate($value, $type, $max);
+			}
 			$search_value = new Range($range[0], $range[1]);
 		}
 	}
@@ -145,8 +164,9 @@ class Search_Parameters_Parser
 		$this->applyEmpty($search_value, $property->getType());
 		$this->applyJokers($search_value);
 		if ($this->hasRange($property)) {
-			$this->applyRange($search_value);
+			$this->applyRange($search_value, $property->getType());
 		}
+		$this->applyDate($search_value, $property->getType());
 	}
 
 	//-------------------------------------------------------------------------------------- hasRange

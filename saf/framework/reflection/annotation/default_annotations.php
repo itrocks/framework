@@ -208,10 +208,6 @@ Parser::$default_annotations = array(
 	// Tells that the numeric value can be negative.
 	__NAMESPACE__ . '\Property\Signed_Annotation' => Boolean_Annotation::class,
 
-	// @store serialized
-	// The serialized value of the object is stored, instead of generating an objects table
-	__NAMESPACE__ . '\Property\Store_Annotation' => Annotation::class,
-
 	// @textile
 	// This tells that the property should be rendered using textile parsing
 	__NAMESPACE__ . '\Property\Textile_Annotation' => Boolean_Annotation::class,

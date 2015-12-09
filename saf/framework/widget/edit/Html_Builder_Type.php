@@ -103,6 +103,7 @@ class Html_Builder_Type
 	 */
 	public function build()
 	{
+		$this->patchSearchTypes();
 		$type = $this->type;
 		if (!isset($type)) {
 			return $this->buildId();
@@ -455,6 +456,23 @@ class Html_Builder_Type
 			. '[' . $count . ']'
 			. substr($this->preprop, $field_name_j + 1)
 			. '[' . $prefix . $this->name . ']';
+	}
+
+	//------------------------------------------------------------------------------ patchSearchTypes
+	/**
+	 * Patch search type : eg dates should be typed as string
+	 */
+	private function patchSearchTypes()
+	{
+		if (
+			(substr($this->name, 0, 7) === 'search[')
+			&& $this->type->isDateTime()
+		) {
+			$this->type = new Type(Type::STRING);
+			if ($this->value) {
+				$this->value = Loc::dateToLocale($this->value);
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------- setOnChangeAttribute

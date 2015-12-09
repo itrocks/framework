@@ -2,6 +2,7 @@
 namespace SAF\Framework\Locale;
 
 use DateTime;
+use Exception;
 use SAF\Framework\Tools\Date_Time;
 
 /**
@@ -56,29 +57,37 @@ class Date_Format
 	/**
 	 * Takes a locale date and make it ISO
 	 *
-	 * @param $date string ie '25/12/2001' '25/12/2001 12:20' '25/12/2001 12:20:16'
+	 * @param $date string ie '12/25/2001' '12/25/2001 12:20' '12/25/2001 12:20:16'
+	 * @param $max  boolean if true, the incomplete date will be completed to the max range
+	 * eg '25/12/2001' will result in '2001-12-25 00:00:00' if false, '2001-12-25 23:59:59' if true
 	 * @return string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 */
-	public function toIso($date)
+	public function toIso($date, $max = false)
 	{
 		if (empty($date)) {
 			return '0000-00-00';
 		}
 		$date = $this->advancedDate($date);
+		if ($max && (strlen($date) == 10)) {
+			$date .= SP . '23:59:59';
+		}
 		if (strlen($date) == 10) {
 			$datetime = DateTime::createFromFormat($this->format, $date);
 			return $datetime ? $datetime->format('Y-m-d') : $date;
 		}
-		else {
+		elseif (strpos($date, SP)) {
 			list($date, $time) = explode(SP, $date);
 			while (strlen($time) < 8) {
-				$time .= ':00';
+				$time .= $max ? ':59' : ':00';
 			}
 			$datetime = DateTime::createFromFormat($this->format, $date);
 			return trim($datetime
 				? ($datetime->format('Y-m-d') . SP . $time)
 				: $date . SP . $time
 			);
+		}
+		else {
+			return $date;
 		}
 	}
 
@@ -95,8 +104,13 @@ class Date_Format
 		if ($date instanceof DateTime) {
 			$date = $date->format('Y-m-d H:i:s');
 		}
-		if (empty($date) || (new Date_Time($date))->isMin()) {
-			return '';
+		try {
+			if (empty($date) || (new Date_Time($date))->isMin()) {
+				return '';
+			}
+		}
+		catch (Exception $e) {
+			return $date;
 		}
 		if (strlen($date) == 10) {
 			return DateTime::createFromFormat('Y-m-d', $date)->format($this->format);
