@@ -49,7 +49,7 @@ Définition des objets manipulés :
 - Une classe racine est un trait particulier qui sert de base à la construction de classes plus
   étoffées : elle contient les données de base (par exemple code internet et libellé d'un article).
 
-- Une donnée est un nom, son type, des règles de gestion, etc. (champs personnalisé)
+- Une donnée est un nom, son type, des règles de gestion, etc. (champ personnalisé)
   Une donnée complète peut implicitement donner lieu à l'établissement d'une nouvelle classe et
   de ses traits
 
