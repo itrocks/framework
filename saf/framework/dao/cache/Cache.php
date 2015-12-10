@@ -59,8 +59,7 @@ class Cache implements Registerable
 
 	//------------------------------------------------------------------------------- cacheReadObject
 	/**
-	 * Keep object into cache on write, if there is no write option
-	 * (write option may suppose the object is incomplete)
+	 * Store object into cache on Dao::read()
 	 *
 	 * @param $result    object
 	 * @param $joinpoint Method_Joinpoint
@@ -74,7 +73,7 @@ class Cache implements Registerable
 
 	//------------------------------------------------------------------------------ cacheWriteObject
 	/**
-	 * Keep object into cache on write, if there is no write option
+	 * Store object into cache on Dao::write(), if there is no write option
 	 * (write option may suppose the object is incomplete)
 	 *
 	 * @param $object    object
@@ -107,6 +106,9 @@ class Cache implements Registerable
 	}
 
 	//----------------------------------------------------------------------------------------- purge
+	/**
+	 * Purge removes self::PURGE old objects from the cache
+	 */
 	private function purge()
 	{
 		$counter = 0;
@@ -126,12 +128,13 @@ class Cache implements Registerable
 			list($class_name, $identifier) = current($list);
 			unset($this->cache[$class_name][$identifier]);
 			$this->count --;
+			$counter --;
 		}
 	}
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
-	 * Remove from cache
+	 * Remove an object from the cache, knowing its class name and identifier
 	 *
 	 * @param $class_name string
 	 * @param $identifier integer
