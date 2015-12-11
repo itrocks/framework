@@ -583,10 +583,14 @@ class Template
 		$i = strpos($property_name, '?');
 		if ($i !== false) {
 			$condition_path = substr($property_name, 0, $i);
+			$condition = $this->parseValue($condition_path, true);
 			$j = strrpos($property_name, ':');
-			if ($this->parseValue($condition_path, true)) {
+			if ($condition) {
 				if ($j === false) {
 					$j = strlen($property_name);
+				}
+				elseif ($j === ($i + 1)) {
+					return $condition;
 				}
 				return $this->parseValue(substr($property_name, $i + 1, $j - $i - 1));
 			}
