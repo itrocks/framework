@@ -280,10 +280,9 @@ class Object_Builder_Array
 	/**
 	 * @param $array      array
 	 * @param $class_name string the name of the class to build each element
-	 * @param $link       string|null
 	 * @return integer[]
 	 */
-	public function buildMap($array, $class_name, $link = Link_Annotation::MAP)
+	public function buildMap($array, $class_name)
 	{
 		$map = [];
 		if ($array) {
@@ -295,9 +294,7 @@ class Object_Builder_Array
 						);
 					}
 					else {
-						$map[$key] = is_object($element)
-							? $element
-							: ($link ? Dao::read($element, $class_name) : intval($element));
+						$map[$key] = is_object($element) ? $element : Dao::read($element, $class_name);
 					}
 				}
 			}
@@ -388,9 +385,9 @@ class Object_Builder_Array
 					$class_name = $property->getType()->getElementTypeAsString();
 					$value = $this->buildCollection($class_name, $value, $null_if_empty, $object);
 				}
-				// map or not-linked array
-				elseif ($link == Link_Annotation::MAP) {
-					$value = $this->buildMap($value, $property->getType()->getElementTypeAsString(), $link);
+				// map or not-linked array of objects
+				elseif ($property->getType()->isClass()) {
+					$value = $this->buildMap($value, $property->getType()->getElementTypeAsString());
 				}
 			}
 			// @output string

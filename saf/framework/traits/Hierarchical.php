@@ -22,19 +22,19 @@ use SAF\Framework\Reflection\Link_Class;
 trait Hierarchical
 {
 
-	//---------------------------------------------------------------------------------------- getSub
+	//--------------------------------------------------------------------------------------- readSub
 	/**
 	 * To use this :
 	 * - Create your own getSubClassNames() method
 	 * - Your method has no parameters
 	 * - Your method must return Class_Name[]
-	 * - Call return getSub('sub_class_names', 'super_class_name') using your two properties names
+	 * - Call return readSub('sub_class_names', 'super_class_name') using your two properties names
 	 *
 	 * @param $sub   string sub property name ie 'sub_class_names'
 	 * @param $super string super property name ie 'super_class_name'
 	 * @return object[]|Hierarchical[]
 	 */
-	private function getSub($sub, $super)
+	protected function readSub($sub, $super)
 	{
 		if (!isset($this->$sub)) {
 			$this->$sub = Dao::search([$super => $this], Link_Class::linkedClassNameOf($this));
@@ -53,7 +53,7 @@ trait Hierarchical
 	 * @param $sub   string sub property name ie 'sub_class_names'
 	 * @param $super string super property name ie 'super_class_name'
 	 */
-	private function writeSub($sub, $super)
+	protected function writeSub($sub, $super)
 	{
 		$written = [];
 		// update $super_property into new $sub_properties
