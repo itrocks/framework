@@ -6,6 +6,7 @@ use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Sql\Column;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Tools\Files;
 use SAF\Framework\Tools\List_Data;
 
 /**
@@ -18,6 +19,33 @@ class Link extends Identifier_Map
 
 	//-------------------------------------------------- File link configuration array keys constants
 	const PATH = 'path';
+
+	//----------------------------------------------------------------------------------------- $path
+	/**
+	 * The local storage path. Always has a trailing / set by __construct().
+	 *
+	 * @var string
+	 */
+	private $path;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Construct a new File link into given path
+	 *
+	 * @param $parameters string[] ['path' => $local_storage_path]
+	 */
+	public function __construct($parameters = null)
+	{
+		if (is_array($parameters)) {
+			foreach ($parameters as $parameter => $value) {
+				$this->$parameter = $value;
+			}
+			Files::mkdir($this->path, 0700);
+		}
+		if (substr($this->path, -1) !== SL) {
+			$this->path .= SL;
+		}
+	}
 
 	//----------------------------------------------------------------------------------------- count
 	/**
@@ -73,6 +101,19 @@ class Link extends Identifier_Map
 		// TODO: Implement getStoredProperties() method.
 	}
 
+	//------------------------------------------------------------------------------ propertyFileName
+	/**
+	 * @param $object        object object from which to get the value of the property
+	 * @param $property_name string the name of the property
+	 * @return string
+	 */
+	private function propertyFileName($object, $property_name)
+	{
+		return $this->path
+		. $this->storeNameOf(get_class($object)) . SL
+		. $this->getObjectIdentifier($object) . '-' . $property_name;
+	}
+
 	//------------------------------------------------------------------------------------------ read
 	/**
 	 * Read an object from data source
@@ -97,6 +138,21 @@ class Link extends Identifier_Map
 	public function readAll($class_name, $options = [])
 	{
 		// TODO: Implement readAll() method.
+	}
+
+	//---------------------------------------------------------------------------------- readProperty
+	/**
+	 * Reads the value of a property from the data store
+	 * Used only when @dao dao_name is used on a property which is not a @var @link (simple values)
+	 *
+	 * @param $object        object object from which to read the value of the property
+	 * @param $property_name string the name of the property
+	 * @return mixed the read value for the property read from the data link. null if no value stored
+	 */
+	public function readProperty($object, $property_name)
+	{
+		$file_name = $this->propertyFileName($object, $property_name);
+		return (is_file($file_name)) ? file_get_contents($file_name) : null;
 	}
 
 	//----------------------------------------------------------------------------- replaceReferences
@@ -173,6 +229,28 @@ class Link extends Identifier_Map
 	public function write($object, $options = [])
 	{
 		// TODO: Implement write() method.
+	}
+
+	//--------------------------------------------------------------------------------- writeProperty
+	/**
+	 * Writes the value of a property into the data store
+	 * Used only when @dao dao_name is used on a property which is not a @var @link (simple values)
+	 *
+	 * @param $object        object object from which to get the value of the property
+	 * @param $property_name string the name of the property
+	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
+	 */
+	public function writeProperty($object, $property_name, $value = null)
+	{
+		$file_name = $this->propertyFileName($object, $property_name);
+		$value = isset($value) ? $value : $object->$property_name;
+		if (isset($value)) {
+			Files::mkdir(lLastParse($file_name, SL), 0700);
+			file_put_contents($file_name, $value);
+		}
+		elseif (is_file($file_name)) {
+			unlink($file_name);
+		}
 	}
 
 }

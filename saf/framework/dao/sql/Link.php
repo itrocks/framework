@@ -141,6 +141,24 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	abstract public function query($query, $class_name = null);
 
+	//---------------------------------------------------------------------------------- readProperty
+	/**
+	 * Reads the value of a property from the data store
+	 * Used only when @dao dao_name is used on a property which is not a @var @link (simple values)
+	 *
+	 * @param $object        object object from which to read the value of the property
+	 * @param $property_name string the name of the property
+	 * @return mixed the read value for the property read from the data link. null if no value stored
+	 */
+	public function readProperty($object, $property_name)
+	{
+		user_error(
+			'@dao : property ' . get_class($object) . '::' . $property_name
+			. ' cannot be read alone into a ' . get_class($this) . ' data link',
+			E_USER_ERROR
+		);
+	}
+
 	//-------------------------------------------------------------------------------------- rollback
 	/**
 	 * Rollback current transaction
@@ -217,6 +235,24 @@ abstract class Link extends Identifier_Map implements Transactional
 		$this->setContext($class_name);
 		$table_name = $this->storeNameOf($class_name);
 		$this->query('TRUNCATE TABLE ' . BQ . $table_name . BQ);
+	}
+
+	//--------------------------------------------------------------------------------- writeProperty
+	/**
+	 * Writes the value of a property into the data store
+	 * Used only when @dao dao_name is used on a property which is not a @var @link (simple values)
+	 *
+	 * @param $object        object object from which to get the value of the property
+	 * @param $property_name string the name of the property
+	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
+	 */
+	public function writeProperty($object, $property_name, $value = null)
+	{
+		user_error(
+			'@dao : property ' . get_class($object) . '::' . $property_name
+			. ' cannot be written alone into a ' . get_class($this) . ' data link',
+			E_USER_ERROR
+		);
 	}
 
 }

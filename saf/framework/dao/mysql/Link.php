@@ -4,6 +4,7 @@ namespace SAF\Framework\Dao\Mysql;
 use mysqli_result;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Option\Only;
 use SAF\Framework\Mapper\Abstract_Class;
@@ -342,14 +343,18 @@ class Link extends Dao\Sql\Link
 		// execute actions stored into $prepared_fetch
 		foreach ($this->prepared_fetch as $property_name => $actions) {
 			foreach ($actions as $action) {
-				switch ($action) {
-					case self::GZINFLATE:
-						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
-						$value = @gzinflate($object->$property_name);
-						if ($value !== false) {
-							$object->$property_name = $value;
-						}
-						break;
+				if ($action === self::GZINFLATE) {
+					/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
+					$value = @gzinflate($object->$property_name);
+					if ($value !== false) {
+						$object->$property_name = $value;
+					}
+				}
+				elseif ($action instanceof Data_Link) {
+					$value = $action->readProperty($object, $property_name);
+					if (isset($value)) {
+						$object->$property_name = $value;
+					}
 				}
 			}
 		}
@@ -618,8 +623,15 @@ class Link extends Dao\Sql\Link
 	{
 		$this->prepared_fetch = [];
 		foreach ((new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property) {
+			// dao must be before gz : first we get the value from the file, then we inflate it
+			if ($dao = $property->getAnnotation('dao')->value) {
+				$dao = Dao::get($dao);
+				if ($dao !== $this) {
+					$this->prepared_fetch[$property->name][] = $dao;
+				}
+			}
 			if ($property->getAnnotation('store')->value === 'gz') {
-				$this->prepared_fetch[$property->name] = [self::GZINFLATE];
+				$this->prepared_fetch[$property->name][] = self::GZINFLATE;
 			}
 		}
 	}
@@ -867,7 +879,8 @@ class Link extends Dao\Sql\Link
 				}
 				$table_columns_names = array_keys($this->getStoredProperties($class));
 				$write_collections = [];
-				$write_maps = [];
+				$write_maps        = [];
+				$write_properties  = [];
 				$write = [];
 				$aop_getter_ignore = Getter::$ignore;
 				Getter::$ignore = true;
@@ -898,11 +911,11 @@ class Link extends Dao\Sql\Link
 										if ($property->getAnnotation('store')->value === 'gz') {
 											$value = gzdeflate($value);
 										}
-										$write[$storage_name] = 'X' . Q . bin2hex($value) . Q;
+										$will_hex = true;
 									}
 									else {
 										$values = $property->getListAnnotation('values')->values();
-										$write[$storage_name] = is_array($value)
+										$write[$storage_name] = $value = is_array($value)
 											? (
 												($property->getType()->isMultipleString() && $values)
 													? join(',', $value)
@@ -910,7 +923,23 @@ class Link extends Dao\Sql\Link
 											)
 											: $value;
 									}
+									if ($dao = $property->getAnnotation('dao')->value) {
+										if (($dao = Dao::get($dao)) !== $this) {
+											$write_properties[] = [$property->name, $value, $dao];
+											$write[$storage_name] = '';
+											if (isset($will_hex)) {
+												unset($will_hex);
+											}
+										}
+									}
+									if (isset($will_hex)) {
+										if (strlen($value)) {
+											$write[$storage_name] = 'X' . Q . bin2hex($value) . Q;
+										}
+										unset($will_hex);
+									}
 								}
+								// write array or object into a @store gz/hex/string
 								elseif ($property->getAnnotation('store')->value) {
 									$value = is_array($value) ? serialize($value) : strval($value);
 									if ($property->getAnnotation('store')->value === 'gz') {
@@ -920,6 +949,12 @@ class Link extends Dao\Sql\Link
 										$value = 'X' . Q . bin2hex($value) . Q;
 									}
 									$write[$storage_name] = $value;
+									if ($dao = $property->getAnnotation('dao')->value) {
+										if (($dao = Dao::get($dao)) !== $this) {
+											$write_properties[] = [$property->name, $write[$storage_name], $dao];
+											$write[$storage_name] = '';
+										}
+									}
 								}
 								// write object id if set or object if no id is set (new object)
 								else {
@@ -1033,6 +1068,10 @@ class Link extends Dao\Sql\Link
 				foreach ($write_maps as $write) {
 					list($property, $value) = $write;
 					$this->writeMap($object, $property, $value);
+				}
+				foreach ($write_properties as $write) {
+					list($property, $value, $dao) = $write;
+					$dao->writeProperty($object, $property, $value);
 				}
 				// if link class : write linked object too
 				$id_property = $link->value ? ('id_' . $class->getCompositeProperty()->name) : null;

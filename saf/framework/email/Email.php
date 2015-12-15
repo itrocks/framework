@@ -39,6 +39,7 @@ class Email
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
+	 * @dao files
 	 * @max_length 10000000
 	 * @multiline
 	 * @store gz
@@ -261,6 +262,23 @@ class Email
 				}
 			}
 		}
+	}
+
+	//---------------------------------------------------------------------------------------- update
+	/**
+	 * Rewrite content of all emails, in order to have it compressed
+	 * This is a simple rewrite. Mysql\Link does all the work (inflate-deflate) !
+	 *
+	 * Call this update script using http://saf/sfkgroup/SAF/Framework/Email/update
+	 *
+	 * @return string
+	 */
+	public function update()
+	{
+		foreach (Dao::readAll(__CLASS__) as $email) {
+			Dao::write($email, [Dao::only('content')]);
+		}
+		return 'OK';
 	}
 
 }
