@@ -279,9 +279,16 @@ class Email
 	public function update(Parameters $parameters)
 	{
 		set_time_limit(36000);
-		$emails = $parameters->contains('all')
-			? Dao::readAll(__CLASS__)
-			: Dao::search(['date' => Func::greaterOrEqual(Date_Time::today())], __CLASS__);
+		$search = ['content' => Func::notEqual('')];
+		if (!$parameters->contains('all')) {
+			if ($date = $parameters->getRawParameter(0)) {
+				$search = ['date' => Func::like($date . '%')];
+			}
+			else {
+				$search = ['date' => Func::greaterOrEqual(Date_Time::today())];
+			}
+		}
+		$emails = Dao::search($search, __CLASS__, [Dao::limit(1000)]);
 		foreach ($emails as $email) {
 			Dao::write($email, [Dao::only('content')]);
 		}
