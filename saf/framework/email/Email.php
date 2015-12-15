@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Email\Account;
 use SAF\Framework\Email\Attachment;
 use SAF\Framework\Email\Recipient;
@@ -271,14 +273,19 @@ class Email
 	 *
 	 * Call this update script using http://saf/sfkgroup/SAF/Framework/Email/update
 	 *
+	 * @param $parameters Parameters
 	 * @return string
 	 */
-	public function update()
+	public function update(Parameters $parameters)
 	{
-		foreach (Dao::readAll(__CLASS__) as $email) {
+		set_time_limit(36000);
+		$emails = $parameters->contains('all')
+			? Dao::readAll(__CLASS__)
+			: Dao::search(['date' => Func::greaterOrEqual(Date_Time::today())], __CLASS__);
+		foreach ($emails as $email) {
 			Dao::write($email, [Dao::only('content')]);
 		}
-		return 'OK';
+		return 'OK (' . count($emails) . ')';
 	}
 
 }

@@ -56,6 +56,18 @@ class Parameters
 		return $this;
 	}
 
+	//-------------------------------------------------------------------------------------- contains
+	/**
+	 * Returns true if the parameters contain the value $value
+	 *
+	 * @param $value mixed the searched value
+	 * @return boolean true if found, else false
+	 */
+	public function contains($value)
+	{
+		return (array_search($value, $this->parameters) === false) ? false : true;
+	}
+
 	//----------------------------------------------------------------------------------------- count
 	/**
 	 * Gets parameters count
@@ -232,6 +244,18 @@ class Parameters
 		if (isset($this->parameters[$key])) {
 			unset($this->parameters[$key]);
 		}
+	}
+
+	//---------------------------------------------------------------------------------------- search
+	/**
+	 * Returns the key of the parameter having value $string
+	 *
+	 * @param $value mixed the searched value
+	 * @return integer|string|boolean the name of the found parameter, or false if not found
+	 */
+	public function search($value)
+	{
+		return array_search($value, $this->parameters);
 	}
 
 	//------------------------------------------------------------------------------ searchMainObject
