@@ -32,7 +32,13 @@ class Sort_Annotation extends List_Annotation implements Class_Context_Annotatio
 			$representative = $class->getAnnotation('representative')->value;
 			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if (in_array($property->getName(), $representative)) {
-					if (!$property->isStatic() && !$property->getAnnotation('link')->value) {
+					if (
+						!$property->isStatic()
+						&& (
+							!$property->getAnnotation('link')->value
+							|| $property->getAnnotation('store')->value
+						)
+					) {
 						$this->value[] = $property->getName();
 					}
 				}
