@@ -41,7 +41,7 @@ class Email
 	/**
 	 * @max_length 10000000
 	 * @multiline
-	 * @store hex
+	 * @store gz
 	 * @var string
 	 */
 	public $content;

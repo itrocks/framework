@@ -32,6 +32,11 @@ use SAF\Framework\Tools\Contextual_Mysqli;
 class Link extends Dao\Sql\Link
 {
 
+	/**
+	 * Actions for $prepared_fetch
+	 */
+	const GZINFLATE = 'gzinflate';
+
 	//----------------------------------------------------------------------------------- $connection
 	/**
 	 * Connection to the mysqli server is a mysqli object
@@ -45,6 +50,13 @@ class Link extends Dao\Sql\Link
 	 * @var integer
 	 */
 	private $commit_stack = 0;
+
+	//------------------------------------------------------------------------------- $prepared_fetch
+	/**
+	 * @example ['content' => [self::GZINFLATE]]
+	 * @var array key is the name of the property, value is an array of actions (eg GZINFLATE)
+	 */
+	private $prepared_fetch;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -324,7 +336,22 @@ class Link extends Dao\Sql\Link
 	{
 		$object = $result_set->fetch_object(Builder::className($class_name));
 		if ($object instanceof Abstract_Class) {
+			$this->prepareFetch($object->class);
 			$object = $this->read($this->getObjectIdentifier($object), $object->class);
+		}
+		// execute actions stored into $prepared_fetch
+		foreach ($this->prepared_fetch as $property_name => $actions) {
+			foreach ($actions as $action) {
+				switch ($action) {
+					case self::GZINFLATE:
+						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
+						$value = @gzinflate($object->$property_name);
+						if ($value !== false) {
+							$object->$property_name = $value;
+						}
+						break;
+				}
+			}
 		}
 		return $object;
 	}
@@ -356,6 +383,7 @@ class Link extends Dao\Sql\Link
 		$fetch_class_name = ((new Reflection_Class($class_name))->isAbstract())
 			? Abstract_Class::class
 			: $class_name;
+		$this->prepareFetch($fetch_class_name);
 		while ($object = $this->fetch($result_set, $fetch_class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
 			// the most common key is the record id : do it quick
@@ -580,6 +608,22 @@ class Link extends Dao\Sql\Link
 		return $properties;
 	}
 
+	//---------------------------------------------------------------------------------- prepareFetch
+	/**
+	 * Prepare fetch gets annotations values that transform the read object
+	 *
+	 * @param $class_name
+	 */
+	private function prepareFetch($class_name)
+	{
+		$this->prepared_fetch = [];
+		foreach ((new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property) {
+			if ($property->getAnnotation('store')->value === 'gz') {
+				$this->prepared_fetch[$property->name] = [self::GZINFLATE];
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------------- query
 	/**
 	 * Executes an SQL query and returns the inserted record identifier or the mysqli result object
@@ -662,6 +706,7 @@ class Link extends Dao\Sql\Link
 				. LF . 'FROM' . SP . BQ . $this->storeNameOf($class_name) . BQ
 				. LF . 'WHERE id = ' . $identifier;
 			$result_set = $this->connection->query($query);
+			$this->prepareFetch($class_name);
 			$object = $this->fetch($result_set, $class_name);
 			$this->free($result_set);
 		}
@@ -847,8 +892,12 @@ class Link extends Dao\Sql\Link
 								// write basic
 								if ($element_type->isBasic()) {
 									if (
-										$element_type->isString() && ($property->getAnnotation('store')->value == 'hex')
+										$element_type->isString()
+										&& in_array($property->getAnnotation('store')->value, ['gz', 'hex'])
 									) {
+										if ($property->getAnnotation('store')->value === 'gz') {
+											$value = gzdeflate($value);
+										}
 										$write[$storage_name] = 'X' . Q . bin2hex($value) . Q;
 									}
 									else {
@@ -862,10 +911,15 @@ class Link extends Dao\Sql\Link
 											: $value;
 									}
 								}
-								elseif (in_array($property->getAnnotation('store')->value, ['hex', 'string'])) {
-									$write[$storage_name] = is_array($value)
-										? serialize($value)
-										: strval($value);
+								elseif ($property->getAnnotation('store')->value) {
+									$value = is_array($value) ? serialize($value) : strval($value);
+									if ($property->getAnnotation('store')->value === 'gz') {
+										$value = 'X' . Q . bin2hex(gzdeflate($value)) . Q;
+									}
+									elseif ($property->getAnnotation('store')->value === 'hex') {
+										$value = 'X' . Q . bin2hex($value) . Q;
+									}
+									$write[$storage_name] = $value;
 								}
 								// write object id if set or object if no id is set (new object)
 								else {

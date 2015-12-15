@@ -184,9 +184,14 @@ abstract class Getter
 				}
 			}
 			if (isset($stored)) {
-				if (
-					isset($property) && in_array($property->getAnnotation('store')->value, ['hex', 'string'])
-				) {
+				if (isset($property) && $property->getAnnotation('store')->value) {
+					if ($property->getAnnotation('store')->value === 'gz') {
+						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
+						$inflated = @gzinflate($stored);
+						if ($inflated !== false) {
+							$stored = $inflated;
+						}
+					}
 					/** @var $stored_object Stringable */
 					$stored_object = Builder::create($property->getType()->asString());
 					$stored_object->fromString($stored);

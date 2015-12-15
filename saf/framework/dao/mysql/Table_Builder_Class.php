@@ -84,7 +84,7 @@ class Table_Builder_Class
 						$table->addColumn(Column::buildProperty($property));
 						if (
 							($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
-							&& !in_array($property->getAnnotation('store')->value, ['hex', 'string'])
+							&& !$property->getAnnotation('store')->value
 						) {
 							$class_name = $property->getType()->asString();
 							$this->dependencies_context[$class_name] = $class_name;

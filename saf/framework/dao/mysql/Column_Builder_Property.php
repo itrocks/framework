@@ -81,7 +81,7 @@ trait Column_Builder_Property
 		return (
 			$type->isBasic()
 			|| ($type->isMultiple() && $type->getElementType()->isString())
-			|| in_array($property->getAnnotation('store')->value, ['hex', 'string'])
+			|| $property->getAnnotation('store')->value
 		)
 			? $property->getAnnotation('storage')->value
 			: ('id_' . $property->getAnnotation('storage')->value);
@@ -109,10 +109,7 @@ trait Column_Builder_Property
 	private static function propertyTypeToMysql(Reflection_Property $property)
 	{
 		$property_type = $property->getType();
-		if (
-			$property_type->isBasic()
-			|| in_array($property->getAnnotation('store')->value, ['hex', 'string'])
-		) {
+		if ($property_type->isBasic() || $property->getAnnotation('store')->value) {
 			if ($property_type->hasSize()) {
 				/** @var integer $max_length */
 				$max_length = $property->getAnnotation('max_length')->value;
@@ -157,15 +154,22 @@ trait Column_Builder_Property
 				}
 				else {
 					$values = self::propertyValues($property);
-					if ($values && !in_array($property->getAnnotation('store')->value, ['hex', 'string'])) {
+					if ($values && !$property->getAnnotation('store')->value) {
 						if (!isset($values[''])) {
 							$values[''] = '';
 						}
 						return 'enum(' . Q . join(Q . ',' . Q, $values) . Q . ')';
 					}
-					return ($max_length <= 3) ? 'char(' . $max_length . ')' : (
-						($max_length <= 255) ? 'varchar(' . $max_length . ')' : (
-						($max_length <= 65535) ? 'text' : (
+					if ($property->getAnnotation('store')->value === 'gz') {
+						return ($max_length <= 255) ? 'tinyblob' : (
+							($max_length <= 65535)    ? 'blob' : (
+							($max_length <= 16777215) ? 'mediumblob' :
+							'longblob'
+						));
+					}
+					return ($max_length <= 3)   ? 'char(' . $max_length . ')' : (
+						($max_length <= 255)      ? 'varchar(' . $max_length . ')' : (
+						($max_length <= 65535)    ? 'text' : (
 						($max_length <= 16777215) ? 'mediumtext' :
 						'longtext'
 					))) . ' CHARACTER SET utf8 COLLATE utf8_general_ci';

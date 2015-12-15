@@ -20,15 +20,19 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 class Store_Annotation extends Annotation implements Property_Context_Annotation
 {
 
+	const GZ     = 'gz';
+	const HEX    = 'hex';
+	const STRING = 'string';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    string @values gz, hex, string
 	 * @param $property Reflection_Property
 	 */
 	public function __construct($value, Reflection_Property $property)
 	{
 		if (empty($value) && $property->getType()->isDateTime()) {
-			$value = 'string';
+			$value = self::STRING;
 		}
 		parent::__construct($value);
 	}
