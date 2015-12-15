@@ -58,8 +58,7 @@ abstract class Getter
 						$property = new Reflection_Property(get_class($object), $property);
 					}
 					$property_name = $property->getAnnotation('foreign')->value;
-					$dao = ($dao = $property->getAnnotation('dao')->value)
-						? Dao::get($dao) : Dao::current();
+					$dao = Dao::get($property->getAnnotation('dao')->value);
 				}
 				else {
 					$dao = Dao::current();
@@ -133,7 +132,7 @@ abstract class Getter
 				if (!($property instanceof Reflection_Property)) {
 					$property = new Reflection_Property(get_class($object), $property);
 				}
-				$dao = ($dao = $property->getAnnotation('dao')->value) ? Dao::get($dao) : Dao::current();
+				$dao = Dao::get($property->getAnnotation('dao')->value);
 				$class_name = get_class($object);
 				$linked_class_name = (new Link_Class($class_name))->getLinkedClassName();
 				if ($linked_class_name) {
@@ -198,8 +197,8 @@ abstract class Getter
 					$stored = $stored_object;
 				}
 				else {
-					$stored = (isset($property) && ($dao = $property->getAnnotation('dao')->value))
-						? Dao::get($dao)->read($stored, $class_name)
+					$stored = isset($property)
+						? Dao::get($property->getAnnotation('dao')->value)->read($stored, $class_name)
 						: Dao::read($stored, $class_name);
 				}
 			}

@@ -165,16 +165,23 @@ class Dao implements Configurable
 	/**
 	 * Get the data link identified by the $dao_identifier string
 	 *
+	 * If no data link matches $dao_identifier or if its empty, gets the current default data link
+	 *
 	 * @param $dao_identifier string
 	 * @return Data_Link
 	 */
 	public static function get($dao_identifier)
 	{
-		$dao = self::$list[$dao_identifier];
-		if (is_array($dao)) {
-			$class_name = $dao[Configuration::CLASS_NAME];
-			unset($dao[Configuration::CLASS_NAME]);
-			$dao = self::$list[$dao_identifier] = Builder::create($class_name, [$dao]);
+		if (!empty($dao_identifier) && isset(self::$list[$dao_identifier])) {
+			$dao = self::$list[$dao_identifier];
+			if (is_array($dao)) {
+				$class_name = $dao[Configuration::CLASS_NAME];
+				unset($dao[Configuration::CLASS_NAME]);
+				$dao = self::$list[$dao_identifier] = Builder::create($class_name, [$dao]);
+			}
+		}
+		else {
+			$dao = self::current();
 		}
 		return $dao;
 	}
