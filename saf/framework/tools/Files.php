@@ -109,12 +109,15 @@ abstract class Files
 	/**
 	 * Creates a directory if it does not exist, recursively
 	 *
+	 * returns true if no error or if directory already exists before call
+	 *
 	 * @param $directory string path of the directory to be created
+	 * @param $mode      integer chmod the created directory : default is the largest possible
 	 * @return boolean true if a folder was created or existed, false if any error occurred
 	 */
-	public static function mkdir($directory)
+	public static function mkdir($directory, $mode = 0777)
 	{
-		return is_dir($directory) ? true : mkdir($directory, 0777, true);
+		return is_dir($directory) ? true : mkdir($directory, $mode, true);
 	}
 
 	//----------------------------------------------------------------------------------------- rmdir
