@@ -353,7 +353,14 @@ class Type
 	 */
 	public function isInstanceOf($class_name)
 	{
-		return $this->isClass() && is_a($this->getElementTypeAsString(), $class_name, true);
+		if ($this->isClass()) {
+			if ($class_name === 'object') {
+				return true;
+			}
+			$element_type_string = $this->getElementTypeAsString();
+			return ($element_type_string !== 'object') && is_a($element_type_string, $class_name, true);
+		}
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------- isInteger
