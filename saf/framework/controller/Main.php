@@ -334,7 +334,7 @@ class Main
 				$exception->getLine(), []
 				);
 			$handler = new Report_Call_Stack_Error_Handler();
-			$handler->trace = 'Exception stack trace:' . LF . $exception->getTraceAsString();
+			$handler->trace = 'Exception stack trace:' . LF . $exception->getTraceAsString() . LF;
 			$handler->handle($handled_error);
 		}
 		return $result;
