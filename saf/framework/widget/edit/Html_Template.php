@@ -49,6 +49,15 @@ class Html_Template extends Template
 		return strval($this->form_id);
 	}
 
+	//---------------------------------------------------------------------------------- newFunctions
+	/**
+	 * @return Html_Template_Functions
+	 */
+	protected function newFunctions()
+	{
+		return Builder::create(Html_Template_Functions::class);
+	}
+
 	//----------------------------------------------------------------------------------- nextCounter
 	/**
 	 * Returns next counter for field name into current form context

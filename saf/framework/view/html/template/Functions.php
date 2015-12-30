@@ -534,15 +534,10 @@ class Functions
 		}
 
 		foreach ($properties as $property_path => $property) {
-			if (
-				!$property->isStatic()
-				&& !$property->getListAnnotation(User_Annotation::ANNOTATION)->has(
-					User_Annotation::INVISIBLE
-				)
-			) {
-				$property = new Reflection_Property_Value(
-					$class->name, $property->path, $object, false, true
-				);
+			$property = new Reflection_Property_Value(
+				$class->name, $property->path, $object, false, true
+			);
+			if ($this->isPropertyVisible($property)) {
 				if (isset($properties_title) && isset($properties_title[$property_path])) {
 					$property->display = $properties_title[$property_path];
 				}
@@ -799,6 +794,25 @@ class Functions
 	public function getZero(Template $template)
 	{
 		return strval(reset($template->objects)) === '0';
+	}
+
+	//----------------------------------------------------------------------------- isPropertyVisible
+	/**
+	 * @param $property Reflection_Property
+	 * @return boolean
+	 */
+	protected function isPropertyVisible(Reflection_Property $property)
+	{
+		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
+		return !$property->isStatic()
+			&& !$user_annotation->has(User_Annotation::INVISIBLE)
+			&& (
+				!$user_annotation->has(User_Annotation::HIDE_EMPTY)
+				|| (
+					($property instanceof Reflection_Property_Value)
+					&& !$property->isValueEmpty()
+				)
+			);
 	}
 
 	//--------------------------------------------------------------------------- toEditPropertyExtra

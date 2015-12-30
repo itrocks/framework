@@ -152,9 +152,21 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 			: false;
 	}
 
+	//---------------------------------------------------------------------------------- isValueEmpty
+	/**
+	 * Returns true if property value is empty
+	 *
+	 * @param $value mixed
+	 * @return boolean
+	 */
+	public function isValueEmpty($value = null)
+	{
+		return parent::isValueEmpty(func_num_args() ? $value : $this->value());
+	}
+
 	//----------------------------------------------------------------------------------------- value
 	/**
-	 * @param $value object
+	 * @param $value mixed
 	 * @return mixed
 	 */
 	public function value($value = null)
