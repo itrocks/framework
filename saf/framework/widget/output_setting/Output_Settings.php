@@ -230,6 +230,21 @@ class Output_Settings extends Custom_Settings
 		}
 	}
 
+	//----------------------------------------------------------------------------- propertyHideEmpty
+	/**
+	 * Sets the property to hide-empty
+	 *
+	 * @param $property_path string
+	 * @param $hide_empty    boolean
+	 */
+	public function propertyHideEmpty($property_path, $hide_empty = false)
+	{
+		$this->initProperties();
+		if (isset($this->properties[$property_path])) {
+			$this->properties[$property_path]->hide_empty = $hide_empty;
+		}
+	}
+
 	//------------------------------------------------------------------------------ propertyReadOnly
 	/**
 	 * Sets the property to read-only

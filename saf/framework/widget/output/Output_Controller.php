@@ -40,6 +40,9 @@ class Output_Controller implements Default_Feature_Controller
 			foreach ($output_settings->properties as $property_path => $property) {
 				$reflection_property = new Reflection_Property($output_settings->class_name, $property_path);
 				$user_annotation = $reflection_property->getListAnnotation(User_Annotation::ANNOTATION);
+				$property->hide_empty
+					? $user_annotation->add(User_Annotation::HIDE_EMPTY)
+					: $user_annotation->remove(User_Annotation::HIDE_EMPTY);
 				$property->read_only
 					? $user_annotation->add(User_Annotation::READONLY)
 					: $user_annotation->remove(User_Annotation::READONLY);
@@ -95,6 +98,11 @@ class Output_Controller implements Default_Feature_Controller
 			$did_change = true;
 		}
 		if (isset($parameters['property_path'])) {
+			if (isset($parameters['property_hide_empty'])) {
+				$output_settings->propertyHideEmpty(
+					$parameters['property_path'], $parameters['property_hide_empty']
+				);
+			}
 			if (isset($parameters['property_read_only'])) {
 				$output_settings->propertyReadOnly(
 					$parameters['property_path'], $parameters['property_read_only']
