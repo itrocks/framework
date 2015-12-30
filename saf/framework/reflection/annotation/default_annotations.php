@@ -182,6 +182,8 @@ Parser::$default_annotations = array(
 
 	// @read_only [false]
 	// Set this annotation to set the property in read-only mode : it can't be set
+	// Not to be confused with @user readonly, which enable the application to set a value
+	// into this property, but does not allow the final user to alter it through the HMI
 	__NAMESPACE__ . '\Property\Read_Only_Annotation' => Boolean_Annotation::class,
 
 	// @replace_filter [false]
