@@ -30,6 +30,7 @@ abstract class History
 	 * Or create another property with @replaces object
 	 *
 	 * @link Object
+	 * @mandatory
 	 * @var object
 	 */
 	public $object;
