@@ -893,7 +893,11 @@ class Link extends Dao\Sql\Link
 				foreach ($properties as $property) {
 					$property_name = $property->name;
 					if (!isset($only) || in_array($property_name, $only)) {
-						if (!$property->isStatic() && !in_array($property_name, $exclude_properties)) {
+						if (
+							!$property->isStatic()
+							&& !in_array($property_name, $exclude_properties)
+							&& !$property->getAnnotation('calculated')->value
+						) {
 							$value = isset($object->$property_name) ? $property->getValue($object) : null;
 							$property_is_null = $property->getAnnotation('null')->value;
 							if (is_null($value) && !$property_is_null) {

@@ -103,7 +103,7 @@ Parser::$default_annotations = array(
 	__NAMESPACE__ . '\Property\Block_Annotation' => List_Annotation::class,
 
 	// @calculated
-	// The value of this property is calculated
+	// The value of this property is calculated : it will not be stored into DAO data links
 	__NAMESPACE__ . '\Property\Calculated_Annotation' => Boolean_Annotation::class,
 
 	// @component
