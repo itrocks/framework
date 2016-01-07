@@ -202,7 +202,7 @@ class Dao implements Configurable
 	public static function getObjectIdentifier($object, $property_name = null)
 	{
 		$data_link = self::current();
-		return ($data_link instanceof Identifier_Map)
+		return (($data_link instanceof Identifier_Map) && is_object($object))
 			? $data_link->getObjectIdentifier($object, $property_name)
 			: null;
 	}

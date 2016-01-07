@@ -547,7 +547,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function getObjectIdentifier($object, $property_name = null)
 	{
-		return isset($property_name)
+		return (is_object($object) && isset($property_name))
 			? parent::getObjectIdentifier($object, $property_name)
 			: ($this->getLinkObjectIdentifier($object) ?: parent::getObjectIdentifier($object));
 	}
