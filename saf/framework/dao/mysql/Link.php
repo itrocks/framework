@@ -1176,13 +1176,11 @@ class Link extends Dao\Sql\Link
 		foreach ($map as $element) {
 			$id = $this->getObjectIdentifier($element)
 				?: $this->getObjectIdentifier($this->write($element));
-			if (!isset($old_map[$id])) {
+			if (!isset($old_map[$id]) && !isset($id_set[$id])) {
 				$query = $insert_builder->buildQuery($object, $element);
 				$this->connection->query($query);
 			}
-			else {
-				$id_set[$id] = true;
-			}
+			$id_set[$id] = true;
 		}
 		// remove old unused elements
 		$delete_builder = new Map_Delete($property);
