@@ -80,7 +80,11 @@ class Table_Builder_Class
 			foreach ($properties as $property) {
 				if (!in_array($property->name, $this->excluded_properties)) {
 					$type = $property->getType();
-					if (($type->isMultipleString() || !$type->isMultiple()) && !$property->isStatic()) {
+					if (
+						($type->isMultipleString() || !$type->isMultiple())
+						&& !$property->isStatic()
+						&& !$property->getAnnotation('calculated')->value
+					) {
 						$table->addColumn(Column::buildProperty($property));
 						if (
 							($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
