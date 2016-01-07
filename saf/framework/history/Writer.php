@@ -31,20 +31,21 @@ abstract class Writer
 	 */
 	public static function afterWrite(Has_History $object, Data_Link $link)
 	{
+		$class_name = Builder::className(get_class($object));
 		if (
 			($link instanceof Identifier_Map)
 			&& ($identifier = $link->getObjectIdentifier($object))
-			&& isset(self::$before_write[get_class($object)][$identifier])
+			&& isset(self::$before_write[$class_name][$identifier])
 		) {
 			/** @var $before_write Has_History */
-			$before_write = self::$before_write[get_class($object)][$identifier];
-			/** @var $after_write Has_History */
-			$after_write = $link->read($identifier, get_class($object));
-			foreach (self::createHistory($before_write, $after_write) as $history) {
+			$before_write = self::$before_write[$class_name][$identifier];
+			foreach (self::createHistory($before_write, $object) as $history) {
 				Dao::write($history);
 			}
-			unset(self::$before_write[get_class($object)][$identifier]);
+			unset(self::$before_write[$class_name][$identifier]);
 		}
+		// this commit() solves the begin() into beforeWrite()
+		Dao::commit();
 	}
 
 	//----------------------------------------------------------------------------------- beforeWrite
@@ -54,13 +55,16 @@ abstract class Writer
 	 */
 	public static function beforeWrite(Has_History $object, Data_Link $link)
 	{
+		// this begin() will be solved into afterWrite()
+		Dao::begin();
 		if (($link instanceof Identifier_Map) && ($identifier = $link->getObjectIdentifier($object))) {
+			$class_name = Builder::className(get_class($object));
 			/** @noinspection PhpUndefinedFieldInspection */
-			self::$before_write[get_class($object)][$identifier] = $before = $link->read(
-				$identifier, get_class($object)
+			self::$before_write[$class_name][$identifier] = $before = $link->read(
+				$identifier, $class_name
 			);
 			// call getter for collections and maps in order to get the full value before write
-			foreach ((new Reflection_Class(get_class($before)))->accessProperties() as $property) {
+			foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 				if ($property->gettype()->isMultiple()) {
 					$property->getValue($before);
 				}
