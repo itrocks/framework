@@ -3,6 +3,7 @@ namespace SAF\Framework\Mapper;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Date_Time;
@@ -184,7 +185,7 @@ abstract class Getter
 			}
 			if (isset($stored)) {
 				if (isset($property) && $property->getAnnotation('store')->value) {
-					if ($property->getAnnotation('store')->value === 'gz') {
+					if ($property->getAnnotation('store')->value === Store_Annotation::GZ) {
 						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
 						$inflated = @gzinflate($stored);
 						if ($inflated !== false) {

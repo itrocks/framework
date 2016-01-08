@@ -15,6 +15,7 @@ use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Link_Class;
@@ -630,7 +631,7 @@ class Link extends Dao\Sql\Link
 					$this->prepared_fetch[$property->name][] = $dao;
 				}
 			}
-			if ($property->getAnnotation('store')->value === 'gz') {
+			if ($property->getAnnotation('store')->value === Store_Annotation::GZ) {
 				$this->prepared_fetch[$property->name][] = self::GZINFLATE;
 			}
 		}
@@ -896,7 +897,7 @@ class Link extends Dao\Sql\Link
 						if (
 							!$property->isStatic()
 							&& !in_array($property_name, $exclude_properties)
-							&& !$property->getAnnotation('calculated')->value
+							&& ($property->getAnnotation('store')->value !== Store_Annotation::FALSE)
 						) {
 							$value = isset($object->$property_name) ? $property->getValue($object) : null;
 							$property_is_null = $property->getAnnotation('null')->value;
@@ -910,9 +911,12 @@ class Link extends Dao\Sql\Link
 								if ($element_type->isBasic()) {
 									if (
 										$element_type->isString()
-										&& in_array($property->getAnnotation('store')->value, ['gz', 'hex'])
+										&& in_array(
+											$property->getAnnotation('store')->value,
+											[Store_Annotation::GZ, Store_Annotation::HEX]
+										)
 									) {
-										if ($property->getAnnotation('store')->value === 'gz') {
+										if ($property->getAnnotation('store')->value === Store_Annotation::GZ) {
 											$value = gzdeflate($value);
 										}
 										$will_hex = true;
@@ -946,10 +950,10 @@ class Link extends Dao\Sql\Link
 								// write array or object into a @store gz/hex/string
 								elseif ($property->getAnnotation('store')->value) {
 									$value = is_array($value) ? serialize($value) : strval($value);
-									if ($property->getAnnotation('store')->value === 'gz') {
+									if ($property->getAnnotation('store')->value === Store_Annotation::GZ) {
 										$value = 'X' . Q . bin2hex(gzdeflate($value)) . Q;
 									}
-									elseif ($property->getAnnotation('store')->value === 'hex') {
+									elseif ($property->getAnnotation('store')->value === Store_Annotation::HEX) {
 										$value = 'X' . Q . bin2hex($value) . Q;
 									}
 									$write[$storage_name] = $value;

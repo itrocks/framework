@@ -2,6 +2,7 @@
 namespace SAF\Framework\Dao\Mysql;
 
 use DateTime;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Date_Time;
@@ -160,7 +161,7 @@ trait Column_Builder_Property
 						}
 						return 'enum(' . Q . join(Q . ',' . Q, $values) . Q . ')';
 					}
-					if ($property->getAnnotation('store')->value === 'gz') {
+					if ($property->getAnnotation('store')->value === Store_Annotation::GZ) {
 						return ($max_length <= 255) ? 'tinyblob' : (
 							($max_length <= 65535)    ? 'blob' : (
 							($max_length <= 16777215) ? 'mediumblob' :

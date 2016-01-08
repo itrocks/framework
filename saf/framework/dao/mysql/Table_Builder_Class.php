@@ -3,6 +3,7 @@ namespace SAF\Framework\Dao\Mysql;
 
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -83,7 +84,7 @@ class Table_Builder_Class
 					if (
 						($type->isMultipleString() || !$type->isMultiple())
 						&& !$property->isStatic()
-						&& !$property->getAnnotation('calculated')->value
+						&& ($property->getAnnotation('store')->value !== Store_Annotation::FALSE)
 					) {
 						$table->addColumn(Column::buildProperty($property));
 						if (

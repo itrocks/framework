@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
@@ -36,7 +37,10 @@ class Sort_Annotation extends List_Annotation implements Class_Context_Annotatio
 						!$property->isStatic()
 						&& (
 							!$property->getAnnotation('link')->value
-							|| $property->getAnnotation('store')->value
+							|| (
+								$property->getAnnotation('store')->value
+								&& ($property->getAnnotation('store')->value !== Store_Annotation::FALSE)
+							)
 						)
 					) {
 						$this->value[] = $property->getName();
