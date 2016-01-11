@@ -131,8 +131,7 @@ trait Component
 	public function setComposite($object, $property_name = null)
 	{
 		foreach (self::getCompositeProperties($object, $property_name) as $property) {
-			$name = $property->name;
-			$this->$name = $object;
+			$property->setValue($this, $object);
 		}
 	}
 
