@@ -94,19 +94,20 @@ abstract class Getter
 						E_USER_ERROR
 					);
 				}
-			}
-			if (!isset($stored)) {
-				$stored = [];
-			}
-			elseif ($stored) {
-				// $element->setComposite() is not used for optimization reason :
-				// this should go as fast as it can
-				$element = reset($stored);
-				if ($element instanceof Component) {
-					$composite_properties = $element->getCompositeProperties($object);
-					foreach ($stored as $element) {
-						foreach ($composite_properties as $property) {
-							$property->setValue($element, $object);
+				if (!isset($stored)) {
+					$stored = [];
+				}
+				elseif ($stored) {
+					// $element->setComposite() is not used for optimization reason :
+					// this should go as fast as it can
+					if ($is_component) {
+						/** @var $element Component */
+						$element = reset($stored);
+						$composite_properties = $element->getCompositeProperties($object);
+						foreach ($stored as $element) {
+							foreach ($composite_properties as $property) {
+								$property->setValue($element, $object);
+							}
 						}
 					}
 				}
