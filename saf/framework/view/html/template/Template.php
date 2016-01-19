@@ -182,6 +182,9 @@ class Template
 		}
 		if (isset($template_file)) {
 			$this->path    = substr($template_file, 0, strrpos($template_file, SL));
+			if (!file_exists($template_file)) {
+				trigger_error('Template file not found ' . $template_file, E_USER_ERROR);
+			}
 			$this->content = file_get_contents($template_file);
 		}
 	}
