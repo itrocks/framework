@@ -8,6 +8,7 @@ use SAF\Framework\Objects\Code;
  * A physical person civility
  *
  * @business
+ * @feature
  */
 class Civility extends Code
 {

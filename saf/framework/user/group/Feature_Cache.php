@@ -84,14 +84,34 @@ class Feature_Cache
 
 	//----------------------------------------------------------------------------------- saveToCache
 	/**
+	 * Save updated features to cache
+	 *
+	 * TODO LOW This will crash if a feature linked to a user group is removed. Check this out !
+	 *
 	 * @param $features Feature[]
 	 */
 	public function saveToCache($features)
 	{
 		Dao::begin();
-		Dao::truncate(Feature::class);
+		/** @var $old_features Feature[] */
+		$old_features = Dao::readAll(Feature::class, [Dao::key('path')]);
 		foreach ($features as $feature) {
-			Dao::write($feature);
+			if (isset($old_features[$feature->path])) {
+				$old_feature = $old_features[$feature->path];
+				if ($feature->name !== $old_feature->name) {
+					$old_feature->name = $feature->name;
+					Dao::write($old_feature, [Dao::only('name')]);
+				}
+				unset($old_features[$feature->path]);
+			}
+			else {
+				Dao::write($feature);
+			}
+		}
+		Dao::commit();
+		Dao::begin();
+		foreach ($old_features as $old_feature) {
+			Dao::delete($old_feature);
 		}
 		Dao::commit();
 	}

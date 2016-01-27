@@ -2,23 +2,20 @@
 namespace SAF\Framework\User\Group;
 
 use SAF\Framework\Controller;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Traits\Has_Name;
 
 /**
  * The represents an atomic end-user feature into the software :
  * a feature which a user group gives access to
  *
  * @before_write beforeWrite
- * @override $name @getter getName @mandatory
- * The fully readable name of the end-user feature.
- * Default will be calculated from $path :
- * Names::classToDisplay(getClassName()) . SP . Names::methodToDisplay(getFeatureName())
+ * @representative name
+ * @sort name
  */
 class Feature
 {
-	use Has_Name;
 
 	const ADMIN = [
 		Controller\Feature::F_ADMIN,
@@ -69,6 +66,18 @@ class Feature
 	 */
 	public $includes;
 
+	//----------------------------------------------------------------------------------------- $name
+	/**
+	 * The fully readable name of the end-user feature.
+	 * Default will be calculated from $path :
+	 * Names::classToDisplay(getClassName()) . SP . Names::methodToDisplay(getFeatureName())
+	 *
+	 * @getter getName
+	 * @mandatory
+	 * @var string
+	 */
+	public $name;
+
 	//----------------------------------------------------------------------------------------- $path
 	/**
 	 * This is the path of the end-user feature
@@ -113,6 +122,15 @@ class Feature
 			$implicit_features = array_merge(Feature::ADMIN, Feature::EDIT, Feature::OUTPUT);
 			Feature::$implicit = array_combine($implicit_features, $implicit_features);
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->name ? Loc::tr($this->name) : '';
 	}
 
 	//----------------------------------------------------------------------------------- beforeWrite
@@ -240,11 +258,9 @@ class Feature
 				$this->name = $this->resolveName($name);
 			}
 			// default name
-			else {
-				$this->name = ucfirst(
-					Names::classToDisplay($this->getClassName())
-					. SP . Names::methodToDisplay($this->getFeatureName())
-				);
+			elseif (isset($this->path)) {
+				$this->name = ucfirst(Names::classToDisplay(Names::classToSet($this->getClassName())))
+					. SP . Names::methodToDisplay($this->getFeatureName());
 			}
 		}
 		return $this->name;
@@ -304,7 +320,7 @@ class Feature
 			$name = ucfirst(str_replace(
 				['$class', '$feature'],
 				[
-					Names::classToDisplay($this->getClassName()),
+					ucfirst(Names::classToDisplay(Names::classToSet($this->getClassName()))),
 					Names::methodToDisplay($this->getFeatureName())
 				],
 				$name
