@@ -151,6 +151,24 @@ abstract class Names
 		return strtolower(str_replace(SP, '_', $display));
 	}
 
+	//----------------------------------------------------------------------------------- fileToClass
+	/**
+	 * Changes a 'full/path/Class_File_Name.php' into 'Full\Path\Class_File_Name'
+	 *
+	 * This checks if the class exist and gets the correct case of it
+	 *
+	 * @param $file_name string
+	 * @return string
+	 */
+	public static function fileToClass($file_name)
+	{
+		$class_name = self::pathToClass(lParse($file_name, DOT));
+		if (!class_exists($class_name)) {
+			$class_name = lLastParse($class_name, BS);
+		}
+		return (new Reflection_Class($class_name))->name;
+	}
+
 	//--------------------------------------------------------------------------------- fileToDisplay
 	/**
 	 * Changes a 'full/path/file_name.ext' into 'file name'

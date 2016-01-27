@@ -138,7 +138,7 @@ trait Annoted
 
 	//----------------------------------------------------------------------------- getListAnnotation
 	/**
-	 * Gets an List_Annotation for the reflected property
+	 * Gets a List_Annotation for the reflected property
 	 *
 	 * @param $annotation_name string
 	 * @return List_Annotation

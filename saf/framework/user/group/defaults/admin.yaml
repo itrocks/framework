@@ -1,0 +1,3 @@
+features: admin, delete
+includes: edit
+name:     $class administration
