@@ -4,7 +4,6 @@ namespace SAF\Framework\User;
 use SAF\Framework\Dao;
 use SAF\Framework\Traits\Has_Name;
 use SAF\Framework\User\Group\Feature;
-use SAF\Framework\User\Group\Feature_Group;
 
 /**
  * User group
