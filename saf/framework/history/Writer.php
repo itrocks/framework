@@ -7,6 +7,7 @@ use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Data_Link\Identifier_Map;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\History;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Stringable;
 
@@ -84,33 +85,39 @@ abstract class Writer
 		$history = [];
 		$class = new Reflection_Class(get_class($before));
 		foreach ($class->accessProperties() as $property) {
-			$old_value = $property->getValue($before);
-			$new_value = $property->getValue($after);
-			if (is_array($old_value)) {
-				$old_value = join(', ', $old_value);
-			}
-			if (is_array($new_value)) {
-				$new_value = join(', ', $new_value);
-			}
+			$type = $property->getType();
 			if (
-				(
-					(is_object($old_value) || is_object($new_value))
-					&& (
-						(
-							(Dao::getObjectIdentifier($old_value) || Dao::getObjectIdentifier($new_value))
-							&& !Dao::is($old_value, $new_value)
-						)
-						|| (
-							($old_value instanceof Stringable) && ($new_value instanceof Stringable)
-							&& strval($old_value) != strval($new_value)
+				(!$type->isClass() || !isA($type->getElementTypeAsString(), History::class))
+				&& ($property->getAnnotation('store')->value !== Store_Annotation::FALSE)
+			) {
+				$old_value = $property->getValue($before);
+				$new_value = $property->getValue($after);
+				if (is_array($old_value)) {
+					$old_value = join(', ', $old_value);
+				}
+				if (is_array($new_value)) {
+					$new_value = join(', ', $new_value);
+				}
+				if (
+					(
+						(is_object($old_value) || is_object($new_value))
+						&& (
+							(
+								(Dao::getObjectIdentifier($old_value) || Dao::getObjectIdentifier($new_value))
+								&& !Dao::is($old_value, $new_value)
+							)
+							|| (
+								($old_value instanceof Stringable) && ($new_value instanceof Stringable)
+								&& strval($old_value) != strval($new_value)
+							)
 						)
 					)
-				)
-				|| (strval($old_value) != strval($new_value))
-			) {
-				$history[] = Builder::create(
-					$history_class->name, [$after, $property->name, $old_value, $new_value]
-				);
+					|| (strval($old_value) != strval($new_value))
+				) {
+					$history[] = Builder::create(
+						$history_class->name, [$after, $property->name, $old_value, $new_value]
+					);
+				}
 			}
 		}
 		return $history;
