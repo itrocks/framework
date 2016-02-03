@@ -20,7 +20,6 @@ require_once __DIR__ . '/../../../../vendor/fpdi/fpdi.php';
  * @example
  * / ** @var $pdf PDF|TCPDF * /
  * $pdf = new PDF();
- * @var PDF|TCPDF
  */
 class PDF extends FPDI
 {
