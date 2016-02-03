@@ -277,7 +277,7 @@ class Parser
 		/** @var $annotation Annotation */
 		$annotation = isset($value)
 			? new $annotation_class($value, $reflection_object, $annotation_name)
-		: null;
+			: null;
 
 		if (isset($annotation) && isA($annotation, Annotation_In::class)) {
 			/** @var $annotation Annotation_In */
