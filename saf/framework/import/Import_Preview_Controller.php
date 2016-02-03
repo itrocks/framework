@@ -11,8 +11,10 @@ use SAF\Framework\Dao\File;
 use SAF\Framework\Dao\File\Session_File\Files;
 use SAF\Framework\Dao\File\Spreadsheet_File;
 use SAF\Framework\Import;
+use SAF\Framework\Import\Settings\Import_Settings;
 use SAF\Framework\Import\Settings\Import_Settings_Builder;
 use SAF\Framework\Session;
+use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\View;
@@ -31,9 +33,10 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	/**
 	 * @param $class_name string object or class name
 	 * @param $parameters array parameters
+	 * @param $settings   Custom_Settings|Import_Settings always null (unused)
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($class_name, $parameters)
+	public function getGeneralButtons($class_name, $parameters, Custom_Settings $settings = null)
 	{
 		return [
 			Feature::F_WRITE => new Button(

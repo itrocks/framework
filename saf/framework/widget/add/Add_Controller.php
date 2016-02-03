@@ -5,11 +5,13 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Edit\Edit_Controller;
+use SAF\Framework\Widget\Output_Setting\Output_Settings;
 
 /**
  * The default new controller is the same as an edit controller, that accepts no object
@@ -21,11 +23,12 @@ class Add_Controller extends Edit_Controller
 	/**
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
+	 * @param $settings   Custom_Settings|Output_Settings
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, $parameters)
+	public function getGeneralButtons($object, $parameters, Custom_Settings $settings = null)
 	{
-		$buttons = parent::getGeneralButtons($object, $parameters);
+		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
 
 		$close_link = View::link(Names::classToSet(get_class($object)));
 		list($close_link) = $this->prepareThen($object, $parameters, $close_link);

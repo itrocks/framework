@@ -11,6 +11,7 @@ use SAF\Framework\Printer\Model;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Setting\Buttons;
+use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
@@ -148,9 +149,10 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	/**
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
+	 * @param $settings   Custom_Settings|Output_Settings
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, $parameters)
+	public function getGeneralButtons($object, $parameters, Custom_Settings $settings = null)
 	{
 		list($close_link, $follows) = $this->prepareThen($object, $parameters);
 		$buttons[Feature::F_CLOSE] = new Button(
@@ -181,6 +183,21 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 				)
 			]]
 		);
+
+		if ($settings && $settings->actions) {
+			// default buttons on settings are false : get the default buttons from getGeneralButtons
+			// whet they are set into output settings
+			foreach ($settings->actions as $button_key => $button) {
+				if (isset($buttons[$button_key])) {
+					$settings->actions[$button_key] = $buttons[$button_key];
+				}
+				else {
+					$settings->actions[$button_key]->setObjectContext($object);
+				}
+			}
+			$buttons = $settings->actions;
+		}
+
 		return $buttons;
 	}
 
@@ -283,23 +300,9 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 		$parameters['custom_buttons'] = (new Buttons())->getButtons(
 			'custom ' . $feature, $object, $feature /* , Target::MESSAGES TODO back but do not display output */
 		);
-		$general_buttons = $this->getGeneralButtons($object, $parameters);
-		if ($output_settings->actions) {
-			// default buttons on settings are false : get the default buttons from getGeneralButtons
-			// whet they are set into output settings
-			foreach ($output_settings->actions as $button_key => $button) {
-				if (isset($general_buttons[$button_key])) {
-					$output_settings->actions[$button_key] = $general_buttons[$button_key];
-				}
-				else {
-					$output_settings->actions[$button_key]->setObjectContext($object);
-				}
-			}
-			$parameters['general_buttons'] = $output_settings->actions;
-		}
-		else {
-			$parameters['general_buttons'] = $general_buttons;
-		}
+		$parameters['general_buttons'] = $this->getGeneralButtons(
+			$object, $parameters, $output_settings
+		);
 		return $parameters;
 	}
 

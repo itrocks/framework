@@ -4,11 +4,13 @@ namespace SAF\Framework\Widget\Edit;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
+use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Output\Output_Controller;
+use SAF\Framework\Widget\Output_Setting\Output_Settings;
 
 /**
  * The default edit controller, when no edit controller is set for the class
@@ -20,16 +22,17 @@ class Edit_Controller extends Output_Controller
 	/**
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
+	 * @param $settings   Custom_Settings|Output_Settings
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, $parameters)
+	public function getGeneralButtons($object, $parameters, Custom_Settings $settings = null)
 	{
 		list($close_link, $follows) = $this->prepareThen(
 			$object,
 			$parameters,
 			View::link(Names::classToSet(is_object($object) ? get_class($object) : $object))
 		);
-		$buttons = parent::getGeneralButtons($object, $parameters);
+		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
 		unset($buttons[Feature::F_EDIT]);
 		unset($buttons[Feature::F_PRINT]);
 		$fill_combo = isset($parameters['fill_combo'])
