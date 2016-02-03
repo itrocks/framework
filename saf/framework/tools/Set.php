@@ -34,11 +34,9 @@ class Set implements Iterator
 	 */
 	public function __construct($element_class_name = null, $elements = [])
 	{
-		$this->element_class_name = Builder::current()->sourceClassName(
-			empty($element_class_name)
+		$this->element_class_name = empty($element_class_name)
 			? Names::setToClass(get_class($this))
-			: $element_class_name
-		);
+			: $element_class_name;
 		$this->elements = $elements;
 	}
 
