@@ -56,43 +56,91 @@ class Menu implements Configurable
 	{
 		foreach ($configuration as $block_key => $items) {
 			if ($block_key == self::TITLE) {
-				foreach ($items as $item) {
-					if     (substr($item, 0, 1) == SL)  $this->title_link        = $item;
-					elseif (substr($item, 0, 1) == '#') $this->title_link_target = $item;
-					else                                $this->title             = $item;
-				}
+				$this->constructTitle($items);
 			}
 			else {
-				$block = new Block();
-				if (substr($block_key, 0, 1) == SL) $block->title_link = $block_key;
-				else                                $block->title      = $block_key;
-				foreach ($items as $item_key => $item) {
-					if     ($item_key == self::MODULE) $block->module            = $item;
-					elseif ($item_key == self::TITLE)  $block->title             = $item;
-					elseif ($item_key == self::LINK)   $block->title_link        = $item;
-					elseif ($item_key == self::TARGET) $block->title_link_target = $item;
-					else {
-						$menu_item = new Item();
-						$menu_item->link = $item_key;
-						if (is_array($item)) {
-							foreach ($item as $property_key => $property) {
-								if (is_numeric($property_key)) {
-									if     (substr($property, 0, 1) == SL)  $menu_item->link        = $property;
-									elseif (substr($property, 0, 1) == '#') $menu_item->link_target = $property;
-									else                                    $menu_item->caption     = $property;
-								}
-							}
-						}
-						else {
-							$menu_item->caption = $item;
-						}
-						$block->items[] = $menu_item;
-					}
+				$block = $this->constructBlock($block_key, $items);
+				if ($block) {
+					$this->blocks[] = $block;
 				}
-				if (!isset($block->module)) {
-					$block->module = Names::displayToProperty($block_key);
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------- constructBlock
+	/**
+	 * @param $block_key string
+	 * @param $items     array
+	 * @return Block
+	 */
+	private function constructBlock($block_key, $items)
+	{
+		$block = new Block();
+
+		if (substr($block_key, 0, 1) == SL) {
+			$block->title_link = $block_key;
+		}
+		else {
+			$block->title = $block_key;
+		}
+
+		foreach ($items as $item_key => $item) {
+			if     ($item_key == self::MODULE) $block->module            = $item;
+			elseif ($item_key == self::TITLE)  $block->title             = $item;
+			elseif ($item_key == self::LINK)   $block->title_link        = $item;
+			elseif ($item_key == self::TARGET) $block->title_link_target = $item;
+			else {
+				$menu_item = $this->constructItem($item_key, $item);
+				if ($menu_item) {
+					$block->items[] = $menu_item;
 				}
-				$this->blocks[] = $block;
+			}
+		}
+		if (!$block->items) {
+			$block = null;
+		}
+		elseif (!isset($block->module)) {
+			$block->module = Names::displayToProperty($block_key);
+		}
+		return $block;
+	}
+
+	//--------------------------------------------------------------------------------- constructItem
+	/**
+	 * @param $item_key string
+	 * @param $item     string[]
+	 * @return Item
+	 */
+	private function constructItem($item_key, $item)
+	{
+		$menu_item = new Item();
+		$menu_item->link = $item_key;
+		if (is_array($item)) {
+			foreach ($item as $property_key => $property) {
+				if (is_numeric($property_key)) {
+					if     (substr($property, 0, 1) == SL)  $menu_item->link        = $property;
+					elseif (substr($property, 0, 1) == '#') $menu_item->link_target = $property;
+					else                                    $menu_item->caption     = $property;
+				}
+			}
+		}
+		else {
+			$menu_item->caption = $item;
+		}
+		return $menu_item;
+	}
+
+	//-------------------------------------------------------------------------------- constructTitle
+	/**
+	 * @param $items
+	 */
+	private function constructTitle($items)
+	{
+		foreach ($items as $item) {
+			switch (substr($item, 0, 1)) {
+				case SL:  $this->title_link        = $item; break;
+				case '#': $this->title_link_target = $item; break;
+				default:  $this->title = $item;
 			}
 		}
 	}
