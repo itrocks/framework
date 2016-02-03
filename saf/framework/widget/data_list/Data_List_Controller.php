@@ -16,6 +16,7 @@ use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Setting\Buttons;
+use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\List_Data;
@@ -24,13 +25,14 @@ use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\String;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
+use SAF\Framework\Widget\Button\Has_Selection_Buttons;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 use SAF\Framework\Widget\Output\Output_Controller;
 
 /**
  * The default list controller is called if no list controller has beed defined for a business object class
  */
-class Data_List_Controller extends Output_Controller
+class Data_List_Controller extends Output_Controller implements Has_Selection_Buttons
 {
 
 	//---------------------------------------------------------------------------------- $class_names
@@ -198,11 +200,12 @@ class Data_List_Controller extends Output_Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
-	 * @param $class_name string object or class name
-	 * @param $parameters string[] parameters
+	 * @param $class_name string The context object or class name
+	 * @param $parameters array Parameters prepared to the view. 'selection_buttons' to be added
+	 * @param $settings   Custom_Settings|Data_List_Settings
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons($class_name, $parameters)
+	public function getGeneralButtons($class_name, $parameters, Custom_Settings $settings = null)
 	{
 		return [
 			Feature::F_ADD => new Button(
@@ -290,15 +293,44 @@ class Data_List_Controller extends Output_Controller
 		}
 		return $search;
 	}
+	/*
+	public function getSearchValues(Data_List_Settings $list_settings)
+	{
+		$class_name = Builder::className($list_settings->class_name);
+		$search = array_combine($list_settings->properties_path, $list_settings->properties_path);
+		foreach ($list_settings->search as $property_path => $search_value) {
+			$property = new Reflection_Property_Value($class_name, $property_path, $search_value, true);
+			if (isset($search[$property_path])) {
+				if ($property->getType()->isClass() && !$property->getAnnotation('store')->value) {
+					$property->value(Dao::read($search_value, $property->getType()->asString()));
+				}
+				else {
+					$property->value($search_value);
+				}
+				$search[$property_path] = $property;
+			}
+			if ($property->getType()->isDateTime()) {
+				$property->setAnnotationLocal('var')->value = 'string';
+				$search[$property_path] = $property;
+			}
+			elseif ($property->getAnnotation('multiline')->value) {
+				$property->setAnnotationLocal('multiline')->value = false;
+				$search[$property_path] = $property;
+			}
+		}
+		return $search;
+	}
+	*/
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
-	 * @param $class_name string
+	 * @param $class_name    string class name
+	 * @param $parameters    string[] parameters
+	 * @param $list_settings Custom_Settings|Data_List_Settings
 	 * @return Button[]
 	 */
-	protected function getSelectionButtons(
-		/** @noinspection PhpUnusedParameterInspection needed for plugins or overriding */
-		$class_name
+	public function getSelectionButtons(
+		$class_name, $parameters, Custom_Settings $list_settings = null
 	) {
 		return [
 			new Button(
@@ -461,8 +493,12 @@ class Data_List_Controller extends Output_Controller
 		$parameters['custom_buttons'] = $buttons->getButtons(
 			'custom list', Names::classToSet($class_name)
 		);
-		$parameters['general_buttons']   = $this->getGeneralButtons($class_name, $parameters);
-		$parameters['selection_buttons'] = $this->getSelectionButtons($class_name);
+		$parameters['general_buttons'] = $this->getGeneralButtons(
+			$class_name, $parameters, $list_settings
+		);
+		$parameters['selection_buttons'] = $this->getSelectionButtons(
+			$class_name, $parameters, $list_settings
+		);
 		if (!isset($customized_list_settings[$list_settings->name])) {
 			unset($parameters['general_buttons']['delete']);
 		}
