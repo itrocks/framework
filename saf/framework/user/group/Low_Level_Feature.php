@@ -9,6 +9,9 @@ class Low_Level_Feature
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
+	 * The low-level feature path is like an URI : eg 'SAF/Framework/User/output'.
+	 * It contains the class path and the name of the feature.
+	 *
 	 * @var string
 	 */
 	public $feature;

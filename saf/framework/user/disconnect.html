@@ -10,11 +10,13 @@
 <body>
 <!--BEGIN-->
 
-<div class="user disconnect window">
-	<p>|You have been disconnected|.</p>
-</div>
+	<div class="user disconnect window">
+		<p>|You have been disconnected|.</p>
+	</div>
 
-{/SAF/Framework/User/login.html}
+	<script>
+		setTimeout(function() { redirect('/') } , 1500);
+	</script>
 
 <!--END-->
 </body>

@@ -1,1 +1,6 @@
-features: list, output
+features:
+  - dataList
+  - dataListSetting
+  - output
+  - SAF/Framework/Property/remove
+  - SAF/Framework/Property/select

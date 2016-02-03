@@ -171,6 +171,21 @@ class Feature
 		return rLastParse($this->path, SL);
 	}
 
+	//-------------------------------------------------------------------------------- getAllFeatures
+	/**
+	 * Gets all features from $this->includes + $this->features
+	 *
+	 * @return Low_Level_Feature[]
+	 */
+	public function getAllFeatures()
+	{
+		$features = [];
+		foreach ($this->includes as $include) {
+			$features = array_merge($features, $include->getAllFeatures());
+		}
+		return array_merge($features, $this->features);
+	}
+
 	//----------------------------------------------------------------------------------- getFeatures
 	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
@@ -182,7 +197,9 @@ class Feature
 	private function getFeatures()
 	{
 		if (!isset($this->features)) {
-			$this->features = $this->yaml ? $this->yaml->getFeatures() : [];
+			$class_path = str_replace(BS, SL, $this->getClassName());
+			$features = $this->yaml ? $this->yaml->getFeatures($class_path) : [];
+			$this->features = $features;
 		}
 		return $this->features;
 	}
@@ -290,7 +307,8 @@ class Feature
 			// implicit yaml file content
 			if (!isset($this->yaml)) {
 				if ($this->isImplicit()) {
-					$this->setImplicitYaml();
+					$default_yaml = new Default_Yaml($this->getClassName(), $this->getFeatureName());
+					$this->yaml = $default_yaml->toYaml();
 				}
 			}
 		}
@@ -327,31 +345,6 @@ class Feature
 			));
 		}
 		return $name;
-	}
-
-	//------------------------------------------------------------------------------- setImplicitYaml
-	/**
-	 * Initialises $this->yaml with implicit data.
-	 * Called when no file was found for an implicit feature.
-	 */
-	private function setImplicitYaml()
-	{
-		$feature = $this->getFeatureName();
-		if (in_array($feature, self::ADMIN)) {
-			$this->yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_ADMIN));
-		}
-		elseif (in_array($feature, self::EDIT)) {
-			$this->yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_EDIT));
-		}
-		elseif (in_array($feature, self::OUTPUT)) {
-			$this->yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_OUTPUT));
-		}
-		else {
-			$this->yaml = false;
-		}
-		if ($this->yaml) {
-			$this->yaml->extendYaml();
-		}
 	}
 
 }

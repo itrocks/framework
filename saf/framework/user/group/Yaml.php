@@ -56,6 +56,29 @@ class Yaml
 		}
 	}
 
+	//------------------------------------------------------------------------------------ addFeature
+	/**
+	 * Adds a low-level feature
+	 *
+	 * @param $feature string
+	 * @param $options array
+	 */
+	public function addFeature($feature, $options = null)
+	{
+		if (!isset($this->data[self::FEATURES])) {
+			$this->data[self::FEATURES] = [];
+		}
+		$features_data =& $this->data[self::FEATURES];
+		if (!isset($features_data[$feature]) && !in_array($feature, $features_data)) {
+			if ($options) {
+				$features_data[$feature] = $options;
+			}
+			else {
+				$features_data[] = $feature;
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------- defaultFileName
 	/**
 	 * Reads the content of the default file, stored into defaults/, for a given end-user feature
@@ -165,17 +188,24 @@ class Yaml
 	/**
 	 * Gets the low-level features list stored into the yaml file
 	 *
+	 * @param $default_path string
 	 * @return Low_Level_Feature[]
 	 */
-	public function getFeatures()
+	public function getFeatures($default_path)
 	{
 		$features = [];
 		if (isset($this->data[self::FEATURES])) {
 			foreach ($this->data[self::FEATURES] as $feature => $feature_detail) {
 				if (is_string($feature_detail) && !is_string($feature)) {
+					if (!strpos($feature_detail, SL)) {
+						$feature_detail = $default_path . SL . $feature_detail;
+					}
 					$features[$feature_detail] = new Low_Level_Feature($feature_detail);
 				}
 				elseif (is_string($feature) && is_array($feature_detail)) {
+					if (!strpos($feature, SL)) {
+						$feature = $default_path . SL . $feature;
+					}
 					$features[$feature] = new Low_Level_Feature($feature, $feature_detail);
 				}
 				else {

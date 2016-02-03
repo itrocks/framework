@@ -1,0 +1,151 @@
+<?php
+namespace SAF\Framework\User\Group;
+
+use SAF\Framework\Controller;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Reflection_Class;
+
+/**
+ * Default yaml file generator
+ */
+class Default_Yaml
+{
+
+	//---------------------------------------------------------------------------------------- $class
+	/**
+	 * @var string
+	 */
+	private $class;
+
+	//--------------------------------------------------------------------------- $collection_classes
+	/**
+	 * @var string[]
+	 */
+	private $collection_classes;
+
+	//----------------------------------------------------------------------------- $features_classes
+	/**
+	 * @var string[]
+	 */
+	private $features_classes;
+
+	//--------------------------------------------------------------------------------- $dependencies
+	/**
+	 * @var string[]
+	 */
+	private $dependencies;
+
+	//-------------------------------------------------------------------------------------- $feature
+	/**
+	 * @var string
+	 */
+	private $feature;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class string
+	 * @param $feature string
+	 */
+	public function __construct($class = null, $feature = null)
+	{
+		if (isset($class)) {
+			$this->class = $class;
+		}
+		if (isset($feature)) {
+			$this->feature = $feature;
+		}
+	}
+
+	//--------------------------------------------------------------------- addCollectionDependencies
+	/**
+	 * @param $features   string[]
+	 * @param $class_name string
+	 */
+	private function addCollectionDependencies($features, $class_name)
+	{
+		if (!isset($this->collection_classes[$class_name])) {
+			$this->collection_classes[$class_name] = true;
+			$this->getDependencies($features, $class_name);
+		}
+	}
+
+	//------------------------------------------------------------------------- addObjectDependencies
+	/**
+	 * @param $features   string[]
+	 * @param $class_name string
+	 */
+	private function addObjectDependencies($features, $class_name)
+	{
+		if (!isset($this->features_classes[$class_name])) {
+			$this->features_classes[$class_name] = true;
+			foreach ($features as $feature) {
+				$path = str_replace(BS, SL, $class_name) . SL . $feature;
+				$this->dependencies[$path] = $path;
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------- getDependencies
+	/**
+	 * Get low-level features for dependencies
+	 *
+	 * @param $features   string[]
+	 * @param $class_name string
+	 * @return string[]
+	 */
+	private function getDependencies($features, $class_name = null)
+	{
+		if (!isset($class_name)) {
+			$this->features_classes = [];
+			$this->dependencies = [];
+			$class_name = $this->class;
+		}
+		$class = new Reflection_Class($class_name);
+		foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
+			$link = $property->getAnnotation(Link_Annotation::ANNOTATION)->value;
+			if ($link) {
+				if (in_array($link, [Link_Annotation::MAP, Link_Annotation::OBJECT])) {
+					$this->addObjectDependencies(
+						$features, $property->getType()->getElementTypeAsString()
+					);
+				}
+				elseif ($link === Link_Annotation::COLLECTION) {
+					$this->addCollectionDependencies(
+						$features, $property->getType()->getElementTypeAsString()
+					);
+				}
+			}
+		}
+		return $this->dependencies;
+	}
+
+	//---------------------------------------------------------------------------------------- toYaml
+	/**
+	 * Initialises $this->yaml with implicit data.
+	 * Called when no file was found for an implicit feature.
+	 */
+	public function toYaml()
+	{
+		$feature = $this->feature;
+		if (in_array($feature, Feature::ADMIN)) {
+			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_ADMIN));
+			$yaml->extendYaml();
+		}
+		elseif (in_array($feature, Feature::EDIT)) {
+			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_EDIT));
+			$yaml->extendYaml();
+			foreach ($this->getDependencies([Controller\Feature::F_JSON]) as $feature) {
+				$yaml->addFeature($feature);
+			}
+		}
+		elseif (in_array($feature, Feature::OUTPUT)) {
+			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_OUTPUT));
+			$yaml->extendYaml();
+		}
+		else {
+			$yaml = false;
+		}
+		return $yaml;
+	}
+
+}

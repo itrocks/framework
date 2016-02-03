@@ -4,6 +4,7 @@ namespace SAF\Framework\User;
 use SAF\Framework\Dao;
 use SAF\Framework\Traits\Has_Name;
 use SAF\Framework\User\Group\Feature;
+use SAF\Framework\User\Group\Low_Level_Feature;
 
 /**
  * User group
@@ -25,5 +26,20 @@ class Group
 	 * @var Feature[]
 	 */
 	public $features;
+
+	//--------------------------------------------------------------------------- getLowLevelFeatures
+	/**
+	 * Gets all features from $this->includes + $this->features
+	 *
+	 * @return Low_Level_Feature[]
+	 */
+	public function getLowLevelFeatures()
+	{
+		$features = [];
+		foreach ($this->features as $feature) {
+			$features = array_merge($features, $feature->getAllFeatures());
+		}
+		return $features;
+	}
 
 }

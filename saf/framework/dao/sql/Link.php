@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\Sql;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao\Data_Link\Identifier_Map;
 use SAF\Framework\Dao\Data_Link\Transactional;
 use SAF\Framework\Dao\Option;
@@ -181,6 +182,9 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public function select($object_class, $columns, $filter_object = null, $options = [])
 	{
+		if (is_string($object_class)) {
+			$object_class = Builder::className($object_class);
+		}
 		foreach ($options as $option) {
 			if ($option instanceof Option\Array_Result) {
 				$list = [];

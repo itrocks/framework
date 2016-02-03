@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Builder;
+
 /**
  * A String class to get commonly used string features into an object
  */
@@ -157,7 +159,7 @@ class String
 	 */
 	public function path()
 	{
-		return new String(str_replace(BS, SL, $this->value));
+		return new String(str_replace(BS, SL, Builder::current()->sourceClassName($this->value)));
 	}
 
 	//----------------------------------------------------------------------------------------- short
@@ -167,6 +169,15 @@ class String
 	public function short()
 	{
 		return new String(Namespaces::shortClassName($this->value));
+	}
+
+	//---------------------------------------------------------------------------------------- source
+	/**
+	 * Change a class name to a source class name
+	 */
+	public function source()
+	{
+		return new String(Builder::current()->sourceClassName($this->value));
 	}
 
 	//---------------------------------------------------------------------------------------- substr

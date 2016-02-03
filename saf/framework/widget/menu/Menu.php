@@ -54,14 +54,17 @@ class Menu implements Configurable
 	 */
 	public function __construct($configuration = [])
 	{
-		foreach ($configuration as $block_key => $items) {
-			if ($block_key == self::TITLE) {
-				$this->constructTitle($items);
-			}
-			else {
-				$block = $this->constructBlock($block_key, $items);
-				if ($block) {
-					$this->blocks[] = $block;
+		if (isset($configuration)) {
+			$this->blocks = [];
+			foreach ($configuration as $block_key => $items) {
+				if ($block_key == self::TITLE) {
+					$this->constructTitle($items);
+				}
+				else {
+					$block = $this->constructBlock($block_key, $items);
+					if ($block) {
+						$this->blocks[] = $block;
+					}
 				}
 			}
 		}
