@@ -17,6 +17,7 @@ use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Button\Code;
+use SAF\Framework\Widget\Button\Has_General_Buttons;
 use SAF\Framework\Widget\Duplicate\Duplicate;
 use SAF\Framework\Widget\Output_Setting\Output_Settings;
 use SAF\Framework\Widget\Tab;
@@ -25,7 +26,7 @@ use SAF\Framework\Widget\Tab\Tabs_Builder_Object;
 /**
  * All output controllers should extend from this at it offers standard output elements methods and structure
  */
-class Output_Controller implements Default_Feature_Controller
+class Output_Controller implements Default_Feature_Controller, Has_General_Buttons
 {
 
 	//--------------------------------------------------------------------------- applyOutputSettings
@@ -149,7 +150,7 @@ class Output_Controller implements Default_Feature_Controller
 	 * @param $parameters string[] parameters
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons($object, $parameters)
+	public function getGeneralButtons($object, $parameters)
 	{
 		list($close_link, $follows) = $this->prepareThen($object, $parameters);
 		$buttons[Feature::F_CLOSE] = new Button(

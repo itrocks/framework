@@ -18,20 +18,22 @@ use SAF\Framework\Tools\Color;
 use SAF\Framework\View;
 use SAF\Framework\View\Html\Template;
 use SAF\Framework\Widget\Button;
+use SAF\Framework\Widget\Button\Has_General_Buttons;
 use StdClass;
 
 /**
  * Import preview controller
  */
-class Import_Preview_Controller implements Default_Feature_Controller
+class Import_Preview_Controller implements Default_Feature_Controller, Has_General_Buttons
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $class_name string object or class name
+	 * @param $parameters string[] parameters
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons($class_name)
+	public function getGeneralButtons($class_name, $parameters)
 	{
 		return [
 			Feature::F_WRITE => new Button(

@@ -22,7 +22,7 @@ class Edit_Controller extends Output_Controller
 	 * @param $parameters string[] parameters
 	 * @return Button[]
 	 */
-	protected function getGeneralButtons($object, $parameters)
+	public function getGeneralButtons($object, $parameters)
 	{
 		list($close_link, $follows) = $this->prepareThen(
 			$object,
