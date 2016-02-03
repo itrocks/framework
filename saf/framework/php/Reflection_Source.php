@@ -20,6 +20,18 @@ class Reflection_Source
 	const REQUIRES     = 5;
 	const USES         = 6;
 
+	//---------------------------------------------------------------------------------------- $cache
+	/**
+	 * Reflection_Source cache : all files are kept here with two indices : file name and class name
+	 * This allow to always have only one version of a Source, at any time (needed for PHP Compiler)
+	 *
+	 * The cache is filled in when you use __construct(), ofClass() or ofFile().
+	 * But the cache is not used into __construct(), so you may have duplicates if you do not use of()
+	 *
+	 * @var Reflection_Source[] key is file_name and class_name
+	 */
+	private static $cache = [];
+
 	//-------------------------------------------------------------------------------------- $classes
 	/**
 	 * @var Reflection_Class[] the key is the full name of each class
@@ -47,12 +59,6 @@ class Reflection_Source
 	 * @var string
 	 */
 	public $file_name;
-
-	//----------------------------------------------------------------------------- $file_name_getter
-	/**
-	 * @var Class_File_Name_Getter
-	 */
-	private $file_name_getter;
 
 	//--------------------------------------------------------------------------------- $instantiates
 	/**
@@ -104,15 +110,11 @@ class Reflection_Source
 	/**
 	 * @param $file_name        string may be the name of a file
 	 *                          or the PHP source code if beginning with '<?php'
-	 * @param $file_name_getter Class_File_Name_Getter needed to get linked reflection objects
-	 *                          without loading classes. If not set, it will work, but with class
-	 *                          loading, which is less interesting.
 	 * @param $class_name       string If file name can be null, $class_name will force initialisation
 	 *                          of classes as a Reflection_Class object for $class_name
 	 */
-	public function __construct(
-		$file_name = null, Class_File_Name_Getter $file_name_getter = null, $class_name = null
-	) {
+	public function __construct($file_name = null, $class_name = null)
+	{
 		if (isset($file_name)) {
 			if (substr($file_name, 0, 5) === '<?php') {
 				$this->source = $file_name;
@@ -123,9 +125,45 @@ class Reflection_Source
 				$this->changed = false;
 			}
 		}
-		$this->file_name_getter = $file_name_getter;
 		if ($this->internal = (!$file_name && $class_name)) {
 			$this->classes = [$class_name => new Reflection_Class($this, $class_name)];
+		}
+		$source_class_name = $this->getFirstClassName();
+		if ($class_name && ($source_class_name !== $source_class_name)) {
+			trigger_error(
+				"Build Reflection_Source($file_name, $class_name)"
+				. SP . "has non-matching class $source_class_name into source",
+				E_USER_ERROR
+			);
+		}
+		if ($class_name && !isset(self::$cache[$class_name])) self::$cache[$class_name] = $this;
+		if ($file_name  && !isset(self::$cache[$file_name ])) self::$cache[$file_name ] = $this;
+	}
+
+	//------------------------------------------------------------------------------------ clearCache
+	/**
+	 * Clear all cache access to this class or file name
+	 * - both caches accessible with class or file name will be cleared
+	 * - if the first class name into the file differs from $class_or_file_name, both will be cleared
+	 *
+	 * @param $class_or_file_name string If null, then clear the entire cache
+	 */
+	public static function clearCache($class_or_file_name = null)
+	{
+		if (!isset($class_or_file_name)) {
+			self::$cache = [];
+		}
+		elseif (isset(self::$cache[$class_or_file_name])) {
+			$source = self::$cache[$class_or_file_name];
+			if ($source->file_name) {
+				unset(self::$cache[$source->file_name]);
+			}
+			if ($class_name = $source->getFirstClassName()) {
+				unset(self::$cache[$class_name]);
+			}
+			if (isset(self::$cache[$class_or_file_name])) {
+				unset(self::$cache[$class_or_file_name]);
+			}
 		}
 	}
 
@@ -505,14 +543,9 @@ class Reflection_Source
 	public function getClass($class_name)
 	{
 		$classes = $this->getClasses();
-		if (!isset($classes[$class_name])) {
-			/*
-			trigger_error(
-				'No class ' . $class_name . ' into source file ' . $this->file_name, E_USER_ERROR
-			);
-			*/
-		}
-		return $classes[$class_name];
+		return isset($classes[$class_name])
+			? $classes[$class_name]
+			: new Reflection_Class($this, $class_name);
 	}
 
 	//------------------------------------------------------------------------------------ getClasses
@@ -554,6 +587,30 @@ class Reflection_Source
 		return $instantiates
 			? arrayMergeRecursive($this->dependencies, $this->instantiates)
 			: $this->dependencies;
+	}
+
+	//--------------------------------------------------------------------------------- getFirstClass
+	/**
+	 * Gets the first class into source (null if none)
+	 *
+	 * @return Reflection_Class
+	 */
+	public function getFirstClass()
+	{
+		$classes = $this->getClasses();
+		return $classes ? reset($classes) : null;
+	}
+
+	//----------------------------------------------------------------------------- getFirstClassName
+	/**
+	 * Gets the name of the first class into source (null if none)
+	 *
+	 * @return string
+	 */
+	public function getFirstClassName()
+	{
+		$class = $this->getFirstClass();
+		return $class ? $class->name : null;
 	}
 
 	//------------------------------------------------------------------------------- getInstantiates
@@ -600,15 +657,13 @@ class Reflection_Source
 	 */
 	public function getOutsideClass($class_name)
 	{
-		if (isset($this->file_name_getter)) {
-			$file_name = $this->file_name_getter->getClassFilename($class_name);
-			$source = is_string($file_name)
-				? new Reflection_Source($file_name, $this->file_name_getter)
-				: $file_name;
+		$filename = (new ReflectionClass($class_name))->getFileName();
+		// consider vendor classes like internal classes : we don't work with their sources
+		if (strpos($filename, '/vendor/')) {
+			$source = new Reflection_Source(null, $class_name);
 		}
 		else {
-			$filename =( new ReflectionClass($class_name))->getFileName();
-			$source = new Reflection_Source($filename, null, $filename ? null : $class_name);
+			$source = Reflection_Source::ofFile($filename, $class_name);
 		}
 		return $source->getClass($class_name);
 	}
@@ -632,9 +687,14 @@ class Reflection_Source
 	public function getSource()
 	{
 		if (!isset($this->source)) {
-			$this->source = isset($this->lines)
-				? join(LF, $this->lines)
-				: file_get_contents($this->file_name);
+			if ($this->file_name) {
+				$this->source = isset($this->lines)
+					? join(LF, $this->lines)
+					: file_get_contents($this->file_name);
+			}
+			else {
+				$this->source = '';
+			}
 		}
 		return $this->source;
 	}
@@ -681,21 +741,53 @@ class Reflection_Source
 		return strtolower(substr(token_name($token_id), 2));
 	}
 
-	//-------------------------------------------------------------------------------------------- of
+	//--------------------------------------------------------------------------------------- ofClass
 	/**
 	 * @param $class_name string
 	 * @return Reflection_Source
 	 */
-	public static function of($class_name)
+	public static function ofClass($class_name)
 	{
-		$file = Names::classToPath($class_name) . '.php';
-		if (Builder::isBuilt($class_name)) {
-			$file = 'cache/compiled/' . str_replace(SL, '-', substr($file, 0, -4));
+		if (isset(self::$cache[$class_name])) {
+			$result = self::$cache[$class_name];
 		}
-		if (!file_exists($file)) {
-			$file = strtolower(substr($file, 0, -4)) . SL . rLastParse($file, SL);
+		else {
+			$file_name = Names::classToPath($class_name) . '.php';
+			if (Builder::isBuilt($class_name)) {
+				$file_name = 'cache/compiled/' . str_replace(SL, '-', substr($file_name, 0, -4));
+			}
+			if (!file_exists($file_name)) {
+				$file_name = strtolower(substr($file_name, 0, -4)) . SL . rLastParse($file_name, SL);
+			}
+			$result = new Reflection_Source($file_name, $class_name);
 		}
-		return new Reflection_Source($file);
+		return $result;
+	}
+
+	//---------------------------------------------------------------------------------------- ofFile
+	/**
+	 * @param $file_name  string
+	 * @param $class_name string
+	 * @return Reflection_Source
+	 */
+	public static function ofFile($file_name, $class_name = null)
+	{
+		if (isset(self::$cache[$file_name])) {
+			$result = self::$cache[$file_name];
+		}
+		elseif ($class_name) {
+			if (isset(self::$cache[$class_name])) {
+				$result = self::$cache[$class_name];
+			}
+			else {
+				$result = new Reflection_Source($file_name, $class_name);
+			}
+			self::$cache[$file_name] = $result;
+		}
+		else {
+			$result = new Reflection_Source($file_name);
+		}
+		return $result;
 	}
 
 	//------------------------------------------------------------------------------------ searchFile
@@ -756,6 +848,9 @@ class Reflection_Source
 			$this->free(0);
 		}
 		$this->source = $source;
+		if ($class_name = $this->getFirstClassName()) {
+			self::$cache[$class_name] = $this;
+		}
 		return $this;
 	}
 

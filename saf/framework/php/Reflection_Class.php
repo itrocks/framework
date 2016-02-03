@@ -810,7 +810,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public static function of($class_name)
 	{
-		return Reflection_Source::of($class_name)->getClass($class_name);
+		return Reflection_Source::ofClass($class_name)->getClass($class_name);
 	}
 
 	//----------------------------------------------------------------------------------------- regex
@@ -865,6 +865,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$this->requires   = [];
 
 			$this->getTokens();
+			if (!$this->tokens) return;
 			$token = $this->tokens[$this->token_key];
 			while ($token !== '{') {
 				if (is_array($token) && in_array($token[0], [T_EXTENDS, T_IMPLEMENTS])) {
@@ -906,6 +907,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$visibility_token = null;
 
 			$this->getTokens();
+			if (!$this->tokens) return;
 			$token = $this->tokens[$this->token_key];
 			do {
 
@@ -995,6 +997,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	{
 		if (!isset($this->use)) {
 			$this->getTokens();
+			if (!$this->tokens) return;
 			$token = $this->tokens[$this->token_key = 0];
 
 			$this->namespace = '';

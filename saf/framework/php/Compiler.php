@@ -7,8 +7,8 @@ use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Func;
-use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\Dao\Set;
+use SAF\Framework\Dao\Sql\Link;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
@@ -30,10 +30,6 @@ use Serializable;
 class Compiler implements
 	Configurable, Registerable, Class_File_Name_Getter, Needs_Main, Serializable, Updatable
 {
-
-	const MAX_OPENED_SOURCES = 100;
-
-	const SOURCES_FREE = 10;
 
 	//------------------------------------------------------------------------------------ $cache_dir
 	/**
@@ -65,6 +61,15 @@ class Compiler implements
 	 */
 	private $compilers = [];
 
+	//-------------------------------------------------------------------------------- $saved_sources
+	/**
+	 * Saved sources : during the second and next compiler passes, all compiled sources are saved
+	 * here
+	 *
+	 * @var Reflection_Source[]
+	 */
+	private $saved_sources = [];
+
 	//-------------------------------------------------------------------------------------- $sources
 	/**
 	 * List of PHP sources being compiled.
@@ -74,12 +79,6 @@ class Compiler implements
 	 * @var Reflection_Source[]
 	 */
 	private $sources;
-
-	//-------------------------------------------------------------------------------- $sources_cache
-	/**
-	 * @var Reflection_Source[]
-	 */
-	private $sources_cache = [];
 
 	//------------------------------------------------------------------------------ $main_controller
 	/**
@@ -157,14 +156,7 @@ class Compiler implements
 				);
 			}
 		}
-		foreach (array_keys($source->getClasses()) as $class_name) {
-			$this->sources_cache[$class_name] = $source;
-		}
-		$this->more_sources[$source->file_name] = $source;
-
-		if (count($this->sources_cache) > 1000) {
-			$source->free(self::SOURCES_FREE);
-		}
+		$this->more_sources[$source->getFirstClassName() ?: $source->file_name] = $source;
 	}
 
 	//--------------------------------------------------------------------------------------- compile
@@ -213,7 +205,7 @@ class Compiler implements
 		foreach ($this->compilers as $compilers) {
 			/** @var $compilers ICompiler[] */
 
-			$saved_sources = $this->sources;
+			$this->saved_sources = $this->sources;
 			while ($this->sources) {
 
 				// get source and update dependencies
@@ -246,7 +238,7 @@ class Compiler implements
 							Dependency::class,
 							['file_name' => $source->file_name]
 						);
-						$this->sources[$source->file_name] = $source;
+						$this->sources[$source->getFirstClassName() ?: $source->file_name] = $source;
 					}
 
 					if (count($compilers) == 1) {
@@ -255,33 +247,23 @@ class Compiler implements
 
 				} while ($added);
 
-				$saved_sources = array_merge($saved_sources, $this->sources);
-
-				// fill in sources cache
-				$sources_count = count($this->sources);
-				foreach ($this->sources as $source) {
-					foreach (array_keys($source->getClasses()) as $class_name) {
-						$this->sources_cache[$class_name] = $source;
-					}
-					if ($sources_count > self::MAX_OPENED_SOURCES) {
-						$source->free(self::SOURCES_FREE);
-					}
-				}
+				$this->saved_sources = array_merge($this->saved_sources, $this->sources);
 
 				// compile sources
+				$this->sortSourcesByParentsCount();
 				foreach ($this->sources as $source) {
-					$this->compileSource($source, $compilers, $cache_dir, $first_group, $sources_count);
+					$this->compileSource($source, $compilers, $cache_dir, $first_group);
 				}
 
 				$this->sources = $this->more_sources;
 				$this->more_sources = [];
-				foreach ($this->sources as $source) {
-					if (!isset($saved_sources[$source->file_name])) {
-						$saved_sources[$source->file_name] = $source;
+				foreach ($this->sources as $source_class_name => $source) {
+					if (!isset($this->saved_sources[$source_class_name])) {
+						$this->saved_sources[$source_class_name] = $source;
 					}
 				}
 			}
-			$this->sources = $saved_sources;
+			$this->sources = $this->saved_sources;
 			$first_group = false;
 		}
 		$this->sources = null;
@@ -296,12 +278,10 @@ class Compiler implements
 	 * @param $compilers     ICompiler[]
 	 * @param $cache_dir     string
 	 * @param $first_group   boolean
-	 * @param $sources_count integer
 	 * @return mixed
 	 */
-	private function compileSource(
-		Reflection_Source $source, $compilers, $cache_dir, $first_group, $sources_count
-	) {
+	private function compileSource(Reflection_Source $source, $compilers, $cache_dir, $first_group)
+	{
 		foreach ($compilers as $compiler) {
 			$compiler->compile($source, $this);
 		}
@@ -320,9 +300,6 @@ class Compiler implements
 		}
 		elseif (file_exists($file_name) && $first_group) {
 			unlink($file_name);
-		}
-		if ($sources_count > self::MAX_OPENED_SOURCES) {
-			$source->free(self::SOURCES_FREE);
 		}
 	}
 
@@ -343,14 +320,13 @@ class Compiler implements
 	/**
 	 * Gets a Reflection_Source knowing its class _name.
 	 * Uses sources cache, or router's getClassFilename() and fill-in cache.
-	 *
-	 * @param $class_name string
+	 ** @param $class_name string
 	 * @return Reflection_Source
 	 */
 	public function getClassFilename($class_name)
 	{
-		if (isset($this->sources_cache[$class_name])) {
-			return $this->sources_cache[$class_name];
+		if (isset($this->saved_sources[$class_name])) {
+			return $this->saved_sources[$class_name];
 		}
 		else {
 			/** @var $router Router */
@@ -362,14 +338,7 @@ class Compiler implements
 			else {
 				$file_name = $router->getClassFilename($class_name);
 			}
-			$source = new Reflection_Source($file_name, $this, $class_name);
-			foreach (array_keys($source->getClasses()) as $class_name) {
-				$this->sources_cache[$class_name] = $source;
-				if (count($this->sources_cache) > self::MAX_OPENED_SOURCES) {
-					$source->free(self::SOURCES_FREE);
-				}
-			}
-			return $this->sources_cache[$class_name];
+			return Reflection_Source::ofFile($file_name, $class_name);
 		}
 	}
 
@@ -389,7 +358,8 @@ class Compiler implements
 		$files = [];
 		foreach ($source_files as $file_path) {
 			if ((substr($file_path, -4) == '.php') && (filemtime($file_path) > $last_time)) {
-				$files[$file_path] = new Reflection_Source($file_path, $this);
+				$source = Reflection_Source::ofFile($file_path);
+				$files[$source->getFirstClassName() ?: $file_path] = $source;
 			}
 		}
 		return $files;
@@ -428,6 +398,64 @@ class Compiler implements
 	public function setMainController(Main $main_controller)
 	{
 		$this->main_controller = $main_controller;
+	}
+
+	//--------------------------------------------------------------------- sortSourcesByParentsCount
+	/**
+	 * Parent classes must be compiled first : so sort classes by :
+	 * - first the classes without any parent
+	 * - next the classes with 1 parent
+	 * - and so on...
+	 */
+	private function sortSourcesByParentsCount()
+	{
+		$by_parents_count = [];
+		foreach ($this->sources as $source_class_name => $source) {
+			// -1 : no class in source, 0 : no parent, 1 : one parent, etc.
+			$parents_count = -1;
+			$parent_class = $source->getClasses();
+			$parent_class = reset($parent_class);
+			while (
+				$parent_class
+				&& ($parent_class instanceof Reflection_Class)
+				&& !$parent_class->isInternal()
+			) {
+				$parents_count ++;
+				$parent_name = $parent_class->getParentName();
+				flush();
+				if ($parent_name) {
+					if (isset($this->saved_sources[$parent_name])) {
+						$parent_class = $this->saved_sources[$parent_name]->getClasses();
+						$parent_class = reset($parent_class);
+					}
+					else {
+						$file_name = $this->getClassFileName($parent_name);
+						if ($file_name instanceof Reflection_Source) {
+							if ($file_name->isInternal()) {
+								break;
+							}
+							$file_name = $file_name->file_name;
+						}
+						if (isset($this->saved_sources[$file_name])) {
+							$parent_class = $this->saved_sources[$file_name]->getClasses();
+							$parent_class = reset($parent_class);
+						}
+						else {
+							$parent_class = $parent_class->getParentClass();
+						}
+					}
+				}
+				else {
+					break;
+				}
+			}
+			$by_parents_count[$parents_count][$source_class_name] = $source;
+		}
+		ksort($by_parents_count);
+		$this->sources = [];
+		foreach ($by_parents_count as $sources) {
+			$this->sources = array_merge($this->sources, $sources);
+		}
 	}
 
 	//---------------------------------------------------------------------------------------- update

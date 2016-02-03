@@ -93,7 +93,7 @@ class Compiler implements ICompiler
 					$source = Reflection_Class::of($linked_class)->source;
 					if (!isset($sources[$source->file_name])) {
 						$sources[$source->file_name] = $source;
-						$added[$source->file_name] = $source;
+						$added[$source->getFirstClassName() ?: $source->file_name] = $source;
 					}
 					$class = $source->getClass($linked_class);
 				}
@@ -101,9 +101,9 @@ class Compiler implements ICompiler
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
 					/** @var $dependency Dependency */
 					if (!isset($sources[$dependency->file_name])) {
-						$source = new Reflection_Source($dependency->file_name);
+						$source = Reflection_Source::ofFile($dependency->file_name);
 						$sources[$dependency->file_name] = $source;
-						$added[$dependency->file_name] = $source;
+						$added[$source->getFirstClassName() ?: $dependency->file_name] = $source;
 					}
 				}
 			}

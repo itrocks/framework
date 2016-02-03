@@ -377,7 +377,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 			do {
 				$class = $class->source->getOutsideClass($class->getListAnnotation('extends')->values()[0]);
 				$methods = $class->getMethods($flags);
-			} while (!isset($methods[$method_name]));
+			} while ($class && !isset($methods[$method_name]));
 		}
 		return $methods[$method_name];
 	}

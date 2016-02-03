@@ -2,6 +2,7 @@
 namespace SAF\Framework\AOP;
 
 use SAF\Framework\AOP\Compiler\Scanners;
+use SAF\Framework\AOP\Weaver\Handler;
 use SAF\Framework\AOP\Weaver\IWeaver;
 use SAF\Framework\Application;
 use SAF\Framework\Builder;
@@ -27,12 +28,6 @@ class Compiler implements ICompiler, Needs_Main
 
 	const DEBUG = false;
 
-	//----------------------------------------------------------------------------- $compiled_classes
-	/**
-	 * @var boolean[] key is class name, value is always true
-	 */
-	private $compiled_classes = [];
-
 	//--------------------------------------------------------------------------------------- $weaver
 	/**
 	 * @var Weaver
@@ -46,6 +41,34 @@ class Compiler implements ICompiler, Needs_Main
 	public function __construct(IWeaver $weaver = null)
 	{
 		$this->weaver = $weaver ?: Session::current()->plugins->get(Weaver::class);
+	}
+
+	//---------------------------------------------------------------------------------- addPointcuts
+	/**
+	 * @param $methods        array
+	 * @param $properties     array
+	 * @param $class_name     string
+	 * @param $handler_filter string[] @values after, around, before
+	 */
+	private function addPointcuts(&$methods, &$properties, $class_name, $handler_filter = null)
+	{
+		foreach ($this->weaver->getJoinpoints($class_name) as $method_or_property => $pointcuts2) {
+			foreach ($pointcuts2 as $pointcut) {
+				if (empty($handler_filter) || in_array($pointcut[0], $handler_filter)) {
+					if ($pointcut[0] == Handler::READ) {
+						$properties[$method_or_property]['implements'][Handler::READ] = true;
+						$properties[$method_or_property][] = $pointcut;
+					}
+					elseif ($pointcut[0] == Handler::WRITE) {
+						$properties[$method_or_property]['implements'][Handler::WRITE] = true;
+						$properties[$method_or_property][] = $pointcut;
+					}
+					else {
+						$methods[$method_or_property][] = $pointcut;
+					}
+				}
+			}
+		}
 	}
 
 	//--------------------------------------------------------------------------------------- cleanup
@@ -100,11 +123,22 @@ class Compiler implements ICompiler, Needs_Main
 	 */
 	public function compileClass(Reflection_Class $class)
 	{
-		$this->compiled_classes[$class->name] = true;
-		if (self::DEBUG) echo '<h2>' . $class->name . '</h2>';
+		if (self::DEBUG) { echo '<h2>' . $class->name . '</h2>'; flush(); }
 
 		$methods    = [];
 		$properties = [];
+
+		$interfaces = $class->getInterfaceNames();
+		foreach ($interfaces as $interface_name) {
+			$this->addPointcuts(
+				$methods, $properties, $interface_name, [Handler::AROUND, Handler::BEFORE]
+			);
+		}
+		$this->addPointcuts($methods, $properties, $class->name);
+		foreach ($interfaces as $interface_name) {
+			$this->addPointcuts($methods, $properties, $interface_name, [Handler::AFTER]);
+		}
+
 		if ($class->type !== T_INTERFACE) {
 			// implements : _read_property, _write_property
 			if ($class->type !== T_TRAIT) {
@@ -120,19 +154,22 @@ class Compiler implements ICompiler, Needs_Main
 			//$this->scanForMethods($methods, $class);
 		}
 
-		list($methods2, $properties2) = $this->getPointcuts($class->name);
-		$methods    = arrayMergeRecursive($methods,    $methods2);
-		$properties = arrayMergeRecursive($properties, $properties2);
 		$methods_code = [];
 
-		if (self::DEBUG && $properties) echo '<pre>properties = ' . print_r($properties, true) . '</pre>';
+		if (self::DEBUG && $properties) {
+			echo '<pre>properties = ' . print_r($properties, true) . '</pre>';
+			flush();
+		}
 
 		if ($properties) {
 			$properties_compiler = new Compiler\Properties($class);
 			$methods_code = $properties_compiler->compile($properties);
 		}
 
-		if (self::DEBUG && $methods) echo '<pre>methods = ' . print_r($methods, true) . '</pre>';
+		if (self::DEBUG && $methods) {
+			echo '<pre>methods = ' . print_r($methods, true) . '</pre>';
+			flush();
+		}
 
 		$method_compiler = new Compiler\Method($class);
 		foreach ($methods as $method_name => $advices) {
@@ -144,7 +181,10 @@ class Compiler implements ICompiler, Needs_Main
 		if ($methods_code) {
 			ksort($methods_code);
 
-			if (self::DEBUG && $methods_code) echo '<pre>' . print_r($methods_code, true) . '</pre>';
+			if (self::DEBUG && $methods_code) {
+				echo '<pre>' . print_r($methods_code, true) . '</pre>';
+				flush();
+			}
 
 			$class->source->setSource(
 				substr(trim($class->source->getSource()), 0, -1)
@@ -175,6 +215,7 @@ class Compiler implements ICompiler, Needs_Main
 				if ($class->type === T_TRAIT) {
 					$search->dependency_name = $class->name;
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
+						/** @var $dependency Dependency */
 						while ($dependency && Builder::isBuilt($dependency->class_name)) {
 							$search_built_parent = Search_Object::create(Dependency::class);
 							$search_built_parent->class_name = $dependency->class_name;
@@ -196,11 +237,10 @@ class Compiler implements ICompiler, Needs_Main
 								);
 							}
 						}
-						/** @var $dependency Dependency */
 						if (!isset($sources[$dependency->file_name])) {
-							$source = new Reflection_Source($dependency->file_name);
+							$source = Reflection_Source::ofFile($dependency->file_name);
 							$sources[$dependency->file_name] = $source;
-							$added[$dependency->file_name]   = $source;
+							$added[$source->getFirstClassName() ?: $dependency->file_name] = $source;
 						}
 					}
 				}
@@ -216,10 +256,10 @@ class Compiler implements ICompiler, Needs_Main
 				unset($search->dependency_name);
 				$search->type = Dependency::T_CLASS;
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
-					$source = Reflection_Source::of($dependency->dependency_name);
+					$source = Reflection_Source::ofClass($dependency->dependency_name);
 					if (!isset($sources[$source->file_name])) {
 						$sources[$source->file_name] = $source;
-						$added[$source->file_name] = $source;
+						$added[$source->getFirstClassName() ?: $source->file_name] = $source;
 					}
 				}
 			}
@@ -244,10 +284,10 @@ class Compiler implements ICompiler, Needs_Main
 								$advice_class = get_class($advice_class);
 							}
 							if (isset($already[$advice_class])) {
-								$source = Reflection_Source::of($class_name);
+								$source = Reflection_Source::ofClass($class_name);
 								/*
 								if ($source->file_name && !$source->isInternal() && !is_file($source->file_name)) {
-									$applicant_source = Reflection_Source::of($advice_class);
+									$applicant_source = Reflection_Source::ofClass($advice_class);
 									if (
 										!$source->searchFile($class_name, array_keys($applicant_source->getRequires()))
 									) {
@@ -259,7 +299,7 @@ class Compiler implements ICompiler, Needs_Main
 								*/
 								if ($source->getClass($class_name)) {
 									$sources[$source->file_name] = $source;
-									$added[$source->file_name] = $source;
+									$added[$class_name] = $source;
 									$already[$class_name] = true;
 								}
 								else {
@@ -287,34 +327,7 @@ class Compiler implements ICompiler, Needs_Main
 	 */
 	public function compileFile($file_name)
 	{
-		return $this->compileClass((new Reflection_Source($file_name))->getClasses()[0]);
-	}
-
-	//---------------------------------------------------------------------------------- getPointcuts
-	/**
-	 * @param $class_name string
-	 * @return array[] two elements : [$methods, $properties)
-	 */
-	private function getPointcuts($class_name)
-	{
-		$methods    = [];
-		$properties = [];
-		foreach ($this->weaver->getJoinpoints($class_name) as $method_or_property => $pointcuts2) {
-			foreach ($pointcuts2 as $pointcut) {
-				if ($pointcut[0] == 'read') {
-					$properties[$method_or_property]['implements']['read'] = true;
-					$properties[$method_or_property][] = $pointcut;
-				}
-				elseif ($pointcut[0] == 'write') {
-					$properties[$method_or_property]['implements']['write'] = true;
-					$properties[$method_or_property][] = $pointcut;
-				}
-				else {
-					$methods[$method_or_property][] = $pointcut;
-				}
-			}
-		}
-		return [$methods, $properties];
+		return $this->compileClass(Reflection_Source::ofFile($file_name)->getFirstClass());
 	}
 
 	//------------------------------------------------------------------------------- scanForAbstract

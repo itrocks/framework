@@ -38,7 +38,7 @@ class Linked_Classes_Compiler implements ICompiler
 							($class_exists && is_a($replacement_class_name, $parent_class_name))
 							|| (
 								!$class_exists
-								&& Reflection_Source::of($replacement_class_name)->getClass(
+								&& Reflection_Source::ofClass($replacement_class_name)->getClass(
 									$replacement_class_name
 								)->isA($class->name)
 							)
@@ -108,7 +108,9 @@ class Linked_Classes_Compiler implements ICompiler
 							!isset($sources[$dependency->file_name])
 							&& !Builder::isBuilt($dependency->class_name)
 						) {
-							$added[$dependency->file_name] = new Reflection_Source($dependency->file_name);
+							$source_class_name = $source->getFirstClassName();
+							$added[$source_class_name ?: $dependency->file_name]
+								= Reflection_Source::ofFile($dependency->file_name, $source_class_name);
 						}
 					}
 				}

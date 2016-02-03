@@ -63,9 +63,9 @@ class Compiler implements ICompiler, Needs_Main
 			['class_name' => $class_name, 'dependency_name' => $class_name], Dependency::class
 		);
 		if (!isset($sources[$dependency->file_name])) {
-			$source = new Reflection_Source($dependency->file_name);
-			$sources[$dependency->file_name] = $source;
-			$added[$dependency->file_name] = $source;
+			$source = Reflection_Source::ofFile($dependency->file_name, $class_name);
+			$sources[$class_name] = $source;
+			$added[$class_name]   = $source;
 		}
 	}
 
