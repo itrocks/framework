@@ -17,6 +17,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 
 	//--------------------------------------------------------------------------------- $value values
 	const ALL        = 'All';
+	const ANNOTATION = 'link';
 	const COLLECTION = 'Collection';
 	const DATETIME   = 'DateTime';
 	const MAP        = 'Map';
