@@ -30,7 +30,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $class_name string object or class name
-	 * @param $parameters string[] parameters
+	 * @param $parameters array parameters
 	 * @return Button[]
 	 */
 	public function getGeneralButtons($class_name, $parameters)
@@ -101,7 +101,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		}
 		// prepare parameters
 		$parameters = $parameters->getObjects();
-		$general_buttons = $this->getGeneralButtons($class_name);
+		$general_buttons = $this->getGeneralButtons($class_name, $parameters);
 		if (
 			isset($parameters['constant_remove'])
 			&& (strtoupper($parameters['constant_remove'][0]) === $parameters['constant_remove'][0])

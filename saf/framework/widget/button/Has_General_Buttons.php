@@ -12,7 +12,7 @@ interface Has_General_Buttons
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $object object|string The context object or class name
-	 * @param $parameters string[]  Parameters prepared for the view
+	 * @param $parameters array     Parameters prepared for the view
 	 * @return Button[]
 	 */
 	public function getGeneralButtons($object, $parameters);

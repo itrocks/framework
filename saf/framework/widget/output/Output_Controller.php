@@ -147,7 +147,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $object     object|string object or class name
-	 * @param $parameters string[] parameters
+	 * @param $parameters array parameters
 	 * @return Button[]
 	 */
 	public function getGeneralButtons($object, $parameters)

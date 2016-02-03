@@ -19,7 +19,7 @@ class Edit_Controller extends Output_Controller
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $object     object|string object or class name
-	 * @param $parameters string[] parameters
+	 * @param $parameters array parameters
 	 * @return Button[]
 	 */
 	public function getGeneralButtons($object, $parameters)

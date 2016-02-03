@@ -12,7 +12,7 @@ interface Has_Selection_Buttons
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
 	 * @param $class_name string class name
-	 * @param $parameters string[] parameters
+	 * @param $parameters array parameters
 	 * @return Button[]
 	 */
 	public function getSelectionButtons($class_name, $parameters);
