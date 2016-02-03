@@ -64,7 +64,8 @@ class Session implements Serializable
 	 * Get the object of class $class_name from session
 	 *
 	 * @param $class_name     string
-	 * @param $create_default boolean Create a default object for the class name if does not exist
+	 * @param $create_default boolean|callable Create a default object for the class name if does not
+	 *        exist. Can be callable that creates the default object
 	 * @return object|null
 	 */
 	public function get($class_name, $create_default = false)
@@ -73,14 +74,20 @@ class Session implements Serializable
 			$current = $this->current[$class_name];
 			if (is_array($current)) {
 				$current = $current[1];
-				$this->current[$class_name] = $current = is_numeric($current)
-					? Dao::read($current, $class_name)
-					: unserialize($current);
+				$this->current[$class_name] = $current = (
+					is_numeric($current)
+						? Dao::read($current, $class_name)
+						: unserialize($current)
+				);
 			}
 			return $current;
 		}
 		elseif ($create_default) {
-			return $this->current[$class_name] = Builder::create($class_name);
+			return $this->current[$class_name] = (
+				is_callable($create_default)
+					? call_user_func($create_default)
+					: Builder::create($class_name)
+			);
 		}
 		else {
 			return null;
