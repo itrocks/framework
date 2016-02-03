@@ -132,36 +132,17 @@ class Type
 	{
 		if (!$this->absolute && $this->isClass()) {
 			$class_name = $this->getElementTypeAsString();
-			// class name containing '\' : search for namespace
-			if ($length = strpos($class_name, BS)) {
-				$search = BS . substr($class_name, 0, $length++);
-				foreach ($use as $u) {
-					$bu = BS . $u;
-					if (substr($bu, -$length) === $search) {
-						$class_name = ((strlen($bu) > $length) ? (substr($bu, 1, -$length) . BS) : '')
-							. $class_name;
-					}
-				}
-				if (strpos($class_name, BS) === false) {
-					$class_name = ($namespace ? ($namespace . BS) : '') . $class_name;
+			$search = BS . lParse($class_name, BS);
+			$length = strlen($search);
+			foreach ($use as $u) {
+				if (substr(BS . $u, -$length) === $search) {
+					$found = true;
+					$class_name = $u . (strpos($class_name, BS) ? (BS . substr($class_name, $length)) : '');
+					break;
 				}
 			}
-			// class name without '\' : search for full class name
-			else {
-				$found = false;
-				$search = BS . $class_name;
-				$length = strlen($search);
-				foreach ($use as $u) {
-					$bu = BS . $u;
-					if(substr($bu, -$length) === $search) {
-						$class_name = $u;
-						$found = true;
-						break;
-					}
-				}
-				if (!$found && (strpos($class_name, BS) === false)) {
-					$class_name = ($namespace ? ($namespace . BS) : '') . $class_name;
-				}
+			if (!isset($found)) {
+				$class_name = ($namespace ? ($namespace . BS) : '') . $class_name;
 			}
 			$this->type = $class_name . ($this->isMultiple() ? '[]' : '');
 			$this->absolute = true;
