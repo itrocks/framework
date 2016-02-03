@@ -293,34 +293,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		return $search;
 	}
-	/*
-	public function getSearchValues(Data_List_Settings $list_settings)
-	{
-		$class_name = Builder::className($list_settings->class_name);
-		$search = array_combine($list_settings->properties_path, $list_settings->properties_path);
-		foreach ($list_settings->search as $property_path => $search_value) {
-			$property = new Reflection_Property_Value($class_name, $property_path, $search_value, true);
-			if (isset($search[$property_path])) {
-				if ($property->getType()->isClass() && !$property->getAnnotation('store')->value) {
-					$property->value(Dao::read($search_value, $property->getType()->asString()));
-				}
-				else {
-					$property->value($search_value);
-				}
-				$search[$property_path] = $property;
-			}
-			if ($property->getType()->isDateTime()) {
-				$property->setAnnotationLocal('var')->value = 'string';
-				$search[$property_path] = $property;
-			}
-			elseif ($property->getAnnotation('multiline')->value) {
-				$property->setAnnotationLocal('multiline')->value = false;
-				$search[$property_path] = $property;
-			}
-		}
-		return $search;
-	}
-	*/
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
