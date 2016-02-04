@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Locale;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -71,7 +72,9 @@ class Translations
 			foreach (explode(', ', $translation) as $translation_part) {
 				$text_parts[] = $this->reverse($translation_part, $context, $context_property_path);
 			}
-			$text = new Translation(join(', ', $text_parts), $this->language, $context, $translation);
+			$text = Builder::create(Translation::class,
+				[join(', ', $text_parts), $this->language, $context, $translation]
+			);
 		}
 		$text = isset($text) ? $text->text : $translation;
 		return empty($text) ? $text : (strIsCapitals($translation[0]) ? ucfirsta($text) : $text);
@@ -105,7 +108,7 @@ class Translations
 			else {
 				$str_uri = false;
 			}
-			$search = new Translation($text, $this->language, $context);
+			$search = Builder::create(Translation::class, [$text, $this->language, $context]);
 			$translations = Dao::search($search);
 			foreach ($translations as $translation) if ($translation->text === $text) break;
 			while ($search->context && !isset($translation)) {
@@ -119,9 +122,9 @@ class Translations
 				foreach (explode(', ', $text) as $text_part) {
 					$translation_parts[] = $this->translate($text_part, $context);
 				}
-				$translation = new Translation(
+				$translation = Builder::create(Translation::class, [
 					$text, $this->language, $context, join(', ', $translation_parts)
-				);
+				]);
 			}
 			if (!isset($translation)) {
 				$translation = $search;
