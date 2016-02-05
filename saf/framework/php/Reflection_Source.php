@@ -657,13 +657,26 @@ class Reflection_Source
 	 */
 	public function getOutsideClass($class_name)
 	{
-		$filename = (new ReflectionClass($class_name))->getFileName();
-		// consider vendor classes like internal classes : we don't work with their sources
-		if (strpos($filename, '/vendor/')) {
-			$source = new Reflection_Source(null, $class_name);
+		if (isset(self::$cache[$class_name])) {
+			$source = self::$cache[$class_name];
 		}
 		else {
-			$source = Reflection_Source::ofFile($filename, $class_name);
+			if (!strpos($class_name, BS)) {
+				/** @noinspection PhpUsageOfSilenceOperatorInspection May not exist */
+				@include_once '/usr/share/php/' . str_replace(BS, '_', $class_name);
+			}
+			$filename = (new ReflectionClass($class_name))->getFileName();
+			// consider vendor classes like internal classes : we don't work with their sources
+			if (strpos($filename, '/vendor/')) {
+				$source = new Reflection_Source(null, $class_name);
+			}
+			else {
+				$source = Reflection_Source::ofFile($filename, $class_name);
+			}
+			self::$cache[$class_name] = $source;
+			if (!empty($filename)) {
+				self::$cache[$filename] = $source;
+			}
 		}
 		return $source->getClass($class_name);
 	}

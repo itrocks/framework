@@ -456,7 +456,8 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				if (!class_exists($parent->name, false)) {
 					foreach (array_keys($this->source->requires) as $require) {
 						/** @noinspection PhpIncludeInspection is dynamic */
-						include_once $require;
+						/** @noinspection PhpUsageOfSilenceOperatorInspection Some requires have @ */
+						@include_once $require;
 					}
 				}
 				$this->parent = new Reflection\Reflection_Class($parent->name);
