@@ -1,14 +1,10 @@
 <?php
 namespace SAF\Framework\Email;
 
-use Mail_mime;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Email;
 
-if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail/mime.php')) {
-	@include_once '/usr/share/php/Mail/mime.php';
-}
 include_once __DIR__ . '/../../../vendor/html2text/html2text.php';
 
 /**
@@ -38,9 +34,9 @@ class Encoder
 
 	//-------------------------------------------------------------------------------- addAttachments
 	/**
-	 * @param $mail       Mail_mime
+	 * @param $mail Mime
 	 */
-	protected function addAttachments(Mail_mime $mail)
+	protected function addAttachments(Mime $mail)
 	{
 		foreach ($this->email->attachments as $attachment) {
 			$mail->addAttachment($attachment->temporary_file_name);
@@ -60,8 +56,8 @@ class Encoder
 	{
 		if ($this->email->attachments || strpos($this->email->content, '<body')) {
 
-			/** @var $mail Mail_mime */
-			$mail = Builder::create(Mail_mime::class);
+			/** @var $mail Mime */
+			$mail = Builder::create(Mime::class);
 
 			$body = $this->parseImages($mail, $this->email->content);
 
@@ -90,11 +86,11 @@ class Encoder
 
 	//----------------------------------------------------------------------------------- parseImages
 	/**
-	 * @param $mail   Mail_mime
+	 * @param $mail   Mime
 	 * @param $buffer string
 	 * @return string
 	 */
-	protected function parseImages(Mail_mime $mail, $buffer)
+	protected function parseImages(Mime $mail, $buffer)
 	{
 		$parent = '';
 		$slash_count = substr_count(__DIR__, SL);
@@ -115,12 +111,14 @@ class Encoder
 			preg_match_all($pattern, $buffer, $matches);
 			foreach ($matches[1] as $match) {
 				$mail->addHTMLImage($match);
-				foreach ($mail->_html_images as $key => $image) {
+				$html_images = $mail->getHtmlImages();
+				foreach ($html_images as $key => $image) {
 					if ($image['name'] == $match) {
-						$mail->_html_images[$key]['c_type'] = 'image/' . rLastParse($match, '.');
+						$mail->$html_images[$key]['c_type'] = 'image/' . rLastParse($match, '.');
 						$buffer = str_replace($match, 'cid:' . $image['cid'], $buffer);
 					}
 				}
+				$mail->setHtmlImages($html_images);
 			}
 		}
 		return $buffer;
