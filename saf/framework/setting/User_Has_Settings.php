@@ -1,11 +1,13 @@
 <?php
 namespace SAF\Framework\Setting;
 
+use SAF\Framework\User;
+
 /**
  * For users that have settings
  *
  * @business
- * @extends SAF\Framework\User
+ * @extends User
  * @implements Has_Settings
  */
 trait User_Has_Settings
