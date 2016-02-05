@@ -125,6 +125,12 @@ class Compiler implements ICompiler, Needs_Main
 	{
 		if (self::DEBUG) { echo '<h2>' . $class->name . '</h2>'; flush(); }
 
+		// if source has already been compiled for AOP, then do not compile it again
+		preg_match('|\n\s+//#+\sAOP\n|', $class->source->getSource(), $matches);
+		if ($matches) {
+			return false;
+		}
+
 		$methods    = [];
 		$properties = [];
 
