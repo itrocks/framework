@@ -354,6 +354,7 @@ class Main
 	public function runController($uri, $get = [], $post = [], $files = [], $sub_feature = null)
 	{
 		$uri = new Uri($uri, $get);
+		$uri->controller_name = Builder::className($uri->controller_name);
 		$parameters = clone $uri->parameters;
 		$main_object = $parameters->getMainObject();
 		$controller_name = ($main_object instanceof Set)
