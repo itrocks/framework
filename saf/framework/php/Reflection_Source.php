@@ -663,7 +663,7 @@ class Reflection_Source
 		else {
 			if (!strpos($class_name, BS)) {
 				/** @noinspection PhpUsageOfSilenceOperatorInspection May not exist */
-				@include_once '/usr/share/php/' . str_replace(BS, '_', $class_name);
+				@include_once '/usr/share/php/' . str_replace('_', SL, $class_name) . '.php';
 			}
 			$filename = (new ReflectionClass($class_name))->getFileName();
 			// consider vendor classes like internal classes : we don't work with their sources
