@@ -300,7 +300,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 		$parameters['custom_buttons'] = (new Buttons())->getButtons(
 			'custom ' . $feature, $object, $feature /* , Target::MESSAGES TODO back but do not display output */
 		);
-		$parameters['general_buttons'] = $this->getGeneralButtons(
+		$parameters[self::GENERAL_BUTTONS] = $this->getGeneralButtons(
 			$object, $parameters, $output_settings
 		);
 		return $parameters;

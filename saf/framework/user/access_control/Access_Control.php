@@ -17,6 +17,8 @@ use SAF\Framework\User\Group\Feature;
 use SAF\Framework\User\Group\Has_Groups;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
+use SAF\Framework\Widget\Button\Has_General_Buttons;
+use SAF\Framework\Widget\Button\Has_Selection_Buttons;
 use SAF\Framework\Widget\Menu;
 use SAF\Framework\Widget\Menu\Item;
 
@@ -354,7 +356,9 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function removeButtonsWithNoLink(&$parameters)
 	{
-		foreach (['general_buttons', 'selection_buttons'] as $buttons) {
+		foreach (
+			[Has_General_Buttons::GENERAL_BUTTONS, Has_Selection_Buttons::SELECTION_BUTTONS] as $buttons
+		) {
 			if (isset($parameters[$buttons])) {
 				foreach ($parameters[$buttons] as $key => $button) {
 					if (empty($button->link)) {

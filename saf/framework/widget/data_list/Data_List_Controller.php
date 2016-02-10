@@ -465,14 +465,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$parameters['custom_buttons'] = $buttons->getButtons(
 			'custom list', Names::classToSet($class_name)
 		);
-		$parameters['general_buttons'] = $this->getGeneralButtons(
+		$parameters[self::GENERAL_BUTTONS] = $this->getGeneralButtons(
 			$class_name, $parameters, $list_settings
 		);
-		$parameters['selection_buttons'] = $this->getSelectionButtons(
+		$parameters[self::SELECTION_BUTTONS] = $this->getSelectionButtons(
 			$class_name, $parameters, $list_settings
 		);
 		if (!isset($customized_list_settings[$list_settings->name])) {
-			unset($parameters['general_buttons']['delete']);
+			unset($parameters[self::GENERAL_BUTTONS][Feature::F_DELETE]);
 		}
 		return $parameters;
 	}

@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Controller\Tag;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Tools\Color;
@@ -49,7 +50,7 @@ class Edit_Controller extends Output_Controller
 				'Write',
 				View::link($object, Feature::F_WRITE, null, array_merge($fill_combo, $follows)),
 				Feature::F_WRITE,
-				[new Color(Color::GREEN), Target::MESSAGES, '.submit']
+				[new Color(Color::GREEN), Target::MESSAGES, Tag::SUBMIT]
 			)
 		]);
 	}

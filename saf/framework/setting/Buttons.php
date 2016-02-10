@@ -2,6 +2,7 @@
 namespace SAF\Framework\Setting;
 
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Tag;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
@@ -27,8 +28,8 @@ class Buttons
 			Feature::F_WRITE => new Button(
 				'Save',
 				$link,
-				'custom_save',
-				[$target, '.submit', 'hint' => "Save this view as a $caption"]
+				Feature::F_CUSTOM_SAVE,
+				[$target, Tag::SUBMIT, Button::HINT => "Save this view as a $caption"]
 			),
 		];
 	}
