@@ -32,7 +32,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @var string
 	 */
-	private static $max_date = '2999-12-31 23:59:59';
+	private static $max_date = '2999-12-31 00:00:00';
 
 	//------------------------------------------------------------------------------------- $min_date
 	/**
@@ -68,46 +68,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function __toString()
 	{
 		return $this->toISO();
-	}
-
-	//------------------------------------------------------------------------------ createFromFormat
-	/**
-	 * @param $format   string
-	 * @param $time     string
-	 * @param $timezone DateTimeZone
-	 * @return Date_Time
-	 */
-	public static function createFromFormat($format, $time, $timezone = null)
-	{
-		$dateTime = $timezone
-			? parent::createFromFormat($format, $time, $timezone)
-			: parent::createFromFormat($format, $time);
-		return $timezone
-			? new Date_Time($dateTime->format('Y-m-d H:i:s'), $timezone)
-			: new Date_Time($dateTime->format('Y-m-d H:i:s'));
-	}
-
-	//----------------------------------------------------------------------------------- daysInMonth
-	/**
-	 * Returns the number of days in the given month
-	 *
-	 * @return integer
-	 */
-	public function daysInMonth()
-	{
-		return $this->format('d');
-	}
-
-	//--------------------------------------------------------------------------------------- fromISO
-	/**
-	 * @param $date string
-	 * @return Date_Time
-	 */
-	public static function fromISO($date)
-	{
-		return (!empty($date) && (substr($date, 0, 4) !== '0000'))
-			? new Date_Time($date . substr('2000-01-01 00:00:00', strlen($date)))
-			: new Date_Time(self::$min_date);
 	}
 
 	//------------------------------------------------------------------------------------------- add
@@ -149,6 +109,34 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $this;
 	}
 
+	//------------------------------------------------------------------------------ createFromFormat
+	/**
+	 * @param $format   string
+	 * @param $time     string
+	 * @param $timezone DateTimeZone
+	 * @return Date_Time
+	 */
+	public static function createFromFormat($format, $time, $timezone = null)
+	{
+		$dateTime = $timezone
+			? parent::createFromFormat($format, $time, $timezone)
+			: parent::createFromFormat($format, $time);
+		return $timezone
+			? new Date_Time($dateTime->format('Y-m-d H:i:s'), $timezone)
+			: new Date_Time($dateTime->format('Y-m-d H:i:s'));
+	}
+
+	//----------------------------------------------------------------------------------- daysInMonth
+	/**
+	 * Returns the number of days in the given month
+	 *
+	 * @return integer
+	 */
+	public function daysInMonth()
+	{
+		return $this->format('d');
+	}
+
 	//------------------------------------------------------------------------------------------ diff
 	/**
 	 * @param $datetime2 Date_Time
@@ -173,6 +161,18 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return parent::format($format);
 	}
 
+	//--------------------------------------------------------------------------------------- fromISO
+	/**
+	 * @param $date string
+	 * @return Date_Time
+	 */
+	public static function fromISO($date)
+	{
+		return (!empty($date) && (substr($date, 0, 4) !== '0000'))
+			? new Date_Time($date . substr('2000-01-01 00:00:00', strlen($date)))
+			: new Date_Time(self::$min_date);
+	}
+
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
@@ -182,6 +182,16 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	{
 		$this->fromISO($string);
 		return $this;
+	}
+
+	//-------------------------------------------------------------------------------------------- is
+	/**
+	 * @param $begin_date Date_Time
+	 * @return boolean
+	 */
+	public function is(Date_Time $begin_date)
+	{
+		return $this->toISO() === $begin_date->toISO();
 	}
 
 	//--------------------------------------------------------------------------------------- isAfter
