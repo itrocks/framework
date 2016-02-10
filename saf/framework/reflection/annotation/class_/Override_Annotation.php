@@ -19,17 +19,18 @@ class Override_Annotation extends List_Annotation implements Multiple_Annotation
 	public $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
+	/** @noinspection PhpMissingParentConstructorInspection This does all the wark itself */
 	/**
 	 * @param $value string
 	 */
 	public function __construct($value)
 	{
-		foreach (explode(' @', $value) as $override_annotation) {
+		foreach (explode(SP . AT, $value) as $override_annotation) {
 			if (!isset($this->property_name)) {
 				$this->property_name = $override_annotation;
 			}
 			else {
-				if (substr_count($override_annotation, SP)) {
+				if (strpos($override_annotation, SP)) {
 					list($annotation_name, $annotation_value) = explode(SP, $override_annotation, 2);
 				}
 				else {

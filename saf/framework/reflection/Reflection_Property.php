@@ -231,7 +231,7 @@ class Reflection_Property extends ReflectionProperty
 	public function getDocComment($flags = [T_USE])
 	{
 		if (!isset($this->doc_comment)) {
-			$overridden_property = $this->getOverriddenProperty();
+			$overridden_property  = $this->getOverriddenProperty();
 			$declaring_trait_name = $this->getDeclaringTrait()->name;
 			$this->doc_comment =
 				$this->getOverrideDocComment()

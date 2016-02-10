@@ -12,7 +12,7 @@ use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 /**
  * Known annotations that do not need a specific class
  */
-Parser::$default_annotations = array(
+Parser::$default_annotations = [
 
 	/**
 	 * @after_read afterRead
@@ -325,4 +325,4 @@ Parser::$default_annotations = array(
 	 */
 	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Annotation::class,
 
-);
+];

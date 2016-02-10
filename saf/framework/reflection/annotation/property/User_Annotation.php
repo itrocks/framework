@@ -21,7 +21,8 @@ class User_Annotation extends List_Annotation
 	 * - hidden : the property will be generated into lists or output forms, but with a 'hidden' class
 	 * - hide_empty : the property will not be displayed into output views if value is empty,
 	 *   but will be still visible into edit views
-	 * - invisible : the property will not be displayed into lists or output forms
+	 * - invisible : the property will not be displayed (nor exist) into lists, output forms, property
+	 *   selector, etc. any user template
 	 * - readonly : the property will be displayed but will not be accessible for modification
 	 *
 	 * @todo readonly should be implicitly set when @read_only is enabled
