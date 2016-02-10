@@ -2,15 +2,18 @@
 namespace SAF\Framework\User;
 
 use SAF\Framework\Application;
-use SAF\Framework\Controller\Feature;
+use SAF\Framework\Builder;
+use SAF\Framework\Controller;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Uri;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\User;
+use SAF\Framework\User\Group\Feature;
 use SAF\Framework\User\Group\Has_Groups;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
@@ -186,13 +189,13 @@ class Access_Control implements Configurable, Registerable
 		) {
 			if ($this->isBlank($uri)) {
 				$this->setUri(
-					View::link(Application::class, Feature::F_BLANK), $uri, $get, $post, $files
+					View::link(Application::class, Controller\Feature::F_BLANK), $uri, $get, $post, $files
 				);
 				$accessible = false;
 			}
 			elseif (!$this->exception($uri)) {
 				$this->setUri(
-					View::link(Access_Control::class, Feature::F_DENIED), $uri, $get, $post, $files
+					View::link(Access_Control::class, Controller\Feature::F_DENIED), $uri, $get, $post, $files
 				);
 				$accessible = false;
 			}
@@ -214,12 +217,12 @@ class Access_Control implements Configurable, Registerable
 		if (!User::current()) {
 			if ($this->isBlank($uri)) {
 				$this->setUri(
-					View::link(Application::class, Feature::F_BLANK), $uri, $get, $post, $files
+					View::link(Application::class, Controller\Feature::F_BLANK), $uri, $get, $post, $files
 				);
 			}
 			elseif (!$this->exception($uri)) {
 				$this->setUri(
-					View::link(User::class, Feature::F_LOGIN), $uri, $get, $post, $files
+					View::link(User::class, Controller\Feature::F_LOGIN), $uri, $get, $post, $files
 				);
 			}
 		}
@@ -286,6 +289,41 @@ class Access_Control implements Configurable, Registerable
 		return User::current() ? null : false;
 	}
 
+	//-------------------------------------------------------------------- overridePropertyDocComment
+	/**
+	 * Add object class overriden annotations at the beginning of the doc-comment
+	 *
+	 * @param $result string The doc-comment : we will prepend the access-overridden annotations here
+	 * @param $object Reflection_Property
+	 * @return string The doc-comment with access control override options
+	 */
+	public function overridePropertyDocComment($result, Reflection_Property $object)
+	{
+		static $anti_loop;
+		if (empty($anti_loop)) {
+			$anti_loop = true;
+			$user = User::current();
+			if (isA($user, Has_Groups::class)) {
+				/** @var $user User|Has_Groups */
+				$class_name = $object->getDeclaringClassName();
+				$path = SL . str_replace(BS, SL, $class_name) . SL . Feature::OVERRIDE;
+				if (
+					$user
+					&& !empty($feature = $user->getAccessOptions($path))
+					&& isset($feature[$object->name])
+				) {
+					$annotations = [];
+					foreach ($feature[$object->name] as $annotation_name => $annotation_value) {
+						$annotations[] = '* @' . $annotation_name . SP . $annotation_value;
+					}
+					$result = join(LF, $annotations) . LF . $result;
+				}
+			}
+			$anti_loop = false;
+		}
+		return $result;
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registration code for the plugin
@@ -296,10 +334,16 @@ class Access_Control implements Configurable, Registerable
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod([Main::class, 'runController'], [$this, 'checkAccess']);
+
 		$aop->beforeMethod([Menu::class, 'constructBlock'], [$this, 'menuCheckAccess']);
-		$aop->afterMethod([View::class, 'link'], [$this, 'checkAccessToLink']);
 		$aop->afterMethod([Menu::class, 'constructItem'], [$this, 'checkAccessToMenuItem']);
+
+		$aop->afterMethod(
+			[Reflection_Property::class, 'getOverrideDocComment'], [$this, 'overridePropertyDocComment']
+		);
+
 		$aop->beforeMethod([View::class, 'run'], [$this, 'removeButtonsWithNoLink']);
+		$aop->afterMethod([View::class, 'link'], [$this, 'checkAccessToLink']);
 	}
 
 	//----------------------------------------------------------------------- removeButtonsWithNoLink

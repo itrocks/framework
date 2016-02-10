@@ -3,6 +3,8 @@ namespace SAF\Framework\User\Group;
 
 use SAF\Framework\Controller;
 use SAF\Framework\Locale\Loc;
+use SAF\Framework\Reflection\Annotation\Property\Feature_Annotation;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 
@@ -32,6 +34,8 @@ class Feature
 		Controller\Feature::F_LIST,
 		Controller\Feature::F_OUTPUT
 	];
+
+	const OVERRIDE = 'override';
 
 	//------------------------------------------------------------------------------------- $features
 	/**
@@ -145,32 +149,6 @@ class Feature
 		$this->getName();
 	}
 
-	//---------------------------------------------------------------------------------- getClassName
-	/**
-	 * Gets the full name of the class, read into the path
-	 *
-	 * @example 'A/Module/Namespace/A_Class/featureName' :
-	 * the class name is 'A/Module/Namespace/A_Class';
-	 * @return string
-	 */
-	private function getClassName()
-	{
-		return Names::pathToClass(lLastParse($this->path, SL));
-	}
-
-	//-------------------------------------------------------------------------------- getFeatureName
-	/**
-	 * Gets the name of the end-user feature, read into the path, without the name of the class
-	 *
-	 * @example 'A/Module/Namespace/A_Class/featureName' :
-	 * the feature name is 'featureName';
-	 * @return string
-	 */
-	private function getFeatureName()
-	{
-		return rLastParse($this->path, SL);
-	}
-
 	//-------------------------------------------------------------------------------- getAllFeatures
 	/**
 	 * Gets all features from $this->includes + $this->features
@@ -186,6 +164,43 @@ class Feature
 		return array_merge($features, $this->features);
 	}
 
+	//---------------------------------------------------------------------------------- getClassName
+	/**
+	 * Gets the full name of the class, read into the path
+	 *
+	 * @example 'A/Module/Namespace/A_Class/featureName' :
+	 * the class name is 'A/Module/Namespace/A_Class';
+	 * @return string
+	 */
+	private function getClassName()
+	{
+		return Names::pathToClass($this->getClassPath());
+	}
+
+	//---------------------------------------------------------------------------------- getClassPath
+	/**
+	 * Gets the Full/Class_Path from the feature path
+	 *
+	 * @return string
+	 */
+	private function getClassPath()
+	{
+		return lLastParse($this->path, SL);
+	}
+
+	//-------------------------------------------------------------------------------- getFeatureName
+	/**
+	 * Gets the name of the end-user feature, read into the path, without the name of the class
+	 *
+	 * @example 'A/Module/Namespace/A_Class/featureName' :
+	 * the feature name is 'featureName';
+	 * @return string
+	 */
+	private function getFeatureName()
+	{
+		return rLastParse($this->path, SL);
+	}
+
 	//----------------------------------------------------------------------------------- getFeatures
 	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
@@ -198,7 +213,10 @@ class Feature
 	{
 		if (!isset($this->features)) {
 			$class_path = str_replace(BS, SL, $this->getClassName());
-			$features = $this->yaml ? $this->yaml->getFeatures($class_path) : [];
+			$features = array_merge(
+				$this->yaml ? $this->yaml->getFeatures($class_path) : [],
+				$this->getPropertiesFeatures()
+			);
 			$this->features = $features;
 		}
 		return $this->features;
@@ -281,6 +299,40 @@ class Feature
 			}
 		}
 		return $this->name;
+	}
+
+	//------------------------------------------------------------------------- getPropertiesFeatures
+	/**
+	 * Scan class properties for @feature with the same name, and add low-level feature 'override'
+	 *
+	 * @return Low_Level_Feature[]
+	 */
+	private function getPropertiesFeatures()
+	{
+		/** @var $features Low_Level_Feature[] */
+		$features = [];
+		$class = new Reflection_Class($this->getClassName());
+		$feature_name = $this->getFeatureName();
+		$feature_path = $this->getClassPath() . SL . self::OVERRIDE;
+		foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
+			/** @var $annotations Feature_Annotation[] */
+			$annotations = $property->getAnnotations(Feature_Annotation::ANNOTATION);
+			foreach ($annotations as $annotation) {
+				if ($annotation->getFeatureName() === $feature_name) {
+					$values  = $annotation->values();
+					$options = [$property->name => $values];
+					if (isset($features[$feature_path])) {
+						$features[$feature_path]->options = arrayMergeRecursive(
+							$features[$feature_path]->options, $options
+						);
+					}
+					else {
+						$features[$feature_path] = new Low_Level_Feature($feature_path, $options);
+					}
+				}
+			}
+		}
+		return $features;
 	}
 
 	//--------------------------------------------------------------------------------------- getYaml

@@ -3,6 +3,7 @@ namespace SAF\Framework\User\Group;
 
 use SAF\Framework\Application;
 use SAF\Framework\Dao;
+use SAF\Framework\Reflection\Annotation\Property\Feature_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Names;
 
@@ -15,24 +16,6 @@ use SAF\Framework\Tools\Names;
 class Feature_Cache
 {
 
-	//-------------------------------------------------------------------------------- getClassHeader
-	/**
-	 * Optimized file read : gets only the top class doc-comment and class definition
-	 *
-	 * @param $filename string
-	 * @return string
-	 */
-	private function getClassHeader($filename)
-	{
-		$file = fopen($filename, 'r');
-		$buffer = '';
-		do {
-			$buffer .= fread($file, 512);
-		} while ((!strpos($buffer, LF . '{') || !strpos($buffer, LF . SP . '*/')) && !feof($file));
-		fclose($file);
-		return $buffer;
-	}
-
 	//-------------------------------------------------------------------------------- isFeatureClass
 	/**
 	 * Returns true if the file class header buffer reveals a @feature class
@@ -44,7 +27,7 @@ class Feature_Cache
 	 */
 	private function isFeatureClass($buffer)
 	{
-		return strpos($buffer, LF . SP . '* @feature');
+		return strpos($buffer, '{') && (strpos($buffer, '* @feature') ? true : false);
 	}
 
 	//----------------------------------------------------------------------------------------- reset
@@ -54,32 +37,6 @@ class Feature_Cache
 	public function reset()
 	{
 		$this->saveToCache($this->scanFeatures());
-	}
-
-	//---------------------------------------------------------------------------------- scanFeatures
-	/**
-	 * Scan the application source files for feature classes that may give us final user features
-	 *
-	 * return Feature[]
-	 */
-	public function scanFeatures()
-	{
-		$application = Application::current();
-		$files = $application->include_path->getSourceFiles();
-		/** @var $php_files_features  Feature[] */
-		/** @var $yaml_files_features Feature[] */
-		$php_files_features  = [];
-		$yaml_files_features = [];
-		foreach ($files as $filename) {
-			if (substr($filename, -5) === '.yaml') {
-				if (substr($filename, 0, 34) !== 'saf/framework/user/group/defaults/')
-				$yaml_files_features = array_merge($yaml_files_features, $this->scanYamlFile($filename));
-			}
-			elseif (substr($filename, -4) === '.php') {
-				$php_files_features = array_merge($php_files_features, $this->scanPhpFile($filename));
-			}
-		}
-		return array_merge($php_files_features, $yaml_files_features);
 	}
 
 	//----------------------------------------------------------------------------------- saveToCache
@@ -157,6 +114,61 @@ class Feature_Cache
 			}
 		}
 
+		// scan properties
+		foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
+			/** @var $annotations Feature_Annotation[] */
+			$annotations = $property->getListAnnotations(Feature_Annotation::ANNOTATION);
+			foreach ($annotations as $annotation) {
+				$feature = new Feature($annotation->path);
+				$options = $annotation->values();
+				$feature->features = ['override' => new Low_Level_Feature('override', $options)];
+				$features[$annotation->path] = $feature;
+			}
+		}
+
+		return $features;
+	}
+
+	//---------------------------------------------------------------------------------- scanFeatures
+	/**
+	 * Scan the application source files for feature classes that may give us final user features
+	 *
+	 * return Feature[]
+	 */
+	public function scanFeatures()
+	{
+		$application = Application::current();
+		$files = $application->include_path->getSourceFiles();
+		/** @var $php_files_features  Feature[] */
+		/** @var $yaml_files_features Feature[] */
+		$php_files_features  = [];
+		$yaml_files_features = [];
+		foreach ($files as $filename) {
+			if (substr($filename, -5) === '.yaml') {
+				if (substr($filename, 0, 34) !== 'saf/framework/user/group/defaults/')
+					$yaml_files_features = array_merge($yaml_files_features, $this->scanYamlFile($filename));
+			}
+			elseif (substr($filename, -4) === '.php') {
+				$php_files_features = array_merge($php_files_features, $this->scanPhpFile($filename));
+			}
+		}
+		return array_merge($php_files_features, $yaml_files_features);
+	}
+
+	//----------------------------------------------------------------------------------- scanPhpFile
+	/**
+	 * @param $filename string
+	 * @return Feature[]
+	 */
+	private function scanPhpFile($filename)
+	{
+		/** @var $features Feature[] */
+		$features = [];
+		$buffer = file_get_contents($filename);
+		if ($this->isFeatureClass($buffer)) {
+			$class_name = Names::fileToClass($filename);
+			$features = $this->scanClass($class_name);
+		}
 		return $features;
 	}
 
@@ -172,23 +184,6 @@ class Feature_Cache
 		foreach (Yaml::fromFile($filename) as $path => $yaml) {
 			$features[$path] = new Feature($path);
 			$features[$path]->yaml = $yaml;
-		}
-		return $features;
-	}
-
-	//----------------------------------------------------------------------------------- scanPhpFile
-	/**
-	 * @param $filename string
-	 * @return Feature[]
-	 */
-	private function scanPhpFile($filename)
-	{
-		/** @var $features Feature[] */
-		$features = [];
-		$buffer = $this->getClassHeader($filename);
-		if ($this->isFeatureClass($buffer)) {
-			$class_name = Names::fileToClass($filename);
-			$features = $this->scanClass($class_name);
 		}
 		return $features;
 	}
