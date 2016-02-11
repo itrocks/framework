@@ -282,6 +282,9 @@ class Compiler implements
 	 */
 	private function compileSource(Reflection_Source $source, $compilers, $cache_dir, $first_group)
 	{
+		if (isset($GLOBALS['D'])) {
+			echo 'Compile source ' . $source->file_name . ' / ' . $source->getFirstClassName() . SP . BR . LF;
+		}
 		foreach ($compilers as $compiler) {
 			$compiler->compile($source, $this);
 		}
