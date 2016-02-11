@@ -4,6 +4,7 @@ namespace SAF\Framework\Dao\Sql;
 //------------------------------------------------------------------------------------------ Select
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Func\Dao_Function;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Mapper\Object_Builder_Array;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -288,7 +289,7 @@ class Select
 	 */
 	private function objectToProperties($object)
 	{
-		if (is_object($object)) {
+		if (is_object($object) && !($object instanceof Dao_Function)) {
 			$id = $this->link->getObjectIdentifier($object);
 			$object = isset($id) ? ['id' => $id] : get_object_vars($object);
 		}

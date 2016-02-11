@@ -59,6 +59,12 @@ interface List_Data extends Iterator
 	 */
 	public function getRow($row_index);
 
+	//--------------------------------------------------------------------------------------- getRows
+	/**
+	 * @return List_Row[]
+	 */
+	public function getRows();
+
 	//-------------------------------------------------------------------------------------- getValue
 	/**
 	 * Gets displayable value from a list data cell

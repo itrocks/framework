@@ -10,6 +10,14 @@ use SAF\Framework\Sql\Value;
 class In implements Where
 {
 
+	//--------------------------------------------------------------------------------------- $not_in
+	/**
+	 * If true, then this is a 'NOT IN' instead of a 'IN'
+	 *
+	 * @var boolean
+	 */
+	public $not_in;
+
 	//--------------------------------------------------------------------------------------- $values
 	/**
 	 * @var mixed[]
@@ -19,10 +27,12 @@ class In implements Where
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $values mixed[]
+	 * @param $not_in boolean
 	 */
-	public function __construct($values = null)
+	public function __construct($values = null, $not_in = false)
 	{
 		if (isset($values)) $this->values = $values;
+		if (isset($not_in)) $this->not_in = $not_in;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -38,7 +48,8 @@ class In implements Where
 	{
 		$sql = '';
 		if ($this->values) {
-			$sql = $builder->buildColumn($property_path, $prefix) . ' IN (';
+			$sql = $builder->buildColumn($property_path, $prefix)
+				. ($this->not_in ? ' NOT' : '') . ' IN (';
 			$first = true;
 			foreach ($this->values as $value) {
 				if ($first) $first = false; else $sql .= ', ';

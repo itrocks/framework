@@ -5,15 +5,19 @@ use SAF\Framework\Builder;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Option\Count;
 use SAF\Framework\Dao\Option\Group_By;
 use SAF\Framework\Dao\Option\Limit;
 use SAF\Framework\Dao;
+use SAF\Framework\History;
 use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Printer\Model;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Setting\Buttons;
 use SAF\Framework\Setting\Custom_Settings;
@@ -511,14 +515,76 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if ($group_by = $this->groupBy($list_settings->properties_path)) {
 			$options[] = $group_by;
 		}
-		$data = Dao::select($class_name, $list_settings->properties_path, $search, $options);
+		list($properties_path, $search) = $this->removeInvisibleProperties(
+			$class_name, $list_settings->properties_path, $search
+		);
+		$data = Dao::select($class_name, $properties_path, $search, $options);
 		if (($data->length() < $limit->count) && ($limit->from > 1)) {
 			$limit->from = max(1, $count->count - $limit->count + 1);
 			$list_settings->start_display_line_number = $limit->from;
 			$list_settings->save();
-			$data = Dao::select($class_name, $list_settings->properties_path, $search, $options);
+			$data = Dao::select($class_name, $properties_path, $search, $options);
 		}
+		// TODO LOW the following patch line is to avoid others calculation to use invisible properties
+		$list_settings->properties_path = $properties_path;
 		return $data;
+	}
+
+	//--------------------------------------------------------------------- removeInvisibleProperties
+	/**
+	 * @param $class_name      string
+	 * @param $properties_path string[] properties path that can include invisible properties
+	 * @param $search          array search where to add Has_History criterions
+	 * @return string[] properties path without the invisible properties
+	 */
+	protected function removeInvisibleProperties($class_name, $properties_path, $search)
+	{
+		// remove properties directly used as columns
+		foreach ($properties_path as $key => $property_path) {
+			$property = new Reflection_Property($class_name, $property_path);
+			$annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
+			if ($annotation->has(User_Annotation::INVISIBLE)) {
+				unset($properties_path[$key]);
+			}
+			$history_class_name = $property->getFinalClassName();
+			if (isA($history_class_name, History::class)) {
+				$ignore_invisible_properties[$history_class_name] = lLastParse($property_path, DOT);
+			}
+		}
+		// remove properties read from an History table
+		// TODO this should be a specific when we use history. If the app does not use history, this
+		// should not execute. Create an AOP advice.
+		if (isset($ignore_invisible_properties)) {
+			foreach ($ignore_invisible_properties as $history_class_name => $history_path) {
+				$property_names = Dao::select(
+					$history_class_name, ['property_name'], [], [Dao::groupBy('property_name')]
+				)->getRows();
+				foreach ($property_names as $property_name) {
+					$property_name = $property_name->getValue('property_name');
+					$property      = new Reflection_Property($class_name, $property_name);
+					$annotation    = $property->getListAnnotation(User_Annotation::ANNOTATION);
+					if ($annotation->has(User_Annotation::INVISIBLE)) {
+						$all_but[] = $property_name;
+					}
+				}
+				if (isset($all_but)) {
+					$history_search[$history_path . DOT . 'property_name'] = Func::notIn($all_but);
+					unset($all_but);
+				}
+			}
+			if (isset($history_search)) {
+				if ($search) {
+					$search = Func::andOp(array_merge([$search], $history_search));
+				}
+				elseif (count($history_search) > 1) {
+					$search = Func::andOp($history_search);
+				}
+				else {
+					$search = $history_search;
+				}
+			}
+		}
+		return [array_values($properties_path), $search];
 	}
 
 	//------------------------------------------------------------------------------------------- run

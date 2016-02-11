@@ -191,6 +191,16 @@ abstract class Func
 		return new Comparison(Comparison::NOT_EQUAL, $value);
 	}
 
+	//----------------------------------------------------------------------------------------- notIn
+	/**
+	 * @param $values mixed[]
+	 * @return In
+	 */
+	public static function notIn($values)
+	{
+		return new In($values, true);
+	}
+
 	//--------------------------------------------------------------------------------------- notLike
 	/**
 	 * @param $value mixed

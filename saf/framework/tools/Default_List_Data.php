@@ -85,6 +85,15 @@ class Default_List_Data extends Set implements List_Data
 		return $this->get($row_index);
 	}
 
+	//--------------------------------------------------------------------------------------- getRows
+	/**
+	 * @return List_Row[]
+	 */
+	public function getRows()
+	{
+		return $this->elements;
+	}
+
 	//-------------------------------------------------------------------------------------- getValue
 	/**
 	 * @param $row_index integer
