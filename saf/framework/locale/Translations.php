@@ -48,8 +48,15 @@ class Translations
 	 */
 	public function reverse($translation, $context = '', $context_property_path = '')
 	{
-		if (empty($translation)) {
+		if (!trim($translation) || is_numeric($translation)) {
 			return $translation;
+		}
+		elseif (strpos($translation, DOT) !== false) {
+			$text = [];
+			foreach (explode(DOT, $translation) as $sentence) {
+				$text[] = $this->reverse($sentence, $context, $context_property_path);
+			}
+			return join(DOT, $text);
 		}
 		$context_property = str_replace('*', '', $context_property_path);
 		/** @var $search Translation */
