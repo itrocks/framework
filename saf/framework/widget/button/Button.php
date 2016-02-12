@@ -59,6 +59,16 @@ class Button
 	 */
 	public $color;
 
+	//----------------------------------------------------------------------------------- $conditions
+	/**
+	 * The button will be displayed only if these conditions are ok on the context object
+	 *
+	 * @max_length 60000
+	 * @multiline
+	 * @var string
+	 */
+	public $conditions;
+
 	//-------------------------------------------------------------------------------------- $feature
 	/**
 	 * Button feature
@@ -166,6 +176,18 @@ class Button
 	public function __toString()
 	{
 		return strval($this->caption);
+	}
+
+	//----------------------------------------------------------------------------- conditionsApplyTo
+	/**
+	 * Returns true if the conditions apply to the context object
+	 *
+	 * @param $object object
+	 * @return boolean
+	 */
+	public function conditionsApplyTo($object)
+	{
+		return (new Code($this->conditions))->execute($object, true);
 	}
 
 	//--------------------------------------------------------------------------------------- getLink

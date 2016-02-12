@@ -32,6 +32,7 @@ class Output_Settings extends Custom_Settings
 	 * The returned boolean value will tell if the form must be available or not for the object.
 	 *
 	 * @max_length 60000
+	 * @multiline
 	 * @var string
 	 */
 	public $conditions;

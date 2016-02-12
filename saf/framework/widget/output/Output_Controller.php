@@ -198,6 +198,13 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 			$buttons = $settings->actions;
 		}
 
+		// remove buttons whose conditions do not apply
+		foreach ($buttons as $key => $button) {
+			if (!$button->conditionsApplyTo($object)) {
+				unset($buttons[$key]);
+			}
+		}
+
 		return $buttons;
 	}
 

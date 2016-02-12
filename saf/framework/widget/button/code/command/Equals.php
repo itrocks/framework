@@ -54,7 +54,7 @@ class Equals implements Command
 				$value = substr($this->value, 1, -1);
 			}
 			// right operand is a numeric constant
-			elseif (is_numeric($this->value)) {
+			elseif (is_numeric($this->value) || is_bool($this->value)) {
 				$value = $this->value;
 			}
 			// right operand is a property path : get its value

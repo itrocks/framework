@@ -30,6 +30,9 @@ class Parser
 				return new Assign(trim($property_name), trim($value));
 			}
 		}
+		elseif ($source && $condition) {
+			return new Equals(trim($source), true);
+		}
 		return null;
 	}
 

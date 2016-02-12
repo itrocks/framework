@@ -22,7 +22,7 @@ class Edit_Controller extends Edit\Edit_Controller
 	 */
 	protected function getPropertiesList($class_name)
 	{
-		return ['caption', 'class', 'feature', 'target', 'hint', 'code'];
+		return ['caption', 'class', 'feature', 'target', 'hint', 'conditions', 'code'];
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
