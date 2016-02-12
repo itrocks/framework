@@ -39,20 +39,22 @@ class Edit_Controller extends Output_Controller
 		$fill_combo = isset($parameters['fill_combo'])
 			? ['fill_combo' => $parameters['fill_combo']]
 			: [];
-		return array_merge($buttons, [
-			Feature::F_CLOSE => new Button(
-				'Close',
-				$close_link,
-				Feature::F_CLOSE,
-				[new Color(Feature::F_CLOSE), Target::MAIN]
-			),
-			Feature::F_WRITE => new Button(
-				'Write',
-				View::link($object, Feature::F_WRITE, null, array_merge($fill_combo, $follows)),
-				Feature::F_WRITE,
-				[new Color(Color::GREEN), Target::MESSAGES, Tag::SUBMIT]
-			)
-		]);
+		return ($settings && $settings->actions)
+			? $buttons
+			: array_merge([
+				Feature::F_CLOSE => new Button(
+					'Close',
+					$close_link,
+					Feature::F_CLOSE,
+					[new Color(Feature::F_CLOSE), Target::MAIN]
+				),
+				Feature::F_WRITE => new Button(
+					'Write',
+					View::link($object, Feature::F_WRITE, null, array_merge($fill_combo, $follows)),
+					Feature::F_WRITE,
+					[new Color(Color::GREEN), Target::MESSAGES, Tag::SUBMIT]
+				)
+			]);
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
