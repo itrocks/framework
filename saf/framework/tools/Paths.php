@@ -76,7 +76,7 @@ abstract class Paths
 	 */
 	public static function getUrl($object = null)
 	{
-		return (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://'
+		return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http') . '://'
 			. $_SERVER['SERVER_NAME']
 			. Paths::$uri_base
 			. (isset($object) ? (SL . Names::classToUri($object)) : '');
