@@ -20,10 +20,11 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 class Store_Annotation extends Annotation implements Property_Context_Annotation
 {
 
-	const FALSE  = 'false';
-	const GZ     = 'gz';
-	const HEX    = 'hex';
-	const STRING = 'string';
+	const ANNOTATION = 'store';
+	const FALSE      = 'false';
+	const GZ         = 'gz';
+	const HEX        = 'hex';
+	const STRING     = 'string';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

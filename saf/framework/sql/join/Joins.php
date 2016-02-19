@@ -4,6 +4,7 @@ namespace SAF\Framework\Sql\Join;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -358,7 +359,10 @@ class Joins
 				// knowing anything about the specific
 				$foreign_class_name = $foreign_type->asString();
 			}
-			elseif (!$foreign_type->isBasic() && !$master_property->getAnnotation('store')->value) {
+			elseif (
+				!$foreign_type->isBasic()
+				&& !$master_property->getAnnotation(Store_Annotation::ANNOTATION)->value
+			) {
 				$join->mode = $master_property->getAnnotation('mandatory')->value
 					? Join::INNER
 					: Join::LEFT;

@@ -82,7 +82,7 @@ trait Column_Builder_Property
 		return (
 			$type->isBasic()
 			|| ($type->isMultiple() && $type->getElementType()->isString())
-			|| $property->getAnnotation('store')->value
+			|| $property->getAnnotation(Store_Annotation::ANNOTATION)->value
 		)
 			? $property->getAnnotation('storage')->value
 			: ('id_' . $property->getAnnotation('storage')->value);
@@ -110,7 +110,10 @@ trait Column_Builder_Property
 	private static function propertyTypeToMysql(Reflection_Property $property)
 	{
 		$property_type = $property->getType();
-		if ($property_type->isBasic() || $property->getAnnotation('store')->value) {
+		if (
+			$property_type->isBasic()
+			|| $property->getAnnotation(Store_Annotation::ANNOTATION)->value
+		) {
 			if ($property_type->hasSize()) {
 				/** @var integer $max_length */
 				$max_length = $property->getAnnotation('max_length')->value;
@@ -155,13 +158,15 @@ trait Column_Builder_Property
 				}
 				else {
 					$values = self::propertyValues($property);
-					if ($values && !$property->getAnnotation('store')->value) {
+					if ($values && !$property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
 						if (!isset($values[''])) {
 							$values[''] = '';
 						}
 						return 'enum(' . Q . join(Q . ',' . Q, $values) . Q . ')';
 					}
-					if ($property->getAnnotation('store')->value === Store_Annotation::GZ) {
+					if (
+						$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::GZ
+					) {
 						return ($max_length <= 255) ? 'tinyblob' : (
 							($max_length <= 65535)    ? 'blob' : (
 							($max_length <= 16777215) ? 'mediumblob' :

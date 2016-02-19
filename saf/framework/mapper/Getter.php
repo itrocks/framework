@@ -196,8 +196,10 @@ abstract class Getter
 				}
 			}
 			if (isset($stored)) {
-				if (isset($property) && $property->getAnnotation('store')->value) {
-					if ($property->getAnnotation('store')->value === Store_Annotation::GZ) {
+				if (isset($property) && $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
+					if (
+						$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::GZ
+					) {
 						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
 						$inflated = @gzinflate($stored);
 						if ($inflated !== false) {

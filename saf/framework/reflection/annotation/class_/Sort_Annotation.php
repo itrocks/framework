@@ -38,8 +38,8 @@ class Sort_Annotation extends List_Annotation implements Class_Context_Annotatio
 						&& (
 							!$property->getAnnotation('link')->value
 							|| (
-								$property->getAnnotation('store')->value
-								&& ($property->getAnnotation('store')->value !== Store_Annotation::FALSE)
+								($store = $property->getAnnotation(Store_Annotation::ANNOTATION)->value)
+								&& ($store !== Store_Annotation::FALSE)
 							)
 						)
 					) {

@@ -84,12 +84,15 @@ class Table_Builder_Class
 					if (
 						($type->isMultipleString() || !$type->isMultiple())
 						&& !$property->isStatic()
-						&& ($property->getAnnotation('store')->value !== Store_Annotation::FALSE)
+						&& (
+							$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+							!== Store_Annotation::FALSE
+						)
 					) {
 						$table->addColumn(Column::buildProperty($property));
 						if (
 							($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
-							&& !$property->getAnnotation('store')->value
+							&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
 						) {
 							$class_name = $property->getType()->asString();
 							$this->dependencies_context[$class_name] = $class_name;

@@ -88,7 +88,9 @@ abstract class Writer
 			$type = $property->getType();
 			if (
 				(!$type->isClass() || !isA($type->getElementTypeAsString(), History::class))
-				&& ($property->getAnnotation('store')->value !== Store_Annotation::FALSE)
+				&& (
+					$property->getAnnotation(Store_Annotation::ANNOTATION)->value !== Store_Annotation::FALSE
+				)
 			) {
 				$old_value = $property->getValue($before);
 				$new_value = $property->getValue($after);

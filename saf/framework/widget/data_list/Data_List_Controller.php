@@ -14,6 +14,7 @@ use SAF\Framework\History;
 use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Printer\Model;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -286,7 +287,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		foreach ($list_settings->search as $property_path => $search_value) {
 			if (isset($search[$property_path])) {
 				$property = new Reflection_Property_Value($class_name, $property_path, $search_value, true);
-				if ($property->getType()->isClass() && !$property->getAnnotation('store')->value) {
+				if (
+					$property->getType()->isClass()
+					&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+				) {
 					$property->value(Dao::read($search_value, $property->getType()->asString()));
 				}
 				else {
