@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\Data_Link;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Reflection\Link_Class;
 
@@ -74,13 +75,21 @@ abstract class Identifier_Map extends Data_Link
 	 *
 	 * @param $object1 object
 	 * @param $object2 object
+	 * @param $strict boolean if true, will consider a @link object and a non-@link object as different
 	 * @return boolean
 	 */
-	public function is($object1, $object2)
+	public function is($object1, $object2, $strict = false)
 	{
-		return $this->getObjectIdentifier($object1)
-			&& ($this->getObjectIdentifier($object1) === $this->getObjectIdentifier($object2))
-			&& (is_a($object1, get_class($object2)) || is_a($object2, get_class($object1)));
+		$result = $this->getObjectIdentifier($object1)
+			&& (
+				$this->getObjectIdentifier($object1, $strict ? null : 'id')
+				=== $this->getObjectIdentifier($object2, $strict ? null : 'id')
+			)
+			&& (
+				is_a($object1, Builder::current()->sourceClassName(get_class($object2)))
+				|| is_a($object2, Builder::current()->sourceClassName(get_class($object1)))
+			);
+		return $result;
 	}
 
 	//--------------------------------------------------------------------------------------- replace
