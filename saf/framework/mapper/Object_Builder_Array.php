@@ -152,6 +152,9 @@ class Object_Builder_Array
 	private function buildBasicValue(Reflection_Property $property, $value)
 	{
 		if (!is_null($value) || !$property->getAnnotation('null')->value) {
+			if (is_string($value)) {
+				$value = trim($value);
+			}
 			switch ($property->getType()->asString()) {
 				case Type::BOOLEAN:
 					$value = !(empty($value) || ($value === 'false'));
@@ -394,7 +397,7 @@ class Object_Builder_Array
 			elseif (isset($value) && ($property->getAnnotation('output')->value == 'string')) {
 				/** @var $object_value Stringable */
 				$object_value = Builder::create($property->getType()->asString());
-				$object_value->fromString($value);
+				$object_value->fromString(trim($value));
 				$value = $object_value;
 			}
 		}
