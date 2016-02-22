@@ -767,6 +767,24 @@ class Functions
 		return $template->getObject();
 	}
 
+	//--------------------------------------------------------------------------------------- getVoid
+	/**
+	 * Returns true if the object is void ie if its strval() has no length
+	 *
+	 * A value is void if :
+	 * - null
+	 * - empty string
+	 *
+	 * It is not void if its numeric value is 0 or 0.00
+	 *
+	 * @param $template Template
+	 * @return boolean
+	 */
+	public function getVoid(Template $template)
+	{
+		return !strlen(reset($template->objects));
+	}
+
 	//-------------------------------------------------------------------------------------- getValue
 	/**
 	 * Returns the current value of the current element of the currently read array
