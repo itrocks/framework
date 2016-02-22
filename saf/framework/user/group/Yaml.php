@@ -128,20 +128,20 @@ class Yaml
 	public function fileMatches($path)
 	{
 		$default_path = lLastParse($path, SL);
-		foreach ($this->data as $path => $feature_data) {
-			if (is_string($feature_data) && ($path === self::PATH)) {
+		foreach ($this->data as $yaml_path => $feature_data) {
+			if (is_string($feature_data) && ($yaml_path === self::PATH)) {
 				$default_path = str_replace(BS, SL, $feature_data);
 			}
-			elseif ($path === self::FEATURES) {
+			elseif ($yaml_path === self::FEATURES) {
 				$this->extendYaml();
 				return true;
 			}
 			elseif (is_array($feature_data)) {
-				$path = str_replace(BS, SL, $path);
-				if (!empty($path) && (strpos($path, SL) === false)) {
-					$path = $default_path . SL . $path;
+				$yaml_path = str_replace(BS, SL, $yaml_path);
+				if (!empty($yaml_path) && (strpos($yaml_path, SL) === false)) {
+					$yaml_path = $default_path . SL . $yaml_path;
 				}
-				if ($path === $path) {
+				if ($yaml_path === $path) {
 					$this->data = $feature_data;
 					$this->extendYaml();
 					return true;
