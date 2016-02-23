@@ -12,11 +12,11 @@ use SAF\Framework\Plugin\Registerable;
 class Logger implements Registerable
 {
 
-	//------------------------------------------------------------------------------------- $antiloop
+	//------------------------------------------------------------------------------------ $anti_loop
 	/**
 	 * @var integer
 	 */
-	private $antiloop = 0;
+	private $anti_loop = 0;
 
 	//------------------------------------------------------------------------------------ $log_entry
 	/**
@@ -46,11 +46,11 @@ class Logger implements Registerable
 	 */
 	public function start($uri, $get, $post, $files)
 	{
-		if (!$this->antiloop) {
+		if (!$this->anti_loop) {
 			$this->log_entry = new Entry($uri, $get, $post, $files);
 			Dao::write($this->log_entry);
 		}
-		$this->antiloop++;
+		$this->anti_loop++;
 	}
 
 	//------------------------------------------------------------------------------------------ stop
@@ -59,8 +59,8 @@ class Logger implements Registerable
 	 */
 	public function stop()
 	{
-		$this->antiloop--;
-		if (!$this->antiloop) {
+		$this->anti_loop--;
+		if (!$this->anti_loop) {
 			$this->log_entry->stop();
 			Dao::write($this->log_entry);
 		}

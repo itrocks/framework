@@ -108,10 +108,21 @@ class Entry
 		if (!isset($this->session_id)) {
 			$this->session_id = session_id();
 		}
-		if (isset($arguments) && !isset($this->arguments)) $this->arguments = $this->serialize($arguments);
-		if (isset($uri)       && !isset($this->uri))       $this->uri       = $uri;
-		if (isset($files)     && !isset($this->files))     $this->files     = $this->serialize($files);
-		if (isset($form)      && !isset($this->form))      $this->form      = $this->serialize($form);
+		if (isset($arguments) && !isset($this->arguments)) {
+			$this->arguments = $this->serialize($arguments);
+		}
+		if (isset($uri) && !isset($this->uri)) {
+			$this->uri = $uri;
+		}
+		if (isset($files) && !isset($this->files)) {
+			$this->files = $this->serialize($files);
+		}
+		if (isset($form) && !isset($this->form)) {
+			if (isset($form['password'])) {
+				$form['password'] = '***';
+			}
+			$this->form = $this->serialize($form);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- serialize
