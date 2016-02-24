@@ -40,6 +40,23 @@ function classTree($object, $classes = true, $traits = true, $interfaces = true,
 	return $tree;
 }
 
+//-------------------------------------------------------------------------------------------- diff
+/**
+ * Returns 0 if $v1 === $v2, -1 if $v1 < $v2, 1 if $v1 > $v2 : use it for smaller uasort() callbacks
+ *
+ * @param $v1     mixed
+ * @param $v2     mixed
+ * @param $strict boolean true for strict comparison (type must be the same), else false
+ * @return integer -1, 0 or 1
+ */
+function cmp($v1, $v2, $strict = true)
+{
+	if ($strict ? ($v1 === $v2) : ($v1 == $v2)) {
+		return 0;
+	}
+	return ($v1 < $v2) ? -1 : 1;
+}
+
 //--------------------------------------------------------------------------------------------- isA
 /**
  * Returns true if an object / class /interface / trait is a class / interface / trait
