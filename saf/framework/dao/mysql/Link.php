@@ -983,9 +983,20 @@ class Link extends Dao\Sql\Link
 										$object->$id_column_name = $this->getObjectIdentifier($value, $id_value);
 										if (empty($object->$id_column_name)) {
 											Getter::$ignore = $aop_getter_ignore;
-											$object->$id_column_name = $this->getObjectIdentifier(
-												$this->write($value), $id_value
-											);
+											if (
+												!isset($value) || isA($element_type->asString(), get_class($value))
+											) {
+												$object->$id_column_name = $this->getObjectIdentifier(
+													$this->write($value), $id_value
+												);
+											}
+											else {
+												$clone = Builder::createClone($value, $property->getType()->asString());
+												$object->$id_column_name = $this->getObjectIdentifier(
+													$this->write($clone), $id_value
+												);
+												$this->replace($value, $clone, false);
+											}
 											Getter::$ignore = true;
 										}
 									}
