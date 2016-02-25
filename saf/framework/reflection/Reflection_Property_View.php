@@ -3,6 +3,7 @@ namespace SAF\Framework\Reflection;
 
 use DateTime;
 use SAF\Framework\Tools\Date_Time;
+use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Password;
 
 /**
@@ -110,6 +111,9 @@ class Reflection_Property_View
 	{
 		if ($this->property->getAnnotation('password')->value) {
 			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
+		}
+		elseif ($this->property->getAnnotation('values')->value) {
+			$value = Names::propertyToDisplay($value);
 		}
 		return $value;
 	}
