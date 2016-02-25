@@ -109,7 +109,9 @@ window.modifiable_waiting  = false;
 						var input = $input.get(0);
 						settings.stop.call(input);
 					}
-					$popup.fadeOut(100, function() { $(this).remove(); });
+					if ($popup) {
+						$popup.fadeOut(100, function() { $(this).remove(); });
+					}
 					$input.parent().html($input.val());
 					$this.removeData('old');
 				};
