@@ -112,4 +112,14 @@ class Default_List_Row implements List_Row
 		return $this->object;
 	}
 
+	//-------------------------------------------------------------------------------------- setValue
+	/**
+	 * @param $property string the path of the property
+	 * @param $value    mixed the new value
+	 */
+	public function setValue($property, $value)
+	{
+		$this->values[$property] = $value;
+	}
+
 }

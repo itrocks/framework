@@ -2,6 +2,7 @@
 namespace SAF\Framework\Tools;
 
 use Iterator;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
  * List data is an interface for all list data storage classes
@@ -27,9 +28,9 @@ interface List_Data extends Iterator
 
 	//-------------------------------------------------------------------------------------- getClass
 	/**
-	 * Gets the element's class name
+	 * Gets the element's class
 	 *
-	 * @return string
+	 * @return Reflection_Class
 	 */
 	public function getClass();
 

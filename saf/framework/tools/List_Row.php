@@ -54,4 +54,11 @@ interface List_Row
 	 */
 	public function id();
 
+	//-------------------------------------------------------------------------------------- setValue
+	/**
+	 * @param $property string the path of the property
+	 * @param $value    mixed the new value
+	 */
+	public function setValue($property, $value);
+
 }

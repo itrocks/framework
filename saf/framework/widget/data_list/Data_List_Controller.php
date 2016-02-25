@@ -500,6 +500,30 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		return null;
 	}
 
+	//------------------------------------------------------------------------------- objectsToString
+	/**
+	 * In Dao::select() result : replace objects with their matching __toString() result value
+	 * @param $data List_Data
+	 */
+	private function objectsToString(List_Data $data)
+	{
+		$class_properties = [];
+		$class_name = $data->getClass()->getName();
+		foreach ($data->getProperties() as $property_name) {
+			$property = new Reflection_Property($class_name, $property_name);
+			if ($property->getType()->isClass()) {
+				$class_properties[$property_name] = $property_name;
+			}
+		}
+		if ($class_properties) {
+			foreach ($data->getRows() as $row) {
+				foreach ($class_properties as $property_name) {
+					$row->setValue($property_name, strval($row->getValue($property_name)));
+				}
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------------------- readData
 	/**
 	 * @param $class_name    string
@@ -523,6 +547,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$class_name, $list_settings->properties_path, $search
 		);
 		$data = Dao::select($class_name, $properties_path, $search, $options);
+		$this->objectsToString($data);
 		if (($data->length() < $limit->count) && ($limit->from > 1)) {
 			$limit->from = max(1, $count->count - $limit->count + 1);
 			$list_settings->start_display_line_number = $limit->from;
