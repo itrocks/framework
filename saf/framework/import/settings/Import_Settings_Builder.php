@@ -138,7 +138,7 @@ abstract class Import_Settings_Builder
 				if (ctype_upper($property_path[0])) {
 					// the first element is always the main class name
 					$class_name = $main_class_name = $property_path;
-					$settings->class_name = $class_name;
+					$settings->setClassName($class_name);
 					$property_path = '';
 				}
 				else {

@@ -1,13 +1,12 @@
 <?php
-namespace SAF\Framework\Widget\Output_Setting;
+namespace SAF\Framework\Widget\Data_List_Setting;
 
 use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Can_Be_Empty;
 
 /**
- * Output setting widget property
+ * Data list setting widget for a property (ie a column of the list)
  */
 class Property implements Can_Be_Empty
 {
@@ -18,28 +17,17 @@ class Property implements Can_Be_Empty
 	 */
 	public $display;
 
-	//----------------------------------------------------------------------------------- $hide_empty
+	//--------------------------------------------------------------------------- $one_line_per_value
 	/**
-	 * Hide the property if its value if empty while in display mode
-	 * In edit mode and if the property is not read-only, the property will be visible
-	 *
 	 * @var boolean
 	 */
-	public $hide_empty;
+	public $one_line_per_value;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
 	 * @var string
 	 */
 	public $path;
-
-	//------------------------------------------------------------------------------------ $read_only
-	/**
-	 * The property will be read-only : the user will not be able to change this value
-	 *
-	 * @var boolean
-	 */
-	public $read_only;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -52,9 +40,6 @@ class Property implements Can_Be_Empty
 			$property         = new Reflection_Property_Value($class_name, $property_path);
 			$this->display    = Loc::tr($property->display());
 			$this->path       = $property->path;
-			$user_annotation  = $property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->hide_empty = $user_annotation->has(User_Annotation::HIDE_EMPTY);
-			$this->read_only  = $user_annotation->has(User_Annotation::READONLY);
 		}
 	}
 
@@ -67,22 +52,13 @@ class Property implements Can_Be_Empty
 		return strval($this->display);
 	}
 
-	//--------------------------------------------------------------------------------- htmlHideEmpty
+	//--------------------------------------------------------------------------- htmlOneLinePerValue
 	/**
 	 * @return string
 	 */
-	public function htmlHideEmpty()
+	public function htmlOneLinePerValue()
 	{
-		return $this->hide_empty ? 'checked' : '';
-	}
-
-	//---------------------------------------------------------------------------------- htmlReadOnly
-	/**
-	 * @return string
-	 */
-	public function htmlReadOnly()
-	{
-		return $this->read_only ? 'checked' : '';
+		return $this->one_line_per_value ? 'checked' : '';
 	}
 
 	//--------------------------------------------------------------------------------------- isEmpty

@@ -25,9 +25,7 @@ class Import_Settings extends Custom_Settings
 	 */
 	public function __construct($class_name = null)
 	{
-		if (isset($class_name)) {
-			$this->class_name = $class_name;
-		}
+		parent::__construct($class_name);
 		if (!isset($this->classes)) {
 			$this->classes = [];
 		}
@@ -78,14 +76,15 @@ class Import_Settings extends Custom_Settings
 	 */
 	public function getClassName()
 	{
-		if (empty($this->class_name)) {
+		if (!parent::getClassName()) {
 			foreach ($this->classes as $class_key => $class) {
 				if (!$class_key) {
-					return ($this->class_name = $class->class_name);
+					$this->setClassName($class->class_name);
+					break;
 				}
 			}
 		}
-		return $this->class_name;
+		return parent::getClassName();
 	}
 
 	//------------------------------------------------------------------------------------ getSummary
@@ -94,7 +93,6 @@ class Import_Settings extends Custom_Settings
 	 */
 	public function getSummary()
 	{
-
 	}
 
 	//---------------------------------------------------------------------------------- setConstants

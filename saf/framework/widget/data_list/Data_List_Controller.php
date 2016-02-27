@@ -10,6 +10,7 @@ use SAF\Framework\Dao\Option\Count;
 use SAF\Framework\Dao\Option\Group_By;
 use SAF\Framework\Dao\Option\Limit;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Option\Reverse;
 use SAF\Framework\History;
 use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
@@ -17,7 +18,6 @@ use SAF\Framework\Printer\Model;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Setting\Buttons;
@@ -27,7 +27,6 @@ use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\List_Data;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Tools\String;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Button\Has_Selection_Buttons;
@@ -146,16 +145,16 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	protected function applySearchParameters(Data_List_Settings $list_settings)
 	{
-		$class_name = Builder::className($list_settings->class_name);
+		$class = $list_settings->getClass();
 		/** @var $search_parameters_parser Search_Parameters_Parser */
 		$search_parameters_parser = Builder::create(
-			Search_Parameters_Parser::class, [$class_name, $list_settings->search]
+			Search_Parameters_Parser::class, [$class->name, $list_settings->search]
 		);
 		$result = $search_parameters_parser->parse();
 
-		foreach ((new Reflection_Class($class_name))->getAnnotations('on_data_list') as $execute) {
+		foreach ($class->getAnnotations('on_data_list') as $execute) {
 			/** @var $execute Method_Annotation */
-			if ($execute->call($class_name, [&$result]) === false) {
+			if ($execute->call($class->name, [&$result]) === false) {
 				break;
 			}
 		}
@@ -228,22 +227,40 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		];
 	}
 
-	//----------------------------------------------------------------------------- getReverseClasses
+	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @param $list_settings Data_List_Settings
-	 * @return string[] key is column number and property path
+	 * @return Property[]
 	 */
-	protected function getReverseClasses(Data_List_Settings $list_settings)
+	protected function getProperties(Data_List_Settings $list_settings)
 	{
-		$reverse_classes = [];
-		foreach ($list_settings->sort->reverse as $property_path) {
-			$reverse_classes[$property_path] = 'reverse';
-			$key = array_search($property_path, $list_settings->properties_path);
-			if ($key !== false) {
-				$reverse_classes[$key] = 'reverse';
+		$class_name = $list_settings->getClassName();
+		/** @var $properties Property[] */
+		$properties = [];
+		// properties / search
+		foreach ($list_settings->properties as $property) {
+			/** @var $property Property */
+			$property = Builder::createClone($property, Property::class);
+			$property->search = new Reflection_Property_Value($class_name, $property->path, null, true);
+			$properties[$property->path] = $property;
+		}
+		foreach ($list_settings->search as $property_path => $search_value) {
+			if (isset($properties[$property_path])) {
+				$this->searchProperty($properties[$property_path]->search, $search_value);
 			}
 		}
-		return $reverse_classes;
+		// sort / reverse
+		$sort_position = 0;
+		foreach ($list_settings->sort->columns as $column) {
+			$property_path = ($column instanceof Reverse) ? $column->column : $column;
+			if (isset($properties[$property_path])) {
+				$properties[$property_path]->sort = ++$sort_position;
+				if ($list_settings->sort->isReverse($property_path)) {
+					$properties[$property_path]->reverse = true;
+				}
+			}
+		}
+		return $properties;
 	}
 
 	//------------------------------------------------------------------------------ getSearchSummary
@@ -262,7 +279,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$t = $i = '';
 			}
 			$class_display = Names::classToDisplay(
-				(new Reflection_Class($list_settings->class_name))->getAnnotation('set')->value
+				$list_settings->getClass()->getAnnotation('set')->value
 			);
 			$summary = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
 			$first = true;
@@ -273,33 +290,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			return $summary;
 		}
 		return null;
-	}
-
-	//------------------------------------------------------------------------------- getSearchValues
-	/**
-	 * @param $list_settings Data_List_Settings
-	 * @return Reflection_Property_Value[] key is the property path
-	 */
-	public function getSearchValues(Data_List_Settings $list_settings)
-	{
-		$class_name = Builder::className($list_settings->class_name);
-		$search = array_combine($list_settings->properties_path, $list_settings->properties_path);
-		foreach ($list_settings->search as $property_path => $search_value) {
-			if (isset($search[$property_path])) {
-				$property = new Reflection_Property_Value($class_name, $property_path, $search_value, true);
-				if (
-					$property->getType()->isClass()
-					&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-				) {
-					$property->value(Dao::read($search_value, $property->getType()->asString()));
-				}
-				else {
-					$property->value($search_value);
-				}
-				$search[$property_path] = $property;
-			}
-		}
-		return $search;
 	}
 
 	//--------------------------------------------------------------------------- getSelectionButtons
@@ -331,95 +321,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				]
 			])
 		];
-	}
-
-	//-------------------------------------------------------------------------------- getSortClasses
-	/**
-	 * @param $list_settings Data_List_Settings
-	 * @return string[] key is column number and property path, value is position of the sort property
-	 *         (0..n)
-	 */
-	protected function getSortClasses(Data_List_Settings $list_settings)
-	{
-		$sort_classes = [];
-		$sort_count = 0;
-		foreach ($list_settings->sort->getColumns() as $property_path) {
-			$sort_classes[$property_path] = ++$sort_count;
-			$key = array_search($property_path, $list_settings->properties_path);
-			if ($key !== false) {
-				$sort_classes[$key] = $sort_count;
-			}
-		}
-		return $sort_classes;
-	}
-
-	//---------------------------------------------------------------------------------- getSortLinks
-	/**
-	 * @param $list_settings Data_List_Settings
-	 * @return string[] key is column number and property path, value is 'sort' or 'reverse'
-	 */
-	protected function getSortLinks(Data_List_Settings $list_settings)
-	{
-		$sort_links = [];
-		foreach ($list_settings->properties_path as $property_path) {
-			$sort_links[$property_path] = 'sort';
-			$key = array_search($property_path, $list_settings->properties_path);
-			if ($key !== false) {
-				$sort_links[$key] = 'sort';
-			}
-		}
-		$sort = $list_settings->sort->getColumns();
-		if ($sort) {
-			$sort_links[reset($sort)] = 'reverse';
-			$key = array_search(reset($sort), $list_settings->properties_path);
-			if ($key !== false) {
-				$sort_links[$key] = 'reverse';
-			}
-		}
-		return $sort_links;
-	}
-
-	//-------------------------------------------------------------------------------- getShortTitles
-	/**
-	 * @param $list_settings Data_List_Settings
-	 * @return string[] key is property path, value is short title
-	 */
-	protected function getShortTitles(Data_List_Settings $list_settings)
-	{
-		$short_titles = [];
-		foreach ($this->getTitles($list_settings) as $property_path => $title) {
-			$short_titles[$property_path] = (new String($title))->twoLast();
-			$key = array_search($property_path, $list_settings->properties_path);
-			if ($key !== false) {
-				$sort_titles[$key] = $short_titles[$property_path];
-			}
-		}
-		return $short_titles;
-	}
-
-	//------------------------------------------------------------------------------------- getTitles
-	/**
-	 * @param $list_settings Data_List_Settings
-	 * @return string[] key is property path, value is title
-	 */
-	protected function getTitles(Data_List_Settings $list_settings)
-	{
-		$locale = Locale::current();
-		$titles = [];
-		foreach ($list_settings->properties_path as $property_path) {
-			$titles[$property_path] = str_replace(
-				'_',
-				SP,
-				isset($list_settings->properties_title[$property_path])
-					? $list_settings->properties_title[$property_path]
-					: (isset($locale) ? Loc::tr($property_path) : $property_path)
-			);
-			$key = array_search($property_path, $list_settings->properties_path);
-			if ($key !== false) {
-				$titles[$key] = str_replace('_', SP, $titles[$property_path]);
-			}
-		}
-		return $titles;
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
@@ -455,16 +356,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'less_twenty'           => $less_twenty,
 				'more_hundred'          => $more_hundred,
 				'more_thousand'         => $more_thousand,
-				'reversed'              => $this->getReverseClasses($list_settings),
+				'properties'            => $this->getProperties($list_settings),
 				'rows_count'            => $count->count,
-				'search'                => $this->getSearchValues($list_settings),
 				'search_summary'        => $this->getSearchSummary($list_settings),
 				'settings'              => $list_settings,
-				'short_titles'          => $this->getShortTitles($list_settings),
-				'sort_options'          => $this->getSortLinks($list_settings),
-				'sorted'                => $this->getSortClasses($list_settings),
-				'title'                 => $list_settings->title(),
-				'titles'                => $this->getTitles($list_settings)
+				'title'                 => $list_settings->title()
 			]
 		);
 		// buttons
@@ -503,6 +399,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	//------------------------------------------------------------------------------- objectsToString
 	/**
 	 * In Dao::select() result : replace objects with their matching __toString() result value
+	 *
 	 * @param $data List_Data
 	 */
 	private function objectsToString(List_Data $data)
@@ -539,12 +436,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$list_settings->maximum_displayed_lines_count
 		);
 		$options = [$list_settings->sort, $limit, $count];
+		$properties = array_keys($list_settings->properties);
 		// TODO : an automation to make the group by only when it is useful
-		if ($group_by = $this->groupBy($list_settings->properties_path)) {
+		if ($group_by = $this->groupBy($properties)) {
 			$options[] = $group_by;
 		}
 		list($properties_path, $search) = $this->removeInvisibleProperties(
-			$class_name, $list_settings->properties_path, $search
+			$class_name, $properties, $search
 		);
 		$data = Dao::select($class_name, $properties_path, $search, $options);
 		$this->objectsToString($data);
@@ -555,7 +453,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$data = Dao::select($class_name, $properties_path, $search, $options);
 		}
 		// TODO LOW the following patch line is to avoid others calculation to use invisible properties
-		$list_settings->properties_path = $properties_path;
+		foreach ($list_settings->properties as $property_path => $property) {
+			if (!in_array($property_path, $properties_path)) {
+				unset($list_settings->properties[$property_path]);
+			}
+		}
 		return $data;
 	}
 
@@ -614,6 +516,23 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 		return [array_values($properties_path), $search];
+	}
+
+	//-------------------------------------------------------------------------------- searchProperty
+	/**
+	 * @param $property Reflection_Property_Value
+	 * @param $value    string
+	 */
+	private function searchProperty(Reflection_Property_Value $property, $value)
+	{
+		if (
+			$property->getType()->isClass()
+			&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+		) {
+			$value = Dao::read($value, $property->getType()->asString());
+		}
+		$property->value($value);
+		$property->value(Loc::propertyToISO($property));
 	}
 
 	//------------------------------------------------------------------------------------------- run

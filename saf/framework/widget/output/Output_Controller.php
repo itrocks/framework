@@ -40,7 +40,9 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	{
 		if ($output_settings->properties) {
 			foreach ($output_settings->properties as $property_path => $property) {
-				$reflection_property = new Reflection_Property($output_settings->class_name, $property_path);
+				$reflection_property = new Reflection_Property(
+					$output_settings->getClassName(), $property_path
+				);
 				$user_annotation = $reflection_property->getListAnnotation(User_Annotation::ANNOTATION);
 				$property->hide_empty
 					? $user_annotation->add(User_Annotation::HIDE_EMPTY)
@@ -71,7 +73,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 		if (isset($parameters['add_action'])) {
 			if (!$output_settings->actions) {
 				$output_settings->actions = $this->getGeneralButtons(
-					$output_settings->class_name, $parameters
+					$output_settings->getClassName(), $parameters
 				);
 			}
 			$output_settings->addAction(

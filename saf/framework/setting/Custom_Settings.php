@@ -4,6 +4,7 @@ namespace SAF\Framework\Setting;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Mapper\Search_Object;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Setting;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Traits\Has_Name;
@@ -21,13 +22,28 @@ abstract class Custom_Settings
 	 *
 	 * @var string
 	 */
-	public $class_name;
+	private $class_name;
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
 	 * @var Setting
 	 */
 	public $setting;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name string
+	 * @param $setting    Setting
+	 */
+	public function __construct($class_name = null, Setting $setting = null)
+	{
+		if (isset($class_name)) {
+			$this->setClassName($class_name);
+		}
+		if (isset($setting)) {
+			$this->setting = $setting;
+		}
+	}
 
 	//--------------------------------------------------------------------------------------- cleanup
 	/**
@@ -103,6 +119,29 @@ abstract class Custom_Settings
 				Dao::delete($setting);
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- getClass
+	/**
+	 * @return Reflection_Class
+	 */
+	public function getClass()
+	{
+		return new Reflection_Class($this->getClassName());
+	}
+
+	//---------------------------------------------------------------------------------- getClassName
+	/**
+	 * @return string
+	 */
+	public function getClassName()
+	{
+		// TODO LOWEST remove : this is for unserialize() compatibility with old public $class_name
+		$class_name = $this->class_name;
+		if (!isset($class_name) && isset(get_object_vars($this)['class_name'])) {
+			$this->class_name = get_object_vars($this)['class_name'];
+		}
+		return Builder::className($class_name);
 	}
 
 	//----------------------------------------------------------------------------- getCustomSettings
@@ -188,6 +227,15 @@ abstract class Custom_Settings
 			$custom_settings[] = $selected_setting->setting->value;
 		}
 		return $custom_settings;
+	}
+
+	//---------------------------------------------------------------------------------- setClassName
+	/**
+	 * @param $class_name string
+	 */
+	public function setClassName($class_name)
+	{
+		$this->class_name = Builder::current()->sourceClassName($class_name);
 	}
 
 }

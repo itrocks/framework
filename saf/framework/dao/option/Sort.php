@@ -74,6 +74,13 @@ class Sort implements Option
 		}
 		array_unshift($this->columns, $property_path);
 		$this->columns = array_slice($this->columns, 0, $sort_columns_count);
+		// remove reverse of removed columns
+		foreach ($this->reverse as $key => $property_path) {
+			if (!in_array($property_path, $this->columns)) {
+				unset($this->reverse[$key]);
+			}
+		}
+		$this->reverse = array_values($this->reverse);
 	}
 
 	//-------------------------------------------------------------------------------- applyClassName
@@ -138,6 +145,26 @@ class Sort implements Option
 			$this->applyClassName($class_name);
 		}
 		return $this->columns;
+	}
+
+	//------------------------------------------------------------------------------------- isReverse
+	/**
+	 * Returns true if the property path has a reverse sort
+	 *
+	 * @param $property_path string
+	 * @return boolean
+	 */
+	public function isReverse($property_path)
+	{
+		if (in_array($property_path, $this->reverse)) {
+			return true;
+		}
+		foreach ($this->columns as $column) {
+			if (($column instanceof Reverse) && ($column->column === $property_path)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//----------------------------------------------------------------------------------- sortObjects

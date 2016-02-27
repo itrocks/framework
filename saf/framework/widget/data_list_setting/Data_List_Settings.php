@@ -23,10 +23,19 @@ class Data_List_Settings extends Custom_Settings
 	 */
 	public $title;
 
+	//----------------------------------------------------------------------------------- $properties
+	/**
+	 * Custom properties used for columns into the list
+	 *
+	 * @var Property[] key is the path of the property
+	 */
+	public $properties = [];
+
 	//------------------------------------------------------------------------------ $properties_path
 	/**
 	 * Properties path
 	 *
+	 * @deprecated stored into $property
 	 * @var string[] key is the column number (0..n)
 	 */
 	public $properties_path;
@@ -35,6 +44,7 @@ class Data_List_Settings extends Custom_Settings
 	/**
 	 * Properties title
 	 *
+	 * @deprecated stored into $property
 	 * @var string[] key is the property path
 	 */
 	public $properties_title = [];
@@ -76,49 +86,44 @@ class Data_List_Settings extends Custom_Settings
 	 */
 	public function __construct($class_name = null, Setting $setting = null)
 	{
-		if (isset($class_name)) {
-			$this->class_name = $class_name;
-		}
-		if (isset($setting)) {
-			$this->setting = $setting;
-		}
+		parent::__construct($class_name, $setting);
 		if (!isset($this->sort)) {
 			$this->sort = new Sort($class_name);
-		}
-		if (!isset($this->properties_path) && isset($this->class_name)) {
-			$this->properties_path = (new Reflection_Class($this->class_name))
-				->getListAnnotation('representative')->values();
 		}
 	}
 
 	//----------------------------------------------------------------------------------- addProperty
 	/**
-	 * @param $property_path       string
+	 * @param $add_property_path   string
 	 * @param $where               string 'after', 'before' or null
 	 * @param $where_property_path string reference property path for $where
 	 */
-	public function addProperty($property_path, $where = 'after', $where_property_path = null)
+	public function addProperty($add_property_path, $where = 'after', $where_property_path = null)
 	{
-		$properties_path = [];
-		$count = 0;
+		$this->initProperties();
+		$add_property = isset($this->properties[$add_property_path])
+			? $this->properties[$add_property_path]
+			: Builder::create(Property::class, [$this->getClassName(), $add_property_path]);
+		$properties = [];
 		if (($where == 'after') && empty($where_property_path)) {
-			$properties_path[$count++] = $property_path;
+			$properties[$add_property_path] = $add_property;
 		}
-		foreach ($this->properties_path as $key) {
-			if (($where == 'before') && ($key == $where_property_path)) {
-				$properties_path[$count++] = $property_path;
+		foreach ($this->properties as $property_path => $property) {
+			if (($where == 'before') && ($property_path == $where_property_path)) {
+				$properties[$add_property_path] = $add_property;
 			}
-			if ($key !== $property_path) {
-				$properties_path[$count++] = $key;
+			if ($property_path !== $add_property_path) {
+				$properties[$property_path] = $property;
 			}
-			if (($where == 'after') && ($key == $where_property_path)) {
-				$properties_path[$count++] = $property_path;
+			if (($where == 'after') && ($property_path == $where_property_path)) {
+				$properties[$add_property_path] = $add_property;
 			}
 		}
 		if (($where == 'before') && empty($where_property_path)) {
-			$properties_path[$count] = $property_path;
+			$properties[$add_property_path] = $add_property;
 		}
-		$this->properties_path = $properties_path;
+
+		$this->properties = $properties;
 	}
 
 	//--------------------------------------------------------------------------------------- cleanup
@@ -129,17 +134,15 @@ class Data_List_Settings extends Custom_Settings
 	 */
 	public function cleanup()
 	{
-		$class_name = Builder::className($this->class_name);
+		$this->initProperties();
+		$class_name = $this->getClassName();
 		$changes_count = 0;
-		// properties path
-		foreach ($this->properties_path as $key => $property_path) {
+		// properties
+		foreach (array_keys($this->properties) as $property_path) {
 			if (!Reflection_Property::exists($class_name, $property_path)) {
-				unset($this->properties_path[$key]);
+				unset($this->properties[$property_path]);
 				$changes_count ++;
 			}
-		}
-		if ($changes_count) {
-			$this->properties_path = array_values($this->properties_path);
 		}
 		// search
 		foreach (array_keys($this->search) as $property_path) {
@@ -155,6 +158,7 @@ class Data_List_Settings extends Custom_Settings
 				$changes_count ++;
 			}
 		}
+
 		return $changes_count;
 	}
 
@@ -164,44 +168,87 @@ class Data_List_Settings extends Custom_Settings
 	 */
 	private function getDefaultTitle()
 	{
-		return ucfirst(Names::classToDisplay(
-			(new Reflection_Class($this->class_name))->getAnnotation('set')
-		));
+		return ucfirst(Names::classToDisplay($this->getClass()->getAnnotation('set')));
 	}
 
-	//-------------------------------------------------------------------------------- removeProperty
+	//-------------------------------------------------------------------------------- initProperties
 	/**
-	 * @param $property_path string
+	 * @param $filter_properties string[] property path
+	 * @return Property[]
 	 */
-	public function removeProperty($property_path)
+	public function initProperties($filter_properties = null)
 	{
-		if (($key = array_search($property_path, $this->properties_path, true)) !== false) {
-			unset($this->properties_path[$key]);
-			$this->properties_path = array_values($this->properties_path);
+		$class_name = $this->getClassName();
+
+		// TODO LOW this keeps compatibility with deprecated properties_path and properties_title
+		if (isset($this->properties_path) && (!isset($this->properties) || !$this->properties)) {
+			foreach ($this->properties_path as $property_path) {
+				$property = new Property($class_name, $property_path);
+				if (isset($this->properties_title[$property_path])) {
+					$property->display = $this->properties_title[$property_path];
+				}
+				$property->path = $property_path;
+				$this->properties[$property_path] = $property;
+			}
+			unset($this->properties_path);
+			unset($this->properties_title);
 		}
+
+		if (!$this->properties) {
+			if ($filter_properties) {
+				foreach ($filter_properties as $property_path) {
+					$this->properties[$property_path] = Builder::create(
+						Property::class, [$class_name, $property_path]
+					);
+				}
+			}
+			else {
+				foreach (
+					(new Reflection_Class($class_name))->getListAnnotation('representative')->values()
+					as $property_name
+				) {
+					$property = new Reflection_Property($class_name, $property_name);
+					if ($property->isPublic() && !$property->isStatic()) {
+						$this->properties[$property->name] = Builder::create(
+							Property::class, [$class_name, $property->name]
+						);
+					}
+				}
+			}
+		}
+		return $this->properties;
 	}
 
-	//--------------------------------------------------------------------------------------- reverse
+	//--------------------------------------------------------------------------- propertiesParameter
 	/**
-	 * @param $property_path string
+	 * Returns a list of a given parameter taken from properties
+	 *
+	 * @example $properties_display = $list_settings->propertiesParameter('one_line_per_value');
+	 * @param $parameter string
+	 * @return array key is the property path, value is the parameter value
 	 */
-	public function reverse($property_path)
+	public function propertiesParameter($parameter)
 	{
-		if (in_array($property_path, $this->sort->reverse)) {
-			unset($this->sort->reverse[array_search($property_path, $this->sort->reverse)]);
+		$result = [];
+		foreach ($this->properties as $property_path => $property) {
+			$result[$property_path] = $property->$parameter;
 		}
-		else {
-			array_push($this->sort->reverse, $property_path);
-		}
+		return $result;
 	}
 
-	//------------------------------------------------------------------------------------------ sort
+	//----------------------------------------------------------------------- propertyOneLinePerValue
 	/**
-	 * @param $property_path string
+	 * Sets the property one_line_per_value setting
+	 *
+	 * @param $property_path      string
+	 * @param $one_line_per_value boolean
 	 */
-	public function sort($property_path)
+	public function propertyOneLinePerValue($property_path, $one_line_per_value = false)
 	{
-		$this->sort->addSortColumn($property_path);
+		$this->initProperties();
+		if (isset($this->properties[$property_path])) {
+			$this->properties[$property_path]->one_line_per_value = $one_line_per_value;
+		}
 	}
 
 	//--------------------------------------------------------------------------------- propertyTitle
@@ -213,13 +260,45 @@ class Data_List_Settings extends Custom_Settings
 	 */
 	public function propertyTitle($property_path, $title = null)
 	{
-		if (empty($title)) {
-			if (isset($this->properties_title[$property_path])) {
-				unset($this->properties_title[$property_path]);
-			}
+		$this->initProperties();
+		if (isset($this->properties[$property_path])) {
+			$this->properties[$property_path]->display = $title;
 		}
-		else {
-			$this->properties_title[$property_path] = $title;
+		// TODO check what happens if an empty title is set : must be stored as empty, with default view
+	}
+
+	//-------------------------------------------------------------------------------- removeProperty
+	/**
+	 * @param $property_path string
+	 */
+	public function removeProperty($property_path)
+	{
+		$this->initProperties();
+		if (isset($this->properties[$property_path])) {
+			unset($this->properties[$property_path]);
+		}
+	}
+
+	//--------------------------------------------------------------------------------------- reverse
+	/**
+	 * @param $property_path string
+	 */
+	public function reverse($property_path)
+	{
+		if (!in_array($property_path, $this->sort->reverse)) {
+			$this->sort->reverse[] = $property_path;
+		}
+	}
+
+	//------------------------------------------------------------------------------------------ sort
+	/**
+	 * @param $property_path string
+	 */
+	public function sort($property_path)
+	{
+		$this->sort->addSortColumn($property_path);
+		if (in_array($property_path, $this->sort->reverse)) {
+			unset($this->sort->reverse[array_search($property_path, $this->sort->reverse)]);
 		}
 	}
 

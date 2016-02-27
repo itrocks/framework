@@ -30,23 +30,23 @@
 		<th class="column_select">
 			<a class="popup" href="/SAF/Framework/Property/select/{@class.path}" target="#column_select">|select columns|</a>
 		</th>
-		<!--getProperties-->
-		<th data-property="{.}" class="sort{sorted.{#}} {?reversed.{#}} property">
-			<a href="/{--@class.path}/{@feature}?{sort_options.{#}}={.}" target="#main" title="|{.}|">{short_titles.{#}}</a>
+		<!--properties-->
+		<th data-property="{path}" class="sort{sort} {?htmlReverse} property">
+			<a href="/{--@class.path}/{@feature}?{htmlSortLink}={path}" target="#main" title="|{title}|">{shortTitle}</a>
 		</th>
 		<!--sample-->
 		<th data-property="column2" class="sort property">
 			<a href="/Class/feature?sort=column2" target="#main">column2</a>
 		</th>
-		<!--getProperties-->
+		<!--properties-->
 	</tr>
 	<tr class="search">
 		<td colspan="2"></td>
-		<!--search-->
-		<td>{@edit('search[{#.@escapeName}]','true','true')}</td>
+		<!--properties-->
+		<td>{search.@edit('search[{path.@escapeName}]','true','true')}</td>
 		<!--sample-->
 		<td><input name="search[column2]"></td>
-		<!--search-->
+		<!--properties-->
 	</tr>
 	</thead>
 	<tbody>

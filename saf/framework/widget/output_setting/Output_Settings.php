@@ -47,7 +47,7 @@ class Output_Settings extends Custom_Settings
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * @var Property[] key is the sort index (0..n)
+	 * @var Property[] key is the path of the property
 	 */
 	public $properties = [];
 
@@ -56,21 +56,6 @@ class Output_Settings extends Custom_Settings
 	 * @var Tab
 	 */
 	public $tab = null;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class_name string
-	 * @param $setting    Setting
-	 */
-	public function __construct($class_name = null, Setting $setting = null)
-	{
-		if (isset($class_name)) {
-			$this->class_name = $class_name;
-		}
-		if (isset($setting)) {
-			$this->setting = $setting;
-		}
-	}
 
 	//------------------------------------------------------------------------------------- addAction
 	/**
@@ -117,7 +102,7 @@ class Output_Settings extends Custom_Settings
 		$this->initProperties();
 		$add_property = isset($this->properties[$add_property_path])
 			? $this->properties[$add_property_path]
-			: Builder::create(Property::class, [$this->class_name, $add_property_path]);
+			: Builder::create(Property::class, [$this->getClassName(), $add_property_path]);
 		$properties = [];
 		if (($where == 'after') && empty($where_property_path)) {
 			$properties[$add_property_path] = $add_property;
@@ -151,7 +136,7 @@ class Output_Settings extends Custom_Settings
 	{
 		$changes_count = 0;
 		foreach (array_keys($this->properties) as $property_path) {
-			if (!Reflection_Property::exists($this->class_name, $property_path)) {
+			if (!Reflection_Property::exists($this->getClassName(), $property_path)) {
 				unset($this->properties[$property_path]);
 				$changes_count ++;
 			}
@@ -185,7 +170,7 @@ class Output_Settings extends Custom_Settings
 	 */
 	private function getDefaultTitle()
 	{
-		return Loc::tr(ucfirst(Names::classToDisplay($this->class_name)));
+		return Loc::tr(ucfirst(Names::classToDisplay($this->getClassName())));
 	}
 
 	//-------------------------------------------------------------------------------- initProperties
@@ -196,15 +181,15 @@ class Output_Settings extends Custom_Settings
 	public function initProperties($filter_properties = null)
 	{
 		if (!$this->properties) {
+			$class_name = $this->getClassName();
 			if ($filter_properties) {
 				foreach ($filter_properties as $property_path) {
 					$this->properties[$property_path] = Builder::create(
-						Property::class, [$this->class_name, $property_path]
+						Property::class, [$class_name, $property_path]
 					);
 				}
 			}
 			else {
-				$class_name = Builder::className($this->class_name);
 				foreach (
 					(new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE])
 					as $property
@@ -223,12 +208,29 @@ class Output_Settings extends Custom_Settings
 	//--------------------------------------------------------------------------------------- initTab
 	private function initTab()
 	{
-		if (!isset($this->tab) && isset($this->class_name)) {
+		if (!isset($this->tab)) {
 			$this->tab = new Tab('main');
 			$this->tab->includes = Tabs_Builder_Class::build(
-				new Reflection_Class($this->class_name), array_keys($this->properties)
+				$this->getClass(), array_keys($this->properties)
 			);
 		}
+	}
+
+	//--------------------------------------------------------------------------- propertiesParameter
+	/**
+	 * Returns a list of a given parameter taken from properties
+	 *
+	 * @example $properties_display = $output_settings->propertiesParameter('display');
+	 * @param $parameter string
+	 * @return array key is the property path, value is the parameter value
+	 */
+	public function propertiesParameter($parameter)
+	{
+		$result = [];
+		foreach ($this->properties as $property_path => $property) {
+			$result[$property_path] = $property->$parameter;
+		}
+		return $result;
 	}
 
 	//----------------------------------------------------------------------------- propertyHideEmpty
@@ -274,23 +276,6 @@ class Output_Settings extends Custom_Settings
 		if (isset($this->properties[$property_path])) {
 			$this->properties[$property_path]->display = $title;
 		}
-	}
-
-	//--------------------------------------------------------------------------- propertiesParameter
-	/**
-	 * Returns a list of a given parameter taken from properties
-	 *
-	 * @example $properties_display = $output_settings->propertiesParameter('display');
-	 * @param $parameter string
-	 * @return array key is the property path, value is the parameter value
-	 */
-	public function propertiesParameter($parameter)
-	{
-		$result = [];
-		foreach ($this->properties as $property_path => $property) {
-			$result[$property_path] = $property->$parameter;
-		}
-		return $result;
 	}
 
 	//---------------------------------------------------------------------------------- removeAction
