@@ -3,6 +3,7 @@ namespace SAF\Framework\Sql\Builder;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao\Func;
+use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -46,7 +47,7 @@ class Columns
 	/**
 	 * Properties paths list
 	 *
-	 * @var string[]|Func[]
+	 * @var string[]|Column[]
 	 */
 	private $properties;
 
@@ -61,7 +62,7 @@ class Columns
 	 * Construct the SQL columns list section of a query
 	 *
 	 * @param $class_name string
-	 * @param $properties string[] properties paths list
+	 * @param $properties string[]|Column[] properties paths list
 	 * @param $joins      Joins
 	 * @param $append     mixed[] appends expressions to some SQL columns
 	 * - each element being a string is an expression to append to each column, ie 'DESC'
@@ -320,6 +321,7 @@ class Columns
 	{
 		$properties = [];
 		foreach ($this->properties as $key => $property_name) {
+			$property_name = is_object($property_name) ? $key : $property_name;
 			if (isset($columns->properties[$property_name])) {
 				$properties[$property_name] = $columns->properties[$property_name];
 			}

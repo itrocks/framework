@@ -4,6 +4,7 @@ namespace SAF\Framework\Dao\Sql;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao\Data_Link\Identifier_Map;
 use SAF\Framework\Dao\Data_Link\Transactional;
+use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Sql;
 use SAF\Framework\Tools\Default_List_Data;
@@ -171,9 +172,9 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $object_class  string class for the read object
-	 * @param $columns       string[] the list of the columns names : only those properties will be
-	 *        read. You can use 'column.sub_column' to get values from linked objects from the same
-	 *        data source.
+	 * @param $columns       string[]|Column[] the list of the columns names : only those properties
+	 *        will be read. You can use 'column.sub_column' to get values from linked objects from the
+	 *        same data source. You can use Dao\Func\Column sub-classes to get result of functions.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *        search. Can be an array associating properties names to corresponding search value too.
 	 * @param $options    Option[] some options for advanced search
@@ -191,7 +192,11 @@ abstract class Link extends Identifier_Map implements Transactional
 			}
 		}
 		if (!isset($list)) {
-			$list = new Default_List_Data($object_class, $columns);
+			$properties = [];
+			foreach ($columns as $key => $column) {
+				$properties[] = is_object($column) ? $key : $column;
+			}
+			$list = new Default_List_Data($object_class, $properties);
 		}
 		$select = new Select($object_class, $columns, $this);
 		$query = $select->prepareQuery($filter_object, $options);

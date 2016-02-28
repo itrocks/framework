@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Sql\Builder;
 
+use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Sql\Link;
 use SAF\Framework\Sql\Join\Joins;
@@ -62,11 +63,11 @@ class Select
 	 * - column.foreign_column : column must be a property of class, foreign_column must be a property
 	 * of column's type class.
 	 *
-	 * @param $class_name  string        base object class name
-	 * @param $properties  string[]|null properties paths list
-	 * (default : all table columns will be read)
-	 * @param $where_array array|object  where array expression, keys are columns names,
-	 * or filter object
+	 * @param $class_name  string base object class name
+	 * @param $properties  string[]|Column[]|null properties paths list
+	 *                     (default : all table columns will be read)
+	 * @param $where_array array|object where array expression, keys are columns names,
+	 *                     or filter object
 	 * @param $sql_link    Link
 	 * @param $options     Option[] DAO options can be used for complex queries building
 	 */

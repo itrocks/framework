@@ -168,7 +168,8 @@ class Select
 	 * Constructs a new Select object, read to use, with all its context data
 	 *
 	 * @param $class_name string The name of the main business class to start from
-	 * @param $columns    string[] If not set, the columns names will be taken from the query result
+	 * @param $columns    string[]|Column[] If not set, the columns names will be taken from the
+	 *        query result
 	 * @param $link       Link If not set, the default link will be Dao::current()
 	 */
 	public function __construct($class_name = null, $columns = null, Link $link = null)
