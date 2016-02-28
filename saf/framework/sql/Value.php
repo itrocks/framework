@@ -12,7 +12,8 @@ abstract class Value
 
 	//---------------------------------------------------------------------------------------- escape
 	/**
-	 * Escape a column value, in order to insert it into a SQL query
+	 * Escapes a column value, in order to insert it into a SQL query
+	 * Adds quotes around string / escaped values
 	 *
 	 * @param $value            mixed
 	 * @param $double_backquote boolean

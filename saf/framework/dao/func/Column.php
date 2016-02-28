@@ -10,15 +10,18 @@ use SAF\Framework\Sql\Value;
 abstract class Column implements Dao_Function
 {
 
-	//----------------------------------------------------------------------------------------- toSql
+	//-------------------------------------------------------------------------------------- aliasSql
 	/**
-	 * Returns the Dao function as SQL
+	 * Gets the sql code for the SQL aliasing
 	 *
-	 * @param $builder       Columns the sql query builder
-	 * @param $property_path string the property path
-	 * @return string
+	 * @param $builder       Columns
+	 * @param $property_path string
+	 * @return string @example ' AS `alias_name`' or empty string if alias resolving is "off"
 	 */
-	abstract public function toSql(Columns $builder, $property_path);
+	protected function aliasSql(Columns $builder, $property_path)
+	{
+		return $builder->resolve_aliases ? (' AS ' . BQ . $property_path . BQ) : '';
+	}
 
 	//-------------------------------------------------------------------------------------- quickSql
 	/**
@@ -33,11 +36,21 @@ abstract class Column implements Dao_Function
 	protected function quickSql(
 		Columns $builder, $property_path, $sql_function, $args = []
 	) {
-		$sql = $sql_function . '(' . $builder->buildColumn($property_path);
+		$sql = $sql_function . '(' . $builder->buildColumn($property_path, null, false);
 		foreach ($args as $arg) {
 			$sql .= ', ' . Value::escape($arg);
 		}
-		return $sql . ')' . ($builder->resolve_aliases ? (' AS ' . BQ . $property_path . BQ) : '');
+		return $sql . ')' . $this->aliasSql($builder, $property_path);
 	}
+
+	//----------------------------------------------------------------------------------------- toSql
+	/**
+	 * Returns the Dao function as SQL
+	 *
+	 * @param $builder       Columns the sql query builder
+	 * @param $property_path string the property path
+	 * @return string
+	 */
+	abstract public function toSql(Columns $builder, $property_path);
 
 }
