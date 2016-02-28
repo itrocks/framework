@@ -10,11 +10,9 @@ use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection_Method;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Reflection\Reflection_Property_View;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View\Html\Template\Functions;
-use SAF\Framework\Widget\Data_List\Data_List_Controller;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
@@ -44,21 +42,6 @@ class Loc implements Registerable
 		list($property, $property_path, $value) = $result;
 		$value = self::propertyToLocale($property, $value);
 		return [$property, $property_path, $value];
-	}
-
-	//------------------------------------------------------------------------- afterListSearchValues
-	/**
-	 * @param $result Reflection_Property_Value[]
-	 */
-	public function afterListSearchValues(&$result)
-	{
-		if (isset($result)) {
-			foreach ($result as $property) {
-				if ($property instanceof Reflection_Property_Value) {
-					$property->value(self::propertyToIso($property));
-				}
-			}
-		}
 	}
 
 	//------------------------------------------------------- beforeObjectBuilderArrayBuildBasicValue
@@ -182,13 +165,12 @@ class Loc implements Registerable
 
 	//------------------------------------------------------------------------------------ floatToIso
 	/**
-	 * @param $float    string
-	 * @param $property Reflection_Property
+	 * @param $float string
 	 * @return float
 	 */
-	public static function floatToIso($float, Reflection_Property $property = null)
+	public static function floatToIso($float)
 	{
-		return Locale::current()->number_format->floatToIso($float, $property);
+		return Locale::current()->number_format->floatToIso($float);
 	}
 
 	//--------------------------------------------------------------------------------- floatToLocale
@@ -216,12 +198,11 @@ class Loc implements Registerable
 	//---------------------------------------------------------------------------------- integerToIso
 	/**
 	 * @param $integer  string
-	 * @param $property Reflection_Property
 	 * @return integer
 	 */
-	public static function integerToIso($integer, Reflection_Property $property = null)
+	public static function integerToIso($integer)
 	{
-		return Locale::current()->number_format->integerToIso($integer, $property);
+		return Locale::current()->number_format->integerToIso($integer);
 	}
 
 	//------------------------------------------------------------------------------- integerToLocale
@@ -297,10 +278,6 @@ class Loc implements Registerable
 		$aop->beforeMethod(
 			[Object_Builder_Array::class, 'buildBasicValue'],
 			[$this, 'beforeObjectBuilderArrayBuildBasicValue']
-		);
-		$aop->afterMethod(
-			[Data_List_Controller::class, 'getSearchValues'],
-			[$this, 'afterListSearchValues']
 		);
 		// format to locale
 		$aop->afterMethod(
