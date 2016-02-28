@@ -414,21 +414,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	private function groupConcat(&$properties_path, Group_By $group_by)
 	{
-		foreach ($group_by->properties as $root_path) {
-			$root_path = lLastParse($root_path, DOT, 1, false);
-			if ($root_path) {
-				$root_path .= DOT;
-			}
-			$length = strlen($root_path);
-			foreach ($properties_path as $key => $property_path) {
-				if (
-					(!$root_path || (substr($property_path, 0, $length) === $root_path))
-					&& !in_array($property_path, $group_by->properties)
-				) {
-					$group_concat = new Group_Concat();
-					$group_concat->separator = ', ';
-					$properties_path[$key] = $group_concat;
-				}
+		foreach ($properties_path as $key => $property_path) {
+			if (!in_array($property_path, $group_by->properties)) {
+				$group_concat = new Group_Concat();
+				$group_concat->separator = ', ';
+				$properties_path[$key] = $group_concat;
 			}
 		}
 	}

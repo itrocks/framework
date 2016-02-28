@@ -420,6 +420,18 @@ class Joins
 		return isset($this->joins[$path]) ? $this->joins[$path]->foreign_alias : 't0';
 	}
 
+	//-------------------------------------------------------------------------------------- getClass
+	/**
+	 * Gets the class (property type) associated to the $column name, if set
+	 *
+	 * @param $column_name string
+	 * @return string|null
+	 */
+	public function getClass($column_name)
+	{
+		return isset($this->classes[$column_name]) ? $this->classes[$column_name] : null;
+	}
+
 	//------------------------------------------------------------------------------------ getClasses
 	/**
 	 * Gets an array of used classes names

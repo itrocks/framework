@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\Func;
 
-use SAF\Framework\Sql\Builder\Columns;
+use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Value;
 
 /**
@@ -34,24 +34,24 @@ class Group_Concat extends Column
 	/**
 	 * Returns the Dao function as SQL
 	 *
-	 * @param $builder       Columns the sql query builder
+	 * @param $builder       Builder\Columns the sql query builder
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(Columns $builder, $property_path)
+	public function toSql(Builder\Columns $builder, $property_path)
 	{
 		if (!isset($this->order_by)) {
 			$this->order_by = [$property_path];
 		}
 		foreach ($this->order_by as $by_path) {
-			$order_by[] = $builder->buildColumn($by_path, null, false);
+			$order_by[] = $builder->buildColumn($by_path, false, true);
 		}
 		if ($this->separator && ($this->separator !== ',')) {
 			$separator = ' SEPARATOR ' . Value::escape($this->separator);
 		}
 		$sql = 'GROUP_CONCAT('
 			. ($this->distinct ? 'DISTINCT ' : '')
-			. $builder->buildColumn($property_path, null, false)
+			. $builder->buildColumn($property_path, false, true)
 			. (isset($order_by) ? (' ORDER BY ' . join(SP, $order_by)) : '')
 			. (isset($separator) ? $separator : '')
 			. ')'
