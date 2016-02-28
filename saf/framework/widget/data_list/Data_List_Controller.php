@@ -248,12 +248,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		foreach ($list_settings->properties as $property) {
 			/** @var $property Property */
 			$property = Builder::createClone($property, Property::class);
-			$property->search = new Reflection_Property_Value($class_name, $property->path, null, true);
+			$property->search = new Reflection_Property($class_name, $property->path);
 			$properties[$property->path] = $property;
 		}
 		foreach ($list_settings->search as $property_path => $search_value) {
 			if (isset($properties[$property_path])) {
-				$this->searchProperty($properties[$property_path]->search, $search_value);
+				$properties[$property_path]->search = $this->searchProperty(
+					$properties[$property_path]->search, $search_value
+				);
 			}
 		}
 		// sort / reverse
@@ -548,19 +550,23 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//-------------------------------------------------------------------------------- searchProperty
 	/**
-	 * @param $property Reflection_Property_Value
+	 * @param $property Reflection_Property
 	 * @param $value    string
+	 * @return Reflection_Property_Value
 	 */
-	private function searchProperty(Reflection_Property_Value $property, $value)
+	private function searchProperty(Reflection_Property $property, $value)
 	{
-		if (
-			$property->getType()->isClass()
-			&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-		) {
-			$value = Dao::read($value, $property->getType()->asString());
+		if (strlen($value) && !is_null($value)) {
+			if (
+				$property->getType()->isClass()
+				&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+			) {
+				$value = Dao::read($value, $property->getType()->asString());
+			}
+			$property = new Reflection_Property_Value($property->class, $property->name, $value, true);
+			$property->value(Loc::propertyToISO($property));
 		}
-		$property->value($value);
-		$property->value(Loc::propertyToISO($property));
+		return $property;
 	}
 
 	//------------------------------------------------------------------------------------------- run
