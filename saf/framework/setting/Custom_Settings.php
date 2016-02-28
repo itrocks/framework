@@ -137,11 +137,10 @@ abstract class Custom_Settings
 	public function getClassName()
 	{
 		// TODO LOWEST remove : this is for unserialize() compatibility with old public $class_name
-		$class_name = $this->class_name;
-		if (!isset($class_name) && isset(get_object_vars($this)['class_name'])) {
+		if (!isset($this->class_name) && isset(get_object_vars($this)['class_name'])) {
 			$this->class_name = get_object_vars($this)['class_name'];
 		}
-		return Builder::className($class_name);
+		return Builder::className($this->class_name);
 	}
 
 	//----------------------------------------------------------------------------- getCustomSettings

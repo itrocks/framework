@@ -6,6 +6,7 @@ use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Dao\Func;
+use SAF\Framework\Dao\Func\Group_Concat;
 use SAF\Framework\Dao\Option\Count;
 use SAF\Framework\Dao\Option\Group_By;
 use SAF\Framework\Dao\Option\Limit;
@@ -30,6 +31,7 @@ use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\View;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Button\Has_Selection_Buttons;
+use SAF\Framework\Widget\Data_List_Setting;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 use SAF\Framework\Widget\Output\Output_Controller;
 
@@ -100,6 +102,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$list_settings->removeProperty($parameters['remove_property']);
 		}
 		elseif (isset($parameters['property_path'])) {
+			if (isset($parameters['property_group_by'])) {
+				$list_settings->propertyGroupBy(
+					$parameters['property_path'], $parameters['property_group_by']
+				);
+			}
 			if (isset($parameters['property_title'])) {
 				$list_settings->propertyTitle($parameters['property_path'], $parameters['property_title']);
 			}
@@ -383,17 +390,47 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//--------------------------------------------------------------------------------------- groupBy
 	/**
-	 * @param $properties_path string[]
+	 * @param $properties Data_List_Setting\Property[]
 	 * @return Group_By|null
 	 */
-	private function groupBy($properties_path)
+	private function groupBy($properties)
 	{
-		foreach ($properties_path as $property_path) {
-			if (strpos($property_path, DOT)) {
-				return Dao::groupBy(array_merge(['id'], $properties_path));
+		$group_by = null;
+		foreach ($properties as $property) {
+			if ($property->group_by) {
+				if (!isset($group_by)) {
+					$group_by = new Group_By();
+				}
+				$group_by->properties[] = $property->path;
 			}
 		}
-		return null;
+		return $group_by;
+	}
+
+	//----------------------------------------------------------------------------------- groupConcat
+	/**
+	 * @param $properties_path string[]
+	 * @param Group_By         $group_by
+	 */
+	private function groupConcat(&$properties_path, Group_By $group_by)
+	{
+		foreach ($group_by->properties as $root_path) {
+			$root_path = lLastParse($root_path, DOT, 1, false);
+			if ($root_path) {
+				$root_path .= DOT;
+			}
+			$length = strlen($root_path);
+			foreach ($properties_path as $key => $property_path) {
+				if (
+					(!$root_path || (substr($property_path, 0, $length) === $root_path))
+					&& !in_array($property_path, $group_by->properties)
+				) {
+					$group_concat = new Group_Concat();
+					$group_concat->separator = ', ';
+					$properties_path[$key] = $group_concat;
+				}
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------- objectsToString
@@ -437,13 +474,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		);
 		$options = [$list_settings->sort, $limit, $count];
 		$properties = array_keys($list_settings->properties);
-		// TODO : an automation to make the group by only when it is useful
-		if ($group_by = $this->groupBy($properties)) {
-			$options[] = $group_by;
-		}
 		list($properties_path, $search) = $this->removeInvisibleProperties(
 			$class_name, $properties, $search
 		);
+		// TODO : an automation to make the group by only when it is useful
+		if ($group_by = $this->groupBy($list_settings->properties)) {
+			$options[] = $group_by;
+			$this->groupConcat($properties_path, $group_by);
+		}
 		$data = Dao::select($class_name, $properties_path, $search, $options);
 		$this->objectsToString($data);
 		if (($data->length() < $limit->count) && ($limit->from > 1)) {
@@ -454,7 +492,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		// TODO LOW the following patch line is to avoid others calculation to use invisible properties
 		foreach ($list_settings->properties as $property_path => $property) {
-			if (!in_array($property_path, $properties_path)) {
+			if (!isset($properties_path[$property_path])) {
 				unset($list_settings->properties[$property_path]);
 			}
 		}
@@ -515,7 +553,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				}
 			}
 		}
-		return [array_values($properties_path), $search];
+		return [array_combine($properties_path, $properties_path), $search];
 	}
 
 	//-------------------------------------------------------------------------------- searchProperty

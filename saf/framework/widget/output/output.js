@@ -139,18 +139,15 @@ $('document').ready(function()
 			$this.parent().find('h2>span').modifiable({
 				ajax:      callback_uri + '&title={value}',
 				ajax_form: 'form',
-				aliases:   {
-					className:   className,
-					featureName: featureName
-				},
+				aliases:   { className: className, featureName: featureName },
 				popup:     output_edit_uri,
+				target:    '#messages',
 				start: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', 'none');
 				},
 				stop: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', '');
-				},
-				target: '#messages'
+				}
 			});
 
 			//--------------------------------------------------------- div[class][id]>label>a modifiable
@@ -158,11 +155,7 @@ $('document').ready(function()
 			$this.find('div[class][id]>label').modifiable({
 				ajax:       callback_uri + '&property_path={propertyPath}&property_title={value}',
 				ajax_form: 'form',
-				aliases:   {
-					className:    className,
-					featureName:  featureName,
-					propertyPath: propertyPath
-				},
+				aliases:   { className: className, featureName: featureName, propertyPath: propertyPath },
 				popup:     output_property_uri,
 				target:    '#messages'
 			});

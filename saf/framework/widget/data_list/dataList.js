@@ -150,27 +150,34 @@ $('document').ready(function()
 			{
 				return $this.closest('th').data('property');
 			};
-			var uri = window.app.uri_base + '/{className}/dataListSetting'
-				+ window.app.askSIDand() + 'as_widget';
+
+			var callback_uri = window.app.uri_base + '/{className}/dataListSetting?as_widget'
+				+ window.app.andSID();
+
+			var data_list_property_uri = window.app.uri_base
+				+ '/SAF/Framework/Widget/Data_List_Setting/Property/edit/{className}/{propertyPath}?as_widget'
+				+ window.app.andSID();
 
 			// list title (class name) double-click
 			$this.find('h2>span').modifiable({
-				ajax:    uri + '&title={value}',
-				aliases: { 'className': className },
+				ajax:      callback_uri + '&title={value}',
+				aliases:   { 'className': className },
+				target:    '#messages',
 				start: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', 'none');
 				},
 				stop: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', '');
-				},
-				target: '#messages'
+				}
 			});
 
 			// list column header (property path) double-click
 			$this.find('table>thead>tr>th.property>a').modifiable({
-				ajax:    uri + '&property_path={propertyPath}&property_title={value}',
-				aliases: { 'className': className, 'propertyPath': propertyPath },
-				target:  '#messages'
+				ajax:      callback_uri + '&property_path={propertyPath}&property_title={value}',
+				ajax_form: 'form',
+				aliases:   { 'className': className, 'propertyPath': propertyPath },
+				popup:     data_list_property_uri,
+				target:    '#messages'
 			});
 
 			//--------------------------------------------------------------- input[type=checkbox] change

@@ -223,7 +223,7 @@ class Data_List_Settings extends Custom_Settings
 	/**
 	 * Returns a list of a given parameter taken from properties
 	 *
-	 * @example $properties_display = $list_settings->propertiesParameter('one_line_per_value');
+	 * @example $properties_display = $list_settings->propertiesParameter('group_by');
 	 * @param $parameter string
 	 * @return array key is the property path, value is the parameter value
 	 */
@@ -236,18 +236,18 @@ class Data_List_Settings extends Custom_Settings
 		return $result;
 	}
 
-	//----------------------------------------------------------------------- propertyOneLinePerValue
+	//------------------------------------------------------------------------------- propertyGroupBy
 	/**
-	 * Sets the property one_line_per_value setting
+	 * Sets the property group by setting
 	 *
-	 * @param $property_path      string
-	 * @param $one_line_per_value boolean
+	 * @param $property_path string
+	 * @param $group_by      boolean
 	 */
-	public function propertyOneLinePerValue($property_path, $one_line_per_value = false)
+	public function propertyGroupBy($property_path, $group_by = false)
 	{
 		$this->initProperties();
 		if (isset($this->properties[$property_path])) {
-			$this->properties[$property_path]->one_line_per_value = $one_line_per_value;
+			$this->properties[$property_path]->group_by = $group_by;
 		}
 	}
 

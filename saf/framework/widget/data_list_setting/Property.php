@@ -17,11 +17,11 @@ class Property implements Can_Be_Empty
 	 */
 	public $display;
 
-	//--------------------------------------------------------------------------- $one_line_per_value
+	//------------------------------------------------------------------------------------- $group_by
 	/**
 	 * @var boolean
 	 */
-	public $one_line_per_value;
+	public $group_by;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -52,13 +52,13 @@ class Property implements Can_Be_Empty
 		return strval($this->display);
 	}
 
-	//--------------------------------------------------------------------------- htmlOneLinePerValue
+	//----------------------------------------------------------------------------------- htmlGroupBy
 	/**
 	 * @return string
 	 */
-	public function htmlOneLinePerValue()
+	public function htmlGroupBy()
 	{
-		return $this->one_line_per_value ? 'checked' : '';
+		return $this->group_by ? 'checked' : '';
 	}
 
 	//--------------------------------------------------------------------------------------- isEmpty

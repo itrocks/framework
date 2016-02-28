@@ -60,15 +60,6 @@ class Property extends Data_List_Setting\Property
 	 */
 	public function shortTitle()
 	{
-		return (new String($this->title()))->twoLast();
-	}
-
-	//----------------------------------------------------------------------------------------- title
-	/**
-	 * @return string
-	 */
-	public function title()
-	{
 		if (empty($this->display)) {
 			$display = str_replace(
 				'_', SP, ($locale = Locale::current()) ? Loc::tr($this->path) : $this->path
@@ -77,6 +68,18 @@ class Property extends Data_List_Setting\Property
 		else {
 			$display = $this->display;
 		}
+		return (new String($display))->twoLast();
+	}
+
+	//----------------------------------------------------------------------------------------- title
+	/**
+	 * @return string
+	 */
+	public function title()
+	{
+		$display = str_replace(
+			'_', SP, ($locale = Locale::current()) ? Loc::tr($this->path) : $this->path
+		);
 		return $display;
 	}
 
