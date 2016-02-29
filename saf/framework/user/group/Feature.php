@@ -30,6 +30,14 @@ class Feature
 		Controller\Feature::F_WRITE
 	];
 
+	const EXPORT = [
+		Controller\Feature::F_EXPORT
+	];
+
+	const IMPORT = [
+		Controller\Feature::F_IMPORT
+	];
+
 	const OUTPUT = [
 		Controller\Feature::F_LIST,
 		Controller\Feature::F_OUTPUT
@@ -123,7 +131,9 @@ class Feature
 			$this->name = $this->resolveName($name);
 		}
 		if (!isset(self::$implicit)) {
-			$implicit_features = array_merge(Feature::ADMIN, Feature::EDIT, Feature::OUTPUT);
+			$implicit_features = array_merge(
+				Feature::ADMIN, Feature::EDIT, Feature::EXPORT, Feature::IMPORT, Feature::OUTPUT
+			);
 			Feature::$implicit = array_combine($implicit_features, $implicit_features);
 		}
 	}
@@ -256,11 +266,17 @@ class Feature
 	/**
 	 * Get implicit end-user features names
 	 *
-	 * @return string[] @example ['admin', 'edit', 'output']
+	 * @return string[] @example ['admin', 'edit', 'export', 'output']
 	 */
 	public static function getImplicitFeatures()
 	{
-		return [Controller\Feature::F_ADMIN, Controller\Feature::F_EDIT, Controller\Feature::F_OUTPUT];
+		return [
+			Controller\Feature::F_ADMIN,
+			Controller\Feature::F_EDIT,
+			Controller\Feature::F_EXPORT,
+			Controller\Feature::F_IMPORT,
+			Controller\Feature::F_OUTPUT
+		];
 	}
 
 	//----------------------------------------------------------------------------------- getIncludes

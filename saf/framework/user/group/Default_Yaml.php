@@ -138,6 +138,14 @@ class Default_Yaml
 				$yaml->addFeature($feature);
 			}
 		}
+		elseif (in_array($feature, Feature::EXPORT)) {
+			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_EXPORT));
+			$yaml->extendYaml();
+		}
+		elseif (in_array($feature, Feature::IMPORT)) {
+			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_IMPORT));
+			$yaml->extendYaml();
+		}
 		elseif (in_array($feature, Feature::OUTPUT)) {
 			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_OUTPUT));
 			$yaml->extendYaml();
