@@ -313,7 +313,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$class_name, $parameters, Custom_Settings $list_settings = null
 	) {
 		return [
-			new Button(
+			Feature::F_EXPORT => new Button(
 				'Export',
 				View::link(
 					Names::classToSet($class_name), Feature::F_EXPORT, null, [Parameter::AS_WIDGET => true]
@@ -321,7 +321,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				Feature::F_EXPORT,
 				[View::TARGET => Target::TOP]
 			),
-			new Button(
+			Feature::F_PRINT => new Button(
 				'Print',
 				View::link($class_name, Feature::F_PRINT),
 				Feature::F_PRINT, [
