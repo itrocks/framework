@@ -6,6 +6,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Files;
@@ -65,6 +66,9 @@ class Export_Controller implements Default_Feature_Controller
 			if ($property->getType()->isDateTime()) {
 				$date_times[$property_path] = true;
 			}
+			if ($property->getListAnnotation('values')->values()) {
+				$translate[$property_path] = true;
+			}
 		}
 		// write data
 		foreach ($data->getRows() as $row) {
@@ -77,6 +81,9 @@ class Export_Controller implements Default_Feature_Controller
 					elseif (substr($value, -8) === '00:00:00') {
 						$value = lParse($value, SP);
 					}
+				}
+				elseif (isset($translate[$property_path])) {
+					$value = Loc::tr($value);
 				}
 				$write[] = $value;
 			}
