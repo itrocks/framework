@@ -368,8 +368,16 @@ class Access_Control implements Configurable, Registerable
 		) {
 			if (isset($parameters[$buttons])) {
 				foreach ($parameters[$buttons] as $key => $button) {
+					/** @var Button $button */
 					if (empty($button->link)) {
 						unset($parameters[$buttons][$key]);
+					}
+					else {
+						foreach ($button->sub_buttons as $sub_key => $sub_button) {
+							if (empty($sub_button->link)) {
+								unset($button->sub_buttons[$sub_key]);
+							}
+						}
 					}
 				}
 			}
