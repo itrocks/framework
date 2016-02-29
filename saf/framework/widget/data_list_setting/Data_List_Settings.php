@@ -209,8 +209,8 @@ class Data_List_Settings extends Custom_Settings
 				) {
 					$property = new Reflection_Property($class_name, $property_name);
 					if ($property->isPublic() && !$property->isStatic()) {
-						$this->properties[$property->name] = Builder::create(
-							Property::class, [$class_name, $property->name]
+						$this->properties[$property->path] = Builder::create(
+							Property::class, [$class_name, $property->path]
 						);
 					}
 				}
