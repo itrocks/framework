@@ -145,7 +145,14 @@ class Access_Control implements Configurable, Registerable
 			$user = User::current();
 			if ($user && isA($user, Has_Groups::class)) {
 				$nop = [];
-				if (!$this->checkFeatures($result, $nop, $nop, $nop)) {
+				list($uri, $arguments) = strpos($result, '?') ? explode('?', $result, 2) : [$result, null];
+				if ($this->checkFeatures($uri, $nop, $nop, $nop)) {
+					$result = $uri;
+					if (!is_null($arguments)) {
+						$result .= '?' . $arguments;
+					}
+				}
+				else {
 					$result = null;
 				}
 			}
