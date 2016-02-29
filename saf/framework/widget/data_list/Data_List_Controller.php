@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Data_List;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Dao\Func;
@@ -313,6 +314,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	) {
 		return [
 			new Button(
+				'Export',
+				View::link(
+					Names::classToSet($class_name), Feature::F_EXPORT, null, [Parameter::AS_WIDGET => true]
+				),
+				Feature::F_EXPORT,
+				[View::TARGET => Target::TOP]
+			),
+			new Button(
 				'Print',
 				View::link($class_name, Feature::F_PRINT),
 				Feature::F_PRINT, [
@@ -457,14 +466,20 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $count         Count
 	 * @return List_Data
 	 */
-	protected function readData($class_name, Data_List_Settings $list_settings, Count $count)
+	public function readData($class_name, Data_List_Settings $list_settings, Count $count = null)
 	{
 		$search = $this->applySearchParameters($list_settings);
-		$limit = new Limit(
-			$list_settings->start_display_line_number,
-			$list_settings->maximum_displayed_lines_count
-		);
-		$options = [$list_settings->sort, $limit, $count];
+		$options = [$list_settings->sort];
+		if ($count) {
+			$options[] = $count;
+		}
+		if ($list_settings->maximum_displayed_lines_count) {
+			$limit = new Limit(
+				$list_settings->start_display_line_number,
+				$list_settings->maximum_displayed_lines_count
+			);
+			$options[] = $limit;
+		}
 		$properties = array_keys($list_settings->properties);
 		list($properties_path, $search) = $this->removeInvisibleProperties(
 			$class_name, $properties, $search
@@ -476,11 +491,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		$data = Dao::select($class_name, $properties_path, $search, $options);
 		$this->objectsToString($data);
-		if (($data->length() < $limit->count) && ($limit->from > 1)) {
-			$limit->from = max(1, $count->count - $limit->count + 1);
-			$list_settings->start_display_line_number = $limit->from;
-			$list_settings->save();
-			$data = Dao::select($class_name, $properties_path, $search, $options);
+		if (isset($limit) && isset($count)) {
+			if (($data->length() < $limit->count) && ($limit->from > 1)) {
+				$limit->from = max(1, $count->count - $limit->count + 1);
+				$list_settings->start_display_line_number = $limit->from;
+				$list_settings->save();
+				$data = Dao::select($class_name, $properties_path, $search, $options);
+			}
 		}
 		// TODO LOW the following patch line is to avoid others calculation to use invisible properties
 		foreach ($list_settings->properties as $property_path => $property) {

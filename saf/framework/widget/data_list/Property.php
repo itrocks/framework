@@ -2,9 +2,7 @@
 namespace SAF\Framework\Widget\Data_List;
 
 use SAF\Framework\Locale;
-use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\String;
 use SAF\Framework\Widget\Data_List_Setting;
 
 /**
@@ -52,35 +50,6 @@ class Property extends Data_List_Setting\Property
 	public function htmlSortLink()
 	{
 		return (($this->sort == 1) && !$this->reverse) ? 'reverse' : 'sort';
-	}
-
-	//------------------------------------------------------------------------------------ shortTitle
-	/**
-	 * @return string
-	 */
-	public function shortTitle()
-	{
-		if (empty($this->display)) {
-			$display = str_replace(
-				'_', SP, ($locale = Locale::current()) ? Loc::tr($this->path) : $this->path
-			);
-		}
-		else {
-			$display = $this->display;
-		}
-		return (new String($display))->twoLast();
-	}
-
-	//----------------------------------------------------------------------------------------- title
-	/**
-	 * @return string
-	 */
-	public function title()
-	{
-		$display = str_replace(
-			'_', SP, ($locale = Locale::current()) ? Loc::tr($this->path) : $this->path
-		);
-		return $display;
 	}
 
 }

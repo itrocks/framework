@@ -149,7 +149,7 @@ class Main
 	 *                         controller namespace
 	 * @return callable
 	 */
-	private function getController($controller_name, $feature_name, $sub_feature = null)
+	public function getController($controller_name, $feature_name, $sub_feature = null)
 	{
 		if (isset($sub_feature)) {
 			list($class, $method) = Getter::get(

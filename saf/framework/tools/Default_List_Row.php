@@ -103,6 +103,15 @@ class Default_List_Row implements List_Row
 		return $this->values[$property];
 	}
 
+	//------------------------------------------------------------------------------------- getValues
+	/**
+	 * @return array
+	 */
+	public function getValues()
+	{
+		return $this->values;
+	}
+
 	//-------------------------------------------------------------------------------------------- id
 	/**
 	 * @return object

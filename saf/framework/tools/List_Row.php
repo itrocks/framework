@@ -46,6 +46,14 @@ interface List_Row
 	 */
 	public function getValue($property);
 
+	//------------------------------------------------------------------------------------- getValues
+	/**
+	 * Gets all values from the row
+	 *
+	 * @return array
+	 */
+	public function getValues();
+
 	//-------------------------------------------------------------------------------------------- id
 	/**
 	 * Returns the row's DAO identifier
