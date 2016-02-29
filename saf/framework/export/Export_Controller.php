@@ -6,6 +6,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Files;
 use SAF\Framework\Tools\Names;
@@ -58,9 +59,28 @@ class Export_Controller implements Default_Feature_Controller
 			$row[] = $property->shortTitle();
 		}
 		fputcsv($f, $row);
+		// format dates
+		foreach ($data->getProperties() as $property_path) {
+			$property = new Reflection_Property($class_name, $property_path);
+			if ($property->getType()->isDateTime()) {
+				$date_times[$property_path] = true;
+			}
+		}
 		// write data
 		foreach ($data->getRows() as $row) {
-			fputcsv($f, $row->getValues());
+			$write = [];
+			foreach ($row->getValues() as $property_path => $value) {
+				if (isset($date_times[$property_path])) {
+					if ($value === '0000-00-00 00:00:00') {
+						$value = null;
+					}
+					elseif (substr($value, -8) === '00:00:00') {
+						$value = lParse($value, SP);
+					}
+				}
+				$write[] = $value;
+			}
+			fputcsv($f, $write);
 		}
 		// done
 		fclose($f);
