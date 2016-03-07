@@ -124,15 +124,15 @@ class Proxy
 	 */
 	private function dataEncode($array, $prefix = null)
 	{
-		$url = "";
+		$url = '';
 		if (!is_array($array)) {
 			$url .= "&$prefix=$array";
 		} else {
 			foreach ($array as $key => $val) {
 				if (is_array($val)) {
-					$url .= "&" . $this->dataEncode($val, $prefix ? ($prefix . "[$key]") : $key);
+					$url .= '&' . $this->dataEncode($val, $prefix ? ($prefix . "[$key]") : $key);
 				} elseif ($prefix) {
-					$url .= "&" . $prefix . "[$key]=$val";
+					$url .= '&' . $prefix . "[$key]=$val";
 				} else {
 					$url .= "&$key=$val";
 				}
@@ -309,7 +309,7 @@ class Proxy
 		$host = $url['host'];
 		$f = @fsockopen(
 			(($url['scheme'] == 'https') ? 'ssl://' : '') . $host,
-			($url['scheme'] == 'https') ? 443 : 80,
+			$url['port'] ? $url['port'] : (($url['scheme'] == 'https') ? 443 : 80),
 			$errno, $error, 30
 		);
 		if ($f) {
