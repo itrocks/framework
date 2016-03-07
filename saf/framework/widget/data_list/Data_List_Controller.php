@@ -151,7 +151,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $list_settings Data_List_Settings
 	 * @return array search-compatible search array
 	 */
-	protected function applySearchParameters(Data_List_Settings $list_settings)
+	public function applySearchParameters(Data_List_Settings $list_settings)
 	{
 		$class = $list_settings->getClass();
 		/** @var $search_parameters_parser Search_Parameters_Parser */
@@ -515,7 +515,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $search          array search where to add Has_History criterions
 	 * @return string[] properties path without the invisible properties
 	 */
-	protected function removeInvisibleProperties($class_name, $properties_path, $search)
+	public function removeInvisibleProperties($class_name, $properties_path, $search)
 	{
 		// remove properties directly used as columns
 		foreach ($properties_path as $key => $property_path) {
