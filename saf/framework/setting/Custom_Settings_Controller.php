@@ -32,7 +32,7 @@ abstract class Custom_Settings_Controller
 			$feature = isset($parameters[Feature::FEATURE]) ? $parameters[Feature::FEATURE] : null;
 			$custom_settings = call_user_func_array(
 				[get_class($custom_settings), 'load'],
-				[$custom_settings->getClassName(), $feature, $parameters['load_name']]
+				[$custom_settings->getSourceClassName(), $feature, $parameters['load_name']]
 			);
 			$custom_settings->cleanup();
 			$did_change = true;

@@ -138,7 +138,7 @@ abstract class Custom_Settings
 	{
 		// TODO LOWEST remove : this is for unserialize() compatibility with old public $class_name
 		if (!isset($this->class_name) && isset(get_object_vars($this)['class_name'])) {
-			$this->class_name = get_object_vars($this)['class_name'];
+			$this->class_name = Builder::current()->sourceClassName(get_object_vars($this)['class_name']);
 		}
 		return Builder::className($this->class_name);
 	}
@@ -162,6 +162,19 @@ abstract class Custom_Settings
 		}
 		ksort($list);
 		return $list;
+	}
+
+	//---------------------------------------------------------------------------- getSourceClassName
+	/**
+	 * @return string
+	 */
+	public function getSourceClassName()
+	{
+		// TODO LOWEST remove : this is for unserialize() compatibility with old public $class_name
+		if (!isset($this->class_name) && isset(get_object_vars($this)['class_name'])) {
+			$this->class_name = Builder::current()->sourceClassName(get_object_vars($this)['class_name']);
+		}
+		return $this->class_name;
 	}
 
 	//------------------------------------------------------------------------------------------ load
