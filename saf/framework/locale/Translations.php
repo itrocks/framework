@@ -89,7 +89,7 @@ class Translations
 
 	//------------------------------------------------------------------------------------- translate
 	/**
-	 * Translates a text using current language and an optionnal given context
+	 * Translates a text using current language and an optional given context
 	 *
 	 * @param $text    string
 	 * @param $context string

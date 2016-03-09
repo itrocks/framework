@@ -31,7 +31,7 @@ class Uri
 	/**
 	 * The list of parameters sent to the controller
 	 *
-	 * @example URI is '/Order/3/Line/2/output', there will be two parameters : 'Order' with it's value 3, and 'Line' with it's value 2
+	 * @example URI is '/Order/3/Line/2/output', there will be two parameters : 'Order' with its value 3, and 'Line' with its value 2
 	 * @var Parameters
 	 */
 	public $parameters;

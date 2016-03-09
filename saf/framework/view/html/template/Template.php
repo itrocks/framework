@@ -1185,7 +1185,7 @@ class Template
 	{
 		if (($i = strrpos($loop->content, '<!--separator-->')) !== false) {
 			$separator = substr($loop->content, $i + 16);
-			// this separator is not for me if there is any <!--block--> to parse into it's source code.
+			// this separator is not for me if there is any <!--block--> to parse into its source code.
 			$j = 0;
 			while (strpos($separator, '<!--', $j) !== false) {
 				$j += 4;

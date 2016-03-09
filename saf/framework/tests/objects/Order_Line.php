@@ -44,7 +44,7 @@ class Order_Line
 	 * Order
 	 *
 	 * The 'composite' annotation is not mandatory if it's guaranteed there will be only one property
-	 * of type 'Order' into the class and it's children.
+	 * of type 'Order' into the class and its children.
 	 *
 	 * @composite
 	 * @mandatory

@@ -11,8 +11,8 @@ use SAF\Framework\Tools\List_Data;
 
 /**
  * This data link stores objects into files
- * - one directory per class (it's path is the full class name)
- * - one file per object (it's name is an internal integer identifier)
+ * - one directory per class (its path is the full class name)
+ * - one file per object (its name is an internal integer identifier)
  */
 class Link extends Identifier_Map
 {

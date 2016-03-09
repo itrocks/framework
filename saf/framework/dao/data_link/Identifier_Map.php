@@ -113,7 +113,7 @@ abstract class Identifier_Map extends Data_Link
 	/**
 	 * Forces an object identifier
 	 *
-	 * Use it after an object is read from data link to associate it's identifier to it.
+	 * Use it after an object is read from data link to associate its identifier to it.
 	 *
 	 * @param $object        object
 	 * @param $id            mixed

@@ -93,7 +93,7 @@ class Select
 
 	//---------------------------------------------------------------------------------- buildOptions
 	/**
-	 * Builds optionnal SQL expressions, component of the SELECT query
+	 * Builds optional SQL expressions, component of the SELECT query
 	 *
 	 * @return string[]
 	 */

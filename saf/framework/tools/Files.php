@@ -11,11 +11,10 @@ abstract class Files
 	/**
 	 * Appends a slash to the string if there is none
 	 *
-	 * If the string is empty, it will keep empty and no slash will be appended.
+	 * If the string is empty, it will remain empty and no slash will be appended.
 	 *
 	 * @param $string string The string to analyse
-	 * @return string return the string with a slash if there is no but it's the same string if there
-	 * are already a slash
+	 * @return string return the string with a trailing slash if there is none
 	 */
 	public static function appendSlash($string)
 	{

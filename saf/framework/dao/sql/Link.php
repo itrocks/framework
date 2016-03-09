@@ -25,7 +25,7 @@ abstract class Link extends Identifier_Map implements Transactional
 
 	//--------------------------------------------------------------------------------------- $tables
 	/**
-	 * Links each class name to it's storage table name
+	 * Links each class name to its storage table name
 	 *
 	 * @var string[] key is the class name, with or without namespace
 	 */

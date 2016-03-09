@@ -28,7 +28,7 @@ class Table_Builder_Class
 	 * Excluded properties names
 	 *
 	 * For classes with a link annotation, all properties names from the linked parent class
-	 * and it's own parents are excluded.
+	 * and its own parents are excluded.
 	 *
 	 * @var string[]
 	 */

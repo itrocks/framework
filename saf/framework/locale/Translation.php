@@ -2,7 +2,7 @@
 namespace SAF\Framework\Locale;
 
 /**
- * A translation is the association of the origin programmed text and it's translation using a given
+ * A translation is the association of the origin programmed text and its translation using a given
  * language
  *
  * @representative language, text, translation
