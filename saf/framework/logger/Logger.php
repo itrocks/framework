@@ -35,6 +35,19 @@ class Logger implements Registerable
 		$aop->afterMethod( [Main::class, 'runController'], [$this, 'stop']);
 	}
 
+	//---------------------------------------------------------------------------------------- resume
+	/**
+	 * Write stop date, but this is not the final write.
+	 * Call this sometimes when you execute a daemon script without time limit.
+	 */
+	public function resume()
+	{
+		if ($this->anti_loop) {
+			$this->log_entry->resume();
+			Dao::write($this->log_entry, [Dao::only(['duration', 'error_code', 'stop'])]);
+		}
+	}
+
 	//----------------------------------------------------------------------------------------- start
 	/**
 	 * Start logging : write pids and start-time
@@ -62,7 +75,7 @@ class Logger implements Registerable
 		$this->anti_loop--;
 		if (!$this->anti_loop) {
 			$this->log_entry->stop();
-			Dao::write($this->log_entry);
+			Dao::write($this->log_entry, [Dao::only(['duration', 'error_code', 'stop'])]);
 		}
 	}
 

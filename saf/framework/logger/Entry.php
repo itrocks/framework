@@ -30,6 +30,25 @@ class Entry
 	 */
 	public $duration;
 
+	//------------------------------------------------------------------------------- $duration_start
+	/**
+	 * This is the microtime when the script starts.
+	 * Used to calculate duration on resume() and stop()
+	 *
+	 * @store false
+	 * @var float
+	 */
+	private $duration_start;
+
+	//----------------------------------------------------------------------------------- $error_code
+	/**
+	 * Error code enable to know how the script stopped
+	 *
+	 * @see Error_Code
+	 * @var integer
+	 */
+	private $error_code;
+
 	//---------------------------------------------------------------------------------------- $files
 	/**
 	 * @max_length 65000
@@ -64,12 +83,14 @@ class Entry
 
 	//---------------------------------------------------------------------------------------- $start
 	/**
+	 * @link DateTime
 	 * @var Date_Time
 	 */
 	public $start;
 
 	//----------------------------------------------------------------------------------------- $stop
 	/**
+	 * @link DateTime
 	 * @var Date_Time
 	 */
 	public $stop;
@@ -93,7 +114,7 @@ class Entry
 	public function __construct($uri, $arguments = null, $form = null, $files = null)
 	{
 		if (!isset($this->start)) {
-			$this->duration = microtime(true);
+			$this->duration_start = microtime(true);
 			$this->start = new Date_Time();
 		}
 		if (!isset($this->process_id)) {
@@ -125,6 +146,13 @@ class Entry
 		}
 	}
 
+	//---------------------------------------------------------------------------------------- resume
+	public function resume()
+	{
+		$this->stop();
+		$this->error_code = Error_Code::RUNNING;
+	}
+
 	//------------------------------------------------------------------------------------- serialize
 	/**
 	 * @param $str string
@@ -139,7 +167,8 @@ class Entry
 	//------------------------------------------------------------------------------------------ stop
 	public function stop()
 	{
-		$this->duration = microtime(true) - $this->duration;
+		$this->error_code = Error_Code::OK;
+		$this->duration = microtime(true) - $this->duration_start;
 		$this->stop = new Date_Time();
 	}
 
