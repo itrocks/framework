@@ -386,6 +386,10 @@ class Main
 				ini_set('memory_limit', $get['memory_limit']);
 				unset($get['memory_limit']);
 			}
+			if (isset($get['time_limit'])) {
+				set_time_limit($get['time_limit']);
+				unset($get['time_limit']);
+			}
 			session_start();
 			if (isset($GLOBALS['X'])) {
 				$_SESSION = [];
