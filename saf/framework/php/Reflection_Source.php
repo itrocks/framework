@@ -497,9 +497,8 @@ class Reflection_Source
 	 */
 	public function getAll()
 	{
-		$filters = [];
+		$filters = [self::DEPENDENCIES];
 		if (!isset($this->classes))      $filters[] = self::CLASSES;
-		if (!isset($this->dependencies)) $filters[] = self::DEPENDENCIES;
 		if (!isset($this->instantiates)) $filters[] = self::INSTANTIATES;
 		if (!isset($this->namespaces))   $filters[] = self::NAMESPACES;
 		if (!isset($this->requires))     $filters[] = self::REQUIRES;
@@ -557,9 +556,10 @@ class Reflection_Source
 	public function getClasses()
 	{
 		if (!isset($this->classes)) {
-			$filters = [self::CLASSES];
+			$filters = [self::CLASSES, self::DEPENDENCIES];
 			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
 			if (!isset($this->requires))   $filters[] = self::REQUIRES;
+			if (!isset($this->use))        $filters[] = self::USES;
 			$this->get($filters);
 		}
 		return $this->classes;
@@ -576,9 +576,8 @@ class Reflection_Source
 	public function getDependencies($instantiates = false)
 	{
 		if (!isset($this->dependencies) || ($instantiates && !isset($this->instantiates))) {
-			$filters = [];
+			$filters = [self::DEPENDENCIES];
 			if ($instantiates && !isset($this->instantiates)) $filters[] = self::INSTANTIATES;
-			if (!isset($this->dependencies))                  $filters[] = self::DEPENDENCIES;
 			if (!isset($this->namespaces))                    $filters[] = self::NAMESPACES;
 			if (!isset($this->requires))                      $filters[] = self::REQUIRES;
 			if (!isset($this->use))                           $filters[] = self::USES;
@@ -623,7 +622,7 @@ class Reflection_Source
 	public function getInstantiates()
 	{
 		if (!isset($this->instantiates)) {
-			$filters = [self::INSTANTIATES];
+			$filters = [self::DEPENDENCIES, self::INSTANTIATES];
 			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
 			if (!isset($this->requires))   $filters[] = self::REQUIRES;
 			if (!isset($this->use))        $filters[] = self::USES;
