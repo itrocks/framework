@@ -230,15 +230,21 @@ class Compiler implements
 						$added = array_merge($added, $compiler->moreSourcesToCompile($this->sources));
 					}
 
-					foreach ($added as $source) {
-						/** @var Reflection_Source $source inspector bug */
-						/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-						(new Set)->replace(
-							$source->getDependencies(true),
-							Dependency::class,
-							['file_name' => $source->file_name]
-						);
-						$this->sources[$source->getFirstClassName() ?: $source->file_name] = $source;
+					foreach ($added as $added_key => $source) {
+						$source_file_name = $source->getFirstClassName() ?: $source->file_name;
+						if (isset($this->sources[$source_file_name])) {
+							unset($added[$added_key]);
+						}
+						else {
+							/** @var Reflection_Source $source inspector bug */
+							/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
+							(new Set)->replace(
+								$source->getDependencies(true),
+								Dependency::class,
+								['file_name' => $source->file_name]
+							);
+							$this->sources[$source_file_name] = $source;
+						}
 					}
 
 					if (count($compilers) == 1) {
