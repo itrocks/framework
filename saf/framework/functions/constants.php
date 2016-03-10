@@ -1,5 +1,7 @@
 <?php
 
+const _PRE = '</pre>';
+
 const AS_ARRAY = 'AS_ARRAY';
 
 const AT = '@';
