@@ -218,13 +218,13 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	{
 		if (!isset($this->parent)) {
 			$this->parent = false;
-			$parent = $this->class->getParentClass();
-			if ($parent) {
-				$properties = $parent->getProperties();
+			$parent_class = $this->class->getParentClass();
+			if ($parent_class) {
+				$properties = $parent_class->getProperties();
 				if (!isset($properties[$this->name])) {
-					$properties = $parent->getProperties([T_USE]);
+					$properties = $parent_class->getProperties([T_USE]);
 					if (!isset($properties[$this->name])) {
-						$properties = $parent->getProperties([T_EXTENDS]);
+						$properties = $parent_class->getProperties([T_EXTENDS]);
 					}
 				}
 				if (isset($properties[$this->name])) {

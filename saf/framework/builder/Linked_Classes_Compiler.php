@@ -108,9 +108,9 @@ class Linked_Classes_Compiler implements ICompiler
 							!isset($sources[$dependency->file_name])
 							&& !Builder::isBuilt($dependency->class_name)
 						) {
-							$source_class_name = $source->getFirstClassName();
-							$added[$source_class_name ?: $dependency->file_name]
-								= Reflection_Source::ofFile($dependency->file_name, $source_class_name);
+							$added[$dependency->class_name] = Reflection_Source::ofFile(
+								$dependency->file_name, $dependency->class_name
+							);
 						}
 					}
 				}

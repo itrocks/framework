@@ -101,7 +101,7 @@ class Compiler implements ICompiler
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
 					/** @var $dependency Dependency */
 					if (!isset($sources[$dependency->file_name])) {
-						$source = Reflection_Source::ofFile($dependency->file_name);
+						$source = Reflection_Source::ofFile($dependency->file_name, $dependency->class_name);
 						$sources[$dependency->file_name] = $source;
 						$added[$source->getFirstClassName() ?: $dependency->file_name] = $source;
 					}
