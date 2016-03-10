@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Edit;
 
 use DateTime;
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Dao\File\Session_File;
@@ -495,6 +496,9 @@ class Html_Builder_Type
 	public function setTemplate(Html_Template $template)
 	{
 		$this->template = $template;
+		if (!$this->preprop) {
+			$this->preprop = $this->template->getParameter(Parameter::PROPERTIES_PREFIX);
+		}
 		return $this;
 	}
 

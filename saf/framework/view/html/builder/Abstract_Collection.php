@@ -1,9 +1,13 @@
 <?php
 namespace SAF\Framework\View\Html\Builder;
 
+use SAF\Framework\Builder;
+use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Mapper;
 use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\View;
 use SAF\Framework\View\Html\Dom\Table;
+use SAF\Framework\View\Html\Template;
 
 /**
  * Takes a collection of objects and build an HTML output containing their data
@@ -52,7 +56,8 @@ class Abstract_Collection
 	{
 		$result = '';
 		foreach ($this->collection as $object) {
-			$result .= PRE . print_r($object, true) . _PRE;
+			$parameters = [$object, Parameter::IS_INCLUDED => true, Template::TEMPLATE => 'object'];
+			$result .= View::run($parameters, [], [], get_class($object), 'output');
 		}
 		return $result;
 	}

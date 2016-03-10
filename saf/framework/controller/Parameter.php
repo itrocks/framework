@@ -17,6 +17,7 @@ class Parameter
 	const EXPAND_PROPERTY_PATH = 'expand_property_path';
 	const IS_INCLUDED          = 'is_included';
 	const PROPERTIES_FILTER    = 'properties_filter';
+	const PROPERTIES_PREFIX    = 'properties_prefix';
 	const PROPERTIES_TITLE     = 'properties_title';
 
 }

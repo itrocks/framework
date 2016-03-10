@@ -2,8 +2,11 @@
 namespace SAF\Framework\Widget\Edit;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Controller\Parameter;
+use SAF\Framework\View;
 use SAF\Framework\View\Html\Builder\Abstract_Collection;
 use SAF\Framework\View\Html\Dom\Table;
+use SAF\Framework\View\Html\Template;
 
 /**
  * Takes a collection of objects and build a HTML edit sub-form containing their data.
@@ -35,7 +38,20 @@ class Html_Builder_Abstract_Collection extends Abstract_Collection
 	 */
 	public function build()
 	{
-		return parent::build();
+		$result = '';
+		foreach ($this->collection as $object) {
+			$property_prefix = $this->property->pathAsField()
+				. '[' . $this->template->nextCounter($this->property->path) . ']';
+			$parameters = [
+				$object,
+				Parameter::IS_INCLUDED       => true,
+				Parameter::PROPERTIES_PREFIX => $property_prefix,
+				Template::TEMPLATE_NAMESPACE => __NAMESPACE__,
+				Template::TEMPLATE           => 'object'
+			];
+			$result .= View::run($parameters, [], [], get_class($object), 'output');
+		}
+		return $result;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate

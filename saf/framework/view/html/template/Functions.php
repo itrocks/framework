@@ -534,14 +534,16 @@ class Functions
 		}
 
 		foreach ($properties as $property_path => $property) {
-			$property = new Reflection_Property_Value(
-				$class->name, $property->path, $object, false, true
-			);
-			if ($this->isPropertyVisible($property)) {
-				if (isset($properties_title) && isset($properties_title[$property_path])) {
-					$property->display = $properties_title[$property_path];
+			if (!$property->isStatic()) {
+				$property = new Reflection_Property_Value(
+					$class->name, $property->path, $object, false, true
+				);
+				if ($this->isPropertyVisible($property)) {
+					if (isset($properties_title) && isset($properties_title[$property_path])) {
+						$property->display = $properties_title[$property_path];
+					}
+					$result_properties[$property_path] = $property;
 				}
-				$result_properties[$property_path] = $property;
 			}
 		}
 
