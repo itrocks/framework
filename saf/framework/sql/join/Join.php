@@ -97,7 +97,7 @@ class Join
 
 	//----------------------------------------------------------------------------------- newInstance
 	/**
-	 * Generate a new Sql_Join instance, with initialization of all it's properties
+	 * Generate a new Sql_Join instance, with initialization of all its properties
 	 *
 	 * @param $mode           integer
 	 * @param $master_alias   string

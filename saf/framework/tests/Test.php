@@ -2,7 +2,7 @@
 namespace SAF\Framework\Tests;
 
 /**
- * All unit test classes must extend this, to access it's begin(), end() and assume() methods
+ * All unit test classes must extend this, to access its begin(), end() and assume() methods
  */
 class Test
 {

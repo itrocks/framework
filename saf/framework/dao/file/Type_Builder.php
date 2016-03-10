@@ -2,7 +2,7 @@
 namespace SAF\Framework\Dao\File;
 
 /**
- * Builds a File Type by analysing a file extension and checking it's content
+ * Builds a File Type by analysing a file extension and checking its content
  */
 abstract class Type_Builder
 {

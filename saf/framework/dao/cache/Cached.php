@@ -41,7 +41,7 @@ class Cached
 
 	//---------------------------------------------------------------------------------------- access
 	/**
-	 * Call this each time the object is accessed : it's access date-time will be updated
+	 * Call this each time the object is accessed : its access date-time will be updated
 	 */
 	public function access()
 	{

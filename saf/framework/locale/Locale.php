@@ -78,7 +78,7 @@ class Locale implements Configurable
 
 	//-------------------------------------------------------------------------------- methodToLocale
 	/**
-	 * Change an ISO value into a locale formatted value, knowing it's method
+	 * Change an ISO value into a locale formatted value, knowing its method
 	 *
 	 * @param $method Reflection_Method
 	 * @param $value  string
@@ -91,7 +91,7 @@ class Locale implements Configurable
 
 	//--------------------------------------------------------------------------------- propertyToIso
 	/**
-	 * Change a locale value into an ISO formatted value, knowing it's property
+	 * Change a locale value into an ISO formatted value, knowing its property
 	 *
 	 * @param $property Reflection_Property
 	 * @param $value    string
@@ -109,7 +109,7 @@ class Locale implements Configurable
 
 	//------------------------------------------------------------------------------ propertyToLocale
 	/**
-	 * Change an ISO value into a locale formatted value, knowing it's property
+	 * Change an ISO value into a locale formatted value, knowing its property
 	 *
 	 * @param $property Reflection_Property
 	 * @param $value    string
@@ -165,7 +165,7 @@ class Locale implements Configurable
 
 	//----------------------------------------------------------------------------------------- toIso
 	/**
-	 * Change a locale value into an ISO formatted value, knowing it's data type
+	 * Change a locale value into an ISO formatted value, knowing its data type
 	 *
 	 * @param $value string
 	 * @param $type  Type
@@ -189,7 +189,7 @@ class Locale implements Configurable
 
 	//-------------------------------------------------------------------------------------- toLocale
 	/**
-	 * Change an ISO value into a locale formatted value, knowing it's data type
+	 * Change an ISO value into a locale formatted value, knowing its data type
 	 *
 	 * @param $type  Type
 	 * @param $value string

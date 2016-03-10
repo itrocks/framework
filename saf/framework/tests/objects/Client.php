@@ -27,7 +27,7 @@ class Client
 
 	//--------------------------------------------------------------------------------------- $client
 	/**
-	 * Link to it's own client (for recursivity tests)
+	 * Link to its own client (for recursivity tests)
 	 *
 	 * @link Object
 	 * @var Client

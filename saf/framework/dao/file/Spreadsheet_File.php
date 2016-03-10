@@ -50,10 +50,10 @@ class Spreadsheet_File
 
 	//----------------------------------------------------------------------------------- fileToArray
 	/**
-	 * This is a direct, fast and optimized feature to read an excel file and return it's workseets
-	 * into a simple PHP array, as fastest as possible, using gnumeric.
+	 * This is a direct, fast and optimized feature to read an excel file and return its worksheets
+	 * into a simple PHP array, as fast as possible, using gnumeric.
 	 *
-	 * This enable you to import huge xls files of 10MB and more
+	 * This enables you to import huge xls files of 10MB and more
 	 *
 	 * @param $file_name string
 	 * @param $errors    string[]

@@ -14,7 +14,7 @@ use SAF\Framework\Reflection\Link_Class;
  * This tells that the class is a link class
  *
  * It means that :
- * - it's data storage set naming will be appended by a '_links'
+ * - its data storage set naming will be appended by a '_links'
  * - there will be no data storage field creation for parent linked table into this data storage set
  *   but a link field
  *

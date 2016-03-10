@@ -4,7 +4,7 @@ namespace SAF\Framework\Tests\Objects;
 use SAF\Framework\Mapper\Component;
 
 /**
- * A salesman with specific data for it's link to a quote
+ * A salesman with specific data for its link to a quote
  *
  * The 'link' annotation allow to consider this class as a link class
  *

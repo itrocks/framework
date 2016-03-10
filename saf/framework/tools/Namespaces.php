@@ -167,7 +167,7 @@ abstract class Namespaces
 
 	//-------------------------------------------------------------------------------- shortClassName
 	/**
-	 * Get the short class name (without it's namespace) for a given class name
+	 * Get the short class name (without its namespace) for a given class name
 	 * (with or without namespace)
 	 *
 	 * @param $class_name string
