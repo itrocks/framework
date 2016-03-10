@@ -80,7 +80,7 @@ class Html_Builder_Property extends Html_Builder_Type
 
 	//------------------------------------------------------------------------------- buildCollection
 	/**
-	 * @return Table
+	 * @return string
 	 */
 	private function buildCollection()
 	{
@@ -90,7 +90,9 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (!$this->value) {
 			$this->value = [];
 		}
-		$collection = new Html_Builder_Collection($this->property, $this->value);
+		$collection = $this->property->getType()->asReflectionClass()->isAbstract()
+			? new Html_Builder_Abstract_Collection($this->property, $this->value)
+			: new Html_Builder_Collection($this->property, $this->value);
 		$collection->preprop = $this->preprop;
 		$collection->setTemplate($this->template);
 		return $collection->build();

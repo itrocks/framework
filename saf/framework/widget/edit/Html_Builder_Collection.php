@@ -15,7 +15,7 @@ use SAF\Framework\View\Html\Dom\Table\Standard_Cell;
 use SAF\Framework\View\Html\Dom\Table;
 
 /**
- * Takes a collection of objects and build a HTML edit subform containing their data
+ * Takes a collection of objects and build a HTML edit sub-form containing their data
  */
 class Html_Builder_Collection extends Collection
 {

@@ -3,8 +3,10 @@ namespace SAF\Framework\Mapper;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\PHP\Dependency;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Link_Class;
+use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Stringable;
@@ -37,6 +39,30 @@ abstract class Getter
 		return $stored;
 	}
 
+	//------------------------------------------------------------------------- getAbstractCollection
+	/**
+	 * Gets a collection of objects which class is abstract.
+	 * - Use Dependency to get all possible classes
+	 * - Get objects from each possible class
+	 * - Return all of them
+	 *
+	 * @param $class_name string
+	 * @param $object     object
+	 * @param $property   string|Reflection_Property
+	 * @return object[]
+	 */
+	private static function getAbstractCollection($class_name, $object, $property = null)
+	{
+		$objects = [];
+		$class_names = self::getFinalClasses($class_name);
+		foreach ($class_names as $class_name) {
+			$stored = null;
+			self::getCollection($stored, $class_name, $object, $property);
+			$objects = array_merge($objects, $stored);
+		}
+		return $objects;
+	}
+
 	//--------------------------------------------------------------------------------- getCollection
 	/**
 	 * Generic getter for a collection of objects
@@ -52,57 +78,63 @@ abstract class Getter
 	{
 		if (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {
-				$search_element = Search_Object::create($class_name);
-				$is_component = isA($search_element, Component::class);
-				if (isset($property)) {
-					if (!$property instanceof Reflection_Property) {
-						$property = new Reflection_Property(get_class($object), $property);
-					}
-					$property_name = $property->getAnnotation('foreign')->value;
-					$dao = Dao::get($property->getAnnotation('dao')->value);
+				$class = new Reflection_Class($class_name);
+				if ($class->isAbstract()) {
+					$stored = self::getAbstractCollection($class_name, $object, $property);
 				}
 				else {
-					$dao = Dao::current();
-					$property_name = null;
-				}
-				if ($is_component) {
-					/** @var $search_element Component */
-					$search_element->setComposite($object, $property_name);
-					$link_properties_names = (new Link_Class($class_name))->getLinkPropertiesNames();
-					$options = $link_properties_names
-						? [Dao::sort(), Dao::key($link_properties_names)]
-						: [Dao::sort()];
-					$stored = $dao->search($search_element, null, $options);
-				}
-				// when element class is not a component and a property name was found
-				elseif (!empty($property_name)) {
-					$property = new Reflection_Property(get_class($search_element), $property_name);
-					$accessible = $property->isPublic();
-					if (!$accessible) {
-						$property->setAccessible(true);
+					$search_element = Search_Object::create($class_name);
+					$is_component = isA($search_element, Component::class);
+					if (isset($property)) {
+						if (!$property instanceof Reflection_Property) {
+							$property = new Reflection_Property(get_class($object), $property);
+						}
+						$property_name = $property->getAnnotation('foreign')->value;
+						$dao = Dao::get($property->getAnnotation('dao')->value);
 					}
-					$property->setValue($search_element, $object);
-					if (!$accessible) {
-						$property->setAccessible(false);
+					else {
+						$dao = Dao::current();
+						$property_name = null;
 					}
-					$stored = $dao->search($search_element, null, [Dao::sort()]);
-				}
-				else {
-					trigger_error(
-						'getCollection() must be called for a component foreign type'
-						. ' or with a parent property name',
-						E_USER_ERROR
-					);
-				}
-				if ($stored && $is_component) {
-					// $element->setComposite() is not used for optimization reason :
-					// this should go as fast as it can
-					/** @var $element Component */
-					$element = reset($stored);
-					$composite_properties = $element->getCompositeProperties($object);
-					foreach ($stored as $element) {
-						foreach ($composite_properties as $property) {
-							$property->setValue($element, $object);
+					if ($is_component) {
+						/** @var $search_element Component */
+						$search_element->setComposite($object, $property_name);
+						$link_properties_names = (new Link_Class($class_name))->getLinkPropertiesNames();
+						$options = $link_properties_names
+							? [Dao::sort(), Dao::key($link_properties_names)]
+							: [Dao::sort()];
+						$stored = $dao->search($search_element, null, $options);
+					}
+					// when element class is not a component and a property name was found
+					elseif (!empty($property_name)) {
+						$property = new Reflection_Property(get_class($search_element), $property_name);
+						$accessible = $property->isPublic();
+						if (!$accessible) {
+							$property->setAccessible(true);
+						}
+						$property->setValue($search_element, $object);
+						if (!$accessible) {
+							$property->setAccessible(false);
+						}
+						$stored = $dao->search($search_element, null, [Dao::sort()]);
+					}
+					else {
+						trigger_error(
+							'getCollection() must be called for a component foreign type'
+							. ' or with a parent property name',
+							E_USER_ERROR
+						);
+					}
+					if ($stored && $is_component) {
+						// $element->setComposite() is not used for optimization reason :
+						// this should go as fast as it can
+						/** @var $element Component */
+						$element = reset($stored);
+						$composite_properties = $element->getCompositeProperties($object);
+						foreach ($stored as $element) {
+							foreach ($composite_properties as $property) {
+								$property->setValue($element, $object);
+							}
 						}
 					}
 				}
@@ -127,6 +159,31 @@ abstract class Getter
 			$stored = Date_Time::fromISO($stored);
 		}
 		return $stored;
+	}
+
+	//------------------------------------------------------------------------------- getFinalClasses
+	/**
+	 * Gets final class names of an extensible class
+	 * This uses Dependency cache
+	 *
+	 * @param $class_name string
+	 * @return string[]
+	 */
+	private static function getFinalClasses($class_name)
+	{
+		$class_names = [];
+		$search = ['dependency_name' => $class_name, 'type' => Dependency::T_EXTENDS];
+		foreach (Dao::search($search, Dependency::class) as $dependency) {
+			/** @var $dependency Dependency */
+			$class = new Reflection_Class($dependency->class_name);
+			if (!$class->isAbstract()) {
+				$class_names[$class->name] = $class->name;
+			}
+			$class_names = array_merge(
+				$class_names, self::getFinalClasses($class->name)
+			);
+		}
+		return $class_names;
 	}
 
 	//---------------------------------------------------------------------------------------- getMap

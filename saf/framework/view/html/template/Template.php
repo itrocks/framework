@@ -15,7 +15,6 @@ use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Paths;
 use SAF\Framework\Tools\String;
 use SAF\Framework\View\Html;
-use SAF\Framework\View\Html\Builder\Property;
 use SAF\Framework\View\Html\Template\Functions;
 use SAF\Framework\View\Html\Template\Loop;
 
@@ -573,7 +572,9 @@ class Template
 	 */
 	protected function parseCollection(Reflection_Property $property, $collection)
 	{
-		return (new Html\Builder\Collection($property, $collection))->build();
+		return $property->getType()->asReflectionClass()->isAbstract()
+			? (new Html\Builder\Abstract_Collection($property, $collection))->build()
+			: (new Html\Builder\Collection($property, $collection))->build();
 	}
 
 	//------------------------------------------------------------------------------ parseConditional
@@ -1171,6 +1172,7 @@ class Template
 				return $callable->call();
 			}
 		}
+		/** @noinspection PhpUsageOfSilenceOperatorInspection */
 		return $this->htmlEntities(@($object->$property_name));
 	}
 
@@ -1247,6 +1249,7 @@ class Template
 			$this->parse_class_name = null;
 		}
 		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
+			/** @noinspection PhpUsageOfSilenceOperatorInspection */
 			if (is_array($object) && (isset($object[$property_name]) || !@class_exists($property_name))) {
 				$object = $this->parseArrayElement($object, $property_name);
 			}
@@ -1290,12 +1293,12 @@ class Template
 				($property_name == 'value')
 				&& ($object instanceof Reflection_Property)
 				&& ($builder = $object->getAnnotation('widget')->value)
-				&& is_a($builder, Property::class, true)
+				&& is_a($builder, Html\Builder\Property::class, true)
 			) {
 				$builder = Builder::create(
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
-				/** @var $builder Property */
+				/** @var $builder Html\Builder\Property */
 				$object = $builder->buildHtml();
 				$format_value = false;
 			}

@@ -54,7 +54,7 @@ class Collection
 	 */
 	public function __construct(Reflection_Property $property, $collection)
 	{
-		$this->property = $property;
+		$this->property   = $property;
 		$this->collection = $collection;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
 		$this->properties = $this->getProperties();
