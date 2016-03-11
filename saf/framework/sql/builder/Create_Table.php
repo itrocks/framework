@@ -27,7 +27,10 @@ class Create_Table
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * @return string
+	 * To create a table with foreign keys, we need multiple queries.
+	 * This method Returns all necessary queries : CREATE TABLE, then ALTER TABLE ... ADD CONSTRAINT.
+	 *
+	 * @return string[]
 	 */
 	public function build()
 	{
@@ -47,11 +50,14 @@ class Create_Table
 				$indexes[$foreign_key_constraint] = Index::buildLink($foreign_key_constraint)->toSql();
 			}
 		}
-		return 'CREATE TABLE IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('
+		$queries[] = 'CREATE TABLE IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('
 			. ($columns ? (LF . TAB) : '') . join(',' . LF . TAB, $columns)
 			. ($indexes ? (',' . LF . TAB) : '') . join(',' . LF . TAB, $indexes)
-			. ($foreign_keys ? (',' . LF . TAB) : '') . join(',' . LF . TAB, $foreign_keys)
 			. LF . ') DEFAULT CHARSET = utf8 COLLATE = utf8_general_ci';
+		foreach ($foreign_keys as $foreign_key) {
+			$queries[] = 'ALTER TABLE ' . BQ . $this->table->getName() . BQ . ' ADD ' . $foreign_key;
+		}
+		return $queries;
 	}
 
 }

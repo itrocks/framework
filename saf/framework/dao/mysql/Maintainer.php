@@ -41,7 +41,9 @@ class Maintainer implements Registerable
 		foreach ($builder->build($class_name) as $table) {
 			$last_context = $mysqli->context;
 			$mysqli->context = $builder->dependencies_context;
-			$mysqli->query((new Create_Table($table))->build());
+			foreach ((new Create_Table($table))->build() as $query) {
+				$mysqli->query($query);
+			}
 			$mysqli->context = $last_context;
 		}
 	}
@@ -103,7 +105,9 @@ class Maintainer implements Registerable
 				$table->addIndex($index);
 			}
 		}
-		$mysqli->query((new Create_Table($table))->build());
+		foreach ((new Create_Table($table))->build() as $query) {
+			$mysqli->query($query);
+		}
 		return true;
 	}
 
@@ -387,7 +391,9 @@ class Maintainer implements Registerable
 		foreach ((new Table_Builder_Class)->build($class_name) as $class_table) {
 			$mysql_table = Table_Builder_Mysqli::build($mysqli, $class_table->getName());
 			if (!$mysql_table) {
-				$mysqli->query((new Create_Table($class_table))->build());
+				foreach ((new Create_Table($class_table))->build() as $query) {
+					$mysqli->query($query);
+				}
 				$result = true;
 			}
 			else {
