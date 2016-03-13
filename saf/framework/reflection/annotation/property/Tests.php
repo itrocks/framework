@@ -183,7 +183,7 @@ class Tests extends Test
 		// @getter Distant\Class\Full\Path::methodName
 		$this->assume(
 			'Distant\Class\Full\Path\Class_Name::methodName',
-			(new Getter_Annotation(Annoted::class . '::has', $property))->value,
+			(new Getter_Annotation(BS . Annoted::class . '::has', $property))->value,
 			Annoted::class . '::has'
 		);
 		// use Distant\Class\Full\Path\Class_Name

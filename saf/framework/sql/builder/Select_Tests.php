@@ -509,7 +509,7 @@ class Select_Tests extends Test
 			'SELECT t0.`date`, t0.`number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity`' . LF
 			. 'FROM `orders` t0' . LF
 			. 'LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'WHERE t1.`number` = "2"'
+			. 'WHERE t1.`number` = 2'
 		);
 	}
 
