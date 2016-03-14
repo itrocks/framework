@@ -90,14 +90,14 @@ abstract class Builder
 	 */
 	public static function buildInsert($class, $write)
 	{
-		$sql_insert = 'INSERT INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET ';
+		$sql_insert = 'INSERT INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET' . SP;
 		$i = 0;
 		foreach ($write as $key => $value) {
 			if ($i++) {
 				$sql_insert .= ', ';
 			}
 			if (($key != 'id') && (substr($key, 0, 3) != 'id_')) {
-				$key   = BQ . $key . BQ;
+				$key = BQ . $key . BQ;
 			}
 			$sql_insert .= $key . ' = ' . Value::escape($value);
 		}

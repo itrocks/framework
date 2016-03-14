@@ -6,6 +6,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Option;
+use SAF\Framework\Dao\Option\Add;
 use SAF\Framework\Dao\Option\Only;
 use SAF\Framework\Mapper\Abstract_Class;
 use SAF\Framework\Mapper\Component;
@@ -863,6 +864,9 @@ class Link extends Dao\Sql\Link
 			$class = new Link_Class(get_class($object));
 			$id_property = 'id';
 			foreach ($options as $option) {
+				if ($option instanceof Add) {
+					$force_add = true;
+				}
 				if ($option instanceof Only) {
 					$only = isset($only) ? array_merge($only, $option->properties) : $option->properties;
 				}
@@ -1074,8 +1078,11 @@ class Link extends Dao\Sql\Link
 					}
 					if ($write) {
 						$this->setContext($class->name);
-						if (empty($id)) {
+						if (empty($id) || isset($force_add)) {
 							$this->disconnect($object);
+							if (isset($force_add) && !empty($id)) {
+								$write['id'] = $id;
+							}
 							$id = $this->query(Sql\Builder::buildInsert($class->name, $write));
 							if (!empty($id)) {
 								$this->setObjectIdentifier($object, $id);
