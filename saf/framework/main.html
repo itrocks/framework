@@ -103,29 +103,44 @@
 
 <body>
 
-<header>
-	<div id="messages"></div>
-	<ul>
-		<li class="provider saf"><a href="http://saf.re" target="_blank" title="saf.re">SAF</a></li>
-		<li class="rad add"><a href="/SAF/Framework/Rad/add" target="#rad_add">add</a></li>
-	</ul>
-</header>
+	<header>
+		<div id="messages"></div>
+		<ul>
+			<li class="provider saf"><a href="http://saf.re" target="_blank" title="saf.re">SAF</a></li>
+			<li class="rad add">
+				<a href="/SAF/Framework/Rad/add" target="#rad_add">add</a>
+				<ul class="rad add">
+					<li><a href="/SAF/Framework/Property/select/{@class.path}" target="#column_select">
+						|select columns|
+					</a></li>
+				</ul>
+			</li>
+		</ul>
+	</header>
 
-<!--Session.current.plugins.get(Menu.class)-->
-<nav class="menu output">
-	{/SAF/Framework/Widget/Menu/output}
-</nav>
-<!--Session.current.plugins.get(Menu.class)-->
+	<!--Session.current.plugins.get(Menu.class)-->
+	<nav class="menu output">
+		{/SAF/Framework/Widget/Menu/output}
+	</nav>
+	<!--Session.current.plugins.get(Menu.class)-->
 
-<div id="main">
-	{@content}
-</div>
+	<div id="main">
+		{@content}
+	</div>
 
-<section id="trashcan">
-	<h2>|Trashcan|</h2>
-	<div></div>
-	<a href="/SAF/Framework/Widget/Trashcan" target="#trashcan>div">bin</a>
-</section>
+	<section class="rad reload invisible">
+		<ul class="rad actions">
+			<li class="close">
+				<a class="button" href="">Close add mode</a>
+			</li>
+		</ul>
+	</section>
+
+	<section id="trashcan">
+		<h2>|Trashcan|</h2>
+		<div></div>
+		<a href="/SAF/Framework/Widget/Trashcan" target="#trashcan>div">bin</a>
+	</section>
 
 </body>
 </html>
