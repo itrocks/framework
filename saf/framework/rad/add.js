@@ -13,6 +13,16 @@
 	$.fn.radAdd = function(element_selector, hint, direction, link)
 	{
 
+		// properties can be dropped into trashcan only when in "RAD" mode
+		$('body').build(function()
+		{
+			this.inside('#trashcan a').droppable({
+				accept: '.property, .column label, .object, .objects, .throwable, .action',
+				hoverClass: 'candrop',
+				tolerance: 'touch'
+			});
+		});
+
 		// highlight zones
 		this.each(function() {
 			$(this).addClass('rad highlight');
@@ -28,9 +38,7 @@
 			if ($elements.length > 1) {
 				var position1 = $($elements[0]).position();
 				var position2 = $($elements[1]).position();
-				vertical = (
-				position1.left == position2.left
-				);
+				vertical = (position1.left == position2.left);
 			}
 		}
 
@@ -46,30 +54,38 @@
 			var $this = $(this);
 			// call link
 			var call = link;
-			if (call.indexOf('{class}') > -1) {
-				call = call.replace('{class}', $this.closest('[data-class]').data('class').repl(BS, SL));
+			if (call === 'add_property') {
+				$('.invisible').show();
 			}
-			if (call.indexOf('{feature') > -1) {
-				call = call.replace('{feature}', $this.closest('[data-feature]').data('feature'));
-			}
-			call = call.replace(/{(\w+)->(\w+)}/g, function(text, selector, attribute) {
-				var value = $this.closest(selector).attr(attribute);
-				if (attribute === 'class') {
-					value = value.repl(SP, DOT);
+			else {
+				if (call.indexOf('{class}') > -1) {
+					call = call.replace('{class}', $this.closest('[data-class]').data('class').repl(BS, SL));
 				}
-				return value;
-			});
-			call = window.app.uri_base + call + '?as_widget' + window.app.andSID();
-			$.ajax({ url: call, success: function(data) {
-				var $popup = $(data).addClass('rad popup');
-				$popup.css('position', 'absolute');
-				$popup.offset({ left: $this.offset().left, top: $this.offset().top + $this.height() + 5 });
-				$popup.appendTo('body');
-				$popup.build();
-			}});
-			// prevent click inside <a>
-			event.preventDefault();
-			event.stopImmediatePropagation();
+				if (call.indexOf('{feature') > -1) {
+					call = call.replace('{feature}', $this.closest('[data-feature]').data('feature'));
+				}
+				call = call.replace(/{(\w+)->(\w+)}/g, function (text, selector, attribute) {
+					var value = $this.closest(selector).attr(attribute);
+					if (attribute === 'class') {
+						value = value.repl(SP, DOT);
+					}
+					return value;
+				});
+				call = window.app.uri_base + call + '?as_widget' + window.app.andSID();
+				$.ajax({ url: call, success: function (data) {
+					var $popup = $(data).addClass('rad popup');
+					$popup.css('position', 'absolute');
+					$popup.offset({
+						left: $this.offset().left,
+						top:  $this.offset().top + $this.height() + 5
+					});
+					$popup.appendTo('body');
+					$popup.build();
+				}});
+				// prevent click inside <a>
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
 		};
 
 		$elements.click(click);

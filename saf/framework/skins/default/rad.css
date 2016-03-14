@@ -8,6 +8,13 @@ body > header > ul > li.rad.add > a {
   body > header > ul > li.rad.add > a:hover:before {
     color: #2D8F8D; }
 
+.div.list {
+  width: 150px;
+  top: 55px;
+  position: fixed;
+  font-family: arial,helvetica,sans-serif;
+  right: 120px; }
+
 .rad.highlight {
   border: 1px solid green; }
 
@@ -22,3 +29,15 @@ body > header > ul > li.rad.add > a {
 
 .rad.insert-top {
   border-top: 2px solid red; }
+
+.rad.invisible {
+  display: none; }
+
+.rad.reload {
+  top: 55px;
+  position: fixed;
+  font-family: arial,helvetica,sans-serif;
+  right: 0; }
+
+.rad.visible {
+  display: inline-block; }

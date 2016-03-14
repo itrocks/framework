@@ -45,7 +45,7 @@ $('document').ready(function()
 
 		// trash is droppable
 		this.inside('#trashcan a').droppable({
-			accept:     '.column label, .object, .objects, .property, .throwable',
+			accept:     '.column label, .object, .objects, .throwable',
 			hoverClass: 'candrop',
 			tolerance:  'touch',
 
@@ -96,6 +96,9 @@ $('document').ready(function()
 				}
 				if (ui.helper.data('property')) {
 					event.target.href += '/SAF/Framework/Property/' + ui.helper.data('property');
+				}
+				if (ui.helper.data('action')){
+					event.target.href += '/SAF/Framework/Rad/' + ui.helper.data('action');
 				}
 				event.target.href += event.target.search + event.target.hash;
 				event.target.click();
