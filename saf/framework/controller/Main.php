@@ -47,6 +47,17 @@ class Main
 	 */
 	private $redirection;
 
+	//-------------------------------------------------------------------------------------- $running
+	/**
+	 * true if the main controller is running.
+	 * false if it is done (run was complete).
+	 * This allows Session::serialize() to know if the program crashed or not, and throw the call
+	 * stack
+	 *
+	 * @var boolean
+	 */
+	public $running = true;
+
 	//----------------------------------------------------------------------------- $top_core_plugins
 	/**
 	 * @var Plugin[]
@@ -337,6 +348,7 @@ class Main
 			$handler->trace = 'Exception stack trace:' . LF . $exception->getTraceAsString() . LF;
 			$handler->handle($handled_error);
 		}
+		$this->running = false;
 		return $result;
 	}
 
