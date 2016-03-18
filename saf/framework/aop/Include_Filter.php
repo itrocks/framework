@@ -71,7 +71,7 @@ class Include_Filter extends php_user_filter
 	 */
 	public static function register()
 	{
-		return stream_filter_register(self::ID, __CLASS__);
+		return stream_filter_register(self::ID, __CLASS__) or die('Failed to register filter');
 	}
 
 }
