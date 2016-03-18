@@ -15,6 +15,7 @@ class Dependency
 	const T_NEW         = 'new';
 	const T_PARAM       = 'param';
 	const T_RETURN      = 'return';
+	const T_SET         = 'set';
 	const T_STATIC      = 'static';
 	const T_USE         = 'use';
 	const T_VAR         = 'var';
@@ -70,13 +71,14 @@ class Dependency
 	 * - 'extends' for a 'extends Dependency_Name' into class declaration
 	 * - 'implements' for a 'implements Dependency_Name' into class declaration
 	 * - 'new' for a 'new Dependency_Name' into the source code
-	 * - 'param' for a '@param ...' into the source code (doc comment)
-	 * - 'return' for a '@return ...' into the source code (doc comment)
+	 * - 'param' for a '@param ...' into the source code (method doc comment)
+	 * - 'return' for a '@return ...' into the source code (method doc comment)
+	 * - 'set' for a '@set ...' into the source code (class doc comment)
 	 * - 'static' for a 'Dependency_Name::' call into the source code
 	 * - 'use' for a 'use Dependency_Name' into the class
-	 * - 'var' for a '@var ...' into the source code (doc comment)
+	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *
-	 * @values class, declaration, extends, implements, new, param, return, static, use, var
+	 * @values class, declaration, extends, implements, new, param, return, set, static, use, var
 	 * @var string
 	 */
 	public $type;

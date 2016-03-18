@@ -3,6 +3,7 @@ namespace SAF\Framework\Tools;
 
 use SAF\Framework\Application;
 use SAF\Framework\Dao;
+use SAF\Framework\PHP\Dependency;
 use SAF\Framework\Reflection\Reflection_Class;
 
 /**
@@ -10,6 +11,12 @@ use SAF\Framework\Reflection\Reflection_Class;
  */
 abstract class Names
 {
+
+	//----------------------------------------------------------------------------------------- $sets
+	/**
+	 * @var string[] key is the name of the set class, value is the matching name of the single class
+	 */
+	private static $sets = [];
 
 	//------------------------------------------------------------------------------ classToDirectory
 	/**
@@ -309,6 +316,18 @@ abstract class Names
 	 */
 	public static function setToClass($class_name, $check_class = true)
 	{
+		if (isset(self::$sets[$class_name])) {
+			return self::$sets[$class_name];
+		}
+		/** @var $dependency Dependency */
+		$dependency = Dao::searchOne(
+			['dependency_name' => $class_name, 'type' => Dependency::T_SET],
+			Dependency::class
+		);
+		if ($dependency) {
+			self::$sets[$class_name] = $dependency->class_name;
+			return $dependency->class_name;
+		}
 		$set_class_name = $class_name;
 		$class_name = Namespaces::shortClassName($class_name);
 		$right = '';

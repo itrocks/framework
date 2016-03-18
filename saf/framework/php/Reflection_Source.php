@@ -380,6 +380,12 @@ class Reflection_Source
 				$dependency->line            = $token[2];
 				$dependency->type            = Dependency::T_DECLARATION;
 				$this->dependencies[] = $dependency;
+				if (isset($missing_class_name)) {
+					foreach ($missing_class_name as $dependency) {
+						$dependency->class_name = $class->name;
+					}
+					unset($missing_class_name);
+				}
 			}
 
 			elseif ($token_id === T_FUNCTION) {
@@ -408,7 +414,7 @@ class Reflection_Source
 					$doc_comment = $token[1];
 					// 0 : everything until var name, 1 : type, 2 : Class_Name / $param, 3 : Class_Name
 					preg_match_all(
-						'%\*\s+@(param|return|var)\s+([\w\$\[\]\|\\\\]+)(?:\s+([\w\$\[\]\|\\\\]+))?%',
+						'%\*\s+@(param|return|set|var)\s+([\w\$\[\]\|\\\\]+)(?:\s+([\w\$\[\]\|\\\\]+))?%',
 						$doc_comment,
 						$matches,
 						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
@@ -432,6 +438,9 @@ class Reflection_Source
 								$dependency->line            = $line;
 								$dependency->type            = $type;
 								$this->instantiates[] = $dependency;
+								if (!$class->name) {
+									$missing_class_name[] = $dependency;
+								}
 							}
 						}
 					}
