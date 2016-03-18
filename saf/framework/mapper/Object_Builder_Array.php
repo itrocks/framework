@@ -598,6 +598,10 @@ class Object_Builder_Array
 							foreach (array_keys($link_properties) as $link_property_name) {
 								unset($linked_array[$link_property_name]);
 							}
+							$link_class_properties = $link->getLinkClass()->getLocalProperties();
+							foreach (array_keys($link_class_properties) as $link_property_name) {
+								unset($linked_array[$link_property_name]);
+							}
 							$builder = new Object_Builder_Array($property_class_name, $this->from_form);
 							$array[$property_name] = $builder->build($linked_array);
 						}
