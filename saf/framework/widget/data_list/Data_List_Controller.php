@@ -599,7 +599,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		return View::run($parameters, $form, $files, $class_name, Feature::F_LIST);
+		return View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
 	}
 
 }
