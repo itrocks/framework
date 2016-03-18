@@ -14,6 +14,7 @@
 			minimized_class: 'minimized',
 			minimized_hide:  false,
 			min_height:      24,
+			min_padding:     0,
 			min_width:       24
 		}, options);
 
@@ -52,12 +53,18 @@
 			//------------------------------------------------------------------------------------ minimize
 			var minimize = function()
 			{
+				var padding = [
+					this.css('padding-top'),
+					this.css('padding-right'),
+					this.css('padding-bottom'),
+					this.css('padding-left')
+				];
 				this.data('height',  this.height() + 'px');
-				this.data('padding', this.css('padding'));
+				this.data('padding', padding.join(SP));
 				this.data('width',   this.width() + 'px');
 				this.css({ overflow: 'hidden' });
 				this.animate(
-					{ height: settings.min_height + 'px', padding: 0, width: settings.min_width + 'px' },
+					{ height: settings.min_height + 'px', padding: settings.min_padding + 'px', width: settings.min_width + 'px' },
 					settings.duration,
 					function() {
 						$(this).addClass(settings.minimized_class);

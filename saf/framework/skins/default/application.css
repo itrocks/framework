@@ -201,5 +201,26 @@ thead > tr > th {
   .logger.error:before {
     content: "ERREUR : "; }
 
+.minimize {
+  background: url("img/arrow_black_up.gif") center no-repeat;
+  color: transparent;
+  cursor: pointer;
+  float: left;
+  font-size: 1px;
+  height: 24px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 24px;
+  z-index: 1; }
+  .minimize + h2 {
+    padding-left: 24px !important; }
+
+.minimized {
+  float: none;
+  position: absolute; }
+  .minimized > .minimize {
+    background: url("img/arrow_black_down.gif") center no-repeat; }
+
 table.worksheet > tbody > tr > td > input {
   margin: 0 -3px -1px -2px; }

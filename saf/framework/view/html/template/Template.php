@@ -1784,23 +1784,32 @@ class Template
 	protected function replaceLinks($content)
 	{
 		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textarea>']);
+		$length = strlen($content);
 		$links = ['action=', 'href=', 'location='];
-		foreach ($links as $link) {
-			foreach ([Q, DQ] as $quote) {
+		foreach ($links as $l) {
+			foreach ([DQ, Q] as $quote) {
+				$link = $l . $quote;
+				$link_length = strlen($link);
 				$i = 0;
-				while (($i = strpos($content, $link . $quote, $i)) !== false) {
-					$i += strlen($link) + strlen($quote);
-					$j = strpos($content, $quote, $i);
-					if ($this->isInBlackZones($black_zones, $i)) {
-						$i = $j + strlen($quote);
+				while (($i = strpos($content, $link, $i)) !== false) {
+					if ($l == 'href=') {
+						$of = strrpos($content, '<', $i - $length);
+						$ok = (substr($content, $of, 6) !== '<link ');
 					}
 					else {
-						if (substr($content, $i, 1) === SL) {
-							$replacement_uri = $this->replaceLink(substr($content, $i, $j - $i));
-							$content = substr($content, 0, $i) . $replacement_uri . substr($content, $j);
-							$this->blackZonesInc($black_zones, strlen($replacement_uri) - ($j - $i), $j);
-							$i += strlen($replacement_uri);
-						}
+						$ok = true;
+					}
+					$i += $link_length;
+					$j = strpos($content, $quote, $i);
+					if (!$ok || (substr($content, $i, 1) !== SL) || $this->isInBlackZones($black_zones, $i)) {
+						$i = $j;
+					}
+					else {
+						$replacement_uri = $this->replaceLink(substr($content, $i, $j - $i));
+						$content = substr($content, 0, $i) . $replacement_uri . substr($content, $j);
+						$length = strlen($content);
+						$this->blackZonesInc($black_zones, strlen($replacement_uri) - ($j - $i), $j);
+						$i += strlen($replacement_uri);
 					}
 				}
 			}
@@ -1858,20 +1867,30 @@ class Template
 	protected function replaceUris($content)
 	{
 		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textarea>']);
-		$links = ['@import ', 'src=', 'loadScript('];
+		$length = strlen($content);
+		$links = ['@import ', 'href=', 'src=', 'loadScript('];
 		foreach ($links as $l) {
 			foreach ([DQ, Q] as $quote) {
 				$link = $l . $quote;
+				$link_length = strlen($link);
 				$i = 0;
 				while (($i = strpos($content, $link, $i)) !== false) {
-					$i += strlen($link);
+					if ($l == 'href=') {
+						$of = strrpos($content, '<', $i - $length);
+						$ok = (substr($content, $of, 6) === '<link ');
+					}
+					else {
+						$ok = true;
+					}
+					$i += $link_length;
 					$j = strpos($content, $quote, $i);
-					if ($this->isInBlackZones($black_zones, $i)) {
-						$i = $j + strlen($quote);
+					if (!$ok || $this->isInBlackZones($black_zones, $i)) {
+						$i = $j;
 					}
 					else {
 						$replacement_uri = $this->replaceUri(substr($content, $i, $j - $i));
 						$content = substr($content, 0, $i) . $replacement_uri . substr($content, $j);
+						$length = strlen($content);
 						$this->blackZonesInc($black_zones, strlen($replacement_uri) - ($j - $i), $j);
 						$i += strlen($replacement_uri);
 					}

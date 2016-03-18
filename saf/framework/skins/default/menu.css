@@ -6,17 +6,10 @@
   display: inline-block;
   float: left;
   margin: -30px 4px 4px;
-  padding-bottom: 10px; }
+  padding-bottom: 10px;
+  position: relative; }
   .menu.output li {
     margin: 0; }
-  .menu.output > .minimize {
-    background: url("img/arrow_black_up.gif") center no-repeat;
-    color: transparent;
-    cursor: pointer;
-    float: left;
-    font-size: 1px;
-    height: 24px;
-    width: 24px; }
   .menu.output > h2 {
     border-bottom: 1px solid #c0c0c0;
     margin: 0 0 4px;
@@ -54,9 +47,3 @@
         .menu.output > ul > li > ul > li > a:hover {
           color: darkred;
           text-decoration: underline; }
-
-.menu.output.minimized {
-  float: none;
-  position: absolute; }
-  .menu.output.minimized > .minimize {
-    background: url("img/arrow_black_down.gif") center no-repeat; }

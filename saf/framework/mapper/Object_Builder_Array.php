@@ -14,6 +14,8 @@ use SAF\Framework\View\Html\Builder\Property;
 
 /**
  * Build an object and it's property values from data stored into a recursive array
+ *
+ * TODO LOW Do we need to do if (!isset($object->$property_name)) into all builders ? Please check.
  */
 class Object_Builder_Array
 {
@@ -235,8 +237,9 @@ class Object_Builder_Array
 	 * @param $value         mixed The value of the property
 	 * @param $pos           integer The position of the DOT into the $property_name
 	 */
-	private function buildDottedProperty(Object_Builder_Array_Tool $build, $property_name, $value, $pos)
-	{
+	private function buildDottedProperty(
+		Object_Builder_Array_Tool $build, $property_name, $value, $pos
+	) {
 		$property_path = substr($property_name, $pos + 1);
 		$property_name = substr($property_name, 0, $pos);
 		$this->extractAsterisk($property_name);
@@ -272,7 +275,17 @@ class Object_Builder_Array
 		)) {
 			$object->$real_property_name = null;
 		}
-		$object->$property_name = $value;
+		// forces the call to the setter, if there is one for the property
+		if ($value && (!isset($object->$property_name) || ($value != $object->$property_name))) {
+			$property = new Reflection_Property(get_class($object), $real_property_name);
+			if ($property->getAnnotation('setter')->value) {
+				$dao = Dao::get($property->getAnnotation('dao')->value);
+				$object->$real_property_name = $dao->read($value, $property->getType()->asString());
+			}
+		}
+		if (!isset($object->$property_name) || ($value != $object->$property_name)) {
+			$object->$property_name = $value;
+		}
 		if (!$property->isValueEmptyOrDefault($value)) {
 			$is_null = false;
 		}
@@ -404,7 +417,9 @@ class Object_Builder_Array
 		// the property value is set only for official properties, if not default and not empty
 		$property_name = $property->name;
 		if (($value !== '') || !$property->getType()->isClass()) {
-			$object->$property_name = $value;
+			if (!isset($object->$property_name) || ($value != $object->$property_name)) {
+				$object->$property_name = $value;
+			}
 		}
 		if (!$property->isValueEmptyOrDefault($value)) {
 			$is_null = false;

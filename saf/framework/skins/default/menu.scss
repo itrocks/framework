@@ -8,19 +8,10 @@
 	float: left;
 	margin: -30px 4px 4px;
 	padding-bottom: 10px;
+	position: relative;
 
 	li {
 		margin: 0;
-	}
-
-	>.minimize {
-		background: url("img/arrow_black_up.gif") center no-repeat;
-		color: transparent;
-		cursor: pointer;
-		float: left;
-		font-size: 1px;
-		height: 24px;
-		width: 24px;
 	}
 
 	>h2 {
@@ -75,13 +66,5 @@
 				}
 			}
 		}
-	}
-}
-
-.menu.output.minimized {
-	float: none;
-	position: absolute;
-	>.minimize {
-		background: url("img/arrow_black_down.gif") center no-repeat;
 	}
 }

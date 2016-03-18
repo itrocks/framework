@@ -17,7 +17,7 @@ class Properties
 	//------------------------------------------------------------------------------ $SETTER_RESERVED
 	private static $SETTER_RESERVED = [
 		'class_name', 'element_type', 'element_type_name', 'joinpoint', 'object',
-		'property', 'property_name', 'result', 'stored', 'type', 'type_name'
+		'property', 'property_name', 'result', 'stored', 'type', 'type_name', 'value'
 	];
 
 	//-------------------------------------------------------------------------------------- $actions

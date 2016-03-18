@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Controller\Main;
 use SAF\Framework\Plugin\Manager;
 use Serializable;
 
@@ -171,6 +172,10 @@ class Session implements Serializable
 	 */
 	public function serialize()
 	{
+		if (Main::$current->running) {
+			// TODO this does not work as well as xdebug_backtrace visible into PhpStorm : change it
+			debug_print_backtrace();
+		}
 		$data = ['current' => [], 'plugins' => $this->plugins];
 		if (isset($this->current)) {
 			foreach ($this->current as $class_name => $object) {
