@@ -21,6 +21,11 @@
 			$tabber.data('pages', $tabber.children(':not(ul:first)'));
 
 		}
+		else if ((action == 'click') && ($add_tab != undefined)) {
+
+			$tabber.children('.ui-tabber-tabs').find('a[href="' + $add_tab + '"]').click();
+
+		}
 		else if (action == 'refresh') {
 
 			$tabber.data('tabs',  $tabber.children('ul:first').children('li'));
