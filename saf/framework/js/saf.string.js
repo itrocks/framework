@@ -1,4 +1,21 @@
 
+//---------------------------------------------------------------------------------------- endsWith
+if (!String.prototype.endsWith) {
+	String.prototype.endsWith = function(search, position)
+	{
+		var subject = this.toString();
+		if (
+			typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position
+			|| position > subject.length
+		) {
+			position = subject.length;
+		}
+		position -= search.length;
+		var last_index = subject.indexOf(search, position);
+		return last_index !== -1 && last_index === position;
+	};
+}
+
 //-------------------------------------------------------------------------------------- lLastParse
 String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 {
@@ -87,6 +104,15 @@ String.prototype.repl = function(from, to)
 	replaced += this.substring(start);
 	return replaced;
 };
+
+//-------------------------------------------------------------------------------------- startsWith
+if (!String.prototype.startsWith) {
+	String.prototype.startsWith = function(search, position)
+	{
+		position = position || 0;
+		return this.substr(position, search.length) === search;
+	};
+}
 
 //----------------------------------------------------------------------------------------- ucfirst
 String.prototype.ucfirst = function()
