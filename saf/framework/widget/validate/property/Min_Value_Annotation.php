@@ -34,12 +34,14 @@ class Min_Value_Annotation extends Annotation implements Property_Validator
 	 */
 	public function reportMessage()
 	{
-		switch ($this->valid) {
-			case Validate::INFORMATION:
-				return 'value is greater than !' . $this->value . '!';
-			case Validate::WARNING:
-			case Validate::ERROR:
-				return 'minimal value is !' . $this->value . '!';
+		if (strlen($this->value)) {
+			switch ($this->valid) {
+				case Validate::INFORMATION:
+					return 'value is greater than !' . $this->value . '!';
+				case Validate::WARNING:
+				case Validate::ERROR:
+					return 'minimal value is !' . $this->value . '!';
+			}
 		}
 		return '';
 	}

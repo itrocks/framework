@@ -50,10 +50,12 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 	 */
 	public function reportMessage()
 	{
-		switch ($this->valid) {
-			case Validate::INFORMATION: return 'mandatory and set';
-			case Validate::WARNING:     return 'should be filled in';
-			case Validate::ERROR:       return 'mandatory';
+		if (is_bool($this->value)) {
+			switch ($this->valid) {
+				case Validate::INFORMATION: return 'mandatory and set';
+				case Validate::WARNING:     return 'should be filled in';
+				case Validate::ERROR:       return 'mandatory';
+			}
 		}
 		return '';
 	}

@@ -32,10 +32,12 @@ class Precision_Annotation extends Annotation implements Property_Validator
 	 */
 	public function reportMessage()
 	{
-		switch ($this->valid) {
-			case Validate::INFORMATION: return 'precision is respected';
-			case Validate::WARNING:     return 'precision overflow';
-			case Validate::ERROR:       return 'precision overflow';
+		if (strlen($this->value)) {
+			switch ($this->valid) {
+				case Validate::INFORMATION: return 'precision is respected';
+				case Validate::WARNING:     return 'precision overflow';
+				case Validate::ERROR:       return 'precision overflow';
+			}
 		}
 		return '';
 	}

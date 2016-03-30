@@ -32,10 +32,12 @@ class Signed_Annotation extends Boolean_Annotation implements Property_Validator
 	 */
 	public function reportMessage()
 	{
-		switch ($this->valid) {
-			case Validate::INFORMATION: return 'number signature is conform';
-			case Validate::WARNING:     return 'number signature not expected';
-			case Validate::ERROR:       return 'number signature not allowed';
+		if (is_bool($this->value)) {
+			switch ($this->valid) {
+				case Validate::INFORMATION: return 'number signature is conform';
+				case Validate::WARNING:     return 'number signature not expected';
+				case Validate::ERROR:       return 'number signature not allowed';
+			}
 		}
 		return '';
 	}
