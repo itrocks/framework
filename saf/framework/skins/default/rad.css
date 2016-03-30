@@ -9,11 +9,11 @@ body > header > ul > li.rad.add > a {
     color: #2D8F8D; }
 
 .div.list {
-  width: 150px;
-  top: 55px;
-  position: fixed;
   font-family: arial,helvetica,sans-serif;
-  right: 120px; }
+  position: fixed;
+  right: 120px;
+  top: 55px;
+  width: 150px; }
 
 .rad.highlight {
   border: 1px solid green; }
@@ -34,10 +34,10 @@ body > header > ul > li.rad.add > a {
   display: none; }
 
 .rad.reload {
-  top: 55px;
+  font-family: arial, helvetica, sans-serif;
   position: fixed;
-  font-family: arial,helvetica,sans-serif;
-  right: 0; }
+  right: 0;
+  top: 55px; }
 
 .rad.visible {
   display: inline-block; }

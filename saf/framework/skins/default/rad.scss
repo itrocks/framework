@@ -14,11 +14,11 @@ body > header > ul > li.rad.add > a {
 }
 
 .div.list {
-	width: 150px;
-	top: 55px;
-	position: fixed;
 	font-family: arial,helvetica,sans-serif;
+	position: fixed;
 	right: 120px;
+	top: 55px;
+	width: 150px;
 }
 
 .rad.highlight {
@@ -41,17 +41,17 @@ body > header > ul > li.rad.add > a {
 	border-top: 2px solid red;
 }
 
-.rad.invisible{
+.rad.invisible {
 	display: none;
 }
 
 .rad.reload {
-	top: 55px;
+	font-family: arial, helvetica, sans-serif;
 	position: fixed;
-	font-family: arial,helvetica,sans-serif;
 	right: 0;
+	top: 55px;
 }
 
-.rad.visible{
+.rad.visible {
 	display: inline-block;
 }
