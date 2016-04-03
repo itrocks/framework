@@ -13,6 +13,7 @@ abstract class Feature
 	//---------------------------------------------------------------------------- features constants
 	const F_ADD           = 'add';
 	const F_ADMIN         = 'admin';
+	const F_API           = 'api';
 	const F_BLANK         = 'blank';
 	const F_CLOSE         = 'close';
 	const F_CUSTOM_DELETE = 'custom_delete';

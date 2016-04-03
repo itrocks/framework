@@ -131,6 +131,10 @@ class Default_Yaml
 			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_ADMIN));
 			$yaml->extendYaml();
 		}
+		elseif (in_array($feature, Feature::API)) {
+			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_API));
+			$yaml->extendYaml();
+		}
 		elseif (in_array($feature, Feature::EDIT)) {
 			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_EDIT));
 			$yaml->extendYaml();

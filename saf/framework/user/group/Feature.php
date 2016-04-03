@@ -24,6 +24,10 @@ class Feature
 		Controller\Feature::F_DELETE
 	];
 
+	const API = [
+		Controller\Feature::F_API
+	];
+
 	const EDIT = [
 		Controller\Feature::F_ADD,
 		Controller\Feature::F_EDIT,
@@ -132,7 +136,12 @@ class Feature
 		}
 		if (!isset(self::$implicit)) {
 			$implicit_features = array_merge(
-				Feature::ADMIN, Feature::EDIT, Feature::EXPORT, Feature::IMPORT, Feature::OUTPUT
+				Feature::ADMIN,
+				Feature::API,
+				Feature::EDIT,
+				Feature::EXPORT,
+				Feature::IMPORT,
+				Feature::OUTPUT
 			);
 			Feature::$implicit = array_combine($implicit_features, $implicit_features);
 		}
@@ -272,6 +281,7 @@ class Feature
 	{
 		return [
 			Controller\Feature::F_ADMIN,
+			Controller\Feature::F_API,
 			Controller\Feature::F_EDIT,
 			Controller\Feature::F_EXPORT,
 			Controller\Feature::F_IMPORT,

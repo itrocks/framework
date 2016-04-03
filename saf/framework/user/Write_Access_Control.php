@@ -21,6 +21,7 @@ class Write_Access_Control implements Registerable
 
 	const WRITE_FEATURES = [
 		Feature::F_ADD,
+		Feature::F_API,
 		Feature::F_DELETE,
 		Feature::F_DUPLICATE,
 		Feature::F_EDIT,
