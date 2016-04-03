@@ -3,6 +3,7 @@ namespace SAF\Framework\User;
 
 use SAF\Framework\AOP\Joinpoint\Method_Joinpoint;
 use SAF\Framework\Controller\Feature;
+use SAF\Framework\Controller\Uri;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\User;
@@ -10,6 +11,8 @@ use SAF\Framework\Widget\Add\Add_Controller;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Data_List\Data_List_Controller;
 use SAF\Framework\Widget\Edit\Edit_Controller;
+use SAF\Framework\Widget\Menu;
+use SAF\Framework\Widget\Menu\Item;
 use SAF\Framework\Widget\Output\Output_Controller;
 use SAF\Framework\Widget\Write\Write_Controller;
 
@@ -42,6 +45,23 @@ class Write_Access_Control implements Registerable
 		}
 	}
 
+	//------------------------------------------------------------------------- checkAccessToMenuItem
+	/**
+	 * @param $result Item
+	 */
+	public function checkAccessToMenuItem(Item &$result)
+	{
+		if (isset($result)) {
+			$user = User::current();
+			if (!$user) {
+				$uri = new Uri($result->link);
+				if (in_array($uri->feature_name, self::WRITE_FEATURES)) {
+					$result = null;
+				}
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registration code for the plugin
@@ -51,25 +71,23 @@ class Write_Access_Control implements Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
+		$aop->beforeMethod(
+			[Add_Controller::class, 'run'],                     [$this, 'accessControl']
+		);
 		$aop->afterMethod(
-			[Data_List_Controller::class, 'getGeneralButtons'],
-			[$this, 'removeButtons']
+			[Data_List_Controller::class, 'getGeneralButtons'], [$this, 'removeButtons']
+		);
+		$aop->beforeMethod(
+			[Edit_Controller::class, 'run'],                    [$this, 'accessControl']
 		);
 		$aop->afterMethod(
-			[Output_Controller::class, 'getGeneralButtons'],
-			[$this, 'removeButtons']
+			[Menu::class, 'constructItem'],                     [$this, 'checkAccessToMenuItem']
+		);
+		$aop->afterMethod(
+			[Output_Controller::class, 'getGeneralButtons'],    [$this, 'removeButtons']
 		);
 		$aop->beforeMethod(
-			[Add_Controller::class, 'run'],
-			[$this, 'accessControl']
-		);
-		$aop->beforeMethod(
-			[Edit_Controller::class, 'run'],
-			[$this, 'accessControl']
-		);
-		$aop->beforeMethod(
-			[Write_Controller::class, 'run'],
-			[$this, 'accessControl']
+			[Write_Controller::class, 'run'],                   [$this, 'accessControl']
 		);
 	}
 
