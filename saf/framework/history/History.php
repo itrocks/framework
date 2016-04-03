@@ -11,6 +11,7 @@ use SAF\Framework\Tools\Date_Time;
  * Or create another property with @replaces object
  *
  * @representative object, date, property_name, old_value, new_value
+ * @set History
  * @sort date
  */
 abstract class History
