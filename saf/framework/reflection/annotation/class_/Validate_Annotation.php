@@ -2,7 +2,7 @@
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Object_Validator;
+//use SAF\Framework\Reflection\Annotation\Template\Object_Validator;
 
 /**
  * @validate [[[\Vendor\Module\]Class_Name::]methodName]
@@ -10,7 +10,7 @@ use SAF\Framework\Reflection\Annotation\Template\Object_Validator;
  * Tells a method name that will be called by the Validator plugin.
  * This method will be called before an object is written using the Dao.
  */
-class Validate_Annotation extends Method_Annotation implements Object_Validator
+class Validate_Annotation extends Method_Annotation // implements Object_Validator
 {
 
 	//-------------------------------------------------------------------------------------- $message
