@@ -158,16 +158,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$search_parameters_parser = Builder::create(
 			Search_Parameters_Parser::class, [$class->name, $list_settings->search]
 		);
-		$result = $search_parameters_parser->parse();
-
-		foreach ($class->getAnnotations('on_data_list') as $execute) {
-			/** @var $execute Method_Annotation */
-			if ($execute->call($class->name, [&$result]) === false) {
-				break;
-			}
-		}
-
-		return $result;
+		return $search_parameters_parser->parse();
 	}
 
 	//----------------------------------------------------------------------------------- descapeForm
@@ -469,6 +460,15 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	public function readData($class_name, Data_List_Settings $list_settings, Count $count = null)
 	{
 		$search = $this->applySearchParameters($list_settings);
+
+		$class = $list_settings->getClass();
+		foreach ($class->getAnnotations('on_data_list') as $execute) {
+			/** @var $execute Method_Annotation */
+			if ($execute->call($class->name, [&$search]) === false) {
+				break;
+			}
+		}
+
 		$options = [$list_settings->sort];
 		if ($count) {
 			$options[] = $count;
