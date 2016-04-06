@@ -11,6 +11,8 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 class Null_Annotation extends Boolean_Annotation implements Property_Context_Annotation
 {
 
+	const NULL = 'null';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    string

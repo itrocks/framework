@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection;
 
 use DateTime;
+use SAF\Framework\Reflection\Annotation\Property\Null_Annotation;
 use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Password;
@@ -85,7 +86,8 @@ class Reflection_Property_View
 	 */
 	protected function formatFloat($value)
 	{
-		return (is_null($value) && $this->property->getAnnotation('null')->value) ? null : ($value + 0);
+		$null = $this->property->getAnnotation(Null_Annotation::NULL);
+		return (is_null($value) && $null->value) ? null : ($value + 0);
 	}
 
 	//--------------------------------------------------------------------------------- formatInteger

@@ -17,6 +17,7 @@ use SAF\Framework\History;
 use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Printer\Model;
+use SAF\Framework\Reflection\Annotation\Property\Null_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
@@ -241,6 +242,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			/** @var $property Property */
 			$property = Builder::createClone($property, Property::class);
 			$property->search = new Reflection_Property($class_name, $property->path);
+			if (!$property->search->getAnnotation(Null_Annotation::NULL)->value) {
+				$property->search->setAnnotationLocal(Null_Annotation::NULL)->value = true;
+			}
 			$properties[$property->path] = $property;
 		}
 		foreach ($list_settings->search as $property_path => $search_value) {
