@@ -14,8 +14,8 @@ class Quote_Salesman_Additional extends Quote_Salesman
 
 	//------------------------------------------------------------------------------ $additional_text
 	/**
-	 * @var string
 	 * @multiline
+	 * @var string
 	 */
 	public $additional_text;
 

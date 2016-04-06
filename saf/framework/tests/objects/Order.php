@@ -11,8 +11,8 @@ class Order extends Document
 	/**
 	 * Client
 	 *
-	 * @mandatory
 	 * @link Object
+	 * @mandatory
 	 * @var Client
 	 */
 	private $client;

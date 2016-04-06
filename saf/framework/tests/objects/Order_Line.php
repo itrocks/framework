@@ -47,8 +47,8 @@ class Order_Line
 	 * of type 'Order' into the class and its children.
 	 *
 	 * @composite
-	 * @mandatory
 	 * @link Object
+	 * @mandatory
 	 * @var Order
 	 */
 	public $order;

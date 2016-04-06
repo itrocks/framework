@@ -11,8 +11,8 @@ class Quote extends Document
 	/**
 	 * Client
 	 *
-	 * @mandatory
 	 * @link Object
+	 * @mandatory
 	 * @var Client
 	 */
 	public $client;
