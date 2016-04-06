@@ -143,14 +143,15 @@ class Loc implements Registerable
 	/**
 	 * Takes a locale date and make it ISO
 	 *
-	 * @param $date string ie '12/25/2001' '12/25/2001 12:20' '12/25/2001 12:20:16'
-	 * @param $max  boolean if true, the incomplete date will be completed to the max range
+	 * @param $date  string ie '12/25/2001' '12/25/2001 12:20' '12/25/2001 12:20:16'
+	 * @param $max   boolean if true, the incomplete date will be completed to the max range
 	 * eg '25/12/2001' will result in '2001-12-25 00:00:00' if false, '2001-12-25 23:59:59' if true
+	 * @param $joker string if set, the character that replaces missing values, instead of current
 	 * @return string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 */
-	public static function dateToIso($date, $max = false)
+	public static function dateToIso($date, $max = false, $joker = null)
 	{
-		return Locale::current()->date_format->toIso($date, $max);
+		return Locale::current()->date_format->toIso($date, $max, $joker);
 	}
 
 	//-------------------------------------------------------------------- floatReturnedValueToLocale

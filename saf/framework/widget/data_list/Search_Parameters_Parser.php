@@ -69,11 +69,15 @@ class Search_Parameters_Parser
 	 * @param $search_value string
 	 * @param $type         Type
 	 * @param $max          boolean
+	 * @param $joker        string
 	 */
-	protected function applyDate(&$search_value, Type $type, $max = false)
+	protected function applyDate(&$search_value, Type $type, $max = false, $joker = null)
 	{
-		if (is_string($search_value) && $type->isDateTime() && (strpos($search_value, SL) !== false)) {
-			$search_value = Loc::dateToIso($search_value, $max);
+		if (is_string($search_value) && $type->isDateTime() && (strpos($search_value, '-') === false)) {
+			$search_value = Loc::dateToIso($search_value, $max, $joker);
+			if (strpos($search_value, '_')) {
+				$search_value = Func::like($search_value);
+			}
 		}
 	}
 
@@ -182,7 +186,7 @@ class Search_Parameters_Parser
 		if ($this->hasRange($property)) {
 			$this->applyRange($search_value, $property->getType());
 		}
-		$this->applyDate($search_value, $property->getType());
+		$this->applyDate($search_value, $property->getType(), false, '_');
 		$this->applyDateRange($search_value, $property->getType());
 	}
 

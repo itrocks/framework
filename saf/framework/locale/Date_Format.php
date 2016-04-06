@@ -13,6 +13,7 @@ class Date_Format
 
 	//--------------------------------------------------------------------------------------- $format
 	/**
+	 * @example 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
 	 * @var string
 	 */
 	public $format;
@@ -23,7 +24,7 @@ class Date_Format
 	 *
 	 * Default date format, if none told, is ISO 'Y-m-d'
 	 *
-	 * @param $format string ie 'd/m/Y' for french date format
+	 * @param $format string eg 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
 	 */
 	public function __construct($format = null)
 	{
@@ -37,20 +38,46 @@ class Date_Format
 
 	//---------------------------------------------------------------------------------- advancedDate
 	/**
-	 * @param $date string
-	 * @return string
+	 * @param $date   string an incomplete locale format date : day alone, year alone, compositions
+	 * @param $joker  string if set, the character that replaces missing values, instead of current
+	 * @return string the complete locale date eg 2015-30-25
 	 */
-	private function advancedDate($date)
+	private function advancedDate($date, $joker = null)
 	{
-		// 1 or 2 digits : day alone : add current month and year
+		// two values with a middle slash
+		if (substr_count($date, SL) == 1) {
+			list($one, $two) = explode(SL, $date);
+			// the first number is a year : year/month
+			if (strlen($one) > 2) {
+				$date = sprintf('%04s-%02s-' . ($joker ? ($joker . $joker) : '01'), $one, $two);
+			}
+			// the second number is a year : month/year
+			elseif (strlen($two) > 2) {
+				$date = sprintf('%04s-%02s-' . ($joker ? ($joker . $joker) : '01'), $two, $one);
+			}
+			// these are small numbers : day/month or month/day, depending on the locale format
+			elseif (strpos($this->format, 'd/m') !== false) {
+				$date = sprintf(date('Y') . '-%02s-%02s', $two, $one);
+			}
+			else {
+				$date = sprintf(date('Y') . '-%02s-%02s', $one, $two);
+			}
+		}
+		//echo "date = $date<br>";
+		// 1 or 2 digits : day alone : add current month/day and year
 		if (in_array(strlen($date), [1, 2])) {
-			$iso_date = (new DateTime())->format(date('Y-m-' . sprintf('%02s', $date)));
+			$date = $joker
+				// joker = search : this is a month
+				? date('Y-' . sprintf('%02s', $date) . '-' . $joker . $joker)
+				// no joker = input : this is the day of the current month
+				: date('Y-m-' . sprintf('%02s', $date));
 		}
 		// 3 and more digits : year alone : add january the 1st
 		elseif (is_numeric($date)) {
-			$iso_date = (new DateTime())->format(date(sprintf('%04s', $date) . '-01-01'));
+			$date = sprintf('%04s', $date) . '-01-01';
 		}
-		return isset($iso_date) ? $date = (new DateTime($iso_date))->format($this->format) : $date;
+		//echo "result = $date<br>";
+		return $date;
 	}
 
 	//------------------------------------------------------------------------------------- appendMax
@@ -85,38 +112,46 @@ class Date_Format
 	/**
 	 * Takes a locale date and make it ISO
 	 *
-	 * @param $date string ie '12/25/2001' '12/25/2001 12:20' '12/25/2001 12:20:16'
-	 * @param $max  boolean if true, the incomplete date will be completed to the max range
+	 * @param $date  string ie '12/25/2001' '12/25/2001 12:20' '12/25/2001 12:20:16'
+	 * @param $max   boolean if true, the incomplete date will be completed to the max range
 	 * eg '25/12/2001' will result in '2001-12-25 00:00:00' if false, '2001-12-25 23:59:59' if true
+	 * @param $joker string if set, the character that replaces missing values, instead of current
 	 * @return string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 */
-	public function toIso($date, $max = false)
+	public function toIso($date, $max = false, $joker = null)
 	{
 		if (empty($date)) {
 			return '0000-00-00';
 		}
-		$date = $this->advancedDate($date);
-		if ($max && (strlen($date) == 10)) {
-			$date .= SP . '23:59:59';
-		}
+		$date = $this->advancedDate($date, $joker);
 		if (strlen($date) == 10) {
-			$datetime = DateTime::createFromFormat($this->format, $date);
-			return $datetime ? $datetime->format('Y-m-d') : $date;
+			if ($max) {
+				$date .= SP . '23:59:59';
+			}
+			elseif ($joker) {
+				$date .= SP . $joker . $joker . ':' . $joker . $joker . ':' . $joker . $joker;
+			}
+			elseif (strpos($date, '-') === false) {
+				$datetime = DateTime::createFromFormat($this->format, $date);
+				return $datetime ? $datetime->format('Y-m-d') : $date;
+			}
+			else {
+				return $date . SP . (
+					$joker
+						? ($joker . $joker . ':' . $joker . $joker . ':' . $joker . $joker)
+						: '00:00:00'
+				);
+			}
 		}
 		elseif (strpos($date, SP)) {
 			list($date, $time) = explode(SP, $date);
 			while (strlen($time) < 8) {
-				$time .= $max ? ':59' : ':00';
+				$time .= $joker ? (':' . $joker . $joker) : ($max ? ':59' : ':00');
 			}
 			$datetime = DateTime::createFromFormat($this->format, $date);
-			return trim($datetime
-				? ($datetime->format('Y-m-d') . SP . $time)
-				: $date . SP . $time
-			);
+			return trim($datetime ? ($datetime->format('Y-m-d') . SP . $time) : $date . SP . $time);
 		}
-		else {
-			return $date;
-		}
+		return $date;
 	}
 
 	//-------------------------------------------------------------------------------------- toLocale
@@ -148,7 +183,9 @@ class Date_Format
 			if ((strlen($time) == 8) && (substr($time, -3) == ':00')) {
 				substr($time, 0, 5);
 			}
-			$result = DateTime::createFromFormat('Y-m-d', $date)->format($this->format) . SP . $time;
+			$result = ($date_time = DateTime::createFromFormat('Y-m-d', $date))
+				? ($date_time->format($this->format) . SP . $time)
+				: $date;
 			if (substr($result, -9) == ' 00:00:00') {
 				$result = substr($result, 0, -9);
 			}
