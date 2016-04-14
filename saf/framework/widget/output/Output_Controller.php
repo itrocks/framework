@@ -276,7 +276,8 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 			/** @var $new_settings Output_Settings */
 			$new_settings = Output_Settings::conditionalOutputSettings($output_settings_list, $object);
 			if (
-				$new_settings && ($output_settings->name != $new_settings->name)
+				$new_settings
+				&& ($output_settings->name != $new_settings->name)
 				&& (
 					!$output_settings->name
 					|| !((new Code($output_settings->conditions))->execute($object, true))
