@@ -6,8 +6,6 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Option;
-use SAF\Framework\Dao\Option\Add;
-use SAF\Framework\Dao\Option\Only;
 use SAF\Framework\Mapper\Abstract_Class;
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Mapper\Getter;
@@ -87,7 +85,7 @@ class Link extends Dao\Sql\Link
 		$before_writes = (new Reflection_Class(get_class($object)))->getAnnotations('before_write');
 		if ($before_writes) {
 			foreach ($options as $option) {
-				if ($option instanceof Only) {
+				if ($option instanceof Option\Only) {
 					$only = $option;
 					break;
 				}
@@ -864,11 +862,14 @@ class Link extends Dao\Sql\Link
 			$class = new Link_Class(get_class($object));
 			$id_property = 'id';
 			foreach ($options as $option) {
-				if ($option instanceof Add) {
+				if ($option instanceof Option\Add) {
 					$force_add = true;
 				}
-				if ($option instanceof Only) {
+				elseif ($option instanceof Option\Only) {
 					$only = isset($only) ? array_merge($only, $option->properties) : $option->properties;
+				}
+				elseif ($option instanceof Option\Link_Class_Only) {
+					$link_class_only = true;
 				}
 			}
 			do {
@@ -1108,7 +1109,7 @@ class Link extends Dao\Sql\Link
 				// if link class : write linked object too
 				$id_property = $link->value ? ('id_' . $class->getCompositeProperty()->name) : null;
 				$class       = $link->value ? new Link_Class($link->value) : null;
-			} while ($class && !Null_Object::isNull($object, $class->name));
+			} while ($class && !isset($link_class_only) && !Null_Object::isNull($object, $class->name));
 
 			/** @var $after_writes Method_Annotation[] */
 			$after_writes = (new Reflection_Class(get_class($object)))->getAnnotations('after_write');
@@ -1150,6 +1151,7 @@ class Link extends Dao\Sql\Link
 		// collection properties : write each of them
 		$id_set = [];
 		if ($collection) {
+			$link_class_only = new Option\Link_Class_Only();
 			foreach ($collection as $key => $element) {
 				if (!is_a($element, $element_class->getName())) {
 					$collection[$key] = $element = Builder::createClone($element, $element_class->getName(), [
@@ -1163,7 +1165,7 @@ class Link extends Dao\Sql\Link
 				if (!empty($id)) {
 					$id_set[$id] = true;
 				}
-				$this->write($element);
+				$this->write($element, empty($id) ? [] : [$link_class_only]);
 			}
 		}
 		// remove old unused elements
