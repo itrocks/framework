@@ -69,6 +69,38 @@ class Map
 		return isset($this->objects[$key]) || array_key_exists($key, $this->objects);
 	}
 
+	//------------------------------------------------------------------------------------- intersect
+	/**
+	 * Returns the intersection of two objects maps
+	 * Only objects which Dao identifier match into the two objects map are returned
+	 *
+	 * $only_first_common_element = true can be used for optimisation purpose if you are interested in
+	 * knowing if there is at least one common element instead of getting all the intersection
+	 * elements.
+	 *
+	 * @param $objects                   Map|object[]
+	 * @param $only_first_common_element boolean If true : returns only the first common element
+	 * @return Map|object[] the intersection of this set and linked elements / Set elements
+	 * Returns a Map if $elements was a Map, or an object[] if $elements was an object[]
+	 */
+	public function intersect($objects, $only_first_common_element = false)
+	{
+		if ($objects instanceof Map) {
+			$objects = $objects->objects;
+			$returns_map = true;
+		}
+		foreach ($objects as $key => $object) {
+			if (!isset($this->objects[Dao::getObjectIdentifier($object)])) {
+				unset($objects[$key]);
+			}
+			elseif ($only_first_common_element) {
+				$objects = [$key => $object];
+				break;
+			}
+		}
+		return isset($returns_map) ? new Map($objects) : $objects;
+	}
+
 	//---------------------------------------------------------------------------------------- remove
 	/**
 	 * Remove an object from an objects array
