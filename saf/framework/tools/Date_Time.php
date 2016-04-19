@@ -103,7 +103,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			if (isset($interval)) {
 				$interval = new DateInterval($interval);
 				$interval->invert = $invert;
-				return new Date_Time(parent::add($interval));
+				return parent::add($interval);
 			}
 		}
 		return $this;
@@ -347,7 +347,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function sub($quantity, $unit = Date_Time::DAY)
 	{
 		return ($quantity instanceof DateInterval)
-			? new Date_Time(parent::sub($quantity))
+			? parent::sub($quantity)
 			: $this->add(-$quantity, $unit);
 	}
 
