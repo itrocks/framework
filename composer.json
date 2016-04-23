@@ -7,8 +7,8 @@
 		"installer-paths": { "{$vendor}/{$name}/": ["type:itrocks"] },
 		"installer-types": ["itrocks"]
 	},
-	"license":     "MIT",
-	"name":        "saf/framework",
+	"license": "MIT",
+	"name": "saf/framework",
 	"require": {
 		"components/jquery":                     "2.x",
 		"components/jqueryui":                   "1.x",
