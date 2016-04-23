@@ -9,7 +9,7 @@
 	"require": {
 		"components/jquery":   "2.x",
 		"components/jqueryui": "1.x",
-		"composer/installers": "1.x",
+		"composer/installers": "~1.0",
 		"html2text/html2text": "4.x",
 		"setasign/fpdi":       "1.x"
 	},
