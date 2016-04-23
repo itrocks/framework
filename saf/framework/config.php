@@ -19,7 +19,7 @@ use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\View\Html\Cleaner;
 
 global $pwd;
-require 'pwd.php';
+require __DIR__ . '/../../pwd.php';
 
 $config['SAF/Framework'] = [
 	Configuration::APP    => Application::class,

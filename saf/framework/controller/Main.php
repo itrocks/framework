@@ -227,7 +227,7 @@ class Main
 	private function loadConfiguration()
 	{
 		$config = isset($_SERVER['CONFIG'])
-			? ($_SERVER['CONFIG'] . '.php')
+			? ($_SERVER['CONFIG'] . '/config.php')
 			: substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1);
 		$configuration = (new Configurations())->load($config);
 		return $configuration;
