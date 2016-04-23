@@ -1,62 +1,14 @@
 {
-	"name": "bappli/sfkgroup",
-	"description": "SFK Group",
-	"minimum-stability": "stable",
-	"license": "proprietary",
 	"authors": [
-		{ "name": "B-APPLI Studio",  "email": "studio@bappli.com" },
-		{ "name": "Baptiste Pillot", "email": "baptiste.pillot@bappli.com" }
+		{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }
 	],
+	"description": "SAF",
+	"license":     "MIT",
+	"name":        "saf/framework",
 	"require": {
-		"jquery/jquery": "2.2.2",
-		"jquery/jquery-migrate": "1.4.0",
-		"jquery/jquery-ui": "1.11.4",
-		"jquery/jquery-ui-themes": "1.11.4"
-	},
-	"repositories": [
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/jquery",
-				"version": "2.2.2",
-				"dist": {
-					"type": "file",
-					"url": "https://code.jquery.com/jquery-2.2.2.js"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/jquery-migrate",
-				"version": "1.4.0",
-				"dist": {
-					"type": "file",
-					"url": "https://code.jquery.com/jquery-migrate-1.4.0.js"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/jquery-ui",
-				"version": "1.11.4",
-				"dist": {
-					"type": "zip",
-					"url": "https://jqueryui.com/resources/download/jquery-ui-1.11.4.zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/jquery-ui-themes",
-				"version": "1.11.4",
-				"dist": {
-					"type": "zip",
-					"url": "https://jqueryui.com/resources/download/jquery-ui-themes-1.11.4.zip"
-				}
-			}
-		}
-	]
+		"components/jquery":   "2.x",
+		"components/jqueryui": "1.x",
+		"html2text/html2text": "4.x",
+		"setasign/fpdi":       "1.x"
+	}
 }
