@@ -3,12 +3,15 @@
 		{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }
 	],
 	"description": "SAF",
+	"extra": { "installer-paths": { "{$name}/": ["type:itrocks"] }},
 	"license":     "MIT",
 	"name":        "saf/framework",
 	"require": {
 		"components/jquery":   "2.x",
 		"components/jqueryui": "1.x",
+		"composer/installers": "1.x",
 		"html2text/html2text": "4.x",
 		"setasign/fpdi":       "1.x"
-	}
+	},
+	"type": "itrocks"
 }
