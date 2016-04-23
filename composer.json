@@ -3,6 +3,10 @@
 		{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }
 	],
 	"description": "SAF",
+	"extra": {
+		"installer-paths": { "{$vendor}/{$name}/": ["type:itrocks"] },
+		"installer-types": ["itrocks"]
+	},
 	"license":     "MIT",
 	"name":        "saf/framework",
 	"require": {
