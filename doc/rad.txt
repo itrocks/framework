@@ -1,84 +1,84 @@
 > PRINCIPES DE BASE
 
-- Si on veut changer quelque chose, ça doit pouvoir être fait en cliquant simplement dessus, quoi que ce soit
-- Tout doit être énoncé avec des termes explicites et concis
-- Pour déplacer quelque chose d'un point A vers un point B, ça doit pouvoir être fait en le faisant glisser (privilégier le drag'n'drop)
+- Si on veut changer quelque chose, Ã§a doit pouvoir Ãªtre fait en cliquant simplement dessus, quoi que ce soit
+- Tout doit Ãªtre Ã©noncÃ© avec des termes explicites et concis
+- Pour dÃ©placer quelque chose d'un point A vers un point B, Ã§a doit pouvoir Ãªtre fait en le faisant glisser (privilÃ©gier le drag'n'drop)
 
 > NOUVEAU TYPE DE DOCUMENT
 
-Etape 1 : Définition
+Etape 1 : DÃ©finition
 --------------------
 
-Un / Une :	(singulier, rempli automatiquement d'après pluriel jusqu'à correction manuelle)
-Des :		(pluriel, rempli automatiquement d'après singulier jusqu'à correction manuelle)
+Un / Une :	(singulier, rempli automatiquement d'aprÃ¨s pluriel jusqu'Ã  correction manuelle)
+Des :		(pluriel, rempli automatiquement d'aprÃ¨s singulier jusqu'Ã  correction manuelle)
 
-Ce type de document est un modèle non utilisable / un document qui peut être utilisé comme modèle / un document final qui ne pourra pas être utilisé comme modèle (déconseillé)
+Ce type de document est un modÃ¨le non utilisable / un document qui peut Ãªtre utilisÃ© comme modÃ¨le / un document final qui ne pourra pas Ãªtre utilisÃ© comme modÃ¨le (dÃ©conseillÃ©)
 
-Modèles : (un seul conseillé (héritage), plusieurs possibles mais un seul pourra êtr un modèle utilisable, les autres devront être modèles non utilisables ("traits" en php))
+ModÃ¨les : (un seul conseillÃ© (hÃ©ritage), plusieurs possibles mais un seul pourra Ãªtr un modÃ¨le utilisable, les autres devront Ãªtre modÃ¨les non utilisables ("traits" en php))
 
 Tags :
-	ceux du modèle (pouvoir les retirer / récupérer)
-	rajouter des tags (saisie avec complétion automatique, ou recherches dans l'annuaire)
+	ceux du modÃ¨le (pouvoir les retirer / rÃ©cupÃ©rer)
+	rajouter des tags (saisie avec complÃ©tion automatique, ou recherches dans l'annuaire)
 
 Notice de fonctionnement
 ------------------------
-- Un / une (et toutes listes de choix) : surligné la bonne réponse, change avec un simple clic. si clic, la mauvaise réponse disparait (revient par simple clic)
+- Un / une (et toutes listes de choix) : surlignÃ© la bonne rÃ©ponse, change avec un simple clic. si clic, la mauvaise rÃ©ponse disparait (revient par simple clic)
 
 Etape 2 & Etape 3 : Vues, Actions
 ---------------------------------
 
 Vue / Action principale :
 	Liste
-	[Nouveau modèle de vue, simplement saisir le nom, sera stocké dans les éléments à créer]
+	[Nouveau modÃ¨le de vue, simplement saisir le nom, sera stockÃ© dans les Ã©lÃ©ments Ã  crÃ©er]
 
 Vues / Actions disponibles :
 	Formulaire
 	Liste
-	[Nouveau modèle de vue, simplement saisir le nom, sera stocké dans les éléments à créer]
+	[Nouveau modÃ¨le de vue, simplement saisir le nom, sera stockÃ© dans les Ã©lÃ©ments Ã  crÃ©er]
 
-Vues /actions désactivées :
+Vues /actions dÃ©sactivÃ©es :
 	Impression
 
 Bouton continuer
 
 Notice de fonctionnement
 ------------------------
-- Vues : par glisser-déposer, avec sélection multiple possible
-- Les noms étapes s'affichent sous forme d'onglets, dès la première étape validée les onglets des étapes activées deviennent visibles (en l'occurence la simple saisie d'un caractère dans l'intitulé suffit)
+- Vues : par glisser-dÃ©poser, avec sÃ©lection multiple possible
+- Les noms Ã©tapes s'affichent sous forme d'onglets, dÃ¨s la premiÃ¨re Ã©tape validÃ©e les onglets des Ã©tapes activÃ©es deviennent visibles (en l'occurence la simple saisie d'un caractÃ¨re dans l'intitulÃ© suffit)
 
 Etape 4 : Contenu
 -----------------
 
-Contenu du [intitulé du document]
+Contenu du [intitulÃ© du document]
 T	Mon champ 1
 T	Mon champ 2
-	Ajouter (ouvre l'onglet "ajouter / parcourir" à droite)
+	Ajouter (ouvre l'onglet "ajouter / parcourir" Ã  droite)
 
-Contenu issu des modèles
-Modèle 1
+Contenu issu des modÃ¨les
+ModÃ¨le 1
 T	Nom
-T	Prénom
+T	PrÃ©nom
 N	Age
 >	Adresse
-Modèle 2
+ModÃ¨le 2
 etc.
-(y compris modèles des modèles)
+(y compris modÃ¨les des modÃ¨les)
 
-Etape 5 : Afficher détail du fonctionnement, bouton validé
+Etape 5 : Afficher dÃ©tail du fonctionnement, bouton validÃ©
 ----------------------------------------------------------
 
-On reprend ici en affichage tout ce qu'on a réglé auparavant, grosse liste
+On reprend ici en affichage tout ce qu'on a rÃ©glÃ© auparavant, grosse liste
 Avec un bouton "valider" au bout
-Tant qu'on a pas validé, notre todo comporte "finir de configurer et valider le type de document X"
+Tant qu'on a pas validÃ©, notre todo comporte "finir de configurer et valider le type de document X"
 
 Notice de fonctionnement
 ------------------------
-- T pour texte, N pour numérique, > pour lien vers un autre type de document
-- Clic sur un contenu en ouvre le détail des propriétés à droite
+- T pour texte, N pour numÃ©rique, > pour lien vers un autre type de document
+- Clic sur un contenu en ouvre le dÃ©tail des propriÃ©tÃ©s Ã  droite
 - A droite : deux onglets possibles :
-	- ajouter (arborescence de modèles, de documents, etc., pour glisser-déposer)
-	- détail du contenu cliqué : type de donnée, toutes annotations, etc.
+	- ajouter (arborescence de modÃ¨les, de documents, etc., pour glisser-dÃ©poser)
+	- dÃ©tail du contenu cliquÃ© : type de donnÃ©e, toutes annotations, etc.
 
 > DETAIL SUR UN CONTENU
 	Nom
-	Type de donnée : simple ou autre document utilisable (permettre recherche textuelle, par tags, par classifications (plusieurs possibles))
+	Type de donnÃ©e : simple ou autre document utilisable (permettre recherche textuelle, par tags, par classifications (plusieurs possibles))

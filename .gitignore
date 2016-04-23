@@ -1,17 +1,9 @@
 .DS_Store
+/.buildpath
 /.git
 /.idea
-/.settings
-/.buildpath
 /.project
-
-/cache
-/phpdoc
-/tmp
-/vendor
-
-/composer.lock
-/composer.phar
+/.settings
 
 /pwd.php
 /update
