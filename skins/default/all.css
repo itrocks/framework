@@ -4,7 +4,7 @@
  * and for a full-ajax application, the slowdown risk will only be on the first page loading
  */
 
-@import "../../../../vendor/reset5/reset.css";
+@import "../../../../vendor/csl/reset5/reset.min.css";
 
 @import "../../../../vendor/jquery-ui/smoothness/jquery-ui.css";
 @import "../../../../vendor/jquery-ui/smoothness/jquery.ui.theme.css";

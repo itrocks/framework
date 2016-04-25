@@ -9,10 +9,24 @@
 	},
 	"license": "MIT",
 	"name": "saf/framework",
+	"repositories": [
+		{
+			"type": "package",
+			"package": {
+				"name": "csl/reset5",
+				"version": "1.0",
+				"dist": {
+					"type": "file",
+					"url": "https://reset5.googlecode.com/hg/reset.min.css"
+				}
+			}
+		}
+	],
 	"require": {
 		"components/jquery":                     "2.x",
 		"components/jqueryui":                   "1.x",
 		"composer/installers":                   "~1.0",
+		"csl/reset5":                            "1.x",
 		"html2text/html2text":                   "4.x",
 		"oomphinc/composer-installers-extender": "~1.1",
 		"setasign/fpdi-tcpdf":                   "1.x"
