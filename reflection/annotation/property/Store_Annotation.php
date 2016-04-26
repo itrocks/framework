@@ -46,4 +46,21 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 		parent::__construct($value);
 	}
 
+	//-------------------------------------------------------------------------- storedPropertiesOnly
+	/**
+	 * Returns only properties which @store annotation is not false
+	 *
+	 * @param $properties Reflection_Property[]
+	 * @return Reflection_Property[] filtered properties list
+	 */
+	public static function storedPropertiesOnly($properties)
+	{
+		foreach ($properties as $key => $property) {
+			if ($property->getAnnotation(self::ANNOTATION)->value === self::FALSE) {
+				unset($properties[$key]);
+			}
+		}
+		return $properties;
+	}
+
 }
