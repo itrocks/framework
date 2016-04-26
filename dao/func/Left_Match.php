@@ -7,8 +7,16 @@ use SAF\Framework\Sql\Value;
 /**
  * Dao Left_Match function
  */
-class Left_Match implements Where
+class Left_Match implements Where, Negate
 {
+
+	//------------------------------------------------------------------------------------ $not_match
+	/**
+	 * If true, then this is a 'not match' instead of a 'match'
+	 *
+	 * @var boolean
+	 */
+	public $not_match;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -19,10 +27,12 @@ class Left_Match implements Where
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value mixed|Where
+	 * @param $not_match boolean
 	 */
-	public function __construct($value)
+	public function __construct($value, $not_match = false)
 	{
 		$this->value = $value;
+		if (isset($not_match)) $this->not_match = $not_match;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -38,7 +48,18 @@ class Left_Match implements Where
 	{
 		$column = $builder->buildColumn($property_path, $prefix);
 		$value  = Value::escape($this->value);
-		return $column . ' = LEFT(' . $value . ', LENGTH(' . $column . '))';
+		return $column . ($this->not_match ? ' <> ' : ' = ') . 'LEFT(' . $value . ', LENGTH(' . $column . '))';
+	}
+
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 *
+	 * @return void
+	 */
+	public function negate()
+	{
+		$this->not_match = !$this->not_match;
 	}
 
 }

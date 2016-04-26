@@ -7,7 +7,7 @@ use SAF\Framework\Sql\Value;
 /**
  * Dao IN function
  */
-class In implements Where
+class In implements Where, Negate
 {
 
 	//--------------------------------------------------------------------------------------- $not_in
@@ -58,6 +58,17 @@ class In implements Where
 			$sql .= ')';
 		}
 		return $sql;
+	}
+
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 *
+	 * @return void
+	 */
+	public function negate()
+	{
+		$this->not_in = !$this->not_in;
 	}
 
 }

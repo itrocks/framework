@@ -589,7 +589,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			if (!$property->getType()->isString()) {
 				$property->setAnnotationLocal(Var_Annotation::ANNOTATION)->value = Type::STRING;
 			}
-			$property->value(Loc::propertyToISO($property, $value));
+			$property->value(Loc::propertyToIso($property, $value));
 		}
 		return $property;
 	}

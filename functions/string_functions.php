@@ -200,6 +200,7 @@ function strHasAccent($str)
  */
 function strIsCapitals($str)
 {
+	//TODO: a better implementation using multibyte string library to take care any letter
 	for ($i = 0; $i < strlen($str); $i ++) {
 		if (
 			(($str[$i] < 'A') || ($str[$i] > 'Z'))

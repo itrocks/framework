@@ -8,7 +8,7 @@ use SAF\Framework\Sql\Value;
  * Lesser than is a condition used to get the record where the column has a value lesser than the
  * given value
  */
-class Comparison implements Where
+class Comparison implements Where, Negate
 {
 
 	//---------------------------------------------------------------------------------- $sign values
@@ -46,8 +46,8 @@ class Comparison implements Where
 		if (isset($this->than_value) && !isset($this->sign)) {
 			$this->sign =
 				((strpos($this->than_value, '_') !== false) || (strpos($this->than_value, '%') !== false))
-				? self::LIKE
-				: self::EQUAL;
+					? self::LIKE
+					: self::EQUAL;
 		}
 	}
 
@@ -73,12 +73,52 @@ class Comparison implements Where
 			if ($this->sign == self::NOT_EQUAL) {
 				return 'NOT (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
 			}
+			elseif ($this->sign == self::EQUAL) {
+				//Because of Negate, we should support EQUAL for instance of Where
+				return ' (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
+			}
 			else {
 				return $this->than_value->toSql($builder, $property_path, $prefix);
 			}
 		}
 		return $column . SP . $this->sign . SP
-			. Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
+		. Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
+	}
+
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate this comparison
+	 *
+	 * @return void
+	 */
+	public function negate()
+	{
+		switch ($this->sign) {
+			case self::EQUAL:
+				$this->sign = self::NOT_EQUAL;
+				break;
+			case self::LIKE:
+				$this->sign = self::NOT_LIKE;
+				break;
+			case self::NOT_EQUAL:
+				$this->sign = self::EQUAL;
+				break;
+			case self::NOT_LIKE:
+				$this->sign = self::LIKE;
+				break;
+			case self::GREATER:
+				$this->sign = self::LESS_OR_EQUAL;
+				break;
+			case self::LESS:
+				$this->sign = self::GREATER_OR_EQUAL;
+				break;
+			case self::GREATER_OR_EQUAL:
+				$this->sign = self::LESS;
+				break;
+			case self::LESS_OR_EQUAL:
+				$this->sign = self::GREATER;
+				break;
+		}
 	}
 
 }

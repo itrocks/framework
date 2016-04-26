@@ -220,6 +220,16 @@ abstract class Func
 		return new Comparison(Comparison::NOT_EQUAL, null);
 	}
 
+	//----------------------------------------------------------------------------------------- notOp
+	/**
+	 * @param $value mixed
+	 * @return Comparison
+	 */
+	public static function notOp($value)
+	{
+		return new Logical(Logical::NOT_OPERATOR, $value);
+	}
+
 	//------------------------------------------------------------------------------------------ orOp
 	/**
 	 * @var $arguments Where[]|mixed

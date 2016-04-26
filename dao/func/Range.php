@@ -7,8 +7,16 @@ use SAF\Framework\Sql\Value;
 /**
  * Dao Range function
  */
-class Range implements Where
+class Range implements Where, Negate
 {
+
+	//---------------------------------------------------------------------------------- $not_between
+	/**
+	 * If true, then this is a 'NOT BETWEEN' instead of a 'BETWEEN'
+	 *
+	 * @var boolean
+	 */
+	public $not_between;
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
@@ -26,11 +34,13 @@ class Range implements Where
 	/**
 	 * @param $from mixed
 	 * @param $to   mixed
+	 * @param $not_between boolean
 	 */
-	public function __construct($from, $to)
+	public function __construct($from, $to, $not_between = false)
 	{
 		$this->from = $from;
 		$this->to   = $to;
+		if (isset($not_between)) $this->not_between = $not_between;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -45,9 +55,23 @@ class Range implements Where
 	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
 		return '('
-			. $builder->buildColumn($property_path, $prefix) . ' BETWEEN '
-			. Value::escape($this->from) . ' AND ' . Value::escape($this->to)
+		. $builder->buildColumn($property_path, $prefix) . ($this->not_between ? ' NOT' : '')
+		. ' BETWEEN '
+		// make SQL secure if given from>to
+		. 'LEAST(' . Value::escape($this->from) . ',' . Value::escape($this->to) . ') '
+		. ' AND '
+		. 'GREATEST(' . Value::escape($this->from) . ',' . Value::escape($this->to) . ') '
 		. ')';
+	}
+
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 *
+	 * @return void
+	 */
+	public function negate() {
+		$this->not_between = !$this->not_between;
 	}
 
 }
