@@ -82,7 +82,7 @@ class Comparison implements Where, Negate
 			}
 		}
 		return $column . SP . $this->sign . SP
-		. Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
+		. Value::escape($this->than_value/*, strpos($this->sign, 'LIKE') !== false*/);
 	}
 
 	//---------------------------------------------------------------------------------------- negate
