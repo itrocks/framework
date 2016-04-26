@@ -12,6 +12,11 @@
 		&:empty {
 			display: none;
 		}
+
+		.error {
+			font-size: 100%;
+			padding: 1px 3px;
+		}
 	}
 
 	/* table */

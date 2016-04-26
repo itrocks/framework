@@ -11,7 +11,6 @@ use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Date_Time;
-//use SAF\Framework\View\View_Exception;
 
 /**************************************************/
 
@@ -195,11 +194,12 @@ class Search_Parameters_Parser
 	 */
 	public function parse()
 	{
-		$errors = [];
 		$search = $this->search;
 		foreach ($search as $property_path => &$search_value) {
 			$property = new Reflection_Property($this->class->name, $property_path);
-			$this->parseField($search_value, $property, $errors);
+			if (strlen(trim($search_value))) {
+				$this->parseField($search_value, $property);
+			}
 		}
 		return $search;
 	}
@@ -208,23 +208,14 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property Reflection_Property
-	 * @param &$errors [out] array of errors encountered on search expressions during apply
 	 */
-	public function parseField(&$search_value, Reflection_Property $property, &$errors)
+	public function parseField(&$search_value, Reflection_Property $property)
 	{
 		try {
 			$search_value = $this->applyOr($search_value, $property);
 		}
-		catch (Data_List_Exception $e) {
-			//TODO: message to display as an error on output
-			$search_value = '';
-			$errors[$property->getName()][] = $e->getMessage();
-			//throw new View_Exception($e->getMessage() . ' : ' . $search_value);
-		}
 		catch (\Exception $e) {
-			//TODO: message to display as an error on output
-			$search_value = '';
-			//throw new View_Exception($e->getMessage());
+			$search_value = $e;
 		}
 	}
 
@@ -319,6 +310,7 @@ class Search_Parameters_Parser
 	 * @param $search_value string|Option
 	 * @param $property     Reflection_Property
 	 * @return mixed
+	 * @throws Data_List_Exception
 	 */
 	protected function applySingleValue($search_value, Reflection_Property $property)
 	{
@@ -338,6 +330,9 @@ class Search_Parameters_Parser
 				$search = $this->applyScalar($search_value, $property);
 				break;
 			}
+		}
+		if ($search === false) {
+			throw new Data_List_Exception($search_value, "Error in expression");
 		}
 		return $search;
 	}

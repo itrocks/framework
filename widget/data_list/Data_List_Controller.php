@@ -50,6 +50,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	private $class_names;
 
+	//---------------------------------------------------------------------------------- $class_names
+	/**
+	 * List of errors on fields' search expression 
+	 * @var array of \Exception
+	 */
+	private $errors = [];
+
 	//----------------------------------------------------------------- applyParametersToListSettings
 	/**
 	 * Apply parameters to list settings
@@ -142,9 +149,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if (!$list_settings->title) {
 			$list_settings->title = $list_settings->name;
 		}
-		if ($did_change) {
-			$list_settings->save();
-		}
+		//Sebastien: I put the save outside this method because we should save only if search expressions
+		//are all valid.
+		//TODO: Move back save() here once we have a generic validator (parser) not depending of SQL that we could fire here before save!
+		//if ($did_change) {
+		//	$list_settings->save();
+		//}
 		return $did_change ? $list_settings : null;
 	}
 
@@ -160,7 +170,19 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$search_parameters_parser = Builder::create(
 			Search_Parameters_Parser::class, [$class->name, $list_settings->search]
 		);
-		return $search_parameters_parser->parse();
+		$search = $search_parameters_parser->parse();
+		//check if we have errors in search expressions
+		$this->errors = [];
+		foreach ($search as $property_path => &$search_value) {
+			if ($search_value instanceof \Exception) {
+				$this->errors[$property_path] = $search_value;
+				//reset result value to a valid empty expression that can be given to readData() to work properly
+				$search_value = '';
+				//reset settings value to a valid empty expression that can be saved
+				$list_settings->search[$property_path] = '';
+			}
+		}
+		return $search;
 	}
 
 	//----------------------------------------------------------------------------------- descapeForm
@@ -292,6 +314,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			foreach ($list_settings->search as $property_path => $value) {
 				if ($first) $first = false; else $summary .= ',';
 				$summary .= SP . $t . $property_path . $t . ' = ' . DQ . $value . DQ;
+				if (isset($this->errors, $this->errors[$property_path])) {
+					$e = $this->errors[$property_path];
+					$summary .= SP . '<span class="error">' . $e->getMessage();
+					if ($e instanceof Data_List_Exception) {
+						$summary .= ' (' . $e->getExpression() . ')';
+					}
+					$summary .= '</span>';
+				}
 			}
 			return $summary;
 		}
@@ -351,10 +381,18 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$parameters = $parameters->getObjects();
 		$list_settings = Data_List_Settings::current($class_name);
 		$list_settings->cleanup();
-		$this->applyParametersToListSettings($list_settings, $parameters, $form);
+		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$customized_list_settings = $list_settings->getCustomSettings();
 		$count = new Count();
+		//before to fire readData (that may change $list_settings if error found)
+		//we need to d a copy in order to display summary with original given parameters
+		$list_settings_original = clone $list_settings;
 		$data = $this->readData($class_name, $list_settings, $count);
+		//Sebastien: Moved from applyParametersToListSettings()
+		//TODO: Move back once we have a generic validator (parser) not depending of SQL that we could fire before save!
+		if (!is_null($did_change)) {
+			$list_settings->save();
+		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
 		$less_twenty = $displayed_lines_count > 20;
 		$more_hundred = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
@@ -370,9 +408,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'less_twenty'           => $less_twenty,
 				'more_hundred'          => $more_hundred,
 				'more_thousand'         => $more_thousand,
-				'properties'            => $this->getProperties($list_settings),
+				'properties'            => $this->getProperties($list_settings_original),
 				'rows_count'            => $count->count,
-				'search_summary'        => $this->getSearchSummary($list_settings),
+				'search_summary'        => $this->getSearchSummary($list_settings_original),
 				'settings'              => $list_settings,
 				'title'                 => $list_settings->title()
 			]

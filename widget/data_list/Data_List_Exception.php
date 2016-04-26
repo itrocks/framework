@@ -28,4 +28,13 @@ class Data_List_Exception extends Exception
 		$this->message = $message;
 	}
 
+	//--------------------------------------------------------------------------------- getExpression
+	/**
+	 * @return string
+	 */
+	public function getExpression()
+	{
+		return $this->expression;
+	}
+
 }
