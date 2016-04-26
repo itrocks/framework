@@ -30,6 +30,15 @@ use SAF\Framework\View\Html\Dom\Textarea;
 class Html_Builder_Type
 {
 
+	//----------------------------------------------------------------------------------- $conditions
+	/**
+	 * The key is the name of the condition, the value is the name of the value that enables
+	 * the condition
+	 *
+	 * @var string[]
+	 */
+	public $conditions;
+
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
@@ -96,6 +105,27 @@ class Html_Builder_Type
 		if (isset($type))    $this->type = $type;
 		if (isset($value))   $this->value = $value;
 		if (isset($preprop)) $this->preprop = $preprop;
+	}
+
+	//---------------------------------------------------------------------------- addInputConditions
+	/**
+	 * Add conditions to the input 'data-conditions' attribute
+	 *
+	 * @param $element Element the button / input / select element
+	 */
+	protected function addConditionsToElement($element)
+	{
+		if ($this->conditions) {
+			$html_conditions = [];
+			$old_name = $this->name;
+			foreach ($this->conditions as $condition_name => $condition_value) {
+				$this->name = $condition_name;
+				$name = $this->getFieldName('', false);
+				$html_conditions[] = $name . '=' . $condition_value;
+			}
+			$this->name = $old_name;
+			$element->setAttribute('data-conditions', join(';', $html_conditions));
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -170,6 +200,7 @@ class Html_Builder_Type
 			if ($this->value) {
 				$checkbox->setAttribute('checked');
 			}
+			$this->addConditionsToElement($checkbox);
 			return $input . $checkbox;
 		}
 	}
@@ -193,6 +224,7 @@ class Html_Builder_Type
 		else {
 			$input->addClass('datetime');
 		}
+		$this->addConditionsToElement($input);
 		return $input;
 	}
 
@@ -215,6 +247,7 @@ class Html_Builder_Type
 		else {
 			$span = '';
 		}
+		$this->addConditionsToElement($file);
 		return $file . $span;
 	}
 
@@ -259,6 +292,7 @@ class Html_Builder_Type
 		}
 		$input->addClass('float');
 		$input->addClass('autowidth');
+		$this->addConditionsToElement($input);
 		return $input;
 	}
 
@@ -294,18 +328,17 @@ class Html_Builder_Type
 		}
 		$input->addClass('integer');
 		$input->addClass('autowidth');
+		$this->addConditionsToElement($input);
 		return $input;
 	}
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
-	 * @param $conditions string[] the key is the name of the condition, the value is the name of the
-	 *   value that enables the condition
 	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
 	 *   element containing its value
 	 * @return string
 	 */
-	public function buildObject($conditions = null, $filters = null)
+	public function buildObject($filters = null)
 	{
 		$class_name = $this->type->asString();
 		// visible input
@@ -329,18 +362,8 @@ class Html_Builder_Type
 				$this->name = $old_name;
 				$input->setAttribute('data-combo-filters', join(',', $html_filters));
 			}
-			if ($conditions) {
-				$html_conditions = [];
-				$old_name = $this->name;
-				foreach ($conditions as $condition_name => $condition_value) {
-					$this->name = $condition_name;
-					$name = $this->getFieldName('', false);
-					$html_conditions[] = $name . '=' . $condition_value;
-				}
-				$this->name = $old_name;
-				$input->setAttribute('data-conditions', join(';', $html_conditions));
-			}
 			$input->addClass('combo');
+			$this->addConditionsToElement($input);
 			// id input
 			$id_input = new Input(
 				$this->getFieldName('id_'), $this->value ? Dao::getObjectIdentifier($this->value) : ''
@@ -403,6 +426,7 @@ class Html_Builder_Type
 			$input->removeAttribute('name');
 			$input->setAttribute('readonly');
 		}
+		$this->addConditionsToElement($input);
 		return $input;
 	}
 
