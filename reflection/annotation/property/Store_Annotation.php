@@ -21,10 +21,17 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 {
 
 	const ANNOTATION = 'store';
+
 	const FALSE      = 'false';
+	const JSON       = 'json';
 	const GZ         = 'gz';
 	const HEX        = 'hex';
 	const STRING     = 'string';
+
+	/**
+	 * The internal key to store the name of the class into the json structure
+	 */
+	const JSON_CLASS = '_class';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -37,6 +44,23 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 			$value = self::STRING;
 		}
 		parent::__construct($value);
+	}
+
+	//-------------------------------------------------------------------------- storedPropertiesOnly
+	/**
+	 * Returns only properties which @store annotation is not false
+	 *
+	 * @param $properties Reflection_Property[]
+	 * @return Reflection_Property[] filtered properties list
+	 */
+	public static function storedPropertiesOnly($properties)
+	{
+		foreach ($properties as $key => $property) {
+			if ($property->getAnnotation(self::ANNOTATION)->value === self::FALSE) {
+				unset($properties[$key]);
+			}
+		}
+		return $properties;
 	}
 
 }

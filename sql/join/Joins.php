@@ -296,8 +296,10 @@ class Joins
 	private function addProperties($path, $class_name, $join_mode = null)
 	{
 		$class = new Link_Class($class_name);
-		$this->properties[$class_name] = $class->getProperties([T_EXTENDS, T_USE]);
-		$linked_class_name = $class->getAnnotation('link')->value;
+		$this->properties[$class_name] = Store_Annotation::storedPropertiesOnly(
+			$class->getProperties([T_EXTENDS, T_USE])
+		);
+		$linked_class_name = $class->getAnnotation(Link_Annotation::ANNOTATION)->value;
 		if ($linked_class_name) {
 			$this->addLinkedClass($path, $class, $linked_class_name, $join_mode);
 		}

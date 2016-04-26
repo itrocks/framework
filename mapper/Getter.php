@@ -76,7 +76,30 @@ abstract class Getter
 	 */
 	public static function & getCollection(&$stored, $class_name, $object, $property = null)
 	{
-		if (!(self::$ignore || isset($stored))) {
+		// TODO JSON will work only if $property is set. Should add string / null case
+		if (
+			!self::$ignore
+			&& ($property instanceof Reflection_Property)
+			&& in_array(
+				$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
+				[Store_Annotation::JSON]
+			)
+		) {
+			if (isset($stored) && is_string($stored)) {
+				switch ($property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
+					case Store_Annotation::JSON:
+						$objects_arrays = json_decode($stored, true);
+						$stored = [];
+						if ($objects_arrays) {
+							foreach ($objects_arrays as $key => $object_array) {
+								$stored[$key] = static::schemaDecode($object_array, $property);
+							}
+						}
+						break;
+				}
+			}
+		}
+		elseif (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {
 				$class = new Reflection_Class($class_name);
 				if ($class->isAbstract()) {
@@ -263,10 +286,18 @@ abstract class Getter
 							$stored = $inflated;
 						}
 					}
-					/** @var $stored_object Stringable */
-					$stored_object = Builder::create($property->getType()->asString());
-					$stored_object->fromString($stored);
-					$stored = $stored_object;
+					switch ($property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
+						case Store_Annotation::JSON:
+							$stored = json_decode($stored);
+							$stored = static::schemaDecode($stored, $property);
+							break;
+						default:
+							/** @var $stored_object Stringable */
+							$stored_object = Builder::create($property->getType()->asString());
+							$stored_object->fromString($stored);
+							$stored = $stored_object;
+							break;
+					}
 				}
 				else {
 					$stored = isset($property)
@@ -274,6 +305,32 @@ abstract class Getter
 						: Dao::read($stored, $class_name);
 				}
 			}
+		}
+		return $stored;
+	}
+
+	//---------------------------------------------------------------------------------- schemaDecode
+	/**
+	 * @param $stored   array The object stored into an array : [$property_name => $value]
+	 * @param $property Reflection_Property
+	 * @return object
+	 */
+	private static function schemaDecode(array $stored, Reflection_Property $property)
+	{
+		$stored_array = $stored;
+		$class_name   = '';
+		if (
+			isset($stored_array[Store_Annotation::JSON_CLASS])
+			&& $stored_array[Store_Annotation::JSON_CLASS]
+		) {
+			$class_name = $stored_array[Store_Annotation::JSON_CLASS];
+			unset($stored_array[Store_Annotation::JSON_CLASS]);
+		}
+		else if ($property->getType()->isClass()) {
+			$class_name = $property->getType()->getElementTypeAsString();
+		}
+		if ($class_name) {
+			$stored = Builder::fromArray($class_name, $stored_array);
 		}
 		return $stored;
 	}

@@ -82,7 +82,13 @@ class Table_Builder_Class
 				if (!in_array($property->name, $this->excluded_properties)) {
 					$type = $property->getType();
 					if (
-						($type->isMultipleString() || !$type->isMultiple())
+						(
+							$type->isMultipleString() || !$type->isMultiple()
+							|| in_array(
+								$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
+								[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING]
+							)
+						)
 						&& !$property->isStatic()
 						&& (
 							$property->getAnnotation(Store_Annotation::ANNOTATION)->value
@@ -91,7 +97,10 @@ class Table_Builder_Class
 					) {
 						$table->addColumn(Column::buildProperty($property));
 						if (
-							($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
+							(
+								$property->getAnnotation(Link_Annotation::ANNOTATION)->value
+								== Link_Annotation::OBJECT
+							)
 							&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
 						) {
 							$class_name = $property->getType()->asString();
