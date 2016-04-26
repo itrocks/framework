@@ -181,6 +181,11 @@ trait Column_Builder_Property
 					))) . ' CHARACTER SET utf8 COLLATE utf8_general_ci';
 				}
 			}
+			elseif (
+				$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::JSON
+			) {
+				return 'text';
+			}
 			switch ($property_type->asString()) {
 				case Type::_ARRAY:
 					return null;

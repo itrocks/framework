@@ -21,10 +21,17 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 {
 
 	const ANNOTATION = 'store';
+
 	const FALSE      = 'false';
+	const JSON       = 'json';
 	const GZ         = 'gz';
 	const HEX        = 'hex';
 	const STRING     = 'string';
+
+	/**
+	 * The internal key to store the name of the class into the json structure
+	 */
+	const JSON_CLASS = '_class';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

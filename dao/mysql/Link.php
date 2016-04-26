@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\Mysql;
 
+use Exception;
 use mysqli_result;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
@@ -38,6 +39,12 @@ class Link extends Dao\Sql\Link
 	 */
 	const GZINFLATE = 'gzinflate';
 
+	//--------------------------------------------------------------------------------- $commit_stack
+	/**
+	 * @var integer
+	 */
+	private $commit_stack = 0;
+
 	//----------------------------------------------------------------------------------- $connection
 	/**
 	 * Connection to the mysqli server is a mysqli object
@@ -45,12 +52,6 @@ class Link extends Dao\Sql\Link
 	 * @var Contextual_Mysqli
 	 */
 	private $connection;
-
-	//--------------------------------------------------------------------------------- $commit_stack
-	/**
-	 * @var integer
-	 */
-	private $commit_stack = 0;
 
 	//------------------------------------------------------------------------------- $prepared_fetch
 	/**
@@ -600,17 +601,203 @@ class Link extends Dao\Sql\Link
 	{
 		$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		foreach ($properties as $key => $property) {
-			$type = $property->getType();
-			if ($property->isStatic() || ($type->isMultiple() && !$type->getElementType()->isBasic())) {
-				unset($properties[$key]);
-			}
-			elseif ($type->isClass()) {
-				$properties[$property->name] = new Column(
-					'id_' . $property->getAnnotation('storage')->value
-				);
+			if ($property->getAnnotation(Store_Annotation::ANNOTATION) != Store_Annotation::JSON) {
+				$type = $property->getType();
+				if ($property->isStatic() || ($type->isMultiple() && !$type->getElementType()->isBasic())) {
+					unset($properties[$key]);
+				}
+				elseif ($type->isClass()) {
+					$properties[$property->name] = new Column(
+						'id_' . $property->getAnnotation('storage')->value
+					);
+				}
 			}
 		}
 		return $properties;
+	}
+
+	//---------------------------------------------------------------------------- objectToWriteArray
+	/**
+	 * Gets write arrays from an object
+	 *
+	 * @param $object          object
+	 * @param $only_properties string[] get write arrays for these properties only (if set)
+	 * @param $class           Link_Class
+	 * @return array           [$write, $write_collections, $write_maps, $write_properties]
+	 * @throws Exception
+	 */
+	private function objectToWriteArray(
+		$object, array $only_properties = null, Link_Class $class = null
+	) {
+		if (!$class) {
+			$class = new Link_Class(get_class($object));
+		}
+		$link = $class->getAnnotation(Link_Annotation::ANNOTATION);
+		$table_columns_names = array_keys($this->getStoredProperties($class));
+		$write_collections   = [];
+		$write_maps          = [];
+		$write_properties    = [];
+		$write               = [];
+		$aop_getter_ignore   = Getter::$ignore;
+		Getter::$ignore      = true;
+		$exclude_properties  = $link->value
+			? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
+			: [];
+		/** @var $properties Reflection_Property[] */
+		$properties = $class->accessProperties();
+		$properties = Replaces_Annotations::removeReplacedProperties($properties);
+		foreach ($properties as $property) {
+			$property_name = $property->name;
+			if (!isset($only_properties) || in_array($property_name, $only_properties)) {
+				if (
+					!$property->isStatic()
+					&& !in_array($property_name, $exclude_properties)
+					&& (
+						$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+						!== Store_Annotation::FALSE
+					)
+				) {
+					$value            = isset($object->$property_name) ? $property->getValue($object) : null;
+					$property_is_null = $property->getAnnotation('null')->value;
+					if (is_null($value) && !$property_is_null) {
+						$value = '';
+					}
+					if (in_array($property_name, $table_columns_names)) {
+						$element_type = $property->getType()->getElementType();
+						$storage_name = $property->getAnnotation('storage')->value;
+						// write basic
+						if ($element_type->isBasic()) {
+							if (
+								$element_type->isString()
+								&& in_array(
+									$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
+									[Store_Annotation::GZ, Store_Annotation::HEX]
+								)
+							) {
+								if (
+									$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+									=== Store_Annotation::GZ
+								) {
+									$value = gzdeflate($value);
+								}
+								$will_hex = true;
+							}
+							else {
+								$values               = $property->getListAnnotation('values')->values();
+								$write[$storage_name] = $value = is_array($value)
+									? (
+									($property->getType()->isMultipleString() && $values)
+										? join(',', $value)
+										: json_encode($value)
+									)
+									: $value;
+							}
+							if ($dao = $property->getAnnotation('dao')->value) {
+								if (($dao = Dao::get($dao)) !== $this) {
+									$write_properties[]   = [$property->name, $value, $dao];
+									$write[$storage_name] = '';
+									if (isset($will_hex)) {
+										unset($will_hex);
+									}
+								}
+							}
+							if (isset($will_hex)) {
+								if (strlen($value)) {
+									$write[$storage_name] = 'X' . Q . bin2hex($value) . Q;
+								}
+								unset($will_hex);
+							}
+						}
+						// write array or object into a @store gz/hex/string
+						elseif ($store = $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
+							if ($store == Store_Annotation::JSON) {
+								$value = $this->valueToWriteArray($value);
+								if (!is_string($value)) {
+									$value = json_encode($value);
+								}
+							}
+							else {
+								$value = is_array($value) ? serialize($value) : strval($value);
+							}
+							if ($store === Store_Annotation::GZ) {
+								$value = 'X' . Q . bin2hex(gzdeflate($value)) . Q;
+							}
+							elseif ($store === Store_Annotation::HEX) {
+								$value = 'X' . Q . bin2hex($value) . Q;
+							}
+							$write[$storage_name] = $value;
+							if ($dao = $property->getAnnotation('dao')->value) {
+								if (($dao = Dao::get($dao)) !== $this) {
+									$write_properties[]   = [$property->name, $write[$storage_name], $dao];
+									$write[$storage_name] = '';
+								}
+							}
+						}
+						// write object id if set or object if no id is set (new object)
+						else {
+							$id_column_name = 'id_' . $property_name;
+							if (is_object($value)) {
+								$value_class = new Link_Class(get_class($value));
+								$id_value    = (
+									$value_class->getLinkedClassName()
+									&& !$element_type->asReflectionClass()->getAnnotation('link')->value
+								) ? 'id_' . $value_class->getCompositeProperty()->name
+									: 'id';
+								$object->$id_column_name = $this->getObjectIdentifier($value, $id_value);
+								if (empty($object->$id_column_name)) {
+									Getter::$ignore = $aop_getter_ignore;
+									if (!isset($value) || isA($element_type->asString(), get_class($value))) {
+										$object->$id_column_name = $this->getObjectIdentifier(
+											$this->write($value), $id_value
+										);
+									}
+									else {
+										$clone = Builder::createClone($value, $property->getType()->asString());
+										$object->$id_column_name = $this->getObjectIdentifier(
+											$this->write($clone), $id_value
+										);
+										$this->replace($value, $clone, false);
+									}
+									Getter::$ignore = true;
+								}
+							}
+							$write['id_' . $storage_name] = (
+								($property_is_null && !isset($object->$id_column_name))
+								? null
+								: intval($object->$id_column_name)
+							);
+						}
+					}
+					// write collection
+					elseif (
+						is_array($value)
+						&& ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION)
+					) {
+						$write_collections[] = [$property, $value];
+					}
+					// write map
+					elseif (
+						is_array($value)
+						&& ($property->getAnnotation('link')->value == Link_Annotation::MAP)
+					) {
+						foreach ($value as $key => $val) {
+							if (!is_object($val)) {
+								$val = Dao::read($val, $property->getType()->getElementTypeAsString());
+								if (isset($val)) {
+									$value[$key] = $val;
+								}
+								else {
+									unset($value[$key]);
+								}
+							}
+						}
+						$write_maps[] = [$property, $value];
+					}
+				}
+			}
+		}
+		Getter::$ignore = $aop_getter_ignore;
+		return [$write, $write_collections, $write_maps, $write_properties];
 	}
 
 	//---------------------------------------------------------------------------------- prepareFetch
@@ -837,6 +1024,33 @@ class Link extends Dao\Sql\Link
 		$this->connection->context = $context_object;
 	}
 
+	//----------------------------------------------------------------------------- valueToWriteArray
+	/**
+	 * Prepare a property value for JSON encode
+	 *
+	 * @param $value mixed The value of a property
+	 * @return array
+	 */
+	protected function valueToWriteArray($value)
+	{
+		$array = [];
+		if (is_object($value)) {
+			// encode only stored data for the moment, not collection or map
+			list($array) = $this->objectToWriteArray($value);
+			// JSON comes first, like it is done by serialize()
+			$array = array_merge([Store_Annotation::JSON_CLASS => get_class($value)], $array);
+		}
+		else if (is_array($value)) {
+			foreach ($value as $key => $sub_value) {
+				$array[$key] = $this->valueToWriteArray($sub_value);
+			}
+		}
+		else {
+			$array = $value;
+		}
+		return $array;
+	}
+
 	//----------------------------------------------------------------------------------------- write
 	/**
 	 * Write an object into data source
@@ -861,6 +1075,7 @@ class Link extends Dao\Sql\Link
 			}
 			$class = new Link_Class(get_class($object));
 			$id_property = 'id';
+			$only = null;
 			foreach ($options as $option) {
 				if ($option instanceof Option\Add) {
 					$force_add = true;
@@ -883,163 +1098,12 @@ class Link extends Dao\Sql\Link
 						$object->$id_link_property = $this->write($link_object, $options);
 					}
 				}
-				$table_columns_names = array_keys($this->getStoredProperties($class));
-				$write_collections = [];
-				$write_maps        = [];
-				$write_properties  = [];
-				$write = [];
-				$aop_getter_ignore = Getter::$ignore;
-				Getter::$ignore = true;
-				$exclude_properties = $link->value
-					? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
-					: [];
+				list($write, $write_collections, $write_maps, $write_properties)
+					= $this->objectToWriteArray($object, $only, $class);
+
 				/** @var $properties Reflection_Property[] */
 				$properties = $class->accessProperties();
 				$properties = Replaces_Annotations::removeReplacedProperties($properties);
-				foreach ($properties as $property) {
-					$property_name = $property->name;
-					if (!isset($only) || in_array($property_name, $only)) {
-						if (
-							!$property->isStatic()
-							&& !in_array($property_name, $exclude_properties)
-							&& (
-								$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-								!== Store_Annotation::FALSE
-							)
-						) {
-							$value = isset($object->$property_name) ? $property->getValue($object) : null;
-							$property_is_null = $property->getAnnotation('null')->value;
-							if (is_null($value) && !$property_is_null) {
-								$value = '';
-							}
-							if (in_array($property_name, $table_columns_names)) {
-								$element_type = $property->getType()->getElementType();
-								$storage_name = $property->getAnnotation('storage')->value;
-								// write basic
-								if ($element_type->isBasic()) {
-									if (
-										$element_type->isString()
-										&& in_array(
-											$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
-											[Store_Annotation::GZ, Store_Annotation::HEX]
-										)
-									) {
-										if (
-											$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-											=== Store_Annotation::GZ
-										) {
-											$value = gzdeflate($value);
-										}
-										$will_hex = true;
-									}
-									else {
-										$values = $property->getListAnnotation('values')->values();
-										$write[$storage_name] = $value = is_array($value)
-											? (
-												($property->getType()->isMultipleString() && $values)
-													? join(',', $value)
-													: json_encode($value)
-											)
-											: $value;
-									}
-									if ($dao = $property->getAnnotation('dao')->value) {
-										if (($dao = Dao::get($dao)) !== $this) {
-											$write_properties[] = [$property->name, $value, $dao];
-											$write[$storage_name] = '';
-											if (isset($will_hex)) {
-												unset($will_hex);
-											}
-										}
-									}
-									if (isset($will_hex)) {
-										if (strlen($value)) {
-											$write[$storage_name] = 'X' . Q . bin2hex($value) . Q;
-										}
-										unset($will_hex);
-									}
-								}
-								// write array or object into a @store gz/hex/string
-								elseif ($store = $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
-									$value = is_array($value) ? serialize($value) : strval($value);
-									if ($store === Store_Annotation::GZ) {
-										$value = 'X' . Q . bin2hex(gzdeflate($value)) . Q;
-									}
-									elseif ($store === Store_Annotation::HEX) {
-										$value = 'X' . Q . bin2hex($value) . Q;
-									}
-									$write[$storage_name] = $value;
-									if ($dao = $property->getAnnotation('dao')->value) {
-										if (($dao = Dao::get($dao)) !== $this) {
-											$write_properties[] = [$property->name, $write[$storage_name], $dao];
-											$write[$storage_name] = '';
-										}
-									}
-								}
-								// write object id if set or object if no id is set (new object)
-								else {
-									$id_column_name = 'id_' . $property_name;
-									if (is_object($value)) {
-										$value_class = new Link_Class(get_class($value));
-										$id_value = (
-											$value_class->getLinkedClassName()
-											&& !$element_type->asReflectionClass()->getAnnotation('link')->value
-										) ? 'id_' . $value_class->getCompositeProperty()->name
-											: 'id';
-										$object->$id_column_name = $this->getObjectIdentifier($value, $id_value);
-										if (empty($object->$id_column_name)) {
-											Getter::$ignore = $aop_getter_ignore;
-											if (
-												!isset($value) || isA($element_type->asString(), get_class($value))
-											) {
-												$object->$id_column_name = $this->getObjectIdentifier(
-													$this->write($value), $id_value
-												);
-											}
-											else {
-												$clone = Builder::createClone($value, $property->getType()->asString());
-												$object->$id_column_name = $this->getObjectIdentifier(
-													$this->write($clone), $id_value
-												);
-												$this->replace($value, $clone, false);
-											}
-											Getter::$ignore = true;
-										}
-									}
-									$write['id_' . $storage_name]
-										= ($property_is_null && !isset($object->$id_column_name))
-											? null
-											: intval($object->$id_column_name);
-								}
-							}
-							// write collection
-							elseif (
-								is_array($value)
-								&& ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION)
-							) {
-								$write_collections[] = [$property, $value];
-							}
-							// write map
-							elseif (
-								is_array($value)
-								&& ($property->getAnnotation('link')->value == Link_Annotation::MAP)
-							) {
-								foreach ($value as $key => $val) {
-									if (!is_object($val)) {
-										$val = Dao::read($val, $property->getType()->getElementTypeAsString());
-										if (isset($val)) {
-											$value[$key] = $val;
-										}
-										else {
-											unset($value[$key]);
-										}
-									}
-								}
-								$write_maps[] = [$property, $value];
-							}
-						}
-					}
-				}
-				Getter::$ignore = $aop_getter_ignore;
 				if ($write) {
 					// link class : id is the couple of composite properties values
 					if ($link->value) {
@@ -1103,6 +1167,7 @@ class Link extends Dao\Sql\Link
 					$this->writeMap($object, $property, $value);
 				}
 				foreach ($write_properties as $write) {
+					/** @var $dao Data_Link */
 					list($property, $value, $dao) = $write;
 					$dao->writeProperty($object, $property, $value);
 				}
