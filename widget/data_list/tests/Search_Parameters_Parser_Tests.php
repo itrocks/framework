@@ -853,7 +853,7 @@ class Search_Parameters_Parser_Tests extends Test
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
-	//---------------------------------------------------------------------------- testParseMonthYear
+	//---------------------------------------------------------------- testParseMonthYearWithFormulas
 	/**
 	 * test date parser for a date m-1/y-1 where it should correctly detect month and year parts
 	 *

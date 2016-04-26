@@ -107,7 +107,7 @@ class Html_Builder_Type
 		if (isset($preprop)) $this->preprop = $preprop;
 	}
 
-	//---------------------------------------------------------------------------- addInputConditions
+	//------------------------------------------------------------------------ addConditionsToElement
 	/**
 	 * Add conditions to the input 'data-conditions' attribute
 	 *

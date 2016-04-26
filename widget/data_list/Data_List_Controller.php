@@ -50,7 +50,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	private $class_names;
 
-	//---------------------------------------------------------------------------------- $class_names
+	//--------------------------------------------------------------------------------------- $errors
 	/**
 	 * List of errors on fields' search expression 
 	 * @var array of \Exception
