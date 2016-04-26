@@ -156,6 +156,7 @@ class Functions
 				$class_name, $property_name
 			);
 			$property_edit = new Html_Builder_Property($property, $value);
+			$property_edit->conditions = [];
 			$property_edit->name = $name ?: $property_path;
 			$property_edit->preprop = null;
 			if ($ignore_user) {
@@ -168,6 +169,7 @@ class Functions
 		}
 		if ($object instanceof Reflection_Property_Value) {
 			$property_edit = new Html_Builder_Property($object, $object->value());
+			$property_edit->conditions = [];
 			$property_edit->name = $name ?: $object->path;
 			$property_edit->preprop = null;
 			if ($ignore_user) {
@@ -180,6 +182,7 @@ class Functions
 		}
 		if ($object instanceof Reflection_Property) {
 			$property_edit = new Html_Builder_Property($object);
+			$property_edit->conditions = [];
 			$property_edit->name = $name ?: $object->path;
 			$property_edit->preprop = null;
 			if ($ignore_user) {
@@ -211,11 +214,12 @@ class Functions
 					$property_edit = new Html_Builder_Property($property, $property->getValue($object));
 					$property_edit->name = $name ?: $property_name;
 				}
-				if ($ignore_user) {
-					$property_edit->readonly = false;
-				}
+				$property_edit->conditions = [];
 				if ($can_always_be_null) {
 					$property_edit->null = true;
+				}
+				if ($ignore_user) {
+					$property_edit->readonly = false;
 				}
 				return $property_edit->build();
 			}

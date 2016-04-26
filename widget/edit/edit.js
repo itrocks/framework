@@ -363,7 +363,7 @@ $('document').ready(function()
 
 		//---------------------------------------------------------------------- input[data-conditions]
 		var will_change = {};
-		this.inside('input[data-conditions]').each(function()
+		this.inside('[data-conditions]').each(function()
 		{
 			var $this = $(this);
 			var conditions = $this.data('conditions').replace(/\(.*\)/g);
@@ -409,11 +409,16 @@ $('document').ready(function()
 							});
 							return (show = found);
 						});
+						// TODO HIGH always only one show + one hide : if collection, the input ; if form : the entire field
 						if (show) {
-							$element.parent().find('input,button').show();
+							$element.parent().find('button,input,select').show();
+							//noinspection JSValidateTypes
+							$element.parent().parent().find('label').parent().show();
 						}
 						else {
-							$element.parent().find('input,button').hide();
+							$element.parent().find('button,input,select').hide();
+							//noinspection JSValidateTypes
+							$element.parent().parent().find('label').parent().hide();
 						}
 					});
 				});

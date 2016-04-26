@@ -67,6 +67,11 @@ class Set extends Element
 	public function getContent()
 	{
 		$content = parent::getContent();
+		// TODO HCR Something more simple (BP : why removeAttribute ?)
+		$conditions = $this->getAttribute('data-conditions');
+		if ($conditions) {
+			$this->removeAttribute('data-conditions');
+		}
 		if (!isset($content)) {
 			$values = $this->values;
 			asort($values);
@@ -82,7 +87,12 @@ class Set extends Element
 				if (in_array($value, $selected)) {
 					$html_option->setAttribute('checked');
 				}
-				$content .= strval(new Label(strval($html_option) . Loc::tr($caption))) . BR;
+				$label = new Label(strval($html_option) . Loc::tr($caption));
+				$label->setAttribute('name', $this->base_name);
+				if ($conditions) {
+					$label->setAttribute($conditions->name, $conditions->value);
+				}
+				$content .= strval($label) . BR;
 			}
 			$this->setContent($content);
 		}

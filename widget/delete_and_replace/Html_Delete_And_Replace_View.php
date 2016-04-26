@@ -31,7 +31,7 @@ class Html_Delete_And_Replace_View implements View
 			new Type($class_name),
 			Builder::create($class_name)
 		);
-		return $edit->buildObject(null, $this->getFilters($object));
+		return $edit->buildObject($this->getFilters($object));
 	}
 
 	//------------------------------------------------------------------------------------ getFilters

@@ -57,6 +57,7 @@ class Html_Builder_Property extends Html_Builder_Type
 					: $preprop2;
 				$name = lParse(rLastParse($name, '['), ']');
 			}
+			$this->loadConditions();
 			parent::__construct($name, $property->getType(), $value, $preprop);
 		}
 		else {
@@ -142,30 +143,12 @@ class Html_Builder_Property extends Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
-	 * @param $conditions string[] the key is the name of the condition, the value is the name of the
-	 *   value that enables the condition
 	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
 	 *   containing its value
 	 * @return string
 	 */
-	public function buildObject($conditions = null, $filters = null)
+	public function buildObject($filters = null)
 	{
-		if (!isset($conditions)) {
-			$conditions_values = $this->property->getListAnnotation('conditions')->values();
-			if ($conditions_values) {
-				foreach ($conditions_values as $condition) {
-					if (strpos($condition, '=')) {
-						list($name, $condition) = explode('=', $condition);
-					}
-					else {
-						$name = $condition;
-					}
-					$conditions[$name] = isset($conditions[$name])
-						? ($conditions[$name] . ',' . $condition)
-						: $condition;
-				}
-			}
-		}
 		if (!isset($filters)) {
 			$filters_values = $this->property->getListAnnotation('filters')->values();
 			if ($filters_values) {
@@ -178,7 +161,7 @@ class Html_Builder_Property extends Html_Builder_Type
 				}
 			}
 		}
-		return parent::buildObject($conditions, $filters);
+		return parent::buildObject($filters);
 	}
 
 	//----------------------------------------------------------------------------------- buildSingle
@@ -233,6 +216,31 @@ class Html_Builder_Property extends Html_Builder_Type
 			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
 		}
 		return $element;
+	}
+
+	//-------------------------------------------------------------------------------- loadConditions
+	/**
+	 * Load conditions with annotation and stock in attribute
+	 */
+	private function loadConditions()
+	{
+		if (!isset($this->conditions)) {
+			$conditions_values = $this->property->getListAnnotation('conditions')->values();
+			$this->conditions  = [];
+			if ($conditions_values) {
+				foreach ($conditions_values as $condition) {
+					if (strpos($condition, '=')) {
+						list($name, $condition) = explode('=', $condition);
+					}
+					else {
+						$name = $condition;
+					}
+					$this->conditions[$name] = isset($this->conditions[$name])
+						? ($this->conditions[$name] . ',' . $condition)
+						: $condition;
+				}
+			}
+		}
 	}
 
 }
