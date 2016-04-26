@@ -250,7 +250,7 @@ class Search_Parameters_Parser
 		if (is_string($search_value) && (strpos($search_value, '&') !== false)) {
 			$and = [];
 			foreach (explode('&', $search_value) as $search) {
-				$this->applySingleValue($search, $property);
+				$and[] = $this->applyNot($search, $property);
 			}
 			return Func::andOp($and);
 		}
