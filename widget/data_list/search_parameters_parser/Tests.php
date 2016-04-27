@@ -12,7 +12,7 @@ use SAF\Framework\Tools\Date_Time;
 /**
  * Search parameters parser unit tests
  */
-class Search_Parameters_Parser_Tests extends Test
+class Tests extends Test
 {
 
 	//----------------------------------------------------------------------------------- $class_name
