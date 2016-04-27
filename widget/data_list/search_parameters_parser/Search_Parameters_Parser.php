@@ -679,18 +679,18 @@ class Search_Parameters_Parser
 				$year = $three;
 			}
 			if (!$this->computeDay($day)) {
-				//bad expression?
-				//TODO: Remove Exception or make a support for error?
+				// bad expression ?
+				// TODO Remove Exception or make a support for error ?
 				throw new Data_List_Exception($expr, "Error in day expression");
 			}
 			if (!$this->computeMonth($month)) {
-				//bad expression?
-				//TODO: Remove Exception or make a support for error?
+				// bad expression ?
+				// TODO Remove Exception or make a support for error ?
 				throw new Data_List_Exception($expr, "Error in month expression");
 			}
 			if (!$this->computeYear($year)) {
-				//bad expression?
-				//TODO: Remove Exception or make a support for error?
+				// bad expression ?
+				// TODO Remove Exception or make a support for error ?
 				throw new Data_List_Exception($expr, "Error in year expression");
 			}
 			$date = $this->_buildDayMonthYear($day, $month, $year, $minmax, $expr);
@@ -1238,12 +1238,12 @@ class Search_Parameters_Parser
 			$day = $expr;
 			if (!$this->computeDay($day)) {
 				// bad expression?
-				//TODO: Remove Exception or make a support for error?
+				// TODO Remove Exception or make a support for error?
 				throw new Data_List_Exception($expr, "Error in day expression");
 			}
 			if ($this->hasJoker($day)) {
-				// $date_begin = "{$this->currentYear}-{$this->currentMonth}-{$day} 00:00:00";
-				// $date_end = "{$this->currentYear}-{$this->currentMonth}-{$day} 23:59:59";
+				//$date_begin = "{$this->currentYear}-{$this->currentMonth}-{$day} 00:00:00";
+				//$date_end = "{$this->currentYear}-{$this->currentMonth}-{$day} 23:59:59";
 				list($day, $month, $year) = $this->padDateParts($day, $this->currentMonth, $this->currentYear);
 				$date = Func::like("{$year}-{$month}-{$day} __:__:__");
 			}
@@ -1378,7 +1378,7 @@ class Search_Parameters_Parser
 			$date = Func::orOp([$value, Func::isNull()]);
 			return $date;
 		}
-		//not an empty word
+		// not an empty word
 		return false;
 	}
 
