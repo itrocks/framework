@@ -1,27 +1,9 @@
 {
-	"authors": [
-		{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }
-	],
-	"description": "SAF",
-	"extra": {
-		"installer-paths": { "{$vendor}/{$name}/": ["type:itrocks"] },
-		"installer-types": ["itrocks"]
-	},
-	"license": "MIT",
-	"name": "saf/framework",
-	"repositories": [
-		{
-			"type": "package",
-			"package": {
-				"name": "csl/reset5",
-				"version": "1.0",
-				"dist": {
-					"type": "file",
-					"url": "https://reset5.googlecode.com/hg/reset.min.css"
-				}
-			}
-		}
-	],
+	"authors":      [{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }],
+	"description":  "SAF",
+	"license":      "MIT",
+	"name":         "saf/framework",
+	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
 		"components/jquery":                     "2.x",
 		"components/jqueryui":                   "1.x",
