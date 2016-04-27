@@ -7,7 +7,7 @@ use SAF\Framework\Sql\Value;
 /**
  * Dao Range function
  */
-class Range implements Where, Negate
+class Range implements Negate, Where
 {
 
 	//---------------------------------------------------------------------------------- $not_between
@@ -57,20 +57,19 @@ class Range implements Where, Negate
 		return '('
 		. $builder->buildColumn($property_path, $prefix) . ($this->not_between ? ' NOT' : '')
 		. ' BETWEEN '
-		// make SQL secure if given from>to
-		. 'LEAST(' . Value::escape($this->from) . ',' . Value::escape($this->to) . ') '
+		// make SQL secure if given from > to (if from is the greatest, then this will work too)
+		. 'LEAST(' . Value::escape($this->from) . ', ' . Value::escape($this->to) . ') '
 		. ' AND '
-		. 'GREATEST(' . Value::escape($this->from) . ',' . Value::escape($this->to) . ') '
+		. 'GREATEST(' . Value::escape($this->from) . ', ' . Value::escape($this->to) . ') '
 		. ')';
 	}
 
 	//---------------------------------------------------------------------------------------- negate
 	/**
 	 * Negate the Dao function
-	 *
-	 * @return void
 	 */
-	public function negate() {
+	public function negate()
+	{
 		$this->not_between = !$this->not_between;
 	}
 

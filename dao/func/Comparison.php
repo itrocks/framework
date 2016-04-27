@@ -8,7 +8,7 @@ use SAF\Framework\Sql\Value;
  * Lesser than is a condition used to get the record where the column has a value lesser than the
  * given value
  */
-class Comparison implements Where, Negate
+class Comparison implements Negate, Where
 {
 
 	//---------------------------------------------------------------------------------- $sign values
@@ -22,8 +22,20 @@ class Comparison implements Where, Negate
 	const NOT_EQUAL        = '<>';
 	const NOT_LIKE         = 'NOT LIKE';
 
+	const REVERSE = [
+		self::EQUAL            => self::NOT_EQUAL,
+		self::GREATER          => self::LESS_OR_EQUAL,
+		self::GREATER_OR_EQUAL => self::LESS,
+		self::LESS             => self::GREATER_OR_EQUAL,
+		self::LESS_OR_EQUAL    => self::GREATER,
+		self::LIKE             => self::NOT_LIKE,
+		self::NOT_EQUAL        => self::EQUAL,
+		self::NOT_LIKE         => self::LIKE
+	];
+
 	//----------------------------------------------------------------------------------------- $sign
 	/**
+	 * @values =, >, >=, <, <=, LIKE, <>, NOT LIKE
 	 * @var string
 	 */
 	public $sign;
@@ -87,37 +99,14 @@ class Comparison implements Where, Negate
 
 	//---------------------------------------------------------------------------------------- negate
 	/**
-	 * Negate this comparison
+	 * Negate the comparison
 	 *
-	 * @return void
+	 * @example GREATER will become LESS_OR_EQUAL
 	 */
 	public function negate()
 	{
-		switch ($this->sign) {
-			case self::EQUAL:
-				$this->sign = self::NOT_EQUAL;
-				break;
-			case self::LIKE:
-				$this->sign = self::NOT_LIKE;
-				break;
-			case self::NOT_EQUAL:
-				$this->sign = self::EQUAL;
-				break;
-			case self::NOT_LIKE:
-				$this->sign = self::LIKE;
-				break;
-			case self::GREATER:
-				$this->sign = self::LESS_OR_EQUAL;
-				break;
-			case self::LESS:
-				$this->sign = self::GREATER_OR_EQUAL;
-				break;
-			case self::GREATER_OR_EQUAL:
-				$this->sign = self::LESS;
-				break;
-			case self::LESS_OR_EQUAL:
-				$this->sign = self::GREATER;
-				break;
+		if (in_array($this->sign, self::REVERSE)) {
+			$this->sign = self::REVERSE[$this->sign];
 		}
 	}
 

@@ -10,8 +10,6 @@ interface Negate extends Dao_Function
 	//---------------------------------------------------------------------------------------- negate
 	/**
 	 * Negate the Dao function
-	 *
-	 * @return void
 	 */
 	public function negate();
 

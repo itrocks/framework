@@ -7,7 +7,7 @@ use SAF\Framework\Sql\Value;
 /**
  * Dao Left_Match function
  */
-class Left_Match implements Where, Negate
+class Left_Match implements Negate, Where
 {
 
 	//------------------------------------------------------------------------------------ $not_match
@@ -48,14 +48,14 @@ class Left_Match implements Where, Negate
 	{
 		$column = $builder->buildColumn($property_path, $prefix);
 		$value  = Value::escape($this->value);
-		return $column . ($this->not_match ? ' <> ' : ' = ') . 'LEFT(' . $value . ', LENGTH(' . $column . '))';
+		return $column
+			. ($this->not_match ? ' <> ' : ' = ')
+			. 'LEFT(' . $value . ', LENGTH(' . $column . '))';
 	}
 
 	//---------------------------------------------------------------------------------------- negate
 	/**
 	 * Negate the Dao function
-	 *
-	 * @return void
 	 */
 	public function negate()
 	{

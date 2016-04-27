@@ -27,13 +27,13 @@ class Test
 	/**
 	 * Assumes a checked value is the same than an assumed value
 	 *
-	 * @param $test   string the name of the test (ie 'Method_Name[.test_name]')
-	 * @param $check  mixed the checked value
-	 * @param $assume mixed the assumed value
-	 * @param $diffOutput boolean set false in order not to ouput the diff of check and assume
+	 * @param $test        string the name of the test (ie 'Method_Name[.test_name]')
+	 * @param $check       mixed the checked value
+	 * @param $assume      mixed the assumed value
+	 * @param $diff_output boolean set to false in order not to output the diff of check and assume
 	 * @return boolean true if the checked value corresponds to the assumed value
 	 */
-	protected function assume($test, $check, $assume, $diffOutput=true)
+	protected function assume($test, $check, $assume, $diff_output = true)
 	{
 		$duration = round((microtime(true) - $this->start_time) * 1000000);
 		$check  = $this->toArray($check);
@@ -61,8 +61,16 @@ class Test
 			$result = '<span style="color:red;font-weight:bold">BAD</span>'
 			. '<pre style="color:red;font-weight:bold;">[' . print_r($check, true) . ']</pre>'
 			. '<pre style="color:blue;font-weight:bold;">[' . print_r($assume, true) . ']</pre>'
-			. ($diffOutput && $diff1 ? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff1, true) . ']</pre>') : '')
-			. ($diffOutput && $diff2 ? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff2, true) . ']</pre>') : '');
+			. (
+				($diff_output && $diff1)
+				? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff1, true) . ']</pre>')
+				: ''
+			)
+			. (
+				($diff_output && $diff2)
+				? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff2, true) . ']</pre>')
+				: ''
+			);
 		}
 		echo '<li>' . str_replace(get_class($this) . '::', '', $test) . ' : ' . $result;
 		return ($result === 'OK');

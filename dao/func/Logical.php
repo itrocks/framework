@@ -1,25 +1,34 @@
 <?php
 namespace SAF\Framework\Dao\Func;
 
+use Exception;
 use SAF\Framework\Sql\Builder;
 
 /**
  * Dao AND function
  */
-class Logical implements Where, Negate
+class Logical implements Negate, Where
 {
 
-	const AND_OPERATOR = ' AND ';
-	const OR_OPERATOR  = ' OR ';
-	const XOR_OPERATOR = ' XOR ';
-	const NOT_OPERATOR = ' NOT ';
-	const TRUE_OPERATOR  = ''; // to be able to negate the NOT !
+	const AND_OPERATOR  = ' AND ';
+	const NOT_OPERATOR  = 'NOT ';
+	const OR_OPERATOR   = ' OR ';
+	const TRUE_OPERATOR = '';
+	const XOR_OPERATOR  = ' XOR ';
+
+	const REVERSE = [
+		self::AND_OPERATOR  => self::OR_OPERATOR,
+		self::NOT_OPERATOR  => self::TRUE_OPERATOR,
+		self::OR_OPERATOR   => self::AND_OPERATOR,
+		self::TRUE_OPERATOR => self::NOT_OPERATOR,
+		self::XOR_OPERATOR  => self::NOT_OPERATOR
+	];
 
 	//------------------------------------------------------------------------------------ $arguments
 	/**
 	 * Key can be a property path or numeric if depends on main property part
 	 *
-	 * @var Where[]|mixed[]
+	 * @var Where[]|mixed[]|Where|mixed
 	 */
 	public $arguments;
 
@@ -34,17 +43,17 @@ class Logical implements Where, Negate
 	 * @param $operator string
 	 * @param $arguments Where[]|mixed key can be a property path or numeric if depends
 	 * on main property part
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function __construct($operator = null, $arguments = null)
 	{
 		if (isset($operator))  $this->operator  = $operator;
 		if (isset($arguments)) $this->arguments = $arguments;
 		if (
-			in_array($this->operator, [self::NOT_OPERATOR, self::TRUE_OPERATOR]) &&
-			is_array($this->arguments)
+			in_array($this->operator, [self::NOT_OPERATOR, self::TRUE_OPERATOR])
+			&& is_array($this->arguments)
 		) {
-			throw new \Exception("Can not build logical not|true expression with array");
+			throw new Exception("Can not build logical not|true expression with array");
 		}
 	}
 
@@ -57,6 +66,15 @@ class Logical implements Where, Negate
 		return $this->operator === self::AND_OPERATOR;
 	}
 
+	//----------------------------------------------------------------------------------------- isNot
+	/**
+	 * @return boolean
+	 */
+	public function isNot()
+	{
+		return $this->operator === self::NOT_OPERATOR;
+	}
+
 	//------------------------------------------------------------------------------------------ isOr
 	/**
 	 * @return boolean
@@ -66,6 +84,15 @@ class Logical implements Where, Negate
 		return $this->operator === self::OR_OPERATOR;
 	}
 
+	//---------------------------------------------------------------------------------------- isTrue
+	/**
+	 * @return boolean
+	 */
+	public function isTrue()
+	{
+		return $this->operator === self::TRUE_OPERATOR;
+	}
+
 	//----------------------------------------------------------------------------------------- isXor
 	/**
 	 * @return boolean
@@ -73,15 +100,6 @@ class Logical implements Where, Negate
 	public function isXor()
 	{
 		return $this->operator === self::XOR_OPERATOR;
-	}
-
-	//----------------------------------------------------------------------------------------- isNot
-	/**
-	 * @return boolean
-	 */
-	public function isNot()
-	{
-		return $this->operator === self::NOT_OPERATOR;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -96,8 +114,8 @@ class Logical implements Where, Negate
 	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
 		$sql = '';
-		//$this->arguments may not be array if operator is NOT_OPERATOR or TRUE_OPERATOR
-		$arguments =  (!is_array($this->arguments) ? [$this->arguments] : $this->arguments);
+		// $this->arguments may not be array if operator is NOT_OPERATOR or TRUE_OPERATOR
+		$arguments = (is_array($this->arguments) ? $this->arguments : [$this->arguments]);
 		foreach ($arguments as $other_property_path => $argument) {
 			if (empty($not_first)) {
 				$not_first = true;
@@ -120,17 +138,33 @@ class Logical implements Where, Negate
 			else {
 				$sql .= ($argument instanceof Where)
 					? $argument->toSql($builder, $other_property_path, $prefix)
-					: (new Comparison(Comparison::AUTO, $argument))->toSql($builder, $other_property_path, $prefix);
+					: (new Comparison(Comparison::AUTO, $argument))
+						->toSql($builder, $other_property_path, $prefix);
 			}
 		}
-		return ($this->operator == self::NOT_OPERATOR ? 'NOT ' : '') . '(' . $sql . ')';
+		return (($this->operator === self::NOT_OPERATOR) ? 'NOT ' : '') . '(' . $sql . ')';
+	}
+
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 */
+	public function negate()
+	{
+		if (key_exists($this->operator, self::REVERSE)) {
+			if ($this->operator == self::XOR_OPERATOR) {
+				$this->arguments = new Logical(self::XOR_OPERATOR, $this->arguments);
+			}
+			elseif (in_array($this->operator, [self::AND_OPERATOR, self::OR_OPERATOR])) {
+				$this->negateArguments();
+			}
+			$this->operator = self::REVERSE[$this->operator];
+		}
 	}
 
 	//------------------------------------------------------------------------------- negateArguments
 	/**
-	 * Negate the arguments of this
-	 *
-	 * @return void
+	 * Negate each argument of $this
 	 */
 	private function negateArguments()
 	{
@@ -141,40 +175,11 @@ class Logical implements Where, Negate
 			foreach ($this->arguments as &$argument) {
 				if ($argument instanceof Negate) {
 					$argument->negate();
-				} else {
+				}
+				else {
 					$argument = new Logical(self::NOT_OPERATOR, $argument);
 				}
 			}
-		}
-	}
-
-	//---------------------------------------------------------------------------------------- negate
-	/**
-	 * Negate the Dao function
-	 *
-	 * @return void
-	 */
-	public function negate()
-	{
-		switch ($this->operator) {
-			case self::AND_OPERATOR:
-				$this->operator = self::OR_OPERATOR;
-				$this->negateArguments();
-				break;
-			case self::OR_OPERATOR:
-				$this->operator = self::AND_OPERATOR;
-				$this->negateArguments();
-				break;
-			case self::XOR_OPERATOR:
-				$this->operator = self::NOT_OPERATOR;
-				$this->arguments = new Logical(self::XOR_OPERATOR, $this->arguments);
-				break;
-			case self::NOT_OPERATOR:
-				$this->operator = self::TRUE_OPERATOR;
-				break;
-			case self::TRUE_OPERATOR:
-				$this->operator = self::NOT_OPERATOR;
-				break;
 		}
 	}
 

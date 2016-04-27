@@ -6,6 +6,7 @@ use \Exception;
 /**
  * The Data_List exception stops the current parsing of a search parameters of a field
  * and enabled parsing remaining fields
+ *
  * TODO: Support special messaging display for bad search part ?
  */
 class Data_List_Exception extends Exception

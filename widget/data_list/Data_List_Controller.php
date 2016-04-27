@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Data_List;
 
+use Exception;
 use SAF\Framework\Builder;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameter;
@@ -52,7 +53,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//--------------------------------------------------------------------------------------- $errors
 	/**
-	 * List of errors on fields' search expression 
+	 * List of errors on fields' search expression
 	 * @var array of \Exception
 	 */
 	private $errors = [];
@@ -149,9 +150,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if (!$list_settings->title) {
 			$list_settings->title = $list_settings->name;
 		}
-		//Sebastien: I put the save outside this method because we should save only if search expressions
-		//are all valid.
-		//TODO: Move back save() here once we have a generic validator (parser) not depending of SQL that we could fire here before save!
+		// Sebastien: I put the save outside this method because we should save only if search
+		// expressions are all valid.
+		// TODO: Move back save() here once we have a generic validator (parser) not depending of SQL that we could fire here before save!
 		//if ($did_change) {
 		//	$list_settings->save();
 		//}
@@ -171,14 +172,15 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			Search_Parameters_Parser::class, [$class->name, $list_settings->search]
 		);
 		$search = $search_parameters_parser->parse();
-		//check if we have errors in search expressions
+		// check if we have errors in search expressions
 		$this->errors = [];
 		foreach ($search as $property_path => &$search_value) {
-			if ($search_value instanceof \Exception) {
+			if ($search_value instanceof Exception) {
 				$this->errors[$property_path] = $search_value;
-				//reset result value to a valid empty expression that can be given to readData() to work properly
+				// reset result value to a valid empty expression that can be given to readData() to work
+				// properly
 				$search_value = '';
-				//reset settings value to a valid empty expression that can be saved
+				// reset settings value to a valid empty expression that can be saved
 				$list_settings->search[$property_path] = '';
 			}
 		}
@@ -315,10 +317,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				if ($first) $first = false; else $summary .= ',';
 				$summary .= SP . $t . $property_path . $t . ' = ' . DQ . $value . DQ;
 				if (isset($this->errors, $this->errors[$property_path])) {
-					$e = $this->errors[$property_path];
-					$summary .= SP . '<span class="error">' . $e->getMessage();
-					if ($e instanceof Data_List_Exception) {
-						$summary .= ' (' . $e->getExpression() . ')';
+					$error = $this->errors[$property_path];
+					// TODO I should not see any HTML code inside the PHP code
+					$summary .= SP . '<span class="error">' . $error->getMessage();
+					if ($error instanceof Data_List_Exception) {
+						$summary .= ' (' . $error->getExpression() . ')';
 					}
 					$summary .= '</span>';
 				}
@@ -384,12 +387,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$customized_list_settings = $list_settings->getCustomSettings();
 		$count = new Count();
-		//before to fire readData (that may change $list_settings if error found)
-		//we need to d a copy in order to display summary with original given parameters
-		$list_settings_original = clone $list_settings;
+		// before to fire readData (that may change $list_settings if error found)
+		// we need to get a copy in order to display summary with original given parameters
+		$list_settings_before_read = clone $list_settings;
 		$data = $this->readData($class_name, $list_settings, $count);
-		//Sebastien: Moved from applyParametersToListSettings()
-		//TODO: Move back once we have a generic validator (parser) not depending of SQL that we could fire before save!
+		// SM : Moved from applyParametersToListSettings()
+		// TODO Move back once we have a generic validator (parser) not depending of SQL that we could fire before save
 		if (!is_null($did_change)) {
 			$list_settings->save();
 		}
@@ -408,9 +411,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'less_twenty'           => $less_twenty,
 				'more_hundred'          => $more_hundred,
 				'more_thousand'         => $more_thousand,
-				'properties'            => $this->getProperties($list_settings_original),
+				'properties'            => $this->getProperties($list_settings_before_read),
 				'rows_count'            => $count->count,
-				'search_summary'        => $this->getSearchSummary($list_settings_original),
+				'search_summary'        => $this->getSearchSummary($list_settings_before_read),
 				'settings'              => $list_settings,
 				'title'                 => $list_settings->title()
 			]

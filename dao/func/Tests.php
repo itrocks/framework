@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\Func;
 
+use Exception;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Sql\Builder\Select;
 use SAF\Framework\Tests\Objects\Order;
@@ -81,6 +82,111 @@ class Tests extends Test
 		);
 	}
 
+	//------------------------------------------------------------------------- testLogicalAndNegated
+	public function testLogicalAndNegated()
+	{
+		$argument = Func::andOp(['true', 'false']);
+		$argument->negate();
+		$builder = new Select(
+			Order::class,
+			null,
+			['number' => $argument]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.*' . LF
+			. 'FROM `orders` t0' . LF
+			. 'WHERE (NOT (t0.`number` = "true") OR NOT (t0.`number` = "false"))'
+		);
+	}
+
+	//-------------------------------- testLogicalExceptionRaisedOnNotOrTrueOperatorWithArrayArgument
+	public function testLogicalExceptionRaisedOnNotOrTrueOperatorWithArrayArgument()
+	{
+		$check = false;
+		try
+		{
+			$argument = new Logical(Logical::TRUE_OPERATOR, ['true', 'false']);
+			unset($argument);
+		}
+		catch (Exception $e)
+		{
+			$check = true;
+		}
+		$this->assume(__METHOD__,	$check,	true);
+	}
+
+	//-------------------------------------------------------------------------------- testLogicalNot
+	public function testLogicalNot()
+	{
+		$builder = new Select(
+			Order::class,
+			null,
+			['number' => Func::notOp('true')]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.*' . LF
+			. 'FROM `orders` t0' . LF
+			. 'WHERE NOT (t0.`number` = "true")'
+		);
+	}
+
+	//----------------------------------------------------------------------------- testLogicalNotAnd
+	public function testLogicalNotAnd()
+	{
+		$builder = new Select(
+			Order::class,
+			null,
+			['number' => Func::notOp(Func::andOp(['true', 'false']))]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.*' . LF
+			. 'FROM `orders` t0' . LF
+			. 'WHERE NOT ((t0.`number` = "true" AND t0.`number` = "false"))'
+		);
+	}
+
+	//------------------------------------------------------------------------- testLogicalNotNegated
+	public function testLogicalNotNegated()
+	{
+		$argument = Func::notOp('true');
+		$argument->negate();
+		$builder = new Select(
+			Order::class,
+			null,
+			['number' => $argument]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.*' . LF
+			. 'FROM `orders` t0' . LF
+			. 'WHERE (t0.`number` = "true")'
+		);
+	}
+
+	//----------------------------------------------------------------------------- testLogicalNotNot
+	public function testLogicalNotNot()
+	{
+		$builder = new Select(
+			Order::class,
+			null,
+			['number' => Func::notOp(Func::notOp('true'))]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.*' . LF
+			. 'FROM `orders` t0' . LF
+			. 'WHERE NOT (NOT (t0.`number` = "true"))'
+		);
+	}
+
 	//--------------------------------------------------------------------------------- testLogicalOr
 	public function testLogicalOr()
 	{
@@ -95,23 +201,6 @@ class Tests extends Test
 			'SELECT t0.*' . LF
 			. 'FROM `orders` t0' . LF
 			. 'WHERE (t0.`number` = "true" OR t0.`number` = "false")'
-		);
-	}
-
-	//-------------------------------------------------------------------------------- testLogicalXor
-	public function testLogicalXor()
-	{
-		$builder = new Select(
-			Order::class,
-			null,
-			['number' => Func::xorOp(['true', 'false'])]
-		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
-			. 'WHERE (t0.`number` = "true" XOR t0.`number` = "false")'
 		);
 	}
 
@@ -136,8 +225,8 @@ class Tests extends Test
 		);
 	}
 
-	//----------------------------------------------------- testLogicalTrue_ShouldNotBeCalledDirectly
-	public function testLogicalTrue_ShouldNotBeCalledDirectly()
+	//------------------------------------------------------ testLogicalTrueShouldNotBeCalledDirectly
+	public function testLogicalTrueShouldNotBeCalledDirectly()
 	{
 		$builder = new Select(
 			Order::class,
@@ -153,108 +242,20 @@ class Tests extends Test
 		);
 	}
 
-	//-------------------------------- testLogicalExceptionRaisedOnNotOrTrueOperatorWithArrayArgument
-	public function testLogicalExceptionRaisedOnNotOrTrueOperatorWithArrayArgument()
-	{
-		$check = false;
-		try
-		{
-			$argument = new Logical(Logical::TRUE_OPERATOR, ['true', 'false']);
-			unset($argument);
-		}
-		catch (\Exception $e)
-		{
-			$check = true;
-		}
-		$this->assume(__METHOD__,	$check,	true);
-	}
-
-	//-------------------------------------------------------------------------------- testLogicalNot
-	public function testLogicalNot()
+	//-------------------------------------------------------------------------------- testLogicalXor
+	public function testLogicalXor()
 	{
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Func::notOp('true')]
+			['number' => Func::xorOp(['true', 'false'])]
 		);
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
 			. 'FROM `orders` t0' . LF
-			. 'WHERE NOT (t0.`number` = "true")'
-		);
-	}
-
-	//----------------------------------------------------------------------------- testLogicalNotNot
-	public function testLogicalNotNot()
-	{
-		$builder = new Select(
-			Order::class,
-			null,
-			['number' => Func::notOp(Func::notOp('true'))]
-		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
-			. 'WHERE NOT (NOT (t0.`number` = "true"))'
-		);
-	}
-
-	//------------------------------------------------------------------------- testLogicalNotNegated
-	public function testLogicalNotNegated()
-	{
-		$argument = Func::notOp('true');
-		$argument->negate();
-		$builder = new Select(
-			Order::class,
-			null,
-			['number' => $argument]
-		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
-			. 'WHERE (t0.`number` = "true")'
-		);
-	}
-
-	//----------------------------------------------------------------------------- testLogicalNotAnd
-	public function testLogicalNotAnd()
-	{
-		$builder = new Select(
-			Order::class,
-			null,
-			['number' => Func::notOp(Func::andOp(['true', 'false']))]
-		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
-			. 'WHERE NOT ((t0.`number` = "true" AND t0.`number` = "false"))'
-		);
-	}
-
-	//------------------------------------------------------------------------- testLogicalAndNegated
-	public function testLogicalAndNegated()
-	{
-		$argument = Func::andOp(['true', 'false']);
-		$argument->negate();
-		$builder = new Select(
-			Order::class,
-			null,
-			['number' => $argument]
-		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
-			. 'WHERE (NOT (t0.`number` = "true") OR NOT (t0.`number` = "false"))'
+			. 'WHERE (t0.`number` = "true" XOR t0.`number` = "false")'
 		);
 	}
 
