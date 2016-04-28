@@ -108,7 +108,7 @@ trait Date
 	protected function applyDateRangeValue($search_value, $min_max)
 	{
 		if ($this->hasJoker($search_value)) {
-			throw new Data_List_Exception($search_value, 'Range value can not have wildcard');
+			throw new Data_List_Exception($search_value, Loc::tr('Range value can not have wildcard'));
 		}
 		return $this->applyDatePeriod($search_value, $min_max);
 	}
@@ -138,14 +138,12 @@ trait Date
 	protected function applyDateWord($expr, $min_max)
 	{
 		/**
-		 * TODO RETURN THE PERIOD !
 		 * TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
 		 * See: http://php.net/manual/en/function.iconv.php#74101
 		 */
-
 		$word = preg_replace('/\s|\'/', '', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $expr)));
-		// TODO change by using Loc::rtr($word) ??
-		if (in_array($word, ['currentyear', 'anneecourante', 'anneeencours'])) {
+
+		if (in_array($word, $this->getWordsToCompare(Date_Time::YEAR))) {
 			// we convert a current year word in numeric current year period
 			$date_begin = date(
 				'Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, $this->currentYear)
@@ -154,7 +152,7 @@ trait Date
 				'Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $this->currentYear)
 			);
 		}
-		elseif (in_array($word, ['currentmonth', 'moiscourant', 'moisencours'])) {
+		elseif (in_array($word, $this->getWordsToCompare(Date_Time::MONTH))) {
 			//we convert a current year word in numeric current month / current year period
 			$date_begin = date(
 				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, 1, $this->currentYear)
@@ -163,9 +161,7 @@ trait Date
 				'Y-m-d H:i:s', mktime(0, 0, -1, $this->currentMonth + 1, 1, $this->currentYear)
 			);
 		}
-		elseif (in_array(
-			$word, ['today', 'currentday', 'jourcourant', 'jourencours', "aujourd'hui", 'aujourdhui'])
-		) {
+		elseif (in_array($word, $this->getWordsToCompare(Date_Time::DAY))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
 				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, $this->currentDay, $this->currentYear)
@@ -173,6 +169,16 @@ trait Date
 			$date_end = date(
 				'Y-m-d H:i:s',
 				mktime(23, 59, 59, $this->currentMonth, $this->currentDay, $this->currentYear)
+			);
+		}
+		elseif (in_array($word, $this->getWordsToCompare('yesterday'))) {
+			//we convert a current day word in numeric current day period
+			$date_begin = date(
+				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, (int)$this->currentDay-1, $this->currentYear)
+			);
+			$date_end = date(
+				'Y-m-d H:i:s',
+				mktime(23, 59, 59, $this->currentMonth, (int)$this->currentDay-1, $this->currentYear)
 			);
 		}
 		if (isset($date_begin) && isset($date_end)) {
@@ -209,13 +215,11 @@ trait Date
 			}
 			if (!$this->computeDay($day)) {
 				// bad expression ?
-				// TODO: Remove Exception or make a support for error?
-				throw new Data_List_Exception($expression, 'Error in day expression');
+				throw new Data_List_Exception($expression, Loc::tr('Error in day expression'));
 			}
 			if (!$this->computeMonth($month)) {
 				// bad expression?
-				// TODO Remove Exception or make a support for error ?
-				throw new Data_List_Exception($expression, 'Error in month expression');
+				throw new Data_List_Exception($expression, Loc::tr('Error in month expression'));
 			}
 			$date = $this->buildDayMonth($day, $month, $min_max, $expression);
 			return $date;
@@ -251,18 +255,15 @@ trait Date
 			}
 			if (!$this->computeDay($day)) {
 				// bad expression ?
-				// TODO Remove Exception or make a support for error ?
-				throw new Data_List_Exception($expr, 'Error in day expression');
+				throw new Data_List_Exception($expr, Loc::tr('Error in day expression'));
 			}
 			if (!$this->computeMonth($month)) {
 				// bad expression ?
-				// TODO Remove Exception or make a support for error ?
-				throw new Data_List_Exception($expr, 'Error in month expression');
+				throw new Data_List_Exception($expr, Loc::tr('Error in month expression'));
 			}
 			if (!$this->computeYear($year)) {
 				// bad expression ?
-				// TODO Remove Exception or make a support for error ?
-				throw new Data_List_Exception($expr, 'Error in year expression');
+				throw new Data_List_Exception($expr, Loc::tr('Error in year expression'));
 			}
 			return $this->buildDayMonthYear($day, $month, $year, $min_max, $expr);
 		}
@@ -281,16 +282,17 @@ trait Date
 	protected function applyDayOnly($expression, $min_max)
 	{
 		// two chars or a single joker or formula
-		if (preg_match('/^ \s* ([*%?_] | [0-9*?%_]{1,2} | ([djDJ]([-+]\d+)?)) \s* $/x', $expression)) {
+		$letters_day = $this->getLetters(Date_Time::DAY);
+		if (
+			preg_match('/^ \s* ([*%?_] | [0-9*?%_]{1,2} | (['.$letters_day.']([-+]\d+)?)) \s* $/x'
+				, $expression)
+		) {
 			$day = $expression;
 			if (!$this->computeDay($day)) {
 				// bad expression ?
-				// TODO Remove Exception or make a support for error ?
-				throw new Data_List_Exception($expression, 'Error in day expression');
+				throw new Data_List_Exception($expression, Loc::tr('Error in day expression'));
 			}
 			if ($this->hasJoker($day)) {
-				//$date_begin = "{$this->currentYear}-{$this->currentMonth}-{$day} 00:00:00";
-				//$date_end = "{$this->currentYear}-{$this->currentMonth}-{$day} 23:59:59";
 				list($day, $month, $year) = $this->padDateParts(
 					$day, $this->currentMonth, $this->currentYear
 				);
@@ -321,20 +323,22 @@ trait Date
 	 */
 	protected function applyMonthYear($expression, $min_max)
 	{
+		$letters_month = $this->getLetters(Date_Time::MONTH);
+		$letters_year = $this->getLetters(Date_Time::YEAR);
 		// two values with a middle slash
 		if (substr_count($expression, SL) == 1) {
 			list($one, $two) = explode(SL, $expression);
 			if (
-				(strlen($one) > 2 && !preg_match('/^ \s* [mM]([-+]\d+)? $/x', $one))
-				|| preg_match('/^ \s* [yaYA]([-+]\d+)? $/x', $one)
+				(strlen($one) > 2 && !preg_match('/^ \s* ['.$letters_month.']([-+]\d+)? $/x', $one))
+				|| preg_match('/^ \s* ['.$letters_year.']([-+]\d+)? $/x', $one)
 			) {
 				// the first number is a year or contains 'y' or 'a' : year/month
 				$month = $two;
 				$year  = $one;
 			}
 			elseif (
-				(strlen($two) > 2 && !preg_match('/^ \s* [mM]([-+]\d+)? $/x', $two))
-				|| preg_match('/^ [yaYA]([-+]\d+)? \s* $/x', $two)) {
+				(strlen($two) > 2 && !preg_match('/^ \s* ['.$letters_month.']([-+]\d+)? $/x', $two))
+				|| preg_match('/^ ['.$letters_year.']([-+]\d+)? \s* $/x', $two)) {
 				// the second number is a year or contains 'y' or 'a' : month/year
 				$month = $one;
 				$year  = $two;
@@ -345,13 +349,11 @@ trait Date
 			}
 			if (!$this->computeMonth($month)) {
 				// bad expression ?
-				// TODO Remove Exception or make a support for error?
-				throw new Data_List_Exception($expression, 'Error in month expression');
+				throw new Data_List_Exception($expression, Loc::tr('Error in month expression'));
 			}
 			if (!$this->computeYear($year)) {
 				// bad expression ?
-				// TODO Remove Exception or make a support for error?
-				throw new Data_List_Exception($expression, 'Error in year expression');
+				throw new Data_List_Exception($expression, Loc::tr('Error in year expression'));
 			}
 			return $this->buildMonthYear($month, $year, $min_max, $expression);
 		}
@@ -406,9 +408,12 @@ trait Date
 	 */
 	protected function applyYearOnly($expression, $min_max)
 	{
+		$letters_year = $this->getLetters(Date_Time::YEAR);
 		// no slash and (>3 digit or "y" or "a")
-		//if (!substr_count($expression, SL) && (strlen($expression)>2 || preg_match('/y|a/', $expression))) {
-		if (preg_match('/^ \s* ([0-9*?%_]{3,4} | ([yaYA]([-+]\d+)?)) \s* $/x', $expression)) {
+		if (
+			preg_match('/^ \s* ([0-9*?%_]{3,4} | (['.$letters_year.']([-+]\d+)?)) \s* $/x'
+				, $expression)
+		) {
 			$year = $expression;
 			if ($this->computeYear($year)) {
 				if ($this->hasJoker($year)) {
@@ -423,8 +428,7 @@ trait Date
 				return $date;
 			}
 			// bad expression?
-			// TODO Remove Exception or make a support for error ?
-			throw new Data_List_Exception($expression, 'Error in year expression');
+			throw new Data_List_Exception($expression, Loc::tr('Error in year expression'));
 		}
 		return false;
 	}
@@ -476,7 +480,7 @@ trait Date
 			//at least one has wildcard
 			if ($min_max != self::NOT_A_RANGE_VALUE) {
 				//we can not have wildcard on a range value
-				throw new Data_List_Exception($expr, "You can not have a wildcard on a range value!");
+				throw new Data_List_Exception($expr, Loc::tr('You can not have a wildcard on a range value'));
 			}
 			if (!$monthHasJoker) {
 				//day has wildcard, month may be computed
@@ -491,7 +495,7 @@ trait Date
 				//month has wildcard but not day that may be computed.
 				//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
 				if ($day < 1 || $day > 31) {
-					throw new Data_List_Exception($expr, "You can not put a formula on day when month has wildcard!");
+					throw new Data_List_Exception($expr, Loc::tr('You can not put a formula on day when month has wildcard'));
 				}
 				list($day, $month) = $this->padDateParts($day, $month, 'fooo');
 				$date = Func::like("{$this->currentYear}-$month-$day __:__:__");
@@ -533,7 +537,7 @@ trait Date
 			if ($min_max != self::NOT_A_RANGE_VALUE) {
 				//we can not have wildcard on a range value
 				throw new Data_List_Exception(
-					$expression, 'You can not have a wildcard on a range value !'
+					$expression, Loc::tr('You can not have a wildcard on a range value')
 				);
 			}
 			if (
@@ -550,7 +554,7 @@ trait Date
 			) {
 				if ($month < 1 || $month > 12) {
 					throw new Data_List_Exception(
-						$expression, 'You can not put a formula on month when year has wildcard !'
+						$expression, Loc::tr('You can not put a formula on month when year has wildcard')
 					);
 				}
 			}
@@ -572,7 +576,7 @@ trait Date
 				//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
 				if ($day < 1 || $day > 31) {
 					throw new Data_List_Exception(
-						$expression, 'You can not put a formula on day when month has wildcard !'
+						$expression, Loc::tr('You can not put a formula on day when month has wildcard')
 					);
 				}
 			}
@@ -612,7 +616,7 @@ trait Date
 			// So we should take care if month is <1 or >12
 			if ($month < 1 || $month > 12) {
 				throw new Data_List_Exception(
-					$expression, 'You can not put a formula on month when year has wildcard !');
+					$expression, Loc::tr('You can not put a formula on month when year has wildcard'));
 			}
 			list($day, $month, $year) = $this->padDateParts('__', $month, $year);
 			$date = Func::like("$year-$month-$day __:__:__");
@@ -664,7 +668,7 @@ trait Date
 	 *        | j-2... returns computed if any
 	 * @return boolean
 	 */
-	public function computeDay(&$expression)
+	protected function computeDay(&$expression)
 	{
 		$expression = trim($expression);
 		// numeric expr
@@ -742,7 +746,7 @@ trait Date
 	 *        returns computed if any
 	 * @return boolean
 	 */
-	public function computeMonth(&$expression)
+	protected function computeMonth(&$expression)
 	{
 		$expression = trim($expression);
 		// numeric expression
@@ -768,7 +772,7 @@ trait Date
 	 *        returns computed if any
 	 * @return boolean
 	 */
-	public function computeYear(&$expression)
+	protected function computeYear(&$expression)
 	{
 		$expression = trim($expression);
 		// numeric expression
@@ -908,6 +912,36 @@ trait Date
 			];
 		}
 		return $letters[$part];
+	}
+
+	//----------------------------------------------------------------------------- getWordsToCompare
+	/**
+	 * Build given word for comparison and get the words to compare with
+	 *
+	 * @param $part   string
+	 * @return array
+	 */
+	protected function getWordsToCompare($part) {
+		static $all_words_references = [
+			Date_Time::DAY => ['today', 'current day'],
+			Date_Time::MONTH => ['current month'],
+			Date_Time::YEAR => ['current year'],
+			'yesterday' => ['yesterday']
+		];
+		$words_references = $all_words_references[$part];
+		$words_localized = [];
+		foreach($words_references as $word) {
+			$words_localized[] = Loc::tr($word);
+		}
+		$words = array_merge($words_references, $words_localized);
+		array_walk($words, function(&$word) {
+			/**
+			 * TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
+			 * See: http://php.net/manual/en/function.iconv.php#74101
+			 */
+			$word = preg_replace('/\s|\'/', '', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $word)));
+		});
+		return $words;
 	}
 
 	//-------------------------------------------------------------------------------------- hasJoker

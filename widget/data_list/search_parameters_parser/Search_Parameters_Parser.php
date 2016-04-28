@@ -134,7 +134,7 @@ class Search_Parameters_Parser
 				$search = $this->applyRange($search_value, $property);
 			}
 			else {
-				throw new Data_List_Exception($search_value, 'Range not permitted');
+				throw new Data_List_Exception($search_value, Loc::tr('Range not permitted'));
 			}
 		}
 		else {
@@ -242,7 +242,7 @@ class Search_Parameters_Parser
 		$range[1] = $this->applyRangeValue($range[1], $property, self::MAX_RANGE_VALUE);
 		if ($range[0] === false || $range[1] === false) {
 			throw new Data_List_Exception(
-				$search_value, 'Error in range expression or range must have 2 parts only'
+				$search_value, Loc::tr('Error in range expression or range must have 2 parts only')
 			);
 		}
 		return new Func\Range($range[0], $range[1]);
@@ -313,7 +313,7 @@ class Search_Parameters_Parser
 			}
 		}
 		if ($search === false) {
-			throw new Data_List_Exception($search_value, 'Error in expression');
+			throw new Data_List_Exception($search_value, Loc::tr('Error in expression'));
 		}
 		return $search;
 	}
@@ -348,7 +348,7 @@ class Search_Parameters_Parser
 				}
 				else {
 					throw new Data_List_Exception(
-						$search_value, 'Error in range expression or range must have 2 parts only'
+						$search_value, Loc::tr('Error in range expression or range must have 2 parts only')
 					);
 				}
 				break;
@@ -358,7 +358,7 @@ class Search_Parameters_Parser
 				$range = explode('-', $search_value, 2);
 				// Check we have only two parts in the range!
 				if (implode('-', $range) !== $search_value) {
-					throw new Data_List_Exception($search_value, 'Range must have 2 parts only');
+					throw new Data_List_Exception($search_value, Loc::tr('Range must have 2 parts only'));
 				}
 				break;
 		}
@@ -372,7 +372,7 @@ class Search_Parameters_Parser
 	 * @param $property Reflection_Property
 	 * @return boolean true if range supported and authorized
 	 */
-	public function hasRange(Reflection_Property $property)
+	protected function hasRange(Reflection_Property $property)
 	{
 		$type_string = $property->getType()->asString();
 		return ($property->getAnnotation('search_range')->value !== false)
@@ -386,8 +386,13 @@ class Search_Parameters_Parser
 	 */
 	protected function isEmptyWord($expr)
 	{
-		$word = preg_replace('/\s/','',$expr);
-		return in_array(Loc::rtr($word), ['empty', 'none', 'null']);
+		/**
+		 * TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
+		 * See: http://php.net/manual/en/function.iconv.php#74101
+		 */
+		$word = preg_replace('/\s|\'/', '',
+			strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', Loc::rtr($expr))));
+		return in_array($word, ['empty', 'none', 'null']);
 	}
 
 	//--------------------------------------------------------------------------------------- isRange
@@ -398,7 +403,7 @@ class Search_Parameters_Parser
 	 * @param $property     Reflection_Property
 	 * @return boolean
 	 */
-	public function isRange($search_value, Reflection_Property $property)
+	protected function isRange($search_value, Reflection_Property $property)
 	{
 		$type_string = $property->getType()->asString();
 		switch ($type_string) {
@@ -444,7 +449,7 @@ class Search_Parameters_Parser
 	 * @param $search_value string
 	 * @param $property Reflection_Property
 	 */
-	public function parseField(&$search_value, Reflection_Property $property)
+	protected function parseField(&$search_value, Reflection_Property $property)
 	{
 		try {
 			$search_value = $this->applyOr($search_value, $property);

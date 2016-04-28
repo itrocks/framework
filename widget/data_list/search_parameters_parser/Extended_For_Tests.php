@@ -109,9 +109,9 @@ class Extended_For_Tests extends Search_Parameters_Parser
 	 * @param $part string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return void
 	 */
-	public function _correctDateWildcardExpr(&$expr, $part)
+	public function correctDateWildcardExpr(&$expr, $part)
 	{
-		parent::_correctDateWildcardExpr($expr, $part);
+		parent::correctDateWildcardExpr($expr, $part);
 	}
 
 }
