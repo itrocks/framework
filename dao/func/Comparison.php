@@ -132,8 +132,6 @@ class Comparison implements Negate, Where
 		$column = $builder->buildColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
 			if (in_array($this->sign, [self::EQUAL, self::NOT_EQUAL, self::LIKE, self::NOT_LIKE])) {
-				$property    = $builder->getProperty($property_path);
-				$type_string = $property->getType()->asString();
 				$close_parenthesis = '';
 				switch ($this->sign) {
 					case self::NOT_EQUAL: case self::NOT_LIKE:
@@ -149,6 +147,9 @@ class Comparison implements Negate, Where
 				}
 				$sql = '';
 				// in case of Date_Time is null we want to check for '0000-00-00 00:00:00' too
+				// property may be null if reverse path : Class\Name->foreign_property_name
+				$property    = $builder->getProperty($property_path);
+				$type_string = $property ? $property->getType()->asString() : null;
 				if ($type_string == Date_Time::class) {
 					$close_parenthesis = ')';
 					$sql .= '(' . $column . SP . $sign . SP
@@ -175,8 +176,8 @@ class Comparison implements Negate, Where
 				return $this->than_value->toSql($builder, $property_path, $prefix);
 			}
 		}
-		return $column . SP . $this->sign . SP
-		. Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
+		return $column . SP . $this->sign
+			. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
 	}
 
 	//---------------------------------------------------------------------------------------- negate
