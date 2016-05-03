@@ -2,7 +2,9 @@
 namespace SAF\Framework\Dao\Func;
 
 use Exception;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Sql\Builder;
+use SAF\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Dao AND function
@@ -22,6 +24,14 @@ class Logical implements Negate, Where
 		self::OR_OPERATOR   => self::AND_OPERATOR,
 		self::TRUE_OPERATOR => self::NOT_OPERATOR,
 		self::XOR_OPERATOR  => self::NOT_OPERATOR
+	];
+
+	const HUMAN = [
+		self::AND_OPERATOR  => 'and',
+		self::NOT_OPERATOR  => 'except',
+		self::OR_OPERATOR   => 'or',
+		self::TRUE_OPERATOR => 'is',
+		self::XOR_OPERATOR  => 'exclusively or'
 	];
 
 	//------------------------------------------------------------------------------------ $arguments
@@ -102,6 +112,90 @@ class Logical implements Negate, Where
 		return $this->operator === self::XOR_OPERATOR;
 	}
 
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 */
+	public function negate()
+	{
+		if (key_exists($this->operator, self::REVERSE)) {
+			if ($this->operator == self::XOR_OPERATOR) {
+				$this->arguments = new Logical(self::XOR_OPERATOR, $this->arguments);
+			}
+			elseif (in_array($this->operator, [self::AND_OPERATOR, self::OR_OPERATOR])) {
+				$this->negateArguments();
+			}
+			$this->operator = self::REVERSE[$this->operator];
+		}
+	}
+
+	//------------------------------------------------------------------------------- negateArguments
+	/**
+	 * Negate each argument of $this
+	 */
+	private function negateArguments()
+	{
+		if ($this->arguments instanceof Negate) {
+			$this->arguments->negate();
+		}
+		elseif (is_array($this->arguments)) {
+			foreach ($this->arguments as &$argument) {
+				if ($argument instanceof Negate) {
+					$argument->negate();
+				}
+				else {
+					$argument = new Logical(self::NOT_OPERATOR, $argument);
+				}
+			}
+		}
+	}
+
+	//--------------------------------------------------------------------------------------- toHuman
+	/**
+	 * Returns the Dao function as Human readable string
+	 *
+	 * @param $builder       Summary_Builder the sql query builder
+	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
+	 * @return string
+	 */
+	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	{
+		$str = '';
+		// $this->arguments may not be array if operator is NOT_OPERATOR or TRUE_OPERATOR
+		$arguments = (is_array($this->arguments) ? $this->arguments : [$this->arguments]);
+		foreach ($arguments as $other_property_path => $argument) {
+			if (empty($not_first)) {
+				$not_first = true;
+			}
+			else {
+				$str .= ' ' . Loc::tr(self::HUMAN[$this->operator]) . ' ';
+			}
+			if (is_array($argument)) {
+				$str .= (new Logical($this->operator, $argument))->toHuman(
+					$builder,
+					is_numeric($other_property_path) ? $property_path : $other_property_path,
+					$prefix
+				);
+			}
+			elseif (is_numeric($other_property_path)) {
+				$str .= ($argument instanceof Where) ?
+					$argument->toHuman($builder, $property_path, $prefix) :
+					(new Comparison(Comparison::AUTO, $argument))->toHuman($builder, $property_path, $prefix);
+			}
+			else {
+				$str .= ($argument instanceof Where)
+					? $argument->toHuman($builder, $other_property_path, $prefix)
+					: (new Comparison(Comparison::AUTO, $argument))
+						->toHuman($builder, $other_property_path, $prefix);
+			}
+		}
+		return (
+			($this->operator === self::NOT_OPERATOR) ? Loc::tr(self::HUMAN[self::NOT_OPERATOR]) . ' ' :	''
+		)
+		. '(' . $str . ')';
+	}
+
 	//----------------------------------------------------------------------------------------- toSql
 	/**
 	 * Returns the Dao function as SQL
@@ -143,44 +237,6 @@ class Logical implements Negate, Where
 			}
 		}
 		return (($this->operator === self::NOT_OPERATOR) ? 'NOT ' : '') . '(' . $sql . ')';
-	}
-
-	//---------------------------------------------------------------------------------------- negate
-	/**
-	 * Negate the Dao function
-	 */
-	public function negate()
-	{
-		if (key_exists($this->operator, self::REVERSE)) {
-			if ($this->operator == self::XOR_OPERATOR) {
-				$this->arguments = new Logical(self::XOR_OPERATOR, $this->arguments);
-			}
-			elseif (in_array($this->operator, [self::AND_OPERATOR, self::OR_OPERATOR])) {
-				$this->negateArguments();
-			}
-			$this->operator = self::REVERSE[$this->operator];
-		}
-	}
-
-	//------------------------------------------------------------------------------- negateArguments
-	/**
-	 * Negate each argument of $this
-	 */
-	private function negateArguments()
-	{
-		if ($this->arguments instanceof Negate) {
-			$this->arguments->negate();
-		}
-		elseif (is_array($this->arguments)) {
-			foreach ($this->arguments as &$argument) {
-				if ($argument instanceof Negate) {
-					$argument->negate();
-				}
-				else {
-					$argument = new Logical(self::NOT_OPERATOR, $argument);
-				}
-			}
-		}
 	}
 
 }

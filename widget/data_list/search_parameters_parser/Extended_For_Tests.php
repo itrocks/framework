@@ -103,10 +103,11 @@ class Extended_For_Tests extends Search_Parameters_Parser
 		$this->currentSeconds  = $this->currentDateTime->format('s');
 	}
 
-	//---------------------------------------------------------------------- _correctDateWildcardExpr
+	//----------------------------------------------------------------------- correctDateWildcardExpr
 	/**
-	 * @param string $expr
-	 * @param $part string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
+	 * @param $expr string
+	 * @param $part string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
+	 *              Date_Time::MINUTE, Date_Time::SECOND
 	 * @return void
 	 */
 	public function correctDateWildcardExpr(&$expr, $part)

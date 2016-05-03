@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\Dao\Func;
 
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Value;
+use SAF\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Lesser than is a condition used to get the record where the column has a value lesser than the
@@ -61,6 +63,57 @@ class Comparison implements Negate, Where
 					? self::LIKE
 					: self::EQUAL;
 		}
+	}
+
+	//----------------------------------------------------------------------------------- signToHuman
+	/**
+	 * @param $sign       string
+	 * @return string
+	 */
+	public function signToHuman($sign)
+	{
+		return (
+			in_array($sign, [self::LIKE, self::NOT_LIKE]) ?	Loc::tr('is ' . strtolower($sign)) :  $sign
+		);
+	}
+
+	//--------------------------------------------------------------------------------------- toHuman
+	/**
+	 * Returns the Dao function as Human readable string
+	 *
+	 * @param $builder       Summary_Builder the sql query builder
+	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
+	 * @return string
+	 */
+	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	{
+		$column = $builder->buildColumn($property_path, $prefix);
+		if (is_null($this->than_value)) {
+			switch ($this->sign) {
+				case self::EQUAL:     case self::LIKE:     return $column . ' ' . Loc::tr('is null');
+				case self::NOT_EQUAL: case self::NOT_LIKE: return $column . ' ' . Loc::tr('is not null');
+			}
+		}
+		if ($this->than_value instanceof Where) {
+			if ($this->sign == self::NOT_EQUAL) {
+				return Loc::tr('except') . ' ('
+				. $this->than_value->toHuman($builder, $property_path, $prefix)
+				. ')';
+			}
+			elseif ($this->sign == self::EQUAL) {
+				//Because of Negate, we should support EQUAL for instance of Where
+				return ' (' . $this->than_value->toHuman($builder, $property_path, $prefix) . ')';
+			}
+			else {
+				return $this->than_value->toHuman($builder, $property_path, $prefix);
+			}
+		}
+		$scalar = $builder->buildScalar($this->than_value, $property_path);
+		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE])) {
+			$scalar = str_replace(['_', '%'], ['?', '*'], $scalar);
+		}
+		return $column . SP . $this->signToHuman($this->sign) . SP . $scalar;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

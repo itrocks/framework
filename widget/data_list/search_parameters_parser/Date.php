@@ -284,7 +284,7 @@ trait Date
 		// two chars or a single joker or formula
 		$letters_day = $this->getLetters(Date_Time::DAY);
 		if (
-			preg_match('/^ \s* ([*%?_] | [0-9*?%_]{1,2} | (['.$letters_day.']([-+]\d+)?)) \s* $/x'
+			preg_match('/^ \s* ([*%?_] | [0-9*?%_]{1,2} | ([' . $letters_day . ']([-+]\d+)?)) \s* $/x'
 				, $expression)
 		) {
 			$day = $expression;
@@ -480,7 +480,9 @@ trait Date
 			//at least one has wildcard
 			if ($min_max != self::NOT_A_RANGE_VALUE) {
 				//we can not have wildcard on a range value
-				throw new Data_List_Exception($expr, Loc::tr('You can not have a wildcard on a range value'));
+				throw new Data_List_Exception(
+					$expr, Loc::tr('You can not have a wildcard on a range value'
+				));
 			}
 			if (!$monthHasJoker) {
 				//day has wildcard, month may be computed
@@ -495,7 +497,9 @@ trait Date
 				//month has wildcard but not day that may be computed.
 				//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
 				if ($day < 1 || $day > 31) {
-					throw new Data_List_Exception($expr, Loc::tr('You can not put a formula on day when month has wildcard'));
+					throw new Data_List_Exception(
+						$expr, Loc::tr('You can not put a formula on day when month has wildcard'
+					));
 				}
 				list($day, $month) = $this->padDateParts($day, $month, 'fooo');
 				$date = Func::like("{$this->currentYear}-$month-$day __:__:__");

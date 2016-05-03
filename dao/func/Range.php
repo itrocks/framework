@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\Dao\Func;
 
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Value;
+use SAF\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Dao Range function
@@ -41,6 +43,32 @@ class Range implements Negate, Where
 		$this->from = $from;
 		$this->to   = $to;
 		if (isset($not_between)) $this->not_between = $not_between;
+	}
+
+	//--------------------------------------------------------------------------------------- toHuman
+	/**
+	 * Returns the Dao function as Human readable string
+	 *
+	 * @param $builder       Summary_Builder the sql query builder
+	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
+	 * @return string
+	 */
+	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	{
+		$str = '(' . $builder->buildColumn($property_path, $prefix);
+
+		$from = $builder->buildScalar($this->from, $property_path);
+		$to = $builder->buildScalar($this->to, $property_path);
+		if ($from == $to) {
+			$str .= ' ' . ($this->not_between ? Loc::tr('is not') : Loc::tr('is'));
+			$str .= ' ' . $from . ')';
+		}
+		else {
+			$str .= ' ' . ($this->not_between ? Loc::tr('is not between') : Loc::tr('is between'));
+			$str .= ' ' . $from . ' ' . Loc::tr('and')	. ' ' . $to . ')';
+		}
+		return $str;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

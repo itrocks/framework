@@ -321,10 +321,7 @@ class Tests extends Test
 	 */
 	public function testParseDayWords()
 	{
-		$this->parser->search = [
-			'date'
-				=> "today,currentday, current day ,yesterday"
-		];
+		$this->parser->search = ['date' => 'today,currentday, current day ,yesterday'];
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
@@ -395,9 +392,7 @@ class Tests extends Test
 	 */
 	public function testParseMonthWords()
 	{
-		$this->parser->search = [
-			'date' => 'currentmonth, current month '
-		];
+		$this->parser->search = ['date' => 'currentmonth, current month '];
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
@@ -744,10 +739,7 @@ class Tests extends Test
 	 */
 	public function testParseYearWords()
 	{
-		$this->parser->search = [
-			'date'
-			=> 'currentyear, current year '
-		];
+		$this->parser->search = ['date' => 'currentyear, current year '];
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([

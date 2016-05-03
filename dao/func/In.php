@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\Dao\Func;
 
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Value;
+use SAF\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Dao IN function
@@ -33,6 +35,31 @@ class In implements Negate, Where
 	{
 		if (isset($values)) $this->values = $values;
 		if (isset($not_in)) $this->not_in = $not_in;
+	}
+
+	//--------------------------------------------------------------------------------------- toHuman
+	/**
+	 * Returns the Dao function as Human readable string
+	 *
+	 * @param $builder       Summary_Builder the sql query builder
+	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
+	 * @return string
+	 */
+	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	{
+		$str = '';
+		if ($this->values) {
+			$str = $builder->buildColumn($property_path, $prefix)
+				. ($this->not_in ? ' ' . Loc::tr('except') : '') . ' ' . Loc::tr('in') . ' (';
+			$first = true;
+			foreach ($this->values as $value) {
+				if ($first) $first = false; else $str .= ', ';
+				$str .= $builder->buildScalar($value, $property_path);
+			}
+			$str .= ')';
+		}
+		return $str;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

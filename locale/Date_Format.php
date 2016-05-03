@@ -167,33 +167,75 @@ class Date_Format
 		if ($date instanceof DateTime) {
 			$date = $date->format('Y-m-d H:i:s');
 		}
+		// new Date_Time will rise exception if input is incorrect
+		// DateTime::createFromFormat will rise exception if input is incorrect
 		try {
 			if (empty($date) || (new Date_Time($date))->isMin()) {
 				return '';
 			}
+			if (strlen($date) == 10) {
+				return DateTime::createFromFormat('Y-m-d', $date)->format($this->format);
+			}
+			else {
+				list($date, $time) = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
+				// TODO Here it's useless. May be what is wanted is $time = substr($time, 0, 5); ??
+				if ((strlen($time) == 8) && (substr($time, -3) == ':00')) {
+					substr($time, 0, 5);
+				}
+				$result = ($date_time = DateTime::createFromFormat('Y-m-d', $date))
+					? ($date_time->format($this->format) . SP . $time)
+					: $date;
+				if (substr($result, -9) == ' 00:00:00') {
+					$result = substr($result, 0, -9);
+				}
+				elseif (substr($result, -3) == ':00') {
+					$result = substr($result, 0, -3);
+				}
+				return $result;
+			}
 		}
 		catch (Exception $e) {
-			return $date;
+			return $this->toLocaleFromDateWithWildcard($date);
 		}
+	}
+
+	//------------------------------------------------------------------ toLocaleFromDateWithWildcard
+	/**
+	 * Takes an ISO date possibly having wildcards and make it like locale
+	 *
+	 * @param $date string|Date_Time ie '2001-12-25' '2001-__-25 12:20:00' '2001-12-25 %%:20:16'
+	 * @return string '25/12/2011' '25/??/2001 12:20' '25/12/2001 12:20:16'
+	 */
+	public function toLocaleFromDateWithWildcard($date)
+	{
+		static $sub_pattern_date = '([0-9%_]{4}) - ([0-9%_]{2}) - ([0-9%_]{2})';
+		static $sub_pattern_time = '([0-9%_]{2}) (?::([0-9%_]{2}))? (?::([0-9%_]{2}))?';
+		/** for now it only supports Y,m,d,H,i,s chars in format */
+		static $replacement = [
+			'Y' => '$1',
+			'm' => '$2',
+			'd' => '$3',
+			'H' => '$4',
+			'i' => '$5',
+			's' => '$6',
+		];
 		if (strlen($date) == 10) {
-			return DateTime::createFromFormat('Y-m-d', $date)->format($this->format);
+			$pattern = "/ $sub_pattern_date /x";
+			if (preg_match($pattern, $date)) {
+				$replace = str_replace(array_keys($replacement), array_values($replacement), $this->format);
+				return preg_replace($pattern, $replace, $date);
+			}
 		}
 		else {
-			list($date, $time) = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
-			if ((strlen($time) == 8) && (substr($time, -3) == ':00')) {
-				substr($time, 0, 5);
+			$pattern = "/ $sub_pattern_date \\s+ $sub_pattern_time /x";
+			if (preg_match($pattern, $date)) {
+				$replace = str_replace(array_keys($replacement), array_values($replacement), $this->format);
+				//return str_replace(['_', '%'], ['?', '*'], preg_replace($pattern, $replace, $date));
+				return preg_replace($pattern, $replace, $date);
 			}
-			$result = ($date_time = DateTime::createFromFormat('Y-m-d', $date))
-				? ($date_time->format($this->format) . SP . $time)
-				: $date;
-			if (substr($result, -9) == ' 00:00:00') {
-				$result = substr($result, 0, -9);
-			}
-			elseif (substr($result, -3) == ':00') {
-				$result = substr($result, 0, -3);
-			}
-			return $result;
 		}
+		// unknown : we return like it is
+		return $date;
 	}
 
 }

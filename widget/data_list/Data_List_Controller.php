@@ -150,9 +150,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if (!$list_settings->title) {
 			$list_settings->title = $list_settings->name;
 		}
-		// Sebastien: I put the save outside this method because we should save only if search
+		// SM : I put the save outside this method because we should save only if search
 		// expressions are all valid.
-		// TODO: Move back save() here once we have a generic validator (parser) not depending of SQL that we could fire here before save!
+		// TODO : Move back save() here once we have a generic validator (parser) not depending of SQL that we could fire here before save !
 		//if ($did_change) {
 		//	$list_settings->save();
 		//}
@@ -295,10 +295,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//------------------------------------------------------------------------------ getSearchSummary
 	/**
+	 * @param $class_name    string class for the read object
 	 * @param $list_settings Data_List_Settings
+	 * @param $search        array search-compatible search array
 	 * @return string
 	 */
-	public function getSearchSummary(Data_List_Settings $list_settings)
+	public function getSearchSummary($class_name, Data_List_Settings $list_settings, $search)
 	{
 		if ($list_settings->search) {
 			if (Locale::current()) {
@@ -312,14 +314,15 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$list_settings->getClass()->getAnnotation('set')->value
 			);
 			$summary = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
-			$first = true;
-			foreach ($list_settings->search as $property_path => $value) {
-				if ($first) $first = false; else $summary .= ',';
-				$summary .= SP . $t . $property_path . $t . ' = ' . DQ . $value . DQ;
-				if (isset($this->errors, $this->errors[$property_path])) {
-					$error = $this->errors[$property_path];
+			$summary_builder = new Summary_Builder($class_name, $search);
+			$summary .= SP . (string)$summary_builder;
+
+			if (isset($this->errors) && is_array($this->errors)) {
+				$first = true;
+				foreach ($this->errors as $property_path => $error) {
+					if ($first) $first = false; else $summary .= ',';
 					// TODO I should not see any HTML code inside the PHP code
-					$summary .= SP . '<span class="error">' . $error->getMessage();
+					$summary .= SP . ' <span class="error">' . $error->getMessage();
 					if ($error instanceof Data_List_Exception) {
 						$summary .= ' (' . $error->getExpression() . ')';
 					}
@@ -390,10 +393,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		// before to fire readData (that may change $list_settings if error found)
 		// we need to get a copy in order to display summary with original given parameters
 		$list_settings_before_read = clone $list_settings;
-		$data = $this->readData($class_name, $list_settings, $count);
+		// SM : Moved from readData()
+		$search = $this->applySearchParameters($list_settings);
+		$data = $this->readData($class_name, $list_settings, $search, $count);
 		// SM : Moved from applyParametersToListSettings()
 		// TODO Move back once we have a generic validator (parser) not depending of SQL that we could fire before save
-		if (!is_null($did_change)) {
+		if (!is_null($did_change) && !(isset($this->errors) && count($this->errors))) {
 			$list_settings->save();
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
@@ -413,7 +418,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'more_thousand'         => $more_thousand,
 				'properties'            => $this->getProperties($list_settings_before_read),
 				'rows_count'            => $count->count,
-				'search_summary'        => $this->getSearchSummary($list_settings_before_read),
+				'search_summary'        => $this->getSearchSummary(
+					$class_name, $list_settings_before_read, $search
+				),
 				'settings'              => $list_settings,
 				'title'                 => $list_settings->title()
 			]
@@ -500,12 +507,19 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	/**
 	 * @param $class_name    string
 	 * @param $list_settings Data_List_Settings
+	 * @param $search        array search-compatible search array
 	 * @param $count         Count
 	 * @return List_Data
 	 */
-	public function readData($class_name, Data_List_Settings $list_settings, Count $count = null)
+	public function readData(
+		$class_name,
+		Data_List_Settings $list_settings,
+		$search,
+		Count $count = null
+	)
 	{
-		$search = $this->applySearchParameters($list_settings);
+		// SM : Moved outside the method in order result to be used for search summary
+		//$search = $this->applySearchParameters($list_settings);
 
 		$class = $list_settings->getClass();
 		foreach ($class->getAnnotations('on_data_list') as $execute) {

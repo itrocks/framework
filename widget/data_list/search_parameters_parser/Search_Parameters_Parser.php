@@ -191,8 +191,8 @@ class Search_Parameters_Parser
 	 */
 	protected function applyNot($search_value, Reflection_Property $property)
 	{
-		if (is_string($search_value) && (substr($search_value, 0, 1) === '!')) {
-			$search_value = substr($search_value, 1);
+		if (is_string($search_value) && (substr(trim($search_value), 0, 1) === '!')) {
+			$search_value = substr(trim($search_value), 1);
 			$search = $this->applyComplexValue($search_value, $property);
 			if ($search instanceof Func\Negate) {
 				$search->negate();
@@ -282,7 +282,15 @@ class Search_Parameters_Parser
 	protected function applyScalar(
 		/** @noinspection PhpUnusedParameterInspection */
 		$search_value, Reflection_Property $property, $is_range_value = false
-	) {
+	)
+	{
+		// check if we are on a enum field with @values list of values
+		$values = $property->getListAnnotation('values')->values();
+		if (count($values)) {
+			//we do not apply wildcards, we want search for this exact value
+			return Func::equal($search_value);
+		}
+
 		return $this->applyJokers($search_value, $is_range_value);
 	}
 
@@ -387,11 +395,12 @@ class Search_Parameters_Parser
 	protected function isEmptyWord($expr)
 	{
 		/**
-		 * TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
+		 * TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support !!
 		 * See: http://php.net/manual/en/function.iconv.php#74101
 		 */
-		$word = preg_replace('/\s|\'/', '',
-			strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', Loc::rtr($expr))));
+		$word = preg_replace(
+			'/\s|\'/', '', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', Loc::rtr($expr)))
+		);
 		return in_array($word, ['empty', 'none', 'null']);
 	}
 
