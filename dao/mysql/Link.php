@@ -332,11 +332,11 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 * @param $class_name string The class name to store the result data into
-	 * @return object
+	 * @return null|object
 	 */
 	public function fetch($result_set, $class_name = null)
 	{
-		$object = $result_set->fetch_object(Builder::className($class_name));
+		$object = $result_set ? $result_set->fetch_object(Builder::className($class_name)) : null;
 		if ($object instanceof Abstract_Class) {
 			$this->prepareFetch($object->class);
 			$object = $this->read($this->getObjectIdentifier($object), $object->class);
@@ -436,12 +436,11 @@ class Link extends Dao\Sql\Link
 	 * Fetch a result from a result set to an array
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
-	 * @return object
+	 * @return null|object
 	 */
 	public function fetchRow($result_set)
 	{
-		$object = $result_set->fetch_row();
-		return $object;
+		return $result_set ? $result_set->fetch_row() : null;
 	}
 
 	//------------------------------------------------------------------------------------------ free
@@ -454,7 +453,9 @@ class Link extends Dao\Sql\Link
 	 */
 	public function free($result_set)
 	{
-		$result_set->free();
+		if ($result_set) {
+			$result_set->free();
+		}
 	}
 
 	//--------------------------------------------------------------------------------- getColumnName
@@ -469,7 +470,11 @@ class Link extends Dao\Sql\Link
 	 */
 	public function getColumnName($result_set, $index)
 	{
-		return $result_set->fetch_field_direct($index)->name;
+		if ($result_set) {
+			$object = $result_set->fetch_field_direct($index);
+			return $object ? $object->name : '';
+		}
+		return '';
 	}
 
 	//------------------------------------------------------------------------------- getColumnsCount
@@ -483,7 +488,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function getColumnsCount($result_set)
 	{
-		return $result_set->field_count;
+		return $result_set ? $result_set->field_count : 0;
 	}
 
 	//--------------------------------------------------------------------------------- getConnection
@@ -511,7 +516,7 @@ class Link extends Dao\Sql\Link
 		if (!isset($link)) {
 			$link = (new Reflection_Class(get_class($object)))->getAnnotation('link');
 		}
-		if ($link->value) {
+		if ($link && $link->value) {
 			$ids = [];
 			foreach ($link->getLinkProperties() as $link_property) {
 				$property_name = $link_property->getName();
@@ -578,9 +583,12 @@ class Link extends Dao\Sql\Link
 		else {
 			if ($clause == 'SELECT') {
 				$result = $this->connection->query('SELECT FOUND_ROWS()');
-				$row = $result->fetch_row();
-				$result->free();
-				return $row[0];
+				if ($result) {
+					$row = $result->fetch_row();
+					$result->free();
+					return $row[0];
+				}
+				return 0;
 			}
 			return $this->connection->affected_rows;
 		}
@@ -838,42 +846,42 @@ class Link extends Dao\Sql\Link
 	 */
 	public function query($query, $class_name = null)
 	{
+		$objects = null;
 		if ($query) {
 			$result = $this->connection->query($query);
-			if (isset($class_name)) {
-				if ($class_name === AS_ARRAY) {
-					$objects = [];
-					while ($element = $result->fetch_assoc()) {
-						if (isset($element['id'])) {
-							$objects[$element['id']] = $element;
+			if ($result) {
+				if (isset($class_name)) {
+					if ($class_name === AS_ARRAY) {
+						$objects = [];
+						while ($element = $result->fetch_assoc()) {
+							if (isset($element['id'])) {
+								$objects[$element['id']] = $element;
+							}
+							else {
+								$objects[] = $element;
+							}
 						}
-						else {
-							$objects[] = $element;
-						}
+						$result->free();
 					}
-					$result->free();
+					else {
+						$class_name = Builder::className($class_name);
+						$objects = [];
+						while ($object = $result->fetch_object($class_name)) {
+							if (isset($object->id)) {
+								$objects[$object->id] = $object;
+							}
+							else {
+								$objects[] = $object;
+							}
+						}
+						$result->free();
+						$this->afterReadMultiple($objects);
+					}
 				}
 				else {
-					$class_name = Builder::className($class_name);
-					$objects = [];
-					while ($object = $result->fetch_object($class_name)) {
-						if (isset($object->id)) {
-							$objects[$object->id] = $object;
-						}
-						else {
-							$objects[] = $object;
-						}
-					}
-					$result->free();
-					$this->afterReadMultiple($objects);
+					$objects = $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
 				}
 			}
-			else {
-				$objects = $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
-			}
-		}
-		else {
-			$objects = null;
 		}
 		return $objects;
 	}
