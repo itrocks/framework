@@ -49,9 +49,9 @@ class Left_Match implements Negate, Where
 	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
 	{
 		$column = $builder->buildColumn($property_path, $prefix);
-		$str = ($this->not_match ?
-			Loc::tr('$column is not start of string "$value"') :
-			Loc::tr('$column is the start of string "$value"'));
+		$str = $this->not_match
+			? Loc::tr('$column is not start of string "$value"')
+			: Loc::tr('$column is the start of string "$value"');
 		return str_replace(['$column', '$value'], [$column, $this->value], $str);
 	}
 

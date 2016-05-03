@@ -51,7 +51,7 @@ class In implements Negate, Where
 		$str = '';
 		if ($this->values) {
 			$str = $builder->buildColumn($property_path, $prefix)
-				. ($this->not_in ? ' ' . Loc::tr('except') : '') . ' ' . Loc::tr('in') . ' (';
+				. ($this->not_in ? (SP . Loc::tr('except')) : '') . SP . Loc::tr('in') . ' (';
 			$first = true;
 			foreach ($this->values as $value) {
 				if ($first) $first = false; else $str .= ', ';

@@ -332,7 +332,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 * @param $class_name string The class name to store the result data into
-	 * @return null|object
+	 * @return object|null
 	 */
 	public function fetch($result_set, $class_name = null)
 	{
@@ -436,7 +436,7 @@ class Link extends Dao\Sql\Link
 	 * Fetch a result from a result set to an array
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
-	 * @return null|object
+	 * @return object|null
 	 */
 	public function fetchRow($result_set)
 	{

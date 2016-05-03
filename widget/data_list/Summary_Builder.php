@@ -11,6 +11,7 @@ use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Join\Joins;
 use SAF\Framework\Sql\Join;
@@ -20,7 +21,7 @@ use SAF\Framework\Tools\Date_Time;
 /**
  * The Summary section of search filter on a Data_List
  */
-class Summary_Builder /*extends Builder\Where*/
+class Summary_Builder
 {
 
 	//---------------------------------------------------------------------------------------- $joins
@@ -84,15 +85,17 @@ class Summary_Builder /*extends Builder\Where*/
 	public function build()
 	{
 		$where_array = $this->where_array;
-		if (($where_array instanceof Func\Logical) && $where_array->isOr()
-		) {
+		if (($where_array instanceof Func\Logical) && $where_array->isOr()) {
 			$str = [];
 			foreach ($where_array->arguments as $property_path => $argument) {
-				$str[] = LF . Loc::tr('where') . ' ' . $this->buildPath($property_path, $argument, Loc::tr('and'));
+				$str[] = LF . Loc::tr('where')
+					. SP . $this->buildPath($property_path, $argument, Loc::tr('and'));
 			}
 			return implode(', ', $str);
 		}
-		$str = is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, Loc::tr('and'));
+		$str = is_null($this->where_array)
+			? ''
+			: $this->buildPath('id', $this->where_array, Loc::tr('and'));
 		return $str ? (LF . $str) : $str;
 	}
 
@@ -100,17 +103,17 @@ class Summary_Builder /*extends Builder\Where*/
 	/**
 	 * Build SQL WHERE section for multiple where clauses
 	 *
-	 * @param $path        string Base property path for values (if keys are numeric or structure keywords)
-	 * @param $array       array An array of where conditions
-	 * @param $clause      string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
+	 * @param $path   string Base property path for values (if keys are numeric or structure keywords)
+	 * @param $array  array An array of where conditions
+	 * @param $clause string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @return string
 	 */
 	private function buildArray($path, $array, $clause)
 	{
-		$sql = '';
-		$sql_close = '';
+		$sql        = '';
+		$sql_close  = '';
 		$sub_clause = $clause;
-		$first = true;
+		$first      = true;
 		foreach ($array as $key => $value) {
 			if (!is_string($value) || strlen($value)) {
 				if ($first) $first = false;
@@ -133,17 +136,17 @@ class Summary_Builder /*extends Builder\Where*/
 					default:
 						if (is_numeric($key)) {
 							if ((count($array) > 1) && !$sql) {
-								$sql = '(';
-								$clause = 'OR';
+								$sql       = '(';
+								$clause    = 'OR';
 								$sql_close = ')';
 							}
 							$build = $this->buildPath($path, $value, $sub_clause);
 						}
 						else {
-							$prefix = '';
-							$master_path = (($i = strrpos($path, DOT)) !== false) ? substr($path, 0, $i) : '';
+							$prefix        = '';
+							$master_path   = (($i = strrpos($path, DOT)) !== false) ? substr($path, 0, $i) : '';
 							$property_name = ($i !== false) ? substr($path, $i + 1) : $path;
-							$properties = $this->joins->getProperties($master_path);
+							$properties    = $this->joins->getProperties($master_path);
 							if (isset($properties[$property_name])) {
 								$property = $properties[$property_name];
 								$link = $property->getAnnotation('link')->value;
@@ -191,8 +194,8 @@ class Summary_Builder /*extends Builder\Where*/
 	/**
 	 * Build SQL WHERE section for an object
 	 *
-	 * @param $path        string Base property path pointing to the object
-	 * @param $object      object The value is an object, which will be used for search
+	 * @param $path   string Base property path pointing to the object
+	 * @param $object object The value is an object, which will be used for search
 	 * @return string
 	 */
 	private function buildObject($path, $object)
@@ -257,14 +260,13 @@ class Summary_Builder /*extends Builder\Where*/
 			$value = $value->toISO(false);
 		}
 		switch (gettype($value)) {
-			case 'NULL':   return $this->buildColumn($path) . ' ' . Loc::tr('is null');
+			case 'NULL':   return $this->buildColumn($path) . SP . Loc::tr('is null');
 			case 'array':  return $this->buildArray ($path, $value, $clause);
 			case 'object': return $this->buildObject($path, $value);
 			default:       return $this->buildValue ($path, $value);
 		}
 	}
 
-	//----------------------------------------------------------------------------------- buildScalar
 	/**
 	 * Build a scalar value to be human readable
 	 * @param $value         string
@@ -272,8 +274,8 @@ class Summary_Builder /*extends Builder\Where*/
 	 * @return string
 	 */
 	public function buildScalar($value, $property_path) {
-		static $pattern =
-			'/([0-9%_]{4})-([0-9%_]{2})-([0-9%_]{2})(?:\s([0-9%_]{2}):([0-9%_]{2}):([0-9%_]{2}))?/x';
+		static $pattern
+			= '/([0-9%_]{4})-([0-9%_]{2})-([0-9%_]{2})(?:\s([0-9%_]{2}):([0-9%_]{2}):([0-9%_]{2}))?/x';
 		$property = $this->getProperty($property_path);
 		// check if we are on a enum field with @values list of values
 		$values = ($property ? $property->getListAnnotation('values')->values() : []);
@@ -319,8 +321,8 @@ class Summary_Builder /*extends Builder\Where*/
 	/**
 	 * get the property of a path
 	 *
-	 * @param $path    string
-	 * @return null|\SAF\Framework\Reflection\Reflection_Property
+	 * @param $path string
+	 * @return Reflection_Property|null
 	 */
 	public function getProperty($path)
 	{

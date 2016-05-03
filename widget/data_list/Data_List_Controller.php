@@ -512,12 +512,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @return List_Data
 	 */
 	public function readData(
-		$class_name,
-		Data_List_Settings $list_settings,
-		$search,
-		Count $count = null
-	)
-	{
+		$class_name, Data_List_Settings $list_settings, $search, Count $count = null
+	) {
 		// SM : Moved outside the method in order result to be used for search summary
 		//$search = $this->applySearchParameters($list_settings);
 

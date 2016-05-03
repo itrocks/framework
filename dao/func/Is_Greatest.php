@@ -40,7 +40,7 @@ class Is_Greatest implements Where_Inner
 	 */
 	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
 	{
-		return ' ' . Loc::tr('is greatest of') . '(' . implode(', ', $this->properties) . ')';
+		return SP . Loc::tr('is greatest of') . '(' . implode(', ', $this->properties) . ')';
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
