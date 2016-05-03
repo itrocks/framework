@@ -3,7 +3,6 @@ namespace SAF\Framework\Widget\Data_List\Search_Parameters_Parser;
 
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Comparison;
-use SAF\Framework\Dao\Func\Logical;
 use SAF\Framework\Dao\Func\Range;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Locale\Loc;
@@ -60,23 +59,6 @@ trait Date
 	 */
 	protected $currentYear;
 
-	//---------------------------------------------------------------------------- applyDateEmptyWord
-	/**
-	 * If expression is a date empty word, convert to corresponding value
-	 *
-	 * @param $expression string
-	 * @return Logical|boolean false
-	 */
-	protected function applyDateEmptyWord($expression)
-	{
-		if ($this->isEmptyWord($expression)) {
-			$value = '0000-00-00 00:00:00';
-			return Func::orOp([$value, Func::isNull()]);
-		}
-		// not an empty word
-		return false;
-	}
-
 	//------------------------------------------------------------------------------- applyDatePeriod
 	/**
 	 * @param $search_value string
@@ -87,7 +69,7 @@ trait Date
 	{
 		return $this->applyDateSingleJoker($search_value)
 			?: $this->applyDateWord($search_value, $min_max)
-			?: $this->applyDateEmptyWord($search_value)
+			?: $this->applyEmptyWord($search_value)
 			?: $this->applyDayMonthYear($search_value, $min_max)
 			?: $this->applyMonthYear($search_value, $min_max)
 			?: $this->applyDayMonth($search_value, $min_max)

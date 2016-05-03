@@ -4,6 +4,8 @@ namespace SAF\Framework\Dao\Func;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Value;
+use SAF\Framework\Reflection\Type;
+use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Widget\Data_List\Summary_Builder;
 
 /**
@@ -91,8 +93,8 @@ class Comparison implements Negate, Where
 		$column = $builder->buildColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
 			switch ($this->sign) {
-				case self::EQUAL:     case self::LIKE:     return $column . ' ' . Loc::tr('is null');
-				case self::NOT_EQUAL: case self::NOT_LIKE: return $column . ' ' . Loc::tr('is not null');
+				case self::EQUAL:     case self::LIKE:     return $column . ' ' . Loc::tr('is empty');
+				case self::NOT_EQUAL: case self::NOT_LIKE: return $column . ' ' . Loc::tr('is not empty');
 			}
 		}
 		if ($this->than_value instanceof Where) {
@@ -129,9 +131,37 @@ class Comparison implements Negate, Where
 	{
 		$column = $builder->buildColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
-			switch ($this->sign) {
-				case self::EQUAL:     case self::LIKE:     return $column . ' IS NULL';
-				case self::NOT_EQUAL: case self::NOT_LIKE: return $column . ' IS NOT NULL';
+			if (in_array($this->sign, [self::EQUAL, self::NOT_EQUAL, self::LIKE, self::NOT_LIKE])) {
+				$property = $builder->getProperty($property_path);
+				$type_string = $property->getType()->asString();
+
+				$sql = '';
+				$close_parenthesis = '';
+				switch ($this->sign) {
+					case self::NOT_EQUAL: case self::NOT_LIKE:
+						$sign = self::NOT_EQUAL;
+						$logical = 'AND';
+						$operand = 'IS NOT NULL';
+						break;
+					default: /*case self::EQUAL: case self::LIKE:*/
+						$sign = self::EQUAL;
+						$logical = 'OR';
+						$operand = 'IS NULL';
+						break;
+				}
+				// in case of Date_Time is null we want to check for '0000-00-00 00:00:00' too
+				if ($type_string == Date_Time::class) {
+					$close_parenthesis = ')';
+					$sql .= '(' . $column . SP . $sign . SP
+						. DQ . '0000-00-00 00:00:00' . DQ . SP . $logical . SP;
+				}
+				// in case of Date_Time is null we want to check for 0 too
+				elseif (in_array($type_string, [Type::BOOLEAN, Type::FLOAT, Type::INTEGER])) {
+					$close_parenthesis = ')';
+					$sql .= '(' . $column . SP . $sign . SP . '0' . SP . $logical . SP;
+				}
+				$sql .= $column . SP . $operand . $close_parenthesis;
+				return $sql;
 			}
 		}
 		if ($this->than_value instanceof Where) {

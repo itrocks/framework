@@ -313,6 +313,21 @@ class Where
 		return $this->joins;
 	}
 
+	//----------------------------------------------------------------------------------- getProperty
+	/**
+	 * get the property of a path
+	 *
+	 * @param $path    string
+	 * @return null|\SAF\Framework\Reflection\Reflection_Property
+	 */
+	public function getProperty($path)
+	{
+		list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
+		$properties = $this->joins->getProperties($master_path);
+		$property = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+		return $property;
+	}
+
 	//------------------------------------------------------------------------------------ getSqlLink
 	/**
 	 * Gets used Sql_Link as defined on constructor call

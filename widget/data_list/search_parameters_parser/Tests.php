@@ -152,9 +152,9 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				Func::orOp(['0000-00-00 00:00:00', Func::isNull()]),
-				Func::orOp(['0000-00-00 00:00:00', Func::isNull()]),
-				Func::orOp(['0000-00-00 00:00:00', Func::isNull()])
+				Func::isNull(),
+				Func::isNull(),
+				Func::isNull()
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -347,9 +347,9 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [];
 		$assume['number'] = Func::orOp([
-			Func::orOp(['', Func::isNull()]),
-			Func::orOp(['', Func::isNull()]),
-			Func::orOp(['', Func::isNull()])
+			Func::isNull(),
+			Func::isNull(),
+			Func::isNull()
 		]);
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}

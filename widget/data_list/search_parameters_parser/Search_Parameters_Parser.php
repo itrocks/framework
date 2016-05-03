@@ -50,10 +50,10 @@ use SAF\Framework\Widget\Data_List\Search_Parameters_Parser\Date;
  *              | "y" [+|-] integer (means from 01/01/yyyy to 31/12/yyyy)
  *              | "m" [+|-] integer (means from 01/mm/currentyear to 31!/mm/currentyear)
  *              | "d" [+|-] integer (means implicit current month and year)
- * dateword     = "currentyear" | "currentmonth" | déclinaisons françaises
- *              | "today" | "currentday" | déclinaisons françaises
+ * dateword     = "current year" | "current month" | localized equivalent
+ *              | "today" | "current day" | localized equivalent
  *              | "now" (means with current time?)
- * emptyword    = "vide" | "nul" | "aucun"
+ * emptyword    = "empty" | "null" | localized equivalent
  * dd           = #[0-3?]?[0-9?]|*#  |  "d" (+|-) integer
  * mm           = #[0-1?]?[0-9?]|*# | "m" (+|-) integer
  * yyyy         = #[0-9?]{4}|*# | "y" (+|-) integer //is it possible to check year about "*" only? we can not be sure this is a year!
@@ -148,15 +148,12 @@ class Search_Parameters_Parser
 	 * If expression is a date empty word, convert to corresponding value
 	 *
 	 * @param $expression string
-	 * @param $type       string
 	 * @return mixed|boolean false
 	 */
-	protected function applyEmptyWord($expression, $type)
+	protected function applyEmptyWord($expression)
 	{
 		if ($this->isEmptyWord($expression)) {
-			$value = in_array($type, [Type::BOOLEAN, Type::FLOAT, Type::INTEGER]) ? 0 : '';
-			$date = Func::orOp([$value, Func::isNull()]);
-			return $date;
+			return Func::isNull();
 		}
 		// not an empty word
 		return false;
@@ -313,7 +310,7 @@ class Search_Parameters_Parser
 			// Float | Integer | String types
 			//case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {
 			default: {
-				if (($search = $this->applyEmptyWord($search_value, $type)) !== false) {
+				if (($search = $this->applyEmptyWord($search_value)) !== false) {
 					break;
 				}
 				$search = $this->applyScalar($search_value, $property);
