@@ -132,23 +132,22 @@ class Comparison implements Negate, Where
 		$column = $builder->buildColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
 			if (in_array($this->sign, [self::EQUAL, self::NOT_EQUAL, self::LIKE, self::NOT_LIKE])) {
-				$property = $builder->getProperty($property_path);
+				$property    = $builder->getProperty($property_path);
 				$type_string = $property->getType()->asString();
-
-				$sql = '';
 				$close_parenthesis = '';
 				switch ($this->sign) {
 					case self::NOT_EQUAL: case self::NOT_LIKE:
-						$sign = self::NOT_EQUAL;
+						$sign    = self::NOT_EQUAL;
 						$logical = 'AND';
 						$operand = 'IS NOT NULL';
 						break;
 					default: /*case self::EQUAL: case self::LIKE:*/
-						$sign = self::EQUAL;
+						$sign    = self::EQUAL;
 						$logical = 'OR';
 						$operand = 'IS NULL';
 						break;
 				}
+				$sql = '';
 				// in case of Date_Time is null we want to check for '0000-00-00 00:00:00' too
 				if ($type_string == Date_Time::class) {
 					$close_parenthesis = ')';
@@ -169,7 +168,7 @@ class Comparison implements Negate, Where
 				return 'NOT (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
 			}
 			elseif ($this->sign == self::EQUAL) {
-				//Because of Negate, we should support EQUAL for instance of Where
+				// Because of Negate, we should support EQUAL for instance of Where
 				return ' (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
 			}
 			else {
