@@ -75,7 +75,7 @@ class Comparison implements Negate, Where
 	public function signToHuman($sign)
 	{
 		return (
-			in_array($sign, [self::LIKE, self::NOT_LIKE]) ?	Loc::tr('is ' . strtolower($sign)) :  $sign
+			in_array($sign, [self::LIKE, self::NOT_LIKE]) ?	Loc::tr('is' . SP . strtolower($sign)) : $sign
 		);
 	}
 
@@ -93,8 +93,8 @@ class Comparison implements Negate, Where
 		$column = $builder->buildColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
 			switch ($this->sign) {
-				case self::EQUAL:     case self::LIKE:     return $column . ' ' . Loc::tr('is empty');
-				case self::NOT_EQUAL: case self::NOT_LIKE: return $column . ' ' . Loc::tr('is not empty');
+				case self::EQUAL:     case self::LIKE:     return $column . SP . Loc::tr('is empty');
+				case self::NOT_EQUAL: case self::NOT_LIKE: return $column . SP . Loc::tr('is not empty');
 			}
 		}
 		if ($this->than_value instanceof Where) {
@@ -104,7 +104,7 @@ class Comparison implements Negate, Where
 				. ')';
 			}
 			elseif ($this->sign == self::EQUAL) {
-				//Because of Negate, we should support EQUAL for instance of Where
+				// Because of Negate, we should support EQUAL for instance of Where
 				return ' (' . $this->than_value->toHuman($builder, $property_path, $prefix) . ')';
 			}
 			else {

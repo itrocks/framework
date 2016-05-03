@@ -265,10 +265,9 @@ trait Date
 	{
 		// two chars or a single joker or formula
 		$letters_day = $this->getLetters(Date_Time::DAY);
-		if (
-			preg_match('/^ \s* ([*%?_] | [0-9*?%_]{1,2} | ([' . $letters_day . ']([-+]\d+)?)) \s* $/x'
-				, $expression)
-		) {
+		if (preg_match(
+			'/^ \s* ([*%?_] | [0-9*?%_]{1,2} | ([' . $letters_day . ']([-+]\d+)?)) \s* $/x', $expression
+		)) {
 			$day = $expression;
 			if (!$this->computeDay($day)) {
 				// bad expression ?
@@ -306,7 +305,7 @@ trait Date
 	protected function applyMonthYear($expression, $min_max)
 	{
 		$letters_month = $this->getLetters(Date_Time::MONTH);
-		$letters_year = $this->getLetters(Date_Time::YEAR);
+		$letters_year  = $this->getLetters(Date_Time::YEAR);
 		// two values with a middle slash
 		if (substr_count($expression, SL) == 1) {
 			list($one, $two) = explode(SL, $expression);
@@ -320,7 +319,8 @@ trait Date
 			}
 			elseif (
 				(strlen($two) > 2 && !preg_match('/^ \s* ['.$letters_month.']([-+]\d+)? $/x', $two))
-				|| preg_match('/^ ['.$letters_year.']([-+]\d+)? \s* $/x', $two)) {
+				|| preg_match('/^ ['.$letters_year.']([-+]\d+)? \s* $/x', $two)
+			) {
 				// the second number is a year or contains 'y' or 'a' : month/year
 				$month = $one;
 				$year  = $two;
@@ -393,8 +393,7 @@ trait Date
 		$letters_year = $this->getLetters(Date_Time::YEAR);
 		// no slash and (>3 digit or "y" or "a")
 		if (
-			preg_match('/^ \s* ([0-9*?%_]{3,4} | (['.$letters_year.']([-+]\d+)?)) \s* $/x'
-				, $expression)
+			preg_match('/^ \s* ([0-9*?%_]{3,4} | (['.$letters_year.']([-+]\d+)?)) \s* $/x', $expression)
 		) {
 			$year = $expression;
 			if ($this->computeYear($year)) {
@@ -907,15 +906,16 @@ trait Date
 	 * @param $part   string
 	 * @return array
 	 */
-	protected function getWordsToCompare($part) {
+	protected function getWordsToCompare($part)
+	{
 		static $all_words_references = [
-			Date_Time::DAY => ['today', 'current day'],
+			Date_Time::DAY   => ['current day', 'today'],
 			Date_Time::MONTH => ['current month'],
-			Date_Time::YEAR => ['current year'],
-			'yesterday' => ['yesterday']
+			Date_Time::YEAR  => ['current year'],
+			'yesterday'      => ['yesterday']
 		];
 		$words_references = $all_words_references[$part];
-		$words_localized = [];
+		$words_localized  = [];
 		foreach($words_references as $word) {
 			$words_localized[] = Loc::tr($word);
 		}

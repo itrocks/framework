@@ -61,12 +61,12 @@ class Range implements Negate, Where
 		$from = $builder->buildScalar($this->from, $property_path);
 		$to = $builder->buildScalar($this->to, $property_path);
 		if ($from == $to) {
-			$str .= ' ' . ($this->not_between ? Loc::tr('is not') : Loc::tr('is'));
-			$str .= ' ' . $from . ')';
+			$str .= SP . ($this->not_between ? Loc::tr('is not') : Loc::tr('is'));
+			$str .= SP . $from . ')';
 		}
 		else {
-			$str .= ' ' . ($this->not_between ? Loc::tr('is not between') : Loc::tr('is between'));
-			$str .= ' ' . $from . ' ' . Loc::tr('and')	. ' ' . $to . ')';
+			$str .= SP . ($this->not_between ? Loc::tr('is not between') : Loc::tr('is between'));
+			$str .= SP . $from . SP . Loc::tr('and') . SP . $to . ')';
 		}
 		return $str;
 	}

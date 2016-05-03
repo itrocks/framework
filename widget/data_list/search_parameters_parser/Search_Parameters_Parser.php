@@ -279,15 +279,13 @@ class Search_Parameters_Parser
 	protected function applyScalar(
 		/** @noinspection PhpUnusedParameterInspection */
 		$search_value, Reflection_Property $property, $is_range_value = false
-	)
-	{
+	) {
 		// check if we are on a enum field with @values list of values
 		$values = $property->getListAnnotation('values')->values();
 		if (count($values)) {
 			//we do not apply wildcards, we want search for this exact value
 			return Func::equal($search_value);
 		}
-
 		return $this->applyJokers($search_value, $is_range_value);
 	}
 
