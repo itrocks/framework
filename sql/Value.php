@@ -55,7 +55,7 @@ abstract class Value
 				$string_value = DQ . Dao::current()->escapeString($value) . DQ;
 			}
 		}
-		return $double_backquote ? str_replace(BS, BS . BS, $string_value) : $string_value;
+		return $double_backquote ? str_replace(BS, BS . BS, str_replace(BS . DQ, DQ . DQ, $string_value)) : $string_value;
 	}
 
 	//---------------------------------------------------------------------------------------- isLike

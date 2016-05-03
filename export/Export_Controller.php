@@ -47,7 +47,9 @@ class Export_Controller implements Default_Feature_Controller
 		$data_list_class_name = Main::$current->getController($class_name, 'dataList')[0];
 		$data_list_controller = Builder::create($data_list_class_name);
 		$list_settings->maximum_displayed_lines_count = null;
-		$data = $data_list_controller->readData($class_name, $list_settings);
+		// SM : Now called here instead of inside readData to use $search below
+		$search = $data_list_controller->applySearchParameters($list_settings);
+		$data = $data_list_controller->readData($class_name, $list_settings, $search);
 		// create temporary file
 		/** @var $application Application */
 		$application = Session::current()->get(Application::class);

@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\Dao\Func;
 
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Value;
+use SAF\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Dao Left_Match function
@@ -33,6 +35,24 @@ class Left_Match implements Negate, Where
 	{
 		$this->value = $value;
 		if (isset($not_match)) $this->not_match = $not_match;
+	}
+
+	//--------------------------------------------------------------------------------------- toHuman
+	/**
+	 * Returns the Dao function as Human readable string
+	 *
+	 * @param $builder       Summary_Builder the sql query builder
+	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
+	 * @return string
+	 */
+	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	{
+		$column = $builder->buildColumn($property_path, $prefix);
+		$str = ($this->not_match ?
+			Loc::tr('$column is not start of string "$value"') :
+			Loc::tr('$column is the start of string "$value"'));
+		return str_replace(['$column', '$value'], [$column, $this->value], $str);
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

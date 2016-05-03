@@ -3,8 +3,10 @@ namespace SAF\Framework\Dao\Func;
 
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Join\Subquery;
+use SAF\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Is greatest is a condition used to get the record where the column has the greatest value
@@ -25,6 +27,20 @@ class Is_Greatest implements Where_Inner
 	public function __construct($properties = null)
 	{
 		if (isset($properties)) $this->properties = $properties;
+	}
+
+	//--------------------------------------------------------------------------------------- toHuman
+	/**
+	 * Returns the Dao function as Human readable string
+	 *
+	 * @param $builder       Summary_Builder the sql query builder
+	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
+	 * @return string
+	 */
+	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	{
+		return ' ' . Loc::tr('is greatest of') . '(' . implode(', ', $this->properties) . ')';
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

@@ -94,7 +94,7 @@ class Tests extends Test
 		];
 		foreach($tests as $to_check => $assume) {
 			$check = $to_check;
-			$this->parser->_correctDateWildcardExpr($check, Date_Time::YEAR);
+			$this->parser->correctDateWildcardExpr($check, Date_Time::YEAR);
 			$lok =$this->assume(
 				__FUNCTION__ . '_Year(' . $to_check . ' => ' . $assume . ')', $check, $assume, false
 			);
@@ -113,7 +113,7 @@ class Tests extends Test
 		];
 		foreach($tests as $to_check => $assume) {
 			$check = $to_check;
-			$this->parser->_correctDateWildcardExpr($check, Date_Time::DAY);
+			$this->parser->correctDateWildcardExpr($check, Date_Time::DAY);
 			$lok =$this->assume(
 				__FUNCTION__ . '_Day(' . $to_check .' => ' . $assume . ')',
 				$check,
@@ -321,25 +321,14 @@ class Tests extends Test
 	 */
 	public function testParseDayWords()
 	{
-		$this->parser->search = [
-			'date'
-				=> "today,currentday,jourcourant,jourencours,aujourd'hui,aujourdhui, current day ,"
-					. "jour courant,jour en cours,aujourd'hui,aujourd hui"
-		];
+		$this->parser->search = ['date' => 'today,currentday, current day ,yesterday'];
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
 				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
 				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
 				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59')
+				new Range('2016-06-14 00:00:00', '2016-06-14 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -354,11 +343,10 @@ class Tests extends Test
 	public function testParseEmptyWords()
 	{
 		//TODO: Do CHeck forcing FR and EN locales
-		$this->parser->search = ['number' => 'empty,none,null,vide'];
+		$this->parser->search = ['number' => 'empty,none,null'];
 		$check = $this->parser->parse();
 		$assume = [];
 		$assume['number'] = Func::orOp([
-			Func::orOp(['', Func::isNull()]),
 			Func::orOp(['', Func::isNull()]),
 			Func::orOp(['', Func::isNull()]),
 			Func::orOp(['', Func::isNull()])
@@ -404,16 +392,10 @@ class Tests extends Test
 	 */
 	public function testParseMonthWords()
 	{
-		$this->parser->search = [
-			'date' => 'currentmonth,moiscourant,moisencours, current month , mois courant , mois encours '
-		];
+		$this->parser->search = ['date' => 'currentmonth, current month '];
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
 				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
 				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
 			])
@@ -757,17 +739,10 @@ class Tests extends Test
 	 */
 	public function testParseYearWords()
 	{
-		$this->parser->search = [
-			'date'
-			=> 'currentyear,anneecourante,anneeencours, current year , annee courante , annee en cours '
-		];
+		$this->parser->search = ['date' => 'currentyear, current year '];
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
 				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
 				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
 			])
