@@ -1,6 +1,9 @@
 <?php
 namespace SAF\Framework\RAD;
 
+use SAF\Framework\Mapper\Component;
+use SAF\Framework\Widget\Edit\Widgets\Collection_As_Map;
+
 /**
  * RAD Feature class
  *
@@ -8,6 +11,7 @@ namespace SAF\Framework\RAD;
  */
 class Feature
 {
+	use Component;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -51,8 +55,16 @@ class Feature
 	/**
 	 * @link Collection
 	 * @var Feature[]
+	 * @widget Collection_As_Map
 	 */
 	public $children;
+
+	//----------------------------------------------------------------------------------------- $tags
+	/**
+	 * @link Map
+	 * @var Tag[]
+	 */
+	public $tags;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -76,7 +88,7 @@ class Feature
 	 */
 	public function __toString()
 	{
-		return $this->title . SP . '(' . $this->type . ')';
+		return $this->title . ($this->type ? (SP . '(' . $this->type . ')') : '');
 	}
 
 	//--------------------------------------------------------------------------------------- depends

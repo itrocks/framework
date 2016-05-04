@@ -3,9 +3,10 @@ namespace SAF\Framework\RAD\Plugins;
 
 use SAF\Framework\Dao\File;
 use SAF\Framework\Mapper;
-use SAF\Framework\RAD\Applications\Application;
-use SAF\Framework\RAD\Features\Feature;
+use SAF\Framework\RAD\Feature;
 use SAF\Framework\RAD\Tag;
+use SAF\Framework\Traits\Has_Name;
+use SAF\RAD\Application;
 
 /**
  * A plugin is a set of code which has limited dependencies to others plugins
@@ -17,6 +18,7 @@ use SAF\Framework\RAD\Tag;
  */
 class Plugin
 {
+	use Has_Name;
 	use Mapper\Component;
 
 	//---------------------------------------------------------------------------------- $application
@@ -27,13 +29,6 @@ class Plugin
 	 * @var Application
 	 */
 	public $application;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @mandatory
-	 * @var string
-	 */
-	public $name;
 
 	//-------------------------------------------------------------------------------------- $summary
 	/**
@@ -91,14 +86,5 @@ class Plugin
 	 * @var Tag[]
 	 */
 	public $tags;
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return strval($this->name);
-	}
 
 }
