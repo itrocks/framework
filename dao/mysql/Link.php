@@ -92,12 +92,23 @@ class Link extends Dao\Sql\Link
 				}
 			}
 			foreach ($before_writes as $before_write) {
-				$response = $before_write->call($object, [$this, $options]);
-				if ($response === false) {
-					return false;
+				if ($before_write instanceof Method_Annotation) {
+					$response = $before_write->call($object, [$this, $options]);
+					if ($response === false) {
+						return false;
+					}
+					elseif (is_array($response) && isset($only)) {
+						$only->properties = array_merge($response, $only->properties);
+					}
 				}
-				elseif (is_array($response) && isset($only)) {
-					$only->properties = array_merge($response, $only->properties);
+				else {
+					// TODO Will be better if annotation parser could check for validity of annotation ?
+					//$error = 'a before_write annotation is not of subtype Method_Annotation ('
+					//	. get_class($before_write) . ') can not call method;
+					//trigger_error($error, E_USER_ERROR);
+					
+					// since we have a bugged annotation, do like if the method has returned false !
+					return false;
 				}
 			}
 		}
