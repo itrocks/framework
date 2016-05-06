@@ -332,11 +332,11 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 * @param $class_name string The class name to store the result data into
-	 * @return object|null
+	 * @return object
 	 */
 	public function fetch($result_set, $class_name = null)
 	{
-		$object = $result_set ? $result_set->fetch_object(Builder::className($class_name)) : null;
+		$object = $result_set->fetch_object(Builder::className($class_name));
 		if ($object instanceof Abstract_Class) {
 			$this->prepareFetch($object->class);
 			$object = $this->read($this->getObjectIdentifier($object), $object->class);
@@ -440,7 +440,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function fetchRow($result_set)
 	{
-		return $result_set ? $result_set->fetch_row() : null;
+		return $result_set->fetch_row();
 	}
 
 	//------------------------------------------------------------------------------------------ free
@@ -453,9 +453,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function free($result_set)
 	{
-		if ($result_set) {
-			$result_set->free();
-		}
+		$result_set->free();
 	}
 
 	//--------------------------------------------------------------------------------- getColumnName
@@ -470,11 +468,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function getColumnName($result_set, $index)
 	{
-		if ($result_set) {
-			$object = $result_set->fetch_field_direct($index);
-			return $object ? $object->name : '';
-		}
-		return '';
+		return $result_set->fetch_field_direct($index)->name;
 	}
 
 	//------------------------------------------------------------------------------- getColumnsCount
@@ -488,7 +482,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function getColumnsCount($result_set)
 	{
-		return $result_set ? $result_set->field_count : 0;
+		return $result_set->field_count;
 	}
 
 	//--------------------------------------------------------------------------------- getConnection
@@ -516,7 +510,7 @@ class Link extends Dao\Sql\Link
 		if (!isset($link)) {
 			$link = (new Reflection_Class(get_class($object)))->getAnnotation('link');
 		}
-		if ($link && $link->value) {
+		if ($link->value) {
 			$ids = [];
 			foreach ($link->getLinkProperties() as $link_property) {
 				$property_name = $link_property->getName();
@@ -851,8 +845,8 @@ class Link extends Dao\Sql\Link
 			$result = $this->connection->query($query);
 			if ($result) {
 				if (isset($class_name)) {
+					$objects = [];
 					if ($class_name === AS_ARRAY) {
-						$objects = [];
 						while ($element = $result->fetch_assoc()) {
 							if (isset($element['id'])) {
 								$objects[$element['id']] = $element;
@@ -865,7 +859,6 @@ class Link extends Dao\Sql\Link
 					}
 					else {
 						$class_name = Builder::className($class_name);
-						$objects = [];
 						while ($object = $result->fetch_object($class_name)) {
 							if (isset($object->id)) {
 								$objects[$object->id] = $object;
@@ -881,6 +874,9 @@ class Link extends Dao\Sql\Link
 				else {
 					$objects = $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
 				}
+			}
+			elseif (isset($class_name)) {
+				$objects = [];
 			}
 		}
 		return $objects;

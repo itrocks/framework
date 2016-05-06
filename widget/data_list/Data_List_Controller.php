@@ -54,7 +54,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	//--------------------------------------------------------------------------------------- $errors
 	/**
 	 * List of errors on fields' search expression
-	 * @var array of \Exception
+	 *
+	 * @var array of Exception
 	 */
 	private $errors = [];
 
@@ -152,7 +153,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		// SM : I put the save outside this method because we should save only if search
 		// expressions are all valid.
-		// TODO : Move back save() here once we have a generic validator (parser) not depending of SQL that we could fire here before save !
+		// TODO Move back save() here once we have a generic validator (parser) not depending of SQL that we could fire here before save !
 		//if ($did_change) {
 		//	$list_settings->save();
 		//}
