@@ -140,6 +140,63 @@ class Tests extends Test
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
+	//------------------------------------------------------------------------- testParseBooleanFalse
+	/**
+	 * Test date parser for a simple AND
+	 *
+	 * @return boolean
+	 */
+	public function testParseBooleanFalse()
+	{
+		$this->parser->search = ['has_workflow' => '0,false,no,n'];
+		$check = $this->parser->parse();
+		$assume = [];
+		$assume['has_workflow'] = Func::orOp([
+			Func::equal("0"),
+			Func::equal("0"),
+			Func::equal("0"),
+			Func::equal("0")
+		]);
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
+	//-------------------------------------------------------------------------- testParseBooleanTrue
+	/**
+	 * Test date parser for a simple AND
+	 *
+	 * @return boolean
+	 */
+	public function testParseBooleanTrue()
+	{
+		$this->parser->search = ['has_workflow' => '1,2,3.5,true,yes,y'];
+		$check = $this->parser->parse();
+		$assume = [];
+		$assume['has_workflow'] = Func::orOp([
+			Func::equal("1"),
+			Func::equal("1"),
+			Func::equal("1"),
+			Func::equal("1"),
+			Func::equal("1"),
+			Func::equal("1")
+		]);
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
+	//---------------------------------------------------------------------- testParseBooleanWildcard
+	/**
+	 * Test date parser for a simple AND
+	 *
+	 * @return boolean
+	 */
+	public function testParseBooleanWildcard()
+	{
+		$this->parser->search = ['has_workflow' => '**'];
+		$check = $this->parser->parse();
+		$assume = [];
+		$assume['has_workflow'] = Func::orOp([1, 0]);
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
 	//----------------------------------------------------------------------- testParseDateEmptyWords
 	/**
 	 * Test date parser for date empty words
@@ -263,6 +320,22 @@ class Tests extends Test
 				new Range('2016-06-12 00:00:00', '2016-06-12 23:59:59'),
 				new Range('2013-08-08 00:00:00', '2013-08-08 23:59:59')
 			])
+		];
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
+	//----------------------------------------------------------------------------- testParseDateZero
+	/**
+	 * Test date parser for '00/00/0000'
+	 *
+	 * @return boolean
+	 */
+	public function testParseDateZero()
+	{
+		$this->parser->search = ['date' => '00/00/0000,00/00,00/0000'];
+		$check = $this->parser->parse();
+		$assume = [
+			'date' => Func::orOp([Func::isNull(), Func::isNull(), Func::isNull()])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}

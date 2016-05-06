@@ -23,12 +23,15 @@ class Reflection_Class_Tests extends Test
 		$date->final_class = Order::class;
 		$number = new Reflection_Property(Document::class, 'number');
 		$number->final_class = Order::class;
+		$has_workflow = new Reflection_Property(Document::class, 'has_workflow');
+		$has_workflow->final_class = Order::class;
 		$test1 = $this->assume(
 			__METHOD__ . '.1',
 			$properties = $class->accessProperties(),
 			[
 				'date'            => $date,
 				'number'          => $number,
+				'has_workflow'    => $has_workflow,
 				'client'          => new Reflection_Property(Order::class,    'client'),
 				'delivery_client' => new Reflection_Property(Order::class,    'delivery_client'),
 				'lines'           => new Reflection_Property(Order::class,    'lines'),
@@ -38,7 +41,7 @@ class Reflection_Class_Tests extends Test
 		if ($test1) {
 			// are properties now accessible ?
 			$check = [];
-			$test_order = new Order(date('Y-m-d'), 'CDE001');
+			$test_order = new Order(date('Y-m-d'), 'CDE001', true);
 			foreach ($properties as $property) {
 				try {
 					$check[$property->name] = $property->getValue($test_order);
@@ -50,7 +53,7 @@ class Reflection_Class_Tests extends Test
 			$this->assume(
 				__METHOD__ . '.2',
 				$check,
-				['date' => date('Y-m-d'), 'number' => 'CDE001', 'client' => null, 'lines' => null]
+				['date' => date('Y-m-d'), 'number' => 'CDE001', 'has_workflow' => true, 'client' => null, 'lines' => null]
 			);
 		}
 	}
@@ -58,7 +61,7 @@ class Reflection_Class_Tests extends Test
 	//---------------------------------------------------------------------- testAccessPropertiesDone
 	public function testAccessPropertiesDone()
 	{
-		$test_order = new Order(date('Y-m-d'), 'CDE001');
+		$test_order = new Order(date('Y-m-d'), 'CDE001', true);
 		$class = new Reflection_Class(Order::class);
 		$class->accessProperties();
 		$properties = $class->getProperties([T_EXTENDS, T_USE]);
@@ -75,7 +78,7 @@ class Reflection_Class_Tests extends Test
 			__METHOD__,
 			$check,
 			[
-				'date' => null, 'number' => null, 'client' => null, 'delivery_client' => null,
+				'date' => null, 'number' => null, 'has_workflow' => null, 'client' => null, 'delivery_client' => null,
 				'lines' => null, 'salesmen' => null
 			]
 		);
@@ -88,12 +91,15 @@ class Reflection_Class_Tests extends Test
 		$date->final_class = Order::class;
 		$number = new Reflection_Property(Document::class, 'number');
 		$number->final_class = Order::class;
+		$has_workflow = new Reflection_Property(Document::class, 'has_workflow');
+		$has_workflow->final_class = Order::class;
 		$this->assume(
 			__METHOD__,
 			(new Reflection_Class(Order::class))->getProperties([T_EXTENDS, T_USE]),
 			[
 				'date'            => $date,
 				'number'          => $number,
+				'has_workflow'    => $has_workflow,
 				'client'          => new Reflection_Property(Order::class,    'client'),
 				'delivery_client' => new Reflection_Property(Order::class,    'delivery_client'),
 				'lines'           => new Reflection_Property(Order::class,    'lines'),
