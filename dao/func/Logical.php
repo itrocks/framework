@@ -63,7 +63,7 @@ class Logical implements Negate, Where
 			in_array($this->operator, [self::NOT_OPERATOR, self::TRUE_OPERATOR])
 			&& is_array($this->arguments)
 		) {
-			throw new Exception("Can not build logical not|true expression with array");
+			throw new Exception('Can not build logical not|true expression with array');
 		}
 	}
 

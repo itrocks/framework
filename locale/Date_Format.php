@@ -206,7 +206,7 @@ class Date_Format
 	 * @param $date string|Date_Time ie '2001-12-25' '2001-__-25 12:20:00' '2001-12-25 %%:20:16'
 	 * @return string '25/12/2011' '25/??/2001 12:20' '25/12/2001 12:20:16'
 	 */
-	public function toLocaleFromDateWithWildcard($date)
+	private function toLocaleFromDateWithWildcard($date)
 	{
 		static $sub_pattern_date = '([0-9%_]{4}) - ([0-9%_]{2}) - ([0-9%_]{2})';
 		static $sub_pattern_time = '([0-9%_]{2}) (?::([0-9%_]{2}))? (?::([0-9%_]{2}))?';
