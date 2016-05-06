@@ -161,7 +161,25 @@ class Contextual_Mysqli extends mysqli
 			$this->last_errno = 999;
 			$this->last_error = 'Unknown error';
 		}
+		if ($this->last_errno || $this->last_error) {
+			$result = $this->queryError($query);
+		}
 		return $result;
+	}
+
+	//------------------------------------------------------------------------------------ queryError
+	/**
+	 * @param $query string
+	 * @return mysqli_result|boolean false, but other errors managers may change this
+	 */
+	protected function queryError($query)
+	{
+		if (error_reporting()) {
+			$error = $this->last_errno . ': ' . $this->error . '[' . $query . ']';
+			echo '<div class="Mysql logger error">' . $error . '</div>' . LF;
+			trigger_error('Mysql logger error : ' . $error . ' on query ' . $query, E_USER_ERROR);
+		}
+		return false;
 	}
 
 	//------------------------------------------------------------------------------ selectedDatabase

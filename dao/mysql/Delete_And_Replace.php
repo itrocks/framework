@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\Mysql;
 
+use SAF\Framework\AOP\Joinpoint\Before_Method;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Plugin\Register;
@@ -30,12 +31,13 @@ class Delete_And_Replace implements Registerable
 		return is_numeric($id) ? intval($id) : null;
 	}
 
-	//--------------------------------------------------------------------------------------- onError
+	//---------------------------------------------------------------------------------- onQueryError
 	/**
-	 * @param $query  string
-	 * @param $object Contextual_Mysqli
+	 * @param $object    Contextual_Mysqli
+	 * @param $query     string
+	 * @param $joinpoint Before_Method
 	 */
-	public function onError($query, Contextual_Mysqli $object)
+	public function onQueryError(Contextual_Mysqli $object, $query, Before_Method $joinpoint)
 	{
 		if (
 			in_array(
@@ -50,6 +52,7 @@ class Delete_And_Replace implements Registerable
 			if ($id) {
 				$controller_uri = SL . $object->context . SL . $id . SL . 'deleteAndReplace';
 				echo (new Main())->runController($controller_uri, [Parameter::AS_WIDGET => true]);
+				$joinpoint->stop = true;
 			}
 		}
 	}
@@ -60,7 +63,7 @@ class Delete_And_Replace implements Registerable
 	 */
 	public function register(Register $register)
 	{
-		$register->aop->afterMethod([Contextual_Mysqli::class, 'query'], [$this, 'onError']);
+		$register->aop->beforeMethod([Contextual_Mysqli::class, 'queryError'], [$this, 'onQueryError']);
 	}
 
 }

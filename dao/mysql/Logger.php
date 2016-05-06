@@ -99,6 +99,12 @@ class Logger implements Configurable, Registerable
 		}
 	}
 
+	//----------------------------------------------------------------------- beforeMainControllerRun
+	public function beforeMainControllerRun()
+	{
+		$this->main_controller_counter++;
+	}
+
 	//--------------------------------------------------------------------------------------- dumpLog
 	/**
 	 * Display query log
@@ -125,30 +131,18 @@ class Logger implements Configurable, Registerable
 		$this->queries_log[] = $query;
 	}
 
-	//--------------------------------------------------------------------------------------- onError
+	//---------------------------------------------------------------------------------- onQueryError
 	/**
 	 * Called each time after a mysql_query() call is done : log the error (if some)
 	 *
-	 * @param $query  string
 	 * @param $object Contextual_Mysqli
+	 * @param $query  string
 	 */
-	public function onError($query, Contextual_Mysqli $object)
+	public function onQueryError(Contextual_Mysqli $object, $query)
 	{
 		$mysqli = $object;
-		if ($mysqli->last_errno) {
-			$error = $mysqli->last_errno . ': ' . $mysqli->error . '[' . $query . ']';
-			if (error_reporting()) {
-				echo '<div class="Mysql logger error">' . $error . '</div>' . LF;
-				trigger_error('Mysql logger error : ' . $error . ' on query ' . $query, E_USER_ERROR);
-			}
-			$this->errors_log[] = $error;
-		}
-	}
-
-	//--------------------------------------------------------------------------- onMainControllerRun
-	public function onMainControllerRun()
-	{
-		$this->main_controller_counter++;
+		$error = $mysqli->last_errno . ': ' . $mysqli->error . '[' . $query . ']';
+		$this->errors_log[] = $error;
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -158,15 +152,11 @@ class Logger implements Configurable, Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->beforeMethod([Contextual_Mysqli::class, 'query'], [$this, 'onQuery']);
-		$aop->afterMethod([Contextual_Mysqli::class, 'query'], [$this, 'onError']);
+		$aop->beforeMethod([Contextual_Mysqli::class, 'query'],      [$this, 'onQuery']);
+		$aop->beforeMethod([Contextual_Mysqli::class, 'queryError'], [$this, 'onQueryError']);
 		if (!$this->continue) {
-			$aop->beforeMethod(
-				[Main::class, 'runController'], [$this, 'onMainControllerRun']
-			);
-			$aop->afterMethod(
-				[Main::class, 'runController'], [$this, 'afterMainControllerRun']
-			);
+			$aop->afterMethod([Main::class, 'runController'], [$this, 'afterMainControllerRun']);
+			$aop->beforeMethod([Main::class, 'runController'], [$this, 'beforeMainControllerRun']);
 		}
 	}
 
