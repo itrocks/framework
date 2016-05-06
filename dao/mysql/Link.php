@@ -436,7 +436,7 @@ class Link extends Dao\Sql\Link
 	 * Fetch a result from a result set to an array
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
-	 * @return object|null
+	 * @return object
 	 */
 	public function fetchRow($result_set)
 	{
@@ -577,12 +577,9 @@ class Link extends Dao\Sql\Link
 		else {
 			if ($clause == 'SELECT') {
 				$result = $this->connection->query('SELECT FOUND_ROWS()');
-				if ($result) {
-					$row = $result->fetch_row();
-					$result->free();
-					return $row[0];
-				}
-				return 0;
+				$row = $result->fetch_row();
+				$result->free();
+				return $row[0];
 			}
 			return $this->connection->affected_rows;
 		}
@@ -843,40 +840,35 @@ class Link extends Dao\Sql\Link
 		$objects = null;
 		if ($query) {
 			$result = $this->connection->query($query);
-			if ($result) {
-				if (isset($class_name)) {
-					$objects = [];
-					if ($class_name === AS_ARRAY) {
-						while ($element = $result->fetch_assoc()) {
-							if (isset($element['id'])) {
-								$objects[$element['id']] = $element;
-							}
-							else {
-								$objects[] = $element;
-							}
+			if (isset($class_name)) {
+				$objects = [];
+				if ($class_name === AS_ARRAY) {
+					while ($element = $result->fetch_assoc()) {
+						if (isset($element['id'])) {
+							$objects[$element['id']] = $element;
 						}
-						$result->free();
-					}
-					else {
-						$class_name = Builder::className($class_name);
-						while ($object = $result->fetch_object($class_name)) {
-							if (isset($object->id)) {
-								$objects[$object->id] = $object;
-							}
-							else {
-								$objects[] = $object;
-							}
+						else {
+							$objects[] = $element;
 						}
-						$result->free();
-						$this->afterReadMultiple($objects);
 					}
+					$result->free();
 				}
 				else {
-					$objects = $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
+					$class_name = Builder::className($class_name);
+					while ($object = $result->fetch_object($class_name)) {
+						if (isset($object->id)) {
+							$objects[$object->id] = $object;
+						}
+						else {
+							$objects[] = $object;
+						}
+					}
+					$result->free();
+					$this->afterReadMultiple($objects);
 				}
 			}
-			elseif (isset($class_name)) {
-				$objects = [];
+			else {
+				$objects = $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
 			}
 		}
 		return $objects;
