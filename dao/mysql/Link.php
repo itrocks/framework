@@ -837,7 +837,6 @@ class Link extends Dao\Sql\Link
 	 */
 	public function query($query, $class_name = null)
 	{
-		$objects = null;
 		if ($query) {
 			$result = $this->connection->query($query);
 			if (isset($class_name)) {
@@ -870,6 +869,9 @@ class Link extends Dao\Sql\Link
 			else {
 				$objects = $this->connection->isSelect($query) ? $result : $this->connection->insert_id;
 			}
+		}
+		else {
+			$objects = null;
 		}
 		return $objects;
 	}
