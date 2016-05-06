@@ -176,7 +176,6 @@ class Contextual_Mysqli extends mysqli
 	{
 		if (error_reporting()) {
 			$error = $this->last_errno . ': ' . $this->error . '[' . $query . ']';
-			echo '<div class="Mysql logger error">' . $error . '</div>' . LF;
 			trigger_error('Mysql logger error : ' . $error . ' on query ' . $query, E_USER_ERROR);
 		}
 		return false;
