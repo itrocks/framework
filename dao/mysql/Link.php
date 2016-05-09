@@ -92,6 +92,14 @@ class Link extends Dao\Sql\Link
 				}
 			}
 			foreach ($before_writes as $before_write) {
+				// TODO This is here for in-prod diagnostic. Please remove when done.
+				if (!($before_write instanceof Method_Annotation)) {
+					trigger_error(
+						'Method_Annotation awaited ' . print_r($before_write, true) . LF
+						. 'on object ' . print_r($object, true),
+						E_USER_ERROR
+					);
+				}
 				$response = $before_write->call($object, [$this, $options]);
 				if ($response === false) {
 					return false;
