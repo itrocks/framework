@@ -1,37 +1,51 @@
+#!/usr/bin/php
 <?php
-namespace SAF\Framework;
-
-use SAF\Framework\AOP\Include_Filter;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Plugin\Manager;
-
-// php settings
 error_reporting(E_ALL);
-ini_set('arg_separator.output', '&amp;');
-ini_set('default_charset', 'UTF-8');
-ini_set('max_input_vars', 1000000);
-ini_set('memory_limit', '1G');
-ini_set('session.use_cookies', true);
-ini_set('xdebug.collect_params', 4);
-ini_set('xdebug.max_nesting_level', 255);
-//ini_set('xdebug.scream', true);
-ini_set('xdebug.var_display_max_children', 10);
-ini_set('xdebug.var_display_max_data', 150);
-ini_set('xdebug.var_display_max_depth', 3);
-set_time_limit(30);
-//&XDEBUG_PROFILE=1
 
-$new_id = session_id();
+$tmp_dir = __DIR__ . '/tmp';
 
-// enable running from command line
-if (!isset($_SERVER['PATH_INFO'])) $_SERVER['PATH_INFO'] = '/';
-$_SERVER['CWD'] = getcwd();
+if (!is_dir($tmp_dir)) mkdir($tmp_dir, 0755, true);
+exec('chmod ugo+rwx ' . $tmp_dir);
 
-// enable cache files for compiled scripts : includes must all use this filter
-include_once __DIR__ . '/aop/Include_Filter.php';
-//Include_Filter::register();
-// enable autoloader
-/** @noinspection PhpIncludeInspection */
-include_once Include_Filter::file(__DIR__ . '/Autoloader.php');
-(new Autoloader)->register();
+$_sfkgroup_flag = $tmp_dir . '/' . (str_replace('/', '_', substr($argv[1], 1)) ?: 'admin');
+$output = [];
 
+exec(
+	"ps -aux | grep \"$argv[1] $argv[2] " . (empty($argv[3]) ?: $argv[3]) . "\" | grep -v grep",
+	$outputs
+);
+
+$count = 0;
+foreach ($outputs as $output) {
+	if (strpos($output, "$argv[1] $argv[2] $argv[3]") && strpos($output, '/usr/bin/php')) {
+		$count++;
+	}
+}
+
+if ($count > 1) {
+	echo "Opération deja en cours ($argv[1] $argv[2] $argv[3])\n";
+	print_r($outputs);
+}
+else {
+	touch($_sfkgroup_flag);
+	unset($count);
+	unset($output);
+	unset($outputs);
+
+	if (empty($_GET)) {
+		//chdir('/home/bappli/www');
+		$_GET = ['as_widget' => true];
+		foreach ($argv as $k => $v) {
+			if ($k > 1) {
+				list($k, $v) = explode('=', $v, 2);
+				$_GET[$k] = $v;
+			}
+		}
+		$_SERVER['HTTPS'] = true;
+		$_SERVER['PATH_INFO'] = $argv[1];
+		$_SERVER['SCRIPT_NAME'] = __DIR__ . '/../../../../../sfkgroup.php';
+		include __DIR__ . '/../../../../../sfkgroup.php';
+	}
+
+	@unlink($_sfkgroup_flag);
+}
