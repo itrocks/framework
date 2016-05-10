@@ -19,6 +19,15 @@ abstract class Document
 	 */
 	private $date;
 
+	//--------------------------------------------------------------------------------- $has_workflow
+	/**
+	 * Document should be sent through workflow
+	 *
+	 * @mandatory
+	 * @var boolean
+	 */
+	public $has_workflow;
+
 	//--------------------------------------------------------------------------------------- $number
 	/**
 	 * Document number
@@ -28,26 +37,15 @@ abstract class Document
 	 */
 	private $number;
 
-	//--------------------------------------------------------------------------------- $has_workflow
-	/**
-	 * Document should be sent through workflow
-	 *
-	 * @mandatory
-	 * @var boolean
-	 */
-	private $has_workflow;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $date         string|Date_Time
-	 * @param $number       string
-	 * @param $has_workflow boolean
+	 * @param $date   string|Date_Time
+	 * @param $number string
 	 */
-	public function __construct($date = null, $number = null, $has_workflow = false)
+	public function __construct($date = null, $number = null)
 	{
-		$this->date = $date;
-		$this->number = $number;
-		$this->has_workflow = $has_workflow;
+		if (isset($date))   $this->date   = $date;
+		if (isset($number)) $this->number = $number;
 	}
 
 	//------------------------------------------------------------------------------------ setCounter

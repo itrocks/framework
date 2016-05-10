@@ -339,8 +339,8 @@ class Search_Parameters_Parser
 	/**
 	 * Trim words, removes spaces and some chars like apostrophe, then transliterate to remove accents
 	 *
-	 * @param $words array of string
-	 * @return array of string
+	 * @param $words string[]
+	 * @return string[]
 	 */
 	protected function getCompressedWords($words)
 	{

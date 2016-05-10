@@ -2,6 +2,8 @@
 namespace SAF\Framework\Widget\Data_List\Search_Parameters_Parser;
 
 use SAF\Framework\Dao\Func;
+use SAF\Framework\Dao\Func\Comparison;
+use SAF\Framework\Dao\Func\Logical;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Widget\Data_List\Data_List_Exception;
@@ -16,8 +18,8 @@ trait Type_Boolean
 
 	//----------------------------------------------------------------------------- applyBooleanValue
 	/**
-	 * @param $search_value string|Option
-	 * @return mixed
+	 * @param $search_value string The source search value, as a string typed by the user
+	 * @return Comparison|Logical|string|boolean The resulting dao-ready search expression, or false
 	 * @throws Data_List_Exception
 	 */
 	protected function applyBooleanValue($search_value)
@@ -42,9 +44,9 @@ trait Type_Boolean
 		}
 		if (is_numeric($search_value)) {
 			if ((int)$search_value) {
-				return Func::equal("1");
+				return Func::equal('1');
 			}
-			return Func::equal("0");
+			return Func::equal('0');
 		}
 		return false;
 	}
@@ -52,31 +54,31 @@ trait Type_Boolean
 	//------------------------------------------------------------------------------ applyBooleanWord
 	/**
 	 * If expression is a boolean word, convert to corresponding boolean value
-	 * @param $expr          string
-	 * @return mixed|boolean false
+	 *
+	 * @param $expression string The source expression
+	 * @return Comparison|boolean The resulting dao-ready search expression or false if none
 	 */
-	protected function applyBooleanWord($expr)
+	protected function applyBooleanWord($expression)
 	{
-		$word = $this->getCompressedWords([$expr])[0];
+		$word = $this->getCompressedWords([$expression])[0];
 
 		if (in_array($word, $this->getBooleanWordsTrueToCompare())) {
-			return Func::equal("1");
+			return Func::equal('1');
 		}
 		elseif (in_array($word, $this->getBooleanWordsFalseToCompare())) {
-			return Func::equal("0");
+			return Func::equal('0');
 		}
 		return false;
 	}
-
 
 	//----------------------------------------------------------------------------- getBooleanLetters
 	/**
 	 * get the char used for translation of 'y' (yes) or 'n' (no) using translation of 'n|y'
 	 *
 	 * @param $value boolean
-	 * @return string of single char
+	 * @return string a single character
 	 */
-	function getBooleanLetters($value)
+	protected function getBooleanLetters($value)
 	{
 		static $letters;
 		if (!isset($letters)) {
@@ -84,19 +86,19 @@ trait Type_Boolean
 			if (!strlen($letters[0])) {
 				$letters[0] = 'y';
 			}
-			if (count($letters)<2 || !strlen($letters[1])) {
+			if ((count($letters) < 2) || !strlen($letters[1])) {
 				$letters[1] = 'n';
 			}
 			array_splice($letters, 2);
 		}
-		return $letters[($value?1:0)];
+		return $letters[$value ? 1 : 0];
 	}
 
 	//----------------------------------------------------------------- getBooleanWordsFalseToCompare
 	/**
 	 * get the words to compare with a boolean word in search expression
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	protected function getBooleanWordsFalseToCompare()
 	{
@@ -115,7 +117,7 @@ trait Type_Boolean
 	/**
 	 * get the words to compare with a boolean word in search expression
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	protected function getBooleanWordsTrueToCompare()
 	{

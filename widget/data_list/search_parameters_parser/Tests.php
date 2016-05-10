@@ -152,10 +152,7 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [];
 		$assume['has_workflow'] = Func::orOp([
-			Func::equal("0"),
-			Func::equal("0"),
-			Func::equal("0"),
-			Func::equal("0")
+			Func::equal('0'), Func::equal('0'), Func::equal('0'), Func::equal('0')
 		]);
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
@@ -172,12 +169,8 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [];
 		$assume['has_workflow'] = Func::orOp([
-			Func::equal("1"),
-			Func::equal("1"),
-			Func::equal("1"),
-			Func::equal("1"),
-			Func::equal("1"),
-			Func::equal("1")
+			Func::equal('1'), Func::equal('1'), Func::equal('1'),
+			Func::equal('1'), Func::equal('1'), Func::equal('1')
 		]);
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
