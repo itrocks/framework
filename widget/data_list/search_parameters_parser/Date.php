@@ -310,16 +310,16 @@ trait Date
 		if (substr_count($expression, SL) == 1) {
 			list($one, $two) = explode(SL, $expression);
 			if (
-				(strlen($one) > 2 && !preg_match('/^ \s* ['.$letters_month.']([-+]\d+)? $/x', $one))
-				|| preg_match('/^ \s* ['.$letters_year.']([-+]\d+)? $/x', $one)
+				(strlen($one) > 2 && !preg_match('/^ \s* [' . $letters_month . ']([-+]\d+)? $/x', $one))
+				|| preg_match('/^ \s* [' . $letters_year . ']([-+]\d+)? $/x', $one)
 			) {
 				// the first number is a year or contains 'y' or 'a' : year/month
 				$month = $two;
 				$year  = $one;
 			}
 			elseif (
-				(strlen($two) > 2 && !preg_match('/^ \s* ['.$letters_month.']([-+]\d+)? $/x', $two))
-				|| preg_match('/^ ['.$letters_year.']([-+]\d+)? \s* $/x', $two)
+				(strlen($two) > 2 && !preg_match('/^ \s* [' . $letters_month . ']([-+]\d+)? $/x', $two))
+				|| preg_match('/^ [' . $letters_year . ']([-+]\d+)? \s* $/x', $two)
 			) {
 				// the second number is a year or contains 'y' or 'a' : month/year
 				$month = $one;
@@ -392,9 +392,9 @@ trait Date
 	{
 		$letters_year = $this->getLetters(Date_Time::YEAR);
 		// no slash and (>3 digit or "y" or "a")
-		if (
-			preg_match('/^ \s* ([0-9*?%_]{3,4} | (['.$letters_year.']([-+]\d+)?)) \s* $/x', $expression)
-		) {
+		if (preg_match(
+			'/^ \s* ([0-9*?%_]{3,4} | ([' . $letters_year . ']([-+]\d+)?)) \s* $/x', $expression
+		)) {
 			$year = $expression;
 			if ($this->computeYear($year)) {
 				if ($this->hasJoker($year)) {
@@ -903,7 +903,7 @@ trait Date
 	/**
 	 * Build given word for comparison and get the words to compare with
 	 *
-	 * @param $part   string
+	 * @param $part string
 	 * @return array
 	 */
 	protected function getWordsToCompare($part)

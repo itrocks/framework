@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Data_List;
 
-use \Exception;
+use Exception;
 
 /**
  * The Data_List exception stops the current parsing of a search parameters of a field

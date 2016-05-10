@@ -9,6 +9,7 @@ use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Join\Joins;
 use SAF\Framework\Sql\Join;
@@ -315,10 +316,10 @@ class Where
 
 	//----------------------------------------------------------------------------------- getProperty
 	/**
-	 * get the property of a path
+	 * Gets the property of a path
 	 *
-	 * @param $path    string
-	 * @return null|\SAF\Framework\Reflection\Reflection_Property
+	 * @param $path string
+	 * @return Reflection_Property|null
 	 */
 	public function getProperty($path)
 	{

@@ -150,13 +150,7 @@ class Tests extends Test
 	{
 		$this->parser->search = ['date' => 'empty,none, null '];
 		$check = $this->parser->parse();
-		$assume = [
-			'date' => Func::orOp([
-				Func::isNull(),
-				Func::isNull(),
-				Func::isNull()
-			])
-		];
+		$assume = [ 'date' => Func::orOp([ Func::isNull(), Func::isNull(), Func::isNull() ]) ];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
@@ -345,12 +339,7 @@ class Tests extends Test
 		//TODO: Do CHeck forcing FR and EN locales
 		$this->parser->search = ['number' => 'empty,none,null'];
 		$check = $this->parser->parse();
-		$assume = [];
-		$assume['number'] = Func::orOp([
-			Func::isNull(),
-			Func::isNull(),
-			Func::isNull()
-		]);
+		$assume = [ 'number' => Func::orOp([ Func::isNull(), Func::isNull(), Func::isNull() ]) ];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 

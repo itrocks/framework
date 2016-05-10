@@ -3,6 +3,7 @@ namespace SAF\Framework\Dao\Mysql;
 
 use mysqli;
 use mysqli_result;
+use SAF\Framework\AOP\Joinpoint\Before_Method;
 use SAF\Framework\Dao;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
@@ -227,16 +228,18 @@ class Maintainer implements Registerable
 		return $retry;
 	}
 
-	//--------------------------------------------------------------------------------- onMysqliQuery
 	/**
-	 * This is called after each mysql query in order to update automatically database structure in case of errors
+	 * This is called after each mysql query in order to update automatically database structure in
+	 * case of errors
 	 *
-	 * @param $object Contextual_Mysqli
-	 * @param $query  string
-	 * @param $result mysqli_result|boolean
+	 * @param $object    Contextual_Mysqli
+	 * @param $query     string
+	 * @param $result    mysqli_result|boolean
+	 * @param $joinpoint Before_Method
 	 */
-	public function onMysqliQuery(Contextual_Mysqli $object, $query, &$result)
-	{
+	public function onMysqliQueryError(
+		Contextual_Mysqli $object, $query, &$result, Before_Method $joinpoint
+	)	{
 		$mysqli = $object;
 		if ($mysqli->last_errno && !isset($this->already[$query])) {
 			$this->already[$query] = 1;
@@ -262,6 +265,9 @@ class Maintainer implements Registerable
 				}
 				if ($retry) {
 					$result = $mysqli->query($query);
+					if (!$mysqli->last_errno && !$mysqli->error) {
+						$joinpoint->stop = true;
+					}
 				}
 			}
 		}
@@ -358,7 +364,7 @@ class Maintainer implements Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod([Contextual_Mysqli::class, 'query'], [$this, 'onMysqliQuery']);
+		$aop->beforeMethod([Contextual_Mysqli::class, 'queryError'], [$this, 'onMysqliQueryError']);
 	}
 
 	//--------------------------------------------------------------------------- updateContextTables
