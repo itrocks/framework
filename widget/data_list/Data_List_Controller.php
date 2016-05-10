@@ -303,6 +303,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	public function getSearchSummary($class_name, Data_List_Settings $list_settings, $search)
 	{
+		if (empty($search)) {
+			return '';
+		}
 		if ($list_settings->search) {
 			if (Locale::current()) {
 				$t = '|';

@@ -10,11 +10,12 @@ use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Widget\Data_List\Search_Parameters_Parser\Date;
+use SAF\Framework\Widget\Data_List\Search_Parameters_Parser\Type_Boolean;
 
 /**
  * Search parameters parser
  *
- * - Search grammar :
+ * - Search grammar (and so algorithm):
  *
  * spaces are optionals
  * search       = orexpr
@@ -22,17 +23,22 @@ use SAF\Framework\Widget\Data_List\Search_Parameters_Parser\Date;
  * andexpr      = notexpr [& notexpr [...]]
  * notexpr      = ["!"]complexvalue
  * complexvalue = singlevalue
- * singlevalue  = scalar | emptyword
- * scalar       = sentence that may contains jokers
+ * singlevalue  = emptyword | scalar
+ * emptyword    = "empty" | "null" | localized equivalent
+ * scalar       = sentence that may contains wildcards
  * joker        = "?" | "*" | "%" | "_"
  *
- * - Especially for Date_Time, Float, Integer, String fields :
+ * - Especially for Boolean :
+ * singlevalue  = emptyword | booleanvalue
+ * booleanvalue = booleanword
+ *              | "0" | "1" | number != 0 (for true)
+ * booleanword  = "no" | "yes" | "n" | "y" | "false" | "true"
  *
+ * - Especially for Date_Time, Float, Integer, String fields :
  * complexvalue = range | singlevalue
  * range        = minrgnvalue "-" maxrngvalue
  *
  * - Especially for Float, Integer, String fields :
- *
  * minrngvalue  = scalar
  * maxrngvalue  = scalar
  *
@@ -53,7 +59,6 @@ use SAF\Framework\Widget\Data_List\Search_Parameters_Parser\Date;
  * dateword     = "current year" | "current month" | localized equivalent
  *              | "today" | "current day" | localized equivalent
  *              | "now" (means with current time?)
- * emptyword    = "empty" | "null" | localized equivalent
  * dd           = #[0-3?]?[0-9?]|*#  |  "d" (+|-) integer
  * mm           = #[0-1?]?[0-9?]|*# | "m" (+|-) integer
  * yyyy         = #[0-9?]{4}|*# | "y" (+|-) integer //is it possible to check year about "*" only? we can not be sure this is a year!
@@ -70,6 +75,7 @@ use SAF\Framework\Widget\Data_List\Search_Parameters_Parser\Date;
 class Search_Parameters_Parser
 {
 	use Date;
+	use Type_Boolean;
 
 	const MAX_RANGE_VALUE   = 1;
 	const MIN_RANGE_VALUE   = -1;
@@ -298,8 +304,16 @@ class Search_Parameters_Parser
 	 */
 	protected function applySingleValue($search_value, Reflection_Property $property)
 	{
-		$type = $property->getType()->asString();
-		switch ($type) {
+		$type_string = $property->getType()->asString();
+		switch ($type_string) {
+			// boolean type
+			case Type::BOOLEAN: {
+				if (($search = $this->applyEmptyWord($search_value)) !== false) {
+					break;
+				}
+				$search = $this->applyBooleanValue($search_value);
+				break;
+			}
 			// Date_Time type
 			case Date_Time::class: {
 				$search = $this->applyDatePeriod($search_value);
@@ -319,6 +333,25 @@ class Search_Parameters_Parser
 			throw new Data_List_Exception($search_value, Loc::tr('Error in expression'));
 		}
 		return $search;
+	}
+
+	//---------------------------------------------------------------------------- getCompressedWords
+	/**
+	 * Trim words, removes spaces and some chars like apostrophe, then transliterate to remove accents
+	 *
+	 * @param $words string[]
+	 * @return string[]
+	 */
+	protected function getCompressedWords($words)
+	{
+		array_walk($words, function(&$word) {
+			/**
+			 * TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
+			 * See: http://php.net/manual/en/function.iconv.php#74101
+			 */
+			$word = preg_replace('/\s|\'/', '', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $word)));
+		});
+		return $words;
 	}
 
 	//--------------------------------------------------------------------------------- getRangeParts
@@ -368,6 +401,20 @@ class Search_Parameters_Parser
 		return $range;
 	}
 
+	//-------------------------------------------------------------------------------------- hasJoker
+	/**
+	 * Check if expression has any wildcard
+	 *
+	 * @param $search_value string
+	 * @return boolean
+	 */
+	protected function hasJoker($search_value)
+	{
+		return preg_match('/[*?%_]/', $search_value)
+			? true
+			: false;
+	}
+
 	//-------------------------------------------------------------------------------------- hasRange
 	/**
 	 * Checks if a property has right to have range in search string
@@ -411,14 +458,8 @@ class Search_Parameters_Parser
 	{
 		$type_string = $property->getType()->asString();
 		switch ($type_string) {
-			// Float | Integer | String types
-			case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]):
-				if (is_string($search_value) && (strpos($search_value, '-') !== false)) {
-					return true;
-				}
-				break;
 			// Date_Time type
-			case Date_Time::class:
+			case Date_Time::class: {
 				if (
 					is_string($search_value)
 					// take care of formula that may contains char '-'
@@ -428,6 +469,13 @@ class Search_Parameters_Parser
 					return true;
 				}
 				break;
+			}
+			default: {
+				if (is_string($search_value) && (strpos($search_value, '-') !== false)) {
+					return true;
+				}
+				break;
+			}
 		}
 		return false;
 	}
@@ -439,11 +487,19 @@ class Search_Parameters_Parser
 	public function parse()
 	{
 		$search = $this->search;
+		$to_unset = [];
 		foreach ($search as $property_path => &$search_value) {
 			$property = new Reflection_Property($this->class->name, $property_path);
-			if (strlen(trim($search_value))) {
+			if (strlen($search_value)) {
 				$this->parseField($search_value, $property);
+				// if search has been transformed to empty string, we cancel search for this column
+				if (is_string($search_value) && !strlen($search_value)) {
+					$to_unset[] = $property_path;
+				}
 			}
+		}
+		foreach ($to_unset as $property_path) {
+			unset($search[$property_path]);
 		}
 		return $search;
 	}

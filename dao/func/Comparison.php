@@ -155,7 +155,7 @@ class Comparison implements Negate, Where
 					$sql .= '(' . $column . SP . $sign . SP
 						. DQ . '0000-00-00 00:00:00' . DQ . SP . $logical . SP;
 				}
-				// in case of Date_Time is null we want to check for 0 too
+				// in case of numeric is null we want to check for 0 too
 				elseif (in_array($type_string, [Type::BOOLEAN, Type::FLOAT, Type::INTEGER])) {
 					$close_parenthesis = ')';
 					$sql .= '(' . $column . SP . $sign . SP . '0' . SP . $logical . SP;

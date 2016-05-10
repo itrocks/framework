@@ -113,19 +113,15 @@ trait Date
 	//--------------------------------------------------------------------------------- applyDateWord
 	/**
 	 * If expression is a date word, convert to corresponding date
-	 * @param $expr         string
+	 * @param $expr          string
 	 * @param $min_max       integer  ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 */
 	protected function applyDateWord($expr, $min_max)
 	{
-		/**
-		 * TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
-		 * See: http://php.net/manual/en/function.iconv.php#74101
-		 */
-		$word = preg_replace('/\s|\'/', '', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $expr)));
+		$word = $this->getCompressedWords([$expr])[0];
 
-		if (in_array($word, $this->getWordsToCompare(Date_Time::YEAR))) {
+		if (in_array($word, $this->getDateWordsToCompare(Date_Time::YEAR))) {
 			// we convert a current year word in numeric current year period
 			$date_begin = date(
 				'Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, $this->currentYear)
@@ -134,7 +130,7 @@ trait Date
 				'Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $this->currentYear)
 			);
 		}
-		elseif (in_array($word, $this->getWordsToCompare(Date_Time::MONTH))) {
+		elseif (in_array($word, $this->getDateWordsToCompare(Date_Time::MONTH))) {
 			//we convert a current year word in numeric current month / current year period
 			$date_begin = date(
 				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, 1, $this->currentYear)
@@ -143,7 +139,7 @@ trait Date
 				'Y-m-d H:i:s', mktime(0, 0, -1, $this->currentMonth + 1, 1, $this->currentYear)
 			);
 		}
-		elseif (in_array($word, $this->getWordsToCompare(Date_Time::DAY))) {
+		elseif (in_array($word, $this->getDateWordsToCompare(Date_Time::DAY))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
 				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, $this->currentDay, $this->currentYear)
@@ -153,7 +149,7 @@ trait Date
 				mktime(23, 59, 59, $this->currentMonth, $this->currentDay, $this->currentYear)
 			);
 		}
-		elseif (in_array($word, $this->getWordsToCompare('yesterday'))) {
+		elseif (in_array($word, $this->getDateWordsToCompare('yesterday'))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
 				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, (int)$this->currentDay-1, $this->currentYear)
@@ -264,7 +260,7 @@ trait Date
 	protected function applyDayOnly($expression, $min_max)
 	{
 		// two chars or a single joker or formula
-		$letters_day = $this->getLetters(Date_Time::DAY);
+		$letters_day = $this->getDateLetters(Date_Time::DAY);
 		if (preg_match(
 			'/^ \s* ([*%?_] | [0-9*?%_]{1,2} | ([' . $letters_day . ']([-+]\d+)?)) \s* $/x', $expression
 		)) {
@@ -278,6 +274,9 @@ trait Date
 					$day, $this->currentMonth, $this->currentYear
 				);
 				$date = Func::like("$year-$month-$day __:__:__");
+			}
+			elseif (!(int)$day) {
+				$date = Func::isNull();
 			}
 			else {
 				$date_begin = date(
@@ -304,8 +303,8 @@ trait Date
 	 */
 	protected function applyMonthYear($expression, $min_max)
 	{
-		$letters_month = $this->getLetters(Date_Time::MONTH);
-		$letters_year  = $this->getLetters(Date_Time::YEAR);
+		$letters_month = $this->getDateLetters(Date_Time::MONTH);
+		$letters_year  = $this->getDateLetters(Date_Time::YEAR);
 		// two values with a middle slash
 		if (substr_count($expression, SL) == 1) {
 			list($one, $two) = explode(SL, $expression);
@@ -390,7 +389,7 @@ trait Date
 	 */
 	protected function applyYearOnly($expression, $min_max)
 	{
-		$letters_year = $this->getLetters(Date_Time::YEAR);
+		$letters_year = $this->getDateLetters(Date_Time::YEAR);
 		// no slash and (>3 digit or "y" or "a")
 		if (preg_match(
 			'/^ \s* ([0-9*?%_]{3,4} | ([' . $letters_year . ']([-+]\d+)?)) \s* $/x', $expression
@@ -450,45 +449,53 @@ trait Date
 	 */
 	private function buildDayMonth($day, $month, $min_max, $expr)
 	{
-		$dayHasJoker = $this->hasJoker($day);
-		$monthHasJoker = $this->hasJoker($month);
-		if (!$dayHasJoker && !$monthHasJoker) {
-			//none has wildcard
-			$date_begin = date('Y-m-d H:i:s', mktime(0,0,0,$month,$day,$this->currentYear));
-			$date_end = date('Y-m-d H:i:s', mktime(0,0,-1,$month,(int)$day+1,$this->currentYear));
-			$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
-		} else {
-			//at least one has wildcard
-			if ($min_max != self::NOT_A_RANGE_VALUE) {
-				//we can not have wildcard on a range value
-				throw new Data_List_Exception(
-					$expr, Loc::tr('You can not have a wildcard on a range value'
-				));
-			}
-			if (!$monthHasJoker) {
-				//day has wildcard, month may be computed
-				//try to correct month and year
-				$time = mktime(0, 0, 0, $month, 1, $this->currentYear);
-				$year = date('Y', $time);
-				$month = date('m', $time);
-				list($day, $month, $year) = $this->padDateParts($day, $month, $year);
-				$date = Func::like("$year-$month-$day __:__:__");
-			}
-			elseif (!$dayHasJoker) {
-				//month has wildcard but not day that may be computed.
-				//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
-				if ($day < 1 || $day > 31) {
-					throw new Data_List_Exception(
-						$expr, Loc::tr('You can not put a formula on day when month has wildcard'
-					));
-				}
-				list($day, $month) = $this->padDateParts($day, $month, 'fooo');
-				$date = Func::like("{$this->currentYear}-$month-$day __:__:__");
+		if (!(int)$day && !(int)$month) {
+			$date = Func::isNull();
+		}
+		else {
+			$dayHasJoker = $this->hasJoker($day);
+			$monthHasJoker = $this->hasJoker($month);
+			if (!$dayHasJoker && !$monthHasJoker) {
+				//none has wildcard
+				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, $day, $this->currentYear));
+				$date_end = date(
+					'Y-m-d H:i:s', mktime(0, 0, -1, $month, (int)$day + 1, $this->currentYear)
+				);
+				$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
 			}
 			else {
-				//both day and month have wildcards
-				list($day, $month) = $this->padDateParts($day, $month, 'fooo');
-				$date = Func::like("{$this->currentYear}-$month-$day __:__:__");
+				//at least one has wildcard
+				if ($min_max != self::NOT_A_RANGE_VALUE) {
+					//we can not have wildcard on a range value
+					throw new Data_List_Exception(
+						$expr, Loc::tr('You can not have a wildcard on a range value')
+					);
+				}
+				if (!$monthHasJoker) {
+					//day has wildcard, month may be computed
+					//try to correct month and year
+					$time = mktime(0, 0, 0, $month, 1, $this->currentYear);
+					$year = date('Y', $time);
+					$month = date('m', $time);
+					list($day, $month, $year) = $this->padDateParts($day, $month, $year);
+					$date = Func::like("$year-$month-$day __:__:__");
+				}
+				elseif (!$dayHasJoker) {
+					//month has wildcard but not day that may be computed.
+					//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
+					if ($day < 1 || $day > 31) {
+						throw new Data_List_Exception(
+							$expr, Loc::tr('You can not put a formula on day when month has wildcard')
+						);
+					}
+					list($day, $month) = $this->padDateParts($day, $month, 'fooo');
+					$date = Func::like("{$this->currentYear}-$month-$day __:__:__");
+				}
+				else {
+					//both day and month have wildcards
+					list($day, $month) = $this->padDateParts($day, $month, 'fooo');
+					$date = Func::like("{$this->currentYear}-$month-$day __:__:__");
+				}
 			}
 		}
 		return $date;
@@ -508,65 +515,70 @@ trait Date
 	 */
 	private function buildDayMonthYear($day, $month, $year, $min_max, $expression)
 	{
-		$day_has_joker   = $this->hasJoker($day);
-		$month_has_joker = $this->hasJoker($month);
-		$year_has_joker  = $this->hasJoker($year);
-		if (!$day_has_joker && !$month_has_joker && !$year_has_joker) {
-			// none has wildcard
-			$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0,  $month, $day,     $year));
-			$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, $month, $day + 1, $year));
-			$date       = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+		if (!(int)$day && !(int)$month && !(int)$year) {
+			$date = Func::isNull();
 		}
 		else {
-			// at least one has wildcard
-			if ($min_max != self::NOT_A_RANGE_VALUE) {
-				//we can not have wildcard on a range value
-				throw new Data_List_Exception(
-					$expression, Loc::tr('You can not have a wildcard on a range value')
-				);
+			$day_has_joker = $this->hasJoker($day);
+			$month_has_joker = $this->hasJoker($month);
+			$year_has_joker = $this->hasJoker($year);
+			if (!$day_has_joker && !$month_has_joker && !$year_has_joker) {
+				// none has wildcard
+				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, $day, $year));
+				$date_end = date('Y-m-d H:i:s', mktime(0, 0, -1, $month, $day + 1, $year));
+				$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
 			}
-			if (
-				// 000: all have wildcards
-				($day_has_joker && $month_has_joker && $year_has_joker)
-				// 001: day has wildcard, month has wildcard, year may be computed
-				|| ($day_has_joker && $month_has_joker && !$year_has_joker)
-			) {
-				// no need to correct anything!
-			}
-			if (
-				// 010: day has wildcard, month may be computed, year has wildcard
-				($day_has_joker && !$month_has_joker && $year_has_joker)
-			) {
-				if ($month < 1 || $month > 12) {
+			else {
+				// at least one has wildcard
+				if ($min_max != self::NOT_A_RANGE_VALUE) {
+					//we can not have wildcard on a range value
 					throw new Data_List_Exception(
-						$expression, Loc::tr('You can not put a formula on month when year has wildcard')
+						$expression, Loc::tr('You can not have a wildcard on a range value')
 					);
 				}
-			}
-			if (
-				// 011: day has wildcard, month may be computed, year may be computed
-				($day_has_joker && !$month_has_joker && !$year_has_joker)
-			) {
-				// try to correct month and year
-				$time  = mktime(0, 0, 0, $month, 1, $year);
-				$year  = date('Y', $time);
-				$month = date('m', $time);
-			}
-			if (
-				// 100: day may be computed, month has wildcard, year has wildcard
-				(!$day_has_joker && $month_has_joker && $year_has_joker)
-				// 101: day may be computed, month has wildcard, year may be computed
-				|| (!$day_has_joker && $month_has_joker && !$year_has_joker)
-			) {
-				//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
-				if ($day < 1 || $day > 31) {
-					throw new Data_List_Exception(
-						$expression, Loc::tr('You can not put a formula on day when month has wildcard')
-					);
+				if (
+					// 000: all have wildcards
+					($day_has_joker && $month_has_joker && $year_has_joker)
+					// 001: day has wildcard, month has wildcard, year may be computed
+					|| ($day_has_joker && $month_has_joker && !$year_has_joker)
+				) {
+					// no need to correct anything!
 				}
+				if (
+					// 010: day has wildcard, month may be computed, year has wildcard
+					($day_has_joker && !$month_has_joker && $year_has_joker)
+				) {
+					if ($month < 1 || $month > 12) {
+						throw new Data_List_Exception(
+							$expression, Loc::tr('You can not put a formula on month when year has wildcard')
+						);
+					}
+				}
+				if (
+					// 011: day has wildcard, month may be computed, year may be computed
+					($day_has_joker && !$month_has_joker && !$year_has_joker)
+				) {
+					// try to correct month and year
+					$time = mktime(0, 0, 0, $month, 1, $year);
+					$year = date('Y', $time);
+					$month = date('m', $time);
+				}
+				if (
+					// 100: day may be computed, month has wildcard, year has wildcard
+					(!$day_has_joker && $month_has_joker && $year_has_joker)
+					// 101: day may be computed, month has wildcard, year may be computed
+					|| (!$day_has_joker && $month_has_joker && !$year_has_joker)
+				) {
+					//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
+					if ($day < 1 || $day > 31) {
+						throw new Data_List_Exception(
+							$expression, Loc::tr('You can not put a formula on day when month has wildcard')
+						);
+					}
+				}
+				list($day, $month, $year) = $this->padDateParts($day, $month, $year);
+				$date = Func::like("$year-$month-$day __:__:__");
 			}
-			list($day, $month, $year) = $this->padDateParts($day, $month, $year);
-			$date = Func::like("$year-$month-$day __:__:__");
 		}
 		return $date;
 	}
@@ -584,32 +596,38 @@ trait Date
 	 */
 	private function buildMonthYear($month, $year, $min_max, $expression)
 	{
-		$month_has_joker = $this->hasJoker($month);
-		$year_has_joker  = $this->hasJoker($year);
-		if (!$month_has_joker && !$year_has_joker) {
-			$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0,  $month,     1, $year));
-			$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, $month + 1, 1, $year));
-			$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
-		}
-		elseif (!$year_has_joker) {
-			// month has wildcard, year may be computed
-			list($day, $month, $year) = $this->padDateParts('__', $month, $year);
-			$date = Func::like("$year-$month-$day __:__:__");
-		}
-		elseif (!$month_has_joker) {
-			// year has wildcard but not month that may be computed.
-			// So we should take care if month is <1 or >12
-			if ($month < 1 || $month > 12) {
-				throw new Data_List_Exception(
-					$expression, Loc::tr('You can not put a formula on month when year has wildcard'));
-			}
-			list($day, $month, $year) = $this->padDateParts('__', $month, $year);
-			$date = Func::like("$year-$month-$day __:__:__");
+		if (!(int)$month && !(int)$year) {
+			$date = Func::isNull();
 		}
 		else {
-			// both year and month have wildcards
-			list($day, $month, $year) = $this->padDateParts('__', $month, $year);
-			$date = Func::like("$year-$month-$day __:__:__");
+			$month_has_joker = $this->hasJoker($month);
+			$year_has_joker = $this->hasJoker($year);
+			if (!$month_has_joker && !$year_has_joker) {
+				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, 1, $year));
+				$date_end = date('Y-m-d H:i:s', mktime(0, 0, -1, $month + 1, 1, $year));
+				$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+			}
+			elseif (!$year_has_joker) {
+				// month has wildcard, year may be computed
+				list($day, $month, $year) = $this->padDateParts('__', $month, $year);
+				$date = Func::like("$year-$month-$day __:__:__");
+			}
+			elseif (!$month_has_joker) {
+				// year has wildcard but not month that may be computed.
+				// So we should take care if month is <1 or >12
+				if ($month < 1 || $month > 12) {
+					throw new Data_List_Exception(
+						$expression, Loc::tr('You can not put a formula on month when year has wildcard')
+					);
+				}
+				list($day, $month, $year) = $this->padDateParts('__', $month, $year);
+				$date = Func::like("$year-$month-$day __:__:__");
+			}
+			else {
+				// both year and month have wildcards
+				list($day, $month, $year) = $this->padDateParts('__', $month, $year);
+				$date = Func::like("$year-$month-$day __:__:__");
+			}
 		}
 		return $date;
 	}
@@ -869,23 +887,23 @@ trait Date
 	{
 		static $pattern = false;
 		if (!$pattern) {
-			$letters = $this->getLetters(Date_Time::YEAR)
-				. $this->getLetters(Date_Time::MONTH)
-				. $this->getLetters(Date_Time::DAY);
+			$letters = $this->getDateLetters(Date_Time::YEAR)
+				. $this->getDateLetters(Date_Time::MONTH)
+				. $this->getDateLetters(Date_Time::DAY);
 			$pattern = '(?:(?:[0-9*?%_]{1,4} | [' . $letters . '](?:[-+]\d+)?) [\/]){0,2}'
 				. SP . '(?:[0-9*?%_]{1,4} | [' . $letters . '](?:[-+]\d+)?)';
 		}
 		return $pattern;
 	}
 
-	//------------------------------------------------------------------------------------ getLetters
+	//-------------------------------------------------------------------------------- getDateLetters
 	/**
 	 * Gets the letters that can be used in formula for a part of a date
 	 *
 	 * @param $part string Date_Time::DAY | Date_Time::MONTH | Date_Time::YEAR
 	 * @return string
 	 */
-	protected function getLetters($part)
+	protected function getDateLetters($part)
 	{
 		static $letters;
 		if (!isset($letters)) {
@@ -899,14 +917,14 @@ trait Date
 		return $letters[$part];
 	}
 
-	//----------------------------------------------------------------------------- getWordsToCompare
+	//------------------------------------------------------------------------- getDateWordsToCompare
 	/**
-	 * Build given word for comparison and get the words to compare with
+	 * get the words to compare with a date word in search expression
 	 *
 	 * @param $part string
 	 * @return array
 	 */
-	protected function getWordsToCompare($part)
+	protected function getDateWordsToCompare($part)
 	{
 		static $all_words_references = [
 			Date_Time::DAY   => ['current day', 'today'],
@@ -919,29 +937,7 @@ trait Date
 		foreach($words_references as $word) {
 			$words_localized[] = Loc::tr($word);
 		}
-		$words = array_merge($words_references, $words_localized);
-		array_walk($words, function(&$word) {
-			/**
-			 * TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
-			 * See: http://php.net/manual/en/function.iconv.php#74101
-			 */
-			$word = preg_replace('/\s|\'/', '', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $word)));
-		});
-		return $words;
-	}
-
-	//-------------------------------------------------------------------------------------- hasJoker
-	/**
-	 * Check if expression has any wildcard
-	 *
-	 * @param $search_value string
-	 * @return boolean
-	 */
-	protected function hasJoker($search_value)
-	{
-		return preg_match('/[*?%_]/', $search_value)
-			? true
-			: false;
+		return $this->getCompressedWords(array_merge($words_references, $words_localized));
 	}
 
 	//------------------------------------------------------------------------------------- initDates

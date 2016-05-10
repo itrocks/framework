@@ -12,6 +12,7 @@ use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
+use SAF\Framework\Reflection\Type;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Join\Joins;
 use SAF\Framework\Sql\Join;
@@ -289,12 +290,16 @@ class Summary_Builder
 			}
 			return DQ . $t . $i . $value . $i . $t . DQ;
 		}
-		elseif (is_numeric($value)) {
-			return $value;
-		}
 		elseif (preg_match($pattern, $value)) {
 			// in case of a date, we convert to locale
 			return substr(Loc::dateToLocale($value), 0, 10);
+		}
+		elseif (is_numeric($value)) {
+			$type_string = $property->getType()->asString();
+			if ($type_string == Type::BOOLEAN) {
+				return ($value ? Loc::tr('yes') : Loc::tr('no'));
+			}
+			return $value;
 		}
 		else {
 			return DQ . $value . DQ;
