@@ -413,12 +413,12 @@ $('document').ready(function()
 						if (show) {
 							$element.parent().find('button,input,select').show();
 							//noinspection JSValidateTypes
-							$element.parent().parent().find('label').parent().show();
+							$element.parent().find('label').parent().show();
 						}
 						else {
 							$element.parent().find('button,input,select').hide();
 							//noinspection JSValidateTypes
-							$element.parent().parent().find('label').parent().hide();
+							$element.parent().find('label').parent().hide();
 						}
 					});
 				});
