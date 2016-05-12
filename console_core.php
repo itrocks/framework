@@ -1,5 +1,8 @@
-#!/usr/bin/php
 <?php
+/**
+ * Permet de lancement du framework en ligne de commande
+ * $dir est initialisé dans le script appelant.
+ */
 error_reporting(E_ALL);
 
 $tmp_dir = __DIR__ . '/tmp';
@@ -11,19 +14,26 @@ $_sfkgroup_flag = $tmp_dir . '/' . (str_replace('/', '_', substr($argv[1], 1)) ?
 $output = [];
 
 exec(
-	"ps -aux | grep \"$argv[1] $argv[2] " . (empty($argv[3]) ?: $argv[3]) . "\" | grep -v grep",
+	"ps -aux | grep \"$argv[1] " . (empty($argv[2]) ?: $argv[2]) . " " . (empty($argv[3]) ?: $argv[3])
+	. "\" | grep -v grep",
 	$outputs
 );
 
 $count = 0;
 foreach ($outputs as $output) {
-	if (strpos($output, "$argv[1] $argv[2] $argv[3]") && strpos($output, '/usr/bin/php')) {
+	if (strpos(
+			$output,
+			"$argv[1] " . (empty($argv[2]) ?: $argv[2]) . " " . (empty($argv[3]) ?: $argv[3]) . "\""
+		)
+		&& strpos($output, '/usr/bin/php')
+	) {
 		$count++;
 	}
 }
 
 if ($count > 1) {
-	echo "Opération deja en cours ($argv[1] $argv[2] $argv[3])\n";
+	echo "Opération deja en cours ($argv[1] " . (empty($argv[2]) ?: $argv[2]) . " " . (empty($argv[3])
+			?: $argv[3]) . ")\n";
 	print_r($outputs);
 }
 else {
@@ -33,7 +43,6 @@ else {
 	unset($outputs);
 
 	if (empty($_GET)) {
-		//chdir('/home/bappli/www');
 		$_GET = ['as_widget' => true];
 		foreach ($argv as $k => $v) {
 			if ($k > 1) {
@@ -43,8 +52,8 @@ else {
 		}
 		$_SERVER['HTTPS'] = true;
 		$_SERVER['PATH_INFO'] = $argv[1];
-		$_SERVER['SCRIPT_NAME'] = __DIR__ . '/../../../../../sfkgroup.php';
-		include __DIR__ . '/../../../../../sfkgroup.php';
+		chdir($dir);
+		require $dir . '/saf/framework/index.php';
 	}
 
 	@unlink($_sfkgroup_flag);
