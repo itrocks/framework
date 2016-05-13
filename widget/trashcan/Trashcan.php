@@ -9,6 +9,15 @@ use SAF\Framework\Plugin;
 class Trashcan implements Plugin
 {
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return 'trashcan';
+	}
+
 	//------------------------------------------------------------------------------------------ drop
 	/**
 	 * Drop an object into the trashcan (store then delete)
