@@ -175,7 +175,7 @@ class Contextual_Mysqli extends mysqli
 	protected function queryError($query)
 	{
 		if (error_reporting()) {
-			$error = $this->last_errno . ': ' . $this->error . '[' . $query . ']';
+			$error = $this->last_errno . ': ' . $this->last_error . '[' . $query . ']';
 			trigger_error('Mysql logger error : ' . $error . ' on query ' . $query, E_USER_ERROR);
 		}
 		return false;

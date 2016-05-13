@@ -14,8 +14,13 @@ class Logger implements Configurable, Registerable
 {
 
 	//----------------------------------------------------- Logger configuration array keys constants
+	//---------------------------------------------------------------------------------- CONTINUE_LOG
 	const CONTINUE_LOG = 'continue';
+
+	//----------------------------------------------------------------------------------- DISPLAY_LOG
 	const DISPLAY_LOG  = 'display_log';
+
+	//--------------------------------------------------------------------------------------- EXCLUDE
 	const EXCLUDE      = 'exclude';
 
 	//------------------------------------------------------------------------------------- $continue
@@ -141,7 +146,7 @@ class Logger implements Configurable, Registerable
 	public function onQueryError(Contextual_Mysqli $object, $query)
 	{
 		$mysqli = $object;
-		$error = $mysqli->last_errno . ': ' . $mysqli->error . '[' . $query . ']';
+		$error = $mysqli->last_errno . ': ' . $mysqli->last_error . '[' . $query . ']';
 		$this->errors_log[] = $error;
 	}
 
