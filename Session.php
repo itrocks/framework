@@ -17,6 +17,13 @@ class Session implements Serializable
 	 */
 	private $current;
 
+	//---------------------------------------------------------------------------------- $environment
+	/**
+	 * @values development, production, test
+	 * @var string
+	 */
+	public $environment;
+
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
 	 * @var Manager
@@ -176,7 +183,7 @@ class Session implements Serializable
 			// TODO this does not work as well as xdebug_backtrace visible into PhpStorm : change it
 			debug_print_backtrace();
 		}
-		$data = ['current' => [], 'plugins' => $this->plugins];
+		$data = ['current' => [], 'environment' => $this->environment, 'plugins' => $this->plugins];
 		if (isset($this->current)) {
 			foreach ($this->current as $class_name => $object) {
 				if (is_object($object)) {
@@ -222,8 +229,9 @@ class Session implements Serializable
 	public function unserialize($serialized)
 	{
 		$data = unserialize($serialized);
-		$this->current = $data['current'];
-		$this->plugins = $data['plugins'];
+		$this->current     = $data['current'];
+		$this->environment = $data['environment'];
+		$this->plugins     = $data['plugins'];
 	}
 
 }

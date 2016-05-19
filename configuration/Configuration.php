@@ -1,16 +1,27 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Configuration\Environment;
+
 /**
  * A configuration set : current configuration for the global application configuration, secondary configurations can be worked with
  */
 class Configuration
 {
 
-	//------------------------------------------------------------ Configuration array keys constants
-	const APP         = 'app';
-	const AUTHOR      = 'author';
-	const CLASS_NAME  = 'class';
+	//------------------------------------------------------------------------------------------- APP
+	const APP = 'app';
+
+	//---------------------------------------------------------------------------------------- AUTHOR
+	const AUTHOR = 'author';
+
+	//------------------------------------------------------------------------------------ CLASS_NAME
+	const CLASS_NAME = 'class';
+
+	//----------------------------------------------------------------------------------- ENVIRONMENT
+	const ENVIRONMENT = 'environment';
+
+	//----------------------------------------------------------------------------------- EXTENDS_APP
 	const EXTENDS_APP = 'extends';
 
 	//---------------------------------------------------------------------------- $application_class
@@ -26,6 +37,13 @@ class Configuration
 	 * @var string
 	 */
 	private $author;
+
+	//---------------------------------------------------------------------------------- $environment
+	/**
+	 * @values development, production, test
+	 * @var string
+	 */
+	public $environment;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -52,11 +70,15 @@ class Configuration
 	 */
 	public function __construct($name, $configuration)
 	{
-		$this->name = $name;
 		$this->application_class = $configuration[self::APP];
-		$this->author = $configuration[self::AUTHOR];
+		$this->author            = $configuration[self::AUTHOR];
+		$this->environment       = isset($configuration[self::ENVIRONMENT])
+			? $configuration[self::ENVIRONMENT]
+			: Environment::DEVELOPMENT;
+		$this->name = $name;
 		unset($configuration[self::APP]);
 		unset($configuration[self::AUTHOR]);
+		unset($configuration[self::ENVIRONMENT]);
 		$this->plugins = $configuration;
 	}
 

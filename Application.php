@@ -82,7 +82,7 @@ class Application
 	 */
 	public function getCacheDir()
 	{
-		return $_SERVER['CWD'] . SL . 'cache';
+		return __DIR__ . '/../../cache';
 	}
 
 	//-------------------------------------------------------------------------------- getClassesTree

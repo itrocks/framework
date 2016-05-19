@@ -18,12 +18,14 @@ use SAF\Framework\Plugin\Priority;
 use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\View\Html\Cleaner;
 
-global $pwd;
+global $loc, $pwd;
+require __DIR__ . '/../../loc.php';
 require __DIR__ . '/../../pwd.php';
 
 $config['SAF/Framework'] = [
-	Configuration::APP    => Application::class,
-	Configuration::AUTHOR => 'Baptiste Pillot',
+	Configuration::APP         => Application::class,
+	Configuration::AUTHOR      => 'Baptiste Pillot',
+	Configuration::ENVIRONMENT => $loc[Configuration::ENVIRONMENT],
 
 	// top core plugins are loaded first, before the session is opened
 	// this array must stay empty : top core plugins must be set into the index.php script

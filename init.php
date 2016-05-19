@@ -1,6 +1,9 @@
 <?php
-include_once __DIR__ . '/saf/framework/functions/constants.php';
-include_once __DIR__ . '/saf/framework/functions/string_functions.php';
+/**
+ * THIS IS OBSOLESCENT ! UPDATE THIS TO MAKE THE BEST USE OF COMPOSER
+ */
+include_once __DIR__ . '/functions/constants.php';
+include_once __DIR__ . '/functions/string_functions.php';
 
 if ($argc < 3) {
 	die('Arguments attendus : nickname helloworld' . LF);
@@ -59,6 +62,7 @@ echo '- Create local configuration file ' . $local_file . LF;
 file_put_contents($local_file, <<<EOT
 <?php
 \$loc = [
+	'environment' => 'development'
 ];
 
 EOT
@@ -138,7 +142,6 @@ echo '- Create alias script ' . $alias_script . LF;
 
 file_put_contents($alias_script, <<<EOT
 <?php
-\$_SERVER['ENV'] = 'DEV';
 chdir('$application_dir');
 require 'index.php';
 
