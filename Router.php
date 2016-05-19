@@ -157,7 +157,7 @@ class Router implements
 	 */
 	public function autoload($class_name)
 	{
-		$file_path = $this->getClassFilename($class_name);
+		$file_path = $this->getClassFileName($class_name);
 		if ($file_path) {
 			/** @noinspection PhpIncludeInspection */
 			include_once Include_Filter::file($file_path);
@@ -305,14 +305,14 @@ class Router implements
 		}
 	}
 
-	//------------------------------------------------------------------------------ getClassFilename
+	//------------------------------------------------------------------------------ getClassFileName
 	/**
 	 * Checks, searches, and gets the file path for a class name
 	 *
 	 * @param $class_name string
 	 * @return string
 	 */
-	public function getClassFilename($class_name)
+	public function getClassFileName($class_name)
 	{
 		if (isset($this->class_paths[$class_name])) {
 			$class_path = $this->class_paths[$class_name];
