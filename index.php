@@ -9,6 +9,7 @@ use SAF\Framework\Plugin\Manager;
 error_reporting(E_ALL);
 ini_set( 'arg_separator.output',            '&amp;' );
 ini_set( 'default_charset',                 'UTF-8' );
+ini_set( 'max_execution_time',              30      );
 ini_set( 'max_input_vars',                  1000000 );
 ini_set( 'memory_limit',                    '1G'    );
 ini_set( 'session.use_cookies',             true    );

@@ -278,7 +278,6 @@ class Email
 	 */
 	public function update(Parameters $parameters)
 	{
-		set_time_limit(36000);
 		$search = ['content' => Func::notEqual('')];
 		if (!$parameters->contains('all')) {
 			if ($date = $parameters->getRawParameter(0)) {

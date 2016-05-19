@@ -27,7 +27,7 @@ class Import_Execute_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
-		set_time_limit(900);
+		upgradeTimeLimit(900);
 		$import = Import_Builder_Form::build(
 			$form, Session::current()->get(Files::class)->files
 		);
