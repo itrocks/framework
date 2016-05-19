@@ -112,7 +112,7 @@ abstract class Custom_Settings
 	public function delete($feature = null)
 	{
 		if ($this->name) {
-			$code = $this->getClassName() . DOT . static::customId($feature);
+			$code = $this->getSourceClassName() . DOT . static::customId($feature);
 			$setting = new Setting($code . DOT . $this->name);
 			$setting = Dao::searchOne($setting);
 			if (isset($setting)) {
@@ -153,7 +153,7 @@ abstract class Custom_Settings
 	public function getCustomSettings($feature = null)
 	{
 		$list = [];
-		$search['code'] = $this->getClassName() . DOT . static::customId($feature) . '.%';
+		$search['code'] = $this->getSourceClassName() . DOT . static::customId($feature) . '.%';
 		foreach (Dao::search($search, Setting::class) as $setting) {
 			/** @var $setting Setting */
 			/** @var $settings Custom_Settings */
@@ -214,7 +214,7 @@ abstract class Custom_Settings
 		if (isset($save_name)) {
 			$this->name = $save_name;
 			$setting = new Setting(
-				$this->getClassName()
+				$this->getSourceClassName()
 				. DOT . static::customId($this->setting->getFeature())
 				. ($save_name ? (DOT . $save_name) : '')
 			);
