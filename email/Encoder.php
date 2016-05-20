@@ -5,7 +5,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Email;
 
-include_once __DIR__ . '/../../../vendor/html2text/html2text.php';
+include_once __DIR__ . '/../../../vendor/html2text/html2text/src/Html2Text.php';
 
 /**
  * Encodes MIME emails
