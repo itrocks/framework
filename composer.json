@@ -11,6 +11,7 @@
 		"composer/installers":                   "~1.0",
 		"csl/reset5":                            "1.x",
 		"html2text/html2text":                   "4.x",
+		"jan-odvarko/jscolor":                   "2.x",
 		"malsup/form":                           "3.x",
 		"netcarver/textile":                     "3.x",
 		"oomphinc/composer-installers-extender": "~1.1",
