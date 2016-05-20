@@ -5,7 +5,7 @@ namespace SAF\Framework\Dao\File;
 use PHPExcel;
 use PHPExcel_IOFactory;
 
-require dirname(__FILE__) . '/../../vendor/PHPExcel/Classes/PHPExcel.php';
+require dirname(__FILE__) . '/../../vendor/phpoffice/phpexcel/Classes/PHPExcel.php';
 */
 use PHPExcel_IOFactory;
 use SAF\Framework\Application;
