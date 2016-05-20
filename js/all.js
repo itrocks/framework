@@ -2,13 +2,12 @@
 // use the global path to set it before calling all.js (sorry, i've no better idea for the moment)
 
 $.getScript(path + 'saf/framework/js/saf.constants.js');
-$.getScript(path + 'vendor/jquery-ui/jquery-ui-1.9.2.custom.js');
+$.getScript(path + 'vendor/components/jqueryui/jquery-ui.js');
 $.getScript(path + 'saf/framework/js/jquery.xtarget.js');
 
-$.getScript(path + 'vendor/jquery.form/jquery.form.js');
-$.getScript(path + 'vendor/jquery.colresizable/colResizable-1.3.min.js');
+$.getScript(path + 'vendor/alvaro-prieto/colResizable/colResizable-1.6.min.js');
+$.getScript(path + 'vendor/malsup/form/jquery.form.js');
 $.getScript(path + 'vendor/jquery.elastic/jquery.elastic.source.js');
-
 $.getScript(path + 'vendor/jscolor/jscolor.js');
 
 $.getScript(path + 'saf/framework/js/jquery.aform.js');
