@@ -7,7 +7,6 @@ $.getScript(path + 'saf/framework/js/jquery.xtarget.js');
 
 $.getScript(path + 'vendor/alvaro-prieto/colResizable/colResizable-1.6.min.js');
 $.getScript(path + 'vendor/malsup/form/jquery.form.js');
-$.getScript(path + 'vendor/jquery.elastic/jquery.elastic.source.js');
 $.getScript(path + 'vendor/jscolor/jscolor.js');
 
 $.getScript(path + 'saf/framework/js/jquery.aform.js');
