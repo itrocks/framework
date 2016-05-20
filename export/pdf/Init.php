@@ -3,10 +3,10 @@ namespace SAF\Framework\Export\PDF;
 
 use FPDI;
 
-require_once __DIR__ . '/../../../../vendor/tcpdf/tcpdf.php';
-require_once __DIR__ . '/../../../../vendor/fpdi/fpdi_bridge.php';
-require_once __DIR__ . '/../../../../vendor/fpdi/fpdf_tpl.php';
-require_once __DIR__ . '/../../../../vendor/fpdi/fpdi.php';
+require_once __DIR__ . '/../../../../vendor/tecnickcom/tcpdf/tcpdf.php';
+require_once __DIR__ . '/../../../../vendor/setasign/fpdi/fpdi_bridge.php';
+require_once __DIR__ . '/../../../../vendor/setasign/fpdi/fpdf_tpl.php';
+require_once __DIR__ . '/../../../../vendor/setasign/fpdi/fpdi.php';
 
 /**
  * Initialisation features

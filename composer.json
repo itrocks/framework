@@ -12,7 +12,8 @@
 		"html2text/html2text":                   "4.x",
 		"oomphinc/composer-installers-extender": "~1.1",
 		"phpoffice/phpexcel":                    "1.x",
-		"setasign/fpdi-tcpdf":                   "1.x"
+		"setasign/fpdi-tcpdf":                   "1.x",
+		"technickcom/tcpdf":                     "6.x"
 	},
 	"type": "itrocks"
 }
