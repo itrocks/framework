@@ -6,8 +6,8 @@ $.getScript(path + 'vendor/components/jqueryui/jquery-ui.js');
 $.getScript(path + 'saf/framework/js/jquery.xtarget.js');
 
 $.getScript(path + 'vendor/alvaro-prieto/colResizable/colResizable-1.6.min.js');
+$.getScript(path + 'vendor/jan-odvarko/jscolor/jscolor.js');
 $.getScript(path + 'vendor/malsup/form/jquery.form.js');
-$.getScript(path + 'vendor/jscolor/jscolor.js');
 
 $.getScript(path + 'saf/framework/js/jquery.aform.js');
 $.getScript(path + 'saf/framework/js/jquery.autofocus.js');
