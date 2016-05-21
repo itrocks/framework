@@ -6,7 +6,7 @@ if ($argc < 3) {
 // project
 $vendor_name       = str_replace('.', '_', $argv[1]);
 $project_name      = str_replace('.', '_', $argv[2]);
-$dir               = getcwd() . '/' . $project_name;
+$dir               = getcwd() . '/' . strtolower($vendor_name . '-' . $project_name);
 $project_directory = $dir . '/' . strtolower($vendor_name . '/' . $project_name);
 $project_password  = uniqid();
 
@@ -20,6 +20,7 @@ $composer_executable   = $dir . '/composer.phar';
 $composer_file         = $dir . '/composer.json';
 $composer_setup        = $dir . '/composer-setup.php';
 $configuration_file    = $project_directory . '/config.php';
+$console_file          = $dir . '/saf/framework/console.php';
 $hello_world_template  = $project_directory . '/Application_home.html';
 $gitignore_file        = $dir . '/.gitignore';
 $launcher_file         = substr($dir, 0, strrpos($dir, '/')) . '/' . strtolower($project_name) . '.php';
@@ -28,7 +29,6 @@ $password_file         = $dir . '/pwd.php';
 $update_file           = $dir . '/update';
 
 // directories
-$application_directory = substr($dir, strrpos($dir, '/') + 1);
 $cache_directory       = $dir . '/cache';
 $temporary_directory   = $dir . '/tmp';
 
@@ -160,7 +160,7 @@ EOT
 echo '- Create launcher script ' . $launcher_file . "\n";
 file_put_contents($launcher_file, <<<EOT
 <?php
-require __DIR__ . '/$project_name/saf/framework/index.php';
+require __DIR__ . '/$vendor_name-$project_name/saf/framework/index.php';
 EOT
 );
 
@@ -175,7 +175,7 @@ exec('chmod ugo+rwx ' . $temporary_directory);
 echo '- create update file ' . $update_file . "\n";
 touch($update_file);
 exec('chmod ugo+rwx ' . $update_file);
-exec('chmod ugo+rwx ' . $application_directory);
+exec('chmod ugo+rwx ' . $dir);
 
 echo '- create composer.json file ' . $composer_file . "\n";
 file_put_contents($composer_file, <<<EOT
@@ -196,16 +196,16 @@ EOT
 );
 
 echo '- download composer into ' . $composer_executable . "\n";
-chdir($application_directory);
+chdir($dir);
 copy('https://getcomposer.org/installer', $composer_setup);
 if (hash_file('SHA384', $composer_setup) === '92102166af5abdb03f49ce52a40591073a7b859a86e8ff13338cf7db58a19f7844fbc0bb79b2773bf30791e935dbd938') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;
-exec('php ' . $composer_setup);
+system('php ' . $composer_setup);
 unlink($composer_setup);
 
 echo '- install composer dependencies' . "\n";
-exec('php ' . $composer_executable . ' install');
+system('php ' . $composer_executable . ' install');
 
-echo '- create database ' . $database_name . "\n";
+echo '- create database ' . $database_name . " - NEED YOUR DATABASE ROOT PASSWORD\n";
 file_put_contents($temporary_directory . '/init.sql', <<<EOT
 CREATE DATABASE IF NOT EXISTS $database_name;
 DELETE FROM mysql.user WHERE user = '$user_name';
@@ -217,7 +217,11 @@ VALUES ('localhost', '$user_name', '$database_name', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y
 FLUSH PRIVILEGES;
 EOT
 );
-exec('mysql -uroot -p <' . $temporary_directory . '/init.sql');
+system('mysql -uroot -p <' . $temporary_directory . '/init.sql');
 unlink($temporary_directory . '/init.sql');
+
+echo '- initialise your application cache...' . " - NEED YOUR SYSTEM ROOT PASSWORD\n";
+echo "sudo -uwww-data php $console_file\n";
+system('sudo -uwww-data php ' . $console_file);
 
 echo 'Your application ' . $vendor_name . '/' . $project_name . ' is initialized' . "\n";
