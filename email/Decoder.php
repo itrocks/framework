@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework\Email;
 
-include_once __DIR__ . '/../../../vendor/pear/mail_mime-decode/Mail/mimeDecode.php';
-
 /**
  * Decodes MIME emails
  *

@@ -5,11 +5,6 @@ use FPDI;
 use SAF\Framework\Export\PDF\Init;
 use TCPDF;
 
-require_once __DIR__ . '/../../../../vendor/tecnickcom/tcpdf/tcpdf.php';
-require_once __DIR__ . '/../../../../vendor/setasign/fpdi/fpdi_bridge.php';
-require_once __DIR__ . '/../../../../vendor/setasign/fpdi/fpdf_tpl.php';
-require_once __DIR__ . '/../../../../vendor/setasign/fpdi/fpdi.php';
-
 /**
  * PDF export library
  *

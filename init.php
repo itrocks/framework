@@ -1,52 +1,55 @@
 <?php
-/**
- * THIS IS OBSOLESCENT ! UPDATE THIS TO MAKE THE BEST USE OF COMPOSER
- */
-include_once __DIR__ . '/functions/constants.php';
-include_once __DIR__ . '/functions/string_functions.php';
-
 if ($argc < 3) {
-	die('Arguments attendus : nickname helloworld' . LF);
+	die('Use : php init.php vendor_name project_name' . "\n");
 }
 
-$nickname = str_replace('.', '_', $argv[1]);
-$project_name = str_replace('.', '_', $argv[2]);
-$database = strtolower($nickname . '_' . $project_name);
-$username = substr($database, 0, 16);
-$project_password = uniqid();
-$project_dir = __DIR__ . SL . strtolower($nickname . SL . $project_name);
-$application_file = $project_dir . SL . 'Application.php';
-$config_file = __DIR__ . SL . strtolower($project_name) . '.php';
-$namespace = ucfirst($nickname) . BS . ucfirst($project_name);
-$config_name = str_replace(BS, SL, $namespace);
-$helloworld_template = $project_dir . SL . 'Application_home.html';
-$alias_script = lLastParse(__DIR__, SL) . SL . strtolower($project_name) . '.php';
-$application_dir = rLastParse(__DIR__, SL);
-$local_file = __DIR__ . SL . 'loc.php';
-$password_file = __DIR__ . SL . 'pwd.php';
-$cache_dir = __DIR__ . SL . 'cache';
-$tmp_dir = __DIR__ . SL . 'tmp';
-$update_file = __DIR__ . SL . 'update';
-$vendor_dir = __DIR__ . SL . 'vendor';
+// project
+$vendor_name       = str_replace('.', '_', $argv[1]);
+$project_name      = str_replace('.', '_', $argv[2]);
+$dir               = getcwd() . '/' . strtolower($vendor_name . '-' . $project_name);
+$project_directory = $dir . '/' . strtolower($vendor_name . '/' . $project_name);
+$project_password  = uniqid();
 
-echo 'Initialization of your project ' . $namespace . '...' . LF;
+// database
+$database_name = strtolower($vendor_name . '_' . $project_name);
+$user_name     = substr($database_name, 0, 16);
 
-echo '- Create directory ' . $project_dir . LF;
-// /$nickname/$project/
+// files
+$application_file      = $project_directory . '/Application.php';
+$composer_executable   = $dir . '/composer.phar';
+$composer_file         = $dir . '/composer.json';
+$composer_setup        = $dir . '/composer-setup.php';
+$configuration_file    = $project_directory . '/config.php';
+$console_file          = $dir . '/saf/framework/console.php';
+$hello_world_template  = $project_directory . '/Application_home.html';
+$gitignore_file        = $dir . '/.gitignore';
+$launcher_file         = substr($dir, 0, strrpos($dir, '/')) . '/' . strtolower($project_name) . '.php';
+$local_file            = $dir . '/loc.php';
+$password_file         = $dir . '/pwd.php';
+$update_file           = $dir . '/update';
 
-if (!is_dir($project_dir)) mkdir($project_dir, 0755, true);
+// directories
+$cache_directory       = $dir . '/cache';
+$temporary_directory   = $dir . '/tmp';
 
-echo '- Create application class file ' . $application_file . LF;
-// /$nickname/$project/Application.php
+// others
+$namespace          = ucfirst($vendor_name) . "\\" . ucfirst($project_name);
+$configuration_name = ucfirst($vendor_name) . '/' . ucfirst($project_name);
 
+echo 'Initialization of your project ' . $namespace . '...' . "\n";
+
+echo '- Create directory ' . $project_directory . "\n";
+if (!is_dir($project_directory)) mkdir($project_directory, 0755, true);
+
+echo '- Create application class file ' . $application_file . "\n";
 file_put_contents($application_file, <<<EOT
 <?php
-namespace {$namespace};
+namespace $namespace;
 
 use SAF\Framework;
 
 /**
- * The {$project_name} application
+ * The $project_name application
  */
 class Application extends Framework\Application
 {
@@ -56,37 +59,55 @@ class Application extends Framework\Application
 EOT
 );
 
-echo '- Create local configuration file ' . $local_file . LF;
-// /pwd.php
-
+echo '- Create local configuration file ' . $local_file . "\n";
 file_put_contents($local_file, <<<EOT
 <?php
 \$loc = [
-	'environment' => 'development'
+	'database'    => '$database_name',
+	'environment' => 'development',
+	'login'       => '$user_name'
 ];
 
 EOT
 );
 
-echo '- Create password file ' . $password_file . LF;
-// /pwd.php
-
+echo '- Create password file ' . $password_file . "\n";
 file_put_contents($password_file, <<<EOT
 <?php
 \$pwd = [
-	'{$username}' => '{$project_password}',
+	'$user_name' => '$project_password',
 	'saf_demo' => ''
 ];
 
 EOT
 );
 
-echo '- Create application configuration file ' . $config_file . LF;
-// /$project.php
+echo '- Create .gitignore file ' . $gitignore_file . "\n";
+file_put_contents($gitignore_file, <<<EOT
+/.buildpath
+/.git
+/.idea
+/.project
+/.settings
 
-file_put_contents($config_file, <<<EOT
+/cache
+/saf/framework
+/tmp
+/vendor
+
+/composer.lock
+/loc.php
+/pwd.php
+/update
+
+EOT
+);
+
+
+echo '- Create application configuration file ' . $configuration_file . "\n";
+file_put_contents($configuration_file, <<<EOT
 <?php
-namespace {$namespace};
+namespace $namespace;
 
 use SAF\Framework;
 use SAF\Framework\Configuration;
@@ -95,19 +116,20 @@ use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\Plugin\Priority;
 
 global \$loc, \$pwd;
-require 'loc.php';
-require 'pwd.php';
-require 'saf.php';
+require __DIR__ . '/../../loc.php';
+require __DIR__ . '/../../pwd.php';
+require __DIR__ . '/../../saf/framework/config.php';
 
-\$config['{$config_name}'] = [
+\$config['$configuration_name'] = [
 	Configuration::APP         => Application::class,
+	Configuration::ENVIRONMENT => \$loc['environment'],
 	Configuration::EXTENDS_APP => 'SAF/Framework',
 
 	Priority::NORMAL => [
 		Dao::class => [
-			Link::DATABASE => '{$database}',
-			Link::LOGIN    => '{$username}',
-			Link::PASSWORD => \$pwd['{$username}']
+			Link::DATABASE => \$loc[Link::DATABASE],
+			Link::LOGIN    => \$loc[Link::LOGIN],
+			Link::PASSWORD => \$pwd[\$loc[Link::LOGIN]]
 		]
 	]
 ];
@@ -115,10 +137,8 @@ require 'saf.php';
 EOT
 );
 
-echo '- Create helloworld home template file ' . $helloworld_template . LF;
-// /$nickname/$project/Application_home.html
-
-file_put_contents($helloworld_template, <<<EOT
+echo '- Create hello-world home template file ' . $hello_world_template . "\n";
+file_put_contents($hello_world_template, <<<EOT
 <!DOCTYPE html>
 <html>
 <head>
@@ -128,7 +148,7 @@ file_put_contents($helloworld_template, <<<EOT
 <body>
 <!--BEGIN-->
 
-Hello, world !
+	Hello, world !
 
 <!--END-->
 </body>
@@ -137,92 +157,71 @@ Hello, world !
 EOT
 );
 
-echo '- Create alias script ' . $alias_script . LF;
-// ../$project.php
-
-file_put_contents($alias_script, <<<EOT
+echo '- Create launcher script ' . $launcher_file . "\n";
+file_put_contents($launcher_file, <<<EOT
 <?php
-chdir('$application_dir');
-require 'index.php';
-
+require __DIR__ . '/$vendor_name-$project_name/saf/framework/index.php';
 EOT
 );
 
-echo '- create cache directory ' . $cache_dir . LF;
-// /cache/
+echo '- create cache directory ' . $cache_directory . "\n";
+if (!is_dir($cache_directory)) mkdir($cache_directory, 0777, true);
+exec('chmod ugo+rwx ' . $cache_directory);
 
-if (!is_dir($cache_dir)) mkdir($cache_dir, 0755, true);
-exec('chmod ugo+rwx ' . $cache_dir);
+echo '- create temporary directory ' . $temporary_directory . "\n";
+if (!is_dir($temporary_directory)) mkdir($temporary_directory, 0777, true);
+exec('chmod ugo+rwx ' . $temporary_directory);
 
-echo '- create temporary directory ' . $tmp_dir . LF;
-// /tmp/
-
-if (!is_dir($tmp_dir)) mkdir($tmp_dir, 0755, true);
-exec('chmod ugo+rwx ' . $tmp_dir);
-
-echo '- create update file ' . $update_file . LF;
-// /update
-
+echo '- create update file ' . $update_file . "\n";
 touch($update_file);
 exec('chmod ugo+rwx ' . $update_file);
-exec('chmod ugo+rwx .');
+exec('chmod ugo+rwx ' . $dir);
 
-echo '- download dependencies into ' . $vendor_dir . LF;
-// /vendor/*
-
-exec('apt-get install -y php-pear php-geshi php-mail php-mail-mime php-mail-mimedecode');
-exec('pear install Net_POP3');
-
-if (!is_dir($vendor_dir)) mkdir($vendor_dir, 0755, true);
-chdir($vendor_dir);
-
-if (!is_dir($vendor_dir . SL . 'fpdi')) exec('git clone https://github.com/setasign/fpdi fpdi');
-if (!is_dir($vendor_dir . SL . 'html2text')) exec('git clone https://github.com/soundasleep/html2text html2text');
-if (!is_dir($vendor_dir . SL . 'jquery.form')) exec('git clone https://github.com/malsup/form jquery.form');
-if (!is_dir($vendor_dir . SL . 'jscolor')) exec('git clone https://github.com/odvarko/jscolor.git jscolor');
-if (!is_dir($vendor_dir . SL . 'tcpdf')) exec('git clone https://github.com/tecnickcom/TCPDF tcpdf');
-if (!is_dir($vendor_dir . SL . 'textile')) exec('git clone https://github.com/textile/php-textile.git textile -b2.5');
-
-if (!is_dir($vendor_dir . SL . 'fpdf')) mkdir($vendor_dir . SL . 'fpdf', 0755, true);
-copy('http://www.fpdf.org/fr/dl.php?v=17&f=tgz', $vendor_dir . SL . 'fpdf.tgz');
-system('tar -zxvf fpdf.tgz');
-system('mv fpdf17/* fpdf/');
-rmdir($vendor_dir . SL . 'fpdf17');
-unlink($vendor_dir . SL . 'fpdf.tgz');
-if (!is_dir($vendor_dir . SL . 'jquery')) mkdir($vendor_dir . SL . 'jquery', 0755, true);
-copy('http://code.jquery.com/jquery-1.8.3.js', $vendor_dir . SL . 'jquery/jquery-1.8.3.js');
-copy('http://code.jquery.com/jquery-1.8.3.min.js', $vendor_dir . SL . 'jquery/jquery-1.8.3.min.js');
-if (!is_dir($vendor_dir . SL . 'jquery-ui')) {
-	exec('wget http://saf.re/prod/projects/wiki/vendor/jquery-ui/ -P jquery-ui.tmp -r -np');
-	rename('jquery-ui.tmp/saf.re/prod/projects/wiki/vendor/jquery-ui', 'jquery-ui');
-	exec('rm -rf jquery-ui.tmp');
+echo '- create composer.json file ' . $composer_file . "\n";
+file_put_contents($composer_file, <<<EOT
+{
+	"authors": [{ "name": "$vendor_name",  "email": "your@email.com" }],
+	"description": "Description of the $project_name project",
+	"extra": {
+		"installer-paths": { "{\$vendor}/{\$name}/": ["type:itrocks"] },
+		"installer-types": ["itrocks"]
+	},
+	"name": "$vendor_name/$project_name",
+	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
+	"require": {
+		"saf/framework": "dev-master"
+	}
 }
-if (!is_dir($vendor_dir . SL . 'jquery.colresizable')) mkdir($vendor_dir . SL . 'jquery.colresizable', 0755, true);
-copy('http://saf.re/prod/projects/wiki/vendor/jquery.colresizable/colResizable-1.3.min.js', $vendor_dir . SL . 'jquery.colresizable/colResizable-1.3.min.js');
-if (!is_dir($vendor_dir . SL . 'jquery.elastic')) mkdir($vendor_dir . SL . 'jquery.elastic', 0755, true);
-copy('http://saf.re/prod/projects/wiki/vendor/jquery.elastic/jquery.elastic.source.js', $vendor_dir . SL . 'jquery.elastic/jquery.elastic.source.js');
-if (!is_dir($vendor_dir . SL . 'reset5')) mkdir($vendor_dir . SL . 'reset5', 0755, true);
-copy('http://reset5.googlecode.com/hg/reset.css', $vendor_dir . SL . 'reset5/reset.css');
+EOT
+);
 
-exec('chmod ugo+rwx ' . $vendor_dir);
-chdir(__DIR__);
+echo '- download composer into ' . $composer_executable . "\n";
+chdir($dir);
+copy('https://getcomposer.org/installer', $composer_setup);
+if (hash_file('SHA384', $composer_setup) === '92102166af5abdb03f49ce52a40591073a7b859a86e8ff13338cf7db58a19f7844fbc0bb79b2773bf30791e935dbd938') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;
+system('php ' . $composer_setup);
+unlink($composer_setup);
 
-echo '- create mysql database and user ' . $database . LF;
-// mysql.user += localhost:$nickname_$project
-// mysql.db += localhost:$nickname_$project:$nickname_$project
+echo '- install composer dependencies' . "\n";
+system('php ' . $composer_executable . ' install');
 
-file_put_contents(__DIR__ . '/tmp/init.sql', <<<EOT
-CREATE DATABASE IF NOT EXISTS {$database};
-DELETE FROM mysql.user WHERE User = '{$username}';
-DELETE FROM mysql.db WHERE User = '{$username}';
-INSERT INTO mysql.user (Host, User, Password)
-VALUES ('localhost', '{$username}', PASSWORD('{$project_password}'));
-INSERT INTO mysql.db (Host, User, Db, Select_priv, Insert_priv, Update_priv, Delete_priv, Create_priv, Drop_priv, References_priv, Index_priv, Alter_priv, Create_tmp_table_priv, Lock_tables_priv)
-VALUES ('localhost', '{$username}', '{$database}', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y');
+echo '- create database ' . $database_name . " - NEED YOUR DATABASE ROOT PASSWORD\n";
+file_put_contents($temporary_directory . '/init.sql', <<<EOT
+CREATE DATABASE IF NOT EXISTS $database_name;
+DELETE FROM mysql.user WHERE user = '$user_name';
+DELETE FROM mysql.db WHERE user = '$user_name';
+INSERT INTO mysql.user (host, user, authentication_string)
+VALUES ('localhost', '$user_name', PASSWORD('$project_password'));
+INSERT INTO mysql.db (host, user, db, select_priv, insert_priv, update_priv, delete_priv, create_priv, drop_priv, references_priv, index_priv, alter_priv, create_tmp_table_priv, lock_tables_priv)
+VALUES ('localhost', '$user_name', '$database_name', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y');
 FLUSH PRIVILEGES;
 EOT
 );
-exec('mysql -uroot -p <' . __DIR__ . '/tmp/init.sql');
-unlink(__DIR__ . '/tmp/init.sql');
+system('mysql -uroot -p <' . $temporary_directory . '/init.sql');
+unlink($temporary_directory . '/init.sql');
 
-echo 'Your application is initialized' . LF;
+echo '- initialise your application cache...' . " - NEED YOUR SYSTEM ROOT PASSWORD\n";
+echo "sudo -uwww-data php $console_file\n";
+system('sudo -uwww-data php ' . $console_file);
+
+echo 'Your application ' . $vendor_name . '/' . $project_name . ' is initialized' . "\n";

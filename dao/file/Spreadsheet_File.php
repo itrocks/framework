@@ -1,25 +1,21 @@
 <?php
 namespace SAF\Framework\Dao\File;
 
-/*
-use PHPExcel;
-use PHPExcel_IOFactory;
-
-require dirname(__FILE__) . '/../../vendor/phpoffice/phpexcel/Classes/PHPExcel.php';
-*/
 use PHPExcel_IOFactory;
 use SAF\Framework\Application;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
 
+/*
+use PHPExcel;
+use PHPExcel_IOFactory;
+*/
+
 /**
  * Excel file
  *
- * Needs PHPOffice/PHPExcel vendor project to be installed into your framework/vendor/ folder,
- * following this install procedure (Debian/Ubuntu example) :
+ * Needs gnumeric and others dependencies : install (Debian/Ubuntu/Mint example) with :
  * apt-get install gnumeric php_zip php_xml php_gd2
- * cd framework/vendor
- * git pull https://github.com/PHPOffice/PHPExcel.git
  */
 class Spreadsheet_File
 {

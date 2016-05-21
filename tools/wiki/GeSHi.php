@@ -3,8 +3,6 @@ namespace SAF\Framework\Tools\Wiki;
 
 use SAF\Framework\Tools\String;
 
-include_once __DIR__ . '../../../../vendor/easybook/geshi/geshi.php';
-
 /**
  * GeSHi generic multi-languages syntax highlighter
  *

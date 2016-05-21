@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework\Email;
 
-include_once __DIR__ . '/../../../vendor/pear/net_pop3/Net/POP3.php';
-
 /**
  * Receives emails
  *
