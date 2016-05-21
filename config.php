@@ -75,10 +75,10 @@ $config['SAF/Framework'] = [
 		],
 		Dao::class => [
 			Configuration::CLASS_NAME => Link::class,
-			Link::DATABASE => 'saf_demo',
+			Link::DATABASE => $loc[Link::DATABASE],
 			Link::HOST     => 'localhost',
-			Link::LOGIN    => 'saf_demo',
-			Link::PASSWORD => $pwd['saf_demo'],
+			Link::LOGIN    => $loc[Link::LOGIN],
+			Link::PASSWORD => $pwd[$loc[Link::LOGIN]],
 		],
 		Html_Translator::class,
 		Loc::class,
