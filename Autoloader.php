@@ -65,8 +65,8 @@ class Autoloader
 				Session::current()->plugins->get($class_name);
 			}
 		}
+		$this->files = [];
 		if (!$result) {
-			$this->files = [];
 			if (isset($file1)) $this->files[] = $file1;
 			if (isset($file2)) $this->files[] = $file2;
 			if (isset($file3)) $this->files[] = $file3;
