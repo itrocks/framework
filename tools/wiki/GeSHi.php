@@ -3,15 +3,12 @@ namespace SAF\Framework\Tools\Wiki;
 
 use SAF\Framework\Tools\String;
 
-if (!@include_once(__DIR__ . '../../../../vendor/geshi/geshi.php')) {
-	@include_once('/usr/share/php-geshi/geshi.php');
-}
+include_once __DIR__ . '../../../../vendor/easybook/geshi/geshi.php';
 
 /**
  * GeSHi generic multi-languages syntax highlighter
  *
  * This offers a SAF interface to the PHP GeSHi library
- * To install it on a Debian Linux server : apt-get install php-geshi
  */
 class GeSHi
 {
@@ -42,11 +39,11 @@ class GeSHi
 		}
 		else {
 			// php highlighter is always here
-			return '<pre>' . (
-				($language == 'php')
+			return PRE . (
+					($language == 'php')
 					? highlight_string($source, true)
 					: String::of($source)->htmlEntities()
-				) . '</pre>';
+				) . _PRE;
 		}
 	}
 

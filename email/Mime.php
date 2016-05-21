@@ -3,18 +3,13 @@ namespace SAF\Framework\Email;
 
 use Mail_mime;
 
-if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail/mime.php')) {
-	@include_once '/usr/share/php/Mail/mime.php';
-}
+include_once __DIR__ . '/../../../vendor/pear/mail_mime-decode/Mail/mimePart.php';
+include_once __DIR__ . '/../../../vendor/pear/mail_mime-decode/Mail/mime.php';
 
 /**
  * Mime object manager
  *
  * Extension to PEAR Mail_mime : allow manipulation of html images
- *
- * Compatibility with two versions of PEAR\Mail_mime :
- * - the one which uses $this->_html_images (before 06/2015)
- * - the other one with $this->html_images (since 06/2015)
  */
 class Mime extends Mail_mime
 {
@@ -28,7 +23,7 @@ class Mime extends Mail_mime
 	 */
 	public function getHtmlImages()
 	{
-		return isset($this->_html_images) ? $this->_html_images : $this->html_images;
+		return $this->_html_images;
 	}
 
 	//--------------------------------------------------------------------------------- setHtmlImages

@@ -3,25 +3,18 @@ namespace SAF\Framework\Email;
 
 use Mail;
 use Mail_smtp;
-use PEAR;
 use PEAR_Error;
 use SAF\Framework\Builder;
 use SAF\Framework\Email;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Date_Time;
 
-/** @noinspection PhpUsageOfSilenceOperatorInspection */
-if (!@include_once(__DIR__ . '/../../../vendor/pear/Mail.php')) {
-	include_once '/usr/share/php/Mail.php';
-}
+include_once __DIR__ . '/../../../vendor/pear/mail/Mail.php';
 
 /**
  * Sends emails
  *
  * This offers a SAF interface to the PHP PEAR Mail package
- * To install it on a Debian/Ubuntu/Mint Linux server :
- * apt-get install php-mail OR apt-get install php-pear & pear install Mail
- * apt-get install php-pear & pear install Mail Net_SMTP
  */
 class Sender implements Configurable
 {

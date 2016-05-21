@@ -17,7 +17,6 @@
 		"netcarver/textile":                     "3.x",
 		"oomphinc/composer-installers-extender": "~1.1",
 		"pear/mail":                             "1.x",
-		"pear/mail_mime":                        "1.x",
 		"pear/mail_mime-decode":                 "1.x",
 		"pear/net_pop3":                         "1.x",
 		"pear/net_smtp":                         "1.x",
