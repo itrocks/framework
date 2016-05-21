@@ -4,10 +4,6 @@ namespace SAF\Framework\Tools\Wiki;
 use Netcarver\Textile\Parser;
 use SAF\Framework\Builder;
 
-require_once __DIR__ . '/../../../../vendor/netcarver/textile/src/Netcarver/Textile/DataBag.php';
-require_once __DIR__ . '/../../../../vendor/netcarver/textile/src/Netcarver/Textile/Parser.php';
-require_once __DIR__ . '/../../../../vendor/netcarver/textile/src/Netcarver/Textile/Tag.php';
-
 /**
  * Textile review B-Appli style, in order to be more ergonomic
  *

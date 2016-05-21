@@ -3,9 +3,6 @@ namespace SAF\Framework\Email;
 
 use Mail_mime;
 
-include_once __DIR__ . '/../../../vendor/pear/mail_mime-decode/Mail/mimePart.php';
-include_once __DIR__ . '/../../../vendor/pear/mail_mime-decode/Mail/mime.php';
-
 /**
  * Mime object manager
  *
@@ -23,7 +20,10 @@ class Mime extends Mail_mime
 	 */
 	public function getHtmlImages()
 	{
-		return $this->_html_images;
+		return isset($this->html_images) ? $this->html_images : (
+			isset($this->_html_images) ? $this->_html_images :
+			trigger_error('Mail_mime::html_image not found', E_USER_ERROR)
+		);
 	}
 
 	//--------------------------------------------------------------------------------- setHtmlImages

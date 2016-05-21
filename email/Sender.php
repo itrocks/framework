@@ -9,8 +9,6 @@ use SAF\Framework\Email;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Tools\Date_Time;
 
-include_once __DIR__ . '/../../../vendor/pear/mail/Mail.php';
-
 /**
  * Sends emails
  *
