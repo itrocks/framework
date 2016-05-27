@@ -93,14 +93,14 @@ class Tests
 			&& (strtolower(end($file_parts)) == strtolower(prev($file_parts)))
 		) {
 			$short_class_name = Names::pathToClass(join(SL, $file_parts));
-			array_pop($file_parts);
+			unset($file_parts[key($file_parts)]);
 		}
 		$class_name = Names::pathToClass(join(SL, $file_parts));
 		/** @noinspection PhpUsageOfSilenceOperatorInspection class may not exist */
-		if (
-			(isset($short_class_name) && @is_subclass_of($short_class_name, Test::class))
-			|| is_subclass_of($class_name, Test::class)
-		) {
+		$class_name = (isset($short_class_name) && @class_exists($short_class_name))
+			? $short_class_name
+			: $class_name;
+		if (is_subclass_of($class_name, Test::class)) {
 			$this->runClass($class_name);
 		}
 	}
