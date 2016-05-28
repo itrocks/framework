@@ -12,13 +12,25 @@ class Reflection_Source
 {
 	use Tokens_Parser;
 
-	//--------------------------------------------------------------------------------- get() filters
-	const CLASSES      = 1;
+	//----------------------------------------------------------------------- get() filters constants
+
+	//--------------------------------------------------------------------------------------- CLASSES
+	const CLASSES = 1;
+
+	//---------------------------------------------------------------------------------- DEPENDENCIES
 	const DEPENDENCIES = 2;
+
+	//---------------------------------------------------------------------------------- INSTANTIATES
 	const INSTANTIATES = 3;
-	const NAMESPACES   = 4;
-	const REQUIRES     = 5;
-	const USES         = 6;
+
+	//------------------------------------------------------------------------------------ NAMESPACES
+	const NAMESPACES = 4;
+
+	//-------------------------------------------------------------------------------------- REQUIRES
+	const REQUIRES = 5;
+
+	//------------------------------------------------------------------------------------------ USES
+	const USES = 6;
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
@@ -669,10 +681,6 @@ class Reflection_Source
 			$source = self::$cache[$class_name];
 		}
 		else {
-			if (!strpos($class_name, BS)) {
-				/** @noinspection PhpUsageOfSilenceOperatorInspection May not exist */
-				@include_once '/usr/share/php/' . str_replace('_', SL, $class_name) . '.php';
-			}
 			$filename = (new ReflectionClass($class_name))->getFileName();
 			// consider vendor classes like internal classes : we don't work with their sources
 			if (strpos($filename, '/vendor/')) {

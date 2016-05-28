@@ -175,7 +175,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			&& ($user_changes = $this->property->getAnnotations('user_change'))
 		) {
 			foreach ($user_changes as $user_change) {
-				$this->on_change[] = $user_change_value = str_replace([BS, '::'], SL, $user_change->value);
+				$this->on_change[] = str_replace([BS, '::'], SL, $user_change->value);
 			}
 		}
 		return parent::build();

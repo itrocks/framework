@@ -265,7 +265,7 @@ class Maintainer implements Registerable
 				}
 				if ($retry) {
 					$result = $mysqli->query($query);
-					if (!$mysqli->last_errno && !$mysqli->error) {
+					if (!$mysqli->last_errno && !$mysqli->last_error) {
 						$joinpoint->stop = true;
 					}
 				}

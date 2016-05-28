@@ -7,7 +7,7 @@ namespace SAF\Framework\PHP;
 interface Class_File_Name_Getter
 {
 
-	//------------------------------------------------------------------------------ getClassFilename
+	//------------------------------------------------------------------------------ getClassFileName
 	/**
 	 * Give a class name and gets its matching file name or Reflection Source.
 	 * Implemented by autoloaders.
@@ -15,6 +15,6 @@ interface Class_File_Name_Getter
 	 * @param $class_name string
 	 * @return Reflection_Source|string
 	 */
-	public function getClassFilename($class_name);
+	public function getClassFileName($class_name);
 
 }

@@ -1,18 +1,15 @@
 <?php
 namespace SAF\Framework\Email;
 
+use Html2Text\Html2Text;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Email;
-
-include_once __DIR__ . '/../../../vendor/html2text/html2text.php';
 
 /**
  * Encodes MIME emails
  *
  * This offers a SAF interface to the PHP PEAR Mail_Mime package
- * To install it on a Debian Linux server : apt-get install php-mail-mime
- * Or from pear : pear install Mail_Mime
  */
 class Encoder
 {
@@ -63,7 +60,7 @@ class Encoder
 
 			$error_reporting = error_reporting();
 			error_reporting(E_ALL & ~E_WARNING);
-			$mail->setTXTBody(convert_html_to_text($this->email->content));
+			$mail->setTXTBody((new Html2Text($this->email->content))->getText());
 			error_reporting($error_reporting);
 
 			$mail->setHTMLBody($body);

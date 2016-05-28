@@ -12,7 +12,7 @@ use SAF\Framework\Tools\Date_Time;
 /**
  * A SAF electronic mail object to get full access to mails without depending on MIME or the else
  *
- * @before_write
+ * @before_write beforeWrite
  * @representative date, from, to, subject
  */
 class Email
@@ -278,7 +278,6 @@ class Email
 	 */
 	public function update(Parameters $parameters)
 	{
-		set_time_limit(36000);
 		$search = ['content' => Func::notEqual('')];
 		if (!$parameters->contains('all')) {
 			if ($date = $parameters->getRawParameter(0)) {

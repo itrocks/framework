@@ -226,11 +226,14 @@ class Main
 	 */
 	private function loadConfiguration()
 	{
-		$config = isset($_SERVER['CONFIG'])
-			? ($_SERVER['CONFIG'] . '/config.php')
-			: substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1);
-		$configuration = (new Configurations())->load($config);
-		return $configuration;
+		$configurations = new Configurations();
+		$config = $configurations->getConfigurationFileNameFromComposer();
+		if (!isset($config)) {
+			$config = isset($_SERVER['CONFIG'])
+				? ($_SERVER['CONFIG'] . '/config.php')
+				: substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1);
+		}
+		return $configurations->load($config);
 	}
 
 	//-------------------------------------------------------------------------------------- redirect
@@ -304,6 +307,7 @@ class Main
 		}
 
 		unset($_SESSION['include_path']);
+		$session->environment = $configuration->environment;
 		$this->setIncludePath($_SESSION, $configuration->getApplicationClassName());
 		$this->registerPlugins($session->plugins, $configuration);
 	}

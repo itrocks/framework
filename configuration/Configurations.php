@@ -41,6 +41,25 @@ class Configurations
 		return $this->configurations[$configuration_name];
 	}
 
+	//---------------------------------------------------------- getConfigurationFileNameFromComposer
+	/**
+	 * Automatically get the current configuration name, if set into your final project's
+	 * composer.json file.
+	 *
+	 * @return string A configuration file name is a string looking like 'vendor/project/config.php'
+	 */
+	public function getConfigurationFileNameFromComposer()
+	{
+		if (file_exists('composer.json')) {
+			$composer = file_get_contents('composer.json');
+			preg_match('~\n\s*\"name\":\s*\"(?P<vendor>\w*)/(?P<project>\w*)\"\s*,~', $composer, $match);
+			if ($match) {
+				return $match['vendor'] . SL . $match['project'] . SL . 'config.php';
+			}
+		}
+		return null;
+	}
+
 	//------------------------------------------------------------------------------------------ load
 	/**
 	 * Load the config.php configuration file an store it into the configurations list

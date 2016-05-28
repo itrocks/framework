@@ -28,15 +28,18 @@ use SAF\Framework\Widget\Menu\Item;
  * - runController() can be called only if the user has access to the uri (low-level features)
  *   This control is done only if isA(User, Has_Groups)
  *
- *
  * A list of free access URI can be given as a configuration
  */
 class Access_Control implements Configurable, Registerable
 {
 
-	//---------------------------------------- User access control configuration array keys constants
-	const ALL_USERS  = 'all_users';
-	const BLANK      = 'blank';
+	//------------------------------------------------------------------------------------- ALL_USERS
+	const ALL_USERS = 'all_users';
+
+	//----------------------------------------------------------------------------------------- BLANK
+	const BLANK = 'blank';
+
+	//------------------------------------------------------------------------------------ EXCEPTIONS
 	const EXCEPTIONS = 'exceptions';
 
 	//------------------------------------------------------------------------------------ $all_users
@@ -202,7 +205,7 @@ class Access_Control implements Configurable, Registerable
 				);
 				$accessible = false;
 			}
-			elseif (!$this->exception($uri)) {
+			elseif (!pregMatchArray($this->exceptions, $uri)) {
 				$this->setUri(
 					View::link(Access_Control::class, Controller\Feature::F_DENIED), $uri, $get, $post, $files
 				);
@@ -229,7 +232,7 @@ class Access_Control implements Configurable, Registerable
 					View::link(Application::class, Controller\Feature::F_BLANK), $uri, $get, $post, $files
 				);
 			}
-			elseif (!$this->exception($uri)) {
+			elseif (!pregMatchArray($this->exceptions, $uri)) {
 				$this->setUri(
 					View::link(User::class, Controller\Feature::F_LOGIN), $uri, $get, $post, $files
 				);
@@ -251,24 +254,6 @@ class Access_Control implements Configurable, Registerable
 	{
 		$uri = new Uri($uri);
 		return View::link(Names::setToClass($uri->controller_name, false), $uri->feature_name);
-	}
-
-	//------------------------------------------------------------------------------------- exception
-	/**
-	 * Returns true if there is a set exception, eg no access control for this URI
-	 *
-	 * @param $uri string
-	 * @return boolean
-	 */
-	private function exception($uri)
-	{
-		// could use preg_grep, but I don't want to ask delimiters into exceptions array
-		foreach ($this->exceptions as $exception) {
-			if (preg_match('%^' . $exception . '$%', $uri)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	//--------------------------------------------------------------------------------------- isBlank

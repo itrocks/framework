@@ -17,7 +17,10 @@ use SAF\Framework\View;
 class IP implements Configurable, Registerable
 {
 
+	//------------------------------------------------------------------------------ REMOTE_ADDRESSES
 	const REMOTE_ADDRESSES = 'remote_addresses';
+
+	//------------------------------------------------------------------------------------------ URIS
 	const URIS             = 'uris';
 
 	//----------------------------------------------------------------------------- $remote_addresses
@@ -68,7 +71,7 @@ class IP implements Configurable, Registerable
 	/**
 	 * Returns true if the remote address matches the originators list
 	 *
-	 * @param $remote_address string
+	 * @param $remote_address string The remote client address (IP)
 	 * @return boolean
 	 */
 	private function checkIP($remote_address)
@@ -82,7 +85,7 @@ class IP implements Configurable, Registerable
 				$ip = gethostbyname($address);
 				if ($ip !== $address) {
 					$this->remote_addresses[$ip] = $ip;
-					if ($address === $remote_address) {
+					if ($ip === $remote_address) {
 						return true;
 					}
 				}

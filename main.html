@@ -51,11 +51,9 @@
 	<!-- xtarget must be the first, as it is high-level for a and sub-modules may want to prevent propagation -->
 	<script type="text/javascript" src="js/jquery.xtarget.js"></script>
 
-	<script type="text/javascript" src="../../vendor/jquery.colresizable/colResizable-1.3.min.js"></script>
-	<script type="text/javascript" src="../../vendor/jquery.elastic/jquery.elastic.source.js"></script>
-	<script type="text/javascript" src="../../vendor/jquery.form/jquery.form.js"></script>
-
-	<script type="text/javascript" src="../../vendor/jscolor/jscolor.js"></script>
+	<script type="text/javascript" src="../../vendor/alvaro-prieto/colResizable/colResizable-1.6.min.js"></script>
+	<script type="text/javascript" src="../../vendor/jan-odvarko/jscolor/jscolor.js"></script>
+	<script type="text/javascript" src="../../vendor/malsup/form/jquery.form.js"></script>
 
 	<script type="text/javascript" src="js/jquery.aform.js"></script>
 	<script type="text/javascript" src="js/jquery.autofocus.js"></script>
@@ -104,16 +102,11 @@
 
 	<header>
 		<div id="messages"></div>
-		<ul>
-			<li class="provider saf"><a href="http://saf.re" target="_blank" title="saf.re">SAF</a></li>
-			<li class="rad add">
-				<a href="/SAF/Framework/Rad/add" target="#rad_add">add</a>
-				<ul class="rad add">
-					<li><a href="/SAF/Framework/Property/select/{@class.path}" target="#column_select">
-						|select columns|
-					</a></li>
-				</ul>
+		<ul class="links">
+			<li class="provider saf">
+				<a href="http://saf.re" target="_blank" title="saf.re">SAF</a>
 			</li>
+			<li class="rad add"><a href="/SAF/Framework/Rad/add">|configure|</a></li>
 		</ul>
 	</header>
 
@@ -121,14 +114,14 @@
 	{/SAF/Framework/Widget/Menu/output}
 	<!--Session.current.plugins.get(Menu.class)-->
 
-	<div id="main">
+	<section class="application center" id="main">
 		{@content}
-	</div>
+	</section>
 
 	<section id="trashcan">
 		<h2>|Trashcan|</h2>
 		<div></div>
-		<a href="/SAF/Framework/Widget/Trashcan" target="#trashcan>div">bin</a>
+		<a href="/SAF/Framework/Widget/Trashcan" target="#trashcan>div">|bin|</a>
 	</section>
 
 </body>

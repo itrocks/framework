@@ -5,13 +5,25 @@
 	"name":         "saf/framework",
 	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
+		"alvaro-prieto/colResizable":            "1.6",
 		"components/jquery":                     "2.x",
 		"components/jqueryui":                   "1.x",
 		"composer/installers":                   "~1.0",
 		"csl/reset5":                            "1.x",
+		"easybook/geshi":                        "1.x",
 		"html2text/html2text":                   "4.x",
+		"jan-odvarko/jscolor":                   "2.x",
+		"malsup/form":                           "3.x",
+		"netcarver/textile":                     "3.x",
 		"oomphinc/composer-installers-extender": "~1.1",
-		"setasign/fpdi-tcpdf":                   "1.x"
+		"pear/mail":                             "1.x",
+		"pear/mail_mime":                        "1.x",
+		"pear/mail_mime-decode":                 "1.x",
+		"pear/net_pop3":                         "1.x",
+		"pear/net_smtp":                         "1.x",
+		"phpoffice/phpexcel":                    "1.x",
+		"setasign/fpdi-tcpdf":                   "1.x",
+		"tecnickcom/tcpdf":                      "6.x"
 	},
 	"type": "itrocks"
 }

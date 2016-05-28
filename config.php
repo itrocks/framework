@@ -18,12 +18,14 @@ use SAF\Framework\Plugin\Priority;
 use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\View\Html\Cleaner;
 
-global $pwd;
+global $loc, $pwd;
+require __DIR__ . '/../../loc.php';
 require __DIR__ . '/../../pwd.php';
 
 $config['SAF/Framework'] = [
-	Configuration::APP    => Application::class,
-	Configuration::AUTHOR => 'Baptiste Pillot',
+	Configuration::APP         => Application::class,
+	Configuration::AUTHOR      => 'Baptiste Pillot',
+	Configuration::ENVIRONMENT => $loc[Configuration::ENVIRONMENT],
 
 	// top core plugins are loaded first, before the session is opened
 	// this array must stay empty : top core plugins must be set into the index.php script
@@ -73,10 +75,10 @@ $config['SAF/Framework'] = [
 		],
 		Dao::class => [
 			Configuration::CLASS_NAME => Link::class,
-			Link::DATABASE => 'saf_demo',
+			Link::DATABASE => $loc[Link::DATABASE],
 			Link::HOST     => 'localhost',
-			Link::LOGIN    => 'saf_demo',
-			Link::PASSWORD => $pwd['saf_demo'],
+			Link::LOGIN    => $loc[Link::LOGIN],
+			Link::PASSWORD => $pwd[$loc[Link::LOGIN]],
 		],
 		Html_Translator::class,
 		Loc::class,

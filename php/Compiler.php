@@ -165,7 +165,7 @@ class Compiler implements
 	 */
 	public function compile($last_time = 0)
 	{
-		set_time_limit(900);
+		upgradeTimeLimit(900);
 		clearstatcache();
 		$cache_dir = $this->getCacheDir();
 
@@ -325,14 +325,14 @@ class Compiler implements
 		return $this->cache_dir;
 	}
 
-	//------------------------------------------------------------------------------ getClassFilename
+	//------------------------------------------------------------------------------ getClassFileName
 	/**
 	 * Gets a Reflection_Source knowing its class _name.
-	 * Uses sources cache, or router's getClassFilename() and fill-in cache.
+	 * Uses sources cache, or router's getClassFileName() and fill-in cache.
 	 ** @param $class_name string
 	 * @return Reflection_Source
 	 */
-	public function getClassFilename($class_name)
+	public function getClassFileName($class_name)
 	{
 		if (isset($this->saved_sources[$class_name])) {
 			return $this->saved_sources[$class_name];
@@ -345,7 +345,7 @@ class Compiler implements
 					. str_replace(SL, '-', Names::classToPath($class_name));
 			}
 			else {
-				$file_name = $router->getClassFilename($class_name);
+				$file_name = $router->getClassFileName($class_name);
 			}
 			return Reflection_Source::ofFile($file_name, $class_name);
 		}

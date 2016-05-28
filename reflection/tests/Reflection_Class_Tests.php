@@ -83,7 +83,7 @@ class Reflection_Class_Tests extends Test
 			__METHOD__,
 			$check,
 			[
-				'date' => null, 'number' => null, 'has_workflow' => null, 'client' => null,
+				'date' => null, 'has_workflow' => true, 'number' => null, 'client' => null,
 				'delivery_client' => null, 'lines' => null, 'salesmen' => null
 			]
 		);

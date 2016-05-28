@@ -1,9 +1,8 @@
 <?php
 namespace SAF\Framework\Tools\Wiki;
 
+use Netcarver\Textile\Parser;
 use SAF\Framework\Builder;
-
-require_once __DIR__ . '/../../../../vendor/textile/classTextile.php';
 
 /**
  * Textile review B-Appli style, in order to be more ergonomic
@@ -11,7 +10,7 @@ require_once __DIR__ . '/../../../../vendor/textile/classTextile.php';
  * Replace textile's '_' by '/' for italic
  * Replace textile's '+' by '_' for underlined
  */
-class Textile extends \Textile
+class Textile extends Parser
 {
 
 	//----------------------------------------------------------------------------------- $span_depth
@@ -108,19 +107,20 @@ class Textile extends \Textile
 		$this->span_depth++;
 
 		if ($this->span_depth <= $this->max_span_depth) {
-			foreach ($span_tags as $f) {
-				$f = preg_quote($f);
+			foreach ($span_tags as $tag) {
+				$tag = preg_quote($tag);
 				$text = preg_replace_callback(
 					"`
-          (^|(?<=[\s>$pnct\(])|[{[]) # pre
-          ($f)(?!$f)                 # tag
-          ({$this->lc})              # atts - do not use horizontal alignment; it kills html tags within inline elements.
-          (?::(\S+))?                # cite
-          ([^\s$f]+|\S.*?[^\s$f\n])  # content
-          ([$pnct]*)                 # end
-          $f
-          ($|[\[\]}<]|(?=[$pnct]{1,2}[^0-9]|\s|\)))  # tail
-          `x" . $this->regex_snippets['mod'],
+					(?P<pre>^|(?<=[\s>$pnct\(])|[{[])
+					(?P<tag>$tag)(?!$tag)
+					(?P<atts>{$this->cls})
+					(?!$tag)
+					(?::(?P<cite>\S+[^$tag]{$this->regex_snippets['space']}))?
+					(?P<content>[^{$this->regex_snippets['space']}$tag]+|\S.*?[^\s$tag\n])
+					(?P<end>[$pnct]*)
+					$tag
+					(?P<tail>$|[\[\]}<]|(?=[$pnct]{1,2}[^0-9]|\s|\)))
+					`x" . $this->regex_snippets['mod'],
 					[&$this, 'fSpan'],
 					$text
 				);
@@ -135,15 +135,15 @@ class Textile extends \Textile
 	 * Parses the given Textile input in un-restricted mode.
 	 *
 	 * @param $text     string The Textile input to parse
-	 * @param $lite     boolean|string Switch to lite mode
-	 * @param $encode   string Encode input and return
-	 * @param $no_image string Disables images
-	 * @param $strict   boolean|string false to strip whitespace before parsing
-	 * @param $rel      string Relationship attribute applied to generated links
+	 * @param $lite     string|boolean Switch to lite mode
+	 * @param $encode   string|boolean Encode input and return
+	 * @param $no_image string|boolean Disables images
+	 * @param $strict   string|boolean false to strip whitespace before parsing
+	 * @param $rel      string|boolean Relationship attribute applied to generated links
 	 * @return string Parsed $text
 	 */
 	public function textileThis(
-		$text, $lite = '', $encode = '', $no_image = '', $strict = '', $rel = ''
+		$text, $lite = false, $encode = false, $no_image = false, $strict = false, $rel = false
 	) {
 		return $this->parseSpans(parent::textileThis($text, $lite, $encode, $no_image, $strict, $rel));
 	}

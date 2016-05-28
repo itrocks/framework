@@ -86,8 +86,21 @@ class Tests
 	 */
 	public function runFile($file_name)
 	{
-		$class_name = Names::pathToClass(substr($file_name, 0, -4));
-		if (is_subclass_of($class_name, Test::class)) {
+		// Accept both Class_Name/Class_Name and Class_Name namespaces
+		$file_parts = explode(SL, substr($file_name, 0, -4));
+		if (
+			(count($file_parts) > 2)
+			&& (strtolower(end($file_parts)) == strtolower(prev($file_parts)))
+		) {
+			$long_class_name = Names::pathToClass(join(SL, $file_parts));
+			unset($file_parts[key($file_parts)]);
+		}
+		$short_class_name = Names::pathToClass(join(SL, $file_parts));
+		/** @noinspection PhpUsageOfSilenceOperatorInspection class may not exist */
+		if (
+			@is_subclass_of($class_name = $short_class_name, Test::class)
+			|| (isset($long_class_name) && @is_subclass_of($class_name = $long_class_name, Test::class))
+		) {
 			$this->runClass($class_name);
 		}
 	}

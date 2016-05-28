@@ -68,7 +68,12 @@ class Application
 			Session::current()->set($set_current, Application::class);
 			return $set_current;
 		}
-		return Session::current()->get(Application::class);
+		$session = Session::current();
+		if ($session == null) {
+			$session = new Session();
+		}
+		//return Session::current()->get(Application::class);
+		return $session->get(Application::class);
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir
@@ -77,7 +82,7 @@ class Application
 	 */
 	public function getCacheDir()
 	{
-		return $_SERVER['CWD'] . SL . 'cache';
+		return __DIR__ . '/../../cache';
 	}
 
 	//-------------------------------------------------------------------------------- getClassesTree
