@@ -6,6 +6,7 @@ namespace SAF\Framework\Reflection\Interfaces;
  */
 interface Reflection_Class extends Reflection
 {
+	const T_SORT = 'sort';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -89,8 +90,9 @@ interface Reflection_Class extends Reflection
 	 *
 	 * Properties visible for current class, not the privates ones from parents and traits are
 	 * retrieved but if you set T_EXTENDS and T_USE to get them.
+	 * If you set self::T_SORT properties will be sorted by (@)display_order class annotation
 	 *
-	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @param $flags integer[] T_EXTENDS, T_USE, self::T_SORT
 	 * @param $final_class string force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
 	 */

@@ -3,6 +3,7 @@ namespace SAF\Framework\Reflection;
 
 use ReflectionClass;
 use SAF\Framework\Reflection\Annotation\Annoted;
+use SAF\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
 use SAF\Framework\Reflection\Annotation\Parser;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -305,8 +306,9 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * Properties visible for current class, not the privates ones from parents and traits are
 	 * retrieved.
+	 * If you set self::T_SORT properties will be sorted by (@)display_order class annotation
 	 *
-	 * @param $flags integer[] T_EXTENDS, T_USE. T_USE has no effect : traits properties will always
+	 * @param $flags integer[] T_EXTENDS, T_USE, self::T_SORT. Note: T_USE has no effect
 	 * @param $final_class string force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
 	 */
@@ -327,6 +329,9 @@ class Reflection_Class extends ReflectionClass
 				$properties = array_merge($parent->getProperties([], $final_class), $properties);
 				$parent = $parent->getParentClass();
 			}
+		}
+		if (in_array(self::T_SORT, $flags)) {
+			$properties = $this->sortProperties($properties);
 		}
 		return $properties;
 	}
@@ -385,6 +390,36 @@ class Reflection_Class extends ReflectionClass
 			}
 		}
 		return false;
+	}
+
+	//-------------------------------------------------------------------------------- sortProperties
+	/**
+	 * Sort the properties list from (@)display_order class annotation
+	 * @param $properties Reflection_Property[] key is the name of the property
+	 * @return Reflection_Property[] key is the name of the property
+	 */
+	public function sortProperties($properties)
+	{
+		$annotations = $this->getAnnotation(Display_Order_Annotation::ANNOTATION);
+		if (is_array($annotations->value) && count($annotations->value)) {
+			$property_names = $annotations->value;
+			array_walk($property_names, function (&$value) {
+				$value = trim($value);
+			});
+			$sorted_properties = [];
+			foreach($property_names as $property_name) {
+				if (isset($properties[$property_name])) {
+					$sorted_properties[$property_name] = $properties[$property_name];
+				}
+			}
+			foreach ($properties as $property_name => $property) {
+				if (!isset($sorted_properties[$property_name])) {
+					$sorted_properties[$property_name] = $property;
+				}
+			}
+			return $sorted_properties;
+		}
+		return $properties;
 	}
 
 }

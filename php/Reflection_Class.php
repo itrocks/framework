@@ -545,7 +545,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
-	 * A little difference with PHP's Reflection\Reflection_Class::getProperties : if T_USER flag is
+	 * A little difference with PHP's Reflection\Reflection_Class::getProperties : if T_USE flag is
 	 * not set, this will not return properties that are declared into traits.
 	 *
 	 * @param $flags       integer[] T_EXTENDS, T_USE

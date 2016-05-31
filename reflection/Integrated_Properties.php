@@ -87,7 +87,7 @@ abstract class Integrated_Properties
 			$integrated_simple = $integrated->has(Integrated_Annotation::SIMPLE);
 			/** @var $sub_properties_class Reflection_Class */
 			$sub_properties_class = $property->getType()->asReflectionClass();
-			$expand_properties = $sub_properties_class->getProperties([T_EXTENDS, T_USE]);
+			$expand_properties = $sub_properties_class->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT]);
 			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
 				if (!$sub_property->getListAnnotation(User_Annotation::ANNOTATION)->has(

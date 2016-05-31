@@ -193,6 +193,12 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Property\Deprecated_Annotation' => Boolean_Annotation::class,
 
 	/**
+	 * @display_order property_name, another_property
+	 * Declares property names' display order
+	 */
+	__NAMESPACE__ . '\Property\Display_Order_Annotation' => List_Annotation::class,
+
+	/**
 	 * @filters property_name, another_property
 	 * Declares other property names that are used to filter possible values of the property
 	 */
