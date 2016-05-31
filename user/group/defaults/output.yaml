@@ -1,6 +1,7 @@
 features:
   - dataList
   - dataListSetting
+  - json
   - output
   - SAF/Framework/Property/remove
   - SAF/Framework/Property/select
