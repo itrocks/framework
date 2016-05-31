@@ -90,7 +90,9 @@ trait Date
 	protected function applyDateRangeValue($search_value, $min_max)
 	{
 		if ($this->hasJoker($search_value)) {
-			throw new Data_List_Exception($search_value, Loc::tr('You can not have a wildcard on a range value'));
+			throw new Data_List_Exception(
+				$search_value, Loc::tr('You can not have a wildcard on a range value')
+			);
 		}
 		return $this->applyDatePeriod($search_value, $min_max);
 	}
@@ -899,13 +901,14 @@ trait Date
 		static $letters;
 		if (!isset($letters)) {
 			$letters = explode('|', Loc::tr('d|m|y') . '|' . Loc::tr('h|m|s'));
+			$ipUp = function($letter) { return isset($letter) ? ($letter . strtoupper($letter)) : ''; };
 			$letters = [
-				Date_Time::DAY   => 'dD' . (isset($letters[0]) ? $letters[0] . strtoupper($letters[0]) : ''),
-				Date_Time::MONTH => 'mM' . (isset($letters[1]) ? $letters[1] . strtoupper($letters[1]) : ''),
-				Date_Time::YEAR  => 'yY' . (isset($letters[2]) ? $letters[2] . strtoupper($letters[2]) : ''),
-				Date_Time::HOUR  => 'hH' . (isset($letters[3]) ? $letters[3] . strtoupper($letters[3]) : ''),
-				Date_Time::MINUTE => 'iI' . (isset($letters[4]) ? $letters[4] . strtoupper($letters[4]) : ''),
-				Date_Time::SECOND  => 'sS' . (isset($letters[5]) ? $letters[5] . strtoupper($letters[5]) : '')
+				Date_Time::DAY     => 'dD' . $ipUp($letters[0]),
+				Date_Time::MONTH   => 'mM' . $ipUp($letters[1]),
+				Date_Time::YEAR    => 'yY' . $ipUp($letters[2]),
+				Date_Time::HOUR    => 'hH' . $ipUp($letters[3]),
+				Date_Time::MINUTE  => 'iI' . $ipUp($letters[4]),
+				Date_Time::SECOND  => 'sS' . $ipUp($letters[5])
 			];
 		}
 		return $letters[$part];
