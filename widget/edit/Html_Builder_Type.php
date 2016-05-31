@@ -159,7 +159,7 @@ class Html_Builder_Type
 					$result = $this->buildObject();
 				}
 			}
-			if ($result instanceof Element) {
+			if (isset($result) && ($result instanceof Element)) {
 				$this->setOnChangeAttribute($result);
 			}
 		}

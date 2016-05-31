@@ -90,7 +90,7 @@ trait Date
 	protected function applyDateRangeValue($search_value, $min_max)
 	{
 		if ($this->hasJoker($search_value)) {
-			throw new Data_List_Exception($search_value, Loc::tr('Range value can not have wildcard'));
+			throw new Data_List_Exception($search_value, Loc::tr('You can not have a wildcard on a range value'));
 		}
 		return $this->applyDatePeriod($search_value, $min_max);
 	}
@@ -700,16 +700,7 @@ trait Date
 	 */
 	protected function computeFormula(&$expression, $part)
 	{
-		$p = [
-			// y+1 y-3 a+1 a-3
-			Date_Time::YEAR   => '[yaYA]',
-			Date_Time::MONTH  => '[mM]',
-			Date_Time::DAY    => '[djDJ]',
-			Date_Time::HOUR   => '[hH]',
-			Date_Time::MINUTE => '[mM]',
-			Date_Time::SECOND => '[sS]'
-		];
-		$pp = $p[$part];
+		$pp = '[' . $this->getDateLetters($part) . ']';
 		if (preg_match(
 			"/^ \\s* $pp \\s* (?:(?<sign>[-+]) \\s* (?<operand>\\d+))? \\s* $/x", $expression, $matches
 		)) {
@@ -907,11 +898,14 @@ trait Date
 	{
 		static $letters;
 		if (!isset($letters)) {
-			$letters = explode('|', Loc::tr('d|m|y'));
+			$letters = explode('|', Loc::tr('d|m|y') . '|' . Loc::tr('h|m|s'));
 			$letters = [
-				Date_Time::DAY   => 'dD' . $letters[0] . strtoupper($letters[0]),
-				Date_Time::MONTH => 'mM' . $letters[1] . strtoupper($letters[1]),
-				Date_Time::YEAR  => 'yY' . $letters[2] . strtoupper($letters[2])
+				Date_Time::DAY   => 'dD' . (isset($letters[0]) ? $letters[0] . strtoupper($letters[0]) : ''),
+				Date_Time::MONTH => 'mM' . (isset($letters[1]) ? $letters[1] . strtoupper($letters[1]) : ''),
+				Date_Time::YEAR  => 'yY' . (isset($letters[2]) ? $letters[2] . strtoupper($letters[2]) : ''),
+				Date_Time::HOUR  => 'hH' . (isset($letters[3]) ? $letters[3] . strtoupper($letters[3]) : ''),
+				Date_Time::MINUTE => 'iI' . (isset($letters[4]) ? $letters[4] . strtoupper($letters[4]) : ''),
+				Date_Time::SECOND  => 'sS' . (isset($letters[5]) ? $letters[5] . strtoupper($letters[5]) : '')
 			];
 		}
 		return $letters[$part];

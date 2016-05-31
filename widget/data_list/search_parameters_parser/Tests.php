@@ -687,14 +687,12 @@ class Tests extends Test
 	 */
 	public function testParseSingleDayFormula()
 	{
-		$this->parser->search = ['date' => 'd+4,j-4,d,j,D,J'];
+		$this->parser->search = ['date' => 'd+4,d-4,d,D'];
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
 				new Range('2016-06-19 00:00:00', '2016-06-19 23:59:59'),
 				new Range('2016-06-11 00:00:00', '2016-06-11 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
 				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
 				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59')
 			])
@@ -731,14 +729,12 @@ class Tests extends Test
 	 */
 	public function testParseSingleYearFormula()
 	{
-		$this->parser->search = ['date' => 'y+5,a-5,y,a,Y,A'];
+		$this->parser->search = ['date' => 'y+5,y-5,y,Y'];
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
 				new Range('2021-01-01 00:00:00', '2021-12-31 23:59:59'),
 				new Range('2011-01-01 00:00:00', '2011-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
 				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
 				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
 			])
