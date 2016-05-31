@@ -44,8 +44,11 @@ $('document').ready(function()
 		});
 
 		// trash is droppable
-		this.inside('#trashcan a').droppable({
-			accept:     '.column label, .list table th.property, .object, .objects, .throwable',
+		var accept = '.column label, .list table th.property, .object, .objects, .throwable';
+		this.inside('#trashcan a')
+		.data('accept', accept)
+		.droppable({
+			accept:     accept,
 			hoverClass: 'candrop',
 			tolerance:  'touch',
 
