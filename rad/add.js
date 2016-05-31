@@ -14,8 +14,7 @@
 	{
 
 		// properties can be dropped into trashcan only when in "RAD" mode
-		$('body').build(function()
-		{
+		$('body').build(function() {
 			this.inside('#trashcan a').droppable({
 				accept: '.property, .column label, .object, .objects, .throwable, .action',
 				hoverClass: 'candrop',
