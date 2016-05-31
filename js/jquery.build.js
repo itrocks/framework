@@ -47,19 +47,14 @@
 			// add a callback function
 			window.jquery_build_callback.push(callback);
 			if ((call_now == undefined) || call_now) {
-				this.tmpBuildCaller = callback;
-				this.tmpBuildCaller();
-				delete this.tmpBuildCaller;
+				callback.call(this);
 			}
 		}
 		else {
 			// execute all callback functions
 			for (var key in jquery_build_callback) if (jquery_build_callback.hasOwnProperty(key)) {
-				callback = window.jquery_build_callback[key];
-				this.tmpBuildCaller = callback;
-				this.tmpBuildCaller();
+				window.jquery_build_callback[key].call(this);
 			}
-			delete this.tmpBuildCaller;
 		}
 		delete this.inside;
 
