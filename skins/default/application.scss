@@ -160,6 +160,18 @@ strong {
 	font-weight: bold;
 }
 
+sub {
+	font-size: smaller;
+	line-height: normal;
+	vertical-align: sub;
+}
+
+sup {
+	font-size: smaller;
+	line-height: normal;
+	vertical-align: super;
+}
+
 table, tbody, thead, tr, td, th {
 	border-spacing: 0;
 	padding: 0 2px;
