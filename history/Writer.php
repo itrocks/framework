@@ -66,7 +66,7 @@ abstract class Writer
 			);
 			// call getter for collections and maps in order to get the full value before write
 			foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
-				if ($property->gettype()->isMultiple()) {
+				if ($property->getType()->isMultiple()) {
 					$property->getValue($before);
 				}
 			}
