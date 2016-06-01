@@ -10,6 +10,7 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Current;
+use SAF\Framework\Tools\Date_Time;
 
 /**
  * A Locale object has all locale features, useful for specific locale conversions
@@ -19,9 +20,15 @@ class Locale implements Configurable
 	use Current { current as private pCurrent; }
 
 	//----------------------------------------------------- Locale configuration array keys constants
-	const DATE     = 'date';
+
+	//------------------------------------------------------------------------------------------ DATE
+	const DATE = 'date';
+
+	//-------------------------------------------------------------------------------------- LANGUAGE
 	const LANGUAGE = 'language';
-	const NUMBER   = 'number';
+
+	//---------------------------------------------------------------------------------------- NUMBER
+	const NUMBER = 'number';
 
 	//---------------------------------------------------------------------------------- $date_format
 	/**
@@ -119,6 +126,9 @@ class Locale implements Configurable
 	{
 		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
 			$value = $property->value();
+		}
+		if ($value instanceof Date_Time) {
+			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
 		}
 		return (is_null($value) && $property->getAnnotation('null')->value)
 			? $value

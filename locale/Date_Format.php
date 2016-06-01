@@ -18,6 +18,12 @@ class Date_Format
 	 */
 	public $format;
 
+	//--------------------------------------------------------------------------------- $show_seconds
+	/**
+	 * @var boolean
+	 */
+	public $show_seconds = false;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructor needs the locale format of the date
@@ -179,8 +185,8 @@ class Date_Format
 			else {
 				list($date, $time) = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
 				// TODO Here it's useless. May be what is wanted is $time = substr($time, 0, 5); ??
-				if ((strlen($time) == 8) && (substr($time, -3) == ':00')) {
-					substr($time, 0, 5);
+				if ((strlen($time) == 8) && ((substr($time, -3) == ':00') || !$this->show_seconds)) {
+					$time = substr($time, 0, 5);
 				}
 				$result = ($date_time = DateTime::createFromFormat('Y-m-d', $date))
 					? ($date_time->format($this->format) . SP . $time)

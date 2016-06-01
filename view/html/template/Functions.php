@@ -430,10 +430,21 @@ class Functions
 	 */
 	public function getLoc(Template $template)
 	{
+		reset($template->var_names);
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
 				if ($object instanceof Date_Time) {
-					return Loc::dateToLocale($object);
+					$parent = current($template->objects);
+					if (is_object($parent)) {
+						// call propertyToLocale to apply @show_seconds
+						return Loc::propertyToLocale(
+							new Reflection_Property(get_class($parent), current($template->var_names)),
+							$object
+						);
+					}
+					else {
+						return Loc::dateToLocale($object);
+					}
 				}
 				else {
 					$property_name = reset($template->var_names);
@@ -446,8 +457,8 @@ class Functions
 						return Loc::propertyToLocale($property, reset($template->objects));
 					}
 				}
-				break;
 			}
+			next($template->var_names);
 		}
 		return reset($object);
 	}
