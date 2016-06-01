@@ -121,9 +121,9 @@ class Object_Validator implements Registerable
 	 */
 	public function register(Register $register)
 	{
+		$register->aop->afterMethod([Data_Link::class, 'beforeWrite'], [$this, 'beforeWrite']);
 		$register->aop->afterMethod([Main::class, 'runController'], [$this, 'afterMainControllerRun']);
 		$register->aop->beforeMethod([Main::class, 'runController'], [$this, 'beforeMainControllerRun']);
-		$register->aop->beforeMethod([Data_Link::class, 'write'], [$this, 'beforeWrite']);
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'length'     => Property\Length_Annotation::class,
 			'mandatory'  => Property\Mandatory_Annotation::class,
