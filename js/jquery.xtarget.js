@@ -27,6 +27,7 @@
 			history:         false, // { condition, popup, post, title }
 			keep:            'popup',
 			popup_element:   'div',
+			show:            undefined,
 			submit:          'submit',
 			success:         undefined,
 			url_append:      '',
@@ -147,6 +148,9 @@
 				}
 				// write result into destination element, and build jquery active contents
 				$target.html(data);
+				if (settings.show && $target.is(':not(:visible)')) {
+					$target.show();
+				}
 				// auto empty
 				if (settings.auto_empty !== undefined) {
 					for (var key in settings.auto_empty) if (settings.auto_empty.hasOwnProperty(key)) {

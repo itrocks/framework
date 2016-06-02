@@ -42,7 +42,8 @@ ul.actions {
       border-top-color: #ddd;
       display: none;
       left: 3px;
-      position: absolute; }
+      position: absolute;
+      z-index: 1; }
       ul.actions > li > ul > li {
         display: block;
         margin: 0; }

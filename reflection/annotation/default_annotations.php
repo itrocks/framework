@@ -295,6 +295,13 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Property\Setter_Annotation' => Method_Annotation::class,
 
 	/**
+	 * @show_seconds
+	 * Tells that for a Date_Time we must show seconds to the user.
+	 * If not (default), seconds are always hidden by Loc::dateToLocale()
+	 */
+	__NAMESPACE__ . '\Property\Show_Seconds' => Boolean_Annotation::class,
+
+	/**
 	 * @signed
 	 * Tells that the numeric value can be negative.
 	 */
