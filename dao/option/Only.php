@@ -70,20 +70,63 @@ class Only implements Option
 	/**
 	 * Returns true if any of the 'only' options has the property name
 	 *
-	 * @param $options  Option[]
-	 * @param $property string
+	 * If $no_only_returns_true is set to false, the function will return false if there is no Only
+	 * If $no_only_returns_true is kept to true, the function will return true if there is no Only
+	 *
+	 *
+	 * @param $options   Option[]
+	 * @param $property  string
+	 * @param $no_only_returns_true boolean if there is no Only option, returns this value
 	 * @return boolean
 	 */
-	public static function have($options, $property)
+	public static function have($options, $property, $no_only_returns_true = true)
 	{
+		$default = $no_only_returns_true;
 		foreach ($options as $option) {
 			if ($option instanceof Only) {
+				$default = false;
 				if ($option->has($property)) {
 					return true;
 				}
 			}
 		}
-		return false;
+		return $default;
+	}
+
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * Remove a property
+	 *
+	 * @param $property string
+	 * @return integer How many properties were removed. 0 if was not here.
+	 */
+	public function remove($property)
+	{
+		$removed = 0;
+		while (($key = array_search($property, $this->properties)) !== false) {
+			unset($this->properties[$key]);
+			$removed ++;
+		}
+		return $removed;
+	}
+
+	//------------------------------------------------------------------------------------- removeAll
+	/**
+	 * Remove all references to a property
+	 *
+	 * @param $options Option[]
+	 * @param $property
+	 * @return integer the count of property removed from options
+	 */
+	public static function removeAll($options, $property)
+	{
+		$removed = 0;
+		foreach ($options as $option) {
+			if ($option instanceof Only) {
+				$removed += $option->remove($property);
+			}
+		}
+		return $removed;
 	}
 
 }
