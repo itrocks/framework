@@ -7,6 +7,7 @@ use SAF\Framework\Mapper\Empty_Object;
 use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use SAF\Framework\Reflection\Annotation\Parser;
+use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use SAF\Framework\Tools\Can_Be_Empty;
@@ -21,6 +22,7 @@ class Reflection_Property extends ReflectionProperty
 {
 	use Annoted;
 
+	//----------------------------------------------------------------------------------- EMPTY_VALUE
 	const EMPTY_VALUE = '~~EMPTY~VALUE~~';
 
 	//------------------------------------------------------------------------------ $declaring_trait
@@ -458,6 +460,21 @@ class Reflection_Property extends ReflectionProperty
 	{
 		return $this->isValueEmpty($value)
 			|| $this->isEquivalentObject($value, $this->getDefaultValue());
+	}
+
+	//------------------------------------------------------------------------------------- isVisible
+	/**
+	 * Calculate if the property is visible
+	 *
+	 * @param $hide_empty_test boolean If false, will be shown even if HIDE_EMPTY is set
+	 * @return boolean
+	 */
+	public function isVisible($hide_empty_test = true)
+	{
+		$user_annotation = $this->getListAnnotation(User_Annotation::ANNOTATION);
+		return !$this->isStatic()
+			&& !$user_annotation->has(User_Annotation::INVISIBLE)
+			&& (!$hide_empty_test || !$user_annotation->has(User_Annotation::HIDE_EMPTY));
 	}
 
 	//----------------------------------------------------------------------------------- pathAsField

@@ -164,6 +164,32 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 		return parent::isValueEmpty(func_num_args() ? $value : $this->value());
 	}
 
+	//------------------------------------------------------------------------------------- isVisible
+	/**
+	 * Calculate if the property is visible
+	 *
+	 * @param $hide_empty_test boolean If false, will be shown even if HIDE_EMPTY is set and value
+	 *        is empty
+	 * @return boolean
+	 */
+	public function isVisible($hide_empty_test = true)
+	{
+		$user_annotation = $this->getListAnnotation(User_Annotation::ANNOTATION);
+		return !$this->isStatic()
+			&& !$user_annotation->has(User_Annotation::INVISIBLE)
+			&& (
+				($hide_empty_test && (
+					!$user_annotation->has(User_Annotation::HIDE_EMPTY)
+					|| !$this->isValueEmpty()
+				))
+				|| (!$hide_empty_test && (
+					!$user_annotation->has(User_Annotation::READONLY)
+					|| !$user_annotation->has(User_Annotation::HIDE_EMPTY)
+					|| !$this->isValueEmpty()
+				))
+			);
+	}
+
 	//----------------------------------------------------------------------------------------- value
 	/**
 	 * @param $value mixed

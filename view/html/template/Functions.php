@@ -4,7 +4,6 @@ namespace SAF\Framework\View\Html\Template;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper\Collection;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Integrated_Properties;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -838,16 +837,7 @@ class Functions
 	 */
 	protected function isPropertyVisible(Reflection_Property $property)
 	{
-		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-		return !$property->isStatic()
-			&& !$user_annotation->has(User_Annotation::INVISIBLE)
-			&& (
-				!$user_annotation->has(User_Annotation::HIDE_EMPTY)
-				|| (
-					($property instanceof Reflection_Property_Value)
-					&& !$property->isValueEmpty()
-				)
-			);
+		return $property->isVisible();
 	}
 
 	//--------------------------------------------------------------------------- toEditPropertyExtra

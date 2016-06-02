@@ -1,9 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Edit;
 
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\View\Html\Template\Functions;
 
 /**
@@ -23,18 +21,7 @@ class Html_Template_Functions extends Functions
 	 */
 	protected function isPropertyVisible(Reflection_Property $property)
 	{
-		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-		return !$property->isStatic()
-			&& !$user_annotation->has(User_Annotation::INVISIBLE)
-			&& (
-				// the following line is the only thing added to the parent function
-				!$user_annotation->has(User_Annotation::READONLY)
-				|| !$user_annotation->has(User_Annotation::HIDE_EMPTY)
-				|| (
-					($property instanceof Reflection_Property_Value)
-					&& strlen($property->value())
-				)
-			);
+		return $property->isVisible(false);
 	}
 
 }
