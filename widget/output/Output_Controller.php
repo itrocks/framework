@@ -30,6 +30,12 @@ use SAF\Framework\Widget\Tab\Tabs_Builder_Object;
 class Output_Controller implements Default_Feature_Controller, Has_General_Buttons
 {
 
+	//------------------------------------------------------------------------------- HIDE_EMPTY_TEST
+	/**
+	 * Parameter for Reflection_Property::isVisible (for tabs)
+	 */
+	const HIDE_EMPTY_TEST = true;
+
 	//--------------------------------------------------------------------------- applyOutputSettings
 	/**
 	 * Apply output settings rules to output settings properties
@@ -242,6 +248,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 				$object, array_keys($output_settings->properties)
 			);
 		}
+		$tab->filterVisibleProperties(static::HIDE_EMPTY_TEST);
 		return $tab;
 	}
 

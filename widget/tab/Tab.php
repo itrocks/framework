@@ -121,6 +121,26 @@ class Tab
 		return $this;
 	}
 
+	//----------------------------------------------------------------------- filterVisibleProperties
+	/**
+	 * @param $hide_empty_test boolean If false, will be shown even if HIDE_EMPTY is set
+	 */
+	public function filterVisibleProperties($hide_empty_test = true)
+	{
+		if ($this->content) {
+			foreach ($this->content as $key => $element) {
+				if (($element instanceof Reflection_Property) && method_exists($element, 'isVisible')) {
+					if (!$element->isVisible($hide_empty_test)) {
+						unset($this->content[$key]);
+					}
+				}
+			}
+		}
+		foreach ($this->includes as $include) {
+			$include->filterVisibleProperties($hide_empty_test);
+		}
+	}
+
 	//-------------------------------------------------------------------------------------------- id
 	/**
 	 * Return a calculated id for the tab, calculated from its title
