@@ -18,8 +18,12 @@ $('document').ready(function()
 			}
 		});
 
-		// messages is draggable
-		this.inside('#messages').draggable();
+		// messages is draggable and closable
+		this.inside('#messages').draggable().click(function (event) {
+			if (event.offsetX > this.clientWidth - 10 && event.offsetY < 10) {
+				$(this).empty();
+			}
+		});
 
 		// tab controls
 		this.inside('.tabber').tabber();
