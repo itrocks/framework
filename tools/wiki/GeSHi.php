@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\Tools\Wiki;
 
-use SAF\Framework\Tools\String;
+use SAF\Framework\Tools\String_Class;
 
 /**
  * GeSHi generic multi-languages syntax highlighter
@@ -40,7 +40,7 @@ class GeSHi
 			return PRE . (
 					($language == 'php')
 					? highlight_string($source, true)
-					: String::of($source)->htmlEntities()
+					: String_Class::of($source)->htmlEntities()
 				) . _PRE;
 		}
 	}

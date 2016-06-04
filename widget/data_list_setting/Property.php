@@ -5,7 +5,7 @@ use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Can_Be_Empty;
-use SAF\Framework\Tools\String;
+use SAF\Framework\Tools\String_Class;
 
 /**
  * Data list setting widget for a property (ie a column of the list)
@@ -86,7 +86,7 @@ class Property implements Can_Be_Empty
 		else {
 			$display = $this->display;
 		}
-		return strval((new String($display))->twoLast());
+		return strval((new String_Class($display))->twoLast());
 	}
 
 	//----------------------------------------------------------------------------------------- title

@@ -23,7 +23,7 @@ interface Index
 	/**
 	 * Gets the SQL version of the column definition
 	 *
-	 * @returns String
+	 * @returns string
 	 */
 	public function toSql();
 
