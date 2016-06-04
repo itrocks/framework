@@ -98,11 +98,11 @@ class Encoder
 				break;
 			}
 		}
-		$buffer = str_replace(
-			['src=' . DQ . '/images/',   'src=' . Q . '/images/',   '(url=/images/'],
-			['src=' . DQ . $parent . 'images/', 'src=' . Q . $parent . 'images/', '(url=' . $parent . 'images/)'],
-			$buffer
-		);
+		$buffer = strReplace([
+			'src=' . DQ . '/images/' => 'src=' . DQ . $parent . 'images/',
+			'src=' . Q . '/images/'  => 'src=' . Q . $parent . 'images/',
+			'(url=/images/'          => '(url=' . $parent . 'images/)'
+		], $buffer);
 		foreach (['(' => ')', Q => Q, DQ => DQ] as $open => $close) {
 			$pattern = '%\\' . $open . '([\\w\\.\\/\\-\\_]+\\.(?:gif|jpg|png))\\' . $close . '%';
 			preg_match_all($pattern, $buffer, $matches);
