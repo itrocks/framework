@@ -818,7 +818,7 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Prepare fetch gets annotations values that transform the read object
 	 *
-	 * @param $class_name
+	 * @param $class_name string
 	 */
 	private function prepareFetch($class_name)
 	{
