@@ -6,7 +6,7 @@ use SAF\Framework\Tests\Test;
 /**
  * Array function unit tests
  */
-class Array_Function_Tests extends Test
+class Array_Functions_Tests extends Test
 {
 
 	//--------------------------------------------------------------------------- testArrayFormRevert
