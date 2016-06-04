@@ -129,7 +129,7 @@ class Email
 	 */
 	public function __toString()
 	{
-		return $this->subject;
+		return strval($this->subject);
 	}
 
 	//----------------------------------------------------------------------------------------- $uidl
