@@ -62,7 +62,7 @@ abstract class Authentication
 	//----------------------------------------------------------------- controlRegisterFormParameters
 	/**
 	 * Control if the parameters put in form are right for register
-	 * @param $form
+	 * @param $form string[] ['login' => $login, 'password' => $password]
 	 * @return array A list of errors.
 	 */
 	public static function controlRegisterFormParameters($form)

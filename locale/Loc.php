@@ -342,7 +342,7 @@ class Loc implements Registerable
 	 * Some hooks automatically set it : classNameDisplayReverse()
 	 * Used by hooks that need it : propertiesDisplayReverse()
 	 *
-	 * @param $context
+	 * @param $context string
 	 */
 	public static function setContext($context)
 	{

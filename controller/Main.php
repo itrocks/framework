@@ -113,7 +113,7 @@ class Main
 	/**
 	 * Create the current application object
 	 *
-	 * @param $configuration
+	 * @param $configuration Configuration
 	 */
 	private function createApplication(Configuration $configuration)
 	{
@@ -208,7 +208,7 @@ class Main
 	 * Called by the bootstrap only : initialisation of the first main controller
 	 *
 	 * @param $includes string[]
-	 * @return $this
+	 * @return Main $this
 	 */
 	public function init($includes = [])
 	{

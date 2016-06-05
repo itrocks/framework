@@ -56,7 +56,7 @@ class Dead_Or_Alive
 	/**
 	 * Increment a Dead_Or_Alive object matching $identifier
 	 *
-	 * @param $identifier
+	 * @param $identifier string
 	 */
 	public static function isAlive($identifier)
 	{

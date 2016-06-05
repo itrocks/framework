@@ -171,7 +171,7 @@ function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
 /**
  * Returns a default text matching the given URI
  *
- * @param $uri
+ * @param $uri string
  * @return string
  */
 function strFromUri($uri)

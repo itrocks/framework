@@ -19,7 +19,7 @@ class Dao implements Configurable
 {
 	use Current { current as private pCurrent; }
 
-	//-------------------------------------------------------- Dao configuration array keys constants
+	//------------------------------------------------------------------------------------ LINKS_LIST
 	const LINKS_LIST = 'list';
 
 	//----------------------------------------------------------------------------------------- $list
@@ -270,8 +270,7 @@ class Dao implements Configurable
 	 * Use this for optimizations and to avoid overridden writes if you are sure of what properties
 	 * have to been written
 	 *
-	 * @param $properties string[]|string
-	 * @param $properties,... string[]|string
+	 * @param $properties string[]|string ...
 	 * @return Option\Only
 	 */
 	public static function only($properties)

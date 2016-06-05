@@ -34,7 +34,7 @@ class Code
 	 * - first get all codes matching the string as Code::$code
 	 * - If none found, get all codes matching the string as Code::$name
 	 *
-	 * @param $value
+	 * @param $value string
 	 * @return static[]
 	 */
 	public static function fromString($value)

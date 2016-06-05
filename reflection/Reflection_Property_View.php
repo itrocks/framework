@@ -51,7 +51,7 @@ class Reflection_Property_View
 	 * Return 'yes' or 'no' depending on the value of the boolean
 	 * If the property has a @values annotation : the first value is for 'no', the second for 'yes'
 	 *
-	 * @param $value
+	 * @param $value boolean|null
 	 * @return string
 	 */
 	protected function formatBoolean($value)

@@ -27,8 +27,7 @@ class Only implements Option
 	 * @example Dao::write($user, Dao::only(['login', 'password')));
 	 * Will write the values of user's login and password into the database
 	 *
-	 * @param $properties string[]|string
-	 * @param $properties,... string[]|string
+	 * @param $properties string[]|string ...
 	 */
 	public function __construct($properties)
 	{
@@ -58,7 +57,7 @@ class Only implements Option
 	/**
 	 * Returns true if the option has the property name
 	 *
-	 * @param $property
+	 * @param $property string
 	 * @return boolean
 	 */
 	public function has($property)
@@ -114,8 +113,8 @@ class Only implements Option
 	/**
 	 * Remove all references to a property
 	 *
-	 * @param $options Option[]
-	 * @param $property
+	 * @param $options  Option[]
+	 * @param $property string
 	 * @return integer the count of property removed from options
 	 */
 	public static function removeAll($options, $property)

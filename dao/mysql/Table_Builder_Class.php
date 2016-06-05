@@ -137,8 +137,8 @@ class Table_Builder_Class
 
 	//------------------------------------------------------------------------------- buildLinkTables
 	/**
-	 * @param $link
-	 * @param $class_name
+	 * @param $link       string
+	 * @param $class_name string
 	 * @return Table[]
 	 */
 	private function buildLinkTables($link, $class_name)
