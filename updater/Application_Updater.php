@@ -14,8 +14,10 @@ use Serializable;
 class Application_Updater implements Serializable
 {
 
-	//----------------------------------------------------------------- Application updater constants
+	//------------------------------------------------------------------------------ LAST_UPDATE_FILE
 	const LAST_UPDATE_FILE = 'last_update';
+
+	//----------------------------------------------------------------------------------- UPDATE_FILE
 	const UPDATE_FILE      = 'update';
 
 	//------------------------------------------------------------------------------------ $lock_file
@@ -106,6 +108,9 @@ class Application_Updater implements Serializable
 		clearstatcache(true, self::UPDATE_FILE);
 		if (file_exists(self::UPDATE_FILE)) {
 			unlink(self::UPDATE_FILE);
+		}
+		if (function_exists('opcache_reset')) {
+			opcache_reset();
 		}
 	}
 
