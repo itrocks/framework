@@ -8,6 +8,7 @@ use SAF\Framework\AOP\Joinpoint;
  */
 abstract class Function_Joinpoint extends Joinpoint
 {
+
 	//----------------------------------------------------------------------------------- $parameters
 	/**
 	 * @var array
