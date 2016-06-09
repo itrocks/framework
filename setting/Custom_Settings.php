@@ -26,6 +26,7 @@ abstract class Custom_Settings
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
+	 * @store false Custom_Settings is always saved into a Setting, we must not save it again
 	 * @var Setting
 	 */
 	public $setting;

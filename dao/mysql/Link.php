@@ -336,6 +336,15 @@ class Link extends Dao\Sql\Link
 	{
 		if (is_object($value)) {
 			$id = $this->getObjectIdentifier($value, 'id');
+			$properties = (new Reflection_Class(get_class($value)))->getAnnotedProperties(
+				Store_Annotation::ANNOTATION, Store_Annotation::FALSE
+			);
+			if ($properties) {
+				$value = clone $value;
+				foreach (array_keys($properties) as $property_name) {
+					unset($value->$property_name);
+				}
+			}
 			$value = is_numeric($id) ? $id : serialize($value);
 		}
 		return $this->connection->escape_string($value);
