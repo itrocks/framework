@@ -24,6 +24,9 @@ class Configuration
 	//----------------------------------------------------------------------------------- EXTENDS_APP
 	const EXTENDS_APP = 'extends';
 
+	//--------------------------------------------------------------------------- TEMPORARY_DIRECTORY
+	const TEMPORARY_DIRECTORY = 'temporary_directory';
+
 	//---------------------------------------------------------------------------- $application_class
 	/**
 	 * Application class name
@@ -59,6 +62,12 @@ class Configuration
 	 */
 	private $plugins;
 
+	//-------------------------------------------------------------------------- $temporary_directory
+	/**
+	 * @var string
+	 */
+	public $temporary_directory;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Build configuration using configurations options
@@ -76,9 +85,13 @@ class Configuration
 			? $configuration[self::ENVIRONMENT]
 			: Environment::DEVELOPMENT;
 		$this->name = $name;
+		$this->temporary_directory = isset($configuration[self::TEMPORARY_DIRECTORY])
+			? $configuration[self::TEMPORARY_DIRECTORY]
+			: null;
 		unset($configuration[self::APP]);
 		unset($configuration[self::AUTHOR]);
 		unset($configuration[self::ENVIRONMENT]);
+		unset($configuration[self::TEMPORARY_DIRECTORY]);
 		$this->plugins = $configuration;
 	}
 
@@ -90,8 +103,8 @@ class Configuration
 	public function getApplicationClassName()
 	{
 		if (!isset($this->application_class)) {
-			$this->application_class = (isset($this->author) ? $this->author : 'SAF') . BS
-				. $this->name . '\Application';
+			$this->application_class
+				= (isset($this->author) ? $this->author : 'SAF') . BS . $this->name . BS . 'Application';
 		}
 		return $this->application_class;
 	}

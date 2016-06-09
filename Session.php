@@ -11,6 +11,15 @@ use Serializable;
 class Session implements Serializable
 {
 
+	//--------------------------------------------------------------------------------------- CURRENT
+	/**
+	 * A 'current' constant used for array storages / current method dynamic calls
+	 */
+	const CURRENT = 'current';
+
+	//--------------------------------------------------------------------------------------- PLUGINS
+	const PLUGINS = 'plugins';
+
 	//-------------------------------------------------------------------------------------- $current
 	/**
 	 * @var object[]|string[]
@@ -29,6 +38,17 @@ class Session implements Serializable
 	 * @var Manager
 	 */
 	public $plugins;
+
+	//-------------------------------------------------------------------------- $temporary_directory
+	/**
+	 * The application temporary directory that you can get using
+	 * Application::current()->getTemporaryFilesPath()
+	 *
+	 * Default will be /tmp/Application_Class_Name
+	 *
+	 * @var string
+	 */
+	public $temporary_directory;
 
 	//-------------------------------------------------------------------------------- cloneSessionId
 	/**
@@ -183,13 +203,18 @@ class Session implements Serializable
 			// TODO this does not work as well as xdebug_backtrace visible into PhpStorm : change it
 			debug_print_backtrace();
 		}
-		$data = ['current' => [], 'environment' => $this->environment, 'plugins' => $this->plugins];
+		$data = [
+			self::CURRENT                      => [],
+			Configuration::ENVIRONMENT         => $this->environment,
+			self::PLUGINS                      => $this->plugins,
+			Configuration::TEMPORARY_DIRECTORY => $this->temporary_directory
+		];
 		if (isset($this->current)) {
 			foreach ($this->current as $class_name => $object) {
 				if (is_object($object)) {
 					$object = [$class_name, Dao::getObjectIdentifier($object) ?: serialize($object)];
 				}
-				$data['current'][$class_name] = $object;
+				$data[self::CURRENT][$class_name] = $object;
 			}
 		}
 		return serialize($data);
@@ -229,9 +254,10 @@ class Session implements Serializable
 	public function unserialize($serialized)
 	{
 		$data = unserialize($serialized);
-		$this->current     = $data['current'];
-		$this->environment = $data['environment'];
-		$this->plugins     = $data['plugins'];
+		$this->current             = $data[self::CURRENT];
+		$this->environment         = $data[Configuration::ENVIRONMENT];
+		$this->plugins             = $data[self::PLUGINS];
+		$this->temporary_directory = $data[Configuration::TEMPORARY_DIRECTORY];
 	}
 
 }

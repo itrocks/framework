@@ -37,7 +37,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * This is given by configuration
 	 *
-	 * @var array
+	 * @var array elements are callable[] : [$class_name][] = callable
 	 */
 	private $restrictions = [];
 
@@ -47,7 +47,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * This is an internal cache to avoid repetitive searches into parent classes
 	 *
-	 * @var array associate classes and callbacks
+	 * @var array associate classes and callbacks : [$class_name][] = callable
 	 */
 	private $final_restrictions = [];
 
@@ -88,7 +88,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * @param $builder     Select
 	 * @param $class_name  string
-	 * @param $restriction string|array a restriction callback
+	 * @param $restriction callable a restriction callback
 	 */
 	private function applyRestriction(Select $builder, $class_name, $restriction)
 	{

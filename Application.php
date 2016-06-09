@@ -165,11 +165,24 @@ class Application
 	 */
 	public function getTemporaryFilesPath()
 	{
-		if (!is_dir('tmp')) {
-			mkdir('tmp');
-			file_put_contents('tmp/.htaccess', 'Deny From All');
+		if (!Session::current()->temporary_directory) {
+			// one temporary files path per user, in order to avoid conflicts bw www-data and other users
+			// - user is www-data : /tmp/helloworld (no 'www-data' in this case)
+			// - user is root : /tmp/helloworld.root
+			$user = function_exists('posix_getuid') ? posix_getpwuid(posix_getuid())['name'] : 'www-data';
+			Session::current()->temporary_directory = '/tmp/' . str_replace(SL, '-', strUri($this->name))
+				. (($user === 'www-data') ? '' : (DOT . $user));
 		}
-		return 'tmp';
+
+		$path = Session::current()->temporary_directory;
+
+		if (!is_dir($path)) {
+			mkdir($path);
+			// in case of this directory is publicly accessible into an Apache2 website
+			file_put_contents($path . '/.htaccess', 'Deny From All');
+		}
+
+		return $path;
 	}
 
 }
