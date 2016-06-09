@@ -75,7 +75,9 @@ class Html_Builder_Property extends Html_Builder_Type
 		switch ($link) {
 			case Link_Annotation::COLLECTION: return $this->buildCollection();
 			case Link_Annotation::MAP:        return $this->buildMap();
-			default: return is_array($this->value) ? $this->buildMap() : $this->buildSingle();
+			default: return is_array($this->value) && $this->type != 'string[]' ?
+				$this->buildMap() :
+				$this->buildSingle();
 		}
 	}
 

@@ -18,11 +18,14 @@ trait Foreign_Key_Builder_Property
 	 */
 	private static function propertyConstraintToMysql($table_name, Reflection_Property $property)
 	{
-		return $table_name . DOT
-		. (
-			$property->getAnnotation('link')->value
-			? ('id_' . $property->getAnnotation('storage')->value)
-			: $property->getAnnotation('storage')->value
+		return substr(
+			$table_name . DOT . (
+				$property->getAnnotation('link')->value
+				? ('id_' . $property->getAnnotation('storage')->value)
+				: $property->getAnnotation('storage')->value
+			),
+			0,
+			64
 		);
 	}
 
