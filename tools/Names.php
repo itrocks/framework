@@ -181,7 +181,7 @@ abstract class Names
 	/**
 	 * Changes a 'full/path/file_name.ext' into 'file name'
 	 *
-	 * @param $file_name
+	 * @param $file_name string
 	 * @return string
 	 */
 	public static function fileToDisplay($file_name)

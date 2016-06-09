@@ -1,36 +1,30 @@
-(function($)
+$('document').ready(function()
 {
+	window.zindex_counter = 0;
 
+	//----------------------------------------------------------------------------------------- enter
 	/**
 	 * Call this on a jQuery object you want to highlight and enable inserting elements between
 	 * some contained elements
 	 *
-	 * @param element_selector string the childs element selector between which the user will insert
+	 * @param container        string the container element selector
+	 * @param element_selector string the children element selector between which the user will insert
 	 * @param hint             string the hint text to display and follow the mouse cursor
 	 * @param direction        string 'auto' (default), 'horizontal' or 'vertical'
 	 * @param link             string
 	 */
-	$.fn.radAdd = function(element_selector, hint, direction, link)
+	var enter = function(container, element_selector, hint, direction, link)
 	{
-
-		// properties can be dropped into trashcan only when in "RAD" mode
-		$('body').build(function()
-		{
-			this.inside('#trashcan a').droppable({
-				accept: '.property, .column label, .object, .objects, .throwable, .action',
-				hoverClass: 'candrop',
-				tolerance: 'touch'
-			});
-		});
+		var $container = $(container);
 
 		// highlight zones
-		this.each(function() {
+		$container.each(function() {
 			$(this).addClass('rad highlight');
 		});
 
 		var $elements = (element_selector[0] == '>')
-			? this.children(element_selector.substr(1))
-			: this.find(element_selector);
+			? $container.children(element_selector.substr(1))
+			: $container.find(element_selector);
 
 		// horizontal or vertical ? (default is horizontal, if zero or one contained elements only)
 		var vertical = (direction == 'vertical');
@@ -148,8 +142,66 @@
 			$hint.text(hint);
 			$hint.appendTo('body');
 		});
+	};
 
-		return this;
-	}
+	//----------------------------------------------------------------------------- body.build (MAIN)
+	$('body').build(function ()
+	{
+		if (!this.length) return;
 
-})( jQuery );
+		var rad_mode = false;
+
+		// rad enter
+		this.inside('.rad.enter a').click(function(event)
+		{
+			event.preventDefault();
+			event.stopImmediatePropagation();
+
+			// what will the trashcan accept
+			var $trashcan = $('#trashcan a');
+			var accept;
+			var trashcan_accept = ', .action, .property';
+
+			//-------------------------------------------------------------------------------------- exit
+			if (rad_mode) {
+				rad_mode = false;
+
+				accept = $trashcan.data('accept').repl(trashcan_accept, '');
+
+				//history.go(0);
+			}
+
+			//------------------------------------------------------------------------------------- enter
+			else {
+				rad_mode = true;
+				radOutput();
+
+				// properties can be dropped into trashcan only when in "RAD" mode
+				accept = $trashcan.data('accept') + trashcan_accept;
+
+			}
+
+			// common code for enter / exit
+			$trashcan.data('accept', accept);
+			$trashcan.droppable({ accept: accept });
+		});
+
+	});
+
+});
+
+/**
+ //enter('.general.actions', '>li', 'Insérer une action', 'horizontal', '/SAF/Framework/Widget/Button/edit/{class}/{feature}/{li->class}');
+ //enter('.actions>li>ul', '>li', 'Insérer une action secondaire', 'vertical');
+ //enter('fieldset', '>div:not(.tabber, .columns)', 'Insérer un champ', 'vertical','add_property');
+
+ $('document').radAddOutput();
+ //$('document').radAddButton();
+ //$('.menu>ul').radAdd('>li', 'Insérer un bloc de menu', 'vertical');
+ //$('.menu>ul>li>ul').radAdd('>li', 'Insérer un lien dans le menu', 'vertical');
+ //$('.actions>li>ul').radAdd('>li', 'Insérer une action secondaire', 'vertical');
+ //$('.list.window>table>thead>tr:first-child').radAdd('>th.property', 'Insérer une colonne', 'horizontal');
+ //$('.tabber>ul').radAdd('>li', 'Insérer un onglet', 'horizontal');
+ //$('.columns').radAdd('>.column', 'Insérer un bloc de champs en colonne', 'horizontal');
+ //$('table.collection>thead>tr:first-child').radAdd('>th:not(:last-child)', 'Insérer une colonne', 'horizontal');
+*/

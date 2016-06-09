@@ -65,7 +65,7 @@ class Textile extends Parser
 	 *
 	 * This makes available all customizations of text formatting, linked to css stylesheets.
 	 *
-	 * @param $text
+	 * @param $text string
 	 * @return string
 	 */
 	private function parseSpans($text)

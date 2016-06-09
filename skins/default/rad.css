@@ -1,19 +1,8 @@
-body > header > ul > li.rad.add > a {
+body > header > ul > li.rad.enter > a {
+  background: url("img/green-gears.svg") center no-repeat;
   color: transparent;
-  font-size: 1px; }
-  body > header > ul > li.rad.add > a:before {
-    color: #222;
-    content: "+";
-    font-size: 16px; }
-  body > header > ul > li.rad.add > a:hover:before {
-    color: #2D8F8D; }
-
-.div.list {
-  font-family: arial, helvetica, sans-serif;
-  position: fixed;
-  right: 120px;
-  top: 55px;
-  width: 150px; }
+  font-size: 1px;
+  padding: 0 20px; }
 
 .rad.highlight {
   border: 1px solid green; }

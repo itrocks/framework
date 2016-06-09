@@ -11,20 +11,35 @@ use DateTimeZone;
 class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 {
 
-	//----------------------------------------------------------------------- duration unit constants
-	/** Duration unit : hour */
-	const DAY    = 'day';
-	const HOUR   = 'hour';
-	const MINUTE = 'minute';
-	const MONTH  = 'month';
-	const SECOND = 'second';
-	const WEEK   = 'week';
-	const YEAR   = 'year';
+	//------------------------------------------------------------------------------------------- DAY
+	const DAY = 'day';
 
-	//------------------------------------------------------------------------- date format constants
+	//---------------------------------------------------------------------------------- DAY_OF_MONTH
 	const DAY_OF_MONTH  = 'd';
+
+	//----------------------------------------------------------------------------------- DAY_OF_WEEK
 	const DAY_OF_WEEK   = 'w';
+
+	//--------------------------------------------------------------------------------- DAYS_IN_MONTH
 	const DAYS_IN_MONTH = 't';
+
+	//------------------------------------------------------------------------------------------ HOUR
+	const HOUR = 'hour';
+
+	//---------------------------------------------------------------------------------------- MINUTE
+	const MINUTE = 'minute';
+
+	//----------------------------------------------------------------------------------------- MONTH
+	const MONTH = 'month';
+
+	//---------------------------------------------------------------------------------------- SECOND
+	const SECOND = 'second';
+
+	//------------------------------------------------------------------------------------------ WEEK
+	const WEEK = 'week';
+
+	//------------------------------------------------------------------------------------------ YEAR
+	const YEAR = 'year';
 
 	//------------------------------------------------------------------------------------- $max_date
 	/**
@@ -360,6 +375,18 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public static function today()
 	{
 		return new Date_Time(date('Y-m-d 00:00:00'));
+	}
+
+	//--------------------------------------------------------------------------------------- toMonth
+	/**
+	 * Returns a Date_Time for the month (goes to the beginning of the month)
+	 *
+	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
+	 * @return Date_Time
+	 */
+	public function toMonth()
+	{
+		return new Date_Time($this->format('Y-m'));
 	}
 
 	//----------------------------------------------------------------------------------------- toISO

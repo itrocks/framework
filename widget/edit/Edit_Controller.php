@@ -19,6 +19,12 @@ use SAF\Framework\Widget\Output_Setting\Output_Settings;
 class Edit_Controller extends Output_Controller
 {
 
+	//------------------------------------------------------------------------------- HIDE_EMPTY_TEST
+	/**
+	 * Parameter for Reflection_Property::isVisible (for tabs)
+	 */
+	const HIDE_EMPTY_TEST = false;
+
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $object     object|string object or class name

@@ -338,7 +338,7 @@ class Maintainer implements Registerable
 	/**
 	 * Parse an SQL query to get all table names
 	 *
-	 * @param $query
+	 * @param $query string
 	 * @return string[]
 	 */
 	private function parseNamesFromQuery($query)

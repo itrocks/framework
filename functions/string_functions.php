@@ -171,7 +171,7 @@ function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
 /**
  * Returns a default text matching the given URI
  *
- * @param $uri
+ * @param $uri string
  * @return string
  */
 function strFromUri($uri)
@@ -210,6 +210,19 @@ function strIsCapitals($str)
 		}
 	}
 	return !empty($str);
+}
+
+//-------------------------------------------------------------------------------------- strReplace
+/**
+ * Search en replace multiple couples
+ *
+ * @param $search_replace string[] key is 'search what', value is 'replace with'
+ * @param $subject        string The text where to make the replacement
+ * @return string
+ */
+function strReplace($search_replace, $subject)
+{
+	return str_replace(array_keys($search_replace), array_values($search_replace), $subject);
 }
 
 //------------------------------------------------------------------------------------- strSimplify

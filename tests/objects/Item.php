@@ -3,6 +3,9 @@ namespace SAF\Framework\Tests\Objects;
 
 /**
  * An item class
+ *
+ * @before_write beforeWrite
+ * @property $call_before_write integer
  */
 class Item
 {
@@ -55,6 +58,15 @@ class Item
 	public function __toString()
 	{
 		return strval($this->code);
+	}
+
+	//----------------------------------------------------------------------------------- beforeWrite
+	/**
+	 * Before write annotation code : increments a counter on a virtual property
+	 */
+	public function beforeWrite()
+	{
+		$this->call_before_write = isset($this->call_before_write) ? 1 : ($this->call_before_write + 1);
 	}
 
 }

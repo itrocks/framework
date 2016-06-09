@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework;
 
+use SAF\Framework\Setting\Custom_Settings;
+
 /**
  * An application setting
  */
@@ -17,7 +19,7 @@ class Setting
 	/**
 	 * @getter getValue
 	 * @max_length 1000000000
-	 * @var string|object
+	 * @var string|Custom_Settings string if serialized (for storage)
 	 */
 	public $value;
 
@@ -58,13 +60,18 @@ class Setting
 	private function getValue()
 	{
 		$value = $this->value;
-		return (
+		if (
 			isset($value)
 			&& is_string($value)
 			&& (substr($value, 0, 2) == 'O:')
-			&& substr($value, -1) === '}'
-		) ? ($this->value = unserialize($value))
-			: $value;
+			&& (substr($value, -1) === '}')
+		) {
+			$this->value = unserialize($value);
+		}
+		if (!isset($this->value->setting)) {
+			$this->value->setting = $this;
+		}
+		return $this->value;
 	}
 
 }

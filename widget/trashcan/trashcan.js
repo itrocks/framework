@@ -7,11 +7,11 @@ $('document').ready(function()
 
 		this.inside('.object').draggable({
 
-			appendTo: 'body',
+			appendTo:    'body',
 			containment: 'body',
-			cursorAt: { left: 10, top: 10 },
-			delay: 500,
-			scroll: false,
+			cursorAt:    { left: 10, top: 10 },
+			delay:       500,
+			scroll:      false,
 
 			helper: function()
 			{
@@ -44,8 +44,11 @@ $('document').ready(function()
 		});
 
 		// trash is droppable
-		this.inside('#trashcan a').droppable({
-			accept:     '.column label, .object, .objects, .throwable',
+		var accept = '.column label, .list table th.property, .object, .objects, .throwable';
+		this.inside('#trashcan a')
+		.data('accept', accept)
+		.droppable({
+			accept:     accept,
 			hoverClass: 'candrop',
 			tolerance:  'touch',
 

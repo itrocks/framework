@@ -1,9 +1,6 @@
 
 function PDF_Templates(id_print_model)
 {
-
-	jscolor.init();
-
 	var active_zone;
 	var active_ruler;
 	var current_zone;

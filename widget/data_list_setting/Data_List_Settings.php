@@ -51,7 +51,7 @@ class Data_List_Settings extends Custom_Settings
 
 	//--------------------------------------------------------------------------------------- $search
 	/**
-	 * Search criterion
+	 * Search criteria
 	 *
 	 * @var string[] key is the property path, value is the value or search expression
 	 */

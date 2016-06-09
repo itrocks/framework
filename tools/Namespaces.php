@@ -47,7 +47,7 @@ abstract class Namespaces
 	 * If source $class_name has no namespace, namespace will be taken from $model_class_name
 	 * If $model_class_name has no namespace too, $class_name will be kept without namespace
 	 *
-	 * @param $class_name string
+	 * @param $class_name       string
 	 * @param $model_class_name string
 	 * @return string
 	 */

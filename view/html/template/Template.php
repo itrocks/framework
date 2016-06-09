@@ -13,7 +13,7 @@ use SAF\Framework\Tools\Contextual_Callable;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Paths;
-use SAF\Framework\Tools\String;
+use SAF\Framework\Tools\String_Class;
 use SAF\Framework\View\Html;
 use SAF\Framework\View\Html\Template\Functions;
 use SAF\Framework\View\Html\Template\Loop;
@@ -25,9 +25,17 @@ class Template
 {
 
 	//----------------------------------------------------------------------------- options constants
-	const PROPAGATE          = true;
-	const TEMPLATE           = 'template';
-	const TEMPLATE_CLASS     = 'template_class';
+
+	//------------------------------------------------------------------------------------- PROPAGATE
+	const PROPAGATE = true;
+
+	//-------------------------------------------------------------------------------------- TEMPLATE
+	const TEMPLATE = 'template';
+
+	//-------------------------------------------------------------------------------- TEMPLATE_CLASS
+	const TEMPLATE_CLASS = 'template_class';
+
+	//---------------------------------------------------------------------------- TEMPLATE_NAMESPACE
 	const TEMPLATE_NAMESPACE = 'template_namespace';
 
 	//-------------------------------------------------------------------------------------- $content
@@ -1349,7 +1357,7 @@ class Template
 
 	//----------------------------------------------------------------------------------- parseString
 	/**
-	 * If property name is the name of a String method, call this method
+	 * If property name is the name of a String_Class method, call this method
 	 * If not, will return true if string value equals $property_name
 	 *
 	 * @param $string        string
@@ -1358,7 +1366,7 @@ class Template
 	 */
 	protected function parseString($string, $property_name)
 	{
-		$string = new String($string);
+		$string = new String_Class($string);
 		if (method_exists($string, $property_name)) {
 			return $this->parseStringMethod($string, $property_name);
 		}

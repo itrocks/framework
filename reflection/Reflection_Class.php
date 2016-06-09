@@ -76,7 +76,7 @@ class Reflection_Class extends ReflectionClass
 				(isset($annotation_value) && ($annotation->value == $annotation_value))
 				|| (!isset($annotation_value) && !empty($annotation->value))
 			) {
-				$properties[] = $property;
+				$properties[$property->name] = $property;
 			}
 		}
 		return $properties;

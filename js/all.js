@@ -6,7 +6,6 @@ $.getScript(path + 'vendor/components/jqueryui/jquery-ui.js');
 $.getScript(path + 'saf/framework/js/jquery.xtarget.js');
 
 $.getScript(path + 'vendor/alvaro-prieto/colResizable/colResizable-1.6.min.js');
-$.getScript(path + 'vendor/jan-odvarko/jscolor/jscolor.js');
 $.getScript(path + 'vendor/malsup/form/jquery.form.js');
 
 $.getScript(path + 'saf/framework/js/jquery.aform.js');
@@ -31,10 +30,11 @@ $.getScript(path + 'saf/framework/debug/debug.js');
 $.getScript(path + 'saf/framework/import_export/import.js');
 $.getScript(path + 'saf/framework/printer/model/model.js');
 $.getScript(path + 'saf/framework/property/select.js');
+$.getScript(path + 'saf/framework/rad/output.js');
+$.getScript(path + 'saf/framework/rad/rad.js');
 $.getScript(path + 'saf/framework/settings/custom.js');
 $.getScript(path + 'saf/framework/widget/edit/edit.js');
 $.getScript(path + 'saf/framework/widget/data_list/dataList.js');
-$.getScript(path + 'saf/framework/widget/output/output.js');
 $.getScript(path + 'saf/framework/widget/trashcan/trashcan.js');
 
 $.getScript(path + 'saf/framework/js/default.application.js');

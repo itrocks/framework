@@ -583,8 +583,8 @@ class Object_Builder_Array
 
 	//-------------------------------------------------------------------------------- initLinkObject
 	/**
-	 * @param $array
-	 * @param $object
+	 * @param $array  array
+	 * @param $object object
 	 * @return array
 	 */
 	private function initLinkObject(&$array, &$object)

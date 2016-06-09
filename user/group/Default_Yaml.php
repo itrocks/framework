@@ -100,19 +100,22 @@ class Default_Yaml
 			$this->dependencies = [];
 			$class_name = $this->class;
 		}
-		$class = new Reflection_Class($class_name);
-		foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
-			$link = $property->getAnnotation(Link_Annotation::ANNOTATION)->value;
-			if ($link) {
-				if (in_array($link, [Link_Annotation::MAP, Link_Annotation::OBJECT])) {
-					$this->addObjectDependencies(
-						$features, $property->getType()->getElementTypeAsString()
-					);
-				}
-				elseif ($link === Link_Annotation::COLLECTION) {
-					$this->addCollectionDependencies(
-						$features, $property->getType()->getElementTypeAsString()
-					);
+		/** @noinspection PhpUsageOfSilenceOperatorInspection May not exist for obsolescent feature */
+		if (@class_exists($class_name)) {
+			$class = new Reflection_Class($class_name);
+			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
+				$link = $property->getAnnotation(Link_Annotation::ANNOTATION)->value;
+				if ($link) {
+					if (in_array($link, [Link_Annotation::MAP, Link_Annotation::OBJECT])) {
+						$this->addObjectDependencies(
+							$features, $property->getType()->getElementTypeAsString()
+						);
+					}
+					elseif ($link === Link_Annotation::COLLECTION) {
+						$this->addCollectionDependencies(
+							$features, $property->getType()->getElementTypeAsString()
+						);
+					}
 				}
 			}
 		}

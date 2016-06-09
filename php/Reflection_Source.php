@@ -433,27 +433,37 @@ class Reflection_Source
 					);
 
 					foreach ($matches as $match) {
-						list($class_name, $pos) = $match[2];
-						if ($class_name[0] === '$') {
-							list($class_name, $pos) = isset($match[3]) ? $match[3] : 'null';
+						list($class_names, $pos) = $match[2];
+						if ($class_names[0] === '$') {
+							list($class_names, $pos) = isset($match[3]) ? $match[3] : ['', $match[2][1]];
 						}
-						foreach (explode('|', $class_name) as $class_name) {
-							if (ctype_upper($class_name[0])) {
-								$class_name = str_replace(['[', ']'], '', $class_name);
-								$line = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
-								$type = $match[1][0];
-								$class_name = $this->fullClassName($class_name);
-								$dependency = new Dependency();
-								$dependency->class_name      = $class->name;
-								$dependency->dependency_name = $class_name;
-								$dependency->file_name       = $this->file_name;
-								$dependency->line            = $line;
-								$dependency->type            = $type;
-								$this->instantiates[] = $dependency;
-								if (!$class->name) {
-									$missing_class_name[] = $dependency;
+						$line = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
+						if (strlen($class_names)) {
+							foreach (explode('|', $class_names) as $class_name) {
+								if (ctype_upper($class_name[0])) {
+									$class_name = str_replace(['[', ']'], '', $class_name);
+									$type = $match[1][0];
+									$class_name = $this->fullClassName($class_name);
+									$dependency = new Dependency();
+									$dependency->class_name      = $class->name;
+									$dependency->dependency_name = $class_name;
+									$dependency->file_name       = $this->file_name;
+									$dependency->line            = $line;
+									$dependency->type            = $type;
+									$this->instantiates[] = $dependency;
+									if (!$class->name) {
+										$missing_class_name[] = $dependency;
+									}
 								}
 							}
+						}
+						else {
+							trigger_error(
+								'Bad annotation ' . substr($match[0][0], 2)
+								. ' into file ' . $this->file_name . ' at line ' . $line
+								. ' : var type / class is needed',
+								E_USER_WARNING
+							);
 						}
 					}
 				}

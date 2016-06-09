@@ -61,6 +61,7 @@ ul.actions {
 			display: none;
 			left: 3px;
 			position: absolute;
+			z-index: 1;
 
 			>li {
 				display: block;

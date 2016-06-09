@@ -34,6 +34,7 @@ use SAF\Framework\Tools\Contextual_Mysqli;
 class Link extends Dao\Sql\Link
 {
 
+	//------------------------------------------------------------------------------------- GZINFLATE
 	/**
 	 * Actions for $prepared_fetch
 	 */
@@ -97,7 +98,13 @@ class Link extends Dao\Sql\Link
 					trigger_error(
 						'Method_Annotation awaited ' . print_r($before_write, true) . LF
 						. 'on object ' . print_r($object, true),
-						E_USER_ERROR
+						E_USER_WARNING
+					);
+					$before_write = new Method_Annotation(
+						$before_write->value, new Reflection_Class(get_class($object)), 'before_write'
+					);
+					trigger_error(
+						'Try executing before_write ' . print_r($before_write, true), E_USER_WARNING
 					);
 				}
 				$response = $before_write->call($object, [$this, $options]);
@@ -329,6 +336,15 @@ class Link extends Dao\Sql\Link
 	{
 		if (is_object($value)) {
 			$id = $this->getObjectIdentifier($value, 'id');
+			$properties = (new Reflection_Class(get_class($value)))->getAnnotedProperties(
+				Store_Annotation::ANNOTATION, Store_Annotation::FALSE
+			);
+			if ($properties) {
+				$value = clone $value;
+				foreach (array_keys($properties) as $property_name) {
+					unset($value->$property_name);
+				}
+			}
 			$value = is_numeric($id) ? $id : serialize($value);
 		}
 		return $this->connection->escape_string($value);
@@ -811,7 +827,7 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Prepare fetch gets annotations values that transform the read object
 	 *
-	 * @param $class_name
+	 * @param $class_name string
 	 */
 	private function prepareFetch($class_name)
 	{
@@ -1115,6 +1131,7 @@ class Link extends Dao\Sql\Link
 					if ($link->value) {
 						$search = [];
 						foreach ($link->getLinkProperties() as $property) {
+							/** @var $property Reflection_Property $link annotates a Reflection_Property */
 							$property_name = $property->getName();
 							$column_name = $property->getType()->isClass() ? 'id_' : '';
 							$column_name .= $properties[$property_name]->getAnnotation('storage')->value;

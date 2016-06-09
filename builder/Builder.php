@@ -303,7 +303,7 @@ class Builder implements Activable, Registerable, Serializable
 	/**
 	 * Returns true if any property of $object is set and different than its default value
 	 *
-	 * @param $object
+	 * @param $object object
 	 * @return boolean
 	 */
 	public static function isObjectSet($object)
@@ -472,7 +472,7 @@ class Builder implements Activable, Registerable, Serializable
 	/**
 	 * Gets source class name for a replacement class name
 	 *
-	 * @param $class_name
+	 * @param $class_name string
 	 * @return string
 	 */
 	public function sourceClassName($class_name)

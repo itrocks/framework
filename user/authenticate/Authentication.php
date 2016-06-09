@@ -49,8 +49,8 @@ abstract class Authentication
 	//---------------------------------------------------------------------------- controlNameNotUsed
 	/**
 	 * Control if the name is not already used.
-	 * @param $login String The name of the user
-	 * @return bool True if the login is not used, false if the login is already used.
+	 * @param $login string The name of the user
+	 * @return boolean true if the login is not used, false if the login is already used.
 	 */
 	public static function controlNameNotUsed($login)
 	{
@@ -62,7 +62,7 @@ abstract class Authentication
 	//----------------------------------------------------------------- controlRegisterFormParameters
 	/**
 	 * Control if the parameters put in form are right for register
-	 * @param $form
+	 * @param $form string[] ['login' => $login, 'password' => $password]
 	 * @return array A list of errors.
 	 */
 	public static function controlRegisterFormParameters($form)

@@ -19,34 +19,41 @@ use SAF\Framework\Tools\Namespaces;
 class Feature
 {
 
+	//----------------------------------------------------------------------------------------- ADMIN
 	const ADMIN = [
 		Controller\Feature::F_ADMIN,
 		Controller\Feature::F_DELETE
 	];
 
+	//------------------------------------------------------------------------------------------- API
 	const API = [
 		Controller\Feature::F_API
 	];
 
+	//------------------------------------------------------------------------------------------ EDIT
 	const EDIT = [
 		Controller\Feature::F_ADD,
 		Controller\Feature::F_EDIT,
 		Controller\Feature::F_WRITE
 	];
 
+	//---------------------------------------------------------------------------------------- EXPORT
 	const EXPORT = [
 		Controller\Feature::F_EXPORT
 	];
 
+	//---------------------------------------------------------------------------------------- IMPORT
 	const IMPORT = [
 		Controller\Feature::F_IMPORT
 	];
 
+	//---------------------------------------------------------------------------------------- OUTPUT
 	const OUTPUT = [
 		Controller\Feature::F_LIST,
 		Controller\Feature::F_OUTPUT
 	];
 
+	//-------------------------------------------------------------------------------------- OVERRIDE
 	const OVERRIDE = 'override';
 
 	//------------------------------------------------------------------------------------- $features
@@ -231,12 +238,20 @@ class Feature
 	private function getFeatures()
 	{
 		if (!isset($this->features)) {
-			$class_path = str_replace(BS, SL, $this->getClassName());
-			$features = array_merge(
-				$this->yaml ? $this->yaml->getFeatures($class_path) : [],
-				$this->getPropertiesFeatures()
-			);
-			$this->features = $features;
+			$class_name = $this->getClassName();
+			// fix access to features of removed classes
+			/** @noinspection PhpUsageOfSilenceOperatorInspection May not exist for obsolescent feature */
+			if (@class_exists($class_name)) {
+				$class_path = str_replace(BS, SL, $this->getClassName());
+				$features = array_merge(
+					$this->yaml ? $this->yaml->getFeatures($class_path) : [],
+					$this->getPropertiesFeatures()
+				);
+				$this->features = $features;
+			}
+			else {
+				$this->features = [];
+			}
 		}
 		return $this->features;
 	}

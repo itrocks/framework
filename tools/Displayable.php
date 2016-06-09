@@ -6,24 +6,28 @@ namespace SAF\Framework\Tools;
  *
  * Mainly built from any reflection class, method, or property names.
  */
-class Displayable extends String
+class Displayable extends String_Class
 {
 
+	//------------------------------------------------------------------------------------ TYPE_CLASS
 	/**
 	 * @var string 'class'
 	 */
 	const TYPE_CLASS = 'class';
 
+	//----------------------------------------------------------------------------------- TYPE_METHOD
 	/**
 	 * @var string 'method'
 	 */
 	const TYPE_METHOD = 'method';
 
+	//--------------------------------------------------------------------------------- TYPE_PROPERTY
 	/**
 	 * @var string 'property'
 	 */
 	const TYPE_PROPERTY = 'property';
 
+	//----------------------------------------------------------------------------------- TYPE_STRING
 	/**
 	 * @var string 'string'
 	 */

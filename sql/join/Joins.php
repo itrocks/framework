@@ -462,7 +462,7 @@ class Joins
 
 	//---------------------------------------------------------------------------- getClassProperties
 	/**
-	 * @param $class_name
+	 * @param $class_name string
 	 * @return Reflection_Property[]
 	 */
 	public function getClassProperties($class_name)

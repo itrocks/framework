@@ -244,7 +244,7 @@ trait Annoted
 	 *
 	 * If the annotation was already set to local, this local annotation is returned without reset.
 	 *
-	 * @param $annotation_name
+	 * @param $annotation_name string
 	 * @return Annotation
 	 */
 	public function setAnnotationLocal($annotation_name)

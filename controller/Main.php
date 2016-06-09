@@ -8,6 +8,7 @@ use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\Configuration;
 use SAF\Framework\Configuration\Configurations;
+use SAF\Framework\Controller;
 use SAF\Framework\Error_Handler\Handled_Error;
 use SAF\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use SAF\Framework\IAutoloader;
@@ -112,7 +113,7 @@ class Main
 	/**
 	 * Create the current application object
 	 *
-	 * @param $configuration
+	 * @param $configuration Configuration
 	 */
 	private function createApplication(Configuration $configuration)
 	{
@@ -139,7 +140,9 @@ class Main
 	 */
 	private function executeController($controller, $method_name, $uri, $post, $files)
 	{
-		$controller = Builder::create($controller);
+		$controller = isA($controller, Controller::class)
+			? Builder::create($controller)
+			: $uri->parameters->getMainObject($uri->controller_name);
 		if ($controller instanceof Class_Controller) {
 			return call_user_func_array([$controller, $method_name],
 				[$uri->parameters, $post, $files, $uri->feature_name, $uri->controller_name]
@@ -205,7 +208,7 @@ class Main
 	 * Called by the bootstrap only : initialisation of the first main controller
 	 *
 	 * @param $includes string[]
-	 * @return $this
+	 * @return Main $this
 	 */
 	public function init($includes = [])
 	{

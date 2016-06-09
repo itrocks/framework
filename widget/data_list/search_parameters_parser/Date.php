@@ -62,7 +62,7 @@ trait Date
 	//------------------------------------------------------------------------------- applyDatePeriod
 	/**
 	 * @param $search_value string
-	 * @param $min_max      integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max      integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return mixed
 	 */
 	protected function applyDatePeriod($search_value, $min_max = self::NOT_A_RANGE_VALUE)
@@ -83,14 +83,16 @@ trait Date
 	//--------------------------------------------------------------------------- applyDateRangeValue
 	/**
 	 * @param $search_value string|Option
-	 * @param $min_max      integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max      integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return mixed
 	 * @throws Data_List_Exception
 	 */
 	protected function applyDateRangeValue($search_value, $min_max)
 	{
 		if ($this->hasJoker($search_value)) {
-			throw new Data_List_Exception($search_value, Loc::tr('You can not have a wildcard on a range value'));
+			throw new Data_List_Exception(
+				$search_value, Loc::tr('You can not have a wildcard on a range value')
+			);
 		}
 		return $this->applyDatePeriod($search_value, $min_max);
 	}
@@ -113,8 +115,8 @@ trait Date
 	//--------------------------------------------------------------------------------- applyDateWord
 	/**
 	 * If expression is a date word, convert to corresponding date
-	 * @param $expr          string
-	 * @param $min_max       integer  ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $expr    string
+	 * @param $min_max integer @values :MIN_RANGE_VALUE, :MAX_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 */
 	protected function applyDateWord($expr, $min_max)
@@ -171,7 +173,7 @@ trait Date
 	 * Apply if expression is a day/month or month/day
 	 *
 	 * @param $expression string
-	 * @param $min_max    integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 * @throws Data_List_Exception
 	 */
@@ -209,8 +211,8 @@ trait Date
 	/**
 	 * Apply if expression is a day/month/year or month/day/year
 	 *
-	 * @param $expr         string
-	 * @param $min_max       integer  ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $expr    string
+	 * @param $min_max integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return mixed|bool false
 	 * @throws Data_List_Exception
 	 */
@@ -253,7 +255,7 @@ trait Date
 	 * Apply if expression is a day only
 	 *
 	 * @param $expression string
-	 * @param $min_max    integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return boolean|mixed false
 	 * @throws Data_List_Exception
 	 */
@@ -297,7 +299,7 @@ trait Date
 	 * Apply if expression is a month/year
 	 *
 	 * @param $expression string
-	 * @param $min_max    integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 * @throws Data_List_Exception
 	 */
@@ -346,7 +348,7 @@ trait Date
 	 * Apply a formula that is alone in the expression (eg. not "15/m+1/2016" but only "m+1")
 	 *
 	 * @param &$expression string|integer formula
-	 * @param $min_max     integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max     integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @param $part        string Date_Time::DAY | Date_Time::MONTH | Date_Time::YEAR
 	 *        | Date_Time::HOUR | Date_Time::MINUTE | Date_Time::SECOND
 	 * @return string|Range
@@ -383,7 +385,7 @@ trait Date
 	 * Apply if expression is a year
 	 *
 	 * @param $expression string
-	 * @param $min_max    integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 * @throws Data_List_Exception
 	 */
@@ -417,9 +419,9 @@ trait Date
 	/**
 	 * Builds the correct Dao object for given begin and end date according to what we want
 	 *
-	 * @param $date_begin   string
-	 * @param $date_end     string
-	 * @param $min_max
+	 * @param $date_begin string
+	 * @param $date_end   string
+	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @return Range|string
 	 */
 	protected function buildDateOrPeriod($date_begin, $date_end, $min_max)
@@ -440,10 +442,10 @@ trait Date
 	/**
 	 * Builds the date from computed month and a year
 	 *
-	 * @param $day        string
-	 * @param $month      string
-	 * @param $min_max     integer  ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
-	 * @param $expr       string
+	 * @param $day     string
+	 * @param $month   string
+	 * @param $min_max integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $expr    string
 	 * @return Func\Comparison|Range
 	 * @throws Data_List_Exception
 	 */
@@ -508,7 +510,7 @@ trait Date
 	 * @param $day        string|integer
 	 * @param $month      string|integer
 	 * @param $year       string|integer
-	 * @param $min_max    integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @param $expression string
 	 * @return Comparison|Range
 	 * @throws Data_List_Exception
@@ -589,7 +591,7 @@ trait Date
 	 *
 	 * @param $month      string|integer
 	 * @param $year       string|integer
-	 * @param $min_max    integer ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
 	 * @param $expression string
 	 * @return Func\Comparison|Range
 	 * @throws Data_List_Exception
@@ -899,13 +901,14 @@ trait Date
 		static $letters;
 		if (!isset($letters)) {
 			$letters = explode('|', Loc::tr('d|m|y') . '|' . Loc::tr('h|m|s'));
+			$ipUp = function($letter) { return isset($letter) ? ($letter . strtoupper($letter)) : ''; };
 			$letters = [
-				Date_Time::DAY   => 'dD' . (isset($letters[0]) ? $letters[0] . strtoupper($letters[0]) : ''),
-				Date_Time::MONTH => 'mM' . (isset($letters[1]) ? $letters[1] . strtoupper($letters[1]) : ''),
-				Date_Time::YEAR  => 'yY' . (isset($letters[2]) ? $letters[2] . strtoupper($letters[2]) : ''),
-				Date_Time::HOUR  => 'hH' . (isset($letters[3]) ? $letters[3] . strtoupper($letters[3]) : ''),
-				Date_Time::MINUTE => 'iI' . (isset($letters[4]) ? $letters[4] . strtoupper($letters[4]) : ''),
-				Date_Time::SECOND  => 'sS' . (isset($letters[5]) ? $letters[5] . strtoupper($letters[5]) : '')
+				Date_Time::DAY     => 'dD' . $ipUp($letters[0]),
+				Date_Time::MONTH   => 'mM' . $ipUp($letters[1]),
+				Date_Time::YEAR    => 'yY' . $ipUp($letters[2]),
+				Date_Time::HOUR    => 'hH' . $ipUp($letters[3]),
+				Date_Time::MINUTE  => 'iI' . $ipUp($letters[4]),
+				Date_Time::SECOND  => 'sS' . $ipUp($letters[5])
 			];
 		}
 		return $letters[$part];

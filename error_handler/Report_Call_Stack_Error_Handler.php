@@ -38,12 +38,12 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	{
 		$code = new Error_Code($error->getErrorNumber());
 		$stack = new Call_Stack();
-		$message = '<div class="' . $code->caption() . ' handler">'
-			. '<span class="number">' . $code->caption() . '</span>'
-			. '<span class="message">' . $error->getErrorMessage() . '</span>'
-			. '<table class="call-stack">'
+		$message = '<div class="' . $code->caption() . ' handler">' . LF
+			. '<span class="number">' . $code->caption() . '</span>' . LF
+			. '<span class="message">' . $error->getErrorMessage() . '</span>' . LF
+			. '<table class="call-stack">' . LF
 				. $this->stackLinesTableRows($this->trace ?: $stack->lines())
-			. '</table>'
+			. '</table>' . LF
 			. '</div>' . LF;
 		if (ini_get('display_errors')) {
 			echo $message . LF;
