@@ -38,6 +38,9 @@ class Include_Filter extends php_user_filter
 		$cache_file_name = self::$cache_dir . '/' . str_replace('/', '-', substr($file_name, 0, -4));
 		if (file_exists($cache_file_name)) {
 			self::$file_name = $cache_file_name;
+			if (!empty($GLOBALS['D'])) {
+				echo '- use cached ' . $cache_file_name . '<br>\n';
+			}
 			return 'php://filter/read=' . self::ID . '/resource=' . $file_name;
 		}
 		return $file_name;
@@ -56,6 +59,9 @@ class Include_Filter extends php_user_filter
 		while ($bucket = stream_bucket_make_writeable($in)) {
 			$consumed = $bucket->datalen;
 			if (isset(self::$file_name)) {
+				if (!empty($GLOBALS['D'])) {
+					echo '- load cached ' . self::$file_name . '<br>\n';
+				}
 				$bucket->data = file_get_contents(self::$file_name);
 				$bucket->datalen = strlen($bucket->data);
 				/** @noinspection PhpParamsInspection inspector bug */
