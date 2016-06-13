@@ -4,15 +4,28 @@ namespace SAF\Framework\Printer\Model;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Printer\Model;
+use SAF\Framework\Tools\Has_Ordering;
 
 /**
  * A print model page : a model linked to a unique page background and design
  *
- * @representative number, background
+ * The page number : 1 is the first page, 3 is the last page, 2 is 'all others pages'
+ * @override $ordering @getter getNumber @setter setNumber @signed
+ * @representative model, ordering
  */
 class Page
 {
 	use Component;
+	use Has_Ordering;
+
+	//----------------------------------------------------------------------------------------- FIRST
+	const FIRST = 'first';
+
+	//------------------------------------------------------------------------------------------ LAST
+	const LAST = 'last';
+
+	//---------------------------------------------------------------------------------------- MIDDLE
+	const MIDDLE = 'middle';
 
 	//---------------------------------------------------------------------------------------- $model
 	/**
@@ -22,17 +35,6 @@ class Page
 	 */
 	public $model;
 
-	//--------------------------------------------------------------------------------------- $number
-	/**
-	 * The page number : 1 is the first page, -1 is the last page, 0 is 'all others pages'
-	 *
-	 * @signed
-	 * @getter getNumber
-	 * @setter setNumber
-	 * @var integer
-	 */
-	public $number;
-
 	//----------------------------------------------------------------------------------- $background
 	/**
 	 * @link Object
@@ -40,42 +42,42 @@ class Page
 	 */
 	public $background;
 
-	//---------------------------------------------------------------------------------------- $zones
+	//--------------------------------------------------------------------------------------- $fields
 	/**
 	 * @link Collection
-	 * @var Zone[]
+	 * @var Field[]
 	 */
-	public $zones;
+	public $fields;
 
 	//------------------------------------------------------------------------------------- getNumber
 	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
-	 * @return string
+	 * @return string @values first, middle, last
 	 */
 	private function getNumber()
 	{
-		$number = $this->number;
-		switch ($number) {
-			case 1:  return 'first';
-			case 0:  return 'all';
-			case -1: return 'last';
+		$ordering = $this->ordering;
+		switch ($ordering) {
+			case 1: return self::FIRST;
+			case 2: return self::MIDDLE;
+			case 3: return self::LAST;
 		}
-		return $number;
+		return $ordering;
 	}
 
 	//------------------------------------------------------------------------------------- setNumber
 	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
-	 * @param string
+	 * @param $ordering integer|string @values 1, 2, 3, first, middle, last
 	 */
-	private function setNumber($number)
+	private function setNumber($ordering)
 	{
-		switch ($number) {
-			case 'first': $number = 1;  break;
-			case 'all':   $number = 0;  break;
-			case 'last':  $number = -1; break;
+		switch ($ordering) {
+			case self::FIRST:  $ordering = 1; break;
+			case self::MIDDLE: $ordering = 2; break;
+			case self::LAST:   $ordering = 3; break;
 		}
-		$this->number = $number;
+		$this->ordering = $ordering;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -84,7 +86,7 @@ class Page
 	 */
 	public function __toString()
 	{
-		return strval($this->model) . SP . strval($this->number);
+		return strval($this->model) . SP . strval($this->ordering);
 	}
 
 }
