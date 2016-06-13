@@ -9,7 +9,6 @@ use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Tools\Password;
-use SAF\Framework\Tools\Stringable;
 use SAF\Framework\View\Html\Builder\Property;
 
 /**
@@ -408,10 +407,7 @@ class Object_Builder_Array
 			}
 			// @output string
 			elseif (isset($value) && ($property->getAnnotation('output')->value == 'string')) {
-				/** @var $object_value Stringable */
-				$object_value = Builder::create($property->getType()->asString());
-				$object_value->fromString(trim($value));
-				$value = $object_value;
+				$value = call_user_func([$property->getType()->asString(), 'fromString'], trim($value));
 			}
 		}
 		// the property value is set only for official properties, if not default and not empty

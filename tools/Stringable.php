@@ -12,7 +12,7 @@ interface Stringable
 	 * @param $string string
 	 * @return self
 	 */
-	public function fromString($string);
+	public static function fromString($string);
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

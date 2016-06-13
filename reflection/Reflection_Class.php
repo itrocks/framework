@@ -6,6 +6,7 @@ use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Parser;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use SAF\Framework\Tools\Stringable;
 
 /**
  * A rich extension of the PHP ReflectionClass class, adding :
@@ -14,7 +15,7 @@ use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
  * - annotations management
  */
 class Reflection_Class extends ReflectionClass
-	implements Has_Doc_Comment, Interfaces\Reflection_Class
+	implements Has_Doc_Comment, Interfaces\Reflection_Class, Stringable
 {
 	use Annoted;
 
@@ -48,6 +49,16 @@ class Reflection_Class extends ReflectionClass
 			}
 		}
 		return $properties;
+	}
+
+	//------------------------------------------------------------------------------------ fromString
+	/**
+	 * @param $string string
+	 * @return self
+	 */
+	public static function fromString($string)
+	{
+		return new Reflection_Class($string);
 	}
 
 	//------------------------------------------------------------------------ getAnnotationCachePath

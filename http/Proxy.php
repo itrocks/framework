@@ -10,7 +10,7 @@ namespace SAF\Framework\Http;
 class Proxy
 {
 
-	//---------------------------------------------------------------- __construct STANDARD parameter
+	//-------------------------------------------------------------------------------------- STANDARD
 	/**
 	 * Use new Proxy(Proxy::STANDARD) to get a proxy ready with standard headers and parameters
 	 * @var null
@@ -211,8 +211,7 @@ class Proxy
 				$name = substr($header, 0, $pos);
 				$value = substr($header, $pos + 2);
 				if ($name == 'Set-Cookie') {
-					$cookie = new Cookie();
-					$cookie->fromString($value);
+					$cookie = Cookie::fromString($value);
 					if ($deleted || !($cookie->value == 'deleted')) {
 						$cookies[] = $cookie;
 					}

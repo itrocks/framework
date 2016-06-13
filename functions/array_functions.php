@@ -2,6 +2,41 @@
 
 use SAF\Framework\Debug\Dead_Or_Alive;
 
+/**
+ * Cuts a string to create an array, following an array of elements length.
+ *
+ * @param $string            string The source string tu cut
+ * @param $lengths           integer[] The length of each element into the string
+ * @param $ignore_characters string|boolean Some characters to ignore. Optional.
+ * @param $get_trailing_characters_element boolean Gets the trailing characters element if true
+ * @return string[] The resulting array
+ */
+function arrayCut(
+	$string, array $lengths, $ignore_characters = '', $get_trailing_characters_element = false
+) {
+	if (is_bool($ignore_characters)) {
+		$get_trailing_characters_element = $ignore_characters;
+		$ignore_characters = '';
+	}
+	if (strlen($ignore_characters)) {
+		$string = str_replace(str_split($ignore_characters), '', $string);
+	}
+	$string_length = strlen($string);
+	$position      = 0;
+	$result        = [];
+	foreach ($lengths as $length) {
+		$result[] = substr($string, $position, $length);
+		$position += $length;
+		if ($position >= $string_length) {
+			break;
+		}
+	}
+	if ($get_trailing_characters_element && ($position < $string_length)) {
+		$result[] = substr($string, $position);
+	}
+	return $result;
+}
+
 //------------------------------------------------------------------------------ arrayDiffRecursive
 /**
  * @param $array1    array
