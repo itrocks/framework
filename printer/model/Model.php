@@ -2,18 +2,22 @@
 namespace SAF\Framework\Printer;
 
 use SAF\Framework\Printer\Model\Page;
+use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Traits\Has_Name;
 
 /**
  * A print model gives the way to print an object of a given class
  *
- * @representative class
+ * @representative class_name, name
  */
 class Model
 {
+	use Has_Name;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * @var string
+	 * @store string
+	 * @var Reflection_Class
 	 */
 	public $class;
 
@@ -30,7 +34,7 @@ class Model
 	 */
 	public function __toString()
 	{
-		return strval($this->class);
+		return $this->class ? $this->class->name : 'Choose a class';
 	}
 
 }

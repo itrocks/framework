@@ -5,9 +5,10 @@ use SAF\Framework\Mapper\Component;
 use SAF\Framework\Traits\Has_Name;
 
 /**
- * A print model zone is a zone into the page that contains links to the data to be printed
+ * A print model field is a little zone into the page that contains the description of the data
+ * to be printed (eg. link to a property, constant text, a drawing)
  */
-class Zone
+class Field
 {
 	use Component;
 	use Has_Name;
@@ -21,15 +22,6 @@ class Zone
 	 * @var Page
 	 */
 	public $page;
-
-	//--------------------------------------------------------------------------------------- $zoning
-	/**
-	 * Raw zoning data (json)
-	 *
-	 * @max_length 1000000
-	 * @var string
-	 */
-	public $zoning;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
