@@ -12,6 +12,21 @@ use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
 class Integrated_Annotation extends List_Annotation
 {
 
+	//----------------------------------------------------------------------------------------- ALIAS
+	const ALIAS = 'alias';
+
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'integrated';
+
+	//----------------------------------------------------------------------------------------- BLOCK
+	const BLOCK = 'block';
+
+	//------------------------------------------------------------------------------------------ FULL
+	const FULL = 'full';
+
+	//---------------------------------------------------------------------------------------- SIMPLE
+	const SIMPLE = 'simple';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Default value is 'full' when no value is given
@@ -24,11 +39,15 @@ class Integrated_Annotation extends List_Annotation
 	public function __construct($value)
 	{
 		if (isset($value) && empty($value)) {
-			$value = 'full';
+			$value = self::FULL;
 		}
 		parent::__construct($value);
-		if ($this->value && !parent::has('simple') && (parent::has('block') || parent::has('alias'))) {
-				$this->value[] = 'simple';
+		if (
+			$this->value
+			&& !parent::has(self::SIMPLE)
+			&& (parent::has(self::BLOCK) || parent::has(self::ALIAS))
+		) {
+				$this->value[] = self::SIMPLE;
 			}
 	}
 

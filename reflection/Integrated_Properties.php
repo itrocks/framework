@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
@@ -78,12 +79,12 @@ abstract class Integrated_Properties
 	) {
 		$expanded = [];
 		/** @var $integrated Integrated_Annotation */
-		$integrated = $property->getListAnnotation('integrated');
+		$integrated = $property->getListAnnotation(Integrated_Annotation::ANNOTATION);
 		if ($integrated->value && !$property->isStatic()) {
-			if ($integrated->has('block')) {
+			if ($integrated->has(Integrated_Annotation::BLOCK)) {
 				$blocks[$property->path ?: $property->name] = $property->path ?: $property->name;
 			}
-			$integrated_simple = $integrated->has('simple');
+			$integrated_simple = $integrated->has(Integrated_Annotation::SIMPLE);
 			/** @var $sub_properties_class Reflection_Class */
 			$sub_properties_class = $property->getType()->asReflectionClass();
 			$expand_properties = $sub_properties_class->getProperties([T_EXTENDS, T_USE]);
@@ -108,13 +109,13 @@ abstract class Integrated_Properties
 						$sub_property->final_class = $sub_properties_class->name;
 						$sub_property->display = $integrated_simple
 							? (
-								$integrated->has('alias')
-								? $sub_property->getAnnotation('alias')->value
+								$integrated->has(Integrated_Annotation::ALIAS)
+								? $sub_property->getAnnotation(Alias_Annotation::ANNOTATION)->value
 								: $sub_property_name
 							)
 							: $display;
 						/** @var $block_annotation List_Annotation */
-						$block_annotation = $sub_property->setAnnotationLocal('block');
+						$block_annotation = $sub_property->setAnnotationLocal(Annotation::BLOCK);
 						foreach ($blocks as $block) {
 							$block_annotation->add($block);
 						}

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Button;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Tools\Stringable;
 use SAF\Framework\Widget\Button\Code\Command;
 use SAF\Framework\Widget\Button\Code\Command\Parser;
@@ -87,10 +88,9 @@ class Code implements Stringable
 	 * @param $source string
 	 * @return self
 	 */
-	public function fromString($source)
+	public static function fromString($source)
 	{
-		$this->source = $source;
-		return $this;
+		return Builder::create(get_called_class(), [$source]);
 	}
 
 }

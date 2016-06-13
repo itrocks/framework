@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Http;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Tools\Stringable;
 use SAF\Framework\Traits\Has_Name;
 
@@ -55,21 +56,21 @@ class Cookie implements Stringable
 	 * @param $string string
 	 * @return self
 	 */
-	public function fromString($string)
+	public static function fromString($string)
 	{
-		unset($this->name);
-		$this->properties = [];
+		$cookie = Builder::create(get_called_class());
+		$cookie->properties = [];
 		foreach (explode(';', $string) as $element) {
 			list($key, $value) = explode('=', $element);
-			if (!isset($this->name)) {
-				$this->name  = trim($key);
-				$this->value = trim($value);
+			if (!isset($cookie->name)) {
+				$cookie->name  = trim($key);
+				$cookie->value = trim($value);
 			}
 			else {
-				$this->properties[trim($key)] = trim($value);
+				$cookie->properties[trim($key)] = trim($value);
 			}
 		}
-		return $this;
+		return $cookie;
 	}
 
 }
