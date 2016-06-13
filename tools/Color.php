@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tools;
 
+use SAF\Framework\Builder;
+
 /**
  * Colors manager
  *
@@ -10,12 +12,23 @@ class Color implements Stringable
 {
 
 	//------------------------------------------------------------------------- Color value constants
-	const BLACK   = 'black';
-	const BLUE    = 'blue';
-	const GREEN   = 'green';
+	//----------------------------------------------------------------------------------------- BLACK
+	const BLACK = 'black';
+
+	//------------------------------------------------------------------------------------------ BLUE
+	const BLUE = 'blue';
+
+	//----------------------------------------------------------------------------------------- GREEN
+	const GREEN = 'green';
+
+	//--------------------------------------------------------------------------------------- MAGENTA
 	const MAGENTA = 'magenta';
-	const RED     = 'red';
-	const WHITE   = 'white';
+
+	//------------------------------------------------------------------------------------------- RED
+	const RED = 'red';
+
+	//----------------------------------------------------------------------------------------- WHITE
+	const WHITE = 'white';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -50,10 +63,9 @@ class Color implements Stringable
 	 * @param $color string
 	 * @return self
 	 */
-	public function fromString($color)
+	public static function fromString($color)
 	{
-		$this->value = $color;
-		return $this;
+		return Builder::create(get_called_class(), [$color]);
 	}
 
 	//--------------------------------------------------------------------------------- getBrightness

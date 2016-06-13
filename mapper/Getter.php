@@ -9,7 +9,6 @@ use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Date_Time;
-use SAF\Framework\Tools\Stringable;
 
 /**
  * Getter default methods are common getters for Dao linked objects
@@ -292,10 +291,7 @@ abstract class Getter
 							$stored = static::schemaDecode($stored, $property);
 							break;
 						default:
-							/** @var $stored_object Stringable */
-							$stored_object = Builder::create($property->getType()->asString());
-							$stored_object->fromString($stored);
-							$stored = $stored_object;
+							$stored = call_user_func([$property->getType()->asString(), 'fromString'], $stored);
 							break;
 					}
 				}
