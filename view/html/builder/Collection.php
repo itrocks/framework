@@ -3,6 +3,7 @@ namespace SAF\Framework\View\Html\Builder;
 
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper;
+use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -120,7 +121,7 @@ class Collection
 			) {
 				$cell = new Header_Cell(
 					Loc::tr(
-						Names::propertyToDisplay($property->getAnnotation('alias')->value),
+						Names::propertyToDisplay($property->getAnnotation(Alias_Annotation::ANNOTATION)->value),
 						$this->class_name
 					)
 				);

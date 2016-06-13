@@ -4,6 +4,8 @@ namespace SAF\Framework\View\Html\Template;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper\Collection;
+use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Integrated_Properties;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -590,10 +592,11 @@ class Functions
 	private function getPropertyBlocks(Reflection_Property $property)
 	{
 		$blocks = [];
-		if ($property->getListAnnotation('integrated')->has('block')) {
+		$integrated = $property->getListAnnotation(Integrated_Annotation::ANNOTATION);
+		if ($integrated->has(Integrated_Annotation::BLOCK)) {
 			$blocks[$property->path] = $property->path;
 		}
-		foreach ($property->getListAnnotation('block')->values() as $block) {
+		foreach ($property->getListAnnotation(Annotation::BLOCK)->values() as $block) {
 			$blocks[$block] = $block;
 		}
 		return $blocks;

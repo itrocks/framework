@@ -4,6 +4,7 @@ namespace SAF\Framework\View\Html\Builder;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper;
 use SAF\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Names;
@@ -106,7 +107,7 @@ class Map
 		$row = new Row();
 		foreach ($this->properties as $property) {
 			$cell = new Header_Cell(Loc::tr(
-				Names::propertyToDisplay($property->getAnnotation('alias')->value),
+				Names::propertyToDisplay($property->getAnnotation(Alias_Annotation::ANNOTATION)->value),
 				$this->class_name
 			));
 			$row->addCell($cell);
