@@ -17,6 +17,9 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 class Alias_Annotation extends Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'alias';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    string
