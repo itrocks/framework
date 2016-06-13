@@ -9,6 +9,84 @@ use SAF\Framework\Tests\Test;
 class Array_Functions_Tests extends Test
 {
 
+	//---------------------------------------------------------------------------------- testArrayCut
+	/**
+	 * All tests on arrayCut()
+	 *
+	 * @return boolean
+	 */
+	public function testArrayCut()
+	{
+		$string = 'Word123456Last wordsTrailing things';
+		$result = true;
+
+		// a simple complete call
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'complete',
+			arrayCut($string, [4, 6, 10, 15]),
+			['Word', '123456', 'Last words', 'Trailing things']
+		);
+		$result &= $ok;
+
+		// ignore a single character (space)
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'ignore-single',
+			arrayCut($string, [4, 6, 9, 14], SP),
+			['Word', '123456', 'Lastwords', 'Trailingthings']
+		);
+		$result &= $ok;
+
+		// ignore multiple characters
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'ignore-multiple',
+			arrayCut($string, [3, 5, 8, 14], '2o '),
+			['Wrd', '13456', 'Lastwrds', 'Trailingthings']
+		);
+		$result &= $ok;
+
+		// ignore the 'trailing things' string
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'missing',
+			arrayCut($string, [4, 6, 10]),
+			['Word', '123456', 'Last words']
+		);
+		$result &= $ok;
+
+		// get the complete trailing string without having to tell its size
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'trailing',
+			arrayCut($string, [4, 6, 10], '', true),
+			['Word', '123456', 'Last words', 'Trailing things']
+		);
+		$result &= $ok;
+
+		// get the complete trailing string without having to tell its size, case of ignored letters
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'trailing-ignore',
+			arrayCut($string, [3, 5, 8], '2o ', true),
+			['Wrd', '13456', 'Lastwrds', 'Trailingthings']
+		);
+		$result &= $ok;
+
+		// not enough elements : we ignore the end of the string
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'not-enough',
+			arrayCut($string, [4, 6]),
+			['Word', '123456']
+		);
+		$result &= $ok;
+
+		// more elements to cut than available into the string : ignore those too many cuts
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'more',
+			arrayCut($string, [4, 6, 10, 15, 8, 3, 4]),
+			['Word', '123456', 'Last words', 'Trailing things']
+		);
+		$result &= $ok;
+
+		return $result;
+	}
+
 	//--------------------------------------------------------------------------- testArrayFormRevert
 	/**
 	 * Simple test of arrayFormRevert()
@@ -97,7 +175,7 @@ class Array_Functions_Tests extends Test
 	public function testArrayFormRevertOfOneMatch()
 	{
 		$matches = [['match 1 found'], ['match 1 elem 1'], ['match 1 elem 2']];
-		$result = [['match 1 found', 'match 1 elem 1', 'match 1 elem 2']];
+		$result  = [['match 1 found', 'match 1 elem 1', 'match 1 elem 2']];
 		return $this->assume(__FUNCTION__, arrayFormRevert($matches), $result);
 	}
 
@@ -132,9 +210,9 @@ class Array_Functions_Tests extends Test
 	public function testArrayFormRevertWithSet()
 	{
 		$form = [
-			'id' => [1, 2, 3],
+			'id'      => [1, 2, 3],
 			'id_item' => [101, 102, 103],
-			'colors' => [0 => ['white'], 2 => ['white', 'red']]
+			'colors'  => [0 => ['white'], 2 => ['white', 'red']]
 		];
 		$array = [
 			['id' => 1, 'id_item' => 101, 'colors' => ['white']],
@@ -153,9 +231,9 @@ class Array_Functions_Tests extends Test
 	public function testArrayFormRevertWithStringSet()
 	{
 		$form = [
-			'id' => [1, 2, 3],
+			'id'      => [1, 2, 3],
 			'id_item' => [101, 102, 103],
-			'colors' => [0 => ['white' => 'white'], 2 => ['white' => 'white', 'red' => 'red']]
+			'colors'  => [0 => ['white' => 'white'], 2 => ['white' => 'white', 'red' => 'red']]
 		];
 		$array = [
 			['id' => 1, 'id_item' => 101, 'colors' => ['white' => 'white']],
