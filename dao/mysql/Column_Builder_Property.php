@@ -79,11 +79,7 @@ trait Column_Builder_Property
 	private static function propertyNameToMysql(Reflection_Property $property)
 	{
 		$type = $property->getType();
-		return (
-			$type->isBasic()
-			|| ($type->isMultiple() && $type->getElementType()->isString())
-			|| $property->getAnnotation(Store_Annotation::ANNOTATION)->value
-		)
+		return ($type->isBasic() || $property->getAnnotation(Store_Annotation::ANNOTATION)->value)
 			? $property->getAnnotation('storage')->value
 			: ('id_' . $property->getAnnotation('storage')->value);
 	}
@@ -111,9 +107,12 @@ trait Column_Builder_Property
 	{
 		$property_type = $property->getType();
 		if (
-			$property_type->isBasic()
-			|| $property->getAnnotation(Store_Annotation::ANNOTATION)->value
+			$property_type->isBasic() || $property->getAnnotation(Store_Annotation::ANNOTATION)->value
 		) {
+			if ($property_type->isMultipleString()) {
+				$values = self::propertyValues($property);
+				return $values ? 'set(' . Q . join(Q . ',' . Q, $values) . Q . ')' : 'text';
+			}
 			if ($property_type->hasSize()) {
 				/** @var integer $max_length */
 				$max_length = $property->getAnnotation('max_length')->value;
@@ -202,10 +201,6 @@ trait Column_Builder_Property
 				default:
 					return 'char(255)';
 			}
-		}
-		elseif ($property_type->asString() === Type::STRING_ARRAY) {
-			$values = self::propertyValues($property);
-			return $values ? 'set(' . Q . join(Q . ',' . Q, $values) . Q . ')' : 'text';
 		}
 		else {
 			return 'bigint(18) unsigned';
