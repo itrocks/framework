@@ -97,30 +97,35 @@ class Select_Controller implements Feature_Controller
 		$class_name = Set::elementClassNameOf($parameters->shiftUnnamed());
 		$property_path = $parameters->shiftUnnamed();
 		if (empty($property_path)) {
-			$top_property = new Property();
+			$top_property        = new Property();
 			$top_property->class = $class_name;
-			$properties = $this->getProperties(new Reflection_Class($class_name));
+			$properties          = $this->getProperties(new Reflection_Class($class_name));
 			foreach ($properties as $property) {
 				$property->path = $property->name;
 			}
 		}
 		else {
 			$top_property = new Reflection_Property($class_name, $property_path);
-			$properties = $this->getProperties(
-				new Reflection_Class($top_property->getType()->getElementTypeAsString()),
-				$top_property->final_class
-			);
-			foreach ($properties as $property) {
-				$property->path = $property_path . DOT . $property->name;
+			if ($top_property->getType()->isClass()) {
+				$properties = $this->getProperties(
+					new Reflection_Class($top_property->getType()->getElementTypeAsString()),
+					$top_property->final_class
+				);
+				foreach ($properties as $property) {
+					$property->path = $property_path . DOT . $property->name;
+				}
+				if (!$parameters->getRawParameter(Parameter::CONTAINER)) {
+					$parameters->set(Parameter::CONTAINER, 'subtree');
+				}
 			}
-			if (!$parameters->getRawParameter(Parameter::CONTAINER)) {
-				$parameters->set(Parameter::CONTAINER, 'subtree');
+			else {
+				$properties = [];
 			}
 		}
 		$objects = $parameters->getObjects();
 		array_unshift($objects, $top_property);
-		$objects['properties'] = $properties;
-		$objects['class_name'] = $class_name;
+		$objects['properties']        = $properties;
+		$objects['class_name']        = $class_name;
 		$objects['display_full_path'] = false;
 		/**
 		 * Objects for the view :
