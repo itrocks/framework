@@ -242,6 +242,10 @@ class Maintainer implements Registerable
 	)	{
 		$mysqli = $object;
 		if ($mysqli->last_errno && !isset($this->already[$query])) {
+			trigger_error(
+				'Mysql\Maintainer ' . $mysqli->last_errno . SP . $mysqli->last_error . ' : ' . $query,
+				E_USER_NOTICE
+			);
 			$this->already[$query] = 1;
 			if (!isset($mysqli->context)) {
 				$mysqli->context = $this->guessContext($query);
