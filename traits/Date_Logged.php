@@ -16,6 +16,7 @@ trait Date_Logged
 	/**
 	 * @default Date_Time::now
 	 * @link DateTime
+	 * @user readonly
 	 * @var Date_Time
 	 */
 	public $creation;
@@ -24,6 +25,7 @@ trait Date_Logged
 	/**
 	 * @default Date_Time::now
 	 * @link DateTime
+	 * @user readonly
 	 * @var Date_Time
 	 */
 	public $last_update;
