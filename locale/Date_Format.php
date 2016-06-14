@@ -184,22 +184,15 @@ class Date_Format
 			}
 			else {
 				list($date, $time) = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
-				// TODO Here it's useless. May be what is wanted is $time = substr($time, 0, 5); ??
-				if ((strlen($time) == 8) && ((substr($time, -3) == ':00') || !$this->show_seconds)) {
+				if ($time === '00:00:00') {
+					$time = '';
+				}
+				elseif (!$this->show_seconds) {
 					$time = substr($time, 0, 5);
 				}
 				$result = ($date_time = DateTime::createFromFormat('Y-m-d', $date))
-					? ($date_time->format($this->format) . SP . $time)
+					? ($date_time->format($this->format) . (strlen($time) ? (SP . $time) : ''))
 					: $date;
-				if (substr($result, -9) == ' 00:00:00') {
-					$result = substr($result, 0, -9);
-				}
-				elseif (substr($result, -6) == ' 00:00') {
-					$result = substr($result, 0, -6);
-				}
-				elseif (substr($result, -3) == ':00') {
-					$result = substr($result, 0, -3);
-				}
 				return $result;
 			}
 		}
