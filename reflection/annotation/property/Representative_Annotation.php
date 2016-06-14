@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Property;
 
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Representative;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
@@ -26,6 +27,8 @@ class Representative_Annotation extends Representative implements Property_Conte
 	public function __construct($value, Reflection_Property $property)
 	{
 		parent::__construct($value, $property->getType()->asReflectionClass());
+		$this->properties = Replaces_Annotations::replaceProperties($this->getProperties());
+		$this->value = array_keys($this->properties);
 	}
 
 }

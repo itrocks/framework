@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
 use SAF\Framework\PHP;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Representative;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
@@ -34,10 +35,11 @@ class Representative_Annotation extends Representative implements Class_Context_
 			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if (!$property->isStatic() && !$property->getType()->isMultiple()) {
 					$this->properties[$property->getName()] = $property;
-					$this->value[] = $property->getName();
 				}
 			}
 		}
+		$this->properties = Replaces_Annotations::replaceProperties($this->getProperties());
+		$this->value = array_keys($this->properties);
 	}
 
 }
