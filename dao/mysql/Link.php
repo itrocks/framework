@@ -230,7 +230,7 @@ class Link extends Dao\Sql\Link
 	public function createStorage($class_name)
 	{
 		$class_name = Builder::className($class_name);
-		return Maintainer::updateTable($this->connection, $class_name);
+		return (new Maintainer())->updateTable($this->connection, $class_name);
 	}
 
 	//---------------------------------------------------------------------------------------- delete
