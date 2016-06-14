@@ -1,13 +1,12 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Sets;
 
-use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Features for replaces annotations
  */
-class Replaces_Annotations extends Annotation
+abstract class Replaces_Annotations
 {
 
 	//---------------------------------------------------------------------- removeReplacedProperties

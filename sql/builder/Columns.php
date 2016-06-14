@@ -5,6 +5,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Func\Concat;
+use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -299,7 +300,10 @@ class Columns
 	{
 		$sql_columns = '';
 		if ($this->expand_objects) {
-			foreach ($this->joins->getProperties($path) as $property) {
+			$properties = $this->joins->getProperties($path);
+			$properties = Replaces_Annotations::removeReplacedProperties($properties);
+			/** @var $properties Reflection_Property[] */
+			foreach ($properties as $property) {
 				$column_name = Sql\Builder::buildColumnName($property);
 				if ($column_name) {
 					if ($first_property) $first_property = false; else $sql_columns .= ', ';
