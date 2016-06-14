@@ -20,18 +20,29 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 class Store_Annotation extends Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'store';
 
-	const FALSE      = 'false';
-	const JSON       = 'json';
-	const GZ         = 'gz';
-	const HEX        = 'hex';
-	const STRING     = 'string';
+	//----------------------------------------------------------------------------------------- FALSE
+	const FALSE = 'false';
 
+	//-------------------------------------------------------------------------------------------- GZ
+	const GZ = 'gz';
+
+	//------------------------------------------------------------------------------------------- HEX
+	const HEX = 'hex';
+
+	//------------------------------------------------------------------------------------------ JSON
+	const JSON = 'json';
+
+	//------------------------------------------------------------------------------------ JSON_CLASS
 	/**
 	 * The internal key to store the name of the class into the json structure
 	 */
 	const JSON_CLASS = '_class';
+
+	//---------------------------------------------------------------------------------------- STRING
+	const STRING = 'string';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -40,15 +51,20 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 */
 	public function __construct($value, Reflection_Property $property)
 	{
-		if (empty($value) && $property->getType()->isDateTime()) {
-			$value = self::STRING;
-		}
 		parent::__construct($value);
+		if (empty($this->value)) {
+			if ($property->isStatic()) {
+				$this->value = self::FALSE;
+			}
+			elseif ($property->getType()->isDateTime()) {
+				$this->value = self::STRING;
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------- storedPropertiesOnly
 	/**
-	 * Returns only properties which @store annotation is not false
+	 * Returns only non-static properties which @store annotation is not false
 	 *
 	 * @param $properties Reflection_Property[]
 	 * @return Reflection_Property[] filtered properties list
@@ -56,7 +72,10 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	public static function storedPropertiesOnly($properties)
 	{
 		foreach ($properties as $key => $property) {
-			if ($property->getAnnotation(self::ANNOTATION)->value === self::FALSE) {
+			if (
+				$property->isStatic()
+				|| ($property->getAnnotation(self::ANNOTATION)->value === self::FALSE)
+			) {
 				unset($properties[$key]);
 			}
 		}
