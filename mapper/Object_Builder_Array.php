@@ -375,7 +375,7 @@ class Object_Builder_Array
 		}
 		if (!isset($done)) {
 			$type = $property->getType();
-			if ($type->isBasic()) {
+			if ($type->isBasic(false)) {
 				// password
 				if ($encryption = $property->getAnnotation('password')->value) {
 					if ($value == Password::UNCHANGED) {

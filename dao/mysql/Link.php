@@ -689,7 +689,7 @@ class Link extends Dao\Sql\Link
 						$element_type = $property->getType()->getElementType();
 						$storage_name = $property->getAnnotation('storage')->value;
 						// write basic
-						if ($element_type->isBasic()) {
+						if ($element_type->isBasic(false)) {
 							if (
 								$element_type->isString()
 								&& in_array(

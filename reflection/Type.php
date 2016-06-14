@@ -11,18 +11,38 @@ use SAF\Framework\Reflection\Interfaces;
 class Type
 {
 
-	//------------------------------------------------------------------------ type strings constants
-	const _ARRAY       = 'array';
-	const _CALLABLE    = 'callable';
-	const BOOLEAN      = 'boolean';
-	const FLOAT        = 'float';
-	const INTEGER      = 'integer';
-	const MULTIPLE     = 'multiple';
-	const NULL         = 'NULL';
-	const RESOURCE     = 'resource';
-	const STRING       = 'string';
+	//---------------------------------------------------------------------------------------- _ARRAY
+	const _ARRAY = 'array';
+
+	//------------------------------------------------------------------------------------- _CALLABLE
+	const _CALLABLE = 'callable';
+
+	//--------------------------------------------------------------------------------------- BOOLEAN
+	const BOOLEAN = 'boolean';
+
+	//----------------------------------------------------------------------------------------- FLOAT
+	const FLOAT = 'float';
+
+	//--------------------------------------------------------------------------------------- INTEGER
+	const INTEGER = 'integer';
+
+	//-------------------------------------------------------------------------------------- MULTIPLE
+	const MULTIPLE = 'multiple';
+
+	//------------------------------------------------------------------------------------------ NULL
+	const NULL = 'NULL';
+
+	//------------------------------------------------------------------------------------------ null
+	const null = 'null';
+
+	//-------------------------------------------------------------------------------------- RESOURCE
+	const RESOURCE = 'resource';
+
+	//---------------------------------------------------------------------------------------- STRING
+	const STRING = 'string';
+
+	//---------------------------------------------------------------------------------- STRING_ARRAY
 	const STRING_ARRAY = 'string[]';
-	const null         = 'null';
 
 	//------------------------------------------------------------------------------------- $absolute
 	/**
@@ -32,15 +52,15 @@ class Type
 	 */
 	private $absolute;
 
-	//---------------------------------------------------------------------------------- $basic_types
+	//------------------------------------------------------------------------- $strictly_basic_types
 	/**
 	 * These are the basic non-object php types
 	 *
 	 * @var string[]
 	 */
-	private static $basic_types = [
-		self::BOOLEAN, self::INTEGER, self::FLOAT, self::STRING,
-		self::_ARRAY, self::RESOURCE, self::_CALLABLE, self::NULL, self::null
+	private static $strictly_basic_types = [
+		self::_ARRAY, self::BOOLEAN, self::_CALLABLE, self::FLOAT, self::INTEGER,
+		self::NULL, self::null, self::RESOURCE, self::STRING
 	];
 
 	//---------------------------------------------------------------------------------- $can_be_null
@@ -59,7 +79,7 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $numeric_types = [self::INTEGER, self::FLOAT];
+	private static $numeric_types = [self::FLOAT, self::INTEGER];
 
 	//---------------------------------------------------------------------------------- $sized_types
 	/**
@@ -67,7 +87,7 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $sized_types = [self::INTEGER, self::FLOAT, self::STRING];
+	private static $sized_types = [self::FLOAT, self::INTEGER, self::STRING];
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -271,16 +291,19 @@ class Type
 	/**
 	 * Tells if a type is a basic type or not
 	 *
-	 * Basic types are boolean, integer, float, string, array, resource, callable, null, NULL
-	 * DateTime and Date_Time are considered comme basic too ! Use isStrictlyBasic
+	 * Basic types : boolean, integer, float, string, string[], array, resource, callable, null, NULL
+	 * DateTime and Date_Time are considered as basic too ! Use isStrictlyBasic
 	 * if you don't want them
-	 * Not basic types are *,[] objects, class names
+	 * Not basic types are *, [] objects, class names
 	 *
+	 * @param $include_multiple_string boolean if false, string[] is not considered as a basic type
 	 * @return boolean
 	 */
-	public function isBasic()
+	public function isBasic($include_multiple_string = true)
 	{
-		return $this->isStrictlyBasic() || $this->isDateTime();
+		return $this->isStrictlyBasic()
+			|| $this->isDateTime()
+			|| ($include_multiple_string && $this->isMultipleString());
 	}
 
 	//------------------------------------------------------------------------------------- isBoolean
@@ -374,7 +397,7 @@ class Type
 	 */
 	public function isMultipleString()
 	{
-		return $this->type === (self::STRING . '[]');
+		return $this->type === self::STRING_ARRAY;
 	}
 
 	//---------------------------------------------------------------------------------------- isNull
@@ -383,7 +406,7 @@ class Type
 	 */
 	public function isNull()
 	{
-		return $this->type === self::NULL;
+		return in_array($this->type, [self::NULL, self::null]);
 	}
 
 	//------------------------------------------------------------------------------------- isNumeric
@@ -401,14 +424,14 @@ class Type
 	/**
 	 * Tells if a type is strictly a basic type or not
 	 *
-	 * Basic types are boolean, integer, float, string, array, resource, callable, null, NULL
-	 * Not basic types are *,[] objects, class names, including DateTime
+	 * Strictly basic types are boolean, integer, float, string, array, resource, callable, null, NULL
+	 * Not basic types are *, [] objects, class names, including DateTime and string[]
 	 *
 	 * @return boolean
 	 */
 	public function isStrictlyBasic()
 	{
-		return in_array($this->type, self::$basic_types);
+		return in_array($this->type, self::$strictly_basic_types);
 	}
 
 	//-------------------------------------------------------------------------------------- isString
