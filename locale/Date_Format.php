@@ -194,6 +194,9 @@ class Date_Format
 				if (substr($result, -9) == ' 00:00:00') {
 					$result = substr($result, 0, -9);
 				}
+				elseif (substr($result, -6) == ' 00:00') {
+					$result = substr($result, 0, -6);
+				}
 				elseif (substr($result, -3) == ':00') {
 					$result = substr($result, 0, -3);
 				}
