@@ -111,6 +111,48 @@ function isStrictNumeric($value)
 	return is_numeric($value) && !strpos('0+.', $value[0]) && (stripos($value, 'E') === false);
 }
 
+//------------------------------------------------------------------------------------------ maxSet
+/**
+ * Returns the maximal value of $arguments
+ *
+ * @param $arguments float|float[]|integer|integer[]
+ * @return integer|null null if there is not any real value into arguments
+ */
+function maxSet($arguments)
+{
+	$maximum = null;
+	foreach (func_get_args() as $argument) {
+		if (is_array($argument)) {
+			$argument = call_user_func_array(__FUNCTION__, $argument);
+		}
+		if (($argument !== false) && !is_null($argument)) {
+			$maximum = isset($maximum) ? max($argument, $maximum) : $argument;
+		}
+	}
+	return $maximum;
+}
+
+//------------------------------------------------------------------------------------------ minSet
+/**
+ * Returns the minimal value of $arguments
+ *
+ * @param $arguments float|float[]|integer|integer[]
+ * @return integer|null null if there is not any real value into arguments
+ */
+function minSet($arguments)
+{
+	$minimum = null;
+	foreach (func_get_args() as $argument) {
+		if (is_array($argument)) {
+			$argument = call_user_func_array(__FUNCTION__, $argument);
+		}
+		if (($argument !== false) && !is_null($argument)) {
+			$minimum = isset($minimum) ? min($argument, $minimum) : $argument;
+		}
+	}
+	return $minimum;
+}
+
 define('_ALL',       65535);
 define('_CLASS',     1);
 define('_INTERFACE', 2);
