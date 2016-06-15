@@ -93,7 +93,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		if (is_string($lines)) {
 			$result = [];
 			foreach (explode(LF, $lines) as $line) {
-				$result[] = '<tr><td>' . ++$lines_count . '</td><td>' . $line . '</td><tr>';
+				$result[] = '<tr><td>' . ++$lines_count . '</td><td>' . htmlentities($line, ENT_QUOTES|ENT_HTML5) . '</td><tr>';
 			}
 		}
 		else {
@@ -103,10 +103,10 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			foreach ($lines as $line) {
 				$result[] = '<tr>'
 					. '<td>' . ++$lines_count . '</td>'
-					. '<td>' . $line->class . '</td>'
-					. '<td>' . $line->function . '</td>'
-					. '<td>' . $line->file . '</td>'
-					. '<td>' . $line->line . '</td>'
+					. '<td>' . htmlentities($line->class, ENT_QUOTES|ENT_HTML5) . '</td>'
+					. '<td>' . htmlentities($line->function, ENT_QUOTES|ENT_HTML5) . '</td>'
+					. '<td>' . htmlentities($line->file, ENT_QUOTES|ENT_HTML5) . '</td>'
+					. '<td>' . htmlentities($line->line, ENT_QUOTES|ENT_HTML5) . '</td>'
 					. '</tr>';
 			}
 		}
