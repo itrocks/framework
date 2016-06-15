@@ -9,6 +9,18 @@ use SAF\Framework\Dao\Sql;
 class Database implements Sql\Database
 {
 
+	//--------------------------------------------------------------------------------- CHARACTER_SET
+	/**
+	 * Default character set for mysql databases
+	 */
+	const CHARACTER_SET = 'utf8';
+
+	//--------------------------------------------------------------------------------------- COLLATE
+	/**
+	 * Default collate for mysql databases
+	 */
+	const COLLATE = 'utf8_general_ci';
+
 	//------------------------------------------------------------------------------------- $Database
 	/**
 	 * @var string
@@ -22,6 +34,33 @@ class Database implements Sql\Database
 	public function getName()
 	{
 		return $this->Database;
+	}
+
+	//------------------------------------------------------------------------------- characterSetSql
+	/**
+	 * @return string @example CHARACTER SET utf8
+	 */
+	public static function characterSetSql()
+	{
+		return 'CHARACTER SET ' . static::CHARACTER_SET;
+	}
+
+	//------------------------------------------------------------------------ characterSetCollateSql
+	/**
+	 * @return string @example CHARACTER SET utf8 COLLATE utf8_general_ci
+	 */
+	public static function characterSetCollateSql()
+	{
+		return static::characterSetSql() . SP . static::collateSql();
+	}
+
+	//------------------------------------------------------------------------------------ collateSql
+	/**
+	 * @return string @example COLLATE utf8_general_ci
+	 */
+	public static function collateSql()
+	{
+		return 'COLLATE ' . static::COLLATE;
 	}
 
 }

@@ -209,31 +209,6 @@ class Maintainer implements Registerable
 		return $context ? $context : null;
 	}
 
-	//----------------------------------------------------------------------------- lockAndRemoveKeys
-	/**
-	 * @param $mysqli     mysqli
-	 * @param $table_name string
-	 * @param $columns    string[] key = value = column name
-	 * @return Foreign_Key[]
-	 */
-	private function lockAndRemoveKeys(mysqli $mysqli, $table_name, array $columns)
-	{
-		$foreign_keys = [];
-		$lock_tables  = [];
-		foreach (Foreign_Key::buildReferences($mysqli, $table_name) as $foreign_key) {
-			$column_name = $foreign_key->getFields()[0];
-			if (isset($columns[$column_name])) {
-				$reference_table_name = $foreign_key->getReferenceTable();
-				$lock_tables[$reference_table_name] = $reference_table_name;
-				$foreign_keys[$column_name] = $foreign_key;
-			}
-		}
-		// TODO lock tables
-		// TODO destroy foreign keys
-		// see http://stackoverflow.com/questions/13606469
-		return $foreign_keys;
-	}
-
 	//------------------------------------------------------------------------ onCantCreateTableError
 	/**
 	 * @param $mysqli Contextual_Mysqli
@@ -384,19 +359,6 @@ class Maintainer implements Registerable
 		return $tables;
 	}
 
-	//---------------------------------------------------------------------------- resetKeysAndUnlock
-	/**
-	 * @param $mysqli       mysqli
-	 * @param $table_name   string
-	 * @param $foreign_keys Foreign_Key[]
-	 */
-	private function resetKeysAndUnlock(mysqli $mysqli, $table_name, array $foreign_keys)
-	{
-		// TODO reset keys
-		// TODO unlock tables
-		// see http://stackoverflow.com/questions/13606469
-	}
-
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers the Mysql maintainer plugin
@@ -439,33 +401,48 @@ class Maintainer implements Registerable
 		foreach ((new Table_Builder_Class)->build($class_name) as $class_table) {
 			$table_name = $class_table->getName();
 			$mysql_table = Table_Builder_Mysqli::build($mysqli, $table_name);
+
+			// create table
 			if (!$mysql_table) {
 				foreach ((new Create_Table($class_table))->build() as $query) {
 					$mysqli->query($query);
 				}
 				$result = true;
 			}
+
+			// alter table
 			else {
 				$mysql_columns = $mysql_table->getColumns();
 				$builder       = new Alter_Table($mysql_table);
 				$alter_columns = [];
+				$foreign_keys  = null;
 				foreach ($class_table->getColumns() as $column) {
 					$column_name = $column->getName();
 					if (!isset($mysql_columns[$column_name])) {
 						$builder->addColumn($column);
 					}
 					elseif (!$column->equiv($mysql_columns[$column_name])) {
-						$builder->alterColumn($column_name, $column);
+						trigger_error(
+							'Maintainer alters column ' . print_r($column, true)
+								. print_r($mysql_columns[$column_name], true),
+							E_USER_NOTICE
+						);
+						if (!isset($foreign_keys)) {
+							$foreign_keys = Foreign_Key::buildTable($mysqli, $table_name);
+						}
+						$foreign_key = isset($foreign_keys[$column_name]) ? $foreign_keys[$column_name] : null;
+						$builder->alterColumn($column_name, $column, $foreign_key);
 						$alter_columns[$column_name] = $column_name;
 					}
 				}
 				if ($builder->isReady()) {
-					$foreign_keys = $this->lockAndRemoveKeys($mysqli, $table_name, $alter_columns);
-					$mysqli->query($builder->build());
-					$this->resetKeysAndUnlock($mysqli, $table_name, $foreign_keys);
+					foreach ($builder->build(true) as $query) {
+						$mysqli->query($query);
+					}
 					$result = true;
 				}
 			}
+
 		}
 		return $result;
 	}

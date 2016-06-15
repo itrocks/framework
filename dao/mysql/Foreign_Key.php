@@ -97,35 +97,6 @@ class Foreign_Key implements Sql\Foreign_Key
 		return $foreign_key;
 	}
 
-	//------------------------------------------------------------------------------------ buildTable
-	/**
-	 * Builds a Foreign_Key[] object array using database information for a given table
-	 *
-	 * @param $mysqli        mysqli
-	 * @param $table_name    string
-	 * @param $database_name string
-	 * @return Foreign_Key[]
-	 */
-	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
-	{
-		$database_name = isset($database_name) ? (DQ . $database_name . DQ) : 'DATABASE()';
-		$foreign_keys = [];
-		$result = $mysqli->query(
-			'SELECT constraint_name `Constraint`,'
-			. ' RIGHT(constraint_name, LENGTH(constraint_name) - LOCATE(".", constraint_name)) `Fields`,'
-			. ' update_rule `On_update`, delete_rule `On_delete`,'
-			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
-			. LF . 'FROM information_schema.referential_constraints'
-			. LF . 'WHERE constraint_schema = ' . $database_name
-			. ' AND table_name = ' . DQ . $table_name . DQ
-		);
-		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
-			$foreign_keys[] = $foreign_key;
-		}
-		$result->free();
-		return $foreign_keys;
-	}
-
 	//------------------------------------------------------------------------------- buildReferences
 	/**
 	 * Builds a Foreign_Key[] object array using database information for a given
@@ -151,6 +122,36 @@ class Foreign_Key implements Sql\Foreign_Key
 		);
 		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
 			$foreign_keys[] = $foreign_key;
+		}
+		$result->free();
+		return $foreign_keys;
+	}
+
+	//------------------------------------------------------------------------------------ buildTable
+	/**
+	 * Builds a Foreign_Key[] object array using database information for a given table
+	 *
+	 * @param $mysqli        mysqli
+	 * @param $table_name    string
+	 * @param $database_name string
+	 * @return Foreign_Key[]
+	 */
+	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
+	{
+		$database_name = isset($database_name) ? (DQ . $database_name . DQ) : 'DATABASE()';
+		$foreign_keys = [];
+		$result = $mysqli->query(
+			'SELECT constraint_name `Constraint`,'
+			. ' RIGHT(constraint_name, LENGTH(constraint_name) - LOCATE(".", constraint_name)) `Fields`,'
+			. ' update_rule `On_update`, delete_rule `On_delete`,'
+			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
+			. LF . 'FROM information_schema.referential_constraints'
+			. LF . 'WHERE constraint_schema = ' . $database_name
+			. ' AND table_name = ' . DQ . $table_name . DQ
+		);
+		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
+			/** @var $foreign_key Foreign_Key */
+			$foreign_keys[$foreign_key->getFields()[0]] = $foreign_key;
 		}
 		$result->free();
 		return $foreign_keys;
@@ -208,6 +209,15 @@ class Foreign_Key implements Sql\Foreign_Key
 	public function getReferenceTable()
 	{
 		return $this->Reference_table;
+	}
+
+	//------------------------------------------------------------------------------------- toDropSql
+	/**
+	 * @return string
+	 */
+	public function toDropSql()
+	{
+		return 'DROP FOREIGN KEY ' . BQ . $this->getConstraint() . BQ;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

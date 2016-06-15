@@ -7,7 +7,10 @@ namespace SAF\Framework\Dao\Sql;
 interface Foreign_Key
 {
 
-	const CASCADE  = 'CASCADE';
+	//--------------------------------------------------------------------------------------- CASCADE
+	const CASCADE = 'CASCADE';
+
+	//-------------------------------------------------------------------------------------- RESTRICT
 	const RESTRICT = 'RESTRICT';
 
 	//--------------------------------------------------------------------------------- getConstraint
@@ -45,6 +48,12 @@ interface Foreign_Key
 	 * @return string
 	 */
 	public function getReferenceTable();
+
+	//------------------------------------------------------------------------------------- toDropSql
+	/**
+	 * @return string
+	 */
+	public function toDropSql();
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**

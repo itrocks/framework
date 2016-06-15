@@ -16,6 +16,18 @@ class Column implements Sql\Column
 {
 	use Column_Builder_Property;
 
+	//-------------------------------------------------------------------------------- AUTO_INCREMENT
+	const AUTO_INCREMENT = 'auto_increment';
+
+	//-------------------------------------------------------------------------------------------- NO
+	const NO = 'NO';
+
+	//---------------------------------------------------------------------------------- STRING_TYPES
+	const STRING_TYPES = ['char', 'enum', 'mediumtext', 'set', 'text', 'tinytext', 'varchar'];
+
+	//------------------------------------------------------------------------------------------- YES
+	const YES = 'YES';
+
 	//---------------------------------------------------------------------------------------- $Field
 	/**
 	 * Mysql column name
@@ -36,6 +48,7 @@ class Column implements Sql\Column
 	 * 'enum("v",...)', 'set("v",...)'
 	 * where 'p' = 'precision', 'l' = 'length', 'd' = 'decimals', 'v' = 'value'
 	 * numeric types can be followed with ' unsigned'
+	 * text types can be followed with 'CHARACTER SET utf8 COLLATE utf8_general_ci'
 	 *
 	 * @var string
 	 */
@@ -85,7 +98,9 @@ class Column implements Sql\Column
 	 */
 	public function __construct($name = null, $type = null)
 	{
-		if (isset($name)) $this->Field = $name;
+		if (isset($name)) {
+			$this->Field = $name;
+		}
 		if (isset($type)) {
 			$this->Type  = $type;
 			if (!isset($this->Default)) {
@@ -105,12 +120,12 @@ class Column implements Sql\Column
 	public static function buildProperty(Reflection_Property $property)
 	{
 		$column = new Column();
-		$column->Field   = self::propertyNameToMysql($property, $column);
-		$column->Type    = self::propertyTypeToMysql($property, $column);
-		$column->Null    = self::propertyNullToMysql($property, $column);
-		$column->Key     = self::propertyKeyToMysql($property, $column);
+		$column->Field   = self::propertyNameToMysql($property);
+		$column->Type    = self::propertyTypeToMysql($property);
+		$column->Null    = self::propertyNullToMysql($property);
+		$column->Key     = self::propertyKeyToMysql($property);
 		$column->Default = self::propertyDefaultToMysql($property, $column);
-		$column->Extra = '';
+		$column->Extra   = '';
 		return $column;
 	}
 
@@ -123,9 +138,9 @@ class Column implements Sql\Column
 	public static function buildId()
 	{
 		$column = new Column('id', 'bigint(18) unsigned');
-		$column->Null    = 'NO';
+		$column->Null    = self::NO;
 		$column->Default = null;
-		$column->Extra   = 'auto_increment';
+		$column->Extra   = self::AUTO_INCREMENT;
 		return $column;
 	}
 
@@ -139,7 +154,7 @@ class Column implements Sql\Column
 	public static function buildLink($column_name)
 	{
 		$column = new Column($column_name, 'bigint(18) unsigned');
-		$column->Null    = 'NO';
+		$column->Null    = self::NO;
 		$column->Default = 0;
 		return $column;
 	}
@@ -151,7 +166,7 @@ class Column implements Sql\Column
 	 * @param $mysqli        mysqli
 	 * @param $table_name    string
 	 * @param $database_name string
-	 * @return Column[]
+	 * @return Column[] key is the name of the column
 	 */
 	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
 	{
@@ -166,7 +181,10 @@ class Column implements Sql\Column
 		);
 		/** @var $column Column */
 		while ($column = $result->fetch_object(Column::class)) {
-			$columns[] = $column;
+			if (is_null($column->Default) && !$column->canBeNull() && $column->isString()) {
+				$column->Default = '';
+			}
+			$columns[$column->getName()] = $column;
 		}
 		$result->free();
 		return $columns;
@@ -178,7 +196,7 @@ class Column implements Sql\Column
 	 */
 	public function canBeNull()
 	{
-		return $this->Null === 'YES';
+		return $this->Null === self::YES;
 	}
 
 	//-------------------------------------------------------------------------------- cleanupDefault
@@ -235,6 +253,18 @@ class Column implements Sql\Column
 		return $this->Field;
 	}
 
+	//------------------------------------------------------------------------------------ getRawType
+	/**
+	 * Get sql raw base type, without size or any other information
+	 *
+	 * @return string
+	 */
+	public function getRawType()
+	{
+		$i = minSet(strpos($this->Type, '('), strpos($this->Type, SP));
+		return is_null($i) ? $this->Type : substr($this->Type, 0, $i);
+	}
+
 	//--------------------------------------------------------------------------------- getSqlPostfix
 	/**
 	 * @return string
@@ -259,9 +289,7 @@ class Column implements Sql\Column
 	 */
 	public function getType()
 	{
-		$i = strpos($this->Type, '(');
-		$type = ($i === false) ? $this->Type : substr($this->Type, 0, $i);
-		switch ($type) {
+		switch ($this->getRawType()) {
 			case 'decimal': case 'float': case 'double':
 				return new Type(Type::FLOAT);
 			case 'tinyint': case 'smallint': case 'mediumint': case 'int': case 'bigint':
@@ -284,6 +312,15 @@ class Column implements Sql\Column
 		return !empty($this->Key);
 	}
 
+	//-------------------------------------------------------------------------------------- isString
+	/**
+	 * @return boolean
+	 */
+	public function isString()
+	{
+		return in_array($this->getRawType(), self::STRING_TYPES);
+	}
+
 	//------------------------------------------------------------------------------- setDefaultValue
 	/**
 	 * @param $default string
@@ -300,14 +337,14 @@ class Column implements Sql\Column
 	public function toSql()
 	{
 		$column_name = $this->getName();
-		$type = $this->getSqlType();
-		$postfix = $this->getSqlPostfix();
-		$sql = BQ . $column_name . BQ . SP . $type;
+		$type        = $this->getSqlType();
+		$postfix     = $this->getSqlPostfix();
+		$sql         = BQ . $column_name . BQ . SP . $type;
 		if (!$this->canBeNull()) {
 			$sql .= ' NOT NULL';
 		}
 		if (
-			($postfix != ' auto_increment')
+			($postfix !== (SP . self::AUTO_INCREMENT))
 			&& !in_array($type, [
 				'tinyblob', 'tinytext', 'blob', 'text', 'mediumblob', 'mediumtext', 'longblob', 'longtext'
 			])
@@ -315,7 +352,7 @@ class Column implements Sql\Column
 			$sql .= ' DEFAULT ' . Value::escape($this->getDefaultValue());
 		}
 		$sql .= $postfix;
-		if ($postfix === ' auto_increment') {
+		if ($postfix === (SP . self::AUTO_INCREMENT)) {
 			$sql .= ' PRIMARY KEY';
 		}
 		return $sql;

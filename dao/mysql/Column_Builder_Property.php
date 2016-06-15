@@ -111,7 +111,8 @@ trait Column_Builder_Property
 		) {
 			if ($property_type->isMultipleString()) {
 				$values = self::propertyValues($property);
-				return $values ? 'set(' . Q . join(Q . ',' . Q, $values) . Q . ')' : 'text';
+				return ($values ? 'set(' . Q . join(Q . ',' . Q, $values) . Q . ')' : 'text')
+					. SP . Database::characterSetCollateSql();
 			}
 			if ($property_type->hasSize()) {
 				/** @var integer $max_length */
@@ -161,7 +162,8 @@ trait Column_Builder_Property
 						if (!isset($values[''])) {
 							$values[''] = '';
 						}
-						return 'enum(' . Q . join(Q . ',' . Q, $values) . Q . ')';
+						return 'enum(' . Q . join(Q . ',' . Q, $values) . Q . ')'
+							. SP . Database::characterSetCollateSql();
 					}
 					if (
 						$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::GZ
@@ -177,7 +179,7 @@ trait Column_Builder_Property
 						($max_length <= 65535)    ? 'text' : (
 						($max_length <= 16777215) ? 'mediumtext' :
 						'longtext'
-					))) . ' CHARACTER SET utf8 COLLATE utf8_general_ci';
+					))) . SP . Database::characterSetCollateSql();
 				}
 			}
 			elseif (
