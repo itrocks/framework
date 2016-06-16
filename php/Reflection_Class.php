@@ -6,6 +6,7 @@ use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Parser;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use SAF\Framework\Tools\Call_Stack;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Set;
 
@@ -1057,6 +1058,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				}
 
 				$class_name = $this->fullClassName($this->scanClassName(), false);
+
+				if (($class_name !== $this->name) && (strtolower($class_name) === strtolower($this->name))) {
+					trigger_error(
+						"Wrong case $this->name : you should replace with $class_name", E_USER_ERROR
+					);
+				}
 
 			} while (!isset($this->name) || ($class_name !== $this->name));
 			$this->name = $class_name;
