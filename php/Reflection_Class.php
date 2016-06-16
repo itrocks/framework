@@ -19,6 +19,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	use Annoted;
 	use Tokens_Parser;
 
+	//--------------------------------------------------------------------------------- T_DOC_EXTENDS
 	const T_DOC_EXTENDS = 'T_DOC_EXTENDS';
 
 	//---------------------------------------------------------------------------------- $doc_comment
@@ -1059,16 +1060,41 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 				$class_name = $this->fullClassName($this->scanClassName(), false);
 
-				if (($class_name !== $this->name) && (strtolower($class_name) === strtolower($this->name))) {
-					trigger_error(
-						"Wrong case $this->name : you should replace with $class_name", E_USER_ERROR
-					);
+				if (
+					($class_name !== $this->name) && (strtolower($class_name) === strtolower($this->name))
+				) {
+					$this->wrongCaseError($class_name, $this->name);
 				}
 
 			} while (!isset($this->name) || ($class_name !== $this->name));
 			$this->name = $class_name;
 
 		}
+	}
+
+	//-------------------------------------------------------------------------------- wrongCaseError
+	/**
+	 * @param $class_name       string
+	 * @param $wrong_class_name string
+	 */
+	private function wrongCaseError($class_name, $wrong_class_name)
+	{
+		// look for the source class where the class name is wrong
+		foreach ((new Call_Stack())->lines() as $line) {
+			if (
+				($line->object instanceof Interfaces\Reflection_Class)
+				&& ($line->object->getName() !== $wrong_class_name)
+			) {
+				$into_class_name = $line->object->getName();
+				break;
+			}
+		}
+		// case mismatch is an error
+		trigger_error(
+			"Wrong case $wrong_class_name : you should replace with $class_name"
+			. (isset($into_class_name) ? " into $into_class_name" : ''),
+			E_USER_ERROR
+		);
 	}
 
 }
