@@ -551,7 +551,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$options[] = $group_by;
 			$this->groupConcat($properties_path, $group_by);
 		}
-		$data = Dao::select($class_name, $properties_path, $search, $options);
+		$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
 		$this->objectsToString($data);
 		if (isset($limit) && isset($count)) {
 			if (($data->length() < $limit->count) && ($limit->from > 1)) {
@@ -568,6 +568,18 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 		return $data;
+	}
+
+	//-------------------------------------------------------------------------------- readDataSelect
+	/**
+	 * @param $class_name      string
+	 * @param $properties_path string[]
+	 * @param $search          array search-compatible search array
+	 * @return List_Data
+	 */
+	protected function readDataSelect($class_name, array $properties_path, array $search, $options)
+	{
+		return Dao::select($class_name, $properties_path, $search, $options);
 	}
 
 	//--------------------------------------------------------------------- removeInvisibleProperties
