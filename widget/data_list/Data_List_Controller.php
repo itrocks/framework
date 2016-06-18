@@ -639,6 +639,22 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		return [array_combine($properties_path, $properties_path), $search];
 	}
 
+	//------------------------------------------------------------------------------------------- run
+	/**
+	 * Default run method for default 'list-typed' view controller
+	 *
+	 * @param $parameters Parameters
+	 * @param $form       array
+	 * @param $files      array
+	 * @param $class_name string
+	 * @return mixed
+	 */
+	public function run(Parameters $parameters, $form, $files, $class_name)
+	{
+		$parameters = $this->getViewParameters($parameters, $form, $class_name);
+		return View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
+	}
+
 	//-------------------------------------------------------------------------------- searchProperty
 	/**
 	 * @param $property Reflection_Property
@@ -661,22 +677,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$property->value(Loc::propertyToIso($property, $value));
 		}
 		return $property;
-	}
-
-	//------------------------------------------------------------------------------------------- run
-	/**
-	 * Default run method for default 'list-typed' view controller
-	 *
-	 * @param $parameters Parameters
-	 * @param $form       array
-	 * @param $files      array
-	 * @param $class_name string
-	 * @return mixed
-	 */
-	public function run(Parameters $parameters, $form, $files, $class_name)
-	{
-		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		return View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
 	}
 
 }
