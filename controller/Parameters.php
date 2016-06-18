@@ -112,7 +112,7 @@ class Parameters
 		}
 		if (!$object || !is_object($object) || (isset($class_name) && !@is_a($object, $class_name))) {
 			$object = isset($default_object) ? $default_object : (
-				(isset($class_name) && @class_exists($class_name))
+				(isset($class_name) && class_exists($class_name))
 				? Builder::create($class_name)
 				: Set::instantiate($class_name)
 			);
@@ -141,7 +141,7 @@ class Parameters
 			if (isset($parameter_name[0]) && ctype_upper($parameter_name[0])) {
 				$class_name = $parameter_name;
 			}
-			if (isset($class_name) && @class_exists($class_name)) {
+			if (isset($class_name) && class_exists($class_name)) {
 				// object parameter
 				$object = $this->getRawParameter($parameter_name) + 0;
 				Mapper\Getter::getObject($object, $class_name);

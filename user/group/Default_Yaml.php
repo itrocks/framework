@@ -100,8 +100,7 @@ class Default_Yaml
 			$this->dependencies = [];
 			$class_name = $this->class;
 		}
-		/** @noinspection PhpUsageOfSilenceOperatorInspection May not exist for obsolescent feature */
-		if (@class_exists($class_name)) {
+		if (class_exists($class_name)) {
 			$class = new Reflection_Class($class_name);
 			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
 				$link = $property->getAnnotation(Link_Annotation::ANNOTATION)->value;

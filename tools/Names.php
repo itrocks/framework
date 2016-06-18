@@ -170,8 +170,7 @@ abstract class Names
 	public static function fileToClass($file_name)
 	{
 		$class_name = self::pathToClass(lParse($file_name, DOT));
-		/** @noinspection PhpUsageOfSilenceOperatorInspection */
-		if (!@class_exists($class_name)) {
+		if (!class_exists($class_name)) {
 			$class_name = lLastParse($class_name, BS);
 		}
 		return (new Reflection_Class($class_name))->name;
@@ -335,7 +334,7 @@ abstract class Names
 		do {
 			$class_name = self::setToSingle($class_name);
 			$full_class_name = Namespaces::defaultFullClassName($class_name . $right, $set_class_name);
-			if (@class_exists($full_class_name) || trait_exists($full_class_name, false)) {
+			if (class_exists($full_class_name) || trait_exists($full_class_name)) {
 				return $full_class_name;
 			}
 			$i = strrpos($class_name, '_');
@@ -344,7 +343,7 @@ abstract class Names
 			}
 			if ($i === false) {
 				if (
-					(@class_exists($set_class_name) || trait_exists($set_class_name, false))
+					(class_exists($set_class_name) || trait_exists($set_class_name))
 					&& ((new Reflection_Class($set_class_name))->getAnnotation('set')->value == $set_class_name)
 				) {
 					return $set_class_name;

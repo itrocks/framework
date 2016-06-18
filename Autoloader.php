@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\Framework\AOP\Include_Filter;
+use SAF\Framework\Tools\Call_Stack;
 use SAF\Framework\Tools\Names;
 
 /**
@@ -85,7 +86,8 @@ class Autoloader
 	public function classNotFound($class_name)
 	{
 		$this->files[] = 'vendor';
-		if (error_reporting()) {
+		$call_stack_line = (new Call_Stack())->searchFunctions(['class_exists', 'trait_exists']);
+		if (!$call_stack_line || ($call_stack_line->arguments[0] !== $class_name)) {
 			trigger_error(
 				'Class not found ' . $class_name . ', searched into ' . join(', ', $this->files),
 				E_USER_ERROR

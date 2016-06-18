@@ -99,6 +99,27 @@ class Call_Stack
 		return $lines;
 	}
 
+	//------------------------------------------------------------------------------- searchFunctions
+	/**
+	 * Returns true if the call stack contains any of the given functions
+	 *
+	 * @param $functions string[] The searched functions
+	 * @return Line|null The first matching line if found, else false
+	 */
+	public function searchFunctions($functions)
+	{
+		foreach ($this->stack as $stack) {
+			if (
+				isset($stack['function'])
+				&& !isset($stack['class'])
+				&& in_array($stack['function'], $functions)
+			) {
+				return Line::fromDebugBackTraceArray($stack);
+			}
+		}
+		return null;
+	}
+
 	//----------------------------------------------------------------------------------------- shift
 	/**
 	 * @param $count integer

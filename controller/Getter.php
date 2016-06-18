@@ -43,7 +43,7 @@ abstract class Getter
 			$classes[$class_name] = substr(
 				$class_name, strpos($class_name, BS, strpos($class_name, BS) + 1) + 1
 			);
-			if (@class_exists($class_name)) {
+			if (class_exists($class_name)) {
 				$reflection_class = new Reflection_Class(Builder::className($class_name));
 				$extends_annotations = $reflection_class->getListAnnotations('extends');
 				foreach ($extends_annotations as $extends_annotation) {

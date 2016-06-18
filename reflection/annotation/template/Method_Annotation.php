@@ -52,16 +52,13 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				) {
 					$type_annotation->applyNamespace($class->getNamespaceName());
 				}
-				/** @noinspection PhpUsageOfSilenceOperatorInspection */
-				if (!@class_exists($type_annotation->value)) {
+				if (!class_exists($type_annotation->value)) {
 					$this->searchIntoDeclaringTrait($class_property, $type_annotation, $value, $pos);
 				}
-				/** @noinspection PhpUsageOfSilenceOperatorInspection */
-				if (!@class_exists($type_annotation->value)) {
+				if (!class_exists($type_annotation->value)) {
 					$this->searchIntoFinalClass($class_property, $type_annotation, $value, $pos);
 				}
-				/** @noinspection PhpUsageOfSilenceOperatorInspection */
-				if (!@class_exists($type_annotation->value) && !@trait_exists($type_annotation->value)) {
+				if (!class_exists($type_annotation->value) && !trait_exists($type_annotation->value)) {
 					trigger_error(
 						sprintf(
 							'Not found full class name for Method_Annotation %1 value %2 class %3 property %4',

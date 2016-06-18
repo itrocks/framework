@@ -20,11 +20,18 @@ use SAF\Framework\Tools\Namespaces;
 class Parser
 {
 
+	//-------------------------------------------------------------------------------- DOC_COMMENT_IN
 	const DOC_COMMENT_IN = "\t *IN ";
 
 	//---------------------------------------------------------------- annotations contexts constants
-	const T_CLASS    = 'Class_';
-	const T_METHOD   = 'Method';
+
+	//--------------------------------------------------------------------------------------- T_CLASS
+	const T_CLASS = 'Class_';
+
+	//-------------------------------------------------------------------------------------- T_METHOD
+	const T_METHOD = 'Method';
+
+	//------------------------------------------------------------------------------------ T_PROPERTY
 	const T_PROPERTY = 'Property';
 
 	//----------------------------------------------------------------------- $additional_annotations
@@ -174,8 +181,7 @@ class Parser
 		$annotation_class = __NAMESPACE__
 			. BS . $reflection_class
 			. BS . Names::propertyToClass($annotation_name) . '_Annotation';
-		/** @noinspection PhpUsageOfSilenceOperatorInspection */
-		if (!@class_exists($annotation_class)) {
+		if (!class_exists($annotation_class)) {
 			if (!isset(self::$default_annotations)) {
 				self::initDefaultAnnotations();
 			}
