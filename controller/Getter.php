@@ -177,7 +177,7 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 					$last_controller_class  = $base_class;
 					$last_controller_method = $feature_name;
 				}
-				if (@method_exists($base_class, $feature_name)) {
+				if (method_exists($base_class, $feature_name)) {
 					$class = $base_class;
 					$method = $feature_name;
 				}
