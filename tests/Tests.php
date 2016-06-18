@@ -96,10 +96,9 @@ class Tests
 			unset($file_parts[key($file_parts)]);
 		}
 		$short_class_name = Names::pathToClass(join(SL, $file_parts));
-		/** @noinspection PhpUsageOfSilenceOperatorInspection class may not exist */
 		if (
-			@is_subclass_of($class_name = $short_class_name, Test::class)
-			|| (isset($long_class_name) && @is_subclass_of($class_name = $long_class_name, Test::class))
+			is_subclass_of($class_name = $short_class_name, Test::class)
+			|| (isset($long_class_name) && is_subclass_of($class_name = $long_class_name, Test::class))
 		) {
 			$this->runClass($class_name);
 		}

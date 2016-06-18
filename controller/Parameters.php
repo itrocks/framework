@@ -105,12 +105,12 @@ class Parameters
 			}
 			if ((!$object || !is_object($object)) && !$class_name) {
 				$class_name = $this->uri->controller_name;
-				if (@is_a($class_name, Application::class, true) || @isA($class_name, Current::class)) {
+				if (is_a($class_name, Application::class, true) || isA($class_name, Current::class)) {
 					$object = call_user_func([$class_name, 'current']);
 				}
 			}
 		}
-		if (!$object || !is_object($object) || (isset($class_name) && !@is_a($object, $class_name))) {
+		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
 			$object = isset($default_object) ? $default_object : (
 				(isset($class_name) && class_exists($class_name))
 				? Builder::create($class_name)

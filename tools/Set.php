@@ -104,7 +104,7 @@ class Set implements Iterator
 	 */
 	public static function elementClassNameOf($class_name)
 	{
-		if (@is_a($class_name, __CLASS__, true)) {
+		if (is_a($class_name, __CLASS__, true)) {
 			$class_name = (new $class_name)->element_class_name;
 		}
 		elseif (!class_exists($class_name)) {

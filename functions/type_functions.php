@@ -84,6 +84,12 @@ function isA($object, $class_name)
 	if (is_a($object, $class_name, true)) {
 		return true;
 	}
+	if (
+		   !class_exists($object)     && !interface_exists($object)     && !trait_exists($object)
+		|| !class_exists($class_name) && !interface_exists($class_name) && !trait_exists($class_name)
+	) {
+		return false;
+	}
 	$classes = class_parents($object) + class_uses($object);
 	while ($classes) {
 		$next_classes = [];
