@@ -51,8 +51,11 @@ abstract class Getter
 						$classes[$extends] = explode(BS, $extends, 3)[2];
 					}
 				}
+				$class_name = get_parent_class($class_name);
 			}
-			$class_name = @get_parent_class($class_name);
+			else {
+				$class_name = null;
+			}
 		} while ($class_name);
 
 		// Looking for specific controller for each application

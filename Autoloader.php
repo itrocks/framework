@@ -87,7 +87,8 @@ class Autoloader
 	{
 		$this->files[] = 'vendor';
 		$call_stack_line = (new Call_Stack())->searchFunctions([
-			'class_exists', 'interface_exists', 'is_a', 'isA', 'is_subclass_of', 'trait_exists'
+			'class_exists', 'interface_exists', 'is_a', 'isA', 'is_subclass_of', 'method_exists',
+			'trait_exists'
 		]);
 		if (!$call_stack_line || ($call_stack_line->arguments[0] !== $class_name)) {
 			trigger_error(

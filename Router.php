@@ -353,7 +353,7 @@ class Router implements
 			&& !isset($GLOBALS['F'])
 		) {
 			$controller = $this->controller_calls[$object->controller_name][$object->feature_name];
-			if (@method_exists($controller[0], $controller[1])) {
+			if (method_exists($controller[0], $controller[1])) {
 				return [$controller];
 			}
 		}
@@ -413,7 +413,7 @@ class Router implements
 		}
 		if (isset($this->view_calls[$class_name][$feature_names])) {
 			$view = $this->view_calls[$class_name][$feature_names];
-			if (@method_exists($view[0], $view[1])) {
+			if (method_exists($view[0], $view[1])) {
 				return [$view];
 			}
 		}
