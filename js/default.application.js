@@ -19,7 +19,8 @@ $('document').ready(function()
 		});
 
 		// messages is draggable and closable
-		this.inside('#messages').draggable().click(function (event) {
+		this.inside('#messages').draggable().click(function(event)
+		{
 			if (event.offsetX > this.clientWidth - 10 && event.offsetY < 10) {
 				$(this).empty();
 			}
