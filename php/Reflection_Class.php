@@ -157,7 +157,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		unset($this->type);
 
 		if (isset($name)) {
-			$this->name = $name;
+			$this->name = (substr($name, 0, 1) === BS) ? substr($name, 1) : $name;
 		}
 	}
 

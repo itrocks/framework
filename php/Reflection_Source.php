@@ -343,6 +343,13 @@ class Reflection_Source
 				// namespace use
 				if ($use_what == T_NAMESPACE) {
 					foreach ($this->scanClassNames() as $used => $line) {
+						if ($used[0] === BS) {
+							trigger_error(
+								'Coding standards : use ' . $used . ' do not need to begin with a back-slash'
+								. ' into ' . $this->file_name . '. This may cause drawbacks to the framework.',
+								E_USER_WARNING
+							);
+						}
 						$use[$used] = $used;
 						if ($f_uses) {
 							$this->use[$used] = $line;

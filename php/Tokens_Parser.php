@@ -1,7 +1,9 @@
 <?php
 namespace SAF\Framework\PHP;
 
+use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Type;
+use SAF\Framework\Tools\Call_Stack;
 
 /**
  * These are helpers functions to parse tokens
@@ -73,6 +75,11 @@ trait Tokens_Parser
 			}
 		});
 		// trigger error
+		foreach ((new Call_Stack())->lines() as $line) {
+			if ($line->object instanceof Interfaces\Reflection_Class) {
+				echo '! You may check your class ' . $line->object->getName() . BR . LF;
+			}
+		}
 		trigger_error('EOF during ' . $method . '() after [' . lParse($where, LF) . ']', E_USER_ERROR);
 	}
 
