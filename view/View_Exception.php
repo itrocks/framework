@@ -1,7 +1,7 @@
 <?php
 namespace SAF\Framework\View;
 
-use \Exception;
+use Exception;
 
 /**
  * The View exception stops the current controller-view execution chain and enabled displaying
