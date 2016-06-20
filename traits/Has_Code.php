@@ -3,7 +3,9 @@ namespace SAF\Framework\Traits;
 
 /**
  * For all classes having a code made of true ascii string ([a-zA-Z0-9_])
+ *
  * @before_write transformToCode
+ * @todo HIGHEST Should not it be $code's @setter, instead of @before_write ?
  */
 trait Has_Code
 {
@@ -22,11 +24,14 @@ trait Has_Code
 	{
 		if (isset($this->code)) {
 			$this->code = preg_replace(
-				['/(\s+)/', '/' . Q . '/'], ['_', ''], trim(strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $this->code)))
+				['/(\s+)/', '/' . Q . '/'],
+				['-', ''],
+				trim(strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $this->code)))
 			);
 			if (is_null($this->code)) {
 				$this->code = '';
 			}
 		}
 	}
+
 }

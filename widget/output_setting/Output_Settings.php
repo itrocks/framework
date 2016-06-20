@@ -95,12 +95,11 @@ class Output_Settings extends Custom_Settings
 	 * @param $tab_name            string
 	 * @param $where               string 'after', 'before' or null
 	 * @param $where_property_path string reference property path for $where
+	 * @todo NORMAL make it work with $tab_name
 	 */
 	public function addProperty(
-	 	$add_property_path
 		/** @noinspection PhpUnusedParameterInspection */
-		, $tab_name
-		, $where = 'after', $where_property_path = null
+	 	$add_property_path, $tab_name, $where = 'after', $where_property_path = null
 	) {
 		$this->initProperties();
 		$add_property = isset($this->properties[$add_property_path])
@@ -193,10 +192,10 @@ class Output_Settings extends Custom_Settings
 				}
 			}
 			else {
-				foreach (
-					(new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT])
-					as $property
-				) {
+				$properties = (new Reflection_Class($class_name))->getProperties(
+					[T_EXTENDS, T_USE, Reflection_Class::T_SORT]
+				);
+				foreach ($properties as $property) {
 					if ($property->isPublic() && !$property->isStatic()) {
 						$this->properties[$property->name] = Builder::create(
 							Property::class, [$class_name, $property->name]
@@ -209,6 +208,10 @@ class Output_Settings extends Custom_Settings
 	}
 
 	//--------------------------------------------------------------------------------------- initTab
+	/** @noinspection PhpUnusedPrivateMethodInspection */
+	/**
+	 * TODO NORMAL in-tabs management
+	 */
 	private function initTab()
 	{
 		if (!isset($this->tab)) {
