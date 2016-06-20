@@ -57,7 +57,7 @@ class Textile extends Parser
 		/** @var $textile Textile */
 		$textile = Builder::create(Textile::class);
 		$result = $textile->textileThis($text);
-		return strReplace(['&at;' => '@', '<code>&amp;at;' => '<code>@', '|' => '||'], $result);
+		return strReplace(['&at;' => '@', '&amp;at;' => '@', '|' => '||'], $result);
 	}
 
 	//------------------------------------------------------------------------------------ parseSpans
