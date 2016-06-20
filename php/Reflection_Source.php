@@ -349,6 +349,7 @@ class Reflection_Source
 								. ' into ' . $this->file_name . '. This may cause drawbacks to the framework.',
 								E_USER_WARNING
 							);
+							$used = substr($used, 1);
 						}
 						$use[$used] = $used;
 						if ($f_uses) {
