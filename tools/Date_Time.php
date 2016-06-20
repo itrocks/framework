@@ -385,6 +385,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function toMonth()
 	{
+		if ($this->isMin()) {
+			return new Date_Time($this);
+		}
 		return new Date_Time($this->format('Y-m'));
 	}
 
