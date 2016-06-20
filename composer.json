@@ -6,6 +6,7 @@
 	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
 		"alvaro-prieto/colResizable":            "1.6",
+		"bappli/document-designer":              "0.x",
 		"components/jquery":                     "2.x",
 		"components/jqueryui":                   "1.x",
 		"composer/installers":                   "~1.0",
