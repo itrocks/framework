@@ -11,6 +11,8 @@ use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
  */
 class Display_Order_Annotation extends List_Annotation
 {
+
+	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'display_order';
 
 }

@@ -6,6 +6,8 @@ namespace SAF\Framework\Reflection\Interfaces;
  */
 interface Reflection_Class extends Reflection
 {
+
+	//---------------------------------------------------------------------------------------- T_SORT
 	const T_SORT = 'sort';
 
 	//------------------------------------------------------------------------------------ __toString
