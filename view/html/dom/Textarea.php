@@ -16,7 +16,9 @@ class Textarea extends Element
 	{
 		parent::__construct('textarea');
 		if (isset($name))  $this->setAttribute('name', $name);
-		if (isset($value)) $this->setContent($value);
+		if (isset($value)) $this->setContent(
+			strReplace(['<' => '&lt;', '>' => '&gt;', '|' => '&#124;'], $value)
+		);
 	}
 
 }

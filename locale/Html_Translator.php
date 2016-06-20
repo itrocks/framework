@@ -46,7 +46,7 @@ class Html_Translator implements Registerable
 			$i ++;
 			if ($i < strlen($content)) {
 				if ($content[$i] == '|') {
-					$i ++;
+					$content = substr($content, 0, $i) . substr($content, $i + 1);
 				}
 				elseif (!in_array($content[$i], [SP, CR, LF, TAB])) {
 					$this->translateElement($content, $i, $context);

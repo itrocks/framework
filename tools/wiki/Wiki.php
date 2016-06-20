@@ -66,7 +66,7 @@ class Wiki implements Registerable
 						$content = substr($string, $j + 1, $k - $j - 2 - strlen($cr));
 						$content = str_replace(
 							['&lt;', '&gt;', '&#123;', '&#125;'],
-							['<',    '>',    '{',      '}'],
+							['<',    '>',    '{',      '}',    ],
 							$content
 						);
 						$geshi = GeSHi::parse($content, $cr ? substr($language, 0, -1) : $language);
@@ -97,11 +97,7 @@ class Wiki implements Registerable
 		foreach ($this->geshi_replace as $replacement => $geshi) {
 			$string = str_replace(
 				$replacement,
-				str_replace(
-					['{',      '}'],
-					['&#123;', '&#125;'],
-					$geshi
-				),
+				strReplace(['{' => '&#123;', '}' => '&#125;'], $geshi),
 				$string
 			);
 		}
