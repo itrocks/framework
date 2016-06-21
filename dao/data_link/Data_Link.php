@@ -61,7 +61,7 @@ abstract class Data_Link
 	 * @param $options Option[]
 	 * @return boolean
 	 */
-	protected function beforeWrite($object, array $options)
+	protected function beforeWrite($object, $options)
 	{
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = (new Reflection_Class(get_class($object)))->getAnnotations('before_write');
