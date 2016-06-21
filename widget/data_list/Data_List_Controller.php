@@ -9,6 +9,7 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Group_Concat;
+use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Option\Count;
 use SAF\Framework\Dao\Option\Group_By;
 use SAF\Framework\Dao\Option\Limit;
@@ -552,16 +553,16 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$this->groupConcat($properties_path, $group_by);
 		}
 		$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
-		$this->objectsToString($data);
 		if (isset($limit) && isset($count)) {
 			if (($data->length() < $limit->count) && ($limit->from > 1)) {
 				$limit->from = max(1, $count->count - $limit->count + 1);
 				$list_settings->start_display_line_number = $limit->from;
 				$list_settings->save();
-				$data = Dao::select($class_name, $properties_path, $search, $options);
+				$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
 			}
 		}
-		// TODO LOW the following patch line is to avoid others calculation to use invisible properties
+		$this->objectsToString($data);
+		// TODO LOW the following patch lines are to avoid others calculation to use invisible props
 		foreach ($list_settings->properties as $property_path => $property) {
 			if (!isset($properties_path[$property_path])) {
 				unset($list_settings->properties[$property_path]);
@@ -572,13 +573,19 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//-------------------------------------------------------------------------------- readDataSelect
 	/**
-	 * @param $class_name      string
-	 * @param $properties_path string[]
-	 * @param $search          array search-compatible search array
-	 * @return List_Data
+	 * @param $class_name      string Class name for the read object
+	 * @param $properties_path string[] the list of the columns names : only those properties
+	 *                         will be read. There are 'column.sub_column' to get values from linked
+	 *                         objects from the same data source
+	 * @param $search          array Search array for filter, associating properties names to
+	 *                         matching search value too.
+	 * @param $options         Option[] some options for advanced search
+	 * @return List_Data A list of read records. Each record values (may be objects) are
+	 *         stored in the same order than columns.
 	 */
-	protected function readDataSelect($class_name, array $properties_path, array $search, $options)
-	{
+	protected function readDataSelect(
+		$class_name, array $properties_path, array $search, array $options
+	) {
 		return Dao::select($class_name, $properties_path, $search, $options);
 	}
 
