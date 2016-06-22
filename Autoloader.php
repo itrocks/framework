@@ -11,14 +11,6 @@ use SAF\Framework\Tools\Names;
 class Autoloader
 {
 
-	//---------------------------------------------------------------------------------------- $files
-	/**
-	 * Searched filenames or paths
-	 *
-	 * @var string[]
-	 */
-	private $files = [];
-
 	//-------------------------------------------------------------------------------------- autoload
 	/**
 	 * Includes the php file that contains the given class (must contain namespace)
@@ -66,37 +58,6 @@ class Autoloader
 				Session::current()->plugins->get($class_name);
 			}
 		}
-		$this->files = [];
-		if (!$result) {
-			if (isset($file1)) $this->files[] = $file1;
-			if (isset($file2)) $this->files[] = $file2;
-			if (isset($file3)) $this->files[] = $file3;
-			if (isset($file4)) $this->files[] = $file4;
-		}
-		return $result;
-	}
-
-	//--------------------------------------------------------------------------------- classNotFound
-	/**
-	 * This is called when no file containing the class was found
-	 *
-	 * @param $class_name string
-	 * @return boolean false
-	 */
-	public function classNotFound($class_name)
-	{
-		$this->files[] = 'vendor';
-		$call_stack_line = (new Call_Stack())->searchFunctions([
-			'class_exists', 'interface_exists', 'is_a', 'isA', 'is_subclass_of', 'method_exists',
-			'trait_exists'
-		]);
-		if (!$call_stack_line || ($call_stack_line->arguments[0] !== $class_name)) {
-			trigger_error(
-				'Class not found ' . $class_name . ', searched into ' . join(', ', $this->files),
-				E_USER_ERROR
-			);
-		}
-		return false;
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -107,7 +68,6 @@ class Autoloader
 	{
 		include_once __DIR__ . '/../../vendor/autoload.php';
 		spl_autoload_register([$this, 'autoload'], true, true);
-		spl_autoload_register([$this, 'classNotFound']);
 	}
 
 }
