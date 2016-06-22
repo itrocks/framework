@@ -26,6 +26,7 @@ class Compiler implements ICompiler, Needs_Main
 {
 	use Scanners;
 
+	//----------------------------------------------------------------------------------------- DEBUG
 	const DEBUG = false;
 
 	//--------------------------------------------------------------------------------------- $weaver
@@ -305,8 +306,8 @@ class Compiler implements ICompiler, Needs_Main
 								*/
 								if ($source->getClass($class_name)) {
 									$sources[$source->file_name] = $source;
-									$added[$class_name] = $source;
-									$already[$class_name] = true;
+									$added[$class_name]          = $source;
+									$already[$class_name]        = true;
 								}
 								else {
 									/*
