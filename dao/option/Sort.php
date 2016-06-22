@@ -5,6 +5,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Mapper\Comparator;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 
 /**
  * A DAO sort option
@@ -136,7 +137,7 @@ class Sort implements Option
 	//------------------------------------------------------------------------------------ getColumns
 	/**
 	 * @param $class_name string the contextual class name :
-	 * needed if the constructor was called without columns
+	 *                    needed if the constructor was called without columns
 	 * @return string[] the column names
 	 */
 	public function getColumns($class_name = null)
@@ -145,6 +146,21 @@ class Sort implements Option
 			$this->applyClassName($class_name);
 		}
 		return $this->columns;
+	}
+
+	//--------------------------------------------------------------------------------- getProperties
+	/**
+	 * @param string $class_name the contextual class name :
+	 *                           needed if the constructor was called without columns
+	 * @return Reflection_Property[] the properties
+	 */
+	public function getProperties($class_name = null)
+	{
+		$properties = [];
+		foreach ($this->getColumns($class_name) as $column) {
+			$properties[$column] = new Reflection_Property($this->class_name, $column);
+		}
+		return $properties;
 	}
 
 	//------------------------------------------------------------------------------------- isReverse
