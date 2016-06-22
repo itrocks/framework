@@ -12,6 +12,7 @@ class Properties
 	use Scanners;
 	use Toolbox;
 
+	//----------------------------------------------------------------------------------------- DEBUG
 	const DEBUG = false;
 
 	//------------------------------------------------------------------------------ $SETTER_RESERVED
@@ -226,7 +227,7 @@ class Properties
 	{
 		// only if at least one property is declared here
 		foreach ($advices as $property_advices) {
-			if (isset($property_advices['implements'])) {
+			if (isset($property_advices['implements']) || isset($property_advices['replaced'])) {
 				$over = $this->overrideMethod('__construct', false);
 				return
 	$over['prototype'] . '
@@ -267,8 +268,11 @@ class Properties
 			case ' . Q . $property_name . Q . ': $value =& $this; return $value;';
 				}
 				else {
+					$replacement = isset($advices[$property_advices['replaced']]['implements']['read'])
+						? ('_' . $property_advices['replaced'] . '_read()')
+						: $property_advices['replaced'];
 					$code .= '
-			case ' . Q . $property_name . Q . ': $value =& $this->' . $property_advices['replaced'] . '; return $value;';
+			case ' . Q . $property_name . Q . ': return $this->' . $replacement . ';';
 				}
 				if (isset($over['cases'][$property_name])) {
 					unset($over['cases'][$property_name]);
@@ -366,7 +370,8 @@ class Properties
 	private function & _' . $property_name . '_read()
 	{
 		unset($this->_[' . Q . $property_name . Q . ']);
-		' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
+		' . $last . '$value = $this->' . $property_name . ' = $this->' . $property_name . '_;
+		unset($this->' . $property_name . '_);
 ';
 				}
 				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
@@ -383,6 +388,7 @@ class Properties
 			// todo missing call of setters if value has been changed
 			return $prototype . $this->initCode($init) . $code . '
 
+		$this->' . $property_name . '_ = $this->' . $property_name . ';
 		unset($this->' . $property_name . ');
 		$this->_[' . Q . $property_name . Q . '] = true;
 		return $value;
