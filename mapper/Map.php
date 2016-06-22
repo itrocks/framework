@@ -143,6 +143,30 @@ class Map
 					? new Sort($object->getClassName())
 					: new Sort(get_class($object));
 			}
+
+			/**
+			 * This patch disables the warning message on uasort when sort columns are objects which
+			 * classes that are loaded by the autoloader inside the uasort().
+			 * uasort does not like throw Exceptions inside of it. There may be some.
+			 *
+			 * This patch executes all the potential autoload before calling uasort, so we never get
+			 * this warning message. To be removed when the PHP issue will be fixed.
+			 *
+			 * Caching of Parser::getAnnotationClassName was also needed : all classes must be
+			 * included before calling uasort() to be sure this will work smoothly.
+			 *
+			 * @see https://bugs.php.net/bug.php?id=50688
+			 * @see http://stackoverflow.com/questions/3235387
+			 */
+			if ($this->objects) {
+				foreach ($sort->getProperties() as $sort_column => $property) {
+					$type = $property->getType();
+					if ($type->isClass()) {
+						$type->asReflectionClass();
+					}
+				}
+			}
+
 			uasort($this->objects, function($object1, $object2) use ($sort)
 			{
 				if (($object1 instanceof List_Row) && ($object2 instanceof List_Row)) {
