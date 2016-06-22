@@ -1,0 +1,25 @@
+<?php
+namespace SAF\Framework\Reflection\Annotation\Tests\Replaces;
+
+use SAF\Framework\Setting\User_Setting;
+use SAF\Framework\User;
+
+/**
+ * A son for the class Dependency, with some replacements
+ *
+ * TODO A unit test to check that the getter is called once and both properties are always right
+ */
+class User_Setting_Son extends User_Setting
+{
+
+	//------------------------------------------------------------------------------------------ $guy
+	/**
+	 * @composite
+	 * @link Object
+	 * @override
+	 * @replaces user
+	 * @var User
+	 */
+	public $guy;
+
+}
