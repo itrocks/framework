@@ -370,8 +370,7 @@ class Properties
 	private function & _' . $property_name . '_read()
 	{
 		unset($this->_[' . Q . $property_name . Q . ']);
-		' . $last . '$value = $this->' . $property_name . ' = $this->' . $property_name . '_;
-		unset($this->' . $property_name . '_);
+		' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
 ';
 				}
 				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
@@ -388,7 +387,6 @@ class Properties
 			// todo missing call of setters if value has been changed
 			return $prototype . $this->initCode($init) . $code . '
 
-		$this->' . $property_name . '_ = $this->' . $property_name . ';
 		unset($this->' . $property_name . ');
 		$this->_[' . Q . $property_name . Q . '] = true;
 		return $value;
