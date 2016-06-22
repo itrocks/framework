@@ -37,18 +37,19 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	public function handle(Handled_Error $error)
 	{
 		$code = new Error_Code($error->getErrorNumber());
-		$stack = new Call_Stack();
-		$message = '<div class="' . $code->caption() . ' handler">' . LF
-			. '<span class="number">' . $code->caption() . '</span>' . LF
-			. '<span class="message">' . $error->getErrorMessage() . '</span>' . LF
-			. '<table class="call-stack">' . LF
-				. $this->stackLinesTableRows($this->trace ?: $stack->lines())
-			. '</table>' . LF
-			. '</div>' . LF;
 		if (ini_get('display_errors')) {
+			$stack = $this->trace ?: new Call_Stack();
+			$message = '<div class="' . $code->caption() . ' handler">' . LF
+				. '<span class="number">' . $code->caption() . '</span>' . LF
+				. '<span class="message">' . $error->getErrorMessage() . '</span>' . LF
+				. '<table class="call-stack">' . LF
+				. $this->stackLinesTableRows($this->trace ?: $stack->lines())
+				. '</table>' . LF
+				. '</div>' . LF;
 			echo $message . LF;
 		}
 		if (ini_get('log_errors') && ($log_file = ini_get('error_log'))) {
+			$stack = $this->trace ?: new Call_Stack();
 			$f = fopen($log_file, 'ab');
 			$date = '[' . date('Y-m-d H:i:s') . ']' . SP;
 			fputs($f, $date . ucfirst($code->caption()) . ':' . SP . $error->getErrorMessage() . LF);
