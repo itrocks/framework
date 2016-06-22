@@ -158,6 +158,22 @@ trait Scanners
 		foreach ($this->scanForOverrides($class->getDocComment(), ['replaces']) as $match) {
 			$properties[$match['method_name']]['replaced'] = $match['property_name'];
 		}
+		// copy-paste getters and setters from replaced to replacement properties
+		// TODO HIGH this is not enough : the getter with access an unset property. See unit test
+		foreach ($properties as $advices) {
+			if (isset($advices['replaced'])) {
+				foreach ($advices as $advice_key => $advice) {
+					if (is_numeric($advice_key)) {
+						$properties[$advices['replaced']][] = $advice;
+					}
+					elseif ($advice_key === 'implements') {
+						foreach ($advice as $implements_key => $implements) {
+							$properties[$advices['replaced']]['implements'][$implements_key] = $implements;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------- scanForSetters
