@@ -268,11 +268,8 @@ class Properties
 			case ' . Q . $property_name . Q . ': $value =& $this; return $value;';
 				}
 				else {
-					$replacement = isset($advices[$property_advices['replaced']]['implements']['read'])
-						? ('_' . $property_advices['replaced'] . '_read()')
-						: $property_advices['replaced'];
 					$code .= '
-			case ' . Q . $property_name . Q . ': return $this->' . $replacement . ';';
+			case ' . Q . $property_name . Q . ': $value =& $this->' . $property_advices['replaced'] . '; return $value;';
 				}
 				if (isset($over['cases'][$property_name])) {
 					unset($over['cases'][$property_name]);

@@ -160,6 +160,7 @@ trait Scanners
 		}
 		// copy-paste getters and setters from replaced to replacement properties
 		// TODO HIGH this is not enough : the getter with access an unset property. See unit test
+		/*
 		foreach ($properties as $advices) {
 			if (isset($advices['replaced'])) {
 				foreach ($advices as $advice_key => $advice) {
@@ -174,6 +175,7 @@ trait Scanners
 				}
 			}
 		}
+		*/
 	}
 
 	//-------------------------------------------------------------------------------- scanForSetters
