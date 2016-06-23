@@ -40,6 +40,29 @@ class Tests extends Test
 		);
 	}
 
+	//------------------------------------------------------------------------------- testChildMethod
+	public function testChildMethod()
+	{
+		$object = new Child_Method();
+		$object->replaced_string = 'value';
+		$this->assume(
+			__METHOD__ . DOT . 'object.direct', $object->getReplacedObject()->replaced, 'to_replacement'
+		);
+		$this->assume(
+			__METHOD__ . DOT . 'object.replaced', $object->replaced_object->replaced, 'to_replacement'
+		);
+		$this->assume(
+			__METHOD__ . DOT . 'object.replacement',
+			$object->replacement_object->replacement,
+			'to_replacement'
+		);
+		$this->assume(__METHOD__ . DOT . 'string.direct', $object->getReplacedString(), 'value.get');
+		// TODO HIGH Make this work (getters are not called)
+		//$this->assume(__METHOD__ . DOT . 'string.replaced', $object->replaced_string, 'value.get');
+		//$this->assume(__METHOD__ . DOT . 'string.replacement', $object->replacement_string, 'value.get');
+		//$this->assume(__METHOD__ . DOT . 'strval', strval($object), 'value.get.to_replacement');
+	}
+
 	//------------------------------------------------------------------------------------ testSimple
 	public function testSimple()
 	{
