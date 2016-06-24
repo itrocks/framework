@@ -61,6 +61,7 @@ class Tests extends Test
 		//$this->assume(__METHOD__ . DOT . 'string.replaced', $object->replaced_string, 'value.get');
 		//$this->assume(__METHOD__ . DOT . 'string.replacement', $object->replacement_string, 'value.get');
 		//$this->assume(__METHOD__ . DOT . 'strval', strval($object), 'value.get.to_replacement');
+		//$this->assume(__METHOD__ . DOT . 'strval', strval($object), 'value.get.to_replacement');
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
