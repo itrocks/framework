@@ -401,16 +401,13 @@ class Reflection_Class extends ReflectionClass
 	 */
 	public function sortProperties(array $properties)
 	{
-		$annotations = $this->getAnnotation(Display_Order_Annotation::ANNOTATION);
-		if (is_array($annotations->value) && count($annotations->value)) {
-			$property_names = $annotations->value;
-			array_walk($property_names, function(&$value) {
-				$value = trim($value);
-			});
+		if ($annotations = $this->getListAnnotations(Display_Order_Annotation::ANNOTATION)) {
 			$sorted_properties = [];
-			foreach ($property_names as $property_name) {
-				if (isset($properties[$property_name])) {
-					$sorted_properties[$property_name] = $properties[$property_name];
+			foreach ($annotations as $annotation) {
+				foreach ($annotation->value as $property_name) {
+					if (isset($properties[$property_name])) {
+						$sorted_properties[$property_name] = $properties[$property_name];
+					}
 				}
 			}
 			foreach ($properties as $property_name => $property) {
