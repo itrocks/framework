@@ -42,22 +42,23 @@
 			// filtered object itself, added to find into it's children
 			return this.filter(selector).add(this.find(selector));
 		};
-		//
+
+		// add a callback function
 		if (callback != undefined) {
-			// add a callback function
 			window.jquery_build_callback.push(callback);
 			if ((call_now == undefined) || call_now) {
 				callback.call(this);
 			}
 		}
+
+		// execute all callback functions
 		else {
-			// execute all callback functions
 			for (var key in jquery_build_callback) if (jquery_build_callback.hasOwnProperty(key)) {
 				window.jquery_build_callback[key].call(this);
 			}
 		}
-		delete this.inside;
 
+		delete this.inside;
 		return this;
 	};
 
