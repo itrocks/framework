@@ -61,7 +61,10 @@ class Parser
 				. TAB . 'Parser::$default_annotations,' . LF
 				. TAB . 'unserialize(' . Q . serialize(self::$additional_annotations) . Q . ')' . LF
 				. ');' . LF;
-			file_put_contents($cached_annotations_file, $buffer);
+			$cache = file_get_contents($cached_annotations_file);
+			if ($buffer !== $cache) {
+				file_put_contents($cached_annotations_file, $buffer);
+			}
 		}
 		else {
 			clearstatcache();
