@@ -5,6 +5,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Func\Concat;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -306,21 +307,45 @@ class Columns
 			foreach ($properties as $property) {
 				$column_name = Sql\Builder::buildColumnName($property);
 				if ($column_name) {
-					if ($first_property) $first_property = false; else $sql_columns .= ', ';
+					if ($first_property) {
+						$first_property = false;
+					}
+					else {
+						$sql_columns .= ', ';
+					}
+					if (
+						(substr($column_name, 0, 3) === 'id_')
+						&& in_array(
+							$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
+							[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING]
+						)
+					) {
+						$column_name = substr($column_name, 3);
+					}
 					$sql_columns .= $join->foreign_alias . DOT . BQ . $column_name . BQ . (
 						($this->append || !$this->resolve_aliases)
 						? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ)
 					);
 				}
 			}
-			if ($first_property) $first_property = false; else $sql_columns .= ', ';
+			if ($first_property) {
+				$first_property = false;
+			}
+			else {
+				$sql_columns .= ', ';
+			}
 			$sql_columns .= $join->foreign_alias . '.id' . (
 				($this->append || !$this->resolve_aliases)
 					? '' : (' AS ' . BQ . $path . ':id' . BQ)
 				);
 		}
 		else {
-			if ($first_property) $first_property = false; else $sql_columns .= ', ';
+			if ($first_property) {
+				$first_property = false;
+			}
+			else {
+				$sql_columns .= ', ';
+			}
 			$sql_columns .= $join->foreign_alias . '.id'
 				. ($this->resolve_aliases ? (' AS ' . BQ . $path . BQ) : '');
 		}
