@@ -394,17 +394,18 @@ class Reflection_Class extends ReflectionClass
 
 	//-------------------------------------------------------------------------------- sortProperties
 	/**
-	 * Sort the properties list from (@)display_order class annotation
+	 * Sort the properties list from @display_order class annotation(s)
 	 *
 	 * @param $properties Reflection_Property[] key is the name of the property
 	 * @return Reflection_Property[] key is the name of the property
 	 */
 	public function sortProperties(array $properties)
 	{
+		/** @var $annotations Display_Order_Annotation[] */
 		if ($annotations = $this->getListAnnotations(Display_Order_Annotation::ANNOTATION)) {
 			$sorted_properties = [];
 			foreach ($annotations as $annotation) {
-				foreach ($annotation->value as $property_name) {
+				foreach ($annotation->values() as $property_name) {
 					if (isset($properties[$property_name])) {
 						$sorted_properties[$property_name] = $properties[$property_name];
 					}
