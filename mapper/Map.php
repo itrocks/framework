@@ -136,7 +136,7 @@ class Map
 	 */
 	public function sort(Sort $sort = null)
 	{
-		if ($this->objects) {
+		if (count($this->objects) > 1) {
 			$object = reset($this->objects);
 			if (!isset($sort)) {
 				$sort = ($object instanceof List_Row)
