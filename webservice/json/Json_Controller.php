@@ -5,6 +5,9 @@ use SAF\Framework\Builder;
 use SAF\Framework\Controller\Default_Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Func\Logical;
+use SAF\Framework\Dao\Option;
+use SAF\Framework\Mapper\Map;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Search_Array_Builder;
@@ -63,7 +66,7 @@ class Json_Controller implements Default_Feature_Controller
 			$objects = [];
 			// first object only
 			if (isset($parameters['first']) && $parameters['first']) {
-				$objects = Dao::search($search, $element_class_name, [Dao::sort(), Dao::limit(1)]);
+				$objects = $this->search($search, $element_class_name, [Dao::limit(1)]);
 				$source_object = $objects ? reset($objects) : Builder::create($element_class_name);
 				return json_encode(new Autocomplete_Entry(
 					Dao::getObjectIdentifier($source_object), strval($source_object)
@@ -71,11 +74,11 @@ class Json_Controller implements Default_Feature_Controller
 			}
 			// all results from search
 			else {
-				$search_options = [Dao::sort()];
+				$search_options = [];
 				if (isset($parameters['limit'])) {
 					$search_options[] = Dao::limit($parameters['limit']);
 				}
-				foreach (Dao::search($search, $element_class_name, $search_options) as $source_object) {
+				foreach ($this->search($search, $element_class_name, $search_options) as $source_object) {
 					$objects[] = new Autocomplete_Entry(
 						Dao::getObjectIdentifier($source_object), strval($source_object)
 					);
@@ -92,6 +95,36 @@ class Json_Controller implements Default_Feature_Controller
 			));
 		}
 		return '';
+	}
+
+	//---------------------------------------------------------------------------------------- search
+	/**
+	 * Optimized search : if OR, it's best launching multiple fast searches than one slow one
+	 *
+	 * @param $what       object|array source object for filter, only set properties will be used for
+	 *                    search
+	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $options    Option[] some options for advanced search
+	 * @return object[] a collection of read objects
+	 */
+	private function search($what, $class_name, $options)
+	{
+		if (
+			($what instanceof Logical)
+			&& ($what->operator == Logical::OR_OPERATOR)
+			&& (count($what->arguments) > 1)
+		) {
+			$objects = new Map();
+			foreach ($what->arguments as $argument_key => $argument) {
+				$objects->add(Dao::search([$argument_key => $argument], $class_name, $options));
+			}
+			$objects = $objects->sort();
+		}
+		else {
+			$options[] = Dao::sort();
+			$objects = Dao::search($what, $class_name, $options);
+		}
+		return $objects;
 	}
 
 }
