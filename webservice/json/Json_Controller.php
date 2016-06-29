@@ -7,6 +7,7 @@ use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Func\Logical;
 use SAF\Framework\Dao\Option;
+use SAF\Framework\Dao\Option\Limit;
 use SAF\Framework\Mapper\Map;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Names;
@@ -109,6 +110,7 @@ class Json_Controller implements Default_Feature_Controller
 	 */
 	private function search($what, $class_name, $options)
 	{
+		$options[] = Dao::sort();
 		if (
 			($what instanceof Logical)
 			&& ($what->operator == Logical::OR_OPERATOR)
@@ -119,9 +121,13 @@ class Json_Controller implements Default_Feature_Controller
 				$objects->add(Dao::search([$argument_key => $argument], $class_name, $options));
 			}
 			$objects = $objects->sort();
+			foreach ($options as $option) {
+				if (($option instanceof Limit) && (count($objects) > $option->count)) {
+					$objects = array_slice($objects, $option->from, $option->count, true);
+				}
+			}
 		}
 		else {
-			$options[] = Dao::sort();
 			$objects = Dao::search($what, $class_name, $options);
 		}
 		return $objects;
