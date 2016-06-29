@@ -4,7 +4,9 @@ namespace SAF\Framework\Controller;
 use SAF\Framework\Application;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper;
+use SAF\Framework\Mapper\Object_Not_Found_Exception;
 use SAF\Framework\Tools\Current;
 use SAF\Framework\Tools\Set;
 
@@ -130,6 +132,7 @@ class Parameters
 	 *
 	 * @param $parameter_name string
 	 * @return object
+	 * @throws Object_Not_Found_Exception
 	 */
 	public function getObject($parameter_name)
 	{
@@ -145,6 +148,9 @@ class Parameters
 				// object parameter
 				$object = $this->getRawParameter($parameter_name) + 0;
 				Mapper\Getter::getObject($object, $class_name);
+				if (empty($object) && ($this->getRawParameter($parameter_name) + 0)) {
+					throw new Object_Not_Found_Exception(Loc::tr('The object does not exist anymore'));
+				}
 				$this->objects[$parameter_name] = $object;
 			}
 			else {

@@ -13,6 +13,7 @@ use SAF\Framework\Error_Handler\Handled_Error;
 use SAF\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use SAF\Framework\IAutoloader;
 use SAF\Framework\Include_Path;
+use SAF\Framework\Mapper\Object_Not_Found_Exception;
 use SAF\Framework\Plugin;
 use SAF\Framework\Plugin\Activable;
 use SAF\Framework\Plugin\Manager;
@@ -376,7 +377,12 @@ class Main
 		$uri = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
 		$parameters = clone $uri->parameters;
-		$main_object = $parameters->getMainObject();
+		try {
+			$main_object = $parameters->getMainObject();
+		}
+		catch (Object_Not_Found_Exception $exception) {
+			return '<div class="error">' . $exception->getMessage() . '</div>';
+		}
 		$controller_name = ($main_object instanceof Set)
 			? $main_object->element_class_name
 			: $uri->controller_name;
