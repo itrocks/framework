@@ -5,6 +5,7 @@ use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Logical;
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 
 /**
  * The search array builder builds search arrays from properties paths and search phrases
@@ -117,15 +118,9 @@ class Search_Array_Builder
 		/** @var $property_names List_Annotation */
 		$property_names = $class->getListAnnotation('representative')->values();
 		foreach ($property_names as $key => $property_name) {
-			$property_class = $class;
-			$i = strpos($property_name, DOT);
-			while ($i !== false) {
-				$property = $property_class->getProperty(substr($property_name, 0, $i));
-				$property_class = new Reflection_Class($property->getType()->asString());
-				$property_name = substr($property_name, $i + 1);
-				$i = strpos($property_name, DOT);
-			}
-			$property = $property_class->getProperty($property_name);
+			$property = strpos($property_name, DOT)
+				? new Reflection_Property($class->name, $property_name)
+				: $class->getProperty($property_name);
 			$type = $property->getType();
 			$type_string = $type->asString();
 			if (!$type->isBasic()) {
