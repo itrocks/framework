@@ -18,6 +18,14 @@ class Client
 	 */
 	public $client;
 
+	//----------------------------------------------------------------------------- $client_component
+	/**
+	 * @component
+	 * @link Object
+	 * @var Client_Component
+	 */
+	public $client_component;
+
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * Client full name
