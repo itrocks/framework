@@ -9,13 +9,14 @@ namespace SAF\Framework\Tests\Objects;
 class Client
 {
 
-	//--------------------------------------------------------------------------------------- $number
+	//--------------------------------------------------------------------------------------- $client
 	/**
-	 * Client number
+	 * Link to its own client (for recursivity tests)
 	 *
-	 * @var string
+	 * @link Object
+	 * @var Client
 	 */
-	public $number;
+	public $client;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -25,14 +26,13 @@ class Client
 	 */
 	public $name;
 
-	//--------------------------------------------------------------------------------------- $client
+	//--------------------------------------------------------------------------------------- $number
 	/**
-	 * Link to its own client (for recursivity tests)
+	 * Client number
 	 *
-	 * @link Object
-	 * @var Client
+	 * @var string
 	 */
-	public $client;
+	public $number;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
