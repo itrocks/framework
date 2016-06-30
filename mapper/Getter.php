@@ -268,13 +268,21 @@ abstract class Getter
 				$property_name = $property;
 				$property = new Reflection_Property(get_class($object), $property_name);
 			}
-			if (is_object($object) && isset($property_name)) {
+			if ($property && $property->getAnnotation('component')->value) {
+				$foreign_property_name = $property->getAnnotation('foreign')->value;
+				if ($foreign_property_name && Dao::getObjectIdentifier($object)) {
+					$stored = Dao::searchOne(
+						[$foreign_property_name => $object], $property->getType()->getElementTypeAsString()
+					);
+				}
+			}
+			elseif (is_object($object) && isset($property_name)) {
 				$id_property_name = 'id_' . $property_name;
 				if (isset($object->$id_property_name)) {
 					$stored = $object->$id_property_name;
 				}
 			}
-			if (isset($stored)) {
+			if (isset($stored) && !is_object($stored)) {
 				if (isset($property) && $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
 					if (
 						$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::GZ
