@@ -27,7 +27,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 */
 	public function __construct($value, Reflection_Property $property)
 	{
-		parent::__construct($value, $property);
+		parent::__construct($value);
 		if (empty($this->value)) {
 			$link = $property->getAnnotation('link')->value;
 			$possibles = null;
@@ -134,9 +134,14 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 			$foreign_type = $foreign_property->getType();
 			if (
 				$foreign_type->isClass()
-				&& $foreign_type->isMultiple()
 				&& $foreign_type->isInstanceOf($property->getDeclaringClass())
-				&& $foreign_property->getAnnotation('link')->value == Link_Annotation::COLLECTION
+				&& (
+					$property->getAnnotation('component')->value
+					|| (
+						$foreign_type->isMultiple()
+						&& ($foreign_property->getAnnotation('link')->value == Link_Annotation::COLLECTION)
+					)
+				)
 			) {
 				$possibles[$foreign_property->getName()] = $foreign_property;
 			}
