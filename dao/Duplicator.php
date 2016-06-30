@@ -61,7 +61,7 @@ class Duplicator
 								$this->createDuplicate($element);
 							}
 						}
-						$this->removeCompositeFromComponents($elements, $class_name);
+						$this->removeCompositeFromComponents($elements, $class_name, $object);
 					}
 				}
 			}
@@ -99,8 +99,10 @@ class Duplicator
 	/**
 	 * @param $elements             object[]|Component[] the component objects
 	 * @param $composite_class_name string the composite class name
+	 * @param $component            object The component object of component objects
+	 * The method check if properties of $elements are not his own parents
 	 */
-	private function removeCompositeFromComponents($elements, $composite_class_name)
+	private function removeCompositeFromComponents($elements, $composite_class_name, $component)
 	{
 		if (isA($element = reset($elements), Component::class)) {
 			$getCompositeProperty = [get_class($element), 'getCompositeProperty'];
@@ -108,7 +110,7 @@ class Duplicator
 				foreach ($elements as $element) {
 					$property_name = $composite_property->name;
 					$id_property_name = 'id_' . $property_name;
-					if (isset($element->$property_name)) {
+					if (isset($element->$property_name) && !Dao::is($component, $element->$property_name)) {
 						$this->dao->disconnect($element->$property_name);
 					}
 					unset($element->$id_property_name);
