@@ -30,7 +30,7 @@ abstract class Empty_Object
 			$class = new Reflection_Class(get_class($object));
 			$default = get_class_vars($class->name);
 			foreach ($class->accessProperties() as $property) {
-				if (!$property->isStatic()) {
+				if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
 					$value = $property->getValue($object);
 					if (
 						!empty($value)
