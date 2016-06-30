@@ -83,23 +83,25 @@ class Table_Builder_Class
 					$type = $property->getType();
 					if (
 						(
-							$type->isMultipleString() || !$type->isMultiple()
+							$type->isMultipleString()
+							|| !$type->isMultiple()
 							|| in_array(
 								$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
 								[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING]
 							)
 						)
 						&& !$property->isStatic()
+						&& !$property->getAnnotation('component')->value
 						&& (
 							$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-							!== Store_Annotation::FALSE
+								!== Store_Annotation::FALSE
 						)
 					) {
 						$table->addColumn(Column::buildProperty($property));
 						if (
 							(
 								$property->getAnnotation(Link_Annotation::ANNOTATION)->value
-								== Link_Annotation::OBJECT
+									== Link_Annotation::OBJECT
 							)
 							&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
 						) {
