@@ -92,9 +92,16 @@ abstract class Integrated_Properties
 			);
 			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
-				if (!$sub_property->getListAnnotation(User_Annotation::ANNOTATION)->has(
-					User_Annotation::INVISIBLE
-				)) {
+				if (
+					!$sub_property->isStatic()
+					&& !$sub_property->getListAnnotation(User_Annotation::ANNOTATION)->has(
+						User_Annotation::INVISIBLE
+					)
+					&& (
+						!$property->getAnnotation('component')->value
+						|| !$sub_property->getAnnotation('composite')->value
+					)
+				) {
 					$display = ($display_prefix . ($display_prefix ? DOT : '')
 						. $property->name . DOT . $sub_property_name);
 					$sub_prefix = $integrated_simple ? $display_prefix : $display;

@@ -21,6 +21,7 @@ class Client
 	//----------------------------------------------------------------------------- $client_component
 	/**
 	 * @component
+	 * @integrated simple
 	 * @link Object
 	 * @var Client_Component
 	 */
