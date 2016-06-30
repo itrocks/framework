@@ -381,7 +381,7 @@ class Joins
 						}
 					}
 				}
-				if ($foreign_type->isMultiple()) {
+				if ($foreign_type->isMultiple() || $master_property->getAnnotation('component')->value) {
 					$foreign_class_name = $foreign_type->getElementTypeAsString();
 					$foreign_property_name = $master_property->getAnnotation('foreign')->value;
 					if (
