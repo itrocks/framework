@@ -162,7 +162,6 @@ Parser::$default_annotations = [
 	 * @component
 	 * The object referenced by the property is a component of the main object.
 	 * It should not exist without its container.
-	 * TODO not sure this is used anymore
 	 */
 	__NAMESPACE__ . '\Property\Component_Annotation' => Boolean_Annotation::class,
 
