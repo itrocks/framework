@@ -9,6 +9,7 @@ use SAF\Framework\Dao\Data_Link;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Mapper\Abstract_Class;
 use SAF\Framework\Mapper\Component;
+use SAF\Framework\Mapper\Empty_Object;
 use SAF\Framework\Mapper\Getter;
 use SAF\Framework\Mapper\Null_Object;
 use SAF\Framework\Mapper\Search_Object;
@@ -598,7 +599,11 @@ class Link extends Dao\Sql\Link
 		foreach ($properties as $key => $property) {
 			if ($property->getAnnotation(Store_Annotation::ANNOTATION) != Store_Annotation::JSON) {
 				$type = $property->getType();
-				if ($property->isStatic() || ($type->isMultiple() && !$type->getElementType()->isBasic())) {
+				if (
+					$property->isStatic()
+					|| ($type->isMultiple() && !$type->getElementType()->isBasic())
+					|| $property->getAnnotation('component')->value
+				) {
 					unset($properties[$key]);
 				}
 				elseif ($type->isClass()) {
@@ -618,7 +623,7 @@ class Link extends Dao\Sql\Link
 	 * @param $object          object
 	 * @param $only_properties string[] get write arrays for these properties only (if set)
 	 * @param $class           Link_Class
-	 * @return array           [$write, $write_collections, $write_maps, $write_properties]
+	 * @return array [$write, $write_collections, $write_maps, $write_objects, $write_properties]
 	 * @throws Exception
 	 */
 	private function objectToWriteArray(
@@ -631,6 +636,7 @@ class Link extends Dao\Sql\Link
 		$table_columns_names = array_keys($this->getStoredProperties($class));
 		$write_collections   = [];
 		$write_maps          = [];
+		$write_objects       = [];
 		$write_properties    = [];
 		$write               = [];
 		$aop_getter_ignore   = Getter::$ignore;
@@ -788,11 +794,19 @@ class Link extends Dao\Sql\Link
 						}
 						$write_maps[] = [$property, $value];
 					}
+					// write object
+					elseif (
+						is_object($value)
+						&& ($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
+						&& $property->getAnnotation('composite')
+					) {
+						$write_objects[] = [$property, $value];
+					}
 				}
 			}
 		}
 		Getter::$ignore = $aop_getter_ignore;
-		return [$write, $write_collections, $write_maps, $write_properties];
+		return [$write, $write_collections, $write_maps, $write_objects, $write_properties];
 	}
 
 	//---------------------------------------------------------------------------------- prepareFetch
@@ -1092,7 +1106,7 @@ class Link extends Dao\Sql\Link
 						$object->$id_link_property = $this->write($link_object, $options);
 					}
 				}
-				list($write, $write_collections, $write_maps, $write_properties)
+				list($write, $write_collections, $write_maps, $write_objects, $write_properties)
 					= $this->objectToWriteArray($object, $only, $class);
 
 				/** @var $properties Reflection_Property[] */
@@ -1161,6 +1175,10 @@ class Link extends Dao\Sql\Link
 					list($property, $value) = $write;
 					$this->writeMap($object, $property, $value);
 				}
+				foreach ($write_objects as $write) {
+					list($property, $value) = $write;
+					$this->writeObject($object, $property, $value);
+				}
 				foreach ($write_properties as $write) {
 					/** @var $dao Data_Link */
 					list($property, $value, $dao) = $write;
@@ -1211,14 +1229,15 @@ class Link extends Dao\Sql\Link
 		// collection properties : write each of them
 		$id_set = [];
 		if ($collection) {
-			$link_class_only = new Option\Link_Class_Only();
+			$link_class_only       = new Option\Link_Class_Only();
+			$foreign_property_name = $property->getAnnotation('foreign')->value;
 			foreach ($collection as $key => $element) {
 				if (!is_a($element, $element_class->getName())) {
 					$collection[$key] = $element = Builder::createClone($element, $element_class->getName(), [
 						$element_link->getLinkClass()->getCompositeProperty()->name => $element
 					]);
 				}
-				$element->setComposite($object, $property->getAnnotation('foreign')->value);
+				$element->setComposite($object, $foreign_property_name);
 				$id = $element_link->value
 					? $this->getLinkObjectIdentifier($element, $element_link)
 					: $this->getObjectIdentifier($element);
@@ -1280,6 +1299,38 @@ class Link extends Dao\Sql\Link
 				$query = $delete_builder->buildQuery($object, $old_element);
 				$this->connection->query($query);
 			}
+		}
+	}
+
+	//----------------------------------------------------------------------------------- writeObject
+	/**
+	 * @param $object           object
+	 * @param $property         Reflection_Property
+	 * @param $component_object Component
+	 * @todo And what if $component_object has a @link class type ?
+	 */
+	private function writeObject($object, Reflection_Property $property, $component_object)
+	{
+		// if there is already a stored component object : there must be only one
+		if (is_object($component_object)) {
+			$foreign_property_name = $property->getAnnotation('foreign')->value;
+			$existing = $this->searchOne(
+				[$foreign_property_name => $object], get_class($component_object)
+			);
+			if ($existing) {
+				$this->replace($component_object, $existing, false);
+			}
+		}
+		// delete
+		if (Empty_Object::isEmpty($component_object)) {
+			if ($this->getObjectIdentifier($component_object)) {
+				Dao::delete($component_object);
+			}
+		}
+		// create / update
+		else {
+			$component_object->setComposite($object);
+			$this->write($component_object);
 		}
 	}
 
