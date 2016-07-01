@@ -38,9 +38,6 @@ $('document').ready(function()
 		// minimize menu
 		this.inside('.menu.output').minimize();
 
-	});
-
-	// focus first form element
-	$(this).autofocus();
+	}).autofocus();
 
 });
