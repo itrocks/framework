@@ -780,9 +780,8 @@ class Link extends Dao\Sql\Link
 					}
 					// write object
 					elseif (
-						is_object($value)
-						&& ($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
-						&& $property->getAnnotation('composite')
+						($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
+						&& $property->getAnnotation('component')->value
 					) {
 						$write_objects[] = [$property, $value];
 					}
@@ -1292,6 +1291,7 @@ class Link extends Dao\Sql\Link
 	 * @param $property         Reflection_Property
 	 * @param $component_object Component
 	 * @todo And what if $component_object has a @link class type ?
+	 * @todo working with @dao property annotation
 	 */
 	private function writeObject($object, Reflection_Property $property, $component_object)
 	{
