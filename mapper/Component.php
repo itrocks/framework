@@ -12,7 +12,7 @@ use SAF\Framework\Reflection\Reflection_Property;
 trait Component
 {
 
-	//---------------------------------------------------------------------- $composite_property_name
+	//---------------------------------------------------------------------- $composite_properties
 	/**
 	 * Composite property name
 	 *
@@ -20,9 +20,9 @@ trait Component
 	 * - the called class, as composite property name can be different for each class
 	 * - the filter condition (a class or property name)
 	 *
-	 * @var string[]
+	 * @var array Reflection_Property[][]
 	 */
-	private static $composite_property_name;
+	private static $composite_properties;
 
 	//--------------------------------------------------------------------------------------- dispose
 	/**
@@ -82,29 +82,29 @@ trait Component
 		}
 		$self = get_called_class();
 		$path = $self . DOT . $class_name . DOT . $property_name;
-		if (!isset(self::$composite_property_name[$path])) {
-			self::$composite_property_name[$path] = [];
+		if (!isset(self::$composite_properties[$path])) {
+			self::$composite_properties[$path] = [];
 			$properties = empty($property_name)
 				? (new Reflection_Class($self))->getAnnotedProperties('composite')
 				: [new Reflection_Property($self, $property_name)];
 			// take the right composite property
 			foreach ($properties as $property) {
 				if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
-					self::$composite_property_name[$path][$property->name] = $property;
+					self::$composite_properties[$path][$property->name] = $property;
 				}
 			}
-			if (!self::$composite_property_name[$path]) {
+			if (!self::$composite_properties[$path]) {
 				// automatic composite property : filter all properties by class name as type
 				foreach (
 					(new Reflection_Class($self))->getProperties([T_EXTENDS, T_USE]) as $property
 				) {
 					if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
-						self::$composite_property_name[$path][$property->name] = $property;
+						self::$composite_properties[$path][$property->name] = $property;
 					}
 				}
 			}
 		}
-		return self::$composite_property_name[$path];
+		return self::$composite_properties[$path];
 	}
 
 	//-------------------------------------------------------------------------- getCompositeProperty
