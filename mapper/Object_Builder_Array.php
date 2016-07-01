@@ -47,6 +47,14 @@ class Object_Builder_Array
 	 */
 	private $defaults;
 
+	//---------------------------------------------------------------------------------------- $force
+	/**
+	 * Force values for each class property when a new instance of the object is created
+	 *
+	 * @var array
+	 */
+	private $new_instance_values = [];
+
 	//------------------------------------------------------------------------------------ $from_form
 	/**
 	 * True (default) if apply build specifics for arrays that come from an input form :
@@ -322,11 +330,19 @@ class Object_Builder_Array
 	 * @param $class_name    string
 	 * @param $array         array
 	 * @param $null_if_empty boolean
+	 * @param $parent        object The parent object (set it only if property is a @component)
 	 * @return object
 	 */
-	private function buildObjectValue($class_name, $array, $null_if_empty = false)
+	private function buildObjectValue($class_name, $array, $null_if_empty, $parent)
 	{
 		$builder = new Object_Builder_Array($class_name, $this->from_form);
+		if ($parent && isA($class_name, Component::class)) {
+			/** @var $composite_property Reflection_Property */
+			$composite_property = call_user_func(
+				[$class_name, 'getCompositeProperty'], get_class($parent)
+			);
+			$builder->new_instance_values[$composite_property->name] = $parent;
+		}
 		$object = $builder->build($array, null, $this->null_if_empty_sub_objects || $null_if_empty);
 		$this->built_objects = array_merge($this->built_objects, $builder->built_objects);
 		return $object;
@@ -393,7 +409,8 @@ class Object_Builder_Array
 				// object
 				if ($link == Link_Annotation::OBJECT) {
 					$class_name = $property->getType()->asString();
-					$value = $this->buildObjectValue($class_name, $value, $null_if_empty);
+					$parent_object = $property->getAnnotation('component')->value ? $object : null;
+					$value = $this->buildObjectValue($class_name, $value, $null_if_empty, $parent_object);
 				}
 				// collection
 				elseif ($link == Link_Annotation::COLLECTION) {
@@ -658,6 +675,9 @@ class Object_Builder_Array
 				$link_search = $this->initLinkObject($array, $object);
 				if (!isset($object)) {
 					$object = $this->class->newInstance();
+					foreach ($this->new_instance_values as $property_name => $value) {
+						$object->$property_name = $value;
+					}
 				}
 			}
 			if (isset($array['id'])) {
