@@ -462,10 +462,10 @@ class Select_Tests extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT t0.`number`, t0.`name`, t1.`number` AS `client:number`, t1.`name` AS `client:name`, t1.`id_client` AS `client:client`, t1.id AS `client:id`' . LF
+			'SELECT t0.`number`, t0.`name`, t1.`id_client` AS `client:client`, t1.`id_client_component` AS `client:client_component`, t1.`name` AS `client:name`, t1.`number` AS `client:number`, t1.id AS `client:id`' . LF
 			. 'FROM `clients` t0' . LF
 			. 'LEFT JOIN `clients` t1 ON t1.id = t0.id_client' . LF
-			. 'WHERE t0.`number` = 1 AND t0.`name` LIKE "Roger%"'
+			. 'WHERE t0.`name` LIKE "Roger%" AND t0.`number` = 1'
 		);
 	}
 
