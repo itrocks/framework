@@ -48,7 +48,7 @@ class Object_Builder_Array
 	 */
 	private $defaults;
 
-	//---------------------------------------------------------------------------------------- $force
+	//-------------------------------------------------------------------------- $new_instance_values
 	/**
 	 * Force values for each class property when a new instance of the object is created
 	 *

@@ -12,7 +12,7 @@ use SAF\Framework\Reflection\Reflection_Property;
 trait Component
 {
 
-	//---------------------------------------------------------------------- $composite_properties
+	//------------------------------------------------------------------------- $composite_properties
 	/**
 	 * Composite property name
 	 *
