@@ -23,6 +23,18 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public $context;
 
+	//------------------------------------------------------------------------------------- $database
+	/**
+	 * @var string
+	 */
+	public $database;
+
+	//----------------------------------------------------------------------------------------- $host
+	/**
+	 * @var string
+	 */
+	public $host;
+
 	//----------------------------------------------------------------------------------- $last_errno
 	/**
 	 * Last error number : mysqli::$errno is reset to 0 immediately when you read it.
@@ -40,6 +52,54 @@ class Contextual_Mysqli extends mysqli
 	 * @var string
 	 */
 	public $last_error;
+
+	//------------------------------------------------------------------------------------- $password
+	/**
+	 * @var string
+	 */
+	public $password;
+
+	//----------------------------------------------------------------------------------------- $port
+	/**
+	 * @var integer
+	 */
+	public $port;
+
+	//--------------------------------------------------------------------------------------- $socket
+	/**
+	 * @var integer
+	 */
+	public $socket;
+
+	//----------------------------------------------------------------------------------------- $user
+	/**
+	 * @var string
+	 */
+	public $user;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Opens a new connection to the MySQL server
+	 *
+	 * @param $host     string
+	 * @param $user     string
+	 * @param $password string
+	 * @param $database string
+	 * @param $port     integer
+	 * @param $socket   string
+	 */
+	public function __construct(
+		$host = 'localhost', $user = null, $password = null, $database = null, $port = 3306,
+		$socket = null
+	) {
+		parent::__construct($host, $user, $password, $database, $port);
+		$this->host     = $host;
+		$this->user     = $user;
+		$this->password = $password;
+		$this->database = $database;
+		$this->port     = $port;
+		$this->socket   = $socket;
+	}
 
 	//---------------------------------------------------------------------------------------- exists
 	/**
@@ -83,6 +143,18 @@ class Contextual_Mysqli extends mysqli
 			$tables[] = $row[0];
 		}
 		return $tables;
+	}
+
+	//-------------------------------------------------------------------------------------------- is
+	/**
+	 * Returns true if the two mysqli connexions are the same one
+	 *
+	 * @param $mysqli Contextual_Mysqli
+	 * @return boolean
+	 */
+	public function is(Contextual_Mysqli $mysqli)
+	{
+		return ($mysqli->thread_id === $this->thread_id) && ($mysqli->host_info === $this->host_info);
 	}
 
 	//-------------------------------------------------------------------------------------- isDelete
@@ -154,7 +226,12 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
 	{
+		// error_reporting patch to disable 'warning Error while sending QUERY packet' when mysql
+		// disconnects. This may disable other warnings, but you always will have error / errno if
+		// there is a mysqli error
+		$reporting = error_reporting(E_ALL & ~E_WARNING);
 		$result = parent::query($query, $result_mode);
+		error_reporting($reporting);
 		$this->last_errno = $this->errno;
 		$this->last_error = $this->error;
 		if (($result === false) && !$this->last_errno && $this->isSelect($query)) {
@@ -179,6 +256,22 @@ class Contextual_Mysqli extends mysqli
 			trigger_error('Mysql logger error : ' . $error . ' on query ' . $query, E_USER_ERROR);
 		}
 		return false;
+	}
+
+	//------------------------------------------------------------------------------------- reconnect
+	/**
+	 * Reconnects to the mysql server
+	 *
+	 * You can't reconnect an existing mysqli connexion : it will be replaced.
+	 *
+	 * @return Contextual_Mysqli $this
+	 */
+	public function reconnect()
+	{
+		$this->connect(
+			$this->host, $this->user, $this->password, $this->database, $this->port, $this->socket
+		);
+		return !$this->connect_errno && !$this->connect_error;
 	}
 
 	//------------------------------------------------------------------------------ selectedDatabase

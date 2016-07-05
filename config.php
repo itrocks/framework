@@ -93,6 +93,7 @@ $config['SAF/Framework'] = [
 			]
 		],
 		Mysql\Maintainer::class,
+		Mysql\Reconnect::class,
 		Translation_String_Composer::class,
 		View::class => [
 			Configuration::CLASS_NAME => View\Html\Engine::class,
