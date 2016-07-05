@@ -163,7 +163,7 @@ class Dao implements Configurable
 
 	//------------------------------------------------------------------------------------------- get
 	/**
-	 * Get the data link identified by the $dao_identifier string
+	 * Gets the data link identified by the $dao_identifier string
 	 *
 	 * If no data link matches $dao_identifier or if its empty, gets the current default data link
 	 *
@@ -184,6 +184,17 @@ class Dao implements Configurable
 			$dao = self::current();
 		}
 		return $dao;
+	}
+
+	//--------------------------------------------------------------------------------------- getList
+	/**
+	 * Gets the list of data links
+	 *
+	 * @return Data_Link[] key is the data list identifier (text, or empty for the main data list)
+	 */
+	public static function getList()
+	{
+		return array_merge(['' => self::current()], self::$list);
 	}
 
 	//--------------------------------------------------------------------------- getObjectIdentifier
