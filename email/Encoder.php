@@ -58,8 +58,7 @@ class Encoder
 
 			$body = $this->parseImages($mail, $this->email->content);
 
-			$error_reporting = error_reporting();
-			error_reporting(E_ALL & ~E_WARNING);
+			$error_reporting = error_reporting(E_ALL & ~E_WARNING);
 			$mail->setTXTBody((new Html2Text($this->email->content))->getText());
 			error_reporting($error_reporting);
 

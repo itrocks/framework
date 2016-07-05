@@ -101,8 +101,7 @@ class Sender implements Configurable
 		// send email using PEAR Mail and Net_SMTP features
 		/** @var $mail Mail_smtp */
 		$mail = (new Mail())->factory('smtp', $params);
-		$error_reporting = error_reporting();
-		error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+		$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
 		$send_result = $mail->send(
 			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $content
 		);
