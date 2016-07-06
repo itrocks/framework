@@ -27,10 +27,12 @@ $config['SAF/Framework'] = [
 	Configuration::AUTHOR      => 'Baptiste Pillot',
 	Configuration::ENVIRONMENT => $loc[Configuration::ENVIRONMENT],
 
+	//---------------------------------------------------------------------------- Priority::TOP_CORE
 	// top core plugins are loaded first, before the session is opened
 	// this array must stay empty : top core plugins must be set into the index.php script
 	Priority::TOP_CORE => [],
 
+	//-------------------------------------------------------------------------------- Priority::CORE
 	// core plugins are registered first on session creation
 	// they are activated first, at the beginning of each script
 	// here must be only plugins that are needed in 100% scripts, as a lot of them may consume time
@@ -54,11 +56,16 @@ $config['SAF/Framework'] = [
 	// ie if two plugins have the same pointcut, the highest priority advice will be executed,
 	// and the lowest priority advice will be executed only if the highest processes wants it.
 
+	//-------------------------------------------------------------------------------- Priority::LOW-
 	Priority::LOWEST => [],
 	Priority::LOWER  => [],
-	Priority::LOW    => [],
+	Priority::LOW    => [
+		// lower to execute this before Mysql\Maintainer
+		Mysql\Reconnect::class
+	],
 
-	Priority::NORMAL  => [
+	//------------------------------------------------------------------------------ Priority::NORMAL
+	Priority::NORMAL => [
 		Cleaner::class,
 		Compiler::class => [
 			1 => [
@@ -93,7 +100,6 @@ $config['SAF/Framework'] = [
 			]
 		],
 		Mysql\Maintainer::class,
-		Mysql\Reconnect::class,
 		Translation_String_Composer::class,
 		View::class => [
 			Configuration::CLASS_NAME => View\Html\Engine::class,
@@ -101,7 +107,8 @@ $config['SAF/Framework'] = [
 		]
 	],
 
-	Priority::HIGH    => [],
+	//------------------------------------------------------------------------------- Priority::HIGH+
+	Priority::HIGH => [],
 	Priority::HIGHER  => [],
 	Priority::HIGHEST => [],
 	Priority::REMOVE  => []

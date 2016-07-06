@@ -228,6 +228,7 @@ class Maintainer implements Registerable
 		return $retry;
 	}
 
+	//---------------------------------------------------------------------------- onMysqliQueryError
 	/**
 	 * This is called after each mysql query in order to update automatically database structure in
 	 * case of errors
@@ -239,7 +240,7 @@ class Maintainer implements Registerable
 	 */
 	public function onMysqliQueryError(
 		Contextual_Mysqli $object, $query, &$result, Before_Method $joinpoint
-	)	{
+	) {
 		$mysqli = $object;
 		if ($mysqli->last_errno && !isset($this->already[$query])) {
 			$this->already[$query] = 1;
