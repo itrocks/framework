@@ -7,6 +7,8 @@ use SAF\Framework\Dao\Data_Link\Transactional;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Plugin\Configurable;
+use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Tools\Current;
 use SAF\Framework\Tools\List_Data;
@@ -495,6 +497,22 @@ class Dao implements Configurable
 	public static function sort($columns = null)
 	{
 		return new Option\Sort($columns);
+	}
+
+	//------------------------------------------------------------------------------- storedAsForeign
+	/**
+	 * Returns true if a property will be stored into a foreign table record,
+	 * or false if it's is stored as a simple value
+	 *
+	 * @param $property Reflection_Property
+	 * @return boolean
+	 */
+	public static function storedAsForeign(Reflection_Property $property)
+	{
+		$type = $property->getType();
+		return $type->isClass()
+			&& !$type->isDateTime()
+			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
 	}
 
 	//----------------------------------------------------------------------------------- storeNameOf

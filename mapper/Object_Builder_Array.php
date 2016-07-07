@@ -3,6 +3,7 @@ namespace SAF\Framework\Mapper;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -590,14 +591,14 @@ class Object_Builder_Array
 		if ($link->value) {
 			$id_property_value = null;
 			$linked_class_name = null;
-			$link_properties = $link->getLinkProperties();
+			$link_properties = $link->getLinkClass()->getUniqueProperties();
 			$search = [];
 			foreach ($link_properties as $property) {
-				if ($property->getType()->isClass()) {
-					$property_name = $property->getName();
+				$property_name = $property->getName();
+				if (Dao::storedAsForeign($property)) {
 					$id_property_name = 'id_' . $property_name;
-					if (isset($array[$id_property_name]) && $array[$id_property_name]) {
-						$search[$property_name] = $array[$id_property_name];
+					if (isset($array[$id_property_name])) {
+						$search[$property_name] = $array[$id_property_name] ?: null;
 					}
 					$property_class_name = $property->getType()->asString();
 					if (is_a($property_class_name, $link->value, true)) {
@@ -618,8 +619,15 @@ class Object_Builder_Array
 						}
 					}
 				}
+				else {
+					if (isset($array[$property_name])) {
+						$search[$property_name] = ($property->getType()->isDateTime())
+							? Loc::dateToIso($array[$property_name])
+							: $array[$property_name];
+					}
+				}
 			}
-			if (count($search) >= 2) {
+			if (count($search) >= count($link_properties)) {
 				$object = Dao::searchOne($search, $this->class->name);
 			}
 			if ($id_property_value && !$object) {

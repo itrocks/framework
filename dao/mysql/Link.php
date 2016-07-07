@@ -245,7 +245,7 @@ class Link extends Dao\Sql\Link
 					$id = [];
 					foreach ($link->getLinkClass()->getUniqueProperties() as $link_property) {
 						$property_name = $link_property->getName();
-						if ($this->storedAsForeign($link_property)) {
+						if (Dao::storedAsForeign($link_property)) {
 							$column_name = 'id_' . $link_property->getAnnotation('storage')->value;
 							$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
 						}
@@ -505,7 +505,7 @@ class Link extends Dao\Sql\Link
 			$link_class = $link->getLinkClass();
 			foreach ($link_class->getUniqueProperties() as $link_property) {
 				$property_name = $link_property->getName();
-				if ($this->storedAsForeign($link_property)) {
+				if (Dao::storedAsForeign($link_property)) {
 					$id = parent::getObjectIdentifier($object, $property_name);
 					if (!isset($id)) {
 						if ($link_class->getCompositeProperty()->name == $property_name) {
@@ -1018,22 +1018,6 @@ class Link extends Dao\Sql\Link
 		$this->connection->context = $context_object;
 	}
 
-	//------------------------------------------------------------------------------- storedAsForeign
-	/**
-	 * Returns true if a property will be stored into a foreign table record,
-	 * or false if it's is stored as a simple value
-	 *
-	 * @param $property Reflection_Property
-	 * @return boolean
-	 */
-	private function storedAsForeign(Reflection_Property $property)
-	{
-		$type = $property->getType();
-		return $type->isClass()
-			&& !$type->isDateTime()
-			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
-	}
-
 	//----------------------------------------------------------------------------- valueToWriteArray
 	/**
 	 * Prepare a property value for JSON encode
@@ -1121,7 +1105,7 @@ class Link extends Dao\Sql\Link
 						foreach ($link->getLinkClass()->getUniqueProperties() as $property) {
 							/** @var $property Reflection_Property $link annotates a Reflection_Property */
 							$property_name = $property->getName();
-							$column_name = $this->storedAsForeign($property) ? 'id_' : '';
+							$column_name = Dao::storedAsForeign($property) ? 'id_' : '';
 							$column_name .= $properties[$property_name]->getAnnotation('storage')->value;
 							if (isset($write[$column_name])) {
 								$search[$property_name] = $write[$column_name];
