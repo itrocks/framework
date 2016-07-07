@@ -4,6 +4,7 @@ namespace SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Builder;
 use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Annotation;
+use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
@@ -28,7 +29,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * @var Reflection_Class
+	 * @var Reflection_Class|Annoted
 	 */
 	public $class;
 
@@ -118,6 +119,28 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 			}
 		}
 		return $this->link_properties;
+	}
+
+	//--------------------------------------------------------------------------- getUniqueProperties
+	/**
+	 * Gets the list of @unique properties. If no @unique annotation, gets link properties
+	 *
+	 * @return Reflection_Property[]
+	 */
+	public function getUniqueProperties()
+	{
+		$unique = $this->class->getListAnnotation('unique')->values();
+		if ($unique) {
+			$unique_properties = [];
+			foreach ($unique as $property_name) {
+				$unique_properties[$property_name] = $this->class->getProperty($property_name);
+			}
+			return $unique_properties;
+		}
+		else {
+			$unique_properties = $this->getLinkProperties();
+		}
+		return $unique_properties;
 	}
 
 }

@@ -113,6 +113,14 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Class_\Stored_Annotation' => Boolean_Annotation::class,
 
 	/**
+	 * @unique property1, property2, ...
+	 * Identifies a list of property that are the unique tuple of data that identify a record.
+	 * Used with @link classes to allow the same object multiple times with different link property
+	 * values (ie a client can have the same contract several times, with different dates)
+	 */
+	__NAMESPACE__ . '\Class_\Unique_Annotation' => List_Annotation::class,
+
+	/**
 	 * @advice
 	 * This tells everybody the method is an AOP advice
 	 */
