@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao\Mysql;
 
+use DateTime;
 use Exception;
 use mysqli_result;
 use SAF\Framework\Builder;
@@ -1086,10 +1087,15 @@ class Link extends Dao\Sql\Link
 					// link class : id is the couple of composite properties values
 					if ($link->value) {
 						$search = [];
-						foreach ($link->getLinkProperties() as $property) {
+						foreach ($link->getUniqueProperties() as $property) {
 							/** @var $property Reflection_Property $link annotates a Reflection_Property */
 							$property_name = $property->getName();
-							$column_name = $property->getType()->isClass() ? 'id_' : '';
+							$is_class = $property->getType()->isClass()
+								&& !$property->getType()->isInstanceOf(DateTime::class)
+								&& in_array(
+									$property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']
+								);
+							$column_name = $is_class ? 'id_' : '';
 							$column_name .= $properties[$property_name]->getAnnotation('storage')->value;
 							if (isset($write[$column_name])) {
 								$search[$property_name] = $write[$column_name];
