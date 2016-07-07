@@ -10,6 +10,7 @@ use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
 class Link_Class extends Reflection_Class
 {
 
+	//---------------------------------------------------------------------------------- ID_SEPARATOR
 	/**
 	 * The separator for identifiers
 	 */
@@ -90,6 +91,21 @@ class Link_Class extends Reflection_Class
 		return $link->getLinkProperties();
 	}
 
+	//------------------------------------------------------------------------ getLinkPropertiesNames
+	/**
+	 * Returns the two or more properties names of the class that make the link
+	 * ie : properties defined into the class @link annotation, if set,
+	 * otherwise @composite properties names
+	 *
+	 * @return string[] key and value are the name of each link property
+	 */
+	public function getLinkPropertiesNames()
+	{
+		/** @var $link Link_Annotation */
+		$link = $this->getAnnotation('link');
+		return array_keys($link->getLinkProperties());
+	}
+
 	//------------------------------------------------------------------------------- getLinkProperty
 	/**
 	 * Returns the property of the class that make the link with the object of the parent class
@@ -111,21 +127,6 @@ class Link_Class extends Reflection_Class
 		return null;
 	}
 
-	//------------------------------------------------------------------------ getLinkPropertiesNames
-	/**
-	 * Returns the two or more properties names of the class that make the link
-	 * ie : properties defined into the class @link annotation, if set,
-	 * otherwise @composite properties names
-	 *
-	 * @return string[] key and value are the name of each link property
-	 */
-	public function getLinkPropertiesNames()
-	{
-		/** @var $link Link_Annotation */
-		$link = $this->getAnnotation('link');
-		return array_keys($link->getLinkProperties());
-	}
-
 	//---------------------------------------------------------------------------- getLocalProperties
 	/**
 	 * Returns only properties of the class, without those of the linked class
@@ -143,6 +144,38 @@ class Link_Class extends Reflection_Class
 			}
 		}
 		return $properties;
+	}
+
+	//--------------------------------------------------------------------------- getUniqueProperties
+	/**
+	 * Gets the list of @unique properties. If no @unique annotation, gets link properties
+	 *
+	 * @return Reflection_Property[] key is the name of the property
+	 */
+	public function getUniqueProperties()
+	{
+		$unique = $this->getListAnnotation('unique')->values();
+		if ($unique) {
+			$unique_properties = [];
+			foreach ($unique as $property_name) {
+				$unique_properties[$property_name] = $this->getProperty($property_name);
+			}
+		}
+		else {
+			$unique_properties = $this->getLinkProperties();
+		}
+		return $unique_properties;
+	}
+
+	//---------------------------------------------------------------------- getUniquePropertiesNames
+	/**
+	 * Gets the list of @unique property names. If no @unique annotation, gets link properties.
+	 *
+	 * @return string[] key and value are the name of each link property
+	 */
+	public function getUniquePropertiesNames()
+	{
+		return $this->getListAnnotation('unique')->values() ?: $this->getLinkPropertiesNames();
 	}
 
 	//----------------------------------------------------------------------------- linkedClassNameOf

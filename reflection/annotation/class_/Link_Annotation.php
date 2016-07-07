@@ -121,26 +121,4 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 		return $this->link_properties;
 	}
 
-	//--------------------------------------------------------------------------- getUniqueProperties
-	/**
-	 * Gets the list of @unique properties. If no @unique annotation, gets link properties
-	 *
-	 * @return Reflection_Property[]
-	 */
-	public function getUniqueProperties()
-	{
-		$unique = $this->class->getListAnnotation('unique')->values();
-		if ($unique) {
-			$unique_properties = [];
-			foreach ($unique as $property_name) {
-				$unique_properties[$property_name] = $this->class->getProperty($property_name);
-			}
-			return $unique_properties;
-		}
-		else {
-			$unique_properties = $this->getLinkProperties();
-		}
-		return $unique_properties;
-	}
-
 }

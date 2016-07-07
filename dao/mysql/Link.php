@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\Dao\Mysql;
 
-use DateTime;
 use Exception;
 use mysqli_result;
 use SAF\Framework\Builder;
@@ -244,11 +243,16 @@ class Link extends Dao\Sql\Link
 				$this->setContext($class_name);
 				if ($link->value) {
 					$id = [];
-					foreach ($link->getLinkProperties() as $link_property) {
+					foreach ($link->getLinkClass()->getUniqueProperties() as $link_property) {
 						$property_name = $link_property->getName();
-						$column_name = ($link_property->getType()->isClass() ? 'id_' : '')
-							. $link_property->getAnnotation('storage')->value;
-						$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
+						if ($this->storedAsForeign($link_property)) {
+							$column_name = 'id_' . $link_property->getAnnotation('storage')->value;
+							$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
+						}
+						else {
+							$column_name = $link_property->getAnnotation('storage')->value;
+							$id[$column_name] = $link_property->getValue($object);
+						}
 					}
 				}
 				$this->query(Sql\Builder::buildDelete($class_name, $id));
@@ -383,16 +387,21 @@ class Link extends Dao\Sql\Link
 				// (Dao::key(['property_1', 'property_2']))
 				if (is_array($object_key)) {
 					$k_key = '';
+					$multiple = count($keys) > 1;
 					foreach ($keys as $key => $k_keys) {
 						$k_object_key = $object_key[$key];
 						$key_object   = $object;
-						foreach ($k_keys as $key) $key_object = $key_object->$key;
+						foreach ($k_keys as $key) {
+							$key_object = $key_object->$key;
+						}
 						$k_id_object_key = 'id_' . $k_object_key;
-						$k_key .= ($k_key ? Link_Class::ID_SEPARATOR : '') . (
-							isset($key_object->$k_id_object_key)
-								? ($k_object_key . '=' . $key_object->$k_id_object_key)
-								: $key_object->$k_object_key
-							);
+						$k_key .= ($k_key ? Link_Class::ID_SEPARATOR : '')
+							. ($multiple ? ($k_object_key . '=') : '')
+							. (
+									isset($key_object->$k_id_object_key)
+									? $key_object->$k_id_object_key
+									: $key_object->$k_object_key
+								);
 					}
 					$search_result[$k_key] = $object;
 				}
@@ -493,19 +502,25 @@ class Link extends Dao\Sql\Link
 		}
 		if ($link->value) {
 			$ids = [];
-			foreach ($link->getLinkProperties() as $link_property) {
+			$link_class = $link->getLinkClass();
+			foreach ($link_class->getUniqueProperties() as $link_property) {
 				$property_name = $link_property->getName();
-				$id = parent::getObjectIdentifier($object, $property_name);
-				if (!isset($id)) {
-					if ($link->getLinkClass()->getCompositeProperty()->name == $property_name) {
-						$id = isset($object->id) ? $object->id : null;
-						if (!isset($id)) {
+				if ($this->storedAsForeign($link_property)) {
+					$id = parent::getObjectIdentifier($object, $property_name);
+					if (!isset($id)) {
+						if ($link_class->getCompositeProperty()->name == $property_name) {
+							$id = isset($object->id) ? $object->id : null;
+							if (!isset($id)) {
+								return null;
+							}
+						}
+						else {
 							return null;
 						}
 					}
-					else {
-						return null;
-					}
+				}
+				else {
+					$id = $link_property->getValue($object);
 				}
 				$ids[] = $property_name . '=' . $id;
 			}
@@ -1003,6 +1018,22 @@ class Link extends Dao\Sql\Link
 		$this->connection->context = $context_object;
 	}
 
+	//------------------------------------------------------------------------------- storedAsForeign
+	/**
+	 * Returns true if a property will be stored into a foreign table record,
+	 * or false if it's is stored as a simple value
+	 *
+	 * @param $property Reflection_Property
+	 * @return boolean
+	 */
+	private function storedAsForeign(Reflection_Property $property)
+	{
+		$type = $property->getType();
+		return $type->isClass()
+			&& !$type->isDateTime()
+			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
+	}
+
 	//----------------------------------------------------------------------------- valueToWriteArray
 	/**
 	 * Prepare a property value for JSON encode
@@ -1087,15 +1118,10 @@ class Link extends Dao\Sql\Link
 					// link class : id is the couple of composite properties values
 					if ($link->value) {
 						$search = [];
-						foreach ($link->getUniqueProperties() as $property) {
+						foreach ($link->getLinkClass()->getUniqueProperties() as $property) {
 							/** @var $property Reflection_Property $link annotates a Reflection_Property */
 							$property_name = $property->getName();
-							$is_class = $property->getType()->isClass()
-								&& !$property->getType()->isInstanceOf(DateTime::class)
-								&& in_array(
-									$property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']
-								);
-							$column_name = $is_class ? 'id_' : '';
+							$column_name = $this->storedAsForeign($property) ? 'id_' : '';
 							$column_name .= $properties[$property_name]->getAnnotation('storage')->value;
 							if (isset($write[$column_name])) {
 								$search[$property_name] = $write[$column_name];
