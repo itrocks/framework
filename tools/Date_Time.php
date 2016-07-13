@@ -15,10 +15,19 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	const DAY = 'day';
 
 	//---------------------------------------------------------------------------------- DAY_OF_MONTH
-	const DAY_OF_MONTH  = 'd';
+	const DAY_OF_MONTH = 'd';
+
+	//--------------------------------------------------------------------- DAY_OF_MONTH_WITHOUT_ZERO
+	const DAY_OF_MONTH_WITHOUT_ZERO = 'j';
 
 	//----------------------------------------------------------------------------------- DAY_OF_WEEK
-	const DAY_OF_WEEK   = 'w';
+	const DAY_OF_WEEK = 'w';
+
+	//------------------------------------------------------------------------------- DAY_OF_WEEK_ISO
+	const DAY_OF_WEEK_ISO = 'N';
+
+	//----------------------------------------------------------------------------------- DAY_OF_YEAR
+	const DAY_OF_YEAR = 's';
 
 	//--------------------------------------------------------------------------------- DAYS_IN_MONTH
 	const DAYS_IN_MONTH = 't';
@@ -31,6 +40,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//----------------------------------------------------------------------------------------- MONTH
 	const MONTH = 'month';
+
+	//------------------------------------------------------------------------------------------- NOW
+	const NOW = 'now';
 
 	//---------------------------------------------------------------------------------------- SECOND
 	const SECOND = 'second';
@@ -65,7 +77,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *                  If null, current time on timezone will be used to initialize
 	 * @param $timezone DateTimeZone
 	 */
-	public function __construct($time = 'now', DateTimeZone $timezone = null)
+	public function __construct($time = self::NOW, DateTimeZone $timezone = null)
 	{
 		if ($time instanceof DateTime) {
 			$time = $time->format('Y-m-d H:i:s');
@@ -141,6 +153,41 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			: new Date_Time($dateTime->format('Y-m-d H:i:s'));
 	}
 
+	//------------------------------------------------------------------------------------ dayOfMonth
+	/**
+	 * Returns the number of the day in the month
+	 *
+	 * @param $leading_zero boolean return leading zero (eg '01') if true, else not (eg 1)
+	 * @return string
+	 */
+	public function dayOfMonth($leading_zero = true)
+	{
+		return $this->format($leading_zero ? self::DAY_OF_MONTH : self::DAY_OF_MONTH_WITHOUT_ZERO);
+	}
+
+	//------------------------------------------------------------------------------------- dayOfWeek
+	/**
+	 * Returns the number of the day in the week, 1 (monday) through 7 (sunday)
+	 *
+	 * @param $iso_8601 boolean if set to false, sunday will return 0 instead of 7
+	 * @return string
+	 */
+	public function dayOfWeek($iso_8601 = true)
+	{
+		return $this->format($iso_8601 ? self::DAY_OF_WEEK_ISO : self::DAY_OF_WEEK);
+	}
+
+	//------------------------------------------------------------------------------------- dayOfYear
+	/**
+	 * Returns the number of the day in the year, starting from 0
+	 *
+	 * @return integer
+	 */
+	public function dayOfYear()
+	{
+		return $this->format(self::DAY_OF_YEAR);
+	}
+
 	//----------------------------------------------------------------------------------- daysInMonth
 	/**
 	 * Returns the number of days in the given month
@@ -149,7 +196,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function daysInMonth()
 	{
-		return $this->format('d');
+		return $this->format(self::DAYS_IN_MONTH);
 	}
 
 	//------------------------------------------------------------------------------------------ diff
@@ -178,14 +225,25 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//--------------------------------------------------------------------------------------- fromISO
 	/**
+	 * Create a date from an ISO string
+	 *
+	 * The ISO date can be incomplete : eg '2016-07'. Then the created date will autocomplete :
+	 * - with a minimal date-time if $max is false (default) : eg '2016-07-01 00:00:00'
+	 * - with a maximal date-time if max is true : eg '2016-07-31 23:59:59'
+	 *
 	 * @param $date string
+	 * @param $max  boolean
 	 * @return Date_Time
 	 */
-	public static function fromISO($date)
+	public static function fromISO($date, $max = false)
 	{
 		return (!empty($date) && (substr($date, 0, 4) !== '0000'))
-			? new Date_Time($date . substr('2000-01-01 00:00:00', strlen($date)))
-			: new Date_Time(self::$min_date);
+			? new Date_Time(
+				(strlen($date) >= 19)
+					? $date
+					: ($date . substr(($max ? self::$max_date : '2000-01-01 00:00:00'), strlen($date)))
+			)
+			: new Date_Time($max ? self::$max_date : self::$min_date);
 	}
 
 	//------------------------------------------------------------------------------------ fromString
