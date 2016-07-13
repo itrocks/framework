@@ -82,7 +82,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function __toString()
 	{
-		return $this->toISO();
+		return $this->toISO(false);
 	}
 
 	//------------------------------------------------------------------------------------------- add
@@ -200,12 +200,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//-------------------------------------------------------------------------------------------- is
 	/**
-	 * @param $begin_date Date_Time
+	 * @param $begin_date Date_Time|string|null
 	 * @return boolean
 	 */
-	public function is(Date_Time $begin_date)
+	public function is($begin_date)
 	{
-		return $this->toISO() === $begin_date->toISO();
+		return $this->toISO(false) === strval($begin_date);
 	}
 
 	//--------------------------------------------------------------------------------------- isAfter
@@ -222,9 +222,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function isAfter($date_time, $null_is_late = false)
 	{
-		return isset($date_time)
-			? ($this->toISO() > (is_string($date_time) ? $date_time : $date_time->toISO()))
-			: !$null_is_late;
+		return isset($date_time) ? ($this->toISO(false) > strval($date_time)) : !$null_is_late;
 	}
 
 	//-------------------------------------------------------------------------------- isAfterOrEqual
@@ -241,9 +239,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function isAfterOrEqual($date_time, $null_is_late = false)
 	{
-		return isset($date_time)
-			? ($this->toISO() >= (is_string($date_time) ? $date_time : $date_time->toISO()))
-			: !$null_is_late;
+		return isset($date_time) ? ($this->toISO(false) >= strval($date_time)) : !$null_is_late;
 	}
 
 	//-------------------------------------------------------------------------------------- isBefore
@@ -260,9 +256,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function isBefore($date_time, $null_is_late = false)
 	{
-		return isset($date_time)
-			? ($this->toISO() < (is_string($date_time) ? $date_time : $date_time->toISO()))
-			: $null_is_late;
+		return isset($date_time) ? ($this->toISO(false) < strval($date_time)) : $null_is_late;
 	}
 
 	//------------------------------------------------------------------------------- isBeforeOrEqual
@@ -279,9 +273,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function isBeforeOrEqual($date_time, $null_is_late = false)
 	{
-		return isset($date_time)
-			? ($this->toISO() <= (is_string($date_time) ? $date_time : $date_time->toISO()))
-			: $null_is_late;
+		return isset($date_time) ? ($this->toISO(false) <= strval($date_time)) : $null_is_late;
 	}
 
 	//--------------------------------------------------------------------------------------- isEmpty
