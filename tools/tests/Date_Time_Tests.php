@@ -10,6 +10,47 @@ use SAF\Framework\Tools\Date_Time;
 class Date_Time_Tests extends Test
 {
 
+	//---------------------------------------------------------------------------------------- testIs
+	public function testIs()
+	{
+		$empty_string    = '0000-00-00 00:00:00';
+		$today_string    = '2016-07-13 09:47:05';
+		$tomorrow_string = '2016-07-14 00:00:00';
+		$empty_date = new Date_Time($empty_string);
+		$today_date = new Date_Time($today_string);
+		$min_date   = Date_Time::min();
+		$max_date   = Date_Time::max();
+		$this->method(__METHOD__);
+		$this->assume('emptyIsEmptyString',    $empty_date->is($empty_string),    true);
+		$this->assume('emptyIsTodayString',    $empty_date->is($today_string),    false);
+		$this->assume('emptyIsTomorrow',       $empty_date->is($tomorrow_string), false);
+		$this->assume('emptyIsEmptyDate',      $empty_date->is($empty_date),      true);
+		$this->assume('emptyIsTodayDate',      $empty_date->is($today_date),      false);
+		$this->assume('emptyIsMinDate',        $empty_date->is($min_date),        true);
+		$this->assume('emptyIsMaxDate',        $empty_date->is($max_date),        false);
+		$this->assume('todayIsEmptyString',    $today_date->is($empty_string),    false);
+		$this->assume('todayIsTodayString',    $today_date->is($today_string),    true);
+		$this->assume('todayIsTomorrowString', $today_date->is($tomorrow_string), false);
+		$this->assume('todayIsEmptyDate',      $today_date->is($empty_date),      false);
+		$this->assume('todayIsMinDate',        $today_date->is($min_date),        false);
+		$this->assume('todayIsTodayDate',      $today_date->is($today_date),      true);
+		$this->assume('todayIsMaxDate',        $today_date->is($max_date),        false);
+		$this->assume('minIsEmptyString',      $min_date->is($empty_string),      true);
+		$this->assume('minIsTodayString',      $min_date->is($today_string),      false);
+		$this->assume('minIsTomorrowString',   $min_date->is($tomorrow_string),   false);
+		$this->assume('minIsEmptyDate',        $min_date->is($empty_date),        true);
+		$this->assume('minIsTodayDate',        $min_date->is($today_date),        false);
+		$this->assume('minIsMinDate',          $min_date->is($min_date),          true);
+		$this->assume('minIsMaxDate',          $min_date->is($max_date),          false);
+		$this->assume('maxIsEmptyString',      $max_date->is($empty_string),      false);
+		$this->assume('maxIsTodayString',      $max_date->is($today_string),      false);
+		$this->assume('maxIsTomorrowString',   $max_date->is($tomorrow_string),   false);
+		$this->assume('maxIsEmptyDate',        $max_date->is($empty_date),        false);
+		$this->assume('maxIsTodayDate',        $max_date->is($today_date),        false);
+		$this->assume('minIsMinDate',          $max_date->is($min_date),          false);
+		$this->assume('maxIsMaxDate',          $max_date->is($max_date),          true);
+	}
+
 	//----------------------------------------------------------------------------------- testIsAfter
 	public function testIsAfter()
 	{
@@ -173,6 +214,48 @@ class Date_Time_Tests extends Test
 		$this->assume('maxBeforeTodayDate',        $max_date->isBeforeOrEqual($today_date),        false);
 		$this->assume('minBeforeMinDate',          $max_date->isBeforeOrEqual($min_date),          false);
 		$this->assume('maxBeforeMaxDate',          $max_date->isBeforeOrEqual($max_date),          true);
+	}
+
+	//----------------------------------------------------------------------------------- testIsEmpty
+	public function testIsEmpty()
+	{
+		$empty_date = new Date_Time('0000-00-00 00:00:00');
+		$today_date = new Date_Time('2016-07-13 09:47:05');
+		$min_date   = Date_Time::min();
+		$max_date   = Date_Time::max();
+		$this->method(__METHOD__);
+		$this->assume('empty', $empty_date->isEmpty(), true);
+		$this->assume('today', $today_date->isEmpty(), false);
+		$this->assume('min',   $min_date->isEmpty(),   true);
+		$this->assume('max',   $max_date->isEmpty(),   true);
+	}
+
+	//------------------------------------------------------------------------------------- testIsMax
+	public function testIsMax()
+	{
+		$empty_date = new Date_Time('0000-00-00 00:00:00');
+		$today_date = new Date_Time('2016-07-13 09:47:05');
+		$min_date   = Date_Time::min();
+		$max_date   = Date_Time::max();
+		$this->method(__METHOD__);
+		$this->assume('empty', $empty_date->isMax(), false);
+		$this->assume('today', $today_date->isMax(), false);
+		$this->assume('min',   $min_date->isMax(),   false);
+		$this->assume('max',   $max_date->isMax(),   true);
+	}
+
+	//------------------------------------------------------------------------------------- testIsMin
+	public function testIsMin()
+	{
+		$empty_date = new Date_Time('0000-00-00 00:00:00');
+		$today_date = new Date_Time('2016-07-13 09:47:05');
+		$min_date   = Date_Time::min();
+		$max_date   = Date_Time::max();
+		$this->method(__METHOD__);
+		$this->assume('empty', $empty_date->isMin(), true);
+		$this->assume('today', $today_date->isMin(), false);
+		$this->assume('min',   $min_date->isMin(),   true);
+		$this->assume('max',   $max_date->isMin(),   false);
 		$this->method('-');
 	}
 
