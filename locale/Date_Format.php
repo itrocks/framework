@@ -96,22 +96,7 @@ class Date_Format
 	 */
 	public function appendMax($date)
 	{
-		if (strlen($date) == 4) {
-			$date .= '-12-31 23:59:59';
-		}
-		elseif (strlen($date) == 7) {
-			$days_of_month = (new Date_Time($date . '-01'))->daysInMonth();
-			$date .= '-' . $days_of_month . SP . '23:59:59';
-		}
-		elseif (strlen($date) == 10) {
-			$date .= SP . '23:59:59';
-		}
-		elseif (strlen($date) >= 13) {
-			while (strlen($date) < 19) {
-				$date .= ':59';
-			}
-		}
-		return $date;
+		return Date_Time::fromISO($date, true)->toISO();
 	}
 
 	//----------------------------------------------------------------------------------------- toIso
