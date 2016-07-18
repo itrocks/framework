@@ -101,12 +101,24 @@ class Select
 	{
 		$options = [];
 		foreach ($this->options as $option) {
-			if ($option instanceof Option\Group_By) {
+			if ($option instanceof Option\Count) {
+				$this->additional_select_clause .= SP . 'SQL_CALC_FOUND_ROWS';
+			}
+			elseif ($option instanceof Option\Distinct) {
+				$this->additional_select_clause .= SP . 'DISTINCT';
+			}
+			elseif ($option instanceof Option\Group_By) {
 				$columns = new Columns($this->class_name, $option->properties, $this->joins);
 				$columns->expand_objects = false;
 				$columns->resolve_aliases = false;
 				$group_by = $columns->build();
 				$options[10] = LF . 'GROUP BY ' . $group_by;
+			}
+			elseif ($option instanceof Option\Limit) {
+				// todo this works only with Mysql so beware, this should be into Mysql or something
+				$options[30] = LF . 'LIMIT '
+					. (isset($option->from) ? ($option->from - 1) . ', ' : '')
+					. $option->count;
 			}
 			elseif ($option instanceof Option\Sort) {
 				$columns = new Columns(
@@ -122,18 +134,6 @@ class Select
 				if ($order_by) {
 					$options[20] = LF . 'ORDER BY ' . $order_by;
 				}
-			}
-			elseif ($option instanceof Option\Limit) {
-				// todo this works only with Mysql so beware, this should be into Mysql or something
-				$options[30] = LF . 'LIMIT '
-					. (isset($option->from) ? ($option->from - 1) . ', ' : '')
-					. $option->count;
-			}
-			elseif ($option instanceof Option\Count) {
-				$this->additional_select_clause = ' SQL_CALC_FOUND_ROWS';
-			}
-			elseif ($option instanceof Option\Distinct) {
-				$this->additional_select_clause .= ' DISTINCT';
 			}
 		}
 		ksort($options);
