@@ -48,11 +48,11 @@ class Select
 	 */
 	private $where_builder;
 
-	//---------------------------------------------------------------------- $additional_where_clause
+	//--------------------------------------------------------------------- $additional_select_clause
 	/**
 	 * @var string
 	 */
-	private $additional_where_clause;
+	private $additional_select_clause;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -130,10 +130,10 @@ class Select
 					. $option->count;
 			}
 			elseif ($option instanceof Option\Count) {
-				$this->additional_where_clause = ' SQL_CALC_FOUND_ROWS';
+				$this->additional_select_clause = ' SQL_CALC_FOUND_ROWS';
 			}
 			elseif ($option instanceof Option\Distinct) {
-				$this->additional_where_clause .= ' DISTINCT';
+				$this->additional_select_clause .= ' DISTINCT';
 			}
 		}
 		ksort($options);
@@ -151,7 +151,7 @@ class Select
 		// Call of buildOptions() and buildWhere() before buildColumns(), as all joins must be done to
 		// correctly deal with all properties.
 		// Call of buildColumns() and buildWhere() before buildTables(), to get joins ready.
-		$this->additional_where_clause = '';
+		$this->additional_select_clause = '';
 		// Notice : true was commented as it very often crashes mysql maintainer
 		$where   = $this->where_builder->build(/*true*/);
 		$options = $this->buildOptions();
@@ -192,7 +192,7 @@ class Select
 			return 'SELECT *' . LF . 'FROM (' . LF . $sql . LF . ') t0'
 			. LF . 'GROUP BY t0.id' . join('', $options);
 		}
-		return 'SELECT' . $this->additional_where_clause . SP . $columns
+		return 'SELECT' . $this->additional_select_clause . SP . $columns
 			. LF . 'FROM' . SP . $tables
 			. $where
 			. join('', $options);
