@@ -163,6 +163,15 @@ class Dao implements Configurable
 		return self::current()->disconnect($object);
 	}
 
+	//-------------------------------------------------------------------------------------- distinct
+	/**
+	 * Gets a DAO distinct, option used to return only distinct (different) values
+	 */
+	public static function distinct()
+	{
+		return new Option\Distinct();
+	}
+
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Gets the data link identified by the $dao_identifier string

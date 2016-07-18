@@ -132,6 +132,9 @@ class Select
 			elseif ($option instanceof Option\Count) {
 				$this->additional_where_clause = ' SQL_CALC_FOUND_ROWS';
 			}
+			elseif ($option instanceof Option\Distinct) {
+				$this->additional_where_clause .= ' DISTINCT';
+			}
 		}
 		ksort($options);
 		return $options;
