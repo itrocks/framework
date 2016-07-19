@@ -120,8 +120,8 @@ abstract class Authentication
 	public static function getRegisterInputs()
 	{
 		return Input::newCollection([
-			['login', 'Login', 'text'],
-			['password',  'Password',  'password']
+			['login',    'Login',    'text'],
+			['password', 'Password', 'password']
 		]);
 	}
 
@@ -142,8 +142,8 @@ abstract class Authentication
 		$search->login = $login;
 		$password = (new Password(
 			$password,
-			(new Reflection_Property(get_class($search), 'password'))->getAnnotation('password')
-				->value
+			(new Reflection_Property(get_class($search), 'password'))
+				->getAnnotation('password')->value
 		))->encrypted();
 		foreach (Dao::search($search) as $user) {
 			if ($user->password === $password) {
@@ -162,7 +162,9 @@ abstract class Authentication
 	 */
 	public static function register($form)
 	{
-		return Dao::write(self::arrayToUser($form));
+		/** @var $user User */
+		$user = Dao::write(self::arrayToUser($form));
+		return $user;
 	}
 
 }
