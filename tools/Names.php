@@ -335,6 +335,7 @@ abstract class Names
 			$class_name = self::setToSingle($class_name);
 			$full_class_name = Namespaces::defaultFullClassName($class_name . $right, $set_class_name);
 			if (class_exists($full_class_name) || trait_exists($full_class_name)) {
+				self::$sets[$set_class_name] = $full_class_name;
 				return $full_class_name;
 			}
 			$i = strrpos($class_name, '_');
@@ -346,6 +347,7 @@ abstract class Names
 					(class_exists($set_class_name) || trait_exists($set_class_name))
 					&& ((new Reflection_Class($set_class_name))->getAnnotation('set')->value == $set_class_name)
 				) {
+					self::$sets[$set_class_name] = $set_class_name;
 					return $set_class_name;
 				}
 				elseif ($check_class && error_reporting()) {
@@ -363,14 +365,17 @@ abstract class Names
 		} while (!empty($class_name));
 		$class_name .= $right;
 		if (class_exists($class_name, false) || trait_exists($class_name, false)) {
+			self::$sets[$set_class_name] = $class_name;
 			return $class_name;
 		}
 		elseif (strrpos($set_class_name, '_') > strrpos($set_class_name, BS)) {
 			$namespace = Namespaces::of($set_class_name);
 			$class_name = substr($set_class_name, strpos($set_class_name, '_', strlen($namespace)) + 1);
-			return self::setToClass($namespace . BS . $class_name, $check_class);
+			self::$sets[$set_class_name] = self::setToClass($namespace . BS . $class_name, $check_class);
+			return self::$sets[$set_class_name];
 		}
 		else {
+			self::$sets[$set_class_name] = $set_class_name;
 			return $set_class_name;
 		}
 	}
