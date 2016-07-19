@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Tests;
 
+use SAF\Framework\Controller\Response;
+
 /**
  * All unit test classes must extend this, to access its begin(), end() and assume() methods
  */
@@ -73,7 +75,7 @@ class Test
 			);
 		}
 		echo '<li>' . str_replace(get_class($this) . '::', '', $test) . ' : ' . $result;
-		return ($result === 'OK');
+		return ($result === Response::OK);
 	}
 
 	//--------------------------------------------------------------------------------- assumeCapture

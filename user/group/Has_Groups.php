@@ -74,8 +74,7 @@ trait Has_Groups
 	 * $uri is checked into path
 	 *
 	 * @param $uri string
-	 * @return array|null If the object has access to the $uri, returns the activate options.
-	 * Returns null if the object has no access to this feature path.
+	 * @return boolean Returns true if the user has access to this uri
 	 */
 	public function hasAccessTo($uri)
 	{
