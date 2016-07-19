@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>|User authenticated|</title>
+	<style type="text/css">
+		@import "../../skins/default/all.css";
+	</style>
+</head>
+<body>
+<!--BEGIN-->
+
+<div class="window">
+	<form action="{uri_to_launch}" id="goToAppForm" method="post">
+		<input type="hidden" name="login" value="{login}">
+		<input type="hidden" name="server" value="{server}">
+		<input type="hidden" name="token" value="{token}">
+		<input type="submit" value="|Go to ||Application|">
+	</form>
+</div>
+<script>
+//	$('#goToAppForm').submit();
+</script>
+
+<!--END-->
+</body>
+</html>
