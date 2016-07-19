@@ -60,7 +60,7 @@ class IP implements Configurable, Registerable
 	 */
 	public function checkAccess(&$uri)
 	{
-		if (isset($this->uris[$uri])) {
+		if (pregMatchArray($this->uris, $uri, true)) {
 			if (!$this->checkIP($_SERVER['REMOTE_ADDR'])) {
 				$uri = View::link(Application::class, Controller\Feature::F_BLANK);
 			}
