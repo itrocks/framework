@@ -29,11 +29,11 @@ class Check_Controller implements Feature_Controller
 	public function run(Parameters $parameters, $form, $files)
 	{
 		$login = $parameters->uri->parameters->getRawParameter('login');
-		$login = $login ?: ($form['login'] ?: '');
+		$login = $login ?: (isset($form['login']) ? $form['login'] : '');
 		$token = $parameters->uri->parameters->getRawParameter('token');
-		$token = $token ?: ($form['token'] ?: '');
+		$token = $token ?: (isset($form['token']) ? $form['token'] : '');
 		$sentence = $parameters->uri->parameters->getRawParameter('sentence');
-		$sentence = $sentence ?: ($form['sentence'] ?: '');
+		$sentence = $sentence ?: (isset($form['sentence']) ? $form['sentence'] : '');
 
 		/** @var $auth_server Authentication_Server */
 		$auth_server = Session::current()->plugins->get(Authentication_Server::class);
@@ -58,7 +58,7 @@ class Check_Controller implements Feature_Controller
 		}
 		else {
 			header($_SERVER["SERVER_PROTOCOL"].' 403 Forbidden', true, 403);
-			return '';
+			return '403 Forbidden';
 		}
 	}
 
