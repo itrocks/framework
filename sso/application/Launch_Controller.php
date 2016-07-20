@@ -15,6 +15,7 @@ use SAF\Framework\View;
 
 /**
  * Launch an application authenticated through SSO
+ *
  */
 class Launch_Controller implements Feature_Controller
 {

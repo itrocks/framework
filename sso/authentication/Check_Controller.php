@@ -12,6 +12,7 @@ use SAF\Framework\View;
 
 /**
  * Launch an application authenticated through SSO
+ *
  */
 class Check_Controller implements Feature_Controller
 {

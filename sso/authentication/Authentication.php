@@ -10,7 +10,6 @@ use SAF\Framework\User;
  * @business
  * @representative action, login, request_time_float
  * @validate validateAuthentication
- *
  */
 class Authentication
 {
@@ -85,7 +84,7 @@ class Authentication
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @link Object
-	 * @store integer
+	 * @store string
 	 * @var User
 	 */
 	public $user;

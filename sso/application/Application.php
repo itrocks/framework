@@ -16,15 +16,18 @@ class Application
 	//-------------------------------------------------------------------------------------- REDIRECT
 	const REDIRECT = 'redirect';
 
-	//------------------------------------------------------------------------------------------- URI
-	const URI = 'uri';
-
 	//-------------------------------------------------------------------------------------- SENTENCE
 	const SENTENCE = 'sentence';
+
+	//------------------------------------------------------------------------------------------- URI
+	const URI = 'uri';
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * The maximum timeout for a session for application (if user has not specifically disconnect)
+	 * in seconds
+	 *
+	 * @example 600
 	 * @var string
 	 */
 	public $max_session_time;
@@ -32,6 +35,8 @@ class Application
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * The name of application
+	 *
+	 * @example stats
 	 * @var string
 	 */
 	public $name;
@@ -39,23 +44,29 @@ class Application
 	//------------------------------------------------------------------------------------- $redirect
 	/**
 	 * The path where to redirect after application has validated authentication
+	 *
+	 * @example /home
 	 * @var string
 	 */
 	public $redirect;
 
-	//------------------------------------------------------------------------------------------ $uri
-	/**
-	 * The home url of application where to redirect on 1st access
-	 * @var string
-	 */
-	public $uri;
-
 	//------------------------------------------------------------------------------------- $sentence
 	/**
 	 * The sentence sent to application to recognize the authentication server
+	 *
+	 * @example This is the kindly deadly incredible sentence of security!
 	 * @var string
 	 */
 	private $sentence;
+
+	//------------------------------------------------------------------------------------------ $uri
+	/**
+	 * The URL of application where to send authentication parameters
+	 *
+	 * @example http://sebastien.meudec.com/my_path_to_get_token
+	 * @var string
+	 */
+	public $uri;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -73,11 +84,11 @@ class Application
 		if (isset($configuration[self::REDIRECT])) {
 			$this->redirect= $configuration[self::REDIRECT];
 		}
-		if (isset($configuration[self::URI])) {
-			$this->uri = $configuration[self::URI];
-		}
 		if (isset($configuration[self::SENTENCE])) {
 			$this->sentence = $configuration[self::SENTENCE];
+		}
+		if (isset($configuration[self::URI])) {
+			$this->uri = $configuration[self::URI];
 		}
 	}
 
@@ -96,6 +107,7 @@ class Application
 	//--------------------------------------------------------------------------------------- isValid
 	/**
 	 * returns true if application is valid and can be used
+	 *
 	 * @return string
 	 */
 	public function isValid()

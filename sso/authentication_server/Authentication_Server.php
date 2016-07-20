@@ -32,6 +32,7 @@ class Authentication_Server implements Configurable, Registerable
 	//----------------------------------------------------------------------------------------- $salt
 	/**
 	 * The salt used to build tokens
+	 *
 	 * @var string
 	 */
 	static private $salt;
@@ -74,6 +75,7 @@ class Authentication_Server implements Configurable, Registerable
 	//------------------------------------------------------------------------------ beforeDisconnect
 	/**
 	 * SSO cleaning before to disconnect a user
+	 *
 	 */
 	public function beforeDisconnect() {
 		// create disconnect log
