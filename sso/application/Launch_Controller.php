@@ -7,6 +7,7 @@ use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Session;
 use SAF\Framework\SSO\Application;
+use SAF\Framework\SSO\Authentication;
 use SAF\Framework\SSO\Authentication_Server;
 use SAF\Framework\Tools\Paths;
 use SAF\Framework\User;
@@ -33,7 +34,9 @@ class Launch_Controller implements Feature_Controller
 			$auth_server = Session::current()->plugins->get(Authentication_Server::class);
 			if ($application = $auth_server->hasApplication($name)) {
 				$parameters = $parameters->getObjects();
-				$parameters['uri_to_launch'] = $application->uri;
+				$parameters['third_party_application_uri'] = $application->uri;
+				$parameters['path'] = SL . str_replace(BS, SL, Authentication::class)
+					. SL . Authentication\Check_Controller::CHECK_FEATURE;
 				$parameters['token'] = $auth_server->getToken();
 				$parameters['login'] = User::current()->login;
 				$parameters['server'] = Paths::getUrl();

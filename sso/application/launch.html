@@ -11,9 +11,10 @@
 <!--BEGIN-->
 
 <div class="window">
-	<form action="{uri_to_launch}" id="goToAppForm" method="post">
-		<input type="hidden" name="login" value="{login}">
+	<form action="{third_party_application_uri}" id="goToAppForm" method="post">
 		<input type="hidden" name="server" value="{server}">
+		<input type="hidden" name="path" value="{path}">
+		<input type="hidden" name="login" value="{login}">
 		<input type="hidden" name="token" value="{token}">
 		<input type="submit" value="|Go to ||Application|">
 	</form>
