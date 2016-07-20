@@ -28,6 +28,8 @@ class Check_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
+		header('Content-Type: application/json');
+
 		$login = $parameters->uri->parameters->getRawParameter('login');
 		$login = $login ?: (isset($form['login']) ? $form['login'] : '');
 		$token = $parameters->uri->parameters->getRawParameter('token');
@@ -49,16 +51,17 @@ class Check_Controller implements Feature_Controller
 				}
 			}
 		}
+		$object = new \stdClass();
 		if ($authenticated) {
-			// output session id, will send HTTP 200 Response code
-			$parameters = $parameters->getObjects();
-			$parameters['session_id_parameter'] = session_name() . '=' . session_id();
-			$parameters[Parameter::AS_WIDGET] = true;
-			return View::run($parameters, $form, $files, Authentication::class, 'authenticated');
+			$object->response = 'OK';
+			$object->session_name = session_name();
+			$object->session_id = session_id();
+			return json_encode($object);
 		}
 		else {
 			header($_SERVER["SERVER_PROTOCOL"].' 403 Forbidden', true, 403);
-			return '403 Forbidden';
+			$object->response = 'Forbidden';
+			return json_encode($object);
 		}
 	}
 
