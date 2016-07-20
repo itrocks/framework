@@ -67,6 +67,8 @@ input.combo {
 			background: url("img/add_action.png") no-repeat center 2px;
 			display: none;
 			position: absolute;
+			right: 0;
+			top: 0;
 		}
 	}
 }
@@ -172,6 +174,7 @@ fieldset {
 
 					>td {
 						padding: 1px 5px 0 0;
+						position: relative;
 						white-space: nowrap;
 
 						>input, >textarea {
