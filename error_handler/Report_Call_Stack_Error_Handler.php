@@ -53,6 +53,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$f = fopen($log_file, 'ab');
 			$date = '[' . date('Y-m-d H:i:s') . ']' . SP;
 			fputs($f, $date . ucfirst($code->caption()) . ':' . SP . $error->getErrorMessage() . LF);
+			fputs($f, $_SERVER['REQUEST_URI'] . LF);
 			fputs($f, $this->processIdentification());
 			fputs($f, $this->formData());
 			fputs($f, $this->trace ?: $this->stackLinesText($stack->lines()));
