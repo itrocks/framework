@@ -11,6 +11,21 @@ use SAF\Framework\Reflection\Reflection_Property;
 abstract class Builder
 {
 
+	//---------------------------------------------------------------------------------------- DELETE
+	const DELETE = 'DELETE';
+
+	//---------------------------------------------------------------------------------------- INSERT
+	const INSERT = 'INSERT';
+
+	//--------------------------------------------------------------------------------------- REPLACE
+	const REPLACE = 'REPLACE';
+
+	//---------------------------------------------------------------------------------------- SELECT
+	const SELECT = 'SELECT';
+
+	//---------------------------------------------------------------------------------------- UPDATE
+	const UPDATE = 'UPDATE';
+
 	//------------------------------------------------------------------------------- buildColumnName
 	/**
 	 * Builds column name from a property
@@ -42,7 +57,8 @@ abstract class Builder
 		if ($class instanceof Reflection_Class) {
 			$class = $class->name;
 		}
-		$sql_delete = 'DELETE FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'WHERE';
+		$sql_delete = self::DELETE . ' FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ
+			. LF . 'WHERE';
 		if (is_numeric($id)) {
 			$sql_delete .= ' id = ' . $id;
 		}
@@ -90,7 +106,8 @@ abstract class Builder
 	 */
 	public static function buildInsert($class, $write)
 	{
-		$sql_insert = 'INSERT INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET' . SP;
+		$sql_insert = self::INSERT . ' INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ
+			. LF . 'SET' . SP;
 		$i = 0;
 		foreach ($write as $key => $value) {
 			if ($i++) {
@@ -115,7 +132,7 @@ abstract class Builder
 	 */
 	public static function buildUpdate($class, $write, $id)
 	{
-		$sql_update = 'UPDATE ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET ';
+		$sql_update = self::UPDATE . SP . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET ';
 		$i = 0;
 		foreach ($write as $key => $value) {
 			if ($i++) {

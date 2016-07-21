@@ -4,6 +4,7 @@ namespace SAF\Framework\Sql\Builder;
 use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Sql\Link;
+use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Join\Joins;
 
 /**
@@ -189,10 +190,10 @@ class Select
 				}
 				$sql .= $this->finalize($columns, $sub_where, $tables, $options_inside);
 			}
-			return 'SELECT *' . LF . 'FROM (' . LF . $sql . LF . ') t0'
-			. LF . 'GROUP BY t0.id' . join('', $options);
+			return Builder::SELECT . SP . '*' . LF . 'FROM (' . LF . $sql . LF . ') t0'
+				. LF . 'GROUP BY t0.id' . join('', $options);
 		}
-		return 'SELECT' . $this->additional_select_clause . SP . $columns
+		return Builder::SELECT . $this->additional_select_clause . SP . $columns
 			. LF . 'FROM' . SP . $tables
 			. $where
 			. join('', $options);
