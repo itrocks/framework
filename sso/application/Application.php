@@ -22,7 +22,7 @@ class Application
 	//------------------------------------------------------------------------------------------- URI
 	const URI = 'uri';
 
-	//----------------------------------------------------------------------------------------- $name
+	//----------------------------------------------------------------------------- $max_session_time
 	/**
 	 * The maximum timeout for a session for application (if user has not specifically disconnect)
 	 * in seconds
