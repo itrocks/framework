@@ -135,7 +135,7 @@ class File_Logger implements Configurable, Registerable, Serializable
 	 */
 	private function queryResult(Contextual_Mysqli $mysqli, $query, $result)
 	{
-		switch (substr($query, 0, 6)) {
+		switch (substr(ltrim($query), 0, 6)) {
 			case Builder::DELETE:
 			case self::REPLAC:
 			case Builder::UPDATE:
