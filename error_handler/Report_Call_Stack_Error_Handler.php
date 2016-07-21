@@ -57,6 +57,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			fputs($f, $this->processIdentification());
 			fputs($f, $this->formData());
 			fputs($f, $this->trace ?: $this->stackLinesText($stack->lines()));
+			fputs($f, LF);
 			fclose($f);
 		}
 		if ($code->isFatal() || $this->trace) {
