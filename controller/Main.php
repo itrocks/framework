@@ -329,9 +329,9 @@ class Main
 	/**
 	 * Run main controller for given uri, get, post and files vars coming from the web call
 	 *
-	 * @param $uri string
-	 * @param $get array
-	 * @param $post array
+	 * @param $uri   string
+	 * @param $get   array
+	 * @param $post  array
 	 * @param $files array
 	 * @return mixed
 	 */
