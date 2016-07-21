@@ -24,6 +24,18 @@ class Logger implements Registerable
 	 */
 	public $log_entry;
 
+	//--------------------------------------------------------------------------------- getIdentifier
+	/**
+	 * Gets the identifier of the current log id
+	 * May be useful if you need to save click-context information
+	 *
+	 * @return mixed
+	 */
+	public function getIdentifier()
+	{
+		return Dao::getObjectIdentifier($this->log_entry);
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * @param $register Register

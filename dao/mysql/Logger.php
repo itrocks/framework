@@ -14,6 +14,7 @@ class Logger implements Configurable, Registerable
 {
 
 	//----------------------------------------------------- Logger configuration array keys constants
+
 	//---------------------------------------------------------------------------------- CONTINUE_LOG
 	const CONTINUE_LOG = 'continue';
 
