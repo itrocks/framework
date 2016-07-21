@@ -3,6 +3,7 @@ namespace SAF\Framework\User;
 
 use SAF\Framework\Controller\Feature_Controller;
 use SAF\Framework\Controller\Parameters;
+use SAF\Framework\Session;
 use SAF\Framework\User;
 use SAF\Framework\User\Authenticate\Authentication;
 use SAF\Framework\View;
@@ -31,7 +32,7 @@ class Disconnect_Controller implements Feature_Controller
 		}
 		Authentication::disconnect($current_user);
 		array_unshift($parameters, $current_user);
-		session_destroy();
+		Session::current()->stop();
 		return View::run($parameters, $form, $files, get_class($current_user), 'disconnect');
 	}
 

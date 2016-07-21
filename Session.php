@@ -20,6 +20,19 @@ class Session implements Serializable
 	//--------------------------------------------------------------------------------------- PLUGINS
 	const PLUGINS = 'plugins';
 
+	//-------------------------------------------------------------------------------------- $stopped
+	/**
+	 * When true, the session will be closed at the end of the script execution.
+	 * This is the case when an action disconnects the action : all session data will be reset,
+	 * including the session id.
+	 *
+	 * Do not set this directly to true : call stop()
+	 *
+	 * @see SAF\Framework\Session::stop
+	 * @var boolean
+	 */
+	public $stopped = false;
+
 	//-------------------------------------------------------------------------------------- $current
 	/**
 	 * @var object[]|string[]
@@ -245,6 +258,26 @@ class Session implements Serializable
 	public static function sid($prefix = '')
 	{
 		return session_id() ? ($prefix . session_name() . '=' . session_id()) : '';
+	}
+
+	//------------------------------------------------------------------------------------------ stop
+	/**
+	 * Stops the current session.
+	 *
+	 * This will destroy the session data at the end of the script.
+	 * The session cookie will be removed so that a new session is created at next click.
+	 */
+	public function stop()
+	{
+		$params = session_get_cookie_params();
+		if ($_COOKIE[session_name()] == session_id()) {
+			setcookie(
+				session_name(), '', time() - 42000,
+				$params['path'], $params['domain'], $params['secure'], $params['httponly']
+			);
+		}
+		session_destroy();
+		$this->stopped = true;
 	}
 
 	//----------------------------------------------------------------------------------- unserialize
