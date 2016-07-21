@@ -264,7 +264,7 @@ class Contextual_Mysqli extends mysqli
 	 *
 	 * You can't reconnect an existing mysqli connexion : it will be replaced.
 	 *
-	 * @return Contextual_Mysqli $this
+	 * @return boolean true if reconnect worked, false in case of connect error
 	 */
 	public function reconnect()
 	{
@@ -282,7 +282,7 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public function selectedDatabase()
 	{
-		$result = $this->query('SELECT DATABASE()');
+		$result   = $this->query('SELECT DATABASE()');
 		$database = $result->fetch_row()[0];
 		$result->free();
 		return $database;
