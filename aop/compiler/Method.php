@@ -11,6 +11,7 @@ class Method
 {
 	use Toolbox;
 
+	//----------------------------------------------------------------------------------------- DEBUG
 	const DEBUG = false;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -75,8 +76,9 @@ class Method
 		// preg expression to search and replace things into method prototype
 		$preg_expr = Reflection_Method::regex($method_name);
 		// $indent = prototype level indentation spaces
-		$indent = $source_method instanceof Reflection_method
-			? $source_method->getIndent() : (LF . TAB);
+		$indent = ($source_method instanceof Reflection_Method)
+			? $source_method->getIndent()
+			: (LF . TAB);
 		$i2 = $indent . TAB;
 		$i3 = $i2 . TAB;
 		// $parameters = ['parameter_name' => 'parameter_name')
