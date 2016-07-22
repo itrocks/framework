@@ -1,5 +1,7 @@
 .entry.output.window fieldset #sql div {
   display: block;
   height: 180px;
+  line-height: 7px;
   overflow-y: scroll;
+  padding-top: 1px;
   white-space: pre; }
