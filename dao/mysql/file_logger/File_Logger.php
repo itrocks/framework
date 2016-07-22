@@ -3,10 +3,9 @@ namespace SAF\Framework\Dao\Mysql;
 
 use mysqli_result;
 use SAF\Framework;
-use SAF\Framework\Plugin\Configurable;
+use SAF\Framework\Dao;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Session;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Tools\Contextual_Mysqli;
 use Serializable;
@@ -14,11 +13,11 @@ use Serializable;
 /**
  * A logger for mysql queries : logs queries in files, and give information about their results
  */
-class File_Logger implements Configurable, Registerable, Serializable
+class File_Logger extends Framework\Logger\File_Logger implements Registerable, Serializable
 {
 
-	//------------------------------------------------------------------------------------------ PATH
-	const PATH = 'path';
+	//-------------------------------------------------------------------------------- FILE_EXTENSION
+	const FILE_EXTENSION = 'sql';
 
 	//---------------------------------------------------------------------------------------- REPLAC
 	/**
@@ -38,28 +37,11 @@ class File_Logger implements Configurable, Registerable, Serializable
 	 */
 	private $database = '';
 
-	//----------------------------------------------------------------------------------------- $path
-	/**
-	 * @var string
-	 */
-	private $path;
-
 	//----------------------------------------------------------------------------------------- $time
 	/**
 	 * @var float
 	 */
 	private $time;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $configuration array [path]
-	 */
-	public function __construct($configuration = null)
-	{
-		if (isset($configuration) && isset($configuration[self::PATH])) {
-			$this->path = $configuration[self::PATH];
-		}
-	}
 
 	//------------------------------------------------------------------------------------ afterQuery
 	/**
@@ -90,40 +72,6 @@ class File_Logger implements Configurable, Registerable, Serializable
 	public function beforeQuery()
 	{
 		$this->time = microtime(true);
-	}
-
-	//------------------------------------------------------------------------------------------ file
-	/**
-	 * @return resource
-	 */
-	private function file()
-	{
-		static $file = null;
-		if (empty($file) && ($filename = $this->fileName())) {
-			if (!file_exists($path = lLastParse($filename, SL))) {
-				mkdir($path, 0777, true);
-			}
-			$file = fopen($filename, 'wb');
-		}
-		return $file;
-	}
-
-	//-------------------------------------------------------------------------------------- fileName
-	/**
-	 * @return string
-	 */
-	private function fileName()
-	{
-		static $file_name = null;
-		if (empty($file_name)) {
-			/** @var $logger Framework\Logger */
-			$logger = Session::current()->plugins->get(Framework\Logger::class);
-			if ($identifier = $logger->getIdentifier()) {
-				$path = $this->path . SL . date('Y-m-d');
-				$file_name = $path . SL . $identifier . '.sql';
-			}
-		}
-		return $file_name;
 	}
 
 	//----------------------------------------------------------------------------------- queryResult

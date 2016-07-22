@@ -87,8 +87,8 @@ class Class_Builder
 	//------------------------------------------------------------------------------------ buildClass
 	/**
 	 * @param $class_name  string
-	 * @param $interfaces  string[]
-	 * @param $traits      string[]
+	 * @param $interfaces  array string[][]
+	 * @param $traits      array string[][]
 	 * @param $get_source        boolean if true, get built [$name, $source) instead of $name
 	 * @return string|string[] generated class name
 	 */

@@ -33,6 +33,7 @@ $.getScript(path + 'saf/framework/property/select.js');
 $.getScript(path + 'saf/framework/rad/output.js');
 $.getScript(path + 'saf/framework/rad/rad.js');
 $.getScript(path + 'saf/framework/settings/custom.js');
+$.getScript(path + 'saf/framework/view/logger/html_logger.js');
 $.getScript(path + 'saf/framework/widget/edit/edit.js');
 $.getScript(path + 'saf/framework/widget/data_list/dataList.js');
 $.getScript(path + 'saf/framework/widget/trashcan/trashcan.js');

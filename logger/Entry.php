@@ -1,17 +1,23 @@
 <?php
 namespace SAF\Framework\Logger;
 
+use SAF\Framework;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Mysql\Link;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Tools\Date_Time;
 
 /**
  * Log class stores logs infos
  *
+ * @representative start, uri
  * @set Logs
  */
 class Entry
 {
+	// TODO HIGH #71516 Fix Builder\Compiler as this should be replaced by dynamic call in config.php
+	use Framework\Dao\Mysql\File_Logger\Entry;
+	use Framework\View\Logger\Entry;
 
 	//------------------------------------------------------------------------------------ $arguments
 	/**
@@ -111,39 +117,50 @@ class Entry
 	 * @param $form      array
 	 * @param $files     array
 	 */
-	public function __construct($uri, $arguments = null, $form = null, $files = null)
+	public function __construct($uri = null, $arguments = null, $form = null, $files = null)
 	{
-		if (!isset($this->start)) {
-			$this->duration_start = microtime(true);
-			$this->start = new Date_Time();
-		}
-		if (!isset($this->process_id)) {
-			$this->process_id = getmypid();
-		}
-		if (!isset($this->mysql_thread_id)) {
-			$dao = Dao::current();
-			if ($dao instanceof Link) {
-				$this->mysql_thread_id = $dao->getConnection()->thread_id;
+		if (isset($uri)) {
+			if (!isset($this->start)) {
+				$this->duration_start = microtime(true);
+				$this->start = new Date_Time();
+			}
+			if (!isset($this->process_id)) {
+				$this->process_id = getmypid();
+			}
+			if (!isset($this->mysql_thread_id)) {
+				$dao = Dao::current();
+				if ($dao instanceof Link) {
+					$this->mysql_thread_id = $dao->getConnection()->thread_id;
+				}
+			}
+			if (!isset($this->session_id)) {
+				$this->session_id = session_id();
+			}
+			if (isset($arguments) && !isset($this->arguments)) {
+				$this->arguments = $this->serialize($arguments);
+			}
+			if (isset($uri) && !isset($this->uri)) {
+				$this->uri = $uri;
+			}
+			if (isset($files) && !isset($this->files)) {
+				$this->files = $this->serialize($files);
+			}
+			if (isset($form) && !isset($this->form)) {
+				if (isset($form['password'])) {
+					$form['password'] = '***';
+				}
+				$this->form = $this->serialize($form);
 			}
 		}
-		if (!isset($this->session_id)) {
-			$this->session_id = session_id();
-		}
-		if (isset($arguments) && !isset($this->arguments)) {
-			$this->arguments = $this->serialize($arguments);
-		}
-		if (isset($uri) && !isset($this->uri)) {
-			$this->uri = $uri;
-		}
-		if (isset($files) && !isset($this->files)) {
-			$this->files = $this->serialize($files);
-		}
-		if (isset($form) && !isset($this->form)) {
-			if (isset($form['password'])) {
-				$form['password'] = '***';
-			}
-			$this->form = $this->serialize($form);
-		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return trim(Loc::dateToLocale($this->start) . SP . $this->uri);
 	}
 
 	//---------------------------------------------------------------------------------------- resume
