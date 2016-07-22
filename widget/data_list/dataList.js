@@ -24,8 +24,8 @@ $('document').ready(function()
 						$div.show();
 						$div.find('input').first().focus();
 					}
-					event.stopImmediatePropagation();
 					event.preventDefault();
+					event.stopImmediatePropagation();
 				}
 			});
 

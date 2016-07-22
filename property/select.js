@@ -71,8 +71,8 @@ $('document').ready(function()
 					$this.addClass('expanded');
 					$li.children('section:not(:visible)').show();
 				}
-				event.stopImmediatePropagation();
 				event.preventDefault();
+				event.stopImmediatePropagation();
 			}
 			else {
 				$this.addClass('expanded');
