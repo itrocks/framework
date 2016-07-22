@@ -26,22 +26,12 @@ class Logger extends File_Logger implements Registerable
 
 	//------------------------------------------------------------------------------ onMainController
 	/**
-	 * @param $uri    string
-	 * @param $get    array
-	 * @param $post   array
-	 * @param $files  array
 	 * @param $result string
 	 */
-	public function onMainController($uri, $get, $post, $files, $result)
+	public function onMainController($result)
 	{
 		if ($file = $this->file()) {
-			$buffer = lParse(rLastParse($this->fileName(), SL), DOT) . LF;
-			$buffer .= PRE . LF;
-			$buffer .= 'uri = ' . $uri . LF;
-			if ($get)   $buffer .= 'get = '   . print_r($get, true)   . LF;
-			if ($post)  $buffer .= 'post = '  . print_r($post, true)  . LF;
-			if ($files) $buffer .= 'files = ' . print_r($files, true) . LF;
-			$buffer .= _PRE . LF . '<hr>' . LF . LF;
+			$buffer = '#' . lParse(rLastParse($this->fileName(), SL), DOT) . LF . '<P>' . LF;
 			gzputs($file, $buffer);
 			gzputs($file, $result);
 		}
