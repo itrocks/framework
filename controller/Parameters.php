@@ -24,7 +24,7 @@ class Parameters
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
-	 * @var integer[] keys are parameters names (ie object class short name)
+	 * @var array keys are parameters names (ie object class short name)
 	 */
 	private $parameters = [];
 
@@ -405,9 +405,7 @@ class Parameters
 			if (isset($this->parameters[$class_name])) {
 				unset($this->parameters[$class_name]);
 			}
-			$this->parameters = arrayMergeRecursive(
-				[get_class($parameter_value) => $parameter_value], $this->parameters
-			);
+			$this->parameters = arrayMergeRecursive([$class_name => $parameter_value], $this->parameters);
 		}
 		else {
 			$this->unshiftUnnamed($parameter_value);

@@ -15,7 +15,6 @@ use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Join\Joins;
-use SAF\Framework\Sql\Join;
 use SAF\Framework\Sql\Value;
 use SAF\Framework\Tools\Date_Time;
 
@@ -331,9 +330,15 @@ class Summary_Builder
 	 */
 	public function getProperty($path)
 	{
+		/* old way to do. keep for backward compatibility */
+		/* todo: check if we should keep or if it's buggy and so we could keep only new way to do */
 		list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
 		$properties = $this->joins->getProperties($master_path);
 		$property = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+		/* if null, new way to do */
+		if (is_null($property)) {
+			$property = new Reflection_Property($this->joins->getClass(''), $path);
+		}
 		return $property;
 	}
 
