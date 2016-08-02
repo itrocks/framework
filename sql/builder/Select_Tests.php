@@ -10,6 +10,7 @@ use SAF\Framework\Tests\Objects\Order_Line;
 use SAF\Framework\Tests\Objects\Quote;
 use SAF\Framework\Tests\Objects\Quote_Salesman;
 use SAF\Framework\Tests\Objects\Quote_Salesman_Additional;
+use SAF\Framework\Tests\Objects\Salesman;
 use SAF\Framework\Tests\Test;
 
 /**
@@ -258,6 +259,42 @@ class Select_Tests extends Test
 			. 'FROM `quotes_salesmen` t0' . LF
 			. 'INNER JOIN `salesmen` t1 ON t1.id = t0.id_salesman' . LF
 			. 'WHERE t1.`name` = "Robert" AND t0.`percentage` = 100'
+		);
+	}
+
+	//------------------------------------------------------------------- testLinkedClassObjectSearch
+	public function testLinkedClassObjectSearch()
+	{
+		// search text with internal ids to simulate a light salesman
+		$search = Search_Object::create(Quote_Salesman::class);
+		$search->id_quote    = 101;
+		$search->id_salesman = 102;
+		$builder = new Select(
+			Quote_Salesman::class,
+			['name', 'percentage'],
+			$search
+		);
+		$this->assume(
+			__METHOD__ . '.short',
+			$builder->buildQuery(),
+			'SELECT t1.`name`, t0.`percentage`' . LF
+			. 'FROM `quotes_salesmen` t0' . LF
+			. 'INNER JOIN `salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'WHERE t0.id_quote = 101 AND t0.id_salesman = 102'
+		);
+		$search->quote        = Search_Object::create(Quote::class);
+		$search->quote->id    = 101;
+		$search->salesman     = Search_Object::create(Salesman::class);
+		$search->salesman->id = 102;
+		$this->assume(
+			__METHOD__ . '.long',
+			$builder->buildQuery(),
+			'SELECT t1.`name`, t0.`percentage`' . LF
+			. 'FROM `quotes_salesmen` t0' . LF
+			. 'INNER JOIN `salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'LEFT JOIN `quotes` t2 ON t2.id = t0.id_quote' . LF
+			. 'LEFT JOIN `salesmen` t3 ON t3.id = t0.id_salesman' . LF
+			. 'WHERE t2.`id` = 101 AND t3.`id` = 102'
 		);
 	}
 
