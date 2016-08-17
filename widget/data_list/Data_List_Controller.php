@@ -424,7 +424,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'more_hundred'          => $more_hundred,
 				'more_thousand'         => $more_thousand,
 				'properties'            => $this->getProperties($list_settings_before_read),
-				'rows_count'            => $count->count,
+				'rows_count'            => (int)$count->count,
 				'search_summary'        => $this->getSearchSummary(
 					$class_name, $list_settings_before_read, $search
 				),
