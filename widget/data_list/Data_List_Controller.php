@@ -15,6 +15,8 @@ use SAF\Framework\Dao\Option\Group_By;
 use SAF\Framework\Dao\Option\Limit;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Option\Reverse;
+use SAF\Framework\Error_Handler\Handled_Error;
+use SAF\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use SAF\Framework\History;
 use SAF\Framework\Locale;
 use SAF\Framework\Locale\Loc;
@@ -31,6 +33,7 @@ use SAF\Framework\Setting\Buttons;
 use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Setting\Custom_Settings_Controller;
 use SAF\Framework\Tools\Color;
+use SAF\Framework\Tools\Default_List_Data;
 use SAF\Framework\Tools\List_Data;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
@@ -230,6 +233,28 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		return $this->class_names;
 	}
 
+	//------------------------------------------------------------------------------ getErrorsSummary
+	/**
+	 * @return string
+	 */
+	public function getErrorsSummary()
+	{
+		$summary = '';
+		if (isset($this->errors) && is_array($this->errors)) {
+			$first = true;
+			foreach ($this->errors as $property_path => $error) {
+				if ($first) $first = false; else $summary .= ',';
+				// TODO I should not see any HTML code inside the PHP code
+				$summary .= SP . ' <span class="error">' . $error->getMessage();
+				if ($error instanceof Data_List_Exception) {
+					$summary .= ' (' . $error->getExpression() . ')';
+				}
+				$summary .= '</span>';
+			}
+		}
+		return $summary;
+	}
+
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $class_name string The context object or class name
@@ -323,19 +348,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$summary = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
 			$summary_builder = new Summary_Builder($class_name, $search);
 			$summary .= SP . (string)$summary_builder;
-
-			if (isset($this->errors) && is_array($this->errors)) {
-				$first = true;
-				foreach ($this->errors as $property_path => $error) {
-					if ($first) $first = false; else $summary .= ',';
-					// TODO I should not see any HTML code inside the PHP code
-					$summary .= SP . ' <span class="error">' . $error->getMessage();
-					if ($error instanceof Data_List_Exception) {
-						$summary .= ' (' . $error->getExpression() . ')';
-					}
-					$summary .= '</span>';
-				}
-			}
 			return $summary;
 		}
 		return null;
@@ -402,11 +414,24 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$list_settings_before_read = clone $list_settings;
 		// SM : Moved from readData()
 		$search = $this->applySearchParameters($list_settings);
-		$data = $this->readData($class_name, $list_settings, $search, $count);
-		// SM : Moved from applyParametersToListSettings()
-		// TODO Move back once we have a generic validator (parser) not depending of SQL that we could fire before save
-		if (!is_null($did_change) && !(isset($this->errors) && count($this->errors))) {
-			$list_settings->save();
+		try {
+			$data = $this->readData($class_name, $list_settings, $search, $count);
+			// SM : Moved from applyParametersToListSettings()
+			// TODO Move back once we have a generic validator (parser) not depending of SQL that we could fire before save
+			if (!is_null($did_change) && !(isset($this->errors) && count($this->errors))) {
+				$list_settings->save();
+			}
+		}
+		catch (Exception $e) {
+			//set empty list result
+			$data  = new Default_List_Data($class_name, []);
+			//set an error to display
+			$error = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
+			$this->errors[] = $error;
+			// log the error in order software maintainer to be informed
+			$handled = new Handled_Error($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), null);
+			$handler = new Report_Call_Stack_Error_Handler();
+			$handler->logError($handled);
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
 		$less_twenty = $displayed_lines_count > 20;
@@ -420,6 +445,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'default_title'         => ucfirst(Names::classToDisplay($this->class_names)),
 				'display_start'         => $list_settings->start_display_line_number,
 				'displayed_lines_count' => $displayed_lines_count,
+				'errors_summary'        => $this->getErrorsSummary(),
 				'less_twenty'           => $less_twenty,
 				'more_hundred'          => $more_hundred,
 				'more_thousand'         => $more_thousand,
@@ -438,6 +464,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$parameters['custom_buttons'] = $buttons->getButtons(
 			'custom list', Names::classToSet($class_name)
 		);
+		// if an error occurred, we do not display custom save button
+		if (count($this->errors)) {
+			if (isset($parameters['custom_buttons'][Feature::F_WRITE])) {
+				unset($parameters['custom_buttons'][Feature::F_WRITE]);
+			}
+		}
 		$parameters[self::GENERAL_BUTTONS] = $this->getGeneralButtons(
 			$class_name, $parameters, $list_settings
 		);

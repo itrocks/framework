@@ -30,6 +30,17 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		return $result;
 	}
 
+	//--------------------------------------------------------------------- getUserInformationMessage
+	/**
+	 * @return string
+	 */
+	static public function getUserInformationMessage()
+	{
+		return Loc::tr('An error occurred') . DOT
+		. SP . Loc::tr('The software maintainer has been informed and will fix it soon') . DOT
+		. SP . Loc::tr('Please check your data for bad input') . DOT;
+	}
+
 	//---------------------------------------------------------------------------------------- handle
 	/**
 	 * @param $error Handled_Error
@@ -48,6 +59,21 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				. '</div>' . LF;
 			echo $message . LF;
 		}
+
+		$this->logError($error);
+
+		if ($code->isFatal() || $this->trace) {
+			echo '<div class="error">' . $this->getUserInformationMessage()	. '</div>';
+		}
+	}
+
+	//-------------------------------------------------------------------------------------- logError
+	/**
+	 * @param $error Handled_Error
+	 */
+	public function logError(Handled_Error $error)
+	{
+		$code = new Error_Code($error->getErrorNumber());
 		if (ini_get('log_errors') && ($log_file = ini_get('error_log'))) {
 			$stack = $this->trace ?: new Call_Stack();
 			$f = fopen($log_file, 'ab');
@@ -59,13 +85,6 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			fputs($f, $this->trace ?: $this->stackLinesText($stack->lines()));
 			fputs($f, LF);
 			fclose($f);
-		}
-		if ($code->isFatal() || $this->trace) {
-			echo '<div class="error">'
-				. Loc::tr('An error occurred') . DOT
-				. SP . Loc::tr('The software maintainer has been informed and will fix it soon') . DOT
-				. SP . Loc::tr('Please check your data for bad input') . DOT
-				. '</div>';
 		}
 	}
 
