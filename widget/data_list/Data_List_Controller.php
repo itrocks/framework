@@ -712,6 +712,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$property = new Reflection_Property_Value($property->class, $property->name, $value, true);
 			if (!$property->getType()->isString()) {
 				$property->setAnnotationLocal(Var_Annotation::ANNOTATION)->value = Type::STRING;
+				$property->setAnnotationLocal(Link_Annotation::ANNOTATION)->value = null;
 			}
 			$property->value(Loc::propertyToIso($property, $value));
 		}
