@@ -28,6 +28,7 @@
     .property_select ul > li {
       background: url("img/tree/string-right.png") 8px -2px no-repeat;
       cursor: default;
+      font-weight: normal;
       line-height: 1em;
       margin: 1px 0;
       padding-left: 18px; }
@@ -35,11 +36,14 @@
         background: url("img/tree/string-last.png") 8px -2px no-repeat; }
       .property_select ul > li:hover {
         background-color: #aedc5f; }
+      .property_select ul > li.ui-draggable-handle {
+        cursor: grab; }
       .property_select ul > li > a {
         background: url("img/tree/plus.png") 4px 2px no-repeat;
         color: black;
         cursor: pointer;
         display: block;
+        font-weight: bold;
         margin-left: -18px;
         padding-left: 18px;
         text-decoration: none;

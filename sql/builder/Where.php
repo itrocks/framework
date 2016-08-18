@@ -97,7 +97,8 @@ class Where
 			}
 			return $sql;
 		}
-		$sql = is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND');
+		$sql = is_null($this->where_array)
+			? '' : $this->buildPath('id', $this->where_array, 'AND', true);
 		return $sql ? (LF . 'WHERE ' . $sql) : $sql;
 	}
 
@@ -205,8 +206,8 @@ class Where
 				$tx = 't0';
 			}
 			$column = ((!$master_path) || ($master_path === 'id'))
-				? ($tx . DOT . BQ . $prefix . $foreign_column . BQ)
-				: ($this->joins->getAlias($master_path) . DOT . BQ . $prefix . $foreign_column . BQ);
+				? ($tx . DOT . $this->withBQ($prefix . $foreign_column))
+				: ($this->joins->getAlias($master_path) . DOT . $this->withBQ($prefix . $foreign_column));
 		}
 		return $column;
 	}
@@ -217,16 +218,19 @@ class Where
 	 *
 	 * @param $path        string Base property path pointing to the object
 	 * @param $object      object The value is an object, which will be used for search
+	 * @param $root_object boolean if true, this is the root object : @link classes do not apply
 	 * @return string
 	 */
-	private function buildObject($path, $object)
+	private function buildObject($path, $object, $root_object = false)
 	{
 		$class = new Link_Class(get_class($object));
-		$id = $this->sql_link->getObjectIdentifier(
-			$object,
-			$class->getAnnotation('link')->value ? $class->getCompositeProperty()->name : null
-		);
-		if ($id) {
+		if (!$root_object || !$class->getAnnotation('link')->value) {
+			$id = $this->sql_link->getObjectIdentifier(
+				$object,
+				$class->getAnnotation('link')->value ? $class->getCompositeProperty()->name : null
+			);
+		}
+		if (!empty($id)) {
 			// object is linked to stored data : search with object identifier
 			return $this->buildValue($path, $id, ($path == 'id') ? '' : 'id_');
 		}
@@ -238,9 +242,12 @@ class Where
 			Replaces_Annotations::removeReplacedProperties($class->accessProperties())
 			as $property_name => $property
 		) {
+			$id_property_name = 'id_' . $property_name;
 			if (isset($object->$property_name)) {
-				$sub_path = $property_name;
-				$array[$sub_path] = $object->$property_name;
+				$array[$property_name] = $object->$property_name;
+			}
+			elseif (isset($object->$id_property_name)) {
+				$array[$id_property_name] = $object->$id_property_name;
 			}
 		}
 		$sql = $this->buildArray($path, $array, 'AND');
@@ -254,12 +261,13 @@ class Where
 	/**
 	 * Build SQL WHERE section for given path and value
 	 *
-	 * @param $path        string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
-	 * @param $value       mixed May be a value, or a structured array of multiple where clauses
-	 * @param $clause      string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
+	 * @param $path      string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
+	 * @param $value     mixed May be a value, or a structured array of multiple where clauses
+	 * @param $clause    string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
+	 * @param $root_path boolean
 	 * @return string
 	 */
-	private function buildPath($path, $value, $clause)
+	private function buildPath($path, $value, $clause, $root_path = false)
 	{
 		if ($value instanceof Func\Where) {
 			$this->joins->add($path);
@@ -284,7 +292,7 @@ class Where
 		switch (gettype($value)) {
 			case 'NULL':   return $this->buildColumn($path) . ' IS NULL';
 			case 'array':  return $this->buildArray ($path, $value, $clause);
-			case 'object': return $this->buildObject($path, $value);
+			case 'object': return $this->buildObject($path, $value, $root_path);
 			default:       return $this->buildValue ($path, $value);
 		}
 	}
@@ -338,6 +346,18 @@ class Where
 	public function getSqlLink()
 	{
 		return $this->sql_link;
+	}
+
+	//---------------------------------------------------------------------------------------- withBQ
+	/**
+	 * @param $column_name string
+	 * @return string
+	 */
+	private function withBQ($column_name)
+	{
+		return (substr($column_name, 0, 3) === 'id_')
+			? $column_name
+			: BQ . $column_name . BQ;
 	}
 
 }
