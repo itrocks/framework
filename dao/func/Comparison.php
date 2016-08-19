@@ -29,13 +29,13 @@ class Comparison implements Negate, Where
 	const REVERSE = [
 		self::EQUAL            => self::NOT_EQUAL,
 		self::GREATER          => self::LESS_OR_EQUAL,
-		self::GREATER_OR_EQUAL => self::LESS,
+			self::GREATER_OR_EQUAL => self::LESS,
 		self::LESS             => self::GREATER_OR_EQUAL,
 		self::LESS_OR_EQUAL    => self::GREATER,
 		self::LIKE             => self::NOT_LIKE,
 		self::NOT_EQUAL        => self::EQUAL,
 		self::NOT_LIKE         => self::LIKE
-	];
+		];
 
 	//----------------------------------------------------------------------------------------- $sign
 	/**
@@ -62,8 +62,8 @@ class Comparison implements Negate, Where
 		if (isset($this->than_value) && !isset($this->sign)) {
 			$this->sign =
 				((strpos($this->than_value, '_') !== false) || (strpos($this->than_value, '%') !== false))
-					? self::LIKE
-					: self::EQUAL;
+				? self::LIKE
+				: self::EQUAL;
 		}
 	}
 
@@ -98,18 +98,10 @@ class Comparison implements Negate, Where
 			}
 		}
 		if ($this->than_value instanceof Where) {
-			if ($this->sign == self::NOT_EQUAL) {
-				return Loc::tr('except') . ' ('
-				. $this->than_value->toHuman($builder, $property_path, $prefix)
-				. ')';
-			}
-			elseif ($this->sign == self::EQUAL) {
-				// Because of Negate, we should support EQUAL for instance of Where
-				return ' (' . $this->than_value->toHuman($builder, $property_path, $prefix) . ')';
-			}
-			else {
-				return $this->than_value->toHuman($builder, $property_path, $prefix);
-			}
+			return $this->whereSQL(
+				$column,
+				$this->than_value->toHuman($builder, $property_path, $prefix)
+			);
 		}
 		$scalar = $builder->buildScalar($this->than_value, $property_path);
 		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE])) {
@@ -134,13 +126,14 @@ class Comparison implements Negate, Where
 			if (in_array($this->sign, [self::EQUAL, self::NOT_EQUAL, self::LIKE, self::NOT_LIKE])) {
 				$close_parenthesis = '';
 				switch ($this->sign) {
-					case self::NOT_EQUAL: case self::NOT_LIKE:
-						$sign    = self::NOT_EQUAL;
+					case self::NOT_EQUAL:
+					case self::NOT_LIKE:
+						$sign = self::NOT_EQUAL;
 						$logical = 'AND';
 						$operand = 'IS NOT NULL';
 						break;
 					default: /*case self::EQUAL: case self::LIKE:*/
-						$sign    = self::EQUAL;
+						$sign = self::EQUAL;
 						$logical = 'OR';
 						$operand = 'IS NULL';
 						break;
@@ -148,7 +141,7 @@ class Comparison implements Negate, Where
 				$sql = '';
 				// in case of Date_Time is null we want to check for '0000-00-00 00:00:00' too
 				// property may be null if reverse path : Class\Name->foreign_property_name
-				$property    = $builder->getProperty($property_path);
+				$property = $builder->getProperty($property_path);
 				$type_string = $property ? $property->getType()->asString() : null;
 				if ($type_string == Date_Time::class) {
 					$close_parenthesis = ')';
@@ -165,19 +158,13 @@ class Comparison implements Negate, Where
 			}
 		}
 		if ($this->than_value instanceof Where) {
-			if ($this->sign == self::NOT_EQUAL) {
-				return 'NOT (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
-			}
-			elseif ($this->sign == self::EQUAL) {
-				// Because of Negate, we should support EQUAL for instance of Where
-				return ' (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
-			}
-			else {
-				return $this->than_value->toSql($builder, $property_path, $prefix);
-			}
+			return $this->whereSQL(
+				$column,
+				$this->than_value->toSql($builder, $property_path, $prefix)
+			);
 		}
 		return $column . SP . $this->sign
-			. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
+		. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
 	}
 
 	//---------------------------------------------------------------------------------------- negate
@@ -191,6 +178,28 @@ class Comparison implements Negate, Where
 		if (in_array($this->sign, self::REVERSE)) {
 			$this->sign = self::REVERSE[$this->sign];
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- whereSQL
+	/**
+	 * Specific sql parsing in case of Where
+	 *
+	 * @param $column
+	 * @param $sql
+	 * @return string
+	 */
+	private function whereSQL($column, $sql)
+	{
+		if ($this->than_value instanceof Property) {
+			$sql = $column . SP . $this->sign . SP . $sql;
+		}
+		else {
+			$sql = '(' . $sql . ')';
+			if ($this->sign == self::NOT_EQUAL) {
+				$sql = 'NOT ' . $sql;
+			}
+		}
+		return $sql;
 	}
 
 }

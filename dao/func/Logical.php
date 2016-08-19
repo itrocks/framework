@@ -22,17 +22,17 @@ class Logical implements Negate, Where
 		self::AND_OPERATOR  => 'and',
 		self::NOT_OPERATOR  => 'except',
 		self::OR_OPERATOR   => 'or',
-		self::TRUE_OPERATOR => 'is',
+			self::TRUE_OPERATOR => 'is',
 		self::XOR_OPERATOR  => 'exclusively or'
-	];
+		];
 
 	const REVERSE = [
 		self::AND_OPERATOR  => self::OR_OPERATOR,
 		self::NOT_OPERATOR  => self::TRUE_OPERATOR,
 		self::OR_OPERATOR   => self::AND_OPERATOR,
-		self::TRUE_OPERATOR => self::NOT_OPERATOR,
+			self::TRUE_OPERATOR => self::NOT_OPERATOR,
 		self::XOR_OPERATOR  => self::NOT_OPERATOR
-	];
+		];
 
 	//------------------------------------------------------------------------------------ $arguments
 	/**
@@ -182,19 +182,19 @@ class Logical implements Negate, Where
 				$str .= ($argument instanceof Where)
 					? $argument->toHuman($builder, $property_path, $prefix)
 					: (new Comparison(Comparison::AUTO, $argument))->toHuman(
-							$builder, $property_path, $prefix
-						);
+						$builder, $property_path, $prefix
+					);
 			}
 			else {
 				$str .= ($argument instanceof Where)
 					? $argument->toHuman($builder, $other_property_path, $prefix)
 					: (new Comparison(Comparison::AUTO, $argument))->toHuman(
-							$builder, $other_property_path, $prefix
-						);
+						$builder, $other_property_path, $prefix
+					);
 			}
 		}
 		return (
-			($this->operator === self::NOT_OPERATOR) ? Loc::tr(self::HUMAN[self::NOT_OPERATOR]) : ''
+		($this->operator === self::NOT_OPERATOR) ? Loc::tr(self::HUMAN[self::NOT_OPERATOR]) : ''
 		)
 		. ' (' . $str . ')';
 	}

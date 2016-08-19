@@ -9,6 +9,7 @@ use SAF\Framework\Dao\Func\Is_Greatest;
 use SAF\Framework\Dao\Func\Left;
 use SAF\Framework\Dao\Func\Left_Match;
 use SAF\Framework\Dao\Func\Logical;
+use SAF\Framework\Dao\Func\Position;
 use SAF\Framework\Dao\Func\Where;
 
 /**
@@ -223,7 +224,7 @@ abstract class Func
 	//----------------------------------------------------------------------------------------- notOp
 	/**
 	 * @param $value mixed
-	 * @return Comparison
+	 * @return Logical
 	 */
 	public static function notOp($value)
 	{
@@ -238,6 +239,18 @@ abstract class Func
 	public static function orOp($arguments)
 	{
 		return new Logical(Logical::OR_OPERATOR, $arguments);
+	}
+
+	//-------------------------------------------------------------------------------------- position
+	/**
+	 * @param $needle
+	 * @param $haystack
+	 * @param int $offset
+	 * @return Position
+	 */
+	public static function position($needle, $haystack, $offset = 0)
+	{
+		return new Position($needle, $haystack, $offset);
 	}
 
 	//------------------------------------------------------------------------------------------- sum

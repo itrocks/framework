@@ -300,6 +300,19 @@ class Dao implements Configurable
 		return (new Reflection_Class(Option\Only::class))->newInstanceArgs(func_get_args());
 	}
 
+	//-------------------------------------------------------------------------------------- property
+	/**
+	 * Gets property for use in function
+	 *
+	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
+	 * @return Dao\Func\Property
+	 */
+	public static function property($property_path, $prefix = '')
+	{
+		return new Dao\Func\Property($property_path, $prefix);
+	}
+
 	//------------------------------------------------------------------------------------------ read
 	/**
 	 * Read an object from current data link
@@ -520,8 +533,8 @@ class Dao implements Configurable
 	{
 		$type = $property->getType();
 		return $type->isClass()
-			&& !$type->isDateTime()
-			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
+		&& !$type->isDateTime()
+		&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
 	}
 
 	//----------------------------------------------------------------------------------- storeNameOf
