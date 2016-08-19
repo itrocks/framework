@@ -32,6 +32,12 @@ abstract class Search_Object extends Null_Object
 					$name = $property->name;
 					if (!isset($object->$name) || ($object->$name !== $object)) {
 						unset($object->$name);
+						// #72831: here i also unset the property with id_ prefix.
+						// But i think this will be better to update AOP compiler to add this unset in __unset()
+						$id_name = 'id_' . $name;
+						if (isset($object->$id_name)) {
+							unset($object->$id_name);
+						}
 					}
 				}
 				else {
