@@ -196,6 +196,17 @@ class Template
 		}
 	}
 
+
+	//--------------------------------------------------------------------------------------- context
+	/**
+	 * Returns the context for the this template, may be overridden to change context generation
+	 *
+	 * @return string
+	 */
+	public function context() {
+		return str_replace('\\','.',get_class($this));
+	}
+
 	//--------------------------------------------------------------------------------- blackZonesInc
 	/**
 	 * Increment black zones offset starting from a $position by $increment

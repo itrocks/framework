@@ -31,3 +31,5 @@ const SL = '/';
 const SP = ' ';
 
 const TAB = "\t";
+
+const P = "|";

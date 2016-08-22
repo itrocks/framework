@@ -42,10 +42,10 @@ class Html_Translator implements Registerable
 	public function translateContent(&$content, $context)
 	{
 		$i = 0;
-		while (($i = strpos($content, '|', $i)) !== false) {
+		while (($i = strpos($content, P, $i)) !== false) {
 			$i ++;
 			if ($i < strlen($content)) {
-				if ($content[$i] == '|') {
+				if ($content[$i] == P) {
 					$content = substr($content, 0, $i) . substr($content, $i + 1);
 				}
 				elseif (!in_array($content[$i], [SP, CR, LF, TAB])) {
@@ -66,7 +66,7 @@ class Html_Translator implements Registerable
 	 */
 	private function translateElement(&$content, &$i, $context)
 	{
-		$j = strpos($content, '|', $i);
+		$j = strpos($content, P, $i);
 		if ($j >= $i) {
 			$text = substr($content, $i, $j - $i);
 			$translation = Loc::tr($text, $context);
@@ -99,7 +99,7 @@ class Html_Translator implements Registerable
 	 */
 	public function translatePage(Template $object, $result)
 	{
-		return $this->translateContent($result, get_class($object));
+		return $this->translateContent($result, $object->context());
 	}
 
 	//------------------------------------------------------------------------------- translateString
@@ -111,7 +111,7 @@ class Html_Translator implements Registerable
 	 */
 	public function translateString(Template $object, &$property_name)
 	{
-		$this->translateContent($property_name, get_class($object));
+		$this->translateContent($property_name, $object->context());
 	}
 
 }
