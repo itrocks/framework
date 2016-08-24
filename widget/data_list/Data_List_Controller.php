@@ -376,18 +376,18 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'Print',
 				View::link($class_name, Feature::F_PRINT),
 				Feature::F_PRINT, [
-				Button::SUB_BUTTONS => [
-					new Button(
-						'Models',
-						View::link(
-							Names::classToSet(Model::class),
+					Button::SUB_BUTTONS => [
+						new Button(
+							'Models',
+							View::link(
+								Names::classToSet(Model::class),
+								Feature::F_LIST,
+								Namespaces::shortClassName($class_name)
+							),
 							Feature::F_LIST,
-							Namespaces::shortClassName($class_name)
-						),
-						Feature::F_LIST,
-						Target::MAIN
-					)
-				]
+							Target::MAIN
+						)
+					]
 			])
 		];
 	}
@@ -600,6 +600,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				unset($list_settings->properties[$property_path]);
 			}
 		}
+
+		foreach ($data->elements as $datum) {
+			$datum->values = array_map(
+				function ($value) { return htmlspecialchars($value); },
+				$datum->values
+			);
+		}
+
 		return $data;
 	}
 
