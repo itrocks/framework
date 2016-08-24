@@ -114,6 +114,8 @@ class Date_Format
 		if (empty($date)) {
 			return '0000-00-00';
 		}
+		//prevent some mistyping
+		$date = str_replace('//','/',$date);
 		$date = $this->advancedDate($date, $joker);
 		if (strlen($date) == 10) {
 			if ($max) {
