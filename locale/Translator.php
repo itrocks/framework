@@ -11,7 +11,7 @@ use SAF\Framework\Reflection\Reflection_Property;
  *
  * TODO : translations maintainer : only one text per context, and only one translation per context
  */
-class Translations
+class Translator
 {
 
 	//---------------------------------------------------------------------------------------- $cache
@@ -140,6 +140,7 @@ class Translations
 				Dao::write($translation);
 			}
 			$translation = $translation ? $translation->translation : $text;
+
 			if ($str_uri) {
 				$text .= AT;
 				$translation = strUri($translation);

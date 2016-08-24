@@ -36,14 +36,14 @@ class Translation_String_Composer implements Registerable
 
 	//----------------------------------------------------------------------------------- onTranslate
 	/**
-	 * @param $object    Translations
+	 * @param $object    Translator
 	 * @param $text      string
 	 * @param $context   string
 	 * @param $joinpoint Around_Method
 	 * @return string
 	 */
 	public function onTranslate(
-		Translations $object, $text, $context, Around_Method $joinpoint
+		Translator $object, $text, $context, Around_Method $joinpoint
 	) {
 		$context = isset($context) ? $context : '';
 		if (strpos($text, '¦') !== false) {
@@ -89,7 +89,7 @@ class Translation_String_Composer implements Registerable
 	{
 		$aop = $register->aop;
 		$aop->aroundMethod(
-			[Translations::class, 'translate'],
+			[Translator::class, 'translate'],
 			[$this, 'onTranslate']
 		);
 		$aop->afterMethod(
