@@ -6,15 +6,13 @@ use SAF\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Used to retrieve property for use in function
- *
- * @package SAF\Framework\Dao\Func
  */
 class Property implements Where
 {
 
 	//--------------------------------------------------------------------------------------- $prefix
 	/**
-	 * string column name prefix
+	 * Column name prefix
 	 *
 	 * @var string
 	 */
@@ -22,7 +20,7 @@ class Property implements Where
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
-	 * string the property path
+	 * The property path
 	 *
 	 * @var string
 	 */
@@ -30,14 +28,15 @@ class Property implements Where
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Property constructor.
-	 * @param string $property_path
-	 * @param string $prefix
+	 * Property constructor
+	 *
+	 * @param $property_path string
+	 * @param $prefix        string
 	 */
 	public function __construct($property_path, $prefix = '')
 	{
 		$this->property_path = $property_path;
-		$this->prefix = $prefix;
+		$this->prefix        = $prefix;
 	}
 
 	//--------------------------------------------------------------------------------------- toHuman
