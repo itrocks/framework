@@ -140,7 +140,6 @@ class Translator
 				Dao::write($translation);
 			}
 			$translation = $translation ? $translation->translation : $text;
-
 			if ($str_uri) {
 				$text .= AT;
 				$translation = strUri($translation);
