@@ -13,9 +13,9 @@ class User_Annotation extends List_Annotation
 	const HIDDEN     = 'hidden';
 	const HIDE_EMPTY = 'hide_empty';
 	const INVISIBLE  = 'invisible';
-	const READONLY   = 'readonly';
 	const NO_ADD     = 'no_add';
 	const NO_DELETE  = 'no_delete';
+	const READONLY   = 'readonly';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -31,7 +31,7 @@ class User_Annotation extends List_Annotation
 	 * - no_delete : forbids user to delete any element
 	 *
 	 * @todo readonly should be implicitly set when @read_only is enabled
-	 * @values hidden, hide_empty, invisible, readonly, no_add, no_delete
+	 * @values hidden, hide_empty, invisible, no_add, no_delete, readonly
 	 * @var string[]
 	 */
 	public $value;

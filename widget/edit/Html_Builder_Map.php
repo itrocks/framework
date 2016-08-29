@@ -37,7 +37,7 @@ class Html_Builder_Map extends Map
 	 *
 	 * @var boolean
 	 */
-	private $noAdd;
+	private $no_add;
 
 	//------------------------------------------------------------------------------------- $noDelete
 	/**
@@ -45,7 +45,7 @@ class Html_Builder_Map extends Map
 	 *
 	 * @var boolean
 	 */
-	private $noDelete;
+	private $no_delete;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
@@ -146,11 +146,11 @@ class Html_Builder_Map extends Map
 	 */
 	protected function noAdd()
 	{
-		if (!isset($this->noAdd)) {
+		if (!isset($this->no_add)) {
 			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->noAdd = $user_annotation->has(User_Annotation::NO_ADD);
+			$this->no_add = $user_annotation->has(User_Annotation::NO_ADD);
 		}
-		return $this->noAdd;
+		return $this->no_add;
 	}
 
 	//----------------------------------------------------------------------------------------- noAdd
@@ -159,11 +159,11 @@ class Html_Builder_Map extends Map
 	 */
 	protected function noDelete()
 	{
-		if (!isset($this->noDelete)) {
+		if (!isset($this->no_delete)) {
 			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->noDelete = $user_annotation->has(User_Annotation::NO_DELETE);
+			$this->no_delete = $user_annotation->has(User_Annotation::NO_DELETE);
 		}
-		return $this->noDelete;
+		return $this->no_delete;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate
