@@ -34,6 +34,22 @@ class Html_Builder_Collection extends Collection
 	 */
 	private $read_only;
 
+	//---------------------------------------------------------------------------------------- $noAdd
+	/**
+	 * Property read only cache. Do not use this property : use noAdd() instead.
+	 *
+	 * @var boolean
+	 */
+	private $noAdd;
+
+	//------------------------------------------------------------------------------------- $noDelete
+	/**
+	 * Property read only cache. Do not use this property : use noDelete() instead.
+	 *
+	 * @var boolean
+	 */
+	private $noDelete;
+
 	//------------------------------------------------------------------------------------- $template
 	/**
 	 * @var Html_Template
@@ -60,7 +76,7 @@ class Html_Builder_Collection extends Collection
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
-		if (!$this->readOnly()) {
+		if (!$this->readOnly() && !$this->noAdd()) {
 			$row = $this->buildRow(Builder::create($this->class_name));
 			$row->addClass('new');
 			$body->addRow($row);
@@ -131,7 +147,7 @@ class Html_Builder_Collection extends Collection
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
-		if (!$this->readOnly()) {
+		if (!$this->readOnly() && !$this->noDelete()) {
 			$cell = new Standard_Cell('-');
 			$cell->setAttribute('title', '|remove line|');
 			$cell->addClass('minus');
@@ -169,6 +185,32 @@ class Html_Builder_Collection extends Collection
 			$this->read_only = $user_annotation->has(User_Annotation::READONLY);
 		}
 		return $this->read_only;
+	}
+
+	//----------------------------------------------------------------------------------------- noAdd
+	/**
+	 * @return boolean
+	 */
+	protected function noAdd()
+	{
+		if (!isset($this->noAdd)) {
+			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+			$this->noAdd = $user_annotation->has(User_Annotation::NO_ADD);
+		}
+		return $this->noAdd;
+	}
+
+	//----------------------------------------------------------------------------------------- noAdd
+	/**
+	 * @return boolean
+	 */
+	protected function noDelete()
+	{
+		if (!isset($this->noDelete)) {
+			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+			$this->noDelete = $user_annotation->has(User_Annotation::NO_DELETE);
+		}
+		return $this->noDelete;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate
