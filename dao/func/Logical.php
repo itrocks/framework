@@ -12,27 +12,38 @@ use SAF\Framework\Widget\Data_List\Summary_Builder;
 class Logical implements Negate, Where
 {
 
-	const AND_OPERATOR  = ' AND ';
-	const NOT_OPERATOR  = 'NOT ';
-	const OR_OPERATOR   = ' OR ';
-	const TRUE_OPERATOR = '';
-	const XOR_OPERATOR  = ' XOR ';
+	//---------------------------------------------------------------------------------- AND_OPERATOR
+	const AND_OPERATOR = ' AND ';
 
+	//---------------------------------------------------------------------------------- NOT_OPERATOR
+	const NOT_OPERATOR = 'NOT ';
+
+	//----------------------------------------------------------------------------------- OR_OPERATOR
+	const OR_OPERATOR = ' OR ';
+
+	//--------------------------------------------------------------------------------- TRUE_OPERATOR
+	const TRUE_OPERATOR = '';
+
+	//---------------------------------------------------------------------------------- XOR_OPERATOR
+	const XOR_OPERATOR = ' XOR ';
+
+	//----------------------------------------------------------------------------------------- HUMAN
 	const HUMAN = [
 		self::AND_OPERATOR  => 'and',
 		self::NOT_OPERATOR  => 'except',
 		self::OR_OPERATOR   => 'or',
-			self::TRUE_OPERATOR => 'is',
+		self::TRUE_OPERATOR => 'is',
 		self::XOR_OPERATOR  => 'exclusively or'
-		];
+	];
 
+	//--------------------------------------------------------------------------------------- REVERSE
 	const REVERSE = [
 		self::AND_OPERATOR  => self::OR_OPERATOR,
 		self::NOT_OPERATOR  => self::TRUE_OPERATOR,
 		self::OR_OPERATOR   => self::AND_OPERATOR,
-			self::TRUE_OPERATOR => self::NOT_OPERATOR,
+		self::TRUE_OPERATOR => self::NOT_OPERATOR,
 		self::XOR_OPERATOR  => self::NOT_OPERATOR
-		];
+	];
 
 	//------------------------------------------------------------------------------------ $arguments
 	/**

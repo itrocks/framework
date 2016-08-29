@@ -12,14 +12,6 @@ use SAF\Framework\Widget\Data_List\Summary_Builder;
 class Property implements Where
 {
 
-	//-------------------------------------------------------------------------------- $property_name
-	/**
-	 * string the property path
-	 *
-	 * @var string
-	 */
-	public $property_path;
-
 	//--------------------------------------------------------------------------------------- $prefix
 	/**
 	 * string column name prefix
@@ -28,6 +20,15 @@ class Property implements Where
 	 */
 	public $prefix;
 
+	//-------------------------------------------------------------------------------- $property_path
+	/**
+	 * string the property path
+	 *
+	 * @var string
+	 */
+	public $property_path;
+
+	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Property constructor.
 	 * @param string $property_path

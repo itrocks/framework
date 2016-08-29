@@ -16,26 +16,45 @@ class Comparison implements Negate, Where
 {
 
 	//---------------------------------------------------------------------------------- $sign values
-	const AUTO             = null;
-	const EQUAL            = '=';
-	const GREATER          = '>';
-	const GREATER_OR_EQUAL = '>=';
-	const LESS             = '<';
-	const LESS_OR_EQUAL    = '<=';
-	const LIKE             = 'LIKE';
-	const NOT_EQUAL        = '<>';
-	const NOT_LIKE         = 'NOT LIKE';
 
+	//------------------------------------------------------------------------------------------ AUTO
+	const AUTO = null;
+
+	//----------------------------------------------------------------------------------------- EQUAL
+	const EQUAL = '=';
+
+	//--------------------------------------------------------------------------------------- GREATER
+	const GREATER = '>';
+
+	//------------------------------------------------------------------------------ GREATER_OR_EQUAL
+	const GREATER_OR_EQUAL = '>=';
+
+	//------------------------------------------------------------------------------------------ LESS
+	const LESS = '<';
+
+	//--------------------------------------------------------------------------------- LESS_OR_EQUAL
+	const LESS_OR_EQUAL = '<=';
+
+	//------------------------------------------------------------------------------------------ LIKE
+	const LIKE = 'LIKE';
+
+	//------------------------------------------------------------------------------------- NOT_EQUAL
+	const NOT_EQUAL = '<>';
+
+	//-------------------------------------------------------------------------------------- NOT_LIKE
+	const NOT_LIKE = 'NOT LIKE';
+
+	//--------------------------------------------------------------------------------------- REVERSE
 	const REVERSE = [
 		self::EQUAL            => self::NOT_EQUAL,
 		self::GREATER          => self::LESS_OR_EQUAL,
-			self::GREATER_OR_EQUAL => self::LESS,
+		self::GREATER_OR_EQUAL => self::LESS,
 		self::LESS             => self::GREATER_OR_EQUAL,
 		self::LESS_OR_EQUAL    => self::GREATER,
 		self::LIKE             => self::NOT_LIKE,
 		self::NOT_EQUAL        => self::EQUAL,
 		self::NOT_LIKE         => self::LIKE
-		];
+	];
 
 	//----------------------------------------------------------------------------------------- $sign
 	/**
