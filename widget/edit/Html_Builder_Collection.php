@@ -149,8 +149,7 @@ class Html_Builder_Collection extends Collection
 		$properties = parent::getProperties();
 		if ($this->readOnly()) {
 			foreach ($properties as $property) {
-				/** @var $user_annotation User_Annotation */
-				$user_annotation = $property->getAnnotation(User_Annotation::ANNOTATION);
+				$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 				$user_annotation->add(User_Annotation::READONLY);
 			}
 		}
@@ -164,8 +163,7 @@ class Html_Builder_Collection extends Collection
 	protected function readOnly()
 	{
 		if (!isset($this->read_only)) {
-			/** @var $user_annotation User_Annotation */
-			$user_annotation = $this->property->getAnnotation(User_Annotation::ANNOTATION);
+			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
 			$this->read_only = $user_annotation->has(User_Annotation::READONLY);
 		}
 		return $this->read_only;
@@ -174,7 +172,7 @@ class Html_Builder_Collection extends Collection
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
 	 * @param $template Html_Template
-	 * @return Html_Builder_Type
+	 * @return Html_Builder_Collection
 	 */
 	public function setTemplate(Html_Template $template)
 	{
