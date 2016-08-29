@@ -35,6 +35,7 @@ class Html_Translator implements Registerable
 	//------------------------------------------------------------------------------ translateContent
 	/**
 	 * Translate a content in a context
+	 *
 	 * @param $content  string
 	 * @param $context  string
 	 * @return string
@@ -42,10 +43,10 @@ class Html_Translator implements Registerable
 	public function translateContent(&$content, $context)
 	{
 		$i = 0;
-		while (($i = strpos($content, P, $i)) !== false) {
+		while (($i = strpos($content, PIPE, $i)) !== false) {
 			$i ++;
 			if ($i < strlen($content)) {
-				if ($content[$i] == P) {
+				if ($content[$i] == PIPE) {
 					$content = substr($content, 0, $i) . substr($content, $i + 1);
 				}
 				elseif (!in_array($content[$i], [SP, CR, LF, TAB])) {
@@ -66,7 +67,7 @@ class Html_Translator implements Registerable
 	 */
 	private function translateElement(&$content, &$i, $context)
 	{
-		$j = strpos($content, P, $i);
+		$j = strpos($content, PIPE, $i);
 		if ($j >= $i) {
 			$text = substr($content, $i, $j - $i);
 			$translation = Loc::tr($text, $context);

@@ -24,6 +24,8 @@ const LF = "\n";
 
 const Q = "'";
 
+const PIPE = '|';
+
 const PRE = '<pre>';
 
 const SL = '/';
@@ -31,5 +33,3 @@ const SL = '/';
 const SP = ' ';
 
 const TAB = "\t";
-
-const P = "|";
