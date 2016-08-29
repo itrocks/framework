@@ -147,12 +147,12 @@ class Comparison implements Negate, Where
 				switch ($this->sign) {
 					case self::NOT_EQUAL:
 					case self::NOT_LIKE:
-						$sign = self::NOT_EQUAL;
+						$sign    = self::NOT_EQUAL;
 						$logical = 'AND';
 						$operand = 'IS NOT NULL';
 						break;
 					default: /*case self::EQUAL: case self::LIKE:*/
-						$sign = self::EQUAL;
+						$sign    = self::EQUAL;
 						$logical = 'OR';
 						$operand = 'IS NULL';
 						break;
@@ -160,7 +160,7 @@ class Comparison implements Negate, Where
 				$sql = '';
 				// in case of Date_Time is null we want to check for '0000-00-00 00:00:00' too
 				// property may be null if reverse path : Class\Name->foreign_property_name
-				$property = $builder->getProperty($property_path);
+				$property    = $builder->getProperty($property_path);
 				$type_string = $property ? $property->getType()->asString() : null;
 				if ($type_string == Date_Time::class) {
 					$close_parenthesis = ')';

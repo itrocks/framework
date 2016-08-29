@@ -37,12 +37,15 @@
 			line-height: 1em;
 			margin: 1px 0;
 			padding-left: 18px;
+
 			&:last-child {
 				background: url("img/tree/string-last.png") 8px -2px no-repeat;
 			}
+
 			&:hover {
 				background-color: $hover;
 			}
+
 			&.ui-draggable-handle {
 				cursor: grab;
 			}

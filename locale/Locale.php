@@ -156,7 +156,7 @@ class Locale implements Configurable
 	 */
 	private function setLanguage($language)
 	{
-		$this->language = $language;
+		$this->language     = $language;
 		$this->translations = new Translator($this->language);
 	}
 

@@ -205,7 +205,7 @@ class Logical implements Negate, Where
 			}
 		}
 		return (
-		($this->operator === self::NOT_OPERATOR) ? Loc::tr(self::HUMAN[self::NOT_OPERATOR]) : ''
+			($this->operator === self::NOT_OPERATOR) ? Loc::tr(self::HUMAN[self::NOT_OPERATOR]) : ''
 		)
 		. ' (' . $str . ')';
 	}
