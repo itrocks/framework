@@ -297,20 +297,9 @@ class Dao implements Configurable
 	 */
 	public static function only($properties)
 	{
-		return (new Reflection_Class(Option\Only::class))->newInstanceArgs(func_get_args());
-	}
-
-	//-------------------------------------------------------------------------------------- property
-	/**
-	 * Gets property for use in function
-	 *
-	 * @param $property_path string the property path
-	 * @param $prefix        string column name prefix
-	 * @return Dao\Func\Property
-	 */
-	public static function property($property_path, $prefix = '')
-	{
-		return new Dao\Func\Property($property_path, $prefix);
+		/** @var $only Option\Only */
+		$only = (new Reflection_Class(Option\Only::class))->newInstanceArgs(func_get_args());
+		return $only;
 	}
 
 	//------------------------------------------------------------------------------------------ read
