@@ -7,7 +7,6 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao\Mysql;
 use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\Debug\Xdebug;
-use SAF\Framework\Locale;
 use SAF\Framework\Locale\Html_Translator;
 use SAF\Framework\Locale\Language;
 use SAF\Framework\Locale\Loc;
