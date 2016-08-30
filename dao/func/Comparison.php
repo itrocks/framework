@@ -76,7 +76,7 @@ class Comparison implements Negate, Where
 	 */
 	public function __construct($sign = null, $than_value = null)
 	{
-		if (isset($sign))       $this->sign = $sign;
+		if (isset($sign))       $this->sign       = $sign;
 		if (isset($than_value)) $this->than_value = $than_value;
 		if (isset($this->than_value) && !isset($this->sign)) {
 			$this->sign =
@@ -88,7 +88,7 @@ class Comparison implements Negate, Where
 
 	//----------------------------------------------------------------------------------- signToHuman
 	/**
-	 * @param $sign       string
+	 * @param $sign string
 	 * @return string
 	 */
 	public function signToHuman($sign)
@@ -203,8 +203,8 @@ class Comparison implements Negate, Where
 	/**
 	 * Specific sql parsing in case of Where
 	 *
-	 * @param $column
-	 * @param $sql
+	 * @param $column string
+	 * @param $sql    string
 	 * @return string
 	 */
 	private function whereSQL($column, $sql)
