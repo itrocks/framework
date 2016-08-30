@@ -12,12 +12,22 @@ use SAF\Framework\Widget\Data_List\Summary_Builder;
 class Logical implements Negate, Where
 {
 
-	const AND_OPERATOR  = ' AND ';
-	const NOT_OPERATOR  = 'NOT ';
-	const OR_OPERATOR   = ' OR ';
-	const TRUE_OPERATOR = '';
-	const XOR_OPERATOR  = ' XOR ';
+	//---------------------------------------------------------------------------------- AND_OPERATOR
+	const AND_OPERATOR = ' AND ';
 
+	//---------------------------------------------------------------------------------- NOT_OPERATOR
+	const NOT_OPERATOR = 'NOT ';
+
+	//----------------------------------------------------------------------------------- OR_OPERATOR
+	const OR_OPERATOR = ' OR ';
+
+	//--------------------------------------------------------------------------------- TRUE_OPERATOR
+	const TRUE_OPERATOR = '';
+
+	//---------------------------------------------------------------------------------- XOR_OPERATOR
+	const XOR_OPERATOR = ' XOR ';
+
+	//----------------------------------------------------------------------------------------- HUMAN
 	const HUMAN = [
 		self::AND_OPERATOR  => 'and',
 		self::NOT_OPERATOR  => 'except',
@@ -26,6 +36,7 @@ class Logical implements Negate, Where
 		self::XOR_OPERATOR  => 'exclusively or'
 	];
 
+	//--------------------------------------------------------------------------------------- REVERSE
 	const REVERSE = [
 		self::AND_OPERATOR  => self::OR_OPERATOR,
 		self::NOT_OPERATOR  => self::TRUE_OPERATOR,
@@ -182,15 +193,15 @@ class Logical implements Negate, Where
 				$str .= ($argument instanceof Where)
 					? $argument->toHuman($builder, $property_path, $prefix)
 					: (new Comparison(Comparison::AUTO, $argument))->toHuman(
-							$builder, $property_path, $prefix
-						);
+						$builder, $property_path, $prefix
+					);
 			}
 			else {
 				$str .= ($argument instanceof Where)
 					? $argument->toHuman($builder, $other_property_path, $prefix)
 					: (new Comparison(Comparison::AUTO, $argument))->toHuman(
-							$builder, $other_property_path, $prefix
-						);
+						$builder, $other_property_path, $prefix
+					);
 			}
 		}
 		return (

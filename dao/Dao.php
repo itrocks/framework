@@ -297,7 +297,9 @@ class Dao implements Configurable
 	 */
 	public static function only($properties)
 	{
-		return (new Reflection_Class(Option\Only::class))->newInstanceArgs(func_get_args());
+		/** @var $only Option\Only */
+		$only = (new Reflection_Class(Option\Only::class))->newInstanceArgs(func_get_args());
+		return $only;
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -520,8 +522,8 @@ class Dao implements Configurable
 	{
 		$type = $property->getType();
 		return $type->isClass()
-			&& !$type->isDateTime()
-			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
+		&& !$type->isDateTime()
+		&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
 	}
 
 	//----------------------------------------------------------------------------------- storeNameOf

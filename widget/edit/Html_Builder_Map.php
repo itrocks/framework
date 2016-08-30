@@ -15,6 +15,22 @@ use SAF\Framework\View\Html\Dom\Table\Standard_Cell;
 class Html_Builder_Map extends Map
 {
 
+	//--------------------------------------------------------------------------------------- $no_add
+	/**
+	 * Property read only cache. Do not use this property : use noAdd() instead.
+	 *
+	 * @var boolean
+	 */
+	private $no_add;
+
+	//------------------------------------------------------------------------------------ $no_delete
+	/**
+	 * Property read only cache. Do not use this property : use noDelete() instead.
+	 *
+	 * @var boolean
+	 */
+	private $no_delete;
+
 	//-------------------------------------------------------------------------------------- $preprop
 	/**
 	 * Property name prefix
@@ -56,7 +72,7 @@ class Html_Builder_Map extends Map
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
-		if (!$this->readOnly()) {
+		if (!$this->readOnly() && !$this->noAdd()) {
 			$row = $this->buildRow(Builder::create($this->class_name));
 			$row->addClass('new');
 			$body->addRow($row);
@@ -101,13 +117,39 @@ class Html_Builder_Map extends Map
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
-		if (!$this->readOnly()) {
+		if (!$this->readOnly() && !$this->noDelete()) {
 			$cell = new Standard_Cell('-');
 			$cell->setAttribute('title', '|remove line|');
 			$cell->addClass('minus');
 			$row->addCell($cell);
 		}
 		return $row;
+	}
+
+	//----------------------------------------------------------------------------------------- noAdd
+	/**
+	 * @return boolean
+	 */
+	protected function noAdd()
+	{
+		if (!isset($this->no_add)) {
+			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+			$this->no_add = $user_annotation->has(User_Annotation::NO_ADD);
+		}
+		return $this->no_add;
+	}
+
+	//-------------------------------------------------------------------------------------- noDelete
+	/**
+	 * @return boolean
+	 */
+	protected function noDelete()
+	{
+		if (!isset($this->no_delete)) {
+			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+			$this->no_delete = $user_annotation->has(User_Annotation::NO_DELETE);
+		}
+		return $this->no_delete;
 	}
 
 	//-------------------------------------------------------------------------------------- readOnly

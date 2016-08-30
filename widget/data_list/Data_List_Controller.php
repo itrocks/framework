@@ -376,19 +376,20 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'Print',
 				View::link($class_name, Feature::F_PRINT),
 				Feature::F_PRINT, [
-				Button::SUB_BUTTONS => [
-					new Button(
-						'Models',
-						View::link(
-							Names::classToSet(Model::class),
+					Button::SUB_BUTTONS => [
+						new Button(
+							'Models',
+							View::link(
+								Names::classToSet(Model::class),
+								Feature::F_LIST,
+								Namespaces::shortClassName($class_name)
+							),
 							Feature::F_LIST,
-							Namespaces::shortClassName($class_name)
-						),
-						Feature::F_LIST,
-						Target::MAIN
-					)
+							Target::MAIN
+						)
+					]
 				]
-			])
+			)
 		];
 	}
 
@@ -422,14 +423,20 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$list_settings->save();
 			}
 		}
-		catch (Exception $e) {
+		catch (Exception $exception) {
 			//set empty list result
 			$data  = new Default_List_Data($class_name, []);
 			//set an error to display
 			$error = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
 			$this->errors[] = $error;
 			// log the error in order software maintainer to be informed
-			$handled = new Handled_Error($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), null);
+			$handled = new Handled_Error(
+				$exception->getCode(),
+				$exception->getMessage(),
+				$exception->getFile(),
+				$exception->getLine(),
+				null
+			);
 			$handler = new Report_Call_Stack_Error_Handler();
 			$handler->logError($handled);
 		}
@@ -600,6 +607,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				unset($list_settings->properties[$property_path]);
 			}
 		}
+
+		foreach ($data->getRows() as $row) {
+			foreach ($row->getValues() as $property_name => $value) {
+				$row->setValue($property_name, htmlspecialchars($value));
+			}
+		}
+
 		return $data;
 	}
 
@@ -711,8 +725,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 			$property = new Reflection_Property_Value($property->class, $property->name, $value, true);
 			if (!$property->getType()->isString()) {
-				$property->setAnnotationLocal(Var_Annotation::ANNOTATION)->value = Type::STRING;
 				$property->setAnnotationLocal(Link_Annotation::ANNOTATION)->value = null;
+				$property->setAnnotationLocal(Var_Annotation::ANNOTATION)->value  = Type::STRING;
 			}
 			$property->value(Loc::propertyToIso($property, $value));
 		}

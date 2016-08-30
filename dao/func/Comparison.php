@@ -16,16 +16,35 @@ class Comparison implements Negate, Where
 {
 
 	//---------------------------------------------------------------------------------- $sign values
-	const AUTO             = null;
-	const EQUAL            = '=';
-	const GREATER          = '>';
-	const GREATER_OR_EQUAL = '>=';
-	const LESS             = '<';
-	const LESS_OR_EQUAL    = '<=';
-	const LIKE             = 'LIKE';
-	const NOT_EQUAL        = '<>';
-	const NOT_LIKE         = 'NOT LIKE';
 
+	//------------------------------------------------------------------------------------------ AUTO
+	const AUTO = null;
+
+	//----------------------------------------------------------------------------------------- EQUAL
+	const EQUAL = '=';
+
+	//--------------------------------------------------------------------------------------- GREATER
+	const GREATER = '>';
+
+	//------------------------------------------------------------------------------ GREATER_OR_EQUAL
+	const GREATER_OR_EQUAL = '>=';
+
+	//------------------------------------------------------------------------------------------ LESS
+	const LESS = '<';
+
+	//--------------------------------------------------------------------------------- LESS_OR_EQUAL
+	const LESS_OR_EQUAL = '<=';
+
+	//------------------------------------------------------------------------------------------ LIKE
+	const LIKE = 'LIKE';
+
+	//------------------------------------------------------------------------------------- NOT_EQUAL
+	const NOT_EQUAL = '<>';
+
+	//-------------------------------------------------------------------------------------- NOT_LIKE
+	const NOT_LIKE = 'NOT LIKE';
+
+	//--------------------------------------------------------------------------------------- REVERSE
 	const REVERSE = [
 		self::EQUAL            => self::NOT_EQUAL,
 		self::GREATER          => self::LESS_OR_EQUAL,
@@ -57,19 +76,19 @@ class Comparison implements Negate, Where
 	 */
 	public function __construct($sign = null, $than_value = null)
 	{
-		if (isset($sign))       $this->sign = $sign;
+		if (isset($sign))       $this->sign       = $sign;
 		if (isset($than_value)) $this->than_value = $than_value;
 		if (isset($this->than_value) && !isset($this->sign)) {
 			$this->sign =
 				((strpos($this->than_value, '_') !== false) || (strpos($this->than_value, '%') !== false))
-					? self::LIKE
-					: self::EQUAL;
+				? self::LIKE
+				: self::EQUAL;
 		}
 	}
 
 	//----------------------------------------------------------------------------------- signToHuman
 	/**
-	 * @param $sign       string
+	 * @param $sign string
 	 * @return string
 	 */
 	public function signToHuman($sign)
@@ -98,18 +117,10 @@ class Comparison implements Negate, Where
 			}
 		}
 		if ($this->than_value instanceof Where) {
-			if ($this->sign == self::NOT_EQUAL) {
-				return Loc::tr('except') . ' ('
-				. $this->than_value->toHuman($builder, $property_path, $prefix)
-				. ')';
-			}
-			elseif ($this->sign == self::EQUAL) {
-				// Because of Negate, we should support EQUAL for instance of Where
-				return ' (' . $this->than_value->toHuman($builder, $property_path, $prefix) . ')';
-			}
-			else {
-				return $this->than_value->toHuman($builder, $property_path, $prefix);
-			}
+			return $this->whereSQL(
+				$column,
+				$this->than_value->toHuman($builder, $property_path, $prefix)
+			);
 		}
 		$scalar = $builder->buildScalar($this->than_value, $property_path);
 		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE])) {
@@ -134,7 +145,8 @@ class Comparison implements Negate, Where
 			if (in_array($this->sign, [self::EQUAL, self::NOT_EQUAL, self::LIKE, self::NOT_LIKE])) {
 				$close_parenthesis = '';
 				switch ($this->sign) {
-					case self::NOT_EQUAL: case self::NOT_LIKE:
+					case self::NOT_EQUAL:
+					case self::NOT_LIKE:
 						$sign    = self::NOT_EQUAL;
 						$logical = 'AND';
 						$operand = 'IS NOT NULL';
@@ -165,19 +177,13 @@ class Comparison implements Negate, Where
 			}
 		}
 		if ($this->than_value instanceof Where) {
-			if ($this->sign == self::NOT_EQUAL) {
-				return 'NOT (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
-			}
-			elseif ($this->sign == self::EQUAL) {
-				// Because of Negate, we should support EQUAL for instance of Where
-				return ' (' . $this->than_value->toSql($builder, $property_path, $prefix) . ')';
-			}
-			else {
-				return $this->than_value->toSql($builder, $property_path, $prefix);
-			}
+			return $this->whereSQL(
+				$column,
+				$this->than_value->toSql($builder, $property_path, $prefix)
+			);
 		}
 		return $column . SP . $this->sign
-			. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
+		. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
 	}
 
 	//---------------------------------------------------------------------------------------- negate
@@ -191,6 +197,28 @@ class Comparison implements Negate, Where
 		if (in_array($this->sign, self::REVERSE)) {
 			$this->sign = self::REVERSE[$this->sign];
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- whereSQL
+	/**
+	 * Specific sql parsing in case of Where
+	 *
+	 * @param $column string
+	 * @param $sql    string
+	 * @return string
+	 */
+	private function whereSQL($column, $sql)
+	{
+		if ($this->than_value instanceof Property) {
+			$sql = $column . SP . $this->sign . SP . $sql;
+		}
+		else {
+			$sql = '(' . $sql . ')';
+			if ($this->sign == self::NOT_EQUAL) {
+				$sql = 'NOT ' . $sql;
+			}
+		}
+		return $sql;
 	}
 
 }

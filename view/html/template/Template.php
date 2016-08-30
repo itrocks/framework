@@ -280,6 +280,17 @@ class Template
 		return call_user_func_array([$object_call, $func_name], $params);
 	}
 
+	//--------------------------------------------------------------------------------------- context
+	/**
+	 * Returns the context for the this template, may be overridden to change context generation
+	 *
+	 * @return string
+	 */
+	public function context()
+	{
+		return str_replace(BS, DOT, get_class($this));
+	}
+
 	//--------------------------------------------------------------------------- getContainerContent
 	/**
 	 * @param $file_name string

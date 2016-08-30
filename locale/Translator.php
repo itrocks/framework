@@ -11,7 +11,7 @@ use SAF\Framework\Reflection\Reflection_Property;
  *
  * TODO : translations maintainer : only one text per context, and only one translation per context
  */
-class Translations
+class Translator
 {
 
 	//---------------------------------------------------------------------------------------- $cache

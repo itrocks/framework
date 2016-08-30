@@ -24,6 +24,8 @@ const LF = "\n";
 
 const Q = "'";
 
+const PIPE = '|';
+
 const PRE = '<pre>';
 
 const SL = '/';

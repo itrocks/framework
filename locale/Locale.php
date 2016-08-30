@@ -3,7 +3,7 @@ namespace SAF\Framework;
 
 use SAF\Framework\Locale\Date_Format;
 use SAF\Framework\Locale\Number_Format;
-use SAF\Framework\Locale\Translations;
+use SAF\Framework\Locale\Translator;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Reflection\Interfaces\Reflection_Method;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
@@ -54,7 +54,7 @@ class Locale implements Configurable
 
 	//--------------------------------------------------------------------------------- $translations
 	/**
-	 * @var Translations
+	 * @var Translator
 	 */
 	public $translations;
 
@@ -156,8 +156,8 @@ class Locale implements Configurable
 	 */
 	private function setLanguage($language)
 	{
-		$this->language = $language;
-		$this->translations = new Translations($this->language);
+		$this->language     = $language;
+		$this->translations = new Translator($this->language);
 	}
 
 	//------------------------------------------------------------------------------- setNumberFormat

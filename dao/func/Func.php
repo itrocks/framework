@@ -9,6 +9,8 @@ use SAF\Framework\Dao\Func\Is_Greatest;
 use SAF\Framework\Dao\Func\Left;
 use SAF\Framework\Dao\Func\Left_Match;
 use SAF\Framework\Dao\Func\Logical;
+use SAF\Framework\Dao\Func\Position;
+use SAF\Framework\Dao\Func\Property;
 use SAF\Framework\Dao\Func\Where;
 
 /**
@@ -223,7 +225,7 @@ abstract class Func
 	//----------------------------------------------------------------------------------------- notOp
 	/**
 	 * @param $value mixed
-	 * @return Comparison
+	 * @return Logical
 	 */
 	public static function notOp($value)
 	{
@@ -238,6 +240,31 @@ abstract class Func
 	public static function orOp($arguments)
 	{
 		return new Logical(Logical::OR_OPERATOR, $arguments);
+	}
+
+	//-------------------------------------------------------------------------------------- position
+	/**
+	 * @param $needle   string
+	 * @param $haystack string
+	 * @param $offset   integer
+	 * @return Position
+	 */
+	public static function position($needle, $haystack, $offset = 0)
+	{
+		return new Position($needle, $haystack, $offset);
+	}
+
+	//-------------------------------------------------------------------------------------- property
+	/**
+	 * Gets property for use in function
+	 *
+	 * @param $property_path string the property path
+	 * @param $prefix        string column name prefix
+	 * @return Property
+	 */
+	public static function property($property_path, $prefix = '')
+	{
+		return new Property($property_path, $prefix);
 	}
 
 	//------------------------------------------------------------------------------------------- sum

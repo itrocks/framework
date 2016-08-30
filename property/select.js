@@ -85,7 +85,7 @@ $('document').ready(function()
 			//'.property, fieldset>div[id]>label' /* SM: previous selector*/
 			// properties of fields selector in data_list to add column.
 			// was previous '.property' used for something else than data_list?
-			'.property_tree .property.basic'
+			'.property_tree .basic.property'
 			// for object edition forms
 			+ ', fieldset>div[id]>label'
 		).draggable({
