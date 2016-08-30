@@ -15,6 +15,22 @@ use SAF\Framework\View\Html\Dom\Table\Standard_Cell;
 class Html_Builder_Map extends Map
 {
 
+	//--------------------------------------------------------------------------------------- $no_add
+	/**
+	 * Property read only cache. Do not use this property : use noAdd() instead.
+	 *
+	 * @var boolean
+	 */
+	private $no_add;
+
+	//------------------------------------------------------------------------------------ $no_delete
+	/**
+	 * Property read only cache. Do not use this property : use noDelete() instead.
+	 *
+	 * @var boolean
+	 */
+	private $no_delete;
+
 	//-------------------------------------------------------------------------------------- $preprop
 	/**
 	 * Property name prefix
@@ -30,22 +46,6 @@ class Html_Builder_Map extends Map
 	 * @var boolean
 	 */
 	private $read_only;
-
-	//---------------------------------------------------------------------------------------- $noAdd
-	/**
-	 * Property read only cache. Do not use this property : use noAdd() instead.
-	 *
-	 * @var boolean
-	 */
-	private $no_add;
-
-	//------------------------------------------------------------------------------------- $noDelete
-	/**
-	 * Property read only cache. Do not use this property : use noDelete() instead.
-	 *
-	 * @var boolean
-	 */
-	private $no_delete;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
@@ -126,6 +126,32 @@ class Html_Builder_Map extends Map
 		return $row;
 	}
 
+	//----------------------------------------------------------------------------------------- noAdd
+	/**
+	 * @return boolean
+	 */
+	protected function noAdd()
+	{
+		if (!isset($this->no_add)) {
+			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+			$this->no_add = $user_annotation->has(User_Annotation::NO_ADD);
+		}
+		return $this->no_add;
+	}
+
+	//-------------------------------------------------------------------------------------- noDelete
+	/**
+	 * @return boolean
+	 */
+	protected function noDelete()
+	{
+		if (!isset($this->no_delete)) {
+			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+			$this->no_delete = $user_annotation->has(User_Annotation::NO_DELETE);
+		}
+		return $this->no_delete;
+	}
+
 	//-------------------------------------------------------------------------------------- readOnly
 	/**
 	 * @return boolean
@@ -140,36 +166,10 @@ class Html_Builder_Map extends Map
 		return $this->read_only;
 	}
 
-	//----------------------------------------------------------------------------------------- noAdd
-	/**
-	 * @return boolean
-	 */
-	protected function noAdd()
-	{
-		if (!isset($this->no_add)) {
-			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->no_add = $user_annotation->has(User_Annotation::NO_ADD);
-		}
-		return $this->no_add;
-	}
-
-	//----------------------------------------------------------------------------------------- noAdd
-	/**
-	 * @return boolean
-	 */
-	protected function noDelete()
-	{
-		if (!isset($this->no_delete)) {
-			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->no_delete = $user_annotation->has(User_Annotation::NO_DELETE);
-		}
-		return $this->no_delete;
-	}
-
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
 	 * @param $template Html_Template
-	 * @return Html_Builder_Type
+	 * @return Html_Builder_Map
 	 */
 	public function setTemplate(Html_Template $template)
 	{
