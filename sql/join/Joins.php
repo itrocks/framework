@@ -270,7 +270,6 @@ class Joins
 
 		// fix linked join master_alias when master_column is an id : if point on a link class,
 		// then replace the master_alias with the link class.
-		// TODO HIGHEST problem : the value here will be replaced by caller
 		if ($linked_join->master_column === 'id') {
 			$master_join = $this->byAlias($linked_join->master_alias);
 			if ($master_join) {
