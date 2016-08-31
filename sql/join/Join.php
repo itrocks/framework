@@ -2,6 +2,7 @@
 namespace SAF\Framework\Sql;
 
 use SAF\Framework;
+use SAF\Framework\Reflection\Reflection_Property;
 
 /**
  * This stores data for SQL joins and enable to output SQL expression for a table join
@@ -10,15 +11,50 @@ class Join
 {
 
 	//------------------------------------------------------------------------------------- JOIN MODE
-	const INNER = 'INNER'; // inner join
-	const LEFT  = 'LEFT';  // left join
-	const OUTER = 'OUTER'; // outer join
-	const RIGHT = 'RIGHT'; // right join
+
+	//----------------------------------------------------------------------------------------- INNER
+	/**
+	 * INNER JOIN
+	 */
+	const INNER = 'INNER';
+
+	//------------------------------------------------------------------------------------------ LEFT
+	/**
+	 * LEFT JOIN
+	 */
+	const LEFT = 'LEFT';
+
+	//----------------------------------------------------------------------------------------- OUTER
+	/**
+	 * OUTER JOIN
+	 */
+	const OUTER = 'OUTER';
+
+	//----------------------------------------------------------------------------------------- RIGHT
+	/**
+	 * RIGHT JOIN
+	 */
+	const RIGHT = 'RIGHT';
 
 	//------------------------------------------------------------------------------------- JOIN TYPE
-	const LINK   = 'LINK';   // a property set here because of a 'link' annotated class
-	const OBJECT = 'OBJECT'; // an object property
-	const SIMPLE = 'SIMPLE'; // a simple value property
+
+	//------------------------------------------------------------------------------------------ LINK
+	/**
+	 * A property set here because of a 'link' annotated class
+	 */
+	const LINK = 'LINK';
+
+	//---------------------------------------------------------------------------------------- OBJECT
+	/**
+	 * An object property
+	 */
+	const OBJECT = 'OBJECT';
+
+	//---------------------------------------------------------------------------------------- SIMPLE
+	/**
+	 * A simple value property
+	 */
+	const SIMPLE = 'SIMPLE';
 
 	//-------------------------------------------------------------------------------- $foreign_alias
 	/**
@@ -44,6 +80,14 @@ class Join
 	 */
 	public $foreign_column;
 
+	//----------------------------------------------------------------------------- $foreign_property
+	/**
+	 * The property that matches the foreign column (if set)
+	 *
+	 * @var Reflection_Property
+	 */
+	public $foreign_property;
+
 	//-------------------------------------------------------------------------------- $foreign_table
 	/**
 	 * Foreign table name
@@ -67,6 +111,14 @@ class Join
 	 * @var string
 	 */
 	public $master_column;
+
+	//------------------------------------------------------------------------------ $master_property
+	/**
+	 * The property that matches the master column (if set)
+	 *
+	 * @var Reflection_Property
+	 */
+	public $master_property;
 
 	//----------------------------------------------------------------------------------------- $mode
 	/**

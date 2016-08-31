@@ -196,19 +196,19 @@ class Joins
 	 * @return Reflection_Property[] the properties that come from the linked class,
 	 * for further exclusion
 	 */
-	private function addLinkedClass($path, $class, $linked_class_name, $join_mode)
+	private function addLinkedClass($path, Link_Class $class, $linked_class_name, $join_mode)
 	{
 		$linked_class = new Reflection_Class($linked_class_name);
 		$join = new Join();
-		$join->master_alias   = 't' . ($this->alias_counter - 1);
-		$join->master_column  = 'id_'
-			. $class->getCompositeProperty($linked_class_name)->getAnnotation('storage')->value;
-		$join->foreign_alias  = 't' . $this->alias_counter++;
-		$join->foreign_column = 'id';
-		$join->foreign_class  = Builder::className($linked_class_name);
-		$join->foreign_table  = Dao::storeNameOf($join->foreign_class);
-		$join->mode           = ($join_mode == Join::LEFT) ? Join::LEFT : Join::INNER;
-		$join->type           = Join::LINK;
+		$join->master_alias    = 't' . ($this->alias_counter - 1);
+		$join->master_property = $class->getCompositeProperty($linked_class_name);
+		$join->master_column   = 'id_' . $join->master_property->getAnnotation('storage')->value;
+		$join->foreign_alias   = 't' . $this->alias_counter++;
+		$join->foreign_column  = 'id';
+		$join->foreign_class   = Builder::className($linked_class_name);
+		$join->foreign_table   = Dao::storeNameOf($join->foreign_class);
+		$join->mode            = ($join_mode == Join::LEFT) ? Join::LEFT : Join::INNER;
+		$join->type            = Join::LINK;
 		if (!isset($this->joins[$path])) {
 			// this ensures that the main path is set before the linked path
 			$this->joins[$path] = null;
@@ -220,10 +220,8 @@ class Joins
 		$exclude_properties = $more_linked_class_name
 			? $this->addLinkedClass($path, $class, $more_linked_class_name, $join_mode)
 			: [];
-		foreach (
-			$linked_class->getProperties([T_EXTENDS, T_USE]) as $property) if (!$property->isStatic()
-		) {
-			if (!isset($exclude_properties[$property->name])) {
+		foreach ($linked_class->getProperties([T_EXTENDS, T_USE]) as $property) {
+			if (!$property->isStatic() && !isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
 				$property_path = ($path ? $path . DOT : '') . $property->name;
 				$type = $property->getType();
@@ -252,19 +250,34 @@ class Joins
 	) {
 		$link_table = new Link_Table($property);
 		$linked_join = new Join();
-		$linked_join->foreign_column = $reverse ? $link_table->foreignColumn() : $link_table->masterColumn();
+		$linked_join->foreign_column = $reverse
+			? $link_table->foreignColumn() : $link_table->masterColumn();
 		$linked_join->foreign_table = $link_table->table();
 		$linked_join->master_column = 'id';
-		$linked_join->mode = $join->mode;
+		$linked_join->mode          = $join->mode;
 		$this->joins[$foreign_path . '-link'] = $this->addFinalize(
 			$linked_join, $master_path ? $master_path : 'id', $foreign_class_name, $foreign_path, 1
 		);
-		$join->foreign_column = 'id';
-		$join->master_column = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
-		$join->master_alias = $linked_join->foreign_alias;
+		$join->foreign_column  = 'id';
+		$join->master_property = $property;
+		$join->master_column   = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
+		$join->master_alias    = $linked_join->foreign_alias;
 		$this->linked_tables[$linked_join->foreign_table] = [
 			$join->master_column, $linked_join->foreign_column
 		];
+
+		// fix linked join master_alias when master_column is an id : if point on a link class,
+		// then replace the master_alias with the link class.
+		// TODO HIGHEST problem : the value here will be replaced by caller
+		if ($linked_join->master_column === 'id') {
+			$master_join = $this->byAlias($linked_join->master_alias);
+			if ($master_join) {
+				$master_linked_join = $this->getLinkedJoin($master_join);
+				if ($master_linked_join) {
+					$linked_join->master_alias = $master_linked_join->foreign_alias;
+				}
+			}
+		}
 	}
 
 	//----------------------------------------------------------------------------------- addMultiple
@@ -325,7 +338,7 @@ class Joins
 		);
 		if (strpos($foreign_property_name, '=')) {
 			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
-			$join->master_column  = 'id_' . $master_property_name;
+			$join->master_column = 'id_' . $master_property_name;
 		}
 		else {
 			$join->master_column = 'id';
@@ -337,6 +350,9 @@ class Joins
 			$this->addLinkedJoin(
 				$join, $master_path, $foreign_path, $foreign_class_name, $foreign_property, true
 			);
+		}
+		else {
+			$join->foreign_property = $foreign_property;
 		}
 		return $foreign_class_name;
 	}
@@ -391,8 +407,9 @@ class Joins
 						$foreign_property = new Reflection_Property(
 							$foreign_class_name, $foreign_property_name
 						);
-						$join->foreign_column = 'id_' . $foreign_property->getAnnotation('storage')->value;
-						$join->master_column  = 'id';
+						$join->foreign_property = $foreign_property;
+						$join->foreign_column  = 'id_' . $foreign_property->getAnnotation('storage')->value;
+						$join->master_column   = 'id';
 					}
 					else {
 						$this->addLinkedJoin(
@@ -402,12 +419,30 @@ class Joins
 				}
 				else {
 					$foreign_class_name = $foreign_type->asString();
-					$join->master_column  = 'id_' . $master_property->getAnnotation('storage')->value;
-					$join->foreign_column = 'id';
+					$join->master_property = $master_property;
+					$join->master_column   = 'id_' . $master_property->getAnnotation('storage')->value;
+					$join->foreign_column  = 'id';
 				}
 			}
 		}
 		return $foreign_class_name;
+	}
+
+	//--------------------------------------------------------------------------------------- byAlias
+	/**
+	 * Gets the join that matches this foreign_alias
+	 *
+	 * @param $alias string
+	 * @return Join
+	 */
+	public function byAlias($alias)
+	{
+		foreach ($this->joins as $join) {
+			if ($join && ($join->foreign_alias === $alias)) {
+				return $join;
+			}
+		}
+		return null;
 	}
 
 	//-------------------------------------------------------------------------------------- getAlias
