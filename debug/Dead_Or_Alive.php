@@ -84,8 +84,8 @@ class Dead_Or_Alive
 		$call_stack = new Call_Stack();
 		$call_stack->shift();
 		$line = $call_stack->lines()[0];
-		if (!$property_names || in_array('file',  $property_names)) $this->file  = $line->file;
-		if (!$property_names || in_array('line',  $property_names)) $this->line  = $line->line;
+		if (!$property_names || in_array('file', $property_names)) $this->file = $line->file;
+		if (!$property_names || in_array('line', $property_names)) $this->line = $line->line;
 	}
 
 	//------------------------------------------------------------------------------------ __toString

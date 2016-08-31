@@ -3,6 +3,7 @@ namespace SAF\Framework\Sql\Join;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Debug\Dead_Or_Alive;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Link_Class;
@@ -137,7 +138,8 @@ class Joins
 		$this->joins[$path] = $join->mode
 			? $this->addFinalize($join, $master_path, $foreign_class_name, $path, $depth)
 			: null;
-		if (isset($linked_master_alias)) {
+		if (isset($linked_master_alias) && !$join->master_alias) {
+			Dead_Or_Alive::isAlive("Joins::add($path) master_alias = $linked_master_alias");
 			$join->master_alias = $linked_master_alias;
 		}
 		return $this->joins[$path];
