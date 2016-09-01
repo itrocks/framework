@@ -96,6 +96,22 @@ class Join
 	 */
 	public $foreign_table;
 
+	//--------------------------------------------------------------------------------- $linked_class
+	/**
+	 * Linked class join
+	 *
+	 * @var Join
+	 */
+	public $linked_class;
+
+	//---------------------------------------------------------------------------------- $linked_join
+	/**
+	 * Linked join
+	 *
+	 * @var Join
+	 */
+	public $linked_join;
+
 	//--------------------------------------------------------------------------------- $master_alias
 	/**
 	 * Alias for master table (t0..tn)

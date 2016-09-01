@@ -3,7 +3,6 @@ namespace SAF\Framework\Sql\Join;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
-use SAF\Framework\Debug\Dead_Or_Alive;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Link_Class;
@@ -138,8 +137,7 @@ class Joins
 		$this->joins[$path] = $join->mode
 			? $this->addFinalize($join, $master_path, $foreign_class_name, $path, $depth)
 			: null;
-		if (isset($linked_master_alias) && !$join->master_alias) {
-			Dead_Or_Alive::isAlive("Joins::add($path) master_alias = $linked_master_alias");
+		if (isset($linked_master_alias)) {
 			$join->master_alias = $linked_master_alias;
 		}
 		return $this->joins[$path];
@@ -200,17 +198,19 @@ class Joins
 	 */
 	private function addLinkedClass($path, Link_Class $class, $linked_class_name, $join_mode)
 	{
-		$linked_class = new Reflection_Class($linked_class_name);
+		$linked_class    = new Reflection_Class($linked_class_name);
+		$master_property = $class->getCompositeProperty($linked_class_name);
 		$join = new Join();
-		$join->master_alias    = 't' . ($this->alias_counter - 1);
-		$join->master_property = $class->getCompositeProperty($linked_class_name);
-		$join->master_column   = 'id_' . $join->master_property->getAnnotation('storage')->value;
-		$join->foreign_alias   = 't' . $this->alias_counter++;
+		$join->foreign_alias   = 't' . $this->alias_counter;
 		$join->foreign_column  = 'id';
 		$join->foreign_class   = Builder::className($linked_class_name);
 		$join->foreign_table   = Dao::storeNameOf($join->foreign_class);
+		$join->master_alias    = 't' . ($this->alias_counter - 1);
+		$join->master_column   = 'id_' . $master_property->getAnnotation('storage')->value;
+		$join->master_property = $master_property;
 		$join->mode            = ($join_mode == Join::LEFT) ? Join::LEFT : Join::INNER;
 		$join->type            = Join::LINK;
+		$this->alias_counter ++;
 		if (!isset($this->joins[$path])) {
 			// this ensures that the main path is set before the linked path
 			$this->joins[$path] = null;
@@ -261,9 +261,10 @@ class Joins
 			$linked_join, $master_path ? $master_path : 'id', $foreign_class_name, $foreign_path, 1
 		);
 		$join->foreign_column  = 'id';
-		$join->master_property = $property;
-		$join->master_column   = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
+		$join->linked_join     = $linked_join;
 		$join->master_alias    = $linked_join->foreign_alias;
+		$join->master_column   = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
+		$join->master_property = $property;
 		$this->linked_tables[$linked_join->foreign_table] = [
 			$join->master_column, $linked_join->foreign_column
 		];
@@ -408,9 +409,9 @@ class Joins
 						$foreign_property = new Reflection_Property(
 							$foreign_class_name, $foreign_property_name
 						);
+						$join->foreign_column   = 'id_' . $foreign_property->getAnnotation('storage')->value;
 						$join->foreign_property = $foreign_property;
-						$join->foreign_column  = 'id_' . $foreign_property->getAnnotation('storage')->value;
-						$join->master_column   = 'id';
+						$join->master_column    = 'id';
 					}
 					else {
 						$this->addLinkedJoin(
@@ -419,10 +420,10 @@ class Joins
 					}
 				}
 				else {
-					$foreign_class_name = $foreign_type->asString();
-					$join->master_property = $master_property;
-					$join->master_column   = 'id_' . $master_property->getAnnotation('storage')->value;
+					$foreign_class_name    = $foreign_type->asString();
 					$join->foreign_column  = 'id';
+					$join->master_column   = 'id_' . $master_property->getAnnotation('storage')->value;
+					$join->master_property = $master_property;
 				}
 			}
 		}
@@ -436,7 +437,7 @@ class Joins
 	 * @param $alias string
 	 * @return Join
 	 */
-	public function byAlias($alias)
+	private function byAlias($alias)
 	{
 		foreach ($this->joins as $join) {
 			if ($join && ($join->foreign_alias === $alias)) {
@@ -639,6 +640,29 @@ class Joins
 	public function getStartingClassName()
 	{
 		return $this->classes[''];
+	}
+
+	//--------------------------------------------------------------------------------------- inAlias
+	/**
+	 * Returns true if the property is found into the foreign class matching the aliased join
+	 *
+	 * @param $property Reflection_Property
+	 * @param $alias    string
+	 * @return boolean
+	 */
+	private function inAlias(Reflection_Property $property, $alias)
+	{
+		$join = $this->byAlias($alias);
+		if ($join) {
+			$class_name = $join->foreign_class;
+			if ($class_name) {
+				$class = new Reflection_Class($class_name);
+				if ($class->hasProperty($property->name)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
