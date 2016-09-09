@@ -1,5 +1,35 @@
 <?php
 
+//-------------------------------------------------------------------------------------- beginsWith
+/**
+ * Returns true if $haystack begins with $needle
+ *
+ * @param $haystack string
+ * @param $needle   string
+ * @return boolean
+ */
+function beginsWith($haystack, $needle)
+{
+	$needle_length = strlen($needle);
+	return (strlen($haystack) >= $needle_length)
+		&& (substr($haystack, 0, $needle_length) === $needle);
+}
+
+//---------------------------------------------------------------------------------------- endsWith
+/**
+ * Returns true if $haystack ends with $needle
+ *
+ * @param $haystack string
+ * @param $needle   string
+ * @return boolean
+ */
+function endsWith($haystack, $needle)
+{
+	$needle_length = strlen($needle);
+	return (strlen($haystack) >= $needle_length)
+		&& (substr($haystack, -$needle_length) === $needle);
+}
+
 //-------------------------------------------------------------------------------------- lLastParse
 /**
  * Returns the part of the string left to the last occurrence of the separator
@@ -233,7 +263,8 @@ function strReplace($search_replace, $subject)
  * 1/ accents are replaced with non-accentuated characters
  * 2/ string is lowercased
  * 3/ only a..z, A..Z, 0..9, dot (.,) characters are allowed
- * 4/ not allowed characters are replaced by a joker character, or removed if no joker character is set
+ * 4/ not allowed characters are replaced by a joker character, or removed if no joker character is
+ *    set
  *
  * @param $str      string
  * @param $extended boolean|string|string[] if true, default '.,/- ' is used
