@@ -346,12 +346,12 @@ class Compiler implements ICompiler, Needs_Main
 	 * - if any advice : add it for the current class
 	 *
 	 * @param $methods     array [$method][$index] = [$type, callback $advice]
-	 * @param $class       Reflection_Class
+	 * @param $class       \SAF\Framework\Reflection\Interfaces\Reflection_Class
 	 * @param $only_method string Internal use only : the method name we are up-scanning
 	 */
-	private function scanForAbstract(&$methods, Reflection_Class $class, $only_method = null)
+	private function scanForAbstract(&$methods, \SAF\Framework\Reflection\Interfaces\Reflection_Class $class, $only_method = null)
 	{
-		if ($class->getParentName()) {
+		if ($class instanceof Reflection_Class && $class->getParentName()) {
 			$parent_class = $class->getParentClass();
 			$parent_methods = $parent_class->getMethods([T_EXTENDS, T_IMPLEMENTS]);
 			foreach ($class->getMethods($only_method ? [T_EXTENDS, T_IMPLEMENTS] : [T_USE]) as $method) {
