@@ -62,6 +62,8 @@ class File_Logger implements Configurable
 		if (empty($this->file) && ($filename = $this->fileName())) {
 			if (!file_exists($path = lLastParse($filename, SL))) {
 				mkdir($path, 0777, true);
+				// patch : mkdir's set mode does not work (debian 8)
+				chmod($path, 0777);
 			}
 			$this->file = static::GZ ? gzopen($filename, 'wb9') : fopen($filename, 'wb');
 		}
