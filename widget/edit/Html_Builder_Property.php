@@ -1,8 +1,10 @@
 <?php
 namespace SAF\Framework\Widget\Edit;
 
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper\Empty_Object;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -10,7 +12,6 @@ use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Password;
 use SAF\Framework\View\Html\Dom\Element;
-use SAF\Framework\View\Html\Dom\Table;
 
 /**
  * Builds a standard form input matching a given property and value
@@ -216,6 +217,9 @@ class Html_Builder_Property extends Html_Builder_Type
 		if ($this->property->getAnnotation('password')->value) {
 			$element->setAttribute('type', 'password');
 			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
+		}
+		if ($placeholder = $this->property->getAnnotation(Placeholder_Annotation::ANNOTATION)->value) {
+			$element->setAttribute('placeholder', Loc::tr($placeholder));
 		}
 		return $element;
 	}

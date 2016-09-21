@@ -80,15 +80,7 @@ $('document').ready(function()
 		});
 
 		// draggable items
-		this.inside(
-			// In data list we want to be able to drag only basic type fields, not sub_object or arrays!
-			//'.property, fieldset>div[id]>label' /* SM: previous selector*/
-			// properties of fields selector in data_list to add column.
-			// was previous '.property' used for something else than data_list?
-			'.property_tree .basic.property'
-			// for object edition forms
-			+ ', fieldset>div[id]>label'
-		).draggable({
+		this.inside('.property, fieldset>div[id]>label').draggable({
 			appendTo:    'body',
 			cursorAt:    { left: 10, top: 10 },
 			scroll:      false,

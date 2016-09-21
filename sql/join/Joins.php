@@ -505,6 +505,23 @@ class Joins
 		return $this->joins;
 	}
 
+	//--------------------------------------------------------------------------------- getLinkedJoin
+	/**
+	 * Gets the linked join matching a direct join
+	 *
+	 * @param $join Join
+	 * @return Join the linked join
+	 */
+	public function getLinkedJoin(Join $join)
+	{
+		foreach ($this->getLinkedJoins() as $linked_join) {
+			if ($linked_join->master_alias === $join->foreign_alias) {
+				return $linked_join;
+			}
+		}
+		return null;
+	}
+
 	//-------------------------------------------------------------------------------- getLinkedJoins
 	/**
 	 * Gets the list of joins that come from a 'link' class annotation

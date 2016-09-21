@@ -60,6 +60,10 @@
 				if (!val.length) {
 					val = $this.text();
 				}
+				if (!val.length) {
+					val = $this.attr('placeholder');
+					val = (val == undefined) ? '' : val;
+				}
 				$span.text(val.replace(' ', '_').split("\n").join('<br>'));
 				width = $span.width();
 				if (write_cache) {
@@ -151,7 +155,11 @@
 			var previous_width = parseInt($this.data('text-width'));
 			var margin_right = calcMargin.call($this, settings.margin_right);
 			var new_width = $this.gettextwidth(false) + margin_right;
-			if (new_width != previous_width) {
+			if (new_width == margin_right) {
+				$this.data('text-width', 'auto');
+				$this.width('auto');
+			}
+			else if (new_width != previous_width) {
 				$this.data('text-width', new_width);
 				var tag_name = $this.parent().prop('tagName').toLowerCase();
 				var $table = (tag_name == 'td') ? $this.closest('table') : undefined;
