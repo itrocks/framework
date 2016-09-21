@@ -52,10 +52,9 @@
 		var max_width = 0;
 		var $span = $('<span>').css('position', 'absolute').css({left: 0, top: 0}).csscopyfrom(this);
 		$span.appendTo('body');
-		var width;
 		this.each(function() {
 			var $this = $(this);
-			width = read_cache ? $this.data('text-width') : undefined;
+			var width = read_cache ? $this.data('text-width') : undefined;
 			if (width == undefined) {
 				var val = $this.val();
 				if (!val.length) {
