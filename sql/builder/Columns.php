@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\Sql\Builder;
 
-use SAF\Framework\Builder;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Func\Concat;
@@ -300,11 +299,22 @@ class Columns
 	private function buildObjectColumns($path, Join $join, &$first_property)
 	{
 		$sql_columns = '';
+
+		// linked join and linked properties list
+		$class = new Link_Class($join->foreign_class);
+		if ($class->getAnnotation('link')->value) {
+			$linked_properties = $class->getLinkedProperties();
+			$linked_join = $this->joins->getLinkedJoin($join);
+		}
+
 		if ($this->expand_objects) {
 			$properties = $this->joins->getProperties($path);
 			$properties = Replaces_Annotations::removeReplacedProperties($properties);
 			/** @var $properties Reflection_Property[] */
-			foreach ($properties as $property) {
+			foreach ($properties as $property_name => $property) {
+				$foreign_alias = (isset($linked_join) && isset($linked_properties[$property_name]))
+					? $linked_join->foreign_alias
+					: $join->foreign_alias;
 				$column_name = Sql\Builder::buildColumnName($property);
 				if ($column_name) {
 					if ($first_property) {
@@ -322,7 +332,7 @@ class Columns
 					) {
 						$column_name = substr($column_name, 3);
 					}
-					$sql_columns .= $join->foreign_alias . DOT . BQ . $column_name . BQ . (
+					$sql_columns .= $foreign_alias . DOT . BQ . $column_name . BQ . (
 						($this->append || !$this->resolve_aliases)
 						? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ)
 					);
@@ -334,11 +344,13 @@ class Columns
 			else {
 				$sql_columns .= ', ';
 			}
-			$sql_columns .= $join->foreign_alias . '.id' . (
+			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
+			$sql_columns .= $foreign_alias . '.id' . (
 				($this->append || !$this->resolve_aliases)
 					? '' : (' AS ' . BQ . $path . ':id' . BQ)
 				);
 		}
+
 		else {
 			if ($first_property) {
 				$first_property = false;
@@ -346,9 +358,11 @@ class Columns
 			else {
 				$sql_columns .= ', ';
 			}
-			$sql_columns .= $join->foreign_alias . '.id'
+			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
+			$sql_columns .= $foreign_alias . '.id'
 				. ($this->resolve_aliases ? (' AS ' . BQ . $path . BQ) : '');
 		}
+
 		return $sql_columns;
 	}
 

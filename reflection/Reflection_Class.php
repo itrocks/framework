@@ -146,8 +146,7 @@ class Reflection_Class extends ReflectionClass
 	public function getConstructor()
 	{
 		$constructor = parent::getConstructor();
-		return $constructor
-			? new Reflection_Method($constructor->class, $constructor->name) : $constructor;
+		return $constructor ? new Reflection_Method($this->name, $constructor->name) : null;
 	}
 
 	//-------------------------------------------------------------------------- getDefaultProperties
@@ -234,7 +233,7 @@ class Reflection_Class extends ReflectionClass
 	public function getMethod($method_name)
 	{
 		$method = parent::getMethod($method_name);
-		return $method ? new Reflection_Method($method->class, $method->name) : $method;
+		return $method ? new Reflection_Method($this->name, $method->name) : null;
 	}
 
 	//------------------------------------------------------------------------------------ getMethods
@@ -297,7 +296,7 @@ class Reflection_Class extends ReflectionClass
 	public function getParentClass()
 	{
 		$parent_class = parent::getParentClass();
-		return $parent_class ? new Reflection_Class($parent_class->name) : $parent_class;
+		return $parent_class ? new Reflection_Class($parent_class->name) : null;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
@@ -349,7 +348,7 @@ class Reflection_Class extends ReflectionClass
 	public function getProperty($name)
 	{
 		$property = property_exists($this->name, $name) ? parent::getProperty($name) : null;
-		return $property ? new Reflection_Property($property->class, $property->name) : $property;
+		return $property ? new Reflection_Property($this->name, $property->name) : null;
 	}
 
 	//------------------------------------------------------------------------------------- getTraits

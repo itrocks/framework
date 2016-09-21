@@ -9,7 +9,6 @@ use SAF\Framework\Builder;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
-use SAF\Framework\Dao\Func;
 use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Session;
@@ -18,6 +17,7 @@ use SAF\Framework\PHP\Dependency;
 use SAF\Framework\PHP\ICompiler;
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\PHP\Reflection_Source;
+use SAF\Framework\Reflection\Interfaces;
 
 /**
  * Standard aspect weaver compiler
@@ -346,12 +346,13 @@ class Compiler implements ICompiler, Needs_Main
 	 * - if any advice : add it for the current class
 	 *
 	 * @param $methods     array [$method][$index] = [$type, callback $advice]
-	 * @param $class       Reflection_Class
+	 * @param $class       Interfaces\Reflection_Class
 	 * @param $only_method string Internal use only : the method name we are up-scanning
 	 */
-	private function scanForAbstract(&$methods, Reflection_Class $class, $only_method = null)
-	{
-		if ($class->getParentName()) {
+	private function scanForAbstract(
+		&$methods, Interfaces\Reflection_Class $class, $only_method = null
+	) {
+		if ($class instanceof Reflection_Class && $class->getParentName()) {
 			$parent_class = $class->getParentClass();
 			$parent_methods = $parent_class->getMethods([T_EXTENDS, T_IMPLEMENTS]);
 			foreach ($class->getMethods($only_method ? [T_EXTENDS, T_IMPLEMENTS] : [T_USE]) as $method) {
