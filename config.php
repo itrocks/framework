@@ -84,7 +84,7 @@ $config['SAF/Framework'] = [
 			Link::DATABASE => $loc[Link::DATABASE],
 			Link::HOST     => 'localhost',
 			Link::LOGIN    => $loc[Link::LOGIN],
-			Link::PASSWORD => $pwd[$loc[Link::LOGIN]],
+			Link::PASSWORD => $pwd[Link::class],
 		],
 		Html_Translator::class,
 		Loc::class,
