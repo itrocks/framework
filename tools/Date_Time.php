@@ -108,7 +108,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function add($quantity, $unit = Date_Time::DAY)
 	{
 		if ($quantity instanceof DateInterval) {
-			return parent::add($quantity);
+			parent::add($quantity);
 		}
 		elseif (is_numeric($quantity)) {
 			if ($quantity < 0) {
@@ -130,7 +130,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			if (isset($interval)) {
 				$interval = new DateInterval($interval);
 				$interval->invert = $invert;
-				return parent::add($interval);
+				parent::add($interval);
 			}
 		}
 		return $this;
@@ -367,7 +367,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return ($this->toISO(false) <= self::$min_date);
 	}
 
-	//----------------------------------------------------------------------------- lastDayOfTheMonth
+	//-------------------------------------------------------------------------------- lastDayOfMonth
 	/**
 	 * Returns last day of the month (goes to the end of the month)
 	 *
@@ -425,9 +425,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function sub($quantity, $unit = Date_Time::DAY)
 	{
-		return ($quantity instanceof DateInterval)
+		($quantity instanceof DateInterval)
 			? parent::sub($quantity)
 			: $this->add(-$quantity, $unit);
+		return $this;
 	}
 
 	//----------------------------------------------------------------------------------------- toISO

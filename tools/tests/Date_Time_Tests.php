@@ -10,6 +10,21 @@ use SAF\Framework\Tools\Date_Time;
 class Date_Time_Tests extends Test
 {
 
+	//--------------------------------------------------------------------------------------- testAdd
+	public function testAdd()
+	{
+		$today              = new Date_Time('2016-09-23 11:04:02');
+		$tomorrow           = new Date_Time('2016-09-24 11:04:02');
+		$one_minute_ago     = new Date_Time('2016-09-24 11:03:02');
+		$two_hours_after    = new Date_Time('2016-09-24 13:03:02');
+		$three_years_before = new Date_Time('2013-09-24 13:03:02');
+		$this->method(__METHOD__);
+		$this->assume('1 day',          $today->add(1),                     $tomorrow);
+		$this->assume('1 minute ago',   $today->add(-1, Date_Time::MINUTE), $one_minute_ago);
+		$this->assume('2 hours after',  $today->add(2,  Date_Time::HOUR),   $two_hours_after);
+		$this->assume('3 years before', $today->add(-3, Date_Time::YEAR),   $three_years_before);
+	}
+
 	//---------------------------------------------------------------------------------------- testIs
 	public function testIs()
 	{
