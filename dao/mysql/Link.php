@@ -14,7 +14,6 @@ use SAF\Framework\Mapper\Null_Object;
 use SAF\Framework\Mapper\Search_Object;
 use SAF\Framework\Reflection\Annotation\Class_;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
@@ -34,11 +33,29 @@ use SAF\Framework\Tools\Contextual_Mysqli;
 class Link extends Dao\Sql\Link
 {
 
+	//------------------------------------------------------------------------------------- COLLATION
+	const COLLATION = 'collation';
+
 	//------------------------------------------------------------------------------------- GZINFLATE
 	/**
 	 * Actions for $prepared_fetch
 	 */
 	const GZINFLATE = 'gzinflate';
+
+	//---------------------------------------------------------------------------------------- LATIN1
+	/**
+	 * LATIN1 collation value
+	 */
+	const LATIN1 = 'LATIN1';
+
+	//------------------------------------------------------------------------------------------ UTF8
+	/**
+	 * UTF8 collation value
+	 */
+	const UTF8 = 'UTF8';
+
+	//------------------------------------------------------------------------------------ $collation
+	private $collation = self::UTF8;
 
 	//--------------------------------------------------------------------------------- $commit_stack
 	/**
@@ -72,6 +89,9 @@ class Link extends Dao\Sql\Link
 	public function __construct($parameters = null)
 	{
 		parent::__construct($parameters);
+		if (isset($parameters[self::COLLATION])) {
+			$this->collation = $parameters[self::COLLATION];
+		}
 		$this->connect($parameters);
 	}
 
@@ -131,7 +151,7 @@ class Link extends Dao\Sql\Link
 
 	//--------------------------------------------------------------------------------------- connect
 	/**
-	 * @param $parameters string[]
+	 * @param $parameters string[] ['host', 'login', 'password', 'database']
 	 */
 	private function connect($parameters)
 	{
@@ -142,7 +162,7 @@ class Link extends Dao\Sql\Link
 			$parameters[self::HOST],     $parameters[self::LOGIN],
 			$parameters[self::PASSWORD], $parameters[self::DATABASE]
 		);
-		$this->query('SET NAMES UTF8');
+		$this->query('SET NAMES ' . $this->collation);
 	}
 
 	//----------------------------------------------------------------------------------------- count
