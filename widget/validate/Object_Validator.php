@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\Widget\Validate;
 
-use SAF\Framework\Controller;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Dao\Data_Link;
@@ -9,10 +8,11 @@ use SAF\Framework\Dao\Option;
 use SAF\Framework\Dao\Option\Only;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Parser;
 use SAF\Framework\Reflection\Annotation\Template;
 use SAF\Framework\Reflection\Annotation\Template\Validator;
-use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\View;
 use SAF\Framework\View\View_Exception;
 use SAF\Framework\Widget\Validate\Property;
@@ -153,10 +153,13 @@ class Object_Validator implements Registerable
 		$this->report = [];
 		$this->valid  = true;
 		$only_properties = array_flip($only_properties);
-		$class = new Reflection_Class($object);
+		$class = new Link_Class($object);
+		$properties = $class->getAnnotation(Link_Annotation::ANNOTATION)->value
+			? $class->getLinkProperties()
+			: $class->accessProperties();
 
 		// properties value validation
-		foreach ($class->accessProperties() as $property) {
+		foreach ($properties as $property) {
 			if (!$only_properties || isset($only_properties[$property->name])) {
 				$property_validator = new Property_Validator($property);
 				$validated_property = $property_validator->validate($object);
