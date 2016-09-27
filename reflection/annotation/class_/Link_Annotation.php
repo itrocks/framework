@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Class_;
 
-use SAF\Framework\Builder;
-use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
@@ -26,6 +24,9 @@ use SAF\Framework\Reflection\Link_Class;
 class Link_Annotation extends Annotation implements Class_Context_Annotation
 {
 	use Types_Annotation;
+
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'link';
 
 	//---------------------------------------------------------------------------------------- $class
 	/**

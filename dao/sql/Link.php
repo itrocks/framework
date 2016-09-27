@@ -6,7 +6,6 @@ use SAF\Framework\Dao\Data_Link\Identifier_Map;
 use SAF\Framework\Dao\Data_Link\Transactional;
 use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Option;
-use SAF\Framework\Sql;
 use SAF\Framework\Tools\Default_List_Data;
 use SAF\Framework\Tools\List_Data;
 
@@ -17,11 +16,21 @@ abstract class Link extends Identifier_Map implements Transactional
 {
 
 	//--------------------------------------------------- Sql link configuration array keys constants
+
+	//-------------------------------------------------------------------------------------- DATABASE
 	const DATABASE = 'database';
-	const HOST     = 'host';
-	const LOGIN    = 'login';
+
+	//------------------------------------------------------------------------------------------ HOST
+	const HOST = 'host';
+
+	//----------------------------------------------------------------------------------------- LOGIN
+	const LOGIN = 'login';
+
+	//-------------------------------------------------------------------------------------- PASSWORD
 	const PASSWORD = 'password';
-	const TABLES   = 'tables';
+
+	//---------------------------------------------------------------------------------------- TABLES
+	const TABLES = 'tables';
 
 	//--------------------------------------------------------------------------------------- $tables
 	/**
@@ -54,7 +63,9 @@ abstract class Link extends Identifier_Map implements Transactional
 	/**
 	 * Begin transaction
 	 */
-	public function begin() {}
+	public function begin()
+	{
+	}
 
 	//---------------------------------------------------------------------------------------- commit
 	/**
@@ -63,7 +74,10 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $flush boolean
 	 * @return boolean
 	 */
-	public function commit($flush = false) {}
+	public function commit($flush = false)
+	{
+		return false;
+	}
 
 	//----------------------------------------------------------------------------------------- fetch
 	/**
@@ -159,13 +173,16 @@ abstract class Link extends Identifier_Map implements Transactional
 			. ' cannot be read alone into a ' . get_class($this) . ' data link',
 			E_USER_ERROR
 		);
+		return null;
 	}
 
 	//-------------------------------------------------------------------------------------- rollback
 	/**
 	 * Rollback current transaction
 	 */
-	public function rollback() {}
+	public function rollback()
+	{
+	}
 
 	//---------------------------------------------------------------------------------------- select
 	/**

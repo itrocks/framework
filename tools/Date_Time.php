@@ -14,6 +14,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//------------------------------------------------------------------------------------------- DAY
 	const DAY = 'day';
 
+	//--------------------------------------------------------------------------------- DAYS_IN_MONTH
+	const DAYS_IN_MONTH = 't';
+
 	//---------------------------------------------------------------------------------- DAY_OF_MONTH
 	const DAY_OF_MONTH = 'd';
 
@@ -28,9 +31,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//----------------------------------------------------------------------------------- DAY_OF_YEAR
 	const DAY_OF_YEAR = 's';
-
-	//--------------------------------------------------------------------------------- DAYS_IN_MONTH
-	const DAYS_IN_MONTH = 't';
 
 	//------------------------------------------------------------------------------------------ HOUR
 	const HOUR = 'hour';
@@ -108,7 +108,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function add($quantity, $unit = Date_Time::DAY)
 	{
 		if ($quantity instanceof DateInterval) {
-			return parent::add($quantity);
+			parent::add($quantity);
 		}
 		elseif (is_numeric($quantity)) {
 			if ($quantity < 0) {
@@ -130,7 +130,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			if (isset($interval)) {
 				$interval = new DateInterval($interval);
 				$interval->invert = $invert;
-				return parent::add($interval);
+				parent::add($interval);
 			}
 		}
 		return $this;
@@ -367,6 +367,21 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return ($this->toISO(false) <= self::$min_date);
 	}
 
+	//-------------------------------------------------------------------------------- lastDayOfMonth
+	/**
+	 * Returns last day of the month (goes to the end of the month)
+	 *
+	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-31 23:59:59'
+	 * @return Date_Time
+	 */
+	public function lastDayOfMonth()
+	{
+		if ($this->isMin()) {
+			return static::min();
+		}
+		return new Date_Time($this->format('Y-m-t 23:59:59'));
+	}
+
 	//------------------------------------------------------------------------------------------- max
 	/**
 	 * Returns a maximal date time, far into the future considered as a date that non is after
@@ -410,20 +425,22 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function sub($quantity, $unit = Date_Time::DAY)
 	{
-		return ($quantity instanceof DateInterval)
+		($quantity instanceof DateInterval)
 			? parent::sub($quantity)
 			: $this->add(-$quantity, $unit);
+		return $this;
 	}
 
-	//----------------------------------------------------------------------------------------- today
+	//----------------------------------------------------------------------------------------- toISO
 	/**
-	 * Returns current date, with an empty time (00:00:00)
-	 *
-	 * @return Date_Time
+	 * @param $empty_min_max boolean If true, returns an empty string for zero or max dates
+	 * @return string
 	 */
-	public static function today()
+	public function toISO($empty_min_max = true)
 	{
-		return new Date_Time(date('Y-m-d 00:00:00'));
+		$format = max($this->format('Y-m-d H:i:s'), self::$min_date);
+		return ($empty_min_max && (($format <= self::$min_date) || ($format >= self::$max_date)))
+			? '' : $format;
 	}
 
 	//--------------------------------------------------------------------------------------- toMonth
@@ -441,16 +458,15 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return new Date_Time($this->format('Y-m'));
 	}
 
-	//----------------------------------------------------------------------------------------- toISO
+	//----------------------------------------------------------------------------------------- today
 	/**
-	 * @param $empty_min_max boolean If true, returns an empty string for zero or max dates
-	 * @return string
+	 * Returns current date, with an empty time (00:00:00)
+	 *
+	 * @return Date_Time
 	 */
-	public function toISO($empty_min_max = true)
+	public static function today()
 	{
-		$format = max($this->format('Y-m-d H:i:s'), self::$min_date);
-		return ($empty_min_max && (($format <= self::$min_date) || ($format >= self::$max_date)))
-			? '' : $format;
+		return new Date_Time(date('Y-m-d 00:00:00'));
 	}
 
 }
