@@ -138,8 +138,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (!$this->value) {
 			$this->value = [];
 		}
-		$preprop = (substr($this->preprop, -2) == '[]') ? $this->getFieldName() : $this->preprop;
-		$map = new Html_Builder_Map($this->property, $this->value, $preprop);
+		$map = new Html_Builder_Map($this->property, $this->value, $this->getFieldName());
 		$map->setTemplate($this->template);
 		return $map->build();
 	}

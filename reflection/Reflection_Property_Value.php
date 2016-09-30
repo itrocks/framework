@@ -67,12 +67,11 @@ class Reflection_Property_Value extends Reflection_Property
 	) {
 		parent::__construct($class_name, $property_name);
 		$this->final_value = $final_value;
-		$this->path = $property_name;
 		if (!isset($this->object)) {
 			$this->object = $object;
 		}
 		else {
-echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . BR;
+			echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . BR;
 		}
 		$this->user = $user;
 	}
@@ -116,7 +115,7 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 	{
 		return $this->display
 			? $this->display
-			: Names::propertyToDisplay($this->path ? $this->path : $this->name);
+			: Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias);
 	}
 
 	//---------------------------------------------------------------------------------------- format

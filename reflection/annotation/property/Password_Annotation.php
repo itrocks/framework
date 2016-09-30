@@ -8,7 +8,7 @@ use SAF\Framework\Tools\Encryption;
  * This tells the string property stores crypted password
  *
  * @example @password sha1
- * @see Password class to know which encryptions can be used (ie 'crypt', 'md5', 'sha1')
+ * @see Encryption class to know which encryptions can be used (eg 'crypt', 'md5', 'sha1')
  */
 class Password_Annotation extends Annotation
 {
