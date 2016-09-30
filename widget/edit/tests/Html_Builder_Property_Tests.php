@@ -22,11 +22,10 @@ class Html_Builder_Property_Tests extends Test
 	 */
 	private function norm($text)
 	{
-		$text = str_replace('>', '>' . LF, str_replace([LF, TAB], '', trim($text)));
 		$result = [];
-		foreach (explode(LF, $text) as $key => $line) {
-			if (strpos($line, '<input') !== false) {
-				$result[] = htmlentities($line);
+		foreach (explode('>', $text) as $line) {
+			if ((strpos($line, '<input') !== false) && (strpos($line, SP . 'name=' . DQ) !== false)) {
+				$result[] = mParse($line, SP . 'name=' . DQ, DQ);
 			}
 		}
 		return $result;
@@ -45,17 +44,17 @@ class Html_Builder_Property_Tests extends Test
 			$object->simple_collection
 		);
 		$assume = <<<EOT
-<input name="simple_collection[id][0]" type="hidden">
-<input name="simple_collection[code][0]" value="o" autocomplete="off" class="autowidth">
-<input name="simple_collection[name][0]" value="one" autocomplete="off" class="autowidth" required>
-<input name="simple_collection[id][1]" type="hidden">
-<input name="simple_collection[code][1]" value="t" autocomplete="off" class="autowidth">
-<input name="simple_collection[name][1]" value="two" autocomplete="off" class="autowidth" required>
-<input name="simple_collection[id][2]" type="hidden">
-<input name="simple_collection[code][2]" autocomplete="off" class="autowidth">
-<input name="simple_collection[name][2]" autocomplete="off" class="autowidth" required>
+simple_collection[id][0]
+simple_collection[code][0]
+simple_collection[name][0]
+simple_collection[id][1]
+simple_collection[code][1]
+simple_collection[name][1]
+simple_collection[id][2]
+simple_collection[code][2]
+simple_collection[name][2]
 EOT;
-		$this->assume(__METHOD__, $this->norm($builder->build()), $this->norm($assume));
+		$this->assume(__METHOD__, $this->norm($builder->build()), explode(LF, $assume));
 	}
 
 	//---------------------------------------------------------------------------------- testBuildMap
@@ -71,14 +70,11 @@ EOT;
 			$object->simple_map
 		);
 		$assume = <<<EOT
-<input name="simple_map[0]" type="hidden" class="id">
-<input value="one" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
-<input name="simple_map[1]" type="hidden" class="id">
-<input value="two" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
-<input name="simple_map[2]" type="hidden" class="id">
-<input value="" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
+simple_map[0]
+simple_map[1]
+simple_map[2]
 EOT;
-		$this->assume(__METHOD__, $this->norm($builder->build()), $this->norm($assume));
+		$this->assume(__METHOD__, $this->norm($builder->build()), explode(LF, $assume));
 	}
 
 	//-------------------------------------------------------------------- testBuildMapIntoCollection
@@ -94,32 +90,23 @@ EOT;
 			$object->collection_has_map
 		);
 		$assume = <<<EOT
-<input name="collection_has_map[id][0]" type="hidden">
-<input name="collection_has_map[id_composite][0]" value="" type="hidden" class="id">
-<input value="" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Has_Collections" class="autowidth combo">
-<input name="collection_has_map[simple_map][0][0]" type="hidden" class="id">
-<input value="one" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
-<input name="collection_has_map[simple_map][0][1]" type="hidden" class="id">
-<input value="" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
-<input name="collection_has_map[code][0]" value="one" autocomplete="off" class="autowidth">
-<input name="collection_has_map[id][1]" type="hidden">
-<input name="collection_has_map[id_composite][1]" value="" type="hidden" class="id">
-<input value="" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Has_Collections" class="autowidth combo">
-<input name="collection_has_map[simple_map][1][0]" type="hidden" class="id">
-<input value="three" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
-<input name="collection_has_map[simple_map][1][1]" type="hidden" class="id">
-<input value="two" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
-<input name="collection_has_map[simple_map][1][2]" type="hidden" class="id">
-<input value="" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
-<input name="collection_has_map[code][1]" value="two" autocomplete="off" class="autowidth">
-<input name="collection_has_map[id][2]" type="hidden">
-<input name="collection_has_map[id_composite][2]" value="" type="hidden" class="id">
-<input value="" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Has_Collections" class="autowidth combo">
-<input name="collection_has_map[simple_map][2][0]" type="hidden" class="id">
-<input value="" autocomplete="off" data-combo-class="SAF\Framework\Widget\Edit\Tests\Simples" class="autowidth combo">
-<input name="collection_has_map[code][2]" autocomplete="off" class="autowidth">
+collection_has_map[id][0]
+collection_has_map[id_composite][0]
+collection_has_map[simple_map][0][0]
+collection_has_map[simple_map][0][1]
+collection_has_map[code][0]
+collection_has_map[id][1]
+collection_has_map[id_composite][1]
+collection_has_map[simple_map][1][0]
+collection_has_map[simple_map][1][1]
+collection_has_map[simple_map][1][2]
+collection_has_map[code][1]
+collection_has_map[id][2]
+collection_has_map[id_composite][2]
+collection_has_map[simple_map][2][0]
+collection_has_map[code][2]
 EOT;
-		$this->assume(__METHOD__, $this->norm($builder->build()), $this->norm($assume));
+		$this->assume(__METHOD__, $this->norm($builder->build()), explode(LF, $assume));
 	}
 
 }
