@@ -67,13 +67,11 @@ class Reflection_Property_Value extends Reflection_Property
 	) {
 		parent::__construct($class_name, $property_name);
 		$this->final_value = $final_value;
-		// SM: useless: the parent do this job. confusing: we believe we set another value than parent
-		//$this->path = $property_name;
 		if (!isset($this->object)) {
 			$this->object = $object;
 		}
 		else {
-echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . BR;
+			echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . BR;
 		}
 		$this->user = $user;
 	}
