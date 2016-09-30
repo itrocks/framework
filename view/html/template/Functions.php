@@ -283,7 +283,7 @@ class Functions
 	 * Returns an expanded list of properties. Source element must be a list of Reflection_Property
 	 *
 	 * @param $template Template
-	 * @return Reflection_Property
+	 * @return Reflection_Property[]
 	 */
 	public function getExpand(Template $template)
 	{
@@ -297,7 +297,7 @@ class Functions
 				$property->path = $expand_property_path . DOT . $property->path;
 				$property->root_class = null;
 				if (($property instanceof Reflection_Property_Value) && !$property->display) {
-					$property->display = rLastParse($property->path, DOT . DOT, 1, true);
+					$property->display = rLastParse($property->aliased_path, DOT . DOT, 1, true);
 				}
 			}
 		}

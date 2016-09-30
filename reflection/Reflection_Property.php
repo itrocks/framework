@@ -7,6 +7,7 @@ use SAF\Framework\Mapper\Empty_Object;
 use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use SAF\Framework\Reflection\Annotation\Parser;
+use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -24,6 +25,23 @@ class Reflection_Property extends ReflectionProperty
 
 	//----------------------------------------------------------------------------------- EMPTY_VALUE
 	const EMPTY_VALUE = '~~EMPTY~VALUE~~';
+
+	//---------------------------------------------------------------------------------------- $alias
+	/**
+	 * Aliased name
+	 *
+	 * @var string
+	 */
+	public $alias;
+
+	//---------------------------------------------------------------------------------------- $alias
+	/**
+	 * Same as $path but all parts aliased
+	 *
+	 * @see $path
+	 * @var string
+	 */
+	public $aliased_path;
 
 	//------------------------------------------------------------------------------ $declaring_trait
 	/**
@@ -87,9 +105,11 @@ class Reflection_Property extends ReflectionProperty
 		$this->path       = $property_name;
 		$this->root_class = $class_name;
 		$i = 0;
+		$aliases = [];
 		while (($j = strpos($property_name, DOT, $i)) !== false) {
 			$property = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
 			$class_name = $property->getType()->getElementTypeAsString();
+			$aliases[] = $property->alias;
 			$i = $j + 1;
 		}
 		if ($i) {
@@ -97,6 +117,8 @@ class Reflection_Property extends ReflectionProperty
 		}
 		$this->final_class = $class_name;
 		parent::__construct($class_name, $property_name);
+		$this->alias = $this->getAnnotation(Alias_Annotation::ANNOTATION)->value;
+		$this->aliased_path = $aliases ? implode(DOT, $aliases) : $this->alias;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
