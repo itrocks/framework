@@ -105,11 +105,11 @@ class Reflection_Property extends ReflectionProperty
 		$this->path       = $property_name;
 		$this->root_class = $class_name;
 		$i = 0;
-		$aliases = [];
+		//$aliases = [];
 		while (($j = strpos($property_name, DOT, $i)) !== false) {
 			$property   = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
 			$class_name = $property->getType()->getElementTypeAsString();
-			$aliases[]  = $property->alias;
+			//$aliases[]  = $property->alias;
 			$i          = $j + 1;
 		}
 		if ($i) {
@@ -117,8 +117,10 @@ class Reflection_Property extends ReflectionProperty
 		}
 		$this->final_class = $class_name;
 		parent::__construct($class_name, $property_name);
+		/*
 		$this->alias        = $this->getAnnotation(Alias_Annotation::ANNOTATION)->value;
 		$this->aliased_path = $aliases ? implode(DOT, $aliases) : $this->alias;
+		*/
 	}
 
 	//------------------------------------------------------------------------------------ __toString
