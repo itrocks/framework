@@ -34,7 +34,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public $alias;
 
-	//---------------------------------------------------------------------------------------- $alias
+	//--------------------------------------------------------------------------------- $aliased_path
 	/**
 	 * Same as $path but all parts aliased
 	 *
