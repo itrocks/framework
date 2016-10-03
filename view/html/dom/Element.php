@@ -9,6 +9,20 @@ use SAF\Framework\View\Html\Dom\Lists\Unordered_List;
 abstract class Element
 {
 
+	//------------------------------------------------------------------------------- BUILD_MODE_AUTO
+	const BUILD_MODE_AUTO = 'auto';
+
+	//-------------------------------------------------------------------------------- BUILD_MODE_RAW
+	const BUILD_MODE_RAW = 'raw';
+
+	//----------------------------------------------------------------------------------- $build_mode
+	/**
+	 * In AUTO mode, check content to format as list or table, in RAW strictly build content
+	 *
+	 * @var boolean
+	 */
+	private $build_mode = self::BUILD_MODE_AUTO;
+
 	//----------------------------------------------------------------------------------- $attributes
 	/**
 	 * Available attributes
@@ -19,7 +33,7 @@ abstract class Element
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * @var string|string[]|mixed[] mixed[] means string[][]
+	 * @var string|string[]|mixed[] mixed[] means string[][] for build_mode AUTO
 	 */
 	private $content;
 
@@ -110,12 +124,17 @@ abstract class Element
 	{
 		if (is_array($this->content)) {
 			if ($this->content) {
-				$element = reset($this->content);
-				if (is_array($element)) {
-					$content = $this->getContentAsTable();
+				if ($this->build_mode == self::BUILD_MODE_RAW) {
+					$content = $this->getContentAsRaw();
 				}
-				else {
-					$content = $this->getContentAsList();
+				else /*self::BUILD_MODE_AUTO*/ {
+					$element = reset($this->content);
+					if (is_array($element)) {
+						$content = $this->getContentAsTable();
+					}
+					else {
+						$content = $this->getContentAsList();
+					}
 				}
 			}
 			else {
@@ -139,6 +158,16 @@ abstract class Element
 		return $list;
 	}
 
+	//------------------------------------------------------------------------------- getContentAsRaw
+	/**
+	 * @return string
+	 */
+	private function getContentAsRaw()
+	{
+		$content = $this->parseArray($this->content);
+		return $content;
+	}
+
 	//----------------------------------------------------------------------------- getContentAsTable
 	/**
 	 * @return Table
@@ -155,6 +184,31 @@ abstract class Element
 			$table->body->addRow($row);
 		}
 		return $table;
+	}
+
+	//------------------------------------------------------------------------------------ parseArray
+	/**
+	 * @param $array mixed[]
+	 * @return string
+	 */
+	private function parseArray($array)
+	{
+		$content = '';
+		foreach ($array as $item) {
+			if (is_array($item)) {
+				$content .= $this->parseArray($item);
+			}
+			elseif ($item instanceof Element) {
+				$saved_mode = $item->build_mode;
+				$item->build_mode = $this->build_mode;
+				$content .= (string)$item;
+				$item->build_mode = $saved_mode;
+			}
+			else {
+				$content .= (string)$item;
+			}
+		}
+		return $content;
 	}
 
 	//------------------------------------------------------------------------------- removeAttribute
@@ -206,7 +260,7 @@ abstract class Element
 
 	//------------------------------------------------------------------------------------ setContent
 	/**
-	 * @param $content string
+	 * @param $content string|string[]|mixed[] mixed[] means string[][] for build_mode AUTO
 	 */
 	public function setContent($content)
 	{
@@ -222,6 +276,15 @@ abstract class Element
 	public function setData($name, $value = null)
 	{
 		return $this->setAttributeNode(new Attribute('data-' . $name, $value));
+	}
+
+	//---------------------------------------------------------------------------------- setBuildMode
+	/**
+	 * @param $build_mode string
+	 */
+	public function setBuildMode($build_mode)
+	{
+		$this->build_mode = $build_mode;
 	}
 
 	//-------------------------------------------------------------------------------------- setStyle

@@ -159,6 +159,10 @@ class Html_Builder_Type
 					$result = $this->buildObject();
 				}
 			}
+			/**
+			 * @todo SM: create a Editable_Element class to be able to add some behavior like on_change because Element may be span or other html
+			 *
+			 */
 			if (isset($result) && ($result instanceof Element)) {
 				$this->setOnChangeAttribute($result);
 			}
@@ -178,8 +182,7 @@ class Html_Builder_Type
 				$this->getFieldName(), ['' => '', '0' => 'no', '1' => 'yes'], $value
 			);
 			if ($this->readonly) {
-				$input->removeAttribute('name');
-				$input->setAttribute('readonly');
+				$this->setInputAsReadOnly($input);
 			}
 			return $input;
 		}
@@ -194,8 +197,7 @@ class Html_Builder_Type
 				$checkbox->setData('nullable', strlen($this->value) ? ($this->value ? 0 : 1) : 0);
 			}
 			if ($this->readonly) {
-				$input->removeAttribute('name');
-				$checkbox->setAttribute('readonly');
+				$this->setInputAsReadOnly($input);
 			}
 			if ($this->value) {
 				$checkbox->setAttribute('checked');
@@ -218,8 +220,7 @@ class Html_Builder_Type
 		);
 		$input->setAttribute('autocomplete', 'off');
 		if ($this->readonly) {
-			$input->removeAttribute('name');
-			$input->setAttribute('readonly');
+			$this->setInputAsReadOnly($input);
 		}
 		else {
 			$input->addClass('datetime');
@@ -238,8 +239,7 @@ class Html_Builder_Type
 		$file->setAttribute('type', 'file');
 		$file->addClass('file');
 		if ($this->readonly) {
-			$file->removeAttribute('name');
-			$file->setAttribute('readonly');
+			$this->setInputAsReadOnly($file);
 		}
 		if ($this->value instanceof File) {
 			$span = $this->buildFileAnchor($this->value);
@@ -287,8 +287,7 @@ class Html_Builder_Type
 			$format ? Loc::floatToLocale($this->value) : $this->value
 		);
 		if ($this->readonly) {
-			$input->removeAttribute('name');
-			$input->setAttribute('readonly');
+			$this->setInputAsReadOnly($input);
 		}
 		$input->addClass('float');
 		$input->addClass('autowidth');
@@ -306,7 +305,9 @@ class Html_Builder_Type
 		$input->setAttribute('type', 'hidden');
 		$input->addClass('id');
 		if ($this->readonly) {
-			$input->removeAttribute('name');
+			// SM : note, here factorize even if there was no setAttribute('readonly')
+			//$input->removeAttribute('name');
+			$this->setInputAsReadOnly($input);
 		}
 		return $input;
 	}
@@ -323,8 +324,7 @@ class Html_Builder_Type
 			$format ? Loc::integerToLocale($this->value) : $this->value
 		);
 		if ($this->readonly) {
-			$input->removeAttribute('name');
-			$input->setAttribute('readonly');
+			$this->setInputAsReadOnly($input);
 		}
 		$input->addClass('integer');
 		$input->addClass('autowidth');
@@ -347,8 +347,7 @@ class Html_Builder_Type
 		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
 		$input->addClass('autowidth');
 		if ($this->readonly) {
-			$input->removeAttribute('name');
-			$input->setAttribute('readonly');
+			$this->setInputAsReadOnly($input);
 		}
 		else {
 			if ($filters) {
@@ -401,30 +400,50 @@ class Html_Builder_Type
 	 */
 	protected function buildString($multiline = false, $values = null)
 	{
-		if ($multiline) {
-			$input = new Textarea($this->getFieldName(), $this->value);
-			$input->addClass('autowidth');
-			$input->addClass('autoheight');
-		}
-		elseif ($values && !$this->readonly) {
-			if ($this->type->isMultipleString()) {
-				$input = new Set($this->getFieldName(), $values, $this->value);
+		// case choice of values (single or multiple)
+		if ($values) {
+			if (!$this->readonly) {
+				if ($this->type->isMultipleString()) {
+					$input = new Set($this->getFieldName(), $values, $this->value);
+				}
+				else {
+					if (!isset($values[''])) {
+						$values = array_merge(['' => ''], $values);
+					}
+					$input = new Select($this->getFieldName(), $values, $this->value);
+				}
 			}
 			else {
-				if (!isset($values[''])) {
-					$values = array_merge(['' => ''], $values);
+				if ($this->type->isMultipleString()) {
+					$selected = explode(',', $this->value);
+					$inputs = [];
+					foreach($values as $value => $caption) {
+						if (in_array($value, $selected)) {
+							$hidden = new Input(null, $value);
+							$hidden->setAttribute('type', 'hidden');
+							$hidden->setAttribute('readonly');
+							$inputs[] = [
+								$hidden,
+								Loc::tr($caption),
+								BR
+							];
+						}
+					}
+					$input = new Span($inputs);
+					$input->setAttribute('class', 'set');
+					$input->setBuildMode(Element::BUILD_MODE_RAW);
 				}
-				$input = new Select($this->getFieldName(), $values, $this->value);
+				else {
+					$hidden = new Input(null, $this->value);
+					$hidden->setAttribute('type', 'hidden');
+					$hidden->setAttribute('readonly');
+					$input = new Span([$hidden, Loc::tr($values[$this->value])]);
+				}
 			}
 		}
+		// case of free editable text (mono or multi line)
 		else {
-			$input = new Input($this->getFieldName(), $values ? Loc::tr($this->value) : $this->value);
-			$input->setAttribute('autocomplete', 'off');
-			$input->addClass('autowidth');
-		}
-		if ($this->readonly) {
-			$input->removeAttribute('name');
-			$input->setAttribute('readonly');
+			$input = $this->makeTextInputOrTextarea($multiline, $this->value);
 		}
 		$this->addConditionsToElement($input);
 		return $input;
@@ -483,6 +502,28 @@ class Html_Builder_Type
 			. '[' . $prefix . $this->name . ']';
 	}
 
+	/**
+	 * @param $multiline boolean
+	 * @param $value     string
+	 * @return Input
+	 */
+	private function makeTextInputOrTextarea($multiline, $value)
+	{
+		if ($multiline) {
+			$input = new Textarea($this->getFieldName(), $value);
+			$input->addClass('autoheight');
+		}
+		else {
+			$input = new Input($this->getFieldName(), $value);
+			$input->setAttribute('autocomplete', 'off');
+		}
+		$input->addClass('autowidth');
+		if ($this->readonly) {
+			$this->setInputAsReadOnly($input);
+		}
+		return $input;
+	}
+
 	//------------------------------------------------------------------------------ patchSearchTypes
 	/**
 	 * Patch search type : eg dates should be typed as string
@@ -498,6 +539,16 @@ class Html_Builder_Type
 				$this->value = Loc::dateToLocale($this->value);
 			}
 		}
+	}
+
+	//---------------------------------------------------------------------------- setInputAsReadOnly
+	/**
+	 * @param $input Element
+	 */
+	private function setInputAsReadOnly($input)
+	{
+		$input->removeAttribute('name');
+		$input->setAttribute('readonly');
 	}
 
 	//-------------------------------------------------------------------------- setOnChangeAttribute

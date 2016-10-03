@@ -36,9 +36,9 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (isset($property)) {
 			$this->null     = $property->getAnnotation('null')->value;
 			$this->property = $property;
-			$this->readonly = $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
-				User_Annotation::READONLY
-			);
+			$user_annotations = $property->getListAnnotation(User_Annotation::ANNOTATION);
+			// 1st, get read_only from @user readonly
+			$this->readonly = $user_annotations->has(User_Annotation::READONLY);
 			if (
 				!$this->readonly
 				&& ($property instanceof Reflection_Property_Value)
@@ -48,7 +48,17 @@ class Html_Builder_Property extends Html_Builder_Type
 				$user_default_annotation = $property->getAnnotation('user_default');
 				if ($user_default_annotation->value) {
 					$value = $user_default_annotation->call($property->getObject());
+					// if there is @user_default, there can not be @user if_empty
+					if ($user_annotations->has(User_Annotation::IF_EMPTY)) {
+						$flag_cannot_be_if_empty = true;
+					}
 				}
+			}
+			// 2nd, if not read_only but has a value and @user if_empty, then set read_only
+			if (!$this->readonly
+				&& ((is_object($value) && !Empty_Object::isEmpty($value)) || !empty($value))
+				&& (!isset($flag_cannot_be_if_empty) || !$flag_cannot_be_if_empty)) {
+				$this->readonly = $user_annotations->has(User_Annotation::IF_EMPTY);
 			}
 			$name = $property->pathAsField();
 			if (strpos($name, '[')) {
