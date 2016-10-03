@@ -250,7 +250,7 @@ class Reflection_Class extends ReflectionClass
 	{
 		$methods = [];
 		foreach (parent::getMethods() as $method) {
-			$methods[$method->name] = new Reflection_Method($method->class, $method->name);
+			$methods[$method->name] = new Reflection_Method($this->name, $method->name);
 		}
 		if ($flags) {
 			$flip = array_flip($flags);
@@ -318,7 +318,7 @@ class Reflection_Class extends ReflectionClass
 		}
 		$properties = [];
 		foreach (parent::getProperties() as $property) {
-			$property = new Reflection_Property($property->class, $property->name);
+			$property = new Reflection_Property($this->name, $property->name);
 			$property->final_class = $final_class;
 			$properties[$property->name] = $property;
 		}
