@@ -115,8 +115,7 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 	{
 		return $this->display
 			? $this->display
-			: Names::propertyToDisplay($this->path ? $this->path : $this->name);
-			//: Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias);
+			: Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias);
 	}
 
 	//---------------------------------------------------------------------------------------- format
