@@ -36,27 +36,9 @@ abstract class Getter
 		$method = 'run';
 		$application_classes = Application::current()->getClassesTree();
 
-		// $classes : the controller class name and its parents
+		// $classes : the controller class name and its parents and traits
 		// ['Vendor\Application\Module\Class_Name' => '\Module\Class_Name']
-		$classes = [];
-		do {
-			$classes[$class_name] = substr(
-				$class_name, strpos($class_name, BS, strpos($class_name, BS) + 1) + 1
-			);
-			if (class_exists($class_name)) {
-				$reflection_class = new Reflection_Class(Builder::className($class_name));
-				$extends_annotations = $reflection_class->getListAnnotations('extends');
-				foreach ($extends_annotations as $extends_annotation) {
-					foreach($extends_annotation->values() as $extends) {
-						$classes[$extends] = explode(BS, $extends, 3)[2];
-					}
-				}
-				$class_name = get_parent_class($class_name);
-			}
-			else {
-				$class_name = null;
-			}
-		} while ($class_name);
+		$classes = self::getClasses($class_name);
 
 		// Looking for specific controller for each application
 		$application_class = reset($application_classes);
@@ -210,6 +192,70 @@ if (isset($GLOBALS['D'])) echo '- try C2 ' . $path . SL . strtolower($sub) . '/D
 		$result = [isset($class) ? $class : null, $method];
 if (isset($GLOBALS['D'])) echo '- FOUND ' . join('::', $result) . BR;
 		return $result;
+	}
+
+	//------------------------------------------------------------------------------------ getClasses
+	/**
+	 * Get classes we can get from, starting from the actual lower descendant
+	 *
+	 * @param $class_name string
+	 * @return string[] key is the full name of each class, value is it without 'Vendor/Project/'
+	 */
+	static private function getClasses($class_name)
+	{
+		$classes = [];
+
+		do {
+			$classes[$class_name] = self::classNameWithoutVendorProject($class_name);
+			if (class_exists($class_name)) {
+				$reflection_class = new Reflection_Class(Builder::className($class_name));
+				// @extends
+				$extends_annotations = $reflection_class->getListAnnotations('extends');
+				foreach ($extends_annotations as $extends_annotation) {
+					foreach ($extends_annotation->values() as $extends) {
+						$classes[$extends] = self::classNameWithoutVendorProject($extends);
+					}
+				}
+				// use (traits)
+				$classes = array_merge($classes, self::getTraitsRecursive($reflection_class));
+				// parent classes
+				$class_name = get_parent_class($class_name);
+			}
+			else {
+				$class_name = null;
+			}
+		} while ($class_name);
+
+		return $classes;
+	}
+
+	//---------------------------------------------------------------------------- getTraitsRecursive
+	/**
+	 * Get traits we can get from, starting from the actual class / trait
+	 *
+	 * @param $class Reflection_Class
+	 * @return string[] key is the full name of each trait, value is it without 'Vendor/Project/'
+	 */
+	static private function getTraitsRecursive(Reflection_Class $class)
+	{
+		$traits = [];
+		foreach ($class->getTraits() as $trait) {
+			$traits[$trait->name] = self::classNameWithoutVendorProject($trait->name);
+			$traits = array_merge($traits, self::getTraitsRecursive($trait));
+		}
+		return $traits;
+	}
+
+	//----------------------------------------------------------------- classNameWithoutVendorProject
+	/**
+	 * Returns the name of the class, without the beginning 'Vendor\Project\'
+	 *
+	 * @param $class_name string 'Vendor\Project\Namespace\Class_Name'
+	 * @return string 'Namespace\Class_Name'
+	 */
+	static private function classNameWithoutVendorProject($class_name)
+	{
+		return explode(BS, $class_name, 3)[2];
 	}
 
 }
