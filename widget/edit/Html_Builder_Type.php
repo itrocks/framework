@@ -347,8 +347,15 @@ class Html_Builder_Type
 		$input->setAttribute('autocomplete', 'off');
 		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
 		$input->addClass('autowidth');
+		// id input (SM: should always be output, cause can be used by other properties)
+		$id_input = new Input(
+			$this->getFieldName('id_'), $this->value ? Dao::getObjectIdentifier($this->value) : ''
+		);
+		$id_input->setAttribute('type', 'hidden');
+		$id_input->addClass('id');
 		if ($this->readonly) {
 			$this->setInputAsReadOnly($input);
+			$id_input->setAttribute('disabled');
 		}
 		else {
 			if ($filters) {
@@ -364,12 +371,6 @@ class Html_Builder_Type
 			}
 			$input->addClass('combo');
 			$this->addConditionsToElement($input);
-			// id input
-			$id_input = new Input(
-				$this->getFieldName('id_'), $this->value ? Dao::getObjectIdentifier($this->value) : ''
-			);
-			$id_input->setAttribute('type', 'hidden');
-			$id_input->addClass('id');
 			// 'add' / 'edit' anchor
 			$fill_combo = isset($this->template)
 				? ['fill_combo' => $this->template->getFormId() . DOT . $this->getFieldName('id_', false)]
@@ -390,7 +391,7 @@ class Html_Builder_Type
 			$this->setOnChangeAttribute($id_input);
 			return $id_input . $input . $more . $edit;
 		}
-		return $input;
+		return $id_input . $input;
 	}
 
 	//----------------------------------------------------------------------------------- buildString
