@@ -22,7 +22,7 @@ use SAF\Framework\View;
 use SAF\Framework\View\Html\Template;
 use SAF\Framework\Widget\Button;
 use SAF\Framework\Widget\Button\Has_General_Buttons;
-use StdClass;
+use stdClass;
 
 /**
  * Import preview controller
@@ -152,7 +152,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 			if (!isset($customized_import_settings[$worksheet->settings->name])) {
 				unset($worksheet_general_buttons['delete']);
 			}
-			$parameters['custom'][$worksheet_number] = new StdClass();
+			$parameters['custom'][$worksheet_number] = new stdClass();
 			$parameters['custom'][$worksheet_number]->customized_lists = $customized_import_settings;
 			$parameters['custom'][$worksheet_number]->general_buttons = $worksheet_general_buttons;
 			$parameters['custom'][$worksheet_number]->settings = $worksheet->settings;
