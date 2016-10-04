@@ -4,6 +4,8 @@ namespace SAF\Framework;
 use SAF\Framework\Dao\File;
 use SAF\Framework\Import\Import_Export_Format;
 use SAF\Framework\Import\Import_Worksheet;
+use SAF\Framework\Locale\Loc;
+use SAF\Framework\Tools\Names;
 
 /**
  * Standard import class for your objects data
@@ -46,6 +48,17 @@ class Import
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return Names::classToDisplay($this->class_name) . ' :'
+			. SP . $this->format
+			. SP . Loc::tr('import');
 	}
 
 }
