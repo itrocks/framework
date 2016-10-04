@@ -15,6 +15,12 @@ class Set extends Element
 	 */
 	private $base_name;
 
+	//------------------------------------------------------------------------------------- $readonly
+	/**
+	 * @var boolean
+	 */
+	private $readonly = false;
+
 	//------------------------------------------------------------------------------------- $selected
 	/**
 	 * @var string[]
@@ -33,13 +39,16 @@ class Set extends Element
 	 * @param $values    string[]
 	 * @param $selected  string
 	 * @param $id        string
+	 * @param $readonly  boolean
 	 */
-	public function __construct($base_name = null, $values = null, $selected = null, $id = null)
+	public function __construct($base_name = null, $values = null, $selected = null, $id = null,
+		$readonly = false)
 	{
 		parent::__construct('span', true);
 		$this->setAttribute('class', 'set');
 		if (isset($id))         $this->setAttribute('id',   $id);
 		if (isset($base_name))  $this->base_name = $base_name;
+		if (isset($readonly))   $this->readonly = $readonly;
 		if (isset($values))     $this->values = $values;
 		if (isset($selected))   $this->selected($selected);
 	}
@@ -86,6 +95,11 @@ class Set extends Element
 				$html_option->setAttribute('type', 'checkbox');
 				if (in_array($value, $selected)) {
 					$html_option->setAttribute('checked');
+				}
+				if ($this->readonly) {
+					$html_option->removeAttribute('name');
+					$html_option->setAttribute('readonly');
+					$html_option->setAttribute('disabled');
 				}
 				$label = new Label(strval($html_option) . Loc::tr($caption));
 				$label->setAttribute('name', $this->base_name);

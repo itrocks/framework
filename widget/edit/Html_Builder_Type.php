@@ -19,6 +19,7 @@ use SAF\Framework\View\Html\Dom\Button;
 use SAF\Framework\View\Html\Dom\Element;
 use SAF\Framework\View\Html\Dom\Image;
 use SAF\Framework\View\Html\Dom\Input;
+use SAF\Framework\View\Html\Dom\Label;
 use SAF\Framework\View\Html\Dom\Select;
 use SAF\Framework\View\Html\Dom\Set;
 use SAF\Framework\View\Html\Dom\Span;
@@ -415,29 +416,14 @@ class Html_Builder_Type
 			}
 			else {
 				if ($this->type->isMultipleString()) {
-					$selected = explode(',', $this->value);
-					$inputs = [];
-					foreach($values as $value => $caption) {
-						if (in_array($value, $selected)) {
-							$hidden = new Input(null, $value);
-							$hidden->setAttribute('type', 'hidden');
-							$hidden->setAttribute('readonly');
-							$inputs[] = [
-								$hidden,
-								Loc::tr($caption),
-								BR
-							];
-						}
-					}
-					$input = new Span($inputs);
-					$input->setAttribute('class', 'set');
-					$input->setBuildMode(Element::BUILD_MODE_RAW);
+					$input = new Set($this->getFieldName(), $values, $this->value, null, $this->readonly);
 				}
 				else {
 					$hidden = new Input(null, $this->value);
 					$hidden->setAttribute('type', 'hidden');
 					$hidden->setAttribute('readonly');
-					$input = new Span([$hidden, Loc::tr($values[$this->value])]);
+					$input = new Label([$hidden, Loc::tr($values[$this->value])]);
+					$input->setBuildMode(Element::BUILD_MODE_RAW);
 				}
 			}
 		}
