@@ -21,6 +21,15 @@ use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 class Loc implements Registerable
 {
 
+	//-------------------------------------------------------------------------------------- FEMININE
+	const FEMININE = 'f';
+
+	//------------------------------------------------------------------------------------- MASCULINE
+	const MASCULINE = 'm';
+
+	//--------------------------------------------------------------------------------------- NEUTRAL
+	const NEUTRAL = 'n';
+
 	//-------------------------------------------------------------------------------------- $context
 	/**
 	 * Current context for translations
