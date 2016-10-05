@@ -17,10 +17,11 @@ abstract class Empty_Object
 	 * Returns true if the object properties values are all empty (or null or unset or equal to
 	 * default value) or empty objects.
 	 *
-	 * @param $object object
+	 * @param $object          object
+	 * @param $check_composite boolean if true, check if @composite properties are empty too
 	 * @return boolean
 	 */
-	public static function isEmpty($object)
+	public static function isEmpty($object, $check_composite = false)
 	{
 		$is_empty = true;
 		if ($object instanceof Can_Be_Empty) {
@@ -30,11 +31,15 @@ abstract class Empty_Object
 			$class = new Reflection_Class(get_class($object));
 			$default = get_class_vars($class->name);
 			foreach ($class->accessProperties() as $property) {
-				if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
+				$is_composite = $property->getAnnotation('composite')->value;
+				if (!$property->isStatic() && ($check_composite || !$is_composite)) {
 					$value = $property->getValue($object);
 					if (
 						!empty($value)
-						&& ((!is_object($value)) || !Empty_Object::isEmpty($value))
+						&& (
+							(!is_object($value))
+							|| (($check_composite && $is_composite) || !Empty_Object::isEmpty($value))
+						)
 						&& (is_object($value) || ($value !== $default[$property->name]))
 					) {
 						$is_empty = false;
