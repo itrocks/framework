@@ -5,6 +5,10 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * A property context annotation needs the property to be properly built
+ * Annotations class that are intended for properties only should implement this
+ *
+ * @see Class_Context_Annotation
+ * @see Reflection_Context_Annotation
  */
 interface Property_Context_Annotation
 {

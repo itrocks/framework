@@ -45,7 +45,7 @@ class Property_Validator
 	{
 		$validated = true;
 		foreach ($this->property->getAnnotations() as $annotation_name => $annotation) {
-			if ($annotation instanceof Template\Property_Validator) {
+			if ($annotation instanceof Template\Validator) {
 				/** @var $annotation Template\Property_Validator|Property_Validate_Annotation */
 				$validated_annotation = $annotation->validate($object);
 				if ($annotation->valid === true)  $annotation->valid = Validate::INFORMATION;

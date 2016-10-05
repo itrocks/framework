@@ -190,7 +190,7 @@ class Object_Validator implements Registerable
 
 		// object validation
 		foreach ($class->getAnnotations() as $annotation) {
-			if ($annotation instanceof Template\Object_Validator) {
+			if ($annotation instanceof Template\Validator) {
 				$validated_annotation = $annotation->validate($object);
 				if (is_null($validated_annotation)) {
 					return $this->valid = null;

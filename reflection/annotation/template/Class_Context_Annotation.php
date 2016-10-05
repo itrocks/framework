@@ -1,11 +1,14 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Template;
 
-use SAF\Framework\PHP;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
  * A class context annotation needs the class to be properly built
+ * Annotations class that are intended for class only should implement this
+ *
+ * @see Property_Context_Annotation
+ * @see Reflection_Context_Annotation
  */
 interface Class_Context_Annotation
 {

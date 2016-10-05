@@ -4,7 +4,11 @@ namespace SAF\Framework\Reflection\Annotation\Template;
 use SAF\Framework\Reflection\Interfaces\Reflection;
 
 /**
- * A property context annotation needs the property to be properly built
+ * A reflection context annotation needs either a property or a class to be properly built
+ * Annotations class that are intended to work for both class and properties should implement this
+ *
+ * @see Class_Context_Annotation
+ * @see Property_Context_Annotation
  */
 interface Reflection_Context_Annotation
 {
@@ -12,10 +16,9 @@ interface Reflection_Context_Annotation
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value           string
-	 * @param $property        Reflection eg the contextual Reflection_Property or Reflection_Class
-	 *                                    object
+	 * @param $class_property  Reflection contextual Reflection_Class or Reflection_Property object
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $property, $annotation_name);
+	public function __construct($value, Reflection $class_property, $annotation_name);
 
 }
