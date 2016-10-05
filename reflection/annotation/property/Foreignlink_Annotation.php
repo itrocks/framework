@@ -22,7 +22,7 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	 */
 	public function __construct($value, Reflection_Property $property)
 	{
-		parent::__construct($value, $property);
+		parent::__construct($value);
 		if (empty($this->value)) {
 			$link = $property->getAnnotation('link')->value;
 			$possibles = null;

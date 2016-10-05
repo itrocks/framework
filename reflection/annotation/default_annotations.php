@@ -288,7 +288,7 @@ Parser::$default_annotations = [
 	/**
 	 * @replaces property_name
 	 * This tells the framework the property replaces an existing parent property name, so the parent
-	 * property and this property will point on the same reference and have a common value
+	 * property and this property will point on the same reference and have a common value.
 	 */
 	__NAMESPACE__ . '\Property\Replaces_Annotation' => Annotation::class,
 
@@ -298,6 +298,12 @@ Parser::$default_annotations = [
 	 * disable ie for properties which values often contain the - character.
 	 */
 	__NAMESPACE__ . '\Property\Search_Range_Annotation' => Default_True_Boolean_Annotation::class,
+
+	/**
+	 * @set_store_name Store_Name
+	 * Defines the name of the automatically generated link table.
+	 */
+	__NAMESPACE__ . '\Property\Set_Store_Name_Annotation' => Annotation::class,
 
 	/**
 	 * @setter [[[\Vendor\Module\]Class_Name::]methodName]
@@ -312,7 +318,7 @@ Parser::$default_annotations = [
 	 * Tells that for a Date_Time we must show seconds to the user.
 	 * If not (default), seconds are always hidden by Loc::dateToLocale()
 	 */
-	__NAMESPACE__ . '\Property\Show_Seconds' => Boolean_Annotation::class,
+	__NAMESPACE__ . '\Property\Show_Seconds_Annotation' => Boolean_Annotation::class,
 
 	/**
 	 * @signed
