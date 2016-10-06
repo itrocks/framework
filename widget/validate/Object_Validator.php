@@ -17,6 +17,7 @@ use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\View;
 use SAF\Framework\View\View_Exception;
 use SAF\Framework\Widget\Validate\Property;
+use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
 
 /**
  * The object validator links validation processes to objects
@@ -196,6 +197,11 @@ class Object_Validator implements Registerable
 		foreach ($class->getAnnotations() as $annotation) {
 			if ($annotation instanceof Template\Validator) {
 				$validated_annotation = $annotation->validate($object);
+				if (isA($annotation, Property_Validate_Annotation::class)) {
+					/** @var $annotation Template\Property_Validator|Property_Validate_Annotation */
+					if ($annotation->valid === true)  $annotation->valid = Validate::INFORMATION;
+					if ($annotation->valid === false) $annotation->valid = Validate::ERROR;
+				}
 				if (is_null($validated_annotation)) {
 					return $this->valid = null;
 				}

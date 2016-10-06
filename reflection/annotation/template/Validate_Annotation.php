@@ -15,7 +15,9 @@ use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
  */
 class Validate_Annotation extends Method_Annotation  implements Validator
 {
-	use Property_Validate_Annotation;
+	use Property_Validate_Annotation {
+		Property_Validate_Annotation::getValue as getPropertyValue;
+	}
 
 	//-------------------------------------------------------------------------------------- $message
 	/**
@@ -35,6 +37,21 @@ class Validate_Annotation extends Method_Annotation  implements Validator
 		if ($class_property instanceof Reflection_Property) {
 			$this->property = $class_property;
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Gets the value of the property from the last validated object
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		if (isset($this->property)) {
+			$return = $this->getPropertyValue();
+			return $return;
+		}
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
@@ -58,11 +75,12 @@ class Validate_Annotation extends Method_Annotation  implements Validator
 	public function validate($object)
 	{
 		$this->object = $object;
-		$result = $this->call($object, isset($this->property) ? [$this->property] : []);
-		if ($result !== true) {
-			$this->message = $result;
+		$this->valid = $this->call($object, isset($this->property) ? [$this->property] : []);
+		if ($this->valid !== true && $this->valid !== false && !is_null($this->valid)) {
+			$this->message = $this->valid;
+			$this->valid = false;
 		}
-		return $result === true;
+		return $this->valid === true;
 	}
 
 }

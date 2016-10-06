@@ -17,15 +17,24 @@
 	<ul>
 		<!--getErrors-->
 		<li>
-			|{property.name}| {?getValue}&nbsp;:
+			<!-- property validation -->
+			<!--property?-->
+			|{property.alias}| {?getValue}&nbsp;:
 			|{reportMessage}|
-			<!--value--> - |expected ¦{.}¦|<!--value-->
+			<!--getValue--> - |expected ¦{getValue}¦|<!--getValue-->
 			<script>
-				$('input[name="id_{property.name}"]').next('input').addClass('bad');
-				$('input[name="{property.name}"]').addClass('bad');
+				$('#{property.name} label + div').each(function () {
+					$(this).find("input:visible:not(:checkbox), textarea, select").addClass('bad');
+					$(this).children('span.set').closest('div').addClass('bad');
+				})
 				$('input[name="{property.name}[0]"]').next('input').addClass('bad');
 				$('.bad').first().focus();
 			</script>
+			<!--property?-->
+			<!-- object validation -->
+			<!--!property?-->
+			|{reportMessage}|
+			<!--!property?-->
 		</li>
 		<!--getErrors-->
 	</ul>
