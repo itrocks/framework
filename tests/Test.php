@@ -9,6 +9,15 @@ use SAF\Framework\Controller\Response;
 class Test
 {
 
+	//------------------------------------------------------------------------------------------- ALL
+	const ALL = 'all';
+
+	//---------------------------------------------------------------------------------------- ERRORS
+	const ERRORS = 'errors';
+
+	//------------------------------------------------------------------------------------------ NONE
+	const NONE = 'none';
+
 	//-------------------------------------------------------------------------------------- $capture
 	/**
 	 * Capture of the output, filled in by captureStart() and flushed by captureEnd()
@@ -17,6 +26,28 @@ class Test
 	 */
 	private $capture;
 
+	//--------------------------------------------------------------------------------- $errors_count
+	/**
+	 * @var integer
+	 */
+	public $errors_count = 0;
+
+	//--------------------------------------------------------------------------------------- $header
+	/**
+	 * Header content to show if an error comes when $show_when_ok is false
+	 * Reset once shown
+	 *
+	 * @var string
+	 */
+	public $header;
+
+	//--------------------------------------------------------------------------------- $show_when_ok
+	/**
+	 * @values all, errors, none
+	 * @var string
+	 */
+	public $show = self::ERRORS;
+
 	//----------------------------------------------------------------------------------- $start_time
 	/**
 	 * The start time of each test
@@ -24,6 +55,12 @@ class Test
 	 * @var float
 	 */
 	public $start_time;
+
+	//---------------------------------------------------------------------------------- $tests_count
+	/**
+	 * @var integer
+	 */
+	public $tests_count = 0;
 
 	//---------------------------------------------------------------------------------------- assume
 	/**
@@ -58,6 +95,7 @@ class Test
 				$duration .= 'μs';
 			}
 			$result = '<span style="color:green;font-weight:bold">OK</span> (<i>' . $duration . '</i>)';
+			$result_code = Response::OK;
 		}
 		else {
 			$result = '<span style="color:red;font-weight:bold">BAD</span>'
@@ -73,9 +111,23 @@ class Test
 				? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff2, true) . ']</pre>')
 				: ''
 			);
+			$result_code = Response::ERROR;
 		}
-		echo '<li>' . str_replace(get_class($this) . '::', '', $test) . ' : ' . $result;
-		return ($result === Response::OK);
+		$is_error = ($result_code !== Response::OK);
+		if ($this->header && $is_error) {
+			echo $this->header;
+			$this->header = '';
+		}
+		if (($this->show === self::ALL) || ($is_error && $this->show === self::ERRORS)) {
+			echo '<li>'
+				. str_replace(get_class($this) . '::', '', $test) . ' : ' . $result
+				. '</li>' . LF;
+		}
+		if ($is_error) {
+			$this->errors_count ++;
+		}
+		$this->tests_count ++;
+		return ($result_code === Response::OK);
 	}
 
 	//--------------------------------------------------------------------------------- assumeCapture
@@ -97,8 +149,7 @@ class Test
 	 */
 	public function begin()
 	{
-		echo '<h3>' . get_class($this) . '</h3>';
-		echo '<ul>';
+		$this->show('<h3>' . get_class($this) . '</h3>' . LF . '<ul>' . LF);
 	}
 
 	//------------------------------------------------------------------------------------ captureEnd
@@ -131,7 +182,7 @@ class Test
 	 */
 	public function end()
 	{
-		echo '</ul>';
+		$this->show('</ul>' . LF);
 	}
 
 	//---------------------------------------------------------------------------------------- method
@@ -142,7 +193,21 @@ class Test
 	 */
 	public function method($method_name)
 	{
-		echo '<h4>' . $method_name . '</h4>';
+		$this->show('<h4>' . $method_name . '</h4>' . LF);
+	}
+
+	//------------------------------------------------------------------------------------------ show
+	/**
+	 * @param $show string
+	 */
+	private function show($show)
+	{
+		if (($this->show === self::ALL) || ($this->errors_count && ($this->show === self::ERRORS))) {
+			echo $show;
+		}
+		elseif ($this->show === self::ERRORS) {
+			$this->header .= $show;
+		}
 	}
 
 	//--------------------------------------------------------------------------------------- toArray

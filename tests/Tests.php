@@ -12,9 +12,29 @@ use SAF\Framework\Tools\Names;
 class Tests
 {
 
+	//--------------------------------------------------------------------------------- $errors_count
+	/**
+	 * @var integer
+	 */
+	public $errors_count;
+
+	//----------------------------------------------------------------------------------------- $show
+	/**
+	 * @var string
+	 */
+	public $show = Test::ERRORS;
+
+	//---------------------------------------------------------------------------------- $tests_count
+	/**
+	 * @var integer
+	 */
+	public $tests_count;
+
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
+		$this->errors_count = 0;
+		$this->tests_count  = 0;
 		foreach (Application::current()->include_path->getSourceDirectories() as $directory_name) {
 			$this->runDir($directory_name);
 		}
@@ -29,6 +49,7 @@ class Tests
 	{
 		/** @var $unit_test Test|Runnable */
 		$unit_test = new $class_name();
+		$unit_test->show = $this->show;
 		if ($unit_test instanceof Runnable) {
 			$unit_test->begin();
 			$unit_test->run();
@@ -57,6 +78,8 @@ class Tests
 				$unit_test->end();
 			}
 		}
+		$this->errors_count += $unit_test->errors_count;
+		$this->tests_count  += $unit_test->tests_count;
 	}
 
 	//---------------------------------------------------------------------------------------- runDir
@@ -102,6 +125,20 @@ class Tests
 		) {
 			$this->runClass($class_name);
 		}
+	}
+
+	//----------------------------------------------------------------------------- successPercentage
+	/**
+	 * @param $with_text boolean
+	 * @return integer|string
+	 */
+	public function successPercentage($with_text)
+	{
+		$text = $with_text ? '% of success' : '';
+		$percent = $this->tests_count
+			? (floor(100 * ($this->tests_count - $this->errors_count) / $this->tests_count))
+			: '';
+		return $with_text ? ($percent . $text) : $percent;
 	}
 
 }
