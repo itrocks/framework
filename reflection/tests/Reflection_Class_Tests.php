@@ -23,19 +23,17 @@ class Reflection_Class_Tests extends Test
 		$date->final_class = Order::class;
 		$number = new Reflection_Property(Document::class, 'number');
 		$number->final_class = Order::class;
-		$has_workflow = new Reflection_Property(Document::class, 'has_workflow');
-		$has_workflow->final_class = Order::class;
 		$test1 = $this->assume(
-			__METHOD__ . '.1',
+			__METHOD__,
 			$properties = $class->accessProperties(),
 			[
 				'date'            => $date,
 				'number'          => $number,
-				'has_workflow'    => $has_workflow,
-				'client'          => new Reflection_Property(Order::class,    'client'),
-				'delivery_client' => new Reflection_Property(Order::class,    'delivery_client'),
-				'lines'           => new Reflection_Property(Order::class,    'lines'),
-				'salesmen'        => new Reflection_Property(Order::class,    'salesmen')
+				'has_workflow'    => new Reflection_Property(Order::class, 'has_workflow'),
+				'client'          => new Reflection_Property(Order::class, 'client'),
+				'delivery_client' => new Reflection_Property(Order::class, 'delivery_client'),
+				'lines'           => new Reflection_Property(Order::class, 'lines'),
+				'salesmen'        => new Reflection_Property(Order::class, 'salesmen')
 			]
 		);
 		if ($test1) {
@@ -92,19 +90,16 @@ class Reflection_Class_Tests extends Test
 	//-------------------------------------------------------------------------- testGetAllProperties
 	public function testGetAllProperties()
 	{
-		$date = new Reflection_Property(Document::class, 'date');
-		$date->final_class = Order::class;
+		$date   = new Reflection_Property(Document::class, 'date');
 		$number = new Reflection_Property(Document::class, 'number');
-		$number->final_class = Order::class;
-		$has_workflow = new Reflection_Property(Document::class, 'has_workflow');
-		$has_workflow->final_class = Order::class;
+		$date->final_class = $number->final_class = Order::class;
 		$this->assume(
 			__METHOD__,
 			(new Reflection_Class(Order::class))->getProperties([T_EXTENDS, T_USE]),
 			[
 				'date'            => $date,
 				'number'          => $number,
-				'has_workflow'    => $has_workflow,
+				'has_workflow'    => new Reflection_Property(Order::class, 'has_workflow'),
 				'client'          => new Reflection_Property(Order::class, 'client'),
 				'delivery_client' => new Reflection_Property(Order::class, 'delivery_client'),
 				'lines'           => new Reflection_Property(Order::class, 'lines'),
