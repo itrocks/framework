@@ -1,6 +1,8 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace SAF\Framework\Widget\Validate\Template;
 
+use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
+use SAF\Framework\Reflection\Annotation\Template\Validator;
 use SAF\Framework\Reflection\Interfaces\Reflection;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
@@ -13,7 +15,7 @@ use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
  * If annotation is set on a class, arguments will be only the object
  * If annotation is set on a property, arguments will be the object then the Reflection_Property
  */
-class Validate_Annotation extends Method_Annotation  implements Validator
+class Validate_Annotation extends Method_Annotation implements Validator
 {
 	use Property_Validate_Annotation {
 		Property_Validate_Annotation::getValue as getPropertyValue;

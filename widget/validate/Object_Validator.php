@@ -9,14 +9,15 @@ use SAF\Framework\Dao\Option\Exclude;
 use SAF\Framework\Dao\Option\Only;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Parser;
-use SAF\Framework\Reflection\Annotation\Template;
 use SAF\Framework\Reflection\Annotation\Template\Validator;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\View;
 use SAF\Framework\View\View_Exception;
 use SAF\Framework\Widget\Validate\Property;
+use SAF\Framework\Widget\Validate\Template;
 use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
 
 /**
@@ -195,10 +196,10 @@ class Object_Validator implements Registerable
 
 		// object validation
 		foreach ($class->getAnnotations() as $annotation) {
-			if ($annotation instanceof Template\Validator) {
+			if ($annotation instanceof Annotation\Template\Validator) {
 				$validated_annotation = $annotation->validate($object);
 				if (isA($annotation, Property_Validate_Annotation::class)) {
-					/** @var $annotation Template\Property_Validator|Property_Validate_Annotation */
+					/** @var $annotation Property_Validate_Annotation */
 					if ($annotation->valid === true)  $annotation->valid = Validate::INFORMATION;
 					if ($annotation->valid === false) $annotation->valid = Validate::ERROR;
 				}
