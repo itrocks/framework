@@ -52,6 +52,23 @@ class Reflection_Class extends ReflectionClass
 		return $properties;
 	}
 
+	//-------------------------------------------------------------------------- accessPropertiesDone
+	/**
+	 * Reset properties accessibility to false when they are not public
+	 *
+	 * @return Reflection_Property[]
+	 */
+	public function accessPropertiesDone()
+	{
+		$properties = $this->getProperties([T_EXTENDS, T_USE]);
+		foreach ($properties as $property) {
+			if (!$property->isPublic()) {
+				$property->setAccessible(false);
+			}
+		}
+		return $properties;
+	}
+
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
@@ -118,6 +135,18 @@ class Reflection_Class extends ReflectionClass
 		return null;
 	}
 
+	//-------------------------------------------------------------------------------- getConstructor
+	/**
+	 * Gets the constructor of the reflected class
+	 *
+	 * @return Reflection_Method
+	 */
+	public function getConstructor()
+	{
+		$constructor = parent::getConstructor();
+		return $constructor ? new Reflection_Method($this->name, $constructor->name) : null;
+	}
+
 	//------------------------------------------------------------------ getDeclaredClassesUsingTrait
 	/**
 	 * Returns a list of declared classes that use this trait
@@ -135,18 +164,6 @@ class Reflection_Class extends ReflectionClass
 			}
 		}
 		return $classes;
-	}
-
-	//-------------------------------------------------------------------------------- getConstructor
-	/**
-	 * Gets the constructor of the reflected class
-	 *
-	 * @return Reflection_Method
-	 */
-	public function getConstructor()
-	{
-		$constructor = parent::getConstructor();
-		return $constructor ? new Reflection_Method($this->name, $constructor->name) : null;
 	}
 
 	//-------------------------------------------------------------------------- getDefaultProperties
