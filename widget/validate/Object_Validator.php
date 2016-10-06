@@ -150,6 +150,9 @@ class Object_Validator implements Registerable
 			'precision'  => Property\Precision_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class
 		]);
+		$register->setAnnotations(Parser::T_TEMPLATE, [
+			'validate'   => Template\Validate_Annotation::class
+		]);
 	}
 
 	//-------------------------------------------------------------------------------------- validate
