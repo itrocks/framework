@@ -3,7 +3,6 @@ namespace SAF\Framework\Plugin;
 
 use SAF\Framework\AOP\Weaver\IWeaver;
 use SAF\Framework\Reflection\Annotation\Parser;
-use SAF\Framework\Tools\Names;
 
 /**
  * Plugin register structure
@@ -81,14 +80,7 @@ class Register
 	 */
 	public function setAnnotation($context, $annotation_name, $annotation_class)
 	{
-		// instantiates Parser, in order to call its __destruct() method at the script end
-		if (!isset($GLOBALS['parser'])) {
-			$GLOBALS['parser'] = new Parser();
-		}
-		// add annotation
-		$namespace = 'SAF\Framework\Reflection\Annotation' . BS . $context;
-		$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
-		Parser::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
+		Parser::setAdditionalAnnotation($context, $annotation_name, $annotation_class);
 	}
 
 	//-------------------------------------------------------------------------------- setAnnotations
@@ -101,16 +93,7 @@ class Register
 	 */
 	public function setAnnotations($context, $annotations_classes)
 	{
-		// instantiates Parser, in order to call its __destruct() method at the script end
-		if (!isset($GLOBALS['parser'])) {
-			$GLOBALS['parser'] = new Parser();
-		}
-		// add annotation
-		$namespace = 'SAF\Framework\Reflection\Annotation' . BS . $context;
-		foreach ($annotations_classes as $annotation_name => $annotation_class) {
-			$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
-			Parser::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
-		}
+		Parser::setAdditionalAnnotations($context, $annotations_classes);
 	}
 
 	//------------------------------------------------------------------------------ setConfiguration
