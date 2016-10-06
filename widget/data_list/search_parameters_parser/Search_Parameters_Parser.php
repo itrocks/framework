@@ -3,6 +3,7 @@ namespace SAF\Framework\Widget\Data_List;
 
 use Exception;
 use SAF\Framework\Dao\Func;
+use SAF\Framework\Dao\Func\Logical;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Class;
@@ -109,7 +110,7 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     Reflection_Property
-	 * @return Func
+	 * @return Logical
 	 */
 	protected function applyAnd($search_value, Reflection_Property $property)
 	{
@@ -190,7 +191,7 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     Reflection_Property
-	 * @return Func
+	 * @return Logical
 	 */
 	protected function applyNot($search_value, Reflection_Property $property)
 	{
@@ -212,7 +213,7 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     Reflection_Property
-	 * @return Func
+	 * @return Logical
 	 */
 	protected function applyOr($search_value, Reflection_Property $property)
 	{

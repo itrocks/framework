@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\Widget\Data_List;
 
-use SAF\Framework\Locale;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Widget\Data_List_Setting;
 

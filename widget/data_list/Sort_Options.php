@@ -54,7 +54,7 @@ class Sort_Options
 	 *
 	 * @param $class_name    string
 	 * @param $property_path string
-	 * @return boolean|Sort[]
+	 * @return boolean|Sort
 	 */
 	public function get($class_name, $property_path = null)
 	{
