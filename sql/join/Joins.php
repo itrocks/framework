@@ -137,7 +137,7 @@ class Joins
 		$this->joins[$path] = $join->mode
 			? $this->addFinalize($join, $master_path, $foreign_class_name, $path, $depth)
 			: null;
-		if (isset($linked_master_alias)) {
+		if (isset($linked_master_alias) && !$join->linked_join) {
 			$join->master_alias = $linked_master_alias;
 		}
 		return $this->joins[$path];
@@ -640,29 +640,6 @@ class Joins
 	public function getStartingClassName()
 	{
 		return $this->classes[''];
-	}
-
-	//--------------------------------------------------------------------------------------- inAlias
-	/**
-	 * Returns true if the property is found into the foreign class matching the aliased join
-	 *
-	 * @param $property Reflection_Property
-	 * @param $alias    string
-	 * @return boolean
-	 */
-	private function inAlias(Reflection_Property $property, $alias)
-	{
-		$join = $this->byAlias($alias);
-		if ($join) {
-			$class_name = $join->foreign_class;
-			if ($class_name) {
-				$class = new Reflection_Class($class_name);
-				if ($class->hasProperty($property->name)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
