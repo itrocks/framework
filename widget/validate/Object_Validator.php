@@ -140,6 +140,9 @@ class Object_Validator implements Registerable
 		$register->aop->beforeMethod(
 			[Main::class, 'runController'], [$this, 'beforeMainControllerRun']
 		);
+		$register->setAnnotations(Parser::T_CLASS, [
+			'validate'   => Template\Validate_Annotation::class
+		]);
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'length'     => Property\Length_Annotation::class,
 			'mandatory'  => Property\Mandatory_Annotation::class,
@@ -148,9 +151,7 @@ class Object_Validator implements Registerable
 			'min_length' => Property\Min_Length_Annotation::class,
 			'min_value'  => Property\Min_Value_Annotation::class,
 			'precision'  => Property\Precision_Annotation::class,
-			'signed'     => Property\Signed_Annotation::class
-		]);
-		$register->setAnnotations(Parser::T_TEMPLATE, [
+			'signed'     => Property\Signed_Annotation::class,
 			'validate'   => Template\Validate_Annotation::class
 		]);
 	}
