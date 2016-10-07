@@ -243,6 +243,8 @@ class Maintainer implements Registerable
 	) {
 		$mysqli = $object;
 		if ($mysqli->last_errno && !isset($this->already[$query])) {
+			$last_errno = $mysqli->last_errno;
+			$last_error = $mysqli->last_error;
 			$this->already[$query] = 1;
 			if (!isset($mysqli->context)) {
 				$mysqli->context = $this->guessContext($query);
@@ -269,6 +271,10 @@ class Maintainer implements Registerable
 					if (!$mysqli->last_errno && !$mysqli->last_error) {
 						$joinpoint->stop = true;
 					}
+				}
+				elseif (!$mysqli->last_errno) {
+					$mysqli->last_errno = $last_errno;
+					$mysqli->last_error = $last_error;
 				}
 			}
 		}
