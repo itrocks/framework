@@ -385,6 +385,12 @@ class Reflection_Source
 			elseif (in_array($token_id, [T_CLASS, T_INTERFACE, T_TRAIT])) {
 				$use_what = T_CLASS;
 				$class_name = $this->fullClassName($this->scanClassName(), false);
+				if (substr($class_name, -1) === BS) {
+					trigger_error(
+						'bad class name ' . $class_name . SP . print_r($token, true),
+						E_USER_WARNING
+					);
+				}
 				$class = new Reflection_Class($this, $class_name);
 				$class->line = $token[2];
 				$class->type = $token_id;
@@ -478,7 +484,8 @@ class Reflection_Source
 			}
 
 			// ::class
-			elseif ($token_id === T_DOUBLE_COLON) {
+			elseif (in_array($token_id, [T_DOUBLE_COLON, T_NS_C])) {
+				//print_r($token); echo BR;
 				if ($f_instantiates) {
 					$token = $this->tokens[$this->token_key - 1];
 					if (($token[1][0] !== '$') && !in_array($token[1], ['self', 'static', '__CLASS__'])) {
@@ -488,8 +495,8 @@ class Reflection_Source
 							$class_name = $this->tokens[$tk][1] . $class_name;
 							$tk --;
 						} while (in_array($this->tokens[$tk][0], [T_NS_SEPARATOR, T_STRING]));
-						$type  = $this->tokens[++$this->token_key];
-						$type  = (is_array($type) && ($type[1] === 'class'))
+						$type = $this->tokens[++$this->token_key];
+						$type = (is_array($type) && ($type[1] === 'class'))
 							? Dependency::T_CLASS
 							: Dependency::T_STATIC;
 						$class_name = $this->fullClassName($class_name);
