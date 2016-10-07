@@ -146,6 +146,7 @@ abstract class Authentication
 				->getAnnotation('password')->value
 		))->encrypted();
 		foreach (Dao::search($search) as $user) {
+			/** @var $user User */
 			if ($user->password === $password) {
 				return $user;
 			}
