@@ -59,10 +59,12 @@ class Link_Table
 			$master_table  = Dao::storeNameOf($this->property->class);
 			$foreign_table = Dao::storeNameOf($this->property->getType()->getElementTypeAsString());
 			$definitions   = [
-				'{default}' => $this->defaultStoreName($master_table, $foreign_table),
 				'{master}'  => $master_table,
 				'{foreign}' => $foreign_table
 			];
+			if (strpos($table, '{default}') !== false) {
+				$definitions['{default}'] = $this->defaultStoreName($master_table, $foreign_table);
+			}
 			foreach ($definitions as $def => $value) {
 				$table = str_replace($def, $value, $table);
 			}
@@ -81,9 +83,17 @@ class Link_Table
 	 */
 	private function defaultStoreName($master_table, $foreign_table)
 	{
-		return ($master_table < $foreign_table)
-			? ($master_table . '_' . $foreign_table)
-			: ($foreign_table . '_' . $master_table);
+		list($left, $right) = ($master_table < $foreign_table)
+			? [$master_table, $foreign_table]
+			: [$foreign_table, $master_table];
+		$left  = explode('_', $left);
+		$right = explode('_', $right);
+		$last  = min(count($left), count($right)) - 1;
+		$skip = 0;
+		while (($skip < $last) && ($right[$skip] === $left[$skip])) {
+			$skip ++;
+		}
+		return join('_', $left) . '_' . join('_', array_slice($right, $skip));
 	}
 
 	//--------------------------------------------------------------------------------- foreignColumn
