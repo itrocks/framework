@@ -47,20 +47,22 @@ class Select_Tests extends Test
 					&& $class->getAnnotation('business')->value
 					&& !strpos($class->name, BS . 'Tests' . BS)
 				) {
-					echo '- ' . $class->name . BR;
 					$properties = $this->propertyNames($class, $depth - 1);
 					$builder    = new Select($class->name, $properties);
 					$query      = 'EXPLAIN ' . $builder->buildQuery();
-					try {
-						$dao->setContext();
-						$dao->query($query);
-						$this->assume($class->name, 'works', 'works');
-					}
-					catch (Exception $exception) {
-						$this->assume(
-							$class->name, $dao->getConnection()->last_error . PRE . $query . _PRE, 'works', false
-						);
-						flush(); ob_flush();
+					if (!strpos($query, '.id_ ')) {
+						try {
+							$dao->setContext();
+							$dao->query($query);
+							$this->assume($class->name, 'works', 'works');
+						}
+						catch (Exception $exception) {
+							$this->assume(
+								$class->name, $dao->getConnection()->last_error . PRE . $query . _PRE, 'works',
+								false
+							);
+							flush(); ob_flush();
+						}
 					}
 				}
 			}
@@ -81,7 +83,6 @@ class Select_Tests extends Test
 		$properties = Replaces_Annotations::removeReplacedProperties($properties);
 		foreach ($properties as $property) {
 			/** @var $property Reflection_Property */
-			echo '~ ' . $property->name;
 			$type  = $property->getType();
 			$class = ($type->isClass() && ($type->getElementTypeAsString() !== 'object'))
 				? $type->asReflectionClass()
@@ -98,10 +99,8 @@ class Select_Tests extends Test
 					)
 				)
 			) {
-				echo ' UNSET';
 				unset($properties[$property->name]);
 			}
-			echo BR;
 		}
 		if ($depth) {
 			foreach ($properties as $property) {
@@ -114,7 +113,6 @@ class Select_Tests extends Test
 				}
 			}
 		}
-		echo 'OK' . BR;
 		return array_keys($properties);
 	}
 
