@@ -95,14 +95,14 @@ class Dependency
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * The dependency type, matches the name of the PHP token representing the dependency type :
-	 * - 'class' for a 'Dependency_Name::class' into the source code
+	 * - 'class' for a '*::class' into the source code
 	 * - 'extends' for a 'extends Dependency_Name' into class declaration
 	 * - 'implements' for a 'implements Dependency_Name' into class declaration
 	 * - 'new' for a 'new Dependency_Name' into the source code
 	 * - 'param' for a '@param ...' into the source code (method doc comment)
 	 * - 'return' for a '@return ...' into the source code (method doc comment)
 	 * - 'set' for a '@set ...' into the source code (class doc comment)
-	 * - 'static' for a 'Dependency_Name::' call into the source code
+	 * - 'static' for a '__CLASS_NAME__::' / 'self::' / 'static::' / 'Dependency_Name::' call
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *

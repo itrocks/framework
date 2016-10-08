@@ -388,7 +388,7 @@ class Reflection_Source
 				if (substr($class_name, -1) === BS) {
 					trigger_error(
 						'bad class name ' . $class_name . SP . print_r($token, true),
-						E_USER_WARNING
+						E_USER_ERROR
 					);
 				}
 				$class = new Reflection_Class($this, $class_name);
@@ -484,22 +484,23 @@ class Reflection_Source
 			}
 
 			// ::class
-			elseif (in_array($token_id, [T_DOUBLE_COLON, T_NS_C])) {
-				//print_r($token); echo BR;
+			elseif ($token_id === T_DOUBLE_COLON) {
 				if ($f_instantiates) {
 					$token = $this->tokens[$this->token_key - 1];
-					if (($token[1][0] !== '$') && !in_array($token[1], ['self', 'static', '__CLASS__'])) {
+					if ($token[1][0] !== '$') {
 						$tk = $this->token_key - 1;
 						$class_name = '';
 						do {
 							$class_name = $this->tokens[$tk][1] . $class_name;
 							$tk --;
 						} while (in_array($this->tokens[$tk][0], [T_NS_SEPARATOR, T_STRING]));
+						$class_name = in_array($token[1], ['__CLASS__', 'self', 'static'])
+							? $class->name
+							: $this->fullClassName($class_name);
 						$type = $this->tokens[++$this->token_key];
 						$type = (is_array($type) && ($type[1] === 'class'))
 							? Dependency::T_CLASS
 							: Dependency::T_STATIC;
-						$class_name = $this->fullClassName($class_name);
 						$dependency = new Dependency();
 						$dependency->class_name      = $class->name;
 						$dependency->dependency_name = $class_name;
