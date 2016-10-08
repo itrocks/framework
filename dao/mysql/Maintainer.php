@@ -180,14 +180,22 @@ class Maintainer implements Registerable
 
 	//---------------------------------------------------------------------------------- guessContext
 	/**
-	 * @param $query string
+	 * @param $query  string
+	 * @param $mysqli Contextual_Mysqli
 	 * @return string[]|null
 	 */
-	private function guessContext($query)
+	private function guessContext($query, Contextual_Mysqli $mysqli)
 	{
 		$context = [];
-		// first clause between `...` is probably the name of the table
-		$table_name = mParse($query, BQ, BQ);
+		if ($mysqli->isSelect($query) || $mysqli->isExplainSelect($query)) {
+			// SELECT : first clause between `...` after FROM is the name of the table
+			$table_name = mParse($query, ['FROM', BQ], BQ);
+		}
+		else {
+			// DELETE, INSERT, UPDATE
+			// first clause between `...` is probably the name of the table
+			$table_name = mParse($query, BQ, BQ);
+		}
 		if ($table_name) {
 			$class_name = Dao::classNameOf($table_name);
 			if ($class_name) {
@@ -247,22 +255,24 @@ class Maintainer implements Registerable
 			$last_error = $mysqli->last_error;
 			$this->already[$query] = 1;
 			if (!isset($mysqli->context)) {
-				$mysqli->context = $this->guessContext($query);
+				$mysqli->context = $this->guessContext($query, $mysqli);
 			}
 			if (isset($mysqli->context)) {
 				$retry = false;
 				$context = is_array($mysqli->context) ? $mysqli->context : [$mysqli->context];
+				$mysqli->last_errno = $last_errno;
+				$mysqli->last_error = $last_error;
 				if (
-					($mysqli->last_errno == Errors::ER_CANT_CREATE_TABLE)
-					&& strpos($mysqli->last_error, '(errno: 150)')
+					($last_errno == Errors::ER_CANT_CREATE_TABLE)
+					&& strpos($last_error, '(errno: 150)')
 				) {
 					$retry = $this->onCantCreateTableError($mysqli, $query);
 				}
-				elseif ($mysqli->last_errno == Errors::ER_NO_SUCH_TABLE) {
+				elseif ($last_errno == Errors::ER_NO_SUCH_TABLE) {
 					$retry = $this->onNoSuchTableError($mysqli, $query, $context);
 				}
 				elseif (
-					in_array($mysqli->last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])
+					in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])
 				) {
 					$retry = $this->updateContextTables($mysqli, $context);
 				}
@@ -272,11 +282,9 @@ class Maintainer implements Registerable
 						$joinpoint->stop = true;
 					}
 				}
-				elseif (!$mysqli->last_errno) {
-					$mysqli->last_errno = $last_errno;
-					$mysqli->last_error = $last_error;
-				}
 			}
+			$mysqli->last_errno = $last_errno;
+			$mysqli->last_error = $last_error;
 		}
 	}
 
