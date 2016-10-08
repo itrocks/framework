@@ -42,6 +42,7 @@ class Select_Tests extends Test
 					$builder    = new Select($class->name, $properties);
 					$query      = 'EXPLAIN ' . $builder->buildQuery();
 					try {
+						$dao->setContext();
 						$dao->query($query);
 						$this->assume($class->name, 'works', 'works');
 					}
