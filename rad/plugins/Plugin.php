@@ -15,6 +15,7 @@ use SAF\Framework\Traits\Has_Name;
  * plugins.
  *
  * @representative name
+ * @set RAD_Plugins
  */
 class Plugin
 {
