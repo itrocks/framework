@@ -139,7 +139,7 @@ class Maintainer implements Registerable
 		$column_names = [];
 		while (($i = strpos($query, $alias . DOT, $i)) !== false) {
 			$i += strlen($alias) + 1;
-			$field_name = substr($query, $i, strpos($query, SP, $i) - $i);
+			$field_name = trim(substr($query, $i, strpos($query, SP, $i) - $i), BQ);
 			$column_names[$field_name] = $field_name;
 		}
 		if (!$column_names) {
@@ -153,7 +153,7 @@ class Maintainer implements Registerable
 			elseif ($mysqli->isInsert($query)) {
 				$column_names = explode(',', str_replace([BQ, SP], '', mParse($query, '(', ')')));
 			}
-			elseif ($mysqli->isSelect($query)) {
+			elseif ($mysqli->isSelect($query) || $mysqli->isExplainSelect($query)) {
 				// @todo create table without context SELECT columns detection (needs complete sql analyst)
 				trigger_error(
 					"TODO Mysql maintainer create table $table_name from a SELECT query without context",
