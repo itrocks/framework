@@ -5,6 +5,9 @@ use SAF\Framework\Printer\Model\Field;
 
 /**
  * Printer model property field
+ *
+ * @business
+ * @set Printer_Model_Properties
  */
 class Property extends Field
 {

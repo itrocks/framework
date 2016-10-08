@@ -10,8 +10,10 @@ use SAF\Framework\Tools\Has_Ordering;
  * A print model page : a model linked to a unique page background and design
  *
  * The page number : 1 is the first page, 3 is the last page, 2 is 'all others pages'
+ *
  * @override $ordering @getter getNumber @setter setNumber @signed
  * @representative model, ordering
+ * @set Printer_Model_Pages
  */
 class Page
 {

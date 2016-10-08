@@ -9,6 +9,7 @@ use SAF\Framework\Traits\Has_Name;
  * A print model gives the way to print an object of a given class
  *
  * @representative class_name, name
+ * @set Printer_Models
  */
 class Model
 {

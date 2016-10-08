@@ -7,6 +7,9 @@ use SAF\Framework\Traits\Has_Name;
 /**
  * A print model field is a little zone into the page that contains the description of the data
  * to be printed (eg. link to a property, constant text, a drawing)
+ *
+ * @business
+ * @set Printer_Model_Fields
  */
 class Field
 {
