@@ -36,7 +36,7 @@ class Builder implements Activable, Registerable, Serializable
 	 * When true, class names replacement by built class names are accepted.
 	 * Can be set temporarily to false when you don't want built class names.
 	 *
-	 * @var $build boolean
+	 * @var boolean
 	 */
 	public $build = true;
 
