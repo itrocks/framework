@@ -150,6 +150,7 @@ class Table_Builder_Class
 		$this->excluded_properties = array_keys(
 			(new Reflection_Class($link_class_name))->getProperties([T_EXTENDS, T_USE])
 		);
+		$this->excluded_properties[] = 'id';
 		return $tables;
 	}
 
