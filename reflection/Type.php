@@ -176,18 +176,21 @@ class Type
 	 * Gets a single or multiple class type as its Reflection_Class
 	 *
 	 * @param $reflection_class_name string Any reflection class name that implements Reflection_Class
-	 * @return Interfaces\Reflection_Class
+	 * @return Interfaces\Reflection_Class|PHP\Reflection_Class|Reflection_Class
 	 */
 	public function asReflectionClass($reflection_class_name = null)
 	{
 		if ($reflection_class_name) {
-			return is_a($reflection_class_name, PHP\Reflection_Class::class, true)
+			$reflection_class = is_a($reflection_class_name, PHP\Reflection_Class::class, true)
 				? PHP\Reflection_Class::of($this->getElementTypeAsString())
 				: (new Reflection_Class($reflection_class_name))->newInstance(
 					$this->getElementTypeAsString()
 				);
 		}
-		return new Reflection_Class($this->getElementTypeAsString());
+		else {
+			$reflection_class = new Reflection_Class($this->getElementTypeAsString());
+		}
+		return $reflection_class;
 	}
 
 	//-------------------------------------------------------------------------------------- asString
