@@ -7,6 +7,7 @@ use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\PHP\Dependency;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Sql\Builder\Select;
@@ -63,10 +64,12 @@ class Select_Tests extends Test
 	 */
 	private function propertyNames(Reflection_Class $class, $depth)
 	{
-		$properties = $class->getProperties([T_EXTENDS, T_USE]);
+		$properties = $class->getAnnotation('link')->value
+			? (new Link_Class($class->name))->getLocalProperties()
+			: $class->getProperties([T_EXTENDS, T_USE]);
 		$properties = Replaces_Annotations::removeReplacedProperties($properties);
-		/** @var $properties Reflection_Property[] */
 		foreach ($properties as $property) {
+			/** @var $property Reflection_Property */
 			echo '~ ' . $property->name;
 			$type  = $property->getType();
 			$class = ($type->isClass() && ($type->getElementTypeAsString() !== 'object'))
