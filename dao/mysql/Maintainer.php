@@ -135,16 +135,22 @@ class Maintainer implements Registerable
 			return true;
 		}
 		// if no class name, create it from columns names in the query
-		/** @noinspection PhpWrongStringConcatenationInspection */
-		$alias = 't' . (
-			(substr($query, strpos($query, BQ . $table_name . BQ . SP . 't') + strlen($table_name) + 4)) + 0
-		);
-		$i = 0;
 		$column_names = [];
-		while (($i = strpos($query, $alias . DOT, $i)) !== false) {
-			$i += strlen($alias) + 1;
-			$field_name = trim(substr($query, $i, strpos($query, SP, $i) - $i), BQ);
-			$column_names[$field_name] = $field_name;
+		$alias_pos = 0;
+		while (true) {
+			$alias_pos = strpos($query, BQ . $table_name . BQ . SP . 't', $alias_pos);
+			if (!$alias_pos) {
+				break;
+			}
+			$alias_pos += strlen($table_name) + 4;
+			$alias = 't' . ((substr($query, $alias_pos)) + 0);
+			$i = 0;
+			while (($i = strpos($query, $alias . DOT, $i)) !== false) {
+				$i += strlen($alias) + 1;
+				$j                         = strpos($query, SP, $i) ?: strlen($query);
+				$field_name                = trim(substr($query, $i, $j - $i), BQ);
+				$column_names[$field_name] = $field_name;
+			}
 		}
 		if (!$column_names) {
 			if ($mysqli->isDelete($query)) {
