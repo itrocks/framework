@@ -7,6 +7,7 @@ use SAF\Framework\Dao;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\PHP\Dependency;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
 use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use SAF\Framework\Reflection\Link_Class;
@@ -159,7 +160,7 @@ class Select_Tests extends Test
 		if ($depth) {
 			foreach ($properties as $property) {
 				$type = $property->getType();
-				if ($type->isClass()) {
+				if ($type->isClass() && $property->getAnnotation(Link_Annotation::ANNOTATION)->value) {
 					$sub_class = new Reflection_Class($type->getElementTypeAsString());
 					foreach ($this->propertyNames($sub_class, $depth - 1) as $sub_property_name) {
 						$properties[$property->name . DOT . $sub_property_name] = true;
