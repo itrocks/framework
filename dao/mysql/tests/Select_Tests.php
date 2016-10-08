@@ -21,6 +21,39 @@ use SAF\Framework\Tests\Test;
 class Select_Tests extends Test
 {
 
+	//-------------------------------------------------------------------------------------- perClass
+	/**
+	 * @param $class Reflection_Class
+	 * @param $depth integer
+	 */
+	private function perClass(Reflection_Class $class, $depth)
+	{
+		/** @var $dao Link */
+		$dao        = Dao::current();
+		$properties = $this->propertyNames($class, $depth - 1);
+		$builder    = new Select($class->name, $properties);
+		$query      = 'EXPLAIN ' . $builder->buildQuery();
+		if (!strpos($query, '.id_ ')) {
+			try {
+				$dao->setContext();
+				$dao->query($query);
+				$this->assume($class->name, 'works', 'works');
+			}
+			catch (Exception $exception) {
+				if (beginsWith($dao->getConnection()->last_error, ('Too many tables'))) {
+					$this->perProperty($class, $depth);
+				}
+				else {
+					$this->assume(
+						$class->name, $dao->getConnection()->last_error . PRE . $query . _PRE, 'works',
+						false
+					);
+				}
+				flush(); ob_flush();
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------------ everything
 	/**
 	 * Test searches on eveything with a depth of 1
@@ -47,25 +80,46 @@ class Select_Tests extends Test
 					&& $class->getAnnotation('business')->value
 					&& !strpos($class->name, BS . 'Tests' . BS)
 				) {
-					$properties = $this->propertyNames($class, $depth - 1);
-					$builder    = new Select($class->name, $properties);
-					$query      = 'EXPLAIN ' . $builder->buildQuery();
-					if (!strpos($query, '.id_ ')) {
-						try {
-							$dao->setContext();
-							$dao->query($query);
-							$this->assume($class->name, 'works', 'works');
-						}
-						catch (Exception $exception) {
-							$this->assume(
-								$class->name, $dao->getConnection()->last_error . PRE . $query . _PRE, 'works',
-								false
-							);
-							flush(); ob_flush();
-						}
-					}
+					$this->perClass($class, $depth);
 				}
 			}
+		}
+	}
+
+	//----------------------------------------------------------------------------------- perProperty
+	/**
+	 * @param $class Reflection_Class
+	 * @param $depth integer
+	 */
+	private function perProperty(Reflection_Class $class, $depth)
+	{
+		/** @var $dao Link */
+		$dao        = Dao::current();
+		$errors     = [];
+		$properties = $this->propertyNames($class, $depth - 1);
+		foreach ($properties as $property) {
+			$builder = new Select($class->name, [$property]);
+			$query   = 'EXPLAIN ' . $builder->buildQuery();
+			if (!strpos($query, '.id_ ')) {
+				try {
+					$dao->setContext();
+					$dao->query($query);
+				}
+				catch (Exception $exception) {
+					$errors[] = $query;
+				}
+			}
+		}
+		if ($errors) {
+			$this->assume(
+				$class->name,
+				$dao->getConnection()->last_error . PRE . print_r($errors, true) . _PRE,
+				'works',
+				false
+			);
+		}
+		else {
+			$this->assume($class->name, 'works', 'works');
 		}
 	}
 
@@ -116,13 +170,13 @@ class Select_Tests extends Test
 		return array_keys($properties);
 	}
 
-	//-------------------------------------------------------------------------- testEverythingDepth1
+	//-------------------------------------------------------------------------- testEverythingDepth2
 	/**
-	 * Test searches of everything that has depth 1
+	 * Test searches of everything that has depth 2
 	 */
-	public function testEverythingDepth1()
+	public function testEverythingDepth2()
 	{
-		$this->everything(1);
+		$this->everything(2);
 	}
 
 }
