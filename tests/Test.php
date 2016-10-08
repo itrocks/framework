@@ -41,7 +41,7 @@ class Test
 	 */
 	public $header;
 
-	//--------------------------------------------------------------------------------- $show_when_ok
+	//----------------------------------------------------------------------------------------- $show
 	/**
 	 * @values all, errors, none
 	 * @var string
@@ -127,6 +127,7 @@ class Test
 			$this->errors_count ++;
 		}
 		$this->tests_count ++;
+		$this->start_time = microtime(true);
 		return ($result_code === Response::OK);
 	}
 
