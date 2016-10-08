@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Dao;
 
+use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Option\Key;
 use SAF\Framework\PHP\Dependency;
@@ -130,7 +131,7 @@ abstract class Data_Link
 				$class_name = Namespaces::fullClassName(join('_', $class_name), false);
 			}
 		}
-		return $class_name;
+		return Builder::className($class_name);
 	}
 
 	//----------------------------------------------------------------------------------------- count
