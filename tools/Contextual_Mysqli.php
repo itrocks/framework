@@ -169,6 +169,18 @@ class Contextual_Mysqli extends mysqli
 		return (strtoupper(substr(trim($query), 0, 6)) === 'DELETE');
 	}
 
+	//------------------------------------------------------------------------------- isExplainSelect
+	/**
+	 * Returns true if the query is an EXPLAIN SELECT
+	 *
+	 * @param $query string
+	 * @return boolean
+	 */
+	public function isExplainSelect($query)
+	{
+		return strtoupper(substr(trim($query), 0, 14)) === 'EXPLAIN SELECT';
+	}
+
 	//-------------------------------------------------------------------------------------- isInsert
 	/**
 	 * Returns true if the query is an INSERT
