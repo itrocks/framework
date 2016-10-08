@@ -2,6 +2,7 @@
 namespace SAF\Framework\Dao\Mysql\Tests;
 
 use Exception;
+use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\PHP\Dependency;
@@ -35,9 +36,13 @@ class Select_Tests extends Test
 				Dependency::class
 			);
 			foreach ($dependencies as $dependency) {
-				$class = new Reflection_Class($dependency->class_name);
+				$class = new Reflection_Class(Builder::className($dependency->class_name));
 				echo '- ' . $class->name . BR;
-				if (!$class->isAbstract() && $class->getAnnotation('business')->value) {
+				if (
+					!$class->isAbstract()
+					&& $class->getAnnotation('business')->value
+					&& !strpos($class->name, BS . 'Tests' . BS)
+				) {
 					$properties = $this->propertyNames($class, $depth - 1);
 					$builder    = new Select($class->name, $properties);
 					$query      = 'EXPLAIN ' . $builder->buildQuery();
