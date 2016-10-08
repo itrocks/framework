@@ -39,13 +39,17 @@ class Maintainer implements Registerable
 	private function createTable(Contextual_Mysqli $mysqli, $class_name)
 	{
 		$builder = new Table_Builder_Class();
-		foreach ($builder->build($class_name) as $table) {
-			$last_context = $mysqli->context;
-			$mysqli->context = $builder->dependencies_context;
-			foreach ((new Create_Table($table))->build() as $query) {
-				$mysqli->query($query);
+		$build = $builder->build($class_name);
+		foreach ($build as $table) {
+			if (!$mysqli->exists($table->getName())) {
+				$last_context    = $mysqli->context;
+				$mysqli->context = $builder->dependencies_context;
+				$queries         = (new Create_Table($table))->build();
+				foreach ($queries as $query) {
+					$mysqli->query($query);
+				}
+				$mysqli->context = $last_context;
 			}
-			$mysqli->context = $last_context;
 		}
 	}
 
@@ -209,7 +213,7 @@ class Maintainer implements Registerable
 			$table_name = lParse($join, BQ);
 			if ($table_name) {
 				$class_name = Dao::classNameOf($table_name);
-				if ($class_name) {
+				if ($class_name && strpos($class_name, BS)) {
 					$context[] = $class_name;
 				}
 			}
