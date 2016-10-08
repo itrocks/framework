@@ -2,6 +2,7 @@
 namespace SAF\Framework\RAD;
 
 use SAF\Framework\Mapper\Component;
+/** @noinspection PhpUnusedAliasInspection @widget */
 use SAF\Framework\Widget\Edit\Widgets\Collection_As_Map;
 
 /**
