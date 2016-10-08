@@ -39,6 +39,9 @@ class Dependency
 	//-------------------------------------------------------------------------------------- T_STATIC
 	const T_STATIC = 'static';
 
+	//--------------------------------------------------------------------------------------- T_STORE
+	const T_STORE = 'store';
+
 	//----------------------------------------------------------------------------------------- T_USE
 	const T_USE = 'use';
 
@@ -106,10 +109,12 @@ class Dependency
 	 * - 'return' for a '@return ...' into the source code (method doc comment)
 	 * - 'set' for a '@set ...' into the source code (class doc comment)
 	 * - 'static' for a '__CLASS_NAME__::' / 'self::' / 'static::' / 'Dependency_Name::' call
+	 * - 'store' for a '@set ...' into the source code (lowercase storage repository name)
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *
-	 * @values class, declaration, extends, implements, new, param, return, set, static, use, var
+	 * @values class, declaration, extends, implements, new, param, return, set, static, store, use,
+	 *         var
 	 * @var string
 	 */
 	public $type;

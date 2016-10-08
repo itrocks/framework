@@ -3,6 +3,7 @@ namespace SAF\Framework\Dao;
 
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Option\Key;
+use SAF\Framework\PHP\Dependency;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property;
@@ -103,23 +104,31 @@ abstract class Data_Link
 	/**
 	 * Gets the class name associated to a store set name
 	 *
-	 * TODO HIGH used by Maintainer only : remove this call and prefer storage-class association cache
-	 *
 	 * @example 'my_addresses' will become 'A\Namespace\My\Address'
 	 * @param $store_name string
 	 * @return string Full class name with namespace
 	 */
 	public function classNameOf($store_name)
 	{
-		$class_name = Namespaces::fullClassName(Names::setToClass(
-			str_replace(SP, '_', ucwords(str_replace('_', SP, $store_name))), false
-		), false);
-		if (strpos($class_name, BS) === false) {
-			$class_name = explode('_', $class_name);
-			foreach ($class_name as $key => $class_name_part) {
-				$class_name[$key] = Names::setToClass($class_name_part, false);
+		/** @var $dependency Dependency */
+		$dependency = Dao::searchOne(
+			['dependency_name' => $store_name, 'type' => Dependency::T_STORE], Dependency::class
+		);
+		if ($dependency) {
+			$class_name = $dependency->class_name;
+		}
+		else {
+			$class_name = Namespaces::fullClassName(
+				Names::setToClass(str_replace(SP, '_', ucwords(str_replace('_', SP, $store_name))), false),
+				false
+			);
+			if (strpos($class_name, BS) === false) {
+				$class_name = explode('_', $class_name);
+				foreach ($class_name as $key => $class_name_part) {
+					$class_name[$key] = Names::setToClass($class_name_part, false);
+				}
+				$class_name = Namespaces::fullClassName(join('_', $class_name), false);
 			}
-			$class_name = Namespaces::fullClassName(join('_', $class_name), false);
 		}
 		return $class_name;
 	}

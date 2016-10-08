@@ -4,6 +4,7 @@ namespace SAF\Framework\PHP;
 use ReflectionClass;
 use SAF\Framework\Builder;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Namespaces;
 
 /**
  * Reflection of PHP source code
@@ -467,6 +468,17 @@ class Reflection_Source
 									$this->instantiates[] = $dependency;
 									if (!$class->name) {
 										$missing_class_name[] = $dependency;
+									}
+									if ($type === Dependency::T_SET) {
+										$dependency = clone $dependency;
+										$dependency->dependency_name = strtolower(
+											Namespaces::shortClassName($class_name)
+										);
+										$dependency->type = Dependency::T_STORE;
+										$this->dependencies[] = $dependency;
+										if (!$class->name) {
+											$missing_class_name[] = $dependency;
+										}
 									}
 								}
 							}
