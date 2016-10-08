@@ -9,7 +9,6 @@ use SAF\Framework\Session;
 /**
  * All classes that have a global current value should use this trait to manage the current() method
  *
- * @business
  * @example
  * The current() method should be overridden to improve IDE's auto-completion capability, like this
  * class A_Class
