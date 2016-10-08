@@ -4,6 +4,7 @@ namespace SAF\Framework\Dao\Mysql\Tests;
 use Exception;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\PHP\Dependency;
 use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -32,17 +33,21 @@ class Select_Tests extends Test
 		if ($dao instanceof Link) {
 			/** @var $dependencies Dependency[] */
 			$dependencies = Dao::search(
-				['type' => Dependency::T_DECLARATION, 'declaration' => [Dependency::T_CLASS]],
+				[
+					'declaration' => [Dependency::T_CLASS],
+					'file_name'   => Func::notOp('%/cache/compiled/%'),
+					'type'        => Dependency::T_DECLARATION
+				],
 				Dependency::class
 			);
 			foreach ($dependencies as $dependency) {
 				$class = new Reflection_Class(Builder::className($dependency->class_name));
-				echo '- ' . $class->name . BR;
 				if (
 					!$class->isAbstract()
 					&& $class->getAnnotation('business')->value
 					&& !strpos($class->name, BS . 'Tests' . BS)
 				) {
+					echo '- ' . $class->name . BR;
 					$properties = $this->propertyNames($class, $depth - 1);
 					$builder    = new Select($class->name, $properties);
 					$query      = 'EXPLAIN ' . $builder->buildQuery();
