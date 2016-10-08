@@ -3,6 +3,9 @@ namespace SAF\Framework\PHP;
 
 /**
  * This stores a dependency between two class names
+ *
+ * @business
+ * @index set type, dependency_name
  */
 class Dependency
 {
