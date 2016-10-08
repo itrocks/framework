@@ -5,6 +5,8 @@ use SAF\Framework\Traits\Has_Name;
 
 /**
  * A tag is a keyword the facilitate searches
+ *
+ * @set RAD_Tags
  */
 class Tag
 {

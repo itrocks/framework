@@ -3,6 +3,8 @@ namespace SAF\Framework\RAD;
 
 /**
  * RAD Ignored feature class
+ *
+ * @set RAD_Ignored_Features
  */
 class Ignored_Feature
 {

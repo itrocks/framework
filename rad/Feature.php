@@ -9,6 +9,7 @@ use SAF\Framework\Widget\Edit\Widgets\Collection_As_Map;
  * RAD Feature class
  *
  * @representative title, type
+ * @set RAD_Features
  */
 class Feature
 {
