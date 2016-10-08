@@ -13,6 +13,7 @@ use SAF\Framework\Tools\Date_Time;
  * A SAF electronic mail object to get full access to mails without depending on MIME or the else
  *
  * @before_write beforeWrite
+ * @business
  * @representative date, from, to, subject
  */
 class Email

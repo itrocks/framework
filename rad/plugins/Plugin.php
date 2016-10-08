@@ -25,8 +25,8 @@ class Plugin
 	//---------------------------------------------------------------------------------- $application
 	/**
 	 * @composite
-	 * @link Object
 	 * @mandatory
+	 * @store string
 	 * @var Application
 	 */
 	public $application;

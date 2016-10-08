@@ -7,6 +7,7 @@ use SAF\Framework\Traits\Has_Name;
 /**
  * An email recipient (or sender, this object can be used for both)
  *
+ * @business
  * @representative name, email
  * @sort name, email
  */

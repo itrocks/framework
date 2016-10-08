@@ -7,7 +7,6 @@ use SAF\Framework\Objects\Code;
 /**
  * A physical person civility
  *
- * @business
  * @feature
  */
 class Civility extends Code
@@ -15,11 +14,13 @@ class Civility extends Code
 
 	//---------------------------------------------------------------------------------------- getAll
 	/**
-	 * @return Civility[]
+	 * @return static[]
 	 */
 	public static function getAll()
 	{
-		return Dao::readAll(get_called_class());
+		/** @var $civilities static[] */
+		$civilities = Dao::readAll(get_called_class());
+		return $civilities;
 	}
 
 	//------------------------------------------------------------------------------------ __toString

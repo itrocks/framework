@@ -13,6 +13,7 @@ use SAF\Framework\Tools\Namespaces;
  * a feature which a user group gives access to
  *
  * @before_write beforeWrite
+ * @business
  * @representative name
  * @sort name
  */

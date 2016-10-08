@@ -7,9 +7,10 @@ use SAF\Framework\Traits\Has_Name;
 /**
  * Standard basic codes, with a code and a full name
  *
+ * @business
  * @representative code, name
  */
-class Code
+abstract class Code
 {
 	use Has_Name;
 
@@ -39,6 +40,7 @@ class Code
 	 */
 	public static function fromString($value)
 	{
+		/** @var $values static[] */
 		$values = Dao::search(['code' => $value], static::class);
 		if (!$values) {
 			$values = Dao::search(['name' => $value], static::class);

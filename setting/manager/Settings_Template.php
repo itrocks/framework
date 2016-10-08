@@ -3,6 +3,8 @@ namespace SAF\Framework\Setting\Manager;
 
 /**
  * A settings template
+ *
+ * @business
  */
 class Settings_Template
 {

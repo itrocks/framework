@@ -7,6 +7,7 @@ use SAF\Framework\Tools\Date_Time;
 /**
  * PHP Compiler log entry
  *
+ * @business
  * @set Compiler_Log
  */
 class Compiler_Log

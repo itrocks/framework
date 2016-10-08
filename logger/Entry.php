@@ -10,6 +10,7 @@ use SAF\Framework\Tools\Date_Time;
 /**
  * Log class stores logs infos
  *
+ * @business
  * @representative start, uri
  * @set Logs
  */

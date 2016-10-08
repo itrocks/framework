@@ -83,6 +83,14 @@ class Select_Tests extends Test
 				) {
 					$this->perClass($class, $depth);
 				}
+				elseif (
+					!$class->isAbstract()
+					&& !$class->getAnnotation('business')->value
+					&& !strpos($class->name, BS . 'Tests' . BS)
+					&& $dao->getConnection()->exists(Dao::storeNameOf($class->name))
+				) {
+					echo '! VERIFIER SI ' . $class->name . ' EST UNE BUSINESS CLASS' . BR;
+				}
 			}
 		}
 	}
@@ -171,13 +179,13 @@ class Select_Tests extends Test
 		return array_keys($properties);
 	}
 
-	//-------------------------------------------------------------------------- testEverythingDepth2
+	//-------------------------------------------------------------------------- testEverythingDepth1
 	/**
-	 * Test searches of everything that has depth 2
+	 * Test searches of everything that has depth 1
 	 */
-	public function testEverythingDepth2()
+	public function testEverythingDepth1()
 	{
-		$this->everything(2);
+		$this->everything(1);
 	}
 
 }

@@ -10,6 +10,8 @@ use SAF\Framework\View\Html\Template;
  * The Counter class manages business-side counters : ie invoices numbers, etc.
  *
  * It deals with application-side locking in order that the next number has no jumps nor replicates
+ *
+ * @business
  */
 class Counter
 {

@@ -3,6 +3,8 @@ namespace SAF\Framework\Email;
 
 /**
  * An email net account : host, login and password to access a distant email account
+ *
+ * @business
  */
 abstract class Net_Account
 {

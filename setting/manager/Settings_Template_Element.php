@@ -6,6 +6,7 @@ use SAF\Framework\Mapper\Component;
 /**
  * A settings template element
  *
+ * @business
  * @set Settings_Templates_Elements
  */
 class Settings_Template_Element
