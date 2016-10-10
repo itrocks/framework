@@ -4,6 +4,7 @@ namespace SAF\Framework\User\Group;
 use SAF\Framework\Builder;
 use SAF\Framework\Controller;
 use SAF\Framework\Controller\Uri;
+use SAF\Framework\Dao;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\User;
 use SAF\Framework\User\Group;
@@ -79,6 +80,41 @@ trait Has_Groups
 	public function hasAccessTo($uri)
 	{
 		return !is_null($this->getAccessOptions($uri));
+	}
+
+	/**
+	 * Check if object has the given group
+	 *
+	 * @param $group Group|string|integer
+	 * @return bool
+	 */
+	public function hasGroup($group)
+	{
+		$identifier = null;
+		// group given
+		if ($group instanceof Group) {
+			$identifier = Dao::getObjectIdentifier($group);
+		}
+		// string give, this is the group name
+		else if (is_string($group)) {
+			$group = Dao::searchOne(['name' => $group], Group::class);
+			if (is_object($group)) {
+				$identifier = Dao::getObjectIdentifier($group);
+			}
+		}
+		// integer given this is identifier
+		else if (isStrictNumeric($group)) {
+			$identifier = (int)$group;
+		}
+
+		if (!empty($identifier)) {
+			foreach($this->groups as $object_group) {
+				if (Dao::getObjectIdentifier($object_group) == $identifier) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }
