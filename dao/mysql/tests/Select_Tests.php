@@ -170,7 +170,11 @@ class Select_Tests extends Test
 		if ($depth) {
 			foreach ($properties as $property) {
 				$type = $property->getType();
-				if ($type->isClass() && $property->getAnnotation(Link_Annotation::ANNOTATION)->value) {
+				if (
+					$type->isClass()
+					&& $property->getAnnotation(Link_Annotation::ANNOTATION)->value
+					&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+				) {
 					$sub_class = new Reflection_Class($type->getElementTypeAsString());
 					foreach ($this->propertyNames($sub_class, $depth - 1) as $sub_property_name) {
 						$properties[$property->name . DOT . $sub_property_name] = true;
@@ -181,14 +185,14 @@ class Select_Tests extends Test
 		return array_keys($properties);
 	}
 
-	//-------------------------------------------------------------------------- testEverythingDepth1
+	//-------------------------------------------------------------------------- testEverythingDepth2
 	/**
-	 * Test searches of everything that has depth 1
+	 * Test searches of everything that has depth 2
 	 */
-	public function testEverythingDepth1()
+	public function testEverythingDepth2()
 	{
 		$this->method(__METHOD__);
-		$this->everything(1);
+		$this->everything(2);
 	}
 
 }
