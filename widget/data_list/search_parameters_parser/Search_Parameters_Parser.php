@@ -78,8 +78,13 @@ class Search_Parameters_Parser
 	use Date;
 	use Type_Boolean;
 
-	const MAX_RANGE_VALUE   = 1;
-	const MIN_RANGE_VALUE   = -1;
+	//------------------------------------------------------------------------------- MAX_RANGE_VALUE
+	const MAX_RANGE_VALUE = 1;
+
+	//------------------------------------------------------------------------------- MIN_RANGE_VALUE
+	const MIN_RANGE_VALUE = -1;
+
+	//----------------------------------------------------------------------------- NOT_A_RANGE_VALUE
 	const NOT_A_RANGE_VALUE = 0;
 
 	//---------------------------------------------------------------------------------------- $class
