@@ -82,7 +82,7 @@ class Application
 	 */
 	public function getCacheDir()
 	{
-		return 'cache';
+		return __DIR__ . '/../../cache';
 	}
 
 	//-------------------------------------------------------------------------------- getClassesTree

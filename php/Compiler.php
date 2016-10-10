@@ -17,6 +17,7 @@ use SAF\Framework\Tools\Files;
 use SAF\Framework\Tools\List_Row;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
+use SAF\Framework\Tools\Paths;
 use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\Updater\Updatable;
 use Serializable;
@@ -301,7 +302,7 @@ class Compiler implements
 			$this->cache_dir = Application::current()->getCacheDir() . '/compiled';
 			Files::mkdir($this->cache_dir);
 		}
-		return $this->cache_dir;
+		return Paths::getRelativeFileName($this->cache_dir);
 	}
 
 	//------------------------------------------------------------------------------ getClassFileName
