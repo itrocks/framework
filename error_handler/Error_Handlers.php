@@ -136,6 +136,14 @@ class Error_Handlers implements Activable, Configurable
 	public function handle($err_no, $err_msg, $filename, $line_num, $vars)
 	{
 		if ((error_reporting() & $err_no) == $err_no) {
+			if (!class_exists(Handled_Error::class)) {
+				trigger_error(
+					'CRASH : Class Handled_Error not found : ' . LF
+					. $err_no . SP . $err_msg . SP . $filename . SP . $line_num . SP . print_r($vars, true)
+					. print_r($GLOBALS, true),
+					E_USER_ERROR
+				);
+			}
 			$handled_error = new Handled_Error($err_no, $err_msg, $filename, $line_num, $vars);
 			foreach ($this->error_handlers as $err_no_filter => $handlers) {
 				if (($err_no_filter & $err_no) == $err_no) {
