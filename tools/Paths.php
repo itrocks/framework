@@ -1,8 +1,6 @@
 <?php
 namespace SAF\Framework\Tools;
 
-use SAF\Framework\Dao;
-
 /**
  * Application paths functions help you to find out usefull paths of your application
  */
@@ -80,6 +78,34 @@ abstract class Paths
 			. $_SERVER['SERVER_NAME']
 			. Paths::$uri_base
 			. (isset($object) ? (SL . Names::classToUri($object)) : '');
+	}
+
+	//--------------------------------------------------------------------------- getRelativeFileName
+	/**
+	 * Normalize the file name :
+	 * - always relative, starting from $file_root (remove if was existing)
+	 * - replaces ../ using removing of the previous directory name
+	 *
+	 * @example
+	 * Paths::getRelativeFileName('/home/project/path/dir/sub_dir/../sub/file_name.php')
+	 * will return 'dir/sub/file_name.php'
+	 * @param $file_name string
+	 * @return string
+	 */
+	public static function getRelativeFileName($file_name)
+	{
+		// replace /dir/../ with /
+		while (($j = strpos($file_name, '/../')) !== false) {
+			$i = strrpos(substr($file_name, 0, $j), SL);
+			$file_name = substr($file_name, 0, $i) . substr($file_name, $j + 3);
+		}
+		// remove /project/root/directory/same/as/current/working/directory/ from beginning of file name
+		$current_working_directory = getcwd() . SL;
+		$length = strlen($current_working_directory);
+		if (substr($file_name, 0, $length) === $current_working_directory) {
+			$file_name = substr($file_name, $length);
+		}
+		return $file_name;
 	}
 
 	//-------------------------------------------------------------------------------------- register
