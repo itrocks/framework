@@ -5,6 +5,7 @@ use ReflectionClass;
 use SAF\Framework\Builder;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
+use SAF\Framework\Tools\Paths;
 
 /**
  * Reflection of PHP source code
@@ -121,10 +122,10 @@ class Reflection_Source
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $file_name        string may be the name of a file
-	 *                          or the PHP source code if beginning with '<?php'
-	 * @param $class_name       string If file name can be null, $class_name will force initialisation
-	 *                          of classes as a Reflection_Class object for $class_name
+	 * @param $file_name  string may be the name of a file
+	 *                    or the PHP source code if beginning with '<?php'
+	 * @param $class_name string If file name can be null, $class_name will force initialisation
+	 *                    of classes as a Reflection_Class object for $class_name
 	 */
 	public function __construct($file_name = null, $class_name = null)
 	{
@@ -719,9 +720,9 @@ class Reflection_Source
 			$source = self::$cache[$class_name];
 		}
 		else {
-			$filename = (new ReflectionClass($class_name))->getFileName();
+			$filename = Paths::getRelativeFileName((new ReflectionClass($class_name))->getFileName());
 			// consider vendor classes like internal classes : we don't work with their sources
-			if (strpos($filename, '/vendor/')) {
+			if (beginsWith($filename, 'vendor/')) {
 				$source = new Reflection_Source(null, $class_name);
 			}
 			else {
@@ -870,6 +871,7 @@ class Reflection_Source
 		static $already = [];
 
 		foreach ($files as $key => $file_name) {
+			$file_name = Paths::getRelativeFileName($file_name);
 			if ($already[$file_name]) {
 				unset($files[$key]);
 			}
