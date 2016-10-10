@@ -208,7 +208,7 @@ class Maintainer implements Registerable
 		}
 		if ($table_name) {
 			$class_name = Dao::classNameOf($table_name);
-			if ($class_name) {
+			if ($class_name && strpos($class_name, BS)) {
 				$context[] = $class_name;
 			}
 		}

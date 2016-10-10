@@ -157,12 +157,7 @@ class Select_Tests extends Test
 				|| (
 					$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::FALSE
 				)
-				|| (
-					$class
-					&& (
-						$class->isAbstract() || $class->isInterface() || ($class->name === 'object')
-					)
-				)
+				|| ($class && ($class->isAbstract() || ($class->name === 'object')))
 			) {
 				unset($properties[$property->name]);
 			}

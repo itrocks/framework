@@ -408,6 +408,23 @@ class Reflection_Class extends ReflectionClass
 		return false;
 	}
 
+	//------------------------------------------------------------------------------------ isAbstract
+	/**
+	 * PHP's ReflectionClass behaviour for this is :
+	 * - Abstract classes are abstract (this is the main use)
+	 * - Interfaces are not abstract
+	 * - PHP before 7.0 : Traits are abstract. PHP 7.0 and next : Traits are not abstract.
+	 *
+	 * Reflection_Class behaviour will be :
+	 * - Abstract classes, Interfaces and Traits are always abstract
+	 *
+	 * @return boolean
+	 */
+	public function isAbstract()
+	{
+		return parent::isAbstract() || $this->isInterface() || $this->isTrait();
+	}
+
 	//-------------------------------------------------------------------------------- sortProperties
 	/**
 	 * Sort the properties list from @display_order class annotation(s)

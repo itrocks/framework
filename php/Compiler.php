@@ -8,16 +8,15 @@ use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Set;
-use SAF\Framework\Dao\Sql\Link;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection;
 use SAF\Framework\Router;
 use SAF\Framework\Session;
 use SAF\Framework\Tools\Files;
 use SAF\Framework\Tools\List_Row;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Updater\Application_Updater;
 use SAF\Framework\Updater\Updatable;
 use Serializable;
@@ -28,7 +27,7 @@ use Serializable;
  * This has heavy dependencies to the SAF Framework, and can't be used without it at the moment
  */
 class Compiler implements
-	Configurable, Registerable, Class_File_Name_Getter, Needs_Main, Serializable, Updatable
+	Class_File_Name_Getter, Configurable, Needs_Main, Registerable, Serializable, Updatable
 {
 
 	//------------------------------------------------------------------------------------ $cache_dir
@@ -61,6 +60,22 @@ class Compiler implements
 	 */
 	private $compilers = [];
 
+	//------------------------------------------------------------------------------ $main_controller
+	/**
+	 * The main controller that called the compilation process
+	 *
+	 * @var Main
+	 */
+	public $main_controller;
+
+	//--------------------------------------------------------------------------------- $more_sources
+	/**
+	 * List of PHP sources to be compiled on next wave
+	 *
+	 * @var Reflection_Source[]
+	 */
+	private $more_sources = [];
+
 	//-------------------------------------------------------------------------------- $saved_sources
 	/**
 	 * Saved sources : during the second and next compiler passes, all compiled sources are saved
@@ -79,22 +94,6 @@ class Compiler implements
 	 * @var Reflection_Source[]
 	 */
 	private $sources;
-
-	//------------------------------------------------------------------------------ $main_controller
-	/**
-	 * The main controller that called the compilation process
-	 *
-	 * @var Main
-	 */
-	public $main_controller;
-
-	//--------------------------------------------------------------------------------- $more_sources
-	/**
-	 * List of PHP sources to be compiled on next wave
-	 *
-	 * @var Reflection_Source[]
-	 */
-	private $more_sources = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -173,26 +172,25 @@ class Compiler implements
 		Dao::createStorage(Dependency::class);
 		Dao::begin();
 		if (isset($_GET['Z'])) {
-			$link = Dao::current();
-			if ($link instanceof Link) {
-				$link->query('TRUNCATE TABLE `dependencies`');
-			}
+			Dao::truncate(Dependency::class);
 		}
-		foreach (
-			Dao::select(Dependency::class, ['file_name' => Func::distinct()]) as $file_dependency
-		) {
-			/** @var $file_dependency List_Row */
-			$file_name = $file_dependency->getValue('file_name');
-			if (!file_exists($file_name)) {
-				foreach (Dao::search(['file_name' => $file_name], Dependency::class) as $dependency) {
-					/** @var $dependency Dependency */
-					Dao::delete($dependency);
-					foreach (
-						Dao::search(['dependency_name' => $dependency->class_name], Dependency::class)
-						as $sub_dependency
-					) {
-						/** @var $sub_dependency Dependency */
-						Dao::delete($sub_dependency);
+		else {
+			foreach (
+				Dao::select(Dependency::class, ['file_name' => Func::distinct()]) as $file_dependency
+			) {
+				/** @var $file_dependency List_Row */
+				$file_name = $file_dependency->getValue('file_name');
+				if (!file_exists($file_name)) {
+					foreach (Dao::search(['file_name' => $file_name], Dependency::class) as $dependency) {
+						/** @var $dependency Dependency */
+						Dao::delete($dependency);
+						foreach (
+							Dao::search(['dependency_name' => $dependency->class_name], Dependency::class)
+							as $sub_dependency
+						) {
+							/** @var $sub_dependency Dependency */
+							Dao::delete($sub_dependency);
+						}
 					}
 				}
 			}
@@ -210,13 +208,7 @@ class Compiler implements
 
 				// get source and update dependencies
 				foreach ($this->sources as $source) {
-					/** @var Reflection_Source $source inspector bug */
-					/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-					(new Set)->replace(
-						$source->getDependencies(true),
-						Dependency::class,
-						['file_name' => $source->file_name]
-					);
+					$this->replaceDependencies($source);
 				}
 
 				do {
@@ -236,13 +228,7 @@ class Compiler implements
 							unset($added[$added_key]);
 						}
 						else {
-							/** @var Reflection_Source $source inspector bug */
-							/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-							(new Set)->replace(
-								$source->getDependencies(true),
-								Dependency::class,
-								['file_name' => $source->file_name]
-							);
+							$this->replaceDependencies($source);
 							$this->sources[$source_file_name] = $source;
 						}
 					}
@@ -284,7 +270,6 @@ class Compiler implements
 	 * @param $compilers     ICompiler[]
 	 * @param $cache_dir     string
 	 * @param $first_group   boolean
-	 * @return mixed
 	 */
 	private function compileSource(Reflection_Source $source, $compilers, $cache_dir, $first_group)
 	{
@@ -298,13 +283,7 @@ class Compiler implements
 			? $source->file_name
 			: ($this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4)));
 		if ($source->hasChanged()) {
-			/** @var Reflection_Source $source inspector bug */
-			/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-			(new Set)->replace(
-				$source->getDependencies(true),
-				Dependency::class,
-				['file_name' => $source->file_name]
-			);
+			$this->replaceDependencies($source);
 			script_put_contents($file_name, $source->getSource());
 		}
 		elseif (file_exists($file_name) && $first_group) {
@@ -383,6 +362,38 @@ class Compiler implements
 		/** @var $application_updater Application_Updater */
 		$application_updater = Session::current()->plugins->get(Application_Updater::class);
 		$application_updater->addUpdatable($this);
+	}
+
+	//--------------------------------------------------------------------------- replaceDependencies
+	/**
+	 * @param $source Reflection_Source
+	 */
+	private function replaceDependencies(Reflection_Source $source)
+	{
+		$dependencies = $source->getDependencies(true);
+		foreach ($dependencies as $dependency) {
+			if ($dependency->type === Dependency::T_STORE) {
+				$store_is_set[$dependency->class_name] = true;
+			}
+		}
+		foreach ($source->getClasses() as $class) {
+			if (
+				!isset($store_is_set[$class->name])
+				&& !$class->isAbstract()
+				&& $class->getAnnotation('business')->value
+			) {
+				$dependency = new Dependency();
+				$dependency->class_name = $class->name;
+				$dependency->dependency_name = strtolower(
+					Namespaces::shortClassName($class->getAnnotation('set')->value)
+				);
+				$dependency->file_name = $source->file_name;
+				$dependency->type = Dependency::T_STORE;
+				$dependencies[] = $dependency;
+			}
+		}
+		/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
+		(new Set)->replace($dependencies, Dependency::class, ['file_name' => $source->file_name]);
 	}
 
 	//------------------------------------------------------------------------------------- serialize

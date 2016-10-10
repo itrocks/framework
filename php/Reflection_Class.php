@@ -719,6 +719,11 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Checks if class is abstract
 	 *
+	 * Abstracts are :
+	 * - abstract class
+	 * - interface
+	 * - trait
+	 *
 	 * @return boolean
 	 */
 	public function isAbstract()
