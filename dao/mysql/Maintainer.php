@@ -129,10 +129,20 @@ class Maintainer implements Registerable
 	{
 		$query = str_replace(LF, SP, $query);
 		// if a class name exists for the table name, use it as context and create table from class
-		$class_name = Dao::classNameOf($table_name);
-		if (class_exists($class_name, false)) {
-			$this->createTable($mysqli, $class_name);
-			return true;
+		$class_names = Dao::classNamesOf($table_name);
+		foreach ($class_names as $class_name) {
+			if (class_exists($class_name, false)) {
+				if (isset($created)) {
+					$this->updateTable($mysqli, $class_name);
+				}
+				else {
+					$this->createTable($mysqli, $class_name);
+				}
+				$created = true;
+			}
+			if (isset($created)) {
+				return true;
+			}
 		}
 		// if no class name, create it from columns names in the query
 		$column_names = [];
@@ -207,9 +217,10 @@ class Maintainer implements Registerable
 			$table_name = mParse($query, BQ, BQ);
 		}
 		if ($table_name) {
-			$class_name = Dao::classNameOf($table_name);
-			if ($class_name && strpos($class_name, BS)) {
-				$context[] = $class_name;
+			foreach (Dao::classNamesOf($table_name) as $class_name) {
+				if (strpos($class_name, BS)) {
+					$context[] = $class_name;
+				}
 			}
 		}
 		// every JOIN `...` may be the name of a table
@@ -218,9 +229,11 @@ class Maintainer implements Registerable
 		foreach ($joins as $join) {
 			$table_name = lParse($join, BQ);
 			if ($table_name) {
-				$class_name = Dao::classNameOf($table_name);
-				if ($class_name && strpos($class_name, BS)) {
-					$context[] = $class_name;
+				$class_names = Dao::classNamesOf($table_name);
+				foreach ($class_names as $class_name) {
+					if (strpos($class_name, BS)) {
+						$context[] = $class_name;
+					}
 				}
 			}
 		}

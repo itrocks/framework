@@ -101,22 +101,27 @@ abstract class Data_Link
 		return true;
 	}
 
-	//----------------------------------------------------------------------------------- classNameOf
+	//---------------------------------------------------------------------------------- classNamesOf
 	/**
-	 * Gets the class name associated to a store set name
+	 * Gets the names of the classes associated to a store set name
+	 *
+	 * Several classes can match a single store set name
 	 *
 	 * @example 'my_addresses' will become 'A\Namespace\My\Address'
 	 * @param $store_name string
-	 * @return string Full class name with namespace
+	 * @return string[] Full class names with namespace
 	 */
-	public function classNameOf($store_name)
+	public function classNamesOf($store_name)
 	{
-		/** @var $dependency Dependency */
-		$dependency = Dao::searchOne(
+		/** @var $dependencies Dependency[] */
+		$dependencies = Dao::search(
 			['dependency_name' => $store_name, 'type' => Dependency::T_STORE], Dependency::class
 		);
-		if ($dependency) {
-			$class_name = $dependency->class_name;
+		if ($dependencies) {
+			$class_names = [];
+			foreach ($dependencies as $dependency) {
+				$class_names[] = Builder::className($dependency->class_name);
+			}
 		}
 		else {
 			$class_name = Namespaces::fullClassName(
@@ -128,10 +133,15 @@ abstract class Data_Link
 				foreach ($class_name as $key => $class_name_part) {
 					$class_name[$key] = Names::setToClass($class_name_part, false);
 				}
-				$class_name = Namespaces::fullClassName(join('_', $class_name), false);
+				$class_names = [
+					Builder::className(Namespaces::fullClassName(join('_', $class_name), false))
+				];
+			}
+			else {
+				$class_names = [$class_name];
 			}
 		}
-		return Builder::className($class_name);
+		return $class_names;
 	}
 
 	//----------------------------------------------------------------------------------------- count

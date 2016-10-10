@@ -66,16 +66,16 @@ class Dao implements Configurable
 		}
 	}
 
-	//----------------------------------------------------------------------------------- classNameOf
+	//---------------------------------------------------------------------------------- classNamesOf
 	/**
 	 * Gets the class name associated to a store set name
 	 *
 	 * @param $store_name string
-	 * @return string Full class name with namespace
+	 * @return string[] Full class name with namespace
 	 */
-	public static function classNameOf($store_name)
+	public static function classNamesOf($store_name)
 	{
-		return self::current()->classNameOf($store_name);
+		return self::current()->classNamesOf($store_name);
 	}
 
 	//---------------------------------------------------------------------------------------- commit
