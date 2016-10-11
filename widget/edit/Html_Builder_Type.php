@@ -160,10 +160,7 @@ class Html_Builder_Type
 					$result = $this->buildObject();
 				}
 			}
-			/**
-			 * @todo SM: create a Editable_Element class to be able to add some behavior like on_change because Element may be span or other html
-			 *
-			 */
+			// TODO SM Create a Editable_Element class to be able to add some behavior like on_change because Element may be span or other html
 			if (isset($result) && ($result instanceof Element)) {
 				$this->setOnChangeAttribute($result);
 			}
@@ -173,7 +170,7 @@ class Html_Builder_Type
 
 	//---------------------------------------------------------------------------------- buildBoolean
 	/**
-	 * @return Element
+	 * @return Element|string
 	 */
 	protected function buildBoolean()
 	{
@@ -232,7 +229,7 @@ class Html_Builder_Type
 
 	//------------------------------------------------------------------------------------- buildFile
 	/**
-	 * @return Span
+	 * @return string
 	 */
 	protected function buildFile()
 	{
@@ -306,8 +303,6 @@ class Html_Builder_Type
 		$input->setAttribute('type', 'hidden');
 		$input->addClass('id');
 		if ($this->readonly) {
-			// SM : note, here factorize even if there was no setAttribute('readonly')
-			//$input->removeAttribute('name');
 			$this->setInputAsReadOnly($input);
 		}
 		return $input;
@@ -489,6 +484,7 @@ class Html_Builder_Type
 			. '[' . $prefix . $this->name . ']';
 	}
 
+	//----------------------------------------------------------------------- makeTextInputOrTextarea
 	/**
 	 * @param $multiline boolean
 	 * @param $value     string

@@ -127,7 +127,8 @@ abstract class Element
 				if ($this->build_mode == self::BUILD_MODE_RAW) {
 					$content = $this->getContentAsRaw();
 				}
-				else /*self::BUILD_MODE_AUTO*/ {
+				// else <=> if $this->build_mode == self::BUILD_MODE_AUTO
+				else {
 					$element = reset($this->content);
 					if (is_array($element)) {
 						$content = $this->getContentAsTable();
@@ -199,9 +200,9 @@ abstract class Element
 				$content .= $this->parseArray($item);
 			}
 			elseif ($item instanceof Element) {
-				$saved_mode = $item->build_mode;
+				$saved_mode       = $item->build_mode;
 				$item->build_mode = $this->build_mode;
-				$content .= (string)$item;
+				$content         .= (string)$item;
 				$item->build_mode = $saved_mode;
 			}
 			else {

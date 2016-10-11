@@ -55,9 +55,11 @@ class Html_Builder_Property extends Html_Builder_Type
 				}
 			}
 			// 2nd, if not read_only but has a value and @user if_empty, then set read_only
-			if (!$this->readonly
+			if (
+				!$this->readonly
 				&& ((is_object($value) && !Empty_Object::isEmpty($value)) || !empty($value))
-				&& (!isset($flag_cannot_be_if_empty) || !$flag_cannot_be_if_empty)) {
+				&& (!isset($flag_cannot_be_if_empty) || !$flag_cannot_be_if_empty)
+			) {
 				$this->readonly = $user_annotations->has(User_Annotation::IF_EMPTY);
 			}
 			$name = $property->pathAsField();

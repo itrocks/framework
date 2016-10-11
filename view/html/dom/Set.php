@@ -41,16 +41,16 @@ class Set extends Element
 	 * @param $id        string
 	 * @param $readonly  boolean
 	 */
-	public function __construct($base_name = null, $values = null, $selected = null, $id = null,
-		$readonly = false)
-	{
+	public function __construct(
+		$base_name = null, $values = null, $selected = null, $id = null, $readonly = false
+	) {
 		parent::__construct('span', true);
 		$this->setAttribute('class', 'set');
-		if (isset($id))         $this->setAttribute('id',   $id);
-		if (isset($base_name))  $this->base_name = $base_name;
-		if (isset($readonly))   $this->readonly = $readonly;
-		if (isset($values))     $this->values = $values;
-		if (isset($selected))   $this->selected($selected);
+		if (isset($base_name)) $this->base_name = $base_name;
+		if (isset($id))        $this->setAttribute('id',   $id);
+		if (isset($readonly))  $this->readonly = $readonly;
+		if (isset($selected))  $this->selected($selected);
+		if (isset($values))    $this->values = $values;
 	}
 
 	//-------------------------------------------------------------------------------------- addValue
@@ -98,8 +98,8 @@ class Set extends Element
 				}
 				if ($this->readonly) {
 					$html_option->removeAttribute('name');
-					$html_option->setAttribute('readonly');
 					$html_option->setAttribute('disabled');
+					$html_option->setAttribute('readonly');
 				}
 				$label = new Label(strval($html_option) . Loc::tr($caption));
 				$label->setAttribute('name', $this->base_name);

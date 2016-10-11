@@ -91,6 +91,7 @@ class User_Annotation extends List_Annotation
 		return parent::remove($value) && $this->validate();
 	}
 
+	//-------------------------------------------------------------------------------------- validate
 	/**
 	 * Check that values list are valid
 	 * @return boolean
@@ -98,8 +99,10 @@ class User_Annotation extends List_Annotation
 	protected function validate()
 	{
 		if ($this->has(self::IF_EMPTY) && $this->has(self::HIDE_EMPTY)) {
-			trigger_error(self::IF_EMPTY . ' and ' . self::HIDE_EMPTY
-				. ' values are incompatible (@user)', E_USER_ERROR);
+			trigger_error(
+				self::IF_EMPTY . ' and ' . self::HIDE_EMPTY . ' values are incompatible',
+				E_USER_ERROR
+			);
 		}
 		return true;
 	}
