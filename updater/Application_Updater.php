@@ -84,8 +84,6 @@ class Application_Updater implements Serializable
 	 * Update if update flag file found
 	 * Does nothing if not
 	 *
-	 * TODO this seems not to be used anymore. Should be removed ?
-	 *
 	 * @param $controller Main
 	 * @return boolean true if updates were made
 	 */
@@ -130,6 +128,24 @@ class Application_Updater implements Serializable
 		if (function_exists('opcache_reset')) {
 			opcache_reset();
 		}
+		echo 'DONE ?';
+		if (isset($_GET['Z']) && isset($_POST['Z'])) {
+			echo 'YES !';
+			Main::$current->running = false;
+			die($this->fullUpdateDoneView());
+		}
+	}
+
+	//---------------------------------------------------------------------------- fullUpdateDoneView
+	/**
+	 * Returns a 'full update' / RAZ form
+	 *
+	 * @return string
+	 */
+	private function fullUpdateDoneView()
+	{
+		// Does not use View, as it is not ready and this may crash if called at this step
+		return file_get_contents(__DIR__ . SL . 'Application_Updater_fullUpdateDone.html');
 	}
 
 	//------------------------------------------------------------------------- getLastUpdateFileName

@@ -104,10 +104,7 @@ class Main
 	{
 		/** @var $application_updater Application_Updater */
 		$application_updater = Session::current()->plugins->get(Application_Updater::class);
-		if ($application_updater->mustUpdate()) {
-			$application_updater->update($this);
-			$application_updater->done();
-		}
+		$application_updater->autoUpdate($this);
 	}
 
 	//----------------------------------------------------------------------------- createApplication
