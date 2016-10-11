@@ -28,7 +28,7 @@ class Session implements Serializable
 	 *
 	 * Do not set this directly to true : call stop()
 	 *
-	 * @see SAF\Framework\Session::stop
+	 * @see \SAF\Framework\Session::stop
 	 * @var boolean
 	 */
 	public $stopped = false;

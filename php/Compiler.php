@@ -117,7 +117,9 @@ class Compiler implements
 		}
 		if (isset($_GET['Z'])) {
 			$cache_dir = $this->getCacheDir();
-			system('rm -rf ' . $cache_dir . '/*');
+			if ($cache_dir && is_dir($cache_dir)) {
+				system('rm -rf ' . $cache_dir . '/*');
+			}
 		}
 	}
 

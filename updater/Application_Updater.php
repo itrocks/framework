@@ -9,7 +9,7 @@ use Serializable;
 
 /**
  * The application updater plugin detects if the application needs to be updated, and launch updates
- * for all objects (independant or plugins) that process updates
+ * for all objects (independent or plugins) that process updates
  */
 class Application_Updater implements Serializable
 {
@@ -18,7 +18,7 @@ class Application_Updater implements Serializable
 	const LAST_UPDATE_FILE = 'last_update';
 
 	//----------------------------------------------------------------------------------- UPDATE_FILE
-	const UPDATE_FILE      = 'update';
+	const UPDATE_FILE = 'update';
 
 	//------------------------------------------------------------------------------------ $lock_file
 	/**
@@ -50,6 +50,10 @@ class Application_Updater implements Serializable
 	public function __construct()
 	{
 		if (isset($_GET['Z'])) {
+			if (!isset($_POST['Z'])) {
+				Main::$current->running = false;
+				die($this->confirmFullUpdateView());
+			}
 			$file_name = $this->getLastUpdateFileName();
 			clearstatcache(true, $file_name);
 			if (file_exists($file_name)) {
@@ -80,6 +84,8 @@ class Application_Updater implements Serializable
 	 * Update if update flag file found
 	 * Does nothing if not
 	 *
+	 * TODO this seems not to be used anymore. Should be removed ?
+	 *
 	 * @param $controller Main
 	 * @return boolean true if updates were made
 	 */
@@ -91,6 +97,18 @@ class Application_Updater implements Serializable
 			return true;
 		}
 		return false;
+	}
+
+	//------------------------------------------------------------------------- confirmFullUpdateView
+	/**
+	 * Returns a 'full update' / RAZ form
+	 *
+	 * @return string
+	 */
+	private function confirmFullUpdateView()
+	{
+		// Does not use View, as it is not ready and this may crash if called at this step
+		return file_get_contents(__DIR__ . SL . 'Application_Updater_confirmFullUpdate.html');
 	}
 
 	//------------------------------------------------------------------------------------------ done
@@ -118,7 +136,7 @@ class Application_Updater implements Serializable
 	/**
 	 * @return string
 	 */
-	public function getLastUpdateFileName()
+	private function getLastUpdateFileName()
 	{
 		return Application::current()->getCacheDir() . SL . self::LAST_UPDATE_FILE;
 	}
@@ -127,15 +145,10 @@ class Application_Updater implements Serializable
 	/**
 	 * @return integer last compile time
 	 */
-	public function getLastUpdateTime()
+	private function getLastUpdateTime()
 	{
 		$file_name = $this->getLastUpdateFileName();
-		if (!file_exists($file_name)) {
-			return 0;
-		}
-		else {
-			return filemtime($file_name);
-		}
+		return file_exists($file_name) ? filemtime($file_name) : 0;
 	}
 
 	//------------------------------------------------------------------------------------ mustUpdate
@@ -147,6 +160,8 @@ class Application_Updater implements Serializable
 	public function mustUpdate()
 	{
 		if (file_exists(self::UPDATE_FILE)) {
+			// wait for update lock file to be released by another update in progress
+			// then : locks the update file to avoid any other update
 			$this->lock_file = fopen(self::UPDATE_FILE, 'r');
 			while (file_exists(self::UPDATE_FILE) && !flock($this->lock_file, LOCK_EX)) {
 				usleep(100000);
@@ -156,6 +171,7 @@ class Application_Updater implements Serializable
 				return true;
 			}
 			fclose($this->lock_file);
+			// TODO ask for stop (update file does this job) and wait for running tasks to stop
 		}
 		return false;
 	}
@@ -177,7 +193,7 @@ class Application_Updater implements Serializable
 	/**
 	 * @param $update_time integer
 	 */
-	public function setLastUpdateTime($update_time)
+	private function setLastUpdateTime($update_time)
 	{
 		$updated = $this->getLastUpdateFileName();
 		touch($updated, $update_time);
