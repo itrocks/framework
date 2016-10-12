@@ -73,8 +73,11 @@ class Object_Validator implements Registerable
 				if ($option instanceof Only) {
 					$only = $option->properties;
 				}
+				if ($option instanceof Skip) {
+					$skip = true;
+				}
 			}
-			if (!$this->validate($object, $only)) {
+			if (!isset($skip) && !$this->validate($object, $only)) {
 				throw new View_Exception($this->notValidated($object, $only));
 			}
 		}
