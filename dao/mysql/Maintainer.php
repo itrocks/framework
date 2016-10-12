@@ -306,8 +306,10 @@ class Maintainer implements Registerable
 					}
 				}
 			}
-			$mysqli->last_errno = $last_errno;
-			$mysqli->last_error = $last_error;
+			if (!$joinpoint->stop) {
+				$mysqli->last_errno = $last_errno;
+				$mysqli->last_error = $last_error;
+			}
 		}
 	}
 
