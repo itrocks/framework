@@ -128,9 +128,7 @@ class Application_Updater implements Serializable
 		if (function_exists('opcache_reset')) {
 			opcache_reset();
 		}
-		echo 'DONE ?';
 		if (isset($_GET['Z']) && isset($_POST['Z'])) {
-			echo 'YES !';
 			Main::$current->running = false;
 			die($this->fullUpdateDoneView());
 		}
