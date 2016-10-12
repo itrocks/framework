@@ -22,8 +22,8 @@ class Doc_Comment_Annotations_Tests extends Test
 	//------------------------------------------------------------------------ testSameInterfaceTwice
 	/**
 	 * Test case :
-	 * A class implements an interface and herits a class that implements the same interface
-	 * Will the annotation coming from the annotation be implmented once or twice ? Should once.
+	 * A class implements an interface and inherits a class that implements the same interface
+	 * Will the annotation coming from the annotation be implemented once or twice ? Should once.
 	 */
 	public function testSameInterfaceTwice()
 	{
