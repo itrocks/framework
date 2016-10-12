@@ -168,6 +168,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
 	 * TODO use $flags ?
+	 *
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */

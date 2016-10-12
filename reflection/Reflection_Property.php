@@ -249,6 +249,7 @@ class Reflection_Property extends ReflectionProperty
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
 	 * TODO LOW use $flags ?
+	 *
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */

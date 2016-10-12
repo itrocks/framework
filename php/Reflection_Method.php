@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\PHP;
 
-use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Annoted;
 use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use SAF\Framework\Reflection\Interfaces;
@@ -128,6 +127,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
 	 * TODO LOWEST parent methods read
+	 *
 	 * @param $flags integer[]|boolean T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */

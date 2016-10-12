@@ -38,6 +38,7 @@ class Reflection_Method extends ReflectionMethod
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
 	 * TODO LOWEST parent methods read
+	 *
 	 * @param $flags integer[]
 	 * @return string
 	 */

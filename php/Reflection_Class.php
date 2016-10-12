@@ -237,12 +237,13 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
-	 * Cumulates documentations of parents and the class itself
+	 * Accumulates documentations of parents and the class itself
 	 *
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags   integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
 	 */
-	public function getDocComment($flags = [])
+	public function getDocComment($flags = [], &$already = [])
 	{
 		if ($flags === true) {
 			$flags = [T_EXTENDS, T_IMPLEMENTS, T_USE];
@@ -256,22 +257,25 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$flip = array_flip($flags);
 			if (($this->type !== T_INTERFACE) && isset($flip[T_USE])) {
 				foreach ($this->getTraits() as $trait) {
-					if ($comment = $trait->getDocComment($flags)) {
+					if ($comment = $trait->getDocComment($flags, $already)) {
 						$doc_comment .= LF . Parser::DOC_COMMENT_IN . $trait->name . LF . $comment;
 					}
 				}
 			}
 			if (($this->type !== T_TRAIT) && isset($flip[T_EXTENDS])) {
 				if ($parent = $this->getParentClass()) {
-					if ($comment = $parent->getDocComment($flags)) {
+					if ($comment = $parent->getDocComment($flags, $already)) {
 						$doc_comment .= LF . Parser::DOC_COMMENT_IN . $parent->name . LF . $comment;
 					}
 				}
 			}
 			if (($this->type !== T_TRAIT) && isset($flip[T_IMPLEMENTS])) {
 				foreach ($this->getInterfaces() as $interface) {
-					if ($comment = $interface->getDocComment($flags)) {
-						$doc_comment .= LF . Parser::DOC_COMMENT_IN . $interface->name . LF . $comment;
+					if (!isset($already[$interface->name])) {
+						$already[$interface->name] = true;
+						if ($comment = $interface->getDocComment($flags)) {
+							$doc_comment .= LF . Parser::DOC_COMMENT_IN . $interface->name . LF . $comment;
+						}
 					}
 				}
 			}

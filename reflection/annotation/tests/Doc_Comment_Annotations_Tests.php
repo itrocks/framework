@@ -11,14 +11,6 @@ use SAF\Framework\Tests\Test;
 class Doc_Comment_Annotations_Tests extends Test
 {
 
-	//----------------------------------------------------------------------------------- beforeWrite
-	/**
-	 * An empty
-	 */
-	public function beforeWrite()
-	{
-	}
-
 	//------------------------------------------------------------------------ testSameInterfaceTwice
 	/**
 	 * Test case :
@@ -39,9 +31,9 @@ EOT
 		);
 		eval($namespace . 'class Parent_Class implements Test_Interface {}');
 		eval($namespace . 'class Child_Class extends Parent_Class {}');
-		$class = (new Reflection_Class(__NAMESPACE__ . BS . 'Child_Class'));
-		$annotations = $class->getAnnotations('before_write');
+		$class  = (new Reflection_Class(__NAMESPACE__ . BS . 'Child_Class'));
 		$assume = [new Method_Annotation(BS . __CLASS__ . '::beforeWrite', $class, 'before_write')];
+		$annotations = $class->getAnnotations('before_write');
 		$this->assume(__METHOD__, $annotations, $assume);
 	}
 

@@ -13,7 +13,7 @@ interface Has_Doc_Comment
 	/**
 	 * Gets doc comment
 	 *
-	 * @param $flags integer[]|boolean T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags   integer[]|boolean T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
 	public function getDocComment($flags = []);

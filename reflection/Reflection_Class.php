@@ -190,12 +190,13 @@ class Reflection_Class extends ReflectionClass
 
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
-	 * Return doc comment of the class
+	 * Accumulates documentations of parents and the class itself
 	 *
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags   integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
 	 */
-	public function getDocComment($flags = [])
+	public function getDocComment($flags = [], &$already = [])
 	{
 		$doc_comment = parent::getDocComment();
 		if ($flags) {
@@ -204,19 +205,22 @@ class Reflection_Class extends ReflectionClass
 			if (isset($flip[T_USE]) && !$this->isInterface()) {
 				foreach ($this->getTraits() as $trait) {
 					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $trait->name . LF;
-					$doc_comment .= $trait->getDocComment($flags);
+					$doc_comment .= $trait->getDocComment($flags, $already);
 				}
 			}
 			if (isset($flip[T_EXTENDS]) && !$this->isTrait()) {
 				if ($parent_class = $this->getParentClass()) {
 					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $parent_class->name . LF;
-					$doc_comment .= $parent_class->getDocComment($flags);
+					$doc_comment .= $parent_class->getDocComment($flags, $already);
 				}
 			}
 			if (isset($flip[T_IMPLEMENTS]) && !$this->isTrait()) {
 				foreach ($this->getInterfaces() as $interface) {
-					$doc_comment .= LF . Parser::DOC_COMMENT_IN . $interface->name . LF;
-					$doc_comment .= $interface->getDocComment($flags);
+					if (!isset($already[$interface->name])) {
+						$already[$interface->name] = true;
+						$doc_comment .= LF . Parser::DOC_COMMENT_IN . $interface->name . LF;
+						$doc_comment .= $interface->getDocComment($flags, $already);
+					}
 				}
 			}
 		}
