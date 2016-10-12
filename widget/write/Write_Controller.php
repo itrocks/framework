@@ -2,8 +2,6 @@
 namespace SAF\Framework\Widget\Write;
 
 use Exception;
-use SAF\Framework\Builder;
-use SAF\Framework\Controller;
 use SAF\Framework\Controller\Default_Class_Controller;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
@@ -20,10 +18,18 @@ class Write_Controller implements Default_Class_Controller
 {
 
 	//-------------------------------------------------------------------- write controller constants
-	const ERROR      = 'error';
+
+	//----------------------------------------------------------------------------------------- ERROR
+	const ERROR = 'error';
+
+	//------------------------------------------------------------------------------------ FILL_COMBO
 	const FILL_COMBO = 'fill_combo';
-	const REDIRECT   = 'redirect_after_write';
-	const WRITTEN    = 'written';
+
+	//-------------------------------------------------------------------------------------- REDIRECT
+	const REDIRECT = 'redirect_after_write';
+
+	//--------------------------------------------------------------------------------------- WRITTEN
+	const WRITTEN = 'written';
 
 	//----------------------------------------------------------------------------- getViewParameters
 	/**

@@ -640,14 +640,17 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Gets write arrays from an object
 	 *
+	 * TODO Factorize : this method is still too big
+	 *
 	 * @param $object          object
+	 * @param $options         Option\Spreadable[] Spread options
 	 * @param $only_properties string[] get write arrays for these properties only (if set)
 	 * @param $class           Link_Class
 	 * @return array [$write, $write_collections, $write_maps, $write_objects, $write_properties]
 	 * @throws Exception
 	 */
 	private function objectToWriteArray(
-		$object, array $only_properties = null, Link_Class $class = null
+		$object, array $options, array $only_properties = null, Link_Class $class = null
 	) {
 		if (!$class) {
 			$class = new Link_Class(get_class($object));
@@ -732,7 +735,7 @@ class Link extends Dao\Sql\Link
 						// write array or object into a @store gz/hex/string
 						elseif ($store = $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
 							if ($store == Store_Annotation::JSON) {
-								$value = $this->valueToWriteArray($value);
+								$value = $this->valueToWriteArray($value, $options);
 								if (!is_string($value)) {
 									$value = json_encode($value);
 								}
@@ -769,13 +772,13 @@ class Link extends Dao\Sql\Link
 									Getter::$ignore = $aop_getter_ignore;
 									if (!isset($value) || isA($element_type->asString(), get_class($value))) {
 										$object->$id_column_name = $this->getObjectIdentifier(
-											$this->write($value), $id_value
+											$this->write($value, $options), $id_value
 										);
 									}
 									else {
 										$clone = Builder::createClone($value, $property->getType()->asString());
 										$object->$id_column_name = $this->getObjectIdentifier(
-											$this->write($clone), $id_value
+											$this->write($clone, $options), $id_value
 										);
 										$this->replace($value, $clone, false);
 									}
@@ -1055,21 +1058,22 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Prepare a property value for JSON encode
 	 *
-	 * @param $value mixed The value of a property
+	 * @param $value   mixed The value of a property
+	 * @param $options Option\Spreadable[] Spread options
 	 * @return array
 	 */
-	protected function valueToWriteArray($value)
+	protected function valueToWriteArray($value, array $options)
 	{
 		$array = [];
 		if (is_object($value)) {
 			// encode only stored data for the moment, not collection or map
-			list($array) = $this->objectToWriteArray($value);
+			list($array) = $this->objectToWriteArray($value, $options);
 			// JSON comes first, like it is done by serialize()
 			$array = array_merge([Store_Annotation::JSON_CLASS => get_class($value)], $array);
 		}
 		else if (is_array($value)) {
 			foreach ($value as $key => $sub_value) {
-				$array[$key] = $this->valueToWriteArray($sub_value);
+				$array[$key] = $this->valueToWriteArray($sub_value, $options);
 			}
 		}
 		else {
@@ -1100,9 +1104,10 @@ class Link extends Dao\Sql\Link
 			if (Null_Object::isNull($object)) {
 				$this->disconnect($object);
 			}
-			$class = new Link_Class(get_class($object));
-			$id_property = 'id';
-			$only = null;
+			$class          = new Link_Class(get_class($object));
+			$id_property    = 'id';
+			$only           = null;
+			$spread_options = [];
 			foreach ($options as $option) {
 				if ($option instanceof Option\Add) {
 					$force_add = true;
@@ -1112,6 +1117,9 @@ class Link extends Dao\Sql\Link
 				}
 				elseif ($option instanceof Option\Link_Class_Only) {
 					$link_class_only = true;
+				}
+				if ($option instanceof Option\Spreadable) {
+					$spread_options[] = $option;
 				}
 			}
 			do {
@@ -1126,7 +1134,7 @@ class Link extends Dao\Sql\Link
 					}
 				}
 				list($write, $write_collections, $write_maps, $write_objects, $write_properties)
-					= $this->objectToWriteArray($object, $only, $class);
+					= $this->objectToWriteArray($object, $spread_options, $only, $class);
 
 				/** @var $properties Reflection_Property[] */
 				$properties = $class->accessProperties();
@@ -1188,15 +1196,15 @@ class Link extends Dao\Sql\Link
 				}
 				foreach ($write_collections as $write) {
 					list($property, $value) = $write;
-					$this->writeCollection($object, $property, $value);
+					$this->writeCollection($object, $spread_options, $property, $value);
 				}
 				foreach ($write_maps as $write) {
 					list($property, $value) = $write;
-					$this->writeMap($object, $property, $value);
+					$this->writeMap($object, $spread_options, $property, $value);
 				}
 				foreach ($write_objects as $write) {
 					list($property, $value) = $write;
-					$this->writeObject($object, $property, $value);
+					$this->writeObject($object, $spread_options, $property, $value);
 				}
 				foreach ($write_properties as $write) {
 					/** @var $dao Data_Link */
@@ -1228,11 +1236,13 @@ class Link extends Dao\Sql\Link
 	 * Ie when you write an order, it's implicitly needed to write its lines
 	 *
 	 * @param $object     object
+	 * @param $options    Option\Spreadable[]
 	 * @param $property   Reflection_Property
 	 * @param $collection Component[]
 	 */
-	private function writeCollection($object, Reflection_Property $property, $collection)
-	{
+	private function writeCollection(
+		$object, array $options, Reflection_Property $property, $collection
+	) {
 		// old collection
 		$class_name = get_class($object);
 		$old_object = Search_Object::create($class_name);
@@ -1248,7 +1258,7 @@ class Link extends Dao\Sql\Link
 		// collection properties : write each of them
 		$id_set = [];
 		if ($collection) {
-			$link_class_only       = new Option\Link_Class_Only();
+			$options[] = new Option\Link_Class_Only();
 			$foreign_property_name = $property->getAnnotation('foreign')->value;
 			foreach ($collection as $key => $element) {
 				if (!is_a($element, $element_class->getName())) {
@@ -1263,7 +1273,7 @@ class Link extends Dao\Sql\Link
 				if (!empty($id)) {
 					$id_set[$id] = true;
 				}
-				$this->write($element, empty($id) ? [] : [$link_class_only]);
+				$this->write($element, empty($id) ? [] : $options);
 			}
 		}
 		// remove old unused elements
@@ -1280,10 +1290,11 @@ class Link extends Dao\Sql\Link
 	//-------------------------------------------------------------------------------------- writeMap
 	/**
 	 * @param $object   object
+	 * @param $options  Option\Spreadable[]
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
 	 */
-	private function writeMap($object, Reflection_Property $property, $map)
+	private function writeMap($object, array $options, Reflection_Property $property, $map)
 	{
 		// old map
 		$class = new Link_Class(get_class($object));
@@ -1303,7 +1314,7 @@ class Link extends Dao\Sql\Link
 		$id_set = [];
 		foreach ($map as $element) {
 			$id = $this->getObjectIdentifier($element)
-				?: $this->getObjectIdentifier($this->write($element));
+				?: $this->getObjectIdentifier($this->write($element, $options));
 			if (!isset($old_map[$id]) && !isset($id_set[$id])) {
 				$query = $insert_builder->buildQuery($object, $element);
 				$this->connection->query($query);
@@ -1324,13 +1335,15 @@ class Link extends Dao\Sql\Link
 	//----------------------------------------------------------------------------------- writeObject
 	/**
 	 * @param $object           object
+	 * @param $options          Option\Spreadable[]
 	 * @param $property         Reflection_Property
 	 * @param $component_object Component
 	 * @todo And what if $component_object has a @link class type ?
 	 * @todo working with @dao property annotation
 	 */
-	private function writeObject($object, Reflection_Property $property, $component_object)
-	{
+	private function writeObject(
+		$object, array $options, Reflection_Property $property, $component_object
+	) {
 		// if there is already a stored component object : there must be only one
 		if (is_object($component_object)) {
 			$foreign_property_name = $property->getAnnotation('foreign')->value;
@@ -1350,7 +1363,7 @@ class Link extends Dao\Sql\Link
 		// create / update
 		else {
 			$component_object->setComposite($object);
-			$this->write($component_object);
+			$this->write($component_object, $options);
 		}
 	}
 
