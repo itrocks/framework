@@ -46,7 +46,7 @@ class Include_Path
 			return $directories = [];
 		}
 		else {
-			$directories = [$path];
+			$directories[$path] = $path;
 			$dir = dir($path);
 			while ($entry = $dir->read()) if ($entry[0] != DOT) {
 				if (is_dir($path . SL . $entry) && ($entry != 'vendor') && ($entry != 'cache')) {
@@ -110,6 +110,11 @@ class Include_Path
 		$already[$application_class] = true;
 		$app_dir = $this->getSourceDirectory($application_class);
 		$directories = [];
+		$app_dir_begin = '';
+		foreach (explode(SL, $app_dir) as $app_dir_part) {
+			$app_dir_begin .= ($app_dir_begin ? SL : '') . $app_dir_part;
+			$directories[$app_dir_begin] = $app_dir_begin;
+		}
 		if ($application_class != Application::class) {
 			// get source directories from main application extends
 			$extends = get_parent_class($application_class);
@@ -117,7 +122,7 @@ class Include_Path
 				$directories = $this->getSourceDirectories($include_subdirectories, $extends, $already);
 			}
 			// get source directories for secondary applications extends
-			$class = Reflection_class::of($application_class);
+			$class = Reflection_Class::of($application_class);
 			$extends_annotations = $class->getListAnnotations('extends');
 			foreach ($extends_annotations as $extends_annotation) {
 				foreach ($extends_annotation->values() as $extends) {
