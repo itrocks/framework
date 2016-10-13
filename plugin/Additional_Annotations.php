@@ -2,7 +2,9 @@
 namespace SAF\Framework\Plugin;
 
 use SAF\Framework\Application;
+use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Tools\Names;
+use SAF\Framework\Tools\Paths;
 
 /**
  * Class Additional_Annotation support additional annotations added by plugins
@@ -33,7 +35,9 @@ abstract class Additional_Annotations
 		$cached_annotations_file
 			= Application::current()->getCacheDir() . SL . 'default_annotations.php';
 		if (self::$additional_annotations) {
-			$buffer = file_get_contents(__DIR__ . SL . 'default_annotations.php')
+			$default_annotations_file = substr(Paths::$file_root, 0, -1) . Paths::$project_uri . SL
+				. strtolower(Names::classToPath(Annotation::class)) . SL . 'default_annotations.php';
+			$buffer = file_get_contents($default_annotations_file)
 				. LF
 				. 'Parser::$default_annotations = array_merge(' . LF
 				. TAB . 'Parser::$default_annotations,' . LF
