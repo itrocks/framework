@@ -6,7 +6,7 @@ namespace SAF\Framework\History;
  *
  * @after_write \SAF\Framework\History\Writer::afterWrite
  * @before_write \SAF\Framework\History\Writer::beforeWrite
- * @todo Writer:: should be enouth, but the name resolving comes from the final class namespace
+ * @todo Writer:: should be enough, but the name resolving comes from the final class namespace
  * instead of using the interface one.
  */
 interface Has_History
