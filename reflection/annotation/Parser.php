@@ -34,51 +34,11 @@ class Parser
 	//------------------------------------------------------------------------------------ T_PROPERTY
 	const T_PROPERTY = 'Property';
 
-	//----------------------------------------------------------------------- $additional_annotations
-	/**
-	 * @var string[]
-	 */
-	public static $additional_annotations = [];
-
 	//-------------------------------------------------------------------------- $default_annotations
 	/**
 	 * @var string[]
 	 */
 	public static $default_annotations;
-
-	//----------------------------------------------------------------- $shutdown_function_registered
-	/**
-	 * @var boolean
-	 */
-	private static $shutdown_function_registered = false;
-
-	//------------------------------------------------------------------- enableAdditionalAnnotations
-	/**
-	 * Called only when a Parser has been instantiated, on plugins registration
-	 */
-	static public function enableAdditionalAnnotations()
-	{
-		$cached_annotations_file
-			= Application::current()->getCacheDir() . SL . 'default_annotations.php';
-		if (self::$additional_annotations) {
-			$buffer = file_get_contents(__DIR__ . SL . 'default_annotations.php')
-				. LF
-				. 'Parser::$default_annotations = array_merge(' . LF
-				. TAB . 'Parser::$default_annotations,' . LF
-				. TAB . 'unserialize(' . Q . serialize(self::$additional_annotations) . Q . ')' . LF
-				. ');' . LF;
-			$cache = file_get_contents($cached_annotations_file);
-			if ($buffer !== $cache) {
-				file_put_contents($cached_annotations_file, $buffer);
-			}
-		}
-		else {
-			clearstatcache();
-			if (file_exists($cached_annotations_file)) {
-				unlink($cached_annotations_file);
-			}
-		}
-	}
 
 	//---------------------------------------------------------------------------------------- byName
 	/**
@@ -359,56 +319,6 @@ class Parser
 		}
 
 		return $annotation;
-	}
-
-	//---------------------------------------------------------------------- registerShutDownFunction
-	/**
-	 * Register a shutdown function to enable additional annotations
-	 */
-	private static function registerShutDownFunction()
-	{
-		if (!self::$shutdown_function_registered) {
-			register_shutdown_function([Parser::class, 'enableAdditionalAnnotations']);
-			self::$shutdown_function_registered = true;
-		}
-	}
-
-	//----------------------------------------------------------------------- setAdditionalAnnotation
-	/**
-	 * Defines an annotation class, linked to an annotation
-	 *
-	 * @param $context          string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
-	 * @param $annotation_name  string
-	 * @param $annotation_class string
-	 */
-	public static function setAdditionalAnnotation($context, $annotation_name, $annotation_class)
-	{
-		// register the shutdown function
-		self::registerShutDownFunction();
-		// add annotation
-		$namespace = 'SAF\Framework\Reflection\Annotation' . BS . $context;
-		$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
-		Parser::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
-	}
-
-	//---------------------------------------------------------------------- setAdditionalAnnotations
-	/**
-	 * Defines multiple annotations classes
-	 * A very little bit faster than multiple calls to setAnnotation()
-	 *
-	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_VARIABLE
-	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
-	 */
-	public static function setAdditionalAnnotations($context, $annotations_classes)
-	{
-		// register the shutdown function
-		self::registerShutDownFunction();
-		// add annotations
-		$namespace = 'SAF\Framework\Reflection\Annotation' . BS . $context;
-		foreach ($annotations_classes as $annotation_name => $annotation_class) {
-			$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
-			Parser::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
-		}
 	}
 
 }

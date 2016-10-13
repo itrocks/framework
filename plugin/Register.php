@@ -2,7 +2,6 @@
 namespace SAF\Framework\Plugin;
 
 use SAF\Framework\AOP\Weaver\IWeaver;
-use SAF\Framework\Reflection\Annotation\Parser;
 
 /**
  * Plugin register structure
@@ -80,7 +79,7 @@ class Register
 	 */
 	public function setAnnotation($context, $annotation_name, $annotation_class)
 	{
-		Parser::setAdditionalAnnotation($context, $annotation_name, $annotation_class);
+		Additional_Annotations::addAnnotation($context, $annotation_name, $annotation_class);
 	}
 
 	//-------------------------------------------------------------------------------- setAnnotations
@@ -93,7 +92,7 @@ class Register
 	 */
 	public function setAnnotations($context, $annotations_classes)
 	{
-		Parser::setAdditionalAnnotations($context, $annotations_classes);
+		Additional_Annotations::addAnnotations($context, $annotations_classes);
 	}
 
 	//------------------------------------------------------------------------------ setConfiguration
