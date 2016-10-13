@@ -2,7 +2,9 @@
 namespace SAF\Framework\Reflection\Annotation\Property;
 
 use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
+use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
 use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Type;
 
@@ -17,14 +19,19 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value               string
-	 * @param $reflection_property Reflection_Property
+	 * @param $value    string
+	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $reflection_property)
+	public function __construct($value, Reflection_Property $property)
 	{
 		parent::__construct($value);
+		if (count($this->values()) === 1) {
+			if (strpos($value = reset($this->value), '::')) {
+				$this->importValues($value, $property);
+			}
+		}
 		if (isset($value)) {
-			$type = $reflection_property->getType();
+			$type = $property->getType();
 			switch ($type->getElementTypeAsString()) {
 				case Type::FLOAT:   $function = 'floatval'; break;
 				case Type::INTEGER: $function = 'intval';   break;
@@ -32,6 +39,44 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 			}
 			foreach ($this->values() as $key => $value) {
 				$this->value[$key] = $function($value);
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------------- importValues
+	/**
+	 * @param $from     string
+	 * @param $property Reflection_Property
+	 */
+	private function importValues($from, Reflection_Property $property)
+	{
+		list($value, $option) = strpos($from, SP) ? explode(SP, $from, 2) : [$from, null];
+		list($class_name, $what) = explode(
+			'::', (new Method_Annotation($value, $property, 'values'))->value
+		);
+		$reflection_class = get_class($property->getDeclaringClass());
+		/** @var $class Reflection_Class */
+		$class = new $reflection_class($class_name);
+		// each class const that is a value (not an array) is a value. Option local = no parents const
+		if ($what === 'const') {
+			$constants = ($option === 'local') ? $class->getConstants([]) : $class->getConstants();
+			$this->value = [];
+			foreach ($constants as $constant) {
+				if (!is_array($constant)) {
+					$this->value[] = $constant;
+				}
+			}
+		}
+		// a class const that contains an array of values
+		elseif (ctype_upper($what) && is_array($constants = $class->getConstant($what))) {
+			$this->value = array_values($constants);
+		}
+		// a static property default array value
+		else {
+			$what = ltrim($what, '$');
+			$defaults = $class->getDefaultProperties();
+			if (isset($defaults[$what]) && is_array($defaults[$what])) {
+				$this->value = array_values($defaults[$what]);
 			}
 		}
 	}
