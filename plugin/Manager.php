@@ -45,7 +45,9 @@ class Manager implements IManager, Serializable
 	 */
 	public function activate($class_name)
 	{
-		return $this->get($class_name);
+		/** @var $plugin Plugin|Activable */
+		$plugin = $this->get($class_name);
+		return $plugin;
 	}
 
 	//------------------------------------------------------------------------------- activatePlugins

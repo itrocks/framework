@@ -353,7 +353,7 @@ class Import_Array
 				[Link_Annotation::COLLECTION, Link_Annotation::MAP]
 			))
 				? $this->createArrayReference($class->class_name, $search)
-				: $this->importSearchObject($search, $row, $class, $class_properties_column, $property_path);
+				: $this->importSearchObject($search, $row, $class, $class_properties_column);
 			$array[key($array)][$property_path] = $object;
 			$simulation --;
 		}

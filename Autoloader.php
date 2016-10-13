@@ -2,7 +2,6 @@
 namespace SAF\Framework;
 
 use SAF\Framework\AOP\Include_Filter;
-use SAF\Framework\Tools\Call_Stack;
 use SAF\Framework\Tools\Names;
 
 /**
@@ -16,7 +15,6 @@ class Autoloader
 	 * Includes the php file that contains the given class (must contain namespace)
 	 *
 	 * @param $class_name string class name (with or without namespace)
-	 * @return boolean
 	 */
 	public function autoload($class_name)
 	{

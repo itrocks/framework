@@ -37,7 +37,7 @@ trait Current
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
-	 * @var object
+	 * @var object|Current
 	 */
 	protected static $current = null;
 
