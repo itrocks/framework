@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Reflection\Annotation\Template;
 
+use SAF\Framework\Dao;
+use SAF\Framework\PHP\Dependency;
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Interfaces\Reflection;
@@ -40,7 +42,16 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				: $class_property;
 			if ($pos = strpos($value, '::')) {
 				$type_annotation = new Type_Annotation(substr($value, 0, $pos), $class);
-				if ($type_annotation->value == 'composite') {
+				if (in_array($type_annotation->value, ['__CLASS_NAME__', 'self'])) {
+					$type_annotation->value = BS . $class->getName();
+				}
+				elseif ($type_annotation->value == 'static') {
+					if ($class_property instanceof Reflection_Property) {
+						$class = $class_property->getDeclaringClass();
+					}
+					$type_annotation->value = BS . $class->getName();
+				}
+				elseif ($type_annotation->value == 'composite') {
 					/** @var $composite_property Reflection_Property */
 					$composite_property = call_user_func([$class->getName(), 'getCompositeProperty']);
 					$type_annotation->value = $composite_property->getType()->asString();
@@ -50,7 +61,16 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 					!($class_property instanceof Reflection_Property)
 					|| ($class_property->getDeclaringTraitName() === $class_property->getFinalClassName())
 				) {
-					$type_annotation->applyNamespace($class->getNamespaceName());
+					/** @var $dependencies Dependency[] */
+					$dependencies = Dao::search(
+						['class_name' => $class->getName(), 'type' => Dependency::T_NAMESPACE_USE],
+						Dependency::class
+					);
+					$use = [];
+					foreach ($dependencies as $dependency) {
+						$use[] = $dependency->dependency_name;
+					}
+					$type_annotation->applyNamespace($class->getNamespaceName(), $use);
 				}
 				if (!class_exists($type_annotation->value)) {
 					$this->searchIntoDeclaringTrait($class_property, $type_annotation, $value, $pos);
@@ -61,7 +81,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				if (!class_exists($type_annotation->value) && !trait_exists($type_annotation->value)) {
 					trigger_error(
 						sprintf(
-							'Not found full class name for Method_Annotation %1 value %2 class %3 property %4',
+							'Not found full class name for Method_Annotation %s value %s class %s property %s',
 							$annotation_name, $value, $class->getName(), $class_property->getName()
 						),
 						E_USER_ERROR
@@ -105,7 +125,6 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @param $type_annotation Type_Annotation
 	 * @param $value           string
 	 * @param $pos             integer
-	 * @return Reflection_Class
 	 */
 	private function searchIntoDeclaringTrait(
 		Reflection $class_property, Type_Annotation $type_annotation, $value, $pos

@@ -256,8 +256,6 @@ class Reflection_Source
 		$last_stop = null;
 		// level for the T_USE clause : T_NAMESPACE, T_CLASS or T_FUNCTION (T_NULL if outside any level)
 		$use_what = null;
-		// what namespaces or class names does the current namespace use (key = val)
-		$use = [];
 
 		// scan tokens
 		$this->getTokens();
@@ -289,7 +287,6 @@ class Reflection_Source
 			if ($token_id === T_NAMESPACE) {
 				$use_what = T_NAMESPACE;
 				$this->namespace = $this->scanClassName();
-				$use = [];
 				if ($f_namespaces) {
 					$this->namespaces[$this->namespace] = $token[2];
 				}
@@ -353,10 +350,16 @@ class Reflection_Source
 							);
 							$used = substr($used, 1);
 						}
-						$use[$used] = $used;
 						if ($f_uses) {
 							$this->use[$used] = $line;
 						}
+						$dependency = new Dependency();
+						$dependency->dependency_name = $used;
+						$dependency->file_name       = $this->file_name;
+						$dependency->line            = $line;
+						$dependency->type            = Dependency::T_NAMESPACE_USE;
+						$this->dependencies[] = $dependency;
+						$missing_class_name[] = $dependency;
 					}
 				}
 

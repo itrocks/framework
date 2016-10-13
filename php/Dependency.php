@@ -24,6 +24,9 @@ class Dependency
 	//---------------------------------------------------------------------------------- T_IMPLEMENTS
 	const T_IMPLEMENTS = 'implements';
 
+	//------------------------------------------------------------------------------- T_NAMESPACE_USE
+	const T_NAMESPACE_USE = 'namespace_use';
+
 	//----------------------------------------------------------------------------------------- T_NEW
 	const T_NEW = 'new';
 
@@ -43,6 +46,9 @@ class Dependency
 	const T_STORE = 'store';
 
 	//----------------------------------------------------------------------------------------- T_USE
+	/**
+	 * class use
+	 */
 	const T_USE = 'use';
 
 	//----------------------------------------------------------------------------------------- T_VAR
@@ -113,8 +119,8 @@ class Dependency
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *
-	 * @values class, declaration, extends, implements, new, param, return, set, static, store, use,
-	 *         var
+	 * @values class, declaration, extends, implements, namespace_use, new, param, return, set,
+	 *         static, store, use, var
 	 * @var string
 	 */
 	public $type;
