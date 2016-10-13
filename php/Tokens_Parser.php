@@ -144,7 +144,7 @@ trait Tokens_Parser
 					$continue = true;
 				}
 				else {
-					$continue = ($token[0] === T_WHITESPACE);
+					$continue = in_array($token[0], [T_COMMENT, T_DOC_COMMENT, T_WHITESPACE]);
 				}
 			}
 			elseif ($token === ',') {
@@ -192,7 +192,7 @@ trait Tokens_Parser
 
 	//-------------------------------------------------------------------------------- scanTraitNames
 	/**
-	 * Scans commas separated trait names. Ignore { } traits details
+	 * Scans commas separated trait names. Ignore doc-comments and { } traits details
 	 *
 	 * @return integer[] key is the trait name, value is the line number it was declared
 	 */
