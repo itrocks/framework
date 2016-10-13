@@ -22,6 +22,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	//--------------------------------------------------------------------------------- T_DOC_EXTENDS
 	const T_DOC_EXTENDS = 'T_DOC_EXTENDS';
 
+	//------------------------------------------------------------------------------------ $constants
+	/**
+	 * @var double[]|integer[]|string[] Constant name in key, constant value in value
+	 */
+	private $constants;
+
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * @var string
@@ -76,6 +82,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	private $parent;
 
+	//----------------------------------------------------------------------------- $parent_constants
+	/**
+	 * @var double[]|integer[]|string[]
+	 */
+	private $parent_constants;
+
 	//------------------------------------------------------------------------------- $parent_methods
 	/**
 	 * @var Reflection_Method[]
@@ -113,6 +125,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @var integer the line where the class declaration stops into source
 	 */
 	public $stop;
+
+	//------------------------------------------------------------------------------ $trait_constants
+	/**
+	 * @var double[]|integer[]|string[]
+	 */
+	private $trait_constants;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -199,6 +217,65 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		// more traits may have been added
 		$this->traits_methods    = null;
 		$this->traits_properties = null;
+	}
+
+	//----------------------------------------------------------------------------------- getConstant
+	/**
+	 * Gets defined constant value
+	 *
+	 * @param $name string
+	 * @return mixed
+	 */
+	public function getConstant($name)
+	{
+		$constants = $this->getConstants([]);
+		if (!isset($constants[$name])) {
+			$constants = $this->getConstants([T_USE]);
+			if (!isset($constants[$name])) {
+				$constants = $this->getConstants([T_EXTENDS]);
+			}
+		}
+		return array_key_exists($name, $constants) ? $constants[$name] : false;
+	}
+
+	//---------------------------------------------------------------------------------- getConstants
+	/**
+	 * Gets defined constants from a class
+	 *
+	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @return mixed[] Constant name in key, constant value in value
+	 */
+	public function getConstants($flags = [T_EXTENDS, T_USE])
+	{
+		if (!$this->constants) {
+			$this->scanUntilClassEnds();
+		}
+		$constants = $this->constants;
+
+		if ($flags) {
+			$flip = array_flip($flags);
+			if (isset($flip[T_USE])) {
+				if (!isset($this->trait_constants)) {
+					$this->trait_constants = [];
+					foreach ($this->getTraits() as $trait) {
+						$this->trait_constants = array_merge(
+							$trait->getConstants([T_USE]), $this->trait_constants
+						);
+					}
+				}
+				$constants = array_merge($this->trait_constants, $constants);
+			}
+			if (isset($flip[T_EXTENDS])) {
+				if (!isset($this->parent_constants)) {
+					$this->parent_constants = ($parent = $this->getParentClass())
+						? $parent->getConstants([T_EXTENDS, T_USE])
+						: [];
+				}
+				$constants = array_merge($this->parent_constants, $constants);
+			}
+		}
+
+		return $constants;
 	}
 
 	//-------------------------------------------------------------------------------- getConstructor
@@ -490,63 +567,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $this->parent ? (is_string($this->parent) ? $this->parent : $this->parent->name) : null;
 	}
 
-	//------------------------------------------------------------------------------- getSetClassName
-	/**
-	 * @return string
-	 */
-	public function getSetClassName()
-	{
-		$expr = '%'
-			. '\n\s+\*\s+'     // each line beginning by '* '
-			. '@set'           // set annotation
-			. '\s+([\\\\\w]+)' // 1 : class name
-			. '%';
-		preg_match($expr, $this->getDocComment(), $match);
-		return $match
-			? Namespaces::defaultFullClassName($match[1], $this->name)
-			: Set::defaultSetClassNameOf($this->name);
-	}
-
-	//---------------------------------------------------------------------------------- getShortName
-	/**
-	 * @retun string
-	 */
-	public function getShortName()
-	{
-		if (!isset($this->name)) {
-			$this->scanUntilClassName();
-		}
-		return (($pos = strrpos($this->name, BS)) !== false)
-			? substr($this->name, $pos + 1)
-			: $this->name;
-	}
-
-	//---------------------------------------------------------------------------------- getStartLine
-	/**
-	 * Gets starting line number
-	 *
-	 * @return integer
-	 */
-	public function getStartLine()
-	{
-		if (!isset($this->line)) {
-			$this->scanUntilClassName();
-		}
-		return $this->line;
-	}
-
-	//----------------------------------------------------------------------------------- getStopLine
-	/**
-	 * @return integer
-	 */
-	public function getStopLine()
-	{
-		if (!isset($this->stop)) {
-			$this->scanUntilClassEnds();
-		}
-		return $this->stop;
-	}
-
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * A little difference with PHP's Reflection\Reflection_Class::getProperties : if T_USE flag is
@@ -608,6 +628,63 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	public function getProperty($name)
 	{
 		return $this->getProperties()[$name];
+	}
+
+	//------------------------------------------------------------------------------- getSetClassName
+	/**
+	 * @return string
+	 */
+	public function getSetClassName()
+	{
+		$expr = '%'
+			. '\n\s+\*\s+'     // each line beginning by '* '
+			. '@set'           // set annotation
+			. '\s+([\\\\\w]+)' // 1 : class name
+			. '%';
+		preg_match($expr, $this->getDocComment(), $match);
+		return $match
+			? Namespaces::defaultFullClassName($match[1], $this->name)
+			: Set::defaultSetClassNameOf($this->name);
+	}
+
+	//---------------------------------------------------------------------------------- getShortName
+	/**
+	 * @retun string
+	 */
+	public function getShortName()
+	{
+		if (!isset($this->name)) {
+			$this->scanUntilClassName();
+		}
+		return (($pos = strrpos($this->name, BS)) !== false)
+			? substr($this->name, $pos + 1)
+			: $this->name;
+	}
+
+	//---------------------------------------------------------------------------------- getStartLine
+	/**
+	 * Gets starting line number
+	 *
+	 * @return integer
+	 */
+	public function getStartLine()
+	{
+		if (!isset($this->line)) {
+			$this->scanUntilClassName();
+		}
+		return $this->line;
+	}
+
+	//----------------------------------------------------------------------------------- getStopLine
+	/**
+	 * @return integer
+	 */
+	public function getStopLine()
+	{
+		if (!isset($this->stop)) {
+			$this->scanUntilClassEnds();
+		}
+		return $this->stop;
 	}
 
 	//------------------------------------------------------------------------------------- getTokens
@@ -910,6 +987,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!isset($this->methods)) {
 			$this->scanUntilClassBegins();
 
+			$this->constants  = [];
 			$this->methods    = [];
 			$this->properties = [];
 			$this->traits     = [];
@@ -930,6 +1008,35 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 							foreach ($this->scanTraitNames() as $trait_name => $line) {
 								$trait_name = $this->fullClassName($trait_name);
 								$this->traits[$trait_name] = $trait_name;
+							}
+						}
+						break;
+
+					case T_CONST:
+						$const_name = $equal = null;
+						while (($token = $this->tokens[++$this->token_key]) !== ';') {
+							if (is_array($token)) {
+								if ($token[0] === T_STRING) {
+									$const_name = $token[1];
+								}
+								elseif ($const_name && $equal) {
+									$const_value = $token[1];
+									if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
+										if (($const_value[0] === Q) && ($const_value[strlen($const_value) - 1] === Q)) {
+											$const_value = substr($const_value, 1, -1);
+										}
+										$this->constants[$const_name] = $const_value;
+									}
+									elseif ($token[0] === T_DNUMBER) {
+										$this->constants[$const_name] = (double)$const_value;
+									}
+									elseif ($token[0] === T_LNUMBER) {
+										$this->constants[$const_name] = (integer)$const_value;
+									}
+								}
+							}
+							elseif ($token === '=') {
+								$equal = true;
 							}
 						}
 						break;

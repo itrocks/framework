@@ -16,6 +16,24 @@ interface Reflection_Class extends Reflection
 	 */
 	public function __toString();
 
+	//----------------------------------------------------------------------------------- getConstant
+	/**
+	 * Gets defined constant value
+	 *
+	 * @param $name string
+	 * @return mixed
+	 */
+	public function getConstant($name);
+
+	//---------------------------------------------------------------------------------- getConstants
+	/**
+	 * Gets defined constants from a class
+	 *
+	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @return mixed[] Constant name in key, constant value in value
+	 */
+	public function getConstants($flags = [T_EXTENDS, T_USE]);
+
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
 	 * Gets the constructor of the reflected class

@@ -135,6 +135,36 @@ class Reflection_Class extends ReflectionClass
 		return null;
 	}
 
+	//---------------------------------------------------------------------------------- getConstants
+	/**
+	 * Gets defined constants from a class
+	 *
+	 * TODO Problem with this implementation : if a parent/trait constant is overridden in current class, this will remove it. No problem for [T_EXTENDS, T_USE] default use.
+	 *
+	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @return mixed[] Constant name in key, constant value in value
+	 */
+	public function getConstants($flags = [T_EXTENDS, T_USE])
+	{
+		$constants = parent::getConstants();
+		$flags = array_flip($flags);
+		if (!isset($flags[T_EXTENDS])) {
+			if ($parent = $this->getParentClass()) {
+				foreach (array_keys($parent->getConstants([T_EXTENDS, T_USE])) as $constant_name) {
+					unset($constants[$constant_name]);
+				}
+			}
+		}
+		if (!isset($flags[T_USE])) {
+			foreach ($this->getTraits() as $trait) {
+				foreach (array_keys($trait->getConstants([T_USE])) as $constant_name) {
+					unset($constants[$constant_name]);
+				}
+			}
+		}
+		return $constants;
+	}
+
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
 	 * Gets the constructor of the reflected class
