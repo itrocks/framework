@@ -835,8 +835,8 @@ class Template
 	 */
 	protected function parseIncludeResolve($include_uri)
 	{
-		if (($i = strrpos($include_uri, SL)) !== false) {
-			$include_uri = substr($include_uri, $i + 1);
+		if (beginsWith($include_uri, SL)) {
+			$include_uri = substr($include_uri, 1);
 		}
 		return stream_resolve_include_path($include_uri);
 	}
