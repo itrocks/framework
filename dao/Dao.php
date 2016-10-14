@@ -172,6 +172,23 @@ class Dao implements Configurable
 		return new Option\Distinct();
 	}
 
+	//--------------------------------------------------------------------------------------- exclude
+	/**
+	 * This option enables to write all properties but those properties list values to the DAO
+	 *
+	 * Use this for optimizations and to avoid overridden writes if you are sure of what properties
+	 * should not being written
+	 *
+	 * @param $properties string[]|string ...
+	 * @return Option\Exclude
+	 */
+	public static function exclude($properties)
+	{
+		/** @var $exclude Option\Exclude */
+		$exclude = (new Reflection_Class(Option\Exclude::class))->newInstanceArgs(func_get_args());
+		return $exclude;
+	}
+
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Gets the data link identified by the $dao_identifier string

@@ -29,7 +29,8 @@ abstract class Data_Link
 			(new Reflection_Class(get_class($object)))->getAnnotations('after_read') as $after_read
 		) {
 			/** @var $after_read Method_Annotation */
-			if ($after_read->call($object, [$this, []]) === false) {
+			$options = [];
+			if ($after_read->call($object, [$this, &$options]) === false) {
 				break;
 			}
 		}
@@ -40,7 +41,7 @@ abstract class Data_Link
 	 * @param $objects object[]
 	 * @param $options Option[]
 	 */
-	public function afterReadMultiple($objects, $options = [])
+	public function afterReadMultiple($objects, &$options = [])
 	{
 		if ($objects) {
 			/** @var $after_reads Method_Annotation[] */
@@ -49,7 +50,7 @@ abstract class Data_Link
 			);
 			foreach ($objects as $object) {
 				foreach ($after_reads as $after_read) {
-					if ($after_read->call($object, [$this, $options]) === false) {
+					if ($after_read->call($object, [$this, &$options]) === false) {
 						break;
 					}
 				}
@@ -63,7 +64,7 @@ abstract class Data_Link
 	 * @param $options Option[]
 	 * @return boolean
 	 */
-	protected function beforeWrite($object, $options)
+	protected function beforeWrite($object, &$options)
 	{
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = (new Reflection_Class(get_class($object)))->getAnnotations('before_write');
@@ -89,7 +90,7 @@ abstract class Data_Link
 						'Try executing before_write ' . print_r($before_write, true), E_USER_WARNING
 					);
 				}
-				$response = $before_write->call($object, [$this, $options]);
+				$response = $before_write->call($object, [$this, &$options]);
 				if ($response === false) {
 					return false;
 				}

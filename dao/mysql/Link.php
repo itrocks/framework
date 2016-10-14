@@ -642,15 +642,16 @@ class Link extends Dao\Sql\Link
 	 *
 	 * TODO Factorize : this method is still too big
 	 *
-	 * @param $object          object
-	 * @param $options         Option\Spreadable[] Spread options
-	 * @param $only_properties string[] get write arrays for these properties only (if set)
-	 * @param $class           Link_Class
+	 * @param $object  object
+	 * @param $options Option\Spreadable[] Spread options
+	 * @param $only    string[] get write arrays for these properties only (if set)
+	 * @param $exclude string[] get write arrays for these properties only (if set)
+	 * @param $class   Link_Class
 	 * @return array [$write, $write_collections, $write_maps, $write_objects, $write_properties]
 	 * @throws Exception
 	 */
 	private function objectToWriteArray(
-		$object, array $options, array $only_properties = null, Link_Class $class = null
+		$object, array $options, array $only = null, $exclude = [], Link_Class $class = null
 	) {
 		if (!$class) {
 			$class = new Link_Class(get_class($object));
@@ -672,7 +673,10 @@ class Link extends Dao\Sql\Link
 		$properties = Replaces_Annotations::removeReplacedProperties($properties);
 		foreach ($properties as $property) {
 			$property_name = $property->name;
-			if (!isset($only_properties) || in_array($property_name, $only_properties)) {
+			if (
+				(!isset($only) || in_array($property_name, $only))
+				&& !in_array($property_name, $exclude)
+			) {
 				if (
 					!$property->isStatic()
 					&& !in_array($property_name, $exclude_properties)
@@ -1105,6 +1109,7 @@ class Link extends Dao\Sql\Link
 				$this->disconnect($object);
 			}
 			$class          = new Link_Class(get_class($object));
+			$exclude        = [];
 			$id_property    = 'id';
 			$only           = null;
 			$spread_options = [];
@@ -1112,8 +1117,13 @@ class Link extends Dao\Sql\Link
 				if ($option instanceof Option\Add) {
 					$force_add = true;
 				}
+				elseif ($option instanceof Option\Exclude) {
+					$exclude = array_merge($exclude, $option->properties);
+				}
 				elseif ($option instanceof Option\Only) {
-					$only = isset($only) ? array_merge($only, $option->properties) : $option->properties;
+					$only = isset($only)
+						? array_merge($only, $option->properties)
+						: $option->properties;
 				}
 				elseif ($option instanceof Option\Link_Class_Only) {
 					$link_class_only = true;
@@ -1134,7 +1144,7 @@ class Link extends Dao\Sql\Link
 					}
 				}
 				list($write, $write_collections, $write_maps, $write_objects, $write_properties)
-					= $this->objectToWriteArray($object, $spread_options, $only, $class);
+					= $this->objectToWriteArray($object, $spread_options, $only, $exclude, $class);
 
 				/** @var $properties Reflection_Property[] */
 				$properties = $class->accessProperties();
@@ -1219,7 +1229,7 @@ class Link extends Dao\Sql\Link
 			/** @var $after_writes Method_Annotation[] */
 			$after_writes = (new Reflection_Class(get_class($object)))->getAnnotations('after_write');
 			foreach ($after_writes as $after_write) {
-				if ($after_write->call($object, [$this, $options]) === false) {
+				if ($after_write->call($object, [$this, &$options]) === false) {
 					break;
 				}
 			}

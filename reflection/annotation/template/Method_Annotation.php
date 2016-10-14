@@ -112,7 +112,8 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	public function call($object, $arguments = [])
 	{
 		if ($this->static || is_string($object)) {
-			return call_user_func_array($this->value, array_merge([$object], $arguments));
+			array_unshift($arguments, $object);
+			return call_user_func_array($this->value, $arguments);
 		}
 		return call_user_func_array([$object, rParse($this->value, '::')], $arguments);
 	}
