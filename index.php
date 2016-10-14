@@ -27,6 +27,12 @@ if (!isset($_SERVER['PATH_INFO'])) {
 	$_SERVER['PATH_INFO'] = '/';
 }
 
+// wait for unlock
+while (is_file('lock')) {
+	usleep(100000);
+	clearstatcache(true, 'lock');
+}
+
 // enable cache files for compiled scripts : includes must all use this filter
 include_once __DIR__ . '/aop/Include_Filter.php';
 Include_Filter::register();
