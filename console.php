@@ -30,8 +30,8 @@ else {
 	// store the "running" file into /home/tmp, if exists, or into the project's tmp dir
 	$tmp_dir = file_exists('/home/tmp') ? '/home/tmp' : (__DIR__ . '/../../tmp');
 	if (!file_exists($tmp_dir)) {
-		mkdir($tmp_dir, 0755, true);
-		exec('chmod ugo+rwx ' . $tmp_dir);
+		mkdir($tmp_dir, 0777, true);
+		chmod($tmp_dir, 0777);
 	}
 	$running_file = $tmp_dir . '/' . (str_replace('/', '_', substr($argv[1], 1)) ?: 'index');
 	touch($running_file);
