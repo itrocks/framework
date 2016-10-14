@@ -56,6 +56,12 @@ else {
 		$_SERVER['REMOTE_ADDR'] = 'console';
 		$_SERVER['SCRIPT_NAME'] = '/console.php';
 
+		// wait for unlock
+		while (is_file('lock-console')) {
+			usleep(100000);
+			clearstatcache(true, 'lock-console');
+		}
+
 		// execute
 		require __DIR__ . '/index.php';
 	}
