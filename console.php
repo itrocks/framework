@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+namespace SAF\Framework;
+
 /**
  * Call this script from command line / scheduled tasks to call features from the software
  * - Will be considered like running under HTTPS
@@ -7,50 +9,142 @@
  */
 error_reporting(E_ALL);
 
-if (empty($argv[1])) {
-	$argv[1] = '/';
-}
+/**
+ * The SAF\Framework\Console class represents information about the console
+ */
+class Console
+{
 
-// check if the feature is already running
-exec("ps -aux | grep $argv[1] | grep -v grep", $outputs);
-$count  = 0;
-$output = [];
-foreach ($outputs as $output) {
-	if (strpos($output, $argv[1]) && strpos($output, '/usr/bin/php')) {
-		$count++;
+	//-------------------------------------------------------------------------------------- PHP_PATH
+	/**
+	 * The path for the php executable on your system
+	 */
+	const PHP_PATH = '/usr/bin/php';
+
+	//--------------------------------------------------------------------------- TEMPORARY_DIRECTORY
+	/**
+	 * The path of the preferred temporary directory.
+	 * Will be used only if exists : if it does not, a temporary directory named 'tmp' will be created
+	 * into your project root folder.
+	 */
+	const TEMPORARY_DIRECTORY = '/home/tmp';
+
+	//------------------------------------------------------------------------------------ $arguments
+	/**
+	 * The arguments passed to the URI (get / post vars)
+	 * -g argument switches to get vars (default)
+	 * -p argument switches to post vars
+	 *
+	 * @var string[]
+	 */
+	public $arguments;
+
+	//------------------------------------------------------------------------------ $already_running
+	/**
+	 * Already running grep result lines
+	 *
+	 * @var string[]
+	 */
+	private $already_running;
+
+	//-------------------------------------------------------------------------------------- $current
+	/**
+	 * The current running command console object
+	 *
+	 * @var self
+	 */
+	public static $current;
+
+	//--------------------------------------------------------------------------------- $running_file
+	/**
+	 * The name of the running file (set once runningFileName() is called)
+	 *
+	 * @var string
+	 */
+	private $running_file;
+
+	//--------------------------------------------------------------------------------------- $script
+	/**
+	 * The script initially called (matches $argv[0])
+	 *
+	 * @var string
+	 */
+	public $script;
+
+	//------------------------------------------------------------------------------------------ $uri
+	/**
+	 * The called URI (without arguments. Always start with '/')
+	 *
+	 * @var string
+	 */
+	public $uri;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $arguments string[] command line arguments
+	 */
+	public function __construct($arguments)
+	{
+		$this->script = $arguments[0];
+		if (empty($arguments[1]) || (substr($arguments[1], 0, 1) !== '/')) {
+			$this->uri = '/';
+			$this->arguments = array_slice($arguments, 1);
+		}
+		else {
+			$this->uri = $arguments[1];
+			$this->arguments = array_slice($arguments, 2);
+		}
 	}
-}
 
-if ($count > 1) {
-	echo "Already running $argv[1]\n";
-	print_r($outputs);
-}
-else {
-
-	// store the "running" file into /home/tmp, if exists, or into the project's tmp dir
-	$tmp_dir = file_exists('/home/tmp') ? '/home/tmp' : (__DIR__ . '/../../tmp');
-	if (!file_exists($tmp_dir)) {
-		mkdir($tmp_dir, 0777, true);
-		chmod($tmp_dir, 0777);
+	//------------------------------------------------------------------------- alreadyRunningMessage
+	/**
+	 * @return string
+	 */
+	private function alreadyRunningMessage()
+	{
+		return 'Already running ' . $this->uri . "\n" . print_r($this->already_running, true);
 	}
-	$running_file = $tmp_dir . '/' . (str_replace('/', '_', substr($argv[1], 1)) ?: 'index');
-	touch($running_file);
 
-	// cleanup global scope
-	unset($count);
-	unset($output);
-	unset($outputs);
-	unset($tmp_dir);
+	//------------------------------------------------------------------------------------------- end
+	/**
+	 * Called after execution ends : remove running file
+	 */
+	public function end()
+	{
+		/** @noinspection PhpUsageOfSilenceOperatorInspection No warning if removed by someone else */
+		@unlink($this->runningFileName());
+	}
 
-	// parse parameters
-	if (empty($_GET)) {
+	//------------------------------------------------------------------------------ isAlreadyRunning
+	/**
+	 * Checks if the feature is already running (must have been launched from the command line)
+	 *
+	 * @return boolean
+	 */
+	private function isAlreadyRunning()
+	{
+		$count = 0;
+		$this->already_running = [];
+		exec("ps -aux | grep $this->uri | grep -v grep", $outputs);
+		foreach ($outputs as $output) {
+			if (strpos($output, $this->uri) && strpos($output, self::PHP_PATH)) {
+				$this->already_running[] = $output;
+				$count++;
+			}
+		}
+		return $count > 1;
+	}
+
+	//-------------------------------------------------------------------------------- parseArguments
+	/**
+	 * Parse arguments and change them to $_GET / $_POST values
+	 */
+	private function parseArguments()
+	{
 		$_GET = ['as_widget' => true];
 		$post = false;
-		foreach ($argv as $k => $v) {
-			if ($k <= 1) {
-				continue;
-			}
-			switch ($v) {
+		foreach ($this->arguments as $argument) {
+			switch ($argument) {
 				case '-g' :
 					$post = false;
 					break;
@@ -58,29 +152,108 @@ else {
 					$post = true;
 					break;
 				default:
-					list($k, $v) = explode('=', $v, 2);
+					list($name, $value) = strpos($argument, '=')
+						? explode('=', $argument, 2)
+						: [$argument, false];
 					if ($post) {
-						$_POST[$k] = $v;
+						$_POST[$name] = $value;
 					}
 					else {
-						$_GET[$k] = $v;
+						$_GET[$name] = $value;
 					}
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- prepare
+	/**
+	 * Prepare console for script execution
+	 * Returns true if is ready for execution
+	 *
+	 * Execution is a require(__DIR__ . '/index.php') and must be called once from the global context
+	 *
+	 * @return boolean true if prepared and can execute. If false, please don't execute.
+	 */
+	public function prepare()
+	{
+		if ($this->isAlreadyRunning()) {
+			echo $this->alreadyRunningMessage();
+		}
+		else {
+			$this->storeRunningFile();
+			if (empty($_GET)) {
+				$this->parseArguments();
+				$this->waitForUnlock();
+				$this->prepareExecutionContext();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//----------------------------------------------------------------------- prepareExecutionContext
+	/**
+	 * Prepare execution context
+	 */
+	private function prepareExecutionContext()
+	{
 		$_SERVER['HTTPS']       = true;
-		$_SERVER['PATH_INFO']   = $argv[1];
+		$_SERVER['PATH_INFO']   = $this->uri;
 		$_SERVER['REMOTE_ADDR'] = 'console';
 		$_SERVER['SCRIPT_NAME'] = '/console.php';
+	}
 
-		// wait for unlock
+	//------------------------------------------------------------------------------- runningFileName
+	/**
+	 * @return string
+	 */
+	private function runningFileName()
+	{
+		if (!isset($this->running_file)) {
+			$this->running_file = $this->temporaryDirectory() . '/'
+				. (str_replace('/', '_', substr($this->uri, 1)) ?: 'index');
+		}
+		return $this->running_file;
+	}
+
+	//------------------------------------------------------------------------------ storeRunningFile
+	private function storeRunningFile()
+	{
+		touch($this->runningFileName());
+	}
+
+	//---------------------------------------------------------------------------- temporaryDirectory
+	/**
+	 * Gets the temporary directory path
+	 * Creates the directory into the project directory if it does not exist
+	 *
+	 * @return string
+	 */
+	private function temporaryDirectory()
+	{
+		$directory = (file_exists(self::TEMPORARY_DIRECTORY) && is_dir(self::TEMPORARY_DIRECTORY))
+			? self::TEMPORARY_DIRECTORY
+			: (__DIR__ . '../../tmp');
+		if (!file_exists($directory)) {
+			mkdir($directory, 0777, true);
+			chmod($directory, 0777);
+		}
+		return $directory;
+	}
+
+	//--------------------------------------------------------------------------------- waitForUnlock
+	private function waitForUnlock()
+	{
 		while (is_file('lock-console')) {
 			usleep(100000);
 			clearstatcache(true, 'lock-console');
 		}
-
-		// execute
-		require __DIR__ . '/index.php';
 	}
 
-	@unlink($running_file);
+}
+
+Console::$current = new Console(isset($argv) ? $argv : null);
+if (Console::$current->prepare()) {
+	include_once __DIR__ . '/index.php';
+	Console::$current->end();
 }
