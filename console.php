@@ -137,30 +137,33 @@ class Console
 
 	//-------------------------------------------------------------------------------- parseArguments
 	/**
-	 * Parse arguments and change them to $_GET / $_POST values
+	 * Parse arguments and change them to $_COOKIE / $_FILES / $_GET / $_POST / $_REQUEST / $_SERVER
+	 * values
 	 */
 	private function parseArguments()
 	{
 		$_GET = ['as_widget' => true];
-		$post = false;
+		$var  = '-g';
 		foreach ($this->arguments as $argument) {
-			switch ($argument) {
-				case '-g' :
-					$post = false;
-					break;
-				case '-p' :
-					$post = true;
-					break;
-				default:
-					list($name, $value) = strpos($argument, '=')
-						? explode('=', $argument, 2)
-						: [$argument, false];
-					if ($post) {
-						$_POST[$name] = $value;
-					}
-					else {
-						$_GET[$name] = $value;
-					}
+			if (substr($argument, 0, 1) === '-') {
+				$var = $argument;
+			}
+			else {
+				list($name, $value) = strpos($argument, '=')
+					? explode('=', $argument, 2)
+					: [$argument, false];
+				switch ($var) {
+					case '-c': $_COOKIE [$name] = $value; break;
+					case '-f': $_FILES  [$name] = $value; break;
+					case '-g': $_GET    [$name] = $value; break;
+					case '-p': $_POST   [$name] = $value; break;
+					case '-r': $_REQUEST[$name] = $value; break;
+					case '-s': $_SERVER [$name] = $value; break;
+					default: trigger_error('Unknown option ' . $var, E_USER_ERROR);
+				}
+				if (in_array($var, ['-g', '-p'])) {
+					$_REQUEST[$name] = $value;
+				}
 			}
 		}
 	}
@@ -182,9 +185,9 @@ class Console
 		else {
 			$this->storeRunningFile();
 			if (empty($_GET)) {
+				$this->prepareExecutionContext();
 				$this->parseArguments();
 				$this->waitForUnlock();
-				$this->prepareExecutionContext();
 				return true;
 			}
 		}
