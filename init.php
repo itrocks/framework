@@ -180,17 +180,21 @@ exec('chmod ugo+rwx ' . $dir);
 echo '- create composer.json file ' . $composer_file . "\n";
 file_put_contents($composer_file, <<<EOT
 {
-	"authors": [{ "name": "$vendor_name",  "email": "your@email.com" }],
+	"authors":     [{ "name": "$vendor_name",  "email": "your@email.com" }],
 	"description": "Description of the $project_name project",
 	"extra": {
 		"installer-paths": { "{\$vendor}/{\$name}/": ["type:itrocks"] },
 		"installer-types": ["itrocks"]
 	},
-	"name": "$vendor_name/$project_name",
-	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
+	"license":           "MIT",
+	"minimum-stability": "dev",
+	"name":              "$vendor_name/$project_name",
+	"prefer-stable":     true,
+	"repositories":      [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
 		"saf/framework": "dev-master"
-	}
+	},
+	"type": "itrocks-final"
 }
 EOT
 );
