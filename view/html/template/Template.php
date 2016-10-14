@@ -838,6 +838,9 @@ class Template
 		if (beginsWith($include_uri, SL)) {
 			$include_uri = substr($include_uri, 1);
 		}
+		if (strpos($include_uri, SL)) {
+			$include_uri = strtolower(lLastParse($include_uri, SL)) . SL . rLastParse($include_uri, SL);
+		}
 		return stream_resolve_include_path($include_uri);
 	}
 
