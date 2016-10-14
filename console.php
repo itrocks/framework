@@ -45,10 +45,26 @@ else {
 	// parse parameters
 	if (empty($_GET)) {
 		$_GET = ['as_widget' => true];
+		$post = false;
 		foreach ($argv as $k => $v) {
-			if ($k > 1) {
-				list($k, $v) = explode('=', $v, 2);
-				$_GET[$k] = $v;
+			if ($k <= 1) {
+				continue;
+			}
+			switch ($v) {
+				case '-g' :
+					$post = false;
+					break;
+				case '-p' :
+					$post = true;
+					break;
+				default:
+					list($k, $v) = explode('=', $v, 2);
+					if ($post) {
+						$_POST[$k] = $v;
+					}
+					else {
+						$_GET[$k] = $v;
+					}
 			}
 		}
 		$_SERVER['HTTPS']       = true;
