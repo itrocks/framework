@@ -74,9 +74,10 @@ EOT
 echo '- Create password file ' . $password_file . "\n";
 file_put_contents($password_file, <<<EOT
 <?php
+use SAF\Framework\Dao\Mysql\Link;
+
 \$pwd = [
-	'$user_name' => '$project_password',
-	'saf_demo' => ''
+	Link::class => '$project_password'
 ];
 
 EOT
@@ -129,7 +130,7 @@ require __DIR__ . '/../../saf/framework/config.php';
 		Dao::class => [
 			Link::DATABASE => \$loc[Link::DATABASE],
 			Link::LOGIN    => \$loc[Link::LOGIN],
-			Link::PASSWORD => \$pwd[\$loc[Link::LOGIN]]
+			Link::PASSWORD => \$pwd[Link::class]
 		]
 	]
 ];
