@@ -82,11 +82,12 @@ trait Has_Groups
 		return !is_null($this->getAccessOptions($uri));
 	}
 
+	//-------------------------------------------------------------------------------------- hasGroup
 	/**
 	 * Check if object has the given group
 	 *
 	 * @param $group Group|string|integer
-	 * @return bool
+	 * @return boolean
 	 */
 	public function hasGroup($group)
 	{
