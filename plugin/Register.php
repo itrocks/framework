@@ -79,7 +79,7 @@ class Register
 	 */
 	public function setAnnotation($context, $annotation_name, $annotation_class)
 	{
-		Additional_Annotations::addAnnotation($context, $annotation_name, $annotation_class);
+		Additional_Annotations::setAnnotation($context, $annotation_name, $annotation_class);
 	}
 
 	//-------------------------------------------------------------------------------- setAnnotations
@@ -92,7 +92,7 @@ class Register
 	 */
 	public function setAnnotations($context, $annotations_classes)
 	{
-		Additional_Annotations::addAnnotations($context, $annotations_classes);
+		Additional_Annotations::setAnnotations($context, $annotations_classes);
 	}
 
 	//------------------------------------------------------------------------------ setConfiguration

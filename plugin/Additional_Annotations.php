@@ -29,6 +29,8 @@ abstract class Additional_Annotations
 	//------------------------------------------------------------------- enableAdditionalAnnotations
 	/**
 	 * Called only when a plugin has added annotation on registration
+	 *
+	 * Saves a cached default_annotations.php file with standard and additional annotations
 	 */
 	static public function enableAdditionalAnnotations()
 	{
@@ -58,7 +60,7 @@ abstract class Additional_Annotations
 
 	//---------------------------------------------------------------------- registerShutDownFunction
 	/**
-	 * Register a shutdown function to enable additional annotations
+	 * Register a shutdown function to enable additional annotations save-to-cache
 	 */
 	private static function registerShutdownFunction()
 	{
@@ -76,12 +78,12 @@ abstract class Additional_Annotations
 	 * @param $annotation_name  string
 	 * @param $annotation_class string
 	 */
-	public static function addAnnotation($context, $annotation_name, $annotation_class)
+	public static function setAnnotation($context, $annotation_name, $annotation_class)
 	{
 		// register the shutdown function
 		self::registerShutdownFunction();
 		// add annotation
-		$namespace = 'SAF\Framework\Reflection\Annotation' . BS . $context;
+		$namespace  = 'SAF\Framework\Reflection\Annotation' . BS . $context;
 		$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
 		self::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
 	}
@@ -94,7 +96,7 @@ abstract class Additional_Annotations
 	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_VARIABLE
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
-	public static function addAnnotations($context, $annotations_classes)
+	public static function setAnnotations($context, $annotations_classes)
 	{
 		// register the shutdown function
 		self::registerShutdownFunction();
