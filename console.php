@@ -127,9 +127,11 @@ class Console
 		$this->already_running = [];
 		exec("ps -aux | grep $this->uri | grep -v grep", $outputs);
 		foreach ($outputs as $output) {
-			if (strpos($output, $this->uri) && strpos($output, self::PHP_PATH)) {
-				$this->already_running[] = $output;
-				$count++;
+			if (($pos = strpos($output, $this->uri)) && strpos($output, self::PHP_PATH)) {
+				if (in_array(substr($output, $pos + strlen($this->uri), 1), ['', ' ', "\n", "\r", "\t"])) {
+					$this->already_running[] = $output;
+					$count++;
+				}
 			}
 		}
 		return $count > 1;
