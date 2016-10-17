@@ -34,45 +34,11 @@ class Parser
 	//------------------------------------------------------------------------------------ T_PROPERTY
 	const T_PROPERTY = 'Property';
 
-	//----------------------------------------------------------------------- $additional_annotations
-	/**
-	 * @var string[]
-	 */
-	public static $additional_annotations = [];
-
 	//-------------------------------------------------------------------------- $default_annotations
 	/**
 	 * @var string[]
 	 */
 	public static $default_annotations;
-
-	//------------------------------------------------------------------------------------ __destruct
-	/**
-	 * Called only when a Parser has been instantiated, on plugins registration
-	 */
-	public function __destruct()
-	{
-		$cached_annotations_file
-			= Application::current()->getCacheDir() . SL . 'default_annotations.php';
-		if (self::$additional_annotations) {
-			$buffer = file_get_contents(__DIR__ . SL . 'default_annotations.php')
-				. LF
-				. 'Parser::$default_annotations = array_merge(' . LF
-				. TAB . 'Parser::$default_annotations,' . LF
-				. TAB . 'unserialize(' . Q . serialize(self::$additional_annotations) . Q . ')' . LF
-				. ');' . LF;
-			$cache = file_get_contents($cached_annotations_file);
-			if ($buffer !== $cache) {
-				file_put_contents($cached_annotations_file, $buffer);
-			}
-		}
-		else {
-			clearstatcache();
-			if (file_exists($cached_annotations_file)) {
-				unlink($cached_annotations_file);
-			}
-		}
-	}
 
 	//---------------------------------------------------------------------------------------- byName
 	/**
