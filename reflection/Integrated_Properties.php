@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Mapper\Component;
 use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
@@ -91,6 +92,13 @@ abstract class Integrated_Properties
 				[T_EXTENDS, T_USE, Reflection_Class::T_SORT]
 			);
 			$value = $property->getValue($object) ?: Builder::create($property->getType()->asString());
+			if ($property->getAnnotation('component')->value && isA($value, Component::class)) {
+				/** @var $sub_object Component */
+				$sub_object = $value;
+				if (!$sub_object->getComposite()) {
+					$sub_object->setComposite($object);
+				}
+			}
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
 				if (
 					!$sub_property->isStatic()
