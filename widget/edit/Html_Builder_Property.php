@@ -167,11 +167,25 @@ class Html_Builder_Property extends Html_Builder_Type
 			$filters_values = $this->property->getListAnnotation('filters')->values();
 			if ($filters_values) {
 				$properties = $this->property->getDeclaringClass()->getProperties([T_EXTENDS, T_USE]);
+				$property_properties = $this->property->getType()->asReflectionClass()->getProperties([
+					T_EXTENDS, T_USE
+				]);
 				foreach ($filters_values as $filter) {
-					if ($properties[$filter]->getType()->isClass()) {
+					if (strpos($filter, '=') !== false) {
+						list($filter, $filter_value_name) = explode('=', $filter);
+						$filter = trim($filter);
+						$filter_value_name = trim($filter_value_name);
+					}
+					else {
+						$filter_value_name = $filter;
+					}
+					if ($property_properties[$filter]->getType()->isClass()) {
 						$filter = 'id_' . $filter;
 					}
-					$filters[$filter] = $filter;
+					if ($properties[$filter_value_name]->getType()->isClass()) {
+						$filter_value_name = 'id_' . $filter_value_name;
+					}
+					$filters[$filter] = $filter_value_name;
 				}
 			}
 		}
