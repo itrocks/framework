@@ -4,7 +4,7 @@ namespace SAF\Framework\Checker;
 /**
  * This is an interface for auto-checked business objects
  *
- * @deprecated see Object_Validator
+ * @deprecated see Validator
  */
 interface Checked
 {

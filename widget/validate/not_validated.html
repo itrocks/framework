@@ -17,23 +17,20 @@
 	<ul>
 		<!--getErrors-->
 		<li>
-			<!-- property validation -->
 			<!--property?-->
-			|{property.alias}| {?getValue}&nbsp;:
-			|{reportMessage}|
-			<!--getValue--> - |expected ¦{getValue}¦|<!--getValue-->
+			|{property.alias}| {?getPropertyValue}&nbsp;: |{reportMessage}|
+			<!--value--> - |expected ¦{.}¦|<!--value-->
 			<script>
 				$('#{property.name} label + div').each(function () {
 					$(this).find("input:visible:not(:checkbox), textarea, select").addClass('bad');
 					$(this).children('span.set').closest('div').addClass('bad');
-				})
+				});
 				$('input[name="{property.name}[0]"]').next('input').addClass('bad');
 				$('.bad').first().focus();
 			</script>
 			<!--property?-->
-			<!-- object validation -->
 			<!--!property?-->
-			|{reportMessage}|
+			{reportMessage}
 			<!--!property?-->
 		</li>
 		<!--getErrors-->

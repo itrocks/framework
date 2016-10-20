@@ -2,29 +2,15 @@
 namespace SAF\Framework\Widget\Validate\Property;
 
 use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Validator;
-use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Widget\Validate\Validate;
+use SAF\Framework\Widget\Validate\Result;
 
 /**
  * The signed annotation validator
  */
-class Signed_Annotation extends Boolean_Annotation implements Property_Validator
+class Signed_Annotation extends Boolean_Annotation
 {
-	use Property_Validate_Annotation;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    string
-	 * @param $property Interfaces\Reflection_Property
-	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
-	{
-		/** @noinspection PhpUndefinedMethodInspection @extends Annotation */
-		parent::__construct($value);
-		$this->property = $property;
-	}
+	use Annotation;
 
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
@@ -34,9 +20,9 @@ class Signed_Annotation extends Boolean_Annotation implements Property_Validator
 	{
 		if (is_bool($this->value)) {
 			switch ($this->valid) {
-				case Validate::INFORMATION: return 'number signature is conform';
-				case Validate::WARNING:     return 'number signature not expected';
-				case Validate::ERROR:       return 'number signature not allowed';
+				case Result::INFORMATION: return 'number signature is conform';
+				case Result::WARNING:     return 'number signature not expected';
+				case Result::ERROR:       return 'number signature not allowed';
 			}
 		}
 		return '';
@@ -51,20 +37,14 @@ class Signed_Annotation extends Boolean_Annotation implements Property_Validator
 	 */
 	public function validate($object)
 	{
-		$this->object = $object;
 		if ($this->property instanceof Reflection_Property) {
 			if (!$this->value) {
 				$value = $this->property->getValue($object);
-				$this->valid = $value > 0;
+				return $value > 0;
 			}
-			else {
-				$this->valid = true;
-			}
+			return true;
 		}
-		else {
-			$this->valid = null;
-		}
-		return $this->valid;
+		return null;
 	}
 
 }

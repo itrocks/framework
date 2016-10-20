@@ -1,30 +1,16 @@
 <?php
 namespace SAF\Framework\Widget\Validate\Property;
 
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Validator;
-use SAF\Framework\Reflection\Interfaces;
+use SAF\Framework\Reflection;
 use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Widget\Validate\Validate;
+use SAF\Framework\Widget\Validate\Result;
 
 /**
  * The min length annotation validator
  */
-class Min_Length_Annotation extends Annotation implements Property_Validator
+class Min_Length_Annotation extends Reflection\Annotation
 {
-	use Property_Validate_Annotation;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    string
-	 * @param $property Interfaces\Reflection_Property
-	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
-	{
-		/** @noinspection PhpUndefinedMethodInspection @extends Annotation */
-		parent::__construct($value);
-		$this->property = $property;
-	}
+	use Annotation;
 
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
@@ -36,10 +22,10 @@ class Min_Length_Annotation extends Annotation implements Property_Validator
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
-				case Validate::INFORMATION:
+				case Result::INFORMATION:
 					return 'length is greater than !' . $this->value . '!';
-				case Validate::WARNING:
-				case Validate::ERROR:
+				case Result::WARNING:
+				case Result::ERROR:
 					return 'minimal length is !' . $this->value . '!';
 			}
 		}
@@ -55,17 +41,13 @@ class Min_Length_Annotation extends Annotation implements Property_Validator
 	 */
 	public function validate($object)
 	{
-		$this->object = $object;
 		if ($this->property instanceof Reflection_Property) {
 			$value = $this->property->getValue($object);
-			$this->valid = $this->mandatoryAnnotation()->isEmpty($object)
+			return $this->mandatoryAnnotation()->isEmpty($object)
 				|| (is_null($value) && $this->property->getAnnotation('null')->value)
 				|| (strlen($value) >= $this->value);
 		}
-		else {
-			$this->valid = null;
-		}
-		return $this->valid;
+		return null;
 	}
 
 }

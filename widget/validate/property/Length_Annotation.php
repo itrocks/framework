@@ -1,30 +1,16 @@
 <?php
 namespace SAF\Framework\Widget\Validate\Property;
 
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Validator;
-use SAF\Framework\Reflection\Interfaces;
+use SAF\Framework\Reflection;
 use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Widget\Validate\Validate;
+use SAF\Framework\Widget\Validate\Result;
 
 /**
  * The length annotation validator
  */
-class Length_Annotation extends Annotation implements Property_Validator
+class Length_Annotation extends Reflection\Annotation
 {
-	use Property_Validate_Annotation;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    string
-	 * @param $property Interfaces\Reflection_Property
-	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
-	{
-		/** @noinspection PhpUndefinedMethodInspection @extends Annotation */
-		parent::__construct($value);
-		$this->property = $property;
-	}
+	use Annotation;
 
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
@@ -36,10 +22,8 @@ class Length_Annotation extends Annotation implements Property_Validator
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
-				case Validate::WARNING:
-					return 'should be !' . $this->value . '! length';
-				case Validate::ERROR:
-					return 'must be !' . $this->value . '! length';
+				case Result::WARNING: return 'should be !' . $this->value . '! length';
+				case Result::ERROR:   return 'must be !'   . $this->value . '! length';
 			}
 		}
 		return '';
@@ -54,15 +38,12 @@ class Length_Annotation extends Annotation implements Property_Validator
 	 */
 	public function validate($object)
 	{
-		$this->object = $object;
-		if ($this->property instanceof Reflection_Property) {
-			$this->valid = $this->mandatoryAnnotation()->isEmpty($object)
-				|| (strlen($this->property->getValue($object)) == $this->value);
-		}
-		else {
-			$this->valid = null;
-		}
-		return $this->valid;
+		return ($this->property instanceof Reflection_Property)
+			? (
+				$this->mandatoryAnnotation()->isEmpty($object)
+				|| (strlen($this->property->getValue($object)) == $this->value)
+			)
+			: null;
 	}
 
 }

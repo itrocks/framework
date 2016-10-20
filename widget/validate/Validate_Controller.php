@@ -17,6 +17,9 @@ use SAF\Framework\View;
 class Validate_Controller implements Default_Class_Controller
 {
 
+	//-------------------------------------------------------------------------------------- VALIDATE
+	const VALIDATE = 'validate';
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Default run method for the class controller, when no runFeatureName() method was found in it.
@@ -34,11 +37,11 @@ class Validate_Controller implements Default_Class_Controller
 		$object = $parameters->getMainObject();
 		$parameters = $parameters->getRawParameters();
 
-		$validator = new Object_Validator();
+		$validator = new Validator();
 		$validator->validate($object);
 		$parameters['validator'] = $validator;
 
-		return View::run($parameters, $form, $files, get_class($object), Validate::FEATURE);
+		return View::run($parameters, $form, $files, get_class($object), self::VALIDATE);
 	}
 
 }

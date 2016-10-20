@@ -4,7 +4,7 @@ namespace SAF\Framework\Checker\Report;
 /**
  * Check report line
  *
- * @deprecated see Object_Validator
+ * @deprecated see Validator
  */
 interface Line
 {

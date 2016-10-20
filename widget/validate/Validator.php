@@ -9,32 +9,27 @@ use SAF\Framework\Dao\Option\Exclude;
 use SAF\Framework\Dao\Option\Only;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection\Annotation;
 use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Parser;
-use SAF\Framework\Reflection\Annotation\Template\Validator;
+use SAF\Framework\Reflection\Interfaces\Reflection_Class;
+use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Link_Class;
 use SAF\Framework\View;
+use SAF\Framework\View\Html\Template;
 use SAF\Framework\View\View_Exception;
 use SAF\Framework\Widget\Validate\Property;
-use SAF\Framework\Widget\Validate\Template;
-use SAF\Framework\Widget\Validate\Property\Property_Validate_Annotation;
 
 /**
  * The object validator links validation processes to objects
  */
-class Object_Validator implements Registerable
+class Validator implements Registerable
 {
-
-	//--------------------------------------------------------------------------------- $validator_on
-	public $validator_on = false;
 
 	//--------------------------------------------------------------------------------------- $report
 	/**
-	 * The validation report contains a detailed list of validate annotations and values
+	 * The report is made of validate annotations that have been validated or not
 	 *
-	 * @read_only
-	 * @var Validator[]|Property\Property_Validate_Annotation[]
+	 * @var Annotation[]
 	 */
 	public $report = [];
 
@@ -46,6 +41,12 @@ class Object_Validator implements Registerable
 	 * @var boolean
 	 */
 	public $valid;
+
+	//--------------------------------------------------------------------------------- $validator_on
+	/**
+	 * @var boolean
+	 */
+	public $validator_on = false;
 
 	//------------------------------------------------------------------------ afterMainControllerRun
 	public function afterMainControllerRun()
@@ -68,7 +69,7 @@ class Object_Validator implements Registerable
 	 * @param  $options Option[]
 	 * @throws View_Exception
 	 */
-	public function beforeWrite($object, &$options)
+	public function beforeWrite($object, array &$options)
 	{
 		if ($this->validator_on) {
 			$exclude = [];
@@ -77,14 +78,14 @@ class Object_Validator implements Registerable
 				if ($option instanceof Exclude) {
 					$exclude = array_merge($exclude, $option->properties);
 				}
-				if ($option instanceof Only) {
+				elseif ($option instanceof Only) {
 					$only = array_merge($only, $option->properties);
 				}
-				if ($option instanceof Skip) {
+				elseif ($option instanceof Skip) {
 					$skip = true;
 				}
 			}
-			if (!isset($skip) && !$this->validate($object, $only, $exclude)) {
+			if (!isset($skip) && !Result::isValid($this->validate($object, $only, $exclude))) {
 				throw new View_Exception($this->notValidated($object, $only, $exclude));
 			}
 		}
@@ -92,13 +93,13 @@ class Object_Validator implements Registerable
 
 	//------------------------------------------------------------------------------------- getErrors
 	/**
-	 * @return Property\Property_Validate_Annotation[]
+	 * @return Annotation[]
 	 */
 	public function getErrors()
 	{
 		$errors = [];
 		foreach ($this->report as $annotation) {
-			if ($annotation->valid === Validate::ERROR) {
+			if ($annotation->valid === Result::ERROR) {
 				$errors[] = $annotation;
 			}
 		}
@@ -112,15 +113,15 @@ class Object_Validator implements Registerable
 	 * @param $exclude string[] excluded property names
 	 * @return string
 	 */
-	private function notValidated($object, $only = [], $exclude = [])
+	private function notValidated($object, array $only = [], array $exclude = [])
 	{
 		$parameters = [
 			$this,
-			'exclude'                    => $exclude,
-			'object'                     => $object,
-			'only'                       => $only,
-			Parameter::AS_WIDGET         => true,
-			View\Html\Template::TEMPLATE => 'not_validated'
+			'exclude'            => $exclude,
+			'object'             => $object,
+			'only'               => $only,
+			Parameter::AS_WIDGET => true,
+			Template::TEMPLATE   => 'not_validated'
 		];
 		return View::run($parameters, [], [], get_class($object), 'validate');
 	}
@@ -143,7 +144,7 @@ class Object_Validator implements Registerable
 			[Main::class, 'runController'], [$this, 'beforeMainControllerRun']
 		);
 		$register->setAnnotations(Parser::T_CLASS, [
-			'validate'   => Template\Validate_Annotation::class
+			'validate'   => Class_\Validate_Annotation::class
 		]);
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'length'     => Property\Length_Annotation::class,
@@ -154,7 +155,7 @@ class Object_Validator implements Registerable
 			'min_value'  => Property\Min_Value_Annotation::class,
 			'precision'  => Property\Precision_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class,
-			'validate'   => Template\Validate_Annotation::class
+			'validate'   => Property\Validate_Annotation::class
 		]);
 	}
 
@@ -163,59 +164,106 @@ class Object_Validator implements Registerable
 	 * @param $object             object
 	 * @param $only_properties    string[] property names if we want to check those properties only
 	 * @param $exclude_properties string[] property names if we don't want to check those properties
-	 * @return boolean
+	 * @return string|null|true @values Result::const
 	 */
-	public function validate($object, $only_properties = [], $exclude_properties = [])
+	public function validate($object, array $only_properties = [], array $exclude_properties = [])
 	{
-		$this->report = [];
-		$this->valid  = true;
-		$exclude_properties = array_flip($exclude_properties);
-		$only_properties    = array_flip($only_properties);
 		$class = new Link_Class($object);
 		$properties = $class->getAnnotation(Link_Annotation::ANNOTATION)->value
 			? $class->getLinkProperties()
 			: $class->accessProperties();
 
-		// properties value validation
+		$this->report = [];
+		$this->valid = Result::andResult(
+			$this->validateProperties($object, $properties, $only_properties, $exclude_properties),
+			$this->validateObject($object, $class)
+		);
+
+		return $this->valid;
+	}
+
+	//---------------------------------------------------------------------------- validateAnnotation
+	/**
+	 * @param $object     object
+	 * @param $annotation Annotation
+	 * @param $property   Reflection_Property
+	 * @return string|null|true @values Result::const
+	 */
+	protected function validateAnnotation($object, $annotation, Reflection_Property $property = null)
+	{
+		$annotation->object = $object;
+		if ($property) {
+			/** @var $annotation Property\Annotation always when $property is set */
+			$annotation->property = $property;
+		}
+		$annotation->valid = $annotation->validate($object);
+		if ($annotation->valid === true)  $annotation->valid = Result::INFORMATION;
+		if ($annotation->valid === false) $annotation->valid = Result::ERROR;
+		if ($annotation->valid !== Result::NONE) {
+			$this->report[] = $annotation;
+		}
+		return $annotation->valid;
+	}
+
+	//--------------------------------------------------------------------------- validateAnnotations
+	/**
+	 * Returns true if the object follows validation rules
+	 *
+	 * @param $object      object
+	 * @param $annotations Annotation[]
+	 * @param $property    Reflection_Property
+	 * @return string|null|true @values Result::const
+	 */
+	protected function validateAnnotations(
+		$object, array $annotations, Reflection_Property $property = null
+	) {
+		$result = true;
+		foreach ($annotations as $annotation_name => $annotation) {
+			if (isA($annotation, Annotation::class)) {
+				$result = Result::andResult(
+					$result, $this->validateAnnotation($object, $annotation, $property)
+				);
+			}
+		}
+		return $result;
+	}
+
+	//-------------------------------------------------------------------------------- validateObject
+	/**
+	 * @param $object          object
+	 * @param Reflection_Class $class
+	 * @return string|null|true @values Result::const
+	 */
+	protected function validateObject($object, Reflection_Class $class)
+	{
+		return $this->validateAnnotations($object, $class->getAnnotations());
+	}
+
+	//---------------------------------------------------------------------------- validateProperties
+	/**
+	 * @param $object             object
+	 * @param $properties         Reflection_Property[]
+	 * @param $only_properties    string[]
+	 * @param $exclude_properties string[]
+	 * @return string|null|true @values Result::const
+	 */
+	protected function validateProperties(
+		$object, array $properties, array $only_properties, array $exclude_properties
+	) {
+		$result = true;
+		$exclude_properties = array_flip($exclude_properties);
+		$only_properties    = array_flip($only_properties);
 		foreach ($properties as $property) {
 			if (
 				(!$only_properties || isset($only_properties[$property->name]))
 				&& !isset($exclude_properties[$property->name])
 			) {
-				$property_validator = new Property_Validator($property);
-				$validated_property = $property_validator->validate($object);
-				if (is_null($validated_property)) {
-					return $this->valid = null;
-				}
-				else {
-					$this->report = array_merge($this->report, $property_validator->report);
-					$this->valid = $this->valid && $validated_property;
-				}
+				$result = Result::andResult(
+					$result, $this->validateAnnotations($object, $property->getAnnotations(), $property)
+				);
 			}
 		}
-
-		// object validation
-		foreach ($class->getAnnotations() as $annotation) {
-			if ($annotation instanceof Annotation\Template\Validator) {
-				$validated_annotation = $annotation->validate($object);
-				if (isA($annotation, Property_Validate_Annotation::class)) {
-					/** @var $annotation Property_Validate_Annotation */
-					if ($annotation->valid === true)  $annotation->valid = Validate::INFORMATION;
-					if ($annotation->valid === false) $annotation->valid = Validate::ERROR;
-				}
-				if (is_null($validated_annotation)) {
-					return $this->valid = null;
-				}
-				else {
-					if (!$validated_annotation) {
-						$this->report[] = $annotation;
-					}
-					$this->valid = $this->valid && $validated_annotation;
-				}
-			}
-		}
-
-		return $this->valid;
+		return $result;
 	}
 
 }

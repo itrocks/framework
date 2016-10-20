@@ -2,29 +2,15 @@
 namespace SAF\Framework\Widget\Validate\Property;
 
 use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Validator;
-use SAF\Framework\Reflection\Interfaces;
 use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Widget\Validate\Validate;
+use SAF\Framework\Widget\Validate\Result;
 
 /**
  * The mandatory annotation validator
  */
-class Mandatory_Annotation extends Boolean_Annotation implements Property_Validator
+class Mandatory_Annotation extends Boolean_Annotation
 {
-	use Property_Validate_Annotation;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    string
-	 * @param $property Interfaces\Reflection_Property
-	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
-	{
-		/** @noinspection PhpUndefinedMethodInspection @extends Annotation */
-		parent::__construct($value);
-		$this->property = $property;
-	}
+	use Annotation;
 
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
@@ -52,9 +38,9 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 	{
 		if (is_bool($this->value)) {
 			switch ($this->valid) {
-				case Validate::INFORMATION: return 'mandatory and set';
-				case Validate::WARNING:     return 'should be filled in';
-				case Validate::ERROR:       return 'mandatory';
+				case Result::INFORMATION: return 'mandatory and set';
+				case Result::WARNING:     return 'should be filled in';
+				case Result::ERROR:       return 'mandatory';
 			}
 		}
 		return '';
@@ -69,14 +55,9 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Valida
 	 */
 	public function validate($object)
 	{
-		$this->object = $object;
-		if ($this->property instanceof Reflection_Property) {
-			$this->valid = $this->value ? !$this->isEmpty($object) : true;
-		}
-		else {
-			$this->valid = null;
-		}
-		return $this->valid;
+		return ($this->property instanceof Reflection_Property)
+			? ($this->value ? !$this->isEmpty($object) : true)
+			: null;
 	}
 
 }

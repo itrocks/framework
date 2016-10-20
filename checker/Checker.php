@@ -12,7 +12,7 @@ use SAF\Framework\Reflection\Type;
 /**
  * This checks any business object class, using typing and others annotations and management rules
  *
- * @deprecated see Object_Validator
+ * @deprecated see Validator
  */
 abstract class Checker
 {

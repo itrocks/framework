@@ -8,7 +8,7 @@ use SAF\Framework\Reflection\Reflection_Property;
 /**
  * Check report line
  *
- * @deprecated see Object_Validator
+ * @deprecated see Validator
  */
 class Annotation implements Line
 {
