@@ -17,18 +17,20 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 class Getter_Annotation extends Method_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'getter';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value           string
-	 * @param $property        Reflection
+	 * @param $property        Reflection|Reflection_Property
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $property, $annotation_name = 'getter')
+	public function __construct($value, Reflection $property, $annotation_name = self::ANNOTATION)
 	{
-		/** @var $property Reflection_Property */
-		parent::__construct($value, $property, 'getter');
+		parent::__construct($value, $property, self::ANNOTATION);
 		if (empty($this->value)) {
-			$link = ($property->getAnnotation('link')->value);
+			$link = ($property->getAnnotation(Link_Annotation::ANNOTATION)->value);
 			if (!empty($link)) {
 				$this->value = Getter::class . '::get' . $link;
 			}

@@ -196,7 +196,7 @@ class Tests extends Test
 		// default value for getter when there is a @link annotation
 		$this->assume(
 			'default value when @link',
-			$property->getAnnotation('getter')->value,
+			$property->getAnnotation(Getter_Annotation::ANNOTATION)->value,
 			Getter::class . '::getCollection'
 		);
 	}
