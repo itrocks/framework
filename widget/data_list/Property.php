@@ -1,6 +1,8 @@
 <?php
 namespace SAF\Framework\Widget\Data_List;
 
+use SAF\Framework\Locale;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Widget\Data_List_Setting;
 
@@ -49,6 +51,19 @@ class Property extends Data_List_Setting\Property
 	public function htmlSortLink()
 	{
 		return (($this->sort == 1) && !$this->reverse) ? 'reverse' : 'sort';
+	}
+
+	//-------------------------------------------------------------------------------------------- tr
+	/**
+	 * Translate
+	 *
+	 * @param $text string
+	 * @return string
+	 */
+	protected function tr($text)
+	{
+		$context = $this->search->getFinalClass()->getName();
+		return Locale::current() ? Loc::tr($text, $context) : $text;
 	}
 
 }

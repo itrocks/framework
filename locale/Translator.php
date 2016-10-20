@@ -16,9 +16,9 @@ class Translator
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
-	 * @var string[]
+	 * @var array $translation[$text][$context]
 	 */
-	public $cache = [];
+	protected $cache = [];
 
 	//------------------------------------------------------------------------------------- $language
 	/**
@@ -107,32 +107,28 @@ class Translator
 			}
 			return join(DOT, $translation);
 		}
-		elseif (!isset($this->cache[$text]) || !isset($this->cache[$text][$context])) {
-			if (substr($text, -1) === AT) {
-				$str_uri = true;
-				$text = substr($text, 0, -1);
+		elseif (!isset($this->cache[$text])) {
+			$this->cache[$text] = $this->translations($text);
+		}
+		$translations = $this->cache[$text];
+		if (!$translations && strpos($text, ', ')) {
+			$translation = [];
+			foreach (explode(', ', $text) as $text_part) {
+				$translation[] = $this->translate($text_part, $context);
 			}
-			else {
-				$str_uri = false;
-			}
-			$search = Builder::create(Translation::class, [$text, $this->language, $context]);
-			$translations = Dao::search($search);
-			foreach ($translations as $translation) if ($translation->text === $text) break;
-			while ($search->context && !isset($translation)) {
-				$i = strrpos($search->context, DOT);
-				$search->context = $i ? substr($search->context, 0, $i) : '';
-				$translations = Dao::search($search);
-				foreach ($translations as $translation) if ($translation->text === $text) break;
-			}
-			if (!isset($translation) && strpos($text, ', ')) {
-				$translation_parts = [];
-				foreach (explode(', ', $text) as $text_part) {
-					$translation_parts[] = $this->translate($text_part, $context);
-				}
-				$translation = Builder::create(Translation::class, [
-					$text, $this->language, $context, join(', ', $translation_parts)
-				]);
-			}
+			return join(', ', $translation);
+		}
+		// no translation found : return original text
+		if (!$translations) {
+			/** @var $translation Translation */
+			$translation = Builder::create(
+				Translation::class, [str_replace('_', SP, strtolower($text)), $this->language, '', '']
+			);
+			Dao::write($translation);
+			return $text;
+		}
+
+			/*
 			if (!isset($translation)) {
 				$translation = $search;
 				$translation->text = str_replace('_', SP, strtolower($translation->text));
@@ -145,11 +141,40 @@ class Translator
 				$translation = strUri($translation);
 			}
 			$this->cache[$text][$context] = $translation;
+			*/
 		}
 		$translation = $this->cache[$text][$context];
 		return empty($translation)
 			? $text
 			: (strIsCapitals($text[0]) ? ucfirsta($translation) : $translation);
+	}
+
+	//---------------------------------------------------------------------------------- translations
+	/**
+	 * @param $text string
+	 * @return string[] $translation[$context]
+	 */
+	private function translations($text)
+	{
+		if (substr($text, -1) === AT) {
+			$str_uri = true;
+			$text = substr($text, 0, -1);
+		}
+		/** @var $translations Translation[] */
+		$translations = Dao::search(
+			['language' => $this->language, 'text' => $text], Translation::class, [Dao::key('context')]
+		);
+		if (isset($str_uri)) {
+			foreach ($translations as $translation) {
+				$translation->text .= AT;
+				$translation->translation = strUri($translation->translation);
+			}
+		}
+		foreach ($translations as $context => $translation) {
+			$translations[$context] = $translation->translation;
+		}
+		/** @var $translations string[] */
+		return $translations;
 	}
 
 }

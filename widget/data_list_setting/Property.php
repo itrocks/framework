@@ -39,9 +39,9 @@ class Property implements Can_Be_Empty
 	public function __construct($class_name = null, $property_path = null)
 	{
 		if (isset($class_name) && isset($property_path)) {
-			$property         = new Reflection_Property_Value($class_name, $property_path);
-			$this->display    = Loc::tr($property->display());
-			$this->path       = $property->path;
+			$property      = new Reflection_Property_Value($class_name, $property_path);
+			$this->display = $this->tr($property->display());
+			$this->path    = $property->path;
 		}
 	}
 
@@ -79,9 +79,7 @@ class Property implements Can_Be_Empty
 	public function shortTitle()
 	{
 		if (empty($this->display)) {
-			$display = str_replace(
-				'_', SP, ($locale = Locale::current()) ? Loc::tr($this->path) : $this->path
-			);
+			$display = str_replace('_', SP, $this->tr($this->path));
 		}
 		else {
 			$display = $this->display;
@@ -95,10 +93,20 @@ class Property implements Can_Be_Empty
 	 */
 	public function title()
 	{
-		$display = str_replace(
-			'_', SP, ($locale = Locale::current()) ? Loc::tr($this->path) : $this->path
-		);
+		$display = str_replace('_', SP, $this->tr($this->path));
 		return $display;
+	}
+
+	//-------------------------------------------------------------------------------------------- tr
+	/**
+	 * Translate
+	 *
+	 * @param $text string
+	 * @return string
+	 */
+	protected function tr($text)
+	{
+		return Locale::current() ? Loc::tr($text) : $text;
 	}
 
 }
