@@ -2,7 +2,6 @@
 namespace SAF\Framework\User;
 
 use SAF\Framework\Application;
-use SAF\Framework\Builder;
 use SAF\Framework\Controller;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameter;
@@ -285,7 +284,7 @@ class Access_Control implements Configurable, Registerable
 
 	//-------------------------------------------------------------------- overridePropertyDocComment
 	/**
-	 * Add object class overriden annotations at the beginning of the doc-comment
+	 * Add object class overridden annotations at the beginning of the doc-comment
 	 *
 	 * @param $result string The doc-comment : we will prepend the access-overridden annotations here
 	 * @param $object Reflection_Property
