@@ -104,17 +104,53 @@ function isA($object, $class_name)
 
 //--------------------------------------------------------------------------------- isStrictNumeric
 /**
- * Returns true iv $value is a strict numeric.
- * Sale as php's is_numeric, but :
- * - must not begin with '+', '0' or '.'
- * - exponential part is not allowed, thus 123.45e6 is not a valid numeric value
+ * Returns true if $value is a strict integer.
+ * Same as isStrictNumeric, but :
+ * - must not have decimal char
  *
  * @param $value string
  * @return boolean
  */
-function isStrictNumeric($value)
+function isStrictInteger($value)
 {
-	return is_numeric($value) && !strpos('0+.', $value[0]) && (stripos($value, 'E') === false);
+	return isStrictNumeric($value, false);
+}
+
+//--------------------------------------------------------------------------------- isStrictNumeric
+/**
+ * Returns true if $value is a strict numeric.
+ * Same as php's is_numeric, but :
+ * - must not begin with '+', '0' or '.'
+ * - exponential part is not allowed, thus 123.45e6 is not a valid numeric value
+ * - if decimal not allowed, must not have '.' or ',' char
+ * - if signed not allowed, must not start with '-' char
+ *
+ * @param $value           string
+ * @param $decimal_allowed boolean
+ * @param $signed_allowed  boolean
+ * @return boolean
+ */
+function isStrictNumeric($value, $decimal_allowed = true, $signed_allowed = true)
+{
+	return is_numeric($value)
+		&& strpos('0+.', $value[0]) === false
+		&& stripos($value, 'E') === false
+		&& ($decimal_allowed ?: strpos($value, '.') === false)
+		&& ($signed_allowed ?: strpos($value[0], '-') === false);
+}
+
+//--------------------------------------------------------------------------------- isStrictNumeric
+/**
+ * Returns true iv $value is a strict integer.
+ * Same as isStrictNumeric, but :
+ * - must not have decimal char
+ *
+ * @param $value string
+ * @return boolean
+ */
+function isStrictUnsignedInteger($value)
+{
+	return isStrictNumeric($value, false, false);
 }
 
 //------------------------------------------------------------------------------------------ maxSet
