@@ -19,18 +19,22 @@ class Doc_Comment_Annotations_Tests extends Test
 	 */
 	public function testSameInterfaceTwice()
 	{
-		$namespace = 'namespace ' . __NAMESPACE__ . ';' . LF . LF;
-		eval($namespace . <<<EOT
+		$namespace = 'namespace ' . __NAMESPACE__ . ' {' . LF . LF;
+		if (!interface_exists(__NAMESPACE__ . BS . 'Test_Interface', false)) {
+			eval($namespace . <<<EOT
 /**
  * @before_write Doc_Comment_Annotations_Tests::beforeWrite
  */
 interface Test_Interface
 {
 }
+
+}
 EOT
-		);
-		eval($namespace . 'class Parent_Class implements Test_Interface {}');
-		eval($namespace . 'class Child_Class extends Parent_Class {}');
+			);
+			eval($namespace . 'class Parent_Class implements Test_Interface {} }');
+			eval($namespace . 'class Child_Class extends Parent_Class {} }');
+		}
 		$class  = (new Reflection_Class(__NAMESPACE__ . BS . 'Child_Class'));
 		$assume = [new Method_Annotation(BS . __CLASS__ . '::beforeWrite', $class, 'before_write')];
 		$annotations = $class->getAnnotations('before_write');
