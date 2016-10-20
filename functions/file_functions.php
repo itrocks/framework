@@ -5,7 +5,7 @@
  * Deletes a directory, all its subdirectories and all the files they contain
  *
  * @param $directory string
- * @return bool success or failure
+ * @return boolean true on success, or false on failure
  */
 function deleteDirectory($directory)
 {
@@ -18,7 +18,7 @@ function deleteDirectory($directory)
 	}
 
 	foreach (array_diff(scandir($directory), ['.', '..']) as $file) {
-		if (is_dir($target = "$directory/$file")) {
+		if (is_dir($target = ($directory . SL . $file))) {
 			deleteDirectory($target);
 		}
 		else {
