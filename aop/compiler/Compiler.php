@@ -10,14 +10,14 @@ use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Needs_Main;
 use SAF\Framework\Dao;
 use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Session;
 use SAF\Framework\PHP;
 use SAF\Framework\PHP\Dependency;
 use SAF\Framework\PHP\ICompiler;
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\PHP\Reflection_Source;
+use SAF\Framework\Plugin\Registerable;
 use SAF\Framework\Reflection\Interfaces;
+use SAF\Framework\Session;
 
 /**
  * Standard aspect weaver compiler
