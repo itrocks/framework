@@ -4,7 +4,9 @@ namespace SAF\Framework\Widget\Add;
 use SAF\Framework\Controller\Feature;
 use SAF\Framework\Controller\Parameters;
 use SAF\Framework\Controller\Target;
+use SAF\Framework\Dao;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Setting\Custom_Settings;
 use SAF\Framework\Tools\Color;
 use SAF\Framework\Tools\Names;
@@ -56,7 +58,13 @@ class Add_Controller extends Edit_Controller
 		$objects = $parameters->getObjects();
 		if (count($objects) > 1) {
 			foreach (array_slice($objects, 1) as $property_name => $value) {
-				$object->$property_name = $value;
+				$property = new Reflection_Property($class_name, $property_name);
+				$type = $property->getType();
+				if ($type->isClass() && !$type->isMultiple() && isStrictUnsignedInteger($value)) {
+					$object->$property_name =  Dao::read($value, $type->asString());
+				} else {
+					$object->$property_name = $value;
+				}
 			}
 		}
 		return parent::getViewParameters($parameters, $form, $class_name);
