@@ -3,6 +3,8 @@ namespace SAF\Framework\Dao;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Event\Property_Delete;
+use SAF\Framework\Dao\Event\Property_Write;
 use SAF\Framework\Dao\Option\Key;
 use SAF\Framework\PHP\Dependency;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
@@ -58,6 +60,38 @@ abstract class Data_Link
 		}
 	}
 
+	//----------------------------------------------------------------------------- afterWriteElement
+	/**
+	 * @param $event Property_Write
+	 */
+	protected function afterWriteElement(Property_Write $event)
+	{
+		/** @var $after_writes Method_Annotation[] */
+		$after_writes = $event->property->getAnnotations('after_write_element');
+		foreach ($after_writes as $after_write) {
+			if ($after_write->call($event) === false) {
+				break;
+			}
+		}
+	}
+
+	//--------------------------------------------------------------------------- beforeDeleteElement
+	/**
+	 * @param $event Property_Delete
+	 * @return boolean
+	 */
+	protected function beforeDeleteElement(Property_Delete $event)
+	{
+		/** @var $before_deletes Method_Annotation[] */
+		$before_deletes = $event->property->getAnnotations('before_delete_element');
+		foreach ($before_deletes as $before_delete) {
+			if ($before_delete->call($event) === false) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
 	 * @param $object  object
@@ -97,6 +131,23 @@ abstract class Data_Link
 				elseif (is_array($response) && isset($only)) {
 					$only->properties = array_merge($response, $only->properties);
 				}
+			}
+		}
+		return true;
+	}
+
+	//---------------------------------------------------------------------------- beforeWriteElement
+	/**
+	 * @param $event Property_Write
+	 * @return boolean
+	 */
+	protected function beforeWriteElement(Property_Write $event)
+	{
+		/** @var $before_writes Method_Annotation[] */
+		$before_writes = $event->property->getAnnotations('before_write_element');
+		foreach ($before_writes as $before_write) {
+			if ($before_write->call($event) === false) {
+				return false;
 			}
 		}
 		return true;

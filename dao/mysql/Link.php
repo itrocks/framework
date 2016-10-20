@@ -6,6 +6,8 @@ use mysqli_result;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Data_Link;
+use SAF\Framework\Dao\Event\Property_Delete;
+use SAF\Framework\Dao\Event\Property_Write;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Mapper\Abstract_Class;
 use SAF\Framework\Mapper\Component;
@@ -919,13 +921,18 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Read an object from data source
 	 *
-	 * @param $identifier integer identifier for the object
-	 * @param $class_name string class for read object
+	 * @param $identifier integer|object identifier for the object, or an object to re-read
+	 * @param $class_name string class for read object. Useless if $identifier is an object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 */
-	public function read($identifier, $class_name)
+	public function read($identifier, $class_name = null)
 	{
-		if (!$identifier) return null;
+		if (is_object($identifier)) {
+			return $this->read(Dao::getObjectIdentifier($identifier), get_class($identifier));
+		}
+		if (!$identifier) {
+			return null;
+		}
 		$class_name = Builder::className($class_name);
 		$this->setContext($class_name);
 		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
@@ -1295,7 +1302,14 @@ class Link extends Dao\Sql\Link
 				if (!empty($id)) {
 					$id_set[$id] = true;
 				}
-				$this->write($element, empty($id) ? [] : $options);
+				$old_element = isset($old_collection[$key]) ? $old_collection[$key] : null;
+				$property_write_event = new Property_Write(
+					$this, $element, $old_element, $options, $property
+				);
+				if ($this->beforeWriteElement($property_write_event)) {
+					$this->write($element, empty($id) ? [] : $options);
+					$this->afterWriteElement($property_write_event);
+				}
 			}
 		}
 		// remove old unused elements
@@ -1304,7 +1318,10 @@ class Link extends Dao\Sql\Link
 				? $this->getLinkObjectIdentifier($old_element, $element_link)
 				: $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
-				$this->delete($old_element);
+				$delete_event = new Property_Delete($this, $old_element, $options, $property);
+				if ($this->beforeDeleteElement($delete_event)) {
+					$this->delete($old_element);
+				}
 			}
 		}
 	}
@@ -1338,8 +1355,12 @@ class Link extends Dao\Sql\Link
 			$id = $this->getObjectIdentifier($element)
 				?: $this->getObjectIdentifier($this->write($element, $options));
 			if (!isset($old_map[$id]) && !isset($id_set[$id])) {
-				$query = $insert_builder->buildQuery($object, $element);
-				$this->connection->query($query);
+				$property_write_event = new Property_Write($this, $element, null, $options, $property);
+				if ($this->beforeWriteElement($property_write_event)) {
+					$query = $insert_builder->buildQuery($object, $element);
+					$this->connection->query($query);
+					$this->afterWriteElement($property_write_event);
+				}
 			}
 			$id_set[$id] = true;
 		}
@@ -1348,8 +1369,11 @@ class Link extends Dao\Sql\Link
 		foreach ($old_map as $old_element) {
 			$id = $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
-				$query = $delete_builder->buildQuery($object, $old_element);
-				$this->connection->query($query);
+				$delete_event = new Property_Delete($this, $old_element, $options, $property);
+				if ($this->beforeDeleteElement($delete_event)) {
+					$query = $delete_builder->buildQuery($object, $old_element);
+					$this->connection->query($query);
+				}
 			}
 		}
 	}

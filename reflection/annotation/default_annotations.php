@@ -139,6 +139,33 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Method\Return_Annotation' => Documented_Type_Annotation::class,
 
 	/**
+	 * @after_write_element afterWriteElement
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call after the Collection/Map property element is written
+	 * using a data link
+	 * The called method accepts a Dao\Event\Property_Write event object as a unique argument
+	 */
+	__NAMESPACE__ . '\Property\After_Write_Element_Annotation' => Method_Annotation::class,
+
+	/**
+	 * @before_delete_element beforeDeleteElement
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call before the Collection/Map property element is deleted
+	 * using a data link
+	 * The called method accepts a Dao\Event\Property_Delete event object as a unique argument
+	 */
+	__NAMESPACE__ . '\Property\Before_Delete_Element_Annotation' => Method_Annotation::class,
+
+	/**
+	 * @before_write_element beforeWriteElement
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call before the Collection/Map property element is written
+	 * using a data link
+	 * The called method accepts a Dao\Event\Property_Write event object as a unique argument
+	 */
+	__NAMESPACE__ . '\Property\Before_Write_Element_Annotation' => Method_Annotation::class,
+
+	/**
 	 * @binary
 	 * Set this boolean annotation to tell that binary data will be stored into the property value
 	 * The property should be of type 'string'
