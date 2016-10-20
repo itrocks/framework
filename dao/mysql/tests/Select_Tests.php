@@ -3,6 +3,7 @@ namespace SAF\Framework\Dao\Mysql\Tests;
 
 use Exception;
 use SAF\Framework\Builder;
+use SAF\Framework\Console;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Mysql\Link;
@@ -68,6 +69,7 @@ class Select_Tests extends Test
 			/** @var $dependencies Dependency[] */
 			$dependencies = Dao::search(
 				[
+					'class_name'  => Func::notOp(Console::class),
 					'declaration' => [Dependency::T_CLASS],
 					'file_name'   => Func::notOp('%/cache/compiled/%'),
 					'type'        => Dependency::T_DECLARATION
