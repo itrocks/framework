@@ -219,7 +219,12 @@ class Validator implements Registerable
 	) {
 		$result = true;
 		foreach ($annotations as $annotation_name => $annotation) {
-			if (isA($annotation, Annotation::class)) {
+			if (is_array($annotation)) {
+				$result = Result::andResult(
+					$result, $this->validateAnnotations($object, $annotation, $property)
+				);
+			}
+			elseif (isA($annotation, Annotation::class)) {
 				$result = Result::andResult(
 					$result, $this->validateAnnotation($object, $annotation, $property)
 				);

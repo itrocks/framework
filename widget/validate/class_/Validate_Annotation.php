@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Widget\Validate\Class_;
 
+use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 use SAF\Framework\Widget\Validate;
 use SAF\Framework\Widget\Validate\Annotation;
 
@@ -8,6 +9,7 @@ use SAF\Framework\Widget\Validate\Annotation;
  * Class @validate annotation
  */
 class Validate_Annotation extends Validate\Annotation\Validate_Annotation
+	implements Multiple_Annotation
 {
 	use Annotation;
 
@@ -22,7 +24,7 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 	{
 		$result = $this->call($object);
 		$this->message = is_string($result) ? $result : null;
-		return !is_string($result);
+		return is_string($result) ? false : $result;
 	}
 
 }
