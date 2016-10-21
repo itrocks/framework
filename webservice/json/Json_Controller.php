@@ -34,7 +34,7 @@ class Json_Controller implements Default_Feature_Controller
 		$parameters = $parameters->getObjects();
 		// read all objects corresponding to class name
 		if (!$parameters) {
-			return json_encode(Dao::readAll(Names::setToClass($class_name, false), [Dao::sort()]));
+			return json_encode(Dao::readAll(Names::setToClass($class_name, false), Dao::sort()));
 		}
 		// read object
 		$first_parameter = reset($parameters);
@@ -67,7 +67,7 @@ class Json_Controller implements Default_Feature_Controller
 			$objects = [];
 			// first object only
 			if (isset($parameters['first']) && $parameters['first']) {
-				$objects = $this->search($search, $element_class_name, [Dao::limit(1)]);
+				$objects = $this->search($search, $element_class_name, Dao::limit(1));
 				$source_object = $objects ? reset($objects) : Builder::create($element_class_name);
 				return json_encode(new Autocomplete_Entry(
 					Dao::getObjectIdentifier($source_object), strval($source_object)

@@ -154,7 +154,7 @@ class Email
 			$this->date = new Date_Time();
 		}
 		$this->uniqueAttachments();
-		$this->uniqueRecipents();
+		$this->uniqueRecipients();
 	}
 
 	//--------------------------------------------------------------------------- getHeadersAsStrings
@@ -232,13 +232,13 @@ class Email
 		}
 	}
 
-	//------------------------------------------------------------------------------- uniqueRecipents
+	//------------------------------------------------------------------------------ uniqueRecipients
 	/**
 	 * Be sure that recipients are unique into data storage
 	 * - they can be common to several emails
 	 * - modification of recipients is not allowed
 	 */
-	private function uniqueRecipents()
+	private function uniqueRecipients()
 	{
 		/** @var $search Recipient */
 		$search = Search_Object::create(Recipient::class);
@@ -288,9 +288,9 @@ class Email
 				$search = ['date' => Func::greaterOrEqual(Date_Time::today())];
 			}
 		}
-		$emails = Dao::search($search, __CLASS__, [Dao::limit(1000)]);
+		$emails = Dao::search($search, __CLASS__, Dao::limit(1000));
 		foreach ($emails as $email) {
-			Dao::write($email, [Dao::only('content')]);
+			Dao::write($email, Dao::only('content'));
 		}
 		return 'OK (' . count($emails) . ')';
 	}

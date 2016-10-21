@@ -60,13 +60,13 @@ class Select_Controller implements Feature_Controller
 	/**
 	 * Get current environment name possible values
 	 *
-	 * @return mixed[]
+	 * @return object[]|string[]|null
 	 */
 	public function values()
 	{
 		$type = $this->property->getType();
 		if ($type->isClass()) {
-			return Dao::readAll($this->property->getType()->asString(), [Dao::sort()]);
+			return Dao::readAll($this->property->getType()->asString(), Dao::sort());
 		}
 		elseif ($values = $this->property->getListAnnotation('values')->values()) {
 			return array_combine($values, $values);

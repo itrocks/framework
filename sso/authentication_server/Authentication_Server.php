@@ -3,7 +3,6 @@ namespace SAF\Framework\SSO;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
-use SAF\Framework\Dao\Option;
 use SAF\Framework\Plugin\Configurable;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
@@ -191,9 +190,9 @@ class Authentication_Server implements Configurable, Registerable
 		if ($application->max_session_time) {
 			$search['request_time_float'] = Dao\Func::greater(time() - $application->max_session_time);
 		}
-		$sort = new Option\Sort(['request_time_float']);
+		$sort = Dao::sort('request_time_float');
 		$sort->reverse = [true];
-		$authentications = Dao::search($search, Authentication::class, [new Option\Limit(1), $sort]);
+		$authentications = Dao::search($search, Authentication::class, [Dao::limit(1), $sort]);
 		if ($authentications && count($authentications)) {
 			/** @var $authentication Authentication|null */
 			$authentication = reset($authentications);

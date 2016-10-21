@@ -33,7 +33,7 @@ class Tests extends Test
 	public static function distantAfterWrite(
 		Tests $tests, /* @noinspection PhpUnusedParameterInspection */ $link, $options
 	) {
-		$tests->dynamic('disafter', $options);
+		$tests->dynamic('dis-after', $options);
 	}
 
 	//---------------------------------------------------------------------------- distantBeforeWrite
@@ -45,7 +45,7 @@ class Tests extends Test
 	public static function distantBeforeWrite(
 		Tests $tests, /* @noinspection PhpUnusedParameterInspection */ $link, $options
 	) {
-		$tests->dynamic('disbefore', $options);
+		$tests->dynamic('dis-before', $options);
 	}
 
 	//--------------------------------------------------------------------------------------- dynamic
@@ -73,7 +73,7 @@ class Tests extends Test
 	 */
 	public function localAfterWrite(/* @noinspection PhpUnusedParameterInspection */ $link, $options)
 	{
-		$this->dynamic('locafter', $options);
+		$this->dynamic('loc-after', $options);
 	}
 
 	//------------------------------------------------------------------------------ localBeforeWrite
@@ -84,7 +84,7 @@ class Tests extends Test
 	public function localBeforeWrite(
 		/* @noinspection PhpUnusedParameterInspection */ $link, $options)
 	{
-		$this->dynamic('locbefore', $options);
+		$this->dynamic('loc-before', $options);
 	}
 
 	//-------------------------------------------------------------------------- testWriteAnnotations
@@ -92,12 +92,12 @@ class Tests extends Test
 	{
 		$tests = new Tests();
 		$tests->data = 'test';
-		Dao::write($tests, [Dao::only(['data'])]);
+		Dao::write($tests, Dao::only('data'));
 		Dao::delete($tests);
 		$this->assume(
 			__METHOD__,
 			$tests->data,
-			'test+locbefore(data)+disbefore(data)+locafter(data)+disafter(data)'
+			'test+loc-before(data)+dis-before(data)+loc-after(data)+dis-after(data)'
 		);
 	}
 

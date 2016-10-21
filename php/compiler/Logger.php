@@ -54,7 +54,7 @@ class Logger implements Registerable
 			foreach (Dao::search(['log' => Func::isNull()], Compiler_Log::class) as $logger) {
 				/** @var $logger Compiler_Log */
 				$logger->log = $object->log_entry;
-				Dao::write($logger, [Dao::only(['log'])]);
+				Dao::write($logger, Dao::only('log'));
 			}
 			$this->log_flag = false;
 			Dao::commit();

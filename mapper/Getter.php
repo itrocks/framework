@@ -33,7 +33,7 @@ abstract class Getter
 	public static function & getAll(&$stored, $element_type_name)
 	{
 		if (!(self::$ignore || isset($stored))) {
-			$stored = Dao::readAll($element_type_name, [Dao::sort()]);
+			$stored = Dao::readAll($element_type_name, Dao::sort());
 		}
 		return $stored;
 	}
@@ -138,7 +138,7 @@ abstract class Getter
 						if (!$accessible) {
 							$property->setAccessible(false);
 						}
-						$stored = $dao->search($search_element, null, [Dao::sort()]);
+						$stored = $dao->search($search_element, null, Dao::sort());
 					}
 					else {
 						trigger_error(

@@ -51,13 +51,13 @@ class Feature_Cache
 	{
 		Dao::begin();
 		/** @var $old_features Feature[] */
-		$old_features = Dao::readAll(Feature::class, [Dao::key('path')]);
+		$old_features = Dao::readAll(Feature::class, Dao::key('path'));
 		foreach ($features as $feature) {
 			if (isset($old_features[$feature->path])) {
 				$old_feature = $old_features[$feature->path];
 				if ($feature->name !== $old_feature->name) {
 					$old_feature->name = $feature->name;
-					Dao::write($old_feature, [Dao::only('name')]);
+					Dao::write($old_feature, Dao::only('name'));
 				}
 				unset($old_features[$feature->path]);
 			}

@@ -7,7 +7,7 @@ use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
 
 /**
- * A very simple logger plugin that logs start and stop dates, pids and duration of main calls
+ * A very simple logger plugin that logs start and stop dates, PIDs and duration of main calls
  */
 class Logger implements Registerable
 {
@@ -56,13 +56,13 @@ class Logger implements Registerable
 	{
 		if ($this->anti_loop) {
 			$this->log_entry->resume();
-			Dao::write($this->log_entry, [Dao::only(['duration', 'error_code', 'stop'])]);
+			Dao::write($this->log_entry, Dao::only('duration', 'error_code', 'stop'));
 		}
 	}
 
 	//----------------------------------------------------------------------------------------- start
 	/**
-	 * Start logging : write pids and start-time
+	 * Start logging : write PIDs and start-time
 	 *
 	 * @param $uri   string
 	 * @param $get   array
@@ -87,7 +87,7 @@ class Logger implements Registerable
 		$this->anti_loop--;
 		if (!$this->anti_loop) {
 			$this->log_entry->stop();
-			Dao::write($this->log_entry, [Dao::only(['duration', 'error_code', 'stop'])]);
+			Dao::write($this->log_entry, Dao::only('duration', 'error_code', 'stop'));
 		}
 	}
 

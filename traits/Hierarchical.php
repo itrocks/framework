@@ -60,7 +60,7 @@ trait Hierarchical
 		foreach ($this->$sub as $sub) {
 			if (!Dao::is($this, $sub->$super)) {
 				$sub->$super = $this;
-				Dao::write($sub, [Dao::only($super)]);
+				Dao::write($sub, Dao::only($super));
 			}
 			$written[Dao::getObjectIdentifier($sub)] = true;
 		}
@@ -69,7 +69,7 @@ trait Hierarchical
 		foreach ($subs as $sub) {
 			if (!isset($written[Dao::getObjectIdentifier($sub)])) {
 				$sub->$super = null;
-				Dao::write($sub, [Dao::only($super)]);
+				Dao::write($sub, Dao::only($super));
 			}
 		}
 	}

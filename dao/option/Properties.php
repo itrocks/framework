@@ -24,7 +24,9 @@ abstract class Properties implements Option
 	 *
 	 * @example Dao::write($user, Dao::only('password'));
 	 * Will only write the value of password into the database
-	 * @example Dao::write($user, Dao::only(['login', 'password')));
+	 * @example Dao::write($user, Dao::only('login', 'password'));
+	 * Will write the values of user's login and password into the database
+	 * @example Dao::write($user, Dao::only(['login', 'password']));
 	 * Will write the values of user's login and password into the database
 	 *
 	 * @param $properties string[]|string ...

@@ -338,7 +338,7 @@ abstract class Data_Link
 	 */
 	public function searchOne($what, $class_name = null)
 	{
-		$result = $this->search($what, $class_name, [Dao::limit(1)]);
+		$result = $this->search($what, $class_name, Dao::limit(1));
 		return $result ? reset($result) : null;
 	}
 
