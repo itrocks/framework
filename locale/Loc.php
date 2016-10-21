@@ -11,6 +11,7 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Method;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_View;
+use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View\Html\Template\Functions;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
@@ -403,6 +404,34 @@ class Loc implements Registerable
 		return ($object->property->getListAnnotation('values')->values())
 			? $this->tr($result, $object->property->final_class)
 			: $result;
+	}
+
+	//-------------------------------------------------------------------- translateWithReplaceValues
+	/**
+	 * Translate text with context and replace keys in text by their values.
+	 *
+	 * @example translateWithReplaceValues('Error for $number elements', ['number' => 12])
+	 *            => 'Error for 12 elements'
+	 * @param $text     string text to translate
+	 * @param $replaces string[] A list of key must be replaced by their values
+	 * @param $context  string
+	 * @return string
+	 */
+	public static function translateWithReplaceValues($text, array $replaces = [], $context = '')
+	{
+		$message = Loc::tr($text, $context);
+		foreach ($replaces as $key => $value) {
+			if (is_object($value)) {
+				if ($value instanceof Date_Time) {
+					$value = static::dateToLocale($value);
+				}
+				else {
+					$value = strval($value);
+				}
+			}
+			$message = str_replace('$' . $key, $value, $message);
+		}
+		return $message;
 	}
 
 }
