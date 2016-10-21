@@ -67,7 +67,7 @@ class Json_Controller implements Default_Feature_Controller
 			$objects = [];
 			// first object only
 			if (isset($parameters['first']) && $parameters['first']) {
-				$objects = $this->search($search, $element_class_name, Dao::limit(1));
+				$objects = $this->search($search, $element_class_name, [Dao::limit(1)]);
 				$source_object = $objects ? reset($objects) : Builder::create($element_class_name);
 				return json_encode(new Autocomplete_Entry(
 					Dao::getObjectIdentifier($source_object), strval($source_object)
@@ -108,7 +108,7 @@ class Json_Controller implements Default_Feature_Controller
 	 * @param $options    Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
-	private function search($what, $class_name, $options)
+	private function search($what, $class_name, array $options)
 	{
 		$options[] = Dao::sort();
 		if (
