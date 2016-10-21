@@ -41,7 +41,7 @@ abstract class Data_Link
 	 * @param $objects object[]
 	 * @param $options Option[]
 	 */
-	public function afterReadMultiple($objects, &$options = [])
+	public function afterReadMultiple(array $objects, array &$options = [])
 	{
 		if ($objects) {
 			/** @var $after_reads Method_Annotation[] */
@@ -64,7 +64,7 @@ abstract class Data_Link
 	 * @param $options Option[]
 	 * @return boolean
 	 */
-	protected function beforeWrite($object, &$options)
+	protected function beforeWrite($object, array &$options)
 	{
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = (new Reflection_Class(get_class($object)))->getAnnotations('before_write');
@@ -205,7 +205,7 @@ abstract class Data_Link
 	 * @param $options Option[]
 	 * @return string|string[]
 	 */
-	protected function getKeyPropertyName($options)
+	protected function getKeyPropertyName(array $options)
 	{
 		$key = 'id';
 		if (isset($options)) {

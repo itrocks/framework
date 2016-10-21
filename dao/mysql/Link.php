@@ -375,7 +375,7 @@ class Link extends Dao\Sql\Link
 	 * @param $result_set    mysqli_result
 	 * @return object[]
 	 */
-	protected function fetchAll($class_name, $options, $result_set)
+	protected function fetchAll($class_name, array $options, mysqli_result $result_set)
 	{
 		$search_result = [];
 		$keys = $this->getKeyPropertyName($options);
@@ -654,7 +654,7 @@ class Link extends Dao\Sql\Link
 	 * @throws Exception
 	 */
 	private function objectToWriteArray(
-		$object, array $options, array $only = null, $exclude = [], Link_Class $class = null
+		$object, array $options, array $only = null, array $exclude = [], Link_Class $class = null
 	) {
 		if (!$class) {
 			$class = new Link_Class(get_class($object));
@@ -1032,7 +1032,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
 	 * @param $class_name string must be set if $what is a filter array and not an object
-	 * @param $options    Option[] some options for advanced search
+	 * @param $options    Option|Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
 	public function search($what, $class_name = null, $options = [])
@@ -1263,7 +1263,7 @@ class Link extends Dao\Sql\Link
 	 * @param $collection Component[]
 	 */
 	private function writeCollection(
-		$object, array $options, Reflection_Property $property, $collection
+		$object, array $options, Reflection_Property $property, array $collection
 	) {
 		// old collection
 		$class_name = get_class($object);
@@ -1316,7 +1316,7 @@ class Link extends Dao\Sql\Link
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
 	 */
-	private function writeMap($object, array $options, Reflection_Property $property, $map)
+	private function writeMap($object, array $options, Reflection_Property $property, array $map)
 	{
 		// old map
 		$class = new Link_Class(get_class($object));
