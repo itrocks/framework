@@ -402,8 +402,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
-		$this->class_names = $class_name;
-		$class_name = $parameters->getMainObject()->element_class_name;
 		$parameters = $parameters->getObjects();
 		$list_settings = Data_List_Settings::current($class_name);
 		$list_settings->cleanup();
@@ -704,8 +702,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
+		$this->class_names = $class_name;
+		$class_name = $parameters->getMainObject()->element_class_name;
+		Loc::enterContext($class_name);
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		return View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
+		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
+		Loc::exitContext();
+		return $view;
 	}
 
 	//-------------------------------------------------------------------------------- searchProperty

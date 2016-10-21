@@ -13,6 +13,7 @@ use SAF\Framework\Error_Handler\Handled_Error;
 use SAF\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use SAF\Framework\IAutoloader;
 use SAF\Framework\Include_Path;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper\Object_Not_Found_Exception;
 use SAF\Framework\Plugin;
 use SAF\Framework\Plugin\Activable;
@@ -141,16 +142,24 @@ class Main
 		$controller = isA($controller, Controller::class)
 			? Builder::create($controller)
 			: $uri->parameters->getMainObject($uri->controller_name);
+		if (class_exists($uri->controller_name)) {
+			Loc::enterContext($uri->controller_name);
+			$exit_context = true;
+		}
 		if ($controller instanceof Class_Controller) {
-			return call_user_func_array([$controller, $method_name],
+			$result = call_user_func_array([$controller, $method_name],
 				[$uri->parameters, $post, $files, $uri->feature_name, $uri->controller_name]
 			);
 		}
 		else {
-			return call_user_func_array([$controller, $method_name],
+			$result = call_user_func_array([$controller, $method_name],
 				[$uri->parameters, $post, $files, $uri->controller_name, $uri->feature_name]
 			);
 		}
+		if (isset($exit_context)) {
+			Loc::exitContext();
+		}
+		return $result;
 	}
 
 	//--------------------------------------------------------------------------------- getController

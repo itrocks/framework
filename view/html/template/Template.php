@@ -6,6 +6,7 @@ use SAF\Framework\Builder;
 use SAF\Framework\Controller\Main;
 use SAF\Framework\Controller\Parameter;
 use SAF\Framework\Dao\File;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
 use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Property_View;
@@ -184,8 +185,7 @@ class Template
 			}
 		}
 		if (isset($object)) {
-			array_unshift($this->var_names, 'root');
-			array_unshift($this->objects, $object);
+			$this->unshift('root', $object);
 		}
 		if (isset($template_file)) {
 			$this->path = substr($template_file, 0, strrpos($template_file, SL));
@@ -289,6 +289,15 @@ class Template
 	public function context()
 	{
 		return str_replace(BS, DOT, get_class($this));
+	}
+
+	//------------------------------------------------------------------------------------------- fix
+	/**
+	 * @return array [string[], mixed[], string[]] [$var_names, $objects, $translation_contexts]
+	 */
+	protected function fix()
+	{
+		return [$this->var_names, $this->objects, Loc::$contexts_stack];
 	}
 
 	//--------------------------------------------------------------------------- getContainerContent
@@ -862,8 +871,7 @@ class Template
 		$this->parseLoopContentSections($loop);
 		$elements = $this->parseValue($loop->var_name, false);
 		if (!$loop->force_condition) {
-			array_unshift($this->var_names, is_object($elements) ? get_class($elements) : '');
-			array_unshift($this->objects, $elements);
+			$this->unshift(is_object($elements) ? get_class($elements) : '', $elements);
 		}
 		if ($loop->from && !is_numeric($loop->from)) {
 			$loop->from = $this->parseValue($loop->from);
@@ -890,8 +898,7 @@ class Template
 			$loop_insert = '';
 		}
 		if (!$loop->force_condition) {
-			array_shift($this->objects);
-			array_shift($this->var_names);
+			$this->shift();
 		}
 		$i = $i - $length - 7;
 		$j = $j + $length2 + 7;
@@ -947,8 +954,7 @@ class Template
 			$loop_insert = null;
 		}
 		elseif ($loop->counter >= $loop->from) {
-			array_unshift($this->var_names, $loop->key);
-			array_unshift($this->objects, $loop->element);
+			$this->unshift($loop->key, $loop->element);
 			if ($loop->first) {
 				$loop->first = false;
 			}
@@ -956,8 +962,7 @@ class Template
 				$loop_insert = $this->parseVars($loop->separator);
 			}
 			$loop_insert .= $this->parseVars($loop->content);
-			array_shift($this->objects);
-			array_shift($this->var_names);
+			$this->shift();
 		}
 		$this->preprop();
 		return $loop_insert;
@@ -971,8 +976,7 @@ class Template
 	protected function parseLoopEmptyElements(Loop $loop)
 	{
 		$loop_insert = '';
-		array_unshift($this->var_names, null);
-		array_unshift($this->objects, '');
+		$this->unshift(null, '');
 		while ($loop->counter < $loop->to) {
 			$loop->counter++;
 			if ($loop->counter >= $loop->from) {
@@ -986,8 +990,7 @@ class Template
 				$loop_insert .= $sub_content;
 			}
 		}
-		array_shift($this->objects);
-		array_shift($this->var_names);
+		$this->shift();
 		return $loop_insert;
 	}
 
@@ -1172,8 +1175,7 @@ class Template
 	 */
 	protected function parseParent()
 	{
-		array_shift($this->objects);
-		array_shift($this->var_names);
+		$this->shift();
 		return reset($this->objects);
 	}
 
@@ -1379,7 +1381,7 @@ class Template
 	 */
 	protected function parseString($string, $property_name)
 	{
-		$string = new String_Class($string);
+		$string = new String_Class($string, true);
 		if (method_exists($string, $property_name)) {
 			return $this->parseStringMethod($string, $property_name);
 		}
@@ -1473,16 +1475,15 @@ class Template
 		if (strpos('-+', $var_name[0]) !== false) {
 			$descendants_names = $this->descendants_names;
 			$descendants = $this->descendants;
-			$var_names = $this->var_names;
-			$objects = $this->objects;
+			$fixed       = $this->fix();
 			while ($var_name[0] === '-') {
-				array_unshift($this->descendants_names, array_shift($this->var_names));
-				array_unshift($this->descendants, array_shift($this->objects));
+				list($s_name, $s_object) = $this->shift();
+				array_unshift($this->descendants_names, $s_name);
+				array_unshift($this->descendants,       $s_object);
 				$var_name = substr($var_name, 1);
 			}
 			while ($var_name[0] === '+') {
-				array_unshift($this->var_names, array_shift($this->descendants_names));
-				array_unshift($this->objects, array_shift($this->descendants));
+				$this->unshift(array_shift($this->descendants_names), array_shift($this->descendants));
 				$var_name = substr($var_name, 1);
 			}
 		}
@@ -1492,8 +1493,7 @@ class Template
 		}
 		elseif (strpos($var_name, DOT) !== false) {
 			$object = null;
-			if (!isset($var_names)) $var_names = $this->var_names;
-			if (!isset($objects))   $objects   = $this->objects;
+			if (!isset($fixed)) $fixed = $this->fix();
 			$parenthesis = '';
 			foreach (explode(DOT, $var_name) as $property_name) {
 				if ($parenthesis) {
@@ -1509,8 +1509,7 @@ class Template
 				else {
 					$object = $this->parseSingleValue($property_name);
 					if (strlen($property_name)) {
-						array_unshift($this->var_names, $property_name);
-						array_unshift($this->objects,   $object);
+						$this->unshift($property_name, $object);
 					}
 				}
 			}
@@ -1537,8 +1536,7 @@ class Template
 			$object = !$object;
 		}
 		// restore position arrays
-		if (isset($objects))           $this->objects = $objects;
-		if (isset($var_names)) 	       $this->var_names = $var_names;
+		if (isset($fixed))             $this->restore($fixed);
 		if (isset($descendants))       $this->descendants = $descendants;
 		if (isset($descendants_names)) $this->descendants_names = $descendants_names;
 
@@ -1921,6 +1919,17 @@ class Template
 		return $content;
 	}
 
+	//--------------------------------------------------------------------------------------- restore
+	/**
+	 * @param $fixed array [string[], mixed[], string[]] [$var_names, $objects, $translation_contexts]
+	 */
+	protected function restore($fixed)
+	{
+		$this->var_names     = $fixed[0];
+		$this->objects       = $fixed[1];
+		Loc::$contexts_stack = $fixed[2];
+	}
+
 	//------------------------------------------------------------------------------------ setContent
 	/**
 	 * @param $content string
@@ -1957,6 +1966,32 @@ class Template
 			$parameters[Parameter::AS_WIDGET] = true;
 		}
 		$this->parameters = $parameters;
+	}
+
+	//----------------------------------------------------------------------------------------- shift
+	/**
+	 * @return array [string, mixed]
+	 */
+	protected function shift()
+	{
+		if (is_object(reset($this->objects))) {
+			Loc::exitContext();
+		}
+		return [array_shift($this->var_names), array_shift($this->objects)];
+	}
+
+	//--------------------------------------------------------------------------------------- unshift
+	/**
+	 * @param $var_name string
+	 * @param $object   mixed
+	 */
+	protected function unshift($var_name, $object)
+	{
+		if (is_object($object)) {
+			Loc::enterContext(get_class($object));
+		}
+		array_unshift($this->var_names, $var_name);
+		array_unshift($this->objects,   $object);
 	}
 
 }

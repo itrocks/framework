@@ -42,12 +42,13 @@ class Displayable extends String_Class
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
-	 * @param $type string the type of the displayable object : class, method, property or string
+	 * @param $value     string
+	 * @param $type      string the type of the displayable object : class, method, property or string
+	 * @param $translate boolean
 	 */
-	public function __construct($value, $type)
+	public function __construct($value, $type, $translate = false)
 	{
-		parent::__construct($value);
+		parent::__construct($value, $translate);
 		$this->type = $type;
 	}
 

@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Locale;
 
+use Reflector;
 use SAF\Framework\Import\Import_Array;
 use SAF\Framework\Locale;
 use SAF\Framework\Mapper\Object_Builder_Array;
@@ -30,22 +31,13 @@ class Loc implements Registerable
 	//--------------------------------------------------------------------------------------- NEUTRAL
 	const NEUTRAL = 'n';
 
-	//-------------------------------------------------------------------------------------- $context
+	//------------------------------------------------------------------------------- $contexts_stack
 	/**
-	 * Current context for translations
+	 * Current context stack for translations
 	 *
-	 * @var string
+	 * @var string[]
 	 */
-	private static $context;
-
-	//----------------------------------------------------- afterHtmlTemplateFuncsToEditPropertyExtra
-	/**
-	 * TODO HIGHEST 2016-10-24 this is kept to avoid crashes. Please remove it tonight
-	 */
-	public function afterHtmlTemplateFuncsToEditPropertyExtra($result)
-	{
-		return $this->afterHtmlTemplateFunctionsToEditPropertyExtra($result);
-	}
+	public static $contexts_stack = [];
 
 	//------------------------------------------------- afterHtmlTemplateFunctionsToEditPropertyExtra
 	/**
@@ -111,19 +103,6 @@ class Loc implements Registerable
 		}
 	}
 
-	//--------------------------------------------------------------- classNameReturnedValueToContext
-	/**
-	 * Sets context to returned value class name, if not null
-	 *
-	 * @param $result string
-	 */
-	public function classNameReturnedValueToContext($result)
-	{
-		if (isset($result)) {
-			self::setContext($result);
-		}
-	}
-
 	//------------------------------------------------------------------------------------------ date
 	/**
 	 * Returns current date
@@ -172,6 +151,26 @@ class Loc implements Registerable
 		return Locale::current()->date_format->toIso($date, $max, $joker);
 	}
 
+	//---------------------------------------------------------------------------------- enterContext
+	/**
+	 * Set current context for translations
+	 *
+	 * @param $context string
+	 */
+	public static function enterContext($context)
+	{
+		array_push(self::$contexts_stack, $context);
+	}
+
+	//----------------------------------------------------------------------------------- exitContext
+	/**
+	 * Exit current context for translations
+	 */
+	public static function exitContext()
+	{
+		array_pop(self::$contexts_stack);
+	}
+
 	//-------------------------------------------------------------------- floatReturnedValueToLocale
 	/**
 	 * @param $result string
@@ -202,6 +201,21 @@ class Loc implements Registerable
 	public static function floatToLocale($float)
 	{
 		return Locale::current()->number_format->floatToLocale($float);
+	}
+
+	//------------------------------------------------------------------------------------ getContext
+	/**
+	 * Returns the current valid context from the contexts stack
+	 *
+	 * @return string|null
+	 */
+	private static function getContext()
+	{
+		$context = end(self::$contexts_stack);
+		while ($context && is_a($context, Reflector::class, true)) {
+			$context = prev(self::$contexts_stack);
+		}
+		return $context;
 	}
 
 	//------------------------------------------------------------------ integerReturnedValueToLocale
@@ -333,10 +347,6 @@ class Loc implements Registerable
 			[Import_Array::class, 'getClassNameFromValue'],
 			[$this, 'classNameDisplayReverse']
 		);
-		$aop->afterMethod(
-			[Import_Array::class, 'getClassNameFromArray'],
-			[$this, 'classNameReturnedValueToContext']
-		);
 	}
 
 	//------------------------------------------------------------------------------------------- rtr
@@ -344,27 +354,14 @@ class Loc implements Registerable
 	 * Reverse translation
 	 *
 	 * @param $translation           string
-	 * @param $context               string
+	 * @param $context               string if empty, use the actual context set by enterContext()
 	 * @param $context_property_path string
 	 * @return string
 	 */
 	public static function rtr($translation, $context = '', $context_property_path = '')
 	{
+		if (!$context) $context = self::getContext();
 		return Locale::current()->translations->reverse($translation, $context, $context_property_path);
-	}
-
-	//------------------------------------------------------------------------------------ setContext
-	/**
-	 * Set current context for translations
-	 *
-	 * Some hooks automatically set it : classNameDisplayReverse()
-	 * Used by hooks that need it : propertiesDisplayReverse()
-	 *
-	 * @param $context string
-	 */
-	public static function setContext($context)
-	{
-		self::$context = $context;
 	}
 
 	//-------------------------------------------------------------------------------------------- tr
@@ -404,6 +401,9 @@ class Loc implements Registerable
 		if ($language) {
 			$old_language = Locale::current()->translations->language;
 			Locale::current()->translations->language = $language;
+		}
+		if (!$context) {
+			$context = self::getContext();
 		}
 		$translation = Locale::current()->translations->translate($text, $context);
 		if ($language) {

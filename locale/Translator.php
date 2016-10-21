@@ -16,7 +16,7 @@ class Translator
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
-	 * @var array $translation[$text][$context]
+	 * @var array string[][] $translation[$text][$context]
 	 */
 	protected $cache = [];
 
@@ -35,6 +35,40 @@ class Translator
 		if (isset($language)) {
 			$this->language = $language;
 		}
+	}
+
+	//----------------------------------------------------------------------------- chooseTranslation
+	/**
+	 * @param $translations string[]
+	 * @param $context      string
+	 * @return string
+	 */
+	private function chooseTranslation($translations, $context)
+	{
+		$translation = '';
+		if (isset($translations['']) && $translations['']) {
+			$translation = $translations[''];
+			unset($translations['']);
+		}
+		if ($context) {
+			foreach ($translations as $translation_context => $contextual_translation) {
+				if ($contextual_translation && isA($context, $translation_context)) {
+					$context     = $translation_context;
+					$translation = $contextual_translation;
+				}
+			}
+		}
+		return $translation;
+	}
+
+	//---------------------------------------------------------------------------- defaultTranslation
+	/**
+	 * @param $text string
+	 * @return string
+	 */
+	private function defaultTranslation($text)
+	{
+		return endsWith($text, AT) ? strUri(rtrim($text, AT)) : str_replace('_', SP, $text);
 	}
 
 	//--------------------------------------------------------------------------------------- reverse
@@ -87,6 +121,35 @@ class Translator
 		return empty($text) ? $text : (strIsCapitals($translation[0]) ? ucfirsta($text) : $text);
 	}
 
+	//------------------------------------------------------------------------- separatedTranslations
+	/**
+	 * @param $text      string
+	 * @param $separator string
+	 * @param $context   string
+	 * @return string
+	 */
+	private function separatedTranslations($text, $separator, $context)
+	{
+		$translation = [];
+		foreach (explode($separator, $text) as $sentence) {
+			$translation[] = $this->translate($sentence, $context);
+		}
+		return join($separator, $translation);
+	}
+
+	//----------------------------------------------------------------------- storeDefaultTranslation
+	/**
+	 * @param $text string
+	 * @return string
+	 */
+	private function storeDefaultTranslation($text)
+	{
+		/** @var $translation Translation */
+		$translation = Builder::create(Translation::class, [rtrim($text, AT), $this->language]);
+		Dao::write($translation);
+		return $this->defaultTranslation($text);
+	}
+
 	//------------------------------------------------------------------------------------- translate
 	/**
 	 * Translates a text using current language and an optional given context
@@ -97,56 +160,35 @@ class Translator
 	 */
 	public function translate($text, $context = '')
 	{
+		// no text : no translation
 		if (!trim($text) || is_numeric($text)) {
 			return $text;
 		}
+		// different texts separated by dots : translate each part between dots
 		elseif (strpos($text, DOT) !== false) {
-			$translation = [];
-			foreach (explode(DOT, $text) as $sentence) {
-				$translation[] = $this->translate($sentence, $context);
-			}
-			return join(DOT, $translation);
+			return $this->separatedTranslations($text, DOT, $context);
 		}
-		elseif (!isset($this->cache[$text])) {
+		// return cached contextual translation
+		elseif (isset($this->cache[$text][$context])) {
+			return $this->cache[$text][$context];
+		}
+		// $translations string[] $translation[$context]
+		if (!isset($this->cache[$text])) {
 			$this->cache[$text] = $this->translations($text);
 		}
 		$translations = $this->cache[$text];
-		if (!$translations && strpos($text, ', ')) {
-			$translation = [];
-			foreach (explode(', ', $text) as $text_part) {
-				$translation[] = $this->translate($text_part, $context);
-			}
-			return join(', ', $translation);
+		// no translation found and separated by commas : translate each part between commas
+		if (!$translations && (strpos($text, ', ') !== false)) {
+			return $this->separatedTranslations($text, ', ', $context);
 		}
-		// no translation found : return original text
+		// no translation found : store original text to cache and database, then return it
 		if (!$translations) {
-			/** @var $translation Translation */
-			$translation = Builder::create(
-				Translation::class, [str_replace('_', SP, strtolower($text)), $this->language, '', '']
-			);
-			Dao::write($translation);
-			return $text;
+			$translations[''] = $this->cache[$text][''] = $this->storeDefaultTranslation($text);
 		}
-
-			/*
-			if (!isset($translation)) {
-				$translation = $search;
-				$translation->text = str_replace('_', SP, strtolower($translation->text));
-				$translation->translation = '';
-				Dao::write($translation);
-			}
-			$translation = $translation ? $translation->translation : $text;
-			if ($str_uri) {
-				$text .= AT;
-				$translation = strUri($translation);
-			}
-			$this->cache[$text][$context] = $translation;
-			*/
-		}
-		$translation = $this->cache[$text][$context];
-		return empty($translation)
-			? $text
-			: (strIsCapitals($text[0]) ? ucfirsta($translation) : $translation);
+		$translation = $this->chooseTranslation($translations, $context)
+			?: $this->defaultTranslation($text);
+		$this->cache[$text][$context] = $translation;
+		return strIsCapitals($text[0]) ? ucfirsta($translation) : $translation;
 	}
 
 	//---------------------------------------------------------------------------------- translations
@@ -156,22 +198,18 @@ class Translator
 	 */
 	private function translations($text)
 	{
-		if (substr($text, -1) === AT) {
+		if (endsWith($text, AT)) {
 			$str_uri = true;
-			$text = substr($text, 0, -1);
+			$text = rtrim($text, AT);
 		}
 		/** @var $translations Translation[] */
 		$translations = Dao::search(
 			['language' => $this->language, 'text' => $text], Translation::class, [Dao::key('context')]
 		);
-		if (isset($str_uri)) {
-			foreach ($translations as $translation) {
-				$translation->text .= AT;
-				$translation->translation = strUri($translation->translation);
-			}
-		}
 		foreach ($translations as $context => $translation) {
-			$translations[$context] = $translation->translation;
+			$translations[$context] = isset($str_uri)
+				? strUri($translation->translation)
+				: $translation->translation;
 		}
 		/** @var $translations string[] */
 		return $translations;
