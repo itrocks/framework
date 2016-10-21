@@ -15,6 +15,9 @@ use SAF\Framework\Widget\Validate\Class_;
 class Tests extends Test
 {
 
+	//--------------------------------------------------------------------------------------- MESSAGE
+	const MESSAGE = 'This is not value';
+
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @validate notValidFalse
@@ -43,7 +46,7 @@ class Tests extends Test
 	 */
 	public function notValidMessage()
 	{
-		return 'This is not valid';
+		return self::MESSAGE;
 	}
 
 	//--------------------------------------------------------------------- testClassPropertyValidate
@@ -57,6 +60,12 @@ class Tests extends Test
 		// test
 		$validator = new Validator();
 		$result = $validator->validate($this);
+		$messages = [];
+		foreach ($validator->report as $annotation) {
+			/** @noinspection PhpUndefinedMethodInspection Inspector bug */
+			$messages[] = $annotation->reportMessage();
+		}
+
 		// assume
 		$class = (new Reflection_Class(get_class($this)));
 		$property = $class->getProperty('property');
@@ -65,6 +74,7 @@ class Tests extends Test
 			$property->getAnnotations(Property\Validate_Annotation::ANNOTATION),
 			$class->getAnnotations(Class_\Validate_Annotation::ANNOTATION)
 		);
+		$assume_messages = [];
 		foreach ($annotations as $annotation) {
 			$annotation->object = $this;
 			$annotation->valid = strpos($annotation->value, '::not')
@@ -74,9 +84,16 @@ class Tests extends Test
 				/** @var $annotation Property\Annotation::class */
 				$annotation->property = $property;
 			}
+			$assume_messages[] = strpos($annotation->value, '::notValidMessage') ? self::MESSAGE : null;
 		}
+		$assume = [Result::ERROR, $annotations, $assume_messages];
+
 		// report
-		$this->assume(__METHOD__, [$result, $validator->report], [Result::ERROR, $annotations]);
+		$this->assume(
+			__METHOD__,
+			[$result, $validator->report, $messages],
+			$assume
+		);
 	}
 
 	//------------------------------------------------------------------------------------- validTrue

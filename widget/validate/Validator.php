@@ -9,6 +9,7 @@ use SAF\Framework\Dao\Option\Exclude;
 use SAF\Framework\Dao\Option\Only;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
+use SAF\Framework\Reflection;
 use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use SAF\Framework\Reflection\Annotation\Parser;
 use SAF\Framework\Reflection\Interfaces\Reflection_Class;
@@ -29,7 +30,7 @@ class Validator implements Registerable
 	/**
 	 * The report is made of validate annotations that have been validated or not
 	 *
-	 * @var Annotation[]
+	 * @var Reflection\Annotation[]|Annotation[]
 	 */
 	public $report = [];
 
