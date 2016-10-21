@@ -6,9 +6,9 @@ use SAF\Framework\Dao\Event;
 use SAF\Framework\Dao\Option;
 
 /**
- * Dao write event
+ * Dao Add event
  */
-abstract class Write extends Event
+abstract class Add extends Event
 {
 
 	//------------------------------------------------------------------------------------ $new_value
@@ -17,24 +17,17 @@ abstract class Write extends Event
 	 */
 	public $new_value;
 
-	//------------------------------------------------------------------------------------ $old_value
-	/**
-	 * @var object
-	 */
-	public $old_value;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $link      Data_Link
+	 * @param $object    object
 	 * @param $new_value object
-	 * @param $old_value object
 	 * @param $options   Option[]
 	 */
-	public function __construct($link, $new_value, $old_value, &$options)
+	public function __construct($link, $object, $new_value, &$options)
 	{
-		parent::__construct($link, $options);
+		parent::__construct($link, $object, $options);
 		$this->new_value = $new_value;
-		$this->old_value = $old_value;
 	}
 
 }

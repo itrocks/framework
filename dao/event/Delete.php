@@ -6,7 +6,7 @@ use SAF\Framework\Dao\Event;
 use SAF\Framework\Dao\Option;
 
 /**
- * Dao property delete event for collections and maps
+ * Dao delete event
  */
 abstract class Delete extends Event
 {
@@ -20,12 +20,13 @@ abstract class Delete extends Event
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $link      Data_Link
+	 * @param $object    object
 	 * @param $old_value object
 	 * @param $options   Option[]
 	 */
-	public function __construct(Data_Link $link, $old_value, array &$options)
+	public function __construct(Data_Link $link, $object, $old_value, array &$options)
 	{
-		parent::__construct($link, $options);
+		parent::__construct($link, $object, $options);
 		$this->old_value = $old_value;
 	}
 

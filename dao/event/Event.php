@@ -2,7 +2,7 @@
 namespace SAF\Framework\Dao;
 
 /**
- * Dao events
+ * Dao event
  */
 abstract class Event
 {
@@ -13,6 +13,12 @@ abstract class Event
 	 */
 	public $link;
 
+	//--------------------------------------------------------------------------------------- $object
+	/**
+	 * @var object
+	 */
+	public $object;
+
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @var Option[]
@@ -21,12 +27,14 @@ abstract class Event
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param  $link    Data_Link
-	 * @param  $options Option[]
+	 * @param $link    Data_Link
+	 * @param $object  object
+	 * @param $options Option[]
 	 */
-	public function __construct(Data_Link $link, array &$options)
+	public function __construct(Data_Link $link, $object, array &$options)
 	{
 		$this->link = $link;
+		$this->object = $object;
 		$this->options =& $options;
 	}
 

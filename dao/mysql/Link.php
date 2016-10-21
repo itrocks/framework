@@ -6,8 +6,8 @@ use mysqli_result;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Dao\Event\Property_Delete;
-use SAF\Framework\Dao\Event\Property_Write;
+use SAF\Framework\Dao\Event\Property_Add;
+use SAF\Framework\Dao\Event\Property_Remove;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Mapper\Abstract_Class;
 use SAF\Framework\Mapper\Component;
@@ -1302,14 +1302,22 @@ class Link extends Dao\Sql\Link
 				if (!empty($id)) {
 					$id_set[$id] = true;
 				}
-				$old_element = isset($old_collection[$key]) ? $old_collection[$key] : null;
-				$property_write_event = new Property_Write(
-					$this, $element, $old_element, $options, $property
-				);
-				$before_add_elements = $property->getAnnotations('before_add_element');
-				if ($this->callEvent($property_write_event, $before_add_elements)) {
+				$old_element = ($id && isset($old_collection[$id])) ? $old_collection[$id] : null;
+				if (!$old_element) {
+					$property_add_event  = new Property_Add($this, $object, $element, $options, $property);
+					$before_add_elements = $property->getAnnotations('before_add_element');
+					$before_result       = $this->callEvent($property_add_event, $before_add_elements);
+				}
+				else {
+					$property_add_event = null;
+					$before_result = true;
+				}
+				if ($before_result) {
 					$this->write($element, empty($id) ? [] : $options);
-					$this->callEvent($property_write_event, $property->getAnnotations('after_add_element'));
+					if ($property_add_event) {
+						$after_add_elements = $property->getAnnotations('after_add_element');
+						$this->callEvent($property_add_event, $after_add_elements);
+					}
 				}
 			}
 		}
@@ -1319,8 +1327,9 @@ class Link extends Dao\Sql\Link
 				? $this->getLinkObjectIdentifier($old_element, $element_link)
 				: $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
-				$delete_event = new Property_Delete($this, $old_element, $options, $property);
-				if ($this->callEvent($delete_event, $property->getAnnotations('before_remove_element'))) {
+				$remove_event = new Property_Remove($this, $object, $old_element, $options, $property);
+				$before_remove_elements = $property->getAnnotations('before_remove_element');
+				if ($this->callEvent($remove_event, $before_remove_elements)) {
 					$this->delete($old_element);
 				}
 			}
@@ -1356,12 +1365,13 @@ class Link extends Dao\Sql\Link
 			$id = $this->getObjectIdentifier($element)
 				?: $this->getObjectIdentifier($this->write($element, $options));
 			if (!isset($old_map[$id]) && !isset($id_set[$id])) {
-				$property_write_event = new Property_Write($this, $element, null, $options, $property);
+				$property_add_event  = new Property_Add($this, $object, $element, $options, $property);
 				$before_add_elements = $property->getAnnotations('before_add_element');
-				if ($this->callEvent($property_write_event, $before_add_elements)) {
+				if ($this->callEvent($property_add_event, $before_add_elements)) {
 					$query = $insert_builder->buildQuery($object, $element);
 					$this->connection->query($query);
-					$this->callEvent($property_write_event, $property->getAnnotations('after_add_element'));
+					$after_add_elements = $property->getAnnotations('after_add_element');
+					$this->callEvent($property_add_event, $after_add_elements);
 				}
 			}
 			$id_set[$id] = true;
@@ -1371,8 +1381,9 @@ class Link extends Dao\Sql\Link
 		foreach ($old_map as $old_element) {
 			$id = $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
-				$delete_event = new Property_Delete($this, $old_element, $options, $property);
-				if ($this->callEvent($delete_event, $property->getAnnotations('before_remove_element'))) {
+				$remove_event = new Property_Remove($this, $object, $old_element, $options, $property);
+				$before_remove_elements = $property->getAnnotations('before_remove_element');
+				if ($this->callEvent($remove_event, $before_remove_elements)) {
 					$query = $delete_builder->buildQuery($object, $old_element);
 					$this->connection->query($query);
 				}

@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection\Annotation\Template;
 
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Event;
 use SAF\Framework\PHP\Dependency;
 use SAF\Framework\PHP\Reflection_Class;
 use SAF\Framework\Reflection\Annotation;
@@ -102,8 +103,9 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 
 	//------------------------------------------------------------------------------------------ call
 	/**
-	 * The $object argument will be the first argument before $arguments in case of a static call
-	 * If the value is a method for the current object, only $arguments will be sent
+	 * - The $object argument will be the first argument before $arguments in case of a static call
+	 * - If the first argument is an Event object, only $arguments will be sent
+	 * - If the value is a method for the current object, only $arguments will be sent
 	 *
 	 * @param $object    object|string the object will be the first. If string, this is a class name
 	 * @param $arguments array
@@ -112,7 +114,9 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	public function call($object, $arguments = [])
 	{
 		if ($this->static || is_string($object)) {
-			array_unshift($arguments, $object);
+			if (!(reset($arguments) instanceof Event)) {
+				array_unshift($arguments, $object);
+			}
 			return call_user_func_array($this->value, $arguments);
 		}
 		return call_user_func_array([$object, rParse($this->value, '::')], $arguments);

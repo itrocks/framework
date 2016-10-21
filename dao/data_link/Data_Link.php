@@ -114,7 +114,7 @@ abstract class Data_Link
 	{
 		/** @var $annotations Method_Annotation[] */
 		foreach ($annotations as $annotation) {
-			if ($annotation->call($event) === false) {
+			if ($annotation->call($event->object, [$event]) === false) {
 				return false;
 			}
 		}
