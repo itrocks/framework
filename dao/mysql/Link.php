@@ -1306,9 +1306,10 @@ class Link extends Dao\Sql\Link
 				$property_write_event = new Property_Write(
 					$this, $element, $old_element, $options, $property
 				);
-				if ($this->beforeWriteElement($property_write_event)) {
+				$before_add_elements = $property->getAnnotations('before_add_element');
+				if ($this->callEvent($property_write_event, $before_add_elements)) {
 					$this->write($element, empty($id) ? [] : $options);
-					$this->afterWriteElement($property_write_event);
+					$this->callEvent($property_write_event, $property->getAnnotations('after_add_element'));
 				}
 			}
 		}
@@ -1319,7 +1320,7 @@ class Link extends Dao\Sql\Link
 				: $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
 				$delete_event = new Property_Delete($this, $old_element, $options, $property);
-				if ($this->beforeDeleteElement($delete_event)) {
+				if ($this->callEvent($delete_event, $property->getAnnotations('before_remove_element'))) {
 					$this->delete($old_element);
 				}
 			}
@@ -1356,10 +1357,11 @@ class Link extends Dao\Sql\Link
 				?: $this->getObjectIdentifier($this->write($element, $options));
 			if (!isset($old_map[$id]) && !isset($id_set[$id])) {
 				$property_write_event = new Property_Write($this, $element, null, $options, $property);
-				if ($this->beforeWriteElement($property_write_event)) {
+				$before_add_elements = $property->getAnnotations('before_add_element');
+				if ($this->callEvent($property_write_event, $before_add_elements)) {
 					$query = $insert_builder->buildQuery($object, $element);
 					$this->connection->query($query);
-					$this->afterWriteElement($property_write_event);
+					$this->callEvent($property_write_event, $property->getAnnotations('after_add_element'));
 				}
 			}
 			$id_set[$id] = true;
@@ -1370,7 +1372,7 @@ class Link extends Dao\Sql\Link
 			$id = $this->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
 				$delete_event = new Property_Delete($this, $old_element, $options, $property);
-				if ($this->beforeDeleteElement($delete_event)) {
+				if ($this->callEvent($delete_event, $property->getAnnotations('before_remove_element'))) {
 					$query = $delete_builder->buildQuery($object, $old_element);
 					$this->connection->query($query);
 				}
