@@ -577,11 +577,14 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 * @param $clause     string The SQL query was starting with this clause
-	 * @param $options    Option[] If set, will set the result into Dao_Count_Option::$count
+	 * @param $options    Option|Option[] If set, will set the result into Dao_Count_Option::$count
 	 * @return integer will return null if $options is set but contains no Dao_Count_Option
 	 */
 	public function getRowsCount($result_set, $clause, $options = [])
 	{
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
 		if ($options) {
 			foreach ($options as $option) {
 				if ($option instanceof Option\Count) {
@@ -955,11 +958,14 @@ class Link extends Dao\Sql\Link
 	 * Read all objects of a given class from data source
 	 *
 	 * @param $class_name string class for read objects
-	 * @param $options    Option[] some options for advanced read
+	 * @param $options    Option|Option[] some options for advanced read
 	 * @return object[] a collection of read objects
 	 */
 	public function readAll($class_name, $options = [])
 	{
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
 		$class_name = Builder::className($class_name);
 		$this->setContext($class_name);
 		$query = (new Select($class_name, null, null, null, $options))->buildQuery();
@@ -1031,6 +1037,9 @@ class Link extends Dao\Sql\Link
 	 */
 	public function search($what, $class_name = null, $options = [])
 	{
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
 		if (!isset($class_name)) {
 			$class_name = get_class($what);
 		}

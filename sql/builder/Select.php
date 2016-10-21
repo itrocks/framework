@@ -70,17 +70,20 @@ class Select
 	 * @param $where_array array|object where array expression, keys are columns names,
 	 *                     or filter object
 	 * @param $sql_link    Link
-	 * @param $options     Option[] DAO options can be used for complex queries building
+	 * @param $options     Option|Option[] DAO options can be used for complex queries building
 	 */
 	public function __construct(
 		$class_name, $properties = null, $where_array = null, Link $sql_link = null, $options = []
 	) {
-		$this->joins = $joins = new Joins($class_name);
-		$this->class_name = $class_name;
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
+		$this->joins = $joins  = new Joins($class_name);
+		$this->class_name      = $class_name;
 		$this->columns_builder = new Columns($class_name, $properties, $joins);
 		$this->tables_builder  = new Tables($class_name, $joins);
 		$this->where_builder   = new Where($class_name, $where_array, $sql_link, $joins);
-		$this->options = isset($options) ? (is_array($options) ? $options : [$options]) : [];
+		$this->options         = $options;
 	}
 
 	//------------------------------------------------------------------------------------ __toString

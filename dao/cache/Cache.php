@@ -6,7 +6,6 @@ use SAF\Framework\Builder;
 use SAF\Framework\Dao;
 use SAF\Framework\Dao\Cache\Cached;
 use SAF\Framework\Dao\Mysql\Link;
-use SAF\Framework\Dao\Option;
 use SAF\Framework\Plugin\Register;
 use SAF\Framework\Plugin\Registerable;
 
@@ -16,11 +15,14 @@ use SAF\Framework\Plugin\Registerable;
 class Cache implements Registerable
 {
 
+	//--------------------------------------------------------------------------------------- MAXIMUM
 	/**
 	 * When there are more than MAXIMUM objects into the cache, let's purge PURGE of them
 	 */
 	const MAXIMUM = 9999;
-	const PURGE   = 2000;
+
+	//----------------------------------------------------------------------------------------- PURGE
+	const PURGE = 2000;
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
@@ -77,7 +79,7 @@ class Cache implements Registerable
 	 * (write option may suppose the object is incomplete)
 	 *
 	 * @param $object    object
-	 * @param $options   Option[]
+	 * @param $options   Option|Option[]
 	 * @param $joinpoint Method_Joinpoint
 	 */
 	public function cacheWriteObject($object, $options = [], Method_Joinpoint $joinpoint = null)

@@ -259,7 +259,7 @@ abstract class Data_Link
 	 * Read all objects of a given class from data source
 	 *
 	 * @param $class_name string class name of read objects
-	 * @param $options    string|array some options for advanced read
+	 * @param $options    Option|Option[] some options for advanced read
 	 * @return object[] a collection of read objects
 	 */
 	abstract public function readAll($class_name, $options = []);
@@ -318,7 +318,7 @@ abstract class Data_Link
 	 * @param $what       object|array source object for filter, or filter array (need class_name)
 	 *                    only set properties will be used for search
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
-	 * @param $options    Option[] array some options for advanced search
+	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
 	abstract public function search($what, $class_name = null, $options = []);
@@ -352,7 +352,7 @@ abstract class Data_Link
 	 *        data source.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *        search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options    Option[] some options for advanced search
+	 * @param $options Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
 	 *         the same order than columns.
 	 */

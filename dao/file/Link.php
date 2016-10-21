@@ -134,7 +134,7 @@ class Link extends Identifier_Map
 	 * Read all objects of a given class from data source
 	 *
 	 * @param $class_name string class name of read objects
-	 * @param $options    string|array some options for advanced read
+	 * @param $options    Option|Option[] some options for advanced read
 	 * @return object[] a collection of read objects
 	 */
 	public function readAll($class_name, $options = [])
@@ -181,7 +181,7 @@ class Link extends Identifier_Map
 	 *
 	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
-	 * @param $options    Option[] array some options for advanced search
+	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
 	public function search($what, $class_name = null, $options = [])
@@ -196,7 +196,7 @@ class Link extends Identifier_Map
 	 * @param $class         string class for the read object
 	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use 'column.sub_column' to get values from linked objects from the same data source.
 	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options       Option[] some options for advanced search
+	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
 	public function select($class, $columns, $filter_object = null, $options = [])

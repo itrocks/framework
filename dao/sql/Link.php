@@ -142,7 +142,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 * @param $clause     string The SQL query was starting with this clause
-	 * @param $options    Option[] If set, will set the result into Dao_Count_Option::$count
+	 * @param $options    Option|Option[] If set, will set the result into Dao_Count_Option::$count
 	 * @return integer will return null if $options is set but contains no Dao_Count_Option
 	 */
 	public abstract function getRowsCount($result_set, $clause, $options = []);
@@ -194,12 +194,15 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *        same data source. You can use Dao\Func\Column sub-classes to get result of functions.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *        search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options    Option[] some options for advanced search
+	 * @param $options Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
 	 *         the same order than columns.
 	 */
 	public function select($object_class, $columns, $filter_object = null, $options = [])
 	{
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
 		if (is_string($object_class)) {
 			$object_class = Builder::className($object_class);
 		}

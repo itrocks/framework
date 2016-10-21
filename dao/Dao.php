@@ -338,7 +338,7 @@ class Dao implements Configurable
 	 * Read all objects of a given class from current data link
 	 *
 	 * @param $class_name string class name of read objects
-	 * @param $options    Option[] some options for advanced read
+	 * @param $options    Option|Option[] some options for advanced read
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::readAll()
 	 */
@@ -448,7 +448,7 @@ class Dao implements Configurable
 	 * @param $what       object|array source object for filter, only set properties will be used for
 	 *                    search
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
-	 * @param $options    Option[] some options for advanced search
+	 * @param $options    Option|Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 * @see Data_Link::search()
 	 */
@@ -487,7 +487,7 @@ class Dao implements Configurable
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *                       search. Can be an array associating properties names to matching
 	 *                       search value too.
-	 * @param $options       Option[] some options for advanced search
+	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data|List_Row[] a list of read records. Each record values (may be objects) are
 	 *         stored in the same order than columns.
 	 */
@@ -576,7 +576,7 @@ class Dao implements Configurable
 	 * record will be written into data source using this object's data.
 	 *
 	 * @param $object  object object to write into data source
-	 * @param $options Option[] some options for advanced write
+	 * @param $options Option|Option[] some options for advanced write
 	 * @return object the written object
 	 * @see Data_Link::write()
 	 */

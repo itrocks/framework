@@ -392,7 +392,7 @@ class Select
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *                       search. Can be an array associating properties names to corresponding
 	 *                       search value too.
-	 * @param $options       Option[] some options for advanced search
+	 * @param $options       Option|Option[] some options for advanced search
 	 * @return string
 	 */
 	public function prepareQuery($filter_object = null, $options = [])
