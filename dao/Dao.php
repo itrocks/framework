@@ -323,14 +323,14 @@ class Dao implements Configurable
 	/**
 	 * Read an object from current data link
 	 *
-	 * @param $identifier   mixed identifier for the object
-	 * @param $object_class string class for read object
+	 * @param $identifier integer|object identifier for the object, or an object to re-read
+	 * @param $class_name string class for read object. Useless if $identifier is an object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
 	 */
-	public static function read($identifier, $object_class)
+	public static function read($identifier, $class_name)
 	{
-		return self::current()->read($identifier, $object_class);
+		return self::current()->read($identifier, $class_name);
 	}
 
 	//--------------------------------------------------------------------------------------- readAll

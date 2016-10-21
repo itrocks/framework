@@ -267,7 +267,7 @@ abstract class Data_Link
 	/**
 	 * Read an object from data source
 	 *
-	 * @param $identifier mixed identifier for the object
+	 * @param $identifier mixed|object identifier for the object
 	 * @param $class_name string class for read object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 */
