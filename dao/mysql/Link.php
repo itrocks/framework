@@ -1098,11 +1098,14 @@ class Link extends Dao\Sql\Link
 	 * TODO LOWEST factorize this to become SOLID
 	 *
 	 * @param $object  object object to write into data source
-	 * @param $options Option[] some options for advanced write
+	 * @param $options Option|Option[] some options for advanced write
 	 * @return object the written object if written, or null if the object could not be written
 	 */
 	public function write($object, $options = [])
 	{
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
 		if ($this->beforeWrite($object, $options)) {
 
 			if (Null_Object::isNull($object)) {

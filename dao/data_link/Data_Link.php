@@ -425,7 +425,7 @@ abstract class Data_Link
 	 * record will be written into data source using this object's data.
 	 *
 	 * @param $object  object object to write into data source
-	 * @param $options Option[] some options for advanced write
+	 * @param $options Option|Option[] some options for advanced write
 	 * @return object the written object
 	 */
 	abstract public function write($object, $options = []);
