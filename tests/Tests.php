@@ -33,6 +33,7 @@ class Tests
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
+		upgradeTimeLimit(120);
 		$this->errors_count = 0;
 		$this->tests_count  = 0;
 		foreach (Application::current()->include_path->getSourceDirectories() as $directory_name) {
