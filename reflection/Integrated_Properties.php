@@ -94,11 +94,8 @@ abstract class Integrated_Properties
 			if (!($value = $property->getValue($object))) {
 				$value = Builder::create($property->getType()->asString());
 				if ($property->getAnnotation('component')->value && isA($value, Component::class)) {
-					/** @var $sub_object Component */
-					$sub_object = $value;
-					if (!$sub_object->getComposite()) {
-						$sub_object->setComposite($object);
-					}
+					/** @var $value Component */
+					$value->setComposite($object);
 				}
 			}
 			foreach ($expand_properties as $sub_property_name => $sub_property) {
