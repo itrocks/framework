@@ -171,9 +171,9 @@ class Html_Builder_Property extends Html_Builder_Type
 					T_EXTENDS, T_USE
 				]);
 				foreach ($filters_values as $filter) {
-					if (strpos($filter, '=') !== false) {
+					if (strpos($filter, '=')) {
 						list($filter, $filter_value_name) = explode('=', $filter);
-						$filter = trim($filter);
+						$filter            = trim($filter);
 						$filter_value_name = trim($filter_value_name);
 					}
 					else {
