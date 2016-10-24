@@ -29,32 +29,13 @@ class Period
 	public function __construct(Date_Time $begin, Date_Time $end)
 	{
 		if ($begin->isAfter($end) && !$end->isEmpty()) {
-			$this->end    = $begin;
-			$this->begin  = $end;
+			$this->end   = $begin;
+			$this->begin = $end;
 		}
 		else {
-			$this->begin  = $begin;
-			$this->end    = $end;
+			$this->begin = $begin;
+			$this->end   = $end;
 		}
-	}
-
-	//--------------------------------------------------------------------- getMonthsDateTimeInPeriod
-	/**
-	 * Return all months contained in period
-	 *
-	 * @return Date_Time[]
-	 */
-	public function getMonthsDateTimeInPeriod()
-	{
-		$start = $this->begin->toMonth();
-		$stop = $this->end->toMonth();
-		$months = [];
-		while ($start->isBefore($stop)) {
-			$months[] = clone $start;
-			$start->add(1, Date_Time::MONTH);
-		}
-		$months[] = $stop;
-		return $months;
 	}
 
 	//-------------------------------------------------------------------------------------------- in
@@ -67,9 +48,7 @@ class Period
 	public function in(Period $period)
 	{
 		return $this->begin->isAfterOrEqual($period->begin)
-		&& $this->begin->isBeforeOrEqual($period->end)
-		&& $this->end->isAfterOrEqual($period->begin)
-		&& $this->end->isBeforeOrEqual($period->end);
+			&& $this->end->isBeforeOrEqual($period->end);
 	}
 
 	//------------------------------------------------------------------------------------- intersect
@@ -77,56 +56,13 @@ class Period
 	 * Return a period of current period in main period
 	 *
 	 * @param $main_period Period
-	 * @return Period
+	 * @return Period|null
 	 */
 	public function intersect(Period $main_period)
 	{
-		if ($this->in($main_period)) {
-			return $this;
-		}
-		else if ($main_period->in($this)) {
-			return $main_period;
-		}
-		else if ($main_period->out($this)) {
-			return null;
-		}
-		else if ($this->intersectBegin($main_period)) {
-			return new Period($main_period->begin, $this->end);
-		}
-		else if ($this->intersectEnd($main_period)) {
-			return new Period($this->begin, $main_period->end);
-		}
-		return null;
-	}
-
-	//-------------------------------------------------------------------------------- intersectBegin
-	/**
-	 * If intersect begin of other period
-	 *
-	 * @param $period Period
-	 * @return boolean
-	 */
-	public function intersectBegin(Period $period)
-	{
-		return $this->begin->isBefore($period->begin)
-		&& $this->end->isAfterOrEqual($period->begin)
-		&& $this->end->isBeforeOrEqual($period->end);
-	}
-
-	//---------------------------------------------------------------------------------- intersectEnd
-	/**
-	 * If intersect end of other period
-	 *
-	 * this->begin::in(period), period > this->end
-	 *
-	 * @param $period Period
-	 * @return boolean
-	 */
-	public function intersectEnd(Period $period)
-	{
-		return $this->begin->isAfterOrEqual($period->begin)
-		&& $this->begin->isBeforeOrEqual($period->end)
-		&& $this->end->isAfter($period->end);
+		$begin = $this->begin->latest($main_period->begin);
+		$end   = $this->end->earliest($main_period->end);
+		return $begin->isBeforeOrEqual($end) ? new Period($begin, $end) : null;
 	}
 
 	//------------------------------------------------------------------------------------------- out
@@ -138,9 +74,26 @@ class Period
 	 */
 	public function out(Period $period)
 	{
-		return $this->begin->isBefore($period->begin)
-		&& $this->end->isBefore($period->begin)
-		|| $this->begin->isAfter($period->end)
-		&& ($this->end->isAfter($period->end) || $this->end->isEmpty() && !$period->end->isEmpty());
+		return $this->end->isBefore($period->begin) || $this->begin->isAfter($period->end);
 	}
+
+	//--------------------------------------------------------------------- getMonthsDateTimeInPeriod
+	/**
+	 * Return all months contained in period
+	 *
+	 * @return Date_Time[]
+	 */
+	public function toMonths()
+	{
+		$start  = $this->begin->toMonth();
+		$stop   = $this->end->toMonth();
+		$months = [];
+		while ($start->isBefore($stop)) {
+			$months[] = clone $start;
+			$start->add(1, Date_Time::MONTH);
+		}
+		$months[] = $stop;
+		return $months;
+	}
+
 }
