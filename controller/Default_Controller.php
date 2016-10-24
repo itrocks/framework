@@ -4,7 +4,7 @@ namespace SAF\Framework\Controller;
 use SAF\Framework\Controller;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\View;
-use StdClass;
+use stdClass;
 
 /**
  * The default controller launches a view corresponding to the original controller name
@@ -30,12 +30,14 @@ class Default_Controller implements Controller
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name, $feature_name)
 	{
-		$constructor = (new Reflection_Class($class_name))->getConstructor();
+		$constructor = class_exists($class_name)
+			? (new Reflection_Class($class_name))->getConstructor()
+			: null;
 		if (!$constructor || !$constructor->getMandatoryParameters()) {
 			$parameters->getMainObject($class_name);
 		}
 		else {
-			$parameters->getMainObject(StdClass::class);
+			$parameters->getMainObject(stdClass::class);
 		}
 		$parameters = $parameters->getObjects();
 		return View::run($parameters, $form, $files, $class_name, $feature_name);

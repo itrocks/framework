@@ -31,7 +31,7 @@ class Remove_Controller implements Feature_Controller
 		$parameters = $parameters->getObjects();
 		$parameters['class_name']   = array_shift($objects);
 		$parameters['feature_name'] = array_shift($objects);
-		array_unshift($objects, new StdClass());
+		array_unshift($objects, new stdClass());
 		/**
 		 * $objects for the view :
 		 * - first : an empty class object (ie Property)
