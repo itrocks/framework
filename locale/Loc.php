@@ -40,10 +40,19 @@ class Loc implements Registerable
 
 	//----------------------------------------------------- afterHtmlTemplateFuncsToEditPropertyExtra
 	/**
+	 * TODO HIGHEST 2016-10-24 this is kept to avoid crashes. Please remove it tonight
+	 */
+	public function afterHtmlTemplateFuncsToEditPropertyExtra($result)
+	{
+		return $this->afterHtmlTemplateFunctionsToEditPropertyExtra($result);
+	}
+
+	//------------------------------------------------- afterHtmlTemplateFunctionsToEditPropertyExtra
+	/**
 	 * @param $result array[]
 	 * @return array[]
 	 */
-	public function afterHtmlTemplateFuncsToEditPropertyExtra($result)
+	public function afterHtmlTemplateFunctionsToEditPropertyExtra($result)
 	{
 		/** @var $property      Reflection_Property */
 		/** @var $property_path string */
@@ -292,7 +301,7 @@ class Loc implements Registerable
 		// format to locale
 		$aop->afterMethod(
 			[Functions::class, 'toEditPropertyExtra'],
-			[$this, 'afterHtmlTemplateFuncsToEditPropertyExtra']
+			[$this, 'afterHtmlTemplateFunctionsToEditPropertyExtra']
 		);
 		$aop->afterMethod(
 			[Reflection_Property_View::class, 'formatBoolean'],
