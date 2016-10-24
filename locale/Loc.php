@@ -370,15 +370,29 @@ class Loc implements Registerable
 
 	//-------------------------------------------------------------------------------------------- tr
 	/**
-	 * Translation
+	 * Text translation
 	 *
-	 * @param $text    string
-	 * @param $context string
-	 * @return string
+	 * You can replace some $values into $text using a replacement table.
+	 * Each key into $replaces will be prefixed with an $ and replaced in $text by their value.
+	 * Date-time values are formatted using locale.
+	 * If you need to translate replacement values, you must call Loc::tr() for each of them.
+	 *
+	 * @example tr('Error for $number elements', '', ['number' => 12]) => 'Error for 12 elements'
+	 * @param $text     string The text to translate
+	 * @param $context  string The context to use for translation, if forced
+	 * @param $replaces array  The replacement table
+	 * @return string The translated text
 	 */
-	public static function tr($text, $context = '')
+	public static function tr($text, $context = '', $replaces = [])
 	{
-		return Locale::current()->translations->translate($text, $context);
+		$translation = Locale::current()->translations->translate($text, $context);
+		foreach ($replaces as $key => $value) {
+			if (is_object($value)) {
+				$value = ($value instanceof Date_Time) ? static::dateToLocale($value) : strval($value);
+			}
+			$translation = str_replace('$' . $key, $value, $translation);
+		}
+		return $translation;
 	}
 
 	//------------------------------------------------------------------------ translateReturnedValue
@@ -404,34 +418,6 @@ class Loc implements Registerable
 		return ($object->property->getListAnnotation('values')->values())
 			? $this->tr($result, $object->property->final_class)
 			: $result;
-	}
-
-	//-------------------------------------------------------------------- translateWithReplaceValues
-	/**
-	 * Translate text with context and replace keys in text by their values.
-	 *
-	 * @example translateWithReplaceValues('Error for $number elements', ['number' => 12])
-	 *            => 'Error for 12 elements'
-	 * @param $text     string text to translate
-	 * @param $replaces string[] A list of key must be replaced by their values
-	 * @param $context  string
-	 * @return string
-	 */
-	public static function translateWithReplaceValues($text, array $replaces = [], $context = '')
-	{
-		$message = Loc::tr($text, $context);
-		foreach ($replaces as $key => $value) {
-			if (is_object($value)) {
-				if ($value instanceof Date_Time) {
-					$value = static::dateToLocale($value);
-				}
-				else {
-					$value = strval($value);
-				}
-			}
-			$message = str_replace('$' . $key, $value, $message);
-		}
-		return $message;
 	}
 
 }
