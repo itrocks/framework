@@ -28,7 +28,10 @@ class Period
 	 */
 	public function __construct(Date_Time $begin, Date_Time $end)
 	{
-		if ($begin->isAfter($end) && !$end->isEmpty()) {
+		if ($end->isMin()) {
+			$end = Date_Time::max();
+		}
+		if ($begin->isAfter($end)) {
 			$this->end   = $begin;
 			$this->begin = $end;
 		}
@@ -77,7 +80,7 @@ class Period
 		return $this->end->isBefore($period->begin) || $this->begin->isAfter($period->end);
 	}
 
-	//--------------------------------------------------------------------- getMonthsDateTimeInPeriod
+	//-------------------------------------------------------------------------------------- toMonths
 	/**
 	 * Return all months contained in period
 	 *
