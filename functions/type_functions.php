@@ -133,10 +133,10 @@ function isStrictInteger($value)
 function isStrictNumeric($value, $decimal_allowed = true, $signed_allowed = true)
 {
 	return is_numeric($value)
-		&& strpos('0+.', $value[0]) === false
-		&& stripos($value, 'E') === false
-		&& ($decimal_allowed ?: strpos($value, '.') === false)
-		&& ($signed_allowed ?: strpos($value[0], '-') === false);
+		&& (strpos('0+.', $value[0]) === false)
+		&& (stripos($value, 'E')     === false)
+		&& ($decimal_allowed ?: (strpos($value, '.')    === false))
+		&& ($signed_allowed  ?: (strpos($value[0], '-') === false));
 }
 
 //--------------------------------------------------------------------------------- isStrictNumeric
