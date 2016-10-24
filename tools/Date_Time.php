@@ -213,6 +213,25 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $interval;
 	}
 
+	//-------------------------------------------------------------------------------------- earliest
+	/**
+	 * Returns the earliest (ie smaller, older) date from the main object and a list of dates
+	 *
+	 * @param $date Date_Time date-times ...
+	 * @return Date_Time
+	 */
+	public function earliest(Date_Time $date)
+	{
+		$earliest = $this;
+		foreach (func_get_args() as $date) {
+			/** @var $date Date_Time */
+			if ($date->isBefore($earliest)) {
+				$earliest = $date;
+			}
+		}
+		return $earliest;
+	}
+
 	//---------------------------------------------------------------------------------------- format
 	/**
 	 * @param $format string
@@ -380,6 +399,25 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			return static::min();
 		}
 		return new Date_Time($this->format('Y-m-t 23:59:59'));
+	}
+
+	//---------------------------------------------------------------------------------------- latest
+	/**
+	 * Returns the latest (ie bigger, greater) date from the main object and a list of dates
+	 *
+	 * @param $date Date_Time date-times ...
+	 * @return Date_Time
+	 */
+	public function latest(Date_Time $date)
+	{
+		$latest = $this;
+		foreach (func_get_args() as $date) {
+			/** @var $date Date_Time */
+			if ($date->isAfter($latest)) {
+				$latest = $date;
+			}
+		}
+		return $latest;
 	}
 
 	//------------------------------------------------------------------------------------------- max

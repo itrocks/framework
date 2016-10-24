@@ -25,6 +25,22 @@ class Date_Time_Tests extends Test
 		$this->assume('3 years before', $today->add(-3, Date_Time::YEAR),   $three_years_before);
 	}
 
+	//---------------------------------------------------------------------------------- testEarliest
+	public function testEarliest()
+	{
+		$earlier = new Date_Time('2006-01-01 13:29:18');
+		$now     = new Date_Time('2016-10-24 10:48:12');
+		$later   = new Date_Time('2034-05-12 10:00:00');
+		$this->method(__METHOD__);
+		$this->assume('one argument',      $earlier->earliest($later),       $earlier);
+		$this->assume('two arguments',     $earlier->earliest($later, $now), $earlier);
+		$this->assume('reverse arguments', $earlier->earliest($now, $later), $earlier);
+		$this->assume('another reverse',   $now->earliest($earlier, $later), $earlier);
+		$this->assume('another 2',         $now->earliest($later, $earlier), $earlier);
+		$this->assume('another 3',         $later->earliest($earlier, $now), $earlier);
+		$this->assume('another 4',         $later->earliest($now, $earlier), $earlier);
+	}
+
 	//---------------------------------------------------------------------------------------- testIs
 	public function testIs()
 	{
@@ -272,6 +288,22 @@ class Date_Time_Tests extends Test
 		$this->assume('min',   $min_date->isMin(),   true);
 		$this->assume('max',   $max_date->isMin(),   false);
 		$this->method('-');
+	}
+
+	//------------------------------------------------------------------------------------ testLatest
+	public function testLatest()
+	{
+		$earlier = new Date_Time('2006-01-01 13:29:18');
+		$now     = new Date_Time('2016-10-24 10:48:12');
+		$later   = new Date_Time('2034-05-12 10:00:00');
+		$this->method(__METHOD__);
+		$this->assume('one argument',      $earlier->latest($later),       $later);
+		$this->assume('two arguments',     $earlier->latest($later, $now), $later);
+		$this->assume('reverse arguments', $earlier->latest($now, $later), $later);
+		$this->assume('another reverse',   $now->latest($earlier, $later), $later);
+		$this->assume('another 2',         $now->latest($later, $earlier), $later);
+		$this->assume('another 3',         $later->latest($earlier, $now), $later);
+		$this->assume('another 4',         $later->latest($now, $earlier), $later);
 	}
 
 	//----------------------------------------------------------------------------------- testToMonth
