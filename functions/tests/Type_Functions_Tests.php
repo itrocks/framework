@@ -22,12 +22,12 @@ class Type_Functions_Tests extends Test
 		['+1'          , '+1'         , false,          false,          false],
 		['-1'          , '-1'         , true ,          true ,          false],
 		['.1'          , '.1'         , false,          false,          false],
-		['-.1'         , '-.1'        , true ,          false,          false], // is what we want?
+		['-.1'         , '-.1'        , true ,          false,          false],
 		['0.1'         , '0.1'        , false,          false,          false],
 		['1.1'         , '1.1'        , true ,          false,          false],
 		['1,1'         , '1,1'        , false,          false,          false],
-		['-1.1'        , '-1.1'       , true,           false,          false], // is what we want?
-		['1.'          , '1.'         , true ,          false,          false], // is what we want?
+		['-1.1'        , '-1.1'       , true,           false,          false],
+		['1.'          , '1.'         , true ,          false,          false],
 		['1E2'         , '1E2'        , false,          false,          false],
 		['1e2'         , '1e2'        , false,          false,          false],
 		['array'       , []           , false,          false,          false],
@@ -42,11 +42,13 @@ class Type_Functions_Tests extends Test
 	{
 		$result = true;
 
-		foreach (self::NUMERIC_TESTS
+		foreach (
+			self::NUMERIC_TESTS
 			as list($subtitle, $check, $assume_numeric, $assume_integer, $assume_unsigned)
 		) {
-			$ok = $this->assume(__METHOD__ . '(' . $subtitle . ')', isStrictInteger($check),
-				$assume_integer);
+			$ok = $this->assume(
+				__METHOD__ . '(' . $subtitle . ')', isStrictInteger($check), $assume_integer
+			);
 			$result &= $ok;
 		}
 
@@ -61,11 +63,13 @@ class Type_Functions_Tests extends Test
 	{
 		$result = true;
 
-		foreach (self::NUMERIC_TESTS
+		foreach (
+			self::NUMERIC_TESTS
 			as list($subtitle, $check, $assume_numeric, $assume_integer, $assume_unsigned)
 		) {
-			$ok = $this->assume(__METHOD__ . '(' . $subtitle . ')', isStrictNumeric($check),
-				$assume_numeric);
+			$ok = $this->assume(
+				__METHOD__ . '(' . $subtitle . ')', isStrictNumeric($check), $assume_numeric
+			);
 			$result &= $ok;
 		}
 
@@ -80,11 +84,13 @@ class Type_Functions_Tests extends Test
 	{
 		$result = true;
 
-		foreach (self::NUMERIC_TESTS
+		foreach (
+			self::NUMERIC_TESTS
 			as list($subtitle, $check, $assume_numeric, $assume_integer, $assume_unsigned)
 		) {
-			$ok = $this->assume(__METHOD__ . '(' . $subtitle . ')', isStrictUnsignedInteger($check),
-				$assume_unsigned);
+			$ok = $this->assume(
+				__METHOD__ . '(' . $subtitle . ')', isStrictUnsignedInteger($check), $assume_unsigned
+			);
 			$result &= $ok;
 		}
 
