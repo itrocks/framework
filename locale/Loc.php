@@ -11,7 +11,6 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Method;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_View;
-use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View\Html\Template\Functions;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
@@ -372,25 +371,48 @@ class Loc implements Registerable
 	/**
 	 * Text translation
 	 *
-	 * You can replace some $values into $text using a replacement table.
-	 * Each key into $replaces will be prefixed with an $ and replaced in $text by their value.
-	 * Date-time values are formatted using locale.
-	 * If you need to translate replacement values, you must call Loc::tr() for each of them.
-	 *
-	 * @example tr('Error for $number elements', '', ['number' => 12]) => 'Error for 12 elements'
 	 * @param $text     string The text to translate
-	 * @param $context  string The context to use for translation, if forced
-	 * @param $replaces array  The replacement table
+	 * @param $options  Option[]|object[]|string[]|Option|object|string Options for translation,
+	 * see options in namespace SAF\Framework\Locale\Option
+	 * If options is a string or contain a string, this string is used as a context
+	 * If options contain a object who implements Has_Language, use object language for translation
 	 * @return string The translated text
 	 */
-	public static function tr($text, $context = '', $replaces = [])
+	public static function tr($text, $options = [])
 	{
-		$translation = Locale::current()->translations->translate($text, $context);
-		foreach ($replaces as $key => $value) {
-			if (is_object($value)) {
-				$value = ($value instanceof Date_Time) ? static::dateToLocale($value) : strval($value);
+		if (!is_array($options)) {
+			$options = [$options];
+		}
+		// For now, only 1 context is allowed, but to change
+		$context = '';
+		$language = '';
+		foreach ($options as $option) {
+			if (is_string($option)) {
+				// Compatibility with old usages of tr
+				$context = $option;
 			}
-			$translation = str_replace('$' . $key, $value, $translation);
+			else if ($option instanceof Locale\Option\Context) {
+				$context = $option->context;
+			}
+			else if (isA($option, Has_Language::class)) {
+				/** @var $option Has_Language */
+				$language = $option->language->name;
+			}
+		}
+		$old_language = '';
+		if ($language) {
+			$old_language = Locale::current()->translations->language;
+			Locale::current()->translations->language = $language;
+		}
+		$translation = Locale::current()->translations->translate($text, $context);
+		if ($language) {
+			// If we have change language
+			Locale::current()->translations->language = $old_language;
+		}
+		foreach ($options as $option) {
+			if ($option instanceof Option) {
+				$translation = $option->afterTranslation($translation);
+			}
 		}
 		return $translation;
 	}
