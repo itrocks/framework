@@ -15,7 +15,7 @@
 	</script>
 	|¦{object.@class.display.ucfirst}¦ !{object}! is invalid| :
 	<ul>
-		<!--getErrors-->
+		<!--getMessages-->
 		<li>
 			<!--property?-->
 			|{property.alias}| {?getPropertyValue}&nbsp;: |{reportMessage}|
@@ -33,8 +33,24 @@
 			{reportMessage}
 			<!--!property?-->
 		</li>
-		<!--getErrors-->
+		<!--getMessages-->
 	</ul>
+	<!--!getErrors-->
+	<form method="post">
+		<!--.getPostProperties-->
+		<input type="hidden" name="{@key}" value="{value}">
+		<!--.getPostProperties-->
+		<ul class="general actions">
+			<li class="cancel">
+				<a href="#" onclick="$('#messages').empty();return false;">|Cancel|</a>
+			</li>
+			<li class="write">
+				<a class="submit" href="{.getConfirmLink}" target="#messages">|Ignore and confirm|</a>
+			</li>
+		</ul>
+	</form>
+	<!--!getErrors-->
+
 
 <!--END-->
 </body>

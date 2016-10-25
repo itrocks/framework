@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Widget\Validate;
 
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Exclude;
@@ -19,6 +20,7 @@ use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
 use ITRocks\Framework\Widget\Validate\Property;
+use ITRocks\Framework\Widget\Write\Write_Controller;
 
 /**
  * The object validator links validation processes to objects
@@ -49,10 +51,34 @@ class Validator implements Registerable
 	 */
 	public $validator_on = false;
 
+	//----------------------------------------------------------------------------------- $warning_on
+	/**
+	 * @var boolean
+	 */
+	public $warning_on = false;
+
 	//------------------------------------------------------------------------ afterMainControllerRun
 	public function afterMainControllerRun()
 	{
 		$this->validator_on = false;
+	}
+
+	//----------------------------------------------------------------------- afterWriteControllerRun
+	public function afterWriteControllerRun()
+	{
+		$this->warning_on = false;
+	}
+
+	//--------------------------------------------------------------------- afterWriteControllerWrite
+	/**
+	 * @param $write_objects array
+	 * @throws View_Exception
+	 */
+	public function afterWriteControllerWrite($write_objects)
+	{
+		if ($this->warningEnabled() && $this->getWarnings()) {
+			throw new View_Exception($this->notValidated(reset($write_objects)));
+		}
 	}
 
 	//----------------------------------------------------------------------- beforeMainControllerRun
@@ -86,7 +112,7 @@ class Validator implements Registerable
 					$skip = true;
 				}
 			}
-			if (!isset($skip) && !Result::isValid($this->validate($object, $only, $exclude))) {
+			if (!isset($skip) && !Result::isValid($this->validate($object, $only, $exclude), true)) {
 				throw new View_Exception($this->notValidated($object, $only, $exclude));
 			}
 		}
@@ -118,6 +144,28 @@ class Validator implements Registerable
 		return $validator_on;
 	}
 
+	//---------------------------------------------------------------------- beforeWriteControllerRun
+	/**
+	 * @param $parameters Parameters
+	 */
+	public function beforeWriteControllerRun(Parameters $parameters)
+	{
+		if (!$parameters->getRawParameter('confirm')) {
+			$this->warning_on = true;
+		}
+	}
+
+	//-------------------------------------------------------------------------------- getConfirmLink
+	/**
+	 * @return string
+	 */
+	public function getConfirmLink()
+	{
+		$uri = lParse('/' . rParse($_SERVER['REQUEST_URI'], '/', 2), '?', 1, true);
+		$uri .= (strpos($uri, '?') !== false ? '&' : '?') . 'confirm=1';
+		return $uri;
+	}
+
 	//------------------------------------------------------------------------------------- getErrors
 	/**
 	 * @return Annotation[]
@@ -131,6 +179,69 @@ class Validator implements Registerable
 			}
 		}
 		return $errors;
+	}
+
+	//----------------------------------------------------------------------------------- getMessages
+	/**
+	 * Return all messages for view
+	 *
+	 * @return Annotation[]
+	 */
+	public function getMessages()
+	{
+		return array_merge($this->getWarnings(), $this->getErrors());
+	}
+
+	//----------------------------------------------------------------------------- getPostProperties
+	/**
+	 * Return all properties passed in POST from form
+	 *
+	 * @return string[]
+	 */
+	public function getPostProperties()
+	{
+		return $this->getPropertiesToString($_POST);
+	}
+
+	//------------------------------------------------------------------------- getPropertiesToString
+	/**
+	 * @param array  $elements
+	 * @param string $base_path
+	 * @return string[]
+	 */
+	private function getPropertiesToString($elements = [], $base_path = '')
+	{
+		$properties = [];
+		foreach ($elements as $key => $element) {
+			if ($base_path) {
+				$path = $base_path . '[' . $key . ']';
+			}
+			else {
+				$path = $key;
+			}
+			if (is_array($element)) {
+				$properties = array_merge($properties, $this->getPropertiesToString($element, $path));
+			}
+			else {
+				$properties[$path] = $element;
+			}
+		}
+		return $properties;
+	}
+
+	//----------------------------------------------------------------------------------- getWarnings
+	/**
+	 * @return array
+	 */
+	public function getWarnings()
+	{
+		$warning = [];
+		foreach ($this->report as $annotation) {
+			if ($annotation->valid === Result::WARNING) {
+				$warning[] = $annotation;
+			}
+		}
+		return $warning;
 	}
 
 	//---------------------------------------------------------------------------------- notValidated
@@ -170,8 +281,18 @@ class Validator implements Registerable
 		$register->aop->beforeMethod(
 			[Main::class, 'runController'], [$this, 'beforeMainControllerRun']
 		);
+		$register->aop->afterMethod(
+			[Write_Controller::class, 'run'], [$this, 'afterWriteControllerRun']
+		);
+		$register->aop->beforeMethod(
+			[Write_Controller::class, 'run'], [$this, 'beforeWriteControllerRun']
+		);
+		$register->aop->afterMethod(
+			[Write_Controller::class, 'write'], [$this, 'afterWriteControllerWrite']
+		);
 		$register->setAnnotations(Parser::T_CLASS, [
-			'validate'   => Class_\Validate_Annotation::class
+			'validate'   => Class_\Validate_Annotation::class,
+			'warning'    => Class_\Warning_Annotation::class,
 		]);
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'length'     => Property\Length_Annotation::class,
@@ -182,7 +303,8 @@ class Validator implements Registerable
 			'min_value'  => Property\Min_Value_Annotation::class,
 			'precision'  => Property\Precision_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class,
-			'validate'   => Property\Validate_Annotation::class
+			'validate'   => Property\Validate_Annotation::class,
+			'warning'    => Property\Warning_Annotation::class,
 		]);
 	}
 
@@ -200,7 +322,6 @@ class Validator implements Registerable
 			? $class->getLinkProperties()
 			: $class->accessProperties();
 
-		$this->report = [];
 		$this->valid = Result::andResult(
 			$this->validateProperties($object, $properties, $only_properties, $exclude_properties),
 			$this->validateObject($object, $class)
@@ -226,7 +347,7 @@ class Validator implements Registerable
 		$annotation->valid = $annotation->validate($object);
 		if ($annotation->valid === true)  $annotation->valid = Result::INFORMATION;
 		if ($annotation->valid === false) $annotation->valid = Result::ERROR;
-		if ($annotation->valid !== Result::NONE) {
+		if (($annotation->valid !== Result::NONE) && ($annotation->valid !== true)) {
 			$this->report[] = $annotation;
 		}
 		return $annotation->valid;
@@ -296,6 +417,17 @@ class Validator implements Registerable
 			}
 		}
 		return $result;
+	}
+
+	//-------------------------------------------------------------------------------- warningEnabled
+	/**
+	 * Return true if warning check are enabled
+	 *
+	 * @return boolean
+	 */
+	public function warningEnabled()
+	{
+		return $this->validator_on && $this->warning_on;
 	}
 
 }
