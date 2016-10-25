@@ -48,14 +48,6 @@ class Object_Builder_Array
 	 */
 	private $defaults;
 
-	//-------------------------------------------------------------------------- $new_instance_values
-	/**
-	 * Force values for each class property when a new instance of the object is created
-	 *
-	 * @var array
-	 */
-	private $new_instance_values = [];
-
 	//------------------------------------------------------------------------------------ $from_form
 	/**
 	 * True (default) if apply build specifics for arrays that come from an input form :
@@ -82,6 +74,14 @@ class Object_Builder_Array
 	 */
 	public $null_if_empty_sub_objects = false;
 
+	//--------------------------------------------------------------------------------------- $parent
+	/**
+	 * Store parent object to attach to composite properties
+	 *
+	 * @var object
+	 */
+	public $parent = null;
+
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * Properties list, set by start()
@@ -104,10 +104,12 @@ class Object_Builder_Array
 	 * @param $from_form  boolean Set this to false to disable interpretation of arrays coming from
 	 *                    forms : arrayFormRevert, widgets. You should always set this to false if
 	 *                    your array does not come from an input form.
+	 * @param $parent     object|null
 	 */
-	public function __construct($class_name = null, $from_form = true)
+	public function __construct($class_name = null, $from_form = true, $parent = null)
 	{
 		$this->from_form = $from_form;
+		$this->parent    = $parent;
 		if (isset($class_name)) {
 			$this->setClass($class_name);
 		}
@@ -197,18 +199,7 @@ class Object_Builder_Array
 	{
 		$collection = [];
 		if ($array) {
-			$builder = new Object_Builder_Array($class_name, $this->from_form);
-			/** @var $link Class_\Link_Annotation */
-			$link = $builder->class->getAnnotation('link');
-			if ($link->value && isset($parent->id)) {
-				$composite_properties = call_user_func(
-					[$builder->class->name, 'getCompositeProperties'], $this->class->name
-				);
-				$id_property_name = 'id_' . reset($composite_properties);
-			}
-			else {
-				$id_property_name = null;
-			}
+			$builder = new Object_Builder_Array($class_name, $this->from_form, $parent);
 			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
 			reset($array);
 			if ($this->from_form && !is_numeric(key($array))) {
@@ -224,11 +215,8 @@ class Object_Builder_Array
 				if ($combine) {
 					$element = array_combine($first_row, $element);
 				}
-				if ($id_property_name && !isset($element[$id_property_name])) {
-					$element[$id_property_name] = $parent->id;
-				}
 				$object = $builder->build(
-					$element, null, $this->null_if_empty_sub_objects || $null_if_empty, $id_property_name
+					$element, null, $this->null_if_empty_sub_objects || $null_if_empty
 				);
 				if (isset($object)) {
 					$collection[$key] = $object;
@@ -336,15 +324,11 @@ class Object_Builder_Array
 	 */
 	private function buildObjectValue($class_name, $array, $null_if_empty, $parent)
 	{
-		$builder = new Object_Builder_Array($class_name, $this->from_form);
-		if ($parent && isA($class_name, Component::class)) {
-			/** @var $composite_property Reflection_Property */
-			$composite_property = call_user_func(
-				[$class_name, 'getCompositeProperty'], get_class($parent)
-			);
-			$builder->new_instance_values[$composite_property->name] = $parent;
-		}
+		$builder = new Object_Builder_Array($class_name, $this->from_form, $parent);
 		$object = $builder->build($array, null, $this->null_if_empty_sub_objects || $null_if_empty);
+		if ($object && $parent && isA($class_name, Component::class)) {
+			array_pop($builder->built_objects);
+		}
 		$this->built_objects = array_merge($this->built_objects, $builder->built_objects);
 		return $object;
 	}
@@ -683,8 +667,8 @@ class Object_Builder_Array
 				$link_search = $this->initLinkObject($array, $object);
 				if (!isset($object)) {
 					$object = $this->class->newInstance();
-					foreach ($this->new_instance_values as $property_name => $value) {
-						$object->$property_name = $value;
+					if ($this->parent && isA($object, Component::class)) {
+						$object->setComposite($this->parent);
 					}
 				}
 			}
