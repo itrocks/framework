@@ -2,6 +2,7 @@
 namespace SAF\Framework\Dao\Func;
 
 use SAF\Framework\Locale\Loc;
+use SAF\Framework\Locale\Option\Replace;
 use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Value;
 use SAF\Framework\Widget\Data_List\Summary_Builder;
@@ -49,10 +50,11 @@ class Left_Match implements Negate, Where
 	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
 	{
 		$column = $builder->buildColumn($property_path, $prefix);
+		$replace = new Replace(['column' => $column, 'value' => $this->value]);
 		$str = $this->not_match
-			? Loc::tr('$column is not start of string "$value"')
-			: Loc::tr('$column is the start of string "$value"');
-		return str_replace(['$column', '$value'], [$column, $this->value], $str);
+			? Loc::tr('$column is not start of string "$value"', $replace)
+			: Loc::tr('$column is the start of string "$value"', $replace);
+		return $str;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
