@@ -196,6 +196,16 @@ class Template
 		}
 	}
 
+	//--------------------------------------------------------------------------------- backupContext
+	/**
+	 * @return array [string[], mixed[], string[]] [$var_names, $objects, $translation_contexts]
+	 * @see parseValue(), restoreContext()
+	 */
+	protected function backupContext()
+	{
+		return [$this->var_names, $this->objects, Loc::$contexts_stack];
+	}
+
 	//--------------------------------------------------------------------------------- blackZonesInc
 	/**
 	 * Increment black zones offset starting from a $position by $increment
@@ -289,15 +299,6 @@ class Template
 	public function context()
 	{
 		return str_replace(BS, DOT, get_class($this));
-	}
-
-	//------------------------------------------------------------------------------------------- fix
-	/**
-	 * @return array [string[], mixed[], string[]] [$var_names, $objects, $translation_contexts]
-	 */
-	protected function fix()
-	{
-		return [$this->var_names, $this->objects, Loc::$contexts_stack];
 	}
 
 	//--------------------------------------------------------------------------- getContainerContent
@@ -1474,8 +1475,8 @@ class Template
 		}
 		if (strpos('-+', $var_name[0]) !== false) {
 			$descendants_names = $this->descendants_names;
-			$descendants = $this->descendants;
-			$fixed       = $this->fix();
+			$descendants       = $this->descendants;
+			$context           = $this->backupContext();
 			while ($var_name[0] === '-') {
 				list($s_name, $s_object) = $this->shift();
 				array_unshift($this->descendants_names, $s_name);
@@ -1492,8 +1493,8 @@ class Template
 			$object = reset($this->objects);
 		}
 		elseif (strpos($var_name, DOT) !== false) {
+			if (!isset($context)) $context = $this->backupContext();
 			$object = null;
-			if (!isset($fixed)) $fixed = $this->fix();
 			$parenthesis = '';
 			foreach (explode(DOT, $var_name) as $property_name) {
 				if ($parenthesis) {
@@ -1536,7 +1537,7 @@ class Template
 			$object = !$object;
 		}
 		// restore position arrays
-		if (isset($fixed))             $this->restore($fixed);
+		if (isset($context))           $this->restoreContext($context);
 		if (isset($descendants))       $this->descendants = $descendants;
 		if (isset($descendants_names)) $this->descendants_names = $descendants_names;
 
@@ -1919,15 +1920,14 @@ class Template
 		return $content;
 	}
 
-	//--------------------------------------------------------------------------------------- restore
+	//-------------------------------------------------------------------------------- restoreContext
 	/**
 	 * @param $fixed array [string[], mixed[], string[]] [$var_names, $objects, $translation_contexts]
+	 * @see backupContext(), parseValue()
 	 */
-	protected function restore($fixed)
+	protected function restoreContext($fixed)
 	{
-		$this->var_names     = $fixed[0];
-		$this->objects       = $fixed[1];
-		Loc::$contexts_stack = $fixed[2];
+		list($this->var_names, $this->objects, Loc::$contexts_stack) = $fixed;
 	}
 
 	//------------------------------------------------------------------------------------ setContent
@@ -1974,10 +1974,12 @@ class Template
 	 */
 	protected function shift()
 	{
-		if (is_object(reset($this->objects))) {
+		$var_name = array_shift($this->var_names);
+		$object   = array_shift($this->objects);
+		if (is_object($object)) {
 			Loc::exitContext();
 		}
-		return [array_shift($this->var_names), array_shift($this->objects)];
+		return [$var_name, $object];
 	}
 
 	//--------------------------------------------------------------------------------------- unshift
