@@ -2,19 +2,12 @@
 namespace SAF\Framework\Tools;
 
 use SAF\Framework\Builder;
-use SAF\Framework\Locale\Loc;
 
 /**
  * A String class to get commonly used string features into an object
  */
 class String_Class
 {
-
-	//------------------------------------------------------------------------------------ $translate
-	/**
-	 * @var boolean
-	 */
-	public $translate;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -24,13 +17,11 @@ class String_Class
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value     string
-	 * @param $translate boolean
+	 * @param $value string
 	 */
-	public function __construct($value, $translate = false)
+	public function __construct($value)
 	{
-		$this->value     = $value;
-		$this->translate = $translate;
+		$this->value = $value;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -55,8 +46,7 @@ class String_Class
 	function cleanWord()
 	{
 		return new String_Class(
-			preg_replace('#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#', '', $this->value),
-			$this->translate
+			preg_replace('#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#', '', $this->value)
 		);
 	}
 
@@ -66,8 +56,7 @@ class String_Class
 	 */
 	public function display()
 	{
-		$display = str_replace('_', SP, $this->value);
-		return $this->translate ? Loc::tr($display) : $display;
+		return str_replace('_', SP, $this->value);
 	}
 
 	//---------------------------------------------------------------------------------------- escape
@@ -76,7 +65,7 @@ class String_Class
 	 */
 	public function escape()
 	{
-		return new String_Class(str_replace(BS, BS . BS, $this->value), $this->translate);
+		return new String_Class(str_replace(BS, BS . BS, $this->value));
 	}
 
 	//----------------------------------------------------------------------------------------- first
@@ -89,12 +78,10 @@ class String_Class
 	{
 		foreach ([':', DOT, '-', ','] as $char) {
 			if (strpos($this->value, $char) !== false) {
-				return new String_Class(
-					substr($this->value, 0, strpos($this->value, $char)), $this->translate
-				);
+				return new String_Class(substr($this->value, 0, strpos($this->value, $char)));
 			}
 		}
-		return new String_Class($this->value, $this->translate);
+		return new String_Class($this->value);
 	}
 
 	//---------------------------------------------------------------------------------- htmlEntities
@@ -103,7 +90,7 @@ class String_Class
 	 */
 	public function htmlEntities()
 	{
-		return new String_Class(htmlentities($this->value, ENT_QUOTES|ENT_HTML5), $this->translate);
+		return new String_Class(htmlentities($this->value, ENT_QUOTES|ENT_HTML5));
 	}
 
 	//---------------------------------------------------------------------------------------- isWord
@@ -128,10 +115,10 @@ class String_Class
 	{
 		foreach ([':', DOT, '-', ','] as $char) {
 			if (strrpos($this->value, $char) !== false) {
-				return new String_Class(rLastParse($this->value, $char, $count, true), $this->translate);
+				return new String_Class(rLastParse($this->value, $char, $count, true));
 			}
 		}
-		return new String_Class($this->value, $this->translate);
+		return new String_Class($this->value);
 	}
 
 	//----------------------------------------------------------------------------------------- lower
@@ -140,7 +127,7 @@ class String_Class
 	 */
 	public function lower()
 	{
-		return new String_Class(strtolower($this->value), $this->translate);
+		return new String_Class(strtolower($this->value));
 	}
 
 	//------------------------------------------------------------------------------------------ nbsp
@@ -156,13 +143,12 @@ class String_Class
 	/**
 	 * Constructs a new String
 	 *
-	 * @param $string    string
-	 * @param $translate boolean
+	 * @param $string string
 	 * @return self
 	 */
-	public static function of($string, $translate = false)
+	public static function of($string)
 	{
-		return new String_Class($string, $translate);
+		return new String_Class($string);
 	}
 
 	//------------------------------------------------------------------------------------------ path
@@ -173,9 +159,7 @@ class String_Class
 	 */
 	public function path()
 	{
-		return new String_Class(
-			str_replace(BS, SL, Builder::current()->sourceClassName($this->value)), $this->translate
-		);
+		return new String_Class(str_replace(BS, SL, Builder::current()->sourceClassName($this->value)));
 	}
 
 	//----------------------------------------------------------------------------------------- short
@@ -184,7 +168,7 @@ class String_Class
 	 */
 	public function short()
 	{
-		return new String_Class(Namespaces::shortClassName($this->value), $this->translate);
+		return new String_Class(Namespaces::shortClassName($this->value));
 	}
 
 	//---------------------------------------------------------------------------------------- source
@@ -193,7 +177,7 @@ class String_Class
 	 */
 	public function source()
 	{
-		return new String_Class(Builder::current()->sourceClassName($this->value), $this->translate);
+		return new String_Class(Builder::current()->sourceClassName($this->value));
 	}
 
 	//---------------------------------------------------------------------------------------- substr
@@ -205,8 +189,7 @@ class String_Class
 	public function substr($index, $length = null)
 	{
 		return new String_Class(
-			isset($length) ? substr($this->value, $index, $length) : substr($this->value, $index),
-			$this->translate
+			isset($length) ? substr($this->value, $index, $length) : substr($this->value, $index)
 		);
 	}
 
@@ -219,8 +202,7 @@ class String_Class
 	public function substring($start, $stop = null)
 	{
 		return new String_Class(
-			isset($stop) ? substr($this->value, $start, $stop - $start) : substr($this->value, $start),
-			$this->translate
+			isset($stop) ? substr($this->value, $start, $stop - $start) : substr($this->value, $start)
 		);
 	}
 
@@ -236,7 +218,7 @@ class String_Class
 		$text = $wiki->geshi($this->value, false);
 		$text = $wiki->textile($text);
 		$text = $wiki->geshiSolve($text);
-		return new String_Class($text, $this->translate);
+		return new String_Class($text);
 	}
 
 	//--------------------------------------------------------------------------------------- twoLast
@@ -257,7 +239,7 @@ class String_Class
 	 */
 	public function ucfirst()
 	{
-		return new String_Class(ucfirst($this->value), $this->translate);
+		return new String_Class(ucfirst($this->value));
 	}
 
 	//--------------------------------------------------------------------------------------- ucwords
@@ -266,7 +248,7 @@ class String_Class
 	 */
 	public function ucwords()
 	{
-		return new String_Class(ucwords($this->value), $this->translate);
+		return new String_Class(ucwords($this->value));
 	}
 
 	//----------------------------------------------------------------------------------------- upper
@@ -275,7 +257,7 @@ class String_Class
 	 */
 	public function upper()
 	{
-		return new String_Class(strtoupper($this->value), $this->translate);
+		return new String_Class(strtoupper($this->value));
 	}
 
 	//------------------------------------------------------------------------------------------- uri
@@ -284,7 +266,7 @@ class String_Class
 	 */
 	public function uri()
 	{
-		return new String_Class(strUri($this->value), $this->translate);
+		return new String_Class(strUri($this->value));
 	}
 
 }
