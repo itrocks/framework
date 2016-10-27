@@ -37,6 +37,10 @@ class Export_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
+		/** @todo cf task #81421  */
+		upgradeMemoryLimit('6G');
+		upgradeTimeLimit(3600);
+
 		// get list settings
 		$class_names = $class_name;
 		$class_name = $parameters->getMainObject()->element_class_name;
