@@ -11,7 +11,6 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Method;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_View;
-use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View\Html\Template\Functions;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
@@ -123,18 +122,6 @@ class Loc implements Registerable
 		if (isset($result)) {
 			self::setContext($result);
 		}
-	}
-
-	//--------------------------------------------------------------------------------------- context
-	/**
-	 * This option sets context for the current translation
-	 *
-	 * @param $context string Class name or context variable
-	 * @return Option\Context
-	 */
-	public static function context($context)
-	{
-		return new Option\Context($context);
 	}
 
 	//------------------------------------------------------------------------------------------ date
@@ -350,16 +337,6 @@ class Loc implements Registerable
 			[Import_Array::class, 'getClassNameFromArray'],
 			[$this, 'classNameReturnedValueToContext']
 		);
-	}
-
-	//--------------------------------------------------------------------------------------- replace
-	/**
-	 * @param $replace string[]|Date_Time[] List of keys to be replaces by values
-	 * @return Option\Replace
-	 */
-	public static function replace($replace = [])
-	{
-		return new Option\Replace($replace);
 	}
 
 	//------------------------------------------------------------------------------------------- rtr

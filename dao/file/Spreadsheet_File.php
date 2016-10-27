@@ -4,6 +4,7 @@ namespace SAF\Framework\Dao\File;
 use PHPExcel_IOFactory;
 use SAF\Framework\Application;
 use SAF\Framework\Locale\Loc;
+use SAF\Framework\Locale\Option\Replace;
 use SAF\Framework\Reflection\Reflection_Class;
 
 /*
@@ -91,7 +92,7 @@ class Spreadsheet_File
 			$row ++;
 			if (($column = array_search('#REF!', $buf)) !== false) {
 				$column ++;
-				$replace = Loc::replace([1 => $row, 2 => $column]);
+				$replace  = new Replace([1 => $row, 2 => $column]);
 				$errors[] = Loc::tr('unsolved reference at row $1 and column $2', $replace);
 			}
 			$lines[] = $buf;
