@@ -360,7 +360,9 @@ class Loc implements Registerable
 	 */
 	public static function rtr($translation, $context = '', $context_property_path = '')
 	{
-		if (!$context) $context = self::getContext();
+		if (!$context) {
+			$context = self::getContext();
+		}
 		return Locale::current()->translations->reverse($translation, $context, $context_property_path);
 	}
 
