@@ -648,7 +648,7 @@ class Object_Builder_Array
 	 *   $array
 	 * - if the object is a link class and the link class identifier properties values are set,
 	 *   read the object from the data link
-	 * - if the object is a Component with a knew composite, initializes its composite object to
+	 * - if the object is a Component with a known composite, initializes its composite object to
 	 *   $this->composite
 	 *
 	 * @param $array  array  the source array
