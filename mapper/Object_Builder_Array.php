@@ -667,14 +667,14 @@ class Object_Builder_Array
 				$link_search = $this->initLinkObject($array, $object);
 				if (!isset($object)) {
 					$object = $this->class->newInstance();
-					if ($this->parent && isA($object, Component::class)) {
-						$object->setComposite($this->parent);
-					}
 				}
 			}
 			if (isset($array['id'])) {
 				unset($array['id']);
 			}
+		}
+		if ($this->parent && isA($object, Component::class)) {
+			$object->setComposite($this->parent);
 		}
 		return isset($link_search) ? $link_search : null;
 	}
