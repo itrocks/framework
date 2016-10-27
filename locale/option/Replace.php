@@ -7,11 +7,11 @@ use SAF\Framework\Tools\Date_Time;
 
 /**
  * Option to replace some $values into $text using a replacement table.
- * Each key into $replaces will be prefixed with an $ and replaced in $text by their value.
- * Date-time values are formatted using locale.
+ * Each key into $replaces will be prefixed with an $ and replaced in $text by its value.
+ * Date_Time values are automatically formatted using locale.
  * If you need to translate replacement values, you must call Loc::tr() for each of them.
  *
- * @example tr('Error for $number elements', new Replace(['number' => 12]))
+ * @example Loc::tr('Error for $number elements', Loc::Replace(['number' => 12]))
  *          => 'Error for 12 elements'
  */
 class Replace extends Option
@@ -30,7 +30,7 @@ class Replace extends Option
 	/**
 	 * Replace constructor.
 	 *
-	 * @param $replace string[]|object[] List of keys to be replaces by values
+	 * @param $replace string[]|Date_Time[] List of keys to be replaces by values
 	 */
 	public function __construct(array $replace = [])
 	{

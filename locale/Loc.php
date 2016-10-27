@@ -11,6 +11,7 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Method;
 use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 use SAF\Framework\Reflection\Reflection_Class;
 use SAF\Framework\Reflection\Reflection_Property_View;
+use SAF\Framework\Tools\Date_Time;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\View\Html\Template\Functions;
 use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
@@ -122,6 +123,18 @@ class Loc implements Registerable
 		if (isset($result)) {
 			self::setContext($result);
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- context
+	/**
+	 * This option sets context for the current translation
+	 *
+	 * @param $context string Class name or context variable
+	 * @return Option\Context
+	 */
+	public static function context($context)
+	{
+		return new Option\Context($context);
 	}
 
 	//------------------------------------------------------------------------------------------ date
@@ -339,6 +352,16 @@ class Loc implements Registerable
 		);
 	}
 
+	//--------------------------------------------------------------------------------------- replace
+	/**
+	 * @param $replace string[]|Date_Time[] List of keys to be replaces by values
+	 * @return Option\Replace
+	 */
+	public static function replace($replace = [])
+	{
+		return new Option\Replace($replace);
+	}
+
 	//------------------------------------------------------------------------------------------- rtr
 	/**
 	 * Reverse translation
@@ -372,10 +395,11 @@ class Loc implements Registerable
 	 * Text translation
 	 *
 	 * @param $text     string The text to translate
-	 * @param $options  Option[]|object[]|string[]|Option|object|string Options for translation,
-	 * see options in namespace SAF\Framework\Locale\Option
-	 * If options is a string or contain a string, this string is used as a context
-	 * If options contain a object who implements Has_Language, use object language for translation
+	 * @param $options  Option[]|Has_Language[]|string[]|Option|Has_Language|string Options for
+	 *        translation : see options in namespace SAF\Framework\Locale\Option
+	 *        If options is a string or contain a string, this string is used as a context
+	 *        If options contain a object who implements Has_Language, use object's language for
+	 *        translation
 	 * @return string The translated text
 	 */
 	public static function tr($text, $options = [])
@@ -384,17 +408,17 @@ class Loc implements Registerable
 			$options = [$options];
 		}
 		// For now, only 1 context is allowed, but to change
-		$context = '';
+		$context  = '';
 		$language = '';
 		foreach ($options as $option) {
 			if (is_string($option)) {
 				// Compatibility with old usages of tr
 				$context = $option;
 			}
-			else if ($option instanceof Locale\Option\Context) {
+			elseif ($option instanceof Locale\Option\Context) {
 				$context = $option->context;
 			}
-			else if (isA($option, Has_Language::class)) {
+			elseif (isA($option, Has_Language::class)) {
 				/** @var $option Has_Language */
 				$language = $option->language->name;
 			}

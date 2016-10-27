@@ -1,9 +1,9 @@
 <?php
-
 namespace SAF\Framework\Locale;
 
 /**
- * Add language field
+ * Adds $language property
+ *
  * Objects with this trait can be used in Loc::tr as option to use object language for translation
  */
 trait Has_Language
@@ -15,4 +15,5 @@ trait Has_Language
 	 * @var Language
 	 */
 	public $language;
+
 }

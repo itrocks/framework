@@ -2,8 +2,9 @@
 namespace SAF\Framework\Locale;
 
 /**
- * Option for locate functions
- * For the moment : only Loc::tr
+ * Option for locale functions
+ *
+ * @see Loc::tr()
  */
 abstract class Option
 {
