@@ -104,7 +104,7 @@ class Object_Builder_Array
 	 * @param $from_form  boolean Set this to false to disable interpretation of arrays coming from
 	 *                    forms : arrayFormRevert, widgets. You should always set this to false if
 	 *                    your array does not come from an input form.
-	 * @param $parent     object|null
+	 * @param $parent     object|null Reference to the parent object if we build a Component
 	 */
 	public function __construct($class_name = null, $from_form = true, $parent = null)
 	{
