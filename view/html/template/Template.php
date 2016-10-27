@@ -198,12 +198,22 @@ class Template
 
 	//--------------------------------------------------------------------------------- backupContext
 	/**
-	 * @return array [string[], mixed[], string[]] [$var_names, $objects, $translation_contexts]
+	 * @return array [string[], array, string[]] [$var_names, $objects, $translation_contexts]
 	 * @see parseValue(), restoreContext()
 	 */
 	protected function backupContext()
 	{
 		return [$this->var_names, $this->objects, Loc::$contexts_stack];
+	}
+
+	//----------------------------------------------------------------------------- backupDescendants
+	/**
+	 * @return array [string[], array] [$descendants_names, $descendants]
+	 * @see parseValue(), restoreDescendants()
+	 */
+	protected function backupDescendants()
+	{
+		return [$this->descendants_names, $this->descendants];
 	}
 
 	//--------------------------------------------------------------------------------- blackZonesInc
@@ -1130,6 +1140,28 @@ class Template
 		}
 	}
 
+	//--------------------------------------------------------------------------------- parseNavigate
+	/**
+	 * Navigate into $var_name through parents (-) and children (+)
+	 *
+	 * @param $var_name string
+	 * @return string new $var_name (without -/+)
+	 */
+	protected function parseNavigate($var_name)
+	{
+		while ($var_name[0] === '-') {
+			list($descendant_name, $descendant) = $this->shift();
+			array_unshift($this->descendants_names, $descendant_name);
+			array_unshift($this->descendants,       $descendant);
+			$var_name = substr($var_name, 1);
+		}
+		while ($var_name[0] === '+') {
+			$this->unshift(array_shift($this->descendants_names), array_shift($this->descendants));
+			$var_name = substr($var_name, 1);
+		}
+		return $var_name;
+	}
+
 	//-------------------------------------------------------------------------------------- parseNot
 	/**
 	 * Returns the reverse boolean value for property value
@@ -1178,6 +1210,39 @@ class Template
 	{
 		$this->shift();
 		return reset($this->objects);
+	}
+
+	//------------------------------------------------------------------------------------- parsePath
+	/**
+	 * Parse current object through methods/properties path
+	 *
+	 * @param $var_name string
+	 * @return array [$object, $property_name]
+	 */
+	protected function parsePath($var_name)
+	{
+		$object        = null;
+		$parenthesis   = '';
+		$property_name = null;
+		foreach (explode(DOT, $var_name) as $property_name) {
+			if ($parenthesis) {
+				$property_name = $parenthesis . DOT . $property_name;
+				$parenthesis   = '';
+			}
+			if (
+				strpos($property_name, '(')
+				&& (substr_count($property_name, '(') > substr_count($property_name, ')'))
+			) {
+				$parenthesis = $property_name;
+			}
+			else {
+				$object = $this->parseSingleValue($property_name);
+				if (strlen($property_name)) {
+					$this->unshift($property_name, $object);
+				}
+			}
+		}
+		return [$object, $property_name];
 	}
 
 	//--------------------------------------------------------------------------------- parseProperty
@@ -1466,54 +1531,27 @@ class Template
 			return $this->parseInclude($var_name);
 		}
 		elseif ($var_name[0] == '!') {
-			$not = true;
+			$not      = true;
 			$var_name = substr($var_name, 1);
 		}
 		if (substr($var_name, -1) == '*') {
-			$group = true;
+			$group    = true;
 			$var_name = substr($var_name, 0, -1);
 		}
 		if (strpos('-+', $var_name[0]) !== false) {
-			$descendants_names = $this->descendants_names;
-			$descendants       = $this->descendants;
-			$context           = $this->backupContext();
-			while ($var_name[0] === '-') {
-				list($s_name, $s_object) = $this->shift();
-				array_unshift($this->descendants_names, $s_name);
-				array_unshift($this->descendants,       $s_object);
-				$var_name = substr($var_name, 1);
-			}
-			while ($var_name[0] === '+') {
-				$this->unshift(array_shift($this->descendants_names), array_shift($this->descendants));
-				$var_name = substr($var_name, 1);
-			}
+			$context     = $this->backupContext();
+			$descendants = $this->backupDescendants();
+			$var_name    = $this->parseNavigate($var_name);
 		}
 		$property_name = null;
 		if ($var_name === DOT) {
 			$object = reset($this->objects);
 		}
 		elseif (strpos($var_name, DOT) !== false) {
-			if (!isset($context)) $context = $this->backupContext();
-			$object = null;
-			$parenthesis = '';
-			foreach (explode(DOT, $var_name) as $property_name) {
-				if ($parenthesis) {
-					$property_name = $parenthesis . DOT . $property_name;
-					$parenthesis = '';
-				}
-				if (
-					strpos($property_name, '(')
-					&& (substr_count($property_name, '(') > substr_count($property_name, ')'))
-				) {
-					$parenthesis = $property_name;
-				}
-				else {
-					$object = $this->parseSingleValue($property_name);
-					if (strlen($property_name)) {
-						$this->unshift($property_name, $object);
-					}
-				}
+			if (!isset($context)) {
+				$context = $this->backupContext();
 			}
+			list($object, $property_name) = $this->parsePath($var_name);
 		}
 		else {
 			$object = $this->parseSingleValue($var_name);
@@ -1537,9 +1575,12 @@ class Template
 			$object = !$object;
 		}
 		// restore position arrays
-		if (isset($context))           $this->restoreContext($context);
-		if (isset($descendants))       $this->descendants = $descendants;
-		if (isset($descendants_names)) $this->descendants_names = $descendants_names;
+		if (isset($context)) {
+			$this->restoreContext($context);
+		}
+		if (isset($descendants)) {
+			$this->restoreDescendants($descendants);
+		}
 
 		return isset($group) ? $this->group($var_name, $object) : $object;
 	}
@@ -1922,12 +1963,22 @@ class Template
 
 	//-------------------------------------------------------------------------------- restoreContext
 	/**
-	 * @param $fixed array [string[], mixed[], string[]] [$var_names, $objects, $translation_contexts]
+	 * @param $context array [string[], array, string[]] [$var_names, $objects, $translation_contexts]
 	 * @see backupContext(), parseValue()
 	 */
-	protected function restoreContext($fixed)
+	protected function restoreContext($context)
 	{
-		list($this->var_names, $this->objects, Loc::$contexts_stack) = $fixed;
+		list($this->var_names, $this->objects, Loc::$contexts_stack) = $context;
+	}
+
+	//---------------------------------------------------------------------------- restoreDescendants
+	/**
+	 * @param $descendants array [string[], array] [$descendants_names, $descendants]
+	 * @see backupDescendants(), parseValue()
+	 */
+	protected function restoreDescendants($descendants)
+	{
+		list($this->descendants_names, $this->descendants) = $descendants;
 	}
 
 	//------------------------------------------------------------------------------------ setContent
