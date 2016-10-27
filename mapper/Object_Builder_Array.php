@@ -40,6 +40,14 @@ class Object_Builder_Array
 	 */
 	private $class;
 
+	//------------------------------------------------------------------------------------ $composite
+	/**
+	 * Store composite object to attach the @composite property of a Component built object
+	 *
+	 * @var object
+	 */
+	public $composite = null;
+
 	//------------------------------------------------------------------------------------- $defaults
 	/**
 	 * Default values for each class property
@@ -74,14 +82,6 @@ class Object_Builder_Array
 	 */
 	public $null_if_empty_sub_objects = false;
 
-	//--------------------------------------------------------------------------------------- $parent
-	/**
-	 * Store parent object to attach to composite properties
-	 *
-	 * @var object
-	 */
-	public $parent = null;
-
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * Properties list, set by start()
@@ -104,12 +104,12 @@ class Object_Builder_Array
 	 * @param $from_form  boolean Set this to false to disable interpretation of arrays coming from
 	 *                    forms : arrayFormRevert, widgets. You should always set this to false if
 	 *                    your array does not come from an input form.
-	 * @param $parent     object|null Reference to the parent object if we build a Component
+	 * @param $composite  object|null Reference to the composite object if we build a Component
 	 */
-	public function __construct($class_name = null, $from_form = true, $parent = null)
+	public function __construct($class_name = null, $from_form = true, $composite = null)
 	{
 		$this->from_form = $from_form;
-		$this->parent    = $parent;
+		$this->composite = $composite;
 		if (isset($class_name)) {
 			$this->setClass($class_name);
 		}
@@ -192,14 +192,14 @@ class Object_Builder_Array
 	 * @param $class_name    string
 	 * @param $array         array
 	 * @param $null_if_empty boolean
-	 * @param $parent        object the parent object, if linked
+	 * @param $composite     object the composite object, if linked
 	 * @return object[]
 	 */
-	public function buildCollection($class_name, $array, $null_if_empty = false, $parent = null)
+	public function buildCollection($class_name, $array, $null_if_empty = false, $composite = null)
 	{
 		$collection = [];
 		if ($array) {
-			$builder = new Object_Builder_Array($class_name, $this->from_form, $parent);
+			$builder = new Object_Builder_Array($class_name, $this->from_form, $composite);
 			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
 			reset($array);
 			if ($this->from_form && !is_numeric(key($array))) {
@@ -319,14 +319,14 @@ class Object_Builder_Array
 	 * @param $class_name    string
 	 * @param $array         array
 	 * @param $null_if_empty boolean
-	 * @param $parent        object The parent object (set it only if property is a @component)
+	 * @param $composite     object The composite object (set it only if property is a @component)
 	 * @return object
 	 */
-	private function buildObjectValue($class_name, $array, $null_if_empty, $parent)
+	private function buildObjectValue($class_name, $array, $null_if_empty, $composite)
 	{
-		$builder = new Object_Builder_Array($class_name, $this->from_form, $parent);
+		$builder = new Object_Builder_Array($class_name, $this->from_form, $composite);
 		$object = $builder->build($array, null, $this->null_if_empty_sub_objects || $null_if_empty);
-		if ($object && $parent && isA($class_name, Component::class)) {
+		if ($object && $composite && isA($class_name, Component::class)) {
 			array_pop($builder->built_objects);
 		}
 		$this->built_objects = array_merge($this->built_objects, $builder->built_objects);
@@ -394,8 +394,8 @@ class Object_Builder_Array
 				// object
 				if ($link == Link_Annotation::OBJECT) {
 					$class_name = $property->getType()->asString();
-					$parent_object = $property->getAnnotation('component')->value ? $object : null;
-					$value = $this->buildObjectValue($class_name, $value, $null_if_empty, $parent_object);
+					$composite_object = $property->getAnnotation('component')->value ? $object : null;
+					$value = $this->buildObjectValue($class_name, $value, $null_if_empty, $composite_object);
 				}
 				// collection
 				elseif ($link == Link_Annotation::COLLECTION) {
@@ -648,6 +648,8 @@ class Object_Builder_Array
 	 *   $array
 	 * - if the object is a link class and the link class identifier properties values are set,
 	 *   read the object from the data link
+	 * - if the object is a Component with a knew composite, initializes its composite object to
+	 *   $this->composite
 	 *
 	 * @param $array  array  the source array
 	 * @param $object object the object to complete (if set) or to build (if null)
@@ -673,8 +675,8 @@ class Object_Builder_Array
 				unset($array['id']);
 			}
 		}
-		if ($this->parent && isA($object, Component::class)) {
-			$object->setComposite($this->parent);
+		if ($this->composite && isA($object, Component::class)) {
+			$object->setComposite($this->composite);
 		}
 		return isset($link_search) ? $link_search : null;
 	}
