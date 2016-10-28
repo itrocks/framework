@@ -69,9 +69,9 @@ class Html_Translator implements Registerable
 	{
 		$j = strpos($content, PIPE, $i);
 		if ($j >= $i) {
-			$text = substr($content, $i, $j - $i);
+			$text        = substr($content, $i, $j - $i);
 			$translation = Loc::tr($text, $context);
-			$content = substr($content, 0, $i - 1) . $translation . substr($content, $j + 1);
+			$content     = substr($content, 0, $i - 1) . $translation . substr($content, $j + 1);
 			$i += strlen($translation) - 1;
 		}
 	}

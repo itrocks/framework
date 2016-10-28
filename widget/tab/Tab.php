@@ -182,7 +182,7 @@ class Tab
 	 * Change properties or property names stored into tab into values from the object
 	 *
 	 * @param $object           object
-	 * @param $properties_title string[] key is the property path, value is the property display
+	 * @param $properties_title string[] key is the property path, value is the property display (tr)
 	 * @return Tab
 	 */
 	public function propertiesToValues($object, $properties_title)

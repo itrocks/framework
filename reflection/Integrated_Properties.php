@@ -2,6 +2,7 @@
 namespace SAF\Framework\Reflection;
 
 use SAF\Framework\Builder;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Mapper\Component;
 use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use SAF\Framework\Reflection\Annotation\Property\Integrated_Annotation;
@@ -123,13 +124,14 @@ abstract class Integrated_Properties
 							$sub_property->class, $sub_property->name, $value, false, true
 						);
 						$sub_property->final_class = $sub_properties_class->name;
-						$sub_property->display = $integrated_simple
-							? (
+						$sub_property->display = Loc::tr(
+							$integrated_simple ? (
 								$integrated->has(Integrated_Annotation::ALIAS)
 								? $sub_property->getAnnotation(Alias_Annotation::ANNOTATION)->value
 								: $sub_property_name
 							)
-							: $display;
+							: $display
+						);
 						/** @var $block_annotation List_Annotation */
 						$block_annotation = $sub_property->setAnnotationLocal(Annotation::BLOCK);
 						foreach ($blocks as $block) {

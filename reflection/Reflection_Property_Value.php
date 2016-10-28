@@ -1,6 +1,7 @@
 <?php
 namespace SAF\Framework\Reflection;
 
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Tools\Contextual_Callable;
 use SAF\Framework\Tools\Names;
@@ -16,6 +17,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * What will be displayed by the display() function
 	 *
 	 * Keep this null to calculate automatically, fill this only to force display
+	 * The display stored here must already be translated
 	 *
 	 * @var string|null
 	 */
@@ -115,7 +117,7 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 	{
 		return $this->display
 			? $this->display
-			: Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias);
+			: Loc::tr(Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias));
 	}
 
 	//---------------------------------------------------------------------------------------- format

@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\Widget\Output_Setting;
 
-use SAF\Framework\Locale\Loc;
 use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
 use SAF\Framework\Reflection\Reflection_Property_Value;
 use SAF\Framework\Tools\Can_Be_Empty;
@@ -14,6 +13,8 @@ class Property implements Can_Be_Empty
 
 	//-------------------------------------------------------------------------------------- $display
 	/**
+	 * Display must be stored already translated
+	 *
 	 * @var string
 	 */
 	public $display;
@@ -50,7 +51,7 @@ class Property implements Can_Be_Empty
 	{
 		if (isset($class_name) && isset($property_path)) {
 			$property         = new Reflection_Property_Value($class_name, $property_path);
-			$this->display    = Loc::tr($property->display());
+			$this->display    = $property->display();
 			$this->path       = $property->path;
 			$user_annotation  = $property->getListAnnotation(User_Annotation::ANNOTATION);
 			$this->hide_empty = $user_annotation->has(User_Annotation::HIDE_EMPTY);

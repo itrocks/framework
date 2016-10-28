@@ -12,12 +12,29 @@ class Parameter
 {
 
 	//-------------------------------------------------------------- Some general parameter constants
-	const AS_WIDGET            = 'as_widget';
-	const CONTAINER            = 'container';
+
+	//------------------------------------------------------------------------------------- AS_WIDGET
+	const AS_WIDGET = 'as_widget';
+
+	//------------------------------------------------------------------------------------- CONTAINER
+	const CONTAINER = 'container';
+
+	//-------------------------------------------------------------------------- EXPAND_PROPERTY_PATH
 	const EXPAND_PROPERTY_PATH = 'expand_property_path';
-	const IS_INCLUDED          = 'is_included';
-	const PROPERTIES_FILTER    = 'properties_filter';
-	const PROPERTIES_PREFIX    = 'properties_prefix';
-	const PROPERTIES_TITLE     = 'properties_title';
+
+	//----------------------------------------------------------------------------------- IS_INCLUDED
+	const IS_INCLUDED = 'is_included';
+
+	//----------------------------------------------------------------------------- PROPERTIES_FILTER
+	const PROPERTIES_FILTER = 'properties_filter';
+
+	//----------------------------------------------------------------------------- PROPERTIES_PREFIX
+	const PROPERTIES_PREFIX = 'properties_prefix';
+
+	//------------------------------------------------------------------------------ PROPERTIES_TITLE
+	/**
+	 * Note : properties titles must always be stored translated
+	 */
+	const PROPERTIES_TITLE = 'properties_title';
 
 }

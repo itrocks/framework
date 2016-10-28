@@ -367,7 +367,7 @@ class Functions
 				$property->path       = $expand_property_path . DOT . $property->path;
 				$property->root_class = null;
 				if (($property instanceof Reflection_Property_Value) && !$property->display) {
-					$property->display = rLastParse($property->aliased_path, DOT . DOT, 1, true);
+					$property->display = Loc::tr(rLastParse($property->aliased_path, DOT . DOT, 1, true));
 				}
 			}
 		}
