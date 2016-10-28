@@ -39,9 +39,26 @@ class Translator
 
 	//----------------------------------------------------------------------------- chooseTranslation
 	/**
-	 * @param $translations string[]
-	 * @param $context      string
-	 * @return string
+	 * Chooses the translation which context matches the most acutely the given context
+	 *
+	 * Translations context can be class, interface, trait names.
+	 * $context argument will be a business class name.
+	 *
+	 * @example
+	 * $translations = [
+	 *   ''                                    => 'default user translation',
+	 *   SAF\Framework\User::class             => 'user translation',
+	 *   SAF\Framework\User\Account::class     => 'account user translation',
+	 *   SAF\Framework\Traits\Has_Email::class => 'has email translation'
+	 * ]
+	 * Where class Use uses trait Account and Account uses trait Has_Email.
+	 * $context = SAF\Framework\User::class            => returns 'user translation'
+	 * $context = SAF\Framework\Email\Recipient::class => returns 'has email translation'
+	 * $context = SAF\Framework\Anything_Else::class   => returns 'default user translation'
+	 *
+	 * @param $translations string[] All translations of the same word : [$context => $translation]
+	 * @param $context      string The context we want to translate from
+	 * @return string The chosen translation
 	 */
 	private function chooseTranslation($translations, $context)
 	{
