@@ -128,7 +128,7 @@ class Functions
 	/**
 	 * Returns an HTML edit widget for current property or List_Data property
 	 *
-	 * @param $template          Template
+	 * @param $template           Template
 	 * @param $name               string
 	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
 	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
@@ -143,7 +143,7 @@ class Functions
 		$object = reset($template->objects);
 		// find the first next object
 		if (!($object instanceof Reflection_Property)) {
-			$object = next($template->objects);
+			$object        = next($template->objects);
 			$property_name = reset($template->var_names);
 			while (($object !== false) && !is_object($object)) {
 				$object        = next($template->objects);
@@ -151,84 +151,154 @@ class Functions
 			}
 		}
 		if ($object instanceof Default_List_Data) {
-			$class_name = $object->element_class_name;
-			$property_name = prev($template->var_names);
-			list($property, $property_path, $value) = $this->toEditPropertyExtra(
-				$class_name, $property_name
+			return $this->getEditDefaultListData(
+				$object, $template, $name, $ignore_user, $can_always_be_null
 			);
-			$property_edit = new Html_Builder_Property($property, $value);
-			$property_edit->conditions = [];
-			$property_edit->name = $name ?: $property_path;
-			$property_edit->preprop = null;
-			if ($ignore_user) {
-				$property_edit->readonly = false;
-			}
-			if ($can_always_be_null) {
-				$property_edit->null = true;
-			}
-			return $property_edit->build();
 		}
 		if ($object instanceof Reflection_Property_Value) {
-			$property_edit = new Html_Builder_Property($object, $object->value());
-			$property_edit->conditions = [];
-			$property_edit->name = $name ?: $object->path;
-			$property_edit->preprop = null;
-			if ($ignore_user) {
-				$property_edit->readonly = false;
-			}
-			if ($can_always_be_null) {
-				$property_edit->null = true;
-			}
-			return $property_edit->build();
+			return $this->getEditReflectionPropertyValue(
+				$object, $name, $ignore_user, $can_always_be_null
+			);
 		}
 		if ($object instanceof Reflection_Property) {
-			$property_edit = new Html_Builder_Property($object);
-			$property_edit->conditions = [];
-			$property_edit->name = $name ?: $object->path;
-			$property_edit->preprop = null;
-			if ($ignore_user) {
-				$property_edit->readonly = false;
-			}
-			return $property_edit->build();
+			return $this->getEditReflectionProperty($object, $name, $ignore_user);
 		}
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
 			$property = new Reflection_Property(get_class($object), $property_name);
 			if (isset($property)) {
-				if ($template->preprops && !$name) {
-					$preprop = isset($preprop)
-						? ($preprop . '[' . reset($template->preprops) . ']')
-						: reset($template->preprops);
-					while ($next = next($template->preprops)) {
-						if ((strpos($next, BS) !== false) && class_exists($next)) {
-							$next = Names::classToDisplay($next);
-						}
-						else {
-							$next = str_replace(DOT, '>', $next);
-						}
-						$preprop .= '[' . $next . ']';
-					}
-					$property_edit = new Html_Builder_Property(
-						$property, $property->getValue($object), $preprop
-					);
-				}
-				else {
-					$property_edit = new Html_Builder_Property($property, $property->getValue($object));
-					$property_edit->name = $name ?: $property_name;
-				}
-				$property_edit->conditions = [];
-				if ($can_always_be_null) {
-					$property_edit->null = true;
-				}
-				if ($ignore_user) {
-					$property_edit->readonly = false;
-				}
-				return $property_edit->build();
+				return $this->getEditObjectProperty(
+					$object, $property_name, $property, $template, $name, $ignore_user, $can_always_be_null
+				);
 			}
 		}
 		// default html input widget
 		$input = new Input();
 		$input->setAttribute('name', reset($template->objects));
 		return $input;
+	}
+
+	//------------------------------------------------------------------------ getEditDefaultListData
+	/**
+	 * Returns an HTML edit widget for current List_Data property
+	 *
+	 * @param $object             Default_List_Data
+	 * @param $template           Template
+	 * @param $name               string
+	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
+	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
+	 * @return string
+	 */
+	protected function getEditDefaultListData(
+		Default_List_Data $object, Template $template, $name, $ignore_user, $can_always_be_null
+	) {
+		$class_name    = $object->element_class_name;
+		$property_name = prev($template->var_names);
+		list($property, $property_path, $value) = $this->toEditPropertyExtra(
+			$class_name, $property_name
+		);
+		$property_edit             = new Html_Builder_Property($property, $value);
+		$property_edit->conditions = [];
+		$property_edit->name       = $name ?: $property_path;
+		$property_edit->preprop    = null;
+		if ($ignore_user) {
+			$property_edit->readonly = false;
+		}
+		if ($can_always_be_null) {
+			$property_edit->null = true;
+		}
+		return $property_edit->build();
+	}
+
+	//------------------------------------------------------------------------- getEditObjectProperty
+	/**
+	 * @param $object             object
+	 * @param $property_name      string
+	 * @param $property           Reflection_Property
+	 * @param $template           Template
+	 * @param $name               string
+	 * @param $ignore_user        boolean
+	 * @param $can_always_be_null boolean
+	 * @return string
+	 */
+	protected function getEditObjectProperty(
+		$object, $property_name, Reflection_Property $property, Template $template, $name, $ignore_user,
+		$can_always_be_null
+	) {
+		if ($template->preprops && !$name) {
+			$prefix = isset($prefix)
+				? ($prefix . '[' . reset($template->preprops) . ']')
+				: reset($template->preprops);
+			while ($next = next($template->preprops)) {
+				if ((strpos($next, BS) !== false) && class_exists($next)) {
+					$next = Names::classToDisplay($next);
+				}
+				else {
+					$next = str_replace(DOT, '>', $next);
+				}
+				$prefix .= '[' . $next . ']';
+			}
+			$property_edit = new Html_Builder_Property($property, $property->getValue($object), $prefix);
+		}
+		else {
+			$property_edit       = new Html_Builder_Property($property, $property->getValue($object));
+			$property_edit->name = $name ?: $property_name;
+		}
+		$property_edit->conditions = [];
+		if ($can_always_be_null) {
+			$property_edit->null = true;
+		}
+		if ($ignore_user) {
+			$property_edit->readonly = false;
+		}
+		return $property_edit->build();
+	}
+
+	//--------------------------------------------------------------------- getEditReflectionProperty
+	/**
+	 * Returns an HTML edit widget for current Reflection_Property object
+	 *
+	 * @param $object      Reflection_Property
+	 * @param $name        string
+	 * @param $ignore_user boolean ignore @user annotation, to disable invisible and read-only
+	 * @return string
+	 */
+	protected function getEditReflectionProperty(Reflection_Property $object, $name, $ignore_user)
+	{
+		$property_edit             = new Html_Builder_Property($object);
+		$property_edit->conditions = [];
+		$property_edit->name       = $name ?: $object->path;
+		$property_edit->preprop    = null;
+		if ($ignore_user) {
+			$property_edit->readonly = false;
+		}
+		// TODO LOW validate that we do not need $can_always_be_null here
+		return $property_edit->build();
+	}
+
+	//---------------------------------------------------------------- getEditReflectionPropertyValue
+	/**
+	 * Returns an HTML edit widget for current Reflection_Property_Value object
+	 *
+	 * @param $object             Reflection_Property_Value
+	 * @param $name               string
+	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
+	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
+	 * @return string
+	 */
+	protected function getEditReflectionPropertyValue(
+		Reflection_Property_Value $object, $name, $ignore_user, $can_always_be_null
+	) {
+		$property_edit             = new Html_Builder_Property($object, $object->value());
+		$property_edit->conditions = [];
+		$property_edit->name       = $name ?: $object->path;
+		$property_edit->preprop    = null;
+		if ($ignore_user) {
+			$property_edit->readonly = false;
+		}
+		if ($can_always_be_null) {
+			$property_edit->null = true;
+		}
+		return $property_edit->build();
 	}
 
 	//-------------------------------------------------------------------------------------- getEmpty
@@ -294,7 +364,7 @@ class Functions
 		$result = $expanded ? $expanded : [$property];
 		if ($expand_property_path = $template->getParameter(Parameter::EXPAND_PROPERTY_PATH)) {
 			foreach ($result as $property) {
-				$property->path = $expand_property_path . DOT . $property->path;
+				$property->path       = $expand_property_path . DOT . $property->path;
 				$property->root_class = null;
 				if (($property instanceof Reflection_Property_Value) && !$property->display) {
 					$property->display = rLastParse($property->aliased_path, DOT . DOT, 1, true);
@@ -336,7 +406,7 @@ class Functions
 	//---------------------------------------------------------------------------------------- getHas
 	/**
 	 * Returns true if the element is not empty
-	 * (usefull for conditions on arrays)
+	 * (useful for conditions on arrays)
 	 *
 	 * @param $template Template
 	 * @return boolean
@@ -427,7 +497,7 @@ class Functions
 	 * Returns a value with application of current locales
 	 *
 	 * @param $template Template
-	 * @return object
+	 * @return mixed
 	 */
 	public function getLoc(Template $template)
 	{
@@ -490,7 +560,7 @@ class Functions
 
 	//------------------------------------------------------------------------------------- getObject
 	/**
-	 * Returns nearest object from templating tree
+	 * Returns nearest object from template objects stack
 	 *
 	 * After this call, current($template->var_names) will give you the var name of the object
 	 *
@@ -563,7 +633,9 @@ class Functions
 			}
 		}
 
-		return Replaces_Annotations::removeReplacedProperties($result_properties);
+		/** @var $result_properties Reflection_Property_Value[] */
+		$result_properties = Replaces_Annotations::removeReplacedProperties($result_properties);
+		return $result_properties;
 	}
 
 	//------------------------------------------------------------------------ getPropertiesOutOfTabs
@@ -589,7 +661,7 @@ class Functions
 	 * @param $property Reflection_Property
 	 * @return array[]
 	 */
-	private function getPropertyBlocks(Reflection_Property $property)
+	protected function getPropertyBlocks(Reflection_Property $property)
 	{
 		$blocks = [];
 		$integrated = $property->getListAnnotation(Integrated_Annotation::ANNOTATION);
@@ -636,7 +708,7 @@ class Functions
 
 	//---------------------------------------------------------------------------------- getRootClass
 	/**
-	 * Returns root class from templating tree
+	 * Returns root class from template objects stack
 	 *
 	 * @param $template Template
 	 * @return object
@@ -654,7 +726,7 @@ class Functions
 
 	//--------------------------------------------------------------------------------- getRootObject
 	/**
-	 * Returns root object from templating tree
+	 * Returns root object from template objects stack
 	 *
 	 * @param $template Template
 	 * @return object
@@ -730,7 +802,7 @@ class Functions
 	public function getStoppingBlocks(Template $template)
 	{
 		if ($this->inside_blocks) {
-			$array_of = null;
+			$array_of         = null;
 			$starting_objects = $template->objects;
 			foreach ($template->objects as $object_key => $object) {
 				if ($object instanceof Reflection_Property) {
@@ -743,7 +815,7 @@ class Functions
 						$array_of = null;
 					}
 					else {
-						$properties = $object;
+						$properties    = $object;
 						$next_property = false;
 						foreach ($properties as $property) {
 							if ($property->path === $array_of->path) {
@@ -788,7 +860,7 @@ class Functions
 
 	//--------------------------------------------------------------------------------------- getVoid
 	/**
-	 * Returns true if the object is void ie if its strval() has no length
+	 * Returns true if the object is void ie if its string value has no length
 	 *
 	 * A value is void if :
 	 * - null
@@ -851,20 +923,20 @@ class Functions
 	 * @param $property   Reflection_Property_Value|Reflection_Property|string
 	 * @return mixed[] Reflection_Property $property, string $property path, mixed $value
 	 */
-	private function toEditPropertyExtra($class_name, $property)
+	protected function toEditPropertyExtra($class_name, $property)
 	{
 		if ($property instanceof Reflection_Property_Value) {
 			$property_path = $property->path;
-			$value = $property->value();
+			$value         = $property->value();
 		}
 		elseif ($property instanceof Reflection_Property) {
 			$property_path = $property->name;
-			$value = '';
+			$value         = '';
 		}
 		else {
 			$property_path = $property;
-			$value = '';
-			$property = new Reflection_Property($class_name, $property);
+			$value         = '';
+			$property      = new Reflection_Property($class_name, $property);
 		}
 		return [$property, $property_path, $value];
 	}
