@@ -20,20 +20,6 @@ use SAF\Framework\Reflection\Reflection_Property_Value;
 class Translation_String_Composer implements Registerable
 {
 
-	//----------------------------------------------------------- afterReflectionPropertyValueDisplay
-	/**
-	 * This patch changes HTML properties displays from a.property.display
-	 * to ¦a¦.¦property¦.¦display¦ to minimize needed translations.
-	 *
-	 * @param $result string
-	 */
-	public function afterReflectionPropertyValueDisplay(&$result)
-	{
-		if (strpos($result, DOT) !== false) {
-			$result = '¦' . str_replace(DOT, '¦.¦', $result) . '¦';
-		}
-	}
-
 	//----------------------------------------------------------------------------------- onTranslate
 	/**
 	 * @param $object    Translator
@@ -87,15 +73,7 @@ class Translation_String_Composer implements Registerable
 	 */
 	public function register(Register $register)
 	{
-		$aop = $register->aop;
-		$aop->aroundMethod(
-			[Translator::class, 'translate'],
-			[$this, 'onTranslate']
-		);
-		$aop->afterMethod(
-			[Reflection_Property_Value::class, 'display'],
-			[$this, 'afterReflectionPropertyValueDisplay']
-		);
+		$register->aop->aroundMethod([Translator::class, 'translate'], [$this, 'onTranslate']);
 	}
 
 }

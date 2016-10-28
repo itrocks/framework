@@ -40,7 +40,7 @@ class Property implements Can_Be_Empty
 	{
 		if (isset($class_name) && isset($property_path)) {
 			$property      = new Reflection_Property_Value($class_name, $property_path);
-			$this->display = $this->tr($property->display());
+			$this->display = $property->display();
 			$this->path    = $property->path;
 		}
 	}

@@ -111,6 +111,8 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 
 	//--------------------------------------------------------------------------------------- display
 	/**
+	 * Returns the reflection property name display, translated
+	 *
 	 * @return string
 	 */
 	public function display()
