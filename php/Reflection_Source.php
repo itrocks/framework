@@ -828,7 +828,11 @@ class Reflection_Source
 				$file_name = 'cache/compiled/' . str_replace(SL, '-', substr($file_name, 0, -4));
 			}
 			if (!file_exists($file_name)) {
-				$file_name = strtolower(substr($file_name, 0, -4)) . SL . rLastParse($file_name, SL);
+				$file_name = strtolower(substr($file_name, 0, -4))
+					. SL . rLastParse($file_name, SL, 1, true);
+				if (!file_exists($file_name)) {
+					$file_name = null;
+				}
 			}
 			$result = new Reflection_Source($file_name, $class_name);
 		}
