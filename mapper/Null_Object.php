@@ -3,6 +3,7 @@ namespace SAF\Framework\Mapper;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Reflection\Reflection_Class;
+use SAF\Framework\Tools\Date_Time;
 
 /**
  * A null object is an object which all properties have a null value
@@ -68,7 +69,8 @@ abstract class Null_Object
 			if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
 				$value = $property->getValue($object);
 				if (
-					(is_object($value) && !self::isNull($value))
+					(($value instanceof Date_Time) && !$value->isEmpty())
+					|| (is_object($value) && !self::isNull($value))
 					|| (!is_object($value) && !is_null($value))
 				) {
 					$is_null = false;
