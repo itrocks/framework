@@ -209,7 +209,7 @@ class Loc implements Registerable
 	 *
 	 * @return string|null
 	 */
-	private static function getContext()
+	public static function getContext()
 	{
 		$context = end(self::$contexts_stack);
 		while ($context && is_a($context, Reflector::class, true)) {

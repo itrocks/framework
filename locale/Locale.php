@@ -2,6 +2,7 @@
 namespace SAF\Framework;
 
 use SAF\Framework\Locale\Date_Format;
+use SAF\Framework\Locale\Loc;
 use SAF\Framework\Locale\Number_Format;
 use SAF\Framework\Locale\Translator;
 use SAF\Framework\Plugin\Configurable;
@@ -218,7 +219,8 @@ class Locale implements Configurable
 				return $this->number_format->integerToLocale($value);
 			}
 		}
-		return $value;
+		$context = $type->isClass() ? $type->getElementTypeAsString() : Loc::getContext();
+		return $this->translations->translate($value, $context);
 	}
 
 }
