@@ -177,18 +177,18 @@ class Html_Template extends Template
 					? $property->value()
 					: parent::parseSingleValue($property_name, false);
 				if (
-					($preprop = lLastParse($property->pathAsField(), '[', 1, false))
+					($prefix = lLastParse($property->pathAsField(), '[', 1, false))
 					&& (
 						!isset($this->cache[self::PARSED_ID])
 						|| !isset($this->cache[self::PARSED_ID][$this->getFormId()])
-						|| !isset($this->cache[self::PARSED_ID][$this->getFormId()][$preprop])
+						|| !isset($this->cache[self::PARSED_ID][$this->getFormId()][$prefix])
 					)
 				) {
-					$this->cache[self::PARSED_ID][$this->getFormId()][$preprop] = true;
+					$this->cache[self::PARSED_ID][$this->getFormId()][$prefix] = true;
 					if ($property instanceof Reflection_Property_Value) {
 						$parent_object = $property->getObject();
 						$id       = isset($parent_object) ? Dao::getObjectIdentifier($parent_object) : null;
-						$html_builder_type = new Html_Builder_Type('id', null, $id, $preprop);
+						$html_builder_type = new Html_Builder_Type('id', null, $id, $prefix);
 						$id_value = $html_builder_type->setTemplate($this)->build();
 					}
 					else {
