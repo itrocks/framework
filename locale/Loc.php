@@ -35,6 +35,14 @@ class Loc implements Registerable
 	/**
 	 * Current context stack for translations
 	 *
+	 * This contains class names only
+	 * The last pushed class name is the current context
+	 * The others class names are here for recursion
+	 *
+	 * Typical Classes that are treated well for now :
+	 * - business classes are returned by getContext() as being the current context
+	 * - reflection classes (that implement Reflector) are stacked but ignored by getContext()
+	 *
 	 * @var string[]
 	 */
 	public static $contexts_stack = [];
