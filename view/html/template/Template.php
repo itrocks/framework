@@ -14,7 +14,7 @@ use SAF\Framework\Tools\Contextual_Callable;
 use SAF\Framework\Tools\Names;
 use SAF\Framework\Tools\Namespaces;
 use SAF\Framework\Tools\Paths;
-use SAF\Framework\Tools\String_Translated;
+use SAF\Framework\Tools\String_Class;
 use SAF\Framework\View\Html;
 use SAF\Framework\View\Html\Template\Functions;
 use SAF\Framework\View\Html\Template\Loop;
@@ -1447,7 +1447,7 @@ class Template
 	 */
 	protected function parseString($string, $property_name)
 	{
-		$string = new String_Translated($string);
+		$string = new String_Class($string);
 		if (method_exists($string, $property_name)) {
 			return $this->parseStringMethod($string, $property_name);
 		}
