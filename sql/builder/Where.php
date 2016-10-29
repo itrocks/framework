@@ -97,8 +97,11 @@ class Where
 			}
 			return $sql;
 		}
-		$sql = is_null($this->where_array)
-			? '' : $this->buildPath('id', $this->where_array, 'AND', true);
+		$sql = ($this->where_array === false)
+			? 'FALSE'
+			: (
+				is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND', true)
+			);
 		return $sql ? (LF . 'WHERE ' . $sql) : $sql;
 	}
 

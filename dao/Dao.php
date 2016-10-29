@@ -165,11 +165,22 @@ class Dao implements Configurable
 
 	//-------------------------------------------------------------------------------------- distinct
 	/**
-	 * Gets a DAO distinct, option used to return only distinct (different) values
+	 * Gets a DAO distinct option, used to return only distinct (different) values
 	 */
 	public static function distinct()
 	{
 		return new Option\Distinct();
+	}
+
+	//------------------------------------------------------------------------------------ doublePass
+	/**
+	 * Gets as DAO double-pass option, used to enable double-pass optimization on read queries
+	 *
+	 * @return Option\Double_Pass
+	 */
+	public static function doublePass()
+	{
+		return new Option\Double_Pass();
 	}
 
 	//--------------------------------------------------------------------------------------- exclude

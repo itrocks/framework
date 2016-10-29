@@ -183,7 +183,7 @@ class Select
 	 *        query result
 	 * @param $link       Link If not set, the default link will be Dao::current()
 	 */
-	public function __construct($class_name = null, $columns = null, Link $link = null)
+	public function __construct($class_name = null, array $columns = null, Link $link = null)
 	{
 		$this->link       = $link ?: Dao::current();
 		$this->class_name = $class_name;
@@ -401,9 +401,9 @@ class Select
 
 	//---------------------------------------------------------------------------------- prepareQuery
 	/**
-	 * @param $filter_object object|array source object for filter, set properties will be used for
-	 *                       search. Can be an array associating properties names to corresponding
-	 *                       search value too.
+	 * @param $filter_object object|array|false source object for filter, set properties will be used
+	 *        for search. Can be an array associating properties names to matching search value too.
+	 *        Special values : null for no filter, false to get no result.
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return string
 	 */

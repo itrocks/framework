@@ -876,7 +876,7 @@ class Link extends Dao\Sql\Link
 	 * @param $class_name string if set, the result will be object[] with read data
 	 * @param $result mixed The result set associated to the data link, if $class_name is constant
 	 *        Call $query with $result = true to store the result set into $result
-	 * @return mixed depends on $class_name specific constants used
+	 * @return mixed|mysqli_result depends on $class_name specific constants used
 	 */
 	public function query($query, $class_name = null, &$result = null)
 	{

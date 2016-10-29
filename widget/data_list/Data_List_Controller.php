@@ -570,15 +570,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 
-		$options = [$list_settings->sort];
+		$options = [$list_settings->sort, Dao::doublePass()];
 		if ($count) {
 			$options[] = $count;
 		}
 		if ($list_settings->maximum_displayed_lines_count) {
 			$limit = new Limit(
 				$list_settings->start_display_line_number,
-				$list_settings->maximum_displayed_lines_count,
-				true
+				$list_settings->maximum_displayed_lines_count
 			);
 			$options[] = $limit;
 		}

@@ -214,11 +214,17 @@ abstract class Link extends Identifier_Map implements Transactional
 		if (!isset($list)) {
 			$list = $this->selectList($object_class, $properties);
 		}
-		if (isset($double_pass)) {
+		if ($double_pass) {
 			$filter_object = $this->selectFirstPass($object_class, $filter_object, $options);
 		}
-		$select     = new Select($object_class, $properties, $this);
-		$query      = $select->prepareQuery($filter_object, $options);
+		if (!$double_pass || ($double_pass && $filter_object)) {
+			$select = new Select($object_class, $properties, $this);
+			$query  = $select->prepareQuery($filter_object, $options);
+		}
+		else {
+			$select = new Select($object_class, [], $this);
+			$query  = $select->prepareQuery(false);
+		}
 		$result_set = $this->query($query);
 		if (isset($options) && !isset($double_pass)) {
 			$this->getRowsCount('SELECT', $options, $result_set);
@@ -285,7 +291,7 @@ abstract class Link extends Identifier_Map implements Transactional
 		$double_pass = null;
 		$list        = null;
 		foreach ($options as $option) {
-			if (($option instanceof Option\Limit) && $option->double_pass) {
+			if ($option instanceof Option\Double_Pass) {
 				foreach ($columns as $column) {
 					if (strpos($column, DOT)) {
 						$double_pass = true;
