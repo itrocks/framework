@@ -5,7 +5,7 @@ use SAF\Framework\Sql\Builder;
 use SAF\Framework\Sql\Value;
 
 /**
- * A Dao select function applies only to returned columns : it changes the value of a column
+ * A Dao select function applies only to returned columns : it changes the value of a read column
  */
 abstract class Column implements Dao_Function
 {
