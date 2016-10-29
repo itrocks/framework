@@ -4,6 +4,10 @@ const _PRE = '</pre>';
 
 const AS_ARRAY = 'AS_ARRAY';
 
+const AS_VALUE = 'AS_VALUE';
+
+const AS_VALUES = 'AS_VALUES';
+
 const AT = '@';
 
 const BQ = '`';

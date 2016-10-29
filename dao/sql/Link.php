@@ -140,12 +140,12 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * Sql_Link inherited classes must implement getting rows count only into this method
 	 *
-	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 * @param $clause     string The SQL query was starting with this clause
 	 * @param $options    Option|Option[] If set, will set the result into Dao_Count_Option::$count
+	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 * @return integer will return null if $options is set but contains no Dao_Count_Option
 	 */
-	public abstract function getRowsCount($result_set, $clause, $options = []);
+	public abstract function getRowsCount($clause, $options = [], $result_set = null);
 
 	//----------------------------------------------------------------------------------------- query
 	/**
@@ -153,9 +153,10 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $query      string
 	 * @param $class_name string if set, the result will be object[] with read data
-	 * @return integer|object[]
+	 * @param $result_set mixed The result set associated to the data link, if $class_name is constant
+	 * @return mixed depends on $class_name specific constants used
 	 */
-	abstract public function query($query, $class_name = null);
+	abstract public function query($query, $class_name = null, &$result_set = null);
 
 	//---------------------------------------------------------------------------------- readProperty
 	/**
@@ -189,42 +190,114 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $object_class  string class for the read object
-	 * @param $columns       string[]|Column[] the list of the columns names : only those properties
-	 *        will be read. You can use 'column.sub_column' to get values from linked objects from the
-	 *        same data source. You can use Dao\Func\Column sub-classes to get result of functions.
+	 * @param $properties    string[]|string|Column[] the list of property paths : only those
+	 *        properties will be read. You can use Dao\Func\Column sub-classes to get result of
+	 *        functions.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *        search. Can be an array associating properties names to corresponding search value too.
 	 * @param $options Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
 	 *         the same order than columns.
 	 */
-	public function select($object_class, $columns, $filter_object = null, $options = [])
+	public function select($object_class, $properties, $filter_object = null, $options = [])
 	{
-		if (!is_array($options)) {
-			$options = $options ? [$options] : [];
-		}
 		if (is_string($object_class)) {
 			$object_class = Builder::className($object_class);
 		}
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
+		if (!is_array($properties)) {
+			$properties = $properties ? [$properties] : [];
+		}
+		list($double_pass, $list) = $this->selectOptions($options, $properties);
+		if (!isset($list)) {
+			$list = $this->selectList($object_class, $properties);
+		}
+		if (isset($double_pass)) {
+			$filter_object = $this->selectFirstPass($object_class, $filter_object, $options);
+		}
+		$select     = new Select($object_class, $properties, $this);
+		$query      = $select->prepareQuery($filter_object, $options);
+		$result_set = $this->query($query);
+		if (isset($options) && !isset($double_pass)) {
+			$this->getRowsCount('SELECT', $options, $result_set);
+		}
+		return $select->fetchResultRows($result_set, $list);
+	}
+
+	//------------------------------------------------------------------------------- selectFirstPass
+	/**
+	 * @param $object_class  string class for the read object
+	 * @param $filter_object object|array source object for filter, set properties will be used for
+	 *        search. Can be an array associating properties names to corresponding search value too.
+	 * @param $options Option[] some options for advanced search
+	 * @return array An array of read objects identifiers
+	 */
+	private function selectFirstPass($object_class, $filter_object, array &$options)
+	{
+		$select = new Select($object_class, [], $this);
+		$query = $select->prepareQuery($filter_object, $options);
+		$result_set = true;
+		$read_lines_filter = $this->query($query, AS_VALUES, $result_set);
+		if ($options && $result_set) {
+			$this->getRowsCount('SELECT', $options, $result_set);
+			$this->free($result_set);
+			foreach ($options as $key => $option) {
+				if ($option instanceof Option\Limit) {
+					unset($options[$key]);
+				}
+				elseif ($option instanceof Option\Count) {
+					unset($options[$key]);
+				}
+			}
+		}
+		return $read_lines_filter;
+	}
+
+	//------------------------------------------------------------------------------------ selectList
+	/**
+	 * @param $object_class string class for the read object
+	 * @param $columns      string[]|Column[] the list of the columns names : only those properties
+	 *        will be read. You can use 'column.sub_column' to get values from linked objects from the
+	 *        same data source. You can use Dao\Func\Column sub-classes to get result of functions.
+	 * @return Default_List_Data
+	 */
+	private function selectList($object_class, array $columns)
+	{
+		$properties = [];
+		foreach ($columns as $key => $column) {
+			$properties[] = is_object($column) ? $key : $column;
+		}
+		return new Default_List_Data($object_class, $properties);
+	}
+
+	//--------------------------------------------------------------------------------- selectOptions
+	/**
+	 * @param $options Option[] some options for advanced search
+	 * @param $columns string[]|Column[] the list of the columns names : only those properties
+	 *        will be read. You can use 'column.sub_column' to get values from linked objects from the
+	 *        same data source. You can use Dao\Func\Column sub-classes to get result of functions.
+	 * @return array [$double_pass, $list]
+	 */
+	private function selectOptions(array $options, array $columns)
+	{
+		$double_pass = null;
+		$list        = null;
 		foreach ($options as $option) {
-			if ($option instanceof Option\Array_Result) {
+			if (($option instanceof Option\Limit) && $option->double_pass) {
+				foreach ($columns as $column) {
+					if (strpos($column, DOT)) {
+						$double_pass = true;
+						break;
+					}
+				}
+			}
+			elseif (($option instanceof Option\Array_Result) || ($option === AS_ARRAY)) {
 				$list = [];
 			}
 		}
-		if (!isset($list)) {
-			$properties = [];
-			foreach ($columns as $key => $column) {
-				$properties[] = is_object($column) ? $key : $column;
-			}
-			$list = new Default_List_Data($object_class, $properties);
-		}
-		$select = new Select($object_class, $columns, $this);
-		$query = $select->prepareQuery($filter_object, $options);
-		$result_set = $this->query($query);
-		if (isset($options)) {
-			$this->getRowsCount($result_set, 'SELECT', $options);
-		}
-		return $select->fetchResultRows($result_set, $list);
+		return [$double_pass, $list];
 	}
 
 	//------------------------------------------------------------------------------------ setContext

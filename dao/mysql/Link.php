@@ -577,20 +577,20 @@ class Link extends Dao\Sql\Link
 	 *
 	 * Sql_Link inherited classes must implement getting rows count only into this method
 	 *
-	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 * @param $clause     string The SQL query was starting with this clause
 	 * @param $options    Option|Option[] If set, will set the result into Dao_Count_Option::$count
+	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 * @return integer will return null if $options is set but contains no Dao_Count_Option
 	 */
-	public function getRowsCount($result_set, $clause, $options = [])
+	public function getRowsCount($clause, $options = [], $result_set = null)
 	{
-		if (!is_array($options)) {
-			$options = $options ? [$options] : [];
-		}
-		if ($options) {
+		if ($options && $result_set) {
+			if (!is_array($options)) {
+				$options = $options ? [$options] : [];
+			}
 			foreach ($options as $option) {
 				if ($option instanceof Option\Count) {
-					$option->count = $this->getRowsCount($result_set, 'SELECT');
+					$option->count = $this->getRowsCount($clause);
 					return $option->count;
 				}
 			}
@@ -874,37 +874,31 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $query string
 	 * @param $class_name string if set, the result will be object[] with read data
-	 * @return integer|mysqli_result|object[]
+	 * @param $result mixed The result set associated to the data link, if $class_name is constant
+	 *        Call $query with $result = true to store the result set into $result
+	 * @return mixed depends on $class_name specific constants used
 	 */
-	public function query($query, $class_name = null)
+	public function query($query, $class_name = null, &$result = null)
 	{
+		$get_result = $result;
 		if ($query) {
 			$result = $this->connection->query($query);
 			if (isset($class_name)) {
-				$objects = [];
 				if ($class_name === AS_ARRAY) {
-					while ($element = $result->fetch_assoc()) {
-						if (isset($element['id'])) {
-							$objects[$element['id']] = $element;
-						}
-						else {
-							$objects[] = $element;
-						}
-					}
-					$result->free();
+					$objects = $this->queryFetchAsArray($result);
+				}
+				elseif ($class_name === AS_VALUE) {
+					$objects = $this->queryFetchAsValue($result);
+				}
+				elseif ($class_name === AS_VALUES) {
+					$objects = $this->queryFetchAsValues($result);
 				}
 				else {
-					$class_name = Builder::className($class_name);
-					while ($object = $result->fetch_object($class_name)) {
-						if (isset($object->id)) {
-							$objects[$object->id] = $object;
-						}
-						else {
-							$objects[] = $object;
-						}
-					}
-					$result->free();
+					$objects = $this->queryFetchAsObjects($result, $class_name);
 					$this->afterReadMultiple($objects);
+				}
+				if (!$get_result) {
+					$result->free();
 				}
 			}
 			else {
@@ -914,7 +908,85 @@ class Link extends Dao\Sql\Link
 		else {
 			$objects = null;
 		}
+		if (!$get_result) {
+			$result = null;
+		}
 		return $objects;
+	}
+
+	//----------------------------------------------------------------------------- queryFetchAsArray
+	/**
+	 * @param $result mysqli_result
+	 * @return array [$id|$n => [$key => $value]] each element is an [$key => $value] record array
+	 */
+	private function queryFetchAsArray(mysqli_result $result)
+	{
+		$elements = [];
+		while ($element = $result->fetch_assoc()) {
+			if (isset($element['id'])) {
+				$elements[$element['id']] = $element;
+			}
+			else {
+				$elements[] = $element;
+			}
+		}
+		return $elements;
+	}
+
+	//--------------------------------------------------------------------------- queryFetchAsObjects
+	/**
+	 * @param $result     mysqli_result
+	 * @param $class_name string
+	 * @return object[] [$id|$n => $object] each element is a new instance of class $class_name
+	 */
+	private function queryFetchAsObjects(mysqli_result $result, $class_name)
+	{
+		$objects = [];
+		$class_name = Builder::className($class_name);
+		while ($object = $result->fetch_object($class_name)) {
+			if (isset($object->id)) {
+				$objects[$object->id] = $object;
+			}
+			else {
+				$objects[] = $object;
+			}
+		}
+		return $objects;
+	}
+
+	//----------------------------------------------------------------------------- queryFetchAsValue
+	/**
+	 * TODO not tested : the first value will probably be 'id'. But is the last value right ?
+	 *
+	 * @param $result mysqli_result
+	 * @return mixed the value of the returned column for the first read row
+	 */
+	private function queryFetchAsValue(mysqli_result $result)
+	{
+		$element = $result->fetch_row();
+		return $element ? $element[$result->field_count - 1] : null;
+	}
+
+	//---------------------------------------------------------------------------- queryFetchAsValues
+	/**
+	 * TODO not tested : the first value will probably be 'id'. But is the last value right ?
+	 *
+	 * @param $result mysqli_result
+	 * @return array [$id|$n => $value] each element is the value of the first returned column
+	 */
+	private function queryFetchAsValues(mysqli_result $result)
+	{
+		$column = $result->field_count - 1;
+		$values = [];
+		while ($element = $result->fetch_row()) {
+			if (isset($element['id'])) {
+				$values[$element['id']] = $element[$column];
+			}
+			else {
+				$values[] = $element[$column];
+			}
+		}
+		return $values;
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -978,7 +1050,7 @@ class Link extends Dao\Sql\Link
 		$query = (new Select($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->connection->query($query);
 		if ($options) {
-			$this->getRowsCount($result_set, 'SELECT', $options);
+			$this->getRowsCount('SELECT', $options, $result_set);
 		}
 		$objects = $this->fetchAll($class_name, $options, $result_set);
 		$this->afterReadMultiple($objects, $options);
@@ -1056,7 +1128,7 @@ class Link extends Dao\Sql\Link
 		$this->setContext($builder->getJoins()->getClassNames());
 		$result_set = $this->connection->query($query);
 		if ($options) {
-			$this->getRowsCount($result_set, 'SELECT', $options);
+			$this->getRowsCount('SELECT', $options, $result_set);
 		}
 		$objects = $this->fetchAll($class_name, $options, $result_set);
 		$this->afterReadMultiple($objects, $options);

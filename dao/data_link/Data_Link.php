@@ -3,6 +3,7 @@ namespace SAF\Framework\Dao;
 
 use SAF\Framework\Builder;
 use SAF\Framework\Dao;
+use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Option\Key;
 use SAF\Framework\PHP\Dependency;
 use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
@@ -366,16 +367,15 @@ abstract class Data_Link
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $columns       string[] the list of the columns names : only those properties will be
-	 *        read. You can use 'column.sub_column' to get values from linked objects from the same
-	 *        data source.
+	 * @param $properties    string[]|string|Column[] the list of property paths : only those
+	 *        properties will be read.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *        search. Can be an array associating properties names to corresponding search value too.
 	 * @param $options Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
 	 *         the same order than columns.
 	 */
-	abstract public function select($class, $columns, $filter_object = null, $options = []);
+	abstract public function select($class, $properties, $filter_object = null, $options = []);
 
 	//----------------------------------------------------------------------------------- storeNameOf
 	/**

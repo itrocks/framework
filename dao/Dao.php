@@ -481,9 +481,8 @@ class Dao implements Configurable
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $columns       string[]|Func[] the list of the columns names : only those properties
-	 *                       will be read. You can use 'column.sub_column' to get values from linked
-	 *                       objects from the same data source.
+	 * @param $properties    string[]|string|Func[] the list of the property paths : only those
+	 *                       properties will be read.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *                       search. Can be an array associating properties names to matching
 	 *                       search value too.
@@ -491,9 +490,9 @@ class Dao implements Configurable
 	 * @return List_Data|List_Row[] a list of read records. Each record values (may be objects) are
 	 *         stored in the same order than columns.
 	 */
-	public static function select($class, $columns, $filter_object = null, $options = [])
+	public static function select($class, $properties, $filter_object = null, $options = [])
 	{
-		return self::current()->select($class, $columns, $filter_object, $options);
+		return self::current()->select($class, $properties, $filter_object, $options);
 	}
 
 	//------------------------------------------------------------------------------------------- set

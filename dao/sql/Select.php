@@ -36,7 +36,7 @@ use SAF\Framework\Tools\List_Data;
  * $query = $select->prepareQuery($filter_object, $options);
  * $result_set = $data_link->query($query);
  * if (isset($options)) {
- *   $this->getRowsCount($result_set, 'SELECT', $options);
+ *   $this->getRowsCount('SELECT', $options, $result_set);
  * }
  * return $select->fetchResultRows($result_set, $list);
  *
@@ -46,7 +46,7 @@ use SAF\Framework\Tools\List_Data;
  * $query = $select->prepareQuery($filter_object, $options);
  * $result_set = $data_link->query($query);
  * if (isset($options)) {
- *   $this->getRowsCount($result_set, 'SELECT', $options);
+ *   $this->getRowsCount('SELECT', $options, $result_set);
  * }
  * return $select->fetchResultRows($result_set);
  */

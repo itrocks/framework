@@ -45,7 +45,8 @@ use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
 use SAF\Framework\Widget\Output\Output_Controller;
 
 /**
- * The default list controller is called if no list controller has beed defined for a business object class
+ * The default list controller is called if no list controller has been defined for a business
+ * object class
  */
 class Data_List_Controller extends Output_Controller implements Has_Selection_Buttons
 {
@@ -101,8 +102,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		elseif (isset($parameters['more'])) {
 			$list_settings->maximum_displayed_lines_count = round(min(
-						1000, $list_settings->maximum_displayed_lines_count + $parameters['more']
-					) / 100) * 100;
+				1000, $list_settings->maximum_displayed_lines_count + $parameters['more']
+			) / 100) * 100;
 		}
 		elseif (isset($parameters['move'])) {
 			if ($parameters['move'] == 'down') {
@@ -576,7 +577,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if ($list_settings->maximum_displayed_lines_count) {
 			$limit = new Limit(
 				$list_settings->start_display_line_number,
-				$list_settings->maximum_displayed_lines_count
+				$list_settings->maximum_displayed_lines_count,
+				true
 			);
 			$options[] = $limit;
 		}
@@ -637,7 +639,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	/**
 	 * @param $class_name      string
 	 * @param $properties_path string[] properties path that can include invisible properties
-	 * @param $search          array search where to add Has_History criterions
+	 * @param $search          array search where to add Has_History criteria
 	 * @return string[] properties path without the invisible properties
 	 */
 	public function removeInvisibleProperties($class_name, $properties_path, $search)
@@ -660,7 +662,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if (isset($ignore_invisible_properties)) {
 			foreach ($ignore_invisible_properties as $history_class_name => $history_path) {
 				$property_names = Dao::select(
-					$history_class_name, ['property_name'], [], [Dao::groupBy('property_name')]
+					$history_class_name, 'property_name', null, Dao::groupBy('property_name')
 				)->getRows();
 				foreach ($property_names as $property_name) {
 					$property_name = $property_name->getValue('property_name');
