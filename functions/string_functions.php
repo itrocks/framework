@@ -211,7 +211,7 @@ function strFromUri($uri)
 
 //------------------------------------------------------------------------------------ strHasAccent
 /**
- * Returns true if string has at least one accentued character
+ * Returns true if string has at least one accentuated character
  *
  * @param $str string
  * @return boolean
@@ -261,7 +261,7 @@ function strReplace($search_replace, $subject)
  * no space, no accents, no special characters
  *
  * 1/ accents are replaced with non-accentuated characters
- * 2/ string is lowercased
+ * 2/ string is lower-cased
  * 3/ only a..z, A..Z, 0..9, dot (.,) characters are allowed
  * 4/ not allowed characters are replaced by a joker character, or removed if no joker character is
  *    set
@@ -325,7 +325,9 @@ function strSimplify($str, $extended = false, $joker = null)
  */
 function strUri($str, $joker = null)
 {
-	$uri = strtolower(strSimplify(str_replace([Q, SP], '-', $str), '/-_{}.', $joker));
+	$uri = strtolower(strSimplify(
+		str_replace([DOT, Q, SP, ',', ':', ';'], '-', $str), '/-_{}.', $joker
+	));
 	while (strpos($uri, '--')) {
 		$uri = str_replace('--', '-', $uri);
 	}
