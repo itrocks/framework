@@ -22,10 +22,10 @@ function upgradeMemoryLimit($memory_limit)
 		$old_memory_limit *= $m[$unit];
 	}
 	// upgrade (round to the ceil MB)
-	if ($memory_limit == 0) {
+	if ($memory_limit <= 0) {
 		$memory_limit = -1;
 	}
-	if (($memory_limit > $old_memory_limit) || ($memory_limit == -1)) {
+	if ((($old_memory_limit > 0) && ($memory_limit > $old_memory_limit)) || ($memory_limit == -1)) {
 		ini_set('memory_limit', ceil($memory_limit / 1024 / 1024) . 'M');
 	}
 }
@@ -38,10 +38,10 @@ function upgradeMemoryLimit($memory_limit)
  */
 function upgradeTimeLimit($time_limit)
 {
-	if ($time_limit == -1) {
+	if ($time_limit <= 0) {
 		$time_limit = 0;
 	}
-	if (($time_limit > ini_get('max_execution_time')) || ($time_limit == 0)) {
+	if ((($time_limit > 0) && ($time_limit > ini_get('max_execution_time'))) || ($time_limit == 0)) {
 		ini_set('max_execution_time', $time_limit);
 		set_time_limit($time_limit);
 	}
