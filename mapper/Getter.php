@@ -313,6 +313,25 @@ abstract class Getter
 		return $stored;
 	}
 
+	//---------------------------------------------------------------------------------------- ignore
+	/**
+	 * Changes the state of self::$ignore
+	 *
+	 * @example
+	 * $getter_ignore = Getter::ignore(true);
+	 * // .. do some stuff
+	 * Getter::ignore($getter_ignore);
+	 *
+	 * @param $ignore boolean new state for self::$ignore
+	 * @return boolean old state of self::$ignore
+	 */
+	public static function ignore($ignore)
+	{
+		$result = self::$ignore;
+		self::$ignore = $ignore;
+		return $result;
+	}
+
 	//---------------------------------------------------------------------------------- schemaDecode
 	/**
 	 * @param $stored   array The object stored into an array : [$property_name => $value]
