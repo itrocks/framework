@@ -62,10 +62,16 @@ EOT
 echo '- Create local configuration file ' . $local_file . "\n";
 file_put_contents($local_file, <<<EOT
 <?php
+use SAF\Framework\Configuration;
+use SAF\Framework\Configuration\Environment;
+use SAF\Framework\Dao\Mysql\Link;
+
 \$loc = [
-	'database'    => '$database_name',
-	'environment' => 'development',
-	'login'       => '$user_name'
+	Configuration::class => Environment::DEVELOPMENT,
+	Link::class => [
+		Link::DATABASE => '$database_name',
+		Link::LOGIN    => '$user_name'
+	]
 ];
 
 EOT
