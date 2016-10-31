@@ -112,6 +112,17 @@ class Select
 	 */
 	private $i_to_j;
 
+	//-------------------------------------------------------------------- $ignore_unknown_properties
+	/**
+	 * If false, fetch will generate an error if the array contains data for properties that do not
+	 * exist in object's class.
+	 * With true, you do not generate this error but we ignore unknown properties
+	 * With null, we store unknown properties into the object
+	 *
+	 * @var boolean|null
+	 */
+	public $ignore_unknown_properties = false;
+
 	//------------------------------------------------------------------------------------------ $key
 	/**
 	 * Key property names
@@ -209,6 +220,7 @@ class Select
 	{
 		if ($this->class_name && !($data_store instanceof List_Data)) {
 			$this->object_builder = new Object_Builder_Array($this->class_name, false);
+			$this->object_builder->ignore_unknown_properties = $this->ignore_unknown_properties;
 			$data_store = [];
 		}
 		$first = true;

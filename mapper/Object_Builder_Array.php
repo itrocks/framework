@@ -70,9 +70,11 @@ class Object_Builder_Array
 	//-------------------------------------------------------------------- $ignore_unknown_properties
 	/**
 	 * If false, build() will generate an error if the array contains data for properties that do not
-	 * exist in object's class. With true, you do not generate this error.
+	 * exist in object's class.
+	 * With true, you do not generate this error but we ignore unknown properties
+	 * With null, we store unknown properties into the object
 	 *
-	 * @var boolean
+	 * @var boolean|null
 	 */
 	public $ignore_unknown_properties = false;
 
@@ -449,7 +451,10 @@ class Object_Builder_Array
 			}
 		}
 		elseif (($property_name != 'id') && !isset($property)) {
-			if (!$this->ignore_unknown_properties) {
+			if (is_null($this->ignore_unknown_properties)) {
+				$build->object->$property_name = $value;
+			}
+			elseif (!$this->ignore_unknown_properties) {
 				trigger_error(
 					'Unknown property ' . $this->class->name . '::$' . $property_name, E_USER_ERROR
 				);
