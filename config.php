@@ -81,9 +81,9 @@ $config['SAF/Framework'] = [
 		],
 		Dao::class => [
 			Configuration::CLASS_NAME => Link::class,
-			Link::DATABASE => $loc[Link::DATABASE],
+			Link::DATABASE => $loc[Link::class][Link::DATABASE],
 			Link::HOST     => 'localhost',
-			Link::LOGIN    => $loc[Link::LOGIN],
+			Link::LOGIN    => $loc[Link::class][Link::LOGIN],
 			Link::PASSWORD => $pwd[Link::class],
 		],
 		Html_Translator::class,
@@ -94,7 +94,7 @@ $config['SAF/Framework'] = [
 			Locale::NUMBER   => [
 				Number_Format::DECIMAL_MINIMAL_COUNT => 2,
 				Number_Format::DECIMAL_MAXIMAL_COUNT => 4,
-				Number_Format::DECIMAL_SEPARATOR     => '.',
+				Number_Format::DECIMAL_SEPARATOR     => DOT,
 				Number_Format::THOUSAND_SEPARATOR    => ',',
 			]
 		],
@@ -107,7 +107,7 @@ $config['SAF/Framework'] = [
 	],
 
 	//------------------------------------------------------------------------------- Priority::HIGH+
-	Priority::HIGH => [],
+	Priority::HIGH    => [],
 	Priority::HIGHER  => [],
 	Priority::HIGHEST => [],
 	Priority::REMOVE  => []
