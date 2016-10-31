@@ -4,6 +4,7 @@ namespace SAF\Framework\Tools;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 /**
  * This class extends php's DateTime class : you should use this to be SAF compatible
@@ -208,7 +209,13 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function diff($datetime2, $absolute = false)
 	{
 		$parent_diff = parent::diff($datetime2, $absolute);
-		$interval = new Date_Interval($parent_diff->format('P%yY%mM%dDT%hH%iM%sS'));
+		try {
+			$interval = new Date_Interval($parent_diff->format('P%yY%mM%dDT%hH%iM%sS'));
+		}
+		// patch prefer and empty interval than a crash
+		catch (Exception $exception) {
+			$interval = new Date_Interval('P0M');
+		}
 		$interval->invert = $parent_diff->invert;
 		return $interval;
 	}
