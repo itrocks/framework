@@ -67,7 +67,7 @@ use SAF\Framework\Configuration\Environment;
 use SAF\Framework\Dao\Mysql\Link;
 
 \$loc = [
-	Configuration::class => Environment::DEVELOPMENT,
+	Configuration::ENVIRONMENT => Environment::DEVELOPMENT,
 	Link::class => [
 		Link::DATABASE => '$database_name',
 		Link::LOGIN    => '$user_name'
@@ -116,29 +116,17 @@ file_put_contents($configuration_file, <<<EOT
 <?php
 namespace $namespace;
 
-use SAF\Framework;
 use SAF\Framework\Configuration;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Mysql\Link;
 use SAF\Framework\Plugin\Priority;
 
-global \$loc, \$pwd;
+global \$loc;
 require __DIR__ . '/../../loc.php';
-require __DIR__ . '/../../pwd.php';
 require __DIR__ . '/../../saf/framework/config.php';
 
 \$config['$configuration_name'] = [
 	Configuration::APP         => Application::class,
-	Configuration::ENVIRONMENT => \$loc['environment'],
+	Configuration::ENVIRONMENT => \$loc[Configuration::ENVIRONMENT],
 	Configuration::EXTENDS_APP => 'SAF/Framework',
-
-	Priority::NORMAL => [
-		Dao::class => [
-			Link::DATABASE => \$loc[Link::DATABASE],
-			Link::LOGIN    => \$loc[Link::LOGIN],
-			Link::PASSWORD => \$pwd[Link::class]
-		]
-	]
 ];
 
 EOT
