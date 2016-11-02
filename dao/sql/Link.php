@@ -6,6 +6,8 @@ use SAF\Framework\Dao\Data_Link\Identifier_Map;
 use SAF\Framework\Dao\Data_Link\Transactional;
 use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Option;
+use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
+use SAF\Framework\Reflection\Reflection_Property;
 use SAF\Framework\Tools\Default_List_Data;
 use SAF\Framework\Tools\List_Data;
 
@@ -215,7 +217,7 @@ abstract class Link extends Identifier_Map implements Transactional
 			$list = $this->selectList($object_class, $properties);
 		}
 		if ($double_pass) {
-			$filter_object = $this->selectFirstPass($object_class, $filter_object, $options);
+			$filter_object = $this->selectFirstPass($object_class, $properties, $filter_object, $options);
 		}
 		if (!$double_pass || ($double_pass && $filter_object)) {
 			$select = new Select($object_class, $properties, $this);
@@ -235,14 +237,19 @@ abstract class Link extends Identifier_Map implements Transactional
 	//------------------------------------------------------------------------------- selectFirstPass
 	/**
 	 * @param $object_class  string class for the read object
+	 * @param $properties    string[]|Column[] the list of property paths : only those properties
+	 *        will be read. You can use Dao\Func\Column sub-classes to get result of functions.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
 	 *        search. Can be an array associating properties names to corresponding search value too.
 	 * @param $options Option[] some options for advanced search
 	 * @return array An array of read objects identifiers
 	 */
-	private function selectFirstPass($object_class, $filter_object, array &$options)
-	{
-		$select = new Select($object_class, [], $this);
+	private function selectFirstPass(
+		$object_class, array $properties, $filter_object, array &$options
+	) {
+		$select = new Select(
+			$object_class, $this->selectFirstPassProperties($object_class, $properties, $options), $this
+		);
 		$query = $select->prepareQuery($filter_object, $options);
 		$result_set = true;
 		$read_lines_filter = $this->query($query, AS_VALUES, $result_set);
@@ -259,6 +266,75 @@ abstract class Link extends Identifier_Map implements Transactional
 			}
 		}
 		return $read_lines_filter;
+	}
+
+	//--------------------------------------------------------------------- selectFirstPassProperties
+	/**
+	 * @param $object_class  string class for the read object
+	 * @param $properties    string[]|Column[] the list of property paths : only those properties
+	 *        will be read. You can use Dao\Func\Column sub-classes to get result of functions.
+	 * @param $options Option[] some options for advanced search
+	 * @return string[] path of the properties we keep for the first pass, for correct rows counting
+	 */
+	private function selectFirstPassProperties($object_class, array $properties, array $options)
+	{
+		$result = [];
+		foreach ($options as $option) {
+			if ($option instanceof Option\Group_By) {
+				$result = array_merge($properties, $option->properties);
+			}
+		}
+		if (!$result) {
+			foreach ($properties as $key => $property_path) {
+				if (is_string($key) && !is_string($property_path)) {
+					$property_path = $key;
+				}
+				// $keep_path = the deepest path of a @link Collection|Map property
+				$keep_path = $path = '';
+				foreach (explode(DOT, $property_path) as $property_name) {
+					$path .= ($path ? DOT : '') . $property_name;
+					$link = (new Reflection_Property($object_class, $path))->getAnnotation(
+						Link_Annotation::ANNOTATION
+					);
+					if (in_array($link->value, [Link_Annotation::COLLECTION, Link_Annotation::MAP])) {
+						$keep_path = $path;
+					}
+				}
+				if ($keep_path) {
+					$add = true;
+					// add the path only if is not the start of an already added path
+					$property_path_dot = $property_path . DOT;
+					$length            = strlen($property_path_dot);
+					foreach ($result as $existing_path) {
+						if (substr($existing_path, 0, $length) === $property_path_dot) {
+							$add = false;
+						}
+					}
+					if ($add) {
+						// optimization : get the full path if the last property is not an object
+						if (
+							((substr_count($property_path, DOT) - substr_count($keep_path, DOT)) === 1)
+							&& (isset($link) && !$link->value)
+						) {
+							$result[$property_path] = $property_path;
+						}
+						// get the intermediate path (the entire object will be read, but who cares ?)
+						else {
+							$result[$keep_path] = $keep_path;
+						}
+						// remove all other already added paths that are the start of the path
+						$remove_path = '';
+						foreach (explode(DOT, $keep_path) as $part) {
+							$remove_path .= ($remove_path ? DOT : '') . $part;
+							if (isset($result[$remove_path])) {
+								unset($result[$remove_path]);
+							}
+						}
+					}
+				}
+			}
+		}
+		return $result;
 	}
 
 	//------------------------------------------------------------------------------------ selectList
