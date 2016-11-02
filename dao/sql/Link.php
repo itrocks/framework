@@ -248,19 +248,20 @@ abstract class Link extends Identifier_Map implements Transactional
 		$object_class, array $properties, $filter_object, array &$options
 	) {
 		// select properties with @link Collection|Map : only if Count
+		$select_properties = false;
 		foreach ($options as $option) {
 			if ($option instanceof Option\Count) {
 				$select_properties = true;
 				break;
 			}
 		}
-		$properties = isset($select_properties)
+		$properties = $select_properties
 			? $this->selectFirstPassProperties($object_class, $properties, $options)
 			: [];
 		// first pass
-		$select = new Select($object_class, $properties, $this);
-		$query = $select->prepareQuery($filter_object, $options);
-		$result_set = true;
+		$select            = new Select($object_class, $properties, $this);
+		$query             = $select->prepareQuery($filter_object, $options);
+		$result_set        = true;
 		$read_lines_filter = $this->query($query, AS_VALUES, $result_set);
 		if ($options && $result_set) {
 			$this->getRowsCount('SELECT', $options, $result_set);
@@ -268,7 +269,7 @@ abstract class Link extends Identifier_Map implements Transactional
 			foreach ($options as $key => $option) {
 				// keep Limit if we did not need to keep @link Collection|Map properties for counting
 				// if we do not keep it, we may have more result records than we want
-				if (($option instanceof Option\Limit) && isset($select_properties)) {
+				if (($option instanceof Option\Limit) && $select_properties) {
 					unset($options[$key]);
 				}
 				// the Count option is kept by the originator, but we don't want it for the second pass
