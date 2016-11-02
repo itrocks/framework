@@ -2,6 +2,7 @@
 namespace SAF\Framework\Tools\Tests;
 
 use SAF\Framework\Tests\Test;
+use SAF\Framework\Tools\Date_Interval;
 use SAF\Framework\Tools\Date_Time;
 
 /**
@@ -23,6 +24,19 @@ class Date_Time_Tests extends Test
 		$this->assume('1 minute ago',   $today->add(-1, Date_Time::MINUTE), $one_minute_ago);
 		$this->assume('2 hours after',  $today->add(2,  Date_Time::HOUR),   $two_hours_after);
 		$this->assume('3 years before', $today->add(-3, Date_Time::YEAR),   $three_years_before);
+	}
+
+	//-------------------------------------------------------------------------------------- testDiff
+	public function testDiff()
+	{
+		$yesterday = new Date_Time('2016-11-01 16:11:00');
+		$tomorrow  = new Date_Time('2016-11-03 15:10:49');
+		$check     = 'P1DT22H59M49S';
+		$this->method(__METHOD__);
+		$this->assume('normal',           $yesterday->diff($tomorrow), new Date_Interval($check));
+		$this->assume('reverse',          $tomorrow->diff($yesterday), new Date_Interval($check, true));
+		$this->assume('absolute',         $yesterday->diff($tomorrow), new Date_Interval($check));
+		$this->assume('absolute+reverse', $tomorrow->diff($yesterday), new Date_Interval($check, true));
 	}
 
 	//---------------------------------------------------------------------------------- testEarliest

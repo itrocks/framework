@@ -212,9 +212,14 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		try {
 			$interval = new Date_Interval($parent_diff->format('P%yY%mM%dDT%hH%iM%sS'));
 		}
-		// patch prefer and empty interval than a crash
+		// DateInterval does not support kind of P0Y0M7DT-1H44M37S it generated itself with format() !
+		// So we do it manually if there is a problem
 		catch (Exception $exception) {
-			$interval = new Date_Interval('P0M');
+			$interval = Date_Interval::createFromDuration(
+				$absolute
+					? abs($datetime2->getTimestamp() - $this->getTimestamp())
+					: ($datetime2->getTimestamp() - $this->getTimestamp())
+			);
 		}
 		$interval->invert = $parent_diff->invert;
 		return $interval;
