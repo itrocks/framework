@@ -1,7 +1,6 @@
 <?php
 namespace SAF\Framework\Reflection;
 
-use SAF\Framework\Property;
 use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
 
 /**
@@ -36,10 +35,10 @@ class Link_Class extends Reflection_Class
 	{
 		if (!isset($composite_class_name)) {
 			$composite_object = $this;
-			$link = $composite_object->getAnnotation('link');
+			$link = $composite_object->getAnnotation(Link_Annotation::ANNOTATION);
 			while ($link->value) {
 				$composite_class_name = $link->value;
-				$link = (new Link_Class($composite_class_name))->getAnnotation('link');
+				$link = (new Link_Class($composite_class_name))->getAnnotation(Link_Annotation::ANNOTATION);
 			}
 		}
 		/** @var $composite Reflection_Property[] */
@@ -62,7 +61,7 @@ class Link_Class extends Reflection_Class
 	 */
 	public function getLinkedClassName()
 	{
-		return $this->getAnnotation('link')->value;
+		return $this->getAnnotation(Link_Annotation::ANNOTATION)->value;
 	}
 
 	//--------------------------------------------------------------------------- getLinkedProperties
@@ -87,8 +86,10 @@ class Link_Class extends Reflection_Class
 	public function getLinkProperties()
 	{
 		/** @var $link Link_Annotation */
-		$link = $this->getAnnotation('link');
-		return $link->getLinkProperties();
+		$link = $this->getAnnotation(Link_Annotation::ANNOTATION);
+		/** @var $link_properties Reflection_Property[] */
+		$link_properties = $link->getLinkProperties();
+		return $link_properties;
 	}
 
 	//------------------------------------------------------------------------ getLinkPropertiesNames
@@ -102,7 +103,7 @@ class Link_Class extends Reflection_Class
 	public function getLinkPropertiesNames()
 	{
 		/** @var $link Link_Annotation */
-		$link = $this->getAnnotation('link');
+		$link = $this->getAnnotation(Link_Annotation::ANNOTATION);
 		return array_keys($link->getLinkProperties());
 	}
 
@@ -116,7 +117,7 @@ class Link_Class extends Reflection_Class
 	public function getLinkProperty($class_name = null)
 	{
 		if (!$class_name) {
-			$class_name = $this->getAnnotation('link')->value;
+			$class_name = $this->getAnnotation(Link_Annotation::ANNOTATION)->value;
 		}
 		foreach ($this->getLinkProperties() as $property_name) {
 			$property = $this->getProperty($property_name);
@@ -144,6 +145,41 @@ class Link_Class extends Reflection_Class
 			}
 		}
 		return $properties;
+	}
+
+	//---------------------------------------------------------------------------- getRootLinkedClass
+	/**
+	 * Gets the root linked class, ie of the first parent class that has no @link
+	 *
+	 * This is the same as getLinkedClass(), with recursion.
+	 * Another difference : if the current class is not a @link class, this will return $this.
+	 *
+	 * @return Link_Class
+	 */
+	public function getRootLinkedClass()
+	{
+		$linked_class = $this;
+		do {
+			$linked_class_name = $linked_class->getLinkedClassName();
+			if ($linked_class_name) {
+				$linked_class = new Link_Class($linked_class_name);
+			}
+		} while ($linked_class_name);
+		return $linked_class;
+	}
+
+	//------------------------------------------------------------------------ getRootLinkedClassName
+	/**
+	 * Gets the name of the root linked class, ie of the first parent class that has no @link
+	 *
+	 * This is the same as getLinkedClassName(), with recursion
+	 * Another difference : if the current class is not a @link class, this will return $this->name.
+	 *
+	 * @return string
+	 */
+	public function getRootLinkedClassName()
+	{
+		return $this->getRootLinkedClass()->name;
 	}
 
 	//--------------------------------------------------------------------------- getUniqueProperties
