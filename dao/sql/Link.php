@@ -267,9 +267,9 @@ abstract class Link extends Identifier_Map implements Transactional
 			$this->getRowsCount('SELECT', $options, $result_set);
 			$this->free($result_set);
 			foreach ($options as $key => $option) {
-				// keep Limit if we did not need to keep @link Collection|Map properties for counting
-				// if we do not keep it, we may have more result records than we want
-				if (($option instanceof Option\Limit) && $select_properties) {
+				// keep Limit if we did not need to keep @link Collection|Map property paths for counting
+				// if we remove Limit, we may have more result records than we want in this case
+				if (($option instanceof Option\Limit) && !$properties) {
 					unset($options[$key]);
 				}
 				// the Count option is kept by the originator, but we don't want it for the second pass
