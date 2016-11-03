@@ -330,27 +330,31 @@ class Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
-	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
+	 * @param $filters   string[] the key is the name of the filter, the value is the name of the form
 	 *   element containing its value
+	 * @param $as_string boolean true if the object should be used as a string
 	 * @return string
 	 */
-	public function buildObject($filters = null)
+	public function buildObject($filters = null, $as_string = false)
 	{
 		$class_name = $this->type->asString();
-		// visible input
-		$input = new Input(null, strval($this->value));
+		// visible input ?
+		$input_id = $as_string ? $this->getFieldName() : null;
+		$input = new Input($input_id, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
 		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
 		$input->addClass('autowidth');
-		// id input (SM: should always be output, cause can be used by other properties)
-		$id_input = new Input(
-			$this->getFieldName('id_'), $this->value ? Dao::getObjectIdentifier($this->value) : ''
-		);
-		$id_input->setAttribute('type', 'hidden');
-		$id_input->addClass('id');
+		// id input. Should always be output, except if as_string, cause can be used by other properties
+		if (!$as_string) {
+			$id_input = new Input(
+				$this->getFieldName('id_'), $this->value ? Dao::getObjectIdentifier($this->value) : ''
+			);
+			$id_input->setAttribute('type', 'hidden');
+			$id_input->addClass('id');
+		}
 		if ($this->readonly) {
 			$this->setInputAsReadOnly($input);
-			$id_input->setAttribute('disabled');
+			if (isset($id_input)) $id_input->setAttribute('disabled');
 		}
 		else {
 			if ($filters) {
@@ -383,10 +387,13 @@ class Html_Builder_Type
 			$more = new Button('more');
 			$more->addClass('more');
 			$more->setAttribute('tabindex', -1);
-			$this->setOnChangeAttribute($id_input);
-			return $id_input . $input . $more . $edit;
+			if (isset($id_input))
+				$this->setOnChangeAttribute($id_input);
+			else
+				$this->setOnChangeAttribute($input);
+			return (isset($id_input) ? $id_input : '') . $input . $more . $edit;
 		}
-		return $id_input . $input;
+		return (isset($id_input) ? $id_input : '') . $input;
 	}
 
 	//----------------------------------------------------------------------------------- buildString

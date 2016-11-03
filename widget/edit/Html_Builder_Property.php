@@ -5,6 +5,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -160,9 +161,10 @@ class Html_Builder_Property extends Html_Builder_Type
 	/**
 	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
 	 *   containing its value
+	 * @param $as_string boolean true if the object should be used as a string
 	 * @return string
 	 */
-	public function buildObject($filters = null)
+	public function buildObject($filters = null, $as_string = null)
 	{
 		if (!isset($filters)) {
 			$filters_values = $this->property->getListAnnotation('filters')->values();
@@ -190,7 +192,13 @@ class Html_Builder_Property extends Html_Builder_Type
 				}
 			}
 		}
-		return parent::buildObject($filters);
+		$as_string = isset($as_string)
+			? $as_string
+			: (
+				$this->property->getAnnotation(Store_Annotation::ANNOTATION)->value
+				=== Store_Annotation::STRING
+			);
+		return parent::buildObject($filters, $as_string);
 	}
 
 	//----------------------------------------------------------------------------------- buildSingle
