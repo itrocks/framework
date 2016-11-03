@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
 /**
  * Adds multiple lines and big string capabilities to Translation

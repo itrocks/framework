@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Validate;
+namespace ITRocks\Framework\Widget\Validate;
 
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tests\Test;
-use SAF\Framework\Widget\Validate\Class_;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Widget\Validate\Class_;
 
 /**
  * Validate widget testing

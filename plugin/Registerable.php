@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Plugin;
+namespace ITRocks\Framework\Plugin;
 
-use SAF\Framework\Plugin;
+use ITRocks\Framework\Plugin;
 
 /**
  * Registerable plugins will be registered the first time they are used : at session start, or at

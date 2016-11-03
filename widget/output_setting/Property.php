@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Output_Setting;
+namespace ITRocks\Framework\Widget\Output_Setting;
 
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Can_Be_Empty;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Can_Be_Empty;
 
 /**
  * Output setting widget property

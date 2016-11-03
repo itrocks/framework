@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Widget\Data_List\Search_Parameters_Parser;
+namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Dao\Func\Comparison;
-use SAF\Framework\Dao\Func\Logical;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Widget\Data_List\Data_List_Exception;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Comparison;
+use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
 
 /**
  * Boolean search parameters parser

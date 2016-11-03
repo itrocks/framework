@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Import\Settings;
+namespace ITRocks\Framework\Import\Settings;
 
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * Import property

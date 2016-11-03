@@ -1,19 +1,19 @@
 <?php
-namespace SAF\Framework\View\Html\Builder;
+namespace ITRocks\Framework\View\Html\Builder;
 
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Mapper;
-use SAF\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\View\Html\Dom\Table;
-use SAF\Framework\View\Html\Dom\Table\Body;
-use SAF\Framework\View\Html\Dom\Table\Head;
-use SAF\Framework\View\Html\Dom\Table\Header_Cell;
-use SAF\Framework\View\Html\Dom\Table\Row;
-use SAF\Framework\View\Html\Dom\Table\Standard_Cell;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Mapper;
+use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View\Html\Dom\Table;
+use ITRocks\Framework\View\Html\Dom\Table\Body;
+use ITRocks\Framework\View\Html\Dom\Table\Head;
+use ITRocks\Framework\View\Html\Dom\Table\Header_Cell;
+use ITRocks\Framework\View\Html\Dom\Table\Row;
+use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
 
 /**
  * Takes a map of objects and builds HTML code using their data

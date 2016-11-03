@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Objects;
+namespace ITRocks\Framework\Objects;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * Standard basic codes, with a code and a full name

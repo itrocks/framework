@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Tag;
-use SAF\Framework\Controller\Target;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Button;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Tag;
+use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Button;
 
 /**
  * Custom settings buttons

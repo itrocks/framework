@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Property feature annotation : a feature based on changes on the property annotations
@@ -21,6 +21,7 @@ class Feature_Annotation
 	implements Multiple_Annotation, Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'feature';
 
 	//----------------------------------------------------------------------------------------- $path

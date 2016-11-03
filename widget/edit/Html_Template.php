@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Widget\Edit;
+namespace ITRocks\Framework\Widget\Edit;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\View\Html\Builder\Property;
-use SAF\Framework\View\Html\Builder\Value_Widget;
-use SAF\Framework\View\Html\Template;
-use SAF\Framework\View\Html\Template\Loop;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\View\Html\Builder\Property;
+use ITRocks\Framework\View\Html\Builder\Value_Widget;
+use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\Html\Template\Loop;
 
 /**
  * Html template that changes all properties values to form inputs

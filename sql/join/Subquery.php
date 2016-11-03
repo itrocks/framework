@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Sql\Join;
+namespace ITRocks\Framework\Sql\Join;
 
-use SAF\Framework\Sql\Builder;
-use SAF\Framework\Sql\Join;
+use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Sql\Join;
 
 /**
  * Sql subquery join

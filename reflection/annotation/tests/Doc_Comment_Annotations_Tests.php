@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Tests;
+namespace ITRocks\Framework\Reflection\Annotation\Tests;
 
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Doc-comment annotations tests

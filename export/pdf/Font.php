@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Export\PDF;
+namespace ITRocks\Framework\Export\PDF;
 
 /**
  * PDF standard fonts
@@ -12,11 +12,13 @@ abstract class Font
 	const DINGBATS  = 'zapfdingbats';
 	const HELVETICA = 'helvetica';
 	const SYMBOL    = 'symbol';
+	//----------------------------------------------------------------------------------------- TIMES
 	const TIMES     = 'times';
 
 	//------------------------------------------------------------------------- font styles constants
 	const NORMAL = '';
 	const BOLD   = 'B';
+	//---------------------------------------------------------------------------------------- ITALIC
 	const ITALIC = 'I';
 
 	//------------------------------------------------------------------------------------------- get

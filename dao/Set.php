@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Dao;
+namespace ITRocks\Framework\Dao;
 
-use SAF\Framework\Dao\Data_Link\Identifier_Map;
-use SAF\Framework\Dao;
+use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
+use ITRocks\Framework\Dao;
 
 /**
  * This is a set of records linked to Dao tools

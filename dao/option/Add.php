@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Option;
+namespace ITRocks\Framework\Dao\Option;
 
-use SAF\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option;
 
 /**
  * When Dao::write() is called, this option force to add the object instead of updating it if

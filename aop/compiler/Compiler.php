@@ -1,23 +1,23 @@
 <?php
-namespace SAF\Framework\AOP;
+namespace ITRocks\Framework\AOP;
 
-use SAF\Framework\AOP\Compiler\Scanners;
-use SAF\Framework\AOP\Weaver\Handler;
-use SAF\Framework\AOP\Weaver\IWeaver;
-use SAF\Framework\Application;
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Needs_Main;
-use SAF\Framework\Dao;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\PHP;
-use SAF\Framework\PHP\Dependency;
-use SAF\Framework\PHP\ICompiler;
-use SAF\Framework\PHP\Reflection_Class;
-use SAF\Framework\PHP\Reflection_Source;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection\Interfaces;
-use SAF\Framework\Session;
+use ITRocks\Framework\AOP\Compiler\Scanners;
+use ITRocks\Framework\AOP\Weaver\Handler;
+use ITRocks\Framework\AOP\Weaver\IWeaver;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Needs_Main;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\PHP;
+use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\PHP\ICompiler;
+use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\PHP\Reflection_Source;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Session;
 
 /**
  * Standard aspect weaver compiler

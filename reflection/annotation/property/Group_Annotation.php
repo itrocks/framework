@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Class_;
-use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Tells in which group the property is stored

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Session;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Session;
 
 /**
  * Setting set controller
@@ -26,6 +26,7 @@ class Set_Controller implements Feature_Controller
 			$parameters->getRawParameter('code'),
 			$parameters->getRawParameter('value')
 		);
+		return;
 	}
 
 }

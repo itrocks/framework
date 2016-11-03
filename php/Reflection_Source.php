@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
 use ReflectionClass;
-use SAF\Framework\Builder;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Tools\Paths;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Tools\Paths;
 
 /**
  * Reflection of PHP source code

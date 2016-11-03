@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\Mysql\Information_Schema;
+namespace ITRocks\Framework\Dao\Mysql\Information_Schema;
 
 /**
  * Information schema : key column usage

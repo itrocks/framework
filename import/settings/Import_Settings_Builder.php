@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Import\Settings;
+namespace ITRocks\Framework\Import\Settings;
 
 use ReflectionException;
-use SAF\Framework\Import\Import_Array;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Import\Import_Array;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
 
 /**
  * Import settings builder

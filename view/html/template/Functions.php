@@ -1,28 +1,28 @@
 <?php
-namespace SAF\Framework\View\Html\Template;
+namespace ITRocks\Framework\View\Html\Template;
 
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Mapper\Collection;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Integrated_Annotation;
-use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use SAF\Framework\Reflection\Integrated_Properties;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Method;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Session;
-use SAF\Framework\Tools\Date_Time;
-use SAF\Framework\Tools\Default_List_Data;
-use SAF\Framework\Tools\Displayable;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Set;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Builder\Property_Select;
-use SAF\Framework\View\Html\Dom\Input;
-use SAF\Framework\View\Html\Template;
-use SAF\Framework\Widget\Edit\Html_Builder_Property;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Mapper\Collection;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Integrated_Properties;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Method;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Default_List_Data;
+use ITRocks\Framework\Tools\Displayable;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Set;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Builder\Property_Select;
+use ITRocks\Framework\View\Html\Dom\Input;
+use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\Widget\Edit\Html_Builder_Property;
 
 /**
  * Html template functions : those which are called using {@functionName} into templates

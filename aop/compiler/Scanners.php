@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\AOP\Compiler;
+namespace ITRocks\Framework\AOP\Compiler;
 
-use SAF\Framework\Mapper\Getter;
-use SAF\Framework\PHP\Reflection_Class;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Some methods that scan for getters, setters, overrides, etc. globally properties annotations

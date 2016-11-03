@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Address;
+namespace ITRocks\Framework\Address;
 
 /**
  * A Has_Name Person which $name is always replaced by "$first_name $last_name"

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Tools\Tests;
+namespace ITRocks\Framework\Tools\Tests;
 
-use SAF\Framework\Tests\Test;
-use SAF\Framework\Tools\Date_Interval;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tools\Date_Interval;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Date_Time tools class unit tests

@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
-use SAF\Framework\AOP\Joinpoint\Before_Method;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Tools\Contextual_Mysqli;
+use ITRocks\Framework\AOP\Joinpoint\Before_Method;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Tools\Contextual_Mysqli;
 
 /**
  * Mysql delete-and-replace feature

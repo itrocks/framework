@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tests\Objects;
+namespace ITRocks\Framework\Tests\Objects;
 
 /**
  * A quote class to test classes having the 'link' annotation

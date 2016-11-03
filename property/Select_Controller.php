@@ -1,19 +1,19 @@
 <?php
-namespace SAF\Framework\Property;
+namespace ITRocks\Framework\Property;
 
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Property;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use SAF\Framework\Reflection\Link_Class;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Set;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Property;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Set;
+use ITRocks\Framework\View;
 
 /**
  * The property select controller is a class properties tree view controller.

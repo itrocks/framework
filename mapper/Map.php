@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Option\Sort;
-use SAF\Framework\Tools\List_Row;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Option\Sort;
+use ITRocks\Framework\Tools\List_Row;
 
 /**
  * A map is an array of objects which the container object is linked to

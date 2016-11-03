@@ -1,18 +1,17 @@
 <?php
-namespace SAF\Framework\Widget\Output_Setting;
+namespace ITRocks\Framework\Widget\Output_Setting;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Setting;
-use SAF\Framework\Setting\Custom_Settings;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Widget\Button;
-use SAF\Framework\Widget\Button\Code;
-use SAF\Framework\Widget\Tab;
-use SAF\Framework\Widget\Tab\Tabs_Builder_Class;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Widget\Button;
+use ITRocks\Framework\Widget\Button\Code;
+use ITRocks\Framework\Widget\Tab;
+use ITRocks\Framework\Widget\Tab\Tabs_Builder_Class;
 
 /**
  * Output settings for personalized forms

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Logger\Entry;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Logger\Entry;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
 
 /**
  * A very simple logger plugin that logs start and stop dates, PIDs and duration of main calls

@@ -1,25 +1,25 @@
 <?php
-namespace SAF\Framework\User;
+namespace ITRocks\Framework\User;
 
-use SAF\Framework\Application;
-use SAF\Framework\Controller;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Controller\Uri;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\User;
-use SAF\Framework\User\Group\Feature;
-use SAF\Framework\User\Group\Has_Groups;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Button;
-use SAF\Framework\Widget\Button\Has_General_Buttons;
-use SAF\Framework\Widget\Button\Has_Selection_Buttons;
-use SAF\Framework\Widget\Menu;
-use SAF\Framework\Widget\Menu\Item;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Controller;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\User;
+use ITRocks\Framework\User\Group\Feature;
+use ITRocks\Framework\User\Group\Has_Groups;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Button;
+use ITRocks\Framework\Widget\Button\Has_General_Buttons;
+use ITRocks\Framework\Widget\Button\Has_Selection_Buttons;
+use ITRocks\Framework\Widget\Menu;
+use ITRocks\Framework\Widget\Menu\Item;
 
 /**
  * Very simple user access control plugin :
@@ -180,7 +180,7 @@ class Access_Control implements Configurable, Registerable
 
 	//--------------------------------------------------------------------------------- checkFeatures
 	/**
-	 * @param $uri   string must start with '/' @example /SAF/Framework/User/add
+	 * @param $uri   string must start with '/' @example /ITRocks/Framework/User/add
 	 * @param $get   array
 	 * @param $post  array
 	 * @param $files array
@@ -243,9 +243,9 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * Change a full-featured uri to something simple (/Path/Class/Feature)
 	 *
-	 * @example '/SAF/Framework/Property/18/select/Bappli/Sfkgroup/Claims'
-	 * will become '/SAF/Framework/Property/select'
-	 * @example '/SAF/Framework/Users' will become '/SAF/Framework/User/listData'
+	 * @example '/ITRocks/Framework/Property/18/select/Bappli/Sfkgroup/Claims'
+	 * will become '/ITRocks/Framework/Property/select'
+	 * @example '/ITRocks/Framework/Users' will become '/ITRocks/Framework/User/listData'
 	 * @param $uri string
 	 * @return string
 	 */

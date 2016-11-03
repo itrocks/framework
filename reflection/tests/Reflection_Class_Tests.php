@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Reflection\Tests;
+namespace ITRocks\Framework\Reflection\Tests;
 
 use ReflectionException;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tests\Objects\Document;
-use SAF\Framework\Tests\Objects\Order;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tests\Objects\Document;
+use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Reflection class tests

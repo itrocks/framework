@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tests\Objects;
+namespace ITRocks\Framework\Tests\Objects;
 
-use SAF\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper\Component;
 
 /**
  * A vehicle door

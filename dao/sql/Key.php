@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Sql;
+namespace ITRocks\Framework\Dao\Sql;
 
-use SAF\Framework\Tools\Field;
+use ITRocks\Framework\Tools\Field;
 
 /**
  * A common interface for Dao key object representation

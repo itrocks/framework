@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Validate;
+namespace ITRocks\Framework\Widget\Validate;
 
-use SAF\Framework\Controller\Default_Class_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Default_Class_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\View;
 
 /**
  * This controller enables object validation

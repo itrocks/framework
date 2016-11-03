@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Widget\Data_List_Setting;
+namespace ITRocks\Framework\Widget\Data_List_Setting;
 
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Tools\Set;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Data_List\Data_List_Controller;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Tools\Set;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
 
 /**
  * Default data list setting feature controller

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Every _History class should extend this

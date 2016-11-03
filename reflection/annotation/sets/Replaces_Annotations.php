@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Sets;
+namespace ITRocks\Framework\Reflection\Annotation\Sets;
 
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Features for replaces annotations

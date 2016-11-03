@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 use Exception;
-use SAF\Framework\Tools\Call_Stack\Line;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Tools\Call_Stack\Line;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Call stack class

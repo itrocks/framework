@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation;
 
 /**
  * A Placeholder is a substitute expression helping to know what content to fill in a field

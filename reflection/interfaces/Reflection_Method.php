@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection\Interfaces;
+namespace ITRocks\Framework\Reflection\Interfaces;
 
 /**
  * An interface for all reflection method classes
@@ -7,6 +7,7 @@ namespace SAF\Framework\Reflection\Interfaces;
 interface Reflection_Method extends Reflection_Class_Component
 {
 
+	//------------------------------------------------------------------------------------------- ALL
 	/**
 	 * Another constant for default Reflection_Class::getMethods() filter
 	 *

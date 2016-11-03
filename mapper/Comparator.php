@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Dao\Option\Reverse;
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Dao\Option\Reverse;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * This

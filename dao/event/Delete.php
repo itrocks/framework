@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Dao\Event;
+namespace ITRocks\Framework\Dao\Event;
 
-use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Dao\Event;
-use SAF\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Event;
+use ITRocks\Framework\Dao\Option;
 
 /**
  * Dao delete event

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao;
+namespace ITRocks\Framework\Dao;
 
 /**
  * Dao event

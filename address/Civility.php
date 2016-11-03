@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Address;
+namespace ITRocks\Framework\Address;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Objects\Code;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Objects\Code;
 
 /**
  * A physical person civility

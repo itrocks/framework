@@ -155,7 +155,7 @@ $('document').ready(function()
 				+ window.app.andSID();
 
 			var data_list_property_uri = window.app.uri_base
-				+ '/SAF/Framework/Widget/Data_List_Setting/Property/edit/{className}/{propertyPath}?as_widget'
+				+ '/ITRocks/Framework/Widget/Data_List_Setting/Property/edit/{className}/{propertyPath}?as_widget'
 				+ window.app.andSID();
 
 			// list title (class name) double-click

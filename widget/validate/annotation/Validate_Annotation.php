@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Widget\Validate\Annotation;
+namespace ITRocks\Framework\Widget\Validate\Annotation;
 
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 
 /**
  * Common code for all @validate annotations

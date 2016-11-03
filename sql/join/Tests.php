@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Sql\Join;
+namespace ITRocks\Framework\Sql\Join;
 
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Sql\Join;
-use SAF\Framework\Tests\Test;
-use SAF\Framework\Tests\Objects\Client;
-use SAF\Framework\Tests\Objects\Order;
-use SAF\Framework\Tests\Objects\Order_Line;
-use SAF\Framework\Tests\Objects\Salesman;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Sql\Join;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tests\Objects\Client;
+use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tests\Objects\Order_Line;
+use ITRocks\Framework\Tests\Objects\Salesman;
 
 /**
  * Sql joins tests

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 /**
  * Locks manager, to enable locking of features and disable multiple execution of the same thing the same time

@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Tools\Contextual_Mysqli;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Tools\Contextual_Mysqli;
 
 /**
  * A logger for mysql queries

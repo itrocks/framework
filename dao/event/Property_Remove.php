@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Dao\Event;
+namespace ITRocks\Framework\Dao\Event;
 
-use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Dao property remove event is fired when an element is removed from a collection or map

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Sql;
+namespace ITRocks\Framework\Sql;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Manages link tables for map properties

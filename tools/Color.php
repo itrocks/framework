@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Builder;
+use ITRocks\Framework\Builder;
 
 /**
  * Colors manager
@@ -61,11 +61,13 @@ class Color implements Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $color string
-	 * @return self
+	 * @return static
 	 */
 	public static function fromString($color)
 	{
-		return Builder::create(get_called_class(), [$color]);
+		/** @var $color static */
+		$color = Builder::create(get_called_class(), [$color]);
+		return $color;
 	}
 
 	//--------------------------------------------------------------------------------- getBrightness

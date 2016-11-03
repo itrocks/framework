@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Link annotation defines which kind of link is defined for an object or array of objects property
@@ -21,6 +21,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	const COLLECTION = 'Collection';
 	const DATETIME   = 'DateTime';
 	const MAP        = 'Map';
+	//---------------------------------------------------------------------------------------- OBJECT
 	const OBJECT     = 'Object';
 
 	//----------------------------------------------------------------------------------- __construct

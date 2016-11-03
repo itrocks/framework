@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Widget\Input;
+namespace ITRocks\Framework\Widget\Input;
 
-use SAF\Framework\Widget\Input;
+use ITRocks\Framework\Widget\Input;
 
 /**
  * An inputs collection

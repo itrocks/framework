@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Property;
+namespace ITRocks\Framework\Property;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Property;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Template;
-use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Property;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
  * The default property add controller does nothing : we must add a property from a context

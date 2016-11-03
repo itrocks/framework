@@ -1,29 +1,29 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
 use ReflectionClass;
-use SAF\Framework\Builder\Class_Builder;
-use SAF\Framework\Mapper\Getter;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Plugin\Activable;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Link_Class;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\Sql\Join\Joins;
-use SAF\Framework\Tools\Current_With_Default;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Set;
+use ITRocks\Framework\Builder\Class_Builder;
+use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Plugin\Activable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Sql\Join\Joins;
+use ITRocks\Framework\Tools\Current_With_Default;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Set;
 use Serializable;
 
 /**
  * The Builder plugin replaces 'new Class_Name' calls by 'Builder::create('Class_Name')' in order to
  * enable objects substitution
  *
- * You should always use these calls for SAF business objects instantiations.
+ * You should always use these calls for ITRocks business objects instantiations.
  *
  * @todo remove dependencies
  */

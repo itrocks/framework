@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Locale\Date_Format;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Locale\Number_Format;
-use SAF\Framework\Locale\Translator;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Reflection\Interfaces\Reflection_Method;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\Tools\Current;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Locale\Date_Format;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Locale\Number_Format;
+use ITRocks\Framework\Locale\Translator;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Current;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A Locale object has all locale features, useful for specific locale conversions

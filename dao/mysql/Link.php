@@ -1,34 +1,34 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
 use Exception;
 use mysqli_result;
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Dao\Event\Property_Add;
-use SAF\Framework\Dao\Event\Property_Remove;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Mapper\Abstract_Class;
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Mapper\Empty_Object;
-use SAF\Framework\Mapper\Getter;
-use SAF\Framework\Mapper\Null_Object;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Reflection\Annotation\Class_;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
-use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Reflection\Link_Class;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Sql;
-use SAF\Framework\Sql\Builder\Count;
-use SAF\Framework\Sql\Builder\Map_Delete;
-use SAF\Framework\Sql\Builder\Map_Insert;
-use SAF\Framework\Sql\Builder\Select;
-use SAF\Framework\Tools\Contextual_Mysqli;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Event\Property_Add;
+use ITRocks\Framework\Dao\Event\Property_Remove;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Mapper\Abstract_Class;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper\Empty_Object;
+use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Mapper\Null_Object;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Sql;
+use ITRocks\Framework\Sql\Builder\Count;
+use ITRocks\Framework\Sql\Builder\Map_Delete;
+use ITRocks\Framework\Sql\Builder\Map_Insert;
+use ITRocks\Framework\Sql\Builder\Select;
+use ITRocks\Framework\Tools\Contextual_Mysqli;
 
 /**
  * The mysql link for Dao

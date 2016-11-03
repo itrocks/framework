@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Controller;
+namespace ITRocks\Framework\Controller;
 
-use SAF\Framework\Controller;
+use ITRocks\Framework\Controller;
 
 /**
  * A feature controller is a single controller class devoted to one class and one feature

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Widget;
+namespace ITRocks\Framework\Widget;
 
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Widget\Menu\Block;
-use SAF\Framework\Widget\Menu\Item;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Widget\Menu\Block;
+use ITRocks\Framework\Widget\Menu\Item;
 
 /**
  * A standard menu for your application

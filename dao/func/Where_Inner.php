@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
 /**
  * A Dao where function applies only to conditions : it changes the condition behaviour

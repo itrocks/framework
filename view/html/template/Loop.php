@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\View\Html\Template;
+namespace ITRocks\Framework\View\Html\Template;
 
 /**
  * The loop manager

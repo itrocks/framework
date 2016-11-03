@@ -1,18 +1,18 @@
 <?php
-namespace SAF\Framework\Widget\Edit;
+namespace ITRocks\Framework\Widget\Edit;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\View\Html\Builder\Collection;
-use SAF\Framework\View\Html\Dom\Input;
-use SAF\Framework\View\Html\Dom\Table\Body;
-use SAF\Framework\View\Html\Dom\Table\Head;
-use SAF\Framework\View\Html\Dom\Table\Header_Cell;
-use SAF\Framework\View\Html\Dom\Table\Row;
-use SAF\Framework\View\Html\Dom\Table\Standard_Cell;
-use SAF\Framework\View\Html\Dom\Table;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\View\Html\Builder\Collection;
+use ITRocks\Framework\View\Html\Dom\Input;
+use ITRocks\Framework\View\Html\Dom\Table\Body;
+use ITRocks\Framework\View\Html\Dom\Table\Head;
+use ITRocks\Framework\View\Html\Dom\Table\Header_Cell;
+use ITRocks\Framework\View\Html\Dom\Table\Row;
+use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
+use ITRocks\Framework\View\Html\Dom\Table;
 
 /**
  * Takes a collection of objects and build a HTML edit sub-form containing their data

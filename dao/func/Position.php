@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Sql\Builder;
-use SAF\Framework\Sql\Value;
-use SAF\Framework\Widget\Data_List\Summary_Builder;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Sql\Value;
+use ITRocks\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Function search first position of string into another

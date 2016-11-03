@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Setting\Manager;
+namespace ITRocks\Framework\Setting\Manager;
 
-use SAF\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper\Component;
 
 /**
  * A settings template element

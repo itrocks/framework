@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Class_;
+namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 
 /**
  * A @group annotation contains a name and several values, and is a multiple annotation too

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * A default list data set class : this stores data (visible strings and linked object) for list views
@@ -82,7 +82,9 @@ class Default_List_Data extends Set implements List_Data
 	 */
 	public function getRow($row_index)
 	{
-		return $this->get($row_index);
+		/** @var $list_row List_Row */
+		$list_row = $this->get($row_index);
+		return $list_row;
 	}
 
 	//--------------------------------------------------------------------------------------- getRows

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace ITRocks\Framework\Tests;
 
-use SAF\Framework\Controller\Response;
+use ITRocks\Framework\Controller\Response;
 
 /**
  * All unit test classes must extend this, to access its begin(), end() and assume() methods

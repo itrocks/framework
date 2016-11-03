@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\AOP;
+namespace ITRocks\Framework\AOP;
 
-use SAF\Framework\AOP\Weaver\Handler;
-use SAF\Framework\AOP\Weaver\IHandler;
-use SAF\Framework\AOP\Weaver\IWeaver;
-use SAF\Framework\Session;
+use ITRocks\Framework\AOP\Weaver\Handler;
+use ITRocks\Framework\AOP\Weaver\IHandler;
+use ITRocks\Framework\AOP\Weaver\IWeaver;
+use ITRocks\Framework\Session;
 
 /**
  * The Aop class is an interface to the Aop calls manager

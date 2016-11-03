@@ -1,13 +1,10 @@
 <?php
-namespace SAF\Framework\View\Html\Builder;
+namespace ITRocks\Framework\View\Html\Builder;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Mapper;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Dom\Table;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Takes a collection of objects and build an HTML output containing their data

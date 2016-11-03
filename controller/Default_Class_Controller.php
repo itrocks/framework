@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Controller;
+namespace ITRocks\Framework\Controller;
 
-use SAF\Framework\Controller;
+use ITRocks\Framework\Controller;
 
 /**
  * A default class controller, called for a given feature

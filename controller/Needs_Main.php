@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Controller;
+namespace ITRocks\Framework\Controller;
 
 /**
  * For classes that need the main controller object to run

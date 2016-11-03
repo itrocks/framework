@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Widget\Button\Code\Command;
+namespace ITRocks\Framework\Widget\Button\Code\Command;
 
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Widget\Button\Code\Command;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Widget\Button\Code\Command;
 
 /**
  * Equals command : returns true if the two constant or property-name operands have the same value

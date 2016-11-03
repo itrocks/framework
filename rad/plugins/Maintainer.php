@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\RAD\Plugins;
+namespace ITRocks\Framework\RAD\Plugins;
 
-use SAF\Framework;
+use ITRocks\Framework;
 
 /**
  * Maintains the plugins database :

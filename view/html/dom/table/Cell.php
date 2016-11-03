@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\View\Html\Dom\Table;
+namespace ITRocks\Framework\View\Html\Dom\Table;
 
-use SAF\Framework\View\Html\Dom\Element;
+use ITRocks\Framework\View\Html\Dom\Element;
 
 /**
  * A DOM element class for HTML tables cells (<td> and <th>, base class for standard and header cell)

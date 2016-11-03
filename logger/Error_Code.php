@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Logger;
+namespace ITRocks\Framework\Logger;
 
 /**
  * Logger error code constants
@@ -7,18 +7,21 @@ namespace SAF\Framework\Logger;
 abstract class Error_Code
 {
 
+	//----------------------------------------------------------------------------------------- CRASH
 	/**
 	 * The script crashed without writing an error code
 	 * This code is set manually by the application administrator, when he solved the problem
 	 */
 	const CRASH = 2;
 
+	//----------------------------------------------------------------------------------------- ERROR
 	/**
 	 * An error detected and fired by the script
 	 * The script ended correctly, but there is an error to solve
 	 */
 	const ERROR = 1;
 
+	//-------------------------------------------------------------------------------------------- OK
 	/**
 	 * The scripts runs correctly and has no problem
 	 * If a stop date is set, the script ended correctly without throwing any error
@@ -28,6 +31,7 @@ abstract class Error_Code
 	 */
 	const OK = 0;
 
+	//--------------------------------------------------------------------------------------- RUNNING
 	/**
 	 * The script is running in "resume" mode : this is used for long-time scripts to avoid
 	 * problem detection :

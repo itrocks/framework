@@ -26,7 +26,7 @@ $('document').ready(function()
 						search_step = 1;
 						last_search = new_search;
 						$.ajax(
-							window.app.uri_base + '/SAF/Framework/Property/search'
+							window.app.uri_base + '/ITRocks/Framework/Property/search'
 								+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
 								+ '?search=' + encodeURI(new_search)
 								+ '&as_widget' + window.app.andSID(),
@@ -138,6 +138,7 @@ $('document').ready(function()
 	// hide popup select box when clicking outside of it
 	$(document).click(function(event)
 	{
+		//noinspection JSJQueryEfficiency well, why ?
 		var $column_select = $('#column_select.popup>.property_select');
 		if ($column_select.length) {
 			var offset = $column_select.offset();

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tests\Objects;
+namespace ITRocks\Framework\Tests\Objects;
 
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A document class

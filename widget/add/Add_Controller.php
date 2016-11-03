@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Widget\Add;
+namespace ITRocks\Framework\Widget\Add;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Controller\Target;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Setting\Custom_Settings;
-use SAF\Framework\Tools\Color;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Button;
-use SAF\Framework\Widget\Edit\Edit_Controller;
-use SAF\Framework\Widget\Output_Setting\Output_Settings;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Tools\Color;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Button;
+use ITRocks\Framework\Widget\Edit\Edit_Controller;
+use ITRocks\Framework\Widget\Output_Setting\Output_Settings;
 
 /**
  * The default new controller is the same as an edit controller, that accepts no object

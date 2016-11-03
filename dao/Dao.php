@@ -1,18 +1,18 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Dao\Data_Link\Identifier_Map;
-use SAF\Framework\Dao\Data_Link\Transactional;
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Current;
-use SAF\Framework\Tools\List_Data;
-use SAF\Framework\Tools\List_Row;
+use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
+use ITRocks\Framework\Dao\Data_Link\Transactional;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Current;
+use ITRocks\Framework\Tools\List_Data;
+use ITRocks\Framework\Tools\List_Row;
 
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
@@ -298,9 +298,9 @@ class Dao implements Configurable
 	 * Gets a DAO limit option, used to limit the number of read objects with Dao::readAll()
 	 * or Dao::search()
 	 *
-	 * @example Dao::readAll('SAF\Framework\User', Dao::limit(2, 10));
+	 * @example Dao::readAll('ITRocks\Framework\User', Dao::limit(2, 10));
 	 * Will return 10 read users objects, starting with the second read user
-	 * @example Dao::readAll('SAF\Framework\User', Dao::limit(10));
+	 * @example Dao::readAll('ITRocks\Framework\User', Dao::limit(10));
 	 * Will return the 10 first read users objects
 	 *
 	 * @param $from  integer The offset of the first object to return
@@ -412,7 +412,7 @@ class Dao implements Configurable
 	 *
 	 * @example
 	 * $users = Dao::readAll(
-	 *   SAF\Framework\User::class,
+	 *   ITRocks\Framework\User::class,
 	 *   Dao::sort([Dao::reverse('birth_date'), 'first_name', 'last_name'])
 	 * );
 	 *
@@ -524,7 +524,7 @@ class Dao implements Configurable
 	 *
 	 * @example
 	 * $users = Dao::readAll(
-	 *   SAF\Framework\User::class,
+	 *   ITRocks\Framework\User::class,
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name'])
 	 * );
 	 *

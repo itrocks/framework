@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Widget;
+namespace ITRocks\Framework\Widget;
 
 /**
  * An input object is used into HMI forms to enable the user to type in data

@@ -1,18 +1,18 @@
 <?php
-namespace SAF\Framework\Email;
+namespace ITRocks\Framework\Email;
 
 use Mail;
 use Mail_smtp;
 use PEAR_Error;
-use SAF\Framework\Builder;
-use SAF\Framework\Email;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Email;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Sends emails
  *
- * This offers a SAF interface to the PHP PEAR Mail package
+ * This offers a ITRocks interface to the PHP PEAR Mail package
  */
 class Sender implements Configurable
 {

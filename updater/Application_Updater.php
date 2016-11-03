@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Updater;
+namespace ITRocks\Framework\Updater;
 
-use SAF\Framework\Application;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Needs_Main;
-use SAF\Framework\Session;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Needs_Main;
+use ITRocks\Framework\Session;
 use Serializable;
 
 /**

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * This tells that the property can take the null value as a valid value (default is false)
@@ -11,6 +11,7 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 class Null_Annotation extends Boolean_Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------------ NULL
 	const NULL = 'null';
 
 	//----------------------------------------------------------------------------------- __construct

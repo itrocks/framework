@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\View\Html;
+namespace ITRocks\Framework\View\Html;
 
-use SAF\Framework\Builder;
-use SAF\Framework;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\View\IView;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\View\IView;
 
 /**
  * The Html default view selects the template associated to wished class and feature names

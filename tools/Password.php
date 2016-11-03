@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 /**
  * Used for common 'password-like' data encryption
@@ -12,8 +12,10 @@ class Password
 	const T_LOWERCASE = 1;
 	const T_UPPERCASE = 2;
 	const T_NUMERIC   = 4;
+	//------------------------------------------------------------------------------------- T_SPECIAL
 	const T_SPECIAL   = 8;
 
+	//------------------------------------------------------------------------------------- UNCHANGED
 	/**
 	 * Use this constant when you want to test or set the password as 'unchanged'
 	 */

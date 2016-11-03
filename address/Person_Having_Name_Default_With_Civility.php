@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Address;
+namespace ITRocks\Framework\Address;
 
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * Person_Having_Name setDefaultName prepends civility

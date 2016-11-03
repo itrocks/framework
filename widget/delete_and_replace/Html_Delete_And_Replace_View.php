@@ -1,14 +1,14 @@
 <?php
-namespace SAF\Framework\Widget\Delete_And_Replace;
+namespace ITRocks\Framework\Widget\Delete_And_Replace;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\View\Html\Default_View;
-use SAF\Framework\View\Html\View;
-use SAF\Framework\Widget\Edit\Html_Builder_Type;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\View\Html\Default_View;
+use ITRocks\Framework\View\Html\View;
+use ITRocks\Framework\Widget\Edit\Html_Builder_Type;
 
 /**
  * The default delete-and-replace view

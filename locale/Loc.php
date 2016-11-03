@@ -1,20 +1,20 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
 use Reflector;
-use SAF\Framework\Import\Import_Array;
-use SAF\Framework\Locale;
-use SAF\Framework\Mapper\Object_Builder_Array;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Method;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property_View;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\View\Html\Template\Functions;
-use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ITRocks\Framework\Import\Import_Array;
+use ITRocks\Framework\Locale;
+use ITRocks\Framework\Mapper\Object_Builder_Array;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property_View;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View\Html\Template\Functions;
+use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
  * Locale plugin concentrates locale translation / formatting features into simple static calls
@@ -380,7 +380,7 @@ class Loc implements Registerable
 	 *
 	 * @param $text     string The text to translate
 	 * @param $options  Option[]|Has_Language[]|string[]|Option|Has_Language|string Options for
-	 *        translation : see options in namespace SAF\Framework\Locale\Option
+	 *        translation : see options in namespace ITRocks\Framework\Locale\Option
 	 *        If options is a string or contain a string, this string is used as a context
 	 *        If options contain a object who implements Has_Language, use object's language for
 	 *        translation

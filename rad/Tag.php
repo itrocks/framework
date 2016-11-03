@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\RAD;
+namespace ITRocks\Framework\RAD;
 
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A tag is a keyword the facilitate searches

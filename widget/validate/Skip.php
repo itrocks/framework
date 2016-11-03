@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Widget\Validate;
+namespace ITRocks\Framework\Widget\Validate;
 
-use SAF\Framework\Dao\Option\Spreadable;
+use ITRocks\Framework\Dao\Option\Spreadable;
 
 /**
  * Skip validation option for Dao::write() calls

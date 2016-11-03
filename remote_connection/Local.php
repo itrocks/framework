@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Remote_Connection;
+namespace ITRocks\Framework\Remote_Connection;
 
-use SAF\Framework\Remote_Connection;
+use ITRocks\Framework\Remote_Connection;
 
 /**
  * Local file system connection

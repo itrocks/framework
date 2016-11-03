@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Export;
+namespace ITRocks\Framework\Export;
 
 /**
  * Class Excel

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Printer;
+namespace ITRocks\Framework\Printer;
 
-use SAF\Framework\Printer\Model\Page;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Printer\Model\Page;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A print model gives the way to print an object of a given class

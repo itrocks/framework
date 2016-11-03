@@ -1,4 +1,4 @@
-SAF/Framework
+ITRocks/Framework
 =============
 The RAD Framework for small-to-big PHP Business Applications
 
@@ -8,7 +8,7 @@ This is a currently-in-dev version of the framework.
 
 Since a lot of things for a basic use are done, there is a lot of work to do to get it stable and good, and the documentation is actually not done at all.
 
-Documentation will begin seriously once our first urgent app that uses SAF is done. Please be patient if you are interested in it.
+Documentation will begin seriously once our first urgent app that uses ITRocks is done. Please be patient if you are interested in it.
 
 # MIT License
 

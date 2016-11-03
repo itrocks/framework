@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Debug;
+namespace ITRocks\Framework\Debug;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Tools\Call_Stack;
-use SAF\Framework\Traits\Date_Logged;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Tools\Call_Stack;
+use ITRocks\Framework\Traits\Date_Logged;
 
 /**
  * Tell if a feature is dead or alive

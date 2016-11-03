@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\SSO;
+namespace ITRocks\Framework\SSO;
 
 /**
  * Application where user can connect through SSO

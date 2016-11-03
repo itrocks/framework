@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\File;
+namespace ITRocks\Framework\Dao\File;
 
 /**
  * Builds a File Type by analysing a file extension and checking its content

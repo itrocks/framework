@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Sql;
+namespace ITRocks\Framework\Sql;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Sql value tool methods

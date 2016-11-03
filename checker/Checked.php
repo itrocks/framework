@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Checker;
+namespace ITRocks\Framework\Checker;
 
 /**
  * This is an interface for auto-checked business objects

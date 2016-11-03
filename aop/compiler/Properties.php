@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\AOP\Compiler;
+namespace ITRocks\Framework\AOP\Compiler;
 
-use SAF\Framework\PHP\Reflection_Class;
-use SAF\Framework\PHP\Reflection_Method;
+use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\PHP\Reflection_Method;
 
 /**
  * Aspect weaver properties compiler
@@ -123,7 +123,7 @@ class Properties
 			}
 			if (isset($advice_parameters['joinpoint'])) {
 				$pointcut_string = '[$this, ' . Q . $property_name . Q . ']';
-				$init['2.joinpoint'] = '$joinpoint = new \SAF\Framework\AOP' . BS . ucfirst($type) . '_Property('
+				$init['2.joinpoint'] = '$joinpoint = new \ITRocks\Framework\AOP' . BS . ucfirst($type) . '_Property('
 					. LF . TAB . TAB . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
 					. ');';
 			}
@@ -132,7 +132,7 @@ class Properties
 				|| isset($advice_parameters['element_type']) || isset($advice_parameters['type_name'])
 				|| isset($advice_parameters['element_type_name']) || isset($advice_parameters['class_name'])
 			) {
-				$init['3.property'] = '$property = new \SAF\Framework\Reflection\Reflection_Property(get_class($this), '
+				$init['3.property'] = '$property = new \ITRocks\Framework\Reflection\Reflection_Property(get_class($this), '
 					. Q . $property_name . Q . ');';
 			}
 			if (

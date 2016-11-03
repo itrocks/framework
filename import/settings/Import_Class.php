@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Import\Settings;
+namespace ITRocks\Framework\Import\Settings;
 
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Traits\Has_Name;
 use Serializable;
 
 /**

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
-use SAF\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Feature;
 
 /**
  * Custom settings controller

@@ -1,14 +1,14 @@
 <?php
-namespace SAF\Framework\Builder;
+namespace ITRocks\Framework\Builder;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\PHP;
-use SAF\Framework\PHP\Dependency;
-use SAF\Framework\PHP\ICompiler;
-use SAF\Framework\PHP\Reflection_Source;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\PHP;
+use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\PHP\ICompiler;
+use ITRocks\Framework\PHP\Reflection_Source;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * This compiles child classes that extend classes replaced by built classes :

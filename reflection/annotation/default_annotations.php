@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation;
+namespace ITRocks\Framework\Reflection\Annotation;
 
-use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Default_True_Boolean_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Default_True_Boolean_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 
 //-------------------------------------------------------------------- Parser::$default_annotations
 /**
@@ -207,7 +207,7 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Property\Conditions_Annotation' => List_Annotation::class,
 
 	/**
-	 * @dao SAF\Framework\Dao\Mysql\Link
+	 * @dao ITRocks\Framework\Dao\Mysql\Link
 	 * This annotation stores the name of the Dao that should always used for a linked object,
 	 * map or collection property. Use it in conjunction with @link and @var annotations.
 	 */

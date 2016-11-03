@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Tools\Current;
-use SAF\Framework\User\Account;
+use ITRocks\Framework\Tools\Current;
+use ITRocks\Framework\User\Account;
 
 /**
  * A user business object for all your uses in user authentication

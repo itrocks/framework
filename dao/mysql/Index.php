@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
-use SAF\Framework\Dao\Sql;
+use ITRocks\Framework\Dao\Sql;
 
 /**
  * An object representation of a mysql index
@@ -12,6 +12,7 @@ class Index implements Sql\Index
 	//------------------------------------------------------------------------ $type values constants
 	const KEY     = 'KEY';
 	const PRIMARY = 'PRIMARY';
+	//---------------------------------------------------------------------------------------- UNIQUE
 	const UNIQUE  = 'UNIQUE';
 
 	//----------------------------------------------------------------------------------------- $keys

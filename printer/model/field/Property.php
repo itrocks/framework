@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Printer\Model\Field;
+namespace ITRocks\Framework\Printer\Model\Field;
 
-use SAF\Framework\Printer\Model\Field;
+use ITRocks\Framework\Printer\Model\Field;
 
 /**
  * Printer model property field

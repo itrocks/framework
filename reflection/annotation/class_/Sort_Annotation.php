@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Class_;
+namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
  * The sort annotation for classes stores a list of column names for object collections sort

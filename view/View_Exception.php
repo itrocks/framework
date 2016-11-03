@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\View;
+namespace ITRocks\Framework\View;
 
 use Exception;
 

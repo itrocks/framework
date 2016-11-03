@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\Tools\Can_Be_Empty;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Can_Be_Empty;
 
 /**
  * An empty object is an object which all properties have an empty or default value

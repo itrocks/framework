@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Controller;
+namespace ITRocks\Framework\Controller;
 
 /**
  * Standard responses constants

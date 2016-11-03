@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
-use SAF\Framework\Objects\Code;
+use ITRocks\Framework\Objects\Code;
 
 /**
  * Locale language constants
@@ -13,6 +13,7 @@ class Language extends Code
 	const EN = 'en';
 	const ES = 'es';
 	const FR = 'fr';
+	//-------------------------------------------------------------------------------------------- NL
 	const NL = 'nl';
 
 }

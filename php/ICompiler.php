@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
 /**
  * All Php compiler files should use this interface

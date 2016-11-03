@@ -1,8 +1,7 @@
 <?php
-namespace SAF\Framework\Error_Handler;
+namespace ITRocks\Framework\Error_Handler;
 
-use SAF\Framework\Debug;
-use SAF\Framework\Tools\Call_Stack;
+use ITRocks\Framework\Debug;
 
 /**
  * An error that error handlers can handle

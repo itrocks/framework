@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Address;
+namespace ITRocks\Framework\Address;
 
 /**
  * Physical person trait : use it for classes that represent a physical person.

@@ -1,15 +1,15 @@
 <?php
-namespace SAF\Framework\Controller\Tests;
+namespace ITRocks\Framework\Controller\Tests;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Controller\Uri;
-use SAF\Framework\Tests\Objects\Order;
-use SAF\Framework\Tests\Test;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Widget\Tab;
-use SAF\Framework\Widget\Trashcan;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Widget\Tab;
+use ITRocks\Framework\Widget\Trashcan;
 
 /**
  * Controller uri features tests
@@ -21,7 +21,7 @@ class Uri_Tests extends Test
 	public function testDeleteControllers()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Widget/Tab/remove/'
+			'/ITRocks/Framework/Widget/Tab/remove/'
 				. Names::classToSet(Order::class) . SL . Feature::F_LIST . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
@@ -45,7 +45,7 @@ class Uri_Tests extends Test
 	//---------------------------------------------------------------------------- testExplicitOutput
 	public function testExplicitOutput()
 	{
-		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Order/1/' . Feature::F_OUTPUT, []);
+		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Order/1/' . Feature::F_OUTPUT, []);
 		$this->assume(
 				__METHOD__,
 				[
@@ -64,7 +64,7 @@ class Uri_Tests extends Test
 	//------------------------------------------------------------------------------ testImplicitList
 	public function testImplicitList()
 	{
-		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Orders', []);
+		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders', []);
 		$this->assume(
 			__METHOD__,
 			[
@@ -73,7 +73,7 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
+				'controller_name' => 'ITRocks\Framework\Tests\Objects\Orders',
 				'feature_name' => Feature::F_LIST,
 				'parameters' => (new Parameters())->getRawParameters()
 			]
@@ -83,7 +83,7 @@ class Uri_Tests extends Test
 	//---------------------------------------------------------------------------- testImplicitOutput
 	public function testImplicitOutput()
 	{
-		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Order/1', []);
+		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Order/1', []);
 		$this->assume(
 			__METHOD__,
 			[
@@ -102,7 +102,7 @@ class Uri_Tests extends Test
 	//----------------------------------------------------------------------- testListRemoveParameter
 	public function testListRemoveParameter()
 	{
-		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Orders/listRemove/date');
+		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders/listRemove/date');
 		$this->assume(
 			__METHOD__,
 			[
@@ -111,7 +111,7 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
+				'controller_name' => 'ITRocks\Framework\Tests\Objects\Orders',
 				'feature_name' => 'listRemove',
 				'parameters' => (new Parameters())->addValue('date')->getRawParameters()
 			]
@@ -121,7 +121,7 @@ class Uri_Tests extends Test
 	//---------------------------------------------------------------------- testListRemoveParameters
 	public function testListRemoveParameters()
 	{
-		$controller_uri = new Uri('/SAF/Framework/Tests/Objects/Orders/listRemove/date/number');
+		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders/listRemove/date/number');
 		$this->assume(
 			__METHOD__,
 			[
@@ -130,7 +130,7 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
+				'controller_name' => 'ITRocks\Framework\Tests\Objects\Orders',
 				'feature_name' => 'listRemove',
 				'parameters' => (new Parameters())->addValue('date')->addValue('number')
 					->getRawParameters()
@@ -142,7 +142,7 @@ class Uri_Tests extends Test
 	public function testListRemoveWithArguments()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Tests/Objects/Orders/listRemove/date/number',
+			'/ITRocks/Framework/Tests/Objects/Orders/listRemove/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		$this->assume(
@@ -153,7 +153,7 @@ class Uri_Tests extends Test
 				'parameters'      => $controller_uri->parameters->getRawParameters()
 			],
 			[
-				'controller_name' => 'SAF\Framework\Tests\Objects\Orders',
+				'controller_name' => 'ITRocks\Framework\Tests\Objects\Orders',
 				'feature_name' => 'listRemove',
 				'parameters' => (new Parameters())->addValue('date')->addValue('number')
 					->set(Parameter::AS_WIDGET, true)->set('_', 2)->getRawParameters()
@@ -165,7 +165,7 @@ class Uri_Tests extends Test
 	public function testTrashcanDropOutput()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Widget/Trashcan/drop/Order/1/' . Feature::F_OUTPUT . '/date/number',
+			'/ITRocks/Framework/Widget/Trashcan/drop/Order/1/' . Feature::F_OUTPUT . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		$this->assume(
@@ -189,7 +189,7 @@ class Uri_Tests extends Test
 	public function testTrashcanDropParameters()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number'
+			'/ITRocks/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number'
 		);
 		$this->assume(
 			__METHOD__,
@@ -211,7 +211,7 @@ class Uri_Tests extends Test
 	public function testTrashcanDropWithArguments()
 	{
 		$controller_uri = new Uri(
-			'/SAF/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number',
+			'/ITRocks/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		$this->assume(

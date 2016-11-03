@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection\Interfaces;
+namespace ITRocks\Framework\Reflection\Interfaces;
 
 /**
  * An interface for all reflection class classes

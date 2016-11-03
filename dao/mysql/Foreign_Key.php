@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
-use SAF\Framework\Dao\Sql;
+use ITRocks\Framework\Dao\Sql;
 
 use mysqli;
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Mysql foreign key

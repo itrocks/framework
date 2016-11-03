@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Tests\Replaces;
+namespace ITRocks\Framework\Reflection\Annotation\Tests\Replaces;
 
 /**
  * A simple test class with properties replacing each other

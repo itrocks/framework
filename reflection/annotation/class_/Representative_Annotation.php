@@ -1,11 +1,10 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Class_;
+namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use SAF\Framework\PHP;
-use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Representative;
-use SAF\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Representative;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
  * The 'representative' annotation stores the list of properties which values are representative

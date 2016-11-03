@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\Data_Link;
+namespace ITRocks\Framework\Dao\Data_Link;
 
 /**
  * A transactional data link defines a data link that accepts transactional calls (maybe virtual...)

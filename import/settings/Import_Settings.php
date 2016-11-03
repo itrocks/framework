@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Import\Settings;
+namespace ITRocks\Framework\Import\Settings;
 
-use SAF\Framework\Import\Import_Array;
-use SAF\Framework\Locale;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Import\Import_Array;
+use ITRocks\Framework\Locale;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Setting\Custom_Settings;
 
 /**
  * Import settings
@@ -67,7 +67,9 @@ class Import_Settings extends Custom_Settings
 	 */
 	public static function current($class_name, $feature = 'import')
 	{
-		return parent::current($class_name, $feature);
+		/** @var $import_settings Import_Settings */
+		$import_settings = parent::current($class_name, $feature);
+		return $import_settings;
 	}
 
 	//---------------------------------------------------------------------------------- getClassName
@@ -93,6 +95,7 @@ class Import_Settings extends Custom_Settings
 	 */
 	public function getSummary()
 	{
+		return;
 	}
 
 	//---------------------------------------------------------------------------------- setConstants

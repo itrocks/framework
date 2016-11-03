@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Sql\Join\Joins;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Sql\Join\Joins;
 
 /**
  * The SQL tables section (joins) of SQL queries builder

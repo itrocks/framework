@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Dao;
+namespace ITRocks\Framework\Dao;
 
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Sql\Builder\Select;
-use SAF\Framework\Sql\Builder\Where;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Sql\Builder\Select;
+use ITRocks\Framework\Sql\Builder\Where;
 
 /**
  * This configuration plugin enables to restrict read data
@@ -160,7 +160,7 @@ class Sql_Link_Restrictor implements Registerable
 		$aop = $register->aop;
 		/* @todo this method does not exist anymore into Sql_Select_Builder
 		$aop->beforeMethod(
-			['SAF\Framework\Sql_Select_Builder', 'buildTables'),
+			['ITRocks\Framework\Sql_Select_Builder', 'buildTables'),
 			[__CLASS__, 'beforeSqlSelectBuilderBuildTables')
 		);
 		*/

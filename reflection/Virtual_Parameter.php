@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
 /**
  * This is a virtual Reflection_Parameter object, needed for internal methods optional parameters

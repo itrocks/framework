@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A null object is an object which all properties have a null value

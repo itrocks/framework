@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Widget\Remove;
+namespace ITRocks\Framework\Widget\Remove;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 use stdClass;
 
 /**

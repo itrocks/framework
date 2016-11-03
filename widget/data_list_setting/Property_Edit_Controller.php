@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Widget\Data_List_Setting;
+namespace ITRocks\Framework\Widget\Data_List_Setting;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\View;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
 
 /**
  * Output setting widget property edit controller

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\View\Html\Dom;
+namespace ITRocks\Framework\View\Html\Dom;
 
 /**
  * <script> html dom element

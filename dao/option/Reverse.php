@@ -1,8 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Option;
+namespace ITRocks\Framework\Dao\Option;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option;
 
 /**
  * A DAO reverse option for use as a column name for Sort
@@ -33,7 +32,7 @@ class Reverse implements Option
 	 */
 	public function __toString()
 	{
-		return $this->column . ' reverse';
+		return $this->column . SP . 'reverse';
 	}
 
 }

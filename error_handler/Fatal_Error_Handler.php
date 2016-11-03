@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Error_Handler;
+namespace ITRocks\Framework\Error_Handler;
 
 /**
  * Fatal error handler : this handler display the error and stops the program

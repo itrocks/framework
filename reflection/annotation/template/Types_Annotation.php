@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Type;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * Types annotation : apply this trait to annotations that can contain type name or type names list

@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Import;
+namespace ITRocks\Framework\Import;
 
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao\File\Session_File\Files;
-use SAF\Framework\Session;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\File\Session_File\Files;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Import execution controller

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * The class for the global application object

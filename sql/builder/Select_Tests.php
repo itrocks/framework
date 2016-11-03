@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Tests\Objects\Client;
-use SAF\Framework\Tests\Objects\Item;
-use SAF\Framework\Tests\Objects\Order;
-use SAF\Framework\Tests\Objects\Order_Line;
-use SAF\Framework\Tests\Objects\Quote;
-use SAF\Framework\Tests\Objects\Quote_Salesman;
-use SAF\Framework\Tests\Objects\Quote_Salesman_Additional;
-use SAF\Framework\Tests\Objects\Salesman;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Tests\Objects\Client;
+use ITRocks\Framework\Tests\Objects\Item;
+use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tests\Objects\Order_Line;
+use ITRocks\Framework\Tests\Objects\Quote;
+use ITRocks\Framework\Tests\Objects\Quote_Salesman;
+use ITRocks\Framework\Tests\Objects\Quote_Salesman_Additional;
+use ITRocks\Framework\Tests\Objects\Salesman;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Sql select builder tests

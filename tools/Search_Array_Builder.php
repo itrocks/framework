@@ -1,11 +1,10 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Dao\Func\Logical;
-use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * The search array builder builds search arrays from properties paths and search phrases
@@ -115,7 +114,6 @@ class Search_Array_Builder
 	 */
 	private function classRepresentativeProperties($class, $already = [])
 	{
-		/** @var $property_names List_Annotation */
 		$property_names = $class->getListAnnotation('representative')->values();
 		foreach ($property_names as $key => $property_name) {
 			$property = strpos($property_name, DOT)

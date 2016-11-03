@@ -1,8 +1,8 @@
-<!--use SAF\Framework\Html_Session-->
-<!--use SAF\Framework\Locale\Loc-->
-<!--use SAF\Framework\Session-->
-<!--use SAF\Framework\Tools\Paths-->
-<!--use SAF\Framework\Widget\Menu-->
+<!--use ITRocks\Framework\Html_Session-->
+<!--use ITRocks\Framework\Locale\Loc-->
+<!--use ITRocks\Framework\Session-->
+<!--use ITRocks\Framework\Tools\Paths-->
+<!--use ITRocks\Framework\Widget\Menu-->
 <!DOCTYPE html>
 <html>
 
@@ -43,7 +43,7 @@
 	<link href="skins/default/user.css" rel="stylesheet" type="text/css">
 
 	<!-- must be first -->
-	<script type="text/javascript" src="js/saf.constants.js"></script>
+	<script type="text/javascript" src="js/itrocks.constants.js"></script>
 	<script type="text/javascript" src="../../vendor/components/jquery/jquery.min.js"></script>
 	<script type="text/javascript" src="../../vendor/components/jquery/jquery-migrate.min.js"></script>
 	<script type="text/javascript" src="../../vendor/components/jqueryui/jquery-ui.min.js"></script>
@@ -68,10 +68,10 @@
 	<script type="text/javascript" src="js/jquery.verticalscrollbar.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.tabber.js"></script>
 
-	<script type="text/javascript" src="js/saf.app.js"></script>
-	<script type="text/javascript" src="js/saf.fullheight.js"></script>
-	<script type="text/javascript" src="js/saf.functions.js"></script>
-	<script type="text/javascript" src="js/saf.string.js"></script>
+	<script type="text/javascript" src="js/itrocks.app.js"></script>
+	<script type="text/javascript" src="js/itrocks.fullheight.js"></script>
+	<script type="text/javascript" src="js/itrocks.functions.js"></script>
+	<script type="text/javascript" src="js/itrocks.string.js"></script>
 
 	<script type="text/javascript" src="debug/debug.js"></script>
 	<script type="text/javascript" src="import/import.js"></script>
@@ -84,7 +84,7 @@
 	<script type="text/javascript" src="widget/trashcan/trashcan.js"></script>
 
 	<!-- must be after dataList because of modifiable -->
-	<script type="text/javascript" src="../../saf/framework/setting/custom.js"></script>
+	<script type="text/javascript" src="../../itrocks/framework/setting/custom.js"></script>
 
 	<script type="text/javascript" src="js/default.application.js"></script>
 
@@ -102,15 +102,15 @@
 	<header>
 		<div id="messages"></div>
 		<ul class="links">
-			<li class="provider saf">
-				<a href="http://saf.re" target="_blank" title="saf.re">SAF</a>
+			<li class="provider itrocks">
+				<a href="http://itrocks.org" target="_blank" title="itrocks.org">ITRocks</a>
 			</li>
-			<li class="rad enter"><a href="/SAF/Framework/Rad/enter" title="|Enter application modification mode|">RAD</a></li>
+			<li class="rad enter"><a href="/ITRocks/Framework/Rad/enter" title="|Enter application modification mode|">RAD</a></li>
 		</ul>
 	</header>
 
 	<!--Session.current.plugins.get(Menu.class)-->
-	{/SAF/Framework/Widget/Menu/output}
+	{/ITRocks/Framework/Widget/Menu/output}
 	<!--Session.current.plugins.get(Menu.class)-->
 
 	<section class="application center" id="main">
@@ -120,7 +120,7 @@
 	<section id="trashcan">
 		<h2>|Trashcan|</h2>
 		<div></div>
-		<a href="/SAF/Framework/Widget/Trashcan" target="#trashcan>div">|bin|</a>
+		<a href="/ITRocks/Framework/Widget/Trashcan" target="#trashcan>div">|bin|</a>
 	</section>
 
 </body>

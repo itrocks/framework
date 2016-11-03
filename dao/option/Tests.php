@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Dao\Option;
+namespace ITRocks\Framework\Dao\Option;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Dao options tests

@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
 use Exception;
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Sql\Builder\Select;
-use SAF\Framework\Tests\Objects\Order;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Sql\Builder\Select;
+use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Dao functions unit tests

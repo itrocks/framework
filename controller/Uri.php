@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Controller;
+namespace ITRocks\Framework\Controller;
 
-use SAF\Framework\Application;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * The controller URI contains the controller name, feature, and additional parameters

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 /**
  * Image tools class
@@ -75,7 +75,7 @@ class Image
 
 	//--------------------------------------------------------------------------------------- display
 	/**
-	 * @return string
+	 * Display an image
 	 */
 	public function display()
 	{

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Email;
+namespace ITRocks\Framework\Email;
 
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * HTML emails template engine

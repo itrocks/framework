@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Dao\Func\Column;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Dao\Sql\Link;
-use SAF\Framework\Sql\Builder;
-use SAF\Framework\Sql\Join\Joins;
+use ITRocks\Framework\Dao\Func\Column;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Sql\Link;
+use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Sql\Join\Joins;
 
 /**
  * The SQL select queries builder

@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\View;
+namespace ITRocks\Framework\View;
 
-use SAF\Framework;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Logger\File_Logger;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
+use ITRocks\Framework;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Logger\File_Logger;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
 
 /**
  * This plugin logs all view outputs sent to users.

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Builder;
+use ITRocks\Framework\Builder;
 
 /**
  * A String class to get commonly used string features into an object

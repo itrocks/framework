@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Widget\Menu;
+namespace ITRocks\Framework\Widget\Menu;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Session;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Menu;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Menu;
 
 /**
  * The Menu output controller outputs the current menu if none is passed as parameter

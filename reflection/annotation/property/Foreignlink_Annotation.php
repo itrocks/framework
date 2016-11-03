@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * The property name into the virtual link class that contains foreign object

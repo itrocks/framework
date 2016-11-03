@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Tests\Replaces;
+namespace ITRocks\Framework\Reflection\Annotation\Tests\Replaces;
 
-use SAF\Framework\Setting\User_Setting;
-use SAF\Framework\User;
+use ITRocks\Framework\Setting\User_Setting;
+use ITRocks\Framework\User;
 
 /**
  * A son for the class Dependency, with some replacements

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Option;
+namespace ITRocks\Framework\Dao\Option;
 
-use SAF\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option;
 
 /**
  * Set this option to write link class data only.

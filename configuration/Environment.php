@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Configuration;
+namespace ITRocks\Framework\Configuration;
 
 /**
  * Environment constants

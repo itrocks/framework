@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
-use SAF\Framework\Dao\Sql;
+use ITRocks\Framework\Dao\Sql;
 
 /**
  * An object representation of a mysql table

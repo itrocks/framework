@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\User\Register;
+namespace ITRocks\Framework\User\Register;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\User;
-use SAF\Framework\User\Authenticate\Authentication;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\User;
+use ITRocks\Framework\User\Authenticate\Authentication;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * The user register controller offers a registration form view

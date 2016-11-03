@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Access;
+namespace ITRocks\Framework\Access;
 
-use SAF\Framework\Application;
-use SAF\Framework\Controller;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\View;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Controller;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\View;
 
 /**
  * An access control plugin for features available only from a set of IP

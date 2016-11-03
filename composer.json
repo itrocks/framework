@@ -1,8 +1,8 @@
 {
 	"authors":      [{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }],
-	"description":  "SAF",
+	"description":  "ITRocks",
 	"license":      "MIT",
-	"name":         "saf/framework",
+	"name":         "itrocks/framework",
 	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
 		"alvaro-prieto/colResizable":            "1.6",

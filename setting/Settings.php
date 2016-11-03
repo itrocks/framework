@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Setting;
-use SAF\Framework\Tools\Set;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Setting;
+use ITRocks\Framework\Tools\Set;
 
 /**
  * Set of settings
@@ -25,7 +25,7 @@ class Settings extends Set
 				$settings[$setting->code] = $setting;
 			}
 		}
-		parent::__construct(Builder::className('SAF\Framework\Setting'), $settings);
+		parent::__construct(Builder::className('ITRocks\Framework\Setting'), $settings);
 	}
 
 	//------------------------------------------------------------------------------------------- add
@@ -65,7 +65,9 @@ class Settings extends Set
 	 */
 	public function get($code)
 	{
-		return parent::get($code);
+		/** @var $setting Setting */
+		$setting = parent::get($code);
+		return $setting;
 	}
 
 }

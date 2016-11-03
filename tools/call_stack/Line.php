@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tools\Call_Stack;
+namespace ITRocks\Framework\Tools\Call_Stack;
 
 /**
  * Call stack line

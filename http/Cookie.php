@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Http;
+namespace ITRocks\Framework\Http;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Tools\Stringable;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Tools\Stringable;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * HTTP header cookie object
@@ -54,10 +54,11 @@ class Cookie implements Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
-	 * @return self
+	 * @return static
 	 */
 	public static function fromString($string)
 	{
+		/** @var $cookie static */
 		$cookie = Builder::create(get_called_class());
 		$cookie->properties = [];
 		foreach (explode(';', $string) as $element) {

@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Widget\Edit;
+namespace ITRocks\Framework\Widget\Edit;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\View\Html\Builder\Map;
-use SAF\Framework\View\Html\Dom\Table\Body;
-use SAF\Framework\View\Html\Dom\Table\Row;
-use SAF\Framework\View\Html\Dom\Table\Standard_Cell;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\View\Html\Builder\Map;
+use ITRocks\Framework\View\Html\Dom\Table\Body;
+use ITRocks\Framework\View\Html\Dom\Table\Row;
+use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
 
 /**
  * Takes a map of objects and build a HTML edit subform containing their data

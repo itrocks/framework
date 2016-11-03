@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Email;
+namespace ITRocks\Framework\Email;
 
-use SAF\Framework\Traits\Has_Email;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Has_Email;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * An email recipient (or sender, this object can be used for both)

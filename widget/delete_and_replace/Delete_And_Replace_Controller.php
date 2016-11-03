@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Widget\Delete_And_Replace;
+namespace ITRocks\Framework\Widget\Delete_And_Replace;
 
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Delete_And_Replace;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Delete_And_Replace;
 
 /**
  * Default delete-and-replace controller

@@ -1,28 +1,28 @@
 <?php
-namespace SAF\Framework\Widget\Output;
+namespace ITRocks\Framework\Widget\Output;
 
-use SAF\Framework\Controller;
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Controller\Target;
-use SAF\Framework\Printer\Model;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Setting\Buttons;
-use SAF\Framework\Setting\Custom_Settings;
-use SAF\Framework\Setting\Custom_Settings_Controller;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Button;
-use SAF\Framework\Widget\Button\Code;
-use SAF\Framework\Widget\Button\Has_General_Buttons;
-use SAF\Framework\Widget\Duplicate\Duplicate;
-use SAF\Framework\Widget\Output_Setting\Output_Settings;
-use SAF\Framework\Widget\Tab;
-use SAF\Framework\Widget\Tab\Tabs_Builder_Object;
+use ITRocks\Framework\Controller;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Printer\Model;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Setting\Buttons;
+use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Setting\Custom_Settings_Controller;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Button;
+use ITRocks\Framework\Widget\Button\Code;
+use ITRocks\Framework\Widget\Button\Has_General_Buttons;
+use ITRocks\Framework\Widget\Duplicate\Duplicate;
+use ITRocks\Framework\Widget\Output_Setting\Output_Settings;
+use ITRocks\Framework\Widget\Tab;
+use ITRocks\Framework\Widget\Tab\Tabs_Builder_Object;
 
 /**
  * All output controllers should extend from this at it offers standard output elements methods and structure
@@ -234,7 +234,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	 *
 	 * @param $object          object
 	 * @param $output_settings Output_Settings
-	 * @return Tab[]
+	 * @return Tab
 	 */
 	protected function getTab($object, $output_settings)
 	{

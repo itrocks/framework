@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Plugin;
+namespace ITRocks\Framework\Plugin;
 
-use SAF\Framework\Plugin;
+use ITRocks\Framework\Plugin;
 
 /**
  * The plugins manager standard interface

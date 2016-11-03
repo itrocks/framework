@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
-use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * Builds Table object with a structure matching the structure of a PHP class

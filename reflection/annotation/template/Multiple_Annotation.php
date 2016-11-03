@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
 /**
  * This is an interface for annotations that accept severals cumulative implementations.

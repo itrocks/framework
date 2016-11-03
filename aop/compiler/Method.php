@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\AOP\Compiler;
+namespace ITRocks\Framework\AOP\Compiler;
 
-use SAF\Framework\PHP\Reflection_Class;
-use SAF\Framework\PHP\Reflection_Method;
+use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\PHP\Reflection_Method;
 
 /**
  * Aspect weaver method compiler
@@ -165,7 +165,7 @@ class Method
 					$joinpoint_parameters_string .= $joinpoint_string_parameters . ']';
 					switch ($type) {
 						case 'after':
-							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\Framework\AOP\Joinpoint\After_Method('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \ITRocks\Framework\AOP\Joinpoint\After_Method('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', $result_, ' . $advice_string
 								. $i2 . ');';
 							break;
@@ -173,13 +173,13 @@ class Method
 							$process_callback = ($methods[$method_name]->class->name == $this->class->name)
 								? ($method_name . '_' . $count)
 								: $method_name;
-							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\Framework\AOP\Joinpoint\Around_Method('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \ITRocks\Framework\AOP\Joinpoint\Around_Method('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string
 								. ', ' . $advice_string . ', ' . Q . $process_callback . Q
 								. $i2 . ');';
 							break;
 						case 'before':
-							$joinpoint_code = $i2 . '$joinpoint_ = new \SAF\Framework\AOP\Joinpoint\Before_Method('
+							$joinpoint_code = $i2 . '$joinpoint_ = new \ITRocks\Framework\AOP\Joinpoint\Before_Method('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', ' . $advice_string
 								. $i2 . ');';
 							break;

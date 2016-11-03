@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * A component is a class for objects that should not exist without their container object

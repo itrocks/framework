@@ -1,10 +1,9 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
-use SAF\Framework\AOP\Joinpoint\Around_Method;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\AOP\Joinpoint\Around_Method;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
 
 /**
  * Compose translations with dynamic elements with separated translations

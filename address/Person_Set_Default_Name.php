@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Address;
+namespace ITRocks\Framework\Address;
 
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A Has_Name Person which $name is set to "$first_name $last_name" when empty

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Traits;
+namespace ITRocks\Framework\Traits;
 
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * For classes that have an optional valid-from date as validity date

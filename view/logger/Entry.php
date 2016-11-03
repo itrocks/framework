@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\View\Logger;
+namespace ITRocks\Framework\View\Logger;
 
-use SAF\Framework;
-use SAF\Framework\Session;
-use SAF\Framework\View\Logger;
+use ITRocks\Framework;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\View\Logger;
 
 /**
- * Logger entry trait to view output into SAF\Framework\Logger\Entry
+ * Logger entry trait to view output into ITRocks\Framework\Logger\Entry
  */
 trait Entry
 {

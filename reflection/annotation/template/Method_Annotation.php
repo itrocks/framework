@@ -1,14 +1,14 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Event;
-use SAF\Framework\PHP\Dependency;
-use SAF\Framework\PHP\Reflection_Class;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Event;
+use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * This annotation template contains a callable method :

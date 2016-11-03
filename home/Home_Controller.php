@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Home;
+namespace ITRocks\Framework\Home;
 
-use SAF\Framework\Application;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\View;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\View;
 
 /**
  * Application home page view controller

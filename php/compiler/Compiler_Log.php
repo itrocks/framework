@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\PHP\Compiler;
+namespace ITRocks\Framework\PHP\Compiler;
 
-use SAF\Framework\Logger\Entry;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Logger\Entry;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * PHP Compiler log entry

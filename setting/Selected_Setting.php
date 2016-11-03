@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Setting;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Setting;
 
 /**
  * A Custom_Settings object with the information of it is selected or not

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\User\Group;
+namespace ITRocks\Framework\User\Group;
 
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * User group feature(s) yaml file management class
@@ -9,16 +9,22 @@ use SAF\Framework\Tools\Names;
 class Yaml
 {
 
+	//---------------------------------------------------------------------------------- DEFAULTS_DIR
 	const DEFAULTS_DIR = __DIR__ . SL . 'defaults';
 
+	//-------------------------------------------------------------------------------------- FEATURES
 	const FEATURES = 'features';
 
+	//-------------------------------------------------------------------------------------- INCLUDES
 	const INCLUDES = 'includes';
 
+	//------------------------------------------------------------------------------------------ NAME
 	const NAME = 'name';
 
+	//------------------------------------------------------------------------------------------ PATH
 	const PATH = 'path';
 
+	//------------------------------------------------------------------------------------------ YAML
 	const YAML = 'yaml';
 
 	//----------------------------------------------------------------------------------------- $data

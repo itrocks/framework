@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\AOP\Compiler;
+namespace ITRocks\Framework\AOP\Compiler;
 
 use ReflectionFunction;
-use SAF\Framework\PHP\Reflection_Class;
-use SAF\Framework\PHP\Reflection_Method;
-use SAF\Framework\Plugin;
-use SAF\Framework\Reflection\Reflection_Function;
+use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\PHP\Reflection_Method;
+use ITRocks\Framework\Plugin;
+use ITRocks\Framework\Reflection\Reflection_Function;
 
 /**
  * Functions common to all element compilers classes
@@ -149,7 +149,7 @@ trait Toolbox
 			}
 			else {
 				return $i2 . '/** @var $object_ ' . BS . $advice_class_name . ' */'
-					. $i2 . '$object_ = \SAF\Framework\Session::current()->plugins->get('
+					. $i2 . '$object_ = \ITRocks\Framework\Session::current()->plugins->get('
 						. "'$advice_class_name'"
 					. ');'
 					. $joinpoint_code

@@ -31,7 +31,7 @@ Définition des objets manipulés :
   d'un framework.
 
 - Un framework est en ensemble de fonctionnalités dont peut hériter une application ou un
-  framework de plus haut niveau. SAF est le framework de plus bas niveau et est le seul composant
+  framework de plus haut niveau. ITRocks est le framework de plus bas niveau et est le seul composant
   du logiciel sans parent.
 
 - Un module est une composante dépendante de l'application, et consiste en un ensemble de

@@ -1,15 +1,14 @@
 <?php
-namespace SAF\Framework\Email;
+namespace ITRocks\Framework\Email;
 
 use Html2Text\Html2Text;
-use SAF\Framework\Builder;
-use SAF\Framework\Dao\File;
-use SAF\Framework\Email;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Email;
 
 /**
  * Encodes MIME emails
  *
- * This offers a SAF interface to the PHP PEAR Mail_Mime package
+ * This offers a ITRocks interface to the PHP PEAR Mail_Mime package
  */
 class Encoder
 {

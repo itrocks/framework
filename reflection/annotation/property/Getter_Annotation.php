@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Mapper\Getter;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Tells a method name that is the getter for that property.

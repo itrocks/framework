@@ -1,16 +1,16 @@
 <?php
-namespace SAF\Framework\View\Html\Builder\Tests;
+namespace ITRocks\Framework\View\Html\Builder\Tests;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Controller\Uri;
-use SAF\Framework\Tests\Objects\Vehicle;
-use SAF\Framework\Tests\Objects\Vehicle_Door;
-use SAF\Framework\Tests\Objects\Vehicle_Door_Piece;
-use SAF\Framework\Tests\Test;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Edit\Edit_Controller;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Tests\Objects\Vehicle;
+use ITRocks\Framework\Tests\Objects\Vehicle_Door;
+use ITRocks\Framework\Tests\Objects\Vehicle_Door_Piece;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Edit\Edit_Controller;
 
 /**
  * HTML view collection builder tests

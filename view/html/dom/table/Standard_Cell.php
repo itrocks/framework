@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\View\Html\Dom\Table;
+namespace ITRocks\Framework\View\Html\Dom\Table;
 
 /**
  * A DOM element class for HTML tables standard cells <td>

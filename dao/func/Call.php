@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
-use SAF\Framework\Sql\Builder\Columns;
+use ITRocks\Framework\Sql\Builder\Columns;
 
 /**
  * A simple function call
@@ -10,6 +10,7 @@ class Call extends Column
 {
 
 	const DISTINCT = 'DISTINCT';
+	//------------------------------------------------------------------------------------------ TRIM
 	const TRIM     = 'TRIM';
 
 	//------------------------------------------------------------------------------------- $function

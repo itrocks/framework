@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Dao;
+use ITRocks\Framework\Dao;
 
 /**
  * Collections of objects search functions library

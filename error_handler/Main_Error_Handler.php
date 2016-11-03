@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Error_Handler;
+namespace ITRocks\Framework\Error_Handler;
 
 /**
  * The main error handler displays the error and resume

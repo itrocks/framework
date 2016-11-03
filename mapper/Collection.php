@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
 /**
  * A collection is an array of objects that are a component of the container object

@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
 use DateTime;
-use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * This builds a mysql column associated to a class property

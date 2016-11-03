@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Logger;
+namespace ITRocks\Framework\Logger;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Logger;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Session;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Logger;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Session;
 
 /**
  * Features common to files loggers plugins

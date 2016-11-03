@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Widget\Data_List_Setting;
+namespace ITRocks\Framework\Widget\Data_List_Setting;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Setting\Custom_Settings;
-use SAF\Framework\Dao\Option\Sort;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Setting;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Dao\Option\Sort;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Setting;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Data list settings : all that can be customized into a list view

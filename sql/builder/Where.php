@@ -1,20 +1,20 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Dao\Func\Logical;
-use SAF\Framework\Dao\Sql\Link;
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use SAF\Framework\Reflection\Link_Class;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Sql\Builder;
-use SAF\Framework\Sql\Join\Joins;
-use SAF\Framework\Sql\Join;
-use SAF\Framework\Sql\Value;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Dao\Sql\Link;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Sql\Join\Joins;
+use ITRocks\Framework\Sql\Join;
+use ITRocks\Framework\Sql\Value;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * The SQL where section of SQL queries builder

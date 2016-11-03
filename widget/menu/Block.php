@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Widget\Menu;
+namespace ITRocks\Framework\Widget\Menu;
 
 /**
  * The menu block is the main division of menus items

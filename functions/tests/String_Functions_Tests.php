@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Functions\Tests;
+namespace ITRocks\Framework\Functions\Tests;
 
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Unit tests for the string_functions.php functions library

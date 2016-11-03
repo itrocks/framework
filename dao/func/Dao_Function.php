@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
 /**
  * Dao function

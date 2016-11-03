@@ -1,9 +1,8 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 use Iterator;
-use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * The default Set class for set of objects

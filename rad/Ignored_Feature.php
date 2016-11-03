@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\RAD;
+namespace ITRocks\Framework\RAD;
 
 /**
  * RAD Ignored feature class

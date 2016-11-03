@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
-use SAF\Framework\Reflection\Interfaces\Reflection;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
 
 /**
  * A reflection context annotation needs either a property or a class to be properly built

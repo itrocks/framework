@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tests\Objects;
+namespace ITRocks\Framework\Tests\Objects;
 
 /**
  * A salesman with specific data for its link to a quote and with additional specific data

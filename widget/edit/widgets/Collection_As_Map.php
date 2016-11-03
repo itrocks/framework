@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Widget\Edit\Widgets;
+namespace ITRocks\Framework\Widget\Edit\Widgets;
 
-use SAF\Framework\Mapper\Object_Builder_Array;
-use SAF\Framework\View\Html\Builder\Map;
-use SAF\Framework\View\Html\Builder\Property;
-use SAF\Framework\Widget\Edit\Html_Builder_Map;
-use SAF\Framework\Widget\Edit\Html_Template;
+use ITRocks\Framework\Mapper\Object_Builder_Array;
+use ITRocks\Framework\View\Html\Builder\Map;
+use ITRocks\Framework\View\Html\Builder\Property;
+use ITRocks\Framework\Widget\Edit\Html_Builder_Map;
+use ITRocks\Framework\Widget\Edit\Html_Template;
 
 /**
  * This property widget displays a collection as if it was a map

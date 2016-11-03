@@ -1,26 +1,26 @@
 <?php
-namespace SAF\Framework\View\Html;
+namespace ITRocks\Framework\View\Html;
 
-use SAF\Framework\Application;
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Dao\File;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_View;
-use SAF\Framework\Tools\Contextual_Callable;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Tools\Paths;
-use SAF\Framework\Tools\String_Class;
-use SAF\Framework\View\Html;
-use SAF\Framework\View\Html\Template\Functions;
-use SAF\Framework\View\Html\Template\Loop;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_View;
+use ITRocks\Framework\Tools\Contextual_Callable;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Tools\Paths;
+use ITRocks\Framework\Tools\String_Class;
+use ITRocks\Framework\View\Html;
+use ITRocks\Framework\View\Html\Template\Functions;
+use ITRocks\Framework\View\Html\Template\Loop;
 
 /**
- * built-in SAF HTML template engine
+ * built-in ITRocks HTML template engine
  */
 class Template
 {
@@ -101,7 +101,7 @@ class Template
 
 	//-------------------------------------------------------------------------------- $main_template
 	/**
-	 * The main template file path (ie 'saf/framework/main.html');
+	 * The main template file path (ie 'itrocks/framework/main.html');
 	 *
 	 * If null or not set : will be automatically set to current application main template 'main.html'
 	 * If false : no main template will be used
@@ -153,7 +153,7 @@ class Template
 	/**
 	 * Full classes used.
 	 *
-	 * @example After '<!--use SAF\Framework\Class-->', you can use short class name '{Class}'
+	 * @example After '<!--use ITRocks\Framework\Class-->', you can use short class name '{Class}'
 	 * @var string[] key is the short class name, value is the full class name including namespace
 	 */
 	protected $use = [];

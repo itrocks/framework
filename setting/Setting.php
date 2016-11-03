@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Setting\Custom_Settings;
 
 /**
  * An application setting

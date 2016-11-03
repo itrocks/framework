@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\View\Html\Dom;
+namespace ITRocks\Framework\View\Html\Dom;
 
-use SAF\Framework\View\Html\Dom\Table\Body;
-use SAF\Framework\View\Html\Dom\Table\Head;
+use ITRocks\Framework\View\Html\Dom\Table\Body;
+use ITRocks\Framework\View\Html\Dom\Table\Head;
 
 /**
  * A DOM element class for HTML tables <table>

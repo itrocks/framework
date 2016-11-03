@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Dao\Mysql\File_Logger;
+namespace ITRocks\Framework\Dao\Mysql\File_Logger;
 
-use SAF\Framework;
-use SAF\Framework\Session;
-use SAF\Framework\Dao\Mysql\File_Logger;
+use ITRocks\Framework;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\Dao\Mysql\File_Logger;
 
 /**
- * Logger entry trait to view output into SAF\Framework\Logger\Entry
+ * Logger entry trait to view output into ITRocks\Framework\Logger\Entry
  */
 trait Entry
 {

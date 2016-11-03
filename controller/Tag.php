@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Controller;
+namespace ITRocks\Framework\Controller;
 
 /**
  * Constants for controller tag (html : <div class='tagName', css : .tagName)
@@ -8,6 +8,7 @@ namespace SAF\Framework\Controller;
 abstract class Tag
 {
 
+	//---------------------------------------------------------------------------------------- SUBMIT
 	const SUBMIT = '.submit';
 
 }

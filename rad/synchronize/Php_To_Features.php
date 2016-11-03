@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\RAD\Synchronize;
+namespace ITRocks\Framework\RAD\Synchronize;
 
 /**
  * Php to features synchronization service

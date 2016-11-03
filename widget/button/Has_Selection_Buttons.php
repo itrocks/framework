@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Widget\Button;
+namespace ITRocks\Framework\Widget\Button;
 
-use SAF\Framework\Setting\Custom_Settings;
-use SAF\Framework\Widget\Button;
+use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Widget\Button;
 
 /**
  * Apply this contract to all controllers that need a getSelectionButtons() method.
@@ -10,6 +10,7 @@ use SAF\Framework\Widget\Button;
 interface Has_Selection_Buttons
 {
 
+	//----------------------------------------------------------------------------- SELECTION_BUTTONS
 	const SELECTION_BUTTONS = 'selection_buttons';
 
 	//--------------------------------------------------------------------------- getSelectionButtons

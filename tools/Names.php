@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Application;
-use SAF\Framework\Dao;
-use SAF\Framework\PHP\Dependency;
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * A library of feature to transform PHP elements names
@@ -97,8 +97,8 @@ abstract class Names
 	/**
 	 * Gets the URI of a class name or object
 	 *
-	 * @example class name User : 'SAF/Framework/User'
-	 * @example User object of id = 1 : 'SAF/Framework/User/1'
+	 * @example class name User : 'ITRocks/Framework/User'
+	 * @example User object of id = 1 : 'ITRocks/Framework/User/1'
 	 * @param $class_name object|string
 	 * @return string
 	 */

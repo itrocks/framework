@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Widget\Edit;
+namespace ITRocks\Framework\Widget\Edit;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Controller\Tag;
-use SAF\Framework\Controller\Target;
-use SAF\Framework\Setting\Custom_Settings;
-use SAF\Framework\Tools\Color;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Button;
-use SAF\Framework\Widget\Output\Output_Controller;
-use SAF\Framework\Widget\Output_Setting\Output_Settings;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Tag;
+use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Tools\Color;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Button;
+use ITRocks\Framework\Widget\Output\Output_Controller;
+use ITRocks\Framework\Widget\Output_Setting\Output_Settings;
 
 /**
  * The default edit controller, when no edit controller is set for the class

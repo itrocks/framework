@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Setting;
-use SAF\Framework\User;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Setting;
+use ITRocks\Framework\User;
 
 /**
  * User setting

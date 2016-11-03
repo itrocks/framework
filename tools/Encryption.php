@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 /**
  * Encryption class

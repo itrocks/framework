@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Widget\Edit;
+namespace ITRocks\Framework\Widget\Edit;
 
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
 
 /**
  * Html edit multiple controller
@@ -23,8 +23,9 @@ class Html_Multiple_Output_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files)
 	{
-		echo 'check this out man';
-		echo '<pre>' . print_r($parameters->getObjects(), true) . '</pre>';
+		return 'check this out man'
+			. PRE . print_r($parameters->getObjects(), true) . _PRE;
+
 	}
 
 }

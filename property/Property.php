@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\Tools\Field;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Field;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A property is a field into a programmed class

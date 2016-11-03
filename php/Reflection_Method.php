@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
-use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
-use SAF\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use ITRocks\Framework\Reflection\Interfaces;
 
 /**
  * The same as PHP's ReflectionMethod, but working with PHP source, without loading the class

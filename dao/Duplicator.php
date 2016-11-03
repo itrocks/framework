@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Dao;
+namespace ITRocks\Framework\Dao;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Data_Link\Identifier_Map;
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * This process class prepares business object linked to storage for duplicate

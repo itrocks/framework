@@ -1,16 +1,15 @@
 <?php
-namespace SAF\Framework\Builder;
+namespace ITRocks\Framework\Builder;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Configuration;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Needs_Main;
-use SAF\Framework\Dao;
-use SAF\Framework\PHP;
-use SAF\Framework\PHP\Dependency;
-use SAF\Framework\PHP\ICompiler;
-use SAF\Framework\PHP\Reflection_Source;
-use SAF\Framework\Session;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Needs_Main;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\PHP;
+use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\PHP\ICompiler;
+use ITRocks\Framework\PHP\Reflection_Source;
+use ITRocks\Framework\Session;
 
 /**
  * Built classes compiler

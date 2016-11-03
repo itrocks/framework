@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Email;
+namespace ITRocks\Framework\Email;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Email;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Email;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
 
 /**
  * Enables archiving of all received and sent emails

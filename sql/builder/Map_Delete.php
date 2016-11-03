@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * SQL delete queries builder for a mapped object
@@ -35,8 +35,8 @@ class Map_Delete
 		list($table, $field1, $field2, $id1, $id2) = Map::sqlElementsOf(
 			$object, $this->property, $foreign_object
 		);
-		return 'DELETE FROM ' . BQ . $table . BQ
-			. LF . 'WHERE ' . BQ . $field1 . BQ . ' = ' . $id1 . ' AND ' . BQ . $field2 . BQ . ' = ' . $id2;
+		return 'DELETE FROM' . SP . BQ . $table . BQ . LF
+			. 'WHERE ' . BQ . $field1 . BQ . ' = ' . $id1 . ' AND ' . BQ . $field2 . BQ . ' = ' . $id2;
 	}
 
 }

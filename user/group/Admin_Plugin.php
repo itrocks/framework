@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\User\Group;
+namespace ITRocks\Framework\User\Group;
 
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Session;
-use SAF\Framework\Updater\Application_Updater;
-use SAF\Framework\Updater\Updatable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\Updater\Updatable;
 
 /**
  * User group administration plugin TEST

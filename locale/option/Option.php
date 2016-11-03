@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
 /**
  * Option for locale functions

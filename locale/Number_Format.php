@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
 /**
  * Number format locale features : changes number format to comply with user's locale configuration
@@ -10,6 +10,7 @@ class Number_Format
 	const DECIMAL_MAXIMAL_COUNT = 'decimal_maximal_count';
 	const DECIMAL_MINIMAL_COUNT = 'decimal_minimal_count';
 	const DECIMAL_SEPARATOR     = 'decimal_separator';
+	//---------------------------------------------------------------------------- THOUSAND_SEPARATOR
 	const THOUSAND_SEPARATOR    = 'thousand_separator';
 
 	//------------------------------------------------------------------------ $decimal_maximal_count

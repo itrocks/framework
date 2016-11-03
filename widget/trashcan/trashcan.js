@@ -98,10 +98,10 @@ $('document').ready(function()
 					event.target.href += SL + ui.helper.data('feature');
 				}
 				if (ui.helper.data('property')) {
-					event.target.href += '/SAF/Framework/Property/' + ui.helper.data('property');
+					event.target.href += '/ITRocks/Framework/Property/' + ui.helper.data('property');
 				}
 				if (ui.helper.data('action')){
-					event.target.href += '/SAF/Framework/Rad/' + ui.helper.data('action');
+					event.target.href += '/ITRocks/Framework/Rad/' + ui.helper.data('action');
 				}
 				event.target.href += event.target.search + event.target.hash;
 				event.target.click();

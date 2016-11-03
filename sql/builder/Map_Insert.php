@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Sql\Value;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Sql\Value;
 
 /**
  * SQL insert queries builder for a mapped object

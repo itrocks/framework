@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Validate\Property;
+namespace ITRocks\Framework\Widget\Validate\Property;
 
-use SAF\Framework\Reflection\Annotation\Template\Boolean_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Widget\Validate\Result;
+use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Widget\Validate\Result;
 
 /**
  * The mandatory annotation validator

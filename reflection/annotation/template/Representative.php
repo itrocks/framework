@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
-use SAF\Framework\Reflection\Interfaces\Reflection_Class;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Source class for both class and property Representative_Annotation

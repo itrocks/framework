@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\Sql;
+namespace ITRocks\Framework\Dao\Sql;
 
 /**
  * A common interface for Dao table object representation

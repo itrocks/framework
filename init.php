@@ -20,7 +20,7 @@ $composer_executable   = $dir . '/composer.phar';
 $composer_file         = $dir . '/composer.json';
 $composer_setup        = $dir . '/composer-setup.php';
 $configuration_file    = $project_directory . '/config.php';
-$console_file          = $dir . '/saf/framework/console.php';
+$console_file          = $dir . '/itrocks/framework/console.php';
 $hello_world_template  = $project_directory . '/Application_home.html';
 $gitignore_file        = $dir . '/.gitignore';
 $launcher_file         = substr($dir, 0, strrpos($dir, '/')) . '/' . strtolower($project_name) . '.php';
@@ -46,7 +46,7 @@ file_put_contents($application_file, <<<EOT
 <?php
 namespace $namespace;
 
-use SAF\Framework;
+use ITRocks\Framework;
 
 /**
  * The $project_name application
@@ -62,9 +62,9 @@ EOT
 echo '- Create local configuration file ' . $local_file . "\n";
 file_put_contents($local_file, <<<EOT
 <?php
-use SAF\Framework\Configuration;
-use SAF\Framework\Configuration\Environment;
-use SAF\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Configuration;
+use ITRocks\Framework\Configuration\Environment;
+use ITRocks\Framework\Dao\Mysql\Link;
 
 \$loc = [
 	Configuration::ENVIRONMENT => Environment::DEVELOPMENT,
@@ -80,7 +80,7 @@ EOT
 echo '- Create password file ' . $password_file . "\n";
 file_put_contents($password_file, <<<EOT
 <?php
-use SAF\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Dao\Mysql\Link;
 
 \$pwd = [
 	Link::class => '$project_password'
@@ -98,7 +98,7 @@ file_put_contents($gitignore_file, <<<EOT
 /.settings
 
 /cache
-/saf/framework
+/itrocks/framework
 /tmp
 /vendor
 
@@ -116,17 +116,17 @@ file_put_contents($configuration_file, <<<EOT
 <?php
 namespace $namespace;
 
-use SAF\Framework\Configuration;
-use SAF\Framework\Plugin\Priority;
+use ITRocks\Framework\Configuration;
+use ITRocks\Framework\Plugin\Priority;
 
 global \$loc;
 require __DIR__ . '/../../loc.php';
-require __DIR__ . '/../../saf/framework/config.php';
+require __DIR__ . '/../../itrocks/framework/config.php';
 
 \$config['$configuration_name'] = [
 	Configuration::APP         => Application::class,
 	Configuration::ENVIRONMENT => \$loc[Configuration::ENVIRONMENT],
-	Configuration::EXTENDS_APP => 'SAF/Framework',
+	Configuration::EXTENDS_APP => 'ITRocks/Framework',
 ];
 
 EOT
@@ -155,7 +155,7 @@ EOT
 echo '- Create launcher script ' . $launcher_file . "\n";
 file_put_contents($launcher_file, <<<EOT
 <?php
-require __DIR__ . '/$vendor_name-$project_name/saf/framework/index.php';
+require __DIR__ . '/$vendor_name-$project_name/itrocks/framework/index.php';
 EOT
 );
 
@@ -187,7 +187,7 @@ file_put_contents($composer_file, <<<EOT
 	"prefer-stable":     true,
 	"repositories":      [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
-		"saf/framework": "dev-master"
+		"itrocks/framework": "dev-master"
 	},
 	"type": "itrocks-final"
 }

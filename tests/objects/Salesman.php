@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tests\Objects;
+namespace ITRocks\Framework\Tests\Objects;
 
 /**
  * A salesman class

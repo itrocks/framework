@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Plugin;
+namespace ITRocks\Framework\Plugin;
 
-use SAF\Framework\AOP\Weaver\IWeaver;
+use ITRocks\Framework\AOP\Weaver\IWeaver;
 
 /**
  * Plugin register structure

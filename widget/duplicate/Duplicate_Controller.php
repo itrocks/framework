@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Duplicate;
+namespace ITRocks\Framework\Widget\Duplicate;
 
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao\Duplicator;
-use SAF\Framework\Widget\Edit\Edit_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\Duplicator;
+use ITRocks\Framework\Widget\Edit\Edit_Controller;
 
 /**
  * Default duplicate controller

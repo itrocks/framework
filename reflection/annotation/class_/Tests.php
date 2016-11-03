@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Class_;
+namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Class annotations unit tests

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\AOP\Joinpoint;
+namespace ITRocks\Framework\AOP\Joinpoint;
 
-use SAF\Framework\AOP\Joinpoint;
+use ITRocks\Framework\AOP\Joinpoint;
 
 /**
  * Function joinpoint

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Plugin;
+namespace ITRocks\Framework\Plugin;
 
 /**
  * Plugin priorities constants
@@ -16,6 +16,7 @@ abstract class Priority
 	const HIGH     = 'high';
 	const HIGHER   = 'higher';
 	const HIGHEST  = 'highest';
+	//---------------------------------------------------------------------------------------- REMOVE
 	const REMOVE   = 'remove';
 
 }

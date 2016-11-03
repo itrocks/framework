@@ -1,15 +1,15 @@
 <?php
-namespace SAF\Framework\Property;
+namespace ITRocks\Framework\Property;
 
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Property;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Property;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
 
 /**
  * Property search controller

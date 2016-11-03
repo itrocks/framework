@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 use DateInterval;
 use DateTime;
@@ -7,7 +7,7 @@ use DateTimeZone;
 use Exception;
 
 /**
- * This class extends php's DateTime class : you should use this to be SAF compatible
+ * This class extends php's DateTime class : you should use this to be ITRocks compatible
  */
 class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 {

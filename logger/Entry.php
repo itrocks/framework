@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Logger;
+namespace ITRocks\Framework\Logger;
 
-use SAF\Framework;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Mysql\Link;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Log class stores logs infos

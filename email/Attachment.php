@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Email;
+namespace ITRocks\Framework\Email;
 
-use SAF\Framework\Dao\File;
+use ITRocks\Framework\Dao\File;
 
 /**
  * Email attachments are attached or embedded (ie images) files, including multiple versions

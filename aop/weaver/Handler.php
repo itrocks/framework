@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\AOP\Weaver;
+namespace ITRocks\Framework\AOP\Weaver;
 
 /**
  * The Aop handler
@@ -12,6 +12,7 @@ class Handler implements IHandler
 	const AROUND = 'around';
 	const BEFORE = 'before';
 	const READ   = 'read';
+	//----------------------------------------------------------------------------------------- WRITE
 	const WRITE  = 'write';
 
 	//---------------------------------------------------------------------------------------- $index

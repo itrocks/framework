@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Import;
+namespace ITRocks\Framework\Import;
 
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Import;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Import;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Default importForm feature controller

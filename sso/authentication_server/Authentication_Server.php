@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\SSO;
+namespace ITRocks\Framework\SSO;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\User;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\User;
 
 /**
  * Plugin to manage the framework as a SSO authentication server

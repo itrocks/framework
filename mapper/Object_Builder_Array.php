@@ -1,16 +1,16 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Annotation\Class_;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\Tools\Password;
-use SAF\Framework\View\Html\Builder\Property;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Password;
+use ITRocks\Framework\View\Html\Builder\Property;
 
 /**
  * Build an object and it's property values from data stored into a recursive array

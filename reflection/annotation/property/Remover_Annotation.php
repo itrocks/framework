@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 
 /**
  * Tells the remover which method must be called to remove a component object from a composite class

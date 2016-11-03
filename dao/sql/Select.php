@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Dao\Sql;
+namespace ITRocks\Framework\Dao\Sql;
 
 //------------------------------------------------------------------------------------------ Select
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Func\Dao_Function;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Mapper\Object_Builder_Array;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Sql;
-use SAF\Framework\Tools\List_Data;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func\Dao_Function;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Mapper\Object_Builder_Array;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Sql;
+use ITRocks\Framework\Tools\List_Data;
 
 /**
  * Manages Select() Dao Link calls : how to call and parse the query

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Tests\Replaces;
+namespace ITRocks\Framework\Reflection\Annotation\Tests\Replaces;
 
 /**
  * Replaced property with getter test

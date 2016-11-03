@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Widget\Data_List\Search_Parameters_Parser;
+namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
-use SAF\Framework\Tools\Date_Time;
-use SAF\Framework\Widget\Data_List\Search_Parameters_Parser;
+use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
 /**
  * Tests that should pass date and date time column
  *
- * Note: These tests are greatly dependants of object structure managed by SAF\Framework\Dao !!!
+ * Note: These tests are greatly dependants of object structure managed by ITRocks\Framework\Dao !!!
  *
  *
  * 2016

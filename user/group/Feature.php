@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\User\Group;
+namespace ITRocks\Framework\User\Group;
 
-use SAF\Framework\Controller;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Annotation\Property\Feature_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Controller;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * The represents an atomic end-user feature into the software :
@@ -71,7 +71,7 @@ class Feature
 	//------------------------------------------------------------------------------------- $implicit
 	/**
 	 * The list of implicit low-level features :
-	 * They are constants from SAF\Framework\Controller\Feature that do not need a yaml file
+	 * They are constants from ITRocks\Framework\Controller\Feature that do not need a yaml file
 	 * Defined as an addition of ADMINISTRATE, EDIT and OUTPUT constants
 	 * More can be dynamically added if needed
 	 *

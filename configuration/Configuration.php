@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Configuration\Environment;
+use ITRocks\Framework\Configuration\Environment;
 
 /**
  * A configuration set : current configuration for the global application configuration, secondary configurations can be worked with
@@ -97,14 +97,14 @@ class Configuration
 
 	//----------------------------------------------------------------------- getApplicationClassName
 	/**
-	 * @example 'SAF\Tests\Application'
+	 * @example 'ITRocks\Tests\Application'
 	 * @return string
 	 */
 	public function getApplicationClassName()
 	{
 		if (!isset($this->application_class)) {
 			$this->application_class
-				= (isset($this->author) ? $this->author : 'SAF') . BS . $this->name . BS . 'Application';
+				= (isset($this->author) ? $this->author : 'ITRocks') . BS . $this->name . BS . 'Application';
 		}
 		return $this->application_class;
 	}

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Tools\Contextual_Callable;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Tools\Contextual_Callable;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * A reflection property value is a reflection property enriched with it's display label and a value

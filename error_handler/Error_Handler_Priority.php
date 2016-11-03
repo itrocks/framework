@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Error_Handler;
+namespace ITRocks\Framework\Error_Handler;
 
 /**
  * Error handler priorities constants
@@ -7,14 +7,19 @@ namespace SAF\Framework\Error_Handler;
 abstract class Error_Handler_Priority
 {
 
+	//--------------------------------------------------------------------------------------- HIGHEST
 	const HIGHEST = 0;
 
+	//------------------------------------------------------------------------------------------ HIGH
 	const HIGH    = 1;
 
+	//---------------------------------------------------------------------------------------- NORMAL
 	const NORMAL  = 2;
 
+	//------------------------------------------------------------------------------------------- LOW
 	const LOW     = 3;
 
+	//---------------------------------------------------------------------------------------- LOWEST
 	const LOWEST  = 4;
 
 }

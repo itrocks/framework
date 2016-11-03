@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
-use SAF\Framework\Sql\Builder\Columns;
+use ITRocks\Framework\Sql\Builder\Columns;
 
 /**
  * Group By function
@@ -13,6 +13,7 @@ class Group_By extends Column
 	const COUNT   = 'COUNT';
 	const MAX     = 'MAX';
 	const MIN     = 'MIN';
+	//------------------------------------------------------------------------------------------- SUM
 	const SUM     = 'SUM';
 
 	//------------------------------------------------------------------------------------- $function

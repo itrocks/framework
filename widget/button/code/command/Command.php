@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Widget\Button\Code;
+namespace ITRocks\Framework\Widget\Button\Code;
 
 /**
  * A command to execute

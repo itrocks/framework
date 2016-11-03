@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao;
+namespace ITRocks\Framework\Dao;
 
 /**
  * A common interface for DAO options classes

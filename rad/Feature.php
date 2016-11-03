@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\RAD;
+namespace ITRocks\Framework\RAD;
 
-use SAF\Framework\Mapper\Component;
-/** @noinspection PhpUnusedAliasInspection @widget */
-use SAF\Framework\Widget\Edit\Widgets\Collection_As_Map;
+use ITRocks\Framework\Mapper\Component;
+use /** @noinspection PhpUnusedAliasInspection @widget */
+	ITRocks\Framework\Widget\Edit\Widgets\Collection_As_Map;
 
 /**
  * RAD Feature class

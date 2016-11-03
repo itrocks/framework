@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Checker\Report;
+namespace ITRocks\Framework\Checker\Report;
 
 /**
  * Check report line

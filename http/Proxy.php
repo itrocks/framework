@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Http;
+namespace ITRocks\Framework\Http;
 
 /**
  * Http Proxy
@@ -492,7 +492,7 @@ class Proxy
 		$this->method = $method;
 		$this->request_headers = [
 			'Host'            => isset($_SERVER['HTTP_HOST'])       ? $_SERVER['HTTP_HOST'] : 'local',
-			'User-Agent'      => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'saf',
+			'User-Agent'      => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'itrocks',
 			'Accept'          => 'text/html;q=0.9,*/*;q=0.8',
 			'Accept-Language' => 'fr-FR,q=0.8,en-US;q=0.6,en;q=0.4',
 			'Accept-Encoding' => 'gzip,deflate',

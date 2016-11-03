@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Getter;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Tools\Current;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Getter;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Tools\Current;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * The View class offers static methods to call views from the application main view engine
@@ -17,6 +17,7 @@ class View implements Configurable
 	use Current { current as private pCurrent; }
 
 	//----------------------------------------------------------------- Constants common to all views
+	//---------------------------------------------------------------------------------------- TARGET
 	const TARGET = 'target';
 
 	//----------------------------------------------------------------------------------- __construct

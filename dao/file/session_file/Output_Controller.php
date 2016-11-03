@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Dao\File\Session_File;
+namespace ITRocks\Framework\Dao\File\Session_File;
 
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Tools\Image;
-use SAF\Framework\Session;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Tools\Image;
+use ITRocks\Framework\Session;
 
 /**
  * Session file output controller
@@ -48,6 +48,7 @@ class Output_Controller implements Feature_Controller
 				echo $file->content;
 			}
 		}
+		return;
 	}
 
 }

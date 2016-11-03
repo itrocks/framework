@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
 /**
  * A remover class implements a remove() object to remove any of its possible composite objects

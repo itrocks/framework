@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Widget\Edit;
+namespace ITRocks\Framework\Widget\Edit;
 
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Mapper\Empty_Object;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Password;
-use SAF\Framework\View\Html\Dom\Element;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Mapper\Empty_Object;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Password;
+use ITRocks\Framework\View\Html\Dom\Element;
 
 /**
  * Builds a standard form input matching a given property and value

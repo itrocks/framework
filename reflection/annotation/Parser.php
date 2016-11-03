@@ -1,18 +1,18 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation;
+namespace ITRocks\Framework\Reflection\Annotation;
 
-use SAF\Framework\Application;
-use SAF\Framework\Builder;
-use SAF\Framework\PHP;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Annotation_In;
-use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
-use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
-use SAF\Framework\Reflection\Interfaces\Reflection;
-use SAF\Framework\Reflection\Interfaces\Reflection_Class_Component;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\PHP;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Annotation_In;
+use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class_Component;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * The annotation parser process calculates the annotation value

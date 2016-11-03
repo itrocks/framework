@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Locale\Option;
+namespace ITRocks\Framework\Locale\Option;
 
-use SAF\Framework\Locale\Option;
+use ITRocks\Framework\Locale\Option;
 
 /**
  * The context to use for translation, if forced

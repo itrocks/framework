@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Sql;
+namespace ITRocks\Framework\Sql;
 
-use SAF\Framework;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * This stores data for SQL joins and enable to output SQL expression for a table join

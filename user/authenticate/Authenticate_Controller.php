@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\User\Authenticate;
+namespace ITRocks\Framework\User\Authenticate;
 
-use SAF\Framework\Controller\Default_Controller;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\User;
+use ITRocks\Framework\Controller\Default_Controller;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\User;
 
 /**
  * Authenticates a user and launch an authenticate / authenticateError view controller

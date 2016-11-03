@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Traits;
+namespace ITRocks\Framework\Traits;
 
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A trait for creation and modification date logged objects

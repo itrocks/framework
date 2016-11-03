@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
 /**
  *

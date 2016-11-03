@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Sql\Link_Table;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Sql\Link_Table;
 
 /**
  * The SQL map builder builds elements useful for the database representation of an objects map

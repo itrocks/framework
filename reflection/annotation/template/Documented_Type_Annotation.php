@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
-use SAF\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation;
 
 /**
  * This stores @annotation type and a documentation into two available annotation properties :

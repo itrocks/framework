@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tests\Runnable;
-use SAF\Framework\Tests\Test;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tests\Runnable;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * The tests class enables running of unit test

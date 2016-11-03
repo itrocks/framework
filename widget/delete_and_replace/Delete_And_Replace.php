@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Widget;
+namespace ITRocks\Framework\Widget;
 
-use SAF\Framework\Dao;
+use ITRocks\Framework\Dao;
 
 /**
  * Delete and replace

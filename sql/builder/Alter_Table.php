@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Dao\Sql\Column;
-use SAF\Framework\Dao\Sql\Foreign_Key;
-use SAF\Framework\Dao\Sql\Table;
+use ITRocks\Framework\Dao\Sql\Column;
+use ITRocks\Framework\Dao\Sql\Foreign_Key;
+use ITRocks\Framework\Dao\Sql\Table;
 
 /**
  * SQL alter table queries builder

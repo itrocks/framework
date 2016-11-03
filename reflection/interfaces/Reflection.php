@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Reflection\Interfaces;
+namespace ITRocks\Framework\Reflection\Interfaces;
 
-use SAF\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation;
 
 /**
  * Common interface for reflection objects

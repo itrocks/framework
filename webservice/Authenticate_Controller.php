@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Webservice;
+namespace ITRocks\Framework\Webservice;
 
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Session;
-use SAF\Framework\User;
-use SAF\Framework\User\Authenticate\Authentication;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\User;
+use ITRocks\Framework\User\Authenticate\Authentication;
 
 /**
  * A controller to login for API access of webservices
@@ -15,6 +15,7 @@ class Authenticate_Controller implements Default_Feature_Controller
 
 	//-------------------------------------------------------------------------------- AUTH constants
 	const AUTH_ERROR = 'AUTH_ERROR';
+	//--------------------------------------------------------------------------------------- AUTH_OK
 	const AUTH_OK    = 'AUTH=';
 
 	//------------------------------------------------------------------------------------------- run

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Traits;
+namespace ITRocks\Framework\Traits;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Link_Class;
 
 /**
  * A trait for simple hierarchical business objects.

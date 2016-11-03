@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Edit\Tests;
+namespace ITRocks\Framework\Widget\Edit\Tests;
 
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tests\Test;
-use SAF\Framework\Widget\Edit\Html_Builder_Property;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Widget\Edit\Html_Builder_Property;
 
 /**
  * Unit tests for HTML builder of a property

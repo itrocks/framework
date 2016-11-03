@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Php\Reflection_Class;
-use SAF\Framework\Tools\OS;
+use ITRocks\Framework\Php\Reflection_Class;
+use ITRocks\Framework\Tools\OS;
 
 /**
  * Include path manager
@@ -90,11 +90,11 @@ class Include_Path
 	/**
 	 * Returns the full directory list for the application, including parent's applications directory
 	 *
-	 * Directory names are sorted from higher-level application to basis SAF 'framework' directory
+	 * Directory names are sorted from higher-level application to basis ITRocks 'framework' directory
 	 * Inside an application, directories are sorted randomly (according to how the php
 	 * Directory->read() call works)
 	 *
-	 * Paths are relative to the SAF index.php base script position
+	 * Paths are relative to the ITRocks index.php base script position
 	 *
 	 * @param $include_subdirectories boolean
 	 * @param $application_class     string
@@ -160,10 +160,10 @@ class Include_Path
 	/**
 	 * Returns the full files list for the application, including parent's applications directory
 	 *
-	 * File names are sorted from higher-level application to basis SAF 'framework' directory
+	 * File names are sorted from higher-level application to basis ITRocks 'framework' directory
 	 * Inside an application, files are sorted randomly (according to how the php Directory->read() call works)
 	 *
-	 * Paths are relative to the SAF index.php base script position
+	 * Paths are relative to the ITRocks index.php base script position
 	 *
 	 * @return string[]
 	 */

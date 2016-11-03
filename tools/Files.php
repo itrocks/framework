@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 /**
  * Utility methods for directories and files
@@ -124,7 +124,7 @@ abstract class Files
 	 * Removes a directory if it exists, and recursively delete files
 	 *
 	 * @param $directory string path of the directory to be deleted
-	 * @return boolean true if a folder was created or existed, false if any error occurred
+	 * @return boolean true if a folder was removed or was not existing, false if any error occurred
 	 */
 	public static function rmdir($directory)
 	{
@@ -137,8 +137,9 @@ abstract class Files
 					unlink($directory . SL . $entry);
 				}
 			}
-			rmdir($directory);
+			return rmdir($directory);
 		}
+		return true;
 	}
 
 	//------------------------------------------------------------------------------- scanDirForFiles

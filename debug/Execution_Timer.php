@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Debug;
+namespace ITRocks\Framework\Debug;
 
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
 
 /**
  * An execution timer plugin, to enable the execution duration info on document's foot

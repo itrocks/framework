@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Dao\Option;
+namespace ITRocks\Framework\Dao\Option;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Mapper\Comparator;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Mapper\Comparator;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * A DAO sort option
@@ -44,7 +44,7 @@ class Sort implements Option
 	 * $option = new Dao_Sort_Option(['first_name', 'last_name', 'city.country.name'));
 	 * // Please prefer using this equivalent for standard calls, ie in this standard use example :
 	 * $users = Dao::readAll(
-	 *   'SAF\Framework\User',
+	 *   'ITRocks\Framework\User',
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name')));
 	 * );
 	 *

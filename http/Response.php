@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Http;
+namespace ITRocks\Framework\Http;
 
 /**
  * HTTP response codes

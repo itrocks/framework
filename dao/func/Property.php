@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
-use SAF\Framework\Sql\Builder;
-use SAF\Framework\Widget\Data_List\Summary_Builder;
+use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Widget\Data_List\Summary_Builder;
 
 /**
  * Used to retrieve property for use in function

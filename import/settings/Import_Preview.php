@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Import\Settings;
+namespace ITRocks\Framework\Import\Settings;
 
-use SAF\Framework\Import\Import_Array;
+use ITRocks\Framework\Import\Import_Array;
 
 /**
  * Import preview data

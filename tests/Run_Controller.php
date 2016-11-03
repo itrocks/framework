@@ -1,20 +1,20 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace ITRocks\Framework\Tests;
 
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Tests;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Tests;
 
 /**
  * Tests run controller
  *
  * @example
- * /SAF/Framework/Tests/run
- * /SAF/Framework/Tests/run?show=all
- * /SAF/Framework/Tests/run?show=none
- * /SAF/Framework/Tests/run/SAF/Framework/Sql/Join/Tests
- * /SAF/Framework/Tests/run/SAF/Framework/Sql/Join/Tests/testObject
- * /SAF/Framework/Tests/run/SAF/Framework/Sql/Join/Tests/testObject?show=all
+ * /ITRocks/Framework/Tests/run
+ * /ITRocks/Framework/Tests/run?show=all
+ * /ITRocks/Framework/Tests/run?show=none
+ * /ITRocks/Framework/Tests/run/ITRocks/Framework/Sql/Join/Tests
+ * /ITRocks/Framework/Tests/run/ITRocks/Framework/Sql/Join/Tests/testObject
+ * /ITRocks/Framework/Tests/run/ITRocks/Framework/Sql/Join/Tests/testObject?show=all
  */
 class Run_Controller implements Feature_Controller
 {

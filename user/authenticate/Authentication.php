@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\User\Authenticate;
+namespace ITRocks\Framework\User\Authenticate;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Session;
-use SAF\Framework\Tools\Password;
-use SAF\Framework\User;
-use SAF\Framework\Widget\Input;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\Password;
+use ITRocks\Framework\User;
+use ITRocks\Framework\Widget\Input;
 
 /**
  * The user authentication class gives direct access to login, register and disconnect user features

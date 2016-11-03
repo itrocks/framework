@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Locale\Option;
+namespace ITRocks\Framework\Locale\Option;
 
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Locale\Option;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Locale\Option;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Option to replace some $values into $text using a replacement table.

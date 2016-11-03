@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\AOP\Joinpoint;
+namespace ITRocks\Framework\AOP\Joinpoint;
 
-use SAF\Framework\AOP\Joinpoint;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\AOP\Joinpoint;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Property joinpoint

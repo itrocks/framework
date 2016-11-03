@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Widget\Edit\Tests;
+namespace ITRocks\Framework\Widget\Edit\Tests;
 
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Traits\Has_Code;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Traits\Has_Code;
 
 /**
  * A simple test object

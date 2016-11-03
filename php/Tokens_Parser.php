@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
-use SAF\Framework\Reflection\Interfaces;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\Tools\Call_Stack;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Call_Stack;
 
 /**
  * These are helpers functions to parse tokens

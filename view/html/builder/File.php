@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\View\Html\Builder;
+namespace ITRocks\Framework\View\Html\Builder;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Takes a value that stores a file content and builds HTML code using their data

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Plugin\Activable;
-use SAF\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Activable;
+use ITRocks\Framework\Plugin\Configurable;
 
 /**
  * Pass session id thru HTML code using this plugin
@@ -11,6 +11,7 @@ class Html_Session implements Activable, Configurable
 {
 
 	//----------------------------------------------- Html session configuration array keys constants
+	//------------------------------------------------------------------------------------ USE_COOKIE
 	const USE_COOKIE = 'use_cookie';
 
 	//----------------------------------------------------------------------------------- $use_cookie

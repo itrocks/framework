@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
 use mysqli;
 use mysqli_result;
-use SAF\Framework\AOP\Joinpoint\Before_Method;
-use SAF\Framework\Dao;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Sql\Builder\Alter_Table;
-use SAF\Framework\Sql\Builder\Create_Table;
-use SAF\Framework\Tools\Contextual_Mysqli;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\AOP\Joinpoint\Before_Method;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Sql\Builder\Alter_Table;
+use ITRocks\Framework\Sql\Builder\Create_Table;
+use ITRocks\Framework\Tools\Contextual_Mysqli;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * This is an intelligent database maintainer that automatically updates a table structure if there

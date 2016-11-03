@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Dao;
+namespace ITRocks\Framework\Dao;
 
-use SAF\Framework\AOP\Joinpoint\Method_Joinpoint;
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Cache\Cached;
-use SAF\Framework\Dao\Mysql\Link;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
+use ITRocks\Framework\AOP\Joinpoint\Method_Joinpoint;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Cache\Cached;
+use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
 
 /**
  * DAO cache object

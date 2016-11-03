@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation;
+namespace ITRocks\Framework\Reflection\Annotation;
 
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
-use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
  * An annoted class contains annotations.
@@ -169,6 +169,7 @@ trait Annoted
 				'Bad annotation type getListAnnotations(' . $annotation_name . ')', E_USER_ERROR
 			);
 		}
+		/** @var $annotations List_Annotation[] */
 		return $annotations;
 	}
 

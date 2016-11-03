@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tests\Objects;
+namespace ITRocks\Framework\Tests\Objects;
 
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A vehicle

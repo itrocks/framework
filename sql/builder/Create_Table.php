@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Sql\Builder;
+namespace ITRocks\Framework\Sql\Builder;
 
-use SAF\Framework\Dao\Mysql\Index;
-use SAF\Framework\Dao\Sql\Table;
+use ITRocks\Framework\Dao\Mysql\Index;
+use ITRocks\Framework\Dao\Sql\Table;
 
 /**
  * SQL create table queries builder
@@ -50,12 +50,12 @@ class Create_Table
 				$indexes[$foreign_key_constraint] = Index::buildLink($foreign_key_constraint)->toSql();
 			}
 		}
-		$queries[] = 'CREATE TABLE IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('
+		$queries[] = 'CREATE TABLE' . ' IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('
 			. ($columns ? (LF . TAB) : '') . join(',' . LF . TAB, $columns)
 			. ($indexes ? (',' . LF . TAB) : '') . join(',' . LF . TAB, $indexes)
 			. LF . ') DEFAULT CHARSET = utf8 COLLATE = utf8_general_ci';
 		foreach ($foreign_keys as $foreign_key) {
-			$queries[] = 'ALTER TABLE ' . BQ . $this->table->getName() . BQ . ' ADD ' . $foreign_key;
+			$queries[] = 'ALTER TABLE' . SP . BQ . $this->table->getName() . BQ . ' ADD ' . $foreign_key;
 		}
 		return $queries;
 	}

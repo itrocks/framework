@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Tools\Wiki;
+namespace ITRocks\Framework\Tools\Wiki;
 
 use Netcarver\Textile\Parser;
-use SAF\Framework\Builder;
+use ITRocks\Framework\Builder;
 
 /**
  * Textile review B-Appli style, in order to be more ergonomic

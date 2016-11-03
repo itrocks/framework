@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\File;
+namespace ITRocks\Framework\Dao\File;
 
 /**
  * File type
@@ -9,6 +9,7 @@ class Type
 
 	//-------------------------------------------------------------------------------- is() constants
 	const APPLICATION = 'application';
+	//----------------------------------------------------------------------------------------- IMAGE
 	const IMAGE       = 'image';
 
 	//----------------------------------------------------------------------------- $extensions_types

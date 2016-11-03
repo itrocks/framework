@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
 /**
  * This stores a dependency between two class names

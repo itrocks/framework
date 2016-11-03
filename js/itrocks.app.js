@@ -40,14 +40,14 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 
 	//----------------------------------------------------------------------------------- script_name
 	/**
-	 * @example 'saf'
+	 * @example 'itrocks'
 	 * @var string
 	 */
 	this.script_name = script_name;
 
 	//-------------------------------------------------------------------------------------- uri_base
 	/**
-	 * @example '/a/folder/saf'
+	 * @example '/a/folder/itrocks'
 	 * @type string
 	 */
 	this.uri_base = uri_root + script_name;

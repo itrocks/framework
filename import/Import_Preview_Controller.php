@@ -1,27 +1,27 @@
 <?php
-namespace SAF\Framework\Import;
+namespace ITRocks\Framework\Import;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Controller\Tag;
-use SAF\Framework\Controller\Target;
-use SAF\Framework\Dao\File\Builder\Post_Files;
-use SAF\Framework\Dao\File;
-use SAF\Framework\Dao\File\Session_File\Files;
-use SAF\Framework\Dao\File\Spreadsheet_File;
-use SAF\Framework\Import;
-use SAF\Framework\Import\Settings\Import_Settings;
-use SAF\Framework\Import\Settings\Import_Settings_Builder;
-use SAF\Framework\Session;
-use SAF\Framework\Setting\Custom_Settings;
-use SAF\Framework\Setting\Custom_Settings_Controller;
-use SAF\Framework\Tools\Color;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Template;
-use SAF\Framework\Widget\Button;
-use SAF\Framework\Widget\Button\Has_General_Buttons;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Tag;
+use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Dao\File\Builder\Post_Files;
+use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Dao\File\Session_File\Files;
+use ITRocks\Framework\Dao\File\Spreadsheet_File;
+use ITRocks\Framework\Import;
+use ITRocks\Framework\Import\Settings\Import_Settings;
+use ITRocks\Framework\Import\Settings\Import_Settings_Builder;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Setting\Custom_Settings_Controller;
+use ITRocks\Framework\Tools\Color;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\Widget\Button;
+use ITRocks\Framework\Widget\Button\Has_General_Buttons;
 use stdClass;
 
 /**

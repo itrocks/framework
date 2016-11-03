@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\RAD\Plugins;
+namespace ITRocks\Framework\RAD\Plugins;
 
-use SAF\Framework\Application;
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Dao\File;
-use SAF\Framework\RAD\Feature;
-use SAF\Framework\RAD\Tag;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\RAD\Feature;
+use ITRocks\Framework\RAD\Tag;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A plugin is a set of code which has limited dependencies to others plugins

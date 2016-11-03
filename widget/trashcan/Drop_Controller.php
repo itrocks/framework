@@ -1,15 +1,15 @@
 <?php
-namespace SAF\Framework\Widget\Trashcan;
+namespace ITRocks\Framework\Widget\Trashcan;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Set;
-use SAF\Framework\View;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Set;
+use ITRocks\Framework\View;
 
 /**
  * This controller is called when objects are dropped into the trashcan

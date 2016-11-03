@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Error_Handler;
+namespace ITRocks\Framework\Error_Handler;
 
-use SAF\Framework\Plugin\Activable;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Tools\Current;
+use ITRocks\Framework\Plugin\Activable;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Tools\Current;
 
 /**
  * A configurable (with a php array) error handlers collection

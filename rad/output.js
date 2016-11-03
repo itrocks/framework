@@ -142,11 +142,11 @@ function radOutput()
 				+ '?as_widget&feature={featureName}' + window.app.andSID();
 
 			var output_edit_uri = window.app.uri_base
-				+ '/SAF/Framework/Widget/Output_Setting/Output_Settings/edit/{className}/{featureName}?as_widget'
+				+ '/ITRocks/Framework/Widget/Output_Setting/Output_Settings/edit/{className}/{featureName}?as_widget'
 				+ window.app.andSID();
 
 			var output_property_uri = window.app.uri_base
-				+ '/SAF/Framework/Widget/Output_Setting/Property/edit/{className}/{featureName}/{propertyPath}?as_widget'
+				+ '/ITRocks/Framework/Widget/Output_Setting/Property/edit/{className}/{featureName}/{propertyPath}?as_widget'
 				+ window.app.andSID();
 
 			//--------------------------------------- .windows h2>span, div[class][id]>label>a modifiable

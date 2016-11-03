@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Widget\Validate\Annotation;
+namespace ITRocks\Framework\Widget\Validate\Annotation;
 
 /**
  * For validator that get a specific message

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\User\Group;
+namespace ITRocks\Framework\User\Group;
 
-use SAF\Framework\Controller;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Controller;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * Default yaml file generator

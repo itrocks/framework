@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Webservice\Json;
+namespace ITRocks\Framework\Webservice\Json;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Func\Logical;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Dao\Option\Limit;
-use SAF\Framework\Mapper\Map;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Search_Array_Builder;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option\Limit;
+use ITRocks\Framework\Mapper\Map;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Search_Array_Builder;
 
 /**
  * A default json controller to output any object or objects collection into json format

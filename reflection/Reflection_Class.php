@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
 use ReflectionClass;
-use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
-use SAF\Framework\Reflection\Annotation\Parser;
-use SAF\Framework\Reflection\Interfaces;
-use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
-use SAF\Framework\Tools\Stringable;
+use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use ITRocks\Framework\Tools\Stringable;
 
 /**
  * A rich extension of the PHP ReflectionClass class, adding :

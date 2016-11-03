@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\File;
+namespace ITRocks\Framework\Dao\File;
 
 /**
  * Session file

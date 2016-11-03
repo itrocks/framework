@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Widget\Output_Setting;
+namespace ITRocks\Framework\Widget\Output_Setting;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\View;
 
 /**
  * Output setting widget output edit controller

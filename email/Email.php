@@ -1,16 +1,16 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Email\Account;
-use SAF\Framework\Email\Attachment;
-use SAF\Framework\Email\Recipient;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Email\Account;
+use ITRocks\Framework\Email\Attachment;
+use ITRocks\Framework\Email\Recipient;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
- * A SAF electronic mail object to get full access to mails without depending on MIME or the else
+ * A ITRocks electronic mail object to get full access to mails without depending on MIME or the else
  *
  * @before_write beforeWrite
  * @business
@@ -272,7 +272,7 @@ class Email
 	 * Rewrite content of all emails, in order to have it compressed
 	 * This is a simple rewrite. Mysql\Link does all the work (inflate-deflate) !
 	 *
-	 * Call this update script using http://saf/sfkgroup/SAF/Framework/Email/update
+	 * Call this update script using http://itrocks/sfkgroup/ITRocks/Framework/Email/update
 	 *
 	 * @param $parameters Parameters
 	 * @return string

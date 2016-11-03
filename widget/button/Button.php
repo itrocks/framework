@@ -1,14 +1,13 @@
 <?php
-namespace SAF\Framework\Widget;
+namespace ITRocks\Framework\Widget;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Target;
-use SAF\Framework\Controller\Uri;
-use SAF\Framework\Dao;
-use SAF\Framework\Tools\Color;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Button\Code;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Tools\Color;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Button\Code;
 
 /**
  * An HMI button
@@ -19,6 +18,7 @@ class Button
 	//------------------------------------------------------------------- Button option key constants
 	const COLOR       = 'color';
 	const HINT        = 'hint';
+	//----------------------------------------------------------------------------------- SUB_BUTTONS
 	const SUB_BUTTONS = 'sub_buttons';
 
 	//-------------------------------------------------------------------------------------- $caption

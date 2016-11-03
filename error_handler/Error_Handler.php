@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Error_Handler;
+namespace ITRocks\Framework\Error_Handler;
 
 /**
  * An interface for error handlers

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Tools\Tests;
+namespace ITRocks\Framework\Tools\Tests;
 
-use SAF\Framework\Tests\Test;
-use SAF\Framework\Tools\Date_Interval;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tools\Date_Interval;
 
 /**
  * Date_Interval tests

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection\Interfaces;
+namespace ITRocks\Framework\Reflection\Interfaces;
 
 /**
  * Interface for classes that have doc comments.

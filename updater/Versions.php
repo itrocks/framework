@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Updater;
+namespace ITRocks\Framework\Updater;
 
-use SAF\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Configurable;
 
 /**
- * SAF application updater : dependencies versions
+ * ITRocks application updater : dependencies versions
  */
 class Versions implements Configurable
 {

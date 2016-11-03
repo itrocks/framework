@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Printer\Model;
+namespace ITRocks\Framework\Printer\Model;
 
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A print model field is a little zone into the page that contains the description of the data

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
 use DateTime;
 use Exception;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Date format locale features : changes date format to comply with user's locale configuration

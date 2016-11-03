@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Error_Handler;
+namespace ITRocks\Framework\Error_Handler;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Mysql\Link;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Tools\Call_Stack;
-use SAF\Framework\Tools\Call_Stack\Line;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Call_Stack;
+use ITRocks\Framework\Tools\Call_Stack\Line;
 
 /**
  * An error handler that reports the full call stack and not only the error message alone

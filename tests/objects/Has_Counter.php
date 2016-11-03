@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Tests\Objects;
+namespace ITRocks\Framework\Tests\Objects;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
 
 /**
  * For any class that has counter
@@ -18,7 +18,7 @@ trait Has_Counter
 
 	//------------------------------------------------------------------------------------- setNumber
 	/**
-	 * @before SAF\Framework\Dao\Data_Link::write($this)
+	 * @before ITRocks\Framework\Dao\Data_Link::write($this)
 	 */
 	public function setNumber()
 	{

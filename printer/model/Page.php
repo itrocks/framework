@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Printer\Model;
+namespace ITRocks\Framework\Printer\Model;
 
-use SAF\Framework\Dao\File;
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Printer\Model;
-use SAF\Framework\Tools\Has_Ordering;
+use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Printer\Model;
+use ITRocks\Framework\Tools\Has_Ordering;
 
 /**
  * A print model page : a model linked to a unique page background and design

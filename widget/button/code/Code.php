@@ -1,10 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Button;
+namespace ITRocks\Framework\Widget\Button;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Tools\Stringable;
-use SAF\Framework\Widget\Button\Code\Command;
-use SAF\Framework\Widget\Button\Code\Command\Parser;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Tools\Stringable;
+use ITRocks\Framework\Widget\Button\Code\Command\Parser;
 
 /**
  * Dynamic source code typed in by the user
@@ -86,11 +85,13 @@ class Code implements Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $source string
-	 * @return self
+	 * @return static
 	 */
 	public static function fromString($source)
 	{
-		return Builder::create(get_called_class(), [$source]);
+		/** @var $code static */
+		$code = Builder::create(get_called_class(), [$source]);
+		return $code;
 	}
 
 }

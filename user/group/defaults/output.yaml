@@ -3,5 +3,5 @@ features:
   - dataListSetting
   - json
   - output
-  - SAF/Framework/Property/remove
-  - SAF/Framework/Property/select
+  - ITRocks/Framework/Property/remove
+  - ITRocks/Framework/Property/select

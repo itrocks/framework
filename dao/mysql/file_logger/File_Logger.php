@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
 use mysqli_result;
-use SAF\Framework;
-use SAF\Framework\Dao;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Sql\Builder;
-use SAF\Framework\Tools\Contextual_Mysqli;
+use ITRocks\Framework;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Tools\Contextual_Mysqli;
 use Serializable;
 
 /**

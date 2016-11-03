@@ -1,27 +1,27 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\AOP;
-use SAF\Framework\AOP\Weaver;
-use SAF\Framework\Builder;
-use SAF\Framework\Dao\Mysql;
-use SAF\Framework\Dao\Mysql\Link;
-use SAF\Framework\Debug\Xdebug;
-use SAF\Framework\Locale\Html_Translator;
-use SAF\Framework\Locale\Language;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Locale\Number_Format;
-use SAF\Framework\Locale\Translation_String_Composer;
-use SAF\Framework\PHP\Compiler;
-use SAF\Framework\Plugin\Priority;
-use SAF\Framework\Updater\Application_Updater;
-use SAF\Framework\View\Html\Cleaner;
+use ITRocks\Framework\AOP;
+use ITRocks\Framework\AOP\Weaver;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao\Mysql;
+use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Debug\Xdebug;
+use ITRocks\Framework\Locale\Html_Translator;
+use ITRocks\Framework\Locale\Language;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Locale\Number_Format;
+use ITRocks\Framework\Locale\Translation_String_Composer;
+use ITRocks\Framework\PHP\Compiler;
+use ITRocks\Framework\Plugin\Priority;
+use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\View\Html\Cleaner;
 
 global $loc, $pwd;
 require __DIR__ . '/../../loc.php';
 require __DIR__ . '/../../pwd.php';
 
-$config['SAF/Framework'] = [
+$config['ITRocks/Framework'] = [
 	Configuration::APP         => Application::class,
 	Configuration::AUTHOR      => 'Baptiste Pillot',
 	Configuration::ENVIRONMENT => $loc[Configuration::ENVIRONMENT],

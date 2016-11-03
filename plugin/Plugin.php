@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
 /**
  * The Plugin interface must be used to define plugins

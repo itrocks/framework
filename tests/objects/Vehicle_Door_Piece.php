@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Tests\Objects;
+namespace ITRocks\Framework\Tests\Objects;
 
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A piece of vehicle door

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
 /**
  * Abstract_Class is used to read data for abstract classes

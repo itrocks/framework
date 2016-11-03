@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\User\Group;
+namespace ITRocks\Framework\User\Group;
 
-use SAF\Framework\Controller\Uri;
-use SAF\Framework\Tools\Current;
-use SAF\Framework\User;
+use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Tools\Current;
+use ITRocks\Framework\User;
 
 /**
  * Low level features cache to keep into session / file / anywhere you want

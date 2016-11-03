@@ -1,20 +1,20 @@
 <?php
-namespace SAF\Framework\User;
+namespace ITRocks\Framework\User;
 
-use SAF\Framework\AOP\Joinpoint\Method_Joinpoint;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Uri;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\User;
-use SAF\Framework\Widget\Add\Add_Controller;
-use SAF\Framework\Widget\Button;
-use SAF\Framework\Widget\Data_List\Data_List_Controller;
-use SAF\Framework\Widget\Edit\Edit_Controller;
-use SAF\Framework\Widget\Menu;
-use SAF\Framework\Widget\Menu\Item;
-use SAF\Framework\Widget\Output\Output_Controller;
-use SAF\Framework\Widget\Write\Write_Controller;
+use ITRocks\Framework\AOP\Joinpoint\Method_Joinpoint;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\User;
+use ITRocks\Framework\Widget\Add\Add_Controller;
+use ITRocks\Framework\Widget\Button;
+use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
+use ITRocks\Framework\Widget\Edit\Edit_Controller;
+use ITRocks\Framework\Widget\Menu;
+use ITRocks\Framework\Widget\Menu\Item;
+use ITRocks\Framework\Widget\Output\Output_Controller;
+use ITRocks\Framework\Widget\Write\Write_Controller;
 
 /**
  * Write access control plugin
@@ -22,6 +22,7 @@ use SAF\Framework\Widget\Write\Write_Controller;
 class Write_Access_Control implements Registerable
 {
 
+	//-------------------------------------------------------------------------------- WRITE_FEATURES
 	const WRITE_FEATURES = [
 		Feature::F_ADD,
 		Feature::F_API,

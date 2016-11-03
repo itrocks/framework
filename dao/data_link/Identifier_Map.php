@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Dao\Data_Link;
+namespace ITRocks\Framework\Dao\Data_Link;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Reflection\Link_Class;
 
 /**
  * Source of data link classes that use a map between internal identifiers and business objects

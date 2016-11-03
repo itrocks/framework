@@ -1,21 +1,21 @@
 <?php
-namespace SAF\Framework\Dao\Mysql\Tests;
+namespace ITRocks\Framework\Dao\Mysql\Tests;
 
 use Exception;
-use SAF\Framework\Builder;
-use SAF\Framework\Console;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Dao\Mysql\Link;
-use SAF\Framework\PHP\Dependency;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
-use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use SAF\Framework\Reflection\Link_Class;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Sql\Builder\Select;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Console;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Sql\Builder\Select;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Mysql select tests for all cases of joins

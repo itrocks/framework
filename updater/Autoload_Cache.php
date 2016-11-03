@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Updater;
+namespace ITRocks\Framework\Updater;
 
-use SAF\Framework\Application;
-use SAF\Framework\Autoloader;
-use SAF\Framework\Plugin\Activable;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Session;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Autoloader;
+use ITRocks\Framework\Plugin\Activable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * The autoload cache plugin  is here to make class autoload faster, but need update at each code

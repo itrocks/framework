@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Import;
+namespace ITRocks\Framework\Import;
 
-use SAF\Framework\Dao\File;
-use SAF\Framework\Import;
-use SAF\Framework\Import\Settings\Import_Settings_Builder;
+use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Import;
+use ITRocks\Framework\Import\Settings\Import_Settings_Builder;
 
 /**
  * Import builder from import form data

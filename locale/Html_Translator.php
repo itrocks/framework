@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\View\Html\Dom\Option;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\View\Html\Dom\Option;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Html translator plugin : translates '|non-translated text|' from html pages to 'translated text'

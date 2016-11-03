@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Configuration;
+namespace ITRocks\Framework\Configuration;
 
-use SAF\Framework\Configuration;
-use SAF\Framework\Plugin\Priority;
+use ITRocks\Framework\Configuration;
+use ITRocks\Framework\Plugin\Priority;
 
 /**
  * The available applications configurations management class
@@ -90,7 +90,7 @@ class Configurations
 				$config_options['app'] = $config_name;
 			}
 			if (!isset($config_options['author'])) {
-				$config_options['author'] = 'SAF';
+				$config_options['author'] = 'ITRocks';
 			}
 			$configurations[$config_name] = $config_options;
 		}

@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Widget\Button\Code\Command;
+namespace ITRocks\Framework\Widget\Button\Code\Command;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Widget\Button\Code\Command;
-use SAF\Framework\Widget\Validate\Property\Mandatory_Annotation;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Widget\Button\Code\Command;
+use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 
 /**
  * Change a property annotation value during the execution of the current script

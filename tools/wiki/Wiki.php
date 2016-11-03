@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\AOP\Joinpoint\Around_Method;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection\Reflection_Property_View;
-use SAF\Framework\Tools\Wiki\GeSHi;
-use SAF\Framework\Tools\Wiki\Textile;
-use SAF\Framework\Widget\Edit\Html_Template;
+use ITRocks\Framework\AOP\Joinpoint\Around_Method;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Reflection_Property_View;
+use ITRocks\Framework\Tools\Wiki\GeSHi;
+use ITRocks\Framework\Tools\Wiki\Textile;
+use ITRocks\Framework\Widget\Edit\Html_Template;
 
 /**
  * The wiki plugin enable wiki parsing of multiline properties values

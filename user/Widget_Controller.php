@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\User;
+namespace ITRocks\Framework\User;
 
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\User;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\User;
+use ITRocks\Framework\View;
 
 /**
  * The user widget controller choose a user output depending on user registration/login state

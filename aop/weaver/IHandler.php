@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\AOP\Weaver;
+namespace ITRocks\Framework\AOP\Weaver;
 
 /**
  * Aop linker interface

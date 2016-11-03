@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
 /**
  * A translation is the association of the origin programmed text and its translation using a given

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Tools\Encryption;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Tools\Encryption;
 
 /**
  * This tells the string property stores crypted password
@@ -20,7 +20,7 @@ class Password_Annotation extends Annotation
 	 * Annotation class will have to parse it ie for several parameters or specific syntax, or if they
 	 * want to store specific typed or calculated value
 	 *
-	 * @param $value string any value from SAF\Framework\Tools\Encryption constants
+	 * @param $value string any value from ITRocks\Framework\Tools\Encryption constants
 	 */
 	public function __construct($value)
 	{

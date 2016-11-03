@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Class_;
+namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Class;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Link_Class;
 
 /**
  * This tells that the class is a link class

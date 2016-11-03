@@ -1,15 +1,15 @@
 <?php
-namespace SAF\Framework\Widget\Write;
+namespace ITRocks\Framework\Widget\Write;
 
 use Exception;
-use SAF\Framework\Controller\Default_Class_Controller;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao\File\Builder\Post_Files;
-use SAF\Framework\Dao;
-use SAF\Framework\Mapper\Object_Builder_Array;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Controller\Default_Class_Controller;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\File\Builder\Post_Files;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Object_Builder_Array;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * The default write controller will be called if no other write controller is defined

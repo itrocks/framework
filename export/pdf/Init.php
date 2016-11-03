@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Export\PDF;
+namespace ITRocks\Framework\Export\PDF;
 
 use FPDI;
 

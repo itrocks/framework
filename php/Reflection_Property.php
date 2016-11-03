@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
-use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Interfaces;
-use SAF\Framework\Reflection\Type;
+use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * The same as PHP's ReflectionProperty, but working with PHP source, without loading the class

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Plugin;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Session;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Plugin;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Session;
 
 /**
  * All classes that have a global current value should use this trait to manage the current() method

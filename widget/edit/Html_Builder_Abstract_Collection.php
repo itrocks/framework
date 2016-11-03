@@ -1,12 +1,10 @@
 <?php
-namespace SAF\Framework\Widget\Edit;
+namespace ITRocks\Framework\Widget\Edit;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Builder\Abstract_Collection;
-use SAF\Framework\View\Html\Dom\Table;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Builder\Abstract_Collection;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Takes a collection of objects and build a HTML edit sub-form containing their data.
@@ -57,7 +55,7 @@ class Html_Builder_Abstract_Collection extends Abstract_Collection
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
 	 * @param $template Html_Template
-	 * @return Html_Builder_Type
+	 * @return static
 	 */
 	public function setTemplate(Html_Template $template)
 	{

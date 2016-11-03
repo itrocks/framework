@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\View\Html;
+namespace ITRocks\Framework\View\Html;
 
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
 
 /**
  * This plugin cleans HTML code to avoid multiple blank lines, etc.

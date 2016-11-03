@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Widget\Button\Code\Command;
+namespace ITRocks\Framework\Widget\Button\Code\Command;
 
-use SAF\Framework\Widget\Button\Code\Command;
+use ITRocks\Framework\Widget\Button\Code\Command;
 
 /**
  * Command parser

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
 /**
  * Property path mapper methods for classes

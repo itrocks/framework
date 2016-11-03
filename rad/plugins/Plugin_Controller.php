@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\RAD\Plugins;
+namespace ITRocks\Framework\RAD\Plugins;
 
-use SAF\Framework;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\View;
+use ITRocks\Framework;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\View;
 
 /**
  * RAD plugins controller

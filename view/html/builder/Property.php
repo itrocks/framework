@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\View\Html\Builder;
+namespace ITRocks\Framework\View\Html\Builder;
 
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Abstract class for html property builder
@@ -11,6 +11,7 @@ use SAF\Framework\View\Html\Template;
 abstract class Property
 {
 
+	//------------------------------------------------------------------------------ DONT_BUILD_VALUE
 	/**
 	 * This unique and arbitrary constant is returned by buildValue() when is not defined into a
 	 * child class

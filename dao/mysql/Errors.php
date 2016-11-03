@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
 /**
  * Official mysql error codes, stored into constants
@@ -70,6 +70,7 @@ class Errors
 	const CR_AUTH_PLUGIN_CANNOT_LOAD = 2059;
 	const CR_DUPLICATE_CONNECTION_ATTR = 2060;
 	const CR_AUTH_PLUGIN_ERR = 2061;
+	//--------------------------------------------------------------------------- CR_INSECURE_API_ERR
 	const CR_INSECURE_API_ERR = 2062;
 
 	const ER_HASHCHK = 1000;
@@ -799,6 +800,7 @@ class Errors
 	const ER_BINLOG_UNSAFE_INSERT_TWO_KEYS = 1724;
 	const ER_TABLE_IN_FK_CHECK = 1725;
 	const ER_UNSUPPORTED_ENGINE = 1726;
+	//------------------------------------------------------------ ER_BINLOG_UNSAFE_AUTOINC_NOT_FIRST
 	const ER_BINLOG_UNSAFE_AUTOINC_NOT_FIRST = 1727;
 
 }

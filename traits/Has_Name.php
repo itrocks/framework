@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Traits;
+namespace ITRocks\Framework\Traits;
 
 /**
  * For all classes having a name as representative value

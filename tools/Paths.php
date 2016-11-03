@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 /**
  * Application paths functions help you to find out usefull paths of your application
@@ -12,14 +12,14 @@ abstract class Paths
 	 * The root path for main script file, without the script name
 	 *
 	 * @example /var/www/root/path/
-	 * @example /home/saf/www/
+	 * @example /home/itrocks/www/
 	 * @var string
 	 */
 	public static $file_root;
 
 	//---------------------------------------------------------------------------------- $project_uri
 	/**
-	 * The root path for the current project files (direct access, without the saf launch script name)
+	 * The root path for the current project files (direct access, without the itrocks launch script name)
 	 *
 	 * @example /environment/project
 	 * @example /test/bappli
@@ -32,7 +32,7 @@ abstract class Paths
 	 * the script name, alone, without extension
 	 *
 	 * @example project
-	 * @example saf
+	 * @example itrocks
 	 * @example bappli
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ abstract class Paths
 
 	//------------------------------------------------------------------------------------- $uri_root
 	/**
-	 * The root path for uri, without the saf launch script name
+	 * The root path for uri, without the itrocks launch script name
 	 *
 	 * @example /root/path/
 	 * @example /
@@ -52,8 +52,8 @@ abstract class Paths
 	/**
 	 * The base uri for creating links between transactions
 	 *
-	 * @example /root/path/saf
-	 * @example /saf
+	 * @example /root/path/itrocks
+	 * @example /itrocks
 	 * @example /bappli
 	 * @var string
 	 */
@@ -66,9 +66,9 @@ abstract class Paths
 	 * This includes : currently used protocol, server name and uri base
 	 * If object or class name is set, path to this object or class name is added to the URL
 	 *
-	 * @example without class name : 'https://saf.re/saf'
-	 * @example with the class name of User : 'https://saf.re/saf/SAF/Framework/User'
-	 * @example with a User object of id = 1 : 'https://saf.re/saf/SAF/Framework/User/1'
+	 * @example without class name : 'https://itrocks.org/itrocks'
+	 * @example with the class name of User : 'https://itrocks.org/itrocks/ITRocks/Framework/User'
+	 * @example with a User object of id = 1 : 'https://itrocks.org/itrocks/ITRocks/Framework/User/1'
 	 * @param $object object|string object or class name
 	 * @return string
 	 */

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Plugin;
+namespace ITRocks\Framework\Plugin;
 
-use SAF\Framework\Application;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Class Additional_Annotation support additional annotations added by plugins
@@ -83,7 +83,7 @@ abstract class Additional_Annotations
 		// register the shutdown function
 		self::registerShutdownFunction();
 		// add annotation
-		$namespace  = 'SAF\Framework\Reflection\Annotation' . BS . $context;
+		$namespace  = 'ITRocks\Framework\Reflection\Annotation' . BS . $context;
 		$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
 		self::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
 	}
@@ -101,7 +101,7 @@ abstract class Additional_Annotations
 		// register the shutdown function
 		self::registerShutdownFunction();
 		// add annotations
-		$namespace = 'SAF\Framework\Reflection\Annotation' . BS . $context;
+		$namespace = 'ITRocks\Framework\Reflection\Annotation' . BS . $context;
 		foreach ($annotations_classes as $annotation_name => $annotation_class) {
 			$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
 			self::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;

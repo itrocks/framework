@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Setting\Manager;
+namespace ITRocks\Framework\Setting\Manager;
 
 /**
  * A settings template

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Widget\Data_List;
+namespace ITRocks\Framework\Widget\Data_List;
 
-use SAF\Framework\Dao\Option\Sort;
+use ITRocks\Framework\Dao\Option\Sort;
 
 /**
  * Sort options

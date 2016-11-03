@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Email;
+namespace ITRocks\Framework\Email;
 
 /**
  * An email policy

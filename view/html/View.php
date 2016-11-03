@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\View\Html;
+namespace ITRocks\Framework\View\Html;
 
-use SAF\Framework\View\IView;
+use ITRocks\Framework\View\IView;
 
 /**
  * An Html_View should always implement this interface

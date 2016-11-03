@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Cache;
+namespace ITRocks\Framework\Dao\Cache;
 
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * An object stored into the cache

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
 /**
  * Boolean annotation which default value is true

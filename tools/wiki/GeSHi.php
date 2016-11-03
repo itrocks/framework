@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Tools\Wiki;
+namespace ITRocks\Framework\Tools\Wiki;
 
-use SAF\Framework\Tools\String_Class;
+use ITRocks\Framework\Tools\String_Class;
 
 /**
  * GeSHi generic multi-languages syntax highlighter
  *
- * This offers a SAF interface to the PHP GeSHi library
+ * This offers a ITRocks interface to the PHP GeSHi library
  */
 class GeSHi
 {

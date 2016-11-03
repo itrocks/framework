@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Error_Handler;
+namespace ITRocks\Framework\Error_Handler;
 
 /**
  * An error code storage and translator
@@ -8,6 +8,7 @@ class Error_Code
 {
 
 	/** Unknown error code message */
+	//--------------------------------------------------------------------------------------- UNKNOWN
 	const UNKNOWN = 'unknown';
 
 	//------------------------------------------------------------------------------------- $CAPTIONS

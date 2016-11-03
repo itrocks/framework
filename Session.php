@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Plugin\Manager;
+use ITRocks\Framework\Plugin\Manager;
 use Serializable;
 
 /**
@@ -27,7 +27,7 @@ class Session implements Serializable
 	 *
 	 * Do not set this directly to true : call stop()
 	 *
-	 * @see \SAF\Framework\Session::stop
+	 * @see stop()
 	 * @var boolean
 	 */
 	public $stopped = false;

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Reflection\Type;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * A generic field interface : usefull to define fields, columns and properties

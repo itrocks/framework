@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * All annotations classes must inherit from this or any annotation template

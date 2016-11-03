@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Updater;
+namespace ITRocks\Framework\Updater;
 
 /**
  * An interface for all updatable classes (in most of cases they should be plugins too)

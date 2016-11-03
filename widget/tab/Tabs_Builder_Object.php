@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Widget\Tab;
+namespace ITRocks\Framework\Widget\Tab;
 
-use SAF\Framework\Reflection\Annotation\Class_\Group_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Set;
-use SAF\Framework\Widget\Tab;
+use ITRocks\Framework\Reflection\Annotation\Class_\Group_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Set;
+use ITRocks\Framework\Widget\Tab;
 
 /**
  * Tabs builder : build tabs for an object

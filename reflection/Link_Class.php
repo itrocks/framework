@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
-use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 
 /**
  * Link class

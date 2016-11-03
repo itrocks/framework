@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Export;
+namespace ITRocks\Framework\Export;
 
 use FPDI;
-use SAF\Framework\Export\PDF\Init;
+use ITRocks\Framework\Export\PDF\Init;
 use TCPDF;
 
 /**

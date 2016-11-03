@@ -1,19 +1,19 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation;
+namespace ITRocks\Framework\Reflection\Annotation;
 
-use SAF\Framework\Reflection\Annotation\Property\Foreign_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Foreignlink_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tests\Objects\Best_Line;
-use SAF\Framework\Tests\Objects\Category;
-use SAF\Framework\Tests\Objects\Client;
-use SAF\Framework\Tests\Objects\Item;
-use SAF\Framework\Tests\Objects\Order;
-use SAF\Framework\Tests\Objects\Order_Line;
-use SAF\Framework\Tests\Objects\Shop;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Foreignlink_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tests\Objects\Best_Line;
+use ITRocks\Framework\Tests\Objects\Category;
+use ITRocks\Framework\Tests\Objects\Client;
+use ITRocks\Framework\Tests\Objects\Item;
+use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tests\Objects\Order_Line;
+use ITRocks\Framework\Tests\Objects\Shop;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Mapping annotations tests

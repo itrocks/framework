@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Widget\Delete;
+namespace ITRocks\Framework\Widget\Delete;
 
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\View;
 
 /**
  * The default delete controller will be called if no other delete controller is defined

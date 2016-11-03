@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * Search objects are used for searches : all public properties are unset, as unset properties are

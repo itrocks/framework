@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\View\Html\Dom;
+namespace ITRocks\Framework\View\Html\Dom;
 
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * A DOM element class for HTML form select inputs option <option>...</option>

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Dao\File\Session_File;
+namespace ITRocks\Framework\Dao\File\Session_File;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao\File;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao\File;
 use Serializable;
 
 /**

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\AOP\Include_Filter;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\AOP\Include_Filter;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes

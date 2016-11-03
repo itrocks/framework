@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\AOP\Include_Filter;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Plugin\Manager;
+use ITRocks\Framework\AOP\Include_Filter;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Plugin\Manager;
 
 // php settings
 chdir(__DIR__ . '/../..');

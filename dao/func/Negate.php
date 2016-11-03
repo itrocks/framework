@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
 /**
  * A Dao negate function applies only to function that have a negative : it negates the function

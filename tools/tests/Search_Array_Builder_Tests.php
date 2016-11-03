@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Tools\Tests;
+namespace ITRocks\Framework\Tools\Tests;
 
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Tests\Test;
-use SAF\Framework\Tools;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tools;
 
 /**
  * Search array builder test

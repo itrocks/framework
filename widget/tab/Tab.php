@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget;
+namespace ITRocks\Framework\Widget;
 
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * A tab is a data organisation for multiple items $content classification into a graphical tab

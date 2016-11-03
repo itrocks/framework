@@ -1,14 +1,11 @@
 <?php
-namespace SAF\Framework\SSO\Authentication;
+namespace ITRocks\Framework\SSO\Authentication;
 
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Session;
-use SAF\Framework\SSO\Authentication;
-use SAF\Framework\SSO\Authentication_Server;
-use SAF\Framework\User;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\SSO\Authentication_Server;
+use ITRocks\Framework\User;
 
 /**
  * Launch an application authenticated through SSO

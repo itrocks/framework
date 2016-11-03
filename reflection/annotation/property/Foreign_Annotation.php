@@ -1,15 +1,15 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Builder;
-use SAF\Framework\PHP;
-use SAF\Framework\Reflection;
-use SAF\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Class;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\PHP;
+use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * The property name into the foreign class that contains current object

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 use mysqli;
 use mysqli_result;
-use SAF\Framework\Dao\Mysql\Table;
-use SAF\Framework\Dao\Mysql\Table_Builder_Mysqli;
+use ITRocks\Framework\Dao\Mysql\Table;
+use ITRocks\Framework\Dao\Mysql\Table_Builder_Mysqli;
 
 /**
  * Contextual mysqli class : this enables storage of context name for mysqli queries calls

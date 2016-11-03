@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\User;
+namespace ITRocks\Framework\User;
 
-use SAF\Framework\Traits\Has_Email;
+use ITRocks\Framework\Traits\Has_Email;
 
 /**
  * An account can connect to an application (or to anything that needs authentication)

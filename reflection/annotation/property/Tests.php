@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Mapper\Getter;
-use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Interfaces;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tests\Test;
+use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tests\Test;
 
 /**
  * Property annotations unit tests

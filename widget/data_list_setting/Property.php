@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Widget\Data_List_Setting;
+namespace ITRocks\Framework\Widget\Data_List_Setting;
 
-use SAF\Framework\Locale;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Tools\Can_Be_Empty;
-use SAF\Framework\Tools\String_Class;
+use ITRocks\Framework\Locale;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Can_Be_Empty;
+use ITRocks\Framework\Tools\String_Class;
 
 /**
  * Data list setting widget for a property (ie a column of the list)

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Checker\Report\Line;
+namespace ITRocks\Framework\Checker\Report\Line;
 
-use SAF\Framework\Checker\Report\Line;
-use SAF\Framework\Reflection;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Checker\Report\Line;
+use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Check report line

@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Dao\File\Builder;
+namespace ITRocks\Framework\Dao\File\Builder;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao\File;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao\File;
 
 /**
  * Parse post files list like $_FILES to get them into objects

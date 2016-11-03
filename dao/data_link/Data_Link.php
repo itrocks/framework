@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Dao;
+namespace ITRocks\Framework\Dao;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Func\Column;
-use SAF\Framework\Dao\Option\Key;
-use SAF\Framework\PHP\Dependency;
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\List_Data;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func\Column;
+use ITRocks\Framework\Dao\Option\Key;
+use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\List_Data;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * This class stores methods common to all data links classes,

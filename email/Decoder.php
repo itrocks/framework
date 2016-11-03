@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Email;
+namespace ITRocks\Framework\Email;
 
 /**
  * Decodes MIME emails
  *
- * This offers a SAF interface to the PHP PEAR Mail_mimeDecode package
+ * This offers a ITRocks interface to the PHP PEAR Mail_mimeDecode package
  */
 class Decoder
 {

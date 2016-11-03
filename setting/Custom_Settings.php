@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Setting;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Setting;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * Custom settings objects can be loaded and saved from user configuration

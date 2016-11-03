@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Reflection\Interfaces;
+namespace ITRocks\Framework\Reflection\Interfaces;
 
-use SAF\Framework\Reflection\Type;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * An interface for all reflection method classes
@@ -9,6 +9,7 @@ use SAF\Framework\Reflection\Type;
 interface Reflection_Property extends Reflection_Class_Component
 {
 
+	//------------------------------------------------------------------------------------------- ALL
 	/**
 	 * Another constant for default Reflection_Class::getProperties() filter
 	 *

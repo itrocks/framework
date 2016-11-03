@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Reflection\Reflection_Method;
+use ITRocks\Framework\Reflection\Reflection_Method;
 
 /**
  * This is a contextual flexible callable class

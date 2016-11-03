@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Dao\Func;
+namespace ITRocks\Framework\Dao\Func;
 
-use SAF\Framework\Sql\Builder;
-use SAF\Framework\Sql\Value;
+use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Sql\Value;
 
 /**
  * Group_Concat function to group values when Group_By is used

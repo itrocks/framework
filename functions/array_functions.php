@@ -1,6 +1,6 @@
 <?php
 
-use SAF\Framework\Debug\Dead_Or_Alive;
+use ITRocks\Framework\Debug\Dead_Or_Alive;
 
 /**
  * Cuts a string to create an array, following an array of elements length.
@@ -193,7 +193,7 @@ function arrayNamedValues($array)
 /**
  * Returns the sum of all elements into a recursive (aka multidimensional) array
  *
- * @param $array array
+ * @param $array array|number
  * @return number
  */
 function arraySumRecursive($array)

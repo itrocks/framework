@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Widget;
+namespace ITRocks\Framework\Widget;
 
-use SAF\Framework\Plugin;
+use ITRocks\Framework\Plugin;
 
 /**
  * The trashcan widget enables dropping objects for deletion

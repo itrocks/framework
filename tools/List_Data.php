@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
 use Iterator;
-use SAF\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
  * List data is an interface for all list data storage classes

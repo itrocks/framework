@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Template;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
-use SAF\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation;
 
 /**
  * A boolean annotation can have true or false value

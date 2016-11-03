@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Tools;
+namespace ITRocks\Framework\Tools;
 
-use SAF\Framework\Router;
+use ITRocks\Framework\Router;
 
 /**
  * A functions library to deal with class names and namespaces

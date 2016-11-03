@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\AOP\Joinpoint;
+namespace ITRocks\Framework\AOP\Joinpoint;
 
 /**
  * Before method joinpoint

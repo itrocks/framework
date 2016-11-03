@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Widget\Output_Setting;
+namespace ITRocks\Framework\Widget\Output_Setting;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Default_Feature_Controller;
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Getter;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\View;
-use SAF\Framework\Widget\Output\Output_Controller;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Getter;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Output\Output_Controller;
 
 /**
  * Default output setting feature controller

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Tests\Replaces;
+namespace ITRocks\Framework\Reflection\Annotation\Tests\Replaces;
 
 /**
  * Parent method @replaces test
@@ -7,14 +7,14 @@ namespace SAF\Framework\Reflection\Annotation\Tests\Replaces;
 class Parent_Method
 {
 
-	//--------------------------------------------------------------------------------------- $object
+	//------------------------------------------------------------------------------ $replaced_object
 	/**
 	 * @getter getReplacedObject
 	 * @var Parent_Class
 	 */
 	public $replaced_object;
 
-	//------------------------------------------------------------------------------------- $replaced
+	//------------------------------------------------------------------------------ $replaced_string
 	/**
 	 * @getter getReplacedString
 	 * @var string

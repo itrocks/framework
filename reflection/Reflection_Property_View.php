@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
 use DateTime;
-use SAF\Framework\Reflection\Annotation\Property\Null_Annotation;
-use SAF\Framework\Tools\Date_Time;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Password;
+use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Password;
 
 /**
  * This is a way to display a property value into a view

@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
 /**
  * Call this script from command line / scheduled tasks to call features from the software
@@ -10,7 +10,7 @@ namespace SAF\Framework;
 error_reporting(E_ALL);
 
 /**
- * The SAF\Framework\Console class represents information about the console
+ * The ITRocks\Framework\Console class represents information about the console
  */
 class Console
 {

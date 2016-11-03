@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Mapper;
+namespace ITRocks\Framework\Mapper;
 
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * The remover tool enables common process of removal of composite objects from a container object

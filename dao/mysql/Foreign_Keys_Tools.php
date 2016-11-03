@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
-use SAF\Framework\Tools\Contextual_Mysqli;
+use ITRocks\Framework\Tools\Contextual_Mysqli;
 
 /**
  * Gives foreign keys to a column
@@ -42,7 +42,7 @@ class Foreign_Keys_Tools
 			AND REFERENCED_COLUMN_NAME '$column'
 		");
 		while ($row = $result->fetch_assoc()) {
-			
+
 		}
 	}
 

@@ -1,12 +1,12 @@
 <?php
-namespace SAF\Framework\Environment;
+namespace ITRocks\Framework\Environment;
 
-use SAF\Framework\Controller\Feature;
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Environment;
-use SAF\Framework\Session;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Environment;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\View;
 
 /**
  * Environment output controller

@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Validate\Property;
+namespace ITRocks\Framework\Widget\Validate\Property;
 
-use SAF\Framework\Reflection;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Widget\Validate;
+use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Widget\Validate;
 
 /**
  * Common to all property annotations : includes the property context

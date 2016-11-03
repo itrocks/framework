@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Checker\Report;
-use SAF\Framework\Checker\Report\Line;
-use SAF\Framework\Reflection\Annotation\Property\Null_Annotation;
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Type;
+use ITRocks\Framework\Checker\Report;
+use ITRocks\Framework\Checker\Report\Line;
+use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * This checks any business object class, using typing and others annotations and management rules

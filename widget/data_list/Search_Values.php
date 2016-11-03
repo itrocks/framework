@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Widget\Data_List;
+namespace ITRocks\Framework\Widget\Data_List;
 
 /**
  * Search values for list component

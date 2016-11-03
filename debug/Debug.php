@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Call_Stack;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Call_Stack;
 
 /**
  * Debug functions that are missing in standard

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Dao\File\Session_File;
+namespace ITRocks\Framework\Dao\File\Session_File;
 
-use SAF\Framework\Controller\Feature_Controller;
-use SAF\Framework\Controller\Parameters;
-use SAF\Framework\Dao\File\Session_File;
-use SAF\Framework\View;
+use ITRocks\Framework\Controller\Feature_Controller;
+use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\File\Session_File;
+use ITRocks\Framework\View;
 
 /**
  * Session file image controller

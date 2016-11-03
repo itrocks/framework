@@ -1,19 +1,19 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
 use Exception;
 use ReflectionProperty;
-use SAF\Framework\Mapper\Empty_Object;
-use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Annotation\Class_\Override_Annotation;
-use SAF\Framework\Reflection\Annotation\Parser;
-use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Interfaces;
-use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
-use SAF\Framework\Tools\Can_Be_Empty;
-use SAF\Framework\Tools\Field;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Mapper\Empty_Object;
+use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Annotation\Class_\Override_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use ITRocks\Framework\Tools\Can_Be_Empty;
+use ITRocks\Framework\Tools\Field;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * A rich extension of the PHP ReflectionProperty class

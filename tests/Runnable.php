@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Tests;
+namespace ITRocks\Framework\Tests;
 
 /**
  * A runnable unit test

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Locale;
+namespace ITRocks\Framework\Locale;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Translations give the programmer translations features, and store them into cache
@@ -47,14 +47,14 @@ class Translator
 	 * @example
 	 * $translations = [
 	 *   ''                                    => 'default user translation',
-	 *   SAF\Framework\User::class             => 'user translation',
-	 *   SAF\Framework\User\Account::class     => 'account user translation',
-	 *   SAF\Framework\Traits\Has_Email::class => 'has email translation'
+	 *   ITRocks\Framework\User::class             => 'user translation',
+	 *   ITRocks\Framework\User\Account::class     => 'account user translation',
+	 *   ITRocks\Framework\Traits\Has_Email::class => 'has email translation'
 	 * ]
 	 * Where class Use uses trait Account and Account uses trait Has_Email.
-	 * $context = SAF\Framework\User::class            => returns 'user translation'
-	 * $context = SAF\Framework\Email\Recipient::class => returns 'has email translation'
-	 * $context = SAF\Framework\Anything_Else::class   => returns 'default user translation'
+	 * $context = ITRocks\Framework\User::class            => returns 'user translation'
+	 * $context = ITRocks\Framework\Email\Recipient::class => returns 'has email translation'
+	 * $context = ITRocks\Framework\Anything_Else::class   => returns 'default user translation'
 	 *
 	 * @param $translations string[] All translations of the same word : [$context => $translation]
 	 * @param $context      string The context we want to translate from

@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Plugin;
+namespace ITRocks\Framework\Plugin;
 
-use SAF\Framework\AOP\Weaver;
-use SAF\Framework\Builder;
-use SAF\Framework\Plugin;
-use SAF\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\AOP\Weaver;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Plugin;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use Serializable;
 
 /**

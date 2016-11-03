@@ -1,8 +1,8 @@
 <?php
-namespace SAF\Framework\Widget\Edit;
+namespace ITRocks\Framework\Widget\Edit;
 
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\View\Html\Template\Functions;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\View\Html\Template\Functions;
 
 /**
  * Edit widget html template functions specifics

@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Dao\Mysql;
+namespace ITRocks\Framework\Dao\Mysql;
 
-use SAF\Framework\Dao\Sql;
+use ITRocks\Framework\Dao\Sql;
 
 use mysqli;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Reflection\Type;
-use SAF\Framework\Sql\Value;
-use SAF\Framework\Tools\Date_Time;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Sql\Value;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Mysql column

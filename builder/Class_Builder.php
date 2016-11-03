@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Builder;
+namespace ITRocks\Framework\Builder;
 
-use SAF\Framework\Application;
-use SAF\Framework\Dao;
-use SAF\Framework\PHP\Dependency;
-use SAF\Framework\PHP\Reflection_Class;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * The class builder builds dynamically a virtual class composed of an existing class and additional traits
@@ -147,8 +147,8 @@ class Class_Builder
 	/**
 	 * Gets built name space for a class name
 	 *
-	 * @param $class_name string ie 'SAF\Framework\Module\Class_Name'
-	 * @return string ie 'Vendor\Application\Built\SAF\Framework\Module\Class_Name'
+	 * @param $class_name string ie 'ITRocks\Framework\Module\Class_Name'
+	 * @return string ie 'Vendor\Application\Built\ITRocks\Framework\Module\Class_Name'
 	 */
 	public static function builtClassName($class_name)
 	{

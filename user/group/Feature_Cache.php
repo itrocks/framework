@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\User\Group;
+namespace ITRocks\Framework\User\Group;
 
-use SAF\Framework\Application;
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Annotation\Property\Feature_Annotation;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * This processing class enables to store the list of features in cache :
@@ -145,7 +145,7 @@ class Feature_Cache
 		$yaml_files_features = [];
 		foreach ($files as $filename) {
 			if (substr($filename, -5) === '.yaml') {
-				if (substr($filename, 0, 34) !== 'saf/framework/user/group/defaults/')
+				if (substr($filename, 0, 34) !== 'itrocks/framework/user/group/defaults/')
 					$yaml_files_features = array_merge($yaml_files_features, $this->scanYamlFile($filename));
 			}
 			elseif (substr($filename, -4) === '.php') {

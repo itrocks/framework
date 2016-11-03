@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\User\Group;
+namespace ITRocks\Framework\User\Group;
 
 /**
  * A detail for a low-level feature
@@ -9,7 +9,7 @@ class Low_Level_Feature
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
-	 * The low-level feature path is like an URI : eg 'SAF/Framework/User/output'.
+	 * The low-level feature path is like an URI : eg 'ITRocks/Framework/User/output'.
 	 * It contains the class path and the name of the feature.
 	 *
 	 * @var string

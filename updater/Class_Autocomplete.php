@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Updater;
+namespace ITRocks\Framework\Updater;
 
 /**
  * This automatically complete classes with code you don't want to write

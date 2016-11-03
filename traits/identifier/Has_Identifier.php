@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Traits\Identifier;
+namespace ITRocks\Framework\Traits\Identifier;
 
-use SAF\Framework\Dao;
-use SAF\Framework\Mapper\Search_Object;
-use SAF\Framework\Traits\Identifier;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Traits\Identifier;
 
 /**
  * For classes that need an unique identifier

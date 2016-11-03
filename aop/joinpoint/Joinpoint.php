@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\AOP;
+namespace ITRocks\Framework\AOP;
 
 /**
  * The base joinpoint object

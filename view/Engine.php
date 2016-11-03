@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\View;
+namespace ITRocks\Framework\View;
 
 /**
  * The common interface to all view engines

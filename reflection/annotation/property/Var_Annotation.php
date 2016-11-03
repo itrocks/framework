@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use SAF\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Describes the data type of the property.
@@ -15,6 +15,7 @@ use SAF\Framework\Reflection\Interfaces\Reflection_Property;
 class Var_Annotation extends Documented_Type_Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'var';
 
 	//----------------------------------------------------------------------------------- __construct

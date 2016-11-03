@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Validate\Property;
+namespace ITRocks\Framework\Widget\Validate\Property;
 
-use SAF\Framework\Reflection;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Widget\Validate\Result;
+use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Widget\Validate\Result;
 
 /**
  * The max value annotation validator

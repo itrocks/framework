@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Dao\File;
+namespace ITRocks\Framework\Dao\File;
 
-use SAF\Framework\Dao\Data_Link\Identifier_Map;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Dao\Sql\Column;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Files;
-use SAF\Framework\Tools\List_Data;
+use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Sql\Column;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Files;
+use ITRocks\Framework\Tools\List_Data;
 
 /**
  * This data link stores objects into files
@@ -60,6 +60,7 @@ class Link extends Identifier_Map
 	public function count($what, $class_name = null)
 	{
 		// TODO: Implement count() method.
+		return 0;
 	}
 
 	//--------------------------------------------------------------------------------- createStorage
@@ -72,6 +73,7 @@ class Link extends Identifier_Map
 	public function createStorage($class_name)
 	{
 		// TODO: Implement createStorage() method.
+		return false;
 	}
 
 	//---------------------------------------------------------------------------------------- delete
@@ -87,6 +89,7 @@ class Link extends Identifier_Map
 	public function delete($object)
 	{
 		// TODO: Implement delete() method.
+		return false;
 	}
 
 	//--------------------------------------------------------------------------- getStoredProperties
@@ -101,6 +104,7 @@ class Link extends Identifier_Map
 	public function getStoredProperties($class)
 	{
 		// TODO: Implement getStoredProperties() method.
+		return [];
 	}
 
 	//------------------------------------------------------------------------------ propertyFileName
@@ -127,6 +131,7 @@ class Link extends Identifier_Map
 	public function read($identifier, $class_name)
 	{
 		// TODO: Implement read() method.
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------------- readAll
@@ -140,6 +145,7 @@ class Link extends Identifier_Map
 	public function readAll($class_name, $options = [])
 	{
 		// TODO: Implement readAll() method.
+		return [];
 	}
 
 	//---------------------------------------------------------------------------------- readProperty
@@ -169,6 +175,7 @@ class Link extends Identifier_Map
 	public function replaceReferences($replaced, $replacement)
 	{
 		// TODO: Implement replaceReferences() method.
+		return false;
 	}
 
 	//---------------------------------------------------------------------------------------- search
@@ -187,6 +194,7 @@ class Link extends Identifier_Map
 	public function search($what, $class_name = null, $options = [])
 	{
 		// TODO: Implement search() method.
+		return [];
 	}
 
 	//---------------------------------------------------------------------------------------- select
@@ -202,6 +210,7 @@ class Link extends Identifier_Map
 	public function select($class, $columns, $filter_object = null, $options = [])
 	{
 		// TODO: Implement select() method.
+		return null;
 	}
 
 	//-------------------------------------------------------------------------------------- truncate
@@ -231,6 +240,7 @@ class Link extends Identifier_Map
 	public function write($object, $options = [])
 	{
 		// TODO: Implement write() method.
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------- writeProperty

@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
-use SAF\Framework\User;
+use /** @noinspection PhpUnusedAliasInspection @extends */ ITRocks\Framework\User;
 
 /**
  * For users that have settings

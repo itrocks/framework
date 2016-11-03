@@ -1,24 +1,24 @@
 <?php
-namespace SAF\Framework\Widget\Validate;
+namespace ITRocks\Framework\Widget\Validate;
 
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Parameter;
-use SAF\Framework\Dao\Data_Link;
-use SAF\Framework\Dao\Option;
-use SAF\Framework\Dao\Option\Exclude;
-use SAF\Framework\Dao\Option\Only;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Reflection;
-use SAF\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use SAF\Framework\Reflection\Annotation\Parser;
-use SAF\Framework\Reflection\Interfaces\Reflection_Class;
-use SAF\Framework\Reflection\Interfaces\Reflection_Property;
-use SAF\Framework\Reflection\Link_Class;
-use SAF\Framework\View;
-use SAF\Framework\View\Html\Template;
-use SAF\Framework\View\View_Exception;
-use SAF\Framework\Widget\Validate\Property;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option\Exclude;
+use ITRocks\Framework\Dao\Option\Only;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\View_Exception;
+use ITRocks\Framework\Widget\Validate\Property;
 
 /**
  * The object validator links validation processes to objects

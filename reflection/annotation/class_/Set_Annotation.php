@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Reflection\Annotation\Class_;
+namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use SAF\Framework\Reflection\Annotation;
-use SAF\Framework\Reflection\Annotation\Template\Types_Annotation;
-use SAF\Framework\Reflection\Interfaces\Reflection_Class;
-use SAF\Framework\Tools\Set;
+use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Tools\Set;
 
 /**
  * Use the @set annotation to define the name of the set class (virtual or real) associated to the

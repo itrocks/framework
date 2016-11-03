@@ -1,14 +1,14 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
-use SAF\Framework\Reflection;
-use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Annotation\Parser;
-use SAF\Framework\Reflection\Interfaces;
-use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
-use SAF\Framework\Tools\Call_Stack;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Tools\Set;
+use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use ITRocks\Framework\Tools\Call_Stack;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Tools\Set;
 
 /**
  * A reflection class parser that uses php tokens to parse php source code instead of loading

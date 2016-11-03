@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Widget\Data_List;
+namespace ITRocks\Framework\Widget\Data_List;
 
-use SAF\Framework\Locale;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Reflection_Property_Value;
-use SAF\Framework\Widget\Data_List_Setting;
+use ITRocks\Framework\Locale;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Widget\Data_List_Setting;
 
 /**
  * Data list property (ie visible column)

@@ -1,31 +1,31 @@
 <?php
-namespace SAF\Framework\PHP;
+namespace ITRocks\Framework\PHP;
 
-use SAF\Framework\Application;
-use SAF\Framework\Builder;
-use SAF\Framework\Controller\Main;
-use SAF\Framework\Controller\Needs_Main;
-use SAF\Framework\Dao;
-use SAF\Framework\Dao\Func;
-use SAF\Framework\Dao\Set;
-use SAF\Framework\Plugin\Configurable;
-use SAF\Framework\Plugin\Register;
-use SAF\Framework\Plugin\Registerable;
-use SAF\Framework\Router;
-use SAF\Framework\Session;
-use SAF\Framework\Tools\Files;
-use SAF\Framework\Tools\List_Row;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Tools\Paths;
-use SAF\Framework\Updater\Application_Updater;
-use SAF\Framework\Updater\Updatable;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Needs_Main;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Set;
+use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Router;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\Files;
+use ITRocks\Framework\Tools\List_Row;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Tools\Paths;
+use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\Updater\Updatable;
 use Serializable;
 
 /**
  * Php compiler : the php scripts compilers manager
  *
- * This has heavy dependencies to the SAF Framework, and can't be used without it at the moment
+ * This has heavy dependencies to the ITRocks Framework, and can't be used without it at the moment
  */
 class Compiler implements
 	Class_File_Name_Getter, Configurable, Needs_Main, Registerable, Serializable, Updatable

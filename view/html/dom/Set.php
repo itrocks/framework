@@ -1,7 +1,7 @@
 <?php
-namespace SAF\Framework\View\Html\Dom;
+namespace ITRocks\Framework\View\Html\Dom;
 
-use SAF\Framework\Locale\Loc;
+use ITRocks\Framework\Locale\Loc;
 
 /**
  * A DOM element class for HTML form set inputs

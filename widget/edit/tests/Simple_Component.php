@@ -1,9 +1,9 @@
 <?php
-namespace SAF\Framework\Widget\Edit\Tests;
+namespace ITRocks\Framework\Widget\Edit\Tests;
 
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Traits\Has_Code;
-use SAF\Framework\Traits\Has_Name;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Traits\Has_Code;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A simple test object

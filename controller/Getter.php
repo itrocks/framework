@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework\Controller;
+namespace ITRocks\Framework\Controller;
 
-use SAF\Framework\Application;
-use SAF\Framework\Builder;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * Gets the active class for a given base name feature, suffix and file extension
@@ -17,7 +17,7 @@ abstract class Getter
 
 	//------------------------------------------------------------------------------------------- get
 	/**
-	 * @param $base_class   string The base name for the class, ie 'SAF\Framework\User'
+	 * @param $base_class   string The base name for the class, ie 'ITRocks\Framework\User'
 	 * @param $feature_name string The name of the feature, ie 'dataList'
 	 * @param $suffix       string Class suffix, ie 'Controller', 'View'
 	 * @param $extension    string File extension, ie 'php', 'html'

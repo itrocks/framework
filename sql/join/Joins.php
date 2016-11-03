@@ -1,17 +1,17 @@
 <?php
-namespace SAF\Framework\Sql\Join;
+namespace ITRocks\Framework\Sql\Join;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Store_Annotation;
-use SAF\Framework\Reflection\Link_Class;
-use SAF\Framework\Reflection\Reflection_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Sql;
-use SAF\Framework\Sql\Join;
-use SAF\Framework\Sql\Link_Table;
-use SAF\Framework\Tools\Namespaces;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Sql;
+use ITRocks\Framework\Sql\Join;
+use ITRocks\Framework\Sql\Link_Table;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * This builds and stores SQL tables joins in order to make easy automatic joins generation

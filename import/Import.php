@@ -1,11 +1,11 @@
 <?php
-namespace SAF\Framework;
+namespace ITRocks\Framework;
 
-use SAF\Framework\Dao\File;
-use SAF\Framework\Import\Import_Export_Format;
-use SAF\Framework\Import\Import_Worksheet;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Tools\Names;
+use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Import\Import_Export_Format;
+use ITRocks\Framework\Import\Import_Worksheet;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Standard import class for your objects data

@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Setting;
+namespace ITRocks\Framework\Setting;
 
 /**
  * For business objects that have settings

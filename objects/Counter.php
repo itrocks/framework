@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Objects;
+namespace ITRocks\Framework\Objects;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Tools\Date_Time;
-use SAF\Framework\View\Html\Template;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * The Counter class manages business-side counters : ie invoices numbers, etc.
@@ -18,7 +18,7 @@ class Counter
 
 	//--------------------------------------------------------------------------------------- $format
 	/**
-	 * @example 'F{YEAR}{SAF\Framework\User.current.login.0.upper}%04s'
+	 * @example 'F{YEAR}{ITRocks\Framework\User.current.login.0.upper}%04s'
 	 * @var string
 	 */
 	public $format = '{YEAR}%04s';

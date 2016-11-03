@@ -1,10 +1,10 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
 use ReflectionMethod;
-use SAF\Framework\Reflection\Annotation\Annoted;
-use SAF\Framework\Reflection\Interfaces;
-use SAF\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
  * A rich extension of the PHP ReflectionMethod class, adding :

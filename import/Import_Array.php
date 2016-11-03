@@ -1,20 +1,20 @@
 <?php
-namespace SAF\Framework\Import;
+namespace ITRocks\Framework\Import;
 
 use ReflectionException;
-use SAF\Framework\Builder;
-use SAF\Framework\Dao;
-use SAF\Framework\Import\Settings\Import_Class;
-use SAF\Framework\Import\Settings\Import_Property;
-use SAF\Framework\Import\Settings\Import_Settings;
-use SAF\Framework\Locale;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
-use SAF\Framework\Reflection\Link_Class;
-use SAF\Framework\Reflection\Reflection_Property;
-use SAF\Framework\Tools\Names;
-use SAF\Framework\Tools\Namespaces;
-use SAF\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Import\Settings\Import_Class;
+use ITRocks\Framework\Import\Settings\Import_Property;
+use ITRocks\Framework\Import\Settings\Import_Settings;
+use ITRocks\Framework\Locale;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
  * Import data into the application from array

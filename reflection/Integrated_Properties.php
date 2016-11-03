@@ -1,13 +1,13 @@
 <?php
-namespace SAF\Framework\Reflection;
+namespace ITRocks\Framework\Reflection;
 
-use SAF\Framework\Builder;
-use SAF\Framework\Locale\Loc;
-use SAF\Framework\Mapper\Component;
-use SAF\Framework\Reflection\Annotation\Property\Alias_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\Integrated_Annotation;
-use SAF\Framework\Reflection\Annotation\Property\User_Annotation;
-use SAF\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 
 /**
  * Integrated properties toolbox, used to expand properties list when @integrated annotation is used

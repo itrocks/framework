@@ -1,5 +1,5 @@
 <?php
-namespace SAF\Framework\Widget\Validate;
+namespace ITRocks\Framework\Widget\Validate;
 
 /**
  * Validators have report
