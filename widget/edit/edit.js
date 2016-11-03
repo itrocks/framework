@@ -267,9 +267,14 @@ $('document').ready(function()
 			select: function(event, ui)
 			{
 				var $this = $(this);
-				var previous_id = $this.prev().val();
+				//case where we have a previous input as id
+				var $prev = $this.prev();
+				var previous_value = ($prev.length ? $this.prev().val() : $this.val());
+
 				//console.log('selected ' + ui.item.id + ': ' + ui.item.value);
-				$this.prev().val(ui.item.id);
+				if ($prev.length) {
+					$prev.val(ui.item.id);
+				}
 				if (!event.keyCode) {
  					// when mouse is clicked, then the value changes, sure !
 					$this.val(ui.item.value);
@@ -279,8 +284,9 @@ $('document').ready(function()
 					//console.log('> ' + $this.val() + ' does not match ' + $this.data('value'));
 					comboForce($this);
 				}
-				if (previous_id != $this.prev().val()) {
-					$this.prev().change();
+				if (previous_value != ($prev.length ? $prev.val() : $this.val())) {
+					// on-change is either on previous input either on this one, not on both
+					$prev.length ? $prev.change() : $this.change();
 				}
 			}
 		})
