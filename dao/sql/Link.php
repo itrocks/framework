@@ -4,6 +4,7 @@ namespace SAF\Framework\Dao\Sql;
 use SAF\Framework\Builder;
 use SAF\Framework\Dao\Data_Link\Identifier_Map;
 use SAF\Framework\Dao\Data_Link\Transactional;
+use SAF\Framework\Dao\Func;
 use SAF\Framework\Dao\Func\Column;
 use SAF\Framework\Dao\Option;
 use SAF\Framework\Reflection\Annotation\Property\Link_Annotation;
@@ -217,7 +218,10 @@ abstract class Link extends Identifier_Map implements Transactional
 			$list = $this->selectList($object_class, $properties);
 		}
 		if ($double_pass) {
-			$filter_object = $this->selectFirstPass($object_class, $properties, $filter_object, $options);
+			$filter_object = Func::andOp([
+				$filter_object,
+				Func::orOp($this->selectFirstPass($object_class, $properties, $filter_object, $options))
+			]);
 		}
 		if (!$double_pass || ($double_pass && $filter_object)) {
 			$select = new Select($object_class, $properties, $this);
