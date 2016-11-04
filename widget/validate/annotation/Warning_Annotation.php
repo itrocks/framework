@@ -1,10 +1,9 @@
 <?php
+namespace ITRocks\Framework\Widget\Validate\Annotation;
 
-namespace SAF\Framework\Widget\Validate\Annotation;
-
-use SAF\Framework\Reflection\Annotation\Template\Method_Annotation;
-use SAF\Framework\Widget\Validate\Annotation;
-use SAF\Framework\Widget\Validate\Result;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Widget\Validate\Annotation;
+use ITRocks\Framework\Widget\Validate\Result;
 
 /**
  * Common code for all @warning annotation

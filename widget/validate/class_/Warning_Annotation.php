@@ -1,10 +1,9 @@
 <?php
+namespace ITRocks\Framework\Widget\Validate\Class_;
 
-namespace SAF\Framework\Widget\Validate\Class_;
-
-use SAF\Framework\Reflection\Annotation\Template\Multiple_Annotation;
-use SAF\Framework\Widget\Validate;
-use SAF\Framework\Widget\Validate\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use ITRocks\Framework\Widget\Validate;
+use ITRocks\Framework\Widget\Validate\Annotation;
 
 /**
  * Property @validate annotation
