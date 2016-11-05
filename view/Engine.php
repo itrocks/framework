@@ -11,7 +11,8 @@ interface Engine
 	/**
 	 * Generates a link for to an object and feature, using parameters if needed
 	 *
-	 * @param $object     object|string linked object or class name
+	 * @param $object     object|string|array linked object or class name
+	 *                    Some internal calls may all this with [$class_name, $id]
 	 * @param $feature    string linked feature name
 	 * @param $parameters string|string[]|object|object[] optional parameters list
 	 * @param $arguments  string|string[] optional arguments list
