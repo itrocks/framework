@@ -28,6 +28,10 @@ const LF = "\n";
 
 const Q = "'";
 
+const PHP_CEIL = 'ceil';
+
+const PHP_FLOOR = 'floor';
+
 const PIPE = '|';
 
 const PRE = '<pre>';

@@ -64,14 +64,42 @@ class Date_Interval extends DateInterval
 		return new Date_Interval($interval_spec, $invert);
 	}
 
-	//---------------------------------------------------------------------------------------- toTime
+	//---------------------------------------------------------------------------------------- months
+	/**
+	 * Returns the date interval in number of years
+	 *
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
+	 * @return integer
+	 */
+	public function months($round_mode = PHP_CEIL, $absolute = false)
+	{
+		return $this->round($this->timestamp($absolute) / 2592000, $round_mode);
+	}
+
+	//----------------------------------------------------------------------------------------- round
+	/**
+	 * @param $duration   float
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @return integer
+	 */
+	private function round($duration, $round_mode)
+	{
+		switch ($round_mode) {
+			case PHP_CEIL:  return ceil($duration);
+			case PHP_FLOOR: return floor($duration);
+			default: return round($duration, 0, $round_mode);
+		}
+	}
+
+	//------------------------------------------------------------------------------------- timestamp
 	/**
 	 * Returns the date interval in time format (number of seconds)
 	 *
 	 * @param $absolute boolean
 	 * @return integer
 	 */
-	public function toTime($absolute = false)
+	public function timestamp($absolute = false)
 	{
 		return (($this->invert && !$absolute) ? -1 : 1) * (
 			$this->s
@@ -81,6 +109,33 @@ class Date_Interval extends DateInterval
 			+ $this->m * 2592000
 			+ $this->y * 31104000
 		);
+	}
+
+	//---------------------------------------------------------------------------------------- toTime
+	/**
+	 * Returns the date interval in time format (number of seconds)
+	 *
+	 * @deprecated
+	 * @param $absolute boolean
+	 * @return integer
+	 * @see timestamp()
+	 */
+	public function toTime($absolute = false)
+	{
+		return $this->timestamp($absolute);
+	}
+
+	//----------------------------------------------------------------------------------------- years
+	/**
+	 * Returns the date interval in number of years
+	 *
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
+	 * @return integer
+	 */
+	public function years($round_mode = PHP_CEIL, $absolute = false)
+	{
+		return $this->round($this->timestamp($absolute) / 31104000, $round_mode);
 	}
 
 }
