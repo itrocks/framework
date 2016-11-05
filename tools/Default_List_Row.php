@@ -102,7 +102,9 @@ class Default_List_Row implements List_Row
 	 */
 	public function getOutputLink()
 	{
-		return View::link($this->getObject());
+		return View::link(
+			is_object($this->object) ? $this->object : [$this->class_name, $this->object]
+		);
 	}
 
 	//-------------------------------------------------------------------------------------- getValue

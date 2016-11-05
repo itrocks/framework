@@ -85,7 +85,8 @@ class Engine implements Configurable, Framework\View\Engine
 	/**
 	 * Generates a link for to an object and feature, using parameters if needed
 	 *
-	 * @param $object     object|string linked object or class name
+	 * @param $object     object|string|array linked object or class name
+	 *                    Some internal calls may all this with [$class_name, $id]
 	 * @param $feature    string linked feature name
 	 * @param $parameters string|string[]|object|object[] optional parameters list
 	 * @param $arguments  string|string[] optional arguments list
@@ -94,20 +95,23 @@ class Engine implements Configurable, Framework\View\Engine
 	public function link($object, $feature = null, $parameters = null, $arguments = null)
 	{
 		// class name : not Built, not Set
-		$class_names = is_string($object) ? $object : get_class($object);
+		$class_names = is_object($object)
+			? get_class($object)
+			: (is_array($object) ? reset($object) : $object);
 		$class_name = Names::setToClass($class_names, false);
-		$set_class = ($class_name != $class_names);
+		$set_class  = ($class_name != $class_names);
 		$class_name = Builder::current()->sourceClassName($class_name);
 		if ($set_class) {
 			$class_name = Names::classToSet($class_name);
 		}
 
+		// identifier
+		$identifier = is_object($object)
+			? Dao::getObjectIdentifier($object)
+			: (is_array($object) ? end($object) : null);
+
 		// build uri
-		$link = str_replace(BS, SL,
-			(is_object($object) && Dao::getObjectIdentifier($object))
-			? ($class_name . SL . Dao::getObjectIdentifier($object))
-			: $class_name
-		);
+		$link = str_replace(BS, SL, $identifier ? ($class_name . SL . $identifier) : $class_name);
 		if (isset($feature)) {
 			$link .= SL . $feature;
 		}
