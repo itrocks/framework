@@ -13,6 +13,7 @@
 <body>
 <!--BEGIN-->
 
+	<!--use ITRocks\Framework\Html\Engine-->
 	<form action="/{@class.path}/{@feature}" class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" method="post" target="#main">
 		<h2>
 			<span>{title}</span>
@@ -72,7 +73,7 @@
 					<!--formatValues:1-->
 					<td>
 						<!----class_name?-->
-						<a class="object" data-class="{--class_name.source}" data-id="{--id}" href="/{--class_name.path}/{--id}" target="#main">{value.nbsp}</a>
+						<a class="object" data-class="{--class_name.source}" data-id="{--id}" href="{--getOutputLink}" target="#main">{value.nbsp}</a>
 						<!----class_name?-->
 					</td>
 					<!--formatValues-->

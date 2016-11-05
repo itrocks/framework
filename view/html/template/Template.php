@@ -241,7 +241,6 @@ class Template
 	/**
 	 * Search "black zones" into content
 	 *
-	 * @exemple
 	 * @param $content    string   the text to search black zones into
 	 * @param $delimiters string[] each key is the start delimiter, value is the end delimiter
 	 * @return integer[] key is the start index and value is the end index for each black zone

@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tools;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
+use ITRocks\Framework\View;
 
 /**
  * The list row class for Default_List_Data
@@ -91,6 +92,17 @@ class Default_List_Row implements List_Row
 	{
 		Getter::getObject($this->object, $this->class_name);
 		return $this->object;
+	}
+
+	//--------------------------------------------------------------------------------- getOutputLink
+	/**
+	 * Returns link to the output feature for the object
+	 *
+	 * @return string
+	 */
+	public function getOutputLink()
+	{
+		return View::link($this->getObject());
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
