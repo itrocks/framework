@@ -194,10 +194,23 @@ file_put_contents($composer_file, <<<EOT
 EOT
 );
 
+echo '- get composer hash' . "\n";
+$download_page = file_get_contents('https://getcomposer.org/download/');
+$hash_begin = "hash_file('SHA384', 'composer-setup.php') === '";
+$hash_end = "'";
+$hash_position = strpos($download_page, $hash_begin) + strlen($hash_begin);
+$hash = substr(
+	$download_page, $hash_position, strpos($download_page, $hash_end, $hash_position) - $hash_position
+);
+echo $hash . "\n";
+
 echo '- download composer into ' . $composer_executable . "\n";
 chdir($dir);
 copy('https://getcomposer.org/installer', $composer_setup);
-if (hash_file('SHA384', $composer_setup) === 'aa96f26c2b67226a324c27919f1eb05f21c248b987e6195cad9690d5c1ff713d53020a02ac8c217dbf90a7eacc9d141d') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;
+if (hash_file('SHA384', $composer_setup) === $hash) { echo 'Installer verified'; }
+else { echo 'Installer corrupt'; unlink('composer-setup.php'); }
+echo PHP_EOL;
+
 system('php ' . $composer_setup);
 unlink($composer_setup);
 
