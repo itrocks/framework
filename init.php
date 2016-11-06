@@ -117,7 +117,6 @@ file_put_contents($configuration_file, <<<EOT
 namespace $namespace;
 
 use ITRocks\Framework\Configuration;
-use ITRocks\Framework\Plugin\Priority;
 
 global \$loc;
 require __DIR__ . '/../../loc.php';
