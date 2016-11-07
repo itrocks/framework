@@ -545,4 +545,18 @@ class Reflection_Property extends ReflectionProperty
 		}
 	}
 
+	//--------------------------------------------------------------------- toReflectionPropertyValue
+	/**
+	 *
+	 * @param $object object
+	 * @param $user   boolean
+	 * @return Reflection_Property_Value
+	 */
+	public function toReflectionPropertyValue($object, $user = false)
+	{
+		return new Reflection_Property_Value(
+			$this->root_class ?: $this->class, $this->path, $object, false, $user
+		);
+	}
+
 }

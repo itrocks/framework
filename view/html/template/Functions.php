@@ -224,6 +224,7 @@ class Functions
 		$object, $property_name, Reflection_Property $property, Template $template, $name, $ignore_user,
 		$can_always_be_null
 	) {
+		$property_value = $property->toReflectionPropertyValue($object, true);
 		if ($template->preprops && !$name) {
 			$prefix = isset($prefix)
 				? ($prefix . '[' . reset($template->preprops) . ']')
@@ -237,10 +238,10 @@ class Functions
 				}
 				$prefix .= '[' . $next . ']';
 			}
-			$property_edit = new Html_Builder_Property($property, $property->getValue($object), $prefix);
+			$property_edit = new Html_Builder_Property($property_value, null, $prefix);
 		}
 		else {
-			$property_edit       = new Html_Builder_Property($property, $property->getValue($object));
+			$property_edit       = new Html_Builder_Property($property_value);
 			$property_edit->name = $name ?: $property_name;
 		}
 		$property_edit->conditions = [];
