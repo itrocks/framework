@@ -16,6 +16,49 @@ use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
 abstract class Date
 {
 
+	//------------------------------------------------------------------------------------------ DATE
+	const DATE               = 'date';
+
+	//---------------------------------------------------------------------------- DATE_HOURS_MINUTES
+	const DATE_HOURS_MINUTES = 'date_hours_minutes';
+
+	//------------------------------------------------------------------------------- DATE_HOURS_ONLY
+	const DATE_HOURS_ONLY    = 'date_hours_only';
+
+	//------------------------------------------------------------------------------------- DATE_TIME
+	const DATE_TIME          = 'date_time';
+
+	//------------------------------------------------------------------------------------- DAY_MONTH
+	const DAY_MONTH          = 'day_month';
+
+	//-------------------------------------------------------------------------------------- DAY_ONLY
+	const DAY_ONLY           = 'day_only';
+
+	//------------------------------------------------------------------------------------ MONTH_ONLY
+	const MONTH_ONLY         = 'month_only';
+
+	//------------------------------------------------------------------------------------ MONTH_YEAR
+	const MONTH_YEAR         = 'month_year';
+
+	//------------------------------------------------------------------------------------- YEAR_ONLY
+	const YEAR_ONLY          = 'year_only';
+
+	//--------------------------------------------------------------------------------- KIND_OF_DATES
+	/**
+	 * All kind of date expression we can have. Order is important!
+	 */
+	const KIND_OF_DATES = [
+		self::DATE_TIME,
+		self::DATE_HOURS_MINUTES,
+		self::DATE_HOURS_ONLY,
+		self::DATE,
+		self::MONTH_YEAR,
+		self::DAY_MONTH,
+		self::YEAR_ONLY,
+		self::DAY_ONLY,
+		self::MONTH_ONLY
+	];
+
 	//------------------------------------------------------------------------------ $currentDateTime
 	/**
 	 * @var Date_Time
@@ -889,19 +932,125 @@ abstract class Date
 	 * Note: this is not the complete pattern, you should surround by delimiters
 	 * and add whatever else you want
 	 *
+	 * @param $kind_of_date null|string value of self::KIND_OF_DATE
 	 * @return string
 	 */
-	public static function getDateSubPattern()
+	public static function getDateSubPattern($kind_of_date = null)
 	{
-		static $pattern = false;
-		if (!$pattern) {
-			$letters = self::getDateLetters(Date_Time::YEAR)
-				. self::getDateLetters(Date_Time::MONTH)
-				. self::getDateLetters(Date_Time::DAY);
-			$pattern = '(?:(?:[0-9*?%_]{1,4} | [' . $letters . '](?:[-+]\d+)?) [\/]){0,2}'
-				. SP . '(?:[0-9*?%_]{1,4} | [' . $letters . '](?:[-+]\d+)?)';
+		static $big_pattern = null;
+		static $named_patterns = null;
+		if (!isset($big_pattern)) {
+			$y_letters = self::getDateLetters(Date_Time::YEAR);
+			$m_letters = self::getDateLetters(Date_Time::MONTH);
+			$d_letters = self::getDateLetters(Date_Time::DAY);
+			$h_letters = self::getDateLetters(Date_Time::HOUR);
+			$i_letters = self::getDateLetters(Date_Time::MINUTE);
+			$s_letters = self::getDateLetters(Date_Time::SECOND);
+
+			// pattern for a date part : digits with optional wildcards or formula
+			$day     = '(?:[0-3*?%_]?[0-9*?%_]) | (?:[' . $d_letters . '](?:[-+]\d+)?)';
+			$month   = '(?:[0-1*?%_]?[0-9*?%_]) | (?:[' . $m_letters . '](?:[-+]\d+)?)';
+			$year    = '(?:[0-9*?%_]){1,4}      | (?:[' . $y_letters . '](?:[-+]\d+)?)';
+			$hours   = '(?:[0-2*?%_]?[0-9*?%_]) | (?:[' . $h_letters . '](?:[-+]\d+)?)';
+			$minutes = '(?:[0-5*?%_]?[0-9*?%_]) | (?:[' . $i_letters . '](?:[-+]\d+)?)';
+			$seconds = '(?:[0-5*?%_]?[0-9*?%_]) | (?:[' . $s_letters . '](?:[-+]\d+)?)';
+
+			$named_day     = "(?P<day> $day )";
+			$named_month   = "(?P<month> $month )";
+			$named_year    = "(?P<year> $year )";
+			$named_hours   = "(?P<hours> $hours )";
+			$named_minutes = "(?P<minutes> $minutes )";
+			$named_seconds = "(?P<seconds> $seconds )";
+
+			$unnamed_day     = "(?: $day )";
+			$unnamed_month   = "(?: $month )";
+			$unnamed_year    = "(?: $year )";
+			$unnamed_hours   = "(?: $hours )";
+			$unnamed_minutes = "(?: $minutes )";
+			$unnamed_seconds = "(?: $seconds )";
+
+			/*
+			* [d]d/[m]m/yyyy
+			* [d]d/[m]m         (means implicit current year)
+			* [m]m/yyyy | yyyy/[m]m (means from 01/mm/yyyy to 31!/mm/yyyy) 3-4 chars mandatory
+			* [d]d              (means implicit current month and year)
+			* yyyy              (means from 01/01/yyyy to 31/12/yyyy) 3-4 chars mandatory
+			* "y" [+|-] integer (means from 01/01/yyyy to 31/12/yyyy)
+			* "d" [+|-] integer (means implicit current month and year)
+      * "m" [+|-] integer (means from 01/mm/currentyear to 31!/mm/currentyear)
+			*/
+
+			//build the named patterns that helps to split an expression in many parts
+			$named_patterns = [];
+			if (Loc::date()->format == 'd/m/Y') {
+				$named_patterns[self::DATE_TIME] =
+					"(?:$named_day\\/$named_month\\/$named_year \\s "	.
+					"$named_hours\\:$named_minutes\\:$named_seconds)";
+				$named_patterns[self::DATE_HOURS_MINUTES] =
+					"(?:$named_day\\/$named_month\\/$named_year \\s " .
+					"$named_hours\\:$named_minutes)";
+				$named_patterns[self::DATE_HOURS_ONLY] =
+					"(?:$named_day\\/$named_month\\/$named_year \\s $named_hours)";
+				$named_patterns[self::DATE]      = "(?:$named_day\\/$named_month\\/$named_year)";
+				$named_patterns[self::DAY_MONTH] = "(?:$named_day\\/$named_month)";
+			}
+			else {
+				$named_patterns[self::DATE_TIME] =
+					"(?:$named_month\\/$named_day\\/$named_year \\s $named_hours\\:$named_minutes\\:$named_seconds)";
+				$named_patterns[self::DATE_HOURS_MINUTES] =
+					"(?:$named_month\\/$named_day\\/$named_year \\s $named_hours\\:$named_minutes)";
+				$named_patterns[self::DATE_HOURS_ONLY] =
+					"(?:$named_month\\/$named_day\\/$named_year \\s $named_hours)";
+				$named_patterns[self::DATE]      = "(?:$named_month\\/$named_day\\/$named_year)";
+				$named_patterns[self::DAY_MONTH] = "(?:$named_month\\/$named_day)";
+			}
+			$named_patterns[self::MONTH_YEAR]  = "(?:$named_month\\/$named_year)";
+			$named_patterns[self::YEAR_ONLY]   = "$named_year";
+			$named_patterns[self::DAY_ONLY]    = "$named_day";
+			$named_patterns[self::MONTH_ONLY]  = "$named_month";
+
+			// build unnamed patterns for a big pattern (we can not have same name twice in a pattern)
+			$unnamed_patterns = [];
+			if (Loc::date()->format == 'd/m/Y') {
+				$unnamed_patterns[self::DATE_TIME] =
+					"(?:$unnamed_day\\/$unnamed_month\\/$unnamed_year \\s "	.
+					"$unnamed_hours\\:$unnamed_minutes\\:$unnamed_seconds)";
+				$unnamed_patterns[self::DATE_HOURS_MINUTES] =
+					"(?:$unnamed_day\\/$unnamed_month\\/$unnamed_year \\s " .
+					"$unnamed_hours\\:$unnamed_minutes)";
+				$unnamed_patterns[self::DATE_HOURS_ONLY] =
+					"(?:$unnamed_day\\/$unnamed_month\\/$unnamed_year \\s $unnamed_hours)";
+				$unnamed_patterns[self::DATE]      = "(?:$unnamed_day\\/$unnamed_month\\/$unnamed_year)";
+				$unnamed_patterns[self::DAY_MONTH] = "(?:$unnamed_day\\/$unnamed_month)";
+			}
+			else {
+				$unnamed_patterns[self::DATE_TIME] =
+					"(?:$unnamed_month\\/$unnamed_day\\/$unnamed_year \\s $unnamed_hours\\:$unnamed_minutes\\:$unnamed_seconds)";
+				$unnamed_patterns[self::DATE_HOURS_MINUTES] =
+					"(?:$unnamed_month\\/$unnamed_day\\/$unnamed_year \\s $unnamed_hours\\:$unnamed_minutes)";
+				$unnamed_patterns[self::DATE_HOURS_ONLY] =
+					"(?:$unnamed_month\\/$unnamed_day\\/$unnamed_year \\s $unnamed_hours)";
+				$unnamed_patterns[self::DATE]      = "(?:$unnamed_month\\/$unnamed_day\\/$unnamed_year)";
+				$unnamed_patterns[self::DAY_MONTH] = "(?:$unnamed_month\\/$unnamed_day)";
+			}
+			$unnamed_patterns[self::MONTH_YEAR]  = "(?:$unnamed_month\\/$unnamed_year)";
+			$unnamed_patterns[self::YEAR_ONLY]   = "$unnamed_year";
+			$unnamed_patterns[self::DAY_ONLY]    = "$unnamed_day";
+			$unnamed_patterns[self::MONTH_ONLY]  = "$unnamed_month";
+
+			//build the big pattern that check if expression is a date and can get kind of date
+			$patterns = [];
+			foreach (self::KIND_OF_DATES as $kind) {
+				$patterns[$kind] = "(?P<" . $kind . "> " . $unnamed_patterns[$kind] . ")";
+			}
+
+			$big_pattern  = "(?: " . LF . TAB . SP . SP . implode(LF . TAB . '| ', $patterns) . LF . " )";
 		}
-		return $pattern;
+
+		if (isset($kind_of_date)) {
+			return $named_patterns[$kind_of_date];
+		}
+		return $big_pattern;
 	}
 
 	//-------------------------------------------------------------------------------- getDateLetters
@@ -952,6 +1101,49 @@ abstract class Date
 		return Words::getCompressedWords(array_merge($words_references, $words_localized));
 	}
 
+	//--------------------------------------------------------------------------------- getKindOfDate
+	/**
+	 * Return matches of regexp cutting date expression in multiple parts
+	 *
+	 * @param $expression string
+	 * @return null|string value of self::KIND_OF_DATE
+	 */
+	private static function getKindOfDate($expression)
+	{
+		$pattern = "/^ \\s* " . self::getDateSubPattern() . " \\s* $/x";
+		if (preg_match($pattern, $expression, $matches)) {
+			foreach(self::KIND_OF_DATES as $kind_of_date) {
+				if (isset($matches[$kind_of_date]) && !empty($matches[$kind_of_date])) {
+					return $kind_of_date;
+				}
+			}
+		}
+		return null;
+	}
+
+	//-------------------------------------------------------------------------------------- getParts
+	/**
+	 * @param $expression   string
+	 * @param $kind_of_date string value of self::KIND_OF_DATE
+	 * @return array
+	 */
+	public static function getParts($expression, $kind_of_date)
+	{
+		$pattern = "/^ \\s* " . self::getDateSubPattern($kind_of_date) . " \\s* $/x";
+		if (preg_match($pattern, $expression, $matches)) {
+			$parts = [
+				'day'     => (isset($matches['day'])     ? $matches['day']     : ''),
+				'month'   => (isset($matches['month'])   ? $matches['month']   : ''),
+				'year'    => (isset($matches['year'])    ? $matches['year']    : ''),
+				'hours'   => (isset($matches['hours'])   ? $matches['hours']   : ''),
+				'minutes' => (isset($matches['minutes']) ? $matches['minutes'] : ''),
+				'seconds' => (isset($matches['seconds']) ? $matches['seconds'] : ''),
+			];
+			return $parts;
+		}
+		return null;
+	}
+
 	//------------------------------------------------------------------------------------- initDates
 	/**
 	 * Init dates constants
@@ -984,25 +1176,39 @@ abstract class Date
 		// we check if $expr is a single date containing formula
 		// but it may be a range with 2 dates containing formula, what should return false
 		// so the use of /^ ... $/
-		$pattern = "/^ \\s* " . self::getDateSubPattern() . " \\s* $/x";
-		$is = preg_match($pattern, $expression, $matches) ? true	: false;
+		$kind_of_date = self::getKindOfDate($expression);
+		$is = isset($kind_of_date) ? true	: false;
 		return $is;
 	}
 
 	//---------------------------------------------------------------------------------- padDateParts
 	/**
 	 * Pad the date parts to have left leading 0
+	 * Note: if $hours is given so $minutes and $seconds should be given too!
 	 *
 	 * @param $day     string|integer
 	 * @param $month   string|integer
 	 * @param $year    string|integer
+	 * @param $hours   string|integer|null
+	 * @param $minutes string|integer|null
+	 * @param $seconds string|integer|null
 	 * @return array
 	 */
-	private static function padDateParts($day, $month, $year)
+	private static function padDateParts($day, $month, $year, $hours = null, $minutes = null
+		, $seconds = null)
 	{
 		$day   = str_pad($day,   2, '0', STR_PAD_LEFT);
 		$month = str_pad($month, 2, '0', STR_PAD_LEFT);
 		$year  = str_pad($year,  2, '0', STR_PAD_LEFT);
+		if (isset($hours) && isset($minutes) && isset($seconds)) {
+			$hours    = str_pad($hours,   2, '0', STR_PAD_LEFT);
+			$minutes  = str_pad($minutes, 2, '0', STR_PAD_LEFT);
+			$seconds  = str_pad($seconds, 2, '0', STR_PAD_LEFT);
+			return [$day, $month, $year, $hours, $minutes, $seconds];
+		}
+		if (isset($hours) && !(isset($minutes) && isset($seconds))) {
+			trigger_error('missing arguments for padDateParts()', E_USER_ERROR);
+		}
 		return [$day, $month, $year];
 	}
 

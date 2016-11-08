@@ -205,6 +205,75 @@ class Tests extends Test
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
+	//-------------------------------------------------------------------------- testParseDateAndTime
+	/**
+	 * Test date parser for a full date DD/MM/YYYY with FUll time HH:II:SS
+	 *
+	 * @return boolean
+	 */
+	public function testParseDateAndTime()
+	{
+		$this->parser->search = [
+			'date'	=> '05/03/2015 20:45:57,5/3/2015 8:5:6,05/3/2015 0:0:0,5/03/2015 23:59:59'
+		];
+		$check = $this->parser->parse();
+		$assume = [
+			'date' => Func::orOp([
+				Func::equal('2015-03-05 20:45:57'),
+				Func::equal('2015-03-05 08:05:06'),
+				Func::equal('2015-03-05 00:00:00'),
+				Func::equal('2015-03-05 23:59:59')
+			])
+		];
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
+	//--------------------------------------------------------------------- testParseDateHoursMinutes
+	/**
+	 * Test date parser for a full date DD/MM/YYYY with hours and minutes, not seconds
+	 *
+	 * @return boolean
+	 */
+	public function testParseDateHoursMinutes()
+	{
+		$this->parser->search = [
+			'date'	=> '05/03/2015 20:45,5/3/2015 8:5,05/3/2015 0:0,5/03/2015 23:59'
+		];
+		$check = $this->parser->parse();
+		$assume = [
+			'date' => Func::orOp([
+				new Range('2015-03-05 20:45:00', '2015-03-05 20:45:59'),
+				new Range('2015-03-05 08:05:00', '2015-03-05 08:05:59'),
+				new Range('2015-03-05 00:00:00', '2015-03-05 00:00:59'),
+				new Range('2015-03-05 23:59:00', '2015-03-05 23:59:59')
+			])
+		];
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
+	//------------------------------------------------------------------------ testParseDateHoursOnly
+	/**
+	 * Test date parser for a full date DD/MM/YYYY with hours , not minutes not seconds
+	 *
+	 * @return boolean
+	 */
+	public function testParseDateHoursOnly()
+	{
+		$this->parser->search = [
+			'date'	=> '05/03/2015 20,5/3/2015 8,05/3/2015 0,5/03/2015 23'
+		];
+		$check = $this->parser->parse();
+		$assume = [
+			'date' => Func::orOp([
+				new Range('2015-03-05 20:00:00', '2015-03-05 20:59:59'),
+				new Range('2015-03-05 08:00:00', '2015-03-05 08:59:59'),
+				new Range('2015-03-05 00:00:00', '2015-03-05 00:59:59'),
+				new Range('2015-03-05 23:00:00', '2015-03-05 23:59:59')
+			])
+		];
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
 	//----------------------------------------------------------------------------- testParseDateFull
 	/**
 	 * Test date parser for a full date DD/MM/YYYY
