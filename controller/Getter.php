@@ -74,7 +74,6 @@ if (isset($GLOBALS['D'])) echo '- try A4 ' . Names::classToPath($class_name) . '
 if (isset($GLOBALS['D']) && $suffix) echo '- try A5 ' . $path . SL . $suffix . $ext . BR;
 				if (
 					$suffix
-					&& !$ext
 					&& file_exists($path . SL . $suffix . $ext)
 					&& method_exists($class_name . BS . $suffix, 'run' . ucfirst($feature_name))
 				) {
@@ -88,6 +87,7 @@ if (isset($GLOBALS['D']) && $suffix) echo '- try A5 ' . $path . SL . $suffix . $
 					break 2;
 				}
 			}
+
 
 			// next application is the parent one
 			$application_class = next($application_classes);
