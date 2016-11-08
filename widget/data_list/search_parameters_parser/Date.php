@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Comparison;
-use ITRocks\Framework\Dao\Func\Range;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Date_Time;
@@ -14,87 +13,90 @@ use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
  *
  * @extends Search_Parameter_Parser
  */
-trait Date
+abstract class Date
 {
 
 	//------------------------------------------------------------------------------ $currentDateTime
 	/**
 	 * @var Date_Time
 	 */
-	protected $currentDateTime;
+	protected static $currentDateTime;
 
 	//----------------------------------------------------------------------------------- $currentDay
 	/**
 	 * @var string|integer
 	 */
-	protected $currentDay;
+	protected static $currentDay;
 
 	//---------------------------------------------------------------------------------- $currentHour
 	/**
 	 * @var string|integer
 	 */
-	protected $currentHour;
+	protected static $currentHour;
 
 	//------------------------------------------------------------------------------- $currentMinutes
 	/**
 	 * @var string|integer
 	 */
-	protected $currentMinutes;
+	protected static $currentMinutes;
 
 	//--------------------------------------------------------------------------------- $currentMonth
 	/**
 	 * @var string|integer
 	 */
-	protected $currentMonth;
+	protected static $currentMonth;
 
 	//------------------------------------------------------------------------------- $currentSeconds
 	/**
 	 * @var string|integer
 	 */
-	protected $currentSeconds;
+	protected static $currentSeconds;
 
 	//---------------------------------------------------------------------------------- $currentYear
 	/**
 	 * @var string|integer
 	 */
-	protected $currentYear;
+	protected static $currentYear;
 
 	//------------------------------------------------------------------------------- applyDatePeriod
 	/**
 	 * @param $search_value string
-	 * @param $min_max      integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max      integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                      Range::NOT_A_RANGE_VALUE
 	 * @return mixed
 	 */
-	protected function applyDatePeriod($search_value, $min_max = self::NOT_A_RANGE_VALUE)
+	public static function applyDatePeriod($search_value
+		, $min_max = Range::NOT_A_RANGE_VALUE)
 	{
-		return $this->applyDateSingleJoker($search_value)
-			?: $this->applyDateWord($search_value, $min_max)
-			?: $this->applyEmptyWord($search_value)
-			?: $this->applyDayMonthYear($search_value, $min_max)
-			?: $this->applyMonthYear($search_value, $min_max)
-			?: $this->applyDayMonth($search_value, $min_max)
-			?: $this->applyYearOnly($search_value, $min_max)
-			?: $this->applyDayOnly($search_value, $min_max)
-			?: $this->applySingleFormula($search_value, $min_max, Date_Time::YEAR)
-			?: $this->applySingleFormula($search_value, $min_max, Date_Time::MONTH)
-			?: $this->applySingleFormula($search_value, $min_max, Date_Time::DAY);
+		return self::applyDateSingleJoker($search_value)
+			?: self::applyDateWord($search_value, $min_max)
+			?: Words::applyEmptyWord($search_value)
+			?: self::applyDayMonthYear($search_value, $min_max)
+			?: self::applyMonthYear($search_value, $min_max)
+			?: self::applyDayMonth($search_value, $min_max)
+			?: self::applyYearOnly($search_value, $min_max)
+			?: self::applyDayOnly($search_value, $min_max)
+			?: self::applySingleFormula($search_value, $min_max, Date_Time::YEAR)
+			?: self::applySingleFormula($search_value, $min_max, Date_Time::MONTH)
+			?: self::applySingleFormula($search_value, $min_max, Date_Time::DAY);
 	}
 
 	//--------------------------------------------------------------------------- applyDateRangeValue
 	/**
 	 * @param $search_value string|Option
-	 * @param $min_max      integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max      integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                      Range::NOT_A_RANGE_VALUE
 	 * @return mixed
 	 * @throws Data_List_Exception
 	 */
-	protected function applyDateRangeValue($search_value, $min_max)
+	public static function applyDateRangeValue($search_value, $min_max)
 	{
-		if ($this->hasJoker($search_value)) {
+		if (Joker::hasJoker($search_value)) {
 			throw new Data_List_Exception(
 				$search_value, Loc::tr('You can not have a wildcard on a range value')
 			);
 		}
-		return $this->applyDatePeriod($search_value, $min_max);
+		return self::applyDatePeriod($search_value, $min_max);
 	}
 
 	//-------------------------------------------------------------------------- applyDateSingleJoker
@@ -104,10 +106,12 @@ trait Date
 	 * @param $expr         string
 	 * @return boolean|mixed false
 	 */
-	protected function applyDateSingleJoker($expr)
+	protected static function applyDateSingleJoker($expr)
 	{
 		if (is_string($expr) && preg_match('/^ [*%?_]+ $/x', $expr)) {
-			return Func::like("____-__-__ __:__:__");
+			//return Func::like("____-__-__ __:__:__");
+			// Optimization by replacing LIKE by IS NOT NULL
+			return Func::notNull();
 		}
 		return false;
 	}
@@ -116,53 +120,54 @@ trait Date
 	/**
 	 * If expression is a date word, convert to corresponding date
 	 * @param $expr    string
-	 * @param $min_max integer @values :MIN_RANGE_VALUE, :MAX_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                 Range::NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 */
-	protected function applyDateWord($expr, $min_max)
+	protected static function applyDateWord($expr, $min_max)
 	{
-		$word = $this->getCompressedWords([$expr])[0];
+		$word = Words::getCompressedWords([$expr])[0];
 
-		if (in_array($word, $this->getDateWordsToCompare(Date_Time::YEAR))) {
+		if (in_array($word, self::getDateWordsToCompare(Date_Time::YEAR))) {
 			// we convert a current year word in numeric current year period
 			$date_begin = date(
-				'Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, $this->currentYear)
+				'Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, self::$currentYear)
 			);
 			$date_end = date(
-				'Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $this->currentYear)
+				'Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, self::$currentYear)
 			);
 		}
-		elseif (in_array($word, $this->getDateWordsToCompare(Date_Time::MONTH))) {
+		elseif (in_array($word, self::getDateWordsToCompare(Date_Time::MONTH))) {
 			//we convert a current year word in numeric current month / current year period
 			$date_begin = date(
-				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, 1, $this->currentYear)
+				'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, 1, self::$currentYear)
 			);
 			$date_end = date(
-				'Y-m-d H:i:s', mktime(0, 0, -1, $this->currentMonth + 1, 1, $this->currentYear)
+				'Y-m-d H:i:s', mktime(0, 0, -1, self::$currentMonth + 1, 1, self::$currentYear)
 			);
 		}
-		elseif (in_array($word, $this->getDateWordsToCompare(Date_Time::DAY))) {
+		elseif (in_array($word, self::getDateWordsToCompare(Date_Time::DAY))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
-				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, $this->currentDay, $this->currentYear)
+				'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, self::$currentDay, self::$currentYear)
 			);
 			$date_end = date(
 				'Y-m-d H:i:s',
-				mktime(23, 59, 59, $this->currentMonth, $this->currentDay, $this->currentYear)
+				mktime(23, 59, 59, self::$currentMonth, self::$currentDay, self::$currentYear)
 			);
 		}
-		elseif (in_array($word, $this->getDateWordsToCompare('yesterday'))) {
+		elseif (in_array($word, self::getDateWordsToCompare('yesterday'))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
-				'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, (int)$this->currentDay-1, $this->currentYear)
+				'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, (int)self::$currentDay-1, self::$currentYear)
 			);
 			$date_end = date(
 				'Y-m-d H:i:s',
-				mktime(23, 59, 59, $this->currentMonth, (int)$this->currentDay-1, $this->currentYear)
+				mktime(23, 59, 59, self::$currentMonth, (int)self::$currentDay-1, self::$currentYear)
 			);
 		}
 		if (isset($date_begin) && isset($date_end)) {
-			$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+			$date = self::buildDateOrPeriod($date_begin, $date_end, $min_max);
 			return $date;
 		}
 		return false;
@@ -173,17 +178,18 @@ trait Date
 	 * Apply if expression is a day/month or month/day
 	 *
 	 * @param $expression string
-	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                    Range::NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 * @throws Data_List_Exception
 	 */
-	protected function applyDayMonth($expression, $min_max)
+	protected static function applyDayMonth($expression, $min_max)
 	{
 		// two values with a middle slash
 		if (substr_count($expression, SL) == 1) {
 			list($one, $two) = explode(SL, $expression);
 			// these should be small numbers : day/month or month/day, depending on the locale format
-			if (strpos(Loc::date()->format, 'd/m') !== false) {
+			if (Loc::date()->format == 'd/m/Y') {
 				// day/month
 				$day   = $one;
 				$month = $two;
@@ -193,15 +199,15 @@ trait Date
 				$day   = $two;
 				$month = $one;
 			}
-			if (!$this->computeDay($day)) {
+			if (!self::computeDay($day)) {
 				// bad expression ?
 				throw new Data_List_Exception($expression, Loc::tr('Error in day expression'));
 			}
-			if (!$this->computeMonth($month)) {
+			if (!self::computeMonth($month)) {
 				// bad expression?
 				throw new Data_List_Exception($expression, Loc::tr('Error in month expression'));
 			}
-			$date = $this->buildDayMonth($day, $month, $min_max, $expression);
+			$date = self::buildDayMonth($day, $month, $min_max, $expression);
 			return $date;
 		}
 		return false;
@@ -212,11 +218,12 @@ trait Date
 	 * Apply if expression is a day/month/year or month/day/year
 	 *
 	 * @param $expr    string
-	 * @param $min_max integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                 Range::NOT_A_RANGE_VALUE
 	 * @return mixed|bool false
 	 * @throws Data_List_Exception
 	 */
-	protected function applyDayMonthYear($expr, $min_max)
+	protected static function applyDayMonthYear($expr, $min_max)
 	{
 		// three values with a middle slash
 		if (substr_count($expr, SL) == 2) {
@@ -233,19 +240,19 @@ trait Date
 				$month = $one;
 				$year  = $three;
 			}
-			if (!$this->computeDay($day)) {
+			if (!self::computeDay($day)) {
 				// bad expression ?
 				throw new Data_List_Exception($expr, Loc::tr('Error in day expression'));
 			}
-			if (!$this->computeMonth($month)) {
+			if (!self::computeMonth($month)) {
 				// bad expression ?
 				throw new Data_List_Exception($expr, Loc::tr('Error in month expression'));
 			}
-			if (!$this->computeYear($year)) {
+			if (!self::computeYear($year)) {
 				// bad expression ?
 				throw new Data_List_Exception($expr, Loc::tr('Error in year expression'));
 			}
-			return $this->buildDayMonthYear($day, $month, $year, $min_max, $expr);
+			return self::buildDayMonthYear($day, $month, $year, $min_max, $expr);
 		}
 		return false;
 	}
@@ -255,25 +262,26 @@ trait Date
 	 * Apply if expression is a day only
 	 *
 	 * @param $expression string
-	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                    Range::NOT_A_RANGE_VALUE
 	 * @return boolean|mixed false
 	 * @throws Data_List_Exception
 	 */
-	protected function applyDayOnly($expression, $min_max)
+	protected static function applyDayOnly($expression, $min_max)
 	{
 		// two chars or a single joker or formula
-		$letters_day = $this->getDateLetters(Date_Time::DAY);
+		$letters_day = self::getDateLetters(Date_Time::DAY);
 		if (preg_match(
 			'/^ \s* ([*%?_] | [0-9*?%_]{1,2} | ([' . $letters_day . ']([-+]\d+)?)) \s* $/x', $expression
 		)) {
 			$day = $expression;
-			if (!$this->computeDay($day)) {
+			if (!self::computeDay($day)) {
 				// bad expression ?
 				throw new Data_List_Exception($expression, Loc::tr('Error in day expression'));
 			}
-			if ($this->hasJoker($day)) {
-				list($day, $month, $year) = $this->padDateParts(
-					$day, $this->currentMonth, $this->currentYear
+			if (Joker::hasJoker($day)) {
+				list($day, $month, $year) = self::padDateParts(
+					$day, self::$currentMonth, self::$currentYear
 				);
 				$date = Func::like("$year-$month-$day __:__:__");
 			}
@@ -282,12 +290,12 @@ trait Date
 			}
 			else {
 				$date_begin = date(
-					'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, $day, $this->currentYear)
+					'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, $day, self::$currentYear)
 				);
 				$date_end = date(
-					'Y-m-d H:i:s', mktime(23, 59, 59, $this->currentMonth, $day, $this->currentYear)
+					'Y-m-d H:i:s', mktime(23, 59, 59, self::$currentMonth, $day, self::$currentYear)
 				);
-				$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+				$date = self::buildDateOrPeriod($date_begin, $date_end, $min_max);
 			}
 			return $date;
 		}
@@ -299,14 +307,15 @@ trait Date
 	 * Apply if expression is a month/year
 	 *
 	 * @param $expression string
-	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                    Range::NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 * @throws Data_List_Exception
 	 */
-	protected function applyMonthYear($expression, $min_max)
+	protected static function applyMonthYear($expression, $min_max)
 	{
-		$letters_month = $this->getDateLetters(Date_Time::MONTH);
-		$letters_year  = $this->getDateLetters(Date_Time::YEAR);
+		$letters_month = self::getDateLetters(Date_Time::MONTH);
+		$letters_year  = self::getDateLetters(Date_Time::YEAR);
 		// two values with a middle slash
 		if (substr_count($expression, SL) == 1) {
 			list($one, $two) = explode(SL, $expression);
@@ -330,15 +339,15 @@ trait Date
 				// else, may be day/month or month/day => supported elsewhere
 				return false;
 			}
-			if (!$this->computeMonth($month)) {
+			if (!self::computeMonth($month)) {
 				// bad expression ?
 				throw new Data_List_Exception($expression, Loc::tr('Error in month expression'));
 			}
-			if (!$this->computeYear($year)) {
+			if (!self::computeYear($year)) {
 				// bad expression ?
 				throw new Data_List_Exception($expression, Loc::tr('Error in year expression'));
 			}
-			return $this->buildMonthYear($month, $year, $min_max, $expression);
+			return self::buildMonthYear($month, $year, $min_max, $expression);
 		}
 		return false;
 	}
@@ -348,34 +357,35 @@ trait Date
 	 * Apply a formula that is alone in the expression (eg. not "15/m+1/2016" but only "m+1")
 	 *
 	 * @param &$expression string|integer formula
-	 * @param $min_max     integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max     integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                     Range::NOT_A_RANGE_VALUE
 	 * @param $part        string Date_Time::DAY | Date_Time::MONTH | Date_Time::YEAR
 	 *        | Date_Time::HOUR | Date_Time::MINUTE | Date_Time::SECOND
-	 * @return string|Range
+	 * @return string|Func\Range
 	 */
-	protected function applySingleFormula($expression, $min_max, $part)
+	protected static function applySingleFormula($expression, $min_max, $part)
 	{
-		if ($this->computeFormula($expression, $part)) {
+		if (self::computeFormula($expression, $part)) {
 			switch ($part) {
 				case Date_Time::YEAR:
 					$date_begin = date('Y-m-d H:i:s', mktime(0,  0,  0,  1,  1,  $expression));
 					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $expression));
 					break;
 				case Date_Time::MONTH:
-					$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0,  $expression,   1, $this->currentYear));
-					$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, $expression+1, 1, $this->currentYear));
+					$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0,  $expression,   1, self::$currentYear));
+					$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, $expression+1, 1, self::$currentYear));
 					break;
 				case Date_Time::DAY:
 					$date_begin = date(
-						'Y-m-d H:i:s', mktime(0, 0, 0, $this->currentMonth, $expression, $this->currentYear)
+						'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, $expression, self::$currentYear)
 					);
 					$date_end = date(
-						'Y-m-d H:i:s', mktime(23, 59, 59, $this->currentMonth, $expression, $this->currentYear)
+						'Y-m-d H:i:s', mktime(23, 59, 59, self::$currentMonth, $expression, self::$currentYear)
 					);
 					break;
 			}
 			/** @noinspection PhpUndefinedVariableInspection All possible cases done by switch */
-			return $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+			return self::buildDateOrPeriod($date_begin, $date_end, $min_max);
 		}
 		return false;
 	}
@@ -385,27 +395,28 @@ trait Date
 	 * Apply if expression is a year
 	 *
 	 * @param $expression string
-	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                    Range::NOT_A_RANGE_VALUE
 	 * @return mixed|boolean false
 	 * @throws Data_List_Exception
 	 */
-	protected function applyYearOnly($expression, $min_max)
+	protected static function applyYearOnly($expression, $min_max)
 	{
-		$letters_year = $this->getDateLetters(Date_Time::YEAR);
+		$letters_year = self::getDateLetters(Date_Time::YEAR);
 		// no slash and (>3 digit or "y" or "a")
 		if (preg_match(
 			'/^ \s* ([0-9*?%_]{3,4} | ([' . $letters_year . ']([-+]\d+)?)) \s* $/x', $expression
 		)) {
 			$year = $expression;
-			if ($this->computeYear($year)) {
-				if ($this->hasJoker($year)) {
-					list($day, $month, $year) = $this->padDateParts('__', '__', $year);
+			if (self::computeYear($year)) {
+				if (Joker::hasJoker($year)) {
+					list($day, $month, $year) = self::padDateParts('__', '__', $year);
 					$date = Func::like("$year-$month-$day __:__:__");
 				}
 				else {
 					$date_begin = date('Y-m-d H:i:s', mktime(0,  0,  0,  1,  1,  $year));
 					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $year));
-					$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+					$date = self::buildDateOrPeriod($date_begin, $date_end, $min_max);
 				}
 				return $date;
 			}
@@ -421,19 +432,20 @@ trait Date
 	 *
 	 * @param $date_begin string
 	 * @param $date_end   string
-	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
-	 * @return Range|string
+	 * @param $min_max    integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                    Range::NOT_A_RANGE_VALUE
+	 * @return Func\Range|string
 	 */
-	protected function buildDateOrPeriod($date_begin, $date_end, $min_max)
+	protected static function buildDateOrPeriod($date_begin, $date_end, $min_max)
 	{
-		if ($min_max == self::MIN_RANGE_VALUE) {
+		if ($min_max == Range::MIN_RANGE_VALUE) {
 			$date = $date_begin;
 		}
-		elseif ($min_max == self::MAX_RANGE_VALUE) {
+		elseif ($min_max == Range::MAX_RANGE_VALUE) {
 			$date = $date_end;
 		}
 		else {
-			$date = new Range($date_begin, $date_end);
+			$date = Range::buildRange($date_begin, $date_end);
 		}
 		return $date;
 	}
@@ -444,30 +456,31 @@ trait Date
 	 *
 	 * @param $day     string
 	 * @param $month   string
-	 * @param $min_max integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                 Range::NOT_A_RANGE_VALUE
 	 * @param $expr    string
-	 * @return Func\Comparison|Range
+	 * @return Comparison|Func\Range
 	 * @throws Data_List_Exception
 	 */
-	private function buildDayMonth($day, $month, $min_max, $expr)
+	private static function buildDayMonth($day, $month, $min_max, $expr)
 	{
 		if (!(int)$day && !(int)$month) {
 			$date = Func::isNull();
 		}
 		else {
-			$dayHasJoker = $this->hasJoker($day);
-			$monthHasJoker = $this->hasJoker($month);
+			$dayHasJoker = Joker::hasJoker($day);
+			$monthHasJoker = Joker::hasJoker($month);
 			if (!$dayHasJoker && !$monthHasJoker) {
 				//none has wildcard
-				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, $day, $this->currentYear));
+				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, $day, self::$currentYear));
 				$date_end = date(
-					'Y-m-d H:i:s', mktime(0, 0, -1, $month, (int)$day + 1, $this->currentYear)
+					'Y-m-d H:i:s', mktime(0, 0, -1, $month, (int)$day + 1, self::$currentYear)
 				);
-				$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+				$date = self::buildDateOrPeriod($date_begin, $date_end, $min_max);
 			}
 			else {
 				//at least one has wildcard
-				if ($min_max != self::NOT_A_RANGE_VALUE) {
+				if ($min_max != Range::NOT_A_RANGE_VALUE) {
 					//we can not have wildcard on a range value
 					throw new Data_List_Exception(
 						$expr, Loc::tr('You can not have a wildcard on a range value')
@@ -476,10 +489,10 @@ trait Date
 				if (!$monthHasJoker) {
 					//day has wildcard, month may be computed
 					//try to correct month and year
-					$time = mktime(0, 0, 0, $month, 1, $this->currentYear);
+					$time = mktime(0, 0, 0, $month, 1, self::$currentYear);
 					$year = date('Y', $time);
 					$month = date('m', $time);
-					list($day, $month, $year) = $this->padDateParts($day, $month, $year);
+					list($day, $month, $year) = self::padDateParts($day, $month, $year);
 					$date = Func::like("$year-$month-$day __:__:__");
 				}
 				elseif (!$dayHasJoker) {
@@ -490,13 +503,13 @@ trait Date
 							$expr, Loc::tr('You can not put a formula on day when month has wildcard')
 						);
 					}
-					list($day, $month) = $this->padDateParts($day, $month, 'fooo');
-					$date = Func::like("{$this->currentYear}-$month-$day __:__:__");
+					list($day, $month) = self::padDateParts($day, $month, 'fooo');
+					$date = Func::like(self::$currentYear . "-$month-$day __:__:__");
 				}
 				else {
 					//both day and month have wildcards
-					list($day, $month) = $this->padDateParts($day, $month, 'fooo');
-					$date = Func::like("{$this->currentYear}-$month-$day __:__:__");
+					list($day, $month) = self::padDateParts($day, $month, 'fooo');
+					$date = Func::like(self::$currentYear . "-$month-$day __:__:__");
 				}
 			}
 		}
@@ -510,29 +523,30 @@ trait Date
 	 * @param $day        string|integer
 	 * @param $month      string|integer
 	 * @param $year       string|integer
-	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                    Range::NOT_A_RANGE_VALUE
 	 * @param $expression string
-	 * @return Comparison|Range
+	 * @return Comparison|Func\Range
 	 * @throws Data_List_Exception
 	 */
-	private function buildDayMonthYear($day, $month, $year, $min_max, $expression)
+	private static function buildDayMonthYear($day, $month, $year, $min_max, $expression)
 	{
 		if (!(int)$day && !(int)$month && !(int)$year) {
 			$date = Func::isNull();
 		}
 		else {
-			$day_has_joker = $this->hasJoker($day);
-			$month_has_joker = $this->hasJoker($month);
-			$year_has_joker = $this->hasJoker($year);
+			$day_has_joker = Joker::hasJoker($day);
+			$month_has_joker = Joker::hasJoker($month);
+			$year_has_joker = Joker::hasJoker($year);
 			if (!$day_has_joker && !$month_has_joker && !$year_has_joker) {
 				// none has wildcard
 				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, $day, $year));
 				$date_end = date('Y-m-d H:i:s', mktime(0, 0, -1, $month, $day + 1, $year));
-				$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+				$date = self::buildDateOrPeriod($date_begin, $date_end, $min_max);
 			}
 			else {
 				// at least one has wildcard
-				if ($min_max != self::NOT_A_RANGE_VALUE) {
+				if ($min_max != Range::NOT_A_RANGE_VALUE) {
 					//we can not have wildcard on a range value
 					throw new Data_List_Exception(
 						$expression, Loc::tr('You can not have a wildcard on a range value')
@@ -578,7 +592,7 @@ trait Date
 						);
 					}
 				}
-				list($day, $month, $year) = $this->padDateParts($day, $month, $year);
+				list($day, $month, $year) = self::padDateParts($day, $month, $year);
 				$date = Func::like("$year-$month-$day __:__:__");
 			}
 		}
@@ -591,27 +605,28 @@ trait Date
 	 *
 	 * @param $month      string|integer
 	 * @param $year       string|integer
-	 * @param $min_max    integer @values :MAX_RANGE_VALUE, :MIN_RANGE_VALUE, :NOT_A_RANGE_VALUE
+	 * @param $min_max    integer @values Range::MAX_RANGE_VALUE, Range::MIN_RANGE_VALUE,
+	 *                                    Range::NOT_A_RANGE_VALUE
 	 * @param $expression string
-	 * @return Func\Comparison|Range
+	 * @return Comparison|Func\Range
 	 * @throws Data_List_Exception
 	 */
-	private function buildMonthYear($month, $year, $min_max, $expression)
+	private static function buildMonthYear($month, $year, $min_max, $expression)
 	{
 		if (!(int)$month && !(int)$year) {
 			$date = Func::isNull();
 		}
 		else {
-			$month_has_joker = $this->hasJoker($month);
-			$year_has_joker = $this->hasJoker($year);
+			$month_has_joker = Joker::hasJoker($month);
+			$year_has_joker = Joker::hasJoker($year);
 			if (!$month_has_joker && !$year_has_joker) {
 				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, 1, $year));
 				$date_end = date('Y-m-d H:i:s', mktime(0, 0, -1, $month + 1, 1, $year));
-				$date = $this->buildDateOrPeriod($date_begin, $date_end, $min_max);
+				$date = self::buildDateOrPeriod($date_begin, $date_end, $min_max);
 			}
 			elseif (!$year_has_joker) {
 				// month has wildcard, year may be computed
-				list($day, $month, $year) = $this->padDateParts('__', $month, $year);
+				list($day, $month, $year) = self::padDateParts('__', $month, $year);
 				$date = Func::like("$year-$month-$day __:__:__");
 			}
 			elseif (!$month_has_joker) {
@@ -622,12 +637,12 @@ trait Date
 						$expression, Loc::tr('You can not put a formula on month when year has wildcard')
 					);
 				}
-				list($day, $month, $year) = $this->padDateParts('__', $month, $year);
+				list($day, $month, $year) = self::padDateParts('__', $month, $year);
 				$date = Func::like("$year-$month-$day __:__:__");
 			}
 			else {
 				// both year and month have wildcards
-				list($day, $month, $year) = $this->padDateParts('__', $month, $year);
+				list($day, $month, $year) = self::padDateParts('__', $month, $year);
 				$date = Func::like("$year-$month-$day __:__:__");
 			}
 		}
@@ -642,12 +657,12 @@ trait Date
 	 *        | Date_Time::MINUTE | Date_Time::SECOND
 	 * @return boolean
 	 */
-	protected function checkDateWildcardExpr(&$expression, $part)
+	public static function checkDateWildcardExpr(&$expression, $part)
 	{
 		$expression = str_replace(['*', '?'], ['%', '_'], $expression);
 		$nchar = ($part == Date_Time::YEAR ? 4 : 2);
 		if ($c = preg_match_all("/^[0-9_%]{1,$nchar}$/", $expression)) {
-			$this->correctDateWildcardExpr($expression, $part);
+			self::correctDateWildcardExpr($expression, $part);
 			return true;
 		}
 		return false;
@@ -660,7 +675,7 @@ trait Date
 	 * @param $expression string
 	 * @return boolean
 	 */
-	private function checkNumericExpr(&$expression)
+	private static function checkNumericExpr(&$expression)
 	{
 		return is_numeric($expression) && (string)((int)$expression) == $expression;
 	}
@@ -673,19 +688,19 @@ trait Date
 	 *        | j-2... returns computed if any
 	 * @return boolean
 	 */
-	protected function computeDay(&$expression)
+	protected static function computeDay(&$expression)
 	{
 		$expression = trim($expression);
 		// numeric expr
-		if ($this->checkNumericExpr($expression)) {
+		if (self::checkNumericExpr($expression)) {
 			return true;
 		}
 		// expression with wildcards
-		if ($this->checkDateWildcardExpr($expression, Date_Time::DAY)) {
+		if (self::checkDateWildcardExpr($expression, Date_Time::DAY)) {
 			return true;
 		}
 		// expression with formula
-		if ($this->computeFormula($expression, Date_Time::DAY)) {
+		if (self::computeFormula($expression, Date_Time::DAY)) {
 			return true;
 		}
 		return false;
@@ -700,9 +715,9 @@ trait Date
 	 *        | Date_Time::HOUR | Date_Time::MINUTE | Date_Time::SECOND
 	 * @return boolean true if formula found
 	 */
-	protected function computeFormula(&$expression, $part)
+	protected static function computeFormula(&$expression, $part)
 	{
-		$pp = '[' . $this->getDateLetters($part) . ']';
+		$pp = '[' . self::getDateLetters($part) . ']';
 		if (preg_match(
 			"/^ \\s* $pp \\s* (?:(?<sign>[-+]) \\s* (?<operand>\\d+))? \\s* $/x", $expression, $matches
 		)) {
@@ -720,7 +735,7 @@ trait Date
 				Date_Time::MINUTE => 'i',
 				Date_Time::SECOND => 's'
 			];
-			$value = (int)$this->currentDateTime->format($f[$part]);
+			$value = (int)(self::$currentDateTime->format($f[$part]));
 			if (isset($matches['sign']) && isset($matches['operand'])) {
 				$sign = $matches['sign'];
 				$operand = (int)($matches['operand']);
@@ -742,19 +757,19 @@ trait Date
 	 *        returns computed if any
 	 * @return boolean
 	 */
-	protected function computeMonth(&$expression)
+	protected static function computeMonth(&$expression)
 	{
 		$expression = trim($expression);
 		// numeric expression
-		if ($this->checkNumericExpr($expression)) {
+		if (self::checkNumericExpr($expression)) {
 			return true;
 		}
 		// expression with wildcards
-		if ($this->checkDateWildcardExpr($expression, Date_Time::MONTH)) {
+		if (self::checkDateWildcardExpr($expression, Date_Time::MONTH)) {
 			return true;
 		}
 		// expression with formula
-		if ($this->computeFormula($expression, Date_Time::MONTH)) {
+		if (self::computeFormula($expression, Date_Time::MONTH)) {
 			return true;
 		}
 		return false;
@@ -768,19 +783,19 @@ trait Date
 	 *        returns computed if any
 	 * @return boolean
 	 */
-	protected function computeYear(&$expression)
+	protected static function computeYear(&$expression)
 	{
 		$expression = trim($expression);
 		// numeric expression
-		if ($this->checkNumericExpr($expression)) {
+		if (self::checkNumericExpr($expression)) {
 			return true;
 		}
 		// expression with wildcards
-		if ($this->checkDateWildcardExpr($expression, Date_Time::YEAR)) {
+		if (self::checkDateWildcardExpr($expression, Date_Time::YEAR)) {
 			return true;
 		}
 		// expression with formula
-		if ($this->computeFormula($expression, Date_Time::YEAR)) {
+		if (self::computeFormula($expression, Date_Time::YEAR)) {
 			return true;
 		}
 		return false;
@@ -794,7 +809,7 @@ trait Date
 	 * @param $part        string Date_Time::DAY | Date_Time::MONTH | Date_Time::YEAR
 	 *        | Date_Time::HOUR | Date_Time::MINUTE | Date_Time::SECOND
 	 */
-	protected function correctDateWildcardExpr(&$expression, $part)
+	protected static function correctDateWildcardExpr(&$expression, $part)
 	{
 		/**
 		 * eg. for a month or day (or hour, minutes, seconds), it's simple since we have 2 chars only
@@ -876,13 +891,13 @@ trait Date
 	 *
 	 * @return string
 	 */
-	protected function getDateSubPattern()
+	public static function getDateSubPattern()
 	{
 		static $pattern = false;
 		if (!$pattern) {
-			$letters = $this->getDateLetters(Date_Time::YEAR)
-				. $this->getDateLetters(Date_Time::MONTH)
-				. $this->getDateLetters(Date_Time::DAY);
+			$letters = self::getDateLetters(Date_Time::YEAR)
+				. self::getDateLetters(Date_Time::MONTH)
+				. self::getDateLetters(Date_Time::DAY);
 			$pattern = '(?:(?:[0-9*?%_]{1,4} | [' . $letters . '](?:[-+]\d+)?) [\/]){0,2}'
 				. SP . '(?:[0-9*?%_]{1,4} | [' . $letters . '](?:[-+]\d+)?)';
 		}
@@ -896,19 +911,19 @@ trait Date
 	 * @param $part string Date_Time::DAY | Date_Time::MONTH | Date_Time::YEAR
 	 * @return string
 	 */
-	protected function getDateLetters($part)
+	private static function getDateLetters($part)
 	{
 		static $letters;
 		if (!isset($letters)) {
 			$letters = explode('|', Loc::tr('d|m|y') . '|' . Loc::tr('h|m|s'));
 			$ipUp = function($letter) { return isset($letter) ? ($letter . strtoupper($letter)) : ''; };
 			$letters = [
-				Date_Time::DAY     => 'dD' . $ipUp($letters[0]),
-				Date_Time::MONTH   => 'mM' . $ipUp($letters[1]),
-				Date_Time::YEAR    => 'yY' . $ipUp($letters[2]),
-				Date_Time::HOUR    => 'hH' . $ipUp($letters[3]),
-				Date_Time::MINUTE  => 'iI' . $ipUp($letters[4]),
-				Date_Time::SECOND  => 'sS' . $ipUp($letters[5])
+				Date_Time::DAY     => 'dD' . $ipUp($letters[0] != 'd' ? $letters[0] : null),
+				Date_Time::MONTH   => 'mM' . $ipUp($letters[1] != 'm' ? $letters[1] : null),
+				Date_Time::YEAR    => 'yY' . $ipUp($letters[2] != 'y' ? $letters[2] : null),
+				Date_Time::HOUR    => 'hH' . $ipUp($letters[3] != 'h' ? $letters[3] : null),
+				Date_Time::MINUTE  => 'iI',
+				Date_Time::SECOND  => 'sS' . $ipUp($letters[5] != 's' ? $letters[5] : null)
 			];
 		}
 		return $letters[$part];
@@ -921,7 +936,7 @@ trait Date
 	 * @param $part string
 	 * @return array
 	 */
-	protected function getDateWordsToCompare($part)
+	private static function getDateWordsToCompare($part)
 	{
 		static $all_words_references = [
 			Date_Time::DAY   => ['current day', 'today'],
@@ -934,22 +949,27 @@ trait Date
 		foreach($words_references as $word) {
 			$words_localized[] = Loc::tr($word);
 		}
-		return $this->getCompressedWords(array_merge($words_references, $words_localized));
+		return Words::getCompressedWords(array_merge($words_references, $words_localized));
 	}
 
 	//------------------------------------------------------------------------------------- initDates
 	/**
 	 * Init dates constants
+	 *
+	 * @param $date Date_Time|null
 	 */
-	protected function initDates()
+	public static function initDates($date = null)
 	{
-		$this->currentDateTime = Date_Time::now();
-		$this->currentYear     = $this->currentDateTime->format('Y');
-		$this->currentMonth    = $this->currentDateTime->format('m');
-		$this->currentDay      = $this->currentDateTime->format('d');
-		$this->currentHour     = $this->currentDateTime->format('H');
-		$this->currentMinutes  = $this->currentDateTime->format('i');
-		$this->currentSeconds  = $this->currentDateTime->format('s');
+		if (!isset($date)) {
+			$date = Date_Time::now();
+		}
+		self::$currentDateTime = $date;
+		self::$currentYear     = self::$currentDateTime->format('Y');
+		self::$currentMonth    = self::$currentDateTime->format('m');
+		self::$currentDay      = self::$currentDateTime->format('d');
+		self::$currentHour     = self::$currentDateTime->format('H');
+		self::$currentMinutes  = self::$currentDateTime->format('i');
+		self::$currentSeconds  = self::$currentDateTime->format('s');
 	}
 
 	//-------------------------------------------------------------------------- isASingleDateFormula
@@ -959,15 +979,14 @@ trait Date
 	 * @param $expression string
 	 * @return boolean
 	 */
-	protected function isASingleDateFormula($expression)
+	public static function isASingleDateFormula($expression)
 	{
 		// we check if $expr is a single date containing formula
 		// but it may be a range with 2 dates containing formula, what should return false
 		// so the use of /^ ... $/
-		$pattern = $this->getDateSubPattern();
-		return preg_match("/^ \\s* $pattern \\s* $/x", $expression)
-			? true
-			: false;
+		$pattern = "/^ \\s* " . self::getDateSubPattern() . " \\s* $/x";
+		$is = preg_match($pattern, $expression, $matches) ? true	: false;
+		return $is;
 	}
 
 	//---------------------------------------------------------------------------------- padDateParts
@@ -979,7 +998,7 @@ trait Date
 	 * @param $year    string|integer
 	 * @return array
 	 */
-	protected function padDateParts($day, $month, $year)
+	private static function padDateParts($day, $month, $year)
 	{
 		$day   = str_pad($day,   2, '0', STR_PAD_LEFT);
 		$month = str_pad($month, 2, '0', STR_PAD_LEFT);

@@ -26,7 +26,7 @@ class Tests extends Test
 	/**
 	 * Internal object use to simulate environment for parsing
 	 *
-	 * @var Extended_For_Tests
+	 * @var Search_Parameters_Parser
 	 */
 	private $parser;
 
@@ -38,7 +38,9 @@ class Tests extends Test
 	{
 		// TODO Build
 		$this->class_name = Document::class;
-		$this->parser = new Extended_For_Tests($this->class_name, null);
+		$this->parser = new Search_Parameters_Parser($this->class_name, null);
+		// init the date we base upon for tests
+		Date::initDates(new Date_Time('2016-06-15 12:30:45'));
 	}
 
 	//--------------------------------------------------------- testCorrectionOfDateExprWithWildcards
@@ -93,7 +95,7 @@ class Tests extends Test
 		];
 		foreach($tests as $to_check => $assume) {
 			$check = $to_check;
-			$this->parser->correctDateWildcardExpr($check, Date_Time::YEAR);
+			Date::checkDateWildcardExpr($check, Date_Time::YEAR);
 			$lok =$this->assume(
 				__FUNCTION__ . '_Year(' . $to_check . ' => ' . $assume . ')', $check, $assume, false
 			);
@@ -112,7 +114,7 @@ class Tests extends Test
 		];
 		foreach($tests as $to_check => $assume) {
 			$check = $to_check;
-			$this->parser->correctDateWildcardExpr($check, Date_Time::DAY);
+			Date::checkDateWildcardExpr($check, Date_Time::DAY);
 			$lok =$this->assume(
 				__FUNCTION__ . '_Day(' . $to_check .' => ' . $assume . ')',
 				$check,
@@ -284,11 +286,16 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
+				/*Func::like('____-__-__ __:__:__'),
 				Func::like('____-__-__ __:__:__'),
 				Func::like('____-__-__ __:__:__'),
 				Func::like('____-__-__ __:__:__'),
-				Func::like('____-__-__ __:__:__'),
-				Func::like('____-__-__ __:__:__')
+				Func::like('____-__-__ __:__:__')*/
+				Func::notNull(),
+				Func::notNull(),
+				Func::notNull(),
+				Func::notNull(),
+				Func::notNull()
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);

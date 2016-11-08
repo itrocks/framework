@@ -14,20 +14,19 @@ use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
  */
 trait Type_Boolean
 {
-
 	//----------------------------------------------------------------------------- applyBooleanValue
 	/**
 	 * @param $search_value string The source search value, as a string typed by the user
 	 * @return Comparison|Logical|string|boolean The resulting dao-ready search expression, or false
 	 * @throws Data_List_Exception
 	 */
-	protected function applyBooleanValue($search_value)
+	public static function applyBooleanValue($search_value)
 	{
 		$search_value = trim($search_value);
 		if (!strlen($search_value)) {
 			return '';
 		}
-		if ($this->hasJoker($search_value)) {
+		if (Joker::hasJoker($search_value)) {
 			$search_value = preg_replace ('/^ \s* [*%?_]+ \s* $/x', '*', $search_value);
 			// we cannot have wildcard on boolean type, but we accept expression made of only wildcards
 			if (!in_array(trim($search_value), ['*', '%', '?', '_'])) {
@@ -38,7 +37,7 @@ trait Type_Boolean
 			// only wildcard on a boolean means any value (even if we'd rather do no search on field)
 			return Func::orOp([1, 0]);
 		}
-		if (($search = $this->applyBooleanWord($search_value)) !== false) {
+		if (($search = self::applyBooleanWord($search_value)) !== false) {
 			return $search;
 		}
 		if (is_numeric($search_value)) {
@@ -57,14 +56,14 @@ trait Type_Boolean
 	 * @param $expression string The source expression
 	 * @return Comparison|boolean The resulting dao-ready search expression or false if none
 	 */
-	protected function applyBooleanWord($expression)
+	public static function applyBooleanWord($expression)
 	{
-		$word = $this->getCompressedWords([$expression])[0];
+		$word = Words::getCompressedWords([$expression])[0];
 
-		if (in_array($word, $this->getBooleanWordsTrueToCompare())) {
+		if (in_array($word, self::getBooleanWordsTrueToCompare())) {
 			return Func::equal('1');
 		}
-		elseif (in_array($word, $this->getBooleanWordsFalseToCompare())) {
+		elseif (in_array($word, self::getBooleanWordsFalseToCompare())) {
 			return Func::equal('0');
 		}
 		return false;
@@ -77,7 +76,7 @@ trait Type_Boolean
 	 * @param $value boolean
 	 * @return string a single character
 	 */
-	protected function getBooleanLetters($value)
+	private static function getBooleanLetters($value)
 	{
 		static $letters;
 		if (!isset($letters)) {
@@ -99,17 +98,21 @@ trait Type_Boolean
 	 *
 	 * @return string[]
 	 */
-	protected function getBooleanWordsFalseToCompare()
+	private static function getBooleanWordsFalseToCompare()
 	{
-		static $words_references = ['no', 'false'];
-		$words_localized  = [];
-		foreach($words_references as $word) {
-			$words_localized[] = Loc::tr($word);
+		static $words = null;
+		if (!isset($words)) {
+			$words_references = ['no', 'false'];
+			$words_localized  = [];
+			foreach($words_references as $word) {
+				$words_localized[] = Loc::tr($word);
+			}
+			// We can not translate directly 'n' that is confusing
+			$words_references[] = 'n';
+			$words_localized[] = self::getBooleanLetters(false);
+			$words = Words::getCompressedWords(array_merge($words_references, $words_localized));
 		}
-		// We can not translate directly 'n' that is confusing
-		$words_references[] = 'n';
-		$words_localized[] = $this->getBooleanLetters(false);
-		return $this->getCompressedWords(array_merge($words_references, $words_localized));
+		return $words;
 	}
 
 	//------------------------------------------------------------------ getBooleanWordsTrueToCompare
@@ -118,17 +121,21 @@ trait Type_Boolean
 	 *
 	 * @return string[]
 	 */
-	protected function getBooleanWordsTrueToCompare()
+	private static function getBooleanWordsTrueToCompare()
 	{
-		static $words_references = ['yes', 'true'];
-		$words_localized  = [];
-		foreach($words_references as $word) {
-			$words_localized[] = Loc::tr($word);
+		static $words = null;
+		if (!isset($words)) {
+			$words_references = ['yes', 'true'];
+			$words_localized = [];
+			foreach ($words_references as $word) {
+				$words_localized[] = Loc::tr($word);
+			}
+			// We can not translate directly 'y' that is confusing
+			$words_references[] = 'y';
+			$words_localized[] = self::getBooleanLetters(true);
+			$words = Words::getCompressedWords(array_merge($words_references, $words_localized));
 		}
-		// We can not translate directly 'y' that is confusing
-		$words_references[] = 'y';
-		$words_localized[] = $this->getBooleanLetters(true);
-		return $this->getCompressedWords(array_merge($words_references, $words_localized));
+		return $words;
 	}
 
 }
