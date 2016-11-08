@@ -74,11 +74,17 @@ if (isset($GLOBALS['D'])) echo '- try A4 ' . Names::classToPath($class_name) . '
 if (isset($GLOBALS['D']) && $suffix) echo '- try A5 ' . $path . SL . $suffix . $ext . BR;
 				if (
 					$suffix
+					&& !$ext
 					&& file_exists($path . SL . $suffix . $ext)
 					&& method_exists($class_name . BS . $suffix, 'run' . ucfirst($feature_name))
 				) {
 					$class = $class_name . BS . $suffix;
 					$method = 'run' . ucfirst($feature_name);
+					break 2;
+				}
+				elseif ($suffix && $ext && file_exists($path . SL . $suffix . $ext)) {
+					$class = $class_name . BS . $suffix;
+					$method = 'run';
 					break 2;
 				}
 			}
