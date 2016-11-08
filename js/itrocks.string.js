@@ -1,4 +1,12 @@
 
+//---------------------------------------------------------------------------------------- contains
+if (!String.prototype.contains) {
+	String.prototype.contains = function(search)
+	{
+		return (this.indexOf(search) > -1);
+	}
+}
+
 //---------------------------------------------------------------------------------------- endsWith
 if (!String.prototype.endsWith) {
 	String.prototype.endsWith = function(search, position)
