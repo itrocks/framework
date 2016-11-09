@@ -219,10 +219,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				Func::equal('2015-03-05 20:45:57'),
-				Func::equal('2015-03-05 08:05:06'),
-				Func::equal('2015-03-05 00:00:00'),
-				Func::equal('2015-03-05 23:59:59')
+				'2015-03-05 20:45:57',
+				'2015-03-05 08:05:06',
+				'2015-03-05 00:00:00',
+				'2015-03-05 23:59:59'
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -402,7 +402,7 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				Func::equal('2016-06-15 12:30:44'),
+				'2016-06-15 12:30:44',
 				new Range('2016-06-15 11:00:00', '2016-06-15 11:59:59'),
 				new Range('2016-06-15 11:05:00', '2016-06-15 11:05:59'),
 				new Range('2016-06-15 13:29:00', '2016-06-15 13:29:59')

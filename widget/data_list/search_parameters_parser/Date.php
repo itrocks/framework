@@ -434,19 +434,14 @@ abstract class Date
 	 */
 	private static function buildDateOrPeriod($date_min, $date_max, $range_side)
 	{
-		if ($range_side == Range::MIN) {
+		if ($range_side == Range::MIN || ($date_min == $date_max)) {
 			$date = $date_min;
 		}
 		elseif ($range_side == Range::MAX) {
 			$date = $date_max;
 		}
 		else {
-			if ($date_min == $date_max) {
-				$date = Func::equal($date_min);
-			}
-			else {
-				$date = Range::buildRange($date_min, $date_max);
-			}
+			$date = Range::buildRange($date_min, $date_max);
 		}
 		return $date;
 	}
