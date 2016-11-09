@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Date_Time;
@@ -10,38 +9,109 @@ use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
 
 /**
  * Date search parameters parser
+ * - According to locale date format day and month can be inverted d/m <-> m/d
+ * - Hours are on 24h format
+ * - We can not express numerical month only, minutes only or seconds only, it will be processed
+ *   like a day only
  *
- * @extends Search_Parameter_Parser
+ * [d]d/[m]m/yyyy [h]h:[m]m:[s]s
+ * [d]d/[m]m/yyyy [h]h:[m]m
+ * [d]d/[m]m/yyyy [h]h
+ * [d]d/[m]m/yyyy
+ * [d]d/[m]m         (means implicit current year)
+ * [m]m/yyyy         (means from 01/mm/yyyy to 31!/mm/yyyy) 3-4 chars mandatory
+ * yyyy              (means from 01/01/yyyy to 31/12/yyyy) 3-4 chars mandatory
+ * [d]d              (means implicit current month and year)
+ * "y" [+|-] integer (means from 01/01/yyyy to 31/12/yyyy)
+ * "m" [+|-] integer (means from 01/mm/currentyear to 31!/mm/currentyear)
+ * "d" [+|-] integer (means implicit current month and year)
+ * "h" [+|-] integer (means implicit current day) from 0 minute 0s to 59 minutes 59s
+ *
+ * Test expressions:
+ * 05/03/2015 20:45:57
+ * 05/03/2015 20:45
+ * 05/03/2015 20
+ * 05/03/2015
+ * 05/03
+ * 03/2015
+ * 03/20*
+ * 2015/03
+ * 20??/03
+ * 2005
+ * 2*6
+ * 05
+ * d-1/m-2/y-3 h-1:m-1:s-2
+ * d-1
+ * m-2
+ * y-3
+ * h-1
+ * 05/03/2001 h-1
+ * ?/?/? ?:?:?
+ * ?/?/? ?:?
+ * ?/?/? ?
+ * ?/?/?
+ * ?/?
+ * ?
+ * 0/0/0 0:0:0
+ * 00/00/0000 00:00:00
+ * 0
+ * 05/3/201*
+ * 05/3/20*
+ * 05/3/2*
+ * 05/3/*
+ *
  */
 abstract class Date
 {
 
 	//------------------------------------------------------------------------------------------ DATE
-	const DATE               = 'date';
+	const DATE                  = 'date';
 
 	//---------------------------------------------------------------------------- DATE_HOURS_MINUTES
-	const DATE_HOURS_MINUTES = 'date_hours_minutes';
+	const DATE_HOURS_MINUTES    = 'date_hours_minutes';
 
 	//------------------------------------------------------------------------------- DATE_HOURS_ONLY
-	const DATE_HOURS_ONLY    = 'date_hours_only';
+	const DATE_HOURS_ONLY       = 'date_hours_only';
 
 	//------------------------------------------------------------------------------------- DATE_TIME
-	const DATE_TIME          = 'date_time';
+	const DATE_TIME             = 'date_time';
 
 	//------------------------------------------------------------------------------------- DAY_MONTH
-	const DAY_MONTH          = 'day_month';
+	const DAY_MONTH             = 'day_month';
 
 	//-------------------------------------------------------------------------------------- DAY_ONLY
-	const DAY_ONLY           = 'day_only';
+	const DAY_ONLY              = 'day_only';
+
+	//------------------------------------------------------------------------------------ HOURS_ONLY
+	const HOURS_ONLY            = 'hours_only';
+
+	//--------------------------------------------------------------------------------- HOURS_MINUTES
+	const HOURS_MINUTES         = 'hours_minutes';
+
+	//------------------------------------------------------------------------- HOURS_MINUTES_SECONDS
+	const HOURS_MINUTES_SECONDS = 'hours_minutes_seconds';
 
 	//------------------------------------------------------------------------------------ MONTH_ONLY
-	const MONTH_ONLY         = 'month_only';
+	const MONTH_ONLY            = 'month_only';
 
 	//------------------------------------------------------------------------------------ MONTH_YEAR
-	const MONTH_YEAR         = 'month_year';
+	const MONTH_YEAR            = 'month_year';
+
+	//------------------------------------------------------------------------------------ YEAR_MONTH
+	const YEAR_MONTH            = 'year_month';
 
 	//------------------------------------------------------------------------------------- YEAR_ONLY
-	const YEAR_ONLY          = 'year_only';
+	const YEAR_ONLY             = 'year_only';
+
+	//------------------------------------------------------------------------------------ DATE_PARTS
+	const DATE_PARTS = [
+		Date_Time::DAY,
+		Date_Time::MONTH,
+		Date_Time::YEAR,
+		Date_Time::HOUR,
+		Date_Time::MINUTE,
+		Date_Time::SECOND
+	];
 
 	//--------------------------------------------------------------------------------- KIND_OF_DATES
 	/**
@@ -53,10 +123,14 @@ abstract class Date
 		self::DATE_HOURS_ONLY,
 		self::DATE,
 		self::MONTH_YEAR,
+		self::YEAR_MONTH,
 		self::DAY_MONTH,
 		self::YEAR_ONLY,
 		self::DAY_ONLY,
-		self::MONTH_ONLY
+		self::MONTH_ONLY, // can only be a formula like "m-1"
+		self::HOURS_ONLY, // can only be a formula like "h-1", implicit current day
+		self::HOURS_MINUTES,
+		self::HOURS_MINUTES_SECONDS
 	];
 
 	//------------------------------------------------------------------------------ $currentDateTime
@@ -101,17 +175,149 @@ abstract class Date
 	 */
 	protected static $currentYear;
 
-	//------------------------------------------------------------------------------- applyDatePeriod
+	//---------------------------------------------------------------------------- applyDateFormatted
+	/**
+	 * transform expression of a date to suitable Func
+	 *
+	 * @param $expression string
+	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
+	 * @return mixed|boolean false
+	 * @throws Data_List_Exception
+	 */
+	protected static function applyDateFormatted($expression, $range_side)
+	{
+		$kind_of_date = self::getKindOfDate($expression);
+		if (!$kind_of_date) {
+			throw new Data_List_Exception(
+				$expression, Loc::tr('invalid date expression')
+			);
+		}
+
+		$date_parts = self::getParts($expression, $kind_of_date);
+		/**
+		 * created by extract() as references on $date_parts values
+		 * @var $day    string
+		 * @var $month  string
+		 * @var $year   string
+		 * @var $hour   string
+		 * @var $minute string
+		 * @var $second string
+		 */
+		extract($date_parts, EXTR_OVERWRITE|EXTR_REFS);
+
+		if (self::isEmptyParts($date_parts)) {
+			return Func::isNull();
+		}
+
+		foreach (self::DATE_PARTS as $date_part) {
+			if (!self::computePart($date_parts[$date_part], $date_part)) {
+				throw new Data_List_Exception(
+					$expression, Loc::tr('invalid date expression') . '(' . Loc::tr($date_part) . ')'
+				);
+			};
+		}
+
+		$has_joker = self::onePartHasJoker($date_parts);
+		if ($has_joker) {
+			if ($range_side != Range::NONE) {
+				throw new Data_List_Exception(
+					$expression, Loc::tr('You can not have wildcard on a range value of a date expression')
+				);
+			}
+			$has_formula = self::onePartHasFormula($date_parts);
+			if ($has_formula) {
+				throw new Data_List_Exception(
+					$expression, Loc::tr('You can not combine wildcard and formula in a date expression')
+				);
+			}
+			self::fillEmptyPartsWithJokers($date_parts);
+			self::padParts($date_parts);
+			$date = Func::like("$year-$month-$day $hour:$minute:$second");
+		}
+		else {
+			switch ($kind_of_date) {
+				case self::DATE_TIME:
+					$date_begin = date('Y-m-d H:i:s', mktime($hour, $minute, $second, $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime($hour, $minute, $second, $month, $day, $year));
+					break;
+				case self::DATE_HOURS_MINUTES:
+					$date_begin = date('Y-m-d H:i:s', mktime($hour, $minute, 0 , $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime($hour, $minute, 59, $month, $day, $year));
+					break;
+				case self::DATE_HOURS_ONLY:
+					$date_begin = date('Y-m-d H:i:s', mktime($hour, 0 , 0 , $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime($hour, 59, 59, $month, $day, $year));
+					break;
+				case self::DATE:
+					$date_begin = date('Y-m-d H:i:s', mktime(0 , 0 , 0 , $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, $month, $day, $year));
+					break;
+				case self::MONTH_YEAR:
+				case self::YEAR_MONTH:
+					$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0 ,      $month    , 1, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, (int)$month + 1, 1, $year));
+					break;
+				case self::DAY_MONTH:
+					$year = self::$currentYear;
+					$date_begin = date('Y-m-d H:i:s', mktime(0 , 0 , 0 , $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, $month, $day, $year));
+					break;
+				case self::YEAR_ONLY:
+					$date_begin = date('Y-m-d H:i:s', mktime(0 , 0 , 0 , 1 , 1 , $year));
+					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $year));
+					break;
+				case self::DAY_ONLY:
+					$year  = self::$currentYear;
+					$month = self::$currentMonth;
+					$date_begin = date('Y-m-d H:i:s', mktime(0 , 0 , 0 , $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, $month, $day, $year));
+					break;
+				case self::MONTH_ONLY: // can only be a formula like "m-1"
+					$year = self::$currentYear;
+					$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0 , $month, 1, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, (int)$month + 1, 1, $year));
+					break;
+				case self::HOURS_ONLY: // can only be a formula like "h-1", implicit current day
+					$year  = self::$currentYear;
+					$month = self::$currentMonth;
+					$day   = self::$currentDay;
+					$date_begin = date('Y-m-d H:i:s', mktime($hour, 0 , 0 , $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime($hour, 59, 59, $month, $day, $year));
+					break;
+				case self::HOURS_MINUTES:
+					$year  = self::$currentYear;
+					$month = self::$currentMonth;
+					$day   = self::$currentDay;
+					$date_begin = date('Y-m-d H:i:s', mktime($hour, $minute, 0 , $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime($hour, $minute, 59, $month, $day, $year));
+					break;
+				case self::HOURS_MINUTES_SECONDS:
+					$year  = self::$currentYear;
+					$month = self::$currentMonth;
+					$day   = self::$currentDay;
+					$date_begin = date('Y-m-d H:i:s', mktime($hour, $minute, $second, $month, $day, $year));
+					$date_end   = date('Y-m-d H:i:s', mktime($hour, $minute, $second, $month, $day, $year));
+					break;
+			}
+			/** @noinspection PhpUndefinedVariableInspection */
+			$date = self::buildDateOrPeriod($date_begin, $date_end, $range_side);
+		}
+		return $date;
+	}
+
+	//-------------------------------------------------------------------------------- applyDateValue
 	/**
 	 * @param $expression string
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed
+	 * @return mixed|boolean false
 	 */
-	public static function applyDatePeriod($expression, $range_side = Range::NONE)
+	public static function applyDateValue($expression, $range_side = Range::NONE)
 	{
 		return self::applyDateSingleJoker($expression)
 			?: self::applyDateWord($expression, $range_side)
 			?: Words::applyEmptyWord($expression)
+			?: self::applyDateFormatted($expression, $range_side);
+		  /*
 			?: self::applyDayMonthYear($expression, $range_side)
 			?: self::applyMonthYear($expression, $range_side)
 			?: self::applyDayMonth($expression, $range_side)
@@ -120,6 +326,7 @@ abstract class Date
 			?: self::applySingleFormula($expression, $range_side, Date_Time::YEAR)
 			?: self::applySingleFormula($expression, $range_side, Date_Time::MONTH)
 			?: self::applySingleFormula($expression, $range_side, Date_Time::DAY);
+		  */
 	}
 
 	//--------------------------------------------------------------------------- applyDateRangeValue
@@ -136,7 +343,7 @@ abstract class Date
 				$expression, Loc::tr('You can not have a wildcard on a range value')
 			);
 		}
-		return self::applyDatePeriod($expression, $range_side);
+		return self::applyDateValue($expression, $range_side);
 	}
 
 	//-------------------------------------------------------------------------- applyDateSingleJoker
@@ -146,9 +353,9 @@ abstract class Date
 	 * @param $expression string
 	 * @return boolean|mixed false
 	 */
-	protected static function applyDateSingleJoker($expression)
+	private static function applyDateSingleJoker($expression)
 	{
-		if (is_string($expression) && preg_match('/^ [*%?_]+ $/x', $expression)) {
+		if (is_string($expression) && preg_match('/^ \\s* [*%?_]+ \\s* $/x', $expression)) {
 			//return Func::like("____-__-__ __:__:__");
 			// Optimization by replacing LIKE by IS NOT NULL
 			return Func::notNull();
@@ -163,7 +370,7 @@ abstract class Date
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
 	 * @return mixed|boolean false
 	 */
-	protected static function applyDateWord($expression, $range_side)
+	private static function applyDateWord($expression, $range_side)
 	{
 		$word = Words::getCompressedWords([$expression])[0];
 
@@ -212,253 +419,6 @@ abstract class Date
 		return false;
 	}
 
-	//--------------------------------------------------------------------------------- applyDayMonth
-	/**
-	 * Apply if expression is a day/month or month/day
-	 *
-	 * @param $expression string
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed|boolean false
-	 * @throws Data_List_Exception
-	 */
-	protected static function applyDayMonth($expression, $range_side)
-	{
-		// two values with a middle slash
-		if (substr_count($expression, SL) == 1) {
-			list($one, $two) = explode(SL, $expression);
-			// these should be small numbers : day/month or month/day, depending on the locale format
-			if (Loc::date()->format == 'd/m/Y') {
-				// day/month
-				$day   = $one;
-				$month = $two;
-			}
-			else {
-				// month/day
-				$day   = $two;
-				$month = $one;
-			}
-			if (!self::computeDay($day)) {
-				// bad expression ?
-				throw new Data_List_Exception($expression, Loc::tr('Error in day expression'));
-			}
-			if (!self::computeMonth($month)) {
-				// bad expression?
-				throw new Data_List_Exception($expression, Loc::tr('Error in month expression'));
-			}
-			$date = self::buildDayMonth($day, $month, $range_side, $expression);
-			return $date;
-		}
-		return false;
-	}
-
-	//----------------------------------------------------------------------------- applyDayMonthYear
-	/**
-	 * Apply if expression is a day/month/year or month/day/year
-	 *
-	 * @param $expression string
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed|bool false
-	 * @throws Data_List_Exception
-	 */
-	protected static function applyDayMonthYear($expression, $range_side)
-	{
-		// three values with a middle slash
-		if (substr_count($expression, SL) == 2) {
-			list($one, $two, $three) = explode(SL, $expression);
-			if (Loc::date()->format == 'd/m/Y') {
-				// day/month/year
-				$day   = $one;
-				$month = $two;
-				$year  = $three;
-			}
-			else {
-				// month/day/year
-				$day   = $two;
-				$month = $one;
-				$year  = $three;
-			}
-			if (!self::computeDay($day)) {
-				// bad expression ?
-				throw new Data_List_Exception($expression, Loc::tr('Error in day expression'));
-			}
-			if (!self::computeMonth($month)) {
-				// bad expression ?
-				throw new Data_List_Exception($expression, Loc::tr('Error in month expression'));
-			}
-			if (!self::computeYear($year)) {
-				// bad expression ?
-				throw new Data_List_Exception($expression, Loc::tr('Error in year expression'));
-			}
-			return self::buildDayMonthYear($day, $month, $year, $range_side, $expression);
-		}
-		return false;
-	}
-
-	//---------------------------------------------------------------------------------- applyDayOnly
-	/**
-	 * Apply if expression is a day only
-	 *
-	 * @param $expression string
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return boolean|mixed false
-	 * @throws Data_List_Exception
-	 */
-	protected static function applyDayOnly($expression, $range_side)
-	{
-		// two chars or a single joker or formula
-		$letters_day = self::getDateLetters(Date_Time::DAY);
-		if (preg_match(
-			'/^ \s* ([*%?_] | [0-9*?%_]{1,2} | ([' . $letters_day . ']([-+]\d+)?)) \s* $/x', $expression
-		)) {
-			$day = $expression;
-			if (!self::computeDay($day)) {
-				// bad expression ?
-				throw new Data_List_Exception($expression, Loc::tr('Error in day expression'));
-			}
-			if (Joker::hasJoker($day)) {
-				list($day, $month, $year) = self::padDateParts(
-					$day, self::$currentMonth, self::$currentYear
-				);
-				$date = Func::like("$year-$month-$day __:__:__");
-			}
-			elseif (!(int)$day) {
-				$date = Func::isNull();
-			}
-			else {
-				$date_begin = date(
-					'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, $day, self::$currentYear)
-				);
-				$date_end = date(
-					'Y-m-d H:i:s', mktime(23, 59, 59, self::$currentMonth, $day, self::$currentYear)
-				);
-				$date = self::buildDateOrPeriod($date_begin, $date_end, $range_side);
-			}
-			return $date;
-		}
-		return false;
-	}
-
-	//-------------------------------------------------------------------------------- applyMonthYear
-	/**
-	 * Apply if expression is a month/year
-	 *
-	 * @param $expression string
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed|boolean false
-	 * @throws Data_List_Exception
-	 */
-	protected static function applyMonthYear($expression, $range_side)
-	{
-		$letters_month = self::getDateLetters(Date_Time::MONTH);
-		$letters_year  = self::getDateLetters(Date_Time::YEAR);
-		// two values with a middle slash
-		if (substr_count($expression, SL) == 1) {
-			list($one, $two) = explode(SL, $expression);
-			if (
-				(strlen($one) > 2 && !preg_match('/^ \s* [' . $letters_month . ']([-+]\d+)? $/x', $one))
-				|| preg_match('/^ \s* [' . $letters_year . ']([-+]\d+)? $/x', $one)
-			) {
-				// the first number is a year or contains 'y' or 'a' : year/month
-				$month = $two;
-				$year  = $one;
-			}
-			elseif (
-				(strlen($two) > 2 && !preg_match('/^ \s* [' . $letters_month . ']([-+]\d+)? $/x', $two))
-				|| preg_match('/^ [' . $letters_year . ']([-+]\d+)? \s* $/x', $two)
-			) {
-				// the second number is a year or contains 'y' or 'a' : month/year
-				$month = $one;
-				$year  = $two;
-			}
-			else {
-				// else, may be day/month or month/day => supported elsewhere
-				return false;
-			}
-			if (!self::computeMonth($month)) {
-				// bad expression ?
-				throw new Data_List_Exception($expression, Loc::tr('Error in month expression'));
-			}
-			if (!self::computeYear($year)) {
-				// bad expression ?
-				throw new Data_List_Exception($expression, Loc::tr('Error in year expression'));
-			}
-			return self::buildMonthYear($month, $year, $range_side, $expression);
-		}
-		return false;
-	}
-
-	//---------------------------------------------------------------------------- applySingleFormula
-	/**
-	 * Apply a formula that is alone in the expression (eg. not "15/m+1/2016" but only "m+1")
-	 *
-	 * @param &$expression string|integer formula
-	 * @param $range_side  integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @param $date_part   string Date_Time::DAY | Date_Time::MONTH | Date_Time::YEAR
-	 *        | Date_Time::HOUR | Date_Time::MINUTE | Date_Time::SECOND
-	 * @return string|Func\Range
-	 */
-	protected static function applySingleFormula($expression, $range_side, $date_part)
-	{
-		if (self::computeFormula($expression, $date_part)) {
-			switch ($date_part) {
-				case Date_Time::YEAR:
-					$date_begin = date('Y-m-d H:i:s', mktime(0,  0,  0,  1,  1,  $expression));
-					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $expression));
-					break;
-				case Date_Time::MONTH:
-					$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0,  $expression,   1, self::$currentYear));
-					$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, $expression+1, 1, self::$currentYear));
-					break;
-				case Date_Time::DAY:
-					$date_begin = date(
-						'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, $expression, self::$currentYear)
-					);
-					$date_end = date(
-						'Y-m-d H:i:s', mktime(23, 59, 59, self::$currentMonth, $expression, self::$currentYear)
-					);
-					break;
-			}
-			/** @noinspection PhpUndefinedVariableInspection All possible cases done by switch */
-			return self::buildDateOrPeriod($date_begin, $date_end, $range_side);
-		}
-		return false;
-	}
-
-	//--------------------------------------------------------------------------------- applyYearOnly
-	/**
-	 * Apply if expression is a year
-	 *
-	 * @param $expression string
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed|boolean false
-	 * @throws Data_List_Exception
-	 */
-	protected static function applyYearOnly($expression, $range_side)
-	{
-		$letters_year = self::getDateLetters(Date_Time::YEAR);
-		// no slash and (>3 digit or "y" or "a")
-		if (preg_match(
-			'/^ \s* ([0-9*?%_]{3,4} | ([' . $letters_year . ']([-+]\d+)?)) \s* $/x', $expression
-		)) {
-			$year = $expression;
-			if (self::computeYear($year)) {
-				if (Joker::hasJoker($year)) {
-					list($day, $month, $year) = self::padDateParts('__', '__', $year);
-					$date = Func::like("$year-$month-$day __:__:__");
-				}
-				else {
-					$date_begin = date('Y-m-d H:i:s', mktime(0,  0,  0,  1,  1,  $year));
-					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $year));
-					$date = self::buildDateOrPeriod($date_begin, $date_end, $range_side);
-				}
-				return $date;
-			}
-			// bad expression?
-			throw new Data_List_Exception($expression, Loc::tr('Error in year expression'));
-		}
-		return false;
-	}
-
 	//----------------------------------------------------------------------------- buildDateOrPeriod
 	/**
 	 * Builds the correct Dao object for given begin and end date according to what we want
@@ -468,7 +428,7 @@ abstract class Date
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
 	 * @return Func\Range|string
 	 */
-	protected static function buildDateOrPeriod($date_min, $date_max, $range_side)
+	private static function buildDateOrPeriod($date_min, $date_max, $range_side)
 	{
 		if ($range_side == Range::MIN) {
 			$date = $date_min;
@@ -477,202 +437,11 @@ abstract class Date
 			$date = $date_max;
 		}
 		else {
-			$date = Range::buildRange($date_min, $date_max);
-		}
-		return $date;
-	}
-
-	//--------------------------------------------------------------------------------- buildDayMonth
-	/**
-	 * Builds the date from computed month and a year
-	 *
-	 * @param $day        string
-	 * @param $month      string
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @param $expression    string
-	 * @return Comparison|Func\Range
-	 * @throws Data_List_Exception
-	 */
-	private static function buildDayMonth($day, $month, $range_side, $expression)
-	{
-		if (!(int)$day && !(int)$month) {
-			$date = Func::isNull();
-		}
-		else {
-			$dayHasJoker = Joker::hasJoker($day);
-			$monthHasJoker = Joker::hasJoker($month);
-			if (!$dayHasJoker && !$monthHasJoker) {
-				//none has wildcard
-				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, $day, self::$currentYear));
-				$date_end = date(
-					'Y-m-d H:i:s', mktime(0, 0, -1, $month, (int)$day + 1, self::$currentYear)
-				);
-				$date = self::buildDateOrPeriod($date_begin, $date_end, $range_side);
+			if ($date_min == $date_max) {
+				$date = Func::equal($date_min);
 			}
 			else {
-				//at least one has wildcard
-				if ($range_side != Range::NONE) {
-					//we can not have wildcard on a range value
-					throw new Data_List_Exception(
-						$expression, Loc::tr('You can not have a wildcard on a range value')
-					);
-				}
-				if (!$monthHasJoker) {
-					//day has wildcard, month may be computed
-					//try to correct month and year
-					$time = mktime(0, 0, 0, $month, 1, self::$currentYear);
-					$year = date('Y', $time);
-					$month = date('m', $time);
-					list($day, $month, $year) = self::padDateParts($day, $month, $year);
-					$date = Func::like("$year-$month-$day __:__:__");
-				}
-				elseif (!$dayHasJoker) {
-					//month has wildcard but not day that may be computed.
-					//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
-					if ($day < 1 || $day > 31) {
-						throw new Data_List_Exception(
-							$expression, Loc::tr('You can not put a formula on day when month has wildcard')
-						);
-					}
-					list($day, $month) = self::padDateParts($day, $month, 'fooo');
-					$date = Func::like(self::$currentYear . "-$month-$day __:__:__");
-				}
-				else {
-					//both day and month have wildcards
-					list($day, $month) = self::padDateParts($day, $month, 'fooo');
-					$date = Func::like(self::$currentYear . "-$month-$day __:__:__");
-				}
-			}
-		}
-		return $date;
-	}
-
-	//----------------------------------------------------------------------------- buildDayMonthYear
-	/**
-	 * Build the date from computed day, month and year
-	 *
-	 * @param $day        string|integer
-	 * @param $month      string|integer
-	 * @param $year       string|integer
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @param $expression string
-	 * @return Comparison|Func\Range
-	 * @throws Data_List_Exception
-	 */
-	private static function buildDayMonthYear($day, $month, $year, $range_side, $expression)
-	{
-		if (!(int)$day && !(int)$month && !(int)$year) {
-			$date = Func::isNull();
-		}
-		else {
-			$day_has_joker = Joker::hasJoker($day);
-			$month_has_joker = Joker::hasJoker($month);
-			$year_has_joker = Joker::hasJoker($year);
-			if (!$day_has_joker && !$month_has_joker && !$year_has_joker) {
-				// none has wildcard
-				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, $day, $year));
-				$date_end = date('Y-m-d H:i:s', mktime(0, 0, -1, $month, $day + 1, $year));
-				$date = self::buildDateOrPeriod($date_begin, $date_end, $range_side);
-			}
-			else {
-				// at least one has wildcard
-				if ($range_side != Range::NONE) {
-					//we can not have wildcard on a range value
-					throw new Data_List_Exception(
-						$expression, Loc::tr('You can not have a wildcard on a range value')
-					);
-				}
-				if (
-					// 000: all have wildcards
-					($day_has_joker && $month_has_joker && $year_has_joker)
-					// 001: day has wildcard, month has wildcard, year may be computed
-					|| ($day_has_joker && $month_has_joker && !$year_has_joker)
-				) {
-					// no need to correct anything!
-				}
-				if (
-					// 010: day has wildcard, month may be computed, year has wildcard
-					($day_has_joker && !$month_has_joker && $year_has_joker)
-				) {
-					if ($month < 1 || $month > 12) {
-						throw new Data_List_Exception(
-							$expression, Loc::tr('You can not put a formula on month when year has wildcard')
-						);
-					}
-				}
-				if (
-					// 011: day has wildcard, month may be computed, year may be computed
-					($day_has_joker && !$month_has_joker && !$year_has_joker)
-				) {
-					// try to correct month and year
-					$time = mktime(0, 0, 0, $month, 1, $year);
-					$year = date('Y', $time);
-					$month = date('m', $time);
-				}
-				if (
-					// 100: day may be computed, month has wildcard, year has wildcard
-					(!$day_has_joker && $month_has_joker && $year_has_joker)
-					// 101: day may be computed, month has wildcard, year may be computed
-					|| (!$day_has_joker && $month_has_joker && !$year_has_joker)
-				) {
-					//So we should take care if day is <1 or >31 //TODO:what about 30? 29? 28?
-					if ($day < 1 || $day > 31) {
-						throw new Data_List_Exception(
-							$expression, Loc::tr('You can not put a formula on day when month has wildcard')
-						);
-					}
-				}
-				list($day, $month, $year) = self::padDateParts($day, $month, $year);
-				$date = Func::like("$year-$month-$day __:__:__");
-			}
-		}
-		return $date;
-	}
-
-	//-------------------------------------------------------------------------------- buildMonthYear
-	/**
-	 * Build the date from computed month and a yea
-	 *
-	 * @param $month      string|integer
-	 * @param $year       string|integer
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @param $expression string
-	 * @return Comparison|Func\Range
-	 * @throws Data_List_Exception
-	 */
-	private static function buildMonthYear($month, $year, $range_side, $expression)
-	{
-		if (!(int)$month && !(int)$year) {
-			$date = Func::isNull();
-		}
-		else {
-			$month_has_joker = Joker::hasJoker($month);
-			$year_has_joker = Joker::hasJoker($year);
-			if (!$month_has_joker && !$year_has_joker) {
-				$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0, $month, 1, $year));
-				$date_end = date('Y-m-d H:i:s', mktime(0, 0, -1, $month + 1, 1, $year));
-				$date = self::buildDateOrPeriod($date_begin, $date_end, $range_side);
-			}
-			elseif (!$year_has_joker) {
-				// month has wildcard, year may be computed
-				list($day, $month, $year) = self::padDateParts('__', $month, $year);
-				$date = Func::like("$year-$month-$day __:__:__");
-			}
-			elseif (!$month_has_joker) {
-				// year has wildcard but not month that may be computed.
-				// So we should take care if month is <1 or >12
-				if ($month < 1 || $month > 12) {
-					throw new Data_List_Exception(
-						$expression, Loc::tr('You can not put a formula on month when year has wildcard')
-					);
-				}
-				list($day, $month, $year) = self::padDateParts('__', $month, $year);
-				$date = Func::like("$year-$month-$day __:__:__");
-			}
-			else {
-				// both year and month have wildcards
-				list($day, $month, $year) = self::padDateParts('__', $month, $year);
-				$date = Func::like("$year-$month-$day __:__:__");
+				$date = Range::buildRange($date_min, $date_max);
 			}
 		}
 		return $date;
@@ -709,27 +478,32 @@ abstract class Date
 		return is_numeric($expression) && (string)((int)$expression) == $expression;
 	}
 
-	//------------------------------------------------------------------------------------ computeDay
+	//----------------------------------------------------------------------------------- computePart
 	/**
-	 * Compute a day expression to get a string suitable to build a Date
+	 * Compute a date part expression to get a string suitable to build a Date
 	 *
-	 * @param $expression string numeric or with widlcard or formula d+1 | d+3 | d-2 | j+1 | j+3
-	 *        | j-2... returns computed if any
+	 * @param &$expression string numeric or with widlcard or formula d+1 | m+3 | y-2 | h+1 | i+3...
+	 * @param $date_part   string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
+	 *                            Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean
 	 */
-	protected static function computeDay(&$expression)
+	protected static function computePart(&$expression, $date_part)
 	{
 		$expression = trim($expression);
+		// empty expression
+		if (!strlen($expression)) {
+			return true;
+		}
 		// numeric expr
 		if (self::checkNumericExpr($expression)) {
 			return true;
 		}
 		// expression with wildcards
-		if (self::checkDateWildcardExpr($expression, Date_Time::DAY)) {
+		if (self::checkDateWildcardExpr($expression, $date_part)) {
 			return true;
 		}
 		// expression with formula
-		if (self::computeFormula($expression, Date_Time::DAY)) {
+		if (self::computeFormula($expression, $date_part)) {
 			return true;
 		}
 		return false;
@@ -744,7 +518,7 @@ abstract class Date
 	 *                            Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean true if formula found
 	 */
-	protected static function computeFormula(&$expression, $date_part)
+	private static function computeFormula(&$expression, $date_part)
 	{
 		$pp = '[' . self::getDateLetters($date_part) . ']';
 		if (preg_match(
@@ -778,58 +552,6 @@ abstract class Date
 		return false;
 	}
 
-	//---------------------------------------------------------------------------------- computeMonth
-	/**
-	 * Compute a month expression to get a string suitable to build a Date
-	 *
-	 * @param $expression string numeric or with wildcard or formula m+1 | m+3 | m-2...
-	 *        returns computed if any
-	 * @return boolean
-	 */
-	protected static function computeMonth(&$expression)
-	{
-		$expression = trim($expression);
-		// numeric expression
-		if (self::checkNumericExpr($expression)) {
-			return true;
-		}
-		// expression with wildcards
-		if (self::checkDateWildcardExpr($expression, Date_Time::MONTH)) {
-			return true;
-		}
-		// expression with formula
-		if (self::computeFormula($expression, Date_Time::MONTH)) {
-			return true;
-		}
-		return false;
-	}
-
-	//----------------------------------------------------------------------------------- computeYear
-	/**
-	 * Compute a year expression to get a string suitable to build a Date
-	 *
-	 * @param $expression string numeric or with wildcard or formula like y+1 | y+3 | a+1 | a+3...
-	 *        returns computed if any
-	 * @return boolean
-	 */
-	protected static function computeYear(&$expression)
-	{
-		$expression = trim($expression);
-		// numeric expression
-		if (self::checkNumericExpr($expression)) {
-			return true;
-		}
-		// expression with wildcards
-		if (self::checkDateWildcardExpr($expression, Date_Time::YEAR)) {
-			return true;
-		}
-		// expression with formula
-		if (self::computeFormula($expression, Date_Time::YEAR)) {
-			return true;
-		}
-		return false;
-	}
-
 	//----------------------------------------------------------------------- correctDateWildcardExpr
 	/**
 	 * Correct a date expression containing SQL wildcard in order to build a Date string
@@ -838,7 +560,7 @@ abstract class Date
 	 * @param $date_part   string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
 	 *                            Date_Time::MINUTE, Date_Time::SECOND
 	 */
-	protected static function correctDateWildcardExpr(&$expression, $date_part)
+	private static function correctDateWildcardExpr(&$expression, $date_part)
 	{
 		/**
 		 * eg. for a month or day (or hour, minutes, seconds), it's simple since we have 2 chars only
@@ -910,7 +632,81 @@ abstract class Date
 		$expression = str_replace('%', '_', $expression);
 	}
 
-	//----------------------------------------------------------------------------- getDateSubPattern
+	//-------------------------------------------------------------------------------- getDateLetters
+	/**
+	 * Gets the letters that can be used in formula for a part of a date
+	 *
+	 * @param $date_part null|string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                               Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
+	 * @return string
+	 */
+	private static function getDateLetters($date_part = null)
+	{
+		static $letters;
+		if (!isset($letters)) {
+			$letters = explode('|', Loc::tr('d|m|y') . '|' . Loc::tr('h|m|s'));
+			$ipUp = function($letter) { return isset($letter) ? ($letter . strtoupper($letter)) : ''; };
+			$letters = [
+				Date_Time::DAY     => 'dD' . $ipUp($letters[0] != 'd' ? $letters[0] : null),
+				Date_Time::MONTH   => 'mM' . $ipUp($letters[1] != 'm' ? $letters[1] : null),
+				Date_Time::YEAR    => 'yY' . $ipUp($letters[2] != 'y' ? $letters[2] : null),
+				Date_Time::HOUR    => 'hH' . $ipUp($letters[3] != 'h' ? $letters[3] : null),
+				Date_Time::MINUTE  => 'mM' . $ipUp($letters[4] != 'm' ? $letters[4] : null),
+				Date_Time::SECOND  => 'sS' . $ipUp($letters[5] != 's' ? $letters[5] : null)
+			];
+		}
+		if (!isset($date_part)) {
+			return implode('', $letters);
+		}
+		return $letters[$date_part];
+	}
+
+	//-------------------------------------------------------------------------- getDatePatternsArray
+	/**
+	 * @param $sub_patterns string[]
+	 * @return string[]
+	 */
+	private static function getDatePatternsArray($sub_patterns)
+	{
+		/**
+		 * @var $day        string
+		 * @var $month      string
+		 * @var $month_only string
+		 * @var $year       string
+		 * @var $year_only  string
+		 * @var $hours      string
+		 * @var $hours_only string
+		 * @var $minutes    string
+		 * @var $seconds    string
+		 */
+		extract($sub_patterns);
+		$patterns = [];
+		if (Loc::date()->format == 'd/m/Y') {
+			$patterns[self::DATE_TIME]     = "(?:$day\\/$month\\/$year \\s $hours\\:$minutes\\:$seconds)";
+			$patterns[self::DATE_HOURS_MINUTES]  = "(?:$day\\/$month\\/$year \\s $hours\\:$minutes)";
+			$patterns[self::DATE_HOURS_ONLY]     = "(?:$day\\/$month\\/$year \\s $hours)";
+			$patterns[self::DATE]                = "(?:$day\\/$month\\/$year)";
+			$patterns[self::DAY_MONTH]           = "(?:$day\\/$month)";
+		}
+		else {
+			$patterns[self::DATE_TIME]     = "(?:$month\\/$day\\/$year \\s $hours\\:$minutes\\:$seconds)";
+			$patterns[self::DATE_HOURS_MINUTES]  =	"(?:$month\\/$day\\/$year \\s $hours\\:$minutes)";
+			$patterns[self::DATE_HOURS_ONLY]     = "(?:$month\\/$day\\/$year \\s $hours)";
+			$patterns[self::DATE]                = "(?:$month\\/$day\\/$year)";
+			$patterns[self::DAY_MONTH]           = "(?:$month\\/$day)";
+		}
+		$patterns[self::MONTH_YEAR]            = "(?:$month\\/$year)";
+		$patterns[self::YEAR_MONTH]            = "(?:$year\\/$month)";
+		$patterns[self::YEAR_ONLY]             = "$year_only";
+		$patterns[self::DAY_ONLY]              = "$day";
+		$patterns[self::MONTH_ONLY]            = "$month_only";
+		$patterns[self::HOURS_ONLY]            = "$hours_only";
+		$patterns[self::HOURS_MINUTES]         = "(?:$hours\\:$minutes)";
+		$patterns[self::HOURS_MINUTES_SECONDS] = "(?:$hours\\:$minutes\\:$seconds)";
+		return $patterns;
+	}
+
+	//-------------------------------------------------------------------------------- getDatePattern
 	/**
 	 * Gets the PCRE Pattern of a date that may contain formula in its part
 	 *
@@ -921,7 +717,7 @@ abstract class Date
 	 * @param $kind_of_date null|string value of self::KIND_OF_DATE
 	 * @return string
 	 */
-	public static function getDateSubPattern($kind_of_date = null)
+	public static function getDatePattern($kind_of_date = null)
 	{
 		static $big_pattern = null;
 		static $named_patterns = null;
@@ -934,143 +730,70 @@ abstract class Date
 			$s_letters = self::getDateLetters(Date_Time::SECOND);
 
 			// pattern for a date part : digits with optional wildcards or formula
-			$day     = '(?:[0-3*?%_]?[0-9*?%_]) | (?:[' . $d_letters . '](?:[-+]\d+)?)';
-			$month   = '(?:[0-1*?%_]?[0-9*?%_]) | (?:[' . $m_letters . '](?:[-+]\d+)?)';
-			$year    = '(?:[0-9*?%_]){1,4}      | (?:[' . $y_letters . '](?:[-+]\d+)?)';
-			$hours   = '(?:[0-2*?%_]?[0-9*?%_]) | (?:[' . $h_letters . '](?:[-+]\d+)?)';
-			$minutes = '(?:[0-5*?%_]?[0-9*?%_]) | (?:[' . $i_letters . '](?:[-+]\d+)?)';
-			$seconds = '(?:[0-5*?%_]?[0-9*?%_]) | (?:[' . $s_letters . '](?:[-+]\d+)?)';
-
-			$named_day     = "(?P<day> $day )";
-			$named_month   = "(?P<month> $month )";
-			$named_year    = "(?P<year> $year )";
-			$named_hours   = "(?P<hours> $hours )";
-			$named_minutes = "(?P<minutes> $minutes )";
-			$named_seconds = "(?P<seconds> $seconds )";
-
-			$unnamed_day     = "(?: $day )";
-			$unnamed_month   = "(?: $month )";
-			$unnamed_year    = "(?: $year )";
-			$unnamed_hours   = "(?: $hours )";
-			$unnamed_minutes = "(?: $minutes )";
-			$unnamed_seconds = "(?: $seconds )";
-
-			/*
-			* [d]d/[m]m/yyyy
-			* [d]d/[m]m         (means implicit current year)
-			* [m]m/yyyy | yyyy/[m]m (means from 01/mm/yyyy to 31!/mm/yyyy) 3-4 chars mandatory
-			* [d]d              (means implicit current month and year)
-			* yyyy              (means from 01/01/yyyy to 31/12/yyyy) 3-4 chars mandatory
-			* "y" [+|-] integer (means from 01/01/yyyy to 31/12/yyyy)
-			* "d" [+|-] integer (means implicit current month and year)
-      * "m" [+|-] integer (means from 01/mm/currentyear to 31!/mm/currentyear)
-			*/
+			$day        = '(?:[' . $d_letters . '](?:[-+]\d+)?) | (?:[0-3*?%_]?[0-9*?%_])';
+			$month      = '(?:[' . $m_letters . '](?:[-+]\d+)?) | (?:[0-1*?%_]?[0-9*?%_])';
+			$month_only = '(?:[' . $m_letters . '](?:[-+]\d+)?)';
+			// formula | 4 digits | 3 to 4 digit with wildcard if preceded by '/'
+			$year       = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9]{4} | (?<=\\/)[0-9*?%_]{3,4} '
+				// | 3 to 4 digit with wildcard if followed by '/'
+				. '| [0-9*?%_]{3,4}(?=\\/) '
+				// | 1 to 4 wildcards | 1 to 4 '0' only if preceded by '/'
+				. '| [*?%_]{1,4} | (?<=\\/)0{1,4}';
+			// formula | 3 to 4 digit with wildcard
+			$year_only  = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9*?%_]{3,4}';
+			$hours      = '(?:[' . $h_letters . '](?:[-+]\d+)?) | (?:[0-2*?%_]?[0-9*?%_])';
+			$hours_only = '(?:[' . $h_letters . '](?:[-+]\d+)?)';
+			$minutes    = '(?:[' . $i_letters . '](?:[-+]\d+)?) | (?:[0-5*?%_]?[0-9*?%_])';
+			$seconds    = '(?:[' . $s_letters . '](?:[-+]\d+)?) | (?:[0-5*?%_]?[0-9*?%_])';
 
 			//build the named patterns that helps to split an expression in many parts
-			$named_patterns = [];
-			if (Loc::date()->format == 'd/m/Y') {
-				$named_patterns[self::DATE_TIME] =
-					"(?:$named_day\\/$named_month\\/$named_year \\s "	.
-					"$named_hours\\:$named_minutes\\:$named_seconds)";
-				$named_patterns[self::DATE_HOURS_MINUTES] =
-					"(?:$named_day\\/$named_month\\/$named_year \\s " .
-					"$named_hours\\:$named_minutes)";
-				$named_patterns[self::DATE_HOURS_ONLY] =
-					"(?:$named_day\\/$named_month\\/$named_year \\s $named_hours)";
-				$named_patterns[self::DATE]      = "(?:$named_day\\/$named_month\\/$named_year)";
-				$named_patterns[self::DAY_MONTH] = "(?:$named_day\\/$named_month)";
-			}
-			else {
-				$named_patterns[self::DATE_TIME] =
-					"(?:$named_month\\/$named_day\\/$named_year \\s $named_hours\\:$named_minutes\\:$named_seconds)";
-				$named_patterns[self::DATE_HOURS_MINUTES] =
-					"(?:$named_month\\/$named_day\\/$named_year \\s $named_hours\\:$named_minutes)";
-				$named_patterns[self::DATE_HOURS_ONLY] =
-					"(?:$named_month\\/$named_day\\/$named_year \\s $named_hours)";
-				$named_patterns[self::DATE]      = "(?:$named_month\\/$named_day\\/$named_year)";
-				$named_patterns[self::DAY_MONTH] = "(?:$named_month\\/$named_day)";
-			}
-			$named_patterns[self::MONTH_YEAR]  = "(?:$named_month\\/$named_year)";
-			$named_patterns[self::YEAR_ONLY]   = "$named_year";
-			$named_patterns[self::DAY_ONLY]    = "$named_day";
-			$named_patterns[self::MONTH_ONLY]  = "$named_month";
+			$named = [];
+			$named['day']          = "(?P<" . Date_Time::DAY    . "> $day )";
+			$named['month']        = "(?P<" . Date_Time::MONTH  . "> $month )";
+			$named['month_only']   = "(?P<" . Date_Time::MONTH  . "> $month_only )";
+			$named['year']         = "(?P<" . Date_Time::YEAR   . "> $year )";
+			$named['year_only']    = "(?P<" . Date_Time::YEAR   . "> $year_only )";
+			$named['hours']        = "(?P<" . Date_Time::HOUR   . "> $hours )";
+			$named['hours_only']   = "(?P<" . Date_Time::HOUR   . "> $hours_only )";
+			$named['minutes']      = "(?P<" . Date_Time::MINUTE . "> $minutes )";
+			$named['seconds']      = "(?P<" . Date_Time::SECOND . "> $seconds )";
+			$named_patterns = self::getDatePatternsArray($named);
 
 			// build unnamed patterns for a big pattern (we can not have same name twice in a pattern)
-			$unnamed_patterns = [];
-			if (Loc::date()->format == 'd/m/Y') {
-				$unnamed_patterns[self::DATE_TIME] =
-					"(?:$unnamed_day\\/$unnamed_month\\/$unnamed_year \\s "	.
-					"$unnamed_hours\\:$unnamed_minutes\\:$unnamed_seconds)";
-				$unnamed_patterns[self::DATE_HOURS_MINUTES] =
-					"(?:$unnamed_day\\/$unnamed_month\\/$unnamed_year \\s " .
-					"$unnamed_hours\\:$unnamed_minutes)";
-				$unnamed_patterns[self::DATE_HOURS_ONLY] =
-					"(?:$unnamed_day\\/$unnamed_month\\/$unnamed_year \\s $unnamed_hours)";
-				$unnamed_patterns[self::DATE]      = "(?:$unnamed_day\\/$unnamed_month\\/$unnamed_year)";
-				$unnamed_patterns[self::DAY_MONTH] = "(?:$unnamed_day\\/$unnamed_month)";
-			}
-			else {
-				$unnamed_patterns[self::DATE_TIME] =
-					"(?:$unnamed_month\\/$unnamed_day\\/$unnamed_year \\s $unnamed_hours\\:$unnamed_minutes\\:$unnamed_seconds)";
-				$unnamed_patterns[self::DATE_HOURS_MINUTES] =
-					"(?:$unnamed_month\\/$unnamed_day\\/$unnamed_year \\s $unnamed_hours\\:$unnamed_minutes)";
-				$unnamed_patterns[self::DATE_HOURS_ONLY] =
-					"(?:$unnamed_month\\/$unnamed_day\\/$unnamed_year \\s $unnamed_hours)";
-				$unnamed_patterns[self::DATE]      = "(?:$unnamed_month\\/$unnamed_day\\/$unnamed_year)";
-				$unnamed_patterns[self::DAY_MONTH] = "(?:$unnamed_month\\/$unnamed_day)";
-			}
-			$unnamed_patterns[self::MONTH_YEAR]  = "(?:$unnamed_month\\/$unnamed_year)";
-			$unnamed_patterns[self::YEAR_ONLY]   = "$unnamed_year";
-			$unnamed_patterns[self::DAY_ONLY]    = "$unnamed_day";
-			$unnamed_patterns[self::MONTH_ONLY]  = "$unnamed_month";
+			$unnamed = [];
+			$unnamed['day']        = "(?: $day )";
+			$unnamed['month']      = "(?: $month )";
+			$unnamed['month_only'] = "(?: $month_only )";
+			$unnamed['year']       = "(?: $year )";
+			$unnamed['year_only']  = "(?: $year_only )";
+			$unnamed['hours']      = "(?: $hours )";
+			$unnamed['hours_only'] = "(?: $hours_only )";
+			$unnamed['minutes']    = "(?: $minutes )";
+			$unnamed['seconds']    = "(?: $seconds )";
+			$unnamed_patterns = self::getDatePatternsArray($unnamed);
 
 			//build the big pattern that check if expression is a date and can get kind of date
-			$patterns = [];
+			$big_pattern_parts = [];
 			foreach (self::KIND_OF_DATES as $kind) {
-				$patterns[$kind] = "(?P<" . $kind . "> " . $unnamed_patterns[$kind] . ")";
+				$big_pattern_parts[$kind] = "(?P<" . $kind . "> " . $unnamed_patterns[$kind] . ")";
 			}
-
-			$big_pattern  = "(?: " . LF . TAB . SP . SP . implode(LF . TAB . '| ', $patterns) . LF . " )";
+			$big_pattern  = "(?: " . LF . TAB . SP . SP . implode(LF . TAB . '| ', $big_pattern_parts) . LF . " )";
 		}
 
 		if (isset($kind_of_date)) {
 			return $named_patterns[$kind_of_date];
 		}
+		/** You wanna debug? copy this regexp : /^ \s* $big_pattern \s* $/gmx
+		 * into https://regex101.com/ and try your dates
+		 */
 		return $big_pattern;
-	}
-
-	//-------------------------------------------------------------------------------- getDateLetters
-	/**
-	 * Gets the letters that can be used in formula for a part of a date
-	 *
-	 * @param $date_part string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
-	 *                            Date_Time::MINUTE, Date_Time::SECOND
-	 * @return string
-	 */
-	private static function getDateLetters($date_part)
-	{
-		static $letters;
-		if (!isset($letters)) {
-			$letters = explode('|', Loc::tr('d|m|y') . '|' . Loc::tr('h|m|s'));
-			$ipUp = function($letter) { return isset($letter) ? ($letter . strtoupper($letter)) : ''; };
-			$letters = [
-				Date_Time::DAY     => 'dD' . $ipUp($letters[0] != 'd' ? $letters[0] : null),
-				Date_Time::MONTH   => 'mM' . $ipUp($letters[1] != 'm' ? $letters[1] : null),
-				Date_Time::YEAR    => 'yY' . $ipUp($letters[2] != 'y' ? $letters[2] : null),
-				Date_Time::HOUR    => 'hH' . $ipUp($letters[3] != 'h' ? $letters[3] : null),
-				Date_Time::MINUTE  => 'iI',
-				Date_Time::SECOND  => 'sS' . $ipUp($letters[5] != 's' ? $letters[5] : null)
-			];
-		}
-		return $letters[$date_part];
 	}
 
 	//------------------------------------------------------------------------- getDateWordsToCompare
 	/**
 	 * get the words to compare with a date word in search expression
 	 *
-	 * @param $date_part string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
-	 *                          Date_Time::MINUTE, Date_Time::SECOND
+	 * @param $date_part string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR
 	 * @return array
 	 */
 	private static function getDateWordsToCompare($date_part)
@@ -1079,13 +802,20 @@ abstract class Date
 			Date_Time::DAY   => ['current day', 'today'],
 			Date_Time::MONTH => ['current month'],
 			Date_Time::YEAR  => ['current year'],
+			Date_Time::HOUR  => ['current hour'],
 			'yesterday'      => ['yesterday']
 		];
-		$words_references = $all_words_references[$date_part];
-		$words_localized  = [];
-		foreach($words_references as $word) {
-			$words_localized[] = Loc::tr($word);
+		static $all_words_localized = [];
+		if (!$all_words_localized) {
+			foreach($all_words_references as $dp => $words_references) {
+				$all_words_localized[$dp] = [];
+				foreach($words_references as $word) {
+					$all_words_localized[$dp][] = Loc::tr($word);
+				}
+			}
 		}
+		$words_references = $all_words_references[$date_part];
+		$words_localized  = $all_words_localized[$date_part];
 		return Words::getCompressedWords(array_merge($words_references, $words_localized));
 	}
 
@@ -1098,7 +828,7 @@ abstract class Date
 	 */
 	private static function getKindOfDate($expression)
 	{
-		$pattern = "/^ \\s* " . self::getDateSubPattern() . " \\s* $/x";
+		$pattern = "/^ \\s* " . self::getDatePattern() . " \\s* $/x";
 		if (preg_match($pattern, $expression, $matches)) {
 			foreach(self::KIND_OF_DATES as $kind_of_date) {
 				if (isset($matches[$kind_of_date]) && !empty($matches[$kind_of_date])) {
@@ -1115,21 +845,30 @@ abstract class Date
 	 * @param $kind_of_date string value of self::KIND_OF_DATE
 	 * @return array
 	 */
-	public static function getParts($expression, $kind_of_date)
+	private static function getParts($expression, $kind_of_date)
 	{
-		$pattern = "/^ \\s* " . self::getDateSubPattern($kind_of_date) . " \\s* $/x";
+		$pattern = "/^ \\s* " . self::getDatePattern($kind_of_date) . " \\s* $/x";
 		if (preg_match($pattern, $expression, $matches)) {
-			$parts = [
-				'day'     => (isset($matches['day'])     ? $matches['day']     : ''),
-				'month'   => (isset($matches['month'])   ? $matches['month']   : ''),
-				'year'    => (isset($matches['year'])    ? $matches['year']    : ''),
-				'hours'   => (isset($matches['hours'])   ? $matches['hours']   : ''),
-				'minutes' => (isset($matches['minutes']) ? $matches['minutes'] : ''),
-				'seconds' => (isset($matches['seconds']) ? $matches['seconds'] : ''),
-			];
+			$parts = [];
+			foreach (self::DATE_PARTS as $date_part) {
+				$parts[$date_part] = (isset($matches[$date_part]) ? $matches[$date_part] : '');
+			}
 			return $parts;
 		}
 		return null;
+	}
+
+	//---------------------------------------------------------------------- fillEmptyPartsWithJokers
+	/**
+	 * @param $date_parts string[]
+	 */
+	private static function fillEmptyPartsWithJokers(&$date_parts)
+	{
+		foreach ($date_parts as $date_part => $part) {
+			if (!strlen($part)) {
+				$date_parts[$date_part] = $date_part == Date_Time::YEAR ? '____' : '__';
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------------- initDates
@@ -1169,35 +908,65 @@ abstract class Date
 		return $is;
 	}
 
-	//---------------------------------------------------------------------------------- padDateParts
+	//---------------------------------------------------------------------------------- isEmptyParts
+	/**
+	 * @param $date_parts string[]
+	 * @return boolean
+	 */
+	private static function isEmptyParts($date_parts)
+	{
+		foreach ($date_parts as $date_part => $part) {
+			if (strlen($part) && !preg_match('/^ \\s* [0]+ \\s* $/x', $part)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	//----------------------------------------------------------------------------- onePartHasFormula
+	/**
+	 * @param $date_parts string[]
+	 * @return boolean
+	 */
+	private static function onePartHasFormula($date_parts)
+	{
+		$letters = self::getDateLetters();
+		foreach ($date_parts as $date_part => $part) {
+			if (strpbrk($part, $letters) !== false) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//------------------------------------------------------------------------------- onePartHasJoker
+	/**
+	 * @param $date_parts string[]
+	 * @return boolean
+	 */
+	private static function onePartHasJoker($date_parts)
+	{
+		foreach ($date_parts as $date_part => $part) {
+			if (Joker::hasJoker($part)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//-------------------------------------------------------------------------------------- padParts
 	/**
 	 * Pad the date parts to have left leading 0
 	 * Note: if $hours is given so $minutes and $seconds should be given too!
 	 *
-	 * @param $day     string|integer
-	 * @param $month   string|integer
-	 * @param $year    string|integer
-	 * @param $hours   string|integer|null
-	 * @param $minutes string|integer|null
-	 * @param $seconds string|integer|null
-	 * @return array
+	 * @param $date_parts string[]
 	 */
-	private static function padDateParts($day, $month, $year, $hours = null, $minutes = null
-		, $seconds = null)
+	private static function padParts(&$date_parts)
 	{
-		$day   = str_pad($day,   2, '0', STR_PAD_LEFT);
-		$month = str_pad($month, 2, '0', STR_PAD_LEFT);
-		$year  = str_pad($year,  2, '0', STR_PAD_LEFT);
-		if (isset($hours) && isset($minutes) && isset($seconds)) {
-			$hours    = str_pad($hours,   2, '0', STR_PAD_LEFT);
-			$minutes  = str_pad($minutes, 2, '0', STR_PAD_LEFT);
-			$seconds  = str_pad($seconds, 2, '0', STR_PAD_LEFT);
-			return [$day, $month, $year, $hours, $minutes, $seconds];
+		foreach ($date_parts as $date_part => &$part) {
+			$length = ($date_part == Date_Time::YEAR) ? 4 : 2;
+			$part = str_pad($part, $length, '0', STR_PAD_LEFT);
 		}
-		if (isset($hours) && !(isset($minutes) && isset($seconds))) {
-			trigger_error('missing arguments for padDateParts()', E_USER_ERROR);
-		}
-		return [$day, $month, $year];
 	}
 
 }

@@ -213,7 +213,7 @@ class Search_Parameters_Parser
 			}
 			// Date_Time type
 			case Date_Time::class: {
-				$search = Date::applyDatePeriod($search_value);
+				$search = Date::applyDateValue($search_value);
 				break;
 			}
 			// Float | Integer | String types

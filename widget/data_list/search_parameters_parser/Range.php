@@ -100,7 +100,7 @@ abstract class Range
 			case Date_Time::class:
 				// Take care of char of formulas on expr like 'm-3-m', '01/m-2/2015-01/m-2/2016'...
 				// pattern of a date that may contain formula
-				$pattern = Date::getDateSubPattern();
+				$pattern = Date::getDatePattern();
 				// We should analyse 1st the right pattern to solve cases like 1/5/y-1/7/y
 				// We should parse like min=1/5/y and max=1/7/y
 				// and not parse like min=1/5/y-1 and max=/7/y
