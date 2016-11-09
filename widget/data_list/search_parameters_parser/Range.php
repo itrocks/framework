@@ -17,32 +17,32 @@ use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
 abstract class Range
 {
 
-	//------------------------------------------------------------------------------- MAX_RANGE_VALUE
-	const MAX_RANGE_VALUE = 1;
+	//------------------------------------------------------------------------------------------- MAX
+	const MAX = 1;
 
-	//------------------------------------------------------------------------------- MIN_RANGE_VALUE
-	const MIN_RANGE_VALUE = -1;
+	//------------------------------------------------------------------------------------------- MIN
+	const MIN = -1;
 
-	//----------------------------------------------------------------------------- NOT_A_RANGE_VALUE
-	const NOT_A_RANGE_VALUE = 0;
+	//------------------------------------------------------------------------------------------ NONE
+	const NONE = 0;
 
 	//------------------------------------------------------------------------------------ applyRange
 	/**
 	 * Apply a range expression on search string. The range is supposed to exist !
 	 *
-	 * @param $search_value string|Option
-	 * @param $property     Reflection_Property
+	 * @param $expression string|Option
+	 * @param $property   Reflection_Property
 	 * @return Func\Range
 	 * @throws Data_List_Exception
 	 */
-	public static function applyRange($search_value, Reflection_Property $property)
+	public static function applyRange($expression, Reflection_Property $property)
 	{
-		$range    = self::getRangeParts($search_value, $property);
-		$range[0] = self::applyRangeValue($range[0], $property, self::MIN_RANGE_VALUE);
-		$range[1] = self::applyRangeValue($range[1], $property, self::MAX_RANGE_VALUE);
+		$range    = self::getRangeParts($expression, $property);
+		$range[0] = self::applyRangeValue($range[0], $property, self::MIN);
+		$range[1] = self::applyRangeValue($range[1], $property, self::MAX);
 		if ($range[0] === false || $range[1] === false) {
 			throw new Data_List_Exception(
-				$search_value, Loc::tr('Error in range expression or range must have 2 parts only')
+				$expression, Loc::tr('Error in range expression or range must have 2 parts only')
 			);
 		}
 		return self::buildRange($range[0], $range[1]);
@@ -50,28 +50,29 @@ abstract class Range
 
 	//------------------------------------------------------------------------------- applyRangeValue
 	/**
-	 * @param $search_value string|Option
+	 * @param $expression string|Option
 	 * @param $property     Reflection_Property
-	 * @param $min_max      integer  ::MIN_RANGE_VALUE | ::MAX_RANGE_VALUE | ::NOT_A_RANGE_VALUE
+	 * @param $range_side      integer  Range::MIN | Range::MAX | Range::NONE
 	 * @return mixed
 	 */
-	protected static function applyRangeValue($search_value, Reflection_Property $property, $min_max)
+	protected static function applyRangeValue($expression, Reflection_Property $property,	$range_side)
 	{
 		$type_string = $property->getType()->asString();
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class:
-				$search = Date::applyDateRangeValue($search_value, $min_max);
+				$search = Date::applyDateRangeValue($expression, $range_side);
 				break;
 			// Float | Integer | String types
 			//case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {
 			default:
-				$search = Scalar::applyScalar($search_value, $property, true);
+				$search = Scalar::applyScalar($expression, $property, true);
 				break;
 		}
 		return $search;
 	}
 
+	//------------------------------------------------------------------------------------ buildRange
 	/**
 	 * @param $min mixed
 	 * @param $max mixed
@@ -86,12 +87,12 @@ abstract class Range
 	/**
 	 * Apply a range expression on search string. The range is supposed to exist !
 	 *
-	 * @param $search_value string|Option
-	 * @param $property     Reflection_Property
+	 * @param $expression string|Option
+	 * @param $property   Reflection_Property
 	 * @return array
 	 * @throws Data_List_Exception
 	 */
-	protected static function getRangeParts($search_value, Reflection_Property $property)
+	protected static function getRangeParts($expression, Reflection_Property $property)
 	{
 		$type_string = $property->getType()->asString();
 		switch ($type_string) {
@@ -104,40 +105,40 @@ abstract class Range
 				// We should parse like min=1/5/y and max=1/7/y
 				// and not parse like min=1/5/y-1 and max=/7/y
 				$pattern_right = "/[-](\\s* $pattern \\s* )$/x";
-				$found = preg_match($pattern_right, $search_value, $matches);
+				$found = preg_match($pattern_right, $expression, $matches);
 				if ($found) {
 					$max = trim($matches[1]);
-					$min = trim(substr($search_value, 0, -(strlen($matches[0]))));
+					$min = trim(substr($expression, 0, -(strlen($matches[0]))));
 					// We check that left part is a date expression
 					if (Date::isASingleDateFormula($min)) {
 						$range = [$min, $max];
 					}
 					else {
 						throw new Data_List_Exception(
-							$search_value, Loc::tr('Error in left part of range expression')
+							$expression, Loc::tr('Error in left part of range expression')
 						);
 					}
 				}
 				else {
 					throw new Data_List_Exception(
-						$search_value, Loc::tr('Error in range expression or range must have 2 parts only')
+						$expression, Loc::tr('Error in range expression or range must have 2 parts only')
 					);
 				}
 				break;
 			// Float | Integer | String types
 			// case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {
 			default:
-				$range = explode('-', $search_value, 2);
+				$range = explode('-', $expression, 2);
 				// Check we have only two parts in the range!
-				if (implode('-', $range) !== $search_value) {
-					throw new Data_List_Exception($search_value, Loc::tr('Range must have 2 parts only'));
+				if (implode('-', $range) !== $expression) {
+					throw new Data_List_Exception($expression, Loc::tr('Range must have 2 parts only'));
 				}
 				break;
 		}
 		return $range;
 	}
 
-	//-------------------------------------------------------------------------------------- hasRange
+	//--------------------------------------------------------------------------------- supportsRange
 	/**
 	 * Checks if a property has right to have range in search string
 	 *
@@ -155,28 +156,28 @@ abstract class Range
 	/**
 	 * Check if expression is a range expression
 	 *
-	 * @param $search_value string
-	 * @param $property     Reflection_Property
+	 * @param $expression string
+	 * @param $property   Reflection_Property
 	 * @return boolean
 	 */
-	public static function isRange($search_value, Reflection_Property $property)
+	public static function isRange($expression, Reflection_Property $property)
 	{
 		$type_string = $property->getType()->asString();
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class: {
 				if (
-					is_string($search_value)
+					is_string($expression)
 					// take care of formula that may contains char '-'
-					&& !Date::isASingleDateFormula($search_value)
-					&& (strpos($search_value, '-') !== false)
+					&& !Date::isASingleDateFormula($expression)
+					&& (strpos($expression, '-') !== false)
 				) {
 					return true;
 				}
 				break;
 			}
 			default: {
-				if (is_string($search_value) && (strpos($search_value, '-') !== false)) {
+				if (is_string($expression) && (strpos($expression, '-') !== false)) {
 					return true;
 				}
 				break;
@@ -184,6 +185,5 @@ abstract class Range
 		}
 		return false;
 	}
-
 
 }
