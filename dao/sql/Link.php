@@ -386,8 +386,11 @@ abstract class Link extends Identifier_Map implements Transactional
 		$list        = null;
 		foreach ($options as $option) {
 			if ($option instanceof Option\Double_Pass) {
-				foreach ($columns as $column) {
-					if (strpos($column, DOT)) {
+				foreach ($columns as $column_key => $column) {
+					if (is_object($column) && is_string($column_key)) {
+						$column = $column_key;
+					}
+					if (is_string($column) && strpos($column, DOT)) {
 						$double_pass = true;
 						break;
 					}
