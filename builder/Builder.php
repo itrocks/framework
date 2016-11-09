@@ -213,7 +213,7 @@ class Builder implements Activable, Registerable, Serializable
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Builder
-	 * @return Builder
+	 * @return static
 	 */
 	public static function current(Builder $set_current = null)
 	{

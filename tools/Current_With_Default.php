@@ -14,8 +14,8 @@ trait Current_With_Default
 	/**
 	 * Gets/sets current environment's object
 	 *
-	 * @param $set_current object
-	 * @return object
+	 * @param $set_current static
+	 * @return static|null
 	 */
 	public static function current($set_current = null)
 	{

@@ -37,7 +37,7 @@ trait Current
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
-	 * @var object|Current
+	 * @var static
 	 */
 	protected static $current = null;
 
@@ -45,8 +45,8 @@ trait Current
 	/**
 	 * Gets/sets current environment's object
 	 *
-	 * @param $set_current mixed
-	 * @return Current
+	 * @param $set_current static
+	 * @return static
 	 */
 	public static function current($set_current = null)
 	{

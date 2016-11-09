@@ -18,8 +18,8 @@ class User
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current User
-	 * @return User
+	 * @param $set_current static
+	 * @return static
 	 */
 	public static function current($set_current = null)
 	{
