@@ -186,6 +186,10 @@ abstract class Date
 	 */
 	protected static function applyDateFormatted($expression, $range_side)
 	{
+		if (preg_match('/^ \\s* [0]+ \\s* $/x', $expression)) {
+			return Func::isNull();
+		}
+
 		$kind_of_date = self::getKindOfDate($expression);
 		if (!$kind_of_date) {
 			throw new Data_List_Exception(

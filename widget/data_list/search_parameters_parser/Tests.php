@@ -301,7 +301,27 @@ class Tests extends Test
 	 *
 	 * @return boolean
 	 */
-	public function testParseDateFullWithWildcard()
+	public function testParseDateTimeWithWildcard()
+	{
+		$this->parser->search = ['date' => '05/*/2015 2*,?/3/20?5 2*:1*,05/3/20* 2*:1*:*0'];
+		$check = $this->parser->parse();
+		$assume = [
+			'date' => Func::orOp([
+				Func::like('2015-__-05 2_:__:__'),
+				Func::like('20_5-03-__ 2_:1_:__'),
+				Func::like('20__-03-05 2_:1_:_0'),
+			])
+		];
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
+	//----------------------------------------------------------------- testParseDateFullWithWildcard
+	/**
+	 * Test date parser for a full date DD/MM/YYYY with wildcard
+	 *
+	 * @return boolean
+	 */
+	public function testParseDateWithWildcard()
 	{
 		$this->parser->search = ['date' => '05/*/2015,?/3/20?5,05/3/20*,*/?/2015'];
 		$check = $this->parser->parse();
@@ -376,6 +396,27 @@ class Tests extends Test
 	 *
 	 * @return boolean
 	 */
+	public function testParseDateTimeWithFormulas()
+	{
+		$this->parser->search = ['date' => 'd/m/y h:m:s-1,d/m/y h-1, d/m/y h-1:5, d/m/y 13:m-1'];
+		$check = $this->parser->parse();
+		$assume = [
+			'date' => Func::orOp([
+				Func::equal('2016-06-15 12:30:44'),
+				new Range('2016-06-15 11:00:00', '2016-06-15 11:59:59'),
+				new Range('2016-06-15 11:05:00', '2016-06-15 11:05:59'),
+				new Range('2016-06-15 13:29:00', '2016-06-15 13:29:59')
+			])
+		];
+		return $this->assume(__FUNCTION__, $check, $assume, false);
+	}
+
+	//--------------------------------------------------------------------- testParseDateWithFormulas
+	/**
+	 * Test date parser for a date with many formulas
+	 *
+	 * @return boolean
+	 */
 	public function testParseDateWithFormulas()
 	{
 		$this->parser->search = ['date' => 'd/m/y,1/m+1/2016, 1/m+1/y-1, d-3/06/y, d-7/m+2/y-3'];
@@ -400,10 +441,11 @@ class Tests extends Test
 	 */
 	public function testParseDateZero()
 	{
-		$this->parser->search = ['date' => '00/00/0000,00/00,00/0000'];
+		$this->parser->search = ['date' => '00/00/0000,00/00,00/0000,0000,0'];
 		$check = $this->parser->parse();
 		$assume = [
-			'date' => Func::orOp([Func::isNull(), Func::isNull(), Func::isNull()])
+			'date' => Func::orOp([Func::isNull(), Func::isNull(), Func::isNull(), Func::isNull(),
+				Func::isNull()])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
