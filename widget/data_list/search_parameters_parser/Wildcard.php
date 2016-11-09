@@ -8,16 +8,16 @@ use ITRocks\Framework\Dao\Func;
  *
  * @extends Search_Parameter_Parser
  */
-abstract class Joker
+abstract class Wildcard
 {
 
-	//----------------------------------------------------------------------------------- applyJokers
+	//-------------------------------------------------------------------------------- applyWildcards
 	/**
 	 * @param $search_value   string
 	 * @param $is_range_value boolean  true if we parse a range value
 	 * @return string
 	 */
-	public static function applyJokers($search_value, $is_range_value = false)
+	public static function applyWildcards($search_value, $is_range_value = false)
 	{
 		if (is_string($search_value)) {
 			//$search = str_replace(['*', '?'], ['%', '_'], $search_value);
@@ -32,14 +32,14 @@ abstract class Joker
 		return $search_value;
 	}
 
-	//-------------------------------------------------------------------------------------- hasJoker
+	//----------------------------------------------------------------------------------- hasWildcard
 	/**
 	 * Check if expression has any wildcard
 	 *
 	 * @param $search_value string
 	 * @return boolean
 	 */
-	public static function hasJoker($search_value)
+	public static function hasWildcard($search_value)
 	{
 		return preg_match('/[*?%_]/', $search_value)
 			? true

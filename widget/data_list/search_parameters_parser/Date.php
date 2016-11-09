@@ -217,8 +217,8 @@ abstract class Date
 			};
 		}
 
-		$has_joker = self::onePartHasJoker($date_parts);
-		if ($has_joker) {
+		$has_wildcard = self::onePartHasWildcard($date_parts);
+		if ($has_wildcard) {
 			if ($range_side != Range::NONE) {
 				throw new Data_List_Exception(
 					$expression, Loc::tr('You can not have wildcard on a range value of a date expression')
@@ -230,7 +230,7 @@ abstract class Date
 					$expression, Loc::tr('You can not combine wildcard and formula in a date expression')
 				);
 			}
-			self::fillEmptyPartsWithJokers($date_parts);
+			self::fillEmptyPartsWithWildcard($date_parts);
 			self::padParts($date_parts);
 			$date = Func::like("$year-$month-$day $hour:$minute:$second");
 		}
@@ -313,7 +313,7 @@ abstract class Date
 	 */
 	public static function applyDateValue($expression, $range_side = Range::NONE)
 	{
-		return self::applyDateSingleJoker($expression)
+		return self::applyDateSingleWildcard($expression)
 			?: self::applyDateWord($expression, $range_side)
 			?: Words::applyEmptyWord($expression)
 			?: self::applyDateFormatted($expression, $range_side);
@@ -338,7 +338,7 @@ abstract class Date
 	 */
 	public static function applyDateRangeValue($expression, $range_side)
 	{
-		if (Joker::hasJoker($expression)) {
+		if (Wildcard::hasWildcard($expression)) {
 			throw new Data_List_Exception(
 				$expression, Loc::tr('You can not have a wildcard on a range value')
 			);
@@ -346,14 +346,14 @@ abstract class Date
 		return self::applyDateValue($expression, $range_side);
 	}
 
-	//-------------------------------------------------------------------------- applyDateSingleJoker
+	//----------------------------------------------------------------------- applyDateSingleWildcard
 	/**
 	 * If expression is a single wildcard or series of wildcard chars, convert to corresponding date
 	 *
 	 * @param $expression string
 	 * @return boolean|mixed false
 	 */
-	private static function applyDateSingleJoker($expression)
+	private static function applyDateSingleWildcard($expression)
 	{
 		if (is_string($expression) && preg_match('/^ \\s* [*%?_]+ \\s* $/x', $expression)) {
 			//return Func::like("____-__-__ __:__:__");
@@ -858,11 +858,11 @@ abstract class Date
 		return null;
 	}
 
-	//---------------------------------------------------------------------- fillEmptyPartsWithJokers
+	//-------------------------------------------------------------------- fillEmptyPartsWithWildcard
 	/**
 	 * @param $date_parts string[]
 	 */
-	private static function fillEmptyPartsWithJokers(&$date_parts)
+	private static function fillEmptyPartsWithWildcard(&$date_parts)
 	{
 		foreach ($date_parts as $date_part => $part) {
 			if (!strlen($part)) {
@@ -939,15 +939,15 @@ abstract class Date
 		return false;
 	}
 
-	//------------------------------------------------------------------------------- onePartHasJoker
+	//---------------------------------------------------------------------------- onePartHasWildcard
 	/**
 	 * @param $date_parts string[]
 	 * @return boolean
 	 */
-	private static function onePartHasJoker($date_parts)
+	private static function onePartHasWildcard($date_parts)
 	{
 		foreach ($date_parts as $date_part => $part) {
-			if (Joker::hasJoker($part)) {
+			if (Wildcard::hasWildcard($part)) {
 				return true;
 			}
 		}

@@ -28,7 +28,7 @@ abstract class Scalar
 			//we do not apply wildcards, we want search for this exact value
 			return Func::equal($search_value);
 		}
-		return Joker::applyJokers($search_value, $is_range_value);
+		return Wildcard::applyWildcards($search_value, $is_range_value);
 	}
 
 

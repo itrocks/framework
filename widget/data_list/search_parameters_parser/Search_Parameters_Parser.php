@@ -30,7 +30,7 @@ use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Words;
  * singlevalue  = emptyword | scalar
  * emptyword    = "empty" | "null" | localized equivalent
  * scalar       = sentence that may contains wildcards
- * joker        = "?" | "*" | "%" | "_"
+ * wildcard     = "?" | "*" | "%" | "_"
  *
  * - Especially for Boolean :
  * singlevalue  = emptyword | booleanvalue
@@ -50,7 +50,7 @@ use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Words;
  * singlevalue  = dateperiod   (that will be updated to both a min and a max value of the period)
  * minrngvalue  = daterngvalue (that will be updated to its min value)
  * maxrngvalue  = daterngvalue (that will be updated to its max value)
- * daterngvalue = dateperiod without any joker
+ * daterngvalue = dateperiod without any wildcard
  * dateperiod   = dateword | emptyword | wildcard
  *              | [d]d/[m]m/yyyy
  *              | [m]m/yyyy | yyyy/[m]m (means from 01/mm/yyyy to 31!/mm/yyyy) 3-4 chars mandatory
@@ -69,7 +69,7 @@ use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Words;
  * yyyy         = #[0-9?]{4}|*#     | "y" (+|-) integer //is it possible to check year about "*"
  *                only? we can not be sure this is a year!
  *
- * If there is any joker (*?) on a dd, mmm or yyyy, it will be converted to a LIKE search
+ * If there is any wildcard (*?) on a dd, mmm or yyyy, it will be converted to a LIKE search
  * Otherwise any date will be converted to a period from midnight to 23h59:59
  * For ranges, min date will be converted to midnight and maxdate to 23h59:59
  *

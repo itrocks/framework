@@ -26,7 +26,7 @@ trait Type_Boolean
 		if (!strlen($search_value)) {
 			return '';
 		}
-		if (Joker::hasJoker($search_value)) {
+		if (Wildcard::hasWildcard($search_value)) {
 			$search_value = preg_replace ('/^ \s* [*%?_]+ \s* $/x', '*', $search_value);
 			// we cannot have wildcard on boolean type, but we accept expression made of only wildcards
 			if (!in_array(trim($search_value), ['*', '%', '?', '_'])) {

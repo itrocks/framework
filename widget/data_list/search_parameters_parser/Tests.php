@@ -741,7 +741,7 @@ class Tests extends Test
 
 	//------------------------------------------------------------------ testParseScalarWithWildcards
 	/**
-	 * Test date parser for a simple scalar with jokers
+	 * Test date parser for a simple scalar with wildcards
 	 *
 	 * @return boolean
 	 */
