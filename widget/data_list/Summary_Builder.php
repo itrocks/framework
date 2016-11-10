@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale;
+use ITRocks\Framework\Locale\Date_Format;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -290,8 +291,13 @@ class Summary_Builder
 			return DQ . $t . $i . $value . $i . $t . DQ;
 		}
 		elseif (preg_match($pattern, $value)) {
-			// in case of a date, we convert to locale
-			return substr(Loc::dateToLocale($value), 0, 10);
+			// in case of a date, we convert to locale with time
+			$date_format = Loc::date();
+			$show_time = $date_format->show_time;
+			$date_format->show_time = Date_Format::TIME_ALWAYS;
+			$date = Loc::dateToLocale($value);
+			$date_format->show_time = $show_time;
+			return $date;
 		}
 		elseif (is_numeric($value)) {
 			$type_string = $property->getType()->asString();

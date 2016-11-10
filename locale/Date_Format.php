@@ -11,6 +11,24 @@ use ITRocks\Framework\Tools\Date_Time;
 class Date_Format
 {
 
+	//----------------------------------------------------------------------------------- TIME_ALWAYS
+	/**
+	 * Always display time, always with seconds too
+	 */
+	const TIME_ALWAYS = 'always';
+
+	//------------------------------------------------------------------------------------- TIME_AUTO
+	/**
+	 * Default and backward compatibility. Time is added if not 00:00:00, using ::$show_seconds
+	 */
+	const TIME_AUTO   = 'auto';
+
+	//------------------------------------------------------------------------------------ TIME_NEVER
+	/**
+	 * Never display time
+	 */
+	const TIME_NEVER  = 'never';
+
 	//--------------------------------------------------------------------------------------- $format
 	/**
 	 * @example 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
@@ -23,6 +41,12 @@ class Date_Format
 	 * @var boolean
 	 */
 	public $show_seconds = false;
+
+	//------------------------------------------------------------------------------------ $show_time
+	/**
+	 * @var string
+	 */
+	public $show_time = self::TIME_AUTO;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -149,7 +173,7 @@ class Date_Format
 
 	//-------------------------------------------------------------------------------------- toLocale
 	/**
-	 * Takes an ISO date and make it locale
+	 * Takes an ISO date and make it locale. Use self::SHOW_TIME to display (or not) time
 	 *
 	 * @param $date string|Date_Time ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 * @return string '25/12/2011' '25/12/2001 12:20' '25/12/2001 12:20:16'
@@ -171,11 +195,16 @@ class Date_Format
 			}
 			else {
 				list($date, $time) = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
-				if ($time === '00:00:00') {
+				if ($this->show_time == self::TIME_NEVER) {
 					$time = '';
 				}
-				elseif (!$this->show_seconds) {
-					$time = substr($time, 0, 5);
+				elseif ($this->show_time != self::TIME_ALWAYS) {
+					if ($time === '00:00:00') {
+						$time = '';
+					}
+					elseif (!$this->show_seconds) {
+						$time = substr($time, 0, 5);
+					}
 				}
 				$result = ($date_time = DateTime::createFromFormat('Y-m-d', $date))
 					? ($date_time->format($this->format) . (strlen($time) ? (SP . $time) : ''))
@@ -216,11 +245,32 @@ class Date_Format
 			}
 		}
 		else {
-			$pattern = "/ $sub_pattern_date \\s+ $sub_pattern_time /x";
-			if (preg_match($pattern, $date)) {
+			$pattern = "/ (?<date>$sub_pattern_date) \\s+ (?<time>$sub_pattern_time) /x";
+			if (preg_match($pattern, $date, $matches)) {
+				$date = $matches['date'];
+				$time = $matches['time'];
 				$replace = str_replace(array_keys($replacement), array_values($replacement), $this->format);
 				//return str_replace(['_', '%'], ['?', '*'], preg_replace($pattern, $replace, $date));
-				return preg_replace($pattern, $replace, $date);
+				$date = preg_replace("/ $sub_pattern_date /x", $replace, $date);
+				// backward compatible code but with support to display time if required
+				if ($this->show_time == self::TIME_ALWAYS) {
+					return trim($date . SP . $time);
+				}
+				return $date;
+				// want code compatible with ::$show_seconds (and new constants) like in toLocale()?
+				// => change above backward code with below
+				/*if ($this->show_time == self::TIME_NEVER) {
+					return $date;
+				}
+				elseif ($this->show_time != self::TIME_ALWAYS) {
+					if ($time === '__:__:__') {
+						$time = '';
+					}
+					elseif (!$this->show_seconds && strlen($time) == 8 && substr($time, -2) == '__') {
+						$time = substr($time, 0, 5);
+					}
+				}
+				return trim($date . SP . $time);*/
 			}
 		}
 		// unknown : we return like it is

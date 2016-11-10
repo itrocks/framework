@@ -56,17 +56,47 @@ class Range implements Negate, Where
 	 */
 	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
 	{
-		$str = '(' . $builder->buildColumn($property_path, $prefix);
-
+		$str = $builder->buildColumn($property_path, $prefix);
 		$from = $builder->buildScalar($this->from, $property_path);
 		$to = $builder->buildScalar($this->to, $property_path);
+
+		$property = $builder->getProperty($property_path);
+		if ($property->getType()->isDateTime()) {
+			list($date_from, $time_from) = explode(SP, $from);
+			list($date_to, $time_to) = explode(SP, $to);
+			//if we check full day, we remove time parts
+			if ($time_from == '00:00:00' && $time_to == '23:59:59') {
+				$from = $date_from;
+				$to = $date_to;
+			}
+			else {
+				//if we check full minute or full hour, we remove seconds
+				$time_parts_from = explode(':', $time_from);
+				$time_parts_to = explode(':', $time_to);
+				if ($time_parts_from[0] == $time_parts_to[0]
+					&& ($time_parts_from[1] == $time_parts_to[1]
+						|| ($time_parts_from[1] == '00' && $time_parts_to[1] == '59')
+					)
+					&& $time_parts_from[2] == '00'
+					&& $time_parts_to[2] == '59'
+				) {
+					unset($time_parts_from[2]);
+					unset($time_parts_to[2]);
+				}
+				$time_from = implode(':', $time_parts_from);
+				$time_to = implode(':', $time_parts_to);
+				$from = trim("$date_from $time_from");
+				$to = trim("$date_to $time_to");
+			}
+		}
+
 		if ($from == $to) {
-			$str .= SP . ($this->not_between ? Loc::tr('is not') : Loc::tr('is'));
-			$str .= SP . $from . ')';
+			$str .= SP . ($this->not_between ? Loc::tr('is not') : '=') . SP . $from;
 		}
 		else {
-			$str .= SP . ($this->not_between ? Loc::tr('is not between') : Loc::tr('is between'));
-			$str .= SP . $from . SP . Loc::tr('and') . SP . $to . ')';
+			$str = '(' . $str . SP
+				. ($this->not_between ? Loc::tr('is not between') : Loc::tr('is between'))
+				. SP . $from . SP . Loc::tr('and') . SP . $to . ')';
 		}
 		return $str;
 	}
