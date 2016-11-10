@@ -326,7 +326,7 @@ function strSimplify($str, $extended = false, $joker = null)
 function strUri($str, $joker = null)
 {
 	$uri = strtolower(strSimplify(
-		str_replace([Q, SP, ',', ':', ';'], '-', $str), '/-_{}.', $joker
+		str_replace([BS, Q, SP, ',', ':', ';'], '-', $str), '/-_{}.', $joker
 	));
 	while (strpos($uri, '--')) {
 		$uri = str_replace('--', '-', $uri);
