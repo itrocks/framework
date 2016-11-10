@@ -98,31 +98,34 @@ abstract class Range
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class:
-				// Take care of char of formulas on expr like 'm-3-m', '01/m-2/2015-01/m-2/2016'...
-				// pattern of a date that may contain formula
-				$pattern = Date::getDatePattern();
-				// We should analyse 1st the right pattern to solve cases like 1/5/y-1/7/y
-				// We should parse like min=1/5/y and max=1/7/y
-				// and not parse like min=1/5/y-1 and max=/7/y
-				$pattern_right = "/[-](\\s* $pattern \\s* )$/x";
-				$found = preg_match($pattern_right, $expression, $matches);
-				if ($found) {
-					$max = trim($matches[1]);
-					$min = trim(substr($expression, 0, -(strlen($matches[0]))));
-					// We check that left part is a date expression
-					if (Date::isASingleDateFormula($min)) {
-						$range = [$min, $max];
+				$range = [];
+				if (!Date::isASingleDateExpression($expression)) {
+					// Take care of char of formulas on expr like 'm-3-m', '01/m-2/2015-01/m-2/2016'...
+					// pattern of a date that may contain formula
+					$pattern = Date::getDatePattern(false);
+					// We should analyse 1st the right pattern to solve cases like 1/5/y-1/7/y
+					// We should parse like min=1/5/y and max=1/7/y
+					// and not parse like min=1/5/y-1 and max=/7/y
+					$pattern_right = "/[-](\\s* $pattern \\s* )$/x";
+					$found = preg_match($pattern_right, $expression, $matches);
+					if ($found) {
+						$max = trim($matches[1]);
+						$min = trim(substr($expression, 0, -(strlen($matches[0]))));
+						// We check that left part is a date expression
+						if (Date::isASingleDateExpression($min)) {
+							$range = [$min, $max];
+						}
+						else {
+							throw new Data_List_Exception(
+								$expression, Loc::tr('Error in left part of range expression')
+							);
+						}
 					}
 					else {
 						throw new Data_List_Exception(
-							$expression, Loc::tr('Error in left part of range expression')
+							$expression, Loc::tr('Error in range expression or range must have 2 parts only')
 						);
 					}
-				}
-				else {
-					throw new Data_List_Exception(
-						$expression, Loc::tr('Error in range expression or range must have 2 parts only')
-					);
 				}
 				break;
 			// Float | Integer | String types
@@ -166,10 +169,11 @@ abstract class Range
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class: {
+				$is_date_expression = Date::isASingleDateExpression($expression);
 				if (
 					is_string($expression)
 					// take care of formula that may contains char '-'
-					&& !Date::isASingleDateFormula($expression)
+					&& !$is_date_expression
 					&& (strpos($expression, '-') !== false)
 				) {
 					return true;
