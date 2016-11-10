@@ -309,30 +309,6 @@ abstract class Date
 		return $date;
 	}
 
-	//-------------------------------------------------------------------------------- applyDateValue
-	/**
-	 * @param $expression string
-	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed|boolean false
-	 */
-	public static function applyDateValue($expression, $range_side = Range::NONE)
-	{
-		return self::applyDateSingleWildcard($expression)
-			?: self::applyDateWord($expression, $range_side)
-			?: Words::applyEmptyWord($expression)
-			?: self::applyDateFormatted($expression, $range_side);
-		  /*
-			?: self::applyDayMonthYear($expression, $range_side)
-			?: self::applyMonthYear($expression, $range_side)
-			?: self::applyDayMonth($expression, $range_side)
-			?: self::applyYearOnly($expression, $range_side)
-			?: self::applyDayOnly($expression, $range_side)
-			?: self::applySingleFormula($expression, $range_side, Date_Time::YEAR)
-			?: self::applySingleFormula($expression, $range_side, Date_Time::MONTH)
-			?: self::applySingleFormula($expression, $range_side, Date_Time::DAY);
-		  */
-	}
-
 	//--------------------------------------------------------------------------- applyDateRangeValue
 	/**
 	 * @param $expression string|Option
@@ -365,6 +341,30 @@ abstract class Date
 			return Func::notNull();
 		}
 		return false;
+	}
+
+	//-------------------------------------------------------------------------------- applyDateValue
+	/**
+	 * @param $expression string
+	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
+	 * @return mixed|boolean false
+	 */
+	public static function applyDateValue($expression, $range_side = Range::NONE)
+	{
+		return self::applyDateSingleWildcard($expression)
+			?: self::applyDateWord($expression, $range_side)
+				?: Words::applyEmptyWord($expression)
+					?: self::applyDateFormatted($expression, $range_side);
+		/*
+		?: self::applyDayMonthYear($expression, $range_side)
+		?: self::applyMonthYear($expression, $range_side)
+		?: self::applyDayMonth($expression, $range_side)
+		?: self::applyYearOnly($expression, $range_side)
+		?: self::applyDayOnly($expression, $range_side)
+		?: self::applySingleFormula($expression, $range_side, Date_Time::YEAR)
+		?: self::applySingleFormula($expression, $range_side, Date_Time::MONTH)
+		?: self::applySingleFormula($expression, $range_side, Date_Time::DAY);
+		*/
 	}
 
 	//--------------------------------------------------------------------------------- applyDateWord
@@ -631,6 +631,19 @@ abstract class Date
 		$expression = str_replace('%', '_', $expression);
 	}
 
+	//-------------------------------------------------------------------- fillEmptyPartsWithWildcard
+	/**
+	 * @param $date_parts string[]
+	 */
+	private static function fillEmptyPartsWithWildcard(&$date_parts)
+	{
+		foreach ($date_parts as $date_part => $part) {
+			if (!strlen($part)) {
+				$date_parts[$date_part] = $date_part == Date_Time::YEAR ? '____' : '__';
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------------- getDateLetters
 	/**
 	 * Gets the letters that can be used in formula for a part of a date
@@ -658,51 +671,6 @@ abstract class Date
 			return implode('', $letters);
 		}
 		return $letters[$date_part];
-	}
-
-	//-------------------------------------------------------------------------- getDatePatternsArray
-	/**
-	 * @param $sub_patterns string[]
-	 * @return string[]
-	 */
-	private static function getDatePatternsArray($sub_patterns)
-	{
-		/**
-		 * @var $day        string
-		 * @var $month      string
-		 * @var $month_only string
-		 * @var $year       string
-		 * @var $year_only  string
-		 * @var $hours      string
-		 * @var $hours_only string
-		 * @var $minutes    string
-		 * @var $seconds    string
-		 */
-		extract($sub_patterns);
-		$patterns = [];
-		if (Loc::date()->format == 'd/m/Y') {
-			$patterns[self::DATE_TIME]     = "(?:$day\\/$month\\/$year \\s $hours\\:$minutes\\:$seconds)";
-			$patterns[self::DATE_HOURS_MINUTES]  = "(?:$day\\/$month\\/$year \\s $hours\\:$minutes)";
-			$patterns[self::DATE_HOURS_ONLY]     = "(?:$day\\/$month\\/$year \\s $hours)";
-			$patterns[self::DATE]                = "(?:$day\\/$month\\/$year)";
-			$patterns[self::DAY_MONTH]           = "(?:$day\\/$month)";
-		}
-		else {
-			$patterns[self::DATE_TIME]     = "(?:$month\\/$day\\/$year \\s $hours\\:$minutes\\:$seconds)";
-			$patterns[self::DATE_HOURS_MINUTES]  =	"(?:$month\\/$day\\/$year \\s $hours\\:$minutes)";
-			$patterns[self::DATE_HOURS_ONLY]     = "(?:$month\\/$day\\/$year \\s $hours)";
-			$patterns[self::DATE]                = "(?:$month\\/$day\\/$year)";
-			$patterns[self::DAY_MONTH]           = "(?:$month\\/$day)";
-		}
-		$patterns[self::MONTH_YEAR]            = "(?:$month\\/$year)";
-		$patterns[self::YEAR_MONTH]            = "(?:$year\\/$month)";
-		$patterns[self::YEAR_ONLY]             = "$year_only";
-		$patterns[self::DAY_ONLY]              = "$day";
-		$patterns[self::MONTH_ONLY]            = "$month_only";
-		$patterns[self::HOURS_ONLY]            = "$hours_only";
-		$patterns[self::HOURS_MINUTES]         = "(?:$hours\\:$minutes)";
-		$patterns[self::HOURS_MINUTES_SECONDS] = "(?:$hours\\:$minutes\\:$seconds)";
-		return $patterns;
 	}
 
 	//-------------------------------------------------------------------------------- getDatePattern
@@ -788,6 +756,51 @@ abstract class Date
 		return $big_pattern;
 	}
 
+	//-------------------------------------------------------------------------- getDatePatternsArray
+	/**
+	 * @param $sub_patterns string[]
+	 * @return string[]
+	 */
+	private static function getDatePatternsArray($sub_patterns)
+	{
+		/**
+		 * @var $day        string
+		 * @var $month      string
+		 * @var $month_only string
+		 * @var $year       string
+		 * @var $year_only  string
+		 * @var $hours      string
+		 * @var $hours_only string
+		 * @var $minutes    string
+		 * @var $seconds    string
+		 */
+		extract($sub_patterns);
+		$patterns = [];
+		if (Loc::date()->format == 'd/m/Y') {
+			$patterns[self::DATE_TIME]     = "(?:$day\\/$month\\/$year \\s $hours\\:$minutes\\:$seconds)";
+			$patterns[self::DATE_HOURS_MINUTES]  = "(?:$day\\/$month\\/$year \\s $hours\\:$minutes)";
+			$patterns[self::DATE_HOURS_ONLY]     = "(?:$day\\/$month\\/$year \\s $hours)";
+			$patterns[self::DATE]                = "(?:$day\\/$month\\/$year)";
+			$patterns[self::DAY_MONTH]           = "(?:$day\\/$month)";
+		}
+		else {
+			$patterns[self::DATE_TIME]     = "(?:$month\\/$day\\/$year \\s $hours\\:$minutes\\:$seconds)";
+			$patterns[self::DATE_HOURS_MINUTES]  =	"(?:$month\\/$day\\/$year \\s $hours\\:$minutes)";
+			$patterns[self::DATE_HOURS_ONLY]     = "(?:$month\\/$day\\/$year \\s $hours)";
+			$patterns[self::DATE]                = "(?:$month\\/$day\\/$year)";
+			$patterns[self::DAY_MONTH]           = "(?:$month\\/$day)";
+		}
+		$patterns[self::MONTH_YEAR]            = "(?:$month\\/$year)";
+		$patterns[self::YEAR_MONTH]            = "(?:$year\\/$month)";
+		$patterns[self::YEAR_ONLY]             = "$year_only";
+		$patterns[self::DAY_ONLY]              = "$day";
+		$patterns[self::MONTH_ONLY]            = "$month_only";
+		$patterns[self::HOURS_ONLY]            = "$hours_only";
+		$patterns[self::HOURS_MINUTES]         = "(?:$hours\\:$minutes)";
+		$patterns[self::HOURS_MINUTES_SECONDS] = "(?:$hours\\:$minutes\\:$seconds)";
+		return $patterns;
+	}
+
 	//------------------------------------------------------------------------- getDateWordsToCompare
 	/**
 	 * get the words to compare with a date word in search expression
@@ -855,19 +868,6 @@ abstract class Date
 			return $parts;
 		}
 		return null;
-	}
-
-	//-------------------------------------------------------------------- fillEmptyPartsWithWildcard
-	/**
-	 * @param $date_parts string[]
-	 */
-	private static function fillEmptyPartsWithWildcard(&$date_parts)
-	{
-		foreach ($date_parts as $date_part => $part) {
-			if (!strlen($part)) {
-				$date_parts[$date_part] = $date_part == Date_Time::YEAR ? '____' : '__';
-			}
-		}
 	}
 
 	//------------------------------------------------------------------------------------- initDates
