@@ -74,8 +74,8 @@ abstract class Properties implements Option
 	 * If $no_property_returns_true is set to false, the function will return false if there is none
 	 * If $no_property_returns_true is kept to true, the function will return true if there is none
 	 *
-	 * @param $options              Option[]
-	 * @param $property             string
+	 * @param $options                  Option[]
+	 * @param $property                 string
 	 * @param $no_property_returns_true boolean if there is no Properties option, returns this value
 	 * @return boolean
 	 */
