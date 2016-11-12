@@ -151,7 +151,7 @@ class Select_Tests extends Test
 		foreach ($properties as $property) {
 			/** @var $property Reflection_Property */
 			$type  = $property->getType();
-			$class = ($type->isClass() && ($type->getElementTypeAsString() !== 'object'))
+			$class = ($type->isClass() & !in_array($type->getElementTypeAsString(), ['object', 'static']))
 				? $type->asReflectionClass()
 				: null;
 			if (
