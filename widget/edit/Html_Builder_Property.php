@@ -236,6 +236,17 @@ class Html_Builder_Property extends Html_Builder_Type
 			$this->property->getAnnotation('multiline')->value,
 			$values_captions
 		);
+		if ($this->property->getAnnotation('ckeditor')->value) {
+			// @TODO Low : When declaring a ckeditor, it would have to be a default mulitline
+			$editor_type = $this->property->getAnnotation('ckeditor')->value;
+			if (is_string($editor_type)) {
+				$element->addClass('ckeditor-' . $editor_type);
+			}
+			else {
+				// Default value full configuration
+				$element->addClass('ckeditor-full');
+			}
+		}
 		if ($this->property->getAnnotation('mandatory')->value) {
 			$element->setAttribute('required', true);
 		}

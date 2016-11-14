@@ -69,6 +69,10 @@ Parser::$default_annotations = [
 	 */
 	__NAMESPACE__ . '\Class_\Business_Annotation' => Boolean_Annotation::class,
 
+	// @ckeditor full
+	// Enables online text editor CKEditor (full, standard)
+	__NAMESPACE__ . '\Property\Ckeditor_Annotation' => Annotation::class,
+
 	/**
 	 * @default_feature output
 	 */

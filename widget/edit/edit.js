@@ -466,5 +466,17 @@ $('document').ready(function()
 		//------------------------------------------------------------------------- .vertical.scrollbar
 		this.inside('.vertical.scrollbar').verticalscrollbar();
 
+		//----------------------------------------------------------------------------- .ckeditor-full
+		this.inside('.ckeditor-full').ckeditor(
+		{
+			customConfig: window.app.project_uri + '/vendor/ckeditor/config_full.js'
+		});
+
+		//------------------------------------------------------------------------ .ckeditor-standard
+		this.inside('.ckeditor-standard').ckeditor(
+		{
+		    customConfig: window.app.project_uri + '/vendor/ckeditor/config_standard.js'
+		});
+
 	});
 });
