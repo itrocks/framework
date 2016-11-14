@@ -234,6 +234,15 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		return $this->class_names;
 	}
 
+	//------------------------------------------------------------------------------------- getErrors
+	/**
+	 * @return array
+	 */
+	public function getErrors()
+	{
+		return $this->errors;
+	}
+
 	//------------------------------------------------------------------------------ getErrorsSummary
 	/**
 	 * @return string
