@@ -30,7 +30,7 @@ abstract class Result
 	 */
 	public static function andResult($result, $and_result)
 	{
-		$levels = [true, null, self::INFORMATION, self::WARNING, self::ERROR];
+		$levels = [self::VALID, self::NONE, self::INFORMATION, self::WARNING, self::ERROR];
 		$result_level     = array_search($result,     $levels, true);
 		$and_result_level = array_search($and_result, $levels, true);
 		return ($result_level > $and_result_level) ? $result : $and_result;

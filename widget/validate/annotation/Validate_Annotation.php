@@ -13,4 +13,17 @@ abstract class Validate_Annotation extends Method_Annotation
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'validate';
 
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Gets the value of the property from the last validated object
+	 * In case of a validate annotation, we do not want to output in the template the value that
+	 * represents a method name. So we disable output
+	 *
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		return null;
+	}
 }

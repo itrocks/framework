@@ -21,11 +21,13 @@ use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
 use ITRocks\Framework\Widget\Validate\Annotation\Warning_Annotation;
 use ITRocks\Framework\Widget\Validate\Property;
+use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Widget\Write\Write_Controller;
 
 /**
@@ -152,6 +154,38 @@ class Validator implements Registerable
 		}
 	}
 
+	//---------------------------------------------------------------------- beforeWriteControllerRun
+	/**
+	 * @param $parameters Parameters
+	 */
+	public function beforeWriteControllerRun(Parameters $parameters)
+	{
+		if (!$parameters->getRawParameter('confirm')) {
+			$this->warning_on = true;
+		}
+	}
+
+	//------------------------------------------------------------------------------- createSubObject
+	/**
+	 * @param $object   object
+	 * @param $property Reflection_Property
+	 * @param $type     Type
+	 * @return object|null
+	 */
+	private function createSubObject($object, $property, $type)
+	{
+		// no need to create a sub object if property is not mandatory
+		if ($property->getAnnotation(Mandatory_Annotation::ANNOTATION)->value) {
+			$link_class = new Link_Class($type->getElementTypeAsString());
+			$sub_object = $link_class->newInstance();
+			// we attach composite object, but we do not set the sub_object in its parent property
+			// we simply want to validate the new object, not save it!
+			$sub_object->setComposite($object);
+			return $sub_object;
+		}
+		return null;
+	}
+
 	//--------------------------------------------------------------------------------------- disable
 	/**
 	 * Disable validator and return previous status
@@ -167,7 +201,7 @@ class Validator implements Registerable
 
 	//---------------------------------------------------------------------------------------- enable
 	/**
-	 * Disable validator and return previous status
+	 * Enable validator and return previous status
 	 *
 	 * @return boolean true if was enabled, false if was disabled
 	 */
@@ -176,17 +210,6 @@ class Validator implements Registerable
 		$validator_on       = $this->validator_on;
 		$this->validator_on = true;
 		return $validator_on;
-	}
-
-	//---------------------------------------------------------------------- beforeWriteControllerRun
-	/**
-	 * @param $parameters Parameters
-	 */
-	public function beforeWriteControllerRun(Parameters $parameters)
-	{
-		if (!$parameters->getRawParameter('confirm')) {
-			$this->warning_on = true;
-		}
 	}
 
 	//-------------------------------------------------------------------------------- getConfirmLink
@@ -349,9 +372,11 @@ class Validator implements Registerable
 	 * @param $object             object
 	 * @param $only_properties    string[] property names if we want to check those properties only
 	 * @param $exclude_properties string[] property names if we don't want to check those properties
+	 * @param $root               boolean
 	 * @return string|null|true @values Result::const
 	 */
-	public function validate($object, array $only_properties = [], array $exclude_properties = [])
+	public function validate($object, array $only_properties = [], array $exclude_properties = [],
+		$root = true)
 	{
 		$class      = new Link_Class($object);
 		$properties = Replaces_Annotations::removeReplacedProperties(
@@ -360,6 +385,10 @@ class Validator implements Registerable
 				: $class->accessProperties()
 		);
 
+		/*if ($root) {
+			$this->report = [];
+			$this->valid = Result::VALID;
+		}*/
 		$this->valid = Result::andResult(
 			$this->validateProperties($object, $properties, $only_properties, $exclude_properties),
 			$this->validateObject($object, $class)
@@ -414,6 +443,75 @@ class Validator implements Registerable
 		return $result;
 	}
 
+	/**
+	 * @param $object             object
+	 * @param $only_properties    string[]
+	 * @param $exclude_properties string[]
+	 * @param $property           Reflection\Reflection_Property
+	 * @return string|null|true @values Result::const
+	 */
+	private function validateComponent(
+		$object, array $only_properties, array $exclude_properties, $property
+	) {
+		$result = true;
+		$type = $property->getType();
+		if ($type->isClass()) {
+			// save current report
+			$current_report = $this->report;
+			$this->report = [];
+
+			$sub_objects = [];
+
+			// @link Collection (or Map ?)
+			if ($type->isMultiple())
+			{
+				// if there are existing sub objects, validate them
+				if (count($object->{$property->name})) {
+					array_walk($object->{$property->name}, function($sub_object) {
+						$sub_objects[] = $sub_object;
+					});
+				}
+				else {
+					// if no existing sub object, create one if needed
+					$sub_object = $this->createSubObject($object, $property, $type);
+				}
+			}
+			// @link Object
+			else {
+				// get existing sub object, or create one if needed
+				$sub_object = $property->getValue($object)
+					?: $this->createSubObject($object, $property, $type);
+			}
+			if (isset($sub_object)) {
+				$sub_objects[] = $sub_object;
+			}
+
+			// validate sub_objects
+			foreach($sub_objects as $sub_object) {
+				$result = Result::andResult($result, $this->validate($sub_object, $only_properties,
+					$exclude_properties, false
+				));
+			}
+
+			// update properties path of report annotations to be relative to parent property
+			/** @noinspection PhpUnusedParameterInspection */
+			array_walk($this->report,
+				function ($annotation, $key, Reflection\Reflection_Property $property) {
+					if ($annotation->property) {
+						$parent_class_name = $property->final_class;
+						$path = $property->path . DOT . $annotation->property->path;
+						$annotation->property = new Reflection\Reflection_Property($parent_class_name, $path);
+					}
+				},
+				$property
+			);
+
+			// restore saved report and merge with this
+			$this->report = array_merge($current_report, $this->report);
+		}
+		return $result;
+	}
+
 	//-------------------------------------------------------------------------------- validateObject
 	/**
 	 * @param $object          object
@@ -445,10 +543,17 @@ class Validator implements Registerable
 				&& (!$only_properties || isset($only_properties[$property->name]))
 				&& !isset($exclude_properties[$property->name])
 				&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
+				// exclude composite to avoid infinite recursion
+				&& !$property->getAnnotation('composite')->value
 			) {
 				$result = Result::andResult(
 					$result, $this->validateAnnotations($object, $property->getAnnotations())
 				);
+				// fire validation on mandatory component properties
+				if ($property->getAnnotation('component')->value) {
+					$result = Result::andResult($result, $this->validateComponent($object, $only_properties,
+						$exclude_properties, $property));
+				}
 			}
 		}
 		return $result;
