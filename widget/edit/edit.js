@@ -469,13 +469,13 @@ $('document').ready(function()
 		//----------------------------------------------------------------------------- .ckeditor-full
 		this.inside('.ckeditor-full').ckeditor(
 		{
-			customConfig: window.app.project_uri + '/vendor/ckeditor/config_full.js'
+			customConfig: window.app.project_uri + SL + 'itrocks/framework/js/ckeditor-config_full.js'
 		});
 
 		//------------------------------------------------------------------------ .ckeditor-standard
 		this.inside('.ckeditor-standard').ckeditor(
 		{
-		    customConfig: window.app.project_uri + '/vendor/ckeditor/config_standard.js'
+			customConfig: window.app.project_uri + SL + 'itrocks/framework/js/ckeditor-config_standard.js'
 		});
 
 	});
