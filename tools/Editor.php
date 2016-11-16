@@ -5,7 +5,12 @@ use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Session;
 
 /**
- * Editor
+ * This class allows you to configure online editor (WYSIWYG), activated with annotation
+ * @editor editor_name
+ *
+ * @exemple config.php : Editor::class => ['ckeditor' => ['version' => 'full']] for full version,
+ * or ['version' => 'standard'] for basic version (http://ckeditor.com/demo#full)
+ *
  */
 class Editor implements Configurable
 {
