@@ -88,6 +88,12 @@ Parser::$default_annotations = [
 	__NAMESPACE__ . '\Class_\Duplicate_Annotation' => Method_Annotation::class,
 
 	/**
+	 * @editor editor_name
+	 * Enables online text editor (ckeditor)
+	 */
+	__NAMESPACE__ . '\Property\Editor_Annotation' => Annotation::class,
+
+	/**
 	 * @feature [[[Class/Path/]feature] Human-readable atomic end-user feature name]
 	 * This is a Multiple_Annotation
 	 * Marks the class as an atomic end-user feature
