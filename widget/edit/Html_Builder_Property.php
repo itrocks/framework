@@ -9,6 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Editor;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\View\Html\Dom\Element;
@@ -236,15 +237,12 @@ class Html_Builder_Property extends Html_Builder_Type
 			$this->property->getAnnotation('multiline')->value,
 			$values_captions
 		);
-		if ($this->property->getAnnotation('ckeditor')->value) {
-			// @TODO Low : When declaring a ckeditor, it would have to be a default mulitline
-			$editor_type = $this->property->getAnnotation('ckeditor')->value;
-			if (is_string($editor_type)) {
-				$element->addClass('ckeditor-' . $editor_type);
-			}
-			else {
-				// Default value full configuration
-				$element->addClass('ckeditor-full');
+		if ($this->property->getAnnotation('editor')->value) {
+			// @TODO Low : When declaring a editor, it would have to be a default mulitline
+			$editor_type = $this->property->getAnnotation('editor')->value;
+			if ($editor_type == Editor::CKEDITOR) {
+				$setting = Editor::getSettings(Editor::CKEDITOR);
+				$element->addClass('ckeditor-' . $setting['version']);
 			}
 		}
 		if ($this->property->getAnnotation('mandatory')->value) {

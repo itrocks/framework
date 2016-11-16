@@ -69,10 +69,6 @@ Parser::$default_annotations = [
 	 */
 	__NAMESPACE__ . '\Class_\Business_Annotation' => Boolean_Annotation::class,
 
-	// @ckeditor full
-	// Enables online text editor CKEditor (full, standard)
-	__NAMESPACE__ . '\Property\Ckeditor_Annotation' => Annotation::class,
-
 	/**
 	 * @default_feature output
 	 */
@@ -90,6 +86,12 @@ Parser::$default_annotations = [
 	 * Declare one or several methods to call after the object has been duplicated
 	 */
 	__NAMESPACE__ . '\Class_\Duplicate_Annotation' => Method_Annotation::class,
+
+	/**
+	 * @editor editor_name
+	 * Enables online text editor (ckeditor)
+	 */
+	__NAMESPACE__ . '\Property\Editor_Annotation' => Annotation::class,
 
 	/**
 	 * @feature [[[Class/Path/]feature] Human-readable atomic end-user feature name]
