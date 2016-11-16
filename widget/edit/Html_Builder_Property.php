@@ -239,11 +239,8 @@ class Html_Builder_Property extends Html_Builder_Type
 		);
 		if ($this->property->getAnnotation('editor')->value) {
 			// @TODO Low : When declaring a editor, it would have to be a default mulitline
-			$editor_type = $this->property->getAnnotation('editor')->value;
-			if ($editor_type == Editor::CKEDITOR) {
-				$setting = Editor::getSettings(Editor::CKEDITOR);
-				$element->addClass('ckeditor-' . $setting['version']);
-			}
+			$version_editor = $this->property->getAnnotation('editor')->value;
+			$element->addClass(Editor::buildClassName($version_editor));
 		}
 		if ($this->property->getAnnotation('mandatory')->value) {
 			$element->setAttribute('required', true);
