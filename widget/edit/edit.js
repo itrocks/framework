@@ -467,14 +467,14 @@ $('document').ready(function()
 		this.inside('.vertical.scrollbar').verticalscrollbar();
 
 		//----------------------------------------------------------------------------- .ckeditor-full
-		this.inside('.ckeditor-full').ckeditor(
-		{
+		var $ckeditor_full = this.inside('.ckeditor-full');
+		if ($ckeditor_full.length) $ckeditor_full.ckeditor({
 			customConfig: window.app.project_uri + SL + 'itrocks/framework/js/ckeditor-config_full.js'
 		});
 
 		//------------------------------------------------------------------------ .ckeditor-standard
-		this.inside('.ckeditor-standard').ckeditor(
-		{
+		var $ckeditor_standard = this.inside('.ckeditor-standard');
+		if ($ckeditor_standard.length) $ckeditor_standard.ckeditor({
 			customConfig: window.app.project_uri + SL + 'itrocks/framework/js/ckeditor-config_standard.js'
 		});
 
