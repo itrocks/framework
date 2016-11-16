@@ -30,6 +30,7 @@
 			show:            undefined,
 			submit:          'submit',
 			success:         undefined,
+			track:           true,
 			url_append:      '',
 			xtarget_from:    'xtarget.from'
 		}, options);
@@ -158,6 +159,10 @@
 							$(settings.auto_empty[key]).empty();
 						}
 					}
+				}
+				// track window position to target
+				if (settings.track && xhr.from.target.beginsWith('#')) {
+					window.location = xhr.from.target;
 				}
 				// change browser's URL and title, push URL into history
 				if (settings.history != undefined) {

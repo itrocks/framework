@@ -1,9 +1,16 @@
 
+if (!String.prototype.beginsWith) {
+	String.prototype.beginsWith = function(string)
+	{
+		return this.indexOf(string) === 0;
+	}
+}
+
 //---------------------------------------------------------------------------------------- contains
 if (!String.prototype.contains) {
 	String.prototype.contains = function(search)
 	{
-		return (this.indexOf(search) > -1);
+		return this.indexOf(search) > -1;
 	}
 }
 
@@ -13,14 +20,16 @@ if (!String.prototype.endsWith) {
 	{
 		var subject = this.toString();
 		if (
-			typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position
-			|| position > subject.length
+			(typeof position !== 'number')
+			|| !isFinite(position)
+			|| (Math.floor(position) !== position)
+			|| (position > subject.length)
 		) {
 			position = subject.length;
 		}
 		position -= search.length;
 		var last_index = subject.indexOf(search, position);
-		return last_index !== -1 && last_index === position;
+		return (last_index !== -1) && (last_index === position);
 	};
 }
 
@@ -59,6 +68,25 @@ String.prototype.lParse = function (sep, cnt, complete_if_not)
 	}
 };
 
+//-------------------------------------------------------------------------------------------- repl
+String.prototype.repl = function(from, to)
+{
+	var replaced = '';
+	var start = 0;
+	var length = from.length;
+	var i = this.indexOf(from, start);
+	while (i > -1) {
+		if (i > start) {
+			replaced += this.substring(start, i);
+		}
+		replaced += to;
+		start = i + length;
+		i = this.indexOf(from, start);
+	}
+	replaced += this.substring(start);
+	return replaced;
+};
+
 //-------------------------------------------------------------------------------------- rLastParse
 String.prototype.rLastParse = function (sep, cnt, complete_if_not)
 {
@@ -92,25 +120,6 @@ String.prototype.rParse = function (sep, cnt, complete_if_not)
 	else {
 		return this.substr(i + sep.length);
 	}
-};
-
-//-------------------------------------------------------------------------------------------- repl
-String.prototype.repl = function(from, to)
-{
-	var replaced = '';
-	var start = 0;
-	var length = from.length;
-	var i = this.indexOf(from, start);
-	while (i > -1) {
-		if (i > start) {
-			replaced += this.substring(start, i);
-		}
-		replaced += to;
-		start = i + length;
-		i = this.indexOf(from, start);
-	}
-	replaced += this.substring(start);
-	return replaced;
 };
 
 //-------------------------------------------------------------------------------------- startsWith
