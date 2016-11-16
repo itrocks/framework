@@ -18,6 +18,8 @@ const BS = '\\';
 
 const CR = "\r";
 
+const CRLF = "\r\n";
+
 const DD = '..';
 
 const DOT = '.';
