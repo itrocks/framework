@@ -362,15 +362,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		$result = View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);
-		if (strpos($result, '\Repair Center') || strpos($result, '\Repair Type')) {
-			file_put_contents('/tmp/' . uniqid('rx'), $result);
-			$result = strReplace([
-				'\Repair Center' => '\Repair_Center',
-				'\Repair Type'   => '\Repair_Type'
-			], $result);
-		}
-		return $result;
+		return View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);
 	}
 
 }

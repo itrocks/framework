@@ -1580,8 +1580,14 @@ class Template
 		if (isset($descendants)) {
 			$this->restoreDescendants($descendants);
 		}
-
-		return isset($group) ? $this->group($var_name, $object) : $object;
+		if (isset($group)) {
+			$object = $this->group($var_name, $object);
+		}
+		// if value contains translated data (|), do not translate if | is alone
+		if (is_string($object) && (substr_count($object, '|') % 2)) {
+			$object = str_replace('|', '||', $object);
+		}
+		return $object;
 	}
 
 	//-------------------------------------------------------------------------------------- parseVar
