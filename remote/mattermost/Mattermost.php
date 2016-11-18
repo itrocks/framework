@@ -48,6 +48,7 @@ class Mattermost implements Configurable
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Mattermost_Connector configuration
+	 *
 	 * @param $configuration array
 	 * @throws Exception
 	 */
