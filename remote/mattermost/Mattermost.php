@@ -1,6 +1,6 @@
 <?php
 
-namespace ITRocks\Framework;
+namespace ITRocks\Framework\Remote;
 
 use Exception;
 use ITRocks\Framework\Plugin\Configurable;
