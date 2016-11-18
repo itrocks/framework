@@ -6,17 +6,8 @@ use ITRocks\Framework\Controller\Response;
 /**
  * All unit test classes must extend this, to access its begin(), end() and assume() methods
  */
-class Test
+class Test extends Testable
 {
-
-	//------------------------------------------------------------------------------------------- ALL
-	const ALL = 'all';
-
-	//---------------------------------------------------------------------------------------- ERRORS
-	const ERRORS = 'errors';
-
-	//------------------------------------------------------------------------------------------ NONE
-	const NONE = 'none';
 
 	//-------------------------------------------------------------------------------------- $capture
 	/**
@@ -26,28 +17,6 @@ class Test
 	 */
 	private $capture;
 
-	//--------------------------------------------------------------------------------- $errors_count
-	/**
-	 * @var integer
-	 */
-	public $errors_count = 0;
-
-	//--------------------------------------------------------------------------------------- $header
-	/**
-	 * Header content to show if an error comes when $show_when_ok is false
-	 * Reset once shown
-	 *
-	 * @var string
-	 */
-	public $header;
-
-	//----------------------------------------------------------------------------------------- $show
-	/**
-	 * @values all, errors, none
-	 * @var string
-	 */
-	public $show = self::ERRORS;
-
 	//----------------------------------------------------------------------------------- $start_time
 	/**
 	 * The start time of each test
@@ -55,12 +24,6 @@ class Test
 	 * @var float
 	 */
 	public $start_time;
-
-	//---------------------------------------------------------------------------------- $tests_count
-	/**
-	 * @var integer
-	 */
-	public $tests_count = 0;
 
 	//---------------------------------------------------------------------------------------- assume
 	/**
@@ -144,15 +107,6 @@ class Test
 		return $this->assume($test . '.output', $this->captureEnd(), $assume);
 	}
 
-	//----------------------------------------------------------------------------------------- begin
-	/**
-	 * Begin of a unit test class
-	 */
-	public function begin()
-	{
-		$this->show('<h3>' . get_class($this) . '</h3>' . LF . '<ul>' . LF);
-	}
-
 	//------------------------------------------------------------------------------------ captureEnd
 	/**
 	 * Stops capture of the standard output and returns the captured output
@@ -175,40 +129,6 @@ class Test
 		ob_start(function($buffer) use ($test) {
 			$test->capture .= $buffer;
 		});
-	}
-
-	//------------------------------------------------------------------------------------------- end
-	/**
-	 * End of a unit test class
-	 */
-	public function end()
-	{
-		$this->show('</ul>' . LF);
-	}
-
-	//---------------------------------------------------------------------------------------- method
-	/**
-	 * Start test method log
-	 *
-	 * @param $method_name string
-	 */
-	public function method($method_name)
-	{
-		$this->show('<h4>' . $method_name . '</h4>' . LF);
-	}
-
-	//------------------------------------------------------------------------------------------ show
-	/**
-	 * @param $show string
-	 */
-	private function show($show)
-	{
-		if (($this->show === self::ALL) || ($this->errors_count && ($this->show === self::ERRORS))) {
-			echo $show;
-		}
-		elseif ($this->show === self::ERRORS) {
-			$this->header .= $show;
-		}
 	}
 
 	//--------------------------------------------------------------------------------------- toArray

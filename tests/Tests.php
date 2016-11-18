@@ -4,6 +4,7 @@ namespace ITRocks\Framework;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Runnable;
 use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tests\Testable;
 use ITRocks\Framework\Tools\Names;
 
 /**
@@ -22,7 +23,7 @@ class Tests
 	/**
 	 * @var string
 	 */
-	public $show = Test::ERRORS;
+	public $show = Testable::ERRORS;
 
 	//---------------------------------------------------------------------------------- $tests_count
 	/**
@@ -80,7 +81,7 @@ class Tests
 			}
 		}
 		$this->errors_count += $unit_test->errors_count;
-		$this->tests_count  += $unit_test->tests_count;
+		$this->tests_count  += (isset($unit_test->tests_count) ? $unit_test->tests_count : 1);
 	}
 
 	//---------------------------------------------------------------------------------------- runDir
