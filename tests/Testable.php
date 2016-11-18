@@ -3,8 +3,6 @@ namespace ITRocks\Framework\Tests;
 
 /**
  * Base methods to use in a unit test class
- *
- * @package ITRocks\Framework\Tests
  */
 abstract class Testable {
 
@@ -88,9 +86,11 @@ abstract class Testable {
 		}
 	}
 
+	//----------------------------------------------------------------------------------------- flush
 	public function flush()
 	{
 		echo $this->header;
 		$this->header = '';
 	}
+
 }
