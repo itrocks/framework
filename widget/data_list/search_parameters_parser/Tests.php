@@ -295,7 +295,7 @@ class Tests extends Test
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
-	//----------------------------------------------------------------- testParseDateFullWithWildcard
+	//----------------------------------------------------------------- testParseDateTimeWithWildcard
 	/**
 	 * Test date parser for a full date DD/MM/YYYY with wildcard
 	 *
@@ -315,7 +315,7 @@ class Tests extends Test
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
-	//----------------------------------------------------------------- testParseDateFullWithWildcard
+	//--------------------------------------------------------------------- testParseDateWithWildcard
 	/**
 	 * Test date parser for a full date DD/MM/YYYY with wildcard
 	 *
@@ -390,7 +390,7 @@ class Tests extends Test
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
-	//--------------------------------------------------------------------- testParseDateWithFormulas
+	//----------------------------------------------------------------- testParseDateTimeWithFormulas
 	/**
 	 * Test date parser for a date with many formulas
 	 *
