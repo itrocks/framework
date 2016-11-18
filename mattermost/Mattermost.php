@@ -2,6 +2,7 @@
 
 namespace ITRocks\Framework;
 
+use Exception;
 use ITRocks\Framework\Plugin\Configurable;
 use stdClass;
 
@@ -48,7 +49,7 @@ class Mattermost implements Configurable
 	/**
 	 * Mattermost_Connector configuration
 	 * @param $configuration array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function __construct($configuration = [])
 	{
@@ -56,9 +57,9 @@ class Mattermost implements Configurable
 		$this->hook     = $configuration[static::HOOK];
 		$this->username = $configuration[static::USERNAME];
 
-		foreach (get_object_vars($this) as $prop => $value) {
+		foreach (get_object_vars($this) as $property => $value) {
 			if (empty($value)) {
-				throw new \Exception('Missing required props ' . $prop);
+				throw new Exception('Missing required property ' . $property);
 			}
 		}
 	}
@@ -67,8 +68,8 @@ class Mattermost implements Configurable
 	/**
 	 * Posts a text message to a mattermost channel
 	 *
-	 * @param $message string
-	 * @param $channel string
+	 * @param $message  string
+	 * @param $channel  string
 	 * @param $username string
 	 * @return mixed
 	 */
@@ -76,7 +77,7 @@ class Mattermost implements Configurable
 	{
 		$content           = new stdClass();
 		$content->username = isset($username) ? $username : $this->username;
-		$content->channel  = isset($channel) ? $channel : $this->channel;
+		$content->channel  = isset($channel)  ? $channel  : $this->channel;
 		$content->text     = $message;
 
 		$content = json_encode($content);
@@ -85,10 +86,8 @@ class Mattermost implements Configurable
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		curl_setopt(
-			$ch, CURLOPT_HTTPHEADER, array(
-				'Content-Type: application/json',
-				'Content-Length: ' . strlen($content)
-			)
+			$ch, CURLOPT_HTTPHEADER,
+			['Content-Type: application/json', 'Content-Length: ' . strlen($content)]
 		);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$server_output = curl_exec($ch);
