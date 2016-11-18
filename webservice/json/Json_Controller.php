@@ -19,13 +19,57 @@ use ITRocks\Framework\Tools\Search_Array_Builder;
 class Json_Controller implements Default_Feature_Controller
 {
 
+	//-------------------------------------------------------------------------- applyFiltersToSearch
+	/**
+	 * @param $search  mixed
+	 * @param $filters string[] list of filters to apply
+	 */
+	protected function applyFiltersToSearch(&$search, $filters)
+	{
+		if (!(is_object($search) && $search->isAnd())) {
+			$search = Dao\Func::andOp($search ? [$search] : []);
+		}
+		foreach ($filters as $filter_name => $filter_value) {
+			$search->arguments[$filter_name] = ($filter_value[0] == '!')
+				? Dao\Func::notEqual(substr($filter_value, 1))
+				: $filter_value;
+		}
+		if (count($search->arguments) == 1) {
+			reset($search->arguments);
+			$search = [key($search->arguments) => current($search->arguments)];
+		}
+	}
+
+	//------------------------------------------------------------------------------------- buildJson
+	/**
+	 * @param $objects object[]|object
+	 * @return string
+	 */
+	protected function buildJson($objects)
+	{
+		if (is_array($objects)) {
+			$entries = [];
+			foreach($objects as $source_object) {
+				$entries[] = new Autocomplete_Entry(
+					Dao::getObjectIdentifier($source_object), strval($source_object)
+				);
+			}
+		}
+		else {
+			$entries = new Autocomplete_Entry(
+				Dao::getObjectIdentifier($objects), strval($objects)
+			);
+		}
+		return json_encode($entries);
+	}
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Run the default json controller
 	 *
 	 * @param $parameters Parameters
-	 * @param $form array
-	 * @param $files array
+	 * @param $form       array
+	 * @param $files      array
 	 * @param $class_name string
 	 * @return string
 	 */
@@ -43,57 +87,13 @@ class Json_Controller implements Default_Feature_Controller
 		}
 		// search objects for autocomplete combo pull-down list
 		if (isset($parameters['term'])) {
-			$element_class_name = Names::setToClass($class_name, false);
-			$search = null;
-			if (!empty($parameters['term'])) {
-				$search = (new Search_Array_Builder)->buildMultiple(
-					new Reflection_Class($element_class_name), $parameters['term'], '', '%'
-				);
-			}
-			if (isset($parameters['filters']) && $parameters['filters']) {
-				if (!(is_object($search) && $search->isAnd())) {
-					$search = Dao\Func::andOp($search ? [$search] : []);
-				}
-				foreach ($parameters['filters'] as $filter_name => $filter_value) {
-					$search->arguments[$filter_name] = ($filter_value[0] == '!')
-						? Dao\Func::notEqual(substr($filter_value, 1))
-						: $filter_value;
-				}
-				if (count($search->arguments) == 1) {
-					reset($search->arguments);
-					$search = [key($search->arguments) => current($search->arguments)];
-				}
-			}
-			$objects = [];
-			// first object only
-			if (isset($parameters['first']) && $parameters['first']) {
-				$objects = $this->search($search, $element_class_name, [Dao::limit(1)]);
-				$source_object = $objects ? reset($objects) : Builder::create($element_class_name);
-				return json_encode(new Autocomplete_Entry(
-					Dao::getObjectIdentifier($source_object), strval($source_object)
-				));
-			}
-			// all results from search
-			else {
-				$search_options = [];
-				if (isset($parameters['limit'])) {
-					$search_options[] = Dao::limit($parameters['limit']);
-				}
-				foreach ($this->search($search, $element_class_name, $search_options) as $source_object) {
-					$objects[] = new Autocomplete_Entry(
-						Dao::getObjectIdentifier($source_object), strval($source_object)
-					);
-				}
-				return json_encode($objects);
-			}
+			return $this->searchObjectsForAutoCompleteCombo($class_name, $parameters);
 		}
 		// single object for autocomplete pull-down list value
 		elseif (isset($parameters['id'])) {
 			$element_class_name = Names::setToClass($class_name);
-			$source_object = Dao::read($parameters['id'], $element_class_name);
-			return json_encode(new Autocomplete_Entry(
-				Dao::getObjectIdentifier($source_object), strval($source_object)
-			));
+			$source_object      = Dao::read($parameters['id'], $element_class_name);
+			return $this->buildJson($source_object);
 		}
 		return '';
 	}
@@ -131,6 +131,41 @@ class Json_Controller implements Default_Feature_Controller
 			$objects = Dao::search($what, $class_name, $options);
 		}
 		return $objects;
+	}
+
+	//------------------------------------------------------------- searchObjectsForAutoCompleteCombo
+	/**
+	 * @param $set_name   string
+	 * @param $parameters mixed[]
+	 * @return string
+	 */
+	protected function searchObjectsForAutoCompleteCombo($set_name, $parameters)
+	{
+		$element_class_name = Names::setToClass($set_name, false);
+		$search             = null;
+		if (!empty($parameters['term'])) {
+			$search = (new Search_Array_Builder)->buildMultiple(
+				new Reflection_Class($element_class_name), $parameters['term'], '', '%'
+			);
+		}
+		if (isset($parameters['filters']) && $parameters['filters']) {
+			$this->applyFiltersToSearch($search, $parameters['filters']);
+		}
+		// first object only
+		if (isset($parameters['first']) && $parameters['first']) {
+			$objects       = $this->search($search, $element_class_name, [Dao::limit(1)]);
+			$source_object = $objects ? reset($objects) : Builder::create($element_class_name);
+			return $this->buildJson($source_object);
+		}
+		// all results from search
+		else {
+			$search_options = [];
+			if (isset($parameters['limit'])) {
+				$search_options[] = Dao::limit($parameters['limit']);
+			}
+			$objects = $this->search($search, $element_class_name, $search_options);
+			return $this->buildJson($objects);
+		}
 	}
 
 }
