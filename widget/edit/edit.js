@@ -266,27 +266,33 @@ $('document').ready(function()
 
 			select: function(event, ui)
 			{
-				var $this = $(this);
-				//case where we have a previous input as id
-				var $prev = $this.prev();
-				var previous_value = ($prev.length ? $this.prev().val() : $this.val());
+				// caption of the combo
+				var $caption = $(this);
+				// does value is an id managed with a previous input, or same string as caption?
+				var has_id = true;
+				var $value = $caption.prev();
+				if (!$value.length) {
+					// no id ! the value is the caption !
+					$value = $caption;
+					has_id = false;
+				}
+				var previous_value = $value.val();
 
 				//console.log('selected ' + ui.item.id + ': ' + ui.item.value);
-				if ($prev.length) {
-					$prev.val(ui.item.id);
+				if (has_id) {
+					$value.val(ui.item.id);
 				}
 				if (!event.keyCode) {
  					// when mouse is clicked, then the value changes, sure !
-					$this.val(ui.item.value);
+					$caption.val(ui.item.value);
 				}
-				$this.data('value', ui.item.value);
-				if (!comboMatches($this)) {
-					//console.log('> ' + $this.val() + ' does not match ' + $this.data('value'));
-					comboForce($this);
+				$caption.data('value', ui.item.value);
+				if (!comboMatches($caption)) {
+					//console.log('> ' + $caption.val() + ' does not match ' + $caption.data('value'));
+					comboForce($caption);
 				}
-				if (previous_value != ($prev.length ? $prev.val() : $this.val())) {
-					// on-change is either on previous input either on this one, not on both
-					$prev.length ? $prev.change() : $this.change();
+				if (previous_value != $value.val()) {
+					$value.change();
 				}
 			}
 		})
