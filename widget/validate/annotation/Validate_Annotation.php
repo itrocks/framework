@@ -19,8 +19,7 @@ abstract class Validate_Annotation extends Method_Annotation
 	 * In case of a validate annotation, we do not want to output in the template the value that
 	 * represents a method name. So we disable output
 	 *
-	 *
-	 * @return mixed
+	 * @return null
 	 */
 	public function getValue()
 	{

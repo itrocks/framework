@@ -451,20 +451,22 @@ class Validator implements Registerable
 	 * @return string|null|true @values Result::const
 	 */
 	private function validateComponent(
-		$object, array $only_properties, array $exclude_properties, $property
+		$object,
+		array $only_properties,
+		array $exclude_properties,
+		Reflection\Reflection_Property $property
 	) {
 		$result = true;
 		$type = $property->getType();
 		if ($type->isClass()) {
 			// save current report
 			$current_report = $this->report;
-			$this->report = [];
+			$this->report   = [];
 
-			$sub_objects = [];
+			$sub_objects    = [];
 
 			// @link Collection (or Map ?)
-			if ($type->isMultiple())
-			{
+			if ($type->isMultiple()) {
 				// if there are existing sub objects, validate them
 				if (count($object->{$property->name})) {
 					array_walk($object->{$property->name}, function($sub_object) {
@@ -498,8 +500,8 @@ class Validator implements Registerable
 			array_walk($this->report,
 				function ($annotation, $key, Reflection\Reflection_Property $property) {
 					if ($annotation->property) {
-						$parent_class_name = $property->final_class;
-						$path = $property->path . DOT . $annotation->property->path;
+						$parent_class_name    = $property->final_class;
+						$path                 = $property->path . DOT . $annotation->property->path;
 						$annotation->property = new Reflection\Reflection_Property($parent_class_name, $path);
 					}
 				},
@@ -551,8 +553,10 @@ class Validator implements Registerable
 				);
 				// fire validation on mandatory component properties
 				if ($property->getAnnotation('component')->value) {
-					$result = Result::andResult($result, $this->validateComponent($object, $only_properties,
-						$exclude_properties, $property));
+					$result = Result::andResult(
+						$result,
+						$this->validateComponent($object, $only_properties, $exclude_properties, $property)
+					);
 				}
 			}
 		}
