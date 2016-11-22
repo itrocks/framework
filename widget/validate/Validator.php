@@ -499,7 +499,7 @@ class Validator implements Registerable
 			/** @noinspection PhpUnusedParameterInspection */
 			array_walk($this->report,
 				function ($annotation, $key, Reflection\Reflection_Property $property) {
-					if ($annotation->property) {
+					if (isA($annotation, Property\Annotation::class) && $annotation->property) {
 						$parent_class_name    = $property->final_class;
 						$path                 = $property->path . DOT . $annotation->property->path;
 						$annotation->property = new Reflection\Reflection_Property($parent_class_name, $path);
