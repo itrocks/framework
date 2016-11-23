@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>|{title}|</title>
+</head>
+<body>
+<!--BEGIN-->
+
+<div class="list window">
+	<h2>
+		<span>{title}</span>
+	</h2>
+
+	<table>
+		<thead>
+			<tr>
+				<th>|Name|</th>
+				<th>|Ask date|</th>
+				<th>|Duration|</th>
+				<th>|State|</th>
+				<th>|Progress|</th>
+				<th>|Message|</th>
+			</tr>
+		</thead>
+		<tbody>
+		<!--elements-->
+		<tr>
+			<td>{@value}</td>
+			<td>{begin_date.@loc}</td>
+			<td>{calculateDuration}</td>
+			<td>|{status}|</td>
+			<td title="{progress}/{max_progress}"><progress value="{progress}" max="{max_progress}"></progress></td>
+			<td>{short_message}</td>
+		</tr>
+		<!--elements-->
+		</tbody>
+	</table>
+
+	<table>
+
+		<tbody>
+
+		</tbody>
+	</table>
+</div>
+
+<!--END-->
+</body>
+</html>

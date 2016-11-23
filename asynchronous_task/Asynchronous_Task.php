@@ -2,6 +2,8 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Asynchronous_Task\Worker;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Paths;
 
 /**
@@ -13,25 +15,71 @@ use ITRocks\Framework\Tools\Paths;
  */
 class Asynchronous_Task
 {
-	//--------------------------------------------------------------------------------------- PENDING
-	const PENDING = 'pending';
-
-	//----------------------------------------------------------------------------------- IN_PROGRESS
-	const IN_PROGRESS = 'in_progress';
+	//----------------------------------------------------------------------------------------- ERROR
+	const ERROR = 'error';
 
 	//-------------------------------------------------------------------------------------- FINISHED
 	const FINISHED = 'finished';
 
-	//----------------------------------------------------------------------------------------- ERROR
-	const ERROR = 'error';
+	//----------------------------------------------------------------------------------- IN_PROGRESS
+	const IN_PROGRESS = 'in_progress';
 
-	//--------------------------------------------------------------------------------------- $worker
+	//--------------------------------------------------------------------------------------- PENDING
+	const PENDING = 'pending';
+
+	//-------------------------------------------------------------------------------- $creation_date
 	/**
-	 * @link Object
-	 * @store json
-	 * @var Worker
+	 * @link DateTime
+	 * @var Date_Time
 	 */
-	public $worker;
+	public $creation_date;
+
+	//----------------------------------------------------------------------------------- $begin_date
+	/**
+	 * @link DateTime
+	 * @var Date_Time
+	 */
+	public $begin_date;
+
+	//------------------------------------------------------------------------------------- $end_date
+	/**
+	 * @link DateTime
+	 * @var Date_Time
+	 */
+	public $end_date;
+
+	//--------------------------------------------------------------------------- $last_progress_date
+	/**
+	 * @link DateTime
+	 * @var Date_Time
+	 */
+	public $last_progress_date;
+
+	//--------------------------------------------------------------------------------- $max_progress
+	/**
+	 * @var integer
+	 */
+	public $max_progress;
+
+	//------------------------------------------------------------------------------------- $progress
+	/**
+	 * @var integer
+	 */
+	public $progress;
+
+	//-------------------------------------------------------------------------------- $short_message
+	/**
+	 * @var string
+	 */
+	public $short_message;
+
+	//---------------------------------------------------------------------------------------- $state
+	/**
+	 * State of progress generation (if status is in_progress)
+	 *
+	 * @var string
+	 */
+	public $state;
 
 	//--------------------------------------------------------------------------------------- $status
 	/**
@@ -42,31 +90,13 @@ class Asynchronous_Task
 	 */
 	public $status = self::PENDING;
 
-	//---------------------------------------------------------------------------------------- $state
+	//--------------------------------------------------------------------------------------- $worker
 	/**
-	 * State of progress generation (if status is in_progress)
-	 *
-	 * @var string
+	 * @link Object
+	 * @store json
+	 * @var Worker
 	 */
-	public $state;
-
-	//------------------------------------------------------------------------------------- $progress
-	/**
-	 * @var integer
-	 */
-	public $progress;
-
-	//--------------------------------------------------------------------------------- $max_progress
-	/**
-	 * @var integer
-	 */
-	public $max_progress;
-
-	//-------------------------------------------------------------------------------- $short_message
-	/**
-	 * @var string
-	 */
-	public $short_message;
+	public $worker;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -80,12 +110,22 @@ class Asynchronous_Task
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	function __toString()
+	{
+		return strval($this->worker);
+	}
+
 	//----------------------------------------------------------------------------------------- start
 	/**
 	 * Launch asynchronous task
 	 */
 	public function start()
 	{
+		$this->creation_date = new Date_Time();
 		Dao::write($this);
 		$host = $_SERVER['HTTP_HOST'];
 		$controller_url = $host . Paths::$uri_root . Paths::$script_name
@@ -101,13 +141,29 @@ class Asynchronous_Task
 		curl_close($curl);
 	}
 
-	//------------------------------------------------------------------------------------ __toString
+	//----------------------------------------------------------------------------- calculateDuration
 	/**
 	 * @return string
 	 */
-	function __toString()
+	public function calculateDuration()
 	{
-		return $this->worker . ' ' . $this->status;
+		$end_date = $this->end_date && !$this->end_date->isEmpty()
+			? $this->end_date : new Date_Time();
+		if ($end_date) {
+			$diff = $this->begin_date->diff($end_date, true);
+			$format = [];
+			if ($diff->h) {
+				$format[] = $diff->h . SP . Loc::tr('hour');
+			}
+			if ($diff->i) {
+				$format[] = $diff->i . SP . Loc::tr('minutes');
+			}
+			if ($diff->s) {
+				$format[] = $diff->s . SP . Loc::tr('seconds');
+			}
+			return join(SP, $format);
+		}
+		return '';
 	}
 
 }

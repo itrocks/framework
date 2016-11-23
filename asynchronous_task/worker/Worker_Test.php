@@ -27,11 +27,23 @@ class Worker_Test extends Worker
 	 */
 	public function execute(Asynchronous_Task $asynchronous_task)
 	{
-		for ($i =0; $i < 30; $i++) {
-			sleep(1);
-			$asynchronous_task->progress++;
+		$number_of_tests = 30;
+		$this->initMaxProgress($asynchronous_task, $number_of_tests);
+		for ($i =0; $i < $number_of_tests; $i++) {
+			sleep(5);
+			$this->progress($asynchronous_task, $i + 1, 'Wait step ' . $i . ' for 5 seconds');
 		}
-		$asynchronous_task->progress++;
+	}
+
+	//-------------------------------------------------------------------------------------- finished
+	/**
+	 * @param Asynchronous_Task $asynchronous_task
+	 * @param string            $short_message
+	 */
+	public function finished(
+		Asynchronous_Task $asynchronous_task, $short_message = 'Test finished with success'
+	)	{
+		parent::finished($asynchronous_task, $short_message);
 	}
 
 }
