@@ -297,7 +297,7 @@ abstract class Getter
 					}
 					switch ($property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
 						case Store_Annotation::JSON:
-							$stored = json_decode($stored);
+							$stored = json_decode($stored, true);
 							$stored = static::schemaDecode($stored, $property);
 							break;
 						default:
