@@ -7,7 +7,7 @@
 <body>
 <!--BEGIN-->
 
-<div class="list window">
+<div class="list window asynchronous_task_list" data-feature="{uri}">
 	<h2>
 		<span>{title}</span>
 	</h2>
@@ -38,7 +38,13 @@
 	</table>
 </div>
 <script>
-	setTimeout(function() { redirect('{uri}', '#main') } , 5000);
+	setTimeout(
+		function() {
+			if ($('.asynchronous_task_list[data-feature="' + '{uri}' + '"]').length) {
+				redirect('{uri}', '#main')
+			}
+		} , 5000
+	);
 </script>
 
 <!--END-->
