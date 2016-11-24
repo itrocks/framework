@@ -28,6 +28,7 @@ class List_Controller implements Default_Feature_Controller
 		$elements = Dao::readAll($class_name, [$sort, Dao::limit(15)]);
 		$parameters->set('elements', $elements);
 		$parameters->set('title', Loc::tr(ucfirst(Names::classToDisplay($class_name))));
+		$parameters->set('uri', View::link($class_name, 'list'));
 		$parameters->getMainObject();
 		$parameters = $parameters->getRawParameters();
 		return View::run($parameters, $form, $files, $class_name, 'list');
