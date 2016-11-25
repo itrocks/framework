@@ -7,7 +7,7 @@
 <body>
 <!--BEGIN-->
 
-<div class="list window asynchronous_task_list" data-feature="{uri}">
+<div class="list window asynchronous_request_list" data-feature="{uri}">
 	<h2>
 		<span>{title}</span>
 	</h2>
@@ -18,20 +18,16 @@
 				<th>|Name|</th>
 				<th>|Request date|</th>
 				<th>|Duration|</th>
-				<th>|State|</th>
 				<th>|Progress|</th>
-				<th>|Message|</th>
 			</tr>
 		</thead>
 		<tbody>
 		<!--elements-->
 		<tr>
 			<td>{@value}</td>
-			<td>{begin_date.@loc}</td>
+			<td>{creation.@loc}</td>
 			<td>{calculateDuration}</td>
-			<td>|{status}|</td>
 			<td title="{progress}/{max_progress}"><progress value="{progress}" max="{max_progress}"></progress></td>
-			<td>{short_message}</td>
 		</tr>
 		<!--elements-->
 		</tbody>
@@ -40,7 +36,7 @@
 <script>
 	setTimeout(
 		function() {
-			if ($('.asynchronous_task_list[data-feature="' + '{uri}' + '"]').length) {
+			if ($('.asynchronous_request_list[data-feature="' + '{uri}' + '"]').length) {
 				redirect('{uri}', '#main')
 			}
 		} , 5000

@@ -1,9 +1,8 @@
 <?php
 
-namespace ITRocks\Framework\Asynchronous_Task;
+namespace ITRocks\Framework\Asynchronous\Test;
 
-use ITRocks\Framework\Asynchronous_Task;
-use ITRocks\Framework\Asynchronous_Task\Worker\Worker_Test;
+use ITRocks\Framework\Asynchronous\Request;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 
@@ -23,8 +22,9 @@ class Test_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
-		$asynchronous_task = new Asynchronous_Task(new Worker_Test());
-		$asynchronous_task->start();
+		$asynchronous = new Request('Test of asynchronous task');
+		$asynchronous->addTask(new Worker_Test_Prepare());
+		$asynchronous->start();
 		return 'Test launched';
 	}
 }

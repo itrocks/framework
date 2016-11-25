@@ -1,11 +1,10 @@
 <?php
 
-namespace ITRocks\Framework\Asynchronous_Task\Worker;
+namespace ITRocks\Framework\Asynchronous\Worker;
 
-use ITRocks\Framework\Asynchronous_Task;
-use ITRocks\Framework\Asynchronous_Task\Worker;
+use ITRocks\Framework\Asynchronous;
+use ITRocks\Framework\Asynchronous\Worker;
 use ITRocks\Framework\Controller\Main;
-use ITRocks\Framework\Dao;
 
 /**
  * This worker just call function
@@ -39,14 +38,9 @@ class Worker_Call_Feature extends Worker
 	}
 
 	//--------------------------------------------------------------------------------------- execute
-	/**
-	 * @param $asynchronous_task Asynchronous_Task
-	 */
-	public function execute(Asynchronous_Task $asynchronous_task)
+	public function execute()
 	{
-		$result = (new Main())->runController($this->uri, $this->parameters);
-		$asynchronous_task->short_message = $result;
-		Dao::write($asynchronous_task);
+		(new Main())->runController($this->uri, $this->parameters);
 	}
 
 }
