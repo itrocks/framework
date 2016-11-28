@@ -18,7 +18,11 @@
 				<th>|Name|</th>
 				<th>|Request date|</th>
 				<th>|Duration|</th>
+				<th>|Status|</th>
 				<th>|Progress|</th>
+				<th>|Current tasks|</th>
+				<th>|Errors|</th>
+				<th>|Actions|</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,7 +31,25 @@
 			<td>{@value}</td>
 			<td>{creation.@loc}</td>
 			<td>{calculateDuration}</td>
+			<td>|{status}|</td>
 			<td title="{progress}/{max_progress}"><progress value="{progress}" max="{max_progress}"></progress></td>
+			<td>
+				<ul>
+					<!--pending_tasks-->
+					<li>{worker}</li>
+					<!--pending_tasks-->
+				</ul>
+			</td>
+			<td>
+				<ul>
+					<!--errors-->
+					<li>{worker}</li>
+					<!--errors-->
+				</ul>
+			</td>
+			<td>
+				{/general_buttons.html}
+			</td>
 		</tr>
 		<!--elements-->
 		</tbody>

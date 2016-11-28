@@ -8,6 +8,7 @@ use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Button;
 
 /**
  * Asynchronous task request
@@ -20,12 +21,63 @@ class Request
 {
 	use Has_Name;
 
-	//-------------------------------------------------------------------------------- $creation_date
+	//-------------------------------------------------------------------------------------- FINISHED
+	const FINISHED = 'finished';
+
+	//----------------------------------------------------------------------------------- IN_PROGRESS
+	const IN_PROGRESS = 'in_progress';
+
+	//------------------------------------------------------------------------------------- $creation
 	/**
 	 * @link DateTime
 	 * @var Date_Time
 	 */
 	public $creation;
+
+	//--------------------------------------------------------------------------------------- $errors
+	/**
+	 * @calculated
+	 * @store false
+	 * @getter
+	 * @var Task[]
+	 */
+	public $errors;
+
+	//--------------------------------------------------------------------------------- $max_progress
+	/**
+	 * @calculated
+	 * @store false
+	 * @getter
+	 * @var integer
+	 */
+	public $max_progress;
+
+	//-------------------------------------------------------------------------------- $pending_tasks
+	/**
+	 * @calculated
+	 * @store false
+	 * @getter
+	 * @var Task[]
+	 */
+	public $pending_tasks;
+
+	//------------------------------------------------------------------------------------- $progress
+	/**
+	 * @calculated
+	 * @store false
+	 * @getter
+	 * @var integer
+	 */
+	public $progress;
+
+	//--------------------------------------------------------------------------------------- $status
+	/**
+	 * @calculated
+	 * @store false
+	 * @getter
+	 * @var string
+	 */
+	public $status;
 
 	//---------------------------------------------------------------------------------------- $tasks
 	/**
@@ -38,23 +90,13 @@ class Request
 	 */
 	public $tasks;
 
-	//------------------------------------------------------------------------------------- $progress
 	/**
 	 * @calculated
 	 * @store false
 	 * @getter
-	 * @var integer
+	 * @var Button[]
 	 */
-	public $progress;
-
-	//--------------------------------------------------------------------------------- $max_progress
-	/**
-	 * @calculated
-	 * @store false
-	 * @getter
-	 * @var integer
-	 */
-	public $max_progress;
+	public $general_buttons;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -81,41 +123,6 @@ class Request
 		Dao::write($task);
 	}
 
-	//----------------------------------------------------------------------------------------- start
-	/**
-	 * Launch asynchronous task
-	 */
-	public function start()
-	{
-		$this->creation = new Date_Time();
-		Dao::write($this);
-		$this->asynchronousLaunch();
-	}
-
-	//----------------------------------------------------------------------------------- getProgress
-	/**
-	 * @return integer
-	 */
-	public function getProgress()
-	{
-		return isset($this->progress) ?
-			$this->progress :
-			$this->progress = Dao::count(
-				['status' => Task::FINISHED, 'request' => $this], static::getTaskClass()
-			);
-	}
-
-	//-------------------------------------------------------------------------------- getMaxProgress
-	/**
-	 * @return integer
-	 */
-	public function getMaxProgress()
-	{
-		return isset($this->max_progress) ?
-			$this->max_progress :
-			$this->max_progress = Dao::count(['request' => $this], static::getTaskClass());
-	}
-
 	//---------------------------------------------------------------------------- asynchronousLaunch
 	public function asynchronousLaunch()
 	{
@@ -133,6 +140,68 @@ class Request
 		curl_close($curl);
 	}
 
+	//------------------------------------------------------------------------------------- getErrors
+	/**
+	 * @return Task[]
+	 */
+	public function getErrors()
+	{
+		if (isset($this->errors)) {
+			return $this->errors;
+		}
+		$errors = Dao::search(['status' => Task::ERROR, 'request' => $this], static::getTaskClass());
+		return $this->errors = ($errors ?: []);
+	}
+
+	//-------------------------------------------------------------------------------- getMaxProgress
+	/**
+	 * @return integer
+	 */
+	public function getMaxProgress()
+	{
+		return isset($this->max_progress) ?
+			$this->max_progress :
+			$this->max_progress = Dao::count(['request' => $this], static::getTaskClass());
+	}
+
+	//------------------------------------------------------------------------------- getPendingTasks
+	/**
+	 * @return array|Task[]
+	 */
+	public function getPendingTasks()
+	{
+		if (isset($this->pending_tasks)) {
+			return $this->pending_tasks;
+		}
+		$pending_tasks = Dao::search(
+			['status' => Task::IN_PROGRESS, 'request' => $this], static::getTaskClass()
+		);
+		return $this->pending_tasks = ($pending_tasks ?: []);
+	}
+
+	//----------------------------------------------------------------------------------- getProgress
+	/**
+	 * @return integer
+	 */
+	public function getProgress()
+	{
+		return isset($this->progress) ?
+			$this->progress :
+			$this->progress = Dao::count(
+				['status' => Task::FINISHED, 'request' => $this], static::getTaskClass()
+			);
+	}
+
+	//------------------------------------------------------------------------------------- getStatus
+	/**
+	 * @return string
+	 */
+	public function getStatus()
+	{
+		$tasks_executed = $this->progress + count($this->errors);
+		return $tasks_executed >= $this->max_progress ? static::FINISHED : static::IN_PROGRESS;
+	}
+
 	//---------------------------------------------------------------------------------- getTaskClass
 	/**
 	 * @return string
@@ -142,6 +211,30 @@ class Request
 	{
 		return (new Reflection_Class(get_called_class()))->getProperty('tasks')
 			->getType()->getElementTypeAsString();
+	}
+
+	//----------------------------------------------------------------------------------------- start
+	/**
+	 * Launch asynchronous task
+	 */
+	public function start()
+	{
+		$this->creation = new Date_Time();
+		Dao::write($this);
+		$this->asynchronousLaunch();
+	}
+
+	//----------------------------------------------------------------------------- getGeneralButtons
+	/**
+	 * @return Button[]
+	 */
+	public function getGeneralButtons()
+	{
+		$buttons = [];
+		if ($this->status == self::IN_PROGRESS) {
+			$buttons[] = new Button('Recalculate', View::link($this, 'launch'), 'launch');
+		}
+		return $buttons;
 	}
 
 }
