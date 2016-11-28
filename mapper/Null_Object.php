@@ -2,7 +2,9 @@
 namespace ITRocks\Framework\Mapper;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -65,7 +67,10 @@ abstract class Null_Object
 		$is_null = true;
 		$getter_ignore = Getter::$ignore;
 		Getter::$ignore = true;
-		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
+		/** @var $properties Reflection_Property[] */
+		$properties = (new Reflection_Class($class_name))->accessProperties();
+		$properties = Store_Annotation::storedPropertiesOnly($properties);
+		foreach ($properties as $property) {
 			if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
 				$value = $property->getValue($object);
 				if (
