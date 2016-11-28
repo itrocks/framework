@@ -19,7 +19,6 @@ use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\List_Row;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
-use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
 use Serializable;
@@ -39,7 +38,7 @@ use Serializable;
  * We have direct reverse to class name!
  * To reverse source file we just have to check existence of both case file.
  */
-class Compiler implements
+class Compiler extends Cache implements
 	Class_File_Name_Getter, Configurable, Needs_Main, Registerable, Serializable, Updatable
 {
 
@@ -313,24 +312,6 @@ class Compiler implements
 		elseif (file_exists($file_name) && $first_group) {
 			unlink($file_name);
 		}
-	}
-
-	//----------------------------------------------------------------------------------- getCacheDir
-	/**
-	 * Returns the relative or absolute compiler cache dir path (default relative)
-	 *
-	 * @param $absolute boolean true if want to get absolute path
-	 * @return string
-	 */
-	public static function getCacheDir($absolute = false)
-	{
-		static $absolute_cache_dir, $relative_cache_dir;
-		if (!isset($absolute_cache_dir)) {
-			$absolute_cache_dir = Application::current()->getCacheDir() . SL . self::CACHE_DIR_NAME;
-			Files::mkdir($absolute_cache_dir);
-			$relative_cache_dir = Paths::getRelativeFileName($absolute_cache_dir);
-		}
-		return $absolute ? $absolute_cache_dir : $relative_cache_dir;
 	}
 
 	//------------------------------------------------------------------------------ getClassFileName
