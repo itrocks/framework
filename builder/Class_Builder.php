@@ -2,9 +2,11 @@
 namespace ITRocks\Framework\Builder;
 
 use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Namespaces;
 
 /**
@@ -156,7 +158,10 @@ class Class_Builder
 			return $class_name;
 		}
 		if ($namespace = self::getBuiltNameSpace()) {
-			return $namespace . $class_name;
+			//todo wait for process of database migration to rollback above. see #88021
+			// SM: temporarily disable patch #88021 (vendor is part of built class_name)
+			//return $namespace . $class_name;
+			return $namespace . rParse($class_name, BS, 1, true);
 		}
 		return false;
 	}
@@ -207,7 +212,13 @@ class Class_Builder
 			return $class_name;
 		}
 		if ($namespace = self::getBuiltNameSpace()) {
-			return str_replace($namespace, '', $class_name);
+			// SM: temporarily disable patch #88021 (vendor is part of built class_name)
+			//return str_replace($namespace, '', $class_name);
+			//todo wait for process of database migration to rollback above. see #88021
+			/** @var $builder Builder */
+			$builder = Session::current()->plugins->get(Builder::class);
+			// SM: Note this is buggy during Application update()
+			return $builder->sourceClassName($class_name);
 		}
 		return false;
 	}
