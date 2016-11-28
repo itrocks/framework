@@ -41,6 +41,7 @@ class Task
 	/**
 	 * @link Object
 	 * @store json
+	 * @user readonly
 	 * @var Worker
 	 */
 	public $worker;
@@ -137,6 +138,15 @@ class Task
 			return join(SP, $format);
 		}
 		return '';
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	function __toString()
+	{
+		return strval($this->worker) . ' - ' . Loc::tr($this->status);
 	}
 
 }

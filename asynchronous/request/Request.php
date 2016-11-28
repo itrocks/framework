@@ -30,6 +30,7 @@ class Request
 	//------------------------------------------------------------------------------------- $creation
 	/**
 	 * @link DateTime
+	 * @user readonly
 	 * @var Date_Time
 	 */
 	public $creation;
@@ -37,8 +38,9 @@ class Request
 	//--------------------------------------------------------------------------------------- $errors
 	/**
 	 * @calculated
-	 * @store false
 	 * @getter
+	 * @store false
+	 * @user readonly
 	 * @var Task[]
 	 */
 	public $errors;
@@ -46,8 +48,9 @@ class Request
 	//--------------------------------------------------------------------------------- $max_progress
 	/**
 	 * @calculated
-	 * @store false
 	 * @getter
+	 * @store false
+	 * @user readonly
 	 * @var integer
 	 */
 	public $max_progress;
@@ -55,8 +58,9 @@ class Request
 	//-------------------------------------------------------------------------------- $pending_tasks
 	/**
 	 * @calculated
-	 * @store false
 	 * @getter
+	 * @store false
+	 * @user readonly
 	 * @var Task[]
 	 */
 	public $pending_tasks;
@@ -64,8 +68,9 @@ class Request
 	//------------------------------------------------------------------------------------- $progress
 	/**
 	 * @calculated
-	 * @store false
 	 * @getter
+	 * @store false
+	 * @user readonly
 	 * @var integer
 	 */
 	public $progress;
@@ -73,8 +78,9 @@ class Request
 	//--------------------------------------------------------------------------------------- $status
 	/**
 	 * @calculated
-	 * @store false
 	 * @getter
+	 * @store false
+	 * @user readonly
 	 * @var string
 	 */
 	public $status;
@@ -86,15 +92,18 @@ class Request
 	 * and can be updated by other task pending execution
 	 *
 	 * @link Collection
+	 * @user no_add, no_delete
 	 * @var Task[]
 	 */
 	public $tasks;
 
+	//------------------------------------------------------------------------------ $general_buttons
 	/**
 	 * @calculated
-	 * @store false
 	 * @getter
+	 * @store false
 	 * @var Button[]
+	 * @user invisible
 	 */
 	public $general_buttons;
 
@@ -235,6 +244,15 @@ class Request
 			$buttons[] = new Button('Recalculate', View::link($this, 'launch'), 'launch');
 		}
 		return $buttons;
+	}
+
+	//--------------------------------------------------------------------------------- getOutputLink
+	/**
+	 * @return string
+	 */
+	public function getOutputLink()
+	{
+		return View::link($this, 'output');
 	}
 
 }

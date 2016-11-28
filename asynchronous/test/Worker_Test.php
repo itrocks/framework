@@ -43,7 +43,7 @@ class Worker_Test extends Worker
 	 */
 	public function __toString()
 	{
-		return 'Test worker : wait ' . $this->wait . ' seconds';
+		return 'wait ' . $this->wait . ' seconds';
 	}
 
 	//----------------------------------------------------------------------------------------- error
