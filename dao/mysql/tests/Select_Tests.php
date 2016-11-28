@@ -7,6 +7,7 @@ use ITRocks\Framework\Console;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
@@ -72,7 +73,7 @@ class Select_Tests extends Test
 				[
 					'class_name'  => Func::notOp(Console::class),
 					'declaration' => [Dependency::T_CLASS],
-					'file_name'   => Func::notOp('%/cache/compiled/%'),
+					'file_name'   => Func::notOp('%/' . Compiler::getCacheDir() . '/%'),
 					'type'        => Dependency::T_DECLARATION
 				],
 				Dependency::class

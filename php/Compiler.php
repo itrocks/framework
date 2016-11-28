@@ -1,8 +1,10 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
+use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Dao;
@@ -26,21 +28,26 @@ use Serializable;
  * Php compiler : the php scripts compilers manager
  *
  * This has heavy dependencies to the ITRocks Framework, and can't be used without it at the moment
+ *
+ * Note: given class name or source file name, the compiled file name should be able to be reversed
+ *       to original class name or source file name.
+ * So with:
+ * Itrocks\Framework\Module\Class_Name, itrocks/framework/module/Class_Name.php
+ * => vendor-application-itrocks-framework-module-Class_Name
+ * Itrocks\Framework\Module\Class_Name, itrocks/framework/module/class_name/Class_Name.php
+ * => vendor-application-itrocks-framework-module-Class_Name
+ * We have direct reverse to class name!
+ * To reverse source file we just have to check existence of both case file.
  */
 class Compiler implements
 	Class_File_Name_Getter, Configurable, Needs_Main, Registerable, Serializable, Updatable
 {
 
-	//------------------------------------------------------------------------------------ $cache_dir
+	//-------------------------------------------------------------------------------- CACHE_DIR_NAME
 	/**
-	 * Cache directory name
-	 *
-	 * You should not use this property.
-	 * Please use getCacheDir() to be sure this is initialized.
-	 *
-	 * @var string
+	 * Basename of the cache directory
 	 */
-	private $cache_dir;
+	const CACHE_DIR_NAME = 'compiled';
 
 	//------------------------------------------------------------------------------------- $compiler
 	/**
@@ -113,10 +120,11 @@ class Compiler implements
 					: Builder::create($class_name);
 			}
 		}
+		//todo SM: move this block above configuration?????
 		if (isset($_GET['Z'])) {
-			$cache_dir = $this->getCacheDir();
-			if ($cache_dir && is_dir($cache_dir)) {
-				system('rm -rf ' . $cache_dir . '/*');
+			$absolute_cache_dir = self::getCacheDir(true);
+			if ($absolute_cache_dir && is_dir($absolute_cache_dir)) {
+				system('rm -rf ' . $absolute_cache_dir . '/*');
 			}
 		}
 	}
@@ -145,8 +153,7 @@ class Compiler implements
 			$classes = $source->getClasses();
 			if ($classes) {
 				$class = reset($classes);
-				$source->file_name = $this->getCacheDir()
-					. SL . str_replace(SL, '-', Names::classToPath($class->name));
+				$source->file_name = self::getCacheDir() . SL . self::classToPath($class->name);
 			}
 			else {
 				trigger_error(
@@ -159,6 +166,20 @@ class Compiler implements
 		$this->more_sources[$source->getFirstClassName() ?: $source->file_name] = $source;
 	}
 
+	//----------------------------------------------------------------------------------- classToPath
+	/**
+	 * Returns the filename where to store compiled file for given class name
+	 * This does not include cache dir
+	 *
+	 * @param $class_name string
+	 * @return string
+	 * @see Compiler::pathToClass()
+	 */
+	public static function classToPath($class_name)
+	{
+		return str_replace(SL, '-', Names::classToPath($class_name));
+	}
+
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $last_time integer compile only files modified since this time
@@ -167,7 +188,7 @@ class Compiler implements
 	{
 		upgradeTimeLimit(900);
 		clearstatcache();
-		$cache_dir = $this->getCacheDir();
+		$cache_dir = self::getCacheDir();
 
 		// create data set for dependencies, check for dependencies for deleted files
 		Dao::createStorage(Dependency::class);
@@ -282,9 +303,9 @@ class Compiler implements
 			}
 			$compiler->compile($source, $this);
 		}
-		$file_name = (substr($source->file_name, 0, strlen($cache_dir)) === $cache_dir)
+		$file_name = Files::isInPath($source->file_name, $cache_dir)
 			? $source->file_name
-			: ($this->getCacheDir() . SL . str_replace(SL, '-', substr($source->file_name, 0, -4)));
+			: ($cache_dir . SL . self::sourceFileToPath($source->file_name));
 		if ($source->hasChanged()) {
 			$this->replaceDependencies($source);
 			script_put_contents($file_name, $source->getSource());
@@ -296,22 +317,28 @@ class Compiler implements
 
 	//----------------------------------------------------------------------------------- getCacheDir
 	/**
+	 * Returns the relative or absolute compiler cache dir path (default relative)
+	 *
+	 * @param $absolute boolean true if want to get absolute path
 	 * @return string
 	 */
-	public function getCacheDir()
+	public static function getCacheDir($absolute = false)
 	{
-		if (!isset($this->cache_dir)) {
-			$this->cache_dir = Application::current()->getCacheDir() . '/compiled';
-			Files::mkdir($this->cache_dir);
+		static $absolute_cache_dir, $relative_cache_dir;
+		if (!isset($absolute_cache_dir)) {
+			$absolute_cache_dir = Application::current()->getCacheDir() . SL . self::CACHE_DIR_NAME;
+			Files::mkdir($absolute_cache_dir);
+			$relative_cache_dir = Paths::getRelativeFileName($absolute_cache_dir);
 		}
-		return Paths::getRelativeFileName($this->cache_dir);
+		return $absolute ? $absolute_cache_dir : $relative_cache_dir;
 	}
 
 	//------------------------------------------------------------------------------ getClassFileName
 	/**
 	 * Gets a Reflection_Source knowing its class _name.
 	 * Uses sources cache, or router's getClassFileName() and fill-in cache.
-	 ** @param $class_name string
+	 *
+	 * @param $class_name string
 	 * @return Reflection_Source
 	 */
 	public function getClassFileName($class_name)
@@ -322,9 +349,8 @@ class Compiler implements
 		else {
 			/** @var $router Router */
 			$router = Session::current()->plugins->get(Router::class);
-			if (Builder::isBuilt($class_name)) {
-				$file_name = $this->getCacheDir() . SL
-					. str_replace(SL, '-', Names::classToPath($class_name));
+			if (Class_Builder::isBuilt($class_name)) {
+				$file_name = self::getCacheDir() . SL . self::classToPath($class_name);
 			}
 			else {
 				$file_name = $router->getClassFileName($class_name);
@@ -354,6 +380,33 @@ class Compiler implements
 			}
 		}
 		return $files;
+	}
+
+	//----------------------------------------------------------------------------------- pathToClass
+	/**
+	 * Returns the class name given a compiled file path (excluding the cache dir part)
+	 *
+	 * @param $path string
+	 * @return string
+	 * @see Compiler::classToPath()
+	 */
+	public static function pathToClass($path)
+	{
+		return Names::pathToClass(str_replace('-', SL, $path));
+	}
+
+	//----------------------------------------------------------------------------------- pathToClass
+	/**
+	 * Returns the source file given a compiled file path (excluding the cache dir part)
+	 * eg. a-class-name-like-This into a/class/name/like/This.php or a/class/name/like/this/This.php
+	 *
+	 * @param $path string
+	 * @return string|boolean false if source file not found
+	 * @see Compiler::sourceFileToPath()
+	 */
+	public static function pathToSourceFile($path)
+	{
+		return Names::classToFile(self::pathToClass($path));
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -481,6 +534,21 @@ class Compiler implements
 		foreach ($by_parents_count as $sources) {
 			$this->sources = array_merge($this->sources, $sources);
 		}
+	}
+
+	//------------------------------------------------------------------------------ sourceFileToPath
+	/**
+	 * Returns the filename where to store compiled file for given source file name
+	 * 'a/class/name/like/this/This.php' or 'a/class/name/like/This.php' into
+	 * 'a-class-name-like-This'
+	 *
+	 * @param $file_name string
+	 * @return string
+	 * @see Compiler::PathToSourceFile()
+	 */
+	public static function sourceFileToPath($file_name)
+	{
+		return Include_Filter::cache_file($file_name);
 	}
 
 	//---------------------------------------------------------------------------------------- update

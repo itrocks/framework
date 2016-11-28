@@ -28,7 +28,7 @@ class Linked_Classes_Compiler implements ICompiler
 		$compiled = false;
 		foreach ($source->getClasses() as $class) {
 			// replace extends with the built replacement class
-			if (!Builder::isBuilt($class->name)) {
+			if (!Class_Builder::isBuilt($class->name)) {
 				$parent_class_name = $class->getParentName();
 				if ($parent_class_name) {
 					$replacement_class_name = Builder::className($parent_class_name);
@@ -52,7 +52,7 @@ class Linked_Classes_Compiler implements ICompiler
 					}
 					elseif (
 						($replacement_class_name !== $parent_class_name)
-						&& Builder::isBuilt($replacement_class_name)
+						&& Class_Builder::isBuilt($replacement_class_name)
 					) {
 						$extended = null;
 						$buffer = $source->getSource();
@@ -97,14 +97,14 @@ class Linked_Classes_Compiler implements ICompiler
 		$search = ['type' => Dependency::T_EXTENDS];
 		foreach ($sources as $source) {
 			foreach ($source->getClasses() as $class) {
-				if (!Builder::isBuilt($class->name)) {
+				if (!Class_Builder::isBuilt($class->name)) {
 					// add all classes that extend source classes
 					$search['dependency_name'] = Func::equal($class->name);
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
 						/** @var $dependency Dependency */
 						if (
 							!isset($sources[$dependency->file_name])
-							&& !Builder::isBuilt($dependency->class_name)
+							&& !Class_Builder::isBuilt($dependency->class_name)
 						) {
 							$added[$dependency->class_name] = Reflection_Source::ofFile(
 								$dependency->file_name, $dependency->class_name

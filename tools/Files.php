@@ -104,6 +104,19 @@ abstract class Files
 		header('Content-Transfer-Encoding: binary');
 	}
 
+	/**
+	 * Returns true is file is contained in path
+	 *
+	 * @param $file_name string
+	 * @param $path      string
+	 * @return boolean
+	 */
+	public static function isInPath($file_name, $path)
+	{
+		$path_len = strlen($path);
+		return ($file_name === $path) || (substr($file_name, 0, $path_len + 1) === $path . SL);
+	}
+
 	//----------------------------------------------------------------------------------------- mkdir
 	/**
 	 * Creates a directory if it does not exist, recursively

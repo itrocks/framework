@@ -44,6 +44,27 @@ abstract class Names
 		return strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
 	}
 
+	/**
+	 * Changes 'A\Namespace\Class_Name' into 'a/namespace/Class_Name.php' or
+	 * 'a/namespace/class_name/Class_Name.php'
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function classToFile($class_name)
+	{
+		$file_name = self::classToPath($class_name);
+		//case into a/class/name/like/This.php
+		if (file_exists($file1 = ($file_name . '.php'))) {
+			return $file1;
+		}
+		//case into a/class/name/like/this/This.php
+		elseif (file_exists($file2 = (strtolower($file_name) . SL . basename($file_name) . '.php'))) {
+			return $file2;
+		}
+		return false;
+	}
+
 	//--------------------------------------------------------------------------------- classToMethod
 	/**
 	 * Changes 'A\Namespace\Class_Name' into 'className'

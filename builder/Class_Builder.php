@@ -89,7 +89,7 @@ class Class_Builder
 	 * @param $class_name  string
 	 * @param $interfaces  array string[][]
 	 * @param $traits      array string[][]
-	 * @param $get_source        boolean if true, get built [$name, $source) instead of $name
+	 * @param $get_source  boolean if true, get built [$name, $source] instead of $name
 	 * @return string|string[] generated class name
 	 */
 	private static function buildClass($class_name, array $interfaces, array $traits, $get_source)
@@ -97,19 +97,18 @@ class Class_Builder
 		if (!$traits) $traits = [0 => []];
 		end($traits);
 		$end_level = key($traits);
-		$namespace = $short_class = $built_class = null;
+		$short_class = Namespaces::shortClassName($class_name);
+		$namespace_prefix = Namespaces::of(self::builtClassName($class_name));
+		$namespace = $built_class = null;
 		foreach ($traits as $level => $class_traits) {
-			// must be set before $shot_class and $namespace (extends last class)
-			$extends = BS . (isset($short_class) ? ($namespace . BS . $short_class) : $class_name);
+			// must be set before $namespace (extends last class)
+			$extends = BS . (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
 			$end = ($level == $end_level);
 			$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
-			$namespace = array_slice(explode(BS, Namespaces::of($class_name)), 1);
-			$left = Application::current()->getNamespace();
-			$namespace = $left . BS . 'Built' . BS . join(BS, $namespace) . $count . $sub_count;
 			$interfaces_names = ($end && $interfaces) ? (BS . join(', ' . BS, $interfaces)) : '';
 			$traits_names = $class_traits ? join(';' . LF . TAB . 'use ' . BS, $class_traits) : '';
-			$short_class = Namespaces::shortClassName($class_name);
+			$namespace = $namespace_prefix . $count . $sub_count;
 			$built_class = $namespace . BS . $short_class;
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
 				. '/** Built ' . $short_class . ' class */' . LF
@@ -145,18 +144,72 @@ class Class_Builder
 
 	//-------------------------------------------------------------------------------- builtClassName
 	/**
-	 * Gets built name space for a class name
+	 * Gets built class name for a source class name
 	 *
 	 * @param $class_name string ie 'ITRocks\Framework\Module\Class_Name'
 	 * @return string ie 'Vendor\Application\Built\ITRocks\Framework\Module\Class_Name'
+	 * @see Class_Builder::sourceClassName()
 	 */
 	public static function builtClassName($class_name)
 	{
-		$namespace = array_slice(explode(BS, Namespaces::of($class_name)), 1);
-		$left = Application::current()->getNamespace();
-		$namespace = $left . BS . 'Built' . BS . join(BS, $namespace);
-		$built_class = $namespace . BS . Namespaces::shortClassName($class_name);
-		return $built_class;
+		if (self::isBuilt($class_name)) {
+			return $class_name;
+		}
+		if ($namespace = self::getBuiltNameSpace()) {
+			return $namespace . $class_name;
+		}
+		return false;
+	}
+
+	//----------------------------------------------------------------------------- getBuiltNameSpace
+	/**
+	 * Returns the prefix namespace for built classes
+	 *
+	 * @return null|string
+	 */
+	public static function getBuiltNameSpace()
+	{
+		static $namespace;
+		if (!isset($namespace) && $application = Application::current()) {
+			$namespace = $application->getNamespace() . BS . 'Built' . BS;
+		}
+		return $namespace;
+	}
+
+	//--------------------------------------------------------------------------------------- isBuilt
+	/**
+	 * Returns true if class name is a built class name
+	 *
+	 * A built class has a namespace beginning with 'Vendor\Application\Built\'
+	 *
+	 * @param $class_name string
+	 * @return boolean
+	 */
+	public static function isBuilt($class_name)
+	{
+		if ($namespace = self::getBuiltNameSpace()) {
+			return substr($class_name, 0, strlen($namespace)) == $namespace;
+		}
+		return false;
+	}
+
+	//------------------------------------------------------------------------------- sourceClassName
+	/**
+	 * Gets source class name for a built class name
+	 *
+	 * @param $class_name string ie 'Vendor\Application\Built\ITRocks\Framework\Module\Class_Name'
+	 * @return string ie 'ITRocks\Framework\Module\Class_Name'
+	 * @see Class_Builder::builtClassName()
+	 */
+	public static function sourceClassName($class_name)
+	{
+		if (!self::isBuilt($class_name)) {
+			return $class_name;
+		}
+		if ($namespace = self::getBuiltNameSpace()) {
+			return str_replace($namespace, '', $class_name);
+		}
+		return false;
 	}
 
 }

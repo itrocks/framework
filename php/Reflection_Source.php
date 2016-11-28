@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\PHP;
 
 use ReflectionClass;
-use ITRocks\Framework\Builder;
+use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\Paths;
@@ -826,16 +826,14 @@ class Reflection_Source
 			$result = self::$cache[$class_name];
 		}
 		else {
-			$file_name = Names::classToPath($class_name) . '.php';
-			if (Builder::isBuilt($class_name)) {
-				$file_name = 'cache/compiled/' . str_replace(SL, '-', substr($file_name, 0, -4));
+			if (Class_Builder::isBuilt($class_name)) {
+				$file_name = Compiler::getCacheDir() . SL . Compiler::classToPath($class_name);
+			}
+			else {
+				$file_name = Names::classToFile($class_name);
 			}
 			if (!file_exists($file_name)) {
-				$file_name = strtolower(substr($file_name, 0, -4))
-					. SL . rLastParse($file_name, SL, 1, true);
-				if (!file_exists($file_name)) {
-					$file_name = null;
-				}
+				$file_name = null;
 			}
 			$result = new Reflection_Source($file_name, $class_name);
 		}

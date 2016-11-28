@@ -16,6 +16,7 @@ class Include_Filter extends php_user_filter
 	//------------------------------------------------------------------------------------ $cache_dir
 	/**
 	 * @var string
+	 * @see Compiler::getCacheDir()
 	 */
 	private static $cache_dir = 'cache/compiled';
 
@@ -28,14 +29,41 @@ class Include_Filter extends php_user_filter
 	 */
 	private static $file_name;
 
+	//------------------------------------------------------------------------------------ cache_file
+	/**
+	 * Returns the filename of a cache file for given source file name
+	 * 'a/class/name/like/this/This.php' or 'a/class/name/like/This.php' into
+	 * 'a-class-name-like-This'
+	 *
+	 * @param $file_name string
+	 * @return string
+	 * @see Compiler::PathToSourceFile()
+	 */
+	public static function cache_file($file_name)
+	{
+		$dot_pos = strrpos($file_name, '.');
+		$file_name_no_ext = $dot_pos ? substr($file_name, 0, $dot_pos) : $file_name;
+		$basename = basename($file_name_no_ext);
+		$parent_dir = dirname($file_name_no_ext);
+		//case a/class/name/like/this/This.php => a-class-name-like-This
+		if (strtolower($basename) == basename($parent_dir)) {
+			return str_replace('/', '-', dirname($parent_dir) . '/' . $basename);
+		}
+		//case a/class/name/like/This.php => a-class-name-like-This
+		else {
+			return str_replace('/', '-', $file_name_no_ext);
+		}
+	}
+
 	//------------------------------------------------------------------------------------------ file
 	/**
 	 * @param $file_name string relative path to the file to be included
 	 * @return string
+	 * @see Compiler::sourceFileToPath()
 	 */
 	public static function file($file_name)
 	{
-		$cache_file_name = self::$cache_dir . '/' . str_replace('/', '-', substr($file_name, 0, -4));
+		$cache_file_name = self::$cache_dir . '/' . self::cache_file($file_name);
 		if (file_exists($cache_file_name)) {
 			if (isset($GLOBALS['D'])) {
 				return $cache_file_name;
@@ -44,6 +72,17 @@ class Include_Filter extends php_user_filter
 			return 'php://filter/read=' . self::ID . '/resource=' . $file_name;
 		}
 		return $file_name;
+	}
+
+	//----------------------------------------------------------------------------------- getCacheDir
+	/**
+	 * Returns the cache directory
+	 *
+	 * @return string
+	 */
+	public static function getCacheDir()
+	{
+		return self::$cache_dir;
 	}
 
 	//---------------------------------------------------------------------------------------- filter

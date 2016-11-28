@@ -5,7 +5,7 @@ use ITRocks\Framework\AOP\Compiler\Scanners;
 use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\AOP\Weaver\IWeaver;
 use ITRocks\Framework\Application;
-use ITRocks\Framework\Builder;
+use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Dao;
@@ -225,7 +225,7 @@ class Compiler implements ICompiler, Needs_Main
 					$search['dependency_name'] = Func::equal($class->name);
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
 						/** @var $dependency Dependency */
-						while ($dependency && Builder::isBuilt($dependency->class_name)) {
+						while ($dependency && Class_Builder::isBuilt($dependency->class_name)) {
 							$search_built_parent = Search_Object::create(Dependency::class);
 							$search_built_parent->class_name = $dependency->class_name;
 							$search_built_parent->type       = Dependency::T_EXTENDS;
