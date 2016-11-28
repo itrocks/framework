@@ -79,6 +79,7 @@ class Task
 	{
 		$this->begin_date = new Date_Time();
 		$this->status = self::IN_PROGRESS;
+		$this->worker->task = $this;
 		$this->worker->started();
 		Dao::write($this);
 	}
