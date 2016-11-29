@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Updater;
 
+use Exception;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
@@ -10,12 +11,30 @@ use Serializable;
 /**
  * The application updater plugin detects if the application needs to be updated, and launch updates
  * for all objects (independent or plugins) that process updates
+ *
+ * Because of session (and so plugins) that can be reset and recreated in some process, we use only
+ * static properties to be sure they are shared across instances.
+ * This makes others plugin classes able to know state of update processing.
  */
 class Application_Updater implements Serializable
 {
 
 	//------------------------------------------------------------------------------ LAST_UPDATE_FILE
 	const LAST_UPDATE_FILE = 'last_update';
+
+	//------------------------------------------------------------------------------- NB_MAX_LOCK_TRY
+	/**
+	 * Max tries to acquire lock. Total time = NB_MAX_LOCK_TRY * MICROSECONDS_BETWEEN_TWO_LOCK_TRY μs
+	 * @example 500 (* 1000000 = 5 minutes)
+	 */
+	const NB_MAX_LOCK_TRY = 500;
+
+	//------------------------------------------------------------- MICROSECONDS_BETWEEN_TWO_LOCK_TRY
+	/**
+	 * Delay between two tries to acquire lock
+	 * @example 1000000 (μs = 1s)
+	 */
+	const MICROSECONDS_BETWEEN_TWO_LOCK_TRY = 1000000;
 
 	//----------------------------------------------------------------------------------- UPDATE_FILE
 	const UPDATE_FILE = 'update';
@@ -26,7 +45,15 @@ class Application_Updater implements Serializable
 	 *
 	 * @var resource
 	 */
-	private $lock_file;
+	private static $lock_file;
+
+	//-------------------------------------------------------------------------------------- $running
+	/**
+	 * Tells if update is running
+	 *
+	 * @var boolean
+	 */
+	private static $running = false;
 
 	//----------------------------------------------------------------------------------- $updatables
 	/**
@@ -34,13 +61,13 @@ class Application_Updater implements Serializable
 	 *
 	 * @var Updatable[]|string[]
 	 */
-	private $updatables = [];
+	private static $updatables;
 
 	//---------------------------------------------------------------------------------- $update_time
 	/**
 	 * @var integer
 	 */
-	private $update_time;
+	private static $update_time;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -49,6 +76,9 @@ class Application_Updater implements Serializable
 	 */
 	public function __construct()
 	{
+		if (!isset(self::$updatables)) {
+			self::$updatables = [];
+		}
 		if (isset($_GET['Z'])) {
 			if (!isset($_POST['Z'])) {
 				Main::$current->running = false;
@@ -74,7 +104,7 @@ class Application_Updater implements Serializable
 	 */
 	public function addUpdatable($object)
 	{
-		$this->updatables[] = $object;
+		self::$updatables[] = $object;
 	}
 
 	//------------------------------------------------------------------------------------ autoUpdate
@@ -90,9 +120,20 @@ class Application_Updater implements Serializable
 	public function autoUpdate(Main $controller)
 	{
 		if ($this->mustUpdate()) {
-			$this->update($controller);
-			$this->done();
-			return true;
+			try {
+				if ($this->lock()) {
+					$this->update($controller);
+					$this->release();
+					$this->done();
+					return true;
+				} else {
+					throw new Exception("unable to acquire lock");
+				}
+			}
+			catch (Exception $e) {
+				$this->release();
+				trigger_error("Unable to update : " . $e->getMessage(), E_USER_ERROR);
+			}
 		}
 		return false;
 	}
@@ -117,10 +158,8 @@ class Application_Updater implements Serializable
 	 */
 	public function done()
 	{
-		$this->setLastUpdateTime($this->update_time);
-		unset($this->update_time);
-		flock($this->lock_file, LOCK_UN);
-		fclose($this->lock_file);
+		$this->setLastUpdateTime(self::$update_time);
+		self::$update_time = null;
 		clearstatcache(true, self::UPDATE_FILE);
 		if (file_exists(self::UPDATE_FILE)) {
 			unlink(self::UPDATE_FILE);
@@ -165,6 +204,43 @@ class Application_Updater implements Serializable
 		return file_exists($file_name) ? filemtime($file_name) : 0;
 	}
 
+	//------------------------------------------------------------------------------------- isRunning
+	/**
+	 * Tells if update is running
+	 *
+	 * @return boolean
+	 */
+	public function isRunning() {
+		return self::$running;
+	}
+
+	//------------------------------------------------------------------------------------------ lock
+	/**
+	 * Lock other script for update
+	 */
+	private function lock()
+	{
+		self::$lock_file = fopen(self::UPDATE_FILE, 'r');
+		// wait for update lock file to be released by another update in progress
+		// then : locks the update file to avoid any other update
+		$nb_try = 0;
+		$would_block = 1;
+		while (
+			$nb_try++ < self::NB_MAX_LOCK_TRY
+			&& file_exists(self::UPDATE_FILE)
+			// add LOCK_NB to make a not blocking call, and check $would_block for lock acquired
+			&& !flock(self::$lock_file, LOCK_EX | LOCK_NB, $would_block)
+			&& $would_block
+		) {
+			usleep(self::MICROSECONDS_BETWEEN_TWO_LOCK_TRY);
+			clearstatcache(true, self::UPDATE_FILE);
+		}
+		if (!$would_block && file_exists(self::UPDATE_FILE)) {
+			return true;
+		}
+		return false;
+	}
+
 	//------------------------------------------------------------------------------------ mustUpdate
 	/**
 	 * Returns true if the application must be updated
@@ -174,20 +250,23 @@ class Application_Updater implements Serializable
 	public function mustUpdate()
 	{
 		if (file_exists(self::UPDATE_FILE)) {
-			// wait for update lock file to be released by another update in progress
-			// then : locks the update file to avoid any other update
-			$this->lock_file = fopen(self::UPDATE_FILE, 'r');
-			while (file_exists(self::UPDATE_FILE) && !flock($this->lock_file, LOCK_EX)) {
-				usleep(100000);
-				clearstatcache(true, self::UPDATE_FILE);
-			}
-			if (file_exists(self::UPDATE_FILE)) {
-				return true;
-			}
-			fclose($this->lock_file);
-			// TODO ask for stop (update file does this job) and wait for running tasks to stop
+			return true;
 		}
 		return false;
+	}
+
+	//--------------------------------------------------------------------------------------- release
+	/**
+	 * Release the lock
+	 */
+	private function release()
+	{
+		if (self::$lock_file) {
+			// Note: fclose() will also unlock the file, but it's proper do do it explicitly !
+			flock(self::$lock_file, LOCK_UN);
+			// TODO ask for stop (update file does this job) and wait for running tasks to stop
+			fclose(self::$lock_file);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- serialize
@@ -197,7 +276,7 @@ class Application_Updater implements Serializable
 	public function serialize()
 	{
 		$updatables = [];
-		foreach ($this->updatables as $updatable) {
+		foreach (self::$updatables as $updatable) {
 			$updatables[] = is_object($updatable) ? get_class($updatable) : $updatable;
 		}
 		return serialize($updatables);
@@ -223,20 +302,24 @@ class Application_Updater implements Serializable
 	 */
 	public function update(Main $main_controller)
 	{
+		self::$running = true;
+
 		$last_update_time = $this->getLastUpdateTime();
-		if (!isset($this->update_time)) {
-			$this->update_time = time();
+		if (!isset(self::$update_time)) {
+			self::$update_time = time();
 		}
-		foreach ($this->updatables as $key => $updatable) {
+		foreach (self::$updatables as $key => $updatable) {
 			if (is_string($updatable)) {
 				$updatable = Session::current()->plugins->get($updatable);
-				$this->updatables[$key] = $updatable;
+				self::$updatables[$key] = $updatable;
 			}
 			if ($updatable instanceof Needs_Main) {
 				$updatable->setMainController($main_controller);
 			}
 			$updatable->update($last_update_time);
 		}
+
+		self::$running = false;
 	}
 
 	//----------------------------------------------------------------------------------- unserialize
@@ -245,7 +328,7 @@ class Application_Updater implements Serializable
 	 */
 	public function unserialize($serialized)
 	{
-		$this->updatables = unserialize($serialized);
+		self::$updatables = unserialize($serialized);
 	}
 
 }
