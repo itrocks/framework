@@ -1,11 +1,11 @@
 <?php
 namespace ITRocks\Framework\Asynchronous;
 
+use ITRocks\Framework\Asynchronous\Condition\Dependency;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Date_Time;
-use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button;
@@ -27,6 +27,13 @@ class Request
 	//----------------------------------------------------------------------------------- IN_PROGRESS
 	const IN_PROGRESS = 'in_progress';
 
+	//----------------------------------------------------------------------------------- $task_count
+	/**
+	 * Internal counter for distribute new tasks in all execution task
+	 * @var integer
+	 */
+	private $task_count = 1;
+
 	//------------------------------------------------------------------------------------- $creation
 	/**
 	 * @link DateTime
@@ -45,6 +52,16 @@ class Request
 	 */
 	public $errors;
 
+	//------------------------------------------------------------------------------ $general_buttons
+	/**
+	 * @calculated
+	 * @getter
+	 * @store false
+	 * @var Button[]
+	 * @user invisible
+	 */
+	public $general_buttons;
+
 	//--------------------------------------------------------------------------------- $max_progress
 	/**
 	 * @calculated
@@ -54,6 +71,13 @@ class Request
 	 * @var integer
 	 */
 	public $max_progress;
+
+	//------------------------------------------------------------------------- $number_of_executions
+	/**
+	 * The number of process running to execute tasks
+	 * @var integer
+	 */
+	public $number_of_executions = 1;
 
 	//-------------------------------------------------------------------------------- $pending_tasks
 	/**
@@ -97,56 +121,72 @@ class Request
 	 */
 	public $tasks;
 
-	//------------------------------------------------------------------------------ $general_buttons
-	/**
-	 * @calculated
-	 * @getter
-	 * @store false
-	 * @var Button[]
-	 * @user invisible
-	 */
-	public $general_buttons;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Asynchronous constructor.
+	 * Asynchronous request constructor.
+	 *
 	 * @param $label string
+	 * @param $number_of_executions integer
 	 */
-	public function __construct($label = '')
+	public function __construct($label = '', $number_of_executions = null)
 	{
 		if ($label) {
 			$this->name = $label;
+		}
+		if ($number_of_executions) {
+			$this->number_of_executions = $number_of_executions;
 		}
 	}
 
 	//--------------------------------------------------------------------------------------- addTask
 	/**
-	 * @param $worker Worker
+	 * @param $worker     Worker Worker of task
+	 * @param $dependency Task If defined, new task wait the end of dependency task
+	 * @return Task
 	 */
-	public function addTask(Worker $worker)
+	public function addTask(Worker $worker, Task $dependency = null)
 	{
 		/** @var $task Task */
 		$task = Builder::create(static::getTaskClass());
 		$task->worker = $worker;
 		$task->request = $this;
+		if ($dependency) {
+			$task->group = $this->nextGroup();
+		}
+		if ($dependency) {
+			$task->condition = new Dependency($dependency);
+			// If has dependency, use the same group of execution
+			// Not mandatory, but it's choice
+			$task->group = $dependency->group;
+		}
+		else {
+			$task->group = $this->nextGroup();
+		}
 		Dao::write($task);
+		$this->checkRunningTaskLaunched($task);
+		return $task;
 	}
 
-	//---------------------------------------------------------------------------- asynchronousLaunch
-	public function asynchronousLaunch()
+	//---------------------------------------------------------------------- checkRunningTaskLaunched
+	/**
+	 * @param $task Task
+	 */
+	private function checkRunningTaskLaunched($task)
 	{
-		$host = $_SERVER['HTTP_HOST'];
-		$controller_url = $host . Paths::$uri_root . Paths::$script_name
-			. View::link($this, 'execute');
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_URL, $controller_url);
-		curl_setopt($curl, CURLOPT_HEADER, 0);
-		curl_setopt($curl, CURLOPT_POST, 1);
-		curl_setopt($curl, CURLOPT_FRESH_CONNECT, true);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
-		curl_setopt($curl, CURLOPT_TIMEOUT_MS, 100);
-		curl_exec($curl);
-		curl_close($curl);
+		if ($this->creation && !$this->creation->isEmpty() && $this->number_of_executions > 1) {
+			$request = Running\Request::getRequest($task->request);
+			if ($request) {
+				/** @var $task Running\Task */
+				$task = Dao::searchOne(
+					['request' => $request, 'group' => $task->group], Running\Task::class
+				);
+				if ($task->status == Task::FINISHED) {
+					$task->status = Task::PENDING;
+					Dao::write($task);
+					$task->asynchronousLaunch();
+				}
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
@@ -162,6 +202,19 @@ class Request
 		return $this->errors = ($errors ?: []);
 	}
 
+	//----------------------------------------------------------------------------- getGeneralButtons
+	/**
+	 * @return Button[]
+	 */
+	public function getGeneralButtons()
+	{
+		$buttons = [];
+		if ($this->status == self::IN_PROGRESS) {
+			$buttons[] = new Button('Recalculate', View::link($this, 'launch'), 'launch');
+		}
+		return $buttons;
+	}
+
 	//-------------------------------------------------------------------------------- getMaxProgress
 	/**
 	 * @return integer
@@ -171,6 +224,15 @@ class Request
 		return isset($this->max_progress) ?
 			$this->max_progress :
 			$this->max_progress = Dao::count(['request' => $this], static::getTaskClass());
+	}
+
+	//--------------------------------------------------------------------------------- getOutputLink
+	/**
+	 * @return string
+	 */
+	public function getOutputLink()
+	{
+		return View::link($this, 'output');
 	}
 
 	//------------------------------------------------------------------------------- getPendingTasks
@@ -222,6 +284,34 @@ class Request
 			->getType()->getElementTypeAsString();
 	}
 
+	//------------------------------------------------------------------------------ getTaskToExecute
+	/**
+	 * @param $group integer Group number for task.
+	 * @return Task[]
+	 */
+	public function getTaskToExecute($group = 1)
+	{
+		/** @var $tasks Task[] */
+		$tasks = Dao::search(
+			['request' => $this, 'status' => Task::PENDING, 'group' => $group],
+			static::getTaskClass()
+		);
+		return $tasks ?: [];
+	}
+
+	//------------------------------------------------------------------------------------- nextGroup
+	/**
+	 * @return integer
+	 */
+	private function nextGroup()
+	{
+		$this->task_count++;
+		if ($this->task_count > $this->number_of_executions) {
+			return $this->task_count = 1;
+		}
+		return $this->task_count;
+	}
+
 	//----------------------------------------------------------------------------------------- start
 	/**
 	 * Launch asynchronous task
@@ -230,29 +320,31 @@ class Request
 	{
 		$this->creation = new Date_Time();
 		Dao::write($this);
-		$this->asynchronousLaunch();
+		$this->launch();
 	}
 
-	//----------------------------------------------------------------------------- getGeneralButtons
-	/**
-	 * @return Button[]
-	 */
-	public function getGeneralButtons()
+	//---------------------------------------------------------------------------------------- launch
+	protected function launch()
 	{
-		$buttons = [];
-		if ($this->status == self::IN_PROGRESS) {
-			$buttons[] = new Button('Recalculate', View::link($this, 'launch'), 'launch');
+		$running_request = Running\Request::getRequest($this);
+		if ($running_request) {
+			$group_map = [];
+			foreach ($running_request->tasks as $task) {
+				// Re-launch all running tasks who are stopped
+				if (in_array($task->status, [Task::PENDING, Task::FINISHED])) {
+					$task->asynchronousLaunch();
+					$group_map[$task->group] = true;
+				}
+			}
+			for ($i = 1; $i <= $this->number_of_executions; $i++) {
+				if (!isset($group_map[$i])) {
+					$task = new Running\Task($i);
+					$task->request = $running_request;
+					Dao::write($task);
+					$task->asynchronousLaunch();
+				}
+			}
 		}
-		return $buttons;
-	}
-
-	//--------------------------------------------------------------------------------- getOutputLink
-	/**
-	 * @return string
-	 */
-	public function getOutputLink()
-	{
-		return View::link($this, 'output');
 	}
 
 }

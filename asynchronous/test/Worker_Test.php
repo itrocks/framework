@@ -60,7 +60,7 @@ class Worker_Test extends Worker
 	 */
 	public function execute()
 	{
-		if (rand(1,9) == 1) {
+		if (rand(1,90) == 1) {
 			throw new Exception('Random error');
 		}
 		sleep($this->wait);

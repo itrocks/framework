@@ -2,7 +2,6 @@
 
 namespace ITRocks\Framework\Asynchronous;
 
-use Exception;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
@@ -29,22 +28,8 @@ class Task
 	//--------------------------------------------------------------------------------------- PENDING
 	const PENDING = 'pending';
 
-	//-------------------------------------------------------------------------------------- $request
-	/**
-	 * @link Object
-	 * @composite
-	 * @var Request
-	 */
-	public $request;
-
-	//--------------------------------------------------------------------------------------- $worker
-	/**
-	 * @link Object
-	 * @store json
-	 * @user readonly
-	 * @var Worker
-	 */
-	public $worker;
+	//--------------------------------------------------------------------------------------- STOPPED
+	const STOPPED = 'stopped';
 
 	//----------------------------------------------------------------------------------- $begin_date
 	/**
@@ -53,12 +38,37 @@ class Task
 	 */
 	public $begin_date;
 
+	//------------------------------------------------------------------------------------ $condition
+	/**
+	 * @link Object
+	 * @store json
+	 * @user readonly
+	 * @var Condition
+	 */
+	public $condition;
+
 	//------------------------------------------------------------------------------------- $end_date
 	/**
 	 * @link DateTime
 	 * @var Date_Time
 	 */
 	public $end_date;
+
+	//---------------------------------------------------------------------------------------- $group
+	/**
+	 * Execution group.
+	 * Used for distributed task in many servers
+	 * @var integer
+	 */
+	public $group = 1;
+
+	//-------------------------------------------------------------------------------------- $request
+	/**
+	 * @link Object
+	 * @composite
+	 * @var Request
+	 */
+	public $request;
 
 	//--------------------------------------------------------------------------------------- $status
 	/**
@@ -69,50 +79,22 @@ class Task
 	 */
 	public $status = self::PENDING;
 
-	//--------------------------------------------------------------------------------------- execute
-	public function execute()
-	{
-		$this->worker->execute();
-	}
-
-	//--------------------------------------------------------------------------------------- started
-	public function started()
-	{
-		$this->begin_date = new Date_Time();
-		$this->status = self::IN_PROGRESS;
-		$this->worker->task = $this;
-		$this->worker->started();
-		Dao::write($this);
-	}
-
-	//-------------------------------------------------------------------------------------- finished
-	public function finished()
-	{
-		$this->end_date = new Date_Time();
-		$this->status = self::FINISHED;
-		$this->worker->finished();
-		Dao::write($this);
-	}
-
-	//----------------------------------------------------------------------------------------- error
+	//--------------------------------------------------------------------------------------- $worker
 	/**
-	 * @param $e Exception Exception launched
+	 * @link Object
+	 * @store json
+	 * @user readonly
+	 * @var Worker
 	 */
-	public function error(Exception $e)
-	{
-		$this->end_date = new Date_Time();
-		$this->status = self::ERROR;
-		$this->worker->error($e);
-		Dao::write($this);
-	}
+	public $worker;
 
-	//------------------------------------------------------------------------------------ canExecute
+	//------------------------------------------------------------------------------------ __toString
 	/**
-	 * @return boolean
+	 * @return string
 	 */
-	public function canExecute()
+	function __toString()
 	{
-		return $this->status === self::PENDING;
+		return strval($this->worker) . ' - ' . Loc::tr($this->status);
 	}
 
 	//----------------------------------------------------------------------------- calculateDuration
@@ -140,13 +122,51 @@ class Task
 		return '';
 	}
 
-	//------------------------------------------------------------------------------------ __toString
+	//------------------------------------------------------------------------------------ canExecute
 	/**
-	 * @return string
+	 * @return boolean
 	 */
-	function __toString()
+	public function canExecute()
 	{
-		return strval($this->worker) . ' - ' . Loc::tr($this->status);
+		$status = $this->status === self::PENDING;
+		if (!$status) {
+			return false;
+		}
+		if ($this->condition) {
+			return $this->condition->check();
+		}
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------------- error
+	public function error()
+	{
+		$this->end_date = new Date_Time();
+		$this->status = self::ERROR;
+		Dao::write($this);
+	}
+
+	//-------------------------------------------------------------------------------------- finished
+	public function finished()
+	{
+		$this->end_date = new Date_Time();
+		$this->status = self::FINISHED;
+		Dao::write($this);
+	}
+
+	//------------------------------------------------------------------------------------------- run
+	public function run()
+	{
+		$this->worker->task = $this;
+		$this->worker->run();
+	}
+
+	//--------------------------------------------------------------------------------------- started
+	public function started()
+	{
+		$this->begin_date = new Date_Time();
+		$this->status = self::IN_PROGRESS;
+		Dao::write($this);
 	}
 
 }

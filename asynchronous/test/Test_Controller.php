@@ -22,7 +22,7 @@ class Test_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
-		$asynchronous = new Request('Test of asynchronous task');
+		$asynchronous = new Request('Test of asynchronous task', 12);
 		$asynchronous->addTask(new Worker_Test_Prepare());
 		$asynchronous->start();
 		return 'Test launched';

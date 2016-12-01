@@ -29,18 +29,31 @@ abstract class Worker
 	/**
 	 * Basic execution of worker
 	 */
-	public abstract function execute();
+	protected abstract function execute();
 
-	//-------------------------------------------------------------------------------------- finished
+	//------------------------------------------------------------------------------------------- run
 	/**
-	 * Called when task is finished
+	 * Run worker
 	 */
-	public function finished() { }
+	public function run()
+	{
+		try {
+			$this->task->started();
+			$this->execute();
+			$this->task->finished();
+		}
+		catch (Exception $e) {
+			$this->task->error();
+		}
+	}
 
-	//--------------------------------------------------------------------------------------- started
+	//------------------------------------------------------------------------------------ __toString
 	/**
-	 * Called when task is started
+	 * @return string
 	 */
-	public function started() { }
+	function __toString()
+	{
+		return 'Worker';
+	}
 
 }
