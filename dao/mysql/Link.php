@@ -748,7 +748,7 @@ class Link extends Dao\Sql\Link
 						elseif ($store = $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
 							if ($store == Store_Annotation::JSON) {
 								$value = $this->valueToWriteArray($value, $options);
-								if (!is_string($value)) {
+								if (!is_string($value) && isset($value)) {
 									$value = json_encode($value);
 								}
 							}
