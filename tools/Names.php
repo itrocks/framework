@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Application;
+use ITRocks\Framework\Autoloader;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP\Dependency;
@@ -53,16 +54,8 @@ abstract class Names
 	 */
 	public static function classToFile($class_name)
 	{
-		$file_name = self::classToPath($class_name);
-		//case into a/class/name/like/This.php
-		if (file_exists($file1 = ($file_name . '.php'))) {
-			return $file1;
-		}
-		//case into a/class/name/like/this/This.php
-		elseif (file_exists($file2 = (strtolower($file_name) . SL . basename($file_name) . '.php'))) {
-			return $file2;
-		}
-		return false;
+		$file_name = Autoloader::getFileName($class_name);
+		return $file_name;
 	}
 
 	//--------------------------------------------------------------------------------- classToMethod
