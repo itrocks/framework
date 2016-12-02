@@ -5,6 +5,8 @@ namespace ITRocks\Framework\Asynchronous\Request;
 use ITRocks\Framework\Asynchronous\Request;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Asynchronous\Running;
+use ITRocks\Framework\Dao;
 
 /**
  */
@@ -25,8 +27,14 @@ class Launch_Controller implements Feature_Controller
 		/** @var $asynchronous Request */
 		$asynchronous = $parameters->getMainObject();
 		if ($asynchronous && $asynchronous instanceof Request) {
-			// TODO : check if previous process is not in progress
-			$asynchronous->asynchronousLaunch();
+			$running_request = Running\Request::getRequest($asynchronous);
+			foreach ($running_request->tasks as $task) {
+				if (in_array($task->status, [Running\Task::FINISHED, Running\Task::ERROR])) {
+					$task->status = Running\Task::PENDING;
+					Dao::write($task, Dao::only('status'));
+				}
+			}
+			$asynchronous->launch();
 		}
 		return (new List_Controller())->run($parameters, $form, $files, get_class($asynchronous));
 	}

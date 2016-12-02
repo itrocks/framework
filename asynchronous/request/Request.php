@@ -27,6 +27,9 @@ class Request
 	//----------------------------------------------------------------------------------- IN_PROGRESS
 	const IN_PROGRESS = 'in_progress';
 
+	//----------------------------------------------------------------------------------------- ERROR
+	const ERROR = 'error';
+
 	//----------------------------------------------------------------------------------- $task_count
 	/**
 	 * Internal counter for distribute new tasks in all execution task
@@ -269,7 +272,11 @@ class Request
 	 */
 	public function getStatus()
 	{
-		$tasks_executed = $this->progress + count($this->errors);
+		$errors = count($this->errors);
+		if ($errors) {
+			return self::ERROR;
+		}
+		$tasks_executed = $this->progress;
 		return $tasks_executed >= $this->max_progress ? static::FINISHED : static::IN_PROGRESS;
 	}
 
@@ -324,7 +331,7 @@ class Request
 	}
 
 	//---------------------------------------------------------------------------------------- launch
-	protected function launch()
+	public function launch()
 	{
 		$running_request = Running\Request::getRequest($this);
 		if ($running_request) {
