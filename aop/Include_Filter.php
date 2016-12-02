@@ -13,12 +13,11 @@ class Include_Filter extends php_user_filter
 	//-------------------------------------------------------------------------------------------- ID
 	const ID = 'aop.include';
 
-	//------------------------------------------------------------------------------------ $cache_dir
+	//------------------------------------------------------------------------------------- CACHE_DIR
 	/**
-	 * @var string
-	 * @see Compiler::getCacheDir()
+	 * @see \ITRocks\Framework\PHP\Compiler::getCacheDir()
 	 */
-	private static $cache_dir = 'cache/compiled';
+	const CACHE_DIR = 'cache/compiled';
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
@@ -37,7 +36,6 @@ class Include_Filter extends php_user_filter
 	 *
 	 * @param $file_name string
 	 * @return string
-	 * @see Compiler::PathToSourceFile()
 	 */
 	public static function cache_file($file_name)
 	{
@@ -57,21 +55,22 @@ class Include_Filter extends php_user_filter
 
 	//------------------------------------------------------------------------------------------ file
 	/**
-	 * @param $file_name string relative path to the file to be included
+	 * @param $file_name   string relative path to the file to be included
+	 * @param $path_prefix string
 	 * @return string
-	 * @see Compiler::sourceFileToPath()
 	 */
-	public static function file($file_name)
+	public static function file($file_name, $path_prefix = '')
 	{
-		$cache_file_name = self::$cache_dir . '/' . self::cache_file($file_name);
+		$path_prefix .= (strlen($path_prefix) && substr($path_prefix, -1) != '/') ? '/' : '';
+		$cache_file_name = self::CACHE_DIR . '/' . self::cache_file($file_name);
 		if (file_exists($cache_file_name)) {
 			if (isset($GLOBALS['D'])) {
 				return $cache_file_name;
 			}
 			self::$file_name = $cache_file_name;
-			return 'php://filter/read=' . self::ID . '/resource=' . $file_name;
+			return 'php://filter/read=' . self::ID . '/resource=' . $path_prefix . $file_name;
 		}
-		return $file_name;
+		return $path_prefix . $file_name;
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir
@@ -82,7 +81,7 @@ class Include_Filter extends php_user_filter
 	 */
 	public static function getCacheDir()
 	{
-		return self::$cache_dir;
+		return self::CACHE_DIR;
 	}
 
 	//---------------------------------------------------------------------------------------- filter

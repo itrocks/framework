@@ -119,13 +119,7 @@ class Compiler extends Cache implements
 					: Builder::create($class_name);
 			}
 		}
-		//todo SM: move this block above configuration?????
-		if (isset($_GET['Z'])) {
-			$absolute_cache_dir = self::getCacheDir(true);
-			if ($absolute_cache_dir && is_dir($absolute_cache_dir)) {
-				system('rm -rf ' . $absolute_cache_dir . '/*');
-			}
-		}
+		parent::manageCacheDirReset();
 	}
 
 	//----------------------------------------------------------------------------------- addCompiler

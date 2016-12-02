@@ -41,4 +41,18 @@ abstract class Cache
 		return $absolute ? $absolute_cache_dir : $relative_cache_dir;
 	}
 
+	//--------------------------------------------------------------------------- manageCacheDirReset
+	/**
+	 * Reset the cache directory if required
+	 */
+	public function manageCacheDirReset()
+	{
+		if (isset($_GET['Z'])) {
+			$absolute_cache_dir = static::getCacheDir(true);
+			if ($absolute_cache_dir && is_dir($absolute_cache_dir)) {
+				system('rm -rf ' . $absolute_cache_dir . '/*');
+			}
+		}
+	}
+
 }
