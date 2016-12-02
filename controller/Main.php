@@ -320,6 +320,9 @@ class Main
 	}
 
 	//--------------------------------------------------------------------------------- resumeSession
+	/**
+	 * Resume the session
+	 */
 	private function resumeSession()
 	{
 		$plugins = Session::current()->plugins;
