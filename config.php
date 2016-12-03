@@ -82,7 +82,7 @@ $config['ITRocks/Framework'] = [
 		Dao::class => [
 			Configuration::CLASS_NAME => Link::class,
 			Link::DATABASE => $loc[Link::class][Link::DATABASE],
-			Link::HOST     => 'localhost',
+			Link::HOST     => '127.0.0.1',
 			Link::LOGIN    => $loc[Link::class][Link::LOGIN],
 			Link::PASSWORD => $pwd[Link::class],
 		],

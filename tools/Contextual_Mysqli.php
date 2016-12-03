@@ -89,7 +89,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $socket   string
 	 */
 	public function __construct(
-		$host = 'localhost', $user = null, $password = null, $database = null, $port = 3306,
+		$host = '127.0.0.1', $user = null, $password = null, $database = null, $port = 3306,
 		$socket = null
 	) {
 		parent::__construct($host, $user, $password, $database, $port);
