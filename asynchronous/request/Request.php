@@ -154,9 +154,6 @@ class Request
 		$task->worker = $worker;
 		$task->request = $this;
 		if ($dependency) {
-			$task->group = $this->nextGroup();
-		}
-		if ($dependency) {
 			$task->condition = new Dependency($dependency);
 			// If has dependency, use the same group of execution
 			// Not mandatory, but it's choice

@@ -11,7 +11,7 @@ use ITRocks\Framework\Asynchronous\Task;
 class Dependency extends Condition
 {
 
-	//---------------------------------------------------------------------------------------- $tasks
+	//----------------------------------------------------------------------------------------- $task
 	/**
 	 * @link Object
 	 * @var Task
@@ -28,6 +28,15 @@ class Dependency extends Condition
 		if ($task) {
 			$this->task = $task;
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	function __toString()
+	{
+		return 'Depend on ' . $this->task;
 	}
 
 	//----------------------------------------------------------------------------------------- check

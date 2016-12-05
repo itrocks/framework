@@ -43,6 +43,7 @@ abstract class Worker
 			$this->task->finished();
 		}
 		catch (Exception $e) {
+			$this->task->error = $e->getMessage();
 			$this->task->error();
 		}
 	}
