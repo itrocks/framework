@@ -147,6 +147,7 @@ class Request
 		$task = Builder::create(static::getTaskClass());
 		$task->worker = $worker;
 		$task->request = $this;
+		$worker->task = $task;
 		if ($dependency) {
 			$task->condition = new Dependency($dependency);
 			// If has dependency, use the same group of execution
@@ -226,7 +227,7 @@ class Request
 		return isset($this->progress) ?
 			$this->progress :
 			$this->progress = Dao::count(
-				['status' => Task::FINISHED, 'request' => $this], static::getTaskClass()
+				['status' => [Task::FINISHED, Task::STOPPED], 'request' => $this], static::getTaskClass()
 			);
 	}
 
