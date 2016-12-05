@@ -87,7 +87,7 @@ class Application_Updater implements Configurable, Serializable
 	 *
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct($configuration = null)
 	{
 		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
 			self::$nb_max_lock_try = $configuration[self::NB_MAX_LOCK_TRIES];
