@@ -64,10 +64,10 @@ class Task
 	//---------------------------------------------------------------------------------------- $group
 	/**
 	 * Execution group.
-	 * Used for distributed task in many servers
+	 * Used for distributed task in many execution
 	 * @var integer
 	 */
-	public $group = 1;
+	public $group = 0;
 
 	//-------------------------------------------------------------------------------------- $request
 	/**

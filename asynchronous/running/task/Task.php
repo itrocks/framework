@@ -28,9 +28,6 @@ class Task extends Asynchronous\Task
 		if ($task_number) {
 			$this->group = $task_number;
 		}
-		if (!$this->worker) {
-			$this->worker = new Worker();
-		}
 	}
 
 	//---------------------------------------------------------------------------- asynchronousLaunch

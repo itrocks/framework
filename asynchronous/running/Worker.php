@@ -7,7 +7,7 @@ use ITRocks\Framework\Dao;
 
 /**
  */
-class Worker extends Asynchronous\Worker
+abstract class Worker extends Asynchronous\Worker
 {
 	//----------------------------------------------------------------------------------------- $task
 	/**
@@ -17,37 +17,11 @@ class Worker extends Asynchronous\Worker
 	 */
 	public $task;
 
-	//--------------------------------------------------------------------------------------- execute
-	/**
-	 * Basic execution of worker
-	 */
-	protected function execute()
-	{
-		$finish = false;
-		while (!$finish) {
-			$request = $this->task->request->getRequestToRun();
-			$tasks = $request->getTaskToExecute($this->task->group);
-			if ($this->isStopped()) {
-				throw new Execution_Stopped();
-			}
-			if ($tasks) {
-				foreach ($tasks as $task) {
-					if ($task->canExecute()) {
-						$task->run();
-					}
-				}
-			}
-			if (!$tasks) {
-				$finish = true;
-			}
-		}
-	}
-
 	//------------------------------------------------------------------------------------- isStopped
 	/**
 	 * @return boolean
 	 */
-	private function isStopped()
+	public function isStopped()
 	{
 		/** @var $task Task */
 		$task = Dao::read(Dao::getObjectIdentifier($this->task), get_class($this->task));

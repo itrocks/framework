@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Asynchronous;
 
 use ITRocks\Framework\Asynchronous\Condition\Dependency;
+use ITRocks\Framework\Asynchronous\Running\Main_Worker;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -29,13 +30,6 @@ class Request
 
 	//----------------------------------------------------------------------------------------- ERROR
 	const ERROR = 'error';
-
-	//----------------------------------------------------------------------------------- $task_count
-	/**
-	 * Internal counter for distribute new tasks in all execution task
-	 * @var integer
-	 */
-	private $task_count = 1;
 
 	//------------------------------------------------------------------------------------- $creation
 	/**
@@ -157,36 +151,9 @@ class Request
 			$task->condition = new Dependency($dependency);
 			// If has dependency, use the same group of execution
 			// Not mandatory, but it's choice
-			$task->group = $dependency->group;
-		}
-		else {
-			$task->group = $this->nextGroup();
 		}
 		Dao::write($task);
-		$this->checkRunningTaskLaunched($task);
 		return $task;
-	}
-
-	//---------------------------------------------------------------------- checkRunningTaskLaunched
-	/**
-	 * @param $task Task
-	 */
-	private function checkRunningTaskLaunched($task)
-	{
-		if ($this->creation && !$this->creation->isEmpty() && $this->number_of_executions > 1) {
-			$request = Running\Request::getRequest($task->request);
-			if ($request) {
-				/** @var $task Running\Task */
-				$task = Dao::searchOne(
-					['request' => $request, 'group' => $task->group], Running\Task::class
-				);
-				if ($task->status == Task::FINISHED) {
-					$task->status = Task::PENDING;
-					Dao::write($task);
-					$task->asynchronousLaunch();
-				}
-			}
-		}
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
@@ -277,6 +244,15 @@ class Request
 		return $tasks_executed >= $this->max_progress ? static::FINISHED : static::IN_PROGRESS;
 	}
 
+	//------------------------------------------------------------------------------------ isFinished
+	/**
+	 * @return boolean
+	 */
+	public function isFinished()
+	{
+		return $this->progress + count($this->errors) >= $this->max_progress;
+	}
+
 	//---------------------------------------------------------------------------------- getTaskClass
 	/**
 	 * @return string
@@ -303,19 +279,6 @@ class Request
 		return $tasks ?: [];
 	}
 
-	//------------------------------------------------------------------------------------- nextGroup
-	/**
-	 * @return integer
-	 */
-	private function nextGroup()
-	{
-		$this->task_count++;
-		if ($this->task_count > $this->number_of_executions) {
-			return $this->task_count = 1;
-		}
-		return $this->task_count;
-	}
-
 	//----------------------------------------------------------------------------------------- start
 	/**
 	 * Launch asynchronous task
@@ -332,22 +295,9 @@ class Request
 	{
 		$running_request = Running\Request::getRequest($this);
 		if ($running_request) {
-			$group_map = [];
-			foreach ($running_request->tasks as $task) {
-				// Re-launch all running tasks who are stopped
-				if (in_array($task->status, [Task::PENDING, Task::FINISHED])) {
-					$task->asynchronousLaunch();
-					$group_map[$task->group] = true;
-				}
-			}
-			for ($i = 1; $i <= $this->number_of_executions; $i++) {
-				if (!isset($group_map[$i])) {
-					$task = new Running\Task($i);
-					$task->request = $running_request;
-					Dao::write($task);
-					$task->asynchronousLaunch();
-				}
-			}
+			/** @var $task Running\Task */
+			$task = $running_request->addTask(new Main_Worker());
+			$task->asynchronousLaunch();
 		}
 	}
 
