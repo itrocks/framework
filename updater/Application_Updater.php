@@ -5,6 +5,7 @@ use Exception;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
+use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Session;
 use Serializable;
 
@@ -16,28 +17,29 @@ use Serializable;
  * static properties to be sure they are shared across instances.
  * This makes others plugin classes able to know state of update processing.
  */
-class Application_Updater implements Serializable
+class Application_Updater implements Configurable, Serializable
 {
 
 	//------------------------------------------------------------------------------ LAST_UPDATE_FILE
 	const LAST_UPDATE_FILE = 'last_update';
 
-	//------------------------------------------------------------------------------- NB_MAX_LOCK_TRY
-	/**
-	 * Max tries to acquire lock. Total time = NB_MAX_LOCK_TRY * MICROSECONDS_BETWEEN_TWO_LOCK_TRY μs
-	 * @example 500 (* 1000000 = 5 minutes)
-	 */
-	const NB_MAX_LOCK_TRY = 500;
+	//----------------------------------------------------------------------------- NB_MAX_LOCK_TRIES
+	const NB_MAX_LOCK_TRIES = 'nb_max_lock_tries';
 
-	//------------------------------------------------------------- MICROSECONDS_BETWEEN_TWO_LOCK_TRY
-	/**
-	 * Delay between two tries to acquire lock
-	 * @example 1000000 (μs = 1s)
-	 */
-	const MICROSECONDS_BETWEEN_TWO_LOCK_TRY = 1000000;
+	//------------------------------------------------------------------ DELAY_BETWEEN_TWO_LOCK_TRIES
+	const DELAY_BETWEEN_TWO_LOCK_TRIES = 'delay_between_two_lock_tries';
 
 	//----------------------------------------------------------------------------------- UPDATE_FILE
 	const UPDATE_FILE = 'update';
+
+	//------------------------------------------------------------------- $delay_between_two_lock_try
+	/**
+	 * Delay between two lock tries in microseconds
+	 *
+	 * @example 1000000 (μs = 1s)
+	 * @var integer
+	 */
+	private static $delay_between_two_lock_tries = 1000000;
 
 	//------------------------------------------------------------------------------------ $lock_file
 	/**
@@ -46,6 +48,15 @@ class Application_Updater implements Serializable
 	 * @var resource
 	 */
 	private static $lock_file;
+
+	//------------------------------------------------------------------------------ $nb_max_lock_try
+	/**
+	 * Maximum number of tries to lock file for update
+	 *
+	 * @example 240 (* 1000000μs = 4 minutes)
+	 * @var integer
+	 */
+	private static $nb_max_lock_try = 240;
 
 	//-------------------------------------------------------------------------------------- $running
 	/**
@@ -73,9 +84,18 @@ class Application_Updater implements Serializable
 	/**
 	 * Application updater constructor zaps the cache directory if '?Z' argument is sent
 	 * This will result into a complete application cache rebuild
+	 *
+	 * @param $configuration array
 	 */
-	public function __construct()
+	public function __construct($configuration)
 	{
+		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
+			self::$nb_max_lock_try = $configuration[self::NB_MAX_LOCK_TRIES];
+		}
+		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
+			self::$delay_between_two_lock_tries = $configuration[self::DELAY_BETWEEN_TWO_LOCK_TRIES];
+		}
+
 		if (!isset(self::$updatables)) {
 			self::$updatables = [];
 		}
@@ -226,13 +246,13 @@ class Application_Updater implements Serializable
 		$nb_try = 0;
 		$would_block = 1;
 		while (
-			$nb_try++ < self::NB_MAX_LOCK_TRY
+			$nb_try++ < self::$nb_max_lock_try
 			&& file_exists(self::UPDATE_FILE)
 			// add LOCK_NB to make a not blocking call, and check $would_block for lock acquired
 			&& !flock(self::$lock_file, LOCK_EX | LOCK_NB, $would_block)
 			&& $would_block
 		) {
-			usleep(self::MICROSECONDS_BETWEEN_TWO_LOCK_TRY);
+			usleep(self::$delay_between_two_lock_tries);
 			clearstatcache(true, self::UPDATE_FILE);
 		}
 		if (!$would_block && file_exists(self::UPDATE_FILE)) {
@@ -275,11 +295,15 @@ class Application_Updater implements Serializable
 	 */
 	public function serialize()
 	{
+		$configuration = [];
+		$configuration[self::DELAY_BETWEEN_TWO_LOCK_TRIES] = self::$delay_between_two_lock_tries;
+		$configuration[self::NB_MAX_LOCK_TRIES] = self::$nb_max_lock_try;
 		$updatables = [];
 		foreach (self::$updatables as $updatable) {
 			$updatables[] = is_object($updatable) ? get_class($updatable) : $updatable;
 		}
-		return serialize($updatables);
+		$configuration['updatables'] = $updatables;
+		return serialize($configuration);
 	}
 
 	//----------------------------------------------------------------------------- setLastUpdateTime
@@ -328,7 +352,14 @@ class Application_Updater implements Serializable
 	 */
 	public function unserialize($serialized)
 	{
-		self::$updatables = unserialize($serialized);
+		$configuration = unserialize($serialized);
+		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
+			self::$nb_max_lock_try = $configuration[self::NB_MAX_LOCK_TRIES];
+		}
+		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
+			self::$delay_between_two_lock_tries = $configuration[self::DELAY_BETWEEN_TWO_LOCK_TRIES];
+		}
+		self::$updatables = $configuration['updatables'];
 	}
 
 }
