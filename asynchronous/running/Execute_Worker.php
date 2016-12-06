@@ -23,6 +23,8 @@ class Execute_Worker extends Worker
 	{
 		$finish = false;
 		while (!$finish) {
+			upgradeTimeLimit(600);
+			upgradeMemoryLimit('2G');
 			$request = $this->task->request->getRequestToRun();
 			$tasks = $request->getTaskToExecute($this->task->group);
 			if ($this->isStopped()) {

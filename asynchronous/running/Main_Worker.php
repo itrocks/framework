@@ -62,6 +62,8 @@ class Main_Worker extends Worker
 			if ($this->isStopped()) {
 				throw new Execution_Stopped();
 			}
+			upgradeTimeLimit(600);
+			upgradeMemoryLimit('2G');
 			$request = $this->task->request->getRequestToRun();
 			if (!$request->isFinished()) {
 				$task_repartition = $request->getTaskToExecute(0);
