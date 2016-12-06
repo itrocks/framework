@@ -237,6 +237,8 @@ class Application_Updater implements Configurable, Serializable
 	//------------------------------------------------------------------------------------------ lock
 	/**
 	 * Lock other script for update
+	 *
+	 * @return boolean
 	 */
 	private function lock()
 	{
