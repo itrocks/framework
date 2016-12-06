@@ -106,6 +106,7 @@ class Task
 
 	//----------------------------------------------------------------------------- calculateDuration
 	/**
+	 * Calculate difference between start and end time
 	 * @return string
 	 */
 	public function calculateDuration()
@@ -131,6 +132,7 @@ class Task
 
 	//------------------------------------------------------------------------------------ canExecute
 	/**
+	 * Check if we can execute task
 	 * @return boolean
 	 */
 	public function canExecute()
@@ -146,6 +148,9 @@ class Task
 	}
 
 	//----------------------------------------------------------------------------------------- error
+	/**
+	 * Call by worker run if error was happening
+	 */
 	public function error()
 	{
 		$this->end_date = new Date_Time();
@@ -154,6 +159,9 @@ class Task
 	}
 
 	//-------------------------------------------------------------------------------------- finished
+	/**
+	 * Call by worker when task is finished
+	 */
 	public function finished()
 	{
 		$this->end_date = new Date_Time();
@@ -162,6 +170,9 @@ class Task
 	}
 
 	//------------------------------------------------------------------------------------------- run
+	/**
+	 * Call to run worker
+	 */
 	public function run()
 	{
 		$this->worker->task = $this;
@@ -169,6 +180,9 @@ class Task
 	}
 
 	//--------------------------------------------------------------------------------------- started
+	/**
+	 * Call when worker begin work
+	 */
 	public function started()
 	{
 		$this->begin_date = new Date_Time();

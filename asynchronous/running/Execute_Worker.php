@@ -17,7 +17,7 @@ class Execute_Worker extends Worker
 
 	//--------------------------------------------------------------------------------------- execute
 	/**
-	 * Basic execution of worker
+	 * Execute task attributed at his group
 	 */
 	protected function execute()
 	{

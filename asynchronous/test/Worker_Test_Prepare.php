@@ -22,6 +22,7 @@ class Worker_Test_Prepare extends Worker
 
 	//--------------------------------------------------------------------------------------- execute
 	/**
+	 * Prepare a list of task for tests
 	 */
 	public function execute()
 	{

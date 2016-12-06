@@ -96,6 +96,48 @@ class Request
 	 */
 	public $progress;
 
+	//------------------------------------------------------------------------------------- $progress
+	/**
+	 * Time to execute all tasks (time between start and end time)
+	 *
+	 * @calculated
+	 * @getter
+	 * @store false
+	 * @user readonly
+	 * @var integer
+	 */
+	public $execution_time;
+
+	//------------------------------------------------------------------------------------- $progress
+	/**
+	 * Total time executed (if task are executed in one synchronous task)
+	 *
+	 * @calculated
+	 * @getter
+	 * @store false
+	 * @user readonly
+	 * @var integer
+	 */
+	public $calculation_time;
+
+	public function getExecutionTime()
+	{
+		$last_date = $this->creation;
+		foreach ($this->tasks as $task) {
+			if ($task->end_date->isAfter($last_date)) {
+				$last_time = $task->end_date;
+			}
+		}
+		return '';
+	}
+
+	public function getCalculationTime()
+	{
+		foreach ($this->tasks as $task) {
+
+		}
+	}
+
 	//--------------------------------------------------------------------------------------- $status
 	/**
 	 * @calculated
@@ -282,7 +324,7 @@ class Request
 
 	//----------------------------------------------------------------------------------------- start
 	/**
-	 * Launch asynchronous task
+	 * Launch asynchronous request.
 	 */
 	public function start()
 	{

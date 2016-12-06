@@ -27,6 +27,9 @@ class Main_Worker extends Worker
 
 	//------------------------------------------------------------------------------ checkRunningTask
 	/**
+	 * Check if this execution task with this group number is running.
+	 * If not running, launch again.
+	 *
 	 * @param $group integer
 	 */
 	public function checkRunningTask($group)
@@ -53,7 +56,8 @@ class Main_Worker extends Worker
 
 	//--------------------------------------------------------------------------------------- execute
 	/**
-	 * Basic execution of worker
+	 * Attribute tasks for all runners
+	 * Not : it's better to pass messages by socket, but for the moment, it's stay simple
 	 */
 	protected function execute()
 	{
@@ -99,6 +103,8 @@ class Main_Worker extends Worker
 
 	//-------------------------------------------------------------------------------- getRunningTask
 	/**
+	 * Return running execution task with this group
+	 *
 	 * @param $group integer
 	 * @return Task
 	 */
@@ -111,6 +117,8 @@ class Main_Worker extends Worker
 
 	//------------------------------------------------------------------------------------ selectTask
 	/**
+	 * Select a task available in the list of tasks
+	 *
 	 * @param $task_repartition Task[]
 	 * @return Task|null
 	 */

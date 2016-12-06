@@ -13,14 +13,9 @@ use ITRocks\Framework\Asynchronous\Worker;
 class Worker_Test extends Worker
 {
 
-	//---------------------------------------------------------------------------------------- $error
-	/**
-	 * @var string
-	 */
-	public $error = '';
-
 	//----------------------------------------------------------------------------------------- $wait
 	/**
+	 * Wait x seconds
 	 * @var integer
 	 */
 	public $wait = 0;
@@ -44,15 +39,6 @@ class Worker_Test extends Worker
 	public function __toString()
 	{
 		return 'wait ' . $this->wait . ' seconds';
-	}
-
-	//----------------------------------------------------------------------------------------- error
-	/**
-	 * @param $e Exception
-	 */
-	public function error(Exception $e)
-	{
-		$this->error = $e->getMessage();
 	}
 
 	//--------------------------------------------------------------------------------------- execute

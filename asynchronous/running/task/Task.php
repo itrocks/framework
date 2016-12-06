@@ -31,6 +31,9 @@ class Task extends Asynchronous\Task
 	}
 
 	//---------------------------------------------------------------------------- asynchronousLaunch
+	/**
+	 * Launch task in asynchronous execution
+	 */
 	public function asynchronousLaunch()
 	{
 		$host = $_SERVER['HTTP_HOST'];

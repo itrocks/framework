@@ -19,6 +19,8 @@ abstract class Worker extends Asynchronous\Worker
 
 	//------------------------------------------------------------------------------------- isStopped
 	/**
+	 * If we have stop running
+	 *
 	 * @return boolean
 	 */
 	public function isStopped()

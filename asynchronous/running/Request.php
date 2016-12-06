@@ -52,6 +52,8 @@ class Request extends Asynchronous\Request
 
 	//------------------------------------------------------------------------------------ getRequest
 	/**
+	 * Return request to must be executed
+	 *
 	 * @param $request Asynchronous\Request
 	 * @return static
 	 */
