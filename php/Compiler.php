@@ -131,6 +131,41 @@ class Compiler extends Cache implements
 		$this->compilers[] = $compiler;
 	}
 
+	//-------------------------------------------------------------------------------- addMoreSources
+	/**
+	 * @param $compilers ICompiler[string $class_name]
+	 * @return Reflection_Source[]
+	 */
+	private function addMoreSources($compilers)
+	{
+		$added = [];
+
+		// ask each compiler for adding of compiled files, until they have nothing to add
+		foreach ($compilers as $compiler) {
+			/** @var $compiler ICompiler */
+			if ($compiler instanceof Needs_Main) {
+				$compiler->setMainController($this->main_controller);
+			}
+			$added = array_merge($added, $compiler->moreSourcesToCompile($this->sources));
+		}
+
+		foreach ($added as $added_key => $source) {
+			$source_file_name = $source->getFirstClassName() ?: $source->file_name;
+			if (isset($this->sources[$source_file_name])) {
+				unset($added[$added_key]);
+			}
+			else {
+				$this->replaceDependencies($source);
+				$this->sources[$source_file_name] = $source;
+			}
+		}
+
+		if (count($compilers) == 1) {
+			$added = [];
+		}
+		return $added;
+	}
+
 	//------------------------------------------------------------------------------------- addSource
 	/**
 	 * Adds a PHP source to the sources to be compiled
@@ -183,98 +218,51 @@ class Compiler extends Cache implements
 		clearstatcache();
 		$cache_dir = self::getCacheDir();
 
-		// create data set for dependencies, check for dependencies for deleted files
-		Dao::createStorage(Dependency::class);
-		Dao::begin();
-		if (isset($_GET['Z'])) {
-			Dao::truncate(Dependency::class);
-		}
-		else {
-			foreach (
-				Dao::select(Dependency::class, ['file_name' => Func::distinct()]) as $file_dependency
-			) {
-				/** @var $file_dependency List_Row */
-				$file_name = $file_dependency->getValue('file_name');
-				if (!file_exists($file_name)) {
-					foreach (Dao::search(['file_name' => $file_name], Dependency::class) as $dependency) {
-						/** @var $dependency Dependency */
-						Dao::delete($dependency);
-						foreach (
-							Dao::search(['dependency_name' => $dependency->class_name], Dependency::class)
-							as $sub_dependency
-						) {
-							/** @var $sub_dependency Dependency */
-							Dao::delete($sub_dependency);
-						}
-					}
-				}
-			}
-		}
-		Dao::commit();
+		// create data set for dependencies, check dependencies for deleted files
+		$this->manageDependencies();
 
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 		$first_group = true;
 
 		foreach ($this->compilers as $compilers) {
 			/** @var $compilers ICompiler[] */
-
+			//save sources in oder to give them to next compilers too
 			$this->saved_sources = $this->sources;
-			while ($this->sources) {
-
-				// get source and update dependencies
-				foreach ($this->sources as $source) {
-					$this->replaceDependencies($source);
-				}
-
-				do {
-					$added = [];
-
-					// ask each compiler for adding of compiled files, until they have nothing to add
-					foreach ($compilers as $compiler) {
-						if ($compiler instanceof Needs_Main) {
-							$compiler->setMainController($this->main_controller);
-						}
-						$added = array_merge($added, $compiler->moreSourcesToCompile($this->sources));
-					}
-
-					foreach ($added as $added_key => $source) {
-						$source_file_name = $source->getFirstClassName() ?: $source->file_name;
-						if (isset($this->sources[$source_file_name])) {
-							unset($added[$added_key]);
-						}
-						else {
-							$this->replaceDependencies($source);
-							$this->sources[$source_file_name] = $source;
-						}
-					}
-
-					if (count($compilers) == 1) {
-						$added = [];
-					}
-
-				} while ($added);
-
-				$this->saved_sources = array_merge($this->saved_sources, $this->sources);
-
-				// compile sources
-				$this->sortSourcesByParentsCount();
-				foreach ($this->sources as $source) {
-					$this->compileSource($source, $compilers, $cache_dir, $first_group);
-				}
-
-				$this->sources = $this->more_sources;
-				$this->more_sources = [];
-				foreach ($this->sources as $source_class_name => $source) {
-					if (!isset($this->saved_sources[$source_class_name])) {
-						$this->saved_sources[$source_class_name] = $source;
-					}
-				}
-			}
+			$this->compileLoop($compilers, $first_group, $cache_dir);
 			$this->sources = $this->saved_sources;
 			$first_group = false;
 		}
 		$this->sources = null;
 
+	}
+
+	//----------------------------------------------------------------------------------- compileLoop
+	/**
+	 * Loop on compilers until it remains no source to compile
+	 *
+	 * @param $compilers   ICompiler[string $class_name]
+	 * @param $first_group boolean
+	 * @param $cache_dir   string
+	 */
+	private function compileLoop($compilers, $first_group, $cache_dir)
+	{
+		while ($this->sources) {
+
+			// get source and update dependencies
+			foreach ($this->sources as $source) {
+				$this->replaceDependencies($source);
+			}
+
+			do {
+				// ask each compiler for adding of compiled files, until they have nothing to add
+				$added = $this->addMoreSources($compilers);
+			} while ($added);
+
+			$this->saved_sources = array_merge($this->saved_sources, $this->sources);
+
+			// compile sources
+			$this->compileSources($compilers, $first_group, $cache_dir);
+		}
 	}
 
 	//--------------------------------------------------------------------------------- compileSource
@@ -305,6 +293,28 @@ class Compiler extends Cache implements
 		}
 		elseif (file_exists($file_name) && $first_group) {
 			unlink($file_name);
+		}
+	}
+
+	//-------------------------------------------------------------------------------- compileSources
+	/**
+	 * @param $compilers   ICompiler[string $class_name]
+	 * @param $first_group boolean
+	 * @param $cache_dir   string
+	 */
+	private function compileSources($compilers, $first_group, $cache_dir)
+	{
+		$this->sortSourcesByParentsCount();
+		foreach ($this->sources as $source) {
+			$this->compileSource($source, $compilers, $cache_dir, $first_group);
+		}
+
+		$this->sources = $this->more_sources;
+		$this->more_sources = [];
+		foreach ($this->sources as $source_class_name => $source) {
+			if (!isset($this->saved_sources[$source_class_name])) {
+				$this->saved_sources[$source_class_name] = $source;
+			}
 		}
 	}
 
@@ -357,6 +367,41 @@ class Compiler extends Cache implements
 		return $files;
 	}
 
+	//---------------------------------------------------------------------------- manageDependencies
+	/**
+	 * Create data set for dependencies, check dependencies for deleted files
+	 */
+	private function manageDependencies()
+	{
+		Dao::createStorage(Dependency::class);
+		Dao::begin();
+		if (isset($_GET['Z'])) {
+			Dao::truncate(Dependency::class);
+		}
+		else {
+			foreach (
+				Dao::select(Dependency::class, ['file_name' => Func::distinct()]) as $file_dependency
+			) {
+				/** @var $file_dependency List_Row */
+				$file_name = $file_dependency->getValue('file_name');
+				if (!file_exists($file_name)) {
+					foreach (Dao::search(['file_name' => $file_name], Dependency::class) as $dependency) {
+						/** @var $dependency Dependency */
+						Dao::delete($dependency);
+						foreach (
+							Dao::search(['dependency_name' => $dependency->class_name], Dependency::class)
+							as $sub_dependency
+						) {
+							/** @var $sub_dependency Dependency */
+							Dao::delete($sub_dependency);
+						}
+					}
+				}
+			}
+		}
+		Dao::commit();
+	}
+
 	//----------------------------------------------------------------------------------- pathToClass
 	/**
 	 * Returns the class name given a compiled file path (excluding the cache dir part)
@@ -370,7 +415,7 @@ class Compiler extends Cache implements
 		return Names::pathToClass(str_replace('-', SL, $path));
 	}
 
-	//----------------------------------------------------------------------------------- pathToClass
+	//------------------------------------------------------------------------------ pathToSourceFile
 	/**
 	 * Returns the source file given a compiled file path (excluding the cache dir part)
 	 * eg. a-class-name-like-This into a/class/name/like/This.php or a/class/name/like/this/This.php
@@ -515,7 +560,7 @@ class Compiler extends Cache implements
 	/**
 	 * Returns the filename where to store compiled file for given source file name
 	 * 'a/class/name/like/this/This.php' or 'a/class/name/like/This.php' into
-	 * 'a-class-name-like-This'
+	 * 'a-class-name-like-This'>
 	 *
 	 * @param $file_name string
 	 * @return string
