@@ -120,11 +120,19 @@ class Application_Updater implements Configurable, Serializable
 	 * This can be called before the application updater plugin is registered, all updatable objects
 	 * will be kept
 	 *
+	 *
 	 * @param $object Updatable|string object or class name
 	 */
 	public function addUpdatable($object)
 	{
-		self::$updatables[] = $object;
+		/**
+		 * BE WARN: This is called each time plugin are registered (means on session creation/reset) and
+		 * it can happen that some Updatable plugins do some session reset, so register again during an
+		 * update. Since we do not want to add again updatables, we add only if update is not running!
+		 */
+		if (!self::isRunning()) {
+			self::$updatables[] = $object;
+		}
 	}
 
 	//------------------------------------------------------------------------------------ autoUpdate
