@@ -23,11 +23,7 @@ abstract class Value
 	{
 		// no is_numeric(), as sql numeric search make numeric conversion of string fields
 		// ie WHERE NAME = 500 instead of '500' will give you '500' and '500L', which is not correct
-		if (
-			is_float($value)
-			|| is_integer($value)
-			|| (is_numeric($value) && $value{0} && (strpos($value, 'E') === false))
-		) {
+		if (isStrictNumeric($value) && $value{0}) {
 			$string_value = strval($value);
 		}
 		elseif (is_bool($value)) {
