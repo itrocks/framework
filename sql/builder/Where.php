@@ -109,12 +109,12 @@ class Where
 	/**
 	 * Build SQL WHERE section for multiple where clauses
 	 *
-	 * @param $path        string Base property path for values (if keys are numeric or structure keywords)
-	 * @param $array       array An array of where conditions
-	 * @param $clause      string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
+	 * @param $path   string Base property path for values (if keys are numeric or structure keywords)
+	 * @param $array  array An array of where conditions
+	 * @param $clause string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @return string
 	 */
-	private function buildArray($path, $array, $clause)
+	private function buildArray($path, array $array, $clause)
 	{
 		$sql = '';
 		$sql_close = '';

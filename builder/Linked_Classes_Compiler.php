@@ -90,7 +90,7 @@ class Linked_Classes_Compiler implements ICompiler
 	 * @param &$sources Reflection_Source[]
 	 * @return Reflection_Source[] added sources list
 	 */
-	public function moreSourcesToCompile(&$sources)
+	public function moreSourcesToCompile(array &$sources)
 	{
 		$added = [];
 		// we will search all extends dependencies

@@ -253,7 +253,7 @@ function strIsCapitals($str)
  * @param $subject        string The text where to make the replacement
  * @return string
  */
-function strReplace($search_replace, $subject)
+function strReplace(array $search_replace, $subject)
 {
 	return str_replace(array_keys($search_replace), array_values($search_replace), $subject);
 }

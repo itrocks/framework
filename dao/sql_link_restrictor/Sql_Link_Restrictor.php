@@ -62,7 +62,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * @param $restrictions array
 	 */
-	public function __construct($restrictions = null)
+	public function __construct(array $restrictions = null)
 	{
 		if (isset($restrictions)) $this->restrictions = $restrictions;
 	}

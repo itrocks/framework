@@ -36,11 +36,11 @@ class Default_List_Row implements List_Row
 	 * @param $object     object
 	 * @param $values     string[]
 	 */
-	public function __construct($class_name, $object, $values)
+	public function __construct($class_name, $object, array $values)
 	{
 		$this->class_name = $class_name;
-		$this->object = $object;
-		$this->values = $values;
+		$this->object     = $object;
+		$this->values     = $values;
 	}
 
 	//----------------------------------------------------------------------------------------- count

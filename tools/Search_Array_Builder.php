@@ -22,9 +22,9 @@ class Search_Array_Builder
 	/**
 	 * @param $property_name string
 	 * @param $search_phrase string
-	 * @param $prepend string
-	 * @param $append string
-	 * @return array
+	 * @param $prepend       string
+	 * @param $append        string
+	 * @return array|string
 	 */
 	public function build($property_name, $search_phrase, $prepend = '', $append = '')
 	{
@@ -112,7 +112,7 @@ class Search_Array_Builder
 	 * @param $already string[] For recursion limits : already got classes
 	 * @return string[]
 	 */
-	private function classRepresentativeProperties($class, $already = [])
+	private function classRepresentativeProperties($class, array $already = [])
 	{
 		$property_names = $class->getListAnnotation('representative')->values();
 		foreach ($property_names as $key => $property_name) {

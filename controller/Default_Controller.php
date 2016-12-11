@@ -23,12 +23,12 @@ class Default_Controller implements Controller
 	 *
 	 * @param $parameters   Parameters
 	 * @param $form         array
-	 * @param $files        array
+	 * @param $files        array[]
 	 * @param $class_name   string
 	 * @param $feature_name string
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files, $class_name, $feature_name)
+	public function run(Parameters $parameters, array $form, array $files, $class_name, $feature_name)
 	{
 		$constructor = class_exists($class_name)
 			? (new Reflection_Class($class_name))->getConstructor()

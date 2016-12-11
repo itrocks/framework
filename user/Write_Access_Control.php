@@ -96,7 +96,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @param $result Button[]
 	 */
-	public function removeButtons(&$result)
+	public function removeButtons(array &$result)
 	{
 		if (!User::current()) {
 			foreach (self::WRITE_FEATURES as $feature) {

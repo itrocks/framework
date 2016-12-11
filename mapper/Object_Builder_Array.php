@@ -134,7 +134,7 @@ class Object_Builder_Array
 	 * @return object
 	 */
 	public function build(
-		$array, $object = null, $null_if_empty = false, $ignore_property_name = null
+		array $array, $object = null, $null_if_empty = false, $ignore_property_name = null
 	) {
 		if (!$this->started) {
 			$this->start(isset($object) ? get_class($object) : null);
@@ -197,8 +197,9 @@ class Object_Builder_Array
 	 * @param $composite     object the composite object, if linked
 	 * @return object[]
 	 */
-	public function buildCollection($class_name, $array, $null_if_empty = false, $composite = null)
-	{
+	public function buildCollection(
+		$class_name, array $array, $null_if_empty = false, $composite = null
+	) {
 		$collection = [];
 		if ($array) {
 			$builder = new Object_Builder_Array($class_name, $this->from_form, $composite);
@@ -296,20 +297,18 @@ class Object_Builder_Array
 	 * @param $class_name string the name of the class to build each element
 	 * @return integer[]
 	 */
-	public function buildMap($array, $class_name)
+	public function buildMap(array $array, $class_name)
 	{
 		$map = [];
-		if ($array) {
-			foreach ($array as $key => $element) {
-				if (!empty($element)) {
-					if (is_array($element)) {
-						$map[$key] = (new Object_Builder_Array($class_name, $this->from_form))->build(
-							$element, null, true
-						);
-					}
-					else {
-						$map[$key] = is_object($element) ? $element : Dao::read($element, $class_name);
-					}
+		foreach ($array as $key => $element) {
+			if (!empty($element)) {
+				if (is_array($element)) {
+					$map[$key] = (new Object_Builder_Array($class_name, $this->from_form))->build(
+						$element, null, true
+					);
+				}
+				else {
+					$map[$key] = is_object($element) ? $element : Dao::read($element, $class_name);
 				}
 			}
 		}
@@ -324,7 +323,7 @@ class Object_Builder_Array
 	 * @param $composite     object The composite object (set it only if property is a @component)
 	 * @return object
 	 */
-	private function buildObjectValue($class_name, $array, $null_if_empty, $composite)
+	private function buildObjectValue($class_name, array $array, $null_if_empty, $composite)
 	{
 		$builder = new Object_Builder_Array($class_name, $this->from_form, $composite);
 		$object = $builder->build($array, null, $this->null_if_empty_sub_objects || $null_if_empty);
@@ -590,7 +589,7 @@ class Object_Builder_Array
 	 * @param $object object
 	 * @return array
 	 */
-	private function initLinkObject(&$array, &$object)
+	private function initLinkObject(array &$array, &$object)
 	{
 		/** @var $link Class_\Link_Annotation */
 		$link = $this->class->getAnnotation('link');
@@ -661,7 +660,7 @@ class Object_Builder_Array
 	 *                This object is always set at the end of execution of initObject()
 	 * @return array if read from a link object, this is the search properties that identify it
 	 */
-	private function initObject(&$array, &$object)
+	private function initObject(array &$array, &$object)
 	{
 		if (!isset($object)) {
 			if (isset($array['id']) && $array['id']) {
@@ -693,7 +692,7 @@ class Object_Builder_Array
 	 * @param $read_properties string[] properties names
 	 * @return object
 	 */
-	public function readObject($object, $read_properties)
+	public function readObject($object, array $read_properties)
 	{
 		$objects = Dao::search($read_properties, get_class($object));
 		if (count($objects) > 1) {

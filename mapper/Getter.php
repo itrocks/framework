@@ -30,7 +30,7 @@ abstract class Getter
 	 * @param $element_type_name string
 	 * @return object[]
 	 */
-	public static function & getAll(&$stored, $element_type_name)
+	public static function & getAll(array &$stored = null, $element_type_name)
 	{
 		if (!(self::$ignore || isset($stored))) {
 			$stored = Dao::readAll($element_type_name, Dao::sort());
@@ -73,8 +73,9 @@ abstract class Getter
 	 *        but can be omitted if foreign class is a Component
 	 * @return object[]
 	 */
-	public static function & getCollection(&$stored, $class_name, $object, $property = null)
-	{
+	public static function & getCollection(
+		array &$stored = null, $class_name, $object, $property = null
+	) {
 		// TODO JSON will work only if $property is set. Should add string / null case
 		if (
 			!self::$ignore
@@ -217,7 +218,7 @@ abstract class Getter
 	 * @param $property string|Reflection_Property the source property (or name) for map reading
 	 * @return Component[]
 	 */
-	public static function & getMap(&$stored, $object, $property)
+	public static function & getMap(array &$stored = null, $object, $property)
 	{
 		if (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {

@@ -71,9 +71,8 @@ class Password
 	 * Replaces the password by a randomly generated one
 	 *
 	 * @param $length          integer wished length for the password
-	 * @param $specials        string special characters that can be used
 	 * @param $characters_type integer a sum of self::T_* constants to tell which characters are allowed
-	 * @param $uppercase       boolean true if uppercase letters are allowed, false if we want only low case
+	 * @param $specials        string special characters that can be used
 	 * @return Password
 	 */
 	public function generate($length = 9, $characters_type = self::T_ALL, $specials = '()[]-_+-*/\\')

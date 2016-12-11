@@ -47,7 +47,7 @@ class Feature_Cache
 	 *
 	 * @param $features Feature[]
 	 */
-	public function saveToCache($features)
+	public function saveToCache(array $features)
 	{
 		Dao::begin();
 		/** @var $old_features Feature[] */

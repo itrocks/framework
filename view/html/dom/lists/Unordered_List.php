@@ -17,8 +17,9 @@ class Unordered_List extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @param $items List_Item[]
 	 */
-	public function __construct($items = null)
+	public function __construct(array $items = null)
 	{
 		parent::__construct('ul');
 		if (isset($items)) $this->items = $items;

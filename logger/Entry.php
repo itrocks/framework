@@ -116,10 +116,11 @@ class Entry
 	 * @param $uri       string
 	 * @param $arguments array
 	 * @param $form      array
-	 * @param $files     array
+	 * @param $files     array[]
 	 */
-	public function __construct($uri = null, $arguments = null, $form = null, $files = null)
-	{
+	public function __construct(
+		$uri = null, array $arguments = null, array $form = null, array $files = null
+	) {
 		if (isset($uri)) {
 			if (!isset($this->start)) {
 				$this->duration_start = microtime(true);

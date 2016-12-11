@@ -71,9 +71,9 @@ class Application
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 *
-	 * @param $configuration array|null
+	 * @param $configuration array
 	 */
-	public function __construct($configuration = null)
+	public function __construct($configuration = [])
 	{
 		if (isset($configuration[self::MAX_SESSION_TIME])) {
 			$this->max_session_time = $configuration[self::MAX_SESSION_TIME];

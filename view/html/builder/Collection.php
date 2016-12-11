@@ -53,7 +53,7 @@ class Collection
 	 * @param $property   Reflection_Property
 	 * @param $collection object[]
 	 */
-	public function __construct(Reflection_Property $property, $collection)
+	public function __construct(Reflection_Property $property, array $collection)
 	{
 		$this->property   = $property;
 		$this->collection = $collection;

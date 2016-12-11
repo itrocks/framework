@@ -17,10 +17,10 @@ interface Default_Feature_Controller extends Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array
+	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files, $class_name);
+	public function run(Parameters $parameters, array $form, array $files, $class_name);
 
 }

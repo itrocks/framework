@@ -69,7 +69,7 @@ class Yaml
 	 * @param $feature string
 	 * @param $options array
 	 */
-	public function addFeature($feature, $options = null)
+	public function addFeature($feature, array $options = [])
 	{
 		if (!isset($this->data[self::FEATURES])) {
 			$this->data[self::FEATURES] = [];

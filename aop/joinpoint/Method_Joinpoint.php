@@ -32,7 +32,7 @@ abstract class Method_Joinpoint extends Function_Joinpoint
 	 * @param $parameters  array
 	 * @param $advice      string[]|object[]|string
 	 */
-	public function __construct($class_name, $pointcut, $parameters, $advice)
+	public function __construct($class_name, array $pointcut, $parameters, $advice)
 	{
 		parent::__construct($pointcut, $parameters, $advice);
 		$this->class_name  = $class_name;

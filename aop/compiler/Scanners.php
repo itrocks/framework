@@ -16,7 +16,7 @@ trait Scanners
 	 * @param $properties array
 	 * @param $class      Reflection_Class
 	 */
-	private function scanForGetters(&$properties, Reflection_Class $class)
+	private function scanForGetters(array &$properties, Reflection_Class $class)
 	{
 		foreach ($class->getProperties() as $property) {
 			$expr = '%'
@@ -50,7 +50,7 @@ trait Scanners
 	 * @param $properties array
 	 * @param $class      Reflection_Class
 	 */
-	private function scanForLinks(&$properties, Reflection_Class $class)
+	private function scanForLinks(array &$properties, Reflection_Class $class)
 	{
 		$disable = [];
 		foreach ($properties as $property_name => $advices) {
@@ -97,7 +97,8 @@ trait Scanners
 	 * @return array
 	 */
 	private function scanForOverrides(
-		$documentation, $annotations = ['getter', 'link', 'replaces', 'setter'], $disable = []
+		$documentation, array $annotations = ['getter', 'link', 'replaces', 'setter'],
+		array $disable = []
 	) {
 		$overrides = [];
 		if (strpos($documentation, '@override')) {
@@ -142,7 +143,7 @@ trait Scanners
 	 * @param $properties array
 	 * @param $class      Reflection_Class
 	 */
-	private function scanForReplaces(&$properties, Reflection_Class $class)
+	private function scanForReplaces(array &$properties, Reflection_Class $class)
 	{
 		foreach ($class->getProperties([T_USE]) as $property) {
 			$expr = '%'
@@ -183,7 +184,7 @@ trait Scanners
 	 * @param $properties array
 	 * @param $class      Reflection_Class
 	 */
-	private function scanForSetters(&$properties, Reflection_Class $class)
+	private function scanForSetters(array &$properties, Reflection_Class $class)
 	{
 		foreach ($class->getProperties() as $property) {
 			$expr = '%'

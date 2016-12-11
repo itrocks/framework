@@ -21,7 +21,7 @@ abstract class Tabs_Builder_Class
 	 * @param $filter_properties string[]
 	 * @return Tab[] Tabs will contain Reflection_Property[] as content
 	 */
-	public static function build(Reflection_Class $class, $filter_properties = null)
+	public static function build(Reflection_Class $class, array $filter_properties = null)
 	{
 		/** @var $group_annotations Group_Annotation[] */
 		$group_annotations = $class->getAnnotations('group');
@@ -41,7 +41,7 @@ abstract class Tabs_Builder_Class
 	 * @param $group_annotations Group_Annotation[]
 	 * @return Tab[]
 	 */
-	protected static function buildProperties($properties, $group_annotations)
+	protected static function buildProperties(array $properties, array $group_annotations)
 	{
 		$root_tab = new Tab();
 		if (!empty($group_annotations)) {
@@ -88,7 +88,7 @@ abstract class Tabs_Builder_Class
 	 * @param $property_names string[]
 	 * @return Reflection_Property[]
 	 */
-	private static function getProperties($properties, $property_names)
+	private static function getProperties(array $properties, array $property_names)
 	{
 		$result = [];
 		foreach ($property_names as $property_name) {

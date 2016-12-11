@@ -73,23 +73,21 @@ class Logger implements Configurable, Registerable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = null)
+	public function __construct($configuration = [])
 	{
-		if (isset($configuration)) {
-			if (isset($configuration[self::CONTINUE_LOG])) {
-				$this->continue = $configuration[self::CONTINUE_LOG];
-				if (isset($configuration[self::EXCLUDE])) {
-					foreach ($configuration[self::EXCLUDE] as $exclude) {
-						if (strpos(SL . $_SERVER['REQUEST_URI'] . SL, SL . $exclude . SL)) {
-							$this->continue = false;
-							break;
-						}
+		if (isset($configuration[self::CONTINUE_LOG])) {
+			$this->continue = $configuration[self::CONTINUE_LOG];
+			if (isset($configuration[self::EXCLUDE])) {
+				foreach ($configuration[self::EXCLUDE] as $exclude) {
+					if (strpos(SL . $_SERVER['REQUEST_URI'] . SL, SL . $exclude . SL)) {
+						$this->continue = false;
+						break;
 					}
 				}
 			}
-			if (isset($configuration[self::DISPLAY_LOG])) {
-				$this->display_log = $configuration[self::DISPLAY_LOG];
-			}
+		}
+		if (isset($configuration[self::DISPLAY_LOG])) {
+			$this->display_log = $configuration[self::DISPLAY_LOG];
 		}
 	}
 

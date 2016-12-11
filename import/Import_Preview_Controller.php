@@ -37,8 +37,9 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	 * @param $settings   Custom_Settings|Import_Settings always null (unused)
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($class_name, $parameters, Custom_Settings $settings = null)
-	{
+	public function getGeneralButtons(
+		$class_name, array $parameters, Custom_Settings $settings = null
+	) {
 		return [
 			Feature::F_WRITE => new Button(
 				'Save', View::link($class_name, Feature::F_IMPORT, 'preview'),
@@ -55,12 +56,12 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array
+	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return mixed
 	 * @todo factorize
 	 */
-	public function run(Parameters $parameters, $form, $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		// convert form files to worksheets and session files
 		if ($files) {

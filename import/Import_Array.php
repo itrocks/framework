@@ -77,7 +77,7 @@ class Import_Array
 	 * @param $this_constants $value = string[$property_path]
 	 * @param $array          $value = string[integer $row_number][integer $column_number]
 	 */
-	private static function addConstantsToArray($this_constants, &$array)
+	private static function addConstantsToArray($this_constants, array &$array)
 	{
 		if ($this_constants) {
 			$constants = [];
@@ -112,7 +112,7 @@ class Import_Array
 	 * @param $search     array
 	 * @return array
 	 */
-	private function createArrayReference($class_name, $search)
+	private function createArrayReference($class_name, array $search = null)
 	{
 		$array = (isset($search)) ? [Builder::fromArray($class_name, $search)] : null;
 		$class = new Link_Class($class_name);
@@ -143,7 +143,7 @@ class Import_Array
 	 * @param $array array $value = string[$row_number][$column_number]
 	 * @return string
 	 */
-	public static function getClassNameFromArray(&$array)
+	public static function getClassNameFromArray(array &$array)
 	{
 		$row = reset($array);
 		$array_class_name = reset($row);
@@ -177,7 +177,7 @@ class Import_Array
 	 * @param $array array $value = string[$row_number][$column_number]
 	 * @return string[] $fixed_value_for_import = string[string $property_path]
 	 */
-	public static function getConstantsFromArray(&$array)
+	public static function getConstantsFromArray(array &$array)
 	{
 		$constants = [];
 		$row = self::getClassNameFromArray($array) ? next($array) : current($array);
@@ -219,7 +219,7 @@ class Import_Array
 	 * @param $class_name string class name : if set, will use current list settings properties alias
 	 * @return string[] $property_path = string[integer $column_number]
 	 */
-	public static function getPropertiesFromArray(&$array, $class_name = null)
+	public static function getPropertiesFromArray(array &$array, $class_name = null)
 	{
 		$use_reverse_translation = Locale::current() ? true : false;
 		$properties_alias = isset($class_name) ? self::getPropertiesAlias($class_name) : null;
@@ -241,7 +241,7 @@ class Import_Array
 	 * @param $properties_path string[] $property_path = string[integer $column_number]
 	 * @return array [$property_link = string[string $property_path], $property_column = string[string $property_path]]
 	 */
-	private static function getPropertiesLinkAndColumn($class_name, $properties_path)
+	private static function getPropertiesLinkAndColumn($class_name, array $properties_path)
 	{
 		$properties_link = ['' => Link_Annotation::OBJECT];
 		$properties_column = [];
@@ -282,8 +282,9 @@ class Import_Array
 	 * @param $class_properties_column integer[] $column_number = integer[string $property_name]
 	 * @return array search array for Dao::search() using $this->class_name
 	 */
-	private function getSearchObject($row, $identify_properties, $class_properties_column)
-	{
+	private function getSearchObject(
+		array $row, array $identify_properties, array $class_properties_column
+	) {
 		$empty_object = true;
 		$search = [];
 		foreach (array_keys($identify_properties) as $property_name) {
@@ -304,7 +305,7 @@ class Import_Array
 	 *
 	 * @param $array array $value = string[$row_number][$column_number]
 	 */
-	public function importArray(&$array)
+	public function importArray(array &$array)
 	{
 		Dao::begin();
 		$class_name = self::getClassNameFromArray($array) ?: $this->class_name;
@@ -340,7 +341,7 @@ class Import_Array
 	 * @param $class Import_Class
 	 * @param $array array $value = string[integer $row_number][integer $column_number]
 	 */
-	private function importArrayClass(Import_Class $class, &$array)
+	private function importArrayClass(Import_Class $class, array &$array)
 	{
 		$property_path = join(DOT, $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
@@ -367,8 +368,9 @@ class Import_Array
 	 * @param $class_properties_column integer[]
 	 * @return object
 	 */
-	public function importSearchObject($search, $row, Import_Class $class, $class_properties_column)
-	{
+	public function importSearchObject(
+		$search, array $row, Import_Class $class, array $class_properties_column
+	) {
 		if ($this->simulation && isset($search)) {
 			$this->simulateSearch($class, $search, $class->class_name);
 		}
@@ -413,7 +415,7 @@ class Import_Array
 	 * @return string
 	 */
 	public static function propertyPathOf(
-		$class_name, $property_path, $use_reverse_translation = false, $properties_alias = null
+		$class_name, $property_path, $use_reverse_translation = false, array $properties_alias = null
 	) {
 		if (isset($properties_alias) && isset($properties_alias[$property_path])) {
 			$property_path = $properties_alias[$property_path];
@@ -464,11 +466,11 @@ class Import_Array
 
 	//-------------------------------------------------------------------------------- simulateSearch
 	/**
-	 * @param $class  Import_Class
+	 * @param $class      Import_Class
 	 * @param $search     string[]
 	 * @param $class_name string
 	 */
-	protected function simulateSearch(Import_Class $class, $search, $class_name)
+	protected function simulateSearch(Import_Class $class, array $search, $class_name)
 	{
 		echo '- search ' . $class_name . ' = ' . print_r($search, true) . BR;
 	}
@@ -508,7 +510,7 @@ class Import_Array
 	 * @return object
 	 */
 	private function updateExistingObject(
-		$object, $row, Import_Class $class, $class_properties_column
+		$object, $row, Import_Class $class, array $class_properties_column
 	) {
 		$do_write = false;
 		foreach (array_keys($class->write_properties) as $property_name) {
@@ -533,7 +535,7 @@ class Import_Array
 	 * @param $class_properties_column integer[]|string[]
 	 * @return object
 	 */
-	private function writeNewObject($row, Import_Class $class, $class_properties_column)
+	private function writeNewObject(array $row, Import_Class $class, array $class_properties_column)
 	{
 		$object = Builder::create($class->class_name);
 		foreach (array_keys($class->identify_properties) as $property_name) {

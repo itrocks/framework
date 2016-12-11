@@ -427,7 +427,7 @@ class Router implements
 	 * @param $files Reflection_Source[] Key is the file path
 	 * @return Reflection_Source[] added sources list
 	 */
-	public function moreSourcesToCompile(&$files)
+	public function moreSourcesToCompile(array &$files)
 	{
 		return [];
 	}
@@ -544,7 +544,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	 * @param $parameters    array
 	 * @param $feature_name  string
 	 */
-	public function setPossibleHtmlTemplate($template_file, $parameters, $feature_name)
+	public function setPossibleHtmlTemplate($template_file, array $parameters, $feature_name)
 	{
 		if (isset($this->class_name)) {
 			$features = isset($parameters[Feature::FEATURE])
@@ -564,7 +564,7 @@ $this->view_calls = ' . var_export($this->view_calls, true) . ';
 	 * @param $view_method_name string
 	 */
 	public function setPossibleViewCall(
-		$class_name, $feature_name, $parameters, $view, $view_method_name
+		$class_name, $feature_name, array $parameters, $view, $view_method_name
 	) {
 		$features = isset($parameters[Feature::FEATURE])
 			? ($parameters[Feature::FEATURE] . DOT . $feature_name)

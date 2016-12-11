@@ -15,7 +15,7 @@ class Xdebug implements Registerable
 	/**
 	 * @param $get string[]
 	 */
-	public static function cleanup(&$get)
+	public static function cleanup(array &$get)
 	{
 		unset($get['XDEBUG_PROFILE']);
 		if (isset($get['XDEBUG_SESSION_START'])) {

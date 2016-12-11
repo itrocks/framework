@@ -22,7 +22,7 @@ class Exclude extends Properties
 	 * @param $no_property_returns_true boolean if there is no Properties option, returns this value
 	 * @return boolean
 	 */
-	public static function have($options, $property, $no_property_returns_true = false)
+	public static function have(array $options, $property, $no_property_returns_true = false)
 	{
 		return parent::have($options, $property, $no_property_returns_true);
 	}

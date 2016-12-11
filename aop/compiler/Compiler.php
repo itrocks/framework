@@ -51,8 +51,9 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $class_name     string
 	 * @param $handler_filter string[] @values after, around, before
 	 */
-	private function addPointcuts(&$methods, &$properties, $class_name, $handler_filter = null)
-	{
+	private function addPointcuts(
+		array &$methods, array &$properties, $class_name, array $handler_filter = null
+	) {
 		foreach ($this->weaver->getJoinpoints($class_name) as $method_or_property => $pointcuts2) {
 			foreach ($pointcuts2 as $pointcut) {
 				if (empty($handler_filter) || in_array($pointcut[0], $handler_filter)) {
@@ -209,7 +210,7 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $sources Reflection_Source[]
 	 * @return Reflection_Source[] added sources list
 	 */
-	public function moreSourcesToCompile(&$sources)
+	public function moreSourcesToCompile(array &$sources)
 	{
 		$added = [];
 
@@ -350,7 +351,7 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $only_method string Internal use only : the method name we are up-scanning
 	 */
 	private function scanForAbstract(
-		&$methods, Interfaces\Reflection_Class $class, $only_method = null
+		array &$methods, Interfaces\Reflection_Class $class, $only_method = null
 	) {
 		if ($class instanceof Reflection_Class && $class->getParentName()) {
 			$parent_class = $class->getParentClass();
@@ -377,7 +378,7 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $properties array
 	 * @param $class      Reflection_Class
 	 */
-	private function scanForImplements(&$properties, Reflection_Class $class)
+	private function scanForImplements(array &$properties, Reflection_Class $class)
 	{
 		// properties from the class and its direct traits
 		$implemented_properties = $class->getProperties([T_USE]);
@@ -438,7 +439,7 @@ class Compiler implements ICompiler, Needs_Main
 	 */
 	/*
 	//-------------------------------------------------------------------------------- scanForMethods
-	private function scanForMethods(&$methods, Reflection_Class $class)
+	private function scanForMethods(array &$methods, Reflection_Class $class)
 	{
 		foreach ($class->getMethods() as $method) {
 			if (!$method->isAbstract() && ($method->class->name == $class->name)) {

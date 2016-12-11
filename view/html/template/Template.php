@@ -224,7 +224,7 @@ class Template
 	 * @param $increment   integer
 	 * @param $position    integer
 	 */
-	protected function blackZonesInc(&$black_zones, $increment, $position = 0)
+	protected function blackZonesInc(array &$black_zones, $increment, $position = 0)
 	{
 		$new_black_zones = [];
 		foreach ($black_zones as $start => $stop) {
@@ -245,7 +245,7 @@ class Template
 	 * @param $delimiters string[] each key is the start delimiter, value is the end delimiter
 	 * @return integer[] key is the start index and value is the end index for each black zone
 	 */
-	protected function blackZonesOf($content, $delimiters)
+	protected function blackZonesOf($content, array $delimiters)
 	{
 		$black_zones = [];
 		foreach ($delimiters as $start => $stop) {
@@ -537,7 +537,7 @@ class Template
 	 * @param $position    integer
 	 * @return boolean
 	 */
-	protected function isInBlackZones($black_zones, $position)
+	protected function isInBlackZones(array $black_zones, $position)
 	{
 		foreach ($black_zones as $start => $stop) {
 			if (($start <= $position) && ($position <= $stop)) {
@@ -553,7 +553,9 @@ class Template
 	 */
 	protected function newFunctions()
 	{
-		return Builder::create(Functions::class);
+		/** @var $functions Functions */
+		$functions = Builder::create(Functions::class);
+		return $functions;
 	}
 
 	//----------------------------------------------------------------------------------------- parse
@@ -573,11 +575,11 @@ class Template
 
 	//----------------------------------------------------------------------------- parseArrayElement
 	/**
-	 * @param $array   array
-	 * @param $index   string|integer
+	 * @param $array array
+	 * @param $index string|integer
 	 * @return mixed
 	 */
-	protected function parseArrayElement($array, $index)
+	protected function parseArrayElement(array $array, $index)
 	{
 		return $this->htmlEntities(isset($array[$index]) ? $array[$index] : null);
 	}
@@ -608,7 +610,7 @@ class Template
 	 * @param $collection object[]
 	 * @return string
 	 */
-	protected function parseCollection(Reflection_Property $property, $collection)
+	protected function parseCollection(Reflection_Property $property, array $collection)
 	{
 		return $property->getType()->asReflectionClass()->isAbstract()
 			? (new Html\Builder\Abstract_Collection($property, $collection))->build()
@@ -923,7 +925,7 @@ class Template
 	 * @param $elements array
 	 * @return string
 	 */
-	protected function parseLoopArray(Loop $loop, $elements)
+	protected function parseLoopArray(Loop $loop, array $elements)
 	{
 		$loop_insert = '';
 		$this->preprop($loop->var_name);
@@ -1114,7 +1116,7 @@ class Template
 	 * @param $collection object[]
 	 * @return string
 	 */
-	protected function parseMap(Reflection_Property $property, $collection)
+	protected function parseMap(Reflection_Property $property, array $collection)
 	{
 		return (new Html\Builder\Map($property, $collection))->build();
 	}
@@ -1743,9 +1745,9 @@ class Template
 	 *          'link rel="canonical"...' will be replaced by the new value into the '<head>'
 	 *          If did not exist, the element is added to the beginning of '<head>'
 	 * @param $content  string page content
-	 * @param $elements string[] ie
+	 * @param $elements string[]
 	 */
-	protected function replaceHeadElements(&$content, $elements)
+	protected function replaceHeadElements(&$content, array $elements)
 	{
 		if (($i = strpos($content, '<element')) !== false) {
 			// remove already existing element
@@ -1781,7 +1783,7 @@ class Template
 	 * @param $content string
 	 * @param $links   string[]
 	 */
-	protected function replaceHeadLinks(&$content, $links)
+	protected function replaceHeadLinks(&$content, array $links)
 	{
 		if ($links) {
 			$this->replaceHeadElements($content, $links);
@@ -1793,7 +1795,7 @@ class Template
 	 * @param $content string
 	 * @param $metas   string[]
 	 */
-	protected function replaceHeadMetas(&$content, $metas)
+	protected function replaceHeadMetas(&$content, array $metas)
 	{
 		if ($metas) {
 			$this->replaceHeadElements($content, $metas);
@@ -1971,7 +1973,7 @@ class Template
 	 * @param $context array [string[], array, string[]] [$var_names, $objects, $translation_contexts]
 	 * @see backupContext(), parseValue()
 	 */
-	protected function restoreContext($context)
+	protected function restoreContext(array $context)
 	{
 		list($this->var_names, $this->objects, Loc::$contexts_stack) = $context;
 	}
@@ -1981,7 +1983,7 @@ class Template
 	 * @param $descendants array [string[], array] [$descendants_names, $descendants]
 	 * @see backupDescendants(), parseValue()
 	 */
-	protected function restoreDescendants($descendants)
+	protected function restoreDescendants(array $descendants)
 	{
 		list($this->descendants_names, $this->descendants) = $descendants;
 	}
@@ -2014,9 +2016,9 @@ class Template
 	 *   main html head and foot will not be loaded
 	 * </ul>
 	 *
-	 * @param $parameters mixed[] key is parameter name
+	 * @param $parameters array key is parameter name
 	 */
-	public function setParameters($parameters)
+	public function setParameters(array $parameters)
 	{
 		if (isset($parameters[Parameter::IS_INCLUDED])) {
 			$parameters[Parameter::AS_WIDGET] = true;

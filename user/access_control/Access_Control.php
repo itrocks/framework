@@ -89,7 +89,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = null)
+	public function __construct($configuration = [])
 	{
 		if (isset($configuration[self::ALL_USERS])) {
 			$this->all_users = array_merge($this->all_users, $configuration[self::ALL_USERS]);
@@ -125,9 +125,9 @@ class Access_Control implements Configurable, Registerable
 	 * @param $uri   string
 	 * @param $get   array
 	 * @param $post  array
-	 * @param $files array
+	 * @param $files array[]
 	 */
-	public function checkAccess(&$uri, &$get, &$post, &$files)
+	public function checkAccess(&$uri, array &$get, array &$post, array &$files)
 	{
 		$origin_uri = $uri;
 		$this->checkUser($uri, $get, $post, $files);
@@ -183,12 +183,12 @@ class Access_Control implements Configurable, Registerable
 	 * @param $uri   string must start with '/' @example /ITRocks/Framework/User/add
 	 * @param $get   array
 	 * @param $post  array
-	 * @param $files array
+	 * @param $files array[]
 	 * @return boolean
 	 */
-	private function checkFeatures(&$uri, &$get, &$post, &$files)
+	private function checkFeatures(&$uri, array &$get, array &$post, array &$files)
 	{
-		$last_protect = self::$protect;
+		$last_protect  = self::$protect;
 		self::$protect = true;
 		$user = User::current();
 		$accessible = true;
@@ -220,10 +220,10 @@ class Access_Control implements Configurable, Registerable
 	 * @param $uri   string
 	 * @param $get   array
 	 * @param $post  array
-	 * @param $files array
+	 * @param $files array[]
 	 * @todo HIGHEST private (@ next deployment) + return false if no user is logged in
 	 */
-	public function checkUser(&$uri, &$get, &$post, &$files)
+	public function checkUser(&$uri, array &$get, array &$post, array &$files)
 	{
 		if (!User::current()) {
 			if ($this->isBlank($uri)) {
@@ -345,7 +345,7 @@ class Access_Control implements Configurable, Registerable
 	 *
 	 * @param $parameters Button[]
 	 */
-	public function removeButtonsWithNoLink(&$parameters)
+	public function removeButtonsWithNoLink(array &$parameters)
 	{
 		foreach (
 			[Has_General_Buttons::GENERAL_BUTTONS, Has_Selection_Buttons::SELECTION_BUTTONS] as $buttons
@@ -376,9 +376,9 @@ class Access_Control implements Configurable, Registerable
 	 * @param $uri     string
 	 * @param $get     array
 	 * @param $post    array
-	 * @param $files   array
+	 * @param $files   array[]
 	 */
-	private function setUri($new_uri, &$uri, &$get, &$post, &$files)
+	private function setUri($new_uri, &$uri, array &$get, array &$post, array &$files)
 	{
 		$uri = $new_uri;
 		$_get = [];

@@ -79,7 +79,7 @@ class Dead_Or_Alive
 	/**
 	 * @param $property_names string[]|null
 	 */
-	private function matchCallStack($property_names = null)
+	private function matchCallStack(array $property_names = null)
 	{
 		$call_stack = new Call_Stack();
 		$call_stack->shift();

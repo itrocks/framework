@@ -41,7 +41,7 @@ class Properties
 	 * @param $advices array
 	 * @return string[]
 	 */
-	public function compile($advices)
+	public function compile(array $advices)
 	{
 		$this->actions = [];
 		$methods = [];
@@ -79,7 +79,7 @@ class Properties
 	 * @param $init          string[]
 	 * @return string
 	 */
-	private function compileAdvice($property_name, $type, $advice, &$init)
+	private function compileAdvice($property_name, $type, $advice, array &$init)
 	{
 		$class_name = $this->class->name;
 
@@ -170,7 +170,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileAop($advices)
+	private function compileAop(array $advices)
 	{
 		$parent_code = '';
 		$begin_code = '
@@ -223,7 +223,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileConstruct($advices)
+	private function compileConstruct(array $advices)
 	{
 		// only if at least one property is declared here
 		foreach ($advices as $property_advices) {
@@ -244,7 +244,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileGet($advices)
+	private function compileGet(array $advices)
 	{
 		$over = $this->overrideMethod('__get', true, $advices);
 		$code = $over['prototype'] . '
@@ -304,7 +304,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileIsset($advices)
+	private function compileIsset(array $advices)
 	{
 		$over = $this->overrideMethod('__isset');
 		$code =
@@ -347,7 +347,7 @@ class Properties
 	 * @param $advices       array
 	 * @return string
 	 */
-	private function compileRead($property_name, $advices)
+	private function compileRead($property_name, array $advices)
 	{
 		$code = '';
 		$init = [];
@@ -398,7 +398,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileSet($advices)
+	private function compileSet(array $advices)
 	{
 		$over = $this->overrideMethod('__set', true, $advices);
 		$code =
@@ -462,7 +462,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileUnset($advices)
+	private function compileUnset(array $advices)
 	{
 		$over = $this->overrideMethod('__unset');
 		$code =
@@ -523,7 +523,7 @@ class Properties
 	 * @param $advices       array
 	 * @return string
 	 */
-	private function compileWrite($property_name, $advices)
+	private function compileWrite($property_name, array $advices)
 	{
 		$code = '';
 		$init = [];
@@ -601,7 +601,7 @@ class Properties
 	 * @param $init string[]
 	 * @return string
 	 */
-	private function initCode($init)
+	private function initCode(array $init)
 	{
 		if (isset($init['7.element_type_name']) && isset($init['7.class_name'])) {
 			$init['7.class_name_element_type_name'] = '$class_name = ' . $init['7.element_type_name'];
@@ -621,7 +621,7 @@ class Properties
 	 * @param $advices      array
 	 * @return array action (rename, trait), call, Reflection_Method method, prototype
 	 */
-	private function overrideMethod($method_name, $needs_return = true, $advices = null)
+	private function overrideMethod($method_name, $needs_return = true, array $advices = [])
 	{
 		$over = ['cases' => []];
 		$parameters = '';
@@ -656,7 +656,7 @@ class Properties
 			}
 		}
 		// add parent AOP properties cases
-		$over['cases']  = $this->parentCases($method_name, $parameters, $advices);
+		$over['cases'] = $this->parentCases($method_name, $parameters, $advices);
 		// the method exists : prepare call and prototype
 		if (isset($method)) {
 			$over['method']    = $method;
@@ -726,7 +726,7 @@ class Properties
 	 * @todo this check only getters, links and setters. This should check AOP links too.
 	 * (the parent class has not this method but it has AOP properties)
 	 */
-	private function parentCases($method_name, &$parameters, $advices)
+	private function parentCases($method_name, &$parameters, array $advices)
 	{
 		$cases = [];
 		if (

@@ -201,7 +201,7 @@ class Parser
 	 * @param $annotations Annotation[]
 	 * @return Annotation[]
 	 */
-	private static function multipleRemove($annotations)
+	private static function multipleRemove(array $annotations)
 	{
 		$remove = [];
 		foreach ($annotations as $key => $annotation) {

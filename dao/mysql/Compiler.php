@@ -75,7 +75,7 @@ class Compiler implements ICompiler
 	 * @param &$sources Reflection_Source[]
 	 * @return Reflection_Source[] added sources list
 	 */
-	public function moreSourcesToCompile(&$sources)
+	public function moreSourcesToCompile(array &$sources)
 	{
 		$added = [];
 		// Builder is disabled during the listing as we want to get the original linked class name when

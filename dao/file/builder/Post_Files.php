@@ -16,29 +16,27 @@ class Post_Files
 	//---------------------------------------------------------------------------------- appendToForm
 	/**
 	 * @param $form  array
-	 * @param $files array
+	 * @param $files array[]
 	 * @return array
 	 */
-	public function appendToForm($form, $files)
+	public function appendToForm(array $form, array $files)
 	{
-		if (is_array($files)) {
-			foreach ($files as $top => $element) {
-				// element keys are standard post files keys : name, type, tmp_name, error, size
-				if (is_array($element['name'])) {
-					if (!isset($form[$top])) {
-						$form[$top] = [];
-					}
-					$form[$top] = $this->appendToFormRecurse(
-						$form[$top], $element['name'], $element['tmp_name']
-					);
+		foreach ($files as $top => $element) {
+			// element keys are standard post files keys : name, type, tmp_name, error, size
+			if (is_array($element['name'])) {
+				if (!isset($form[$top])) {
+					$form[$top] = [];
 				}
-				elseif (!(empty($element['name']) || empty($element['tmp_name']))) {
-					/** @var $file File */
-					$file = Builder::create(File::class);
-					$file->name = $element['name'];
-					$file->temporary_file_name = $element['tmp_name'];
-					$form[$top] = $file;
-				}
+				$form[$top] = $this->appendToFormRecurse(
+					$form[$top], $element['name'], $element['tmp_name']
+				);
+			}
+			elseif (!(empty($element['name']) || empty($element['tmp_name']))) {
+				/** @var $file File */
+				$file = Builder::create(File::class);
+				$file->name = $element['name'];
+				$file->temporary_file_name = $element['tmp_name'];
+				$form[$top] = $file;
 			}
 		}
 		return $form;
@@ -51,7 +49,7 @@ class Post_Files
 	 * @param $tmp_name_element array
 	 * @return array
 	 */
-	private function appendToFormRecurse($form, $name_element, $tmp_name_element)
+	private function appendToFormRecurse(array $form, array $name_element, array $tmp_name_element)
 	{
 		foreach ($name_element as $key => $name_sub_element) {
 			if (is_array($name_sub_element)) {

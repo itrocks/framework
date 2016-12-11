@@ -46,9 +46,9 @@ class File_Logger implements Configurable
 	/**
 	 * @param $configuration array [path]
 	 */
-	public function __construct($configuration = null)
+	public function __construct($configuration = [])
 	{
-		if (isset($configuration) && isset($configuration[self::PATH])) {
+		if (isset($configuration[self::PATH])) {
 			$this->path = $configuration[self::PATH];
 		}
 	}

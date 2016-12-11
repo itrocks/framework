@@ -30,11 +30,11 @@ abstract class Column implements Dao_Function
 	 * @param $builder       Builder\Columns
 	 * @param $property_path string
 	 * @param $sql_function  string
-	 * @param $args          mixed[]
+	 * @param $args          array
 	 * @return string
 	 */
 	protected function quickSql(
-		Builder\Columns $builder, $property_path, $sql_function, $args = []
+		Builder\Columns $builder, $property_path, $sql_function, array $args = []
 	) {
 		$sql = $sql_function . '(' . $builder->buildColumn($property_path, false);
 		foreach ($args as $arg) {

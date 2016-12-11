@@ -102,7 +102,7 @@ class Include_Path
 	 * @return string[]
 	 */
 	public function getSourceDirectories(
-	 	$include_subdirectories = false, $application_class = null, &$already = []
+	 	$include_subdirectories = false, $application_class = null, array &$already = []
 	) {
 		if (!isset($application_class)) {
 			$application_class = $this->application_class;

@@ -98,7 +98,7 @@ class Search_Parameters_Parser
 	 * @param $class_name string
 	 * @param $search     array user-input search string
 	 */
-	public function __construct($class_name, $search)
+	public function __construct($class_name, array $search)
 	{
 		$this->class  = new Reflection_Class($class_name);
 		$this->search = $search;

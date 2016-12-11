@@ -63,7 +63,7 @@ class Object_Builder_Array_Tool
 
 	//--------------------------------------------------------------------------------------- $search
 	/**
-	 * @var array
+	 * @var array|null
 	 */
 	public $search;
 
@@ -75,8 +75,9 @@ class Object_Builder_Array_Tool
 	 * @param $ignore_property_name string
 	 * @param $search               string[]|null
 	 */
-	public function __construct($array, $object, $null_if_empty, $ignore_property_name, $search)
-	{
+	public function __construct(
+		array $array, $object, $null_if_empty, $ignore_property_name, array $search = null
+	) {
 		$this->array                = $array; // arrayToTree($array); // no ! builder do this !
 		$this->ignore_property_name = $ignore_property_name;
 		$this->is_null              = $null_if_empty;

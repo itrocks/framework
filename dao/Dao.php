@@ -132,7 +132,9 @@ class Dao implements Configurable
 	 */
 	public static function current(Data_Link $set_current = null)
 	{
-		return self::pCurrent($set_current);
+		/** @var $data_link Data_Link */
+		$data_link = self::pCurrent($set_current);
+		return $data_link;
 	}
 
 	//---------------------------------------------------------------------------------------- delete

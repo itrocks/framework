@@ -26,7 +26,7 @@ class Map
 	 * @param $key_is_id boolean Set this to true if your objects array use objects id as key
 	 *                           This will enable an optimization to get this working faster
 	 */
-	public function __construct(&$objects = [], $key_is_id = false)
+	public function __construct(array &$objects = [], $key_is_id = false)
 	{
 		if (!$key_is_id) {
 			$this->objects = $objects;

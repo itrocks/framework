@@ -31,6 +31,9 @@ class Foreign_Keys_Tools
 	//-------------------------------------------------------------------------------------- toColumn
 	/**
 	 * Returns all foreign keys to a column
+	 *
+	 * @param $table  string
+	 * @param $column string
 	 */
 	public function toColumn($table, $column)
 	{

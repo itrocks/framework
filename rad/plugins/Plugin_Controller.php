@@ -13,12 +13,12 @@ class Plugin_Controller implements Framework\Controller
 
 	//---------------------------------------------------------------------------- runDatabaseToFiles
 	/**
-	 * @param $parameters   Parameters
-	 * @param $form         array
-	 * @param $files        array
+	 * @param $parameters Parameters
+	 * @param $form       array
+	 * @param $files      array[]
 	 * @return mixed
 	 */
-	public function runDatabaseToFiles(Parameters $parameters, $form, $files)
+	public function runDatabaseToFiles(Parameters $parameters, array $form, array $files)
 	{
 		$maintainer = new Maintainer();
 		$maintainer->databaseToFiles();
@@ -27,12 +27,12 @@ class Plugin_Controller implements Framework\Controller
 
 	//---------------------------------------------------------------------------- runFilesToDatabase
 	/**
-	 * @param $parameters   Parameters
-	 * @param $form         array
-	 * @param $files        array
+	 * @param $parameters Parameters
+	 * @param $form       array
+	 * @param $files      array[]
 	 * @return mixed
 	 */
-	public function runFilesToDatabase(Parameters $parameters, $form, $files)
+	public function runFilesToDatabase(Parameters $parameters, array $form, array $files)
 	{
 		$maintainer = new Maintainer();
 		$maintainer->filesToDatabase();

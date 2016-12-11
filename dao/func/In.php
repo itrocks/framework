@@ -28,10 +28,10 @@ class In implements Negate, Where
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $values mixed[]
+	 * @param $values array
 	 * @param $not_in boolean
 	 */
-	public function __construct($values = null, $not_in = false)
+	public function __construct(array $values = null, $not_in = false)
 	{
 		if (isset($values)) $this->values = $values;
 		if (isset($not_in)) $this->not_in = $not_in;

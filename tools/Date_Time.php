@@ -106,8 +106,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $unit     string any of the Date_Time duration unit constants
 	 * @return Date_Time
 	 */
-	public function add($quantity, $unit = Date_Time::DAY)
-	{
+	public function add(
+		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
+		$quantity, $unit = Date_Time::DAY
+	) {
 		if ($quantity instanceof DateInterval) {
 			parent::add($quantity);
 		}
@@ -144,7 +146,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $timezone DateTimeZone
 	 * @return Date_Time
 	 */
-	public static function createFromFormat($format, $time, $timezone = null)
+	public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
 	{
 		$dateTime = $timezone
 			? parent::createFromFormat($format, $time, $timezone)
@@ -473,8 +475,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $unit     string any of the Date_Time duration unit constants
 	 * @return Date_Time
 	 */
-	public function sub($quantity, $unit = Date_Time::DAY)
-	{
+	public function sub(
+		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
+		$quantity, $unit = Date_Time::DAY
+	) {
 		($quantity instanceof DateInterval)
 			? parent::sub($quantity)
 			: $this->add(-$quantity, $unit);

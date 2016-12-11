@@ -27,7 +27,7 @@ class Columns
 	 * - each element being an array : the main key is the expression to be appended to the properties
 	 * names in the array, ie 'DESC' => ['property.path.1', 'property2')
 	 *
-	 * @var mixed[]|null
+	 * @var array|null
 	 */
 	private $append;
 
@@ -66,13 +66,14 @@ class Columns
 	 * @param $class_name string
 	 * @param $properties string[]|Column[] properties paths list
 	 * @param $joins      Joins
-	 * @param $append     mixed[] appends expressions to some SQL columns
+	 * @param $append     array appends expressions to some SQL columns
 	 * - each element being a string is an expression to append to each column, ie 'DESC'
 	 * - each element being an array : the main key is the expression to be appended to the properties
 	 * names in the array, ie 'DESC' => ['property.path.1', 'property2')
 	 */
-	public function __construct($class_name, $properties, Joins $joins = null, $append = null)
-	{
+	public function __construct(
+		$class_name, array $properties, Joins $joins = null, array $append = null
+	) {
 		$this->joins      = $joins ? $joins : new Joins($class_name);
 		$this->properties = $properties;
 		$this->append     = $append;

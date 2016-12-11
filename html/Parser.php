@@ -108,10 +108,10 @@ class Parser
 	/**
 	 * Adds attributes to all elements matching $selector into the buffer
 	 *
-	 * @param $selector string the selector for elements
-	 * @param string[] attributes added attributes $attribute_value = string[$attribute_name]
+	 * @param $selector   string the selector for elements
+	 * @param $attributes string[] added attributes $attribute_value = string[$attribute_name]
 	 */
-	public function addAttributes($selector, $attributes)
+	public function addAttributes($selector, array $attributes)
 	{
 		$i = 0;
 		while (($i = $this->selectorPos($selector, $i)) !== false) {
@@ -311,7 +311,7 @@ class Parser
 	 *
 	 * @param $headers string[]
 	 */
-	public function headersToProxy(&$headers)
+	public function headersToProxy(array &$headers)
 	{
 		foreach ($headers as $key => $value) {
 			if (substr($value, 0, 10) === 'Location: ') {
@@ -396,7 +396,7 @@ class Parser
 	 * @param $parts array string['#'|'.'|':'][integer]
 	 * @return string
 	 */
-	private function partsTag($parts)
+	private function partsTag(array $parts)
 	{
 		return isset($parts['<']) ? reset($parts['<']) : 'div';
 	}
@@ -406,7 +406,7 @@ class Parser
 	 * @param $parts array string['#'|'.'|':'][integer]
 	 * @return string html code for parts
 	 */
-	private function partsToHtml($parts)
+	private function partsToHtml(array $parts)
 	{
 		$attributes = ['#' => 'id', DOT => 'class'];
 		$html = '<' . $this->partsTag($parts);
