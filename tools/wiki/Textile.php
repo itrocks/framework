@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Tools\Wiki;
 
 use Netcarver\Textile\Parser;
-use ITRocks\Framework\Builder;
 
 /**
  * Textile review B-Appli style, in order to be more ergonomic
@@ -26,11 +25,11 @@ class Textile extends Parser
 	 * This override replace '_' by '/' for em and '+' by '_' for ins
 	 * Default is html5
 	 *
-	 * @param string $doctype The output document type, either 'xhtml' or 'html5'
+	 * @param string $doc_type The output document type, either 'xhtml' or 'html5'
 	 */
-	public function __construct($doctype = 'html5')
+	public function __construct($doc_type = 'html5')
 	{
-		parent::__construct($doctype);
+		parent::__construct($doc_type);
 
 		$this->span_tags = [
 			'*'  => 'strong',
