@@ -195,10 +195,10 @@ class Select
 
 	//------------------------------------------------------------------------------------ doCallback
 	/**
-	 * @param $data_store array[]|object[]
+	 * @param $data_store array[]|object
 	 * @return boolean if the call returns false for any stored object, this will stop & return false
 	 */
-	private function doCallback(array &$data_store)
+	private function doCallback(&$data_store)
 	{
 		if (isset($this->callback)) {
 			foreach ($data_store as $object) {

@@ -98,7 +98,7 @@ class Search_Parameters_Parser
 	 * @param $class_name string
 	 * @param $search     array user-input search string
 	 */
-	public function __construct($class_name, array $search)
+	public function __construct($class_name, array $search = [])
 	{
 		$this->class  = new Reflection_Class($class_name);
 		$this->search = $search;
@@ -238,7 +238,7 @@ class Search_Parameters_Parser
 	 */
 	public function parse()
 	{
-		$search = $this->search;
+		$search   = $this->search;
 		$to_unset = [];
 		foreach ($search as $property_path => &$search_value) {
 			$property = new Reflection_Property($this->class->name, $property_path);

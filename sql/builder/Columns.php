@@ -49,7 +49,7 @@ class Columns
 	/**
 	 * Properties paths list
 	 *
-	 * @var string[]|Column[]
+	 * @var string[]|Column[]|null
 	 */
 	private $properties;
 
@@ -72,7 +72,7 @@ class Columns
 	 * names in the array, ie 'DESC' => ['property.path.1', 'property2')
 	 */
 	public function __construct(
-		$class_name, array $properties, Joins $joins = null, array $append = null
+		$class_name, array $properties = null, Joins $joins = null, array $append = null
 	) {
 		$this->joins      = $joins ? $joins : new Joins($class_name);
 		$this->properties = $properties;

@@ -146,7 +146,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $timezone DateTimeZone
 	 * @return Date_Time
 	 */
-	public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
+	public static function createFromFormat($format, $time, $timezone = null)
 	{
 		$dateTime = $timezone
 			? parent::createFromFormat($format, $time, $timezone)
