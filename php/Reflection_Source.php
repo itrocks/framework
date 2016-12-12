@@ -723,7 +723,10 @@ class Reflection_Source
 			$source = self::$cache[$class_name];
 		}
 		else {
-			$filename = Paths::getRelativeFileName((new ReflectionClass($class_name))->getFileName());
+			$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED);
+			$class = new ReflectionClass($class_name);
+			error_reporting($error_reporting);
+			$filename = Paths::getRelativeFileName($class->getFileName());
 			// consider vendor classes like internal classes : we don't work with their sources
 			if (beginsWith($filename, 'vendor/')) {
 				$source = new Reflection_Source(null, $class_name);
