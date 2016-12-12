@@ -25,7 +25,8 @@ class Feature
 
 	//-------------------------------------------------------------------------------- $configuration
 	/**
-	 * @var array
+	 * @store false
+	 * @var array|null
 	 */
 	public $configuration;
 
