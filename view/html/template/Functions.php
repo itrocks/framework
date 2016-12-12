@@ -359,8 +359,9 @@ class Functions
 	public function getExpand(Template $template)
 	{
 		$property = reset($template->objects);
+		$expanded = [];
 		$expanded = Integrated_Properties::expandUsingProperty(
-			$expanded = [], $property, $template->getParentObject($property->class)
+			$expanded, $property, $template->getParentObject($property->class)
 		);
 		$result = $expanded ? $expanded : [$property];
 		if ($expand_property_path = $template->getParameter(Parameter::EXPAND_PROPERTY_PATH)) {
