@@ -180,7 +180,7 @@ class Import_Array
 	public static function getConstantsFromArray(array &$array)
 	{
 		$constants = [];
-		$row = self::getClassNameFromArray($array) ? next($array) : current($array);
+		$row       = self::getClassNameFromArray($array) ? next($array) : current($array);
 		while ($row && (count($row) > 1) && ($row[1] == '=')) {
 			$constants[$row[0]] = isset($row[2]) ? $row[2] : '';
 			$row = next($array);
