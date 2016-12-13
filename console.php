@@ -1,8 +1,9 @@
-#!/usr/bin/php
 <?php
 namespace ITRocks\Framework;
 
 /**
+ * Call with php itrocks/framework/console.php
+ *
  * Call this script from command line / scheduled tasks to call features from the software
  * - Will be considered like running under HTTPS
  * - Remote address will be 'console'
