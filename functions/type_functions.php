@@ -132,11 +132,15 @@ function isStrictInteger($value)
  */
 function isStrictNumeric($value, $decimal_allowed = true, $signed_allowed = true)
 {
-	return is_numeric($value)
-		&& (strpos('0+.', $value[0]) === false)
-		&& (stripos($value, 'E')     === false)
-		&& ($decimal_allowed ?: (strpos($value, '.')    === false))
-		&& ($signed_allowed  ?: (strpos($value[0], '-') === false));
+	return
+		(is_float($value) || is_integer($value))
+		|| (
+			is_numeric($value)
+			&& (strpos('0+.', $value[0]) === false)
+			&& (stripos($value, 'E')     === false)
+			&& ($decimal_allowed ?: (strpos($value, '.')    === false))
+			&& ($signed_allowed  ?: (strpos($value[0], '-') === false))
+		);
 }
 
 //--------------------------------------------------------------------------------- isStrictNumeric

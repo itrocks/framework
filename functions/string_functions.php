@@ -230,6 +230,9 @@ function strHasAccent($str)
  */
 function strIsCapitals($str)
 {
+	if (!is_string($str)) {
+		$str = strval($str);
+	}
 	// TODO SM a better implementation using a multi-byte string library to take care of any letter
 	for ($i = 0; $i < strlen($str); $i ++) {
 		if (
@@ -343,6 +346,9 @@ function strUri($str, $joker = null)
  */
 function ucfirsta($str)
 {
+	if (!is_string($str)) {
+		$str = strval($str);
+	}
 	if ($str[0] == "\xC3") {
 		if (ord($str[1]) >= 160) {
 			$str[1] = chr(ord($str[1]) - 32);

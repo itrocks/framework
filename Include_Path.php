@@ -48,8 +48,8 @@ class Include_Path
 		else {
 			$directories[$path] = $path;
 			$dir = dir($path);
-			while ($entry = $dir->read()) if ($entry[0] != DOT) {
-				if (is_dir($path . SL . $entry) && ($entry != 'vendor') && ($entry != 'cache')) {
+			while ($entry = $dir->read()) if ($entry[0] !== DOT) {
+				if (is_dir($path . SL . $entry) && ($entry !== 'vendor') && ($entry !== 'cache')) {
 					$directories = array_merge($directories, $this->getDirectories($path . SL . $entry));
 				}
 			}
@@ -172,7 +172,7 @@ class Include_Path
 		$files = [];
 		foreach ($this->getSourceDirectories(true) as $directory) {
 			$dir = dir($directory);
-			while ($entry = $dir->read()) if ($entry[0] != DOT) {
+			while ($entry = $dir->read()) if ($entry[0] !== DOT) {
 				$file_path = $directory . SL . $entry;
 				if (is_file($file_path)) {
 					$files[] = $file_path;
