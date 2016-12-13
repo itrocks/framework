@@ -163,7 +163,7 @@ class Wiki implements Registerable
 	 */
 	public function textile($string)
 	{
-		return Textile::parse($string);
+		return (new Textile)->parse($string);
 	}
 
 }

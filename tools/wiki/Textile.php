@@ -51,12 +51,10 @@ class Textile extends Parser
 	 * @param $text string
 	 * @return string
 	 */
-	public static function parse($text)
+	public function parse($text)
 	{
-		$text = strReplace(['@@@' => '@&at;', '@@' => '&at;'], $text);
-		/** @var $textile Textile */
-		$textile = Builder::create(Textile::class);
-		$result = $textile->textileThis($text);
+		$text   = strReplace(['@@@' => '@&at;', '@@' => '&at;'], $text);
+		$result = parent::parse($text);
 		return strReplace(['&at;' => '@', '&amp;at;' => '@', '|' => '||'], $result);
 	}
 
