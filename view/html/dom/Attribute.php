@@ -26,7 +26,7 @@ class Attribute
 	 */
 	public function __construct($name = null, $value = null)
 	{
-		if (isset($name))  $this->name = $name;
+		if (isset($name))  $this->name  = $name;
 		if (isset($value)) $this->value = $value;
 	}
 

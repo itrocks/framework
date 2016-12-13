@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Tests\Objects;
+namespace ITRocks\Framework\Reflection\Annotation\Tests\Conditions;
 
 use ITRocks\Framework\User;
 
@@ -31,7 +31,7 @@ trait Conditions_Trait
 
 	//--------------------------------------------------------------------------- $conditioned_object
 	/**
-	 * @conditions boolean=1
+	 * @conditions boolean=true, enum=value1
 	 * @link Object
 	 * @var User
 	 */

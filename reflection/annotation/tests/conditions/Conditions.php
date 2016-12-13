@@ -1,11 +1,14 @@
 <?php
-namespace ITRocks\Framework\Tests\Objects;
+namespace ITRocks\Framework\Reflection\Annotation\Tests;
+
+use ITRocks\Framework\Reflection\Annotation\Tests\Conditions\Conditions_Collection;
+use ITRocks\Framework\Reflection\Annotation\Tests\Conditions\Conditions_Trait;
 
 /**
  * Example business class for @conditions
  *
  * To test it :
- * http://it.rocks/project/ITRocks/Framework/Tests/Objects/Conditions/add
+ * http://localhost/itrocks/ITRocks/Framework/Reflection/Annotation/Tests/Conditions/add
  *
  * @set Tests_Conditions
  */

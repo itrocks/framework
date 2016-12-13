@@ -400,8 +400,14 @@ $('document').ready(function()
 				});
 				var this_name = $this.attr('name');
 				if (!this_name) this_name = $this.prev().attr('name');
-				if ($condition.data('condition-of') == undefined) $condition.data('condition-of', {});
-				$condition.data('condition-of')[this_name] = $this;
+				if ($condition.data('condition-of')) {
+					$condition.data('condition-of')[this_name] = $this;
+				}
+				else {
+					var condition_of = {};
+					condition_of[this_name] = $this;
+					$condition.data('condition-of', condition_of);
+				}
 			});
 		});
 
@@ -423,10 +429,9 @@ $('document').ready(function()
 							});
 							return (show = found);
 						});
-						var name = $element.attr('name') ? $element.attr('name') : $element.prev().attr('name');
-						if (name.beginsWith('id_')) {
-							name = name.substr(3);
-						}
+						var name = $element.attr('name');
+						if (!name)                  name = $element.prev().attr('name');
+						if (name.beginsWith('id_')) name = name.substr(3);
 						var $field = $element.closest('#' + name);
 						if (!$field.length) {
 							$field = $element.parent().children();

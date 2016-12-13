@@ -1,7 +1,8 @@
 <?php
-namespace ITRocks\Framework\Tests\Objects;
+namespace ITRocks\Framework\Reflection\Annotation\Tests\Conditions;
 
 use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Reflection\Annotation\Tests\Conditions;
 
 /**
  * Conditions in a collection
@@ -14,6 +15,7 @@ class Conditions_Collection
 	//----------------------------------------------------------------------------------- $conditions
 	/**
 	 * @composite
+	 * @link Object
 	 * @var Conditions
 	 */
 	public $conditions;

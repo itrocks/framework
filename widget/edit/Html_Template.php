@@ -61,7 +61,9 @@ class Html_Template extends Template
 	 */
 	protected function newFunctions()
 	{
-		return Builder::create(Html_Template_Functions::class);
+		/** @var $functions Html_Template_Functions */
+		$functions = Builder::create(Html_Template_Functions::class);
+		return $functions;
 	}
 
 	//----------------------------------------------------------------------------------- nextCounter
@@ -74,17 +76,15 @@ class Html_Template extends Template
 	 */
 	public function nextCounter($field_name, $increment = true)
 	{
-		$form = $this->getFormId();
-		$counter = isset($this->cache[self::COUNTER])
-			? $this->cache[self::COUNTER]
-			: [];
+		$form    = $this->getFormId();
+		$counter = isset($this->cache[self::COUNTER]) ? $this->cache[self::COUNTER] : [];
 		if (!isset($counter[$form])) {
 			$counter[$form] = [];
 		}
-		$count = isset($counter[$form][$field_name]) ? $counter[$form][$field_name] + $increment : 0;
-		if ($increment !== null) {
+		$count = isset($counter[$form][$field_name]) ? ($counter[$form][$field_name] + $increment) : 0;
+		if ($increment) {
 			$counter[$form][$field_name] = $count;
-			$this->cache[self::COUNTER] = $counter;
+			$this->cache[self::COUNTER]  = $counter;
 		}
 		return $count;
 	}
