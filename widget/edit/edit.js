@@ -423,9 +423,13 @@ $('document').ready(function()
 							});
 							return (show = found);
 						});
-						var $field = $element.closest('#' + $element.attr('name'));
+						var name = $element.attr('name') ? $element.attr('name') : $element.prev().attr('name');
+						if (name.beginsWith('id_')) {
+							name = name.substr(3);
+						}
+						var $field = $element.closest('#' + name);
 						if (!$field.length) {
-							$field = $element;
+							$field = $element.parent().children();
 						}
 						show ? $field.show() : $field.hide();
 					});

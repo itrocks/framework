@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\User;
+
 /**
  * Conditions trait : common to Conditions and Conditions_Collection
  */
@@ -26,6 +28,14 @@ trait Conditions_Trait
 	 * @var string
 	 */
 	public $boolean_true_conditioned;
+
+	//--------------------------------------------------------------------------- $conditioned_object
+	/**
+	 * @conditions boolean=1
+	 * @link Object
+	 * @var User
+	 */
+	public $conditioned_object;
 
 	//----------------------------------------------------------------------------------------- $enum
 	/**
