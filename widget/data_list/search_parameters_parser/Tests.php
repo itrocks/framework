@@ -5,7 +5,6 @@ use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 use ITRocks\Framework\Tests\Objects\Document;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Range;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -242,10 +241,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2015-03-05 20:45:00', '2015-03-05 20:45:59'),
-				new Range('2015-03-05 08:05:00', '2015-03-05 08:05:59'),
-				new Range('2015-03-05 00:00:00', '2015-03-05 00:00:59'),
-				new Range('2015-03-05 23:59:00', '2015-03-05 23:59:59')
+				new Func\Range('2015-03-05 20:45:00', '2015-03-05 20:45:59'),
+				new Func\Range('2015-03-05 08:05:00', '2015-03-05 08:05:59'),
+				new Func\Range('2015-03-05 00:00:00', '2015-03-05 00:00:59'),
+				new Func\Range('2015-03-05 23:59:00', '2015-03-05 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -265,10 +264,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2015-03-05 20:00:00', '2015-03-05 20:59:59'),
-				new Range('2015-03-05 08:00:00', '2015-03-05 08:59:59'),
-				new Range('2015-03-05 00:00:00', '2015-03-05 00:59:59'),
-				new Range('2015-03-05 23:00:00', '2015-03-05 23:59:59')
+				new Func\Range('2015-03-05 20:00:00', '2015-03-05 20:59:59'),
+				new Func\Range('2015-03-05 08:00:00', '2015-03-05 08:59:59'),
+				new Func\Range('2015-03-05 00:00:00', '2015-03-05 00:59:59'),
+				new Func\Range('2015-03-05 23:00:00', '2015-03-05 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -286,10 +285,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2015-03-05 00:00:00', '2015-03-05 23:59:59'),
-				new Range('2015-03-05 00:00:00', '2015-03-05 23:59:59'),
-				new Range('2015-03-05 00:00:00', '2015-03-05 23:59:59'),
-				new Range('2015-03-05 00:00:00', '2015-03-05 23:59:59')
+				new Func\Range('2015-03-05 00:00:00', '2015-03-05 23:59:59'),
+				new Func\Range('2015-03-05 00:00:00', '2015-03-05 23:59:59'),
+				new Func\Range('2015-03-05 00:00:00', '2015-03-05 23:59:59'),
+				new Func\Range('2015-03-05 00:00:00', '2015-03-05 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -353,11 +352,11 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-06-15 00:00:00', '2016-07-31 23:59:59'),
-				new Range('2015-07-01 00:00:00', '2016-06-12 23:59:59'),
-				new Range('2013-08-08 00:00:00', '2016-04-22 23:59:59'),
-				new Range('2013-08-08 00:00:00', '2016-04-22 23:59:59'),
-				new Range('2016-05-15 00:00:00', '2016-06-15 23:59:59')
+				new Func\Range('2016-06-15 00:00:00', '2016-07-31 23:59:59'),
+				new Func\Range('2015-07-01 00:00:00', '2016-06-12 23:59:59'),
+				new Func\Range('2013-08-08 00:00:00', '2016-04-22 23:59:59'),
+				new Func\Range('2013-08-08 00:00:00', '2016-04-22 23:59:59'),
+				new Func\Range('2016-05-15 00:00:00', '2016-06-15 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -403,9 +402,9 @@ class Tests extends Test
 		$assume = [
 			'date' => Func::orOp([
 				'2016-06-15 12:30:44',
-				new Range('2016-06-15 11:00:00', '2016-06-15 11:59:59'),
-				new Range('2016-06-15 11:05:00', '2016-06-15 11:05:59'),
-				new Range('2016-06-15 13:29:00', '2016-06-15 13:29:59')
+				new Func\Range('2016-06-15 11:00:00', '2016-06-15 11:59:59'),
+				new Func\Range('2016-06-15 11:05:00', '2016-06-15 11:05:59'),
+				new Func\Range('2016-06-15 13:29:00', '2016-06-15 13:29:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -423,11 +422,11 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-07-01 00:00:00', '2016-07-01 23:59:59'),
-				new Range('2015-07-01 00:00:00', '2015-07-01 23:59:59'),
-				new Range('2016-06-12 00:00:00', '2016-06-12 23:59:59'),
-				new Range('2013-08-08 00:00:00', '2013-08-08 23:59:59')
+				new Func\Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
+				new Func\Range('2016-07-01 00:00:00', '2016-07-01 23:59:59'),
+				new Func\Range('2015-07-01 00:00:00', '2015-07-01 23:59:59'),
+				new Func\Range('2016-06-12 00:00:00', '2016-06-12 23:59:59'),
+				new Func\Range('2013-08-08 00:00:00', '2013-08-08 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -462,10 +461,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-03-05 00:00:00', '2016-03-05 23:59:59'),
-				new Range('2016-03-05 00:00:00', '2016-03-05 23:59:59'),
-				new Range('2016-03-05 00:00:00', '2016-03-05 23:59:59'),
-				new Range('2016-03-05 00:00:00', '2016-03-05 23:59:59')
+				new Func\Range('2016-03-05 00:00:00', '2016-03-05 23:59:59'),
+				new Func\Range('2016-03-05 00:00:00', '2016-03-05 23:59:59'),
+				new Func\Range('2016-03-05 00:00:00', '2016-03-05 23:59:59'),
+				new Func\Range('2016-03-05 00:00:00', '2016-03-05 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -483,8 +482,8 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-06-05 00:00:00', '2016-06-05 23:59:59'),
-				new Range('2016-06-05 00:00:00', '2016-06-05 23:59:59')
+				new Func\Range('2016-06-05 00:00:00', '2016-06-05 23:59:59'),
+				new Func\Range('2016-06-05 00:00:00', '2016-06-05 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -502,10 +501,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-14 00:00:00', '2016-06-14 23:59:59')
+				new Func\Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
+				new Func\Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
+				new Func\Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
+				new Func\Range('2016-06-14 00:00:00', '2016-06-14 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -537,7 +536,7 @@ class Tests extends Test
 		$this->parser->search = ['number' => 'xxx-yyy'];
 		$check = $this->parser->parse();
 		$assume = [];
-		$assume['number'] = new Range('xxx', 'yyy');
+		$assume['number'] = new Func\Range('xxx', 'yyy');
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
@@ -552,7 +551,7 @@ class Tests extends Test
 		$this->parser->search = ['number' => 'x*x-y?y'];
 		$check = $this->parser->parse();
 		$assume = [];
-		$assume['number'] = new Range('x%x', 'y_y');
+		$assume['number'] = new Func\Range('x%x', 'y_y');
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
@@ -568,8 +567,8 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
+				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
+				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -587,10 +586,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
+				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
+				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
+				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
+				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -607,7 +606,7 @@ class Tests extends Test
 		$this->parser->search = ['date' => 'm-1/y-1'];
 		$check = $this->parser->parse();
 		$assume = [
-			'date' => new Range('2015-05-01 00:00:00', '2015-05-31 23:59:59')
+			'date' => new Func\Range('2015-05-01 00:00:00', '2015-05-31 23:59:59')
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
@@ -638,7 +637,7 @@ class Tests extends Test
 		$this->parser->search = ['number' => '!xxx-yyy'];
 		$check = $this->parser->parse();
 		$assume = [];
-		$assume['number'] = new Range('xxx', 'yyy', true);
+		$assume['number'] = new Func\Range('xxx', 'yyy', true);
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
 
@@ -724,14 +723,14 @@ class Tests extends Test
 		$assume = [];
 		$assume['number'] = Func::orOp([
 			Func::andOp([
-				new Range('a%a', 'bb%'),
+				new Func\Range('a%a', 'bb%'),
 				Func::notLike('%cc')
 			]),
 			Func::andOp([
-				new Range('d_d', '_e_', true),
+				new Func\Range('d_d', '_e_', true),
 				Func::like('%f_')
 			]),
-			new Range('g_g', 'h%_', true)
+			new Func\Range('g_g', 'h%_', true)
 		]);
 		return $this->assume(__FUNCTION__, $check, $assume, false);
 	}
@@ -808,10 +807,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-06-19 00:00:00', '2016-06-19 23:59:59'),
-				new Range('2016-06-11 00:00:00', '2016-06-11 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
-				new Range('2016-06-15 00:00:00', '2016-06-15 23:59:59')
+				new Func\Range('2016-06-19 00:00:00', '2016-06-19 23:59:59'),
+				new Func\Range('2016-06-11 00:00:00', '2016-06-11 23:59:59'),
+				new Func\Range('2016-06-15 00:00:00', '2016-06-15 23:59:59'),
+				new Func\Range('2016-06-15 00:00:00', '2016-06-15 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -829,10 +828,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-10-01 00:00:00', '2016-10-31 23:59:59'),
-				new Range('2016-02-01 00:00:00', '2016-02-29 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
-				new Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
+				new Func\Range('2016-10-01 00:00:00', '2016-10-31 23:59:59'),
+				new Func\Range('2016-02-01 00:00:00', '2016-02-29 23:59:59'),
+				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59'),
+				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -850,10 +849,10 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2021-01-01 00:00:00', '2021-12-31 23:59:59'),
-				new Range('2011-01-01 00:00:00', '2011-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
+				new Func\Range('2021-01-01 00:00:00', '2021-12-31 23:59:59'),
+				new Func\Range('2011-01-01 00:00:00', '2011-12-31 23:59:59'),
+				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
+				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -871,8 +870,8 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
+				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
+				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
@@ -911,8 +910,8 @@ class Tests extends Test
 		$check = $this->parser->parse();
 		$assume = [
 			'date' => Func::orOp([
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
-				new Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
+				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59'),
+				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
 			])
 		];
 		return $this->assume(__FUNCTION__, $check, $assume, false);
