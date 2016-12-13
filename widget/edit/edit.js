@@ -423,17 +423,11 @@ $('document').ready(function()
 							});
 							return (show = found);
 						});
-						// TODO HIGH always only one show + one hide : if collection, the input ; if form : the entire field
-						if (show) {
-							$element.parent().find('button,input,select').show();
-							//noinspection JSValidateTypes
-							$element.parent().find('label').parent().show();
+						var $field = $element.closest('#' + $element.attr('name'));
+						if (!$field.length) {
+							$field = $element;
 						}
-						else {
-							$element.parent().find('button,input,select').hide();
-							//noinspection JSValidateTypes
-							$element.parent().find('label').parent().hide();
-						}
+						show ? $field.show() : $field.hide();
 					});
 				});
 			}
