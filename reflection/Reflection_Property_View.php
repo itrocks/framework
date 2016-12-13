@@ -62,7 +62,7 @@ class Reflection_Property_View
 		}
 		return (is_null($value) && $this->property->getAnnotation('null')->value)
 			? null
-			: ($value ? 'yes' : 'no');
+			: ($value ? YES : NO);
 	}
 
 	//--------------------------------------------------------------------------------- formatDefault

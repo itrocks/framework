@@ -177,7 +177,7 @@ class Html_Builder_Type
 		$value = strlen($this->value) ? ($this->value ? 1 : 0) : ($this->null ? null : 0);
 		if ($this->null) {
 			$input = new Select(
-				$this->getFieldName(), ['' => '', '0' => 'no', '1' => 'yes'], $value
+				$this->getFieldName(), ['' => '', '0' => NO, '1' => YES], $value
 			);
 			if ($this->readonly) {
 				$this->setInputAsReadOnly($input);

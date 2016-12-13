@@ -1,6 +1,10 @@
 <?php
 
+const _FALSE = 'false';
+
 const _PRE = '</pre>';
+
+const _TRUE = 'true';
 
 const AS_ARRAY = 'AS_ARRAY';
 
@@ -28,6 +32,8 @@ const DQ = '"';
 
 const LF = "\n";
 
+const NO = 'no';
+
 const Q = "'";
 
 const PHP_CEIL = 'ceil';
@@ -43,3 +49,5 @@ const SL = '/';
 const SP = ' ';
 
 const TAB = "\t";
+
+const YES = 'yes';

@@ -71,7 +71,7 @@ class Tests extends Test
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Func::andOp(['true', 'false'])]
+			['number' => Func::andOp([_TRUE, _FALSE])]
 		);
 		$this->assume(
 			__METHOD__,
@@ -85,7 +85,7 @@ class Tests extends Test
 	//------------------------------------------------------------------------- testLogicalAndNegated
 	public function testLogicalAndNegated()
 	{
-		$argument = Func::andOp(['true', 'false']);
+		$argument = Func::andOp([_TRUE, _FALSE]);
 		$argument->negate();
 		$builder = new Select(
 			Order::class,
@@ -107,7 +107,7 @@ class Tests extends Test
 		$check = false;
 		try
 		{
-			$argument = new Logical(Logical::TRUE_OPERATOR, ['true', 'false']);
+			$argument = new Logical(Logical::TRUE_OPERATOR, [_TRUE, _FALSE]);
 			unset($argument);
 		}
 		catch (Exception $e)
@@ -123,7 +123,7 @@ class Tests extends Test
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Func::notOp('true')]
+			['number' => Func::notOp(_TRUE)]
 		);
 		$this->assume(
 			__METHOD__,
@@ -140,7 +140,7 @@ class Tests extends Test
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Func::notOp(Func::andOp(['true', 'false']))]
+			['number' => Func::notOp(Func::andOp([_TRUE, _FALSE]))]
 		);
 		$this->assume(
 			__METHOD__,
@@ -154,7 +154,7 @@ class Tests extends Test
 	//------------------------------------------------------------------------- testLogicalNotNegated
 	public function testLogicalNotNegated()
 	{
-		$argument = Func::notOp('true');
+		$argument = Func::notOp(_TRUE);
 		$argument->negate();
 		$builder = new Select(
 			Order::class,
@@ -176,7 +176,7 @@ class Tests extends Test
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Func::notOp(Func::notOp('true'))]
+			['number' => Func::notOp(Func::notOp(_TRUE))]
 		);
 		$this->assume(
 			__METHOD__,
@@ -193,7 +193,7 @@ class Tests extends Test
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Func::orOp(['true', 'false'])]
+			['number' => Func::orOp([_TRUE, _FALSE])]
 		);
 		$this->assume(
 			__METHOD__,
@@ -211,8 +211,8 @@ class Tests extends Test
 			Order::class,
 			null,
 			['number' => Func::orOp([
-				Func::orOp(['true', 'false']),
-				Func::orOp(['true', 'false']),
+				Func::orOp([_TRUE, _FALSE]),
+				Func::orOp([_TRUE, _FALSE]),
 			])]
 		);
 		$this->assume(
@@ -231,7 +231,7 @@ class Tests extends Test
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => new Logical(Logical::TRUE_OPERATOR, 'true')]
+			['number' => new Logical(Logical::TRUE_OPERATOR, _TRUE)]
 		);
 		$this->assume(
 			__METHOD__,
@@ -248,7 +248,7 @@ class Tests extends Test
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Func::xorOp(['true', 'false'])]
+			['number' => Func::xorOp([_TRUE, _FALSE])]
 		);
 		$this->assume(
 			__METHOD__,
@@ -262,7 +262,7 @@ class Tests extends Test
 	//------------------------------------------------------------------------- testLogicalXorNegated
 	public function testLogicalXorNegated()
 	{
-		$argument = Func::xorOp(['true', 'false']);
+		$argument = Func::xorOp([_TRUE, _FALSE]);
 		$argument->negate();
 		$builder = new Select(
 			Order::class,

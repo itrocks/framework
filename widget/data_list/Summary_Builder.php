@@ -302,7 +302,7 @@ class Summary_Builder
 		elseif (is_numeric($value)) {
 			$type_string = $property->getType()->asString();
 			if ($type_string == Type::BOOLEAN) {
-				return ($value ? Loc::tr('yes') : Loc::tr('no'));
+				return ($value ? Loc::tr(YES) : Loc::tr(NO));
 			}
 			return $value;
 		}

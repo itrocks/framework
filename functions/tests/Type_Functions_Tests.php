@@ -13,8 +13,8 @@ class Type_Functions_Tests extends Test
 	const NUMERIC_TESTS = [
 		/* subtitle,     value,         numeric_result, integer_result, unsigned_integer_result */
 		['empty_string', ''           , false,          false,          false],
-		['false'       , false        , false,          false,          false],
-		['true'        , true         , false,          false,          false],
+		[_FALSE        , false        , false,          false,          false],
+		[_TRUE         , true         , false,          false,          false],
 		['null'        , null         , false,          false,          false],
 		['1'           , '1'          , true ,          true ,          true ],
 		['10'          , '10'         , true ,          true ,          true ],

@@ -125,8 +125,8 @@ trait Type_Boolean
 	{
 		static $words = null;
 		if (!isset($words)) {
-			$words_references = ['yes', 'true'];
-			$words_localized = [];
+			$words_references = [YES, _TRUE];
+			$words_localized  = [];
 			foreach ($words_references as $word) {
 				$words_localized[] = Loc::tr($word);
 			}
