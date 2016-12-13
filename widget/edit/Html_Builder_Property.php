@@ -275,13 +275,19 @@ class Html_Builder_Property extends Html_Builder_Type
 			if ($conditions_values) {
 				foreach ($conditions_values as $condition) {
 					if (strpos($condition, '=')) {
-						list($name, $condition) = explode('=', $condition);
+						list($property_name, $condition) = explode('=', $condition);
 					}
 					else {
-						$name = $condition;
+						$property_name = $condition;
 					}
-					$this->conditions[$name] = isset($this->conditions[$name])
-						? ($this->conditions[$name] . ',' . $condition)
+					if (
+						in_array($condition, [_FALSE, _TRUE])
+						&& $this->property->getFinalClass()->getProperty($property_name)->getType()->isBoolean()
+					) {
+						$condition = ($condition === _TRUE) ? 1 : 0;
+					}
+					$this->conditions[$property_name] = isset($this->conditions[$property_name])
+						? ($this->conditions[$property_name] . ',' . $condition)
 						: $condition;
 				}
 			}

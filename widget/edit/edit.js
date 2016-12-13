@@ -53,7 +53,7 @@ $('document').ready(function()
 						$checkbox.attr('checked', false);
 					}
 				}
-				$input.val(check);
+				$input.val(check).change();
 				$checkbox.val(check);
 			}
 		});
@@ -417,7 +417,9 @@ $('document').ready(function()
 						$.each($element.data('conditions'), function(condition_name, condition) {
 							var found = false;
 							$.each(condition.values, function(value) {
-								return !(found = (condition.element.val() == value));
+								var element_value = (condition.element.attr('type') === 'checkbox')
+									? (condition.element.is(':checked') ? 1 : 0) : condition.element.val();
+								return !(found = (element_value == value));
 							});
 							return (show = found);
 						});
