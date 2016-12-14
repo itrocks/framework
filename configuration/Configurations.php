@@ -52,9 +52,15 @@ class Configurations
 	{
 		if (file_exists('composer.json')) {
 			$composer = file_get_contents('composer.json');
-			preg_match('~\n\s*\"name\":\s*\"(?P<vendor>\w*)/(?P<project>\w*)\"\s*,~', $composer, $match);
+			preg_match(
+				'~\n\s*\"name\":\s*\"(?P<vendor>[\w-]*)/(?P<project>[\w-]*)\"\s*,~', $composer, $match
+			);
 			if ($match) {
-				return $match['vendor'] . SL . $match['project'] . SL . 'config.php';
+				$file_name = $match['vendor'] . SL . $match['project'] . SL . 'config.php';
+				if (!is_file($file_name)) {
+					$file_name = $match['project'] . '.php';
+				}
+				return is_file($file_name) ? $file_name : null;
 			}
 		}
 		return null;
