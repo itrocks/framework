@@ -58,7 +58,10 @@ class Configurations
 			if ($match) {
 				$file_name = $match['vendor'] . SL . $match['project'] . SL . 'config.php';
 				if (!is_file($file_name)) {
-					$file_name = $match['project'] . '.php';
+					$file_name = 'config.php';
+					if (!is_file($file_name)) {
+						$file_name = $match['project'] . '.php';
+					}
 				}
 				return is_file($file_name) ? $file_name : null;
 			}
