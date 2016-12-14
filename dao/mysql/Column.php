@@ -210,7 +210,9 @@ class Column implements Sql\Column
 	{
 		if (isset($this->Default)) {
 			if ($this->getType()->isNumeric()) {
-				$this->Default += 0;
+				$this->Default = (strpos($this->Default, DOT) !== false)
+					? floatval($this->Default)
+					: intval($this->Default);
 			}
 			elseif ($this->getType()->isString()) {
 				$this->Default = strval($this->Default);
