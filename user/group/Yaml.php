@@ -69,7 +69,7 @@ class Yaml
 	 * @param $feature string
 	 * @param $options array
 	 */
-	public function addFeature($feature, $options = null)
+	public function addFeature($feature, array $options = [])
 	{
 		if (!isset($this->data[self::FEATURES])) {
 			$this->data[self::FEATURES] = [];
@@ -237,7 +237,7 @@ class Yaml
 	 */
 	private function getFilenamePath()
 	{
-		$path = lLastParse($this->filename, SL);
+		$path       = lLastParse($this->filename, SL);
 		$file_parts = explode('_', lParse(rLastParse($this->filename, SL), DOT));
 		foreach ($file_parts as $key => $file_part) {
 			if (ctype_lower($file_part[0])) {

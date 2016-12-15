@@ -90,13 +90,14 @@ class View implements Configurable
 	 * @param $view_method_name string
 	 * @param $parameters       array
 	 * @param $form             array
-	 * @param $files            array
+	 * @param $files            array[]
 	 * @param $class_name       string
 	 * @param $feature_name     string
 	 * @return mixed
 	 */
 	private static function executeView(
-		$view, $view_method_name, $parameters, $form, $files, $class_name, $feature_name
+		$view, $view_method_name, array $parameters, array $form, array $files, $class_name,
+		$feature_name
 	) {
 		$object = reset($parameters);
 		$view_object = (is_object($object) && isA($object, $view))
@@ -138,15 +139,16 @@ class View implements Configurable
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param $parameters   array  Parameters for the view. The first must be the context object.
-	 * @param $form         array  Form parameters
-	 * @param $files        array  Files parameters
-	 * @param $class_name   string The context class name (class of the first parameter)
-	 * @param $feature_name string The feature class name
+	 * @param $parameters   array   Parameters for the view. The first must be the context object.
+	 * @param $form         array   Form parameters
+	 * @param $files        array[] Files parameters
+	 * @param $class_name   string  The context class name (class of the first parameter)
+	 * @param $feature_name string  The feature class name
 	 * @return mixed
 	 */
-	public static function run($parameters, $form, $files, $class_name, $feature_name)
-	{
+	public static function run(
+		array $parameters, array $form, array $files, $class_name, $feature_name
+	) {
 		$feature_names
 			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] != $feature_name))
 			? [$parameters[Feature::FEATURE], $feature_name]

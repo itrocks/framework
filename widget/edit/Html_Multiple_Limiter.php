@@ -105,7 +105,7 @@ class Html_Multiple_Limiter implements Registerable
 	 * This results on an incomplete object, but the object is used for editing form only so we don't
 	 * care.
 	 *
-	 * @param $options Option[] some options for advanced search
+	 * @param $options Option[]|Option some options for advanced search
 	 */
 	public function beforeMysqlLinkSearch(&$options)
 	{

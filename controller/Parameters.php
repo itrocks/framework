@@ -93,7 +93,7 @@ class Parameters
 	 * @param $search_by_properties string[]
 	 * @return object
 	 */
-	public function getMainObject($class_name = null, $search_by_properties = [])
+	public function getMainObject($class_name = null, array $search_by_properties = [])
 	{
 		if (is_object($class_name)) {
 			$default_object = $class_name;
@@ -270,7 +270,7 @@ class Parameters
 	 * @param $property_names string[]
 	 * @return object
 	 */
-	public function searchMainObject($class_name, $property_names)
+	public function searchMainObject($class_name, array $property_names)
 	{
 		$search = [];
 		foreach ($property_names as $property_name) {

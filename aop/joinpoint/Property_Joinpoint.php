@@ -42,13 +42,13 @@ abstract class Property_Joinpoint extends Joinpoint
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name    string
-	 * @param $pointcut      string[]|object[]
-	 * @param $value         mixed
-	 * @param $stored        mixed
-	 * @param $advice        callable
+	 * @param $class_name string
+	 * @param $pointcut   string[]|object[]
+	 * @param $value      mixed
+	 * @param $stored     mixed
+	 * @param $advice     callable
 	 */
-	public function __construct($class_name, $pointcut, &$value, &$stored, $advice)
+	public function __construct($class_name, array $pointcut, &$value, &$stored, callable $advice)
 	{
 		$this->advice        = $advice;
 		$this->class_name    = $class_name;

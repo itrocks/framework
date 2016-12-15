@@ -360,6 +360,7 @@ class Functions
 	public function getExpand(Template $template)
 	{
 		$property = reset($template->objects);
+		$expanded = [];
 		$expanded = Integrated_Properties::expandUsingProperty(
 			$expanded, $property, $template->getParentObject($property->class)
 		);

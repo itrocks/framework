@@ -245,7 +245,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return mixed[] Constant name in key, constant value in value
 	 */
-	public function getConstants($flags = [T_EXTENDS, T_USE])
+	public function getConstants(array $flags = [T_EXTENDS, T_USE])
 	{
 		if (!$this->constants) {
 			$this->scanUntilClassEnds();
@@ -307,7 +307,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return array
 	 */
-	public function getDefaultProperties($flags = [])
+	public function getDefaultProperties(array $flags = [])
 	{
 		return [];
 	}
@@ -320,7 +320,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
 	 */
-	public function getDocComment($flags = [], &$already = [])
+	public function getDocComment(array $flags = [], array &$already = [])
 	{
 		if ($flags === true) {
 			$flags = [T_EXTENDS, T_IMPLEMENTS, T_USE];
@@ -787,7 +787,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @return boolean
 	 * @todo works only with parents : add interfaces and traits
 	 */
-	public function isA($name, $flags = [])
+	public function isA($name, array $flags = [])
 	{
 		if ($name == $this->name) {
 			return true;

@@ -86,7 +86,7 @@ class Main
 	 * @param $plugins array
 	 * @return Main
 	 */
-	public function addTopCorePlugins($plugins)
+	public function addTopCorePlugins(array $plugins)
 	{
 		foreach ($plugins as $plugin) {
 			$this->top_core_plugins[get_class($plugin)] = $plugin;
@@ -134,10 +134,10 @@ class Main
 	 * @param $method_name string
 	 * @param $uri         Uri
 	 * @param $post        array
-	 * @param $files       array
+	 * @param $files       array[]
 	 * @return string
 	 */
-	private function executeController($controller, $method_name, $uri, $post, $files)
+	private function executeController($controller, $method_name, $uri, array $post, array $files)
 	{
 		$controller = isA($controller, Controller::class)
 			? Builder::create($controller)
@@ -217,7 +217,7 @@ class Main
 	 * @param $includes string[]
 	 * @return Main $this
 	 */
-	public function init($includes = [])
+	public function init(array $includes = [])
 	{
 		$this->globals();
 		$this->includes();
@@ -338,10 +338,10 @@ class Main
 	 * @param $uri   string
 	 * @param $get   array
 	 * @param $post  array
-	 * @param $files array
+	 * @param $files array[]
 	 * @return mixed
 	 */
-	public function run($uri, $get, $post, $files)
+	public function run($uri, array $get, array $post, array $files)
 	{
 		$result = null;
 		try {
@@ -374,12 +374,13 @@ class Main
 	 * @param $uri         string The URI which describes the called controller and its parameters
 	 * @param $get         array Arguments sent by the caller
 	 * @param $post        array Posted forms sent by the caller
-	 * @param $files       array Files sent by the caller
+	 * @param $files       array[] Files sent by the caller
 	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
 	 * @return mixed View data returned by the view the controller called
 	 */
-	public function runController($uri, $get = [], $post = [], $files = [], $sub_feature = null)
-	{
+	public function runController(
+	 	$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
+	) {
 		$uri = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
 		$parameters = clone $uri->parameters;
@@ -407,10 +408,10 @@ class Main
 	/**
 	 * Start PHP session and remove session id from parameters (if set)
 	 *
-	 * @param $get array
+	 * @param $get  array
 	 * @param $post array
 	 */
-	private function sessionStart(&$get, &$post)
+	private function sessionStart(array &$get, array &$post)
 	{
 		if (empty($_SESSION)) {
 			ini_set('session.cookie_path', Paths::$uri_base);
@@ -447,7 +448,7 @@ class Main
 	 * @param $session           array
 	 * @param $application_class string
 	 */
-	private function setIncludePath(&$session, $application_class)
+	private function setIncludePath(array &$session, $application_class)
 	{
 		if (isset($session['include_path'])) {
 			set_include_path($session['include_path']);

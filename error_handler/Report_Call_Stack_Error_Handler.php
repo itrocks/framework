@@ -144,7 +144,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 * @param $lines Line[]
 	 * @return string
 	 */
-	private function stackLinesText($lines)
+	private function stackLinesText(array $lines)
 	{
 		$lines_count = 0;
 		$result = 'Stack trace:' . LF;

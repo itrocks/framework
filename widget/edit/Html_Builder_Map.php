@@ -59,7 +59,7 @@ class Html_Builder_Map extends Map
 	 * @param $map      object[]
 	 * @param $preprop  string
 	 */
-	public function __construct(Reflection_Property $property, $map, $preprop = null)
+	public function __construct(Reflection_Property $property, array $map, $preprop = null)
 	{
 		parent::__construct($property, $map);
 		$this->preprop = $preprop;

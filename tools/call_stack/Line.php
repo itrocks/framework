@@ -60,7 +60,7 @@ class Line
 	 * @param $debug_backtrace array
 	 * @return Line
 	 */
-	public static function fromDebugBackTraceArray($debug_backtrace)
+	public static function fromDebugBackTraceArray(array $debug_backtrace)
 	{
 		$line = new Line();
 		foreach ($debug_backtrace as $key => $value) {

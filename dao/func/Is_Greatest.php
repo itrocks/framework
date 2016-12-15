@@ -24,7 +24,7 @@ class Is_Greatest implements Where_Inner
 	/**
 	 * @param $properties string[]
 	 */
-	public function __construct($properties = null)
+	public function __construct(array $properties = null)
 	{
 		if (isset($properties)) $this->properties = $properties;
 	}

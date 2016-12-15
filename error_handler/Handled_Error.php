@@ -72,13 +72,13 @@ class Handled_Error
 	/**
 	 * Handled error construction is done by Error_Handlers::handle() and should not be done manually
 	 *
-	 * @param $err_no integer   php error number
-	 * @param $err_msg string   php error message
+	 * @param $err_no   integer php error number
+	 * @param $err_msg  string  php error message
 	 * @param $filename string  php script filename where the error occurs
 	 * @param $line_num integer line number into the php script file where the error occurs
-	 * @param $vars array       error context : all active variables and their values when the error occured
+	 * @param $vars     array   error context : all active variables and their values when the error occured
 	 */
-	public function __construct($err_no, $err_msg, $filename, $line_num, $vars)
+	public function __construct($err_no, $err_msg, $filename, $line_num, array $vars)
 	{
 		$this->err_no   = $err_no;
 		$this->err_msg  = $err_msg;

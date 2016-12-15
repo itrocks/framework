@@ -8,6 +8,7 @@ interface Controller
 {
 
 	//--------------------------------------------------- THEN specific parameter for action chaining
+
 	//------------------------------------------------------------------------------------------ THEN
 	const THEN = 'then';
 

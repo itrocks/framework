@@ -93,7 +93,7 @@ trait Toolbox
 	 * @param $advice array
 	 * @return string
 	 */
-	private function displayAdvice($advice)
+	private function displayAdvice(array $advice)
 	{
 		$advice = $advice[1];
 		if (is_string($advice)) {

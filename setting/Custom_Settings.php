@@ -59,13 +59,14 @@ abstract class Custom_Settings
 	/**
 	 * @param $class_name string
 	 * @param $feature    string
-	 * @return Setting
+	 * @return User_Setting
 	 */
 	public static function currentUserSetting($class_name, $feature = null)
 	{
 		$class_name = Builder::current()->sourceClassName($class_name);
 		$setting = new User_Setting($class_name . DOT . static::customId($feature));
-		return Dao::searchOne($setting) ?: $setting;
+		$setting = Dao::searchOne($setting) ?: $setting;
+		return $setting;
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -233,7 +234,7 @@ abstract class Custom_Settings
 	 * @param $selected_settings Selected_Setting[]
 	 * @return Custom_Settings[]
 	 */
-	public function selectedSettingsToCustomSettings($selected_settings)
+	public function selectedSettingsToCustomSettings(array $selected_settings)
 	{
 		$custom_settings = [];
 		foreach ($selected_settings as $selected_setting) {

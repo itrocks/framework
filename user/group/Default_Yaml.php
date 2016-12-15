@@ -61,7 +61,7 @@ class Default_Yaml
 	 * @param $features   string[]
 	 * @param $class_name string
 	 */
-	private function addCollectionDependencies($features, $class_name)
+	private function addCollectionDependencies(array $features, $class_name)
 	{
 		if (!isset($this->collection_classes[$class_name])) {
 			$this->collection_classes[$class_name] = true;
@@ -74,7 +74,7 @@ class Default_Yaml
 	 * @param $features   string[]
 	 * @param $class_name string
 	 */
-	private function addObjectDependencies($features, $class_name)
+	private function addObjectDependencies(array $features, $class_name)
 	{
 		if (!isset($this->features_classes[$class_name])) {
 			$this->features_classes[$class_name] = true;
@@ -93,7 +93,7 @@ class Default_Yaml
 	 * @param $class_name string
 	 * @return string[]
 	 */
-	private function getDependencies($features, $class_name = null)
+	private function getDependencies(array $features, $class_name = null)
 	{
 		if (!isset($class_name)) {
 			$this->features_classes = [];

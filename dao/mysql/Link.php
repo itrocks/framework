@@ -89,7 +89,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $parameters array
 	 */
-	public function __construct($parameters = null)
+	public function __construct(array $parameters = null)
 	{
 		parent::__construct($parameters);
 		if (isset($parameters[self::COLLATION])) {
@@ -156,7 +156,7 @@ class Link extends Dao\Sql\Link
 	/**
 	 * @param $parameters string[] ['host', 'login', 'password', 'database']
 	 */
-	private function connect($parameters)
+	private function connect(array $parameters)
 	{
 		if (!isset($parameters[self::DATABASE]) && isset($parameters['databases'])) {
 			$parameters[self::DATABASE] = str_replace('*', '', $parameters['databases']);
@@ -372,9 +372,9 @@ class Link extends Dao\Sql\Link
 
 	//-------------------------------------------------------------------------------------- fetchAll
 	/**
-	 * @param $class_name    string
-	 * @param $options       Option[]
-	 * @param $result_set    mysqli_result
+	 * @param $class_name string
+	 * @param $options    Option[]
+	 * @param $result_set mysqli_result
 	 * @return object[]
 	 */
 	protected function fetchAll($class_name, array $options, mysqli_result $result_set)

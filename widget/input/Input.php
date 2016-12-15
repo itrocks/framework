@@ -71,7 +71,7 @@ class Input
 	 * @param $inputs_arrays array[] each array is a set of arguments for Input's constructor
 	 * @return Input[]
 	 */
-	public static function newCollection($inputs_arrays)
+	public static function newCollection(array $inputs_arrays)
 	{
 		$inputs = [];
 		foreach ($inputs_arrays as $array) {

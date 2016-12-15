@@ -19,9 +19,9 @@ class Class_Builder
 	/**
 	 * $builds stores already built classes
 	 *
-	 * Keys are the name of the class and the
+	 * Keys are the name of the class and the most of interfaces / traits names separated by dots
 	 *
-	 * @var string[]
+	 * @var array string[][]
 	 */
 	private static $builds = [];
 
@@ -32,7 +32,7 @@ class Class_Builder
 	 * @param $get_source        boolean if true, get built [$name, $source] instead of $name
 	 * @return string|string[] the full name of the built class
 	 */
-	public static function build($class_name, $interfaces_traits = [], $get_source = false)
+	public static function build($class_name, array $interfaces_traits = [], $get_source = false)
 	{
 		$key = join(DOT, $interfaces_traits);
 		if (isset(self::$builds[$class_name][$key])) {
@@ -92,7 +92,7 @@ class Class_Builder
 	 * @param $get_source        boolean if true, get built [$name, $source) instead of $name
 	 * @return string|string[] generated class name
 	 */
-	private static function buildClass($class_name, $interfaces, $traits, $get_source)
+	private static function buildClass($class_name, array $interfaces, array $traits, $get_source)
 	{
 		if (!$traits) $traits = [0 => []];
 		end($traits);

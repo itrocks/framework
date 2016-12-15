@@ -61,7 +61,7 @@ class RGB_Color
 	public function setHex($color)
 	{
 		// Gets a proper hex string
-		$color = str_replace('#', '', $color);
+		$color   = str_replace('#', '', $color);
 		$hex_str = preg_replace("/[^0-9A-Fa-f]/", '', $color);
 		// If a proper hex code, convert using bitwise operation. No overhead... faster
 		if (strlen($hex_str) == 6) {

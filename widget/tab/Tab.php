@@ -185,7 +185,7 @@ class Tab
 	 * @param $properties_title string[] key is the property path, value is the property display (tr)
 	 * @return Tab
 	 */
-	public function propertiesToValues($object, $properties_title)
+	public function propertiesToValues($object, array $properties_title)
 	{
 		$class_name = get_class($object);
 		foreach ($this->columns as $key => $column) {

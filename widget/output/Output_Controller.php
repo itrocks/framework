@@ -75,7 +75,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	 * @return Output_Settings set if parameters did change
 	 */
 	public function applyParametersToOutputSettings(
-		Output_Settings &$output_settings, $parameters, $form = null
+		Output_Settings &$output_settings, array $parameters, array $form = null
 	) {
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
@@ -165,7 +165,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	 * @param $settings   Custom_Settings|Output_Settings
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, $parameters, Custom_Settings $settings = null)
+	public function getGeneralButtons($object, array $parameters, Custom_Settings $settings = null)
 	{
 		list($close_link, $follows) = $this->prepareThen($object, $parameters);
 		$buttons[Feature::F_CLOSE] = new Button(
@@ -266,11 +266,11 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	 */
 	protected function getViewParameters(
 		/** @noinspection PhpUnusedParameterInspection */
-		Parameters $parameters, $form, $class_name
+		Parameters $parameters, array $form, $class_name
 	) {
-		$object = $parameters->getMainObject($class_name);
+		$object     = $parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
-		$feature = isset($parameters[Feature::FEATURE])
+		$feature    = isset($parameters[Feature::FEATURE])
 			? $parameters[Feature::FEATURE]
 			: Feature::F_OUTPUT;
 
@@ -340,7 +340,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	 * @param $default_close_link string
 	 * @return array first element is the close link, second element is an array of a link parameter
 	 */
-	protected function prepareThen($object, $parameters, $default_close_link = null)
+	protected function prepareThen($object, array $parameters, $default_close_link = null)
 	{
 		if (isset($parameters[Controller::THEN])) {
 			$close_link = $parameters[Controller::THEN];
@@ -360,11 +360,11 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array
+	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		return View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);

@@ -93,6 +93,8 @@ class Autoload_Cache implements Activable, Updatable
 	//---------------------------------------------------------------------------------------- update
 	/**
 	 * Scans all PHP files into the project (excluding vendor) and store their paths to the cache
+	 *
+	 * @param $last_time integer
 	 */
 	public function update($last_time = 0)
 	{

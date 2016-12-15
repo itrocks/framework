@@ -83,7 +83,7 @@ abstract class Builder
 	 * @param $column_names string[]
 	 * @return string
 	 */
-	public static function buildColumns($column_names)
+	public static function buildColumns(array $column_names)
 	{
 		$sql_columns = '';
 		$i = 0;
@@ -104,7 +104,7 @@ abstract class Builder
 	 * @param $write string[] the data to write for each column : key is the column name
 	 * @return string
 	 */
-	public static function buildInsert($class, $write)
+	public static function buildInsert($class, array $write)
 	{
 		$sql_insert = self::INSERT . ' INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ
 			. LF . 'SET' . SP;
@@ -130,7 +130,7 @@ abstract class Builder
 	 * @param $id    integer|integer[]
 	 * @return string
 	 */
-	public static function buildUpdate($class, $write, $id)
+	public static function buildUpdate($class, array $write, $id)
 	{
 		$sql_update = self::UPDATE . SP . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET ';
 		$i = 0;
@@ -165,7 +165,7 @@ abstract class Builder
 	 * @param $values string[] keys are columns names
 	 * @return string
 	 */
-	public static function buildValues($values)
+	public static function buildValues(array $values)
 	{
 		return join(', ', array_map([Value::class, 'escape'], $values));
 	}

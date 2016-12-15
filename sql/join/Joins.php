@@ -94,7 +94,7 @@ class Joins
 	 * @param $starting_class_name string the class name for the root of property paths
 	 * @param $paths               array a property paths list to add at construction
 	 */
-	public function __construct($starting_class_name, $paths = [])
+	public function __construct($starting_class_name, array $paths = [])
 	{
 		$this->alias_counter = 1;
 		$this->classes[''] = $starting_class_name;
@@ -289,7 +289,7 @@ class Joins
 	 * @param $paths_array string[]
 	 * @return Joins
 	 */
-	public function addMultiple($paths_array)
+	public function addMultiple(array $paths_array)
 	{
 		foreach ($paths_array as $path) {
 			$this->add($path);
@@ -652,7 +652,7 @@ class Joins
 	 * @param $paths               array a property paths list to add at construction
 	 * @return Joins
 	 */
-	public static function newInstance($starting_class_name, $paths = [])
+	public static function newInstance($starting_class_name, array $paths = [])
 	{
 		return new Joins($starting_class_name, $paths);
 	}

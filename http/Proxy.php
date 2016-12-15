@@ -118,7 +118,7 @@ class Proxy
 	 * Return form content as an url component like var=val&var2=val2&...
 	 * If prefix is given, this will return prefix[var]=val&prefix[var2]=val2&...
 	 *
-	 * @param $array  array data
+	 * @param $array  array|string data
 	 * @param $prefix string for internal use only (prefix on recursion)
 	 * @return string
 	 */
@@ -127,7 +127,8 @@ class Proxy
 		$url = '';
 		if (!is_array($array)) {
 			$url .= "&$prefix=$array";
-		} else {
+		}
+		else {
 			foreach ($array as $key => $val) {
 				if (is_array($val)) {
 					$url .= '&' . $this->dataEncode($val, $prefix ? ($prefix . "[$key]") : $key);
@@ -255,6 +256,8 @@ class Proxy
 	/**
 	 * Call this instead of sendResponse() to send headers and response with redirections replaced
 	 * by displayed links
+	 *
+	 * @param $buffer string
 	 */
 	public function debugRedirect(&$buffer)
 	{
@@ -298,7 +301,7 @@ class Proxy
 	 * @param $method string GET, POST
 	 * @return boolean true if job done, false if any error occurred
 	 */
-	public function request($url = null, $data = null, $method = null)
+	public function request($url = null, array $data = null, $method = null)
 	{
 		if (isset($url))    $this->url    = $url;
 		if (isset($method)) $this->method = $method;
@@ -398,7 +401,7 @@ class Proxy
 	/**
 	 * @param $cookies Cookie[]
 	 */
-	public function setRequestCookies($cookies = [])
+	public function setRequestCookies(array $cookies = [])
 	{
 		$text = '';
 		foreach ($cookies as $cookie) {
@@ -418,7 +421,7 @@ class Proxy
 	 * @param $headers string[]
 	 * @param $reset   boolean
 	 */
-	public function setRequestHeaders($headers = [], $reset = false)
+	public function setRequestHeaders(array $headers = [], $reset = false)
 	{
 		$this->request_headers = $reset ? $headers : array_merge($this->request_headers, $headers);
 	}
@@ -440,7 +443,7 @@ class Proxy
 	 * @param $cookies Cookie[]
 	 * @param $replace boolean
 	 */
-	public function setResponseCookies($cookies = [], $replace = true)
+	public function setResponseCookies(array $cookies = [], $replace = true)
 	{
 		if ($replace) {
 			foreach ($this->response_headers as $key => $header) {

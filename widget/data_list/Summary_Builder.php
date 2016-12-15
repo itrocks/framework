@@ -109,7 +109,7 @@ class Summary_Builder
 	 * @param $clause string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @return string
 	 */
-	private function buildArray($path, $array, $clause)
+	private function buildArray($path, array $array, $clause)
 	{
 		$sql        = '';
 		$sql_close  = '';
@@ -234,9 +234,9 @@ class Summary_Builder
 	/**
 	 * Build Human readable search section for given path and value
 	 *
-	 * @param $path        string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
-	 * @param $value       mixed May be a value, or a structured array of multiple where clauses
-	 * @param $clause      string For multiple where clauses, tell if they are linked with OR or AND
+	 * @param $path   string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
+	 * @param $value  mixed May be a value, or a structured array of multiple where clauses
+	 * @param $clause string For multiple where clauses, tell if they are linked with OR or AND
 	 * @return string
 	 */
 	private function buildPath($path, $value, $clause)

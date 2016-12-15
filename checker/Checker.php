@@ -89,7 +89,7 @@ abstract class Checker
 	 * @param $value        mixed
 	 */
 	private static function checkVar(
-		&$report_lines, Reflection_Property $property, Annotation $annotation, $value
+		array &$report_lines, Reflection_Property $property, Annotation $annotation, $value
 	) {
 		switch ($annotation->value) {
 			case 'array':
@@ -126,7 +126,7 @@ abstract class Checker
 	 * @param $value        mixed
 	 */
 	private static function checkValue(
-		&$report_lines, $test, Reflection_Property $property, Annotation $annotation, $value
+		array &$report_lines, $test, Reflection_Property $property, Annotation $annotation, $value
 	) {
 		if (!$test) {
 			$report_line = new Line\Annotation($property, $annotation, $value);

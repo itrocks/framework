@@ -60,7 +60,7 @@ class Engine implements Configurable, Framework\View\Engine
 	 * @return string the resulting path of the found template file
 	 */
 	public static function getTemplateFile(
-		$class_name, $feature_names, $template = null, $template_file_type = 'html'
+		$class_name, array $feature_names, $template = null, $template_file_type = 'html'
 	) {
 		if (isset($template)) {
 			foreach ($feature_names as $feature_name) {

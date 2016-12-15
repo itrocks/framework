@@ -62,8 +62,8 @@ class Logical implements Negate, Where
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $operator string
-	 * @param $arguments Where[]|mixed key can be a property path or numeric if depends
-	 * on main property part
+	 * @param $arguments Where[]|mixed[]|Where|mixed key can be a property path or numeric if depends
+	 *        on main property part
 	 * @throws Exception
 	 */
 	public function __construct($operator = null, $arguments = null)

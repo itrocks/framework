@@ -86,7 +86,7 @@ class Select
 	 *
 	 * @var string[]
 	 */
-	private $columns = null;
+	private $columns = [];
 
 	//--------------------------------------------------------------------------------- $column_count
 	/**
@@ -195,7 +195,7 @@ class Select
 
 	//------------------------------------------------------------------------------------ doCallback
 	/**
-	 * @param $data_store array[]|object[]
+	 * @param $data_store array[]|object
 	 * @return boolean if the call returns false for any stored object, this will stop & return false
 	 */
 	private function doCallback(&$data_store)
@@ -261,7 +261,7 @@ class Select
 	 * @param $key        string[] Key property names
 	 * @return List_Data|array[]|object[]|callable
 	 */
-	public function executeQuery($query, $data_store = null, $key = null)
+	public function executeQuery($query, $data_store = null, array $key = null)
 	{
 		if (isset($key)) {
 			$this->key = $key;
@@ -303,7 +303,7 @@ class Select
 	private function objectToProperties($object)
 	{
 		if (is_object($object) && !($object instanceof Dao_Function)) {
-			$id = $this->link->getObjectIdentifier($object);
+			$id     = $this->link->getObjectIdentifier($object);
 			$object = isset($id) ? ['id' => $id] : get_object_vars($object);
 		}
 		elseif (is_array($object)) {
@@ -325,13 +325,11 @@ class Select
 	 * @param $columns string[] The input list of column names
 	 * @return string[] The output list of the column names
 	 */
-	private function prepareColumns($columns)
+	private function prepareColumns(array $columns = [])
 	{
 		$cols = [];
-		if ($columns) {
-			foreach ($columns as $may_be_column => $column) {
-				$cols[] = is_string($may_be_column) ? $may_be_column : $column;
-			}
+		foreach ($columns as $may_be_column => $column) {
+			$cols[] = is_string($may_be_column) ? $may_be_column : $column;
 		}
 		return $cols;
 	}
@@ -424,11 +422,11 @@ class Select
 
 	//----------------------------------------------------------------------------------- resultToRow
 	/**
-	 * @param $result mixed[]
+	 * @param $result array
 	 * @param $first  boolean
 	 * @return array
 	 */
-	private function resultToRow($result, $first)
+	private function resultToRow(array $result, $first)
 	{
 		$row = [];
 		for ($i = 0; $i < $this->column_count; $i++) {
@@ -462,11 +460,11 @@ class Select
 	/**
 	 * Store the row into the data store
 	 *
-	 * @param $row  array
+	 * @param $row        array
 	 * @param $data_store List_Data|array[]|object[]
 	 * @return boolean false if the callback returned false to stop the read process
 	 */
-	private function store($row, &$data_store)
+	private function store(array $row, &$data_store)
 	{
 		$result = true;
 		if ($data_store instanceof List_Data) {

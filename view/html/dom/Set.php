@@ -42,7 +42,7 @@ class Set extends Element
 	 * @param $readonly  boolean
 	 */
 	public function __construct(
-		$base_name = null, $values = null, $selected = null, $id = null, $readonly = false
+		$base_name = null, array $values = null, $selected = null, $id = null, $readonly = false
 	) {
 		parent::__construct('span', true);
 		$this->setAttribute('class', 'set');

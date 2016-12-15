@@ -17,10 +17,10 @@ class Set_Controller implements Feature_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array
+	 * @param $files      array[]
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files)
+	public function run(Parameters $parameters, array $form, array $files)
 	{
 		Session::current()->get(Settings::class, true)->add(
 			$parameters->getRawParameter('code'),

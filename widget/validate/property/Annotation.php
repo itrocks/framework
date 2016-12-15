@@ -40,7 +40,9 @@ trait Annotation
 	 */
 	protected function mandatoryAnnotation()
 	{
-		return $this->property->getAnnotation('mandatory');
+		/** @var $mandatory_annotation Mandatory_Annotation */
+		$mandatory_annotation = $this->property->getAnnotation('mandatory');
+		return $mandatory_annotation;
 	}
 
 }

@@ -37,7 +37,7 @@ class Tests extends Test
 	{
 		// TODO Build
 		$this->class_name = Document::class;
-		$this->parser = new Search_Parameters_Parser($this->class_name, null);
+		$this->parser     = new Search_Parameters_Parser($this->class_name);
 		// init the date we base upon for tests
 		Date::initDates(new Date_Time('2016-06-15 12:30:45'));
 	}

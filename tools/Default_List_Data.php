@@ -20,7 +20,7 @@ class Default_List_Data extends Set implements List_Data
 	 * @param $element_class_name string the reference class name
 	 * @param $properties         string[] properties names
 	 */
-	public function __construct($element_class_name, $properties)
+	public function __construct($element_class_name, array $properties)
 	{
 		parent::__construct($element_class_name);
 		$this->properties = $properties;

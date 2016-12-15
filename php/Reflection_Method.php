@@ -131,7 +131,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * @param $flags integer[]|boolean T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
-	public function getDocComment($flags = [])
+	public function getDocComment(array $flags = [])
 	{
 		if (!isset($this->doc_comment)) {
 			$this->doc_comment = '';
@@ -369,7 +369,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * @param $flags       integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method
 	 */
-	public static function of($class_name, $method_name, $flags = [])
+	public static function of($class_name, $method_name, array $flags = [])
 	{
 		$class = Reflection_Class::of($class_name);
 		$methods = $class->getMethods($flags);

@@ -21,12 +21,12 @@ class Drop_Controller implements Feature_Controller
 	/**
 	 * Delete an object
 	 *
-	 * @param $parameters mixed[]
+	 * @param $parameters array
 	 * - first : the deleted object
 	 * - other parameters are not sent to the delete controller (only as_widget is kept)
 	 * @return mixed
 	 */
-	private function deleteObject($parameters)
+	private function deleteObject(array $parameters)
 	{
 		$object = array_shift($parameters);
 		$controller_uri = SL . Names::classToUri(get_class($object))
@@ -37,10 +37,10 @@ class Drop_Controller implements Feature_Controller
 
 	//----------------------------------------------------------------------------------- parseAndRun
 	/**
-	 * @param $parameters mixed[]
+	 * @param $parameters array
 	 * @return mixed
 	 */
-	private function parseAndRun($parameters)
+	private function parseAndRun(array $parameters)
 	{
 		$first_parameter = array_shift($parameters);
 		if (is_object($first_parameter)) {
@@ -72,8 +72,9 @@ class Drop_Controller implements Feature_Controller
 	 * @param $parameters mixed[] The elements to be removed, and additional parameters
 	 * @return mixed
 	 */
-	private function removeElement($class_name, $context_class_name, $context_feature, $parameters)
-	{
+	private function removeElement(
+		$class_name, $context_class_name, $context_feature, array $parameters
+	) {
 		$context = substr(View::link($context_class_name, $context_feature), 1);
 		return (new Main())->runController(
 			View::link($class_name, Feature::F_REMOVE, [$context]),
@@ -85,12 +86,12 @@ class Drop_Controller implements Feature_Controller
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array
+	 * @param $files      array[]
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files)
+	public function run(Parameters $parameters, array $form, array $files)
 	{
-		$trash = $parameters->getUnnamedParameters();
+		$trash   = $parameters->getUnnamedParameters();
 		$objects = $parameters->getObjects();
 		return (count($trash) <= 1)
 			? $this->deleteObject($objects)

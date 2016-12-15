@@ -32,7 +32,7 @@ class Edit_Controller extends Edit\Edit_Controller
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Parameters $parameters, $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
 		$parameters['custom_class_name'] = $parameters[0];
@@ -62,11 +62,11 @@ class Edit_Controller extends Edit\Edit_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array
+	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		/** @var $button Button */
 		$button = $parameters->getMainObject($class_name);

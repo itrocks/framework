@@ -64,10 +64,10 @@ class Maintainer implements Registerable
 	 * @todo mysqli context should contain sql builder (ie Select) in order to know if this was
 	 *       an implicit link table. If then : only one unique index should be built
 	 */
-	private function createImplicitTable(mysqli $mysqli, $table_name, $column_names)
+	private function createImplicitTable(mysqli $mysqli, $table_name, array $column_names)
 	{
-		$only_ids = true;
-		$table = new Table($table_name);
+		$only_ids  = true;
+		$table     = new Table($table_name);
 		$ids_index = new Index();
 		$ids_index->setType(Index::UNIQUE);
 		$indexes = [];
@@ -320,7 +320,7 @@ class Maintainer implements Registerable
 	 * @param $context string[]
 	 * @return boolean true if the query with an error can be retried after this error was dealt with
 	 */
-	private function onNoSuchTableError(Contextual_Mysqli $mysqli, $query, $context)
+	private function onNoSuchTableError(Contextual_Mysqli $mysqli, $query, array $context)
 	{
 		$retry = false;
 		$error_table_names = [$this->parseNameFromError($mysqli->last_error)];
@@ -413,7 +413,7 @@ class Maintainer implements Registerable
 	 * @param $context string[]
 	 * @return boolean true if the query with an error can be retried after this error was dealt with
 	 */
-	private function updateContextTables($mysqli, $context)
+	private function updateContextTables(Contextual_Mysqli $mysqli, array $context)
 	{
 		foreach ($context as $context_class) {
 			if ($this->updateTable($mysqli, $context_class)) {
@@ -427,7 +427,7 @@ class Maintainer implements Registerable
 	/**
 	 * Update table structure corresponding to a data class
 	 *
-	 * @param $mysqli mysqli
+	 * @param $mysqli     mysqli
 	 * @param $class_name string
 	 * @return boolean true if an update query has been generated and executed
 	 */

@@ -30,7 +30,7 @@ abstract class Function_Joinpoint extends Joinpoint
 	 * @param $parameters  array
 	 * @param $advice      string[]|object[]|string
 	 */
-	public function __construct($pointcut, $parameters, $advice)
+	public function __construct($pointcut, array $parameters, $advice)
 	{
 		$this->advice     = $advice;
 		$this->parameters = $parameters;

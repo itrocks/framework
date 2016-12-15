@@ -77,7 +77,7 @@ class Configuration
 	 * @param $name          string application name
 	 * @param $configuration array recursive configuration array from the config.php file
 	 */
-	public function __construct($name, $configuration)
+	public function __construct($name, array $configuration)
 	{
 		$this->application_class = $configuration[self::APP];
 		$this->author            = $configuration[self::AUTHOR];

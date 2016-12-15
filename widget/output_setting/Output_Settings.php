@@ -150,7 +150,7 @@ class Output_Settings extends Custom_Settings
 	 * @param $object               object
 	 * @return Output_Settings|null
 	 */
-	public static function conditionalOutputSettings($output_settings_list, $object)
+	public static function conditionalOutputSettings(array $output_settings_list, $object)
 	{
 		foreach ($output_settings_list as $output_settings) {
 			if ($output_settings->conditions) {
@@ -178,7 +178,7 @@ class Output_Settings extends Custom_Settings
 	 * @param $filter_properties string[] property path
 	 * @return Property[]
 	 */
-	public function initProperties($filter_properties = null)
+	public function initProperties(array $filter_properties = null)
 	{
 		if (!$this->properties) {
 			$class_name = $this->getClassName();
@@ -334,8 +334,9 @@ class Output_Settings extends Custom_Settings
 	 * @param $feature              string
 	 * @return Output_Settings|null
 	 */
-	public static function unconditionalOutputSettings($output_settings_list, $class_name, $feature)
-	{
+	public static function unconditionalOutputSettings(
+		array $output_settings_list, $class_name, $feature
+	) {
 		foreach ($output_settings_list as $output_settings) {
 			if (!$output_settings->conditions) {
 				return $output_settings;

@@ -88,11 +88,11 @@ class Select_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * - first : the root reference class name (ie a business object)
 	 * - second : if set, the selected property path into the root reference class name
-	 * @param $form array  not used
-	 * @param $files array not used
+	 * @param $form  array not used
+	 * @param $files array[] not used
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files)
+	public function run(Parameters $parameters, array $form, array $files)
 	{
 		$class_name = Set::elementClassNameOf($parameters->shiftUnnamed());
 		$property_path = $parameters->shiftUnnamed();

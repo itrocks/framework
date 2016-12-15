@@ -91,12 +91,12 @@ class Parser
 	{
 		$doc_comment = $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 		$annotations = [];
-		$i = 0;
+		$i           = 0;
 		while (($i = strpos($doc_comment, '* @', $i)) !== false) {
 			$i += 2;
 			$j = strlen($doc_comment);
 			if (($k = strpos($doc_comment, LF, $i)) < $j) $j = $k;
-			if (($k = strpos($doc_comment, SP, $i)) < $j)  $j = $k;
+			if (($k = strpos($doc_comment, SP, $i)) < $j) $j = $k;
 			$annotation_name = substr($doc_comment, $i + 1, $j - $i - 1);
 			$annotation_class = static::getAnnotationClassName(get_class($reflection_object), $annotation_name);
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
@@ -122,7 +122,7 @@ class Parser
 			}
 		}
 		foreach ($reflection_object->getCachedAnnotations() as $annotation_name => $cached_annotation) {
-			$annotation = $cached_annotation[0];
+			$annotation                    = $cached_annotation[0];
 			$annotations[$annotation_name] = $annotation;
 		}
 		return $annotations;
@@ -201,7 +201,7 @@ class Parser
 	 * @param $annotations Annotation[]
 	 * @return Annotation[]
 	 */
-	private static function multipleRemove($annotations)
+	private static function multipleRemove(array $annotations)
 	{
 		$remove = [];
 		foreach ($annotations as $key => $annotation) {

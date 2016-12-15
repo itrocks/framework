@@ -176,7 +176,7 @@ class Data_List_Settings extends Custom_Settings
 	 * @param $filter_properties string[] property path
 	 * @return Property[]
 	 */
-	public function initProperties($filter_properties = null)
+	public function initProperties(array $filter_properties = null)
 	{
 		$class_name = $this->getClassName();
 
@@ -311,7 +311,7 @@ class Data_List_Settings extends Custom_Settings
 	 *
 	 * @param $search array key is the property path
 	 */
-	public function search($search)
+	public function search(array $search)
 	{
 		foreach ($search as $property_path => $value) {
 			if (!strlen($value)) {

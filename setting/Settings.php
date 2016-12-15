@@ -17,7 +17,7 @@ class Settings extends Set
 	/**
 	 * @param $elements Setting[]
 	 */
-	public function __construct($elements = null)
+	public function __construct(array $elements = null)
 	{
 		$settings = [];
 		if (isset($elements)) {

@@ -22,21 +22,21 @@ function rename_function($function_name, $new_name) {}
  *          disable exit; calls
  * @example set_exit_overload(function($msg) { echo '[DIE $msg]'; return true; });
  *          format message displayed on dying
- * @param $callback string|array
+ * @param $callback callable
  * Callback parameter : the die message, optional
  * Callback returns true to confirm that the script must end, or false to cancel the exit
  */
-function set_exit_overload($callback) {}
+function set_exit_overload(callable $callback) {}
 
 //-------------------------------------------------------------------------------- set_new_overload
 /**
  * Registers a callback function that is automatically invoked when the new operator is executed
  *
- * @param $callback string|array
+ * @param $callback callable
  * Callback parameter : the class name string wished by the new operator
  * Callback returns : the class name string to invoke
  */
-function set_new_overload($callback) {}
+function set_new_overload(callable $callback) {}
 
 //----------------------------------------------------------------------------- unset_exit_overload
 function unset_exit_overload() {}

@@ -13,7 +13,7 @@ class Tests extends Test
 	/**
 	 * @param $method string
 	 * @param $object object
-	 * @param $append string[]
+	 * @param $append string|string[]
 	 */
 	private function allTests($method, $object, $append = null)
 	{
@@ -81,7 +81,7 @@ class Tests extends Test
 	 * @param $property_names string[]
 	 * @return array
 	 */
-	private function values($object, $property_names)
+	private function values($object, array $property_names)
 	{
 		$values = [];
 		foreach ($property_names as $property_name) {

@@ -56,7 +56,7 @@ class Spreadsheet_File
 	 * @param $errors    string[]
 	 * @return array three dimensions (worksheet, row, column) array of read data
 	 */
-	public static function fileToArray($file_name, &$errors = [])
+	public static function fileToArray($file_name, array &$errors = [])
 	{
 		if (substr($file_name, -4) == '.csv') {
 			$csv_file = $file_name;
@@ -83,7 +83,7 @@ class Spreadsheet_File
 	 * @param $errors   string[]
 	 * @return array
 	 */
-	public static function readCsvFile($csv_file, &$errors = [])
+	public static function readCsvFile($csv_file, array &$errors = [])
 	{
 		$lines = [];
 		$row   = 0;

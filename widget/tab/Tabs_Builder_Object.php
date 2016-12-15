@@ -24,7 +24,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	 * @param $filter_properties string[]
 	 * @return Tab[] tabs will contain Reflection_Property_Value[] as content
 	 */
-	public static function buildObject($object, $filter_properties = null)
+	public static function buildObject($object, array $filter_properties = null)
 	{
 		$class = new Reflection_Class(get_class($object));
 		/** @var $group_annotations Group_Annotation[] */
@@ -54,7 +54,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	/**
 	 * @param $groups Group_Annotation[]
 	 */
-	private static function mergeGroups(&$groups)
+	private static function mergeGroups(array &$groups)
 	{
 		// merge groups that have the same name
 		$merged = [];

@@ -22,7 +22,7 @@ abstract class Import_Settings_Builder
 	 * @param $properties_path string[] $property_path = string[integer $column_number]
 	 * @return array $identified = boolean[string $property_path][integer $position]
 	 */
-	private static function autoIdentify($class_name, $properties_path)
+	private static function autoIdentify($class_name, array $properties_path)
 	{
 		foreach ($properties_path as $property_path) {
 			if (strpos($property_path, '*') !== false) {
@@ -62,7 +62,7 @@ abstract class Import_Settings_Builder
 	 * @param $class_name string default class name (if not found into array)
 	 * @return Import_Settings
 	 */
-	public static function buildArray(&$array, $class_name = null)
+	public static function buildArray(array &$array, $class_name = null)
 	{
 		$class_name = Import_Array::getClassNameFromArray($array) ?: $class_name;
 		$settings = new Import_Settings($class_name);
@@ -123,13 +123,13 @@ abstract class Import_Settings_Builder
 	/**
 	 * Builds import settings using a recursive array coming from an input form
 	 *
-	 * @param $worksheet  array
+	 * @param $worksheet array
 	 * @return Import_Settings
 	 */
-	public static function buildForm($worksheet)
+	public static function buildForm(array $worksheet)
 	{
 		$main_class_name = null;
-		$settings = new Import_Settings();
+		$settings        = new Import_Settings();
 		if (isset($worksheet['name'])) {
 			$settings->name = $worksheet['name'];
 		}
@@ -162,7 +162,7 @@ abstract class Import_Settings_Builder
 	 * @param $class         array
 	 * @return Import_Class
 	 */
-	private static function buildFormClass($class_name, $property_path, $class)
+	private static function buildFormClass($class_name, $property_path, array $class)
 	{
 		$property_path = $property_path ? explode(DOT, $property_path) : [];
 		$import_class = new Import_Class(

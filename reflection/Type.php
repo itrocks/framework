@@ -148,7 +148,7 @@ class Type
 	 * @param $use       string[]
 	 * @return string
 	 */
-	public function applyNamespace($namespace, $use = [])
+	public function applyNamespace($namespace, array $use = [])
 	{
 		if (!$this->absolute && $this->isClass()) {
 			$class_name = $this->getElementTypeAsString();

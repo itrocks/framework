@@ -15,11 +15,11 @@ class Authenticate_Controller implements Feature_Controller
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @param $parameters Parameters
-	 * @param $form       string[] an authentication form result with keys 'login' and 'password'
-	 * @param $files      array
+	 * @param $form       array an authentication form result with keys 'login' and 'password'
+	 * @param $files      array[]
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files)
+	public function run(Parameters $parameters, array $form, array $files)
 	{
 		if (isset($form['login']) && isset($form['password'])) {
 			$current = User::current();

@@ -35,7 +35,7 @@ abstract class Words
 	 * @param $words string[]
 	 * @return string[]
 	 */
-	public static function getCompressedWords($words)
+	public static function getCompressedWords(array $words)
 	{
 		array_walk($words, function(&$word) {
 			/**
