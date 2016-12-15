@@ -60,7 +60,7 @@ class Translator
 	 * @param $context      string The context we want to translate from
 	 * @return string The chosen translation
 	 */
-	private function chooseTranslation(array $translations, $context)
+	private function chooseTranslation($translations, $context)
 	{
 		$translation = '';
 		if (isset($translations['']) && $translations['']) {

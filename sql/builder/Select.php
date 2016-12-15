@@ -73,7 +73,7 @@ class Select
 	 * @param $options     Option|Option[] DAO options can be used for complex queries building
 	 */
 	public function __construct(
-		$class_name, array $properties = null, $where_array = null, Link $sql_link = null, $options = []
+		$class_name, $properties = null, $where_array = null, Link $sql_link = null, $options = []
 	) {
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
@@ -174,7 +174,7 @@ class Select
 	 * @param $options string[]
 	 * @return string
 	 */
-	private function finalize($columns, $where, $tables, array $options)
+	private function finalize($columns, $where, $tables, $options)
 	{
 		if (is_array($where)) {
 			$sql = '';

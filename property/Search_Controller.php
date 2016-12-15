@@ -27,10 +27,10 @@ class Search_Controller extends Select_Controller
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$parameters->set(Parameter::CONTAINER, 'inside_tree');
 		$search = $parameters->getRawParameter('search');
@@ -65,7 +65,7 @@ class Search_Controller extends Select_Controller
 	 * @return Reflection_Property[]
 	 */
 	protected function searchProperties(
-		$class_name, $search, array $exclude_properties = [], $prefix = '', $depth = 0
+		$class_name, $search, $exclude_properties = [], $prefix = '', $depth = 0
 	) {
 		$class = new Reflection_Class($class_name);
 		$all_properties = $this->getProperties($class);

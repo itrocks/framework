@@ -44,7 +44,7 @@ function arrayCut(
  * @param $show_type boolean
  * @return array|boolean
  */
-function arrayDiffRecursive(array $array1, array $array2, $show_type = false)
+function arrayDiffRecursive($array1, $array2, $show_type = false)
 {
 	$diff = [];
 	foreach ($array1 as $key => $value) {
@@ -91,7 +91,7 @@ function arrayDiffRecursive(array $array1, array $array2, $show_type = false)
  * @example #3 with $case_3 = false
  * Source array is [$field_name => [$n => [$sub_field_name => $value]]
  * Destination array is [$n => [$field_name => [$sub_field_name => $value]]
- * @param $array  mixed array or element
+ * @param $array  array
  * @param $case_3 boolean
  * @return array
  */
@@ -140,7 +140,7 @@ function arrayFormRevert($array, $case_3 = true)
  * @param $array2 array
  * @return array
  */
-function arrayMergeRecursive(array $array1, array $array2)
+function arrayMergeRecursive($array1, $array2)
 {
 	foreach ($array2 as $index => $value2) {
 		if (($index === ':') && ($value2 === 'clear')) {
@@ -175,10 +175,10 @@ function arrayMergeRecursive(array $array1, array $array2)
 /**
  * Returns only values which key is not numeric
  *
- * @param $array array
+ * @param $array mixed[]
  * @return mixed[]
  */
-function arrayNamedValues(array $array)
+function arrayNamedValues($array)
 {
 	$result = [];
 	foreach ($array as $key => $value) {
@@ -212,13 +212,13 @@ function arraySumRecursive($array)
 /**
  * Change an array with 'key.sub_key.final_key' keys into a tree with[key][sub_key][final_key]
  *
- * @param $array   array
+ * @param $array   mixed[]
  * @param $recurse boolean
  * @return mixed[]
  */
-function arrayToTree(array $array, $recurse = true)
+function arrayToTree($array, $recurse = true)
 {
-	$result     = [];
+	$result = [];
 	$sub_arrays = [];
 	foreach ($array as $key => $value) {
 		if (strpos($key, DOT) !== false) {
@@ -239,10 +239,10 @@ function arrayToTree(array $array, $recurse = true)
 /**
  * Returns only values which key is numeric
  *
- * @param $array array
+ * @param $array mixed[]
  * @return mixed[]
  */
-function arrayUnnamedValues(array $array)
+function arrayUnnamedValues($array)
 {
 	$result = [];
 	foreach ($array as $key => $value) {
@@ -259,11 +259,11 @@ function arrayUnnamedValues(array $array)
  *
  * Keys are cumulated to a single 'key.sub_key.final_key' key name
  *
- * @param $array      array
+ * @param $array      mixed[]
  * @param $ignore_key string if set, this key is ignored and set as the 'main' value of a node
  * @return mixed[]
  */
-function treeToArray(array $array, $ignore_key = null)
+function treeToArray($array, $ignore_key = null)
 {
 	$result = [];
 	foreach ($array as $key => $val) {
@@ -282,15 +282,14 @@ function treeToArray(array $array, $ignore_key = null)
 
 //--------------------------------------------------------------- explodeStringInArrayToSimpleArray
 /**
- * Explode strings in array and return a larger array
- *
- * @example explodeStringInArrayToSimpleArray(' ', ['Dot', 'a cat', 'the cat run'))
- *          returns : ['Dot', 'a', 'cat', 'the', 'cat', 'run')
+ * Explode strings in array and return a larger array.
  * @param $delimiter string The boundary string.
- * @param $array     array The input array.
+ * @param $array array The input array.
  * @return array Return a larger array explode by delimiter.
+ * @example explodeStringInArrayToSimpleArray(' ', ['Dot', 'a cat', 'the cat run'))
+ * return : ['Dot', 'a', 'cat', 'the', 'cat', 'run')
  */
-function explodeStringInArrayToSimpleArray($delimiter, array $array)
+function explodeStringInArrayToSimpleArray($delimiter, $array)
 {
 	$tab = [];
 	foreach ($array as $element) {
@@ -323,7 +322,7 @@ function explodeStringInArrayToSimpleArray($delimiter, array $array)
  * @param $array     array The input array, can be an array of string or an array of array of string.
  * @return array Return an array of array of string.
  */
-function explodeStringInArrayToDoubleArray($delimiter, array $array)
+function explodeStringInArrayToDoubleArray($delimiter, $array)
 {
 	$tab = [];
 	foreach ($array as $element) {

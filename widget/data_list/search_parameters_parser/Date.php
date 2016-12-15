@@ -649,7 +649,7 @@ abstract class Date
 	/**
 	 * @param $date_parts string[]
 	 */
-	private static function fillEmptyPartsWithWildcard(array &$date_parts)
+	private static function fillEmptyPartsWithWildcard(&$date_parts)
 	{
 		foreach ($date_parts as $date_part => $part) {
 			if (!strlen($part)) {
@@ -797,7 +797,7 @@ abstract class Date
 	 * @param $sub_patterns string[]
 	 * @return string[]
 	 */
-	private static function getDatePatternsArray(array $sub_patterns)
+	private static function getDatePatternsArray($sub_patterns)
 	{
 		/**
 		 * @var $day        string
@@ -954,7 +954,7 @@ abstract class Date
 	 * @param $date_parts string[]
 	 * @return boolean
 	 */
-	private static function isEmptyParts(array $date_parts)
+	private static function isEmptyParts($date_parts)
 	{
 		foreach ($date_parts as $date_part => $part) {
 			if (strlen($part) && !preg_match('/^ \\s* [0]+ \\s* $/x', $part)) {
@@ -969,7 +969,7 @@ abstract class Date
 	 * @param $date_parts string[]
 	 * @return boolean
 	 */
-	private static function onePartHasFormula(array $date_parts)
+	private static function onePartHasFormula($date_parts)
 	{
 		$letters = self::getDateLetters();
 		foreach ($date_parts as $date_part => $part) {
@@ -985,7 +985,7 @@ abstract class Date
 	 * @param $date_parts string[]
 	 * @return boolean
 	 */
-	private static function onePartHasWildcard(array $date_parts)
+	private static function onePartHasWildcard($date_parts)
 	{
 		foreach ($date_parts as $date_part => $part) {
 			if (Wildcard::hasWildcard($part)) {
@@ -1002,11 +1002,11 @@ abstract class Date
 	 *
 	 * @param $date_parts string[]
 	 */
-	private static function padParts(array &$date_parts)
+	private static function padParts(&$date_parts)
 	{
 		foreach ($date_parts as $date_part => &$part) {
 			$length = ($date_part == Date_Time::YEAR) ? 4 : 2;
-			$part   = str_pad($part, $length, '0', STR_PAD_LEFT);
+			$part = str_pad($part, $length, '0', STR_PAD_LEFT);
 		}
 	}
 

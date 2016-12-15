@@ -16,10 +16,10 @@ class Default_View implements IView
 	/**
 	 * @param $template_file string
 	 * @param $parameters    array
-	 * @param $feature_name  string
+	 * @param $feature_name string
 	 * @return string
 	 */
-	protected function executeTemplate($template_file, array $parameters, $feature_name)
+	protected function executeTemplate($template_file, $parameters, $feature_name)
 	{
 		if (isset($parameters[Template::TEMPLATE])) {
 			unset($parameters[Template::TEMPLATE]);
@@ -50,12 +50,12 @@ class Default_View implements IView
 	/**
 	 * @param $parameters   array
 	 * @param $form         array
-	 * @param $files        array[]
+	 * @param $files        array
 	 * @param $class_name   string
 	 * @param $feature_name string
 	 * @return string
 	 */
-	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
+	public function run($parameters, $form, $files, $class_name, $feature_name)
 	{
 		$feature_names
 			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] !== $feature_name))

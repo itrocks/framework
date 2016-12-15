@@ -106,7 +106,7 @@ class Call_Stack
 	 * @param $functions string[] The searched functions
 	 * @return Line|null The first matching line if found, else false
 	 */
-	public function searchFunctions(array $functions)
+	public function searchFunctions($functions)
 	{
 		foreach ($this->stack as $stack) {
 			if (

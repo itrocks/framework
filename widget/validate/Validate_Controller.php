@@ -28,13 +28,13 @@ class Validate_Controller implements Default_Class_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @param $class_name string
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
-		$object     = $parameters->getMainObject();
+		$object = $parameters->getMainObject();
 		$parameters = $parameters->getRawParameters();
 
 		$validator = new Validator();

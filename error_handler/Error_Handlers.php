@@ -28,11 +28,13 @@ class Error_Handlers implements Activable, Configurable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct($configuration = null)
 	{
-		foreach ($configuration as $handle) {
-			list($err_no, $error_handler_class) = $handle;
-			$this->addHandler($err_no, new $error_handler_class());
+		if (is_array($configuration)) {
+			foreach ($configuration as $handle) {
+				list($err_no, $error_handler_class) = $handle;
+				$this->addHandler($err_no, new $error_handler_class());
+			}
 		}
 	}
 
@@ -124,14 +126,14 @@ class Error_Handlers implements Activable, Configurable
 	/**
 	 * This method is automatically called when a registered error type occurs
 	 *
-	 * @param $err_no   integer
-	 * @param $err_msg  string
+	 * @param $err_no int
+	 * @param $err_msg string
 	 * @param $filename string
-	 * @param $line_num integer
-	 * @param $vars     array
+	 * @param $line_num int
+	 * @param $vars array
 	 * @return boolean
 	 */
-	public function handle($err_no, $err_msg, $filename, $line_num, array $vars)
+	public function handle($err_no, $err_msg, $filename, $line_num, $vars)
 	{
 		if ((error_reporting() & $err_no) == $err_no) {
 			if (!class_exists(Handled_Error::class)) {

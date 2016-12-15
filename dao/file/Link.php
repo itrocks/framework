@@ -36,9 +36,9 @@ class Link extends Identifier_Map
 	 *
 	 * @param $parameters string[] ['path' => $local_storage_path]
 	 */
-	public function __construct($parameters = [])
+	public function __construct($parameters = null)
 	{
-		if ($parameters) {
+		if (is_array($parameters)) {
 			foreach ($parameters as $parameter => $value) {
 				$this->$parameter = $value;
 			}
@@ -202,13 +202,12 @@ class Link extends Identifier_Map
 	 * Read selected columns only from data source, using optional filter
 	 *
 	 * @param $class         string class for the read object
-	 * @param $properties    string[]|string|Column[] the list of property paths : only those
-	 *        properties will be read.
+	 * @param $columns       string[] the list of the columns names : only those properties will be read. You can use 'column.sub_column' to get values from linked objects from the same data source.
 	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
 	 */
-	public function select($class, $properties, $filter_object = null, $options = [])
+	public function select($class, $columns, $filter_object = null, $options = [])
 	{
 		// TODO: Implement select() method.
 		return null;

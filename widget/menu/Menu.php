@@ -64,7 +64,7 @@ class Menu implements Configurable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = null)
+	public function __construct($configuration = [])
 	{
 		if (isset($configuration)) {
 			$this->blocks = [];
@@ -88,7 +88,7 @@ class Menu implements Configurable
 	 * @param $items     array
 	 * @return Block
 	 */
-	private function constructBlock($block_key, array $items)
+	private function constructBlock($block_key, $items)
 	{
 		$block = new Block();
 
@@ -123,7 +123,7 @@ class Menu implements Configurable
 	//--------------------------------------------------------------------------------- constructItem
 	/**
 	 * @param $item_key string
-	 * @param $item     string[]|string
+	 * @param $item     string[]
 	 * @return Item
 	 */
 	private function constructItem($item_key, $item)
@@ -149,7 +149,7 @@ class Menu implements Configurable
 	/**
 	 * @param $items string[]
 	 */
-	private function constructTitle(array $items)
+	private function constructTitle($items)
 	{
 		foreach ($items as $item) {
 			switch (substr($item, 0, 1)) {

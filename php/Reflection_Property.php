@@ -172,7 +172,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [])
+	public function getDocComment($flags = [])
 	{
 		if (!isset($this->doc_comment)) {
 			$this->scanBefore();
@@ -293,9 +293,9 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	 * @param $class_name    string
 	 * @param $property_name string
 	 * @param $flags         integer[] T_EXTENDS, T_USE
-	 * @return Reflection_Property
+	 * @return Reflection_Method
 	 */
-	public static function of($class_name, $property_name, array $flags = [])
+	public static function of($class_name, $property_name, $flags = [])
 	{
 		$properties = Reflection_Class::of($class_name)->getProperties($flags);
 		return isset($properties[$property_name]) ? $properties[$property_name] : null;

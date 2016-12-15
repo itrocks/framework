@@ -33,7 +33,7 @@ abstract class Files
 	 * @param $ignore      string[] List of files/directories to ignore
 	 * @return boolean true if copy succeeds, else false
 	 */
-	public static function copy($source, $destination, array $ignore = [])
+	public static function copy($source, $destination, $ignore = [])
 	{
 		if (is_dir($source)) {
 			$result = true;

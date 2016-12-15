@@ -52,7 +52,7 @@ class Loc implements Registerable
 	 * @param $result array[]
 	 * @return array[]
 	 */
-	public function afterHtmlTemplateFunctionsToEditPropertyExtra(array $result)
+	public function afterHtmlTemplateFunctionsToEditPropertyExtra($result)
 	{
 		/** @var $property      Reflection_Property */
 		/** @var $property_path string */

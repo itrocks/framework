@@ -21,7 +21,7 @@ class Report
 	/**
 	 * @param $check_report_lines Line[]
 	 */
-	public function add(array $check_report_lines)
+	public function add($check_report_lines)
 	{
 		$this->lines = array_merge($this->lines, $check_report_lines);
 	}

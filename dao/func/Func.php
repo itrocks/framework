@@ -88,10 +88,10 @@ abstract class Func
 
 	//-------------------------------------------------------------------------------------------- in
 	/**
-	 * @param $values array
+	 * @param $values mixed[]
 	 * @return In
 	 */
-	public static function in(array $values)
+	public static function in($values)
 	{
 		return new In($values);
 	}
@@ -101,7 +101,7 @@ abstract class Func
 	 * @param $properties string[]
 	 * @return Is_Greatest
 	 */
-	public static function isGreatest(array $properties)
+	public static function isGreatest($properties)
 	{
 		return new Is_Greatest($properties);
 	}
@@ -195,10 +195,10 @@ abstract class Func
 
 	//----------------------------------------------------------------------------------------- notIn
 	/**
-	 * @param $values array
+	 * @param $values mixed[]
 	 * @return In
 	 */
-	public static function notIn(array $values)
+	public static function notIn($values)
 	{
 		return new In($values, true);
 	}

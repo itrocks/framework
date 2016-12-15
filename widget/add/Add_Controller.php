@@ -26,7 +26,7 @@ class Add_Controller extends Edit_Controller
 	 * @param $settings   Custom_Settings|Output_Settings
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Custom_Settings $settings = null)
+	public function getGeneralButtons($object, $parameters, Custom_Settings $settings = null)
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
 
@@ -47,7 +47,7 @@ class Add_Controller extends Edit_Controller
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
 		$object = $parameters->getMainObject($class_name);
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {

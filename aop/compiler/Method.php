@@ -31,7 +31,7 @@ class Method
 	 * @param $indent      string
 	 * @return string
 	 */
-	private function codeAssembly(array $before_code, $advice_code, array $after_code, $indent)
+	private function codeAssembly($before_code, $advice_code, $after_code, $indent)
 	{
 		return trim(
 			($before_code ? $indent : '') . join(LF, array_reverse($before_code))
@@ -46,7 +46,7 @@ class Method
 	 * @param $advices     array
 	 * @return string
 	 */
-	public function compile($method_name, array $advices)
+	public function compile($method_name, $advices)
 	{
 		$methods = $this->class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 		if (!isset($methods[$method_name])) {

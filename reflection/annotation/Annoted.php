@@ -266,7 +266,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @param $annotations     Annotation[]
 	 */
-	public function setAnnotations($annotation_name, array $annotations)
+	public function setAnnotations($annotation_name, $annotations)
 	{
 		$path = $this->getAnnotationCachePath();
 		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true] = $annotations;

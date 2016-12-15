@@ -28,7 +28,7 @@ trait Types_Annotation
 	 * @param $namespace string
 	 * @param $use       string[]
 	 */
-	public function applyNamespace($namespace, array $use = [])
+	public function applyNamespace($namespace, $use = [])
 	{
 		/** @var $this Annotation|Types_Annotation */
 		/** @var $values string[] */
@@ -38,7 +38,7 @@ trait Types_Annotation
 			if (ctype_upper($class_name[0])) {
 				if (substr($class_name, -2) == '[]') {
 					$class_name = substr($class_name, 0, -2);
-					$multiple   = '[]';
+					$multiple = '[]';
 				}
 				else {
 					$multiple = '';

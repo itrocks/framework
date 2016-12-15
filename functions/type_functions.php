@@ -132,7 +132,8 @@ function isStrictInteger($value)
  */
 function isStrictNumeric($value, $decimal_allowed = true, $signed_allowed = true)
 {
-	return (is_float($value) || is_integer($value))
+	return
+		(is_float($value) || is_integer($value))
 		|| (
 			is_numeric($value)
 			&& (strpos('0+.', $value[0]) === false)

@@ -20,7 +20,7 @@ class Around_Function extends Function_Joinpoint
 	 * @param $advice           string[]|object[]|string
 	 * @param $process_function string
 	 */
-	public function __construct($pointcut, array $parameters, $advice, $process_function)
+	public function __construct($pointcut, $parameters, $advice, $process_function)
 	{
 		parent::__construct($pointcut, $parameters, $advice);
 		$this->process_function = $process_function;

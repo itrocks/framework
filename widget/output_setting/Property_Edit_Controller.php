@@ -24,10 +24,9 @@ class Property_Edit_Controller implements Feature_Controller
 	{
 		$output_settings = Output_Settings::current($class_name, $feature);
 		$output_settings->cleanup();
-		$property = isset($output_settings->properties[$property_path])
+		return isset($output_settings->properties[$property_path])
 			? $output_settings->properties[$property_path]
 			: Builder::create(Property::class, [$class_name, $property_path]);
-		return $property;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -36,10 +35,10 @@ class Property_Edit_Controller implements Feature_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		if ($parameters->getMainObject(Property::class)->isEmpty()) {
 			list($class_name, $feature, $property_path) = $parameters->getRawParameters();

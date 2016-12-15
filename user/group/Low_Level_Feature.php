@@ -29,7 +29,7 @@ class Low_Level_Feature
 	 * @param $feature string
 	 * @param $options array
 	 */
-	public function __construct($feature = null, array $options = [])
+	public function __construct($feature = null, $options = [])
 	{
 		if (isset($feature)) {
 			$this->feature = $feature;

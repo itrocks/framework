@@ -72,15 +72,13 @@ class Range implements Negate, Where
 			else {
 				//if we check full minute or full hour, we remove seconds
 				$time_parts_from = explode(':', $time_from);
-				$time_parts_to   = explode(':', $time_to);
-				if (
-					$time_parts_from[0] == $time_parts_to[0]
-					&& (
-						$time_parts_from[1] == $time_parts_to[1]
+				$time_parts_to = explode(':', $time_to);
+				if ($time_parts_from[0] == $time_parts_to[0]
+					&& ($time_parts_from[1] == $time_parts_to[1]
 						|| ($time_parts_from[1] == '00' && $time_parts_to[1] == '59')
 					)
 					&& $time_parts_from[2] == '00'
-					&& $time_parts_to[2]   == '59'
+					&& $time_parts_to[2] == '59'
 				) {
 					unset($time_parts_from[2]);
 					unset($time_parts_to[2]);

@@ -77,7 +77,7 @@ class Builder implements Activable, Registerable, Serializable
 	 * @param $replacements string[]|array[] key is parent class name associated to replacement class
 	 *        values can be a class name or a string[] of interfaces and traits to add to the class
 	 */
-	public function __construct(array $replacements = null)
+	public function __construct($replacements = null)
 	{
 		if (isset($replacements)) {
 			$this->replacements = $replacements;
@@ -106,11 +106,11 @@ class Builder implements Activable, Registerable, Serializable
 	 * @param $arguments  array some arguments into an array
 	 * @return object
 	 */
-	public static function create($class_name, array $arguments = [])
+	public static function create($class_name, $arguments = [])
 	{
-		return $arguments
-			? self::current()->newInstanceArgs($class_name, $arguments)
-			: self::current()->newInstance($class_name);
+		return empty($arguments)
+			? self::current()->newInstance($class_name)
+			: self::current()->newInstanceArgs($class_name, $arguments);
 	}
 
 	//----------------------------------------------------------------------------------- createClone
@@ -125,7 +125,7 @@ class Builder implements Activable, Registerable, Serializable
 	 * @return object
 	 */
 	public static function createClone(
-		$object, $class_name = null, array $properties_values = [], $same_identifier = true
+		$object, $class_name = null, $properties_values = [], $same_identifier = true
 	) {
 		$class_name = self::className($class_name);
 		$source_class_name = get_class($object);
@@ -230,26 +230,28 @@ class Builder implements Activable, Registerable, Serializable
 	 * @param $array      array
 	 * @return object
 	 */
-	public static function fromArray($class_name, array $array)
+	public static function fromArray($class_name, $array)
 	{
 		$object = self::create($class_name);
-		foreach ($array as $property_name => $value) {
-			if (is_array($value)) {
-				$property = new Reflection_Property($class_name, $property_name);
-				if ($property->getType()->isClass()) {
-					$property_class_name = $property->getType()->getElementTypeAsString();
-					if ($property->getType()->isMultiple()) {
-						foreach ($value as $key => $val) {
-							$value[$key] = self::fromArray($property_class_name, $val);
+		if (isset($array)) {
+			foreach ($array as $property_name => $value) {
+				if (is_array($value)) {
+					$property = new Reflection_Property($class_name, $property_name);
+					if ($property->getType()->isClass()) {
+						$property_class_name = $property->getType()->getElementTypeAsString();
+						if ($property->getType()->isMultiple()) {
+							foreach ($value as $key => $val) {
+								$value[$key] = self::fromArray($property_class_name, $val);
+							}
 						}
+						else {
+							$value = self::fromArray($property_class_name, $value);
+						}
+						$property->setValue($object, $value);
 					}
-					else {
-						$value = self::fromArray($property_class_name, $value);
-					}
-					$property->setValue($object, $value);
 				}
+				$object->$property_name = $value;
 			}
-			$object->$property_name = $value;
 		}
 		return $object;
 	}
@@ -348,7 +350,7 @@ class Builder implements Activable, Registerable, Serializable
 	 * @param $args       array
 	 * @return object
 	 */
-	public function newInstanceArgs($class_name, array $args)
+	public function newInstanceArgs($class_name, $args)
 	{
 		$class_name = $this->replacementClassName($class_name);
 		return (new ReflectionClass($class_name))->newInstanceArgs($args);

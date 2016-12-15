@@ -190,7 +190,7 @@ class Sort implements Option
 	 * @param $objects object[]
 	 * @return object[]
 	 */
-	public function sortObjects(array &$objects)
+	public function sortObjects(&$objects)
 	{
 		$comparator = new Comparator($this->class_name, $this->columns);
 		$comparator->use_compare_method = false;

@@ -32,7 +32,7 @@ interface IManager
 	 * @param $level   string
 	 * @param $plugins Plugin[]
 	 */
-	public function addPlugins($level, array $plugins);
+	public function addPlugins($level, $plugins);
 
 	//------------------------------------------------------------------------------------------- get
 	/**

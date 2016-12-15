@@ -26,7 +26,7 @@ class Select extends Element
 	 * @param $selected string
 	 * @param $id       string
 	 */
-	public function __construct($name = null, array $values = null, $selected = null, $id = null)
+	public function __construct($name = null, $values = null, $selected = null, $id = null)
 	{
 		parent::__construct('select', true);
 		if (isset($id))       $this->setAttribute('id',   $id);

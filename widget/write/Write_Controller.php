@@ -62,12 +62,12 @@ class Write_Controller implements Default_Class_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @param $class_name string
 	 * @return string
 	 * @throws Exception
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$object = $parameters->getMainObject($class_name);
 		$new_object = !Dao::getObjectIdentifier($object);
@@ -104,7 +104,7 @@ class Write_Controller implements Default_Class_Controller
 	 * @param $write_objects object[]
 	 * @return boolean
 	 */
-	protected function write(array $write_objects)
+	protected function write($write_objects)
 	{
 		$write_error = false;
 		foreach ($write_objects as $write_object) {

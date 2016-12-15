@@ -70,7 +70,7 @@ class Import_Class implements Serializable
 	 * @param $object_not_found_behaviour string create_new_value, do_nothing, tell_it_and_stop_import
 	 */
 	public function __construct(
-		$class_name = null, array $property_path = null, $object_not_found_behaviour = null
+		$class_name = null, $property_path = null, $object_not_found_behaviour = null
 	) {
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
@@ -211,8 +211,6 @@ class Import_Class implements Serializable
 	//-------------------------------------------------------------------------------- removeConstant
 	/**
 	 * Removes a constant from the list
-	 *
-	 * @param $property_name string
 	 */
 	public function removeConstant($property_name)
 	{

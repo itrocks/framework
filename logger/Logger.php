@@ -67,9 +67,9 @@ class Logger implements Registerable
 	 * @param $uri   string
 	 * @param $get   array
 	 * @param $post  array
-	 * @param $files array[]
+	 * @param $files array
 	 */
-	public function start($uri, array $get, array $post, array $files)
+	public function start($uri, $get, $post, $files)
 	{
 		if (!$this->anti_loop) {
 			$this->log_entry = new Entry($uri, $get, $post, $files);

@@ -48,13 +48,13 @@ class Uri
 	/**
 	 * Build a new Controller_Uri object knowing the URI as a text
 	 *
-	 * @param $uri string ie '/Order/3/Line/2/output', or 'User/login'
-	 * @param $get array
+	 * @param $uri                        string ie '/Order/3/Line/2/output', or 'User/login'
+	 * @param $get                        array
 	 */
-	public function __construct($uri, array $get = [])
+	public function __construct($uri, $get = [])
 	{
 		$this->uri = $uri;
-		$uri       = self::uriToArray($uri);
+		$uri = self::uriToArray($uri);
 		$this->parseUri($uri);
 		$this->parseGet($get);
 		$this->setDefaults();
@@ -76,7 +76,7 @@ class Uri
 	 * @param $array string[]
 	 * @return string
 	 */
-	public static function arrayToUri(array $array)
+	public static function arrayToUri($array)
 	{
 		return SL . join(SL, $array);
 	}
@@ -96,7 +96,7 @@ class Uri
 	 *
 	 * @param $get string[]
 	 */
-	private function parseGet(array $get)
+	private function parseGet($get)
 	{
 		foreach ($get as $key => $value) {
 			if (is_numeric($key)) {
@@ -115,7 +115,7 @@ class Uri
 	 * @example $uri = ['order', 148, 'form') will result on controller 'Order_Form' with parameter 'Order' = 148
 	 * @param $uri string[]
 	 */
-	private function parseUri(array $uri)
+	private function parseUri($uri)
 	{
 		// get main object = controller name
 		$key = 0;

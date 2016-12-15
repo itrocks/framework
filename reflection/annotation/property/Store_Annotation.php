@@ -69,7 +69,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 * @param $properties Reflection_Property[]
 	 * @return Reflection_Property[] filtered properties list
 	 */
-	public static function storedPropertiesOnly(array $properties)
+	public static function storedPropertiesOnly($properties)
 	{
 		foreach ($properties as $key => $property) {
 			if (

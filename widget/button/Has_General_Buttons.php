@@ -23,6 +23,6 @@ interface Has_General_Buttons
 	 * @param $settings   Custom_Settings The controller custom settings, if set
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Custom_Settings $settings = null);
+	public function getGeneralButtons($object, $parameters, Custom_Settings $settings = null);
 
 }

@@ -31,7 +31,7 @@ class Set implements Iterator
 	 * @param $element_class_name string   the class name
 	 * @param $elements           object[] the set can be initialized with this set of elements
 	 */
-	public function __construct($element_class_name = null, array $elements = [])
+	public function __construct($element_class_name = null, $elements = [])
 	{
 		$this->element_class_name = empty($element_class_name)
 			? Names::setToClass(get_class($this))
@@ -146,14 +146,14 @@ class Set implements Iterator
 	 * @param $elements   object[]
 	 * @return Set
 	 */
-	public static function instantiate($class_name, array $elements = [])
+	public static function instantiate($class_name, $elements = [])
 	{
 		if (class_exists($class_name)) {
 			return new $class_name($elements);
 		}
 		elseif (
 			trait_exists($class_name)
-			&& ($extends_class = (new Reflection_Class($class_name))->getListAnnotation('extends')->value)
+			&& ($extends_class = (new Reflection_Class($class_name))->getAnnotation('extends')->value)
 		) {
 			$extends_class = reset($extends_class);
 			return new $extends_class($elements);
@@ -237,7 +237,7 @@ class Set implements Iterator
 	 *        and sorted elements list is returned without changing the set
 	 * @return object[] filtered and sorted array of elements
 	 */
-	public function filterAndSort(array $filter_elements, $change = true)
+	public function filterAndSort($filter_elements, $change = true)
 	{
 		$sorted_elements = [];
 		foreach ($filter_elements as $element_key) {

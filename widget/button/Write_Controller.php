@@ -22,7 +22,7 @@ class Write_Controller implements Feature_Controller
 	 * @param $button Button
 	 * @param $form   string[]
 	 */
-	public function callOutputSettingController(Button $button, array $form)
+	public function callOutputSettingController(Button $button, $form)
 	{
 		/** @var $parameters Parameters */
 		$parameters = Builder::create(Parameters::class, [
@@ -47,10 +47,10 @@ class Write_Controller implements Feature_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		/** @var $button Button */
 		$button = $parameters->getMainObject(Button::class);

@@ -42,7 +42,7 @@ class Reflection_Method extends ReflectionMethod
 	 * @param $flags integer[]
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [])
+	public function getDocComment($flags = [])
 	{
 		return parent::getDocComment();
 	}

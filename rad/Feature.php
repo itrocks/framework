@@ -15,20 +15,28 @@ class Feature
 {
 	use Component;
 
-	//------------------------------------------------------------------------------------- $children
+	//----------------------------------------------------------------------------------------- $type
 	/**
-	 * @link Collection
-	 * @var Feature[]
-	 * @widget Collection_As_Map
+	 * @values application, application instance, class, feature, form, framework, module, plugin,
+	 * print, process, root class, rule, trait, view
+	 * @var string
 	 */
-	public $children;
+	public $type;
 
-	//-------------------------------------------------------------------------------- $configuration
+	//---------------------------------------------------------------------------------------- $title
 	/**
-	 * @store false
-	 * @var array|null
+	 * @mandatory
+	 * @var string
 	 */
-	public $configuration;
+	public $title;
+
+	//-------------------------------------------------------------------------------------- $summary
+	/**
+	 * @multiline
+	 * @var string
+	 * @wiki
+	 */
+	public $summary;
 
 	//---------------------------------------------------------------------------------- $description
 	/**
@@ -45,13 +53,13 @@ class Feature
 	 */
 	public $parent;
 
-	//-------------------------------------------------------------------------------------- $summary
+	//------------------------------------------------------------------------------------- $children
 	/**
-	 * @multiline
-	 * @var string
-	 * @wiki
+	 * @link Collection
+	 * @var Feature[]
+	 * @widget Collection_As_Map
 	 */
-	public $summary;
+	public $children;
 
 	//----------------------------------------------------------------------------------------- $tags
 	/**
@@ -59,21 +67,6 @@ class Feature
 	 * @var Tag[]
 	 */
 	public $tags;
-
-	//---------------------------------------------------------------------------------------- $title
-	/**
-	 * @mandatory
-	 * @var string
-	 */
-	public $title;
-
-	//----------------------------------------------------------------------------------------- $type
-	/**
-	 * @values application, application instance, class, feature, form, framework, module, plugin,
-	 * print, process, root class, rule, trait, view
-	 * @var string
-	 */
-	public $type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -83,7 +76,7 @@ class Feature
 	 * @param $configuration array the plugins configuration : key is the plugin class name
 	 */
 	public function __construct(
-		$title = null, $summary = null, $description = null, array $configuration = null
+		$title = null, $summary = null, $description = null, $configuration = null
 	) {
 		if (isset($title))         $this->title         = $title;
 		if (isset($summary))       $this->summary       = $summary;

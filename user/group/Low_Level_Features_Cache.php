@@ -22,7 +22,7 @@ class Low_Level_Features_Cache
 	/**
 	 * @param $features Low_Level_Feature[]
 	 */
-	public function __construct(array $features = null)
+	public function __construct($features = null)
 	{
 		if (isset($features)) {
 			$this->features = $features;
@@ -56,7 +56,7 @@ class Low_Level_Features_Cache
 	 * @param $features Low_Level_Feature[]
 	 * @return array
 	 */
-	private static function lowLevelFeaturesToSearchArray(array $features)
+	private static function lowLevelFeaturesToSearchArray($features)
 	{
 		$array = [];
 		foreach ($features as $feature) {

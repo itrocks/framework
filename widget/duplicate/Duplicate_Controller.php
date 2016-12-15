@@ -20,9 +20,9 @@ class Duplicate_Controller extends Edit_Controller
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
-		$object     = $parameters->getMainObject($class_name);
+		$object = $parameters->getMainObject($class_name);
 		$duplicator = new Duplicator();
 		$duplicator->createDuplicate($object);
 		return parent::getViewParameters($parameters, $form, $class_name);

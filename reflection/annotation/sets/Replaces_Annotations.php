@@ -14,7 +14,7 @@ abstract class Replaces_Annotations
 	 * @param $properties Reflection_Property[] key must be the name of the property
 	 * @return Reflection_Property[] all properties but those that are replaced
 	 */
-	public static function removeReplacedProperties(array $properties)
+	public static function removeReplacedProperties($properties)
 	{
 		foreach ($properties as $property) {
 			$replaced_property_name = $property->getAnnotation('replaces')->value;
@@ -36,7 +36,7 @@ abstract class Replaces_Annotations
 	 * @param $properties Reflection_Property[] key must be the name of the property
 	 * @return Reflection_Property[] all replaced properties has been replaced
 	 */
-	public static function replaceProperties(array $properties = null)
+	public static function replaceProperties($properties)
 	{
 		if ($properties) {
 			// replace properties with their replacement properties (key is still the old property name)

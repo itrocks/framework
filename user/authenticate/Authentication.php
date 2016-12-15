@@ -19,14 +19,13 @@ abstract class Authentication
 	/**
 	 * List all of properties to write in user object for the register
 	 *
-	 * @param $array array The form content
+	 * @param $array string[] The form content
 	 * @return User A list of properties as 'property' => 'value'
 	 */
-	public static function arrayToUser(array $array)
+	public static function arrayToUser($array)
 	{
-		/** @var $user User */
-		$user           = Search_Object::create(User::class);
-		$user->login    = $array['login'];
+		$user = Search_Object::create(User::class);
+		$user->login = $array['login'];
 		$user->password = (new Password(
 			$array['password'],
 			(new Reflection_Property(get_class($user), 'password'))->getAnnotation('password')->value
@@ -63,11 +62,10 @@ abstract class Authentication
 	//----------------------------------------------------------------- controlRegisterFormParameters
 	/**
 	 * Control if the parameters put in form are right for register
-	 *
-	 * @param $form array ['login' => $login, 'password' => $password]
+	 * @param $form string[] ['login' => $login, 'password' => $password]
 	 * @return array A list of errors.
 	 */
-	public static function controlRegisterFormParameters(array $form)
+	public static function controlRegisterFormParameters($form)
 	{
 		$errors_messages = [];
 		if (!(($form['login'] != '') && (str_replace(SP, '', $form['login']) != ''))) {
@@ -160,10 +158,10 @@ abstract class Authentication
 	/**
 	 * Register with current environment using login and password
 	 *
-	 * @param $form array The content of the form
+	 * @param $form string[] The form content
 	 * @return User user
 	 */
-	public static function register(array $form)
+	public static function register($form)
 	{
 		/** @var $user User */
 		$user = Dao::write(self::arrayToUser($form));

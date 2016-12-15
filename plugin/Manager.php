@@ -75,7 +75,7 @@ class Manager implements IManager, Serializable
 	 * @param $level   string
 	 * @param $plugins Plugin[]
 	 */
-	public function addPlugins($level, array $plugins)
+	public function addPlugins($level, $plugins)
 	{
 		if (!isset($this->plugins_tree[$level])) {
 			$this->plugins_tree[$level] = [];

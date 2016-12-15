@@ -72,9 +72,8 @@ class Application
 		if ($session == null) {
 			$session = new Session();
 		}
-		/** @var $application Application */
-		$application = $session->get(Application::class);
-		return $application;
+		//return Session::current()->get(Application::class);
+		return $session->get(Application::class);
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir

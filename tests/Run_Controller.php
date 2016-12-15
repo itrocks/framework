@@ -29,10 +29,10 @@ class Run_Controller implements Feature_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$class_name  = $parameters->shiftUnnamed();
 		$method_name = $parameters->shiftUnnamed();

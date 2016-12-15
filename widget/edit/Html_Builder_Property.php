@@ -164,7 +164,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	 * @param $as_string boolean true if the object should be used as a string
 	 * @return string
 	 */
-	public function buildObject(array $filters = null, $as_string = null)
+	public function buildObject($filters = null, $as_string = null)
 	{
 		if (!isset($filters)) {
 			$filters_values = $this->property->getListAnnotation('filters')->values();
@@ -226,7 +226,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	 *        is automatically used
 	 * @return Element
 	 */
-	protected function buildString($multiline = false, array $values = null)
+	protected function buildString($multiline = false, $values = null)
 	{
 		$values_captions = [];
 		$values = $this->property->getListAnnotation('values')->values();

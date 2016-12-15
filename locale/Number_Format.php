@@ -41,10 +41,12 @@ class Number_Format
 	/**
 	 * @param $parameters array
 	 */
-	public function __construct($parameters = [])
+	public function __construct($parameters = null)
 	{
-		foreach ($parameters as $key => $value) {
-			$this->$key = $value;
+		if (isset($parameters)) {
+			foreach ($parameters as $key => $value) {
+				$this->$key = $value;
+			}
 		}
 	}
 

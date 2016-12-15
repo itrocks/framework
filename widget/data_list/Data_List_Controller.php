@@ -75,7 +75,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @return Data_List_Settings set if parameters did change
 	 */
 	public function applyParametersToListSettings(
-		Data_List_Settings &$list_settings, array $parameters, array $form = null
+		Data_List_Settings &$list_settings, $parameters, $form = null
 	) {
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
@@ -199,7 +199,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $form string[]
 	 * @return string[]
 	 */
-	protected function descapeForm(array $form)
+	protected function descapeForm($form)
 	{
 		$result = [];
 		foreach ($form as $property_name => $value) {
@@ -272,9 +272,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $settings   Custom_Settings|Data_List_Settings
 	 * @return Button[]
 	 */
-	public function getGeneralButtons(
-		$class_name, array $parameters, Custom_Settings $settings = null
-	) {
+	public function getGeneralButtons($class_name, $parameters, Custom_Settings $settings = null)
+	{
 		return [
 			Feature::F_ADD => new Button(
 				'Add',
@@ -340,9 +339,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $search        array search-compatible search array
 	 * @return string
 	 */
-	public function getSearchSummary(
-		$class_name, Data_List_Settings $list_settings, array $search = null
-	) {
+	public function getSearchSummary($class_name, Data_List_Settings $list_settings, $search)
+	{
 		if (empty($search)) {
 			return '';
 		}
@@ -373,7 +371,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @return Button[]
 	 */
 	public function getSelectionButtons(
-		$class_name, array $parameters, Custom_Settings $list_settings = null
+		$class_name, $parameters, Custom_Settings $list_settings = null
 	) {
 		return [
 			Feature::F_EXPORT => new Button(
@@ -412,7 +410,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
 		$parameters = $parameters->getObjects();
 		$list_settings = Data_List_Settings::current($class_name);
@@ -504,7 +502,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $properties Data_List_Setting\Property[]
 	 * @return Group_By|null
 	 */
-	private function groupBy(array $properties)
+	private function groupBy($properties)
 	{
 		$group_by = null;
 		foreach ($properties as $property) {
@@ -523,7 +521,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $properties_path string[]
 	 * @param Group_By         $group_by
 	 */
-	private function groupConcat(array &$properties_path, Group_By $group_by)
+	private function groupConcat(&$properties_path, Group_By $group_by)
 	{
 		foreach ($properties_path as $key => $property_path) {
 			if (!in_array($property_path, $group_by->properties)) {
@@ -568,7 +566,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @return List_Data
 	 */
 	public function readData(
-		$class_name, Data_List_Settings $list_settings, array $search, Count $count = null
+		$class_name, Data_List_Settings $list_settings, $search, Count $count = null
 	) {
 		// SM : Moved outside the method in order result to be used for search summary
 		//$search = $this->applySearchParameters($list_settings);
@@ -650,9 +648,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $class_name      string
 	 * @param $properties_path string[] properties path that can include invisible properties
 	 * @param $search          array search where to add Has_History criteria
-	 * @return array properties path without the invisible properties
+	 * @return string[] properties path without the invisible properties
 	 */
-	public function removeInvisibleProperties($class_name, array $properties_path, array $search)
+	public function removeInvisibleProperties($class_name, $properties_path, $search)
 	{
 		// remove properties directly used as columns
 		foreach ($properties_path as $key => $property_path) {
@@ -708,11 +706,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @param $class_name string
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$this->class_names = $class_name;
 		$class_name = $parameters->getMainObject()->element_class_name;

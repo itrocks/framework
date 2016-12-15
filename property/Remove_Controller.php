@@ -49,11 +49,11 @@ class Remove_Controller extends Remove\Remove_Controller
 	 * - key 0 : context class name (ie a business class)
 	 * - key 1 : context feature name (ie 'output', 'list')
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
-	 * @param $form  array not used
-	 * @param $files array[] not used
+	 * @param $form       array not used
+	 * @param $files      array not used
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$parameters = $parameters->getObjects();
 		$parameters['class_name']    = array_shift($parameters);

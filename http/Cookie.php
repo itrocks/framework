@@ -30,7 +30,7 @@ class Cookie implements Stringable
 	 * @param $value      string
 	 * @param $properties string[]
 	 */
-	public function __construct($name = null, $value = null, array $properties = null)
+	public function __construct($name = null, $value = null, $properties = null)
 	{
 		if (isset($name))              $this->name       = $name;
 		if (isset($value))             $this->value      = $value;

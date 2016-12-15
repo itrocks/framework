@@ -18,7 +18,7 @@ abstract class Search_Objects
 	 * @param $class_name string
 	 * @return object
 	 */
-	public static function searchOne(array $objects, $class_name = null)
+	public static function searchOne($objects, $class_name = null)
 	{
 		foreach ($objects as $object) {
 			$object = Dao::searchOne($object, $class_name);

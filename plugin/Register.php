@@ -90,7 +90,7 @@ class Register
 	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_VARIABLE
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
-	public function setAnnotations($context, array $annotations_classes)
+	public function setAnnotations($context, $annotations_classes)
 	{
 		Additional_Annotations::setAnnotations($context, $annotations_classes);
 	}
@@ -103,7 +103,7 @@ class Register
 	private function setConfiguration($configuration)
 	{
 		$this->configuration = $configuration;
-		$this->get           = false;
+		$this->get = false;
 	}
 
 }

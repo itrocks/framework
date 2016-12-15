@@ -253,7 +253,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [T_USE])
+	public function getDocComment($flags = [T_USE])
 	{
 		if (!isset($this->doc_comment)) {
 			$overridden_property  = $this->getOverriddenProperty();
@@ -519,10 +519,8 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $object object|mixed object or static property value
 	 * @param $value  mixed
 	 */
-	public function setValue(
-		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $object + mixed */
-		$object, $value = self::EMPTY_VALUE
-	) {
+	public function setValue($object, $value = self::EMPTY_VALUE)
+	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$path = explode(DOT, $this->path);
 			$property = new Reflection_Property($this->root_class, array_shift($path));

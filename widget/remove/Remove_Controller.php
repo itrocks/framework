@@ -23,10 +23,10 @@ class Remove_Controller implements Feature_Controller
 	 * - key 1 : context feature name (ie Feature::F_OUTPUT, Feature::F_LIST)
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
 	 * @param $form       array not used
-	 * @param $files      array[] not used
+	 * @param $files      array not used
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$parameters = $parameters->getObjects();
 		$parameters['class_name']   = array_shift($objects);

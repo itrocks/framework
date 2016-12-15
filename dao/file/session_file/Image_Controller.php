@@ -16,10 +16,10 @@ class Image_Controller implements Feature_Controller
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$objects = $parameters->getObjects();
 		$objects['link'] = SL . str_replace(BS, SL, Session_File::class) . '/output/' . reset($objects);

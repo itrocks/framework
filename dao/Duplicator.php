@@ -102,7 +102,7 @@ class Duplicator
 	 * @param $elements             object[]|Component[] the component objects
 	 * @param $composite_class_name string the composite class name
 	 */
-	private function removeCompositeFromComponents(array $elements, $composite_class_name)
+	private function removeCompositeFromComponents($elements, $composite_class_name)
 	{
 		if (isA($element = reset($elements), Component::class)) {
 			$getCompositeProperty = [get_class($element), 'getCompositeProperty'];

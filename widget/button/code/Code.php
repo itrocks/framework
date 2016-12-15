@@ -39,9 +39,7 @@ class Code implements Stringable
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $source  string
-	 * @param $when    string @values after, before
-	 * @param $feature string
+	 * @param $source string
 	 */
 	public function __construct($source = null, $when = null, $feature = null)
 	{

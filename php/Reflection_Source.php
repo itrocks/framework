@@ -223,7 +223,7 @@ class Reflection_Source
 	/**
 	 * @param $filter integer[] what to you want to get
 	 */
-	private function get(array $filter)
+	private function get($filter)
 	{
 		$filter = array_flip($filter);
 		$f_classes      = isset($filter[self::CLASSES]);
@@ -876,7 +876,7 @@ class Reflection_Source
 	 * @param $files      string[] The possible files that may contain the class definition
 	 * @return boolean true if the file has been found, else false
 	 */
-	public function searchFile($class_name, array $files)
+	public function searchFile($class_name, $files)
 	{
 		static $already = [];
 

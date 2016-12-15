@@ -45,10 +45,12 @@ class IP implements Configurable, Registerable
 	 *
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct($configuration = null)
 	{
-		foreach ($configuration as $key => $value) {
-			$this->$key = is_array($value) ? array_combine($value, $value) : $value;
+		if (isset($configuration)) {
+			foreach ($configuration as $key => $value) {
+				$this->$key = is_array($value) ? array_combine($value, $value) : $value;
+			}
 		}
 	}
 

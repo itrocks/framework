@@ -96,7 +96,7 @@ abstract class Additional_Annotations
 	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_VARIABLE
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
-	public static function setAnnotations($context, array $annotations_classes)
+	public static function setAnnotations($context, $annotations_classes)
 	{
 		// register the shutdown function
 		self::registerShutdownFunction();

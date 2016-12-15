@@ -55,7 +55,7 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $sources    Reflection_Source[]
 	 * @param $added      Reflection_Source[]
 	 */
-	private function moreSourcesAdd($class_name, array &$sources, array &$added)
+	private function moreSourcesAdd($class_name, &$sources, &$added)
 	{
 		/** @var $dependency Dependency */
 		$dependency = Dao::searchOne(
@@ -73,7 +73,7 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $sources Reflection_Source[] Key is the file path
 	 * @return Reflection_Source[] added sources list
 	 */
-	public function moreSourcesToCompile(array &$sources)
+	public function moreSourcesToCompile(&$sources)
 	{
 		$added = [];
 		foreach ($sources as $file_path => $source) {

@@ -14,10 +14,10 @@ class After_Function extends Function_Joinpoint
 	 * @param $result     mixed
 	 * @param $advice     string[]|object[]|string
 	 */
-	public function __construct($pointcut, array $parameters, &$result, $advice)
+	public function __construct($pointcut, $parameters, &$result, $advice)
 	{
 		parent::__construct($pointcut, $parameters, $advice);
-		$this->result = &$result;
+		$this->result     = &$result;
 	}
 
 }

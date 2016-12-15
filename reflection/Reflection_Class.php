@@ -144,10 +144,10 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return mixed[] Constant name in key, constant value in value
 	 */
-	public function getConstants(array $flags = [T_EXTENDS, T_USE])
+	public function getConstants($flags = [T_EXTENDS, T_USE])
 	{
 		$constants = parent::getConstants();
-		$flags     = array_flip($flags);
+		$flags = array_flip($flags);
 		if (!isset($flags[T_EXTENDS])) {
 			if ($parent = $this->getParentClass()) {
 				foreach (array_keys($parent->getConstants([T_EXTENDS, T_USE])) as $constant_name) {
@@ -203,7 +203,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return array
 	 */
-	public function getDefaultProperties(array $flags = [])
+	public function getDefaultProperties($flags = [])
 	{
 		$defaults = parent::getDefaultProperties();
 		if ($flags) {
@@ -211,7 +211,7 @@ class Reflection_Class extends ReflectionClass
 				$parent = $this->getParentClass();
 				while ($parent) {
 					$defaults = array_merge($parent->getDefaultProperties(), $defaults);
-					$parent   = $parent->getParentClass();
+					$parent = $parent->getParentClass();
 				}
 			}
 		}
@@ -226,7 +226,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [], array &$already = [])
+	public function getDocComment($flags = [], &$already = [])
 	{
 		$doc_comment = parent::getDocComment();
 		if ($flags) {
@@ -425,7 +425,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return boolean
 	 */
-	public function isA($name, array $flags = [])
+	public function isA($name, $flags = [])
 	{
 		if ($flags) {
 			$flip = array_flip($flags);

@@ -33,7 +33,7 @@ abstract class Element
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
-	 * @var string|string[]|array array for string[][] for build_mode AUTO
+	 * @var string|string[]|mixed[] mixed[] means string[][] for build_mode AUTO
 	 */
 	private $content;
 
@@ -189,10 +189,10 @@ abstract class Element
 
 	//------------------------------------------------------------------------------------ parseArray
 	/**
-	 * @param $array array
+	 * @param $array mixed[]
 	 * @return string
 	 */
-	private function parseArray(array $array)
+	private function parseArray($array)
 	{
 		$content = '';
 		foreach ($array as $item) {

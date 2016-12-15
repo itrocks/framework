@@ -335,7 +335,7 @@ class Html_Builder_Type
 	 * @param $as_string boolean true if the object should be used as a string
 	 * @return string
 	 */
-	public function buildObject(array $filters = null, $as_string = false)
+	public function buildObject($filters = null, $as_string = false)
 	{
 		$class_name = $this->type->asString();
 		// visible input ?
@@ -402,7 +402,7 @@ class Html_Builder_Type
 	 * @param $values    string[]
 	 * @return Element
 	 */
-	protected function buildString($multiline = false, array $values = null)
+	protected function buildString($multiline = false, $values = null)
 	{
 		// case choice of values (single or multiple)
 		if ($values) {

@@ -34,7 +34,7 @@ class Set
 	 * @param $class_name string|object
 	 * @param $search     string[]|object
 	 */
-	public function replace(array $objects, $class_name, $search = null)
+	public function replace($objects, $class_name, $search = null)
 	{
 		$dao = $this->data_link;
 		// change $class_name to string, change $search to search object or array

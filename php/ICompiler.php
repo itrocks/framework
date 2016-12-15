@@ -22,6 +22,6 @@ interface ICompiler
 	 * @param &$sources Reflection_Source[]
 	 * @return Reflection_Source[] added sources list
 	 */
-	public function moreSourcesToCompile(array &$sources);
+	public function moreSourcesToCompile(&$sources);
 
 }

@@ -16,6 +16,7 @@ class Versions implements Configurable
 	 */
 	public function __construct($configuration)
 	{
+
 	}
 
 }

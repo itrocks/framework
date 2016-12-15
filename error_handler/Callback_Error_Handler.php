@@ -9,16 +9,15 @@ class Callback_Error_Handler implements Error_Handler
 
 	//---------------------------------------------------------------------------- $callback_function
 	/**
-	 * @var callable
+	 * @var mixed<string,mixed<string,object>>[] 'functionName', 'Class_Name::functionName', ['Class_Name', 'functionName'), [$object, 'functionName')
 	 */
 	private $callback_function;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $callback_function callable the callback function
-	 *                           (a function name or a class name and function name array)
+	 * @param $callback_function string|string[] the callback function (a function name or a class name and function name array)
 	 */
-	public function __construct(callable $callback_function)
+	public function __construct($callback_function)
 	{
 		$this->callback_function = $callback_function;
 	}

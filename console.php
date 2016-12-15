@@ -84,7 +84,7 @@ class Console
 	/**
 	 * @param $arguments string[] command line arguments
 	 */
-	public function __construct(array $arguments)
+	public function __construct($arguments)
 	{
 		$this->script = $arguments[0];
 		if (empty($arguments[1]) || (substr($arguments[1], 0, 1) !== '/')) {

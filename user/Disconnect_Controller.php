@@ -18,14 +18,14 @@ class Disconnect_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param $parameters Parameters
-	 * @param $form       array
-	 * @param $files      array[]
+	 * @param Parameters $parameters
+	 * @param array                 $form
+	 * @param array                 $files
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
-		$parameters   = $parameters->getObjects();
+		$parameters = $parameters->getObjects();
 		$current_user = User::current();
 		if (!isset($current_user)) {
 			$current_user = new User();

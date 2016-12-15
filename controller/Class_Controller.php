@@ -17,10 +17,10 @@ interface Class_Controller extends Controller
 	 *
 	 * @param $parameters   Parameters
 	 * @param $form         array
-	 * @param $files        array[]
+	 * @param $files        array
 	 * @param $feature_name string
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $feature_name);
+	public function run(Parameters $parameters, $form, $files, $feature_name);
 
 }

@@ -111,7 +111,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @param $arguments array
 	 * @return mixed the value returned by the called method
 	 */
-	public function call($object, array $arguments = [])
+	public function call($object, $arguments = [])
 	{
 		if ($this->static || is_string($object)) {
 			if (!(reset($arguments) instanceof Event)) {

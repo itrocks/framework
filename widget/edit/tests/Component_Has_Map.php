@@ -34,7 +34,7 @@ class Component_Has_Map
 	 * @param $code       string
 	 * @param $simple_map Simple[]
 	 */
-	public function __construct($code = null, array $simple_map = null)
+	public function __construct($code = null, $simple_map = null)
 	{
 		if (isset($code))       $this->code       = $code;
 		if (isset($simple_map)) $this->simple_map = $simple_map;

@@ -26,7 +26,7 @@ class Concat extends Column
 	/**
 	 * @param $columns string[]
 	 */
-	public function __construct(array $columns = null)
+	public function __construct($columns = null)
 	{
 		if (isset($columns)) {
 			$this->columns = $columns;

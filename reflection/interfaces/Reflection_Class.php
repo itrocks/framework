@@ -32,7 +32,7 @@ interface Reflection_Class extends Reflection
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return mixed[] Constant name in key, constant value in value
 	 */
-	public function getConstants(array $flags = [T_EXTENDS, T_USE]);
+	public function getConstants($flags = [T_EXTENDS, T_USE]);
 
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
@@ -49,7 +49,7 @@ interface Reflection_Class extends Reflection
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return array
 	 */
-	public function getDefaultProperties(array $flags = []);
+	public function getDefaultProperties($flags = []);
 
 	//----------------------------------------------------------------------------------- getFileName
 	/**
@@ -170,7 +170,7 @@ interface Reflection_Class extends Reflection
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return boolean
 	 */
-	public function isA($name, array $flags = []);
+	public function isA($name, $flags = []);
 
 	//------------------------------------------------------------------------------------ isAbstract
 	/**

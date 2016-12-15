@@ -103,14 +103,16 @@ class Compiler implements
 	 *
 	 * @param $configuration array string[integer $wave_number][]
 	 */
-	public function __construct($configuration = [])
+	public function __construct($configuration = null)
 	{
-		foreach ($configuration as $wave_number => $compilers) {
-			foreach ($compilers as $class_name) {
-				$this->compilers[$wave_number][$class_name]
-					= Session::current()->plugins->has($class_name)
-					? Session::current()->plugins->get($class_name)
-					: Builder::create($class_name);
+		if (isset($configuration)) {
+			foreach ($configuration as $wave_number => $compilers) {
+				foreach ($compilers as $class_name) {
+					$this->compilers[$wave_number][$class_name]
+						= Session::current()->plugins->has($class_name)
+						? Session::current()->plugins->get($class_name)
+						: Builder::create($class_name);
+				}
 			}
 		}
 		if (isset($_GET['Z'])) {
@@ -267,14 +269,13 @@ class Compiler implements
 	/**
 	 * Compile one source file using compilers
 	 *
-	 * @param $source      Reflection_Source
-	 * @param $compilers   ICompiler[]
-	 * @param $cache_dir   string
-	 * @param $first_group boolean
+	 * @param $source        Reflection_Source
+	 * @param $compilers     ICompiler[]
+	 * @param $cache_dir     string
+	 * @param $first_group   boolean
 	 */
-	private function compileSource(
-	 	Reflection_Source $source, array $compilers, $cache_dir, $first_group
-	) {
+	private function compileSource(Reflection_Source $source, $compilers, $cache_dir, $first_group)
+	{
 		foreach ($compilers as $compiler) {
 			if (isset($GLOBALS['D'])) {
 				echo get_class($compiler) . ' : Compile source file ' . $source->file_name

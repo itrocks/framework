@@ -56,12 +56,12 @@ class Html_Delete_And_Replace_View implements View
 	/**
 	 * @param $parameters   array
 	 * @param $form         array
-	 * @param $files        array[]
+	 * @param $files        array
 	 * @param $class_name   string
 	 * @param $feature_name string
 	 * @return mixed
 	 */
-	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
+	public function run($parameters, $form, $files, $class_name, $feature_name)
 	{
 		// the view when the replacement has been done
 		if (isset($parameters['done'])) {

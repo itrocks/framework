@@ -79,7 +79,7 @@ abstract class Properties implements Option
 	 * @param $no_property_returns_true boolean if there is no Properties option, returns this value
 	 * @return boolean
 	 */
-	public static function have(array $options, $property, $no_property_returns_true = true)
+	public static function have($options, $property, $no_property_returns_true = true)
 	{
 		$default = $no_property_returns_true;
 		foreach ($options as $option) {
@@ -118,7 +118,7 @@ abstract class Properties implements Option
 	 * @param $property string
 	 * @return integer the count of property removed from options
 	 */
-	public static function removeAll(array $options, $property)
+	public static function removeAll($options, $property)
 	{
 		$removed = 0;
 		foreach ($options as $option) {

@@ -24,7 +24,7 @@ class Register_Controller implements Feature_Controller
 	 */
 	protected function getViewParameters(
 		Parameters $parameters,
-		/** @noinspection PhpUnusedParameterInspection */ array $form,
+		/** @noinspection PhpUnusedParameterInspection */ $form,
 		$class_name
 	) {
 		$parameters = $parameters->getObjects();
@@ -40,10 +40,10 @@ class Register_Controller implements Feature_Controller
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$current = User::current();
 		if ($current) {

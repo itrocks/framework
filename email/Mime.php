@@ -32,7 +32,7 @@ class Mime extends Mail_mime
 	 *
 	 * @param $html_images array
 	 */
-	public function setHtmlImages(array $html_images)
+	public function setHtmlImages($html_images)
 	{
 		if (isset($this->_html_images)) {
 			$this->_html_images = $html_images;

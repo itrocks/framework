@@ -38,7 +38,7 @@ class Abstract_Collection
 	 * @param $property   Reflection_Property
 	 * @param $collection object[]
 	 */
-	public function __construct(Reflection_Property $property, array $collection)
+	public function __construct(Reflection_Property $property, $collection)
 	{
 		$this->class_name = $property->getType()->getElementTypeAsString();
 		$this->collection = $collection;

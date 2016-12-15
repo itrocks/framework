@@ -21,10 +21,10 @@ class Json_Controller implements Default_Feature_Controller
 
 	//-------------------------------------------------------------------------- applyFiltersToSearch
 	/**
-	 * @param $search  array|object
+	 * @param $search  mixed
 	 * @param $filters string[] list of filters to apply
 	 */
-	protected function applyFiltersToSearch(&$search, array $filters)
+	protected function applyFiltersToSearch(&$search, $filters)
 	{
 		if (!(is_object($search) && $search->isAnd())) {
 			$search = Dao\Func::andOp($search ? [$search] : []);
@@ -69,11 +69,11 @@ class Json_Controller implements Default_Feature_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @param $class_name string
 	 * @return string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters = $parameters->getObjects();
 		// read all objects corresponding to class name
@@ -136,10 +136,10 @@ class Json_Controller implements Default_Feature_Controller
 	//------------------------------------------------------------- searchObjectsForAutoCompleteCombo
 	/**
 	 * @param $set_name   string
-	 * @param $parameters array
+	 * @param $parameters mixed[]
 	 * @return string
 	 */
-	protected function searchObjectsForAutoCompleteCombo($set_name, array $parameters)
+	protected function searchObjectsForAutoCompleteCombo($set_name, $parameters)
 	{
 		$element_class_name = Names::setToClass($set_name, false);
 		$search             = null;

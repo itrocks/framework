@@ -50,14 +50,14 @@ class Map
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
 	 */
-	public function __construct(Reflection_Property $property, array $map)
+	public function __construct(Reflection_Property $property, $map)
 	{
-		$this->property   = $property;
-		$this->map        = $map;
+		$this->property = $property;
+		$this->map = $map;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
-		$class            = new Reflection_Class($this->class_name);
+		$class = new Reflection_Class($this->class_name);
 		/** @var $representative Representative_Annotation */
-		$representative   = $class->getListAnnotation('representative');
+		$representative = $class->getListAnnotation('representative');
 		$this->properties = $representative->getProperties();
 	}
 

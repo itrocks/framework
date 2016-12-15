@@ -23,9 +23,8 @@ class Around_Method extends Method_Joinpoint
 	 * @param $advice         string[]|object[]|string
 	 * @param $process_method string
 	 */
-	public function __construct(
-		$class_name, array $pointcut, array $parameters, $advice, $process_method
-	) {
+	public function __construct($class_name, $pointcut, $parameters, $advice, $process_method)
+	{
 		parent::__construct($class_name, $pointcut, $parameters, $advice);
 		$this->process_method = $process_method;
 	}

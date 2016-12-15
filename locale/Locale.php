@@ -165,7 +165,7 @@ class Locale implements Configurable
 	/**
 	 * Set locale's number format
 	 *
-	 * @param Number_Format|array
+	 * @param Number_Format|mixed[]
 	 */
 	private function setNumberFormat($number_format)
 	{

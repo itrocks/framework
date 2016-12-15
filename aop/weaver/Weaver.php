@@ -173,7 +173,7 @@ class Weaver implements IWeaver
 	 * @param $array array
 	 * @return string
 	 */
-	private function dumpArray(array $array)
+	private function dumpArray($array)
 	{
 		$lf1 = LF . TAB;
 		$lf2 = $lf1 . TAB;

@@ -15,7 +15,7 @@ class After_Method extends Method_Joinpoint
 	 * @param $result      mixed
 	 * @param $advice      string[]|object[]|string
 	 */
-	public function __construct($class_name, array $pointcut, array $parameters, &$result, $advice)
+	public function __construct($class_name, $pointcut, $parameters, &$result, $advice)
 	{
 		parent::__construct($class_name, $pointcut, $parameters, $advice);
 		$this->result     = &$result;

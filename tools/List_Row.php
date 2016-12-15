@@ -13,7 +13,7 @@ interface List_Row
 	 * @param $object     object
 	 * @param $values     string[]
 	 */
-	public function __construct($class_name, $object, array $values);
+	public function __construct($class_name, $object, $values);
 
 	//----------------------------------------------------------------------------------------- count
 	/**

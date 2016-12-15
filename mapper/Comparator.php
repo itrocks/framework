@@ -35,7 +35,7 @@ class Comparator
 	 * @param $class_name      string
 	 * @param $properties_path string[]|Reverse[]
 	 */
-	public function __construct($class_name, array $properties_path = [])
+	public function __construct($class_name, $properties_path = [])
 	{
 		$this->class_name = $class_name;
 		if ($properties_path) {
@@ -105,7 +105,7 @@ class Comparator
 	 * @param $objects object[]
 	 * @param $sort_callback string You can define which sort function to call
 	 */
-	public function sort(array &$objects, $sort_callback = 'uasort')
+	public function sort(&$objects, $sort_callback = 'uasort')
 	{
 		call_user_func_array($sort_callback, [&$objects, [$this, 'compare']]);
 	}

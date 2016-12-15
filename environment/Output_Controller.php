@@ -20,10 +20,10 @@ class Output_Controller implements Feature_Controller
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array[]
+	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, $form, $files)
 	{
 		$environment = Session::current()->get(Environment::class, true);
 		$parameters = array_merge([get_class($environment) => $environment], $parameters->getObjects());

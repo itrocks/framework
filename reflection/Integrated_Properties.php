@@ -27,7 +27,7 @@ abstract class Integrated_Properties
 	 * @return Reflection_Property[] added properties list (empty if none applies)
 	 */
 	public static function expandUsingProperties(
-		array &$properties_list, $using_properties, $object = null
+		&$properties_list, $using_properties, $object = null
 	) {
 		$expanded = [];
 		if (!is_array($using_properties)) {
@@ -48,7 +48,7 @@ abstract class Integrated_Properties
 	 *
 	 * Only properties with an @integrated annotation will be used for extend
 	 *
-	 * @param $properties_list Reflection_Property[] new indices will be 'property.sub_property'
+	 * @param $properties_list Reflection_Property[] new indicies will be 'property.sub_property'
 	 * @param $property        Reflection_Property
 	 * @param $object          object
 	 * @param $property_name   string
@@ -56,7 +56,7 @@ abstract class Integrated_Properties
 	 *         'property.sub_property'
 	 */
 	public static function expandUsingProperty(
-		array &$properties_list, $property, $object = null, $property_name = null
+		&$properties_list, $property, $object = null, $property_name = null
 	) {
 		if (empty($property_name) || is_numeric($property_name)) {
 			$property_name = $property->name;
@@ -77,8 +77,7 @@ abstract class Integrated_Properties
 	 * @todo probably things to clean up (was patched for 'all properties as values' without controls)
 	 */
 	private static function expandUsingPropertyInternal(
-		array &$properties_list, $property, $object, $property_name, $display_prefix = '',
-		array $blocks = []
+		&$properties_list, $property, $object, $property_name, $display_prefix = '', $blocks = []
 	) {
 		$expanded = [];
 		/** @var $integrated Integrated_Annotation */

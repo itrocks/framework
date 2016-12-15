@@ -50,7 +50,7 @@ class Import_Preview
 	 * @param $data       array
 	 * @param $properties string[]
 	 */
-	public function __construct(array $data = null, array $properties = null)
+	public function __construct($data = null, $properties = null)
 	{
 		if (isset($properties)) {
 			$this->properties = $properties;

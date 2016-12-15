@@ -32,7 +32,7 @@ class Edit_Controller extends Output_Controller
 	 * @param $settings   Custom_Settings|Output_Settings
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Custom_Settings $settings = null)
+	public function getGeneralButtons($object, $parameters, Custom_Settings $settings = null)
 	{
 		list($close_link, $follows) = $this->prepareThen(
 			$object,
@@ -70,7 +70,7 @@ class Edit_Controller extends Output_Controller
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, $form, $class_name)
 	{
 		$parameters->set('editing',        true);
 		$parameters->set(Feature::FEATURE, Feature::F_EDIT);
