@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Period;
 
 /**
  * @business
@@ -111,23 +112,8 @@ class Task
 	 */
 	public function calculateDuration()
 	{
-		$end_date = $this->end_date && !$this->end_date->isEmpty()
-			? $this->end_date : new Date_Time();
-		if ($end_date && $this->begin_date && !$this->begin_date->isEmpty()) {
-			$diff = $this->begin_date->diff($end_date, true);
-			$format = [];
-			if ($diff->h) {
-				$format[] = $diff->h . SP . Loc::tr('hour');
-			}
-			if ($diff->i) {
-				$format[] = $diff->i . SP . Loc::tr('minutes');
-			}
-			if ($diff->s) {
-				$format[] = $diff->s . SP . Loc::tr('seconds');
-			}
-			return join(SP, $format);
-		}
-		return '';
+		$period = new Period($this->begin_date, $this->end_date);
+		return $period->formatDifference();
 	}
 
 	//------------------------------------------------------------------------------------ canExecute

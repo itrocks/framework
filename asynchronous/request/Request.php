@@ -7,6 +7,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Period;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button;
@@ -22,14 +23,26 @@ class Request
 {
 	use Has_Name;
 
+	//----------------------------------------------------------------------------------------- ERROR
+	const ERROR = 'error';
+
 	//-------------------------------------------------------------------------------------- FINISHED
 	const FINISHED = 'finished';
 
 	//----------------------------------------------------------------------------------- IN_PROGRESS
 	const IN_PROGRESS = 'in_progress';
 
-	//----------------------------------------------------------------------------------------- ERROR
-	const ERROR = 'error';
+	//----------------------------------------------------------------------------- $calculation_time
+	/**
+	 * Total time executed (if task are executed in one synchronous task)
+	 *
+	 * @calculated
+	 * @getter
+	 * @store false
+	 * @user readonly
+	 * @var integer
+	 */
+	public $calculation_time;
 
 	//------------------------------------------------------------------------------------- $creation
 	/**
@@ -48,6 +61,18 @@ class Request
 	 * @var Task[]
 	 */
 	public $errors;
+
+	//------------------------------------------------------------------------------- $execution_time
+	/**
+	 * Time to execute all tasks (time between start and end time)
+	 *
+	 * @calculated
+	 * @getter
+	 * @store false
+	 * @user readonly
+	 * @var integer
+	 */
+	public $execution_time;
 
 	//------------------------------------------------------------------------------ $general_buttons
 	/**
@@ -95,48 +120,6 @@ class Request
 	 * @var integer
 	 */
 	public $progress;
-
-	//------------------------------------------------------------------------------------- $progress
-	/**
-	 * Time to execute all tasks (time between start and end time)
-	 *
-	 * @calculated
-	 * @getter
-	 * @store false
-	 * @user readonly
-	 * @var integer
-	 */
-	public $execution_time;
-
-	//------------------------------------------------------------------------------------- $progress
-	/**
-	 * Total time executed (if task are executed in one synchronous task)
-	 *
-	 * @calculated
-	 * @getter
-	 * @store false
-	 * @user readonly
-	 * @var integer
-	 */
-	public $calculation_time;
-
-	public function getExecutionTime()
-	{
-		$last_date = $this->creation;
-		foreach ($this->tasks as $task) {
-			if ($task->end_date->isAfter($last_date)) {
-				$last_time = $task->end_date;
-			}
-		}
-		return '';
-	}
-
-	public function getCalculationTime()
-	{
-		foreach ($this->tasks as $task) {
-
-		}
-	}
 
 	//--------------------------------------------------------------------------------------- $status
 	/**
@@ -199,6 +182,25 @@ class Request
 		return $task;
 	}
 
+	//---------------------------------------------------------------------------- getCalculationTime
+	/**
+	 * @return string
+	 */
+	public function getCalculationTime()
+	{
+		$total_time_in_sec = 0;
+		foreach ($this->tasks as $task) {
+			if (!$task->end_date->isEmpty()) {
+				$diff = $task->begin_date->diff($task->end_date);
+				$total_time_in_sec = $diff->timestamp(true);
+			}
+		}
+		$period = new Period(
+			new Date_Time(), (new Date_Time())->add($total_time_in_sec, Date_Time::SECOND)
+		);
+		return $period->formatDifference();
+	}
+
 	//------------------------------------------------------------------------------------- getErrors
 	/**
 	 * @return Task[]
@@ -210,6 +212,21 @@ class Request
 		}
 		$errors = Dao::search(['status' => Task::ERROR, 'request' => $this], static::getTaskClass());
 		return $this->errors = ($errors ?: []);
+	}
+
+	//------------------------------------------------------------------------------ getExecutionTime
+	/**
+	 * @return string
+	 */
+	public function getExecutionTime()
+	{
+		$last_date = $this->creation;
+		foreach ($this->tasks as $task) {
+			if ($task->end_date->isAfter($last_date)) {
+				$last_date = $task->end_date;
+			}
+		}
+		return (new Period($this->creation, $last_date))->formatDifference();
 	}
 
 	//----------------------------------------------------------------------------- getGeneralButtons
@@ -287,15 +304,6 @@ class Request
 		return $tasks_executed >= $this->max_progress ? static::FINISHED : static::IN_PROGRESS;
 	}
 
-	//------------------------------------------------------------------------------------ isFinished
-	/**
-	 * @return boolean
-	 */
-	public function isFinished()
-	{
-		return $this->progress + count($this->errors) >= $this->max_progress;
-	}
-
 	//---------------------------------------------------------------------------------- getTaskClass
 	/**
 	 * @return string
@@ -322,15 +330,13 @@ class Request
 		return $tasks ?: [];
 	}
 
-	//----------------------------------------------------------------------------------------- start
+	//------------------------------------------------------------------------------------ isFinished
 	/**
-	 * Launch asynchronous request.
+	 * @return boolean
 	 */
-	public function start()
+	public function isFinished()
 	{
-		$this->creation = new Date_Time();
-		Dao::write($this);
-		$this->launch();
+		return $this->progress + count($this->errors) >= $this->max_progress;
 	}
 
 	//---------------------------------------------------------------------------------------- launch
@@ -342,6 +348,17 @@ class Request
 			$task = $running_request->addTask(new Main_Worker());
 			$task->asynchronousLaunch();
 		}
+	}
+
+	//----------------------------------------------------------------------------------------- start
+	/**
+	 * Launch asynchronous request.
+	 */
+	public function start()
+	{
+		$this->creation = new Date_Time();
+		Dao::write($this);
+		$this->launch();
 	}
 
 }

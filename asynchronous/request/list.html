@@ -18,6 +18,7 @@
 				<th>|Name|</th>
 				<th>|Request date|</th>
 				<th>|Duration|</th>
+				<th>|Total calculation time|</th>
 				<th>|Status|</th>
 				<th>|Progress|</th>
 				<th>|Current tasks|</th>
@@ -30,7 +31,8 @@
 		<tr>
 			<td><a href="{getOutputLink}">{@value}</a></td>
 			<td>{creation.@loc}</td>
-			<td>{calculateDuration}</td>
+			<td>{execution_time}</td>
+			<td>{calculation_time}</td>
 			<td>|{status}|</td>
 			<td title="{progress}/{max_progress}"><progress value="{progress}" max="{max_progress}"></progress></td>
 			<td>

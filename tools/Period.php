@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Locale\Loc;
+
 /**
  * Representation of a period between two Date_Time
  */
@@ -39,6 +41,28 @@ class Period
 			$this->begin = $begin;
 			$this->end   = $end;
 		}
+	}
+
+	//------------------------------------------------------------------------------ formatDifference
+	/**
+	 * Return difference between begin and end date
+	 *
+	 * @return string
+	 */
+	public function formatDifference()
+	{
+		$diff = $this->begin->diff($this->end, true);
+		$format = [];
+		if ($diff->h) {
+			$format[] = $diff->h . SP . Loc::tr('hour');
+		}
+		if ($diff->i) {
+			$format[] = $diff->i . SP . Loc::tr('minutes');
+		}
+		if ($diff->s) {
+			$format[] = $diff->s . SP . Loc::tr('seconds');
+		}
+		return join(SP, $format);
 	}
 
 	//-------------------------------------------------------------------------------------------- in
