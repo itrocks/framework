@@ -135,13 +135,8 @@ class Search_Parameters_Parser
 	 */
 	protected function applyComplexValue($search_value, Reflection_Property $property)
 	{
-		if (Range::isRange($search_value, $property)) {
-			if (Range::supportsRange($property)) {
-				$search = Range::applyRange($search_value, $property);
-			}
-			else {
-				throw new Data_List_Exception($search_value, Loc::tr('Range not permitted'));
-			}
+		if (Range::isRange($search_value, $property) && Range::supportsRange($property)) {
+			$search = Range::applyRange($search_value, $property);
 		}
 		else {
 			$search = $this->applySingleValue($search_value, $property);
