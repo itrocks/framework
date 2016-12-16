@@ -14,14 +14,14 @@ function upgradeMemoryLimit($memory_limit)
 	$m = ['G' => 1024 * 1024 * 1024, 'M' => 1024 * 1024, 'K' => 1024];
 	// convert $memory_limit to octets
 	$unit = substr($memory_limit, -1);
-	if (isset($m[$unit])) {
-		$memory_limit *= $m[$unit];
-	}
+	$memory_limit = isset($m[$unit])
+		? intval(substr($memory_limit, 0, -1)) * $m[$unit]
+		: intval($memory_limit);
 	// convert old_memory_limit to octets
-	$unit = substr($old_memory_limit, -1);
-	if (isset($m[$unit])) {
-		$old_memory_limit *= $m[$unit];
-	}
+	$unit = intval(substr($old_memory_limit, -1));
+	$old_memory_limit = isset($m[$unit])
+		? intval(substr($old_memory_limit, 0, -1)) * $m[$unit]
+		: intval($old_memory_limit);
 	// upgrade (round to the ceil MB)
 	if ($memory_limit <= 0) {
 		$memory_limit = -1;
