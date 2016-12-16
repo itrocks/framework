@@ -45,7 +45,9 @@ function upgradeTimeLimit($time_limit)
 	if ($time_limit <= 0) {
 		$time_limit = 0;
 	}
-	if ((($time_limit > 0) && ($time_limit > ini_get('max_execution_time'))) || ($time_limit == 0)) {
+	if (
+		(($time_limit > 0) && ($time_limit > ini_get('max_execution_time'))) || !$time_limit
+	) {
 		ini_set('max_execution_time', $time_limit);
 		set_time_limit($time_limit);
 		return true;

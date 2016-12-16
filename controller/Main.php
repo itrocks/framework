@@ -416,11 +416,11 @@ class Main
 		if (empty($_SESSION)) {
 			ini_set('session.cookie_path', Paths::$uri_base);
 			if (isset($get['memory_limit'])) {
-				ini_set('memory_limit', $get['memory_limit']);
+				upgradeMemoryLimit($get['memory_limit']);
 				unset($get['memory_limit']);
 			}
 			if (isset($get['time_limit'])) {
-				set_time_limit($get['time_limit']);
+				upgradeTimeLimit(intval($get['time_limit']));
 				unset($get['time_limit']);
 			}
 			session_start();
