@@ -3,13 +3,22 @@
 //-------------------------------------------------------------------------------------- beginsWith
 /**
  * Returns true if $haystack begins with $needle
+ * If any (or both) parameter is an array, returns true if any $haystack begins with any $needle
  *
- * @param $haystack string
- * @param $needle   string
+ * @param $haystack string|string[]
+ * @param $needle   string|string[]
  * @return boolean
  */
 function beginsWith($haystack, $needle)
 {
+	if (is_array($haystack)) {
+		foreach ($haystack as $choice) if (beginsWith($choice, $needle)) return true;
+		return false;
+	}
+	if (is_array($needle)) {
+		foreach ($needle as $choice) if (beginsWith($haystack, $choice)) return true;
+		return false;
+	}
 	$needle_length = strlen($needle);
 	return (strlen($haystack) >= $needle_length)
 		&& (substr($haystack, 0, $needle_length) === $needle);
@@ -18,13 +27,22 @@ function beginsWith($haystack, $needle)
 //---------------------------------------------------------------------------------------- endsWith
 /**
  * Returns true if $haystack ends with $needle
+ * If any (or both) parameter is an array, returns true if any $haystack ends with any $needle
  *
- * @param $haystack string
- * @param $needle   string
+ * @param $haystack string|string[]
+ * @param $needle   string|string[]
  * @return boolean
  */
 function endsWith($haystack, $needle)
 {
+	if (is_array($haystack)) {
+		foreach ($haystack as $choice) if (endsWith($choice, $needle)) return true;
+		return false;
+	}
+	if (is_array($needle)) {
+		foreach ($needle as $choice) if (endsWith($haystack, $choice)) return true;
+		return false;
+	}
 	$needle_length = strlen($needle);
 	return (strlen($haystack) >= $needle_length)
 		&& (substr($haystack, -$needle_length) === $needle);
@@ -34,61 +52,55 @@ function endsWith($haystack, $needle)
 /**
  * Returns the part of the string left to the last occurrence of the separator
  *
- * @param $str string
- * @param $sep string
- * @param $cnt int
- * @param $complete_if_not bool
+ * @param $string          string
+ * @param $separator       string
+ * @param $count           integer
+ * @param $complete_if_not boolean
  * @return string
  */
-function lLastParse($str, $sep, $cnt = 1, $complete_if_not = true)
+function lLastParse($string, $separator, $count = 1, $complete_if_not = true)
 {
-	if ($cnt > 1) {
-		$str = lLastParse($str, $sep, $cnt - 1);
+	if ($count > 1) {
+		$string = lLastParse($string, $separator, $count - 1);
 	}
-	$i = strrpos($str, $sep);
-	if ($i === false) {
-		return $complete_if_not ? $str : '';
-	}
-	else {
-		return substr($str, 0, $i);
-	}
+	$i = strrpos($string, $separator);
+	return ($i === false)
+		? ($complete_if_not ? $string : '')
+		: substr($string, 0, $i);
 }
 
 //------------------------------------------------------------------------------------------ lParse
 /**
  * Returns the part of the string left to the first occurrence of the separator
  *
- * @param $str string
- * @param $sep string
- * @param $cnt int
- * @param $complete_if_not bool
+ * @param $string          string
+ * @param $separator       string
+ * @param $count           integer
+ * @param $complete_if_not boolean
  * @return string
  */
-function lParse($str, $sep, $cnt = 1, $complete_if_not = true)
+function lParse($string, $separator, $count = 1, $complete_if_not = true)
 {
 	$i = -1;
-	while ($cnt--) {
-		$i = strpos($str, $sep, $i + 1);
+	while ($count--) {
+		$i = strpos($string, $separator, $i + 1);
 	}
-	if ($i === false) {
-		return $complete_if_not ? $str : '';
-	}
-	else {
-		return substr($str, 0, $i);
-	}
+	return ($i === false)
+		? ($complete_if_not ? $string : '')
+		: substr($string, 0, $i);
 }
 
 //------------------------------------------------------------------------------------ maxRowLength
 /**
  * Returns the wider row characters count (lines are separated by LF = \n = #10)
  *
- * @param $str string
- * @return int
+ * @param $string string
+ * @return integer
  */
-function maxRowLength($str)
+function maxRowLength($string)
 {
 	$length = 0;
-	$rows = explode(LF, $str);
+	$rows   = explode(LF, $string);
 	foreach ($rows as $row) {
 		if (strlen($row) > $length) {
 			$length = strlen($row);
@@ -107,94 +119,88 @@ function maxRowLength($str)
  *          Will result in 'and'
  *          It looks what is after ', ' and then what is after the next space
  *          The returned value stops before ' then '
- * @param $str       string
+ * @param $string    string
  * @param $begin_sep string|string[]
  * @param $end_sep   string|string[]
- * @param $cnt       integer
+ * @param $count     integer
  * @return string
  */
-function mParse($str, $begin_sep, $end_sep, $cnt = 1)
+function mParse($string, $begin_sep, $end_sep, $count = 1)
 {
 	// if $begin_sep is an array, rParse each $begin_sep element
 	if (is_array($begin_sep)) {
-		$sep = array_pop($begin_sep);
+		$separator = array_pop($begin_sep);
 		foreach ($begin_sep as $beg) {
-			$str = rParse($str, $beg, $cnt);
-			$cnt = 1;
+			$string = rParse($string, $beg, $count);
+			$count = 1;
 		}
-		$begin_sep = $sep;
+		$begin_sep = $separator;
 	}
 	// if $end_sep is an array, lParse each $end_sep element, starting from the last one
 	if (is_array($end_sep)) {
 		$end_sep = array_reverse($end_sep);
-		$sep = array_pop($end_sep);
+		$separator = array_pop($end_sep);
 		foreach ($end_sep as $end) {
-			$str = lParse($str, $end);
+			$string = lParse($string, $end);
 		}
-		$end_sep = $sep;
+		$end_sep = $separator;
 	}
-	return lParse(rParse($str, $begin_sep, $cnt), $end_sep);
+	return lParse(rParse($string, $begin_sep, $count), $end_sep);
 }
 
 //-------------------------------------------------------------------------------------- rLastParse
 /**
  * Returns the part of the string right to the last occurrence of the separator
  *
- * @param $str string
- * @param $sep string
- * @param $cnt int
- * @param $complete_if_not bool
+ * @param $string          string
+ * @param $separator       string
+ * @param $count           integer
+ * @param $complete_if_not boolean
  * @return string
  */
-function rLastParse($str, $sep, $cnt = 1, $complete_if_not = false)
+function rLastParse($string, $separator, $count = 1, $complete_if_not = false)
 {
-	$i = strrpos($str, $sep);
-	while (($cnt > 1) && ($i !== false)) {
-		$i = strrpos(substr($str, 0, $i), $sep);
-		$cnt--;
+	$i = strrpos($string, $separator);
+	while (($count > 1) && ($i !== false)) {
+		$i = strrpos(substr($string, 0, $i), $separator);
+		$count--;
 	}
-	if ($i === false) {
-		return $complete_if_not ? $str : '';
-	}
-	else {
-		return substr($str, $i + strlen($sep));
-	}
+	return ($i === false)
+		? ($complete_if_not ? $string : '')
+		: substr($string, $i + strlen($separator));
 }
 
 //---------------------------------------------------------------------------------------- rowCount
 /**
  * Returns the lines count into a text where lines are separated by LF = \n = #10
  *
- * @param $str string
+ * @param $string string
  * @return string
  */
-function rowCount($str)
+function rowCount($string)
 {
-	return substr_count($str, LF) + 1;
+	return substr_count($string, LF) + 1;
 }
 
 //------------------------------------------------------------------------------------------ rParse
 /**
  * Returns the part of the string right to the first occurrence of the separator
  *
- * @param $str             string
- * @param $sep             string
- * @param $cnt             integer
+ * @param $string          string
+ * @param $separator       string
+ * @param $count           integer
  * @param $complete_if_not boolean
  * @return string
  */
-function rParse($str, $sep, $cnt = 1, $complete_if_not = false)
+function rParse($string, $separator, $count = 1, $complete_if_not = false)
 {
 	$i = -1;
-	while ($cnt--) {
-		$i = strpos($str, $sep, $i + 1);
+	while ($count--) {
+		$i = strpos($string, $separator, $i + 1);
 	}
-	if ($i === false) {
-		return $complete_if_not ? $str : '';
-	}
-	else {
-		return substr($str, $i + strlen($sep));
-	}
+	return ($i === false)
+		? ($complete_if_not ? $string : '')
+		: substr($string, $i + strlen($separator));
 }
 
 //-------------------------------------------------------------------------------------- strFromUri
@@ -213,36 +219,36 @@ function strFromUri($uri)
 /**
  * Returns true if string has at least one accentuated character
  *
- * @param $str string
+ * @param $string string
  * @return boolean
  */
-function strHasAccent($str)
+function strHasAccent($string)
 {
-	return (strpbrk($str, 'àáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ') !== false);
+	return (strpbrk($string, 'àáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ') !== false);
 }
 
 //----------------------------------------------------------------------------------- strIsCapitals
 /**
  * Returns true if string contains only capitals letters
  *
- * @param $str string
+ * @param $string string
  * @return boolean
  */
-function strIsCapitals($str)
+function strIsCapitals($string)
 {
-	if (!is_string($str)) {
-		$str = strval($str);
+	if (!is_string($string)) {
+		$string = strval($string);
 	}
 	// TODO SM a better implementation using a multi-byte string library to take care of any letter
-	for ($i = 0; $i < strlen($str); $i ++) {
+	for ($i = 0; $i < strlen($string); $i ++) {
 		if (
-			(($str[$i] < 'A') || ($str[$i] > 'Z'))
-			&& (strpos('ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ', $str[$i]) === false)
+			(($string[$i] < 'A') || ($string[$i] > 'Z'))
+			&& (strpos('ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ', $string[$i]) === false)
 		) {
 			return false;
 		}
 	}
-	return !empty($str);
+	return !empty($string);
 }
 
 //-------------------------------------------------------------------------------------- strReplace
@@ -269,12 +275,12 @@ function strReplace($search_replace, $subject)
  * 4/ not allowed characters are replaced by a joker character, or removed if no joker character is
  *    set
  *
- * @param $str      string
+ * @param $string   string
  * @param $extended boolean|string|string[] if true, default '.,/- ' is used
  * @param $joker    string if set, replace refused characters with this one
  * @return string
  */
-function strSimplify($str, $extended = false, $joker = null)
+function strSimplify($string, $extended = false, $joker = null)
 {
 	$str_simplify = [
 		'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
@@ -302,9 +308,9 @@ function strSimplify($str, $extended = false, $joker = null)
 			$extended = '.,/- ';
 		}
 	}
-	$str = strtr($str, $str_simplify);
-	for ($i = 0; $i < strlen($str); $i ++) {
-		$c = $str{$i};
+	$string = strtr($string, $str_simplify);
+	for ($i = 0; $i < strlen($string); $i ++) {
+		$c = $string{$i};
 		if (
 			(($c >= 'a') && ($c <= 'z')) || (($c >= 'A') && ($c <= 'Z')) || (($c >= '0') && ($c <= '9'))
 			|| ($extended && (strpos($extended, $c) !== false))
@@ -322,14 +328,14 @@ function strSimplify($str, $extended = false, $joker = null)
 /**
  * Returns a string as a well formed HTTP URI
  *
- * @param $str   string
- * @param $joker string if set, replace refused characters with this one instead of removing it
+ * @param $string string
+ * @param $joker  string if set, replace refused characters with this one instead of removing it
  * @return string
  */
-function strUri($str, $joker = null)
+function strUri($string, $joker = null)
 {
 	$uri = strtolower(strSimplify(
-		str_replace([BS, Q, SP, ',', ':', ';'], '-', $str), '/-_{}.', $joker
+		str_replace([BS, Q, SP, ',', ':', ';'], '-', $string), '/-_{}.', $joker
 	));
 	while (strpos($uri, '--')) {
 		$uri = str_replace('--', '-', $uri);
@@ -341,21 +347,21 @@ function strUri($str, $joker = null)
 /**
  * Uppercase the first character, even if this is an accented character
  *
- * @param $str string
+ * @param $string string
  * @return string
  */
-function ucfirsta($str)
+function ucfirsta($string)
 {
-	if (!is_string($str)) {
-		$str = strval($str);
+	if (!is_string($string)) {
+		$string = strval($string);
 	}
-	if ($str[0] == "\xC3") {
-		if (ord($str[1]) >= 160) {
-			$str[1] = chr(ord($str[1]) - 32);
+	if ($string[0] == "\xC3") {
+		if (ord($string[1]) >= 160) {
+			$string[1] = chr(ord($string[1]) - 32);
 		}
-		return $str;
+		return $string;
 	}
 	else {
-		return ucfirst($str);
+		return ucfirst($string);
 	}
 }
