@@ -111,7 +111,7 @@ function maxRowLength($string)
 
 //------------------------------------------------------------------------------------------ mParse
 /**
- * Returns the middle part of the string, between $begin_sep and $end_sep
+ * Returns the middle part of the string, between $begin_separator and $end_separator
  *
  * If separators are arrays, it will search the first separator, then the next one, etc.
  *
@@ -119,33 +119,33 @@ function maxRowLength($string)
  *          Will result in 'and'
  *          It looks what is after ', ' and then what is after the next space
  *          The returned value stops before ' then '
- * @param $string    string
- * @param $begin_sep string|string[]
- * @param $end_sep   string|string[]
- * @param $count     integer
+ * @param $string          string
+ * @param $begin_separator string|string[]
+ * @param $end_separator   string|string[]
+ * @param $count           integer
  * @return string
  */
-function mParse($string, $begin_sep, $end_sep, $count = 1)
+function mParse($string, $begin_separator, $end_separator, $count = 1)
 {
-	// if $begin_sep is an array, rParse each $begin_sep element
-	if (is_array($begin_sep)) {
-		$separator = array_pop($begin_sep);
-		foreach ($begin_sep as $beg) {
-			$string = rParse($string, $beg, $count);
-			$count = 1;
+	// if $begin_separator is an array, rParse each $begin_separator element
+	if (is_array($begin_separator)) {
+		$separator = array_pop($begin_separator);
+		foreach ($begin_separator as $begin) {
+			$string = rParse($string, $begin, $count);
+			$count  = 1;
 		}
-		$begin_sep = $separator;
+		$begin_separator = $separator;
 	}
-	// if $end_sep is an array, lParse each $end_sep element, starting from the last one
-	if (is_array($end_sep)) {
-		$end_sep = array_reverse($end_sep);
-		$separator = array_pop($end_sep);
-		foreach ($end_sep as $end) {
+	// if $end_separator is an array, lParse each $end_separator element, starting from the last one
+	if (is_array($end_separator)) {
+		$end_separator = array_reverse($end_separator);
+		$separator     = array_pop($end_separator);
+		foreach ($end_separator as $end) {
 			$string = lParse($string, $end);
 		}
-		$end_sep = $separator;
+		$end_separator = $separator;
 	}
-	return lParse(rParse($string, $begin_sep, $count), $end_sep);
+	return lParse(rParse($string, $begin_separator, $count), $end_separator);
 }
 
 //-------------------------------------------------------------------------------------- rLastParse
