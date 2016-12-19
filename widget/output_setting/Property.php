@@ -42,6 +42,17 @@ class Property implements Can_Be_Empty
 	 */
 	public $read_only;
 
+	//------------------------------------------------------------------------------------- $tab_name
+	/**
+	 * Tab name for grouping
+	 * Forces the group where the property will be included into in order to display it in the
+	 * matching tab
+	 * Empty value ('' or null) means 'out of tabs'
+	 *
+	 * @var string
+	 */
+	public $tab_name;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name    string

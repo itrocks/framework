@@ -5,6 +5,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Integrated_Properties;
@@ -650,7 +651,7 @@ class Functions
 	{
 		$properties = [];
 		foreach ($this->getProperties($template) as $property_name => $property) {
-			if (!$property->getAnnotation('group')->value) {
+			if (!$property->getAnnotation(Group_Annotation::ANNOTATION)->value) {
 				$properties[$property_name] = $property;
 			}
 		}

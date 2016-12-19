@@ -24,8 +24,8 @@ abstract class Tabs_Builder_Class
 	public static function build(Reflection_Class $class, $filter_properties = null)
 	{
 		/** @var $group_annotations Group_Annotation[] */
-		$group_annotations = $class->getAnnotations('group');
-		$properties = $class->getProperties([T_EXTENDS, T_USE]);
+		$group_annotations = $class->getAnnotations(Group_Annotation::ANNOTATION);
+		$properties        = $class->getProperties([T_EXTENDS, T_USE]);
 		if ($filter_properties) {
 			$properties_set = new Set(Reflection_Property::class, $properties);
 			$properties = $properties_set->filterAndSort($filter_properties);

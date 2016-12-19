@@ -8,6 +8,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Printer\Model;
+use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Buttons;
@@ -56,6 +57,8 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 				$property->read_only
 					? $user_annotation->add(User_Annotation::READONLY)
 					: $user_annotation->remove(User_Annotation::READONLY);
+				$group_annotation = $reflection_property->getAnnotation(Group_Annotation::ANNOTATION);
+				$group_annotation->value = $property->tab_name;
 			}
 		}
 	}
@@ -92,7 +95,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 		if (isset($parameters['add_property'])) {
 			$output_settings->addProperty(
 				$parameters['add_property'],
-				$parameters['tab'],
+				isset($parameters['tab']) ? $parameters['tab'] : '',
 				isset($parameters['before']) ? 'before' : 'after',
 				isset($parameters['before'])
 					? $parameters['before']

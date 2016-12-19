@@ -28,7 +28,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 	{
 		$class = new Reflection_Class(get_class($object));
 		/** @var $group_annotations Group_Annotation[] */
-		$group_annotations = $class->getAnnotations('group');
+		$group_annotations = $class->getAnnotations(Group_Annotation::ANNOTATION);
 		self::mergeGroups($group_annotations);
 		$properties = $class->accessProperties();
 		foreach ($properties as $property_name => $property) {
@@ -36,7 +36,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 				$property = new Reflection_Property_Value(
 					$property->class, $property->name, $object, false, true
 				);
-				$property->final_class = $class->name;
+				$property->final_class      = $class->name;
 				$properties[$property_name] = $property;
 			}
 			else {
@@ -45,7 +45,7 @@ abstract class Tabs_Builder_Object extends Tabs_Builder_Class
 		}
 		if ($filter_properties) {
 			$properties_set = new Set(Reflection_Property_Value::class, $properties);
-			$properties = $properties_set->filterAndSort($filter_properties);
+			$properties     = $properties_set->filterAndSort($filter_properties);
 		}
 		return parent::buildProperties($properties, $group_annotations);
 	}

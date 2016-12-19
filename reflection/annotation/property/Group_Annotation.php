@@ -17,6 +17,9 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 class Group_Annotation extends Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'group';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    string
@@ -26,12 +29,12 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
-			foreach ($property->getFinalClass()->getAnnotations('group') as $group) {
-				/** @var $group Class_\Group_Annotation */
-				if ($group->has($property->getName())) {
-					$this->value = $property->getName();
-					break;
-				}
+			$group = Class_\Group_Annotation::searchProperty(
+				$property->getFinalClass()->getAnnotations(Class_\Group_Annotation::ANNOTATION),
+				$property->getName()
+			);
+			if ($group) {
+				$this->value = $group->name;
 			}
 		}
 	}

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * A @group annotation contains a name and several values, and is a multiple annotation too
@@ -15,6 +16,9 @@ use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
  */
 class Group_Annotation extends List_Annotation implements Multiple_Annotation
 {
+
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'group';
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -40,6 +44,43 @@ class Group_Annotation extends List_Annotation implements Multiple_Annotation
 		}
 		$this->name = substr($value, 0, $i);
 		parent::__construct(substr($value, $i + 1));
+	}
+
+	//----------------------------------------------------------------------------------- searchGroup
+	/**
+	 * Search the $group annotation object matching $name
+	 *
+	 * @param $groups static[]
+	 * @param $name   string
+	 * @return static|null
+	 */
+	public static function searchGroup(array $groups, $name)
+	{
+		foreach ($groups as $group) {
+			if ($group->name === $name) {
+				return $group;
+			}
+		}
+		return null;
+	}
+
+	//-------------------------------------------------------------------------------- searchProperty
+	/**
+	 * Search the @group annotation object where the property is stored into
+	 *
+	 * @param $groups   static[]
+	 * @param $property string|Reflection_Property
+	 * @return static|null
+	 */
+	public static function searchProperty(array $groups, $property)
+	{
+		$property_name = is_object($property) ? $property->getName() : $property;
+		foreach ($groups as $group) {
+			if ($group->has($property_name)) {
+				return $group;
+			}
+		}
+		return null;
 	}
 
 }
