@@ -75,7 +75,7 @@ function radOutput()
 							var uri = app.uri_base + SL + class_name + SL + 'outputSetting'
 								+ '?add_property=' + div_property
 								+ '&' + side + '=' + insert_property
-								+ '&tab=' + tab
+								+ '&tab=' + ((tab === 'outoftabs') ? '' : tab)
 								+ '&feature=' + $window.data('feature')
 								+ '&as_widget'
 								+ app.andSID();
