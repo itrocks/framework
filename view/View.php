@@ -38,7 +38,9 @@ class View implements Configurable
 	 */
 	public static function current(View\Engine $set_current = null)
 	{
-		return self::pCurrent($set_current);
+		/** @var $view_engine View\Engine */
+		$view_engine = self::pCurrent($set_current);
+		return $view_engine;
 	}
 
 	//--------------------------------------------------------------------------------------- getView
