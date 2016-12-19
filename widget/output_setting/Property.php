@@ -47,9 +47,10 @@ class Property implements Can_Be_Empty
 	 * Tab name for grouping
 	 * Forces the group where the property will be included into in order to display it in the
 	 * matching tab
-	 * Empty value ('' or null) means 'out of tabs'
+	 * Empty string ('') means 'out of tabs'
+	 * null means 'use the original value of @group of the matching property / class'
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	public $tab_name;
 

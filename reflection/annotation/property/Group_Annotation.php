@@ -28,7 +28,7 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 	public function __construct($value, Reflection_Property $property)
 	{
 		parent::__construct($value);
-		if (empty($this->value)) {
+		if (is_null($this->value)) {
 			$group = Class_\Group_Annotation::searchProperty(
 				$property->getFinalClass()->getAnnotations(Class_\Group_Annotation::ANNOTATION),
 				$property->getName()

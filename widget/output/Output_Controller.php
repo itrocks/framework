@@ -57,8 +57,10 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 				$property->read_only
 					? $user_annotation->add(User_Annotation::READONLY)
 					: $user_annotation->remove(User_Annotation::READONLY);
-				$group_annotation = $reflection_property->getAnnotation(Group_Annotation::ANNOTATION);
-				$group_annotation->value = $property->tab_name;
+				if (!is_null($property->tab_name)) {
+					$group_annotation = $reflection_property->getAnnotation(Group_Annotation::ANNOTATION);
+					$group_annotation->value = $property->tab_name;
+				}
 			}
 		}
 	}
