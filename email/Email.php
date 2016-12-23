@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Email\Account;
 use ITRocks\Framework\Email\Attachment;
 use ITRocks\Framework\Email\Recipient;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Tools\Date_Time;
 
@@ -280,15 +281,18 @@ class Email
 	public function update(Parameters $parameters)
 	{
 		$search = ['content' => Func::notEqual('')];
-		if (!$parameters->contains('all')) {
+		if (!$parameters->contains('all') && !$parameters->has('all')) {
 			if ($date = $parameters->getRawParameter(0)) {
-				$search = ['date' => Func::like($date . '%')];
+				$search['date'] = Func::like(Loc::dateToIso($date) . '%');
 			}
 			else {
-				$search = ['date' => Func::greaterOrEqual(Date_Time::today())];
+				$search['date'] = Func::greaterOrEqual(Date_Time::today());
 			}
 		}
-		$emails = Dao::search($search, __CLASS__, Dao::limit(1000));
+		$limit = ($parameters->getRawParameter('limit') || !$parameters->contains('limit'))
+			? Dao::limit($parameters->getRawParameter('limit') ?: 1000)
+			: null;
+		$emails = Dao::search($search, static::class, $limit ?: []);
 		foreach ($emails as $email) {
 			Dao::write($email, Dao::only('content'));
 		}
