@@ -1,5 +1,29 @@
 <?php
 
+//--------------------------------------------------------------------------- base64_decode_urlsafe
+/**
+ * Decodes an URL-safe base64 encoded string
+ *
+ * @param $string string
+ * @return string
+ */
+function base64_decode_url_safe($string)
+{
+	return base64_decode(strtr($string, ['-' => '+', '_' => '/', '.' => '=']));
+}
+
+//--------------------------------------------------------------------------- base64_encode_urlsafe
+/**
+ * Encodes data to a string in an URL-safe version of base64
+ *
+ * @param $string string
+ * @return string
+ */
+function base64_encode_url_safe($string)
+{
+	return strtr(base64_encode($string), ['+' => '-', '/' => '_', '=' => '.']);
+}
+
 //-------------------------------------------------------------------------------------- beginsWith
 /**
  * Returns true if $haystack begins with $needle
