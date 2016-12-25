@@ -372,7 +372,7 @@ class Object_Builder_Array
 			$value2 = $builder->buildValue($object, $null_if_empty);
 			if ($value2 !== Property::DONT_BUILD_VALUE) {
 				$value = $value2;
-				$done = true;
+				$done  = true;
 			}
 		}
 		if (!isset($done)) {
@@ -380,7 +380,7 @@ class Object_Builder_Array
 			if ($type->isBasic(false)) {
 				// password
 				if ($encryption = $property->getAnnotation('password')->value) {
-					if ($value == Password::UNCHANGED) {
+					if ($value === Password::UNCHANGED) {
 						return true;
 					}
 					$value = (new Password($value, $encryption))->encrypted();
@@ -391,17 +391,17 @@ class Object_Builder_Array
 				}
 			}
 			elseif (is_array($value)) {
-				$link = $property->getAnnotation('link')->value;
+				$link = Link_Annotation::of($property);
 				// object
-				if ($link == Link_Annotation::OBJECT) {
-					$class_name = $property->getType()->asString();
+				if ($link->isObject()) {
+					$class_name       = $property->getType()->asString();
 					$composite_object = $property->getAnnotation('component')->value ? $object : null;
 					$value = $this->buildObjectValue($class_name, $value, $null_if_empty, $composite_object);
 				}
 				// collection
-				elseif ($link == Link_Annotation::COLLECTION) {
+				elseif ($link->isCollection()) {
 					$class_name = $property->getType()->getElementTypeAsString();
-					$value = $this->buildCollection($class_name, $value, $null_if_empty, $object);
+					$value      = $this->buildCollection($class_name, $value, $null_if_empty, $object);
 				}
 				// map or not-linked array of objects
 				elseif ($property->getType()->isClass()) {
@@ -591,8 +591,7 @@ class Object_Builder_Array
 	 */
 	private function initLinkObject(array &$array, &$object)
 	{
-		/** @var $link Class_\Link_Annotation */
-		$link = $this->class->getAnnotation('link');
+		$link = Class_\Link_Annotation::of($this->class);
 		if ($link->value) {
 			$id_property_value = null;
 			$linked_class_name = null;

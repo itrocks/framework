@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tools;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -106,11 +107,11 @@ abstract class Names
 	{
 		// get object id, if object
 		if (is_object($class_name)) {
-			$id = Dao::getObjectIdentifier($class_name, 'id');
+			$id         = Dao::getObjectIdentifier($class_name, 'id');
 			$class_name = get_class($class_name);
 		}
 		// link classes : get linked class
-		while ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
+		while (Link_Annotation::of(new Reflection_Class($class_name))->value) {
 			$class_name = get_parent_class($class_name);
 		}
 		// built classes : get object class

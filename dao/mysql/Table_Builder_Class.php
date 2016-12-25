@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -99,10 +100,7 @@ class Table_Builder_Class
 					) {
 						$table->addColumn(Column::buildProperty($property));
 						if (
-							(
-								$property->getAnnotation(Link_Annotation::ANNOTATION)->value
-									== Link_Annotation::OBJECT
-							)
+							Link_Annotation::of($property)->isObject()
 							&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
 						) {
 							$class_name = $property->getType()->asString();
@@ -130,9 +128,9 @@ class Table_Builder_Class
 	 */
 	private function buildInternal($class_name, $more_field)
 	{
-		$class = new Reflection_Class($class_name);
-		$link = $class->getAnnotation('link')->value;
-		$tables = $link ? $this->buildLinkTables($link, $class_name) : [];
+		$class    = new Reflection_Class($class_name);
+		$link     = Class_\Link_Annotation::of($class)->value;
+		$tables   = $link ? $this->buildLinkTables($link, $class_name) : [];
 		$tables[] = $this->buildClassTable($class, $more_field);
 		return $tables;
 	}

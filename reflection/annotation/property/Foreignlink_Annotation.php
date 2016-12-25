@@ -24,18 +24,18 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
-			$link = $property->getAnnotation('link')->value;
+			$link      = Link_Annotation::of($property);
 			$possibles = null;
-			if ($link == Link_Annotation::COLLECTION) {
+			if ($link->isCollection()) {
 				$possibles = $this->defaultCollection($property);
 			}
-			elseif ($link == Link_Annotation::MAP) {
+			elseif ($link->isMap()) {
 				$possibles = $this->defaultMap($property);
 			}
-			elseif ($link == Link_Annotation::OBJECT) {
+			elseif ($link->isObject()) {
 				$possibles = $this->defaultObject($property);
 			}
-			if (is_array($possibles) && count($possibles) == 1) {
+			if (is_array($possibles) && (count($possibles) === 1)) {
 				$this->value = reset($possibles);
 			}
 		}

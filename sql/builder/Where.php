@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -116,15 +117,15 @@ class Where
 	 */
 	private function buildArray($path, array $array, $clause)
 	{
-		$sql = '';
-		$sql_close = '';
+		$sql        = '';
+		$sql_close  = '';
 		$sub_clause = $clause;
-		$first = true;
+		$first      = true;
 		foreach ($array as $key => $value) {
 			if ($first) $first = false; else $sql .= SP . $clause . SP;
 			$key_clause = strtoupper($key);
 			if (is_numeric($key) && ($value instanceof Logical)) {
-				// if logical, simply build path as if key clause was 'AND' (the simpliest)
+				// if logical, simply build path as if key clause was 'AND' (the simplest)
 				$key_clause = 'AND';
 			}
 			switch ($key_clause) {
@@ -134,20 +135,20 @@ class Where
 				default:
 					if (is_numeric($key)) {
 						if ((count($array) > 1) && !$sql) {
-							$sql = '(';
-							$clause = 'OR';
+							$sql       = '(';
+							$clause    = 'OR';
 							$sql_close = ')';
 						}
 						$build = $this->buildPath($path, $value, $sub_clause);
 					}
 					else {
-						$prefix = '';
-						$master_path = (($i = strrpos($path, DOT)) !== false) ? substr($path, 0, $i) : '';
+						$prefix        = '';
+						$master_path   = (($i = strrpos($path, DOT)) !== false) ? substr($path, 0, $i) : '';
 						$property_name = ($i !== false) ? substr($path, $i + 1) : $path;
-						$properties = $this->joins->getProperties($master_path);
+						$properties    = $this->joins->getProperties($master_path);
 						if (isset($properties[$property_name])) {
 							$property = $properties[$property_name];
-							$link = $property->getAnnotation('link')->value;
+							$link     = Link_Annotation::of($property)->value;
 							if ($link) {
 								$prefix = ($master_path ? ($master_path . DOT) : '')
 									. $property->getAnnotation('storage')->value . DOT;
@@ -177,7 +178,7 @@ class Where
 	 */
 	public function buildColumn($path, $prefix = '')
 	{
-		$join = $this->joins->add($path);
+		$join      = $this->joins->add($path);
 		$link_join = $this->joins->getIdLinkJoin($path);
 		if (isset($link_join)) {
 			$column = $link_join->foreign_alias . DOT . 'id';
@@ -188,8 +189,7 @@ class Where
 			}
 			else {
 				$property = $this->joins->getStartingClass()->getProperty($path);
-				$column =
-					($property && ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION))
+				$column   = ($property && Link_Annotation::of($property)->isCollection())
 					? $join->master_column
 					: $join->foreign_column;
 				$column = $join->foreign_alias . DOT . BQ . $column . BQ;
@@ -199,7 +199,7 @@ class Where
 			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
 			if (!$master_path && $foreign_column == 'id') {
 				$class = $this->joins->getStartingClassName();
-				$i = 0;
+				$i     = 0;
 				while ($class = (new Link_Class($class))->getLinkedClassName()) {
 					$i ++;
 				}
@@ -227,15 +227,15 @@ class Where
 	private function buildObject($path, $object, $root_object = false)
 	{
 		$class = new Link_Class(get_class($object));
-		if (!$root_object || !$class->getAnnotation('link')->value) {
+		if (!$root_object || !Class_\Link_Annotation::of($class)->value) {
 			$id = $this->sql_link->getObjectIdentifier(
 				$object,
-				$class->getAnnotation('link')->value ? $class->getCompositeProperty()->name : null
+				Class_\Link_Annotation::of($class)->value ? $class->getCompositeProperty()->name : null
 			);
 		}
 		if (!empty($id)) {
 			// object is linked to stored data : search with object identifier
-			return $this->buildValue($path, $id, ($path == 'id') ? '' : 'id_');
+			return $this->buildValue($path, $id, ($path === 'id') ? '' : 'id_');
 		}
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
@@ -280,11 +280,9 @@ class Where
 			}
 			else {
 				$properties = $this->joins->getProperties($master_path);
-				$property = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
-				$id_links = [Link_Annotation::OBJECT, Link_Annotation::COLLECTION, Link_Annotation::MAP];
-				$prefix = $property
-					? (in_array($property->getAnnotation('link')->value, $id_links) ? 'id_' : '')
-					: '';
+				$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+				$id_links   = [Link_Annotation::COLLECTION, Link_Annotation::MAP, Link_Annotation::OBJECT];
+				$prefix     = $property ? (Link_Annotation::of($property)->is($id_links) ? 'id_' : '') : '';
 			}
 			return $value->toSql($this, $path, $prefix);
 		}

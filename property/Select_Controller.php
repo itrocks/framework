@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Property;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -41,8 +42,8 @@ class Select_Controller implements Feature_Controller
 		else {
 			$composite_property = null;
 		}
-		if ($class->getAnnotation('link')->value) {
-			$link_class = new Link_Class($class->name);
+		if (Link_Annotation::of($class)->value) {
+			$link_class              = new Link_Class($class->name);
 			$composite_link_property = $link_class->getCompositeProperty();
 			/** @var $source_properties Reflection_Property[] */
 			$source_properties = Replaces_Annotations::removeReplacedProperties(

@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Reflection\Annotation\Property;
 
 use ITRocks\Framework\Mapper\Getter;
-use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -30,8 +29,8 @@ class Getter_Annotation extends Method_Annotation
 	{
 		parent::__construct($value, $property, self::ANNOTATION);
 		if (empty($this->value)) {
-			$link = ($property->getAnnotation(Link_Annotation::ANNOTATION)->value);
-			if (!empty($link)) {
+			$link = Link_Annotation::of($property)->value;
+			if ($link) {
 				$this->value = Getter::class . '::get' . $link;
 			}
 		}

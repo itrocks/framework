@@ -156,7 +156,7 @@ class Builder implements Activable, Registerable, Serializable
 					$clone->$property_name = $value;
 					if (isset($properties[rtrim($property_name, '_')])) {
 						$property = $properties[rtrim($property_name, '_')];
-						if ($property->getAnnotation('link') == Link_Annotation::COLLECTION) {
+						if (Link_Annotation::get($property)->isCollection()) {
 							$element_class_from = $property->getType()->getElementTypeAsString();
 							$property = $destination_class->getProperty($property->name);
 							if ($property) {

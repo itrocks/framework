@@ -16,6 +16,8 @@ use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Session;
 
@@ -402,7 +404,8 @@ class Compiler implements ICompiler, Needs_Main
 		}
 		// properties overridden into the class and its direct traits
 		$documentations = $class->getDocComment([T_USE]);
-		foreach ($this->scanForOverrides($documentations, ['getter', 'link', 'setter']) as $match) {
+		$annotations    = [Getter_Annotation::ANNOTATION, Link_Annotation::ANNOTATION, 'setter'];
+		foreach ($this->scanForOverrides($documentations, $annotations) as $match) {
 			$properties[$match['property_name']]['implements'][$match['type']] = true;
 			if (!isset($implemented_properties[$match['property_name']])) {
 				$class_properties = $class->getProperties([T_EXTENDS]);

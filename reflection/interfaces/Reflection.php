@@ -38,4 +38,17 @@ interface Reflection
 	 */
 	public function getName();
 
+	//---------------------------------------------------------------------------- setAnnotationLocal
+	/**
+	 * Sets an annotation to local and return the local annotation object.
+	 * This enable to get a copy of the notation visible into this reflection object only,
+	 * that you can change without affecting others equivalent reflection objects.
+	 *
+	 * If the annotation was already set to local, this local annotation is returned without reset.
+	 *
+	 * @param $annotation_name string
+	 * @return Annotation
+	 */
+	public function setAnnotationLocal($annotation_name);
+
 }

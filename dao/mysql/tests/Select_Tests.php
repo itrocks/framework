@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -144,7 +145,7 @@ class Select_Tests extends Test
 	 */
 	private function propertyNames(Reflection_Class $class, $depth)
 	{
-		$properties = $class->getAnnotation('link')->value
+		$properties = Class_\Link_Annotation::of($class)->value
 			? (new Link_Class($class->name))->getLocalProperties()
 			: $class->getProperties([T_EXTENDS, T_USE]);
 		$properties = Replaces_Annotations::removeReplacedProperties($properties);
@@ -169,7 +170,7 @@ class Select_Tests extends Test
 				$type = $property->getType();
 				if (
 					$type->isClass()
-					&& $property->getAnnotation(Link_Annotation::ANNOTATION)->value
+					&& Link_Annotation::of($property)->value
 					&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
 				) {
 					$sub_class = new Reflection_Class($type->getElementTypeAsString());

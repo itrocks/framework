@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
@@ -43,20 +44,19 @@ class Duplicator
 		if ($this->dao->getObjectIdentifier($object)) {
 			// duplicate @link Collection and Map properties values
 			$class_name = get_class($object);
-			$class = new Reflection_Class($class_name);
-			/** @var $link Link_Annotation */
-			$link = $class->getAnnotation('link');
+			$class      = new Reflection_Class($class_name);
+			$link               = Class_\Link_Annotation::of($class);
 			$exclude_properties = $link->value
 				? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 				: [];
 			foreach ($class->accessProperties() as $property) {
 				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-					$property_link = $property->getAnnotation('link')->value;
+					$property_link = Link_Annotation::of($property);
 					// @link Collection : must disconnect objects
 					// @link Collection | Map : duplicate and remove reference to the parent id
-					if (in_array($property_link, [Link_Annotation::COLLECTION, Link_Annotation::MAP])) {
+					if ($property_link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
 						$elements = $property->getValue($object);
-						if ($property_link == Link_Annotation::COLLECTION) {
+						if ($property_link->isCollection()) {
 							foreach ($elements as $element) {
 								$this->createDuplicate($element);
 							}

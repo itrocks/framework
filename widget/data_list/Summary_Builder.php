@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Date_Format;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -150,8 +151,7 @@ class Summary_Builder
 							$properties    = $this->joins->getProperties($master_path);
 							if (isset($properties[$property_name])) {
 								$property = $properties[$property_name];
-								$link = $property->getAnnotation('link')->value;
-								if ($link) {
+								if (Link_Annotation::of($property)->value) {
 									$prefix = ($master_path ? ($master_path . DOT) : '')
 										. $property->getAnnotation('storage')->value . DOT;
 								}
@@ -204,7 +204,7 @@ class Summary_Builder
 		$class = new Link_Class(get_class($object));
 		$id = $this->sql_link->getObjectIdentifier(
 			$object,
-			$class->getAnnotation('link')->value ? $class->getCompositeProperty()->name : null
+			Class_\Link_Annotation::of($class)->value ? $class->getCompositeProperty()->name : null
 		);
 		if ($id) {
 			// object is linked to stored data : search with object identifier
@@ -248,11 +248,9 @@ class Summary_Builder
 			}
 			else {
 				$properties = $this->joins->getProperties($master_path);
-				$property = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
-				$id_links = [Link_Annotation::OBJECT, Link_Annotation::COLLECTION, Link_Annotation::MAP];
-				$prefix = $property
-					? (in_array($property->getAnnotation('link')->value, $id_links) ? 'id_' : '')
-					: '';
+				$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+				$id_links   = [Link_Annotation::COLLECTION, Link_Annotation::MAP, Link_Annotation::OBJECT];
+				$prefix     = $property ? (Link_Annotation::of($property)->is($id_links) ? 'id_' : '') : '';
 			}
 			return $value->toHuman($this, $path, $prefix);
 		}

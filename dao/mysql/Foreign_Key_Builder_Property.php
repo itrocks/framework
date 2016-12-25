@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
@@ -20,7 +21,7 @@ trait Foreign_Key_Builder_Property
 	{
 		return substr(
 			$table_name . DOT . (
-				$property->getAnnotation('link')->value
+				Link_Annotation::of($property)->value
 				? ('id_' . $property->getAnnotation('storage')->value)
 				: $property->getAnnotation('storage')->value
 			),

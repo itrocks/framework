@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget\Edit;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -109,10 +110,10 @@ class Html_Builder_Collection extends Collection
 				: $this->property->name;
 		}
 		$builder = (new Html_Builder_Property($property, $value, $preprop . '[]'));
-		$input = $builder->setTemplate($this->template)->build();
+		$input   = $builder->setTemplate($this->template)->build();
 		if (
-			($property->name == reset($this->properties)->name)
-			&& !(new Reflection_Class($this->class_name))->getAnnotation('link')->value
+			($property->name === reset($this->properties)->name)
+			&& !Link_Annotation::of(new Reflection_Class($this->class_name))->value
 		) {
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);

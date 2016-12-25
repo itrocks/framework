@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
@@ -88,10 +89,10 @@ class Html_Multiple_Limiter implements Registerable
 		if (
 			($object instanceof Reflection_Property_Value)
 			&& ($property_name === 'value')
-			&& ($object->getAnnotation('link')->isMultiple())
+			&& Link_Annotation::of($object)->isMultiple()
 		) {
 			$this->in_multiple = 'search';
-			$this->property = $object;
+			$this->property    = $object;
 		}
 		else {
 			$this->in_multiple = '';

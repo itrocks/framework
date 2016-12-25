@@ -309,10 +309,8 @@ abstract class Link extends Identifier_Map implements Transactional
 				$keep_path = $path = '';
 				foreach (explode(DOT, $property_path) as $property_name) {
 					$path .= ($path ? DOT : '') . $property_name;
-					$link = (new Reflection_Property($object_class, $path))->getAnnotation(
-						Link_Annotation::ANNOTATION
-					);
-					if (in_array($link->value, [Link_Annotation::COLLECTION, Link_Annotation::MAP])) {
+					$link = Link_Annotation::of(new Reflection_Property($object_class, $path));
+					if ($link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
 						$keep_path = $path;
 					}
 				}

@@ -3,7 +3,9 @@ namespace ITRocks\Framework\View\Html\Builder;
 
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -113,7 +115,7 @@ class Collection
 	protected function buildHead()
 	{
 		$head = new Head();
-		$row = new Row();
+		$row  = new Row();
 		foreach ($this->properties as $property) {
 			if (
 				!$property->getType()->isMultiple()
@@ -159,16 +161,16 @@ class Collection
 	{
 		/** @var $representative Representative_Annotation */
 		$representative = $this->property->getListAnnotation('representative');
-		$properties = $representative->getProperties();
+		$properties     = $representative->getProperties();
 		if (!$properties) {
 			// gets all properties from collection element class
-			$class = new Reflection_Class($this->class_name);
+			$class      = new Reflection_Class($this->class_name);
 			$properties = $class->getProperties([T_EXTENDS, T_USE]);
 			// remove replaced properties
 			/** @var $properties Reflection_Property[] */
 			$properties = Replaces_Annotations::removeReplacedProperties($properties);
 			// remove linked class properties
-			$linked_class = $class->getAnnotation('link')->value;
+			$linked_class = Link_Annotation::of($class)->value;
 			if ($linked_class) {
 				foreach (
 					array_keys((new Reflection_Class($linked_class))->getProperties([T_EXTENDS, T_USE]))
@@ -178,7 +180,7 @@ class Collection
 				}
 			}
 			// remove composite property
-			$property_name = $this->property->getAnnotation('foreign')->value;
+			$property_name = Foreign_Annotation::of($this->property)->value;
 			if (isset($properties[$property_name])) {
 				unset($properties[$property_name]);
 			}

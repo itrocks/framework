@@ -9,6 +9,7 @@ use ITRocks\Framework\Import\Settings\Import_Property;
 use ITRocks\Framework\Import\Settings\Import_Settings;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -114,12 +115,12 @@ class Import_Array
 	 */
 	private function createArrayReference($class_name, array $search = null)
 	{
-		$array = (isset($search)) ? [Builder::fromArray($class_name, $search)] : null;
-		$class = new Link_Class($class_name);
-		$link_class = $class->getAnnotation('link')->value;
+		$array      = (isset($search)) ? [Builder::fromArray($class_name, $search)] : null;
+		$class      = new Link_Class($class_name);
+		$link_class = Class_\Link_Annotation::of($class)->value;
 		if ($link_class) {
-			$object = reset($array);
-			$link_search = Builder::create($link_class);
+			$object                  = reset($array);
+			$link_search             = Builder::create($link_class);
 			$composite_property_name = $class->getCompositeProperty()->name;
 			foreach (array_keys($class->getLinkedProperties()) as $property_name) {
 				if (isset($search[$property_name])) {
@@ -243,22 +244,22 @@ class Import_Array
 	 */
 	private static function getPropertiesLinkAndColumn($class_name, array $properties_path)
 	{
-		$properties_link = ['' => Link_Annotation::OBJECT];
+		$properties_link   = ['' => Link_Annotation::OBJECT];
 		$properties_column = [];
 		foreach ($properties_path as $col_number => $property_path) {
 			$property_path = str_replace('*', '', $property_path);
-			$path = '';
+			$path          = '';
 			foreach (explode(DOT, $property_path) as $property_name) {
 				$path .= ($path ? DOT : '') . $property_name;
 				try {
-					$property = new Reflection_Property($class_name, $path);
-					$properties_link[$path] = $property->getAnnotation('link')->value;
+					$property               = new Reflection_Property($class_name, $path);
+					$properties_link[$path] = Link_Annotation::of($property)->value;
 				}
 				catch (ReflectionException $exception) {
 					$properties_link[$path] = '';
 				}
 			}
-			$i = strrpos($property_path, DOT);
+			$i             = strrpos($property_path, DOT);
 			$property_name = substr($property_path, ($i === false) ? 0 : ($i + 1));
 			$property_path = substr($property_path, 0, $i);
 			$properties_column[$property_path][$property_name] = $col_number;

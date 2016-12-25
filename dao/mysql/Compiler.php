@@ -10,6 +10,7 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 
 /**
  * Mysql compiler updates table structure once a PHP script was changed
@@ -89,7 +90,7 @@ class Compiler implements ICompiler
 
 		foreach ($sources as $source) {
 			foreach ($source->getClasses() as $class) {
-				while ($linked_class = $class->getAnnotation('link')->value) {
+				while ($linked_class = Link_Annotation::of($class)->value) {
 					$source = Reflection_Class::of($linked_class)->source;
 					if (!isset($sources[$source->file_name])) {
 						$sources[$source->file_name] = $source;

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
+use ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
@@ -36,9 +37,9 @@ class Sort_Annotation extends List_Annotation implements Class_Context_Annotatio
 					if (
 						!$property->isStatic()
 						&& (
-							!$property->getAnnotation('link')->value
+							!Property\Link_Annotation::of($property)->value
 							|| (
-								($store = $property->getAnnotation(Store_Annotation::ANNOTATION)->value)
+								($store = Store_Annotation::of($property)->value)
 								&& ($store !== Store_Annotation::FALSE)
 							)
 						)

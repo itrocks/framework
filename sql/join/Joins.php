@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Sql\Join;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -217,8 +219,8 @@ class Joins
 		}
 		$this->joins[($path ? ($path . '-') : '') . $join->foreign_table . '-@link'] = $join;
 		$this->id_link_joins[$path] = $join;
-		$this->link_joins[$path] = $join;
-		$more_linked_class_name = $linked_class->getAnnotation('link')->value;
+		$this->link_joins[$path]    = $join;
+		$more_linked_class_name     = Class_\Link_Annotation::of($linked_class)->value;
 		$exclude_properties = $more_linked_class_name
 			? $this->addLinkedClass($path, $class, $more_linked_class_name, $join_mode)
 			: [];
@@ -314,7 +316,7 @@ class Joins
 		$this->properties[$class_name] = Store_Annotation::storedPropertiesOnly(
 			$class->getProperties([T_EXTENDS, T_USE])
 		);
-		$linked_class_name = $class->getAnnotation(Link_Annotation::ANNOTATION)->value;
+		$linked_class_name = Class_\Link_Annotation::of($class)->value;
 		if ($linked_class_name) {
 			$this->addLinkedClass($path, $class, $linked_class_name, $join_mode);
 		}
@@ -400,11 +402,11 @@ class Joins
 					}
 				}
 				if ($foreign_type->isMultiple() || $master_property->getAnnotation('component')->value) {
-					$foreign_class_name = $foreign_type->getElementTypeAsString();
-					$foreign_property_name = $master_property->getAnnotation('foreign')->value;
+					$foreign_class_name    = $foreign_type->getElementTypeAsString();
+					$foreign_property_name = Foreign_Annotation::of($master_property)->value;
 					if (
 						property_exists($foreign_class_name, $foreign_property_name)
-						&& ($master_property->getAnnotation('link')->value != Link_Annotation::MAP)
+						&& !Link_Annotation::of($master_property)->isMap()
 					) {
 						$foreign_property = new Reflection_Property(
 							$foreign_class_name, $foreign_property_name

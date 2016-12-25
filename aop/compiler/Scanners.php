@@ -3,6 +3,8 @@ namespace ITRocks\Framework\AOP\Compiler;
 
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Tools\Names;
 
 /**
@@ -83,7 +85,8 @@ trait Scanners
 				$properties[$property->name][] = ['read', $advice];
 			}
 		}
-		foreach ($this->scanForOverrides($class->getDocComment(), ['link'], $disable) as $match) {
+		$annotations = [Link_Annotation::ANNOTATION];
+		foreach ($this->scanForOverrides($class->getDocComment(), $annotations, $disable) as $match) {
 			$advice = [Getter::class, 'get' . $match['method_name']];
 			$properties[$match['property_name']][] = ['read', $advice];
 		}
@@ -97,7 +100,10 @@ trait Scanners
 	 * @return array
 	 */
 	private function scanForOverrides(
-		$documentation, array $annotations = ['getter', 'link', 'replaces', 'setter'],
+		$documentation,
+		array $annotations = [
+			Getter_Annotation::ANNOTATION, Link_Annotation::ANNOTATION, 'replaces', 'setter'
+		],
 		array $disable = []
 	) {
 		$overrides = [];
@@ -119,11 +125,11 @@ trait Scanners
 				);
 				if ($matches[1]) {
 					foreach ($matches[1] as $i => $match) {
-						if (($annotation != 'link') || !isset($disable[$match])) {
-							if ($annotation == 'getter') {
+						if (($annotation !== Link_Annotation::ANNOTATION) || !isset($disable[$match])) {
+							if ($annotation === Getter_Annotation::ANNOTATION) {
 								$disable[$match] = true;
 							}
-							$type = ($annotation == 'setter') ? 'write' : 'read';
+							$type = ($annotation === 'setter') ? 'write' : 'read';
 							$overrides[] = [
 								'type'          => $type,
 								'property_name' => $matches[1][$i],

@@ -103,14 +103,14 @@ class Default_Yaml
 		if (class_exists($class_name)) {
 			$class = new Reflection_Class($class_name);
 			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
-				$link = $property->getAnnotation(Link_Annotation::ANNOTATION)->value;
+				$link = Link_Annotation::of($property);
 				if ($link) {
-					if (in_array($link, [Link_Annotation::MAP, Link_Annotation::OBJECT])) {
+					if ($link->is(Link_Annotation::MAP, Link_Annotation::OBJECT)) {
 						$this->addObjectDependencies(
 							$features, $property->getType()->getElementTypeAsString()
 						);
 					}
-					elseif ($link === Link_Annotation::COLLECTION) {
+					elseif ($link->isCollection()) {
 						$this->addCollectionDependencies(
 							$features, $property->getType()->getElementTypeAsString()
 						);

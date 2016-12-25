@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Sql;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 
@@ -118,7 +119,7 @@ class Link_Table
 	{
 		if (!isset($this->master_column)) {
 			$this->master_column = 'id_' . Names::setToSingle(
-				$this->property->getAnnotation('foreign')->value
+				Foreign_Annotation::of($this->property)->value
 			);
 		}
 		return $this->master_column;

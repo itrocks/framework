@@ -1604,15 +1604,14 @@ class Template
 		$var_name = substr($content, $i, $j - $i);
 		while (($k = strpos($var_name, '{')) !== false) {
 			$this->parseVar($content, $k + $i + 1, $j);
-			$j = strpos($content, '}', $i);
+			$j        = strpos($content, '}', $i);
 			$var_name = substr($content, $i, $j - $i);
 		}
 		$auto_remove = $this->parseVarWillAutoremove($var_name);
-		$value = $this->parseValue($var_name);
-		$object = reset($this->objects);
+		$value       = $this->parseValue($var_name);
+		$object      = reset($this->objects);
 		if (is_array($value) && ($object instanceof Reflection_Property)) {
-			$link = $object->getAnnotation('link')->value;
-			$value = ($link === Link_Annotation::COLLECTION)
+			$value = Link_Annotation::of($object)->isCollection()
 				? $this->parseCollection($object, $value)
 				: $this->parseMap($object, $value);
 		}

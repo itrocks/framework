@@ -20,6 +20,9 @@ use ITRocks\Framework\Tools\Names;
 class Foreign_Annotation extends Documented_Type_Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'foreign';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    string
@@ -29,15 +32,15 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
-			$link = $property->getAnnotation('link')->value;
+			$link      = Link_Annotation::of($property);
 			$possibles = null;
-			if ($link === Link_Annotation::COLLECTION) {
+			if ($link->isCollection()) {
 				$possibles = $this->defaultCollection($property);
 			}
-			elseif ($link === Link_Annotation::MAP) {
+			elseif ($link->isMap()) {
 				$possibles = $this->defaultMap($property);
 			}
-			elseif ($link === Link_Annotation::OBJECT) {
+			elseif ($link->isObject()) {
 				$possibles = $this->defaultObject($property);
 			}
 			if (is_array($possibles) && count($possibles) == 1) {
@@ -75,7 +78,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				$foreign_type->isClass()
 				&& !$foreign_type->isMultiple()
 				&& is_a($final_class_name, $foreign_type->asString(), true)
-				&& ($foreign_property->getAnnotation('link')->value == Link_Annotation::OBJECT)
+				&& Link_Annotation::of($foreign_property)->isObject()
 			) {
 				$possibles[$foreign_property->getName()] = $foreign_property;
 				if ($foreign_property->getAnnotation('composite')->value) {
@@ -105,7 +108,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				&& is_a(
 					$property->getFinalClassName(), $foreign_type->getElementTypeAsString(), true
 				)
-				&& $foreign_property->getAnnotation('link')->value == Link_Annotation::MAP
+				&& Link_Annotation::of($foreign_property)->isMap()
 				&& (
 					($foreign_property->getDeclaringClassName() != $property->getDeclaringClassName())
 					|| ($foreign_property->getName() != $property->getName())
@@ -137,10 +140,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				&& $foreign_type->isInstanceOf($property->getDeclaringClass())
 				&& (
 					$property->getAnnotation('component')->value
-					|| (
-						$foreign_type->isMultiple()
-						&& ($foreign_property->getAnnotation('link')->value == Link_Annotation::COLLECTION)
-					)
+					|| ($foreign_type->isMultiple() && Link_Annotation::of($foreign_property)->isCollection())
 				)
 			) {
 				$possibles[$foreign_property->getName()] = $foreign_property;

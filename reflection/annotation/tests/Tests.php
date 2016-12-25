@@ -119,7 +119,7 @@ class Tests extends Test
 	{
 		$this->method('@foreign');
 
-		$this->annotation_name = 'foreign';
+		$this->annotation_name = Foreign_Annotation::ANNOTATION;
 		$this->assumed_class   = Foreign_Annotation::class;
 
 		$this->testAnnotation('object', Order_Line::class, 'client', null); // 1A

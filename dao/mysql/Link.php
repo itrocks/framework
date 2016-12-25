@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use Exception;
+use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use mysqli_result;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
@@ -58,6 +59,9 @@ class Link extends Dao\Sql\Link
 	const UTF8 = 'UTF8';
 
 	//------------------------------------------------------------------------------------ $collation
+	/**
+	 * @var string
+	 */
 	private $collation = self::UTF8;
 
 	//--------------------------------------------------------------------------------- $commit_stack
@@ -239,16 +243,15 @@ class Link extends Dao\Sql\Link
 		if ($will_delete) {
 			$id = $this->getObjectIdentifier($object);
 			if ($id) {
-				$class_name = get_class($object);
-				$class = new Reflection_Class($class_name);
-				/** @var $link Class_\Link_Annotation */
-				$link = $class->getAnnotation('link');
+				$class_name         = get_class($object);
+				$class              = new Reflection_Class($class_name);
+				$link               = Class_\Link_Annotation::of($class);
 				$exclude_properties = $link->value
 					? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 					: [];
 				foreach ($class->accessProperties() as $property) {
 					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-						if ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION) {
+						if (Link_Annotation::of($property)->isCollection()) {
 							if ($property->getType()->isMultiple()) {
 								$this->deleteCollection($object, $property, $property->getValue($object));
 							}
@@ -521,7 +524,7 @@ class Link extends Dao\Sql\Link
 	private function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
 	{
 		if (!isset($link)) {
-			$link = (new Reflection_Class(get_class($object)))->getAnnotation('link');
+			$link = Class_\Link_Annotation::of(new Reflection_Class(get_class($object)));
 		}
 		if ($link->value) {
 			$ids = [];
@@ -661,7 +664,7 @@ class Link extends Dao\Sql\Link
 		if (!$class) {
 			$class = new Link_Class(get_class($object));
 		}
-		$link = $class->getAnnotation(Link_Annotation::ANNOTATION);
+		$link                = Class_\Link_Annotation::of($class);
 		$table_columns_names = array_keys($this->getStoredProperties($class));
 		$write_collections   = [];
 		$write_maps          = [];
@@ -773,7 +776,7 @@ class Link extends Dao\Sql\Link
 								$value_class = new Link_Class(get_class($value));
 								$id_value    = (
 									$value_class->getLinkedClassName()
-									&& !$element_type->asReflectionClass()->getAnnotation('link')->value
+									&& !Class_\Link_Annotation::of($element_type->asReflectionClass())->value
 								) ? 'id_' . $value_class->getCompositeProperty()->name
 									: 'id';
 								$object->$id_column_name = $this->getObjectIdentifier($value, $id_value);
@@ -802,17 +805,11 @@ class Link extends Dao\Sql\Link
 						}
 					}
 					// write collection
-					elseif (
-						is_array($value)
-						&& ($property->getAnnotation('link')->value == Link_Annotation::COLLECTION)
-					) {
+					elseif (is_array($value) && Link_Annotation::of($property)->isCollection()) {
 						$write_collections[] = [$property, $value];
 					}
 					// write map
-					elseif (
-						is_array($value)
-						&& ($property->getAnnotation('link')->value == Link_Annotation::MAP)
-					) {
+					elseif (is_array($value) && Link_Annotation::of($property)->isMap()) {
 						foreach ($value as $key => $val) {
 							if (!is_object($val)) {
 								$val = Dao::read($val, $property->getType()->getElementTypeAsString());
@@ -828,7 +825,7 @@ class Link extends Dao\Sql\Link
 					}
 					// write object
 					elseif (
-						($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
+						Link_Annotation::of($property)->isObject()
 						&& $property->getAnnotation('component')->value
 					) {
 						$write_objects[] = [$property, $value];
@@ -1007,7 +1004,7 @@ class Link extends Dao\Sql\Link
 		}
 		$class_name = Builder::className($class_name);
 		$this->setContext($class_name);
-		if ((new Reflection_Class($class_name))->getAnnotation('link')->value) {
+		if (Class_\Link_Annotation::of(new Reflection_Class($class_name))->value) {
 			$what = [];
 			foreach (explode(Link_Class::ID_SEPARATOR, $identifier) as $identify) {
 				list($column, $value) = explode('=', $identify);
@@ -1224,13 +1221,12 @@ class Link extends Dao\Sql\Link
 				}
 			}
 			do {
-				/** @var $link Class_\Link_Annotation */
-				$link = $class->getAnnotation('link');
+				$link = Class_\Link_Annotation::of($class);
 				if ($link->value) {
 					$link_property = $link->getLinkClass()->getLinkProperty();
-					$link_object = $link_property->getValue($object);
+					$link_object   = $link_property->getValue($object);
 					if (!$link_object) {
-						$id_link_property = 'id_' . $link_property->name;
+						$id_link_property          = 'id_' . $link_property->name;
 						$object->$id_link_property = $this->write($link_object, $options);
 					}
 				}
@@ -1349,18 +1345,17 @@ class Link extends Dao\Sql\Link
 		$old_object = Search_Object::create($class_name);
 		$this->setObjectIdentifier($old_object, $this->getObjectIdentifier($object));
 		$aop_getter_ignore = Getter::$ignore;
-		Getter::$ignore = false;
-		$old_collection = $property->getValue($old_object);
-		Getter::$ignore = $aop_getter_ignore;
+		Getter::$ignore    = false;
+		$old_collection    = $property->getValue($old_object);
+		Getter::$ignore    = $aop_getter_ignore;
 
 		$element_class = $property->getType()->asReflectionClass();
-		/** @var $element_link Class_\Link_Annotation */
-		$element_link = $element_class->getAnnotation('link');
+		$element_link  = Class_\Link_Annotation::of($element_class);
 		// collection properties : write each of them
 		$id_set = [];
 		if ($collection) {
-			$options[] = new Option\Link_Class_Only();
-			$foreign_property_name = $property->getAnnotation('foreign')->value;
+			$options[]             = new Option\Link_Class_Only();
+			$foreign_property_name = Foreign_Annotation::of($property)->value;
 			foreach ($collection as $key => $element) {
 				if (!is_a($element, $element_class->getName())) {
 					$collection[$key] = $element = Builder::createClone($element, $element_class->getName(), [
@@ -1382,7 +1377,7 @@ class Link extends Dao\Sql\Link
 				}
 				else {
 					$property_add_event = null;
-					$before_result = true;
+					$before_result      = true;
 				}
 				if ($before_result) {
 					$this->write($element, empty($id) ? [] : $options);
@@ -1418,8 +1413,8 @@ class Link extends Dao\Sql\Link
 	private function writeMap($object, array $options, Reflection_Property $property, array $map)
 	{
 		// old map
-		$class = new Link_Class(get_class($object));
-		$composite_property_name = $class->getAnnotation('link')->value
+		$class                   = new Link_Class(get_class($object));
+		$composite_property_name = Class_\Link_Annotation::of($class)->value
 			? $class->getCompositeProperty()->name
 			: null;
 		$old_object = Search_Object::create(Link_Class::linkedClassNameOf($object));
@@ -1477,7 +1472,7 @@ class Link extends Dao\Sql\Link
 	) {
 		// if there is already a stored component object : there must be only one
 		if (is_object($component_object)) {
-			$foreign_property_name = $property->getAnnotation('foreign')->value;
+			$foreign_property_name = Foreign_Annotation::of($property)->value;
 			$existing = $this->searchOne(
 				[$foreign_property_name => $object], get_class($component_object)
 			);

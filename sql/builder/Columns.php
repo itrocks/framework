@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Concat;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -186,7 +187,7 @@ class Columns
 			}
 			// the main table comes last, as fields with the same name must have the main value (ie 'id')
 			if (isset($has_storage)) {
-				if (!(new Link_Class($this->joins->getStartingClassName()))->getAnnotation('link')->value) {
+				if (!Link_Annotation::of(new Link_Class($this->joins->getStartingClassName()))->value) {
 					$sql_columns .= 't0.id, ';
 				}
 
@@ -303,9 +304,9 @@ class Columns
 
 		// linked join and linked properties list
 		$class = new Link_Class($join->foreign_class);
-		if ($class->getAnnotation('link')->value) {
+		if (Link_Annotation::of($class)->value) {
 			$linked_properties = $class->getLinkedProperties();
-			$linked_join = $this->joins->getLinkedJoin($join);
+			$linked_join       = $this->joins->getLinkedJoin($join);
 		}
 
 		if ($this->expand_objects) {

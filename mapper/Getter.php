@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Mapper;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -112,11 +113,11 @@ abstract class Getter
 						if (!$property instanceof Reflection_Property) {
 							$property = new Reflection_Property(get_class($object), $property);
 						}
-						$property_name = $property->getAnnotation('foreign')->value;
-						$dao = Dao::get($property->getAnnotation('dao')->value);
+						$property_name = Foreign_Annotation::of($property)->value;
+						$dao           = Dao::get($property->getAnnotation('dao')->value);
 					}
 					else {
-						$dao = Dao::current();
+						$dao           = Dao::current();
 						$property_name = null;
 					}
 					if ($is_component) {
@@ -130,7 +131,7 @@ abstract class Getter
 					}
 					// when element class is not a component and a property name was found
 					elseif (!empty($property_name)) {
-						$property = new Reflection_Property(get_class($search_element), $property_name);
+						$property   = new Reflection_Property(get_class($search_element), $property_name);
 						$accessible = $property->isPublic();
 						if (!$accessible) {
 							$property->setAccessible(true);
@@ -270,7 +271,7 @@ abstract class Getter
 				$property = new Reflection_Property(get_class($object), $property_name);
 			}
 			if ($property && $property->getAnnotation('component')->value) {
-				$foreign_property_name = $property->getAnnotation('foreign')->value;
+				$foreign_property_name = Foreign_Annotation::of($property)->value;
 				if ($foreign_property_name && Dao::getObjectIdentifier($object)) {
 					$stored = Dao::searchOne(
 						[$foreign_property_name => $object], $property->getType()->getElementTypeAsString()

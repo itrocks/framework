@@ -86,14 +86,13 @@ class Html_Builder_Property extends Html_Builder_Type
 	 */
 	public function build()
 	{
-		$link = $this->property->getAnnotation('link')->value;
-		switch ($link) {
+		switch (Link_Annotation::of($this->property)->value) {
 			case Link_Annotation::COLLECTION: return $this->buildCollection();
 			case Link_Annotation::MAP:        return $this->buildMap();
-			default: return is_array($this->value) && $this->type != 'string[]' ?
-				$this->buildMap() :
-				$this->buildSingle();
 		}
+		return is_array($this->value) && ($this->type !== 'string[]')
+			? $this->buildMap()
+			: $this->buildSingle();
 	}
 
 	//------------------------------------------------------------------------------- buildCollection

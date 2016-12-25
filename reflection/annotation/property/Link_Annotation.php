@@ -16,13 +16,24 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 {
 
 	//--------------------------------------------------------------------------------- $value values
-	const ALL        = 'All';
+
+	//------------------------------------------------------------------------------------------- ALL
+	const ALL = 'All';
+
+	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'link';
+
+	//------------------------------------------------------------------------------------ COLLECTION
 	const COLLECTION = 'Collection';
-	const DATETIME   = 'DateTime';
-	const MAP        = 'Map';
+
+	//-------------------------------------------------------------------------------------- DATETIME
+	const DATETIME = 'DateTime';
+
+	//------------------------------------------------------------------------------------------- MAP
+	const MAP = 'Map';
+
 	//---------------------------------------------------------------------------------------- OBJECT
-	const OBJECT     = 'Object';
+	const OBJECT = 'Object';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -83,6 +94,16 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 		return $value;
 	}
 
+	//-------------------------------------------------------------------------------------------- is
+	/**
+	 * @param $array string|string[]
+	 * @return boolean
+	 */
+	public function is($array)
+	{
+		return in_array($this->value, is_array($array) ? $array : func_get_args());
+	}
+
 	//----------------------------------------------------------------------------------------- isAll
 	/**
 	 * @return boolean
@@ -125,7 +146,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	 */
 	public function isMultiple()
 	{
-		return in_array($this->value, [self::ALL, self::COLLECTION, self::MAP]);
+		return $this->is(self::ALL, self::COLLECTION, self::MAP);
 	}
 
 	//-------------------------------------------------------------------------------------- isObject

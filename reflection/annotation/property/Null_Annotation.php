@@ -26,7 +26,7 @@ class Null_Annotation extends Boolean_Annotation implements Property_Context_Ann
 		if (
 			!$this->value
 			&& !$property->getAnnotation('mandatory')->value
-			&& ($property->getAnnotation('link')->value == Link_Annotation::OBJECT)
+			&& Link_Annotation::of($property)->isObject()
 		) {
 			$this->value = true;
 		}
