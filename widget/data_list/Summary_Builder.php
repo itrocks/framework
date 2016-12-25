@@ -122,7 +122,7 @@ class Summary_Builder
 				else $sql .= SP . Loc::tr(strtolower($clause)) . SP;
 				$key_clause = strtoupper($key);
 				if (is_numeric($key) && ($value instanceof Logical)) {
-					// if logical, simply build path as if key clause was 'AND' (the simpliest)
+					// if logical, simply build path as if key clause was 'AND' (the simplest)
 					$key_clause = 'AND';
 				}
 				switch ($key_clause) {

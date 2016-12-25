@@ -138,7 +138,7 @@ class Tests extends Test
 		$this->testAnnotation('map response', Category::class, 'shops', 'categories'); // 3C
 		$this->testAnnotation('map myself response', Category::class, 'super_categories', 'sub_categories'); // 3D
 		$this->testAnnotation('map myself response', Category::class, 'sub_categories', 'super_categories'); // 3D
-		$this->testAnnotation('map source concurrence no reponse', Item::class, 'secondary_categories', 'item'); // 3E
+		$this->testAnnotation('map source concurrence no response', Item::class, 'secondary_categories', 'item'); // 3E
 		$this->testAnnotation('map component no response', Best_Line::class, 'lines', 'best_line'); // 3F
 		$this->testAnnotation('map component response', Item::class, 'lines', 'item'); // 3G
 	}
@@ -167,7 +167,7 @@ class Tests extends Test
 		$this->testAnnotation('map response', Category::class, 'shops', 'shop'); // 3C
 		$this->testAnnotation('map myself response', Category::class, 'super_categories', 'super_category'); // 3D
 		$this->testAnnotation('map myself response', Category::class, 'sub_categories', 'sub_category'); // 3D
-		$this->testAnnotation('map source concurrence no reponse', Item::class, 'secondary_categories', 'secondary_category'); // 3E
+		$this->testAnnotation('map source concurrence no response', Item::class, 'secondary_categories', 'secondary_category'); // 3E
 		$this->testAnnotation('map component no response', Best_Line::class, 'lines', 'line'); // 3F
 		$this->testAnnotation('map component response', Item::class, 'lines', 'line'); // 3G
 	}

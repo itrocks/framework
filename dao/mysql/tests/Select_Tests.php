@@ -59,7 +59,7 @@ class Select_Tests extends Test
 
 	//------------------------------------------------------------------------------------ everything
 	/**
-	 * Test searches on eveything with a depth of 1
+	 * Test searches on everything with a depth of 1
 	 *
 	 * @param $depth integer
 	 */
@@ -86,16 +86,6 @@ class Select_Tests extends Test
 				) {
 					$this->perClass($class, $depth);
 				}
-				/*
-				elseif (
-					!$class->isAbstract()
-					&& !$class->getAnnotation('business')->value
-					&& !strpos($class->name, BS . 'Tests' . BS)
-					&& $dao->getConnection()->exists(Dao::storeNameOf($class->name))
-				) {
-					echo '! PLEASE CHECK IF ' . $class->name . ' SHOULD BE @business' . BR;
-				}
-				*/
 			}
 		}
 	}
