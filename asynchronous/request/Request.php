@@ -6,6 +6,7 @@ use ITRocks\Framework\Asynchronous\Running\Main_Worker;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Date_Interval;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Period;
 use ITRocks\Framework\Traits\Has_Name;
@@ -97,7 +98,7 @@ class Request
 	//------------------------------------------------------------------------- $number_of_executions
 	/**
 	 * The number of process running to execute tasks
-	 * 
+	 *
 	 * @var integer
 	 */
 	public $number_of_executions = 1;
@@ -191,11 +192,15 @@ class Request
 		foreach ($this->tasks as $task) {
 			if (!$task->end_date->isEmpty()) {
 				$diff = $task->begin_date->diff($task->end_date);
-				$total_time_in_sec = $diff->timestamp(true);
+				$total_time_in_sec += $diff->timestamp(true);
 			}
 		}
+		// Must pass by Date_Interval because if number of seconds is too big
+		// (in add function or DateInterval construct), DateInterval construct launch crash
+		$interval = new Date_Interval('PT0H');
+		$interval->s = $total_time_in_sec;
 		$period = new Period(
-			new Date_Time(), (new Date_Time())->add($total_time_in_sec, Date_Time::SECOND)
+			new Date_Time(), (new Date_Time())->add($interval, Date_Time::SECOND)
 		);
 		return $period->formatDifference();
 	}
